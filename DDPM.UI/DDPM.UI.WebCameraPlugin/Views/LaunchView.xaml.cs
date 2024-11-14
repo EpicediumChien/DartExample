@@ -166,20 +166,29 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
 
             timer_ststus = new DispatcherTimer();
             timer_ststus.Tick += status_Tick;
-            timer_ststus.Interval = TimeSpan.FromMilliseconds(1);
+            timer_ststus.Interval = TimeSpan.FromMilliseconds(500);
             timer_ststus.Start();
 
             _timer = new DispatcherTimer();
             _timer.Interval = TimeSpan.FromSeconds(3);
             _timer.Tick += Timer_Tick;
+
+
+            in_CameraPlugin = true;
         }
 
         private void status_Tick(object? sender, EventArgs e)
         {
+
+            if (!in_CameraPlugin) return;
+
+            DateTime dt = DateTime.Now;
+            Debug.WriteLine(dt.ToString("yyyy-MM-dd HH:mm:ss") +" running status:" + _vm.running_state.ToString()+" " );
+
             //每一秒檢測一下前警景與背景狀態,以及Camera狀態
             if (_vm.running_state)
             {
-                if (_vm!.MediaCapture == null)
+                if (_vm!.MediaCapture == null || _vm.MediaFrameReader == null)
                 {
                     _ = CameraImage.Dispatcher.BeginInvoke(() =>
                     {
@@ -192,7 +201,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             }
             else
             {
-                if (_vm!.MediaCapture != null)
+                if (_vm!.MediaCapture != null || _vm.MediaFrameReader != null)
                 {
                     _ = CameraImage.Dispatcher.BeginInvoke(() =>
                     {
@@ -419,8 +428,12 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             }));
         }
 
+        bool in_CameraPlugin = true;
         private async void LaunchView_Unloaded(object sender, RoutedEventArgs e)
         {
+
+            in_CameraPlugin = false;
+           
             if (DdpmCommonHelper.DeviceManagerSA != null)
             {
                 DdpmCommonHelper.DeviceManagerSA.ITSettingsActionEvent -= DeviceManagerSA_ITSettingsActionEvent;
@@ -948,25 +961,25 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             if (_vm!.MediaFrameReader != null)
             {
                 _vm.MediaFrameReader.FrameArrived -= MediaFrameReader_FrameArrived;
-                try
-                {
+                //try
+                //{
                     await _vm.MediaFrameReader.StopAsync();
 
-                }
-                catch (Exception ex)
+                //}
+                /*catch (Exception ex)
                 {
                     Debug.WriteLine($"Error stopping MediaFrameReader: {ex.Message}");
-                }
+                }*/
 
-                try
-                {
+                //try
+                //{
                     if (_vm.MediaFrameReader != null)
                         _vm.MediaFrameReader.Dispose();
-                }
-                catch (Exception ex)
+                //}
+                /*catch (Exception ex)
                 {
                     Debug.WriteLine($"Error Dispose MediaFrameReader: {ex.Message}");
-                }
+                }*/
 
                 _vm.MediaFrameReader = null;
             }
