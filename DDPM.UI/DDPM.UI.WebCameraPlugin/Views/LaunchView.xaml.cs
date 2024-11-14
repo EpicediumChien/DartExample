@@ -350,14 +350,14 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                     return;
                 }
 
-                /*DoubleAnimation visibilityAnimation = new()
+                DoubleAnimation visibilityAnimation = new()
                 {
                     From = 1,
                     To = 0,
                     Duration = new Duration(TimeSpan.FromSeconds(0.3))
                 };
                 visibilityAnimation.Completed += ShowGrid;
-                imgDevice.BeginAnimation(OpacityProperty, visibilityAnimation);*/
+                imgDevice.BeginAnimation(OpacityProperty, visibilityAnimation);
 
                 writeableBitmap = new(
                     (int)mediaFrameSource.CurrentFormat.VideoFormat.Width,
@@ -798,7 +798,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             }
             else
                 StartRecordingAsync().RunSynchronously();
-            
+
         }
 
         private void StopRecord()
