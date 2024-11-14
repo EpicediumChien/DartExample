@@ -98,7 +98,10 @@ namespace DDPM.UI.Common.UserControls
         /// </summary>
         public bool IsSelected
         {
-            get { return (bool)GetValue(IsSelectedProperty); }
+            get 
+            { 
+                return (bool)GetValue(IsSelectedProperty); 
+            }
             set
             {
                 SetValue(IsSelectedProperty, value);

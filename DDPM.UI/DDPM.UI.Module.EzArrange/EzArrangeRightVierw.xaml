@@ -18,7 +18,7 @@
 
             <Style x:Key="UXTextBlock_Caption" TargetType="UXControls:UXTextBlock">
                 <Setter Property="FontSize" Value="16" />
-                <Setter Property="Foreground" Value="White" />
+                <Setter Property="Foreground" Value="{DynamicResource DefaultTheme_TxtColor}" />
                 <Setter Property="VerticalAlignment" Value="Center" />
                 <Setter Property="HorizontalAlignment" Value="Left" />
                 <Setter Property="Margin" Value="0,0,8,0" />
@@ -35,7 +35,8 @@
 
                             <!-- Recent -->
                             <Grid Height="40">
-                                <UXControls:UXTextBlock Text="{Binding [Recent], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource UXTextBlock_Caption}" />
+                                <UXControls:UXTextBlock Text="{Binding [Recent], Source={x:Static lang:LangHelper.Instance}}" 
+                                                        Style="{StaticResource UXTextBlock_Caption}" />
                             </Grid>
                             <!-- -->
                             <commonCtrl:SplitListView Name="splitListView_Recent" Margin="0,4"

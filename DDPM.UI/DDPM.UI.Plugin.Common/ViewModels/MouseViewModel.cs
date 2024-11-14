@@ -33,8 +33,8 @@ namespace DDPM.UI.Plugin.ViewModels
         private Visibility _isAllButtonsVisible = Visibility.Visible;
 
         private Dictionary<string, string> AppGuids = new() {
-            {"AllApp","{76824745-CE06-4358-835D-7BB991CB71A0}" },
-            //{"AllApp",string.Empty },
+            //{"AllApp","{76824745-CE06-4358-835D-7BB991CB71A0}" },
+            {"AllApp",string.Empty },
             {"Word","{E0C9145B-BE8B-4423-B520-8CA71BE88E11}" },
             {"Excel","{37743697-4B39-45CD-B7F8-30027D1521ED}" },
             {"PowerPoint","{7BBECD91-F12A-4CC4-B005-526BA66BA657}" },

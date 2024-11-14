@@ -157,18 +157,6 @@ namespace DDPM.UI.Module.WebCameraPresenceDetection
                     //}
                 }
             }
-
-            //Added by Derek for Webcam
-            //PIMS 319334
-            //[DDPM Win 2.0][R15 webcam] Proximity Sensor in Presence Detection default is not disable.
-            SetUPDToDefaultStatus();
-        }
-
-        private void SetUPDToDefaultStatus()
-        {
-            _vm.IsChecked_ProximitySensor = false;
-            _vm.IsChecked_WakeOnApproach = false;
-            _vm.IsChecked_WalkAwayLock = false;
         }
 
         ~WebCameraPresenceDetectionRightView()

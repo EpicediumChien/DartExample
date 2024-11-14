@@ -22,8 +22,14 @@ namespace DDPM.UI.Module.ButtonSettings
         private readonly SolidColorBrush buttonFocusedBKColor2 = new(System.Windows.Media.Color.FromArgb(0x99, 0x20, 0x4A, 0x82));
         private readonly Dictionary<string, string> ButtonCaptions = new();
 
-        int SelectedActionID = -1;
         private string ActiveActionSection = "";
+
+        int SelectedActionID = -1;
+
+        /// <summary>
+        /// Need to expose the property for xaml
+        /// </summary>
+        public bool IsRestoreEnable => _vm.IsRestoreEnable;
 
         public ButtonSettingsRightView(MouseViewModel vm)
         {

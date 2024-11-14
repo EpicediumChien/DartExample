@@ -29,15 +29,14 @@
         </Style>
     </Window.Resources>
     <Grid>
-        <Border Background="#E00B172C" CornerRadius="5"
+        <Border CornerRadius="5"
         Width="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=UserControl}}"
         Height="{Binding ActualHeight, RelativeSource={RelativeSource AncestorType=UserControl}}"
-        BorderThickness="1" BorderBrush="#293B4D">
+        BorderThickness="1" >
             <Grid Margin="0,30,0,0">
-                <TextBlock Width="523" Height="40" VerticalAlignment="Top"
+                <UXControls:UXTextBlock Width="523" Height="40" VerticalAlignment="Top"
                Text="{Binding [HomePage.0], Source={x:Static lang:LangHelper.Instance}}" FontFamily="Roboto" FontSize="32"
                FontWeight="Light" TextAlignment="Center"
-               Background="Transparent" Foreground="White"
                Margin="32,20,32,0" />
                 <Image Name="LoadingImage" Width="64" Height="64" Margin="0,20,0,0"
            HorizontalAlignment="Center" VerticalAlignment="Center"

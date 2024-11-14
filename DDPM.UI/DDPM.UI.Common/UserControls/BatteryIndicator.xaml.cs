@@ -1,7 +1,10 @@
-﻿using System.Diagnostics;
+﻿using System.ComponentModel;
 using System.Windows;
 using System.Windows.Media.Imaging;
+using Windows.ApplicationModel.Background;
 using UserControl = System.Windows.Controls.UserControl;
+using Application = System.Windows.Application;
+using System.Diagnostics;
 
 namespace DDPM.UI.Common
 {
@@ -59,9 +62,18 @@ namespace DDPM.UI.Common
         {
             InitializeComponent();
             UpdateConnectionType();
+            DdpmCommonHelper.BitmapImageUpdated += ConnectionTypeImageUpdated;
+        }
+        private void ConnectionTypeImageUpdated(string resourceKey)
+        {
+            if (resourceKey == "ConnectionTypeImageKey")
+            {
+                ConnectionTypeImage.Source = null;
+                ConnectionTypeImage.Source = (BitmapImage)Application.Current.Resources[resourceKey];
+            }
         }
 
-        private static void OnBatteryChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+            private static void OnBatteryChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             var control = (BatteryIndicator)d;
             control.UpdateBatteryLevelIndicator();
@@ -114,7 +126,6 @@ namespace DDPM.UI.Common
                 }
                 else
                 {
-
                     ConnectionTypeImage.Source = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/LightMode/Port.png");
                 }
                 stackPanel.Visibility = Visibility.Collapsed;
@@ -143,8 +154,16 @@ namespace DDPM.UI.Common
                 }
                 return;
             }
-            BitmapImage bitmapImage = new BitmapImage(new Uri($"/DDPM.UI.Resources;component/Resources/Images/{ConnectionType}.png", UriKind.Relative));
-            ConnectionTypeImage.Source = bitmapImage;
+
+            if (DdpmCommonHelper.isDarkMode())
+            {
+                ConnectionTypeImage.Source = DdpmCommonHelper.GetImageSourceFromCommonResource($"Resources/Images/{ConnectionType}.png", "DDPM.UI.Rersources");
+            }
+            else
+            {
+                //Todo: Need Light Mode PNG, and change Resource Path Later
+                ConnectionTypeImage.Source = DdpmCommonHelper.GetImageSourceFromCommonResource($"Resources/Images/{ConnectionType}.png", "DDPM.UI.Rersources");
+            }
             UpdateBatteryLevelIndicator();
         }
 

@@ -892,7 +892,7 @@ namespace DDPM.UI.Plugin.ViewModels
             {
                 if (mg.GroupIcon != null)
                 {
-                    VbarItem vbarItem = new(idx, mg.GroupIcon, mg.GroupName)
+                    VbarItem vbarItem = new(idx, mg.GroupIcon, mg.GroupName, mg.IconCanvas)
                     {
                         ClickCommand = VbarItemClickCommand
                     };

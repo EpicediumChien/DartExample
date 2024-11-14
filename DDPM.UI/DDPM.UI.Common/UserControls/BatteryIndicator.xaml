@@ -16,7 +16,7 @@
 
     <Border Background="#99193457" CornerRadius="2" Width="111" Height="40">
     -->
-    <Border Background="{DynamicResource BatteryIndicator_BkColor}" CornerRadius="2" Height="40" HorizontalAlignment="Center">
+    <Border CornerRadius="2" Height="40" HorizontalAlignment="Center">
         <!-- Robert_Lin, 2024-6-23 to meet reqtirements of Dell UI team, both left and right side margin should be 12. -->
         <Grid Margin="12,0">
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">

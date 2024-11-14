@@ -31,7 +31,7 @@
             <Setter.Value>
                 <ControlTemplate TargetType="ToggleButton">
                     <Border Padding="{TemplateBinding Padding}"
-                            BorderBrush="{StaticResource GroupExpanderHeaderBottomLineColor}"
+                            BorderBrush="{DynamicResource GroupExpanderHeaderBottomLineColor}"
                             BorderThickness="0,0,0,1">
                         <Grid Background="Transparent" SnapsToDevicePixels="False">
                             <Grid.ColumnDefinitions>
