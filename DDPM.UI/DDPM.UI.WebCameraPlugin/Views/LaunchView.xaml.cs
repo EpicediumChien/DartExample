@@ -191,6 +191,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                         _vm.mre.Reset();
                     }
                 });
+                _vm.mre.Reset();
                 status_thread.Start();
             }
 
