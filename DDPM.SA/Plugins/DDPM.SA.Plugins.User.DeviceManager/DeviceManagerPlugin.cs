@@ -614,7 +614,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             {
                 foreach (var settings in _hotkeySettings)
                 {
-
                     if (settings.HotkeyInfo != null)
                     {
                         HotkeyInfo hotkeyInfo = settings.HotkeyInfo.SingleOrDefault(x => x.ID.Equals(e.HotkeyInfo.ID));
@@ -11668,6 +11667,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             scheduleInfo result = ReadScheduleMonitorSettings(mo).Result;
             return result.IsEnable;
         }
+
         private void Toggle_EzRecentSetting(MonitorInfo monitorInfo, Object[] param)
         {
             //Validation
