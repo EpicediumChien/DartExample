@@ -86,8 +86,8 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
         private string EditingProfileName = string.Empty;
         private static PowerEventControl _pwr_Mon = null;
 
-        //每一秒偵測前後景狀態是否改變,以切換相機狀態
-        private DispatcherTimer timer_ststus;
+        public Thread status_thread = null;
+        public bool exit_status_thread = false;
 
         public LaunchView()
         {
@@ -164,22 +164,49 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             Preview();
             EnableMonitorOnEvent();
 
-            timer_ststus = new DispatcherTimer();
-            timer_ststus.Tick += status_Tick;
-            timer_ststus.Interval = TimeSpan.FromMilliseconds(1);
-            timer_ststus.Start();
 
             _timer = new DispatcherTimer();
             _timer.Interval = TimeSpan.FromSeconds(3);
             _timer.Tick += Timer_Tick;
+
+            exit_status_thread = false;
+            if (status_thread == null)
+            {
+                status_thread = new Thread(() =>
+                {
+                    DateTime dt = DateTime.Now;
+                    while (_vm.mre.WaitOne())
+                    {
+
+                        if (exit_status_thread) return;
+
+                        if (!_vm.IsRecording)
+                        {
+                            Dispatcher.Invoke(new Action(() =>
+                            {
+                                status_change();
+                            }));
+                        }
+
+                        _vm.mre.Reset();
+                    }
+                });
+                _vm.mre.Reset();
+                status_thread.Start();
+            }
+
+            in_CameraPlugin = true;
         }
 
-        private void status_Tick(object? sender, EventArgs e)
+        private void status_change()
         {
+
+            if (!in_CameraPlugin) return;
+
             //每一秒檢測一下前警景與背景狀態,以及Camera狀態
             if (_vm.running_state)
             {
-                if (_vm!.MediaCapture == null)
+                if (_vm!.MediaCapture == null || _vm.MediaFrameReader == null)
                 {
                     _ = CameraImage.Dispatcher.BeginInvoke(() =>
                     {
@@ -192,7 +219,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             }
             else
             {
-                if (_vm!.MediaCapture != null)
+                if (_vm!.MediaCapture != null || _vm.MediaFrameReader != null)
                 {
                     _ = CameraImage.Dispatcher.BeginInvoke(() =>
                     {
@@ -419,13 +446,19 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             }));
         }
 
+        bool in_CameraPlugin = true;
         private async void LaunchView_Unloaded(object sender, RoutedEventArgs e)
         {
+
+            in_CameraPlugin = false;
+            exit_status_thread = true;
+            _vm?.mre.Set();
+
             if (DdpmCommonHelper.DeviceManagerSA != null)
             {
                 DdpmCommonHelper.DeviceManagerSA.ITSettingsActionEvent -= DeviceManagerSA_ITSettingsActionEvent;
             }
-            _vm!.MediaFrameReader.FrameArrived -= MediaFrameReader_FrameArrived;
+            _vm!.MediaFrameReader!.FrameArrived -= MediaFrameReader_FrameArrived;
             _vm.ProfilePropertyChanged -= ProfilePropertyChanged;
             _vm.WebcamSettingChanged -= WebcamSettingChanged;
             try
@@ -785,8 +818,6 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
         {
             _vm!.IsRecording = true;
 
-            //關閉前後景處理機制
-            timer_ststus.Stop();
 
             if (_vm!.WebcamCountdown)
             {
@@ -798,15 +829,13 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             }
             else
                 StartRecordingAsync().RunSynchronously();
-            
+
         }
 
         private void StopRecord()
         {
             _ = StopRecordingAsync();
 
-            //開啟前後景處理機制
-            timer_ststus.Start();
         }
         private void Timer_Tick(object? sender, EventArgs e)
         {
