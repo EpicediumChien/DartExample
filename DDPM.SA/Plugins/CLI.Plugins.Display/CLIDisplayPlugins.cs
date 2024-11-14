@@ -774,6 +774,13 @@ namespace DDPM.CLI.Plugins.Display
                         result.serialize_Json_response = ret.result;
                     }
                     break;
+                case "NETWORKKVMVERSION":
+                    {
+                        var ret = NetworkkvmVersionx(commandLineInput);
+                        result.ExitCode = ret.code;
+                        result.serialize_Json_response = ret.result;
+                    }
+                    break;
                 case "NETWORKKVM":
                     {
                         var ret = Networkkvmx(devMgr, commandLineInput);
@@ -14215,6 +14222,64 @@ namespace DDPM.CLI.Plugins.Display
                     Trace.WriteLine("Registry key not found.");
                 }
             }
+        }
+
+        private (int code, string result) NetworkkvmVersionx(CommandLineInput commandLineInput)
+        {
+            if (commandLineInput.Command == "GET")
+            {
+                return NetworkkvmVersion(commandLineInput).Result;
+            }
+            else
+            {
+                CLI_RESPONSE cli_Response = new CLI_RESPONSE();
+                cli_Response.Command = commandLineInput.Command;
+                cli_Response.TargetFeature = commandLineInput.TargetFeature;
+                cli_Response.Result = "FAIL";
+                cli_Response.Message = $"Un-supported command: {commandLineInput.Command}";
+                return ((int)CLI_ExitCode.unknow_command, cli_Response.ToJson());
+            }
+        }
+
+        private async Task<(int code, string result)> NetworkkvmVersion(CommandLineInput commandLineInput)
+        {
+            string output = string.Empty;
+            bool retcode = false;
+
+            NKVM_RESPONSE cli_Response = new NKVM_RESPONSE();
+            cli_Response.Command = commandLineInput.Command;
+            cli_Response.TargetFeature = commandLineInput.TargetFeature;
+
+            string filePath = @"C:\Program Files\Dell\Dell Display and Peripheral Manager\Plugins\NKVM\DDM.exe";
+
+            if (File.Exists(filePath))
+            {
+                FileVersionInfo fileVersionInfo = FileVersionInfo.GetVersionInfo(filePath);
+                string version = fileVersionInfo.FileVersion;
+
+                if (!string.IsNullOrWhiteSpace(version))
+                {
+                    cli_Response.Value = version;
+                    cli_Response.Result = "PASS";
+                    cli_Response.Message = $"Version: {version}";
+                    retcode = true;
+                }
+                else
+                {
+                    cli_Response.Result = "FAIL";
+                    cli_Response.Message = $"Fail to get NetworkKVM Version";
+                    retcode = false;
+                }
+            }
+            else
+            {
+                cli_Response.Result = "FAIL";
+                cli_Response.Message = $"{filePath} is not exists.";
+            }
+
+            Console.WriteLine(JsonConvert.SerializeObject(cli_Response, Formatting.Indented));
+            output = JsonConvert.SerializeObject(cli_Response, Formatting.Indented);
+            return (retcode ? (int)CLI_ExitCode.success : (int)CLI_ExitCode.functional_error, output);
         }
 
         private (int code, string result) Networkkvmx(IDeviceManagerSA devMgr, CommandLineInput commandLineInput)

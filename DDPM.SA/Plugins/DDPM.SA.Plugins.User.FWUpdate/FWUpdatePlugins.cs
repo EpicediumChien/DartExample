@@ -777,50 +777,50 @@ namespace DDPM.SA.Plugins.User.FWUpdate
             try
             {
                 _IsUITrigger = isUITrigger;
-                string path_programdata = Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData);
-                _logs.DebugMsg_1(nameof(DownloadAndInstall) + " start");
-                string saveFolderName = Guid.NewGuid().ToString();
-                string savePath;
-                DDPMFileSecurity DDPMFileSecurity = new DDPMFileSecurity();
-                if (string.IsNullOrEmpty(installPath))
-                {
-                    if (!string.IsNullOrEmpty(path_programdata))
-                    {
-                        savePath = path_programdata + "\\Dell\\Dell Display and Peripheral Manager" + "\\" + saveFolderName + "\\";
-                    }
-                    else
-                    {
-                        foreach (FWUpdateInfo fwUpdateInfo in fwUpdateInfos)
-                        {
-                            fwUpdateInfo.FWUErrorCode = FWUErrorCode.FileCheckFail;
-                        }
-                        _logs.DebugMsg_1($"{nameof(DownloadAndInstall)} path_programdata get error");
-                        return Task.FromResult(fwUpdateInfos);
-                    }
-                }
-                else
-                {
-                    savePath = installPath;
-                }
-                if (!Directory.Exists(savePath))
-                {
-                    Directory.CreateDirectory(savePath);
-                }
-                //0926 Bruce Add Security
-                if (!CheckFold(savePath, out string FolderInfo, out string PathSymbolicLinInfo))
-                {
-                    foreach (FWUpdateInfo fwUpdateInfo in fwUpdateInfos)
-                    {
-                        fwUpdateInfo.FWUErrorCode = FWUErrorCode.FolderIsNotSafe;
-                    }
-                    _notificationStr = $"Firmware update unsuccessful.";
-                    NotificationFWupdate("Error", _notificationStr);
-                    _logs.DebugMsg_1(nameof(DownloadAndInstall) + " FolderIsNotSafe:" + FolderInfo + "--or--" + PathSymbolicLinInfo);
-                    return Task.FromResult(fwUpdateInfos);
-                }
                 for (int i = 0; i < fwUpdateInfos.Count; i++)
                 {
                     _logs.DebugMsg_1(fwUpdateInfos[i].DeviceName + nameof(DownloadAndInstall) + " start");
+                    string path_programdata = Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData);
+                    _logs.DebugMsg_1(nameof(DownloadAndInstall) + " start");
+                    string saveFolderName = Guid.NewGuid().ToString();
+                    string savePath;
+                    DDPMFileSecurity DDPMFileSecurity = new DDPMFileSecurity();
+                    if (string.IsNullOrEmpty(installPath))
+                    {
+                        if (!string.IsNullOrEmpty(path_programdata))
+                        {
+                            savePath = path_programdata + "\\Dell\\Dell Display and Peripheral Manager" + "\\" + saveFolderName + "\\";
+                        }
+                        else
+                        {
+                            foreach (FWUpdateInfo fwUpdateInfo in fwUpdateInfos)
+                            {
+                                fwUpdateInfo.FWUErrorCode = FWUErrorCode.FileCheckFail;
+                            }
+                            _logs.DebugMsg_1($"{nameof(DownloadAndInstall)} path_programdata get error");
+                            return Task.FromResult(fwUpdateInfos);
+                        }
+                    }
+                    else
+                    {
+                        savePath = installPath;
+                    }
+                    if (!Directory.Exists(savePath))
+                    {
+                        Directory.CreateDirectory(savePath);
+                    }
+                    //0926 Bruce Add Security
+                    if (!CheckFold(savePath, out string FolderInfo, out string PathSymbolicLinInfo))
+                    {
+                        foreach (FWUpdateInfo fwUpdateInfo in fwUpdateInfos)
+                        {
+                            fwUpdateInfo.FWUErrorCode = FWUErrorCode.FolderIsNotSafe;
+                        }
+                        _notificationStr = $"Firmware update unsuccessful.";
+                        NotificationFWupdate("Error", _notificationStr);
+                        _logs.DebugMsg_1(nameof(DownloadAndInstall) + " FolderIsNotSafe:" + FolderInfo + "--or--" + PathSymbolicLinInfo);
+                        return Task.FromResult(fwUpdateInfos);
+                    }
                     _notificationStr = "";
                     _fWUpdateInfo = fwUpdateInfos[i];
                     _updateErrorCode = FWUErrorCode.Unknow;
@@ -940,13 +940,13 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                     {
                         _logs.DebugMsg_1($"{fwUpdateInfos[i].DeviceName} FileLock Error: {ex.Message}");
                     }
+                    // 檢查資料夾是否存在
+                    if (!string.IsNullOrEmpty(savePath) && Directory.Exists(savePath))
+                    {
+                        // 刪除資料夾及其所有內容
+                        Directory.Delete(savePath, true);
+                    }
                     _logs.DebugMsg_1(fwUpdateInfos[i].DeviceName + nameof(DownloadAndInstall) + " done");
-                }
-                // 檢查資料夾是否存在
-                if (!string.IsNullOrEmpty(savePath) && Directory.Exists(savePath))
-                {
-                    // 刪除資料夾及其所有內容
-                    Directory.Delete(savePath, true);
                 }
                 _logs.DebugMsg_1($"{nameof(DownloadAndInstall)}, All done");
                 if (_DelayFWUpdateInfoPackage != null && _DelayFWUpdateInfoPackage.FWUpdateInfo.Count <= 0)

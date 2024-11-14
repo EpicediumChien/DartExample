@@ -257,27 +257,7 @@ namespace DDPM.SA.Plugins.SWUpdate
                     _logs.DebugMsg_1($"{nameof(CheckUpdate)} swUpdateHelper.Softwares.Count : {swUpdateHelper.Softwares.Count}");
                     for (int i = 0; i < swUpdateHelper.Softwares.Count; i++)
                     {
-                        string newVer = swUpdateHelper.Softwares[i].SoftwareVersion;
-                        string oldVer = currentVersion;
-                        if (!int.TryParse(newVer, out _))
-                        {
-                            if (newVer.Contains("."))
-                            {
-                                newVer = newVer.Replace(".", "");
-                            }
-                        }
-                        if (!int.TryParse(oldVer, out _))
-                        {
-                            if (oldVer.Contains("."))
-                            {
-                                oldVer = oldVer.Replace(".", "");
-                            }
-                        }
-                        bool needUpdate = false;
-                        if (int.TryParse(newVer, out _) && int.TryParse(oldVer, out _))
-                        {
-                            needUpdate = int.Parse(newVer) > int.Parse(oldVer) ? true : false;
-                        }
+                        bool needUpdate = SWUpdateSetting.CompareVersions(currentVersion, swUpdateHelper.Softwares[i].SoftwareVersion, _logs);
                         SWUpdateInfo SWUpdateInfo = new SWUpdateInfo()
                         {
                             TheLatestVersion = swUpdateHelper.Softwares[i].SoftwareVersion,

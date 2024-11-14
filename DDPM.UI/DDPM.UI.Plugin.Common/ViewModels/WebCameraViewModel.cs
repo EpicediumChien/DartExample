@@ -91,6 +91,9 @@ namespace DDPM.UI.Plugin.ViewModels
         // 20240926 jim add
         private bool showLockMask = false;
 
+        public ManualResetEvent mre = new ManualResetEvent(false);
+
+
         public bool ShowLockMask
         {
             get { return showLockMask; }
