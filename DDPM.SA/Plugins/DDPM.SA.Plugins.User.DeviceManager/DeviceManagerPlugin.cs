@@ -4654,6 +4654,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             writelog("[DeviceMangerPlugin] GetFWUpdateInfo start");
             if (_PeripheralsPlugin != null && _FWUpdatePlugin != null && _DisplayManagerPlugin != null && _SettingsPlugin != null)
             {
+                _PeripheralsPlugin.CheckForUpdate();
                 UpdateHelper updateHelper = _PeripheralsPlugin.GetFWUpdateInfo().Result;
                 if (updateHelper == null || updateHelper.UpdateItems == null)
                 {
