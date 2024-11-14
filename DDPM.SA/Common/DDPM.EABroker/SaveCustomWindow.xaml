@@ -6,9 +6,11 @@
         xmlns:local="clr-namespace:DDPM.EABroker"
         mc:Ignorable="d"
         Title="SaveCustomWindow" 
-        Width="417" Height="196"
+        Width="420" MinHeight="196"
+        d:DataContext="{DynamicResource vmDesign}"
         WindowStyle="None" ResizeMode="NoResize" Background="Transparent"
-        Topmost="True" ShowInTaskbar="False" AllowsTransparency="True" Loaded="Window_Loaded"
+        Topmost="True" ShowInTaskbar="False" AllowsTransparency="True" 
+        Loaded="Window_Loaded"
         >
     <Window.Resources>
         <ResourceDictionary>
@@ -20,9 +22,22 @@
             <Color x:Key="Color_FakeTransparent">#02000000</Color>
             <SolidColorBrush x:Key="FakeTransparent" Color="{StaticResource Color_FakeTransparent}" />
 
+            <local:SaveCustomWindowViewModel x:Key="vmDesign"  IsAdjustTextVisible="True"
+                                             WindowTitle="Arrange Windows" 
+                                             />
         </ResourceDictionary>
     </Window.Resources>
 
+    <Window.Style>
+        <Style TargetType="Window">
+            <Setter Property="Height" Value="196"/>
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding IsOverlapLayout}" Value="True">
+                    <Setter Property="Height" Value="284"/>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+    </Window.Style>
     <Grid MouseLeftButtonDown="rootGrid_MouseLeftButtonDown">
         <Border Name="saveCustomDlg" BorderBrush="#FF293B4D" BorderThickness="1" CornerRadius="4" 
                 Background="#F20D121A">
@@ -32,8 +47,23 @@
             <Grid>
                 <StackPanel Margin="32">
                     <Grid Height="28">
-                        <TextBlock Name="txtCustomLayout" Text="Custom layout" FontFamily="Roboto" Foreground="White" FontSize="20"
+                        <TextBlock Name="txtCustomLayout" Text="{Binding WindowTitle}" FontFamily="Roboto" Foreground="White" FontSize="20"
                                    VerticalAlignment="Center" HorizontalAlignment="Left" />
+                    </Grid>
+                    <Grid>
+                        <Grid.Style>
+                            <Style TargetType="Grid">
+                                <Setter Property="Visibility" Value="Collapsed"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding IsAdjustTextVisible}" Value="True">
+                                        <Setter Property="Visibility" Value="Visible"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Grid.Style>
+                        <TextBlock Name="txtAdjust" FontFamily="Roboto" Foreground="White" FontSize="16" Margin="0,8"
+                                   TextWrapping="Wrap"
+                                   Text="Adjust your current window arrangement, edit the name (if desired), and click &#34;Save&#34; to store the arrangement."/>
                     </Grid>
                     <ComboBox Name="cbNames" Height="40" Margin="0,8,0,16"
                               Style="{StaticResource DdpmComboBoxStyle}"

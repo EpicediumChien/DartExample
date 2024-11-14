@@ -124,9 +124,12 @@
                                 </Grid.ColumnDefinitions>
 
                                 <UXControls:UXTextBlock Text="{Binding [PipPbp.2], Source={x:Static lang:LangHelper.Instance}}" Grid.Column="0" />
+                                <!-- Robert_Lin, 2024-11-13 PIMS-319966, Change InputSurce
+                                -->
                                 <ComboBox Grid.Column="2" Style="{StaticResource DdpmComboBoxStyle}"
-                                          Width="184" Margin="0,8" DisplayMemberPath="Name"
-                                          ItemsSource="{Binding InputSourceList}"
+                                          Width="184" Margin="0" VerticalAlignment="Center"
+                                          DisplayMemberPath="DisplayName"
+                                          ItemsSource="{Binding VideoSwapItems}"
                                           SelectedItem="{Binding MainInputSource, Mode=TwoWay}" />
                             </Grid>
 
@@ -153,8 +156,9 @@
 
                                 <UXControls:UXTextBlock Text="{Binding [PipPbp.3], Source={x:Static lang:LangHelper.Instance}}" Grid.Column="0" />
                                 <ComboBox Grid.Column="2" Style="{StaticResource DdpmComboBoxStyle}"
-                                          Width="184" Margin="0,8" DisplayMemberPath="Name"
-                                          ItemsSource="{Binding InputSourceList}"
+                                          Width="184" Margin="0" VerticalAlignment="Center"
+                                          DisplayMemberPath="DisplayName"
+                                          ItemsSource="{Binding VideoSwapItems}"
                                           SelectedItem="{Binding Sub1InputSource, Mode=TwoWay}" />
                             </Grid>
 
@@ -181,8 +185,9 @@
 
                                 <UXControls:UXTextBlock Text="{Binding [PipPbp.4], Source={x:Static lang:LangHelper.Instance}}" Grid.Column="0" />
                                 <ComboBox Grid.Column="2" Style="{StaticResource DdpmComboBoxStyle}"
-                                          Width="184" Margin="0,8" DisplayMemberPath="Name"
-                                          ItemsSource="{Binding InputSourceList}"
+                                          Width="184" Margin="0" VerticalAlignment="Center"
+                                          DisplayMemberPath="DisplayName"
+                                          ItemsSource="{Binding VideoSwapItems}"
                                           SelectedItem="{Binding Sub2InputSource, Mode=TwoWay}" />
                             </Grid>
 
@@ -207,8 +212,9 @@
 
                                 <UXControls:UXTextBlock Text="{Binding [PipPbp.5], Source={x:Static lang:LangHelper.Instance}}" Grid.Column="0" />
                                 <ComboBox Grid.Column="2" Style="{StaticResource DdpmComboBoxStyle}"
-                                          Width="184"  Margin="0,8" DisplayMemberPath="Name"
-                                          ItemsSource="{Binding InputSourceList}"
+                                          Width="184"  Margin="0" VerticalAlignment="Center"
+                                          DisplayMemberPath="DisplayName"
+                                          ItemsSource="{Binding VideoSwapItems}"
                                           SelectedItem="{Binding Sub3InputSource, Mode=TwoWay}" />
                             </Grid>
                             <!-- Add a margin space at bottom -->

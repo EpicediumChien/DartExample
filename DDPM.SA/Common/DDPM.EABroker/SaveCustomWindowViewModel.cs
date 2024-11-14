@@ -7,16 +7,20 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Windows.Media.Capture.Frames;
 
 namespace DDPM.EABroker
 {
     public class SaveCustomWindowViewModel : INotifyPropertyChanged
     {
         #region Private Members
-        private readonly IDeviceManagerSA _deviceManagerSA;
+        private readonly IDeviceManagerSA? _deviceManagerSA;
         private ObservableCollection<SplitJson> _customList = new ObservableCollection<SplitJson>();
         private SplitJson _selectedCustomItem;
         private bool _isSaveButtonEnabled = true;
+        private string _windowTitle = "";
+        private bool _isAdjustTextVisible = false;
+        private bool _isOverlapLayout = false;
         #endregion Private Members
 
         #region INotifyPropertyChanged Members
@@ -31,9 +35,11 @@ namespace DDPM.EABroker
         #endregion INotifyPropertyChanged Members
 
         #region ctor
-        public SaveCustomWindowViewModel(IDeviceManagerSA deviceManager)
+        //public SaveCustomWindowViewModel(IDeviceManagerSA? deviceManager = null)
+        public SaveCustomWindowViewModel()
         {
-            _deviceManagerSA = deviceManager;
+            //if (deviceManager != null)
+            //    _deviceManagerSA = deviceManager;
         }
         #endregion
 
@@ -84,6 +90,40 @@ namespace DDPM.EABroker
             get
             {
                 return (SelectedCustomItem == null);
+            }
+        }
+
+        public bool IsAdjustTextVisible
+        {
+            get => _isAdjustTextVisible;
+            set
+            {
+                _isAdjustTextVisible = value;
+                OnPropertyChanged("IsAdjustTextVisible");
+            }
+        }
+        #endregion
+
+        #region Window Tittle
+        public string WindowTitle
+        {
+            get => _windowTitle;
+            set
+            {
+                _windowTitle = value;
+                OnPropertyChanged("WindowTitle");
+            }
+        }
+        #endregion
+
+        #region IsOverlapLayout
+        public bool IsOverlapLayout
+        {
+            get => _isOverlapLayout;
+            set
+            {
+                _isOverlapLayout = value;
+                OnPropertyChanged("IsOverlapLayout");
             }
         }
         #endregion

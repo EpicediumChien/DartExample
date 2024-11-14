@@ -197,12 +197,12 @@ namespace DDPM.UI.Plugin.ViewModels
 
         private void ChangeUPDStatus()
         {
-            if (_isChecked_ProximitySensor) 
+            if (_isChecked_ProximitySensor)
             {
                 IsWALTimerEnable = IsChecked_WalkAwayLock;
                 IsSnoozeEnable = IsChecked_WalkAwayLock;
             }
-            else 
+            else
             {
                 IsWALTimerEnable = false;
                 IsChecked_Snooze = false;
@@ -478,8 +478,13 @@ namespace DDPM.UI.Plugin.ViewModels
             WebcamSettings.ExportWebcamSettings(WebcamSettings, Model);
             OnPropertyChanged(nameof(FPS_IsSelected));
         }
+
+        public int SelectedFovIndex = 0;
         public void SetFOV_Selected(int index)
         {
+            if (!IsAutoFramingOn)
+                FieldOfView = FOVs[index];
+
             for (int j = 0; j < FOV_IsSelected.Length; j++)
             {
                 FOV_IsSelected[j] = false;
@@ -623,11 +628,20 @@ namespace DDPM.UI.Plugin.ViewModels
             {
                 DdpmCommonHelper.DeviceManagerSA!.SetFieldOfView(CurrentDeviceInfo!.ID.ToString(), CurrentProfile.FieldOfView);
                 if (_fOVs[0] == CurrentProfile.FieldOfView)
+                {
                     SetFOV_Selected(0);
+                    SelectedFovIndex = 0;
+                }
                 else if (_fOVs[1] == CurrentProfile.FieldOfView)
+                {
                     SetFOV_Selected(1);
+                    SelectedFovIndex = 1;
+                }
                 else
+                {
                     SetFOV_Selected(2);
+                    SelectedFovIndex = 2;
+                }
             }
 
             if (CurrentDeviceInfo.IsPropertyZoomSupported)
@@ -865,6 +879,8 @@ namespace DDPM.UI.Plugin.ViewModels
         {
             get => CurrentProfile.IsAutoFramingOn ? Strings.On : Strings.Off;
         }
+
+        private bool OriginalAutoFocus = true;
         public bool IsAutoFramingOn
         {
             get => CurrentProfile.IsAutoFramingOn;
@@ -879,17 +895,20 @@ namespace DDPM.UI.Plugin.ViewModels
                 //Derek 2024/11/06
                 if (IsAutoFramingOn)
                 {
-                    //Derek 2024/11/06
-                    //Webcam PIMS-316915 FOV not go back to 90 and greyed out when switch AI Auto-Framing option to on.
-                    //SetFOV_Selected(2); 
-
                     //Derek 1109 change to selected the max support FOV due to not all camera will support all FOVs
                     var FOV = CurrentDeviceInfo!.FOVValues;
                     SetFOV_Selected(FOV.Length - 1);
 
                     //Derek 2024/11/06 Webcam PIMS-317629 
                     //On Turned on Auto Frame AI option, autofocus should be on and be greyed out. (can't select)
+                    OriginalAutoFocus = IsFocusOn;
                     IsFocusOn = true;
+                }
+                else
+                {
+                    SetFOV_Selected(SelectedFovIndex);
+                    if (!OriginalAutoFocus)
+                        IsFocusOn = false;
                 }
 
             }
@@ -1588,20 +1607,6 @@ namespace DDPM.UI.Plugin.ViewModels
         public Visibility MessageBoxVisibility { get; set; } = Visibility.Collapsed;
 
         public bool running_state = true;
-        public void webcamera_stop()
-        {
-            if (MediaFrameReader == null)
-                return;
-            MediaFrameReader.StopAsync();
-
-        }
-
-        public void webcamera_restart()
-        {
-            if (MediaFrameReader == null)
-                return;
-            MediaFrameReader.StartAsync();
-        }
     }
 
     public class StreamResolution
