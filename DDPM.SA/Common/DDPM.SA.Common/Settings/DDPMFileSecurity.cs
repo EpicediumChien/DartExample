@@ -12,6 +12,7 @@ using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net.Http.Json;
@@ -136,7 +137,7 @@ namespace DDPM.SA.Common.Settings
                 DateTimeOffset utcNow = DateTimeOffset.UtcNow;
                 string strTicket = SettingsAccess.GenerateReferenceTicket(utcNow);
                 strRandom = SettingsAccess.GenerateReferenceInfo();                
-                strTicketToFile = utcNow.ToString();
+                strTicketToFile = utcNow.ToString("M/d/yyyy h:mm:ss tt zzz", CultureInfo.InvariantCulture);
                 signature = SettingsAccess.GenerateSignature(strTicket, strRandom, serialized_string);
                 //signature = strRandom + ";;" + strTicketToFile + ";;" + signature; //combine as single key
             }
@@ -352,9 +353,9 @@ namespace DDPM.SA.Common.Settings
                     }
                     modifiedJson = array.ToString();
                 }
-                if (string.IsNullOrEmpty(signature))
+                if (string.IsNullOrEmpty(signature) || string.IsNullOrEmpty(sInfo) || string.IsNullOrEmpty(ticket))
                 {
-                    info = "No signature in json file";
+                    info = $"a part of key is null (1){signature},(2){sInfo},(3){ticket}";
 #if DEBUG 
                     Console.WriteLine(info);
 #endif
@@ -372,24 +373,8 @@ namespace DDPM.SA.Common.Settings
 
             // Convert the modified JObject back to a JSON string
             string cal_sign;
-            //string strRandom;
-            //string strTicket;
             try
             {
-                //string[] strArray = signature.Split(";;");
-                //if(strArray.Length != 3)
-                //{
-                //    info = "signature key is not composed with DDPM key format!";
-                //    return string.Empty;
-                //}
-                //strRandom = strArray[0];
-                //strTicket = strArray[1];
-                //signature = strArray[2];
-                if (string.IsNullOrEmpty(sInfo) || string.IsNullOrEmpty(ticket) || string.IsNullOrEmpty(signature))
-                {
-                    info = $"a part of key is null (1){signature},(2){sInfo},(3){ticket}";
-                    return string.Empty;
-                }
                 //cal_sign = SettingsAccess.ComputeAccessInfo2(Encoding.UTF8.GetBytes(accessInfo), modifiedJson);
                 cal_sign = SettingsAccess.GenerateSignature(ticket, sInfo, modifiedJson);
                 if (string.IsNullOrEmpty(cal_sign))
