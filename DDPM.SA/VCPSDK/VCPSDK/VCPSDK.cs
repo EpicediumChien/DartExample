@@ -95,7 +95,7 @@ namespace VCPSDK
         {
             DDPMEvent?.Invoke(this, new EventArgsjson(response));
         }
-        public static X509Certificate2 LoadCertificate(string filePath)
+        /*public static X509Certificate2 LoadCertificate(string filePath)
         {
             byte[] certBytes = default;
 
@@ -109,7 +109,7 @@ namespace VCPSDK
             }
 
             return new X509Certificate2(certBytes);
-        }
+        }*/
 
         private bool NamedPipeServerSecurity(NamedPipeClientStream pipeServer)
         {

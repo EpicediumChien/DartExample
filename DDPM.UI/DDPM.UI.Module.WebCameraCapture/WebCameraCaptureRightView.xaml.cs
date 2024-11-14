@@ -90,6 +90,7 @@ namespace DDPM.UI.Module.WebCameraCapture
                     btnFPS1.Width = 201;
                     txtFPS1.Text = FPS[1];
                     btnFPS1.CornerRadius = new CornerRadius(0, 5, 5, 0);
+                    btnFPS1.Visibility = Visibility.Visible;
                     btnFPS2.Visibility = Visibility.Collapsed;
                     break;
                 case 3:
@@ -99,6 +100,7 @@ namespace DDPM.UI.Module.WebCameraCapture
                     btnFPS1.Width = 134;
                     txtFPS1.Text = FPS[1];
                     btnFPS1.CornerRadius = new CornerRadius(0);
+                    btnFPS1.Visibility = Visibility.Visible;
                     btnFPS2.Width = 134;
                     txtFPS2.Text = FPS[2];
                     btnFPS2.Visibility = Visibility.Visible;

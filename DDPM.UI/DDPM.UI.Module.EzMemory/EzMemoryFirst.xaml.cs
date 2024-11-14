@@ -720,6 +720,7 @@ namespace DDPM.UI.Module.EzMemory
             {
                 ISplitCtrl spCtrl = spItem.InnerContent as ISplitCtrl;
                 _vm.SelectedSplitItem = spItem;
+                _vm.CurrentSelectsEAID = spCtrl.EAID;
                 //_vm.SetWorkSplit(spCtrl.CellCount, spCtrl.SplitKey, spCtrl.Settings);//EM no need
 
                 //splitListView_Recent.MoveSelectedItemToSecondPosition();//EM no need
