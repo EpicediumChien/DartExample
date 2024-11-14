@@ -280,7 +280,7 @@ namespace DDPM.UI.Common.Tests
             UXSystemParameters.Instance.OSTheme = OSThemeEnum.Dark;
             try
             {
-                DdpmCommonHelper.updateMergedDictionaries(new Dell.Client.Framework.UX.WPF.ResourceManager.ResourceManager());
+                DdpmCommonHelper.updateMergedDictionarie();
                 Assert.True(true);
             }
             catch (Exception ex)

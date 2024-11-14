@@ -16,10 +16,10 @@ namespace DDPM.UI.Plugin.Common
 
             txtCaption.Text = Strings.RestoreToDefault;
             txtMessage.Text = Strings.RestoreToDefalutText;
-            txtYes.Content = Strings.Yes;
-            txtNo.Content = Strings.No;
+            txtYes.Text = Strings.Yes;
+            txtNo.Text = Strings.No;
         }
-        /*
+
         private void Yes_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             DialogResult = true;
@@ -27,18 +27,6 @@ namespace DDPM.UI.Plugin.Common
         }
 
         private void No_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
-        {
-            DialogResult = false;
-            Close();
-        }*/
-
-        private void Yes_MouseLeftButtonDown(object sender, RoutedEventArgs e)
-        {
-            DialogResult = true;
-            Close();
-        }
-
-        private void No_MouseLeftButtonDown(object sender, RoutedEventArgs e)
         {
             DialogResult = false;
             Close();

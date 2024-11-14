@@ -9,7 +9,6 @@
         Title="RestoreModalDialog" Height="196" Width="417" ResizeMode="NoResize" ShowInTaskbar="False"
         WindowStartupLocation="CenterOwner" WindowStyle="None">
     <Window.Resources>
-        <!--
         <Style x:Key="BorderYes" TargetType="Border">
             <Setter Property="Background" Value="#0E1C2F" />
             <Setter Property="CornerRadius" Value="2" />
@@ -25,18 +24,17 @@
             <Setter Property="Height" Value="40" />
             <Setter Property="BorderThickness" Value="0" />
             <Setter Property="BorderBrush" Value="#F5F6F7" />
-        </Style> -->
+        </Style>
     </Window.Resources>
     <Grid>
-        <Border CornerRadius="4" Height="196" Width="417" BorderThickness="1" >
+        <Border Background="#E00B172C" CornerRadius="4" Height="196" Width="417" BorderThickness="1" BorderBrush="#293B4D">
             <StackPanel Orientation="Vertical" Margin="35,36,0,0">
-                <UXControls:UXTextBlock Name="txtCaption" VerticalAlignment="Center" FontWeight="Normal"
+                <UXControls:UXTextBlock Name="txtCaption" Foreground="#FFFFFF" VerticalAlignment="Center" FontWeight="Normal"
                                         HorizontalAlignment="Left" FontFamily="Roboto" FontSize="20" Margin="0,0,0,10" />
-                <UXControls:UXTextBlock Name="txtMessage" VerticalAlignment="Center" FontWeight="Normal" TextWrapping="Wrap"
+                <UXControls:UXTextBlock Name="txtMessage" Foreground="#FFFFFF" VerticalAlignment="Center" FontWeight="Normal" TextWrapping="Wrap"
                                         HorizontalAlignment="Left" FontFamily="Roboto" FontSize="16" LineHeight="24" Width="353" />
 
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="0,8,0,0">
-                    <!--
                     <Border Style="{StaticResource BorderYes}" Cursor="Hand" MouseLeftButtonDown="Yes_MouseLeftButtonDown">
                         <UXControls:UXTextBlock Name="txtYes" Foreground="#F5F6F7" VerticalAlignment="Center" FontWeight="Medium"
                                                 HorizontalAlignment="Center" FontFamily="Roboto" FontSize="14" />
@@ -44,21 +42,7 @@
                     <Border Style="{StaticResource BorderNo}" Cursor="Hand" Margin="6,0,0,0" MouseLeftButtonDown="No_MouseLeftButtonDown">
                         <UXControls:UXTextBlock Name="txtNo" Foreground="#F5F6F7" VerticalAlignment="Center" FontWeight="Medium"
                                                 HorizontalAlignment="Center" FontFamily="Roboto" FontSize="14" Margin="5,0,0,0" />
-                    </Border> -->
-                    <UXControls:UXButton
-                        Name="txtYes" MinHeight="40" MinWidth="87"
-                        Margin="0,8,6,0"                      
-                        ButtonType="Secondary"
-                        Click="Yes_MouseLeftButtonDown"
-                        Content="N/A" FontFamily="Roboto" FontSize="14" FontWeight="Medium"
-                        CornerRadius="2"/>
-                    <UXControls:UXButton
-                        Name="txtNo" MinHeight="40" MinWidth="87"
-                        Margin="0,8,0,0"
-                        ButtonType="Primary"
-                        Click="No_MouseLeftButtonDown"
-                        Content="N/A" FontFamily="Roboto" FontSize="14" FontWeight="Medium"
-                        CornerRadius="2" />
+                    </Border>
                 </StackPanel>
             </StackPanel>
         </Border>

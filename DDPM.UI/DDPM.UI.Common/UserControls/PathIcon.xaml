@@ -11,6 +11,10 @@
              d:DesignHeight="32" d:DesignWidth="32">
     <UserControl.Resources>
         <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <!-- <ResourceDictionary Source="/DDPM.UI.Common;component/ModuleStyle.xaml" /> -->
+            </ResourceDictionary.MergedDictionaries>
+
             <!-- Style to hide tool tips that have an empty content. -->
             <Style TargetType="ToolTip">
                 <Style.Triggers>
@@ -42,29 +46,26 @@
         </ResourceDictionary>
     </UserControl.Resources>
 
-    <Grid x:Name="Path_Grid" MouseLeftButtonUp="Path_MouseLeftButtonDown">
+    <Grid MouseLeftButtonUp="Path_MouseLeftButtonDown">
         <!-- Make hover state -->
         <Grid.Style>
             <Style TargetType="Grid">
-                <Setter Property="Background" Value="{DynamicResource FakeTransparent}" />
+                <Setter Property="Background" Value="{StaticResource  FakeTransparent}" />
                 <Style.Triggers>
                     <Trigger Property="IsMouseOver" Value="True">
-                        <Setter Property="Background" Value="{DynamicResource MouseHover_BkColor}" />
+                        <Setter Property="Background" Value="#33444E" />
                     </Trigger>
                 </Style.Triggers>
             </Style>
         </Grid.Style>
 
-        <Path x:Name="TitleBarPathIcon" Data="{Binding Path=PathData, RelativeSource={RelativeSource AncestorType=UserControl}}"
+        <Path Data="{Binding Path=PathData, RelativeSource={RelativeSource AncestorType=UserControl}}"
+              Fill="{Binding Path=PathFill, RelativeSource={RelativeSource AncestorType=UserControl}}"
               HorizontalAlignment="Center" VerticalAlignment="Center">
             <!-- Robert_Lin, 2024-8-2 Add Disabled state -->
-            <!--<Path.Fill>
-                <Binding Path="IsMouseOver" RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type Grid}}" Converter="{StaticResource PathIconColorConverter}"/>
-            </Path.Fill>-->
             <Path.Style>
                 <Style TargetType="Path">
                     <Setter Property="Opacity" Value="1" />
-                    <Setter Property="Fill" Value="{DynamicResource PathIcon_Color}" />
                     <Style.Triggers>
                         <DataTrigger Binding="{Binding IsEnabled, RelativeSource={RelativeSource AncestorType=UserControl}}"
                                      Value="False">

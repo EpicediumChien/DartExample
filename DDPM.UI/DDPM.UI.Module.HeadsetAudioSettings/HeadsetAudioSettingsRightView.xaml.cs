@@ -1,8 +1,6 @@
 ﻿using DDPM.SA.Common.Settings;
 using DDPM.UI.Common;
 using DDPM.UI.Plugin.ViewModels;
-using Dell.Client.Framework.UX.WPF.Controls;
-using Newtonsoft.Json.Linq;
 using System.ComponentModel;
 using System.Globalization;
 using System.Windows;
@@ -39,7 +37,7 @@ namespace DDPM.UI.Module.HeadsetAudioSettings
             _vm = vm;
             converter.ViewModel = _vm;
             _vm.Invoke_PleaseWait(_vm.Model, _vm);
-            if (_vm.DeviceInfoDTP!.IsPresetsSupported)
+            if (_vm.CurrentDeviceInfo!.IsPresetsSupported)
             {
                 if(_vm.DeviceInfoDTP!.Band1Gain > 4 || _vm.DeviceInfoDTP!.Band1Gain < -6)
                     SetNodeValue(Node1, 0);
@@ -68,7 +66,7 @@ namespace DDPM.UI.Module.HeadsetAudioSettings
             }
             //_vm.Invoke_PleaseWait(_vm.Model);
             //_vm.DetectPageShow(_vm.Model);
-            _vm.DetectPageShow("WL7024");
+            //_vm.DetectPageShow("WL7024");
             //_vm.DetectPageShow("WL5024");
             //vm.DetectPageShow("WH5024");
             //_vm.DetectPageShow("WL3024");
@@ -105,8 +103,6 @@ namespace DDPM.UI.Module.HeadsetAudioSettings
                     }
                 }
             }
-
-            SystemParameters.StaticPropertyChanged += SystemParameters_StaticPropertyChanged;
         }
 
         ~HeadsetAudioSettingsRightView()
@@ -114,19 +110,6 @@ namespace DDPM.UI.Module.HeadsetAudioSettings
             if (DdpmCommonHelper.DeviceManagerSA != null)
             {
                 DdpmCommonHelper.DeviceManagerSA.ITSettingsActionEvent -= DeviceManagerSA_ITSettingsActionEvent;
-                SystemParameters.StaticPropertyChanged -= SystemParameters_StaticPropertyChanged;
-            }
-        }
-
-        private void SystemParameters_StaticPropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            if (DdpmCommonHelper.previousOsTheme == OSThemeEnum.Dark)
-            {
-                _vm.IsDarkTheme = true;
-            }
-            else
-            {
-                _vm.IsDarkTheme = false;
             }
         }
 
@@ -593,36 +576,6 @@ namespace DDPM.UI.Module.HeadsetAudioSettings
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            throw new NotImplementedException();
-        }
-    }
-
-    public class BooleanToForegroundConverter : IMultiValueConverter
-    {
-        public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
-        {
-            if (values.Any())
-            {
-                if (bool.Parse(values[0].ToString()) == true)
-                {
-                    return Brushes.Gray;
-                }
-                else
-                {
-                    if (values[1] == DependencyProperty.UnsetValue)
-                        return Brushes.Gray;
-
-                    if (bool.Parse(values[1].ToString()) == true)
-                        return Brushes.White;
-                    else
-                        return Brushes.Black;
-                }
-            }
-            else return Brushes.Gray;
-        }
-
-        public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
         {
             throw new NotImplementedException();
         }

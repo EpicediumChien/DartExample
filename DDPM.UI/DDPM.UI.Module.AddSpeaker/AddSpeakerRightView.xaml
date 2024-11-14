@@ -12,7 +12,7 @@
     <UserControl.Resources>
         <ResourceDictionary>
             <Style x:Key="TextStyle1" TargetType="UXControls:UXTextBlock">
-                <Setter Property="Foreground" Value="{DynamicResource AddDeviceTextStyle1_TxtColor}" />
+                <Setter Property="Foreground" Value="White" />
                 <Setter Property="FontFamily" Value="Roboto" />
                 <Setter Property="FontSize" Value="16" />
                 <Setter Property="FontWeight" Value="Normal" />
@@ -21,22 +21,22 @@
                 <Setter Property="HorizontalAlignment" Value="Left" />
             </Style>
             <Style x:Key="Border1" TargetType="Border">
-                <Setter Property="Background" Value="{DynamicResource AddDeviceBorder1_BgColor}" />
+                <Setter Property="Background" Value="#99132F54" />
                 <Setter Property="CornerRadius" Value="13" />
                 <Setter Property="Width" Value="926" />
                 <Setter Property="VerticalAlignment" Value="Top" />
                 <Setter Property="BorderThickness" Value="2" />
-                <Setter Property="BorderBrush" Value="{DynamicResource Border1BorderBrush}" />
+                <Setter Property="BorderBrush" Value="#132F54" />
             </Style>
         </ResourceDictionary>
     </UserControl.Resources>
     <Grid>
         <StackPanel Orientation="Vertical">
             <UXControls:UXTextBlock Name="txtCaption" FontFamily="Roboto" FontSize="20" FontWeight="Normal"
-                                    Margin="18,24,0,0" Foreground="{DynamicResource AddDeviceTxtCaption_TxtColor}"
+                                    Margin="18,24,0,0" Foreground="White"
                                     VerticalAlignment="Top" HorizontalAlignment="Left" Text="{Binding [WiredConnection], Source={x:Static lang:LangHelper.Instance}}"/>
             <UXControls:UXTextBlock Name="txtWiredConnection" Margin="19,0,0,0" FontFamily="Roboto"
-                                    HorizontalAlignment="Left" Foreground="{DynamicResource AddDeviceTxtCaption_TxtColor}" FontSize="14" FontWeight="Normal" />
+                                    HorizontalAlignment="Left" Foreground="#FFFFFF" FontSize="14" FontWeight="Normal" />
             <Border Style="{StaticResource Border1}" Margin="16,8,16,0" Width="Auto">
                 <Grid>
                     <StackPanel Orientation="Vertical" Margin="0,0,0,13">

@@ -1,7 +1,4 @@
-﻿using Dell.Client.Framework.UX.WPF.Controls;
-using System.ComponentModel;
-using System.Resources;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
@@ -15,23 +12,36 @@ namespace DDPM.UI.Common
     {
         private readonly VbarItemViewModel vm = new();
 
-        private LinearGradientBrush FocusFillBrush;
-        private LinearGradientBrush FocusBorderBrush;
-        private SolidColorBrush whiteBrush = new SolidColorBrush(Colors.White);
+        private readonly SolidColorBrush NormalFillBrush = new();
+        private readonly SolidColorBrush NormalBorderBrush = new();
+        private readonly LinearGradientBrush FocusFillBrush = new();
+        private readonly LinearGradientBrush FocusBorderBrush = new();
 
         public DeviceBarItem(int id, ImageSource icon, string text, bool isHidden = false)
         {
             InitializeComponent();
-
             vm.Id = id;
             vm.Icon = icon;
             vm.Text = text;
             vm.Visibility = isHidden ? Visibility.Collapsed : Visibility.Visible;
-            this.DataContext = vm;
+            DataContext = vm;
 
-            FocusFillBrush = (LinearGradientBrush)FindResource("Brush_GradientButtonCyan");
-            FocusBorderBrush = (LinearGradientBrush)FindResource("Brush_GradientBorderCyan");
-            ((Canvas)this.FindName(resolveIconName(Id))).Tag = (SolidColorBrush)FindResource("DefaultTheme_PathColor");
+            NormalFillBrush.Color = Color.FromArgb(0x99, 0x13, 0x2F, 0x54);
+            NormalBorderBrush.Color = Color.FromArgb(0x0D, 0xFF, 0xFF, 0xFF);
+            FocusFillBrush.StartPoint = new Point(0, 0);
+            FocusFillBrush.EndPoint = new Point(1, 0);
+            FocusFillBrush.GradientStops.Add(new GradientStop(Color.FromArgb(0xFF, 0x06, 0x72, 0xCB), 0));
+            FocusFillBrush.GradientStops.Add(new GradientStop(Color.FromArgb(0xFF, 0x00, 0x78, 0xD4), 0.5));
+            FocusFillBrush.GradientStops.Add(new GradientStop(Color.FromArgb(0xFF, 0x6E, 0x69, 0xCF), 1));
+            FocusBorderBrush.StartPoint = new Point(0, 0);
+            FocusBorderBrush.EndPoint = new Point(1, 0);
+            FocusBorderBrush.GradientStops.Add(new GradientStop(Color.FromArgb(0xFF, 0x55, 0xB4, 0xFD), 0));
+            FocusBorderBrush.GradientStops.Add(new GradientStop(Color.FromArgb(0xFF, 0x6E, 0x69, 0xCF), 1));
+
+            bdRoot.Background = NormalFillBrush;
+            bdRoot.BorderBrush = NormalBorderBrush;
+            //if(isHidden)
+            //    (bdRoot.Parent as Grid).Visibility = Visibility.Collapsed;
         }
 
         public int Id => vm.Id;
@@ -39,7 +49,8 @@ namespace DDPM.UI.Common
 
         private void rootGrid_MouseEnter(object sender, System.Windows.Input.MouseEventArgs e)
         {
-            SelectBarItem();
+            bdRoot.Background = FocusFillBrush;
+            bdRoot.BorderBrush = FocusBorderBrush;
         }
 
         private void rootGrid_MouseLeave(object sender, System.Windows.Input.MouseEventArgs e)
@@ -47,7 +58,8 @@ namespace DDPM.UI.Common
             if(IsSelected)
             { return; }
 
-            RenewBarItem();
+            bdRoot.Background = NormalFillBrush;
+            bdRoot.BorderBrush = NormalBorderBrush;
         }
 
         public ICommand? ClickCommand { get; set; }
@@ -69,45 +81,17 @@ namespace DDPM.UI.Common
             set
             {
                 vm.IsSelected = value;
+                if(IsSelected)
+                {
+                    bdRoot.Background = FocusFillBrush;
+                    bdRoot.BorderBrush = FocusBorderBrush;
+                }
+                else
+                {
+                    bdRoot.Background = NormalFillBrush;
+                    bdRoot.BorderBrush = NormalBorderBrush;
+                }
             }
-        }
-
-        private string resolveIconName(int Id)
-        {
-            switch (Id) {
-                case 0:
-                    return "Display_0";
-                case 1:
-                    return "Webcam_1";
-                case 2:
-                    return "KeyMouse_2";
-                case 3:
-                    return "Stylus_3";
-                case 4:
-                    return "HeadSet_4";
-                case 5:
-                    return "SpeakSound_5";
-                case 6:
-                    return "Dock_6";
-                default:
-                    return string.Empty;
-            }
-        }
-
-        public void RenewBarItem()
-        {
-            bdRoot.Background = (SolidColorBrush)FindResource("Vbar_BkBrush_Default");
-            bdRoot.BorderBrush = (SolidColorBrush)FindResource("Vbar_BdBrush_Default");
-            ((Canvas)this.FindName(resolveIconName(Id))).Tag = (SolidColorBrush)FindResource("DefaultTheme_PathColor");
-            IconName.ClearValue(TextBlock.ForegroundProperty);
-        }
-
-        public void SelectBarItem()
-        {
-            bdRoot.Background = FocusFillBrush;
-            bdRoot.BorderBrush = FocusBorderBrush;
-            ((Canvas)this.FindName(resolveIconName(Id))).Tag = whiteBrush;
-            IconName.Foreground = whiteBrush;
         }
     }
 }

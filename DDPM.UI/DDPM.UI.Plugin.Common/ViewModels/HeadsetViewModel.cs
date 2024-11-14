@@ -2,13 +2,11 @@
 using DDPM.UI.Common;
 using Dell.Client.Framework.Common;
 using Dell.Client.Framework.UX.WPF;
-using Dell.Client.Framework.UX.WPF.Controls;
 using Microsoft;
 using Newtonsoft.Json.Linq;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows;
-using System.Windows.Media;
 
 namespace DDPM.UI.Plugin.ViewModels
 {
@@ -36,20 +34,6 @@ namespace DDPM.UI.Plugin.ViewModels
             DeviceInfoDTP = new DeviceInfo();
             _current_headset = string.Empty;
             _log!.Info($"[HeadsetViewModel] HeadsetViewModel Start...");
-        }
-
-        private bool _isDarkTheme;
-        public bool IsDarkTheme
-        {
-            get => _isDarkTheme;
-            set
-            {
-                if (_isDarkTheme != value)
-                {
-                    _isDarkTheme = value;
-                    OnPropertyChanged(nameof(IsDarkTheme));
-                }
-            }
         }
 
         public void DetectPageShow(string model)

@@ -4,104 +4,30 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:UXControls="clr-namespace:Dell.Client.Framework.UX.WPF.Controls;assembly=DCF.UX.WPF"
-             xmlns:Common="clr-namespace:DDPM.UI.Common"
-             xmlns:common="clr-namespace:DDPM.UI.Common;assembly=DDPM.UI.Common"
+             xmlns:local="clr-namespace:DDPM.UI.Common"
              mc:Ignorable="d"
              HorizontalAlignment="Right"
              d:DesignHeight="72" d:DesignWidth="228"
              >
-    <UserControl.Style>
-        <Style TargetType="UserControl">
-            <Setter Property="Foreground" Value="{DynamicResource Vbar_FgBrush_Default}" />
-            <Style.Triggers>
-                <Trigger Property="IsEnabled" Value="False">
-                    <Setter Property="Foreground" Value="{DynamicResource Vbar_FgBrush_Disabled}" />
-                </Trigger>
-            </Style.Triggers>
-        </Style>
-    </UserControl.Style>
-    <UserControl.Resources>
-        <common:IdxToVisibilityConverter x:Key="IdxToVis"/>
-    </UserControl.Resources>
+  <UserControl.Resources>
+  </UserControl.Resources>
 
   <Grid Height="64"  VerticalAlignment="Top" Margin="0,0,0,8" HorizontalAlignment="Right" Visibility="{Binding Visibility}">
-        <Border Name="bdRoot" MouseEnter="rootGrid_MouseEnter" MouseLeave="rootGrid_MouseLeave" MouseLeftButtonDown="rootGrid_MouseLeftButtonDown">
-            <Border.Style>
-                <Style TargetType="Border">
-                    <Setter Property="Width" Value="212" />
-                    <Setter Property="CornerRadius" Value="13" />
-                    <Setter Property="Focusable" Value="True" />
-                    <Setter Property="BorderThickness" Value="2" />
-                    <Setter Property="Background" Value="{DynamicResource Vbar_BkBrush_Default}" />
-                    <Setter Property="BorderBrush" Value="{DynamicResource Vbar_BdBrush_Default}" />
-                </Style>
-            </Border.Style>
-            <Grid x:Name="iconTextGrid">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="60" />
-                    <ColumnDefinition Width="*" />
-                </Grid.ColumnDefinitions>
+    <Border Name="bdRoot" Width="212" BorderThickness="2" CornerRadius="13" Focusable="True"
+                MouseEnter="rootGrid_MouseEnter" MouseLeave="rootGrid_MouseLeave" MouseLeftButtonDown="rootGrid_MouseLeftButtonDown">
+      <Grid>
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="60" />
+          <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
 
-                <!--<Image Grid.Column="0" Width="24" Height="24" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="18,0,0,0"
-                           Source="{Binding Icon}" />-->
-                <!--Display-->
-                <Canvas x:Name="Display_0" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"  Width="24" Height="24" Visibility="{Binding Id, Converter={StaticResource IdxToVis}, ConverterParameter=0}">
-                    <Path Data="M24 16.125V2.625H0V16.125H9.375V19.845H5.625V21.435H18.375V19.845H14.625V16.125H24ZM13.02 16.125V19.83H10.98V16.125H13.02ZM1.605 4.125H22.395V14.52H1.605V4.125Z"
-                          Fill="{Binding Tag, RelativeSource={RelativeSource AncestorType=Canvas}}" />
-                </Canvas>
+        <Image Grid.Column="0" Width="24" Height="24" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="18,0,0,0"
+                       Source="{Binding Icon}" />
 
-                <!--Webcam-->
-                <Canvas x:Name="Webcam_1" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"  Width="24" Height="24" Visibility="{Binding Id, Converter={StaticResource IdxToVis}, ConverterParameter=1}">
-                    <Path Data="M14.9999 17.9997C17.0809 17.2892 18.8422 15.8633 19.9702 13.9757C21.0981 12.0881 21.5196 9.86146 21.1595 7.69221C20.7994 5.52296 19.6811 3.55191 18.0037 2.13003C16.3264 0.708154 14.1988 -0.0722656 11.9999 -0.0722656C9.80093 -0.0722656 7.67336 0.708154 5.99598 2.13003C4.31861 3.55191 3.20031 5.52296 2.84021 7.69221C2.48011 9.86146 2.90158 12.0881 4.02957 13.9757C5.15757 15.8633 6.91887 17.2892 8.99986 17.9997V22.3347H4.31986V23.9997H19.6799V22.3947H14.9999V17.9997ZM13.4099 22.3947H10.5899V18.4497C11.0571 18.5151 11.5281 18.5501 11.9999 18.5547C12.4716 18.5501 12.9426 18.5151 13.4099 18.4497V22.3947ZM11.9999 16.9647C10.4809 16.9647 8.99605 16.5143 7.73308 15.6704C6.47011 14.8265 5.48575 13.6271 4.90447 12.2237C4.32319 10.8204 4.1711 9.27621 4.46743 7.78643C4.76377 6.29666 5.49522 4.92821 6.56928 3.85415C7.64335 2.78008 9.0118 2.04863 10.5016 1.7523C11.9913 1.45596 13.5355 1.60805 14.9389 2.18933C16.3422 2.77061 17.5417 3.75498 18.3855 5.01795C19.2294 6.28092 19.6799 7.76577 19.6799 9.28473C19.6759 11.3204 18.8655 13.2715 17.4261 14.7109C15.9866 16.1503 14.0355 16.9608 11.9999 16.9647Z"
-                          Fill="{Binding Tag, RelativeSource={RelativeSource AncestorType=Canvas}}" />
-                    <Path Data="M17.9999 8.47473H12.7949V3.28473H11.9999C10.8132 3.28473 9.65314 3.63662 8.66644 4.29591C7.67975 4.9552 6.91071 5.89227 6.45659 6.98863C6.00246 8.08498 5.88364 9.29138 6.11515 10.4553C6.34666 11.6192 6.91811 12.6883 7.75722 13.5274C8.59634 14.3665 9.66544 14.9379 10.8293 15.1694C11.9932 15.4009 13.1996 15.2821 14.296 14.828C15.3923 14.3739 16.3294 13.6048 16.9887 12.6181C17.648 11.6315 17.9999 10.4714 17.9999 9.28473V8.47473ZM11.9999 13.6797C10.8904 13.6987 9.81489 13.2973 8.98913 12.5562C8.16336 11.815 7.64849 10.789 7.54786 9.68395C7.44723 8.57893 7.76829 7.47675 8.4466 6.59864C9.12491 5.72052 10.1103 5.13147 11.2049 4.94973V10.0797H16.3199C16.134 11.0901 15.6002 12.0034 14.811 12.6611C14.0218 13.3187 13.0272 13.6791 11.9999 13.6797Z"
-                          Fill="{Binding Tag, RelativeSource={RelativeSource AncestorType=Canvas}}" />
-                </Canvas>
-
-                <!--Keyboard And Mouse-->
-                <Canvas x:Name="KeyMouse_2" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"  Width="24" Height="24" Visibility="{Binding Id, Converter={StaticResource IdxToVis}, ConverterParameter=2}">
-                    <Path Data="M12.615 5.07V3.27H13.29C13.6878 3.27 14.0694 3.11196 14.3507 2.83066C14.632 2.54936 14.79 2.16782 14.79 1.77V0H13.155V1.665H12.48C12.0822 1.665 11.7006 1.82304 11.4193 2.10434C11.138 2.38564 10.98 2.76718 10.98 3.165V5.07H0V20.505H15.765V18.9H1.605V6.675H22.395V11.505C22.9874 11.7314 23.5318 12.0672 24 12.495V5.07H12.615Z M8.475 7.71H10.815V9.315H8.475V7.71Z M8.475 10.5H10.815V12.12H8.475V10.5Z M8.475 13.305H10.815V14.91H8.475V13.305Z M13.185 7.71H15.525V9.315H13.185V7.71Z M13.185 10.5H15.525V12.12H13.185V10.5Z M13.185 13.305H15.525V14.91H13.185V13.305Z M17.895 7.71H20.235V9.315H17.895V7.71Z M17.895 12C18.5899 11.5259 19.3965 11.2415 20.235 11.175V10.5H17.895V12Z M7.38 16.125H15.765V17.73H7.38V16.125Z M3.765 7.71H6.105V9.315H3.765V7.71Z M3.765 10.5H6.105V12.12H3.765V10.5Z M3.765 13.305H6.105V14.91H3.765V13.305Z M20.685 12.78C19.8044 12.784 18.9613 13.1366 18.34 13.7606C17.7188 14.3847 17.37 15.2294 17.37 16.11V20.61C17.37 21.4892 17.7193 22.3324 18.3409 22.9541C18.9626 23.5757 19.8058 23.925 20.685 23.925C21.5642 23.925 22.4074 23.5757 23.0291 22.9541C23.6507 22.3324 24 21.4892 24 20.61V16.11C23.9961 15.2306 23.6461 14.3882 23.0256 13.7649C22.4052 13.1417 21.5643 12.7879 20.685 12.78ZM22.395 20.685C22.395 21.1385 22.2148 21.5735 21.8942 21.8942C21.5735 22.2148 21.1385 22.395 20.685 22.395C20.2315 22.395 19.7965 22.2148 19.4758 21.8942C19.1552 21.5735 18.975 21.1385 18.975 20.685V16.185C18.975 15.7315 19.1552 15.2965 19.4758 14.9758C19.7965 14.6552 20.2315 14.475 20.685 14.475C21.1385 14.475 21.5735 14.6552 21.8942 14.9758C22.2148 15.2965 22.395 15.7315 22.395 16.185V20.685Z"
-                          Fill="{Binding Tag, RelativeSource={RelativeSource AncestorType=Canvas}}" />
-                </Canvas>
-
-                <!--Pen-->
-                <Canvas x:Name="Stylus_3" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"  Width="24" Height="24" Visibility="{Binding Id, Converter={StaticResource IdxToVis}, ConverterParameter=3}">
-                    <Path Data="M19.605 0L2.76 16.845L0.27 23.235L0 24L0.765 23.73L7.17 21.225L24 4.395L19.605 0ZM2.805 21.195L4.095 17.865L6.15 19.89L2.805 21.195ZM7.305 18.78L5.19 16.68L17.19 4.68L19.305 6.765L7.305 18.765V18.78ZM18.36 3.54L19.605 2.295L21.705 4.395L20.475 5.625L18.36 3.54Z"
-                          Fill="{Binding Tag, RelativeSource={RelativeSource AncestorType=Canvas}}" />
-                </Canvas>
-
-                <!--HeadSet-->
-                <Canvas x:Name="HeadSet_4" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"  Width="24" Height="24" Visibility="{Binding Id, Converter={StaticResource IdxToVis}, ConverterParameter=4}">
-                    <Path Data="M24 11.265C24 4.845 18.855 0 12 0C5.145 0 0 4.95 0 11.265V19.5H1.5V20.04C1.49803 20.5593 1.59861 21.0739 1.79598 21.5543C1.99335 22.0347 2.28362 22.4713 2.65015 22.8392C3.01667 23.2072 3.45223 23.4991 3.93184 23.6983C4.41145 23.8975 4.92567 24 5.445 24H7.11V13.605H5.445C4.5621 13.6054 3.70467 13.9009 3.00892 14.4444C2.31318 14.988 1.81904 15.7484 1.605 16.605V11.265C1.605 5.76 6.105 1.605 12.105 1.605C18.105 1.605 22.44 5.76 22.44 11.265V16.665C22.2283 15.8072 21.7348 15.0452 21.0386 14.5012C20.3423 13.9573 19.4836 13.6628 18.6 13.665H16.875V24H18.555C19.6013 24 20.6047 23.5844 21.3445 22.8445C22.0844 22.1047 22.5 21.1013 22.5 20.055V19.5H24V11.265ZM3.09 17.55C3.08999 17.2414 3.15101 16.9359 3.26955 16.651C3.38808 16.3662 3.56178 16.1075 3.78066 15.89C3.99955 15.6726 4.25928 15.5005 4.54491 15.3838C4.83055 15.2671 5.13645 15.208 5.445 15.21L5.52 22.395H5.445C5.13645 22.397 4.83055 22.3379 4.54491 22.2212C4.25928 22.1045 3.99955 21.9324 3.78066 21.715C3.56178 21.4975 3.38808 21.2388 3.26955 20.954C3.15101 20.6691 3.08999 20.3636 3.09 20.055V17.55ZM20.91 20.055C20.91 20.3636 20.849 20.6691 20.7305 20.954C20.6119 21.2388 20.4382 21.4975 20.2193 21.715C20.0005 21.9324 19.7407 22.1045 19.4551 22.2212C19.1695 22.3379 18.8636 22.397 18.555 22.395V15.21C18.8636 15.208 19.1695 15.2671 19.4551 15.3838C19.7407 15.5005 20.0005 15.6726 20.2193 15.89C20.4382 16.1075 20.6119 16.3662 20.7305 16.651C20.849 16.9359 20.91 17.2414 20.91 17.55V20.055Z"
-                          Fill="{Binding Tag, RelativeSource={RelativeSource AncestorType=Canvas}}" />
-                </Canvas>
-                
-                <!--Speaker Phone-->
-                <Canvas x:Name="SpeakSound_5" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"  Width="24" Height="24" Visibility="{Binding Id, Converter={StaticResource IdxToVis}, ConverterParameter=5}">
-                    <Path Data="M4.49998 8.24981H0.47998V15.7498H4.49998L9.37498 21.1498L12.615 21.7648V2.2648L9.37498 2.8498L4.49998 8.24981ZM11.01 4.1698V19.8448L10.2 19.6798L5.21998 14.2048H2.06998V9.83981H5.21998L10.2 4.31981L11.01 4.1698Z"
-                          Fill="{Binding Tag, RelativeSource={RelativeSource AncestorType=Canvas}}" />
-                    <Path Data="M16.86 0.674805L16.095 2.0098C17.8564 3.01597 19.3205 4.46997 20.3388 6.22439C21.3571 7.97881 21.8934 9.97128 21.8934 11.9998C21.8934 14.0283 21.3571 16.0208 20.3388 17.7752C19.3205 19.5296 17.8564 20.9836 16.095 21.9898L16.86 23.3248C18.8587 22.1857 20.5204 20.538 21.6762 18.5489C22.832 16.5599 23.4409 14.3003 23.4409 11.9998C23.4409 9.69929 22.832 7.43976 21.6762 5.45069C20.5204 3.46162 18.8587 1.81387 16.86 0.674805Z"
-                          Fill="{Binding Tag, RelativeSource={RelativeSource AncestorType=Canvas}}" />
-                    <Path Data="M18.75 11.9998C18.763 10.6379 18.4348 9.29445 17.7956 8.09186C17.1563 6.88927 16.2262 5.86582 15.09 5.11481L14.28 6.41981C15.2089 7.02263 15.9708 7.84998 16.4951 8.82532C17.0195 9.80066 17.2894 10.8925 17.28 11.9998C17.2947 13.0902 17.0377 14.1671 16.5323 15.1334C16.0269 16.0996 15.289 16.9249 14.385 17.5348L15.21 18.8248C16.3173 18.0676 17.2201 17.0481 17.8377 15.8572C18.4554 14.6664 18.7688 13.3412 18.75 11.9998Z"
-                          Fill="{Binding Tag, RelativeSource={RelativeSource AncestorType=Canvas}}" />
-                </Canvas>
-
-                <!--Dock-->
-                <Canvas x:Name="Dock_6" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"  Width="24" Height="24" Visibility="{Binding Id, Converter={StaticResource IdxToVis}, ConverterParameter=6}">
-                    <Path Data="M15.945 13.6053C16.3068 13.7868 16.7049 13.8841 17.1095 13.89C17.5142 13.8959 17.915 13.8103 18.2819 13.6395C18.6488 13.4687 18.9724 13.2171 19.2284 12.9037C19.4844 12.5902 19.6662 12.2229 19.7603 11.8293C19.8543 11.4356 19.8582 11.0258 19.7715 10.6305C19.6849 10.2351 19.51 9.86451 19.2599 9.54629C19.0099 9.22807 18.6911 8.97049 18.3275 8.79283C17.9638 8.61516 17.5647 8.522 17.16 8.52031C16.5545 8.51778 15.9659 8.72001 15.4898 9.09414C15.0137 9.46828 14.678 9.99236 14.5373 10.5813C14.3966 11.1702 14.4591 11.7895 14.7146 12.3384C14.9702 12.8874 15.4037 13.3338 15.945 13.6053ZM16.185 10.7253C16.275 10.544 16.4141 10.3916 16.5865 10.2855C16.7589 10.1794 16.9576 10.1239 17.16 10.1253C17.3326 10.1221 17.503 10.1635 17.655 10.2453C17.7821 10.3103 17.8951 10.3997 17.9876 10.5084C18.0801 10.6171 18.1503 10.7429 18.1941 10.8787C18.238 11.0145 18.2547 11.1576 18.2433 11.2999C18.2318 11.4421 18.1925 11.5808 18.1275 11.7078C18.0625 11.8349 17.9731 11.9479 17.8644 12.0404C17.7557 12.1329 17.6299 12.2031 17.4941 12.247C17.3583 12.2908 17.2152 12.3075 17.0729 12.2961C16.9307 12.2847 16.7921 12.2453 16.665 12.1803C16.4103 12.048 16.2168 11.8222 16.125 11.5503C16.0453 11.277 16.0666 10.9842 16.185 10.7253Z"
-                          Fill="{Binding Tag, RelativeSource={RelativeSource AncestorType=Canvas}}" />
-                    <Path Data="M3.345 8.86531H4.95V13.5003H3.345V8.86531Z" Fill="{Binding Tag, RelativeSource={RelativeSource AncestorType=Canvas}}" />
-                    <Path Data="M6.54 8.86531H8.13V13.5003H6.54V8.86531Z" Fill="{Binding Tag, RelativeSource={RelativeSource AncestorType=Canvas}}" />
-                    <Path Data="M9.705 8.86531H11.31V13.5003H9.705V8.86531Z" Fill="{Binding Tag, RelativeSource={RelativeSource AncestorType=Canvas}}" />
-                    <Path Data="M0 5.44531V16.9503H4.125V18.5553H7.41V16.9503H16.575V18.5403H19.875V16.9653H24V5.46031L0 5.44531ZM22.38 15.3753H1.605V7.03531H22.395V15.3603L22.38 15.3753Z"
-                          Fill="{Binding Tag, RelativeSource={RelativeSource AncestorType=Canvas}}" />
-                </Canvas>
-
-                <UXControls:UXTextBlock x:Name="IconName" Grid.Column="1" Text="{Binding Text}" FontSize="14" FontFamily="Roboto"
-                                        LineHeight="20" FontWeight="Bold" Padding="0,4,0,0" 
-                                        VerticalAlignment="Center" HorizontalAlignment="Left"
-                                        Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=UserControl}}" />
-            </Grid>
-        </Border>
+        <UXControls:UXTextBlock Grid.Column="1" Text="{Binding Text}" FontSize="14" FontFamily="Roboto" LineHeight="20"
+                                        VerticalAlignment="Center" HorizontalAlignment="Left" FontWeight="Bold" Padding="0,4,0,0"
+                                        Foreground="White" />
+      </Grid>
+    </Border>
   </Grid>
 </UserControl>

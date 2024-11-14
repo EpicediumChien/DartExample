@@ -11,9 +11,13 @@
              d:DataContext="{d:DesignInstance Type=plugin:HeadsetViewModel}"
              mc:Ignorable="d"
              d:DesignHeight="655" d:DesignWidth="520">
-
+    
     <UserControl.Resources>
         <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/DDPM.UI.Common;component/PluginStyles.xaml" />
+                <!-- <ResourceDictionary Source="/DDPM.UI.Common;component/ModuleStyle.xaml" /> -->
+            </ResourceDictionary.MergedDictionaries>
 
             <ImageBrush x:Key="UnselectedNodeImage" ImageSource="pack://application:,,,/DDPM.UI.Common;component/Resources/Headset_Dot.png" />
             <ImageBrush x:Key="SelectedNodeImage" ImageSource="pack://application:,,,/DDPM.UI.Common;component/Resources/Headset_whitedot.png" />
@@ -91,18 +95,18 @@
     </UserControl.Resources>
     <UXControls:UXScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
         <Grid x:Name="MainGrid" Width="520" Margin="0,0,0,15">
-            <Border x:Name="MainBorder" Style="{DynamicResource RightGroupBorderStyleForAudio}" CornerRadius="13" Margin="0,10,0,0">
+            <Border x:Name="MainBorder" Background="#99132F54" CornerRadius="13" Margin="0,10,0,0">
                 <StackPanel x:Name="MainStackPanel" Orientation="Vertical" Margin="16">
                     <Grid x:Name="TitleGrid" VerticalAlignment="Top" Margin="0,0,0,0">
-                        <UXControls:UXTextBlock x:Name="AudioSettingsTextBlock" Text="{Binding [AudioSettings], Source={x:Static lang:LangHelper.Instance}}" FontFamily="Roboto" FontSize="20" Foreground="{DynamicResource TextBlock_ForegroundColor}" Height="28" Width="200" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="0,20,20,20" />
+                        <UXControls:UXTextBlock x:Name="AudioSettingsTextBlock" Text="{Binding [AudioSettings], Source={x:Static lang:LangHelper.Instance}}" FontFamily="Roboto" FontSize="20" Foreground="White" Height="28" Width="200" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="0,20,20,20" />
                     </Grid>
 
-                    <!-- Control the noise I hear -->
+                    <!-- Control the noise I hear -->                 
                     <Grid x:Name="NoiseControlGrid" VerticalAlignment="Top" Margin="0,0,0,20">
-                        <Border Visibility="{Binding ControlTheNoiseIHearPageShow, Converter={StaticResource BooleanToVisibilityConverter}}" x:Name="NoiseControlBorder" Style="{DynamicResource RightGroupBorderStyleForAudio}" CornerRadius="6" Width="488" Height="Auto" VerticalAlignment="Top">
+                        <Border Visibility="{Binding ControlTheNoiseIHearPageShow, Converter={StaticResource BooleanToVisibilityConverter}}" x:Name="NoiseControlBorder" Background="#99132F54" CornerRadius="6" Width="488" Height="Auto" VerticalAlignment="Top">
                             <StackPanel x:Name="NoiseControlStackPanel" Orientation="Vertical">
                                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="8">
-                                    <UXControls:UXTextBlock x:Name="NoiseControlTextBlock" Text="{Binding [HeadsetAudioSettings.0], Source={x:Static lang:LangHelper.Instance}}" Foreground="{DynamicResource TextBlock_ForegroundColor}" FontSize="16" Margin="8,20,8,20" />
+                                    <UXControls:UXTextBlock x:Name="NoiseControlTextBlock" Text="{Binding [HeadsetAudioSettings.0], Source={x:Static lang:LangHelper.Instance}}" Foreground="White" FontSize="16" Margin="8,20,8,20" />
                                     <Image Width="16" Height="16" Margin="0" Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Icon_Info.png" Stretch="Uniform">
                                         <Image.ToolTip>
                                             <ToolTip>
@@ -138,7 +142,7 @@
                                         </Image.ToolTip>
                                     </Image>
                                 </StackPanel>
-                                <Border x:Name="AncModeLockBorder" CornerRadius="13" >
+                                <Border x:Name="AncModeLockBorder" Background="#132F54" CornerRadius="13" >
                                     <Border.Style>
                                         <Style TargetType="Border">
                                             <Setter Property="Opacity" Value="1" />
@@ -152,85 +156,85 @@
                                             </Style.Triggers>
                                         </Style>
                                     </Border.Style>
-                                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" >
-                                        <UXControls:UXToggleSwitch x:Name="ActiveNoiseCancellingButton" Width="146.67" Height="96" Opacity="1" BorderThickness="1.5,1.5,1.5,1.5" Margin="0,0,8,20" IsChecked="{Binding IsActiveNoiseCancellingChecked, Mode=TwoWay}" IsEnabled="{Binding isAncEnabled}">
-                                            <UXControls:UXToggleSwitch.Template>
-                                                <ControlTemplate TargetType="UXControls:UXToggleSwitch">
-                                                    <Border x:Name="ActiveNoiseCancellingButtonBorder" Background="{DynamicResource NormalBackground}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="4,4,4,4">
-                                                        <Grid>
-                                                            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
-                                                                <Image Source="/DDPM.UI.Common;component/Resources/Headset_Noise.png" Width="24" Height="24" />
-                                                                <UXControls:UXTextBlock x:Name="ActiveNoiseCancellingTextBlock" Text="{Binding [HeadsetAudioSettings.1], Source={x:Static lang:LangHelper.Instance}}" TextWrapping="WrapWithOverflow" FontSize="14" Foreground="White" TextAlignment="Center" Margin="0,8,0,0" />
-                                                            </StackPanel>
-                                                            <Image Width="16" Height="16" Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Icon_Info.png" Stretch="Uniform" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,8,8,0">
-                                                                <Image.ToolTip>
-                                                                    <ToolTip>
-                                                                        <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
-                                                                            <Border.Resources>
-                                                                                <Style BasedOn="{StaticResource Tooltip_TextBlockStyle}" TargetType="TextBlock" />
-                                                                            </Border.Resources>
-                                                                            <StackPanel>
-                                                                                <StackPanel Orientation="Horizontal">
-                                                                                    <TextBlock Text="{Binding NoiseCancellingInfoTip}" />
-                                                                                </StackPanel>
+                                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" >                                    
+                                    <UXControls:UXToggleSwitch x:Name="ActiveNoiseCancellingButton" Width="146.67" Height="96" Opacity="1" BorderBrush="#1E3F6C" BorderThickness="1.5,1.5,1.5,1.5" Margin="0,0,8,20" IsChecked="{Binding IsActiveNoiseCancellingChecked, Mode=TwoWay}" IsEnabled="{Binding isAncEnabled}">
+                                        <UXControls:UXToggleSwitch.Template>
+                                            <ControlTemplate TargetType="UXControls:UXToggleSwitch">
+                                                <Border x:Name="ActiveNoiseCancellingButtonBorder" Background="{StaticResource NormalBackground}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="4,4,4,4">
+                                                    <Grid>
+                                                        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                                                            <Image Source="/DDPM.UI.Common;component/Resources/Headset_Noise.png" Width="24" Height="24" />
+                                                            <UXControls:UXTextBlock x:Name="ActiveNoiseCancellingTextBlock" Text="{Binding [HeadsetAudioSettings.1], Source={x:Static lang:LangHelper.Instance}}" TextWrapping="WrapWithOverflow" FontSize="14" Foreground="White" TextAlignment="Center" Margin="0,8,0,0" />
+                                                        </StackPanel>
+                                                        <Image Width="16" Height="16" Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Icon_Info.png" Stretch="Uniform" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,8,8,0">
+                                                            <Image.ToolTip>
+                                                                <ToolTip>
+                                                                    <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
+                                                                        <Border.Resources>
+                                                                            <Style BasedOn="{StaticResource Tooltip_TextBlockStyle}" TargetType="TextBlock" />
+                                                                        </Border.Resources>
+                                                                        <StackPanel>
+                                                                            <StackPanel Orientation="Horizontal">
+                                                                                <TextBlock Text="{Binding NoiseCancellingInfoTip}" />
                                                                             </StackPanel>
-                                                                        </Border>
-                                                                    </ToolTip>
-                                                                </Image.ToolTip>
-                                                            </Image>
-                                                        </Grid>
-                                                    </Border>
-                                                    <ControlTemplate.Triggers>
-                                                        <Trigger Property="IsChecked" Value="True">
-                                                            <Setter TargetName="ActiveNoiseCancellingButtonBorder" Property="Background" Value="{StaticResource PressedBackground}" />
-                                                            <Setter TargetName="ActiveNoiseCancellingButtonBorder" Property="BorderBrush" Value="{StaticResource PressedBorderBrush}" />
-                                                        </Trigger>
-                                                    </ControlTemplate.Triggers>
-                                                </ControlTemplate>
-                                            </UXControls:UXToggleSwitch.Template>
-                                        </UXControls:UXToggleSwitch>
+                                                                        </StackPanel>
+                                                                    </Border>
+                                                                </ToolTip>
+                                                            </Image.ToolTip>
+                                                        </Image>
+                                                    </Grid>
+                                                </Border>
+                                                <ControlTemplate.Triggers>
+                                                    <Trigger Property="IsChecked" Value="True">
+                                                        <Setter TargetName="ActiveNoiseCancellingButtonBorder" Property="Background" Value="{StaticResource PressedBackground}" />
+                                                        <Setter TargetName="ActiveNoiseCancellingButtonBorder" Property="BorderBrush" Value="{StaticResource PressedBorderBrush}" />
+                                                    </Trigger>
+                                                </ControlTemplate.Triggers>
+                                            </ControlTemplate>
+                                        </UXControls:UXToggleSwitch.Template>
+                                    </UXControls:UXToggleSwitch>
 
-                                        <UXControls:UXToggleSwitch x:Name="TransparencyButton" Width="146.67" Height="96" Opacity="1" BorderBrush="#1E3F6C" BorderThickness="1.5,1.5,1.5,1.5" Margin="0,0,8,20" IsChecked="{Binding IsTransparencyChecked, Mode=TwoWay}" IsEnabled="{Binding isAncEnabled}">
-                                            <UXControls:UXToggleSwitch.Template>
-                                                <ControlTemplate TargetType="UXControls:UXToggleSwitch">
-                                                    <Border x:Name="TransparencyButtonBorder" Background="{DynamicResource NormalBackground}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="4,4,4,4">
-                                                        <Grid>
-                                                            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
-                                                                <Image Source="/DDPM.UI.Common;component/Resources/Headset_Transparency.png" Width="24" Height="24" />
-                                                                <UXControls:UXTextBlock x:Name="TransparencyButtonTextBlock" Text="{Binding [HeadsetAudioSettings.2], Source={x:Static lang:LangHelper.Instance}}" TextWrapping="WrapWithOverflow" FontSize="14" Foreground="{DynamicResource TextBlock_ForegroundColor}" TextAlignment="Center" Margin="0,8,0,0" />
-                                                            </StackPanel>
-                                                            <Image Width="16" Height="16" Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Icon_Info.png" Stretch="Uniform" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,8,8,0">
-                                                                <Image.ToolTip>
-                                                                    <ToolTip>
-                                                                        <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
-                                                                            <Border.Resources>
-                                                                                <Style BasedOn="{StaticResource Tooltip_TextBlockStyle}" TargetType="TextBlock" />
-                                                                            </Border.Resources>
-                                                                            <StackPanel>
-                                                                                <StackPanel Orientation="Horizontal">
-                                                                                    <TextBlock Text="{Binding TransparencyInfoTip}" />
-                                                                                </StackPanel>
+                                    <UXControls:UXToggleSwitch x:Name="TransparencyButton" Width="146.67" Height="96" Opacity="1" BorderBrush="#1E3F6C" BorderThickness="1.5,1.5,1.5,1.5" Margin="0,0,8,20" IsChecked="{Binding IsTransparencyChecked, Mode=TwoWay}" IsEnabled="{Binding isAncEnabled}">
+                                        <UXControls:UXToggleSwitch.Template>
+                                            <ControlTemplate TargetType="UXControls:UXToggleSwitch">
+                                                <Border x:Name="TransparencyButtonBorder" Background="{StaticResource NormalBackground}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="4,4,4,4">
+                                                    <Grid>
+                                                        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                                                            <Image Source="/DDPM.UI.Common;component/Resources/Headset_Transparency.png" Width="24" Height="24" />
+                                                            <UXControls:UXTextBlock x:Name="TransparencyButtonTextBlock" Text="{Binding [HeadsetAudioSettings.2], Source={x:Static lang:LangHelper.Instance}}" TextWrapping="WrapWithOverflow" FontSize="14" Foreground="White" TextAlignment="Center" Margin="0,8,0,0" />
+                                                        </StackPanel>
+                                                        <Image Width="16" Height="16" Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Icon_Info.png" Stretch="Uniform" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,8,8,0">
+                                                            <Image.ToolTip>
+                                                                <ToolTip>
+                                                                    <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
+                                                                        <Border.Resources>
+                                                                            <Style BasedOn="{StaticResource Tooltip_TextBlockStyle}" TargetType="TextBlock" />
+                                                                        </Border.Resources>
+                                                                        <StackPanel>
+                                                                            <StackPanel Orientation="Horizontal">
+                                                                                <TextBlock Text="{Binding TransparencyInfoTip}" />
                                                                             </StackPanel>
-                                                                        </Border>
-                                                                    </ToolTip>
-                                                                </Image.ToolTip>
-                                                            </Image>
-                                                        </Grid>
-                                                    </Border>
-                                                    <ControlTemplate.Triggers>
-                                                        <Trigger Property="IsChecked" Value="True">
-                                                            <Setter TargetName="TransparencyButtonBorder" Property="Background" Value="{StaticResource PressedBackground}" />
-                                                            <Setter TargetName="TransparencyButtonBorder" Property="BorderBrush" Value="{StaticResource PressedBorderBrush}" />
-                                                        </Trigger>
-                                                    </ControlTemplate.Triggers>
-                                                </ControlTemplate>
-                                            </UXControls:UXToggleSwitch.Template>
-                                        </UXControls:UXToggleSwitch>
+                                                                        </StackPanel>
+                                                                    </Border>
+                                                                </ToolTip>
+                                                            </Image.ToolTip>
+                                                        </Image>
+                                                    </Grid>
+                                                </Border>
+                                                <ControlTemplate.Triggers>
+                                                    <Trigger Property="IsChecked" Value="True">
+                                                        <Setter TargetName="TransparencyButtonBorder" Property="Background" Value="{StaticResource PressedBackground}" />
+                                                        <Setter TargetName="TransparencyButtonBorder" Property="BorderBrush" Value="{StaticResource PressedBorderBrush}" />
+                                                    </Trigger>
+                                                </ControlTemplate.Triggers>
+                                            </ControlTemplate>
+                                        </UXControls:UXToggleSwitch.Template>
+                                    </UXControls:UXToggleSwitch>
 
-                                        <UXControls:UXToggleSwitch x:Name="NoiseOffButton" Width="146.67" Height="96" Opacity="1"  BorderThickness="1.5,1.5,1.5,1.5" Margin="0,0,0,20" IsChecked="{Binding IsNoiseOffChecked, Mode=TwoWay}" IsEnabled="{Binding isAncEnabled}">
+                                        <UXControls:UXToggleSwitch x:Name="NoiseOffButton" Width="146.67" Height="96" Opacity="1" BorderBrush="#1E3F6C" BorderThickness="1.5,1.5,1.5,1.5" Margin="0,0,0,20" IsChecked="{Binding IsNoiseOffChecked, Mode=TwoWay}" IsEnabled="{Binding isAncEnabled}">
                                             <UXControls:UXToggleSwitch.Template>
                                                 <ControlTemplate TargetType="UXControls:UXToggleSwitch">
-                                                    <Border x:Name="NoiseOffButtonBorder" Background="{DynamicResource NormalBackground}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="4,4,4,4">
+                                                    <Border x:Name="NoiseOffButtonBorder" Background="{StaticResource NormalBackground}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="4,4,4,4">
                                                         <Grid>
                                                             <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
                                                                 <Image Source="/DDPM.UI.Common;component/Resources/Headset_off.png" Width="24" Height="24" />
@@ -272,7 +276,7 @@
                                         <Line X1="0" Y1="0" X2="456" Y2="0" Stroke="#1E3F6C" Margin="0,0,0,20" StrokeThickness="1" HorizontalAlignment="Center" />
                                     </Grid>
                                     <StackPanel>
-                                        <TextBlock Text="{Binding [HeadsetAudioSettings.4], Source={x:Static lang:LangHelper.Instance}}" FontSize="16" Foreground="{DynamicResource TextBlock_ForegroundColor}" Margin="20,20,0,20" />
+                                        <TextBlock Text="{Binding [HeadsetAudioSettings.4], Source={x:Static lang:LangHelper.Instance}}" FontSize="16" Foreground="White" Margin="20,20,0,20" />
                                         <Grid Margin="0,10,0,20">
                                             <Grid.ColumnDefinitions>
                                                 <ColumnDefinition Width="*" />
@@ -301,18 +305,18 @@
 
                     <!-- Configure my audio modes -->
                     <Grid Visibility="{Binding ConfigureMyAudioModesPageShow, Converter={StaticResource BooleanToVisibilityConverter}}" x:Name="AudioModesGrid" VerticalAlignment="Top" Margin="0,0,0,15">
-                        <Border x:Name="AudioModesBorder" Style="{DynamicResource RightGroupBorderStyleForAudio}" CornerRadius="6" Width="488" Height="Auto" VerticalAlignment="Top">
+                        <Border x:Name="AudioModesBorder" Background="#99132F54" CornerRadius="6" Width="488" Height="Auto" VerticalAlignment="Top">
                             <StackPanel x:Name="AudioModesStackPanel" Orientation="Vertical">
-                                <UXControls:UXTextBlock x:Name="AudioModesTextBlock" Text="{Binding [HeadsetAudioSettings.5], Source={x:Static lang:LangHelper.Instance}}" Foreground="{DynamicResource TextBlock_ForegroundColor}" FontSize="16" Margin="20" />
+                                <UXControls:UXTextBlock x:Name="AudioModesTextBlock" Text="{Binding [HeadsetAudioSettings.5], Source={x:Static lang:LangHelper.Instance}}" Foreground="White" FontSize="16" Margin="20" />
                                 <StackPanel x:Name="AudioModesButtonsStackPanel" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,16">
-                                    <UXControls:UXToggleSwitch x:Name="CollaborationButton"  BorderThickness="1.5" Width="224" Height="89" Margin="4" Padding="16" Background="{StaticResource SplitItem_NormalBdColor}" IsChecked="{Binding IsCollaborationChecked, Mode=TwoWay}">
+                                    <UXControls:UXToggleSwitch x:Name="CollaborationButton" BorderBrush="#FF1E3F6C" BorderThickness="1.5" Width="224" Height="89" Margin="4" Padding="16" Background="{StaticResource SplitItem_NormalBdColor}" IsChecked="{Binding IsCollaborationChecked, Mode=TwoWay}">
                                         <UXControls:UXToggleSwitch.Template>
                                             <ControlTemplate TargetType="UXControls:UXToggleSwitch">
-                                                <Border x:Name="CollaborationButtonBorder" Background="{DynamicResource NormalBackground}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="4,4,4,4">
+                                                <Border x:Name="CollaborationButtonBorder" Background="{StaticResource NormalBackground}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="4,4,4,4">
                                                     <Grid>
                                                         <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
                                                             <Image x:Name="CollaborationImage" Width="25" Height="25" Source="/DDPM.UI.Common;component/Resources/Headset_Collaboration.png" Margin="0,0,0,8" />
-                                                            <UXControls:UXTextBlock x:Name="CollaborationTextBlock" Text="{Binding [Collaboration], Source={x:Static lang:LangHelper.Instance}}" FontSize="14" Foreground="{DynamicResource TextBlock_ForegroundColor}" TextAlignment="Center" />
+                                                            <UXControls:UXTextBlock x:Name="CollaborationTextBlock" Text="{Binding [Collaboration], Source={x:Static lang:LangHelper.Instance}}" FontSize="14" Foreground="White" TextAlignment="Center" />
                                                         </StackPanel>
                                                         <Image Width="16" Height="16" Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Icon_Info.png" Stretch="Uniform" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,8,8,0">
                                                             <Image.ToolTip>
@@ -341,10 +345,10 @@
                                             </ControlTemplate>
                                         </UXControls:UXToggleSwitch.Template>
                                     </UXControls:UXToggleSwitch>
-                                    <UXControls:UXToggleSwitch x:Name="MultimediaButton" BorderThickness="1.5" Width="224" Height="89" Margin="4" Padding="16" Background="{StaticResource SplitItem_NormalBdColor}" IsChecked="{Binding IsMultimediaChecked, Mode=TwoWay}">
+                                    <UXControls:UXToggleSwitch x:Name="MultimediaButton" BorderBrush="#FF1E3F6C" BorderThickness="1.5" Width="224" Height="89" Margin="4" Padding="16" Background="{StaticResource SplitItem_NormalBdColor}" IsChecked="{Binding IsMultimediaChecked, Mode=TwoWay}">
                                         <UXControls:UXToggleSwitch.Template>
                                             <ControlTemplate TargetType="UXControls:UXToggleSwitch">
-                                                <Border x:Name="MultimediaButtonBorder" Background="{DynamicResource NormalBackground}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="4,4,4,4">
+                                                <Border x:Name="MultimediaButtonBorder" Background="{StaticResource NormalBackground}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="4,4,4,4">
                                                     <Grid>
                                                         <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
                                                             <Image x:Name="MultimediaImage" Width="25" Height="25" Source="/DDPM.UI.Common;component/Resources/Headset_Multimedia.png"  Margin="0,0,0,8" />
@@ -416,13 +420,13 @@
                                     </StackPanel>
 
                                     <UniformGrid Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,0,0,0">
-                                        <UXControls:UXToggleSwitch x:Name="DefaultButton" Grid.Row="1" Grid.Column="0" BorderThickness="1.5" Width="224" Height="52" Margin="16,0,4,8" Background="{StaticResource SplitItem_NormalBdColor}" IsChecked="{Binding IsDefaultChecked, Mode=TwoWay}">
+                                        <UXControls:UXToggleSwitch x:Name="DefaultButton" Grid.Row="1" Grid.Column="0" BorderBrush="#FF1E3F6C" BorderThickness="1.5" Width="224" Height="52" Margin="16,0,4,8" Background="{StaticResource SplitItem_NormalBdColor}" IsChecked="{Binding IsDefaultChecked, Mode=TwoWay}">
                                             <UXControls:UXToggleSwitch.Template>
                                                 <ControlTemplate TargetType="UXControls:UXToggleSwitch">
-                                                    <Border x:Name="DefaultButtonBorder" Background="{DynamicResource NormalBackground}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="4,4,4,4">
+                                                    <Border x:Name="DefaultButtonBorder" Background="{StaticResource NormalBackground}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="4,4,4,4">
                                                         <Grid>
                                                             <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
-                                                                <UXControls:UXTextBlock Text="{Binding [Default], Source={x:Static lang:LangHelper.Instance}}" FontSize="14" Foreground="{DynamicResource TextBlock_ForegroundColor}" TextAlignment="Center" />
+                                                                <UXControls:UXTextBlock Text="{Binding [Default], Source={x:Static lang:LangHelper.Instance}}" FontSize="14" Foreground="White" TextAlignment="Center" />
                                                             </StackPanel>
                                                         </Grid>
                                                     </Border>
@@ -435,13 +439,13 @@
                                                 </ControlTemplate>
                                             </UXControls:UXToggleSwitch.Template>
                                         </UXControls:UXToggleSwitch>
-                                        <UXControls:UXToggleSwitch x:Name="BassBoostButton" Grid.Row="1" Grid.Column="1" BorderThickness="1.5" Width="224" Height="52" Margin="4,0,0,8" Background="{StaticResource SplitItem_NormalBdColor}" IsChecked="{Binding IsBassBoostChecked, Mode=TwoWay}">
+                                        <UXControls:UXToggleSwitch x:Name="BassBoostButton" Grid.Row="1" Grid.Column="1" BorderBrush="#FF1E3F6C" BorderThickness="1.5" Width="224" Height="52" Margin="4,0,0,8" Background="{StaticResource SplitItem_NormalBdColor}" IsChecked="{Binding IsBassBoostChecked, Mode=TwoWay}">
                                             <UXControls:UXToggleSwitch.Template>
                                                 <ControlTemplate TargetType="UXControls:UXToggleSwitch">
-                                                    <Border x:Name="BassBoostButtonBorder" Background="{DynamicResource NormalBackground}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="4,4,4,4">
+                                                    <Border x:Name="BassBoostButtonBorder" Background="{StaticResource NormalBackground}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="4,4,4,4">
                                                         <Grid>
                                                             <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
-                                                                <UXControls:UXTextBlock Text="{Binding [HeadsetAudioSettings.7], Source={x:Static lang:LangHelper.Instance}}" FontSize="14" Foreground="{DynamicResource TextBlock_ForegroundColor}" TextAlignment="Center" />
+                                                                <UXControls:UXTextBlock Text="{Binding [HeadsetAudioSettings.7], Source={x:Static lang:LangHelper.Instance}}" FontSize="14" Foreground="White" TextAlignment="Center" />
                                                             </StackPanel>
                                                         </Grid>
                                                     </Border>
@@ -458,10 +462,10 @@
                                         <UXControls:UXToggleSwitch x:Name="SpeechBoostButton" Grid.Row="2" Grid.Column="0" BorderBrush="#FF1E3F6C" BorderThickness="1.5" Width="224" Height="52" Margin="16,0,4,8" Background="{StaticResource SplitItem_NormalBdColor}" IsChecked="{Binding IsSpeechBoostChecked, Mode=TwoWay}">
                                             <UXControls:UXToggleSwitch.Template>
                                                 <ControlTemplate TargetType="UXControls:UXToggleSwitch">
-                                                    <Border x:Name="SpeechBoostButtonBorder" Background="{DynamicResource NormalBackground}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="4,4,4,4">
+                                                    <Border x:Name="SpeechBoostButtonBorder" Background="{StaticResource NormalBackground}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="4,4,4,4">
                                                         <Grid>
                                                             <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
-                                                                <UXControls:UXTextBlock Text="{Binding [HeadsetAudioSettings.8], Source={x:Static lang:LangHelper.Instance}}" FontSize="14" Foreground="{DynamicResource TextBlock_ForegroundColor}" TextAlignment="Center" />
+                                                                <UXControls:UXTextBlock Text="{Binding [HeadsetAudioSettings.8], Source={x:Static lang:LangHelper.Instance}}" FontSize="14" Foreground="White" TextAlignment="Center" />
                                                             </StackPanel>
                                                         </Grid>
                                                     </Border>
@@ -475,13 +479,13 @@
                                             </UXControls:UXToggleSwitch.Template>
                                         </UXControls:UXToggleSwitch>
 
-                                        <UXControls:UXToggleSwitch x:Name="TrebleBoostButton" Grid.Row="2" Grid.Column="1" BorderThickness="1.5" Width="224" Height="52" Margin="4,0,0,8" Background="{StaticResource SplitItem_NormalBdColor}" IsChecked="{Binding IsTrebleBoostChecked, Mode=TwoWay}">
+                                        <UXControls:UXToggleSwitch x:Name="TrebleBoostButton" Grid.Row="2" Grid.Column="1" BorderBrush="#FF1E3F6C" BorderThickness="1.5" Width="224" Height="52" Margin="4,0,0,8" Background="{StaticResource SplitItem_NormalBdColor}" IsChecked="{Binding IsTrebleBoostChecked, Mode=TwoWay}">
                                             <UXControls:UXToggleSwitch.Template>
                                                 <ControlTemplate TargetType="UXControls:UXToggleSwitch">
-                                                    <Border x:Name="TrebleBoostButtonBorder" Background="{DynamicResource NormalBackground}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="4,4,4,4">
+                                                    <Border x:Name="TrebleBoostButtonBorder" Background="{StaticResource NormalBackground}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="4,4,4,4">
                                                         <Grid>
                                                             <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
-                                                                <UXControls:UXTextBlock Text="{Binding [HeadsetAudioSettings.9], Source={x:Static lang:LangHelper.Instance}}" FontSize="14" Foreground="{DynamicResource TextBlock_ForegroundColor}" TextAlignment="Center" />
+                                                                <UXControls:UXTextBlock Text="{Binding [HeadsetAudioSettings.9], Source={x:Static lang:LangHelper.Instance}}" FontSize="14" Foreground="White" TextAlignment="Center" />
                                                             </StackPanel>
                                                         </Grid>
                                                     </Border>
@@ -496,13 +500,13 @@
                                         </UXControls:UXToggleSwitch>
                                     </UniformGrid>
 
-                                    <UXControls:UXToggleSwitch x:Name="CustomButton" Grid.Row="3" Grid.ColumnSpan="1" BorderThickness="1.5" Width="456" Height="52" Margin="16,4,0,20" Background="{StaticResource SplitItem_NormalBdColor}" IsChecked="{Binding IsCustomChecked, Mode=TwoWay}">
+                                    <UXControls:UXToggleSwitch x:Name="CustomButton" Grid.Row="3" Grid.ColumnSpan="1" BorderBrush="#FF1E3F6C" BorderThickness="1.5" Width="456" Height="52" Margin="16,4,0,20" Background="{StaticResource SplitItem_NormalBdColor}" IsChecked="{Binding IsCustomChecked, Mode=TwoWay}">
                                         <UXControls:UXToggleSwitch.Template>
                                             <ControlTemplate TargetType="UXControls:UXToggleSwitch">
-                                                <Border x:Name="CustomButtonBorder" Background="{DynamicResource NormalBackground}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="4,4,4,4">
+                                                <Border x:Name="CustomButtonBorder" Background="{StaticResource NormalBackground}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="4,4,4,4">
                                                     <Grid>
                                                         <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
-                                                            <UXControls:UXTextBlock Text="{Binding [Custom], Source={x:Static lang:LangHelper.Instance}}" FontSize="14" Foreground="{DynamicResource TextBlock_ForegroundColor}" TextAlignment="Center" />
+                                                            <UXControls:UXTextBlock Text="{Binding [Custom], Source={x:Static lang:LangHelper.Instance}}" FontSize="14" Foreground="White" TextAlignment="Center" />
                                                         </StackPanel>
                                                     </Grid>
                                                 </Border>
@@ -516,7 +520,7 @@
                                         </UXControls:UXToggleSwitch.Template>
                                     </UXControls:UXToggleSwitch>
 
-                                    <Grid Visibility="{Binding IsCustomChecked, Converter={StaticResource BooleanToVisibilityConverter}}"  x:Name="AudioEqualizerGrid" Grid.Row="4" Grid.ColumnSpan="1" Width="456" Height="324" VerticalAlignment="Top" Margin="0,0,0,20">
+                                    <Grid Visibility="{Binding IsCustomChecked, Converter={StaticResource BooleanToVisibilityConverter}}" Background="#FF132F54" x:Name="AudioEqualizerGrid" Grid.Row="4" Grid.ColumnSpan="1" Width="456" Height="324" VerticalAlignment="Top" Margin="0,0,0,20">
                                         <Grid.RowDefinitions>
                                             <RowDefinition Height="Auto" />
                                             <RowDefinition Height="Auto" />
@@ -524,10 +528,10 @@
                                             <RowDefinition Height="*" />
                                         </Grid.RowDefinitions>
                                         <StackPanel Grid.Row="0" HorizontalAlignment="Left" Margin="20,20,0,0">
-                                            <UXControls:UXTextBlock Text="{Binding [HeadsetAudioSettings.10], Source={x:Static lang:LangHelper.Instance}}" Foreground="{DynamicResource TextBlock_ForegroundColor}" FontSize="16" />
+                                            <UXControls:UXTextBlock Text="{Binding [HeadsetAudioSettings.10], Source={x:Static lang:LangHelper.Instance}}" Foreground="White" FontSize="16" />
                                         </StackPanel>
                                         <StackPanel Grid.Row="1" HorizontalAlignment="Left" Margin="20,20,0,20">
-                                            <UXControls:UXTextBlock Text="{Binding [HeadsetAudioSettings.11], Source={x:Static lang:LangHelper.Instance}}" Foreground="{DynamicResource TextBlock_ForegroundColor}" FontSize="14" />
+                                            <UXControls:UXTextBlock Text="{Binding [HeadsetAudioSettings.11], Source={x:Static lang:LangHelper.Instance}}" Foreground="White" FontSize="14" />
                                         </StackPanel>
                                         <StackPanel Grid.Row="2" HorizontalAlignment="Left" Margin="20,20,0,0">
                                             <Canvas x:Name="EqualizerCanvas" HorizontalAlignment="Center" VerticalAlignment="Center" Width="456" Height="324" Margin="0,0,0,0">
@@ -558,7 +562,7 @@
                                                 </Path.Data>
                                                 </Path>-->
                                                 <!-- 曲線 -->
-                                                <Path Name="CurvePath" Stroke="#FF0672CB" Canvas.Left="0" Canvas.Top="0" StrokeThickness="2.3" Width="410"  Fill="Transparent">
+                                                <Path Name="CurvePath" Stroke="#FF0672CB" Canvas.Left="0" Canvas.Top="0" StrokeThickness="2.3" Width="410">
                                                     <Path.Data>
                                                         <PathGeometry>
                                                             <PathFigure StartPoint="50,60" IsClosed="False" x:Name="CurvePathFigure">
@@ -573,43 +577,43 @@
                                                 <!-- 節點 -->
                                                 <Image x:Name="Node1" Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Headset_Dot.png" Canvas.Left="46" Canvas.Top="54" Width="13.79" Height="13.79" MouseLeftButtonDown="Node_MouseLeftButtonDown" MouseMove="Node_MouseMove" MouseLeftButtonUp="Node_MouseLeftButtonUp" />
                                                 <Border x:Name="Node1TextBackground" Background="{StaticResource UnselectedNodeImage}" Width="28" Height="28" Canvas.Left="46" Canvas.Top="35" Visibility="Collapsed">
-                                                    <TextBlock x:Name="Node1Text" Text="0" Foreground="{DynamicResource TextBlock_ForegroundColor}" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                                    <TextBlock x:Name="Node1Text" Text="0" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center" />
                                                 </Border>
 
                                                 <Image x:Name="Node2" Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Headset_Dot.png" Canvas.Left="136" Canvas.Top="54" Width="13.79" Height="13.79" MouseLeftButtonDown="Node_MouseLeftButtonDown" MouseMove="Node_MouseMove" MouseLeftButtonUp="Node_MouseLeftButtonUp" />
                                                 <Border x:Name="Node2TextBackground" Background="{StaticResource UnselectedNodeImage}" Width="28" Height="28" Canvas.Left="136" Canvas.Top="35" Visibility="Collapsed">
-                                                    <TextBlock x:Name="Node2Text" Text="0" Foreground="{DynamicResource TextBlock_ForegroundColor}" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                                    <TextBlock x:Name="Node2Text" Text="0" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center" />
                                                 </Border>
 
                                                 <Image x:Name="Node3" Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Headset_Dot.png" Canvas.Left="226" Canvas.Top="54" Width="13.79" Height="13.79" MouseLeftButtonDown="Node_MouseLeftButtonDown" MouseMove="Node_MouseMove" MouseLeftButtonUp="Node_MouseLeftButtonUp" />
                                                 <Border x:Name="Node3TextBackground" Background="{StaticResource UnselectedNodeImage}" Width="28" Height="28" Canvas.Left="226" Canvas.Top="35" Visibility="Collapsed">
-                                                    <TextBlock x:Name="Node3Text" Text="0" Foreground="{DynamicResource TextBlock_ForegroundColor}" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                                    <TextBlock x:Name="Node3Text" Text="0" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center" />
                                                 </Border>
 
                                                 <Image x:Name="Node4" Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Headset_Dot.png" Canvas.Left="316" Canvas.Top="54" Width="13.79" Height="13.79" MouseLeftButtonDown="Node_MouseLeftButtonDown" MouseMove="Node_MouseMove" MouseLeftButtonUp="Node_MouseLeftButtonUp" />
                                                 <Border x:Name="Node4TextBackground" Background="{StaticResource UnselectedNodeImage}" Width="28" Height="28" Canvas.Left="316" Canvas.Top="35" Visibility="Collapsed">
-                                                    <TextBlock x:Name="Node4Text" Text="0" Foreground="{DynamicResource TextBlock_ForegroundColor}" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                                    <TextBlock x:Name="Node4Text" Text="0" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center" />
                                                 </Border>
 
                                                 <Image x:Name="Node5" Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Headset_Dot.png" Canvas.Left="406" Canvas.Top="54" Width="13.79" Height="13.79" MouseLeftButtonDown="Node_MouseLeftButtonDown" MouseMove="Node_MouseMove" MouseLeftButtonUp="Node_MouseLeftButtonUp" />
                                                 <Border x:Name="Node5TextBackground" Background="{StaticResource UnselectedNodeImage}" Width="28" Height="28" Canvas.Left="406" Canvas.Top="35" Visibility="Collapsed">
-                                                    <TextBlock x:Name="Node5Text" Text="0" Foreground="{DynamicResource TextBlock_ForegroundColor}" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                                    <TextBlock x:Name="Node5Text" Text="0" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center" />
                                                 </Border>
 
                                                 <StackPanel Grid.Row="3" HorizontalAlignment="Stretch" Margin="-5,51,0,0">
-                                                    <UXControls:UXTextBlock Text="{Binding [HeadsetAudioSettings.12], Source={x:Static lang:LangHelper.Instance},StringFormat={}0 {0}}" Foreground="{DynamicResource TextBlock_ForegroundColor}" FontSize="12" />
+                                                    <UXControls:UXTextBlock Text="{Binding [HeadsetAudioSettings.12], Source={x:Static lang:LangHelper.Instance},StringFormat={}0 {0}}" Foreground="White" FontSize="12" />
                                                 </StackPanel>
 
                                                 <StackPanel Grid.Row="3" HorizontalAlignment="Stretch" Margin="40,165,0,0">
-                                                    <UXControls:UXTextBlock Text="{Binding [HeadsetAudioSettings.13], Source={x:Static lang:LangHelper.Instance}}" Foreground="{DynamicResource TextBlock_ForegroundColor}" FontSize="12" />
+                                                    <UXControls:UXTextBlock Text="{Binding [HeadsetAudioSettings.13], Source={x:Static lang:LangHelper.Instance}}" Foreground="White" FontSize="12" />
                                                 </StackPanel>
 
                                                 <StackPanel Grid.Row="3" HorizontalAlignment="Stretch" Margin="205,165,0,0">
-                                                    <UXControls:UXTextBlock Text="{Binding [HeadsetAudioSettings.14], Source={x:Static lang:LangHelper.Instance}}" Foreground="{DynamicResource TextBlock_ForegroundColor}" FontSize="12" />
+                                                    <UXControls:UXTextBlock Text="{Binding [HeadsetAudioSettings.14], Source={x:Static lang:LangHelper.Instance}}" Foreground="White" FontSize="12" />
                                                 </StackPanel>
 
                                                 <StackPanel Grid.Row="3" HorizontalAlignment="Stretch" Margin="395,165,0,0">
-                                                    <UXControls:UXTextBlock Text="{Binding [HeadsetAudioSettings.15], Source={x:Static lang:LangHelper.Instance}}" Foreground="{DynamicResource TextBlock_ForegroundColor}" FontSize="12" />
+                                                    <UXControls:UXTextBlock Text="{Binding [HeadsetAudioSettings.15], Source={x:Static lang:LangHelper.Instance}}" Foreground="White" FontSize="12" />
                                                 </StackPanel>
                                             </Canvas>
                                         </StackPanel>
@@ -635,7 +639,7 @@
                                                 <ColumnDefinition Width="*" />
                                             </Grid.ColumnDefinitions>
                                             <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
-                                                <UXControls:UXTextBlock HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="16" Foreground="{DynamicResource TextBlock_ForegroundColor}" Text="{Binding [HeadsetAudioSettings.16], Source={x:Static lang:LangHelper.Instance}}" Margin="20,0,0,0" />
+                                                <UXControls:UXTextBlock HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="16" Foreground="White" Text="{Binding [HeadsetAudioSettings.16], Source={x:Static lang:LangHelper.Instance}}" Margin="20,0,0,0" />
                                                 <Image Name="LockIconMic" Visibility="{Binding isMicCancelLocked}" Margin="10,0,0,0"
                                                        Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Lock.png"
                                                        VerticalAlignment="Center" HorizontalAlignment="Center" Width="16" Height="16">
@@ -664,7 +668,7 @@
                                                 <ColumnDefinition Width="Auto" />
                                                 <ColumnDefinition Width="*" />
                                             </Grid.ColumnDefinitions>
-                                            <UXControls:UXTextBlock Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="16" Foreground="{DynamicResource TextBlock_ForegroundColor}" Text="{Binding [HeadsetAudioSettings.17], Source={x:Static lang:LangHelper.Instance}}" Margin="20,0,0,0" />
+                                            <UXControls:UXTextBlock Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="16" Foreground="White" Text="{Binding [HeadsetAudioSettings.17], Source={x:Static lang:LangHelper.Instance}}" Margin="20,0,0,0" />
                                             <Image Grid.Column="1" Width="16" Height="16" Margin="8,0" Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Icon_Info.png" Stretch="Uniform">
                                                 <Image.ToolTip>
                                                     <ToolTip>
@@ -681,7 +685,7 @@
                                                     </ToolTip>
                                                 </Image.ToolTip>
                                             </Image>
-                                            <UXControls:UXToggleSwitch Name="OutgoingAudioToggleSwitch" FontSize="16" Content="{Binding Path=OutgoingAudio_String, FallbackValue='OFF'}" IsChecked="{Binding Path=OutgoingAudioStatus}" IsEnabled="{Binding Path=SupportedOutgoingAudio}" Grid.Column="2" HorizontalAlignment="Right" VerticalAlignment="Center" VerticalContentAlignment="Center" AutomationProperties.Name="OutgoingAudioToggleSwitch" ContentPlacement="Left" ContentTextVisibility="True" Foreground="{DynamicResource TextBlock_ForegroundColor}" Margin="0,0,20,0" IsTabStop="{Binding isMicTabStopped}"/>
+                                            <UXControls:UXToggleSwitch Name="OutgoingAudioToggleSwitch" FontSize="16" Content="{Binding Path=OutgoingAudio_String, FallbackValue='OFF'}" IsChecked="{Binding Path=OutgoingAudioStatus}" IsEnabled="{Binding Path=SupportedOutgoingAudio}" Grid.Column="2" HorizontalAlignment="Right" VerticalAlignment="Center" VerticalContentAlignment="Center" AutomationProperties.Name="OutgoingAudioToggleSwitch" ContentPlacement="Left" ContentTextVisibility="True" Foreground="White" Margin="0,0,20,0" IsTabStop="{Binding isMicTabStopped}"/>
                                         </Grid>
 
                                         <!--Incoming Audio-->
@@ -691,7 +695,7 @@
                                                 <ColumnDefinition Width="Auto" />
                                                 <ColumnDefinition Width="*" />
                                             </Grid.ColumnDefinitions>
-                                            <UXControls:UXTextBlock Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="16" Foreground="{DynamicResource TextBlock_ForegroundColor}" Text="{Binding [HeadsetAudioSettings.18], Source={x:Static lang:LangHelper.Instance}}" Margin="20,0,0,0" />
+                                            <UXControls:UXTextBlock Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="16" Foreground="White" Text="{Binding [HeadsetAudioSettings.18], Source={x:Static lang:LangHelper.Instance}}" Margin="20,0,0,0" />
                                             <Image Grid.Column="1" Width="16" Height="16" Margin="8,0" Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Icon_Info.png" Stretch="Uniform">
                                                 <Image.ToolTip>
                                                     <ToolTip>
@@ -740,7 +744,7 @@
                                                 <ColumnDefinition Width="Auto" />
                                                 <ColumnDefinition Width="*" />
                                             </Grid.ColumnDefinitions>
-                                            <UXControls:UXTextBlock  HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="16" Foreground="{DynamicResource TextBlock_ForegroundColor}" Text="{Binding [HeadsetAudioSettings.16], Source={x:Static lang:LangHelper.Instance}}" Margin="20,20,0,0" />
+                                            <UXControls:UXTextBlock  HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="16" Foreground="White" Text="{Binding [HeadsetAudioSettings.16], Source={x:Static lang:LangHelper.Instance}}" Margin="20,20,0,0" />
                                             <Image Grid.Column="1" Width="16" Height="16" Margin="8,20,0,0" Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Icon_Info.png" Stretch="Uniform">
                                                 <Image.ToolTip>
                                                     <ToolTip>
@@ -775,7 +779,7 @@
                                                     </ToolTip>
                                                 </Image.ToolTip>
                                             </Image>
-                                            <UXControls:UXToggleSwitch Name="MicNoiseCancellationToggleSwitch" FontSize="16" Content="{Binding Path=MicNoiseCancellation_String, FallbackValue='OFF'}" IsChecked="{Binding Path=MicNoiseCancellationStatus}" IsEnabled="{Binding Path=SupportedMicNoiseCancellation}" Grid.Column="3" HorizontalAlignment="Right" VerticalAlignment="Center" VerticalContentAlignment="Center" AutomationProperties.Name="OutgoingAudioToggleSwitch" ContentPlacement="Left" ContentTextVisibility="True" Foreground="{DynamicResource TextBlock_ForegroundColor}" Margin="0,20,20,0" IsTabStop="{Binding isMicTabStopped}"/>
+                                            <UXControls:UXToggleSwitch Name="MicNoiseCancellationToggleSwitch" FontSize="16" Content="{Binding Path=MicNoiseCancellation_String, FallbackValue='OFF'}" IsChecked="{Binding Path=MicNoiseCancellationStatus}" IsEnabled="{Binding Path=SupportedMicNoiseCancellation}" Grid.Column="3" HorizontalAlignment="Right" VerticalAlignment="Center" VerticalContentAlignment="Center" AutomationProperties.Name="OutgoingAudioToggleSwitch" ContentPlacement="Left" ContentTextVisibility="True" Foreground="White" Margin="0,20,20,0" IsTabStop="{Binding isMicTabStopped}"/>
                                             <Border Background="#132F54"
                                                     Opacity="0.6" Grid.Column="3"
                                                     CornerRadius="13" Margin="150,20,20,0"

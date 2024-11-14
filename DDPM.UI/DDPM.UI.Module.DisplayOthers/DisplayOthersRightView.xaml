@@ -8,6 +8,13 @@
              xmlns:local="clr-namespace:DDPM.UI.Module.DisplayOthers"
              mc:Ignorable="d"
              d:DesignHeight="450" d:DesignWidth="800">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <!-- <ResourceDictionary Source="/DDPM.UI.Common;component/ModuleStyle.xaml" /> -->
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
     <Grid>
         <UXControls:UXScrollViewer>
             <StackPanel>
@@ -135,7 +142,7 @@
                                     <UXControls:UXTextBlock Text="{Binding [DisplayOthers.5], Source={x:Static lang:LangHelper.Instance}}" Margin="8"
                                                             Foreground="White"
                                                             VerticalAlignment="Center" />
-                                    <Image x:Name="popup_ArrowCorner" Source="pack://application:,,,/DDPM.UI.Common;component/Resources/popup_ArrowCorner.png"
+                                    <Image Source="pack://application:,,,/DDPM.UI.Common;component/Resources/popup_ArrowCorner.png"
                                            Margin="8" Width="16" Height="16" />
                                 </StackPanel>
                             </UXControls:UXButton>

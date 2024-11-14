@@ -9,30 +9,30 @@
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                 <!--<ResourceDictionary Source="/DDPM.UI.Common;component/ModuleStyle.xaml" />--> 
+                <!-- <ResourceDictionary Source="/DDPM.UI.Common;component/ModuleStyle.xaml" /> -->
             </ResourceDictionary.MergedDictionaries>
 
             <!-- EzBtn (Left/Right Arrow button) Colors -->
-            <!--<SolidColorBrush x:Key="EzBtn_BkColor_Default" Color="#FF193457" />
-            <SolidColorBrush x:Key="EzBtn_BkColor_Disabled" Color="#FF596067" />-->
+            <SolidColorBrush x:Key="EzBtn_BkColor_Default" Color="#FF193457" />
+            <SolidColorBrush x:Key="EzBtn_BkColor_Disabled" Color="#FF596067" />
             <!-- EzBtn_BkColor_Hover: Use Brush_GradientButtonCyan -->
 
-            <!--<Color x:Key="EzBtn_BdColor">#FF132F54</Color>
+            <Color x:Key="EzBtn_BdColor">#FF132F54</Color>
             <SolidColorBrush x:Key="EzBtn_BdColor_Default" Color="{StaticResource EzBtn_BdColor}" />
             <SolidColorBrush x:Key="EzBtn_BdColor_Disabled" Color="{StaticResource EzBtn_BdColor}" />
             <SolidColorBrush x:Key="EzBtn_BdColor_Hover" Color="{StaticResource EzBtn_BdColor}" />
 
             <SolidColorBrush x:Key="EzBtn_Arrow_Default" Color="White" />
             <SolidColorBrush x:Key="EzBtn_Arrow_Disabled" Color="#FFF5F6F7" />
-            <SolidColorBrush x:Key="EzBtn_Arrow_Hover" Color="White" />-->
+            <SolidColorBrush x:Key="EzBtn_Arrow_Hover" Color="White" />
 
             <Style x:Key="EzBtnStyle" TargetType="Border">
                 <Setter Property="Width" Value="46" />
                 <Setter Property="Height" Value="60" />
                 <Setter Property="BorderThickness" Value="1" />
                 <Setter Property="CornerRadius" Value="6" />
-                <Setter Property="BorderBrush" Value="{DynamicResource EzBtn_BdColor_Default}" />
-                <Setter Property="Background" Value="{DynamicResource EzBtn_BkColor_Default}" />
+                <Setter Property="BorderBrush" Value="{StaticResource EzBtn_BdColor_Default}" />
+                <Setter Property="Background" Value="{StaticResource EzBtn_BkColor_Default}" />
                 <Setter Property="Effect">
                     <Setter.Value>
                         <DropShadowEffect Color="#7F000000" ShadowDepth="0" BlurRadius="12" Opacity="1" Direction="0" />
@@ -115,6 +115,68 @@
             <ColumnDefinition Width="Auto" />
         </Grid.ColumnDefinitions>
 
+        <!-- (Unused) Left, Prev Border
+        <Border Grid.Column="0" Name="splitArrowPrev" Visibility="Collapsed"
+        Style="{StaticResource PrevNextBorderStyle}"
+        IsEnabled="{Binding IsPrevButtonEnabled}"
+        MouseLeftButtonDown="splitArrowPrev_MouseLeftButtonDown">
+        <Border.Effect>
+        <DropShadowEffect BlurRadius="10" />
+        </Border.Effect>
+
+        <Viewbox Width="16" Height="16">
+        <Grid Width="16" Height="16">
+        <Path Name="splitLeftArrowPath"
+        Data="M0,8 L7.77914,1.17791 L8.46626,2 L2.3313,7.5 L16,7.5 L16,8.5 L2.3313,8.5 L8.46626,14 L7.77914,14.7975 Z">
+        <Path.Style>
+        <Style TargetType="Path">
+        <Setter Property="Fill" Value="{StaticResource SplitArrowPathColor_Enabled}" />
+        <Style.Triggers>
+        <DataTrigger Binding="{Binding ElementName=splitArrowPrev, Path=IsEnabled}" Value="False">
+        <Setter Property="Fill" Value="{StaticResource SplitArrowPathColor_Disabled}" />
+        </DataTrigger>
+        </Style.Triggers>
+        </Style>
+        </Path.Style>
+        </Path>
+        </Grid>
+        </Viewbox>
+        </Border>
+        -->
+        <!-- (Unused)
+        IsEnabled="{Binding IsNextButtonEnabled}"
+        Width="46" Height="60" Background="{StaticResource SplitArrowBkColor}"
+        BorderBrush="{StaticResource SplitArrowBdColor}" BorderThickness="1" CornerRadius="6"
+        -->
+        <!-- Robert_Lin, 2024-7-6, Unused
+        <Border Grid.Column="2" Name="splitArrowNext" Visibility="Collapsed"
+        Style="{StaticResource PrevNextBorderStyle}"
+        IsEnabled="{Binding IsNextButtonEnabled}"
+        MouseLeftButtonDown="splitArrowNext_MouseLeftButtonDown">
+        <Border.Effect>
+        <DropShadowEffect Color="#7F000000" ShadowDepth="0" BlurRadius="12" Opacity="1" Direction="0" />
+        </Border.Effect>
+
+        <Viewbox Width="16" Height="16">
+        <Grid Width="16" Height="16">
+        <Path Name="splitRightArrowPath"
+        Data="M0,7.5 L13.7548,7.5 L7.50968,2 L8.20645,1.2129 L16,8 L8.20645,14.8387 L7.48387,14 L13.7806,8.5 L0,8.5 Z"
+        Fill="{StaticResource SplitArrowPathColor_Enabled}">
+        <Path.Style>
+        <Style TargetType="Path">
+        <Setter Property="Fill" Value="{StaticResource SplitArrowPathColor_Enabled}" />
+        <Style.Triggers>
+        <DataTrigger Binding="{Binding ElementName=splitArrowNext, Path=IsEnabled}" Value="False">
+        <Setter Property="Fill" Value="{StaticResource SplitArrowPathColor_Disabled}" />
+        </DataTrigger>
+        </Style.Triggers>
+        </Style>
+        </Path.Style>
+        </Path>
+        </Grid>
+        </Viewbox>
+        </Border>        -->
+
         <!-- Robert_Lin, 2024-7-6, NEW, to fix UX team report issue: need to follow Figma design:
         1. Hover state color is not follow requirements
         2. Disable state arrow color is not follow requirements.
@@ -128,10 +190,13 @@
                 <Style TargetType="Border" BasedOn="{StaticResource EzBtnStyle}">
                     <Style.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
-                            <Setter Property="Background" Value="{DynamicResource Brush_GradientButtonCyan}" />
+                            <!--
+                            <Setter Property="Background" Value="{StaticResource EzBtn_BkColor_Hover}" />
+                            -->
+                            <Setter Property="Background" Value="{StaticResource Brush_GradientButtonCyan}" />
                         </Trigger>
                         <DataTrigger Binding="{Binding IsPrevButtonEnabled}" Value="False">
-                            <Setter Property="Background" Value="{DynamicResource EzBtn_BkColor_Disabled}" />
+                            <Setter Property="Background" Value="{StaticResource EzBtn_BkColor_Disabled}" />
                         </DataTrigger>
                     </Style.Triggers>
                 </Style>
@@ -142,14 +207,14 @@
                           Data="M7.79 14.79L8.49 13.99L2.23 8.53004L16 8.53004L16 7.47004L2.23 7.47004L8.49 2.00004L7.79 1.20004L5.93601e-07 8.00004L7.79 14.79Z">
                         <Path.Style>
                             <Style TargetType="Path">
-                                <Setter Property="Fill" Value="{DynamicResource EzBtn_Arrow_Default}" />
+                                <Setter Property="Fill" Value="{StaticResource EzBtn_Arrow_Default}" />
                                 <Style.Triggers>
                                     <DataTrigger Binding="{Binding ElementName=prevBtn, Path=IsMouseOver}" Value="True">
-                                        <Setter Property="Fill" Value="{DynamicResource EzBtn_Arrow_Hover}" />
+                                        <Setter Property="Fill" Value="{StaticResource EzBtn_Arrow_Hover}" />
                                     </DataTrigger>
                                     <DataTrigger Binding="{Binding IsEnabled, RelativeSource={RelativeSource AncestorType=Border}}"
                                                  Value="False">
-                                        <Setter Property="Fill" Value="{DynamicResource EzBtn_Arrow_Disabled}" />
+                                        <Setter Property="Fill" Value="{StaticResource EzBtn_Arrow_Disabled}" />
                                     </DataTrigger>
                                 </Style.Triggers>
                             </Style>
@@ -164,10 +229,13 @@
                 <Style TargetType="Border" BasedOn="{StaticResource EzBtnStyle}">
                     <Style.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
-                            <Setter Property="Background" Value="{DynamicResource Brush_GradientButtonCyan}" />
+                            <!--
+                            <Setter Property="Background" Value="{StaticResource EzBtn_BkColor_Hover}" />
+                            -->
+                            <Setter Property="Background" Value="{StaticResource Brush_GradientButtonCyan}" />
                         </Trigger>
                         <DataTrigger Binding="{Binding IsNextButtonEnabled}" Value="False">
-                            <Setter Property="Background" Value="{DynamicResource EzBtn_BkColor_Disabled}" />
+                            <Setter Property="Background" Value="{StaticResource EzBtn_BkColor_Disabled}" />
                         </DataTrigger>
                     </Style.Triggers>
                 </Style>
@@ -178,14 +246,20 @@
                           Data="M8.21 1.20996L7.51 2.00996L13.77 7.46996H0V8.52996H13.77L7.51 14L8.21 14.8L16 7.99996L8.21 1.20996Z">
                         <Path.Style>
                             <Style TargetType="Path">
-                                <Setter Property="Fill" Value="{DynamicResource EzBtn_Arrow_Default}" />
+                                <Setter Property="Fill" Value="{StaticResource EzBtn_Arrow_Default}" />
                                 <Style.Triggers>
                                     <DataTrigger Binding="{Binding ElementName=nextBtn, Path=IsMouseOver}" Value="True">
-                                        <Setter Property="Fill" Value="{DynamicResource EzBtn_Arrow_Hover}" />
+                                        <Setter Property="Fill" Value="{StaticResource EzBtn_Arrow_Hover}" />
                                     </DataTrigger>
                                     <DataTrigger Binding="{Binding ElementName=nextBtn, Path=IsEnabled}" Value="False">
-                                        <Setter Property="Fill" Value="{DynamicResource EzBtn_Arrow_Disabled}" />
+                                        <Setter Property="Fill" Value="{StaticResource EzBtn_Arrow_Disabled}" />
                                     </DataTrigger>
+                                    <!--
+                                    <DataTrigger Binding="{Binding IsEnabled, RelativeSource={RelativeSource AncestorType=Border}}"
+                                    Value="False">
+                                    <Setter Property="Fill" Value="{StaticResource EzBtn_Arrow_Disabled}" />
+                                    </DataTrigger>
+                                    -->
                                 </Style.Triggers>
                             </Style>
                         </Path.Style>

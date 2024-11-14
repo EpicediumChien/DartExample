@@ -14,7 +14,68 @@
              d:DesignHeight="655" d:DesignWidth="470">
     <UserControl.Resources>
         <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/DDPM.UI.Common;component/PluginStyles.xaml" />
+                <!-- <ResourceDictionary Source="/DDPM.UI.Common;component/ModuleStyle.xaml" /> -->
+            </ResourceDictionary.MergedDictionaries>
 
+            <ImageBrush x:Key="UnselectedNodeImage" ImageSource="pack://application:,,,/DDPM.UI.Common;component/Resources/Headset_Dot.png" />
+            <ImageBrush x:Key="SelectedNodeImage" ImageSource="pack://application:,,,/DDPM.UI.Common;component/Resources/Headset_whitedot.png" />
+
+            <SolidColorBrush x:Key="SplitItem_BkColor" Color="#FF132F54" />
+            <SolidColorBrush x:Key="SplitItem_NormalBdColor" Color="#FF0B1E38" />
+            <SolidColorBrush x:Key="SplitItem_SelectedColor" Color="#FF5CC1EE" />
+
+            <LinearGradientBrush x:Key="SplitItem_HoverBdColor" StartPoint="0,0" EndPoint="1,1">
+                <GradientStop Offset="0" Color="#FF0672CB" />
+                <GradientStop Offset="0.5" Color="#FF0078D4" />
+                <GradientStop Offset="1" Color="#FF6E69CF" />
+            </LinearGradientBrush>
+
+            <!-- Border Style of Normal State -->
+            <Style x:Key="SplitItemBorder_Normal" TargetType="Border">
+                <Setter Property="BorderBrush" Value="{StaticResource SplitItem_NormalBdColor}" />
+                <Setter Property="BorderThickness" Value="4" />
+                <Setter Property="Padding" Value="0" />
+            </Style>
+
+            <!-- Border Style of Hover State -->
+            <Style x:Key="SplitItemBorder_Hover" TargetType="Border">
+                <Setter Property="BorderBrush" Value="{StaticResource SplitItem_HoverBdColor}" />
+                <Setter Property="BorderThickness" Value="4" />
+                <Setter Property="Padding" Value="0" />
+            </Style>
+
+            <!-- Border Style of Selected State -->
+            <Style x:Key="SplitItemBorder_Selected" TargetType="Border">
+                <Setter Property="BorderBrush" Value="{StaticResource SplitItem_SelectedColor}" />
+                <Setter Property="BorderThickness" Value="1.5" />
+            </Style>
+
+            <Style x:Key="CollaborationButtonPressedStyle" TargetType="UXControls:UXButton">
+                <Setter Property="BorderBrush" Value="{StaticResource SplitItem_HoverBdColor}" />
+            </Style>
+
+            <Style x:Key="DotStyle" TargetType="Ellipse">
+                <Setter Property="Fill" Value="Blue" />
+                <Setter Property="Width" Value="10" />
+                <Setter Property="Height" Value="10" />
+            </Style>
+
+            <Style x:Key="LineStyle" TargetType="Path">
+                <Setter Property="Stroke" Value="Blue" />
+                <Setter Property="StrokeThickness" Value="2" />
+            </Style>
+
+            <LinearGradientBrush x:Key="GradientBrush" StartPoint="0,0" EndPoint="0,0.4">
+                <GradientStop Color="Transparent" Offset="0.5" />
+                <GradientStop Color="#0672CB" Offset="0" />
+            </LinearGradientBrush>
+
+            <LinearGradientBrush x:Key="NormalBackground" StartPoint="0,0" EndPoint="1,0">
+                <GradientStop Color="#0B1E38" Offset="0.0" />
+                <GradientStop Color="#0B1E38" Offset="1.0" />
+            </LinearGradientBrush>
             <LinearGradientBrush x:Key="PressedBackground" StartPoint="0,0" EndPoint="1,0">
                 <GradientStop Color="#0672CB" Offset="0.0" />
                 <GradientStop Color="#0078D4" Offset="0.46" />
@@ -28,14 +89,14 @@
             <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
         </ResourceDictionary>
     </UserControl.Resources>
-    <Grid>
-        <Border x:Name="MainBorder" Style="{DynamicResource RightGroupBorderStyleForAudio}" CornerRadius="13" Width="470" Height="655" Margin="0,10,0,0">
+    <Grid Margin="0,0,0,20">
+        <Border x:Name="MainBorder" Background="#99132F54" CornerRadius="13" Width="470" Margin="0,10,0,20">
             <StackPanel x:Name="MainStackPanel" Orientation="Vertical" Margin="16">
                 <Grid VerticalAlignment="Top" Margin="0,0,0,15">
-                    <Border x:Name="MainContentBorder" Style="{DynamicResource RightGroupBorderStyleForHeadset}" CornerRadius="6" Width="438" Height="auto" VerticalAlignment="Top" Margin="0,0,0,0">
+                    <Border x:Name="MainContentBorder" Background="#99132F54" CornerRadius="6" Width="438" VerticalAlignment="Top" Margin="0,0,0,0">
                         <StackPanel x:Name="MainContentStackPanel" Orientation="Vertical" Margin="0,20,0,10">
                             <Grid>
-                                <UXControls:UXTextBlock x:Name="txtCaption" Style="{DynamicResource ModuleCaptionStyle}" Text="{Binding [AudioSettings], Source={x:Static lang:LangHelper.Instance}}" FontFamily="Roboto" FontSize="20" Foreground="{DynamicResource TextBlock_ForegroundColor}" Height="28" Width="200" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="16,8,20,16" />
+                                <UXControls:UXTextBlock x:Name="txtCaption" Style="{StaticResource ModuleCaptionStyle}" Text="{Binding [AudioSettings], Source={x:Static lang:LangHelper.Instance}}" FontFamily="Roboto" FontSize="20" Foreground="White" Height="28" Width="200" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="16,8,20,16" />
                             </Grid>
                             <Grid>
                                 <Grid.ColumnDefinitions>
@@ -43,16 +104,16 @@
                                     <ColumnDefinition Width="Auto" />
                                     <ColumnDefinition Width="*" />
                                 </Grid.ColumnDefinitions>
-                                <UXControls:UXTextBlock x:Name="IntelligentMicNoiseCancellationText" Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="16" Foreground="{DynamicResource TextBlock_ForegroundColor}" Text="{Binding [SpeakerAudioSettings.0], Source={x:Static lang:LangHelper.Instance}}" Margin="16,16,0,10" />
+                                <UXControls:UXTextBlock x:Name="IntelligentMicNoiseCancellationText" Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="16" Foreground="White" Text="{Binding [SpeakerAudioSettings.0], Source={x:Static lang:LangHelper.Instance}}" Margin="16,16,0,10" />
                                 <Image x:Name="IntelligentMicNoiseCancellationImage" Grid.Column="1" Width="16" Height="16" Margin="8,8,0,0" Source="/DDPM.UI.Common;component/Resources/info.png" Stretch="Uniform">
                                     <Image.ToolTip>
-                                        <ToolTip x:Name="IntelligentMicNoiseCancellationToolTip" Style="{DynamicResource InfoToolTipStyle}" Placement="Top" VerticalOffset="8" HorizontalOffset="6">
+                                        <ToolTip x:Name="IntelligentMicNoiseCancellationToolTip" Style="{StaticResource InfoToolTipStyle}" Placement="Top" VerticalOffset="8" HorizontalOffset="6">
                                             <!--Removes background noise to allow your voice to be heard clearly-->
-                                            <TextBlock x:Name="IntelligentMicNoiseCancellationToolTipText" Style="{DynamicResource TabInfoToolTipTextStyle}" Text="{Binding IntelligentMicNoiseCancellationToolTip}" />
+                                            <TextBlock x:Name="IntelligentMicNoiseCancellationToolTipText" Style="{StaticResource TabInfoToolTipTextStyle}" Text="{Binding IntelligentMicNoiseCancellationToolTip}" />
                                         </ToolTip>
                                     </Image.ToolTip>
                                 </Image>
-                                <UXControls:UXToggleSwitch x:Name="IntelligentMicNoiseCancellationToggleSwitch" FontSize="16" Foreground="{DynamicResource TextBlock_ForegroundColor}" Content="{Binding Path=IntelligentMicNoiseCancellation_String, FallbackValue='OFF'}" IsChecked="{Binding Path=IntelligentMicNoiseCancellationStatus}" IsEnabled="{Binding Path=SupportedIntelligentMicNoiseCancellationToggleSwitch}" Grid.Column="2" HorizontalAlignment="Right" VerticalAlignment="Center" VerticalContentAlignment="Center" Margin="0,8,20,0" />
+                                <UXControls:UXToggleSwitch x:Name="IntelligentMicNoiseCancellationToggleSwitch" FontSize="16" Foreground="White" Content="{Binding Path=IntelligentMicNoiseCancellation_String, FallbackValue='OFF'}" IsChecked="{Binding Path=IntelligentMicNoiseCancellationStatus}" IsEnabled="{Binding Path=SupportedIntelligentMicNoiseCancellationToggleSwitch}" Grid.Column="2" HorizontalAlignment="Right" VerticalAlignment="Center" VerticalContentAlignment="Center" Margin="0,8,20,0" />
                             </Grid>
 
                             <StackPanel x:Name="SubContentStackPanel" Orientation="Vertical">
@@ -63,16 +124,16 @@
                                         <ColumnDefinition Width="Auto" />
                                         <ColumnDefinition Width="*" />
                                     </Grid.ColumnDefinitions>
-                                    <UXControls:UXTextBlock x:Name="MuteSoundNotificationText" Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="16" Foreground="{DynamicResource TextBlock_ForegroundColor}" Text="{Binding [SpeakerAudioSettings.1], Source={x:Static lang:LangHelper.Instance}}" Margin="16,16,0,10" />
+                                    <UXControls:UXTextBlock x:Name="MuteSoundNotificationText" Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="16" Foreground="White" Text="{Binding [SpeakerAudioSettings.1], Source={x:Static lang:LangHelper.Instance}}" Margin="16,16,0,10" />
                                     <Image x:Name="MuteSoundNotificationImage" Grid.Column="1" Width="16" Height="16" Margin="8,8,0,0" Source="/DDPM.UI.Common;component/Resources/info.png" Stretch="Uniform">
                                         <Image.ToolTip>
-                                            <ToolTip x:Name="MuteSoundNotificationToolTip" Style="{DynamicResource InfoToolTipStyle}" Placement="Top" VerticalOffset="8" HorizontalOffset="6">
+                                            <ToolTip x:Name="MuteSoundNotificationToolTip" Style="{StaticResource InfoToolTipStyle}" Placement="Top" VerticalOffset="8" HorizontalOffset="6">
                                                 <!--Plays a sound when the device goes on mute-->
-                                                <TextBlock x:Name="MuteSoundNotificationToolTipText" Style="{DynamicResource TabInfoToolTipTextStyle}" Text="{Binding MuteSoundNotificationToolTip}" />
+                                                <TextBlock x:Name="MuteSoundNotificationToolTipText" Style="{StaticResource TabInfoToolTipTextStyle}" Text="{Binding MuteSoundNotificationToolTip}" />
                                             </ToolTip>
                                         </Image.ToolTip>
                                     </Image>
-                                    <UXControls:UXToggleSwitch x:Name="MuteSoundNotificationToggleSwitch" FontSize="16" Foreground="{DynamicResource TextBlock_ForegroundColor}" Content="{Binding Path=MuteSoundNotification_String, FallbackValue='OFF'}" IsChecked="{Binding Path=MuteSoundNotificationStatus}" IsEnabled="{Binding Path=SupportedMuteSoundNotificationToggleSwitch}" Grid.Column="2" HorizontalAlignment="Right" VerticalAlignment="Center" VerticalContentAlignment="Center" Margin="0,8,20,0" />
+                                    <UXControls:UXToggleSwitch x:Name="MuteSoundNotificationToggleSwitch" FontSize="16" Foreground="White" Content="{Binding Path=MuteSoundNotification_String, FallbackValue='OFF'}" IsChecked="{Binding Path=MuteSoundNotificationStatus}" IsEnabled="{Binding Path=SupportedMuteSoundNotificationToggleSwitch}" Grid.Column="2" HorizontalAlignment="Right" VerticalAlignment="Center" VerticalContentAlignment="Center" Margin="0,8,20,0" />
                                 </Grid>
 
                                 <Grid>
@@ -81,26 +142,26 @@
                                         <ColumnDefinition Width="Auto" />
                                         <ColumnDefinition Width="*" />
                                     </Grid.ColumnDefinitions>
-                                    <UXControls:UXTextBlock x:Name="VolumeAdjustmentToneText" Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="16"  Text="{Binding [SpeakerAudioSettings.2], Source={x:Static lang:LangHelper.Instance}}" Foreground="{DynamicResource TextBlock_ForegroundColor}" Margin="16,16,0,0" />
+                                    <UXControls:UXTextBlock x:Name="VolumeAdjustmentToneText" Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="16"  Text="{Binding [SpeakerAudioSettings.2], Source={x:Static lang:LangHelper.Instance}}" Foreground="White" Margin="16,16,0,0" />
                                     <Image x:Name="VolumeAdjustmentToneImage" Grid.Column="1" Width="16" Height="16" Margin="8,16,0,0" Source="/DDPM.UI.Common;component/Resources/info.png" Stretch="Uniform">
                                         <Image.ToolTip>
-                                            <ToolTip x:Name="VolumeAdjustmentToneToolTip" Style="{DynamicResource InfoToolTipStyle}" Placement="Top" VerticalOffset="8" HorizontalOffset="6">
+                                            <ToolTip x:Name="VolumeAdjustmentToneToolTip" Style="{StaticResource InfoToolTipStyle}" Placement="Top" VerticalOffset="8" HorizontalOffset="6">
                                                 <!--Plays a sound when the volume level is adjusted-->
-                                                <TextBlock x:Name="VolumeAdjustmentToneToolTipText" Style="{DynamicResource TabInfoToolTipTextStyle}" Text="{Binding VolumeAdjustmentToneToolTip}" />
+                                                <TextBlock x:Name="VolumeAdjustmentToneToolTipText" Style="{StaticResource TabInfoToolTipTextStyle}" Text="{Binding VolumeAdjustmentToneToolTip}" />
                                             </ToolTip>
                                         </Image.ToolTip>
                                     </Image>
-                                    <UXControls:UXToggleSwitch x:Name="VolumeAdjustmentToneToggleSwitch" FontSize="16" Foreground="{DynamicResource TextBlock_ForegroundColor}" Content="{Binding Path=VolumeAdjustmentTone_String, FallbackValue='OFF'}" IsChecked="{Binding Path=VolumeAdjustmentToneStatus}" IsEnabled="{Binding Path=SupportedolumeAdjustmentToneToggleSwitch}" Grid.Column="2" HorizontalAlignment="Right" VerticalAlignment="Center" VerticalContentAlignment="Center" Margin="0,16,20,0" />
+                                    <UXControls:UXToggleSwitch x:Name="VolumeAdjustmentToneToggleSwitch" FontSize="16" Foreground="White" Content="{Binding Path=VolumeAdjustmentTone_String, FallbackValue='OFF'}" IsChecked="{Binding Path=VolumeAdjustmentToneStatus}" IsEnabled="{Binding Path=SupportedolumeAdjustmentToneToggleSwitch}" Grid.Column="2" HorizontalAlignment="Right" VerticalAlignment="Center" VerticalContentAlignment="Center" Margin="0,16,20,0" />
                                 </Grid>
 
                                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,16,0,8">
-                                    <UXControls:UXToggleSwitch x:Name="EveryLevelButton" BorderThickness="1.5" Width="203" Height="30" Margin="0,0,0,8" IsEnabled="{Binding ElementName=VolumeAdjustmentToneStatus}" IsChecked="{Binding IsEveryLevelChecked, Mode=TwoWay}">
+                                    <UXControls:UXToggleSwitch x:Name="EveryLevelButton" BorderBrush="#FF1E3F6C" BorderThickness="1.5" Width="203" Height="30" Margin="0,0,0,8" Background="{StaticResource SplitItem_NormalBdColor}" IsEnabled="{Binding ElementName=VolumeAdjustmentToneStatus}" IsChecked="{Binding IsEveryLevelChecked, Mode=TwoWay}">
                                         <UXControls:UXToggleSwitch.Template>
                                             <ControlTemplate TargetType="UXControls:UXToggleSwitch">
-                                                <Border x:Name="EveryLevelButtonBorder" BorderThickness="1.5,1.5,0,1.5" CornerRadius="4,0,0,4">
+                                                <Border x:Name="EveryLevelButtonBorder" Background="{StaticResource NormalBackground}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="1.5,1.5,0,1.5" CornerRadius="4,0,0,4">
                                                     <Grid>
                                                         <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
-                                                            <UXControls:UXTextBlock Text="{Binding [SpeakerAudioSettings.3], Source={x:Static lang:LangHelper.Instance}}" FontSize="14" Foreground="{DynamicResource TextBlock_ForegroundColor}" TextAlignment="Center" />
+                                                            <UXControls:UXTextBlock Text="{Binding [SpeakerAudioSettings.3], Source={x:Static lang:LangHelper.Instance}}" FontSize="14" Foreground="White" TextAlignment="Center" />
                                                         </StackPanel>
                                                     </Grid>
                                                 </Border>
@@ -113,13 +174,13 @@
                                             </ControlTemplate>
                                         </UXControls:UXToggleSwitch.Template>
                                     </UXControls:UXToggleSwitch>
-                                    <UXControls:UXToggleSwitch x:Name="MinMaxOnlyButton" BorderThickness="1.5" Width="203" Height="30" Margin="0,0,0,8" IsEnabled="{Binding ElementName=VolumeAdjustmentToneStatus}" IsChecked="{Binding IsMinMaxOnlyChecked, Mode=TwoWay}">
+                                    <UXControls:UXToggleSwitch x:Name="MinMaxOnlyButton" BorderBrush="#FF1E3F6C" BorderThickness="1.5" Width="203" Height="30" Margin="0,0,0,8" Background="{StaticResource SplitItem_NormalBdColor}" IsEnabled="{Binding ElementName=VolumeAdjustmentToneStatus}" IsChecked="{Binding IsMinMaxOnlyChecked, Mode=TwoWay}">
                                         <UXControls:UXToggleSwitch.Template>
                                             <ControlTemplate TargetType="UXControls:UXToggleSwitch">
-                                                <Border x:Name="MinMaxOnlyButtonBorder" BorderThickness="0,1.5,1.5,1.5" CornerRadius="0,4,4,0">
+                                                <Border x:Name="MinMaxOnlyButtonBorder" Background="{StaticResource NormalBackground}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="0,1.5,1.5,1.5" CornerRadius="0,4,4,0">
                                                     <Grid>
                                                         <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
-                                                            <UXControls:UXTextBlock Text="{Binding [SpeakerAudioSettings.4], Source={x:Static lang:LangHelper.Instance}}" FontSize="14" Foreground="{DynamicResource TextBlock_ForegroundColor}" TextAlignment="Center" />
+                                                            <UXControls:UXTextBlock Text="{Binding [SpeakerAudioSettings.4], Source={x:Static lang:LangHelper.Instance}}" FontSize="14" Foreground="White" TextAlignment="Center" />
                                                         </StackPanel>
                                                     </Grid>
                                                 </Border>

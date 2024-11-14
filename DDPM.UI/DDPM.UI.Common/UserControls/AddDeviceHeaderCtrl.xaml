@@ -9,45 +9,38 @@
              Visibility="{Binding CtrlVisibility}"
              SizeChanged="UserControl_SizeChanged" >
 
+    <UserControl.Resources>
+        <SolidColorBrush x:Key="RightView_BkColor" Color="#99193457" />
+        <SolidColorBrush x:Key="RightView_Header_BkColor" Color="#0A2343" />
+        <LinearGradientBrush x:Key="RightView_Header_HiColor" StartPoint="0,0" EndPoint="1,0">
+            <GradientStop Offset="0" Color="#FF0672CB" />
+            <GradientStop Offset="1" Color="#FF6E69CF" />
+        </LinearGradientBrush>
+
+        <Style x:Key="TextBlock_HeaderTextStyle" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="White" />
+            <Setter Property="HorizontalAlignment" Value="Center" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="FontSize" Value="14" />
+            <Setter Property="FontFamily" Value="Roboto" />
+            <Setter Property="FontWeight" Value="Normal" />
+        </Style>
+    </UserControl.Resources>
+
     <Grid>
-        <Border Grid.Row="0" CornerRadius="4" Background="{DynamicResource RightView_Header_BkColor}" Height="30" Margin="0,0,0,12">
+        <Border Grid.Row="0" CornerRadius="4" Background="{StaticResource RightView_Header_BkColor}" Height="30" Margin="0,0,0,12">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="{Binding Col1Width}" />
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
-
+                
                 <!-- Header[0] -->
                 <Border Grid.Column="0" CornerRadius="4,0,0,4" MouseLeftButtonDown="header0_MouseLeftButtonDown">
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                        <Canvas Width="16" Height="16" Margin="0,0,5,0">
-                            <Canvas.Style>
-                                <Style TargetType="Canvas">
-                                    <Setter Property="Tag" Value="{DynamicResource DefaultTheme_PathColor}" />
-                                    <Style.Triggers>
-                                        <DataTrigger Binding="{Binding InternalSelectedIndex}" Value="0">
-                                            <Setter Property="Tag" Value="#FFFFFF" />
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </Canvas.Style>
-                            <Path Data="M8 15.9498V9.3998L5.2 11.9998L4.5 11.2998L8 8.0498V7.9498L4.5 4.6998L5.2 3.9998L8 6.5998V0.0498047L12.85 4.8998L9.5 7.9998L12.85 11.0998L8 15.9498ZM9 8.8998V13.5498L11.4 11.1498L9 8.8998ZM9 2.4498V7.0998L11.4 4.8498L9 2.4498Z" 
-                                  Fill="{Binding Tag, RelativeSource={RelativeSource AncestorType=Canvas}}" >
-                            </Path>
-                        </Canvas>
-                        <TextBlock Text="{Binding Text1, Mode=TwoWay}" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="14">
-                            <TextBlock.Style>
-                                <Style TargetType="TextBlock">
-                                    <Setter Property="Foreground" Value="{DynamicResource DefaultTheme_TxtColor}" />
-                                    <Style.Triggers>
-                                        <DataTrigger Binding="{Binding InternalSelectedIndex}" Value="0">
-                                            <Setter Property="Foreground" Value="#FFFFFF" />
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </TextBlock.Style>
-                        </TextBlock>
+                        <Image Name="Icon1" Width="16" Height="16" Margin="0,0,5,0"></Image>
+                        <TextBlock Text="{Binding Text1, Mode=TwoWay}" Style="{StaticResource TextBlock_HeaderTextStyle}" />
                     </StackPanel>
                     <Border.Style>
                         <Style TargetType="Border">
@@ -55,8 +48,6 @@
                             <Style.Triggers>
                                 <DataTrigger Binding="{Binding InternalSelectedIndex}" Value="0">
                                     <Setter Property="Background" Value="{StaticResource RightView_Header_HiColor}" />
-                                    <Setter Property="TextBlock.Foreground" Value="#FFFFFF" />
-                                    <Setter Property="Path.Fill" Value="#FFFFFF" />
                                 </DataTrigger>
                             </Style.Triggers>
                         </Style>
@@ -66,35 +57,9 @@
                 <!-- Header[1] -->
                 <Border Grid.Column="1" CornerRadius="0,0,0,0" MouseLeftButtonDown="header1_MouseLeftButtonDown" x:Name="header1Border">
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" x:Name="header1SP">
-                        <Canvas Width="8" Height="16" Margin="0,0,5,0">
-                            <Canvas.Style>
-                                <Style TargetType="Canvas">
-                                    <Setter Property="Tag" Value="{DynamicResource DefaultTheme_PathColor}" />
-                                    <Style.Triggers>
-                                        <DataTrigger Binding="{Binding InternalSelectedIndex}" Value="1">
-                                            <Setter Property="Tag" Value="#FFFFFF" />
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </Canvas.Style>
-                            <Path Data="M7.31214 6.56276V3.41263C7.31214 1.53568 5.77646 0 3.89951 0C2.02256 0 0.5 1.53568 0.5 3.41263C0.5 3.43888 0.513126 6.3265 0.526251 6.9434C0.815012 6.57588 1.2219 6.20837 1.69442 5.91961V3.41263C1.69442 2.19196 2.69196 1.20755 3.89951 1.20755C5.10705 1.20755 6.10459 2.20509 6.10459 3.41263V6.56276C6.10459 7.78343 5.10705 8.76784 3.89951 8.76784C3.55824 8.76784 3.21698 8.67596 2.84947 8.46596C2.60008 8.74159 2.4557 9.08286 2.4557 9.43724V9.621C2.95447 9.85726 3.42699 9.97539 3.89951 9.97539C4.56891 9.97539 5.19893 9.75226 5.84208 9.29286C5.98646 9.18786 6.10459 9.09598 6.2096 8.99098C6.2096 8.99098 6.2096 8.99098 6.22272 8.97785C6.32773 8.87285 6.43273 8.76784 6.52461 8.64971C7.03651 7.99344 7.29902 7.29779 7.29902 6.57588L7.31214 6.56276Z"
-                                  Fill="{Binding Tag, RelativeSource={RelativeSource AncestorType=Canvas}}" />
-                            <Path Data="M0.5 9.43705V12.5872C0.5 14.4641 2.03569 15.9998 3.91263 15.9998C5.78958 15.9998 7.32527 14.4641 7.32527 12.5872C7.32527 12.5609 7.31214 9.67331 7.29902 9.05641C7.01025 9.42392 6.60336 9.79144 6.13085 10.0802V12.5872C6.13085 13.8078 5.13331 14.7923 3.92576 14.7923C2.71821 14.7923 1.72067 13.7947 1.72067 12.5872V9.43705C1.72067 8.21637 2.71821 7.23196 3.92576 7.23196C4.26702 7.23196 4.60829 7.32384 4.9758 7.53385C5.22518 7.25821 5.36957 6.91695 5.36957 6.56256V6.3788C4.8708 6.14254 4.39828 6.02441 3.92576 6.02441C3.25636 6.02441 2.62633 6.24755 1.98318 6.72007C1.85193 6.82507 1.72067 6.91695 1.61567 7.02195C1.61567 7.02195 1.60254 7.03508 1.58942 7.0482C1.48441 7.15321 1.37941 7.25821 1.28753 7.37634C0.775636 8.01949 0.513126 8.71514 0.513126 9.45017L0.5 9.43705Z"
-                                  Fill="{Binding Tag, RelativeSource={RelativeSource AncestorType=Canvas}}" />
-                        </Canvas>
-                        <TextBlock Text="{Binding Text2, Mode=TwoWay}" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="14" 
-                                   TextTrimming="WordEllipsis" x:Name="header1Text" MaxWidth="150">
-                            <TextBlock.Style>
-                                <Style TargetType="TextBlock">
-                                    <Setter Property="Foreground" Value="{DynamicResource DefaultTheme_TxtColor}" />
-                                    <Style.Triggers>
-                                        <DataTrigger Binding="{Binding InternalSelectedIndex}" Value="1">
-                                            <Setter Property="Foreground" Value="#FFFFFF" />
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </TextBlock.Style>
-                        </TextBlock>
+                        <Image Name="Icon2" Width="16" Height="16" Margin="0,0,5,0"></Image>
+                        <TextBlock Text="{Binding Text2, Mode=TwoWay}" Style="{StaticResource TextBlock_HeaderTextStyle}" 
+                                   TextTrimming="WordEllipsis" x:Name="header1Text" MaxWidth="150"/>
                     </StackPanel>
                     <Border.Style>
                         <Style TargetType="Border">
@@ -112,32 +77,8 @@
                 <!-- Header[2] -->
                 <Border Grid.Column="2" CornerRadius="0,4,4,0" MouseLeftButtonDown="header2_MouseLeftButtonDown">
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                        <Canvas Width="17" Height="16" Margin="0,0,5,0" >
-                            <Canvas.Style>
-                                <Style TargetType="Canvas">
-                                    <Setter Property="Tag" Value="{DynamicResource DefaultTheme_PathColor}" />
-                                    <Style.Triggers>
-                                        <DataTrigger Binding="{Binding InternalSelectedIndex}" Value="2">
-                                            <Setter Property="Tag" Value="#FFFFFF" />
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </Canvas.Style>
-                            <Path Data="M12.2902 3.27V0H4.7102V3.27H2.8902V6.79C2.88616 7.37817 3.08478 7.9498 3.45266 8.40874C3.82054 8.86768 4.33524 9.18594 4.9102 9.31V12.22H7.9102V16H9.0302V12.22H12.0302V9.31C12.6144 9.19608 13.1406 8.88217 13.5184 8.42226C13.8962 7.96235 14.1019 7.38518 14.1002 6.79V3.27H12.2902ZM5.7802 1.07H11.2302V3.27H5.7802V1.07ZM13.0402 6.79C13.0421 7.13892 12.9224 7.47759 12.7015 7.74773C12.4807 8.01786 12.1725 8.20255 11.8302 8.27L10.9702 8.44V11.15H5.9702V8.44L5.1202 8.27C4.78139 8.20084 4.47688 8.01675 4.25821 7.74887C4.03953 7.481 3.92013 7.1458 3.9202 6.8V4.34H13.0402V6.79Z"
-                                  Fill="{Binding Tag, RelativeSource={RelativeSource AncestorType=Canvas}}" />
-                        </Canvas>
-                        <TextBlock Text="{Binding Text3, Mode=TwoWay}" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="14">
-                            <TextBlock.Style>
-                                <Style TargetType="TextBlock">
-                                    <Setter Property="Foreground" Value="{DynamicResource DefaultTheme_TxtColor}" />
-                                    <Style.Triggers>
-                                        <DataTrigger Binding="{Binding InternalSelectedIndex}" Value="2">
-                                            <Setter Property="Foreground" Value="#FFFFFF" />
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </TextBlock.Style>
-                        </TextBlock>
+                        <Image Name="Icon3" Width="16" Height="16" Margin="0,0,5,0"></Image>
+                        <TextBlock Text="{Binding Text3, Mode=TwoWay}" Style="{StaticResource TextBlock_HeaderTextStyle}" />
                     </StackPanel>
                     <Border.Style>
                         <Style TargetType="Border">
@@ -145,8 +86,6 @@
                             <Style.Triggers>
                                 <DataTrigger Binding="{Binding InternalSelectedIndex}" Value="2">
                                     <Setter Property="Background" Value="{StaticResource RightView_Header_HiColor}" />
-                                    <Setter Property="TextBlock.Foreground" Value="#FFFFFF" />
-                                    <Setter Property="Path.Fill" Value="#FFFFFF" />
                                 </DataTrigger>
                             </Style.Triggers>
                         </Style>

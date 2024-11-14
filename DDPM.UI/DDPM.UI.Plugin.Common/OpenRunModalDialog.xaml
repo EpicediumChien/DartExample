@@ -4,10 +4,8 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:DDPM.UI.Plugin.Common"
-        xmlns:common="clr-namespace:DDPM.UI.Common;assembly=DDPM.UI.Common"
         mc:Ignorable="d"
-        xmlns:UXControls="clr-namespace:Dell.Client.Framework.UX.WPF.Controls;assembly=DCF.UX.WPF" 
-        AllowsTransparency="True"
+        xmlns:UXControls="clr-namespace:Dell.Client.Framework.UX.WPF.Controls;assembly=DCF.UX.WPF" xmlns:common="clr-namespace:DDPM.UI.Common;assembly=DDPM.UI.Common" AllowsTransparency="True"
         Title="OpenRunModalDialog" ResizeMode="NoResize" ShowInTaskbar="False"
         InputMethod.IsInputMethodEnabled="False"
         WindowStartupLocation="Manual" WindowStyle="None" Background="#0D121A">

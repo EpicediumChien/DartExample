@@ -13,7 +13,6 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Windows;
 using System.Windows.Input;
-using VcpCore.Common;
 using UserControl = System.Windows.Controls.UserControl;
 
 namespace DDPM.UI.Plugin.ViewModels
@@ -41,10 +40,9 @@ namespace DDPM.UI.Plugin.ViewModels
             _showPluginManager = showPluginManager;
             _console = console;
             _log = log;
-            DdpmCommonHelper.BitmapImageUpdated += OnRefreshVBar;
         }
 
-        public bool IsPandoraPaired = false; 
+        public bool IsPandoraPaired = false;
 
         public List<ModuleGroup> _moduleGroups = new();
 
@@ -80,7 +78,7 @@ namespace DDPM.UI.Plugin.ViewModels
             set
             {
                 SetProperty(ref _groupSelIdx, value);
-                if((_groupSelIdx < 0) || (_groupSelIdx >= GroupCount))
+                if ((_groupSelIdx < 0) || (_groupSelIdx >= GroupCount))
                     return;
 
                 ModuleGroup mg = ModuleGroups[_groupSelIdx];
@@ -102,14 +100,14 @@ namespace DDPM.UI.Plugin.ViewModels
             set => SetProperty(ref _deviceBarItemClickCommand, value);
         }
 
-        public void RebuildDeviceBarItems()
+        private void RebuildDeviceBarItems()
         {
             _deviceBarItems.Clear();
 
             int idx = 0;
-            foreach(ModuleGroup mg in ModuleGroups)
+            foreach (ModuleGroup mg in ModuleGroups)
             {
-                if(mg.GroupIcon != null)
+                if (mg.GroupIcon != null)
                 {
                     DeviceBarItem deviceBarItem = new(idx, mg.GroupIcon, mg.GroupName, idx == 3 && WacomVersion == "")
                     {
@@ -133,7 +131,7 @@ namespace DDPM.UI.Plugin.ViewModels
             set
             {
                 SetProperty(ref _deviceBarSelectedIndex, value);
-                if((value < 0) || (value >= GroupCount))
+                if ((value < 0) || (value >= GroupCount))
                     return;
 
                 ModuleGroup mg = ModuleGroups[_deviceBarSelectedIndex];
@@ -163,13 +161,13 @@ namespace DDPM.UI.Plugin.ViewModels
             get
             {
                 ModuleGroup? selGroup = SelectedGroup;
-                if(selGroup != null)
+                if (selGroup != null)
                 {
                     RightViewHeader selHeader = selGroup.Headers[RightViewHeaderSelectedIndex];
-                    if(selHeader != null)
+                    if (selHeader != null)
                     {
                         IDdpmModule? mod = selHeader.DdpmModule;
-                        if(mod != null)
+                        if (mod != null)
                             return mod?.GetRightView();
                     }
                 }
@@ -186,11 +184,11 @@ namespace DDPM.UI.Plugin.ViewModels
         {
             get
             {
-                if(_rightViewHeaders.Count == 0)
+                if (_rightViewHeaders.Count == 0)
                 {
-                    if(ModuleGroups.Count > 0)
+                    if (ModuleGroups.Count > 0)
                     {
-                        if((DeviceBarSelectedIndex >= 0) && (DeviceBarSelectedIndex < (ModuleGroups.Count)))
+                        if ((DeviceBarSelectedIndex >= 0) && (DeviceBarSelectedIndex < (ModuleGroups.Count)))
                         {
                             ModuleGroup mg = ModuleGroups[DeviceBarSelectedIndex];
                             _rightViewHeaders = mg.Headers;
@@ -212,7 +210,7 @@ namespace DDPM.UI.Plugin.ViewModels
             get
             {
                 ModuleGroup? selGroup = SelectedGroup;
-                if(selGroup != null)
+                if (selGroup != null)
                 {
                     return selGroup.HeaderSelectedIndex;
                 }
@@ -221,7 +219,7 @@ namespace DDPM.UI.Plugin.ViewModels
             set
             {
                 ModuleGroup? selGroup = SelectedGroup;
-                if(selGroup != null)
+                if (selGroup != null)
                 {
                     selGroup.HeaderSelectedIndex = value;
                 }
@@ -236,10 +234,10 @@ namespace DDPM.UI.Plugin.ViewModels
         {
             get
             {
-                if(ModuleGroups.Count <= 0)
+                if (ModuleGroups.Count <= 0)
                     return null;
 
-                if((DeviceBarSelectedIndex >= 0) && (DeviceBarSelectedIndex < (ModuleGroups.Count)))
+                if ((DeviceBarSelectedIndex >= 0) && (DeviceBarSelectedIndex < (ModuleGroups.Count)))
                 {
                     return ModuleGroups[DeviceBarSelectedIndex];
                 }
@@ -278,13 +276,13 @@ namespace DDPM.UI.Plugin.ViewModels
             DongleInfos.Clear();
             AudioDongleInfos.Clear();
 
-            foreach(var info in dongleInfos)
+            foreach (var info in dongleInfos)
             {
-                if(info.DeviceType == DeviceType.PhysicalDongle && !DongleInfos.ContainsKey(info.ID))
+                if (info.DeviceType == DeviceType.PhysicalDongle && !DongleInfos.ContainsKey(info.ID))
                 {
                     DongleInfos.Add(info.ID, info);
                 }
-                if(info.DeviceType == DeviceType.PhysicalAudioDongle && !AudioDongleInfos.ContainsKey(info.ID))
+                if (info.DeviceType == DeviceType.PhysicalAudioDongle && !AudioDongleInfos.ContainsKey(info.ID))
                 {
                     AudioDongleInfos.Add(info.ID, info);
                 }
@@ -321,22 +319,22 @@ namespace DDPM.UI.Plugin.ViewModels
             DongleAlertKnMVisibility = Visibility.Collapsed;
             DongleAlertHeadsetVisibility = Visibility.Collapsed;
 
-            if(DongleInfos.Count == 0)
+            if (DongleInfos.Count == 0)
             {
                 DongleAlertKnM = noDongleAlertKnM;
                 DongleAlertKnMVisibility = Visibility.Visible;
             }
-            if(DongleInfos.Count > 1)
+            if (DongleInfos.Count > 1)
             {
                 DongleAlertKnM = multiDongleAlert;
                 DongleAlertKnMVisibility = Visibility.Visible;
             }
-            if(AudioDongleInfos.Count == 0)
+            if (AudioDongleInfos.Count == 0)
             {
                 DongleAlertHeadset = noDongleAlertHeadset;
                 DongleAlertHeadsetVisibility = Visibility.Visible;
             }
-            if(AudioDongleInfos.Count > 1)
+            if (AudioDongleInfos.Count > 1)
             {
                 DongleAlertHeadset = multiDongleAlert;
                 DongleAlertHeadsetVisibility = Visibility.Visible;
@@ -346,7 +344,7 @@ namespace DDPM.UI.Plugin.ViewModels
             OnPropertyChanged(nameof(DongleAlertKnMVisibility));
             OnPropertyChanged(nameof(DongleAlertHeadsetVisibility));
 
-            if(DeviceBarSelectedIndex == 2 && DongleAlertKnMVisibility == Visibility.Collapsed && RightViewHeaderSelectedIndex == 1)
+            if (DeviceBarSelectedIndex == 2 && DongleAlertKnMVisibility == Visibility.Collapsed && RightViewHeaderSelectedIndex == 1)
             {
                 CurrentDongle = DongleInfos.Values.First();
                 StartPairing(CurrentDongle.ID);
@@ -364,7 +362,7 @@ namespace DDPM.UI.Plugin.ViewModels
 
         public virtual void HandleNotification(DeviceChangedType changeType, DeviceInfo di, string property = "")
         {
-            switch(changeType)
+            switch (changeType)
             {
                 case DeviceChangedType.Peripherals_PlugIn:
 
@@ -376,10 +374,10 @@ namespace DDPM.UI.Plugin.ViewModels
 
                 case DeviceChangedType.Peripherals_SettingsChange:
                     var properties = property.Split('|');
-                    switch(properties[0])
+                    switch (properties[0])
                     {
                         case "DonglePairedDeviceCountChanged":
-                            if(di.PhysicalDeviceType == DeviceType.PhysicalAudioDongle)
+                            if (di.PhysicalDeviceType == DeviceType.PhysicalAudioDongle)
                             {
                                 //GotoNewDevice();
                                 PairingStatus = "Request";
@@ -391,7 +389,7 @@ namespace DDPM.UI.Plugin.ViewModels
 
                         case "DonglePairingStatusChanged":
                             RequestDeviceName = properties[1];
-                            switch(di.PairingStatusName)
+                            switch (di.PairingStatusName)
                             {
                                 case "Request":
                                     break;
@@ -456,7 +454,16 @@ namespace DDPM.UI.Plugin.ViewModels
 
         public void GotoNewDevice()
         {
-            switch(NewDevice!.LogicalDeviceType.ToUpper())
+            IsPairing = false;
+            PairingStatus = "Stopped";
+            OnPropertyChanged(nameof(PairingStatus));
+            if (NewDevice == null)
+            {
+                _console.ShowHomePage();
+                return;
+            }
+
+            switch (NewDevice?.LogicalDeviceType.ToUpper())
             {
                 case "LOGICALKEYBOARD":
                     _showPluginManager?.ShowPluginById(DDPM.UI.Common.Constants.KeyboardPluginId, NewDevice.ID.ToString());
@@ -478,25 +485,6 @@ namespace DDPM.UI.Plugin.ViewModels
                     break;
             }
             NewDevice = null;
-            IsPairing = false;
-            PairingStatus = "Stopped";
-            OnPropertyChanged(nameof(PairingStatus));
-        }
-
-        /// <summary>
-        /// For event to call vbar refresh
-        /// </summary>
-        /// <param name="key"></param>
-        private void OnRefreshVBar(string key)
-        {
-            if (key == "AddDeviceVBarRefresh")
-            {
-                foreach (DeviceBarItem barItem in _deviceBarItems)
-                {
-                    if(!barItem.IsSelected)
-                        barItem.RenewBarItem();
-                }
-            }
         }
     }
 }

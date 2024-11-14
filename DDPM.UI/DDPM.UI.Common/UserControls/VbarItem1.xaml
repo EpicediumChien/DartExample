@@ -12,6 +12,57 @@
              d:DesignHeight="74" d:DesignWidth="212" PreviewKeyDown="UserControl_PreviewKeyDown">
     <UserControl.Resources>
         <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <!-- <ResourceDictionary Source="/DDPM.UI.Common;component/ModuleStyle.xaml" /> -->
+            </ResourceDictionary.MergedDictionaries>
+
+            <!-- The Color resources are used for ColorAnimation in Story -->
+            <!-- Background Color -->
+            <Color x:Key="Vbar_BkColor_Default">#99132F54</Color>
+            <Color x:Key="Vbar_BkColor_Disabled">#FF596067</Color>
+            <Color x:Key="Vbar_BkColor_LockHover">#FFB6B6B6</Color>
+            <!-- The Selected state is LinearGradientBrush see below in Brush section -->
+
+            <!-- Border Color
+            Disabled: the same with Vbar_BkColor_Disabled; Default: the same with Vbar_BkColor_Default.
+            LandingHover, (non-selected) Hover will be Vbar_BdColor_Hover
+            Selected and SelectedHover have the same BorderBrush:
+            <Color x:Key="Vbar_BdColor_Hover">#991B385F</Color>
+            -->
+            <Color x:Key="Vbar_BdColor_Hover">#FF1B385F</Color>
+            <Color x:Key="Vbar_BdColor_LockHover">#FF1B385F</Color>
+
+            <!-- Foreground or Icon/Text Color -->
+            <Color x:Key="Vbar_FgColor_Default">White</Color>
+            <Color x:Key="Vbar_FgColor_Disabled">#FFF5F6F7</Color>
+
+            <!-- The Brushes -->
+            <!-- Landing Default -->
+            <SolidColorBrush x:Key="Vbar_BkBrush_LandingDefault" Color="{StaticResource Vbar_BkColor_Default}" />
+            <SolidColorBrush x:Key="Vbar_BdBrush_LandingDefault" Color="{StaticResource Vbar_BkColor_Default}" />
+            <!-- Landing Hover -->
+            <SolidColorBrush x:Key="Vbar_BkBrush_LandingHover" Color="{StaticResource Vbar_BkColor_Default}" />
+            <SolidColorBrush x:Key="Vbar_BdBrush_LandingHover" Color="{StaticResource Vbar_BdColor_Hover}" />
+            <!-- Default -->
+            <SolidColorBrush x:Key="Vbar_BkBrush_Default" Color="{StaticResource Vbar_BkColor_Default}" />
+            <SolidColorBrush x:Key="Vbar_BdBrush_Default" Color="{StaticResource Vbar_BkColor_Default}" />
+            <!-- Hover -->
+            <SolidColorBrush x:Key="Vbar_BkBrush_Hover" Color="{StaticResource Vbar_BkColor_Default}" />
+            <SolidColorBrush x:Key="Vbar_BdBrush_Hover" Color="{StaticResource Vbar_BdColor_Hover}" />
+            <!-- Disabled -->
+            <SolidColorBrush x:Key="Vbar_BkBrush_Disabled" Color="{StaticResource Vbar_BkColor_Disabled}" />
+            <SolidColorBrush x:Key="Vbar_BdBrush_Disabled" Color="{StaticResource Vbar_BkColor_Disabled}" />
+            <!-- LockHover -->
+            <SolidColorBrush x:Key="Vbar_BdBrush_LockHover" Color="{StaticResource Vbar_BdColor_LockHover}" />
+            <SolidColorBrush x:Key="Vbar_BkBrush_LockHover" Color="{StaticResource Vbar_BkColor_LockHover}" />
+            <!-- Selected
+            BkBrush: Brush_GradientButtonCyan
+            BdBrush: Brush_GradientBorderCyan
+            -->
+            <!-- Foreground -->
+            <SolidColorBrush x:Key="Vbar_FgBrush_Default" Color="{StaticResource Vbar_FgColor_Default}" />
+            <SolidColorBrush x:Key="Vbar_FgBrush_Disabled" Color="{StaticResource Vbar_FgColor_Disabled}" />
+
             <Common:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
         </ResourceDictionary>
     </UserControl.Resources>
@@ -31,10 +82,10 @@
     -->
     <UserControl.Style>
         <Style TargetType="UserControl">
-            <Setter Property="Foreground" Value="{DynamicResource Vbar_FgBrush_Default}" />
+            <Setter Property="Foreground" Value="{StaticResource Vbar_FgBrush_Default}" />
             <Style.Triggers>
                 <Trigger Property="IsEnabled" Value="False">
-                    <Setter Property="Foreground" Value="{DynamicResource Vbar_FgBrush_Disabled}" />
+                    <Setter Property="Foreground" Value="{StaticResource Vbar_FgBrush_Disabled}" />
                 </Trigger>
             </Style.Triggers>
         </Style>
@@ -59,14 +110,14 @@
                     <Storyboard>
                         <ColorAnimation Storyboard.TargetName="bdOuter"
                                         Storyboard.TargetProperty="BorderBrush.(SolidColorBrush.Color)"
-                                        Duration="0:0:0.3" To="{DynamicResource Vbar_BdColor_Hover}" />
+                                        Duration="0:0:0.3" To="{StaticResource Vbar_BdColor_Hover}" />
                     </Storyboard>
                 </VisualState>
                 <VisualState x:Name="LandingLockHover">
                     <Storyboard>
                         <ColorAnimation Storyboard.TargetName="bdOuter"
                                         Storyboard.TargetProperty="BorderBrush.(SolidColorBrush.Color)"
-                                        Duration="0:0:0.3" To="{DynamicResource Vbar_BkColor_LockHover}" />
+                                        Duration="0:0:0.3" To="{StaticResource Vbar_BdColor_LockHover}" />
                         <!--
                         <ColorAnimation Storyboard.TargetName="bdOuter"
                                         Storyboard.TargetProperty="Background.(SolidColorBrush.Color)"
@@ -83,7 +134,7 @@
                                          Duration="0:0:0.5" To="212" FillBehavior="HoldEnd" />
                         <ColorAnimation Storyboard.TargetName="bdOuter"
                                         Storyboard.TargetProperty="BorderBrush.(SolidColorBrush.Color)"
-                                        Duration="0:0:0.3" To="{DynamicResource Vbar_BdColor_Hover}" />
+                                        Duration="0:0:0.3" To="{StaticResource Vbar_BdColor_Hover}" />
                     </Storyboard>
                 </VisualState>
                 <VisualState x:Name="LockHover">
@@ -93,34 +144,35 @@
                                          Duration="0:0:0.5" To="212" FillBehavior="HoldEnd" />
                         <ColorAnimation Storyboard.TargetName="bdOuter"
                                         Storyboard.TargetProperty="Background.(SolidColorBrush.Color)"
-                                        Duration="0:0:0.3" To="{DynamicResource Vbar_BkColor_LockHover}" />
+                                        Duration="0:0:0.3" To="{StaticResource Vbar_BkColor_LockHover}" />
                     </Storyboard>
                 </VisualState>
             </VisualStateGroup>
         </VisualStateManager.VisualStateGroups>
 
-        <Border x:Name="bdOuter" Height="64" Width="212"  BorderThickness="2" CornerRadius="13" Focusable="True">
+        <Border x:Name="bdOuter" Height="64" BorderThickness="2" CornerRadius="13" Focusable="True">
             <Border.Style>
                 <Style TargetType="Border">
-                    <Setter Property="Background" Value="{DynamicResource Vbar_BkBrush_Default}" />
-                    <Setter Property="BorderBrush" Value="{DynamicResource Vbar_BdBrush_Default}" />
+                    <Setter Property="Background" Value="{StaticResource Vbar_BkBrush_Default}" />
+                    <Setter Property="BorderBrush" Value="{StaticResource Vbar_BdBrush_Default}" />
+                    <Setter Property="Width" Value="212" />
                     <Style.Triggers>
                         <!-- Selected state -->
                         <DataTrigger Binding="{Binding IsSelected, RelativeSource={RelativeSource AncestorType=UserControl}}"  Value="True">
-                            <Setter Property="Background"  Value="{DynamicResource Brush_GradientButtonCyan}" />
-                            <Setter Property="BorderBrush" Value="{DynamicResource  Brush_GradientBorderCyan}" />
+                            <Setter Property="Background"  Value="{StaticResource Brush_GradientButtonCyan}" />
+                            <Setter Property="BorderBrush" Value="{StaticResource  Brush_GradientBorderCyan}" />
                         </DataTrigger>
                         <!-- Disabled state -->
                         <DataTrigger Binding="{Binding IsEnabled, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="False">
-                            <Setter Property="Background"  Value="{DynamicResource Vbar_BkBrush_Disabled}" />
-                            <Setter Property="BorderBrush" Value="{DynamicResource Vbar_BdBrush_Disabled}" />
+                            <Setter Property="Background"  Value="{StaticResource Vbar_BkBrush_Disabled}" />
+                            <Setter Property="BorderBrush" Value="{StaticResource Vbar_BdBrush_Disabled}" />
                             <!--
                             <Setter Property="Width" Value="64" />
                             -->
                         </DataTrigger>
                         <!-- KeyboardFocus state -->
                         <Trigger Property="IsKeyboardFocused" Value="True">
-                            <Setter Property="BorderBrush" Value="{DynamicResource FocusDotBrush}" />
+                            <Setter Property="BorderBrush" Value="{StaticResource FocusDotBrush}" />
                         </Trigger>
                         <!-- Locked & Landing -->
                         <MultiDataTrigger>
@@ -128,8 +180,8 @@
                                 <Condition Binding="{Binding IsLocked, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="True"/>
                                 <Condition Binding="{Binding IsLandingMode, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="True"/>
                             </MultiDataTrigger.Conditions>
-                            <Setter Property="Background"  Value="{DynamicResource Vbar_BkBrush_Disabled}" />
-                            <Setter Property="BorderBrush" Value="{DynamicResource Vbar_BdBrush_Disabled}" />
+                            <Setter Property="Background"  Value="{StaticResource Vbar_BkBrush_Disabled}" />
+                            <Setter Property="BorderBrush" Value="{StaticResource Vbar_BdBrush_Disabled}" />
                         </MultiDataTrigger>
                         <!-- Locked & NonLanding -->
                         <MultiDataTrigger>
@@ -137,8 +189,8 @@
                                 <Condition Binding="{Binding IsLocked, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="True"/>
                                 <Condition Binding="{Binding IsLandingMode, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="False"/>
                             </MultiDataTrigger.Conditions>
-                            <Setter Property="Background"  Value="{DynamicResource Vbar_BkBrush_Disabled}" />
-                            <Setter Property="BorderBrush" Value="{DynamicResource Vbar_BdBrush_Disabled}" />
+                            <Setter Property="Background"  Value="{StaticResource Vbar_BkBrush_Disabled}" />
+                            <Setter Property="BorderBrush" Value="{StaticResource Vbar_BdBrush_Disabled}" />
                         </MultiDataTrigger>
                     </Style.Triggers>
                 </Style>
@@ -151,23 +203,11 @@
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
 
-                <!-- Icon 
+                <!-- Icon -->
+                <ContentControl Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="Collapsed"
                                 Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=UserControl}}"
-                -->
-                <ContentControl Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="Visible"
-                                Template="{Binding IconTemplate, RelativeSource={RelativeSource AncestorType=UserControl}}">
-                    <ContentControl.Style>
-                        <Style TargetType="ContentControl">
-                            <Setter Property="Foreground" Value="{DynamicResource Vbar_TextColor_Normal}"/>
-                            <Style.Triggers>
-                                <DataTrigger Binding="{Binding IsSelected, RelativeSource={RelativeSource AncestorType=UserControl}}"  Value="True">
-                                    <Setter Property="Foreground"  Value="{DynamicResource Vbar_TextColor_Selected}" />
-                                </DataTrigger>
-                            </Style.Triggers>
-                        </Style>
-                    </ContentControl.Style>
-                </ContentControl>
-                <Image Grid.Column="0" Width="24" Height="24" Visibility="Hidden"
+                                Template="{Binding VisualTemplate, RelativeSource={RelativeSource AncestorType=UserControl}}" />
+                <Image Grid.Column="0" Width="24" Height="24" Visibility="Visible"
                        VerticalAlignment="Center" HorizontalAlignment="Center"
                        Source="{Binding IconImage, RelativeSource={RelativeSource AncestorType=UserControl}}">
                     <Image.Style>
@@ -183,24 +223,11 @@
                     </Image.Style>
                 </Image>
 
-                <!-- Text
-                                        Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=UserControl}}"
-                
-                -->
+                <!-- Text -->
                 <UXControls:UXTextBlock Grid.Column="1" FontSize="14"
                                         Text="{Binding Text, RelativeSource={RelativeSource AncestorType=UserControl}}"
-                                        VerticalAlignment="Center" HorizontalAlignment="Left">
-                    <UXControls:UXTextBlock.Style>
-                        <Style TargetType="UXControls:UXTextBlock">
-                            <Setter Property="Foreground" Value="{DynamicResource Vbar_TextColor_Normal}"/>
-                            <Style.Triggers>
-                                <DataTrigger Binding="{Binding IsSelected, RelativeSource={RelativeSource AncestorType=UserControl}}"  Value="True">
-                                    <Setter Property="Foreground"  Value="{DynamicResource Vbar_TextColor_Selected}" />
-                                </DataTrigger>
-                            </Style.Triggers>
-                        </Style>
-                    </UXControls:UXTextBlock.Style>
-                </UXControls:UXTextBlock>
+                                        Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                        VerticalAlignment="Center" HorizontalAlignment="Left" />
                 
                 <!-- LockIcon -->
                 <Grid Grid.Column="1"
@@ -208,7 +235,7 @@
                       VerticalAlignment="Center" HorizontalAlignment="Right" Width="16" Height="16"
                       Margin="0,0,20,0">
                     <Path Data="M12.1 6.40012V4.00012C12.2 1.80012 10.5 0.100122 8.30005 0.00012207H8.10005C5.90005 0.00012207 4.10005 1.80012 4.10005 4.00012V6.40012H1.80005V16.0001H14.1V6.40012H12.1ZM5.30005 4.00012C5.20005 2.50012 6.40005 1.30012 7.80005 1.20012H8.20005C9.80005 1.20012 11 2.50012 11 4.00012V6.40012H5.30005V4.00012ZM13.1 14.9001H3.00005V7.50012H13.1V14.9001Z M7.60005 12.5001H8.60005V9.30012H6.80005V10.3001H7.60005V12.5001Z"
-                                     Fill="{DynamicResource LockIcon_Fill}" />
+                                     Fill="white" />
                 </Grid>
             </Grid>
         </Border>

@@ -2,25 +2,23 @@
 using DDPM.SA.Common.Settings;
 using DDPM.UI.Common.Interfaces;
 using DDPM.UI.Common.Views;
+using Dell.Client.Framework.Common;
 using Dell.Client.Framework.UX.WPF;
 using Dell.Client.Framework.UX.WPF.Controls;
-using Dell.Client.Framework.UX.WPF.ResourceManager;
-using System.ComponentModel;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
+using System.Net.Http.Headers;
 using System.Reflection;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 using static DDPM.UI.Common.Views.DDPMMsgBox;
-using Application = System.Windows.Application;
-using Image = System.Windows.Controls.Image;
 
 namespace DDPM.UI.Common
 {
-    public static partial class DdpmCommonHelper
+    public static class DdpmCommonHelper
     {
         /// <summary>
         /// Create an ImageSource object, which load from DDPM.Common.Resources
@@ -42,31 +40,18 @@ namespace DDPM.UI.Common
             }
             return null;
         }
-        
+
         //reload inputsourece name if renamed
         public static bool bInputSourceRenamed { get; set; }
-
         public static bool isHotkeyBypass { get; set; } = false;
-
-        /// <summary>
-        /// Splash screen path
-        /// </summary>
-        public static string SplashPath { get; set; } = "Resources/Images/splash{0}-round.png";
-
         //DdpmHomePlugin will set this value
         public static IConsole? MyConsole { get; set; }
         public static IShowPluginManager? MyShowPluginManager { get; set; }
 
-        public static IDeviceManagerSA? DeviceManagerSA { get; set; } = null;
+        public static IDeviceManagerSA? DeviceManagerSA { get; set; }
         public static DDPMSettings? Settings_Cache { get; set; }
 
         public static IModuleOwner? ModuleOwner { get; set; }
-
-        /// <summary>
-        /// Flag to switch the Light Mode Feature
-        /// </summary>
-        public static bool ThemeSwitchFlag { get; set; } = false;
-
 
         public static bool DDPMMesssageBox(string title, string text, DependencyObject obj = null)
         {
@@ -292,38 +277,39 @@ namespace DDPM.UI.Common
         }
         //default theme is dark
         public static OSThemeEnum previousOsTheme = OSThemeEnum.Dark;
-        public static void updateMergedDictionaries(ResourceManager resourceManager)
+        public static void updateMergedDictionarie()
         {
             OSThemeEnum oSTheme = UXSystemParameters.Instance.OSTheme;
             if (previousOsTheme == oSTheme) return;
+            //ar regTheme = RegistryWrapper.CurrentUser.GetRegKeyInt(@"Software\Microsoft\Windows\CurrentVersion\Themes\Personalize", "AppsUseLightTheme");
             string darkModeStyle = @"pack://application:,,,/DDPM.UI.Common;component/ModuleStyle.xaml";
-            ResourceDictionary? darkResourceDictionary = Application.Current.Resources.MergedDictionaries.SingleOrDefault(x => x.Source.OriginalString.Equals(darkModeStyle));
-            Application.Current.Resources.MergedDictionaries.Remove(darkResourceDictionary);
-            darkResourceDictionary = new ResourceDictionary()
+            string lightModeStyle = @"pack://application:,,,/DDPM.UI.Common;component/ModuleStyle_light.xaml";
+            ResourceDictionary? darkResourceDictionary = System.Windows.Application.Current.Resources.MergedDictionaries.SingleOrDefault(x => x.Source.OriginalString.Equals(darkModeStyle));
+            ResourceDictionary? lightResourceDictionary = System.Windows.Application.Current.Resources.MergedDictionaries.SingleOrDefault(x => x.Source.OriginalString.Equals(lightModeStyle));
+            System.Windows.Application.Current.Resources.MergedDictionaries.Remove(darkResourceDictionary);
+            System.Windows.Application.Current.Resources.MergedDictionaries.Remove(lightResourceDictionary);
+            switch (oSTheme)
             {
-                Source = new Uri(darkModeStyle)
-            };
-            Application.Current.Resources.MergedDictionaries.Add(darkResourceDictionary);
+                case OSThemeEnum.Dark:
+                    darkResourceDictionary = new ResourceDictionary()
+                    {
+                        Source = new Uri(darkModeStyle)
+                    };
+                    System.Windows.Application.Current.Resources.MergedDictionaries.Add(darkResourceDictionary);
 
-            Application.Current.Dispatcher.Invoke(() =>
-            {
-                switch (oSTheme)
-                {
-                    case OSThemeEnum.Light:
-                        SwitchToLightMode();
-                        break;
-                    case OSThemeEnum.Dark:
-                    default:
-                        SwitchToDarkMode();
-                        break;
-                };
-                resourceManager.SwapDarkAndLightThemes();
-                resourceManager.StageResources();
-                resourceManager.CommitResources();
-                Application.Current.MainWindow?.InvalidateVisual();
-                BitmapImageUpdated?.Invoke("AddDeviceVBarRefresh");
-            }, System.Windows.Threading.DispatcherPriority.Loaded);
-            // Debug.WriteLine($"updateMergedDictionarie to {oSTheme.ToString()}");
+                    Debug.WriteLine($"updateMergedDictionarie to {oSTheme.ToString()}");
+                    break;
+                case OSThemeEnum.Light:
+
+                    lightResourceDictionary = new ResourceDictionary()
+                    {
+                        Source = new Uri(lightModeStyle)
+                    };
+                    System.Windows.Application.Current.Resources.MergedDictionaries.Add(lightResourceDictionary);
+
+                    Debug.WriteLine($"updateMergedDictionarie to {oSTheme.ToString()}");
+                    break;
+            }
             previousOsTheme = oSTheme;
         }
 
@@ -331,53 +317,6 @@ namespace DDPM.UI.Common
         {
             return UXSystemParameters.Instance.OSTheme == OSThemeEnum.Dark;
         }
-
-        public delegate void UpdateAction<T>(ref T resource);
-
-        /// <summary>
-        /// Update Freezable
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="resourceKey"></param>
-        /// <param name="updateAction"></param>
-        public static void UpdateFreezable<T>(string resourceKey, UpdateAction<T> updateAction) where T : Freezable
-        {
-            // Get the Freezable object from the resources
-            if (Application.Current.Resources[resourceKey] is T currentFreezable)
-            {
-                // Clone the Freezable object to modify it
-                T newFreezable = (T)currentFreezable.Clone();
-
-                // Perform the update on the cloned object
-                updateAction(ref newFreezable);
-
-                // Replace the old object with the updated one in the resources
-                Application.Current.Resources[resourceKey] = newFreezable;
-
-                Application.Current.Resources[resourceKey] = Application.Current.Resources[resourceKey];// Force Refresh
-            }
-        }
-
-        /// <summary>
-        /// Create new BitmapImage
-        /// </summary>
-        /// <param name="uri"></param>
-        /// <returns></returns>
-        /// <remarks>
-        /// Please set image files "<CopyToOutputDirectory>Always</CopyToOutputDirectory>"
-        /// </remarks>
-        public static void UpdateBitmapImage(string resourceKey, Uri uri)
-        {
-            BitmapImage bitmapImage = new BitmapImage();
-            bitmapImage.BeginInit();
-            bitmapImage.UriSource = uri;
-            bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
-            bitmapImage.EndInit();
-            Application.Current.Resources[resourceKey] = bitmapImage;
-        }
-
-        // Need refine
-        public static event Action<string>? BitmapImageUpdated;
 
         //Derek 10/30
         public static int GetBreakPoints()

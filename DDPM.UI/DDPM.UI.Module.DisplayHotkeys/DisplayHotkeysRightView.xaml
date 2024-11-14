@@ -20,8 +20,17 @@
         <UXControls:UXScrollViewer>
             <Grid>
                 <StackPanel>
-                    <Border Style="{DynamicResource RightGroupBorderStyle}" Width="Auto">
+                    <Border Style="{StaticResource RightGroupBorderStyle}" Width="Auto">
                         <StackPanel>
+                            <StackPanel.Resources>
+                                <Style TargetType="{x:Type UXControls:UXTextBlock}">
+                                    <Setter Property="Foreground" Value="White" />
+                                    <Setter Property="FontSize" Value="16" />
+                                    <Setter Property="Margin" Value="16,12,0,12" />
+                                    <Setter Property="HorizontalAlignment" Value="Left" />
+                                </Style>
+                            </StackPanel.Resources>
+
                             <UXControls:UXTextBlock Text="{Binding [DisplayHotkeys.0], Source={x:Static lang:LangHelper.Instance}}" FontSize="20" Margin="4,16,0,20" />
                             <Grid Height="50">
                                 <Grid.ColumnDefinitions>
@@ -32,8 +41,9 @@
 
                                 <UXControls:UXTextBlock Text="{Binding [DisplayHotkeys.1], Source={x:Static lang:LangHelper.Instance}}" />
                                 <UXControls:UXTextBox Grid.Column="2" Margin="2" Height="20"
-                                                      Text="{Binding ToggleInputSourceKey,Mode=TwoWay}"                                                     
-                                                      BorderThickness="1" FontSize="14" Width="230"
+                                                      Text="{Binding ToggleInputSourceKey,Mode=TwoWay}"
+                                                      Background="#141D28" Foreground="White" Width="230"
+                                                      BorderBrush="#7E7E7E" BorderThickness="1" FontSize="14"
                                                       HorizontalAlignment="Center" VerticalContentAlignment="Center"
                                                       Name="tbToggleInputSource"
                                                       AcceptsReturn="True"
@@ -50,6 +60,15 @@
                     </Border>
                     <Border Style="{StaticResource RightGroupBorderStyle}" Margin="0,16,0,0" Width="Auto">
                         <StackPanel>
+                            <StackPanel.Resources>
+                                <Style TargetType="{x:Type UXControls:UXTextBlock}">
+                                    <Setter Property="Foreground" Value="White" />
+                                    <Setter Property="FontSize" Value="16" />
+                                    <Setter Property="Margin" Value="16,12,0,12" />
+                                    <Setter Property="HorizontalAlignment" Value="Left" />
+                                </Style>
+                            </StackPanel.Resources>
+
                             <UXControls:UXTextBlock Text="{Binding [VideoSwap], Source={x:Static lang:LangHelper.Instance}}" FontSize="20" Margin="4,16,0,20" />
                             <Grid>
                                 <Grid>
@@ -68,7 +87,8 @@
                                     <UXControls:UXTextBlock Text="{Binding [DisplayHotkeys.2], Source={x:Static lang:LangHelper.Instance}}" Grid.Column="0" Grid.ColumnSpan="2" />
                                     <UXControls:UXTextBox Grid.Column="2" Margin="2" Height="20"
                                                           Text="{Binding FavoriteInputSourceKey,Mode=TwoWay}"
-                                                          BorderThickness="1" FontSize="14"  Width="230"
+                                                          Background="#141D28" Foreground="White" Width="230"
+                                                          BorderBrush="#7E7E7E" BorderThickness="1" FontSize="14"
                                                           HorizontalAlignment="Center" VerticalContentAlignment="Center"
                                                           Name="tbFavoriteInputSource"
                                                           AcceptsReturn="True"
@@ -88,7 +108,8 @@
                                     <UXControls:UXTextBlock Text="{Binding [DisplayHotkeys.3], Source={x:Static lang:LangHelper.Instance}}" Grid.Row="2" Grid.ColumnSpan="2" />
                                     <UXControls:UXTextBox Grid.Column="2" Grid.Row="2" Margin="2" Height="20"
                                                           Text="{Binding SwitchInputSourceKey,Mode=TwoWay}"
-                                                          BorderThickness="1" FontSize="14" Width="230"
+                                                          Background="#141D28" Foreground="White" Width="230"
+                                                          BorderBrush="#7E7E7E" BorderThickness="1" FontSize="14"
                                                           HorizontalAlignment="Center" VerticalContentAlignment="Center"
                                                           Name="tbSwitchInputSource"
                                                           AcceptsReturn="True"
@@ -119,6 +140,15 @@
                     </Border>
                     <Border Style="{StaticResource RightGroupBorderStyle}" Margin="0,16,0,0" Visibility="{Binding PxPkeySettings_Visibility}">
                         <StackPanel>
+                            <StackPanel.Resources>
+                                <Style TargetType="{x:Type UXControls:UXTextBlock}">
+                                    <Setter Property="Foreground" Value="White" />
+                                    <Setter Property="FontSize" Value="16" />
+                                    <Setter Property="Margin" Value="16,12,0,12" />
+                                    <Setter Property="HorizontalAlignment" Value="Left" />
+                                </Style>
+                            </StackPanel.Resources>
+
                             <UXControls:UXTextBlock Text="{Binding [PIPorPBP], Source={x:Static lang:LangHelper.Instance}}" FontSize="20" Margin="4,16,0,20" />
                             <Grid>
                                 <Grid.ColumnDefinitions>
@@ -133,7 +163,8 @@
                                 <UXControls:UXTextBlock Text="{Binding [DisplayHotkeys.4], Source={x:Static lang:LangHelper.Instance}}" Grid.Column="0" />
                                 <UXControls:UXTextBox Grid.Column="2" Margin="2" Height="20"
                                                       Text="{Binding SwapPIPPBPInputSourceKey,Mode=TwoWay}"
-                                                      BorderThickness="1" FontSize="14" Width="230"
+                                                      Background="#141D28" Foreground="White" Width="230"
+                                                      BorderBrush="#7E7E7E" BorderThickness="1" FontSize="14"
                                                       HorizontalAlignment="Center" VerticalContentAlignment="Center"
                                                       Name="tbSwapPIPPBPInputSource"
                                                       AcceptsReturn="True"
@@ -148,7 +179,8 @@
                                 <UXControls:UXTextBlock Text="{Binding [DisplayHotkeys.5], Source={x:Static lang:LangHelper.Instance}}" Grid.Row="1" />
                                 <UXControls:UXTextBox Grid.Column="2" Grid.Row="1" Margin="2" Height="20"
                                                       Text="{Binding ChangePIPPositionKey,Mode=TwoWay}"
-                                                      BorderThickness="1" FontSize="14" Width="230"
+                                                      Background="#141D28" Foreground="White" Width="230"
+                                                      BorderBrush="#7E7E7E" BorderThickness="1" FontSize="14"
                                                       HorizontalAlignment="Center" VerticalContentAlignment="Center"
                                                       Name="tbChangePIPPosition"
                                                       AcceptsReturn="True"

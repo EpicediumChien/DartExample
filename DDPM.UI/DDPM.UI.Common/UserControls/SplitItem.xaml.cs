@@ -394,6 +394,7 @@ namespace DDPM.UI.Common.UserControls
             get { return vm.IsHoverable; }
             set { vm.IsHoverable = value; }
         }
+        //Robert_Lin, 2024-11-10, to be removed, please use IsOverlapCustomLayout instead
         public bool IsAddedCustomLayout
         {
             get 

@@ -19,11 +19,6 @@
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
-    <UserControl.Style>
-        <Style TargetType="UserControl">
-            <Setter Property="Foreground" Value="{DynamicResource Vbar_FgBrush_Default}" />
-        </Style>
-    </UserControl.Style>
     <Grid>
         <Grid>
             <Grid.ColumnDefinitions>
@@ -31,7 +26,7 @@
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
             <!-- Right side: Header + RightView -->
-            <Border CornerRadius="13" Background="{DynamicResource Vbar_BkBrush_Default}" Grid.Column="1" Margin="8,80,8,10" >
+            <Border CornerRadius="13" Background="#99132F54" Grid.Column="1" Margin="8,80,8,10" >
                 <Grid Grid.Column="1" Name="RightFrame">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto" />
@@ -81,17 +76,10 @@
         <Grid VerticalAlignment="Top" HorizontalAlignment="Left">
             <StackPanel Orientation="Vertical">
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
-                    <Image x:Name="ArrowLeft" Margin="64,19,0,0" Source="{DynamicResource Arrow_Left}" Stretch="Fill"
+                    <Image Margin="64,19,0,0" Source="/DDPM.UI.Resources;component/Resources/Images/arrow-left.png" Stretch="Fill"
                            VerticalAlignment="Top" HorizontalAlignment="Left" Cursor="Hand" Width="24" Height="24" MouseLeftButtonDown="GoBackHomepage">
                     </Image>
-                    <UXControls:UXTextBlock Name="txtCaption" 
-                                            FontSize="20"
-                                            FontFamily="Roboto"
-                                            FontWeight="Normal"
-                                            Margin="12,16,0,0"
-                                            HorizontalAlignment="Left" 
-                                            VerticalAlignment="Top"
-                                            Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=UserControl}}"/>
+                    <UXControls:UXTextBlock Name="txtCaption" Margin="12,16,0,0" HorizontalAlignment="Left" Style="{StaticResource ProductNameTextStyle}" VerticalAlignment="Top" />
                 </StackPanel>
                 <UXControls:UXTextBox Name="txtPairingStatus" Text="{Binding PairingStatus}" TextChanged="PairingStatusChanged" Visibility="Hidden" />
             </StackPanel>

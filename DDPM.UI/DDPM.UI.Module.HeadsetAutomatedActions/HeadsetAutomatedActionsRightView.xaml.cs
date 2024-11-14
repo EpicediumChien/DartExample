@@ -5,9 +5,6 @@ using System.Windows.Data;
 using System.Windows.Media;
 using UserControl = System.Windows.Controls.UserControl;
 using DDPM.SA.Common.Settings;
-using Dell.Client.Framework.UX.WPF.Controls;
-using System.Windows;
-using System.ComponentModel;
 
 namespace DDPM.UI.Module.HeadsetAutomatedActions
 {
@@ -22,6 +19,7 @@ namespace DDPM.UI.Module.HeadsetAutomatedActions
         {
             InitializeComponent();
             _vm = vm;
+
             //lock/unlock init, 9/23 add
             if (DdpmCommonHelper.DeviceManagerSA != null)
             {
@@ -42,7 +40,6 @@ namespace DDPM.UI.Module.HeadsetAutomatedActions
                     }
                 }
             }
-            SystemParameters.StaticPropertyChanged += SystemParameters_StaticPropertyChanged;
         }
 
         ~HeadsetAutomatedActionsRightView()
@@ -50,19 +47,6 @@ namespace DDPM.UI.Module.HeadsetAutomatedActions
             if (DdpmCommonHelper.DeviceManagerSA != null)
             {
                 DdpmCommonHelper.DeviceManagerSA.ITSettingsActionEvent -= DeviceManagerSA_ITSettingsActionEvent;
-                SystemParameters.StaticPropertyChanged -= SystemParameters_StaticPropertyChanged;
-            }
-        }
-
-        private void SystemParameters_StaticPropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            if (DdpmCommonHelper.previousOsTheme == OSThemeEnum.Dark)
-            {
-                _vm.IsDarkTheme = true;
-            }
-            else
-            {
-                _vm.IsDarkTheme = false;
             }
         }
 
@@ -84,24 +68,20 @@ namespace DDPM.UI.Module.HeadsetAutomatedActions
         }
     }
 
-    public class BooleanToForegroundConverter : IMultiValueConverter
+    public class BooleanToForegroundConverter : IValueConverter
     {
-        public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (values[0] is bool isChecked && values[1] is bool isDarkTheme)
+            if (value is bool boolValue)
             {
-                if (isDarkTheme)
-                    return isChecked ? Brushes.White : Brushes.Gray;
-                else
-                    return isChecked ? Brushes.Black : Brushes.Gray;
+                return boolValue ? Brushes.White : Brushes.Gray;
             }
             return Brushes.Gray;
         }
 
-        public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
             throw new NotImplementedException();
         }
     }
-
 }

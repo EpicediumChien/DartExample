@@ -13,18 +13,16 @@
     mc:Ignorable="d">
     <UserControl.Resources>
         <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <!-- <ResourceDictionary Source="/DDPM.UI.Common;component/ModuleStyle.xaml" /> -->
+            </ResourceDictionary.MergedDictionaries>
+
             <!--<local:RadioBoolToIntConverter x:Key="radioBoolToIntConverter" />-->
 
-            <!--<local:BooleanToBrushConverter
+            <local:BooleanToBrushConverter
                 x:Key="BooleanToBrushConverter"
                 FalseBrush="White"
-                TrueBrush="Gray" />-->
-
-            <local:CustomBooleanToBrushConverter
-            x:Key="CustomBooleanToBrushConverter"
-            FalseBrushLightTheme="Black"
-            FalseBrushDarkTheme="White"
-            TrueBrush="Gray" />
+                TrueBrush="Gray" />
 
             <local:InverseBooleanConverter x:Key="InverseBooleanConverter" />
 
@@ -33,12 +31,6 @@
             <local:BoolReverseConverter x:Key="boolReverseConverter" />
         </ResourceDictionary>
     </UserControl.Resources>
-    <UserControl.Style>
-        <Style TargetType="UserControl">
-            <Setter Property="Foreground" Value="{DynamicResource RightView_Text_FgColor}"/>
-            <Setter Property="BorderBrush" Value="{DynamicResource RightView_Btn_BdColor}" />
-        </Style>
-    </UserControl.Style>
 
     <Grid KeyboardNavigation.DirectionalNavigation="{Binding TabSTOP}" KeyboardNavigation.TabNavigation="{Binding TabSTOP}">
         <UXControls:UXScrollViewer HorizontalScrollBarVisibility="Hidden">
@@ -71,17 +63,27 @@
                                         Grid.Column="1"
                                         HorizontalAlignment="Center"
                                         VerticalAlignment="Center">
-                                        <Path Data="M9 1.125C13.3313 1.125 16.875 4.66875 16.875 9C16.875 13.3312 13.3313 16.875 9 16.875C4.66875 16.875 1.125 13.3312 1.125 9C1.125 4.66875 4.66875 1.125 9 1.125ZM9 0C4.05 0 0 4.05 0 9C0 13.95 4.05 18 9 18C13.95 18 18 13.95 18 9C18 4.05 13.95 0 9 0Z" />
-                                        <Path Data="M9.5625 7.3125L8.4375 7.3125L8.4375 14.2875L9.5625 14.2875L9.5625 7.3125Z" />
-                                        <Path Data="M9 5.40039C9.46599 5.40039 9.84375 5.02263 9.84375 4.55664C9.84375 4.09065 9.46599 3.71289 9 3.71289C8.53401 3.71289 8.15625 4.09065 8.15625 4.55664C8.15625 5.02263 8.53401 5.40039 9 5.40039Z" />
+                                        <Path Data="M9 1.125C13.3313 1.125 16.875 4.66875 16.875 9C16.875 13.3312 13.3313 16.875 9 16.875C4.66875 16.875 1.125 13.3312 1.125 9C1.125 4.66875 4.66875 1.125 9 1.125ZM9 0C4.05 0 0 4.05 0 9C0 13.95 4.05 18 9 18C13.95 18 18 13.95 18 9C18 4.05 13.95 0 9 0Z" Fill="white" />
+                                        <Path Data="M9.5625 7.3125L8.4375 7.3125L8.4375 14.2875L9.5625 14.2875L9.5625 7.3125Z" Fill="white" />
+                                        <Path Data="M9 5.40039C9.46599 5.40039 9.84375 5.02263 9.84375 4.55664C9.84375 4.09065 9.46599 3.71289 9 3.71289C8.53401 3.71289 8.15625 4.09065 8.15625 4.55664C8.15625 5.02263 8.53401 5.40039 9 5.40039Z" Fill="white" />
                                     </Grid>
                                 </Grid>
                                 <StackPanel Grid.Column="2" VerticalAlignment="Center">
                                     <TextBlock
                                         FontFamily="Roboto"
-                                        FontSize="13">
+                                        FontSize="13"
+                                        Foreground="White">
                                         <Run Text="{Binding [Brightness.1], Source={x:Static lang:LangHelper.Instance}, Mode=OneWay}" />
                                         <Hyperlink Click="Hyperlink_Click">
+                                            <Hyperlink.Style>
+                                                <Style TargetType="Hyperlink">
+                                                    <Style.Triggers>
+                                                        <Trigger Property="IsMouseOver" Value="True">
+                                                            <Setter Property="Foreground" Value="#31A2E3" />
+                                                        </Trigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </Hyperlink.Style>
                                             <Run Text="{Binding [Brightness.2], Source={x:Static lang:LangHelper.Instance}, Mode=OneWay}" />
                                         </Hyperlink>
                                         <Run Text="{Binding [Brightness.3], Source={x:Static lang:LangHelper.Instance}, Mode=OneWay}" />
@@ -94,7 +96,7 @@
                     <Border
                         IsEnabled="{Binding BrightnessEnable}"
                         Opacity="{Binding BrightnessOpacity}"
-                        Style="{DynamicResource RightGroupBorderStyle}"
+                        Style="{StaticResource RightGroupBorderStyle}"
                         Visibility="{Binding isNormalBrightness}">
                         <Expander
                             Name="Expander_Manual"
@@ -109,7 +111,7 @@
                                         HorizontalAlignment="Left"
                                         VerticalAlignment="Center"
                                         FontSize="20"
-                                        Foreground="{DynamicResource TextBlock_ForegroundColor}"
+                                        Foreground="White"
                                         Text="{Binding [Manual], Source={x:Static lang:LangHelper.Instance}}"
                                         TextBlockSemanticColorType="Light"
                                         TextBlockType="Caption" />
@@ -118,7 +120,7 @@
 
                             <StackPanel>
                                 <!--  RightPartBorder  -->
-                                <Border Style="{DynamicResource RightPartBorderStyle}">
+                                <Border Style="{StaticResource RightPartBorderStyle}">
                                     <StackPanel>
                                         <!--  Row: "Brightness"  -->
                                         <Grid Height="40">
@@ -126,7 +128,7 @@
                                                 HorizontalAlignment="Left"
                                                 VerticalAlignment="Center"
                                                 FontSize="16"
-                                                Foreground="{DynamicResource TextBlock_ForegroundColor}"
+                                                Foreground="White"
                                                 Text="{Binding [Brightness], Source={x:Static lang:LangHelper.Instance}}"
                                                 TextBlockSemanticColorType="Light"
                                                 TextBlockType="Display1" />
@@ -145,8 +147,7 @@
                                                 Height="20"
                                                 HorizontalAlignment="Center"
                                                 VerticalAlignment="Center"
-                                                Source="{DynamicResource BrightnessImage}" 
-                                                Stretch="UniformToFill"/>
+                                                Source="{Binding BrightnessImage}" />
 
                                             <UXControls:UXSlider
                                                 Name="B_slider"
@@ -167,7 +168,7 @@
                                                 Name="BrightnessTextBlock"
                                                 Grid.Column="2"
                                                 VerticalAlignment="Center"
-                                                Foreground="{DynamicResource PercentageTextColor}"
+                                                Foreground="{StaticResource PercentageTextColor}"
                                                 Text="{Binding Path=BrightnessValue, StringFormat={}{0}%}"
                                                 TextBlockSemanticColorType="Light"
                                                 TextBlockType="Body2" />
@@ -178,7 +179,7 @@
                                                 HorizontalAlignment="Left"
                                                 VerticalAlignment="Center"
                                                 FontSize="16"
-                                                Foreground="{DynamicResource TextBlock_ForegroundColor}"
+                                                Foreground="White"
                                                 Text="{Binding [Contrast], Source={x:Static lang:LangHelper.Instance}}"
                                                 TextBlockSemanticColorType="Light"
                                                 TextBlockType="Display1" />
@@ -197,8 +198,7 @@
                                                 Height="20"
                                                 HorizontalAlignment="Center"
                                                 VerticalAlignment="Center"
-                                                Source="{DynamicResource ContrastImage}" 
-                                                Stretch="UniformToFill"/>
+                                                Source="{Binding ContrastImage}" />
 
                                             <UXControls:UXSlider
                                                 Name="C_slider"
@@ -219,7 +219,7 @@
                                                 Name="ContrastTextBlock"
                                                 Grid.Column="2"
                                                 VerticalAlignment="Center"
-                                                Foreground="{DynamicResource PercentageTextColor}"
+                                                Foreground="{StaticResource PercentageTextColor}"
                                                 Text="{Binding Path=ContrastValue, StringFormat={}{0}%}"
                                                 TextBlockSemanticColorType="Light"
                                                 TextBlockType="Body2" />
@@ -229,15 +229,13 @@
                                             <StackPanel HorizontalAlignment="Center" Orientation="Horizontal">
                                                 <UXControls:UXButton
                                                     Name="btnManualBrightnessContrast"
-                                                    Width="111"
-                                                    Height="40"
                                                     Padding="24,8"
                                                     ButtonSemanticColorType="Neutral"
                                                     ButtonType="Secondary"
                                                     Click="Hotkey_Click"
                                                     Content="{Binding [Hotkeys], Source={x:Static lang:LangHelper.Instance}}"
                                                     CornerRadius="2"
-                                                    Style="{StaticResource Button_WhiteFrame}" />
+                                                    Foreground="White" />
                                                 <UXControls:UXButton
                                                     Margin="8,0,0,0"
                                                     Padding="24,8"
@@ -246,12 +244,12 @@
                                                     Click="Reset_Click"
                                                     Content="{Binding [Reset], Source={x:Static lang:LangHelper.Instance}}"
                                                     CornerRadius="2"
-                                                    Foreground="{DynamicResource RightView_Btn_TextColor}" />
+                                                    Foreground="White" />
                                             </StackPanel>
                                         </Grid>
                                     </StackPanel>
                                 </Border>
-                                <Border Style="{DynamicResource RightPartBorderStyle}" Visibility="{Binding isShowSynchronize}">
+                                <Border Style="{StaticResource RightPartBorderStyle}" Visibility="{Binding isShowSynchronize}">
                                     <!--  synchronize  -->
                                     <Grid
                                         Height="60"
@@ -269,7 +267,7 @@
                                             HorizontalAlignment="Left"
                                             VerticalAlignment="Center"
                                             FontSize="16"
-                                            Foreground="{Binding IsSynchronizeDisabled, Converter={StaticResource CustomBooleanToBrushConverter}}"
+                                            Foreground="{Binding IsSynchronizeDisabled, Converter={StaticResource BooleanToBrushConverter}}"
                                             Text="{Binding [Brightness.4], Source={x:Static lang:LangHelper.Instance}}"
                                             TextBlockSemanticColorType="Light"
                                             TextBlockType="Display1" />
@@ -319,7 +317,7 @@
                                             Content="{Binding Path=IsSynchronize_String}"
                                             ContentPlacement="Left"
                                             ContentTextVisibility="True"
-                                            Foreground="{Binding IsSynchronizeDisabled, Converter={StaticResource CustomBooleanToBrushConverter}}"
+                                            Foreground="{Binding IsSynchronizeDisabled, Converter={StaticResource BooleanToBrushConverter}}"
                                             IsChecked="{Binding Path=IsSynchronize}"
                                             IsEnabled="{Binding IsSynchronizeDisabled, Converter={StaticResource InverseBooleanConverter}}" />
                                     </Grid>
@@ -334,7 +332,7 @@
                         Margin="0,16,0,0"
                         IsEnabled="{Binding BrightnessEnable}"
                         Opacity="{Binding BrightnessOpacity}"
-                        Style="{DynamicResource RightGroupBorderStyle}"
+                        Style="{StaticResource RightGroupBorderStyle}"
                         Visibility="{Binding isLuminanceSupport}">
 
                         <Expander
@@ -349,7 +347,7 @@
                                         HorizontalAlignment="Left"
                                         VerticalAlignment="Center"
                                         FontSize="20"
-                                        Foreground="{DynamicResource TextBlock_ForegroundColor}"
+                                        Foreground="White"
                                         Text="{Binding [Manual], Source={x:Static lang:LangHelper.Instance}}"
                                         TextBlockSemanticColorType="Light"
                                         TextBlockType="Caption" />
@@ -369,7 +367,7 @@
                                             HorizontalAlignment="Left"
                                             VerticalAlignment="Center"
                                             FontSize="16"
-                                            Foreground="{DynamicResource TextBlock_ForegroundColor}"
+                                            Foreground="White"
                                             Text="{Binding [Luminance], Source={x:Static lang:LangHelper.Instance}}"
                                             TextBlockSemanticColorType="Light"
                                             TextBlockType="Display1" />
@@ -419,8 +417,6 @@
                                     <Grid>
                                         <StackPanel HorizontalAlignment="Center" Orientation="Horizontal">
                                             <UXControls:UXButton
-                                                Width="111"
-                                                Height="40"
                                                 Margin="8,0,0,16"
                                                 Padding="24,8"
                                                 ButtonSemanticColorType="Neutral"
@@ -428,7 +424,7 @@
                                                 Click="Hotkey_Click"
                                                 Content="{Binding [Hotkeys], Source={x:Static lang:LangHelper.Instance}}"
                                                 CornerRadius="2"
-                                                Style="{StaticResource Button_WhiteFrame}" />
+                                                Foreground="White" />
                                             <UXControls:UXButton
                                                 Margin="5,0,0,16"
                                                 Padding="24,8"
@@ -437,7 +433,7 @@
                                                 Click="Reset_Click"
                                                 Content="{Binding [Reset], Source={x:Static lang:LangHelper.Instance}}"
                                                 CornerRadius="2"
-                                                Foreground="{DynamicResource RightView_Btn_TextColor}" />
+                                                Foreground="White" />
                                         </StackPanel>
                                     </Grid>
                                 </StackPanel>
@@ -450,7 +446,7 @@
                         Margin="0,16,0,0"
                         IsEnabled="{Binding BrightnessEnable}"
                         Opacity="{Binding BrightnessOpacity}"
-                        Style="{DynamicResource RightGroupBorderStyle}"
+                        Style="{StaticResource RightGroupBorderStyle}"
                         Visibility="{Binding isAlsSupported}">
                         <Expander
                             Name="Expander_Auto"
@@ -465,7 +461,7 @@
                                         HorizontalAlignment="Left"
                                         VerticalAlignment="Center"
                                         FontSize="20"
-                                        Foreground="{DynamicResource TextBlock_ForegroundColor}"
+                                        Foreground="White"
                                         Text="{Binding [Auto], Source={x:Static lang:LangHelper.Instance}}"
                                         TextBlockSemanticColorType="Light"
                                         TextBlockType="Caption" />
@@ -520,7 +516,7 @@
                                             HorizontalAlignment="Left"
                                             VerticalAlignment="Center"
                                             FontSize="16"
-                                            Foreground="{Binding IsAutoBrightnessTextGrayedOut, Converter={StaticResource CustomBooleanToBrushConverter}}"
+                                            Foreground="{Binding IsAutoBrightnessTextGrayedOut, Converter={StaticResource BooleanToBrushConverter}}"
                                             Text="{Binding [Brightness.6], Source={x:Static lang:LangHelper.Instance}}"
                                             TextBlockSemanticColorType="Light"
                                             TextBlockType="Display1" />
@@ -606,7 +602,7 @@
                                             HorizontalAlignment="Left"
                                             VerticalAlignment="Center"
                                             FontSize="16"
-                                            Foreground="{Binding IsAutoBrightnessRangeLevelTextGrayedOut, Converter={StaticResource CustomBooleanToBrushConverter}}"
+                                            Foreground="{Binding IsAutoBrightnessRangeLevelTextGrayedOut, Converter={StaticResource BooleanToBrushConverter}}"
                                             Text="{Binding [Brightness.8], Source={x:Static lang:LangHelper.Instance}}"
                                             TextBlockSemanticColorType="Light"
                                             TextBlockType="Display1"
@@ -702,7 +698,7 @@
                                             HorizontalAlignment="Left"
                                             VerticalAlignment="Center"
                                             FontSize="16"
-                                            Foreground="{Binding IsAutoColorTempTextGrayedOut, Converter={StaticResource CustomBooleanToBrushConverter}}"
+                                            Foreground="{Binding IsAutoColorTempTextGrayedOut, Converter={StaticResource BooleanToBrushConverter}}"
                                             Text="{Binding [Brightness.10], Source={x:Static lang:LangHelper.Instance}}"
                                             TextBlockSemanticColorType="Light"
                                             TextBlockType="Display1" />
@@ -792,7 +788,7 @@
                                             HorizontalAlignment="Left"
                                             VerticalAlignment="Center"
                                             FontSize="16"
-                                            Foreground="{Binding IsAutoPrimaryMonitorForSyncTextGrayedOut, Converter={StaticResource CustomBooleanToBrushConverter}}"
+                                            Foreground="{Binding IsAutoPrimaryMonitorForSyncTextGrayedOut, Converter={StaticResource BooleanToBrushConverter}}"
                                             Text="{Binding [Brightness.12], Source={x:Static lang:LangHelper.Instance}}"
                                             TextBlockSemanticColorType="Light"
                                             TextBlockType="Display1"
@@ -872,7 +868,7 @@
                                             HorizontalAlignment="Center"
                                             VerticalAlignment="Center"
                                             FontSize="14"
-                                            Foreground="{Binding IsAutoBrightnessRangeLevelStringGrayedOut, Converter={StaticResource CustomBooleanToBrushConverter}}"
+                                            Foreground="{Binding IsAutoBrightnessRangeLevelStringGrayedOut, Converter={StaticResource BooleanToBrushConverter}}"
                                             Text="{Binding AutoBrightnessRangeLevel_String}" />
                                     </Border>
                                     <Border
@@ -905,7 +901,7 @@
                                         HorizontalAlignment="Left"
                                         VerticalAlignment="Center"
                                         FontSize="20"
-                                        Foreground="{DynamicResource TextBlock_ForegroundColor}"
+                                        Foreground="White"
                                         Text="{Binding [Scheduled], Source={x:Static lang:LangHelper.Instance}}"
                                         TextBlockSemanticColorType="Light"
                                         TextBlockType="Caption" />
@@ -920,8 +916,8 @@
                                         <Style BasedOn="{StaticResource RightPartBorderStyle}" TargetType="Border">
                                             <Style.Triggers>
                                                 <DataTrigger Binding="{Binding IsMouseEnterSchedule_1}" Value="True">
-                                                    <Setter Property="Opacity" Value="0.5" />
-                                                    <Setter Property="Background" Value="{DynamicResource PartBorderColor}" />
+                                                    <Setter Property="Opacity" Value="0.6" />
+                                                    <Setter Property="Background" Value="#204A82" />
                                                     <Setter Property="BorderBrush" Value="{StaticResource VbarItem_HiBdColor}" />
                                                 </DataTrigger>
                                             </Style.Triggers>
@@ -951,21 +947,20 @@
                                                     HorizontalAlignment="Left"
                                                     VerticalAlignment="Center"
                                                     FontSize="16"
-                                                    Foreground="{DynamicResource Brightness_TimeText_ForegroundColor}"
+                                                    Foreground="White"
                                                     Text="{Binding [Brightness.14], Source={x:Static lang:LangHelper.Instance}}"
                                                     TextBlockSemanticColorType="Light"
-                                                    TextBlockType="Display1" />					    
-						    
+                                                    TextBlockType="Display1" />
 
                                                 <UXControls:UXTextBox
                                                     Name="PR1_Name_UXTextBox"
                                                     Grid.Row="1"
                                                     VerticalContentAlignment="Center"
-                                                    Background="{DynamicResource DdpmCB_BkColor}"
+                                                    Background="{StaticResource DdpmCB_BkColor}"
                                                     BorderBrush="#7E7E7E"
                                                     BorderThickness="1"
                                                     FontSize="14"
-                                                    Foreground="{DynamicResource TextBlock_ForegroundColor}"
+                                                    Foreground="White"
                                                     IsEnabled="{Binding IsPRPreview, Converter={StaticResource boolReverseConverter}}"
                                                     KeyDown="KeyDown_KeyDown"
                                                     MaxLength="30"
@@ -996,7 +991,7 @@
                                                     HorizontalAlignment="Left"
                                                     VerticalAlignment="Center"
                                                     FontSize="16"
-                                                    Foreground="{DynamicResource Brightness_TimeText_ForegroundColor}"
+                                                    Foreground="White"
                                                     Text="{Binding [Brightness.15], Source={x:Static lang:LangHelper.Instance}}"
                                                     TextBlockSemanticColorType="Light"
                                                     TextBlockType="Display1" />
@@ -1031,7 +1026,7 @@
                                                     HorizontalAlignment="Left"
                                                     VerticalAlignment="Center"
                                                     FontSize="16"
-                                                    Foreground="{DynamicResource TextBlock_ForegroundColor}"
+                                                    Foreground="White"
                                                     Text="{Binding [AM], Source={x:Static lang:LangHelper.Instance}}"
                                                     TextBlockSemanticColorType="Light"
                                                     TextBlockType="Display1" />
@@ -1061,7 +1056,7 @@
                                                         HorizontalAlignment="Left"
                                                         VerticalAlignment="Center"
                                                         FontSize="16"
-                                                        Foreground="{DynamicResource Brightness_TimeText_ForegroundColor}"
+                                                        Foreground="White"
                                                         Text="{Binding [Brightness.16], Source={x:Static lang:LangHelper.Instance}}"
                                                         TextBlockSemanticColorType="Light"
                                                         TextBlockType="Display1" />
@@ -1108,7 +1103,7 @@
                                                     HorizontalAlignment="Left"
                                                     VerticalAlignment="Center"
                                                     FontSize="16"
-                                                    Foreground="{DynamicResource TextBlock_ForegroundColor}"
+                                                    Foreground="White"
                                                     Text="{Binding [Min], Source={x:Static lang:LangHelper.Instance}}"
                                                     TextBlockSemanticColorType="Light"
                                                     TextBlockType="Display1" />
@@ -1122,7 +1117,7 @@
                                                 HorizontalAlignment="Left"
                                                 VerticalAlignment="Center"
                                                 FontSize="16"
-                                                Foreground="{DynamicResource TextBlock_ForegroundColor}"
+                                                Foreground="White"
                                                 Text="{Binding [Brightness], Source={x:Static lang:LangHelper.Instance}}"
                                                 TextBlockSemanticColorType="Light"
                                                 TextBlockType="Display1" />
@@ -1142,8 +1137,7 @@
                                                 Height="20"
                                                 HorizontalAlignment="Center"
                                                 VerticalAlignment="Center"
-                                                Source="{DynamicResource BrightnessImage}"
-                                                Stretch="UniformToFill"/>
+                                                Source="{Binding BrightnessImage}" />
 
                                             <UXControls:UXSlider
                                                 Name="preset1_B_slider"
@@ -1162,7 +1156,7 @@
                                                 Name="preset1_BrightnessTextBlock"
                                                 Grid.Column="2"
                                                 VerticalAlignment="Center"
-                                                Foreground="{DynamicResource PercentageTextColor}"
+                                                Foreground="{StaticResource PercentageTextColor}"
                                                 Text="{Binding Path=PR1BrightnessValue, StringFormat={}{0}%}"
                                                 TextBlockSemanticColorType="Light"
                                                 TextBlockType="Body2" />
@@ -1174,7 +1168,7 @@
                                                 HorizontalAlignment="Left"
                                                 VerticalAlignment="Center"
                                                 FontSize="16"
-                                                Foreground="{DynamicResource TextBlock_ForegroundColor}"
+                                                Foreground="White"
                                                 Text="{Binding [Contrast], Source={x:Static lang:LangHelper.Instance}}"
                                                 TextBlockSemanticColorType="Light"
                                                 TextBlockType="Display1" />
@@ -1194,8 +1188,7 @@
                                                 Height="20"
                                                 HorizontalAlignment="Center"
                                                 VerticalAlignment="Center"
-                                                Source="{DynamicResource ContrastImage}" 
-                                                Stretch="UniformToFill"/>
+                                                Source="{Binding ContrastImage}" />
 
                                             <UXControls:UXSlider
                                                 Name="preset1_C_slider"
@@ -1214,7 +1207,7 @@
                                                 Name="preset1_ContrastTextBlock"
                                                 Grid.Column="2"
                                                 VerticalAlignment="Center"
-                                                Foreground="{DynamicResource PercentageTextColor}"
+                                                Foreground="{StaticResource PercentageTextColor}"
                                                 Text="{Binding Path=PR1ContrastValue, StringFormat={}{0}%}"
                                                 TextBlockSemanticColorType="Light"
                                                 TextBlockType="Body2" />
@@ -1225,16 +1218,14 @@
                                             <StackPanel HorizontalAlignment="Center" Orientation="Horizontal">
                                                 <UXControls:UXButton
                                                     Name="PR1_Preview_UXButton"
-                                                    Width="173"
-                                                    Height="40"
                                                     Padding="24,8"
                                                     ButtonSemanticColorType="Neutral"
                                                     ButtonType="Secondary"
                                                     Click="PR1_Preview_UXButton_Click"
                                                     Content="{Binding PR1ButtonContent}"
                                                     CornerRadius="2"
-                                                    IsEnabled="{Binding IsPR2Preview, Converter={StaticResource boolReverseConverter}}"
-                                                    Style="{StaticResource Button_WhiteFrame}" />
+                                                    Foreground="White"
+                                                    IsEnabled="{Binding IsPR2Preview, Converter={StaticResource boolReverseConverter}}" />
                                             </StackPanel>
                                         </Grid>
                                     </StackPanel>
@@ -1247,8 +1238,8 @@
                                         <Style BasedOn="{StaticResource RightPartBorderStyle}" TargetType="Border">
                                             <Style.Triggers>
                                                 <DataTrigger Binding="{Binding IsMouseEnterSchedule_2}" Value="True">
-                                                    <Setter Property="Opacity" Value="0.5" />
-                                                    <Setter Property="Background" Value="{DynamicResource PartBorderColor}" />
+                                                    <Setter Property="Opacity" Value="0.6" />
+                                                    <Setter Property="Background" Value="#204A82" />
                                                     <Setter Property="BorderBrush" Value="{StaticResource VbarItem_HiBdColor}" />
                                                 </DataTrigger>
                                             </Style.Triggers>
@@ -1278,7 +1269,7 @@
                                                     HorizontalAlignment="Left"
                                                     VerticalAlignment="Center"
                                                     FontSize="16"
-                                                    Foreground="{DynamicResource Brightness_TimeText_ForegroundColor}"
+                                                    Foreground="White"
                                                     Text="{Binding [Brightness.18], Source={x:Static lang:LangHelper.Instance}}"
                                                     TextBlockSemanticColorType="Light"
                                                     TextBlockType="Display1" />
@@ -1287,11 +1278,11 @@
                                                     Name="PR2_Name_UXTextBox"
                                                     Grid.Row="1"
                                                     VerticalContentAlignment="Center"
-                                                    Background="{DynamicResource DdpmCB_BkColor}"
+                                                    Background="{StaticResource DdpmCB_BkColor}"
                                                     BorderBrush="#7E7E7E"
                                                     BorderThickness="1"
                                                     FontSize="14"
-                                                    Foreground="{DynamicResource TextBlock_ForegroundColor}"
+                                                    Foreground="White"
                                                     IsEnabled="{Binding IsPRPreview, Converter={StaticResource boolReverseConverter}}"
                                                     KeyDown="KeyDown_KeyDown"
                                                     MaxLength="30"
@@ -1322,7 +1313,7 @@
                                                     HorizontalAlignment="Left"
                                                     VerticalAlignment="Center"
                                                     FontSize="16"
-                                                    Foreground="{DynamicResource Brightness_TimeText_ForegroundColor}"
+                                                    Foreground="White"
                                                     Text="{Binding [Brightness.15], Source={x:Static lang:LangHelper.Instance}}"
                                                     TextBlockSemanticColorType="Light"
                                                     TextBlockType="Display1" />
@@ -1357,7 +1348,7 @@
                                                     HorizontalAlignment="Left"
                                                     VerticalAlignment="Center"
                                                     FontSize="16"
-                                                    Foreground="{DynamicResource TextBlock_ForegroundColor}"
+                                                    Foreground="White"
                                                     Text="{Binding [PM], Source={x:Static lang:LangHelper.Instance}}"
                                                     TextBlockSemanticColorType="Light"
                                                     TextBlockType="Display1" />
@@ -1387,7 +1378,7 @@
                                                         HorizontalAlignment="Left"
                                                         VerticalAlignment="Center"
                                                         FontSize="16"
-                                                        Foreground="{DynamicResource Brightness_TimeText_ForegroundColor}"
+                                                        Foreground="White"
                                                         Text="{Binding [Brightness.16], Source={x:Static lang:LangHelper.Instance}}"
                                                         TextBlockSemanticColorType="Light"
                                                         TextBlockType="Display1" />
@@ -1434,7 +1425,7 @@
                                                     HorizontalAlignment="Left"
                                                     VerticalAlignment="Center"
                                                     FontSize="16"
-                                                    Foreground="{DynamicResource TextBlock_ForegroundColor}"
+                                                    Foreground="White"
                                                     Text="{Binding [Min], Source={x:Static lang:LangHelper.Instance}}"
                                                     TextBlockSemanticColorType="Light"
                                                     TextBlockType="Display1" />
@@ -1448,7 +1439,7 @@
                                                 HorizontalAlignment="Left"
                                                 VerticalAlignment="Center"
                                                 FontSize="16"
-                                                Foreground="{DynamicResource TextBlock_ForegroundColor}"
+                                                Foreground="White"
                                                 Text="{Binding [Brightness], Source={x:Static lang:LangHelper.Instance}}"
                                                 TextBlockSemanticColorType="Light"
                                                 TextBlockType="Display1" />
@@ -1468,8 +1459,7 @@
                                                 Height="20"
                                                 HorizontalAlignment="Center"
                                                 VerticalAlignment="Center"
-                                                Source="{DynamicResource BrightnessImage}"
-                                                Stretch="UniformToFill"/>
+                                                Source="{Binding BrightnessImage}" />
 
                                             <UXControls:UXSlider
                                                 Name="preset2_B_slider"
@@ -1488,7 +1478,7 @@
                                                 Name="preset2_BrightnessTextBlock"
                                                 Grid.Column="2"
                                                 VerticalAlignment="Center"
-                                                Foreground="{DynamicResource PercentageTextColor}"
+                                                Foreground="{StaticResource PercentageTextColor}"
                                                 Text="{Binding Path=PR2BrightnessValue, StringFormat={}{0}%}"
                                                 TextBlockSemanticColorType="Light"
                                                 TextBlockType="Body2" />
@@ -1500,7 +1490,7 @@
                                                 HorizontalAlignment="Left"
                                                 VerticalAlignment="Center"
                                                 FontSize="16"
-                                                Foreground="{DynamicResource TextBlock_ForegroundColor}"
+                                                Foreground="White"
                                                 Text="{Binding [Contrast], Source={x:Static lang:LangHelper.Instance}}"
                                                 TextBlockSemanticColorType="Light"
                                                 TextBlockType="Display1" />
@@ -1520,8 +1510,7 @@
                                                 Height="20"
                                                 HorizontalAlignment="Center"
                                                 VerticalAlignment="Center"
-                                                Source="{DynamicResource ContrastImage}"
-                                                Stretch="UniformToFill"/>
+                                                Source="{Binding ContrastImage}" />
 
                                             <UXControls:UXSlider
                                                 Name="preset2_C_slider"
@@ -1540,7 +1529,7 @@
                                                 Name="preset2_ContrastTextBlock"
                                                 Grid.Column="2"
                                                 VerticalAlignment="Center"
-                                                Foreground="{DynamicResource PercentageTextColor}"
+                                                Foreground="{StaticResource PercentageTextColor}"
                                                 Text="{Binding Path=PR2ContrastValue, StringFormat={}{0}%}"
                                                 TextBlockSemanticColorType="Light"
                                                 TextBlockType="Body2" />
@@ -1551,16 +1540,14 @@
                                             <StackPanel HorizontalAlignment="Center" Orientation="Horizontal">
                                                 <UXControls:UXButton
                                                     Name="PR2_Preview_UXButton"
-                                                    Width="173"
-                                                    Height="40"
                                                     Padding="24,8"
                                                     ButtonSemanticColorType="Neutral"
                                                     ButtonType="Secondary"
                                                     Click="PR2_Preview_UXButton_Click"
                                                     Content="{Binding PR2ButtonContent}"
                                                     CornerRadius="2"
-                                                    IsEnabled="{Binding IsPR1Preview, Converter={StaticResource boolReverseConverter}}"
-                                                    Style="{StaticResource Button_WhiteFrame}" />
+                                                    Foreground="White"
+                                                    IsEnabled="{Binding IsPR1Preview, Converter={StaticResource boolReverseConverter}}" />
                                             </StackPanel>
                                         </Grid>
                                     </StackPanel>

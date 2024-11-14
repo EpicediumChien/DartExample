@@ -60,7 +60,7 @@
                         <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>
 
-                    <UXControls:UXTextBlock x:Name="ProfileTitleTextBlock" Grid.Row="0" FontSize="20" HorizontalAlignment="Center" Margin="0,0,0,8" Text="{Binding ProfileTitleTextBlockValue}"/>
+                    <UXControls:UXTextBlock x:Name="ProfileTitleTextBlock" Grid.Row="0" FontSize="20" Foreground="White" HorizontalAlignment="Center" Margin="0,0,0,8" Text="{Binding ProfileTitleTextBlockValue}"/>
 
                     <StackPanel Grid.Row="1" Margin="0,10,0,10">
                         <UXControls:UXScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">

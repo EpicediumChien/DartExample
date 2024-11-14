@@ -35,9 +35,9 @@
                 <GradientStop Offset="1" Color="#FF6E69CF" />
             </LinearGradientBrush>
 
-            <!--<SolidColorBrush x:Key="ToolipBkColor" Color="#FF1D2C3B" />
+            <SolidColorBrush x:Key="ToolipBkColor" Color="#FF1D2C3B" />
             <SolidColorBrush x:Key="ToolipBdColor" Color="#FF293B4D" />
-            <SolidColorBrush x:Key="ToolipTextColor" Color="#FFF5F6F7" />-->
+            <SolidColorBrush x:Key="ToolipTextColor" Color="#FFF5F6F7" />
 
             <!-- Border Style of Normal State -->
             <Style x:Key="SplitItemBorder_Normal" TargetType="Border">
@@ -63,18 +63,32 @@
                 <Setter Property="BorderBrush" Value="{StaticResource SplitItem_SelectedBdColor}" />
                 <Setter Property="BorderThickness" Value="1.5" />
             </Style>
+            
+            <!-- Set all Tooltip in SplitItem style -->
+            <!--<Style TargetType="ToolTip">
+                <Style.Resources>
+                    <Style TargetType="ContentPresenter">
+                        <Style.Resources>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="TextWrapping" Value="Wrap" />
+                            </Style>
+                        </Style.Resources>
+                    </Style>
+                </Style.Resources>
+                <Setter Property="MaxWidth" Value="200" />
+            </Style>-->
         </ResourceDictionary>
     </UserControl.Resources>
 
     <Grid Background="{StaticResource FakeTransparent}" MouseLeftButtonDown="rootGrid_MouseLeftButtonDown">
         <Grid.ToolTip>
             <ToolTip>
-                <Border Background="{DynamicResource Tooltip_BkColor}"
-                        BorderBrush="{DynamicResource Tooltip_BdColor}"
+                <Border Background="{StaticResource ToolipBkColor}"
+                        BorderBrush="{StaticResource ToolipBdColor}"
                         CornerRadius="4" Padding="8,12">
                     <Border.Resources>
                         <Style TargetType="TextBlock">
-                            <Setter Property="Foreground" Value="{DynamicResource Tooltip_TextColor}" />
+                            <Setter Property="Foreground" Value="{StaticResource ToolipTextColor}" />
                             <Setter Property="FontSize" Value="12" />
                         </Style>
                     </Border.Resources>
@@ -155,17 +169,16 @@
                 </Border>
             </Grid>
 
-            
-            <!-- Robert_Lin, 2024-10-25, the display tooltip is not this -->
             <Border.ToolTip>
-                <ToolTip>
-                    <Border Background="{DynamicResource Tooltip_BkColor}"
-                            BorderBrush="{DynamicResource Tooltip_BdColor}"
+                <ToolTip MaxWidth="200">
+                    <Border Background="{StaticResource ToolipBkColor}"
+                            BorderBrush="{StaticResource ToolipBdColor}"
                             CornerRadius="4" Padding="8,12">
                         <Border.Resources>
                             <Style TargetType="TextBlock">
-                                <Setter Property="Foreground" Value="{DynamicResource Tooltip_TextColor}" />
+                                <Setter Property="Foreground" Value="{StaticResource ToolipTextColor}" />
                                 <Setter Property="FontSize" Value="12" />
+                                <Setter Property="TextWrapping" Value="Wrap"/>
                             </Style>
                         </Border.Resources>
 
@@ -198,16 +211,16 @@
                     </Style.Triggers>
                 </Style>
             </Border.Style>
-            <!-- Robert_Lin, 2024-10-25 The display tooltip is not this -->
             <Border.ToolTip>
-                <ToolTip>
-                    <Border Background="{DynamicResource Tooltip_BkColor}"
-                            BorderBrush="{DynamicResource Tooltip_BdColor}"
+                <ToolTip MaxWidth="200">
+                    <Border Background="{StaticResource ToolipBkColor}"
+                            BorderBrush="{StaticResource ToolipBdColor}"
                             CornerRadius="4" Padding="8,12">
                         <Border.Resources>
                             <Style TargetType="TextBlock">
-                                <Setter Property="Foreground" Value="{DynamicResource Tooltip_TextColor}" />
+                                <Setter Property="Foreground" Value="{StaticResource ToolipTextColor}" />
                                 <Setter Property="FontSize" Value="12" />
+                                <Setter Property="TextWrapping" Value="Wrap"/>
                             </Style>
                         </Border.Resources>
 
