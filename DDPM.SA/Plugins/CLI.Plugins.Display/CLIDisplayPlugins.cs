@@ -91,8 +91,8 @@ namespace DDPM.CLI.Plugins.Display
                 {
                     Command = commandLineInput.Command,
                     TargetFeature = commandLineInput.TargetFeature,
-                    Result = "FAIL",
-                    Message = "No monitor connected",
+                    // Result = "FAIL",
+                    Message = "No devices found",
                 };
                 result.serialize_Json_response = JsonConvert.SerializeObject(rsp, Formatting.Indented);
                 result.ExitCode = (int)CLI_ExitCode.no_monitor_connected;
@@ -774,6 +774,13 @@ namespace DDPM.CLI.Plugins.Display
                         result.serialize_Json_response = ret.result;
                     }
                     break;
+                case "NETWORKKVMVERSION":
+                    {
+                        var ret = NetworkkvmVersionx(commandLineInput);
+                        result.ExitCode = ret.code;
+                        result.serialize_Json_response = ret.result;
+                    }
+                    break;
                 case "NETWORKKVM":
                     {
                         var ret = Networkkvmx(devMgr, commandLineInput);
@@ -974,6 +981,7 @@ namespace DDPM.CLI.Plugins.Display
         private async Task<(int code, string result)> ConnectedDevices(IDeviceManagerSA devMgr, string type, List<string> index, List<string> serviceTag, List<string> model, CommandLineInput commandLineInput, string value = "")
         {
             ConnectedDevices G_ConnectedDevices_RESPONSE = new ConnectedDevices();
+            G_ConnectedDevices_RESPONSE.Message = "No devices found";
 
             //if (devMgr == null)
             //{
@@ -1315,6 +1323,8 @@ namespace DDPM.CLI.Plugins.Display
 
                         }
                     }
+                    if (_deviceinfo == null || _deviceinfo.Count == 0)
+                        return ((int)CLI_ExitCode.null_device_manager, JsonConvert.SerializeObject(G_ConnectedDevices_RESPONSE, Formatting.Indented));
                 }
                 else if (commandLineInput.Options.Count == 0)
                 {
@@ -1448,10 +1458,13 @@ namespace DDPM.CLI.Plugins.Display
                         cli_Response2.FirmwareVersion = g.FirmwareVersion;
                         cli_Response2.Connectiontype = get_headsetconnection_type(g.ConnectionType);
                         cli_Response2.BatteryStatus = g.BatteryStatus;
+                        cli_Response2.ServiceTag = g.DockServiceTag ?? "N/A";
 
                         recode_per = true;
                         output += "\n" + JsonConvert.SerializeObject(cli_Response2, Formatting.Indented);
                     }
+                    if ((_deviceinfo == null || _deviceinfo.Count == 0) && (_AllInfoMonitors == null || _AllInfoMonitors.Count == 0))
+                        return ((int)CLI_ExitCode.null_device_manager, JsonConvert.SerializeObject(G_ConnectedDevices_RESPONSE, Formatting.Indented));
                 }
                 return ((int)CLI_ExitCode.success, output);
             }
@@ -3924,6 +3937,7 @@ namespace DDPM.CLI.Plugins.Display
         private async Task<(int code, string result)> GetMonitors(IDeviceManagerSA devMgr, string type, List<string> index, List<string> serviceTag, List<string> model, string value = "")
         {
             CLI_Get_MONITORS_RESPONSE G_Monitos_RESPONSE = new CLI_Get_MONITORS_RESPONSE();
+            G_Monitos_RESPONSE.Message = "No devices found";
 
             //if (devMgr == null)
             //{
@@ -7072,13 +7086,23 @@ namespace DDPM.CLI.Plugins.Display
             if (commandLineInput.DeviceIndex.Count <= 0 && commandLineInput.ServiceTag.Count <= 0 && commandLineInput.Model.Count <= 0)
             {
                 bool flag = true;
+                var serviceTagList = _AllInfoMonitors.Select(_ => _.edid.ServiceTag).Distinct().ToList();
+                Trace.WriteLine(serviceTagList.Count);
+                List<string> swapIsDone = new List<string>();
                 while (flag)
                 {
-                    int i = 0;
-                    output = string.Empty;
-                    ret = 0;
-                    foreach (MonitorInfo mo in _AllInfoMonitors.ToList())
+                    for (int i = 0; i < serviceTagList.Count; i++)
                     {
+                        Trace.WriteLine(serviceTagList[i]);
+                        string stIsDone = swapIsDone.FirstOrDefault(_ => _ == serviceTagList[i]);
+                        if (!String.IsNullOrWhiteSpace(stIsDone))
+                            continue;
+                        MonitorInfo mo = _AllInfoMonitors.FirstOrDefault(_ => _.edid.ServiceTag == serviceTagList[i]);
+                        if (mo == null)
+                        {
+                            _AllInfoMonitors = _devMgr.GetMonitors().Result;
+                            break;
+                        }
                         cLI_RESPONSE = new CLI_RESPONSE();
                         cLI_RESPONSE.Command = commandLineInput.Command;
                         cLI_RESPONSE.TargetFeature = commandLineInput.TargetFeature;
@@ -7086,22 +7110,49 @@ namespace DDPM.CLI.Plugins.Display
                         cLI_RESPONSE.ServiceTag = mo.edid.ServiceTag.ToString() + ",";
                         cLI_RESPONSE.SerialNumber = mo.edid.SerialNumber;
                         cLI_RESPONSE.Model = mo.edid.ModelName;
-
                         var tmpRet = PropertiesFunc(devMgr, mo, commandLineInput, cLI_RESPONSE);
                         if (tmpRet.code == 3)
                         {
                             _AllInfoMonitors = devMgr.GetMonitors().Result;
                             break;
                         }
+                        swapIsDone.Add(mo.edid.ServiceTag);
                         ret += tmpRet.code;
                         output += "\n" + tmpRet.result;
                     }
-                    if (i == monitorCount)
-                    {
+                    if (serviceTagList.Count == swapIsDone.Count)
                         flag = false;
-                        break;
-                    }
                 }
+                //while (flag)
+                //{
+                //    int i = 0;
+                //    output = string.Empty;
+                //    ret = 0;
+                //    foreach (MonitorInfo mo in _AllInfoMonitors.ToList())
+                //    {
+                //        cLI_RESPONSE = new CLI_RESPONSE();
+                //        cLI_RESPONSE.Command = commandLineInput.Command;
+                //        cLI_RESPONSE.TargetFeature = commandLineInput.TargetFeature;
+                //        cLI_RESPONSE.Index = change_0base_to_1base(i++.ToString()) + ",";
+                //        cLI_RESPONSE.ServiceTag = mo.edid.ServiceTag.ToString() + ",";
+                //        cLI_RESPONSE.SerialNumber = mo.edid.SerialNumber;
+                //        cLI_RESPONSE.Model = mo.edid.ModelName;
+
+                //        var tmpRet = PropertiesFunc(devMgr, mo, commandLineInput, cLI_RESPONSE);
+                //        if (tmpRet.code == 3)
+                //        {
+                //            _AllInfoMonitors = devMgr.GetMonitors().Result;
+                //            break;
+                //        }
+                //        ret += tmpRet.code;
+                //        output += "\n" + tmpRet.result;
+                //    }
+                //    if (i == monitorCount)
+                //    {
+                //        flag = false;
+                //        break;
+                //    }
+                //}
             }
             else
             {
@@ -7397,75 +7448,84 @@ namespace DDPM.CLI.Plugins.Display
                     CurrentOrientation_RESPONSE = new CLI_Get_Properties_Orientation_RESPONSE(cLI_RESPONSE);
                     try
                     {
-                        if (commandLineInput.Command.Equals("GET"))
+                        if (monitorInfo.CapabilityDic.ContainsKey("AA"))
                         {
-                            writelog("ORIENTATION get entry");
-                            if (commandLineInput.Options.Count > 0)
+                            if (commandLineInput.Command.Equals("GET"))
                             {
-                                cLI_RESPONSE.Result = "FAIL";
-                                cLI_RESPONSE.Message = "Bring in extra strings:";
+                                writelog("ORIENTATION get entry");
+                                if (commandLineInput.Options.Count > 0)
+                                {
+                                    cLI_RESPONSE.Result = "FAIL";
+                                    cLI_RESPONSE.Message = "Bring in extra strings:";
+                                    for (int i = 0; i < commandLineInput.Options.Count; i++)
+                                    {
+                                        cLI_RESPONSE.Message += $"{commandLineInput.Options[i].Option_Name}={commandLineInput.Options[i].Option_Value}";
+                                    }
+                                    break;
+                                }
+                                ret = GetCurrentDisplayProperties(displayPropertiesInfo, CurrentOrientation_RESPONSE) == 0 ? true : false;
+                            }
+                            else if (commandLineInput.Command.Equals("SET"))
+                            {
+                                writelog("ORIENTATION set entry");
+                                if (commandLineInput.Options.Count > 1)
+                                {
+                                    cLI_RESPONSE.Result = "FAIL";
+                                    cLI_RESPONSE.Message = "Bring in extra strings:";
+                                    for (int i = 0; i < commandLineInput.Options.Count; i++)
+                                    {
+                                        cLI_RESPONSE.Message += $"{commandLineInput.Options[i].Option_Name}={commandLineInput.Options[i].Option_Value}";
+                                    }
+                                    break;
+                                }
+                                displayProperties = new Properties()
+                                {
+                                    Resolutions_Width = 0,
+                                    Resolutions_High = 0,
+                                    Frequency = 0
+                                };
                                 for (int i = 0; i < commandLineInput.Options.Count; i++)
                                 {
-                                    cLI_RESPONSE.Message += $"{commandLineInput.Options[i].Option_Name}={commandLineInput.Options[i].Option_Value}";
+                                    if (commandLineInput.Options[i].Option_Name.ToUpper().Equals("VALUE")) //ex: /set -name=Display.Brightness -index=[0] -value=60
+                                    {
+                                        CurrentOrientation_RESPONSE.Value = commandLineInput.Options[i].Option_Value;
+                                        DisplayOrientation? displayOrientation = null;
+                                        switch (commandLineInput.Options[i].Option_Value)
+                                        {
+                                            case "LANDSCAPE":
+                                                displayOrientation = DisplayOrientation.Angle0;
+                                                break;
+
+                                            case "PORTRAIT":
+                                                displayOrientation = DisplayOrientation.Angle90;
+                                                break;
+
+                                            case "LANDSCAPE_FLIPPED":
+                                                displayOrientation = DisplayOrientation.Angle180;
+                                                break;
+
+                                            case "PORTRAIT_FLIPPED":
+                                                displayOrientation = DisplayOrientation.Angle270;
+                                                break;
+
+                                            default:
+                                                ret = false;
+                                                break;
+                                        }
+                                        if (displayOrientation != null)
+                                        {
+                                            ret = _devMgr.SetDisplayPropertiest(monitorInfo, displayProperties, (DisplayOrientation)displayOrientation).Result;
+                                        }
+                                    }
                                 }
-                                break;
                             }
-                            ret = GetCurrentDisplayProperties(displayPropertiesInfo, CurrentOrientation_RESPONSE) == 0 ? true : false;
                         }
-                        else if (commandLineInput.Command.Equals("SET"))
+                        else
                         {
-                            writelog("ORIENTATION set entry");
-                            if (commandLineInput.Options.Count > 1)
-                            {
-                                cLI_RESPONSE.Result = "FAIL";
-                                cLI_RESPONSE.Message = "Bring in extra strings:";
-                                for (int i = 0; i < commandLineInput.Options.Count; i++)
-                                {
-                                    cLI_RESPONSE.Message += $"{commandLineInput.Options[i].Option_Name}={commandLineInput.Options[i].Option_Value}";
-                                }
-                                break;
-                            }
-                            displayProperties = new Properties()
-                            {
-                                Resolutions_Width = 0,
-                                Resolutions_High = 0,
-                                Frequency = 0
-                            };
-                            for (int i = 0; i < commandLineInput.Options.Count; i++)
-                            {
-                                if (commandLineInput.Options[i].Option_Name.ToUpper().Equals("VALUE")) //ex: /set -name=Display.Brightness -index=[0] -value=60
-                                {
-                                    CurrentOrientation_RESPONSE.Value = commandLineInput.Options[i].Option_Value;
-                                    DisplayOrientation? displayOrientation = null;
-                                    switch (commandLineInput.Options[i].Option_Value)
-                                    {
-                                        case "LANDSCAPE":
-                                            displayOrientation = DisplayOrientation.Angle0;
-                                            break;
-
-                                        case "PORTRAIT":
-                                            displayOrientation = DisplayOrientation.Angle90;
-                                            break;
-
-                                        case "LANDSCAPE_FLIPPED":
-                                            displayOrientation = DisplayOrientation.Angle180;
-                                            break;
-
-                                        case "PORTRAIT_FLIPPED":
-                                            displayOrientation = DisplayOrientation.Angle270;
-                                            break;
-
-                                        default:
-                                            ret = false;
-                                            break;
-                                    }
-                                    if (displayOrientation != null)
-                                    {
-                                        ret = _devMgr.SetDisplayPropertiest(monitorInfo, displayProperties, (DisplayOrientation)displayOrientation).Result;
-                                    }
-                                }
-                            }
+                            writelog($"ORIENTATION VCP not support");
+                            output += $"\n  \"Result: \": \"ORIENTATION VCP not support\"";
                         }
+
                     }
                     catch
                     {
@@ -9276,7 +9336,7 @@ namespace DDPM.CLI.Plugins.Display
                                     if (displayProperties.isCurrent)
                                         resolution = $"{displayProperties.Resolutions_Width} x {displayProperties.Resolutions_High} at {displayProperties.Frequency.ToString("0.00")}Hz";
                                 }
-
+                                
                                 get_DeviceData.OptimalResolution = $"{MaxWidth} x {MaxHigh} at {Frequency.ToString("0.00")}Hz";
                                 get_DeviceData.Resolution = resolution;
                                 writelog($"OptimalResolution, Resolution Exit return value: OptimalResolution{$"{MaxWidth} x {MaxHigh} at {Frequency.ToString("0.00")}Hz"} Resolution{resolution}");
@@ -9356,7 +9416,7 @@ namespace DDPM.CLI.Plugins.Display
                                 writelog($"USB_CPrioritization, USBCPrioritizationType Entry");
                                 if (displayPropertiesInfo.SupportedUSBCPrioritization)
                                 {
-                                    get_DeviceData.USB_CPrioritization = displayPropertiesInfo.USBCPrioritizationType == USBCPrioritizationType.HighDataSpeed ? "High Speed" : "High Resolution";
+                                    get_DeviceData.USB_CPrioritization = displayPropertiesInfo.USBCPrioritizationType == USBCPrioritizationType.HighDataSpeed ? "High Data Speed" : "High Resolution";
                                 }
                                 else
                                     get_DeviceData.USB_CPrioritization = "NOT SUPPORT";
@@ -9628,7 +9688,7 @@ namespace DDPM.CLI.Plugins.Display
                     MonitorInfo monitor = _AllInfoMonitors[idx];
                     Get_DeviceData get_DeviceData = new Get_DeviceData();
 
-
+                    
                     get_DeviceData.Model = monitor.modelName;
                     get_DeviceData.SerialNumber = monitor.edid.SerialNumber;
                     get_DeviceData.Index = change_0base_to_1base((monitor.Index).ToString());
@@ -9763,7 +9823,7 @@ namespace DDPM.CLI.Plugins.Display
                     writelog($"USB_CPrioritization, USBCPrioritizationType Entry");
                     if (displayPropertiesInfo.SupportedUSBCPrioritization)
                     {
-                        get_DeviceData.USB_CPrioritization = displayPropertiesInfo.USBCPrioritizationType == USBCPrioritizationType.HighDataSpeed ? "High Speed" : "High Resolution";
+                        get_DeviceData.USB_CPrioritization = displayPropertiesInfo.USBCPrioritizationType == USBCPrioritizationType.HighDataSpeed ? "High Data Speed" : "High Resolution";
                     }
                     else
                         get_DeviceData.USB_CPrioritization = "NOT SUPPORT";
@@ -10963,19 +11023,25 @@ namespace DDPM.CLI.Plugins.Display
             }
             else
             {
-                if (commandLineInput.Options.Count == 1)
-                {
-                    return DiagnosticReportv2(devMgr, commandLineInput).Result;
-                }
-                else
-                {
-                    CLI_RESPONSE cli_Response = new CLI_RESPONSE();
-                    cli_Response.Command = commandLineInput.Command;
-                    cli_Response.TargetFeature = commandLineInput.TargetFeature;
-                    cli_Response.Result = "FAIL";
-                    cli_Response.Message = "Invalid command line syntax.";
-                    return ((int)CLI_ExitCode.invalide_cmdline_syntax, cli_Response.ToJson());
-                }
+                CLI_RESPONSE cli_Response = new CLI_RESPONSE();
+                cli_Response.Command = commandLineInput.Command;
+                cli_Response.TargetFeature = commandLineInput.TargetFeature;
+                cli_Response.Result = "FAIL";
+                cli_Response.Message = "Invalid command line syntax.";
+                return ((int)CLI_ExitCode.invalide_cmdline_syntax, cli_Response.ToJson());
+                //if (commandLineInput.Options.Count == 1)
+                //{
+                //    return DiagnosticReportv2(devMgr, commandLineInput).Result;
+                //}
+                //else
+                //{
+                //    CLI_RESPONSE cli_Response = new CLI_RESPONSE();
+                //    cli_Response.Command = commandLineInput.Command;
+                //    cli_Response.TargetFeature = commandLineInput.TargetFeature;
+                //    cli_Response.Result = "FAIL";
+                //    cli_Response.Message = "Invalid command line syntax.";
+                //    return ((int)CLI_ExitCode.invalide_cmdline_syntax, cli_Response.ToJson());
+                //}
             }
         }
 
@@ -10983,19 +11049,23 @@ namespace DDPM.CLI.Plugins.Display
         {
             string output = string.Empty;
 
-            StreamReader r = new StreamReader(commandLineInput.Options[0].Option_Value);
+            StreamReader r = default;
 
             string jsonString = string.Empty;
             try
             {
+                r = new StreamReader(commandLineInput.Options[0].Option_Value);
                 jsonString = r.ReadToEnd();
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"[DiagnosticReport] StreamReader read failed, message: {ex.Message}");
             }
+            finally
+            {
+                r.Close();
+            }
 
-            r.Close();
 
             if (_AllInfoMonitors == null)
                 _AllInfoMonitors = await devMgr.GetMonitors();
@@ -11094,8 +11164,8 @@ namespace DDPM.CLI.Plugins.Display
             string folderinfo = string.Empty;
             string symblinkinfo = string.Empty;
 
-            if (_AllInfoMonitors == null)
-                _AllInfoMonitors = await devMgr.GetMonitors();
+            //if (_AllInfoMonitors == null)
+            //    _AllInfoMonitors = await devMgr.GetMonitors();
 
             DDPMFileSecurity.CheckFold(filepath, out folderinfo, out symblinkinfo);
             if (!Directory.Exists(filepath))
@@ -11103,114 +11173,92 @@ namespace DDPM.CLI.Plugins.Display
                 Directory.CreateDirectory(filepath);
             }
 
-            if (commandLineInput.DeviceIndex.Count == 0 && commandLineInput.ServiceTag.Count == 0 && commandLineInput.Model.Count == 0)
+            var result = "PASS";
+            var message = "N/A";
+
+            devMgr.SaveLogFile(filepath_);
+
+            if (!File.Exists(file))
             {
-                foreach (MonitorInfo monitor in _AllInfoMonitors)
-                {
-                    CLI_RESPONSE cli_Response = new CLI_RESPONSE();
-                    cli_Response.Command = commandLineInput.Command;
-                    cli_Response.TargetFeature = commandLineInput.TargetFeature;
-                    cli_Response.Model = monitor.modelName;
-                    cli_Response.SerialNumber = monitor.edid.SerialNumber;
-                    cli_Response.Index = change_0base_to_1base((monitor.Index).ToString());
-                    cli_Response.ServiceTag = monitor.edid.ServiceTag;
-                    cli_Response.Message = filepath;
-                    devMgr.SaveLogFile(filepath_);
-
-                    if (!File.Exists(file))
-                    {
-                        cli_Response.Result = "FAIL";
-                        cli_Response.Message = "file is not exist.";
-                    }
-                    else
-                    {
-                        cli_Response.Result = "PASS";
-                        cli_Response.Message = "N/A";
-                    }
-                    output += "\n" + JsonConvert.SerializeObject(cli_Response, Formatting.Indented);
-                }
+                result = "FAIL";
+                message = "file is not exist.";
             }
-            else
-            {
-                foreach (string idx in commandLineInput.DeviceIndex)
-                {
-                    MonitorInfo monitor = _AllInfoMonitors[Convert.ToInt32(idx)];
-                    CLI_RESPONSE cli_Response = new CLI_RESPONSE();
-                    cli_Response.Command = commandLineInput.Command;
-                    cli_Response.TargetFeature = commandLineInput.TargetFeature;
-                    cli_Response.Model = monitor.modelName;
-                    cli_Response.SerialNumber = monitor.edid.SerialNumber;
-                    cli_Response.Index = change_0base_to_1base(idx);
-                    cli_Response.ServiceTag = monitor.edid.ServiceTag;
-                    devMgr.SaveLogFile(filepath_);
 
-                    if (!File.Exists(file))
-                    {
-                        cli_Response.Result = "FAIL";
-                        cli_Response.Message = "file is not exist.";
-                    }
-                    else
-                    {
-                        cli_Response.Result = "PASS";
-                        cli_Response.Message = "N/A";
-                    }
-                    output += "\n" + JsonConvert.SerializeObject(cli_Response, Formatting.Indented);
-                }
-                foreach (string tag in commandLineInput.ServiceTag)
-                {
-                    var tmp = _AllInfoMonitors.FindAll(x => x.edid.ServiceTag.ToUpper().Equals(tag.ToUpper()));
-                    foreach (MonitorInfo monitor in tmp)
-                    {
-                        CLI_RESPONSE cli_Response = new CLI_RESPONSE();
-                        cli_Response.Command = commandLineInput.Command;
-                        cli_Response.TargetFeature = commandLineInput.TargetFeature;
-                        cli_Response.Model = monitor.modelName;
-                        cli_Response.SerialNumber = monitor.edid.SerialNumber;
-                        cli_Response.Index = change_0base_to_1base((monitor.Index).ToString());
-                        cli_Response.ServiceTag = monitor.edid.ServiceTag;
-                        devMgr.SaveLogFile(filepath_);
-
-                        if (!File.Exists(file))
-                        {
-                            cli_Response.Result = "FAIL";
-                            cli_Response.Message = "file is not exist.";
-                        }
-                        else
-                        {
-                            cli_Response.Result = "PASS";
-                            cli_Response.Message = "N/A";
-                        }
-                        output += "\n" + JsonConvert.SerializeObject(cli_Response, Formatting.Indented);
-                    }
-                }
-                foreach (string modelName in commandLineInput.Model)
-                {
-                    var tmp = _AllInfoMonitors.FindAll(x => x.edid.ModelName.ToUpper().Equals(modelName.ToUpper()));
-                    foreach (MonitorInfo monitor in tmp)
-                    {
-                        CLI_RESPONSE cli_Response = new CLI_RESPONSE();
-                        cli_Response.Command = commandLineInput.Command;
-                        cli_Response.TargetFeature = commandLineInput.TargetFeature;
-                        cli_Response.Model = monitor.edid.ModelName;
-                        cli_Response.SerialNumber = monitor.edid.SerialNumber;
-                        cli_Response.Index = change_0base_to_1base((monitor.Index).ToString());
-                        cli_Response.ServiceTag = monitor.edid.ServiceTag;
-                        devMgr.SaveLogFile(filepath_);
-
-                        if (!File.Exists(file))
-                        {
-                            cli_Response.Result = "FAIL";
-                            cli_Response.Message = "file is not exist.";
-                        }
-                        else
-                        {
-                            cli_Response.Result = "PASS";
-                            cli_Response.Message = "N/A";
-                        }
-                        output += "\n" + JsonConvert.SerializeObject(cli_Response, Formatting.Indented);
-                    }
-                }
-            }
+            //if (commandLineInput.DeviceIndex.Count == 0 && commandLineInput.ServiceTag.Count == 0 && commandLineInput.Model.Count == 0)
+            //{
+            //    foreach (MonitorInfo monitor in _AllInfoMonitors)
+            //    {
+            //        CLI_RESPONSE cli_Response = new CLI_RESPONSE();
+            //        cli_Response.Command = commandLineInput.Command;
+            //        cli_Response.TargetFeature = commandLineInput.TargetFeature;
+            //        cli_Response.Model = monitor.modelName;
+            //        cli_Response.SerialNumber = monitor.edid.SerialNumber;
+            //        cli_Response.Index = change_0base_to_1base((monitor.Index).ToString());
+            //        cli_Response.ServiceTag = monitor.edid.ServiceTag;
+            //        cli_Response.Result = result;
+            //        cli_Response.Message = message;
+            //        output += "\n" + JsonConvert.SerializeObject(cli_Response, Formatting.Indented);
+            //    }
+            //}
+            //else
+            //{
+            //    foreach (string idx in commandLineInput.DeviceIndex)
+            //    {
+            //        MonitorInfo monitor = _AllInfoMonitors[Convert.ToInt32(idx)];
+            //        CLI_RESPONSE cli_Response = new CLI_RESPONSE();
+            //        cli_Response.Command = commandLineInput.Command;
+            //        cli_Response.TargetFeature = commandLineInput.TargetFeature;
+            //        cli_Response.Model = monitor.modelName;
+            //        cli_Response.SerialNumber = monitor.edid.SerialNumber;
+            //        cli_Response.Index = change_0base_to_1base(idx);
+            //        cli_Response.ServiceTag = monitor.edid.ServiceTag;
+            //        cli_Response.Result = result;
+            //        cli_Response.Message = message;
+            //        output += "\n" + JsonConvert.SerializeObject(cli_Response, Formatting.Indented);
+            //    }
+            //    foreach (string tag in commandLineInput.ServiceTag)
+            //    {
+            //        var tmp = _AllInfoMonitors.FindAll(x => x.edid.ServiceTag.ToUpper().Equals(tag.ToUpper()));
+            //        foreach (MonitorInfo monitor in tmp)
+            //        {
+            //            CLI_RESPONSE cli_Response = new CLI_RESPONSE();
+            //            cli_Response.Command = commandLineInput.Command;
+            //            cli_Response.TargetFeature = commandLineInput.TargetFeature;
+            //            cli_Response.Model = monitor.modelName;
+            //            cli_Response.SerialNumber = monitor.edid.SerialNumber;
+            //            cli_Response.Index = change_0base_to_1base((monitor.Index).ToString());
+            //            cli_Response.ServiceTag = monitor.edid.ServiceTag;
+            //            cli_Response.Result = result;
+            //            cli_Response.Message = message;
+            //            output += "\n" + JsonConvert.SerializeObject(cli_Response, Formatting.Indented);
+            //        }
+            //    }
+            //    foreach (string modelName in commandLineInput.Model)
+            //    {
+            //        var tmp = _AllInfoMonitors.FindAll(x => x.edid.ModelName.ToUpper().Equals(modelName.ToUpper()));
+            //        foreach (MonitorInfo monitor in tmp)
+            //        {
+            //            CLI_RESPONSE cli_Response = new CLI_RESPONSE();
+            //            cli_Response.Command = commandLineInput.Command;
+            //            cli_Response.TargetFeature = commandLineInput.TargetFeature;
+            //            cli_Response.Model = monitor.edid.ModelName;
+            //            cli_Response.SerialNumber = monitor.edid.SerialNumber;
+            //            cli_Response.Index = change_0base_to_1base((monitor.Index).ToString());
+            //            cli_Response.ServiceTag = monitor.edid.ServiceTag;
+            //            cli_Response.Result = result;
+            //            cli_Response.Message = message;
+            //            output += "\n" + JsonConvert.SerializeObject(cli_Response, Formatting.Indented);
+            //        }
+            //    }
+            //}
+            
+            CLI_RESPONSE cli_Response = new CLI_RESPONSE();
+            cli_Response.Command = commandLineInput.Command;
+            cli_Response.TargetFeature = commandLineInput.TargetFeature;
+            cli_Response.Result = result;
+            cli_Response.Message = message;
+            output += "\n" + JsonConvert.SerializeObject(cli_Response, Formatting.Indented);
+            
             return ((int)CLI_ExitCode.success, output);
         }
 
@@ -11418,9 +11466,21 @@ namespace DDPM.CLI.Plugins.Display
             }
             else
             {
-                StreamReader r = new StreamReader(ss_1[1]);
-                jsonString = r.ReadToEnd();
-                r.Close();
+                StreamReader sr = default;
+
+                try
+                {
+                    sr = new StreamReader(ss_1[1]);
+                    jsonString = sr.ReadToEnd();
+                }
+                catch(Exception ex)
+                {
+                    Trace.WriteLine($"[CLIDisplayPlugins] ApplyConfiguration_v1 exception, message: {ex.Message}");
+                }
+                finally
+                {
+                    sr.Close();
+                }
             }
             // modiffy end @ 20241022
 
@@ -12804,7 +12864,7 @@ namespace DDPM.CLI.Plugins.Display
             List<int> _monitorIndeies = new List<int>();
 
             if (_AllInfoMonitors == null)
-                _AllInfoMonitors = devMgr.GetMonitors().Result;
+            _AllInfoMonitors = devMgr.GetMonitors().Result;
             _monitorIndeies = GetMonitorIndeies(commandLineInput, _AllInfoMonitors);
 
             foreach (int idx in _monitorIndeies)
@@ -12926,7 +12986,7 @@ namespace DDPM.CLI.Plugins.Display
                         {
                             somethingfail |= 0x10;
                         }
-                        break;
+                    break;
                 }
 
                 if (retcode)
@@ -14162,6 +14222,64 @@ namespace DDPM.CLI.Plugins.Display
                     Trace.WriteLine("Registry key not found.");
                 }
             }
+        }
+
+        private (int code, string result) NetworkkvmVersionx(CommandLineInput commandLineInput)
+        {
+            if (commandLineInput.Command == "GET")
+            {
+                return NetworkkvmVersion(commandLineInput).Result;
+            }
+            else
+            {
+                CLI_RESPONSE cli_Response = new CLI_RESPONSE();
+                cli_Response.Command = commandLineInput.Command;
+                cli_Response.TargetFeature = commandLineInput.TargetFeature;
+                cli_Response.Result = "FAIL";
+                cli_Response.Message = $"Un-supported command: {commandLineInput.Command}";
+                return ((int)CLI_ExitCode.unknow_command, cli_Response.ToJson());
+            }
+        }
+
+        private async Task<(int code, string result)> NetworkkvmVersion(CommandLineInput commandLineInput)
+        {
+            string output = string.Empty;
+            bool retcode = false;
+
+            NKVM_RESPONSE cli_Response = new NKVM_RESPONSE();
+            cli_Response.Command = commandLineInput.Command;
+            cli_Response.TargetFeature = commandLineInput.TargetFeature;
+
+            string filePath = @"C:\Program Files\Dell\Dell Display and Peripheral Manager\Plugins\NKVM\DDM.exe";
+
+            if (File.Exists(filePath))
+            {
+                FileVersionInfo fileVersionInfo = FileVersionInfo.GetVersionInfo(filePath);
+                string version = fileVersionInfo.FileVersion;
+
+                if (!string.IsNullOrWhiteSpace(version))
+                {
+                    cli_Response.Value = version;
+                    cli_Response.Result = "PASS";
+                    cli_Response.Message = $"Version: {version}";
+                    retcode = true;
+                }
+                else
+                {
+                    cli_Response.Result = "FAIL";
+                    cli_Response.Message = $"Fail to get NetworkKVM Version";
+                    retcode = false;
+                }
+            }
+            else
+            {
+                cli_Response.Result = "FAIL";
+                cli_Response.Message = $"{filePath} is not exists.";
+            }
+
+            Console.WriteLine(JsonConvert.SerializeObject(cli_Response, Formatting.Indented));
+            output = JsonConvert.SerializeObject(cli_Response, Formatting.Indented);
+            return (retcode ? (int)CLI_ExitCode.success : (int)CLI_ExitCode.functional_error, output);
         }
 
         private (int code, string result) Networkkvmx(IDeviceManagerSA devMgr, CommandLineInput commandLineInput)

@@ -603,6 +603,11 @@ namespace DDPM.UI.Plugin.ViewModels
                     DeviceInfoDTP = new DeviceInfo();
                 }
 
+                DeviceInfoDTP.Band1Gain = _deviceManager.GetBand1GainAsync(CurrentDeviceID.ToString()).Result;
+                DeviceInfoDTP.Band2Gain = _deviceManager.GetBand2GainAsync(CurrentDeviceID.ToString()).Result;
+                DeviceInfoDTP.Band3Gain = _deviceManager.GetBand3GainAsync(CurrentDeviceID.ToString()).Result;
+                DeviceInfoDTP.Band4Gain = _deviceManager.GetBand4GainAsync(CurrentDeviceID.ToString()).Result;
+                DeviceInfoDTP.Band5Gain = _deviceManager.GetBand5GainAsync(CurrentDeviceID.ToString()).Result;
                 DeviceInfoDTP.AncGain = _deviceManager.GetAncGainAsync(CurrentDeviceID.ToString()).Result;
                 DeviceInfoDTP.AncMode = _deviceManager.GetAncModeAsync(CurrentDeviceID.ToString()).Result;
                 DeviceInfoDTP.BatteryLevel = _deviceManager.GetBatteryLevelAsync(CurrentDeviceID.ToString()).Result;
@@ -625,6 +630,11 @@ namespace DDPM.UI.Plugin.ViewModels
                 //DeviceInfoDTP.BandsGain = _deviceManager.GetBandsGainAsync(CurrentDeviceID.ToString()).Result;
                 _log.Info($"[HeadsetViewModel] Print after property ......");
                 _log.Info($"[HeadsetViewModel] ***********************************************************************");
+                _log.Info($"[HeadsetViewModel] DeviceInfoDTP.Band1Gain .............= {DeviceInfoDTP.Band1Gain.ToString()}");
+                _log.Info($"[HeadsetViewModel] DeviceInfoDTP.Band2Gain .............= {DeviceInfoDTP.Band2Gain.ToString()}");
+                _log.Info($"[HeadsetViewModel] DeviceInfoDTP.Band3Gain .............= {DeviceInfoDTP.Band3Gain.ToString()}");
+                _log.Info($"[HeadsetViewModel] DeviceInfoDTP.Band4Gain .............= {DeviceInfoDTP.Band4Gain.ToString()}");
+                _log.Info($"[HeadsetViewModel] DeviceInfoDTP.Band5Gain .............= {DeviceInfoDTP.Band5Gain.ToString()}");
                 _log.Info($"[HeadsetViewModel] DeviceInfoDTP.AncGain .............= {DeviceInfoDTP.AncGain.ToString()}");
                 _log.Info($"[HeadsetViewModel] DeviceInfoDTP.AncMode .............= {DeviceInfoDTP.AncMode.ToString()}");
                 _log.Info($"[HeadsetViewModel] DeviceInfoDTP.BatteryLevel ........= {DeviceInfoDTP.BatteryLevel.ToString()}");

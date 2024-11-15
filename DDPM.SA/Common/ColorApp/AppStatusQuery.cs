@@ -71,8 +71,8 @@ namespace DDPM.ColorApp
 
         private static AppStatusQuery? INSTANCE = null;
 
-        private WindowFocusWatcher focusWatcher = new WindowFocusWatcher(WindowFocusWatcherEvent, Native.EVENT_OBJECT_FOCUS /*| Native.WINEVENT_SKIPOWNPROCESS | Native.EVENT_OBJECT_LOCATIONCHANGE | Native.EVENT_OBJECT_SELECTION*/);
-        private WindowFocusWatcher moveWatcher = new WindowFocusWatcher(WindowMoveResizeWatcherEvent, Native.EVENT_SYSTEM_MOVESIZEEND);
+        private WindowFocusWatcher? focusWatcher = default;
+        private WindowFocusWatcher? moveWatcher = default;
 
         private static string _LastforgroundTitle = string.Empty;
         private static string _LastLocatedScreen = string.Empty;
@@ -90,9 +90,18 @@ namespace DDPM.ColorApp
             writelog("AppStatusQuery()");
 
             ///////logger.SetLogModule("ColorApp");
+            try
+            {
+                focusWatcher = new WindowFocusWatcher(WindowFocusWatcherEvent, Native.EVENT_OBJECT_FOCUS);
+                moveWatcher = new WindowFocusWatcher(WindowMoveResizeWatcherEvent, Native.EVENT_SYSTEM_MOVESIZEEND);
+            }
+            catch(Exception ex)
+            {
+                writelog($"[AppStatusQuery] AppStatusQuery initial failed, message: {ex.Message}");
+            }
         }
 
-        ~AppStatusQuery()
+    ~AppStatusQuery()
         {
         }
 
@@ -267,7 +276,8 @@ namespace DDPM.ColorApp
             ///////logger.WriteLog($"[Watcher-Focus] found:{forgroundTitle}");
             ///
             string strlog;
-            strlog = String.Format($"[Watcher-Focus] found:{forgroundTitle}");
+            //strlog = String.Format($"[Watcher-Focus] found:{forgroundTitle}");
+            strlog =$"[Watcher-Focus] found:{forgroundTitle}";
             writelog(strlog);
 
             //Screen screen = Screen.FromHandle(hWnd);
@@ -276,7 +286,7 @@ namespace DDPM.ColorApp
             if (!string.IsNullOrEmpty(_LastforgroundTitle) && String.Compare(_LastforgroundTitle, forgroundTitle) == 0)
             {
                 //string strlog;
-                strlog = String.Format($"[Watcher-Focus]  Same as last app, drop event");
+                strlog = $"[Watcher-Focus]  Same as last app, drop event";
                 writelog(strlog);
 
                 ///////logger.WriteLog($"[Watcher-Focus]  Same as last app, drop event");

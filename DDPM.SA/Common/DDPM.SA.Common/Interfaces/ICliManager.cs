@@ -104,6 +104,9 @@ namespace DDPM.SA.Common
     {
         //Input is command line parsing object, and the return integer is ExitCode
         Task<CLIEventResult> PerformCommandLineRelay(CommandLineInput commandLineInput);
+
+        //For remote management to subscribe event with result
+        public event EventHandler<CLIEventResult> CLIActionResult;
     }
 
     public interface ICliProxy : IFrameworkPlugin

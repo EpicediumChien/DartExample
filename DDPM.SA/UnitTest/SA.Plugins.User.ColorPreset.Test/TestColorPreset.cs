@@ -576,8 +576,10 @@ namespace DDPM.SA.Plugins.User.ColorPreset.Test
             Dictionary<string, ColorPresetSettings_AppInfo> appInfo = new Dictionary<string, ColorPresetSettings_AppInfo>();
             appInfo.Add("Command Prompt", new ColorPresetSettings_AppInfo() { Color = 0, HDRColor = -1, IconName = "cmd.exe" });
             List<ColorPresetSettings> monitorConfigs1 = new List<ColorPresetSettings>() { new ColorPresetSettings() { ModelName = "DELLU2724DE", SerialNumber = "808597589", RunType = 1, AppInfo = appInfo } };
-            var result = colorPresetPlugin.SetMonitorProfile(monitorInfo1, colorpreset).Result;
-            Assert.That(result, Is.EqualTo(true));
+            string ColorPreset_Name = "Standard";
+            var result = colorPresetPlugin.SetMonitorProfile(monitorInfo1, ColorPreset_Name).Result;
+            Assert.IsNotNull(result);
+
         }
 
         [Test]

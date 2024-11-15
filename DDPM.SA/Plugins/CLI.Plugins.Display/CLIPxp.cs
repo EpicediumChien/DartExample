@@ -914,21 +914,32 @@ namespace CLI.Plugins.Display
             foreach (int idx in _monitorIndeies)
             {
                 ObjGetVCP rc = new ObjGetVCP();
-                rc = _devMgr.GetVCPCapability(_AllInfoMonitors[idx], 0xE5, 0x02).Result;
-                if (rc != null)
-                    isPass = true;
-
-
                 CLI_RESPONSE response = new CLI_RESPONSE()
                 {
                     Command = _cmdLineInput.Command,
                     TargetFeature = _cmdLineInput.TargetFeature
                 };
-                response.Value = (rc.value).ToString();
-                response.Model = _AllInfoMonitors[idx].modelName;
-                response.SerialNumber = _AllInfoMonitors[idx].edid.SerialNumber;
-                response.Index = change_0base_to_1base(idx.ToString());
-                response.ServiceTag = _AllInfoMonitors[idx].edid.ServiceTag;
+
+                if (_AllInfoMonitors[idx].CapabilityDic.ContainsKey("E5"))
+                {
+                    rc = _devMgr.GetVCPCapability(_AllInfoMonitors[idx], 0xE5, 0x02).Result;
+                    if (rc != null)
+                        isPass = true;
+                    response.Value = (rc.value).ToString();
+                    response.Model = _AllInfoMonitors[idx].modelName;
+                    response.SerialNumber = _AllInfoMonitors[idx].edid.SerialNumber;
+                    response.Index = change_0base_to_1base(idx.ToString());
+                    response.ServiceTag = _AllInfoMonitors[idx].edid.ServiceTag;
+                }
+                else
+                {
+                    response.Value = "Not support PxPzoom";
+                    response.Model = _AllInfoMonitors[idx].modelName;
+                    response.SerialNumber = _AllInfoMonitors[idx].edid.SerialNumber;
+                    response.Index = change_0base_to_1base(idx.ToString());
+                    response.ServiceTag = _AllInfoMonitors[idx].edid.ServiceTag;
+                }
+                    
                 if (isPass)
                 {
                     response.Result = "PASS";

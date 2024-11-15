@@ -6,6 +6,7 @@ using DPeMPublic.Common.Enums;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using VcpCore.Common;
 
@@ -53,6 +54,9 @@ namespace DDPM.SA.Common
         Task<Dictionary<string, InstalledAppInfo>> GetAllAppList();
 
         Task<bool> LaunchAndArrangeApps(Dictionary<String, Bind_AddFullPage_AppCollectionData> sortApps);
+
+        Task<bool> CheckEAIDExit(MonitorInfo moinfo, int eAID);
+        Task<bool> DeleteEAID(MonitorInfo moinfo, int eAID);
 
         #endregion EaM
 
@@ -508,6 +512,10 @@ namespace DDPM.SA.Common
 
         public Task SetLastSelectedMonitorFromUI(MonitorInfo mo);
 
+        public Task<bool> ByPassHotkey(bool bypass);
+
+        public Task<bool> UnRegistAllHotkey();
+
         #endregion public for hotkey
 
         #region public for PowerNap
@@ -899,6 +907,12 @@ namespace DDPM.SA.Common
 
         Task<bool> SetBandsGainAsync(string Guid, byte[] newValue);
 
+        Task<bool> SetBand1GainAsync(string Guid, int newValue);
+        Task<bool> SetBand2GainAsync(string Guid, int newValue);
+        Task<bool> SetBand3GainAsync(string Guid, int newValue);
+        Task<bool> SetBand4GainAsync(string Guid, int newValue);
+        Task<bool> SetBand5GainAsync(string Guid, int newValue);
+
         Task<bool> SetAncModeAsync(string Guid, int newValue);
 
         Task<bool> SetAncGainAsync(string Guid, int newValue);
@@ -1004,6 +1018,11 @@ namespace DDPM.SA.Common
         Task<bool> GetMuteStatusAsync(string Guid);
 
         Task<byte[]> GetBandsGainAsync(string Guid);
+        Task<int> GetBand1GainAsync(string Guid);
+        Task<int> GetBand2GainAsync(string Guid);
+        Task<int> GetBand3GainAsync(string Guid);
+        Task<int> GetBand4GainAsync(string Guid);
+        Task<int> GetBand5GainAsync(string Guid);
 
         Task<int> GetAncModeAsync(string Guid);
 
@@ -1068,6 +1087,10 @@ namespace DDPM.SA.Common
         Task<JArray> GetDeviceItemsExAsyncForDongle(string Guid);
 
         #endregion Dongle
+
+        #region Dock
+        Task<DockData> GetDockData(string guid);
+        #endregion
 
         #endregion public for DTPProxy
 

@@ -467,6 +467,22 @@ namespace DDPM.UI.Module.Kvm
             }
         }
 
+        public void SaveHotkeySettings(MonitorInfo monitorInfo, HotkeyInfo hotkeyInfo)
+        {
+            if (DdpmCommonHelper.DeviceManagerSA != null)
+            {
+                IsBusy = true;
+                OnPropertyChanged("IsBusy");
+                bool saveSettings = DdpmCommonHelper.DeviceManagerSA.SaveHotkeySetting(monitorInfo, hotkeyInfo).Result;
+                if (saveSettings)
+                {
+                    DdpmCommonHelper.isHotkeyBypass = DdpmCommonHelper.DeviceManagerSA.ByPassHotkey(false).Result;
+                    IsBusy = false;
+                    OnPropertyChanged("IsBusy");
+                }
+            }
+            Invoke_RefreshHotkeySettings();
+        }
         private void saveKvmHotkeyOption()
         {
             HotkeySettings hotkeySettings = new HotkeySettings
@@ -593,6 +609,9 @@ namespace DDPM.UI.Module.Kvm
                     e.Result = "MonitorInfo is null";
                     return;
                 }
+
+                SupportNKVM = Visibility.Collapsed;
+                SupportUSBKVM = Visibility.Collapsed;
 
                 var directory = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
 

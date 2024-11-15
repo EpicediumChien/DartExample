@@ -53,16 +53,16 @@ namespace DDPM.SA.Common.Method
             {
                 _logs?.DebugMsg_1(nameof(Unzip) + " start");
 
-                VerifierOption myVerifierOptions = VerifierOption.FailOnNoErrorsAndSelfSignedCert;
-                SubjectPublicKeyInfoHashes hashes = new SubjectPublicKeyInfoHashes(HashType.Sha256);
-                var constraints = new LeafCertConstraints(hashes)
-                {
-                    RequireAllCerts = false
-                };
-                PeAuthenticodeVerifier verifier = new PeAuthenticodeVerifier(myVerifierOptions, omitDefaultOptions: true)
-                {
-                    Constraints = constraints
-                };
+                //VerifierOption myVerifierOptions = VerifierOption.FailOnNoErrorsAndSelfSignedCert;
+                //SubjectPublicKeyInfoHashes hashes = new SubjectPublicKeyInfoHashes(HashType.Sha256);
+                //var constraints = new LeafCertConstraints(hashes)
+                //{
+                //    RequireAllCerts = false
+                //};
+                //PeAuthenticodeVerifier verifier = new PeAuthenticodeVerifier(myVerifierOptions, omitDefaultOptions: true)
+                //{
+                //    Constraints = constraints
+                //};
                 using (FileLock fileLock = new FileLock(zipFilePath, PathCheckOption.None, lockNow: true))
                 {
                     AclChecker aclChecker = new AclChecker();

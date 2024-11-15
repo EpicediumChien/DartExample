@@ -597,12 +597,19 @@ namespace ColorPreset.Plugins
 
                             if (registryMonitor_ICC == null)
                             {
-                                writelog("Monitor ICC change initiate...");
-                                registryMonitor_ICC = new RegistryMonitor_ICC(keyName);
-                                registryMonitor_ICC.RegChanged += new EventHandler(OnRegChanged_ICC);
-                                registryMonitor_ICC.Error += new System.IO.ErrorEventHandler(OnError_ICC);
-                                registryMonitor_ICC.Start();
-                                writelog("Monitor ICC change started");
+                                try
+                                {
+                                    writelog("Monitor ICC change initiate...");
+                                    registryMonitor_ICC = new RegistryMonitor_ICC(keyName);
+                                    registryMonitor_ICC.RegChanged += new EventHandler(OnRegChanged_ICC);
+                                    registryMonitor_ICC.Error += new System.IO.ErrorEventHandler(OnError_ICC);
+                                    registryMonitor_ICC.Start();
+                                    writelog("Monitor ICC change started");
+                                }
+                                catch(Exception ex)
+                                {
+                                    writelog($"Monitor ICC change Exception, message: {ex.Message}");
+                                }
                             }
                         }
                     }
@@ -725,13 +732,21 @@ namespace ColorPreset.Plugins
                         string keyName = string.Format("{0}\\{1}", "HKEY_CURRENT_USER", @"Software\Microsoft\Windows NT\CurrentVersion\ICM\ProfileAssociations\Display\{4d36e96e-e325-11ce-bfc1-08002be10318}");
 
                         if (registryMonitor_ICC == null)
-                        {
-                            writelog("Monitor ICC change initiate...");
-                            registryMonitor_ICC = new RegistryMonitor_ICC(keyName);
-                            registryMonitor_ICC.RegChanged += new EventHandler(OnRegChanged_ICC);
-                            registryMonitor_ICC.Error += new System.IO.ErrorEventHandler(OnError_ICC);
-                            registryMonitor_ICC.Start();
-                            writelog("Monitor ICC change started");
+                        {                            
+                            try
+                            {
+                                writelog("Monitor ICC change initiate...");
+                                registryMonitor_ICC = new RegistryMonitor_ICC(keyName);
+                                registryMonitor_ICC.RegChanged += new EventHandler(OnRegChanged_ICC);
+                                registryMonitor_ICC.Error += new System.IO.ErrorEventHandler(OnError_ICC);
+                                registryMonitor_ICC.Start();
+                                writelog("Monitor ICC change started");
+
+                            }
+                            catch (Exception ex)
+                            {
+                                writelog($"Monitor ICC change Exception, message: {ex.Message}");
+                            }
                         }
                     }
                 }

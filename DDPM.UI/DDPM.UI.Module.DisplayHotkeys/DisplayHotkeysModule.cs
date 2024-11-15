@@ -22,6 +22,7 @@ namespace DDPM.UI.Module.DisplayHotkeys
             SelectedHomeDevice = DdpmCommonHelper.ModuleOwner.SelectedHomeDevice;
             vm.DisplayHotkeysModule = this;
             _rightView = new DisplayHotkeysRightView(vm);
+            vm.InitLog();
             vm.Invoke_RefreshData();
         }
 

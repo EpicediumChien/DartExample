@@ -1255,7 +1255,7 @@ namespace NetworkKVM.Plugins
                                                 foreach (string resp  in respList)
                                                 {
                                                     _logs.DebugMsg("[NetworkKVM] response string :" + resp);
-                                                    JsonstringParse(resp).Wait(); //read json type
+                                                    JsonstringParse(resp); //read json type
                                                 }
                                             }
                                         }
@@ -1639,23 +1639,23 @@ namespace NetworkKVM.Plugins
                                     switch (type)
                                     {
                                         case "SET_VCP":
-                                            SetVCP(jsonstring).Wait();
+                                            SetVCP(jsonstring);
                                             break;
 
                                         case "GET_VCP":
-                                            GetVCP(jsonstring).Wait();
+                                            GetVCP(jsonstring);
                                             break;
 
                                         case "GET_MONITOR_INFO":
-                                            GetMonitorInfo(jsonstring).Wait();
+                                            GetMonitorInfo(jsonstring);
                                             break;
 
                                         case "GET_CURRENT_MONITOR_INDEX":
-                                            GetCurrentMonitorIndex(jsonstring).Wait();
+                                            GetCurrentMonitorIndex(jsonstring);
                                             break;
 
                                         case "IS_HOTKEY_AVAILABLE":
-                                            isHotkeyAvailable(jsonstring).Wait();
+                                            isHotkeyAvailable(jsonstring);
                                             break;
 
                                         case "DISCONNECT":
@@ -1665,36 +1665,36 @@ namespace NetworkKVM.Plugins
                                         case "UPDATE_SUPPORTED_MONITOR_LIST_RESPONSE":
                                             if (!ResponseSucces(json).Result)
                                             {
-                                                ResponseSupportedMonitor().Wait();
+                                                ResponseSupportedMonitor();
                                             }
                                             else
                                             {
-                                                OnNKVM().Wait();
+                                                OnNKVM();
                                             }
                                             break;
 
                                         case "ON_NKVM_RESPONSE":
                                             if (!ResponseSucces(json).Result)
                                             {
-                                                OnNKVM().Wait();
+                                                OnNKVM();
                                             }
                                             break;
 
                                         case "OFF_NKVM_RESPONSE":
                                             if (!ResponseSucces(json).Result)
                                             {
-                                                OffNKVM().Wait();
+                                                OffNKVM();
                                             }
                                             break;
 
                                         case "SET_HOTKEY":
-                                            GetSetHotkey(jsonstring).Wait();
+                                            GetSetHotkey(jsonstring);
                                             break;
 
                                         case "SET_HOTKEY_RESPONSE":
                                             if (!ResponseSucces(json).Result && _HotkeyInfo != null)
                                             {
-                                                bool b = SetHotkey(_HotkeyInfo).Result;
+                                                SetHotkey(_HotkeyInfo);
                                             }
                                             break;
 
@@ -2240,6 +2240,7 @@ namespace NetworkKVM.Plugins
                     _logs.DebugMsg("[NetworkKVM] _HotkeySettings not null");
                     NKVMSetHotkey nKVMSetHotkey = new NKVMSetHotkey();
                     HotkeyInfo hotkeyInfo = new HotkeyInfo();
+                    hotkeyInfo.Hotkey = new List<VirtualKey>();
                     if (set_HOTKEY.Hotkey.Control)
                     {
                         hotkeyInfo.Hotkey.Add(VirtualKey.Control);

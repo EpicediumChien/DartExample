@@ -658,19 +658,22 @@ namespace DDPM.SA.Plugins.User.EasyArrange
 
         /// <summary>
         /// EditCommand() function which is running under STA thread.
+        /// In this method, it must return a EditStarted event to UI, to tell UI
+        /// 1) The EditWindow is shown and start edit with "" (empty string) argument,
+        /// 2) Something wrong so caould not start the edit with error message as the argument.
         /// </summary>
         /// <param name="monitorInfo"></param>
         /// <param name="args"></param>
         /// <returns></returns>
         private bool STA_EditCommand(MonitorInfo monitorInfo, EAArgs args)
         {
-            //Should be never
+            //Should be never, these flags are checked alaredy in EditCommand()
             if (_eaBroker == null) 
                 return false;
             if (_editWindow == null)
                 return false;
             if (_saveCustomWindow == null)
-                return true;
+                return false;
 
             Trace.WriteLine("@ UI_EditCommand()");
             Trace.WriteLine($"  * Monitor.Model=[{monitorInfo.modelName}], ServiceTag=[{monitorInfo.edid.ServiceTag}]");
@@ -695,24 +698,46 @@ namespace DDPM.SA.Plugins.User.EasyArrange
 
             //Show EditWindow and SaveCustomWindow, and start editing
             //
-            if (!_editWindow.ShowAndEdit(args, scr))
+            if (_eaArgs.SplitJson.IsOverlapLayout)
             {
+                //1 Signal EditStart event to UI, UI will Minimized to taskbar
                 if (EditStarted != null)
-                {
-                    EditStarted(this, "Error");
-                }
-                return false;
+                    EditStarted(this, "");
+
+                //2 To notify EABroker, we are in Edit process, disable WorkWindow/AwsWindow
+                _eaBroker.VM.IsWorkUIEnabled = false;
+
+                //3 Show SaveCustomWindow, until user click Save or Cancel
+                _saveCustomWindow.ShowAndEdit(args, scr);
+
+                //4 EditWindow will be shown if user click Save later
+                //_editWindow.ShowAndEdit(args, scr);
             }
+            else
+            {
+                //Non-Overlap edit steps
+                //1 Show the layout for editing
+                if (!_editWindow.ShowAndEdit(args, scr))
+                {
+                    if (EditStarted != null)
+                    {
+                        EditStarted(this, "Error");
+                    }
+                    return false;
+                }
 
-            _saveCustomWindow.ShowAndEdit(args, scr);
- 
+                //2 Show the SaveCustomWindow in the same time
+                _saveCustomWindow.ShowAndEdit(args, scr);
 
-            //Signal EditStart event to UI, UI will Minimized to taskbar
-            if (EditStarted != null)
-                EditStarted(this, "");
+                //3 Signal EditStart event to UI, UI will Minimized to taskbar
+                if (EditStarted != null)
+                    EditStarted(this, "");
 
-            //To notify EABroker, we are in Edit process, disable WorkWindow/AwsWindow
-            _eaBroker.VM.IsWorkUIEnabled = false;
+                //4 To notify EABroker, we are in Edit process, disable WorkWindow/AwsWindow
+                _eaBroker.VM.IsWorkUIEnabled = false;
+
+                //5 Wait for user click "Save" or "Cancel"
+            }
 
             return true;
         }
@@ -1735,7 +1760,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange
                     LogInfo("After new EAEditWindow");
                     _editWindow.Show();
 
-                    _saveCustomWindow = new DDPM.EABroker.SaveCustomWindow();
+                    _saveCustomWindow = new DDPM.EABroker.SaveCustomWindow(_deviceManagerPlugin);
                     _saveCustomWindow.Owner = _editWindow;
                     _saveCustomWindow.CancelButtonClick += saveCustomWidow_CancelButtonClick;
                     _saveCustomWindow.SaveButtonClick += saveCustomWidow_SaveButtonClick;
@@ -1776,21 +1801,114 @@ namespace DDPM.SA.Plugins.User.EasyArrange
         {
             if ((EditReturn != null) && (_eaArgs != null))
             {
+                if (_eaArgs.SplitJson.IsOverlapLayout)
+                {
+                    EditForOverlapLayout();
+                    return;
+                }
+
                 EAArgs retArgs = new EAArgs(_eaArgs);
                 retArgs.Command = "EditReturn";
                 retArgs.Result = true;
-
-                retArgs.SplitJson.CustomName = e;
                 retArgs.SplitJson.Settings = _editWindow.GetSettings();
 
+                if (_saveCustomWindow != null)
+                {
+                    if (_saveCustomWindow.SelectedCustomItem != null)
+                    {
+                        //CustomName will copy from SaveCustomWindow
+                        retArgs.SplitJson.CustomName = _saveCustomWindow.SelectedCustomItem.CustomName;
+
+
+                        //If user has selected an existed custom layout
+                        if (_saveCustomWindow.SelectedCustomItem.EAID >= EAEMConstants.EAID_FirstCustom)
+                        {
+                            retArgs.SplitJson.EAID = _saveCustomWindow.SelectedCustomItem.EAID;
+
+                        }
+                        else
+                        {
+                            //The SplitClass will update from SaveCustomWindow
+
+                            //retArgs.SplitJson = _saveCustomWindow.SelectedCustomItem.Clone();
+                        }
+                    }
+                }
+
                 //Can be removed
-                retArgs.CustomName = e;
-                retArgs.Settings = _editWindow.GetSettings();
+                //retArgs.CustomName = e;
+                //retArgs.Settings = _editWindow.GetSettings();
 
                 EditReturn(this, retArgs);
             }
             if (_editWindow != null)
                 _editWindow.Dispatcher_Hide();
+            if (_eaBroker != null)
+                _eaBroker.VM.IsWorkUIEnabled = true;
+        }
+
+        private void EditForOverlapLayout()
+        {
+            Screen workScreen = _saveCustomWindow.WorkScreen;
+
+            //4 When user click "Save" from SaveCustomWindow
+            //5 Show the EditWindow to capture Windows and frame them
+            _editWindow.ShowAndEdit(_eaArgs, workScreen);
+            _editWindow.EditReturn += _editWindow_EditReturn;
+            //6 Delay for 3 sec
+        }
+
+        private void _editWindow_EditReturn(object? sender, EAArgs e)
+        {
+            if (_eaArgs == null)
+                return;
+            if (_editWindow == null)
+                return;
+
+            //7 EditWindow sent EditReturn event, and goto here
+
+            _editWindow.EditReturn -= _editWindow_EditReturn;
+
+            //8 get the returned layout data from EditWindow
+            EAArgs retArgs = new EAArgs(_eaArgs);
+            retArgs.Command = "EditReturn";
+            retArgs.Result = true;
+            retArgs.SplitJson.Settings = _editWindow.GetSettings();
+
+            //9 EditWindow can be closed (Hide) now
+            _editWindow.Dispatcher_Hide();
+
+            //10 Get the returned CustomName and Selected CustomItem from SaveCustomWindow
+            if (_saveCustomWindow != null)
+            {
+                if (_saveCustomWindow.SelectedCustomItem != null)
+                {
+                    //CustomName will copy from SaveCustomWindow
+                    retArgs.SplitJson.CustomName = _saveCustomWindow.SelectedCustomItem.CustomName;
+
+
+                    //If user has selected an existed custom layout
+                    if (_saveCustomWindow.SelectedCustomItem.EAID >= EAEMConstants.EAID_FirstCustom)
+                    {
+                        retArgs.SplitJson.EAID = _saveCustomWindow.SelectedCustomItem.EAID;
+
+                    }
+                    else
+                    {
+                        //The SplitClass will update from SaveCustomWindow
+
+                        //retArgs.SplitJson = _saveCustomWindow.SelectedCustomItem.Clone();
+                    }
+                }
+            }
+
+            //11 Notify UI to get the updates
+            if (EditReturn != null)
+                Task.Run(() => EditReturn.Invoke(this, retArgs));
+
+            //EditReturn(this, retArgs);
+
+            //12 WorkWindow can be resumed 
             if (_eaBroker != null)
                 _eaBroker.VM.IsWorkUIEnabled = true;
         }
@@ -1802,166 +1920,166 @@ namespace DDPM.SA.Plugins.User.EasyArrange
 
         //private void WinEventHook_Start()
         //{
-            //_winEventHook.OnStartMoving += OnWindowStartMovingProc;
-            //_winEventHook.OnEndMoving += OnWindowEndMovingProc;
-            //_winEventHook.OnLocationChanged += OnLocationChangedProc;
-            //_winEventHook.OnForegroundWindowChanged += OnForegroundWindowChangedProc;
-            //_winEventHook.Hook();
+        //_winEventHook.OnStartMoving += OnWindowStartMovingProc;
+        //_winEventHook.OnEndMoving += OnWindowEndMovingProc;
+        //_winEventHook.OnLocationChanged += OnLocationChangedProc;
+        //_winEventHook.OnForegroundWindowChanged += OnForegroundWindowChangedProc;
+        //_winEventHook.Hook();
         //}
 
         //private void WinEventHook_Stop()
         //{
-            //_winEventHook.Unhook();
-            //_winEventHook.OnStartMoving -= OnWindowStartMovingProc;
-            //_winEventHook.OnEndMoving -= OnWindowEndMovingProc;
-            //_winEventHook.OnLocationChanged -= OnLocationChangedProc;
-            //_winEventHook.OnForegroundWindowChanged -= OnForegroundWindowChangedProc;
+        //_winEventHook.Unhook();
+        //_winEventHook.OnStartMoving -= OnWindowStartMovingProc;
+        //_winEventHook.OnEndMoving -= OnWindowEndMovingProc;
+        //_winEventHook.OnLocationChanged -= OnLocationChangedProc;
+        //_winEventHook.OnForegroundWindowChanged -= OnForegroundWindowChangedProc;
         //}
 
         //private void OnForegroundWindowChangedProc(IntPtr hWndNew, IntPtr hWndOld)
         //{
-            //Noting to do in this project
+        //Noting to do in this project
         //}
 
         //private bool _isDebuggingOnWindowStartMoving_Unused = true;
 
         //private void OnWindowStartMovingProc(IntPtr hWnd)
         //{
-            //if (_isDebuggingOnWindowStartMoving)
-            //    _log?.Info($"Enter OnWindowStartMovingProc(), hWnd=0x{hWnd:X}");
+        //if (_isDebuggingOnWindowStartMoving)
+        //    _log?.Info($"Enter OnWindowStartMovingProc(), hWnd=0x{hWnd:X}");
 
-            //if (!_vmArrange.IsFunctionEnabled)
-            //    return;
+        //if (!_vmArrange.IsFunctionEnabled)
+        //    return;
 
-            //Process process;
-            //string msg;
-            //if (WinEventHook.GetProcessFromWindowHandle(hWnd, out process, out msg))
-            //{
-            //    //Try to get the PathName of the process
-            //    try
-            //    {
-            //        if (process.MainModule != null)
-            //        {
-            //            if (!String.IsNullOrEmpty(process.MainModule.FileName))
-            //            {
-            //                string pathName = process.MainModule.FileName;
-            //                if (_isDebuggingOnWindowStartMoving)
-            //                    _log?.Info($"Process.PathName={pathName}");
-            //            }
-            //        }
-            //    }
-            //    catch (Exception e1)
-            //    {
-            //        _log?.Info($"@OnWindowStartMovingProc, access to process causes an exception, msg: {e1.Message}");
+        //Process process;
+        //string msg;
+        //if (WinEventHook.GetProcessFromWindowHandle(hWnd, out process, out msg))
+        //{
+        //    //Try to get the PathName of the process
+        //    try
+        //    {
+        //        if (process.MainModule != null)
+        //        {
+        //            if (!String.IsNullOrEmpty(process.MainModule.FileName))
+        //            {
+        //                string pathName = process.MainModule.FileName;
+        //                if (_isDebuggingOnWindowStartMoving)
+        //                    _log?.Info($"Process.PathName={pathName}");
+        //            }
+        //        }
+        //    }
+        //    catch (Exception e1)
+        //    {
+        //        _log?.Info($"@OnWindowStartMovingProc, access to process causes an exception, msg: {e1.Message}");
 
-            //        //Temporary allow to continue moving
-            //        _vmArrange.IsMoving = true;
-            //        //Robert_Lin Debug, let it contine
-            //        //return;
-            //    }
-            //}
-            //else
-            //{
-            //    _log.Info($"@OnWindowStartMovingProc, GetProcessFromWindowHandle error, msg:{msg}");
-            //}
+        //        //Temporary allow to continue moving
+        //        _vmArrange.IsMoving = true;
+        //        //Robert_Lin Debug, let it contine
+        //        //return;
+        //    }
+        //}
+        //else
+        //{
+        //    _log.Info($"@OnWindowStartMovingProc, GetProcessFromWindowHandle error, msg:{msg}");
+        //}
 
-            //var dpiXProperty = typeof(SystemParameters).GetProperty("DpiX", BindingFlags.NonPublic | BindingFlags.Static);
-            //var varX = (int)dpiXProperty.GetValue(null, null);
-            //double dpiX = (double)varX / (double)96;
+        //var dpiXProperty = typeof(SystemParameters).GetProperty("DpiX", BindingFlags.NonPublic | BindingFlags.Static);
+        //var varX = (int)dpiXProperty.GetValue(null, null);
+        //double dpiX = (double)varX / (double)96;
 
-            //_vmArrange.ScreenScale = dpiX;
-            //_vmArrange.IsMoving = true;
-            //RefreshCellRects();
+        //_vmArrange.ScreenScale = dpiX;
+        //_vmArrange.IsMoving = true;
+        //RefreshCellRects();
         //}
 
         //private void OnWindowEndMovingProc(IntPtr hWnd, bool isCanceled = false)
         //{
-            //bool isWorkUIShowing = _vmArrange.IsWorkUIShowing;
+        //bool isWorkUIShowing = _vmArrange.IsWorkUIShowing;
 
-            //if (!_vmArrange.IsMoving)
-            //    return;
+        //if (!_vmArrange.IsMoving)
+        //    return;
 
-            //_vmArrange.IsMoving = false;
+        //_vmArrange.IsMoving = false;
 
-            //if (!isWorkUIShowing)
-            //    return;
+        //if (!isWorkUIShowing)
+        //    return;
 
-            //if (_vmArrange.HoveringCellObj == null)
-            //    return;
+        //if (_vmArrange.HoveringCellObj == null)
+        //    return;
 
-            ////Check if user cancel the window moving by pressing [Esc] key
-            ////Assumption:
-            //// When user moving window, the mouse [LeftButton] is pressed and hold.
-            //// When user canceling the moving, he/she press [Esc] key and the
-            ////     mouse [LeftButton] is strll pressed and hold.
-            ////
-            //if (WinEventHook.IsUserCancelMoving())
-            //    return;
+        ////Check if user cancel the window moving by pressing [Esc] key
+        ////Assumption:
+        //// When user moving window, the mouse [LeftButton] is pressed and hold.
+        //// When user canceling the moving, he/she press [Esc] key and the
+        ////     mouse [LeftButton] is strll pressed and hold.
+        ////
+        //if (WinEventHook.IsUserCancelMoving())
+        //    return;
 
-            //Rect rcArrange = _vmArrange.HoveringCellObj.rc;
+        //Rect rcArrange = _vmArrange.HoveringCellObj.rc;
 
-            ////Inflate the rect, because the rcArrange not include the border thickness(=6) of CellBorder
-            //rcArrange.Inflate(6, 6);
-            //WinEventHook.SetWindowPosition(hWnd, rcArrange);
+        ////Inflate the rect, because the rcArrange not include the border thickness(=6) of CellBorder
+        //rcArrange.Inflate(6, 6);
+        //WinEventHook.SetWindowPosition(hWnd, rcArrange);
         //}
 
         //private void OnLocationChangedProc(int x, int y)
         //{
-            //_vmArrange.xCursor = x;
-            //_vmArrange.yCursor = y;
+        //_vmArrange.xCursor = x;
+        //_vmArrange.yCursor = y;
 
-            //if (!_vmArrange.IsWorkUIShowing)
-            //    return;
+        //if (!_vmArrange.IsWorkUIShowing)
+        //    return;
 
-            //CellObj orgCell = _vmArrange.HoveringCellObj;
-            //_vmArrange.HoveringCellObj = DetermineHoveringCellObj(x, y);
+        //CellObj orgCell = _vmArrange.HoveringCellObj;
+        //_vmArrange.HoveringCellObj = DetermineHoveringCellObj(x, y);
 
-            //if (orgCell != _vmArrange.HoveringCellObj)
-            //{
-            //    string strOrg = "null";
-            //    if (orgCell != null)
-            //        strOrg = orgCell.Name;
-            //    string strNew = "null";
-            //    if (_vmArrange.HoveringCellObj != null)
-            //        strNew = _vmArrange.HoveringCellObj.Name;
+        //if (orgCell != _vmArrange.HoveringCellObj)
+        //{
+        //    string strOrg = "null";
+        //    if (orgCell != null)
+        //        strOrg = orgCell.Name;
+        //    string strNew = "null";
+        //    if (_vmArrange.HoveringCellObj != null)
+        //        strNew = _vmArrange.HoveringCellObj.Name;
 
-            //    //Trace.WriteLine($" * HoveringCell: {strOrg}->{strNew}");
-            //}
-            //if (_vmArrange.HoveringCellObj != null)
-            //{
-            //    _vmArrange.HoveringCell = _vmArrange.HoveringCellObj.Name;
-            //}
-            //else
-            //{
-            //    _vmArrange.HoveringCell = "";
-            //}
-            ////if (_workingSplit != null)
-            ////    _workingSplit.VM.HoveringCell = vm.HoveringCell;
+        //    //Trace.WriteLine($" * HoveringCell: {strOrg}->{strNew}");
+        //}
+        //if (_vmArrange.HoveringCellObj != null)
+        //{
+        //    _vmArrange.HoveringCell = _vmArrange.HoveringCellObj.Name;
+        //}
+        //else
+        //{
+        //    _vmArrange.HoveringCell = "";
+        //}
+        ////if (_workingSplit != null)
+        ////    _workingSplit.VM.HoveringCell = vm.HoveringCell;
 
-            ////Set WorkWins to topmost
+        ////Set WorkWins to topmost
         //}
 
         //private void RefreshCellRects()
         //{
-            //foreach (KeyValuePair<string, EAWorkWindow> keyValuePair in _workWindows)
-            //{
-            //    EAWorkWindow workWin = keyValuePair.Value;
-            //    workWin.Invoke_RefreshCellRects();
-            //}
+        //foreach (KeyValuePair<string, EAWorkWindow> keyValuePair in _workWindows)
+        //{
+        //    EAWorkWindow workWin = keyValuePair.Value;
+        //    workWin.Invoke_RefreshCellRects();
+        //}
         //}
 
         //private CellObj? DetermineHoveringCellObj(int x, int y)
         //{
-            //foreach (KeyValuePair<string, EAWorkWindow> keyValuePair in _workWindows)
-            //{
-            //    EAWorkWindow workWin = keyValuePair.Value;
-            //    CellObj? cellObj = workWin.DetermineHoveringCellObj(x, y);
-            //    if (cellObj != null)
-            //    {
-            //        return cellObj;
-            //    }
-            //}
-            //return null;
+        //foreach (KeyValuePair<string, EAWorkWindow> keyValuePair in _workWindows)
+        //{
+        //    EAWorkWindow workWin = keyValuePair.Value;
+        //    CellObj? cellObj = workWin.DetermineHoveringCellObj(x, y);
+        //    if (cellObj != null)
+        //    {
+        //        return cellObj;
+        //    }
+        //}
+        //return null;
         //}
 
         #region GetAsyncKeyState

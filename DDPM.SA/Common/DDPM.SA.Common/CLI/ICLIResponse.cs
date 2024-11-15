@@ -315,6 +315,7 @@ namespace DDPM.SA.Common
 
     public class CLI_FWU_RESPONSE : CLI_RESPONSE
     {
+        public string FWVersion { get; set; }
         public List<string> FWUpdateRESPONSE { get; set; }
 
         public CLI_FWU_RESPONSE(CLI_RESPONSE cli_RESPONSE)
@@ -482,6 +483,7 @@ namespace DDPM.SA.Common
         public string Model { get; set; }
         public string Connectiontype { get; set; }
         public string BatteryStatus { get; set; }
+        public string ServiceTag { get; set; } = "N/A";
 
         public CLI_RESPONSE2()
         {

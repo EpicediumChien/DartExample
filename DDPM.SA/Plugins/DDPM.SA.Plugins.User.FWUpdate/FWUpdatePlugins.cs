@@ -399,38 +399,41 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                     _logs.DebugMsg_1($"{nameof(updateHelper.UpdateItems.Count)} = {updateHelper.UpdateItems.Count}");
                     for (int i = 0; i < updateHelper.UpdateItems.Count; i++)
                     {
+                        _logs.DebugMsg_1($"updateHelper.UpdateItems[i].DeviceName = {updateHelper.UpdateItems[i].DeviceName}");
+                        _logs.DebugMsg_1($"updateHelper.UpdateItems[i].NewVersion = {updateHelper.UpdateItems[i].NewVersion}");
+                        _logs.DebugMsg_1($"updateHelper.UpdateItems[i].CurrentVersion = {updateHelper.UpdateItems[i].CurrentVersion}");
                         string newVer = updateHelper.UpdateItems[i].NewVersion;
                         string oldVer = updateHelper.UpdateItems[i].CurrentVersion;
-                        if (!int.TryParse(newVer, out _))
+                        if (!string.IsNullOrEmpty(newVer))
                         {
-                            newVer = Convert.ToInt32(newVer, 16).ToString();
+                            newVer = Regex.Replace(updateHelper.UpdateItems[i].NewVersion, ".{1}", "$0.").Substring(0, (updateHelper.UpdateItems[i].NewVersion.Length * 2) - 1);
                         }
-                        if (!int.TryParse(oldVer, out _))
+                        if (!string.IsNullOrEmpty(oldVer))
                         {
-                            oldVer = Convert.ToInt32(oldVer, 16).ToString();
+                            oldVer = Regex.Replace(updateHelper.UpdateItems[i].CurrentVersion, ".{1}", "$0.").Substring(0, (updateHelper.UpdateItems[i].CurrentVersion.Length * 2) - 1);
                         }
                         DeviceInfo? deviceInfo = deviceInfos.Find(o => o.ID.ToString().Equals(updateHelper.UpdateItems[i].DeviceId.Replace("{", "").Replace("}", "")));
                         string deviceConnectivity = string.Empty;
                         string deviceSupplierID = string.Empty;
                         if (deviceInfo != null)
                         {
-                            _logs.DebugMsg_1($"{nameof(deviceTypeList)} is no null");
+                            _logs.DebugMsg_1($"{nameof(CheckUpdate)} {nameof(deviceInfo)} is no null");
                             deviceConnectivity = GetConnected(deviceInfo.PhysicalDeviceType);
                             deviceSupplierID = GetODM(deviceInfo.OdmId);
-                            //if (updateHelper.UpdateItems[i].DeviceType == DeviceType.PhysicalWiredDock || updateHelper.UpdateItems[i].DeviceType == DeviceType.LogicalDock)
-                            //{
-                            //    _logs.DebugMsg_1($"{nameof(deviceTypeList)} deviceInfo.DeviceName : {deviceInfo.Name}");
-                            //    //updateHelper.UpdateItems[i].DeviceModelNumber = deviceInfo.ModelNumber;
-                            //    updateHelper.UpdateItems[i].DeviceName = deviceInfo.Name;
-                            //}
+                            if (updateHelper.UpdateItems[i].DeviceType == DeviceType.PhysicalWiredDock || updateHelper.UpdateItems[i].DeviceType == DeviceType.LogicalDock)
+                            {
+                                _logs.DebugMsg_1($"{nameof(CheckUpdate)} deviceInfo.DeviceName : {deviceInfo.Name}");
+                                //updateHelper.UpdateItems[i].DeviceModelNumber = deviceInfo.ModelNumber;
+                                updateHelper.UpdateItems[i].DeviceName = deviceInfo.Name;
+                            }
                         }
-                        if (deviceTypeList == null)
+                        if (deviceTypeList == null && !isOnlyDisplay)
                         {
                             _logs.DebugMsg_1($"{nameof(deviceTypeList)} = null");
                             FWUpdateInfo fWUpdateInfo = new FWUpdateInfo()
                             {
-                                TheLatestVersion = Regex.Replace(Convert.ToInt32(newVer).ToString("D4"), ".{1}", "$0.").Substring(0, (Convert.ToInt32(newVer).ToString("D4").Length * 2) - 1),
-                                DeviceVersion = Regex.Replace(Convert.ToInt32(oldVer).ToString("D4"), ".{1}", "$0.").Substring(0, (Convert.ToInt32(oldVer).ToString("D4").Length * 2) - 1),
+                                TheLatestVersion = newVer,
+                                DeviceVersion = oldVer,
                                 NeedUpdated = true,
                                 ServerPath = updateHelper.UpdateItems[i].ServerPath,
                                 FileSavepath = updateHelper.UpdateItems[i].InstallPath,
@@ -467,8 +470,8 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                             {
                                 FWUpdateInfo fWUpdateInfo = new FWUpdateInfo()
                                 {
-                                    TheLatestVersion = Regex.Replace(Convert.ToInt32(newVer).ToString("D4"), ".{1}", "$0.").Substring(0, (Convert.ToInt32(newVer).ToString("D4").Length * 2) - 1),
-                                    DeviceVersion = Regex.Replace(Convert.ToInt32(oldVer).ToString("D4"), ".{1}", "$0.").Substring(0, (Convert.ToInt32(oldVer).ToString("D4").Length * 2) - 1),
+                                    TheLatestVersion = newVer,
+                                    DeviceVersion = oldVer,
                                     NeedUpdated = true,
                                     ServerPath = updateHelper.UpdateItems[i].ServerPath,
                                     FileSavepath = updateHelper.UpdateItems[i].InstallPath,
@@ -502,6 +505,9 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                     _logs.DebugMsg_1($"{nameof(displayUpdateHelper.Firmwares.Count)} = {displayUpdateHelper.Firmwares.Count}");
                     for (int i = 0; i < displayUpdateHelper.Firmwares.Count; i++)
                     {
+                        _logs.DebugMsg_1($"displayUpdateHelper.Firmwares[i].id(DeviceName) = {displayUpdateHelper.Firmwares[i].id}");
+                        _logs.DebugMsg_1($"displayUpdateHelper.Firmwares[i].TheLastVersion = {displayUpdateHelper.Firmwares[i].TheLastVersion}");
+                        _logs.DebugMsg_1($"displayUpdateHelper.Firmwares[i].CurrentVersion = {displayUpdateHelper.Firmwares[i].CurrentVersion}");
                         FWUpdateInfo fWUpdateInfo = new FWUpdateInfo()
                         {
                             TheLatestVersion = displayUpdateHelper.Firmwares[i].TheLastVersion,
@@ -771,50 +777,50 @@ namespace DDPM.SA.Plugins.User.FWUpdate
             try
             {
                 _IsUITrigger = isUITrigger;
-                string path_programdata = Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData);
-                _logs.DebugMsg_1(nameof(DownloadAndInstall) + " start");
-                string saveFolderName = Guid.NewGuid().ToString();
-                string savePath;
-                DDPMFileSecurity DDPMFileSecurity = new DDPMFileSecurity();
-                if (string.IsNullOrEmpty(installPath))
-                {
-                    if (!string.IsNullOrEmpty(path_programdata))
-                    {
-                        savePath = path_programdata + "\\Dell\\Dell Display and Peripheral Manager" + "\\" + saveFolderName + "\\";
-                    }
-                    else
-                    {
-                        foreach (FWUpdateInfo fwUpdateInfo in fwUpdateInfos)
-                        {
-                            fwUpdateInfo.FWUErrorCode = FWUErrorCode.FileCheckFail;
-                        }
-                        _logs.DebugMsg_1($"{nameof(DownloadAndInstall)} path_programdata get error");
-                        return Task.FromResult(fwUpdateInfos);
-                    }
-                }
-                else
-                {
-                    savePath = installPath;
-                }
-                if (!Directory.Exists(savePath))
-                {
-                    Directory.CreateDirectory(savePath);
-                }
-                //0926 Bruce Add Security
-                if (!CheckFold(savePath, out string FolderInfo, out string PathSymbolicLinInfo))
-                {
-                    foreach (FWUpdateInfo fwUpdateInfo in fwUpdateInfos)
-                    {
-                        fwUpdateInfo.FWUErrorCode = FWUErrorCode.FolderIsNotSafe;
-                    }
-                    _notificationStr = $"Firmware update unsuccessful.";
-                    NotificationFWupdate("Error", _notificationStr);
-                    _logs.DebugMsg_1(nameof(DownloadAndInstall) + " FolderIsNotSafe:" + FolderInfo + "--or--" + PathSymbolicLinInfo);
-                    return Task.FromResult(fwUpdateInfos);
-                }
                 for (int i = 0; i < fwUpdateInfos.Count; i++)
                 {
                     _logs.DebugMsg_1(fwUpdateInfos[i].DeviceName + nameof(DownloadAndInstall) + " start");
+                    string path_programdata = Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData);
+                    _logs.DebugMsg_1(nameof(DownloadAndInstall) + " start");
+                    string saveFolderName = Guid.NewGuid().ToString();
+                    string savePath;
+                    DDPMFileSecurity DDPMFileSecurity = new DDPMFileSecurity();
+                    if (string.IsNullOrEmpty(installPath))
+                    {
+                        if (!string.IsNullOrEmpty(path_programdata))
+                        {
+                            savePath = path_programdata + "\\Dell\\Dell Display and Peripheral Manager" + "\\" + saveFolderName + "\\";
+                        }
+                        else
+                        {
+                            foreach (FWUpdateInfo fwUpdateInfo in fwUpdateInfos)
+                            {
+                                fwUpdateInfo.FWUErrorCode = FWUErrorCode.FileCheckFail;
+                            }
+                            _logs.DebugMsg_1($"{nameof(DownloadAndInstall)} path_programdata get error");
+                            return Task.FromResult(fwUpdateInfos);
+                        }
+                    }
+                    else
+                    {
+                        savePath = installPath;
+                    }
+                    if (!Directory.Exists(savePath))
+                    {
+                        Directory.CreateDirectory(savePath);
+                    }
+                    //0926 Bruce Add Security
+                    if (!CheckFold(savePath, out string FolderInfo, out string PathSymbolicLinInfo))
+                    {
+                        foreach (FWUpdateInfo fwUpdateInfo in fwUpdateInfos)
+                        {
+                            fwUpdateInfo.FWUErrorCode = FWUErrorCode.FolderIsNotSafe;
+                        }
+                        _notificationStr = $"Firmware update unsuccessful.";
+                        NotificationFWupdate("Error", _notificationStr);
+                        _logs.DebugMsg_1(nameof(DownloadAndInstall) + " FolderIsNotSafe:" + FolderInfo + "--or--" + PathSymbolicLinInfo);
+                        return Task.FromResult(fwUpdateInfos);
+                    }
                     _notificationStr = "";
                     _fWUpdateInfo = fwUpdateInfos[i];
                     _updateErrorCode = FWUErrorCode.Unknow;
@@ -901,13 +907,21 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                             if (!Unzip(_installationFileStoragePath, extractPath, out exeFilePath))
                             {
                                 fwUpdateInfos[i].FWUErrorCode = FWUErrorCode.FolderIsNotSafe;
-                                _logs.DebugMsg_1(fwUpdateInfos[i].DeviceName + " Unzip Faile");
+                                _logs.DebugMsg_1($"{fwUpdateInfos[i].DeviceName} Unzip Faile");
                                 _notificationStr = $"Firmware update unsuccessful.";
                                 NotificationFWupdate("Error", _notificationStr);
                                 continue;
                             }
                             using (FileLock fileLock_2 = new FileLock(exeFilePath, PathCheckOption.None, lockNow: true))
                             {
+                                if (!CheckThumbprint(exeFilePath, _fWUpdateInfo.Thumbprint, out string FileCAInfo))
+                                {
+                                    _fWUpdateInfo.FWUErrorCode = FWUErrorCode.FileCheckFail;
+                                    _logs.DebugMsg_1($"{fwUpdateInfos[i].DeviceName} CheckThumbprint Faile");
+                                    _notificationStr = $"Firmware update unsuccessful.";
+                                    NotificationFWupdate("Error", _notificationStr);
+                                    continue;
+                                }
                                 fwUpdateInfos[i].InstallPaths = exeFilePath;
                                 fwUpdateInfos[i].FWUErrorCode = Install(fwUpdateInfos[i]);
                                 fwUpdateInfos[i].Update_date = DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss");
@@ -926,13 +940,13 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                     {
                         _logs.DebugMsg_1($"{fwUpdateInfos[i].DeviceName} FileLock Error: {ex.Message}");
                     }
+                    // 檢查資料夾是否存在
+                    if (!string.IsNullOrEmpty(savePath) && Directory.Exists(savePath))
+                    {
+                        // 刪除資料夾及其所有內容
+                        Directory.Delete(savePath, true);
+                    }
                     _logs.DebugMsg_1(fwUpdateInfos[i].DeviceName + nameof(DownloadAndInstall) + " done");
-                }
-                // 檢查資料夾是否存在
-                if (!string.IsNullOrEmpty(savePath) && Directory.Exists(savePath))
-                {
-                    // 刪除資料夾及其所有內容
-                    Directory.Delete(savePath, true);
                 }
                 _logs.DebugMsg_1($"{nameof(DownloadAndInstall)}, All done");
                 if (_DelayFWUpdateInfoPackage != null && _DelayFWUpdateInfoPackage.FWUpdateInfo.Count <= 0)
@@ -1629,6 +1643,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                 _updateErrorCode = FWUErrorCode.Unknow;
                 _logs.DebugMsg_1(fwUpdateInfo.DeviceName + nameof(Install) + " Error:" + ex.ToString());
                 _notificationStr = $"Service not running. Try again.";
+                _namedPipeServer.Dispose();
                 return _updateErrorCode;
             }
         }
@@ -2048,17 +2063,37 @@ namespace DDPM.SA.Plugins.User.FWUpdate
             {
                 isCheckSHA = certificateCheck.CheckFile_SHA256(filePath, _fWUpdateInfo.SHA256, out fileCAInfo);
             }
+            if (isCheckSHA)
+            {
+                _logs.DebugMsg_1($"{_fWUpdateInfo.DeviceName} CheckSHA pass");
+            }
+            else
+            {
+                _logs.DebugMsg_1($"{_fWUpdateInfo.DeviceName} CheckSHA fail fileCAInfo : {fileCAInfo}");
+                _fWUpdateInfo.FWUErrorCode = FWUErrorCode.FileCheckFail;
+#if IL_NotReady
+                isCheckSHA = true;//Wait IL R14 force true
+#endif
+            }
             return isCheckSHA;
         }
-        private bool CheckThumbprint(string filePath, out string fileThumbprintInfo)
+        private bool CheckThumbprint(string filePath, string standThumbprint, out string fileThumbprintInfo)
         {
             CertificateCheck certificateCheck = new CertificateCheck(_logs);
             bool ishumbprint = false;
             fileThumbprintInfo = "Error";
-            if (!certificateCheck.CheckFile_Thumbprint(filePath, _fWUpdateInfo.Thumbprint, out string FileCAInfo))
+            ishumbprint = certificateCheck.CheckFile_Thumbprint(filePath, standThumbprint, out string FileCAInfo);
+            if (ishumbprint)
             {
-                _logs.DebugMsg_1(_fWUpdateInfo.DeviceName + " File check fail. Ex:" + FileCAInfo);
+                _logs.DebugMsg_1($"{_fWUpdateInfo.DeviceName} CheckFile_Thumbprint pass");
+            }
+            else
+            {
+                _logs.DebugMsg_1($"{_fWUpdateInfo.DeviceName} CheckFile_Thumbprint fail FileCAInfo : {FileCAInfo}");
                 _fWUpdateInfo.FWUErrorCode = FWUErrorCode.FileCheckFail;
+#if IL_NotReady
+                ishumbprint = true;//Wait IL R14 force true
+#endif
             }
             return ishumbprint;
         }
@@ -2070,33 +2105,20 @@ namespace DDPM.SA.Plugins.User.FWUpdate
             Unzip unzip = new Unzip(_logs);
             exeFilePath = "";
             string FileCAInfo = "Pass";
-            if (unzip.CheckFileIsZip(filePath))
+            _logs.DebugMsg_1($"{_fWUpdateInfo.DeviceName} CheckSHA go.");
+            if (CheckSHA(filePath, out FileCAInfo))
             {
-                _logs.DebugMsg_1($"{_fWUpdateInfo.DeviceName} File is zip.");
-                _logs.DebugMsg_1($"{_fWUpdateInfo.DeviceName} check SHA start.");
-                if (CheckSHA(filePath, out FileCAInfo))
+                ret = true;
+                if (unzip.CheckFileIsZip(filePath))
                 {
-                    _logs.DebugMsg_1($"{_fWUpdateInfo.DeviceName} ExecuteUnzip start.");
+                    _logs.DebugMsg_1($"{_fWUpdateInfo.DeviceName} File is zip.");
+                    _logs.DebugMsg_1($"{_fWUpdateInfo.DeviceName} ExecuteUnzip go.");
                     if (unzip.ExecuteUnzip(filePath, extractPath, out exeFilePath))
                     {
-                        if (!string.IsNullOrEmpty(exeFilePath))
+                        if (string.IsNullOrEmpty(exeFilePath))
                         {
-                            _logs.DebugMsg_1($"{_fWUpdateInfo.DeviceName} check Thumbprint start.");
-                            CertificateCheck certificateCheck = new CertificateCheck(_logs);
-                            if (certificateCheck.CheckFile_Thumbprint(exeFilePath, _fWUpdateInfo.Thumbprint, out FileCAInfo))
-                            {
-                                ret = true;
-                                _logs.DebugMsg_1($"{_fWUpdateInfo.DeviceName} check done.");
-                            }
-                            else
-                            {
-#if IL_NotReady
-                                ret = true;//Wait IL R14 force true
-#endif
-                                _fWUpdateInfo.FWUErrorCode = FWUErrorCode.FileCheckFail;
-                                _logs.DebugMsg_1($"{_fWUpdateInfo.DeviceName} File check Thumbprint fail. Ex: {FileCAInfo}");
-                            }
-
+                            ret = false;
+                            _logs.DebugMsg_1($"{_fWUpdateInfo.DeviceName} exeFilePath IsNullOrEmpty.");
                         }
                     }
                     else
@@ -2106,61 +2128,8 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                 }
                 else
                 {
-                    _fWUpdateInfo.FWUErrorCode = FWUErrorCode.FileCheckFail;
-                    _logs.DebugMsg_1($"{_fWUpdateInfo.DeviceName} File check SHA fail. Ex: {FileCAInfo}");
-#if IL_NotReady
-                    //////////////Wait IL R14 force true//////////////////
-                    if (unzip.ExecuteUnzip(filePath, extractPath, out exeFilePath))
-                    {
-                        if (!string.IsNullOrEmpty(exeFilePath))
-                        {
-                            _logs.DebugMsg_1($"{_fWUpdateInfo.DeviceName} check Thumbprint start.");
-                            CertificateCheck certificateCheck = new CertificateCheck(_logs);
-                            if (certificateCheck.CheckFile_Thumbprint(exeFilePath, _fWUpdateInfo.Thumbprint, out FileCAInfo))
-                            {
-                                ret = true;
-                                _logs.DebugMsg_1($"{_fWUpdateInfo.DeviceName} check done.");
-                            }
-                            else
-                            {
-                                ret = true;
-                                _fWUpdateInfo.FWUErrorCode = FWUErrorCode.FileCheckFail;
-                                _logs.DebugMsg_1($"{_fWUpdateInfo.DeviceName} File check Thumbprint fail. Ex: {FileCAInfo}");
-                            }
-                        }
-                    }
-                    else
-                    {
-                        _logs.DebugMsg_1($"{_fWUpdateInfo.DeviceName} Unzip Faile");
-                    }
-                    //////////////Wait IL R14 force true//////////////////
-#endif
-                }
-            }
-            else
-            {
-                _logs.DebugMsg_1($"{_fWUpdateInfo.DeviceName} File is exe.");
-                _logs.DebugMsg_1($"{_fWUpdateInfo.DeviceName} check SHA start.");
-                exeFilePath = filePath;
-                if (CheckSHA(exeFilePath, out FileCAInfo))
-                {
-                    _logs.DebugMsg_1($"{_fWUpdateInfo.DeviceName} check Thumbprint start.");
-                    CertificateCheck certificateCheck = new CertificateCheck(_logs);
-                    if (certificateCheck.CheckFile_Thumbprint(exeFilePath, _fWUpdateInfo.Thumbprint, out FileCAInfo))
-                    {
-                        ret = true;
-                        _logs.DebugMsg_1($"{_fWUpdateInfo.DeviceName} check done.");
-                    }
-                    else
-                    {
-                        _fWUpdateInfo.FWUErrorCode = FWUErrorCode.FileCheckFail;
-                        _logs.DebugMsg_1($"{_fWUpdateInfo.DeviceName} File check Thumbprint fail. Ex: {FileCAInfo}");
-                    }
-                }
-                else
-                {
-                    _fWUpdateInfo.FWUErrorCode = FWUErrorCode.FileCheckFail;
-                    _logs.DebugMsg_1($"{_fWUpdateInfo.DeviceName} File check SHA fail. Ex: {FileCAInfo}");
+                    _logs.DebugMsg_1($"{_fWUpdateInfo.DeviceName} File is exe.");
+                    exeFilePath = filePath;
                 }
             }
             _logs.DebugMsg_1($"{_fWUpdateInfo.DeviceName} {nameof(Unzip)} done");
