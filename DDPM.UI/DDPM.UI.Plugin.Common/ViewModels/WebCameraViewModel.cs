@@ -1071,6 +1071,7 @@ namespace DDPM.UI.Plugin.ViewModels
                 {
                     AlertType = WebcamAlert.Alert1;
                     AlertVisibility = Visibility.Visible;
+                    //AlertVisibility = Visibility.Collapsed;
                 }).Start();
                 //AlertType = WebcamAlert.Alert1;
                 //AlertVisibility = Visibility.Visible;
@@ -1080,6 +1081,7 @@ namespace DDPM.UI.Plugin.ViewModels
                 OnPropertyChanged(nameof(IsHDROnText));
                 new Thread(() =>
                 {
+                    Thread.Sleep(500);
                     AlertVisibility = Visibility.Collapsed;
                 }).Start();
             }
