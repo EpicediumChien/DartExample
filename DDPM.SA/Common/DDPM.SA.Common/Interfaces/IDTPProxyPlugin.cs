@@ -100,6 +100,9 @@ namespace DDPM.SA.Common
         Task<bool> GetMenuCenterRightClickSetting();
         Task<bool> GetIsSideTopButtonHoverClick();
         Task<bool> GetIsSideBottomButtonHoverClick();
+        Task<bool> StartKeyCapturePen();
+        Task<bool> FinishKeyCapturePen();
+        Task<string> KeyCaptureData();
 
         #endregion
 

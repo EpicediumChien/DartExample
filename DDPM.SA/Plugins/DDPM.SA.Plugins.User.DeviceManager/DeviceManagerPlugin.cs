@@ -7885,6 +7885,18 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         {
             return await Task.Run(() => _DTPProxyPlugin.GetPenDeviceItemsEx());
         }
+        public Task<bool> StartKeyCapturePen()
+        {
+            return _DTPProxyPlugin.StartKeyCapturePen();
+        }
+        public Task<bool> FinishKeyCapturePen()
+        {
+            return _DTPProxyPlugin.FinishKeyCapturePen();
+        }
+        public Task<string> KeyCaptureData()
+        {
+            return _DTPProxyPlugin.KeyCaptureData();
+        }
 
         public Task<string> PairingPen()
         {
