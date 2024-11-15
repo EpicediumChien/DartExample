@@ -10851,13 +10851,20 @@ namespace DDPM.CLI.Plugins.Display
                         {
                             var support_languages = (JArray)item2["On Screen Display Language"];
                             support_languages.ToObject<List<string>>().ToArray();
+                            // portuguese change to brazilianportuguese
+                            if (commandLineInput.Options[0].Option_Value.ToLower() == "portuguese")
+                            {
+                                var portugueseTemp = support_languages.ToObject<List<string>>().Find(_ => _.ToLower() == "portuguese");
+                                if (portugueseTemp is null)
+                                    commandLineInput.Options[0].Option_Value = "BRAZILIANPORTUGUESE";
+                            }
                             foreach (var support_language in support_languages)
                             {
                                 writelog($"OSDLanguage SET entry");
-                                if (get_language(GetOSDLanguage_index(commandLineInput.Options[0].Option_Value).ToString()).ToLower() == support_language.ToString().ToLower())
+                                if (get_language(GetOSDLanguage_index(commandLineInput.Options[0].Option_Value.ToLower()).ToString()).ToLower() == support_language.ToString().ToLower())
                                 {
                                     in_support_languages = true;
-                                    retcode = SetVCPCode(devMgr, monitor, "0xCC", GetOSDLanguage_index(commandLineInput.Options[0].Option_Value).ToString()).Result;
+                                    retcode = SetVCPCode(devMgr, monitor, "0xCC", GetOSDLanguage_index(commandLineInput.Options[0].Option_Value.ToLower()).ToString()).Result;
                                     cli_Response.Value = commandLineInput.Options[0].Option_Value;
                                 }
                             }
