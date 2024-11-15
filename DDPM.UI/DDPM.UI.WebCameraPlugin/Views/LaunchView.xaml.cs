@@ -213,6 +213,9 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                         imgDevice.Visibility = Visibility.Hidden;
                         Preview();
                         CameraImage.Visibility = Visibility.Visible;
+
+                        //_vm.WebcamGrid
+
                     });
 
                 }
@@ -225,6 +228,9 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                     {
                         CameraImage.Visibility = Visibility.Hidden;
                         _ = CleanupMediaCaptureAsync();
+
+                        grdPreview.Visibility = Visibility.Hidden;
+
 
                         imgDevice.Visibility = Visibility.Visible;
                         DoubleAnimation visibilityAnimation = new()
@@ -377,14 +383,14 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                     return;
                 }
 
-                /*DoubleAnimation visibilityAnimation = new()
+                DoubleAnimation visibilityAnimation = new()
                 {
                     From = 1,
                     To = 0,
                     Duration = new Duration(TimeSpan.FromSeconds(0.3))
                 };
                 visibilityAnimation.Completed += ShowGrid;
-                imgDevice.BeginAnimation(OpacityProperty, visibilityAnimation);*/
+                imgDevice.BeginAnimation(OpacityProperty, visibilityAnimation);
 
                 writeableBitmap = new(
                     (int)mediaFrameSource.CurrentFormat.VideoFormat.Width,
