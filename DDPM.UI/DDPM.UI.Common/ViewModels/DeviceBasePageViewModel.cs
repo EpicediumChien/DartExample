@@ -633,12 +633,16 @@ namespace DDPM.UI.Common.ViewModels
         public void HandleSelectedHomeDeviceChanged()
         {
             RefreshGroupManagerUIByModuleCapabilities();
+            if ((_selectedHomeDevice != null) && (_selectedHomeDevice.MonitorInfo != null))
+                HandleDdcCiOffEvent(_selectedHomeDevice.MonitorInfo.DDCisON);
 
             if (SelectedHomeDeviceChanged != null)
-                SelectedHomeDeviceChanged(this, EventArgs.Empty);
+            {
+               SelectedHomeDeviceChanged(this, EventArgs.Empty);
+            }
 
             //handle the last select monitor
-            if(DdpmCommonHelper.DeviceManagerSA != null)
+            if (DdpmCommonHelper.DeviceManagerSA != null)
             {
                 if( DdpmCommonHelper.ModuleOwner != null && 
                     DdpmCommonHelper.ModuleOwner.SelectedHomeDevice != null &&
@@ -952,6 +956,24 @@ namespace DDPM.UI.Common.ViewModels
         #endregion
 
         #region Set Selected Group/Module 
+        public bool ShowDisplayHotkeysModule()
+        {
+            //Find the terget Group
+            int idxGroup = FindGroupIndexByGroupName(Constants.GroupName_InputSource);
+            if (idxGroup < 0) //Not found
+                return false;
+            ModuleGroup mg = ModuleGroups[idxGroup];
+
+            //Set the selected Module
+            int idxHeader = mg.SetSelectedRightVewHeaderByModuleName(Constants.ModuleName_DisplayHotkeys);
+            if (idxHeader < 0)
+                return false;
+
+            //Switch to the terget Group
+            GroupSelectedIndex = idxHeader;
+            return true;
+        }
+
         /// <summary>
         /// Change to the specific Group/Module
         /// </summary>
@@ -973,7 +995,7 @@ namespace DDPM.UI.Common.ViewModels
                 return false;
 
             //Switch to the terget Group
-            GroupSelectedIndex = GroupSelectedIndex;
+            GroupSelectedIndex = idxGroup;
             return true;
         }
         #endregion  Set Selected Group/Module 

@@ -38,13 +38,21 @@ namespace DDPM.UI.Common
 
         public void AddHeader(string headerText, IDdpmModule module)
         {
-            _headers.Add(new RightViewHeader(0, headerText, module));
+            RightViewHeader header = new RightViewHeader(0, headerText, module);
+            if (module != null)
+            {
+                header.ModuleName = module.ModuleName;
+            }
+            _headers.Add(header);
         }
 
-        public void AddHeader(string headerText, Type moduleType)
+        public void AddHeader(string headerText, Type moduleType, string moduleName="")
         {
             _headers.Add(new RightViewHeader(0, headerText, null)
-            { ModuleType = moduleType });
+            {
+                ModuleType = moduleType,
+                ModuleName = moduleName
+            });
         }
 
         public ObservableCollection<RightViewHeader> Headers { get => _headers; }
@@ -99,6 +107,39 @@ namespace DDPM.UI.Common
                 if (Headers[idx].DdpmModule != null)
                 {
                     if (Headers[idx].DdpmModule.ModuleName.Equals(moduleName, StringComparison.OrdinalIgnoreCase))
+                        return idx;
+                }
+                else //The DdpmModule did not been created
+                {
+                    if (Headers[idx].ModuleName.Equals(moduleName, StringComparison.OrdinalIgnoreCase))
+                        return idx;
+                }
+            }
+            return -1;
+        }
+
+        /// <summary>
+        /// Find the index of ReightViewHeader by ModuleType
+        /// </summary>
+        /// <param name="moduleType">The ModuleType to find
+        /// One of DDPM.UI.Common.Constants.ModuleName_XXXX
+        /// </param>
+        /// <returns>Return the index, or -1 if not found.</returns>
+        public int FindRightViewHeaderIndexByModuleType(Type moduleType)
+        {
+            if (HeaderCount <= 0) return -1;
+
+            for (int idx = 0; idx < HeaderCount; idx++)
+            {
+                if (Headers[idx].DdpmModule != null)
+                {
+                    IDdpmModule mod = Headers[idx].DdpmModule;
+                    if (mod.GetType().Equals(moduleType))
+                        return idx;
+                }
+                else //The DdpmModule did not been created
+                {
+                    if (Headers[idx].ModuleType == moduleType)
                         return idx;
                 }
             }

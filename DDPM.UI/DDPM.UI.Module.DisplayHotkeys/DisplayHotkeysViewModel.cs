@@ -4,6 +4,7 @@ using DDPM.SA.Common.Display;
 using DDPM.SA.Common.Settings;
 using DDPM.UI.Common;
 using DDPM.UI.Common.Interfaces;
+using DDPM.UI.Common.Models;
 using Dell.Client.Framework.Common;
 using Dell.Client.Framework.UX.WPF;
 using System;
@@ -511,6 +512,8 @@ namespace DDPM.UI.Module.DisplayHotkeys
                 OnPropertyChanged("FavoriteInput_Selected");
                 OnPropertyChanged("SwitchInput1_Selected");
                 OnPropertyChanged("SwitchInput2_Selected");
+
+                OnPropertyChanged("HasCapability_PipTogglePosition");
                 //OnPropertyChanged("FavoriteInput_Selected_Index");
 
                 MonitorInfo? monitorInfo = DisplayHotkeysModule.SelectedHomeDevice.MonitorInfo;
@@ -596,6 +599,36 @@ namespace DDPM.UI.Module.DisplayHotkeys
         }
 
         #endregion UI Enable Flags
+
+        #region HasCapability_xxxx flags
+        //Robert_Lin, 2024-11-14 after add HasCapability_xxx in HomeDevice class
+        //PxpMode Code:
+        public const string PipMode_Small = "21";
+        public const string PipMode_Large = "22";
+
+        public const string PipMode_SizeToggle = "01";
+        public const string PipMode_PositionToggle = "02";
+
+        public bool HasCapability_Pxp
+        {
+            get
+            {
+                HomeDevice homeDevice = DisplayHotkeysModule.SelectedHomeDevice;
+                return homeDevice.HasCapability_PipPbp;
+            }
+        }
+        public bool HasCapability_PipTogglePosition
+        {
+            get
+            {
+                HomeDevice homeDevice = DisplayHotkeysModule.SelectedHomeDevice;
+                //Self test
+                //return false;
+                return homeDevice.HasCapability_PxpMode(PipMode_PositionToggle);
+            }
+        }
+        #endregion
+
         #region Log
         private ILog? _log;
         public void InitLog()
