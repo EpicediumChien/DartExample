@@ -312,7 +312,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                     _log.Info($"@ DeviceName=[{e.device_peripherals.Name}]");
                 }
 
-                // Add¤~¶i§PÂ_Walkthrough§PÂ_
+                // If event Contains Add, then into Walkthrough
                 if (e.changedProperty.ToLower().Contains("add"))
                 {
                     _log.Info($"[Walkthrough] {nameof(_deviceManager_DeviceChanged)} Start");
