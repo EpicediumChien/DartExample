@@ -178,7 +178,7 @@ namespace DDPM.SA.Plugins.User.DisplayProperties.Test
             PrivateObject privateObject = new PrivateObject(edidparser);
             privateObject.SetFieldOrProperty("HexString", hexString);
             var result = edidparser.GetModelName();
-            string expectedModelName = "DELLU2724DE";
+            string expectedModelName = "U2724DE";
             string actualModelName = result;
             string result2 = "";
             int num = hexString.IndexOf(ModelName_Header);
