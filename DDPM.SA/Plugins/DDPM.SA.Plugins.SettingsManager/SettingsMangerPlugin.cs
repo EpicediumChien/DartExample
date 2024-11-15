@@ -362,10 +362,13 @@ namespace DDPM.SA.Plugins.SettingsManager
 #if DEBUG
             Console.WriteLine(text);
 #endif
-            if (log_type == log_type.info)
-                Log.Info(text);
-            else
-                Log.Error(text);
+            if (Log != null)
+            {
+                if (log_type == log_type.info)
+                    Log.Info(text);
+                else
+                    Log.Error(text);
+            }
         }
 
         private DDPMITConfig InitDDPMITConfigFile()

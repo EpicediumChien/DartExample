@@ -4272,10 +4272,13 @@ namespace DDPM.CLI.Plugins.Display
 
             text = $"[CLI Plugin Display] {text}, Calss:{className}, Caller Name:{memberName}, Source Line {sourceLineNumber}";
             //Console.WriteLine(text);
-            if (log_type == log_type.info)
-                Log.Info(text);
-            else
-                Log.Error(text);
+            if (Log != null)
+            {
+                if (log_type == log_type.info)
+                    Log.Info(text);
+                else
+                    Log.Error(text);
+            }
         }
 
         private static string get_inputsource_type(string index)
