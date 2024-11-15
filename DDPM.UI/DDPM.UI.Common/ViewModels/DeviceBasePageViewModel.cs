@@ -539,7 +539,13 @@ namespace DDPM.UI.Common.ViewModels
                         //_selectedHomeDevice.UpdateBatteryIndicator();
                         //Selection changed
                         HandleSelectedHomeDeviceChanged();
-                    }
+
+                        //Robert_Lin, 2024-11-15 Show the OSD-Product on the selected Monitor
+                        if ((DdpmCommonHelper.DeviceManagerSA != null) && (_selectedHomeDevice != null))
+                        {
+                            DdpmCommonHelper.DeviceManagerSA.ShowOSD(_selectedHomeDevice.MonitorInfo, OSDType.DisplayChanged);
+                        }
+                     }
                 }
             }
         }
