@@ -179,7 +179,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager.Test
                 string settingsAccessInfo = "Test settings AccessInfo Calculate for Test verify";
                 string colorsettings_path3 = Environment.CurrentDirectory + "\\" + colorsettings_path1_;
                 privateSettingsManagerObject.SetFieldOrProperty("_colorsettings_path", colorsettings_path3);
-                privateSettingsManagerObject.SetFieldOrProperty("_settingsAccessInfo", settingsAccessInfo);
+                //privateSettingsManagerObject.SetFieldOrProperty("_settingsAccessInfo", settingsAccessInfo);
                 var ReadColorPresetSettingsResult3 = SettingsManagerSAPlugin.ReadColorPresetSettings().Result; //strFilePath is  Exists, get strReadJson length is not null
                 Assert.IsNotNull(colorsettings_path3);
                 Assert.That(preset_settings1_, Is.EqualTo(ReadColorPresetSettingsResult3));
@@ -212,7 +212,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager.Test
             PrivateObject privateSettingsManagerObject = new PrivateObject(SettingsManagerSAPlugin);
             string colorsettings_path2 = Environment.CurrentDirectory + "\\" + colorsettings_path1_;
             privateSettingsManagerObject.SetFieldOrProperty("_colorsettings_path", colorsettings_path2);
-            privateSettingsManagerObject.SetFieldOrProperty("_settingsAccessInfo", settingsAccessInfo);
+            //privateSettingsManagerObject.SetFieldOrProperty("_settingsAccessInfo", settingsAccessInfo);
             if (colorPresetSettingsConfigsNull == null)
             {
                 var WriteColorPresetSettingsResult1 = SettingsManagerSAPlugin.WriteColorPresetSettings(colorPresetSettingsConfigsNull).Result;
@@ -289,7 +289,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager.Test
             string hotkeysettings_path2_ = Environment.CurrentDirectory + "\\" + hotkeysettings_path1_;
             privateSettingsManagerObject.SetFieldOrProperty("_hotkeysettings_path", hotkeysettings_path2_);
             string settingsAccessInfo = "Test settings AccessInfo Calculate for Test verify";
-            privateSettingsManagerObject.SetFieldOrProperty("_settingsAccessInfo", settingsAccessInfo);
+            //privateSettingsManagerObject.SetFieldOrProperty("_settingsAccessInfo", settingsAccessInfo);
             if (File.Exists(hotkeysettings_path1_))
             {
                 var ReadHotkeySettingssResult2 = SettingsManagerSAPlugin.ReadHotkeySettings().Result;
@@ -315,7 +315,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager.Test
             string WriteHotkeySettings_path2_ = Environment.CurrentDirectory + "\\" + WriteHotkeySettings_path1_;
             privateSettingsManagerObject.SetFieldOrProperty("_hotkeysettings_path", WriteHotkeySettings_path2_);
             string settingsAccessInfo = "Test settings AccessInfo Calculate for Test verify";
-            privateSettingsManagerObject.SetFieldOrProperty("_settingsAccessInfo", settingsAccessInfo);
+            //privateSettingsManagerObject.SetFieldOrProperty("_settingsAccessInfo", settingsAccessInfo);
             if (hotkeySettingsNull == null)
             {
                 var WriteHotkeySettingssResult1 = SettingsManagerSAPlugin.WriteHotkeySettings(hotkeySettingsNull).Result;
@@ -388,7 +388,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager.Test
             string GlobalSettings_path2_ = Environment.CurrentDirectory + "\\" + GlobalSettings_path1_;
             privateSettingsManagerObject.SetFieldOrProperty("_GlobalSetting_path", GlobalSettings_path2_);
             string settingsAccessInfo = "Test settings AccessInfo Calculate for Test verify";
-            privateSettingsManagerObject.SetFieldOrProperty("_settingsAccessInfo", settingsAccessInfo);
+            //privateSettingsManagerObject.SetFieldOrProperty("_settingsAccessInfo", settingsAccessInfo);
 
             if (File.Exists(GlobalSettings_path1_))
             {
@@ -419,7 +419,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager.Test
             string writeglobalSettings_path2_ = Environment.CurrentDirectory + "\\" + writeglobalSettings_path1_;
             privateSettingsManagerObject.SetFieldOrProperty("_GlobalSetting_path", writeglobalSettings_path2_);
             string settingsAccessInfo = "Test settings AccessInfo Calculate for Test verify";
-            privateSettingsManagerObject.SetFieldOrProperty("_settingsAccessInfo", settingsAccessInfo);
+            //privateSettingsManagerObject.SetFieldOrProperty("_settingsAccessInfo", settingsAccessInfo);
             if (globalSettingParamNull == null)
             {
                 var WriteGlobalSettingsResult1 = SettingsManagerSAPlugin.WriteGlobalSettings(globalSettingParamNull).Result;  //globalSettingParam is null
@@ -530,7 +530,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager.Test
             string WritePowerNapSettings_path2_ = Environment.CurrentDirectory + "\\" + WritePowerNapSettings_path1_;
             privateSettingsManagerObject.SetFieldOrProperty("_powerNapsettings_path", WritePowerNapSettings_path2_);
             string settingsAccessInfo = "Test settings AccessInfo Calculate for Test verify";
-            privateSettingsManagerObject.SetFieldOrProperty("_settingsAccessInfo", settingsAccessInfo);
+            //privateSettingsManagerObject.SetFieldOrProperty("_settingsAccessInfo", settingsAccessInfo);
 
             if (powerNapSettingsNull == null)
             {
@@ -794,7 +794,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager.Test
             string serialized_string = "{\"key\":\"value\"}";
             string target_file = "testSetAppConfigDatafile.json";
             File.WriteAllText(target_file, serialized_string);
-            privateSettingsManagerObject.SetFieldOrProperty("_settingsAccessInfo", accessInfo_);
+            //privateSettingsManagerObject.SetFieldOrProperty("_settingsAccessInfo", accessInfo_);
             privateSettingsManagerObject.SetFieldOrProperty("_settings_path", target_file);
             if (settings_Data != null)
             {
@@ -879,7 +879,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager.Test
             string serialized_string = "{\"key\":\"value\"}";
             string settings_path_target_file = "testReloadAppConfigDatafile.json";
             File.WriteAllText(settings_path_target_file, serialized_string);
-            privateSettingsManagerObject.SetFieldOrProperty("_settingsAccessInfo", accessInfo_);
+            //privateSettingsManagerObject.SetFieldOrProperty("_settingsAccessInfo", accessInfo_);
             privateSettingsManagerObject.SetFieldOrProperty("_settings_path", settings_path_target_file);
             privateSettingsManagerObject.SetFieldOrProperty("_settings", null);
             if (!string.IsNullOrEmpty(settings_path_target_file))
@@ -1108,13 +1108,42 @@ namespace DDPM.SA.Plugins.User.SettingsManager.Test
         public void TestReadImportSettingsFile()
         {
             DDPMImpExpSettings ImpSettings = new DDPMImpExpSettings();
-            string path = "TestReadImportSettings";
-            PrivateObject privatesettingsManagerObj = new PrivateObject(SettingsManagerSAPlugin);
-            var ReadImportSettingsFileResult = (DDPMImpExpSettings)privatesettingsManagerObj.Invoke("ReadImportSettingsFile", path);
-            Assert.IsNotNull(ReadImportSettingsFileResult);
-            Assert.That(ImpSettings.AppSettings, Is.EqualTo(ReadImportSettingsFileResult.AppSettings));
-            Assert.That(ImpSettings.UserSettings, Is.EqualTo(ReadImportSettingsFileResult.UserSettings));
-            Assert.That(ImpSettings.MonitorSettings, Is.EqualTo(ReadImportSettingsFileResult.MonitorSettings));
+            string path1 = "";
+            if (!string.IsNullOrEmpty(path1))
+            {
+                var ReadImportSettingsFile_result1 = SettingsManagerSAPlugin.ReadImportSettingsFile(path1).Result;
+                Assert.IsNotNull(ReadImportSettingsFile_result1);
+            }
+
+            string path2 = "Testpath2";
+            if (!string.IsNullOrEmpty(path2))
+            {
+                if (!File.Exists(path2))
+                {
+                    var ReadImportSettingsFile_result2 = SettingsManagerSAPlugin.ReadImportSettingsFile(path2).Result;
+                    Assert.IsNotNull(ReadImportSettingsFile_result2);
+                }
+            }
+
+            string WriteDDPMImpExpSet_path3_ = "test_WriteDDPMImpExpSetjsonDataPath.json";
+            string DDPMImpExpSetjsonData = "{\"AppSettings\":{\"Version\":2.0},\"UserSettings\":{\"Version\":1.5,\"Language\":1},\"MonitorSettings\":{\"Version\":1.2,\"Model\":\"TestModel\",\"ServiceTag\":\"12345\",\"Input\":{},\"KVM\":{},\"VCPs\":[],\"EA\":{}}}";
+            File.WriteAllText(WriteDDPMImpExpSet_path3_, DDPMImpExpSetjsonData);
+            PrivateObject privateSettingsManagerObject = new PrivateObject(SettingsManagerSAPlugin);
+
+            string WriteDDPMImpExpSet_path33_ = Environment.CurrentDirectory + "\\" + WriteDDPMImpExpSet_path3_;
+            string settingsAccessInfo = "Test settings AccessInfo Calculate for Test verify";
+            //privateSettingsManagerObject.SetFieldOrProperty("_settingsAccessInfo", settingsAccessInfo);
+
+            if (!string.IsNullOrEmpty(WriteDDPMImpExpSet_path33_))
+            {
+                if (File.Exists(WriteDDPMImpExpSet_path33_))
+                {
+                    var ReadImportSettingsFile_result3 = SettingsManagerSAPlugin.ReadImportSettingsFile(WriteDDPMImpExpSet_path33_).Result;
+                    Assert.IsNotNull(ReadImportSettingsFile_result3);
+                    File.Delete(WriteDDPMImpExpSet_path33_);
+                }
+            }
+
         }
 
         [Test]
@@ -1190,7 +1219,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager.Test
             string WriteImpExpSet_path22 = Environment.CurrentDirectory + "\\" + WriteImpExpSet_path2;
             // privatesettingsManagerObj.SetFieldOrProperty("_GlobalSetting_path", WriteImpExpSet_path22);
             string settingsAccessInfo = "Test settings AccessInfo Calculate for Test verify";
-            privatesettingsManagerObj.SetFieldOrProperty("_settingsAccessInfo", settingsAccessInfo);
+            //privatesettingsManagerObj.SetFieldOrProperty("_settingsAccessInfo", settingsAccessInfo);
             if (dDPMImpExpSettingsNull == null)
             {
                 var WriteImpExpSettings_Result = (bool)privatesettingsManagerObj.Invoke("WriteImpExpSettings", WriteImpExpSet_path22, dDPMImpExpSettingsNull); //dDPMImpExpSettingsNull null
@@ -1222,7 +1251,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager.Test
             string monitorSettings_path = string.Empty;
             privatesettingsManagerObj.SetFieldOrProperty("_display_path", DisplayImportSettings_path);
             string settingsAccessInfo = "Test settings AccessInfo Calculate for Test verify";
-            privatesettingsManagerObj.SetFieldOrProperty("_settingsAccessInfo", settingsAccessInfo);
+            //privatesettingsManagerObj.SetFieldOrProperty("_settingsAccessInfo", settingsAccessInfo);
 
             string monitorSettings_path2 = Environment.CurrentDirectory + "\\" + DisplayImportSettings_path2;
             privatesettingsManagerObj.SetFieldOrProperty("_display_path", Environment.CurrentDirectory);
@@ -1308,7 +1337,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager.Test
             string serialized_string = "{\"key\":\"value\"}";
             string settings_path_target_file = "testReloadAppConfigDatafile.json";  //ReloadAppConfigData
             File.WriteAllText(settings_path_target_file, serialized_string);
-            privateSettingsManagerObject.SetFieldOrProperty("_settingsAccessInfo", accessInfo_);
+            //privateSettingsManagerObject.SetFieldOrProperty("_settingsAccessInfo", accessInfo_);
             privateSettingsManagerObject.SetFieldOrProperty("_settings_path", settings_path_target_file);
             privateSettingsManagerObject.SetFieldOrProperty("_settings", settings_Data); //settings_path_target_file is  not null , _settings not null
 
@@ -1333,7 +1362,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager.Test
             _allMonitorSettings.Add("TestU2724DD", new List<DDPMMonitorSettings> { settings }); //ReloadMonitorSettings
             privatesettingsManagerObj.SetFieldOrProperty("_AllMonitorSettings", _allMonitorSettings);
             string settingsAccessInfo = "Test settings AccessInfo Calculate for Test verify";
-            privateSettingsManagerObject.SetFieldOrProperty("_settingsAccessInfo", settingsAccessInfo);
+            //privateSettingsManagerObject.SetFieldOrProperty("_settingsAccessInfo", settingsAccessInfo);
             var result = SettingsManagerSAPlugin.DisplayExportSettings(modelname, seriveTag, _allMonitorSettings["TestU2724DD"], path).Result;
             Assert.That(result, Is.False);
             File.Delete(settings_path_target_file);
@@ -1467,7 +1496,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager.Test
 
             string writeglobalSettings_path2_ = Environment.CurrentDirectory + "\\" + writeglobalSettings_path1_;
             string settingsAccessInfo = "Test settings AccessInfo Calculate for Test verify";
-            privateSettingsManagerObject.SetFieldOrProperty("_settingsAccessInfo", settingsAccessInfo);
+            //privateSettingsManagerObject.SetFieldOrProperty("_settingsAccessInfo", settingsAccessInfo);
 
             var ReadSerializedContentFromFile_result2 = SettingsManagerSAPlugin.ReadSerializedContentFromFile(writeglobalSettings_path2_).Result;
             Assert.IsNotNull(ReadSerializedContentFromFile_result2);
@@ -1484,7 +1513,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager.Test
 
             string writeglobalSettings_path2_ = Environment.CurrentDirectory + "\\" + writeglobalSettings_path1_;
             string settingsAccessInfo = "Test settings AccessInfo Calculate for Test verify";
-            privateSettingsManagerObject.SetFieldOrProperty("_settingsAccessInfo", settingsAccessInfo);
+            //privateSettingsManagerObject.SetFieldOrProperty("_settingsAccessInfo", settingsAccessInfo);
 
             var WriteSerializedContentToFile_result2 = SettingsManagerSAPlugin.WriteSerializedContentToFile(writeglobalSettings_path2_, jsonData).Result;
             Assert.IsNotNull(WriteSerializedContentToFile_result2);

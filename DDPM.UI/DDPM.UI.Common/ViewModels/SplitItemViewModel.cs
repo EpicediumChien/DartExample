@@ -52,10 +52,13 @@ namespace DDPM.UI.Common.ViewModels
                     return _split.Description;
                 else if (SplitCtrl != null)
                 {
+                    if (User32.IniReadInt("DDPMDebug", "EzArrange.SplitItem.Tooltip.ShowDebugInfo", 0, @"C:\temp\DDPMDebug.txt")==1)
+                    {
+                        //Debug version
+                        return $"[{SplitCtrl.EAID}]{SplitCtrl.FriendlyName}";
+                    }
                     //Release version:
                     return $"{SplitCtrl.FriendlyName}";
-                    //Debug version
-                    //return $"[{CustomId}]{SplitCtrl.FriendlyName}";
                 }
                 return "";
             }

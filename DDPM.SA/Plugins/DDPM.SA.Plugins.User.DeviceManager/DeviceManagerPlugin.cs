@@ -45,7 +45,6 @@ using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Reflection;
-using System.Runtime.InteropServices;
 using System.Security.Policy;
 using System.Threading;
 using System.Threading.Tasks;
@@ -172,11 +171,15 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         private JobQueue _hotkeyJobQueue = new JobQueue();
 
         private static MonitorInfo lastSelectedMonitor_UI = null;
+        private bool isBypassHotkey { get; set; } = false;
 
         //powerNap
         private JobQueue _powerNapJobQueue = new JobQueue();
 
         private static System.Timers.Timer _PowerNapTimer = new System.Timers.Timer(2000);
+
+        //USBKVM auto switch USB upstream ports in PBP side-by-side mode
+        private static System.Timers.Timer _USBKVMAutoSwitchTimer = new System.Timers.Timer(1500);
 
         //FW update progress bar
         private UpdateProgress _UpdateProgress;
@@ -225,10 +228,288 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             _PowerNapTimer.Elapsed += OnPowerNapTimedRaise;
             _PowerNapTimer.AutoReset = true;
             _PowerNapTimer.Enabled = true;
+
+            _USBKVMAutoSwitchTimer.Elapsed += OnUsbKvmAutoSwitchTimedRaise;
+            _USBKVMAutoSwitchTimer.AutoReset = true;
+            _USBKVMAutoSwitchTimer.Enabled = true;
+
             UXSystemParameters.Instance.ParameterChangedEvent += UXSystemParametersChanged;
             writelog("DeviceManagerPlugin constructor ...");
 
             _isSubagentActive = WTSFunction.IsYourProcessInActiveSession(Log);
+        }
+
+        private string debugPreMsg = string.Empty;
+        private System.Drawing.Point previousCursorPosition = new System.Drawing.Point { X = 0, Y = 0 };
+        private bool isKvm_Auto_SwitchKbMsKey = false;
+        private bool isKvm_Auto_SwitchKbMsWideMove = false;
+        private int KvmAutoSwitchCounter = 0;
+
+        private void OnUsbKvmAutoSwitchTimedRaise(object sender, ElapsedEventArgs e)
+        {
+            //cursor position
+            System.Drawing.Point cursorPosition = Cursor.Position;
+            // retrieve the monitor object from cursor's position
+            Screen currentScreen = Screen.FromPoint(cursorPosition);
+            MonitorInfo monitorInfo = _AllInfoMonitors.Find(x => x.DisplayName.ToUpper().Equals(currentScreen.DeviceName.ToUpper()));
+            if (monitorInfo != null)
+            {
+                string debugMsg = $"monitor:{monitorInfo.modelName}{monitorInfo.edid.SerialNumber}:currentScreen.WorkingAreaWidth={currentScreen.WorkingArea.Width}:inputCable={monitorInfo.inputCable};inputSource={monitorInfo.inputSource};{currentScreen.DeviceName};Primary:{currentScreen.Primary};WorkingArea.X:{currentScreen.WorkingArea.X};,X={cursorPosition.X},Y={cursorPosition.Y}";
+
+                if (isKvm_Auto_SwitchKbMsWideMove)
+                {
+                    if ((cursorPosition.X <= (previousCursorPosition.X - 50)) || (cursorPosition.X >= (previousCursorPosition.X + 50)) ||
+                        (cursorPosition.Y <= (previousCursorPosition.Y - 50)) || (cursorPosition.Y >= (previousCursorPosition.Y + 50)))
+                    {
+                        isKvm_Auto_SwitchKbMsWideMove = false;
+                    }
+                    return;
+                }
+                if (isUsbKvmCursorEdge(monitorInfo, currentScreen, cursorPosition))
+                {
+                    KvmAutoSwitchCounter += 1;
+                }
+                else
+                {
+                    KvmAutoSwitchCounter = 0;
+                }
+                if (KvmAutoSwitchCounter >= 3)
+                {
+                    if (!debugPreMsg.Equals(debugMsg))
+                    {
+                        debugPreMsg = debugMsg;
+                        Debug.WriteLine($"{debugMsg}");
+                    }
+
+                    if (isKvm_Auto_SwitchKbMsKey || (previousCursorPosition.X.Equals(cursorPosition.X) && previousCursorPosition.Y.Equals(cursorPosition.Y)))
+                    {
+                        Debug.WriteLine($"[USBKVM_Auto_Switch],previous.X={previousCursorPosition.X},previous.Y={previousCursorPosition.Y};Curs.X={cursorPosition.X},Curs.Y={cursorPosition.Y};isKvm_Auto_SwitchKbMsKey= {isKvm_Auto_SwitchKbMsKey}");
+                        writelog($"[USBKVM_Auto_Switch],previous.X={previousCursorPosition.X},previous.Y={previousCursorPosition.Y};Curs.X={cursorPosition.X},Curs.Y={cursorPosition.Y};isKvm_Auto_SwitchKbMsKey= {isKvm_Auto_SwitchKbMsKey}");
+                        previousCursorPosition = cursorPosition;
+                        KvmAutoSwitchCounter = 0;
+                        return;
+                    }
+                    writelog($"[USBKVM_Auto_Switch] Kvm_Auto_SwitchKbMsKey:monitor:{monitorInfo.edid.ServiceTag} Enqueue");
+                    //send usbKvm switch
+
+                    isKvm_Auto_SwitchKbMsKey = true;
+                    isKvm_Auto_SwitchKbMsWideMove = true;
+                    KvmAutoSwitchCounter = 0;
+                    previousCursorPosition = cursorPosition;
+                    _hotkeyJobQueue.Enqueue(new JobInfo(1000, monitorInfo, null, Kvm_Auto_SwitchKbMsKey));
+                }
+            }
+        }
+
+        private bool isUsbKvmCursorEdge(MonitorInfo monitorInfo, Screen currentScreen, System.Drawing.Point cursorPosition)
+        {
+            bool ret = false;
+            if (monitorInfo != null)
+            {
+                if (GetOnUSBKVM(monitorInfo).Result)
+                {
+                    //check
+                    if (_hotkeySettings != null && _hotkeySettings.Count == 0)
+                    {
+                        _hotkeySettings = _SettingsPlugin.ReadHotkeySettings().Result;
+                    }
+                    if (_hotkeySettings != null && _hotkeySettings.Count > 0)
+                    {
+                        HotkeySettings hotkeySettings = _hotkeySettings.FirstOrDefault(x => x.ServiceTag.Equals("DDPM") && x.SerialNumber.Equals("DDPM"));
+                        if (hotkeySettings != null)
+                        {
+                            if (hotkeySettings.HotkeyOptions.Count > 0 && hotkeySettings.HotkeyOptions.Any(x => x.Equals(HotkeyOption.KvmAutoApply)))
+                            {
+                                //check cursor position at the edge
+                                //1.get PBP mode sub input source
+                                Rectangle bounds = currentScreen.Bounds;
+                                Dictionary<string, InputInfo> inputSourcelist = GetInputSourcelist(monitorInfo).Result;
+                                List<ushort> subInputListRet = GetSubInputList(monitorInfo).Result;
+                                //var currentResolution = _DisplayManagerPlugin.GetMonitorCurrentResolution(monitorInfo).Result;
+                                //GetUSBKVMPCsList(monitorInfo);
+                                bool isEdge = false;
+                                string debugMsg = $"monitor:{monitorInfo.modelName}{monitorInfo.edid.SerialNumber}:currentScreen.WorkingAreaWidth={currentScreen.WorkingArea.Width}:inputCable={monitorInfo.inputCable};inputSource={monitorInfo.inputSource};{currentScreen.DeviceName};Primary:{currentScreen.Primary};WorkingArea.X:{currentScreen.WorkingArea.X};,X={cursorPosition.X},Y={cursorPosition.Y}";
+                                if (monitorInfo.inputCable.Equals(monitorInfo.inputSource))
+                                {
+                                    // PBP as main inputSource ,screen is left
+                                    writelog($"[USBKVM_Auto_Switch]as PBP main input:{debugMsg}");
+                                    if (cursorPositionXSide("left", currentScreen, cursorPosition.X))
+                                    {
+                                        Debug.WriteLine($"left edge: approach");
+                                        writelog($"[USBKVM_Auto_Switch] [left edge: approach]\r\n {debugMsg}");
+                                        isEdge = true;
+                                    }
+                                }
+                                else
+                                {
+                                    // PBP as sub imputSource,screen is right
+                                    writelog($"[USBKVM_Auto_Switch]as PBP subinput:{debugMsg}");
+                                    if (cursorPositionXSide("right", currentScreen, cursorPosition.X))
+                                    {
+                                        Debug.WriteLine($"right edge: approach");
+                                        writelog($"[USBKVM_Auto_Switch] [right edge: approach] \r\n {debugMsg}");
+                                        isEdge = true;
+                                    }
+                                }
+                                if (isEdge)
+                                {
+                                    lock (USBKVM_PBPmode_lock)
+                                    {
+                                        UsbKvmPBP usbKvmPBP1 = usbKvmPBPs.SingleOrDefault(x => x.MonitorInfo.edid.ServiceTag.Equals(monitorInfo.edid.ServiceTag) && x.MonitorInfo.edid.SerialNumber.Equals(monitorInfo.edid.SerialNumber));
+                                        if (usbKvmPBP1 != null && usbKvmPBP1.isPBPmode)
+                                        {
+                                            ret = true;
+                                        }
+                                        else
+                                        {
+                                            foreach (var item in usbKvmPBPs)
+                                            {
+                                                Debug.WriteLine($"{item.MonitorInfo.modelName}_{item.MonitorInfo.edid.ServiceTag},PBP mode={item.isPBPmode}");
+                                                writelog($"[USBKVM_Auto_Switch]isUsbKvmCursorEdge:{item.MonitorInfo.modelName}_{item.MonitorInfo.edid.ServiceTag},PBP mode={item.isPBPmode}");
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                writelog($"[USBKVM_Auto_Switch]isUsbKvmCursorEdge:KvmAutoApply OFF");
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    writelog($"[USBKVM_Auto_Switch]isUsbKvmCursorEdge:{monitorInfo.modelName}:{monitorInfo.edid.ServiceTag} USBKVM OFF");
+                }
+            }
+            return ret;
+        }
+
+        private void Kvm_Auto_SwitchKbMsKey(MonitorInfo monitorInfo, Object[] param)
+        {
+            bool usbSwitch = UsbSwitch1(monitorInfo).Result;
+            if (usbSwitch)
+                isKvm_Auto_SwitchKbMsKey = false;
+            writelog($"Kvm_Auto_SwitchKbMsKey:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}]" + (usbSwitch ? "success" : "fail"));
+        }
+
+        private bool cursorPositionXSide(string side, Screen screen, int x)
+        {
+            bool ret = false;
+            int xPos = -1;
+            if ("left".Equals(side))
+            {
+                int v = Math.Abs(screen.WorkingArea.X - x) - screen.WorkingArea.Width;
+                xPos = Math.Abs(v);
+            }
+            if ("right".Equals(side))
+            {
+                int v = Math.Abs(screen.WorkingArea.X - x);
+                xPos = Math.Abs(v);
+            }
+            if (xPos >= 0 && xPos <= 30)
+                ret = true;
+            return ret;
+        }
+
+        private List<UsbKvmPBP> usbKvmPBPs = new List<UsbKvmPBP>();
+        private object USBKVM_PBPmode_lock = new object();
+
+        private void updatePBPModeStatus(MonitorInfo monitorInfo, string vcpcode)
+        {
+            if ("E7".Equals(vcpcode, StringComparison.OrdinalIgnoreCase))
+            {
+                System.Drawing.Point cursorPosition = Cursor.Position;
+                // retrieve the monitor object from cursor's position
+                Screen currentScreen = Screen.FromPoint(cursorPosition);
+                MonitorInfo monitorInfoFind = _AllInfoMonitors.Find(x => x.DisplayName.ToUpper().Equals(currentScreen.DeviceName.ToUpper()));
+                if (monitorInfoFind != null)
+                {
+                    if (monitorInfoFind.edid.ServiceTag.Equals(monitorInfo.edid.ServiceTag) && monitorInfoFind.edid.SerialNumber.Equals(monitorInfo.edid.SerialNumber))
+                    {
+                        previousCursorPosition = cursorPosition;
+                        KvmAutoSwitchCounter = 0;
+                        writelog($"[USBKVM_Auto_Switch]updatePBPModeStatus:{monitorInfo.modelName}:{monitorInfo.edid.ServiceTag} =>vcpcode:E7; cursorPosition = {cursorPosition};Timer:{_USBKVMAutoSwitchTimer.Enabled}");
+                    }
+                }
+            }
+            if ("E9".Equals(vcpcode, StringComparison.OrdinalIgnoreCase) || vcpcode.Equals("2"))
+            {
+                ObjGetVCP ret = GetPxpMode(monitorInfo).Result;
+                UsbKvmPBP usbKvmPBP = new UsbKvmPBP { MonitorInfo = monitorInfo, isPBPmode = false };
+                UInt16 _curPxpMode = 0;
+                if (ret != null && ret.result)
+                {
+                    _curPxpMode = Convert.ToUInt16(ret.value);
+                    switch (_curPxpMode)
+                    {
+                        case 0x11:
+                            usbKvmPBP.isPBPmode = false;
+                            break;
+
+                        case 0x12:
+                            usbKvmPBP.isPBPmode = false;
+                            break;
+
+                        case 0x24:
+                        case 0x2F:
+                        case 0x26:
+                        case 0x28:
+                        case 0x2A:
+                        case 0x2C:
+                        case 0x2E:
+                        case 0x25:
+                        case 0x27:
+                        case 0x29:
+                        case 0x2B:
+                        case 0x2D:
+                        case 0x31:
+                        case 0x32:
+                        case 0x33:
+                        case 0x34:
+                        case 0x35:
+                        case 0x41:
+                        case 0x42:
+                            usbKvmPBP.isPBPmode = true;
+                            break;
+
+                        default:
+                            usbKvmPBP.isPBPmode = false;
+                            break;
+                    }
+                    lock (USBKVM_PBPmode_lock)
+                    {
+                        if (usbKvmPBPs.Count > 0)
+                        {
+                            UsbKvmPBP usbKvmPBP1 = usbKvmPBPs.SingleOrDefault(x => x.MonitorInfo.edid.ServiceTag.Equals(monitorInfo.edid.ServiceTag) && x.MonitorInfo.edid.SerialNumber.Equals(monitorInfo.edid.SerialNumber));
+                            if (usbKvmPBP1 != null)
+                            {
+                                usbKvmPBP1.isPBPmode = usbKvmPBP.isPBPmode;
+                            }
+                            else
+                            {
+                                usbKvmPBPs.Add(usbKvmPBP);
+                            }
+                        }
+                        else
+                        {
+                            usbKvmPBPs.Add(usbKvmPBP);
+                        }
+                        if (usbKvmPBPs.Any(x => x.isPBPmode))
+                        {
+                            _USBKVMAutoSwitchTimer.Stop();
+                            _USBKVMAutoSwitchTimer.Start();
+                            writelog($"[USBKVM_Auto_Switch]updatePBPModeStatus:{monitorInfo.modelName}:{monitorInfo.edid.ServiceTag}:Timer:{_USBKVMAutoSwitchTimer.Enabled}, PBPmode ON");
+                        }
+                        else
+                        {
+                            _USBKVMAutoSwitchTimer.Stop();
+                            writelog($"[USBKVM_Auto_Switch]updatePBPModeStatus:{monitorInfo.modelName}:{monitorInfo.edid.ServiceTag}:Timer:{_USBKVMAutoSwitchTimer.Enabled}, PBPmode OFF");
+                        }
+                    }
+                }
+            }
         }
 
         private void UXSystemParametersChanged(object sender, PropertyChangedEventArgs e)
@@ -309,6 +590,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     _pwr_Mon = new PowerEventControl(Log);
                     _pwr_Mon.MonitorTurnedOn += MonitorEvent_On;
                     _pwr_Mon.Enable_Event();
+                    _pwr_Mon.HotkeyPressed += HotkeyPressed;
+                    _pwr_Mon.Enable_HotkeyHook();
                 }
                 System.Windows.Threading.Dispatcher.Run();
             });
@@ -317,6 +600,51 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             thread.Start();
 
             _disDevHelper = new DisplayDeviceHelper(Log);
+        }
+
+        private void HotkeyPressed(object sender, KeyPressedEventArgs e)
+        {
+            Debug.WriteLine($"HotkeyPressed===>id:{e.HotkeyInfo.ID},key:{e.KeyString}");
+            if (isBypassHotkey)
+            {
+                writelog($"bypass HotkeyPressed,id={e.HotkeyInfo.ID},key:{e.KeyString}");
+                return;
+            }
+            if (_hotkeySettings != null && _hotkeySettings.Count > 0)
+            {
+                foreach (var settings in _hotkeySettings)
+                {
+                    if (settings.HotkeyInfo != null)
+                    {
+                        HotkeyInfo hotkeyInfo = settings.HotkeyInfo.SingleOrDefault(x => x.ID.Equals(e.HotkeyInfo.ID));
+                        if (hotkeyInfo != null && hotkeyInfo.Job != HotkeyType.None)
+                        {
+                            Debug.WriteLine($"[HotkeyPressed]Job matched:{hotkeyInfo.Job} => {hotkeyInfo.Description}: Hotkey(id:{hotkeyInfo.ID}){e.KeyString} => setting key:{string.Join("+", hotkeyInfo.Hotkey.Select(x => x + "(" + (int)x + ")").ToList())}");
+                            writelog($"[HotkeyPressed]Job matched:{hotkeyInfo.Job} => {hotkeyInfo.Description}: Hotkey(id:{hotkeyInfo.ID}){e.KeyString} => setting key: {string.Join("+", hotkeyInfo.Hotkey.Select(x => x + "(" + (int)x + ")").ToList())}");
+                            ExecHotkeyJob(settings, hotkeyInfo.Job);
+                        }
+                        else
+                        {
+                            writelog($"[HotkeyPressed]No Job matched:Hotkey(id:{hotkeyInfo.ID}):{e.KeyString}");
+                        }
+                    }
+                    else
+                    {
+                        writelog($"[HotkeyPressed](id:{e.HotkeyInfo.ID}):{e.KeyString},HotkeyInfo is null");
+                    }
+                }
+            }
+            else
+            {
+                if (_hotkeySettings != null)
+                {
+                    Debug.WriteLine($"HotkeyPressed[job fail],id:{e.HotkeyInfo.ID},key:{e.KeyString} ==> _hotkeySettings:count = {_hotkeySettings.Count}");
+                }
+                else
+                {
+                    Debug.WriteLine($"HotkeyPressed[job fail],id:{e.HotkeyInfo.ID},key:{e.KeyString} ==> _hotkeySettings is null");
+                }
+            }
         }
 
         #endregion
@@ -551,7 +879,23 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             if (colorPresetRunType == (int)ColorPresetRunType.Auto)
                 r = _ColorPresetPlugin.WriteColorPreset(m, ColorPreset_Name, null, colorPresetRunType).Result;
             else
+            {
                 r = _ColorPresetPlugin.WriteColorPreset(m, ColorPreset_Name, _SettingsPlugin, colorPresetRunType).Result;
+
+                if (r == false)
+                {
+                    PopupContentPackage popupContentPackage = new PopupContentPackage()
+                    {
+                        Title = Strings.Dell_Display_and_Peripheral_Manager0,
+                        Info = Strings.Unable_to_synchronize_the_corresponding_ICC_profile0 + m.modelName,
+                        IsInfo = true,
+                        IsOnlyUpdate = false,
+                        StayOpen = false,
+                        Timeout = 5,
+                    };
+                    CallPopup(this, popupContentPackage);
+                }
+            }
             //var tmp = _ColorPresetPlugin.WriteColorPreset(m, ColorPreset_Name, _SettingsPlugin.ReadColorPresetSettings().Result).Result;
 
             //write back to settings
@@ -1614,44 +1958,49 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 writelog("Set VCP code 0x04 Fail...");
             }
 
-            Task.Run(() =>
+            //Telementry Collection
+            var rt = false;
+            var Displaysettings_Function = new Displaysettings_Function();
+            switch (code)
             {
-                //Telementry Collection
-                var rt = false;
-                var Displaysettings_Function = new Displaysettings_Function();
-                switch (code)
-                {
-                    case 0x10:
+                case 0x10:
 
-                        if (monitorInfo.CapabilityDic.ContainsKey("12"))
+                    if (monitorInfo.CapabilityDic.ContainsKey("12"))
+                    {
+                        Task.Run(() =>
                         {
                             writelog("[DeviceMangerPlugin] Send Telementry for Brightness...");
                             rt = Displaysettings_Function.Send_Brightness_Telementry(_TelementryScheduler, monitorInfo, val, GetMonitorCurrentResolution(monitorInfo), GetMonitorMaxResolution(monitorInfo));
                             if (rt) writelog("[DeviceMangerPlugin] Send Telementry for Brightness Success ...");
                             else writelog("[DeviceMangerPlugin] Send Telementry for Brightness Fail ...");
-                        }
-                        else
+                        }).ConfigureAwait(false);
+                    }
+                    else
+                    {
+                        Task.Run(() =>
                         {
                             writelog("[DeviceMangerPlugin] [Telementry] Send Telementry for Luminanc...");
                             rt = Displaysettings_Function.Send_Luminance_Telementry(_TelementryScheduler, monitorInfo, val, GetMonitorCurrentResolution(monitorInfo), GetMonitorMaxResolution(monitorInfo));
                             if (rt) writelog("[DeviceMangerPlugin] [Telementry] Send  Telementry for Luminanc Success ...");
                             else writelog("[DeviceMangerPlugin] [Telementry] Send  Telementry for Luminanc Fail ...");
-                        }
-                        break;
+                        }).ConfigureAwait(false);
+                    }
+                    break;
 
-                    case 0x12:
+                case 0x12:
 
+                    Task.Run(() =>
+                    {
                         writelog("[DeviceMangerPlugin] [Telementry] Send Telementry for Contrast...");
                         rt = Displaysettings_Function.Send_Contrast_Telementry(_TelementryScheduler, monitorInfo, val, GetMonitorCurrentResolution(monitorInfo), GetMonitorMaxResolution(monitorInfo));
                         if (rt) writelog("[DeviceMangerPlugin] [Telementry] Send Telementry for Contrast Success ...");
                         else writelog("[DeviceMangerPlugin] [Telementry] Send Telementry for Contrast Fail ...");
+                    }).ConfigureAwait(false);
+                    break;
 
-                        break;
-
-                    default:
-                        break;
-                }
-            }).ConfigureAwait(false);
+                default:
+                    break;
+            }
 
             return Task.FromResult(r);
         }
@@ -2473,6 +2822,81 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
         }
 
+        public async Task<bool> SetBand1GainAsync(string guid, int newValue)
+        {
+            try
+            {
+                await _DTPProxyPlugin.SetBand1GainAsync(guid, newValue);
+                writelog($"[DeviceManagerPlugin] [Headset] SetBand1GainAsync success, value is {newValue.ToString()}");
+                return true;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [Headset] SetBand1GainAsync failed for GUID: {guid}, Error: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> SetBand2GainAsync(string guid, int newValue)
+        {
+            try
+            {
+                await _DTPProxyPlugin.SetBand2GainAsync(guid, newValue);
+                writelog($"[DeviceManagerPlugin] [Headset] SetBand2GainAsync success, value is {newValue.ToString()}");
+                return true;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [Headset] SetBand2GainAsync failed for GUID: {guid}, Error: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> SetBand3GainAsync(string guid, int newValue)
+        {
+            try
+            {
+                await _DTPProxyPlugin.SetBand3GainAsync(guid, newValue);
+                writelog($"[DeviceManagerPlugin] [Headset] SetBand3GainAsync success, value is {newValue.ToString()}");
+                return true;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [Headset] SetBand3GainAsync failed for GUID: {guid}, Error: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> SetBand4GainAsync(string guid, int newValue)
+        {
+            try
+            {
+                await _DTPProxyPlugin.SetAncModeAsync(guid, newValue);
+                writelog($"[DeviceManagerPlugin] [Headset] SetBand4GainAsync success, value is {newValue.ToString()}");
+                return true;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [Headset] SetBand4GainAsync failed for GUID: {guid}, Error: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> SetBand5GainAsync(string guid, int newValue)
+        {
+            try
+            {
+                await _DTPProxyPlugin.SetAncModeAsync(guid, newValue);
+                writelog($"[DeviceManagerPlugin] [Headset] SetBand5GainAsync success, value is {newValue.ToString()}");
+                return true;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [Headset] SetBand5GainAsync failed for GUID: {guid}, Error: {ex.Message}");
+                return false;
+            }
+        }
+
         public async Task<bool> SetAncModeAsync(string guid, int newValue)
         {
             try
@@ -3229,6 +3653,81 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             {
                 writelog($"[DeviceManagerPlugin] [Headset] GetBandsGainAsync failed for {guid} - Exception: {ex.Message}");
                 return null;
+            }
+        }
+
+        public async Task<int> GetBand1GainAsync(string guid)
+        {
+            try
+            {
+                var result = await _DTPProxyPlugin.GetBand1GainAsync(guid);
+                writelog($"[DeviceManagerPlugin] [Headset] GetBand1GainAsync succeeded for {result.ToString()}");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [Headset] GetBand1GainAsync failed for {guid} - Exception: {ex.Message}");
+                return -1;
+            }
+        }
+
+        public async Task<int> GetBand2GainAsync(string guid)
+        {
+            try
+            {
+                var result = await _DTPProxyPlugin.GetBand2GainAsync(guid);
+                writelog($"[DeviceManagerPlugin] [Headset] GetBand2GainAsync succeeded for {result.ToString()}");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [Headset] GetBand2GainAsync failed for {guid} - Exception: {ex.Message}");
+                return -1;
+            }
+        }
+
+        public async Task<int> GetBand3GainAsync(string guid)
+        {
+            try
+            {
+                var result = await _DTPProxyPlugin.GetBand5GainAsync(guid);
+                writelog($"[DeviceManagerPlugin] [Headset] GetBand3GainAsync succeeded for {result.ToString()}");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [Headset] GetBand3GainAsync failed for {guid} - Exception: {ex.Message}");
+                return -1;
+            }
+        }
+
+        public async Task<int> GetBand4GainAsync(string guid)
+        {
+            try
+            {
+                var result = await _DTPProxyPlugin.GetBand5GainAsync(guid);
+                writelog($"[DeviceManagerPlugin] [Headset] GetBand4GainAsync succeeded for {result.ToString()}");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [Headset] GetBand4GainAsync failed for {guid} - Exception: {ex.Message}");
+                return -1;
+            }
+        }
+
+        public async Task<int> GetBand5GainAsync(string guid)
+        {
+            try
+            {
+                var result = await _DTPProxyPlugin.GetBand5GainAsync(guid);
+                writelog($"[DeviceManagerPlugin] [Headset] GetBand5GainAsync succeeded for {result.ToString()}");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [Headset] GetBand5GainAsync failed for {guid} - Exception: {ex.Message}");
+                return -1;
             }
         }
 
@@ -4096,7 +4595,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             bool b = _DisplayManagerPlugin.SetPbpMode(monitorInfo, modeCode).Result;
             if (b && _NKVMPlugin != null)
             {
-                _NKVMPlugin.SetVCPNotify(monitorInfo, 0xE9, (int)modeCode).Wait();
+                _NKVMPlugin.SetVCPNotify(monitorInfo, 0xE9, (int)(uint)modeCode).Wait();
             }
             if (b)
             {
@@ -4165,6 +4664,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             writelog("[DeviceMangerPlugin] GetFWUpdateInfo start");
             if (_PeripheralsPlugin != null && _FWUpdatePlugin != null && _DisplayManagerPlugin != null && _SettingsPlugin != null)
             {
+                _PeripheralsPlugin.CheckForUpdate();
                 UpdateHelper updateHelper = _PeripheralsPlugin.GetFWUpdateInfo().Result;
                 if (updateHelper == null || updateHelper.UpdateItems == null)
                 {
@@ -4250,7 +4750,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             return Task.FromResult(tmpFWUpdateInfos);
         }
 
-        public Task<FWUErrorCode> Install(string installPath, bool isOnlyDisplay = false)
+        public Task<FWUErrorCode> Install(string installPath, bool isOnlyDisplay = false, DeviceType deviceType = DeviceType.Unknown)
         {
             writelog("[DeviceMangerPlugin] Install start");
             writelog($"[DeviceMangerPlugin] Install isOnlyDisplay : {isOnlyDisplay}");
@@ -4262,9 +4762,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 //if (_UpdateProgress != null)
                 //{
                 writelog($"[DeviceMangerPlugin] Install _FWUpdatePlugin.Install go");
-                ret = _FWUpdatePlugin.Install(installPath, isOnlyDisplay).Result;
+                ret = _FWUpdatePlugin.Install(installPath, isOnlyDisplay, deviceType).Result;
                 //}
-
             }
             return Task.FromResult(ret);
         }
@@ -4504,6 +5003,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             writelog($"{nameof(MiniMizeDDPMUI)} done");
             return Task.FromResult(ret);
         }
+
         public Task<bool> RestoreDDPMUI()
         {
             writelog($"{nameof(RestoreDDPMUI)} start");
@@ -5108,6 +5608,13 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             return Task.FromResult(_DisplayManagerPlugin.SynchronizeALSFeatureValue(monitorALS).Result);
         }
 
+        public Task<string> CheckisShowSynchronize(MonitorInfo currentMoInfo, List<ALSConfig> alsSynchronizeList)
+        {
+            if (_disDevHelper == null)
+                return Task.FromResult("null");
+            return Task.FromResult(_disDevHelper.CheckisShowSynchronize(_DisplayManagerPlugin, _AllInfoMonitors, currentMoInfo, alsSynchronizeList).Result);
+        }
+
         #endregion
 
         #region NKVM implementation
@@ -5344,6 +5851,17 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             if (_DisplayManagerPlugin != null)
             {
                 _DisplayManagerPlugin.SetEAWrokSplit(monitorInfo, cellCount, splitKey, settings);
+                //Telemetry
+                SendEasyArrangeTelemetry("Change_layout");
+            }
+            return Task.FromResult(false);
+        }
+
+        public Task<bool> NotifyEASelectedLayoutChanged(MonitorInfo monitorInfo, SplitJson spJson)
+        {
+            if (_DisplayManagerPlugin != null)
+            {
+                _DisplayManagerPlugin.NotifyEASelectedLayoutChanged(monitorInfo, spJson);
                 //Telemetry
                 SendEasyArrangeTelemetry("Change_layout");
             }
@@ -6446,17 +6964,28 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             writelog("[SW_SetSWUpdateInfoPackage], done.");
             return Task.FromResult(ret);
         }
+
         private Task<bool> SW_CheckSWUpdate()
         {
             writelog("[SW_CheckSWUpdate], start.");
             bool ret = false;
-            if (_SWUpdatePlugin == null)
-                return Task.FromResult(ret);
             try
             {
-                SW_SetDelaySWUpdateInfoPackage();
-                SWUpdateInfoPackage swUpdateInfos = _SWUpdatePlugin.GetSWUpdateInfo(true, false, false, _GlobalSettingParam.GlobalSetting_About.SWVersion, true, false).Result;
-                ret = true;
+                if (_SWUpdatePlugin != null && _GlobalSettingParam != null &&
+                    _GlobalSettingParam.GlobalSetting_About != null &&
+                    !string.IsNullOrEmpty(_GlobalSettingParam.GlobalSetting_About.SWVersion))
+                {
+                    SW_SetDelaySWUpdateInfoPackage();
+                    SWUpdateInfoPackage swUpdateInfos = _SWUpdatePlugin.GetSWUpdateInfo(true, false, false, _GlobalSettingParam.GlobalSetting_About.SWVersion, true, false).Result;
+                    ret = true;
+                }
+                else
+                {
+                    writelog($"[SW_CheckSWUpdate], _SWUpdatePlugin is null = {(_SWUpdatePlugin == null ? "Yes" : "No")}");
+                    writelog($"[SW_CheckSWUpdate], _GlobalSettingParam is null = {(_GlobalSettingParam == null ? "Yes" : "No")}");
+                    writelog($"[SW_CheckSWUpdate], _GlobalSettingParam.GlobalSetting_About is null = {(_GlobalSettingParam.GlobalSetting_About == null ? "Yes" : "No")}");
+                    writelog($"[SW_CheckSWUpdate], _GlobalSettingParam.GlobalSetting_About.SWVersion Is NullOrEmpty = {(string.IsNullOrEmpty(_GlobalSettingParam.GlobalSetting_About.SWVersion) ? "Yes" : "No")}");
+                }
             }
             catch (Exception ex)
             {
@@ -7119,9 +7648,9 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         public Task<DDPMImpExpSettings> ReadImportSettingsFile(string path)
         {
             DDPMImpExpSettings impExpSettings = new DDPMImpExpSettings();
-            if (_SettingsPlugin != null && !string.IsNullOrEmpty(path)) 
+            if (_SettingsPlugin != null && !string.IsNullOrEmpty(path))
             {
-                impExpSettings =  _SettingsPlugin.ReadImportSettingsFile(path).Result;
+                impExpSettings = _SettingsPlugin.ReadImportSettingsFile(path).Result;
             }
             return Task.FromResult(impExpSettings);
         }
@@ -7708,6 +8237,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             return await Task.Run(() => _DTPProxyPlugin.GetIsPropertyAutoFramingSupported(Guid));
         }
 
+        public async Task<bool> GetIsESISupported(string Guid)
+        {
+            return await Task.Run(() => _DTPProxyPlugin.GetIsESISupported(Guid));
+        }
+
         public async Task<bool> GetIsAutoFramingOn(string Guid)
         {
             return await Task.Run(() => _DTPProxyPlugin.GetIsAutoFramingOn(Guid));
@@ -8046,6 +8580,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             return await Task.Run(() => _DTPProxyPlugin.GetIsPrioritizeExternalWebcam(guid));
         }
 
+        public Task<DockData> GetDockData(string guid)
+        {
+            return Task.FromResult(_DTPProxyPlugin.GetDockData(guid).Result);
+        }
+
         #endregion
 
         #endregion
@@ -8310,6 +8849,42 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             CheckAutoColorPresetEnableOnStartedCondition(_AllInfoMonitors);
             CheckAutoColorManagementEnableOnStartedCondition(_AllInfoMonitors);
             LauchNightLightStatusMonitor();
+            foreach (var monitor in _AllInfoMonitors)
+            {
+                Task.Run(() => updatePBPModeStatus(monitor, "E9")).ConfigureAwait(false);
+            }
+            //register hotkey
+            RegistHotkey(false);
+        }
+
+        private void RegistHotkey(bool unRegisterAll)
+        {
+            if (unRegisterAll) _pwr_Mon.UnRegisterAllHotKey();
+            if (_hotkeySettings != null && _hotkeySettings.Count == 0)
+            {
+                _hotkeySettings = _SettingsPlugin.ReadHotkeySettings().Result;
+            }
+            if (_hotkeySettings != null && _hotkeySettings.Count > 0)
+            {
+                foreach (var settings in _hotkeySettings)
+                {
+                    if (settings.HotkeyInfo.Count > 0)
+                    {
+                        _pwr_Mon.RegisterHotKey(settings.HotkeyInfo);
+                    }
+                }
+            }
+            else
+            {
+                if (_hotkeySettings != null)
+                {
+                    Debug.WriteLine($"Keyboard_KeyUpProc ==> _hotkeySettings :count = {_hotkeySettings.Count}");
+                }
+                else
+                {
+                    Debug.WriteLine($"Keyboard_KeyUpProc==> _hotkeySettings is null");
+                }
+            }
         }
 
         #region OutReport
@@ -8791,10 +9366,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             writelog($"Receive DisplaySettingsChanged: {sender}, e:{e}, rescan monitor");
             if (displayInOut)
             {
-                if (_AllInfoMonitors != null)
-                    _AllInfoMonitors.Clear();
-                else
-                    _AllInfoMonitors = new List<MonitorInfo>();
+                _AllInfoMonitors = new List<MonitorInfo>();
 
                 try
                 {
@@ -8924,11 +9496,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                         }).ConfigureAwait(false);
 
                                         if (displayDeviceNumChange && _AllInfoMonitors.Count > 0)
-                                        {
-                                            //displayInOut = false;
                                             _DisplayManagerPlugin.SetDisplayOrientation(_AllInfoMonitors).Wait();
-                                            //displayInOut = true;
-                                        }
 
                                         writelog("[DeviceMangerPlugin] SystemEvents_DisplaySettingsChanged() SetDisplayOrientation finish ...");
 
@@ -9249,7 +9817,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             {
                 return;
             }
-            List<DeviceInfo> _peripheralslist = _PeripheralsPlugin.GetDevices(true).Result.deviceInfo;
+            List<DeviceInfo> _peripheralslist = _PeripheralsPlugin.GetDevices().Result.deviceInfo;
 
             // 2024-08-07 Elie, fix got exception while don't check this is null or not.
             if ((_peripheralslist == null) || (_peripheralslist.Count == 0))
@@ -9263,7 +9831,10 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 {
                     if (deviceInfo.Type == DeviceType.LogicalDock)
                     {
-                        dockCount++;
+                        if (_peripheralslist.FindAll(o => o.ID.Equals(deviceInfo.ID)).Count == 1)
+                        {
+                            dockCount++;
+                        }
                     }
                     if (dockCount >= 2)
                     {
@@ -9328,6 +9899,9 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             _VCPchangedEventArgs.value = e.value;
             //0607 Bruce 因VCPChange事件需要取得螢幕資訊故請Jarvis新增這段變數 代為新增
             _VCPchangedEventArgs.monitor = e.monitor;
+            Debug.WriteLine($"show_display=>monitor:{e.monitor.modelName}=={e.vcpcode}:{e.value}");
+            //1106 add PBP mode status
+            Task.Run(() => updatePBPModeStatus(e.monitor, e.vcpcode)).ConfigureAwait(false);
             OnVCPchanged(_VCPchangedEventArgs);
         }
 
@@ -9444,12 +10018,16 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         /// </summary>
         /// <param name="text"></param>
         /// <param name="log_type">0 means info, others means error</param>
-        private void writelog(string text, log_type log_type = log_type.info)
+        private void writelog(string text,
+            [System.Runtime.CompilerServices.CallerMemberName] string memberName = "",
+            [System.Runtime.CompilerServices.CallerFilePath] string sourceFilePath = "",
+            [System.Runtime.CompilerServices.CallerLineNumber] int sourceLineNumber = 0,
+            log_type log_type = log_type.info)
         {
             if (string.IsNullOrEmpty(text))
                 text = "";
 
-            text = "[DeviceManager] " + text;
+            text = $"[DeviceManager] {text}, Caller Name:{memberName}, Source Line {sourceLineNumber}";
             Console.WriteLine(DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss.fff") + " " + text);
 
             if (Log != null) // Elie, the instance of Log is from DTH. So we just check if it's null or not.
@@ -9771,6 +10349,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
             GetLockRotateStatus();
             writelog($"[DoThingsAfterDisplayRelatedPluginsReady] caller: {caller}, OK. Monitor count is {_AllInfoMonitors.Count}");
+
+            _disDevHelper?.UpdateDDPMPluginInstances(_SettingsPlugin, this, _DisplayManagerPlugin);
         }
 
         private void GetCurrentColorPresetCondition()
@@ -10304,7 +10884,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         {
                             writelog(nameof(GetCurrentTelementrySchedulerCondition) + " Call GetGlobalsetting_IsTelemetryConsentOn:");
                             _TelementryScheduler.GetGlobalsetting_IsTelemetryConsentOn(_GlobalSettingParam.isTelemetryConsentOn);
-                            TelemetryDdpmSwUpdater();
+                            Task.Run(() => TelemetryDdpmSwUpdater()).ConfigureAwait(false);
                         }
                         else
                             writelog(nameof(GetCurrentTelementrySchedulerCondition) + " _GlobalSettingParam is null");
@@ -10317,7 +10897,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         {
                             writelog(nameof(GetCurrentTelementrySchedulerCondition) + " Call GetGlobalsetting_IsTelemetryConsentOn:");
                             _TelementryScheduler.GetGlobalsetting_IsTelemetryConsentOn(_GlobalSettingParam.isTelemetryConsentOn);
-                            TelemetryDdpmSwUpdater();
+                            Task.Run(() => TelemetryDdpmSwUpdater()).ConfigureAwait(false);
                         }
                         else
                             writelog(nameof(GetCurrentTelementrySchedulerCondition) + " _GlobalSettingParam is null");
@@ -10355,10 +10935,22 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             {
                 //new
                 settings.Add(hotkeySettings);
+                _USBKVMAutoSwitchTimer.Stop();
+                _USBKVMAutoSwitchTimer.Start();
             }
             else
             {
                 find.HotkeyOptions = hotkeySettings.HotkeyOptions;
+                HotkeyOption hotkeyOption = hotkeySettings.HotkeyOptions.ElementAtOrDefault(0);
+                if (hotkeyOption.Equals(HotkeyOption.KvmAutoApply))
+                {
+                    _USBKVMAutoSwitchTimer.Stop();
+                    _USBKVMAutoSwitchTimer.Start();
+                }
+                else
+                {
+                    _USBKVMAutoSwitchTimer.Stop();
+                }
             }
             WriteHotkeySettings(settings);
             ReloadHotkeyConfigData();
@@ -10618,6 +11210,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 }
             }
             ReloadHotkeyConfigData();
+            //RegistHotkey
+            RegistHotkey(true);
             //Telementry Collection
             var rt = false;
             var applicationSettings_Function = new ApplicationSettings_Function();
@@ -10744,14 +11338,16 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         private bool _OSDKeyLock = false;
 
+        private bool isReg = false;
+
         private void Keyboard_KeyUpProc(object sender, KeyEventArgs e)
         {
             string strKey = e.KeyCode.ToString().ToUpper();
             Debug.WriteLine($"Keyboard_KeyUpProc ---{strKey}");
-
             bool _altPressed = _HotkeyPlugin.IsKeyPushedDown(System.Windows.Forms.Keys.Menu);
             bool _ctrlPressed = _HotkeyPlugin.IsKeyPushedDown(System.Windows.Forms.Keys.ControlKey);
             bool _shiftPressed = _HotkeyPlugin.IsKeyPushedDown(System.Windows.Forms.Keys.ShiftKey);
+            //will register as ALT+Z ?
             if (_altPressed && strKey.Equals("Z"))
             {
                 CallQAM_UI(this);
@@ -10836,49 +11432,62 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
 
             //osd
-            if (_hotkeySettings != null && _hotkeySettings.Count == 0)
-            {
-                _hotkeySettings = _SettingsPlugin.ReadHotkeySettings().Result;
-            }
-            if (_hotkeySettings != null && _hotkeySettings.Count > 0)
-            {
-                foreach (var settings in _hotkeySettings)
-                {
-                    foreach (var hotkeyInfo in settings.HotkeyInfo)
-                    {
-                        var xx = hotkeyInfo.Hotkey.Any(x => x == VirtualKey.Menu);
-                        var b1 = hotkeyInfo.Hotkey.Any(x => (int)x == e.KeyValue);
-                        Debug.WriteLine($"{hotkeyInfo.Description}: Hotkey => : {string.Join("+", hotkeyInfo.Hotkey.Select(x => x + "(" + (int)x + ")").ToList())}");
-                        Debug.WriteLine($"key _ctrlPressed={_ctrlPressed}; _altPressed={_altPressed}; _shiftPressed={_shiftPressed}; current pressed:{e.KeyValue}={e.KeyCode},isUsing={b1}");
-                        if (_ctrlPressed || _altPressed || _shiftPressed)
+            /*            if (_hotkeySettings != null && _hotkeySettings.Count == 0)
                         {
-                            writelog($"{hotkeyInfo.Description}: Hotkey => : {string.Join("+", hotkeyInfo.Hotkey.Select(x => x + "(" + (int)x + ")").ToList())}");
-                            writelog($"key _ctrlPressed={_ctrlPressed}; _altPressed={_altPressed}; _shiftPressed={_shiftPressed}; current pressed:{e.KeyValue}={e.KeyCode},isUsing={b1}");
+                            _hotkeySettings = _SettingsPlugin.ReadHotkeySettings().Result;
                         }
-                        if (hotkeyInfo.Hotkey.Any(x => x == VirtualKey.Control) == _ctrlPressed
-                        && hotkeyInfo.Hotkey.Any(x => x == VirtualKey.Menu) == _altPressed
-                        && hotkeyInfo.Hotkey.Any(x => x == VirtualKey.Shift) == _shiftPressed
-                        && hotkeyInfo.Hotkey.Any(x => (int)x == e.KeyValue))
+                        if (_hotkeySettings != null && _hotkeySettings.Count > 0)
                         {
-                            Debug.WriteLine($"job matched:{hotkeyInfo.Job}");
-                            writelog($"Job matched:{hotkeyInfo.Job} => {hotkeyInfo.Description}: Hotkey => : {string.Join("+", hotkeyInfo.Hotkey.Select(x => x + "(" + (int)x + ")").ToList())}");
-                            HotkeyType job = hotkeyInfo.Job;
-                            ExecHotkeyJob(settings, job);
+                            foreach (var settings in _hotkeySettings)
+                            {
+                                foreach (var hotkeyInfo in settings.HotkeyInfo)
+                                {
+                                    if (!isReg)
+                                    {
+                                        var key = new HotKey(
+                                              hotkeyInfo.ModifiersEnum,
+                                              hotkeyInfo.KeyCode,
+                                              _HotkeyPlugin.GetHookHandle(),
+                                              (hotkey) =>
+                                              {
+                                                  Debug.WriteLine("hotkey was pressed======================================!");
+                                              });
+                                        isReg = true;
+                                    }
+
+                                    var xx = hotkeyInfo.Hotkey.Any(x => x == VirtualKey.Menu);
+                                    var b1 = hotkeyInfo.Hotkey.Any(x => (int)x == e.KeyValue);
+                                    Debug.WriteLine($"{hotkeyInfo.Description}: Hotkey => : {string.Join("+", hotkeyInfo.Hotkey.Select(x => x + "(" + (int)x + ")").ToList())}");
+                                    Debug.WriteLine($"key _ctrlPressed={_ctrlPressed}; _altPressed={_altPressed}; _shiftPressed={_shiftPressed}; current pressed:{e.KeyValue}={e.KeyCode},isUsing={b1}");
+                                    if (_ctrlPressed || _altPressed || _shiftPressed)
+                                    {
+                                        writelog($"{hotkeyInfo.Description}: Hotkey => : {string.Join("+", hotkeyInfo.Hotkey.Select(x => x + "(" + (int)x + ")").ToList())}");
+                                        writelog($"key _ctrlPressed={_ctrlPressed}; _altPressed={_altPressed}; _shiftPressed={_shiftPressed}; current pressed:{e.KeyValue}={e.KeyCode},isUsing={b1}");
+                                    }
+                                    if (hotkeyInfo.Hotkey.Any(x => x == VirtualKey.Control) == _ctrlPressed
+                                    && hotkeyInfo.Hotkey.Any(x => x == VirtualKey.Menu) == _altPressed
+                                    && hotkeyInfo.Hotkey.Any(x => x == VirtualKey.Shift) == _shiftPressed
+                                    && hotkeyInfo.Hotkey.Any(x => (int)x == e.KeyValue))
+                                    {
+                                        Debug.WriteLine($"job matched:{hotkeyInfo.Job}");
+                                        writelog($"Job matched:{hotkeyInfo.Job} => {hotkeyInfo.Description}: Hotkey => : {string.Join("+", hotkeyInfo.Hotkey.Select(x => x + "(" + (int)x + ")").ToList())}");
+                                        HotkeyType job = hotkeyInfo.Job;
+                                        ExecHotkeyJob(settings, job);
+                                    }
+                                }
+                            }
                         }
-                    }
-                }
-            }
-            else
-            {
-                if (_hotkeySettings != null)
-                {
-                    Debug.WriteLine($"Keyboard_KeyUpProc ==> _hotkeySettings :count = {_hotkeySettings.Count}");
-                }
-                else
-                {
-                    Debug.WriteLine($"Keyboard_KeyUpProc==> _hotkeySettings is null");
-                }
-            }
+                        else
+                        {
+                            if (_hotkeySettings != null)
+                            {
+                                Debug.WriteLine($"Keyboard_KeyUpProc ==> _hotkeySettings :count = {_hotkeySettings.Count}");
+                            }
+                            else
+                            {
+                                Debug.WriteLine($"Keyboard_KeyUpProc==> _hotkeySettings is null");
+                            }
+                        }*/
         }
 
         public Task SetLastSelectedMonitorFromUI(MonitorInfo mo)
@@ -10938,7 +11547,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             {
                 Debug.WriteLine($"ExecHotkeyJob[{job}:{hotkeyStr}] => TargetMonitor(from UI seleted), Monitor [ModelName={monitorInfo.edid.ModelName},ServiceTag={monitorInfo.edid.ServiceTag}, SerialNumber={monitorInfo.edid.SerialNumber}]");
             }
-            writelog($"ExecHotkeyJob[{job}:{hotkeyStr}] => getTargetMonitor: {getTargetMo}, Monitor [ModelName={monitorInfo.edid.ModelName},ServiceTag={monitorInfo.edid.ServiceTag}, SerialNumber={monitorInfo.edid.SerialNumber}]");
+            writelog($"ExecHotkeyJob[befrore:{job}:{hotkeyStr}] => getTargetMonitor: {getTargetMo}, Monitor [ModelName={monitorInfo.edid.ModelName},ServiceTag={monitorInfo.edid.ServiceTag}, SerialNumber={monitorInfo.edid.SerialNumber}]");
             switch (job)
             {
                 case HotkeyType.BrightnessReduce:
@@ -10949,7 +11558,14 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     }
                     else
                     {
-                        _hotkeyJobQueue.Enqueue(new JobInfo(1000, monitorInfo, null, Reduce_Brightness_Value));
+                        if (!isAutoBrightnessOn(monitorInfo))
+                        {
+                            _hotkeyJobQueue.Enqueue(new JobInfo(1000, monitorInfo, null, Reduce_Brightness_Value));
+                        }
+                        else
+                        {
+                            writelog($"ExecHotkeyJob[ Skip {job}:{hotkeyStr} ,cause AutoBrightness is On] => getTargetMonitor: {getTargetMo}, Monitor [ModelName={monitorInfo.edid.ModelName},ServiceTag={monitorInfo.edid.ServiceTag}, SerialNumber={monitorInfo.edid.SerialNumber}]");
+                        }
                     }
                     break;
 
@@ -10961,7 +11577,14 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     }
                     else
                     {
-                        _hotkeyJobQueue.Enqueue(new JobInfo(1000, monitorInfo, null, Increase_Brightness_Value));
+                        if (!isAutoBrightnessOn(monitorInfo))
+                        {
+                            _hotkeyJobQueue.Enqueue(new JobInfo(1000, monitorInfo, null, Increase_Brightness_Value));
+                        }
+                        else
+                        {
+                            writelog($"ExecHotkeyJob[ Skip {job}:{hotkeyStr} ,cause AutoBrightness is On] => getTargetMonitor: {getTargetMo}, Monitor [ModelName={monitorInfo.edid.ModelName},ServiceTag={monitorInfo.edid.ServiceTag}, SerialNumber={monitorInfo.edid.SerialNumber}]");
+                        }
                     }
                     break;
 
@@ -10973,7 +11596,14 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     }
                     else
                     {
-                        _hotkeyJobQueue.Enqueue(new JobInfo(1000, monitorInfo, null, Reduce_Contrast_Value));
+                        if (!isAutoBrightnessOn(monitorInfo))
+                        {
+                            _hotkeyJobQueue.Enqueue(new JobInfo(1000, monitorInfo, null, Reduce_Contrast_Value));
+                        }
+                        else
+                        {
+                            writelog($"ExecHotkeyJob[ Skip {job}:{hotkeyStr} ,cause AutoBrightness is On] => getTargetMonitor: {getTargetMo}, Monitor [ModelName={monitorInfo.edid.ModelName},ServiceTag={monitorInfo.edid.ServiceTag}, SerialNumber={monitorInfo.edid.SerialNumber}]");
+                        }
                     }
                     break;
 
@@ -10985,7 +11615,14 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     }
                     else
                     {
-                        _hotkeyJobQueue.Enqueue(new JobInfo(1000, monitorInfo, null, Increase_Contrast_Value));
+                        if (!isAutoBrightnessOn(monitorInfo))
+                        {
+                            _hotkeyJobQueue.Enqueue(new JobInfo(1000, monitorInfo, null, Increase_Contrast_Value));
+                        }
+                        else
+                        {
+                            writelog($"ExecHotkeyJob[ Skip {job}:{hotkeyStr} ,cause AutoBrightness is On] => getTargetMonitor: {getTargetMo}, Monitor [ModelName={monitorInfo.edid.ModelName},ServiceTag={monitorInfo.edid.ServiceTag}, SerialNumber={monitorInfo.edid.SerialNumber}]");
+                        }
                     }
                     break;
 
@@ -11069,6 +11706,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             return Task.FromResult(true);
         }
 
+        private bool isAutoBrightnessOn(MonitorInfo mo)
+        {
+            scheduleInfo result = ReadScheduleMonitorSettings(mo).Result;
+            return result.IsEnable;
+        }
 
         private void Toggle_EzRecentSetting(MonitorInfo monitorInfo, Object[] param)
         {
@@ -11822,13 +12464,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         {
             if (!IsHotkeyFuncLock(HotkeyType.LockBriCont))
             {
-                ObjGetVCP obBrightness = GetVCPCapability(monitorInfo, 0x10, 0).Result;
-                if (obBrightness.result)
-                {
-                    uint brightnessValue = ((uint)obBrightness.value) <= 5 ? 0 : ((uint)obBrightness.value - 5);
-                    bool ret = SetVCPCapability(monitorInfo, 0x10, brightnessValue).Result;
-                    writelog($"Reduce_Brightness:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] from [{(uint)obBrightness.value}] to [{brightnessValue}]" + (ret ? "success" : "fail"));
-                }
+                _disDevHelper.PerformHotKeyBrightnessContrastLuminanceAction(HotkeyType.BrightnessReduce, _AllInfoMonitors, monitorInfo, GetAllExistAlsConfig().Result);
             }
         }
 
@@ -11836,13 +12472,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         {
             if (!IsHotkeyFuncLock(HotkeyType.LockBriCont))
             {
-                ObjGetVCP obBrightness = GetVCPCapability(monitorInfo, 0x10, 0).Result;
-                if (obBrightness.result)
-                {
-                    uint brightnessValue = (((uint)obBrightness.value) + 5) >= 100 ? 100 : ((uint)obBrightness.value + 5);
-                    bool ret = SetVCPCapability(monitorInfo, 0x10, brightnessValue).Result;
-                    writelog($"Increase_Brightness:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] from [{(uint)obBrightness.value}] to [{brightnessValue}]" + (ret ? "success" : "fail"));
-                }
+                _disDevHelper.PerformHotKeyBrightnessContrastLuminanceAction(HotkeyType.BrightnessIncrease, _AllInfoMonitors, monitorInfo, GetAllExistAlsConfig().Result);
             }
         }
 
@@ -11850,13 +12480,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         {
             if (!IsHotkeyFuncLock(HotkeyType.LockBriCont))
             {
-                ObjGetVCP obContrast = GetVCPCapability(monitorInfo, 0x12, 0).Result;
-                if (obContrast.result)
-                {
-                    uint contrastValue = ((uint)obContrast.value) <= 5 ? 0 : (uint)obContrast.value - 5;
-                    bool ret = SetVCPCapability(monitorInfo, 0x12, contrastValue).Result;
-                    writelog($"Reduce_Contrast:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] from [{(uint)obContrast.value}] to [{contrastValue}]" + (ret ? "success" : "fail"));
-                }
+                _disDevHelper.PerformHotKeyBrightnessContrastLuminanceAction(HotkeyType.ContrastReduce, _AllInfoMonitors, monitorInfo, GetAllExistAlsConfig().Result);
             }
         }
 
@@ -11864,13 +12488,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         {
             if (!IsHotkeyFuncLock(HotkeyType.LockBriCont))
             {
-                ObjGetVCP obContrast = GetVCPCapability(monitorInfo, 0x12, 0).Result;
-                if (obContrast.result)
-                {
-                    uint contrastValue = ((uint)obContrast.value) + 5 >= 100 ? 100 : (uint)obContrast.value + 5;
-                    bool ret = SetVCPCapability(monitorInfo, 0x12, contrastValue).Result;
-                    writelog($"Increase_Contrast:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] from [{(uint)obContrast.value}] to [{contrastValue}]" + (ret ? "success" : "fail"));
-                }
+                _disDevHelper.PerformHotKeyBrightnessContrastLuminanceAction(HotkeyType.ContrastIncrease, _AllInfoMonitors, monitorInfo, GetAllExistAlsConfig().Result);
             }
         }
 
@@ -11878,13 +12496,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         {
             if (!IsHotkeyFuncLock(HotkeyType.LockBriCont))
             {
-                ObjGetVCP obLuminance = GetVCPCapability(monitorInfo, 0x10, 0).Result;
-                if (obLuminance.result)
-                {
-                    uint luminanceValue = ((uint)obLuminance.value) <= 5 ? 0 : (uint)obLuminance.value - 5;
-                    bool ret = SetVCPCapability(monitorInfo, 0x10, luminanceValue).Result;
-                    writelog($"Reduce_Luminance:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] from [{(uint)obLuminance.value}] to [{luminanceValue}]" + (ret ? "success" : "fail"));
-                }
+                _disDevHelper.PerformHotKeyBrightnessContrastLuminanceAction(HotkeyType.LuminanceReduce, _AllInfoMonitors, monitorInfo, GetAllExistAlsConfig().Result);
             }
         }
 
@@ -11892,14 +12504,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         {
             if (!IsHotkeyFuncLock(HotkeyType.LockBriCont))
             {
-                ObjGetVCP obLuminance = GetVCPCapability(monitorInfo, 0x10, 0).Result;
-                ObjGetVCP obLuminanceMax = GetVCPCapability(monitorInfo, 0x10, 1).Result;
-                if (obLuminance.result && obLuminanceMax.result)
-                {
-                    uint luminanceValue = ((uint)obLuminance.value) + 5 >= (uint)obLuminanceMax.value ? (uint)obLuminanceMax.value : (uint)obLuminance.value + 5;
-                    bool ret = SetVCPCapability(monitorInfo, 0x10, luminanceValue).Result;
-                    writelog($"Increase_Luminance:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] from [{(uint)obLuminance.value}] to [{luminanceValue}]" + (ret ? "success" : "fail"));
-                }
+                _disDevHelper.PerformHotKeyBrightnessContrastLuminanceAction(HotkeyType.LuminanceIncrease, _AllInfoMonitors, monitorInfo, GetAllExistAlsConfig().Result);
             }
         }
 
@@ -13890,6 +14495,22 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 return null;
         }
 
+        public Task<bool> CheckEAIDExit(MonitorInfo moinfo, int eAID)
+        {
+            if (_IEzMemoryPlugin != null)
+                return Task.FromResult(_IEzMemoryPlugin.CheckEAIDExit(moinfo, eAID).Result);
+            else
+                return null;
+        }
+
+        public Task<bool> DeleteEAID(MonitorInfo moinfo, int eAID)
+        {
+            if (_IEzMemoryPlugin != null)
+                return Task.FromResult(_IEzMemoryPlugin.DeleteEAID(moinfo, eAID).Result);
+            else
+                return null;
+        }
+
         #endregion EzM
 
         #region Common Json read/write interfaces
@@ -14024,6 +14645,18 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             if (_DisplayManagerPlugin != null)
                 rc = _DisplayManagerPlugin.GetMonitorMaxResolution(monitor).Result;
             return rc;
+        }
+
+        public Task<bool> ByPassHotkey(bool bypass)
+        {
+            isBypassHotkey = bypass;
+            return Task.FromResult(isBypassHotkey);
+        }
+
+        public Task<bool> UnRegistAllHotkey()
+        {
+            _pwr_Mon.UnRegisterAllHotKey();
+            return Task.FromResult(true);
         }
     }
 }

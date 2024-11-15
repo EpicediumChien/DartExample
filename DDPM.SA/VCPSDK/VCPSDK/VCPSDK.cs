@@ -61,7 +61,18 @@ namespace VCPSDK
         public async Task<string> DDPMtoNKVM() //DDPM->NKVM json file
         {
             byte[] buffer = new byte[2048];
-            int bytesRead = await pipeClient.ReadAsync(buffer, 0, buffer.Length/*, cancellationTokenSource.Token*/).ConfigureAwait(false);
+            int bytesRead = default;
+
+            try
+            {
+                bytesRead = await pipeClient.ReadAsync(buffer, 0, buffer.Length/*, cancellationTokenSource.Token*/).ConfigureAwait(false);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("[DDPMtoNKVM] exception, message: " + ex.Message);
+                return string.Empty;
+            }
+
             //VCPResponse(Encoding.UTF8.GetString(buffer, 0, bytesRead));
             return Encoding.UTF8.GetString(buffer, 0, bytesRead);
         }
@@ -84,11 +95,21 @@ namespace VCPSDK
         {
             DDPMEvent?.Invoke(this, new EventArgsjson(response));
         }
-        public static X509Certificate2 LoadCertificate(string filePath)
+        /*public static X509Certificate2 LoadCertificate(string filePath)
         {
-            byte[] certBytes = File.ReadAllBytes(filePath);
+            byte[] certBytes = default;
+
+            try
+            {
+               certBytes = File.ReadAllBytes(filePath);
+            }
+            catch 
+            { 
+                return default;
+            }
+
             return new X509Certificate2(certBytes);
-        }
+        }*/
 
         private bool NamedPipeServerSecurity(NamedPipeClientStream pipeServer)
         {

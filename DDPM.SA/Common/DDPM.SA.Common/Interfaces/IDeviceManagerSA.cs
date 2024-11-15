@@ -6,6 +6,7 @@ using DPeMPublic.Common.Enums;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using VcpCore.Common;
 
@@ -53,6 +54,9 @@ namespace DDPM.SA.Common
         Task<Dictionary<string, InstalledAppInfo>> GetAllAppList();
 
         Task<bool> LaunchAndArrangeApps(Dictionary<String, Bind_AddFullPage_AppCollectionData> sortApps);
+
+        Task<bool> CheckEAIDExit(MonitorInfo moinfo, int eAID);
+        Task<bool> DeleteEAID(MonitorInfo moinfo, int eAID);
 
         #endregion EaM
 
@@ -256,6 +260,7 @@ namespace DDPM.SA.Common
         public event EventHandler<EAArgs> EASettingsChanged;
 
         public Task<bool> SetEAWrokSplit(MonitorInfo monitorInfo, int cellCount, char splitKey, List<double>? settings);
+        public Task<bool> NotifyEASelectedLayoutChanged(MonitorInfo monitorInfo, SplitJson spJson);
 
         //Robert_Lin, 2024-9-13 Remove unused interfaces
         //public Task<bool> RequestEditSplit(MonitorInfo monitorInfo, int cellCount, char splitKey, string customName, List<double>? settings = null);
@@ -507,6 +512,10 @@ namespace DDPM.SA.Common
 
         public Task SetLastSelectedMonitorFromUI(MonitorInfo mo);
 
+        public Task<bool> ByPassHotkey(bool bypass);
+
+        public Task<bool> UnRegistAllHotkey();
+
         #endregion public for hotkey
 
         #region public for PowerNap
@@ -531,7 +540,7 @@ namespace DDPM.SA.Common
         //Task<FWUpdateInfoPackage> GetFWUpdateInfo(bool isShowNotify = true, bool isForce = false, bool isDefer = false, List<DeviceType> deviceTypeList = null, bool UODMode = false);
 
         Task<FWUpdateInfoPackage> GetFWUpdateInfo(bool isShowNotify = true, bool isForce = false, bool isDefer = false, List<DeviceType> deviceTypeList = null, bool UODMode = false, bool isOnlyDisplay = false, bool reScan = true, bool isUItrigger = false, List<string> giuds = null, List<string> serviceTags = null, List<string> models = null, string minVersion = "");
-        Task<FWUErrorCode> Install(string installPath, bool isOnlyDisplay = false);
+        Task<FWUErrorCode> Install(string installPath, bool isOnlyDisplay = false, DeviceType deviceType= DeviceType.Unknown);
 
         //0531 Bruce 因應IL的現有安裝包修改判斷，IDeviceManagerSA.cs中三個關於FWUpdate的方法移除並修改DownloadAndInstall回傳值
         Task<List<FWUpdateInfo>> DownloadAndInstall(List<FWUpdateInfo> fwUpdateInfos, bool isUITrigger = false, string installPath = "");
@@ -564,6 +573,7 @@ namespace DDPM.SA.Common
         Task<List<ALSConfig>> UpdateExistAlsConfig(List<MonitorInfo> monitorInfoMain);
 
         Task<bool> SynchronizeALSFeatureValue(ALSConfig monitorALS);
+        Task<String> CheckisShowSynchronize(MonitorInfo currentMoInfo, List<ALSConfig> alsSynchronizeList);
 
         #endregion public ALS functions
 
@@ -876,6 +886,8 @@ namespace DDPM.SA.Common
 
         Task<bool> GetIsPrioritizeExternalWebcam(string Guid);
 
+        Task<bool> GetIsESISupported(string Guid);
+
         #endregion Webcam
 
         #region Headset
@@ -895,6 +907,12 @@ namespace DDPM.SA.Common
         Task<bool> SetSidetoneLevelAsync(string Guid, int newValue);
 
         Task<bool> SetBandsGainAsync(string Guid, byte[] newValue);
+
+        Task<bool> SetBand1GainAsync(string Guid, int newValue);
+        Task<bool> SetBand2GainAsync(string Guid, int newValue);
+        Task<bool> SetBand3GainAsync(string Guid, int newValue);
+        Task<bool> SetBand4GainAsync(string Guid, int newValue);
+        Task<bool> SetBand5GainAsync(string Guid, int newValue);
 
         Task<bool> SetAncModeAsync(string Guid, int newValue);
 
@@ -1001,6 +1019,11 @@ namespace DDPM.SA.Common
         Task<bool> GetMuteStatusAsync(string Guid);
 
         Task<byte[]> GetBandsGainAsync(string Guid);
+        Task<int> GetBand1GainAsync(string Guid);
+        Task<int> GetBand2GainAsync(string Guid);
+        Task<int> GetBand3GainAsync(string Guid);
+        Task<int> GetBand4GainAsync(string Guid);
+        Task<int> GetBand5GainAsync(string Guid);
 
         Task<int> GetAncModeAsync(string Guid);
 
@@ -1065,6 +1088,10 @@ namespace DDPM.SA.Common
         Task<JArray> GetDeviceItemsExAsyncForDongle(string Guid);
 
         #endregion Dongle
+
+        #region Dock
+        Task<DockData> GetDockData(string guid);
+        #endregion
 
         #endregion public for DTPProxy
 

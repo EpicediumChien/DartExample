@@ -76,20 +76,31 @@ namespace DDPM.UI.Module.WebCameraCapture
             var FPS = _vm.WebcamSettings.SupportedFPSs[_vm.WebcamSettings.SelectedResolution];
             switch (FPS.Count)
             {
+                case 1:
+                    btnFPS0.Width = 402;
+                    txtFPS0.Text = FPS[0];
+                    btnFPS0.CornerRadius = new CornerRadius(5, 5, 5, 5);
+                    btnFPS1.Visibility = Visibility.Collapsed;
+                    btnFPS2.Visibility = Visibility.Collapsed;
+                    break;
                 case 2:
                     btnFPS0.Width = 201;
                     txtFPS0.Text = FPS[0];
+                    btnFPS0.CornerRadius = new CornerRadius(5, 0, 0, 5);
                     btnFPS1.Width = 201;
                     txtFPS1.Text = FPS[1];
                     btnFPS1.CornerRadius = new CornerRadius(0, 5, 5, 0);
+                    btnFPS1.Visibility = Visibility.Visible;
                     btnFPS2.Visibility = Visibility.Collapsed;
                     break;
                 case 3:
                     btnFPS0.Width = 134;
                     txtFPS0.Text = FPS[0];
+                    btnFPS0.CornerRadius = new CornerRadius(5, 0, 0, 5);
                     btnFPS1.Width = 134;
                     txtFPS1.Text = FPS[1];
                     btnFPS1.CornerRadius = new CornerRadius(0);
+                    btnFPS1.Visibility = Visibility.Visible;
                     btnFPS2.Width = 134;
                     txtFPS2.Text = FPS[2];
                     btnFPS2.Visibility = Visibility.Visible;
@@ -98,11 +109,16 @@ namespace DDPM.UI.Module.WebCameraCapture
             }
             _vm.SetFPS_Selected(_vm.WebcamSettings.SupportedFPSs[_vm.WebcamSettings.SelectedResolution].IndexOf(_vm.WebcamSettings.CurrentFPS));
         }
-        private void btnResolution_Click(object sender, MouseButtonEventArgs e)
+        private async void btnResolution_Click(object sender, MouseButtonEventArgs e)
         {
             if (sender is Border bdr)
             {
-                var idx = int.Parse(bdr.Tag.ToString()!);
+                int idx;
+                if (!(bdr.Tag is string))
+                    return;
+                bool r = int.TryParse(bdr.Tag.ToString()!, out idx);
+                if (!r)
+                    return;
                 _vm.SetResolution_Selected(idx);
                 InitializeFPS();
                 foreach (var property in _vm.allProperties)
@@ -111,18 +127,39 @@ namespace DDPM.UI.Module.WebCameraCapture
                     if (properties_temp.Contains(_vm.WebcamSettings.CurrentResolution, StringComparison.OrdinalIgnoreCase) && properties_temp.Contains(_vm.WebcamSettings.CurrentFPS, StringComparison.OrdinalIgnoreCase))
                     {
                         var encodingProperties = property.EncodingProperties;
-                        _ = _vm.MediaCapture!.VideoDeviceController.SetMediaStreamPropertiesAsync(MediaStreamType.VideoPreview, encodingProperties);
+                        //_ = _vm.MediaCapture!.VideoDeviceController.SetMediaStreamPropertiesAsync(MediaStreamType.VideoPreview, encodingProperties);
+
+                        bool set_ok = false;
+                        while (set_ok != true)
+                        {
+                            try
+                            {
+                                //參數設置需要一段硬體初始時間,中間再設定參數會造成設定失敗crush,所以要防呆
+                                _vm.MediaCapture!.VideoDeviceController.SetMediaStreamPropertiesAsync(MediaStreamType.VideoPreview, encodingProperties);
+                                set_ok = true;
+                            }
+                            catch
+                            {
+                                Thread.Sleep(250);
+                            }
+                        }
+
                         break;
                     }
                 }
             }
         }
 
-        private void btnFPS_Click(object sender, MouseButtonEventArgs e)
+        private async void btnFPS_Click(object sender, MouseButtonEventArgs e)
         {
             if (sender is Border bdr)
             {
-                var idx = int.Parse(bdr.Tag.ToString()!);
+                int idx;
+                if (!(bdr.Tag is string))
+                    return;
+                bool r = int.TryParse(bdr.Tag.ToString()!, out idx);
+                if (!r)
+                    return;
                 _vm.SetFPS_Selected(idx);
                 foreach (var property in _vm.allProperties)
                 {
@@ -130,14 +167,31 @@ namespace DDPM.UI.Module.WebCameraCapture
                     if (properties_temp.Contains(_vm.WebcamSettings.CurrentResolution, StringComparison.OrdinalIgnoreCase) && properties_temp.Contains(_vm.WebcamSettings.CurrentFPS, StringComparison.OrdinalIgnoreCase))
                     {
                         var encodingProperties = property.EncodingProperties;
-                        _ = _vm.MediaCapture!.VideoDeviceController.SetMediaStreamPropertiesAsync(MediaStreamType.VideoPreview, encodingProperties);
+
+                        //_ = _vm.MediaCapture!.VideoDeviceController.SetMediaStreamPropertiesAsync(MediaStreamType.VideoPreview, encodingProperties);
+
+                        bool set_ok = false;
+                        while (set_ok != true)
+                        {
+                            try
+                            {
+                                //參數設置需要一段硬體初始時間,中間再設定參數會造成設定失敗crush,所以要防呆
+                                _vm.MediaCapture!.VideoDeviceController.SetMediaStreamPropertiesAsync(MediaStreamType.VideoPreview, encodingProperties);
+                                set_ok = true;
+                            }
+                            catch
+                            {
+                                Thread.Sleep(250);
+                            }
+                        }
+
                         break;
                     }
                 }
             }
         }
 
-        private void Open_Click(object sender, RoutedEventArgs e)
+        private void Open_Click(object sender, MouseButtonEventArgs e)
         {
             Process.Start("explorer.exe", _vm!.VideoCaptureFolder);
         }
@@ -164,11 +218,6 @@ namespace DDPM.UI.Module.WebCameraCapture
                 else
                     _vm.Redo();
             }
-        }
-
-        private void Open_Click(object sender, MouseButtonEventArgs e)
-        {
-
         }
     }
 }

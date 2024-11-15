@@ -17,7 +17,7 @@ namespace DDPM.UI.Common.Models
     public class HomeDevice : ObservableObject, IComparable<HomeDevice>
     {
         private eDeviceCategory _deviceCategory;
-        private string _deviceName = "";
+        private string _deviceName = string.Empty;
         private ImageSource? _deviceImage;
         private double _normalWidth = 400;
 
@@ -68,7 +68,7 @@ namespace DDPM.UI.Common.Models
                 UpdateBatteryIndicator();
 
                 //2024-6-20 Get the model from capability string
-                string model = GetModelFromMonitorCapabilityString(_monitorInfo.CapabilityString);
+                string model = string.IsNullOrWhiteSpace(_monitorInfo.modelName) ? GetModelFromMonitorCapabilityString(_monitorInfo.CapabilityString) : _monitorInfo.modelName;
                 //If fail to get mode from CapabilityString, then use AliasDeviceName instead
                 if (String.IsNullOrEmpty(model))
                 {

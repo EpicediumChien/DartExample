@@ -13,6 +13,7 @@ using System.Windows.Forms;
 using System.Windows;
 using DDPM.SA.Common.Settings;
 using DDPM.UI.Plugin.Common;
+using System.IO;
 
 namespace DDPM.UI.Module.DisplayOthers
 {
@@ -23,7 +24,7 @@ namespace DDPM.UI.Module.DisplayOthers
         public IModuleOwner? ModuleOwner { get; set; }
         public DisplayOthersModule DisplayOthersModule { get; set; }
 
-        private string _powerNapText;
+        private string _powerNapText = Strings.Off;
 
         public string PowerNap_text
         {
@@ -46,6 +47,7 @@ namespace DDPM.UI.Module.DisplayOthers
                 SetProperty(ref _powerNapEnabled, value);
                 PowerNap_text = _powerNapEnabled ? Strings.On : Strings.Off;
                 OnPropertyChanged("PowerNap_Enable");
+                OnPropertyChanged("PowerNap_text");
                 savePowerNapSetting();
             }
         }
@@ -99,11 +101,11 @@ namespace DDPM.UI.Module.DisplayOthers
 
         private bool _autoApply_Checked;
 
-        public bool AutoApply_Checked 
+        public bool AutoApply_Checked
         {
             get => _autoApply_Checked;
             set
-            { 
+            {
                 SetProperty(ref _autoApply_Checked, value);
                 DdpmCommonHelper.DeviceManagerSA.SetSameModel(DisplayOthersModule.SelectedHomeDevice.MonitorInfo, _autoApply_Checked).Wait();
             }
@@ -120,6 +122,8 @@ namespace DDPM.UI.Module.DisplayOthers
         public Visibility LockPowerNap_Visibility { get; set; } = Visibility.Collapsed;
 
         public double LockPowerNap_Opacity { get; set; } = 1;
+
+        public string Tooltip_Settings { get; set; } = Strings.ImpExp_Tooltip2;
 
         #region UI Enable Flags
 
@@ -143,6 +147,7 @@ namespace DDPM.UI.Module.DisplayOthers
             bw.DoWork += DoWork_RefreshData;
             bw.RunWorkerCompleted += RunWorkerCompleted_RefreshData;
             bw.RunWorkerAsync(); //myArg is the optional argument
+            IsBusy = true;
         }
 
         private void DoWork_RefreshData(object sender, DoWorkEventArgs e)
@@ -195,6 +200,7 @@ namespace DDPM.UI.Module.DisplayOthers
                         break;
                 }
             }
+            OnPropertyChanged("PowerNap_text");
             OnPropertyChanged("PowerNap_Enable");
             OnPropertyChanged("Reducebrt_Checked");
             OnPropertyChanged("PutTosleep_Checked");
@@ -203,6 +209,7 @@ namespace DDPM.UI.Module.DisplayOthers
         private void RunWorkerCompleted_RefreshData(object sender, RunWorkerCompletedEventArgs e)
         {
             //Handling the result and final process
+            IsBusy = false;
         }
 
         #region Imp/Exp Loading
@@ -226,9 +233,11 @@ namespace DDPM.UI.Module.DisplayOthers
             string ImpExppath = e.Argument.ToString();
             if (ImpExppath.Substring(0, 3) == "Imp")
             {
-                if (DdpmCommonHelper.DeviceManagerSA.DisplayImportSettings(DisplayOthersModule.SelectedHomeDevice.MonitorInfo, AutoApply_Checked, ImpExppath.Substring(3)).Result)
+                string impPath = ImpExppath.Substring(3);
+                if (DdpmCommonHelper.DeviceManagerSA.DisplayImportSettings(DisplayOthersModule.SelectedHomeDevice.MonitorInfo, AutoApply_Checked, impPath).Result)
                 {
-                    OnMessageDlgInvoke("close_loading");
+                    string fileName = Path.GetFileNameWithoutExtension(impPath);
+                    OnMessageDlgInvoke("close_loading_" + fileName);
                     OnMessageDlgInvoke("result_success");
                 }
                 else
@@ -276,8 +285,8 @@ namespace DDPM.UI.Module.DisplayOthers
                     OnMessageDlgInvoke("close_loading");
                     OnPropertyChanged("IsBusy");
                 }
-                else 
-                { 
+                else
+                {
                     ImpExpSettings("Exp", filename);
                     return true;
                 }
@@ -342,6 +351,7 @@ namespace DDPM.UI.Module.DisplayOthers
             OnPropertyChanged("isLockPowerNapEnable");
             OnPropertyChanged("LockPowerNap_Visibility");
             OnPropertyChanged("LockPowerNap_Opacity");
+            OnPropertyChanged("Tooltip_Settings");
         }
 
         private static LoadingScreen _dlg_loading = null;

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -20,11 +21,39 @@ namespace DDPM.Easy.Common
     /// </summary>
     public partial class CellBorder : UserControl
     {
+        private static double _screenScale = -1;
+        
+
         public CellBorder()
         {
             InitializeComponent();
+
+            if (_screenScale < 0)
+            {
+                var dpiXProperty = typeof(SystemParameters).GetProperty("DpiX", BindingFlags.NonPublic | BindingFlags.Static);
+                if (dpiXProperty != null)
+                {
+                    var varX = (int)dpiXProperty.GetValue(null, null);
+                    double dpiX = (double)varX / (double)96;
+                    if (dpiX >= 1.0000)
+                        _screenScale = dpiX;
+                }
+            }
+
+            #region Em Use
+
+            AllowDrop = true;
+            this.Drop += OnDrop;
+            this.Unloaded += OnUnloaded;
+
+            #endregion 
         }
 
+        private void OnUnloaded(object sender, RoutedEventArgs e)
+        {
+            this.Drop -= OnDrop;
+            this.Unloaded -= OnUnloaded;
+        }
 
         private string _cellName = "";
         public string CellName
@@ -135,10 +164,14 @@ namespace DDPM.Easy.Common
         {
             if (_isHover != isHover)
             {
-                this.Dispatcher.Invoke(() =>
+                //this.Dispatcher.Invoke(() =>
+                //{
+                //    IsHover = isHover;
+                //    //IsEnabled = !isHover;
+                //});
+                Dispatcher.BeginInvoke(delegate()
                 {
                     IsHover = isHover;
-                    //IsEnabled = !isHover;
                 });
             }
         }
@@ -146,6 +179,128 @@ namespace DDPM.Easy.Common
         public void AddChild(UIElement ele)
         {
             childGrid.Children.Add(ele);
+        }
+
+        #region Em Use
+
+        public event EventHandler<Dictionary<int, CellAppData>>? DropOccurred;
+        private void OnDrop(object sender, DragEventArgs e)
+        {
+            if (e.Data.GetDataPresent(DataFormats.FileDrop))
+            {
+                var cellBorder = sender as CellBorder;
+                if (cellBorder != null)
+                {
+                    int cellNumber = cellBorder.CellNumber;
+                    BitmapImage bitmapImage = new BitmapImage();
+                    string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
+                    string filePath = files[0];
+                    string fileName = System.IO.Path.GetFileName(filePath);
+
+                    // MemoryImage
+                    System.Drawing.Icon icon = System.Drawing.Icon.ExtractAssociatedIcon(filePath);
+                    if (icon != null)
+                    {
+                        using (var iconStream = new System.IO.MemoryStream())
+                        {
+                            icon.Save(iconStream);
+                            iconStream.Seek(0, System.IO.SeekOrigin.Begin);
+                            bitmapImage.BeginInit();
+                            bitmapImage.StreamSource = iconStream;
+                            bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
+                            bitmapImage.EndInit();
+                            //cellBorder.MemoryImage = bitmapImage;
+                        }
+                    }
+
+                    _cellAppInfo.Clear();
+                    CellAppData appInfo = new CellAppData();
+                    appInfo.Number = cellNumber;
+                    appInfo.FileName = fileName;
+                    appInfo.FilePath = filePath;
+                    appInfo.Image = bitmapImage;
+                    appInfo.Cell = cellBorder;
+                    _cellAppInfo.Add(cellNumber, appInfo);
+                    DropOccurred?.Invoke(this, _cellAppInfo);
+                }
+            }
+        }
+
+        public static readonly DependencyProperty IsEmModeProperty = DependencyProperty.Register(
+    "IsEmMode", typeof(bool), typeof(CellBorder), new PropertyMetadata(false));
+
+        public bool IsEmMode
+        {
+            get => (bool)GetValue(IsEmModeProperty);
+            set => SetValue(IsEmModeProperty, value);
+        }
+
+        public ImageSource MemoryImage
+        {
+            get => memoryImage.Source;
+            set => memoryImage.Source = value;
+        }
+
+        public string MemoryText
+        {
+            get => memoryTB.Text;
+            set => memoryTB.Text = value;
+        }
+
+        Dictionary<int, CellAppData> _cellAppInfo = new Dictionary<int, CellAppData>();
+
+        public int CellNumber
+        {
+            get { return (int)GetValue(CellNumberProperty); }
+            set { SetValue(CellNumberProperty, value); }
+        }
+
+        public static readonly DependencyProperty CellNumberProperty =
+            DependencyProperty.Register("CellNumber", typeof(int), typeof(CellBorder), new PropertyMetadata(0));
+
+        public class CellAppData
+        {
+            public int Number { get; set; }
+
+            public string FileName { get; set; }
+
+            public string FilePath { get; set; }
+
+            public BitmapImage Image { get; set; }
+
+            public CellBorder Cell { get; set; }
+
+            public CellAppData(int number, string fileName, string filePath, BitmapImage image, CellBorder cell)
+            {
+                Number = number;
+                FileName = fileName;
+                FilePath = filePath;
+                Image = image;
+                Cell = cell;
+            }
+
+            public CellAppData() { }
+        }
+        #endregion
+        
+        private void UserControl_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            if (e.NewValue is bool)
+            {
+                bool isVisible = (bool)e.NewValue;
+                if (!isVisible)
+                    return;
+            }
+            if ((ActualWidth == 0) || (ActualHeight == 0))
+                return;
+
+            if (_screenScale < 0)
+                return;
+
+            System.Windows.Point ptTopLeft = PointToScreen(new System.Windows.Point(0, 0));
+            double w = ActualWidth * _screenScale;
+            double h = ActualHeight * _screenScale;
+            rect = new Rect(ptTopLeft.X, ptTopLeft.Y, w, h);
         }
     }
 }

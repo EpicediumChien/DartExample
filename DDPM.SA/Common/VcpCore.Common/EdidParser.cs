@@ -108,13 +108,13 @@ namespace VcpCore.Common
         {
             if (HexString.Length < (EDID_Header.Length + Manufacturer_ID_Len + VENDOR_ID_Len + SerialNum_Len))
             {
-                return "";
+                return string.Empty;
             }
             string text = HexString.Substring(EDID_Header.Length + Manufacturer_ID_Len + VENDOR_ID_Len, SerialNum_Len);
 
             if (text.Length < 8)
             {
-                return "";
+                return string.Empty;
             }
             int num = 0;
             for (int i = 3; i >= 0; i--)
@@ -131,12 +131,12 @@ namespace VcpCore.Common
             int num = HexString.IndexOf(EDID_SerivceTag_Header);
             if (num < 0 || HexString.Length < (num + EDID_SerivceTag_Header.Length + 26))
             {
-                return "";
+                return string.Empty;
             }
             string text = HexString.Substring(num + EDID_SerivceTag_Header.Length, 26);
             if (text.Length < 26)
             {
-                return "";
+                return string.Empty;
             }
 
             List<byte> list = new List<byte>();
@@ -151,7 +151,7 @@ namespace VcpCore.Common
                 list.AddRange(bytes);
             }
             byte[] bytes2 = list.ToArray();
-            string text3 = "";
+            string text3 = string.Empty;
             string @string = Encoding.ASCII.GetString(bytes2);
             for (int j = 0; j < @string.Length; j++)
             {
@@ -222,22 +222,28 @@ namespace VcpCore.Common
                 byte[] bytes2 = list.ToArray();
                 string text2 = "";
                 string @string = Encoding.ASCII.GetString(bytes2);
-                for (int j = 0; j < @string.Length; j++)
+                bool collectStart = false;
+                for (int j = (@string.Length) - 1; j >= 0; j--)
                 {
                     char value = @string[j];
-                    if (Convert.ToInt32(value) >= 48)
-                    {
+                    if (Convert.ToInt32(value) == 10)
+                        collectStart = true;
+                    else if (collectStart && (Convert.ToInt32(value) >= 48))
                         text2 += value;
-                    }
+                    else if (collectStart && (Convert.ToInt32(value) == 32))
+                        break;
                 }
-                return text2;
+                char[] text2_charArray = text2.ToCharArray();
+                Array.Reverse(text2_charArray);
+                text2 = new string(text2_charArray);
+                return text2.ToUpper();
             }
-            return "";
+            return string.Empty;
         }
 
         public string GetProductCode(string edid)
         {
-            string result = "";
+            string result = string.Empty;
             if (edid != null && edid.Length > 24)
             {
                 result = edid.Substring(22, 2) + edid.Substring(20, 2);
@@ -276,7 +282,7 @@ namespace VcpCore.Common
 
         private static string int2charByASCII(int a)
         {
-            return ((char)(a + 64)).ToString() ?? "";
+            return ((char)(a + 64)).ToString() ?? string.Empty;
         }
 
         public static char ToCharByASCIIShort(int a)

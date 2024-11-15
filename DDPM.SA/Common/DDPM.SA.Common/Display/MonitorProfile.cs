@@ -1,6 +1,8 @@
 using System;
+using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Text;
+using static System.Reflection.Metadata.BlobBuilder;
 
 namespace DDPM.SA.Common
 {
@@ -395,10 +397,15 @@ namespace DDPM.SA.Common
             }
 
             // Third, find out whether to use the global or user profile
+            bool bRes = true;
             UInt32 usePerUserProfiles = 0;
             UInt32 res = _WcsGetUsePerUserProfiles(deviceName, DeviceClassFlags.CLASS_MONITOR, out usePerUserProfiles);
+
+            Trace.WriteLine($"_WcsGetUsePerUserProfiles() res={res}");
+
             if (res == 0)
             {
+                bRes = false;
                 throw new System.ComponentModel.Win32Exception(Marshal.GetLastWin32Error());
             }
 
@@ -410,12 +417,15 @@ namespace DDPM.SA.Common
             StringBuilder sb = new StringBuilder();
             sb.Append(profile_name);
 
-            bool bRes = _WcsSetDefaultColorProfile(scope,
+            //bool bRes = _WcsSetDefaultColorProfile(scope,
+            bRes = _WcsSetDefaultColorProfile(scope,
               deviceName,
               COLORPROFILETYPE.CPT_ICC,
               COLORPROFILESUBTYPE.CPST_NONE | COLORPROFILESUBTYPE.CPST_RGB_WORKING_SPACE | COLORPROFILESUBTYPE.CPST_CUSTOM_WORKING_SPACE,
-              0,
-              sb);
+            0,
+            sb);
+
+            Trace.WriteLine($"_WcsSetDefaultColorProfile() bRes={bRes}");
 
             /* UInt32 cbProfileName = 0;   // in bytes
              res = WcsGetDefaultColorProfileSize(scope,

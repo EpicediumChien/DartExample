@@ -12,8 +12,12 @@ using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json.Linq;
 using NGA.ThickClient.Interfaces;
 using System.Diagnostics.CodeAnalysis;
+using System.Windows;
 using System.Windows.Input;
+using System.Windows.Media.Imaging;
+using System.Windows.Media;
 using System.Windows.Threading;
+using Windows.Graphics.Imaging;
 
 namespace DDPM.UI.Plugin.WebCameraPlugin
 {
@@ -59,6 +63,12 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                 Interval = TimeSpan.FromSeconds(5)
             };
             timer.Tick += Timer_Tick;
+
+            if(_console != null)
+            {
+                _console.RegisterForEvent(ConsoleEventNames.MainWindow_Activate, MainWindowActivate);
+                _console.RegisterForEvent(ConsoleEventNames.MainWindow_DeActivate, MainWindowDeActivate);
+            }
         }
 
 
@@ -166,6 +176,23 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
         ~WebCameraplugin()
         {
             DdpmCommonHelper.DeviceManagerSA!.DeviceChanged -= DeviceManager_DeviceChanged;
+        }
+
+        private void MainWindowActivate(object sender, EventManagerArgs e)
+        {
+            this._log?.Write(LogMsgType.Debug, "WebCamera plugin receive MainWindow Activate event");
+            if (_viewModel == null) return;
+            _viewModel.running_state = true;
+            _viewModel.mre.Set();
+        }
+
+        private void MainWindowDeActivate(object sender, EventManagerArgs e)
+        {
+            this._log?.Write(LogMsgType.Debug, "WebCamera plugin receive MainWindow DeActivate event");
+
+            if (_viewModel == null) return;
+            _viewModel.running_state = false;
+            _viewModel.mre.Set();
         }
     }
 }

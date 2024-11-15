@@ -18,8 +18,7 @@ namespace DDPM.UI.Plugin.ViewModels
         public IDeviceManagerSA _deviceManager;
         public DeviceInfo DeviceInfoDTP;
         public string _current_headset;
-        public readonly string regPath = $@"SOFTWARE\Dell\Dell Display And Peripheral Manager\UserSettings\Global\QRCode";
-        public readonly string regKeyForQRCode = $"IsFirstTimeWalkThroughDone_com.dell.DPM.Plugin.LogicalDevice.HeadsetQRCode";
+
         #endregion Variables
 
         public new event PropertyChangedEventHandler? PropertyChanged;
@@ -82,6 +81,7 @@ namespace DDPM.UI.Plugin.ViewModels
                     _automatedActionsAnswerCallPageShow = false;//DELL 說拿掉;
                     //Page 3
                     _voiceGuidancePageShow = true;
+                    _deviceSettingsDownloadDellAudioPageShow = false;
                     break;
 
                 case "WL3024"://Vaporify
@@ -101,6 +101,7 @@ namespace DDPM.UI.Plugin.ViewModels
                     //Page 2
                     _automatedActionsAnswerCallPageShow = false;//DELL 說拿掉;
                     //Page 3
+                    _deviceSettingsDownloadDellAudioPageShow = false;
                     //defult page
                     break;
 
@@ -116,7 +117,7 @@ namespace DDPM.UI.Plugin.ViewModels
             {
                 if (DdpmCommonHelper.DeviceManagerSA != null)
                 {
-                    regValue = DdpmCommonHelper.DeviceManagerSA!.ReadRegistryData(DDPM.SA.Common.Settings.RegistryHive.LocalMachine, regPath, regKeyForQRCode).Result;
+                    regValue = DdpmCommonHelper.DeviceManagerSA!.ReadRegistryData(DDPM.SA.Common.Settings.RegistryHive.LocalMachine, RegPath, RegKeyForQRCode).Result;
 
                     if (regValue != null)
                     {
@@ -602,6 +603,11 @@ namespace DDPM.UI.Plugin.ViewModels
                     DeviceInfoDTP = new DeviceInfo();
                 }
 
+                DeviceInfoDTP.Band1Gain = _deviceManager.GetBand1GainAsync(CurrentDeviceID.ToString()).Result;
+                DeviceInfoDTP.Band2Gain = _deviceManager.GetBand2GainAsync(CurrentDeviceID.ToString()).Result;
+                DeviceInfoDTP.Band3Gain = _deviceManager.GetBand3GainAsync(CurrentDeviceID.ToString()).Result;
+                DeviceInfoDTP.Band4Gain = _deviceManager.GetBand4GainAsync(CurrentDeviceID.ToString()).Result;
+                DeviceInfoDTP.Band5Gain = _deviceManager.GetBand5GainAsync(CurrentDeviceID.ToString()).Result;
                 DeviceInfoDTP.AncGain = _deviceManager.GetAncGainAsync(CurrentDeviceID.ToString()).Result;
                 DeviceInfoDTP.AncMode = _deviceManager.GetAncModeAsync(CurrentDeviceID.ToString()).Result;
                 DeviceInfoDTP.BatteryLevel = _deviceManager.GetBatteryLevelAsync(CurrentDeviceID.ToString()).Result;
@@ -624,6 +630,11 @@ namespace DDPM.UI.Plugin.ViewModels
                 //DeviceInfoDTP.BandsGain = _deviceManager.GetBandsGainAsync(CurrentDeviceID.ToString()).Result;
                 _log.Info($"[HeadsetViewModel] Print after property ......");
                 _log.Info($"[HeadsetViewModel] ***********************************************************************");
+                _log.Info($"[HeadsetViewModel] DeviceInfoDTP.Band1Gain .............= {DeviceInfoDTP.Band1Gain.ToString()}");
+                _log.Info($"[HeadsetViewModel] DeviceInfoDTP.Band2Gain .............= {DeviceInfoDTP.Band2Gain.ToString()}");
+                _log.Info($"[HeadsetViewModel] DeviceInfoDTP.Band3Gain .............= {DeviceInfoDTP.Band3Gain.ToString()}");
+                _log.Info($"[HeadsetViewModel] DeviceInfoDTP.Band4Gain .............= {DeviceInfoDTP.Band4Gain.ToString()}");
+                _log.Info($"[HeadsetViewModel] DeviceInfoDTP.Band5Gain .............= {DeviceInfoDTP.Band5Gain.ToString()}");
                 _log.Info($"[HeadsetViewModel] DeviceInfoDTP.AncGain .............= {DeviceInfoDTP.AncGain.ToString()}");
                 _log.Info($"[HeadsetViewModel] DeviceInfoDTP.AncMode .............= {DeviceInfoDTP.AncMode.ToString()}");
                 _log.Info($"[HeadsetViewModel] DeviceInfoDTP.BatteryLevel ........= {DeviceInfoDTP.BatteryLevel.ToString()}");
@@ -695,6 +706,18 @@ namespace DDPM.UI.Plugin.ViewModels
             return bitValue;
         }
 
+
+        public readonly string _regPath = $@"SOFTWARE\Dell\Dell Display And Peripheral Manager\UserSettings\Global\QRCode";
+        public string RegPath
+        {
+            get => _regPath;
+        }
+
+        private string _regKeyForQRCode = $"IsFirstTimeWalkThroughDone_com.dell.DPM.Plugin.LogicalDevice.HeadsetQRCode.";
+        public string RegKeyForQRCode
+        {
+            get => _regKeyForQRCode + Model;
+        }
         #region Please Wait
 
         private bool _isPleaseWaitVisible;

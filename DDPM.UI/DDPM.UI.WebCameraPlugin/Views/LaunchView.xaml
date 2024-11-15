@@ -134,7 +134,7 @@
                                             SelectedIndex="{Binding RightViewHeaderSelectedIndex, Mode=TwoWay}"
                                             ItemsSource="{Binding RightViewHeaders, Mode=TwoWay}"
                                             SelectionChanged="RightViewHeaderCtrl_SelectionChanged" />
-        <ContentControl Grid.Row="1" Name="RightFrame" Content="{Binding RightView, Mode=TwoWay}" />
+        <ContentControl Grid.Row="1" Name="RightFrame" Content="{Binding RightView, Mode=TwoWay}" SizeChanged="RightFrame_SizeChanged"/>
       </Grid>
       <!--Layer 2 : Nav and Vbar-->
       <Grid Grid.Column="0" Height="auto">
@@ -220,8 +220,8 @@
                 <MouseBinding Gesture="LeftClick" Command="{Binding GoBackClickedCommand, Mode=OneTime}" />
               </Image.InputBindings>
             </Image>
-            <UXControls:UXTextBlock Name="txtCaption" Text="{Binding Name}" Margin="12,19,0,0" HorizontalAlignment="Left"
-                                                Style="{StaticResource ProductNameTextStyle}" Cursor="" VerticalAlignment="Top" />
+            <UXControls:UXTextBlock Name="txtCaption" Text="{Binding Name}" Margin="12,19,0,0" HorizontalAlignment="Left" TextWrapping="WrapWithOverflow"
+                                    Style="{StaticResource ProductNameTextStyle}" Cursor="" VerticalAlignment="Top" />
           </StackPanel>
           <StackPanel Orientation="Horizontal">
             <UXControls:UXTextBlock Text="{Binding Model}" Margin="101,18,0,0" HorizontalAlignment="Left"
@@ -354,7 +354,7 @@
           <UXControls:UXTextBlock Name="txtName" FontFamily="Roboto" FontSize="16" FontWeight="Medium"  VerticalAlignment="Center" />
           <StackPanel Orientation="Vertical">
             <Border x:Name="bdrName" BorderThickness="1" BorderBrush="#7E7E7E" CornerRadius="4" Margin="16,0,0,0">
-              <UXControls:UXTextBox Name="txbName" Width="260" Height="40" Padding="8,12" FontWeight="Medium" FontFamily="Roboto" MaxLength="50" FontSize="14"
+              <UXControls:UXTextBox Name="txbName" Width="260" Height="40" Padding="8,12" FontWeight="Medium" FontFamily="Roboto" MaxLength="30" FontSize="14"
                                 HorizontalAlignment="Center" Margin="0,0,0,0" Background="#141D28" BorderThickness="0" Foreground="#F5F6F7" 
                                 TextChanged="NameTextChanged" TextWrapping="NoWrap" FocusVisualStyle="{StaticResource BorderFocused}"/>
 

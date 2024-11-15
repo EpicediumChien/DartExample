@@ -1,4 +1,5 @@
 ﻿using DDPM.Easy.Common;
+using DDPM.SA.Common.Display;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -16,6 +17,8 @@ using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using VcpCore.Common;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
+using Window = System.Windows.Window;
 
 namespace DDPM.EABroker
 {
@@ -109,6 +112,113 @@ namespace DDPM.EABroker
         #endregion
 
         #region [Input] Working SplitCtrl
+        public bool SetWorkingSplit(SplitJson splitJson)
+        {
+            this.Dispatcher.Invoke(() =>
+            {
+                Rect rcScreen = new Rect();
+                int cellCount = splitJson.CellCount;
+                char splitKey = splitJson.SplitKey;
+
+                if ((cellCount == 0) && (splitKey == 'A'))
+                {
+                    _workingSplit = null;
+                    splitCtrl.Content = null;
+                    fadeOutCtrl.Content = null;
+                    return;
+                }
+
+                if ((cellCount == 0) && (splitKey == 'B'))
+                {
+                    SplitCtrl0B sp0B = new SplitCtrl0B();
+                    _workingSplit = sp0B;
+                    _workingSplit.SplitMode = eSplitModes.Work;
+
+                    if (splitJson.Settings == null)
+                        _workingSplit.Settings = new List<double>();
+                    else
+                        _workingSplit.Settings = new List<double>(splitJson.Settings);
+
+
+                    //_vm.CreateCellBorderListToSplitCtrlFromCellJsons(splitJson.Cells, ref _workingSplit);
+
+                    Trace.WriteLine($"EAWorkWindow.WorkScreen:({_workScreen.Bounds.Left},{_workScreen.Bounds.Top})-({_workScreen.Bounds.Right},{_workScreen.Bounds.Bottom}){_workScreen.Bounds.Width}x{_workScreen.Bounds.Height}");
+
+                    double scale = 1.000;
+                    //Rect rcScreen = new Rect();
+                    rcScreen.X = _workScreen.Bounds.Left / scale;
+                    rcScreen.Y = _workScreen.Bounds.Top / scale;
+                    rcScreen.Width = _workScreen.Bounds.Width / scale;
+                    rcScreen.Height = _workScreen.Bounds.Height / scale;
+
+                    Trace.WriteLine($"AfterScale(/{_vm.ScreenScale}):({rcScreen.X},{rcScreen.Y})-({rcScreen.Right},{rcScreen.Bottom}){rcScreen.Width}x{rcScreen.Height}");
+
+                    //sp0B.UI_CreateCellBordersFromRatioRects(rcScreen);
+                    sp0B.ApplySettingsToCellList(rcScreen);
+
+                    _workingSplit.IsEditable = false;
+                    _workingSplit.IsVertical = _isVertical;
+                    splitCtrl.Content = _workingSplit;
+                }
+                else
+                {
+                    _workingSplit = ISplitCtrl.Create(cellCount, splitKey);
+
+                    if (_workingSplit != null)
+                    {
+                        _workingSplit.SplitMode = eSplitModes.Work;
+                        if (splitJson.Settings == null)
+                            _workingSplit.Settings = new List<double>();
+                        else
+                            _workingSplit.Settings = new List<double>(splitJson.Settings);
+                        _workingSplit.IsEditable = false;
+                        _workingSplit.IsVertical = _isVertical;
+                        splitCtrl.Content = _workingSplit;
+                    }
+                    else
+                    {
+                        splitCtrl.Content = null;
+                    }
+                }
+                //AwsBuddy Window do not support FadeOut
+                if (_isAwsBuddy)
+                {
+
+                    return;
+                }
+
+                ISplitCtrl? fadeSplit = ISplitCtrl.Create(cellCount, splitKey);
+                if (fadeSplit != null)
+                {
+                    fadeSplit.SplitMode = eSplitModes.Work;
+                    if (splitJson.Settings == null)
+                        fadeSplit.Settings = new List<double>();
+                    else
+                        fadeSplit.Settings = new List<double>(splitJson.Settings);
+
+                    //_vm.CreateCellBorderListToSplitCtrlFromCellJsons(splitJson.Cells, ref fadeSplit);
+
+                    if ((cellCount == 0) && (splitKey == 'B'))
+                    {
+                        SplitCtrl0B sp0b = fadeSplit as SplitCtrl0B;
+                        // sp0b.UI_CreateCellBordersFromRatioRects(rcScreen);
+                        sp0b.ApplySettingsToCellList(rcScreen);
+
+                    }
+                    fadeSplit.IsEditable = false;
+                    fadeSplit.IsVertical = _isVertical;
+                    fadeOutCtrl.Content = fadeSplit;
+                }
+                else
+                {
+                    fadeOutCtrl.Content = null;
+                }
+
+                InvokeFadeOutAnimation();
+            });
+
+            return true;
+        }
 
 
         public bool SetWorkingSplit(int cellCount, char splitKey, List<double>? settings = null)
@@ -288,149 +398,73 @@ namespace DDPM.EABroker
 
         public CellObj? DetermineHoveringCellObj(int x, int y)
         {
+            //if (!Dispatcher.CheckAccess())
+            //    return null;
+
             if (_workingSplit == null)
                 return null;
 
+            CellObj? hoverCell = null;
+            ISplitCtrl localSplit = _workingSplit as ISplitCtrl;
+            if (localSplit == null)
+                return null;
 
-            DpiScale dpiScale = VisualTreeHelper.GetDpi(this);
-            double scale = dpiScale.PixelsPerDip;
-
-            bool isHandled = false;
-
-            _workingSplit.HoveringCell = "";
-
-            /*
-            if (_workingSplit.CtrlClass.Equals("SplitCtrl2C"))
+            //For Overlap layout (SplitCtrl0B), the hover state is set to IsHover.
+            //And need to refresh once changed
+            if (localSplit.IsOverlapCustomLayout)
             {
-                SplitCtrl2C ctrl = _workingSplit as SplitCtrl2C;
-                foreach (CellBorder cellBd in ctrl.CellBorders)
+                foreach (CellObj objCell in localSplit.CellList)
                 {
-                    if (cellBd.rect.Contains(x, y))
-                    {
-                        _vm.AwsIcon1.HoveringCell = cellBd.CellName;
-                        cellBd.IsHover = true;
-                        isHandled = true;
-                    }
-                    else
-                    {
-                        cellBd.IsHover = false;
-                    }
-                }
-            }
-
-            if (_workingSplit.CtrlClass.Equals("SplitCtrl2A"))
-            {
-                SplitCtrl2A ctrl = _workingSplit as SplitCtrl2A;
-                foreach (CellBorder cellBd in ctrl.CellBorders)
-                {
-                    if (cellBd.rect.Contains(x, y))
-                    {
-                        _vm.AwsIcon1.HoveringCell = cellBd.CellName;
-                        cellBd.IsHover = true;
-                        isHandled = true;
-                    }
-                    else
-                    {
-                        cellBd.IsHover = false;
-                    }
-                }
-            }
-            */
-
-            //For AddedCustomLayout
-            if (_workingSplit.IsAddedCustomLayout)
-            {
-                CellObj? hoverCell = null;
-                //Detect from CellList
-                //
-                
-                foreach (CellObj objCell in _workingSplit.CellList)
-                {
-                    string tag = "N";
+                    //If the hoverCell is not determined now
                     if (hoverCell == null)
                     {
+                        //Check if cursor(x,y) is inside this CellBorder
                         if (objCell.rc.Contains(x, y))
                         {
+                            //Yes, this cell will be the HoveringCell
+                            //Set this CellBorder to Hover
+                            //objCell.CellBd.IsHover = true;
+                            objCell.CellBd.Dispatcher_SetIsHover(true);
+                            //Store it in the return object
                             hoverCell = objCell;
-                            tag = "H";
-                            _workingSplit.HoveringCell = objCell.Name;
-                            isHandled = true;
-                        }
-                    }
-
-                    //this.Dispatcher.Invoke(() =>
-                    //{
-                    //    objCell.bd.Tag = tag;
-                    //});
-
-                }
-                if (_workingSplit.IsAddedCustomLayout)
-                {
-                    SplitCtrl0B sp0B = (SplitCtrl0B)_workingSplit;
-                    foreach (CellBorder cellBd in sp0B.CellBorders)
-                    {
-                        //if (cellBd.rect.Contains(x, y))
-                        //{
-                        //    cellBd.IsHover = true;
-                        //    //Convert to CellObj
-                        //    hoverCell = new CellObj(cellBd.Name, cellBd.Border);
-                        //    hoverCell.rc = cellBd.rect;
-                        //}
-                        //else
-                        //    cellBd.IsHover = false;
-                        if (hoverCell != null)
-                        {
-                            if (cellBd.CellName.Equals(hoverCell.Name))
-                                cellBd.Dispatcher_SetIsHover(true);
-                            else
-                                cellBd.Dispatcher_SetIsHover(false);
                         }
                         else
                         {
-                            cellBd.Dispatcher_SetIsHover(false);
+                            //No, set this CellBorder.IsHover to false
+                            //objCell.CellBd.IsHover = false;
+                            objCell.CellBd.Dispatcher_SetIsHover(false);
                         }
                     }
-                 }
-
-                //Detect from CellBorders
-                 return hoverCell; ;
+                    else
+                    {
+                        //hoverCell has been determined, so the other CellBorder will set IsHover to false
+                        //objCell.CellBd.IsHover = false;
+                        objCell.CellBd.Dispatcher_SetIsHover(false);
+                    }
+                } //foreach
+                return hoverCell;
             }
+            //Else: Not Overlap layout, will hover/unhover the cell by DataTrigger with HoveringCell property
 
-            /*
-            foreach (CellBorder cellBd in _workingSplit.CellBorders)
+            foreach (CellObj objCell in localSplit.CellList)
             {
-                if (isHandled)
-                {
-                    cellBd.IsHover = false;
-                    continue;
-                }
-
-                if (cellBd.rect.Contains(x, y))
-                {
-                    _vm.AwsIcon1.HoveringCell = cellBd.CellName;
-                    cellBd.IsHover = true;
-                    isHandled = true;
-                }
-                else
-                {
-                    cellBd.IsHover = false;
-                }
-            }
-            */
-
-            //For other layouts
-            foreach (CellObj objCell in _workingSplit.CellList)
-            {
+                //Check if cursor(x,y) is inside this CellBorder
                 if (objCell.rc.Contains(x, y))
                 {
-                    _workingSplit.HoveringCell = objCell.Name;
-                    return objCell;
+                    //Trigger it to Hover state by HoveringCell property (Cell.Name)
+                    localSplit.HoveringCell = objCell.Name;
+                    //Store it in the return object
+                    hoverCell = objCell;
+                    //We can return immediately, all other CellObjs not been triggerd will be non-Hover
+                    return hoverCell;
                 }
-            }
+
+            } //foreach
 
             return null;
         }
 
+        
         #endregion DetermineHoveringCell
 
         #region Cells
@@ -481,22 +515,35 @@ namespace DDPM.EABroker
                         }
                     }
                 }
-                else
+                else // if (_workingSplit.CellCount==5)
                 {
-                    foreach (CellObj objCell in _workingSplit.CellList)
+                    foreach(CellObj objCell in _workingSplit.CellList)
                     {
-                        if (objCell.bd == null)
+                        if (objCell.CellBd == null)
                             continue;
 
-                        objCell.rc = _vm.GetFrameworkElementRect(objCell.bd);
-
-                        Trace.WriteLine($"Cell({objCell.Name})={ArrangeVM.FormatRect(objCell.rc)}");
+                        objCell.rc = _vm.GetFrameworkElementRect(objCell.CellBd);
 
                         if (objCell.rc.IsEmpty)
                             _areCellRectsRefreshed = false;
                     }
-
                 }
+                //else
+                //{
+                //    //foreach (CellObj objCell in _workingSplit.CellList)
+                //    //{
+                //    //    if (objCell.bd == null)
+                //    //        continue;
+
+                //    //    objCell.rc = _vm.GetFrameworkElementRect(objCell.bd);
+
+                //    //    Trace.WriteLine($"Cell({objCell.Name})={ArrangeVM.FormatRect(objCell.rc)}");
+
+                //    //    if (objCell.rc.IsEmpty)
+                //    //        _areCellRectsRefreshed = false;
+                //    //}
+
+                //}
                 if (!_areCellRectsRefreshed)
                 {
                     //System.Threading.Timer timer1 = new System.Threading.Timer(refreshCellRects_TimerCallback, null, 100, Timeout.Infinite);

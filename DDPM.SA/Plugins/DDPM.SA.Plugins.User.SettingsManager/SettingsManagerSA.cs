@@ -23,6 +23,8 @@ using System.Linq.Expressions;
 using Windows.Devices.Bluetooth.Background;
 using Windows.Web.Http;
 using DDPM.SA.Obfuscation;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace DDPM.SA.Plugins.User.SettingsManager
 {
@@ -122,7 +124,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager
         private List<PowerNapSetting> _powerNapSettings { get; set; }
         private string _powerNapsettings_path { get; set; } = string.Empty;
         //private static List<PowerNapSetting> _present_powerNap_settings = new List<PowerNapSetting>();
-        private static string _settingsAccessInfo = string.Empty;
+        //private static string _settingsAccessInfo = string.Empty;
         private static string _settingsAccessInfoVer = string.Empty;
         private static string _settingsAccessInfoAddr = string.Empty;
 
@@ -297,7 +299,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager
             _SysSettingsPlugin.ITSettingsActionEvent += _SysSettingsPlugin_ActionEvent;
             relay_registered = true;
 
-            _settingsAccessInfo = _SysSettingsPlugin.QueryAccessInfo().Result;
+            //_settingsAccessInfo = _SysSettingsPlugin.QueryAccessInfo().Result;
             _settingsAccessInfoVer = _SysSettingsPlugin.QueryAccessInfoVer().Result;
             _settingsAccessInfoAddr = _SysSettingsPlugin.QueryAccessInfoAddr().Result;
             InitDDPMUserConfigFile();
@@ -312,6 +314,35 @@ namespace DDPM.SA.Plugins.User.SettingsManager
             SettingReadyEvent?.Invoke(this, new EventArgs());
             _isAllSettingsReady = true;
         }
+
+        /*private void HMAC_Secret_Test()
+        {
+            DateTimeOffset utcNow = DateTimeOffset.UtcNow;
+            string strRandom = SettingsAccess.GenerateReferenceInfo();
+            string strTicket = SettingsAccess.GenerateReferenceTicket(utcNow);
+            string strTicketToFile = utcNow.ToString();
+
+            GlobalSettingParam temp = new GlobalSettingParam();
+
+            string content = string.Empty;
+            JToken token = JToken.FromObject(temp);
+            if (token.Type == JTokenType.Object)
+            {
+                JObject obj = (JObject)token;
+                // Handle object
+                content = obj.ToString();
+            }
+            else if (token.Type == JTokenType.Array)
+            {
+                JArray array = (JArray)token;
+                // Handle array
+                content = array.ToString();
+            }
+
+            string signature = SettingsAccess.GenerateSignature(strTicket, strRandom, content);
+            bool result = SettingsAccess.VerifySignature(strTicketToFile, strRandom, content, signature);
+            Console.WriteLine($"The comparison result is {result}");
+        }*/
 
         public Task<bool> QuerySettingsStatus()
         {
@@ -533,7 +564,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager
                         if (_settings == null || force_reload == true)
                         {
                             string info;
-                            string output = DDPMFileSecurity.GetSerializedJsonString(_settingsAccessInfo, _settings_path, out info);//, false);
+                            string output = DDPMFileSecurity.GetSerializedJsonString(_settings_path, out info);//, false);
                             _settings = JsonConvert.DeserializeObject<DDPMSettings>(output);
                         }
                     }
@@ -582,7 +613,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager
                 return Task.FromResult(result);*/
 
                 string info;
-                if (!DDPMFileSecurity.SetJsonContentFromSerializedString(_settingsAccessInfo, JObject.FromObject(_settings).ToString(), _settings_path, out info))//, false))
+                if (!DDPMFileSecurity.SetJsonContentFromSerializedString(JObject.FromObject(_settings).ToString(), _settings_path, out info))//, false))
                 {
                     WriteLog(info);
                     return Task.FromResult(false);
@@ -609,9 +640,17 @@ namespace DDPM.SA.Plugins.User.SettingsManager
                         }
                     }
                     string strReadJson = string.Empty;
-                    using (var reader = new StreamReader(monitorSettings_path))
+
+                    try
                     {
-                        strReadJson = reader.ReadToEnd();
+                        using (var reader = new StreamReader(monitorSettings_path))
+                        {
+                            strReadJson = reader.ReadToEnd();
+                        }
+                    }
+                    catch (Exception ex) 
+                    {
+                        WriteLog("[ReloadMonitorSettings] exception, message: " + ex.Message);
                     }
 
                     if (strReadJson == string.Empty || strReadJson.Length == 0)
@@ -685,7 +724,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager
                 //    strReadJson = reader.ReadToEnd();
                 //}
                 string info;
-                strReadJson = DDPMFileSecurity.GetSerializedJsonString(_settingsAccessInfo, strFilePath, out info);
+                strReadJson = DDPMFileSecurity.GetSerializedJsonString(strFilePath, out info);
 
                 if (strReadJson == string.Empty || strReadJson.Length == 0)
                     return Task.FromResult(_preset_settings);
@@ -720,13 +759,13 @@ namespace DDPM.SA.Plugins.User.SettingsManager
             {
                 JObject obj = (JObject)token;
                 // Handle object
-                result = DDPMFileSecurity.SetJsonContentFromSerializedString(_settingsAccessInfo, obj.ToString(), _colorsettings_path, out info);
+                result = DDPMFileSecurity.SetJsonContentFromSerializedString(obj.ToString(), _colorsettings_path, out info);
             }
             else if (token.Type == JTokenType.Array)
             {
                 JArray array = (JArray)token;
                 // Handle array
-                result = DDPMFileSecurity.SetJsonContentFromSerializedString(_settingsAccessInfo, array.ToString(), _colorsettings_path, out info);
+                result = DDPMFileSecurity.SetJsonContentFromSerializedString(array.ToString(), _colorsettings_path, out info);
             }            
 
             return Task.FromResult(result);
@@ -749,7 +788,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager
                 {
                     string strReadJson = string.Empty;
                     string info;
-                    strReadJson = DDPMFileSecurity.GetSerializedJsonString(_settingsAccessInfo, strFilePath, out info);
+                    strReadJson = DDPMFileSecurity.GetSerializedJsonString(strFilePath, out info);
 
                     if (strReadJson == string.Empty || strReadJson.Length == 0)
                     {
@@ -860,7 +899,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager
 
                     string strReadJson = string.Empty;
                     string info;
-                    strReadJson = DDPMFileSecurity.GetSerializedJsonString(_settingsAccessInfo, strFilePath, out info);
+                    strReadJson = DDPMFileSecurity.GetSerializedJsonString(strFilePath, out info);
 
                     if (strReadJson == string.Empty || strReadJson.Length == 0)
                     {
@@ -910,10 +949,18 @@ namespace DDPM.SA.Plugins.User.SettingsManager
             }
 
             string strReadJson = string.Empty;
-            using (var reader = new StreamReader(filePath))
+            try
             {
-                strReadJson = reader.ReadToEnd();
+                using (var reader = new StreamReader(filePath))
+                {
+                    strReadJson = reader.ReadToEnd();
+                }
             }
+            catch (Exception ex)
+            {
+                WriteLog("[ImportPowerNapSettings] exception, message: " + ex.Message);
+            }
+            
 
             if (strReadJson == string.Empty || strReadJson.Length == 0)
                 return Task.FromResult(_powerNapSettings);// _present_powerNap_settings);
@@ -1731,7 +1778,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager
                 return false;
             }
             string info;
-            if (!DDPMFileSecurity.SetJsonContentFromSerializedString(_settingsAccessInfo, JObject.FromObject(impexpSettings).ToString(), path, out info))
+            if (!DDPMFileSecurity.SetJsonContentFromSerializedString(JObject.FromObject(impexpSettings).ToString(), path, out info))
             {
                 WriteLog(info);
                 return false;
@@ -1762,13 +1809,16 @@ namespace DDPM.SA.Plugins.User.SettingsManager
                     //}
                     //security SA
                     string info;
-                    strReadJson = DDPMFileSecurity.GetSerializedJsonString(_settingsAccessInfo, path, out info);//, false);
+                    strReadJson = DDPMFileSecurity.GetSerializedJsonString(path, out info);//, false);
 
                     if (strReadJson == string.Empty || strReadJson.Length == 0)
+                    {
+                        WriteLog("[ReadImportSettingsFile] strReadJson is empty or length is 0.");
                         return Task.FromResult(ImpSettings);
+                    }
                     try
                     {
-                        WriteLog($"[ReadImportSettingsFile]strReadJson: " + strReadJson);
+                        //WriteLog($"[ReadImportSettingsFile]strReadJson: " + strReadJson);
                         ImpSettings = RunImpExpDeserializeObject(strReadJson);
                     }
                     catch (Exception)
@@ -1840,7 +1890,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager
                 {
                     string strReadJson = string.Empty;
                     string info;
-                    strReadJson = DDPMFileSecurity.GetSerializedJsonString(_settingsAccessInfo, strFilePath, out info);
+                    strReadJson = DDPMFileSecurity.GetSerializedJsonString(strFilePath, out info);
 
                     if (strReadJson == string.Empty || strReadJson.Length == 0)
                     {
@@ -2075,7 +2125,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager
             if (File.Exists(file_appdatapath_userconfig))
             {
                 // DDPMSettings.getSettingsforImport(file_appdatapath_userconfig, ref ddpm_app, ref ddpm_user);
-                string serialized_string = DDPMFileSecurity.GetSerializedJsonString(_settingsAccessInfo, file_appdatapath_userconfig, out info);//, false);
+                string serialized_string = DDPMFileSecurity.GetSerializedJsonString(file_appdatapath_userconfig, out info);//, false);
                 if (!string.IsNullOrEmpty(serialized_string))
                     _settings = JsonConvert.DeserializeObject<DDPMSettings>(serialized_string);
                 else
@@ -2085,7 +2135,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager
                     if (_settings != null)
                     {
                         WriteLog("[InitDDPMUserConfigFile] *** Init cache from file fail, re-create default settings to file");
-                        if (DDPMFileSecurity.SetJsonContentFromSerializedString(_settingsAccessInfo, JObject.FromObject(_settings).ToString(), file_appdatapath_userconfig, out info))
+                        if (DDPMFileSecurity.SetJsonContentFromSerializedString(JObject.FromObject(_settings).ToString(), file_appdatapath_userconfig, out info))
                             WriteLog("[InitDDPMUserConfigFile] re-create file content OK");
                         else
                             WriteLog("[InitDDPMUserConfigFile] save to file failed, please check file access right!!");
@@ -2149,13 +2199,13 @@ namespace DDPM.SA.Plugins.User.SettingsManager
             {
                 JObject obj = (JObject)token;
                 // Handle object
-                result = DDPMFileSecurity.SetJsonContentFromSerializedString(_settingsAccessInfo, obj.ToString(), settings_path, out info);
+                result = DDPMFileSecurity.SetJsonContentFromSerializedString(obj.ToString(), settings_path, out info);
             }
             else if (token.Type == JTokenType.Array)
             {
                 JArray array = (JArray)token;
                 // Handle array
-                result = DDPMFileSecurity.SetJsonContentFromSerializedString(_settingsAccessInfo, array.ToString(), settings_path, out info);
+                result = DDPMFileSecurity.SetJsonContentFromSerializedString(array.ToString(), settings_path, out info);
             }
             else
             {
@@ -2729,7 +2779,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager
             //    WriteLog($"[ReadSerializedContentFromFile][IsFilePathValid] File:{fileInfo.Name}, failed with({info})");
             //    return Task.FromResult(result);
             //}
-            result = DDPMFileSecurity.GetSerializedJsonString(_settingsAccessInfo, filePath, out info);
+            result = DDPMFileSecurity.GetSerializedJsonString(filePath, out info);
             if(string.IsNullOrEmpty(result))
             {
                 WriteLog($"[ReadSerializedContentFromFile] Result is empty, failed with ({info})");
@@ -2748,7 +2798,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager
                 File.Delete(filePath);
                 return Task.FromResult(result);
             }
-            result = DDPMFileSecurity.SetJsonContentFromSerializedString(_settingsAccessInfo, content, filePath, out info);
+            result = DDPMFileSecurity.SetJsonContentFromSerializedString(content, filePath, out info);
             if(!result)
             {
                 WriteLog($"[WriteSerializedContentToFile] failed with ({info})");

@@ -48,14 +48,26 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                         return;
 #endif
                     }
-                    NamedPipeStreamConnection item = new NamedPipeStreamConnection(asyncState, base.PipeName);
-                    item.MessageReceived += new MessageEventHandler(this.Connection_MessageReceived);
-                    item.DisconnectedEvent += Connection_DisconnectedEvent;
+
+                    NamedPipeStreamConnection item = default;
+
+                    try
+                    {
+                        item = new NamedPipeStreamConnection(asyncState, base.PipeName);
+                        item.MessageReceived += new MessageEventHandler(this.Connection_MessageReceived);
+                        item.DisconnectedEvent += Connection_DisconnectedEvent;
+                    }
+                    catch (Exception ex)
+                    {
+                        Trace.WriteLine($"[NamedPipeStreamServer] NamedPipeClientSecurity failed ({ex.Message})");
+                        return;
+                    }
+
                     lock (this._Connections)
                     {
                         this._Connections.Add(item);
                         ClientConnectedEvent?.Invoke(this, new EventArgs());
-                    }
+                    }                                        
                 }
                 NamedPipeServerStream state = NamedPipeServerStreamAcl.Create(base.PipeName, PipeDirection.InOut, NamedPipeServerStream.MaxAllowedServerInstances, PipeTransmissionMode.Message, PipeOptions.Asynchronous, 0, 0, pipeSecurity);
                 state.BeginWaitForConnection(new AsyncCallback(this.ClientConnected), state);

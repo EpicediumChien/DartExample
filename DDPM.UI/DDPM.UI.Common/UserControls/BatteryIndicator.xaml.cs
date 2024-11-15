@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System.Diagnostics;
+using System.Windows;
 using System.Windows.Media.Imaging;
 using UserControl = System.Windows.Controls.UserControl;
 
@@ -91,7 +92,8 @@ namespace DDPM.UI.Common
                 level = "0";
             }
             BitmapImage bitmapImage = new BitmapImage(new Uri($"/DDPM.UI.Resources;component/Resources/Images/Battery{charging}{level}.png", UriKind.Relative));
-            BatteryLevelText.Text = level == "0" ? "" : BatteryLevel.ToString("#0") + "%";
+            BatteryLevelText.Text = level == "0" ? "" : BatteryLevel.ToString("##0") + "%";
+            Debug.WriteLine($"Battery{charging}{level}");
             BatteryImage.Source = bitmapImage;
         }
 

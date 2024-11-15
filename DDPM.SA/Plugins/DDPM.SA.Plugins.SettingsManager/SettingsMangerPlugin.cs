@@ -57,7 +57,7 @@ namespace DDPM.SA.Plugins.SettingsManager
         private const string publisherCompany = "Wistron";
         private const string publisherWebsite = "https://www.wistron.com";
         private const string publisherSupport = "This plugin implements Settings Manager Plugin.";
-        private static string _settingsAccess = SettingsAccess.AppAccessInfo;
+        //private static string _settingsAccess = SettingsAccess.AppAccessInfo;
         private static string _settingsAccessVer = SettingsAccess.AppAccessVer;
         private static string _settingsAccessAddr = SettingsAccess.AppAccessAddr;
 
@@ -131,10 +131,10 @@ namespace DDPM.SA.Plugins.SettingsManager
             return ReadITConfigData(force_reload);
         }
 
-        public Task<string> QueryAccessInfo()
-        {
-            return Task.FromResult(_settingsAccess);
-        }
+        //public Task<string> QueryAccessInfo()
+        //{
+        //    return Task.FromResult(_settingsAccess);
+        //}
 
         public Task<string> QueryAccessInfoVer()
         {
@@ -157,12 +157,12 @@ namespace DDPM.SA.Plugins.SettingsManager
                 _settings = new DDPMITConfig(); //use it as default settings
                 return Task.FromResult(_settings);
             }
-            if (string.IsNullOrEmpty(_settingsAccess))
-            {
-                WriteLog($"ReadITConfigData: Empty system info access, use default data");
-                _settings = new DDPMITConfig(); //use it as default settings
-                return Task.FromResult(_settings);
-            }
+            //if (string.IsNullOrEmpty(_settingsAccess))
+            //{
+            //    WriteLog($"ReadITConfigData: Empty system info access, use default data");
+            //    _settings = new DDPMITConfig(); //use it as default settings
+            //    return Task.FromResult(_settings);
+            //}
             string info = "Success";
             if (force_reload)
             {
@@ -172,7 +172,7 @@ namespace DDPM.SA.Plugins.SettingsManager
 
                 WriteLog($"ReadITConfigData: null settings, load data from file");
             }
-            string serialized_string = DDPMFileSecurity.GetSerializedJsonString(_settingsAccess, _settings_path, out info);
+            string serialized_string = DDPMFileSecurity.GetSerializedJsonString(_settings_path, out info);
             _settings = JsonConvert.DeserializeObject<DDPMITConfig>(serialized_string);
             return Task.FromResult(_settings);
         }
@@ -191,7 +191,7 @@ namespace DDPM.SA.Plugins.SettingsManager
             }
             _settings.global_setting = globalSettingParam;
             string info = string.Empty;
-            bool result = DDPMFileSecurity.SetJsonContentFromSerializedString(_settingsAccess, JToken.FromObject(_settings).ToString(), _settings_path, out info);
+            bool result = DDPMFileSecurity.SetJsonContentFromSerializedString(JToken.FromObject(_settings).ToString(), _settings_path, out info);
             if (!result)
             {
                 WriteLog($"WriteGlobalSettingsToITConfig: write failed, reason: {info}");
@@ -214,7 +214,7 @@ namespace DDPM.SA.Plugins.SettingsManager
             }
             _settings = data;
             string info = "Success";
-            if (!DDPMFileSecurity.SetJsonContentFromSerializedString(_settingsAccess, JObject.FromObject(_settings).ToString(), _settings_path, out info))
+            if (!DDPMFileSecurity.SetJsonContentFromSerializedString(JObject.FromObject(_settings).ToString(), _settings_path, out info))
             {
                 WriteLog($"WriteITConfigData: write failed. Info({info})");
                 return Task.FromResult(false);
@@ -423,7 +423,7 @@ namespace DDPM.SA.Plugins.SettingsManager
                     _infos.Infos = new List<string>();
                     _infos.Infos.Add(InfoHash.Info_Hash.Trim());
                     string msg = string.Empty;
-                    if (!DDPMFileSecurity.SetJsonContentFromSerializedString(_settingsAccess, JToken.FromObject(_infos).ToString(), _info_path, out msg))
+                    if (!DDPMFileSecurity.SetJsonContentFromSerializedString(JToken.FromObject(_infos).ToString(), _info_path, out msg))
                     {
                         WriteLog($"[GetInfos] recover data failed: {msg}");
                     }
@@ -433,7 +433,7 @@ namespace DDPM.SA.Plugins.SettingsManager
             if (force_reload)
             {
                 string msg2 = string.Empty;
-                string read = DDPMFileSecurity.GetSerializedJsonString(_settingsAccess, _info_path, out msg2);
+                string read = DDPMFileSecurity.GetSerializedJsonString(_info_path, out msg2);
                 try
                 {
                     InfoObject obj = JsonConvert.DeserializeObject<InfoObject>(read);
@@ -463,7 +463,7 @@ namespace DDPM.SA.Plugins.SettingsManager
             {
                 _infos.Infos.Add(info);
                 string msg = string.Empty;
-                if (!DDPMFileSecurity.SetJsonContentFromSerializedString(_settingsAccess, JToken.FromObject(_infos).ToString(), _info_path, out msg))
+                if (!DDPMFileSecurity.SetJsonContentFromSerializedString(JToken.FromObject(_infos).ToString(), _info_path, out msg))
                 {
                     WriteLog($"[AddInfo] update data failed: {msg}");
                 }
@@ -566,7 +566,7 @@ namespace DDPM.SA.Plugins.SettingsManager
             bool need_reWrite = true;
             if (File.Exists(filePath))
             {
-                string serialized_string = DDPMFileSecurity.GetSerializedJsonString(_settingsAccess, filePath, out info);
+                string serialized_string = DDPMFileSecurity.GetSerializedJsonString(filePath, out info);
                 if (!string.IsNullOrEmpty(serialized_string))
                 {
                     switch (type)
@@ -597,11 +597,11 @@ namespace DDPM.SA.Plugins.SettingsManager
                 {
                     case "ITConfig":
                         result = _settings;
-                        write = DDPMFileSecurity.SetJsonContentFromSerializedString(_settingsAccess, JToken.FromObject(_settings).ToString(), filePath, out info);
+                        write = DDPMFileSecurity.SetJsonContentFromSerializedString(JToken.FromObject(_settings).ToString(), filePath, out info);
                         break;
                     case "InfoConfig":
                         result = _infos;
-                        write = DDPMFileSecurity.SetJsonContentFromSerializedString(_settingsAccess, JToken.FromObject(_infos).ToString(), filePath, out info);
+                        write = DDPMFileSecurity.SetJsonContentFromSerializedString(JToken.FromObject(_infos).ToString(), filePath, out info);
                         break;
                     default:
                         WriteLog($"[InitSysSettingsData] type({type}) is not defined to support.3");

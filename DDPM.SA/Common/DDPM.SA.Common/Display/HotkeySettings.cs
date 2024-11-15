@@ -1,5 +1,9 @@
 ﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Windows.Forms;
+using System.Windows.Input;
 using VcpCore.Common;
 using Windows.System;
 
@@ -38,10 +42,47 @@ namespace DDPM.SA.Common.Display
 
         public HotkeyType Job = HotkeyType.None;
 
+        [JsonIgnore]
+        public VirtualKey KeyCode => Hotkey.SingleOrDefault(x => x != VirtualKey.Control && x != VirtualKey.Shift && x != VirtualKey.Menu);
+
+        [JsonIgnore]
+        public ushort ID { get; set; }
+
+        [JsonIgnore]
+        public bool Control => Hotkey.Any(x => x == VirtualKey.Control);
+
+        [JsonIgnore]
+        public bool Shift => Hotkey.Any(x => x == VirtualKey.Shift);
+
+        [JsonIgnore]
+        public bool Alt => Hotkey.Any(x => x == VirtualKey.Menu);
+
+        [JsonIgnore]
+        public bool Win { get; set; }
+
+        [JsonIgnore]
+        public ModifierKeys ModifiersEnum
+        {
+            get
+            {
+                ModifierKeys modifiers = ModifierKeys.None;
+
+                if (Alt) modifiers |= ModifierKeys.Alt;
+                if (Control) modifiers |= ModifierKeys.Control;
+                if (Shift) modifiers |= ModifierKeys.Shift;
+                if (Win) modifiers |= ModifierKeys.Windows;
+
+                return modifiers;
+            }
+        }
         //[1006 Dean] since currently we using this field to be per user, so the real input source object should be recorded as monitor setting as well
         public List<InputSourceObj> InputSource { get; set; } = new List<InputSourceObj>();
     }
-
+    public class KeyPressedEventArgs : EventArgs
+    {
+        public HotkeyInfo HotkeyInfo { get; set; } = new HotkeyInfo();
+        public string KeyString { get; set; }
+    }
     public enum HotkeyOption
     {
         None,

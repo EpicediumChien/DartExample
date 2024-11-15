@@ -100,20 +100,8 @@ namespace DDPM.SA.Common.Settings
                             {
                                 foreach (Software software in data.Softwares)
                                 {
-                                    string version;
-                                    if (int.TryParse(software.SoftwareVersion, out _))
-                                    {
-                                        version = Regex.Replace(Convert.ToInt32(software.SoftwareVersion).ToString(), @"(?<=\d)(?=(\d{2})*$)", ".").TrimEnd('.');
-                                    }
-                                    else
-                                    {
-                                        data = new SWUpdateHelper();
-                                        info = $"{nameof(GetSWMetadata)} software.SoftwareVersion TryParse fail: {software.SoftwareVersion}";
-                                        logs?.DebugMsg_1(info);
-                                        return data;
-                                    }
-                                    software.SoftwareVersion = version;
-                                    software.ServerPath = software.ServerPath.Replace("%2", $"{software.SoftwareName}-Setup-v{version}");
+                                    software.SoftwareVersion = software.SoftwareVersion;
+                                    software.ServerPath = software.ServerPath.Replace("%2", $"{software.SoftwareName}-Setup-v{software.SoftwareVersion}");
                                     software.DdpmSwUpdaterServer_path = software.DdpmSwUpdaterServer_path.Replace("%21", $"DdpmSwUpdater");
                                 }
                                 info = $"{nameof(GetSWMetadata)} done";
@@ -146,6 +134,56 @@ namespace DDPM.SA.Common.Settings
                 logs?.DebugMsg_1(info);
             }
             return data;
+        }
+        public static bool CompareVersions(string oldVersion, string newVersion, Logs logs)
+        {
+            logs?.DebugMsg_1($"{nameof(CompareVersions)} start");
+            bool isNeedUpdate = false;
+            logs?.DebugMsg_1($"{nameof(CompareVersions)} oldVersion IsNullOrEmpty : {(string.IsNullOrEmpty(oldVersion) ? "Yes" : "No")}");
+            logs?.DebugMsg_1($"{nameof(CompareVersions)} newVersion IsNullOrEmpty : {(string.IsNullOrEmpty(newVersion) ? "Yes" : "No")}");
+            if (!string.IsNullOrEmpty(oldVersion) && !string.IsNullOrEmpty(newVersion) &&
+                oldVersion.Contains(".") && newVersion.Contains("."))
+            {
+                logs?.DebugMsg_1($"{nameof(CompareVersions)} oldVersion : {oldVersion}");
+                logs?.DebugMsg_1($"{nameof(CompareVersions)} newVersion : {newVersion}");
+                string[] oldVersion_Array = oldVersion.Split('.');
+                string[] newVersion_Array = newVersion.Split('.');
+                logs?.DebugMsg_1($"{nameof(CompareVersions)} oldVersion_Array Is Null : {(oldVersion_Array == null ? "Yes" : "No")}");
+                logs?.DebugMsg_1($"{nameof(CompareVersions)} newVersion_Array Is Null : {(newVersion_Array == null ? "Yes" : "No")}");
+                if (oldVersion_Array != null && newVersion_Array != null)
+                {
+                    logs?.DebugMsg_1($"{nameof(CompareVersions)} oldVersion_Array.Length : {oldVersion_Array.Length}");
+                    logs?.DebugMsg_1($"{nameof(CompareVersions)} newVersion_Array.Length : {newVersion_Array.Length}");
+                    if (oldVersion_Array.Length == 4 && newVersion_Array.Length == 4)
+                    {
+                        if (oldVersion_Array.Length == newVersion_Array.Length)
+                        {
+                            for (int i = 0; i < oldVersion_Array.Length; i++)
+                            {
+                                if (int.TryParse(newVersion_Array[i], out int newVersion_int) && int.TryParse(oldVersion_Array[i], out int oldVersion_int))
+                                {
+                                    logs?.DebugMsg_1($"{nameof(CompareVersions)} oldVersion_int : {oldVersion_int}");
+                                    logs?.DebugMsg_1($"{nameof(CompareVersions)} newVersion_int : {newVersion_int}");
+                                    if (newVersion_int > oldVersion_int)
+                                    {
+                                        isNeedUpdate = true;
+                                        break;
+                                    }
+                                }
+                                else
+                                {
+                                    logs?.DebugMsg_1($"{nameof(CompareVersions)} int.TryParse Error");
+                                    logs?.DebugMsg_1($"{nameof(CompareVersions)} int.TryParse oldVersion_Array[i] : {oldVersion_Array[i]}");
+                                    logs?.DebugMsg_1($"{nameof(CompareVersions)} int.TryParse newVersion_Array[i] : {newVersion_Array[i]}");
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            logs?.DebugMsg_1($"{nameof(CompareVersions)} done");
+            return isNeedUpdate;
         }
         public static InterruptScreenRoot InterruptScreen_Metadata(bool isSkipCA, out string info, ISettingsManagerDev settingsPlugin, List<string> InserInfoPkey, Logs logs)
         {

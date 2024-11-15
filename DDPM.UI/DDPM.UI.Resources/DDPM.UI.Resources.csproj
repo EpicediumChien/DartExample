@@ -49,6 +49,7 @@
     <None Remove="Resources\Images\DownloadTileG.png" />
     <None Remove="Resources\Images\EOLDongle.png" />
     <None Remove="Resources\Images\EzAdd.png" />
+    <None Remove="Resources\Images\EzRemove.png" />
     <None Remove="Resources\Images\Folder.png" />
     <None Remove="Resources\Images\G.png" />
     <None Remove="Resources\Images\GearConnection.png" />
@@ -88,20 +89,12 @@
     <None Remove="Resources\Images\Headset_whitedot.png" />
     <None Remove="Resources\Images\info.png" />
     <None Remove="Resources\Images\info18.png" />
-    <None Remove="Resources\Images\KB3121W.png" />
     <None Remove="Resources\Images\KB500.png" />
-    <None Remove="Resources\Images\KB500S.png" />
     <None Remove="Resources\Images\KB525C.png" />
     <None Remove="Resources\Images\KB555.png" />
-    <None Remove="Resources\Images\KB555S.png" />
     <None Remove="Resources\Images\KB700.png" />
-    <None Remove="Resources\Images\kB700S.png" />
-    <None Remove="Resources\Images\KB7120W.png" />
-    <None Remove="Resources\Images\KB7221W.png" />
     <None Remove="Resources\Images\KB740.png" />
-    <None Remove="Resources\Images\KB740S.png" />
     <None Remove="Resources\Images\KB900.png" />
-    <None Remove="Resources\Images\KB900S.png" />
     <None Remove="Resources\Images\Key1.png" />
     <None Remove="Resources\Images\Key2.png" />
     <None Remove="Resources\Images\Key3.png" />
@@ -403,6 +396,9 @@
     <Resource Include="Resources\Images\EzAdd.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
+    <Resource Include="Resources\Images\EzRemove.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
     <Resource Include="Resources\Images\Folder.png" />
     <Resource Include="Resources\Images\G.png" />
     <Resource Include="Resources\Images\GearConnection.png" />
@@ -591,14 +587,6 @@
     </Resource>
     <Resource Include="Resources\Images\Headset_whitedot.png" />
     <Resource Include="Resources\Images\info.png" />
-    <Resource Include="Resources\Images\KB3121W.png" />
-    <Resource Include="Resources\Images\KB500S.png" />
-    <Resource Include="Resources\Images\KB555S.png" />
-    <Resource Include="Resources\Images\KB7221W.png" />
-    <Resource Include="Resources\Images\kB700S.png" />
-    <Resource Include="Resources\Images\KB7120W.png" />
-    <Resource Include="Resources\Images\KB740S.png" />
-    <Resource Include="Resources\Images\KB900S.png" />
     <Resource Include="Resources\Images\Key1.png" />
     <Resource Include="Resources\Images\Key2.png" />
     <Resource Include="Resources\Images\Key3.png" />

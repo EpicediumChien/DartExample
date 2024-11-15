@@ -88,53 +88,103 @@ namespace DDPM.EABroker
         }
         public void SetWorkSplit(ISplitCtrl splitCtrl, string hoverCellName="")
         {
-            if (_workSplit != null)
-            {
-
-            }
-            _workSplit = splitCtrl;
-
-            if (_workSplit == null)
+            if (splitCtrl == null)
                 return;
 
             this.Dispatcher.Invoke(() =>
             {
-                ISplitCtrl localSplit = splitCtrl.Clone();
-                _workSplit = localSplit;
+                //If workSplit not been assigned, or changed
+                bool needToRefreshWorkSplit = (_workSplit == null) || (splitCtrl.EAID != _workSplit.EAID);
+                ISplitCtrl localSplit = _workSplit;
 
-                //Robert_Lin, 2024-10-23 Temporary comment-out
-                
-                if (localSplit.IsAddedCustomLayout) //SplitCtrl0B
+                if (needToRefreshWorkSplit)
                 {
-                    SplitCtrl0B sp0B = (SplitCtrl0B)localSplit;
+                    //Create a new ISplitCtrl to the AwsBuddyWindow
+                    localSplit = splitCtrl.Clone();
 
-                    if (_workScreen == null)
-                        _workScreen = _vm.WorkScreen;
-
-                    //Fix the rcScreen from _workScreen
-                    Rect rcScreen = new Rect();
-                    rcScreen.X = _workScreen.Bounds.Left / _vm.ScreenScale;
-                    rcScreen.Y = _workScreen.Bounds.Top / _vm.ScreenScale;
-                    rcScreen.Width = _workScreen.Bounds.Width / _vm.ScreenScale;
-                    rcScreen.Height = _workScreen.Bounds.Height / _vm.ScreenScale;
-
-                    //Create Borders and CellBorders to canvas grid
-                    sp0B.ApplySettingsToCellList(rcScreen);
-
-                    foreach(CellBorder cb in sp0B.CellBorders)
+                    if (localSplit.IsOverlapCustomLayout) //SplitCtrl0B
                     {
-                        if (cb.CellName.Equals(hoverCellName))
-                            cb.Dispatcher_SetIsHover(true);
-                        else
-                            cb.Dispatcher_SetIsHover(false);
+                        SplitCtrl0B sp0B = (SplitCtrl0B)localSplit;
+
+                        if (_workScreen == null)
+                            _workScreen = _vm.WorkScreen;
+
+                        //Fix the rcScreen from _workScreen
+                        Rect rcScreen = new Rect();
+                        rcScreen.X = _workScreen.Bounds.Left / _vm.ScreenScale;
+                        rcScreen.Y = _workScreen.Bounds.Top / _vm.ScreenScale;
+                        rcScreen.Width = _workScreen.Bounds.Width / _vm.ScreenScale;
+                        rcScreen.Height = _workScreen.Bounds.Height / _vm.ScreenScale;
+
+                        //Create Borders and CellBorders to canvas grid
+                        sp0B.ApplySettingsToCellList(rcScreen);
+
+                    }
+                    localSplit.SplitMode = eSplitModes.Work;
+                    localSplit.IsEditable = false;
+                    localSplit.IsVertical = IsVertical;
+                    //localSplit.HoveringCell = hoverCellName;
+                    splitContent.Content = localSplit;
+
+                    _workSplit = localSplit;
+                }//Check if workSplit is changed
+
+                if (localSplit != null)
+                {
+                    //Set the hovering Cell to Hover state
+                    if (localSplit.IsAddedCustomLayout)
+                    {
+                        foreach (CellObj objCell in localSplit.CellList)
+                        {
+                            if (objCell.Name.Equals(hoverCellName))
+                                objCell.CellBd.Dispatcher_SetIsHover(true);
+                            else
+                                objCell.CellBd.Dispatcher_SetIsHover(false);
+                        }
+                    }
+                    else
+                    {
+                        localSplit.HoveringCell = hoverCellName;
                     }
                 }
-                
-                localSplit.SplitMode = eSplitModes.Work;
-                localSplit.IsEditable = false;
-                localSplit.IsVertical = IsVertical;
-                localSplit.HoveringCell = hoverCellName;
-                splitContent.Content = localSplit;
+
+
+                //Robert_Lin, 2024-10-23 Temporary comment-out
+
+                //if (localSplit.IsAddedCustomLayout) //SplitCtrl0B
+                //{
+                //    SplitCtrl0B sp0B = (SplitCtrl0B)localSplit;
+
+                //    if (_workScreen == null)
+                //        _workScreen = _vm.WorkScreen;
+
+                //    //Fix the rcScreen from _workScreen
+                //    Rect rcScreen = new Rect();
+                //    rcScreen.X = _workScreen.Bounds.Left / _vm.ScreenScale;
+                //    rcScreen.Y = _workScreen.Bounds.Top / _vm.ScreenScale;
+                //    rcScreen.Width = _workScreen.Bounds.Width / _vm.ScreenScale;
+                //    rcScreen.Height = _workScreen.Bounds.Height / _vm.ScreenScale;
+
+                //    //Create Borders and CellBorders to canvas grid
+                //    sp0B.ApplySettingsToCellList(rcScreen);
+
+                //    foreach(CellBorder cb in sp0B.CellBorders)
+                //    {
+                //        if (cb.CellName.Equals(hoverCellName))
+                //            cb.Dispatcher_SetIsHover(true);
+                //        else
+                //            cb.Dispatcher_SetIsHover(false);
+                //    }
+                //}
+
+                //localSplit.SplitMode = eSplitModes.Work;
+                //localSplit.IsEditable = false;
+                //localSplit.IsVertical = IsVertical;
+                //localSplit.HoveringCell = hoverCellName;
+                //splitContent.Content = localSplit;
+
+                //Delay to call RefreshCellRects
+                RefreshCellRects();
             });
         }
 
@@ -272,5 +322,98 @@ namespace DDPM.EABroker
 
             }
         }
+
+        public Rect GetHoveringCellRect()
+        {
+            if (_workSplit == null)
+            {
+                return Rect.Empty;
+            }
+
+            if (String.IsNullOrEmpty(_workSplit.HoveringCell))
+            {
+                return Rect.Empty;
+            }
+            CellObj? hoveringCellObj = _workSplit.CellList.Find(x => x.Name.Equals(_workSplit.HoveringCell));
+            if (hoveringCellObj == null)
+            {
+                return Rect.Empty;
+            }
+            return hoveringCellObj.rc;
+        }
+
+
+        public void RefreshCellRects()
+        {
+            if (_workSplit == null)
+                return;
+
+            this.Dispatcher.Invoke(() =>
+            {
+                bool _areCellRectsRefreshed = true;
+                ISplitCtrl localSplit = _workSplit as ISplitCtrl;
+                if (localSplit == null)
+                    return;
+                // if (localSplit.IsAddedCustomLayout)
+                // {
+                //    SplitCtrl0B sp0B = (SplitCtrl0B)_workSplit;
+                //    foreach (CellBorder cellBd in localSplit.CellBorders)
+                //    {
+                //        cellBd.rect = _vm.GetFrameworkElementRect(cellBd);
+
+                //        CellObj? cellObj = localSplit.CellList.Find(x => x.Name.Equals(cellBd.CellName));
+                //        if (cellObj != null)
+                //        {
+                //            cellObj.rc = cellBd.rect;
+
+                //            if (cellObj.rc.IsEmpty)
+                //                _areCellRectsRefreshed = false;
+                //        }
+                //    }
+                //}
+                //else // if (_workingSplit.CellCount==5)
+                //{
+                    foreach (CellObj objCell in localSplit.CellList)
+                    {
+                        if (objCell.CellBd == null)
+                            continue;
+
+                        objCell.rc = _vm.GetFrameworkElementRect(objCell.CellBd);
+
+                        if (objCell.rc.IsEmpty)
+                            _areCellRectsRefreshed = false;
+                    }
+                //}
+                //else
+                //{
+                //    //foreach (CellObj objCell in _workingSplit.CellList)
+                //    //{
+                //    //    if (objCell.bd == null)
+                //    //        continue;
+
+                //    //    objCell.rc = _vm.GetFrameworkElementRect(objCell.bd);
+
+                //    //    Trace.WriteLine($"Cell({objCell.Name})={ArrangeVM.FormatRect(objCell.rc)}");
+
+                //    //    if (objCell.rc.IsEmpty)
+                //    //        _areCellRectsRefreshed = false;
+                //    //}
+
+                //}
+                if (!_areCellRectsRefreshed)
+                {
+                    //System.Threading.Timer timer1 = new System.Threading.Timer(refreshCellRects_TimerCallback, null, 100, Timeout.Infinite);
+                    System.Threading.Timer timer1 = new System.Threading.Timer((obj) => { RefreshCellRects(); }, null, 100, Timeout.Infinite);
+                }
+                else
+                {
+                    string d = "";
+                }
+
+            });
+        }
+
     }
+
+
 }

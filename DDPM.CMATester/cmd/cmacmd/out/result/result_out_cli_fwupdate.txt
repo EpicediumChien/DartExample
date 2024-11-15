@@ -1,0 +1,733 @@
+2024 Nov 12 14:11:05.188	out_cli_fwupdate.txt Start test.
+
+Test Json = {"sid":"1731380133","req":[{"tid":1,"active":"fw","devicetype":"display","value":"forcewithnotice","options":{"servicetag":"cn073k0","model":"u2724de","minversion":"m3t103"}}]}
+CMA Notification Alert eventtype : 5
+CMA Notification Alert eventtype : {"sid": "1731380133","gid": "8334806d-1c69-4613-a8b8-6dea664917a4","response": [{"tid": 1,"result": 501,"msg": "No monitor connected","data": [{
+  "Model": "N/A",
+  "SerialNumber": "N/A",
+  "Index": "N/A",
+  "ServiceTag": "N/A",
+  "Command": "SET",
+  "TargetFeature": "FIRMWAREUPDATE",
+  "Value": "N/A",
+  "Result": "FAIL",
+  "Message": "No monitor connected"
+}]}]}
+Test Json = {"sid":"1731380134","req":[{"tid":1,"active":"fw","devicetype":"display","value":"forcewithnonotice","options":{"servicetag":"cn073k0","model":"u2724de","minversion":"m3t103"}}]}
+CMA Notification Alert eventtype : 5
+CMA Notification Alert eventtype : {"sid": "1731380134","gid": "35ffe0e3-294c-4132-b385-cee986c16f9e","response": [{"tid": 1,"result": 501,"msg": "No monitor connected","data": [{
+  "Model": "N/A",
+  "SerialNumber": "N/A",
+  "Index": "N/A",
+  "ServiceTag": "N/A",
+  "Command": "SET",
+  "TargetFeature": "FIRMWAREUPDATE",
+  "Value": "N/A",
+  "Result": "FAIL",
+  "Message": "No monitor connected"
+}]}]}
+Test Json = {"sid":"1731380135","req":[{"tid":1,"active":"fw","devicetype":"display","value":"forcewithnotice","options":{"servicetag":"cn073k0","minversion":"m3t103"}}]}
+CMA Notification Alert eventtype : 5
+CMA Notification Alert eventtype : {"sid": "1731380135","gid": "b5a2333b-120a-4896-a0ce-31636a763468","response": [{"tid": 1,"result": 501,"msg": "No monitor connected","data": [{
+  "Model": "N/A",
+  "SerialNumber": "N/A",
+  "Index": "N/A",
+  "ServiceTag": "N/A",
+  "Command": "SET",
+  "TargetFeature": "FIRMWAREUPDATE",
+  "Value": "N/A",
+  "Result": "FAIL",
+  "Message": "No monitor connected"
+}]}]}
+Test Json = {"sid":"1731380136","req":[{"tid":1,"active":"fw","devicetype":"display","value":"forcewithnonotice","options":{"servicetag":"cn073k0","minversion":"m3t103"}}]}
+CMA Notification Alert eventtype : 5
+CMA Notification Alert eventtype : {"sid": "1731380136","gid": "3052f1a8-b3e4-4fb5-8a58-5e77246f68cb","response": [{"tid": 1,"result": 501,"msg": "No monitor connected","data": [{
+  "Model": "N/A",
+  "SerialNumber": "N/A",
+  "Index": "N/A",
+  "ServiceTag": "N/A",
+  "Command": "SET",
+  "TargetFeature": "FIRMWAREUPDATE",
+  "Value": "N/A",
+  "Result": "FAIL",
+  "Message": "No monitor connected"
+}]}]}
+Test Json = {"sid":"1731380137","req":[{"tid":1,"active":"fw","devicetype":"display","value":"forcewithnotice","options":{"servicetag":"cn073k0","model":"u2724de"}}]}
+CMA Notification Alert eventtype : 5
+CMA Notification Alert eventtype : {"sid": "1731380137","gid": "584e6ab7-c98e-45e8-8753-870bd7c5e8db","response": [{"tid": 1,"result": 501,"msg": "No monitor connected","data": [{
+  "Model": "N/A",
+  "SerialNumber": "N/A",
+  "Index": "N/A",
+  "ServiceTag": "N/A",
+  "Command": "SET",
+  "TargetFeature": "FIRMWAREUPDATE",
+  "Value": "N/A",
+  "Result": "FAIL",
+  "Message": "No monitor connected"
+}]}]}
+Test Json = {"sid":"1731380138","req":[{"tid":1,"active":"fw","devicetype":"display","value":"forcewithnonotice","options":{"servicetag":"cn073k0","model":"u2724de"}}]}
+CMA Notification Alert eventtype : 5
+CMA Notification Alert eventtype : {"sid": "1731380138","gid": "c46e8e43-2fdc-4574-9080-009a17859b4a","response": [{"tid": 1,"result": 501,"msg": "No monitor connected","data": [{
+  "Model": "N/A",
+  "SerialNumber": "N/A",
+  "Index": "N/A",
+  "ServiceTag": "N/A",
+  "Command": "SET",
+  "TargetFeature": "FIRMWAREUPDATE",
+  "Value": "N/A",
+  "Result": "FAIL",
+  "Message": "No monitor connected"
+}]}]}
+Test Json = {"sid":"1731380139","req":[{"tid":1,"active":"fw","devicetype":"display","value":"forcewithnotice","options":{"model":"u2724de","minversion":"m3t103"}}]}
+CMA Notification Alert eventtype : 5
+CMA Notification Alert eventtype : {"sid": "1731380139","gid": "130a258a-5736-4a5b-83df-045609588e69","response": [{"tid": 1,"result": 501,"msg": "No monitor connected","data": [{
+  "Model": "N/A",
+  "SerialNumber": "N/A",
+  "Index": "N/A",
+  "ServiceTag": "N/A",
+  "Command": "SET",
+  "TargetFeature": "FIRMWAREUPDATE",
+  "Value": "N/A",
+  "Result": "FAIL",
+  "Message": "No monitor connected"
+}]}]}
+Test Json = {"sid":"1731380140","req":[{"tid":1,"active":"fw","devicetype":"display","value":"forcewithnonotice","options":{"model":"u2724de","minversion":"m3t103"}}]}
+CMA Notification Alert eventtype : 5
+CMA Notification Alert eventtype : {"sid": "1731380140","gid": "2d3e1964-d410-4346-8e65-c80236ac76bf","response": [{"tid": 1,"result": 501,"msg": "No monitor connected","data": [{
+  "Model": "N/A",
+  "SerialNumber": "N/A",
+  "Index": "N/A",
+  "ServiceTag": "N/A",
+  "Command": "SET",
+  "TargetFeature": "FIRMWAREUPDATE",
+  "Value": "N/A",
+  "Result": "FAIL",
+  "Message": "No monitor connected"
+}]}]}
+Test Json = {"sid":"1731380141","req":[{"tid":1,"active":"fw","devicetype":"display","value":"forcewithnotice","options":{"servicetag":"cn073k0"}}]}
+CMA Notification Alert eventtype : 5
+CMA Notification Alert eventtype : {"sid": "1731380141","gid": "a3c1070c-8254-44ec-9d2f-bd62fd833994","response": [{"tid": 1,"result": 501,"msg": "No monitor connected","data": [{
+  "Model": "N/A",
+  "SerialNumber": "N/A",
+  "Index": "N/A",
+  "ServiceTag": "N/A",
+  "Command": "SET",
+  "TargetFeature": "FIRMWAREUPDATE",
+  "Value": "N/A",
+  "Result": "FAIL",
+  "Message": "No monitor connected"
+}]}]}
+Test Json = {"sid":"1731380142","req":[{"tid":1,"active":"fw","devicetype":"display","value":"forcewithnonotice","options":{"servicetag":"cn073k0"}}]}
+CMA Notification Alert eventtype : 5
+CMA Notification Alert eventtype : {"sid": "1731380142","gid": "ef11cf68-4c3c-41ba-ac43-210ecca9de47","response": [{"tid": 1,"result": 501,"msg": "No monitor connected","data": [{
+  "Model": "N/A",
+  "SerialNumber": "N/A",
+  "Index": "N/A",
+  "ServiceTag": "N/A",
+  "Command": "SET",
+  "TargetFeature": "FIRMWAREUPDATE",
+  "Value": "N/A",
+  "Result": "FAIL",
+  "Message": "No monitor connected"
+}]}]}
+Test Json = {"sid":"1731380143","req":[{"tid":1,"active":"fw","devicetype":"display","value":"forcewithnotice","options":{"minversion":"m3t103"}}]}
+CMA Notification Alert eventtype : 5
+CMA Notification Alert eventtype : {"sid": "1731380143","gid": "c42d56f5-5937-456f-be70-8abd4d8ee288","response": [{"tid": 1,"result": 501,"msg": "No monitor connected","data": [{
+  "Model": "N/A",
+  "SerialNumber": "N/A",
+  "Index": "N/A",
+  "ServiceTag": "N/A",
+  "Command": "SET",
+  "TargetFeature": "FIRMWAREUPDATE",
+  "Value": "N/A",
+  "Result": "FAIL",
+  "Message": "No monitor connected"
+}]}]}
+Test Json = {"sid":"1731380144","req":[{"tid":1,"active":"fw","devicetype":"display","value":"forcewithnonotice","options":{"minversion":"m3t103"}}]}
+CMA Notification Alert eventtype : 5
+CMA Notification Alert eventtype : {"sid": "1731380144","gid": "5d713f8e-3367-4e74-8eb6-915e7dc9f2e5","response": [{"tid": 1,"result": 501,"msg": "No monitor connected","data": [{
+  "Model": "N/A",
+  "SerialNumber": "N/A",
+  "Index": "N/A",
+  "ServiceTag": "N/A",
+  "Command": "SET",
+  "TargetFeature": "FIRMWAREUPDATE",
+  "Value": "N/A",
+  "Result": "FAIL",
+  "Message": "No monitor connected"
+}]}]}
+Test Json = {"sid":"1731380145","req":[{"tid":1,"active":"fw","devicetype":"display","value":"forcewithnotice","options":{"model":"u2724de"}}]}
+CMA Notification Alert eventtype : 5
+CMA Notification Alert eventtype : {"sid": "1731380145","gid": "f0013307-a34e-43c0-9d55-ee1abead9b82","response": [{"tid": 1,"result": 501,"msg": "No monitor connected","data": [{
+  "Model": "N/A",
+  "SerialNumber": "N/A",
+  "Index": "N/A",
+  "ServiceTag": "N/A",
+  "Command": "SET",
+  "TargetFeature": "FIRMWAREUPDATE",
+  "Value": "N/A",
+  "Result": "FAIL",
+  "Message": "No monitor connected"
+}]}]}
+Test Json = {"sid":"1731380146","req":[{"tid":1,"active":"fw","devicetype":"display","value":"forcewithnonotice","options":{"model":"u2724de"}}]}
+CMA Notification Alert eventtype : 5
+CMA Notification Alert eventtype : {"sid": "1731380146","gid": "f876a8f7-d353-4515-b58e-7b2360dde469","response": [{"tid": 1,"result": 501,"msg": "No monitor connected","data": [{
+  "Model": "N/A",
+  "SerialNumber": "N/A",
+  "Index": "N/A",
+  "ServiceTag": "N/A",
+  "Command": "SET",
+  "TargetFeature": "FIRMWAREUPDATE",
+  "Value": "N/A",
+  "Result": "FAIL",
+  "Message": "No monitor connected"
+}]}]}
+Test Json = {"sid":"1731380147","req":[{"tid":1,"active":"fw","devicetype":"display","value":"forcewithnotice","options":{}}]}
+CMA Notification Alert eventtype : 5
+CMA Notification Alert eventtype : {"sid": "1731380147","gid": "4d8734b0-89a9-4a03-adf1-bca7a959ddd6","response": [{"tid": 1,"result": 501,"msg": "No monitor connected","data": [{
+  "Model": "N/A",
+  "SerialNumber": "N/A",
+  "Index": "N/A",
+  "ServiceTag": "N/A",
+  "Command": "SET",
+  "TargetFeature": "FIRMWAREUPDATE",
+  "Value": "N/A",
+  "Result": "FAIL",
+  "Message": "No monitor connected"
+}]}]}
+Test Json = {"sid":"1731380148","req":[{"tid":1,"active":"fw","devicetype":"display","value":"forcewithnonotice","options":{}}]}
+CMA Notification Alert eventtype : 5
+CMA Notification Alert eventtype : {"sid": "1731380148","gid": "94f7b95b-c824-485e-92f5-a3b0fdae2251","response": [{"tid": 1,"result": 501,"msg": "No monitor connected","data": [{
+  "Model": "N/A",
+  "SerialNumber": "N/A",
+  "Index": "N/A",
+  "ServiceTag": "N/A",
+  "Command": "SET",
+  "TargetFeature": "FIRMWAREUPDATE",
+  "Value": "N/A",
+  "Result": "FAIL",
+  "Message": "No monitor connected"
+}]}]}
+Test Json = {"sid":"1731380149","req":[{"tid":1,"active":"fw","devicetype":"keyboard","value":"forcewithnotice","options":{"model":"kb555","minversion":"0010"}}]}
+CMA Notification Alert eventtype : 5
+CMA Notification Alert eventtype : {"sid": "1731380149","gid": "13bdb71a-2259-44e2-bdf5-1f826a156e4d","response": [{"tid": 1,"result": 501,"msg": "No Device connected","data": [{
+  "Model": "N/A",
+  "SerialNumber": "N/A",
+  "Index": "N/A",
+  "ServiceTag": "N/A",
+  "Command": "SET",
+  "TargetFeature": "FIRMWAREUPDATE",
+  "Value": "N/A",
+  "Result": "FAIL",
+  "Message": "No Device connected"
+}]}]}
+Test Json = {"sid":"1731380150","req":[{"tid":1,"active":"fw","devicetype":"keyboard","value":"forcewithnonotice","options":{"model":"kb555","minversion":"0010"}}]}
+CMA Notification Alert eventtype : 5
+CMA Notification Alert eventtype : {"sid": "1731380150","gid": "f82545e7-69ea-478e-8785-49b50a5e65be","response": [{"tid": 1,"result": 501,"msg": "No Device connected","data": [{
+  "Model": "N/A",
+  "SerialNumber": "N/A",
+  "Index": "N/A",
+  "ServiceTag": "N/A",
+  "Command": "SET",
+  "TargetFeature": "FIRMWAREUPDATE",
+  "Value": "N/A",
+  "Result": "FAIL",
+  "Message": "No Device connected"
+}]}]}
+Test Json = {"sid":"1731380151","req":[{"tid":1,"active":"fw","devicetype":"keyboard","value":"forcewithnotice","options":{"minversion":"0010"}}]}
+CMA Notification Alert eventtype : 5
+CMA Notification Alert eventtype : {"sid": "1731380151","gid": "4f4794f2-b070-4c1c-836c-693e86f217f7","response": [{"tid": 1,"result": 501,"msg": "No Device connected","data": [{
+  "Model": "N/A",
+  "SerialNumber": "N/A",
+  "Index": "N/A",
+  "ServiceTag": "N/A",
+  "Command": "SET",
+  "TargetFeature": "FIRMWAREUPDATE",
+  "Value": "N/A",
+  "Result": "FAIL",
+  "Message": "No Device connected"
+}]}]}
+Test Json = {"sid":"1731380152","req":[{"tid":1,"active":"fw","devicetype":"keyboard","value":"forcewithnonotice","options":{"minversion":"0010"}}]}
+CMA Notification Alert eventtype : 5
+CMA Notification Alert eventtype : {"sid": "1731380152","gid": "0af092f3-88cf-44aa-a743-5df58a360237","response": [{"tid": 1,"result": 501,"msg": "No Device connected","data": [{
+  "Model": "N/A",
+  "SerialNumber": "N/A",
+  "Index": "N/A",
+  "ServiceTag": "N/A",
+  "Command": "SET",
+  "TargetFeature": "FIRMWAREUPDATE",
+  "Value": "N/A",
+  "Result": "FAIL",
+  "Message": "No Device connected"
+}]}]}
+Test Json = {"sid":"1731380153","req":[{"tid":1,"active":"fw","devicetype":"keyboard","value":"forcewithnotice","options":{"model":"kb555"}}]}
+CMA Notification Alert eventtype : 5
+CMA Notification Alert eventtype : {"sid": "1731380153","gid": "131e39e4-dd49-4910-a369-2be63ab740c8","response": [{"tid": 1,"result": 501,"msg": "No Device connected","data": [{
+  "Model": "N/A",
+  "SerialNumber": "N/A",
+  "Index": "N/A",
+  "ServiceTag": "N/A",
+  "Command": "SET",
+  "TargetFeature": "FIRMWAREUPDATE",
+  "Value": "N/A",
+  "Result": "FAIL",
+  "Message": "No Device connected"
+}]}]}
+Test Json = {"sid":"1731380154","req":[{"tid":1,"active":"fw","devicetype":"keyboard","value":"forcewithnonotice","options":{"model":"kb555"}}]}
+CMA Notification Alert eventtype : 5
+CMA Notification Alert eventtype : {"sid": "1731380154","gid": "524b850b-0b78-4a2b-ab1d-678a5bb7609d","response": [{"tid": 1,"result": 501,"msg": "No Device connected","data": [{
+  "Model": "N/A",
+  "SerialNumber": "N/A",
+  "Index": "N/A",
+  "ServiceTag": "N/A",
+  "Command": "SET",
+  "TargetFeature": "FIRMWAREUPDATE",
+  "Value": "N/A",
+  "Result": "FAIL",
+  "Message": "No Device connected"
+}]}]}
+Test Json = {"sid":"1731380155","req":[{"tid":1,"active":"fw","devicetype":"keyboard","value":"forcewithnotice","options":{"model":"kb555","minversion":"0010"}}]}
+CMA Notification Alert eventtype : 5
+CMA Notification Alert eventtype : {"sid": "1731380155","gid": "440f46c3-d11a-4f64-9ea7-d093bc0d99d3","response": [{"tid": 1,"result": 501,"msg": "No Device connected","data": [{
+  "Model": "N/A",
+  "SerialNumber": "N/A",
+  "Index": "N/A",
+  "ServiceTag": "N/A",
+  "Command": "SET",
+  "TargetFeature": "FIRMWAREUPDATE",
+  "Value": "N/A",
+  "Result": "FAIL",
+  "Message": "No Device connected"
+}]}]}
+Test Json = {"sid":"1731380156","req":[{"tid":1,"active":"fw","devicetype":"keyboard","value":"forcewithnonotice","options":{"model":"kb555","minversion":"0010"}}]}
+CMA Notification Alert eventtype : 5
+CMA Notification Alert eventtype : {"sid": "1731380156","gid": "d114d014-318e-4174-b5c4-a66dbe74b329","response": [{"tid": 1,"result": 501,"msg": "No Device connected","data": [{
+  "Model": "N/A",
+  "SerialNumber": "N/A",
+  "Index": "N/A",
+  "ServiceTag": "N/A",
+  "Command": "SET",
+  "TargetFeature": "FIRMWAREUPDATE",
+  "Value": "N/A",
+  "Result": "FAIL",
+  "Message": "No Device connected"
+}]}]}
+Test Json = {"sid":"1731380157","req":[{"tid":1,"active":"fw","devicetype":"keyboard","value":"forcewithnotice","options":{}}]}
+CMA Notification Alert eventtype : 5
+CMA Notification Alert eventtype : {"sid": "1731380157","gid": "d47bee78-a251-45ce-8d0c-9e5dc7771f41","response": [{"tid": 1,"result": 501,"msg": "No Device connected","data": [{
+  "Model": "N/A",
+  "SerialNumber": "N/A",
+  "Index": "N/A",
+  "ServiceTag": "N/A",
+  "Command": "SET",
+  "TargetFeature": "FIRMWAREUPDATE",
+  "Value": "N/A",
+  "Result": "FAIL",
+  "Message": "No Device connected"
+}]}]}
+Test Json = {"sid":"1731380158","req":[{"tid":1,"active":"fw","devicetype":"keyboard","value":"forcewithnonotice","options":{}}]}
+CMA Notification Alert eventtype : 5
+CMA Notification Alert eventtype : {"sid": "1731380158","gid": "b9e32a9b-168e-4250-b11c-194cf6d4d812","response": [{"tid": 1,"result": 501,"msg": "No Device connected","data": [{
+  "Model": "N/A",
+  "SerialNumber": "N/A",
+  "Index": "N/A",
+  "ServiceTag": "N/A",
+  "Command": "SET",
+  "TargetFeature": "FIRMWAREUPDATE",
+  "Value": "N/A",
+  "Result": "FAIL",
+  "Message": "No Device connected"
+}]}]}
+Test Json = {"sid":"1731380159","req":[{"tid":1,"active":"fw","devicetype":"keyboard","value":"forcewithnotice","options":{"minversion":"0010"}}]}
+CMA Notification Alert eventtype : 5
+CMA Notification Alert eventtype : {"sid": "1731380159","gid": "c3e88585-3b16-48a2-bc87-b3f42c4e08f5","response": [{"tid": 1,"result": 501,"msg": "No Device connected","data": [{
+  "Model": "N/A",
+  "SerialNumber": "N/A",
+  "Index": "N/A",
+  "ServiceTag": "N/A",
+  "Command": "SET",
+  "TargetFeature": "FIRMWAREUPDATE",
+  "Value": "N/A",
+  "Result": "FAIL",
+  "Message": "No Device connected"
+}]}]}
+Test Json = {"sid":"1731380160","req":[{"tid":1,"active":"fw","devicetype":"keyboard","value":"forcewithnonotice","options":{"minversion":"0010"}}]}
+CMA Notification Alert eventtype : 5
+CMA Notification Alert eventtype : {"sid": "1731380160","gid": "b5cc545b-5804-4c2d-92b0-6518fa0e5831","response": [{"tid": 1,"result": 501,"msg": "No Device connected","data": [{
+  "Model": "N/A",
+  "SerialNumber": "N/A",
+  "Index": "N/A",
+  "ServiceTag": "N/A",
+  "Command": "SET",
+  "TargetFeature": "FIRMWAREUPDATE",
+  "Value": "N/A",
+  "Result": "FAIL",
+  "Message": "No Device connected"
+}]}]}
+Test Json = {"sid":"1731380161","req":[{"tid":1,"active":"fw","devicetype":"keyboard","value":"forcewithnotice","options":{"model":"kb555"}}]}
+CMA Notification Alert eventtype : 5
+CMA Notification Alert eventtype : {"sid": "1731380161","gid": "596e464f-87c8-4f7d-9918-b3e298c0e755","response": [{"tid": 1,"result": 501,"msg": "No Device connected","data": [{
+  "Model": "N/A",
+  "SerialNumber": "N/A",
+  "Index": "N/A",
+  "ServiceTag": "N/A",
+  "Command": "SET",
+  "TargetFeature": "FIRMWAREUPDATE",
+  "Value": "N/A",
+  "Result": "FAIL",
+  "Message": "No Device connected"
+}]}]}
+Test Json = {"sid":"1731380162","req":[{"tid":1,"active":"fw","devicetype":"keyboard","value":"forcewithnonotice","options":{"model":"kb555"}}]}
+CMA Notification Alert eventtype : 5
+CMA Notification Alert eventtype : {"sid": "1731380162","gid": "ce61487b-1db3-4250-95e6-c1db44b81a69","response": [{"tid": 1,"result": 501,"msg": "No Device connected","data": [{
+  "Model": "N/A",
+  "SerialNumber": "N/A",
+  "Index": "N/A",
+  "ServiceTag": "N/A",
+  "Command": "SET",
+  "TargetFeature": "FIRMWAREUPDATE",
+  "Value": "N/A",
+  "Result": "FAIL",
+  "Message": "No Device connected"
+}]}]}
+Test Json = {"sid":"1731380163","req":[{"tid":1,"active":"fw","devicetype":"keyboard","value":"forcewithnotice","options":{}}]}
+CMA Notification Alert eventtype : 5
+CMA Notification Alert eventtype : {"sid": "1731380163","gid": "e139cf51-604b-4b9f-85f8-2715ebac044f","response": [{"tid": 1,"result": 501,"msg": "No Device connected","data": [{
+  "Model": "N/A",
+  "SerialNumber": "N/A",
+  "Index": "N/A",
+  "ServiceTag": "N/A",
+  "Command": "SET",
+  "TargetFeature": "FIRMWAREUPDATE",
+  "Value": "N/A",
+  "Result": "FAIL",
+  "Message": "No Device connected"
+}]}]}
+Test Json = {"sid":"1731380164","req":[{"tid":1,"active":"fw","devicetype":"keyboard","value":"forcewithnonotice","options":{}}]}
+CMA Notification Alert eventtype : 5
+CMA Notification Alert eventtype : {"sid": "1731380164","gid": "e82de974-d3a1-4c1b-b661-60866660717a","response": [{"tid": 1,"result": 501,"msg": "No Device connected","data": [{
+  "Model": "N/A",
+  "SerialNumber": "N/A",
+  "Index": "N/A",
+  "ServiceTag": "N/A",
+  "Command": "SET",
+  "TargetFeature": "FIRMWAREUPDATE",
+  "Value": "N/A",
+  "Result": "FAIL",
+  "Message": "No Device connected"
+}]}]}
+Test Json = {"sid":"1731380165","req":[{"tid":1,"active":"fw","devicetype":"mouse","value":"forcewithnotice","options":{"model":"ms355","minversion":"0010"}}]}
+CMA Notification Alert eventtype : 5
+CMA Notification Alert eventtype : {"sid": "1731380165","gid": "3d6eacc9-8821-40a4-9af5-9845d0b5a83c","response": [{"tid": 1,"result": 501,"msg": "No Device connected","data": [{
+  "Model": "N/A",
+  "SerialNumber": "N/A",
+  "Index": "N/A",
+  "ServiceTag": "N/A",
+  "Command": "SET",
+  "TargetFeature": "FIRMWAREUPDATE",
+  "Value": "N/A",
+  "Result": "FAIL",
+  "Message": "No Device connected"
+}]}]}
+Test Json = {"sid":"1731380166","req":[{"tid":1,"active":"fw","devicetype":"mouse","value":"forcewithnonotice","options":{"model":"ms355","minversion":"0010"}}]}
+CMA Notification Alert eventtype : 5
+CMA Notification Alert eventtype : {"sid": "1731380166","gid": "6edf3a43-fff3-494d-8bd1-13b6f0c222e8","response": [{"tid": 1,"result": 501,"msg": "No Device connected","data": [{
+  "Model": "N/A",
+  "SerialNumber": "N/A",
+  "Index": "N/A",
+  "ServiceTag": "N/A",
+  "Command": "SET",
+  "TargetFeature": "FIRMWAREUPDATE",
+  "Value": "N/A",
+  "Result": "FAIL",
+  "Message": "No Device connected"
+}]}]}
+Test Json = {"sid":"1731380167","req":[{"tid":1,"active":"fw","devicetype":"mouse","value":"forcewithnotice","options":{"minversion":"0010"}}]}
+CMA Notification Alert eventtype : 5
+CMA Notification Alert eventtype : {"sid": "1731380167","gid": "31a4e9d6-f805-478c-8976-1dc0cd0dd8b5","response": [{"tid": 1,"result": 501,"msg": "No Device connected","data": [{
+  "Model": "N/A",
+  "SerialNumber": "N/A",
+  "Index": "N/A",
+  "ServiceTag": "N/A",
+  "Command": "SET",
+  "TargetFeature": "FIRMWAREUPDATE",
+  "Value": "N/A",
+  "Result": "FAIL",
+  "Message": "No Device connected"
+}]}]}
+Test Json = {"sid":"1731380168","req":[{"tid":1,"active":"fw","devicetype":"mouse","value":"forcewithnonotice","options":{"minversion":"0010"}}]}
+CMA Notification Alert eventtype : 5
+CMA Notification Alert eventtype : {"sid": "1731380168","gid": "68a5673c-2ee3-4fe8-bda8-6b219196e387","response": [{"tid": 1,"result": 501,"msg": "No Device connected","data": [{
+  "Model": "N/A",
+  "SerialNumber": "N/A",
+  "Index": "N/A",
+  "ServiceTag": "N/A",
+  "Command": "SET",
+  "TargetFeature": "FIRMWAREUPDATE",
+  "Value": "N/A",
+  "Result": "FAIL",
+  "Message": "No Device connected"
+}]}]}
+Test Json = {"sid":"1731380169","req":[{"tid":1,"active":"fw","devicetype":"mouse","value":"forcewithnotice","options":{"model":"ms355"}}]}
+CMA Notification Alert eventtype : 5
+CMA Notification Alert eventtype : {"sid": "1731380169","gid": "93af699e-e22c-4a3a-9f68-5f1c217a0fd7","response": [{"tid": 1,"result": 501,"msg": "No Device connected","data": [{
+  "Model": "N/A",
+  "SerialNumber": "N/A",
+  "Index": "N/A",
+  "ServiceTag": "N/A",
+  "Command": "SET",
+  "TargetFeature": "FIRMWAREUPDATE",
+  "Value": "N/A",
+  "Result": "FAIL",
+  "Message": "No Device connected"
+}]}]}
+Test Json = {"sid":"1731380170","req":[{"tid":1,"active":"fw","devicetype":"mouse","value":"forcewithnonotice","options":{"model":"ms355"}}]}
+CMA Notification Alert eventtype : 5
+CMA Notification Alert eventtype : {"sid": "1731380170","gid": "9d7e66a7-d366-4153-899a-824355ebd1a6","response": [{"tid": 1,"result": 501,"msg": "No Device connected","data": [{
+  "Model": "N/A",
+  "SerialNumber": "N/A",
+  "Index": "N/A",
+  "ServiceTag": "N/A",
+  "Command": "SET",
+  "TargetFeature": "FIRMWAREUPDATE",
+  "Value": "N/A",
+  "Result": "FAIL",
+  "Message": "No Device connected"
+}]}]}
+Test Json = {"sid":"1731380171","req":[{"tid":1,"active":"fw","devicetype":"mouse","value":"forcewithnotice","options":{"model":"ms355","minversion":"0010"}}]}
+CMA Notification Alert eventtype : 5
+CMA Notification Alert eventtype : {"sid": "1731380171","gid": "b5c2cc7f-fac2-44d6-ab10-9978473d3b6a","response": [{"tid": 1,"result": 501,"msg": "No Device connected","data": [{
+  "Model": "N/A",
+  "SerialNumber": "N/A",
+  "Index": "N/A",
+  "ServiceTag": "N/A",
+  "Command": "SET",
+  "TargetFeature": "FIRMWAREUPDATE",
+  "Value": "N/A",
+  "Result": "FAIL",
+  "Message": "No Device connected"
+}]}]}
+Test Json = {"sid":"1731380172","req":[{"tid":1,"active":"fw","devicetype":"mouse","value":"forcewithnonotice","options":{"model":"ms355","minversion":"0010"}}]}
+CMA Notification Alert eventtype : 5
+CMA Notification Alert eventtype : {"sid": "1731380172","gid": "6dffd8d0-2bfa-4953-aed8-0f84d5aff9b1","response": [{"tid": 1,"result": 501,"msg": "No Device connected","data": [{
+  "Model": "N/A",
+  "SerialNumber": "N/A",
+  "Index": "N/A",
+  "ServiceTag": "N/A",
+  "Command": "SET",
+  "TargetFeature": "FIRMWAREUPDATE",
+  "Value": "N/A",
+  "Result": "FAIL",
+  "Message": "No Device connected"
+}]}]}
+Test Json = {"sid":"1731380173","req":[{"tid":1,"active":"fw","devicetype":"mouse","value":"forcewithnotice","options":{}}]}
+CMA Notification Alert eventtype : 5
+CMA Notification Alert eventtype : {"sid": "1731380173","gid": "8a6642fd-fe6d-4ae7-8526-d7845eb999a1","response": [{"tid": 1,"result": 501,"msg": "No Device connected","data": [{
+  "Model": "N/A",
+  "SerialNumber": "N/A",
+  "Index": "N/A",
+  "ServiceTag": "N/A",
+  "Command": "SET",
+  "TargetFeature": "FIRMWAREUPDATE",
+  "Value": "N/A",
+  "Result": "FAIL",
+  "Message": "No Device connected"
+}]}]}
+Test Json = {"sid":"1731380174","req":[{"tid":1,"active":"fw","devicetype":"mouse","value":"forcewithnonotice","options":{}}]}
+CMA Notification Alert eventtype : 5
+CMA Notification Alert eventtype : {"sid": "1731380174","gid": "91310ff4-84b0-426d-a8bf-03ee02c1904c","response": [{"tid": 1,"result": 501,"msg": "No Device connected","data": [{
+  "Model": "N/A",
+  "SerialNumber": "N/A",
+  "Index": "N/A",
+  "ServiceTag": "N/A",
+  "Command": "SET",
+  "TargetFeature": "FIRMWAREUPDATE",
+  "Value": "N/A",
+  "Result": "FAIL",
+  "Message": "No Device connected"
+}]}]}
+Test Json = {"sid":"1731380175","req":[{"tid":1,"active":"fw","devicetype":"mouse","value":"forcewithnotice","options":{"minversion":"0010"}}]}
+CMA Notification Alert eventtype : 5
+CMA Notification Alert eventtype : {"sid": "1731380175","gid": "f876594f-e2da-443a-814a-1fc81eb7f82b","response": [{"tid": 1,"result": 501,"msg": "No Device connected","data": [{
+  "Model": "N/A",
+  "SerialNumber": "N/A",
+  "Index": "N/A",
+  "ServiceTag": "N/A",
+  "Command": "SET",
+  "TargetFeature": "FIRMWAREUPDATE",
+  "Value": "N/A",
+  "Result": "FAIL",
+  "Message": "No Device connected"
+}]}]}
+Test Json = {"sid":"1731380176","req":[{"tid":1,"active":"fw","devicetype":"mouse","value":"forcewithnonotice","options":{"minversion":"0010"}}]}
+CMA Notification Alert eventtype : 5
+CMA Notification Alert eventtype : {"sid": "1731380176","gid": "0427eccc-9cae-4031-86e2-e98b877ff982","response": [{"tid": 1,"result": 501,"msg": "No Device connected","data": [{
+  "Model": "N/A",
+  "SerialNumber": "N/A",
+  "Index": "N/A",
+  "ServiceTag": "N/A",
+  "Command": "SET",
+  "TargetFeature": "FIRMWAREUPDATE",
+  "Value": "N/A",
+  "Result": "FAIL",
+  "Message": "No Device connected"
+}]}]}
+Test Json = {"sid":"1731380177","req":[{"tid":1,"active":"fw","devicetype":"mouse","value":"forcewithnotice","options":{"model":"ms355"}}]}
+CMA Notification Alert eventtype : 5
+CMA Notification Alert eventtype : {"sid": "1731380177","gid": "9ba19393-ddfd-4280-a92e-1c0a852653c7","response": [{"tid": 1,"result": 501,"msg": "No Device connected","data": [{
+  "Model": "N/A",
+  "SerialNumber": "N/A",
+  "Index": "N/A",
+  "ServiceTag": "N/A",
+  "Command": "SET",
+  "TargetFeature": "FIRMWAREUPDATE",
+  "Value": "N/A",
+  "Result": "FAIL",
+  "Message": "No Device connected"
+}]}]}
+Test Json = {"sid":"1731380178","req":[{"tid":1,"active":"fw","devicetype":"mouse","value":"forcewithnonotice","options":{"model":"ms355"}}]}
+CMA Notification Alert eventtype : 5
+CMA Notification Alert eventtype : {"sid": "1731380178","gid": "d15c2928-4821-4da3-bac2-0ca2718c960a","response": [{"tid": 1,"result": 501,"msg": "No Device connected","data": [{
+  "Model": "N/A",
+  "SerialNumber": "N/A",
+  "Index": "N/A",
+  "ServiceTag": "N/A",
+  "Command": "SET",
+  "TargetFeature": "FIRMWAREUPDATE",
+  "Value": "N/A",
+  "Result": "FAIL",
+  "Message": "No Device connected"
+}]}]}
+Test Json = {"sid":"1731380179","req":[{"tid":1,"active":"fw","devicetype":"mouse","value":"forcewithnotice","options":{}}]}
+CMA Notification Alert eventtype : 5
+CMA Notification Alert eventtype : {"sid": "1731380179","gid": "87376afa-e4b2-42b3-be6c-078a0adc03dc","response": [{"tid": 1,"result": 501,"msg": "No Device connected","data": [{
+  "Model": "N/A",
+  "SerialNumber": "N/A",
+  "Index": "N/A",
+  "ServiceTag": "N/A",
+  "Command": "SET",
+  "TargetFeature": "FIRMWAREUPDATE",
+  "Value": "N/A",
+  "Result": "FAIL",
+  "Message": "No Device connected"
+}]}]}
+Test Json = {"sid":"1731380180","req":[{"tid":1,"active":"fw","devicetype":"mouse","value":"forcewithnonotice","options":{}}]}
+CMA Notification Alert eventtype : 5
+CMA Notification Alert eventtype : {"sid": "1731380180","gid": "766f529b-18de-4c38-a37e-123c2780cb6d","response": [{"tid": 1,"result": 501,"msg": "No Device connected","data": [{
+  "Model": "N/A",
+  "SerialNumber": "N/A",
+  "Index": "N/A",
+  "ServiceTag": "N/A",
+  "Command": "SET",
+  "TargetFeature": "FIRMWAREUPDATE",
+  "Value": "N/A",
+  "Result": "FAIL",
+  "Message": "No Device connected"
+}]}]}
+Test Json = {"sid":"1731380181","req":[{"tid":1,"active":"fw","devicetype":"dock","value":"uod","options":{"model":"wd22tb4","minversion":"66969"}}]}
+CMA Notification Alert eventtype : 5
+CMA Notification Alert eventtype : {"sid": "1731380181","gid": "875fee7e-0a90-43f3-9d19-bc84ba4102c7","response": [{"tid": 1,"result": 501,"msg": "No Device connected","data": [{
+  "Model": "N/A",
+  "SerialNumber": "N/A",
+  "Index": "N/A",
+  "ServiceTag": "N/A",
+  "Command": "SET",
+  "TargetFeature": "SILENTFWUPDATE",
+  "Value": "N/A",
+  "Result": "FAIL",
+  "Message": "No Device connected"
+}]}]}
+Test Json = {"sid":"1731380182","req":[{"tid":1,"active":"fw","devicetype":"dock","value":"uod","options":{"minversion":"66969"}}]}
+CMA Notification Alert eventtype : 5
+CMA Notification Alert eventtype : {"sid": "1731380182","gid": "2c2db413-680a-43c1-a747-a2470bf9e29d","response": [{"tid": 1,"result": 501,"msg": "No Device connected","data": [{
+  "Model": "N/A",
+  "SerialNumber": "N/A",
+  "Index": "N/A",
+  "ServiceTag": "N/A",
+  "Command": "SET",
+  "TargetFeature": "SILENTFWUPDATE",
+  "Value": "N/A",
+  "Result": "FAIL",
+  "Message": "No Device connected"
+}]}]}
+Test Json = {"sid":"1731380183","req":[{"tid":1,"active":"fw","devicetype":"dock","value":"uod","options":{"model":"wd22tb4"}}]}
+CMA Notification Alert eventtype : 5
+CMA Notification Alert eventtype : {"sid": "1731380183","gid": "73cc2c29-4bb0-4118-8b7e-257e751ce658","response": [{"tid": 1,"result": 501,"msg": "No Device connected","data": [{
+  "Model": "N/A",
+  "SerialNumber": "N/A",
+  "Index": "N/A",
+  "ServiceTag": "N/A",
+  "Command": "SET",
+  "TargetFeature": "SILENTFWUPDATE",
+  "Value": "N/A",
+  "Result": "FAIL",
+  "Message": "No Device connected"
+}]}]}
+Test Json = {"sid":"1731380184","req":[{"tid":1,"active":"fw","devicetype":"dock","value":"uod","options":{"model":"wd22tb4","minversion":"66969"}}]}
+CMA Notification Alert eventtype : 5
+CMA Notification Alert eventtype : {"sid": "1731380184","gid": "529f5985-89b1-45dc-94bd-dbe4db98bc41","response": [{"tid": 1,"result": 501,"msg": "No Device connected","data": [{
+  "Model": "N/A",
+  "SerialNumber": "N/A",
+  "Index": "N/A",
+  "ServiceTag": "N/A",
+  "Command": "SET",
+  "TargetFeature": "SILENTFWUPDATE",
+  "Value": "N/A",
+  "Result": "FAIL",
+  "Message": "No Device connected"
+}]}]}
+Test Json = {"sid":"1731380185","req":[{"tid":1,"active":"fw","devicetype":"dock","value":"uod","options":{}}]}
+CMA Notification Alert eventtype : 5
+CMA Notification Alert eventtype : {"sid": "1731380185","gid": "46916ff9-e019-4c07-a51d-41cd921bde4c","response": [{"tid": 1,"result": 501,"msg": "No Device connected","data": [{
+  "Model": "N/A",
+  "SerialNumber": "N/A",
+  "Index": "N/A",
+  "ServiceTag": "N/A",
+  "Command": "SET",
+  "TargetFeature": "SILENTFWUPDATE",
+  "Value": "N/A",
+  "Result": "FAIL",
+  "Message": "No Device connected"
+}]}]}
+Test Json = {"sid":"1731380186","req":[{"tid":1,"active":"fw","devicetype":"dock","value":"uod","options":{"minversion":"66969"}}]}
+CMA Notification Alert eventtype : 5
+CMA Notification Alert eventtype : {"sid": "1731380186","gid": "0cc47490-4765-4043-8731-bafa1da48ede","response": [{"tid": 1,"result": 501,"msg": "No Device connected","data": [{
+  "Model": "N/A",
+  "SerialNumber": "N/A",
+  "Index": "N/A",
+  "ServiceTag": "N/A",
+  "Command": "SET",
+  "TargetFeature": "SILENTFWUPDATE",
+  "Value": "N/A",
+  "Result": "FAIL",
+  "Message": "No Device connected"
+}]}]}
+Test Json = {"sid":"1731380187","req":[{"tid":1,"active":"fw","devicetype":"dock","value":"uod","options":{"model":"wd22tb4"}}]}
+CMA Notification Alert eventtype : 5
+CMA Notification Alert eventtype : {"sid": "1731380187","gid": "c3d7686e-18d5-4136-b08b-d520052012f5","response": [{"tid": 1,"result": 501,"msg": "No Device connected","data": [{
+  "Model": "N/A",
+  "SerialNumber": "N/A",
+  "Index": "N/A",
+  "ServiceTag": "N/A",
+  "Command": "SET",
+  "TargetFeature": "SILENTFWUPDATE",
+  "Value": "N/A",
+  "Result": "FAIL",
+  "Message": "No Device connected"
+}]}]}
+Test Json = {"sid":"1731380188","req":[{"tid":1,"active":"fw","devicetype":"dock","value":"uod","options":{}}]}
+CMA Notification Alert eventtype : 5
+CMA Notification Alert eventtype : {"sid": "1731380188","gid": "8b26f26d-0da6-4829-a55a-7b8a38e4c852","response": [{"tid": 1,"result": 501,"msg": "No Device connected","data": [{
+  "Model": "N/A",
+  "SerialNumber": "N/A",
+  "Index": "N/A",
+  "ServiceTag": "N/A",
+  "Command": "SET",
+  "TargetFeature": "SILENTFWUPDATE",
+  "Value": "N/A",
+  "Result": "FAIL",
+  "Message": "No Device connected"
+}]}]}
+2024 Nov 12 14:14:56.012	out_cli_fwupdate.txt End test.
+
+

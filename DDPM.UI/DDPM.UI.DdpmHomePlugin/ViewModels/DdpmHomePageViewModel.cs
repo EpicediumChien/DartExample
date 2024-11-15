@@ -18,6 +18,7 @@ using System.Windows;
 using System.Windows.Data;
 using System.Windows.Input;
 using VcpCore.Common;
+using static DDPM.UI.Common.User32;
 
 namespace DDPM.UI.Plugin.DdpmHomePlugin.ViewModels
 {
@@ -30,6 +31,9 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.ViewModels
 
         private ObservableCollection<HomeDevice> _homeDevices = new ObservableCollection<HomeDevice>();
         private HomeDevice? _selectedHomeDevice;
+
+        private List<string> EOLKBList = new() { "WK636", "WK717", "KM714", "KM717", "WM126", "UV514" };
+        private List<string> EOLMouseList = new() { "WK717", "KM714", "KM717", "WM126", "WM116", "WM326", "WM527", "WM514", "UV514" };
 
         /// <summary>
         /// Default constructor
@@ -199,7 +203,19 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.ViewModels
 
                     //Apply device category
                     DeviceType devType = di.Type;
-                    if (devType.ToString().Contains("Keyboard"))
+                    if (EOLKBList.Contains(di.Name))
+                    {
+                        dev.DeviceCategory = eDeviceCategory.KB;
+                        dev.SortOrder = (int)dev.DeviceCategory + idxKB;
+                        idxKB++;
+                    }
+                    else if (EOLMouseList.Contains(di.Name))
+                    {
+                        dev.DeviceCategory = eDeviceCategory.Mouse;
+                        dev.SortOrder = (int)dev.DeviceCategory + idxMouse;
+                        idxKB++;
+                    }
+                    else if (devType.ToString().Contains("Keyboard"))
                     {
                         dev.DeviceCategory = eDeviceCategory.KB;
                         //dev.DeviceImage = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Product_KB900.png");
@@ -256,7 +272,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.ViewModels
 
                             case "P3424WEB": //internal webcamera
                                 imagepath = "Resources/WebCamModel_P2424HEB_Small.png";
-                                break;                                
+                                break;
 
                             case "U3223QZ": //internal webcamera
                                 imagepath = "Resources/WebCamModel_U3223QZ_Small.png";
@@ -476,7 +492,41 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.ViewModels
         #endregion Add your first device
 
         #region For Developer's debug
+        //Robert_Lin, 2024-11-9
+        public void AddFakeMonitorToListView()
+        {
+            int idx = HomeDevices.Count;
+            MonitorInfo mi = GetFakeMonitorInfo();
+            mi.Index = idx;
+            PrepareMonitorInfos(new List<MonitorInfo> { mi });
+        }
+        private MonitorInfo GetFakeMonitorInfo()
+        {
+            //Use the Primary's DisplayName
+            string displayName = Screen.PrimaryScreen.DeviceName;
 
+            MonitorInfo info = new MonitorInfo();
+            info.AliasDeviceName = "Fake Monitor";
+            info.inputSource = "Internal";
+            info.CapabilityString = "";
+            info.FwVersion = "1.0";
+            info.DDCisON = false;
+            info.DisplayName = displayName;
+            info.Index = 1;
+            info.IsDellMonitor = false;
+            info.edid = new VcpCore.Common.EDID();
+            info.edid.Month = 6;
+            info.edid.Year = 2024;
+            info.edid.SerialNumber = "A12345";
+            info.edid.EdidVersion = "V1.4";
+            info.edid.ManufactureID = "LGD";
+            info.edid.ServiceTag = "ABCDE";
+            info.edid.ModelName = "INTER";
+            info.edid.Size = 12;
+            info.edid.Week = 2;
+            info.edid.VideoInputType = "digital singal";
+            return info;
+        }
         public void AddDemoHomeDevice(HomeDevice device)
         {
             HomeDevices.Add(device);

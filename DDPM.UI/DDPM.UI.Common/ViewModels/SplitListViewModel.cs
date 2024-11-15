@@ -137,6 +137,21 @@ namespace DDPM.UI.Common.ViewModels
             return null;
         }
 
+        public SplitItem? FindItemByEAID(int eaid)
+        {
+            if (_splitList == null) return null;
+            if (_splitList.Count == 0) return null;
+
+            foreach (SplitItem spItem in _splitList)
+            {
+                if (spItem.ISplitCtrl != null)
+                {
+                    if (spItem.ISplitCtrl.EAID == eaid)
+                        return spItem;
+                }
+            }
+            return null;
+        }
         public SplitItem? GetLatestItem()
         {
             if (_splitList == null) return null;

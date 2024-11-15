@@ -14,6 +14,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using nsWinEventHook;
 using DDPM.Easy.Common;
+using DDPM.Win32Lib;
 
 
 namespace DDPM.EABroker
@@ -50,6 +51,9 @@ namespace DDPM.EABroker
             //Hide window from Alt+tab
             System.Windows.Interop.WindowInteropHelper wndHelper = new System.Windows.Interop.WindowInteropHelper(this);
             Win32Lib.Win32.HideWinFromAltTab(wndHelper.Handle);
+
+            InitLayoutList();
+            //InitPresetLayoutsComboBox();
         }
         #endregion Init
 
@@ -149,6 +153,7 @@ namespace DDPM.EABroker
                 _vm.WriteLog($"@OnWindowStartMovingProc, {_vm.StartMovingMsg}");
             }
 
+            //Get current Screen from cursor
             _vm.RefreshWorkScreen();
 
             //Step_2, Set flags to show windows
@@ -159,7 +164,8 @@ namespace DDPM.EABroker
 
             if (_vm.IsAwsWindowVisible)
             {
-                _vm.AwsWindow.ReloadRecentList(_vm.WorkScreen.DeviceName);
+                //AwsWindowVisibilityChange will trigger to call this method
+                //_vm.AwsWindow.ReloadRecentList(_vm.WorkScreen.DeviceName);
             }
 
             //Temporary always update
@@ -172,8 +178,6 @@ namespace DDPM.EABroker
             //}
 
             _vm.RefreshCellRects();
-            //_vmArrange.RefreshCellRects();
-            //_isRefresCellsCountAfterStartMoving = 0;
         }
 
         private void OnWindowEndMovingProc(IntPtr hWnd, bool isCanceled = false)
@@ -192,6 +196,11 @@ namespace DDPM.EABroker
             {
                 return;
             }
+
+            Win32.RECT rcWnd = new Win32.RECT();
+            Win32._GetWindowRect(hWnd, out rcWnd);
+            _vm.rcWndForeground = new Rect((double)rcWnd.X, (double)rcWnd.Y, (double) rcWnd.Width, (double)rcWnd.Height);
+
 
             //bool isWorkUIShowing = _vm.IsWorkWindowVisible;
 
@@ -214,8 +223,23 @@ namespace DDPM.EABroker
 
             Rect rcArrange = hoveringCellObj.rc;
 
-            if (_vm.HoveringWindow.Equals("aws"))
-                rcArrange = _vm.AwsWindow.CalculateHoveringCellArrangeRect();
+            if (_vm.HoveringWindow.Equals("scr"))
+            {
+                rcArrange = _vm.GetHoveringRectFromAwsBuddyWindow();
+                if (rcArrange.IsEmpty)
+                    rcArrange = _vm.AwsWindow.CalculateHoveringCellArrangeRect();
+                if (rcArrange.IsEmpty)
+                    return;
+            }
+            else if (_vm.HoveringWindow.Equals("aws"))
+            {
+                rcArrange = _vm.GetHoveringRectFromAwsBuddyWindow(); 
+                if (rcArrange.IsEmpty)
+                    rcArrange = _vm.AwsWindow.CalculateHoveringCellArrangeRect();
+                if (rcArrange.IsEmpty)
+                    return;
+            }
+
 
             //Inflate the rect, because the rcArrange not include the border thickness(=6) of CellBorder
             if (_vm.IsWithoutGap)
@@ -236,10 +260,16 @@ namespace DDPM.EABroker
         private void OnLocationChangedProc(int x, int y) 
         {
             _vm.IsShiftPressed = WinEventHook.IsShiftPressed();
-            if ((x == _vm.xCursor) || (y == _vm.yCursor))
-            {
+            double deltaX = Math.Abs(x - _vm.xCursor);
+            double deltaY = Math.Abs(y - _vm.yCursor);
+
+            //if ((x == _vm.xCursor) || (y == _vm.yCursor))
+            //{
+            //    return;
+            //}
+            if ((deltaX < 2.00) && (deltaY < 2.00))
                 return;
-            }
+
             _vm.xCursor = x; _vm.yCursor = y;
             //Screen? cursorScreen = _vm.GetScreenFromCursor();
             Screen? cursorScreen = Screen.FromPoint(new System.Drawing.Point(x, y));
@@ -248,51 +278,51 @@ namespace DDPM.EABroker
             if (!_vm.IsMoving)
                 return;
 
-            this.Dispatcher.Invoke(() =>
+            Dispatcher.BeginInvoke(new Action(() =>
             {
-
-
-                //if (!_vmArrange.IsWorkUIShowing)
-                //    return;
-
-                //if (_isRefresCellsCountAfterStartMoving <= 20)
-                //{
-                //    _isRefresCellsCountAfterStartMoving++;
-                //    _vmArrange.RefreshCellRects();
-                //}
 
                 CellObj orgCell = _vm.HoveringCellObj;
-             CellObj? newCell = _vm.DetermineHoveringCellObj(x, y);
-            //CellObj? newCell = null; // _vm.DetermineHoveringCellObj(x, y);
+                CellObj? newCell = _vm.DetermineHoveringCellObj(x, y);
 
-            if (orgCell != _vm.HoveringCellObj)
-            {
-                string strOrg = "null";
-                if (orgCell != null)
-                    strOrg = orgCell.Name;
-                string strNew = "null";
-                if (_vm.HoveringCellObj != null)
-                    strNew = _vm.HoveringCell;
+                if (orgCell != _vm.HoveringCellObj)
+                {
+                    string strOrg = "null";
+                    if (orgCell != null)
+                        strOrg = orgCell.Name;
+                    string strNew = "null";
+                    if (_vm.HoveringCellObj != null)
+                        strNew = _vm.HoveringCell;
 
-                Trace.WriteLine($" * HoveringCell: {strOrg}->{strNew}");
-            }
-                //if (_vm.HoveringCellObj != null)
-                //{
-                //    _vm.HoveringCell = _vm.HoveringCellObj.Name;
-                //}
-                //else
-                //{
-                //    _vmArrange.HoveringCell = "";
-                //}
-                //if (_workingSplit != null)
-                //    _workingSplit.VM.HoveringCell = vm.HoveringCell;
-
-                //Set WorkWins to topmost
-
-            });
+                    Trace.WriteLine($" * HoveringCell: {strOrg}->{strNew}");
+                }
+            }));
 
         }
 
         #endregion Window Event Handlers
+
+        #region Layouts
+        private void InitLayoutList()
+        {
+            foreach (ISplitCtrl isp in ISplitCtrl.Splits_EA)
+            {
+                lbLayouts.Items.Add($"({isp.EAID}) {isp.CtrlClass}");
+            }
+        }
+        private void reloadCustomLayoutsButton_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+        private void sekectLayoutButton_Click(object sender, RoutedEventArgs e)
+        {
+            object selItem = lbLayouts.SelectedItem;
+            if (selItem != null)
+            {
+                System.Windows.Interop.WindowInteropHelper wndHelper = new System.Windows.Interop.WindowInteropHelper(this);
+                Screen scr = Screen.FromHandle(wndHelper.Handle);
+            }
+        }
+        #endregion
+
     }
 }

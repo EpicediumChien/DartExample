@@ -3,7 +3,9 @@ using DDPM.UI.Common;
 using Dell.Client.Framework.Common;
 using Dell.Client.Framework.UX.WPF;
 using Microsoft;
+using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
 using System.Windows.Input;
@@ -49,7 +51,12 @@ namespace DDPM.UI.Plugin.ViewModels
             foreach (DeviceInfo deviceInfo in deviceInfos)
             {
                 if (deviceInfo.LogicalDeviceType.Contains("Dock"))
-                    DeviceInfos.Add(deviceInfo.ID, deviceInfo);
+                {
+                    if (!DeviceInfos.ContainsKey(deviceInfo.ID))
+                    {
+                        DeviceInfos.Add(deviceInfo.ID, deviceInfo);
+                    }
+                }
             }
         }
 
@@ -59,6 +66,7 @@ namespace DDPM.UI.Plugin.ViewModels
                 return false;
             //0821 Bruce Add show Dock Fw Version
             Model = Model.Replace("_", " ");
+            _deviceManager.GetDockData(instanceID).Wait();
             FirmwareVersion2 = $"{Strings.FirmwareVersion}";
             if (!string.IsNullOrEmpty(CurrentDeviceInfo.DockPackageFwVersion))
             {

@@ -1,4 +1,5 @@
 ﻿using System.Configuration;
+using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media.Imaging;
@@ -20,16 +21,20 @@ namespace DDPM.Easy.Common
         {
             // 2 Windows
             new SplitCtrl2A(), new SplitCtrl2B(), new SplitCtrl2C(), new SplitCtrl2D(),
+            //3 Windows
             new SplitCtrl3A(), new SplitCtrl3B(), new SplitCtrl3C(), new SplitCtrl3D(), new SplitCtrl3E(), new SplitCtrl3F(),
             new SplitCtrl3G(), new SplitCtrl3H(), new SplitCtrl3I(),
-            new SplitCtrl4A(), new SplitCtrl4B(), new SplitCtrl4C(), new SplitCtrl4D(),
-            new SplitCtrl4E(), new SplitCtrl4F(),
-            //new SplitCtrl5A(), new SplitCtrl5B(), new SplitCtrl5C(), new SplitCtrl5D(), new SplitCtrl5E(), new SplitCtrl5F(),
-            //new SplitCtrl5G(), new SplitCtrl5H(), new SplitCtrl5I(),
-            //new SplitCtrl6A(), new SplitCtrl6B(), new SplitCtrl6C(), new SplitCtrl6D(), new SplitCtrl6E(),
-            //new SplitCtrl6F(), new SplitCtrl6G(), new SplitCtrl6H(), new SplitCtrl6I(), new SplitCtrl6J(),
-            //new SplitCtrl7A(), new SplitCtrl7B(),  new SplitCtrl7C(),  new SplitCtrl7D(),  new SplitCtrl7E(),  new SplitCtrl7F(),
-            //new SplitCtrl7G(), new SplitCtrl7H(), new SplitCtrl7I(), new SplitCtrl7J(), new SplitCtrl7K(),
+            //4 Windows
+            new SplitCtrl4A(), new SplitCtrl4B(), new SplitCtrl4C(), new SplitCtrl4D(), new SplitCtrl4E(), new SplitCtrl4F(),
+            //5 Windows
+            new SplitCtrl5A(), new SplitCtrl5B(), new SplitCtrl5C(), new SplitCtrl5D(), new SplitCtrl5E(), new SplitCtrl5F(),
+            new SplitCtrl5G(), new SplitCtrl5H(), new SplitCtrl5I(),
+            //6 Windows
+            new SplitCtrl6A(), new SplitCtrl6B(), new SplitCtrl6C(), new SplitCtrl6D(), new SplitCtrl6E(),
+            new SplitCtrl6F(), new SplitCtrl6G(), new SplitCtrl6H(), new SplitCtrl6I(), new SplitCtrl6J(),
+            //7 or more Windows
+            new SplitCtrl7A(), new SplitCtrl7B(), new SplitCtrl7C(), new SplitCtrl7D(), new SplitCtrl7E(), new SplitCtrl7F(),
+            new SplitCtrl7G(), new SplitCtrl7H(), new SplitCtrl7I(), new SplitCtrl7J(), new SplitCtrl7K(),
 
             new SplitCtrl0A()
         };
@@ -111,8 +116,7 @@ namespace DDPM.Easy.Common
         /// <summary>
         /// Create a ISplitCtrl by EAID
         /// </summary>
-        /// <param name="cellCount"></param>
-        /// <param name="splitKey"></param>
+        /// <param name="eaId"></param>
         /// <returns></returns>
         public static ISplitCtrl? Create(int eaId)
         {
@@ -132,11 +136,13 @@ namespace DDPM.Easy.Common
             ISplitCtrl newObj = New();
             //Clone settings
             newObj.Settings = new List<double>(Settings);
+            newObj.EAID = EAID;
+            newObj.FriendlyName = FriendlyName;
             return newObj;
         }
         #endregion Create a new instance
 
-        #region Working mode
+        #region Split mode
 
         public eSplitModes SplitMode
         {
@@ -147,7 +153,7 @@ namespace DDPM.Easy.Common
             }
         }
 
-        #endregion Working mode
+        #endregion Split mode
 
         #region IsEditable
 
@@ -178,7 +184,7 @@ namespace DDPM.Easy.Common
         /// </summary>
         public List<CellObj> CellList { get; set; }
 
-       // public void UpdateSettingsToCells();
+        public void UpdateRatioRectsFromSettings();
         #endregion Cell list
 
         #region CellBorders
@@ -227,6 +233,7 @@ namespace DDPM.Easy.Common
             }
         }
 
+        //public void UpdateRatioRectsFromSettings();
         #endregion Settings
 
         #region Screen Orientation
@@ -240,6 +247,10 @@ namespace DDPM.Easy.Common
         #endregion Screen Orientation
 
         #region Bitmap - Currently is not used in DDPM
+        //To save a ISplitCtrl to a .PNG image file: (Need to run under UI thread)
+        // ISplitCtr isp must be created and shown on UI
+        // BitmapSource bmpSrc = isp.CreateBitmapSource();
+        // SaveBitmapSourceAsPngFile(bmpSrc, pathName);
 
         /// <summary>
         /// To create a BitmatSouce from current SplitCtrl. The return BitmapSource can be used to
@@ -264,12 +275,28 @@ namespace DDPM.Easy.Common
             return rtb;
         }
 
+        public static bool SaveBitmapSourceAsPngFile(BitmapSource bmpSrc, string pathName)
+        {
+            BitmapFrame bmpFrame = BitmapFrame.Create(bmpSrc);
+            PngBitmapEncoder pngEnc = new PngBitmapEncoder();
+            pngEnc.Frames.Add(bmpFrame);
+
+            FileStream fs = new FileStream(pathName, FileMode.Create, FileAccess.Write, FileShare.None);
+            pngEnc.Save(fs);
+            fs.Close();
+            return true;
+        }
         #endregion Bitmap - Currently is not used in DDPM
 
         #region Added Custom Layout
+        //IsAddedCustomLayout will be removed, please use IsOverlapCustomLayout instead
         public bool IsAddedCustomLayout
         {
             get { return ((CellCount==0) && (SplitKey=='B')); }
+        }
+        public bool IsOverlapCustomLayout
+        {
+            get { return ((CellCount == 0) && (SplitKey == 'B')); }
         }
         #endregion
 

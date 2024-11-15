@@ -655,7 +655,8 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                                 break;
                         }
                         var bandGainNewValue = SetBandsGainValue(_logicalDeviceHeadset, _deviceInfo);
-                        _logicalDeviceHeadset.SetBandsGain(bandGainNewValue);
+                        // Elie, Mask this code becasue R16 has changed this function. 2024/11/09.
+                        //_logicalDeviceHeadset.SetBandsGain(bandGainNewValue);
                         break;
                     }
                 }
@@ -1370,6 +1371,11 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                         info.DockInfo = _logicalDeviceDock.GetDockInfo();
                         try
                         {
+                            IDevice iDevice = (IDevice)item;
+                            if (iDevice != null)
+                            {
+                                info.FirmwareVersion = iDevice.FirmwareVersion.ToString();
+                            }
                             byte[] dokc_bytes = _logicalDeviceDock.GetMonitorCount();
                             _logs.DebugMsg_1($"[PeripheralsPlugin] GetMonitorCount byte is null = {(dokc_bytes == null ? "Yes" : "No")}");
                             if (dokc_bytes != null)
@@ -1419,16 +1425,16 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                                                 info.DockData = dockData;
                                                 info.DockType = dockData.DockType;
                                                 info.ModelNumber = dockData.MarketingName;
-                                                info.Name = $"Dell Dock";
+                                                //info.Name = $"Dell Dock";
                                                 if (info.ModelNumber.ToUpper().StartsWith("WD19S"))
                                                 {
                                                     info.ModelNumber = $"{dockData.MarketingName}_{dockData.PowerSupplyWattage}W";
                                                 }
-                                                if (!string.IsNullOrEmpty(dockData.ServiceTag))
+                                                if (string.IsNullOrEmpty(info.DockServiceTag) && !string.IsNullOrEmpty(dockData.ServiceTag))
                                                 {
                                                     info.DockServiceTag = dockData.ServiceTag;
                                                 }
-                                                if (!string.IsNullOrEmpty(dockData.PackageFirmwareVersion.ToString()))
+                                                if (string.IsNullOrEmpty(info.DockPackageFwVersion) && !string.IsNullOrEmpty(dockData.PackageFirmwareVersion.ToString()))
                                                 {
                                                     info.FirmwareVersion = dockData.PackageFirmwareVersion.ToString();
                                                     info.DockPackageFwVersion = dockData.PackageFirmwareVersion.ToString();
@@ -1456,7 +1462,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                                         using (JsonDocument doc = JsonDocument.Parse(textString))
                                         {
                                             JsonElement root = doc.RootElement;
-                                            string payloadElement = root.GetProperty("ReturnCode").ToString();
+                                            string payloadElement = root.GetProperty("Payload").ToString();
                                             int temp_int = 0;
                                             if (!string.IsNullOrEmpty(payloadElement) && int.TryParse(payloadElement, out temp_int))
                                             {
@@ -1498,6 +1504,61 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                                     }
                                 }
                             }
+                            dokc_bytes = _logicalDeviceDock.GetDockServiceTag();
+                            _logs.DebugMsg_1($"[PeripheralsPlugin] GetDockServiceTag byte is null = {(dokc_bytes == null ? "Yes" : "No")}");
+                            if (dokc_bytes != null)
+                            {
+                                _logs.DebugMsg_1($"[PeripheralsPlugin] GetDockServiceTag dokc_bytes.Length : {dokc_bytes.Length}");
+                                string textString = System.Text.Encoding.UTF8.GetString(dokc_bytes);
+                                _logs.DebugMsg_1($"[PeripheralsPlugin] GetDockServiceTag dokc_bytes to string : " + textString);
+                                if (!string.IsNullOrEmpty(textString))
+                                {
+                                    try
+                                    {
+                                        using (JsonDocument doc = JsonDocument.Parse(textString))
+                                        {
+                                            JsonElement root = doc.RootElement;
+                                            string payloadElement = root.GetProperty("Payload").ToString();
+                                            if (string.IsNullOrEmpty(info.DockServiceTag) && !string.IsNullOrEmpty(payloadElement))
+                                            {
+                                                info.DockServiceTag = payloadElement;
+                                            }
+                                        }
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        _logs.DebugMsg_1($"[PeripheralsPlugin] GetDockServiceTag Error : {ex.Message}");
+                                    }
+                                }
+                            }
+                            dokc_bytes = _logicalDeviceDock.GetDockPackageFwVersion();
+                            _logs.DebugMsg_1($"[PeripheralsPlugin] GetDockPackageFwVersion byte is null = {(dokc_bytes == null ? "Yes" : "No")}");
+                            if (dokc_bytes != null)
+                            {
+                                _logs.DebugMsg_1($"[PeripheralsPlugin] GetDockPackageFwVersion dokc_bytes.Length : {dokc_bytes.Length}");
+                                string textString = System.Text.Encoding.UTF8.GetString(dokc_bytes);
+                                _logs.DebugMsg_1($"[PeripheralsPlugin] GetDockPackageFwVersion dokc_bytes to string : " + textString);
+                                if (!string.IsNullOrEmpty(textString))
+                                {
+                                    try
+                                    {
+                                        using (JsonDocument doc = JsonDocument.Parse(textString))
+                                        {
+                                            JsonElement root = doc.RootElement;
+                                            string payloadElement = root.GetProperty("Payload").ToString();
+                                            if (string.IsNullOrEmpty(info.DockPackageFwVersion) && !string.IsNullOrEmpty(payloadElement))
+                                            {
+                                                info.DockPackageFwVersion = payloadElement;
+                                                info.FirmwareVersion = payloadElement;
+                                            }
+                                        }
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        _logs.DebugMsg_1($"[PeripheralsPlugin] GetDockPackageFwVersion Error : {ex.Message}");
+                                    }
+                                }
+                            }
                         }
                         catch (Exception ex)
                         {
@@ -1508,7 +1569,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
 
                     //item.update
                 }
-                _iDeviceManager_DeviceAddedEvent(device);
+                //_iDeviceManager_DeviceAddedEvent(device);
             }
             Console.WriteLine(_deviceHelper.ToString());
             writelog(_deviceHelper.ToString());
@@ -1557,19 +1618,16 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                 {
                     rfdongle.IsMultipleDongleFound = true;
                 }
-                else
+                rfInfo = new DongleInfo()
                 {
-                    rfInfo = new DongleInfo()
-                    {
-                        ID = _iPhysicalAudioDeviceDongle.Id,
-                        DeviceType = _iPhysicalAudioDeviceDongle.Type,
-                        IsMultipleDongleFound = false,
-                        MaxPairingSlots = _iPhysicalAudioDeviceDongle.MaxPairingSlots,
-                        PairedDeviceCount = _iPhysicalAudioDeviceDongle.PairedDeviceCount,
-                        LogicalDeviceIDs = _iPhysicalAudioDeviceDongle.Devices.Select(x => x.Id).ToList()
-                    };
-                    _rfDeviceHelper.dongleInfo.Add(rfInfo);
-                }
+                    ID = _iPhysicalAudioDeviceDongle.Id,
+                    DeviceType = _iPhysicalAudioDeviceDongle.Type,
+                    IsMultipleDongleFound = false,
+                    MaxPairingSlots = _iPhysicalAudioDeviceDongle.MaxPairingSlots,
+                    PairedDeviceCount = _iPhysicalAudioDeviceDongle.PairedDeviceCount,
+                    LogicalDeviceIDs = _iPhysicalAudioDeviceDongle.Devices.Select(x => x.Id).ToList()
+                };
+                _rfDeviceHelper.dongleInfo.Add(rfInfo);
             }
             else if (device is IPhysicalDeviceDongle _iPhysicalDeviceDongle)
             {
@@ -1579,19 +1637,16 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                 {
                     rfdongle.IsMultipleDongleFound = true;
                 }
-                else
+                rfInfo = new DongleInfo()
                 {
-                    rfInfo = new DongleInfo()
-                    {
-                        ID = _iPhysicalDeviceDongle.Id,
-                        DeviceType = _iPhysicalDeviceDongle.Type,
-                        IsMultipleDongleFound = false,
-                        MaxPairingSlots = _iPhysicalDeviceDongle.MaxPairingSlots,
-                        PairedDeviceCount = _iPhysicalDeviceDongle.PairedDeviceCount,
-                        LogicalDeviceIDs = _iPhysicalDeviceDongle.Devices.Select(x => x.Id).ToList()
-                    };
-                    _rfDeviceHelper.dongleInfo.Add(rfInfo);
-                }
+                    ID = _iPhysicalDeviceDongle.Id,
+                    DeviceType = _iPhysicalDeviceDongle.Type,
+                    IsMultipleDongleFound = false,
+                    MaxPairingSlots = _iPhysicalDeviceDongle.MaxPairingSlots,
+                    PairedDeviceCount = _iPhysicalDeviceDongle.PairedDeviceCount,
+                    LogicalDeviceIDs = _iPhysicalDeviceDongle.Devices.Select(x => x.Id).ToList()
+                };
+                _rfDeviceHelper.dongleInfo.Add(rfInfo);
             }
         }
 
@@ -1749,6 +1804,13 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                 _iDeviceManager = _iClient.DeviceManager;
                 _iDeviceManager.DeviceAddedEvent += _iDeviceManager_DeviceAddedEvent;
                 _iDeviceManager.DeviceRemovedEvent += _iDeviceManager_DeviceRemovedEvent;
+
+                foreach (var device in _iDeviceManager.Devices)
+                {
+                    device.DeviceAddedEvent += IPhysicalDevice_DeviceAddedEvent;
+                    device.DeviceRemovedEvent += IPhysicalDevice_DeviceRemovedEvent;
+                }
+
                 ScanDevices();
 
                 _iUpdateManager = _iClient.UpdateManager;
@@ -1834,6 +1896,11 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
             iPhysicalDevice.DeviceAddedEvent += IPhysicalDevice_DeviceAddedEvent;
             iPhysicalDevice.DeviceRemovedEvent += IPhysicalDevice_DeviceRemovedEvent;
             PhysicalDevices.Add(iPhysicalDevice.Id);
+            ScanDevices();
+            DeviceChangedEventArgs _EventArgs = new();
+            _EventArgs.type = DeviceChangedType.Peripherals_PlugIn;
+            _EventArgs.changedProperty = "PhysicalDeviceAdded";
+            OnNotify(_EventArgs);
         }
 
         private void _iDeviceManager_DeviceRemovedEvent(IPhysicalDevice iPhysicalDevice)
@@ -1847,13 +1914,13 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                 {
                     PhysicalDevices1.Remove(iPhysicalDevice.Id);
 
-                    if (iPhysicalDevice.Type == DeviceType.PhysicalAudioDongle || iPhysicalDevice.Type == DeviceType.PhysicalDongle)
-                    {
-                        DeviceChangedEventArgs _EventArgs = new();
-                        _EventArgs.type = DeviceChangedType.Peripherals_UnPlug;
-                        _EventArgs.changedProperty = "PhysicalDeviceRemoved";
-                        OnNotify(_EventArgs);
-                    }
+                }
+                if (iPhysicalDevice.Type == DeviceType.PhysicalAudioDongle || iPhysicalDevice.Type == DeviceType.PhysicalDongle)
+                {
+                    DeviceChangedEventArgs _EventArgs = new();
+                    _EventArgs.type = DeviceChangedType.Peripherals_UnPlug;
+                    _EventArgs.changedProperty = "PhysicalDeviceRemoved";
+                    OnNotify(_EventArgs);
                 }
             }
         }
@@ -1879,6 +1946,8 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
 
         private void IPhysicalDevice_DeviceRemovedEvent(ILogicalDevice iLogicalDevice)
         {
+            Debug.WriteLine($"ID: {iLogicalDevice.Id}, Type:{iLogicalDevice.Type}");
+            Debug.WriteLine($"DeviceCount: {_deviceHelper.deviceInfo.Count}");
             _deviceHelper.deviceInfo.Where(x => x.ID == iLogicalDevice.Id).ToList().ForEach(device =>
             {
                 device.IsConnected = false;
@@ -2470,6 +2539,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                     _EventArgs.type = DeviceChangedType.Peripherals_SettingsChange;
                     _EventArgs.device_peripherals = deviceInfo;
                     _EventArgs.changedProperty = $"DonglePairingStatusChanged|{requestDeviceName}";
+                    Debug.WriteLine($"{deviceInfo.PairingStatusName}");
                     OnNotify(_EventArgs);
                 }
             }
@@ -2590,12 +2660,16 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
         }
 
         #endregion
-        private void writelog(string text, log_type log_type = log_type.info)
+        private void writelog(string text,
+                [System.Runtime.CompilerServices.CallerMemberName] string memberName = "",
+                [System.Runtime.CompilerServices.CallerFilePath] string sourceFilePath = "",
+                [System.Runtime.CompilerServices.CallerLineNumber] int sourceLineNumber = 0,
+                log_type log_type = log_type.info)
         {
             if (string.IsNullOrEmpty(text))
                 text = "";
 
-            text = "[PeripheralsPlugin] " + text;
+            text = $"[PeripheralsPlugin] {text}, Caller Name:{memberName}, Source Line {sourceLineNumber}";
             Console.WriteLine(text);
             if (Log != null)
             {

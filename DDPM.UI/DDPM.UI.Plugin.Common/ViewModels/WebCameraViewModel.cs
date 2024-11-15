@@ -86,9 +86,13 @@ namespace DDPM.UI.Plugin.ViewModels
         public List<WebcamOperation> WCOperations = new();
         private int OPIndex = -1;
         const int MaxOPs = 30;
+        public List<string> MicList = new() { "WB5023", "WB3023" };
 
         // 20240926 jim add
         private bool showLockMask = false;
+
+        public ManualResetEvent mre = new ManualResetEvent(false);
+
 
         public bool ShowLockMask
         {
@@ -145,12 +149,67 @@ namespace DDPM.UI.Plugin.ViewModels
             get { return _isChecked_ProximitySensor; }
             set
             {
-                _isChecked_ProximitySensor = value;
-                DdpmCommonHelper.DeviceManagerSA!.SetIsProximitySensorEnable(CurrentDeviceInfo!.ID.ToString(), _isChecked_ProximitySensor);
-                //DdpmCommonHelper.DeviceManagerSA!.SetIsProximitySensorEnable(value, CurrentDeviceInfo!.ID);
-                OnPropertyChanged("IsChecked_ProximitySensor");
-                OnPropertyChanged("ProximitySensorStatus_String");
+                if (value != _isChecked_ProximitySensor) //Add by Derek 11/12
+                {
+                    _isChecked_ProximitySensor = value;
+                    DdpmCommonHelper.DeviceManagerSA!.SetIsProximitySensorEnable(CurrentDeviceInfo!.ID.ToString(), _isChecked_ProximitySensor);
+                    //DdpmCommonHelper.DeviceManagerSA!.SetIsProximitySensorEnable(value, CurrentDeviceInfo!.ID);
+                    OnPropertyChanged("IsChecked_ProximitySensor");
+                    OnPropertyChanged("ProximitySensorStatus_String");
 
+                    //Derek 11/12
+                    //PIMS - 319099
+                    //Find Presence Detection Setting is available, when SUT does not support HPD_MPS and
+                    //Internal Presence Sensor. DUT is with HPD_MPS FW
+                    ChangeUPDStatus();
+                }
+            }
+        }
+
+        private bool _isWALTimerEnable = false;
+        public bool IsWALTimerEnable
+        {
+            get { return _isWALTimerEnable; }
+
+            set
+            {
+                if (value != _isWALTimerEnable)
+                {
+                    _isWALTimerEnable = value;
+
+                    OnPropertyChanged("IsWALTimerEnable");
+                }
+            }
+        }
+
+        private bool _isSnoozeEnable = false;
+        public bool IsSnoozeEnable
+        {
+            get { return _isSnoozeEnable; }
+
+            set
+            {
+                if (value != _isSnoozeEnable)
+                {
+                    _isSnoozeEnable = value;
+
+                    OnPropertyChanged("IsSnoozeEnable");
+                }
+            }
+        }
+
+        private void ChangeUPDStatus()
+        {
+            if (_isChecked_ProximitySensor)
+            {
+                IsWALTimerEnable = IsChecked_WalkAwayLock;
+                IsSnoozeEnable = IsChecked_WalkAwayLock;
+            }
+            else
+            {
+                IsWALTimerEnable = false;
+                IsChecked_Snooze = false;
+                IsSnoozeEnable = false;
             }
         }
 
@@ -195,6 +254,9 @@ namespace DDPM.UI.Plugin.ViewModels
                 DdpmCommonHelper.DeviceManagerSA!.SetIsWalkAwayLockEnable(CurrentDeviceInfo!.ID.ToString(), _isChecked_WalkAwayLock);
                 OnPropertyChanged("IsChecked_WalkAwayLock");
                 OnPropertyChanged("WalkAwayLockStatus_String");
+
+                IsWALTimerEnable = value;
+                IsSnoozeEnable = value;
             }
         }
 
@@ -419,8 +481,13 @@ namespace DDPM.UI.Plugin.ViewModels
             WebcamSettings.ExportWebcamSettings(WebcamSettings, Model);
             OnPropertyChanged(nameof(FPS_IsSelected));
         }
+
+        public int SelectedFovIndex = 0;
         public void SetFOV_Selected(int index)
         {
+            if (!IsAutoFramingOn)
+                FieldOfView = FOVs[index];
+
             for (int j = 0; j < FOV_IsSelected.Length; j++)
             {
                 FOV_IsSelected[j] = false;
@@ -564,11 +631,20 @@ namespace DDPM.UI.Plugin.ViewModels
             {
                 DdpmCommonHelper.DeviceManagerSA!.SetFieldOfView(CurrentDeviceInfo!.ID.ToString(), CurrentProfile.FieldOfView);
                 if (_fOVs[0] == CurrentProfile.FieldOfView)
+                {
                     SetFOV_Selected(0);
+                    SelectedFovIndex = 0;
+                }
                 else if (_fOVs[1] == CurrentProfile.FieldOfView)
+                {
                     SetFOV_Selected(1);
+                    SelectedFovIndex = 1;
+                }
                 else
+                {
                     SetFOV_Selected(2);
+                    SelectedFovIndex = 2;
+                }
             }
 
             if (CurrentDeviceInfo.IsPropertyZoomSupported)
@@ -693,6 +769,7 @@ namespace DDPM.UI.Plugin.ViewModels
         public MediaFrameReader? MediaFrameReader;
 
 
+
         private bool _isPrioritizeExternalWebcam = false;
         public bool IsPrioritizeExternalWebcam
         {
@@ -805,6 +882,8 @@ namespace DDPM.UI.Plugin.ViewModels
         {
             get => CurrentProfile.IsAutoFramingOn ? Strings.On : Strings.Off;
         }
+
+        private bool OriginalAutoFocus = true;
         public bool IsAutoFramingOn
         {
             get => CurrentProfile.IsAutoFramingOn;
@@ -815,6 +894,26 @@ namespace DDPM.UI.Plugin.ViewModels
                 OnPropertyChanged();
                 OnPropertyChanged(nameof(IsAutoFramingOnText));
                 OnPropertyChanged(nameof(PanArrowVisibility));
+
+                //Derek 2024/11/06
+                if (IsAutoFramingOn)
+                {
+                    //Derek 1109 change to selected the max support FOV due to not all camera will support all FOVs
+                    var FOV = CurrentDeviceInfo!.FOVValues;
+                    SetFOV_Selected(FOV.Length - 1);
+
+                    //Derek 2024/11/06 Webcam PIMS-317629 
+                    //On Turned on Auto Frame AI option, autofocus should be on and be greyed out. (can't select)
+                    OriginalAutoFocus = IsFocusOn;
+                    IsFocusOn = true;
+                }
+                else
+                {
+                    SetFOV_Selected(SelectedFovIndex);
+                    if (!OriginalAutoFocus)
+                        IsFocusOn = false;
+                }
+
             }
         }
 
@@ -906,10 +1005,15 @@ namespace DDPM.UI.Plugin.ViewModels
             get => CurrentProfile.IsFocusOn;
             set
             {
-                DdpmCommonHelper.DeviceManagerSA!.SetIsFocusOn(CurrentDeviceInfo!.ID.ToString(), value);
-                SetProfileProperty(nameof(IsFocusOn), value, OperationModule.CameraControl);
-                OnPropertyChanged();
-                OnPropertyChanged(nameof(IsFocusOnText));
+                if (value != IsFocusOn) //Derek 1108 for Webcam PIMS-317629 
+                {
+                    DdpmCommonHelper.DeviceManagerSA!.SetIsFocusOn(CurrentDeviceInfo!.ID.ToString(), value);
+                    SetProfileProperty(nameof(IsFocusOn), value, OperationModule.CameraControl);
+                    OnPropertyChanged();
+                    OnPropertyChanged(nameof(IsFocusOnText));
+                    if (!value)
+                        SetFocus();
+                }
             }
         }
         public string IsFocusOnText
@@ -1375,12 +1479,6 @@ namespace DDPM.UI.Plugin.ViewModels
             OnPropertyChanged(nameof(Undo2Visibility));
             OnPropertyChanged(nameof(RedoVisibility));
             OnPropertyChanged(nameof(Redo2Visibility));
-
-            //Derek 2024/11/06
-            //Webcam PIMS-316915
-            //FOV not go back to 90 and greyed out when switch AI Auto-Framing option to on.
-            if (IsAutoFramingOn)
-                SetFOV_Selected(2);
         }
 
         public void ClearUndo()
@@ -1511,6 +1609,7 @@ namespace DDPM.UI.Plugin.ViewModels
         }
         public Visibility MessageBoxVisibility { get; set; } = Visibility.Collapsed;
 
+        public bool running_state = true;
     }
 
     public class StreamResolution

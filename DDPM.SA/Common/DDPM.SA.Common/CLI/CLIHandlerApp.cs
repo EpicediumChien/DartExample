@@ -269,7 +269,23 @@ namespace DDPM.SA.Common.CLI
             WriteLog(Log, $"Output interface log: [{settingsPlugin.GetType()}],[{settingsPlugin.GetType().Name}]");
             ISettingsManagerIT _SettingsPluginIT = type2.Name == "SettingsMangerPlugin" ? (ISettingsManagerIT)settingsPlugin : null;
             IDeviceManagerSA _DeviceManagerPlugin = type2.Name == "DeviceMangerPlugin" ? (IDeviceManagerSA)settingsPlugin : null;
-
+            if(_DeviceManagerPlugin != null)
+            {
+                if (_DeviceManagerPlugin.GetMonitors().Result.Count == 0 && commandLineInput.PluginsType.ToUpper() == "DISPLAY")
+                {
+                    response.Message = "No devices found";
+                    result.serialize_Json_response = JsonConvert.SerializeObject(response, Formatting.Indented);
+                result.ExitCode = (int)CLI_ExitCode.no_monitor_connected;
+                    return result;
+                }
+                if (_DeviceManagerPlugin.GetDevices().Result.deviceInfo.Count == 0 && commandLineInput.PluginsType.ToUpper() != "DISPLAY")
+                {
+                    response.Message = "No devices found";
+                    result.serialize_Json_response = JsonConvert.SerializeObject(response, Formatting.Indented);
+                    result.ExitCode = (int)CLI_ExitCode.null_device_manager;
+                    return result;
+                }
+            }
             if (commandLineInput.Command.Equals("GET"))
             {
                 if (data_user != null)
@@ -356,7 +372,7 @@ namespace DDPM.SA.Common.CLI
                 return CLI_Response_OptionNameNotSupport(commandLineInput, result, op);
             }
             string value = op.Option_Value;
-            if (value.ToUpper().Equals("LOCK"))
+            if (value.ToUpper().Equals("LOCK") || value.ToUpper().Equals("ENABLE"))
             {
                 if (data_IT != null)
                 {
@@ -467,7 +483,7 @@ namespace DDPM.SA.Common.CLI
                     }
                 }
             }
-            else if (value.ToUpper().Equals("UNLOCK"))
+            else if (value.ToUpper().Equals("UNLOCK") || value.ToUpper().Equals("DISABLE"))
             {
                 if (data_IT != null)
                 {

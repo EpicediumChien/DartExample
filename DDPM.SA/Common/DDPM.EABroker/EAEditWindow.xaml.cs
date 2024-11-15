@@ -1,5 +1,6 @@
 ﻿using DDPM.Easy.Common;
 using DDPM.SA.Common;
+using DDPM.SA.Common.Display;
 using DDPM.Win32Lib;
 using Dell.Client.Framework.Common;
 using nsWinEventHook;
@@ -18,6 +19,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using static DDPM.Win32Lib.Win32;
 
 namespace DDPM.EABroker
 {
@@ -29,6 +31,7 @@ namespace DDPM.EABroker
         #region Private members
         private readonly ILog? _log;
         private string _orgFriendlyName = string.Empty;
+        private List<CellJson> _cellJsons = new List<CellJson>();
 
         #endregion Private members
 
@@ -52,6 +55,8 @@ namespace DDPM.EABroker
         {
             this.Dispatcher.Invoke(() =>
             {
+                //Robert_Lin, clear the previous editing SplitCtrl before Hode
+                splitCtrl.Content = null;
                 Hide();
             });
         }
@@ -145,6 +150,11 @@ namespace DDPM.EABroker
             return inputSplitCtrl.Settings;
         }
 
+        public List<CellJson> GetCellJsons()
+        {
+            return _cellJsons;
+        }
+
         #endregion Input SplitCtrl
 
         #region Show and Edit
@@ -155,13 +165,13 @@ namespace DDPM.EABroker
         public bool ShowAndEdit(EAArgs args, Screen scr)
         {
             _inputArgs = args;
-            if ((args.SplitJson.CellCount == 0) && (args.SplitJson.SplitKey == 'B'))
+            if ((args.SplitJson.IsOverlapLayout))
             {
-                this.Dispatcher.Invoke(() => { UI_ShowAndEdit_AddedCustom(args, scr); });
+                this.Dispatcher.Invoke(() => { UI_ShowAndEdit_OverlapCustom(args, scr); });
             }
             else if (ISplitCtrl.IsExisted(args.SplitJson.CellCount, args.SplitJson.SplitKey))
             {
-                this.Dispatcher.Invoke(() => { UI_ShowAndEdit_PredefinedCustom(args, scr); });
+                this.Dispatcher.Invoke(() => { UI_ShowAndEdit_NonOverlapCustom(args, scr); });
             }
             else
             {
@@ -170,8 +180,11 @@ namespace DDPM.EABroker
             return true;
         }
 
-        private void UI_ShowAndEdit_PredefinedCustom(EAArgs args, Screen scr)
+        private void UI_ShowAndEdit_NonOverlapCustom(EAArgs args, Screen scr)
         {
+            canvas.Children.Clear();
+            splitCtrl.Visibility = Visibility.Visible;
+
             //Try to create a ISplitCtrl to verify (cellCount,SplitKey) is valid
             ISplitCtrl? ispCtrl = ISplitCtrl.Create(args.SplitJson.CellCount, args.SplitJson.SplitKey);
             if (ispCtrl == null)
@@ -193,7 +206,7 @@ namespace DDPM.EABroker
             _orgFriendlyName = args.SplitJson.CustomName;
 
             //Calculate the position/size of EditWindow
-            double dpiX = 1.000;
+            double dpiX = 1.00;
             var dpiXProperty = typeof(SystemParameters).GetProperty("DpiX", BindingFlags.NonPublic | BindingFlags.Static);
             if (dpiXProperty != null)
             {
@@ -211,7 +224,7 @@ namespace DDPM.EABroker
 
             Show();
         }
-        private void UI_ShowAndEdit_AddedCustom(EAArgs args, Screen scr)
+        private void UI_ShowAndEdit_OverlapCustom(EAArgs args, Screen scr)
         {
             splitCtrl.Visibility = Visibility.Collapsed;
             _orgFriendlyName = args.CustomName;
@@ -258,12 +271,16 @@ namespace DDPM.EABroker
             List<double> settings = new List<double>();
             settings.Add(0); //BorderCount will be updated later
             settings.Add(scale);
-            settings.Add(screen.Bounds.Width);
-            settings.Add(screen.Bounds.Height);
+            settings.Add(screen.WorkingArea.Width);
+            settings.Add(screen.WorkingArea.Height);
+
+            double xRatio = 1.0000 / (double)screen.WorkingArea.Width;
+            double yRatio = 1.0000 / (float)screen.WorkingArea.Height;
 
             //Enumerate all Window handle which will be fitered by IsTargetWindow()
             List<IntPtr> hWnds = Win32.GetWindowHandles(IsTargetWindow);
             WriteLog($"@ EAEditWindow.CaptureCustomLayout(), Enum candidate Window and add Borders");
+            _cellJsons.Clear();
             int idx = -1;
             int addCount = 0;
             //Second phase to filter out from the hWnd
@@ -291,6 +308,13 @@ namespace DDPM.EABroker
                 if (!screenOfhWnd.Equals(screen))
                 {
                     WriteLog($"    [{idx}] Abandon: Not in target screen.");
+                    continue;
+                }
+
+                //Check if the window is totally inside screen
+                if (!screen.Bounds.Contains(rcWnd))
+                {
+                    WriteLog($"    [{idx}] Abandon: Not inside target screen (no acroess).");
                     continue;
                 }
 
@@ -359,10 +383,44 @@ namespace DDPM.EABroker
                 settings.Add(border.Width);
                 settings.Add(border.Height);
                 WriteLog($"    [{idx}] Accept: Add a Border to EAEditWindow");
+
+                CellJson cellJson = new CellJson();
+                cellJson.Name = $"0b{addCount}";
+                cellJson.x = (double)left * xRatio;
+                cellJson.y = (double)top * yRatio;
+                cellJson.w = (double)border.Width * xRatio;
+                cellJson.h = (double)border.Height * yRatio;
+                _cellJsons.Add(cellJson);
             }
             WriteLog($"  * Detected window count = [{addCount}]");
             settings[0] = addCount;
             inputSplitCtrl.Settings = settings;
+            inputSplitCtrl.CellList.Clear();
+
+
+            SplitCtrl0B spCtrl0B = (SplitCtrl0B)inputSplitCtrl;
+            ///spCtrl0B.RatioRects.Clear();
+            foreach (CellJson cellJson in _cellJsons)
+            {
+                CellBorder cellBorder = new CellBorder();
+                cellBorder.CellName = cellJson.Name;
+                cellBorder.rcRatio = new Rect(cellJson.x, cellJson.y, cellJson.w, cellJson.h);
+                inputSplitCtrl.CellBorders.Add(cellBorder);
+
+                CellObj cellObj = new CellObj(cellJson.Name);
+                cellObj.rcRatio = new Rect(cellJson.x, cellJson.y, cellJson.w, cellJson.h);
+                inputSplitCtrl.CellList.Add(cellObj);
+
+                ///spCtrl0B.RatioRects.Add(new Rect(cellJson.x, cellJson.y, cellJson.w, cellJson.h));
+            }
+
+            //Set a timeer to finished edit process
+            System.Threading.Timer timer1 = new System.Threading.Timer((obj) =>
+            {
+                if (EditReturn != null)
+                    EditReturn(this, _inputArgs);
+                //Hide();
+            }, null, 3000, Timeout.Infinite);
         }
 
         //Reference: https://stackoverflow.com/questions/210504/enumerate-windows-like-alt-tab-does
@@ -391,6 +449,17 @@ namespace DDPM.EABroker
             {
                 return false;
             }
+
+            //Check if the window is minimized
+            uint uiStyles = (uint) Win32._GetWindowLong(hWnd, (int)WindowLongFlags.GWL_STYLE);
+            uint uiMinimizeStyle = (uint)Win32.WindowStyles.WS_MINIMIZE;
+            bool isMinimized = ((uiStyles & uiMinimizeStyle) == uiMinimizeStyle);
+            if (isMinimized)
+                return false;
+
+            //Check if the window across screen boundary
+            //It need Screen rect, will be check after returned
+
             return true;
         }
         #endregion

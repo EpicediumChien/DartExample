@@ -13,12 +13,14 @@
         ResizeMode="NoResize"
         ShowInTaskbar="False"
         Topmost="True"
-        Background="Transparent" Loaded="Window_Loaded"
+        Background="Transparent" 
+        Loaded="Window_Loaded" IsVisibleChanged="Window_IsVisibleChanged"
         >
     <Window.Resources>
         <SolidColorBrush x:Key="OuterBorder_BkBrush" Color="#F20D121A"/>
         <SolidColorBrush x:Key="OuterBorder_BdBrush" Color="#293B4D"/>
         <SolidColorBrush x:Key="SplitCtrl_OuterBorder_BdColor_Aws_Normal" Color="White" />
+        <SolidColorBrush x:Key="SplitCtrl_CellBorder_BkColor_Aws_Hover" Color="#8031A2E3" />
 
         <Style x:Key="MonitorIdTextStyle" TargetType="TextBlock">
             <Setter Property="Foreground" Value="White"/>
@@ -30,7 +32,7 @@
         </Style>
     
     </Window.Resources>
-    <Grid>
+    <Grid Name="rootGrid" IsVisibleChanged="rootGrid_IsVisibleChanged">
         <Grid.Style>
             <Style TargetType="Grid">
                 <Setter Property="Visibility" Value="Hidden"/>
@@ -63,7 +65,7 @@
                 </Grid.Resources>
 
                 <!-- Icon0, MonitorConfig -->
-                <Grid Grid.Column="0">
+                <Grid Grid.Column="0" Visibility="Visible">
                     <Border Width="120" Height="90" BorderThickness="1" BorderBrush="White"
                             CornerRadius="6">
                         <Canvas Name="icon0Canvas">
@@ -72,13 +74,18 @@
                                     <Setter Property="BorderThickness" Value="1.5"/>
                                     <Setter Property="BorderBrush" Value="{StaticResource SplitCtrl_OuterBorder_BdColor_Aws_Normal}"/>
                                     <Setter Property="CornerRadius" Value="4"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding IsHover, RelativeSource={RelativeSource Self}}" Value="True">
+                                            <Setter Property="BkBrush" Value="{StaticResource SplitCtrl_CellBorder_BkColor_Aws_Hover}"/>
+                                        </DataTrigger>
+                                    </Style.Triggers> 
                                 </Style>
                             </Canvas.Resources>
                         </Canvas>
                     </Border>
                 </Grid>
                     
-                <!--<ContentControl Grid.Column="0" Content="{Binding AwsIcon0}"/>-->
+                <ContentControl Grid.Column="0" Content="{Binding AwsIcon0}" Visibility="Collapsed"/>
                 
                 <!-- Icon1 ~ Icon4, EA Layouts load from RecentList -->
                 <ContentControl Grid.Column="1" Content="{Binding AwsIcon1}"/>

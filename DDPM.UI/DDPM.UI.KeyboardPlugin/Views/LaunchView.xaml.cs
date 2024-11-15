@@ -37,7 +37,7 @@ namespace DDPM.UI.Plugin.KeyboardPlugin
             {
                 DataContext = _vm;
                 _vm.VbarItemClickCommand = new RelayCommand<VbarItem>(OnVbarItemClicked!);
-                if (_vm.EOLList.Contains(_vm.Model))
+                if (_vm.EOLKBList.Contains(_vm.Model))
                 {
                     Battery.Visibility = Visibility.Collapsed;
                     btnRestore.Visibility = Visibility.Collapsed;

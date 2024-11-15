@@ -289,21 +289,21 @@ namespace DDPM.UI.Common.UserControls
                 if (ISplitCtrl != null)
                 {
                     eaid = ISplitCtrl.EAID;
-                    if ((CellCount == 0) && (SplitKey == 'B'))
-                    {
-                        foreach (CellBorder cellBorder in ISplitCtrl.CellBorders)
-                        {
-                            CellJson cj = new CellJson();
-                            cj.Name = cellBorder.Name;
-                            cj.x = cellBorder.rcRatio.Left;
-                            cj.y = cellBorder.rcRatio.Top;
-                            cj.w = cellBorder.rcRatio.Width;
-                            cj.h = cellBorder.rcRatio.Height;
-                            cells.Add(cj);
-                        }
-                    }
-                    else
-                    {
+                    //if ((CellCount == 0) && (SplitKey == 'B'))
+                    //{
+                    //    foreach (CellBorder cellBorder in ISplitCtrl.CellBorders)
+                    //    {
+                    //        CellJson cj = new CellJson();
+                    //        cj.Name = cellBorder.CellName;
+                    //        cj.x = cellBorder.rcRatio.Left;
+                    //        cj.y = cellBorder.rcRatio.Top;
+                    //        cj.w = cellBorder.rcRatio.Width;
+                    //        cj.h = cellBorder.rcRatio.Height;
+                    //        cells.Add(cj);
+                    //    }
+                    //}
+                    //else
+                    //{
                         foreach (CellObj objCell in ISplitCtrl.CellList)
                         {
                             CellJson cj = new CellJson();
@@ -314,7 +314,7 @@ namespace DDPM.UI.Common.UserControls
                             cj.h = objCell.rcRatio.Height;
                             cells.Add(cj);
                         }
-                    }
+                    //}
                 }
                 return new SA.Common.Display.SplitJson()
                 {
@@ -381,6 +381,7 @@ namespace DDPM.UI.Common.UserControls
             //Copy data
             ISplitCtrl.Settings = new List<double>(args.SplitJson.Settings);
             ISplitCtrl.FriendlyName = args.SplitJson.CustomName;
+            ISplitCtrl.EAID = args.SplitJson.EAID;
             //CustomId = args.CustomId;
 
             vm.NotifyPropertyChanged_TooltipText();
@@ -393,6 +394,7 @@ namespace DDPM.UI.Common.UserControls
             get { return vm.IsHoverable; }
             set { vm.IsHoverable = value; }
         }
+        //Robert_Lin, 2024-11-10, to be removed, please use IsOverlapCustomLayout instead
         public bool IsAddedCustomLayout
         {
             get 
@@ -402,9 +404,28 @@ namespace DDPM.UI.Common.UserControls
                 return false;
             }
         }
+        public bool IsOverlapCustomLayout
+        {
+            get
+            {
+                if (ISplitCtrl != null)
+                    return ISplitCtrl.IsOverlapCustomLayout;
+                return false;
+            }
+        }
         #endregion Add Custom Layout Button
 
         #region For EzMemory
+
+        private int _profileID;
+        public int ProfileID
+        {
+            get => _profileID;
+            set
+            {
+                _profileID = value;
+            }
+        }
         private int _layoutID;
         public int LayoutID
         {

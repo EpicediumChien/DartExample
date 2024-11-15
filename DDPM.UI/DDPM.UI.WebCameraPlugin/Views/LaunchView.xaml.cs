@@ -13,6 +13,7 @@ using DDPM.UI.Module.WebCameraSettings;
 using DDPM.UI.Plugin.Common;
 using DDPM.UI.Plugin.ViewModels;
 using Dell.Client.Framework.UX.WPF.Controls;
+using Microsoft.Win32;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
@@ -48,6 +49,7 @@ using Image = System.Windows.Controls.Image;
 using LangHelper = DDPM.UI.Resources.Helper.LangHelper;
 using MessageBox = System.Windows.MessageBox;
 using WebcamProfile = DDPM.UI.Common.WebcamProfile;
+using System.Windows.Threading;
 
 namespace DDPM.UI.Plugin.WebCameraPlugin
 {
@@ -83,6 +85,9 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
         private string EditMode = string.Empty;
         private string EditingProfileName = string.Empty;
         private static PowerEventControl _pwr_Mon = null;
+
+        public Thread status_thread = null;
+        public bool exit_status_thread = false;
 
         public LaunchView()
         {
@@ -155,8 +160,85 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             _vm!.WebcamSettingChanged += WebcamSettingChanged;
             _vm!.ProfilePropertyChanged += ProfilePropertyChanged;
 
+            imgDevice.Visibility = Visibility.Hidden;
             Preview();
             EnableMonitorOnEvent();
+
+
+            _timer = new DispatcherTimer();
+            _timer.Interval = TimeSpan.FromSeconds(3);
+            _timer.Tick += Timer_Tick;
+
+            exit_status_thread = false;
+            if (status_thread == null)
+            {
+                status_thread = new Thread(() =>
+                {
+                    DateTime dt = DateTime.Now;
+                    while (_vm.mre.WaitOne())
+                    {
+
+                        if (exit_status_thread) return;
+
+                        if (!_vm.IsRecording)
+                        {
+                            Dispatcher.Invoke(new Action(() =>
+                            {
+                                status_change();
+                            }));
+                        }
+
+                        _vm.mre.Reset();
+                    }
+                });
+                _vm.mre.Reset();
+                status_thread.Start();
+            }
+
+            in_CameraPlugin = true;
+        }
+
+        private void status_change()
+        {
+
+            if (!in_CameraPlugin) return;
+
+            //每一秒檢測一下前警景與背景狀態,以及Camera狀態
+            if (_vm.running_state)
+            {
+                if (_vm!.MediaCapture == null || _vm.MediaFrameReader == null)
+                {
+                    _ = CameraImage.Dispatcher.BeginInvoke(() =>
+                    {
+                        imgDevice.Visibility = Visibility.Hidden;
+                        Preview();
+                        CameraImage.Visibility = Visibility.Visible;
+                    });
+
+                }
+            }
+            else
+            {
+                if (_vm!.MediaCapture != null || _vm.MediaFrameReader != null)
+                {
+                    _ = CameraImage.Dispatcher.BeginInvoke(() =>
+                    {
+                        CameraImage.Visibility = Visibility.Hidden;
+                        _ = CleanupMediaCaptureAsync();
+
+                        imgDevice.Visibility = Visibility.Visible;
+                        DoubleAnimation visibilityAnimation = new()
+                        {
+                            From = 0,
+                            To = 1,
+                            Duration = new Duration(TimeSpan.FromSeconds(0.3))
+                        };
+                        visibilityAnimation.Completed += ShowGrid;
+                        imgDevice.BeginAnimation(OpacityProperty, visibilityAnimation);
+
+                    });
+                }
+            }
         }
 
         private void EnableMonitorOnEvent()
@@ -257,29 +339,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                     return;
                 }
 
-                MediaFrameSource mediaFrameSource = _vm.MediaCapture.FrameSources[frameSourceInfo.Id];
-
-                // 20240626 jim modify
-                _vm.MediaFrameReader = await _vm.MediaCapture.CreateFrameReaderAsync(mediaFrameSource, MediaEncodingSubtypes.Argb32);
-
-
-                writeableBitmap = new(
-                    (int)mediaFrameSource.CurrentFormat.VideoFormat.Width,
-                    (int)mediaFrameSource.CurrentFormat.VideoFormat.Height,
-                    96,
-                    96,
-                    PixelFormats.Bgra32,
-                    null);
-
-                react = new Int32Rect(0, 0, writeableBitmap.PixelWidth, writeableBitmap.PixelHeight);
-                ImageBufferSize = writeableBitmap.PixelWidth * writeableBitmap.PixelHeight * 4;
-                CameraImage.Source = writeableBitmap;
-
-                
-                _vm.MediaFrameReader.FrameArrived += MediaFrameReader_FrameArrived;
-
-                await _vm.MediaFrameReader.StartAsync();
-
+                //Derek 1108 Move to here to fix Webcam PIMS-314613
                 // Query all properties [resolution and frame rate] of the webcam device
                 _vm.allProperties = _vm.MediaCapture.VideoDeviceController.GetAvailableMediaStreamProperties(MediaStreamType.VideoPreview).Select(x => new StreamResolution(x));
 
@@ -296,6 +356,27 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                     }
                 }
 
+                MediaFrameSource mediaFrameSource = _vm.MediaCapture.FrameSources[frameSourceInfo.Id];
+
+                // 20240626 jim modify
+                _vm.MediaFrameReader = await _vm.MediaCapture.CreateFrameReaderAsync(mediaFrameSource, MediaEncodingSubtypes.Argb32);
+
+                _vm.MediaFrameReader.FrameArrived += MediaFrameReader_FrameArrived;
+
+                await _vm.MediaFrameReader.StartAsync();
+
+                try
+                {
+                    //Camera被其他process搶先佔據情況下,初始化會失敗,跟據IL提供範例,也是用檢測初始化是否成功為判斷
+                    uint _t = mediaFrameSource.CurrentFormat.VideoFormat.Width;
+                }
+                catch
+                {
+                    _vm.AlertType = WebcamAlert.Alert2;
+                    _vm.AlertVisibility = Visibility.Visible;
+                    return;
+                }
+
                 DoubleAnimation visibilityAnimation = new()
                 {
                     From = 1,
@@ -304,6 +385,21 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                 };
                 visibilityAnimation.Completed += ShowGrid;
                 imgDevice.BeginAnimation(OpacityProperty, visibilityAnimation);
+
+                writeableBitmap = new(
+                    (int)mediaFrameSource.CurrentFormat.VideoFormat.Width,
+                    (int)mediaFrameSource.CurrentFormat.VideoFormat.Height,
+                    96,
+                    96,
+                    PixelFormats.Bgra32,
+                    null);
+                react = new Int32Rect(0, 0, writeableBitmap.PixelWidth, writeableBitmap.PixelHeight);
+                ImageBufferSize = writeableBitmap.PixelWidth * writeableBitmap.PixelHeight * 4;
+                CameraImage.Source = writeableBitmap;
+                before_width = (int)mediaFrameSource.CurrentFormat.VideoFormat.Width;
+                before_height = (int)mediaFrameSource.CurrentFormat.VideoFormat.Height;
+
+                _vm.AlertVisibility = Visibility.Hidden;
             }
             catch (Exception Exc)
             {
@@ -350,20 +446,26 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             }));
         }
 
+        bool in_CameraPlugin = true;
         private async void LaunchView_Unloaded(object sender, RoutedEventArgs e)
         {
+
+            in_CameraPlugin = false;
+            exit_status_thread = true;
+            _vm?.mre.Set();
+
             if (DdpmCommonHelper.DeviceManagerSA != null)
             {
                 DdpmCommonHelper.DeviceManagerSA.ITSettingsActionEvent -= DeviceManagerSA_ITSettingsActionEvent;
             }
-            _vm!.MediaFrameReader.FrameArrived -= MediaFrameReader_FrameArrived;
+            _vm!.MediaFrameReader!.FrameArrived -= MediaFrameReader_FrameArrived;
             _vm.ProfilePropertyChanged -= ProfilePropertyChanged;
             _vm.WebcamSettingChanged -= WebcamSettingChanged;
             try
             {
                 await CleanupMediaCaptureAsync();
 
-                if(_pwr_Mon != null)
+                if (_pwr_Mon != null)
                 {
                     _pwr_Mon.MonitorTurnedOn -= MonitorEvent_On;
                     _pwr_Mon.Close_Event();
@@ -425,7 +527,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             moduleGroup.AddHeader(Capture, new WebCameraCaptureModule(_vm!));
             groups.Add(moduleGroup);
 
-            if (_vm.CurrentDeviceInfo!.IsMicEnumerationSupported)
+            if (_vm.MicList.Contains(_vm.Model))
             {
                 moduleGroup = new ModuleGroup()
                 {
@@ -555,6 +657,8 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
         WriteableBitmap writeableBitmap;
         SoftwareBitmap backBuffer;
         Int32Rect react;
+        int before_width = 0;
+        int before_height = 0;
 
         [ComImport]
         [Guid("5B0D3235-4DBA-4D44-865E-8F1D0E4FD04D")]
@@ -569,28 +673,46 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
         int count = 0;
         private async void MediaFrameReader_FrameArrived(MediaFrameReader sender, MediaFrameArrivedEventArgs args)
         {
-            if (_running) return;
+            if (_running)
+                return;
             _running = true;
 
-            /*int frame_drop = 3;
-            count++;
-            if (count != frame_drop)
+            SoftwareBitmap softwareBitmap = null;
+
+            try
+            {
+                softwareBitmap = (sender.TryAcquireLatestFrame()?.VideoMediaFrame)?.SoftwareBitmap;
+            }
+            catch
             {
                 _running = false;
                 return;
             }
-            if (count == frame_drop) count = 0;*/
 
-            var softwareBitmap = (sender.TryAcquireLatestFrame()?.VideoMediaFrame)?.SoftwareBitmap;
 
-            Thread.Sleep(66);//15fps
+            Thread.Sleep(60);
 
-            if (softwareBitmap != null)
+            if (softwareBitmap != null && _vm.running_state)
             {
-                //ImageSource source = await ConvertSoftwareBitmap2BitmapImage(softwareBitmap);
                 _ = CameraImage.Dispatcher.BeginInvoke(() =>
                 {
 
+                    if (before_width != softwareBitmap.PixelWidth || before_height != softwareBitmap.PixelHeight)
+                    {
+
+                        writeableBitmap = new(
+                            softwareBitmap.PixelWidth,
+                            softwareBitmap.PixelHeight,
+                            96,
+                            96,
+                            PixelFormats.Bgra32,
+                            null);
+                        react = new Int32Rect(0, 0, writeableBitmap.PixelWidth, writeableBitmap.PixelHeight);
+                        ImageBufferSize = writeableBitmap.PixelWidth * writeableBitmap.PixelHeight * 4;
+                        CameraImage.Source = writeableBitmap;
+                        before_width = softwareBitmap.PixelWidth;
+                        before_height = softwareBitmap.PixelHeight;
+                    }
 
                     writeableBitmap.Lock();
                     using var m = softwareBitmap.LockBuffer(BitmapBufferAccessMode.Read);
@@ -606,17 +728,15 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                             (IntPtr)ptr,
                             (int)capacity,
                             t.Stride);
-                        writeableBitmap.AddDirtyRect(react);
 
                         //way 2:
                         /*CopyMemory(writeableBitmap.BackBuffer, (IntPtr)ptr, ImageBufferSize);
                         writeableBitmap.AddDirtyRect(react);*/
                     }
                     writeableBitmap.Unlock();
-
-                    //CameraImage.Source = source;
                 });
             }
+
             _running = false;
         }
 
@@ -698,24 +818,24 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
         {
             _vm!.IsRecording = true;
 
+
             if (_vm!.WebcamCountdown)
             {
                 //_countdownValue = 3; // 設置倒數起始值
                 //CountdownText.Text = _countdownValue.ToString();
-                _timer = new DispatcherTimer();
-                _timer.Interval = TimeSpan.FromSeconds(3);
-                _timer.Tick += Timer_Tick;
-                _timer.Start();
 
+                _timer.Start();
                 DdpmCommonHelper.DeviceManagerSA!.ShowOSD(Screen.PrimaryScreen!.DeviceName, OSDType.StartRecording);
             }
             else
                 StartRecordingAsync().RunSynchronously();
+
         }
 
         private void StopRecord()
         {
             _ = StopRecordingAsync();
+
         }
         private void Timer_Tick(object? sender, EventArgs e)
         {
@@ -895,10 +1015,35 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             if (IsPresetOpen)
             { btnPreset_Click(this, null); }
             btnPreset.IsEnabled = false;
+
+            //Derek 1110 for Webcam PIMS-315440
+            //During video recording, do"Restart" &"Shutdown"action in SUT,
+            //the video which I just recorded will have no length.
+            SystemEvents.SessionEnding += new SessionEndingEventHandler(SystemEvents_SessionEnding);
+
             StartRecord();
         }
 
+        private void SystemEvents_SessionEnding(object sender, SessionEndingEventArgs e)
+        {
+            //if (e.Reason == SessionEndReasons.SystemShutdown)
+            //{
+            //    UserStopRecord();
+            //}
+            //else if (e.Reason == SessionEndReasons.Logoff)
+            //{
+            //    UserStopRecord();
+            //}
+
+            UserStopRecord();
+        }
+
         private void btnStop_Click(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            UserStopRecord();
+        }
+
+        private void UserStopRecord()
         {
             StopRecord();
             RecordingTimer.Stop();
@@ -1318,6 +1463,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
         private void UserControl_SizeChanged(object sender, SizeChangedEventArgs e)
         {
             UpdatePVMargin(_vm!.VbarSelectedIndex);
+            ChangeDevNameWidth();
         }
 
         private void UpdatePVMargin(int index)
@@ -1332,6 +1478,16 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
 
             }
             largeImage.Margin = new Thickness(40, mT, mR, mB);
+        }
+
+        private void ChangeDevNameWidth()
+        {
+            txtCaption.Width = this.ActualWidth - RightGrid.ActualWidth - VbarGrid.ActualWidth - 100;
+        }
+
+        private void RightFrame_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            ChangeDevNameWidth();
         }
     }
 }
