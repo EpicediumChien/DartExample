@@ -1439,7 +1439,7 @@ namespace VcpCore.Plugins
 
                     _logs.DebugMsg("[VcpCorePlugin] [QueueTrigger] VcpCorePlugin " + monitorInfoX.AliasDeviceName + " Watching 0x52");
 
-                    object_0x02 = Get_VCPCapability(monitorInfoX, 0x02, 0, true);
+                    object_0x02 = Get_VCPCapability(monitorInfoX, 0x02, 0, monitorInfoX.DDCisON);
 
                     if (object_0x02 != null)
                     {
