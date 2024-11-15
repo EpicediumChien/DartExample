@@ -3690,7 +3690,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         {
             try
             {
-                var result = await _DTPProxyPlugin.GetBand5GainAsync(guid);
+                var result = await _DTPProxyPlugin.GetBand3GainAsync(guid);
                 writelog($"[DeviceManagerPlugin] [Headset] GetBand3GainAsync succeeded for {result.ToString()}");
                 return result;
             }
@@ -3705,7 +3705,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         {
             try
             {
-                var result = await _DTPProxyPlugin.GetBand5GainAsync(guid);
+                var result = await _DTPProxyPlugin.GetBand4GainAsync(guid);
                 writelog($"[DeviceManagerPlugin] [Headset] GetBand4GainAsync succeeded for {result.ToString()}");
                 return result;
             }
