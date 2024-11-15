@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace VcpCore.Common
 {
@@ -220,23 +221,20 @@ namespace VcpCore.Common
                     list.AddRange(bytes);
                 }
                 byte[] bytes2 = list.ToArray();
-                string text2 = "";
-                string @string = Encoding.ASCII.GetString(bytes2);
-                bool collectStart = false;
-                for (int j = (@string.Length) - 1; j >= 0; j--)
+                string text2 = string.Empty;
+                string Modelstring = Encoding.ASCII.GetString(bytes2);
+                for (int j = (Modelstring.Length) - 1; j >= 0; j--)
                 {
-                    char value = @string[j];
-                    if (Convert.ToInt32(value) == 10)
-                        collectStart = true;
-                    else if (collectStart && (Convert.ToInt32(value) >= 48))
+                    char value = Modelstring[j];
+                    if (Convert.ToInt32(value) >= 48)
                         text2 += value;
-                    else if (collectStart && (Convert.ToInt32(value) == 32))
-                        break;
                 }
                 char[] text2_charArray = text2.ToCharArray();
                 Array.Reverse(text2_charArray);
                 text2 = new string(text2_charArray);
-                return text2.ToUpper();
+                text2 = Regex.Replace(text2, "DELL", string.Empty, RegexOptions.IgnoreCase);
+                text2 = Regex.Replace(text2, "ALIENWARE", string.Empty, RegexOptions.IgnoreCase);
+                return text2.Trim().ToUpper();
             }
             return string.Empty;
         }
