@@ -466,7 +466,11 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             {
                 DdpmCommonHelper.DeviceManagerSA.ITSettingsActionEvent -= DeviceManagerSA_ITSettingsActionEvent;
             }
-            _vm!.MediaFrameReader!.FrameArrived -= MediaFrameReader_FrameArrived;
+            try
+            {
+                _vm!.MediaFrameReader!.FrameArrived -= MediaFrameReader_FrameArrived;
+            }
+            catch{ }
             _vm.ProfilePropertyChanged -= ProfilePropertyChanged;
             _vm.WebcamSettingChanged -= WebcamSettingChanged;
             try
