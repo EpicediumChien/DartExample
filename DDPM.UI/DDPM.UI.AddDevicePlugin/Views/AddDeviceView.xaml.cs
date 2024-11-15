@@ -16,9 +16,11 @@ using DDPM.UI.Module.AddWebcam;
 using DDPM.UI.Plugin.Common;
 using DDPM.UI.Plugin.ViewModels;
 using Dell.Client.Framework.UX.WPF;
+using Dell.Client.Framework.UX.WPF.Controls;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Media.Imaging;
 
 namespace DDPM.UI.Plugin.AddDevicePlugin
 {
@@ -58,11 +60,21 @@ namespace DDPM.UI.Plugin.AddDevicePlugin
             _vm.DeviceBarItemClickCommand = new RelayCommand<DeviceBarItem>(OnDeviceBarItemClicked!);
 
             BuildModuleGroups();
-            if (_vm.RightViewHeaders != null)
+            if(_vm.RightViewHeaders != null)
             {
                 rightViewHeaderCtrl.SetHeaders(_vm.RightViewHeaders.ToArray());
             }
             txtCaption.Text = Caption;
+            DdpmCommonHelper.BitmapImageUpdated += ArrowLeftImageUpdated;
+        }
+
+        private void ArrowLeftImageUpdated(string resourceKey)
+        {
+            if (resourceKey == "Arrow_Left")
+            {
+                ArrowLeft.Source = null;
+                ArrowLeft.Source = (BitmapImage)Application.Current.Resources[resourceKey];
+            }
         }
 
         private void BuildModuleGroups()
@@ -70,72 +82,142 @@ namespace DDPM.UI.Plugin.AddDevicePlugin
             List<ModuleGroup> groups = new();
             ModuleGroup moduleGroup;
 
-            moduleGroup = new ModuleGroup()
+            if (UXSystemParameters.Instance.OSTheme == OSThemeEnum.Light)
             {
-                GroupName = Display,
-                GroupIcon = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Images/Monitor.png", "DDPM.UI.Resources")
-            };
+                moduleGroup = new ModuleGroup()
+                {
+                    GroupName = Display,
+                    GroupIcon = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Images/Monitor_light.png", "DDPM.UI.Resources")
+                };
+            }
+            else
+            {
+                moduleGroup = new ModuleGroup()
+                {
+                    GroupName = Display,
+                    GroupIcon = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Images/Monitor.png", "DDPM.UI.Resources")
+                };
+            }
+
             moduleGroup.AddHeader(Display, new AddDisplayModule(_vm!));
             groups.Add(moduleGroup);
 
-            moduleGroup = new ModuleGroup()
+            if (UXSystemParameters.Instance.OSTheme == OSThemeEnum.Light)
             {
-                GroupName = Webcam,
-                GroupIcon = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Images/Webcamera.png", "DDPM.UI.Resources")
-            };
+                moduleGroup = new ModuleGroup()
+                {
+                    GroupName = Webcam,
+                    GroupIcon = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Images/Webcamera_light.png", "DDPM.UI.Resources")
+                };
+            }
+            else
+            {
+                moduleGroup = new ModuleGroup()
+                {
+                    GroupName = Webcam,
+                    GroupIcon = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Images/Webcamera.png", "DDPM.UI.Resources")
+                };
+            }
             moduleGroup.AddHeader(Webcam, new AddWebcamModule(_vm!));
             groups.Add(moduleGroup);
 
-            moduleGroup = new ModuleGroup()
+            if (UXSystemParameters.Instance.OSTheme == OSThemeEnum.Light)
             {
-                GroupName = KnM,
-                GroupIcon = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Images/KnM.png", "DDPM.UI.Resources")
-            };
+                moduleGroup = new ModuleGroup()
+                {
+                    GroupName = KnM,
+                    GroupIcon = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Images/KnM_light.png", "DDPM.UI.Resources")
+                };
+            }
+            else
+            {
+                moduleGroup = new ModuleGroup()
+                {
+                    GroupName = KnM,
+                    GroupIcon = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Images/KnM.png", "DDPM.UI.Resources")
+                };
+            }
             moduleGroup.AddHeader(Bluetooth, new AddKnM_BLModule(_vm!));
-            moduleGroup.Headers[0].ImageFile = "Bluetooth.png";
             moduleGroup.AddHeader(WirelessReceiver, new AddKnM_DongleModule(_vm!));
-            moduleGroup.Headers[1].ImageFile = "Dongle.png";
             moduleGroup.AddHeader(Wired, new AddKnM_WiredModule(_vm!));
-            moduleGroup.Headers[2].ImageFile = "Port.png";
             groups.Add(moduleGroup);
 
-            moduleGroup = new ModuleGroup()
+            if (UXSystemParameters.Instance.OSTheme == OSThemeEnum.Light)
             {
-                GroupName = Pen,
-                GroupIcon = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Images/Pen.png", "DDPM.UI.Resources")
-            };
+                moduleGroup = new ModuleGroup()
+                {
+                    GroupName = Pen,
+                    GroupIcon = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Images/Pen_light.png", "DDPM.UI.Resources")
+                };
+            }
+            else 
+            {
+                moduleGroup = new ModuleGroup()
+                {
+                    GroupName = Pen,
+                    GroupIcon = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Images/Pen.png", "DDPM.UI.Resources")
+                };
+            }
             moduleGroup.AddHeader(Bluetooth, new AddPen_BLModule(_vm!));
-            moduleGroup.Headers[0].ImageFile = "Bluetooth.png";
             moduleGroup.AddHeader(Other, new AddPen_OtherModule(_vm!));
-            moduleGroup.Headers[1].ImageFile = "";
             groups.Add(moduleGroup);
 
-            moduleGroup = new ModuleGroup()
+            if (UXSystemParameters.Instance.OSTheme == OSThemeEnum.Light)
             {
-                GroupName = Headset,
-                GroupIcon = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Images/Headset.png", "DDPM.UI.Resources")
-            };
+                moduleGroup = new ModuleGroup()
+                {
+                    GroupName = Headset,
+                    GroupIcon = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Images/Headset_light.png", "DDPM.UI.Resources")
+                };
+            }
+            else
+            {
+                moduleGroup = new ModuleGroup()
+                {
+                    GroupName = Headset,
+                    GroupIcon = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Images/Headset.png", "DDPM.UI.Resources")
+                };
+            }
             moduleGroup.AddHeader(Bluetooth, new AddHeadset_BLModule(_vm!));
-            moduleGroup.Headers[0].ImageFile = "Bluetooth.png";
             moduleGroup.AddHeader(WirelessReceiver, new AddHeadset_DongleModule(_vm!));
-            moduleGroup.Headers[1].ImageFile = "Dongle.png";
             moduleGroup.AddHeader(Wired, new AddHeadset_WiredModule(_vm!));
-            moduleGroup.Headers[2].ImageFile = "Port.png";
             groups.Add(moduleGroup);
 
-            moduleGroup = new ModuleGroup()
+            if (UXSystemParameters.Instance.OSTheme == OSThemeEnum.Light)
             {
-                GroupName = Speaker,
-                GroupIcon = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Images/SpeakerOn.png", "DDPM.UI.Resources")
-            };
+                moduleGroup = new ModuleGroup()
+                {
+                    GroupName = Speaker,
+                    GroupIcon = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Images/SpeakerOn_light.png", "DDPM.UI.Resources")
+                };
+            }
+            else 
+            {
+                moduleGroup = new ModuleGroup()
+                {
+                    GroupName = Speaker,
+                    GroupIcon = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Images/SpeakerOn.png", "DDPM.UI.Resources")
+                };
+            }
             moduleGroup.AddHeader(Speaker, new AddSpeakerModule(_vm!));
             groups.Add(moduleGroup);
 
-            moduleGroup = new ModuleGroup()
+            if (UXSystemParameters.Instance.OSTheme == OSThemeEnum.Light)
             {
-                GroupName = Dock,
-                GroupIcon = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Images/Dock.png", "DDPM.UI.Resources")
-            };
+                moduleGroup = new ModuleGroup()
+                {
+                    GroupName = Dock,
+                    GroupIcon = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Images/Dock_light.png", "DDPM.UI.Resources")
+                };
+            }
+            else 
+            {
+                moduleGroup = new ModuleGroup()
+                {
+                    GroupName = Dock,
+                    GroupIcon = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Images/Dock.png", "DDPM.UI.Resources")
+                };
+            }
             moduleGroup.AddHeader(Dock, new AddDockModule(_vm!));
             groups.Add(moduleGroup);
 
@@ -147,11 +229,14 @@ namespace DDPM.UI.Plugin.AddDevicePlugin
             //if(newItem.Id == _vm!.DeviceBarSelectedIndex) { return; }
 
             if (_vm!.DeviceBarSelectedIndex >= 0)
+            {
                 _vm.DeviceBarItems[_vm.DeviceBarSelectedIndex].IsSelected = false;
+                _vm.DeviceBarItems[_vm.DeviceBarSelectedIndex].RenewBarItem();
+            }
 
             _vm.DeviceBarSelectedIndex = newItem.Id;
 
-            if (_vm.RightViewHeaders != null)
+            if(_vm.RightViewHeaders != null)
             {
                 rightViewHeaderCtrl.SetHeaders(_vm.RightViewHeaders.ToArray());
                 rightViewHeaderCtrl.SelectedIndex = _vm.SelectedGroup!.HeaderSelectedIndex;
@@ -169,16 +254,16 @@ namespace DDPM.UI.Plugin.AddDevicePlugin
             //  return;
 
             int newSelId = rightViewHeaderCtrl.SelectedIndex;
-            if (newSelId != selectedTab)
+            if(newSelId != selectedTab)
             {
-                if (_vm != null)
+                if(_vm != null)
                 {
                     _vm.RightViewHeaderSelectedIndex = newSelId;
                 }
                 selectedTab = newSelId;
             }
 
-            if (newSelId == 1 && (_vm!.DeviceBarSelectedIndex == 2 || _vm!.DeviceBarSelectedIndex == 3 || _vm!.DeviceBarSelectedIndex == 4))
+            if(newSelId == 1 && (_vm!.DeviceBarSelectedIndex == 2 || _vm!.DeviceBarSelectedIndex == 3 || _vm!.DeviceBarSelectedIndex == 4))
             {
                 StartPairing();
             }
@@ -190,9 +275,9 @@ namespace DDPM.UI.Plugin.AddDevicePlugin
 
         private void StartPairing()
         {
-            if (_vm!.DeviceBarSelectedIndex == 2 && _vm.DongleInfos.Count == 1)
+            if(_vm!.DeviceBarSelectedIndex == 2 && _vm.DongleInfos.Count == 1)
             {
-                if (_vm.DongleInfos.Values.First().PairedDeviceCount == _vm.DongleInfos.Values.First().MaxPairingSlots)
+                if(_vm.DongleInfos.Values.First().PairedDeviceCount == _vm.DongleInfos.Values.First().MaxPairingSlots)
                 {
                     ShowMessage(Strings.Error, Strings.DongleSlotFull, "");
                     return;
@@ -203,9 +288,9 @@ namespace DDPM.UI.Plugin.AddDevicePlugin
                     _vm!.StartPairing(_vm!.DongleInfos.Keys.First());
                 }
             }
-            if (_vm!.DeviceBarSelectedIndex == 4 && _vm.AudioDongleInfos.Count == 1)
+            if(_vm!.DeviceBarSelectedIndex == 4 && _vm.AudioDongleInfos.Count == 1)
             {
-                if (_vm.AudioDongleInfos.Values.First().PairedDeviceCount == _vm.AudioDongleInfos.Values.First().MaxPairingSlots)
+                if(_vm.AudioDongleInfos.Values.First().PairedDeviceCount == _vm.AudioDongleInfos.Values.First().MaxPairingSlots)
                 {
                     ShowMessage(Strings.Error, Strings.DongleSlotFull, "");
                     return;
@@ -224,7 +309,7 @@ namespace DDPM.UI.Plugin.AddDevicePlugin
         {
             MessageModalDialog messageModalDialog = new(caption, text, button1Caption, button2Caption);
             Window parentWindow = Window.GetWindow(this);
-            if (parentWindow != null)
+            if(parentWindow != null)
             {
                 messageModalDialog.Owner = parentWindow;
             }
@@ -233,22 +318,28 @@ namespace DDPM.UI.Plugin.AddDevicePlugin
 
         private void PairingStatusChanged(object sender, TextChangedEventArgs e)
         {
-            switch (txtPairingStatus.Text)
+            switch(txtPairingStatus.Text)
             {
                 case "Request":
-                    if (_vm!.IsPairing)
+                    if(_vm!.IsPairing)
                     {
                         WaitingModalDialog waitingModalDialog = new(WaitingCaption, $"{WaitingMessage} {_vm.RequestDeviceName}", WaitingAlert);
                         Window parentWindow = Window.GetWindow(this);
-                        waitingModalDialog.WindowStartupLocation = WindowStartupLocation.Manual;
-                        if (parentWindow != null)
+                        if(parentWindow != null)
                         {
                             waitingModalDialog.Owner = parentWindow;
-                            waitingModalDialog.Left = parentWindow.Left + (parentWindow.ActualWidth - 587) / 2;
-                            waitingModalDialog.Top = parentWindow.Top + (parentWindow.ActualHeight - 349) / 2;
                         }
                         waitingModalDialog.ShowDialog();
-                        _vm.GotoNewDevice();
+                        if(_vm.NewDevice == null)
+                        {
+                            ShowMessage(Strings.Error, Strings.NoDeviceFound, "");
+                            _vm!.StopPairing();
+                            rightViewHeaderCtrl.SelectedIndex = 0;
+                        }
+                        else
+                        {
+                            _vm.GotoNewDevice();
+                        }
                     }
                     break;
 
@@ -270,7 +361,7 @@ namespace DDPM.UI.Plugin.AddDevicePlugin
                     break;
 
                 case "TimeOut":
-                    if (_vm.IsPairing)
+                    if(_vm.IsPairing)
                     {
                         ShowMessage(Strings.Error, Strings.NoDeviceFound, "");
                         _vm!.StopPairing();
@@ -286,8 +377,13 @@ namespace DDPM.UI.Plugin.AddDevicePlugin
 
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
-            OnDeviceBarItemClicked(_vm!.DeviceBarItems[_vm.DeviceBarSelectedIndex]);
+            if (_vm.RightViewHeaders != null)
+            {
+                rightViewHeaderCtrl.SetHeaders(_vm.RightViewHeaders.ToArray());
+                rightViewHeaderCtrl.SelectedIndex = _vm.SelectedGroup!.HeaderSelectedIndex;
+            }
             _vm.DeviceBarItems[_vm.DeviceBarSelectedIndex].IsSelected = true;
+            _vm.DeviceBarItems[_vm.DeviceBarSelectedIndex].SelectBarItem();
         }
     }
 }

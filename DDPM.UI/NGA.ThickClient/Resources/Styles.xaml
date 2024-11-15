@@ -42,7 +42,7 @@
                             BorderThickness="{TemplateBinding BorderThickness}">
 
                         <!-- Display the Top Background-->
-                        <Border x:Name="topBackgroundBorder" Background="{TemplateBinding TopBackground}">
+                        <Border x:Name="topBackgroundBorder" Background="{TemplateBinding Background}">
                             <Grid>
                                 <!-- 20240507-1639-Robert_Lin, try to use real size
                                 Put original code below inside <Grid>
@@ -86,6 +86,17 @@
                             <Setter TargetName="WindowResizeGrip" Property="Visibility" Value="Visible" />
                         </MultiTrigger>
                     </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    <Style TargetType="{x:Type controls:UXFrame}">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type controls:UXFrame}">
+                    <Border Background="Transparent">
+                        <ContentPresenter />
+                    </Border>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>

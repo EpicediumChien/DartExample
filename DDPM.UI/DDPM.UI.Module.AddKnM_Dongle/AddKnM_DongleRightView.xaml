@@ -16,7 +16,7 @@
   <UserControl.Resources>
     <ResourceDictionary>
       <Style x:Key="TextStyle1" TargetType="UXControls:UXTextBlock">
-        <Setter Property="Foreground" Value="White" />
+        <Setter Property="Foreground" Value="{DynamicResource AddDeviceTextStyle1_TxtColor}" />
         <Setter Property="FontFamily" Value="Roboto" />
         <Setter Property="FontSize" Value="16" />
         <Setter Property="FontWeight" Value="Normal" />
@@ -24,7 +24,6 @@
         <Setter Property="TextWrapping" Value="Wrap" />
         <Setter Property="VerticalAlignment" Value="Top" />
         <Setter Property="HorizontalAlignment" Value="Left" />
-        <Setter Property="Margin" Value="6,0,6,25"/> <!-- Derek 11/13 -->
       </Style>
       <Style x:Key="TextStyle2" TargetType="UXControls:UXTextBlock">
         <Setter Property="Foreground" Value="#31A2E3" />
@@ -37,23 +36,22 @@
         <Setter Property="HorizontalAlignment" Value="Left" />
       </Style>
       <Style x:Key="Border1" TargetType="Border">
-        <Setter Property="Background" Value="#99132F54" />
+        <Setter Property="Background" Value="{DynamicResource AddDeviceBorder1_BgColor}" />
         <Setter Property="CornerRadius" Value="13" />
-         <!-- Derek 1113 pleae don't change this code
         <Setter Property="Width" Value="225.5" />
-        <Setter Property="Height" Value="222" /> -->
+        <Setter Property="Height" Value="222" />
         <Setter Property="VerticalAlignment" Value="Top" />
         <Setter Property="BorderThickness" Value="2" />
-        <Setter Property="BorderBrush" Value="#132F54" />
+                <Setter Property="BorderBrush" Value="{DynamicResource Border1BorderBrush}" />
       </Style>
     </ResourceDictionary>
   </UserControl.Resources>
   <Grid>
     <UXControls:UXScrollViewer>
-      <Border>
+      <Border Background="Transparent">
         <StackPanel Orientation="Vertical">
           <UXControls:UXTextBlock Name="txtCaption" FontFamily="Roboto" FontSize="20" FontWeight="Normal"
-                                  Margin="18,14,0,20" Foreground="White"
+                                  Margin="18,14,0,20" Foreground="{DynamicResource AddDeviceTxtCaption_TxtColor}"
                                   VerticalAlignment="Top" HorizontalAlignment="Left" Text="{Binding [AddDevice.KnM.14], Source={x:Static lang:LangHelper.Instance}}"/>
           <Border Name="bdrAlert" Background="#364861" CornerRadius="4" Width="Auto" Margin="17,2,0,10" BorderThickness="7,0,0,0" BorderBrush="#E67F01" Visibility="{Binding DongleAlertKnMVisibility}">
             <StackPanel Orientation="Horizontal">
@@ -73,7 +71,7 @@
                                HorizontalAlignment="Left" VerticalAlignment="Top" Cursor="" Width="46" Height="46" />
                 <StackPanel Orientation="Horizontal" Margin="0,15,0,0">
                   <UXControls:UXTextBlock Text="1." Margin="20,0,0,0" Style="{StaticResource TextStyle1}" />
-                  <UXControls:UXTextBlock Name="txtStep1" Style="{StaticResource TextStyle1}" 
+                  <UXControls:UXTextBlock Name="txtStep1" Margin="6,0,0,0" Style="{StaticResource TextStyle1}" 
                                                             Width="{Binding textBlockWidth}" TextWrapping="WrapWithOverflow"
                                                             Text="{Binding [AddDevice.KnM.6], Source={x:Static lang:LangHelper.Instance}}"/>
                 </StackPanel>
@@ -85,7 +83,7 @@
                                HorizontalAlignment="Left" VerticalAlignment="Top" Cursor="" Width="46" Height="46" />
                 <StackPanel Orientation="Horizontal" Margin="0,15,0,0">
                   <UXControls:UXTextBlock Text="2." Margin="20,0,0,0" Style="{StaticResource TextStyle1}"/>
-                  <UXControls:UXTextBlock Name="txtStep2" Style="{StaticResource TextStyle1}" 
+                  <UXControls:UXTextBlock Name="txtStep2" Margin="6,0,0,0" Style="{StaticResource TextStyle1}" 
                                                             Width="{Binding textBlockWidth}" TextWrapping="WrapWithOverflow"
                                                             Text="{Binding [AddDevice.KnM.7], Source={x:Static lang:LangHelper.Instance}}"/>
                 </StackPanel>
@@ -97,7 +95,7 @@
                                HorizontalAlignment="Left" VerticalAlignment="Top" Cursor="" Width="46" Height="46" />
                 <StackPanel Orientation="Horizontal" Margin="0,15,0,0">
                   <UXControls:UXTextBlock Text="3." Margin="20,0,0,0" Style="{StaticResource TextStyle1}" />
-                  <UXControls:UXTextBlock Name="txtStep3" Style="{StaticResource TextStyle1}" 
+                  <UXControls:UXTextBlock Name="txtStep3" Margin="6,0,0,0" Style="{StaticResource TextStyle1}" 
                                                             Width="{Binding textBlockWidth}" TextWrapping="WrapWithOverflow"
                                                             Text="{Binding [AddDevice.KnM.8], Source={x:Static lang:LangHelper.Instance}}"/>
                 </StackPanel>
@@ -109,7 +107,7 @@
                                HorizontalAlignment="Left" VerticalAlignment="Top" Cursor="" Width="46" Height="46" />
                 <StackPanel Orientation="Horizontal" Margin="0,15,0,0">
                   <UXControls:UXTextBlock Text="4." Margin="20,0,0,0" Style="{StaticResource TextStyle1}" />
-                  <UXControls:UXTextBlock Name="txtStep4" Style="{StaticResource TextStyle1}" 
+                  <UXControls:UXTextBlock Name="txtStep4" Margin="6,0,0,0" Style="{StaticResource TextStyle1}" 
                                                             Width="{Binding textBlockWidth}" TextWrapping="WrapWithOverflow"
                                                             Text="{Binding [AddDevice.KnM.9], Source={x:Static lang:LangHelper.Instance}}"/>
                 </StackPanel>
