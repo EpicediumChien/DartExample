@@ -191,7 +191,7 @@ namespace DDPM.UI.Module.WebCameraCapture
             }
         }
 
-        private void Open_Click(object sender, RoutedEventArgs e)
+        private void Open_Click(object sender, MouseButtonEventArgs e)
         {
             Process.Start("explorer.exe", _vm!.VideoCaptureFolder);
         }
@@ -218,11 +218,6 @@ namespace DDPM.UI.Module.WebCameraCapture
                 else
                     _vm.Redo();
             }
-        }
-
-        private void Open_Click(object sender, MouseButtonEventArgs e)
-        {
-
         }
     }
 }

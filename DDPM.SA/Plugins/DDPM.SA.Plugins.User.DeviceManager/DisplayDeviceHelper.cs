@@ -1,31 +1,25 @@
 ﻿using DDPM.SA.Common;
+using DDPM.SA.Common.Display;
+using DDPM.SA.Common.Settings;
+using DDPM.SA.Resources.Helper;
 using Dell.Client.Framework.Common;
 using Microsoft.Toolkit.Uwp.Notifications;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 using System.IO;
+using System.Threading.Tasks;
 using VcpCore.Common;
-using DDPM.SA.Common.Settings;
-using System.Windows.Shell;
-using DDPM.SA.Resources.Helper;
-using DDPM.SA.Common.Display;
-using static VcpCore.Common.User32;
 
 namespace DDPM.SA.Plugins.User.DeviceManager
-{ 
+{
     public class DisplayWindowsToast
     {
         public string Title { get; set; } = string.Empty;
-        public string Description {  get; set; } = string.Empty;
+        public string Description { get; set; } = string.Empty;
         public string Model { get; set; } = string.Empty;
         public string ServiceTag { get; set; } = string.Empty;
         public string left_btn { get; set; } = string.Empty;
-        public string right_btn { get; set;} = string.Empty;
+        public string right_btn { get; set; } = string.Empty;
         public string left_btn_action { get; set; } = "left_btn";
         public string right_btn_action { get; set; } = "right_btn";
     }
@@ -48,13 +42,14 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         {
             if (settings != null)
                 settingsManagerDev = settings;
-            if(devMgr != null)
+            if (devMgr != null)
                 devManagerSA = devMgr;
-            if(displaySrv != null)
+            if (displaySrv != null)
                 displayService = displaySrv;
         }
 
         private static ILog _log = null;
+
         public DisplayDeviceHelper(ILog Log)
         {
             _log = Log;
@@ -64,7 +59,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             };
         }
 
-        private void WriteLog(string text, log_type log_type = log_type.info, 
+        private void WriteLog(string text, log_type log_type = log_type.info,
             [System.Runtime.CompilerServices.CallerMemberName] string memberName = "",
             [System.Runtime.CompilerServices.CallerFilePath] string sourceFilePath = "",
             [System.Runtime.CompilerServices.CallerLineNumber] int sourceLineNumber = 0)
@@ -181,7 +176,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
         }
 
-        private void AutoImport(ToastNotificationActivatedEventArgsCompat e) 
+        private void AutoImport(ToastNotificationActivatedEventArgsCompat e)
         {
             string[] ret = e.Argument.Split(",");
             if (ret.Length >= 3)
@@ -228,9 +223,9 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         //for PIMS-288826
         public bool isHotkeySyncBrightnessContrastToAllMonitors(HotkeyType job, List<MonitorInfo> moLists, MonitorInfo currentMoInfo, List<ALSConfig> alsSynchronizeList)
         {
-            if(moLists == null || moLists.Count <= 1)
+            if (moLists == null || moLists.Count <= 1)
             {
-                return false; 
+                return false;
             }
             if (job == HotkeyType.BrightnessIncrease || job == HotkeyType.LuminanceIncrease || job == HotkeyType.ContrastIncrease ||
                 job == HotkeyType.BrightnessReduce || job == HotkeyType.LuminanceReduce || job == HotkeyType.ContrastReduce)
@@ -245,7 +240,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 DDPMSettings data = devMgr.ReloadAppConfigData().Result;
                 isSyncEnable = data.UserSettings.IsSynchronizemonitor;
                 string actionType = CheckisShowSynchronize(displayService, moLists, currentMoInfo, alsSynchronizeList).Result;
-                if(actionType.Equals("A") || actionType.Equals("B") || actionType.Equals("C"))
+                if (actionType.Equals("A") || actionType.Equals("B") || actionType.Equals("C"))
                 {
                     if (isSyncEnable)
                         WriteLog($"[isHotkeySyncBrightnessContrastToAllMonitors] should sync {job} between monitor");
@@ -309,7 +304,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             {
                 foreach (MonitorInfo mi in moLists)
                 {
-                    if(currentMoInfo.modelName.Equals(mi.modelName) && currentMoInfo.edid.ServiceTag.Equals(mi.edid.ServiceTag))
+                    if (currentMoInfo.modelName.Equals(mi.modelName) && currentMoInfo.edid.ServiceTag.Equals(mi.edid.ServiceTag))
                     {
                         //already set, next loop
                         continue;
@@ -629,6 +624,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
             return _isAlSON;
         }
+
         /// <summary>
         ///  Check the number of Luminance Monitor.0x12 = non Luminance
         /// </summary>
