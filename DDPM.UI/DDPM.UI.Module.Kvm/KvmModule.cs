@@ -36,7 +36,7 @@ namespace DDPM.UI.Module.Kvm
             vm.Invoke_RefreshData();
         }
 
-        public string ModuleName { get => "KvmModule"; }
+        public string ModuleName { get => Constants.ModuleName_KVM; } //"KvmModule"
 
         public UserControl? GetLeftView()
         {

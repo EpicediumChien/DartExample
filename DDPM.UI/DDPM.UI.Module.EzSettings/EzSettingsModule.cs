@@ -27,7 +27,7 @@ namespace DDPM.UI.Module.EzSettings
             _rightView = new EzSettingsRightView(vm);
         }
 
-        public string ModuleName { get => "EzSettingsModule"; }
+        public string ModuleName { get => Constants.ModuleName_EzSettings; } //"EzSettingsModule"
 
         public UserControl? GetLeftView()
         {

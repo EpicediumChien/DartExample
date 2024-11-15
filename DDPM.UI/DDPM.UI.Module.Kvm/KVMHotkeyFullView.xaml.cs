@@ -280,6 +280,10 @@ namespace DDPM.UI.Module.Kvm
         private void InputSourceHotkey_Click(object sender, RoutedEventArgs e)
         {
             //todo
+            if (DdpmCommonHelper.ModuleOwner != null)
+            {
+                DdpmCommonHelper.ModuleOwner.ShowSpecificModule(Constants.GroupName_InputSource, Constants.ModuleName_DisplayHotkeys);
+            }
         }
 
 
