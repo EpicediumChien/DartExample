@@ -118,363 +118,363 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="no_updates_available" xml:space="preserve">
-    <value>利用可能なアップデートはありません。</value>
+    <value>brak dostępnych aktualizacji.</value>
   </data>
   <data name="Updates_info" xml:space="preserve">
-    <value>アップデート情報</value>
+    <value>Informacje o aktualizacjach</value>
   </data>
   <data name="Software_update_unsuccessful" xml:space="preserve">
-    <value>ソフトウェア アップデートに失敗しました。</value>
+    <value>Aktualizacja oprogramowania nie powiodła się.</value>
   </data>
   <data name="CA_check_fail" xml:space="preserve">
-    <value>CAチェックの失敗</value>
+    <value>Błąd sprawdzania CA</value>
   </data>
   <data name="Network_fail" xml:space="preserve">
-    <value>ネットワーク障害</value>
+    <value>Błąd sieci</value>
   </data>
   <data name="Update_failed_due_to_network_error" xml:space="preserve">
-    <value>ネットワーク エラーのため、アップデートに失敗しました。もう一度やり直してください。</value>
+    <value>Aktualizacja nie powiodła się z powodu błędu sieci. Spróbuj ponownie.</value>
   </data>
   <data name="Dock_FW_is_loaded" xml:space="preserve">
-    <value>ドッキング ステーションFWがロードされました。FWの適用を完了するためにドッキング ステーションを取り外し、1分後に再接続してください。</value>
+    <value>Oprogramowanie wewnętrzne stacji dokującej jest załadowane. Odłącz stację dokującą w celu zakończenia aplikacji oprogramowania wewnętrznego, a następnie podłącz ją ponownie po 1 minucie.</value>
   </data>
   <data name="Dock_UOD_FW_update_info" xml:space="preserve">
-    <value>ドッキング ステーションUOD FWアップデート情報</value>
+    <value>Informacje o aktualizacji oprogramowania wewnętrznego UOD stacji dokującej</value>
   </data>
   <data name="Firmware_update_unsuccessful" xml:space="preserve">
-    <value>ファームウェア アップデートに失敗しました。</value>
+    <value>Aktualizacja oprogramowania wewnętrznego nie powiodła się.</value>
   </data>
   <data name="Multiple_docks_are_detected" xml:space="preserve">
-    <value>複数のドッキング ステーションが検出されました。ドッキング ステーションの損傷を防ぐため、ドッキング ステーションは1台のみ接続してください。</value>
+    <value>Wykryto wiele stacji dokujących. Należy podłączyć tylko jedną stację dokującą, aby zapobiec uszkodzeniu stacji dokującej.</value>
   </data>
   <data name="Dock_FW_info" xml:space="preserve">
-    <value>ドッキング ステーションFW情報</value>
+    <value>Informacje o oprogramowaniu wewnętrznym stacji dokującej</value>
   </data>
   <data name="Dock_FW_is_being_loaded" xml:space="preserve">
-    <value>ドッキング ステーションFWをロードしています。ドッキング ステーションを取り外さないでください。</value>
+    <value>Trwa ładowanie oprogramowania wewnętrznego stacji dokującej. Nie odłączaj stacji dokującej.</value>
   </data>
   <data name="Dock_FW_is_loaded_successful" xml:space="preserve">
-    <value>ドッキング ステーションFWが正常にロードされました。FWの適用を完了するためにドッキング ステーションを取り外し、1分後に再接続してください。</value>
+    <value>Załadowano oprogramowanie wewnętrzne stacji dokującej. Odłącz stację dokującą w celu zakończenia aplikacji oprogramowania wewnętrznego, a następnie podłącz ją ponownie po 1 minucie.</value>
   </data>
   <data name="Dock_FW_loaded_failed" xml:space="preserve">
-    <value>ドッキング ステーションFWのロードに失敗しました。</value>
+    <value>Nie udało się załadować oprogramowania wewnętrznego stacji dokującej.</value>
   </data>
   <data name="Warning" xml:space="preserve">
-    <value>警告</value>
+    <value>Uwaga</value>
   </data>
   <data name="Auto_Brightness_is_currently_enabled" xml:space="preserve">
-    <value>明るさの自動調整は現在有効です。オーバーライドしますか？</value>
+    <value>Automatyczna jasność jest obecnie włączona. Czy chcesz nadpisać to ustawienie?</value>
   </data>
   <data name="Error" xml:space="preserve">
-    <value>エラー</value>
+    <value>Błąd</value>
   </data>
   <data name="SW_info" xml:space="preserve">
-    <value>SW情報</value>
+    <value>Informacje o oprogramowaniu</value>
   </data>
   <data name="UOD_update_completed" xml:space="preserve">
-    <value>UODアップデートが完了しました。</value>
+    <value>Zakończono aktualizację UOD.</value>
   </data>
   <data name="UOD_update_fail" xml:space="preserve">
-    <value>UODアップデートに失敗しました。</value>
+    <value>Aktualizacja UOD nie powiodła się.</value>
   </data>
   <data name="FW_info" xml:space="preserve">
-    <value>FW情報</value>
+    <value>Informacje o oprogramowaniu wewnętrznym</value>
   </data>
   <data name="update_download_cancel" xml:space="preserve">
-    <value>パソコンのバッテリー残量が少なすぎるため、アップデートのダウンロードがキャンセルされます。</value>
+    <value>anulowano pobieranie aktualizacji, ponieważ poziom naładowania baterii komputera jest zbyt niski.</value>
   </data>
   <data name="FW_is_being_Installing" xml:space="preserve">
-    <value>FWをインストールしています。デバイスを取り外さないでください。</value>
+    <value>Trwa instalowanie oprogramowania wewnętrznego. Nie odłączaj urządzenia od zasilania.</value>
   </data>
   <data name="Update" xml:space="preserve">
-    <value>アップデート</value>
+    <value>Aktualizacja</value>
   </data>
   <data name="Delay" xml:space="preserve">
-    <value>遅延</value>
+    <value>Opóźnienie</value>
   </data>
   <data name="Yes" xml:space="preserve">
-    <value>はい</value>
+    <value>Tak</value>
   </data>
   <data name="No" xml:space="preserve">
-    <value>いいえ</value>
+    <value>Nie</value>
   </data>
   <data name="Invalid_ID" xml:space="preserve">
-    <value>IDが無効です。有効なアクションIDを入力してください。</value>
+    <value>Nieprawidłowy identyfikator. Podaj prawidłowy identyfikator akcji.</value>
   </data>
   <data name="Failed_to_open_application" xml:space="preserve">
-    <value>アプリケーションを開くことができませんでした</value>
+    <value>Nie można otworzyć aplikacji</value>
   </data>
   <data name="will_be_updated_to " xml:space="preserve">
-    <value>が次にアップデートされます: </value>
+    <value>zostanie zaktualizowane do </value>
   </data>
   <data name="can_be_updated_to" xml:space="preserve">
-    <value>を次にアップデートできます:</value>
+    <value>może zostać zaktualizowane do</value>
   </data>
   <data name="UpdateAvailable" xml:space="preserve">
-    <value>アップデートが利用可能です</value>
+    <value>Dostępna aktualizacja</value>
   </data>
   <data name="UpdateWillBeApplied" xml:space="preserve">
-    <value>アップデートが適用されます</value>
+    <value>Aktualizacja zostanie zastosowana</value>
   </data>
   <data name="UpdateAvailable_Info" xml:space="preserve">
-    <value>デバイスおよび/またはアプリケーションがアップデートされます。デバイスおよび/またはアプリケーションを断続的には使用できる可能性があります。アップデート中にデバイスを取り外さないでください。</value>
+    <value>Urządzenie i/lub aplikacja zostaną zaktualizowane. Mogą wystąpić przerwy w dostępności urządzenia i/lub aplikacji. Nie odłączaj urządzenia podczas instalowania aktualizacji.</value>
   </data>
   <data name="UpdateWillBeApplied_Info" xml:space="preserve">
-    <value>デバイスおよび/またはアプリケーションがアップデートされます。デバイスおよび/またはアプリケーションを断続的には使用できる可能性があります。アップデート中にデバイスを取り外さないでください。</value>
+    <value>Urządzenie i/lub aplikacja zostaną zaktualizowane. Mogą wystąpić przerwy w dostępności urządzenia i/lub aplikacji. Nie odłączaj urządzenia podczas instalowania aktualizacji.</value>
   </data>
   <data name="UpdateNow" xml:space="preserve">
-    <value>今すぐアップデート</value>
+    <value>Aktualizuj teraz</value>
   </data>
   <data name="Defer" xml:space="preserve">
-    <value>延期</value>
+    <value>Później</value>
   </data>
   <data name="Ok" xml:space="preserve">
     <value>OK</value>
   </data>
   <data name="Service_not_running_Try_again" xml:space="preserve">
-    <value>サービスが実行されていません。もう一度やり直してください</value>
+    <value>Usługa nie działa. Spróbuj ponownie</value>
   </data>
   <data name="Timeout_error" xml:space="preserve">
-    <value>タイムアウト エラー</value>
+    <value>Błąd przekroczenia limitu czasu</value>
   </data>
   <data name="M1_Please_double_click_mouse_left_button_to_start_firmware_update" xml:space="preserve">
-    <value>ファームウェア アップデートを開始するにはマウスの左ボタンをダブルクリックしてください</value>
+    <value>Kliknij dwukrotnie lewym przyciskiem myszy, aby rozpocząć aktualizację oprogramowania układowego</value>
   </data>
   <data name="M2_Please_press_key_on_keyboard_to_start_firmware_update" xml:space="preserve">
-    <value>ファームウェア アップデートを開始するにはキーボードの\&quot;U\&quot;キーを押してください</value>
+    <value>Naciśnij klawisz „U” na klawiaturze, aby rozpocząć aktualizację oprogramowania wewnętrznego</value>
   </data>
   <data name="A0_Device_connected" xml:space="preserve">
-    <value>デバイスが接続されました</value>
+    <value>Urządzenie podłączone</value>
   </data>
   <data name="A1_Firmware_update_started" xml:space="preserve">
-    <value>ファームウェア アップデートが開始されました</value>
+    <value>Rozpoczęto aktualizację oprogramowania wewnętrznego</value>
   </data>
   <data name="A2_Firmware_update_successful" xml:space="preserve">
-    <value>ファームウェア アップデートが正常に行われました</value>
+    <value>Aktualizacja oprogramowania wewnętrznego powiodła się</value>
   </data>
   <data name="E4_USB_wireless_receiver_firmware_is_unable_to_support_device_firmware_upgrade" xml:space="preserve">
-    <value>USBワイヤレス レシーバーのファームウェアが、デバイス ファームウェアのアップグレードをサポートできません</value>
+    <value>Oprogramowanie wewnętrzne bezprzewodowego odbiornika USB nie obsługuje aktualizacji oprogramowania wewnętrznego urządzenia</value>
   </data>
   <data name="update_failed_with_unknown_error" xml:space="preserve">
-    <value>不明なエラーのため、アップデートに失敗しました</value>
+    <value>aktualizacja nie powiodła się z powodu nieznanego błędu</value>
   </data>
   <data name="User_aborted_firmware_update" xml:space="preserve">
-    <value>ユーザーがファームウェア アップデートを中止しました</value>
+    <value>Aktualizacja oprogramowania wewnętrznego przerwana przez użytkownika</value>
   </data>
   <data name="Installing" xml:space="preserve">
-    <value>インストール中</value>
+    <value>Instalowanie</value>
   </data>
   <data name="Timeout" xml:space="preserve">
-    <value>タイムアウト</value>
+    <value>Timeout</value>
   </data>
   <data name="Downloading_and_installing" xml:space="preserve">
-    <value>ダウンロードしてインストールしています</value>
+    <value>Pobieranie i instalacja</value>
   </data>
   <data name="DDPM_will_reopen_soon_after_update" xml:space="preserve">
-    <value>DDPMはアップデート後すぐに再開されます</value>
+    <value>DDPM zostanie ponownie otwarty tuż po aktualizacji</value>
   </data>
   <data name="Processing" xml:space="preserve">
-    <value>処理中</value>
+    <value>Przetwarzanie</value>
   </data>
   <data name="Software_Update" xml:space="preserve">
-    <value>ソフトウェア アップデート</value>
+    <value>Aktualizacja oprogramowania</value>
   </data>
   <data name="Firmware_Update" xml:space="preserve">
-    <value>ファームウェア更新プログラム</value>
+    <value>Aktualizacja oprogramowania wewnętrznego</value>
   </data>
   <data name="Updating_Software_Do_not_power_off_this_PC" xml:space="preserve">
-    <value>ソフトウェアをアップデートしています。このパソコンの電源を切らないでください。</value>
+    <value>Aktualizowanie oprogramowania. Nie wyłączaj tego komputera.</value>
   </data>
   <data name="Updating_firmware_Do_not_remove_or_power_off_the_device_Leave_the_device_undisturbed" xml:space="preserve">
-    <value>ファームウェアをアップデートしています。デバイスを取り外したり、電源を切ったりせず、そのままにしておいてください</value>
+    <value>Aktualizowanie oprogramowania wewnętrznego Nie odłączaj ani nie wyłączaj urządzenia. Pozostaw urządzenie w spokoju</value>
   </data>
   <data name="Unable_to_detect_target_device" xml:space="preserve">
-    <value>ターゲット デバイスを検出できません</value>
+    <value>Nie można wykryć urządzenia docelowego</value>
   </data>
   <data name="AI_Auto_Framing" xml:space="preserve">
-    <value>AI自動フレーミング</value>
+    <value>Automatyczne kadrowanie SI</value>
   </data>
   <data name="ON" xml:space="preserve">
-    <value>オン</value>
+    <value>WŁ</value>
   </data>
   <data name="OFF" xml:space="preserve">
-    <value>オフ</value>
+    <value>WYŁ</value>
   </data>
   <data name="Presets" xml:space="preserve">
-    <value>プリセット</value>
+    <value>Ustawienia predefiniowane</value>
   </data>
   <data name="Auto_framing" xml:space="preserve">
-    <value>自動フレーミング</value>
+    <value>Automatyczne kadrowanie</value>
   </data>
   <data name="Field_of_View" xml:space="preserve">
-    <value>視野</value>
+    <value>Pole widzenia</value>
   </data>
   <data name="Zoom" xml:space="preserve">
-    <value>拡大縮小</value>
+    <value>Przybliżenie</value>
   </data>
   <data name="Default" xml:space="preserve">
-    <value>デフォルト</value>
+    <value>Domyślne</value>
   </data>
   <data name="Smooth" xml:space="preserve">
-    <value>滑らか</value>
+    <value>Gładki</value>
   </data>
   <data name="Vibrant" xml:space="preserve">
-    <value>鮮やか</value>
+    <value>Żywy</value>
   </data>
   <data name="Warm" xml:space="preserve">
-    <value>暖色</value>
+    <value>Ciepły</value>
   </data>
   <data name="Standard_0" xml:space="preserve">
-    <value>標準</value>
+    <value>Standardowy</value>
   </data>
   <data name="Native_0" xml:space="preserve">
-    <value>ネイティブ</value>
+    <value>Własny</value>
   </data>
   <data name="Multimedia_0" xml:space="preserve">
-    <value>マルチメディア</value>
+    <value>Multimedia</value>
   </data>
   <data name="Movie_0" xml:space="preserve">
-    <value>映画</value>
+    <value>Film</value>
   </data>
   <data name="Nature_0" xml:space="preserve">
-    <value>自然</value>
+    <value>Przyroda</value>
   </data>
   <data name="Game_0" xml:space="preserve">
-    <value>ゲーム</value>
+    <value>Gra</value>
   </data>
   <data name="Game_1" xml:space="preserve">
-    <value>ゲーム1</value>
+    <value>Game1</value>
   </data>
   <data name="Sport_0" xml:space="preserve">
-    <value>スポーツ</value>
+    <value>Sport</value>
   </data>
   <data name="Text_0" xml:space="preserve">
-    <value>テキスト</value>
+    <value>Tekst</value>
   </data>
   <data name="Warm_0" xml:space="preserve">
-    <value>暖色</value>
+    <value>Ciepły</value>
   </data>
   <data name="Cool_0" xml:space="preserve">
-    <value>冷却</value>
+    <value>Chłodny</value>
   </data>
   <data name="Custom_Color" xml:space="preserve">
-    <value>カスタム カラー</value>
+    <value>Kolor niestandardowy</value>
   </data>
   <data name="ComfortView_0" xml:space="preserve">
     <value>ComfortView</value>
   </data>
   <data name="Game_2" xml:space="preserve">
-    <value>ゲーム2</value>
+    <value>Game2</value>
   </data>
   <data name="Game_3" xml:space="preserve">
-    <value>ゲーム3</value>
+    <value>Game3</value>
   </data>
   <data name="Desktop_0" xml:space="preserve">
-    <value>デスクトップ</value>
+    <value>Komputer stacjonarny</value>
   </data>
   <data name="Reference_0" xml:space="preserve">
-    <value>参照</value>
+    <value>Odniesienie</value>
   </data>
   <data name="Metro_0" xml:space="preserve">
-    <value>メトロ</value>
+    <value>Metro</value>
   </data>
   <data name="Paper_0" xml:space="preserve">
-    <value>紙</value>
+    <value>Papier</value>
   </data>
   <data name="Standard_HDR" xml:space="preserve">
-    <value>標準HDR</value>
+    <value>Standardowy HDR</value>
   </data>
   <data name="Movie_HDR" xml:space="preserve">
-    <value>映画HDR</value>
+    <value>Film HDR</value>
   </data>
   <data name="Game_HDR" xml:space="preserve">
-    <value>ゲームHDR</value>
+    <value>Gra HDR</value>
   </data>
   <data name="Vivid_HDR" xml:space="preserve">
-    <value>鮮明なHDR</value>
+    <value>Żywy HDR</value>
   </data>
   <data name="Custom_1" xml:space="preserve">
-    <value>カスタム1</value>
+    <value>Niestandardowy 1</value>
   </data>
   <data name="Custom_2" xml:space="preserve">
-    <value>カスタム2</value>
+    <value>Niestandardowy 2</value>
   </data>
   <data name="Custom_3" xml:space="preserve">
-    <value>カスタム3</value>
+    <value>Niestandardowy 3</value>
   </data>
   <data name="User_1" xml:space="preserve">
-    <value>ユーザー1</value>
+    <value>Użytkownik 1</value>
   </data>
   <data name="User_2" xml:space="preserve">
-    <value>ユーザー2</value>
+    <value>Użytkownik 2</value>
   </data>
   <data name="User_3" xml:space="preserve">
-    <value>ユーザー3</value>
+    <value>Użytkownik 3</value>
   </data>
   <data name="SPORTS_Game" xml:space="preserve">
-    <value>スポーツ ゲーム</value>
+    <value>Gra SPORTOWA</value>
   </data>
   <data name="Custom_layout" xml:space="preserve">
-    <value>カスタム レイアウト</value>
+    <value>Układ niestandardowy</value>
   </data>
   <data name="Cancel_0" xml:space="preserve">
-    <value>キャンセル</value>
+    <value>Anuluj</value>
   </data>
   <data name="Save_0" xml:space="preserve">
-    <value>保存</value>
+    <value>Zapisz</value>
   </data>
   <data name="Arrange_Windows" xml:space="preserve">
-    <value>ウィンドウの配置</value>
+    <value>Rozmieszczanie okien</value>
   </data>
   <data name="EA_MSG_0" xml:space="preserve">
-    <value>現在のウィンドウの配置を調整し、名前を編集し（必要な場合）、［保存］をクリックして配置を保存します。</value>
+    <value>Dostosuj bieżący układ okien, edytuj nazwę (w razie potrzeby) i kliknij „Zapisz”, aby zapisać rozmieszenie.</value>
   </data>
   <data name="Battery_Low" xml:space="preserve">
-    <value>バッテリー残量少</value>
+    <value>Niski poziom naładowania baterii</value>
   </data>
   <data name="Caps_Lock_On" xml:space="preserve">
-    <value>Caps Lockオン</value>
+    <value>Caps Lock włączony</value>
   </data>
   <data name="Caps Lock Off" xml:space="preserve">
-    <value>Caps Lockオフ</value>
+    <value>Caps Lock wyłączony</value>
   </data>
   <data name="Easy_Memory" xml:space="preserve">
     <value>Easy Memory</value>
   </data>
   <data name="Go_to_Widget_Settings" xml:space="preserve">
-    <value>ウィジェット設定に移動</value>
+    <value>Przejdź do ustawień widżetów</value>
   </data>
   <data name="is_muted" xml:space="preserve">
-    <value>ミュートされています</value>
+    <value>wyciszono</value>
   </data>
   <data name="is_Unmuted" xml:space="preserve">
-    <value>ミュート解除されています</value>
+    <value>wyłączono wyciszenie</value>
   </data>
   <data name="Num_Lock_Off" xml:space="preserve">
-    <value>Num Lockオフ</value>
+    <value>Num Lock wyłączony</value>
   </data>
   <data name="Num_Lock_On" xml:space="preserve">
-    <value>Num Lockオン</value>
+    <value>Num Lock włączony</value>
   </data>
   <data name="Presence_detection_sensor_is_covered" xml:space="preserve">
-    <value>存在検知センサーにカバーが付けられています</value>
+    <value>Czujnik wykrywania obecności jest zasłonięty</value>
   </data>
   <data name="QAM_OSD_Msg" xml:space="preserve">
-    <value>クイック設定ウィジェットに再度アクセスするには、キーボードの[Alt + Z]を押し続けます。</value>
+    <value>Aby ponownie uzyskać dostęp do widżetu szybkich ustawień, naciśnij i przytrzymaj [Alt + Z] na klawiaturze.</value>
   </data>
   <data name="Scroll_Lock_Off" xml:space="preserve">
-    <value>Scroll Lockオフ</value>
+    <value>Scroll Lock wyłączony</value>
   </data>
   <data name="Scroll_Lock_On" xml:space="preserve">
-    <value>Scroll Lockオン</value>
+    <value>Scroll Lock włączony</value>
   </data>
   <data name="Export_MSG_0" xml:space="preserve">
-    <value>同じモニターが検出されました。次の設定をインポートしますか:</value>
+    <value>Wykryto ten sam monitor. Czy chcesz zaimportować ustawienia dla</value>
   </data>
   <data name="Version" xml:space="preserve">
-    <value>バージョン</value>
+    <value>Wersja</value>
   </data>
   <data name="Walk_Away_Lock" xml:space="preserve">
-    <value>退席中ロック</value>
+    <value>Blokuj przy odejściu</value>
   </data>
 </root>
