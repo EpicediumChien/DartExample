@@ -82,6 +82,9 @@ namespace DDPM.UI.Common.Models
                 //Robert_Lin, 2024-9-30 Add Monitor Product Images
                 DetermineMonitorImage();
 
+                //Robert_lin, 2024-11-14 add Pxp Capapbilies check support
+                InitPipPbpCaps();
+
                 OnPropertyChanged("DisplayName");
             }
         }
@@ -1375,7 +1378,43 @@ namespace DDPM.UI.Common.Models
                 return false;
             }
         }
+
         #endregion HasCapability_XXXX Properties
+
+        #region PIP/PBP Capabilities
+        //The Pxp capabilities Code array, will be build when the first time calling
+        private List<string> _pxpCapStrings = new List<string>();//SDL, change to use new
+
+        //Will be called once MonitorInfo been setup/updated
+        private void InitPipPbpCaps()
+        {
+            //If it has been inited
+            if (_pxpCapStrings.Count > 0)
+                return;
+            if (!HasCapability_PipPbp)
+                return;
+
+            _pxpCapStrings = MonitorInfo.CapabilityDic["E9"];
+        }
+
+        /// <summary>
+        /// Return if current MonitorInfo in this HomeDevice has capability of the specified PxpMode
+        /// </summary>
+        /// <param name="hexStringPxpMode"> for example "21" will return true if has 0x21 mode capability</param>
+        /// <returns></returns>
+        public bool HasCapability_PxpMode(string hexStringPxpMode)
+        {
+            if (!HasCapability_PipPbp)
+                return false;
+
+            if ((_pxpCapStrings != null) && (_pxpCapStrings.Count > 0))
+            {
+                return _pxpCapStrings.Contains(hexStringPxpMode);
+            }
+            return false;
+        }
+
+        #endregion  PIP/PBP Capabilities
 
         #region Monitor Equals
         public static bool IsSameMonitor(MonitorInfo mi1, MonitorInfo mi2, string mask = "")

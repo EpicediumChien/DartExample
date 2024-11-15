@@ -5852,7 +5852,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             {
                 _DisplayManagerPlugin.SetEAWrokSplit(monitorInfo, cellCount, splitKey, settings);
                 //Telemetry
-                SendEasyArrangeTelemetry("Change_layout");
+                //Robert_Lin, 2024-11-15, add monitorInfo for PIMS-321601
+                SendEasyArrangeTelemetry("Change_layout", monitorInfo);
             }
             return Task.FromResult(false);
         }
@@ -5863,7 +5864,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             {
                 _DisplayManagerPlugin.NotifyEASelectedLayoutChanged(monitorInfo, spJson);
                 //Telemetry
-                SendEasyArrangeTelemetry("Change_layout");
+                //Robert_Lin, 2024-11-15, add monitorInfo for PIMS-321601
+                SendEasyArrangeTelemetry("Change_layout", monitorInfo);
             }
             return Task.FromResult(false);
         }
@@ -14540,6 +14542,13 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         {
             if (_TelementryScheduler != null)
             {
+                if (mi == null)
+                {
+                    if ((_AllInfoMonitors != null) && (_AllInfoMonitors.Count > 0))
+                    {
+                        mi = _AllInfoMonitors[0];
+                    }
+                }
                 EasyArrangeTelemetry easyArrangeTelemetry = new EasyArrangeTelemetry();
                 easyArrangeTelemetry.EasyArrange = eventValue;
                 easyArrangeTelemetry.CommunicationPath = "Video";
