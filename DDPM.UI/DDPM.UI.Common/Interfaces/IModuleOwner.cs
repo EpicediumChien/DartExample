@@ -11,5 +11,9 @@ namespace DDPM.UI.Common.Interfaces
         public void OpenFullView(ContentControl content);
 
         public void CloseFullView();
+
+
+        //Robert_Lin, 2024-11-15 for KVM Hotkey FullView, user click a link will nevigate to HotkeyModule
+        public bool ShowSpecificModule(string groupName, string moduleName);
     }
 }

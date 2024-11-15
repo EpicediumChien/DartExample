@@ -31,7 +31,7 @@ namespace DDPM.UI.Module.InputSource
             vm.Invoke_RefreshData();            
         }
 
-        public string ModuleName { get => "InputSourceModule"; }
+        public string ModuleName { get => Constants.ModuleName_InputSource; } //"InputSourceModule"
 
         public UserControl? GetLeftView()
         {
