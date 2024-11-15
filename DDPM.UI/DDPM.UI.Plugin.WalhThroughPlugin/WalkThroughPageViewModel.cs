@@ -2,6 +2,7 @@
 using DDPM.UI.Common;
 using DDPM.UI.Common.Models;
 using DDPM.UI.Plugin.DdpmHomePlugin.Interfaces;
+using Dell.Client.Framework.Common;
 using Dell.Client.Framework.UX.WPF;
 using System;
 using System.Collections.Generic;
@@ -23,7 +24,7 @@ namespace DDPM.UI.Plugin.WalkThroughPlugin
         public string _currentDeviceModel = string.Empty;
         private Dictionary<string, List<WalkThroughPageData>> _devicePages = DDPM.UI.WalkThroughData.WalkThroughData.GetDevicePages((int)DdpmCommonHelper.previousOsTheme);
         public object _currentDeviceinfo = string.Empty;
-        private string last_logicalDeviceType = string.Empty;
+        public string last_logicalDeviceType = string.Empty;
 
         public WalkThroughPageViewModel()
         {
@@ -61,6 +62,7 @@ namespace DDPM.UI.Plugin.WalkThroughPlugin
                 }
                 else
                 {
+                    UpdateLastlogicalDeviceType();
                     // If _devicePages No ModelNumber, remove and next 
                     DdpmHomePlugin.DdpmHomePlugin.WalkThroughQueue.RemoveAt(0);
                 }
@@ -118,10 +120,7 @@ namespace DDPM.UI.Plugin.WalkThroughPlugin
             }
             else
             {
-                if(DdpmHomePlugin.DdpmHomePlugin.WalkThroughQueue.Count == 1)
-                {
-                    last_logicalDeviceType = DdpmHomePlugin.DdpmHomePlugin.WalkThroughQueue[0].ModelType;
-                }
+                UpdateLastlogicalDeviceType();
                 DdpmHomePlugin.DdpmHomePlugin.WalkThroughQueue.RemoveAt(0);
                 if (DdpmHomePlugin.DdpmHomePlugin.WalkThroughQueue.Count > 0)
                 {
@@ -185,6 +184,14 @@ namespace DDPM.UI.Plugin.WalkThroughPlugin
                     _showPluginManager?.ShowHomePage();
                     break;
             }
+            ControlIcon(true);
+        }
+        public void UpdateLastlogicalDeviceType()
+        {
+            if (DdpmHomePlugin.DdpmHomePlugin.WalkThroughQueue.Count == 1)
+            {
+                last_logicalDeviceType = DdpmHomePlugin.DdpmHomePlugin.WalkThroughQueue[0].ModelType;
+            }
         }
 
         public void UpdateButtonVisibility()
@@ -192,6 +199,19 @@ namespace DDPM.UI.Plugin.WalkThroughPlugin
             // refresh button
             ArrowButtonVisibility = (_currentPageIndex == 0) ? Visibility.Collapsed : Visibility.Visible;
             SkipButtonVisibility = _currentPageIndex < _currentTotalPage ? Visibility.Visible : Visibility.Collapsed;
+        }
+
+        public void ControlIcon(bool show_hide)
+        {
+            IConsole? console = DdpmCommonHelper.MyConsole;
+            if (console != null)
+            {
+
+                var args = new EventManagerArgs();
+                args.Tag = show_hide; //true=Show, false=Hide
+                console.RaiseEvent(ConsoleEventNames.Masthead_ShowAddDeviceIcon, this, args);
+                console.RaiseEvent(ConsoleEventNames.Masthead_ShowSettingsIcon, this, args);
+            }
         }
 
         private Visibility _arrowButtonVisibility = Visibility.Visible;
