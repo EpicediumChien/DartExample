@@ -1,9 +1,11 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using DDPM.SA.Common;
 using DDPM.UI.Common.ViewModels;
+using DDPM.UI.Resources.Helper;
 using Dell.Client.Framework.Common;
 using DPeMPublic.Common.Enums;
 using System.Drawing.Imaging;
+using System.Globalization;
 using System.Net;
 using System.Reflection;
 using System.Text.RegularExpressions;
@@ -1419,6 +1421,9 @@ namespace DDPM.UI.Common.Models
                 return;
 
             log.Info($"HomeDevice, DeviceCategory=[{DeviceCategory}], DisplayName=[{DisplayName}]");
+            //log installedUICulture,2024-11-15 gavin
+            CultureInfo installedUICulture = CultureInfo.InstalledUICulture;
+            log.Info($"HomeDevice Page, installedUICulture=[{installedUICulture}]");
             if (MonitorInfo != null)
             {
                 log.Info($"  * CapabilityString={MonitorInfo.CapabilityString}");
