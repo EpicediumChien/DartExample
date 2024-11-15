@@ -198,12 +198,12 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             in_CameraPlugin = true;
         }
 
+        bool WebcamGrid_old_ststus = false;
         private void status_change()
         {
 
             if (!in_CameraPlugin) return;
 
-            //每一秒檢測一下前警景與背景狀態,以及Camera狀態
             if (_vm.running_state)
             {
                 if (_vm!.MediaCapture == null || _vm.MediaFrameReader == null)
@@ -214,7 +214,9 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                         Preview();
                         CameraImage.Visibility = Visibility.Visible;
 
-                        //_vm.WebcamGrid
+                        //恢復9宮格線
+                        _vm.WebcamGrid = WebcamGrid_old_ststus;
+
 
                     });
 
@@ -229,8 +231,8 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                         CameraImage.Visibility = Visibility.Hidden;
                         _ = CleanupMediaCaptureAsync();
 
-                        grdPreview.Visibility = Visibility.Hidden;
-
+                        WebcamGrid_old_ststus = _vm.WebcamGrid;
+                        _vm.WebcamGrid = false;
 
                         imgDevice.Visibility = Visibility.Visible;
                         DoubleAnimation visibilityAnimation = new()
