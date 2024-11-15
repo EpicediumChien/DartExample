@@ -217,27 +217,37 @@ namespace VcpCore.Common
                 {
                     string text = HexString.Substring(num + ModelName_Header.Length, 26);
                     List<byte> list = new List<byte>();
+                    bool rc = true;
                     for (int i = 0; i < 13; i++)
                     {
-                        int.TryParse(text.AsSpan(2 * i, 2), NumberStyles.HexNumber, new CultureInfo("en-US"), out int outint);
-                        byte[] bytes = BitConverter.GetBytes(outint);
-                        list.AddRange(bytes);
+                        var r = int.TryParse(text.AsSpan(2 * i, 2), NumberStyles.HexNumber, new CultureInfo("en-US"), out int outint);
+                        rc = rc && r;
+                        if (rc)
+                        {
+                            byte[] bytes = BitConverter.GetBytes(outint);
+                            list.AddRange(bytes);
+                        }
                     }
-                    byte[] bytes2 = list.ToArray();
-                    string text2 = string.Empty;
-                    string Modelstring = Encoding.ASCII.GetString(bytes2);
-                    for (int j = (Modelstring.Length) - 1; j >= 0; j--)
+                    if (rc)
                     {
-                        char value = Modelstring[j];
-                        if (Convert.ToInt32(value) >= 48)
-                            text2 += value;
+                        byte[] bytes2 = list.ToArray();
+                        string text2 = string.Empty;
+                        string Modelstring = Encoding.ASCII.GetString(bytes2);
+                        for (int j = (Modelstring.Length) - 1; j >= 0; j--)
+                        {
+                            char value = Modelstring[j];
+                            if (Convert.ToInt32(value) >= 48)
+                                text2 += value;
+                        }
+                        char[] text2_charArray = text2.ToCharArray();
+                        Array.Reverse(text2_charArray);
+                        text2 = new string(text2_charArray);
+                        text2 = Regex.Replace(text2, "DELL", string.Empty, RegexOptions.IgnoreCase);
+                        text2 = Regex.Replace(text2, "ALIENWARE", string.Empty, RegexOptions.IgnoreCase);
+                        return text2.Trim().ToUpper();
                     }
-                    char[] text2_charArray = text2.ToCharArray();
-                    Array.Reverse(text2_charArray);
-                    text2 = new string(text2_charArray);
-                    text2 = Regex.Replace(text2, "DELL", string.Empty, RegexOptions.IgnoreCase);
-                    text2 = Regex.Replace(text2, "ALIENWARE", string.Empty, RegexOptions.IgnoreCase);
-                    return text2.Trim().ToUpper();
+                    else
+                        return string.Empty;
                 }
                 else
                     return string.Empty;
