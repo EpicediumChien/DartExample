@@ -145,7 +145,8 @@ namespace DDPM.UI.Module.WebCameraCapture
                             }
                             catch
                             {
-                                Thread.Sleep(250);
+                                _vm._log.Debug("WebCameraCaptureRightView.cs set Resolution fail!");
+                                await Task.Delay(250);
                             }
                         }
 
@@ -186,12 +187,13 @@ namespace DDPM.UI.Module.WebCameraCapture
                             try
                             {
                                 //參數設置需要一段硬體初始時間,中間再設定參數會造成設定失敗crush,所以要防呆
-                                _vm.MediaCapture!.VideoDeviceController.SetMediaStreamPropertiesAsync(MediaStreamType.VideoPreview, encodingProperties);
+                                await _vm.MediaCapture!.VideoDeviceController.SetMediaStreamPropertiesAsync(MediaStreamType.VideoPreview, encodingProperties);
                                 set_ok = true;
                             }
                             catch
                             {
-                                Thread.Sleep(250);
+                                _vm._log.Debug("WebCameraCaptureRightView.cs set FPS fail!");
+                                await Task.Delay(250);
                             }
                         }
 

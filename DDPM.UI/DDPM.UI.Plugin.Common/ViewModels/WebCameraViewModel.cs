@@ -61,7 +61,7 @@ namespace DDPM.UI.Plugin.ViewModels
     public class WebCameraViewModel : PeripheralViewModel, INotifyPropertyChanged
     {
         #region Variables
-        private readonly ILog _log;
+        public readonly ILog _log;
         private List<ProfileItem> _profileItems = new();
         private List<string> _resolutions = new();
 

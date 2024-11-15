@@ -203,6 +203,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
         {
 
             if (!in_CameraPlugin) return;
+            if (_vm == null) return;
 
             if (_vm.running_state)
             {
@@ -226,10 +227,10 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             {
                 if (_vm!.MediaCapture != null || _vm.MediaFrameReader != null)
                 {
-                    _ = CameraImage.Dispatcher.BeginInvoke(() =>
+                    _ = CameraImage.Dispatcher.BeginInvoke(async () =>
                     {
                         CameraImage.Visibility = Visibility.Hidden;
-                        _ = CleanupMediaCaptureAsync();
+                        _= CleanupMediaCaptureAsync();
 
                         WebcamGrid_old_ststus = _vm.WebcamGrid;
                         _vm.WebcamGrid = false;
