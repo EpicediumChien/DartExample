@@ -1700,6 +1700,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         {
             lock (_MoLock)//this) //Dean 0626 fix SAST issue, do not lock over this object
             {
+                writelog("DeviceMangerPlugin received GetMonitors requested ...");
+
                 if (_AllInfoMonitors != null)
                     _AllInfoMonitors.Clear();
 
