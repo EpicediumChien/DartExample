@@ -130,8 +130,11 @@ namespace DDPM.UI.Module.WebCameraCapture
                         //_ = _vm.MediaCapture!.VideoDeviceController.SetMediaStreamPropertiesAsync(MediaStreamType.VideoPreview, encodingProperties);
 
                         new Thread(() => {
-                            _vm.AlertType = WebcamAlert.Alert1;
-                            _vm.AlertVisibility = Visibility.Visible;
+                            Application.Current.Dispatcher.Invoke(() =>
+                            {
+                                _vm.AlertType = WebcamAlert.Alert1;
+                                _vm.AlertVisibility = Visibility.Visible;
+                            });
                         }).Start();
 
                         bool set_ok = false;
@@ -151,7 +154,10 @@ namespace DDPM.UI.Module.WebCameraCapture
                         }
 
                         new Thread(() => {
-                            _vm.AlertVisibility = Visibility.Hidden;
+                            Application.Current.Dispatcher.Invoke(() =>
+                            {
+                                _vm.AlertVisibility = Visibility.Hidden;
+                            });
                         }).Start();
 
 
