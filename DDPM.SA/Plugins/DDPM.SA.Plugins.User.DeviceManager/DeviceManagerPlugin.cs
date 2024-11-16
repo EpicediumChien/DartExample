@@ -2216,35 +2216,78 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         /// <returns></returns>
         public Task<bool> SetUSBUpstream(MonitorInfo monitorInfo, string inputsource, string upstream)
         {
-            if (_DisplayManagerPlugin.SetUSBUpstream(monitorInfo, inputsource, upstream).Result)
+            if (_DisplayManagerPlugin != null)
             {
-                Dictionary<string, InputInfo> inputSourceList = GetInputSourcelist(monitorInfo).Result;
-                if (inputSourceList != null)
+                if (_DisplayManagerPlugin.SetUSBUpstream(monitorInfo, inputsource, upstream).Result)
                 {
-                    InputInfo outinput;
-                    if (inputSourceList.TryGetValue(inputsource, out outinput))
+                    Dictionary<string, InputInfo> inputSourceList = GetInputSourcelist(monitorInfo).Result;
+                    if (inputSourceList != null)
                     {
-                        inputSourceList[inputsource].USBUpstream = upstream;
-                        //string strInputList = InputSourceListSerialize(inputSourceList);
-                        if (SetInputSourcelist(monitorInfo, inputSourceList).Result)
+                        InputInfo outinput = new InputInfo();
+                        if (inputSourceList.TryGetValue(inputsource, out outinput))
                         {
-                            return Task.FromResult(true);
+                            inputSourceList[inputsource].USBUpstream = upstream;
+                            //string strInputList = InputSourceListSerialize(inputSourceList);
+                            if (SetInputSourcelist(monitorInfo, inputSourceList).Result)
+                            {
+                                //Telementry Collection
+                                var Displaysettings_Function = new Displaysettings_Function();
+                                if (Displaysettings_Function.Send_USB_Telementry(_TelementryScheduler, monitorInfo, upstream, GetMonitorCurrentResolution(monitorInfo), GetMonitorMaxResolution(monitorInfo)))
+                                {
+                                    writelog("[SetUSBUpstream] [Telementry] Send Telementry for USB Association Success ...");
+                                }
+                                else
+                                {
+                                    writelog("[SetUSBUpstream] [Telementry] Send Telementry for USB Association Fail ...");
+                                }
+                                return Task.FromResult(true);
+                            }
                         }
                     }
                 }
-                //Telementry Collection
-                var Displaysettings_Function = new Displaysettings_Function();
-                if (Displaysettings_Function.Send_USB_Telementry(_TelementryScheduler, monitorInfo, upstream, GetMonitorCurrentResolution(monitorInfo), GetMonitorMaxResolution(monitorInfo)))
-                {
-                    writelog("[DeviceMangerPlugin] [Telementry] Send Telementry for USB Association Success ...");
-                }
-                else
-                {
-                    writelog("[DeviceMangerPlugin] [Telementry] Send Telementry for USB Association Fail ...");
-                }
+            }
+            else
+            {
+                writelog("[SetUSBUpstream] _DisplayManagerPlugin is null.");
             }
 
             return Task.FromResult(false);
+        }
+
+        public Task<string> GetUSBUpstream(MonitorInfo monitorInfo, string inputsource)
+        {
+            string usbUpstream = string.Empty;
+            if (_DisplayManagerPlugin != null)
+            {
+                usbUpstream = _DisplayManagerPlugin.GetUSBUpstream(monitorInfo, inputsource).Result;
+                if (!string.IsNullOrWhiteSpace(usbUpstream))
+                {
+                    Dictionary<string, InputInfo> inputSourceList = GetInputSourcelist(monitorInfo).Result;
+                    if (inputSourceList != null)
+                    {
+                        InputInfo outinput = new InputInfo();
+                        if (inputSourceList.TryGetValue(inputsource, out outinput))
+                        {
+                            inputSourceList[inputsource].USBUpstream = usbUpstream;
+                            //string strInputList = InputSourceListSerialize(inputSourceList);
+                            if (SetInputSourcelist(monitorInfo, inputSourceList).Result)
+                            {
+                                return Task.FromResult(usbUpstream);
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    writelog("[GetUSBUpstream] USBUpstream is null or empty.");
+                }
+            }
+            else
+            {
+                writelog("[GetUSBUpstream] _DisplayManagerPlugin is null.");
+            }
+
+            return Task.FromResult(usbUpstream);
         }
 
         public Task<bool> USBSwitch(MonitorInfo monitorInfo, string inputsource1, string upstream1, string inputsource2, string upstream2)
@@ -9603,6 +9646,72 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             Debug.WriteLine($"show_display=>monitor:{e.monitor.modelName}=={e.vcpcode}:{e.value}");
             //1106 add PBP mode status
             Task.Run(() => updatePBPModeStatus(e.monitor, e.vcpcode)).ConfigureAwait(false);
+            //Jason add USB change
+            if(e.vcpcode.Equals("E7"))
+            {
+                if (_DisplayManagerPlugin != null)
+                {
+                    Dictionary<string, InputInfo> inputSourceList = GetInputSourcelist(e.monitor).Result;
+                    foreach (var input in inputSourceList)
+                    {
+                        string usbUpstream = GetUSBUpstream(e.monitor, input.Key).Result;
+                        //Update USBKVM
+                        if (GetOnUSBKVM(e.monitor).Result)
+                        {
+                            List<DDPMMonitorSettings> settings = _SettingsPlugin.ReloadMonitorSettings(e.monitor.modelName).Result;
+                            if (settings != null)
+                            {
+                                //get monitor setting
+                                DDPMMonitorSettings monitorSetting = settings.Find(x => x.ServiceTag == e.monitor.edid.ServiceTag);
+                                if (monitorSetting != null)
+                                {
+                                    try
+                                    {
+                                        if (!string.IsNullOrEmpty(monitorSetting.KVM.strUSBKVMPCsList))
+                                        {
+                                            Dictionary<string, PCsInfo> USBKVMPCsList = USBKVMPCsListDeserialize(monitorSetting.KVM.strUSBKVMPCsList);
+                                            if (USBKVMPCsList != null)
+                                            {
+                                                if (USBKVMPCsList.Count != 0)
+                                                {
+                                                    foreach (var pc in USBKVMPCsList)
+                                                    {
+                                                        if (!string.IsNullOrEmpty(pc.Key) && pc.Value != null)
+                                                        {
+                                                            if (pc.Value.InputType == input.Key)
+                                                            {
+                                                                pc.Value.USBUpstream = usbUpstream;
+                                                                bool b = SetUSBKVMPCsList(e.monitor, USBKVMPCsList).Result;
+                                                                break;
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                            else
+                                            {
+                                                writelog("[show_displays] USBKVMPCsList is null");
+                                            }
+                                        }
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        ;
+                                    }
+                                }
+                                else
+                                {
+                                    writelog("[show_displays] monitorSetting is null");
+                                }
+                            }
+                            else
+                            {
+                                writelog("[show_displays] settings is null");
+                            }
+                        }
+                    }
+                }
+            }
             OnVCPchanged(_VCPchangedEventArgs);
         }
 

@@ -1374,7 +1374,7 @@ namespace NetworkKVM.Plugins
                                                 foreach (string resp in respList)
                                                 {
                                                     _logs.DebugMsg("[NetworkKVM] response string :" + resp);
-                                                    JsonstringParse(resp).Wait(); //read json type
+                                                    JsonstringParse(resp); //read json type
                                                 }
                                             }
                                         }
@@ -1446,16 +1446,16 @@ namespace NetworkKVM.Plugins
                 _logs.DebugMsg("[NetworkKVM] Wait Connection.....");
                 if (HaveSuppertMonitor().Result)
                 {
-                    //if (CallNKVMConnent().Result)
-                    //{
+                    if (CallNKVMConnent().Result)
+                    {
                         StartAsync().Wait();
-                    //}
-                    //else
-                    //{
-                    //    _logs.DebugMsg("NKVM CreateNamedPipe_init is not NKVM...");
-                    //    Trace.WriteLine("NKVM CreateNamedPipe_init is not NKVM...");
-                    //    Disconnect();
-                    //}
+                    }
+                    else
+                    {
+                        _logs.DebugMsg("NKVM CreateNamedPipe_init is not NKVM...");
+                        Trace.WriteLine("NKVM CreateNamedPipe_init is not NKVM...");
+                        Disconnect();
+                    }
                 }
                 else
                 {

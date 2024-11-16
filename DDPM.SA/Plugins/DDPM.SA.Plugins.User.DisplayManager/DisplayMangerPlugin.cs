@@ -465,87 +465,99 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                 /*{ "Thunderbolt", "USB-C" }*/;
             List<string> _usbUpstreamList = new List<string>();
             string subUSB = String.Empty;
-            if (monitorInfo.CapabilityDic.ContainsKey("EE") && monitorInfo.CapabilityDic.ContainsKey("E7"))
+            if (monitorInfo.CapabilityDic.ContainsKey("E7"))
             {
-                objGetVCPEE = GetVCPCapability(monitorInfo, 0xEE).Result;
-                if (objGetVCPEE.result)
+                if (monitorInfo.CapabilityDic.ContainsKey("EE"))
                 {
-                    string strUSB = Convert.ToString((uint)objGetVCPEE.value, 2);
-                    if (strUSB.Length >= 4)//0708 temp solution for non-EE monitor
+                    objGetVCPEE = GetVCPCapability(monitorInfo, 0xEE).Result;
+                    if (objGetVCPEE.result)
                     {
-                        for (int i = 0; i < strUSB.Length; i = i + 4)
+                        string strUSB = Convert.ToString((uint)objGetVCPEE.value, 2);
+                        if (strUSB.Length >= 4)//0708 temp solution for non-EE monitor
                         {
-                            subUSB = strUSB.Substring(i, 4);
-                            _logs.DebugMsg("[DisplayMangerPlugin] subUSB:" + subUSB);
+                            for (int i = 0; i < strUSB.Length; i = i + 4)
+                            {
+                                subUSB = strUSB.Substring(i, 4);
+                                _logs.DebugMsg("[DisplayMangerPlugin] subUSB:" + subUSB);
 
-                            string outUSB;
-                            if (USBUplink.TryGetValue(subUSB, out outUSB))
-                            {
-                                _logs.DebugMsg("[DisplayMangerPlugin] outUSB:" + outUSB);
-                                _usbUpstreamList.Add(outUSB);
-                            }
-                        }
-                        _usbUpstreamList = inputTypeString.SubInputType(_usbUpstreamList);
-                    }
-                    USBUpstream.Clear();
-                    string str = string.Empty;
-                    for (int i = 0; i < _usbUpstreamList.Count; i++)
-                    {
-                        if (i == 0)
-                        {
-                            str = "11";
-                        }
-                        else if (i == 1)
-                        {
-                            str = "10";
-                        }
-                        else if (i == 2)
-                        {
-                            str = "01";
-                        }
-                        else if (i == 3)
-                        {
-                            str = "00";
-                        }
-                        USBUpstream.Add(_usbUpstreamList[i], str);
-                    }
-                    string capabilityString = monitorInfo.CapabilityString;
-                    try
-                    {
-                        if (capabilityString != "" && capabilityString.Length > 10)
-                        {
-                            string[] ss = capabilityString.Split("E7(");
-                            ss = ss[1].Split(")");
-                            ss = ss[0].Split(" ");
-                            if (ss.Length < _usbUpstreamList.Count)
-                            {
-                                for (int i = 0; i < ss.Length; i++)
+                                string outUSB;
+                                if (USBUplink.TryGetValue(subUSB, out outUSB))
                                 {
-                                    if (ss[i].Equals("03") && _usbUpstreamList.Count > 0)
-                                    {
-                                        usbUpstreamList.Add(_usbUpstreamList[0]);
-                                    }
-                                    else if (ss[i].Equals("02") && _usbUpstreamList.Count > 1)
-                                    {
-                                        usbUpstreamList.Add(_usbUpstreamList[1]);
-                                    }
-                                    else if (ss[i].Equals("01") && _usbUpstreamList.Count > 2)
-                                    {
-                                        usbUpstreamList.Add(_usbUpstreamList[2]);
-                                    }
-                                    else if (ss[i].Equals("00") && _usbUpstreamList.Count > 3)
-                                    {
-                                        usbUpstreamList.Add(_usbUpstreamList[3]);
-                                    }
+                                    _logs.DebugMsg("[DisplayMangerPlugin] outUSB:" + outUSB);
+                                    _usbUpstreamList.Add(outUSB);
                                 }
-                                //usbUpstreamList = inputTypeString.SubInputType(usbUpstreamList);
+                            }
+                            _usbUpstreamList = inputTypeString.SubInputType(_usbUpstreamList);
+                        }
+                        USBUpstream.Clear();
+                        string str = string.Empty;
+                        for (int i = 0; i < _usbUpstreamList.Count; i++)
+                        {
+                            if (i == 0)
+                            {
+                                str = "11";
+                            }
+                            else if (i == 1)
+                            {
+                                str = "10";
+                            }
+                            else if (i == 2)
+                            {
+                                str = "01";
+                            }
+                            else if (i == 3)
+                            {
+                                str = "00";
+                            }
+                            USBUpstream.Add(_usbUpstreamList[i], str);
+                        }
+                        string capabilityString = monitorInfo.CapabilityString;
+                        try
+                        {
+                            if (capabilityString != "" && capabilityString.Length > 10)
+                            {
+                                string[] ss = capabilityString.Split("E7(");
+                                ss = ss[1].Split(")");
+                                ss = ss[0].Split(" ");
+                                if (ss.Length < _usbUpstreamList.Count)
+                                {
+                                    for (int i = 0; i < ss.Length; i++)
+                                    {
+                                        if (ss[i].Equals("03") && _usbUpstreamList.Count > 0)
+                                        {
+                                            usbUpstreamList.Add(_usbUpstreamList[0]);
+                                        }
+                                        else if (ss[i].Equals("02") && _usbUpstreamList.Count > 1)
+                                        {
+                                            usbUpstreamList.Add(_usbUpstreamList[1]);
+                                        }
+                                        else if (ss[i].Equals("01") && _usbUpstreamList.Count > 2)
+                                        {
+                                            usbUpstreamList.Add(_usbUpstreamList[2]);
+                                        }
+                                        else if (ss[i].Equals("00") && _usbUpstreamList.Count > 3)
+                                        {
+                                            usbUpstreamList.Add(_usbUpstreamList[3]);
+                                        }
+                                    }
+                                    //usbUpstreamList = inputTypeString.SubInputType(usbUpstreamList);
+                                }
                             }
                         }
+                        catch
+                        {
+                            usbUpstreamList = _usbUpstreamList;
+                            //usbUpstreamList = inputTypeString.SubInputType(_usbUpstreamList);
+                        }
                     }
-                    catch
+                }
+                else
+                {
+                    objGetVCPEE = GetVCPCapability(monitorInfo, 0xE7).Result;
+                    if (objGetVCPEE.result)
                     {
-                        usbUpstreamList = _usbUpstreamList;
-                        //usbUpstreamList = inputTypeString.SubInputType(_usbUpstreamList);
+                        string strUSB = Convert.ToString((uint)objGetVCPEE.value, 2);
+                        //USBUplink[strUSB.Substring(0, 4)];
                     }
                 }
             }
