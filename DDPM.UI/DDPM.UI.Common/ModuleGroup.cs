@@ -30,7 +30,7 @@ namespace DDPM.UI.Common
 
         #endregion VbarItem
 
-        #region ReightViewHeader
+        #region RightViewHeader
 
         private ObservableCollection<RightViewHeader> _headers = new ObservableCollection<RightViewHeader>();
 
@@ -38,23 +38,37 @@ namespace DDPM.UI.Common
 
         public void AddHeader(string headerText, IDdpmModule module)
         {
-            _headers.Add(new RightViewHeader(0, headerText, module));
+            RightViewHeader header = new RightViewHeader(0, headerText, module);
+            if (module != null)
+            {
+                header.ModuleName = module.ModuleName;
+            }
+            _headers.Add(header);
         }
 
-        public void AddHeader(string headerText, Type moduleType)
+        public void AddHeader(string headerText, Type moduleType, string moduleName="")
         {
             _headers.Add(new RightViewHeader(0, headerText, null)
-            { ModuleType = moduleType });
+            {
+                ModuleType = moduleType,
+                ModuleName = moduleName
+            });
         }
 
         public ObservableCollection<RightViewHeader> Headers { get => _headers; }
         public int HeaderSelectedIndex { get; set; } = 0;
 
+
+        #endregion RightViewHeader
+
+        #region Find
         //Robert_Lin, 2204-7-26
         /// <summary>
-        /// Return the index of the RightViewHeader by its ModeuleType
+        /// Find the RightViewHeader by ModuleName
         /// </summary>
-        /// <param name="moduleType"></param>
+        /// <param name="moduleName">The ModuleName to find
+        /// One of DDPM.UI.Common.Constants.ModuleName_XXXX
+        /// </param>
         /// <returns>the index to Headers, or -1 if not found.</returns>
         public RightViewHeader? FindRightViewHeaderByModuleName(string moduleName)
         {
@@ -77,6 +91,78 @@ namespace DDPM.UI.Common
             return null;
         }
 
-        #endregion ReightViewHeader
+        /// <summary>
+        /// Find the index of ReightViewHeader by ModuleName
+        /// </summary>
+        /// <param name="moduleName">The ModuleName to find
+        /// One of DDPM.UI.Common.Constants.ModuleName_XXXX
+        /// </param>
+        /// <returns>Return the index, or -1 if not found.</returns>
+        public int FindRightViewHeaderIndexByModuleName(string moduleName)
+        {
+            if (HeaderCount <= 0) return -1;
+
+            for (int idx = 0; idx < HeaderCount; idx++)
+            {
+                if (Headers[idx].DdpmModule != null)
+                {
+                    if (Headers[idx].DdpmModule.ModuleName.Equals(moduleName, StringComparison.OrdinalIgnoreCase))
+                        return idx;
+                }
+                else //The DdpmModule did not been created
+                {
+                    if (Headers[idx].ModuleName.Equals(moduleName, StringComparison.OrdinalIgnoreCase))
+                        return idx;
+                }
+            }
+            return -1;
+        }
+
+        /// <summary>
+        /// Find the index of ReightViewHeader by ModuleType
+        /// </summary>
+        /// <param name="moduleType">The ModuleType to find
+        /// One of DDPM.UI.Common.Constants.ModuleName_XXXX
+        /// </param>
+        /// <returns>Return the index, or -1 if not found.</returns>
+        public int FindRightViewHeaderIndexByModuleType(Type moduleType)
+        {
+            if (HeaderCount <= 0) return -1;
+
+            for (int idx = 0; idx < HeaderCount; idx++)
+            {
+                if (Headers[idx].DdpmModule != null)
+                {
+                    IDdpmModule mod = Headers[idx].DdpmModule;
+                    if (mod.GetType().Equals(moduleType))
+                        return idx;
+                }
+                else //The DdpmModule did not been created
+                {
+                    if (Headers[idx].ModuleType == moduleType)
+                        return idx;
+                }
+            }
+            return -1;
+        }
+
+        /// <summary>
+        /// Set the specific ModuleName as current selected RightViewHeader
+        /// </summary>
+        /// <param name="moduleName">The ModuleName to find
+        /// One of DDPM.UI.Common.Constants.ModuleName_XXXX
+        /// </param>
+        /// <returns>The index of the new selected RightViewHeader (=HeaderSelectedIndex)
+        /// if Fail to find the terget Module, will return -1, but HeaderSelectedIndex will not be updated.</returns>
+        public int SetSelectedRightVewHeaderByModuleName(string moduleName)
+        {
+            int idxModule = FindRightViewHeaderIndexByModuleName(moduleName);
+            if (idxModule == -1) return -1;
+
+            HeaderSelectedIndex = idxModule;
+            return idxModule;
+        }
+        #endregion //Find
+
     }
 }

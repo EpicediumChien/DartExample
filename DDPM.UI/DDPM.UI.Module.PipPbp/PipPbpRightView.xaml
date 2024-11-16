@@ -22,6 +22,9 @@
                 <ResourceDictionary Source="/DDPM.UI.Common;component/ButtonStyle.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
+            <Color x:Key="Color_FakeTransparent">#02000000</Color>
+            <SolidColorBrush x:Key="FakeTransparent" Color="{StaticResource Color_FakeTransparent}" />
+
             <SolidColorBrush x:Key="ToolipBkColor" Color="#FF1D2C3B" />
             <SolidColorBrush x:Key="ToolipBdColor" Color="#FF293B4D" />
             <SolidColorBrush x:Key="ToolipTextColor" Color="#FFF5F6F7" />
@@ -67,27 +70,38 @@
                              </StackPanel>
 
                             <!-- PIP divTitle-->
-                            <UXControls:UXTextBlock Text="{Binding [PipPbp.0], Source={x:Static lang:LangHelper.Instance}}" Foreground="White" Margin="0,12"
+                            <!-- 2024-11-14 Robert_Lin, PIMS-313776, Monitor has not PIP capability, need to hide PIP div
+                                 Add a StackPanel for Pip div, and will hide the Pip div (Grid) when mnitor has not the PIP capability.
+                            -->
+                            <StackPanel Name="pipDiv"
+                                        Visibility="{Binding HasCapabiliy_AnyPip, Converter={StaticResource BoolToVisibilityConverter}}">
+                                
+                                <UXControls:UXTextBlock Text="{Binding [PipPbp.0], Source={x:Static lang:LangHelper.Instance}}" Foreground="White" Margin="0,12"
                                                     FontSize="14" />
-                            <!-- PIP SplitItem List -->
-                            <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
-                                <commonCtrl:SplitItem Width="88" Height="68" Name="pipSmall"
-                                                      ClickCommand="{Binding PipSmallClickCommand}"/>
+                                <!-- PIP SplitItem List -->
+                                <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
+                                    <commonCtrl:SplitItem Width="88" Height="68" Name="pipSmall"
+                                                          ClickCommand="{Binding PipSmallClickCommand}"
+                                                          Visibility="{Binding DataContext.HasCapability_PipSmall, Converter={StaticResource BoolToVisibilityConverter}, RelativeSource={RelativeSource AncestorType=UserControl}}"/>
 
-                                <commonCtrl:SplitItem Width="88" Height="68" Margin="8,0" Name="pipLarge"
-                                                      ClickCommand="{Binding PipLargeClickCommand}"/>
 
-                                <!-- Toggle between positions button 
+                                    <commonCtrl:SplitItem Width="88" Height="68" Margin="8,0" Name="pipLarge"
+                                                          ClickCommand="{Binding PipLargeClickCommand}"
+                                                          Visibility="{Binding DataContext.HasCapability_PipLarge, Converter={StaticResource BoolToVisibilityConverter}, RelativeSource={RelativeSource AncestorType=UserControl}}"/>
+
+                                    <!-- Toggle between positions button 
                                 <UXControls:UXButton Content="{Binding [PipPbp.7], Source={x:Static lang:LangHelper.Instance}}" Height="40" CornerRadius="2" Padding="12,8"
                                                      Margin="4,0" IsEnabled="{Binding IsPipItemSelected}"
                                                      ButtonType="Secondary" ButtonSemanticColorType="Neutral" Foreground="Gray"
                                                      Command="{Binding PipTogglePositionClickCommand}" />
                                 -->
-                                <!-- Using Custom WPF buton, defined in ButtonStyle.xaml -->
-                                <Button Style="{StaticResource SecondaryButtonStyle}"
-                                        Content="{Binding [PipPbp.7], Source={x:Static lang:LangHelper.Instance}}"
-                                        Height="40" Margin="4,0" IsEnabled="{Binding IsPipItemSelected}"
-                                        Command="{Binding PipTogglePositionClickCommand}" />
+                                    <!-- Using Custom WPF buton, defined in ButtonStyle.xaml -->
+                                    <Button Style="{StaticResource SecondaryButtonStyle}"
+                                            Content="{Binding [PipPbp.7], Source={x:Static lang:LangHelper.Instance}}"
+                                            Height="40" Margin="4,0" IsEnabled="{Binding IsPipItemSelected}"
+                                            Command="{Binding PipTogglePositionClickCommand}" 
+                                            Visibility="{Binding HasCapability_PipTogglePosition, Converter={StaticResource BoolToVisibilityConverter}}"/>
+                                </StackPanel>
                             </StackPanel>
 
                             <!-- PBP divTitle-->

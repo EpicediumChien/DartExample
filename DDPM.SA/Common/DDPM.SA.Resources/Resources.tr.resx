@@ -1,0 +1,480 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="no_updates_available" xml:space="preserve">
+    <value>Güncelleştirme yok.</value>
+  </data>
+  <data name="Updates_info" xml:space="preserve">
+    <value>Güncelleştirme bilgileri</value>
+  </data>
+  <data name="Software_update_unsuccessful" xml:space="preserve">
+    <value>Yazılım güncelleştirmesi başarısız oldu.</value>
+  </data>
+  <data name="CA_check_fail" xml:space="preserve">
+    <value>CA denetimi başarısız</value>
+  </data>
+  <data name="Network_fail" xml:space="preserve">
+    <value>Ağ başarısız</value>
+  </data>
+  <data name="Update_failed_due_to_network_error" xml:space="preserve">
+    <value>Ağ hatası sebebiyle güncelleştirme işlemi başarısız oldu. Yeniden deneyin.</value>
+  </data>
+  <data name="Dock_FW_is_loaded" xml:space="preserve">
+    <value>Bağlantı istasyonu bellenimi yüklendi. Bellenim uygulamasını tamamlamak için bağlantı istasyonunu çıkarın ve 1 dakika sonra yeniden bağlayın.</value>
+  </data>
+  <data name="Dock_UOD_FW_update_info" xml:space="preserve">
+    <value>Bağlantı istasyonu UOD bellenimi güncelleştirme bilgileri</value>
+  </data>
+  <data name="Firmware_update_unsuccessful" xml:space="preserve">
+    <value>Bellenim güncelleştirmesi başarısız oldu.</value>
+  </data>
+  <data name="Multiple_docks_are_detected" xml:space="preserve">
+    <value>Birden fazla bağlantı istasyonu algılandı. Bağlantı istasyonlarınızın hasar görmesini önlemek için yalnızca bir bağlantı istasyonunu bağlı tutun.</value>
+  </data>
+  <data name="Dock_FW_info" xml:space="preserve">
+    <value>Bağlantı istasyonu bellenimi bilgileri</value>
+  </data>
+  <data name="Dock_FW_is_being_loaded" xml:space="preserve">
+    <value>Bağlantı istasyonu bellenimi yükleniyor. Bağlantı istasyonunun bağlantısını kesmeyin.</value>
+  </data>
+  <data name="Dock_FW_is_loaded_successful" xml:space="preserve">
+    <value>Bağlantı istasyonu bellenimi başarıyla yüklendi. Bellenim uygulamasını tamamlamak için bağlantı istasyonunu çıkarın ve 1 dakika sonra yeniden bağlayın.</value>
+  </data>
+  <data name="Dock_FW_loaded_failed" xml:space="preserve">
+    <value>Bağlantı istasyonu bellenimi yüklenemedi.</value>
+  </data>
+  <data name="Warning" xml:space="preserve">
+    <value>Uyarı</value>
+  </data>
+  <data name="Auto_Brightness_is_currently_enabled" xml:space="preserve">
+    <value>Otomatik Parlaklık etkin durumda. Geçersiz kılmak istiyor musunuz?</value>
+  </data>
+  <data name="Error" xml:space="preserve">
+    <value>Hata</value>
+  </data>
+  <data name="SW_info" xml:space="preserve">
+    <value>Yazılım bilgisi</value>
+  </data>
+  <data name="UOD_update_completed" xml:space="preserve">
+    <value>UOD güncelleştirmesi tamamlandı.</value>
+  </data>
+  <data name="UOD_update_fail" xml:space="preserve">
+    <value>UOD güncelleştirmesi başarısız.</value>
+  </data>
+  <data name="FW_info" xml:space="preserve">
+    <value>Bellenim bilgisi</value>
+  </data>
+  <data name="update_download_cancel" xml:space="preserve">
+    <value>Bilgisayar pili çok düşük olduğu için güncelleştirme indirme iptal edildi.</value>
+  </data>
+  <data name="FW_is_being_Installing" xml:space="preserve">
+    <value>Bellenim yükleniyor. Aygıtın bağlantısını kesmeyin.</value>
+  </data>
+  <data name="Update" xml:space="preserve">
+    <value>Güncelleştirme</value>
+  </data>
+  <data name="Delay" xml:space="preserve">
+    <value>Gecikme</value>
+  </data>
+  <data name="Yes" xml:space="preserve">
+    <value>Evet</value>
+  </data>
+  <data name="No" xml:space="preserve">
+    <value>Hayır</value>
+  </data>
+  <data name="Invalid_ID" xml:space="preserve">
+    <value>Geçersiz kimlik. Lütfen geçerli bir eylem kimliği girin.</value>
+  </data>
+  <data name="Failed_to_open_application" xml:space="preserve">
+    <value>Uygulama açılamadı</value>
+  </data>
+  <data name="will_be_updated_to " xml:space="preserve">
+    <value>şuna güncelleştirilecek: </value>
+  </data>
+  <data name="can_be_updated_to" xml:space="preserve">
+    <value>şuna güncelleştirilebilir:</value>
+  </data>
+  <data name="UpdateAvailable" xml:space="preserve">
+    <value>Güncelleştirme mevcut</value>
+  </data>
+  <data name="UpdateWillBeApplied" xml:space="preserve">
+    <value>Güncelleştirme uygulanacak</value>
+  </data>
+  <data name="UpdateAvailable_Info" xml:space="preserve">
+    <value>Aygıt ve/veya uygulama güncelleştirilecek. Aygıt ve/veya uygulama zaman zaman kullanılabilir hale gelebilir. Güncelleştirme sırasında aygıtın bağlantısını kesmeyin.</value>
+  </data>
+  <data name="UpdateWillBeApplied_Info" xml:space="preserve">
+    <value>Aygıt ve/veya uygulama güncelleştirilecek. Aygıt ve/veya uygulama zaman zaman kullanılabilir hale gelebilir. Güncelleştirme sırasında aygıtın bağlantısını kesmeyin.</value>
+  </data>
+  <data name="UpdateNow" xml:space="preserve">
+    <value>Şimdi güncelleştir</value>
+  </data>
+  <data name="Defer" xml:space="preserve">
+    <value>Ertele</value>
+  </data>
+  <data name="Ok" xml:space="preserve">
+    <value>Tamam</value>
+  </data>
+  <data name="Service_not_running_Try_again" xml:space="preserve">
+    <value>Hizmet çalışmıyor. Yeniden deneyin</value>
+  </data>
+  <data name="Timeout_error" xml:space="preserve">
+    <value>Zaman aşımı hatası</value>
+  </data>
+  <data name="M1_Please_double_click_mouse_left_button_to_start_firmware_update" xml:space="preserve">
+    <value>Bellenim güncelleştirmesini başlatmak için lütfen farenin sol düğmesine çift tıklayın</value>
+  </data>
+  <data name="M2_Please_press_key_on_keyboard_to_start_firmware_update" xml:space="preserve">
+    <value>Bellenim güncelleştirmesini başlatmak için lütfen klavyedeki \&quot;U\&quot; tuşuna basın</value>
+  </data>
+  <data name="A0_Device_connected" xml:space="preserve">
+    <value>Aygıt bağlı</value>
+  </data>
+  <data name="A1_Firmware_update_started" xml:space="preserve">
+    <value>Bellenim güncelleştirmesi başladı</value>
+  </data>
+  <data name="A2_Firmware_update_successful" xml:space="preserve">
+    <value>Bellenim güncelleştirmesi başarılı</value>
+  </data>
+  <data name="E4_USB_wireless_receiver_firmware_is_unable_to_support_device_firmware_upgrade" xml:space="preserve">
+    <value>USB kablosuz alıcı bellenimi, aygıt bellenim yükseltmesini desteklemiyor</value>
+  </data>
+  <data name="update_failed_with_unknown_error" xml:space="preserve">
+    <value>güncelleştirme, bilinmeyen bir hata nedeniyle başarısız oldu</value>
+  </data>
+  <data name="User_aborted_firmware_update" xml:space="preserve">
+    <value>Bellenim güncelleştirmesi kullanıcı tarafından durduruldu</value>
+  </data>
+  <data name="Installing" xml:space="preserve">
+    <value>Yükleniyor</value>
+  </data>
+  <data name="Timeout" xml:space="preserve">
+    <value>Zaman aşımı</value>
+  </data>
+  <data name="Downloading_and_installing" xml:space="preserve">
+    <value>İndiriliyor ve yükleniyor</value>
+  </data>
+  <data name="DDPM_will_reopen_soon_after_update" xml:space="preserve">
+    <value>DDPM, güncelleştirmeden kısa bir süre sonra yeniden açılır</value>
+  </data>
+  <data name="Processing" xml:space="preserve">
+    <value>İşleniyor</value>
+  </data>
+  <data name="Software_Update" xml:space="preserve">
+    <value>Yazılım Güncelleştirmesi</value>
+  </data>
+  <data name="Firmware_Update" xml:space="preserve">
+    <value>Bellenim Güncelleştirmesi</value>
+  </data>
+  <data name="Updating_Software_Do_not_power_off_this_PC" xml:space="preserve">
+    <value>Yazılım güncelleştiriliyor. Bu bilgisayarı kapatmayın.</value>
+  </data>
+  <data name="Updating_firmware_Do_not_remove_or_power_off_the_device_Leave_the_device_undisturbed" xml:space="preserve">
+    <value>Bellenim güncelleştiriliyor. Aygıtı çıkarmayın veya kapatmayın. Aygıtı olduğu gibi bırakın.</value>
+  </data>
+  <data name="Unable_to_detect_target_device" xml:space="preserve">
+    <value>Hedef aygıt algılanamıyor</value>
+  </data>
+  <data name="AI_Auto_Framing" xml:space="preserve">
+    <value>Yapay Zeka Otomatik Çerçeveleme</value>
+  </data>
+  <data name="ON" xml:space="preserve">
+    <value>AÇIK</value>
+  </data>
+  <data name="OFF" xml:space="preserve">
+    <value>KAPALI</value>
+  </data>
+  <data name="Presets" xml:space="preserve">
+    <value>Ön ayarlar</value>
+  </data>
+  <data name="Auto_framing" xml:space="preserve">
+    <value>Otomatik çerçeveleme</value>
+  </data>
+  <data name="Field_of_View" xml:space="preserve">
+    <value>Görüş Alanı</value>
+  </data>
+  <data name="Zoom" xml:space="preserve">
+    <value>Yakınlaştırma ve Uzaklaştırma</value>
+  </data>
+  <data name="Default" xml:space="preserve">
+    <value>Varsayılan</value>
+  </data>
+  <data name="Smooth" xml:space="preserve">
+    <value>Düzgün</value>
+  </data>
+  <data name="Vibrant" xml:space="preserve">
+    <value>Canlı</value>
+  </data>
+  <data name="Warm" xml:space="preserve">
+    <value>Sıcak</value>
+  </data>
+  <data name="Standard_0" xml:space="preserve">
+    <value>Standart</value>
+  </data>
+  <data name="Native_0" xml:space="preserve">
+    <value>Yerel</value>
+  </data>
+  <data name="Multimedia_0" xml:space="preserve">
+    <value>Multimedya</value>
+  </data>
+  <data name="Movie_0" xml:space="preserve">
+    <value>Film</value>
+  </data>
+  <data name="Nature_0" xml:space="preserve">
+    <value>Doğa</value>
+  </data>
+  <data name="Game_0" xml:space="preserve">
+    <value>Oyun</value>
+  </data>
+  <data name="Game_1" xml:space="preserve">
+    <value>Game1</value>
+  </data>
+  <data name="Sport_0" xml:space="preserve">
+    <value>Spor</value>
+  </data>
+  <data name="Text_0" xml:space="preserve">
+    <value>Metin</value>
+  </data>
+  <data name="Warm_0" xml:space="preserve">
+    <value>Sıcak</value>
+  </data>
+  <data name="Cool_0" xml:space="preserve">
+    <value>Serin</value>
+  </data>
+  <data name="Custom_Color" xml:space="preserve">
+    <value>Özel Renk</value>
+  </data>
+  <data name="ComfortView_0" xml:space="preserve">
+    <value>ComfortView</value>
+  </data>
+  <data name="Game_2" xml:space="preserve">
+    <value>Game2</value>
+  </data>
+  <data name="Game_3" xml:space="preserve">
+    <value>Game3</value>
+  </data>
+  <data name="Desktop_0" xml:space="preserve">
+    <value>Masaüstü</value>
+  </data>
+  <data name="Reference_0" xml:space="preserve">
+    <value>Referans</value>
+  </data>
+  <data name="Metro_0" xml:space="preserve">
+    <value>Metro</value>
+  </data>
+  <data name="Paper_0" xml:space="preserve">
+    <value>Kağıt</value>
+  </data>
+  <data name="Standard_HDR" xml:space="preserve">
+    <value>Standart HDR</value>
+  </data>
+  <data name="Movie_HDR" xml:space="preserve">
+    <value>Film HDR</value>
+  </data>
+  <data name="Game_HDR" xml:space="preserve">
+    <value>Oyun HDR</value>
+  </data>
+  <data name="Vivid_HDR" xml:space="preserve">
+    <value>Canlı HDR</value>
+  </data>
+  <data name="Custom_1" xml:space="preserve">
+    <value>Özel 1</value>
+  </data>
+  <data name="Custom_2" xml:space="preserve">
+    <value>Özel 2</value>
+  </data>
+  <data name="Custom_3" xml:space="preserve">
+    <value>Özel 3</value>
+  </data>
+  <data name="User_1" xml:space="preserve">
+    <value>Kullanıcı 1</value>
+  </data>
+  <data name="User_2" xml:space="preserve">
+    <value>Kullanıcı 2</value>
+  </data>
+  <data name="User_3" xml:space="preserve">
+    <value>Kullanıcı 3</value>
+  </data>
+  <data name="SPORTS_Game" xml:space="preserve">
+    <value>SPOR Oyunu</value>
+  </data>
+  <data name="Custom_layout" xml:space="preserve">
+    <value>Özel Düzen</value>
+  </data>
+  <data name="Cancel_0" xml:space="preserve">
+    <value>İptal</value>
+  </data>
+  <data name="Save_0" xml:space="preserve">
+    <value>Kaydet</value>
+  </data>
+  <data name="Arrange_Windows" xml:space="preserve">
+    <value>Pencereleri Düzenleme</value>
+  </data>
+  <data name="EA_MSG_0" xml:space="preserve">
+    <value>Geçerli pencere düzeninizi ayarlayın, adı düzenleyin (isteğe bağlı) ve düzenlemeyi kaydetmek için &quot;Kaydet&quot; seçeneğine tıklayın.</value>
+  </data>
+  <data name="Battery_Low" xml:space="preserve">
+    <value>Pil Düşük Seviyede</value>
+  </data>
+  <data name="Caps_Lock_On" xml:space="preserve">
+    <value>Caps Lock Açık</value>
+  </data>
+  <data name="Caps Lock Off" xml:space="preserve">
+    <value>Caps Lock Kapalı</value>
+  </data>
+  <data name="Easy_Memory" xml:space="preserve">
+    <value>Kolay Bellek</value>
+  </data>
+  <data name="Go_to_Widget_Settings" xml:space="preserve">
+    <value>Parçacık Ayarları bölümüne gidin</value>
+  </data>
+  <data name="is_muted" xml:space="preserve">
+    <value>sessize alındı</value>
+  </data>
+  <data name="is_Unmuted" xml:space="preserve">
+    <value>sesi açıldı</value>
+  </data>
+  <data name="Num_Lock_Off" xml:space="preserve">
+    <value>Num Lock Kapalı</value>
+  </data>
+  <data name="Num_Lock_On" xml:space="preserve">
+    <value>Num Lock Açık</value>
+  </data>
+  <data name="Presence_detection_sensor_is_covered" xml:space="preserve">
+    <value>Varlık algılama sensörünün üstü kapalı</value>
+  </data>
+  <data name="QAM_OSD_Msg" xml:space="preserve">
+    <value>Hızlı Ayarlar parçacığına tekrar erişmek için klavyenizdeki [Alt + Z] tuşlarını basılı tutun.</value>
+  </data>
+  <data name="Scroll_Lock_Off" xml:space="preserve">
+    <value>Scroll Lock Kapalı</value>
+  </data>
+  <data name="Scroll_Lock_On" xml:space="preserve">
+    <value>Scroll Lock Açık</value>
+  </data>
+  <data name="Export_MSG_0" xml:space="preserve">
+    <value>Aynı monitör algılandı, şunun için ayarları içe aktarmak istiyor musunuz?</value>
+  </data>
+  <data name="Version" xml:space="preserve">
+    <value>Sürüm</value>
+  </data>
+  <data name="Walk_Away_Lock" xml:space="preserve">
+    <value>Uzaklaşınca Kilitleme</value>
+  </data>
+</root>

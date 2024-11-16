@@ -36,7 +36,7 @@ namespace DDPM.UI.Module.Brightness
             }
         }
 
-        public string ModuleName { get => "BrightnessModule"; }
+        public string ModuleName { get => Constants.ModuleName_Brightness; } // "BrightnessModule"
 
         public UserControl? GetLeftView()
         {

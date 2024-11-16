@@ -261,9 +261,23 @@ namespace DDPM.UI.Module.WebCameraPresenceDetection
             System.Diagnostics.Process.Start(psi);
         }
 
-        private void CallUpcdateMPSFW_Click(object sender, RoutedEventArgs e)
+        private void CallUpdateMPSFW_Click(object sender, RoutedEventArgs e)
         {
-           
+            //Derek 1116 for Webcam PIMS 319078
+            string url = "https://www.dell.com/";
+            // Open the browser and navigate to specified url
+            //Process.Start(new ProcessStartInfo
+            //{
+            //    FileName = url,
+            //    UseShellExecute = true
+            //});
+            DDPM.SA.Common.Settings.DDPMFileSecurity.StartProcessSafely(
+                null,
+                new ProcessStartInfo
+                {
+                    FileName = url,
+                    UseShellExecute = true
+                });
         }
 
         private void Image_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
