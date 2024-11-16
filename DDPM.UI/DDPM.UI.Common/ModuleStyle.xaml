@@ -53,6 +53,10 @@
             </Setter.Value>
         </Setter>
     </Style>
+    <Style TargetType="UXControls:UXRadioButton" BasedOn="{StaticResource {x:Type UXControls:UXRadioButton}}">
+        <Setter Property="Background" Value="{DynamicResource DefaultTheme_RbBkColor}" />
+        <Setter Property="Foreground" Value="{DynamicResource DefaultTheme_TxtColor}" />
+    </Style>
     <!-- BasedOn="{StaticResource {x:Type UXControls:UXTextBox}}-->
     <Style TargetType="UXControls:UXTextBox" >
         <Setter Property="Background" Value="{DynamicResource DefaultTheme_TbBkColor}" />
