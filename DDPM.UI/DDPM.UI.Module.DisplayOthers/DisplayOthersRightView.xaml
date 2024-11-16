@@ -122,14 +122,26 @@
                                                                   RadioButtonSize="Large" Foreground="#F5F6F7"
                                                                   HorizontalAlignment="Left"
                                                                   IsEnabled="{Binding isLockPowerNapEnable}" Opacity="{Binding LockPowerNap_Opacity}"
-                                                                  FontSize="16" IsChecked="{Binding Reducebrt_Checked}" />
+                                                                  FontSize="16" IsChecked="{Binding Reducebrt_Checked}">
+                                            <UXControls:UXRadioButton.Resources>
+                                                <Style TargetType="Border">
+                                                    <Setter Property="Background" Value="Transparent" />
+                                                </Style>
+                                            </UXControls:UXRadioButton.Resources>
+                                        </UXControls:UXRadioButton>
                                         <UXControls:UXRadioButton Grid.Row="1"
                                                                   AutomationProperties.AutomationId="LargeRB1"
                                                                   Content="{Binding [DisplayOthers.1], Source={x:Static lang:LangHelper.Instance}}"
                                                                   RadioButtonSize="Large" Foreground="#F5F6F7"
                                                                   HorizontalAlignment="Left"
                                                                   IsEnabled="{Binding isLockPowerNapEnable}" Opacity="{Binding LockPowerNap_Opacity}"
-                                                                  FontSize="16" IsChecked="{Binding PutTosleep_Checked}" />
+                                                                  FontSize="16" IsChecked="{Binding PutTosleep_Checked}">
+                                            <UXControls:UXRadioButton.Resources>
+                                                <Style TargetType="Border">
+                                                    <Setter Property="Background" Value="Transparent" />
+                                                </Style>
+                                            </UXControls:UXRadioButton.Resources>
+                                        </UXControls:UXRadioButton>
                                     </Grid>
                                 </Grid>
                             </Grid>
