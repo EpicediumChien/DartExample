@@ -2049,4 +2049,223 @@
   <data name="No" xml:space="preserve">
     <value>لا</value>
   </data>
+  <data name="Camera.12" xml:space="preserve">
+    <value>غير متوفرة في أثناء إضافة إعداد مسبق</value>
+  </data>
+  <data name="Camera.13" xml:space="preserve">
+    <value>لا تتوفر كل الميزات في أثناء إضافة إعداد مسبق</value>
+  </data>
+  <data name="HeadsetAudioSettings.20" xml:space="preserve">
+    <value>للتحكم في مقدار الصوت الخارجي الذي تسمعه</value>
+  </data>
+  <data name="HeadsetAudioSettings.21" xml:space="preserve">
+    <value>لإزالة الضوضاء المحيطة</value>
+  </data>
+  <data name="HeadsetAudioSettings.22" xml:space="preserve">
+    <value>للسماح بسماع الصوت المحيط. لضبط مستوى صوت الصوت المحيط المسموع.</value>
+  </data>
+  <data name="HeadsetAudioSettings.23" xml:space="preserve">
+    <value>لإيقاف تشغيل ميزات إلغاء الضوضاء</value>
+  </data>
+  <data name="HeadsetAudioSettings.24" xml:space="preserve">
+    <value>للحد من ضوضاء الميكروفون لديك لتوفير تجربة صوتية أفضل للآخرين</value>
+  </data>
+  <data name="HeadsetAudioSettings.25" xml:space="preserve">
+    <value>للحد من ضوضاء ميكروفون الطرف الآخر لتوفير تجربة صوتية أفضل لك</value>
+  </data>
+  <data name="HeadsetAudioSettings.26" xml:space="preserve">
+    <value>لضبط الموازن بناءً على الإعداد المسبق المختار</value>
+  </data>
+  <data name="HeadsetAudioSettings.27" xml:space="preserve">
+    <value>لضبط مستوى صوتك الذي يمكنك أن تسمعه في أثناء التحدث في المكالمة. (غير متوفرة في وضع &quot;الشفافية&quot;)</value>
+  </data>
+  <data name="HeadsetAudioSettings.28" xml:space="preserve">
+    <value>لإزالة ضوضاء الخلفية للسماح بسماع صوتك بوضوح</value>
+  </data>
+  <data name="HeadsetAutomatedActions.9" xml:space="preserve">
+    <value>الإجراءات التلقائية عند إزالة سماعة الرأس</value>
+  </data>
+  <data name="HeadsetAutomatedActions.10" xml:space="preserve">
+    <value>لإيقاف الموسيقى تلقائيًا عند إزالة سماعة الرأس. تستأنف الموسيقى تلقائيًا عند وضع سماعة الرأس.</value>
+  </data>
+  <data name="HeadsetAutomatedActions.11" xml:space="preserve">
+    <value>لكتم صوت الميكروفون تلقائيًا عند إزالة سماعة الرأس</value>
+  </data>
+  <data name="HeadsetAutomatedActions.12" xml:space="preserve">
+    <value>اسحب ذراع الميكروفون لأسفل للرد على المكالمات</value>
+  </data>
+  <data name="HeadsetAutomatedActions.13" xml:space="preserve">
+    <value>إجراءات تلقائية عند تحريك غطاء الأذن عن أذنك</value>
+  </data>
+  <data name="HeadsetDeviceSettings.7" xml:space="preserve">
+    <value>ضوء المؤشر في أثناء مكالمة</value>
+  </data>
+  <data name="HeadsetDeviceSettings.8" xml:space="preserve">
+    <value>مطالبات وإعلانات صوتية لميزات الجهاز</value>
+  </data>
+  <data name="SpeakerToolTip.0" xml:space="preserve">
+    <value>لإزالة ضوضاء الخلفية للسماح بسماع صوتك بوضوح</value>
+  </data>
+  <data name="SpeakerToolTip.1" xml:space="preserve">
+    <value>لتشغيل صوت عندما يكون الجهاز في وضع كتم الصوت</value>
+  </data>
+  <data name="SpeakerToolTip.2" xml:space="preserve">
+    <value>لتشغيل صوت عند ضبط مستوى الصوت</value>
+  </data>
+  <data name="Continue" xml:space="preserve">
+    <value>متابعة</value>
+  </data>
+  <data name="ImpExp_RestartMsg.0" xml:space="preserve">
+    <value>تم تغيير الإعدادات. ستتم إعادة تشغيل Dell Display and Peripheral Manager.</value>
+  </data>
+  <data name="ImpExp_SuccessMsg.0" xml:space="preserve">
+    <value>تم تصدير إعدادات التطبيق بنجاح</value>
+  </data>
+  <data name="ImpExp_SuccessMsg.1" xml:space="preserve">
+    <value>تم تطبيق إعدادات التطبيق على %1 بنجاح. استمتع باستخدام شاشتك.</value>
+  </data>
+  <data name="ImpExp_WarningMsg.0" xml:space="preserve">
+    <value>هذه ليست شاشتك الأساسية. هل تريد المتابعة وتعيين هذه الشاشة كشاشة أساسية للمزامنة؟</value>
+  </data>
+  <data name="ImpExp_WarningMsg.1" xml:space="preserve">
+    <value>مرتبطة بالتخطيط الحالي. هل تريد تجاوزها؟</value>
+  </data>
+  <data name="RestartNeeded" xml:space="preserve">
+    <value>يلزم إعادة التشغيل</value>
+  </data>
+  <data name="Success" xml:space="preserve">
+    <value>النجاح</value>
+  </data>
+  <data name="Warning" xml:space="preserve">
+    <value>تحذير</value>
+  </data>
+  <data name="ImpExp_Message.0" xml:space="preserve">
+    <value>تطبيق الإعدادات تلقائيًا عند اكتشاف نفس الطراز</value>
+  </data>
+  <data name="DisplayDefault.0" xml:space="preserve">
+    <value>هل تريد إعادة تعيين شاشتك إلى إعدادات المصنع الآن؟</value>
+  </data>
+  <data name="RestoreToDefaultActions" xml:space="preserve">
+    <value>استعادة إلى الإجراءات الافتراضية</value>
+  </data>
+  <data name="Game_Enhance_Mode" xml:space="preserve">
+    <value>وضع تعزيز الألعاب</value>
+  </data>
+  <data name="Response_Time" xml:space="preserve">
+    <value>وقت الاستجابة</value>
+  </data>
+  <data name="Dark_Stabilizer" xml:space="preserve">
+    <value>مثبت اللون الداكن</value>
+  </data>
+  <data name="Dark_Stabilizer_Toggle" xml:space="preserve">
+    <value>تبديل مثبت اللون الداكن</value>
+  </data>
+  <data name="Dual_Resolution" xml:space="preserve">
+    <value>دقة مزدوجة</value>
+  </data>
+  <data name="Dual_Resolution_Toggle" xml:space="preserve">
+    <value>تبديل الدقة المزدوجة</value>
+  </data>
+  <data name="Resolution_and_Refresh_Rate" xml:space="preserve">
+    <value>معدل الدقة والتحديث</value>
+  </data>
+  <data name="Toggle_Vision_Engine" xml:space="preserve">
+    <value>تبديل محرك Vision</value>
+  </data>
+  <data name="Third_Party_Licenses" xml:space="preserve">
+    <value>تراخيص الطرف الثالث</value>
+  </data>
+  <data name="Help" xml:space="preserve">
+    <value>تعليمات</value>
+  </data>
+  <data name="Need_help" xml:space="preserve">
+    <value>هل تحتاج إلى مساعدة؟ لمزيد من المعلومات حول هذا البرنامج، انقر فوق الزر أدناه.</value>
+  </data>
+  <data name="Learn_more" xml:space="preserve">
+    <value>معرفة المزيد</value>
+  </data>
+  <data name="On_screen_notifications" xml:space="preserve">
+    <value>الإشعارات الظاهرة على الشاشة</value>
+  </data>
+  <data name="All_Devices" xml:space="preserve">
+    <value>كل الأجهزة</value>
+  </data>
+  <data name="Low_battery_level" xml:space="preserve">
+    <value>مستوى البطارية منخفض</value>
+  </data>
+  <data name="Device_specific" xml:space="preserve">
+    <value>خاص بالجهاز</value>
+  </data>
+  <data name="Keyboard_lock_key" xml:space="preserve">
+    <value>مفتاح قفل لوحة المفاتيح</value>
+  </data>
+  <data name="Webcam_WB7022_Presence_Detection_sensor_cover_state" xml:space="preserve">
+    <value>حالة غطاء مستشعر اكتشاف التواجد لكاميرا الويب WB7022</value>
+  </data>
+  <data name="Headset_speakerphone_and_soundbar_mute_unmute" xml:space="preserve">
+    <value>كتم صوت/إلغاء كتم صوت سماعة الرأس ومكبر الصوت ومكبر الصوت الشريطي</value>
+  </data>
+  <data name="Display_Color_Preset_and_Easy_Memory" xml:space="preserve">
+    <value>الإعداد المسبق للون العرض وEasy Memory</value>
+  </data>
+  <data name="Reports" xml:space="preserve">
+    <value>التقارير</value>
+  </data>
+  <data name="Save_diagnostic_report" xml:space="preserve">
+    <value>حفظ تقرير التشخيص</value>
+  </data>
+  <data name="Save_monitor_asset_report" xml:space="preserve">
+    <value>حفظ التقرير حول أصول الشاشة</value>
+  </data>
+  <data name="Widget_Settings" xml:space="preserve">
+    <value>إعدادات عنصر واجهة المستخدم</value>
+  </data>
+  <data name="Activate_Quick_Access_widget_during_Zoom_conference_calls" xml:space="preserve">
+    <value>تنشيط عنصر واجهة المستخدم للوصول السريع في أثناء مكالمات Zoom الجماعية</value>
+  </data>
+  <data name="Widget_will_automatically_appear_when_meeting_begins" xml:space="preserve">
+    <value>سيظهر عنصر واجهة المستخدم تلقائيًا عند بدء الاجتماع لتخصيص الإعدادات لكاميرات الويب المدعومة</value>
+  </data>
+  <data name="Enable_shortcut_reminder_for_Quick_Accesswidget" xml:space="preserve">
+    <value>تمكين تذكير الاختصار لعنصر واجهة المستخدم للوصول السريع</value>
+  </data>
+  <data name="Critical" xml:space="preserve">
+    <value>حرج</value>
+  </data>
+  <data name="Recommended" xml:space="preserve">
+    <value>موصى به</value>
+  </data>
+  <data name="Optional" xml:space="preserve">
+    <value>اختياري</value>
+  </data>
+  <data name="VisionEngine_Night" xml:space="preserve">
+    <value>ليلي</value>
+  </data>
+  <data name="VisionEngine_Clear" xml:space="preserve">
+    <value>مسح</value>
+  </data>
+  <data name="VisionEngine_Bino" xml:space="preserve">
+    <value>أداة التكبير والتصغير البصري</value>
+  </data>
+  <data name="VisionEngine_Chroma" xml:space="preserve">
+    <value>ضبط درجة اللون</value>
+  </data>
+  <data name="VisionEngine_Crosshair" xml:space="preserve">
+    <value>نقطة مركزية</value>
+  </data>
+  <data name="Software_version" xml:space="preserve">
+    <value>إصدار البرنامج</value>
+  </data>
+  <data name="Driver_version" xml:space="preserve">
+    <value>إصدار برنامج التشغيل</value>
+  </data>
+  <data name="Preview_Changes" xml:space="preserve">
+    <value>معاينة التغييرات</value>
+  </data>
+  <data name="Stop_Preview" xml:space="preserve">
+    <value>إيقاف المعاينة</value>
+  </data>
+  <data name="Tooltips_Schedule" xml:space="preserve">
+    <value>تمكّن هذه الميزة أعيننا من التكيف مع الإعداد المطلوب.</value>
+  </data>
 </root>

@@ -476,7 +476,7 @@
                     <StackPanel>
                         <Grid Height="40" HorizontalAlignment="Center" VerticalAlignment="Top"
                             Margin="0,64,0,32">
-                            <UXControls:UXTextBlock Text="Please wait..."
+                            <UXControls:UXTextBlock Text="{Binding [HomePage.0], Source={x:Static lang:LangHelper.Instance}}"
                                                 Foreground="{DynamicResource SpinnerWaitTxtColor}" FontSize="32"/>
                         </Grid>
                         <Grid Height="64">

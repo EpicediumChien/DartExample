@@ -300,7 +300,7 @@ namespace DDPM.UI.Common.Tests
             //    Assert.Fail("not invoked");
             //}
         }
-       
+
         [Test]
         public void TestisDarkMode()
         {

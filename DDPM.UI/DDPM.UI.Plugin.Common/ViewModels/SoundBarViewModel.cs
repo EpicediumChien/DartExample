@@ -126,6 +126,10 @@ namespace DDPM.UI.Plugin.ViewModels
                     _controlGoogleMeetButtonShow = false;
                     _controlSkypeforBusinessButtonShow = false;
                     break;
+                case "SP3022":
+                    _controlGoogleMeetButtonShow = true;
+                    _controlSkypeforBusinessButtonShow = false;
+                    break;
 
                 default:
                     break;
@@ -158,9 +162,9 @@ namespace DDPM.UI.Plugin.ViewModels
                 _isMinMaxOnlyChecked = false;
             }
             OnPropertyChanged("IntelligentMicNoiseCancellationStatus");
-            OnPropertyChanged("IntelligentMicNoiseCancellationStatus_String");
+            OnPropertyChanged("IntelligentMicNoiseCancellation_String");
             OnPropertyChanged("MuteSoundNotificationStatus");
-            OnPropertyChanged("MuteSoundNotificationStatus_String");
+            OnPropertyChanged("MuteSoundNotification_String");
             OnPropertyChanged("VolumeAdjustmentToneStatus");
             OnPropertyChanged("VolumeAdjustmentTone_String");
             OnPropertyChanged("IsEveryLevelChecked");
@@ -211,6 +215,25 @@ namespace DDPM.UI.Plugin.ViewModels
                         ImageFilePath = "/DDPM.UI.Common;component/Resources/Speaker_SB522A.png";
                         break;
                 }
+            }
+        }
+
+        public void ChangeImageMouseLeave(string model)
+        {
+            _log!.Info($"[SoundBarViewModel] ChangeImageMouseLeave ...... {model}");
+
+            switch (model)
+            {
+                case "SP3022":
+                    ImageFilePath = "/DDPM.UI.Common;component/Resources/Speaker_SP3022.png";
+                    break;
+
+                case "SB522A":
+                    ImageFilePath = "/DDPM.UI.Common;component/Resources/Speaker_SB522A.png";
+                    break;
+                default:
+                    ImageFilePath = "/DDPM.UI.Common;component/Resources/Speaker_SP3022.png";
+                    break;
             }
         }
 
