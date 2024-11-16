@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text.Json;
 
 namespace VcpCore.Common
 {
     [Serializable]
-    public class MonitorInfo : IEquatable<MonitorInfo>
+    public class MonitorInfo : BaseClone<MonitorInfo>, IEquatable<MonitorInfo>
     {
         public string AliasDeviceName = string.Empty;
         public bool IsDellMonitor { get; set; } = false;
@@ -28,6 +29,12 @@ namespace VcpCore.Common
         public MonitorInfo ShallowCopy()
         {
             return (MonitorInfo)this.MemberwiseClone();
+        }
+
+        public override MonitorInfo Clone()
+        {
+            var bytes = JsonSerializer.SerializeToUtf8Bytes(this);
+            return JsonSerializer.Deserialize<MonitorInfo>(bytes);
         }
 
         public override bool Equals(object obj)
