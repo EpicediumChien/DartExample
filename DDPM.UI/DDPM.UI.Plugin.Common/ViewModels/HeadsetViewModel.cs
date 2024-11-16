@@ -517,6 +517,7 @@ namespace DDPM.UI.Plugin.ViewModels
                     break;
 
                 case "MicNCIncomingChanged":
+                    DeviceInfoDTP.MicNCIncoming = _deviceManager.GetMicNCIncomingAsync(CurrentDeviceID.ToString()).Result;
                     CheckMicNCIncomingUI(true);
                     break;
 
