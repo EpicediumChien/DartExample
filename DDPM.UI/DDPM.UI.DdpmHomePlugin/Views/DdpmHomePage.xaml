@@ -163,7 +163,7 @@
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
-        <StackPanel x:Name="UIDebugPanel" Grid.Row="0" Orientation="Horizontal">
+        <StackPanel x:Name="UIDebugPanel" Grid.Row="0" Orientation="Horizontal" Visibility="Hidden">
 
             <UXControls:UXTextBlock TextBlock.Text="DDPM 2.0"
                                     TextBlockType="Header2" />

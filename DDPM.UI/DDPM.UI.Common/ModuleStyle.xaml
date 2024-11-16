@@ -53,10 +53,6 @@
             </Setter.Value>
         </Setter>
     </Style>
-    <Style TargetType="UXControls:UXRadioButton" BasedOn="{StaticResource {x:Type UXControls:UXRadioButton}}">
-        <Setter Property="Background" Value="{DynamicResource DefaultTheme_RbBkColor}" />
-        <Setter Property="Foreground" Value="{DynamicResource DefaultTheme_TxtColor}" />
-    </Style>
     <!-- BasedOn="{StaticResource {x:Type UXControls:UXTextBox}}-->
     <Style TargetType="UXControls:UXTextBox" >
         <Setter Property="Background" Value="{DynamicResource DefaultTheme_TbBkColor}" />
@@ -304,7 +300,13 @@
                                 Grid.Column="0"
                                 HorizontalAlignment="Left"
                                 VerticalAlignment="Center"
-                                IsChecked="{Binding IsChecked, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}" />
+                                IsChecked="{Binding IsChecked, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}">
+                                <UXControls:UXRadioButton.Resources>
+                                    <Style TargetType="Border">
+                                        <Setter Property="Background" Value="Transparent" />
+                                    </Style>
+                                </UXControls:UXRadioButton.Resources>
+                            </UXControls:UXRadioButton>
 
                             <ContentPresenter
                                 Grid.Column="0"
@@ -1122,6 +1124,7 @@
         <Setter Property="CornerRadius" Value="2" />
         <Setter Property="Width" Value="105" />
         <Setter Property="Height" Value="40" />
+        <Setter Property="BorderThickness" Value="1" />
     </Style>
 
     <!-- light #f4f7f9  dark #0F2641-->
