@@ -311,14 +311,19 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                     //await CheckAndQueueDevice(e.device_peripherals);
                     _log.Info($"@ DeviceName=[{e.device_peripherals.Name}]");
                 }
-                _log.Info($"[Walkthrough] {nameof(_deviceManager_DeviceChanged)} Start");
-                await CollectAndCompareDevicesAsync();
-                //// Check Queue¡Afirst use device need to show WalkThroughPage
-                if (WalkThroughQueue.Count > 0 && _showPluginById == false)
+
+                // If event Contains Add, then into Walkthrough
+                if (e.changedProperty.ToLower().Contains("add"))
                 {
-                    _log.Info($"[Walkthrough] {nameof(_deviceManager_DeviceChanged)} WalkThroughQueue has items, ShowPluginById.");
-                    _showPluginManager?.ShowPluginById(DDPM.UI.Common.Constants.WalkThroughPluginId);
-                    _showPluginById = true;
+                    _log.Info($"[Walkthrough] {nameof(_deviceManager_DeviceChanged)} Start");
+                    await CollectAndCompareDevicesAsync();
+                    //// Check Queue¡Afirst use device need to show WalkThroughPage
+                    if (WalkThroughQueue.Count > 0 && _showPluginById == false)
+                    {
+                        _log.Info($"[Walkthrough] {nameof(_deviceManager_DeviceChanged)} WalkThroughQueue has items, ShowPluginById.");
+                        _showPluginManager?.ShowPluginById(DDPM.UI.Common.Constants.WalkThroughPluginId);
+                        _showPluginById = true;
+                    }
                 }
                 //2024-8-6 Robert, fix bug. compare string should be lowercase due to ToLower()
                 //2024-07-02, Elie, we only handle remove and add event on the DdpmHomePlugin.
