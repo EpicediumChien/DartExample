@@ -50,7 +50,7 @@ namespace DDPM.UI.Module.EzArrange
         }
 
 
-        public string ModuleName { get => "EzArrangeModule"; }
+        public string ModuleName { get => Constants.ModuleName_EzArrange; } //"EzArrangeModule"
 
         public UserControl? GetLeftView()
         {

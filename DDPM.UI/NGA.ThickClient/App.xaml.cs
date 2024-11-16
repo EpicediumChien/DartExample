@@ -11,7 +11,6 @@
 using DDPM.UI.Common;
 using Dell.Client.Framework.Common;
 using Dell.Client.Framework.UX.WPF;
-using Dell.Client.Framework.UX.WPF.Controls;
 using Dell.Client.Framework.UX.WPF.ResourceManager;
 using Dell.Client.Framework.UX.WPF.ResourceManager.Enums;
 using Dell.UnifiedAgent.RemotePlugin.Client.Console;
@@ -19,8 +18,8 @@ using NGA.ThickClient.Interfaces;
 using NGA.ThickClientCore;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Windows;
 using Constants = NGA.Common.Constants;
 
@@ -32,7 +31,6 @@ namespace NGA.ThickClient
     public sealed partial class App : DucaThickClientCore
     {
         #region Variables
-
         /// <summary>
         ///  A uniqueId that identifies the Thick Client App.
         /// </summary>
@@ -55,6 +53,9 @@ namespace NGA.ThickClient
 
         #endregion
 
+        [DllImport("kernel32.dll", CharSet = CharSet.Auto)]
+        private static extern int GetPrivateProfileInt(string lpAppName, string lpKeyName, int nDefault, string lpFileName);
+
         //2024-5-8 Robert_Lin, to fix the issue that will cause exception in filelock.cs,
         // FileLock ctor below code:
         //   PathCheckErrorCodes result = PathHelper.ValidateFilePath(filepath, pathCheckOptions);
@@ -68,6 +69,8 @@ namespace NGA.ThickClient
         /// </summary>
         public App() : base(NGA.Resources.Resources.ResourceManager, ThickClientUniqueGuid)
         {
+            DdpmCommonHelper.ThemeSwitchFlag = GetPrivateProfileInt("DDPMDebug", "ThemeSwitchFlag", 0, @"C:\DDPMDebug.ini") == 1;
+            DdpmCommonHelper.UIDebugModeFlag = GetPrivateProfileInt("DDPMDebug", "UIDebugFlag", 0, @"C:\DDPMDebug.ini") == 1;
         }
 
         /// <summary>
@@ -110,7 +113,8 @@ namespace NGA.ThickClient
         {
             var resourceManager = base.LoadResources();
             //update dark/light mode
-            //DdpmCommonHelper.updateMergedDictionarie();
+            if (DdpmCommonHelper.ThemeSwitchFlag)
+                DdpmCommonHelper.updateMergedDictionaries(resourceManager);
             try
             {
                 var resourceDictionaries = new[] { new ResourceDictionary { Source = new Uri(AppStylesUriString, UriKind.RelativeOrAbsolute) } };
@@ -139,7 +143,7 @@ namespace NGA.ThickClient
             if (SystemParameters.PrimaryScreenWidth >= 3840 && SystemParameters.PrimaryScreenHeight >= 2160)
                 sz = Constants.SplashScreenResolution4K;
 
-            _splashScreen = new SplashScreen(Assembly.GetExecutingAssembly(), $"Resources/Images/splash{sz}-round.png");
+            _splashScreen = new SplashScreen(Assembly.GetExecutingAssembly(), string.Format(DdpmCommonHelper.SplashPath, sz));
 
             return _splashScreen;
         }
