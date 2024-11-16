@@ -10,21 +10,21 @@
         "dependencies": {
           "DDPM.SA.Common": "2.0.0.5",
           "DellClientFramework": "6.4.11.2",
-          "runtimepack.Microsoft.Windows.SDK.NET.Ref": "10.0.19041.31"
+          "runtimepack.Microsoft.Windows.SDK.NET.Ref": "10.0.19041.53"
         },
         "runtime": {
           "DDPM.PowerMon.dll": {}
         }
       },
-      "runtimepack.Microsoft.Windows.SDK.NET.Ref/10.0.19041.31": {
+      "runtimepack.Microsoft.Windows.SDK.NET.Ref/10.0.19041.53": {
         "runtime": {
           "Microsoft.Windows.SDK.NET.dll": {
-            "assemblyVersion": "10.0.19041.24",
-            "fileVersion": "10.0.19041.31"
+            "assemblyVersion": "10.0.19041.38",
+            "fileVersion": "10.0.19041.52"
           },
           "WinRT.Runtime.dll": {
-            "assemblyVersion": "2.0.0.0",
-            "fileVersion": "2.0.4.44211"
+            "assemblyVersion": "2.1.0.0",
+            "fileVersion": "2.1.6.47881"
           }
         }
       },
@@ -400,7 +400,10 @@
           "DellClientFramework": "6.4.11.2"
         },
         "runtime": {
-          "DDPM.RemoteManagement.Common.dll": {}
+          "DDPM.RemoteManagement.Common.dll": {
+            "assemblyVersion": "2.0.0.7",
+            "fileVersion": "2.0.0.7"
+          }
         }
       },
       "DDPM.SA.Common/2.0.0.5": {
@@ -416,12 +419,18 @@
           "VcpCore.Interfaces": "2.0.0.5"
         },
         "runtime": {
-          "DDPM.SA.Common.dll": {}
+          "DDPM.SA.Common.dll": {
+            "assemblyVersion": "2.0.0.5",
+            "fileVersion": "2.0.0.5"
+          }
         }
       },
       "DDPM.SA.Obfuscation/1.0.0": {
         "runtime": {
-          "DDPM.SA.Obfuscation.dll": {}
+          "DDPM.SA.Obfuscation.dll": {
+            "assemblyVersion": "1.0.0",
+            "fileVersion": "1.0.0.0"
+          }
         }
       },
       "VcpCore.Common/2.0.0.5": {
@@ -429,7 +438,10 @@
           "DellClientFramework": "6.4.11.2"
         },
         "runtime": {
-          "VcpCore.Common.dll": {}
+          "VcpCore.Common.dll": {
+            "assemblyVersion": "2.0.0.5",
+            "fileVersion": "2.0.0.5"
+          }
         }
       },
       "VcpCore.Interfaces/2.0.0.5": {
@@ -438,7 +450,10 @@
           "VcpCore.Common": "2.0.0.5"
         },
         "runtime": {
-          "VcpCore.Interfaces.dll": {}
+          "VcpCore.Interfaces.dll": {
+            "assemblyVersion": "2.0.0.5",
+            "fileVersion": "2.0.0.5"
+          }
         }
       },
       "DPeMPublic.Common/1.7.6.0": {
@@ -497,7 +512,7 @@
       "serviceable": false,
       "sha512": ""
     },
-    "runtimepack.Microsoft.Windows.SDK.NET.Ref/10.0.19041.31": {
+    "runtimepack.Microsoft.Windows.SDK.NET.Ref/10.0.19041.53": {
       "type": "runtimepack",
       "serviceable": false,
       "sha512": ""
