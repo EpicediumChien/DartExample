@@ -589,6 +589,22 @@ namespace DDPM.UI.Module.Kvm
                 WorkerReportsProgress = false,
                 WorkerSupportsCancellation = false
             };
+            SupportNKVM = Visibility.Collapsed;
+            SupportUSBKVM = Visibility.Collapsed;
+            var directory = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
+
+            directory = $"C:\\Program Files\\Dell\\Dell Display and Peripheral Manager";
+            string strFullPath = string.Format("{0}\\Plugins\\NKVM\\DDM.exe", directory);
+
+            if (DdpmCommonHelper.DeviceManagerSA.isNKVMSupportMonitor(DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo).Result && File.Exists(strFullPath))
+            {
+                SupportNKVM = Visibility.Visible;
+            }
+
+            if (DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo.CapabilityDic.ContainsKey("EE"))
+            {
+                SupportUSBKVM = Visibility.Visible;
+            }
             bw.DoWork += DoWork_RefreshData;
             bw.RunWorkerCompleted += RunWorkerCompleted_RefreshData;
             bw.RunWorkerAsync(); //myArg is the optional argument
@@ -598,7 +614,7 @@ namespace DDPM.UI.Module.Kvm
         private void DoWork_RefreshData(object sender, DoWorkEventArgs e)
         {
             try // 2024-06-19 Fix exception when close Main UI or device remove.
-            {
+            { 
                 //sender is the ‘bw’ object
                 BackgroundWorker bwk = (BackgroundWorker)sender;
 
@@ -615,24 +631,10 @@ namespace DDPM.UI.Module.Kvm
                     return;
                 }
 
-                SupportNKVM = Visibility.Collapsed;
-                SupportUSBKVM = Visibility.Collapsed;
-
-                var directory = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
-
-                directory = $"C:\\Program Files\\Dell\\Dell Display and Peripheral Manager";
-                string strFullPath = string.Format("{0}\\Plugins\\NKVM\\DDM.exe", directory);
-
-                if (DdpmCommonHelper.DeviceManagerSA.isNKVMSupportMonitor(mi).Result && File.Exists(strFullPath))
-                {
-                    SupportNKVM = Visibility.Visible;
-                }
-
                 USBKVMisON = KvmModule.isUSBKVM;//DdpmCommonHelper.DeviceManagerSA.GetOnNKVM().Result;
                 NKVMisON = DdpmCommonHelper.DeviceManagerSA.GetOnNKVM(selHomeDevice.MonitorInfo).Result;
                 if (mi.CapabilityDic.ContainsKey("EE"))
                 {
-                    SupportUSBKVM = Visibility.Visible;
                     isUSBKVMButton = true;
                     USBKVMButtonOpacity = 1;
                     //_isUSBKVM = KvmModule.isUSBKVM;
@@ -658,7 +660,7 @@ namespace DDPM.UI.Module.Kvm
                     //Dictionary<string, PCsInfo> pcsList = new Dictionary<string, PCsInfo>();
                     inputList = DdpmCommonHelper.DeviceManagerSA.GetInputSourcelist(KvmModule.SelectedHomeDevice.MonitorInfo).Result;
                     subInputList = DdpmCommonHelper.DeviceManagerSA.GetSubInputList(KvmModule.SelectedHomeDevice.MonitorInfo).Result;
-                    List<InputSourceObj> result = DdpmCommonHelper.DeviceManagerSA.GetSubInputs(KvmModule.SelectedHomeDevice.MonitorInfo).Result;
+                    //List<InputSourceObj> result = DdpmCommonHelper.DeviceManagerSA.GetSubInputs(KvmModule.SelectedHomeDevice.MonitorInfo).Result;
                     if (subInputList != null)
                     {
                         subInputs.Clear();
@@ -879,10 +881,6 @@ namespace DDPM.UI.Module.Kvm
                     //OnPropertyChanged("NoBattery");
                     //OnPropertyChanged("Text1");
                 }
-                //else
-                //{
-                //    SupportUSBKVM = Visibility.Collapsed;
-                //}
             }
             catch (Exception)
             {
