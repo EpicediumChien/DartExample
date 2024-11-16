@@ -539,7 +539,13 @@ namespace DDPM.UI.Common.ViewModels
                         //_selectedHomeDevice.UpdateBatteryIndicator();
                         //Selection changed
                         HandleSelectedHomeDeviceChanged();
-                    }
+
+                        //Robert_Lin, 2024-11-15 Show the OSD-Product on the selected Monitor
+                        if ((DdpmCommonHelper.DeviceManagerSA != null) && (_selectedHomeDevice != null))
+                        {
+                            DdpmCommonHelper.DeviceManagerSA.ShowOSD(_selectedHomeDevice.MonitorInfo, OSDType.DisplayChanged);
+                        }
+                     }
                 }
             }
         }
@@ -627,12 +633,16 @@ namespace DDPM.UI.Common.ViewModels
         public void HandleSelectedHomeDeviceChanged()
         {
             RefreshGroupManagerUIByModuleCapabilities();
+            if ((_selectedHomeDevice != null) && (_selectedHomeDevice.MonitorInfo != null))
+                HandleDdcCiOffEvent(_selectedHomeDevice.MonitorInfo.DDCisON);
 
             if (SelectedHomeDeviceChanged != null)
-                SelectedHomeDeviceChanged(this, EventArgs.Empty);
+            {
+               SelectedHomeDeviceChanged(this, EventArgs.Empty);
+            }
 
             //handle the last select monitor
-            if(DdpmCommonHelper.DeviceManagerSA != null)
+            if (DdpmCommonHelper.DeviceManagerSA != null)
             {
                 if( DdpmCommonHelper.ModuleOwner != null && 
                     DdpmCommonHelper.ModuleOwner.SelectedHomeDevice != null &&
@@ -701,7 +711,7 @@ namespace DDPM.UI.Common.ViewModels
 
             foreach (ModuleGroup mg in ModuleGroups)
             {
-                RightViewHeader? rightHeader = mg.FindRightViewHeaderByModuleName("PipPbpModule");
+                RightViewHeader? rightHeader = mg.FindRightViewHeaderByModuleName(Constants.ModuleName_PipPbp);
                 if (rightHeader != null)
                 {
                     rightHeader.IsShown = homeDev.HasCapability_PipPbp;
@@ -755,7 +765,7 @@ namespace DDPM.UI.Common.ViewModels
             // Gaming is basic, VisionEngine is additional
             //If there is no Gaming, then hide the Gaming Group
             LogInfo($"  * Has Gaming Capability={homeDev.HasCapability_Gaming}");
-            ModuleGroup? mgGaming = ModuleGroups.FirstOrDefault(x => x.GroupName.Equals("Gaming"));
+            ModuleGroup? mgGaming = ModuleGroups.FirstOrDefault(x => x.GroupName.Equals(Constants.GroupName_Gaming));
             if (mgGaming != null)
             {
                 VbarItem1? vbarItem = VbarItems.Find(x => x.Text.Equals(mgGaming.VbarText));
@@ -767,9 +777,9 @@ namespace DDPM.UI.Common.ViewModels
                     //Then we will change the selected Group to another visible vbarItem
                     if ((homeDev.HasCapability_Gaming) && (SelectedGroup != null))
                     {
-                        if (SelectedGroup.GroupName.Equals("Gaming"))
+                        if (SelectedGroup.GroupName.Equals(Constants.GroupName_Gaming))
                         {
-                            RightViewHeader? rightHeader = SelectedGroup.FindRightViewHeaderByModuleName("VisionEngineModule");
+                            RightViewHeader? rightHeader = SelectedGroup.FindRightViewHeaderByModuleName(Constants.ModuleName_VisionEngine);
                             //If Vision Engine is shown, AND current selected module is Vision Engine
                             if ((rightHeader.IsShown) && (SelectedGroup.HeaderSelectedIndex == 1))
                             {
@@ -791,10 +801,10 @@ namespace DDPM.UI.Common.ViewModels
                             //}
                         }
                     }
-                    else if (SelectedGroup != null && SelectedGroup.GroupName.Equals("Gaming"))
+                    else if (SelectedGroup != null && SelectedGroup.GroupName.Equals(Constants.GroupName_Gaming))
                     {
                         //Change to EasyArrange
-                        int idxEaGroup = FindGroupIndexByGroupName("EasyArrange");
+                        int idxEaGroup = FindGroupIndexByGroupName(Constants.GroupName_EasyArrange);
                         if (idxEaGroup < 0)
                             idxEaGroup = 0;
                         GroupSelectedIndex = idxEaGroup;
@@ -807,7 +817,7 @@ namespace DDPM.UI.Common.ViewModels
             {
                 foreach (ModuleGroup mg in ModuleGroups)
                 {
-                    RightViewHeader? rightHeader = mg.FindRightViewHeaderByModuleName("VisionEngineModule");
+                    RightViewHeader? rightHeader = mg.FindRightViewHeaderByModuleName(Constants.ModuleName_VisionEngine);
                     if (rightHeader != null)
                     {
                         rightHeader.IsShown = homeDev.HasCapability_VisionEngine;
@@ -824,7 +834,7 @@ namespace DDPM.UI.Common.ViewModels
             //Looking for "DisplayPropertiesModule" module
             foreach (ModuleGroup mg in ModuleGroups)
             {
-                RightViewHeader? rightHeader = mg.FindRightViewHeaderByModuleName("DisplayPropertiesModule");
+                RightViewHeader? rightHeader = mg.FindRightViewHeaderByModuleName(Constants.ModuleName_DisplayProperties);
                 if (rightHeader != null)
                 {
                     rightHeader.IsShown = !homeDev.HasCapability_Gaming;
@@ -944,5 +954,50 @@ namespace DDPM.UI.Common.ViewModels
             }
         }
         #endregion
+
+        #region Set Selected Group/Module 
+        public bool ShowDisplayHotkeysModule()
+        {
+            //Find the terget Group
+            int idxGroup = FindGroupIndexByGroupName(Constants.GroupName_InputSource);
+            if (idxGroup < 0) //Not found
+                return false;
+            ModuleGroup mg = ModuleGroups[idxGroup];
+
+            //Set the selected Module
+            int idxHeader = mg.SetSelectedRightVewHeaderByModuleName(Constants.ModuleName_DisplayHotkeys);
+            if (idxHeader < 0)
+                return false;
+
+            //Switch to the terget Group
+            GroupSelectedIndex = idxHeader;
+            return true;
+        }
+
+        /// <summary>
+        /// Change to the specific Group/Module
+        /// </summary>
+        /// <param name="groupName">
+        /// One of Constants.GroupName_XXX which defined in DDPM.UI.Common.Constants
+        /// </param>
+        /// <param name="moduleName"></param>
+        public bool ShowSpecificModule(string groupName, string moduleName)
+        {
+            //Find the terget Group
+            int idxGroup = FindGroupIndexByGroupName(groupName);
+            if (idxGroup < 0) //Not found
+                return false;
+            ModuleGroup mg = ModuleGroups[idxGroup];
+
+            //Set the selected Module
+            int idxHeader = mg.SetSelectedRightVewHeaderByModuleName(moduleName);
+            if (idxHeader < 0)
+                return false;
+
+            //Switch to the terget Group
+            GroupSelectedIndex = idxGroup;
+            return true;
+        }
+        #endregion  Set Selected Group/Module 
     }
 }

@@ -2049,4 +2049,223 @@
   <data name="No" xml:space="preserve">
     <value>否</value>
   </data>
+  <data name="Camera.12" xml:space="preserve">
+    <value>添加预设时不可用</value>
+  </data>
+  <data name="Camera.13" xml:space="preserve">
+    <value>添加预设时并非所有功能都可用</value>
+  </data>
+  <data name="HeadsetAudioSettings.20" xml:space="preserve">
+    <value>控制您听到的外部声音量</value>
+  </data>
+  <data name="HeadsetAudioSettings.21" xml:space="preserve">
+    <value>消除周围噪音</value>
+  </data>
+  <data name="HeadsetAudioSettings.22" xml:space="preserve">
+    <value>允许听到环境声。调整听到的环境声的音量级别。</value>
+  </data>
+  <data name="HeadsetAudioSettings.23" xml:space="preserve">
+    <value>关闭降噪功能</value>
+  </data>
+  <data name="HeadsetAudioSettings.24" xml:space="preserve">
+    <value>限制近端麦克风噪音，为他人创造更好的音频体验</value>
+  </data>
+  <data name="HeadsetAudioSettings.25" xml:space="preserve">
+    <value>限制远端麦克风噪音，为您创造更好的音频体验</value>
+  </data>
+  <data name="HeadsetAudioSettings.26" xml:space="preserve">
+    <value>均衡器会根据所选预设进行调整</value>
+  </data>
+  <data name="HeadsetAudioSettings.27" xml:space="preserve">
+    <value>调整通话时您能听到自己声音的程度。（在“透明模式”下不可用）</value>
+  </data>
+  <data name="HeadsetAudioSettings.28" xml:space="preserve">
+    <value>消除背景噪音，让您的声音清晰可辨</value>
+  </data>
+  <data name="HeadsetAutomatedActions.9" xml:space="preserve">
+    <value>摘下耳机时的自动操作</value>
+  </data>
+  <data name="HeadsetAutomatedActions.10" xml:space="preserve">
+    <value>摘下耳机时自动暂停音乐播放。戴上耳机后，音乐将自动恢复播放。</value>
+  </data>
+  <data name="HeadsetAutomatedActions.11" xml:space="preserve">
+    <value>摘下耳机时自动将麦克风静音</value>
+  </data>
+  <data name="HeadsetAutomatedActions.12" xml:space="preserve">
+    <value>将吊杆式麦克风向下拉即可接听来电</value>
+  </data>
+  <data name="HeadsetAutomatedActions.13" xml:space="preserve">
+    <value>将耳罩从耳朵上移开时的自动操作</value>
+  </data>
+  <data name="HeadsetDeviceSettings.7" xml:space="preserve">
+    <value>通话时指示灯</value>
+  </data>
+  <data name="HeadsetDeviceSettings.8" xml:space="preserve">
+    <value>音频提示和设备功能声明</value>
+  </data>
+  <data name="SpeakerToolTip.0" xml:space="preserve">
+    <value>消除背景噪音，让您的声音清晰可辨</value>
+  </data>
+  <data name="SpeakerToolTip.1" xml:space="preserve">
+    <value>设备静音时播放声音</value>
+  </data>
+  <data name="SpeakerToolTip.2" xml:space="preserve">
+    <value>调整音量时播放声音</value>
+  </data>
+  <data name="Continue" xml:space="preserve">
+    <value>继续</value>
+  </data>
+  <data name="ImpExp_RestartMsg.0" xml:space="preserve">
+    <value>设置已更改。Dell Display and Peripheral Manager 将重新启动。</value>
+  </data>
+  <data name="ImpExp_SuccessMsg.0" xml:space="preserve">
+    <value>应用程序设置导出成功</value>
+  </data>
+  <data name="ImpExp_SuccessMsg.1" xml:space="preserve">
+    <value>应用程序设置已成功应用于 %1。畅享使用显示器的乐趣吧。</value>
+  </data>
+  <data name="ImpExp_WarningMsg.0" xml:space="preserve">
+    <value>这不是您的主显示器。是否要继续并将其设置为用于同步的主显示器？</value>
+  </data>
+  <data name="ImpExp_WarningMsg.1" xml:space="preserve">
+    <value>e 与当前布局相关联。是否要覆盖它？</value>
+  </data>
+  <data name="RestartNeeded" xml:space="preserve">
+    <value>需要重新启动</value>
+  </data>
+  <data name="Success" xml:space="preserve">
+    <value>成功</value>
+  </data>
+  <data name="Warning" xml:space="preserve">
+    <value>警告</value>
+  </data>
+  <data name="ImpExp_Message.0" xml:space="preserve">
+    <value>检测到相同型号时自动应用设置</value>
+  </data>
+  <data name="DisplayDefault.0" xml:space="preserve">
+    <value>是否要立即将显示器重置为出厂设置？</value>
+  </data>
+  <data name="RestoreToDefaultActions" xml:space="preserve">
+    <value>恢复到默认操作</value>
+  </data>
+  <data name="Game_Enhance_Mode" xml:space="preserve">
+    <value>游戏增强模式</value>
+  </data>
+  <data name="Response_Time" xml:space="preserve">
+    <value>响应时间</value>
+  </data>
+  <data name="Dark_Stabilizer" xml:space="preserve">
+    <value>深色稳定器</value>
+  </data>
+  <data name="Dark_Stabilizer_Toggle" xml:space="preserve">
+    <value>深色稳定器切换</value>
+  </data>
+  <data name="Dual_Resolution" xml:space="preserve">
+    <value>双重分辨率</value>
+  </data>
+  <data name="Dual_Resolution_Toggle" xml:space="preserve">
+    <value>双重分辨率切换</value>
+  </data>
+  <data name="Resolution_and_Refresh_Rate" xml:space="preserve">
+    <value>分辨率和刷新率</value>
+  </data>
+  <data name="Toggle_Vision_Engine" xml:space="preserve">
+    <value>切换 Vision Engine</value>
+  </data>
+  <data name="Third_Party_Licenses" xml:space="preserve">
+    <value>第三方许可</value>
+  </data>
+  <data name="Help" xml:space="preserve">
+    <value>帮助</value>
+  </data>
+  <data name="Need_help" xml:space="preserve">
+    <value>需要帮助吗？有关此软件的更多信息，请单击下面的按钮。</value>
+  </data>
+  <data name="Learn_more" xml:space="preserve">
+    <value>了解更多</value>
+  </data>
+  <data name="On_screen_notifications" xml:space="preserve">
+    <value>屏幕上通知</value>
+  </data>
+  <data name="All_Devices" xml:space="preserve">
+    <value>所有设备</value>
+  </data>
+  <data name="Low_battery_level" xml:space="preserve">
+    <value>电池电量低</value>
+  </data>
+  <data name="Device_specific" xml:space="preserve">
+    <value>特定于设备</value>
+  </data>
+  <data name="Keyboard_lock_key" xml:space="preserve">
+    <value>键盘锁定键</value>
+  </data>
+  <data name="Webcam_WB7022_Presence_Detection_sensor_cover_state" xml:space="preserve">
+    <value>网络摄像头 WB7022 用户检测传感器保护盖状态</value>
+  </data>
+  <data name="Headset_speakerphone_and_soundbar_mute_unmute" xml:space="preserve">
+    <value>耳机、扬声器和音棒静音/取消静音</value>
+  </data>
+  <data name="Display_Color_Preset_and_Easy_Memory" xml:space="preserve">
+    <value>显示色彩预设和 Easy Memory</value>
+  </data>
+  <data name="Reports" xml:space="preserve">
+    <value>报告</value>
+  </data>
+  <data name="Save_diagnostic_report" xml:space="preserve">
+    <value>保存诊断报告</value>
+  </data>
+  <data name="Save_monitor_asset_report" xml:space="preserve">
+    <value>保存显示器资产报告</value>
+  </data>
+  <data name="Widget_Settings" xml:space="preserve">
+    <value>小组件设置</value>
+  </data>
+  <data name="Activate_Quick_Access_widget_during_Zoom_conference_calls" xml:space="preserve">
+    <value>在 Zoom 电话会议期间激活“快速访问”小组件</value>
+  </data>
+  <data name="Widget_will_automatically_appear_when_meeting_begins" xml:space="preserve">
+    <value>当会议开始时，将自动显示小组件，以自定义受支持的网络摄像头的设置</value>
+  </data>
+  <data name="Enable_shortcut_reminder_for_Quick_Accesswidget" xml:space="preserve">
+    <value>启用“快速访问”小组件的快捷方式提醒</value>
+  </data>
+  <data name="Critical" xml:space="preserve">
+    <value>关键</value>
+  </data>
+  <data name="Recommended" xml:space="preserve">
+    <value>推荐</value>
+  </data>
+  <data name="Optional" xml:space="preserve">
+    <value>可选</value>
+  </data>
+  <data name="VisionEngine_Night" xml:space="preserve">
+    <value>夜间</value>
+  </data>
+  <data name="VisionEngine_Clear" xml:space="preserve">
+    <value>清晰度</value>
+  </data>
+  <data name="VisionEngine_Bino" xml:space="preserve">
+    <value>Bino</value>
+  </data>
+  <data name="VisionEngine_Chroma" xml:space="preserve">
+    <value>色度</value>
+  </data>
+  <data name="VisionEngine_Crosshair" xml:space="preserve">
+    <value>十字准星</value>
+  </data>
+  <data name="Software_version" xml:space="preserve">
+    <value>软件版本</value>
+  </data>
+  <data name="Driver_version" xml:space="preserve">
+    <value>驱动程序版本</value>
+  </data>
+  <data name="Preview_Changes" xml:space="preserve">
+    <value>预览更改</value>
+  </data>
+  <data name="Stop_Preview" xml:space="preserve">
+    <value>停止预览</value>
+  </data>
+  <data name="Tooltips_Schedule" xml:space="preserve">
+    <value>此功能使我们的眼睛能够适应所需的设置。</value>
+  </data>
 </root>

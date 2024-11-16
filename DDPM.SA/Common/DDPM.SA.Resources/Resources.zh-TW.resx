@@ -118,208 +118,208 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="no_updates_available" xml:space="preserve">
-    <value>利用可能なアップデートはありません。</value>
+    <value>無可用更新。</value>
   </data>
   <data name="Updates_info" xml:space="preserve">
-    <value>アップデート情報</value>
+    <value>更新資訊</value>
   </data>
   <data name="Software_update_unsuccessful" xml:space="preserve">
-    <value>ソフトウェア アップデートに失敗しました。</value>
+    <value>軟體更新失敗。</value>
   </data>
   <data name="CA_check_fail" xml:space="preserve">
-    <value>CAチェックの失敗</value>
+    <value>CA 檢查失敗</value>
   </data>
   <data name="Network_fail" xml:space="preserve">
-    <value>ネットワーク障害</value>
+    <value>網路故障</value>
   </data>
   <data name="Update_failed_due_to_network_error" xml:space="preserve">
-    <value>ネットワーク エラーのため、アップデートに失敗しました。もう一度やり直してください。</value>
+    <value>更新失敗，因為發生網路錯誤。請再試一次。</value>
   </data>
   <data name="Dock_FW_is_loaded" xml:space="preserve">
-    <value>ドッキング ステーションFWがロードされました。FWの適用を完了するためにドッキング ステーションを取り外し、1分後に再接続してください。</value>
+    <value>已載入擴充基座韌體。在完成韌體應用程式時拔下擴充基座，並在 1 分鐘後重新連接擴充基座。</value>
   </data>
   <data name="Dock_UOD_FW_update_info" xml:space="preserve">
-    <value>ドッキング ステーションUOD FWアップデート情報</value>
+    <value>擴充基座 UOD 韌體更新資訊</value>
   </data>
   <data name="Firmware_update_unsuccessful" xml:space="preserve">
-    <value>ファームウェア アップデートに失敗しました。</value>
+    <value>韌體更新失敗。</value>
   </data>
   <data name="Multiple_docks_are_detected" xml:space="preserve">
-    <value>複数のドッキング ステーションが検出されました。ドッキング ステーションの損傷を防ぐため、ドッキング ステーションは1台のみ接続してください。</value>
+    <value>偵測到多個擴充基座。請只連接一個擴充基座，以免擴充基座損壞。</value>
   </data>
   <data name="Dock_FW_info" xml:space="preserve">
-    <value>ドッキング ステーションFW情報</value>
+    <value>擴充基座韌體資訊</value>
   </data>
   <data name="Dock_FW_is_being_loaded" xml:space="preserve">
-    <value>ドッキング ステーションFWをロードしています。ドッキング ステーションを取り外さないでください。</value>
+    <value>正在載入擴充基座韌體。請勿拔下擴充基座。</value>
   </data>
   <data name="Dock_FW_is_loaded_successful" xml:space="preserve">
-    <value>ドッキング ステーションFWが正常にロードされました。FWの適用を完了するためにドッキング ステーションを取り外し、1分後に再接続してください。</value>
+    <value>已成功載入擴充基座韌體。在完成韌體應用程式時拔下擴充基座，並在 1 分鐘後重新連接擴充基座。</value>
   </data>
   <data name="Dock_FW_loaded_failed" xml:space="preserve">
-    <value>ドッキング ステーションFWのロードに失敗しました。</value>
+    <value>擴充基座韌體載入失敗。</value>
   </data>
   <data name="Warning" xml:space="preserve">
     <value>警告</value>
   </data>
   <data name="Auto_Brightness_is_currently_enabled" xml:space="preserve">
-    <value>明るさの自動調整は現在有効です。オーバーライドしますか？</value>
+    <value>「自動亮度」目前已啟用。是否要覆寫該設定？</value>
   </data>
   <data name="Error" xml:space="preserve">
-    <value>エラー</value>
+    <value>錯誤</value>
   </data>
   <data name="SW_info" xml:space="preserve">
-    <value>SW情報</value>
+    <value>軟體資訊</value>
   </data>
   <data name="UOD_update_completed" xml:space="preserve">
-    <value>UODアップデートが完了しました。</value>
+    <value>UOD 更新已完成。</value>
   </data>
   <data name="UOD_update_fail" xml:space="preserve">
-    <value>UODアップデートに失敗しました。</value>
+    <value>UOD 更新失敗。</value>
   </data>
   <data name="FW_info" xml:space="preserve">
-    <value>FW情報</value>
+    <value>韌體資訊</value>
   </data>
   <data name="update_download_cancel" xml:space="preserve">
-    <value>パソコンのバッテリー残量が少なすぎるため、アップデートのダウンロードがキャンセルされます。</value>
+    <value>更新下載取消，因為 PC 電量太低。</value>
   </data>
   <data name="FW_is_being_Installing" xml:space="preserve">
-    <value>FWをインストールしています。デバイスを取り外さないでください。</value>
+    <value>正在安裝韌體。請勿拔下裝置。</value>
   </data>
   <data name="Update" xml:space="preserve">
-    <value>アップデート</value>
+    <value>更新</value>
   </data>
   <data name="Delay" xml:space="preserve">
-    <value>遅延</value>
+    <value>延遲</value>
   </data>
   <data name="Yes" xml:space="preserve">
-    <value>はい</value>
+    <value>是</value>
   </data>
   <data name="No" xml:space="preserve">
-    <value>いいえ</value>
+    <value>否</value>
   </data>
   <data name="Invalid_ID" xml:space="preserve">
-    <value>IDが無効です。有効なアクションIDを入力してください。</value>
+    <value>ID 無效。請提供有效的動作 ID。</value>
   </data>
   <data name="Failed_to_open_application" xml:space="preserve">
-    <value>アプリケーションを開くことができませんでした</value>
+    <value>無法開啟應用程式</value>
   </data>
   <data name="will_be_updated_to " xml:space="preserve">
-    <value>が次にアップデートされます: </value>
+    <value>將更新為 </value>
   </data>
   <data name="can_be_updated_to" xml:space="preserve">
-    <value>を次にアップデートできます:</value>
+    <value>可更新為</value>
   </data>
   <data name="UpdateAvailable" xml:space="preserve">
-    <value>アップデートが利用可能です</value>
+    <value>可用的更新</value>
   </data>
   <data name="UpdateWillBeApplied" xml:space="preserve">
-    <value>アップデートが適用されます</value>
+    <value>將套用更新</value>
   </data>
   <data name="UpdateAvailable_Info" xml:space="preserve">
-    <value>デバイスおよび/またはアプリケーションがアップデートされます。デバイスおよび/またはアプリケーションを断続的には使用できる可能性があります。アップデート中にデバイスを取り外さないでください。</value>
+    <value>裝置及/或應用程式將會更新。裝置及/或應用程式可能會間歇性可用。更新期間請勿拔下裝置。</value>
   </data>
   <data name="UpdateWillBeApplied_Info" xml:space="preserve">
-    <value>デバイスおよび/またはアプリケーションがアップデートされます。デバイスおよび/またはアプリケーションを断続的には使用できる可能性があります。アップデート中にデバイスを取り外さないでください。</value>
+    <value>裝置及/或應用程式將會更新。裝置及/或應用程式可能會間歇性可用。更新期間請勿拔下裝置。</value>
   </data>
   <data name="UpdateNow" xml:space="preserve">
-    <value>今すぐアップデート</value>
+    <value>立刻更新</value>
   </data>
   <data name="Defer" xml:space="preserve">
-    <value>延期</value>
+    <value>延後</value>
   </data>
   <data name="Ok" xml:space="preserve">
-    <value>OK</value>
+    <value>確定</value>
   </data>
   <data name="Service_not_running_Try_again" xml:space="preserve">
-    <value>サービスが実行されていません。もう一度やり直してください</value>
+    <value>服務未執行。請再試一次</value>
   </data>
   <data name="Timeout_error" xml:space="preserve">
-    <value>タイムアウト エラー</value>
+    <value>逾時錯誤</value>
   </data>
   <data name="M1_Please_double_click_mouse_left_button_to_start_firmware_update" xml:space="preserve">
-    <value>ファームウェア アップデートを開始するにはマウスの左ボタンをダブルクリックしてください</value>
+    <value>請按兩下滑鼠左鍵以開始韌體更新</value>
   </data>
   <data name="M2_Please_press_key_on_keyboard_to_start_firmware_update" xml:space="preserve">
-    <value>ファームウェア アップデートを開始するにはキーボードの\&quot;U\&quot;キーを押してください</value>
+    <value>請按下鍵盤上的 \&quot;U\&quot; 鍵以開始韌體更新</value>
   </data>
   <data name="A0_Device_connected" xml:space="preserve">
-    <value>デバイスが接続されました</value>
+    <value>已連接裝置</value>
   </data>
   <data name="A1_Firmware_update_started" xml:space="preserve">
-    <value>ファームウェア アップデートが開始されました</value>
+    <value>韌體更新已開始</value>
   </data>
   <data name="A2_Firmware_update_successful" xml:space="preserve">
-    <value>ファームウェア アップデートが正常に行われました</value>
+    <value>韌體更新成功</value>
   </data>
   <data name="E4_USB_wireless_receiver_firmware_is_unable_to_support_device_firmware_upgrade" xml:space="preserve">
-    <value>USBワイヤレス レシーバーのファームウェアが、デバイス ファームウェアのアップグレードをサポートできません</value>
+    <value>USB 無線接收器韌體無法支援裝置韌體升級</value>
   </data>
   <data name="update_failed_with_unknown_error" xml:space="preserve">
-    <value>不明なエラーのため、アップデートに失敗しました</value>
+    <value>更新失敗，出現未知錯誤</value>
   </data>
   <data name="User_aborted_firmware_update" xml:space="preserve">
-    <value>ユーザーがファームウェア アップデートを中止しました</value>
+    <value>使用者已中止韌體更新</value>
   </data>
   <data name="Installing" xml:space="preserve">
-    <value>インストール中</value>
+    <value>安裝</value>
   </data>
   <data name="Timeout" xml:space="preserve">
-    <value>タイムアウト</value>
+    <value>逾時</value>
   </data>
   <data name="Downloading_and_installing" xml:space="preserve">
-    <value>ダウンロードしてインストールしています</value>
+    <value>下載與安裝</value>
   </data>
   <data name="DDPM_will_reopen_soon_after_update" xml:space="preserve">
-    <value>DDPMはアップデート後すぐに再開されます</value>
+    <value>DDPM 在更新後很快就會重新開啟</value>
   </data>
   <data name="Processing" xml:space="preserve">
-    <value>処理中</value>
+    <value>處理中</value>
   </data>
   <data name="Software_Update" xml:space="preserve">
-    <value>ソフトウェア アップデート</value>
+    <value>軟體更新</value>
   </data>
   <data name="Firmware_Update" xml:space="preserve">
-    <value>ファームウェア更新プログラム</value>
+    <value>韌體更新</value>
   </data>
   <data name="Updating_Software_Do_not_power_off_this_PC" xml:space="preserve">
-    <value>ソフトウェアをアップデートしています。このパソコンの電源を切らないでください。</value>
+    <value>正在更新軟體。請勿關閉此 PC 電源。</value>
   </data>
   <data name="Updating_firmware_Do_not_remove_or_power_off_the_device_Leave_the_device_undisturbed" xml:space="preserve">
-    <value>ファームウェアをアップデートしています。デバイスを取り外したり、電源を切ったりせず、そのままにしておいてください</value>
+    <value>正在更新韌體。請勿移除裝置或關閉裝置電源。讓裝置不受干擾</value>
   </data>
   <data name="Unable_to_detect_target_device" xml:space="preserve">
-    <value>ターゲット デバイスを検出できません</value>
+    <value>無法偵測到目標裝置</value>
   </data>
   <data name="AI_Auto_Framing" xml:space="preserve">
-    <value>AI自動フレーミング</value>
+    <value>AI 自動構圖</value>
   </data>
   <data name="ON" xml:space="preserve">
-    <value>オン</value>
+    <value>開啟</value>
   </data>
   <data name="OFF" xml:space="preserve">
-    <value>オフ</value>
+    <value>關閉</value>
   </data>
   <data name="Presets" xml:space="preserve">
-    <value>プリセット</value>
+    <value>預設值</value>
   </data>
   <data name="Auto_framing" xml:space="preserve">
-    <value>自動フレーミング</value>
+    <value>自動構圖</value>
   </data>
   <data name="Field_of_View" xml:space="preserve">
     <value>視野</value>
   </data>
   <data name="Zoom" xml:space="preserve">
-    <value>拡大縮小</value>
+    <value>縮放</value>
   </data>
   <data name="Default" xml:space="preserve">
-    <value>デフォルト</value>
+    <value>預設</value>
   </data>
   <data name="Smooth" xml:space="preserve">
-    <value>滑らか</value>
+    <value>平滑</value>
   </data>
   <data name="Vibrant" xml:space="preserve">
-    <value>鮮やか</value>
+    <value>鮮明</value>
   </data>
   <data name="Warm" xml:space="preserve">
     <value>暖色</value>
@@ -328,153 +328,153 @@
     <value>標準</value>
   </data>
   <data name="Native_0" xml:space="preserve">
-    <value>ネイティブ</value>
+    <value>原生</value>
   </data>
   <data name="Multimedia_0" xml:space="preserve">
-    <value>マルチメディア</value>
+    <value>多媒體</value>
   </data>
   <data name="Movie_0" xml:space="preserve">
-    <value>映画</value>
+    <value>電影</value>
   </data>
   <data name="Nature_0" xml:space="preserve">
     <value>自然</value>
   </data>
   <data name="Game_0" xml:space="preserve">
-    <value>ゲーム</value>
+    <value>遊戲</value>
   </data>
   <data name="Game_1" xml:space="preserve">
-    <value>ゲーム1</value>
+    <value>遊戲 1</value>
   </data>
   <data name="Sport_0" xml:space="preserve">
-    <value>スポーツ</value>
+    <value>運動</value>
   </data>
   <data name="Text_0" xml:space="preserve">
-    <value>テキスト</value>
+    <value>文字</value>
   </data>
   <data name="Warm_0" xml:space="preserve">
     <value>暖色</value>
   </data>
   <data name="Cool_0" xml:space="preserve">
-    <value>冷却</value>
+    <value>低溫</value>
   </data>
   <data name="Custom_Color" xml:space="preserve">
-    <value>カスタム カラー</value>
+    <value>自訂色彩</value>
   </data>
   <data name="ComfortView_0" xml:space="preserve">
     <value>ComfortView</value>
   </data>
   <data name="Game_2" xml:space="preserve">
-    <value>ゲーム2</value>
+    <value>遊戲 2</value>
   </data>
   <data name="Game_3" xml:space="preserve">
-    <value>ゲーム3</value>
+    <value>遊戲 3</value>
   </data>
   <data name="Desktop_0" xml:space="preserve">
-    <value>デスクトップ</value>
+    <value>桌面</value>
   </data>
   <data name="Reference_0" xml:space="preserve">
-    <value>参照</value>
+    <value>參考資料</value>
   </data>
   <data name="Metro_0" xml:space="preserve">
-    <value>メトロ</value>
+    <value>大都會</value>
   </data>
   <data name="Paper_0" xml:space="preserve">
-    <value>紙</value>
+    <value>紙張</value>
   </data>
   <data name="Standard_HDR" xml:space="preserve">
-    <value>標準HDR</value>
+    <value>標準 HDR</value>
   </data>
   <data name="Movie_HDR" xml:space="preserve">
-    <value>映画HDR</value>
+    <value>電影 HDR</value>
   </data>
   <data name="Game_HDR" xml:space="preserve">
-    <value>ゲームHDR</value>
+    <value>遊戲 HDR</value>
   </data>
   <data name="Vivid_HDR" xml:space="preserve">
-    <value>鮮明なHDR</value>
+    <value>逼真 HDR</value>
   </data>
   <data name="Custom_1" xml:space="preserve">
-    <value>カスタム1</value>
+    <value>自訂 1</value>
   </data>
   <data name="Custom_2" xml:space="preserve">
-    <value>カスタム2</value>
+    <value>自訂 2</value>
   </data>
   <data name="Custom_3" xml:space="preserve">
-    <value>カスタム3</value>
+    <value>自訂 3</value>
   </data>
   <data name="User_1" xml:space="preserve">
-    <value>ユーザー1</value>
+    <value>使用者 1</value>
   </data>
   <data name="User_2" xml:space="preserve">
-    <value>ユーザー2</value>
+    <value>使用者 2</value>
   </data>
   <data name="User_3" xml:space="preserve">
-    <value>ユーザー3</value>
+    <value>使用者 3</value>
   </data>
   <data name="SPORTS_Game" xml:space="preserve">
-    <value>スポーツ ゲーム</value>
+    <value>體育遊戲</value>
   </data>
   <data name="Custom_layout" xml:space="preserve">
-    <value>カスタム レイアウト</value>
+    <value>自訂配置</value>
   </data>
   <data name="Cancel_0" xml:space="preserve">
-    <value>キャンセル</value>
+    <value>取消</value>
   </data>
   <data name="Save_0" xml:space="preserve">
-    <value>保存</value>
+    <value>儲存</value>
   </data>
   <data name="Arrange_Windows" xml:space="preserve">
-    <value>ウィンドウの配置</value>
+    <value>排列視窗</value>
   </data>
   <data name="EA_MSG_0" xml:space="preserve">
-    <value>現在のウィンドウの配置を調整し、名前を編集し（必要な場合）、［保存］をクリックして配置を保存します。</value>
+    <value>調整目前的視窗排列、編輯名稱 (如有需要)，然後按下「儲存」以儲存排列。</value>
   </data>
   <data name="Battery_Low" xml:space="preserve">
-    <value>バッテリー残量少</value>
+    <value>電量低</value>
   </data>
   <data name="Caps_Lock_On" xml:space="preserve">
-    <value>Caps Lockオン</value>
+    <value>Caps Lock 開啟</value>
   </data>
   <data name="Caps Lock Off" xml:space="preserve">
-    <value>Caps Lockオフ</value>
+    <value>Caps Lock 關閉</value>
   </data>
   <data name="Easy_Memory" xml:space="preserve">
     <value>Easy Memory</value>
   </data>
   <data name="Go_to_Widget_Settings" xml:space="preserve">
-    <value>ウィジェット設定に移動</value>
+    <value>前往小工具設定</value>
   </data>
   <data name="is_muted" xml:space="preserve">
-    <value>ミュートされています</value>
+    <value>已靜音</value>
   </data>
   <data name="is_Unmuted" xml:space="preserve">
-    <value>ミュート解除されています</value>
+    <value>已取消靜音</value>
   </data>
   <data name="Num_Lock_Off" xml:space="preserve">
-    <value>Num Lockオフ</value>
+    <value>Num Lock 關閉</value>
   </data>
   <data name="Num_Lock_On" xml:space="preserve">
-    <value>Num Lockオン</value>
+    <value>Num Lock 開啟</value>
   </data>
   <data name="Presence_detection_sensor_is_covered" xml:space="preserve">
-    <value>存在検知センサーにカバーが付けられています</value>
+    <value>用戶偵測感應器已遮蓋</value>
   </data>
   <data name="QAM_OSD_Msg" xml:space="preserve">
-    <value>クイック設定ウィジェットに再度アクセスするには、キーボードの[Alt + Z]を押し続けます。</value>
+    <value>若要再次存取快速設定小工具，請按住鍵盤上的 [Alt + Z]。</value>
   </data>
   <data name="Scroll_Lock_Off" xml:space="preserve">
-    <value>Scroll Lockオフ</value>
+    <value>Scroll Lock 關閉</value>
   </data>
   <data name="Scroll_Lock_On" xml:space="preserve">
-    <value>Scroll Lockオン</value>
+    <value>Scroll Lock 開啟</value>
   </data>
   <data name="Export_MSG_0" xml:space="preserve">
-    <value>同じモニターが検出されました。次の設定をインポートしますか:</value>
+    <value>偵測到相同的顯示器，是否要匯入以下設定：</value>
   </data>
   <data name="Version" xml:space="preserve">
-    <value>バージョン</value>
+    <value>版本</value>
   </data>
   <data name="Walk_Away_Lock" xml:space="preserve">
-    <value>退席中ロック</value>
+    <value>遠離時鎖定</value>
   </data>
 </root>

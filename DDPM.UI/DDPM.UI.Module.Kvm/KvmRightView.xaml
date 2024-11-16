@@ -149,7 +149,7 @@
                                                             </Border.Resources>
                                                             <StackPanel>
                                                                 <StackPanel Orientation="Horizontal">
-                                                                    <TextBlock Text="{Binding [Kvm.27], Source={x:Static lang:LangHelper.Instance}}" />
+                                                                    <TextBlock x:Name="KvmHotkeyTooltip" Text="{Binding KvmHotkeyTooltip,Mode=TwoWay}" />
                                                                 </StackPanel>
                                                             </StackPanel>
                                                         </Border>
