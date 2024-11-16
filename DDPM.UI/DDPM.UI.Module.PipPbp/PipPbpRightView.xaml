@@ -138,6 +138,8 @@
                                 </Grid.ColumnDefinitions>
 
                                 <UXControls:UXTextBlock Text="{Binding [PipPbp.2], Source={x:Static lang:LangHelper.Instance}}" Grid.Column="0" />
+                                <!-- Robert_Lin, 2024-11-13 PIMS-319966, Change InputSurce
+                                -->
                                 <ComboBox Grid.Column="2" Style="{StaticResource DdpmComboBoxStyle}"
                                           Width="184" Margin="0" VerticalAlignment="Center"
                                           DisplayMemberPath="DisplayName"
