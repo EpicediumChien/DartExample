@@ -981,7 +981,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
             if (fwUpdateInfoPackage.FWUpdateInfo.Count > 0 || sWUpdateInfoPackage.SWUpdateInfo.Count > 0)
                 ret = true;
             _IsAnyUpdate = ret;
-            if (sWUpdateInfoPackage.SWUpdateInfo.Count > 0)
+            if (sWUpdateInfoPackage.SWUpdateInfo.Count >= 1)
             {
                 InterruptScreenRoot myDeserializedClass = DdpmCommonHelper.DeviceManagerSA.InterruptScreen_Metadata().Result;
                 if (myDeserializedClass != null)

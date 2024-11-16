@@ -31,7 +31,7 @@ namespace DDPM.UI.Common
     /// <summary>
     /// Interaction logic for InterruptScreen.xaml
     /// </summary>
-    public partial class InterruptScreen : UXWindow, INotifyPropertyChanged
+    public partial class InterruptScreen : Window, INotifyPropertyChanged
     {
         public BitmapImage BackgroundImage { get; set; }
         public string NewDeviceName { get; set; }
