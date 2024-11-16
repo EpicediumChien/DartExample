@@ -187,7 +187,7 @@
     <value>Доступні оновлення</value>
   </data>
   <data name="Updates.1" xml:space="preserve">
-    <value>Dell Display and Peripheral Manager закриється та відкриється знову після встановлення оновлень. Після запуску оновлення скасувати цей процес не можна.</value>
+    <value>Dell Display and Peripheral Manager буде закрито й відкрито знову після встановлення оновлень. Після запуску оновлення скасувати цей процес не можна.</value>
   </data>
   <data name="Updates.2" xml:space="preserve">
     <value>Перевірка наявності оновлень</value>
@@ -2048,5 +2048,224 @@
   </data>
   <data name="No" xml:space="preserve">
     <value>Ні</value>
+  </data>
+  <data name="Camera.12" xml:space="preserve">
+    <value>Недоступно під час додавання конфігурації</value>
+  </data>
+  <data name="Camera.13" xml:space="preserve">
+    <value>Під час додавання конфігурації доступні не всі функції</value>
+  </data>
+  <data name="HeadsetAudioSettings.20" xml:space="preserve">
+    <value>Контролює кількість навколишнього звуку, який ви чуєте</value>
+  </data>
+  <data name="HeadsetAudioSettings.21" xml:space="preserve">
+    <value>Усуває навколишній шум</value>
+  </data>
+  <data name="HeadsetAudioSettings.22" xml:space="preserve">
+    <value>Дає змогу чути навколишній звук. Регулює рівень гучності навколишнього звуку, який ви чуєте.</value>
+  </data>
+  <data name="HeadsetAudioSettings.23" xml:space="preserve">
+    <value>Вимикає функції шумозаглушення</value>
+  </data>
+  <data name="HeadsetAudioSettings.24" xml:space="preserve">
+    <value>Обмежує шум від ближнього мікрофона, щоб покращити звук для інших</value>
+  </data>
+  <data name="HeadsetAudioSettings.25" xml:space="preserve">
+    <value>Обмежує шум від віддаленого мікрофона, щоб покращити звук для вас</value>
+  </data>
+  <data name="HeadsetAudioSettings.26" xml:space="preserve">
+    <value>Параметри еквалайзера адаптуються до вибраної конфігурації</value>
+  </data>
+  <data name="HeadsetAudioSettings.27" xml:space="preserve">
+    <value>Регулює чутність власного голосу під час виклику (недоступно в режимі прозорості)</value>
+  </data>
+  <data name="HeadsetAudioSettings.28" xml:space="preserve">
+    <value>Видаляє фоновий шум, щоб ваш голос був чіткішим</value>
+  </data>
+  <data name="HeadsetAutomatedActions.9" xml:space="preserve">
+    <value>Автоматичні дії, коли ви знімаєте гарнітуру</value>
+  </data>
+  <data name="HeadsetAutomatedActions.10" xml:space="preserve">
+    <value>Автоматично припиняє відтворення музики, коли гарнітура знімається. Відтворення музики автоматично відновиться, коли ви ввімкнете гарнітуру.</value>
+  </data>
+  <data name="HeadsetAutomatedActions.11" xml:space="preserve">
+    <value>Автоматично вимикає мікрофон, коли гарнітура знімається</value>
+  </data>
+  <data name="HeadsetAutomatedActions.12" xml:space="preserve">
+    <value>Щоб відповісти на виклик, потягніть виносний мікрофон вниз</value>
+  </data>
+  <data name="HeadsetAutomatedActions.13" xml:space="preserve">
+    <value>Автоматичні дії, коли ви відсуваєте амбушур від вуха</value>
+  </data>
+  <data name="HeadsetDeviceSettings.7" xml:space="preserve">
+    <value>Світловий індикатор під час виклику</value>
+  </data>
+  <data name="HeadsetDeviceSettings.8" xml:space="preserve">
+    <value>Звукові підказки й оголошення про функції пристрою</value>
+  </data>
+  <data name="SpeakerToolTip.0" xml:space="preserve">
+    <value>Видаляє фоновий шум, щоб ваш голос був чіткішим</value>
+  </data>
+  <data name="SpeakerToolTip.1" xml:space="preserve">
+    <value>Відтворює звуковий сигнал, коли на пристрої вимикається звук</value>
+  </data>
+  <data name="SpeakerToolTip.2" xml:space="preserve">
+    <value>Відтворює звуковий сигнал під час регулювання рівня гучності</value>
+  </data>
+  <data name="Continue" xml:space="preserve">
+    <value>Продовжити</value>
+  </data>
+  <data name="ImpExp_RestartMsg.0" xml:space="preserve">
+    <value>Налаштування змінено. Dell Display and Peripheral Manager буде перезапущено.</value>
+  </data>
+  <data name="ImpExp_SuccessMsg.0" xml:space="preserve">
+    <value>Налаштування програми експортовано</value>
+  </data>
+  <data name="ImpExp_SuccessMsg.1" xml:space="preserve">
+    <value>Налаштування програми застосовано до %1. Використовуйте свій монітор із задоволенням.</value>
+  </data>
+  <data name="ImpExp_WarningMsg.0" xml:space="preserve">
+    <value>Це не ваш основний монітор. Продовжити й зробити цей монітор основним для синхронізації?</value>
+  </data>
+  <data name="ImpExp_WarningMsg.1" xml:space="preserve">
+    <value> пов’язано з поточним компонуванням. Перезаписати?</value>
+  </data>
+  <data name="RestartNeeded" xml:space="preserve">
+    <value>Потрібен перезапуск</value>
+  </data>
+  <data name="Success" xml:space="preserve">
+    <value>Успішно</value>
+  </data>
+  <data name="Warning" xml:space="preserve">
+    <value>Попередження</value>
+  </data>
+  <data name="ImpExp_Message.0" xml:space="preserve">
+    <value>Автоматичне застосування налаштувань у разі виявлення тієї ж моделі</value>
+  </data>
+  <data name="DisplayDefault.0" xml:space="preserve">
+    <value>Відновити заводські налаштування монітора?</value>
+  </data>
+  <data name="RestoreToDefaultActions" xml:space="preserve">
+    <value>Відновити стандартні налаштування для дій</value>
+  </data>
+  <data name="Game_Enhance_Mode" xml:space="preserve">
+    <value>Режим покращення ігрового процесу</value>
+  </data>
+  <data name="Response_Time" xml:space="preserve">
+    <value>Час відгуку</value>
+  </data>
+  <data name="Dark_Stabilizer" xml:space="preserve">
+    <value>Стабілізатор темного режиму</value>
+  </data>
+  <data name="Dark_Stabilizer_Toggle" xml:space="preserve">
+    <value>Перемикач стабілізатора темного режиму</value>
+  </data>
+  <data name="Dual_Resolution" xml:space="preserve">
+    <value>Подвійна роздільна здатність</value>
+  </data>
+  <data name="Dual_Resolution_Toggle" xml:space="preserve">
+    <value>Перемикач подвійної роздільної здатності</value>
+  </data>
+  <data name="Resolution_and_Refresh_Rate" xml:space="preserve">
+    <value>Роздільна здатність і частота оновлення</value>
+  </data>
+  <data name="Toggle_Vision_Engine" xml:space="preserve">
+    <value>Перемикання підсистеми візуалізації</value>
+  </data>
+  <data name="Third_Party_Licenses" xml:space="preserve">
+    <value>Ліцензії третіх сторін</value>
+  </data>
+  <data name="Help" xml:space="preserve">
+    <value>Довідка</value>
+  </data>
+  <data name="Need_help" xml:space="preserve">
+    <value>Потрібна допомога? Щоб дізнатися більше про це програмне забезпечення, натисніть кнопку нижче.</value>
+  </data>
+  <data name="Learn_more" xml:space="preserve">
+    <value>Докладніше</value>
+  </data>
+  <data name="On_screen_notifications" xml:space="preserve">
+    <value>Сповіщення на екрані</value>
+  </data>
+  <data name="All_Devices" xml:space="preserve">
+    <value>Усі пристрої</value>
+  </data>
+  <data name="Low_battery_level" xml:space="preserve">
+    <value>Низький рівень заряду акумулятора</value>
+  </data>
+  <data name="Device_specific" xml:space="preserve">
+    <value>Для конкретного пристрою</value>
+  </data>
+  <data name="Keyboard_lock_key" xml:space="preserve">
+    <value>Клавіша блокування клавіатури</value>
+  </data>
+  <data name="Webcam_WB7022_Presence_Detection_sensor_cover_state" xml:space="preserve">
+    <value>Вебкамера WB7022 — стан закриття датчика виявлення присутності</value>
+  </data>
+  <data name="Headset_speakerphone_and_soundbar_mute_unmute" xml:space="preserve">
+    <value>Вимкнення/ввімкнення звуку гарнітури, спікерфона й звукової панелі</value>
+  </data>
+  <data name="Display_Color_Preset_and_Easy_Memory" xml:space="preserve">
+    <value>Конфігурація кольорів дисплея та зручне запам’ятовування</value>
+  </data>
+  <data name="Reports" xml:space="preserve">
+    <value>Звіти</value>
+  </data>
+  <data name="Save_diagnostic_report" xml:space="preserve">
+    <value>Зберегти діагностичний звіт</value>
+  </data>
+  <data name="Save_monitor_asset_report" xml:space="preserve">
+    <value>Зберегти звіт про монітори</value>
+  </data>
+  <data name="Widget_Settings" xml:space="preserve">
+    <value>Налаштування віджета</value>
+  </data>
+  <data name="Activate_Quick_Access_widget_during_Zoom_conference_calls" xml:space="preserve">
+    <value>Активувати віджет швидкого доступу під час конференц-викликів Zoom</value>
+  </data>
+  <data name="Widget_will_automatically_appear_when_meeting_begins" xml:space="preserve">
+    <value>Віджет автоматично з’являтиметься на початку бесіди для налаштування параметрів підтримуваних вебкамер</value>
+  </data>
+  <data name="Enable_shortcut_reminder_for_Quick_Accesswidget" xml:space="preserve">
+    <value>Увімкнути нагадування про комбінацію для запуску віджета швидкого доступу</value>
+  </data>
+  <data name="Critical" xml:space="preserve">
+    <value>Критична</value>
+  </data>
+  <data name="Recommended" xml:space="preserve">
+    <value>Рекомендовано</value>
+  </data>
+  <data name="Optional" xml:space="preserve">
+    <value>Необов’язково</value>
+  </data>
+  <data name="VisionEngine_Night" xml:space="preserve">
+    <value>Ніч</value>
+  </data>
+  <data name="VisionEngine_Clear" xml:space="preserve">
+    <value>Очистити</value>
+  </data>
+  <data name="VisionEngine_Bino" xml:space="preserve">
+    <value>Bino</value>
+  </data>
+  <data name="VisionEngine_Chroma" xml:space="preserve">
+    <value>Chroma</value>
+  </data>
+  <data name="VisionEngine_Crosshair" xml:space="preserve">
+    <value>Перехрестя</value>
+  </data>
+  <data name="Software_version" xml:space="preserve">
+    <value>Версія програмного забезпечення</value>
+  </data>
+  <data name="Driver_version" xml:space="preserve">
+    <value>Версія драйвера</value>
+  </data>
+  <data name="Preview_Changes" xml:space="preserve">
+    <value>Попередній перегляд змін</value>
+  </data>
+  <data name="Stop_Preview" xml:space="preserve">
+    <value>Зупинити попередній перегляд</value>
+  </data>
+  <data name="Tooltips_Schedule" xml:space="preserve">
+    <value>Ця функція дає очам змогу адаптуватися до бажаних умов.</value>
   </data>
 </root>

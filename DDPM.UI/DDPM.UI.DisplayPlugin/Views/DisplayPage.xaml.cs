@@ -286,7 +286,7 @@ namespace DDPM.UI.Plugin.DisplayPlugin.Views
                 //moduleGroup.AddHeader("Brightness/Contrast",new BrightnessModule() );
 
                 //Option_B,Construct module on first Activate
-                moduleGroup.AddHeader(title_str, typeof(BrightnessModule));
+                moduleGroup.AddHeader(title_str, typeof(BrightnessModule), Constants.ModuleName_Brightness);
 
                 sw.Stop();
                 _log?.Info($"* BrightnessModule ctor consume {sw.ElapsedMilliseconds} msec");
@@ -299,7 +299,7 @@ namespace DDPM.UI.Plugin.DisplayPlugin.Views
                 //Robert_Lin, 2024-5-30
                 //moduleGroup.AddHeader("Color", new ColorModule(_ivm?.SelectedHomeDevice));
                 //moduleGroup.AddHeader("Color", typeof(ColorModule));
-                moduleGroup.AddHeader(Strings.RightViewHeader_Color, typeof(ColorModule));
+                moduleGroup.AddHeader(Strings.RightViewHeader_Color, typeof(ColorModule), Constants.ModuleName_Color);
                 //new ColorModule() { SelectedHomeDevice = _ivm?.SelectedHomeDevice });
                 sw.Stop();
                 _log?.Info($"* ColorModule ctor consume {sw.ElapsedMilliseconds} msec");
@@ -317,7 +317,7 @@ namespace DDPM.UI.Plugin.DisplayPlugin.Views
                 //);
                 //Option_B,Construct module on first Activate
                 //moduleGroup.AddHeader("Display Properties", typeof(DisplayPropertiesModule));
-                moduleGroup.AddHeader(Strings.RightViewHeader_DisplayProperties, typeof(DisplayPropertiesModule));
+                moduleGroup.AddHeader(Strings.RightViewHeader_DisplayProperties, typeof(DisplayPropertiesModule), Constants.ModuleName_DisplayProperties);
 
                 sw.Stop();
                 _log?.Info($"* DisplayPropertiesModule ctor consume {sw.ElapsedMilliseconds} msec");
@@ -332,6 +332,7 @@ namespace DDPM.UI.Plugin.DisplayPlugin.Views
             //Group[1] Input Source
             //         Header[0] General,   InputSourceModule
             //         Header[1] PIP/PBP,   PipPbpModule
+            //         Header[2] Hotkeys,   DisplayHotkeysModule
             moduleGroup = new ModuleGroup()
             {
                 GroupName = Constants.GroupName_InputSource, // "InputSource",
@@ -349,7 +350,7 @@ namespace DDPM.UI.Plugin.DisplayPlugin.Views
                 //moduleGroup.AddHeader("General", new InputSourceModule()); //Jason
                 //Option_B,Construct module on first Activate
                 //moduleGroup.AddHeader("General", typeof(InputSourceModule));
-                moduleGroup.AddHeader(Strings.RightViewHeader_General, typeof(InputSourceModule));
+                moduleGroup.AddHeader(Strings.RightViewHeader_General, typeof(InputSourceModule), Constants.ModuleName_InputSource);
 
                 sw.Stop();
                 _log?.Info($"* InputSourceModule ctor consume {sw.ElapsedMilliseconds} msec");
@@ -360,7 +361,7 @@ namespace DDPM.UI.Plugin.DisplayPlugin.Views
             {
                 sw.Restart();
                 //moduleGroup.AddHeader("PIP/PBP", typeof(PipPbpModule));
-                moduleGroup.AddHeader(Strings.RightViewHeader_PIPPBP, typeof(PipPbpModule));
+                moduleGroup.AddHeader(Strings.RightViewHeader_PIPPBP, typeof(PipPbpModule), Constants.ModuleName_PipPbp);
                 sw.Stop();
                 _log?.Info($"* PipPbpModule ctor consume {sw.ElapsedMilliseconds} msec");
             }
@@ -369,7 +370,7 @@ namespace DDPM.UI.Plugin.DisplayPlugin.Views
             {
                 sw.Restart();
                 //moduleGroup.AddHeader("Hotkeys", typeof(DisplayHotkeysModule));
-                moduleGroup.AddHeader(Strings.RightViewHeader_Hotkeys, typeof(DisplayHotkeysModule));
+                moduleGroup.AddHeader(Strings.RightViewHeader_Hotkeys, typeof(DisplayHotkeysModule), Constants.ModuleName_DisplayHotkeys);
                 sw.Stop();
                 _log?.Info($"* DisplayHotkeysModule ctor consume {sw.ElapsedMilliseconds} msec");
             }
@@ -417,7 +418,7 @@ namespace DDPM.UI.Plugin.DisplayPlugin.Views
             //if (moduleCapabilities.EzSettings)
             {
                 sw.Restart();
-                moduleGroup.AddHeader(Strings.RightViewHeader_Settings, typeof(EzSettingsModule));
+                moduleGroup.AddHeader(Strings.RightViewHeader_Settings, typeof(EzSettingsModule), Constants.ModuleName_EzSettings);
                 //moduleGroup.AddHeader(Strings.RightViewHeader_Settings, new EzSettingsModule() { SelectedHomeDevice = _ivm?.SelectedHomeDevice });
                 sw.Stop();
                 _log?.Info($"* EzSettingsModule ctor consume {sw.ElapsedMilliseconds} msec");
@@ -445,7 +446,7 @@ namespace DDPM.UI.Plugin.DisplayPlugin.Views
             {
                 sw.Restart();
                 //moduleGroup.AddHeader("General", typeof(GamingModule));
-                moduleGroup.AddHeader(Strings.RightViewHeader_General, typeof(GamingModule));
+                moduleGroup.AddHeader(Strings.RightViewHeader_General, typeof(GamingModule), Constants.ModuleName_Gaming);
                 sw.Stop();
                 _log?.Info($"* GamingModule ctor consume {sw.ElapsedMilliseconds} msec");
             }
@@ -454,7 +455,7 @@ namespace DDPM.UI.Plugin.DisplayPlugin.Views
             {
                 sw.Restart();
                 //moduleGroup.AddHeader("Vision Engine", typeof(VisionEngineModule));
-                moduleGroup.AddHeader(Strings.RightViewHeader_VisionEngine, typeof(VisionEngineModule));
+                moduleGroup.AddHeader(Strings.RightViewHeader_VisionEngine, typeof(VisionEngineModule), Constants.ModuleName_VisionEngine);
                 sw.Stop();
                 _log?.Info($"* VisionEngineModule ctor consume {sw.ElapsedMilliseconds} msec");
             }
@@ -479,7 +480,7 @@ namespace DDPM.UI.Plugin.DisplayPlugin.Views
             {
                 sw.Restart();
                 //moduleGroup.AddHeader("KVM", typeof(KvmModule));
-                moduleGroup.AddHeader(Strings.VbarText_KVM, typeof(KvmModule));
+                moduleGroup.AddHeader(Strings.VbarText_KVM, typeof(KvmModule), Constants.ModuleName_KVM);
                 sw.Stop();
                 _log?.Info($"* KvmModule ctor consume {sw.ElapsedMilliseconds} msec");
             }

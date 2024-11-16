@@ -2049,4 +2049,223 @@
   <data name="No" xml:space="preserve">
     <value>Non</value>
   </data>
+  <data name="Camera.12" xml:space="preserve">
+    <value>Non disponible lors de l’ajout d’un préréglage</value>
+  </data>
+  <data name="Camera.13" xml:space="preserve">
+    <value>Toutes les fonctionnalités ne sont pas disponibles lors de l’ajout d’un préréglage</value>
+  </data>
+  <data name="HeadsetAudioSettings.20" xml:space="preserve">
+    <value>Contrôle le volume des sons externes</value>
+  </data>
+  <data name="HeadsetAudioSettings.21" xml:space="preserve">
+    <value>Élimine les bruits environnants</value>
+  </data>
+  <data name="HeadsetAudioSettings.22" xml:space="preserve">
+    <value>Autorise l’ambiance sonore. Ajuste le niveau de volume des sons ambiants.</value>
+  </data>
+  <data name="HeadsetAudioSettings.23" xml:space="preserve">
+    <value>Désactive les fonctions de suppression du bruit</value>
+  </data>
+  <data name="HeadsetAudioSettings.24" xml:space="preserve">
+    <value>Limite le bruit de votre micro pour améliorer l’expérience audio des autres utilisateurs</value>
+  </data>
+  <data name="HeadsetAudioSettings.25" xml:space="preserve">
+    <value>Limite le bruit du micro des autres utilisateurs pour améliorer votre expérience audio</value>
+  </data>
+  <data name="HeadsetAudioSettings.26" xml:space="preserve">
+    <value>L’égaliseur s’ajuste en fonction des préréglages</value>
+  </data>
+  <data name="HeadsetAudioSettings.27" xml:space="preserve">
+    <value>Règle le volume auquel vous entendez votre propre voix lors d’un appel (indisponible en mode Transparence)</value>
+  </data>
+  <data name="HeadsetAudioSettings.28" xml:space="preserve">
+    <value>Réduit le bruit de fond pour permettre à votre voix d’être clairement audible</value>
+  </data>
+  <data name="HeadsetAutomatedActions.9" xml:space="preserve">
+    <value>Actions automatiques lorsque vous retirez votre casque</value>
+  </data>
+  <data name="HeadsetAutomatedActions.10" xml:space="preserve">
+    <value>Met automatiquement en pause la musique lorsque le casque est retiré. La musique reprend automatiquement lorsque le casque est mis en place.</value>
+  </data>
+  <data name="HeadsetAutomatedActions.11" xml:space="preserve">
+    <value>Coupe automatiquement le microphone lorsque le casque est retiré</value>
+  </data>
+  <data name="HeadsetAutomatedActions.12" xml:space="preserve">
+    <value>Abaisser le micro sur bras pour pouvoir répondre aux appels téléphoniques</value>
+  </data>
+  <data name="HeadsetAutomatedActions.13" xml:space="preserve">
+    <value>Actions automatiques lorsque vous retirez une oreillette de votre oreille</value>
+  </data>
+  <data name="HeadsetDeviceSettings.7" xml:space="preserve">
+    <value>Lumière d’indicateur lors d’un appel</value>
+  </data>
+  <data name="HeadsetDeviceSettings.8" xml:space="preserve">
+    <value>Messages audio et annonces pour les fonctionnalités du périphérique</value>
+  </data>
+  <data name="SpeakerToolTip.0" xml:space="preserve">
+    <value>Réduit le bruit de fond pour permettre à votre voix d’être clairement audible</value>
+  </data>
+  <data name="SpeakerToolTip.1" xml:space="preserve">
+    <value>Émet un son lorsque l’utilisateur place le dispositif sur Muet</value>
+  </data>
+  <data name="SpeakerToolTip.2" xml:space="preserve">
+    <value>Émet un son lorsque l’utilisateur règle le niveau de volume</value>
+  </data>
+  <data name="Continue" xml:space="preserve">
+    <value>Continuer</value>
+  </data>
+  <data name="ImpExp_RestartMsg.0" xml:space="preserve">
+    <value>Paramètres modifiés. Le gestionnaire Dell Display and Peripheral Manager va redémarrer.</value>
+  </data>
+  <data name="ImpExp_SuccessMsg.0" xml:space="preserve">
+    <value>Paramètres d’application exportés avec succès</value>
+  </data>
+  <data name="ImpExp_SuccessMsg.1" xml:space="preserve">
+    <value>Paramètres d’application appliqués à %1 avec succès. Nous vous souhaitons une bonne utilisation de votre écran.</value>
+  </data>
+  <data name="ImpExp_WarningMsg.0" xml:space="preserve">
+    <value>Il ne s’agit pas de votre moniteur principal. Voulez-vous continuer et définir ce moniteur comme principal pour la synchronisation ?</value>
+  </data>
+  <data name="ImpExp_WarningMsg.1" xml:space="preserve">
+    <value>e associé à la disposition actuelle. Souhaitez-vous effectuer le remplacement ?</value>
+  </data>
+  <data name="RestartNeeded" xml:space="preserve">
+    <value>Redémarrage nécessaire</value>
+  </data>
+  <data name="Success" xml:space="preserve">
+    <value>Succès</value>
+  </data>
+  <data name="Warning" xml:space="preserve">
+    <value>Avertissement</value>
+  </data>
+  <data name="ImpExp_Message.0" xml:space="preserve">
+    <value>Appliquer automatiquement les paramètres lorsque le même modèle est détecté</value>
+  </data>
+  <data name="DisplayDefault.0" xml:space="preserve">
+    <value>Voulez-vous réinitialiser les paramètres d’usine de votre écran maintenant ?</value>
+  </data>
+  <data name="RestoreToDefaultActions" xml:space="preserve">
+    <value>Restaurer les actions par défaut</value>
+  </data>
+  <data name="Game_Enhance_Mode" xml:space="preserve">
+    <value>Mode d’amélioration du jeu</value>
+  </data>
+  <data name="Response_Time" xml:space="preserve">
+    <value>Temps de réponse</value>
+  </data>
+  <data name="Dark_Stabilizer" xml:space="preserve">
+    <value>Stabilisateur d’obscurité</value>
+  </data>
+  <data name="Dark_Stabilizer_Toggle" xml:space="preserve">
+    <value>Bascule du stabilisateur d’obscurité</value>
+  </data>
+  <data name="Dual_Resolution" xml:space="preserve">
+    <value>Double résolution</value>
+  </data>
+  <data name="Dual_Resolution_Toggle" xml:space="preserve">
+    <value>Bascule de la double résolution</value>
+  </data>
+  <data name="Resolution_and_Refresh_Rate" xml:space="preserve">
+    <value>Résolution et taux d’actualisation</value>
+  </data>
+  <data name="Toggle_Vision_Engine" xml:space="preserve">
+    <value>Activer/Désactiver Vision Engine</value>
+  </data>
+  <data name="Third_Party_Licenses" xml:space="preserve">
+    <value>Licences tierces</value>
+  </data>
+  <data name="Help" xml:space="preserve">
+    <value>Aide</value>
+  </data>
+  <data name="Need_help" xml:space="preserve">
+    <value>Besoin d’aide ? Pour plus d’informations sur ce logiciel, cliquez sur le bouton ci-dessous.</value>
+  </data>
+  <data name="Learn_more" xml:space="preserve">
+    <value>En savoir plus</value>
+  </data>
+  <data name="On_screen_notifications" xml:space="preserve">
+    <value>Notifications à l’écran</value>
+  </data>
+  <data name="All_Devices" xml:space="preserve">
+    <value>Tous les périphériques</value>
+  </data>
+  <data name="Low_battery_level" xml:space="preserve">
+    <value>Niveau de batterie faible</value>
+  </data>
+  <data name="Device_specific" xml:space="preserve">
+    <value>Spécifique au périphérique</value>
+  </data>
+  <data name="Keyboard_lock_key" xml:space="preserve">
+    <value>Touche de verrouillage du clavier</value>
+  </data>
+  <data name="Webcam_WB7022_Presence_Detection_sensor_cover_state" xml:space="preserve">
+    <value>État du capot du capteur de détection de présence de la webcam WB7022</value>
+  </data>
+  <data name="Headset_speakerphone_and_soundbar_mute_unmute" xml:space="preserve">
+    <value>Activer/Désactiver le son du micro, du haut-parleur et de barre de son</value>
+  </data>
+  <data name="Display_Color_Preset_and_Easy_Memory" xml:space="preserve">
+    <value>Préréglage des couleurs de l’écran et Easy Memory</value>
+  </data>
+  <data name="Reports" xml:space="preserve">
+    <value>Rapports</value>
+  </data>
+  <data name="Save_diagnostic_report" xml:space="preserve">
+    <value>Enregistrer le rapport de diagnostic</value>
+  </data>
+  <data name="Save_monitor_asset_report" xml:space="preserve">
+    <value>Enregistrer le rapport sur les actifs du moniteur</value>
+  </data>
+  <data name="Widget_Settings" xml:space="preserve">
+    <value>Paramètres du widget</value>
+  </data>
+  <data name="Activate_Quick_Access_widget_during_Zoom_conference_calls" xml:space="preserve">
+    <value>Activer le widget Accès rapide pendant les conférences téléphoniques Zoom</value>
+  </data>
+  <data name="Widget_will_automatically_appear_when_meeting_begins" xml:space="preserve">
+    <value>Le widget s’affiche automatiquement lorsque la réunion commence à personnaliser les paramètres des webcams prises en charge</value>
+  </data>
+  <data name="Enable_shortcut_reminder_for_Quick_Accesswidget" xml:space="preserve">
+    <value>Activer le rappel de raccourci pour le widget Accès rapide</value>
+  </data>
+  <data name="Critical" xml:space="preserve">
+    <value>Critique</value>
+  </data>
+  <data name="Recommended" xml:space="preserve">
+    <value>Recommandé</value>
+  </data>
+  <data name="Optional" xml:space="preserve">
+    <value>En option</value>
+  </data>
+  <data name="VisionEngine_Night" xml:space="preserve">
+    <value>Nuit</value>
+  </data>
+  <data name="VisionEngine_Clear" xml:space="preserve">
+    <value>Effacer</value>
+  </data>
+  <data name="VisionEngine_Bino" xml:space="preserve">
+    <value>Bino</value>
+  </data>
+  <data name="VisionEngine_Chroma" xml:space="preserve">
+    <value>Chrome</value>
+  </data>
+  <data name="VisionEngine_Crosshair" xml:space="preserve">
+    <value>Réticule</value>
+  </data>
+  <data name="Software_version" xml:space="preserve">
+    <value>Version du logiciel</value>
+  </data>
+  <data name="Driver_version" xml:space="preserve">
+    <value>Version du pilote</value>
+  </data>
+  <data name="Preview_Changes" xml:space="preserve">
+    <value>Prévisualiser les modifications</value>
+  </data>
+  <data name="Stop_Preview" xml:space="preserve">
+    <value>Arrêter la prévisualisation</value>
+  </data>
+  <data name="Tooltips_Schedule" xml:space="preserve">
+    <value>Cette fonctionnalité permet à nos yeux de s’adapter au réglage souhaité.</value>
+  </data>
 </root>

@@ -45,7 +45,7 @@ namespace DDPM.UI.Module.EzMemory
             //_rightView.DataContext = vm;
         }
 
-        public string ModuleName { get => "EzMemoryModule"; }
+        public string ModuleName { get => Constants.ModuleName_EzMemory; } //"EzMemoryModule"
 
         public UserControl? GetLeftView()
         {
