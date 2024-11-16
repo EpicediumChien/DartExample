@@ -15,7 +15,6 @@ namespace DDPM.UI.Module.Brightness
     /// </summary>
     public partial class DisplayHotkeyFullView : UserControl
     {
-        private ILog? _log;
         private bool alphabetKey = false;
         private string _strPreviousKey = string.Empty;
         private List<VirtualKey> newKeys = new List<VirtualKey>();
@@ -31,11 +30,6 @@ namespace DDPM.UI.Module.Brightness
         public DisplayHotkeyFullView()
         {
             InitializeComponent();
-            if (DdpmCommonHelper.MyConsole != null)
-            {
-                _log = DdpmCommonHelper.MyConsole.CreateLog("DisplayHotkeyFullView");
-                _log.Info("DisplayHotkeyFullView");
-            }
         }
 
         private void leftArrow_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
@@ -48,6 +42,22 @@ namespace DDPM.UI.Module.Brightness
             KeysHelper.setUXTextBoxPreviewKey(sender, e, ref newKeys, ref BundleNewKeys, ref alphabetKey);
         }
 
+        private void SaveHotkeySettings(HotkeyInfo hotkeyInfo)
+        {
+            tbCleanFocus.Focus();
+            BrightnessViewModel dataContext = (BrightnessViewModel)DataContext;
+            if (dataContext != null)
+            {
+                Common.Models.HomeDevice? selectedHomeDevice = dataContext.SelectedHomeDevice;
+                if (selectedHomeDevice?.MonitorInfo != null)
+                {
+                    Task.Run(() =>
+                    {
+                        dataContext.SaveHotkeySettings(selectedHomeDevice.MonitorInfo, hotkeyInfo);
+                    });
+                }
+            }
+        }
         private void tbBrightnessMins_PreviewKeyUp(object sender, KeyEventArgs e)
         {
             /*string swHortcutText = string.Empty;
@@ -73,8 +83,7 @@ namespace DDPM.UI.Module.Brightness
 
                     if (KeysHelper.hotKeyConflictsCheck(hotkeyInfo))
                     {
-                        bool saveSettings = DdpmCommonHelper.DeviceManagerSA.SaveHotkeySetting(vm.SelectedHomeDevice.MonitorInfo, hotkeyInfo).Result;
-                        //vm.Invoke_RefreshData();
+                        SaveHotkeySettings(hotkeyInfo);
                     }
                     else
                     {
@@ -131,8 +140,7 @@ namespace DDPM.UI.Module.Brightness
 
                     if (KeysHelper.hotKeyConflictsCheck(hotkeyInfo))
                     {
-                        bool saveSettings = DdpmCommonHelper.DeviceManagerSA.SaveHotkeySetting(vm.SelectedHomeDevice.MonitorInfo, hotkeyInfo).Result;
-                        //vm.Invoke_RefreshData();
+                        SaveHotkeySettings(hotkeyInfo);
                     }
                     else
                     {
@@ -153,85 +161,61 @@ namespace DDPM.UI.Module.Brightness
 
         private void tbBrightnessMins_GotFocus(object sender, RoutedEventArgs e)
         {
-            bool isUnhook = DdpmCommonHelper.DeviceManagerSA.UnHook().Result;
-            if (isUnhook)
-            {
-                alphabetKey = false;
-                newKeys.Clear();
-                _strPreviousKey = vm.BrightnessMinsKey;
-                var texBox = (sender as UXTextBox);
-                texBox?.Select(vm.BrightnessMinsKey.Length, 1);
-                //vm.BrightnessMinsKey = string.Empty;
-            }
+            alphabetKey = false;
+            newKeys.Clear();
+            _strPreviousKey = vm.BrightnessMinsKey;
+            var texBox = (sender as UXTextBox);
+            texBox?.Select(vm.BrightnessMinsKey.Length, 1);
+            //vm.BrightnessMinsKey = string.Empty;
         }
 
         private void tbBrightnessAdd_GotFocus(object sender, RoutedEventArgs e)
         {
-            bool isUnhook = DdpmCommonHelper.DeviceManagerSA.UnHook().Result;
-            if (isUnhook)
-            {
-                alphabetKey = false;
-                newKeys.Clear();
-                _strPreviousKey = vm.BrightnessAddKey;
-                //vm.BrightnessAddKey = string.Empty;
-                var texBox = (sender as UXTextBox);
-                texBox?.Select(vm.BrightnessAddKey.Length, 1);
-            }
+            alphabetKey = false;
+            newKeys.Clear();
+            _strPreviousKey = vm.BrightnessAddKey;
+            //vm.BrightnessAddKey = string.Empty;
+            var texBox = (sender as UXTextBox);
+            texBox?.Select(vm.BrightnessAddKey.Length, 1);
         }
         private void tbContrastMins_GotFocus(object sender, RoutedEventArgs e)
         {
-            bool isUnhook = DdpmCommonHelper.DeviceManagerSA.UnHook().Result;
-            if (isUnhook)
-            {
-                alphabetKey = false;
-                newKeys.Clear();
-                _strPreviousKey = vm.ContrastMinsKey;
-                //vm.ContrastMinsKey = string.Empty;
-                var texBox = (sender as UXTextBox);
-                texBox?.Select(vm.ContrastMinsKey.Length, 1);
-            }
+            alphabetKey = false;
+            newKeys.Clear();
+            _strPreviousKey = vm.ContrastMinsKey;
+            //vm.ContrastMinsKey = string.Empty;
+            var texBox = (sender as UXTextBox);
+            texBox?.Select(vm.ContrastMinsKey.Length, 1);
         }
 
         private void tbContrastAdd_GotFocus(object sender, RoutedEventArgs e)
         {
-            bool isUnhook = DdpmCommonHelper.DeviceManagerSA.UnHook().Result;
-            if (isUnhook)
-            {
-                alphabetKey = false;
-                newKeys.Clear();
-                _strPreviousKey = vm.ContrastAddKey;
-                // vm.ContrastAddKey = string.Empty;
-                var texBox = (sender as UXTextBox);
-                texBox?.Select(vm.ContrastAddKey.Length, 1);
-            }
+            alphabetKey = false;
+            newKeys.Clear();
+            _strPreviousKey = vm.ContrastAddKey;
+            // vm.ContrastAddKey = string.Empty;
+            var texBox = (sender as UXTextBox);
+            texBox?.Select(vm.ContrastAddKey.Length, 1);
         }
 
         private void tbLuminanceMins_GotFocus(object sender, RoutedEventArgs e)
         {
-            bool isUnhook = DdpmCommonHelper.DeviceManagerSA.UnHook().Result;
-            if (isUnhook)
-            {
-                alphabetKey = false;
-                newKeys.Clear();
-                _strPreviousKey = vm.LuminanceMinsKey;
-                //vm.LuminanceMinsKey = string.Empty;
-                var texBox = (sender as UXTextBox);
-                texBox?.Select(vm.LuminanceMinsKey.Length, 1);
-            }
+            alphabetKey = false;
+            newKeys.Clear();
+            _strPreviousKey = vm.LuminanceMinsKey;
+            //vm.LuminanceMinsKey = string.Empty;
+            var texBox = (sender as UXTextBox);
+            texBox?.Select(vm.LuminanceMinsKey.Length, 1);
         }
 
         private void tbLuminanceAdd_GotFocus(object sender, RoutedEventArgs e)
         {
-            bool isUnhook = DdpmCommonHelper.DeviceManagerSA.UnHook().Result;
-            if (isUnhook)
-            {
-                alphabetKey = false;
-                newKeys.Clear();
-                _strPreviousKey = vm.LuminanceAddKey;
-                //vm.LuminanceAddKey = string.Empty;
-                var texBox = (sender as UXTextBox);
-                texBox?.Select(vm.LuminanceAddKey.Length, 1);
-            }
+            alphabetKey = false;
+            newKeys.Clear();
+            _strPreviousKey = vm.LuminanceAddKey;
+            //vm.LuminanceAddKey = string.Empty;
+            var texBox = (sender as UXTextBox);
+            texBox?.Select(vm.LuminanceAddKey.Length, 1);
         }
 
         private void tbContrastMins_PreviewKeyDown(object sender, KeyEventArgs e)
@@ -264,8 +248,7 @@ namespace DDPM.UI.Module.Brightness
 
                     if (KeysHelper.hotKeyConflictsCheck(hotkeyInfo))
                     {
-                        bool saveSettings = DdpmCommonHelper.DeviceManagerSA.SaveHotkeySetting(vm.SelectedHomeDevice.MonitorInfo, hotkeyInfo).Result;
-                        //vm.Invoke_RefreshData();
+                        SaveHotkeySettings(hotkeyInfo);
                     }
                     else
                     {
@@ -314,8 +297,7 @@ namespace DDPM.UI.Module.Brightness
 
                     if (KeysHelper.hotKeyConflictsCheck(hotkeyInfo))
                     {
-                        bool saveSettings = DdpmCommonHelper.DeviceManagerSA.SaveHotkeySetting(vm.SelectedHomeDevice.MonitorInfo, hotkeyInfo).Result;
-                        //vm.Invoke_RefreshData();
+                        SaveHotkeySettings(hotkeyInfo);
                     }
                     else
                     {
@@ -364,8 +346,7 @@ namespace DDPM.UI.Module.Brightness
 
                     if (KeysHelper.hotKeyConflictsCheck(hotkeyInfo))
                     {
-                        bool saveSettings = DdpmCommonHelper.DeviceManagerSA.SaveHotkeySetting(vm.SelectedHomeDevice.MonitorInfo, hotkeyInfo).Result;
-                        //vm.Invoke_RefreshData();
+                        SaveHotkeySettings(hotkeyInfo);
                     }
                     else
                     {
@@ -414,8 +395,7 @@ namespace DDPM.UI.Module.Brightness
 
                     if (KeysHelper.hotKeyConflictsCheck(hotkeyInfo))
                     {
-                        bool saveSettings = DdpmCommonHelper.DeviceManagerSA.SaveHotkeySetting(vm.SelectedHomeDevice.MonitorInfo, hotkeyInfo).Result;
-                        //vm.Invoke_RefreshData();
+                        SaveHotkeySettings(hotkeyInfo);
                     }
                     else
                     {
@@ -438,37 +418,37 @@ namespace DDPM.UI.Module.Brightness
         private void tbBrightnessMins_LostFocus(object sender, RoutedEventArgs e)
         {
             //hook
-            bool isHook = DdpmCommonHelper.DeviceManagerSA.Hook().Result;
+            //bool isHook = DdpmCommonHelper.DeviceManagerSA.Hook().Result;
         }
 
         private void tbBrightnessAdd_LostFocus(object sender, RoutedEventArgs e)
         {
             //hook
-            bool isHook = DdpmCommonHelper.DeviceManagerSA.Hook().Result;
+            //bool isHook = DdpmCommonHelper.DeviceManagerSA.Hook().Result;
         }
 
         private void tbContrastMins_LostFocus(object sender, RoutedEventArgs e)
         {
             //hook
-            bool isHook = DdpmCommonHelper.DeviceManagerSA.Hook().Result;
+            //bool isHook = DdpmCommonHelper.DeviceManagerSA.Hook().Result;
         }
 
         private void tbContrastAdd_LostFocus(object sender, RoutedEventArgs e)
         {
             //hook
-            bool isHook = DdpmCommonHelper.DeviceManagerSA.Hook().Result;
+            //bool isHook = DdpmCommonHelper.DeviceManagerSA.Hook().Result;
         }
 
         private void tbLuminanceMins_LostFocus(object sender, RoutedEventArgs e)
         {
             //hook
-            bool isHook = DdpmCommonHelper.DeviceManagerSA.Hook().Result;
+            //bool isHook = DdpmCommonHelper.DeviceManagerSA.Hook().Result;
         }
 
         private void tbLuminanceAdd_LostFocus(object sender, RoutedEventArgs e)
         {
             //hook
-            bool isHook = DdpmCommonHelper.DeviceManagerSA.Hook().Result;
+            //bool isHook = DdpmCommonHelper.DeviceManagerSA.Hook().Result;
         }
     }
 }

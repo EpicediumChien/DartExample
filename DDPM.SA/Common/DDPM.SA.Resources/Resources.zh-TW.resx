@@ -1,0 +1,480 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="no_updates_available" xml:space="preserve">
+    <value>無可用更新。</value>
+  </data>
+  <data name="Updates_info" xml:space="preserve">
+    <value>更新資訊</value>
+  </data>
+  <data name="Software_update_unsuccessful" xml:space="preserve">
+    <value>軟體更新失敗。</value>
+  </data>
+  <data name="CA_check_fail" xml:space="preserve">
+    <value>CA 檢查失敗</value>
+  </data>
+  <data name="Network_fail" xml:space="preserve">
+    <value>網路故障</value>
+  </data>
+  <data name="Update_failed_due_to_network_error" xml:space="preserve">
+    <value>更新失敗，因為發生網路錯誤。請再試一次。</value>
+  </data>
+  <data name="Dock_FW_is_loaded" xml:space="preserve">
+    <value>已載入擴充基座韌體。在完成韌體應用程式時拔下擴充基座，並在 1 分鐘後重新連接擴充基座。</value>
+  </data>
+  <data name="Dock_UOD_FW_update_info" xml:space="preserve">
+    <value>擴充基座 UOD 韌體更新資訊</value>
+  </data>
+  <data name="Firmware_update_unsuccessful" xml:space="preserve">
+    <value>韌體更新失敗。</value>
+  </data>
+  <data name="Multiple_docks_are_detected" xml:space="preserve">
+    <value>偵測到多個擴充基座。請只連接一個擴充基座，以免擴充基座損壞。</value>
+  </data>
+  <data name="Dock_FW_info" xml:space="preserve">
+    <value>擴充基座韌體資訊</value>
+  </data>
+  <data name="Dock_FW_is_being_loaded" xml:space="preserve">
+    <value>正在載入擴充基座韌體。請勿拔下擴充基座。</value>
+  </data>
+  <data name="Dock_FW_is_loaded_successful" xml:space="preserve">
+    <value>已成功載入擴充基座韌體。在完成韌體應用程式時拔下擴充基座，並在 1 分鐘後重新連接擴充基座。</value>
+  </data>
+  <data name="Dock_FW_loaded_failed" xml:space="preserve">
+    <value>擴充基座韌體載入失敗。</value>
+  </data>
+  <data name="Warning" xml:space="preserve">
+    <value>警告</value>
+  </data>
+  <data name="Auto_Brightness_is_currently_enabled" xml:space="preserve">
+    <value>「自動亮度」目前已啟用。是否要覆寫該設定？</value>
+  </data>
+  <data name="Error" xml:space="preserve">
+    <value>錯誤</value>
+  </data>
+  <data name="SW_info" xml:space="preserve">
+    <value>軟體資訊</value>
+  </data>
+  <data name="UOD_update_completed" xml:space="preserve">
+    <value>UOD 更新已完成。</value>
+  </data>
+  <data name="UOD_update_fail" xml:space="preserve">
+    <value>UOD 更新失敗。</value>
+  </data>
+  <data name="FW_info" xml:space="preserve">
+    <value>韌體資訊</value>
+  </data>
+  <data name="update_download_cancel" xml:space="preserve">
+    <value>更新下載取消，因為 PC 電量太低。</value>
+  </data>
+  <data name="FW_is_being_Installing" xml:space="preserve">
+    <value>正在安裝韌體。請勿拔下裝置。</value>
+  </data>
+  <data name="Update" xml:space="preserve">
+    <value>更新</value>
+  </data>
+  <data name="Delay" xml:space="preserve">
+    <value>延遲</value>
+  </data>
+  <data name="Yes" xml:space="preserve">
+    <value>是</value>
+  </data>
+  <data name="No" xml:space="preserve">
+    <value>否</value>
+  </data>
+  <data name="Invalid_ID" xml:space="preserve">
+    <value>ID 無效。請提供有效的動作 ID。</value>
+  </data>
+  <data name="Failed_to_open_application" xml:space="preserve">
+    <value>無法開啟應用程式</value>
+  </data>
+  <data name="will_be_updated_to " xml:space="preserve">
+    <value>將更新為 </value>
+  </data>
+  <data name="can_be_updated_to" xml:space="preserve">
+    <value>可更新為</value>
+  </data>
+  <data name="UpdateAvailable" xml:space="preserve">
+    <value>可用的更新</value>
+  </data>
+  <data name="UpdateWillBeApplied" xml:space="preserve">
+    <value>將套用更新</value>
+  </data>
+  <data name="UpdateAvailable_Info" xml:space="preserve">
+    <value>裝置及/或應用程式將會更新。裝置及/或應用程式可能會間歇性可用。更新期間請勿拔下裝置。</value>
+  </data>
+  <data name="UpdateWillBeApplied_Info" xml:space="preserve">
+    <value>裝置及/或應用程式將會更新。裝置及/或應用程式可能會間歇性可用。更新期間請勿拔下裝置。</value>
+  </data>
+  <data name="UpdateNow" xml:space="preserve">
+    <value>立刻更新</value>
+  </data>
+  <data name="Defer" xml:space="preserve">
+    <value>延後</value>
+  </data>
+  <data name="Ok" xml:space="preserve">
+    <value>確定</value>
+  </data>
+  <data name="Service_not_running_Try_again" xml:space="preserve">
+    <value>服務未執行。請再試一次</value>
+  </data>
+  <data name="Timeout_error" xml:space="preserve">
+    <value>逾時錯誤</value>
+  </data>
+  <data name="M1_Please_double_click_mouse_left_button_to_start_firmware_update" xml:space="preserve">
+    <value>請按兩下滑鼠左鍵以開始韌體更新</value>
+  </data>
+  <data name="M2_Please_press_key_on_keyboard_to_start_firmware_update" xml:space="preserve">
+    <value>請按下鍵盤上的 \&quot;U\&quot; 鍵以開始韌體更新</value>
+  </data>
+  <data name="A0_Device_connected" xml:space="preserve">
+    <value>已連接裝置</value>
+  </data>
+  <data name="A1_Firmware_update_started" xml:space="preserve">
+    <value>韌體更新已開始</value>
+  </data>
+  <data name="A2_Firmware_update_successful" xml:space="preserve">
+    <value>韌體更新成功</value>
+  </data>
+  <data name="E4_USB_wireless_receiver_firmware_is_unable_to_support_device_firmware_upgrade" xml:space="preserve">
+    <value>USB 無線接收器韌體無法支援裝置韌體升級</value>
+  </data>
+  <data name="update_failed_with_unknown_error" xml:space="preserve">
+    <value>更新失敗，出現未知錯誤</value>
+  </data>
+  <data name="User_aborted_firmware_update" xml:space="preserve">
+    <value>使用者已中止韌體更新</value>
+  </data>
+  <data name="Installing" xml:space="preserve">
+    <value>安裝</value>
+  </data>
+  <data name="Timeout" xml:space="preserve">
+    <value>逾時</value>
+  </data>
+  <data name="Downloading_and_installing" xml:space="preserve">
+    <value>下載與安裝</value>
+  </data>
+  <data name="DDPM_will_reopen_soon_after_update" xml:space="preserve">
+    <value>DDPM 在更新後很快就會重新開啟</value>
+  </data>
+  <data name="Processing" xml:space="preserve">
+    <value>處理中</value>
+  </data>
+  <data name="Software_Update" xml:space="preserve">
+    <value>軟體更新</value>
+  </data>
+  <data name="Firmware_Update" xml:space="preserve">
+    <value>韌體更新</value>
+  </data>
+  <data name="Updating_Software_Do_not_power_off_this_PC" xml:space="preserve">
+    <value>正在更新軟體。請勿關閉此 PC 電源。</value>
+  </data>
+  <data name="Updating_firmware_Do_not_remove_or_power_off_the_device_Leave_the_device_undisturbed" xml:space="preserve">
+    <value>正在更新韌體。請勿移除裝置或關閉裝置電源。讓裝置不受干擾</value>
+  </data>
+  <data name="Unable_to_detect_target_device" xml:space="preserve">
+    <value>無法偵測到目標裝置</value>
+  </data>
+  <data name="AI_Auto_Framing" xml:space="preserve">
+    <value>AI 自動構圖</value>
+  </data>
+  <data name="ON" xml:space="preserve">
+    <value>開啟</value>
+  </data>
+  <data name="OFF" xml:space="preserve">
+    <value>關閉</value>
+  </data>
+  <data name="Presets" xml:space="preserve">
+    <value>預設值</value>
+  </data>
+  <data name="Auto_framing" xml:space="preserve">
+    <value>自動構圖</value>
+  </data>
+  <data name="Field_of_View" xml:space="preserve">
+    <value>視野</value>
+  </data>
+  <data name="Zoom" xml:space="preserve">
+    <value>縮放</value>
+  </data>
+  <data name="Default" xml:space="preserve">
+    <value>預設</value>
+  </data>
+  <data name="Smooth" xml:space="preserve">
+    <value>平滑</value>
+  </data>
+  <data name="Vibrant" xml:space="preserve">
+    <value>鮮明</value>
+  </data>
+  <data name="Warm" xml:space="preserve">
+    <value>暖色</value>
+  </data>
+  <data name="Standard_0" xml:space="preserve">
+    <value>標準</value>
+  </data>
+  <data name="Native_0" xml:space="preserve">
+    <value>原生</value>
+  </data>
+  <data name="Multimedia_0" xml:space="preserve">
+    <value>多媒體</value>
+  </data>
+  <data name="Movie_0" xml:space="preserve">
+    <value>電影</value>
+  </data>
+  <data name="Nature_0" xml:space="preserve">
+    <value>自然</value>
+  </data>
+  <data name="Game_0" xml:space="preserve">
+    <value>遊戲</value>
+  </data>
+  <data name="Game_1" xml:space="preserve">
+    <value>遊戲 1</value>
+  </data>
+  <data name="Sport_0" xml:space="preserve">
+    <value>運動</value>
+  </data>
+  <data name="Text_0" xml:space="preserve">
+    <value>文字</value>
+  </data>
+  <data name="Warm_0" xml:space="preserve">
+    <value>暖色</value>
+  </data>
+  <data name="Cool_0" xml:space="preserve">
+    <value>低溫</value>
+  </data>
+  <data name="Custom_Color" xml:space="preserve">
+    <value>自訂色彩</value>
+  </data>
+  <data name="ComfortView_0" xml:space="preserve">
+    <value>ComfortView</value>
+  </data>
+  <data name="Game_2" xml:space="preserve">
+    <value>遊戲 2</value>
+  </data>
+  <data name="Game_3" xml:space="preserve">
+    <value>遊戲 3</value>
+  </data>
+  <data name="Desktop_0" xml:space="preserve">
+    <value>桌面</value>
+  </data>
+  <data name="Reference_0" xml:space="preserve">
+    <value>參考資料</value>
+  </data>
+  <data name="Metro_0" xml:space="preserve">
+    <value>大都會</value>
+  </data>
+  <data name="Paper_0" xml:space="preserve">
+    <value>紙張</value>
+  </data>
+  <data name="Standard_HDR" xml:space="preserve">
+    <value>標準 HDR</value>
+  </data>
+  <data name="Movie_HDR" xml:space="preserve">
+    <value>電影 HDR</value>
+  </data>
+  <data name="Game_HDR" xml:space="preserve">
+    <value>遊戲 HDR</value>
+  </data>
+  <data name="Vivid_HDR" xml:space="preserve">
+    <value>逼真 HDR</value>
+  </data>
+  <data name="Custom_1" xml:space="preserve">
+    <value>自訂 1</value>
+  </data>
+  <data name="Custom_2" xml:space="preserve">
+    <value>自訂 2</value>
+  </data>
+  <data name="Custom_3" xml:space="preserve">
+    <value>自訂 3</value>
+  </data>
+  <data name="User_1" xml:space="preserve">
+    <value>使用者 1</value>
+  </data>
+  <data name="User_2" xml:space="preserve">
+    <value>使用者 2</value>
+  </data>
+  <data name="User_3" xml:space="preserve">
+    <value>使用者 3</value>
+  </data>
+  <data name="SPORTS_Game" xml:space="preserve">
+    <value>體育遊戲</value>
+  </data>
+  <data name="Custom_layout" xml:space="preserve">
+    <value>自訂配置</value>
+  </data>
+  <data name="Cancel_0" xml:space="preserve">
+    <value>取消</value>
+  </data>
+  <data name="Save_0" xml:space="preserve">
+    <value>儲存</value>
+  </data>
+  <data name="Arrange_Windows" xml:space="preserve">
+    <value>排列視窗</value>
+  </data>
+  <data name="EA_MSG_0" xml:space="preserve">
+    <value>調整目前的視窗排列、編輯名稱 (如有需要)，然後按下「儲存」以儲存排列。</value>
+  </data>
+  <data name="Battery_Low" xml:space="preserve">
+    <value>電量低</value>
+  </data>
+  <data name="Caps_Lock_On" xml:space="preserve">
+    <value>Caps Lock 開啟</value>
+  </data>
+  <data name="Caps Lock Off" xml:space="preserve">
+    <value>Caps Lock 關閉</value>
+  </data>
+  <data name="Easy_Memory" xml:space="preserve">
+    <value>Easy Memory</value>
+  </data>
+  <data name="Go_to_Widget_Settings" xml:space="preserve">
+    <value>前往小工具設定</value>
+  </data>
+  <data name="is_muted" xml:space="preserve">
+    <value>已靜音</value>
+  </data>
+  <data name="is_Unmuted" xml:space="preserve">
+    <value>已取消靜音</value>
+  </data>
+  <data name="Num_Lock_Off" xml:space="preserve">
+    <value>Num Lock 關閉</value>
+  </data>
+  <data name="Num_Lock_On" xml:space="preserve">
+    <value>Num Lock 開啟</value>
+  </data>
+  <data name="Presence_detection_sensor_is_covered" xml:space="preserve">
+    <value>用戶偵測感應器已遮蓋</value>
+  </data>
+  <data name="QAM_OSD_Msg" xml:space="preserve">
+    <value>若要再次存取快速設定小工具，請按住鍵盤上的 [Alt + Z]。</value>
+  </data>
+  <data name="Scroll_Lock_Off" xml:space="preserve">
+    <value>Scroll Lock 關閉</value>
+  </data>
+  <data name="Scroll_Lock_On" xml:space="preserve">
+    <value>Scroll Lock 開啟</value>
+  </data>
+  <data name="Export_MSG_0" xml:space="preserve">
+    <value>偵測到相同的顯示器，是否要匯入以下設定：</value>
+  </data>
+  <data name="Version" xml:space="preserve">
+    <value>版本</value>
+  </data>
+  <data name="Walk_Away_Lock" xml:space="preserve">
+    <value>遠離時鎖定</value>
+  </data>
+</root>

@@ -7,12 +7,14 @@ using Dell.Client.Framework.Interfaces;
 using Microsoft;
 using MS.WindowsAPICodePack.Internal;
 using Newtonsoft.Json.Linq;
+using StreamJsonRpc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using VcpCore.Common;
 using Windows.ApplicationModel;
+using Windows.UI.Composition.Scenes;
 using static DDPM.SA.Common.ICLICommandTable;
 using static DDPM.SA.Plugins.CMAManager.CMAManagerPlugin;
 using IDs = DDPM.SA.Common.IDs;
@@ -107,6 +109,8 @@ namespace DDPM.SA.Plugins.CMAManager
             {
                 if (disposing)
                 {
+                    if(_CliManagerPlugin != null)
+                        _CliManagerPlugin.CLIActionResult -= OnCLIManagerResultHandler;
                     _agent.PluginManager.PluginsStarted -= PluginManagerOnPluginsStarted;
                     _agent = null;
                 }
@@ -191,7 +195,11 @@ namespace DDPM.SA.Plugins.CMAManager
             if (Params.App.ConnectedDevices.ToLower().Equals(task.command.ToLower()))
             {
                 command = command + ("app=" + task.command);
-                command = command + (" value=" + task.devicetype);
+
+                if (!task.devicetype.ToLower().Equals(Params.DeviceType.APP.ToLower())) {
+                    command = command + (" value=" + task.devicetype);
+                }
+                
             }
             else if (Params.App.DeviceData.ToLower().Equals(task.command.ToLower()))
             {
@@ -299,82 +307,76 @@ namespace DDPM.SA.Plugins.CMAManager
 
             command = command + ("set ");
 
-            if (Params.DeviceType.DOCK.ToLower().Equals(task.devicetype.ToLower()))
+            // modified @ 20241112 stephen : change dock fwupdate command format
+            /*            if (Params.DeviceType.DOCK.ToLower().Equals(task.devicetype.ToLower()))
+                        {
+                            command = command + ("dock=silentfwupdate");
+                            command = command + (" value=" + task.value);
+                        }
+                        else
+                        {
+
+
+                        }*/
+
+            command = command + ("app=firmwareupdate");
+            //command = command + (" value=" + task.devicetype + ",forcewithnotice");
+
+            command = command + (" value=" + task.devicetype);
+
+            bool hasOption = false;
+
+            if (Params.FwUpdateValues.ForceWithNotice.ToLower().Equals(task.value.ToLower()))
             {
-                command = command + ("dock=silentfwupdate");
-                command = command + (" value=" + task.value);
+                command = command + (",forcewithnotice");
+                hasOption = true;
             }
-            else
+
+            if (Params.FwUpdateValues.ForceWithNonotice.ToLower().Equals(task.value.ToLower()))
             {
-                command = command + ("app=firmwareupdate");
-                //command = command + (" value=" + task.devicetype + ",forcewithnotice");
+                command = command + (",forcewithnonotice");
+                hasOption = true;
+            }
 
-                command = command + (" value=" + task.devicetype);
+            if (Params.FwUpdateValues.Defer.ToLower().Equals(task.value.ToLower()))
+            {
+                command = command + (",Defer");
+                hasOption = true;
+            }
 
-                bool hasOption = false;
+            if (!hasOption)
+            {
+                command = command + (",forcewithnotice");
+            }
 
-                if (Params.FwUpdateValues.ForceWithNotice.ToLower().Equals(task.value.ToLower()))
+            CmaCommand.CmaTaskOption option = new CmaCommand.CmaTaskOption(task.options);
+            /*if (option.index != null && option.index.Length > 0)
+            {
+                command = command + (" index=" + option.index);
+            }*/
+
+            // modified @ 20241112 stephen : remove servicetag
+/*            if (option.servicetag != null && option.servicetag.Length > 0)
+            {
+                command = command + (" value=" + option.servicetag + ",servicetag");
+            }*/
+
+            if (option.minversion != null && option.minversion.Length > 0)
+            {
+                // add start @ 20241111 stephen
+                if (option.upgradetolatest)
                 {
-                    command = command + (",forcewithnotice");
-                    hasOption = true;
+                    throw new ArgumentException("Command 'minversion' and 'upgradetolatest' can't be exist in the same task");
                 }
+                // add end @ 20241111 stephen
 
-                if (Params.FwUpdateValues.ForceWithNonotice.ToLower().Equals(task.value.ToLower()))
-                {
-                    command = command + (",forcewithnonotice");
-                    hasOption = true;
-                }
+                // *****CLI use 'miniversion'*****
+                command = command + (" value=" + option.minversion + ",miniversion");
+            }
 
-                if (Params.FwUpdateValues.Defer.ToLower().Equals(task.value.ToLower()))
-                {
-                    command = command + (",Defer");
-                    hasOption = true;
-                }
-
-                if (!hasOption)
-                {
-                    command = command + (",forcewithnotice");
-                }
-
-                CmaCommand.CmaTaskOption option = new CmaCommand.CmaTaskOption(task.options);
-                /*if (option.index != null && option.index.Length > 0)
-                {
-                    command = command + (" index=" + option.index);
-                }*/
-
-                if (option.servicetag != null && option.servicetag.Length > 0)
-                {
-                    command = command + (" value=" + option.servicetag + ",servicetag");
-                }
-
-                if (option.minversion != null && option.minversion.Length > 0)
-                {
-                    // add start @ 20241111 stephen
-                    if (option.upgradetolatest)
-                    {
-                        throw new ArgumentException("Command 'minversion' and 'upgradetolatest' can't be exist in the same task");
-                    }
-                    // add end @ 20241111 stephen
-
-                    command = command + (" value=" + option.minversion + ",miniversion");
-                }
-
-                if (option.model != null && option.model.Length > 0)
-                {
-                    command = command + (" value=" + option.model + ",model");
-                }
-
-                /*                // add start @ 20241110 stephen
-                                if (option.upgradetolatest)
-                                {
-                                    command = command + (" upgradetolatest=" + option.upgradetolatest);
-                                }
-                                // *****CLI use 'miniversion'*****
-                                if (command.Contains("miniversion") && command.Contains("upgradetolatest"))
-                                {
-                                    throw new ArgumentException("Command 'minversion' and 'upgradetolatest' can't be exist in the same task");
-                                }
-                                // add end @ 20241110*/
+            if (option.model != null && option.model.Length > 0)
+            {
+                command = command + (" value=" + option.model + ",model");
             }
 
             return command;
@@ -681,78 +683,133 @@ namespace DDPM.SA.Plugins.CMAManager
 
         private bool checkResult(string src, out string msg)
         {
-            bool result = false;
+            bool isSuccess = false;
             msg = string.Empty;
 
             WriteLog($"[CMA] checkResult src = {src}");
 
-            int index = src.IndexOf("{", 0);
-
-            do
+            try
             {
-                index = src.IndexOf("{", index + 2);
-                if (index > 0)
-                {
-                    src = src.Insert(index, ",");
-                }
-            } while (index > 0);
+                JArray jarray;
 
-            // modified @ 20241111 stepohen
-            //src = "[" + src + "]";
+                string strResult = string.Empty;
 
-            if (!src.StartsWith("["))
-            {
-                src = "[" + src + "]";
-            }
-            // modified end @ 20241111
-
-
-            WriteLog($"[CMA] checkResult fixed src = {src}");
-
-            JArray jarray = JArray.Parse(src);
-
-            string strResult = string.Empty;
-
-            foreach (JObject jobj in jarray)
-            {
                 try
                 {
-                    strResult = ((string)jobj["Result"]).ToLower() ?? string.Empty;
-
-                    if (strResult.Equals("success"))
-                    {
-                        result = true;
-                        continue;
-                    }
-
-                    if (strResult.Equals("pass"))
-                    {
-                        result = true;
-                        continue;
-                    }
-
-                    if (strResult.Equals("completed"))
-                    {
-                        result = true;
-                        continue;
-                    }
-
-                    result = false;
-                    msg = (string)jobj["Message"];
-
-                    return result;
+                    jarray = JArray.Parse(src);
                 }
                 catch (Exception e)
                 {
-                    msg = e.ToString();
+                    WriteLog($"[CMA] Exception: checkResult src is not json array.\nException is {e.ToString()}");
 
-                    return result;
+                    // fix CLI response as json string
+                    int index = src.IndexOf("{", 0);
+
+                    do
+                    {
+                        index = src.IndexOf("{", index + 2);
+                        if (index > 0)
+                        {
+                            src = src.Insert(index, ",");
+                        }
+                    } while (index > 0);
+
+                    // modified @ 20241111 stepohen
+                    //src = "[" + src + "]";
+
+                    if (!src.StartsWith("["))
+                    {
+                        src = "[" + src + "]";
+                    }
+                    // modified end @ 20241111
+
+                    WriteLog($"[CMA] checkResult fixed src = {src}");
+
+                    jarray = JArray.Parse(src);
                 }
 
+                // check command result is success or not
+                foreach (JObject jobj in jarray)
+                {
+                    try
+                    {
+                        strResult = ((string)jobj["Result"]).ToLower() ?? string.Empty;
 
+                        if (strResult.Equals("success"))
+                        {
+                            isSuccess = true;
+                            continue;
+                        }
+
+                        if (strResult.Equals("pass"))
+                        {
+                            isSuccess = true;
+                            continue;
+                        }
+
+                        if (strResult.Equals("completed"))
+                        {
+                            isSuccess = true;
+                            continue;
+                        }
+
+                        isSuccess = false;
+                        msg = (string)jobj["Message"];
+
+                        return isSuccess;
+                    }
+                    catch (Exception e)
+                    {
+                        msg = e.ToString();
+
+                        return isSuccess;
+                    }
+
+
+                }
+            }
+            catch (Exception e) {
+
+                if (src.ToLower().Contains("success") || src.ToLower().Contains("pass") || src.ToLower().Contains("completed")) {
+                    isSuccess = true;
+                    return isSuccess;
+                }
+
+                isSuccess = false;
+                msg = e.ToString();
             }
 
-            return result;
+            return isSuccess;
+        }
+
+        private string checkRemoteRequest(string src) 
+        {
+            
+
+            string data = src;
+
+            int index = src.IndexOf('\\', 0);
+
+            if (index < 0)
+            {
+                return data;
+            }
+
+            WriteLog($"[CMA] checkRemoteRequest src.IndexOf('\\', 0) = {index}");
+
+            do
+            {
+                if (data[index + 1] != '\\') {
+                    data = data.Insert(index, "\\");
+                }
+
+                index = data.IndexOf('\\', index + 2);
+
+            } while (index > 0);
+
+            WriteLog($"[CMA] checkRemoteRequest returns = {data}");
+
+            return data;
         }
 
         public Task<RemoteManagementResult> Info(RemoteRequestArgs request)
@@ -774,9 +831,11 @@ namespace DDPM.SA.Plugins.CMAManager
 
             WriteLog($"[CMA] initCommandTask request.cma_request = {request.remote_request}]");
 
+            string remoteRequest = checkRemoteRequest(request.remote_request.ToLower());
+
             try
             {
-                initCommandTask(uniqueAgentGuid.ToString(), request.remote_request);
+                initCommandTask(uniqueAgentGuid.ToString(), remoteRequest);
 
                 TaskInfo taskInfo = taskInfoQueue.Peek();
                 WriteLog($"[CMA] before runCommandTask, taskInfo.sid = {taskInfo.sid} ; taskInfo.gid = {taskInfo.gid} ; taskInfo.tid = {taskInfo.tid} ; taskInfo.eventtype = {taskInfo.eventtype} ; taskInfo.command = {taskInfo.command}");
@@ -862,9 +921,15 @@ namespace DDPM.SA.Plugins.CMAManager
                          {
                              DoRelayRegister();
                          }*/
+                        _CliManagerPlugin.CLIActionResult += OnCLIManagerResultHandler;
                     }
                 }
             });
+        }
+
+        private void OnCLIManagerResultHandler(object sender, CLIEventResult e)
+        {
+            //Paring the result
         }
 
 

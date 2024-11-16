@@ -25,6 +25,11 @@ namespace VcpCore.Common
         public string D_Ctrl { get; set; } = string.Empty;
         public double scalingFactor { get; set; } = 0x0;
 
+        public MonitorInfo ShallowCopy()
+        {
+            return (MonitorInfo)this.MemberwiseClone();
+        }
+
         public override bool Equals(object obj)
         {
             return Equals(obj as MonitorInfo);

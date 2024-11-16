@@ -33,9 +33,11 @@ using static Dell.Client.Framework.Security.LocalAccounts;
 using static Dell.Client.Framework.UX.WPF.WinApi;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.StartPanel;
 using DDPMConstants = DDPM.UI.Common.Constants;
+using User32 = DDPM.UI.Common.User32;
 
 //using VcpCore.Interfaces;
 using IDdpmHomePageViewModel = DDPM.UI.Plugin.DdpmHomePlugin.Interfaces.IDdpmHomePageViewModel;
+using static DDPM.UI.Common.User32;
 
 namespace DDPM.UI.Plugin.DdpmHomePlugin
 {
@@ -309,14 +311,19 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                     //await CheckAndQueueDevice(e.device_peripherals);
                     _log.Info($"@ DeviceName=[{e.device_peripherals.Name}]");
                 }
-                _log.Info($"[Walkthrough] {nameof(_deviceManager_DeviceChanged)} Start");
-                await CollectAndCompareDevicesAsync();
-                //// Check Queue¡Afirst use device need to show WalkThroughPage
-                if (WalkThroughQueue.Count > 0 && _showPluginById == false)
+
+                // If event Contains Add, then into Walkthrough
+                if (e.changedProperty.ToLower().Contains("add"))
                 {
-                    _log.Info($"[Walkthrough] {nameof(_deviceManager_DeviceChanged)} WalkThroughQueue has items, ShowPluginById.");
-                    _showPluginManager?.ShowPluginById(DDPM.UI.Common.Constants.WalkThroughPluginId);
-                    _showPluginById = true;
+                    _log.Info($"[Walkthrough] {nameof(_deviceManager_DeviceChanged)} Start");
+                    await CollectAndCompareDevicesAsync();
+                    //// Check Queue¡Afirst use device need to show WalkThroughPage
+                    if (WalkThroughQueue.Count > 0 && _showPluginById == false)
+                    {
+                        _log.Info($"[Walkthrough] {nameof(_deviceManager_DeviceChanged)} WalkThroughQueue has items, ShowPluginById.");
+                        _showPluginManager?.ShowPluginById(DDPM.UI.Common.Constants.WalkThroughPluginId);
+                        _showPluginById = true;
+                    }
                 }
                 //2024-8-6 Robert, fix bug. compare string should be lowercase due to ToLower()
                 //2024-07-02, Elie, we only handle remove and add event on the DdpmHomePlugin.
@@ -332,7 +339,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                     //2024-6-20 move refresh device form HomeView to here
                     //_ = Task.Run(GetDdpmDevicesAsync(_deviceManager));
                     if (_deviceManager != null)
-                        _ = GetDdpmDevicesAsync(_deviceManager, e.changedProperty.ToLower());
+                        _ = GetDdpmDevicesAsync(_deviceManager, e, e.changedProperty.ToLower());
 
                     if (e.type == DeviceChangedType.NotifyOnly && WalkThroughQueue.Count == 0)
                     {
@@ -485,7 +492,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
         private static List<DeviceInfo> _deviceInfos = null;
         private static List<MonitorInfo> _monitorInfos = null;
 
-        private async Task GetDdpmDevicesAsync(IDeviceManagerSA deviceManager, string condition = "all")
+        private async Task GetDdpmDevicesAsync(IDeviceManagerSA deviceManager, DeviceChangedEventArgs e = null, string condition = "all")
         {
             if (!SpinWait.SpinUntil(() =>
             (_IDeviceManagerPluginCondition is IFrameworkPluginConditionNotification), TimeSpan.FromMinutes(2)))
@@ -509,6 +516,10 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                 if (condition.Equals("all") || !condition.Equals("displaychanged"))
                 {
                     DeviceHelper deviceHelper = deviceManager.GetDevices().Result;
+                    if (deviceHelper == null || deviceHelper.deviceInfo.Count <= 0)
+                    {
+                        deviceHelper = deviceManager.GetDevices(true).Result;
+                    }
                     //List<DeviceInfo> deviceInfos = new List<DeviceInfo>();
                     _deviceInfos = new List<DeviceInfo>();
                     if ((deviceHelper != null) && (deviceHelper.deviceInfo != null))
@@ -539,6 +550,19 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                         {
                             //The "PleaseWait" UI will be displayed and auto closed after timeout (=12 sec)
                             viewModel.Invoke_PleaseWait();
+
+                            //Robert_Lin, 2024-11-9 for Developer debug, check if C:\temp\DDPMDebug.txt contains
+                            //[DDPMDebug]
+                            //HomePlugin.GetDdpmDevicesAsync.AddFakeMonitorIfEmpty=1
+                            if (File.Exists(@"C:\temp\DDPMDebug.txt"))
+                            {
+                                if (User32.IniReadInt("DDPMDebug", "HomePlugin.GetDdpmDevicesAsync.AddFakeMonitorIfEmpty", 0, @"C:\temp\DDPMDebug.txt") == 1)
+                                {
+                                    //Add a Fake monitor to the listView of Homepage
+                                    _viewModel?.AddFakeMonitorToListView();
+                                }
+                            }
+
                         }
                         else
                         {
@@ -682,6 +706,11 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
 
         #endregion Interface IConsolePluginSupportsActivations
 
+        #region HomeDevices
+        /// <summary>
+        /// Called from other plugins to get the HomeDevices from DdpmHomePlugin's ViewModel
+        /// </summary>
+        /// <returns></returns>
         public static List<HomeDevice> GetHomeDevices()
         {
             IDdpmHomePageViewModel? viewModel = PluginIoc.GetService<IDdpmHomePageViewModel>();
@@ -692,6 +721,14 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
             return new List<HomeDevice>();
         }
 
+        /// <summary>
+        /// Called from other plugins to get the SelectedHomeDevices from DdpmHomePlugin's ViewModel
+        /// For the modules of DisplayPlugin, can get this list from their IModuleOwner 
+        /// because that DisplayPlugin will call this method and copy/update to IModuleOwner.
+        /// NOTE. for Display, this return object is the one user click from homepage.
+        /// But not the selected item from Display Landing Page combobox.
+        /// </summary>
+        /// <returns></returns>
         public static HomeDevice? GetSelectedHomeDevice()
         {
             IDdpmHomePageViewModel? viewModel = PluginIoc.GetService<IDdpmHomePageViewModel>();
@@ -702,6 +739,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
             else
                 return null;
         }
+        #endregion
 
         #region Icons on Masthead
 

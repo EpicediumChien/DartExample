@@ -19,6 +19,7 @@ using System.IO;
 using VcpCore.Common;
 using Windows.System;
 using Dell.Client.Framework.Common;
+using DDPM.UI.Resources.Helper;
 using System.Collections.ObjectModel;
 
 namespace DDPM.UI.Module.Kvm
@@ -421,6 +422,18 @@ namespace DDPM.UI.Module.Kvm
 
         #region Hotkey
 
+        private string _kvmHotkeyTooltip = "None";
+
+        public string KvmHotkeyTooltip
+        {
+            get => _kvmHotkeyTooltip;
+            set
+            {
+                SetProperty(ref _kvmHotkeyTooltip, value);
+                OnPropertyChanged("KvmHotkeyTooltip");
+            }
+        }
+
         private string _switchPCsKey = "None";
 
         public string SwitchPCsKey
@@ -470,6 +483,22 @@ namespace DDPM.UI.Module.Kvm
             }
         }
 
+        public void SaveHotkeySettings(MonitorInfo monitorInfo, HotkeyInfo hotkeyInfo)
+        {
+            if (DdpmCommonHelper.DeviceManagerSA != null)
+            {
+                IsBusy = true;
+                OnPropertyChanged("IsBusy");
+                bool saveSettings = DdpmCommonHelper.DeviceManagerSA.SaveHotkeySetting(monitorInfo, hotkeyInfo).Result;
+                if (saveSettings)
+                {
+                    DdpmCommonHelper.isHotkeyBypass = DdpmCommonHelper.DeviceManagerSA.ByPassHotkey(false).Result;
+                    IsBusy = false;
+                    OnPropertyChanged("IsBusy");
+                }
+            }
+            Invoke_RefreshHotkeySettings();
+        }
         private void saveKvmHotkeyOption()
         {
             HotkeySettings hotkeySettings = new HotkeySettings
@@ -502,41 +531,56 @@ namespace DDPM.UI.Module.Kvm
                 //sender is the ‘bw’ object
                 BackgroundWorker bwk = (BackgroundWorker)sender;
                 //load hotkey setting
-                var temp = DdpmCommonHelper.DeviceManagerSA.ReadCurrentHotkey(KvmModule.SelectedHomeDevice.MonitorInfo).Result;
-                HotkeySettings curHotkey = temp.Item1;
-                //0708 error handling for non-EE support monitor
-                string swHortcutText = string.Empty;
-                if (curHotkey.HotkeyInfo.Count > 0)
+                if (DdpmCommonHelper.DeviceManagerSA != null)
                 {
-                    foreach (var hotkeyInfo in curHotkey.HotkeyInfo)
+                    var temp = DdpmCommonHelper.DeviceManagerSA.ReadCurrentHotkey(KvmModule?.SelectedHomeDevice?.MonitorInfo).Result;
+                    HotkeySettings curHotkey = temp.Item1;
+                    //0708 error handling for non-EE support monitor
+                    string swHortcutText = string.Empty;
+                    string HeadCaption = LangHelper.Instance["Hotkeys"];
+                    string SwitchPCsKeyCaption = LangHelper.Instance["Kvm.8"];
+                    string SwitchKbMsKeyCaption = LangHelper.Instance["Kvm.9"];
+                    string ChangePipKeyCaption = LangHelper.Instance["Kvm.10"];
+                    if (curHotkey.HotkeyInfo.Count > 0)
                     {
-                        List<VirtualKey> hotkeys = hotkeyInfo.Hotkey;
-                        switch (hotkeyInfo.Job)
+                        foreach (var hotkeyInfo in curHotkey.HotkeyInfo)
                         {
-                            case HotkeyType.KvmSwitchInputSource:
-                                KeysHelper.ReSetHotKeyText(ref swHortcutText, ref hotkeys);
-                                hotkeys.Clear();
-                                SwitchPCsKey = swHortcutText;
-                                break;
+                            List<VirtualKey> hotkeys = hotkeyInfo.Hotkey;
+                            switch (hotkeyInfo.Job)
+                            {
+                                case HotkeyType.KvmSwitchInputSource:
+                                    KeysHelper.ReSetHotKeyText(ref swHortcutText, ref hotkeys);
+                                    hotkeys.Clear();
+                                    SwitchPCsKey = swHortcutText;
+                                    break;
 
-                            case HotkeyType.KvmSwitchKbMsKey:
-                                KeysHelper.ReSetHotKeyText(ref swHortcutText, ref hotkeys);
-                                hotkeys.Clear();
-                                SwitchKbMsKey = swHortcutText;
-                                break;
+                                case HotkeyType.KvmSwitchKbMsKey:
+                                    KeysHelper.ReSetHotKeyText(ref swHortcutText, ref hotkeys);
+                                    hotkeys.Clear();
+                                    SwitchKbMsKey = swHortcutText;
+                                    break;
 
-                            case HotkeyType.KvmChangePIPPosition:
-                                KeysHelper.ReSetHotKeyText(ref swHortcutText, ref hotkeys);
-                                hotkeys.Clear();
-                                ChangePipKey = swHortcutText;
-                                break;
+                                case HotkeyType.KvmChangePIPPosition:
+                                    KeysHelper.ReSetHotKeyText(ref swHortcutText, ref hotkeys);
+                                    hotkeys.Clear();
+                                    ChangePipKey = swHortcutText;
+                                    break;
+                            }
                         }
+                        _kvmHotkeyTooltip = $"{HeadCaption} - {SwitchPCsKeyCaption}: {SwitchPCsKey}\r\n{HeadCaption} - {SwitchKbMsKeyCaption}: {SwitchKbMsKey}\r\n{HeadCaption} - {ChangePipKeyCaption}: {ChangePipKey}";
+                    }
+                    else
+                    {
+                        string StrNone = LangHelper.Instance["None"];
+                        _kvmHotkeyTooltip = $"{HeadCaption} - {SwitchPCsKeyCaption}: {StrNone}\r\n{HeadCaption} - {SwitchKbMsKeyCaption}: {StrNone}\r\n{HeadCaption} - {ChangePipKeyCaption}: {StrNone}";
+                    }
+                    if (curHotkey.HotkeyOptions.Count > 0 && curHotkey.HotkeyOptions.Any(x => x.Equals(HotkeyOption.KvmAutoApply)))
+                    {
+                        _autoSwitchChecked = true;
                     }
                 }
-                if (curHotkey.HotkeyOptions.Count > 0 && curHotkey.HotkeyOptions.Any(x => x.Equals(HotkeyOption.KvmAutoApply)))
-                {
-                    _autoSwitchChecked = true;
-                }
+
+                OnPropertyChanged("KvmHotkeyTooltip");
             }
             catch (Exception ex)
             {

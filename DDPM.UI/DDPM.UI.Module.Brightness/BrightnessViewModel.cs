@@ -16,6 +16,7 @@ using Windows.System;
 
 [assembly: InternalsVisibleTo("DDPM.UI.Module.Brightness.Tests")]
 [assembly: InternalsVisibleTo("DDPM.UI.Common.Tests")]
+[assembly: InternalsVisibleTo("DDPM.UI.Plugin.Common.Tests")]
 namespace DDPM.UI.Module.Brightness
 {
     internal class BrightnessViewModel : ObservableObject, INotifyPropertyChanged
@@ -289,6 +290,22 @@ namespace DDPM.UI.Module.Brightness
 
         #endregion hotkey property
 
+        public void SaveHotkeySettings(MonitorInfo monitorInfo, HotkeyInfo hotkeyInfo)
+        {
+            if (DdpmCommonHelper.DeviceManagerSA != null)
+            {
+                IsBusy = true;
+                NotifyPropertyChanged("IsBusy");
+                bool saveSettings = DdpmCommonHelper.DeviceManagerSA.SaveHotkeySetting(monitorInfo, hotkeyInfo).Result;
+                if (saveSettings)
+                {
+                    DdpmCommonHelper.isHotkeyBypass = DdpmCommonHelper.DeviceManagerSA.ByPassHotkey(false).Result;
+                    IsBusy = false;
+                    NotifyPropertyChanged("IsBusy");
+                }
+            }
+            Invoke_RefreshHotkeySettings();
+        }
         public void Invoke_RefreshHotkeySettings()
         {
             BackgroundWorker bw = new BackgroundWorker()
@@ -298,7 +315,7 @@ namespace DDPM.UI.Module.Brightness
             };
             bw.DoWork += DoWork_RefreshData;
             bw.RunWorkerCompleted += RunWorkerCompleted_RefreshData;
-            bw.RunWorkerAsync(ApartmentState.STA);
+            bw.RunWorkerAsync();
         }
 
         private void DoWork_RefreshData(object sender, DoWorkEventArgs e)
@@ -2946,7 +2963,7 @@ namespace DDPM.UI.Module.Brightness
                     foreach (HomeDevice hd in DdpmCommonHelper.ModuleOwner.HomeDevices)
                     {
                         if (hd.MonitorInfo.IsDellMonitor)
-                            DdpmCommonHelper.DeviceManagerSA?.WriteColorPreset(hd.MonitorInfo, strSync_CurrentColorPreset, 0, null,false);
+                            DdpmCommonHelper.DeviceManagerSA?.WriteColorPreset(hd.MonitorInfo, strSync_CurrentColorPreset, 0, null, false);
                     }
                 });
 

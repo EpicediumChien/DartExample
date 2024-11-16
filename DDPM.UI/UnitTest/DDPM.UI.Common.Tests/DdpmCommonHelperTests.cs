@@ -280,7 +280,8 @@ namespace DDPM.UI.Common.Tests
             UXSystemParameters.Instance.OSTheme = OSThemeEnum.Dark;
             try
             {
-                DdpmCommonHelper.updateMergedDictionarie();
+                //Fix build
+                DdpmCommonHelper.updateMergedDictionaries(new Dell.Client.Framework.UX.WPF.ResourceManager.ResourceManager());
                 Assert.True(true);
             }
             catch (Exception ex)
@@ -300,7 +301,7 @@ namespace DDPM.UI.Common.Tests
             //    Assert.Fail("not invoked");
             //}
         }
-       
+
         [Test]
         public void TestisDarkMode()
         {

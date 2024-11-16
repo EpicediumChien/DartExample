@@ -1,18 +1,18 @@
 Renamed Types:
 
-[DDPM.SA.Obfuscation]<PrivateImplementationDetails> -> [DDPM.SA.Obfuscation] . 
+[DDPM.SA.Obfuscation]<PrivateImplementationDetails> -> [DDPM.SA.Obfuscation]A.A
 {
-	<PrivateImplementationDetails>/__StaticArrayInitTypeSize=20 [DDPM.SA.Obfuscation]<PrivateImplementationDetails>/__StaticArrayInitTypeSize=20 <PrivateImplementationDetails>::1292EF7C901F7F2F081278CF42CC49BCB03B5FCD2847590B7FD8988F125B5345 ->  
-	<PrivateImplementationDetails>/__StaticArrayInitTypeSize=20 [DDPM.SA.Obfuscation]<PrivateImplementationDetails>/__StaticArrayInitTypeSize=20 <PrivateImplementationDetails>::199BB490923613C9AB6AA3EECE47F848C25BA76BC35CAA4C8FEAC68D14D3A298 ->  
-	<PrivateImplementationDetails>/__StaticArrayInitTypeSize=20 [DDPM.SA.Obfuscation]<PrivateImplementationDetails>/__StaticArrayInitTypeSize=20 <PrivateImplementationDetails>::371F0EBC8EA571C6CAF9FF09E850A69C569274DBC9819A8640C07E5241DB3F6C ->  
-	<PrivateImplementationDetails>/__StaticArrayInitTypeSize=20 [DDPM.SA.Obfuscation]<PrivateImplementationDetails>/__StaticArrayInitTypeSize=20 <PrivateImplementationDetails>::5F4BEF6B1766F0058E4CEC418C325D8147A9260777A34641D9061063A75B03A6 ->  
-	<PrivateImplementationDetails>/__StaticArrayInitTypeSize=20 [DDPM.SA.Obfuscation]<PrivateImplementationDetails>/__StaticArrayInitTypeSize=20 <PrivateImplementationDetails>::A08789BD3518000102A0F84A5BEBC49C30942D5B58AEC87DC30E8F3DEB926114 ->  
-	<PrivateImplementationDetails>/__StaticArrayInitTypeSize=20 [DDPM.SA.Obfuscation]<PrivateImplementationDetails>/__StaticArrayInitTypeSize=20 <PrivateImplementationDetails>::E80BD2FC4C3E0F8B1AF726C6B03C27E1D9CB77DC79D63802574D5F68DE7A5FA6 ->  
-	<PrivateImplementationDetails>/__StaticArrayInitTypeSize=20 [DDPM.SA.Obfuscation]<PrivateImplementationDetails>/__StaticArrayInitTypeSize=20 <PrivateImplementationDetails>::F60CFBCC9D7F77F7085E18190EFAC273BFABF25E9B3619B97444908CA4AC830F ->  
-	<PrivateImplementationDetails>/__StaticArrayInitTypeSize=20 [DDPM.SA.Obfuscation]<PrivateImplementationDetails>/__StaticArrayInitTypeSize=20 <PrivateImplementationDetails>::FFDF5E0774E9F56682CBE0133A7471FFB3E983ECB87B4B5A6966500E349DE697 ->  
+	<PrivateImplementationDetails>/__StaticArrayInitTypeSize=20 [DDPM.SA.Obfuscation]<PrivateImplementationDetails>/__StaticArrayInitTypeSize=20 <PrivateImplementationDetails>::1292EF7C901F7F2F081278CF42CC49BCB03B5FCD2847590B7FD8988F125B5345 -> A
+	<PrivateImplementationDetails>/__StaticArrayInitTypeSize=20 [DDPM.SA.Obfuscation]<PrivateImplementationDetails>/__StaticArrayInitTypeSize=20 <PrivateImplementationDetails>::199BB490923613C9AB6AA3EECE47F848C25BA76BC35CAA4C8FEAC68D14D3A298 -> a
+	<PrivateImplementationDetails>/__StaticArrayInitTypeSize=20 [DDPM.SA.Obfuscation]<PrivateImplementationDetails>/__StaticArrayInitTypeSize=20 <PrivateImplementationDetails>::371F0EBC8EA571C6CAF9FF09E850A69C569274DBC9819A8640C07E5241DB3F6C -> B
+	<PrivateImplementationDetails>/__StaticArrayInitTypeSize=20 [DDPM.SA.Obfuscation]<PrivateImplementationDetails>/__StaticArrayInitTypeSize=20 <PrivateImplementationDetails>::5F4BEF6B1766F0058E4CEC418C325D8147A9260777A34641D9061063A75B03A6 -> b
+	<PrivateImplementationDetails>/__StaticArrayInitTypeSize=20 [DDPM.SA.Obfuscation]<PrivateImplementationDetails>/__StaticArrayInitTypeSize=20 <PrivateImplementationDetails>::A08789BD3518000102A0F84A5BEBC49C30942D5B58AEC87DC30E8F3DEB926114 -> C
+	<PrivateImplementationDetails>/__StaticArrayInitTypeSize=20 [DDPM.SA.Obfuscation]<PrivateImplementationDetails>/__StaticArrayInitTypeSize=20 <PrivateImplementationDetails>::E80BD2FC4C3E0F8B1AF726C6B03C27E1D9CB77DC79D63802574D5F68DE7A5FA6 -> c
+	<PrivateImplementationDetails>/__StaticArrayInitTypeSize=20 [DDPM.SA.Obfuscation]<PrivateImplementationDetails>/__StaticArrayInitTypeSize=20 <PrivateImplementationDetails>::F60CFBCC9D7F77F7085E18190EFAC273BFABF25E9B3619B97444908CA4AC830F -> D
+	<PrivateImplementationDetails>/__StaticArrayInitTypeSize=20 [DDPM.SA.Obfuscation]<PrivateImplementationDetails>/__StaticArrayInitTypeSize=20 <PrivateImplementationDetails>::FFDF5E0774E9F56682CBE0133A7471FFB3E983ECB87B4B5A6966500E349DE697 -> d
 }
 
-[DDPM.SA.Obfuscation]<PrivateImplementationDetails>/__StaticArrayInitTypeSize=20 -> [DDPM.SA.Obfuscation] . / 
+[DDPM.SA.Obfuscation]<PrivateImplementationDetails>/__StaticArrayInitTypeSize=20 -> [DDPM.SA.Obfuscation]A.A/A
 {
 }
 
@@ -24,9 +24,9 @@ Skipped Types:
 	[DDPM.SA.Obfuscation]DDPM.SA.Obfuscation.ThumbprintHash_CICD::.ctor[0]( ) skipped:  special name
 	[DDPM.SA.Obfuscation]DDPM.SA.Obfuscation.ThumbprintHash_CICD::.cctor[0]( ) skipped:  special name
 
-	System.Byte[] [DDPM.SA.Obfuscation]System.Byte[] DDPM.SA.Obfuscation.ThumbprintHash_CICD::DELL_Hash ->  
-	System.Byte[] [DDPM.SA.Obfuscation]System.Byte[] DDPM.SA.Obfuscation.ThumbprintHash_CICD::WST_Hash ->  
-	System.Byte[] [DDPM.SA.Obfuscation]System.Byte[] DDPM.SA.Obfuscation.ThumbprintHash_CICD::WST2_Hash ->  
+	System.Byte[] [DDPM.SA.Obfuscation]System.Byte[] DDPM.SA.Obfuscation.ThumbprintHash_CICD::DELL_Hash -> A
+	System.Byte[] [DDPM.SA.Obfuscation]System.Byte[] DDPM.SA.Obfuscation.ThumbprintHash_CICD::WST_Hash -> a
+	System.Byte[] [DDPM.SA.Obfuscation]System.Byte[] DDPM.SA.Obfuscation.ThumbprintHash_CICD::WST2_Hash -> B
 
 	System.Byte[][] [DDPM.SA.Obfuscation]System.Byte[][] DDPM.SA.Obfuscation.ThumbprintHash_CICD::certificateHash skipped:  KeepPublicApi option in configuration
 }
@@ -43,32 +43,35 @@ Skipped Types:
 
 [DDPM.SA.Obfuscation]DDPM.SA.Obfuscation.SettingsAccess skipped:  KeepPublicApi option in configuration
 {
-	[DDPM.SA.Obfuscation]DDPM.SA.Obfuscation.SettingsAccess::DeriveKey[4]( [System.Runtime]System.String, [System.Runtime]System.Byte[], [System.Runtime]System.Int32, [System.Runtime]System.Int32 ) ->  
-	[DDPM.SA.Obfuscation]DDPM.SA.Obfuscation.SettingsAccess::IsUserElevated[0]( ) ->  
-	[DDPM.SA.Obfuscation]DDPM.SA.Obfuscation.SettingsAccess::get_AppInfo[0]( ) ->  
-	[DDPM.SA.Obfuscation]DDPM.SA.Obfuscation.SettingsAccess::QueryAppAccessInfo[0]( ) ->  
+	[DDPM.SA.Obfuscation]DDPM.SA.Obfuscation.SettingsAccess::DeriveKey[4]( [System.Runtime]System.String, [System.Runtime]System.Byte[], [System.Runtime]System.Int32, [System.Runtime]System.Int32 ) -> A
+	[DDPM.SA.Obfuscation]DDPM.SA.Obfuscation.SettingsAccess::IsUserElevated[0]( ) -> A
+	[DDPM.SA.Obfuscation]DDPM.SA.Obfuscation.SettingsAccess::get_AppInfo[0]( ) -> a
+	[DDPM.SA.Obfuscation]DDPM.SA.Obfuscation.SettingsAccess::QueryAppAccessInfo[0]( ) -> B
+	[DDPM.SA.Obfuscation]DDPM.SA.Obfuscation.SettingsAccess::VerifyTimestamp[2]( [System.Runtime]System.String, [System.Runtime]System.String ) -> A
+	[DDPM.SA.Obfuscation]DDPM.SA.Obfuscation.SettingsAccess::ComputeHMACSHA512[3]( [System.Runtime]System.Byte[], [System.Runtime]System.Byte[], [System.Security.Cryptography]System.Security.Cryptography.HashAlgorithmName ) -> A
 
-	[DDPM.SA.Obfuscation]DDPM.SA.Obfuscation.SettingsAccess::get_AppAccessInfo[0]( ) skipped:  skip by property
 	[DDPM.SA.Obfuscation]DDPM.SA.Obfuscation.SettingsAccess::get_AppAccessVer[0]( ) skipped:  skip by property
 	[DDPM.SA.Obfuscation]DDPM.SA.Obfuscation.SettingsAccess::get_AppAccessAddr[0]( ) skipped:  skip by property
 	[DDPM.SA.Obfuscation]DDPM.SA.Obfuscation.SettingsAccess::GenerateAccessString[2]( [System.Runtime]System.Byte[], [System.Runtime]System.String ) skipped:  KeepPublicApi option in configuration
 	[DDPM.SA.Obfuscation]DDPM.SA.Obfuscation.SettingsAccess::GenerateAccessString2[2]( [System.Runtime]System.String, [System.Runtime]System.String ) skipped:  KeepPublicApi option in configuration
-	[DDPM.SA.Obfuscation]DDPM.SA.Obfuscation.SettingsAccess::ComputeAccessInfo2[2]( [System.Runtime]System.Byte[], [System.Runtime]System.String ) skipped:  KeepPublicApi option in configuration
 	[DDPM.SA.Obfuscation]DDPM.SA.Obfuscation.SettingsAccess::QueryRegistryUpdateLock[2]( [System.Runtime]System.Boolean&, [System.Runtime]System.String& ) skipped:  KeepPublicApi option in configuration
 	[DDPM.SA.Obfuscation]DDPM.SA.Obfuscation.SettingsAccess::DeleteRegistryUpdateLock[1]( [System.Runtime]System.String& ) skipped:  KeepPublicApi option in configuration
+	[DDPM.SA.Obfuscation]DDPM.SA.Obfuscation.SettingsAccess::ComputeBytes[2]( [System.Runtime]System.Byte[], [System.Runtime]System.Byte[] ) skipped:  KeepPublicApi option in configuration
+	[DDPM.SA.Obfuscation]DDPM.SA.Obfuscation.SettingsAccess::GenerateReferenceInfo[0]( ) skipped:  KeepPublicApi option in configuration
+	[DDPM.SA.Obfuscation]DDPM.SA.Obfuscation.SettingsAccess::GenerateReferenceTicket[1]( [System.Runtime]System.DateTimeOffset ) skipped:  KeepPublicApi option in configuration
+	[DDPM.SA.Obfuscation]DDPM.SA.Obfuscation.SettingsAccess::GenerateSignature[3]( [System.Runtime]System.String, [System.Runtime]System.String, [System.Runtime]System.String ) skipped:  KeepPublicApi option in configuration
+	[DDPM.SA.Obfuscation]DDPM.SA.Obfuscation.SettingsAccess::VerifySignature[4]( [System.Runtime]System.String, [System.Runtime]System.String, [System.Runtime]System.String, [System.Runtime]System.String ) skipped:  KeepPublicApi option in configuration
 	[DDPM.SA.Obfuscation]DDPM.SA.Obfuscation.SettingsAccess::.ctor[0]( ) skipped:  special name
 	[DDPM.SA.Obfuscation]DDPM.SA.Obfuscation.SettingsAccess::.cctor[0]( ) skipped:  special name
 
-	System.Int32 [DDPM.SA.Obfuscation]System.Int32 DDPM.SA.Obfuscation.SettingsAccess::iterations ->  
-	System.Int32 [DDPM.SA.Obfuscation]System.Int32 DDPM.SA.Obfuscation.SettingsAccess::keyLength ->  
-	System.ValueTuple`3<System.String,System.String,System.String> [DDPM.SA.Obfuscation]System.ValueTuple`3<System.String,System.String,System.String> DDPM.SA.Obfuscation.SettingsAccess::<AppInfo>k__BackingField ->  
-	System.String [DDPM.SA.Obfuscation]System.String DDPM.SA.Obfuscation.SettingsAccess::<AppAccessInfo>k__BackingField ->  
-	System.String [DDPM.SA.Obfuscation]System.String DDPM.SA.Obfuscation.SettingsAccess::<AppAccessVer>k__BackingField ->  
-	System.String [DDPM.SA.Obfuscation]System.String DDPM.SA.Obfuscation.SettingsAccess::<AppAccessAddr>k__BackingField ->  
+	System.Int32 [DDPM.SA.Obfuscation]System.Int32 DDPM.SA.Obfuscation.SettingsAccess::iterations -> A
+	System.Int32 [DDPM.SA.Obfuscation]System.Int32 DDPM.SA.Obfuscation.SettingsAccess::keyLength -> a
+	System.ValueTuple`3<System.String,System.String,System.String> [DDPM.SA.Obfuscation]System.ValueTuple`3<System.String,System.String,System.String> DDPM.SA.Obfuscation.SettingsAccess::<AppInfo>k__BackingField -> A
+	System.String [DDPM.SA.Obfuscation]System.String DDPM.SA.Obfuscation.SettingsAccess::<AppAccessVer>k__BackingField -> A
+	System.String [DDPM.SA.Obfuscation]System.String DDPM.SA.Obfuscation.SettingsAccess::<AppAccessAddr>k__BackingField -> a
 
-	System.ValueTuple`3<System.String,System.String,System.String> [DDPM.SA.Obfuscation]System.ValueTuple`3<System.String,System.String,System.String> DDPM.SA.Obfuscation.SettingsAccess::AppInfo ->  
+	System.ValueTuple`3<System.String,System.String,System.String> [DDPM.SA.Obfuscation]System.ValueTuple`3<System.String,System.String,System.String> DDPM.SA.Obfuscation.SettingsAccess::AppInfo -> A
 
-	System.String [DDPM.SA.Obfuscation]System.String DDPM.SA.Obfuscation.SettingsAccess::AppAccessInfo skipped:  KeepPublicApi option in configuration
 	System.String [DDPM.SA.Obfuscation]System.String DDPM.SA.Obfuscation.SettingsAccess::AppAccessVer skipped:  KeepPublicApi option in configuration
 	System.String [DDPM.SA.Obfuscation]System.String DDPM.SA.Obfuscation.SettingsAccess::AppAccessAddr skipped:  KeepPublicApi option in configuration
 }
@@ -79,24 +82,24 @@ Skipped Types:
 	[DDPM.SA.Obfuscation]DDPM.SA.Obfuscation.ThumbprintHash::.ctor[0]( ) skipped:  special name
 	[DDPM.SA.Obfuscation]DDPM.SA.Obfuscation.ThumbprintHash::.cctor[0]( ) skipped:  special name
 
-	System.Byte[] [DDPM.SA.Obfuscation]System.Byte[] DDPM.SA.Obfuscation.ThumbprintHash::DELL_Hash ->  
-	System.Byte[] [DDPM.SA.Obfuscation]System.Byte[] DDPM.SA.Obfuscation.ThumbprintHash::DELL_Hash1 ->  
-	System.Byte[] [DDPM.SA.Obfuscation]System.Byte[] DDPM.SA.Obfuscation.ThumbprintHash::DELL_Hash2 ->  
-	System.Byte[] [DDPM.SA.Obfuscation]System.Byte[] DDPM.SA.Obfuscation.ThumbprintHash::WST_Hash ->  
-	System.Byte[] [DDPM.SA.Obfuscation]System.Byte[] DDPM.SA.Obfuscation.ThumbprintHash::WST2_Hash ->  
-	System.Byte[] [DDPM.SA.Obfuscation]System.Byte[] DDPM.SA.Obfuscation.ThumbprintHash::QDA1_Hash ->  
-	System.Byte[] [DDPM.SA.Obfuscation]System.Byte[] DDPM.SA.Obfuscation.ThumbprintHash::QDA2_Hash ->  
-	System.Byte[] [DDPM.SA.Obfuscation]System.Byte[] DDPM.SA.Obfuscation.ThumbprintHash::DELL_CICD_Hash ->  
+	System.Byte[] [DDPM.SA.Obfuscation]System.Byte[] DDPM.SA.Obfuscation.ThumbprintHash::DELL_Hash -> A
+	System.Byte[] [DDPM.SA.Obfuscation]System.Byte[] DDPM.SA.Obfuscation.ThumbprintHash::DELL_Hash1 -> a
+	System.Byte[] [DDPM.SA.Obfuscation]System.Byte[] DDPM.SA.Obfuscation.ThumbprintHash::DELL_Hash2 -> B
+	System.Byte[] [DDPM.SA.Obfuscation]System.Byte[] DDPM.SA.Obfuscation.ThumbprintHash::WST_Hash -> b
+	System.Byte[] [DDPM.SA.Obfuscation]System.Byte[] DDPM.SA.Obfuscation.ThumbprintHash::WST2_Hash -> C
+	System.Byte[] [DDPM.SA.Obfuscation]System.Byte[] DDPM.SA.Obfuscation.ThumbprintHash::QDA1_Hash -> c
+	System.Byte[] [DDPM.SA.Obfuscation]System.Byte[] DDPM.SA.Obfuscation.ThumbprintHash::QDA2_Hash -> D
+	System.Byte[] [DDPM.SA.Obfuscation]System.Byte[] DDPM.SA.Obfuscation.ThumbprintHash::DELL_CICD_Hash -> d
 
 	System.Byte[][] [DDPM.SA.Obfuscation]System.Byte[][] DDPM.SA.Obfuscation.ThumbprintHash::certificateHash skipped:  KeepPublicApi option in configuration
 }
 
 [DDPM.SA.Obfuscation]DDPM.SA.Obfuscation.EncryptionHelper skipped:  KeepPublicApi option in configuration
 {
-	[DDPM.SA.Obfuscation]DDPM.SA.Obfuscation.EncryptionHelper::EncryptStringToBytes_Aes[2]( [System.Runtime]System.String, [System.Runtime]System.String ) ->  
-	[DDPM.SA.Obfuscation]DDPM.SA.Obfuscation.EncryptionHelper::DecryptStringFromBytes_Aes[2]( [System.Runtime]System.Byte[], [System.Runtime]System.String ) ->  
-	[DDPM.SA.Obfuscation]DDPM.SA.Obfuscation.EncryptionHelper::EncryptStringToBytes_Aes2[2]( [System.Runtime]System.String, [System.Runtime]System.String ) ->  
-	[DDPM.SA.Obfuscation]DDPM.SA.Obfuscation.EncryptionHelper::DecryptStringFromBytes_Aes2[2]( [System.Runtime]System.Byte[], [System.Runtime]System.String ) ->  
+	[DDPM.SA.Obfuscation]DDPM.SA.Obfuscation.EncryptionHelper::EncryptStringToBytes_Aes[2]( [System.Runtime]System.String, [System.Runtime]System.String ) -> A
+	[DDPM.SA.Obfuscation]DDPM.SA.Obfuscation.EncryptionHelper::DecryptStringFromBytes_Aes[2]( [System.Runtime]System.Byte[], [System.Runtime]System.String ) -> A
+	[DDPM.SA.Obfuscation]DDPM.SA.Obfuscation.EncryptionHelper::EncryptStringToBytes_Aes2[2]( [System.Runtime]System.String, [System.Runtime]System.String ) -> a
+	[DDPM.SA.Obfuscation]DDPM.SA.Obfuscation.EncryptionHelper::DecryptStringFromBytes_Aes2[2]( [System.Runtime]System.Byte[], [System.Runtime]System.String ) -> a
 
 	[DDPM.SA.Obfuscation]DDPM.SA.Obfuscation.EncryptionHelper::EncryptJsonToBytes[2]( [System.Runtime]System.String, [System.Runtime]System.String ) skipped:  KeepPublicApi option in configuration
 	[DDPM.SA.Obfuscation]DDPM.SA.Obfuscation.EncryptionHelper::DecryptJsonFromFile[2]( [System.Runtime]System.Byte[], [System.Runtime]System.String ) skipped:  KeepPublicApi option in configuration

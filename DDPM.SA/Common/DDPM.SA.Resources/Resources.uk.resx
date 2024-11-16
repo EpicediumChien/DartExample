@@ -1,0 +1,480 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="no_updates_available" xml:space="preserve">
+    <value>Немає доступних оновлень.</value>
+  </data>
+  <data name="Updates_info" xml:space="preserve">
+    <value>Інформація про оновлення</value>
+  </data>
+  <data name="Software_update_unsuccessful" xml:space="preserve">
+    <value>Не вдалося оновити програмне забезпечення.</value>
+  </data>
+  <data name="CA_check_fail" xml:space="preserve">
+    <value>Помилка перевірки CA</value>
+  </data>
+  <data name="Network_fail" xml:space="preserve">
+    <value>Збій мережі</value>
+  </data>
+  <data name="Update_failed_due_to_network_error" xml:space="preserve">
+    <value>Не вдалося оновити систему через помилку мережі. Спробуй ще раз.</value>
+  </data>
+  <data name="Dock_FW_is_loaded" xml:space="preserve">
+    <value>Мікропрограму докстанції завантажено. Від’єднайте докстанцію для застосування мікропрограми й знову під’єднайте її за 1 хвилину.</value>
+  </data>
+  <data name="Dock_UOD_FW_update_info" xml:space="preserve">
+    <value>Інформація про оновлення мікропрограми UOD докстанції</value>
+  </data>
+  <data name="Firmware_update_unsuccessful" xml:space="preserve">
+    <value>Не вдалося оновити мікропрограму.</value>
+  </data>
+  <data name="Multiple_docks_are_detected" xml:space="preserve">
+    <value>Виявлено кілька докстанцій. Щоб запобігти пошкодженню докстанцій, не підключайте більше однієї.</value>
+  </data>
+  <data name="Dock_FW_info" xml:space="preserve">
+    <value>Інформація про мікропрограму докстанції</value>
+  </data>
+  <data name="Dock_FW_is_being_loaded" xml:space="preserve">
+    <value>Завантажується мікропрограма докстанції. Не від’єднуйте докстанцію.</value>
+  </data>
+  <data name="Dock_FW_is_loaded_successful" xml:space="preserve">
+    <value>Мікропрограму докстанції завантажено. Від’єднайте докстанцію для застосування мікропрограми та знову під’єднайте її за 1 хвилину.</value>
+  </data>
+  <data name="Dock_FW_loaded_failed" xml:space="preserve">
+    <value>Не вдалося завантажити мікропрограму докстанції.</value>
+  </data>
+  <data name="Warning" xml:space="preserve">
+    <value>Попередження</value>
+  </data>
+  <data name="Auto_Brightness_is_currently_enabled" xml:space="preserve">
+    <value>Наразі ввімкнено функцію «Автоматична яскравість». Ігнорувати її?</value>
+  </data>
+  <data name="Error" xml:space="preserve">
+    <value>Помилка</value>
+  </data>
+  <data name="SW_info" xml:space="preserve">
+    <value>Інформація про ПЗ</value>
+  </data>
+  <data name="UOD_update_completed" xml:space="preserve">
+    <value>UOD оновлено.</value>
+  </data>
+  <data name="UOD_update_fail" xml:space="preserve">
+    <value>Не вдалося оновити UOD.</value>
+  </data>
+  <data name="FW_info" xml:space="preserve">
+    <value>Інформація про мікропрограму</value>
+  </data>
+  <data name="update_download_cancel" xml:space="preserve">
+    <value>Завантаження оновлення скасовано через занизький заряд акумулятора комп’ютера.</value>
+  </data>
+  <data name="FW_is_being_Installing" xml:space="preserve">
+    <value>Триває встановлення мікропрограми. Не від’єднуйте пристрій.</value>
+  </data>
+  <data name="Update" xml:space="preserve">
+    <value>Update</value>
+  </data>
+  <data name="Delay" xml:space="preserve">
+    <value>Затримка</value>
+  </data>
+  <data name="Yes" xml:space="preserve">
+    <value>Так</value>
+  </data>
+  <data name="No" xml:space="preserve">
+    <value>Ні</value>
+  </data>
+  <data name="Invalid_ID" xml:space="preserve">
+    <value>Неправильний ідентифікатор. Зазначте правильний ідентифікатор дії.</value>
+  </data>
+  <data name="Failed_to_open_application" xml:space="preserve">
+    <value>Не вдалося відкрити програму</value>
+  </data>
+  <data name="will_be_updated_to " xml:space="preserve">
+    <value>буде оновлено до </value>
+  </data>
+  <data name="can_be_updated_to" xml:space="preserve">
+    <value>може бути оновлено до</value>
+  </data>
+  <data name="UpdateAvailable" xml:space="preserve">
+    <value>Доступні оновлення</value>
+  </data>
+  <data name="UpdateWillBeApplied" xml:space="preserve">
+    <value>Буде застосовано оновлення</value>
+  </data>
+  <data name="UpdateAvailable_Info" xml:space="preserve">
+    <value>Пристрій і/або програму буде оновлено. Пристрій і/або програма можуть ставати тимчасово недоступні. Не від’єднуйте пристрій під час оновлення.</value>
+  </data>
+  <data name="UpdateWillBeApplied_Info" xml:space="preserve">
+    <value>Пристрій і/або програму буде оновлено. Пристрій і/або програма можуть ставати тимчасово недоступні. Не від’єднуйте пристрій під час оновлення.</value>
+  </data>
+  <data name="UpdateNow" xml:space="preserve">
+    <value>Оновити зараз</value>
+  </data>
+  <data name="Defer" xml:space="preserve">
+    <value>Відкласти</value>
+  </data>
+  <data name="Ok" xml:space="preserve">
+    <value>OK</value>
+  </data>
+  <data name="Service_not_running_Try_again" xml:space="preserve">
+    <value>Службу не запущено. Спробуй ще раз</value>
+  </data>
+  <data name="Timeout_error" xml:space="preserve">
+    <value>Помилка тайм-ауту</value>
+  </data>
+  <data name="M1_Please_double_click_mouse_left_button_to_start_firmware_update" xml:space="preserve">
+    <value>Двічі клацніть лівою кнопкою миші, щоб розпочати оновлення мікропрограми</value>
+  </data>
+  <data name="M2_Please_press_key_on_keyboard_to_start_firmware_update" xml:space="preserve">
+    <value>Натисніть клавішу U на клавіатурі, щоб розпочати оновлення мікропрограми</value>
+  </data>
+  <data name="A0_Device_connected" xml:space="preserve">
+    <value>Пристрій під’єднано</value>
+  </data>
+  <data name="A1_Firmware_update_started" xml:space="preserve">
+    <value>Розпочато оновлення мікропрограми</value>
+  </data>
+  <data name="A2_Firmware_update_successful" xml:space="preserve">
+    <value>Оновлення мікропрограми завершено</value>
+  </data>
+  <data name="E4_USB_wireless_receiver_firmware_is_unable_to_support_device_firmware_upgrade" xml:space="preserve">
+    <value>Мікропрограма бездротового приймача USB не підтримує оновлення мікропрограми пристрою</value>
+  </data>
+  <data name="update_failed_with_unknown_error" xml:space="preserve">
+    <value>збій оновлення через невідому помилку</value>
+  </data>
+  <data name="User_aborted_firmware_update" xml:space="preserve">
+    <value>Оновлення мікропрограми було перервано користувачем</value>
+  </data>
+  <data name="Installing" xml:space="preserve">
+    <value>Установлення</value>
+  </data>
+  <data name="Timeout" xml:space="preserve">
+    <value>Тайм-аут</value>
+  </data>
+  <data name="Downloading_and_installing" xml:space="preserve">
+    <value>Завантаження та встановлення</value>
+  </data>
+  <data name="DDPM_will_reopen_soon_after_update" xml:space="preserve">
+    <value>DDPM буде незабаром відкрито знову після оновлення</value>
+  </data>
+  <data name="Processing" xml:space="preserve">
+    <value>Оброблення</value>
+  </data>
+  <data name="Software_Update" xml:space="preserve">
+    <value>Оновлення програмного забезпечення</value>
+  </data>
+  <data name="Firmware_Update" xml:space="preserve">
+    <value>Оновлення мікропрограми</value>
+  </data>
+  <data name="Updating_Software_Do_not_power_off_this_PC" xml:space="preserve">
+    <value>Триває оновлення програмного забезпечення. Не вимикайте цей комп’ютер.</value>
+  </data>
+  <data name="Updating_firmware_Do_not_remove_or_power_off_the_device_Leave_the_device_undisturbed" xml:space="preserve">
+    <value>Триває оновлення мікропрограми. Не від’єднуйте та не вимикайте пристрій. Не чіпайте пристрій.</value>
+  </data>
+  <data name="Unable_to_detect_target_device" xml:space="preserve">
+    <value>Не вдається виявити цільовий пристрій</value>
+  </data>
+  <data name="AI_Auto_Framing" xml:space="preserve">
+    <value>Автоматичне кадрування на основі ШІ</value>
+  </data>
+  <data name="ON" xml:space="preserve">
+    <value>УВІМК.</value>
+  </data>
+  <data name="OFF" xml:space="preserve">
+    <value>ВИМК.</value>
+  </data>
+  <data name="Presets" xml:space="preserve">
+    <value>Конфігурації</value>
+  </data>
+  <data name="Auto_framing" xml:space="preserve">
+    <value>Автоматичне кадрування</value>
+  </data>
+  <data name="Field_of_View" xml:space="preserve">
+    <value>Поле зору</value>
+  </data>
+  <data name="Zoom" xml:space="preserve">
+    <value>Масштаб</value>
+  </data>
+  <data name="Default" xml:space="preserve">
+    <value>За замовчуванням</value>
+  </data>
+  <data name="Smooth" xml:space="preserve">
+    <value>Гладкий</value>
+  </data>
+  <data name="Vibrant" xml:space="preserve">
+    <value>Яскравий</value>
+  </data>
+  <data name="Warm" xml:space="preserve">
+    <value>Теплий</value>
+  </data>
+  <data name="Standard_0" xml:space="preserve">
+    <value>Стандартний</value>
+  </data>
+  <data name="Native_0" xml:space="preserve">
+    <value>Нативний</value>
+  </data>
+  <data name="Multimedia_0" xml:space="preserve">
+    <value>Мультимедіа</value>
+  </data>
+  <data name="Movie_0" xml:space="preserve">
+    <value>Фільм</value>
+  </data>
+  <data name="Nature_0" xml:space="preserve">
+    <value>Природа</value>
+  </data>
+  <data name="Game_0" xml:space="preserve">
+    <value>Гра</value>
+  </data>
+  <data name="Game_1" xml:space="preserve">
+    <value>Game1</value>
+  </data>
+  <data name="Sport_0" xml:space="preserve">
+    <value>Спорт</value>
+  </data>
+  <data name="Text_0" xml:space="preserve">
+    <value>Текст</value>
+  </data>
+  <data name="Warm_0" xml:space="preserve">
+    <value>Теплий</value>
+  </data>
+  <data name="Cool_0" xml:space="preserve">
+    <value>Прохолодний</value>
+  </data>
+  <data name="Custom_Color" xml:space="preserve">
+    <value>Користувацький колір</value>
+  </data>
+  <data name="ComfortView_0" xml:space="preserve">
+    <value>ComfortView</value>
+  </data>
+  <data name="Game_2" xml:space="preserve">
+    <value>Game2</value>
+  </data>
+  <data name="Game_3" xml:space="preserve">
+    <value>Game3</value>
+  </data>
+  <data name="Desktop_0" xml:space="preserve">
+    <value>Робочий стіл</value>
+  </data>
+  <data name="Reference_0" xml:space="preserve">
+    <value>Довідка</value>
+  </data>
+  <data name="Metro_0" xml:space="preserve">
+    <value>Metro</value>
+  </data>
+  <data name="Paper_0" xml:space="preserve">
+    <value>Папір</value>
+  </data>
+  <data name="Standard_HDR" xml:space="preserve">
+    <value>Стандартний HDR</value>
+  </data>
+  <data name="Movie_HDR" xml:space="preserve">
+    <value>HDR для відео</value>
+  </data>
+  <data name="Game_HDR" xml:space="preserve">
+    <value>HDR для гри</value>
+  </data>
+  <data name="Vivid_HDR" xml:space="preserve">
+    <value>Яскравий HDR</value>
+  </data>
+  <data name="Custom_1" xml:space="preserve">
+    <value>Користувацький 1</value>
+  </data>
+  <data name="Custom_2" xml:space="preserve">
+    <value>Користувацький 2</value>
+  </data>
+  <data name="Custom_3" xml:space="preserve">
+    <value>Користувацький 3</value>
+  </data>
+  <data name="User_1" xml:space="preserve">
+    <value>Користувач 1</value>
+  </data>
+  <data name="User_2" xml:space="preserve">
+    <value>Користувач 2</value>
+  </data>
+  <data name="User_3" xml:space="preserve">
+    <value>Користувач 3</value>
+  </data>
+  <data name="SPORTS_Game" xml:space="preserve">
+    <value>Спортивна гра</value>
+  </data>
+  <data name="Custom_layout" xml:space="preserve">
+    <value>Користувацьке компонування</value>
+  </data>
+  <data name="Cancel_0" xml:space="preserve">
+    <value>Скасувати</value>
+  </data>
+  <data name="Save_0" xml:space="preserve">
+    <value>Зберегти</value>
+  </data>
+  <data name="Arrange_Windows" xml:space="preserve">
+    <value>Упорядкування вікон</value>
+  </data>
+  <data name="EA_MSG_0" xml:space="preserve">
+    <value>Налаштуйте поточне розташування вікон, змініть для нього назву (за бажанням) і натисніть «Зберегти», щоб зберегти це розташування.</value>
+  </data>
+  <data name="Battery_Low" xml:space="preserve">
+    <value>Низький заряд акумулятора</value>
+  </data>
+  <data name="Caps_Lock_On" xml:space="preserve">
+    <value>Caps Lock увімкнено</value>
+  </data>
+  <data name="Caps Lock Off" xml:space="preserve">
+    <value>Caps Lock вимкнено</value>
+  </data>
+  <data name="Easy_Memory" xml:space="preserve">
+    <value>Зручне запам’ятовування</value>
+  </data>
+  <data name="Go_to_Widget_Settings" xml:space="preserve">
+    <value>Перейти до налаштувань віджета</value>
+  </data>
+  <data name="is_muted" xml:space="preserve">
+    <value>— звук вимкнено</value>
+  </data>
+  <data name="is_Unmuted" xml:space="preserve">
+    <value>— звук увімкнено</value>
+  </data>
+  <data name="Num_Lock_Off" xml:space="preserve">
+    <value>Num Lock вимкнено</value>
+  </data>
+  <data name="Num_Lock_On" xml:space="preserve">
+    <value>Num Lock увімкнено</value>
+  </data>
+  <data name="Presence_detection_sensor_is_covered" xml:space="preserve">
+    <value>Датчик виявлення присутності закритий</value>
+  </data>
+  <data name="QAM_OSD_Msg" xml:space="preserve">
+    <value>Щоб знову відкрити віджет швидких налаштувань, натисніть і втримуйте клавіші [ALT + Z] на клавіатурі.</value>
+  </data>
+  <data name="Scroll_Lock_Off" xml:space="preserve">
+    <value>Scroll Lock вимкнено</value>
+  </data>
+  <data name="Scroll_Lock_On" xml:space="preserve">
+    <value>Scroll Lock увімкнено</value>
+  </data>
+  <data name="Export_MSG_0" xml:space="preserve">
+    <value>Виявлено той самий монітор, імпортувати налаштування для</value>
+  </data>
+  <data name="Version" xml:space="preserve">
+    <value>Версія</value>
+  </data>
+  <data name="Walk_Away_Lock" xml:space="preserve">
+    <value>Блокування в разі віддалення</value>
+  </data>
+</root>

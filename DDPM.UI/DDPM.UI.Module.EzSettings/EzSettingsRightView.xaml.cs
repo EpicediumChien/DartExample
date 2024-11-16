@@ -62,8 +62,23 @@ namespace DDPM.UI.Module.EzSettings
 
                     if (KeysHelper.hotKeyConflictsCheck(hotkeyInfo))
                     {
-                        bool saveSettings = DdpmCommonHelper.DeviceManagerSA.SaveHotkeySetting(_viewModel._homeDevice.MonitorInfo, hotkeyInfo).Result;
-                        //vm.Invoke_RefreshData();
+                        tbCleanFocus.Focus();
+                        EzSettingsViewModel dataContext = (EzSettingsViewModel)DataContext;
+                        if (dataContext != null)
+                        {
+                            dataContext.IsBusy = true;
+                            Task.Run(() =>
+                            {
+                                if (DdpmCommonHelper.DeviceManagerSA != null)
+                                {
+                                    bool saveSettings = DdpmCommonHelper.DeviceManagerSA.SaveHotkeySetting(dataContext._homeDevice.MonitorInfo, hotkeyInfo).Result;
+                                    if (saveSettings)
+                                    {
+                                        DdpmCommonHelper.isHotkeyBypass = DdpmCommonHelper.DeviceManagerSA.ByPassHotkey(false).Result;
+                                    }
+                                }
+                            }).ContinueWith((t) => { dataContext.IsBusy = false; });
+                        }
                     }
                     else
                     {
@@ -79,23 +94,19 @@ namespace DDPM.UI.Module.EzSettings
 
         private void tbRecentHotkey_GotFocus(object sender, System.Windows.RoutedEventArgs e)
         {
-            bool isUnhook = DdpmCommonHelper.DeviceManagerSA.UnHook().Result;
-            if (isUnhook)
-            {
-                alphabetKey = false;
-                newKeys.Clear();
-                //_strTbToggleInputSourcePreviousKey = vm.ToggleInputSourceKey;
-                _strPreviousKey = _viewModel.RecentHotkey;
-                //vm.ToggleInputSourceKey = string.Empty;
-                var texBox = (sender as UXTextBox);
-                texBox?.Select(_viewModel.RecentHotkey.Length, 1);
-            }
+            alphabetKey = false;
+            newKeys.Clear();
+            //_strTbToggleInputSourcePreviousKey = vm.ToggleInputSourceKey;
+            _strPreviousKey = _viewModel.RecentHotkey;
+            //vm.ToggleInputSourceKey = string.Empty;
+            var texBox = (sender as UXTextBox);
+            texBox?.Select(_viewModel.RecentHotkey.Length, 1);
         }
 
         private void tbRecentHotkey_LostFocus(object sender, System.Windows.RoutedEventArgs e)
         {
             //hook
-            bool isHook = DdpmCommonHelper.DeviceManagerSA.Hook().Result;
+            //bool isHook = DdpmCommonHelper.DeviceManagerSA.Hook().Result;
         }
 
         private void tbRecentHotkey_ContextMenuOpening(object sender, ContextMenuEventArgs e)

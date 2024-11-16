@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace VcpCore.Common
 {
@@ -108,13 +109,13 @@ namespace VcpCore.Common
         {
             if (HexString.Length < (EDID_Header.Length + Manufacturer_ID_Len + VENDOR_ID_Len + SerialNum_Len))
             {
-                return "";
+                return string.Empty;
             }
             string text = HexString.Substring(EDID_Header.Length + Manufacturer_ID_Len + VENDOR_ID_Len, SerialNum_Len);
 
             if (text.Length < 8)
             {
-                return "";
+                return string.Empty;
             }
             int num = 0;
             for (int i = 3; i >= 0; i--)
@@ -131,12 +132,12 @@ namespace VcpCore.Common
             int num = HexString.IndexOf(EDID_SerivceTag_Header);
             if (num < 0 || HexString.Length < (num + EDID_SerivceTag_Header.Length + 26))
             {
-                return "";
+                return string.Empty;
             }
             string text = HexString.Substring(num + EDID_SerivceTag_Header.Length, 26);
             if (text.Length < 26)
             {
-                return "";
+                return string.Empty;
             }
 
             List<byte> list = new List<byte>();
@@ -151,7 +152,7 @@ namespace VcpCore.Common
                 list.AddRange(bytes);
             }
             byte[] bytes2 = list.ToArray();
-            string text3 = "";
+            string text3 = string.Empty;
             string @string = Encoding.ASCII.GetString(bytes2);
             for (int j = 0; j < @string.Length; j++)
             {
@@ -212,32 +213,51 @@ namespace VcpCore.Common
             int num = HexString.IndexOf(ModelName_Header);
             if (num != -1)
             {
-                string text = HexString.Substring(num + ModelName_Header.Length, 26);
-                List<byte> list = new List<byte>();
-                for (int i = 0; i < 13; i++)
+                if (HexString.Length >= (num + ModelName_Header.Length + 26))
                 {
-                    byte[] bytes = BitConverter.GetBytes(int.Parse(text.Substring(2 * i, 2), NumberStyles.HexNumber));
-                    list.AddRange(bytes);
-                }
-                byte[] bytes2 = list.ToArray();
-                string text2 = "";
-                string @string = Encoding.ASCII.GetString(bytes2);
-                for (int j = 0; j < @string.Length; j++)
-                {
-                    char value = @string[j];
-                    if (Convert.ToInt32(value) >= 48)
+                    string text = HexString.Substring(num + ModelName_Header.Length, 26);
+                    List<byte> list = new List<byte>();
+                    bool rc = true;
+                    for (int i = 0; i < 13; i++)
                     {
-                        text2 += value;
+                        var r = int.TryParse(text.AsSpan(2 * i, 2), NumberStyles.HexNumber, new CultureInfo("en-US"), out int outint);
+                        rc = rc && r;
+                        if (rc)
+                        {
+                            byte[] bytes = BitConverter.GetBytes(outint);
+                            list.AddRange(bytes);
+                        }
                     }
+                    if (rc)
+                    {
+                        byte[] bytes2 = list.ToArray();
+                        string text2 = string.Empty;
+                        string Modelstring = Encoding.ASCII.GetString(bytes2);
+                        for (int j = (Modelstring.Length) - 1; j >= 0; j--)
+                        {
+                            char value = Modelstring[j];
+                            if (Convert.ToInt32(value) >= 48)
+                                text2 += value;
+                        }
+                        char[] text2_charArray = text2.ToCharArray();
+                        Array.Reverse(text2_charArray);
+                        text2 = new string(text2_charArray);
+                        text2 = Regex.Replace(text2, "DELL", string.Empty, RegexOptions.IgnoreCase);
+                        text2 = Regex.Replace(text2, "ALIENWARE", string.Empty, RegexOptions.IgnoreCase);
+                        return text2.Trim().ToUpper();
+                    }
+                    else
+                        return string.Empty;
                 }
-                return text2;
+                else
+                    return string.Empty;
             }
-            return "";
+            return string.Empty;
         }
 
         public string GetProductCode(string edid)
         {
-            string result = "";
+            string result = string.Empty;
             if (edid != null && edid.Length > 24)
             {
                 result = edid.Substring(22, 2) + edid.Substring(20, 2);
@@ -276,7 +296,7 @@ namespace VcpCore.Common
 
         private static string int2charByASCII(int a)
         {
-            return ((char)(a + 64)).ToString() ?? "";
+            return ((char)(a + 64)).ToString() ?? string.Empty;
         }
 
         public static char ToCharByASCIIShort(int a)

@@ -1,9 +1,11 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using DDPM.SA.Common;
 using DDPM.UI.Common.ViewModels;
+using DDPM.UI.Resources.Helper;
 using Dell.Client.Framework.Common;
 using DPeMPublic.Common.Enums;
 using System.Drawing.Imaging;
+using System.Globalization;
 using System.Net;
 using System.Reflection;
 using System.Text.RegularExpressions;
@@ -17,7 +19,7 @@ namespace DDPM.UI.Common.Models
     public class HomeDevice : ObservableObject, IComparable<HomeDevice>
     {
         private eDeviceCategory _deviceCategory;
-        private string _deviceName = "";
+        private string _deviceName = string.Empty;
         private ImageSource? _deviceImage;
         private double _normalWidth = 400;
 
@@ -68,7 +70,7 @@ namespace DDPM.UI.Common.Models
                 UpdateBatteryIndicator();
 
                 //2024-6-20 Get the model from capability string
-                string model = GetModelFromMonitorCapabilityString(_monitorInfo.CapabilityString);
+                string model = string.IsNullOrWhiteSpace(_monitorInfo.modelName) ? GetModelFromMonitorCapabilityString(_monitorInfo.CapabilityString) : _monitorInfo.modelName;
                 //If fail to get mode from CapabilityString, then use AliasDeviceName instead
                 if (String.IsNullOrEmpty(model))
                 {
@@ -81,6 +83,9 @@ namespace DDPM.UI.Common.Models
 
                 //Robert_Lin, 2024-9-30 Add Monitor Product Images
                 DetermineMonitorImage();
+
+                //Robert_lin, 2024-11-14 add Pxp Capapbilies check support
+                InitPipPbpCaps();
 
                 OnPropertyChanged("DisplayName");
             }
@@ -1375,7 +1380,43 @@ namespace DDPM.UI.Common.Models
                 return false;
             }
         }
+
         #endregion HasCapability_XXXX Properties
+
+        #region PIP/PBP Capabilities
+        //The Pxp capabilities Code array, will be build when the first time calling
+        private List<string> _pxpCapStrings = new List<string>();//SDL, change to use new
+
+        //Will be called once MonitorInfo been setup/updated
+        private void InitPipPbpCaps()
+        {
+            //If it has been inited
+            if (_pxpCapStrings.Count > 0)
+                return;
+            if (!HasCapability_PipPbp)
+                return;
+
+            _pxpCapStrings = MonitorInfo.CapabilityDic["E9"];
+        }
+
+        /// <summary>
+        /// Return if current MonitorInfo in this HomeDevice has capability of the specified PxpMode
+        /// </summary>
+        /// <param name="hexStringPxpMode"> for example "21" will return true if has 0x21 mode capability</param>
+        /// <returns></returns>
+        public bool HasCapability_PxpMode(string hexStringPxpMode)
+        {
+            if (!HasCapability_PipPbp)
+                return false;
+
+            if ((_pxpCapStrings != null) && (_pxpCapStrings.Count > 0))
+            {
+                return _pxpCapStrings.Contains(hexStringPxpMode);
+            }
+            return false;
+        }
+
+        #endregion  PIP/PBP Capabilities
 
         #region Monitor Equals
         public static bool IsSameMonitor(MonitorInfo mi1, MonitorInfo mi2, string mask = "")
@@ -1419,6 +1460,9 @@ namespace DDPM.UI.Common.Models
                 return;
 
             log.Info($"HomeDevice, DeviceCategory=[{DeviceCategory}], DisplayName=[{DisplayName}]");
+            //log installedUICulture,2024-11-15 gavin
+            CultureInfo installedUICulture = CultureInfo.InstalledUICulture;
+            log.Info($"HomeDevice Page, installedUICulture=[{installedUICulture}]");
             if (MonitorInfo != null)
             {
                 log.Info($"  * CapabilityString={MonitorInfo.CapabilityString}");

@@ -157,6 +157,18 @@ namespace DDPM.UI.Module.WebCameraPresenceDetection
                     //}
                 }
             }
+
+            //Added by Derek for Webcam
+            //PIMS 319334
+            //[DDPM Win 2.0][R15 webcam] Proximity Sensor in Presence Detection default is not disable.
+            SetUPDToDefaultStatus();
+        }
+
+        private void SetUPDToDefaultStatus()
+        {
+            _vm.IsChecked_ProximitySensor = false;
+            _vm.IsChecked_WakeOnApproach = false;
+            _vm.IsChecked_WalkAwayLock = false;
         }
 
         ~WebCameraPresenceDetectionRightView()
@@ -249,9 +261,23 @@ namespace DDPM.UI.Module.WebCameraPresenceDetection
             System.Diagnostics.Process.Start(psi);
         }
 
-        private void CallUpcdateMPSFW_Click(object sender, RoutedEventArgs e)
+        private void CallUpdateMPSFW_Click(object sender, RoutedEventArgs e)
         {
-           
+            //Derek 1116 for Webcam PIMS 319078
+            string url = "https://www.dell.com/";
+            // Open the browser and navigate to specified url
+            //Process.Start(new ProcessStartInfo
+            //{
+            //    FileName = url,
+            //    UseShellExecute = true
+            //});
+            DDPM.SA.Common.Settings.DDPMFileSecurity.StartProcessSafely(
+                null,
+                new ProcessStartInfo
+                {
+                    FileName = url,
+                    UseShellExecute = true
+                });
         }
 
         private void Image_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
