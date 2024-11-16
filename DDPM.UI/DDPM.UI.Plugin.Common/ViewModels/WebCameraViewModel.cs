@@ -1067,21 +1067,15 @@ namespace DDPM.UI.Plugin.ViewModels
             get => CurrentProfile.IsHDROn;
             set
             {
-                new Thread(() =>
-                {
-                    AlertType = WebcamAlert.Alert1;
-                    AlertVisibility = Visibility.Visible;
-                    //AlertVisibility = Visibility.Collapsed;
-                }).Start();
-                //AlertType = WebcamAlert.Alert1;
-                //AlertVisibility = Visibility.Visible;
+                AlertType = WebcamAlert.Alert1;
+                AlertVisibility = Visibility.Visible;
                 DdpmCommonHelper.DeviceManagerSA!.SetIsHDROn(CurrentDeviceInfo!.ID.ToString(), value);
                 SetProfileProperty(nameof(IsHDROn), value, OperationModule.ColorAndImage);
                 OnPropertyChanged();
                 OnPropertyChanged(nameof(IsHDROnText));
                 new Thread(() =>
                 {
-                    Thread.Sleep(500);
+                    Thread.Sleep(300);
                     AlertVisibility = Visibility.Collapsed;
                 }).Start();
             }
