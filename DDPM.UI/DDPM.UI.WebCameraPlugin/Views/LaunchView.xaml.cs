@@ -200,12 +200,13 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             in_CameraPlugin = true;
         }
 
+        bool WebcamGrid_old_ststus = false;
         private void status_change()
         {
 
             if (!in_CameraPlugin) return;
+            if (_vm == null) return;
 
-            //每一秒檢測一下前警景與背景狀態,以及Camera狀態
             if (_vm.running_state)
             {
                 if (_vm!.MediaCapture == null || _vm.MediaFrameReader == null)
@@ -215,6 +216,11 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                         imgDevice.Visibility = Visibility.Hidden;
                         Preview();
                         CameraImage.Visibility = Visibility.Visible;
+
+                        //恢復9宮格線
+                        _vm.WebcamGrid = WebcamGrid_old_ststus;
+
+
                     });
 
                 }
@@ -223,10 +229,13 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             {
                 if (_vm!.MediaCapture != null || _vm.MediaFrameReader != null)
                 {
-                    _ = CameraImage.Dispatcher.BeginInvoke(() =>
+                    _ = CameraImage.Dispatcher.BeginInvoke(async () =>
                     {
                         CameraImage.Visibility = Visibility.Hidden;
-                        _ = CleanupMediaCaptureAsync();
+                        _= CleanupMediaCaptureAsync();
+
+                        WebcamGrid_old_ststus = _vm.WebcamGrid;
+                        _vm.WebcamGrid = false;
 
                         imgDevice.Visibility = Visibility.Visible;
                         DoubleAnimation visibilityAnimation = new()
@@ -460,7 +469,11 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             {
                 DdpmCommonHelper.DeviceManagerSA.ITSettingsActionEvent -= DeviceManagerSA_ITSettingsActionEvent;
             }
-            _vm!.MediaFrameReader!.FrameArrived -= MediaFrameReader_FrameArrived;
+            try
+            {
+                _vm!.MediaFrameReader!.FrameArrived -= MediaFrameReader_FrameArrived;
+            }
+            catch{ }
             _vm.ProfilePropertyChanged -= ProfilePropertyChanged;
             _vm.WebcamSettingChanged -= WebcamSettingChanged;
             try
