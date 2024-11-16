@@ -129,13 +129,13 @@ namespace DDPM.UI.Module.WebCameraCapture
                         var encodingProperties = property.EncodingProperties;
                         //_ = _vm.MediaCapture!.VideoDeviceController.SetMediaStreamPropertiesAsync(MediaStreamType.VideoPreview, encodingProperties);
 
-                        new Thread(() => {
-                            Application.Current.Dispatcher.Invoke(() =>
-                            {
-                                _vm.AlertType = WebcamAlert.Alert1;
-                                _vm.AlertVisibility = Visibility.Visible;
-                            });
-                        }).Start();
+
+                        Application.Current.Dispatcher.Invoke(() =>
+                        {
+                            _vm.AlertType = WebcamAlert.Alert1;
+                            _vm.AlertVisibility = Visibility.Visible;
+                        });
+
 
                         bool set_ok = false;
                         while (set_ok != true)
@@ -143,7 +143,7 @@ namespace DDPM.UI.Module.WebCameraCapture
                             try
                             {
                                 //參數設置需要一段硬體初始時間,中間再設定參數會造成設定失敗crush,所以要防呆
-                                 await _vm.MediaCapture!.VideoDeviceController.SetMediaStreamPropertiesAsync(MediaStreamType.VideoPreview, encodingProperties);
+                                await _vm.MediaCapture!.VideoDeviceController.SetMediaStreamPropertiesAsync(MediaStreamType.VideoPreview, encodingProperties);
                                 set_ok = true;
                             }
                             catch
@@ -153,12 +153,11 @@ namespace DDPM.UI.Module.WebCameraCapture
                             }
                         }
 
-                        new Thread(() => {
-                            Application.Current.Dispatcher.Invoke(() =>
-                            {
-                                _vm.AlertVisibility = Visibility.Hidden;
-                            });
-                        }).Start();
+                        Application.Current.Dispatcher.Invoke(() =>
+                        {
+                            _vm.AlertVisibility = Visibility.Hidden;
+                        });
+
 
 
                         break;
