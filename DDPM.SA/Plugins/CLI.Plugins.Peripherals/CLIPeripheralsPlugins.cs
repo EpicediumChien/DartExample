@@ -4518,31 +4518,31 @@ namespace DDPM.CLI.Plugins.Peripherals
                         cli_FWU_RESPONSE.FWVersion = string.Join(",", fwUpdateInfoPackage.FWUpdateInfo.Select(_ => $"[{_.DeviceVersion}]"));
                         cli_FWU_RESPONSE.FWUpdateRESPONSE.AddRange(fwUpdateInfoPackage.FWUpdateInfo.Select(_ => $"Ready to start updating Device:{_.DeviceName} to Version:{_.TheLatestVersion}"));
                         cli_FWU_RESPONSE.Result = "PASS";
-                        //Task.Run(new Action(() =>
-                        //{
-                        //    do
-                        //    {
-                        //        Thread.Sleep(100);
-                        //    } while (retFWUpdateInfos == null);
+                        Task.Run(new Action(() =>
+                        {
+                            do
+                            {
+                                Thread.Sleep(100);
+                            } while (retFWUpdateInfos == null);
 
-                        //    foreach (FWUpdateInfo retFWUpdateInfo in retFWUpdateInfos)
-                        //    {
-                        //        cli_FWU_RESPONSE.Model = retFWUpdateInfo.Model;
-                        //        if (retFWUpdateInfo.FWUErrorCode == FWUErrorCode.NoError)
-                        //        {
-                        //            cli_FWU_RESPONSE.FWUpdateRESPONSE.Add($"{retFWUpdateInfo.DeviceName} update success.");
-                        //            cli_FWU_RESPONSE.Result = "PASS";
-                        //        }
-                        //        else
-                        //        {
-                        //            cli_FWU_RESPONSE.FWUpdateRESPONSE.Add($"{retFWUpdateInfo.DeviceName} update fail. Fail message:{retFWUpdateInfo.FWUErrorCode.ToString()}");
-                        //            cli_FWU_RESPONSE.Result = "FAIL";
-                        //        }
-                        //    }
-                        //    FWResultReceived_List?.Invoke(this, (retFWUpdateInfos, JsonConvert.SerializeObject(cli_FWU_RESPONSE, Formatting.Indented)));
-                        //    _devMgr.ProgressUpdate_Notify -= _FWUpdatePlugin_ProgressUpdate;
-                        //    _devMgr.DownloadAndInstall_Result_Notify -= Download_Event;
-                        //}));
+                            foreach (FWUpdateInfo retFWUpdateInfo in retFWUpdateInfos)
+                            {
+                                //cli_FWU_RESPONSE.Model = retFWUpdateInfo.Model;
+                                if (retFWUpdateInfo.FWUErrorCode == FWUErrorCode.NoError)
+                                {
+                                    cli_FWU_RESPONSE.FWUpdateRESPONSE.Add($"{retFWUpdateInfo.DeviceName} update success.");
+                                    cli_FWU_RESPONSE.Result = "PASS";
+                                }
+                                else
+                                {
+                                    cli_FWU_RESPONSE.FWUpdateRESPONSE.Add($"{retFWUpdateInfo.DeviceName} update fail. Fail message:{retFWUpdateInfo.FWUErrorCode.ToString()}");
+                                    cli_FWU_RESPONSE.Result = "FAIL";
+                                }
+                            }
+                            FWResultReceived_List?.Invoke(this, (retFWUpdateInfos, JsonConvert.SerializeObject(cli_FWU_RESPONSE, Formatting.Indented)));
+                            _devMgr.ProgressUpdate_Notify -= _FWUpdatePlugin_ProgressUpdate;
+                            _devMgr.DownloadAndInstall_Result_Notify -= Download_Event;
+                        }));
                         return ((int)CLI_ExitCode.success, JsonConvert.SerializeObject(cli_FWU_RESPONSE, Formatting.Indented));
                     }
                     else
@@ -4606,31 +4606,31 @@ namespace DDPM.CLI.Plugins.Peripherals
                     cli_FWU_RESPONSE.FWVersion = string.Join(",", fwUpdateInfoPackage.FWUpdateInfo.Select(_ => $"[{_.DeviceVersion}]"));
                     cli_FWU_RESPONSE.FWUpdateRESPONSE.AddRange(fwUpdateInfoPackage.FWUpdateInfo.Select(_ => $"Ready to start updating Device:{_.DeviceName} to Version:{_.TheLatestVersion}"));
                     cli_FWU_RESPONSE.Result = "PASS";
-                    //Task.Run(new Action(() =>
-                    //{
-                    //    do
-                    //    {
-                    //        Thread.Sleep(100);
-                    //    } while (retFWUpdateInfos == null);
+                    Task.Run(new Action(() =>
+                    {
+                        do
+                        {
+                            Thread.Sleep(100);
+                        } while (retFWUpdateInfos == null);
 
-                    //    foreach (FWUpdateInfo retFWUpdateInfo in retFWUpdateInfos)
-                    //    {
-                    //        //cli_FWU_RESPONSE.Model = retFWUpdateInfo.Model;
-                    //        if (retFWUpdateInfo.FWUErrorCode == FWUErrorCode.NoError)
-                    //        {
-                    //            cli_FWU_RESPONSE.FWUpdateRESPONSE.Add($"{retFWUpdateInfo.DeviceName} update success.");
-                    //            cli_FWU_RESPONSE.Result = "PASS";
-                    //        }
-                    //        else
-                    //        {
-                    //            cli_FWU_RESPONSE.FWUpdateRESPONSE.Add($"{retFWUpdateInfo.DeviceName} update fail. Fail message:{retFWUpdateInfo.FWUErrorCode.ToString()}");
-                    //            cli_FWU_RESPONSE.Result = "FAIL";
-                    //        }
-                    //    }
-                    //    FWResultReceived_List?.Invoke(this, (retFWUpdateInfos, JsonConvert.SerializeObject(cli_FWU_RESPONSE, Formatting.Indented)));
-                    //    _devMgr.ProgressUpdate_Notify -= _FWUpdatePlugin_ProgressUpdate;
-                    //    _devMgr.DownloadAndInstall_Result_Notify -= Download_Event;
-                    //}));
+                        foreach (FWUpdateInfo retFWUpdateInfo in retFWUpdateInfos)
+                        {
+                            //cli_FWU_RESPONSE.Model = retFWUpdateInfo.Model;
+                            if (retFWUpdateInfo.FWUErrorCode == FWUErrorCode.NoError)
+                            {
+                                cli_FWU_RESPONSE.FWUpdateRESPONSE.Add($"{retFWUpdateInfo.DeviceName} update success.");
+                                cli_FWU_RESPONSE.Result = "PASS";
+                            }
+                            else
+                            {
+                                cli_FWU_RESPONSE.FWUpdateRESPONSE.Add($"{retFWUpdateInfo.DeviceName} update fail. Fail message:{retFWUpdateInfo.FWUErrorCode.ToString()}");
+                                cli_FWU_RESPONSE.Result = "FAIL";
+                            }
+                        }
+                        FWResultReceived_List?.Invoke(this, (retFWUpdateInfos, JsonConvert.SerializeObject(cli_FWU_RESPONSE, Formatting.Indented)));
+                        _devMgr.ProgressUpdate_Notify -= _FWUpdatePlugin_ProgressUpdate;
+                        _devMgr.DownloadAndInstall_Result_Notify -= Download_Event;
+                    }));
                 }
                 return ((int)CLI_ExitCode.success, JsonConvert.SerializeObject(cli_FWU_RESPONSE, Formatting.Indented));
             }
