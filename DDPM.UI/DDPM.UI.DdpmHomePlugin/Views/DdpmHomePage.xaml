@@ -16,11 +16,9 @@
              d:DesignHeight="450" d:DesignWidth="800"
              x:Name="rootUserControl"
              Loaded="UserControl_Loaded" SizeChanged="rootUserControl_SizeChanged">
-
     <UserControl.Resources>
-
         <!-- Unused -->
-        <Style x:Key="ListBoxStyle_Devices" TargetType="ListBox">
+        <Style x:Key="ListBoxStyle_Devices_Unused" TargetType="ListBox">
             <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Disabled" />
             <Setter Property="Background" Value="Transparent" />
             <Setter Property="ScrollViewer.PanningMode" Value="HorizontalOnly" />
@@ -34,7 +32,7 @@
         </Style>
 
         <!-- Unused -->
-        <DataTemplate x:Key="DeviceItemTemplate" DataType="model:DeviceInfo">
+        <DataTemplate x:Key="DeviceItemTemplate_Unused" DataType="model:DeviceInfo">
             <Border BorderBrush="Green" BorderThickness="3">
                 <Grid>
                     <Grid.RowDefinitions>
@@ -165,12 +163,11 @@
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
-        <StackPanel Grid.Row="0" Orientation="Horizontal">
+        <StackPanel x:Name="UIDebugPanel" Grid.Row="0" Orientation="Horizontal">
 
-            <UXControls:UXTextBlock TextBlock.Text="DDPM 2.0" Visibility="Collapsed"
-                                    Foreground="White"
+            <UXControls:UXTextBlock TextBlock.Text="DDPM 2.0"
                                     TextBlockType="Header2" />
-            <StackPanel x:Name="debugRwdParams" Orientation="Horizontal" Visibility="Collapsed">
+            <StackPanel x:Name="debugRwdParams" Orientation="Horizontal">
                 <Button Content="+D" Click="addDisplay_Click" />
                 <Button Content="+K" Click="addKb_Click" />
                 <Button Content="+M" Click="addMouse_Click" />
@@ -479,7 +476,7 @@
                     <StackPanel>
                         <Grid Height="40" HorizontalAlignment="Center" VerticalAlignment="Top"
                             Margin="0,64,0,32">
-                            <UXControls:UXTextBlock Text="Please wait..."
+                            <UXControls:UXTextBlock Text="{Binding [HomePage.0], Source={x:Static lang:LangHelper.Instance}}"
                                                 Foreground="{DynamicResource SpinnerWaitTxtColor}" FontSize="32"/>
                         </Grid>
                         <Grid Height="64">
