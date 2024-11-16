@@ -10,21 +10,21 @@
         "dependencies": {
           "DDPM.SA.Common": "2.0.0.5",
           "DellClientFramework": "6.4.11.2",
-          "runtimepack.Microsoft.Windows.SDK.NET.Ref": "10.0.19041.34"
+          "runtimepack.Microsoft.Windows.SDK.NET.Ref": "10.0.19041.54"
         },
         "runtime": {
           "DDPM.PowerMon.dll": {}
         }
       },
-      "runtimepack.Microsoft.Windows.SDK.NET.Ref/10.0.19041.34": {
+      "runtimepack.Microsoft.Windows.SDK.NET.Ref/10.0.19041.54": {
         "runtime": {
           "Microsoft.Windows.SDK.NET.dll": {
-            "assemblyVersion": "10.0.19041.24",
-            "fileVersion": "10.0.19041.34"
+            "assemblyVersion": "10.0.19041.38",
+            "fileVersion": "10.0.19041.52"
           },
           "WinRT.Runtime.dll": {
-            "assemblyVersion": "2.0.0.0",
-            "fileVersion": "2.0.8.46841"
+            "assemblyVersion": "2.1.0.0",
+            "fileVersion": "2.1.6.47881"
           }
         }
       },
@@ -512,7 +512,7 @@
       "serviceable": false,
       "sha512": ""
     },
-    "runtimepack.Microsoft.Windows.SDK.NET.Ref/10.0.19041.34": {
+    "runtimepack.Microsoft.Windows.SDK.NET.Ref/10.0.19041.54": {
       "type": "runtimepack",
       "serviceable": false,
       "sha512": ""
