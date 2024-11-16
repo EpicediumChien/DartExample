@@ -8,6 +8,9 @@
 
 #endregion
 
+using DDPM.SA.Common.Settings;
+using DDPM.UI.Common.Interfaces;
+
 namespace DDPM.UI.Common;
 
 /// <summary>
@@ -99,4 +102,34 @@ public class Constants
     public const string GroupName_DisplayOthers = "Others";
 
     #endregion ModuleGroupNames
+    //Robert_Lin, 2024-11-15 added to standardlize GroupNames/ModuleNames
+    //
+    //The ModuleName propety defined in a IDdpmModule
+    //For example:
+    //   public class BrightnessModule : IDdpmModule
+    //   {
+    //        public string ModuleName { get => "BrightnessModule"; }
+    //
+    #region ModuleNames - DisplayPlugin
+    //GroupName_DisplaySettings, "DisplaySettings"
+    public const string ModuleName_Brightness = "BrightnessModule";
+    public const string ModuleName_Color = "ColorModule";
+    public const string ModuleName_DisplayProperties = "DisplayPropertiesModule";
+    //GroupName_InputSource = "InputSource"
+    public const string ModuleName_InputSource = "InputSourceModule";
+    public const string ModuleName_PipPbp = "PipPbpModule";
+    public const string ModuleName_DisplayHotkeys = "DisplayHotkeysModule";
+    //GroupName_EasyArrange = "EasyArrange";
+    public const string ModuleName_EzArrange = "EzArrangeModule";
+    public const string ModuleName_EzMemory = "EzMemoryModule";
+    public const string ModuleName_EzSettings = "EzSettingsModule";
+    //GroupName_Gaming = "Gaming";
+    public const string ModuleName_Gaming = "GamingModule";
+    public const string ModuleName_VisionEngine = "VisionEngineModule";
+    //GroupName_KVM = "KVM";
+    public const string ModuleName_KVM = "KvmModule";
+    //GroupName_DisplayOthers = "Others"
+    public const string ModuleName_DisplayOthers = "DisplayOthersModule";
+
+    #endregion  ModuleNames - DisplayPlugin
 }

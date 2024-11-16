@@ -5303,8 +5303,8 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             {
                 try
                 {
-                    _Dockcom.Connected += _comdity_Connected;
-                    _Dockcom.Disconnected += _comdity_Disconnected;
+                    _Dockcom.Connected += _comdity_Dock_Connected;
+                    _Dockcom.Disconnected += _comdity_Dock_Disconnected;
                     writelog($"Dock Commodity event registered");
                 }
                 catch (Exception e)
@@ -5395,6 +5395,15 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         private void _comdity_Connected(object sender, ConnectedArgs e)
         {
             Debug.WriteLine($"Connected Device ID: {e.DeviceId} !!!!!!!!!!!!!!!");
+        }
+        private void _comdity_Dock_Disconnected(object sender, DisconnectedArgs e)
+        {
+            writelog($"Dock Disconnected Device ID: {e.DeviceId} !!!!!!!!!!!!!!!");
+        }
+
+        private void _comdity_Dock_Connected(object sender, ConnectedArgs e)
+        {
+            writelog($"Dock Connected Device ID: {e.DeviceId} !!!!!!!!!!!!!!!");
         }
 
         #region Headset Event

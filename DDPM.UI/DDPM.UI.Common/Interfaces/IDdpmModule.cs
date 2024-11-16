@@ -35,5 +35,7 @@ namespace DDPM.UI.Interfaces
 
         //0827 for active check to perform UI refresh via display selection change
         public bool IsModuleActive { get; set; }
+
+
     }
 }

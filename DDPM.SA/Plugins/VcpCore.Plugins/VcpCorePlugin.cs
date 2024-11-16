@@ -1439,7 +1439,7 @@ namespace VcpCore.Plugins
 
                     _logs.DebugMsg("[VcpCorePlugin] [QueueTrigger] VcpCorePlugin " + monitorInfoX.AliasDeviceName + " Watching 0x52");
 
-                    object_0x02 = Get_VCPCapability(monitorInfoX, 0x02, 0, true);
+                    object_0x02 = Get_VCPCapability(monitorInfoX, 0x02, 0, monitorInfoX.DDCisON);
 
                     if (object_0x02 != null)
                     {
@@ -2217,7 +2217,7 @@ namespace VcpCore.Plugins
                     SpinWait.SpinUntil(() => false, 1000);
                 } while (count < 3);
 
-                _logs.DebugMsg($"[VcpCorePlugin] GetVcp2Steps return null");
+                _logs.DebugMsg("[VcpCorePlugin] GetVcp2Steps return null");
                 return null;
             }
             catch (Exception) { return null; }
@@ -2356,7 +2356,7 @@ namespace VcpCore.Plugins
 
                             if (blGetEdidPass)
                             {
-                                _logs.DebugMsg($"[VcpCorePlugin] _Get_Monitors collection Get EDID Success");
+                                _logs.DebugMsg("[VcpCorePlugin] _Get_Monitors collection Get EDID Success");
 
                                 if (!string.IsNullOrWhiteSpace(edid.ManufactureID))
                                 {
@@ -2424,7 +2424,7 @@ namespace VcpCore.Plugins
                             }
                             else
                             {
-                                _logs.DebugMsg($"[VcpCorePlugin] _Get_Monitors collection Get EDID Fail");
+                                _logs.DebugMsg("[VcpCorePlugin] _Get_Monitors collection Get EDID Fail");
 
                                 if (_IsOnlyGetDellMontor)
                                     continue;
@@ -2435,8 +2435,10 @@ namespace VcpCore.Plugins
                             watch1.Start();
 
                             _TargetMonitor.modelName = _TargetMonitor.edid.ModelName.ToUpper();
+                            _logs.DebugMsg("[VcpCorePlugin] _Get_Monitors ModelName Get by EDID is " + _TargetMonitor.modelName);
 
                             bool IsSupportDisplay = CheckIsSupportDisplay(ref _TargetMonitor);
+                            _logs.DebugMsg("[VcpCorePlugin] _Get_Monitors IsSupportDisplay first judge : " + IsSupportDisplay.ToString());
 
                             if ((string.IsNullOrWhiteSpace(_TargetMonitor.modelName)) || ((!string.IsNullOrWhiteSpace(_TargetMonitor.modelName)) && IsSupportDisplay))
                             {
@@ -2476,6 +2478,7 @@ namespace VcpCore.Plugins
                                     }
 
                                     IsSupportDisplay = CheckIsSupportDisplay(ref _TargetMonitor);
+                                    _logs.DebugMsg("[VcpCorePlugin] _Get_Monitors IsSupportDisplay second judge : " + IsSupportDisplay.ToString());
                                 }
                             }
 
@@ -2498,6 +2501,8 @@ namespace VcpCore.Plugins
 
                                 if (!string.IsNullOrWhiteSpace(_TargetMonitor.CapabilityString))
                                 {
+                                    _logs.DebugMsg("[VcpCorePlugin] _Get_Monitors DDCisON true");
+
                                     _TargetMonitor.DDCisON = true;
 
                                     int nRetryCount = 0;
@@ -2599,8 +2604,12 @@ namespace VcpCore.Plugins
                                     _TargetMonitor.SupplierID = FwTmp.Item3;
                                 }
                                 else
+                                {
+                                    _logs.DebugMsg("[VcpCorePlugin] _Get_Monitors DDCisON false");
                                     _TargetMonitor.DDCisON = false;
+                                }
 
+                                _logs.DebugMsg("[VcpCorePlugin] _Get_Monitors add " + _TargetMonitor.modelName + " into _AllMonitors");
                                 _TargetMonitor.Index = MoIndexCounter;
                                 monitors.Add(_TargetMonitor);
                                 MoIndexCounter++;
@@ -2784,7 +2793,7 @@ namespace VcpCore.Plugins
                     SpinWait.SpinUntil(() => false, 1000);
                 } while (count < 3);
 
-                _logs.DebugMsg($"[VcpCorePlugin] GetInputSource return string.Empty");
+                _logs.DebugMsg("[VcpCorePlugin] GetInputSource return string.Empty");
                 return (string.Empty, string.Empty);
             }
             catch (Exception) { return (string.Empty, string.Empty); }
@@ -2834,7 +2843,7 @@ namespace VcpCore.Plugins
                 SpinWait.SpinUntil(() => false, 1000);
             } while (count < 3 && retry);
 
-            _logs.DebugMsg($"[VcpCorePlugin] Set_VCPCapability return false");
+            _logs.DebugMsg("[VcpCorePlugin] Set_VCPCapability return false");
             return false;
         }
 
@@ -2858,7 +2867,7 @@ namespace VcpCore.Plugins
                 SpinWait.SpinUntil(() => false, 1000);
             } while (count < 3 && retry);
 
-            _logs.DebugMsg($"[VcpCorePlugin] Get_VCPCapability return null");
+            _logs.DebugMsg("[VcpCorePlugin] Get_VCPCapability return null");
             return null;
         }
 
@@ -2998,7 +3007,7 @@ namespace VcpCore.Plugins
                     SpinWait.SpinUntil(() => false, 1000);
                 } while (count < 3);
 
-                _logs.DebugMsg($"[VcpCorePlugin] GetCurrentColorPreset return string.Empty");
+                _logs.DebugMsg("[VcpCorePlugin] GetCurrentColorPreset return string.Empty");
                 return rc;
             }
             catch (Exception) { return string.Empty; }
@@ -3132,7 +3141,7 @@ namespace VcpCore.Plugins
                 return string.Empty;
             }
 
-            _logs.DebugMsg($"[VcpCorePlugin] GetCapabilities_String return string.Empty");
+            _logs.DebugMsg("[VcpCorePlugin] GetCapabilities_String return string.Empty");
             return string.Empty;
         }
 
@@ -3840,7 +3849,7 @@ namespace VcpCore.Plugins
             }
             catch (Exception ex)
             {
-                _logs.DebugMsg($"[VcpCorePlugin] CheckIsSupportDisplay into catch: " + ex.Message);
+                _logs.DebugMsg("[VcpCorePlugin] CheckIsSupportDisplay into catch: " + ex.Message);
                 return false;
             }
         }
@@ -3861,7 +3870,7 @@ namespace VcpCore.Plugins
                         uint r = ((Convert.ToUInt32(F1supportBit)) & 0xA000);
                         if (r > 0)
                         {
-                            _logs.DebugMsg($"[VcpCorePlugin] CheckIsSupportDisplayByBit return true");
+                            _logs.DebugMsg("[VcpCorePlugin] CheckIsSupportDisplayByBit return true");
                             return true;
                         }
                         else
@@ -3871,12 +3880,12 @@ namespace VcpCore.Plugins
 
                             if (CY >= 19 && rr > 0)
                             {
-                                _logs.DebugMsg($"[VcpCorePlugin] CheckIsSupportDisplayByBit return true");
+                                _logs.DebugMsg("[VcpCorePlugin] CheckIsSupportDisplayByBit return true");
                                 return true;
                             }
                             else
                             {
-                                _logs.DebugMsg($"[VcpCorePlugin] CheckIsSupportDisplayByBit return false");
+                                _logs.DebugMsg("[VcpCorePlugin] CheckIsSupportDisplayByBit return false");
                                 return false;
                             }
                         }
@@ -3887,12 +3896,12 @@ namespace VcpCore.Plugins
                     SpinWait.SpinUntil(() => false, 1000);
                 } while (count < 3);
 
-                _logs.DebugMsg($"[VcpCorePlugin] CheckIsSupportDisplayByBit return false");
+                _logs.DebugMsg("[VcpCorePlugin] CheckIsSupportDisplayByBit return false");
                 return false;
             }
             catch (Exception ex)
             {
-                _logs.DebugMsg($"[VcpCorePlugin] CheckIsSupportDisplayByBit into catch: " + ex.Message);
+                _logs.DebugMsg("[VcpCorePlugin] CheckIsSupportDisplayByBit into catch: " + ex.Message);
                 return false;
             }
         }
@@ -3997,7 +4006,7 @@ namespace VcpCore.Plugins
                 SpinWait.SpinUntil(() => false, 1000);
             } while (count < 3);
 
-            _logs.DebugMsg($"[VcpCorePlugin] FwVersion return string.empty");
+            _logs.DebugMsg("[VcpCorePlugin] FwVersion return string.empty");
             return Version;
         }
 

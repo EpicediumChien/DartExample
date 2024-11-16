@@ -331,6 +331,8 @@ namespace DDPM.UI.Module.PipPbp
         {
             IsBusy = false;
 
+            OnPropertyChanged_AllCapabilities();
+
             //If BackgroundWorker. WorkerSupportsCancellation is true, and you set e.Cancel=true in DoWorker
             if (e.Cancelled)
             {
@@ -802,7 +804,45 @@ namespace DDPM.UI.Module.PipPbp
             string pxpCapString = capabilityString.Substring(idxPipPbpCapsStart, pipPbpCapsLen);
             LogInfo($"  * PxpCapabilitise={pxpCapString}");
             _pipPbpCaps = DdpmCommonHelper.ParsingHexStringToWords(pxpCapString);
+
+            OnPropertyChanged_AllCapabilities();
             return true;
+        }
+
+        public void OnPropertyChanged_AllCapabilities()
+        {
+            OnPropertyChanged("HasCapability_PipSmall");
+            OnPropertyChanged("HasCapability_PipLarge");
+            OnPropertyChanged("HasCapability_PipTogglePosition");
+            OnPropertyChanged("HasCapabiliy_AnyPip");
+        }
+        public bool HasCapability_PipSmall
+        {
+            get { return HasPxpCap(PipMode_Small); }
+            //get { return false; }
+        }
+        public bool HasCapability_PipLarge
+        {
+            get { return HasPxpCap(PipMode_Large); }
+            //get { return false; }
+        }
+        public bool HasCapability_PipTogglePosition
+        {
+            get { return HasPxpCap(PipMode_PositionToggle); }
+            //get { return false; }
+        }
+        public bool HasCapabiliy_AnyPip
+        {
+            get
+            {
+                if (HasCapability_PipSmall)
+                    return true;
+                if (HasCapability_PipLarge)
+                    return true;
+                if (HasCapability_PipTogglePosition)
+                    return true;
+                return false;
+            }
         }
 
         #endregion PIP/PBP Capabilities
@@ -1137,7 +1177,7 @@ namespace DDPM.UI.Module.PipPbp
                 (_sub1InputSource != value);
 
                 SetProperty(ref _sub1InputSource, value);
-                if (isNeedUpdateToDevice)
+                if (isNeedUpdateToDevice && (_sub1InputSource != null))
                 {
                     BackgroundWorker bw = new BackgroundWorker()
                     {
@@ -1172,7 +1212,7 @@ namespace DDPM.UI.Module.PipPbp
                 (_sub2InputSource != value);
 
                 SetProperty(ref _sub2InputSource, value);
-                if (isNeedUpdateToDevice)
+                if (isNeedUpdateToDevice && (_sub2InputSource != null))
                 {
                     BackgroundWorker bw = new BackgroundWorker()
                     {
@@ -1208,7 +1248,7 @@ namespace DDPM.UI.Module.PipPbp
                 (_sub3InputSource != value);
 
                 SetProperty(ref _sub3InputSource, value);
-                if (isNeedUpdateToDevice)
+                if (isNeedUpdateToDevice && (_sub3InputSource!= null))
                 {
                     BackgroundWorker bw = new BackgroundWorker()
                     {
