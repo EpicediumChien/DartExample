@@ -134,7 +134,8 @@ namespace DDPM.UI.Module.PenButtonSettings
 
         private void SearchBox_TextChanged(object sender, TextChangedEventArgs e)
         {
-            if (txtSearchText.Text.Trim() == "") { txtSearchText.Text = ""; }
+            if (txtSearchText.Text.Trim() == "")
+            { txtSearchText.Text = ""; }
             if (txtSearchText.Text == "")
             {
                 SectionAction2.Visibility = Visibility.Visible;
@@ -237,7 +238,7 @@ namespace DDPM.UI.Module.PenButtonSettings
                 if (_vm.SelectedActionID != -1)
                     //cat = _vm.SelectedButton == PenButtonName.TopButton.ToString() ? Actions.PenActions[_vm.SelectedActionID].Category!.Value : Actions.KnMActions[_vm.SelectedActionID].Category!.Value;
                     cat = Actions.PenActions[_vm.SelectedActionID].Category!.Value;
-                if(cat == ActionCategory.None)
+                if (cat == ActionCategory.None)
                 {
                     if (ActiveActionSection != "")
                     {
@@ -339,7 +340,8 @@ namespace DDPM.UI.Module.PenButtonSettings
         {
             var rb = (UXRadioButton)sender;
             var id = int.Parse(rb.Name.Replace("Radio", "").Replace("_A", ""));
-            if (id == _vm.SelectedActionID) { return; }
+            if (id == _vm.SelectedActionID)
+            { return; }
 
             //var section = GetActionSection(id);
             var parameter = "";
@@ -459,7 +461,8 @@ namespace DDPM.UI.Module.PenButtonSettings
             txtCaption.Focus();
             if (sender is Border border)
             {
-                if (border.ActualHeight > 60) { return; }
+                if (border.ActualHeight > 60)
+                { return; }
 
                 var section = border.Name.Replace("bdr", "");
                 if (ActiveActionSection != section)
@@ -557,7 +560,8 @@ namespace DDPM.UI.Module.PenButtonSettings
                 To = 1,
                 Duration = new Duration(TimeSpan.FromSeconds(0.3))
             };
-            if (isFromKeyClick) { visibilityAnimation.Completed += SectionOpened; }
+            if (isFromKeyClick)
+            { visibilityAnimation.Completed += SectionOpened; }
 
             AnimatedPanel.BeginAnimation(DockPanel.OpacityProperty, visibilityAnimation);
 
@@ -579,7 +583,8 @@ namespace DDPM.UI.Module.PenButtonSettings
 
         private void OpenBehaviorSection()
         {
-            if (_vm.SelectedBehavior == "") { return; }
+            if (_vm.SelectedBehavior == "")
+            { return; }
 
             var img = (Image)FindName($"img{_vm.SelectedBehavior}");
             img.RenderTransform = new RotateTransform();
@@ -598,7 +603,8 @@ namespace DDPM.UI.Module.PenButtonSettings
             var section = panelName.Replace("Panel", "");
             AnimatedPanel = (DockPanel)FindName(panelName);
             AnimatedPanel!.Visibility = Visibility.Collapsed;
-            if (isAuto) { ScrollAction(section, 0); }
+            if (isAuto)
+            { ScrollAction(section, 0); }
 
             var img = (Image)FindName($"img{section}");
             img.RenderTransform = new RotateTransform();
@@ -613,7 +619,8 @@ namespace DDPM.UI.Module.PenButtonSettings
 
         private void CloseBehaviorSection()
         {
-            if (_vm.SelectedBehavior == "") { return; }
+            if (_vm.SelectedBehavior == "")
+            { return; }
 
             var img = (Image)FindName($"img{_vm.SelectedBehavior}");
             img.RenderTransform = new RotateTransform();
@@ -634,7 +641,8 @@ namespace DDPM.UI.Module.PenButtonSettings
 
         private void ScrollAction(string section = "", double offset = -1)
         {
-            if (section == "") { section = ActiveActionSection; }
+            if (section == "")
+            { section = ActiveActionSection; }
             if (offset == -1)
             {
                 int index = 0;
@@ -669,7 +677,8 @@ namespace DDPM.UI.Module.PenButtonSettings
             var img = (System.Windows.Controls.Image)sender;
             var section = img.Name.Replace("img", "");
             txtCaption.Focus();
-            if (section != ActiveActionSection) { return; }
+            if (section != ActiveActionSection)
+            { return; }
 
             DoubleAnimation rotateAnimation;
             if (ActiveActionSection == "")
@@ -743,6 +752,11 @@ namespace DDPM.UI.Module.PenButtonSettings
                 txtSearchText.Clear();
                 e.Handled = true;
             }
+        }
+
+        private void txtSearchText_PreviewTextInput(object sender, TextCompositionEventArgs e)
+        {
+            e.Handled = !_vm.CheckChar(e.Text);
         }
     }
 }
