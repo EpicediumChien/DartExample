@@ -1363,14 +1363,14 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             _vm.TooltipVisibility = Visibility.Collapsed;
         }
 
-        //Derek 1115
+        //Derek 1115 for Webcam PIMS 319099 and 319086
         private PresenceDetectionView GetPresenceDetectionView()
         {
             if (_vm!.CurrentDeviceInfo!.IsESISupported)
             {
-                _vm.UPD_Visibility = Visibility.Collapsed;
+                _vm.UPD_Visibility = Visibility.Visible;
                 _vm.MPS_Setting_Visibility = Visibility.Collapsed;
-                _vm.MPS_UpdateFW_Visibility = Visibility.Visible;
+                _vm.MPS_UpdateFW_Visibility = Visibility.Collapsed;
 
                 return PresenceDetectionView.InternalUPDSupport;
             }
