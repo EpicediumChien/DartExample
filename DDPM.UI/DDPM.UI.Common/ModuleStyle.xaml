@@ -53,7 +53,27 @@
             </Setter.Value>
         </Setter>
     </Style>
-    <Style TargetType="UXControls:UXRadioButton" BasedOn="{StaticResource {x:Type UXControls:UXRadioButton}}">
+    <Style TargetType="{x:Type UXControls:UXRadioButton}">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type UXControls:UXRadioButton}">
+                    <Border x:Name="FocusBorder" Background="Transparent">
+                        <ContentPresenter />
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    <Style TargetType="{x:Type UXControls:UXLink}">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type UXControls:UXLink}">
+                    <Border x:Name="FocusBorder" Background="Transparent">
+                        <ContentPresenter />
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
         <Setter Property="Background" Value="{DynamicResource DefaultTheme_RbBkColor}" />
         <Setter Property="Foreground" Value="{DynamicResource DefaultTheme_TxtColor}" />
     </Style>
