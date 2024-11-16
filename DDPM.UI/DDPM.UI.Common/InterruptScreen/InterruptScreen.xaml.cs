@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -25,12 +26,12 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using System.Windows.Threading;
 
-namespace DDPM.UI.Plugin.SettingsPlugin
+namespace DDPM.UI.Common
 {
     /// <summary>
     /// Interaction logic for InterruptScreen.xaml
     /// </summary>
-    public partial class InterruptScreen : Window, INotifyPropertyChanged
+    public partial class InterruptScreen : UXWindow, INotifyPropertyChanged
     {
         public BitmapImage BackgroundImage { get; set; }
         public string NewDeviceName { get; set; }
@@ -212,6 +213,42 @@ namespace DDPM.UI.Plugin.SettingsPlugin
         {
             this.DialogResult = true;
             this.Close();
+        }
+
+        private void LearnMoreForSoftware_Click(object sender, RoutedEventArgs e)
+        {
+            string url = "https://www.dell.com/support/home";
+            try
+            {
+                DDPM.SA.Common.Settings.DDPMFileSecurity.StartProcessSafely(
+                    null,
+                    new ProcessStartInfo
+                    {
+                        FileName = url,
+                        UseShellExecute = true
+                    });
+            }
+            catch
+            {
+            }
+        }
+
+        private void LearnMoreForFirmware_Click(object sender, RoutedEventArgs e)
+        {
+            string url = "https://www.dell.com/support/home";
+            try
+            {
+                DDPM.SA.Common.Settings.DDPMFileSecurity.StartProcessSafely(
+                    null,
+                    new ProcessStartInfo
+                    {
+                        FileName = url,
+                        UseShellExecute = true
+                    });
+            }
+            catch
+            {
+            }
         }
     }
     public class UI_NewSupportedDevices

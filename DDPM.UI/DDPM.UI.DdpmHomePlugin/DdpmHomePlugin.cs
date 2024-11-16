@@ -38,7 +38,6 @@ using User32 = DDPM.UI.Common.User32;
 //using VcpCore.Interfaces;
 using IDdpmHomePageViewModel = DDPM.UI.Plugin.DdpmHomePlugin.Interfaces.IDdpmHomePageViewModel;
 using static DDPM.UI.Common.User32;
-using DDPM.UI.Plugin.SettingsPlugin;
 using System.Windows.Threading;
 using DDPM.SA.Common.UpdateProgressPage;
 
@@ -95,6 +94,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
         private bool _disposed;
         private bool _HasRegisted = false;
         private DdpmHomePageViewModel? _viewModel;
+        private bool _IsAnyUpdate = false;
 
 
         // For WalkThrough
@@ -790,8 +790,15 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
         private void OnGearIconClicked()
         {
             EventManagerArgs args = new EventManagerArgs();
-            if (_console != null)
-                _console.RaiseEvent(ConsoleEventNames.Masthead_ShowSettingsPlugin, this, args);
+            if (_IsAnyUpdate)
+            {
+                _showPluginManager?.ShowPluginById(DDPM.UI.Common.Constants.SettingsPluginId, "1");
+            }
+            else
+            {
+                if (_console != null)
+                    _console.RaiseEvent(ConsoleEventNames.Masthead_ShowSettingsPlugin, this, args);
+            }
         }
 
         private void OnAddIconClicked()
@@ -958,37 +965,34 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
         /// Check if any Software/Firmware update available by calling Subangent/DeviceManagerSA.
         /// </summary>
         /// <returns>True if YES, either FW or SW is available.</returns>
-        private static bool CheckIfSwFwUpdateAvailable(IDeviceManagerSA devMgr)
+        private bool CheckIfSwFwUpdateAvailable(IDeviceManagerSA devMgr)
         {
-            bool ret=false;
+            bool ret = false;
             Requires.NotNull(devMgr, nameof(devMgr));
             //Get FW avaiable count
-            FWUpdateInfoPackage fwUpdateInfoPackage = devMgr.GetFWUpdateInfo(false, false, false, null, false, false, false).Result;
-            SWUpdateInfoPackage sWUpdateInfoPackage = devMgr.SW_GetSWUpdateInfo(false, false, false, false).Result;
-            if (fwUpdateInfoPackage.FWUpdateInfo.Count > 0)
-                ret= true;
-
             //Check SW avaiable count
-            
+            FWUpdateInfoPackage fwUpdateInfoPackage = devMgr.GetFWUpdateInfo(false, false, false, null, false, false, true).Result;
+            SWUpdateInfoPackage sWUpdateInfoPackage = devMgr.SW_GetSWUpdateInfo(false, false, false, true).Result;
+            if (fwUpdateInfoPackage.FWUpdateInfo.Count > 0 || sWUpdateInfoPackage.SWUpdateInfo.Count > 0)
+                ret = true;
+            _IsAnyUpdate = ret;
             if (sWUpdateInfoPackage.SWUpdateInfo.Count > 0)
             {
                 InterruptScreenRoot myDeserializedClass = DdpmCommonHelper.DeviceManagerSA.InterruptScreen_Metadata().Result;
                 if (myDeserializedClass != null)
                 {
                     bool? b = false;
-                    Dispatcher.CurrentDispatcher.BeginInvoke(new Action(() =>
+                    System.Windows.Application.Current.Dispatcher.BeginInvoke(new Action(() =>
                     {
                         InterruptScreen interruptScreen = new InterruptScreen(sWUpdateInfoPackage.SWUpdateInfo[0].TheLatestVersion, myDeserializedClass);
                         b = interruptScreen.ShowDialog();
                         if (b == true)
                         {
+                            _showPluginManager?.ShowPluginById(DDPM.UI.Common.Constants.SettingsPluginId, "1");
                         }
                     }));
                 }
-                ret= true;
             }
-
-
             return ret;
         }
 

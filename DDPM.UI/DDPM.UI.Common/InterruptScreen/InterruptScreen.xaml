@@ -1,11 +1,11 @@
-﻿<Window x:Class="DDPM.UI.Plugin.SettingsPlugin.InterruptScreen"
+﻿<UXControls:UXWindow x:Class="DDPM.UI.Common.InterruptScreen"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:UXControls="clr-namespace:Dell.Client.Framework.UX.WPF.Controls;assembly=DCF.UX.WPF"
         xmlns:lang="clr-namespace:DDPM.UI.Resources.Helper;assembly=DDPM.UI.Resources"
-        xmlns:local="clr-namespace:DDPM.UI.Plugin.SettingsPlugin"
+        xmlns:local="clr-namespace:DDPM.UI.Common"
         mc:Ignorable="d"
         Title="InterruptScreen"
         Height="600"
@@ -16,14 +16,14 @@
         Background="Black"
         Topmost="True"
         Closing="Window_Closing">
-    <Window.Resources>
+    <UXControls:UXWindow.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="/DDPM.UI.Common;component/PluginStyles.xaml" />
                 <!-- <ResourceDictionary Source="/DDPM.UI.Common;component/ModuleStyle.xaml" /> -->
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
-    </Window.Resources>
+    </UXControls:UXWindow.Resources>
     <Grid>
         <Border Background="#132F54">
             <Grid>
@@ -212,6 +212,7 @@
                                             </ItemsControl.ItemTemplate>
                                         </ItemsControl>
                                         <UXControls:UXLink Content="Learn more for software"
+                                                           Click="LearnMoreForSoftware_Click"
                                                            IconPosition="IconRight"
                                                            LinkSize="Medium"
                                                            LinkColorScheme="Primary"
@@ -221,6 +222,7 @@
                                                            VerticalAlignment="Center"
                                                            Height="40" />
                                         <UXControls:UXLink Content="Learn more for firmware"
+                                                           Click="LearnMoreForFirmware_Click"
                                                            IconPosition="IconRight"
                                                            LinkSize="Medium"
                                                            LinkColorScheme="Primary"
@@ -238,4 +240,4 @@
             </Grid>
         </Border>
     </Grid>
-</Window>
+</UXControls:UXWindow>

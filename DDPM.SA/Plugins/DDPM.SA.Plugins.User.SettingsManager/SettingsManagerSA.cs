@@ -2002,7 +2002,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager
                 {
                     string strReadJson = string.Empty;
                     string info;
-                    strReadJson = DDPMFileSecurity.GetSerializedJsonString(_settingsAccessInfo, strFilePath, out info);
+                    strReadJson = DDPMFileSecurity.GetSerializedJsonString(strFilePath, out info);
 
                     if (strReadJson == string.Empty || strReadJson.Length == 0)
                     {
@@ -2035,7 +2035,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager
             if (interruptScreenParam != null && result)
             {
                 string info;
-                if (!DDPMFileSecurity.SetJsonContentFromSerializedString(_settingsAccessInfo, JObject.FromObject(interruptScreenParam).ToString(), _InterruptScreen_path, out info))
+                if (!DDPMFileSecurity.SetJsonContentFromSerializedString(JObject.FromObject(interruptScreenParam).ToString(), _InterruptScreen_path, out info))
                 {
                     WriteLog(info);
                     result= false;
