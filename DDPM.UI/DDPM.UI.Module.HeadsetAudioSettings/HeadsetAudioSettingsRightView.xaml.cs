@@ -38,81 +38,15 @@ namespace DDPM.UI.Module.HeadsetAudioSettings
             converter.ViewModel = _vm;
 
             InitializeAsync();
-            //_vm.Invoke_PleaseWaitAsync(_vm.Model, _vm); ;
-            //if (_vm.DeviceInfoDTP!.IsPresetsSupported)
-            //{
-            //    if(_vm.DeviceInfoDTP!.Band1Gain > 4 || _vm.DeviceInfoDTP!.Band1Gain < -6)
-            //        SetNodeValue(Node1, 0);
-            //    else
-            //        SetNodeValue(Node1, _vm.CurrentDeviceInfo!.Band1Gain);
 
-            //    if (_vm.DeviceInfoDTP!.Band2Gain > 4 || _vm.DeviceInfoDTP!.Band2Gain < -6)
-            //        SetNodeValue(Node2, 0);
-            //    else
-            //        SetNodeValue(Node2, _vm.DeviceInfoDTP!.Band2Gain);
-
-            //    if (_vm.DeviceInfoDTP!.Band3Gain > 4 || _vm.DeviceInfoDTP!.Band3Gain < -6)
-            //        SetNodeValue(Node3, 0);
-            //    else
-            //        SetNodeValue(Node3, _vm.DeviceInfoDTP!.Band3Gain);
-
-            //    if (_vm.DeviceInfoDTP!.Band4Gain > 4 || _vm.DeviceInfoDTP!.Band4Gain < -6)
-            //        SetNodeValue(Node4, 0);
-            //    else
-            //        SetNodeValue(Node4, _vm.DeviceInfoDTP!.Band4Gain);
-
-            //    if (_vm.DeviceInfoDTP!.Band5Gain > 4 || _vm.DeviceInfoDTP!.Band5Gain < -6)
-            //        SetNodeValue(Node5, 0);
-            //    else
-            //        SetNodeValue(Node5, _vm.DeviceInfoDTP!.Band5Gain);
-            //}
-            ////_vm.Invoke_PleaseWait(_vm.Model);
-            ////_vm.DetectPageShow(_vm.Model);
-            ////_vm.DetectPageShow("WL7024");
-            ////_vm.DetectPageShow("WL5024");
-            ////vm.DetectPageShow("WH5024");
-            ////_vm.DetectPageShow("WL3024");
-            ////_vm.DetectPageShow("WH3024");
-
-            ////lock/unlock init, 9/23 add
-            //if (DdpmCommonHelper.DeviceManagerSA != null)
-            //{
-            //    DdpmCommonHelper.DeviceManagerSA.ITSettingsActionEvent += DeviceManagerSA_ITSettingsActionEvent;
-
-            //    DDPMSettings data = DdpmCommonHelper.DeviceManagerSA.ReloadAppConfigData().Result;
-            //    if (data != null)
-            //    {
-            //        if (data.LockSettings.Lock_Audio_ancMode)
-            //        {
-            //            _vm.isAncModeLocked = Visibility.Visible;
-            //            _vm.isAncEnabled = false;
-            //        }
-            //        else
-            //        {
-            //            _vm.isAncModeLocked = Visibility.Collapsed;
-            //            _vm.isAncEnabled = true;
-            //        }
-
-            //        if (data.LockSettings.Lock_Audio_micNoiseCancellation)
-            //        {
-            //            _vm.isMicCancelLocked = Visibility.Visible;
-            //            _vm.isMicTabStopped = false;
-            //        }
-            //        else
-            //        {
-            //            _vm.isMicCancelLocked = Visibility.Collapsed;
-            //            _vm.isMicTabStopped = true;
-            //        }
-            //    }
-            //}
         }
 
         private async void InitializeAsync()
         {
             //await _vm.Invoke_PleaseWaitAsync(_vm.Model, _vm);
-            _vm._log!.Info("Before Invoke_PleaseWaitAsync");
+            _vm._log!.Info("[HeadsetAudioSettingsRightView] Before Invoke_PleaseWaitAsync");
             await _vm.Invoke_PleaseWaitAsync(_vm.Model, _vm);
-            _vm._log!.Info("After Invoke_PleaseWaitAsync");
+            _vm._log!.Info("[HeadsetAudioSettingsRightView] After Invoke_PleaseWaitAsync");
             if (_vm.DeviceInfoDTP!.IsPresetsSupported)
             {
                 if (_vm.DeviceInfoDTP!.Band1Gain > 4 || _vm.DeviceInfoDTP!.Band1Gain < -6)
