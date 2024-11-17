@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using DDPM.SA.Common;
+using DDPM.SA.Common.Method;
 using DDPM.SA.Common.Settings;
 using DDPM.UI.Common;
 using DDPM.UI.Common.Interfaces;
@@ -538,7 +539,7 @@ namespace DDPM.UI.Plugin.SettingsPlugin
                      RecommendedUpdates = new DeviceType[] { DeviceType.LogicalMouse, DeviceType.LogicalKeyboard,
                          DeviceType.LogicalDock, DeviceType.PhysicalWiredDock,
                          DeviceType.PhysicalPen, DeviceType.PhysicalPen,
-                         DeviceType.LogicalWebcam, DeviceType.PhysicalWebcam,
+                         //DeviceType.LogicalWebcam, DeviceType.PhysicalWebcam,
                          DeviceType.PhysicalWiredAudio, DeviceType.LogicalWiredAudio,
                          DeviceType.LogicalHeadset, DeviceType.PhysicalBluetoothAudio };
             FWUpdateInfo = fwUpdateInfo;
@@ -562,8 +563,15 @@ namespace DDPM.UI.Plugin.SettingsPlugin
                 case DeviceType.PhysicalWiredDock:
                     UXAlertItemVisibility = Visibility.Visible;
                     UXAlertItemMessage = "Ensure only one dock is connected to your system. Devices connected to dock may not be available during update.";
-                    UXAlertItemVisibility_2 = Visibility.Visible;
-                    UXAlertItemMessage_2 = "Connect PC to power source and ensure PC battery charge is above 10% to continue with update";
+                    using (BatteryInfo batteryInfo = new BatteryInfo())
+                    {
+                        batteryInfo.GetBatteryInfo(out var battery);
+                        if (battery.BatteryLifePercent <= 10)
+                        {
+                            UXAlertItemVisibility_2 = Visibility.Visible;
+                            UXAlertItemMessage_2 = "Connect PC to power source and ensure PC battery charge is above 10% to continue with update";
+                        }
+                    }
                     break;
 
                 case DeviceType.PhysicalPen:
@@ -573,8 +581,11 @@ namespace DDPM.UI.Plugin.SettingsPlugin
                     break;
                 case DeviceType.LogicalWebcam:
                 case DeviceType.PhysicalWebcam:
-                    UXAlertItemVisibility = Visibility.Visible;
-                    UXAlertItemMessage = "This update will enable presence sensing controls through Windows Settings in systems: Win 11 22H2 or higher, and with OS build\r\n22621 or higher";
+                    if (fwUpdateInfo.Model.Contains("7022"))
+                    {
+                        UXAlertItemVisibility = Visibility.Visible;
+                        UXAlertItemMessage = "This update will enable presence sensing controls through Windows Settings in systems: Win 11 22H2 or higher, and with OS build\r\n22621 or higher";
+                    }
                     break;
                 default:
                     UXAlertItemVisibility = Visibility.Collapsed;
