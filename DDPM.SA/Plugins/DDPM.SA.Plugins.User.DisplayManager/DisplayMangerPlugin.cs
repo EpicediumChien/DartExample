@@ -38,6 +38,7 @@ using VcpCore.Common;
 using VcpCore.Interfaces;
 using static DDPM.SA.Common.Settings.DDPMUserSettings;
 using static VcpCore.Common.EDIDReader;
+using static VcpCore.Common.User32;
 using IDs = DDPM.SA.Common.IDs;
 
 //using WinCopies;
@@ -134,6 +135,10 @@ namespace DDPM.SA.Plugins.User.DisplayManager
         /// gaming parameter changes event，return gaming parameter
         /// </summary>
         public event EventHandler<GamingDisplayPropertiesInfo> GamingChangeEvent;
+        /// <summary>
+        /// OSD Orientation changes event，return OSD Orientation parameter
+        /// </summary>
+        public event EventHandler<DisplayOrientation> OSDOrientationChangeEvent;
 
         #endregion
 
@@ -1768,9 +1773,9 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             VCPchangedEventArgs _VCPchangedEventArgs = new VCPchangedEventArgs();
             _VCPchangedEventArgs.vcpcode = e.vcpcode;
             _VCPchangedEventArgs.value = e.value;
-            //0607 Bruce 自動旋轉畫面顧新增下面兩行程式碼
             _VCPchangedEventArgs.monitor = e.monitor;
-            SetDisplayOrientation(_VCPchangedEventArgs);
+            ////1117 Bruce 不用自動旋轉把下行註解
+            //SetDisplayOrientation(_VCPchangedEventArgs);
             //0611 Dean
             if (e.vcpcode.Equals("66"))
             {
@@ -1942,6 +1947,14 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             {
                 _logs.DebugMsg("[DisplayMangerPlugin] GetDisplaySupportedProperties _DisplayPropertiesPlugin.GetDisplaySupportedProperties go");
                 rc = _DisplayPropertiesPlugin.GetDisplaySupportedProperties(monitorInfo).Result;
+                bool? supported_OSD_Orientation = IsSupportWriteOSDOrientation(monitorInfo.CapabilityString);
+                if (supported_OSD_Orientation == true)
+                {
+                    if (rc != null)
+                    {
+                        rc.OSD_Orientations = IsSupportOSDOrientation(monitorInfo.CapabilityString);
+                    }
+                }
             }
             _logs.DebugMsg("[DisplayMangerPlugin] GetDisplaySupportedProperties done");
             return Task.FromResult(rc);
@@ -1950,10 +1963,12 @@ namespace DDPM.SA.Plugins.User.DisplayManager
         public Task<DisplayPropertiesInfo> GetDisplayPropertiesInfo(MonitorInfo monitorInfos)
         {
             _logs.DebugMsg("[DisplayMangerPlugin] GetDisplayPropertiesInfo start");
+            DisplayPropertiesInfo ret_DisplayPropertiesInfo = new DisplayPropertiesInfo();
             string setParam = "USB-C Prioritization";
             string capabilityString = monitorInfos.CapabilityString;
             USBCPrioritizationType PrioritizationType = USBCPrioritizationType.Unknow;
             bool supportedHDR = IsSupportHDR(capabilityString), supportedUSBC = IsSupportUSBCPrioritization(capabilityString);
+            bool? supported_OSD_Orientation = IsSupportWriteOSDOrientation(capabilityString);
             _logs.DebugMsg($"[DisplayMangerPlugin] GetDisplayPropertiesInfo supportedHDR:{supportedHDR}");
             _logs.DebugMsg($"[DisplayMangerPlugin] GetDisplayPropertiesInfo supportedUSBC:{supportedUSBC}");
             bool isHDREnable = false;
@@ -1995,7 +2010,24 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                     _logs.DebugMsg($"[DisplayMangerPlugin] GetDisplayPropertiesInfo PrioritizationType:{PrioritizationType}");
                 }
             }
-            return Task.FromResult(_DisplayPropertiesPlugin.GetDisplayPropertiesInfo(monitorInfos, capabilityString, supportedHDR, isHDREnable, supportedUSBC, PrioritizationType).Result);
+            ret_DisplayPropertiesInfo = _DisplayPropertiesPlugin.GetDisplayPropertiesInfo(monitorInfos, capabilityString, supportedHDR, isHDREnable, supportedUSBC, PrioritizationType).Result;
+            ret_DisplayPropertiesInfo.Supported_OSD_Orientation = supported_OSD_Orientation;
+            if (ret_DisplayPropertiesInfo.Supported_OSD_Orientation == true)
+            {
+                string osd_Orientation_str = GetOSDOrientation(monitorInfos).Result;
+                for (int i = 0; i < OrientationString.Length; i++)
+                {
+                    if (osd_Orientation_str.Equals(OrientationString[i]))
+                    {
+                        ret_DisplayPropertiesInfo.Current_OSD_Orientation = (DisplayOrientation)(i - 1);
+                    }
+                }
+                if (ret_DisplayPropertiesInfo != null && ret_DisplayPropertiesInfo.SupportedProperties != null)
+                {
+                    ret_DisplayPropertiesInfo.SupportedProperties.OSD_Orientations = IsSupportOSDOrientation(capabilityString);
+                }
+            }
+            return Task.FromResult(ret_DisplayPropertiesInfo);
         }
 
         public Task<DisplayCurrentPropertiesInfo> GetCurrentDisplayProperties(MonitorInfo monitorInfo)
@@ -2044,13 +2076,18 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             bool ret = false;
             if (monitorInfos != null && properties != null)
             {
-                _logs.DebugMsg($"[DisplayMangerPlugin] _DisplayPropertiesPlugin.SetDisplayPropertiest go");
+                _logs.DebugMsg($"[DisplayMangerPlugin] set_OSD_Orientation go");
                 //Bruce, 2024-08-09 Added the feature that if the screen is rotated, the OSD will also be rotated together.
+                bool? set_OSD_Orientation_Ret = SetOSDOrientation(monitorInfos, OrientationString[(int)orientation + 1]).Result;
+                _logs.DebugMsg($"[DisplayMangerPlugin] set_OSD_Orientation set_OSD_Orienset_OSD_Orientation_Rettation : {set_OSD_Orientation_Ret}");
                 isSWSetOrientation = true;
-                SetOSDOrientation(monitorInfos, OrientationString[(int)orientation + 1]);
-                ret = _DisplayPropertiesPlugin.SetDisplayPropertiest(monitorInfos.DisplayName, properties, orientation).Result;
+                //Bruce 11/17 The specification requirements are modified to not rotate the screen.
+                orientation = DisplayOrientation.Unknow;
+                _logs.DebugMsg($"[DisplayMangerPlugin] _DisplayPropertiesPlugin.SetDisplayPropertiest go");
+                ret = _DisplayPropertiesPlugin.SetDisplayPropertiest(monitorInfos.DisplayName, properties, orientation).Result && set_OSD_Orientation_Ret == true;
                 isSWSetOrientation = false;
             }
+            _logs.DebugMsg($"[DisplayMangerPlugin] SetDisplayPropertiest ret : {ret}");
             _logs.DebugMsg($"[DisplayMangerPlugin] SetDisplayPropertiest done");
             return Task.FromResult(ret);
         }
@@ -2070,17 +2107,17 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             return Task.FromResult(ret);
         }
 
-        public Task<bool> SetOrientation(MonitorInfo monitorInfos, DisplayOrientation orientation)
+        public Task<bool?> SetOrientation(MonitorInfo monitorInfos, DisplayOrientation orientation)
         {
             _logs.DebugMsg($"[DisplayMangerPlugin] SetOrientation start");
-            bool ret = false;
+            bool? ret = false;
             if (monitorInfos != null)
             {
-                _logs.DebugMsg($"[DisplayMangerPlugin] _DisplayPropertiesPlugin.SetOrientation go");
-                isSWSetOrientation = true;
-                SetOSDOrientation(monitorInfos, OrientationString[(int)orientation + 1]);
-                ret = _DisplayPropertiesPlugin.SetOrientation(monitorInfos.DisplayName, orientation).Result;
-                isSWSetOrientation = false;
+                _logs.DebugMsg($"[DisplayMangerPlugin] SetOSDOrientation go");
+                ret = SetOSDOrientation(monitorInfos, OrientationString[(int)orientation + 1]).Result;
+                /*isSWSetOrientation = true;
+                ret =_DisplayPropertiesPlugin.SetOrientation(monitorInfos.DisplayName, orientation).Result;
+                isSWSetOrientation = false;*/
             }
             _logs.DebugMsg($"[DisplayMangerPlugin] SetOrientation done");
             return Task.FromResult(ret);
@@ -2112,7 +2149,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             _logs.DebugMsg($"[DisplayMangerPlugin] SetHDRStatus start");
             if (_DisplayPropertiesPlugin != null)
             {
-                _logs.DebugMsg($"[DisplayMangerPlugin] SetHDRStatus on/off:{onoff}");
+                _logs.DebugMsg($"[DisplayMangerPlugin] SetHDRStatus on/off : {(onoff ? "on" : "off")}");
                 if (onoff)
                 {
                     _logs.DebugMsg($"[DisplayMangerPlugin] _DisplayPropertiesPlugin.SetExtendMode go");
@@ -2134,13 +2171,6 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                     _logs.DebugMsg($"[DisplayMangerPlugin] _DisplayPropertiesPlugin.SetHDRStatus go");
                     ret = _DisplayPropertiesPlugin.SetHDRStatus(monitorInfos.edid, onoff).Result;
                     _logs.DebugMsg($"[DisplayMangerPlugin] _DisplayPropertiesPlugin.SetHDRStatus done ret : {ret}");
-                    if (ret)
-                    {
-                        _logs.DebugMsg($"[DisplayMangerPlugin] SetHDRStatus SetVCPCapability go");
-                        _logs.DebugMsg($"[DisplayMangerPlugin] SetHDRStatus SetVCPCapability({monitorInfos.modelName}, {0xF0}, {0xFE00})");
-                        ret = SetVCPCapability(monitorInfos, 0xEA, 0xFE00).Result;
-                        _logs.DebugMsg($"[DisplayMangerPlugin] SetHDRStatus SetVCPCapability done ret : {ret}");
-                    }
                 }
             }
             else
@@ -2278,7 +2308,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             if (monitorInfo != null && !string.IsNullOrEmpty(orientation))
             {
                 _logs.DebugMsg($"[DisplayMangerPlugin] IsSupportWriteOSDOrientation go");
-                if (IsSupportWriteOSDOrientation(monitorInfo.CapabilityString))
+                if (IsSupportWriteOSDOrientation(monitorInfo.CapabilityString) == true)
                 {
                     ret = false;
                     for (int i = 1; i < OrientationString.Length; i++)
@@ -2323,16 +2353,16 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                         _logs.DebugMsg($"[DisplayMangerPlugin] SetDisplayOrientation retValue:{retValue}");
                         DisplayOrientation orientation = (DisplayOrientation)(retValue - 1);
                         _logs.DebugMsg($"[DisplayMangerPlugin] SetDisplayOrientation orientation:{orientation}");
-                        Properties properties = new Properties();
-                        _logs.DebugMsg($"[DisplayMangerPlugin] SetDisplayOrientation go");
-                        ret = SetDisplayPropertiest(vcpchangedEventArgs.monitor, properties, orientation).Result;
+                        OSDOrientationChangeEvent?.AsyncFireAndForget(this, orientation, System.Threading.CancellationToken.None);
+                        //Properties properties = new Properties();
+                        //_logs.DebugMsg($"[DisplayMangerPlugin] SetDisplayOrientation go");
+                        //ret = SetDisplayPropertiest(vcpchangedEventArgs.monitor, properties, orientation).Result;
                     }
                 }
             }
             _logs.DebugMsg($"[DisplayMangerPlugin] SetDisplayOrientation done");
             return Task.FromResult(ret);
         }
-
         private bool IsSupportHDR(string s)
         {
             _logs.DebugMsg($"[DisplayMangerPlugin] IsSupportHDR s : {s}");
@@ -2399,36 +2429,77 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             }
         }
 
-        private bool IsSupportWriteOSDOrientation(string s)
+        private bool? IsSupportWriteOSDOrientation(string s)
         {
+            _logs.DebugMsg($"[DisplayMangerPlugin] IsSupportWriteOSDOrientation start");
             _logs.DebugMsg($"[DisplayMangerPlugin] IsSupportWriteOSDOrientation s : {s}");
+            bool? ret = null;
             try
             {
-                if (string.IsNullOrEmpty(s) || s.Length < 10)
+                if (!string.IsNullOrEmpty(s) && s.Length > 10 && s.Contains("AA"))
                 {
-                    return false;
-                }
-                string[] ss = s.Split("AA(");
-                ss = ss[1].Split(")");
-                _logs.DebugMsg($"[DisplayMangerPlugin] IsSupportWriteOSDOrientation ss : {ss}");
-                ss = ss[0].Split(" ");
-                ss = ss[0].Split(" ");
-                string stand = "00";
-                for (int i = 0; i < ss.Length; i++)
-                {
-                    if (ss[i].Equals(stand))
+                    string[] ss = s.Split("AA(");
+                    if (ss.Length >= 2)
                     {
-                        return (true);
+                        _logs.DebugMsg($"[DisplayMangerPlugin] IsSupportWriteOSDOrientation s.Split(AA) : {ss[1]}");
+                        ss = ss[1].Split(")");
+                        if (ss.Length >= 1)
+                        {
+                            _logs.DebugMsg($"[DisplayMangerPlugin] IsSupportWriteOSDOrientation ss[1].Split() step 2 : {ss[0]}");
+                            ret = ss[0].Contains("00");
+                        }
                     }
                 }
-                return (false);
             }
-            catch
+            catch (Exception ex)
             {
-                return (false);
+                _logs.DebugMsg($"[DisplayMangerPlugin] IsSupportWriteOSDOrientation error : {ex.Message}");
             }
+            _logs.DebugMsg($"[DisplayMangerPlugin] IsSupportWriteOSDOrientation ret : {ret}");
+            _logs.DebugMsg($"[DisplayMangerPlugin] IsSupportWriteOSDOrientation done");
+            return (ret);
         }
-
+        private DisplayOrientation[] IsSupportOSDOrientation(string s)
+        {
+            _logs.DebugMsg($"[DisplayMangerPlugin] IsSupportWriteOSDOrientation start");
+            _logs.DebugMsg($"[DisplayMangerPlugin] IsSupportWriteOSDOrientation s : {s}");
+            List<DisplayOrientation> ret = new List<DisplayOrientation>();
+            try
+            {
+                if (!string.IsNullOrEmpty(s) && s.Length > 10 && s.Contains("AA"))
+                {
+                    string[] ss = s.Split("AA(");
+                    if (ss.Length >= 2)
+                    {
+                        _logs.DebugMsg($"[DisplayMangerPlugin] IsSupportWriteOSDOrientation s.Split(AA) : {ss[1]}");
+                        ss = ss[1].Split(")");
+                        if (ss.Length >= 1)
+                        {
+                            _logs.DebugMsg($"[DisplayMangerPlugin] IsSupportWriteOSDOrientation ss.Split() step 2 : {ss[0]}");
+                            ss = ss[0].Split(" ");
+                            if (ss != null)
+                            {
+                                _logs.DebugMsg($"[DisplayMangerPlugin] IsSupportWriteOSDOrientation ss.Split( ) step 3 : {ss}");
+                                for (int i = 0; i < ss.Length; i++)
+                                {
+                                    if (ss[i] != "00" && int.TryParse(ss[i], out int retValue))
+                                    {
+                                        ret.Add((DisplayOrientation)(retValue - 1));
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                _logs.DebugMsg($"[DisplayMangerPlugin] IsSupportWriteOSDOrientation error : {ex.Message}");
+            }
+            _logs.DebugMsg($"[DisplayMangerPlugin] IsSupportWriteOSDOrientation ret.Count : {ret.Count}");
+            _logs.DebugMsg($"[DisplayMangerPlugin] IsSupportWriteOSDOrientation done");
+            return (ret.ToArray());
+        }
         public Task<string> GetMonitorCurrentResolution(MonitorInfo monitor)
         {
             var rc = string.Empty;
