@@ -4,6 +4,9 @@ using DDPM.SA.Common.Display;
 using DDPM.SA.Common.Settings;
 using DDPM.UI.Common;
 using DDPM.UI.Common.Interfaces;
+using DDPM.UI.Common.Models;
+using Dell.Client.Framework.Common;
+using Dell.Client.Framework.UX.WPF;
 using System;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
@@ -284,15 +287,7 @@ namespace DDPM.UI.Module.DisplayHotkeys
                         }
                         break;
                 }
-
-
-
-
             }
-
-
-
-
         }
 
         public void Invoke_RefreshData()
@@ -316,6 +311,10 @@ namespace DDPM.UI.Module.DisplayHotkeys
                 BackgroundWorker bwk = (BackgroundWorker)sender;
                 inputList = new Dictionary<string, InputInfo>();
                 //load hotkey setting
+                if (DdpmCommonHelper.DeviceManagerSA == null)
+                {
+                    return;
+                }
                 var temp = DdpmCommonHelper.DeviceManagerSA.ReadCurrentHotkey(this.DisplayHotkeysModule.SelectedHomeDevice.MonitorInfo).Result;
                 HotkeySettings curHotkey = temp.Item1;
                 List<HotkeyData> list = temp.Item2;
@@ -327,9 +326,10 @@ namespace DDPM.UI.Module.DisplayHotkeys
                 catch (Exception ex)
                 {
                     Debug.WriteLine($"InputSource caused crash = {ex.Message}");
+                    _log?.Error($"[DisplayHotkeysViewModel] InputSource caused crash :{ex.Message}");
                     inputList = null;
                 }
-                if (inputList != null)
+                if (inputList != null && inputList.Count > 0)
                 {
 
                     ObservableCollection<InputSourceList> tmpInputsList = new ObservableCollection<InputSourceList>();
@@ -504,14 +504,26 @@ namespace DDPM.UI.Module.DisplayHotkeys
                     }
                 }
                 else
+                {
+                    _log?.Error($"[DisplayHotkeysViewModel] InputSourceList is empty");
                     return;//temp solution 0708
+                }
                 OnPropertyChanged("InputsList");
                 OnPropertyChanged("FavoriteInput_Selected");
                 OnPropertyChanged("SwitchInput1_Selected");
                 OnPropertyChanged("SwitchInput2_Selected");
+
+                OnPropertyChanged("HasCapability_PipTogglePosition");
                 //OnPropertyChanged("FavoriteInput_Selected_Index");
+
+                MonitorInfo? monitorInfo = DisplayHotkeysModule.SelectedHomeDevice.MonitorInfo;
+                if (monitorInfo != null)
+                {
+                    PxPkeySettings_Visibility = monitorInfo.CapabilityDic.ContainsKey("E9") ? Visibility.Visible : Visibility.Collapsed;
+                }
+                OnPropertyChanged("PxPkeySettings_Visibility");
                 string swHortcutText = string.Empty;
-                if (curHotkey.HotkeyInfo.Count > 0)
+                if (curHotkey != null && curHotkey.HotkeyInfo.Count > 0)
                 {
                     foreach (var hotkeyInfo in curHotkey.HotkeyInfo)
                     {
@@ -559,9 +571,9 @@ namespace DDPM.UI.Module.DisplayHotkeys
                     ChangePIPPositionKey = "None";
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                ;
+                _log?.Error($"[DisplayHotkeysViewModel]catch :{ex.Message}");
             }
         }
 
@@ -569,7 +581,6 @@ namespace DDPM.UI.Module.DisplayHotkeys
         {
             //Handling the result and final process
             IsBusy = false;
-            OnPropertyChanged("IsBusy");
             Debug.WriteLine("InputSource-->Hotkey tab data refresh done");
         }
         #region UI Enable Flags
@@ -579,9 +590,61 @@ namespace DDPM.UI.Module.DisplayHotkeys
         public bool IsBusy
         {
             get => _isBusy;
-            set => SetProperty(ref _isBusy, value);
+            set
+            {
+                SetProperty(ref _isBusy, value);
+                OnPropertyChanged("IsBusy");
+            }
+
         }
 
         #endregion UI Enable Flags
+
+        #region HasCapability_xxxx flags
+        //Robert_Lin, 2024-11-14 after add HasCapability_xxx in HomeDevice class
+        //PxpMode Code:
+        public const string PipMode_Small = "21";
+        public const string PipMode_Large = "22";
+
+        public const string PipMode_SizeToggle = "01";
+        public const string PipMode_PositionToggle = "02";
+
+        public bool HasCapability_Pxp
+        {
+            get
+            {
+                HomeDevice homeDevice = DisplayHotkeysModule.SelectedHomeDevice;
+                return homeDevice.HasCapability_PipPbp;
+            }
+        }
+        public bool HasCapability_PipTogglePosition
+        {
+            get
+            {
+                HomeDevice homeDevice = DisplayHotkeysModule.SelectedHomeDevice;
+                //Self test
+                //return false;
+                return homeDevice.HasCapability_PxpMode(PipMode_PositionToggle);
+            }
+        }
+        #endregion
+
+        #region Log
+        private ILog? _log;
+        public void InitLog()
+        {
+            IConsole console = DdpmCommonHelper.MyConsole;
+            if (console != null)
+            {
+                _log = console.CreateLog("DisplayHotkeyPage");
+            }
+        }
+        public void LogInfo(string msg)
+        {
+            if (_log != null)
+                _log.Info(msg);
+        }
+        #endregion
+
     }
 }

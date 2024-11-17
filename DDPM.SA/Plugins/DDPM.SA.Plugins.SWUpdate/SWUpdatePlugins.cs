@@ -257,27 +257,7 @@ namespace DDPM.SA.Plugins.SWUpdate
                     _logs.DebugMsg_1($"{nameof(CheckUpdate)} swUpdateHelper.Softwares.Count : {swUpdateHelper.Softwares.Count}");
                     for (int i = 0; i < swUpdateHelper.Softwares.Count; i++)
                     {
-                        string newVer = swUpdateHelper.Softwares[i].SoftwareVersion;
-                        string oldVer = currentVersion;
-                        if (!int.TryParse(newVer, out _))
-                        {
-                            if (newVer.Contains("."))
-                            {
-                                newVer = newVer.Replace(".", "");
-                            }
-                        }
-                        if (!int.TryParse(oldVer, out _))
-                        {
-                            if (oldVer.Contains("."))
-                            {
-                                oldVer = oldVer.Replace(".", "");
-                            }
-                        }
-                        bool needUpdate = false;
-                        if (int.TryParse(newVer, out _) && int.TryParse(oldVer, out _))
-                        {
-                            needUpdate = int.Parse(newVer) > int.Parse(oldVer) ? true : false;
-                        }
+                        bool needUpdate = SWUpdateSetting.CompareVersions(currentVersion, swUpdateHelper.Softwares[i].SoftwareVersion, _logs);
                         SWUpdateInfo SWUpdateInfo = new SWUpdateInfo()
                         {
                             TheLatestVersion = swUpdateHelper.Softwares[i].SoftwareVersion,
@@ -515,6 +495,7 @@ namespace DDPM.SA.Plugins.SWUpdate
                     {
                         if (!Unzip(_installationFileStoragePath, extractPath, out exeFilePath))
                         {
+                            _SWUpdateInfo.SWUErrorCode = SWUErrorCode.FileCheckFail;
                             _logs.DebugMsg_1(_SWUpdateInfo.SoftwareName + " Unzip Faile");
                             _notificationStr = $"Software update unsuccessful.";
                             NotificationFWupdate("Error", _notificationStr);
@@ -522,6 +503,14 @@ namespace DDPM.SA.Plugins.SWUpdate
                         }
                         using (FileLock fileLock_2 = new FileLock(exeFilePath, PathCheckOption.None, lockNow: true))
                         {
+                            if (!CheckThumbprint(exeFilePath, _SWUpdateInfo.Thumbprint, out string FileCAInfo))
+                            {
+                                _SWUpdateInfo.SWUErrorCode = SWUErrorCode.FileCheckFail;
+                                _logs.DebugMsg_1($"{_SWUpdateInfo.SoftwareName} CheckThumbprint Faile");
+                                _notificationStr = $"Software update unsuccessful.";
+                                NotificationFWupdate("Error", _notificationStr);
+                                continue;
+                            }
                             swUpdateInfos[i].InstallPaths = exeFilePath;
                             swUpdateInfos[i].SWUErrorCode = Install(swUpdateInfos[i]).Result;
                         }
@@ -871,7 +860,33 @@ namespace DDPM.SA.Plugins.SWUpdate
             {
                 isCheckSHA = certificateCheck.CheckFile_SHA256(filePath, _SWUpdateInfo.SHA256, out fileCAInfo);
             }
+            if (isCheckSHA)
+            {
+                _logs.DebugMsg_1($"{_SWUpdateInfo.SoftwareName} CheckSHA pass");
+            }
+            else
+            {
+                _logs.DebugMsg_1($"{_SWUpdateInfo.SoftwareName} CheckSHA fail fileCAInfo : {fileCAInfo}");
+                _SWUpdateInfo.SWUErrorCode = SWUErrorCode.FileCheckFail;
+            }
             return isCheckSHA;
+        }
+        private bool CheckThumbprint(string filePath, string standThumbprint, out string fileThumbprintInfo)
+        {
+            CertificateCheck certificateCheck = new CertificateCheck(_logs);
+            bool ishumbprint = false;
+            fileThumbprintInfo = "Error";
+            ishumbprint = certificateCheck.CheckFile_Thumbprint(filePath, standThumbprint, out string FileCAInfo);
+            if (ishumbprint)
+            {
+                _logs.DebugMsg_1($"{_SWUpdateInfo.SoftwareName} CheckFile_Thumbprint pass");
+            }
+            else
+            {
+                _logs.DebugMsg_1($"{_SWUpdateInfo.SoftwareName} File check Thumbprint fail. Ex: {FileCAInfo}");
+                _SWUpdateInfo.SWUErrorCode = SWUErrorCode.FileCheckFail;
+            }
+            return ishumbprint;
         }
         private bool Unzip(string filePath, string extractPath, out string exeFilePath)
         {
@@ -881,29 +896,20 @@ namespace DDPM.SA.Plugins.SWUpdate
             Unzip unzip = new Unzip(_logs);
             exeFilePath = "";
             string FileCAInfo = "Pass";
-            if (unzip.CheckFileIsZip(filePath))
+            _logs.DebugMsg_1($"{_SWUpdateInfo.SoftwareName} check SHA go.");
+            if (CheckSHA(filePath, out FileCAInfo))
             {
-                _logs.DebugMsg_1($"{_SWUpdateInfo.SoftwareName} File is zip.");
-                _logs.DebugMsg_1($"{_SWUpdateInfo.SoftwareName} check SHA start.");
-                if (CheckSHA(filePath, out FileCAInfo))
+                ret = true;
+                if (unzip.CheckFileIsZip(filePath))
                 {
-                    _logs.DebugMsg_1($"{_SWUpdateInfo.SoftwareName} ExecuteUnzip start.");
+                    _logs.DebugMsg_1($"{_SWUpdateInfo.SoftwareName} File is zip.");
+                    _logs.DebugMsg_1($"{_SWUpdateInfo.SoftwareName} ExecuteUnzip go.");
                     if (unzip.ExecuteUnzip(filePath, extractPath, out exeFilePath))
                     {
-                        if (!string.IsNullOrEmpty(exeFilePath))
+                        if (string.IsNullOrEmpty(exeFilePath))
                         {
-                            _logs.DebugMsg_1($"{_SWUpdateInfo.SoftwareName} check Thumbprint start.");
-                            CertificateCheck certificateCheck = new CertificateCheck(_logs);
-                            if (certificateCheck.CheckFile_Thumbprint(exeFilePath, _SWUpdateInfo.Thumbprint, out FileCAInfo))
-                            {
-                                ret = true;
-                                _logs.DebugMsg_1($"{_SWUpdateInfo.SoftwareName} check done.");
-                            }
-                            else
-                            {
-                                _SWUpdateInfo.SWUErrorCode = SWUErrorCode.FileCheckFail;
-                                _logs.DebugMsg_1($"{_SWUpdateInfo.SoftwareName} File check Thumbprint fail. Ex: {FileCAInfo}");
-                            }
+                            ret = false;
+                            _logs.DebugMsg_1($"{_SWUpdateInfo.SoftwareName} exeFilePath IsNullOrEmpty.");
                         }
                     }
                     else
@@ -913,35 +919,10 @@ namespace DDPM.SA.Plugins.SWUpdate
                 }
                 else
                 {
-                    _SWUpdateInfo.SWUErrorCode = SWUErrorCode.FileCheckFail;
-                    _logs.DebugMsg_1($"{_SWUpdateInfo.SoftwareName} File check SHA fail. Ex: {FileCAInfo}");
+                    _logs.DebugMsg_1($"{_SWUpdateInfo.SoftwareName} File is exe.");
+                    exeFilePath = filePath;
+                    ret = true;
                 }
-            }
-            else
-            {
-                _logs.DebugMsg_1($"{_SWUpdateInfo.SoftwareName} File is exe.");
-                _logs.DebugMsg_1($"{_SWUpdateInfo.SoftwareName} check SHA start.");
-                if (CheckSHA(filePath, out FileCAInfo))
-                {
-                    _logs.DebugMsg_1($"{_SWUpdateInfo.SoftwareName} check Thumbprint start.");
-                    CertificateCheck certificateCheck = new CertificateCheck(_logs);
-                    if (certificateCheck.CheckFile_Thumbprint(filePath, _SWUpdateInfo.Thumbprint, out FileCAInfo))
-                    {
-                        ret = true;
-                        _logs.DebugMsg_1($"{_SWUpdateInfo.SoftwareName} check done.");
-                    }
-                    else
-                    {
-                        _SWUpdateInfo.SWUErrorCode = SWUErrorCode.FileCheckFail;
-                        _logs.DebugMsg_1($"{_SWUpdateInfo.SoftwareName} File check Thumbprint fail. Ex: {FileCAInfo}");
-                    }
-                }
-                else
-                {
-                    _SWUpdateInfo.SWUErrorCode = SWUErrorCode.FileCheckFail;
-                    _logs.DebugMsg_1($"{_SWUpdateInfo.SoftwareName} File check SHA fail. Ex: {FileCAInfo}");
-                }
-                exeFilePath = filePath;
             }
             _logs.DebugMsg_1($"{_SWUpdateInfo.SoftwareName} {nameof(Unzip)} done");
             return ret;

@@ -1,579 +1,599 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>net8.0-windows10.0.19041.0</TargetFramework>
-    <OutputPath>..\bin</OutputPath>
-	  <Nullable>enable</Nullable>
-    <UseWPF>true</UseWPF>
-    <UseWindowsForms>true</UseWindowsForms>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <SignAssembly>false</SignAssembly>
-    <AssemblyVersion>1.0.1.0</AssemblyVersion>
-    <FileVersion>1.0.1.0</FileVersion>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFramework>net8.0-windows10.0.19041.0</TargetFramework>
+		<OutputPath>..\bin</OutputPath>
+		<Nullable>enable</Nullable>
+		<UseWPF>true</UseWPF>
+		<UseWindowsForms>true</UseWindowsForms>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<SignAssembly>false</SignAssembly>
+		<AssemblyVersion>1.0.1.0</AssemblyVersion>
+		<FileVersion>1.0.1.0</FileVersion>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <Compile Remove="Resources\WalkThrough\**" />
-    <EmbeddedResource Remove="Resources\WalkThrough\**" />
-    <None Remove="Resources\WalkThrough\**" />
-    <Page Remove="Resources\WalkThrough\**" />
-  </ItemGroup>
+	<ItemGroup>
+		<Compile Remove="Resources\WalkThrough\**" />
+		<EmbeddedResource Remove="Resources\WalkThrough\**" />
+		<None Remove="Resources\WalkThrough\**" />
+		<Page Remove="Resources\WalkThrough\**" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <Compile Remove="UserControls\VbarItem2.xaml.cs" />
-    <Compile Remove="ViewModels\PeripheralViewModel.cs" />
-  </ItemGroup>
+	<ItemGroup>
+		<Compile Remove="UserControls\VbarItem2.xaml.cs" />
+		<Compile Remove="ViewModels\PeripheralViewModel.cs" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <None Remove="Resources\Alert.png" />
-    <None Remove="Resources\Arrow button.png" />
-    <None Remove="Resources\arrow-left.png" />
-    <None Remove="Resources\Arrow-Right.png" />
-    <None Remove="Resources\AW.png" />
-    <None Remove="Resources\Background_Glow.png" />
-    <None Remove="Resources\BatteryOutline.png" />
-    <None Remove="Resources\Camera.png" />
-    <None Remove="Resources\CameraCapture.png" />
-    <None Remove="Resources\CameraColorImage.png" />
-    <None Remove="Resources\CameraControl.png" />
-    <None Remove="Resources\CameraPresenceDetection.png" />
-    <None Remove="Resources\CBvector.png" />
-    <None Remove="Resources\Chat.png" />
-    <None Remove="Resources\Close.png" />
-    <None Remove="Resources\Connect_M_K.png" />
-    <None Remove="Resources\DP.png" />
-    <None Remove="Resources\EzAdd.png" />
-    <None Remove="Resources\G.png" />
-    <None Remove="Resources\HD22Q.png" />
-    <None Remove="Resources\HDMI.png" />
-    <None Remove="Resources\HeadsetModel_7024-Large.png" />
-    <None Remove="Resources\HeadsetModel_7024-mall.png" />
-    <None Remove="Resources\HeadsetModel_7024S-mall.png" />
-    <None Remove="Resources\HeadsetModel_WH3024-Airmax.png" />
-    <None Remove="Resources\HeadsetModel_WH5024-Vinflo.png" />
-    <None Remove="Resources\HeadsetModel_WL3024-Vaporfly.png" />
-    <None Remove="Resources\HeadsetModel_WL5024-Pegasus.png" />
-    <None Remove="Resources\HeadsetModel_WL7024-Mito.png" />
-    <None Remove="Resources\Headset_AppleStore.png" />
-    <None Remove="Resources\Headset_AppleStoreQR.png" />
-    <None Remove="Resources\Headset_AppleStoreQR.svg" />
-    <None Remove="Resources\Headset_Collaboration.png" />
-    <None Remove="Resources\Headset_Dot.png" />
-    <None Remove="Resources\Headset_DownDellAudio.png" />
-    <None Remove="Resources\Headset_GooglePlayStore.png" />
-    <None Remove="Resources\Headset_GooglePlayStoreQR.png" />
-    <None Remove="Resources\Headset_GooglePlayStoreQR.svg" />
-    <None Remove="Resources\Headset_Info.png" />
-    <None Remove="Resources\Headset_Line1.png" />
-    <None Remove="Resources\Headset_Line2.png" />
-    <None Remove="Resources\Headset_Line3.png" />
-    <None Remove="Resources\Headset_LineFive.png" />
-    <None Remove="Resources\Headset_Main.png" />
-    <None Remove="Resources\Headset_Media.png" />
-    <None Remove="Resources\Headset_Multimedia.png" />
-    <None Remove="Resources\Headset_Noise.png" />
-    <None Remove="Resources\Headset_Off.png" />
-    <None Remove="Resources\Headset_Setting.png" />
-    <None Remove="Resources\Headset_Transparency.png" />
-    <None Remove="Resources\Headset_whitedot.png" />
-    <None Remove="Resources\Icon_Info.png" />
-    <None Remove="Resources\BatteryOutline.png" />
-    <None Remove="Resources\Dongle.png" />
-    <None Remove="Resources\Icon_Info1.png" />
-    <None Remove="Resources\info.png" />
-    <None Remove="Resources\LightMode\Port.png" />
-    <None Remove="Resources\Loading.png" />
-    <None Remove="Resources\Lock.png" />
-    <None Remove="Resources\Luminance.png" />
-    <None Remove="Resources\Mic.png" />
-    <None Remove="Resources\Microphone.png" />
-    <None Remove="Resources\Monitor_Outline.png" />
-    <None Remove="Resources\popup_ArrowCorner.png" />
-    <None Remove="Resources\Port.png" />
-    <None Remove="Resources\Product_Display.png" />
-    <None Remove="Resources\Product_KB900.png" />
-    <None Remove="Resources\Product_Mouse.png" />
-    <None Remove="Resources\Progressbar1.png" />
-    <None Remove="Resources\Progressbar2.png" />
-    <None Remove="Resources\Progressbar3.png" />
-    <None Remove="Resources\SB3022.png" />
-    <None Remove="Resources\SB522A.png" />
-    <None Remove="Resources\SD25.png" />
-    <None Remove="Resources\SD25TB4.png" />
-    <None Remove="Resources\SD25TB5.png" />
-    <None Remove="Resources\Share.png" />
-    <None Remove="Resources\SP3022.png" />
-    <None Remove="Resources\Speaker_AudioPreset.png" />
-    <None Remove="Resources\Speaker_AudioSettings.png" />
-    <None Remove="Resources\Speaker_EllipseLeft.png" />
-    <None Remove="Resources\Speaker_EllipseRight.png" />
-    <None Remove="Resources\Speaker_Highlight.png" />
-    <None Remove="Resources\Speaker_Interactions.png" />
-    <None Remove="Resources\Speaker_SB3022.png" />
-    <None Remove="Resources\Speaker_SB3022_AllLight.png" />
-    <None Remove="Resources\Speaker_SB522A.png" />
-    <None Remove="Resources\Speaker_SB522A_AllLight.png" />
-    <None Remove="Resources\Speaker_SB522A_NoLight.png" />
-    <None Remove="Resources\Speaker_SB522A_TwoLight.png" />
-    <None Remove="Resources\Speaker_SP3022.png" />
-    <None Remove="Resources\Speaker_SP3022_AllLight.png" />
-    <None Remove="Resources\Speaker_SP3022_FourLight.png" />
-    <None Remove="Resources\Speaker_SP3022_RedLight.png" />
-    <None Remove="Resources\Speaker_SP3022_TwoLight.png" />
-    <None Remove="Resources\Speaker_StatusLight.png" />
-    <None Remove="Resources\Speaker_u2723qe.png" />
-    <None Remove="Resources\Speaker_VectorLeft.png" />
-    <None Remove="Resources\Speaker_VectorRight.png" />
-    <None Remove="Resources\SplitIcon_Off.png" />
-    <None Remove="Resources\SplitIcon_Pip2.png" />
-    <None Remove="Resources\SplitIcon_Pip3.png" />
-    <None Remove="Resources\u2723qe.png" />
-    <None Remove="Resources\USB-A.png" />
-    <None Remove="Resources\USB-C.png" />
-    <None Remove="Resources\USBKVM_2PCs.png" />
-    <None Remove="Resources\USBKVM_3PCs.png" />
-    <None Remove="Resources\USBKVM_4PCs.png" />
-    <None Remove="Resources\USBKVM_MK_1.png" />
-    <None Remove="Resources\USBKVM_MK_2.png" />
-    <None Remove="Resources\Vbar.Display.EA.png" />
-    <None Remove="Resources\Vbar.Display.Gaming.png" />
-    <None Remove="Resources\Vbar.Display.InputSource.png" />
-    <None Remove="Resources\Vbar.Display.KVM.png" />
-    <None Remove="Resources\Vbar.Display.Others.png" />
-    <None Remove="Resources\Vbar.Display.Settings.png" />
-    <None Remove="Resources\Vbar.Keyboard.Collaboration.png" />
-    <None Remove="Resources\Vbar.Keyboard.Illumination.png" />
-    <None Remove="Resources\Vbar.Keyboard.Key.png" />
-    <None Remove="Resources\Vbar.Mouse.App.png" />
-    <None Remove="Resources\Vbar.Mouse.Cursor.png" />
-    <None Remove="Resources\Vbar.Mouse.Mouse.png" />
-    <None Remove="Resources\Vbar_Keyboard_Collab.png" />
-    <None Remove="Resources\Vbar_Keyboard_Custom.png" />
-    <None Remove="Resources\Vbar_Keyboard_Illumin.png" />
-    <None Remove="Resources\VertNavBar.png" />
-    <None Remove="Resources\Warring.png" />
-    <None Remove="Resources\WD19DCS.png" />
-    <None Remove="Resources\WD19S_130W.png" />
-    <None Remove="Resources\WD19S_180W.png" />
-    <None Remove="Resources\WD22TB4.png" />
-    <None Remove="Resources\WD25.png" />
-    <None Remove="Resources\WD25TB4.png" />
-    <None Remove="Resources\WD25TB5.png" />
-    <None Remove="Resources\WD25Z.png" />
-    <None Remove="Resources\WebCamModel_P2424HEB_Large.png" />
-    <None Remove="Resources\WebCamModel_P2424HEB_Small.png" />
-    <None Remove="Resources\WebCamModel_U3223QZ_Large.png" />
-    <None Remove="Resources\WebCamModel_U3223QZ_Small.png" />
-    <None Remove="Resources\WebCamModel_U3224KB_Large.png" />
-    <None Remove="Resources\WebCamModel_U3224KB_Small.png" />
-    <None Remove="Resources\WebCamModel_WB3023_Large.png" />
-    <None Remove="Resources\WebCamModel_WB3023_Small.png" />
-    <None Remove="Resources\WebCamModel_WB5023_Large.png" />
-    <None Remove="Resources\WebCamModel_WB5023_Small.png" />
-    <None Remove="Resources\WebCamModel_WB7022_Large.png" />
-    <None Remove="Resources\WebCamModel_WB7022_Small.png" />
-    <None Remove="Resources\WH5024.png" />
-    <None Remove="Resources\Wired.png" />
-    <None Remove="Resources\ZoomIn.png" />
-    <None Remove="Resources\ZoomOut.png" />
-  </ItemGroup>
+	<ItemGroup>
+		<None Remove="Resources\Alert.png" />
+		<None Remove="Resources\Arrow button.png" />
+		<None Remove="Resources\arrow-left.png" />
+		<None Remove="Resources\Arrow-Right.png" />
+		<None Remove="Resources\AW.png" />
+		<None Remove="Resources\Background_Glow.png" />
+		<None Remove="Resources\BatteryOutline.png" />
+		<None Remove="Resources\Camera.png" />
+		<None Remove="Resources\CameraCapture.png" />
+		<None Remove="Resources\CameraColorImage.png" />
+		<None Remove="Resources\CameraControl.png" />
+		<None Remove="Resources\CameraPresenceDetection.png" />
+		<None Remove="Resources\CBvector.png" />
+		<None Remove="Resources\Chat.png" />
+		<None Remove="Resources\Close.png" />
+		<None Remove="Resources\Close_light.png" />
+		<None Remove="Resources\Connect_M_K.png" />
+		<None Remove="Resources\DP.png" />
+		<None Remove="Resources\EzAdd.png" />
+		<None Remove="Resources\EzRemove.png" />
+		<None Remove="Resources\G.png" />
+		<None Remove="Resources\HD22Q.png" />
+		<None Remove="Resources\HDMI.png" />
+		<None Remove="Resources\HeadsetModel_7024-Large.png" />
+		<None Remove="Resources\HeadsetModel_7024-mall.png" />
+		<None Remove="Resources\HeadsetModel_7024S-mall.png" />
+		<None Remove="Resources\HeadsetModel_WH3024-Airmax.png" />
+		<None Remove="Resources\HeadsetModel_WH5024-Vinflo.png" />
+		<None Remove="Resources\HeadsetModel_WL3024-Vaporfly.png" />
+		<None Remove="Resources\HeadsetModel_WL5024-Pegasus.png" />
+		<None Remove="Resources\HeadsetModel_WL7024-Mito.png" />
+		<None Remove="Resources\Headset_AppleStore.png" />
+		<None Remove="Resources\Headset_AppleStoreQR.png" />
+		<None Remove="Resources\Headset_AppleStoreQR.svg" />
+		<None Remove="Resources\Headset_Collaboration.png" />
+		<None Remove="Resources\Headset_Dot.png" />
+		<None Remove="Resources\Headset_DownDellAudio.png" />
+		<None Remove="Resources\Headset_GooglePlayStore.png" />
+		<None Remove="Resources\Headset_GooglePlayStoreQR.png" />
+		<None Remove="Resources\Headset_GooglePlayStoreQR.svg" />
+		<None Remove="Resources\Headset_Info.png" />
+		<None Remove="Resources\Headset_Line1.png" />
+		<None Remove="Resources\Headset_Line2.png" />
+		<None Remove="Resources\Headset_Line3.png" />
+		<None Remove="Resources\Headset_LineFive.png" />
+		<None Remove="Resources\Headset_Main.png" />
+		<None Remove="Resources\Headset_Media.png" />
+		<None Remove="Resources\Headset_Multimedia.png" />
+		<None Remove="Resources\Headset_Noise.png" />
+		<None Remove="Resources\Headset_Off.png" />
+		<None Remove="Resources\Headset_Setting.png" />
+		<None Remove="Resources\Headset_Transparency.png" />
+		<None Remove="Resources\Headset_whitedot.png" />
+		<None Remove="Resources\Icon_Info.png" />
+		<None Remove="Resources\BatteryOutline.png" />
+		<None Remove="Resources\Dongle.png" />
+		<None Remove="Resources\Icon_Info1.png" />
+		<None Remove="Resources\info.png" />
+		<None Remove="Resources\LightMode\Brightness.png" />
+		<None Remove="Resources\LightMode\Contrast.png" />
+		<None Remove="Resources\LightMode\popup_ArrowCorner.png" />
+		<None Remove="Resources\LightMode\Port.png" />
+		<None Remove="Resources\Loading.png" />
+		<None Remove="Resources\Lock.png" />
+		<None Remove="Resources\Luminance.png" />
+		<None Remove="Resources\Mic.png" />
+		<None Remove="Resources\Microphone.png" />
+		<None Remove="Resources\Monitor_Outline.png" />
+		<None Remove="Resources\popup_ArrowCorner.png" />
+		<None Remove="Resources\Port.png" />
+		<None Remove="Resources\Product_Display.png" />
+		<None Remove="Resources\Product_KB900.png" />
+		<None Remove="Resources\Product_Mouse.png" />
+		<None Remove="Resources\Progressbar1.png" />
+		<None Remove="Resources\Progressbar2.png" />
+		<None Remove="Resources\Progressbar3.png" />
+		<None Remove="Resources\SB3022.png" />
+		<None Remove="Resources\SB522A.png" />
+		<None Remove="Resources\SD25.png" />
+		<None Remove="Resources\SD25TB4.png" />
+		<None Remove="Resources\SD25TB5.png" />
+		<None Remove="Resources\Share.png" />
+		<None Remove="Resources\SP3022.png" />
+		<None Remove="Resources\Speaker_AudioPreset.png" />
+		<None Remove="Resources\Speaker_AudioSettings.png" />
+		<None Remove="Resources\Speaker_EllipseLeft.png" />
+		<None Remove="Resources\Speaker_EllipseRight.png" />
+		<None Remove="Resources\Speaker_Highlight.png" />
+		<None Remove="Resources\Speaker_Interactions.png" />
+		<None Remove="Resources\Speaker_SB3022.png" />
+		<None Remove="Resources\Speaker_SB3022_AllLight.png" />
+		<None Remove="Resources\Speaker_SB522A.png" />
+		<None Remove="Resources\Speaker_SB522A_AllLight.png" />
+		<None Remove="Resources\Speaker_SB522A_NoLight.png" />
+		<None Remove="Resources\Speaker_SB522A_TwoLight.png" />
+		<None Remove="Resources\Speaker_SP3022.png" />
+		<None Remove="Resources\Speaker_SP3022_AllLight.png" />
+		<None Remove="Resources\Speaker_SP3022_FourLight.png" />
+		<None Remove="Resources\Speaker_SP3022_RedLight.png" />
+		<None Remove="Resources\Speaker_SP3022_TwoLight.png" />
+		<None Remove="Resources\Speaker_StatusLight.png" />
+		<None Remove="Resources\Speaker_u2723qe.png" />
+		<None Remove="Resources\Speaker_VectorLeft.png" />
+		<None Remove="Resources\Speaker_VectorRight.png" />
+		<None Remove="Resources\SplitIcon_Off.png" />
+		<None Remove="Resources\SplitIcon_Pip2.png" />
+		<None Remove="Resources\SplitIcon_Pip3.png" />
+		<None Remove="Resources\u2723qe.png" />
+		<None Remove="Resources\USB-A.png" />
+		<None Remove="Resources\USB-C.png" />
+		<None Remove="Resources\USBKVM_2PCs.png" />
+		<None Remove="Resources\USBKVM_3PCs.png" />
+		<None Remove="Resources\USBKVM_4PCs.png" />
+		<None Remove="Resources\USBKVM_MK_1.png" />
+		<None Remove="Resources\USBKVM_MK_2.png" />
+		<None Remove="Resources\Vbar.Display.EA.png" />
+		<None Remove="Resources\Vbar.Display.Gaming.png" />
+		<None Remove="Resources\Vbar.Display.InputSource.png" />
+		<None Remove="Resources\Vbar.Display.KVM.png" />
+		<None Remove="Resources\Vbar.Display.Others.png" />
+		<None Remove="Resources\Vbar.Display.Settings.png" />
+		<None Remove="Resources\Vbar.Keyboard.Collaboration.png" />
+		<None Remove="Resources\Vbar.Keyboard.Illumination.png" />
+		<None Remove="Resources\Vbar.Keyboard.Key.png" />
+		<None Remove="Resources\Vbar.Mouse.App.png" />
+		<None Remove="Resources\Vbar.Mouse.Cursor.png" />
+		<None Remove="Resources\Vbar.Mouse.Mouse.png" />
+		<None Remove="Resources\Vbar_Keyboard_Collab.png" />
+		<None Remove="Resources\Vbar_Keyboard_Custom.png" />
+		<None Remove="Resources\Vbar_Keyboard_Illumin.png" />
+		<None Remove="Resources\VertNavBar.png" />
+		<None Remove="Resources\Warring.png" />
+		<None Remove="Resources\WD19DCS.png" />
+		<None Remove="Resources\WD19S_130W.png" />
+		<None Remove="Resources\WD19S_180W.png" />
+		<None Remove="Resources\WD22TB4.png" />
+		<None Remove="Resources\WD25.png" />
+		<None Remove="Resources\WD25TB4.png" />
+		<None Remove="Resources\WD25TB5.png" />
+		<None Remove="Resources\WD25Z.png" />
+		<None Remove="Resources\WebCamModel_P2424HEB_Large.png" />
+		<None Remove="Resources\WebCamModel_P2424HEB_Small.png" />
+		<None Remove="Resources\WebCamModel_U3223QZ_Large.png" />
+		<None Remove="Resources\WebCamModel_U3223QZ_Small.png" />
+		<None Remove="Resources\WebCamModel_U3224KB_Large.png" />
+		<None Remove="Resources\WebCamModel_U3224KB_Small.png" />
+		<None Remove="Resources\WebCamModel_WB3023_Large.png" />
+		<None Remove="Resources\WebCamModel_WB3023_Small.png" />
+		<None Remove="Resources\WebCamModel_WB5023_Large.png" />
+		<None Remove="Resources\WebCamModel_WB5023_Small.png" />
+		<None Remove="Resources\WebCamModel_WB7022_Large.png" />
+		<None Remove="Resources\WebCamModel_WB7022_Small.png" />
+		<None Remove="Resources\WH5024.png" />
+		<None Remove="Resources\Wired.png" />
+		<None Remove="Resources\ZoomIn.png" />
+		<None Remove="Resources\ZoomOut.png" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <Page Remove="UserControls\VbarItem2.xaml" />
-  </ItemGroup>
+	<ItemGroup>
+		<Page Remove="UserControls\VbarItem2.xaml" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <Resource Include="Resources\AW.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Resources\CBvector.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Resources\EzAdd.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Resources\G.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Resources\Headset_AppleStore.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Resources\Headset_AppleStoreQR.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Resources\Headset_AppleStoreQR.svg">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Resources\Headset_GooglePlayStore.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Resources\Headset_GooglePlayStoreQR.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Resources\Headset_GooglePlayStoreQR.svg">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Resources\LightMode\Port.png" />
-    <Resource Include="Resources\Lock.png" />
-    <Resource Include="Resources\Monitor_Outline.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Resources\SB522A.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Resources\SD25.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Resources\Loading.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Resources\SD25TB4.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Resources\SD25TB5.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Resources\SP3022.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Resources\Speaker_AudioPreset.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Resources\Speaker_AudioSettings.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Resources\Speaker_EllipseLeft.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Resources\Speaker_EllipseRight.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Resources\Speaker_Highlight.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Resources\Speaker_Interactions.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Resources\Speaker_SB522A.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Resources\Speaker_SB522A_AllLight.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Resources\Speaker_SB522A_NoLight.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Resources\Speaker_SB522A_TwoLight.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Resources\Speaker_SP3022.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Resources\Speaker_SP3022_AllLight.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Resources\Speaker_SP3022_FourLight.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Resources\Speaker_SP3022_RedLight.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Resources\Speaker_SP3022_TwoLight.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Resources\Speaker_StatusLight.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Resources\Speaker_VectorLeft.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Resources\Speaker_VectorRight.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Resources\WD25.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Resources\WD25TB4.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Resources\WD25TB5.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Resources\WD25Z.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Resources\WebCamModel_WB5023_Small.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-  </ItemGroup>
+	<ItemGroup>
+		<Resource Include="Resources\AW.png">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Resource>
+		<Resource Include="Resources\CBvector.png">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Resource>
+		<Resource Include="Resources\Close_light.png">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Resource>
+		<Resource Include="Resources\EzAdd.png">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Resource>
+		<Resource Include="Resources\EzRemove.png">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Resource>
+		<Resource Include="Resources\G.png">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Resource>
+		<Resource Include="Resources\Headset_AppleStore.png">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Resource>
+		<Resource Include="Resources\Headset_AppleStoreQR.png">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Resource>
+		<Resource Include="Resources\Headset_AppleStoreQR.svg">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Resource>
+		<Resource Include="Resources\Headset_GooglePlayStore.png">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Resource>
+		<Resource Include="Resources\Headset_GooglePlayStoreQR.png">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Resource>
+		<Resource Include="Resources\Headset_GooglePlayStoreQR.svg">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Resource>
+		<Resource Include="Resources\LightMode\Brightness.png">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Resource>
+		<Resource Include="Resources\LightMode\Contrast.png">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Resource>
+		<Resource Include="Resources\LightMode\popup_ArrowCorner.png">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Resource>
+		<Resource Include="Resources\LightMode\Port.png" />
+		<Resource Include="Resources\Lock.png" />
+		<Resource Include="Resources\Monitor_Outline.png">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Resource>
+		<Resource Include="Resources\SB522A.png">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Resource>
+		<Resource Include="Resources\SD25.png">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Resource>
+		<Resource Include="Resources\Loading.png">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Resource>
+		<Resource Include="Resources\SD25TB4.png">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Resource>
+		<Resource Include="Resources\SD25TB5.png">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Resource>
+		<Resource Include="Resources\SP3022.png">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Resource>
+		<Resource Include="Resources\Speaker_AudioPreset.png">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Resource>
+		<Resource Include="Resources\Speaker_AudioSettings.png">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Resource>
+		<Resource Include="Resources\Speaker_EllipseLeft.png">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Resource>
+		<Resource Include="Resources\Speaker_EllipseRight.png">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Resource>
+		<Resource Include="Resources\Speaker_Highlight.png">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Resource>
+		<Resource Include="Resources\Speaker_Interactions.png">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Resource>
+		<Resource Include="Resources\Speaker_SB522A.png">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Resource>
+		<Resource Include="Resources\Speaker_SB522A_AllLight.png">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Resource>
+		<Resource Include="Resources\Speaker_SB522A_NoLight.png">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Resource>
+		<Resource Include="Resources\Speaker_SB522A_TwoLight.png">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Resource>
+		<Resource Include="Resources\Speaker_SP3022.png">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Resource>
+		<Resource Include="Resources\Speaker_SP3022_AllLight.png">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Resource>
+		<Resource Include="Resources\Speaker_SP3022_FourLight.png">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Resource>
+		<Resource Include="Resources\Speaker_SP3022_RedLight.png">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Resource>
+		<Resource Include="Resources\Speaker_SP3022_TwoLight.png">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Resource>
+		<Resource Include="Resources\Speaker_StatusLight.png">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Resource>
+		<Resource Include="Resources\Speaker_VectorLeft.png">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Resource>
+		<Resource Include="Resources\Speaker_VectorRight.png">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Resource>
+		<Resource Include="Resources\WD25.png">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Resource>
+		<Resource Include="Resources\WD25TB4.png">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Resource>
+		<Resource Include="Resources\WD25TB5.png">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Resource>
+		<Resource Include="Resources\WD25Z.png">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Resource>
+		<Resource Include="Resources\WebCamModel_WB5023_Small.png">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Resource>
+	</ItemGroup>
 
-  <ItemGroup>
-    <Resource Include="Resources\CameraCapture.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Resources\CameraColorImage.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Resources\CameraControl.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Resources\CameraPresenceDetection.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Resources\Connect_M_K.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Resources\DP.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Resources\HD22Q.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Resources\HDMI.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Resources\HeadsetModel_7024-Large.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Resources\HeadsetModel_7024-mall.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Resources\HeadsetModel_WH3024-Airmax.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Resources\HeadsetModel_WH5024-Vinflo.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Resources\HeadsetModel_WL3024-Vaporfly.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Resources\HeadsetModel_WL5024-Pegasus.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Resources\HeadsetModel_WL7024-Mito.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Resources\Headset_Collaboration.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Resources\Headset_Dot.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Resources\Headset_DownDellAudio.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Resources\Headset_Info.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Resources\Headset_Line1.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Resources\Headset_Line2.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Resources\Headset_Line3.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Resources\Headset_LineFive.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Resources\Headset_Main.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Resources\Headset_Media.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Resources\Headset_Multimedia.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Resources\Headset_Noise.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Resources\Headset_Off.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Resources\Headset_Setting.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Resources\Headset_Transparency.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Resources\Headset_whitedot.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Resources\Icon_Info1.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Resources\Luminance.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Resources\Microphone.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Resources\popup_ArrowCorner.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-  </ItemGroup>
+	<ItemGroup>
+		<Resource Include="Resources\CameraCapture.png">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Resource>
+		<Resource Include="Resources\CameraColorImage.png">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Resource>
+		<Resource Include="Resources\CameraControl.png">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Resource>
+		<Resource Include="Resources\CameraPresenceDetection.png">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Resource>
+		<Resource Include="Resources\Connect_M_K.png">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Resource>
+		<Resource Include="Resources\DP.png">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Resource>
+		<Resource Include="Resources\HD22Q.png">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Resource>
+		<Resource Include="Resources\HDMI.png">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Resource>
+		<Resource Include="Resources\HeadsetModel_7024-Large.png">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Resource>
+		<Resource Include="Resources\HeadsetModel_7024-mall.png">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Resource>
+		<Resource Include="Resources\HeadsetModel_WH3024-Airmax.png">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Resource>
+		<Resource Include="Resources\HeadsetModel_WH5024-Vinflo.png">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Resource>
+		<Resource Include="Resources\HeadsetModel_WL3024-Vaporfly.png">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Resource>
+		<Resource Include="Resources\HeadsetModel_WL5024-Pegasus.png">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Resource>
+		<Resource Include="Resources\HeadsetModel_WL7024-Mito.png">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Resource>
+		<Resource Include="Resources\Headset_Collaboration.png">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Resource>
+		<Resource Include="Resources\Headset_Dot.png">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Resource>
+		<Resource Include="Resources\Headset_DownDellAudio.png">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Resource>
+		<Resource Include="Resources\Headset_Info.png">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Resource>
+		<Resource Include="Resources\Headset_Line1.png">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Resource>
+		<Resource Include="Resources\Headset_Line2.png">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Resource>
+		<Resource Include="Resources\Headset_Line3.png">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Resource>
+		<Resource Include="Resources\Headset_LineFive.png">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Resource>
+		<Resource Include="Resources\Headset_Main.png">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Resource>
+		<Resource Include="Resources\Headset_Media.png">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Resource>
+		<Resource Include="Resources\Headset_Multimedia.png">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Resource>
+		<Resource Include="Resources\Headset_Noise.png">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Resource>
+		<Resource Include="Resources\Headset_Off.png">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Resource>
+		<Resource Include="Resources\Headset_Setting.png">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Resource>
+		<Resource Include="Resources\Headset_Transparency.png">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Resource>
+		<Resource Include="Resources\Headset_whitedot.png">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Resource>
+		<Resource Include="Resources\Icon_Info1.png">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Resource>
+		<Resource Include="Resources\Luminance.png">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Resource>
+		<Resource Include="Resources\Microphone.png">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Resource>
+		<Resource Include="Resources\popup_ArrowCorner.png">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Resource>
+	</ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Include="DCF.Security" Version="2.4.2.1" />
-    <PackageReference Include="DCF.UX.WPF" Version="2.2.4.1" />
-    <PackageReference Include="DellClientFramework" Version="6.4.11.2" />
-    <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.77" />
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="DCF.Security" Version="2.4.2.1" />
+		<PackageReference Include="DCF.UX.WPF" Version="2.2.4.1" />
+		<PackageReference Include="DellClientFramework" Version="6.4.11.2" />
+		<PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.77" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\DDPM.Easy.Common\DDPM.Easy.Common.csproj" />
-    <ProjectReference Include="..\DDPM.UI.Resources\DDPM.UI.Resources.csproj" />
-    <ProjectReference Include="..\DDPM.UI.WalkThroughData\DDPM.UI.WalkThroughData.csproj" />
-  </ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\DDPM.Easy.Common\DDPM.Easy.Common.csproj" />
+		<ProjectReference Include="..\DDPM.UI.Resources\DDPM.UI.Resources.csproj" />
+		<ProjectReference Include="..\DDPM.UI.WalkThroughData\DDPM.UI.WalkThroughData.csproj" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <Resource Include="Resources\Alert.png" />
-    <Resource Include="Resources\arrow-left.png" />
-    <Resource Include="Resources\BatteryOutline.png" />
-    <Resource Include="Resources\Camera.png" />
-    <Resource Include="Resources\Chat.png" />
-    <Resource Include="Resources\Close.png" />
-    <Resource Include="Resources\Icon_Info.png" />
-    <Resource Include="Resources\info.png" />
-    <Resource Include="Resources\Mic.png" />
-    <Resource Include="Resources\Port.png" />
-    <Resource Include="Resources\Product_Display.png" />
-    <Resource Include="Resources\Product_KB900.png" />
-    <Resource Include="Resources\Product_Mouse.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Resources\Progressbar1.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Resources\Progressbar2.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Resources\Progressbar3.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Resources\Share.png" />
-    <Resource Include="Resources\SplitIcon_Off.png" />
-    <Resource Include="Resources\SplitIcon_Pip2.png" />
-    <Resource Include="Resources\SplitIcon_Pip3.png" />
-    <Resource Include="Resources\USB-A.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Resources\USB-C.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Resources\USBKVM_2PCs.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Resources\USBKVM_3PCs.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Resources\USBKVM_4PCs.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Resources\USBKVM_MK_1.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Resources\USBKVM_MK_2.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Resources\Vbar.Display.EA.png" />
-    <Resource Include="Resources\Vbar.Display.Gaming.png" />
-    <Resource Include="Resources\Vbar.Display.InputSource.png" />
-    <Resource Include="Resources\Vbar.Display.KVM.png" />
-    <Resource Include="Resources\Vbar.Display.Others.png" />
-    <Resource Include="Resources\Vbar.Display.Settings.png" />
-    <Resource Include="Resources\Vbar.Keyboard.Collaboration.png" />
-    <Resource Include="Resources\Vbar.Keyboard.Illumination.png" />
-    <Resource Include="Resources\Vbar.Keyboard.Key.png" />
-    <Resource Include="Resources\Vbar.Mouse.App.png" />
-    <Resource Include="Resources\Vbar.Mouse.Cursor.png" />
-    <Resource Include="Resources\Vbar.Mouse.Mouse.png" />
-    <Resource Include="Resources\Vbar_Keyboard_Collab.png" />
-    <Resource Include="Resources\Vbar_Keyboard_Custom.png" />
-    <Resource Include="Resources\Vbar_Keyboard_Illumin.png" />
-    <Resource Include="Resources\VertNavBar.png" />
-    <Resource Include="Resources\Brightness.png" />
-    <Resource Include="Resources\Contrast.png" />
-    <Resource Include="Resources\Warring.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Resources\WD19DCS.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Resources\WD19S_130W.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Resources\WD19S_180W.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Resources\WD22TB4.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Resources\WebCamModel_P2424HEB_Large.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Resources\WebCamModel_P2424HEB_Small.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Resources\WebCamModel_U3223QZ_Large.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Resources\WebCamModel_U3223QZ_Small.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Resources\WebCamModel_U3224KB_Large.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Resources\WebCamModel_U3224KB_Small.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Resources\WebCamModel_WB3023_Large.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Resources\WebCamModel_WB3023_Small.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Resources\WebCamModel_WB5023_Large.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Resources\WebCamModel_WB7022_Large.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Resources\WebCamModel_WB7022_Small.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Resources\WH5024.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Resources\Wired.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Resources\ZoomIn.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Resources\ZoomOut.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-  </ItemGroup>
+	<ItemGroup>
+		<Resource Include="Resources\Alert.png" />
+		<Resource Include="Resources\arrow-left.png" />
+		<Resource Include="Resources\BatteryOutline.png" />
+		<Resource Include="Resources\Camera.png" />
+		<Resource Include="Resources\Chat.png" />
+		<Resource Include="Resources\Close.png" />
+		<Resource Include="Resources\Icon_Info.png" />
+		<Resource Include="Resources\info.png" />
+		<Resource Include="Resources\Mic.png" />
+		<Resource Include="Resources\Port.png" />
+		<Resource Include="Resources\Product_Display.png" />
+		<Resource Include="Resources\Product_KB900.png" />
+		<Resource Include="Resources\Product_Mouse.png">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Resource>
+		<Resource Include="Resources\Progressbar1.png">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Resource>
+		<Resource Include="Resources\Progressbar2.png">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Resource>
+		<Resource Include="Resources\Progressbar3.png">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Resource>
+		<Resource Include="Resources\Share.png" />
+		<Resource Include="Resources\SplitIcon_Off.png" />
+		<Resource Include="Resources\SplitIcon_Pip2.png" />
+		<Resource Include="Resources\SplitIcon_Pip3.png" />
+		<Resource Include="Resources\USB-A.png">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Resource>
+		<Resource Include="Resources\USB-C.png">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Resource>
+		<Resource Include="Resources\USBKVM_2PCs.png">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Resource>
+		<Resource Include="Resources\USBKVM_3PCs.png">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Resource>
+		<Resource Include="Resources\USBKVM_4PCs.png">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Resource>
+		<Resource Include="Resources\USBKVM_MK_1.png">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Resource>
+		<Resource Include="Resources\USBKVM_MK_2.png">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Resource>
+		<Resource Include="Resources\Vbar.Display.EA.png" />
+		<Resource Include="Resources\Vbar.Display.Gaming.png" />
+		<Resource Include="Resources\Vbar.Display.InputSource.png" />
+		<Resource Include="Resources\Vbar.Display.KVM.png" />
+		<Resource Include="Resources\Vbar.Display.Others.png" />
+		<Resource Include="Resources\Vbar.Display.Settings.png" />
+		<Resource Include="Resources\Vbar.Keyboard.Collaboration.png" />
+		<Resource Include="Resources\Vbar.Keyboard.Illumination.png" />
+		<Resource Include="Resources\Vbar.Keyboard.Key.png" />
+		<Resource Include="Resources\Vbar.Mouse.App.png" />
+		<Resource Include="Resources\Vbar.Mouse.Cursor.png" />
+		<Resource Include="Resources\Vbar.Mouse.Mouse.png" />
+		<Resource Include="Resources\Vbar_Keyboard_Collab.png" />
+		<Resource Include="Resources\Vbar_Keyboard_Custom.png" />
+		<Resource Include="Resources\Vbar_Keyboard_Illumin.png" />
+		<Resource Include="Resources\VertNavBar.png" />
+		<Resource Include="Resources\Brightness.png" />
+		<Resource Include="Resources\Contrast.png" />
+		<Resource Include="Resources\Warring.png">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Resource>
+		<Resource Include="Resources\WD19DCS.png">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Resource>
+		<Resource Include="Resources\WD19S_130W.png">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Resource>
+		<Resource Include="Resources\WD19S_180W.png">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Resource>
+		<Resource Include="Resources\WD22TB4.png">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Resource>
+		<Resource Include="Resources\WebCamModel_P2424HEB_Large.png">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Resource>
+		<Resource Include="Resources\WebCamModel_P2424HEB_Small.png">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Resource>
+		<Resource Include="Resources\WebCamModel_U3223QZ_Large.png">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Resource>
+		<Resource Include="Resources\WebCamModel_U3223QZ_Small.png">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Resource>
+		<Resource Include="Resources\WebCamModel_U3224KB_Large.png">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Resource>
+		<Resource Include="Resources\WebCamModel_U3224KB_Small.png">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Resource>
+		<Resource Include="Resources\WebCamModel_WB3023_Large.png">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Resource>
+		<Resource Include="Resources\WebCamModel_WB3023_Small.png">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Resource>
+		<Resource Include="Resources\WebCamModel_WB5023_Large.png">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Resource>
+		<Resource Include="Resources\WebCamModel_WB7022_Large.png">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Resource>
+		<Resource Include="Resources\WebCamModel_WB7022_Small.png">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Resource>
+		<Resource Include="Resources\WH5024.png">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Resource>
+		<Resource Include="Resources\Wired.png">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Resource>
+		<Resource Include="Resources\ZoomIn.png">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Resource>
+		<Resource Include="Resources\ZoomOut.png">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Resource>
+	</ItemGroup>
 
-  <ItemGroup>
-    <Reference Include="DDPM.SA.Common">
-      <HintPath>..\CommonDll\DDPM.SA.Common.dll</HintPath>
-    </Reference>
-    <Reference Include="DPeMPublic.Common">
-      <HintPath>..\CommonDll\DPeMPublic.Common.dll</HintPath>
-    </Reference>
-    <Reference Include="VcpCore.Common">
-      <HintPath>..\CommonDll\VcpCore.Common.dll</HintPath>
-    </Reference>
-  </ItemGroup>
+	<ItemGroup>
+		<Reference Include="DDPM.SA.Common">
+			<HintPath>..\CommonDll\DDPM.SA.Common.dll</HintPath>
+		</Reference>
+		<Reference Include="DPeMPublic.Common">
+			<HintPath>..\CommonDll\DPeMPublic.Common.dll</HintPath>
+		</Reference>
+		<Reference Include="VcpCore.Common">
+			<HintPath>..\CommonDll\VcpCore.Common.dll</HintPath>
+		</Reference>
+	</ItemGroup>
 
-  <ItemGroup>
-    <Compile Update="UserControls\ActionButton.xaml.cs">
-      <SubType>Code</SubType>
-    </Compile>
-  </ItemGroup>
+	<ItemGroup>
+		<Compile Update="UserControls\ActionButton.xaml.cs">
+			<SubType>Code</SubType>
+		</Compile>
+	</ItemGroup>
 
 </Project>

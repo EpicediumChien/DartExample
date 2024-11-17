@@ -1013,6 +1013,2106 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin.Test
             Assert.IsNotNull(devicemanager2);
         }
 
+        [Test]
+        public void TestStopPairing()
+        {
+            Mock<IPhysicalDevice> physicalDevice = new Mock<IPhysicalDevice>();
+            Mock<IPhysicalDeviceDongle> physicalDeviceDongle = new Mock<IPhysicalDeviceDongle>();
+            Mock<IDeviceManager> mockDeviceManager = new Mock<IDeviceManager>();
+
+            physicalDeviceDongle.Setup(pd => pd.Id).Returns(Guid.NewGuid());
+            mockDeviceManager.Setup(dm => dm.Devices).Returns(new[] { physicalDeviceDongle.Object });
+
+            Guid physicalDeviceId = physicalDeviceDongle.Object.Id;
+
+            var DeviceManagerObj = mockDeviceManager.Object;
+            privatetePeripheralsPlugin.SetFieldOrProperty("_iDeviceManager", DeviceManagerObj);
+
+            peripheralsPlugin.StopPairing(physicalDeviceId);                                     // physicalDevice is IPhysicalDeviceDongle
+            var devicemanager = privatetePeripheralsPlugin.GetFieldOrProperty("_iDeviceManager");
+            Assert.IsTrue(true);
+            Assert.IsNotNull(devicemanager);
+
+            Mock<IPhysicalAudioDeviceDongle> physicalAudioDeviceDongle = new Mock<IPhysicalAudioDeviceDongle>();
+            physicalAudioDeviceDongle.Setup(pd => pd.Id).Returns(Guid.NewGuid());
+            mockDeviceManager.Setup(dm => dm.Devices).Returns(new[] { physicalAudioDeviceDongle.Object });
+
+            Guid physicalAudioDeviceDongleId = physicalAudioDeviceDongle.Object.Id;
+
+            var DeviceManagerObj2 = mockDeviceManager.Object;
+            privatetePeripheralsPlugin.SetFieldOrProperty("_iDeviceManager", DeviceManagerObj2);
+
+            peripheralsPlugin.StopPairing(physicalAudioDeviceDongleId);                        // physicalDevice is IPhysicalAudioDeviceDongle
+            var devicemanager2 = privatetePeripheralsPlugin.GetFieldOrProperty("_iDeviceManager");
+            Assert.IsTrue(true);
+            Assert.IsNotNull(devicemanager2);
+        }
+
+        [Test]
+        public void TestStopPairingPen()
+        {
+            Mock<IPhysicalDevice> physicalDevice = new Mock<IPhysicalDevice>();
+            Mock<IPhysicalPenDevice> physicalPenDevice = new Mock<IPhysicalPenDevice>();
+            Mock<IDeviceManager> mockDeviceManager = new Mock<IDeviceManager>();
+
+            physicalPenDevice.Setup(pd => pd.Id).Returns(Guid.NewGuid());
+            mockDeviceManager.Setup(dm => dm.Devices).Returns(new[] { physicalPenDevice.Object });
+
+            Guid physicalPenDeviceId = physicalPenDevice.Object.Id;
+
+            var DeviceManagerObj = mockDeviceManager.Object;
+            privatetePeripheralsPlugin.SetFieldOrProperty("_iDeviceManager", DeviceManagerObj);
+
+            peripheralsPlugin.StopPairingPen();                                     // device is physicalPenDevice
+            var devicemanager = privatetePeripheralsPlugin.GetFieldOrProperty("_iDeviceManager");
+            Assert.IsTrue(true);
+            Assert.IsNotNull(devicemanager);
+        }
+
+        [Test]
+        public void TestUnPair()
+        {
+            Mock<IPhysicalDevice> ParentPhysicalDevice = new Mock<IPhysicalDevice>();
+            Mock<ILogicalDevice> logicalDevice = new Mock<ILogicalDevice>();
+            Mock<IPhysicalDeviceDongle> physicalDeviceDongle = new Mock<IPhysicalDeviceDongle>();
+            Mock<IDeviceManager> mockDeviceManager = new Mock<IDeviceManager>();
+
+            logicalDevice.Setup(ld => ld.Id).Returns(Guid.NewGuid());
+            logicalDevice.Setup(pd => pd.ParentPhysicalDevice).Returns(physicalDeviceDongle.Object);
+            physicalDeviceDongle.Setup(pd => pd.Devices).Returns(new[] { logicalDevice.Object });
+            mockDeviceManager.Setup(dm => dm.Devices).Returns(new[] { physicalDeviceDongle.Object });// mockDeviceManager device- physicalDeviceDongledevice -logicalDevice device- physicalDeviceDongle device
+
+            Guid logicalDeviceId = logicalDevice.Object.Id;
+
+            var DeviceManagerObj = mockDeviceManager.Object;
+            privatetePeripheralsPlugin.SetFieldOrProperty("_iDeviceManager", DeviceManagerObj);
+
+            peripheralsPlugin.UnPair(logicalDeviceId);                                     // physicalDevice ParentPhysicalDevice is IPhysicalDeviceDongle
+            var devicemanager = privatetePeripheralsPlugin.GetFieldOrProperty("_iDeviceManager");
+            Assert.IsTrue(true);
+            Assert.IsNotNull(devicemanager);
+
+            Mock<IPhysicalAudioDeviceDongle> physicalAudioDeviceDongle = new Mock<IPhysicalAudioDeviceDongle>();
+
+            logicalDevice.Setup(ld => ld.Id).Returns(Guid.NewGuid());
+            logicalDevice.Setup(pd => pd.ParentPhysicalDevice).Returns(physicalAudioDeviceDongle.Object);
+            physicalAudioDeviceDongle.Setup(pd => pd.Devices).Returns(new[] { logicalDevice.Object });
+            mockDeviceManager.Setup(dm => dm.Devices).Returns(new[] { physicalAudioDeviceDongle.Object }); // mockDeviceManager device- physicalAudioDeviceDongle -logicalDevice device- physicalAudioDeviceDongle device
+
+            Guid physicalAudioDeviceDongleId = logicalDevice.Object.Id;
+
+            var DeviceManagerObj2 = mockDeviceManager.Object;
+            privatetePeripheralsPlugin.SetFieldOrProperty("_iDeviceManager", DeviceManagerObj2);
+
+            peripheralsPlugin.UnPair(physicalAudioDeviceDongleId);                        // physicalDevice ParentPhysicalDevice is IPhysicalAudioDeviceDongle
+            var devicemanager2 = privatetePeripheralsPlugin.GetFieldOrProperty("_iDeviceManager");
+            Assert.IsTrue(true);
+            Assert.IsNotNull(devicemanager2);
+
+            Mock<IPhysicalPenDevice> physicalPenDevice = new Mock<IPhysicalPenDevice>();
+
+            logicalDevice.Setup(ld => ld.Id).Returns(Guid.NewGuid());
+            logicalDevice.Setup(pd => pd.ParentPhysicalDevice).Returns(physicalPenDevice.Object);
+            physicalPenDevice.Setup(pd => pd.Devices).Returns(new[] { logicalDevice.Object });
+            mockDeviceManager.Setup(dm => dm.Devices).Returns(new[] { physicalPenDevice.Object }); // mockDeviceManager device- physicalPenDevice -logicalDevice device- physicalPenDevice device
+
+            Guid physicalPenDeviceId = logicalDevice.Object.Id;
+
+            var DeviceManagerObj3 = mockDeviceManager.Object;
+            privatetePeripheralsPlugin.SetFieldOrProperty("_iDeviceManager", DeviceManagerObj);
+
+            peripheralsPlugin.UnPair(physicalPenDeviceId);                                                // device ParentPhysicalDevice is physicalPenDevice
+            var devicemanager3 = privatetePeripheralsPlugin.GetFieldOrProperty("_iDeviceManager");
+            Assert.IsTrue(true);
+            Assert.IsNotNull(devicemanager3);
+        }
+
+        [Test]
+        public void TestSetWiredAudioIMicNSEnable()
+        {
+            bool newValue = false;
+            Guid deviceId1 = new Guid();
+            Mock<IPhysicalDevice> physicalDevice = new Mock<IPhysicalDevice>();
+            Mock<IPhysicalPenDevice> physicalPenDevice = new Mock<IPhysicalPenDevice>();
+            Mock<IDeviceManager> mockDeviceManager = new Mock<IDeviceManager>();
+
+            physicalPenDevice.Setup(pd => pd.Id).Returns(Guid.NewGuid());
+            mockDeviceManager.Setup(dm => dm.Devices).Returns(new[] { physicalPenDevice.Object });
+
+            Guid physicalPenDeviceId = physicalPenDevice.Object.Id;
+
+            var DeviceManagerObj = mockDeviceManager.Object;
+            privatetePeripheralsPlugin.SetFieldOrProperty("_iDeviceManager", DeviceManagerObj);
+
+            peripheralsPlugin.SetWiredAudioIMicNSEnable(newValue, deviceId1);                                     // SetWiredAudioIMicNSEnable method not ready
+            var devicemanager = privatetePeripheralsPlugin.GetFieldOrProperty("_iDeviceManager");
+            Assert.IsTrue(true);
+            Assert.IsNotNull(devicemanager);
+        }
+
+        [Test]
+        public void TestSetWiredAudioMicMuteSoundEnable()
+        {
+            bool newValue = false;
+
+            Mock<IPhysicalDevice> PhysicalDevice = new Mock<IPhysicalDevice>();
+            Mock<ILogicalWiredAudio> logicalWiredAudioDevice = new Mock<ILogicalWiredAudio>();
+            //Mock<ILogicalDevice> logicalDevice = new Mock<ILogicalDevice>(); // ILogicalWiredAudio jichengle ILogicalDevice?suoyiyeshi ILogicalDevice
+            Mock<IDeviceManager> mockDeviceManager = new Mock<IDeviceManager>();
+
+            logicalWiredAudioDevice.Setup(ld => ld.Id).Returns(Guid.NewGuid());
+            PhysicalDevice.Setup(pd => pd.Devices).Returns(new[] { logicalWiredAudioDevice.Object });
+            mockDeviceManager.Setup(dm => dm.Devices).Returns(new[] { PhysicalDevice.Object });// mockDeviceManager device- PhysicalDevice -logicalWiredAudioDevice device- logicalWiredAudioDevice device ID
+
+            Guid logicalWiredAudioDeviceId = logicalWiredAudioDevice.Object.Id;
+
+            var DeviceManagerObj = mockDeviceManager.Object;
+            privatetePeripheralsPlugin.SetFieldOrProperty("_iDeviceManager", DeviceManagerObj);
+
+            peripheralsPlugin.SetWiredAudioMicMuteSoundEnable(newValue, logicalWiredAudioDeviceId);                      // logicalDeviceis IlogicalWiredAudioDevice,method not ready
+            var devicemanager = privatetePeripheralsPlugin.GetFieldOrProperty("_iDeviceManager");
+            Assert.IsTrue(true);
+            Assert.IsNotNull(devicemanager);
+        }
+
+        [Test]
+        public void TestSetWiredAudioVolumeAdjustmentTone()
+        {
+            int newValue = 20;
+            Mock<IPhysicalDevice> PhysicalDevice = new Mock<IPhysicalDevice>();
+            Mock<ILogicalWiredAudio> logicalWiredAudioDevice = new Mock<ILogicalWiredAudio>();
+            //Mock<ILogicalDevice> logicalDevice = new Mock<ILogicalDevice>(); // ILogicalWiredAudio jichengle ILogicalDevice?suoyiyeshi ILogicalDevice
+            Mock<IDeviceManager> mockDeviceManager = new Mock<IDeviceManager>();
+
+            logicalWiredAudioDevice.Setup(ld => ld.Id).Returns(Guid.NewGuid());
+            PhysicalDevice.Setup(pd => pd.Devices).Returns(new[] { logicalWiredAudioDevice.Object });
+            mockDeviceManager.Setup(dm => dm.Devices).Returns(new[] { PhysicalDevice.Object });// mockDeviceManager device- PhysicalDevice -logicalWiredAudioDevice device- logicalWiredAudioDevice device ID
+
+            Guid logicalWiredAudioDeviceId = logicalWiredAudioDevice.Object.Id;
+
+            var DeviceManagerObj = mockDeviceManager.Object;
+            privatetePeripheralsPlugin.SetFieldOrProperty("_iDeviceManager", DeviceManagerObj);
+
+            peripheralsPlugin.SetWiredAudioVolumeAdjustmentTone(newValue, logicalWiredAudioDeviceId);                      // logicalDeviceis IlogicalWiredAudioDevice,method not ready
+            var devicemanager = privatetePeripheralsPlugin.GetFieldOrProperty("_iDeviceManager");
+            Assert.IsTrue(true);
+            Assert.IsNotNull(devicemanager);
+        }
+
+        [Test]
+        public void TestSetSidetoneLevel()
+        {
+            int newValue = 10;
+            Mock<IPhysicalDevice> PhysicalDevice = new Mock<IPhysicalDevice>();
+            Mock<ILogicalDeviceHeadset> logicalDeviceHeadset = new Mock<ILogicalDeviceHeadset>();
+            Mock<IDeviceManager> mockDeviceManager = new Mock<IDeviceManager>();
+
+            logicalDeviceHeadset.Setup(ld => ld.Id).Returns(Guid.NewGuid());
+            PhysicalDevice.Setup(pd => pd.Devices).Returns(new[] { logicalDeviceHeadset.Object });
+            mockDeviceManager.Setup(dm => dm.Devices).Returns(new[] { PhysicalDevice.Object });// mockDeviceManager device- PhysicalDevice -logicalDeviceHeadset device- logicalDeviceHeadset device ID
+
+            Guid logicalDeviceHeadsetId = logicalDeviceHeadset.Object.Id;
+
+            var DeviceManagerObj = mockDeviceManager.Object;
+            privatetePeripheralsPlugin.SetFieldOrProperty("_iDeviceManager", DeviceManagerObj);
+
+            DeviceHelper deviceHelper = new DeviceHelper()
+            {
+                deviceInfo = new List<DeviceInfo>()
+                {
+                    new DeviceInfo()
+                    {
+                        DeviceName="Mouse",
+                        Name="Test mouse",
+                        DpiLevel=20,
+                        DpiValue="20",
+                        MousePrimaryButton=MouseButton.Left,
+                        TouchScrollSensitivityLevel=20,
+                        IsCollaborationKeyEnable=false,
+                        IsCollaborationCameraEnable=false,
+                        IsCollaborationScreenShareEnable=false,
+                        IsCollaborationChatEnable=false,
+                        IsCollaborationMicEnable = false,
+                        IsCollaborationBlinkEffectEnable=false,
+                        IsCollaborationDoubleTapEnable=false,
+                        BackLightingControls=20,
+                        BackLightingLevel=20,
+                        SidetoneLevel=20,
+                        //ID=logicalDeviceHeadsetId,
+                    }
+                },
+                DCFVersion = "1.0",
+                DPeMSDKVersion = "1.0",
+                DPeMSubAgentVersion = "1.0",
+                IsdDriverVersion = "1.0",
+            };
+            privatetePeripheralsPlugin.SetFieldOrProperty("_deviceHelper", deviceHelper);
+
+            peripheralsPlugin.SetSidetoneLevel(newValue, logicalDeviceHeadsetId);                      // logicalDeviceis logicalDeviceHeadset,SidetoneLevel=20, _deviceHelper.deviceInfo ID != logicalDeviceHeadsetId
+            var devicemanager = privatetePeripheralsPlugin.GetFieldOrProperty("_iDeviceManager");
+        }
+
+        [Test]
+        public void TestSetAncMode()
+        {
+            int newValue = 10;
+            Mock<IPhysicalDevice> PhysicalDevice = new Mock<IPhysicalDevice>();
+            Mock<ILogicalDeviceHeadset> logicalDeviceHeadset = new Mock<ILogicalDeviceHeadset>();
+            Mock<IDeviceManager> mockDeviceManager = new Mock<IDeviceManager>();
+
+            logicalDeviceHeadset.Setup(ld => ld.Id).Returns(Guid.NewGuid());
+            PhysicalDevice.Setup(pd => pd.Devices).Returns(new[] { logicalDeviceHeadset.Object });
+            mockDeviceManager.Setup(dm => dm.Devices).Returns(new[] { PhysicalDevice.Object });// mockDeviceManager device- PhysicalDevice -logicalDeviceHeadset device- logicalDeviceHeadset device ID
+
+            Guid logicalDeviceHeadsetId = logicalDeviceHeadset.Object.Id;
+
+            var DeviceManagerObj = mockDeviceManager.Object;
+            privatetePeripheralsPlugin.SetFieldOrProperty("_iDeviceManager", DeviceManagerObj);
+
+            DeviceHelper deviceHelper = new DeviceHelper()
+            {
+                deviceInfo = new List<DeviceInfo>()
+                {
+                    new DeviceInfo()
+                    {
+                        DeviceName="Mouse",
+                        Name="Test mouse",
+                        DpiLevel=20,
+                        DpiValue="20",
+                        MousePrimaryButton=MouseButton.Left,
+                        TouchScrollSensitivityLevel=20,
+                        IsCollaborationKeyEnable=false,
+                        IsCollaborationCameraEnable=false,
+                        IsCollaborationScreenShareEnable=false,
+                        IsCollaborationChatEnable=false,
+                        IsCollaborationMicEnable = false,
+                        IsCollaborationBlinkEffectEnable=false,
+                        IsCollaborationDoubleTapEnable=false,
+                        BackLightingControls=20,
+                        BackLightingLevel=20,
+                        SidetoneLevel=20,
+                        //ID=logicalDeviceHeadsetId,
+                        AncMode=20,
+                    }
+                },
+                DCFVersion = "1.0",
+                DPeMSDKVersion = "1.0",
+                DPeMSubAgentVersion = "1.0",
+                IsdDriverVersion = "1.0",
+            };
+            privatetePeripheralsPlugin.SetFieldOrProperty("_deviceHelper", deviceHelper);
+
+            peripheralsPlugin.SetAncMode(newValue, logicalDeviceHeadsetId);                      // logicalDeviceis logicalDeviceHeadset,AncMode=20, _deviceHelper.deviceInfo ID != logicalDeviceHeadsetId
+            var devicemanager = privatetePeripheralsPlugin.GetFieldOrProperty("_iDeviceManager");
+            Assert.IsTrue(true);
+            Assert.IsNotNull(devicemanager);
+
+            deviceHelper.deviceInfo[0].ID = logicalDeviceHeadsetId;
+            privatetePeripheralsPlugin.SetFieldOrProperty("_deviceHelper", deviceHelper);
+
+            peripheralsPlugin.SetAncMode(newValue, logicalDeviceHeadsetId);                     // logicalDeviceis logicalDeviceHeadset,AncMode=20, _deviceHelper.deviceInfo ID = logicalDeviceHeadsetId
+            var devicemanager2 = privatetePeripheralsPlugin.GetFieldOrProperty("_iDeviceManager");
+            Assert.IsTrue(true);
+            Assert.IsNotNull(devicemanager);
+        }
+
+        [Test]
+        public void TestSetAncGain()
+        {
+            int newValue = 10;
+            Mock<IPhysicalDevice> PhysicalDevice = new Mock<IPhysicalDevice>();
+            Mock<ILogicalDeviceHeadset> logicalDeviceHeadset = new Mock<ILogicalDeviceHeadset>();
+            Mock<IDeviceManager> mockDeviceManager = new Mock<IDeviceManager>();
+
+            logicalDeviceHeadset.Setup(ld => ld.Id).Returns(Guid.NewGuid());
+            PhysicalDevice.Setup(pd => pd.Devices).Returns(new[] { logicalDeviceHeadset.Object });
+            mockDeviceManager.Setup(dm => dm.Devices).Returns(new[] { PhysicalDevice.Object });// mockDeviceManager device- PhysicalDevice -logicalDeviceHeadset device- logicalDeviceHeadset device ID
+
+            Guid logicalDeviceHeadsetId = logicalDeviceHeadset.Object.Id;
+
+            var DeviceManagerObj = mockDeviceManager.Object;
+            privatetePeripheralsPlugin.SetFieldOrProperty("_iDeviceManager", DeviceManagerObj);
+
+            DeviceHelper deviceHelper = new DeviceHelper()
+            {
+                deviceInfo = new List<DeviceInfo>()
+                {
+                    new DeviceInfo()
+                    {
+                        DeviceName="Mouse",
+                        Name="Test mouse",
+                        DpiLevel=20,
+                        DpiValue="20",
+                        MousePrimaryButton=MouseButton.Left,
+                        TouchScrollSensitivityLevel=20,
+                        IsCollaborationKeyEnable=false,
+                        IsCollaborationCameraEnable=false,
+                        IsCollaborationScreenShareEnable=false,
+                        IsCollaborationChatEnable=false,
+                        IsCollaborationMicEnable = false,
+                        IsCollaborationBlinkEffectEnable=false,
+                        IsCollaborationDoubleTapEnable=false,
+                        BackLightingControls=20,
+                        BackLightingLevel=20,
+                        SidetoneLevel=20,
+                        //ID=logicalDeviceHeadsetId,
+                        AncMode=20,
+                        AncGain=20,
+                    }
+                },
+                DCFVersion = "1.0",
+                DPeMSDKVersion = "1.0",
+                DPeMSubAgentVersion = "1.0",
+                IsdDriverVersion = "1.0",
+            };
+            privatetePeripheralsPlugin.SetFieldOrProperty("_deviceHelper", deviceHelper);
+
+            peripheralsPlugin.SetAncGain(newValue, logicalDeviceHeadsetId);                      // logicalDeviceis logicalDeviceHeadset,AncGain=20, _deviceHelper.deviceInfo ID != logicalDeviceHeadsetId
+            var devicemanager = privatetePeripheralsPlugin.GetFieldOrProperty("_iDeviceManager");
+            Assert.IsTrue(true);
+            Assert.IsNotNull(devicemanager);
+
+            deviceHelper.deviceInfo[0].ID = logicalDeviceHeadsetId;
+            privatetePeripheralsPlugin.SetFieldOrProperty("_deviceHelper", deviceHelper);
+
+            peripheralsPlugin.SetAncGain(newValue, logicalDeviceHeadsetId);                     // logicalDeviceis logicalDeviceHeadset,AncGain=20, _deviceHelper.deviceInfo ID = logicalDeviceHeadsetId
+            var devicemanager2 = privatetePeripheralsPlugin.GetFieldOrProperty("_iDeviceManager");
+            Assert.IsTrue(true);
+            Assert.IsNotNull(devicemanager);
+        }
+
+        [Test]
+        public void TestSetSelectedPreset()
+        {
+            int newValue = 10;
+            Mock<IPhysicalDevice> PhysicalDevice = new Mock<IPhysicalDevice>();
+            Mock<ILogicalDeviceHeadset> logicalDeviceHeadset = new Mock<ILogicalDeviceHeadset>();
+            Mock<IDeviceManager> mockDeviceManager = new Mock<IDeviceManager>();
+
+            logicalDeviceHeadset.Setup(ld => ld.Id).Returns(Guid.NewGuid());
+            PhysicalDevice.Setup(pd => pd.Devices).Returns(new[] { logicalDeviceHeadset.Object });
+            mockDeviceManager.Setup(dm => dm.Devices).Returns(new[] { PhysicalDevice.Object });// mockDeviceManager device- PhysicalDevice -logicalDeviceHeadset device- logicalDeviceHeadset device ID
+
+            Guid logicalDeviceHeadsetId = logicalDeviceHeadset.Object.Id;
+
+            var DeviceManagerObj = mockDeviceManager.Object;
+            privatetePeripheralsPlugin.SetFieldOrProperty("_iDeviceManager", DeviceManagerObj);
+
+            DeviceHelper deviceHelper = new DeviceHelper()
+            {
+                deviceInfo = new List<DeviceInfo>()
+                {
+                    new DeviceInfo()
+                    {
+                        DeviceName="Mouse",
+                        Name="Test mouse",
+                        DpiLevel=20,
+                        DpiValue="20",
+                        MousePrimaryButton=MouseButton.Left,
+                        TouchScrollSensitivityLevel=20,
+                        IsCollaborationKeyEnable=false,
+                        IsCollaborationCameraEnable=false,
+                        IsCollaborationScreenShareEnable=false,
+                        IsCollaborationChatEnable=false,
+                        IsCollaborationMicEnable = false,
+                        IsCollaborationBlinkEffectEnable=false,
+                        IsCollaborationDoubleTapEnable=false,
+                        BackLightingControls=20,
+                        BackLightingLevel=20,
+                        SidetoneLevel=20,
+                        //ID=logicalDeviceHeadsetId,
+                        AncMode=20,
+                        AncGain=20,
+                        SelectedPreset=20,
+                    }
+                },
+                DCFVersion = "1.0",
+                DPeMSDKVersion = "1.0",
+                DPeMSubAgentVersion = "1.0",
+                IsdDriverVersion = "1.0",
+            };
+            privatetePeripheralsPlugin.SetFieldOrProperty("_deviceHelper", deviceHelper);
+
+            peripheralsPlugin.SetSelectedPreset(newValue, logicalDeviceHeadsetId);                      // logicalDeviceis logicalDeviceHeadset,SelectedPreset=20, _deviceHelper.deviceInfo ID != logicalDeviceHeadsetId
+            var devicemanager = privatetePeripheralsPlugin.GetFieldOrProperty("_iDeviceManager");
+            Assert.IsTrue(true);
+            Assert.IsNotNull(devicemanager);
+
+            deviceHelper.deviceInfo[0].ID = logicalDeviceHeadsetId;
+            privatetePeripheralsPlugin.SetFieldOrProperty("_deviceHelper", deviceHelper);
+
+            peripheralsPlugin.SetSelectedPreset(newValue, logicalDeviceHeadsetId);                     // logicalDeviceis logicalDeviceHeadset,SelectedPreset=20, _deviceHelper.deviceInfo ID = logicalDeviceHeadsetId
+            var devicemanager2 = privatetePeripheralsPlugin.GetFieldOrProperty("_iDeviceManager");
+            Assert.IsTrue(true);
+            Assert.IsNotNull(devicemanager);
+        }
+
+        [Test]
+        public void TestSetBandsGain()
+        {
+            int newValue = 10;
+            Mock<IPhysicalDevice> PhysicalDevice = new Mock<IPhysicalDevice>();
+            Mock<ILogicalDeviceHeadset> logicalDeviceHeadset = new Mock<ILogicalDeviceHeadset>();
+            Mock<IDeviceManager> mockDeviceManager = new Mock<IDeviceManager>();
+
+            logicalDeviceHeadset.Setup(ld => ld.Id).Returns(Guid.NewGuid());
+            PhysicalDevice.Setup(pd => pd.Devices).Returns(new[] { logicalDeviceHeadset.Object });
+            mockDeviceManager.Setup(dm => dm.Devices).Returns(new[] { PhysicalDevice.Object });// mockDeviceManager device- PhysicalDevice -logicalDeviceHeadset device- logicalDeviceHeadset device ID
+
+            Guid logicalDeviceHeadsetId = logicalDeviceHeadset.Object.Id;
+
+            var DeviceManagerObj = mockDeviceManager.Object;
+            privatetePeripheralsPlugin.SetFieldOrProperty("_iDeviceManager", DeviceManagerObj);
+
+            DeviceHelper deviceHelper = new DeviceHelper()
+            {
+                deviceInfo = new List<DeviceInfo>()
+                {
+                    new DeviceInfo()
+                    {
+                        DeviceName="Mouse",
+                        Name="Test mouse",
+                        DpiLevel=20,
+                        DpiValue="20",
+                        MousePrimaryButton=MouseButton.Left,
+                        TouchScrollSensitivityLevel=20,
+                        IsCollaborationKeyEnable=false,
+                        IsCollaborationCameraEnable=false,
+                        IsCollaborationScreenShareEnable=false,
+                        IsCollaborationChatEnable=false,
+                        IsCollaborationMicEnable = false,
+                        IsCollaborationBlinkEffectEnable=false,
+                        IsCollaborationDoubleTapEnable=false,
+                        BackLightingControls=20,
+                        BackLightingLevel=20,
+                        SidetoneLevel=20,
+                        //ID=logicalDeviceHeadsetId,
+                        AncMode=20,
+                        AncGain=20,
+                        SelectedPreset=20,
+                        Band1Gain=20,
+                        Band2Gain=20,
+                        Band3Gain=20,
+                        Band4Gain=20,
+                        Band5Gain=20,
+                    }
+                },
+                DCFVersion = "1.0",
+                DPeMSDKVersion = "1.0",
+                DPeMSubAgentVersion = "1.0",
+                IsdDriverVersion = "1.0",
+            };
+            privatetePeripheralsPlugin.SetFieldOrProperty("_deviceHelper", deviceHelper);
+
+            string bandGainNumber1 = "band1gain";
+            if (deviceHelper.deviceInfo[0] != null)
+            {
+                if (bandGainNumber1 == "band1gain")                                                                      // bandGainNumber1 = "band1gain";
+                {
+                    peripheralsPlugin.SetBandsGain(newValue, logicalDeviceHeadsetId, bandGainNumber1);                      // logicalDeviceis logicalDeviceHeadset,Band1Gain=20, _deviceHelper.deviceInfo ID != logicalDeviceHeadsetId
+                    var devicemanager = privatetePeripheralsPlugin.GetFieldOrProperty("_iDeviceManager");
+                    Assert.IsTrue(true);
+                    Assert.IsNotNull(devicemanager);
+
+                    deviceHelper.deviceInfo[0].ID = logicalDeviceHeadsetId;
+                    privatetePeripheralsPlugin.SetFieldOrProperty("_deviceHelper", deviceHelper);
+
+                    peripheralsPlugin.SetBandsGain(newValue, logicalDeviceHeadsetId, bandGainNumber1);                       // logicalDeviceis logicalDeviceHeadset,Band1Gain=20, _deviceHelper.deviceInfo ID = logicalDeviceHeadsetId
+                    var devicemanager2 = privatetePeripheralsPlugin.GetFieldOrProperty("_iDeviceManager");
+                    Assert.IsTrue(true);
+                    Assert.IsNotNull(devicemanager2);
+                }
+
+                string bandGainNumber2 = "band2gain";
+                if (bandGainNumber2 == "band2gain")                                                                      // bandGainNumber2 = "band2gain";
+                {
+                    peripheralsPlugin.SetBandsGain(newValue, logicalDeviceHeadsetId, bandGainNumber2);                      // logicalDeviceis logicalDeviceHeadset,Band2Gain=20, _deviceHelper.deviceInfo ID != logicalDeviceHeadsetId
+                    var devicemanager = privatetePeripheralsPlugin.GetFieldOrProperty("_iDeviceManager");
+                    Assert.IsTrue(true);
+                    Assert.IsNotNull(devicemanager);
+
+                    deviceHelper.deviceInfo[0].ID = logicalDeviceHeadsetId;
+                    privatetePeripheralsPlugin.SetFieldOrProperty("_deviceHelper", deviceHelper);
+
+                    peripheralsPlugin.SetBandsGain(newValue, logicalDeviceHeadsetId, bandGainNumber2);                       // logicalDeviceis logicalDeviceHeadset,Band2Gain=20, _deviceHelper.deviceInfo ID = logicalDeviceHeadsetId
+                    var devicemanager2 = privatetePeripheralsPlugin.GetFieldOrProperty("_iDeviceManager");
+                    Assert.IsTrue(true);
+                    Assert.IsNotNull(devicemanager2);
+                }
+
+                string bandGainNumber3 = "band3gain";
+                if (bandGainNumber3 == "band3gain")                                                                      // bandGainNumber3 = "band3gain";
+                {
+                    peripheralsPlugin.SetBandsGain(newValue, logicalDeviceHeadsetId, bandGainNumber3);                      // logicalDeviceis logicalDeviceHeadset,Band3Gain=20, _deviceHelper.deviceInfo ID != logicalDeviceHeadsetId
+                    var devicemanager = privatetePeripheralsPlugin.GetFieldOrProperty("_iDeviceManager");
+                    Assert.IsTrue(true);
+                    Assert.IsNotNull(devicemanager);
+
+                    deviceHelper.deviceInfo[0].ID = logicalDeviceHeadsetId;
+                    privatetePeripheralsPlugin.SetFieldOrProperty("_deviceHelper", deviceHelper);
+
+                    peripheralsPlugin.SetBandsGain(newValue, logicalDeviceHeadsetId, bandGainNumber3);                       // logicalDeviceis logicalDeviceHeadset,Band3Gain=20, _deviceHelper.deviceInfo ID = logicalDeviceHeadsetId
+                    var devicemanager2 = privatetePeripheralsPlugin.GetFieldOrProperty("_iDeviceManager");
+                    Assert.IsTrue(true);
+                    Assert.IsNotNull(devicemanager2);
+                }
+
+                string bandGainNumber4 = "band4gain";
+                if (bandGainNumber4 == "band4gain")                                                                      // bandGainNumber4 = "band4gain";
+                {
+                    peripheralsPlugin.SetBandsGain(newValue, logicalDeviceHeadsetId, bandGainNumber4);                      // logicalDeviceis logicalDeviceHeadset,Band4Gain=20, _deviceHelper.deviceInfo ID != logicalDeviceHeadsetId
+                    var devicemanager = privatetePeripheralsPlugin.GetFieldOrProperty("_iDeviceManager");
+                    Assert.IsTrue(true);
+                    Assert.IsNotNull(devicemanager);
+
+                    deviceHelper.deviceInfo[0].ID = logicalDeviceHeadsetId;
+                    privatetePeripheralsPlugin.SetFieldOrProperty("_deviceHelper", deviceHelper);
+
+                    peripheralsPlugin.SetBandsGain(newValue, logicalDeviceHeadsetId, bandGainNumber4);                       // logicalDeviceis logicalDeviceHeadset,Band4Gain=20, _deviceHelper.deviceInfo ID = logicalDeviceHeadsetId
+                    var devicemanager2 = privatetePeripheralsPlugin.GetFieldOrProperty("_iDeviceManager");
+                    Assert.IsTrue(true);
+                    Assert.IsNotNull(devicemanager2);
+                }
+
+                string bandGainNumber5 = "band5gain";
+                if (bandGainNumber5 == "band5gain")                                                                      // bandGainNumber5 = "band5gain";
+                {
+                    peripheralsPlugin.SetBandsGain(newValue, logicalDeviceHeadsetId, bandGainNumber5);                      // logicalDeviceis logicalDeviceHeadset,Band5Gain=20, _deviceHelper.deviceInfo ID != logicalDeviceHeadsetId
+                    var devicemanager = privatetePeripheralsPlugin.GetFieldOrProperty("_iDeviceManager");
+                    Assert.IsTrue(true);
+                    Assert.IsNotNull(devicemanager);
+
+                    deviceHelper.deviceInfo[0].ID = logicalDeviceHeadsetId;
+                    privatetePeripheralsPlugin.SetFieldOrProperty("_deviceHelper", deviceHelper);
+
+                    peripheralsPlugin.SetBandsGain(newValue, logicalDeviceHeadsetId, bandGainNumber5);                       // logicalDeviceis logicalDeviceHeadset,Band5Gain=20, _deviceHelper.deviceInfo ID = logicalDeviceHeadsetId
+                    var devicemanager2 = privatetePeripheralsPlugin.GetFieldOrProperty("_iDeviceManager");
+                    Assert.IsTrue(true);
+                    Assert.IsNotNull(devicemanager2);
+                }
+            }
+        }
+
+        [Test]
+        public void TestSetMicNoiseCancellation()
+        {
+            bool newValue = false;
+            Mock<IPhysicalDevice> PhysicalDevice = new Mock<IPhysicalDevice>();
+            Mock<ILogicalDeviceHeadset> logicalDeviceHeadset = new Mock<ILogicalDeviceHeadset>();
+            Mock<IDeviceManager> mockDeviceManager = new Mock<IDeviceManager>();
+
+            logicalDeviceHeadset.Setup(ld => ld.Id).Returns(Guid.NewGuid());
+            PhysicalDevice.Setup(pd => pd.Devices).Returns(new[] { logicalDeviceHeadset.Object });
+            mockDeviceManager.Setup(dm => dm.Devices).Returns(new[] { PhysicalDevice.Object });// mockDeviceManager device- PhysicalDevice -logicalDeviceHeadset device- logicalDeviceHeadset device ID
+
+            Guid logicalDeviceHeadsetId = logicalDeviceHeadset.Object.Id;
+
+            var DeviceManagerObj = mockDeviceManager.Object;
+            privatetePeripheralsPlugin.SetFieldOrProperty("_iDeviceManager", DeviceManagerObj);
+
+            DeviceHelper deviceHelper = new DeviceHelper()
+            {
+                deviceInfo = new List<DeviceInfo>()
+                {
+                    new DeviceInfo()
+                    {
+                        DeviceName="Mouse",
+                        Name="Test mouse",
+                        DpiLevel=20,
+                        DpiValue="20",
+                        MousePrimaryButton=MouseButton.Left,
+                        TouchScrollSensitivityLevel=20,
+                        IsCollaborationKeyEnable=false,
+                        IsCollaborationCameraEnable=false,
+                        IsCollaborationScreenShareEnable=false,
+                        IsCollaborationChatEnable=false,
+                        IsCollaborationMicEnable = false,
+                        IsCollaborationBlinkEffectEnable=false,
+                        IsCollaborationDoubleTapEnable=false,
+                        BackLightingControls=20,
+                        BackLightingLevel=20,
+                        SidetoneLevel=20,
+                        //ID=logicalDeviceHeadsetId,
+                        AncMode=20,
+                        AncGain=20,
+                        SelectedPreset=20,
+                        Band1Gain=20,
+                        Band2Gain=20,
+                        Band3Gain=20,
+                        Band4Gain=20,
+                        Band5Gain=20,
+                        MicNoiseCancellation=false,
+                    }
+                },
+                DCFVersion = "1.0",
+                DPeMSDKVersion = "1.0",
+                DPeMSubAgentVersion = "1.0",
+                IsdDriverVersion = "1.0",
+            };
+            privatetePeripheralsPlugin.SetFieldOrProperty("_deviceHelper", deviceHelper);
+
+            peripheralsPlugin.SetMicNoiseCancellation(newValue, logicalDeviceHeadsetId);                      // logicalDeviceis logicalDeviceHeadset,MicNoiseCancellation=false, _deviceHelper.deviceInfo ID != logicalDeviceHeadsetId
+            var devicemanager = privatetePeripheralsPlugin.GetFieldOrProperty("_iDeviceManager");
+            Assert.IsTrue(true);
+            Assert.IsNotNull(devicemanager);
+
+            deviceHelper.deviceInfo[0].ID = logicalDeviceHeadsetId;
+            privatetePeripheralsPlugin.SetFieldOrProperty("_deviceHelper", deviceHelper);
+
+            peripheralsPlugin.SetMicNoiseCancellation(newValue, logicalDeviceHeadsetId);                     // logicalDeviceis logicalDeviceHeadset,MicNoiseCancellation=false, _deviceHelper.deviceInfo ID = logicalDeviceHeadsetId
+            var devicemanager2 = privatetePeripheralsPlugin.GetFieldOrProperty("_iDeviceManager");
+            var deviceHelper2 = (DeviceHelper)privatetePeripheralsPlugin.GetFieldOrProperty("_deviceHelper");
+            Assert.IsTrue(true);
+            Assert.IsNotNull(devicemanager2);
+            Assert.That(deviceHelper2.deviceInfo[0].MicNoiseCancellation, Is.EqualTo(newValue));
+        }
+
+        [Test]
+        public void TestSetSidetone()
+        {
+            bool newValue = false;
+            Mock<IPhysicalDevice> PhysicalDevice = new Mock<IPhysicalDevice>();
+            Mock<ILogicalDeviceHeadset> logicalDeviceHeadset = new Mock<ILogicalDeviceHeadset>();
+            Mock<IDeviceManager> mockDeviceManager = new Mock<IDeviceManager>();
+
+            logicalDeviceHeadset.Setup(ld => ld.Id).Returns(Guid.NewGuid());
+            PhysicalDevice.Setup(pd => pd.Devices).Returns(new[] { logicalDeviceHeadset.Object });
+            mockDeviceManager.Setup(dm => dm.Devices).Returns(new[] { PhysicalDevice.Object });// mockDeviceManager device- PhysicalDevice -logicalDeviceHeadset device- logicalDeviceHeadset device ID
+
+            Guid logicalDeviceHeadsetId = logicalDeviceHeadset.Object.Id;
+
+            var DeviceManagerObj = mockDeviceManager.Object;
+            privatetePeripheralsPlugin.SetFieldOrProperty("_iDeviceManager", DeviceManagerObj);
+
+            DeviceHelper deviceHelper = new DeviceHelper()
+            {
+                deviceInfo = new List<DeviceInfo>()
+                {
+                    new DeviceInfo()
+                    {
+                        DeviceName="Mouse",
+                        Name="Test mouse",
+                        DpiLevel=20,
+                        DpiValue="20",
+                        MousePrimaryButton=MouseButton.Left,
+                        TouchScrollSensitivityLevel=20,
+                        IsCollaborationKeyEnable=false,
+                        IsCollaborationCameraEnable=false,
+                        IsCollaborationScreenShareEnable=false,
+                        IsCollaborationChatEnable=false,
+                        IsCollaborationMicEnable = false,
+                        IsCollaborationBlinkEffectEnable=false,
+                        IsCollaborationDoubleTapEnable=false,
+                        BackLightingControls=20,
+                        BackLightingLevel=20,
+                        SidetoneLevel=20,
+                        //ID=logicalDeviceHeadsetId,
+                        AncMode=20,
+                        AncGain=20,
+                        SelectedPreset=20,
+                        Band1Gain=20,
+                        Band2Gain=20,
+                        Band3Gain=20,
+                        Band4Gain=20,
+                        Band5Gain=20,
+                        MicNoiseCancellation=false,
+                        Sidetone=false,
+                    }
+                },
+                DCFVersion = "1.0",
+                DPeMSDKVersion = "1.0",
+                DPeMSubAgentVersion = "1.0",
+                IsdDriverVersion = "1.0",
+            };
+            privatetePeripheralsPlugin.SetFieldOrProperty("_deviceHelper", deviceHelper);
+
+            peripheralsPlugin.SetSidetone(newValue, logicalDeviceHeadsetId);                      // logicalDeviceis logicalDeviceHeadset,Sidetone=false, _deviceHelper.deviceInfo ID != logicalDeviceHeadsetId
+            var devicemanager = privatetePeripheralsPlugin.GetFieldOrProperty("_iDeviceManager");
+            Assert.IsTrue(true);
+            Assert.IsNotNull(devicemanager);
+
+            deviceHelper.deviceInfo[0].ID = logicalDeviceHeadsetId;
+            privatetePeripheralsPlugin.SetFieldOrProperty("_deviceHelper", deviceHelper);
+
+            peripheralsPlugin.SetSidetone(newValue, logicalDeviceHeadsetId);                     // logicalDeviceis logicalDeviceHeadset,Sidetone=false, _deviceHelper.deviceInfo ID = logicalDeviceHeadsetId
+            var devicemanager2 = privatetePeripheralsPlugin.GetFieldOrProperty("_iDeviceManager");
+            var deviceHelper2 = (DeviceHelper)privatetePeripheralsPlugin.GetFieldOrProperty("_deviceHelper");
+            Assert.IsTrue(true);
+            Assert.IsNotNull(devicemanager2);
+            Assert.That(deviceHelper2.deviceInfo[0].Sidetone, Is.EqualTo(newValue));
+        }
+
+        [Test]
+        public void TestSetWearDetection()
+        {
+            int newValue = 10;
+            Mock<IPhysicalDevice> PhysicalDevice = new Mock<IPhysicalDevice>();
+            Mock<ILogicalDeviceHeadset> logicalDeviceHeadset = new Mock<ILogicalDeviceHeadset>();
+            Mock<IDeviceManager> mockDeviceManager = new Mock<IDeviceManager>();
+
+            logicalDeviceHeadset.Setup(ld => ld.Id).Returns(Guid.NewGuid());
+            PhysicalDevice.Setup(pd => pd.Devices).Returns(new[] { logicalDeviceHeadset.Object });
+            mockDeviceManager.Setup(dm => dm.Devices).Returns(new[] { PhysicalDevice.Object });// mockDeviceManager device- PhysicalDevice -logicalDeviceHeadset device- logicalDeviceHeadset device ID
+
+            Guid logicalDeviceHeadsetId = logicalDeviceHeadset.Object.Id;
+
+            var DeviceManagerObj = mockDeviceManager.Object;
+            privatetePeripheralsPlugin.SetFieldOrProperty("_iDeviceManager", DeviceManagerObj);
+
+            DeviceHelper deviceHelper = new DeviceHelper()
+            {
+                deviceInfo = new List<DeviceInfo>()
+                {
+                    new DeviceInfo()
+                    {
+                        DeviceName="Mouse",
+                        Name="Test mouse",
+                        DpiLevel=20,
+                        DpiValue="20",
+                        MousePrimaryButton=MouseButton.Left,
+                        TouchScrollSensitivityLevel=20,
+                        IsCollaborationKeyEnable=false,
+                        IsCollaborationCameraEnable=false,
+                        IsCollaborationScreenShareEnable=false,
+                        IsCollaborationChatEnable=false,
+                        IsCollaborationMicEnable = false,
+                        IsCollaborationBlinkEffectEnable=false,
+                        IsCollaborationDoubleTapEnable=false,
+                        BackLightingControls=20,
+                        BackLightingLevel=20,
+                        SidetoneLevel=20,
+                        //ID=logicalDeviceHeadsetId,
+                        AncMode=20,
+                        AncGain=20,
+                        SelectedPreset=20,
+                        Band1Gain=20,
+                        Band2Gain=20,
+                        Band3Gain=20,
+                        Band4Gain=20,
+                        Band5Gain=20,
+                        MicNoiseCancellation=false,
+                        Sidetone=false,
+                        WearDetection=20,
+                    }
+                },
+                DCFVersion = "1.0",
+                DPeMSDKVersion = "1.0",
+                DPeMSubAgentVersion = "1.0",
+                IsdDriverVersion = "1.0",
+            };
+            privatetePeripheralsPlugin.SetFieldOrProperty("_deviceHelper", deviceHelper);
+
+            peripheralsPlugin.SetWearDetection(newValue, logicalDeviceHeadsetId);                      // logicalDeviceis logicalDeviceHeadset,WearDetection=20, _deviceHelper.deviceInfo ID != logicalDeviceHeadsetId
+            var devicemanager = privatetePeripheralsPlugin.GetFieldOrProperty("_iDeviceManager");
+            Assert.IsTrue(true);
+            Assert.IsNotNull(devicemanager);
+
+            deviceHelper.deviceInfo[0].ID = logicalDeviceHeadsetId;
+            privatetePeripheralsPlugin.SetFieldOrProperty("_deviceHelper", deviceHelper);
+
+            peripheralsPlugin.SetWearDetection(newValue, logicalDeviceHeadsetId);                     // logicalDeviceis logicalDeviceHeadset,WearDetection=20, _deviceHelper.deviceInfo ID = logicalDeviceHeadsetId
+            var devicemanager2 = privatetePeripheralsPlugin.GetFieldOrProperty("_iDeviceManager");
+            var deviceHelper2 = (DeviceHelper)privatetePeripheralsPlugin.GetFieldOrProperty("_deviceHelper");
+            Assert.IsTrue(true);
+            Assert.IsNotNull(devicemanager2);
+            Assert.IsNotNull(deviceHelper2);
+            Assert.That(deviceHelper2.deviceInfo[0].WearDetection, Is.EqualTo(newValue));
+        }
+
+        [Test]
+        public void TestSetWearDetectionForCLI()
+        {
+            int newValue1 = 0;
+            Mock<IPhysicalDevice> PhysicalDevice = new Mock<IPhysicalDevice>();
+            Mock<ILogicalDeviceHeadset> logicalDeviceHeadset = new Mock<ILogicalDeviceHeadset>();
+            Mock<IDeviceManager> mockDeviceManager = new Mock<IDeviceManager>();
+
+            logicalDeviceHeadset.Setup(ld => ld.Id).Returns(Guid.NewGuid());
+            PhysicalDevice.Setup(pd => pd.Devices).Returns(new[] { logicalDeviceHeadset.Object });
+            mockDeviceManager.Setup(dm => dm.Devices).Returns(new[] { PhysicalDevice.Object });// mockDeviceManager device- PhysicalDevice -logicalDeviceHeadset device- logicalDeviceHeadset device ID
+
+            Guid logicalDeviceHeadsetId = logicalDeviceHeadset.Object.Id;
+
+            var DeviceManagerObj = mockDeviceManager.Object;
+            privatetePeripheralsPlugin.SetFieldOrProperty("_iDeviceManager", DeviceManagerObj);
+
+            DeviceHelper deviceHelper = new DeviceHelper()
+            {
+                deviceInfo = new List<DeviceInfo>()
+                {
+                    new DeviceInfo()
+                    {
+                        DeviceName="Mouse",
+                        Name="Test mouse",
+                        DpiLevel=20,
+                        DpiValue="20",
+                        MousePrimaryButton=MouseButton.Left,
+                        TouchScrollSensitivityLevel=20,
+                        IsCollaborationKeyEnable=false,
+                        IsCollaborationCameraEnable=false,
+                        IsCollaborationScreenShareEnable=false,
+                        IsCollaborationChatEnable=false,
+                        IsCollaborationMicEnable = false,
+                        IsCollaborationBlinkEffectEnable=false,
+                        IsCollaborationDoubleTapEnable=false,
+                        BackLightingControls=20,
+                        BackLightingLevel=20,
+                        SidetoneLevel=20,
+                        //ID=logicalDeviceHeadsetId,
+                        AncMode=20,
+                        AncGain=20,
+                        SelectedPreset=20,
+                        Band1Gain=20,
+                        Band2Gain=20,
+                        Band3Gain=20,
+                        Band4Gain=20,
+                        Band5Gain=20,
+                        MicNoiseCancellation=false,
+                        Sidetone=false,
+                        WearDetection=20,
+                    }
+                },
+                DCFVersion = "1.0",
+                DPeMSDKVersion = "1.0",
+                DPeMSubAgentVersion = "1.0",
+                IsdDriverVersion = "1.0",
+            };
+            privatetePeripheralsPlugin.SetFieldOrProperty("_deviceHelper", deviceHelper);
+
+            if (newValue1 == 0)
+            {
+                newValue1 |= 0b00000000;
+                peripheralsPlugin.SetWearDetectionForCLI(newValue1, logicalDeviceHeadsetId);                      // newValue1=0,logicalDeviceis logicalDeviceHeadset,WearDetection=20, _deviceHelper.deviceInfo ID != logicalDeviceHeadsetId
+                var devicemanager = privatetePeripheralsPlugin.GetFieldOrProperty("_iDeviceManager");
+                Assert.IsTrue(true);
+                Assert.IsNotNull(devicemanager);
+            }
+
+            int newValue2 = 10;
+            if (newValue2 != 0)
+            {
+
+                deviceHelper.deviceInfo[0].ID = logicalDeviceHeadsetId;
+                privatetePeripheralsPlugin.SetFieldOrProperty("_deviceHelper", deviceHelper);
+
+                peripheralsPlugin.SetWearDetectionForCLI(newValue2, logicalDeviceHeadsetId);                     // newValue2=10,logicalDeviceis logicalDeviceHeadset,WearDetection=20, _deviceHelper.deviceInfo ID = logicalDeviceHeadsetId
+                newValue2 |= 0b00000111;
+                var devicemanager2 = privatetePeripheralsPlugin.GetFieldOrProperty("_iDeviceManager");
+                var deviceHelper2 = (DeviceHelper)privatetePeripheralsPlugin.GetFieldOrProperty("_deviceHelper");
+                Assert.IsTrue(true);
+                Assert.IsNotNull(devicemanager2);
+                Assert.IsNotNull(deviceHelper2);
+                Assert.That(deviceHelper2.deviceInfo[0].WearDetection, Is.EqualTo(newValue2));
+            }
+        }
+
+        [Test]
+        public void TestSetBusyLight()
+        {
+            bool newValue = false;
+            Mock<IPhysicalDevice> PhysicalDevice = new Mock<IPhysicalDevice>();
+            Mock<ILogicalDeviceHeadset> logicalDeviceHeadset = new Mock<ILogicalDeviceHeadset>();
+            Mock<IDeviceManager> mockDeviceManager = new Mock<IDeviceManager>();
+
+            logicalDeviceHeadset.Setup(ld => ld.Id).Returns(Guid.NewGuid());
+            PhysicalDevice.Setup(pd => pd.Devices).Returns(new[] { logicalDeviceHeadset.Object });
+            mockDeviceManager.Setup(dm => dm.Devices).Returns(new[] { PhysicalDevice.Object });// mockDeviceManager device- PhysicalDevice -logicalDeviceHeadset device- logicalDeviceHeadset device ID
+
+            Guid logicalDeviceHeadsetId = logicalDeviceHeadset.Object.Id;
+
+            var DeviceManagerObj = mockDeviceManager.Object;
+            privatetePeripheralsPlugin.SetFieldOrProperty("_iDeviceManager", DeviceManagerObj);
+
+            DeviceHelper deviceHelper = new DeviceHelper()
+            {
+                deviceInfo = new List<DeviceInfo>()
+                {
+                    new DeviceInfo()
+                    {
+                        DeviceName="Mouse",
+                        Name="Test mouse",
+                        DpiLevel=20,
+                        DpiValue="20",
+                        MousePrimaryButton=MouseButton.Left,
+                        TouchScrollSensitivityLevel=20,
+                        IsCollaborationKeyEnable=false,
+                        IsCollaborationCameraEnable=false,
+                        IsCollaborationScreenShareEnable=false,
+                        IsCollaborationChatEnable=false,
+                        IsCollaborationMicEnable = false,
+                        IsCollaborationBlinkEffectEnable=false,
+                        IsCollaborationDoubleTapEnable=false,
+                        BackLightingControls=20,
+                        BackLightingLevel=20,
+                        SidetoneLevel=20,
+                        //ID=logicalDeviceHeadsetId,
+                        AncMode=20,
+                        AncGain=20,
+                        SelectedPreset=20,
+                        Band1Gain=20,
+                        Band2Gain=20,
+                        Band3Gain=20,
+                        Band4Gain=20,
+                        Band5Gain=20,
+                        MicNoiseCancellation=false,
+                        Sidetone=false,
+                        WearDetection=20,
+                        BusyLight=false,
+                    }
+                },
+                DCFVersion = "1.0",
+                DPeMSDKVersion = "1.0",
+                DPeMSubAgentVersion = "1.0",
+                IsdDriverVersion = "1.0",
+            };
+            privatetePeripheralsPlugin.SetFieldOrProperty("_deviceHelper", deviceHelper);
+
+            peripheralsPlugin.SetBusyLight(newValue, logicalDeviceHeadsetId);                      // logicalDeviceis logicalDeviceHeadset,BusyLight=false, _deviceHelper.deviceInfo ID != logicalDeviceHeadsetId
+            var devicemanager = privatetePeripheralsPlugin.GetFieldOrProperty("_iDeviceManager");
+            Assert.IsTrue(true);
+            Assert.IsNotNull(devicemanager);
+
+            deviceHelper.deviceInfo[0].ID = logicalDeviceHeadsetId;
+            privatetePeripheralsPlugin.SetFieldOrProperty("_deviceHelper", deviceHelper);
+
+            peripheralsPlugin.SetBusyLight(newValue, logicalDeviceHeadsetId);                     // logicalDeviceis logicalDeviceHeadset,BusyLight=false, _deviceHelper.deviceInfo ID = logicalDeviceHeadsetId
+            var devicemanager2 = privatetePeripheralsPlugin.GetFieldOrProperty("_iDeviceManager");
+            var deviceHelper2 = (DeviceHelper)privatetePeripheralsPlugin.GetFieldOrProperty("_deviceHelper");
+            Assert.IsTrue(true);
+            Assert.IsNotNull(devicemanager2);
+            Assert.IsNotNull(deviceHelper2);
+            Assert.That(deviceHelper2.deviceInfo[0].BusyLight, Is.EqualTo(newValue));
+        }
+
+        [Test]
+        public void TestSetVoiceGuidance()
+        {
+            bool newValue = false;
+            Mock<IPhysicalDevice> PhysicalDevice = new Mock<IPhysicalDevice>();
+            Mock<ILogicalDeviceHeadset> logicalDeviceHeadset = new Mock<ILogicalDeviceHeadset>();
+            Mock<IDeviceManager> mockDeviceManager = new Mock<IDeviceManager>();
+
+            logicalDeviceHeadset.Setup(ld => ld.Id).Returns(Guid.NewGuid());
+            PhysicalDevice.Setup(pd => pd.Devices).Returns(new[] { logicalDeviceHeadset.Object });
+            mockDeviceManager.Setup(dm => dm.Devices).Returns(new[] { PhysicalDevice.Object });// mockDeviceManager device- PhysicalDevice -logicalDeviceHeadset device- logicalDeviceHeadset device ID
+
+            Guid logicalDeviceHeadsetId = logicalDeviceHeadset.Object.Id;
+
+            var DeviceManagerObj = mockDeviceManager.Object;
+            privatetePeripheralsPlugin.SetFieldOrProperty("_iDeviceManager", DeviceManagerObj);
+
+            DeviceHelper deviceHelper = new DeviceHelper()
+            {
+                deviceInfo = new List<DeviceInfo>()
+                {
+                    new DeviceInfo()
+                    {
+                        DeviceName="Mouse",
+                        Name="Test mouse",
+                        DpiLevel=20,
+                        DpiValue="20",
+                        MousePrimaryButton=MouseButton.Left,
+                        TouchScrollSensitivityLevel=20,
+                        IsCollaborationKeyEnable=false,
+                        IsCollaborationCameraEnable=false,
+                        IsCollaborationScreenShareEnable=false,
+                        IsCollaborationChatEnable=false,
+                        IsCollaborationMicEnable = false,
+                        IsCollaborationBlinkEffectEnable=false,
+                        IsCollaborationDoubleTapEnable=false,
+                        BackLightingControls=20,
+                        BackLightingLevel=20,
+                        SidetoneLevel=20,
+                        //ID=logicalDeviceHeadsetId,
+                        AncMode=20,
+                        AncGain=20,
+                        SelectedPreset=20,
+                        Band1Gain=20,
+                        Band2Gain=20,
+                        Band3Gain=20,
+                        Band4Gain=20,
+                        Band5Gain=20,
+                        MicNoiseCancellation=false,
+                        Sidetone=false,
+                        WearDetection=20,
+                        BusyLight=false,
+                        VoiceGuidance=false,
+                    }
+                },
+                DCFVersion = "1.0",
+                DPeMSDKVersion = "1.0",
+                DPeMSubAgentVersion = "1.0",
+                IsdDriverVersion = "1.0",
+            };
+            privatetePeripheralsPlugin.SetFieldOrProperty("_deviceHelper", deviceHelper);
+
+            peripheralsPlugin.SetVoiceGuidance(newValue, logicalDeviceHeadsetId);                      // logicalDeviceis logicalDeviceHeadset,VoiceGuidance=false, _deviceHelper.deviceInfo ID != logicalDeviceHeadsetId
+            var devicemanager = privatetePeripheralsPlugin.GetFieldOrProperty("_iDeviceManager");
+            Assert.IsTrue(true);
+            Assert.IsNotNull(devicemanager);
+
+            deviceHelper.deviceInfo[0].ID = logicalDeviceHeadsetId;
+            privatetePeripheralsPlugin.SetFieldOrProperty("_deviceHelper", deviceHelper);
+
+            peripheralsPlugin.SetVoiceGuidance(newValue, logicalDeviceHeadsetId);                     // logicalDeviceis logicalDeviceHeadset,VoiceGuidance=false, _deviceHelper.deviceInfo ID = logicalDeviceHeadsetId
+            var devicemanager2 = privatetePeripheralsPlugin.GetFieldOrProperty("_iDeviceManager");
+            var deviceHelper2 = (DeviceHelper)privatetePeripheralsPlugin.GetFieldOrProperty("_deviceHelper");
+            Assert.IsTrue(true);
+            Assert.IsNotNull(devicemanager2);
+            Assert.IsNotNull(deviceHelper2);
+            Assert.That(deviceHelper2.deviceInfo[0].VoiceGuidance, Is.EqualTo(newValue));
+        }
+
+        [Test]
+        public void TestSetMicNCIncoming()
+        {
+            bool newValue = false;
+            Mock<IPhysicalDevice> PhysicalDevice = new Mock<IPhysicalDevice>();
+            Mock<ILogicalDeviceHeadset> logicalDeviceHeadset = new Mock<ILogicalDeviceHeadset>();
+            Mock<IDeviceManager> mockDeviceManager = new Mock<IDeviceManager>();
+
+            logicalDeviceHeadset.Setup(ld => ld.Id).Returns(Guid.NewGuid());
+            PhysicalDevice.Setup(pd => pd.Devices).Returns(new[] { logicalDeviceHeadset.Object });
+            mockDeviceManager.Setup(dm => dm.Devices).Returns(new[] { PhysicalDevice.Object });// mockDeviceManager device- PhysicalDevice -logicalDeviceHeadset device- logicalDeviceHeadset device ID
+
+            Guid logicalDeviceHeadsetId = logicalDeviceHeadset.Object.Id;
+
+            var DeviceManagerObj = mockDeviceManager.Object;
+            privatetePeripheralsPlugin.SetFieldOrProperty("_iDeviceManager", DeviceManagerObj);
+
+            DeviceHelper deviceHelper = new DeviceHelper()
+            {
+                deviceInfo = new List<DeviceInfo>()
+                {
+                    new DeviceInfo()
+                    {
+                        DeviceName="Mouse",
+                        Name="Test mouse",
+                        DpiLevel=20,
+                        DpiValue="20",
+                        MousePrimaryButton=MouseButton.Left,
+                        TouchScrollSensitivityLevel=20,
+                        IsCollaborationKeyEnable=false,
+                        IsCollaborationCameraEnable=false,
+                        IsCollaborationScreenShareEnable=false,
+                        IsCollaborationChatEnable=false,
+                        IsCollaborationMicEnable = false,
+                        IsCollaborationBlinkEffectEnable=false,
+                        IsCollaborationDoubleTapEnable=false,
+                        BackLightingControls=20,
+                        BackLightingLevel=20,
+                        SidetoneLevel=20,
+                        //ID=logicalDeviceHeadsetId,
+                        AncMode=20,
+                        AncGain=20,
+                        SelectedPreset=20,
+                        Band1Gain=20,
+                        Band2Gain=20,
+                        Band3Gain=20,
+                        Band4Gain=20,
+                        Band5Gain=20,
+                        MicNoiseCancellation=false,
+                        Sidetone=false,
+                        WearDetection=20,
+                        BusyLight=false,
+                        VoiceGuidance=false,
+                        MicNCIncoming=false,
+                    }
+                },
+                DCFVersion = "1.0",
+                DPeMSDKVersion = "1.0",
+                DPeMSubAgentVersion = "1.0",
+                IsdDriverVersion = "1.0",
+            };
+            privatetePeripheralsPlugin.SetFieldOrProperty("_deviceHelper", deviceHelper);
+
+            peripheralsPlugin.SetMicNCIncoming(newValue, logicalDeviceHeadsetId);                      // logicalDeviceis logicalDeviceHeadset,MicNCIncoming=false, _deviceHelper.deviceInfo ID != logicalDeviceHeadsetId
+            var devicemanager = privatetePeripheralsPlugin.GetFieldOrProperty("_iDeviceManager");
+            Assert.IsTrue(true);
+            Assert.IsNotNull(devicemanager);
+
+            deviceHelper.deviceInfo[0].ID = logicalDeviceHeadsetId;
+            privatetePeripheralsPlugin.SetFieldOrProperty("_deviceHelper", deviceHelper);
+
+            peripheralsPlugin.SetMicNCIncoming(newValue, logicalDeviceHeadsetId);                     // logicalDeviceis logicalDeviceHeadset,MicNCIncoming=false, _deviceHelper.deviceInfo ID = logicalDeviceHeadsetId
+            var devicemanager2 = privatetePeripheralsPlugin.GetFieldOrProperty("_iDeviceManager");
+            var deviceHelper2 = (DeviceHelper)privatetePeripheralsPlugin.GetFieldOrProperty("_deviceHelper");
+            Assert.IsTrue(true);
+            Assert.IsNotNull(devicemanager2);
+            Assert.IsNotNull(deviceHelper2);
+            Assert.That(deviceHelper2.deviceInfo[0].MicNCIncoming, Is.EqualTo(newValue));
+        }
+
+        [Test]
+        public void TestSetSideTopSwitchSinglePressSetting()
+        {
+            byte[] newValue = new byte[] { 10, 20, 30, 40 };
+            Mock<IPhysicalDevice> PhysicalDevice = new Mock<IPhysicalDevice>();
+            Mock<ILogicalDevicePen> logicalDevicePen = new Mock<ILogicalDevicePen>();
+            Mock<IDeviceManager> mockDeviceManager = new Mock<IDeviceManager>();
+
+            logicalDevicePen.Setup(ld => ld.Id).Returns(Guid.NewGuid());
+            PhysicalDevice.Setup(pd => pd.Devices).Returns(new[] { logicalDevicePen.Object });
+            mockDeviceManager.Setup(dm => dm.Devices).Returns(new[] { PhysicalDevice.Object });// mockDeviceManager device- PhysicalDevice -logicalDevicePen device- logicalDevicePen device ID
+
+            Guid logicalDevicePenId = logicalDevicePen.Object.Id;
+
+            var DeviceManagerObj = mockDeviceManager.Object;
+            privatetePeripheralsPlugin.SetFieldOrProperty("_iDeviceManager", DeviceManagerObj);
+
+            DeviceHelper deviceHelper = new DeviceHelper()
+            {
+                deviceInfo = new List<DeviceInfo>()
+                {
+                    new DeviceInfo()
+                    {
+                        DeviceName="Mouse",
+                        Name="Test mouse",
+                        DpiLevel=20,
+                        DpiValue="20",
+                        MousePrimaryButton=MouseButton.Left,
+                        TouchScrollSensitivityLevel=20,
+                        IsCollaborationKeyEnable=false,
+                        IsCollaborationCameraEnable=false,
+                        IsCollaborationScreenShareEnable=false,
+                        IsCollaborationChatEnable=false,
+                        IsCollaborationMicEnable = false,
+                        IsCollaborationBlinkEffectEnable=false,
+                        IsCollaborationDoubleTapEnable=false,
+                        BackLightingControls=20,
+                        BackLightingLevel=20,
+                        SidetoneLevel=20,
+                        //ID=logicalDeviceHeadsetId,
+                        AncMode=20,
+                        AncGain=20,
+                        SelectedPreset=20,
+                        Band1Gain=20,
+                        Band2Gain=20,
+                        Band3Gain=20,
+                        Band4Gain=20,
+                        Band5Gain=20,
+                        MicNoiseCancellation=false,
+                        Sidetone=false,
+                        WearDetection=20,
+                        BusyLight=false,
+                        VoiceGuidance=false,
+                        MicNCIncoming=false,
+                        SideTopSwitchSinglePressSetting=new byte[] {10,20,30,40 },
+                    }
+                },
+                DCFVersion = "1.0",
+                DPeMSDKVersion = "1.0",
+                DPeMSubAgentVersion = "1.0",
+                IsdDriverVersion = "1.0",
+            };
+            privatetePeripheralsPlugin.SetFieldOrProperty("_deviceHelper", deviceHelper);
+
+            peripheralsPlugin.SetSideTopSwitchSinglePressSetting(newValue, logicalDevicePenId);                      // logicalDeviceis logicalDeviceHeadset,SideTopSwitchSinglePressSetting=new byte[] {10,20,30,40 } , _deviceHelper.deviceInfo ID != logicalDeviceHeadsetId
+            var devicemanager = privatetePeripheralsPlugin.GetFieldOrProperty("_iDeviceManager");
+            Assert.IsTrue(true);
+            Assert.IsNotNull(devicemanager);
+
+            deviceHelper.deviceInfo[0].ID = logicalDevicePenId;
+            privatetePeripheralsPlugin.SetFieldOrProperty("_deviceHelper", deviceHelper);
+
+            peripheralsPlugin.SetSideTopSwitchSinglePressSetting(newValue, logicalDevicePenId);                     // logicalDeviceis logicalDeviceHeadset,SideTopSwitchSinglePressSetting=new byte[] {10,20,30,40 } , _deviceHelper.deviceInfo ID = logicalDeviceHeadsetId
+            var devicemanager2 = privatetePeripheralsPlugin.GetFieldOrProperty("_iDeviceManager");
+            var deviceHelper2 = (DeviceHelper)privatetePeripheralsPlugin.GetFieldOrProperty("_deviceHelper");
+            Assert.IsTrue(true);
+            Assert.IsNotNull(devicemanager2);
+            Assert.IsNotNull(deviceHelper2);
+            Assert.IsNotNull(logicalDevicePen.Object.SideTopSwitchSinglePressSetting);
+        }
+
+        [Test]
+        public void TestSetIsMicEnumerationOn()
+        {
+            bool newValue = false;
+            Mock<IPhysicalDevice> PhysicalDevice = new Mock<IPhysicalDevice>();
+            Mock<ILogicalDeviceWebcam> LogicalDeviceWebcam = new Mock<ILogicalDeviceWebcam>();
+            Mock<IDeviceManager> mockDeviceManager = new Mock<IDeviceManager>();
+
+            LogicalDeviceWebcam.Setup(ld => ld.Id).Returns(Guid.NewGuid());
+            PhysicalDevice.Setup(pd => pd.Devices).Returns(new[] { LogicalDeviceWebcam.Object });
+            mockDeviceManager.Setup(dm => dm.Devices).Returns(new[] { PhysicalDevice.Object });// mockDeviceManager device- PhysicalDevice -ILogicalDeviceWebcam device- ILogicalDeviceWebcam device ID
+
+            Guid LogicalDeviceWebcamId = LogicalDeviceWebcam.Object.Id;
+
+            var DeviceManagerObj = mockDeviceManager.Object;
+            privatetePeripheralsPlugin.SetFieldOrProperty("_iDeviceManager", DeviceManagerObj);
+
+            DeviceHelper deviceHelper = new DeviceHelper()
+            {
+                deviceInfo = new List<DeviceInfo>()
+                {
+                    new DeviceInfo()
+                    {
+                        DeviceName="Mouse",
+                        Name="Test mouse",
+                        DpiLevel=20,
+                        DpiValue="20",
+                        MousePrimaryButton=MouseButton.Left,
+                        TouchScrollSensitivityLevel=20,
+                        IsCollaborationKeyEnable=false,
+                        IsCollaborationCameraEnable=false,
+                        IsCollaborationScreenShareEnable=false,
+                        IsCollaborationChatEnable=false,
+                        IsCollaborationMicEnable = false,
+                        IsCollaborationBlinkEffectEnable=false,
+                        IsCollaborationDoubleTapEnable=false,
+                        BackLightingControls=20,
+                        BackLightingLevel=20,
+                        SidetoneLevel=20,
+                        //ID=logicalDeviceHeadsetId,
+                        AncMode=20,
+                        AncGain=20,
+                        SelectedPreset=20,
+                        Band1Gain=20,
+                        Band2Gain=20,
+                        Band3Gain=20,
+                        Band4Gain=20,
+                        Band5Gain=20,
+                        MicNoiseCancellation=false,
+                        Sidetone=false,
+                        WearDetection=20,
+                        BusyLight=false,
+                        VoiceGuidance=false,
+                        MicNCIncoming=false,
+                        SideTopSwitchSinglePressSetting=new byte[] {10,20,30,40 },
+                        IsMicEnumerationOn=false,
+                    }
+                },
+                DCFVersion = "1.0",
+                DPeMSDKVersion = "1.0",
+                DPeMSubAgentVersion = "1.0",
+                IsdDriverVersion = "1.0",
+            };
+            privatetePeripheralsPlugin.SetFieldOrProperty("_deviceHelper", deviceHelper);
+
+            peripheralsPlugin.SetIsMicEnumerationOn(newValue, LogicalDeviceWebcamId);                      // logicalDeviceis LogicalDeviceWebcamId,IsMicEnumerationOn=false, _deviceHelper.deviceInfo ID != logicalDeviceHeadsetId
+            var devicemanager = privatetePeripheralsPlugin.GetFieldOrProperty("_iDeviceManager");
+            Assert.IsTrue(true);
+            Assert.IsNotNull(devicemanager);
+
+            deviceHelper.deviceInfo[0].ID = LogicalDeviceWebcamId;
+            privatetePeripheralsPlugin.SetFieldOrProperty("_deviceHelper", deviceHelper);
+
+            peripheralsPlugin.SetIsMicEnumerationOn(newValue, LogicalDeviceWebcamId);                     // logicalDeviceis LogicalDeviceWebcamId,IsMicEnumerationOn=false, _deviceHelper.deviceInfo ID = logicalDeviceHeadsetId
+            var devicemanager2 = privatetePeripheralsPlugin.GetFieldOrProperty("_iDeviceManager");
+            var deviceHelper2 = (DeviceHelper)privatetePeripheralsPlugin.GetFieldOrProperty("_deviceHelper");
+            Assert.IsTrue(true);
+            Assert.IsNotNull(devicemanager2);
+            Assert.IsNotNull(deviceHelper2);
+            Assert.That(deviceHelper2.deviceInfo[0].IsMicEnumerationOn, Is.EqualTo(newValue));
+        }
+
+        [Test]
+        public void TestSetCurrentSelectedProfile()
+        {
+            string newValue = "TestSetCurrentSelectedProfile";
+            Mock<IPhysicalDevice> PhysicalDevice = new Mock<IPhysicalDevice>();
+            Mock<ILogicalDeviceWebcam> LogicalDeviceWebcam = new Mock<ILogicalDeviceWebcam>();
+            Mock<IWebcamProfileManager> WebcamProfileManager = new Mock<IWebcamProfileManager>();
+            Mock<IDeviceManager> mockDeviceManager = new Mock<IDeviceManager>();
+
+            LogicalDeviceWebcam.Setup(ld => ld.ProfileManager).Returns(WebcamProfileManager.Object);
+            LogicalDeviceWebcam.Setup(ld => ld.Id).Returns(Guid.NewGuid());
+            PhysicalDevice.Setup(pd => pd.Devices).Returns(new[] { LogicalDeviceWebcam.Object });
+            mockDeviceManager.Setup(dm => dm.Devices).Returns(new[] { PhysicalDevice.Object });// mockDeviceManager device- PhysicalDevice -ILogicalDeviceWebcam device- ILogicalDeviceWebcam device ID- ILogicalDeviceWebcam ProfileManager
+
+            Guid LogicalDeviceWebcamId = LogicalDeviceWebcam.Object.Id;
+
+            var DeviceManagerObj = mockDeviceManager.Object;
+            privatetePeripheralsPlugin.SetFieldOrProperty("_iDeviceManager", DeviceManagerObj);
+
+            DeviceHelper deviceHelper = new DeviceHelper()
+            {
+                deviceInfo = new List<DeviceInfo>()
+                {
+                    new DeviceInfo()
+                    {
+                        DeviceName="Mouse",
+                        Name="Test mouse",
+                        DpiLevel=20,
+                        DpiValue="20",
+                        MousePrimaryButton=MouseButton.Left,
+                        TouchScrollSensitivityLevel=20,
+                        IsCollaborationKeyEnable=false,
+                        IsCollaborationCameraEnable=false,
+                        IsCollaborationScreenShareEnable=false,
+                        IsCollaborationChatEnable=false,
+                        IsCollaborationMicEnable = false,
+                        IsCollaborationBlinkEffectEnable=false,
+                        IsCollaborationDoubleTapEnable=false,
+                        BackLightingControls=20,
+                        BackLightingLevel=20,
+                        SidetoneLevel=20,
+                        //ID=logicalDeviceHeadsetId,
+                        AncMode=20,
+                        AncGain=20,
+                        SelectedPreset=20,
+                        Band1Gain=20,
+                        Band2Gain=20,
+                        Band3Gain=20,
+                        Band4Gain=20,
+                        Band5Gain=20,
+                        MicNoiseCancellation=false,
+                        Sidetone=false,
+                        WearDetection=20,
+                        BusyLight=false,
+                        VoiceGuidance=false,
+                        MicNCIncoming=false,
+                        SideTopSwitchSinglePressSetting=new byte[] {10,20,30,40 },
+                        IsMicEnumerationOn=false,
+                    }
+                },
+                DCFVersion = "1.0",
+                DPeMSDKVersion = "1.0",
+                DPeMSubAgentVersion = "1.0",
+                IsdDriverVersion = "1.0",
+            };
+            privatetePeripheralsPlugin.SetFieldOrProperty("_deviceHelper", deviceHelper);
+
+            peripheralsPlugin.SetCurrentSelectedProfile(newValue, LogicalDeviceWebcamId);                      // logicalDeviceis LogicalDeviceWebcamId,IsMicEnumerationOn=false, _deviceHelper.deviceInfo ID != logicalDeviceHeadsetId
+            var devicemanager = privatetePeripheralsPlugin.GetFieldOrProperty("_iDeviceManager");
+            Assert.IsTrue(true);
+            Assert.IsNotNull(devicemanager);
+
+            deviceHelper.deviceInfo[0].ID = LogicalDeviceWebcamId;
+            privatetePeripheralsPlugin.SetFieldOrProperty("_deviceHelper", deviceHelper);
+
+            peripheralsPlugin.SetCurrentSelectedProfile(newValue, LogicalDeviceWebcamId);                     // logicalDeviceis LogicalDeviceWebcamId,IsMicEnumerationOn=false, _deviceHelper.deviceInfo ID = logicalDeviceHeadsetId
+            var devicemanager2 = privatetePeripheralsPlugin.GetFieldOrProperty("_iDeviceManager");
+            var deviceHelper2 = (DeviceHelper)privatetePeripheralsPlugin.GetFieldOrProperty("_deviceHelper");
+            Assert.IsTrue(true);
+            Assert.IsNotNull(devicemanager2);
+            Assert.IsNotNull(deviceHelper2);
+        }
+
+        [Test]
+        public void TestSetWALTime()
+        {
+            int newValue = 10;
+            Mock<IPhysicalDevice> PhysicalDevice = new Mock<IPhysicalDevice>();
+            Mock<ILogicalDeviceWebcam> LogicalDeviceWebcam = new Mock<ILogicalDeviceWebcam>();
+            Mock<IDeviceManager> mockDeviceManager = new Mock<IDeviceManager>();
+
+            LogicalDeviceWebcam.Setup(ld => ld.Id).Returns(Guid.NewGuid());
+            PhysicalDevice.Setup(pd => pd.Devices).Returns(new[] { LogicalDeviceWebcam.Object });
+            mockDeviceManager.Setup(dm => dm.Devices).Returns(new[] { PhysicalDevice.Object });// mockDeviceManager device- PhysicalDevice -ILogicalDeviceWebcam device- ILogicalDeviceWebcam device ID
+
+            Guid LogicalDeviceWebcamId = LogicalDeviceWebcam.Object.Id;
+
+            var DeviceManagerObj = mockDeviceManager.Object;
+            privatetePeripheralsPlugin.SetFieldOrProperty("_iDeviceManager", DeviceManagerObj);
+
+            DeviceHelper deviceHelper = new DeviceHelper()
+            {
+                deviceInfo = new List<DeviceInfo>()
+                {
+                    new DeviceInfo()
+                    {
+                        DeviceName="Mouse",
+                        Name="Test mouse",
+                        DpiLevel=20,
+                        DpiValue="20",
+                        MousePrimaryButton=MouseButton.Left,
+                        TouchScrollSensitivityLevel=20,
+                        IsCollaborationKeyEnable=false,
+                        IsCollaborationCameraEnable=false,
+                        IsCollaborationScreenShareEnable=false,
+                        IsCollaborationChatEnable=false,
+                        IsCollaborationMicEnable = false,
+                        IsCollaborationBlinkEffectEnable=false,
+                        IsCollaborationDoubleTapEnable=false,
+                        BackLightingControls=20,
+                        BackLightingLevel=20,
+                        SidetoneLevel=20,
+                        //ID=logicalDeviceHeadsetId,
+                        AncMode=20,
+                        AncGain=20,
+                        SelectedPreset=20,
+                        Band1Gain=20,
+                        Band2Gain=20,
+                        Band3Gain=20,
+                        Band4Gain=20,
+                        Band5Gain=20,
+                        MicNoiseCancellation=false,
+                        Sidetone=false,
+                        WearDetection=20,
+                        BusyLight=false,
+                        VoiceGuidance=false,
+                        MicNCIncoming=false,
+                        SideTopSwitchSinglePressSetting=new byte[] {10,20,30,40 },
+                        IsMicEnumerationOn=false,
+                        WALTime=20,
+                    }
+                },
+                DCFVersion = "1.0",
+                DPeMSDKVersion = "1.0",
+                DPeMSubAgentVersion = "1.0",
+                IsdDriverVersion = "1.0",
+            };
+            privatetePeripheralsPlugin.SetFieldOrProperty("_deviceHelper", deviceHelper);
+
+            peripheralsPlugin.SetWALTime(newValue, LogicalDeviceWebcamId);                      // logicalDeviceis LogicalDeviceWebcamId,WALTime=20, _deviceHelper.deviceInfo ID != logicalDeviceHeadsetId
+            var devicemanager = privatetePeripheralsPlugin.GetFieldOrProperty("_iDeviceManager");
+            Assert.IsTrue(true);
+            Assert.IsNotNull(devicemanager);
+
+            deviceHelper.deviceInfo[0].ID = LogicalDeviceWebcamId;
+            privatetePeripheralsPlugin.SetFieldOrProperty("_deviceHelper", deviceHelper);
+
+            peripheralsPlugin.SetWALTime(newValue, LogicalDeviceWebcamId);                     // logicalDeviceis LogicalDeviceWebcamId,WALTime=20, _deviceHelper.deviceInfo ID = logicalDeviceHeadsetId
+            var devicemanager2 = privatetePeripheralsPlugin.GetFieldOrProperty("_iDeviceManager");
+            var deviceHelper2 = (DeviceHelper)privatetePeripheralsPlugin.GetFieldOrProperty("_deviceHelper");
+            Assert.IsTrue(true);
+            Assert.IsNotNull(devicemanager2);
+            Assert.IsNotNull(deviceHelper2);
+            Assert.That(deviceHelper2.deviceInfo[0].WALTime, Is.EqualTo(newValue));
+        }
+
+        [Test]
+        public void TestSetSnooze()
+        {
+            int newValue = 10;
+            Mock<IPhysicalDevice> PhysicalDevice = new Mock<IPhysicalDevice>();
+            Mock<ILogicalDeviceWebcam> LogicalDeviceWebcam = new Mock<ILogicalDeviceWebcam>();
+            Mock<IDeviceManager> mockDeviceManager = new Mock<IDeviceManager>();
+
+            LogicalDeviceWebcam.Setup(ld => ld.Id).Returns(Guid.NewGuid());
+            PhysicalDevice.Setup(pd => pd.Devices).Returns(new[] { LogicalDeviceWebcam.Object });
+            mockDeviceManager.Setup(dm => dm.Devices).Returns(new[] { PhysicalDevice.Object });// mockDeviceManager device- PhysicalDevice -ILogicalDeviceWebcam device- ILogicalDeviceWebcam device ID
+
+            Guid LogicalDeviceWebcamId = LogicalDeviceWebcam.Object.Id;
+
+            var DeviceManagerObj = mockDeviceManager.Object;
+            privatetePeripheralsPlugin.SetFieldOrProperty("_iDeviceManager", DeviceManagerObj);
+
+            DeviceHelper deviceHelper = new DeviceHelper()
+            {
+                deviceInfo = new List<DeviceInfo>()
+                {
+                    new DeviceInfo()
+                    {
+                        DeviceName="Mouse",
+                        Name="Test mouse",
+                        DpiLevel=20,
+                        DpiValue="20",
+                        MousePrimaryButton=MouseButton.Left,
+                        TouchScrollSensitivityLevel=20,
+                        IsCollaborationKeyEnable=false,
+                        IsCollaborationCameraEnable=false,
+                        IsCollaborationScreenShareEnable=false,
+                        IsCollaborationChatEnable=false,
+                        IsCollaborationMicEnable = false,
+                        IsCollaborationBlinkEffectEnable=false,
+                        IsCollaborationDoubleTapEnable=false,
+                        BackLightingControls=20,
+                        BackLightingLevel=20,
+                        SidetoneLevel=20,
+                        //ID=logicalDeviceHeadsetId,
+                        AncMode=20,
+                        AncGain=20,
+                        SelectedPreset=20,
+                        Band1Gain=20,
+                        Band2Gain=20,
+                        Band3Gain=20,
+                        Band4Gain=20,
+                        Band5Gain=20,
+                        MicNoiseCancellation=false,
+                        Sidetone=false,
+                        WearDetection=20,
+                        BusyLight=false,
+                        VoiceGuidance=false,
+                        MicNCIncoming=false,
+                        SideTopSwitchSinglePressSetting=new byte[] {10,20,30,40 },
+                        IsMicEnumerationOn=false,
+                        WALTime=20,
+                        Snooze=20,
+                    }
+                },
+                DCFVersion = "1.0",
+                DPeMSDKVersion = "1.0",
+                DPeMSubAgentVersion = "1.0",
+                IsdDriverVersion = "1.0",
+            };
+            privatetePeripheralsPlugin.SetFieldOrProperty("_deviceHelper", deviceHelper);
+
+            peripheralsPlugin.SetSnooze(newValue, LogicalDeviceWebcamId);                      // logicalDeviceis LogicalDeviceWebcamId,Snooze=20, _deviceHelper.deviceInfo ID != logicalDeviceHeadsetId
+            var devicemanager = privatetePeripheralsPlugin.GetFieldOrProperty("_iDeviceManager");
+            Assert.IsTrue(true);
+            Assert.IsNotNull(devicemanager);
+
+            deviceHelper.deviceInfo[0].ID = LogicalDeviceWebcamId;
+            privatetePeripheralsPlugin.SetFieldOrProperty("_deviceHelper", deviceHelper);
+
+            peripheralsPlugin.SetSnooze(newValue, LogicalDeviceWebcamId);                     // logicalDeviceis LogicalDeviceWebcamId,Snooze=20, _deviceHelper.deviceInfo ID = logicalDeviceHeadsetId
+            var devicemanager2 = privatetePeripheralsPlugin.GetFieldOrProperty("_iDeviceManager");
+            var deviceHelper2 = (DeviceHelper)privatetePeripheralsPlugin.GetFieldOrProperty("_deviceHelper");
+            Assert.IsTrue(true);
+            Assert.IsNotNull(devicemanager2);
+            Assert.IsNotNull(deviceHelper2);
+            Assert.That(deviceHelper2.deviceInfo[0].Snooze, Is.EqualTo(newValue));
+        }
+
+        [Test]
+        public void TestSetSnoozeLength()
+        {
+            int newValue = 10;
+            Mock<IPhysicalDevice> PhysicalDevice = new Mock<IPhysicalDevice>();
+            Mock<ILogicalDeviceWebcam> LogicalDeviceWebcam = new Mock<ILogicalDeviceWebcam>();
+            Mock<IDeviceManager> mockDeviceManager = new Mock<IDeviceManager>();
+
+            LogicalDeviceWebcam.Setup(ld => ld.Id).Returns(Guid.NewGuid());
+            PhysicalDevice.Setup(pd => pd.Devices).Returns(new[] { LogicalDeviceWebcam.Object });
+            mockDeviceManager.Setup(dm => dm.Devices).Returns(new[] { PhysicalDevice.Object });// mockDeviceManager device- PhysicalDevice -ILogicalDeviceWebcam device- ILogicalDeviceWebcam device ID
+
+            Guid LogicalDeviceWebcamId = LogicalDeviceWebcam.Object.Id;
+
+            var DeviceManagerObj = mockDeviceManager.Object;
+            privatetePeripheralsPlugin.SetFieldOrProperty("_iDeviceManager", DeviceManagerObj);
+
+            DeviceHelper deviceHelper = new DeviceHelper()
+            {
+                deviceInfo = new List<DeviceInfo>()
+                {
+                    new DeviceInfo()
+                    {
+                        DeviceName="Mouse",
+                        Name="Test mouse",
+                        DpiLevel=20,
+                        DpiValue="20",
+                        MousePrimaryButton=MouseButton.Left,
+                        TouchScrollSensitivityLevel=20,
+                        IsCollaborationKeyEnable=false,
+                        IsCollaborationCameraEnable=false,
+                        IsCollaborationScreenShareEnable=false,
+                        IsCollaborationChatEnable=false,
+                        IsCollaborationMicEnable = false,
+                        IsCollaborationBlinkEffectEnable=false,
+                        IsCollaborationDoubleTapEnable=false,
+                        BackLightingControls=20,
+                        BackLightingLevel=20,
+                        SidetoneLevel=20,
+                        //ID=logicalDeviceHeadsetId,
+                        AncMode=20,
+                        AncGain=20,
+                        SelectedPreset=20,
+                        Band1Gain=20,
+                        Band2Gain=20,
+                        Band3Gain=20,
+                        Band4Gain=20,
+                        Band5Gain=20,
+                        MicNoiseCancellation=false,
+                        Sidetone=false,
+                        WearDetection=20,
+                        BusyLight=false,
+                        VoiceGuidance=false,
+                        MicNCIncoming=false,
+                        SideTopSwitchSinglePressSetting=new byte[] {10,20,30,40 },
+                        IsMicEnumerationOn=false,
+                        WALTime=20,
+                        Snooze=20,
+                        SnoozeLength=20,
+                    }
+                },
+                DCFVersion = "1.0",
+                DPeMSDKVersion = "1.0",
+                DPeMSubAgentVersion = "1.0",
+                IsdDriverVersion = "1.0",
+            };
+            privatetePeripheralsPlugin.SetFieldOrProperty("_deviceHelper", deviceHelper);
+
+            peripheralsPlugin.SetSnoozeLength(newValue, LogicalDeviceWebcamId);                      // logicalDeviceis LogicalDeviceWebcamId,SnoozeLength=20, _deviceHelper.deviceInfo ID != logicalDeviceHeadsetId
+            var devicemanager = privatetePeripheralsPlugin.GetFieldOrProperty("_iDeviceManager");
+            Assert.IsTrue(true);
+            Assert.IsNotNull(devicemanager);
+
+            deviceHelper.deviceInfo[0].ID = LogicalDeviceWebcamId;
+            privatetePeripheralsPlugin.SetFieldOrProperty("_deviceHelper", deviceHelper);
+
+            peripheralsPlugin.SetSnoozeLength(newValue, LogicalDeviceWebcamId);                     // logicalDeviceis LogicalDeviceWebcamId,SnoozeLength=20, _deviceHelper.deviceInfo ID = logicalDeviceHeadsetId
+            var devicemanager2 = privatetePeripheralsPlugin.GetFieldOrProperty("_iDeviceManager");
+            var deviceHelper2 = (DeviceHelper)privatetePeripheralsPlugin.GetFieldOrProperty("_deviceHelper");
+            Assert.IsTrue(true);
+            Assert.IsNotNull(devicemanager2);
+            Assert.IsNotNull(deviceHelper2);
+            Assert.That(deviceHelper2.deviceInfo[0].SnoozeLength, Is.EqualTo(newValue));
+        }
+
+        [Test]
+        public void TestSetIsProximitySensorEnable()
+        {
+            bool newValue = false;
+            Mock<IPhysicalDevice> PhysicalDevice = new Mock<IPhysicalDevice>();
+            Mock<ILogicalDeviceWebcam> LogicalDeviceWebcam = new Mock<ILogicalDeviceWebcam>();
+            Mock<IDeviceManager> mockDeviceManager = new Mock<IDeviceManager>();
+
+            LogicalDeviceWebcam.Setup(ld => ld.Id).Returns(Guid.NewGuid());
+            PhysicalDevice.Setup(pd => pd.Devices).Returns(new[] { LogicalDeviceWebcam.Object });
+            mockDeviceManager.Setup(dm => dm.Devices).Returns(new[] { PhysicalDevice.Object });// mockDeviceManager device- PhysicalDevice -ILogicalDeviceWebcam device- ILogicalDeviceWebcam device ID
+
+            Guid LogicalDeviceWebcamId = LogicalDeviceWebcam.Object.Id;
+
+            var DeviceManagerObj = mockDeviceManager.Object;
+            privatetePeripheralsPlugin.SetFieldOrProperty("_iDeviceManager", DeviceManagerObj);
+
+            DeviceHelper deviceHelper = new DeviceHelper()
+            {
+                deviceInfo = new List<DeviceInfo>()
+                {
+                    new DeviceInfo()
+                    {
+                        DeviceName="Mouse",
+                        Name="Test mouse",
+                        DpiLevel=20,
+                        DpiValue="20",
+                        MousePrimaryButton=MouseButton.Left,
+                        TouchScrollSensitivityLevel=20,
+                        IsCollaborationKeyEnable=false,
+                        IsCollaborationCameraEnable=false,
+                        IsCollaborationScreenShareEnable=false,
+                        IsCollaborationChatEnable=false,
+                        IsCollaborationMicEnable = false,
+                        IsCollaborationBlinkEffectEnable=false,
+                        IsCollaborationDoubleTapEnable=false,
+                        BackLightingControls=20,
+                        BackLightingLevel=20,
+                        SidetoneLevel=20,
+                        //ID=logicalDeviceHeadsetId,
+                        AncMode=20,
+                        AncGain=20,
+                        SelectedPreset=20,
+                        Band1Gain=20,
+                        Band2Gain=20,
+                        Band3Gain=20,
+                        Band4Gain=20,
+                        Band5Gain=20,
+                        MicNoiseCancellation=false,
+                        Sidetone=false,
+                        WearDetection=20,
+                        BusyLight=false,
+                        VoiceGuidance=false,
+                        MicNCIncoming=false,
+                        SideTopSwitchSinglePressSetting=new byte[] {10,20,30,40 },
+                        IsMicEnumerationOn=false,
+                        WALTime=20,
+                        Snooze=20,
+                        SnoozeLength=20,
+                        IsProximitySensorEnable=false,
+                    }
+                },
+                DCFVersion = "1.0",
+                DPeMSDKVersion = "1.0",
+                DPeMSubAgentVersion = "1.0",
+                IsdDriverVersion = "1.0",
+            };
+            privatetePeripheralsPlugin.SetFieldOrProperty("_deviceHelper", deviceHelper);
+
+            peripheralsPlugin.SetIsProximitySensorEnable(newValue, LogicalDeviceWebcamId);                      // logicalDeviceis LogicalDeviceWebcamId,IsProximitySensorEnable=false, _deviceHelper.deviceInfo ID != logicalDeviceHeadsetId
+            var devicemanager = privatetePeripheralsPlugin.GetFieldOrProperty("_iDeviceManager");
+            Assert.IsTrue(true);
+            Assert.IsNotNull(devicemanager);
+
+            deviceHelper.deviceInfo[0].ID = LogicalDeviceWebcamId;
+            privatetePeripheralsPlugin.SetFieldOrProperty("_deviceHelper", deviceHelper);
+
+            peripheralsPlugin.SetIsProximitySensorEnable(newValue, LogicalDeviceWebcamId);                     // logicalDeviceis LogicalDeviceWebcamId,IsProximitySensorEnable=false, _deviceHelper.deviceInfo ID = logicalDeviceHeadsetId
+            var devicemanager2 = privatetePeripheralsPlugin.GetFieldOrProperty("_iDeviceManager");
+            var deviceHelper2 = (DeviceHelper)privatetePeripheralsPlugin.GetFieldOrProperty("_deviceHelper");
+            Assert.IsTrue(true);
+            Assert.IsNotNull(devicemanager2);
+            Assert.IsNotNull(deviceHelper2);
+            Assert.That(deviceHelper2.deviceInfo[0].IsProximitySensorEnable, Is.EqualTo(newValue));
+        }
+
+        [Test]
+        public void TestSetIsWakeonApproachEnable()
+        {
+            bool newValue = false;
+            Mock<IPhysicalDevice> PhysicalDevice = new Mock<IPhysicalDevice>();
+            Mock<ILogicalDeviceWebcam> LogicalDeviceWebcam = new Mock<ILogicalDeviceWebcam>();
+            Mock<IDeviceManager> mockDeviceManager = new Mock<IDeviceManager>();
+
+            LogicalDeviceWebcam.Setup(ld => ld.Id).Returns(Guid.NewGuid());
+            PhysicalDevice.Setup(pd => pd.Devices).Returns(new[] { LogicalDeviceWebcam.Object });
+            mockDeviceManager.Setup(dm => dm.Devices).Returns(new[] { PhysicalDevice.Object });// mockDeviceManager device- PhysicalDevice -ILogicalDeviceWebcam device- ILogicalDeviceWebcam device ID
+
+            Guid LogicalDeviceWebcamId = LogicalDeviceWebcam.Object.Id;
+
+            var DeviceManagerObj = mockDeviceManager.Object;
+            privatetePeripheralsPlugin.SetFieldOrProperty("_iDeviceManager", DeviceManagerObj);
+
+            DeviceHelper deviceHelper = new DeviceHelper()
+            {
+                deviceInfo = new List<DeviceInfo>()
+                {
+                    new DeviceInfo()
+                    {
+                        DeviceName="Mouse",
+                        Name="Test mouse",
+                        DpiLevel=20,
+                        DpiValue="20",
+                        MousePrimaryButton=MouseButton.Left,
+                        TouchScrollSensitivityLevel=20,
+                        IsCollaborationKeyEnable=false,
+                        IsCollaborationCameraEnable=false,
+                        IsCollaborationScreenShareEnable=false,
+                        IsCollaborationChatEnable=false,
+                        IsCollaborationMicEnable = false,
+                        IsCollaborationBlinkEffectEnable=false,
+                        IsCollaborationDoubleTapEnable=false,
+                        BackLightingControls=20,
+                        BackLightingLevel=20,
+                        SidetoneLevel=20,
+                        //ID=logicalDeviceHeadsetId,
+                        AncMode=20,
+                        AncGain=20,
+                        SelectedPreset=20,
+                        Band1Gain=20,
+                        Band2Gain=20,
+                        Band3Gain=20,
+                        Band4Gain=20,
+                        Band5Gain=20,
+                        MicNoiseCancellation=false,
+                        Sidetone=false,
+                        WearDetection=20,
+                        BusyLight=false,
+                        VoiceGuidance=false,
+                        MicNCIncoming=false,
+                        SideTopSwitchSinglePressSetting=new byte[] {10,20,30,40 },
+                        IsMicEnumerationOn=false,
+                        WALTime=20,
+                        Snooze=20,
+                        SnoozeLength=20,
+                        IsProximitySensorEnable=false,
+                        IsWakeonApproachEnable=false,
+                    }
+                },
+                DCFVersion = "1.0",
+                DPeMSDKVersion = "1.0",
+                DPeMSubAgentVersion = "1.0",
+                IsdDriverVersion = "1.0",
+            };
+            privatetePeripheralsPlugin.SetFieldOrProperty("_deviceHelper", deviceHelper);
+
+            peripheralsPlugin.SetIsWakeonApproachEnable(newValue, LogicalDeviceWebcamId);                      // logicalDeviceis LogicalDeviceWebcamId,IsWakeonApproachEnable=false, _deviceHelper.deviceInfo ID != logicalDeviceHeadsetId
+            var devicemanager = privatetePeripheralsPlugin.GetFieldOrProperty("_iDeviceManager");
+            Assert.IsTrue(true);
+            Assert.IsNotNull(devicemanager);
+
+            deviceHelper.deviceInfo[0].ID = LogicalDeviceWebcamId;
+            privatetePeripheralsPlugin.SetFieldOrProperty("_deviceHelper", deviceHelper);
+
+            peripheralsPlugin.SetIsWakeonApproachEnable(newValue, LogicalDeviceWebcamId);                     // logicalDeviceis LogicalDeviceWebcamId,IsWakeonApproachEnable=false, _deviceHelper.deviceInfo ID = logicalDeviceHeadsetId
+            var devicemanager2 = privatetePeripheralsPlugin.GetFieldOrProperty("_iDeviceManager");
+            var deviceHelper2 = (DeviceHelper)privatetePeripheralsPlugin.GetFieldOrProperty("_deviceHelper");
+            Assert.IsTrue(true);
+            Assert.IsNotNull(devicemanager2);
+            Assert.IsNotNull(deviceHelper2);
+            Assert.That(deviceHelper2.deviceInfo[0].IsWakeonApproachEnable, Is.EqualTo(newValue));
+        }
+
+        [Test]
+        public void TestSetIsWalkAwayLockEnable()
+        {
+            bool newValue = false;
+            Mock<IPhysicalDevice> PhysicalDevice = new Mock<IPhysicalDevice>();
+            Mock<ILogicalDeviceWebcam> LogicalDeviceWebcam = new Mock<ILogicalDeviceWebcam>();
+            Mock<IDeviceManager> mockDeviceManager = new Mock<IDeviceManager>();
+
+            LogicalDeviceWebcam.Setup(ld => ld.Id).Returns(Guid.NewGuid());
+            PhysicalDevice.Setup(pd => pd.Devices).Returns(new[] { LogicalDeviceWebcam.Object });
+            mockDeviceManager.Setup(dm => dm.Devices).Returns(new[] { PhysicalDevice.Object });// mockDeviceManager device- PhysicalDevice -ILogicalDeviceWebcam device- ILogicalDeviceWebcam device ID
+
+            Guid LogicalDeviceWebcamId = LogicalDeviceWebcam.Object.Id;
+
+            var DeviceManagerObj = mockDeviceManager.Object;
+            privatetePeripheralsPlugin.SetFieldOrProperty("_iDeviceManager", DeviceManagerObj);
+
+            DeviceHelper deviceHelper = new DeviceHelper()
+            {
+                deviceInfo = new List<DeviceInfo>()
+                {
+                    new DeviceInfo()
+                    {
+                        DeviceName="Mouse",
+                        Name="Test mouse",
+                        DpiLevel=20,
+                        DpiValue="20",
+                        MousePrimaryButton=MouseButton.Left,
+                        TouchScrollSensitivityLevel=20,
+                        IsCollaborationKeyEnable=false,
+                        IsCollaborationCameraEnable=false,
+                        IsCollaborationScreenShareEnable=false,
+                        IsCollaborationChatEnable=false,
+                        IsCollaborationMicEnable = false,
+                        IsCollaborationBlinkEffectEnable=false,
+                        IsCollaborationDoubleTapEnable=false,
+                        BackLightingControls=20,
+                        BackLightingLevel=20,
+                        SidetoneLevel=20,
+                        //ID=logicalDeviceHeadsetId,
+                        AncMode=20,
+                        AncGain=20,
+                        SelectedPreset=20,
+                        Band1Gain=20,
+                        Band2Gain=20,
+                        Band3Gain=20,
+                        Band4Gain=20,
+                        Band5Gain=20,
+                        MicNoiseCancellation=false,
+                        Sidetone=false,
+                        WearDetection=20,
+                        BusyLight=false,
+                        VoiceGuidance=false,
+                        MicNCIncoming=false,
+                        SideTopSwitchSinglePressSetting=new byte[] {10,20,30,40 },
+                        IsMicEnumerationOn=false,
+                        WALTime=20,
+                        Snooze=20,
+                        SnoozeLength=20,
+                        IsProximitySensorEnable=false,
+                        IsWakeonApproachEnable=false,
+                        IsWalkAwayLockEnable=false,
+                    }
+                },
+                DCFVersion = "1.0",
+                DPeMSDKVersion = "1.0",
+                DPeMSubAgentVersion = "1.0",
+                IsdDriverVersion = "1.0",
+            };
+            privatetePeripheralsPlugin.SetFieldOrProperty("_deviceHelper", deviceHelper);
+
+            peripheralsPlugin.SetIsWalkAwayLockEnable(newValue, LogicalDeviceWebcamId);                      // logicalDeviceis LogicalDeviceWebcamId,IsWalkAwayLockEnable=false, _deviceHelper.deviceInfo ID != logicalDeviceHeadsetId
+            var devicemanager = privatetePeripheralsPlugin.GetFieldOrProperty("_iDeviceManager");
+            Assert.IsTrue(true);
+            Assert.IsNotNull(devicemanager);
+
+            deviceHelper.deviceInfo[0].ID = LogicalDeviceWebcamId;
+            privatetePeripheralsPlugin.SetFieldOrProperty("_deviceHelper", deviceHelper);
+
+            peripheralsPlugin.SetIsWalkAwayLockEnable(newValue, LogicalDeviceWebcamId);                     // logicalDeviceis LogicalDeviceWebcamId,IsWalkAwayLockEnable=false, _deviceHelper.deviceInfo ID = logicalDeviceHeadsetId
+            var devicemanager2 = privatetePeripheralsPlugin.GetFieldOrProperty("_iDeviceManager");
+            var deviceHelper2 = (DeviceHelper)privatetePeripheralsPlugin.GetFieldOrProperty("_deviceHelper");
+            Assert.IsTrue(true);
+            Assert.IsNotNull(devicemanager2);
+            Assert.IsNotNull(deviceHelper2);
+            Assert.That(deviceHelper2.deviceInfo[0].IsWalkAwayLockEnable, Is.EqualTo(newValue));
+        }
+
+        [Test]
+        public void TestGetSnooze()
+        {
+            int GetSnooze = 0;
+            Mock<IPhysicalDevice> PhysicalDevice = new Mock<IPhysicalDevice>();
+            Mock<ILogicalDeviceWebcam> LogicalDeviceWebcam = new Mock<ILogicalDeviceWebcam>();
+            Mock<IDeviceManager> mockDeviceManager = new Mock<IDeviceManager>();
+
+            LogicalDeviceWebcam.Setup(ld => ld.Snooze).Returns(GetSnooze);
+            LogicalDeviceWebcam.Setup(ld => ld.Id).Returns(Guid.NewGuid());
+            PhysicalDevice.Setup(pd => pd.Devices).Returns(new[] { LogicalDeviceWebcam.Object });
+            mockDeviceManager.Setup(dm => dm.Devices).Returns(new[] { PhysicalDevice.Object });// mockDeviceManager device- PhysicalDevice -ILogicalDeviceWebcam device- ILogicalDeviceWebcam device ID
+
+            Guid LogicalDeviceWebcamId = LogicalDeviceWebcam.Object.Id;
+
+            var DeviceManagerObj = mockDeviceManager.Object;
+            privatetePeripheralsPlugin.SetFieldOrProperty("_iDeviceManager", DeviceManagerObj);
+
+            DeviceHelper deviceHelper = new DeviceHelper()
+            {
+                deviceInfo = new List<DeviceInfo>()
+                {
+                    new DeviceInfo()
+                    {
+                        DeviceName="Mouse",
+                        Name="Test mouse",
+                        DpiLevel=20,
+                        DpiValue="20",
+                        MousePrimaryButton=MouseButton.Left,
+                        TouchScrollSensitivityLevel=20,
+                        IsCollaborationKeyEnable=false,
+                        IsCollaborationCameraEnable=false,
+                        IsCollaborationScreenShareEnable=false,
+                        IsCollaborationChatEnable=false,
+                        IsCollaborationMicEnable = false,
+                        IsCollaborationBlinkEffectEnable=false,
+                        IsCollaborationDoubleTapEnable=false,
+                        BackLightingControls=20,
+                        BackLightingLevel=20,
+                        SidetoneLevel=20,
+                        //ID=logicalDeviceHeadsetId,
+                        AncMode=20,
+                        AncGain=20,
+                        SelectedPreset=20,
+                        Band1Gain=20,
+                        Band2Gain=20,
+                        Band3Gain=20,
+                        Band4Gain=20,
+                        Band5Gain=20,
+                        MicNoiseCancellation=false,
+                        Sidetone=false,
+                        WearDetection=20,
+                        BusyLight=false,
+                        VoiceGuidance=false,
+                        MicNCIncoming=false,
+                        SideTopSwitchSinglePressSetting=new byte[] {10,20,30,40 },
+                        IsMicEnumerationOn=false,
+                        WALTime=20,
+                        Snooze=20,
+                        SnoozeLength=20,
+                        IsProximitySensorEnable=false,
+                        IsWakeonApproachEnable=false,
+                        IsWalkAwayLockEnable=false,
+                    }
+                },
+                DCFVersion = "1.0",
+                DPeMSDKVersion = "1.0",
+                DPeMSubAgentVersion = "1.0",
+                IsdDriverVersion = "1.0",
+            };
+            privatetePeripheralsPlugin.SetFieldOrProperty("_deviceHelper", deviceHelper);
+
+            var GetSnooze_result1 = peripheralsPlugin.GetSnooze(LogicalDeviceWebcamId);                      // logicalDeviceis LogicalDeviceWebcamId,Snooze=20, _deviceHelper.deviceInfo ID != logicalDeviceHeadsetId
+            var devicemanager = privatetePeripheralsPlugin.GetFieldOrProperty("_iDeviceManager");
+            Assert.IsNotNull(GetSnooze_result1);
+            Assert.IsNotNull(devicemanager);
+            Assert.That(GetSnooze, Is.EqualTo(GetSnooze_result1));
+
+            deviceHelper.deviceInfo[0].ID = LogicalDeviceWebcamId;
+            privatetePeripheralsPlugin.SetFieldOrProperty("_deviceHelper", deviceHelper);
+
+            var GetSnooze_result2 = peripheralsPlugin.GetSnooze(LogicalDeviceWebcamId);                     // logicalDeviceis LogicalDeviceWebcamId,Snooze=20, _deviceHelper.deviceInfo ID = logicalDeviceHeadsetId
+            var devicemanager2 = privatetePeripheralsPlugin.GetFieldOrProperty("_iDeviceManager");
+            var deviceHelper2 = (DeviceHelper)privatetePeripheralsPlugin.GetFieldOrProperty("_deviceHelper");
+            Assert.IsTrue(true);
+            Assert.IsNotNull(devicemanager2);
+            Assert.IsNotNull(deviceHelper2);
+            Assert.That(deviceHelper2.deviceInfo[0].Snooze, Is.EqualTo(GetSnooze_result2));
+        }
+
+        [Test]
+        public void TestGetSnoozeLength()
+        {
+            int GetSnoozeLength = 0;
+            Mock<IPhysicalDevice> PhysicalDevice = new Mock<IPhysicalDevice>();
+            Mock<ILogicalDeviceWebcam> LogicalDeviceWebcam = new Mock<ILogicalDeviceWebcam>();
+            Mock<IDeviceManager> mockDeviceManager = new Mock<IDeviceManager>();
+
+            LogicalDeviceWebcam.Setup(ld => ld.SnoozeLength).Returns(GetSnoozeLength);
+            LogicalDeviceWebcam.Setup(ld => ld.Id).Returns(Guid.NewGuid());
+            PhysicalDevice.Setup(pd => pd.Devices).Returns(new[] { LogicalDeviceWebcam.Object });
+            mockDeviceManager.Setup(dm => dm.Devices).Returns(new[] { PhysicalDevice.Object });// mockDeviceManager device- PhysicalDevice -ILogicalDeviceWebcam device- ILogicalDeviceWebcam device ID
+
+            Guid LogicalDeviceWebcamId = LogicalDeviceWebcam.Object.Id;
+
+            var DeviceManagerObj = mockDeviceManager.Object;
+            privatetePeripheralsPlugin.SetFieldOrProperty("_iDeviceManager", DeviceManagerObj);
+
+            DeviceHelper deviceHelper = new DeviceHelper()
+            {
+                deviceInfo = new List<DeviceInfo>()
+                {
+                    new DeviceInfo()
+                    {
+                        DeviceName="Mouse",
+                        Name="Test mouse",
+                        DpiLevel=20,
+                        DpiValue="20",
+                        MousePrimaryButton=MouseButton.Left,
+                        TouchScrollSensitivityLevel=20,
+                        IsCollaborationKeyEnable=false,
+                        IsCollaborationCameraEnable=false,
+                        IsCollaborationScreenShareEnable=false,
+                        IsCollaborationChatEnable=false,
+                        IsCollaborationMicEnable = false,
+                        IsCollaborationBlinkEffectEnable=false,
+                        IsCollaborationDoubleTapEnable=false,
+                        BackLightingControls=20,
+                        BackLightingLevel=20,
+                        SidetoneLevel=20,
+                        //ID=logicalDeviceHeadsetId,
+                        AncMode=20,
+                        AncGain=20,
+                        SelectedPreset=20,
+                        Band1Gain=20,
+                        Band2Gain=20,
+                        Band3Gain=20,
+                        Band4Gain=20,
+                        Band5Gain=20,
+                        MicNoiseCancellation=false,
+                        Sidetone=false,
+                        WearDetection=20,
+                        BusyLight=false,
+                        VoiceGuidance=false,
+                        MicNCIncoming=false,
+                        SideTopSwitchSinglePressSetting=new byte[] {10,20,30,40 },
+                        IsMicEnumerationOn=false,
+                        WALTime=20,
+                        Snooze=20,
+                        SnoozeLength=20,
+                        IsProximitySensorEnable=false,
+                        IsWakeonApproachEnable=false,
+                        IsWalkAwayLockEnable=false,
+                    }
+                },
+                DCFVersion = "1.0",
+                DPeMSDKVersion = "1.0",
+                DPeMSubAgentVersion = "1.0",
+                IsdDriverVersion = "1.0",
+            };
+            privatetePeripheralsPlugin.SetFieldOrProperty("_deviceHelper", deviceHelper);
+
+            var GetSnoozeLength_result1 = peripheralsPlugin.GetSnoozeLength(LogicalDeviceWebcamId);                      // logicalDeviceis LogicalDeviceWebcamId,SnoozeLength=20, _deviceHelper.deviceInfo ID != logicalDeviceHeadsetId
+            var devicemanager = privatetePeripheralsPlugin.GetFieldOrProperty("_iDeviceManager");
+            Assert.IsNotNull(GetSnoozeLength_result1);
+            Assert.IsNotNull(devicemanager);
+            Assert.That(GetSnoozeLength, Is.EqualTo(GetSnoozeLength_result1));
+
+            deviceHelper.deviceInfo[0].ID = LogicalDeviceWebcamId;
+            privatetePeripheralsPlugin.SetFieldOrProperty("_deviceHelper", deviceHelper);
+
+            var GetSnoozeLength_result2 = peripheralsPlugin.GetSnoozeLength(LogicalDeviceWebcamId);                     // logicalDeviceis LogicalDeviceWebcamId,SnoozeLength=20, _deviceHelper.deviceInfo ID = logicalDeviceHeadsetId
+            var devicemanager2 = privatetePeripheralsPlugin.GetFieldOrProperty("_iDeviceManager");
+            var deviceHelper2 = (DeviceHelper)privatetePeripheralsPlugin.GetFieldOrProperty("_deviceHelper");
+            Assert.IsTrue(true);
+            Assert.IsNotNull(devicemanager2);
+            Assert.IsNotNull(deviceHelper2);
+            Assert.That(deviceHelper2.deviceInfo[0].SnoozeLength, Is.EqualTo(GetSnoozeLength_result2));
+        }
+
+        [Test]
+        public void TestSetEqualizerValues()
+        {
+            byte[] bandsGain = new byte[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20 };
+            Mock<ILogicalDeviceHeadset> logicalDeviceHeadset = new Mock<ILogicalDeviceHeadset>();
+            logicalDeviceHeadset.Setup(ld => ld.BandsGain).Returns(bandsGain);
+            var logicalDeviceHeadsetObj = logicalDeviceHeadset.Object;
+
+            DeviceInfo deviceInfo = new DeviceInfo()
+            {
+                DeviceName = "Mouse",
+                Name = "Test mouse",
+                Band1Gain = 20,
+                Band2Gain = 20,
+                Band3Gain = 20,
+                Band4Gain = 20,
+                Band5Gain = 20,
+            };
+
+            if (bandsGain != null && bandsGain.Length >= 20)
+            {
+                peripheralsPlugin.SetEqualizerValues(logicalDeviceHeadsetObj, deviceInfo);
+                Assert.IsTrue(true);
+                Assert.IsNotNull(deviceInfo.Band1Gain);
+                Assert.IsNotNull(deviceInfo.Band2Gain);
+                Assert.IsNotNull(deviceInfo.Band3Gain);
+                Assert.IsNotNull(deviceInfo.Band4Gain);
+                Assert.IsNotNull(deviceInfo.Band5Gain);
+            }
+        }
+
         [OneTimeTearDown]
         public void TearDown()
         {

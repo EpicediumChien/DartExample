@@ -14,7 +14,7 @@
 	  </PackageReference>
 	</ItemGroup>
 
-  <ItemGroup>
+	<ItemGroup>
 	  <None Update="Obfuscar.xml">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</None>
@@ -25,13 +25,13 @@
 			<ObfuscateCommand>$(Obfuscar) "Obfuscar.xml"</ObfuscateCommand>
 		</PropertyGroup>
 		<PropertyGroup>
-			<ReplaceCommand>xcopy "$(ProjectDir)$(OutDir)Obfuscar\DDPM.SA.Obfuscation.*" "$(ProjectDir)$(OutDir)" /Y /S /Q</ReplaceCommand>
+			<ReplaceCommand>xcopy "$(ProjectDir)$(OutDir).Obfuscated\DDPM.SA.Obfuscation.*" "$(ProjectDir)$(OutDir)" /Y /S /Q</ReplaceCommand>
 		</PropertyGroup>
 		<PropertyGroup>
-			<SWUpdaterCommand>xcopy "$(ProjectDir)$(OutDir)Obfuscar\DDPM.SA.Obfuscation.*" "$(SolutionDir)..\DdpmSwUpdater\CommonDll\" /Y /S /Q</SWUpdaterCommand>
+			<SWUpdaterCommand>xcopy "$(ProjectDir)$(OutDir).Obfuscated\DDPM.SA.Obfuscation.*" "$(SolutionDir)..\DdpmSwUpdater\CommonDll\" /Y /S /Q</SWUpdaterCommand>
 		</PropertyGroup>
 		<PropertyGroup>
-			<RemoveTempCommand>rd /s /q "$(ProjectDir)$(OutDir)Obfuscar"</RemoveTempCommand>
+			<RemoveTempCommand>rd /s /q "$(ProjectDir)$(OutDir).Obfuscated"</RemoveTempCommand>
 		</PropertyGroup>
 		<Exec WorkingDirectory="$(OutputPath)" Command="$(ObfuscateCommand)" />
 		<Exec WorkingDirectory="$(OutputPath)" Command="$(ReplaceCommand)" />

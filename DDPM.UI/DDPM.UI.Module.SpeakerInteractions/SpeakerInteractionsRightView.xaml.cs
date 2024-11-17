@@ -36,5 +36,10 @@ namespace DDPM.UI.Module.SpeakerInteractions
         {
             _vm.ChangeImage(_vm.Model, "SkypeforBusiness");
         }
+
+        private void MicrosoftTeamsButton_MouseLeave(object sender, MouseEventArgs e)
+        {
+            _vm.ChangeImageMouseLeave(_vm.Model);
+        }
     }
 }

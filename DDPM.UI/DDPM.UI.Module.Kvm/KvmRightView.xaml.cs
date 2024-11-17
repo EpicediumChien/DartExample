@@ -199,6 +199,12 @@ namespace DDPM.UI.Module.Kvm
             }
 
             radioButton.IsEnabled = true;
+
+            //Robert_Lin debug purpose, can be removed at release build
+            //if (DdpmCommonHelper.ModuleOwner != null)
+            //{
+            //    DdpmCommonHelper.ModuleOwner.ShowSpecificModule(Constants.GroupName_InputSource, Constants.ModuleName_DisplayHotkeys);
+            //}
         }
 
         private void OpenNKVM(object sender, RoutedEventArgs e)

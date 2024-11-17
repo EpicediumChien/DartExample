@@ -763,7 +763,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Auto Brightness is currently enabled. Do you wish to disable it to continue?.
+        ///   Looks up a localized string similar to Auto Brightness is currently enabled. Do you wish to override it?.
         /// </summary>
         internal static string Brightness_19 {
             get {
@@ -2194,6 +2194,15 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Please enter profile name..
+        /// </summary>
+        internal static string EazyMemory_40 {
+            get {
+                return ResourceManager.GetString("EazyMemory.40", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Error.
         /// </summary>
         internal static string EazyMemory_5 {
@@ -2959,6 +2968,33 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Hotkey Warning.
+        /// </summary>
+        internal static string hotkey_7 {
+            get {
+                return ResourceManager.GetString("hotkey.7", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The hotkey you configured is a single key.It may interfere with how you intend that key to work in other applications.Are you sure you want to proceed?.
+        /// </summary>
+        internal static string hotkey_8 {
+            get {
+                return ResourceManager.GetString("hotkey.8", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This hotkey is used by another Dell Display and Peripheral Manager function. Do you want to replace it?.
+        /// </summary>
+        internal static string hotkey_9 {
+            get {
+                return ResourceManager.GetString("hotkey.9", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Hotkeys.
         /// </summary>
         internal static string Hotkeys {
@@ -2982,6 +3018,33 @@ namespace DDPM.UI.Resources {
         internal static string Illumination_1 {
             get {
                 return ResourceManager.GetString("Illumination.1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to To change the brightness level, press the F8 key.
+        /// </summary>
+        internal static string Illumination_2 {
+            get {
+                return ResourceManager.GetString("Illumination.2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Adjusts the brightness levels of keyboard based on amount of light in environment.
+        /// </summary>
+        internal static string Illumination_3 {
+            get {
+                return ResourceManager.GetString("Illumination.3", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Adjust your keyboard’s brightness manually.
+        /// </summary>
+        internal static string Illumination_4 {
+            get {
+                return ResourceManager.GetString("Illumination.4", resourceCulture);
             }
         }
         
@@ -3126,6 +3189,15 @@ namespace DDPM.UI.Resources {
         internal static string InputSource_4 {
             get {
                 return ResourceManager.GetString("InputSource.4", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Rename Input Source.
+        /// </summary>
+        internal static string InputSource_5 {
+            get {
+                return ResourceManager.GetString("InputSource.5", resourceCulture);
             }
         }
         
@@ -3882,6 +3954,15 @@ namespace DDPM.UI.Resources {
         internal static string Off {
             get {
                 return ResourceManager.GetString("Off", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Off.
+        /// </summary>
+        internal static string Off2 {
+            get {
+                return ResourceManager.GetString("Off2", resourceCulture);
             }
         }
         
@@ -5034,6 +5115,15 @@ namespace DDPM.UI.Resources {
         internal static string Updates_6 {
             get {
                 return ResourceManager.GetString("Updates.6", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to URL.
+        /// </summary>
+        internal static string URL {
+            get {
+                return ResourceManager.GetString("URL", resourceCulture);
             }
         }
         

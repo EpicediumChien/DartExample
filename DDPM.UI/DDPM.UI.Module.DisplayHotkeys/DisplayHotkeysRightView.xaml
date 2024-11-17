@@ -6,6 +6,7 @@
              xmlns:local="clr-namespace:DDPM.UI.Module.DisplayHotkeys"
              xmlns:UXControls="clr-namespace:Dell.Client.Framework.UX.WPF.Controls;assembly=DCF.UX.WPF"
              xmlns:lang="clr-namespace:DDPM.UI.Resources.Helper;assembly=DDPM.UI.Resources"
+             xmlns:PluginCommon="clr-namespace:DDPM.UI.Plugin.Common;assembly=DDPM.UI.Plugin.Common"
              mc:Ignorable="d"
              d:DesignHeight="450" d:DesignWidth="800"
              Loaded="UserControl_Loaded">
@@ -14,6 +15,7 @@
             <ResourceDictionary.MergedDictionaries>
                 <!-- <ResourceDictionary Source="/DDPM.UI.Common;component/ModuleStyle.xaml" /> -->
             </ResourceDictionary.MergedDictionaries>
+            <PluginCommon:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
         </ResourceDictionary>
     </UserControl.Resources>
     <Grid>
@@ -176,7 +178,12 @@
                                                       ContextMenu="{x:Null}" 
                                                       InputLanguageManager.InputLanguage="en-US"
                                                       InputLanguageManager.RestoreInputLanguage="True"/>
-                                <UXControls:UXTextBlock Text="{Binding [DisplayHotkeys.5], Source={x:Static lang:LangHelper.Instance}}" Grid.Row="1" />
+
+                                <!-- #region Row of "Change PIP position -->
+                                <!-- Robert_Lin, 2024-11-14, if the Monitor has no PIP position capability then will collapse this row -->
+                                <UXControls:UXTextBlock Text="{Binding [DisplayHotkeys.5], Source={x:Static lang:LangHelper.Instance}}" 
+                                                        Grid.Row="1"
+                                                        Visibility="{Binding HasCapability_PipTogglePosition, Converter={StaticResource BoolToVisibilityConverter}}"/>
                                 <UXControls:UXTextBox Grid.Column="2" Grid.Row="1" Margin="2" Height="20"
                                                       Text="{Binding ChangePIPPositionKey,Mode=TwoWay}"
                                                       Background="#141D28" Foreground="White" Width="230"
@@ -191,7 +198,9 @@
                                                       ContextMenuOpening="tbChangePIPPosition_ContextMenuOpening"
                                                       ContextMenu="{x:Null}" 
                                                       InputLanguageManager.InputLanguage="en-US"
-                                                      InputLanguageManager.RestoreInputLanguage="True"/>
+                                                      InputLanguageManager.RestoreInputLanguage="True"
+                                                      Visibility="{Binding HasCapability_PipTogglePosition, Converter={StaticResource BoolToVisibilityConverter}}"/>
+                                <!-- #endregion Row of "Change PIP position -->
                             </Grid>
                             <TextBox Width="1" Height="1" Name="tbCleanFocus" Panel.ZIndex="-99" />
                         </StackPanel>

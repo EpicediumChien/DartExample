@@ -139,7 +139,7 @@
     <value>Gry</value>
   </data>
   <data name="InputSource" xml:space="preserve">
-    <value>Źródło wejścia</value>
+    <value>Źródło sygnału wejściowego</value>
   </data>
   <data name="KVM" xml:space="preserve">
     <value>KVM</value>
@@ -436,7 +436,7 @@
     <value>Opcja Jasność/Kontrast nie jest dostępna, gdy </value>
   </data>
   <data name="Brightness.2" xml:space="preserve">
-    <value>inteligentny HDR </value>
+    <value>Inteligentny HDR </value>
   </data>
   <data name="Brightness.3" xml:space="preserve">
     <value>jest włączony</value>
@@ -673,7 +673,7 @@
     <value>Do zaawansowanego zarządzania kolorami zalecana jest aplikacja Dell Color Management.</value>
   </data>
   <data name="DisplayHotkeys.0" xml:space="preserve">
-    <value>Źródło wejścia</value>
+    <value>Źródło sygnału wejściowego</value>
   </data>
   <data name="DisplayHotkeys.1" xml:space="preserve">
     <value>Przełącz na następne źródło wejścia</value>
@@ -2048,5 +2048,224 @@
   </data>
   <data name="No" xml:space="preserve">
     <value>Nie</value>
+  </data>
+  <data name="Camera.12" xml:space="preserve">
+    <value>Opcja niedostępna podczas dodawania ustawień predefiniowanych</value>
+  </data>
+  <data name="Camera.13" xml:space="preserve">
+    <value>Nie wszystkie funkcje są dostępne podczas dodawania ustawienia predefiniowanego</value>
+  </data>
+  <data name="HeadsetAudioSettings.20" xml:space="preserve">
+    <value>Steruje ilością słyszanych dźwięków zewnętrznych</value>
+  </data>
+  <data name="HeadsetAudioSettings.21" xml:space="preserve">
+    <value>Eliminuje hałas otoczenia</value>
+  </data>
+  <data name="HeadsetAudioSettings.22" xml:space="preserve">
+    <value>Umożliwia słyszenie dźwięków otoczenia. Dostosowuje poziom głośności słyszanych dźwięków otoczenia.</value>
+  </data>
+  <data name="HeadsetAudioSettings.23" xml:space="preserve">
+    <value>Wyłącza funkcje redukcji hałasu</value>
+  </data>
+  <data name="HeadsetAudioSettings.24" xml:space="preserve">
+    <value>Ogranicza hałas wyłapywany przez Twój mikrofon, aby zapewnić lepsze wrażenia dźwiękowe rozmówcy</value>
+  </data>
+  <data name="HeadsetAudioSettings.25" xml:space="preserve">
+    <value>Ogranicza hałas wyłapywany przez mikrofon rozmówcy, aby zapewnić lepsze wrażenia dźwiękowe Tobie</value>
+  </data>
+  <data name="HeadsetAudioSettings.26" xml:space="preserve">
+    <value>Korektor dostosowuje się na podstawie wybranych ustawień predefiniowanych</value>
+  </data>
+  <data name="HeadsetAudioSettings.27" xml:space="preserve">
+    <value>Umożliwia dostosowanie głośności własnego głosu podczas rozmowy. (niedostępne w trybie przezroczystości)</value>
+  </data>
+  <data name="HeadsetAudioSettings.28" xml:space="preserve">
+    <value>Usuwa hałas z otoczenia, aby Twój głos był wyraźnie słyszalny</value>
+  </data>
+  <data name="HeadsetAutomatedActions.9" xml:space="preserve">
+    <value>Automatyczne działania po zdjęciu zestawu słuchawkowego</value>
+  </data>
+  <data name="HeadsetAutomatedActions.10" xml:space="preserve">
+    <value>Automatycznie wstrzymuje odtwarzanie muzyki po zdjęciu zestawu słuchawkowego. Muzyka zostanie wznowiona automatycznie po założeniu zestawu słuchawkowego.</value>
+  </data>
+  <data name="HeadsetAutomatedActions.11" xml:space="preserve">
+    <value>Automatycznie wycisza mikrofon po zdjęciu zestawu słuchawkowego</value>
+  </data>
+  <data name="HeadsetAutomatedActions.12" xml:space="preserve">
+    <value>Pociągnij mikrofon na wysięgniku w dół, aby odbierać połączenia</value>
+  </data>
+  <data name="HeadsetAutomatedActions.13" xml:space="preserve">
+    <value>Automatyczne działania po zdjęciu nausznika z ucha</value>
+  </data>
+  <data name="HeadsetDeviceSettings.7" xml:space="preserve">
+    <value>Wskaźnik podczas połączenia</value>
+  </data>
+  <data name="HeadsetDeviceSettings.8" xml:space="preserve">
+    <value>Monity dźwiękowe i komunikaty dotyczące funkcji urządzenia</value>
+  </data>
+  <data name="SpeakerToolTip.0" xml:space="preserve">
+    <value>Usuwa hałas z otoczenia, aby Twój głos był wyraźnie słyszalny</value>
+  </data>
+  <data name="SpeakerToolTip.1" xml:space="preserve">
+    <value>Odtwarza dźwięk, gdy urządzenie przechodzi w tryb wyciszenia</value>
+  </data>
+  <data name="SpeakerToolTip.2" xml:space="preserve">
+    <value>Odtwarza dźwięk po ustawieniu poziomu głośności</value>
+  </data>
+  <data name="Continue" xml:space="preserve">
+    <value>Kontynuuj</value>
+  </data>
+  <data name="ImpExp_RestartMsg.0" xml:space="preserve">
+    <value>Zmieniono ustawienia. Program Dell Display and Peripheral Manager uruchomi się ponownie.</value>
+  </data>
+  <data name="ImpExp_SuccessMsg.0" xml:space="preserve">
+    <value>Ustawienia aplikacji zostały pomyślnie wyeksportowane</value>
+  </data>
+  <data name="ImpExp_SuccessMsg.1" xml:space="preserve">
+    <value>Ustawienia aplikacji zostały pomyślnie zastosowane do %1. Możesz już używać monitora.</value>
+  </data>
+  <data name="ImpExp_WarningMsg.0" xml:space="preserve">
+    <value>To nie jest główny monitor. Czy chcesz kontynuować i ustawić ten monitor jako główny do synchronizacji?</value>
+  </data>
+  <data name="ImpExp_WarningMsg.1" xml:space="preserve">
+    <value>powiązane z bieżącym układem. Czy chcesz go nadpisać?</value>
+  </data>
+  <data name="RestartNeeded" xml:space="preserve">
+    <value>Wymagane ponowne uruchomienie</value>
+  </data>
+  <data name="Success" xml:space="preserve">
+    <value>Udane</value>
+  </data>
+  <data name="Warning" xml:space="preserve">
+    <value>Uwaga</value>
+  </data>
+  <data name="ImpExp_Message.0" xml:space="preserve">
+    <value>Automatyczne stosowanie ustawień po wykryciu tego samego modelu</value>
+  </data>
+  <data name="DisplayDefault.0" xml:space="preserve">
+    <value>Czy chcesz teraz przywrócić ustawienia fabryczne monitora?</value>
+  </data>
+  <data name="RestoreToDefaultActions" xml:space="preserve">
+    <value>Czynności przywracania ustawień domyślnych</value>
+  </data>
+  <data name="Game_Enhance_Mode" xml:space="preserve">
+    <value>Tryb ulepszania gry</value>
+  </data>
+  <data name="Response_Time" xml:space="preserve">
+    <value>Czas reakcji</value>
+  </data>
+  <data name="Dark_Stabilizer" xml:space="preserve">
+    <value>Stabilizator ciemności</value>
+  </data>
+  <data name="Dark_Stabilizer_Toggle" xml:space="preserve">
+    <value>Przełącznik stabilizatora ciemności</value>
+  </data>
+  <data name="Dual_Resolution" xml:space="preserve">
+    <value>Podwójna rozdzielczość</value>
+  </data>
+  <data name="Dual_Resolution_Toggle" xml:space="preserve">
+    <value>Przełącznik podwójnej rozdzielczości</value>
+  </data>
+  <data name="Resolution_and_Refresh_Rate" xml:space="preserve">
+    <value>Rozdzielczość i częstotliwość odświeżania</value>
+  </data>
+  <data name="Toggle_Vision_Engine" xml:space="preserve">
+    <value>Przełącznik nakładki wizualnej</value>
+  </data>
+  <data name="Third_Party_Licenses" xml:space="preserve">
+    <value>Licencje firm trzecich</value>
+  </data>
+  <data name="Help" xml:space="preserve">
+    <value>Pomoc</value>
+  </data>
+  <data name="Need_help" xml:space="preserve">
+    <value>Potrzebujesz pomocy? Aby uzyskać więcej informacji na temat tego oprogramowania, kliknij poniższy przycisk.</value>
+  </data>
+  <data name="Learn_more" xml:space="preserve">
+    <value>Dowiedz się więcej</value>
+  </data>
+  <data name="On_screen_notifications" xml:space="preserve">
+    <value>Powiadomienia na ekranie</value>
+  </data>
+  <data name="All_Devices" xml:space="preserve">
+    <value>Wszystkie urządzenia</value>
+  </data>
+  <data name="Low_battery_level" xml:space="preserve">
+    <value>Niski poziom naładowania baterii</value>
+  </data>
+  <data name="Device_specific" xml:space="preserve">
+    <value>Specyficzne dla urządzenia</value>
+  </data>
+  <data name="Keyboard_lock_key" xml:space="preserve">
+    <value>Klawisz blokady klawiatury</value>
+  </data>
+  <data name="Webcam_WB7022_Presence_Detection_sensor_cover_state" xml:space="preserve">
+    <value>Stan pokrywy czujnika wykrywania obecności kamery internetowej WB7022</value>
+  </data>
+  <data name="Headset_speakerphone_and_soundbar_mute_unmute" xml:space="preserve">
+    <value>Włączenie/wyłączenie wyciszenia zestawu słuchawkowego, zestawu głośnomówiącego i listwy dźwiękowej</value>
+  </data>
+  <data name="Display_Color_Preset_and_Easy_Memory" xml:space="preserve">
+    <value>Ustawienia wstępne wyświetlania kolorów i Easy Memory</value>
+  </data>
+  <data name="Reports" xml:space="preserve">
+    <value>Raporty</value>
+  </data>
+  <data name="Save_diagnostic_report" xml:space="preserve">
+    <value>Zapisz raport diagnostyczny</value>
+  </data>
+  <data name="Save_monitor_asset_report" xml:space="preserve">
+    <value>Zapisz raport dotyczący zasobów monitora</value>
+  </data>
+  <data name="Widget_Settings" xml:space="preserve">
+    <value>Ustawienia widżetu</value>
+  </data>
+  <data name="Activate_Quick_Access_widget_during_Zoom_conference_calls" xml:space="preserve">
+    <value>Aktywuj widżet Szybki dostęp podczas połączeń konferencyjnych Zoom</value>
+  </data>
+  <data name="Widget_will_automatically_appear_when_meeting_begins" xml:space="preserve">
+    <value>Widżet pojawi się automatycznie, gdy rozpocznie się spotkanie, aby dostosować ustawienia obsługiwanych kamer internetowych</value>
+  </data>
+  <data name="Enable_shortcut_reminder_for_Quick_Accesswidget" xml:space="preserve">
+    <value>Włącz przypomnienie o skrócie dla widżetu Szybki dostęp</value>
+  </data>
+  <data name="Critical" xml:space="preserve">
+    <value>Krytyczne</value>
+  </data>
+  <data name="Recommended" xml:space="preserve">
+    <value>Zalecane</value>
+  </data>
+  <data name="Optional" xml:space="preserve">
+    <value>Opcjonalne</value>
+  </data>
+  <data name="VisionEngine_Night" xml:space="preserve">
+    <value>Noc</value>
+  </data>
+  <data name="VisionEngine_Clear" xml:space="preserve">
+    <value>Wyczyść</value>
+  </data>
+  <data name="VisionEngine_Bino" xml:space="preserve">
+    <value>Bino</value>
+  </data>
+  <data name="VisionEngine_Chroma" xml:space="preserve">
+    <value>Chroma</value>
+  </data>
+  <data name="VisionEngine_Crosshair" xml:space="preserve">
+    <value>Krzyżyk</value>
+  </data>
+  <data name="Software_version" xml:space="preserve">
+    <value>Wersja oprogramowania</value>
+  </data>
+  <data name="Driver_version" xml:space="preserve">
+    <value>Wersja sterownika</value>
+  </data>
+  <data name="Preview_Changes" xml:space="preserve">
+    <value>Podgląd zmian</value>
+  </data>
+  <data name="Stop_Preview" xml:space="preserve">
+    <value>Zatrzymaj podgląd</value>
+  </data>
+  <data name="Tooltips_Schedule" xml:space="preserve">
+    <value>Ta funkcja umożliwia oczom dostosowanie się do wybranego ustawienia.</value>
   </data>
 </root>

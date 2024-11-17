@@ -42,6 +42,7 @@ namespace DDPM.UI.Plugin.KeyboardPlugin
         private readonly CancellationTokenSource StartupCancellationTokenSource = new();
         private readonly SemaphoreSlim _lock = new(1, 1);
         private DeviceHelper _deviceHelper = new();
+        private bool IsEventRegistered = false;
 
         /// <summary>
         /// Default constructor
@@ -56,7 +57,7 @@ namespace DDPM.UI.Plugin.KeyboardPlugin
 
         private void DeviceManager_DeviceChanged(object? sender, DeviceChangedEventArgs e)
         {
-            if (e.device_peripherals != null && e.device_peripherals.LogicalDeviceType.Contains("Keyboard"))
+            if (e.device_peripherals != null && e.device_peripherals.LogicalDeviceType != null && e.device_peripherals.LogicalDeviceType.Contains("Keyboard"))
             {
                 if (e.type == DeviceChangedType.Peripherals_UnPlug)
                 {
@@ -65,7 +66,14 @@ namespace DDPM.UI.Plugin.KeyboardPlugin
                         _viewModel.OnGoBackClicked();
                         return;
                     }
-                    GetPeripheralsAsync();
+                    if (_viewModel.DeviceInfos.ContainsKey(e.device_peripherals.ID))
+                        _viewModel.DeviceInfos.Remove(e.device_peripherals.ID);
+                    //GetPeripheralsAsync();
+                }
+                if (e.type == DeviceChangedType.Peripherals_PlugIn)
+                {
+                    if (e.device_peripherals.ModelNumber == _viewModel?.CurrentDeviceInfo?.ModelNumber && !_viewModel.DeviceInfos.ContainsKey(e.device_peripherals.ID))
+                        _viewModel.DeviceInfos.Add(e.device_peripherals.ID, e.device_peripherals);
                 }
                 _viewModel?.HandleNotification(e.type, e.device_peripherals, e.changedProperty);
             }
@@ -111,20 +119,33 @@ namespace DDPM.UI.Plugin.KeyboardPlugin
         /// <inheritdoc/>
         public void OnActivated()
         {
-            DdpmCommonHelper.DeviceManagerSA!.DeviceChanged += DeviceManager_DeviceChanged;
+            if (!IsEventRegistered)
+            {
+                DdpmCommonHelper.DeviceManagerSA!.DeviceChanged += DeviceManager_DeviceChanged;
+                IsEventRegistered = true;
+            }
             Mouse.OverrideCursor = null;
         }
 
         /// <inheritdoc/>
         public void OnDeactivated()
         {
-            DdpmCommonHelper.DeviceManagerSA!.DeviceChanged -= DeviceManager_DeviceChanged;
+            if (IsEventRegistered)
+            {
+                DdpmCommonHelper.DeviceManagerSA!.DeviceChanged -= DeviceManager_DeviceChanged;
+                IsEventRegistered = false;
+            }
             Mouse.OverrideCursor = Cursors.Wait;
         }
 
         /// <inheritdoc/>
         public void OnShown(string parameter)
         {
+            if (!IsEventRegistered)
+            {
+                DdpmCommonHelper.DeviceManagerSA!.DeviceChanged += DeviceManager_DeviceChanged;
+                IsEventRegistered = true;
+            }
             ConfigureServices();
             GetPeripheralsAsync();
             if (_viewModel != null && _viewModel.SetCurrentDevice(parameter))

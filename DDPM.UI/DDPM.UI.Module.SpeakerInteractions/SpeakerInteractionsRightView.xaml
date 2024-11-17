@@ -115,7 +115,7 @@
                                 </StackPanel>
 
                                 <StackPanel Grid.Row="1">
-                                    <UXControls:UXToggleSwitch x:Name="MicrosoftTeamsButton" BorderBrush="#FF1B385F" BorderThickness="2" Width="406" Height="56" Margin="16,0,4,8" Background="{StaticResource SplitItem_NormalBdColor}" IsChecked="{Binding IsMicrosoftTeamsChecked, Mode=TwoWay}" MouseMove="MicrosoftTeamsButton_MouseMove">
+                                    <UXControls:UXToggleSwitch x:Name="MicrosoftTeamsButton" BorderBrush="#FF1B385F" BorderThickness="2" Width="406" Height="56" Margin="16,0,4,8" Background="{StaticResource SplitItem_NormalBdColor}" IsChecked="{Binding IsMicrosoftTeamsChecked, Mode=TwoWay}" MouseMove="MicrosoftTeamsButton_MouseMove" MouseLeave="MicrosoftTeamsButton_MouseLeave">
                                         <UXControls:UXToggleSwitch.Template>
                                             <ControlTemplate TargetType="UXControls:UXToggleSwitch">
                                                 <Border x:Name="MicrosoftTeamsBorder" Background="{StaticResource NormalBackground}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="4,4,4,4">
@@ -141,7 +141,7 @@
                                 </StackPanel>
 
                                 <StackPanel Grid.Row="2">
-                                    <UXControls:UXToggleSwitch x:Name="ZoomButton" BorderBrush="#FF1B385F" BorderThickness="1.5" Width="406" Height="56" Margin="16,0,0,8" Background="{StaticResource SplitItem_NormalBdColor}" IsChecked="{Binding IsZoomChecked, Mode=TwoWay}" MouseMove="ZoomButton_MouseMove">
+                                    <UXControls:UXToggleSwitch x:Name="ZoomButton" BorderBrush="#FF1B385F" BorderThickness="1.5" Width="406" Height="56" Margin="16,0,0,8" Background="{StaticResource SplitItem_NormalBdColor}" IsChecked="{Binding IsZoomChecked, Mode=TwoWay}" MouseMove="ZoomButton_MouseMove" MouseLeave="MicrosoftTeamsButton_MouseLeave">
                                         <UXControls:UXToggleSwitch.Template>
                                             <ControlTemplate TargetType="UXControls:UXToggleSwitch">
                                                 <Border x:Name="ZoomButtonBorder" Background="{StaticResource NormalBackground}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="4,4,4,4">
@@ -167,7 +167,7 @@
                                 </StackPanel>
 
                                 <StackPanel Grid.Row="3">
-                                    <UXControls:UXToggleSwitch x:Name="GoogleMeetButton" Visibility="{Binding ControlGoogleMeetButtonShow, Converter={StaticResource BooleanToVisibilityConverter}}" BorderBrush="#FF1B385F" BorderThickness="1.5" Width="406" Height="56" Margin="16,0,4,8" Background="{StaticResource SplitItem_NormalBdColor}" IsChecked="{Binding IsGoogleMeetChecked, Mode=TwoWay}" MouseMove="GoogleMeetButton_MouseMove">
+                                    <UXControls:UXToggleSwitch x:Name="GoogleMeetButton" Visibility="{Binding ControlGoogleMeetButtonShow, Converter={StaticResource BooleanToVisibilityConverter}}" BorderBrush="#FF1B385F" BorderThickness="1.5" Width="406" Height="56" Margin="16,0,4,8" Background="{StaticResource SplitItem_NormalBdColor}" IsChecked="{Binding IsGoogleMeetChecked, Mode=TwoWay}" MouseMove="GoogleMeetButton_MouseMove" MouseLeave="MicrosoftTeamsButton_MouseLeave">
                                         <UXControls:UXToggleSwitch.Template>
                                             <ControlTemplate TargetType="UXControls:UXToggleSwitch">
                                                 <Border x:Name="GoogleMeetButtonBorder" Background="{StaticResource NormalBackground}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="4,4,4,4">
@@ -192,7 +192,7 @@
                                     </UXControls:UXToggleSwitch>
                                 </StackPanel>
 
-                                <StackPanel Grid.Row="4">
+                                <!--<StackPanel Grid.Row="4">
                                     <UXControls:UXToggleSwitch x:Name="SkypeforBusinessButton" Visibility="{Binding ControlSkypeforBusinessButtonShow, Converter={StaticResource BooleanToVisibilityConverter}}" BorderBrush="#FF1B385F" BorderThickness="1.5" Width="406" Height="56" Margin="16,0,0,20" Background="{StaticResource SplitItem_NormalBdColor}" IsChecked="{Binding IsSkypeForBusinessChecked, Mode=TwoWay}" MouseMove="SkypeforBusinessButton_MouseMove">
                                         <UXControls:UXToggleSwitch.Template>
                                             <ControlTemplate TargetType="UXControls:UXToggleSwitch">
@@ -204,10 +204,10 @@
                                                     </Grid>
                                                 </Border>
                                                 <ControlTemplate.Triggers>
-                                                    <!--<Trigger Property="IsChecked" Value="True">
+                                                    --><!--<Trigger Property="IsChecked" Value="True">
                                                     <Setter TargetName="SkypeforBusinessBorder" Property="Background" Value="{StaticResource PressedBackground}" />
                                                     <Setter TargetName="SkypeforBusinessBorder" Property="BorderBrush" Value="{StaticResource PressedBorderBrush}" />
-                                                    </Trigger>-->
+                                                    </Trigger>--><!--
                                                     <Trigger Property="IsMouseOver" Value="True">
                                                         <Setter TargetName="SkypeforBusinessBorder" Property="Background" Value="{StaticResource PressedBackground}" />
                                                         <Setter TargetName="SkypeforBusinessBorder" Property="BorderBrush" Value="{StaticResource SplitItem_HoverBdColor}" />
@@ -216,7 +216,7 @@
                                             </ControlTemplate>
                                         </UXControls:UXToggleSwitch.Template>
                                     </UXControls:UXToggleSwitch>
-                                </StackPanel>
+                                </StackPanel>-->
                             </Grid>
                         </StackPanel>
                     </Border>

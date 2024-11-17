@@ -173,6 +173,8 @@ namespace DDPM.SA.Common
 
         public event EventHandler<ZoomMeetingTypeChangedArgs> ZoomMeetingTypeChanged_Notify;
 
+        Task<bool> GetIsESISupported(string Guid);
+
         #endregion
 
         #region Headset
@@ -184,6 +186,11 @@ namespace DDPM.SA.Common
         Task<bool> SetSelectedPresetAsync(string Guid, int newValue);
         Task<bool> SetSidetoneLevelAsync(string Guid, int newValue);
         Task<bool> SetBandsGainAsync(string Guid, byte[] newValue);
+        Task<bool> SetBand1GainAsync(string Guid, int newValue);
+        Task<bool> SetBand2GainAsync(string Guid, int newValue);
+        Task<bool> SetBand3GainAsync(string Guid, int newValue);
+        Task<bool> SetBand4GainAsync(string Guid, int newValue);
+        Task<bool> SetBand5GainAsync(string Guid, int newValue);
         Task<bool> SetAncModeAsync(string Guid, int newValue);
         Task<bool> SetAncGainAsync(string Guid, int newValue);
         Task<bool> SetWearDetectionAsync(string Guid, int newValue);
@@ -238,6 +245,11 @@ namespace DDPM.SA.Common
         Task<int> GetSidetoneLevelAsync(string Guid);
         Task<bool> GetMuteStatusAsync(string Guid);
         Task<byte[]> GetBandsGainAsync(string Guid);
+        Task<int> GetBand1GainAsync(string Guid);
+        Task<int> GetBand2GainAsync(string Guid);
+        Task<int> GetBand3GainAsync(string Guid);
+        Task<int> GetBand4GainAsync(string Guid);
+        Task<int> GetBand5GainAsync(string Guid);
         Task<int> GetAncModeAsync(string Guid);
         Task<int> GetAncGainAsync(string Guid);
         Task<int> GetWearDetectionAsync(string Guid);
@@ -276,6 +288,10 @@ namespace DDPM.SA.Common
         Task<string> GetPluginIdAsyncForDongle(string Guid);
         Task<JArray> GetDeviceItemsExAsyncForDongle(string Guid);
 
+        #endregion
+
+        #region Dock
+        Task<DockData> GetDockData(string guid);
         #endregion
     }
 }

@@ -1,10 +1,10 @@
 ﻿using Dell.Client.Framework.Common;
+using Dell.Client.Framework.UX.WPF.Controls;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-
 namespace DDPM.SA.Common
 {
     /*public class IT_Command_Global
@@ -144,6 +144,10 @@ namespace DDPM.SA.Common
 
         public class CommandLineInput
         {
+            //Remote management guid assign (ex:CMA command)
+            //If this item has value, it means the subscription does not from cli.subagent, then no need to generate new GUID at runtime.
+            public string remote_mgr_guid { get; set; } = string.Empty;
+
             //Used to judge target command support or not (please everyone refer to your own JIRA story)
             public bool isCliRunAdmin { get; set; } = false;
 
@@ -169,6 +173,8 @@ namespace DDPM.SA.Common
             public List<string> Model { get; set; }//for display with model
             public List<string> DeviceIndex { get; set; }//for display with index
             public List<string> GuidString { get; set; }//for peripherals
+            public List<string> PPID { get; set; } //for peripherals
+            public List<string> SerialNumber { get; set; } //for peripherals
             public string LogPath { get; set; }
 
             //Here are 3 possible conditions,
@@ -194,6 +200,8 @@ namespace DDPM.SA.Common
                 Model = new List<string>();
                 DeviceIndex = new List<string>();
                 GuidString = new List<string>();
+                PPID = new List<string>();
+                SerialNumber = new List<string>();
                 LogPath = Path.GetFullPath("CLI_Log\\" + DateTime.Now.ToString("yyyy - MM - dd - HH - mm - ss") + ".txt");
             }
 
@@ -221,7 +229,11 @@ namespace DDPM.SA.Common
                 }
                 if (arg.Length > 260)
                 {
-                    _Log.Error("[ICLICommandTable] Exception error: string too long. Arg:" + arg.ToString());
+                    string logString = arg;
+                    if (logString.Length >= 500)
+                        logString = logString.Substring(0, 500);
+
+                    _Log.Error("[ICLICommandTable] Exception error: string too long. Arg:" + System.Security.SecurityElement.Escape(logString));
                     return null;
                 }
             }
@@ -296,12 +308,19 @@ namespace DDPM.SA.Common
                             args[i] = args[i].Substring(1);
                         }
 
-                        if (args[i].ToUpper().IndexOf("SERVICETAG") == 0 || args[i].ToUpper().IndexOf("MODEL") == 0 || args[i].ToUpper().IndexOf("INDEX") == 0 || args[i].ToUpper().IndexOf("GUID") == 0)//判斷是那些裝置
+                        if (args[i].ToUpper().IndexOf("SERVICETAG") == 0 || 
+                            args[i].ToUpper().IndexOf("MODEL") == 0 || 
+                            args[i].ToUpper().IndexOf("INDEX") == 0 || 
+                            args[i].ToUpper().IndexOf("GUID") == 0 || 
+                            args[i].ToUpper().IndexOf("PPID") == 0 || 
+                            args[i].ToUpper().IndexOf("SERIALNUMBER") == 0)//判斷是那些裝置
                         {
                             string[] tmpSS = args[i].Split("=");
                             if (tmpSS.Length != 2)
                             {
-                                _Log.Warning($"[CLI] ignore a part of commands => {tmp}");
+                                if (tmp.Length >= 500)
+                                    tmp = tmp.Substring(0, 500);
+                                _Log.Warning($"[CLI] ignore a part of commands => {System.Security.SecurityElement.Escape(tmp)}");
                                 continue;
                             }
 
@@ -337,6 +356,16 @@ namespace DDPM.SA.Common
                                         int temp = int.Parse(t) - 1;
                                         commandInput.DeviceIndex.Add(temp.ToString());
                                     }
+                                    else if (tmpSS[0].ToUpper().Contains("PPID"))
+                                    {
+                                        int temp = int.Parse(t) - 1;
+                                        commandInput.PPID.Add(temp.ToString());
+                                    }
+                                    else if (tmpSS[0].ToUpper().Contains("SERIALNUMBER"))
+                                    {
+                                        int temp = int.Parse(t) - 1;
+                                        commandInput.SerialNumber.Add(temp.ToString());
+                                    }
                                     else
                                     {
                                         //_Log.Error("[ICLICommandTable] ");
@@ -349,7 +378,10 @@ namespace DDPM.SA.Common
                             string[] tmpSS = args[i].Split("=");
                             if (tmpSS.Length != 2)
                             {
-                                _Log.Warning($"[CLI] ignore a part of commands => {tmp}");
+                                if (tmp.Length >= 500)
+                                    tmp = tmp.Substring(0, 500);
+
+                                _Log.Warning($"[CLI] ignore a part of commands => {System.Security.SecurityElement.Escape(tmp)}");
                                 continue;
                             }
                             if (!tmpSS[1].Contains(".txt"))

@@ -106,6 +106,8 @@ namespace DDPM.EABroker
                         _infoWindow = new InfoWindow(_vm);
                         WriteLog("After new InfoWindow");
                         _infoWindow.Show();
+
+                        _vm.InitScreenIdWindows();
                     }
                     catch (Exception exIn)
                     {
@@ -186,6 +188,13 @@ namespace DDPM.EABroker
         {
             if (_vm != null)
                 _vm.ReloadEzSettingsFromUserSettingsFile();
+        }
+
+        public void TestForRobert_EzArrange()
+        {
+            MonitorInfo moinfo = new MonitorInfo();
+            _deviceManagerSA.CheckEAIDExit( moinfo, 0);
+            _deviceManagerSA.DeleteEAID(moinfo, 0);
         }
     }
 

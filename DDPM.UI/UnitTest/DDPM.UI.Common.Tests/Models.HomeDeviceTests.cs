@@ -182,7 +182,7 @@ namespace DDPM.UI.Common.Tests
             homeDevice.MonitorInfo = monitorinfo;
             result = homeDevice.TooltipModelName;
             // Assert
-            Assert.That(result, Is.EqualTo(null));
+            Assert.That(result, Is.EqualTo(""));
 
             // Act
             monitorinfo = new MonitorInfo() { MarketingName="Aa" };

@@ -73,6 +73,16 @@ namespace DDPM.EABroker
             //Hide window from Alt+tab
             System.Windows.Interop.WindowInteropHelper wndHelper = new System.Windows.Interop.WindowInteropHelper(this);
             Win32Lib.Win32.HideWinFromAltTab(wndHelper.Handle);
+
+            ISplitCtrl? isp0B = ISplitCtrl.Create(0, 'B');
+            isp0B.SplitMode = eSplitModes.AWS;
+            _vm.AwsIcon0 = isp0B;
+
+            //ISplitCtrl? isp2B = ISplitCtrl.Create(2, 'B');
+            //isp2B.SplitMode = eSplitModes.AWS;
+            //_vm.AwsIcon0 = isp2B;
+
+
         }
         #endregion ctor / Init
 
@@ -167,8 +177,8 @@ namespace DDPM.EABroker
             }
 
             //Load RecentList to IconList
-            this.Dispatcher.Invoke(() =>
-            {
+            //Dispatcher.BeginInvoke(new Action(() =>
+            //{
                 bool isRecentListLoaded = false;
                 if (isSupportedMonitor)
                 {
@@ -207,7 +217,7 @@ namespace DDPM.EABroker
                 _vm.WriteLog($"  * AwsWindow.ReloadRecentList() elapsed {sw0.ElapsedMilliseconds} msec.");
 
                 Dispatcher_RefreshCellRects();
-            });
+            //}));
         }
 
         private void RefreshAwsIconRects()
@@ -292,8 +302,40 @@ namespace DDPM.EABroker
         #endregion
 
         #region Hovering
+        public CellObj? DetermineHoverigCellObj_Icon0(int x, int y)
+        {
+            //if (!IsCursorInsideAwsWindow(x, y))
+            //{
+            //    _vm.AwsWindowHoverMsg = $"Cursor({x},{y}) not inside AwsWindow";
+            //    return null;
+            //}
 
-         public CellObj? DetermineHoveringCellObj(int x, int y)
+            CellObj? hoverCell = null;
+            hoverCell = DeterminAwsIconHoveringCellObj(_vm.AwsIcon0, x, y);
+            if (hoverCell != null)
+            {
+                _vm.HoveringAwsIcon = _vm.AwsIcon0;
+                _vm.AwsIcon0.HoveringCell = hoverCell.Name;
+                _rcHoveringIcon = _rcIcon0;
+                _rcHoveringCell = hoverCell.rc;
+                _vm.AwsWindowHoverMsg = $"Hovering Icon0.{hoverCell.Name}";
+                HoverCellInAwsIcon0(_vm.AwsIcon0.HoveringCell);
+
+                //_vm.AwsIcon0.HoveringCell = "";
+                _vm.AwsIcon1.HoveringCell = "";
+                _vm.AwsIcon2.HoveringCell = "";
+                _vm.AwsIcon3.HoveringCell = "";
+                _vm.AwsIcon4.HoveringCell = "";
+                return hoverCell;
+            }
+            else
+            {
+                HoverCellInAwsIcon0("");
+            }
+            return null;
+        }
+
+        public CellObj? DetermineHoveringCellObj(int x, int y)
          {
             bool isHandled = false;
             _vm.WriteLog($"@ DetermineHoveringCellObj({x},{y}), _areCellRectsRefreshed={_areCellRectsRefreshed}");
@@ -305,42 +347,63 @@ namespace DDPM.EABroker
                 return null;
             }
 
-            if (!IsCursorInsideAwsWindow(x, y))
-            {
-                _vm.AwsWindowHoverMsg = $"Cursor({x},{y}) not inside AwsWindow";
-                return null;
-            }
+            //if (!IsCursorInsideAwsWindow(x, y))
+            //{
+            //    _vm.AwsWindowHoverMsg = $"Cursor({x},{y}) not inside AwsWindow";
+            //    return null;
+            //}
 
 
             DpiScale dpiScale = VisualTreeHelper.GetDpi(this);
             double scale = dpiScale.PixelsPerDip;
             CellObj? hoverCell = null;
 
-            _vm.AwsIcon0.HoveringCell = "";
-            _vm.AwsIcon1.HoveringCell = "";
-            _vm.AwsIcon2.HoveringCell = "";
-            _vm.AwsIcon3.HoveringCell = "";
-            _vm.AwsIcon4.HoveringCell = "";
+            //_vm.AwsIcon0.HoveringCell = "";
+            //_vm.AwsIcon1.HoveringCell = "";
+            //_vm.AwsIcon2.HoveringCell = "";
+            //_vm.AwsIcon3.HoveringCell = "";
+            //_vm.AwsIcon4.HoveringCell = "";
 
             //
             //  AWSIcon0
             //
-            hoverCell = DeterminAwsIconHoveringCellObj(_vm.AwsIcon0, x, y);
-            if (hoverCell != null)
-            {
-                _vm.HoveringAwsIcon = _vm.AwsIcon0;
-                _vm.AwsIcon0.HoveringCell = hoverCell.Name;
-                _rcHoveringIcon = _rcIcon0;
-                _rcHoveringCell = hoverCell.rc;
-                _vm.AwsWindowHoverMsg = $"Hovering Icon0.{hoverCell.Name}";
+            //if (!_rcIcon0.IsEmpty)
+            //{
+            //    if (_rcIcon0.Contains(x, y))
+            //    {
+            //        hoverCell = DeterminAwsIconHoveringCellObj(_vm.AwsIcon0, x, y);
+            //        //        foreach(CellObj objCell in _vm.AwsIcon0.CellList)
+            //        //        {
+            //        //            if (objCell.rc.Contains(x, y))
+            //        //            {
+            //        //                this.Dispatcher.Invoke(() =>
+            //        //                {
+            //        //                });
+            //        //            }
+            //        //        }
+            //    }
+            //}
+            //hoverCell = DeterminAwsIconHoveringCellObj(_vm.AwsIcon0, x, y);
+            //if (hoverCell != null)
+            //{
+            //    _vm.HoveringAwsIcon = _vm.AwsIcon0;
+            //    _vm.AwsIcon0.HoveringCell = hoverCell.Name;
+            //    _rcHoveringIcon = _rcIcon0;
+            //    _rcHoveringCell = hoverCell.rc;
+            //    _vm.AwsWindowHoverMsg = $"Hovering Icon0.{hoverCell.Name}";
+            //    HoverCellInAwsIcon0(_vm.AwsIcon0.HoveringCell);
 
-                //_vm.AwsIcon0.HoveringCell = "";
-                _vm.AwsIcon1.HoveringCell = "";
-                _vm.AwsIcon2.HoveringCell = "";
-                _vm.AwsIcon3.HoveringCell = "";
-                _vm.AwsIcon4.HoveringCell = "";
-                return hoverCell;
-            }
+            //    //_vm.AwsIcon0.HoveringCell = "";
+            //    _vm.AwsIcon1.HoveringCell = "";
+            //    _vm.AwsIcon2.HoveringCell = "";
+            //    _vm.AwsIcon3.HoveringCell = "";
+            //    _vm.AwsIcon4.HoveringCell = "";
+            //    return hoverCell;
+            //}
+            //else
+            //{
+            //    HoverCellInAwsIcon0("");
+            //}
 
             //
             //  AWSIcon1
@@ -614,7 +677,7 @@ namespace DDPM.EABroker
         {
             CellObj? hoverCell = null;
 
-            if (awsIcon.IsAddedCustomLayout)
+            if (awsIcon.IsOverlapCustomLayout)
             {
                 SplitCtrl0B sp0B = (SplitCtrl0B)awsIcon;
                 foreach(CellObj objCell in awsIcon.CellList)
@@ -623,26 +686,30 @@ namespace DDPM.EABroker
                     {
                         if (objCell.rc.Contains(x, y))
                         {
-                            objCell.CellBd.Dispatcher_SetIsHover(true);
+                         //   objCell.CellBd.Dispatcher_SetIsHover(true);
+                         //   objCell.CellBd.IsHover = true;
 
                             hoverCell = objCell;
                             hoverCell.rc = objCell.rc;
 
-                            _vm.AwsIcon1.HoveringCell = objCell.Name;
-                            _vm.HoveringAwsIcon = awsIcon;
-                            //_rcHoveringIcon = _rcIcon1;
-                            _rcHoveringCell = objCell.rc;
+                            //_vm.AwsIcon1.HoveringCell = objCell.Name;
+                            //_vm.HoveringAwsIcon = awsIcon;
+                            ////_rcHoveringIcon = _rcIcon1;
+                            //_rcHoveringCell = objCell.rc;
                         }
                         else
                         {
-                            objCell.CellBd.Dispatcher_SetIsHover(false);
+                        //    objCell.CellBd.Dispatcher_SetIsHover(false);
                         }
                     }
                     else
                     {
-                        objCell.CellBd.Dispatcher_SetIsHover(false);
+                    //    objCell.CellBd.Dispatcher_SetIsHover(false);
                     }
                 }
+                if (hoverCell != null) 
+                    return hoverCell;
+
                 //foreach (CellBorder cb in sp0B.CellBorders)
                 //{
                 //    if (hoverCell == null)
@@ -731,7 +798,7 @@ namespace DDPM.EABroker
 
         public void RefreshCellRects(int flag = 0)
         {
-            this.Dispatcher.Invoke(() =>
+            Dispatcher.BeginInvoke(new Action(() =>
             {
                 Dispatcher_RefreshCellRects(flag);
 
@@ -739,7 +806,7 @@ namespace DDPM.EABroker
                 {
                     _vm.rcAwsWindow = _vm.GetFrameworkElementRect(this);
                 }
-            });
+            }));
         }
 
         private void Dispatcher_RefreshCellRects(int flag = 0)
@@ -757,9 +824,6 @@ namespace DDPM.EABroker
             {
                 _areCellRectsRefreshed = false;
             }
-
-
-
 
             _rcIcon1 = _vm.GetFrameworkElementRect(_vm.AwsIcon1.UC);
             _vm.WriteLog($"@ RefreshCellRects() - Icon1: {ArrangeVM.FormatRect(_rcIcon1)}");
@@ -946,7 +1010,7 @@ namespace DDPM.EABroker
             {
                 if (flag == 0)
                 {
-                    System.Threading.Timer timer1 = new System.Threading.Timer((obj) => { RefreshCellRects(1); }, null, 100, Timeout.Infinite);
+                    System.Threading.Timer timer1 = new System.Threading.Timer((obj) => { RefreshCellRects(0); }, null, 100, Timeout.Infinite);
                 }
             }
             _vm.OnPropertyChanged_AwsIconInfos();
@@ -956,7 +1020,7 @@ namespace DDPM.EABroker
         {
             bool _areCellRectsRefreshed = true;
 
-            if (awsIcon.IsAddedCustomLayout)
+            if (awsIcon.IsOverlapCustomLayout)
             {
                 SplitCtrl0B splitCtrl0B = (SplitCtrl0B)awsIcon;
                 foreach(CellObj objCell in splitCtrl0B.CellList)
@@ -1017,47 +1081,72 @@ namespace DDPM.EABroker
             if (!isVisible)
                 return;
 
-            //Get the Screen of the cursor
-            Screen showScreen = _vm.GetScreenFromCursor();
-            //Check if the showScreen is WorkScreen of AwsWindow
-            _vm.WriteLog($"@ AwsWindow.HandleAwsWindowVisibilityChanged(), Cursor=({_vm.xCursor},{_vm.yCursor})");
-            System.Windows.Point ptAws = CalculateAwsPosition();
-            _vm.xAwsWindow = ptAws.X;
-            _vm.yAwsWindow = ptAws.Y;
-
-            Dispatcher_MoveWindow(ptAws.X, ptAws.Y);
-
-            //Get current working screen
-            Screen? scr = _vm.GetScreenFromCursor();
-            if (scr != null)
+            Dispatcher.BeginInvoke(new Action(() =>
             {
-                ReloadRecentList(scr.DeviceName);
-            }
-            RefreshAwsIconRects();
-            RefreshCellBordersInAwsIcons();
-            RefreshCellRects();
-            RefreshIcon0();
+                //Get the Screen of the cursor
+                Screen showScreen = _vm.GetScreenFromCursor();
+
+                //Check if the showScreen is WorkScreen of AwsWindow
+                _vm.WriteLog($"@ AwsWindow.HandleAwsWindowVisibilityChanged(), Cursor=({_vm.xCursor},{_vm.yCursor})");
+                System.Windows.Point ptAws = CalculateAwsPosition();
+                _vm.xAwsWindow = ptAws.X;
+                _vm.yAwsWindow = ptAws.Y;
+
+                //Move window to the new WorkScreen
+                Left = ptAws.X;
+                Top = ptAws.Y;
+                Topmost = true;
+
+                //Get current working screen
+                Screen? scr = _vm.GetScreenFromCursor();
+                if (scr != null)
+                {
+                    ReloadRecentList(scr.DeviceName);
+                }
+
+                RefreshAwsIconRects();
+                RefreshCellBordersInAwsIcons();
+                RefreshCellRects();
+                RefreshIcon0();
+
+            }));
+
+
         }
 
         private void HandleWorkScreenChanged(object? sender, Screen newScreen)
         {
             _vm.WriteLog($"@AwsWindow.HandleWorkScreenChanged(newScreen={newScreen.DeviceName})");
 
-            //Trace.WriteLine($"Actual={ActualWidth}x{ActualHeight}, Size={Width}x{Height}");
+            if (!_vm.IsAwsWindowVisible)
+                return;
 
-            _vm.WriteLog($"@ AwsWindow.HandleWorkScreenChanged(), Cursor=({_vm.xCursor},{_vm.yCursor})");
-            System.Windows.Point ptAws = CalculateAwsPosition();
-            _vm.xAwsWindow = ptAws.X;
-            _vm.yAwsWindow = ptAws.Y;
-
-            Dispatcher_MoveWindow(ptAws.X, ptAws.Y);
-
-            //Get current working screen
-            Screen? scr = _vm.GetScreenFromCursor();
-            if (scr != null)
+            Dispatcher.BeginInvoke(new Action(() =>
             {
-                ReloadRecentList(scr.DeviceName);
-            }
+
+                _vm.WriteLog($"@ AwsWindow.HandleWorkScreenChanged(), Cursor=({_vm.xCursor},{_vm.yCursor})");
+                System.Windows.Point ptAws = CalculateAwsPosition();
+                _vm.xAwsWindow = ptAws.X;
+                _vm.yAwsWindow = ptAws.Y;
+
+                //Move window to the new WorkScreen
+                Left = ptAws.X;
+                Top = ptAws.Y;
+                Topmost = true;
+
+                //Get current working screen
+                Screen? scr = _vm.GetScreenFromCursor();
+                if (scr != null)
+                {
+                    ReloadRecentList(scr.DeviceName);
+                }
+
+                RefreshAwsIconRects();
+                RefreshCellBordersInAwsIcons();
+                RefreshCellRects();
+                RefreshIcon0();
+
+            }));
         }
 
         #endregion ViewModel Event Handlers
@@ -1065,12 +1154,21 @@ namespace DDPM.EABroker
         #region Icon0 - Monitors
         private void RefreshIcon0()
         {
-            this.Dispatcher.Invoke(() =>
+            Dispatcher.BeginInvoke(new Action(() =>
             {
+                //if (_vm.AwsIcon0 != null)
+                //{
+                //    UI_RefreshIcon0_SplitCtrl0B();
+                //    return;
+                //}
+
                 if (icon0Canvas.ActualWidth == 0)
                     return;
 
                 System.Drawing.Rectangle rcVirtualScreen = SystemInformation.VirtualScreen;
+                if ((rcVirtualScreen.Width <= 0) || (rcVirtualScreen.Height <= 0))
+                    return;
+                
                 double cxView = 1.000;
                 double cyView = 1.000;
                 double ratioX = icon0Canvas.ActualWidth / (double)rcVirtualScreen.Width;
@@ -1108,6 +1206,7 @@ namespace DDPM.EABroker
                     CellBorder cellBd = new CellBorder();
                     cellBd.Width = scr.Bounds.Width * ratioBorder;
                     cellBd.Height = scr.Bounds.Height * ratioBorder;
+                    cellBd.CellName = $"{idxScr + 1}";
 
                     TextBlock text = new TextBlock();
                     text.Text = $"{idxScr + 1}";
@@ -1146,9 +1245,120 @@ namespace DDPM.EABroker
                     idxScr++;
                 }
                 _vm.OnPropertyChanged_AwsIconInfos();
-            });
+            }));
 
 
+        }
+
+        private void HoverCellInAwsIcon0(string hoverName)
+        {
+            Dispatcher.BeginInvoke(new Action(() =>
+            {
+                foreach (var item in icon0Canvas.Children)
+                {
+                    CellBorder cellBorder = item as CellBorder;
+                    if (cellBorder != null)
+                    {
+                        if (cellBorder.CellName.Equals(hoverName))
+                            cellBorder.Dispatcher_SetIsHover(true);
+                        else
+                            cellBorder.Dispatcher_SetIsHover(false);
+
+                    }
+                }
+            }));
+        }
+
+        private void UI_RefreshIcon0_SplitCtrl0B()
+        {
+            System.Drawing.Rectangle rcVirtualScreen = SystemInformation.VirtualScreen;
+            Trace.WriteLine($"VirtualScreen: {rcVirtualScreen.Width}x{rcVirtualScreen.Height}");
+            Trace.WriteLine($"AwsIcon0: {_vm.AwsIcon0.UC.ActualWidth}x{_vm.AwsIcon0.UC.ActualHeight}; {_vm.AwsIcon0.UC.Width}");
+            Trace.WriteLine($"AwsIcon1: {_vm.AwsIcon1.UC.ActualWidth}x{_vm.AwsIcon1.UC.ActualHeight}; {_vm.AwsIcon1.UC.Width}");
+
+            double cxView = 120;// _vm.AwsIcon1.UC.ActualWidth;
+            double cyView = 90; // _vm.AwsIcon1.UC.ActualHeight;
+
+            double ratioX = cxView / (double)rcVirtualScreen.Width;
+            double ratioY = cyView / (double)rcVirtualScreen.Height;
+            bool isHorzFit = (ratioX < ratioY);
+            Trace.WriteLine($"ratioX={ratioX}, ratioY={ratioY}, IsHorzFit={isHorzFit}");
+
+            double ratio = ratioX; //Default is top-down
+            double ratioBorder;
+            if (isHorzFit)
+            {
+                ratio = ratioY; //Left-right
+                icon0Canvas.Height = rcVirtualScreen.Height * icon0Canvas.ActualWidth / rcVirtualScreen.Width;
+                ratioBorder = icon0Canvas.ActualWidth / rcVirtualScreen.Width;
+            }
+            else
+            {
+                ratio = ratioX; //top-down
+                icon0Canvas.Width = rcVirtualScreen.Width * icon0Canvas.ActualHeight / rcVirtualScreen.Height; ;
+                ratioBorder = icon0Canvas.ActualHeight / rcVirtualScreen.Height;
+            }
+
+            //icon0Canvas.Children.Clear();
+            _vm.AwsIcon0.CellList.Clear();
+            int idxScr = 0;
+
+            foreach (Screen scr in Screen.AllScreens)
+            {
+                Trace.WriteLine($"Screen[{idxScr}] ({scr.Bounds.X},{scr.Bounds.Y}) {scr.Bounds.Width}x{scr.Bounds.Height}");
+                string cellName = $"{idxScr + 1}";
+
+                //AddMsg($"[{idxScr}] {scr.DeviceName} {(scr.Primary ? "Primary" : "")}");
+                //AddMsg($"   {FormatRecttangle(scr.Bounds)}");
+
+                //Border bd = new Border();
+                //bd.Width = scr.Bounds.Width * ratioBorder;
+                //bd.Height = scr.Bounds.Height * ratioBorder;
+                //bd.Style = FindResource("CellBorderStyle") as Style;
+
+                CellBorder cellBd = new CellBorder();
+                cellBd.Width = scr.Bounds.Width * ratio;
+                cellBd.Height = scr.Bounds.Height * ratio;
+                cellBd.CellName = cellName;
+
+                TextBlock text = new TextBlock();
+                text.Text = cellName;
+                text.Style = FindResource("MonitorIdTextStyle") as Style;
+                cellBd.AddChild(text);
+
+                double left = (scr.Bounds.Left - rcVirtualScreen.Left) * ratio;
+                double top = (scr.Bounds.Top - rcVirtualScreen.Top) * ratio;
+
+                //AddMsg($"    Border at ({left},{top}) {bd.Width}x{bd.Height}");
+
+                System.Windows.Point topLeft = new System.Windows.Point(left, top);
+                topLeft = icon0Canvas.PointToScreen(topLeft);
+                cellBd.rect = new Rect(topLeft.X, topLeft.Y, cellBd.Width, cellBd.Height);
+
+                //icon0Canvas.Children.Add(cellBd);
+                //Canvas.SetLeft(cellBd, left);
+                //Canvas.SetTop(cellBd, top);
+
+                CellObj cellObj = new CellObj(text.Text, cellBd);
+                cellObj.rc = new Rect(left, top, cellBd.Width, cellBd.Height);
+                Trace.WriteLine($"Cell[{cellName}] {ArrangeVM.FormatRect(cellObj.rc)}");
+                _vm.AwsIcon0.CellList.Add(cellObj);
+
+                if (isHorzFit)
+                {
+                    icon0Canvas.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
+                    icon0Canvas.VerticalAlignment = VerticalAlignment.Center;
+                }
+                else
+                {
+                    icon0Canvas.VerticalAlignment = VerticalAlignment.Stretch;
+                    icon0Canvas.HorizontalAlignment = System.Windows.HorizontalAlignment.Center;
+                }
+
+
+                idxScr++;
+            }
+            _vm.OnPropertyChanged_AwsIconInfos();
         }
         #endregion
 
@@ -1175,6 +1385,11 @@ namespace DDPM.EABroker
                     _vm.rcAwsWindow = _vm.GetFrameworkElementRect(this);
                 }
             }
+        }
+
+        public void OnWindowStartMoving()
+        {
+            //RefreshIcon0();
         }
     }
 }

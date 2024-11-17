@@ -41,6 +41,7 @@ namespace DDPM.UI.Plugin.MousePlugin
         private readonly CancellationToken CancellationToken;
         private readonly SemaphoreSlim _lock = new(1, 1);
         private DeviceHelper _deviceHelper = new();
+        private bool IsEventRegistered = false;
 
         /// <summary>
         /// Default constructor
@@ -131,21 +132,33 @@ namespace DDPM.UI.Plugin.MousePlugin
         /// <inheritdoc/>
         public void OnActivated()
         {
-            DdpmCommonHelper.DeviceManagerSA!.DeviceChanged += DeviceManager_DeviceChanged;
-            //_deviceManagerPlugin.UpdateNotify += PeripheralsPlugin_UpdateNotify;
+            if (!IsEventRegistered)
+            {
+                DdpmCommonHelper.DeviceManagerSA!.DeviceChanged += DeviceManager_DeviceChanged;
+                IsEventRegistered = true;
+            }
             Mouse.OverrideCursor = null;
         }
 
         /// <inheritdoc/>
         public void OnDeactivated()
         {
-            DdpmCommonHelper.DeviceManagerSA!.DeviceChanged -= DeviceManager_DeviceChanged;
+            if (IsEventRegistered)
+            {
+                DdpmCommonHelper.DeviceManagerSA!.DeviceChanged -= DeviceManager_DeviceChanged;
+                IsEventRegistered = false;
+            }
             Mouse.OverrideCursor = Cursors.Wait;
         }
 
         /// <inheritdoc/>
         public void OnShown(string parameter)
         {
+            if (!IsEventRegistered)
+            {
+                DdpmCommonHelper.DeviceManagerSA!.DeviceChanged += DeviceManager_DeviceChanged;
+                IsEventRegistered = true;
+            }
             ConfigureServices();
             GetPeripheralsAsync();
             if (_viewModel != null && !_viewModel.SetCurrentDevice(parameter))

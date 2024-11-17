@@ -15,12 +15,14 @@ using Dell.Client.Framework.UX.WPF.Console;
 using Dell.Client.Framework.UX.WPF.Controls;
 using Dell.Client.Framework.UX.WPF.ResourceManager;
 using Microsoft.Win32;
+using System;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Interop;
 using Screen = System.Windows.Forms.Screen;
+using ResourceManager = Dell.Client.Framework.UX.WPF.ResourceManager.ResourceManager;
 
 namespace NGA.ThickClient
 {
@@ -33,6 +35,8 @@ namespace NGA.ThickClient
         /// Log object specific to MainWindow
         /// </summary>
         private readonly ILog? _log;
+
+        private readonly IConsole? _Console;
 
         /// <summary>
         ///  75% of the height of the usable area
@@ -58,6 +62,7 @@ namespace NGA.ThickClient
 
         private const int WM_EXITSIZEMOVE = 0x0232;
         private const int WM_QUERYENDSESSION = 0x11;
+        private readonly ResourceManager resourceManager;
 
         /// <summary>
         /// Constructor
@@ -112,6 +117,8 @@ namespace NGA.ThickClient
                 RegisterEvents(console);
             }
             _log?.Info($"{nameof(MainWindow)} - Constructed");
+            resourceManager = new ResourceManager();
+            _Console = console;
         }
 
         #region Private Methods
@@ -162,7 +169,8 @@ namespace NGA.ThickClient
             if (e.PropertyName == nameof(UXSystemParameters.Instance.OSTheme))
             {
                 //update dark/light mode
-                //DdpmCommonHelper.updateMergedDictionarie();
+                if (DdpmCommonHelper.ThemeSwitchFlag)
+                    DdpmCommonHelper.updateMergedDictionaries(resourceManager);
             }
             if (e.PropertyName != nameof(UXSystemParameters.Instance.HighContrast))
                 return;
@@ -402,6 +410,20 @@ namespace NGA.ThickClient
         private void ConsoleWindow_Closed(object sender, EventArgs e)
         {
             _log?.Info($"{nameof(MainWindow)} - ConsoleWindow_Closed");
+        }
+
+        private void ConsoleWindow_Activated(object sender, EventArgs e)
+        {
+            _log?.Info($"{nameof(MainWindow)} - ConsoleWindow_Activated");
+            if (_Console != null)
+                _Console.RaiseEvent(ConsoleEventNames.MainWindow_Activate, this, new EventManagerArgs());
+        }
+
+        private void ConsoleWindow_DeActivated(object sender, EventArgs e)
+        {
+            _log?.Info($"{nameof(MainWindow)} - ConsoleWindow_Deactivated");
+            if (_Console != null)
+                _Console.RaiseEvent(ConsoleEventNames.MainWindow_DeActivate, this, new EventManagerArgs());
         }
     }
 }
