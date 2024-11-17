@@ -9285,31 +9285,45 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             writelog($"CallQAM_UI: GetDevices_WithoutAwait go");
             List<DeviceInfo> deviceInfos = GetDevices_WithoutAwait().Result.deviceInfo.FindAll(x => (x.PhysicalDeviceType.Equals(DeviceType.LogicalWebcam) || x.PhysicalDeviceType.Equals(DeviceType.PhysicalWebcam)));
             writelog($"CallQAM_UI: deviceInfos.Count:{deviceInfos.Count}");
-            if (deviceInfos!=null&& deviceInfos.Count==0)
+            if (_ZoomMeetingType == ZoomMeetingType.CONF_3RD_EVENT_MEETING)
             {
-
-            }
-            if (_ZoomMeetingType == ZoomMeetingType.CONF_3RD_EVENT_MEETING && _QAM == null)
-            {
-                if (deviceInfos != null && deviceInfos.Count == 1)
+                if (_QAM == null)
                 {
-                    CallQAM_UI(this);
-                }
-            }
-            else if (_QAM != null)
-            {
-                QAMClose();
-            }
-            if (_QAM != null)
-            {
-                if (_IsZoomScreenShareActive)
-                {
-                    QAMHide();
+                    if (_GlobalSettingParam != null && _GlobalSettingParam.GlobalSetting_WidgetSettings != null && _GlobalSettingParam.GlobalSetting_WidgetSettings.EnableQuickAccessWidget_Reminder)
+                    {
+                        ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.QAM);
+                    }
+                    else if (_GlobalSettingParam != null && _GlobalSettingParam.GlobalSetting_WidgetSettings != null && _GlobalSettingParam.GlobalSetting_WidgetSettings.EnableQuickAccessWidget)
+                    {
+                        if (deviceInfos != null && deviceInfos.Count == 1)
+                        {
+                            CallQAM_UI(this);
+                        }
+                    }
                 }
                 else
                 {
-
+                    if (deviceInfos != null && deviceInfos.Count == 1)
+                    {
+                        CallQAM_UI(this);
+                    }
+                    if (deviceInfos != null && deviceInfos.Count > 1)
+                    {
+                        QAMClose();
+                    }
+                    if (_IsZoomScreenShareActive)
+                    {
+                        QAMHide();
+                    }
+                    else
+                    {
+                        QAMShow();
+                    }
                 }
+            }
+            else
+            {
+                QAMClose();
             }
             writelog($"HandleQAM done");
         }
@@ -9368,6 +9382,17 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             {
                 writelog($"QAMHide QAMHide go");
                 _QAM.Hide();
+                writelog($"QAMHide QAMHide done");
+            }
+            writelog($"QAMHide done");
+        }
+        private void QAMShow()
+        {
+            writelog($"QAMHide Start");
+            if (_QAM == null)
+            {
+                writelog($"QAMHide QAMHide go");
+                _QAM.Show();
                 writelog($"QAMHide QAMHide done");
             }
             writelog($"QAMHide done");
