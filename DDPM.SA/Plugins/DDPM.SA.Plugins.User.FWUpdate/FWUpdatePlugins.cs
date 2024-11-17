@@ -1090,7 +1090,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                         }
                     }
                 }
-                if(currentFWInfo.DeviceType == DeviceType.PhysicalAudioDongle ||
+                else if(currentFWInfo.DeviceType == DeviceType.PhysicalAudioDongle ||
                     currentFWInfo.DeviceType == DeviceType.PhysicalDongle)
                 {
                     List<DeviceInfo> dongle_deviceInfos = _DeviceInfos.FindAll(o => o.PhysicalDeviceType.Equals(DeviceType.PhysicalAudioDongle) ||
@@ -1107,19 +1107,22 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                         }
                     }
                 }
-                DeviceInfo? deviceInfo = _DeviceInfos.Find(o => o.ID.ToString().Equals(currentFWInfo.DeviceId.Replace("{", "").Replace("}", "")));
-                _logs.DebugMsg_1($"{nameof(CheckDeviceStatus_IsStopUpdate)} deviceInfo is null : {(deviceInfo == null ? "Yes" : "No")}");
-                if (deviceInfo != null)
+                else
                 {
-                    _logs.DebugMsg_1($"{nameof(CheckDeviceStatus_IsStopUpdate)} deviceInfos.IsBatteryLevelSupported : {deviceInfo.IsBatteryLevelSupported}");
-                    if (deviceInfo.IsBatteryLevelSupported)
+                    DeviceInfo? deviceInfo = _DeviceInfos.Find(o => o.ID.ToString().Equals(currentFWInfo.DeviceId.Replace("{", "").Replace("}", "")));
+                    _logs.DebugMsg_1($"{nameof(CheckDeviceStatus_IsStopUpdate)} deviceInfo is null : {(deviceInfo == null ? "Yes" : "No")}");
+                    if (deviceInfo != null)
                     {
-                        _logs.DebugMsg_1($"{nameof(CheckDeviceStatus_IsStopUpdate)} deviceInfos.BatteryStatus : {deviceInfo.BatteryStatus}");
-                        _logs.DebugMsg_1($"{nameof(CheckDeviceStatus_IsStopUpdate)} deviceInfos.BatteryLevel : {deviceInfo.BatteryLevel}");
-                        if (deviceInfo.BatteryLevel <= 20)
+                        _logs.DebugMsg_1($"{nameof(CheckDeviceStatus_IsStopUpdate)} deviceInfos.IsBatteryLevelSupported : {deviceInfo.IsBatteryLevelSupported}");
+                        if (deviceInfo.IsBatteryLevelSupported)
                         {
-                            _notificationStr = "Firmware update unsuccessful.";
-                            ret = true;
+                            _logs.DebugMsg_1($"{nameof(CheckDeviceStatus_IsStopUpdate)} deviceInfos.BatteryStatus : {deviceInfo.BatteryStatus}");
+                            _logs.DebugMsg_1($"{nameof(CheckDeviceStatus_IsStopUpdate)} deviceInfos.BatteryLevel : {deviceInfo.BatteryLevel}");
+                            if (deviceInfo.BatteryLevel <= 20)
+                            {
+                                _notificationStr = "Firmware update unsuccessful.";
+                                ret = true;
+                            }
                         }
                     }
                 }
