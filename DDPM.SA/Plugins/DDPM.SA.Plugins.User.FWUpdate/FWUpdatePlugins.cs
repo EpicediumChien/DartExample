@@ -1076,30 +1076,22 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                 if (currentFWInfo.DeviceType == DeviceType.LogicalDock ||
                     currentFWInfo.DeviceType == DeviceType.PhysicalWiredDock)
                 {
-                    int dockCount = 0;
-                    foreach (DeviceInfo device in _DeviceInfos)
+                    List<DeviceInfo> dock_deviceInfos = _DeviceInfos.FindAll(o => o.PhysicalDeviceType.Equals(DeviceType.LogicalDock) ||
+                    o.PhysicalDeviceType.Equals(DeviceType.PhysicalWiredDock));
+                    _logs.DebugMsg_1($"{nameof(CheckDeviceStatus_IsStopUpdate)} dock_deviceInfos is null : {(dock_deviceInfos == null ? "Yes" : "No")}");
+                    if (dock_deviceInfos != null)
                     {
-                        if (device != null)
+                        _logs.DebugMsg_1($"{nameof(CheckDeviceStatus_IsStopUpdate)} dock_deviceInfos.Count: {dock_deviceInfos.Count}");
+                        if (dock_deviceInfos.Count >= 2)
                         {
-                            if (device.Type == DeviceType.LogicalDock)
-                            {
-                                dockCount++;
-                            }
-                            if (dockCount >= 2)
-                            {
-                                break;
-                            }
+                            _notificationStr = "Multiple docks are detected. Keep only one dock connected to prevent damage to your docks.";
+                            _logs.DebugMsg_1($"{nameof(CheckDeviceStatus_IsStopUpdate)} LogicalDock: Multiple docks are detected. Keep only one dock connected to prevent damage to your docks");
+                            ret = true;
                         }
                     }
-                    _logs.DebugMsg_1($"{nameof(CheckDeviceStatus_IsStopUpdate)} dockCount: {dockCount}");
-                    if (dockCount >= 2)
-                    {
-                        _notificationStr = "Multiple docks are detected. Keep only one dock connected to prevent damage to your docks.";
-                        _logs.DebugMsg_1($"{nameof(CheckDeviceStatus_IsStopUpdate)} LogicalDock: Multiple docks are detected. Keep only one dock connected to prevent damage to your docks");
-                        ret = true;
-                    }
                 }
-                else
+                if(currentFWInfo.DeviceType == DeviceType.PhysicalAudioDongle ||
+                    currentFWInfo.DeviceType == DeviceType.PhysicalDongle)
                 {
                     List<DeviceInfo> dongle_deviceInfos = _DeviceInfos.FindAll(o => o.PhysicalDeviceType.Equals(DeviceType.PhysicalAudioDongle) ||
                     o.PhysicalDeviceType.Equals(DeviceType.PhysicalDongle));
@@ -1107,29 +1099,27 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                     if (dongle_deviceInfos != null)
                     {
                         _logs.DebugMsg_1($"{nameof(CheckDeviceStatus_IsStopUpdate)} dongle_deviceInfos.Count : {dongle_deviceInfos.Count}");
-                        if (dongle_deviceInfos.Count >= 2 &&
-                        (currentFWInfo.DeviceType == DeviceType.LogicalDock ||
-                         currentFWInfo.DeviceType == DeviceType.PhysicalWiredDock))
+                        if (dongle_deviceInfos.Count >= 2)
                         {
                             _notificationStr = "Firmware update aborted. Ensure only one device of same model is connected to system.";
                             _logs.DebugMsg_1($"{nameof(CheckDeviceStatus_IsStopUpdate)} currentFWInfo.Model: {currentFWInfo.Model}: Multiple devices of the same model are plugged in");
                             ret = true;
                         }
                     }
-                    DeviceInfo deviceInfo = _DeviceInfos.Find(o => o.Equals(currentFWInfo));
-                    _logs.DebugMsg_1($"{nameof(CheckDeviceStatus_IsStopUpdate)} deviceInfo is null : {(deviceInfo == null ? "Yes" : "No")}");
-                    if (deviceInfo != null)
+                }
+                DeviceInfo? deviceInfo = _DeviceInfos.Find(o => o.ID.ToString().Equals(currentFWInfo.DeviceId.Replace("{", "").Replace("}", "")));
+                _logs.DebugMsg_1($"{nameof(CheckDeviceStatus_IsStopUpdate)} deviceInfo is null : {(deviceInfo == null ? "Yes" : "No")}");
+                if (deviceInfo != null)
+                {
+                    _logs.DebugMsg_1($"{nameof(CheckDeviceStatus_IsStopUpdate)} deviceInfos.IsBatteryLevelSupported : {deviceInfo.IsBatteryLevelSupported}");
+                    if (deviceInfo.IsBatteryLevelSupported)
                     {
-                        _logs.DebugMsg_1($"{nameof(CheckDeviceStatus_IsStopUpdate)} deviceInfos.IsBatteryLevelSupported : {deviceInfo.IsBatteryLevelSupported}");
-                        if (deviceInfo.IsBatteryLevelSupported)
+                        _logs.DebugMsg_1($"{nameof(CheckDeviceStatus_IsStopUpdate)} deviceInfos.BatteryStatus : {deviceInfo.BatteryStatus}");
+                        _logs.DebugMsg_1($"{nameof(CheckDeviceStatus_IsStopUpdate)} deviceInfos.BatteryLevel : {deviceInfo.BatteryLevel}");
+                        if (deviceInfo.BatteryLevel <= 20)
                         {
-                            _logs.DebugMsg_1($"{nameof(CheckDeviceStatus_IsStopUpdate)} deviceInfos.BatteryStatus : {deviceInfo.BatteryStatus}");
-                            _logs.DebugMsg_1($"{nameof(CheckDeviceStatus_IsStopUpdate)} deviceInfos.BatteryLevel : {deviceInfo.BatteryLevel}");
-                            if (deviceInfo.BatteryLevel <= 20)
-                            {
-                                _notificationStr = "Firmware update unsuccessful.";
-                                ret = true;
-                            }
+                            _notificationStr = "Firmware update unsuccessful.";
+                            ret = true;
                         }
                     }
                 }
