@@ -139,7 +139,6 @@
                                                        HorizontalAlignment="Stretch"
                                                        Margin="8,8,8,8"
                                                        IsExpanded="True"
-                                                       Background="{StaticResource RightViewContainerBkColor}"
                                                        Foreground="White">
                                     <UXControls:UXExpander.Header>
                                         <UXControls:UXTextBlock  Text="{Binding [AdvancedSettings], Source={x:Static lang:LangHelper.Instance}}"
