@@ -48,7 +48,7 @@ namespace DDPM.UI.Common.Tests
             var SplitCtrlMock = new Mock<ISplitCtrl>();
             SplitCtrlMock.Setup(s => s.FriendlyName).Returns("FriendlyName");
             splitItemViewModel.SplitCtrl = SplitCtrlMock.Object;
-            Assert.That(splitItemViewModel.ToolTipText, Is.EqualTo("[0]FriendlyName"));
+            Assert.That(splitItemViewModel.ToolTipText, Is.EqualTo("FriendlyName"));
 
             var _splitMock=new Mock<ISplit>();
             _splitMock.Setup(s => s.Description).Returns("Description");

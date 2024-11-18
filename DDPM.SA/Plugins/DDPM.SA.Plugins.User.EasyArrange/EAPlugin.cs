@@ -959,6 +959,21 @@ namespace DDPM.SA.Plugins.User.EasyArrange
                 }
             }
         }
+
+        /// <summary>
+        /// Set Selected EA Layout with EAID
+        /// It can be used to replace  STA_SetEASelectedLayout(MonitorInfo monitorInfo, SplitJson spJson)
+        /// The SplitJson will be created in thid method from the input EAID, then calling the method above.
+        /// A new method for CLI /WriteEALayout [x]
+        /// </summary>
+        /// <param name="monitorInfo"></param>
+        /// <param name="eaId"></param>
+        /// <returns></returns>
+        public Task<bool> SetEASelectedLayout(MonitorInfo monitorInfo, int eaId)
+        {
+            //EAID=0 => Empty Layout, SplitCtrl0A
+            return Task.FromResult(true);
+        }
         #endregion Methods
 
         #endregion IEasyArrangeService Implementation

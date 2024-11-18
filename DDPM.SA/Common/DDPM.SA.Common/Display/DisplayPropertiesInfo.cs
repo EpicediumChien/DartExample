@@ -163,6 +163,14 @@ namespace DDPM.SA.Common
         /// 現在螢幕畫面方向
         /// </summary>
         public DisplayOrientation CurrentOrientation;
+        /// <summary>
+        /// 螢幕是否支援OSD方向,True支援寫入,False僅支援讀取,null為沒有AA
+        /// </summary>
+        public bool? Supported_OSD_Orientation;
+        /// <summary>
+        /// 現在OSD菜單方向
+        /// </summary>
+        public DisplayOrientation Current_OSD_Orientation;
 
         /// <summary>
         /// 螢幕可支援的解析度刷新率、方向列表(含現在值、建議值)
@@ -174,6 +182,7 @@ namespace DDPM.SA.Common
             SupportedProperties = new DisplaySupportedProperties();
             CurrentOrientation = DisplayOrientation.Unknow;
             USBCPrioritizationType = USBCPrioritizationType.Unknow;
+            Current_OSD_Orientation = DisplayOrientation.Unknow;
         }
     }
 
@@ -184,11 +193,13 @@ namespace DDPM.SA.Common
     {
         public List<Properties> Properties { get; set; }
         public DisplayOrientation[] Orientations { get; set; }
+        public DisplayOrientation[] OSD_Orientations { get; set; }
 
         public DisplaySupportedProperties()
         {
             Properties = new List<Properties>();
             Orientations = new DisplayOrientation[4];
+            OSD_Orientations = new DisplayOrientation[4];
         }
     }
 

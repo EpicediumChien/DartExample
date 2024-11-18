@@ -65,7 +65,8 @@ namespace DDPM.SA.Plugins.User.EasyArrange
         #region Log
         private void LogInfo(string msg)
         {
-            _log?.Info(msg);
+            string logDatetime = DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss.fff");
+            _log?.Info($"[{logDatetime}] {msg}");
         }
         #endregion Log
 

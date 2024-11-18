@@ -129,10 +129,13 @@ namespace DDPM.SA.Plugins.User.CMAProxy
         {
             text = "[CMAProxyPlugin] " + text;
             Console.WriteLine(text);
-            if (log_type == log_type.info)
-                Log.Info(text);
-            else
-                Log.Error(text);
+            if (Log != null)
+            {
+                if (log_type == log_type.info)
+                    Log.Info(text);
+                else
+                    Log.Error(text);
+            }
         }
 
         private void InitializeCMAManagerPlugin()
