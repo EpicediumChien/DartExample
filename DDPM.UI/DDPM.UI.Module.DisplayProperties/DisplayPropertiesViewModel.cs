@@ -36,6 +36,7 @@ namespace DDPM.UI.Module.DisplayProperties
             }
         }
         public Visibility Orientation_IsVisibility { get; set; } = Visibility.Visible;
+        public bool Orientation_IsEnabled { get; set; } = true;
         public List<UI_Orientation> Orientation_ItemsCollection { get; set; }
 
         public UI_Orientation SelectedOrientation
@@ -79,7 +80,7 @@ namespace DDPM.UI.Module.DisplayProperties
                 EventManagerArgs args = new EventManagerArgs(_HDRStatus);
                 DdpmCommonHelper.MyConsole.RaiseEvent("DisplayHDRStatusChanged", this, args);
                 RefreshUI();
-                //DdpmCommonHelper.MyShowPluginManager?.ShowHomePage("GeHomeFirst");
+                DdpmCommonHelper.MyShowPluginManager?.ShowHomePage("GeHomeFirst");
             }
         }
 
@@ -271,14 +272,6 @@ namespace DDPM.UI.Module.DisplayProperties
                 DisplayPropertiesInfo displayPropertiesInfo = DdpmCommonHelper.DeviceManagerSA.GetDisplayPropertiesInfo(currentMonitorInfo).Result;
                 //Add return to let program continue running
                 //return;
-                if (displayPropertiesInfo.CurrentOrientation == DisplayOrientation.Unknow)
-                {
-                    Orientation_IsVisibility = Visibility.Collapsed;
-                }
-                else
-                {
-                    Orientation_IsVisibility = Visibility.Visible;
-                }
                 _SupportedHDR = displayPropertiesInfo.SupportedHDR;
                 _HDRStatus = displayPropertiesInfo.isHDREnable;
                 EventManagerArgs args = new EventManagerArgs(_HDRStatus);
@@ -327,15 +320,30 @@ namespace DDPM.UI.Module.DisplayProperties
                 }));
 
                 _selectedResolution = Resolution_ItemsCollection.Find(x => (x.Properties.isCurrent));
-                foreach (DisplayOrientation orientation in displayPropertiesInfo.SupportedProperties.Orientations)
+                if (displayPropertiesInfo.CurrentOrientation == DisplayOrientation.Unknow || displayPropertiesInfo.Supported_OSD_Orientation == null)
                 {
-                    Orientation_ItemsCollection.Add(new UI_Orientation()
-                    {
-                        Orientation = orientation
-                    });
+                    Orientation_IsVisibility = Visibility.Collapsed;
                 }
-                _selectedOrientation = Orientation_ItemsCollection.Find(x => (x.Orientation == displayPropertiesInfo.CurrentOrientation));
-
+                else
+                {
+                    Orientation_IsVisibility = Visibility.Visible;
+                    if (displayPropertiesInfo.Supported_OSD_Orientation == false)
+                    {
+                        Orientation_IsEnabled = false;
+                    }
+                    else
+                    {
+                        Orientation_IsEnabled = true;
+                    }
+                    foreach (DisplayOrientation orientation in displayPropertiesInfo.SupportedProperties.OSD_Orientations)
+                    {
+                        Orientation_ItemsCollection.Add(new UI_Orientation()
+                        {
+                            Orientation = orientation
+                        });
+                    }
+                    _selectedOrientation = Orientation_ItemsCollection.Find(x => (x.Orientation == displayPropertiesInfo.Current_OSD_Orientation));
+                }
                 //Lock/unlock UI init data here (user's lock data should be synced up from IT config, so read user's data directly)
                 DDPMSettings data = DdpmCommonHelper.ReadDDPMSettings();//DeviceManagerSA.ReloadAppConfigData().Result;
                 Lock_RefreshRate = (bool)data.LockSettings.Lock_Display_ResolutionRefreshRate;
@@ -370,6 +378,7 @@ namespace DDPM.UI.Module.DisplayProperties
             OnPropertyChanged("IsHighDataSpeed");
             OnPropertyChanged("IsHighResolution");
             OnPropertyChanged("Orientation_IsVisibility");
+            OnPropertyChanged("Orientation_IsEnabled");
         }
 
         public void UpdateHDRStatus()
@@ -390,6 +399,14 @@ namespace DDPM.UI.Module.DisplayProperties
                         }
                     }
                 }
+                RefreshUI();
+            }
+        }
+        public void OSDOrientationChang(object o, DisplayOrientation e)
+        {
+            if (e != null)
+            {
+                _selectedOrientation = Orientation_ItemsCollection.Find(x => (x.Orientation == e));
                 RefreshUI();
             }
         }

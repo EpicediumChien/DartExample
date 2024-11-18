@@ -1774,8 +1774,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             _VCPchangedEventArgs.vcpcode = e.vcpcode;
             _VCPchangedEventArgs.value = e.value;
             _VCPchangedEventArgs.monitor = e.monitor;
-            ////1117 Bruce 不用自動旋轉把下行註解
-            //SetDisplayOrientation(_VCPchangedEventArgs);
+            SetDisplayOrientation(_VCPchangedEventArgs);
             //0611 Dean
             if (e.vcpcode.Equals("66"))
             {
@@ -1971,6 +1970,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             bool? supported_OSD_Orientation = IsSupportWriteOSDOrientation(capabilityString);
             _logs.DebugMsg($"[DisplayMangerPlugin] GetDisplayPropertiesInfo supportedHDR:{supportedHDR}");
             _logs.DebugMsg($"[DisplayMangerPlugin] GetDisplayPropertiesInfo supportedUSBC:{supportedUSBC}");
+            _logs.DebugMsg($"[DisplayMangerPlugin] GetDisplayPropertiesInfo supported_OSD_Orientation:{supported_OSD_Orientation}");
             bool isHDREnable = false;
             if (supportedHDR)
             {
@@ -2012,7 +2012,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             }
             ret_DisplayPropertiesInfo = _DisplayPropertiesPlugin.GetDisplayPropertiesInfo(monitorInfos, capabilityString, supportedHDR, isHDREnable, supportedUSBC, PrioritizationType).Result;
             ret_DisplayPropertiesInfo.Supported_OSD_Orientation = supported_OSD_Orientation;
-            if (ret_DisplayPropertiesInfo.Supported_OSD_Orientation == true)
+            if (ret_DisplayPropertiesInfo.Supported_OSD_Orientation != null)
             {
                 string osd_Orientation_str = GetOSDOrientation(monitorInfos).Result;
                 for (int i = 0; i < OrientationString.Length; i++)
@@ -2146,39 +2146,59 @@ namespace DDPM.SA.Plugins.User.DisplayManager
         public Task<bool> SetHDRStatus(MonitorInfo monitorInfos, bool onoff)
         {
             bool ret = false;
+            bool vcp_Ret = false;
             _logs.DebugMsg($"[DisplayMangerPlugin] SetHDRStatus start");
             if (_DisplayPropertiesPlugin != null)
             {
                 _logs.DebugMsg($"[DisplayMangerPlugin] SetHDRStatus on/off : {(onoff ? "on" : "off")}");
                 if (onoff)
                 {
-                    _logs.DebugMsg($"[DisplayMangerPlugin] _DisplayPropertiesPlugin.SetExtendMode go");
-                    _DisplayPropertiesPlugin.SetExtendMode(monitorInfos);
-                    _logs.DebugMsg($"[DisplayMangerPlugin] _DisplayPropertiesPlugin.SetExtendMode done");
-                    _logs.DebugMsg($"[DisplayMangerPlugin] _DisplayPropertiesPlugin.SetHDRStatus go");
-                    ret = _DisplayPropertiesPlugin.SetHDRStatus(monitorInfos.edid, onoff).Result;
-                    _logs.DebugMsg($"[DisplayMangerPlugin] _DisplayPropertiesPlugin.SetHDRStatus done ret : {ret}");
-                    if (ret)
+                    if (monitorInfos.CapabilityString != "" && monitorInfos.CapabilityString.Length > 10)
                     {
-                        _logs.DebugMsg($"[DisplayMangerPlugin] SetHDRStatus SetVCPCapability go");
-                        _logs.DebugMsg($"[DisplayMangerPlugin] SetHDRStatus SetVCPCapability({monitorInfos.modelName}, {0xEA}, {0xFE01})");
-                        ret = SetVCPCapability(monitorInfos, 0xEA, 0xFE01).Result;
-                        _logs.DebugMsg($"[DisplayMangerPlugin] SetHDRStatus SetVCPCapability done ret : {ret}");
+                        string desktop_E2 = "27";
+                        string desktop_F0 = "34";
+                        string[] ss = monitorInfos.CapabilityString.Split("E2(");
+                        ss = ss[1].Split(")");
+                        ss = ss[0].Split(" ");
+                        for (int i = 0; i < ss.Length; i++)
+                        {
+                            _logs.DebugMsg($"[DisplayMangerPlugin] SetHDRStatus ss:{ss[i]}");
+                            if (ss[i].Equals(desktop_E2))
+                            {
+                                var hexStyle = System.Globalization.NumberStyles.HexNumber;
+                                int number;
+                                if (int.TryParse(desktop_F0, hexStyle, CultureInfo.CurrentCulture, out number))
+                                {
+                                    _logs.DebugMsg($"[DisplayMangerPlugin] SetHDRStatus SetVCPCapability go");
+                                    _logs.DebugMsg($"[DisplayMangerPlugin] SetHDRStatus SetVCPCapability(monitorInfos, {0xF0},{(uint)number} )");
+                                    vcp_Ret = SetVCPCapability(monitorInfos, 0xF0, (uint)number).Result;
+                                    _logs.DebugMsg($"[DisplayMangerPlugin] SetHDRStatus SetVCPCapability done vcp_Ret : {vcp_Ret}");
+                                    break;
+                                }
+                            }
+                        }
                     }
                 }
-                else
-                {
-                    _logs.DebugMsg($"[DisplayMangerPlugin] _DisplayPropertiesPlugin.SetHDRStatus go");
-                    ret = _DisplayPropertiesPlugin.SetHDRStatus(monitorInfos.edid, onoff).Result;
-                    _logs.DebugMsg($"[DisplayMangerPlugin] _DisplayPropertiesPlugin.SetHDRStatus done ret : {ret}");
-                }
+
             }
             else
             {
                 _logs.DebugMsg($"[DisplayMangerPlugin] _DisplayPropertiesPlugin is null");
             }
+            _logs.DebugMsg($"[DisplayMangerPlugin] _DisplayPropertiesPlugin.SetHDRStatus go");
+            int count = 0;
+            do
+            {
+                ret = _DisplayPropertiesPlugin.SetHDRStatus(monitorInfos.edid, onoff).Result;
+                if (ret == false)
+                {
+                    Thread.Sleep(1000);
+                }
+                count++;
+            } while (ret == false && count < 10);
+            _logs.DebugMsg($"[DisplayMangerPlugin] _DisplayPropertiesPlugin.SetHDRStatus done ret : {ret}");
             _logs.DebugMsg($"[DisplayMangerPlugin] SetHDRStatus done");
-            return Task.FromResult(ret);
+            return Task.FromResult(ret && vcp_Ret);
         }
 
         public Task<bool> SetUSBCPrioritizationType(MonitorInfo monitorInfos, USBCPrioritizationType type)
