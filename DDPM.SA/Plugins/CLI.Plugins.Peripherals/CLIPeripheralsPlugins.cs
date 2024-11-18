@@ -1043,14 +1043,60 @@ namespace DDPM.CLI.Plugins.Peripherals
                 //    RunTaskA(val);
                 //    return (int)CLI_ExitCode.success;
                 case "ANCMODE":
-                    if (val == 1)
-                        data.LockSettings.Lock_Audio_ancMode = false;
-                    else
-                        data.LockSettings.Lock_Audio_ancMode = true;
-                    _devMgr.SetAppConfigData(data);
-                    taskA = _devMgr.SetAncMode;
-                    RunTaskA(val);
-                    return (int)CLI_ExitCode.success;
+                    SetResults.ForEach(x =>
+                    {
+                        x.Value = "";
+                        if (x.Result == "")
+                        {
+                            if (_devMgr.GetIsANCSupportedAsync(x.Guid).Result)
+                            {
+                                if (val == 1)
+                                    data.LockSettings.Lock_Audio_ancMode = false;
+                                else
+                                    data.LockSettings.Lock_Audio_ancMode = true;
+                                _devMgr.SetAppConfigData(data);
+                                taskA = _devMgr.SetAncMode;
+                                RunTaskA(val);
+                                retcode = true;
+                                //var result = RunAsyncTimeout(_devMgr.SetIsHDROn(x.Guid, bl)).Result;
+                                //if (result == "0")
+                                //{
+                                //    x.Result = "PASS";
+                                //    retcode_ = _devMgr.GetIsHDROn(x.Guid).Result;
+                                //    x.Value = (retcode_) ? "ON" : "OFF";
+                                //    x.Value += "," + (data.LockSettings.Lock_Webcam_hdr ? "LOCK" : "UNLOCK");
+                                //    x.Message = "N/A";
+                                //}
+                                //else if (result == "1")
+                                //{
+                                //    x.Result = "FAIL";
+                                //    x.Message = "Timeout";
+                                //}
+                                //else
+                                //{
+                                //    x.Result = "FAIL";
+                                //    x.Message = result;
+                                //}
+                                //retcode = (result == "0") ? true : false;
+                            }
+                            else
+                            {
+                                x.Value = "N/A";
+                                x.Result = "FAIL";
+                                x.Message = "HeadSet not support ANC";
+                                retcode = false;
+                            }
+                        }
+                    });
+                return retcode ? (int)CLI_ExitCode.success : (int)CLI_ExitCode.functional_error;
+                //if (val == 1)
+                //    data.LockSettings.Lock_Audio_ancMode = false;
+                //else
+                //    data.LockSettings.Lock_Audio_ancMode = true;
+                //_devMgr.SetAppConfigData(data);
+                //taskA = _devMgr.SetAncMode;
+                //RunTaskA(val);
+                //return (int)CLI_ExitCode.success;
                 case "SETANCGAIN":
                     taskA = _devMgr.SetAncGain;
                     RunTaskA(val);
@@ -1072,9 +1118,30 @@ namespace DDPM.CLI.Plugins.Peripherals
                 //        return (int)CLI_ExitCode.fail_SetPeripheralProperty_Value;
                 //    }
                 case "MICNOISECANCELLATION":
-                    taskB = _devMgr.SetMicNoiseCancellation;
-                    RunTaskB(bl);
-                    return (int)CLI_ExitCode.success;
+                    SetResults.ForEach(x =>
+                    {
+                        x.Value = "";
+                        if (x.Result == "")
+                        {
+                            if (_devMgr.GetIsMicNoiseCancellationSupportedAsync(x.Guid).Result)
+                            {
+                                taskB = _devMgr.SetMicNoiseCancellation;
+                                RunTaskB(bl);
+                                retcode = true;
+                            }
+                            else
+                            {
+                                x.Value = "N/A";
+                                x.Result = "FAIL";
+                                x.Message = "HeadSet not support MICNOISECANCELLATION";
+                                retcode = false;
+                            }
+                        }
+                    });
+                    return retcode ? (int)CLI_ExitCode.success : (int)CLI_ExitCode.functional_error;
+                    //taskB = _devMgr.SetMicNoiseCancellation;
+                    //RunTaskB(bl);
+                    //return (int)CLI_ExitCode.success;
                 //case "SETSIDETONE":
                 //    taskB = _devMgr.SetSidetone;
                 //    RunTaskB(bl);
@@ -1084,14 +1151,40 @@ namespace DDPM.CLI.Plugins.Peripherals
                 //    RunTaskA(val);
                 //    return (int)CLI_ExitCode.success;
                 case "WEARDETECTION":
-                    if (val == 1)
-                        data.LockSettings.Lock_Audio_wearDetection = false;
-                    else
-                        data.LockSettings.Lock_Audio_wearDetection = true;
-                    _devMgr.SetAppConfigData(data);
-                    taskA = _devMgr.SetWearDetectionForCLI;
-                    RunTaskA(val);
-                    return (int)CLI_ExitCode.success;
+                    SetResults.ForEach(x =>
+                    {
+                        x.Value = "";
+                        if (x.Result == "")
+                        {
+                            if (_devMgr.GetIsWearDetectionSupportedAsync(x.Guid).Result)
+                            {
+                                if (val == 1)
+                                    data.LockSettings.Lock_Audio_wearDetection = false;
+                                else
+                                    data.LockSettings.Lock_Audio_wearDetection = true;
+                                _devMgr.SetAppConfigData(data);
+                                taskA = _devMgr.SetWearDetectionForCLI;
+                                RunTaskA(val);
+                                retcode = true;
+                            }
+                            else
+                            {
+                                x.Value = "N/A";
+                                x.Result = "FAIL";
+                                x.Message = "HeadSet not support WearDetection";
+                                retcode = false;
+                            }
+                        }
+                    });
+                    return retcode ? (int)CLI_ExitCode.success : (int)CLI_ExitCode.functional_error;
+                    //if (val == 1)
+                    //    data.LockSettings.Lock_Audio_wearDetection = false;
+                    //else
+                    //    data.LockSettings.Lock_Audio_wearDetection = true;
+                    //_devMgr.SetAppConfigData(data);
+                    //taskA = _devMgr.SetWearDetectionForCLI;
+                    //RunTaskA(val);
+                    //return (int)CLI_ExitCode.success;
                 //case "SETBUSYLIGHT":
                 //    taskB = _devMgr.SetBusyLight;
                 //    RunTaskB(bl);
@@ -1117,6 +1210,44 @@ namespace DDPM.CLI.Plugins.Peripherals
                 //        return (int)CLI_ExitCode.fail_SetPeripheralProperty_Value;
                 //    }
                 case "MICSWITCH":
+                    SetResults.ForEach(x =>
+                    {
+                        x.Value = "";
+                        if (x.Result == "")
+                        {
+                            if (_devMgr.GetIsPropertyHDRSupported(x.Guid).Result)
+                            {
+                                var result = RunAsyncTimeout(_devMgr.SetIsHDROn(x.Guid, bl)).Result;
+                                if (result == "0")
+                                {
+                                    x.Result = "PASS";
+                                    retcode_ = _devMgr.GetIsHDROn(x.Guid).Result;
+                                    x.Value = (retcode_) ? "ON" : "OFF";
+                                    x.Value += "," + (data.LockSettings.Lock_Webcam_hdr ? "LOCK" : "UNLOCK");
+                                    x.Message = "N/A";
+                                }
+                                else if (result == "1")
+                                {
+                                    x.Result = "FAIL";
+                                    x.Message = "Timeout";
+                                }
+                                else
+                                {
+                                    x.Result = "FAIL";
+                                    x.Message = result;
+                                }
+                                retcode = (result == "0") ? true : false;
+                            }
+                            else
+                            {
+                                x.Value = "N/A";
+                                x.Result = "FAIL";
+                                x.Message = "Webcam not support HDR";
+                                retcode = false;
+                            }
+                        }
+                    });
+                    return retcode ? (int)CLI_ExitCode.success : (int)CLI_ExitCode.functional_error;
                     taskB = _devMgr.SetIsMicEnumerationOn;
                     RunTaskD(bl);
                     return (int)CLI_ExitCode.success;
