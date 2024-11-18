@@ -1721,40 +1721,40 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 ReviewAllMonitorToAvoidDuplicatedInfo();
 
                 InitMonitorSettings();
-                //List<DDPMMonitorSettings> monitorSettingsList = new List<DDPMMonitorSettings>();
-                //foreach (MonitorInfo m in _AllInfoMonitors)
-                //{
-                //    monitorSettingsList = _SettingsPlugin.InitDDPMMonitorConfigFile(m.modelName, out isInitMonitorSettings).Result;
-                //    if (isInitMonitorSettings)
-                //    {
-                //        if (monitorSettingsList == null)
-                //        {
-                //            monitorSettingsList = new List<DDPMMonitorSettings>();
-                //        }
-                //        if (monitorSettingsList.Count == 0 || monitorSettingsList.FindIndex(x => x.ServiceTag == m.edid.ServiceTag) == -1)
-                //        {
-                //            DDPMMonitorSettings settings = new DDPMMonitorSettings();
-                //            settings.Model = m.modelName;
-                //            settings.ServiceTag = m.edid.ServiceTag;
-                //            settings.VCPs = GetAllVCPcode(m);
-                //            monitorSettingsList.Add(settings);
-                //            bool b = _SettingsPlugin.WriteMonitorSettings(m.modelName, monitorSettingsList).Result;
-                //        }
 
-                //    }
-                //}
-
-                /*
-                _ = Task.Run(async () =>
+                Task.Run(() => //support last selected monitor info from settings
                 {
-                    lock (_CheckAutoLock)
+                    if(_SettingsPlugin != null)
                     {
-                        CheckAutoColorPresetEnableOnStartedCondition(_AllInfoMonitors);
+                        try
+                        {
+                            DDPMSettings data = _SettingsPlugin.ReloadAppConfigData().Result;
+                            if (data != null && data.UserSettings != null)
+                            {
+                                DDPMSimpleMonitorRecord mo = data.UserSettings.lastUISelectedMonitor;
+                                if (mo != null && !string.IsNullOrEmpty(mo.ModelName) && !string.IsNullOrEmpty(mo.ServiceTag))
+                                {
+                                    if (_AllInfoMonitors != null && _AllInfoMonitors.Count > 0)
+                                    {
+                                        int idx = _AllInfoMonitors.FindIndex(x => x.modelName.Equals(mo.ModelName) && x.edid.ServiceTag.Equals(mo.ServiceTag));
+                                        if (idx >= 0)
+                                            lastSelectedMonitor_UI = _AllInfoMonitors[idx];
+                                        else
+                                            lastSelectedMonitor_UI = null;
+                                    }
+                                }
+                                else
+                                    throw new ArgumentNullException("lastUISelectedMonitor");
+                            }
+                            else
+                                throw new ArgumentNullException("data");
+                        }
+                        catch(Exception ex)
+                        {
+                            writelog($"Read last selected monitor from settings failed. ({ex.Message})");
+                        }
                     }
                 });
-                */
-
-                //CheckAutoColorPresetEnableOnStartedCondition(_AllInfoMonitors);
 
                 return Task.FromResult(_AllInfoMonitors);
             }
@@ -11659,6 +11659,18 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         public Task SetLastSelectedMonitorFromUI(MonitorInfo mo)
         {
             lastSelectedMonitor_UI = mo;
+            Task.Run(() =>
+            {
+                if(mo != null && _SettingsPlugin != null)
+                {
+                    DDPMSettings settings = _SettingsPlugin.ReloadAppConfigData().Result;
+                    if(settings != null && settings.UserSettings != null)
+                    {
+                        settings.UserSettings.lastUISelectedMonitor = new DDPMSimpleMonitorRecord() { ModelName = mo.modelName, ServiceTag = mo.edid.ServiceTag};
+                        _SettingsPlugin.SetAppConfigData(settings);
+                    }
+                }
+            });
             return Task.CompletedTask;
         }
 
