@@ -8304,6 +8304,9 @@ namespace DDPM.CLI.Plugins.Display
                                                 RunType = PowerNapType.Off
                                             };
                                             await devMgr.SavePowerNapSetting(setting);
+                                            UpdateUINotify off = new UpdateUINotify();
+                                            off.UI_Field_Name = "POWERNAP;OFF";
+                                            devMgr.OnUIUpdateNotify(off);
                                             break;
                                         }
                                     case "SLEEP":
@@ -8316,6 +8319,9 @@ namespace DDPM.CLI.Plugins.Display
                                                 RunType = PowerNapType.SleepIfRunning
                                             };
                                             await devMgr.SavePowerNapSetting(setting);
+                                            UpdateUINotify sleep = new UpdateUINotify();
+                                            sleep.UI_Field_Name = "POWERNAP;SLEEP";
+                                            devMgr.OnUIUpdateNotify(sleep);
                                             break;
                                         }
                                     case "REDUCEBRIGHTNESS":
@@ -8328,6 +8334,9 @@ namespace DDPM.CLI.Plugins.Display
                                                 RunType = PowerNapType.ReduceBrightness
                                             };
                                             await devMgr.SavePowerNapSetting(setting);
+                                            UpdateUINotify reduce = new UpdateUINotify();
+                                            reduce.UI_Field_Name = "POWERNAP;REDUCE";
+                                            devMgr.OnUIUpdateNotify(reduce);
                                             break;
                                         }
                                     default:
