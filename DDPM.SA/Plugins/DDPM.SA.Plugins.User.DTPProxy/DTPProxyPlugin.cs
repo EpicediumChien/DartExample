@@ -4789,6 +4789,31 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
         }
 
+        public async Task<bool> GetMuteStatusAsyncForSpeaker(string guid)
+        {
+            try
+            {
+                if (!await GetItemIDAsync("Speaker", guid))
+                    return false;
+
+                var commodity = await GetCommodityInterfaceInstanceAsync(_speakerMethodInfo);
+                if (commodity is ICommodity)
+                {
+                    var value = GetPropertyValue(_speakerInterfaceType, commodity, "MuteStatus");
+                    writelog($"[Speaker] GetMuteStatusAsyncForSpeaker succeeded for {guid}");
+                    return (bool)value;
+                }
+
+                writelog($"[Speaker] GetMuteStatusAsyncForSpeaker failed: Could not retrieve commodity interface for {guid}");
+                return false;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[Headset] GetMuteStatusAsyncForSpeaker failed for {guid} - Exception: {ex.Message}");
+                return false;
+            }
+        }
+
         #endregion
 
         #region Dongle
