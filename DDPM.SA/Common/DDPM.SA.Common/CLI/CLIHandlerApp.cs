@@ -278,7 +278,7 @@ namespace DDPM.SA.Common.CLI
                 result.ExitCode = (int)CLI_ExitCode.no_monitor_connected;
                     return result;
                 }
-                if (_DeviceManagerPlugin.GetDevices().Result.deviceInfo.Count == 0 && commandLineInput.PluginsType.ToUpper() != "DISPLAY")
+                if (_DeviceManagerPlugin.GetDevices().Result.deviceInfo.Count == 0 && commandLineInput.PluginsType.ToUpper() != "DISPLAY" && commandLineInput.PluginsType.ToUpper() != "APP")
                 {
                     response.Message = "No devices found";
                     result.serialize_Json_response = JsonConvert.SerializeObject(response, Formatting.Indented);
