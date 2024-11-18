@@ -89,10 +89,10 @@ namespace DDPM.UI.Plugin.ViewModels
 
         public async Task Invoke_PleaseWaitAsync(string model, SoundBarViewModel vm)
         {
-            vm.ShowPleaseWait();
+            //vm.ShowPleaseWait();
             try
             {
-                using (var cts = new CancellationTokenSource(TimeSpan.FromSeconds(6)))
+                using (var cts = new CancellationTokenSource(TimeSpan.FromSeconds(10)))
                 {
                     await Task.Run(() => DoWork_PleaseWait(model, vm), cts.Token);
                 }
@@ -109,7 +109,7 @@ namespace DDPM.UI.Plugin.ViewModels
             }
             finally
             {
-                vm.HidePleaseWait();
+                //vm.HidePleaseWait();
             }
         }
 
