@@ -984,23 +984,37 @@ namespace DDPM.UI.Module.Kvm
 
         private void SelectUSB(string usb, string pcnum)
         {
-            pcsList[pcnum].USBUpstream = usb;
-            //bool b = DdpmCommonHelper.DeviceManagerSA.SetUSBKVMPCsList(KvmModule.SelectedHomeDevice.MonitorInfo, pcsList).Result;
-            OnPropertyChanged("PC1USB_Selected");
-            OnPropertyChanged("PC2USB_Selected");
-            OnPropertyChanged("PC3USB_Selected");
-            OnPropertyChanged("PC4USB_Selected");
+            if (pcsList.TryGetValue(pcnum, out var pc))
+            {
+                pcsList[pcnum].USBUpstream = usb;
+                //bool b = DdpmCommonHelper.DeviceManagerSA.SetUSBKVMPCsList(KvmModule.SelectedHomeDevice.MonitorInfo, pcsList).Result;
+                OnPropertyChanged("PC1USB_Selected");
+                OnPropertyChanged("PC2USB_Selected");
+                OnPropertyChanged("PC3USB_Selected");
+                OnPropertyChanged("PC4USB_Selected");
+            }
+            else
+            {
+                _log.Debug(pcnum + " not found in pcsList.");
+            }
         }
 
         public void CurrentInputChange()
         {
-            if (pcsList["PC1"].InputType != KvmModule.SelectedHomeDevice.MonitorInfo.inputSource)
+            if (pcsList.TryGetValue("PC1", out var pc1))
             {
-                bool b = DdpmCommonHelper.DeviceManagerSA.SetVCPCapability(KvmModule.SelectedHomeDevice.MonitorInfo, "Input Select", pcsList["PC1"].InputType).Result;
-                if (b)
+                if (pcsList["PC1"].InputType != KvmModule.SelectedHomeDevice.MonitorInfo.inputSource)
                 {
-                    KvmModule.SelectedHomeDevice.MonitorInfo.inputSource = pcsList["PC1"].InputType;
+                    bool b = DdpmCommonHelper.DeviceManagerSA.SetVCPCapability(KvmModule.SelectedHomeDevice.MonitorInfo, "Input Select", pcsList["PC1"].InputType).Result;
+                    if (b)
+                    {
+                        KvmModule.SelectedHomeDevice.MonitorInfo.inputSource = pcsList["PC1"].InputType;
+                    }
                 }
+            }
+            else
+            {
+                _log.Debug("PC1 not found in pcsList.");
             }
         }
 

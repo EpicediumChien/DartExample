@@ -267,7 +267,14 @@ namespace DDPM.UI.Module.Kvm
                 vm.isPipSmall = false;
                 vm.isPipLarge = false;
                 vm.isPBP = false;
-                vm.PC1_Input = vm.pcsList["PC1"].InputType;
+                if (vm.pcsList.TryGetValue("PC1", out var pc1))
+                {
+                    vm.PC1_Input = vm.pcsList["PC1"].InputType;
+                }
+                else
+                {
+                    vm._log.Debug("PC1 not found in pcsList.");
+                }
                 //Get the Content of the new selected SplitItem
                 vm.PxPCode = 0x0;
                 vm.VideoSwapContent = vm.PxPcodeDictionary[0x0];
@@ -282,8 +289,15 @@ namespace DDPM.UI.Module.Kvm
                 vm.isPipSmall = true;
                 vm.isPipLarge = false;
                 vm.isPBP = false;
-                vm.PC1_Input = vm.pcsList["PC1"].InputType;
-                vm.PC2_Input = vm.pcsList["PC2"].InputType;
+                if (vm.pcsList.TryGetValue("PC1", out var pc1) && vm.pcsList.TryGetValue("PC2", out var pc2))
+                {
+                    vm.PC1_Input = vm.pcsList["PC1"].InputType;
+                    vm.PC2_Input = vm.pcsList["PC2"].InputType;
+                }
+                else
+                {
+                    vm._log.Debug("PC1 or PC2 not found in pcsList.");
+                }
                 //Get the Content of the new selected SplitItem
                 PIPSplitCtrl1A splitCtrl1A = new PIPSplitCtrl1A();
                 //splitCtrl1A.PC1_Input = vm.pcsList["PC1"].InputType;
@@ -301,8 +315,15 @@ namespace DDPM.UI.Module.Kvm
                 vm.isPipSmall = false;
                 vm.isPipLarge = true;
                 vm.isPBP = false;
-                vm.PC1_Input = vm.pcsList["PC1"].InputType;
-                vm.PC2_Input = vm.pcsList["PC2"].InputType;
+                if (vm.pcsList.TryGetValue("PC1", out var pc1) && vm.pcsList.TryGetValue("PC2", out var pc2))
+                {
+                    vm.PC1_Input = vm.pcsList["PC1"].InputType;
+                    vm.PC2_Input = vm.pcsList["PC2"].InputType;
+                }
+                else
+                {
+                    vm._log.Debug("PC1 or PC2 not found in pcsList.");
+                }
                 //Get the Content of the new selected SplitItem
                 vm.PxPCode = 0x12;
                 vm.VideoSwapContent = vm.PxPcodeDictionary[0x12];
