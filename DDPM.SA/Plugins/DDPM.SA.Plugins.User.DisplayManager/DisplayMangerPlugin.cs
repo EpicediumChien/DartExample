@@ -36,7 +36,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using VcpCore.Common;
 using VcpCore.Interfaces;
-using static DDPM.SA.Common.Settings.DDPMUserSettings;
 using static VcpCore.Common.EDIDReader;
 using IDs = DDPM.SA.Common.IDs;
 
@@ -234,8 +233,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             {
                 _logs.DebugMsg("[DisplayMangerPlugin] DisplayMangerPlugin received GetMonitors requested ...");
 
-                _AllInfoMonitors.Clear();
-                _AllInfoMonitors.AddRange(_VcpCorePlugin.GetMonitors().Result);
+                _AllInfoMonitors = new List<MonitorInfo>(_VcpCorePlugin.GetMonitors().Result);
 
                 _logs.DebugMsg("[DisplayMangerPlugin] GetMonitors() AllInfoMonitors.count is " + _AllInfoMonitors.Count);
 
@@ -253,8 +251,9 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             {
                 var Cancellation = CancellationTokenSource.CreateLinkedTokenSource(token);
                 var NewToken = Cancellation.Token;
-                _AllInfoMonitors.Clear();
-                _AllInfoMonitors.AddRange(_VcpCorePlugin.Re_GetMonitors(NewToken).Result);
+
+                _AllInfoMonitors = new List<MonitorInfo>(_VcpCorePlugin.Re_GetMonitors(NewToken).Result);
+
                 _logs.DebugMsg("[DisplayMangerPlugin] Re_GetMonitors() AllInfoMonitors.count is " + _AllInfoMonitors.Count);
                 return Task.FromResult(_AllInfoMonitors);
             }
@@ -263,8 +262,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                 // Task was canceled before running.
                 // Cancelled due to timeout
 
-                if (_AllInfoMonitors != null) _AllInfoMonitors.Clear();
-                else _AllInfoMonitors = new List<MonitorInfo>();
+                _AllInfoMonitors = new List<MonitorInfo>();
 
                 _logs.DebugMsg("[DisplayMangerPlugin] Re_GetMonitors() cancellation happened...");
                 return Task.FromResult(_AllInfoMonitors);
@@ -274,16 +272,14 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                 // Task was canceled while running.
                 // Cancelled due to timeout
 
-                if (_AllInfoMonitors != null) _AllInfoMonitors.Clear();
-                else _AllInfoMonitors = new List<MonitorInfo>();
+                _AllInfoMonitors = new List<MonitorInfo>();
 
                 _logs.DebugMsg("[DisplayMangerPlugin] Re_GetMonitors() cancellation happened...");
                 return Task.FromResult(_AllInfoMonitors);
             }
             catch (Exception ex)
             {
-                if (_AllInfoMonitors != null) _AllInfoMonitors.Clear();
-                else _AllInfoMonitors = new List<MonitorInfo>();
+                _AllInfoMonitors = new List<MonitorInfo>();
 
                 _logs.DebugMsg("[DisplayMangerPlugin] Re_GetMonitors() AllInfoMonitors Exception is " + ex.Message);
                 return Task.FromResult(_AllInfoMonitors);
@@ -1768,9 +1764,12 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             VCPchangedEventArgs _VCPchangedEventArgs = new VCPchangedEventArgs();
             _VCPchangedEventArgs.vcpcode = e.vcpcode;
             _VCPchangedEventArgs.value = e.value;
-            //0607 Bruce 自動旋轉畫面顧新增下面兩行程式碼
             _VCPchangedEventArgs.monitor = e.monitor;
+            OnVCPchanged(_VCPchangedEventArgs);
+
+            //0607 Bruce 自動旋轉畫面顧新增下面兩行程式碼
             SetDisplayOrientation(_VCPchangedEventArgs);
+
             //0611 Dean
             if (e.vcpcode.Equals("66"))
             {
@@ -1844,7 +1843,6 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             }
             //Bruce 0820
             GamingChangeEventHandle(_VCPchangedEventArgs);
-            OnVCPchanged(_VCPchangedEventArgs);
         }
 
         private void show_DDCCIchangedEventArgs(object sender, DDCCIchangedEventArgs e)
@@ -1852,9 +1850,12 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             _logs.DebugMsg("[DisplayMangerPlugin] Receive DDCCIStatuschanged Event Notify from VcpCorePlugin");
             _logs.DebugMsg("[DisplayMangerPlugin] Send DDCCIStatuschanged Event Notify from DisplayMangerPlugin");
 
+            var monitor = _AllInfoMonitors.Find(m => m.edid.Equals(e.monitors.edid));
+            monitor = e.monitors.Clone();
+
             DDCCIchangedEventArgs _DDCCIchangedEventArgs = new DDCCIchangedEventArgs();
             _DDCCIchangedEventArgs.DDCisON = e.DDCisON;
-            _DDCCIchangedEventArgs.monitors = e.monitors;
+            _DDCCIchangedEventArgs.monitors = e.monitors.Clone();
             OnDDCCIStatuschanged(_DDCCIchangedEventArgs);
         }
 
@@ -1863,9 +1864,11 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             _logs.DebugMsg("[DisplayMangerPlugin] Receive DisplayChanged Event Notify from VcpCorePlugin");
             _logs.DebugMsg("[DisplayMangerPlugin] Send DisplayChanged Event Notify from DisplayMangerPlugin");
 
+            _AllInfoMonitors = new List<MonitorInfo>(e.monitors);
+
             DisplaychangedEventArgs _displaychangedEventArgss = new DisplaychangedEventArgs();
             _displaychangedEventArgss.count = e.count;
-            _displaychangedEventArgss.monitors = e.monitors;
+            _displaychangedEventArgss.monitors = _AllInfoMonitors.ToList();
             OnDisplaychanged(_displaychangedEventArgss);
         }
 
@@ -2189,6 +2192,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             _logs.DebugMsg($"[DisplayMangerPlugin] SetEnableLockOrientation isLock : {isLock}");
             isLockOrientation = isLock;
         }
+
         /// <summary>
         /// Set screen orientation for all monitors when monitors are plugged in and out
         /// </summary>
@@ -2300,6 +2304,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             _logs.DebugMsg($"[DisplayMangerPlugin] SetOSDOrientation done");
             return Task.FromResult(ret);
         }
+
         /// <summary>
         /// Trigger display screen rotation when VCP has AA event
         /// </summary>
@@ -2921,6 +2926,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             }
             return Task.FromResult(false);
         }
+
         public Task<bool> NotifyEASelectedLayoutChanged(MonitorInfo monitorInfo, SplitJson spJson)
         {
             if (_eaService != null)
@@ -2929,6 +2935,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             }
             return Task.FromResult(false);
         }
+
         //Robert_Lin, 2024-9-13 Remove unused interfaces
         //public Task<bool> RequestEditSplit(MonitorInfo monitorInfo, int cellCount, char splitKey, string customName, List<double>? settings = null)
         //{

@@ -28,7 +28,7 @@ namespace DDPM.UI.Module.Gaming
             vm.Invoke_RefreshData();
         }
 
-        public string ModuleName { get => "GamingModule"; }
+        public string ModuleName { get => Constants.ModuleName_Gaming; } //"GamingModule"
 
         public UserControl? GetLeftView()
         {

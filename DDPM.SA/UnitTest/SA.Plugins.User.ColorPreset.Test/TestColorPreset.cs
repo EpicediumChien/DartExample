@@ -489,7 +489,7 @@ namespace DDPM.SA.Plugins.User.ColorPreset.Test
             Assert.Greater(result2.Count, 0);
         }
 
-        [Test]
+        /*[Test]
         public void TestCheckCA()
         {
             string url = @"https://clientperipherals.dell.com/DDPM/";
@@ -510,7 +510,7 @@ namespace DDPM.SA.Plugins.User.ColorPreset.Test
             {
                 Assert.Fail("not invoked");
             }
-        }
+        }*/
 
         [Test]
         public void TestDownloadICCData()

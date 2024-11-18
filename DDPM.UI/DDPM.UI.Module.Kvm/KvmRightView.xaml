@@ -17,7 +17,7 @@
     </UserControl.Resources>
     <Grid>
         <UXControls:UXScrollViewer>
-            <Border CornerRadius="13" Background="{StaticResource RightViewContainerBkColor}">
+            <Border CornerRadius="13">
                 <StackPanel Margin="16,16,16,0">
                     <Grid>
                         <UXControls:UXTextBlock Text="{Binding [Kvm.24], Source={x:Static lang:LangHelper.Instance}}"
@@ -149,7 +149,7 @@
                                                             </Border.Resources>
                                                             <StackPanel>
                                                                 <StackPanel Orientation="Horizontal">
-                                                                    <TextBlock Text="{Binding [Kvm.27], Source={x:Static lang:LangHelper.Instance}}" />
+                                                                    <TextBlock x:Name="KvmHotkeyTooltip" Text="{Binding KvmHotkeyTooltip,Mode=TwoWay}" />
                                                                 </StackPanel>
                                                             </StackPanel>
                                                         </Border>

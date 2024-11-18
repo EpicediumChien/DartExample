@@ -26,7 +26,7 @@ namespace DDPM.UI.Module.DisplayOthers
             vm.Invoke_RefreshData();
         }
 
-        public string ModuleName { get => "DisplayOthersModule"; }
+        public string ModuleName { get => Constants.ModuleName_DisplayOthers; } //"DisplayOthersModule"
 
         public UserControl? GetLeftView()
         {

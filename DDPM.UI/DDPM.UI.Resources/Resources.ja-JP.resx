@@ -187,7 +187,7 @@
     <value>アップデートが利用可能です</value>
   </data>
   <data name="Updates.1" xml:space="preserve">
-    <value>アップデートが完了すると、Dell Peripheral Managerが閉じて再度開きます。一度開始したアップデートをキャンセルすることはできません。</value>
+    <value>アップデートが完了すると、Dell Display and Peripheral Managerが閉じて再度開きます。一度開始したアップデートをキャンセルすることはできません。</value>
   </data>
   <data name="Updates.2" xml:space="preserve">
     <value>アップデートの確認</value>
@@ -781,7 +781,7 @@
     <value>アクティブ ノイズ キャンセリング</value>
   </data>
   <data name="HeadsetAudioSettings.2" xml:space="preserve">
-    <value>透明性</value>
+    <value>外音取り込み</value>
   </data>
   <data name="HeadsetAudioSettings.3" xml:space="preserve">
     <value>オフ</value>
@@ -2048,5 +2048,224 @@
   </data>
   <data name="No" xml:space="preserve">
     <value>いいえ</value>
+  </data>
+  <data name="Camera.12" xml:space="preserve">
+    <value>プリセットの追加中は使用できません</value>
+  </data>
+  <data name="Camera.13" xml:space="preserve">
+    <value>プリセットの追加中は一部の機能を使用できません</value>
+  </data>
+  <data name="HeadsetAudioSettings.20" xml:space="preserve">
+    <value>聞こえる外部音量を制御します</value>
+  </data>
+  <data name="HeadsetAudioSettings.21" xml:space="preserve">
+    <value>周囲のノイズを除去します</value>
+  </data>
+  <data name="HeadsetAudioSettings.22" xml:space="preserve">
+    <value>周囲の音が聞こえるようにします。聞こえる周囲の音の音量を調整します。</value>
+  </data>
+  <data name="HeadsetAudioSettings.23" xml:space="preserve">
+    <value>ノイズ キャンセリング機能をオフにします</value>
+  </data>
+  <data name="HeadsetAudioSettings.24" xml:space="preserve">
+    <value>近くのマイク ノイズを制限して、他のユーザーのオーディオ体験を向上させます</value>
+  </data>
+  <data name="HeadsetAudioSettings.25" xml:space="preserve">
+    <value>遠くのマイク ノイズを制限して、自分のオーディオ体験を向上させます</value>
+  </data>
+  <data name="HeadsetAudioSettings.26" xml:space="preserve">
+    <value>イコライザーは、選択したプリセットに基づいて調整されます</value>
+  </data>
+  <data name="HeadsetAudioSettings.27" xml:space="preserve">
+    <value>通話中に聞こえる自分の声の音量を調整します（外音取り込みモードでは使用できません）</value>
+  </data>
+  <data name="HeadsetAudioSettings.28" xml:space="preserve">
+    <value>周囲のノイズを除去して、自分の声がはっきりと聞こえるようにします</value>
+  </data>
+  <data name="HeadsetAutomatedActions.9" xml:space="preserve">
+    <value>ヘッドセット取り外し時の自動アクション</value>
+  </data>
+  <data name="HeadsetAutomatedActions.10" xml:space="preserve">
+    <value>ヘッドセットを取り外すと、音楽が自動的に一時停止します。ヘッドセットを装着すると、音楽が自動的に再開されます。</value>
+  </data>
+  <data name="HeadsetAutomatedActions.11" xml:space="preserve">
+    <value>ヘッドセットを取り外すと、マイクが自動的にミュートされます</value>
+  </data>
+  <data name="HeadsetAutomatedActions.12" xml:space="preserve">
+    <value>ブーム マイクを下に動かして通話に応答します</value>
+  </data>
+  <data name="HeadsetAutomatedActions.13" xml:space="preserve">
+    <value>イヤーカップを耳から外したときの自動アクション</value>
+  </data>
+  <data name="HeadsetDeviceSettings.7" xml:space="preserve">
+    <value>通話中のインジケーター ライト</value>
+  </data>
+  <data name="HeadsetDeviceSettings.8" xml:space="preserve">
+    <value>デバイス機能に関する音声プロンプトと通知</value>
+  </data>
+  <data name="SpeakerToolTip.0" xml:space="preserve">
+    <value>周囲のノイズを除去して、自分の声がはっきりと聞こえるようにします</value>
+  </data>
+  <data name="SpeakerToolTip.1" xml:space="preserve">
+    <value>デバイスがミュートされるときにサウンドが再生されます</value>
+  </data>
+  <data name="SpeakerToolTip.2" xml:space="preserve">
+    <value>音量レベルを調整するとサウンドが再生されます</value>
+  </data>
+  <data name="Continue" xml:space="preserve">
+    <value>続行</value>
+  </data>
+  <data name="ImpExp_RestartMsg.0" xml:space="preserve">
+    <value>設定が変更されました。Dell Display and Peripheral Managerが再起動します。</value>
+  </data>
+  <data name="ImpExp_SuccessMsg.0" xml:space="preserve">
+    <value>アプリケーション設定が正常にエクスポートされました</value>
+  </data>
+  <data name="ImpExp_SuccessMsg.1" xml:space="preserve">
+    <value>アプリケーション設定が%1に正常に適用されました。モニターを使用できるようになりました。</value>
+  </data>
+  <data name="ImpExp_WarningMsg.0" xml:space="preserve">
+    <value>これはプライマリー モニターではありません。続行して、これを同期するプライマリー モニターとして設定しますか？</value>
+  </data>
+  <data name="ImpExp_WarningMsg.1" xml:space="preserve">
+    <value>eを現在のレイアウトに関連付けます。上書きしますか？</value>
+  </data>
+  <data name="RestartNeeded" xml:space="preserve">
+    <value>再起動が必要です</value>
+  </data>
+  <data name="Success" xml:space="preserve">
+    <value>成功</value>
+  </data>
+  <data name="Warning" xml:space="preserve">
+    <value>警告</value>
+  </data>
+  <data name="ImpExp_Message.0" xml:space="preserve">
+    <value>同じモデルが検出されたときに設定を自動的に適用します</value>
+  </data>
+  <data name="DisplayDefault.0" xml:space="preserve">
+    <value>モニターを工場出荷時の設定にリセットしますか？</value>
+  </data>
+  <data name="RestoreToDefaultActions" xml:space="preserve">
+    <value>デフォルトのアクションに戻す</value>
+  </data>
+  <data name="Game_Enhance_Mode" xml:space="preserve">
+    <value>ゲーム拡張モード</value>
+  </data>
+  <data name="Response_Time" xml:space="preserve">
+    <value>応答時間</value>
+  </data>
+  <data name="Dark_Stabilizer" xml:space="preserve">
+    <value>ダーク スタビライザー</value>
+  </data>
+  <data name="Dark_Stabilizer_Toggle" xml:space="preserve">
+    <value>ダーク スタビライザーの切り替え</value>
+  </data>
+  <data name="Dual_Resolution" xml:space="preserve">
+    <value>デュアル解像度</value>
+  </data>
+  <data name="Dual_Resolution_Toggle" xml:space="preserve">
+    <value>デュアル解像度の切り替え</value>
+  </data>
+  <data name="Resolution_and_Refresh_Rate" xml:space="preserve">
+    <value>解像度とリフレッシュ レート</value>
+  </data>
+  <data name="Toggle_Vision_Engine" xml:space="preserve">
+    <value>ビジョン エンジンの切り替え</value>
+  </data>
+  <data name="Third_Party_Licenses" xml:space="preserve">
+    <value>サード パーティー ライセンス</value>
+  </data>
+  <data name="Help" xml:space="preserve">
+    <value>ヘルプ</value>
+  </data>
+  <data name="Need_help" xml:space="preserve">
+    <value>ご不明な点がある場合、このソフトウェアの詳細については下のボタンをクリックしてください。</value>
+  </data>
+  <data name="Learn_more" xml:space="preserve">
+    <value>詳細を見る</value>
+  </data>
+  <data name="On_screen_notifications" xml:space="preserve">
+    <value>画面上の通知</value>
+  </data>
+  <data name="All_Devices" xml:space="preserve">
+    <value>すべてのデバイス</value>
+  </data>
+  <data name="Low_battery_level" xml:space="preserve">
+    <value>バッテリー残量少</value>
+  </data>
+  <data name="Device_specific" xml:space="preserve">
+    <value>デバイス固有</value>
+  </data>
+  <data name="Keyboard_lock_key" xml:space="preserve">
+    <value>キーボード ロック キー</value>
+  </data>
+  <data name="Webcam_WB7022_Presence_Detection_sensor_cover_state" xml:space="preserve">
+    <value>WebカメラWB7022のプレゼンス検出センサーのカバーの状態</value>
+  </data>
+  <data name="Headset_speakerphone_and_soundbar_mute_unmute" xml:space="preserve">
+    <value>ヘッドセット、スピーカーフォン、サウンドバーのミュート/ミュート解除</value>
+  </data>
+  <data name="Display_Color_Preset_and_Easy_Memory" xml:space="preserve">
+    <value>ディスプレイ カラー プリセットとEasy Memory</value>
+  </data>
+  <data name="Reports" xml:space="preserve">
+    <value>レポート</value>
+  </data>
+  <data name="Save_diagnostic_report" xml:space="preserve">
+    <value>診断レポートの保存</value>
+  </data>
+  <data name="Save_monitor_asset_report" xml:space="preserve">
+    <value>モニター資産レポートの保存</value>
+  </data>
+  <data name="Widget_Settings" xml:space="preserve">
+    <value>ウィジェットの設定</value>
+  </data>
+  <data name="Activate_Quick_Access_widget_during_Zoom_conference_calls" xml:space="preserve">
+    <value>Zoom電話会議中のクイック アクセス ウィジェットのアクティブ化</value>
+  </data>
+  <data name="Widget_will_automatically_appear_when_meeting_begins" xml:space="preserve">
+    <value>会議が始まるとウィジェットが自動的に表示され、サポートされているWebカメラの設定をカスタマイズできます</value>
+  </data>
+  <data name="Enable_shortcut_reminder_for_Quick_Accesswidget" xml:space="preserve">
+    <value>クイック アクセス ウィジェットのショートカット リマインダーの有効化</value>
+  </data>
+  <data name="Critical" xml:space="preserve">
+    <value>重要</value>
+  </data>
+  <data name="Recommended" xml:space="preserve">
+    <value>推奨</value>
+  </data>
+  <data name="Optional" xml:space="preserve">
+    <value>オプション</value>
+  </data>
+  <data name="VisionEngine_Night" xml:space="preserve">
+    <value>夜</value>
+  </data>
+  <data name="VisionEngine_Clear" xml:space="preserve">
+    <value>クリア</value>
+  </data>
+  <data name="VisionEngine_Bino" xml:space="preserve">
+    <value>Bino</value>
+  </data>
+  <data name="VisionEngine_Chroma" xml:space="preserve">
+    <value>彩度</value>
+  </data>
+  <data name="VisionEngine_Crosshair" xml:space="preserve">
+    <value>照準線</value>
+  </data>
+  <data name="Software_version" xml:space="preserve">
+    <value>ソフトウェアバージョン</value>
+  </data>
+  <data name="Driver_version" xml:space="preserve">
+    <value>ドライバー バージョン</value>
+  </data>
+  <data name="Preview_Changes" xml:space="preserve">
+    <value>変更のプレビュー</value>
+  </data>
+  <data name="Stop_Preview" xml:space="preserve">
+    <value>プレビューの停止</value>
+  </data>
+  <data name="Tooltips_Schedule" xml:space="preserve">
+    <value>この機能により、私たちの目は目的の設定に適応できます。</value>
   </data>
 </root>

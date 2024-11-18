@@ -499,11 +499,58 @@ namespace CLI.Plugins.Display
             Trace.WriteLine(serviceTagList.Count);
             bool flag = true;
             List<string> swapIsDone = new List<string>();
+            // if command is /set -Display=PxP -value=<off, pip, pip-large & etc> -value=<HDMI, DP, USB-C & etc>
+            // step1 change inputsource 
+            // step2 set pxp mode
+            // step3 change subinput
+            if (_cmdLineInput.Options.Count == 2)
+            {
+                swapIsDone = new List<string>();
+                flag = true;
+                while (flag)
+                {
+                    for (int i = 0; i < serviceTagList.Count; i++)
+                    {
+                        string stIsDone = swapIsDone.FirstOrDefault(_ => _ == serviceTagList[i]);
+                        if (!String.IsNullOrWhiteSpace(stIsDone))
+                            continue;
+                        MonitorInfo mo = _AllInfoMonitors.FirstOrDefault(_ => _.edid.ServiceTag == serviceTagList[i]);
+                        if (mo == null)
+                        {
+                            _AllInfoMonitors = _devMgr.GetMonitors().Result;
+                            break;
+                        }
+                        if (!String.IsNullOrWhiteSpace(_cmdLineInput.Options[1].Option_Value))
+                        {
+                            string[] ss = _cmdLineInput.Options[1].Option_Value.Split(',');
+                            if (ss.Length == 2)
+                            {
+                                List<InputSourceObj> inputSources = _devMgr.GetSubInputs(mo).Result;
+                                // "Input Select"
+                                string vcpcode = "0x60";
+                                string value = get_InputSource_code(get_inputsource_type(ss[0]).ToString());
+                                Trace.WriteLine(value);
+                                isOK = _devMgr.SetVCPCapability(mo, (Convert.ToByte(vcpcode, 16)), (Convert.ToUInt32(value, 16))).Result;
+                                if (!isOK)
+                                {
+                                    isOK = false;
+                                    _AllInfoMonitors = _devMgr.GetMonitors().Result;
+                                    break;
+                                }
+                                swapIsDone.Add(mo.edid.ServiceTag);
+                            }
+                        }
+                    }
+                    if (serviceTagList.Count == swapIsDone.Count)
+                        flag = false;
+                }
+            }
+            swapIsDone = new List<string>();
+            flag = true;
             while (flag)
             {
                 for (int i = 0; i < serviceTagList.Count; i++)
                 {
-                    Trace.WriteLine(serviceTagList[i]);
                     string stIsDone = swapIsDone.FirstOrDefault(_ => _ == serviceTagList[i]);
                     if (!String.IsNullOrWhiteSpace(stIsDone))
                         continue;
@@ -515,46 +562,9 @@ namespace CLI.Plugins.Display
                     }
                     bool isPass = _devMgr.SetPbpMode(mo, (UInt16)pxpModeObj.ModeCode).Result;
                     if (!isPass)
-                        break;
-
-                    if (_cmdLineInput.Options.Count == 2)
                     {
-                        if (!String.IsNullOrWhiteSpace(_cmdLineInput.Options[1].Option_Value))
-                        {
-                            string[] ss = _cmdLineInput.Options[1].Option_Value.Split(',');
-                            if (ss.Length == 2)
-                            {
-                                string[] allSource = ["HDMI", "USB-C", "DP"];
-                                string sourceA = allSource.FirstOrDefault(_ => _ == ss[0]);
-                                if (String.IsNullOrWhiteSpace(sourceA))
-                                {
-                                    isOK = false;
-                                    break;
-                                }
-                                string sourceB = allSource.FirstOrDefault(_ => _ == ss[1]);
-                                if (String.IsNullOrWhiteSpace(sourceB))
-                                {
-                                    isOK = false;
-                                    break;
-                                }
-                                string vcpcode2 = "0xE8";
-                                string value2 = get_InputSource_code(get_inputsource_type(ss[1]).ToString());
-                                isOK = _devMgr.SetVCPCapability(mo, (Convert.ToByte(vcpcode2, 16)), (Convert.ToUInt32(value2, 16))).Result;
-                                if (!isOK)
-                                {
-                                    isOK = false;
-                                    break;
-                                }
-                                string vcpcode = "0x60";
-                                string value = get_InputSource_code(get_inputsource_type(ss[0]).ToString());
-                                isOK = _devMgr.SetVCPCapability(mo, (Convert.ToByte(vcpcode, 16)), (Convert.ToUInt32(value, 16))).Result;
-                                if (!isOK)
-                                {
-                                    isOK = false;
-                                    break;
-                                }
-                            }
-                        }
+                        _AllInfoMonitors = _devMgr.GetMonitors().Result;
+                        break;
                     }
                     CLI_RESPONSE response = new CLI_RESPONSE()
                     {
@@ -567,7 +577,7 @@ namespace CLI.Plugins.Display
                     response.ServiceTag = mo.edid.ServiceTag;
                     response.Value = rawValue;
                     swapIsDone.Add(mo.edid.ServiceTag);
-                    if (isPass || isOK)
+                    if (isPass)
                     {
                         response.Result = "PASS";
                         response.Message = "";
@@ -578,10 +588,75 @@ namespace CLI.Plugins.Display
                         response.Message = "Fail to SetPxPMode.";
                         errCount++;
                     }
-                    _responses.Add(response);
+                    if (_cmdLineInput.Options.Count != 2)
+                        _responses.Add(response);
                 }
                 if (serviceTagList.Count == swapIsDone.Count)
                     flag = false;
+            }
+            if (_cmdLineInput.Options.Count == 2)
+            {
+                swapIsDone = new List<string>();
+                flag = true;
+                while (flag)
+                {
+                    for (int i = 0; i < serviceTagList.Count; i++)
+                    {
+                        Trace.WriteLine(serviceTagList[i]);
+                        string stIsDone = swapIsDone.FirstOrDefault(_ => _ == serviceTagList[i]);
+                        if (!String.IsNullOrWhiteSpace(stIsDone))
+                            continue;
+                        MonitorInfo mo = _AllInfoMonitors.FirstOrDefault(_ => _.edid.ServiceTag == serviceTagList[i]);
+                        if (mo == null)
+                        {
+                            _AllInfoMonitors = _devMgr.GetMonitors().Result;
+                            break;
+                        }
+                        if (!String.IsNullOrWhiteSpace(_cmdLineInput.Options[1].Option_Value))
+                        {
+                            string[] ss = _cmdLineInput.Options[1].Option_Value.Split(',');
+                            if (ss.Length == 2)
+                            {
+                                //"PIP/PBP Input"
+                                string vcpcode3 = "0xE8";
+                                string value3 = get_InputSource_code(get_inputsource_type(ss[1]).ToString());
+                                Trace.WriteLine(value3);
+                                isOK = _devMgr.SetVCPCapability(mo, (Convert.ToByte(vcpcode3, 16)), (Convert.ToUInt32(value3, 16))).Result;
+                                if (!isOK)
+                                {
+                                    isOK = false;
+                                    _AllInfoMonitors = _devMgr.GetMonitors().Result;
+                                    break;
+                                }
+                            }
+                        }
+                        CLI_RESPONSE response = new CLI_RESPONSE()
+                        {
+                            Command = _cmdLineInput.Command,
+                            TargetFeature = _cmdLineInput.TargetFeature
+                        };
+                        response.Index = change_0base_to_1base(i.ToString());
+                        response.Model = mo.modelName;
+                        response.SerialNumber = mo.edid.SerialNumber;
+                        response.ServiceTag = mo.edid.ServiceTag;
+                        response.Value = rawValue;
+                        swapIsDone.Add(mo.edid.ServiceTag);
+                        if (isOK)
+                        {
+                            response.Result = "PASS";
+                            response.Message = "";
+                        }
+                        else
+                        {
+                            response.Result = "FAIL";
+                            response.Message = "Fail to SetPxPMode.";
+                            errCount++;
+                        }
+                        _responses.Add(response);
+                    }
+                    if (serviceTagList.Count == swapIsDone.Count)
+                        flag = false;
+                }
             }
             if (errCount == 0)
                 return (int)CLI_ExitCode.success;

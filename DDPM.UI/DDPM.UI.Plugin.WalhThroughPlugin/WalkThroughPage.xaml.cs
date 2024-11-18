@@ -20,6 +20,8 @@ namespace DDPM.UI.Plugin.WalkThroughPlugin
         {
             InitializeComponent();
             DataContext = new WalkThroughPageViewModel();
+
+            ViewModel.ControlIcon(false);
         }
 
         ~WalkThroughPage()
@@ -30,7 +32,7 @@ namespace DDPM.UI.Plugin.WalkThroughPlugin
         {
             if (DdpmHomePlugin.DdpmHomePlugin.WalkThroughQueue.Count > 0)
             {
-
+                ViewModel.UpdateLastlogicalDeviceType();
                 DdpmHomePlugin.DdpmHomePlugin.WalkThroughQueue.RemoveAt(0);
 
                 if (DdpmHomePlugin.DdpmHomePlugin.WalkThroughQueue.Count > 0)
