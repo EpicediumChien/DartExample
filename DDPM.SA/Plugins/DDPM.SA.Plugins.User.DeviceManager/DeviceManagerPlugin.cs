@@ -22,6 +22,7 @@ using DDPM.SA.Common.Popup;
 using DDPM.SA.Common.Screen;
 using DDPM.SA.Common.Settings;
 using DDPM.SA.Common.Telemetry;
+using DDPM.SA.Common.UI;
 using DDPM.SA.Common.UpdateProgressPage;
 using DDPM.SA.Resources.Helper;
 using DDPM.ShowOSD;
@@ -237,6 +238,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             writelog("DeviceManagerPlugin constructor ...");
 
             _isSubagentActive = WTSFunction.IsYourProcessInActiveSession(Log);
+            SACommonHelper.GetResourceDictionary();
+            loadResourceDictionary(UXSystemParameters.Instance.OSTheme);
         }
 
         private string debugPreMsg = string.Empty;
@@ -518,31 +521,14 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             {
                 OSThemeEnum oSTheme = UXSystemParameters.Instance.OSTheme;
                 if (previousOsTheme == oSTheme) return;
-                //telemetry [Application Settings ==>AppMode : "Dark","Light"]
-                Debug.WriteLine($"UXSystemParametersChanged:current theme= {oSTheme.ToString()}");
-                //Telementry Collection
-                //var rt = false;
                 var applicationSettings_Function = new ApplicationSettings_Function();
-                string appModeTelementryData = string.Empty;
-                switch (oSTheme)
-                {
-                    case OSThemeEnum.Light:
-                        appModeTelementryData = "Light";
-                        break;
-
-                    case OSThemeEnum.Dark:
-                        appModeTelementryData = "Dark";
-                        break;
-
-                    default:
-                        break;
-                }
+                string appModeTelementryData = loadResourceDictionary(oSTheme);
+                if(string.IsNullOrEmpty(appModeTelementryData))
                 Debug.WriteLine($"AppModeTelemetry=> {appModeTelementryData}");
                 writelog("[DeviceMangerPlugin] [Telementry] Send Telementry for AppMode...");
                 Task.Run(() => applicationSettings_Function.Send_AppMode_Telementry(_TelementryScheduler, _AllInfoMonitors, appModeTelementryData)).ConfigureAwait(false);
                 /* if (rt) writelog("[DeviceMangerPlugin] [Telementry] Send Telementry for AppMode Success ...");
                  else writelog("[DeviceMangerPlugin] [Telementry] Send Telementry for AppMode Fail ...");*/
-                previousOsTheme = oSTheme;
             }
         }
 
@@ -706,6 +692,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         /// HDR status change event，return HDR status
         /// </summary>
         public event EventHandler<bool> HDRChangeEvent;
+        public event EventHandler<DisplayOrientation> OSDOrientationChangeEvent;
 
         /// <summary>
         /// gaming parameter changes event，return gaming parameter
@@ -1720,40 +1707,40 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 ReviewAllMonitorToAvoidDuplicatedInfo();
 
                 InitMonitorSettings();
-                //List<DDPMMonitorSettings> monitorSettingsList = new List<DDPMMonitorSettings>();
-                //foreach (MonitorInfo m in _AllInfoMonitors)
-                //{
-                //    monitorSettingsList = _SettingsPlugin.InitDDPMMonitorConfigFile(m.modelName, out isInitMonitorSettings).Result;
-                //    if (isInitMonitorSettings)
-                //    {
-                //        if (monitorSettingsList == null)
-                //        {
-                //            monitorSettingsList = new List<DDPMMonitorSettings>();
-                //        }
-                //        if (monitorSettingsList.Count == 0 || monitorSettingsList.FindIndex(x => x.ServiceTag == m.edid.ServiceTag) == -1)
-                //        {
-                //            DDPMMonitorSettings settings = new DDPMMonitorSettings();
-                //            settings.Model = m.modelName;
-                //            settings.ServiceTag = m.edid.ServiceTag;
-                //            settings.VCPs = GetAllVCPcode(m);
-                //            monitorSettingsList.Add(settings);
-                //            bool b = _SettingsPlugin.WriteMonitorSettings(m.modelName, monitorSettingsList).Result;
-                //        }
 
-                //    }
-                //}
-
-                /*
-                _ = Task.Run(async () =>
+                Task.Run(() => //support last selected monitor info from settings
                 {
-                    lock (_CheckAutoLock)
+                    if(_SettingsPlugin != null)
                     {
-                        CheckAutoColorPresetEnableOnStartedCondition(_AllInfoMonitors);
+                        try
+                        {
+                            DDPMSettings data = _SettingsPlugin.ReloadAppConfigData().Result;
+                            if (data != null && data.UserSettings != null)
+                            {
+                                DDPMSimpleMonitorRecord mo = data.UserSettings.lastUISelectedMonitor;
+                                if (mo != null && !string.IsNullOrEmpty(mo.ModelName) && !string.IsNullOrEmpty(mo.ServiceTag))
+                                {
+                                    if (_AllInfoMonitors != null && _AllInfoMonitors.Count > 0)
+                                    {
+                                        int idx = _AllInfoMonitors.FindIndex(x => x.modelName.Equals(mo.ModelName) && x.edid.ServiceTag.Equals(mo.ServiceTag));
+                                        if (idx >= 0)
+                                            lastSelectedMonitor_UI = _AllInfoMonitors[idx];
+                                        else
+                                            lastSelectedMonitor_UI = null;
+                                    }
+                                }
+                                else
+                                    throw new ArgumentNullException("lastUISelectedMonitor");
+                            }
+                            else
+                                throw new ArgumentNullException("data");
+                        }
+                        catch(Exception ex)
+                        {
+                            writelog($"Read last selected monitor from settings failed. ({ex.Message})");
+                        }
                     }
                 });
-                */
-
-                //CheckAutoColorPresetEnableOnStartedCondition(_AllInfoMonitors);
 
                 return Task.FromResult(_AllInfoMonitors);
             }
@@ -2277,35 +2264,86 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         /// <returns></returns>
         public Task<bool> SetUSBUpstream(MonitorInfo monitorInfo, string inputsource, string upstream)
         {
-            if (_DisplayManagerPlugin.SetUSBUpstream(monitorInfo, inputsource, upstream).Result)
+            if (_DisplayManagerPlugin != null)
             {
-                Dictionary<string, InputInfo> inputSourceList = GetInputSourcelist(monitorInfo).Result;
-                if (inputSourceList != null)
+                if (_DisplayManagerPlugin.SetUSBUpstream(monitorInfo, inputsource, upstream).Result)
                 {
-                    InputInfo outinput;
-                    if (inputSourceList.TryGetValue(inputsource, out outinput))
+                    Dictionary<string, InputInfo> inputSourceList = GetInputSourcelist(monitorInfo).Result;
+                    if (inputSourceList != null)
                     {
-                        inputSourceList[inputsource].USBUpstream = upstream;
-                        //string strInputList = InputSourceListSerialize(inputSourceList);
-                        if (SetInputSourcelist(monitorInfo, inputSourceList).Result)
+                        InputInfo outinput = new InputInfo();
+                        if (inputSourceList.TryGetValue(inputsource, out outinput))
                         {
-                            return Task.FromResult(true);
+                            inputSourceList[inputsource].USBUpstream = upstream;
+                            //string strInputList = InputSourceListSerialize(inputSourceList);
+                            if (SetInputSourcelist(monitorInfo, inputSourceList).Result)
+                            {
+                                //Telementry Collection
+                                var Displaysettings_Function = new Displaysettings_Function();
+                                if (Displaysettings_Function.Send_USB_Telementry(_TelementryScheduler, monitorInfo, upstream, GetMonitorCurrentResolution(monitorInfo), GetMonitorMaxResolution(monitorInfo)))
+                                {
+                                    writelog("[SetUSBUpstream] [Telementry] Send Telementry for USB Association Success ...");
+                                }
+                                else
+                                {
+                                    writelog("[SetUSBUpstream] [Telementry] Send Telementry for USB Association Fail ...");
+                                }
+                                return Task.FromResult(true);
+                            }
+                        }
+                        else
+                        {
+                            writelog("[SetUSBUpstream] inputSourceList is not find " + inputsource);
                         }
                     }
+                    else 
+                    {
+                        writelog("[SetUSBUpstream] inputSourceList is null ");
+                    }
                 }
-                //Telementry Collection
-                var Displaysettings_Function = new Displaysettings_Function();
-                if (Displaysettings_Function.Send_USB_Telementry(_TelementryScheduler, monitorInfo, upstream, GetMonitorCurrentResolution(monitorInfo), GetMonitorMaxResolution(monitorInfo)))
-                {
-                    writelog("[DeviceMangerPlugin] [Telementry] Send Telementry for USB Association Success ...");
-                }
-                else
-                {
-                    writelog("[DeviceMangerPlugin] [Telementry] Send Telementry for USB Association Fail ...");
-                }
+            }
+            else
+            {
+                writelog("[SetUSBUpstream] _DisplayManagerPlugin is null.");
             }
 
             return Task.FromResult(false);
+        }
+
+        public Task<string> GetUSBUpstream(MonitorInfo monitorInfo, string inputsource)
+        {
+            string usbUpstream = string.Empty;
+            if (_DisplayManagerPlugin != null)
+            {
+                usbUpstream = _DisplayManagerPlugin.GetUSBUpstream(monitorInfo, inputsource).Result;
+                if (!string.IsNullOrWhiteSpace(usbUpstream))
+                {
+                    Dictionary<string, InputInfo> inputSourceList = GetInputSourcelist(monitorInfo).Result;
+                    if (inputSourceList != null)
+                    {
+                        InputInfo outinput = new InputInfo();
+                        if (inputSourceList.TryGetValue(inputsource, out outinput))
+                        {
+                            inputSourceList[inputsource].USBUpstream = usbUpstream;
+                            //string strInputList = InputSourceListSerialize(inputSourceList);
+                            if (SetInputSourcelist(monitorInfo, inputSourceList).Result)
+                            {
+                                return Task.FromResult(usbUpstream);
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    writelog("[GetUSBUpstream] USBUpstream is null or empty.");
+                }
+            }
+            else
+            {
+                writelog("[GetUSBUpstream] _DisplayManagerPlugin is null.");
+            }
+
+            return Task.FromResult(usbUpstream);
         }
 
         public Task<bool> USBSwitch(MonitorInfo monitorInfo, string inputsource1, string upstream1, string inputsource2, string upstream2)
@@ -4038,6 +4076,21 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
         }
 
+        public async Task<bool> GetMuteStatusAsyncForSpeaker(string guid)
+        {
+            try
+            {
+                var result = await _DTPProxyPlugin.GetMuteStatusAsyncForSpeaker(guid);
+                writelog($"[DeviceManagerPlugin] [Speaker] GetMuteStatusAsyncForSpeaker succeeded, value is {result.ToString()}");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [Speaker] GetMuteStatusAsyncForSpeaker failed for {guid} - Exception: {ex.Message}");
+                return false;
+            }
+        }
+
         #endregion
 
         #region Dongle
@@ -4375,9 +4428,9 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             return Task.FromResult(ret);
         }
 
-        public Task<bool> SetOrientation(MonitorInfo monitorInfo, DisplayOrientation orientation)
+        public Task<bool?> SetOrientation(MonitorInfo monitorInfo, DisplayOrientation orientation)
         {
-            bool ret = false;
+            bool? ret = false;
             if (_DisplayManagerPlugin != null)
             {
                 ret = _DisplayManagerPlugin.SetOrientation(monitorInfo, orientation).Result;
@@ -4703,6 +4756,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         {
             writelog("[DeviceMangerPlugin] DownloadAndInstall start");
             writelog($"[DeviceMangerPlugin] DownloadAndInstall isUITrigger : {isUITrigger}");
+            GetDeviceinfos().Wait();
             if (_FWUpdatePlugin == null)
             {
                 writelog("[DeviceMangerPlugin] _FWUpdatePlugin is null");
@@ -5801,6 +5855,15 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             if (_NKVMPlugin != null)
             {
                 _NKVMPlugin.CallNKVMConnent();
+            }
+            return Task.CompletedTask;
+        }
+
+        public Task CallShowNKVM(int num, int x, int y)
+        {
+            if (_NKVMPlugin != null)
+            {
+                _NKVMPlugin.CallShowNKVM(num, x, y);
             }
             return Task.CompletedTask;
         }
@@ -7930,6 +7993,18 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         {
             return await Task.Run(() => _DTPProxyPlugin.GetPenDeviceItemsEx());
         }
+        public Task<bool> StartKeyCapturePen()
+        {
+            return _DTPProxyPlugin.StartKeyCapturePen();
+        }
+        public Task<bool> FinishKeyCapturePen()
+        {
+            return _DTPProxyPlugin.FinishKeyCapturePen();
+        }
+        public Task<string> KeyCaptureData()
+        {
+            return _DTPProxyPlugin.KeyCaptureData();
+        }
 
         public Task<string> PairingPen()
         {
@@ -9495,9 +9570,9 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                             if (rt) writelog("[DeviceMangerPlugin] [Telementry] Send Telementry for DeviceTypeConnected_Function Success ...");
                                             else writelog("[DeviceMangerPlugin] [Telementry] Send Telementry for DeviceTypeConnected_Function Fail ...");
                                         }).ConfigureAwait(false);
-
-                                        if (displayDeviceNumChange && _AllInfoMonitors.Count > 0)
-                                            _DisplayManagerPlugin.SetDisplayOrientation(_AllInfoMonitors).Wait();
+                                        ////1117 Bruce 不用自動旋轉把下兩行註解
+                                        //if (displayDeviceNumChange && _AllInfoMonitors.Count > 0)
+                                        //    _DisplayManagerPlugin.SetDisplayOrientation(_AllInfoMonitors).Wait();
 
                                         writelog("[DeviceMangerPlugin] SystemEvents_DisplaySettingsChanged() SetDisplayOrientation finish ...");
 
@@ -9590,12 +9665,13 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             EventHandler<DisplaychangedEventArgs> handler = Displaychanged;
             //if (handler != null)
             //    handler.Invoke(this, e);
+            /*1117 Bruce 不用自動旋轉把下行註解
             if (_DisplayManagerPlugin != null)
             {
                 //displayInOut = false;
                 _DisplayManagerPlugin.SetDisplayOrientation(e.monitors).Wait();
                 //displayInOut = true;
-            }
+            }*/
             DeviceChangedEventArgs arg = new DeviceChangedEventArgs();
             arg.changedProperty = "DisplayChanged";
             arg.type = DeviceChangedType.NotifyOnly;
@@ -9903,6 +9979,72 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             Debug.WriteLine($"show_display=>monitor:{e.monitor.modelName}=={e.vcpcode}:{e.value}");
             //1106 add PBP mode status
             Task.Run(() => updatePBPModeStatus(e.monitor, e.vcpcode)).ConfigureAwait(false);
+            //Jason add USB change
+            if(e.vcpcode.Equals("E7"))
+            {
+                if (_DisplayManagerPlugin != null)
+                {
+                    Dictionary<string, InputInfo> inputSourceList = GetInputSourcelist(e.monitor).Result;
+                    foreach (var input in inputSourceList)
+                    {
+                        string usbUpstream = GetUSBUpstream(e.monitor, input.Key).Result;
+                        //Update USBKVM
+                        if (GetOnUSBKVM(e.monitor).Result)
+                        {
+                            List<DDPMMonitorSettings> settings = _SettingsPlugin.ReloadMonitorSettings(e.monitor.modelName).Result;
+                            if (settings != null)
+                            {
+                                //get monitor setting
+                                DDPMMonitorSettings monitorSetting = settings.Find(x => x.ServiceTag == e.monitor.edid.ServiceTag);
+                                if (monitorSetting != null)
+                                {
+                                    try
+                                    {
+                                        if (!string.IsNullOrEmpty(monitorSetting.KVM.strUSBKVMPCsList))
+                                        {
+                                            Dictionary<string, PCsInfo> USBKVMPCsList = USBKVMPCsListDeserialize(monitorSetting.KVM.strUSBKVMPCsList);
+                                            if (USBKVMPCsList != null)
+                                            {
+                                                if (USBKVMPCsList.Count != 0)
+                                                {
+                                                    foreach (var pc in USBKVMPCsList)
+                                                    {
+                                                        if (!string.IsNullOrEmpty(pc.Key) && pc.Value != null)
+                                                        {
+                                                            if (pc.Value.InputType == input.Key)
+                                                            {
+                                                                pc.Value.USBUpstream = usbUpstream;
+                                                                bool b = SetUSBKVMPCsList(e.monitor, USBKVMPCsList).Result;
+                                                                break;
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                            else
+                                            {
+                                                writelog("[show_displays] USBKVMPCsList is null");
+                                            }
+                                        }
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        ;
+                                    }
+                                }
+                                else
+                                {
+                                    writelog("[show_displays] monitorSetting is null");
+                                }
+                            }
+                            else
+                            {
+                                writelog("[show_displays] settings is null");
+                            }
+                        }
+                    }
+                }
+            }
             OnVCPchanged(_VCPchangedEventArgs);
         }
 
@@ -10304,6 +10446,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         _DisplayManagerPlugin.GamingChangeEvent += OnGamingParamChangeHandler;
                         //Robert_Lin, 2024-10-8, for EasyArrange when EA Settings changed
                         _DisplayManagerPlugin.EASettingsChanged += _DisplayManagerPlugin_EASettingsChanged;
+                        //Bruce, 2024-1117 add new event
+                        _DisplayManagerPlugin.OSDOrientationChangeEvent += OSDOrientationChangeHandler;
 
                         writelog($"{nameof(GetCurrentDisplayManagerCondition)} - Display Manager Plugin is in a running condition");
                     }
@@ -10329,6 +10473,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         _DisplayManagerPlugin.GamingChangeEvent += OnGamingParamChangeHandler;
                         //Robert_Lin, 2024-10-8, for EasyArrange when EA Settings changed
                         _DisplayManagerPlugin.EASettingsChanged += _DisplayManagerPlugin_EASettingsChanged;
+                        //Bruce, 2024-1117 add new event
+                        _DisplayManagerPlugin.OSDOrientationChangeEvent += OSDOrientationChangeHandler;
 
                         writelog($"{nameof(GetCurrentDisplayManagerCondition)} - Display Manager Plugin is in a started condition");
                     }
@@ -11499,6 +11645,18 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         public Task SetLastSelectedMonitorFromUI(MonitorInfo mo)
         {
             lastSelectedMonitor_UI = mo;
+            Task.Run(() =>
+            {
+                if(mo != null && _SettingsPlugin != null)
+                {
+                    DDPMSettings settings = _SettingsPlugin.ReloadAppConfigData().Result;
+                    if(settings != null && settings.UserSettings != null)
+                    {
+                        settings.UserSettings.lastUISelectedMonitor = new DDPMSimpleMonitorRecord() { ModelName = mo.modelName, ServiceTag = mo.edid.ServiceTag};
+                        _SettingsPlugin.SetAppConfigData(settings);
+                    }
+                }
+            });
             return Task.CompletedTask;
         }
 
@@ -13907,6 +14065,10 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         {
             HDRChangeEvent?.AsyncFireAndForget(this, e, System.Threading.CancellationToken.None);
         }
+        private void OSDOrientationChangeHandler(object sender, DisplayOrientation e)
+        {
+            OSDOrientationChangeEvent?.AsyncFireAndForget(this, e, System.Threading.CancellationToken.None);
+        }
 
         //Bruce, 2024-08-09 add new event
         private void OnGamingParamChangeHandler(object sender, GamingDisplayPropertiesInfo e)
@@ -14670,6 +14832,33 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         {
             _pwr_Mon.UnRegisterAllHotKey();
             return Task.FromResult(true);
+        }
+
+        private string loadResourceDictionary(OSThemeEnum oSTheme)
+        {
+            //telemetry [Application Settings ==>AppMode : "Dark","Light"]
+            Debug.WriteLine($"UXSystemParametersChanged:current theme= {oSTheme.ToString()}");
+            //Telementry Collection
+            //var rt = false;
+            string appModeTelementryData = string.Empty;
+
+            switch (oSTheme)
+            {
+                case OSThemeEnum.Light:
+                    appModeTelementryData = "Light";
+                    SACommonHelper.SwitchToLightMode();
+                    break;
+
+                case OSThemeEnum.Dark:
+                    appModeTelementryData = "Dark";
+                    SACommonHelper.SwitchToDarkMode();
+                    break;
+
+                default:
+                    break;
+            }
+            previousOsTheme = oSTheme;
+            return appModeTelementryData;
         }
     }
 }

@@ -7081,6 +7081,7 @@ namespace DDPM.CLI.Plugins.Display
             CLI_Get_Properties_USBCPrioritization_RESPONSE cli_USBCPrioritization_RESPONSE = o as CLI_Get_Properties_USBCPrioritization_RESPONSE;
             CLI_Get_Properties_Orientation_RESPONSE cli_Orientation_RESPONSE = o as CLI_Get_Properties_Orientation_RESPONSE;
             CLI_Get_Properties_CurrentResolutionRefreshRate_RESPONSE cli_CurrentResolutionRefreshRate_RESPONSE = o as CLI_Get_Properties_CurrentResolutionRefreshRate_RESPONSE;
+            DDPMSettings ddpmSettings = _devMgr.ReloadAppConfigData().Result;
 
             string[] Orientations_Str = new string[] { "Landscape", "Portrait", "Landscape(flipped)", "Portrait(flipped)" };
             if (cli_HDR_RESPONSE != null)
@@ -7090,6 +7091,7 @@ namespace DDPM.CLI.Plugins.Display
             else if (cli_USBCPrioritization_RESPONSE != null)
             {
                 cli_USBCPrioritization_RESPONSE.Value = displayPropertiesInfo.USBCPrioritizationType == USBCPrioritizationType.HighDataSpeed ? "High Data Speed" : "High Resolution";
+                cli_USBCPrioritization_RESPONSE.Value += "," + (ddpmSettings.LockSettings.Lock_Display_USBCPrioritization ? "LOCK" : "UNLOCK");
             }
             else if (cli_Orientation_RESPONSE != null)
             {
@@ -7375,13 +7377,25 @@ namespace DDPM.CLI.Plugins.Display
                             writelog("USBCPRIORITIZATION set entry");
                             if (commandLineInput.Options.Count > 1)
                             {
-                                cLI_RESPONSE.Result = "FAIL";
-                                cLI_RESPONSE.Message = "Bring in extra strings:";
+                                USBCPrioritization_RESPONSE.Result = "FAIL";
+                                USBCPrioritization_RESPONSE.Message = "Bring in extra strings:";
                                 for (int i = 0; i < commandLineInput.Options.Count; i++)
                                 {
-                                    cLI_RESPONSE.Message += $"{commandLineInput.Options[i].Option_Name}={commandLineInput.Options[i].Option_Value}";
+                                    USBCPrioritization_RESPONSE.Message += $"{commandLineInput.Options[i].Option_Name}={commandLineInput.Options[i].Option_Value}";
                                 }
-                                break;
+                                output = JsonConvert.SerializeObject(USBCPrioritization_RESPONSE, Formatting.Indented);
+                                writelog(commandLineInput.TargetFeature + $" Return value{output}");
+                                System.Console.WriteLine(output);
+                                return ((int)CLI_ExitCode.fail_option_value, output);
+                            }
+                            else if (commandLineInput.Options.Count == 0)
+                            {
+                                USBCPrioritization_RESPONSE.Result = "FAIL";
+                                USBCPrioritization_RESPONSE.Message = "Invalid command line syntax, missing -value=...";
+                                output = JsonConvert.SerializeObject(USBCPrioritization_RESPONSE, Formatting.Indented);
+                                writelog(commandLineInput.TargetFeature + $" Return value{output}");
+                                System.Console.WriteLine(output);
+                                return ((int)CLI_ExitCode.fail_option_value, output);
                             }
 
                             commandLineInput.Options[0].Option_Value.Replace(".", ",");
@@ -7400,35 +7414,36 @@ namespace DDPM.CLI.Plugins.Display
                                 }
                             }
 
-                            for (int i = 0; i < commandLineInput.Options.Count; i++)
+                            if (!String.IsNullOrEmpty(commandLineInput.Options[0].Option_Name) && commandLineInput.Options[0].Option_Name.ToUpper().Equals("VALUE")) //ex: /set -name=Display.Brightness -index=[0] -value=60
                             {
-                                if (!String.IsNullOrEmpty(commandLineInput.Options[i].Option_Name) && commandLineInput.Options[i].Option_Name.ToUpper().Equals("VALUE")) //ex: /set -name=Display.Brightness -index=[0] -value=60
+                                //USBCPrioritization_RESPONSE.USBCPrioritizationType = commandLineInput.Options[i].Option_Value;
+
+                                USBCPrioritization_RESPONSE.Value = op_values[0];
+                                if (!String.IsNullOrEmpty(op_values[0]) && op_values[0].ToUpper().Equals("HIGHSPEED"))
                                 {
-                                    //USBCPrioritization_RESPONSE.USBCPrioritizationType = commandLineInput.Options[i].Option_Value;
+                                    op_values[0] = "HighDataSpeed";
+                                    USBCPrioritization_RESPONSE.Value = op_values[0];
+                                }
 
-                                    USBCPrioritization_RESPONSE.Value = commandLineInput.Options[i].Option_Value;
-                                    if (!String.IsNullOrEmpty(commandLineInput.Options[i].Option_Value) && commandLineInput.Options[i].Option_Value.ToUpper().Equals("HIGHSPEED"))
-                                    {
-                                        commandLineInput.Options[i].Option_Value = "HighDataSpeed";
-                                        USBCPrioritization_RESPONSE.Value = commandLineInput.Options[i].Option_Value;
-                                    }
+                                USBCPrioritization_RESPONSE.Value += "," + (data.LockSettings.Lock_Display_USBCPrioritization ? "LOCK" : "UNLOCK");
 
-                                    if (commandLineInput.Options[i].Option_Value.ToUpper() != "HIGHDATASPEED" && commandLineInput.Options[i].Option_Value.ToUpper() != "HIGHRESOLUTION")
-                                    {
-                                        USBCPrioritization_RESPONSE.Result = "FAIL";
-                                        USBCPrioritization_RESPONSE.Message = "Wrong option value";
-                                        output = JsonConvert.SerializeObject(USBCPrioritization_RESPONSE, Formatting.Indented);
-                                        writelog(commandLineInput.TargetFeature + $" Return value{output}");
-                                        System.Console.WriteLine(output);
-                                        return ((int)CLI_ExitCode.fail_option_value, output);
-                                    }
+                                if (op_values[0].ToUpper() != "HIGHDATASPEED" && op_values[0].ToUpper() != "HIGHRESOLUTION")
+                                {
+                                    USBCPrioritization_RESPONSE.Result = "FAIL";
+                                    USBCPrioritization_RESPONSE.Message = $"Option value [{commandLineInput.Options[0].Option_Value}] not support";
+                                    output = JsonConvert.SerializeObject(USBCPrioritization_RESPONSE, Formatting.Indented);
+                                    writelog(commandLineInput.TargetFeature + $" Return value{output}");
+                                    System.Console.WriteLine(output);
+                                    return ((int)CLI_ExitCode.fail_option_value, output);
+                                }
 
-                                    USBCPrioritizationType usbcPrioritizationType = commandLineInput.Options[i].Option_Value.ToUpper().Equals(USBCPrioritizationType.HighDataSpeed.ToString().ToUpper()) ? USBCPrioritizationType.HighDataSpeed : USBCPrioritizationType.HighResolution;
-                                    if (displayPropertiesInfo.USBCPrioritizationType.ToString().ToUpper().Equals(commandLineInput.Options[i].Option_Value.ToUpper()))
-                                    {
-                                        ret = true;
-                                        break;
-                                    }
+                                USBCPrioritizationType usbcPrioritizationType = op_values[0].ToUpper().Equals(USBCPrioritizationType.HighDataSpeed.ToString().ToUpper()) ? USBCPrioritizationType.HighDataSpeed : USBCPrioritizationType.HighResolution;
+                                if (displayPropertiesInfo.USBCPrioritizationType.ToString().ToUpper().Equals(op_values[0].ToUpper()))
+                                {
+                                    ret = true;
+                                }
+                                else
+                                {
                                     ret = _devMgr.SetUSBCPrioritizationType(monitorInfo, usbcPrioritizationType).Result;
                                 }
                             }
@@ -11101,7 +11116,7 @@ namespace DDPM.CLI.Plugins.Display
                 cli_Response.Message = "Invalid command line syntax or missing -value=file";
                 return ((int)CLI_ExitCode.invalide_cmdline_syntax, cli_Response.ToJson());
             }
-            else if (commandLineInput.Command == "GET" && commandLineInput.Options.Count == 0)
+            else if (commandLineInput.Command == "GET" && commandLineInput.Options.Count <= 1)
             {
                 return DiagnosticReportv2(devMgr, commandLineInput).Result;
             }

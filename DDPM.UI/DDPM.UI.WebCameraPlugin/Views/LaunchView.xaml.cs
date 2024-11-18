@@ -1534,5 +1534,10 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
         {
             ChangeDevNameWidth();
         }
+
+        private void txtSearchText_PreviewTextInput(object sender, TextCompositionEventArgs e)
+        {
+            e.Handled = !_vm!.CheckChar(e.Text);
+        }
     }
 }

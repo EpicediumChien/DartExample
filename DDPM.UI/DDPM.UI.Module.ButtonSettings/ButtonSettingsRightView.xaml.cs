@@ -660,5 +660,11 @@ namespace DDPM.UI.Module.ButtonSettings
                     break;
             }
         }
+
+
+        private void txtSearchText_PreviewTextInput(object sender, System.Windows.Input.TextCompositionEventArgs e)
+        {
+            e.Handled = !_vm.CheckChar(e.Text);
+        }
     }
 }
