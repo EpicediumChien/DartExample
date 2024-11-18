@@ -20,79 +20,75 @@
     </UserControl.Resources>
     <Grid>
         <UXControls:UXScrollViewer>
-            <Border Background="#99132F54"
+            <Border Style="{StaticResource GroupBorderStyle}"
                     CornerRadius="13">
                 <StackPanel>
                     <Grid Margin="20,20,8,8">
                         <UXControls:UXTextBlock Text="About"
                                                 FontSize="20"
                                                 TextBlockType="Header1"
-                                                Style="{StaticResource ModuleCaptionStyle}" />
+                                                Foreground="{DynamicResource DefaultTheme_TxtColor}"/>
                     </Grid>
                     <Grid Margin="20,20,8,8">
-                        <Border Background="#132F54"
+                        <Border Style="{StaticResource PartBorderStyle}"
                                 CornerRadius="6">
                             <StackPanel Orientation="Vertical"
                                         Margin="15,0,0,0">
-                                <UXControls:UXTextBlock Margin="0,20,0,0"
+                                <UXControls:UXTextBlock Margin="0,5,0,0"
+                                                        FontSize="16"
                                                         Text="{Binding SWVersion}"
-                                                        Style="{StaticResource ModuleItemStyle}" />
-                                <UXControls:UXTextBlock Margin="0,20,0,0"
+                                                        Foreground="{DynamicResource DefaultTheme_TxtColor}" />
+                                <UXControls:UXTextBlock Margin="0,5,0,0"
+                                                        FontSize="16"
                                                         Text="{Binding DriverVersion}"
-                                                        Style="{StaticResource ModuleItemStyle}" />
+                                                        Foreground="{DynamicResource DefaultTheme_TxtColor}" />
                                 <StackPanel Orientation="Horizontal"
                                             Margin="0,0,0,0">
-                                    <Border Style="{StaticResource BorderUnpair}"
-                                            Background="#132F54"
+                                    <Button Style="{DynamicResource Button_WhiteFrame}"
                                             Width="176"
-                                            MouseLeftButtonDown="ThirdPartyLicenses_Click"
+                                            Height="40"
+                                            Click="ThirdPartyLicenses_Click"
                                             Cursor="Hand"
                                             Margin="0,20,5,20"
-                                            Visibility="Visible">
-                                        <Grid>
-                                            <UXControls:UXTextBlock Foreground="#FFFFFF"
+                                            Visibility="Visible"
                                                                     VerticalAlignment="Center"
                                                                     HorizontalAlignment="Center"
                                                                     FontFamily="Roboto"
                                                                     FontSize="14"
-                                                                    Text="Third Party Licenses" />
-                                        </Grid>
-                                    </Border>
+                                            Content="Third Party Licenses" />
                                 </StackPanel>
                             </StackPanel>
                         </Border>
                     </Grid>
                     <Grid Margin="20,20,8,8">
                         <UXControls:UXTextBlock Text="Help"
-                                                Style="{StaticResource ModuleCaptionStyle}" />
+                                                FontSize="20"
+                                                Foreground="{DynamicResource DefaultTheme_TxtColor}"/>
                     </Grid>
                     <Grid Margin="20,20,8,8">
-                        <Border Background="#132F54"
+                        <Border Style="{StaticResource PartBorderStyle}"
                                 CornerRadius="6">
                             <StackPanel Orientation="Vertical"
                                         Margin="15,0,0,0">
                                 <UXControls:UXTextBlock Margin="0,20,0,0"
+                                                        FontSize="16"
                                                         Text="Need help? For more information on this software, click the button below."
-                                                        Style="{StaticResource ModuleItemStyle}" 
+                                                        Foreground="{DynamicResource DefaultTheme_TxtColor}"
                                                         TextWrapping="WrapWithOverflow"/>
                                 <StackPanel Orientation="Horizontal"
                                             Margin="0,0,0,0">
-                                    <Border Style="{StaticResource BorderUnpair}"
-                                            Background="#132F54"
+                                    <Button Style="{DynamicResource Button_WhiteFrame}"
                                             Width="176"
-                                            MouseLeftButtonDown="LearnMore_Click"
+                                            Height="40"
+                                            Click="LearnMore_Click"
                                             Cursor="Hand"
                                             Margin="0,20,5,20"
-                                            Visibility="Visible">
-                                        <Grid>
-                                            <UXControls:UXTextBlock Foreground="#FFFFFF"
+                                            Visibility="Visible"
+                                            Content="Learn more"
                                                                     VerticalAlignment="Center"
                                                                     HorizontalAlignment="Center"
                                                                     FontFamily="Roboto"
-                                                                    FontSize="14"
-                                                                    Text="Learn more" />
-                                        </Grid>
-                                    </Border>
+                                            FontSize="14" />
                                 </StackPanel>
                             </StackPanel>
                         </Border>
