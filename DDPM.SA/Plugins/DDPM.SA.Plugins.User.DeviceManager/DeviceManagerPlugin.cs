@@ -147,6 +147,15 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         /// </summary>
         public event EventHandler<string> NightLightStatus_ChangeEvent;
 
+        /// <summary>
+        /// Webcam change event
+        /// </summary>
+        public event EventHandler<bool>? IsCameraSensorCovere_ChangeEvent;
+        public event EventHandler<int>? WALSnoozeTimeLeftInSeconds_ChangeEvent;
+        public event EventHandler<bool>? Esi_IsWALLockCountdownStartedChanged_ChangeEvent;
+        public event EventHandler<int>? Esi_WALLockCountdownChanged_ChangeEvent;
+
+
         //Monitor objects
         private List<MonitorInfo> _AllInfoMonitors = new List<MonitorInfo>();
 
@@ -10841,6 +10850,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     }
                     else if (pluginCondition is PluginStartedCondition)
                     {
+                        _DTPProxyPlugin.IsCameraSensorCovere_ChangeEvent += OnIsCameraSensorCovereStatusChangeHandler;
+
                         writelog($"{nameof(GetCurrentDTPProxyPluginCondition)} - DTPProxy Plugin is in a started condition");
                     }
                 }
@@ -13963,6 +13974,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         private void OnNightLightStatusChangeHandler(object sender, string e)
         {
             NightLightStatus_ChangeEvent?.AsyncFireAndForget(this, e, System.Threading.CancellationToken.None);
+        }
+
+        private void OnIsCameraSensorCovereStatusChangeHandler(object sender, bool e)
+        {
+            IsCameraSensorCovere_ChangeEvent?.AsyncFireAndForget(this, e, System.Threading.CancellationToken.None);
         }
 
         #endregion
