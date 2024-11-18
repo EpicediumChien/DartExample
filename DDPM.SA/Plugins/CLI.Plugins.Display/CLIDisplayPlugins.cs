@@ -7597,7 +7597,7 @@ namespace DDPM.CLI.Plugins.Display
                         else
                         {
                             writelog($"ORIENTATION VCP not support");
-                            cLI_RESPONSE.Message = "ORIENTATION VCP not support";
+                            CurrentOrientation_RESPONSE.Message = "ORIENTATION VCP not support";
                             output += $"\n  \"Result: \": \"ORIENTATION VCP not support\"";
                         }
 
