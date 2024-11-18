@@ -2130,7 +2130,6 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 writelog($"[GetMenuSinglePressSetting]Could not retrieve the Commodity Interface for the {_itemID} item. _penMethodInfo is null");
                 return "";
             }
-
         }
         public async Task<bool> GetMenuCenterRightClickSetting()
         {
@@ -2182,7 +2181,6 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 writelog($"[GetIsSideTopButtonHoverClick]Could not retrieve the Commodity Interface for the {_itemID} item. _penMethodInfo is null");
                 return false;
             }
-
         }
         public async Task<bool> GetIsSideBottomButtonHoverClick()
         {
@@ -2207,6 +2205,84 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 Debug.WriteLine($"[GetIsSideBottomButtonHoverClick]Could not retrieve the Commodity Interface for the {_itemID} item. _penMethodInfo is null");
                 writelog($"[GetIsSideBottomButtonHoverClick]Could not retrieve the Commodity Interface for the {_itemID} item. _penMethodInfo is null");
                 return false;
+            }
+
+        }
+        public async Task<bool> StartKeyCapturePen()
+        {
+            _itemID = new ItemId(PenItemID0);
+
+            if (_penMethodInfo != null)
+            {
+                if (await GetCommodityInterfaceInstanceAsync(_penMethodInfo) is ICommodity commodity)
+                {
+                    var value = GetPropertyValue(_penInterfaceType, commodity, "StartKeyCapture");
+                    return (bool)value;
+                }
+                else
+                {
+                    Debug.WriteLine($"Could not retrieve the Commodity Interface {_penInterfaceType} for the {_itemID} item.");
+                    writelog($"Could not retrieve the Commodity Interface {_penInterfaceType} for the {_itemID} item.");
+                    return false;
+                }
+            }
+            else
+            {
+                Debug.WriteLine($"[GetIsSideBottomButtonHoverClick]Could not retrieve the Commodity Interface for the {_itemID} item. _penMethodInfo is null");
+                writelog($"[GetIsSideBottomButtonHoverClick]Could not retrieve the Commodity Interface for the {_itemID} item. _penMethodInfo is null");
+                return false;
+            }
+
+        }
+        public async Task<bool> FinishKeyCapturePen()
+        {
+            _itemID = new ItemId(PenItemID0);
+
+            if (_penMethodInfo != null)
+            {
+                if (await GetCommodityInterfaceInstanceAsync(_penMethodInfo) is ICommodity commodity)
+                {
+                    var value = GetPropertyValue(_penInterfaceType, commodity, "FinishKeyCapture");
+                    return (bool)value;
+                }
+                else
+                {
+                    Debug.WriteLine($"Could not retrieve the Commodity Interface {_penInterfaceType} for the {_itemID} item.");
+                    writelog($"Could not retrieve the Commodity Interface {_penInterfaceType} for the {_itemID} item.");
+                    return false;
+                }
+            }
+            else
+            {
+                Debug.WriteLine($"[GetIsSideBottomButtonHoverClick]Could not retrieve the Commodity Interface for the {_itemID} item. _penMethodInfo is null");
+                writelog($"[GetIsSideBottomButtonHoverClick]Could not retrieve the Commodity Interface for the {_itemID} item. _penMethodInfo is null");
+                return false;
+            }
+
+        }
+        public async Task<string> KeyCaptureData()
+        {
+            _itemID = new ItemId(PenItemID0);
+
+            if (_penMethodInfo != null)
+            {
+                if (await GetCommodityInterfaceInstanceAsync(_penMethodInfo) is ICommodity commodity)
+                {
+                    var value = GetPropertyValue(_penInterfaceType, commodity, "KeyCaptureData");
+                    return (string)value;
+                }
+                else
+                {
+                    Debug.WriteLine($"Could not retrieve the Commodity Interface {_penInterfaceType} for the {_itemID} item.");
+                    writelog($"Could not retrieve the Commodity Interface {_penInterfaceType} for the {_itemID} item.");
+                    return string.Empty;
+                }
+            }
+            else
+            {
+                Debug.WriteLine($"[GetIsSideBottomButtonHoverClick]Could not retrieve the Commodity Interface for the {_itemID} item. _penMethodInfo is null");
+                writelog($"[GetIsSideBottomButtonHoverClick]Could not retrieve the Commodity Interface for the {_itemID} item. _penMethodInfo is null");
+                return string.Empty;
             }
 
         }
