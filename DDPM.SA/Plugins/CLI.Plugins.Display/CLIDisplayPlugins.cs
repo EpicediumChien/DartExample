@@ -4349,6 +4349,9 @@ namespace DDPM.CLI.Plugins.Display
                 case "Thunderbolt-1": return 0x19;
                 case "Thunderbolt-2": return 0x1a;
 
+                case "VGA-1": return 0x01;
+                case "VGA-2": return 0x02;
+
                 default: return 0;
             }
         }
@@ -11311,11 +11314,24 @@ namespace DDPM.CLI.Plugins.Display
                     cli_Response.Index = change_0base_to_1base((monitor.Index).ToString());
                     cli_Response.ServiceTag = monitor.edid.ServiceTag;
 
-                    rc = GetVCPCode(devMgr, monitor, "0xC0").Result;
-                    cli_Response.Value = (rc.value).ToString() + " hours";
+                    if (!monitor.CapabilityDic.ContainsKey("C0"))
+                    {
+                        cli_Response.Result = "FAIL";
+                        cli_Response.Message = "Un - supported Feature";
+                    }
+                    else
+                    {
+                        rc = GetVCPCode(devMgr, monitor, "0xC0").Result;
+                        cli_Response.Value = (rc.value).ToString() + " hours";
 
-                    cli_Response.Result = "PASS";
-                    cli_Response.Message = "N/A";
+                        cli_Response.Result = "PASS";
+                        cli_Response.Message = "N/A";
+                    }
+                    //rc = GetVCPCode(devMgr, monitor, "0xC0").Result;
+                    //cli_Response.Value = (rc.value).ToString() + " hours";
+
+                    //cli_Response.Result = "PASS";
+                    //cli_Response.Message = "N/A";
                     output += "\n" + JsonConvert.SerializeObject(cli_Response, Formatting.Indented);
                 }
             }
@@ -11333,11 +11349,24 @@ namespace DDPM.CLI.Plugins.Display
                     cli_Response.Index = change_0base_to_1base(idx);
                     cli_Response.ServiceTag = monitor.edid.ServiceTag;
 
-                    rc = GetVCPCode(devMgr, monitor, "0xC0").Result;
-                    cli_Response.Value = (rc.value).ToString() + " hours";
+                    if (!monitor.CapabilityDic.ContainsKey("C0"))
+                    {
+                        cli_Response.Result = "FAIL";
+                        cli_Response.Message = "Un - supported Feature";
+                    }
+                    else
+                    {
+                        rc = GetVCPCode(devMgr, monitor, "0xC0").Result;
+                        cli_Response.Value = (rc.value).ToString() + " hours";
 
-                    cli_Response.Result = "PASS";
-                    cli_Response.Message = "N/A";
+                        cli_Response.Result = "PASS";
+                        cli_Response.Message = "N/A";
+                    }
+                    //rc = GetVCPCode(devMgr, monitor, "0xC0").Result;
+                    //cli_Response.Value = (rc.value).ToString() + " hours";
+
+                    //cli_Response.Result = "PASS";
+                    //cli_Response.Message = "N/A";
                     output += "\n" + JsonConvert.SerializeObject(cli_Response, Formatting.Indented);
                 }
                 foreach (string tag in commandLineInput.ServiceTag)
@@ -11354,11 +11383,24 @@ namespace DDPM.CLI.Plugins.Display
                         cli_Response.Index = change_0base_to_1base((monitor.Index).ToString());
                         cli_Response.ServiceTag = monitor.edid.ServiceTag;
 
-                        rc = GetVCPCode(devMgr, monitor, "0xC0").Result;
-                        cli_Response.Value = (rc.value).ToString() + " hours";
+                        if (!monitor.CapabilityDic.ContainsKey("C0"))
+                        {
+                            cli_Response.Result = "FAIL";
+                            cli_Response.Message = "Un - supported Feature";
+                        }
+                        else
+                        {
+                            rc = GetVCPCode(devMgr, monitor, "0xC0").Result;
+                            cli_Response.Value = (rc.value).ToString() + " hours";
 
-                        cli_Response.Result = "PASS";
-                        cli_Response.Message = "N/A";
+                            cli_Response.Result = "PASS";
+                            cli_Response.Message = "N/A";
+                        }
+                        //rc = GetVCPCode(devMgr, monitor, "0xC0").Result;
+                        //cli_Response.Value = (rc.value).ToString() + " hours";
+
+                        //cli_Response.Result = "PASS";
+                        //cli_Response.Message = "N/A";
                         output += "\n" + JsonConvert.SerializeObject(cli_Response, Formatting.Indented);
                     }
                 }
@@ -11376,11 +11418,24 @@ namespace DDPM.CLI.Plugins.Display
                         cli_Response.Index = change_0base_to_1base((monitor.Index).ToString());
                         cli_Response.ServiceTag = monitor.edid.ServiceTag;
 
-                        rc = GetVCPCode(devMgr, monitor, "0xC0").Result;
-                        cli_Response.Value = (rc.value).ToString() + " hours";
+                        if (!monitor.CapabilityDic.ContainsKey("C0"))
+                        {
+                            cli_Response.Result = "FAIL";
+                            cli_Response.Message = "Un - supported Feature";
+                        }
+                        else
+                        {
+                            rc = GetVCPCode(devMgr, monitor, "0xC0").Result;
+                            cli_Response.Value = (rc.value).ToString() + " hours";
 
-                        cli_Response.Result = "PASS";
-                        cli_Response.Message = "N/A";
+                            cli_Response.Result = "PASS";
+                            cli_Response.Message = "N/A";
+                        }
+                        //rc = GetVCPCode(devMgr, monitor, "0xC0").Result;
+                        //cli_Response.Value = (rc.value).ToString() + " hours";
+
+                        //cli_Response.Result = "PASS";
+                        //cli_Response.Message = "N/A";
                         output += "\n" + JsonConvert.SerializeObject(cli_Response, Formatting.Indented);
                     }
                 }
