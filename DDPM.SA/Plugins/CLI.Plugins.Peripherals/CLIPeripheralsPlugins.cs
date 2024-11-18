@@ -1618,10 +1618,13 @@ namespace DDPM.CLI.Plugins.Peripherals
         {
             text = "[CLI Plugin Peripherals] " + text;
             //Console.WriteLine(text);
-            if (log_type == log_type.info)
-                Log.Info(text);
-            else
-                Log.Error(text);
+            if (Log != null)
+            {
+                if (log_type == log_type.info)
+                    Log.Info(text);
+                else
+                    Log.Error(text);
+            }
         }
 
         #endregion Private methods
