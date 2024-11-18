@@ -2304,6 +2304,14 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                 return Task.FromResult(true);
                             }
                         }
+                        else
+                        {
+                            writelog("[SetUSBUpstream] inputSourceList is not find " + inputsource);
+                        }
+                    }
+                    else 
+                    {
+                        writelog("[SetUSBUpstream] inputSourceList is null ");
                     }
                 }
             }

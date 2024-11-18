@@ -411,32 +411,41 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                                     newstrUpstream = "0" + newstrUpstream;
                                 }
                             }
-                            string subUpstream = newstrUpstream.Substring(input_num * 2, 2);
-                            if (subUpstream == "11")
+                            _logs.DebugMsg("[DisplayMangerPlugin][GetInputSourcelist] newstrUpstream : " + newstrUpstream);
+                            _logs.DebugMsg("[DisplayMangerPlugin][GetInputSourcelist] input_num : " + input_num);
+                            if (newstrUpstream.Length == 16)
                             {
-                                //if (usbUpstreamList.Count > 0)//0708 non-EE issue
-                                //    inputInfo.USBUpstream = usbUpstreamList[0];
-                                inputInfo.USBUpstream = USBUpstream.FirstOrDefault(kv => kv.Value == "11").Key;
+                                string subUpstream = newstrUpstream.Substring(input_num * 2, 2);
+                                if (subUpstream == "11")
+                                {
+                                    //if (usbUpstreamList.Count > 0)//0708 non-EE issue
+                                    //    inputInfo.USBUpstream = usbUpstreamList[0];
+                                    inputInfo.USBUpstream = USBUpstream.FirstOrDefault(kv => kv.Value == "11").Key;
+                                }
+                                else if (subUpstream == "10")
+                                {
+                                    //if (usbUpstreamList.Count > 1)//0708 non-EE issue
+                                    //    inputInfo.USBUpstream = usbUpstreamList[1];
+                                    inputInfo.USBUpstream = USBUpstream.FirstOrDefault(kv => kv.Value == "10").Key;
+                                }
+                                else if (subUpstream == "01")
+                                {
+                                    //if (usbUpstreamList.Count > 2)//0708 non-EE issue
+                                    //    inputInfo.USBUpstream = usbUpstreamList[2];
+                                    inputInfo.USBUpstream = USBUpstream.FirstOrDefault(kv => kv.Value == "01").Key;
+                                }
+                                else if (subUpstream == "00")
+                                {
+                                    //if (usbUpstreamList.Count > 3)//0708 non-EE issue
+                                    //    inputInfo.USBUpstream = usbUpstreamList[3];
+                                    inputInfo.USBUpstream = USBUpstream.FirstOrDefault(kv => kv.Value == "00").Key;
+                                }
+                                //inputInfo.USBUpstream = GetUSBUpstream(monitorInfo, tmp.Name).Result;
                             }
-                            else if (subUpstream == "10")
+                            else
                             {
-                                //if (usbUpstreamList.Count > 1)//0708 non-EE issue
-                                //    inputInfo.USBUpstream = usbUpstreamList[1];
-                                inputInfo.USBUpstream = USBUpstream.FirstOrDefault(kv => kv.Value == "10").Key;
+                                _logs.DebugMsg("[DisplayMangerPlugin][GetInputSourcelist] newstrUpstream length is not 16");
                             }
-                            else if (subUpstream == "01")
-                            {
-                                //if (usbUpstreamList.Count > 2)//0708 non-EE issue
-                                //    inputInfo.USBUpstream = usbUpstreamList[2];
-                                inputInfo.USBUpstream = USBUpstream.FirstOrDefault(kv => kv.Value == "01").Key;
-                            }
-                            else if (subUpstream == "00")
-                            {
-                                //if (usbUpstreamList.Count > 3)//0708 non-EE issue
-                                //    inputInfo.USBUpstream = usbUpstreamList[3];
-                                inputInfo.USBUpstream = USBUpstream.FirstOrDefault(kv => kv.Value == "00").Key;
-                            }
-                            //inputInfo.USBUpstream = GetUSBUpstream(monitorInfo, tmp.Name).Result;
                         }
                         else
                         {
@@ -637,18 +646,35 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                                 }
                             }
                             Trace.WriteLine(newstrUpstream);
-                            string subUpstream = newstrUpstream.Substring(input_num * 2, 2);
-                            if (USBUpstream != null && USBUpstream.Count != 0)
+                            _logs.DebugMsg("[DisplayMangerPlugin][GetUSBUpstream] newstrUpstream : " + newstrUpstream);
+                            _logs.DebugMsg("[DisplayMangerPlugin][GetUSBUpstream] input_num : " + input_num);
+                            if (newstrUpstream.Length == 16)
                             {
-                                foreach (var tmp in USBUpstream)
+                                string subUpstream = newstrUpstream.Substring(input_num * 2, 2);
+                                if (USBUpstream != null && USBUpstream.Count != 0)
                                 {
-                                    if (subUpstream == tmp.Value)
+                                    foreach (var tmp in USBUpstream)
                                     {
-                                        return Task.FromResult(tmp.Key);
+                                        if (subUpstream == tmp.Value)
+                                        {
+                                            return Task.FromResult(tmp.Key);
+                                        }
                                     }
                                 }
                             }
+                            else
+                            {
+                                _logs.DebugMsg("[DisplayMangerPlugin][GetUSBUpstream] newstrUpstream length is not 16");
+                            }
                         }
+                        else
+                        {
+                            _logs.DebugMsg("[DisplayMangerPlugin][GetUSBUpstream] _getVCPCapabilities is null or empty.");
+                        }
+                    }
+                    else
+                    {
+                        _logs.DebugMsg("[DisplayMangerPlugin][GetUSBUpstream] GetVCPCapability 0xE7 fail.");
                     }
                 }
             }
