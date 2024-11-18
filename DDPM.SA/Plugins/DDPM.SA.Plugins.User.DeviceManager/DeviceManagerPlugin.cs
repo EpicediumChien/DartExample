@@ -22,6 +22,7 @@ using DDPM.SA.Common.Popup;
 using DDPM.SA.Common.Screen;
 using DDPM.SA.Common.Settings;
 using DDPM.SA.Common.Telemetry;
+using DDPM.SA.Common.UI;
 using DDPM.SA.Common.UpdateProgressPage;
 using DDPM.SA.Resources.Helper;
 using DDPM.ShowOSD;
@@ -237,6 +238,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             writelog("DeviceManagerPlugin constructor ...");
 
             _isSubagentActive = WTSFunction.IsYourProcessInActiveSession(Log);
+            SACommonHelper.GetResourceDictionary();
+            loadResourceDictionary();
         }
 
         private string debugPreMsg = string.Empty;
@@ -516,33 +519,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         {
             if (e.PropertyName == nameof(UXSystemParameters.Instance.OSTheme))
             {
-                OSThemeEnum oSTheme = UXSystemParameters.Instance.OSTheme;
-                if (previousOsTheme == oSTheme) return;
-                //telemetry [Application Settings ==>AppMode : "Dark","Light"]
-                Debug.WriteLine($"UXSystemParametersChanged:current theme= {oSTheme.ToString()}");
-                //Telementry Collection
-                //var rt = false;
-                var applicationSettings_Function = new ApplicationSettings_Function();
-                string appModeTelementryData = string.Empty;
-                switch (oSTheme)
-                {
-                    case OSThemeEnum.Light:
-                        appModeTelementryData = "Light";
-                        break;
-
-                    case OSThemeEnum.Dark:
-                        appModeTelementryData = "Dark";
-                        break;
-
-                    default:
-                        break;
-                }
-                Debug.WriteLine($"AppModeTelemetry=> {appModeTelementryData}");
-                writelog("[DeviceMangerPlugin] [Telementry] Send Telementry for AppMode...");
-                Task.Run(() => applicationSettings_Function.Send_AppMode_Telementry(_TelementryScheduler, _AllInfoMonitors, appModeTelementryData)).ConfigureAwait(false);
-                /* if (rt) writelog("[DeviceMangerPlugin] [Telementry] Send Telementry for AppMode Success ...");
-                 else writelog("[DeviceMangerPlugin] [Telementry] Send Telementry for AppMode Fail ...");*/
-                previousOsTheme = oSTheme;
+                loadResourceDictionary();
             }
         }
 
@@ -14670,6 +14647,40 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         {
             _pwr_Mon.UnRegisterAllHotKey();
             return Task.FromResult(true);
+        }
+
+        private void loadResourceDictionary()
+        {
+            OSThemeEnum oSTheme = UXSystemParameters.Instance.OSTheme;
+            if (previousOsTheme == oSTheme) return;
+            //telemetry [Application Settings ==>AppMode : "Dark","Light"]
+            Debug.WriteLine($"UXSystemParametersChanged:current theme= {oSTheme.ToString()}");
+            //Telementry Collection
+            //var rt = false;
+            var applicationSettings_Function = new ApplicationSettings_Function();
+            string appModeTelementryData = string.Empty;
+
+            switch (oSTheme)
+            {
+                case OSThemeEnum.Light:
+                    appModeTelementryData = "Light";
+                    SACommonHelper.SwitchToLightMode();
+                    break;
+
+                case OSThemeEnum.Dark:
+                    appModeTelementryData = "Dark";
+                    SACommonHelper.SwitchToDarkMode();
+                    break;
+
+                default:
+                    break;
+            }
+            Debug.WriteLine($"AppModeTelemetry=> {appModeTelementryData}");
+            writelog("[DeviceMangerPlugin] [Telementry] Send Telementry for AppMode...");
+            Task.Run(() => applicationSettings_Function.Send_AppMode_Telementry(_TelementryScheduler, _AllInfoMonitors, appModeTelementryData)).ConfigureAwait(false);
+            /* if (rt) writelog("[DeviceMangerPlugin] [Telementry] Send Telementry for AppMode Success ...");
+             else writelog("[DeviceMangerPlugin] [Telementry] Send Telementry for AppMode Fail ...");*/
+            previousOsTheme = oSTheme;
         }
     }
 }

@@ -50,7 +50,7 @@
             <Border
                 Width="366"
                 Height="199"
-                Background="#141D28"
+                Background="{DynamicResource Default_SA_OSD_Border_BkColor}"
                 BorderBrush="#0DFFFFFF"
                 BorderThickness="1.5"
                 CornerRadius="5"
