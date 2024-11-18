@@ -7351,6 +7351,7 @@ namespace DDPM.CLI.Plugins.Display
 
                 case "USBCPRIORITIZATION":
                     USBCPrioritization_RESPONSE = new CLI_Get_Properties_USBCPrioritization_RESPONSE(cLI_RESPONSE);
+                    DDPMSettings data = devMgr.ReloadAppConfigData().Result;
                     //USBCPrioritization_RESPONSE.SupportedUSBCPrioritization = displayPropertiesInfo.SupportedUSBCPrioritization ? "Yes" : "No";
                     if (displayPropertiesInfo.SupportedUSBCPrioritization)
                     {
@@ -7382,11 +7383,29 @@ namespace DDPM.CLI.Plugins.Display
                                 }
                                 break;
                             }
+
+                            commandLineInput.Options[0].Option_Value.Replace(".", ",");
+                            string[] op_values = commandLineInput.Options[0].Option_Value.Split(",");
+
+                            foreach (string v in op_values)
+                            {
+                                switch (v.ToUpper())
+                                {
+                                    case "LOCK":
+                                    case "UNLOCK":
+                                        if (v.ToUpper().Equals("LOCK")) data.LockSettings.Lock_Display_USBCPrioritization = true;
+                                        if (v.ToUpper().Equals("UNLOCK")) data.LockSettings.Lock_Display_USBCPrioritization = false;
+                                        devMgr.SetAppConfigData(data);
+                                        break;
+                                }
+                            }
+
                             for (int i = 0; i < commandLineInput.Options.Count; i++)
                             {
                                 if (!String.IsNullOrEmpty(commandLineInput.Options[i].Option_Name) && commandLineInput.Options[i].Option_Name.ToUpper().Equals("VALUE")) //ex: /set -name=Display.Brightness -index=[0] -value=60
                                 {
-                                    //USBCPrioritization_RESPONSE.USBCPrioritizationType = commandLineInput.Options[i].Option_Value;                                  
+                                    //USBCPrioritization_RESPONSE.USBCPrioritizationType = commandLineInput.Options[i].Option_Value;
+
                                     USBCPrioritization_RESPONSE.Value = commandLineInput.Options[i].Option_Value;
                                     if (!String.IsNullOrEmpty(commandLineInput.Options[i].Option_Value) && commandLineInput.Options[i].Option_Value.ToUpper().Equals("HIGHSPEED"))
                                     {
