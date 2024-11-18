@@ -862,6 +862,15 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Bug Fixes.
+        /// </summary>
+        internal static string Bug_Fixes {
+            get {
+                return ResourceManager.GetString("Bug_Fixes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Scroll Wheel Click.
         /// </summary>
         internal static string ButtonSettings_0 {
@@ -3922,6 +3931,24 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to New Features.
+        /// </summary>
+        internal static string New_Features {
+            get {
+                return ResourceManager.GetString("New_Features", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to New Supported Devices.
+        /// </summary>
+        internal static string New_Supported_Devices {
+            get {
+                return ResourceManager.GetString("New_Supported_Devices", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to No.
         /// </summary>
         internal static string No {
@@ -5034,6 +5061,24 @@ namespace DDPM.UI.Resources {
         internal static string Unpair {
             get {
                 return ResourceManager.GetString("Unpair", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Update.
+        /// </summary>
+        internal static string Update {
+            get {
+                return ResourceManager.GetString("Update", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Update Available Version.
+        /// </summary>
+        internal static string Update_Available_Version {
+            get {
+                return ResourceManager.GetString("Update_Available_Version", resourceCulture);
             }
         }
         
