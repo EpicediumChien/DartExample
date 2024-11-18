@@ -730,7 +730,6 @@ namespace DDPM.SA.Common
 
         #region Pen
 
-        Task<JArray> GetPenDeviceItemsEx();
 
         Task<string> GetEraserDoublePressValues();
 
@@ -761,8 +760,12 @@ namespace DDPM.SA.Common
         Task<bool> GetIsSideTopButtonHoverClick();
 
         Task<bool> GetIsSideBottomButtonHoverClick();
-
         Task<string> PairingPen();
+        Task<JArray> GetPenDeviceItemsEx();
+        Task<bool> StartKeyCapturePen();
+        Task<bool> FinishKeyCapturePen();
+        Task<string> KeyCaptureData();
+
 
         Task UnPairPen(string Guid);
 
@@ -1074,6 +1077,8 @@ namespace DDPM.SA.Common
         Task<bool> GetIsWiredAudioIMicNSEnableAsync(string Guid);
 
         Task<bool> GetIsAudioEqualizerSupportedAsync(string Guid);
+
+        Task<bool> GetMuteStatusAsyncForSpeaker(string guid);
 
         #endregion Wires Audio
 

@@ -4089,6 +4089,21 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
         }
 
+        public async Task<bool> GetMuteStatusAsyncForSpeaker(string guid)
+        {
+            try
+            {
+                var result = await _DTPProxyPlugin.GetMuteStatusAsyncForSpeaker(guid);
+                writelog($"[DeviceManagerPlugin] [Speaker] GetMuteStatusAsyncForSpeaker succeeded, value is {result.ToString()}");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [Speaker] GetMuteStatusAsyncForSpeaker failed for {guid} - Exception: {ex.Message}");
+                return false;
+            }
+        }
+
         #endregion
 
         #region Dongle
@@ -4754,6 +4769,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         {
             writelog("[DeviceMangerPlugin] DownloadAndInstall start");
             writelog($"[DeviceMangerPlugin] DownloadAndInstall isUITrigger : {isUITrigger}");
+            GetDeviceinfos().Wait();
             if (_FWUpdatePlugin == null)
             {
                 writelog("[DeviceMangerPlugin] _FWUpdatePlugin is null");
@@ -7989,6 +8005,18 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         public async Task<JArray> GetPenDeviceItemsEx()
         {
             return await Task.Run(() => _DTPProxyPlugin.GetPenDeviceItemsEx());
+        }
+        public Task<bool> StartKeyCapturePen()
+        {
+            return _DTPProxyPlugin.StartKeyCapturePen();
+        }
+        public Task<bool> FinishKeyCapturePen()
+        {
+            return _DTPProxyPlugin.FinishKeyCapturePen();
+        }
+        public Task<string> KeyCaptureData()
+        {
+            return _DTPProxyPlugin.KeyCaptureData();
         }
 
         public Task<string> PairingPen()

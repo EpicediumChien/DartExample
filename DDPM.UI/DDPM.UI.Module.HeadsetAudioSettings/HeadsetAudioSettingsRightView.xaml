@@ -562,7 +562,7 @@
                                                 </Path.Data>
                                                 </Path>-->
                                                 <!-- 曲線 -->
-                                                <Path Name="CurvePath" Stroke="#FF0672CB" Canvas.Left="0" Canvas.Top="0" StrokeThickness="2.3" Width="410">
+                                                <Path Name="CurvePath" Stroke="#FF0672CB" Canvas.Left="0" Canvas.Top="0" StrokeThickness="2.3" Width="410" Fill="Transparent">
                                                     <Path.Data>
                                                         <PathGeometry>
                                                             <PathFigure StartPoint="50,60" IsClosed="False" x:Name="CurvePathFigure">

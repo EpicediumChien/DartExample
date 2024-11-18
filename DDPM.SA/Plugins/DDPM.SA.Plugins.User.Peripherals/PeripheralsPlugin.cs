@@ -1863,17 +1863,17 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
 
         private void _iCTKMessageHelper_IsZoomCallbacksRegisteredChanged(bool obj)
         {
-            IsZoomCallbacksRegisteredChanged.Invoke(this, obj);
+            IsZoomCallbacksRegisteredChanged?.Invoke(this, obj);
         }
 
         private void _iCTKMessageHelper_IsZoomMultipleCallsDetectedChanged(bool obj)
         {
-            IsZoomMultipleCallsDetectedChanged.Invoke(this, obj);
+            IsZoomMultipleCallsDetectedChanged?.Invoke(this, obj);
         }
 
         private void _iCTKMessageHelper_CollabMultipleCallsDetectedChanged(bool obj)
         {
-            CollabMultipleCallsDetectedChanged.Invoke(this, obj);
+            CollabMultipleCallsDetectedChanged?.Invoke(this, obj);
         }
 
         private void _iCTKMessageHelper_CollaborationMsgChanged(CollaborationMsg collaborationMsg)

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 
-namespace DDPM.SA.Plugins.User.FWUpdate
+namespace DDPM.SA.Common.Method
 {
     public class BatteryInfo : IDisposable
     {
