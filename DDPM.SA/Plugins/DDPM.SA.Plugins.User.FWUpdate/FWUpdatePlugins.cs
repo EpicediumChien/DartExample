@@ -194,7 +194,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
             _ForceFWUpdateInfoPackage = new FWUpdateInfoPackage();
             _ForceFWUpdateInfoPackage.FWUpdateInfo = new List<FWUpdateInfo>();
             _checkUpdateScheduleTimer = new Timer();
-            _checkUpdateScheduleTimer.Interval = TimeSpan.FromMinutes(0.5).TotalMilliseconds;
+            _checkUpdateScheduleTimer.Interval = TimeSpan.FromSeconds(10).TotalMilliseconds;
             _checkUpdateScheduleTimer.Elapsed += new ElapsedEventHandler(CheckUpdateScheduleTimer_Elapsed);
         }
 
@@ -388,6 +388,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
         private Task<List<FWUpdateInfo>> CheckUpdate(UpdateHelper updateHelper, List<DeviceInfo> deviceInfos, bool isShowNotify, List<DeviceType>? deviceTypeList, bool isUODMode, DisplayUpdateHelper displayUpdateHelper, bool isOnlyDisplay, List<string> giuds, List<string> serviceTags, List<string> models, string minVersion)
         {
             _IsShowNotify = isShowNotify;
+            _DeviceInfos = deviceInfos;
             _logs.DebugMsg_1(nameof(CheckUpdate) + " start");
             _fWUpdateInfoPackage = new FWUpdateInfoPackage();
             try
@@ -776,12 +777,12 @@ namespace DDPM.SA.Plugins.User.FWUpdate
         {
             try
             {
+                _logs.DebugMsg_1(nameof(DownloadAndInstall) + " all start");
                 _IsUITrigger = isUITrigger;
                 for (int i = 0; i < fwUpdateInfos.Count; i++)
                 {
-                    _logs.DebugMsg_1(fwUpdateInfos[i].DeviceName + nameof(DownloadAndInstall) + " start");
+                    _logs.DebugMsg_1($"{nameof(DownloadAndInstall)} DeviceName : {fwUpdateInfos[i].DeviceName} start");
                     string path_programdata = Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData);
-                    _logs.DebugMsg_1(nameof(DownloadAndInstall) + " start");
                     string saveFolderName = Guid.NewGuid().ToString();
                     string savePath;
                     DDPMFileSecurity DDPMFileSecurity = new DDPMFileSecurity();
@@ -946,7 +947,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                         // 刪除資料夾及其所有內容
                         Directory.Delete(savePath, true);
                     }
-                    _logs.DebugMsg_1(fwUpdateInfos[i].DeviceName + nameof(DownloadAndInstall) + " done");
+                    _logs.DebugMsg_1($"{nameof(DownloadAndInstall)} DeviceName : {fwUpdateInfos[i].DeviceName} done");
                 }
                 _logs.DebugMsg_1($"{nameof(DownloadAndInstall)}, All done");
                 if (_DelayFWUpdateInfoPackage != null && _DelayFWUpdateInfoPackage.FWUpdateInfo.Count <= 0)
@@ -1069,66 +1070,55 @@ namespace DDPM.SA.Plugins.User.FWUpdate
         {
             _logs.DebugMsg_1($"{nameof(CheckDeviceStatus_IsStopUpdate)} start");
             bool ret = false;
-            CallGetDeviceInfos?.AsyncFireAndForget(this, new EventArgs(), System.Threading.CancellationToken.None);
-            int count = 0;
-            do
-            {
-                Thread.Sleep(100);
-                count++;
-            } while (_DeviceInfos == null && count <= 5);
-
+            _logs.DebugMsg_1($"{nameof(CheckDeviceStatus_IsStopUpdate)} currentFWInfo.DeviceType: {currentFWInfo.DeviceType}");
             if (_DeviceInfos != null)
             {
-                bool isDockUpdate = false;
-                if (currentFWInfo.DeviceType == DeviceType.LogicalDock)
+                if (currentFWInfo.DeviceType == DeviceType.LogicalDock ||
+                    currentFWInfo.DeviceType == DeviceType.PhysicalWiredDock)
                 {
-                    isDockUpdate = true;
-                }
-
-                if (isDockUpdate)
-                {
-                    _logs.DebugMsg_1($"{nameof(CheckDeviceStatus_IsStopUpdate)} isDockUpdate: {isDockUpdate}");
-                    int dockCount = 0;
-                    foreach (DeviceInfo device in _DeviceInfos)
+                    List<DeviceInfo> dock_deviceInfos = _DeviceInfos.FindAll(o => o.PhysicalDeviceType.Equals(DeviceType.LogicalDock) ||
+                    o.PhysicalDeviceType.Equals(DeviceType.PhysicalWiredDock));
+                    _logs.DebugMsg_1($"{nameof(CheckDeviceStatus_IsStopUpdate)} dock_deviceInfos is null : {(dock_deviceInfos == null ? "Yes" : "No")}");
+                    if (dock_deviceInfos != null)
                     {
-                        if (device != null)
+                        _logs.DebugMsg_1($"{nameof(CheckDeviceStatus_IsStopUpdate)} dock_deviceInfos.Count: {dock_deviceInfos.Count}");
+                        if (dock_deviceInfos.Count >= 2)
                         {
-                            if (device.Type == DeviceType.LogicalDock)
-                            {
-                                dockCount++;
-                            }
-                            if (dockCount >= 2)
-                            {
-                                break;
-                            }
+                            _notificationStr = "Multiple docks are detected. Keep only one dock connected to prevent damage to your docks.";
+                            _logs.DebugMsg_1($"{nameof(CheckDeviceStatus_IsStopUpdate)} LogicalDock: Multiple docks are detected. Keep only one dock connected to prevent damage to your docks");
+                            ret = true;
                         }
                     }
-                    _logs.DebugMsg_1($"{nameof(CheckDeviceStatus_IsStopUpdate)} dockCount: {dockCount}");
-                    if (dockCount >= 2)
+                }
+                else if(currentFWInfo.DeviceType == DeviceType.PhysicalAudioDongle ||
+                    currentFWInfo.DeviceType == DeviceType.PhysicalDongle)
+                {
+                    List<DeviceInfo> dongle_deviceInfos = _DeviceInfos.FindAll(o => o.PhysicalDeviceType.Equals(DeviceType.PhysicalAudioDongle) ||
+                    o.PhysicalDeviceType.Equals(DeviceType.PhysicalDongle));
+                    _logs.DebugMsg_1($"{nameof(CheckDeviceStatus_IsStopUpdate)} dongle_deviceInfos is null : {(dongle_deviceInfos == null ? "Yes" : "No")}");
+                    if (dongle_deviceInfos != null)
                     {
-                        _notificationStr = "Multiple docks are detected. Keep only one dock connected to prevent damage to your docks.";
-                        _logs.DebugMsg_1($"{nameof(CheckDeviceStatus_IsStopUpdate)} LogicalDock: Multiple docks are detected. Keep only one dock connected to prevent damage to your docks");
-                        ret = true;
+                        _logs.DebugMsg_1($"{nameof(CheckDeviceStatus_IsStopUpdate)} dongle_deviceInfos.Count : {dongle_deviceInfos.Count}");
+                        if (dongle_deviceInfos.Count >= 2)
+                        {
+                            _notificationStr = "Firmware update aborted. Ensure only one device of same model is connected to system.";
+                            _logs.DebugMsg_1($"{nameof(CheckDeviceStatus_IsStopUpdate)} currentFWInfo.Model: {currentFWInfo.Model}: Multiple devices of the same model are plugged in");
+                            ret = true;
+                        }
                     }
                 }
                 else
                 {
-                    List<DeviceInfo> deviceInfos = _DeviceInfos.FindAll(o => o.ModelNumber.Equals(currentFWInfo.Model));
-                    _logs.DebugMsg_1($"{nameof(CheckDeviceStatus_IsStopUpdate)} deviceInfos.Count : {deviceInfos.Count}");
-                    if (deviceInfos.Count >= 2)
+                    DeviceInfo? deviceInfo = _DeviceInfos.Find(o => o.ID.ToString().Equals(currentFWInfo.DeviceId.Replace("{", "").Replace("}", "")));
+                    _logs.DebugMsg_1($"{nameof(CheckDeviceStatus_IsStopUpdate)} deviceInfo is null : {(deviceInfo == null ? "Yes" : "No")}");
+                    if (deviceInfo != null)
                     {
-                        _notificationStr = "Firmware update aborted. Ensure only one device of same model is connected to system.";
-                        _logs.DebugMsg_1($"{nameof(CheckDeviceStatus_IsStopUpdate)} currentFWInfo.Model: {currentFWInfo.Model}: Multiple devices of the same model are plugged in");
-                        ret = true;
-                    }
-                    else if (deviceInfos.Count >= 1)
-                    {
-                        _logs.DebugMsg_1($"{nameof(CheckDeviceStatus_IsStopUpdate)} deviceInfos.IsBatteryLevelSupported : {deviceInfos[0].IsBatteryLevelSupported}");
-                        if (deviceInfos[0].IsBatteryLevelSupported)
+                        _logs.DebugMsg_1($"{nameof(CheckDeviceStatus_IsStopUpdate)} deviceInfos.IsBatteryLevelSupported : {deviceInfo.IsBatteryLevelSupported}");
+                        if (deviceInfo.IsBatteryLevelSupported)
                         {
-                            _logs.DebugMsg_1($"{nameof(CheckDeviceStatus_IsStopUpdate)} deviceInfos.BatteryStatus : {deviceInfos[0].BatteryStatus}");
-                            _logs.DebugMsg_1($"{nameof(CheckDeviceStatus_IsStopUpdate)} deviceInfos.BatteryLevel : {deviceInfos[0].BatteryLevel}");
-                            if (deviceInfos[0].BatteryLevel <= 20)
+                            _logs.DebugMsg_1($"{nameof(CheckDeviceStatus_IsStopUpdate)} deviceInfos.BatteryStatus : {deviceInfo.BatteryStatus}");
+                            _logs.DebugMsg_1($"{nameof(CheckDeviceStatus_IsStopUpdate)} deviceInfos.BatteryLevel : {deviceInfo.BatteryLevel}");
+                            if (deviceInfo.BatteryLevel <= 20)
                             {
                                 _notificationStr = "Firmware update unsuccessful.";
                                 ret = true;
@@ -1137,7 +1127,6 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                     }
                 }
             }
-            _DeviceInfos = null;
             _logs.DebugMsg_1($"{nameof(CheckDeviceStatus_IsStopUpdate)} ret : {ret}");
             _logs.DebugMsg_1($"{nameof(CheckDeviceStatus_IsStopUpdate)} done");
             return ret;
@@ -1148,27 +1137,27 @@ namespace DDPM.SA.Plugins.User.FWUpdate
         /// </summary>
         /// <param name="currentFWInfo">Firmware information currently to be updated</param>
         /// <returns>Computer power is less than 10% returns true; otherwise it returns false.</returns>
-        private bool CheckPCBattery_IsStopUpdate(FWUpdateInfo currentFWInfo)
+        public bool CheckPCBattery_IsStopUpdate(FWUpdateInfo currentFWInfo)
         {
             bool ret = false;
             try
             {
                 _logs.DebugMsg_1($"{nameof(CheckPCBattery_IsStopUpdate)} start");
-                bool isDockUpdate = false;
-                if (currentFWInfo.DeviceType == DeviceType.LogicalDock)
+                _logs.DebugMsg_1($"{nameof(CheckPCBattery_IsStopUpdate)} currentFWInfo.DeviceType : {currentFWInfo.DeviceType}");
+                if (currentFWInfo.DeviceType == DeviceType.LogicalDock ||
+                    currentFWInfo.DeviceType == DeviceType.PhysicalWiredDock)
                 {
-                    isDockUpdate = true;
-                }
-                using (BatteryInfo batteryInfo = new BatteryInfo())
-                {
-                    batteryInfo.GetBatteryInfo(out var battery);
-                    _logs.DebugMsg_1($"{nameof(CheckPCBattery_IsStopUpdate)} PC battery life percent ： {battery.BatteryLifePercent}");
-                    if (isDockUpdate && battery.BatteryLifePercent <= 10)
+                    using (BatteryInfo batteryInfo = new BatteryInfo())
                     {
-                        _notificationStr = $"Firmware update unsuccessful";
-                        NotificationFWupdate("Error", _notificationStr);
-                        _logs.DebugMsg_1($"{nameof(CheckPCBattery_IsStopUpdate)} {_fWUpdateInfo.DeviceName} update download cancel, because PC battery too low.");
-                        ret = true;
+                        batteryInfo.GetBatteryInfo(out var battery);
+                        _logs.DebugMsg_1($"{nameof(CheckPCBattery_IsStopUpdate)} PC battery life percent ： {battery.BatteryLifePercent}");
+                        if (battery.BatteryLifePercent <= 10)
+                        {
+                            _notificationStr = $"Firmware update unsuccessful";
+                            NotificationFWupdate("Error", _notificationStr);
+                            _logs.DebugMsg_1($"{nameof(CheckPCBattery_IsStopUpdate)} {_fWUpdateInfo.DeviceName} update download cancel, because PC battery too low.");
+                            ret = true;
+                        }
                     }
                 }
             }
@@ -1902,7 +1891,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                             else
                             {
                                 _updateErrorCode = FWUErrorCode.Unknow;
-                                _notificationStr = $"Update failed with unknown error ";
+                                _notificationStr = $"Firmware update unsuccessful ";
                                 _logs.DebugMsg_1($"{_fWUpdateInfo.DeviceName} ErrorCode should got E2,E4,E5 but got : " + errorCodeNode.InnerText);
                             }
                             UpdateProgressInfo updateProgressInfo = new UpdateProgressInfo()
@@ -1916,7 +1905,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                         else
                         {
                             _updateErrorCode = FWUErrorCode.Unknow;
-                            _notificationStr = $"Update failed with unknown error";
+                            _notificationStr = $"Firmware update unsuccessful";
                             _logs.DebugMsg_1("ErrorCode missing : " + message);
                         }
                         resetState();
