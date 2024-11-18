@@ -104,6 +104,14 @@ namespace DDPM.SA.Plugins.CMAManager
                 catch 
                 { }
 
+                // add @ 20241113 stephen
+                try
+                {
+                    uod = (bool)options["uod"];
+                }
+                catch
+                { }
+
             }
 
             public string index { get; set; } = string.Empty;
@@ -112,6 +120,8 @@ namespace DDPM.SA.Plugins.CMAManager
             public string model { get; set; } = string.Empty;
             // add @ 20241110 stephen
             public bool upgradetolatest { get; set; } = false;
+            // add @ 20241113 stephen
+            public bool uod { get; set; } = false;
 
         }
 

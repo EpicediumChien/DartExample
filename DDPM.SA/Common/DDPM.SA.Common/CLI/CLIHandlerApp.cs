@@ -998,7 +998,7 @@ namespace DDPM.SA.Common.CLI
                         }
                         else if (commandLineInput.TargetFeature.Equals("USBCPRIORITIZATION"))
                         {
-                            if (value.ToUpper().Equals("HIGHSPEED") || value.ToUpper().Equals("HIGHRESOLUTION"))
+                            if (value.ToUpper().Equals("HIGHSPEED") || value.ToUpper().Equals("HIGHRESOLUTION") || value.ToUpper().Equals("HIGHDATASPEED"))
                                 continue;
                         }
                         else if (commandLineInput.TargetFeature.Equals("ACTIVEINPUTSOURCE"))

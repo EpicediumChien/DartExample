@@ -442,6 +442,7 @@ namespace DDPM.SA.Common
         /// HDR change event，return HDR status
         /// </summary>
         event EventHandler<bool> HDRChangeEvent;
+        event EventHandler<DisplayOrientation> OSDOrientationChangeEvent;
 
         Task<DisplayPropertiesInfo> GetDisplayPropertiesInfo(MonitorInfo monitorInfos);
 
@@ -449,7 +450,7 @@ namespace DDPM.SA.Common
 
         Task<bool> SetResolutions(MonitorInfo monitorInfos, Properties properties);
 
-        Task<bool> SetOrientation(MonitorInfo monitorInfos, DisplayOrientation orientation);
+        Task<bool?> SetOrientation(MonitorInfo monitorInfos, DisplayOrientation orientation);
 
         Task<bool> CallWindowsDisplaySetting();
 
@@ -615,6 +616,8 @@ namespace DDPM.SA.Common
 
         Task CallNKVMConnent();
 
+        Task CallShowNKVM(int num, int x, int y);
+
         #endregion for NKVM
 
         #region public for SW Update
@@ -728,7 +731,6 @@ namespace DDPM.SA.Common
 
         #region Pen
 
-        Task<JArray> GetPenDeviceItemsEx();
 
         Task<string> GetEraserDoublePressValues();
 
@@ -759,8 +761,12 @@ namespace DDPM.SA.Common
         Task<bool> GetIsSideTopButtonHoverClick();
 
         Task<bool> GetIsSideBottomButtonHoverClick();
-
         Task<string> PairingPen();
+        Task<JArray> GetPenDeviceItemsEx();
+        Task<bool> StartKeyCapturePen();
+        Task<bool> FinishKeyCapturePen();
+        Task<string> KeyCaptureData();
+
 
         Task UnPairPen(string Guid);
 
@@ -1077,6 +1083,8 @@ namespace DDPM.SA.Common
         Task<bool> GetIsWiredAudioIMicNSEnableAsync(string Guid);
 
         Task<bool> GetIsAudioEqualizerSupportedAsync(string Guid);
+
+        Task<bool> GetMuteStatusAsyncForSpeaker(string guid);
 
         #endregion Wires Audio
 

@@ -13,10 +13,12 @@ using Microsoft;
 using System.Collections.ObjectModel;
 using System.Runtime.CompilerServices;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Threading;
+using static System.Net.Mime.MediaTypeNames;
 using MessageBox = System.Windows.MessageBox;
 using UserControl = System.Windows.Controls.UserControl;
 
@@ -57,6 +59,7 @@ namespace DDPM.UI.Plugin.ViewModels
         public List<string> EOLMouseList = new() { "WK717", "KM714", "KM717", "WM126", "WM116", "WM326", "WM527", "WM514", "UV514" };
         //public DDPMSettings? DDPMSettings;
         //public WebcamSettings WebcamSettings = new();
+
         public PeripheralViewModel(IConsole console, ILog log, IDeviceManagerSA deviceManager)
         {
             Requires.NotNull(console, nameof(console));
@@ -1214,6 +1217,17 @@ namespace DDPM.UI.Plugin.ViewModels
                     OnPropertyChanged();
                 }
             }
+        }
+
+        public bool CheckChar(string ch)
+        {
+            //if (char.IsLetterOrDigit(ch))
+            //    return true;
+            //if (ch == ' ' || ch == '@' || ch == 'e')
+            //    return true;
+            //return false;
+            Regex regex = new Regex("^[0-9a-zA-Z @-]+$");
+            return regex.IsMatch(ch);
         }
 
         #region Handle Module Activated/Deactivated

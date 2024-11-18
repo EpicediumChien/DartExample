@@ -442,6 +442,7 @@ namespace DDPM.UI.Module.Brightness
 
                 NotifyPropertyChanged("LuminanceValue");
                 NotifyPropertyChanged("BrightnessValue");
+                NotifyPropertyChanged("AutoBrightnessRangeLevel_String");
             }
             else if (e.vcpcode.Equals("12"))
             {
@@ -511,6 +512,7 @@ namespace DDPM.UI.Module.Brightness
                 NotifyPropertyChanged("BrightnessValue");
                 NotifyPropertyChanged("ContrastValue");
                 NotifyPropertyChanged("IsSynchronize");
+                NotifyPropertyChanged("AutoBrightnessRangeLevel_String");
             }
 
             if (isAlsSupported == Visibility.Visible)
@@ -1073,6 +1075,7 @@ namespace DDPM.UI.Module.Brightness
                 {
                     NotifyPropertyChanged("BrightnessValue");
                     NotifyPropertyChanged("ContrastValue");
+                    NotifyPropertyChanged("AutoBrightnessRangeLevel_String");
                 }
             }));
 
@@ -1924,6 +1927,7 @@ namespace DDPM.UI.Module.Brightness
                 Brightness_Value = value;
                 Brightness_Debouncer.Debounce(value);
                 NotifyPropertyChanged("BrightnessValue");
+                NotifyPropertyChanged("AutoBrightnessRangeLevel_String");
             }
         }
 
@@ -2060,6 +2064,7 @@ namespace DDPM.UI.Module.Brightness
                 Brightness_Value = Convert.ToDouble((uint)(long)obj.value);
             }
             NotifyPropertyChanged("BrightnessValue");
+            NotifyPropertyChanged("AutoBrightnessRangeLevel_String");
             return Brightness_Value;
         }
 
@@ -2182,6 +2187,7 @@ namespace DDPM.UI.Module.Brightness
                             Brightness_Value = 100;
 
                         NotifyPropertyChanged("BrightnessValue");
+                        NotifyPropertyChanged("AutoBrightnessRangeLevel_String");
                         return;
                     }
                 }
@@ -2790,11 +2796,11 @@ namespace DDPM.UI.Module.Brightness
                 if (Start_ALSConfig.AutoBrightnessRangeLevel.Count == 0)
                     return "";
                 if (Start_ALSConfig.AutoBrightnessRangeLevel[0].level_value == 0)
-                    return "Brightness level: 40%";
+                    return "Brightness level: " + BrightnessValue.ToString() + "%";//40%";
                 else if (Start_ALSConfig.AutoBrightnessRangeLevel[0].level_value == 1)
-                    return "Brightness level: 60%";
+                    return "Brightness level: " + BrightnessValue.ToString() + "%";//60%";
                 else
-                    return "Brightness level: 100%";
+                    return "Brightness level: " + BrightnessValue.ToString() + "%";//100%";
             }
         }
 
@@ -2933,6 +2939,7 @@ namespace DDPM.UI.Module.Brightness
             NotifyPropertyChanged("LuminanceValue");
             NotifyPropertyChanged("ContrastValue");
             NotifyPropertyChanged("IsBusy");
+            NotifyPropertyChanged("AutoBrightnessRangeLevel_String");
         }
 
         public void Invoke_ColorPreset_Sync()
@@ -3059,6 +3066,7 @@ namespace DDPM.UI.Module.Brightness
             NotifyPropertyChanged("LuminanceValue");
             NotifyPropertyChanged("ContrastValue");
             NotifyPropertyChanged("IsBusy");
+            NotifyPropertyChanged("AutoBrightnessRangeLevel_String");
         }
 
         public Visibility isShowSynchronize { get; set; } = Visibility.Visible;
