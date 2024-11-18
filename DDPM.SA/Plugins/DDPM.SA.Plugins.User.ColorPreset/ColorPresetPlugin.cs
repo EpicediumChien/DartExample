@@ -2423,121 +2423,127 @@ namespace ColorPreset.Plugins
 
                         strFilePath = Path.Combine(strICC_Folder, Path.GetFileName(url));
 
-                        download.DownloadFile(url, strFilePath, out downloadInfo);
-
-                        if (System.IO.File.Exists(strFilePath))
+                        if (download.DownloadFile(url, strFilePath, out downloadInfo))
                         {
-                            //Elsa Add Security
-                            if (!DDPM.SA.Common.Settings.DDPMFileSecurity.IsFilePathValid(strFilePath, out FileInfo))
+                            if (System.IO.File.Exists(strFilePath))
                             {
-                                writelog($"[DownloadICCData] {FileInfo}");
-                                //return null;
-                                return System.Threading.Tasks.Task.FromResult(_ICC_Metadata);
-                            }
-
-                            strReadJson = string.Empty;
-                            if (!CheckICC_JSON_Security(strFilePath, out strReadJson))
-                            {
-                                writelog($"[DownloadICCData] CheckICC_JSON_Security Fail. {strFilePath}");
-                                return System.Threading.Tasks.Task.FromResult(_ICC_Metadata);
-                            }
-
-                            if (strReadJson.Length < 1)
-                            {
-                                using (var reader = new StreamReader(strFilePath))
+                                //Elsa Add Security
+                                if (!DDPM.SA.Common.Settings.DDPMFileSecurity.IsFilePathValid(strFilePath, out FileInfo))
                                 {
-                                    strReadJson = reader.ReadToEnd();
+                                    writelog($"[DownloadICCData] {FileInfo}");
+                                    //return null;
+                                    return System.Threading.Tasks.Task.FromResult(_ICC_Metadata);
+                                }
+
+                                strReadJson = string.Empty;
+                                if (!CheckICC_JSON_Security(strFilePath, out strReadJson))
+                                {
+                                    writelog($"[DownloadICCData] CheckICC_JSON_Security Fail. {strFilePath}");
+                                    return System.Threading.Tasks.Task.FromResult(_ICC_Metadata);
+                                }
+
+                                if (strReadJson.Length < 1)
+                                {
+                                    using (var reader = new StreamReader(strFilePath))
+                                    {
+                                        strReadJson = reader.ReadToEnd();
+                                    }
+                                }
+
+                                if (strReadJson == string.Empty || strReadJson.Length == 0)
+                                    return System.Threading.Tasks.Task.FromResult(_ICC_Metadata);
+
+                                try
+                                {
+
+                                    _ICC_Metadata = RunDeserializeObject(strReadJson);
+                                    _ICC_Metadata.strICC_Folder = strICC_Folder;
+                                    _ICC_Metadata.Is_Support_ICC_DeviceName = false;
+                                }
+                                catch (System.Exception ex)
+                                {
+                                    //Console.WriteLine("[DownloadICCData] RunDeserializeObject error:" + ex.Message.ToString());
+                                    writelog("[DownloadICCData] RunDeserializeObject error:" + ex.Message.ToString());
                                 }
                             }
 
-                            if (strReadJson == string.Empty || strReadJson.Length == 0)
-                                return System.Threading.Tasks.Task.FromResult(_ICC_Metadata);
 
-                            try
+                            foreach (var kvp in _ICC_Metadata._support_ICC_DeviceName)
                             {
-
-                                _ICC_Metadata = RunDeserializeObject(strReadJson);
-                                _ICC_Metadata.strICC_Folder = strICC_Folder;
-                                _ICC_Metadata.Is_Support_ICC_DeviceName = false;
+                                Trace.WriteLine($" Model name = {kvp.Key}");
                             }
-                            catch (System.Exception ex)
+
+                            Trace.WriteLine($"m.modelName = {m.modelName} ");
+
+                            var lookup = _ICC_Metadata._support_ICC_DeviceName.First(x => x.Key.Equals(m.modelName, StringComparison.OrdinalIgnoreCase));
+
+                            Trace.WriteLine($"lookup.Key = {lookup.Key} ");
+
+                            if (lookup.Key != null)
                             {
-                                //Console.WriteLine("[DownloadICCData] RunDeserializeObject error:" + ex.Message.ToString());
-                                writelog("[DownloadICCData] RunDeserializeObject error:" + ex.Message.ToString());
-                            }
-                        }
+                                _ICC_Metadata._match_ICC_DeviceName = lookup.Value;
+                                _ICC_Metadata.Is_Support_ICC_DeviceName = true;
 
-
-                        foreach (var kvp in _ICC_Metadata._support_ICC_DeviceName)
-                        {
-                            Trace.WriteLine($" Model name = {kvp.Key}");
-                        }
-
-                        Trace.WriteLine($"m.modelName = {m.modelName} ");
-
-                        var lookup = _ICC_Metadata._support_ICC_DeviceName.First(x => x.Key.Equals(m.modelName, StringComparison.OrdinalIgnoreCase));
-
-                        Trace.WriteLine($"lookup.Key = {lookup.Key} ");
-
-                        if (lookup.Key != null)
-                        {
-                            _ICC_Metadata._match_ICC_DeviceName = lookup.Value;
-                            _ICC_Metadata.Is_Support_ICC_DeviceName = true;
-
-                            writelog($"[DownloadICCData] DeviceName = {m.modelName} is Support ICC.");
-                        }
-                        else
-                        {
-                            _ICC_Metadata._match_ICC_DeviceName.Clear();
-                            _ICC_Metadata.Is_Support_ICC_DeviceName = false;
-
-                            writelog($"[DownloadICCData] DeviceName = {m.modelName} is not Support ICC.");
-                        }
-
-                        int count = _ICC_Metadata._match_ICC_DeviceName.Count;
-
-                        // 20240725 jim add
-                        str_url_prefix = string.Empty;
-
-                        str_url_prefix = @"https://clientperipherals.dell.com/DDPM/";
-                        str_url_prefix += str_IncludeTestPath;
-                        str_url_prefix += @"/Windows/Display/ICC/";
-                        str_url_prefix += m.modelName;
-                        str_url_prefix += @"/";
-
-                        string info = string.Empty;
-                        for (int i = 0; i < count; i++)
-                        {
-                            url = string.Empty;
-
-                            url = str_url_prefix + _ICC_Metadata._match_ICC_DeviceName[i].File;
-
-                            strFilePath = Path.Combine(strICC_Folder, Path.GetFileName(url));
-
-                            if (download.DownloadFile(url, strFilePath, out downloadInfo))
-                            {
-                                //string txtSha256 = BytesToString(GetHashSha256(strFilePath));
-                                //
-                                //if (!string.Equals(txtSha256, _ICC_Metadata._match_ICC_DeviceName[i].SHA256, StringComparison.OrdinalIgnoreCase))
-                                bool? rst = _certChecker?.CheckFile_SHA256(strFilePath, _ICC_Metadata._match_ICC_DeviceName[i].SHA256, out info);
-                                if(rst == null || rst == false)
-                                {
-                                    writelog($"[DownloadICCData] {_ICC_Metadata._match_ICC_DeviceName[i]} icc profile sha256 json = {_ICC_Metadata._match_ICC_DeviceName[i].SHA256} mismatch!");
-                                }
-
-                                //string txtSha512 = BytesToString(GetHashSha512(strFilePath));
-                                //
-                                //if (!string.Equals(txtSha512, _ICC_Metadata._match_ICC_DeviceName[i].SHA512, StringComparison.OrdinalIgnoreCase))
-                                rst = _certChecker?.CheckFile_SHA512(strFilePath, _ICC_Metadata._match_ICC_DeviceName[i].SHA512, out info);
-                                if (rst == null || rst == false)
-                                {
-                                    writelog($"[DownloadICCData] {_ICC_Metadata._match_ICC_DeviceName[i]} icc profile sha512 json = {_ICC_Metadata._match_ICC_DeviceName[i].SHA512} mismatch!");
-                                }
+                                writelog($"[DownloadICCData] DeviceName = {m.modelName} is Support ICC.");
                             }
                             else
                             {
-                                writelog($"[DownloadICCData] download icc {_ICC_Metadata._match_ICC_DeviceName[i]} failed");
+                                _ICC_Metadata._match_ICC_DeviceName.Clear();
+                                _ICC_Metadata.Is_Support_ICC_DeviceName = false;
+
+                                writelog($"[DownloadICCData] DeviceName = {m.modelName} is not Support ICC.");
                             }
+
+                            int count = _ICC_Metadata._match_ICC_DeviceName.Count;
+
+                            // 20240725 jim add
+                            str_url_prefix = string.Empty;
+
+                            str_url_prefix = @"https://clientperipherals.dell.com/DDPM/";
+                            str_url_prefix += str_IncludeTestPath;
+                            str_url_prefix += @"/Windows/Display/ICC/";
+                            str_url_prefix += m.modelName;
+                            str_url_prefix += @"/";
+
+                            string info = string.Empty;
+                            for (int i = 0; i < count; i++)
+                            {
+                                url = string.Empty;
+
+                                url = str_url_prefix + _ICC_Metadata._match_ICC_DeviceName[i].File;
+
+                                strFilePath = Path.Combine(strICC_Folder, Path.GetFileName(url));
+
+                                if (download.DownloadFile(url, strFilePath, out downloadInfo))
+                                {
+                                    //string txtSha256 = BytesToString(GetHashSha256(strFilePath));
+                                    //
+                                    //if (!string.Equals(txtSha256, _ICC_Metadata._match_ICC_DeviceName[i].SHA256, StringComparison.OrdinalIgnoreCase))
+                                    bool? rst = _certChecker?.CheckFile_SHA256(strFilePath, _ICC_Metadata._match_ICC_DeviceName[i].SHA256, out info);
+                                    if (rst == null || rst == false)
+                                    {
+                                        writelog($"[DownloadICCData] {_ICC_Metadata._match_ICC_DeviceName[i]} icc profile sha256 json = {_ICC_Metadata._match_ICC_DeviceName[i].SHA256} mismatch!");
+                                    }
+
+                                    //string txtSha512 = BytesToString(GetHashSha512(strFilePath));
+                                    //
+                                    //if (!string.Equals(txtSha512, _ICC_Metadata._match_ICC_DeviceName[i].SHA512, StringComparison.OrdinalIgnoreCase))
+                                    rst = _certChecker?.CheckFile_SHA512(strFilePath, _ICC_Metadata._match_ICC_DeviceName[i].SHA512, out info);
+                                    if (rst == null || rst == false)
+                                    {
+                                        writelog($"[DownloadICCData] {_ICC_Metadata._match_ICC_DeviceName[i]} icc profile sha512 json = {_ICC_Metadata._match_ICC_DeviceName[i].SHA512} mismatch!");
+                                    }
+                                }
+                                else
+                                {
+                                    writelog($"[DownloadICCData] download icc {_ICC_Metadata._match_ICC_DeviceName[i]} failed");
+                                }
+                            }
+
+                        }
+                        else
+                        {
+                            writelog($"[DownloadICCData] Download ICC Metadata failed = {downloadInfo}");
                         }
 
                     }
