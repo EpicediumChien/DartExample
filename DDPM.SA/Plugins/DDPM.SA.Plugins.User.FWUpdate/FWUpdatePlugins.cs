@@ -1891,7 +1891,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                             else
                             {
                                 _updateErrorCode = FWUErrorCode.Unknow;
-                                _notificationStr = $"Update failed with unknown error ";
+                                _notificationStr = $"Firmware update unsuccessful ";
                                 _logs.DebugMsg_1($"{_fWUpdateInfo.DeviceName} ErrorCode should got E2,E4,E5 but got : " + errorCodeNode.InnerText);
                             }
                             UpdateProgressInfo updateProgressInfo = new UpdateProgressInfo()
@@ -1905,7 +1905,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                         else
                         {
                             _updateErrorCode = FWUErrorCode.Unknow;
-                            _notificationStr = $"Update failed with unknown error";
+                            _notificationStr = $"Firmware update unsuccessful";
                             _logs.DebugMsg_1("ErrorCode missing : " + message);
                         }
                         resetState();
