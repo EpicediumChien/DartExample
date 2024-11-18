@@ -1701,20 +1701,20 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             lock (_MoLock)//this) //Dean 0626 fix SAST issue, do not lock over this object
             {
                 writelog("DeviceMangerPlugin received GetMonitors requested ...");
-                //if (_AllInfoMonitorsRecord.Count == 0)
-                //{
+
                 if (_AllInfoMonitors != null)
                     _AllInfoMonitors.Clear();
-                else
-                    _AllInfoMonitors = new List<MonitorInfo>();
 
+                writelog("DeviceMangerPlugin received GetMonitors requested ...");
+                //if (_AllInfoMonitorsRecord.Count == 0)
+                //{
                 if (_DisplayManagerPlugin == null)
                 {
                     writelog("null _DisplayManagerPlugin in [GetMonitors], retrun empty monitor list");
-                    return Task.FromResult(_AllInfoMonitors);
+                    return Task.FromResult(new List<MonitorInfo>());
                 }
-                List<MonitorInfo> mos = _DisplayManagerPlugin.GetMonitors().Result;
-                _AllInfoMonitors.AddRange(mos);
+
+                _AllInfoMonitors = new List<MonitorInfo>(_DisplayManagerPlugin.GetMonitors().Result);
 
                 //review monitor list to check duplicated data
                 ReviewAllMonitorToAvoidDuplicatedInfo();
@@ -1767,19 +1767,17 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             {
                 if (_AllInfoMonitors != null)
                     _AllInfoMonitors.Clear();
-                else
-                    _AllInfoMonitors = new List<MonitorInfo>();
 
                 if (_DisplayManagerPlugin == null)
                 {
                     writelog("null _DisplayManagerPlugin in [Re_GetMonitors], retrun empty monitor list");
-                    return Task.FromResult(_AllInfoMonitors);
+                    return Task.FromResult(new List<MonitorInfo>());
                 }
 
                 if (isLetDisplayServiceIdle == true)
                 {
                     writelog("The idle state is true to drop display settings change event, need caller to unblock this param");
-                    return Task.FromResult(_AllInfoMonitors);
+                    return Task.FromResult(new List<MonitorInfo>());
                 }
 
                 try
@@ -1793,12 +1791,14 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 {
                     _ReGetcancellationTokenSource.Dispose();
                     writelog("[DeviceMangerPlugin] Re_GetMonitors cancellation happened...");
+
                     return Task.FromResult(_AllInfoMonitors);
                 }
                 catch (OperationCanceledException)
                 {
                     _ReGetcancellationTokenSource.Dispose();
                     writelog("[DeviceMangerPlugin] Re_GetMonitors cancellation happened...");
+
                     return Task.FromResult(_AllInfoMonitors);
                 }
                 catch (Exception ex)
@@ -1806,6 +1806,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     _ReGetcancellationTokenSource.Dispose();
                     // Failed to complete due to e exception
                     writelog($"[DeviceMangerPlugin] --Task.Run(Re_GetMonitors) ...there is an exceptionI-- ({ex.Message})");
+
                     return Task.FromResult(_AllInfoMonitors);
                     //Done: let's be nice and don't swallow the exception
                     //throw new InvalidOperationException("some exception happened but not about InitializeMonitorsList cancellation");
@@ -1827,9 +1828,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                             {
                                 try
                                 {
-                                    List<MonitorInfo> mos = _DisplayManagerPlugin.Re_GetMonitors(token).Result;
-                                    _AllInfoMonitors.AddRange(mos);
-
+                                    _AllInfoMonitors = new List<MonitorInfo>(_DisplayManagerPlugin.Re_GetMonitors(token).Result);
                                     ReviewAllMonitorToAvoidDuplicatedInfo();
 
                                     InitMonitorSettings();
@@ -6911,6 +6910,50 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
             return Task.FromResult(_SWUpdatePlugin.DownloadAndInstall(swUpdateInfos, isUITrigger, installPath).Result);
         }
+        public Task<InterruptScreenRoot> InterruptScreen_Metadata()
+        {
+            writelog("[InterruptScreen_Metadata], start.");
+            InterruptScreenRoot result = null;
+            if (_SettingsPlugin != null)
+            {
+
+                try
+                {
+                    writelog("[InterruptScreen_Metadata], creat logs.");
+                    Logs logs = new Logs(Log);
+
+                    writelog("[InterruptScreen_Metadata], SWUpdateSetting.InterruptScreen_Metadata go.");
+                    InterruptScreenRoot temp = SWUpdateSetting.InterruptScreen_Metadata(_IsSkipCA, out string info, _SettingsPlugin, null, logs);
+                    if (temp != null)
+                    {
+                        writelog("[InterruptScreen_Metadata], temp is not null");
+                        writelog("[InterruptScreen_Metadata], _SettingsPlugin.ReadInterruptScreen go.");
+                        InterruptScreenRoot temp2 = _SettingsPlugin.ReadInterruptScreen().Result;
+                        if (temp2 == null || !temp.Equals(temp2))
+                        {
+                            result = temp.Clone();
+                            foreach (FeaturesList interruptScreenRoot in temp.featuresList)
+                            {
+                                if (interruptScreenRoot != null && interruptScreenRoot.content != null)
+                                {
+                                    interruptScreenRoot.content.image = new byte[0];
+                                }
+                            }
+                            writelog("[InterruptScreen_Metadata], _SettingsPlugin.WriteInterruptScreen go.");
+                            bool ret = _SettingsPlugin.WriteInterruptScreen(temp).Result;
+                        }
+                    }
+                    writelog($"[InterruptScreen_Metadata], SWUpdateSetting.InterruptScreen_Metadata info : {info}");
+                    logs = null;
+                }
+                catch (Exception ex)
+                {
+                    writelog($"[InterruptScreen_Metadata], Error : {ex.Message}");
+                }
+            }
+            writelog("[InterruptScreen_Metadata], done.");
+            return Task.FromResult(result);
+        }
 
         private Task<bool> SW_SetSWUpdateInfoPackage(SWUpdateInfoPackage swUpdateInfoPackage)
         {
@@ -9339,7 +9382,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             writelog($"Receive DisplaySettingsChanged: {sender}, e:{e}, rescan monitor");
             if (displayInOut)
             {
-                _AllInfoMonitors = new List<MonitorInfo>();
+                if (_AllInfoMonitors != null)
+                    _AllInfoMonitors.Clear();
 
                 try
                 {
@@ -9423,15 +9467,14 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                         writelog("[DeviceMangerPlugin] XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
 
                                         //Call VCP to catch updated monitor info
-                                        if (_AllInfoMonitors != null)
-                                            _AllInfoMonitors.Clear();
-                                        else
-                                            _AllInfoMonitors = new List<MonitorInfo>();
-                                        _AllInfoMonitors.AddRange((_DisplayManagerPlugin.Re_GetMonitors(token).Result).ToList());
 
-                                        List<MonitorInfo> new_mo = new List<MonitorInfo>();
-                                        if (_AllInfoMonitors.Count > 0)
-                                            new_mo.AddRange(_AllInfoMonitors);
+                                        _AllInfoMonitors = new List<MonitorInfo>(_DisplayManagerPlugin.Re_GetMonitors(token).Result);
+                                        //review monitor list to check duplicated data
+                                        ReviewAllMonitorToAvoidDuplicatedInfo();
+
+                                        //List<MonitorInfo> new_mo = new List<MonitorInfo>();
+                                        //if (_AllInfoMonitors.Count > 0)
+                                        //    new_mo.AddRange(_AllInfoMonitors);
 
                                         writelog($"[DeviceManager] SystemEvents_DisplaySettingsChanged() Got event, monitor count {_AllInfoMonitors.Count}");
 
@@ -9473,14 +9516,14 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
                                         writelog("[DeviceMangerPlugin] SystemEvents_DisplaySettingsChanged() SetDisplayOrientation finish ...");
 
-                                        _DisplayManagerPlugin.UpdateExistAlsConfig(new_mo).Wait();
+                                        _DisplayManagerPlugin.UpdateExistAlsConfig(_AllInfoMonitors.ToList()).Wait();
 
                                         writelog("[DeviceMangerPlugin] SystemEvents_DisplaySettingsChanged() UpdateExistAlsConfig finish ...");
 
                                         writelog("[DeviceMangerPlugin] SystemEvents_DisplaySettingsChanged() Re-GetDevices finish ...");
 
                                         if (_AllInfoMonitors != null && _AllInfoMonitors.Count > 0)
-                                            Task.Run(() => _disDevHelper?.CheckAndTriggerToastWhileMonitorPlugged(_millisecond, new_mo, _SettingsPlugin));
+                                            Task.Run(() => _disDevHelper?.CheckAndTriggerToastWhileMonitorPlugged(_millisecond, _AllInfoMonitors.ToList(), _SettingsPlugin));
                                     }
                                     catch (Exception ex)
                                     {
@@ -9883,9 +9926,12 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             writelog("Receive DDCCIStatuschanged Event Notify from DisplayManagerPlugin");
             writelog("Send DDCCIStatuschanged Event Notify from DeviceMangerPlugin");
 
+            var monitor = _AllInfoMonitors.Find(x => x.edid.Equals(e.monitors.edid));
+            monitor = e.monitors.Clone();
+
             DDCCIchangedEventArgs _DDCCIchangedEventArgs = new DDCCIchangedEventArgs();
             _DDCCIchangedEventArgs.DDCisON = e.DDCisON;
-            _DDCCIchangedEventArgs.monitors = e.monitors;
+            _DDCCIchangedEventArgs.monitors = e.monitors.Clone();
             OnDDCCIStatuschanged(_DDCCIchangedEventArgs);
         }
 
@@ -9894,9 +9940,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             writelog("Receive Displaychanged Event Notify from DisplayManagerPlugin");
             writelog("Send out Displaychanged Event Notify from DeviceMangerPlugin");
 
+            _AllInfoMonitors = new List<MonitorInfo>(e.monitors);
+
             DisplaychangedEventArgs _displaychangedEventArgs = new DisplaychangedEventArgs();
             _displaychangedEventArgs.count = e.count;
-            _displaychangedEventArgs.monitors = e.monitors;
+            _displaychangedEventArgs.monitors = e.monitors.ToList();
             OnDisplaychanged(_displaychangedEventArgs);
 
             Task.Run(() =>
@@ -12964,22 +13012,22 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         return;
                     }
 
-                    List<MonitorInfo> _HadleMonitors = _AllInfoMonitors;
+                    List<MonitorInfo> _HadleMonitors = _AllInfoMonitors.ToList();
                     int nCount = _HadleMonitors.Count;
 
                     for (int n = 0; n < nCount; n++)
                     {
-                        writelog($"[Original] Monitor: {_HadleMonitors[n].DisplayName}, SN: {_HadleMonitors[n].edid.SerialNumber}");
+                        writelog($"[Original] Monitor: {_HadleMonitors[n].DisplayName}, ST: {_HadleMonitors[n].edid.ServiceTag}");
                     }
 
                     List<MonitorInfo> distinctMonitor = RemoveDuplicatesByDisplayName(_HadleMonitors);
                     nCount = distinctMonitor.Count;
                     for (int n = 0; n < nCount; n++)
                     {
-                        writelog($"[Reviewed] Monitor: {distinctMonitor[n].DisplayName}, SN: {distinctMonitor[n].edid.SerialNumber}");
+                        writelog($"[Reviewed] Monitor: {distinctMonitor[n].DisplayName}, ST: {distinctMonitor[n].edid.ServiceTag}");
                     }
 
-                    _AllInfoMonitors = distinctMonitor;
+                    _AllInfoMonitors = new List<MonitorInfo>(distinctMonitor);
                 }
                 catch (Exception ex)
                 {

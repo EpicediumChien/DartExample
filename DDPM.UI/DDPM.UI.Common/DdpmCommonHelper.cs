@@ -15,6 +15,7 @@ using System.Reflection;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Windows.Media.Media3D;
 using System.Windows.Threading;
 using static DDPM.UI.Common.Views.DDPMMsgBox;
 using Application = System.Windows.Application;
@@ -445,6 +446,56 @@ namespace DDPM.UI.Common
             return true;
         }
 
+        #endregion
+
+        #region ProductImage
+        /// <summary>
+        /// Return the filename of the DeviceInfo, not include ".png"
+        /// </summary>
+        /// <param name="deviceInfo"></param>
+        /// <returns></returns>
+        public static string DeterminePeripheralProductImageFileName(DeviceInfo deviceInfo)
+        {
+            string model = "";
+            string colorCode = "";
+
+            if (deviceInfo != null)
+            {
+                switch(deviceInfo.ModelNumber)
+                {
+                    //Keyboard
+                    case "KB740":
+                    case "KB7120W":
+                        model = "KB740";
+                        break;
+                    case "KB500":
+                    case "KB3121W":
+                        model = "KB500";
+                        break;
+                    case "KB700":
+                    case "KB7221W":
+                        model = "KB700";
+                        break;
+
+                    //Mouse
+                    case "MS300":
+                    case "MS3121W":
+                        model = "MS300";
+                        break;
+
+                    //Default
+                    default:
+                        model = deviceInfo.ModelNumber;
+                        break;
+                } //switch(deviceInfo.ModelNumber)
+
+                if (deviceInfo.ColorCode != 0)
+                {
+                    colorCode = $"_{deviceInfo.ColorCode}";
+                }
+            }
+            return $"{model}{colorCode}";
+        }
         #endregion
     }
 }

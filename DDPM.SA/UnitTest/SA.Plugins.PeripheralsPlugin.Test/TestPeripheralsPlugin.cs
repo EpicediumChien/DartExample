@@ -3113,6 +3113,181 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin.Test
             }
         }
 
+        [Test]
+        public void TestSetBandsGainValue()
+        {
+            Mock<ILogicalDeviceHeadset> logicalDeviceHeadset = new Mock<ILogicalDeviceHeadset>();
+            var logicalDeviceHeadsetObj = logicalDeviceHeadset.Object;
+
+            DeviceInfo deviceInfo = new DeviceInfo()
+            {
+                DeviceName = "Mouse",
+                Name = "Test mouse",
+                Band1Gain = 20,
+                Band2Gain = 20,
+                Band3Gain = 20,
+                Band4Gain = 20,
+                Band5Gain = 20,
+            };
+
+            var SetBandsGainValue_result = (byte[])privatetePeripheralsPlugin.Invoke("SetBandsGainValue", logicalDeviceHeadsetObj, deviceInfo);
+            Assert.IsNotNull(SetBandsGainValue_result);
+            Assert.That(deviceInfo.Band1Gain, Is.EqualTo(SetBandsGainValue_result[3]));
+            Assert.That(deviceInfo.Band2Gain, Is.EqualTo(SetBandsGainValue_result[7]));
+            Assert.That(deviceInfo.Band3Gain, Is.EqualTo(SetBandsGainValue_result[11]));
+            Assert.That(deviceInfo.Band4Gain, Is.EqualTo(SetBandsGainValue_result[15]));
+            Assert.That(deviceInfo.Band5Gain, Is.EqualTo(SetBandsGainValue_result[19]));
+        }
+
+        [Test]
+        public void TestByteArrayToInt()
+        {
+            byte[] bandsGain = new byte[] { 1, 2, 3, 4, 5, 6 };
+            int ByteArrayToInt = 50595078;
+
+            var result = PeripheralsPlugin.ByteArrayToInt(bandsGain);
+            Assert.IsNotNull(result);
+            Assert.That(ByteArrayToInt, Is.EqualTo(result));
+        }
+
+        [Test]
+        public void TestGetDPeMAssemblyUpdateInfo()
+        {
+            UpdateItemInfo updateItems = new UpdateItemInfo() { NewVersion = "v1.0" };
+            var GetDPeMAssemblyUpdateInfo_result1 = peripheralsPlugin.GetDPeMAssemblyUpdateInfo();  //_updateItems = NULL
+            Assert.IsNotNull(GetDPeMAssemblyUpdateInfo_result1);
+
+            privatetePeripheralsPlugin.SetFieldOrProperty("_updateItems", updateItems);
+            var GetDPeMAssemblyUpdateInfo_result2 = peripheralsPlugin.GetDPeMAssemblyUpdateInfo();  //_updateItems ! = NULL
+            Assert.IsNotNull(GetDPeMAssemblyUpdateInfo_result2);
+        }
+
+        [Test]
+        public void TestIntToByteArray()
+        {
+            int value = 1234567890;
+            byte[] byteArray = new byte[8];
+            int startIndex = 2;
+            privatetePeripheralsPlugin.Invoke("IntToByteArray", value, byteArray, startIndex);
+            Assert.IsTrue(true);
+        }
+
+        [Test]
+        public void TestGetFWUpdateInfo()
+        {
+            UpdateHelper updateHelper;
+            updateHelper = new UpdateHelper()
+            {
+                UpdateItems = new List<UpdateItemInfo>()
+                {
+                    new UpdateItemInfo()
+                    {
+                        NewVersion="v1.0" ,
+                        _newVersion="v1.0",
+                        Description= "TestDescription",
+                        CurrentVersion="1.0",
+                        DeviceId= "TestDeviceId" ,
+                        UpdateType="TestUpdateType",
+                        UpdateSeverity= "TestUpdateSeverity",
+                        DeviceIndex=0,
+                        DeviceModelNumber="Test123345",
+                        DeviceName="Mouse",
+                        DevicePath= "TestDevicePath",
+                        DeviceType=DPeMPublic.Common.Enums.DeviceType.Unknown,
+                        FrimwareUpdatePath=0,
+                        InstallPath="TestInstallPath",
+                        InstanceId=0,
+                        Priority=0,
+                        ServerPath="TestServerPath",
+                        SupplierID="TestSupplierID",
+                        SHA256="SGAGASDGASDG",
+                        Thumbprint="TestThumbprint"
+                    }
+                }
+            };
+            var GetFWUpdateInfo_result1 = peripheralsPlugin.GetFWUpdateInfo();  // _updateHelper = null
+            Assert.IsNotNull(GetFWUpdateInfo_result1);
+
+            privatetePeripheralsPlugin.SetFieldOrProperty("_updateHelper", updateHelper);  // _updateHelper ! = null
+            var GetFWUpdateInfo_result2 = peripheralsPlugin.GetFWUpdateInfo();
+            Assert.IsNotNull(GetFWUpdateInfo_result2);
+        }
+
+        [Test]
+        public void TestDisplayNotification()
+        {
+            string bannerInfo = "Test bannerInfo";
+            string hyperlinkText = "Test hyperlinkText";
+            string bannerItemType = "Test bannerItemType";
+            peripheralsPlugin.DisplayNotification(bannerInfo, hyperlinkText, bannerItemType);
+            Assert.IsTrue(true);
+        }
+
+        [Test]
+        public void TestCheckForUpdate()
+        {
+            Mock<IUpdateManager> UpdateManager = new Mock<IUpdateManager>();
+            var UpdateManagerObj = UpdateManager.Object;
+            privatetePeripheralsPlugin.SetFieldOrProperty("_iUpdateManager", UpdateManagerObj);
+            if (UpdateManager != null)
+            {
+                peripheralsPlugin.CheckForUpdate();
+                Assert.IsTrue(true);
+            }
+        }
+
+        [Test]
+        public void TestUpdateDongleParingStausText()
+        {
+            var pairingStatus1 = DonglePairingStatus.DonglePairingStatusStopped;
+
+            if (pairingStatus1 == DonglePairingStatus.DonglePairingStatusStopped)
+            {
+                var UpdateParingStausText_result1 = privatetePeripheralsPlugin.Invoke("UpdateParingStausText", pairingStatus1);  //Dongle PairingStatus
+                Assert.That(UpdateParingStausText_result1, Is.EqualTo("Stopped"));
+            }
+
+            var pairingStatus2 = DonglePairingStatus.DonglePairingStatusStarted;
+
+            if (pairingStatus2 == DonglePairingStatus.DonglePairingStatusStarted)
+            {
+                var UpdateParingStausText_result2 = privatetePeripheralsPlugin.Invoke("UpdateParingStausText", pairingStatus2);
+                Assert.That(UpdateParingStausText_result2, Is.EqualTo("Started"));
+            }
+
+            var pairingStatus3 = DonglePairingStatus.DonglePairingStatusRequest;
+
+            if (pairingStatus3 == DonglePairingStatus.DonglePairingStatusRequest)
+            {
+                var UpdateParingStausText_result3 = privatetePeripheralsPlugin.Invoke("UpdateParingStausText", pairingStatus3);
+                Assert.That(UpdateParingStausText_result3, Is.EqualTo("Request"));
+            }
+
+            var pairingStatus4 = DonglePairingStatus.DonglePairingStatusTimeOut;
+
+            if (pairingStatus4 == DonglePairingStatus.DonglePairingStatusTimeOut)
+            {
+                var UpdateParingStausText_result4 = privatetePeripheralsPlugin.Invoke("UpdateParingStausText", pairingStatus4);
+                Assert.That(UpdateParingStausText_result4, Is.EqualTo("TimeOut"));
+            }
+
+            var pairingStatus5 = DonglePairingStatus.DonglePairingStatusAlreadyPaired;
+
+            if (pairingStatus5 == DonglePairingStatus.DonglePairingStatusAlreadyPaired)
+            {
+                var UpdateParingStausText_result5 = privatetePeripheralsPlugin.Invoke("UpdateParingStausText", pairingStatus5);
+                Assert.That(UpdateParingStausText_result5, Is.EqualTo("Already Paired"));
+            }
+
+            var pairingStatus6 = DonglePairingStatus.DonglePairingStatusOldDevice;
+
+            if (pairingStatus6 == DonglePairingStatus.DonglePairingStatusOldDevice)
+            {
+                var UpdateParingStausText_result6 = privatetePeripheralsPlugin.Invoke("UpdateParingStausText", pairingStatus6);
+                Assert.That(UpdateParingStausText_result6, Is.EqualTo("Old Device"));
+            }
+        }
+
         [OneTimeTearDown]
         public void TearDown()
         {
