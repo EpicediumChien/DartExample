@@ -85,7 +85,7 @@ namespace DDPM.CLI.Plugins.Display
         {
             //check if no monitor connected, direct response no monitor
             _AllInfoMonitors = devMgr.GetMonitors().Result;
-            if ((_AllInfoMonitors == null || _AllInfoMonitors.Count == 0) && !commandLineInput.TargetFeature.Equals("DEVICEDATA") && !commandLineInput.TargetFeature.Equals("NETWORKKVM") && !commandLineInput.TargetFeature.Equals("NETWORKKVMAUTOCONNECT") && !commandLineInput.TargetFeature.Equals("NETWORKKVMCONTENTTRANSFER") && !commandLineInput.TargetFeature.Equals("NETWORKKVMINCOMINGPORT") && !commandLineInput.TargetFeature.Equals("NETWORKKVMOUTGOINGPORT") && !commandLineInput.TargetFeature.Equals("NETWORKKVMCONTENTTRANSFERPORT") && !commandLineInput.TargetFeature.Equals("NETWORKKVMACCESSRESET") && !commandLineInput.TargetFeature.Equals("DEVICECONFIGURATION") && !commandLineInput.TargetFeature.Equals("CONNECTEDDEVICES") && !commandLineInput.TargetFeature.Equals("DIAGNOSTICSREPORT"))
+            if ((_AllInfoMonitors == null || _AllInfoMonitors.Count == 0) && !commandLineInput.TargetFeature.Equals("NETWORKKVM") && !commandLineInput.TargetFeature.Equals("NETWORKKVMAUTOCONNECT") && !commandLineInput.TargetFeature.Equals("NETWORKKVMCONTENTTRANSFER") && !commandLineInput.TargetFeature.Equals("NETWORKKVMINCOMINGPORT") && !commandLineInput.TargetFeature.Equals("NETWORKKVMOUTGOINGPORT") && !commandLineInput.TargetFeature.Equals("NETWORKKVMCONTENTTRANSFERPORT") && !commandLineInput.TargetFeature.Equals("NETWORKKVMACCESSRESET") && commandLineInput.TargetType != "APP")
             {
                 CLI_RESPONSE rsp = new CLI_RESPONSE()
                 {
@@ -1535,101 +1535,139 @@ namespace DDPM.CLI.Plugins.Display
 
             if (commandLineInput.Command == "SET" && commandLineInput.Options[0].Option_Value != null)
             {
+                var result = string.Empty;
+                var value = string.Empty;
+                var message = "N/A";
+
+                commandLineInput.Options[0].Option_Value.Replace(".", ",");
+                List<string> values = commandLineInput.Options[0].Option_Value.Split(",").ToList();
+                foreach (string v in values)
+                {
+                    switch (v.ToUpper())
+                    {
+                        case "ON":
+                            writelog($"ScreenNotification on entry");
+                            devMgr.Set_GlobalSetting_DisplayLowBatteryLevel(true);
+                            devMgr.Set_GlobalSetting_DisplayKeyboardLockKey(true);
+                            devMgr.Set_GlobalSetting_DisplayWB7022CoverState(true);
+                            devMgr.Set_GlobalSetting_DisplayMuteState(true);
+                            devMgr.Set_GlobalSetting_DisplayColorPresetAndEasyMemory(true);
+
+                            result = "PASS";
+                            value = "ON";
+                            break;
+
+                        case "OFF":
+                            writelog($"ScreenNotification off entry");
+                            devMgr.Set_GlobalSetting_DisplayLowBatteryLevel(false);
+                            devMgr.Set_GlobalSetting_DisplayKeyboardLockKey(false);
+                            devMgr.Set_GlobalSetting_DisplayWB7022CoverState(false);
+                            devMgr.Set_GlobalSetting_DisplayMuteState(false);
+                            devMgr.Set_GlobalSetting_DisplayColorPresetAndEasyMemory(false);
+                            result = "PASS";
+                            value = "OFF";
+                            break;
+
+                        case "LOCK":
+                        case "UNLOCK":
+                            if (v.ToUpper().Equals("LOCK")) ddpmSettings.LockSettings.Lock_Setting_ScreenNotification = true;
+                            if (v.ToUpper().Equals("UNLOCK")) ddpmSettings.LockSettings.Lock_Setting_ScreenNotification = false;
+                            await devMgr.SetAppConfigData(ddpmSettings);
+                            break;
+
+                        default:
+                            writelog($"option value not support");
+
+                            result = "FAIL";
+                            message = "Un-supported command";
+                            break;
+                    }
+                }
+                value += "," + (ddpmSettings.LockSettings.Lock_Setting_ScreenNotification ? "LOCK" : "UNLOCK");
 
                 List<int> _monitorIndeies = new List<int>();
 
                 if (_AllInfoMonitors == null)
                     _AllInfoMonitors = devMgr.GetMonitors().Result;
-                _monitorIndeies = GetMonitorIndeies(commandLineInput, _AllInfoMonitors);
 
-                foreach (int idx in _monitorIndeies)
+                if (_AllInfoMonitors.Count > 0)
                 {
-                    MonitorInfo monitor = _AllInfoMonitors[idx];
-                    ;
+                    _monitorIndeies = GetMonitorIndeies(commandLineInput, _AllInfoMonitors);
+
+                    foreach (int idx in _monitorIndeies)
+                    {
+                        MonitorInfo monitor = _AllInfoMonitors[idx];
+                        CLI_RESPONSE cli_Response = new CLI_RESPONSE();
+                        cli_Response.Command = commandLineInput.Command;
+                        cli_Response.TargetFeature = commandLineInput.TargetFeature;
+                        cli_Response.Model = monitor.modelName;
+                        cli_Response.SerialNumber = monitor.edid.SerialNumber;
+                        cli_Response.Index = change_0base_to_1base((monitor.Index).ToString());
+                        cli_Response.ServiceTag = monitor.edid.ServiceTag;
+                        cli_Response.Result = result;
+                        cli_Response.Value = value;
+                        cli_Response.Message = message;
+
+                        System.Console.WriteLine(JsonConvert.SerializeObject(cli_Response, Formatting.Indented));
+                        output += "\n" + JsonConvert.SerializeObject(cli_Response, Formatting.Indented);
+                    }
+                }
+                else
+                {
                     CLI_RESPONSE cli_Response = new CLI_RESPONSE();
                     cli_Response.Command = commandLineInput.Command;
                     cli_Response.TargetFeature = commandLineInput.TargetFeature;
-                    cli_Response.Model = monitor.modelName;
-                    cli_Response.SerialNumber = monitor.edid.SerialNumber;
-                    cli_Response.Index = change_0base_to_1base((monitor.Index).ToString());
-                    cli_Response.ServiceTag = monitor.edid.ServiceTag;
+                    cli_Response.Result = result;
+                    cli_Response.Value = value;
+                    cli_Response.Message = message;
 
-                    commandLineInput.Options[0].Option_Value.Replace(".", ",");
-                    List<string> values = commandLineInput.Options[0].Option_Value.Split(",").ToList();
-                    foreach (string v in values)
-                    {
-                        switch (v.ToUpper())
-                        {
-                            case "ON":
-                                writelog($"ScreenNotification on entry");
-                                devMgr.Set_GlobalSetting_DisplayLowBatteryLevel(true);
-                                devMgr.Set_GlobalSetting_DisplayKeyboardLockKey(true);
-                                devMgr.Set_GlobalSetting_DisplayWB7022CoverState(true);
-                                devMgr.Set_GlobalSetting_DisplayMuteState(true);
-                                devMgr.Set_GlobalSetting_DisplayColorPresetAndEasyMemory(true);
-
-                                cli_Response.Result = "PASS";
-                                cli_Response.Value = "ON";
-                                break;
-
-                            case "OFF":
-                                writelog($"ScreenNotification off entry");
-                                devMgr.Set_GlobalSetting_DisplayLowBatteryLevel(false);
-                                devMgr.Set_GlobalSetting_DisplayKeyboardLockKey(false);
-                                devMgr.Set_GlobalSetting_DisplayWB7022CoverState(false);
-                                devMgr.Set_GlobalSetting_DisplayMuteState(false);
-                                devMgr.Set_GlobalSetting_DisplayColorPresetAndEasyMemory(false);
-                                cli_Response.Result = "PASS";
-                                cli_Response.Value = "OFF";
-                                break;
-
-                            case "LOCK":
-                            case "UNLOCK":
-                                if (v.ToUpper().Equals("LOCK")) ddpmSettings.LockSettings.Lock_Setting_ScreenNotification = true;
-                                if (v.ToUpper().Equals("UNLOCK")) ddpmSettings.LockSettings.Lock_Setting_ScreenNotification = false;
-                                await devMgr.SetAppConfigData(ddpmSettings);
-                                break;
-
-                            default:
-                                writelog($"option value not support");
-
-                                cli_Response.Command = commandLineInput.Command;
-                                cli_Response.TargetFeature = commandLineInput.TargetFeature;
-                                cli_Response.Result = "FAIL";
-                                cli_Response.Message = "Un-supported command";
-                                break;
-                        }
-                    }
-                    cli_Response.Value += "," + (ddpmSettings.LockSettings.Lock_Setting_ScreenNotification ? "LOCK" : "UNLOCK");
                     System.Console.WriteLine(JsonConvert.SerializeObject(cli_Response, Formatting.Indented));
                     output += "\n" + JsonConvert.SerializeObject(cli_Response, Formatting.Indented);
                 }
             }
             if (commandLineInput.Command == "GET")
             {
+                GlobalSettingParam param = new GlobalSettingParam();
+                param = devMgr.GetGlobalSettingParam().Result;
+
+                var result = "PASS";
+                var value = (param.GlobalSetting_General.Low_Battery_Level.ToString().ToLower() == "true") ? "ON" : "OFF";
+                value += "," + (ddpmSettings.LockSettings.Lock_Setting_ScreenNotification ? "LOCK" : "UNLOCK");
+
                 List<int> _monitorIndeies = new List<int>();
                 if (_AllInfoMonitors == null)
                     _AllInfoMonitors = devMgr.GetMonitors().Result;
-                _monitorIndeies = GetMonitorIndeies(commandLineInput, _AllInfoMonitors);
 
-                foreach (int idx in _monitorIndeies)
+                if (_AllInfoMonitors.Count > 0)
                 {
-                    writelog($"ScreenNotification get entry");
+                    _monitorIndeies = GetMonitorIndeies(commandLineInput, _AllInfoMonitors);
 
-                    MonitorInfo monitor = _AllInfoMonitors[idx];
-                    GlobalSettingParam param = new GlobalSettingParam();
-                    param = devMgr.GetGlobalSettingParam().Result;
+                    foreach (int idx in _monitorIndeies)
+                    {
+                        writelog($"ScreenNotification get entry");
 
+                        MonitorInfo monitor = _AllInfoMonitors[idx];
+
+                        CLI_RESPONSE cli_Response = new CLI_RESPONSE();
+                        cli_Response.Command = commandLineInput.Command;
+                        cli_Response.TargetFeature = commandLineInput.TargetFeature;
+                        cli_Response.Model = monitor.modelName;
+                        cli_Response.SerialNumber = monitor.edid.SerialNumber;
+                        cli_Response.Index = change_0base_to_1base((monitor.Index).ToString());
+                        cli_Response.ServiceTag = monitor.edid.ServiceTag;
+                        cli_Response.Value = value;
+                        cli_Response.Result = result;
+                        System.Console.WriteLine(JsonConvert.SerializeObject(cli_Response, Formatting.Indented));
+                        output += "\n" + JsonConvert.SerializeObject(cli_Response, Formatting.Indented);
+                    }
+                }
+                else
+                {
                     CLI_RESPONSE cli_Response = new CLI_RESPONSE();
                     cli_Response.Command = commandLineInput.Command;
                     cli_Response.TargetFeature = commandLineInput.TargetFeature;
-                    cli_Response.Model = monitor.modelName;
-                    cli_Response.SerialNumber = monitor.edid.SerialNumber;
-                    cli_Response.Index = change_0base_to_1base((monitor.Index).ToString());
-                    cli_Response.ServiceTag = monitor.edid.ServiceTag;
-                    cli_Response.Value = (param.GlobalSetting_General.Low_Battery_Level.ToString().ToLower() == "true") ? "ON" : "OFF";
-                    cli_Response.Result = "Pass";
-                    cli_Response.Value += "," + (ddpmSettings.LockSettings.Lock_Setting_ScreenNotification ? "LOCK" : "UNLOCK");
+                    cli_Response.Value = value;
+                    cli_Response.Result = result;
                     System.Console.WriteLine(JsonConvert.SerializeObject(cli_Response, Formatting.Indented));
                     output += "\n" + JsonConvert.SerializeObject(cli_Response, Formatting.Indented);
                 }
@@ -7355,6 +7393,17 @@ namespace DDPM.CLI.Plugins.Display
                                         commandLineInput.Options[i].Option_Value = "HighDataSpeed";
                                         USBCPrioritization_RESPONSE.Value = commandLineInput.Options[i].Option_Value;
                                     }
+
+                                    if (commandLineInput.Options[i].Option_Value.ToUpper() != "HIGHDATASPEED" && commandLineInput.Options[i].Option_Value.ToUpper() != "HIGHRESOLUTION")
+                                    {
+                                        USBCPrioritization_RESPONSE.Result = "FAIL";
+                                        USBCPrioritization_RESPONSE.Message = "Wrong option value";
+                                        output = JsonConvert.SerializeObject(USBCPrioritization_RESPONSE, Formatting.Indented);
+                                        writelog(commandLineInput.TargetFeature + $" Return value{output}");
+                                        System.Console.WriteLine(output);
+                                        return ((int)CLI_ExitCode.fail_option_value, output);
+                                    }
+
                                     USBCPrioritizationType usbcPrioritizationType = commandLineInput.Options[i].Option_Value.ToUpper().Equals(USBCPrioritizationType.HighDataSpeed.ToString().ToUpper()) ? USBCPrioritizationType.HighDataSpeed : USBCPrioritizationType.HighResolution;
                                     if (displayPropertiesInfo.USBCPrioritizationType.ToString().ToUpper().Equals(commandLineInput.Options[i].Option_Value.ToUpper()))
                                     {
@@ -7454,7 +7503,7 @@ namespace DDPM.CLI.Plugins.Display
                     CurrentOrientation_RESPONSE = new CLI_Get_Properties_Orientation_RESPONSE(cLI_RESPONSE);
                     try
                     {
-                        if (monitorInfo.CapabilityDic.ContainsKey("AA"))
+                        if (monitorInfo.CapabilityDic.ContainsKey("AA") && monitorInfo.CapabilityDic["AA"] != null && monitorInfo.CapabilityDic["AA"].Contains("00"))
                         {
                             if (commandLineInput.Command.Equals("GET"))
                             {
@@ -7529,6 +7578,7 @@ namespace DDPM.CLI.Plugins.Display
                         else
                         {
                             writelog($"ORIENTATION VCP not support");
+                            cLI_RESPONSE.Message = "ORIENTATION VCP not support";
                             output += $"\n  \"Result: \": \"ORIENTATION VCP not support\"";
                         }
 
@@ -9354,7 +9404,7 @@ namespace DDPM.CLI.Plugins.Display
                                 get_DeviceData.ColorPreset = devMgr.ReadCurrentColorPreset(monitor).Result;
                                 writelog($"ReadCurrentColorPreset Exit return value: {devMgr.ReadCurrentColorPreset(monitor).Result}");
 
-                                if (monitor.CapabilityDic.ContainsKey("AA"))
+                                if (monitor.CapabilityDic.ContainsKey("AA") && monitor.CapabilityDic["AA"] != null && monitor.CapabilityDic["AA"].Contains("00"))
                                 {
                                     writelog($"ScreenOrientation Entry");
                                     rc = GetVCPCode(devMgr, monitor, "0xAA").Result;
@@ -9532,7 +9582,7 @@ namespace DDPM.CLI.Plugins.Display
                                     index_per++;
 
                                     cli_Response2.Index = index_per.ToString();
-                                    cli_Response2.Model = g.Name;
+                                    cli_Response2.Model = g.ModelNumber;
                                     cli_Response2.FirmwareVersion = g.FirmwareVersion;
                                     cli_Response2.Connectiontype = get_headsetconnection_type(g.ConnectionType);
                                     cli_Response2.BatteryStatus = g.BatteryStatus;
@@ -9557,7 +9607,7 @@ namespace DDPM.CLI.Plugins.Display
                                     index_per++;
 
                                     cli_Response2.Index = index_per.ToString();
-                                    cli_Response2.Model = g.Name;
+                                    cli_Response2.Model = g.ModelNumber;
                                     cli_Response2.FirmwareVersion = g.FirmwareVersion;
                                     cli_Response2.Connectiontype = get_headsetconnection_type(g.ConnectionType);
                                     cli_Response2.BatteryStatus = g.BatteryStatus;
@@ -9580,7 +9630,7 @@ namespace DDPM.CLI.Plugins.Display
                                     index_per++;
 
                                     cli_Response2.Index = index_per.ToString();
-                                    cli_Response2.Model = g.Name;
+                                    cli_Response2.Model = g.ModelNumber;
                                     cli_Response2.FirmwareVersion = g.FirmwareVersion;
                                     cli_Response2.Connectiontype = get_headsetconnection_type(g.ConnectionType);
                                     cli_Response2.BatteryStatus = g.BatteryStatus;
@@ -9603,7 +9653,7 @@ namespace DDPM.CLI.Plugins.Display
                                     index_per++;
 
                                     cli_Response2.Index = index_per.ToString();
-                                    cli_Response2.Model = g.Name;
+                                    cli_Response2.Model = g.ModelNumber;
                                     cli_Response2.FirmwareVersion = g.FirmwareVersion;
                                     cli_Response2.Connectiontype = get_headsetconnection_type(g.ConnectionType);
                                     cli_Response2.BatteryStatus = g.BatteryStatus;
@@ -9626,7 +9676,7 @@ namespace DDPM.CLI.Plugins.Display
                                     index_per++;
 
                                     cli_Response2.Index = index_per.ToString();
-                                    cli_Response2.Model = g.Name;
+                                    cli_Response2.Model = g.ModelNumber;
                                     cli_Response2.FirmwareVersion = g.FirmwareVersion;
                                     cli_Response2.Connectiontype = get_headsetconnection_type(g.ConnectionType);
                                     cli_Response2.BatteryStatus = g.BatteryStatus;
@@ -9649,7 +9699,7 @@ namespace DDPM.CLI.Plugins.Display
                                     index_per++;
 
                                     cli_Response2.Index = index_per.ToString();
-                                    cli_Response2.Model = g.Name;
+                                    cli_Response2.Model = g.ModelNumber;
                                     cli_Response2.FirmwareVersion = g.FirmwareVersion;
                                     cli_Response2.Connectiontype = get_headsetconnection_type(g.ConnectionType);
                                     cli_Response2.BatteryStatus = g.BatteryStatus;
@@ -9672,7 +9722,7 @@ namespace DDPM.CLI.Plugins.Display
                                     index_per++;
 
                                     cli_Response2.Index = index_per.ToString();
-                                    cli_Response2.Model = g.Name;
+                                    cli_Response2.Model = g.ModelNumber;
                                     cli_Response2.FirmwareVersion = g.FirmwareVersion;
                                     cli_Response2.Connectiontype = get_headsetconnection_type(g.ConnectionType);
                                     cli_Response2.BatteryStatus = g.BatteryStatus;
@@ -9761,7 +9811,7 @@ namespace DDPM.CLI.Plugins.Display
                     get_DeviceData.ColorPreset = devMgr.ReadCurrentColorPreset(monitor).Result;
                     writelog($"ReadCurrentColorPreset Exit return value: {devMgr.ReadCurrentColorPreset(monitor).Result}");
 
-                    if (monitor.CapabilityDic.ContainsKey("AA"))
+                    if (monitor.CapabilityDic.ContainsKey("AA") && monitor.CapabilityDic["AA"] != null && monitor.CapabilityDic["AA"].Contains("00"))
                     {
                         writelog($"ScreenOrientation Entry");
                         rc = GetVCPCode(devMgr, monitor, "0xAA").Result;
@@ -9928,12 +9978,12 @@ namespace DDPM.CLI.Plugins.Display
 
                 foreach (var g in _deviceinfo)
                 {
-                    output += $"\n  \"Device\": \"{g.LogicalDeviceType}\"";
+                    output += $"\n  \"Device\": \"{g.Name}\"";
                     CLI_RESPONSE2 cli_Response2 = new CLI_RESPONSE2();
 
                     index++;
                     cli_Response2.Index = index.ToString();
-                    cli_Response2.Model = g.Name;
+                    cli_Response2.Model = g.ModelNumber;
                     cli_Response2.ID = g.ID;
                     cli_Response2.FirmwareVersion = g.FirmwareVersion;
                     cli_Response2.Connectiontype = get_headsetconnection_type(g.ConnectionType);
@@ -9944,18 +9994,20 @@ namespace DDPM.CLI.Plugins.Display
                 }
             }
 
-            CLI_RESPONSE3 cli_Response = new CLI_RESPONSE3();
+            CLI_RESPONSE3 cli_Response = new CLI_RESPONSE3(); 
+            cli_Response.Command = commandLineInput.Command;
+            cli_Response.TargetFeature = commandLineInput.TargetFeature;
             if (recode_per || recode_dis)
             {
-                cli_Response.Command = commandLineInput.Command;
-                cli_Response.TargetFeature = commandLineInput.TargetFeature;
                 cli_Response.Result = "PASS";
                 cli_Response.Message = "N/A";
             }
+            else if (_deviceinfo.Count == 0 && _monitorIndeies.Count == 0)
+            {
+                cli_Response.Message = "No devices found";
+            }
             else
             {
-                cli_Response.Command = commandLineInput.Command;
-                cli_Response.TargetFeature = commandLineInput.TargetFeature;
                 cli_Response.Result = "FAIL";
                 cli_Response.Message = "Invalid command line syntax.";
             }
@@ -12013,7 +12065,7 @@ namespace DDPM.CLI.Plugins.Display
                                     {
                                         case "SCREENORIENTATION":
                                             writelog($"ScreenOrientation entry");
-                                            if (monitor.CapabilityDic.ContainsKey("AA"))
+                                            if (monitor.CapabilityDic.ContainsKey("AA") && monitor.CapabilityDic["AA"] != null && monitor.CapabilityDic["AA"].Contains("00"))
                                             {
                                                 retcode = SetVCPCode(devMgr, monitor, "0xAA", get_ScreenOrientation_code(property.Value.ToString())).Result;
                                                 if (!retcode) ispass = false;
@@ -12045,7 +12097,7 @@ namespace DDPM.CLI.Plugins.Display
 
                                         case "OPTIMALRESOLUTION":
                                             writelog($"OptimalResolution entry");
-                                            if (monitor.CapabilityDic.ContainsKey("AA"))
+                                            if (monitor.CapabilityDic.ContainsKey("AA") && monitor.CapabilityDic["AA"] != null && monitor.CapabilityDic["AA"].Contains("00"))
                                             {
                                                 string[] ss = property.Value.ToString().Split(" ");
                                                 displayProperties = new Properties() { Resolutions_Width = int.Parse(ss[0]), Resolutions_High = int.Parse(ss[2]), Frequency = int.Parse(ss[4].Split(".00HZ")[0]) };
