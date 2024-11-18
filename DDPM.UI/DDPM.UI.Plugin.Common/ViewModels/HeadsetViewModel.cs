@@ -809,7 +809,7 @@ namespace DDPM.UI.Plugin.ViewModels
             vm.ShowPleaseWait();
             try
             {
-                using (var cts = new CancellationTokenSource(TimeSpan.FromSeconds(6))) 
+                using (var cts = new CancellationTokenSource(TimeSpan.FromSeconds(10))) 
                 {
                     await Task.Run(() => DoWork_PleaseWait(model, vm), cts.Token);
                 }
