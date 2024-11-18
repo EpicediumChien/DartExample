@@ -93,7 +93,7 @@
                             FontFamily="Roboto"
                             FontSize="14"
                             FontWeight="Medium"
-                            Foreground="#FFFFFF"
+                            Foreground="{DynamicResource Default_SA_OSD_PathColor}"
                             Text="{Binding [Presence_detection_sensor_is_covered], Source={x:Static lang:LangHelper.Instance}, Mode=OneWay}" />
                     </Grid>
                 </Grid>
