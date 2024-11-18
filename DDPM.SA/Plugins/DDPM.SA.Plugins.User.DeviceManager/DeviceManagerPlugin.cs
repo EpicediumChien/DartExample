@@ -5849,6 +5849,15 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             return Task.CompletedTask;
         }
 
+        public Task CallShowNKVM(int num, int x, int y)
+        {
+            if (_NKVMPlugin != null)
+            {
+                _NKVMPlugin.CallShowNKVM(num, x, y);
+            }
+            return Task.CompletedTask;
+        }
+
         #endregion
 
         #region EasyArrage

@@ -615,6 +615,8 @@ namespace DDPM.SA.Common
 
         Task CallNKVMConnent();
 
+        Task CallShowNKVM(int num, int x, int y);
+
         #endregion for NKVM
 
         #region public for SW Update
