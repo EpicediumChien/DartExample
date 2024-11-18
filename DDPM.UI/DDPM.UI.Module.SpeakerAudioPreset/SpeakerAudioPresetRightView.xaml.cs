@@ -29,24 +29,48 @@ namespace DDPM.UI.Module.SpeakerAudioPreset
         {
             InitializeComponent();
             _vm = vm;
-            _vm.DetectPageShow(_vm.Model);
-            _vm.UpdateDTPValue();
+            InitializeAsync();
+        }
+
+        private async void InitializeAsync()
+        {
+            _vm._log!.Info("[SpeakerAudioPresetRightView] Before Invoke_PleaseWaitAsync");
+            await _vm.Invoke_PleaseWaitAsync(_vm.Model, _vm);
+            _vm._log!.Info("[SpeakerAudioPresetRightView] After Invoke_PleaseWaitAsync");
             if (_vm.SpeakerInfoValueDTP.SpeakerProfile == _vm._default)
             {
                 if (_vm.SpeakerInfoValueDTP.SpeakerBass > 2 || _vm.SpeakerInfoValueDTP.SpeakerBass < -2)
+                {
                     SetNodeValue(Node1, 0);
+                    _vm._log!.Info($"[SpeakerAudioPresetRightView] SpeakerBass SetNodeValue ... Bass 00000");
+                }
                 else
+                {
                     SetNodeValue(Node1, _vm.SpeakerInfoValueDTP.SpeakerBass);
+                    _vm._log!.Info($"[SpeakerAudioPresetRightView] SpeakerBass SetNodeValue ... Bass {_vm.SpeakerInfoValueDTP!.SpeakerBass.ToString()}");
+                }
 
                 if (_vm.SpeakerInfoValueDTP.SpeakerMidRange > 2 || _vm.SpeakerInfoValueDTP.SpeakerMidRange < -2)
+                {
                     SetNodeValue(Node2, 0);
+                    _vm._log!.Info($"[SpeakerAudioPresetRightView] SpeakerMidRange SetNodeValue ... MidRange 00000");
+                }
                 else
+                {
                     SetNodeValue(Node2, _vm.SpeakerInfoValueDTP.SpeakerMidRange);
+                    _vm._log!.Info($"[SpeakerAudioPresetRightView] SpeakerMidRange SetNodeValue ... MidRange {_vm.SpeakerInfoValueDTP!.SpeakerMidRange.ToString()}");
+                }
 
                 if (_vm.SpeakerInfoValueDTP.SpeakerTreble > 2 || _vm.SpeakerInfoValueDTP.SpeakerTreble < -2)
+                {
                     SetNodeValue(Node3, 0);
+                    _vm._log!.Info($"[SpeakerAudioPresetRightView] SpeakerTreble SetNodeValue ... Treble 00000");
+                }
                 else
+                {
                     SetNodeValue(Node3, _vm.SpeakerInfoValueDTP.SpeakerTreble);
+                    _vm._log!.Info($"[SpeakerAudioPresetRightView] SpeakerTreble SetNodeValue ... Treble {_vm.SpeakerInfoValueDTP!.SpeakerTreble.ToString()}");
+                }
             }
             _vm.CheckPresetsUI();
             _vm.CheckAudioSettingsUI();

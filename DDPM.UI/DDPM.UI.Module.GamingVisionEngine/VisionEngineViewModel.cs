@@ -15,6 +15,7 @@ using Newtonsoft.Json.Linq;
 using System.Collections.ObjectModel;
 
 [assembly: InternalsVisibleTo("DDPM.UI.Module.Gaming.Tests")]
+[assembly: InternalsVisibleTo("DDPM.UI.Module.GamingVisionEngine.Tests")]
 
 namespace DDPM.UI.Module.GamingVisionEngine
 {

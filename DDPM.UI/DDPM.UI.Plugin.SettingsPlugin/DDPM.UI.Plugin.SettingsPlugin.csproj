@@ -9,6 +9,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+	  <None Remove="Resources\Background_Glow.png" />
 	  <None Remove="Resources\double arrow blue.png" />
 	  <None Remove="Resources\double arrow.png" />
 	  <None Remove="Resources\Lock.png" />
@@ -38,6 +39,9 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <Resource Include="Resources\Background_Glow.png">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </Resource>
 	  <Resource Include="Resources\double arrow blue.png">
 	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 	  </Resource>

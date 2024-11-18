@@ -622,6 +622,7 @@ namespace DDPM.SA.Common
         Task<SWUpdateInfoPackage> SW_GetSWUpdateInfo(bool isShowNotify = true, bool isForce = false, bool isDefer = false, bool reScan = true, bool isUItrigger = false);
 
         Task<List<SWUpdateInfo>> SW_DownloadAndInstall(List<SWUpdateInfo> swUpdateInfos, bool isUItrigger = false, string installPath = "");
+        Task<InterruptScreenRoot> InterruptScreen_Metadata();
 
         #endregion public for SW Update
 
@@ -1074,6 +1075,8 @@ namespace DDPM.SA.Common
         Task<bool> GetIsWiredAudioIMicNSEnableAsync(string Guid);
 
         Task<bool> GetIsAudioEqualizerSupportedAsync(string Guid);
+
+        Task<bool> GetMuteStatusAsyncForSpeaker(string guid);
 
         #endregion Wires Audio
 

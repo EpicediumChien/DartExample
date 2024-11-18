@@ -12,6 +12,7 @@
   </PropertyGroup>
 
 	<ItemGroup>
+		<PackageReference Include="DCF.Security" Version="2.4.2.1" />
 		<PackageReference Include="DCF.UX.WPF" Version="2.2.4.1" />
 	</ItemGroup>
 
