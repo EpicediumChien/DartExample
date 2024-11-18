@@ -61,17 +61,10 @@
                         <RowDefinition Height="*" />
                     </Grid.RowDefinitions>
 
-                    <Image
-                        x:Name="CloseIcon"
-                        Grid.Row="0"
-                        Width="16"
-                        Height="16"
-                        Margin="0,10,10,0"
-                        HorizontalAlignment="Right"
-                        VerticalAlignment="Top"
-                        MouseLeftButtonDown="close_Click"
-                        Source="./Img/Close.png"
-                        Stretch="Fill" />
+                    <Canvas Width="16" Height="16" Tag="{DynamicResource Default_SA_OSD_PathColor}" MouseLeftButtonDown="close_Click">
+                        <Path Data="M16,0.82 L15.18,0 L8,7.2 L0.82,0.05 L0,0.87 L7.15,8 L0.05,15.13 L0.87,16 L8,8.85 L15.13,16 L15.95,15.18 L8.8,8 L16,0.82 Z" 
+                            Fill="{Binding Tag, RelativeSource={RelativeSource AncestorType=Canvas}}" />
+                    </Canvas>
 
                     <Grid Grid.Row="1">
 
@@ -80,13 +73,10 @@
                             <RowDefinition Height="50*" />
                         </Grid.RowDefinitions>
 
-                        <Image
-                            Grid.Row="0"
-                            Width="35"
-                            Height="35"
-                            HorizontalAlignment="Center"
-                            VerticalAlignment="Top"
-                            Source="./Img/Battery.png" />
+                        <Canvas Width="35" Height="35" Tag="{DynamicResource Default_SA_OSD_PathColor}">
+                            <Path Data="M20.26,4.18 V0 H11.74 V4.18 H7.28 V31.28 H24.72 V4.18 ZM13.84,2 H18.16 V4 H13.84 ZM22.62,29.2 H9.38 V6.26 H22.62 ZM20.54,15.64 H11.46 V27.1 H20.54 V15.64 ZM18.54,25.02 H13.54 V17.72 H18.46 Z" 
+                              Fill="{Binding Tag, RelativeSource={RelativeSource AncestorType=Canvas}}" />
+                        </Canvas>
 
                         <StackPanel
                             Grid.Row="1"
