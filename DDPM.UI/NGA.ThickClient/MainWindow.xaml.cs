@@ -169,8 +169,7 @@ namespace NGA.ThickClient
             if (e.PropertyName == nameof(UXSystemParameters.Instance.OSTheme))
             {
                 //update dark/light mode
-                if (DdpmCommonHelper.ThemeSwitchFlag)
-                    DdpmCommonHelper.updateMergedDictionaries(resourceManager);
+                DdpmCommonHelper.updateMergedDictionaries(resourceManager);
             }
             if (e.PropertyName != nameof(UXSystemParameters.Instance.HighContrast))
                 return;
