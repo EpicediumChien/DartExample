@@ -176,7 +176,7 @@ namespace VcpCore.Plugins
                 if (!_Isinitializing) break;
                 SpinWait.SpinUntil(() => false, 250);
                 count++;
-            } while ((_Isinitializing) && (count < 80));
+            } while ((_Isinitializing) && (count < 120));
 
             List<MonitorInfo> _AllDisplays = new List<MonitorInfo>();
             if (_AllInfoMonitors_Mix.Count > 0)
@@ -619,9 +619,16 @@ namespace VcpCore.Plugins
 
             using (var tokenSource = new CancellationTokenSource(30 * 1000))
             {
+                CancellationTokenSource newGetResultCancellationTokenSource;
+
+                if ((_cancellationTokenSource != null) && (!_cancellationTokenSource.Token.Equals(CancellationToken.None)))
+                    newGetResultCancellationTokenSource = CancellationTokenSource.CreateLinkedTokenSource(tokenSource.Token, _cancellationTokenSource.Token);
+                else
+                    newGetResultCancellationTokenSource = CancellationTokenSource.CreateLinkedTokenSource(tokenSource.Token);
+
                 try
                 {
-                    var token = tokenSource.Token;
+                    var token = newGetResultCancellationTokenSource.Token;
 
                     //TODO: May be you'll want to add .ConfigureAwait(false);
                     var r = await Task.Run(() => GetQueueResult_(guid, token), token).ConfigureAwait(false);
@@ -654,6 +661,7 @@ namespace VcpCore.Plugins
                 finally
                 {
                     tokenSource.Dispose();
+                    newGetResultCancellationTokenSource.Dispose();
                 }
             }
         }
@@ -856,8 +864,7 @@ namespace VcpCore.Plugins
         {
             _logs.DebugMsg("[VcpCorePlugin] [QueueTrigger] VcpCorePlugin started GetCapabilitiesString_ ...");
 
-            if ((_AllInfoMonitors.Count > 0) &&
-                (_AllInfoMonitors.Exists(t => t.edid.Equals(monitorInfoX.edid))))
+            if (_AllInfoMonitors_Mix.Count > 0 && _AllInfoMonitors.Count > 0 && _AllInfoMonitors.Count.Equals(_AllInfoMonitors_Mix.Count) && (_AllInfoMonitors.Exists(t => t.edid.Equals(monitorInfoX.edid))))
             {
                 if (monitorInfoX.DDCisON)
                 {
@@ -867,12 +874,19 @@ namespace VcpCore.Plugins
 
                     uint length = 0;
 
-                    _GetCapabilitiesStringLength(monitorInfoX.hPhysicalMonitor, out length);
+                    var r = _GetCapabilitiesStringLength(monitorInfoX.hPhysicalMonitor, out length);
 
-                    var sb = new StringBuilder((int)length);
-                    _CapabilitiesRequestAndCapabilitiesReply(monitorInfoX.hPhysicalMonitor, sb, (uint)sb.Capacity);
+                    if (r)
+                    {
+                        var sb = new StringBuilder((int)length);
+                        var rr = _CapabilitiesRequestAndCapabilitiesReply(monitorInfoX.hPhysicalMonitor, sb, (uint)sb.Capacity);
 
-                    return sb.ToString();
+                        if (rr)
+                            return sb.ToString();
+                        else
+                            return string.Empty;
+                    }
+                    else return string.Empty;
                 }
 
                 return string.Empty;
@@ -888,8 +902,7 @@ namespace VcpCore.Plugins
         {
             _logs.DebugMsg("[VcpCorePlugin] [QueueTrigger] VcpCorePlugin started GetVCPCapabilities_ ...");
 
-            if ((_AllInfoMonitors.Count > 0) &&
-                (_AllInfoMonitors.Exists(t => t.edid.Equals(monitorInfoX.edid))))
+            if (_AllInfoMonitors_Mix.Count > 0 && _AllInfoMonitors.Count > 0 && _AllInfoMonitors.Count.Equals(_AllInfoMonitors_Mix.Count) && (_AllInfoMonitors.Exists(t => t.edid.Equals(monitorInfoX.edid))))
             {
                 string rcString = string.Empty;
                 if (!string.IsNullOrWhiteSpace(monitorInfoX.CapabilityString))
@@ -1040,8 +1053,7 @@ namespace VcpCore.Plugins
         {
             _logs.DebugMsg("[VcpCorePlugin] [QueueTrigger] VcpCorePlugin started GetVCPCapability_ ...");
 
-            if ((_AllInfoMonitors.Count > 0) &&
-                (_AllInfoMonitors.Exists(t => t.edid.Equals(monitorInfoX.edid))))
+            if (_AllInfoMonitors_Mix.Count > 0 && _AllInfoMonitors.Count > 0 && _AllInfoMonitors.Count.Equals(_AllInfoMonitors_Mix.Count) && (_AllInfoMonitors.Exists(t => t.edid.Equals(monitorInfoX.edid))))
             {
                 object r = null;
                 if (monitorInfoX.DDCisON)
@@ -1074,8 +1086,7 @@ namespace VcpCore.Plugins
         {
             _logs.DebugMsg("[VcpCorePlugin] [QueueTrigger] VcpCorePlugin started GetVCPCapability_ ...");
 
-            if ((_AllInfoMonitors.Count > 0) &&
-                (_AllInfoMonitors.Exists(t => t.edid.Equals(monitorInfoX.edid))))
+            if (_AllInfoMonitors_Mix.Count > 0 && _AllInfoMonitors.Count > 0 && _AllInfoMonitors.Count.Equals(_AllInfoMonitors_Mix.Count) && (_AllInfoMonitors.Exists(t => t.edid.Equals(monitorInfoX.edid))))
             {
                 object ro = null;
                 if (monitorInfoX.DDCisON)
@@ -1109,8 +1120,9 @@ namespace VcpCore.Plugins
                                                 val_ = R_ + "1";
                                             else val_ = R_;
 
-                                            VcpCodeList.VCP60.TryGetValue(val_, out uint value);
-                                            list.Add(new InputSourceObject() { Name = R_, value = value });
+                                            var Issucess = VcpCodeList.VCP60.TryGetValue(val_, out uint value);
+                                            if (Issucess)
+                                                list.Add(new InputSourceObject() { Name = R_, value = value });
                                         }
                                         ro = list;
                                         SetToCacheTable(monitorInfoX, "inputsourcelist", ro);
@@ -1174,8 +1186,7 @@ namespace VcpCore.Plugins
         {
             _logs.DebugMsg("[VcpCorePlugin] [QueueTrigger] VcpCorePlugin started SetVCPCapability_ ...");
 
-            if ((_AllInfoMonitors.Count > 0) &&
-                (_AllInfoMonitors.Exists(t => t.edid.Equals(monitorInfoX.edid))))
+            if (_AllInfoMonitors_Mix.Count > 0 && _AllInfoMonitors.Count > 0 && _AllInfoMonitors.Count.Equals(_AllInfoMonitors_Mix.Count) && (_AllInfoMonitors.Exists(t => t.edid.Equals(monitorInfoX.edid))))
             {
                 bool rc = false;
                 if (monitorInfoX.DDCisON)
@@ -1225,8 +1236,7 @@ namespace VcpCore.Plugins
         {
             _logs.DebugMsg("[VcpCorePlugin] [QueueTrigger] VcpCorePlugin started SetVCPCapability_ ...");
 
-            if ((_AllInfoMonitors.Count > 0) &&
-                (_AllInfoMonitors.Exists(t => t.edid.Equals(monitorInfoX.edid))))
+            if (_AllInfoMonitors_Mix.Count > 0 && _AllInfoMonitors.Count > 0 && _AllInfoMonitors.Count.Equals(_AllInfoMonitors_Mix.Count) && (_AllInfoMonitors.Exists(t => t.edid.Equals(monitorInfoX.edid))))
             {
                 bool rc = false;
                 if (monitorInfoX.DDCisON)
@@ -1250,27 +1260,28 @@ namespace VcpCore.Plugins
                                     VCPchangedEventArgs _VCPchangedEventArgs = new VCPchangedEventArgs();
                                     _VCPchangedEventArgs.vcpcode = FunctionName.ToLower();
                                     _VCPchangedEventArgs.value = val;
-                                    _VCPchangedEventArgs.monitor = new MonitorInfo()
-                                    {
-                                        AliasDeviceName = monitorInfoX.AliasDeviceName,
-                                        IsDellMonitor = monitorInfoX.IsDellMonitor,
-                                        Index = monitorInfoX.Index,
-                                        CapabilityString = monitorInfoX.CapabilityString,
-                                        DDCisON = monitorInfoX.DDCisON,
-                                        DisplayName = monitorInfoX.DisplayName,
-                                        edid = monitorInfoX.edid,
-                                        FwVersion = monitorInfoX.FwVersion,
-                                        inputSource = monitorInfoX.inputSource,
-                                        inputCable = monitorInfoX.inputCable,
-                                        CapabilityDic = monitorInfoX.CapabilityDic,
-                                        modelName = monitorInfoX.modelName,
-                                        series = monitorInfoX.series,
-                                        MarketingName = monitorInfoX.MarketingName,
-                                        ImageFileName = monitorInfoX.ImageFileName,
-                                        SupplierID = monitorInfoX.SupplierID,
-                                        D_Ctrl = monitorInfoX.D_Ctrl,
-                                        scalingFactor = monitorInfoX.scalingFactor,
-                                    };
+                                    _VCPchangedEventArgs.monitor = (_AllInfoMonitors_Mix.Find(M => M.Item1.edid.Equals(monitorInfoX.edid))).Item2.Clone();
+                                    //new MonitorInfo()
+                                    //{
+                                    //    AliasDeviceName = monitorInfoX.AliasDeviceName,
+                                    //    IsDellMonitor = monitorInfoX.IsDellMonitor,
+                                    //    Index = monitorInfoX.Index,
+                                    //    CapabilityString = monitorInfoX.CapabilityString,
+                                    //    DDCisON = monitorInfoX.DDCisON,
+                                    //    DisplayName = monitorInfoX.DisplayName,
+                                    //    edid = monitorInfoX.edid,
+                                    //    FwVersion = monitorInfoX.FwVersion,
+                                    //    inputSource = monitorInfoX.inputSource,
+                                    //    inputCable = monitorInfoX.inputCable,
+                                    //    CapabilityDic = monitorInfoX.CapabilityDic,
+                                    //    modelName = monitorInfoX.modelName,
+                                    //    series = monitorInfoX.series,
+                                    //    MarketingName = monitorInfoX.MarketingName,
+                                    //    ImageFileName = monitorInfoX.ImageFileName,
+                                    //    SupplierID = monitorInfoX.SupplierID,
+                                    //    D_Ctrl = monitorInfoX.D_Ctrl,
+                                    //    scalingFactor = monitorInfoX.scalingFactor,
+                                    //};
                                     OnVCPchanged(_VCPchangedEventArgs);
                                 }
                             }
@@ -1307,27 +1318,28 @@ namespace VcpCore.Plugins
                                     VCPchangedEventArgs _VCPchangedEventArgs = new VCPchangedEventArgs();
                                     _VCPchangedEventArgs.vcpcode = FunctionName.ToLower();
                                     _VCPchangedEventArgs.value = val;
-                                    _VCPchangedEventArgs.monitor = new MonitorInfo()
-                                    {
-                                        AliasDeviceName = monitorInfoX.AliasDeviceName,
-                                        IsDellMonitor = monitorInfoX.IsDellMonitor,
-                                        Index = monitorInfoX.Index,
-                                        CapabilityString = monitorInfoX.CapabilityString,
-                                        DDCisON = monitorInfoX.DDCisON,
-                                        DisplayName = monitorInfoX.DisplayName,
-                                        edid = monitorInfoX.edid,
-                                        FwVersion = monitorInfoX.FwVersion,
-                                        inputSource = val,
-                                        inputCable = monitorInfoX.inputCable,
-                                        CapabilityDic = monitorInfoX.CapabilityDic,
-                                        modelName = monitorInfoX.modelName,
-                                        series = monitorInfoX.series,
-                                        MarketingName = monitorInfoX.MarketingName,
-                                        ImageFileName = monitorInfoX.ImageFileName,
-                                        SupplierID = monitorInfoX.SupplierID,
-                                        D_Ctrl = monitorInfoX.D_Ctrl,
-                                        scalingFactor = monitorInfoX.scalingFactor,
-                                    };
+                                    _VCPchangedEventArgs.monitor = (_AllInfoMonitors_Mix.Find(M => M.Item1.edid.Equals(monitorInfoX.edid))).Item2.Clone();
+                                    //new MonitorInfo()
+                                    //{
+                                    //    AliasDeviceName = monitorInfoX.AliasDeviceName,
+                                    //    IsDellMonitor = monitorInfoX.IsDellMonitor,
+                                    //    Index = monitorInfoX.Index,
+                                    //    CapabilityString = monitorInfoX.CapabilityString,
+                                    //    DDCisON = monitorInfoX.DDCisON,
+                                    //    DisplayName = monitorInfoX.DisplayName,
+                                    //    edid = monitorInfoX.edid,
+                                    //    FwVersion = monitorInfoX.FwVersion,
+                                    //    inputSource = val,
+                                    //    inputCable = monitorInfoX.inputCable,
+                                    //    CapabilityDic = monitorInfoX.CapabilityDic,
+                                    //    modelName = monitorInfoX.modelName,
+                                    //    series = monitorInfoX.series,
+                                    //    MarketingName = monitorInfoX.MarketingName,
+                                    //    ImageFileName = monitorInfoX.ImageFileName,
+                                    //    SupplierID = monitorInfoX.SupplierID,
+                                    //    D_Ctrl = monitorInfoX.D_Ctrl,
+                                    //    scalingFactor = monitorInfoX.scalingFactor,
+                                    //};
                                     OnVCPchanged(_VCPchangedEventArgs);
                                 }
                             }
@@ -1346,27 +1358,28 @@ namespace VcpCore.Plugins
                                     VCPchangedEventArgs _VCPchangedEventArgs = new VCPchangedEventArgs();
                                     _VCPchangedEventArgs.vcpcode = FunctionName.ToLower();
                                     _VCPchangedEventArgs.value = val;
-                                    _VCPchangedEventArgs.monitor = new MonitorInfo()
-                                    {
-                                        AliasDeviceName = monitorInfoX.AliasDeviceName,
-                                        IsDellMonitor = monitorInfoX.IsDellMonitor,
-                                        Index = monitorInfoX.Index,
-                                        CapabilityString = monitorInfoX.CapabilityString,
-                                        DDCisON = monitorInfoX.DDCisON,
-                                        DisplayName = monitorInfoX.DisplayName,
-                                        edid = monitorInfoX.edid,
-                                        FwVersion = monitorInfoX.FwVersion,
-                                        inputSource = monitorInfoX.inputSource,
-                                        inputCable = monitorInfoX.inputCable,
-                                        CapabilityDic = monitorInfoX.CapabilityDic,
-                                        modelName = monitorInfoX.modelName,
-                                        series = monitorInfoX.series,
-                                        MarketingName = monitorInfoX.MarketingName,
-                                        ImageFileName = monitorInfoX.ImageFileName,
-                                        SupplierID = monitorInfoX.SupplierID,
-                                        D_Ctrl = monitorInfoX.D_Ctrl,
-                                        scalingFactor = monitorInfoX.scalingFactor,
-                                    };
+                                    _VCPchangedEventArgs.monitor = (_AllInfoMonitors_Mix.Find(M => M.Item1.edid.Equals(monitorInfoX.edid))).Item2.Clone();
+                                    //new MonitorInfo()
+                                    //{
+                                    //    AliasDeviceName = monitorInfoX.AliasDeviceName,
+                                    //    IsDellMonitor = monitorInfoX.IsDellMonitor,
+                                    //    Index = monitorInfoX.Index,
+                                    //    CapabilityString = monitorInfoX.CapabilityString,
+                                    //    DDCisON = monitorInfoX.DDCisON,
+                                    //    DisplayName = monitorInfoX.DisplayName,
+                                    //    edid = monitorInfoX.edid,
+                                    //    FwVersion = monitorInfoX.FwVersion,
+                                    //    inputSource = monitorInfoX.inputSource,
+                                    //    inputCable = monitorInfoX.inputCable,
+                                    //    CapabilityDic = monitorInfoX.CapabilityDic,
+                                    //    modelName = monitorInfoX.modelName,
+                                    //    series = monitorInfoX.series,
+                                    //    MarketingName = monitorInfoX.MarketingName,
+                                    //    ImageFileName = monitorInfoX.ImageFileName,
+                                    //    SupplierID = monitorInfoX.SupplierID,
+                                    //    D_Ctrl = monitorInfoX.D_Ctrl,
+                                    //    scalingFactor = monitorInfoX.scalingFactor,
+                                    //};
                                     OnVCPchanged(_VCPchangedEventArgs);
                                 }
                             }
@@ -1389,7 +1402,7 @@ namespace VcpCore.Plugins
         {
             _logs.DebugMsg("[VcpCorePlugin] [QueueTrigger] VcpCorePlugin Initialize 0x52 to 0 Let's go ...");
 
-            if (_AllInfoMonitors.Count > 0)
+            if (_AllInfoMonitors_Mix.Count > 0 && _AllInfoMonitors.Count > 0 && _AllInfoMonitors.Count.Equals(_AllInfoMonitors_Mix.Count))
             {
                 bool rc = false;
                 object object_0x02 = null;
@@ -1427,15 +1440,17 @@ namespace VcpCore.Plugins
         {
             _logs.DebugMsg("[VcpCorePlugin] [QueueTrigger] Watching 0x52 Let's go ...");
 
-            if (_AllInfoMonitors.Count > 0)
+            if (_AllInfoMonitors_Mix.Count > 0 && _AllInfoMonitors.Count > 0 && _AllInfoMonitors.Count.Equals(_AllInfoMonitors_Mix.Count))
             {
                 bool rc = false;
                 object object_0x02 = null;
                 object object_0x52 = null;
 
-                for (int count = 0; count < _AllInfoMonitors.Count; count++)  //foreach (MonitorInfo_complex monitorInfoX in _AllInfoMonitors)
+                for (int count = 0; count < _AllInfoMonitors_Mix.Count; count++)    //foreach (var monitor in _AllInfoMonitors_Mix)
                 {
-                    var monitorInfoX = _AllInfoMonitors[count];
+                    var monitor = _AllInfoMonitors_Mix[count];
+                    var monitorInfoX = monitor.Item1;
+                    var monitorInfo = monitor.Item2;
 
                     _logs.DebugMsg("[VcpCorePlugin] [QueueTrigger] VcpCorePlugin " + monitorInfoX.AliasDeviceName + " Watching 0x52");
 
@@ -1461,21 +1476,16 @@ namespace VcpCore.Plugins
                             {
                                 DDCCIchangedEventArgs _ddcceventArg = new DDCCIchangedEventArgs();
                                 _ddcceventArg.DDCisON = true;
-                                foreach ((MonitorInfo_complex x, MonitorInfo o) in _AllInfoMonitors_Mix)
-                                {
-                                    if (x.Equals(monitorInfoX))
-                                    {
-                                        x.DDCisON = true;
-                                        x.DDCCIFail = 0;
-                                        o.DDCisON = true;
 
-                                        Initialize2TypesMonitorInfo(false);
+                                monitorInfoX.DDCisON = _ddcceventArg.DDCisON;
+                                monitorInfoX.DDCCIFail = 0;
+                                monitorInfo.DDCisON = _ddcceventArg.DDCisON;
 
-                                        _ddcceventArg.monitors = o.ShallowCopy();
+                                Initialize2TypesMonitorInfo(false);
 
-                                        OnDDCCIStatuschanged(_ddcceventArg);
-                                    }
-                                }
+                                _ddcceventArg.monitors = monitorInfo.Clone();
+
+                                OnDDCCIStatuschanged(_ddcceventArg);
                             }
                         }
 
@@ -1505,27 +1515,28 @@ namespace VcpCore.Plugins
                                             VCPchangedEventArgs _VCPchangedEventArgs = new VCPchangedEventArgs();
                                             _VCPchangedEventArgs.vcpcode = ((uint)object_0x52).ToString("X");
                                             _VCPchangedEventArgs.value = NodeFormatter.FormatVCP_E2(rc_str.ToLower());
-                                            _VCPchangedEventArgs.monitor = new MonitorInfo()
-                                            {
-                                                AliasDeviceName = monitorInfoX.AliasDeviceName,
-                                                IsDellMonitor = monitorInfoX.IsDellMonitor,
-                                                Index = monitorInfoX.Index,
-                                                CapabilityString = monitorInfoX.CapabilityString,
-                                                DDCisON = monitorInfoX.DDCisON,
-                                                DisplayName = monitorInfoX.DisplayName,
-                                                edid = monitorInfoX.edid,
-                                                FwVersion = monitorInfoX.FwVersion,
-                                                inputSource = monitorInfoX.inputSource,
-                                                inputCable = monitorInfoX.inputCable,
-                                                CapabilityDic = monitorInfoX.CapabilityDic,
-                                                modelName = monitorInfoX.modelName,
-                                                series = monitorInfoX.series,
-                                                MarketingName = monitorInfoX.MarketingName,
-                                                ImageFileName = monitorInfoX.ImageFileName,
-                                                SupplierID = monitorInfoX.SupplierID,
-                                                D_Ctrl = monitorInfoX.D_Ctrl,
-                                                scalingFactor = monitorInfoX.scalingFactor,
-                                            };
+                                            _VCPchangedEventArgs.monitor = monitorInfo.Clone();
+                                            //new MonitorInfo()
+                                            //{
+                                            //    AliasDeviceName = monitorInfoX.AliasDeviceName,
+                                            //    IsDellMonitor = monitorInfoX.IsDellMonitor,
+                                            //    Index = monitorInfoX.Index,
+                                            //    CapabilityString = monitorInfoX.CapabilityString,
+                                            //    DDCisON = monitorInfoX.DDCisON,
+                                            //    DisplayName = monitorInfoX.DisplayName,
+                                            //    edid = monitorInfoX.edid,
+                                            //    FwVersion = monitorInfoX.FwVersion,
+                                            //    inputSource = monitorInfoX.inputSource,
+                                            //    inputCable = monitorInfoX.inputCable,
+                                            //    CapabilityDic = monitorInfoX.CapabilityDic,
+                                            //    modelName = monitorInfoX.modelName,
+                                            //    series = monitorInfoX.series,
+                                            //    MarketingName = monitorInfoX.MarketingName,
+                                            //    ImageFileName = monitorInfoX.ImageFileName,
+                                            //    SupplierID = monitorInfoX.SupplierID,
+                                            //    D_Ctrl = monitorInfoX.D_Ctrl,
+                                            //    scalingFactor = monitorInfoX.scalingFactor,
+                                            //};
                                             OnVCPchanged(_VCPchangedEventArgs);
                                         }
                                     }
@@ -1539,45 +1550,38 @@ namespace VcpCore.Plugins
                                         {
                                             SetToCacheTable(monitorInfoX, 0x60, val);
 
-                                            foreach ((MonitorInfo_complex x, MonitorInfo o) in _AllInfoMonitors_Mix)
+                                            List<InputSourceObject> r = new List<InputSourceObject>();
+                                            var R = GetFromCacheTable(monitorInfoX, "inputsourcelist");
+                                            if (R != null)
+                                                r.AddRange(R as List<InputSourceObject>);
+
+                                            var n = NodeFormatter.FormatVCP_60(rc_str.ToLower());
+
+                                            bool rv = false;
+                                            if (r.Count > 0)
                                             {
-                                                if (x.Equals(monitorInfoX))
+                                                foreach (InputSourceObject t in r)
                                                 {
-                                                    List<InputSourceObject> r = new List<InputSourceObject>();
-                                                    var R = GetFromCacheTable(monitorInfoX, "inputsourcelist");
-                                                    if (R != null)
-                                                        r.AddRange(R as List<InputSourceObject>);
-
-                                                    var n = NodeFormatter.FormatVCP_60(rc_str.ToLower());
-
-                                                    bool rv = false;
-                                                    if (r.Count > 0)
+                                                    if (n.Equals(t.Name))
                                                     {
-                                                        foreach (InputSourceObject t in r)
-                                                        {
-                                                            if (n.Equals(t.Name))
-                                                            {
-                                                                rv = true;
-                                                                break;
-                                                            }
-                                                        }
+                                                        rv = true;
+                                                        break;
                                                     }
-
-                                                    if (rv)
-                                                    {
-                                                        x.inputSource = n;
-                                                        o.inputSource = x.inputSource;
-                                                        rstring = o.inputSource;
-                                                    }
-                                                    else
-                                                    {
-                                                        x.inputSource = System.Text.RegularExpressions.Regex.Replace(n, @"\d", string.Empty);
-                                                        o.inputSource = x.inputSource;
-                                                        rstring = o.inputSource;
-                                                    }
-
-                                                    break;
                                                 }
+                                            }
+
+                                            if (rv)
+                                            {
+                                                monitorInfoX.inputSource = n;
+                                                monitorInfo.inputSource = n;
+                                                rstring = n;
+                                            }
+                                            else
+                                            {
+                                                string rs = System.Text.RegularExpressions.Regex.Replace(n, @"\d", string.Empty);
+                                                monitorInfoX.inputSource = rs;
+                                                monitorInfo.inputSource = rs;
+                                                rstring = rs;
                                             }
 
                                             Initialize2TypesMonitorInfo(false);
@@ -1587,27 +1591,28 @@ namespace VcpCore.Plugins
                                             VCPchangedEventArgs _VCPchangedEventArgsII = new VCPchangedEventArgs();
                                             _VCPchangedEventArgsII.vcpcode = "input select";
                                             _VCPchangedEventArgsII.value = rstring;
-                                            _VCPchangedEventArgsII.monitor = new MonitorInfo()
-                                            {
-                                                AliasDeviceName = monitorInfoX.AliasDeviceName,
-                                                IsDellMonitor = monitorInfoX.IsDellMonitor,
-                                                Index = monitorInfoX.Index,
-                                                CapabilityString = monitorInfoX.CapabilityString,
-                                                DDCisON = monitorInfoX.DDCisON,
-                                                DisplayName = monitorInfoX.DisplayName,
-                                                edid = monitorInfoX.edid,
-                                                FwVersion = monitorInfoX.FwVersion,
-                                                inputSource = rstring,
-                                                inputCable = monitorInfoX.inputCable,
-                                                CapabilityDic = monitorInfoX.CapabilityDic,
-                                                modelName = monitorInfoX.modelName,
-                                                series = monitorInfoX.series,
-                                                MarketingName = monitorInfoX.MarketingName,
-                                                ImageFileName = monitorInfoX.ImageFileName,
-                                                SupplierID = monitorInfoX.SupplierID,
-                                                D_Ctrl = monitorInfoX.D_Ctrl,
-                                                scalingFactor = monitorInfoX.scalingFactor,
-                                            };
+                                            _VCPchangedEventArgsII.monitor = monitorInfo.Clone();
+                                            //new MonitorInfo()
+                                            //{
+                                            //    AliasDeviceName = monitorInfoX.AliasDeviceName,
+                                            //    IsDellMonitor = monitorInfoX.IsDellMonitor,
+                                            //    Index = monitorInfoX.Index,
+                                            //    CapabilityString = monitorInfoX.CapabilityString,
+                                            //    DDCisON = monitorInfoX.DDCisON,
+                                            //    DisplayName = monitorInfoX.DisplayName,
+                                            //    edid = monitorInfoX.edid,
+                                            //    FwVersion = monitorInfoX.FwVersion,
+                                            //    inputSource = rstring,
+                                            //    inputCable = monitorInfoX.inputCable,
+                                            //    CapabilityDic = monitorInfoX.CapabilityDic,
+                                            //    modelName = monitorInfoX.modelName,
+                                            //    series = monitorInfoX.series,
+                                            //    MarketingName = monitorInfoX.MarketingName,
+                                            //    ImageFileName = monitorInfoX.ImageFileName,
+                                            //    SupplierID = monitorInfoX.SupplierID,
+                                            //    D_Ctrl = monitorInfoX.D_Ctrl,
+                                            //    scalingFactor = monitorInfoX.scalingFactor,
+                                            //};
                                             OnVCPchanged(_VCPchangedEventArgsII);
 
                                             //----------------------------------------------------------------------
@@ -1646,27 +1651,28 @@ namespace VcpCore.Plugins
                                         VCPchangedEventArgs _VCPchangedEventArgs = new VCPchangedEventArgs();
                                         _VCPchangedEventArgs.vcpcode = ((uint)object_0x52).ToString("X");
                                         _VCPchangedEventArgs.value = ((uint)tmp).ToString();
-                                        _VCPchangedEventArgs.monitor = new MonitorInfo()
-                                        {
-                                            AliasDeviceName = monitorInfoX.AliasDeviceName,
-                                            IsDellMonitor = monitorInfoX.IsDellMonitor,
-                                            Index = monitorInfoX.Index,
-                                            CapabilityString = monitorInfoX.CapabilityString,
-                                            DDCisON = monitorInfoX.DDCisON,
-                                            DisplayName = monitorInfoX.DisplayName,
-                                            edid = monitorInfoX.edid,
-                                            FwVersion = monitorInfoX.FwVersion,
-                                            inputSource = monitorInfoX.inputSource,
-                                            inputCable = monitorInfoX.inputCable,
-                                            CapabilityDic = monitorInfoX.CapabilityDic,
-                                            modelName = monitorInfoX.modelName,
-                                            series = monitorInfoX.series,
-                                            MarketingName = monitorInfoX.MarketingName,
-                                            ImageFileName = monitorInfoX.ImageFileName,
-                                            SupplierID = monitorInfoX.SupplierID,
-                                            D_Ctrl = monitorInfoX.D_Ctrl,
-                                            scalingFactor = monitorInfoX.scalingFactor,
-                                        };
+                                        _VCPchangedEventArgs.monitor = monitorInfo.Clone();
+                                        //new MonitorInfo()
+                                        //{
+                                        //    AliasDeviceName = monitorInfoX.AliasDeviceName,
+                                        //    IsDellMonitor = monitorInfoX.IsDellMonitor,
+                                        //    Index = monitorInfoX.Index,
+                                        //    CapabilityString = monitorInfoX.CapabilityString,
+                                        //    DDCisON = monitorInfoX.DDCisON,
+                                        //    DisplayName = monitorInfoX.DisplayName,
+                                        //    edid = monitorInfoX.edid,
+                                        //    FwVersion = monitorInfoX.FwVersion,
+                                        //    inputSource = monitorInfoX.inputSource,
+                                        //    inputCable = monitorInfoX.inputCable,
+                                        //    CapabilityDic = monitorInfoX.CapabilityDic,
+                                        //    modelName = monitorInfoX.modelName,
+                                        //    series = monitorInfoX.series,
+                                        //    MarketingName = monitorInfoX.MarketingName,
+                                        //    ImageFileName = monitorInfoX.ImageFileName,
+                                        //    SupplierID = monitorInfoX.SupplierID,
+                                        //    D_Ctrl = monitorInfoX.D_Ctrl,
+                                        //    scalingFactor = monitorInfoX.scalingFactor,
+                                        //};
                                         OnVCPchanged(_VCPchangedEventArgs);
                                     }
                                 }
@@ -1696,21 +1702,16 @@ namespace VcpCore.Plugins
 
                                 DDCCIchangedEventArgs _ddcceventArg = new DDCCIchangedEventArgs();
                                 _ddcceventArg.DDCisON = false;
-                                foreach ((MonitorInfo_complex x, MonitorInfo o) in _AllInfoMonitors_Mix)
-                                {
-                                    if (x.Equals(monitorInfoX))
-                                    {
-                                        x.DDCisON = false;
-                                        x.DDCCIFail = 3;
-                                        o.DDCisON = false;
 
-                                        Initialize2TypesMonitorInfo(false);
+                                monitorInfoX.DDCisON = false;
+                                monitorInfoX.DDCCIFail = 3;
+                                monitorInfo.DDCisON = false;
 
-                                        _ddcceventArg.monitors = o.ShallowCopy();
+                                Initialize2TypesMonitorInfo(false);
 
-                                        OnDDCCIStatuschanged(_ddcceventArg);
-                                    }
-                                }
+                                _ddcceventArg.monitors = monitorInfo.Clone();
+
+                                OnDDCCIStatuschanged(_ddcceventArg);
                             }
                         }
                     }
@@ -1842,7 +1843,7 @@ namespace VcpCore.Plugins
                                         _logs.DebugMsg("[VcpCorePlugin] *** Monitor-Retrier start ...");
 
                                         int count = 0;
-                                        while (count < 10)
+                                        while (count < 15)
                                         {
                                             TokenNew.ThrowIfCancellationRequested();
                                             SpinWait.SpinUntil(() => false, 1000);
@@ -1859,29 +1860,30 @@ namespace VcpCore.Plugins
                                                 //----//
                                                 List<MonitorInfo> _tmp = new List<MonitorInfo>();
                                                 //_tmp.Clear();//Dean 0626 fix SAST issue, remove this line since the object just created and it's empty
-                                                foreach (var monitorInfoX in _AllInfoMonitors)
+                                                foreach (var monitor in _AllInfoMonitors_Mix)
                                                 {
-                                                    MonitorInfo minfo = new MonitorInfo()
-                                                    {
-                                                        AliasDeviceName = monitorInfoX.AliasDeviceName,
-                                                        IsDellMonitor = monitorInfoX.IsDellMonitor,
-                                                        Index = monitorInfoX.Index,
-                                                        CapabilityString = monitorInfoX.CapabilityString,
-                                                        DDCisON = monitorInfoX.DDCisON,
-                                                        DisplayName = monitorInfoX.DisplayName,
-                                                        edid = monitorInfoX.edid,
-                                                        FwVersion = monitorInfoX.FwVersion,
-                                                        inputSource = monitorInfoX.inputSource,
-                                                        inputCable = monitorInfoX.inputCable,
-                                                        CapabilityDic = monitorInfoX.CapabilityDic,
-                                                        modelName = monitorInfoX.modelName,
-                                                        series = monitorInfoX.series,
-                                                        MarketingName = monitorInfoX.MarketingName,
-                                                        ImageFileName = monitorInfoX.ImageFileName,
-                                                        SupplierID = monitorInfoX.SupplierID,
-                                                        D_Ctrl = monitorInfoX.D_Ctrl,
-                                                        scalingFactor = monitorInfoX.scalingFactor,
-                                                    };
+                                                    MonitorInfo minfo = monitor.Item2.Clone();
+                                                    //new MonitorInfo()
+                                                    //{
+                                                    //    AliasDeviceName = monitorInfoX.AliasDeviceName,
+                                                    //    IsDellMonitor = monitorInfoX.IsDellMonitor,
+                                                    //    Index = monitorInfoX.Index,
+                                                    //    CapabilityString = monitorInfoX.CapabilityString,
+                                                    //    DDCisON = monitorInfoX.DDCisON,
+                                                    //    DisplayName = monitorInfoX.DisplayName,
+                                                    //    edid = monitorInfoX.edid,
+                                                    //    FwVersion = monitorInfoX.FwVersion,
+                                                    //    inputSource = monitorInfoX.inputSource,
+                                                    //    inputCable = monitorInfoX.inputCable,
+                                                    //    CapabilityDic = monitorInfoX.CapabilityDic,
+                                                    //    modelName = monitorInfoX.modelName,
+                                                    //    series = monitorInfoX.series,
+                                                    //    MarketingName = monitorInfoX.MarketingName,
+                                                    //    ImageFileName = monitorInfoX.ImageFileName,
+                                                    //    SupplierID = monitorInfoX.SupplierID,
+                                                    //    D_Ctrl = monitorInfoX.D_Ctrl,
+                                                    //    scalingFactor = monitorInfoX.scalingFactor,
+                                                    //};
                                                     _tmp.Add(minfo);
                                                 }
                                                 DisplaychangedEventArgs _displaychangedEventArgss = new DisplaychangedEventArgs();
@@ -2099,7 +2101,11 @@ namespace VcpCore.Plugins
 
                 _logs.DebugMsg("[VcpCorePlugin] InitializeCacheTable finish : CacheTable count => " + _CacheTable.Count);
             }
-            catch (Exception) { return; }
+            catch (Exception ex)
+            {
+                _logs.DebugMsg("[VcpCorePlugin] InitializeCacheTable into catch: " + ex.Message);
+                return;
+            }
         }
 
         private object GetFromCacheTable(MonitorInfo_complex MonitorInfo, object key)
@@ -2134,7 +2140,11 @@ namespace VcpCore.Plugins
 
                 return null;
             }
-            catch (Exception) { return null; }
+            catch (Exception ex)
+            {
+                _logs.DebugMsg("[VcpCorePlugin] GetFromCacheTable into catch: " + ex.Message);
+                return null;
+            }
         }
 
         private void SetToCacheTable(MonitorInfo_complex MonitorInfo, object key, object value)
@@ -2173,7 +2183,11 @@ namespace VcpCore.Plugins
 
                 _logs.DebugMsg("[VcpCorePlugin] SetToCacheTable finish");
             }
-            catch (Exception) { return; }
+            catch (Exception ex)
+            {
+                _logs.DebugMsg("[VcpCorePlugin] SetToCacheTable into catch: " + ex.Message);
+                return;
+            }
 
             bool AddValue(List<EDID> Keys)
             {
@@ -2220,7 +2234,11 @@ namespace VcpCore.Plugins
                 _logs.DebugMsg("[VcpCorePlugin] GetVcp2Steps return null");
                 return null;
             }
-            catch (Exception) { return null; }
+            catch (Exception ex)
+            {
+                _logs.DebugMsg("[VcpCorePlugin] GetVcp2Steps into catch: " + ex.Message);
+                return null;
+            }
         }
 
         private byte TranslatorVCPctrCode(string str)
@@ -2234,7 +2252,11 @@ namespace VcpCore.Plugins
 
                 return rc;
             }
-            catch (Exception) { return default(byte); }
+            catch (Exception ex)
+            {
+                _logs.DebugMsg("[VcpCorePlugin] TranslatorVCPctrCode into catch: " + ex.Message);
+                return default(byte);
+            }
         }
 
         private uint TranslatorVCPcategory(string category, string str)
@@ -2256,7 +2278,11 @@ namespace VcpCore.Plugins
 
                 return rc;
             }
-            catch (Exception) { return default(byte); }
+            catch (Exception ex)
+            {
+                _logs.DebugMsg("[VcpCorePlugin] TranslatorVCPcategory into catch: " + ex.Message);
+                return default(byte);
+            }
         }
 
         private void OnCacheTimedRaise(System.Object source, System.Timers.ElapsedEventArgs e)
@@ -2693,7 +2719,11 @@ namespace VcpCore.Plugins
                 }
                 return blResult;
             }
-            catch (Exception) { return false; }
+            catch (Exception ex)
+            {
+                _logs.DebugMsg("[VcpCorePlugin] getE2SupportStrings into catch: " + ex.Message);
+                return false;
+            }
         }
 
         private List<string> GetSmartHdrStrings(Dictionary<string, List<string>> CapDic)
@@ -2729,7 +2759,11 @@ namespace VcpCore.Plugins
 
                 return Newlist;
             }
-            catch (Exception) { return new List<string>(); }
+            catch (Exception ex)
+            {
+                _logs.DebugMsg("[VcpCorePlugin] GetSmartHdrStrings into catch: " + ex.Message);
+                return new List<string>();
+            }
         }
 
         private (string, string) GetInputSource(MonitorInfo_complex monitorInfo_)
@@ -2796,7 +2830,11 @@ namespace VcpCore.Plugins
                 _logs.DebugMsg("[VcpCorePlugin] GetInputSource return string.Empty");
                 return (string.Empty, string.Empty);
             }
-            catch (Exception) { return (string.Empty, string.Empty); }
+            catch (Exception ex)
+            {
+                _logs.DebugMsg("[VcpCorePlugin] GetInputSource into catch: " + ex.Message);
+                return (string.Empty, string.Empty);
+            }
         }
 
         private bool Set_VCPCapability(MonitorInfo_complex monitorInfoX, byte code, uint val, bool retry = true)
@@ -2812,27 +2850,28 @@ namespace VcpCore.Plugins
                     VCPchangedEventArgs _VCPchangedEventArgs = new VCPchangedEventArgs();
                     _VCPchangedEventArgs.vcpcode = code.ToString("X");
                     _VCPchangedEventArgs.value = val.ToString();
-                    _VCPchangedEventArgs.monitor = new MonitorInfo()
-                    {
-                        AliasDeviceName = monitorInfoX.AliasDeviceName,
-                        IsDellMonitor = monitorInfoX.IsDellMonitor,
-                        Index = monitorInfoX.Index,
-                        CapabilityString = monitorInfoX.CapabilityString,
-                        DDCisON = monitorInfoX.DDCisON,
-                        DisplayName = monitorInfoX.DisplayName,
-                        edid = monitorInfoX.edid,
-                        FwVersion = monitorInfoX.FwVersion,
-                        inputSource = monitorInfoX.inputSource,
-                        inputCable = monitorInfoX.inputCable,
-                        CapabilityDic = monitorInfoX.CapabilityDic,
-                        modelName = monitorInfoX.modelName,
-                        series = monitorInfoX.series,
-                        MarketingName = monitorInfoX.MarketingName,
-                        ImageFileName = monitorInfoX.ImageFileName,
-                        SupplierID = monitorInfoX.SupplierID,
-                        D_Ctrl = monitorInfoX.D_Ctrl,
-                        scalingFactor = monitorInfoX.scalingFactor,
-                    };
+                    _VCPchangedEventArgs.monitor = (_AllInfoMonitors_Mix.Find(M => M.Item1.edid.Equals(monitorInfoX.edid))).Item2.Clone();
+                    //new MonitorInfo()
+                    //{
+                    //    AliasDeviceName = monitorInfoX.AliasDeviceName,
+                    //    IsDellMonitor = monitorInfoX.IsDellMonitor,
+                    //    Index = monitorInfoX.Index,
+                    //    CapabilityString = monitorInfoX.CapabilityString,
+                    //    DDCisON = monitorInfoX.DDCisON,
+                    //    DisplayName = monitorInfoX.DisplayName,
+                    //    edid = monitorInfoX.edid,
+                    //    FwVersion = monitorInfoX.FwVersion,
+                    //    inputSource = monitorInfoX.inputSource,
+                    //    inputCable = monitorInfoX.inputCable,
+                    //    CapabilityDic = monitorInfoX.CapabilityDic,
+                    //    modelName = monitorInfoX.modelName,
+                    //    series = monitorInfoX.series,
+                    //    MarketingName = monitorInfoX.MarketingName,
+                    //    ImageFileName = monitorInfoX.ImageFileName,
+                    //    SupplierID = monitorInfoX.SupplierID,
+                    //    D_Ctrl = monitorInfoX.D_Ctrl,
+                    //    scalingFactor = monitorInfoX.scalingFactor,
+                    //};
                     OnVCPchanged(_VCPchangedEventArgs);
 
                     return rc;
@@ -2939,7 +2978,11 @@ namespace VcpCore.Plugins
                 }
                 return GetResult;
             }
-            catch (Exception) { return false; }
+            catch (Exception ex)
+            {
+                _logs.DebugMsg("[VcpCorePlugin] GetColorPresetVcpCode into catch: " + ex.Message);
+                return false;
+            }
         }
 
         private static bool GetColorPresetVcpCodeForNonDell(Dictionary<string, Dictionary<string, string>> ColorPresetHash, string presetName, ref ColorPreset outColorPreset)
@@ -2965,7 +3008,11 @@ namespace VcpCore.Plugins
                 }
                 return GetResult;
             }
-            catch (Exception) { return false; }
+            catch (Exception ex)
+            {
+                _logs.DebugMsg("[VcpCorePlugin] GetColorPresetVcpCodeForNonDell into catch: " + ex.Message);
+                return false;
+            }
         }
 
         private string GetCurrentColorPreset(MonitorInfo_complex monitor)
@@ -3010,7 +3057,11 @@ namespace VcpCore.Plugins
                 _logs.DebugMsg("[VcpCorePlugin] GetCurrentColorPreset return string.Empty");
                 return rc;
             }
-            catch (Exception) { return string.Empty; }
+            catch (Exception ex)
+            {
+                _logs.DebugMsg("[VcpCorePlugin] GetCurrentColorPreset into catch: " + ex.Message);
+                return string.Empty;
+            }
         }
 
         public bool SetColorPreset(MonitorInfo_complex mi, string presetName)
@@ -3039,7 +3090,11 @@ namespace VcpCore.Plugins
                 }
                 return SetResult;
             }
-            catch (Exception) { return false; }
+            catch (Exception ex)
+            {
+                _logs.DebugMsg("[VcpCorePlugin] SetColorPreset into catch: " + ex.Message);
+                return false;
+            }
         }
 
         private string GetCapabilities_String(IntPtr hPhysicalMonitor, CancellationToken token)
@@ -3197,7 +3252,11 @@ namespace VcpCore.Plugins
                     }
                 }
             }
-            catch (Exception) { return; }
+            catch (Exception ex)
+            {
+                _logs.DebugMsg("[VcpCorePlugin] GetAliasDeviceName into catch: " + ex.Message);
+                return;
+            }
         }
 
         private bool GetAllCapabilityData(string CablitityString, ref Dictionary<string, List<string>> CapabilityDic)
@@ -3298,7 +3357,11 @@ namespace VcpCore.Plugins
                     return true;
                 }
             }
-            catch (Exception) { return false; }
+            catch (Exception ex)
+            {
+                _logs.DebugMsg("[VcpCorePlugin] GetAllCapabilityData into catch: " + ex.Message);
+                return false;
+            }
         }
 
         private static void InitialColorPresets()
@@ -3530,7 +3593,11 @@ namespace VcpCore.Plugins
                 }
                 return Newlist;
             }
-            catch (Exception) { return new List<string>(); }
+            catch (Exception ex)
+            {
+                _logs.DebugMsg("[VcpCorePlugin] GetColorPresetStrings into catch: " + ex.Message);
+                return new List<string>();
+            }
         }
 
         private bool GetAllColorPreset(string CablitityString, ref Dictionary<string, Dictionary<string, string>> SupportColorPresets, ref List<string> UnDefinedColorPresets, bool isDellMonitor = true)
@@ -3558,7 +3625,11 @@ namespace VcpCore.Plugins
                 }
                 return blRet;
             }
-            catch (Exception) { return true; }
+            catch (Exception ex)
+            {
+                _logs.DebugMsg("[VcpCorePlugin] GetAllColorPreset into catch: " + ex.Message);
+                return true;
+            }
         }
 
         private bool GetColorPreset(string CablitityString, string ResourceName, ref Dictionary<string, Dictionary<string, string>> SupportColorPresets, ref List<string> UnDefinedColorPresets)
@@ -3610,7 +3681,11 @@ namespace VcpCore.Plugins
 
                 SupportColorPresets.Add(ResourceName, Resourcepreset);
             }
-            catch (Exception) { return hasrestult; }
+            catch (Exception ex)
+            {
+                _logs.DebugMsg("[VcpCorePlugin] GetColorPreset into catch: " + ex.Message);
+                return hasrestult;
+            }
 
             return hasrestult;
         }
@@ -3640,7 +3715,11 @@ namespace VcpCore.Plugins
                 }
                 return ColorPresetDescriptions;
             }
-            catch (Exception) { return new List<string>(); }
+            catch (Exception ex)
+            {
+                _logs.DebugMsg("[VcpCorePlugin] GetColorPresetDescriptionByValue into catch: " + ex.Message);
+                return new List<string>();
+            }
         }
 
         private bool UpdateMyself(ref MonitorInfo_complex _TargetMonitor, CancellationToken token)
@@ -3790,7 +3869,7 @@ namespace VcpCore.Plugins
                         _logs.DebugMsg($"[VcpCorePlugin] {_TargetMonitor.modelName} UpdateMyself Sucess ...");
                         _logs.DebugMsg($"[VcpCorePlugin] {_TargetMonitor.modelName} UpdateMyself go to Initialize2TypesMonitorInfo ...");
 
-                        Initialize2TypesMonitorInfo(true);
+                        Initialize2TypesMonitorInfo(false);
 
                         IsConnect = true;
                     }
@@ -3802,7 +3881,11 @@ namespace VcpCore.Plugins
 
                 return IsConnect;
             }
-            catch (Exception) { return false; }
+            catch (Exception ex)
+            {
+                _logs.DebugMsg("[VcpCorePlugin] UpdateMyself into catch: " + ex.Message);
+                return false;
+            }
         }
 
         private bool CheckIsSupportDisplay(ref MonitorInfo_complex _TargetMonitor)
@@ -4418,33 +4501,41 @@ namespace VcpCore.Plugins
 
         private void Get_SupportListFile()
         {
-            var path = System.AppDomain.CurrentDomain.BaseDirectory + targetFile;
-            var r = DDPMFileSecurity.IsFilePathValid(path, out string log);
-            _logs.DebugMsg("[VCPCore plugin] Get_SupportListFile IsFilePathValid : " + log);
-
-            if (r)
+            try
             {
-                using (FileLock fileLock = new FileLock(path, PathCheckOption.None, lockNow: true))
-                {
-                    if (File.Exists(path))
-                    {
-                        try
-                        {
-                            _SupportClassification = File.ReadAllText(targetFile);
-                        }
-                        catch (Exception ex)
-                        {
-                            _SupportClassification = string.Empty;
-                            _logs.DebugMsg("[VCPCore plugin] Get_SupportListFile IsFilePathValid exception : " + ex.Message);
-                        }
-                    }
+                var path = System.AppDomain.CurrentDomain.BaseDirectory + targetFile;
+                var r = DDPMFileSecurity.IsFilePathValid(path, out string log);
+                _logs.DebugMsg("[VCPCore plugin] Get_SupportListFile IsFilePathValid : " + log);
 
-                    if (!string.IsNullOrEmpty(_SupportClassification))
-                        _SupportDictionary = JsonConvert.DeserializeObject<Dictionary<string, List<modelinfos>>>(_SupportClassification);
+                if (r)
+                {
+                    using (FileLock fileLock = new FileLock(path, PathCheckOption.None, lockNow: true))
+                    {
+                        if (File.Exists(path))
+                        {
+                            try
+                            {
+                                _SupportClassification = File.ReadAllText(targetFile);
+                            }
+                            catch (Exception ex)
+                            {
+                                _SupportClassification = string.Empty;
+                                _logs.DebugMsg("[VCPCore plugin] Get_SupportListFile IsFilePathValid exception : " + ex.Message);
+                            }
+                        }
+
+                        if (!string.IsNullOrEmpty(_SupportClassification))
+                            _SupportDictionary = JsonConvert.DeserializeObject<Dictionary<string, List<modelinfos>>>(_SupportClassification);
+                    }
                 }
+                else
+                    _logs.DebugMsg("[VCPCore plugin] Get_SupportListFile IsFilePathValid fail : " + log);
             }
-            else
-                _logs.DebugMsg("[VCPCore plugin] Get_SupportListFile IsFilePathValid fail : " + log);
+            catch (Exception ex)
+            {
+                _logs.DebugMsg("[VcpCorePlugin] Get_SupportListFile into catch: " + ex.Message);
+                return;
+            }
         }
 
         //---------------------------------------------------
