@@ -706,6 +706,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         /// HDR status change event，return HDR status
         /// </summary>
         public event EventHandler<bool> HDRChangeEvent;
+        public event EventHandler<DisplayOrientation> OSDOrientationChangeEvent;
 
         /// <summary>
         /// gaming parameter changes event，return gaming parameter
@@ -4390,9 +4391,9 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             return Task.FromResult(ret);
         }
 
-        public Task<bool> SetOrientation(MonitorInfo monitorInfo, DisplayOrientation orientation)
+        public Task<bool?> SetOrientation(MonitorInfo monitorInfo, DisplayOrientation orientation)
         {
-            bool ret = false;
+            bool? ret = false;
             if (_DisplayManagerPlugin != null)
             {
                 ret = _DisplayManagerPlugin.SetOrientation(monitorInfo, orientation).Result;
@@ -9523,9 +9524,9 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                             if (rt) writelog("[DeviceMangerPlugin] [Telementry] Send Telementry for DeviceTypeConnected_Function Success ...");
                                             else writelog("[DeviceMangerPlugin] [Telementry] Send Telementry for DeviceTypeConnected_Function Fail ...");
                                         }).ConfigureAwait(false);
-
-                                        if (displayDeviceNumChange && _AllInfoMonitors.Count > 0)
-                                            _DisplayManagerPlugin.SetDisplayOrientation(_AllInfoMonitors).Wait();
+                                        ////1117 Bruce 不用自動旋轉把下兩行註解
+                                        //if (displayDeviceNumChange && _AllInfoMonitors.Count > 0)
+                                        //    _DisplayManagerPlugin.SetDisplayOrientation(_AllInfoMonitors).Wait();
 
                                         writelog("[DeviceMangerPlugin] SystemEvents_DisplaySettingsChanged() SetDisplayOrientation finish ...");
 
@@ -9618,12 +9619,13 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             EventHandler<DisplaychangedEventArgs> handler = Displaychanged;
             //if (handler != null)
             //    handler.Invoke(this, e);
+            /*1117 Bruce 不用自動旋轉把下行註解
             if (_DisplayManagerPlugin != null)
             {
                 //displayInOut = false;
                 _DisplayManagerPlugin.SetDisplayOrientation(e.monitors).Wait();
                 //displayInOut = true;
-            }
+            }*/
             DeviceChangedEventArgs arg = new DeviceChangedEventArgs();
             arg.changedProperty = "DisplayChanged";
             arg.type = DeviceChangedType.NotifyOnly;
@@ -10332,6 +10334,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         _DisplayManagerPlugin.GamingChangeEvent += OnGamingParamChangeHandler;
                         //Robert_Lin, 2024-10-8, for EasyArrange when EA Settings changed
                         _DisplayManagerPlugin.EASettingsChanged += _DisplayManagerPlugin_EASettingsChanged;
+                        //Bruce, 2024-1117 add new event
+                        _DisplayManagerPlugin.OSDOrientationChangeEvent += OSDOrientationChangeHandler;
 
                         writelog($"{nameof(GetCurrentDisplayManagerCondition)} - Display Manager Plugin is in a running condition");
                     }
@@ -10357,6 +10361,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         _DisplayManagerPlugin.GamingChangeEvent += OnGamingParamChangeHandler;
                         //Robert_Lin, 2024-10-8, for EasyArrange when EA Settings changed
                         _DisplayManagerPlugin.EASettingsChanged += _DisplayManagerPlugin_EASettingsChanged;
+                        //Bruce, 2024-1117 add new event
+                        _DisplayManagerPlugin.OSDOrientationChangeEvent += OSDOrientationChangeHandler;
 
                         writelog($"{nameof(GetCurrentDisplayManagerCondition)} - Display Manager Plugin is in a started condition");
                     }
@@ -13934,6 +13940,10 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         private void OnHDRStatusChangeHandler(object sender, bool e)
         {
             HDRChangeEvent?.AsyncFireAndForget(this, e, System.Threading.CancellationToken.None);
+        }
+        private void OSDOrientationChangeHandler(object sender, DisplayOrientation e)
+        {
+            OSDOrientationChangeEvent?.AsyncFireAndForget(this, e, System.Threading.CancellationToken.None);
         }
 
         //Bruce, 2024-08-09 add new event
