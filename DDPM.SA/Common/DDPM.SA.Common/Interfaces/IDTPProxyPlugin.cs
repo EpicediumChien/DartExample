@@ -269,6 +269,7 @@ namespace DDPM.SA.Common
         Task<int> GetWiredAudioVolumeAdjustmentToneAsync(string Guid);
         Task<bool> GetIsWiredAudioIMicNSEnableAsync(string Guid);
         Task<bool> GetIsAudioEqualizerSupportedAsync(string Guid);
+        Task<bool> GetMuteStatusAsyncForSpeaker(string Guid);
 
         #endregion
 

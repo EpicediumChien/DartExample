@@ -1073,6 +1073,8 @@ namespace DDPM.SA.Common
 
         Task<bool> GetIsAudioEqualizerSupportedAsync(string Guid);
 
+        Task<bool> GetMuteStatusAsyncForSpeaker(string guid);
+
         #endregion Wires Audio
 
         #region Dongle
