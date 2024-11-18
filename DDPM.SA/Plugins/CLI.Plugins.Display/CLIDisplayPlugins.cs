@@ -9368,6 +9368,7 @@ namespace DDPM.CLI.Plugins.Display
                                 get_DeviceData.ManufacturingWeek = "ISO week " + monitor.edid.Week.ToString();
                                 get_DeviceData.FirmwareVersion = monitor.FwVersion;
 
+                                Trace.WriteLine(monitor.edid.Edid);
                                 if (monitor.CapabilityDic.ContainsKey("C0"))
                                 {
                                     writelog($"MonitorActiveHour Entry");
@@ -9484,9 +9485,12 @@ namespace DDPM.CLI.Plugins.Display
                                 }
 
                                 writelog($"AspectRatio Entry");
-                                int gcd = (int)GCD((ulong)MaxWidth, (ulong)MaxHigh);
-                                get_DeviceData.AspectRatio = $"{MaxWidth / gcd}:{MaxHigh / gcd}";
-                                writelog($"AspectRatio Exit return value: {$"{MaxWidth / gcd}:{MaxHigh / gcd}"}");
+                                //int gcd = (int)GCD((ulong)MaxWidth, (ulong)MaxHigh);
+                                //get_DeviceData.AspectRatio = $"{MaxWidth / gcd}:{MaxHigh / gcd}";
+                                //writelog($"AspectRatio Exit return value: {$"{MaxWidth / gcd}:{MaxHigh / gcd}"}");
+                                string gcd = Get_AR((double)num_x / (double)num_y);
+                                get_DeviceData.AspectRatio = $"{gcd}";
+                                writelog($"AspectRatio Exit return value: {$"{gcd}"}");
 
                                 writelog($"USB_CPrioritization, USBCPrioritizationType Entry");
                                 if (displayPropertiesInfo.SupportedUSBCPrioritization)
@@ -9891,9 +9895,12 @@ namespace DDPM.CLI.Plugins.Display
                     }
 
                     writelog($"AspectRatio Entry");
-                    int gcd = (int)GCD((ulong)MaxWidth, (ulong)MaxHigh);
-                    get_DeviceData.AspectRatio = $"{MaxWidth / gcd}:{MaxHigh / gcd}";
-                    writelog($"AspectRatio Exit return value: {$"{MaxWidth / gcd}:{MaxHigh / gcd}"}");
+                    //int gcd = (int)GCD((ulong)MaxWidth, (ulong)MaxHigh);
+                    //get_DeviceData.AspectRatio = $"{MaxWidth / gcd}:{MaxHigh / gcd}";
+                    //writelog($"AspectRatio Exit return value: {$"{MaxWidth / gcd}:{MaxHigh / gcd}"}");
+                    string gcd = Get_AR((double)num_x / (double)num_y);
+                    get_DeviceData.AspectRatio = $"{gcd}";
+                    writelog($"AspectRatio Exit return value: {$"{gcd}"}");
 
                     writelog($"USB_CPrioritization, USBCPrioritizationType Entry");
                     if (displayPropertiesInfo.SupportedUSBCPrioritization)
@@ -10132,6 +10139,35 @@ namespace DDPM.CLI.Plugins.Display
                     b %= a;
             }
             return a | b;
+        }
+
+        private static string Get_AR(double value)
+        {
+            switch (value)
+            {
+                case double n when n == 1.25:
+                    return "5:4";
+                case double n when n > 1.25 && n < 1.5://1.333
+                    return "4:3";
+                case double n when n == 1.5:
+                    return "3:2";
+                case double n when n == 1.6:
+                    return "16:10";
+                case double n when n > 1.6 && n < 1.7://1.666
+                    return "15:9";
+                case double n when (n > 1.7 && n < 2.0)://1.777
+                    return "16:9";
+                case double n when n == 2.0:
+                    return "18:9";
+                case double n when n > 2.0 && n < 2.3://2.222
+                    return "20:9";
+                case double n when n > 2.2 && n < 3.5://2.3....
+                    return "21:9";
+                case double n when n > 3.5://3.555
+                    return "32:9";
+                default:
+                    return "N/A";
+            }
         }
 
         private (int code, string result) Getcapabilitystringx(IDeviceManagerSA devMgr, CommandLineInput commandLineInput)
@@ -11736,9 +11772,12 @@ namespace DDPM.CLI.Plugins.Display
                     ApplyConfiguration.Resolution = ApplyConfiguration.OptimalResolution;
                     writelog($"OptimalResolution={ApplyConfiguration.OptimalResolution}");
 
-                    int gcd = (int)GCD((ulong)displayProperties.Resolutions_Width, (ulong)displayProperties.Resolutions_High);
-                    ApplyConfiguration.AspectRatio = $"{displayProperties.Resolutions_Width / gcd}:{displayProperties.Resolutions_High / gcd}";
-                    writelog($"AspectRatio={ApplyConfiguration.AspectRatio}");
+                    //int gcd = (int)GCD((ulong)displayProperties.Resolutions_Width, (ulong)displayProperties.Resolutions_High);
+                    //ApplyConfiguration.AspectRatio = $"{displayProperties.Resolutions_Width / gcd}:{displayProperties.Resolutions_High / gcd}";
+                    //writelog($"AspectRatio={ApplyConfiguration.AspectRatio}");
+                    string gcd = Get_AR((double)displayProperties.Resolutions_Width / (double)displayProperties.Resolutions_High);
+                    ApplyConfiguration.AspectRatio = $"{gcd}";
+                    writelog($"AspectRatio= {gcd}");
 
                     if (monitor.CapabilityDic.ContainsKey("12"))
                     {
