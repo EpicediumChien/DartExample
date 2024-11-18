@@ -51,12 +51,13 @@ class CLIAutoTest():
         return model, result
     
     def check_get_connect_devices(self):
-        command = "/get -app=ConnectedDevices"
+        logger.info("Checking connected devices...")
+        command = "/get -app=DeviceData"
         output = self.run(command)
         _, result = self.parse_output(output)
 
         if not self.check_result_pass(result):
-            logger.error("Device not connected maybe you should run auto-restart-DTH.")
+            logger.error("Device not connected.")
             return False
 
         return True

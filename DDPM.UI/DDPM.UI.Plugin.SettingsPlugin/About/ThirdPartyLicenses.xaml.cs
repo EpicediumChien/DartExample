@@ -29,7 +29,7 @@ namespace DDPM.UI.Plugin.SettingsPlugin
     /// <summary>
     /// Interaction logic for ThirdPartyLicenses.xaml
     /// </summary>
-    public partial class ThirdPartyLicenses : UXWindow, INotifyPropertyChanged
+    public partial class ThirdPartyLicenses : Window, INotifyPropertyChanged
     {
         private ResourceManager resManager = ThirdPartyLicense.ResourceManager;
         public ObservableCollection<UI_ThirdPartyLicenses> ThirdPartyLicensesList { get; set; }
