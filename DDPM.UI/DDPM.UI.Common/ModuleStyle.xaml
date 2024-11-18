@@ -254,7 +254,7 @@
     <SolidColorBrush x:Key="ExpanderHeader_TextColor" Color="White" />
 
     <!-- #region RightView.Content Container Background Color -->
-    <SolidColorBrush x:Key="RightViewContainerBkColor" Color="#F2F8FA" />
+    <SolidColorBrush x:Key="RightViewContainerBkColor" Color="#99194784" />
     <SolidColorBrush x:Key="GroupExpanderHeaderBottomLineColor" Color="#FF1E3F6C" />
     <SolidColorBrush x:Key="RightView_Option_BkColor" Color="#FF1E3F6C" />
     <SolidColorBrush x:Key="RightView_Option_BdColor" Color="#FF1E3F6C" />

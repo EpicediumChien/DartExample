@@ -140,7 +140,6 @@
                                                        HorizontalAlignment="Stretch"
                                                        Margin="8,8,8,8"
                                                        IsExpanded="True"
-                                                       Background="{StaticResource RightViewContainerBkColor}"
                                                        Foreground="White">
                                     <UXControls:UXExpander.Header>
                                         <UXControls:UXTextBlock  Text="{Binding [AdvancedSettings], Source={x:Static lang:LangHelper.Instance}}"
@@ -200,7 +199,13 @@
                                                                               Content="{Binding [DisplayProperties.0], Source={x:Static lang:LangHelper.Instance}}"
                                                                               Foreground="WhiteSmoke"
                                                                               GroupName="USBCPrioritization"
-                                                                              IsTabStop="{Binding USBCrioritizationUI_IsTabStoppable}" />
+                                                                              IsTabStop="{Binding USBCrioritizationUI_IsTabStoppable}">
+                                                        <UXControls:UXRadioButton.Resources>
+                                                            <Style TargetType="Border">
+                                                                <Setter Property="Background" Value="Transparent" />
+                                                            </Style>
+                                                        </UXControls:UXRadioButton.Resources>
+                                                    </UXControls:UXRadioButton>
                                                     <Image Stretch="None"
                                                            Margin="0,0"
                                                            Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Icon_Info.png">
@@ -225,7 +230,13 @@
                                                                               Content="{Binding [DisplayProperties.1], Source={x:Static lang:LangHelper.Instance}}"
                                                                               Foreground="WhiteSmoke"
                                                                               GroupName="USBCPrioritization"
-                                                                              IsTabStop="{Binding USBCrioritizationUI_IsTabStoppable}" />
+                                                                              IsTabStop="{Binding USBCrioritizationUI_IsTabStoppable}">
+                                                        <UXControls:UXRadioButton.Resources>
+                                                            <Style TargetType="Border">
+                                                                <Setter Property="Background" Value="Transparent" />
+                                                            </Style>
+                                                        </UXControls:UXRadioButton.Resources>
+                                                    </UXControls:UXRadioButton>
                                                     <Image Stretch="None"
                                                            Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Icon_Info.png">
                                                         <Image.ToolTip>
