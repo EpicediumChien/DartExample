@@ -5351,6 +5351,20 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 }
             }
 
+            _comdity = await _commSdk.GetCommodityAsync<IPenCommodity>(new ItemId("DellPeripheral.Pen"), CancellationToken.None);
+            if (_comdity is Dell.TechHub.Commodity.Peripheral.IPenCommodity _pencom)
+            {
+                try
+                {
+                    _pencom.KeyCaptureDataChanged += _pencom_KeyCaptureDataChanged;
+                    writelog($"Pen Commodity event registered");
+                }
+                catch (Exception e)
+                {
+                    writelog($"Find IPenCommodity not find  time: {DateTime.Now.ToString("hh.mm.ss.ffffff") + " Message: " + e.Message}");
+                }
+            }
+
             writelog($"Register Commodity event...");
             _comdity = await _commSdk.GetCommodityAsync<IHeadsetCommodity>(new ItemId("DellPeripheral.Headset"), CancellationToken.None);
             if (_comdity is Dell.TechHub.Commodity.Peripheral.IHeadsetCommodity _headsetcom)
@@ -5448,6 +5462,12 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
 
 
+        }
+
+        private void _pencom_KeyCaptureDataChanged(object sender, KeyCaptureDataChangedArgs e)
+        {
+            Debug.WriteLine($"[Pen]KeystrokeDisplayDataChanged {e.KeyCaptureData} Changed for Device ID: {e.DeviceId}  !!!!!!!!!!!!!!!");
+            writelog($"[Headset]FirmwareVersionChanged {e.KeyCaptureData} Changed for Device ID: {e.DeviceId}  !!!!!!!!!!!!!!!");
         }
 
         private void OnDTPProxyPluginConditionChangeHandler(object sender, EventArgs e)

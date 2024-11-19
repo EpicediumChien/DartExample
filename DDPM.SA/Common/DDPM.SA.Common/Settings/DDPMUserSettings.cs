@@ -4,6 +4,12 @@ using System.Collections.Generic;
 
 namespace DDPM.SA.Common.Settings
 {
+    public class DDPMSimpleMonitorRecord
+    {
+        public string ModelName { get; set; } = string.Empty;
+        public string ServiceTag { get; set; } = string.Empty;
+    }
+
     public class DDPMUserSettings
     {
         public enum Themes
@@ -51,17 +57,11 @@ namespace DDPM.SA.Common.Settings
         public string Schedule { get; set; } = string.Empty;
         public FrequencyDateTime TelementryFrequency { get; set; } = new FrequencyDateTime() { Month1stDay = DateTime.Now, PerDay = DateTime.Now, Weekly = DateTime.Now, };
 
-        //Input
-        //public string strInputSourceList { get; set; }
         //FW Update
         public FWUpdateInfoPackage DelayFWUpdateInfoPackage { get; set; }
 
         //0606 Bruce 新增鎖定自動旋轉方向
         public bool LockRotate { get; set; }
-
-        //USBKVM
-        //public string strUSBKVMPCsList { get; set; }
-        //public bool isTelemetryConsentOn { get; set; } = true; //global setting -> Analytics page -> checkbox on/off
 
         //FW Update
         public bool LockFWU_UI { get; set; }
@@ -69,8 +69,6 @@ namespace DDPM.SA.Common.Settings
         public DokcUODUpdateInfoPackage UODFWUInfoPackage { get; set; }
         public List<string> SupportedMonitorList { get; set; }
 
-        //public bool isOnUSBKVM { get; set; } = false;
-        //public bool isOnNKVM { get; set; } = false;
         public SWUpdateInfoPackage DelaySWUpdateInfoPackage { get; set; }
 
         public string VideoCaptureFolder { get; set; } = Environment.GetFolderPath(Environment.SpecialFolder.MyVideos);
@@ -97,5 +95,6 @@ namespace DDPM.SA.Common.Settings
 
         public HotkeySettings HotkeySettings { get; set; } = new HotkeySettings();
         public bool isDisplayConsentPage { get; set; } = false;//DDPMW-1254
+        public DDPMSimpleMonitorRecord lastUISelectedMonitor {  get; set; } = new DDPMSimpleMonitorRecord();
     }
 }

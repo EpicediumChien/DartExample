@@ -26,13 +26,13 @@ namespace DDPM.UI.Plugin.SettingsPlugin
             InitializeComponent();
         }
 
-        private void ThirdPartyLicenses_Click(object sender, MouseButtonEventArgs e)
+        private void ThirdPartyLicenses_Click(object sender, RoutedEventArgs e)
         {
             ThirdPartyLicenses thirdPartyLicenses = new ThirdPartyLicenses();
             thirdPartyLicenses.Show();
         }
 
-        private void LearnMore_Click(object sender, MouseButtonEventArgs e)
+        private void LearnMore_Click(object sender, RoutedEventArgs e)
         {
             string url = "https://www.dell.com/support/home";
             try

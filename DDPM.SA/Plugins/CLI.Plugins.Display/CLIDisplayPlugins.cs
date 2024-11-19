@@ -11116,7 +11116,7 @@ namespace DDPM.CLI.Plugins.Display
                 cli_Response.Message = "Invalid command line syntax or missing -value=file";
                 return ((int)CLI_ExitCode.invalide_cmdline_syntax, cli_Response.ToJson());
             }
-            else if (commandLineInput.Command == "GET" && commandLineInput.Options.Count == 0)
+            else if (commandLineInput.Command == "GET" && commandLineInput.Options.Count <= 1)
             {
                 return DiagnosticReportv2(devMgr, commandLineInput).Result;
             }
