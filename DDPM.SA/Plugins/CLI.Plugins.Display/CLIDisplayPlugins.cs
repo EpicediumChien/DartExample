@@ -14175,7 +14175,8 @@ namespace DDPM.CLI.Plugins.Display
                         string arguments = "/console start";
                         //Process.Start(exeFileAndLocation, arguments);
                         //Trace.WriteLine("Executable Path: " + executablePath);
-                        DDPMFileSecurity.StartProcessSafely(log, exeFileAndLocation, arguments, true);
+                        //DDPMFileSecurity.StartProcessSafely(log, exeFileAndLocation, arguments, true);
+                        DDPMFileSecurity.StartProcessSafely(log, exeFileAndLocation, arguments, true, "", "", true);//lock nkvm
                     }
                     else
                     {
@@ -14208,7 +14209,8 @@ namespace DDPM.CLI.Plugins.Display
                         string arguments = "/networkkvm on";
                         //Process.Start(exeFileAndLocation, arguments);
                         //Trace.WriteLine("Executable Path: " + executablePath);
-                        DDPMFileSecurity.StartProcessSafely(log, exeFileAndLocation, arguments, true);
+                        //DDPMFileSecurity.StartProcessSafely(log, exeFileAndLocation, arguments, true);
+                        DDPMFileSecurity.StartProcessSafely(log, exeFileAndLocation, arguments, true, "", "", true);//lock nkvm
                     }
                     else
                     {
@@ -14241,7 +14243,8 @@ namespace DDPM.CLI.Plugins.Display
                         string arguments = "/networkkvm off";
                         //Process.Start(exeFileAndLocation, arguments);
                         //Trace.WriteLine("Executable Path: " + executablePath);
-                        DDPMFileSecurity.StartProcessSafely(log, exeFileAndLocation, arguments, true);
+                        //DDPMFileSecurity.StartProcessSafely(log, exeFileAndLocation, arguments, true);
+                        DDPMFileSecurity.StartProcessSafely(log, exeFileAndLocation, arguments, true, "", "", true);//lock nkvm
                     }
                     else
                     {
@@ -14274,7 +14277,8 @@ namespace DDPM.CLI.Plugins.Display
                         string arguments = "/networkkvmautoconnect on";
                         //Process.Start(exeFileAndLocation, arguments);
                         //Trace.WriteLine("Executable Path: " + executablePath);
-                        DDPMFileSecurity.StartProcessSafely(log, exeFileAndLocation, arguments, true);
+                        //DDPMFileSecurity.StartProcessSafely(log, exeFileAndLocation, arguments, true);
+                        DDPMFileSecurity.StartProcessSafely(log, exeFileAndLocation, arguments, true, "", "", true);//lock nkvm
                     }
                     else
                     {
@@ -14307,7 +14311,8 @@ namespace DDPM.CLI.Plugins.Display
                         string arguments = "/networkkvmautoconnect off";
                         //Process.Start(exeFileAndLocation, arguments);
                         //Trace.WriteLine("Executable Path: " + executablePath);
-                        DDPMFileSecurity.StartProcessSafely(log, exeFileAndLocation, arguments, true);
+                        //DDPMFileSecurity.StartProcessSafely(log, exeFileAndLocation, arguments, true);
+                        DDPMFileSecurity.StartProcessSafely(log, exeFileAndLocation, arguments, true, "", "", true);//lock nkvm
                     }
                     else
                     {
@@ -14340,7 +14345,8 @@ namespace DDPM.CLI.Plugins.Display
                         string arguments = "/networkkvmcontenttransfer on";
                         //Process.Start(exeFileAndLocation, arguments);
                         //Trace.WriteLine("Executable Path: " + executablePath);
-                        DDPMFileSecurity.StartProcessSafely(log, exeFileAndLocation, arguments, true);
+                        //DDPMFileSecurity.StartProcessSafely(log, exeFileAndLocation, arguments, true);
+                        DDPMFileSecurity.StartProcessSafely(log, exeFileAndLocation, arguments, true, "", "", true);//lock nkvm
                     }
                     else
                     {
@@ -14373,7 +14379,8 @@ namespace DDPM.CLI.Plugins.Display
                         string arguments = "/networkkvmcontenttransfer off";
                         //Process.Start(exeFileAndLocation, arguments);
                         //Trace.WriteLine("Executable Path: " + executablePath);
-                        DDPMFileSecurity.StartProcessSafely(log, exeFileAndLocation, arguments, true);
+                        //DDPMFileSecurity.StartProcessSafely(log, exeFileAndLocation, arguments, true);
+                        DDPMFileSecurity.StartProcessSafely(log, exeFileAndLocation, arguments, true, "", "", true);//lock nkvm
                     }
                     else
                     {
@@ -14406,7 +14413,8 @@ namespace DDPM.CLI.Plugins.Display
                         string arguments = $"/networkkvmincomingport {commandLineInput.Options[0].Option_Value}";
                         //Process.Start(exeFileAndLocation, arguments);
                         //Trace.WriteLine("Executable Path: " + executablePath);
-                        DDPMFileSecurity.StartProcessSafely(log, exeFileAndLocation, arguments, true);
+                        //DDPMFileSecurity.StartProcessSafely(log, exeFileAndLocation, arguments, true);
+                        DDPMFileSecurity.StartProcessSafely(log, exeFileAndLocation, arguments, true, "", "", true);//lock nkvm
                     }
                     else
                     {
@@ -14439,7 +14447,8 @@ namespace DDPM.CLI.Plugins.Display
                         string arguments = $"/networkkvmoutgoingport {commandLineInput.Options[0].Option_Value}";
                         //Process.Start(exeFileAndLocation, arguments);
                         //Trace.WriteLine("Executable Path: " + executablePath);
-                        DDPMFileSecurity.StartProcessSafely(log, exeFileAndLocation, arguments, true);
+                        //DDPMFileSecurity.StartProcessSafely(log, exeFileAndLocation, arguments, true);
+                        DDPMFileSecurity.StartProcessSafely(log, exeFileAndLocation, arguments, true, "", "", true);//lock nkvm
                     }
                     else
                     {
@@ -14472,7 +14481,8 @@ namespace DDPM.CLI.Plugins.Display
                         string arguments = $"/networkkvmcontenttransferport {commandLineInput.Options[0].Option_Value}";
                         //Process.Start(exeFileAndLocation, arguments);
                         //Trace.WriteLine("Executable Path: " + executablePath);
-                        DDPMFileSecurity.StartProcessSafely(log, exeFileAndLocation, arguments, true);
+                        //DDPMFileSecurity.StartProcessSafely(log, exeFileAndLocation, arguments, true);
+                        DDPMFileSecurity.StartProcessSafely(log, exeFileAndLocation, arguments, true, "", "", true);//lock nkvm
                     }
                     else
                     {
@@ -14505,7 +14515,8 @@ namespace DDPM.CLI.Plugins.Display
                         string arguments = $"/networkkvmaccessreset";
                         //Process.Start(exeFileAndLocation, arguments);
                         //Trace.WriteLine("Executable Path: " + executablePath);
-                        DDPMFileSecurity.StartProcessSafely(log, exeFileAndLocation, arguments, true);
+                        //DDPMFileSecurity.StartProcessSafely(log, exeFileAndLocation, arguments, true);
+                        DDPMFileSecurity.StartProcessSafely(log, exeFileAndLocation, arguments, true, "", "", true);//lock nkvm
                     }
                     else
                     {
