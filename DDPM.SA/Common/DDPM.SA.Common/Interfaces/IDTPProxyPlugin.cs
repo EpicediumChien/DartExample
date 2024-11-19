@@ -112,7 +112,7 @@ namespace DDPM.SA.Common
         /// <summary>
         /// Webcam change event
         /// </summary>
-        event EventHandler<bool>? IsCameraSensorCovere_ChangeEvent;
+        event EventHandler<bool>? Esi_IsCameraSensorCover_ChangeEvent;
         event EventHandler<int>? WALSnoozeTimeLeftInSeconds_ChangeEvent;
         event EventHandler<bool>? Esi_IsWALLockCountdownStartedChanged_ChangeEvent;
         event EventHandler<int>? Esi_WALLockCountdownChanged_ChangeEvent;

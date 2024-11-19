@@ -88,7 +88,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         /// <summary>
         /// Webcam change event
         /// </summary>
-        public event EventHandler<bool>? IsCameraSensorCovere_ChangeEvent;
+        public event EventHandler<bool>? Esi_IsCameraSensorCover_ChangeEvent;
         public event EventHandler<int>? WALSnoozeTimeLeftInSeconds_ChangeEvent;
         public event EventHandler<bool>? Esi_IsWALLockCountdownStartedChanged_ChangeEvent;
         public event EventHandler<int>? Esi_WALLockCountdownChanged_ChangeEvent;
@@ -5613,7 +5613,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
         private void _webcamcom_Esi_IsCameraSensorCoveredChanged(object sender, Esi_IsCameraSensorCoveredChangedArgs e)
         {
-            IsCameraSensorCovere_ChangeEvent?.AsyncFireAndForget(this, e.IsCameraSensorCovered, System.Threading.CancellationToken.None);
+            Esi_IsCameraSensorCover_ChangeEvent?.AsyncFireAndForget(this, e.IsCameraSensorCovered, System.Threading.CancellationToken.None);
 
             Debug.WriteLine($"[Speaker] IsMuteStatusChanged {e.IsCameraSensorCovered} Changed for Device ID: {e.DeviceId}  !!!!!!!!!!!!!!!");
             writelog($"[Speaker] IsMuteStatusChanged {e.IsCameraSensorCovered} Changed for Device ID: {e.DeviceId}  !!!!!!!!!!!!!!!");

@@ -508,10 +508,10 @@ namespace DDPM.UI.Module.Color
                
             }
 
-            if (index >= 0)
-                return Test_AddAppCollectionData.GetInstance()._monitorConfigs[index];
-            else
+            if (index < 0 || Test_AddAppCollectionData.GetInstance()._monitorConfigs == null || index >= Test_AddAppCollectionData.GetInstance()._monitorConfigs.Count)
                 return null;
+            else
+                return Test_AddAppCollectionData.GetInstance()._monitorConfigs[index];
         }
 
         public void Invoke_RefreshData()
