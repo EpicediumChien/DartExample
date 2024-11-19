@@ -50,7 +50,7 @@
             <Border
                 Width="366"
                 Height="199"
-                Background="#141D28"
+                Background="{DynamicResource Default_SA_OSD_Border_BkColor}"
                 BorderBrush="#0DFFFFFF"
                 BorderThickness="1.5"
                 CornerRadius="5"
@@ -77,7 +77,7 @@
                         FontFamily="Roboto"
                         FontSize="20"
                         FontWeight="Medium"
-                        Foreground="#FFFFFF"
+                        Foreground="{DynamicResource Default_SA_OSD_PathColor}"
                         Text="{Binding [Walk_Away_Lock], Source={x:Static lang:LangHelper.Instance}, Mode=OneWay}" />
                     <TextBlock
                         x:Name="ShowStringText"
@@ -87,7 +87,7 @@
                         FontFamily="Roboto"
                         FontSize="40"
                         FontWeight="ExtraLight"
-                        Foreground="#FFFFFF"
+                        Foreground="{DynamicResource Default_SA_OSD_PathColor}"
                         Text="5" />
                 </Grid>
             </Border>

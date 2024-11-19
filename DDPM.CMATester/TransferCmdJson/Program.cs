@@ -27,6 +27,10 @@ namespace TransferCmdJson
             string minversion = string.Empty;
             string model = string.Empty;
 
+            // add @ 20241113 stephen
+            //bool upgradetolatest;
+            string uod = string.Empty;  
+
             for (int i = 0; i < cmds.Length; i++)
             {
 
@@ -48,12 +52,12 @@ namespace TransferCmdJson
                         continue;
                     }
 
-                    if (s1[1].Equals("silentfwupdate"))
+                    /*if (s1[1].Equals("silentfwupdate"))
                     {
                         active = "fw";
                         devicetype = s1[0];
                         continue;
-                    }
+                    }*/
 
                     devicetype = s1[0];
                     command = s1[1];
@@ -63,7 +67,7 @@ namespace TransferCmdJson
 
                 if (2 == i)
                 {
-
+                    // -value=display,forcewithnotice
                     string[] s2 = cmds[i].ToLower().Split('=');
 
                     if (s2[1].Contains("display") || s2[1].Contains("dock")
@@ -87,6 +91,20 @@ namespace TransferCmdJson
                         continue;
 
                     }
+
+                    if (s2[1].ToLower().Equals("lock") || s2[1].ToLower().Equals("enable")) {
+                        active = "lock";
+                        value = "";
+                        continue;
+                    }
+
+                    if (s2[1].ToLower().Equals("unlock") || s2[1].ToLower().Equals("disable"))
+                    {
+                        active = "unlock";
+                        value = "";
+                        continue;
+                    }
+
 
                     value = s2[1];
                     continue;
@@ -122,9 +140,24 @@ namespace TransferCmdJson
                         model = ss[0];
                     }
 
+                    // add @ 20241113 stephen
+                    if ("uod".Equals(ss[1]))
+                    {
+                        uod = ss[0];
+                    }
                 }
 
             }
+
+            Console.WriteLine("tCount = " + tCount);
+            Console.WriteLine("active = " + active);
+            Console.WriteLine("devicetype = " + devicetype);
+            Console.WriteLine("command = " + command);
+            Console.WriteLine("value = " + value);
+            Console.WriteLine("servicetag = " + servicetag);
+            Console.WriteLine("model = " + model);
+            Console.WriteLine("minversion = " + minversion);
+            Console.WriteLine("uod = " + uod);
 
             InfoJsonGenerator.TaskJson task = new InfoJsonGenerator.TaskJson()
             {
@@ -137,7 +170,8 @@ namespace TransferCmdJson
                 {
                     servicetag = servicetag,
                     model = model,
-                    minversion = minversion
+                    minversion = minversion,
+                    uod = uod.ToLower().Equals("true") ? true : false 
                 }.toString()
             };
 
@@ -173,7 +207,9 @@ namespace TransferCmdJson
                     {
                         list = new List<string>();
 
-                        alllines[i] = (alllines[i].Replace("/", "")).Replace("-", "");
+                        alllines[i] = (alllines[i].ToLower().Replace("/", "")).Replace("-", "");
+
+                        Console.WriteLine(alllines[i]);
 
                         string strTask = cmdParser(alllines[i].Trim());
 

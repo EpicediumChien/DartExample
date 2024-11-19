@@ -68,10 +68,7 @@ namespace NGA.ThickClient
         /// Constructor
         /// </summary>
         public App() : base(NGA.Resources.Resources.ResourceManager, ThickClientUniqueGuid)
-        {
-            DdpmCommonHelper.ThemeSwitchFlag = GetPrivateProfileInt("DDPMDebug", "ThemeSwitchFlag", 0, @"C:\DDPMDebug.ini") == 1;
-            DdpmCommonHelper.UIDebugModeFlag = GetPrivateProfileInt("DDPMDebug", "UIDebugFlag", 0, @"C:\DDPMDebug.ini") == 1;
-        }
+            => DdpmCommonHelper.UIDebugModeFlag = GetPrivateProfileInt("DDPMDebug", "UIDebugFlag", 0, @"C:\DDPMDebug.ini") == 1;
 
         /// <summary>
         /// Configures the ConsoleConfig.
@@ -113,8 +110,7 @@ namespace NGA.ThickClient
         {
             var resourceManager = base.LoadResources();
             //update dark/light mode
-            if (DdpmCommonHelper.ThemeSwitchFlag)
-                DdpmCommonHelper.updateMergedDictionaries(resourceManager);
+            DdpmCommonHelper.updateMergedDictionaries(resourceManager);
             try
             {
                 var resourceDictionaries = new[] { new ResourceDictionary { Source = new Uri(AppStylesUriString, UriKind.RelativeOrAbsolute) } };

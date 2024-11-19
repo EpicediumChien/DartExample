@@ -112,7 +112,7 @@
                                         ButtonSize="Medium"
                                         ContentStringFormat="{}{0}"
                                         IconAnimation="Move"
-                                        Click="OpenPxPFullView"
+                                        Click="OpenPxPFullView" Visibility="{Binding isPxP}"
                                         HorizontalContentAlignment="Center"
                                         VerticalContentAlignment="Center"
                                         Padding="40,8" Margin="10,0" Width="164" Height="40">
@@ -121,12 +121,23 @@
                                     <Path Data="M17.3796 8.3256L17.6585 8.0002L17.3796 7.67481L11.3796 0.674805L10.6204 1.3256L15.9129 7.5002H0V8.5002H15.9129L10.6204 14.6748L11.3796 15.3256L17.3796 8.3256Z" Fill="white"/>
                                 </StackPanel>
                             </UXControls:UXButton>
+                            <UXControls:UXButton IconPosition="IconRight"
+                                                ButtonType="Primary"
+                                                ButtonSize="Medium"
+                                                Content="{Binding [Finish], Source={x:Static lang:LangHelper.Instance}}"
+                                                ContentStringFormat="{}{0} ⭢"
+                                                IconAnimation="Move"
+                                                Click="USBKVMFinish"
+                                                HorizontalContentAlignment="Center"
+                                                VerticalContentAlignment="Center"
+                                                Padding="40,8" Margin="10,0" Width="164" Height="40"
+                                                Visibility="{Binding NoPXP}" />
                         </Grid>
                         <Grid Grid.Column="2">
                             <UXControls:UXButton ButtonSize="Medium" Width="90" Height="40"
                                                  ButtonType="Tertiary"
                                                  Content="{Binding [Close], Source={x:Static lang:LangHelper.Instance}}"
-                                                 IconAnimation="Move"
+                                                 IconAnimation="Move" Visibility="{Binding isPxP}"
                                                  Click="CloseUSBKVM" />
                         </Grid>
                     </Grid>

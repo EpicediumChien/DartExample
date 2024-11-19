@@ -165,18 +165,22 @@ namespace DDPM.UI.Plugin.HeadsetPlugin
 
         private void GetPeripheralsAsync()
         {
+            _log.Info($"[HeadsetPlugin] GetPeripheralsAsync ... 0 in");
             if (!SpinWait.SpinUntil(() =>
             _deviceManagerPluginCondition is IFrameworkPluginConditionNotification, TimeSpan.FromMinutes(2)))
             {
                 Console.WriteLine("Could not establish communication with DDPM!!");
                 return;
             }
+            _log.Info($"[HeadsetPlugin] GetPeripheralsAsync ... 1 in");
             _log.Debug($"GetPeripherals is invoked");
             //_deviceHelper = await peripheralsPlugin.GetDevices();
             Task<DeviceHelper> task = _deviceManagerPlugin.GetDevices();
+            _log.Info($"[HeadsetPlugin] GetPeripheralsAsync ... 2 in");
             _deviceHelper = task.Result;
-
+            _log.Info($"[HeadsetPlugin] GetPeripheralsAsync ... 3 in");
             _viewModel?.PrepareDeviceInfo(_deviceHelper.deviceInfo);
+            _log.Info($"[HeadsetPlugin] GetPeripheralsAsync ... 4 out");
         }
 
         /// <summary>
@@ -185,6 +189,7 @@ namespace DDPM.UI.Plugin.HeadsetPlugin
         /// <remarks>Below code will be removed when <see cref="IConsole"/> provides the bootstrapper support</remarks>
         private void ConfigureServices()
         {
+            _log.Info($"[HeadsetPlugin] ConfigureServices ... in");
             if (_isConfigured)
                 return;
 
@@ -199,6 +204,7 @@ namespace DDPM.UI.Plugin.HeadsetPlugin
 
             _viewModel = (HeadsetViewModel?)PluginIoc.GetService<IPeripheralViewModel>();
             _isConfigured = true;
+            _log.Info($"[HeadsetPlugin] ConfigureServices ... out");
         }
 
         public string HeaderText => "Dell Headset";
@@ -223,9 +229,11 @@ namespace DDPM.UI.Plugin.HeadsetPlugin
         /// <inheritdoc/>
         public void OnShown(string parameter)
         {
+            _log.Info($"[HeadsetPlugin] OnShown ... in");
             ConfigureServices();
             GetPeripheralsAsync();
             if (_viewModel != null && !_viewModel.SetCurrentDevice(parameter)) { }
+            _log.Info($"[HeadsetPlugin] OnShown ... out");
         }
         #endregion Interface IConsolePluginSupportsActivations
 

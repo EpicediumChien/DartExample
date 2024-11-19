@@ -672,4 +672,11 @@
     <Setter Property="ItemContainerStyle" Value="{StaticResource DdpmComboBoxItemContainerStyle}" />
   </Style>
   <!--  ComboBoxItem style of DdpmComboBox  -->
+    <LinearGradientBrush x:Key="LinerGradientBrush1_Interrupt" StartPoint="0,0" EndPoint="1,0" Opacity="0.5">
+        <GradientStop Color="#306cc7" Offset="0.1" />
+        <GradientStop Color="#0063B8" Offset="0.2" />
+        <GradientStop Color="#003ACE" Offset="0.3" />
+        <GradientStop Color="#674AB8" Offset="0.4" />
+        <GradientStop Color="#0063B8" Offset="0.5" />
+    </LinearGradientBrush>
 </ResourceDictionary>
