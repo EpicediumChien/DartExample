@@ -69,7 +69,7 @@ namespace DDPM.UI.Plugin.SettingsPlugin
             SettingsPageViewModel vm = (SettingsPageViewModel)DataContext;
             DdpmCommonHelper.DeviceManagerSA.Set_GlobalSetting_DisplayColorPresetAndEasyMemory(vm.GlobalSettingParam.GlobalSetting_General.Display_Color_Preset_and_Easy_Memory);
         }
-        private void SaveDiagnosticReport_Click(object sender, MouseButtonEventArgs e)
+        private void SaveDiagnosticReport_Click(object sender, RoutedEventArgs e)
         {
             SettingsPageViewModel vm = (SettingsPageViewModel)DataContext;
             using (SaveFileDialog saveFileDialog = new SaveFileDialog())
@@ -93,7 +93,7 @@ namespace DDPM.UI.Plugin.SettingsPlugin
                 }
             }
         }
-        private void SaveMonitorAssetReport_Click(object sender, MouseButtonEventArgs e)
+        private void SaveMonitorAssetReport_Click(object sender, RoutedEventArgs e)
         {
             SettingsPageViewModel vm = (SettingsPageViewModel)DataContext;
             using (SaveFileDialog saveFileDialog = new SaveFileDialog())

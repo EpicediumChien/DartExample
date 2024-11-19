@@ -31,7 +31,8 @@
     <SolidColorBrush x:Key="DefaultTheme_SetupScanBdColor" Color="#FFFFFF" />
     <SolidColorBrush x:Key="DefaultTheme_SetupSelectBdColor" Color="#1B385F" />
     <SolidColorBrush x:Key="DefaultTheme_ListBoxBkColor" Color="#80141D27" />
-    <Style TargetType="UXControls:UXTextBlock" >
+    <Style TargetType="UXControls:UXTextBlock"
+           BasedOn="{StaticResource {x:Type UXControls:UXTextBlock}}">
         <Setter Property="Foreground" Value="{DynamicResource DefaultTheme_TxtColor}" />
         <Setter Property="Background" Value="{DynamicResource FakeTransparent}" />
     </Style>
@@ -64,7 +65,7 @@
             </Setter.Value>
         </Setter>
     </Style>
-    <Style TargetType="{x:Type UXControls:UXLink}">
+    <!--<Style TargetType="{x:Type UXControls:UXLink}">
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type UXControls:UXLink}">
@@ -76,9 +77,9 @@
         </Setter>
         <Setter Property="Background" Value="{DynamicResource DefaultTheme_RbBkColor}" />
         <Setter Property="Foreground" Value="{DynamicResource DefaultTheme_TxtColor}" />
-    </Style>
+    </Style>-->
     <!-- BasedOn="{StaticResource {x:Type UXControls:UXTextBox}}-->
-    <Style TargetType="UXControls:UXTextBox" >
+    <Style TargetType="UXControls:UXTextBox" BasedOn="{StaticResource {x:Type UXControls:UXTextBox}}">
         <Setter Property="Background" Value="{DynamicResource DefaultTheme_TbBkColor}" />
         <Setter Property="Foreground" Value="{DynamicResource DefaultTheme_TbFgColor}" />
         <Setter Property="BorderBrush" Value="{DynamicResource DefaultTheme_TbBdColor}" />
