@@ -13373,7 +13373,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                             settings.easyArrangementDDPM = new EasyArrangementDDPM();
                             settings.ImpExpSettings = new ImpExpSettings();
                             settings.hotkeyData = new List<HotkeyData>();
-                            settings.scheduleInfo = new scheduleInfo();
+                            settings.scheduleInfo = new scheduleInfo()
+                            {
+                                model = m.modelName,
+                                serviceTag = m.edid.ServiceTag
+                            };
                             settings.ALSConfig = 0;
                             monitorSettingsList.Add(settings);
                             bool b = _SettingsPlugin.WriteMonitorSettings(m.modelName, monitorSettingsList).Result;
