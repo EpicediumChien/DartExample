@@ -61,17 +61,14 @@
                         <RowDefinition Height="*" />
                     </Grid.RowDefinitions>
 
-                    <Image
-                        x:Name="CloseIcon"
-                        Grid.Row="0"
-                        Width="16"
-                        Height="16"
-                        Margin="0,10,10,0"
-                        HorizontalAlignment="Right"
-                        VerticalAlignment="Top"
-                        MouseLeftButtonDown="close_Click"
-                        Source="./Img/Close.png"
-                        Stretch="Fill" />
+                    <!--Close-->
+                    <Canvas Grid.Row="0" Width="16" Height="16" Margin="0,10,10,0" 
+                            HorizontalAlignment="Right" VerticalAlignment="Top" 
+                            MouseLeftButtonDown="close_Click" 
+                            Tag="{DynamicResource Default_SA_OSD_PathColor}">
+                        <Path Data="M16,0.82 L15.18,0 L8,7.2 L0.82,0.05 L0,0.87 L7.15,8 L0.05,15.13 L0.87,16 L8,8.85 L15.13,16 L15.95,15.18 L8.8,8 L16,0.82 Z" 
+                            Fill="{Binding Tag, RelativeSource={RelativeSource AncestorType=Canvas}}" />
+                    </Canvas>
 
                     <Grid Grid.Row="1">
 
@@ -80,13 +77,41 @@
                             <RowDefinition Height="50*" />
                         </Grid.RowDefinitions>
 
-                        <Image
-                            Grid.Row="0"
-                            Width="50"
-                            Height="50"
+                        <!--Keyboard-->
+                        <Canvas Grid.Row="0"
+                            Width="50" Height="50"
                             HorizontalAlignment="Center"
                             VerticalAlignment="Top"
-                            Source="./Img/Keybord.png" />
+                            Tag="{DynamicResource Default_SA_OSD_PathColor}">
+                            <Path Data="M26.2812 14.6562V10.9062H27.6875C28.5163 10.9062 29.3112 10.577 29.8972 9.99096C30.4833 9.40491 30.8125 8.61005 30.8125 7.78125V3.125H27.4063V7.5625H26C25.1712 7.5625 24.3763 7.89174 23.7903 8.47779C23.2042 9.06384 22.875 9.8587 22.875 10.6875V14.6562H0V46.875H50V14.6562H26.2812ZM46.6562 43.4688H3.34375V18H46.6562V43.4688Z"
+                              Fill="{Binding Tag, RelativeSource={RelativeSource AncestorType=Canvas}}" />
+                            <Path Data="M7.84375 20.1562H12.7188V23.5H7.84375V20.1562Z"
+                              Fill="{Binding Tag, RelativeSource={RelativeSource AncestorType=Canvas}}" />
+                            <Path Data="M7.84375 26.0312H12.7188V29.3438H7.84375V26.0312Z"
+                              Fill="{Binding Tag, RelativeSource={RelativeSource AncestorType=Canvas}}" />
+                            <Path Data="M7.84375 31.8125H12.7188V35.1562H7.84375V31.8125Z"
+                              Fill="{Binding Tag, RelativeSource={RelativeSource AncestorType=Canvas}}" />
+                            <Path Data="M17.6562 20.1562H22.5312V23.5H17.6562V20.1562Z"
+                              Fill="{Binding Tag, RelativeSource={RelativeSource AncestorType=Canvas}}" />
+                            <Path Data="M17.6562 26.0312H22.5312V29.3438H17.6562V26.0312Z"
+                              Fill="{Binding Tag, RelativeSource={RelativeSource AncestorType=Canvas}}" />
+                            <Path Data="M17.6562 31.8125H22.5312V35.1562H17.6562V31.8125Z"
+                              Fill="{Binding Tag, RelativeSource={RelativeSource AncestorType=Canvas}}" />
+                            <Path Data="M27.4688 20.1562H32.3438V23.5H27.4688V20.1562Z"
+                              Fill="{Binding Tag, RelativeSource={RelativeSource AncestorType=Canvas}}" />
+                            <Path Data="M27.4688 26.0312H32.3438V29.3438H27.4688V26.0312Z"
+                              Fill="{Binding Tag, RelativeSource={RelativeSource AncestorType=Canvas}}" />
+                            <Path Data="M27.4688 31.8125H32.3438V35.1562H27.4688V31.8125Z"
+                              Fill="{Binding Tag, RelativeSource={RelativeSource AncestorType=Canvas}}" />
+                            <Path Data="M37.2812 20.1562H42.1562V23.5H37.2812V20.1562Z"
+                              Fill="{Binding Tag, RelativeSource={RelativeSource AncestorType=Canvas}}" />
+                            <Path Data="M37.2812 26.0312H42.1562V29.3438H37.2812V26.0312Z"
+                              Fill="{Binding Tag, RelativeSource={RelativeSource AncestorType=Canvas}}" />
+                            <Path Data="M37.2812 31.8125H42.1562V35.1562H37.2812V31.8125Z"
+                              Fill="{Binding Tag, RelativeSource={RelativeSource AncestorType=Canvas}}" />
+                            <Path Data="M15.3438 37.6562H34.625V41H15.3438V37.6562Z"
+                              Fill="{Binding Tag, RelativeSource={RelativeSource AncestorType=Canvas}}" />
+                        </Canvas>
 
                         <StackPanel
                             Grid.Row="1"
