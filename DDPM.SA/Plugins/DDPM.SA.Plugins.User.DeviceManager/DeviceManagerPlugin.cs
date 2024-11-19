@@ -85,8 +85,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         private const string pluginName = "DeviceManagerPlugin";
         private const string pluginVersion = "1.0.0";
         private const string pluginDescription = "This plugin implements Device Manager Plugin.";
-        private const string publisherCompany = "Wistron";
-        private const string publisherWebsite = "https://www.wistron.com";
+        private const string publisherCompany = "Dell Inc.";
+        private const string publisherWebsite = "https://www.dell.com";
         private const string publisherSupport = "This plugin implements Device Manager Plugin.";
 
         private IAgent _agent;
@@ -148,6 +148,15 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         /// NightLight Status change event，return On or Off
         /// </summary>
         public event EventHandler<string> NightLightStatus_ChangeEvent;
+
+        /// <summary>
+        /// Webcam change event
+        /// </summary>
+        public event EventHandler<bool>? Esi_IsCameraSensorCover_ChangeEvent;
+        public event EventHandler<int>? WALSnoozeTimeLeftInSeconds_ChangeEvent;
+        public event EventHandler<bool>? Esi_IsWALLockCountdownStartedChanged_ChangeEvent;
+        public event EventHandler<int>? Esi_WALLockCountdownChanged_ChangeEvent;
+
 
         //Monitor objects
         private List<MonitorInfo> _AllInfoMonitors = new List<MonitorInfo>();
@@ -11128,6 +11137,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     }
                     else if (pluginCondition is PluginStartedCondition)
                     {
+                        _DTPProxyPlugin.Esi_IsCameraSensorCover_ChangeEvent += OnEsi_IsCameraSensorCoverChangeHandler;
+                        _DTPProxyPlugin.WALSnoozeTimeLeftInSeconds_ChangeEvent += OnWALSnoozeTimeLeftInSecondsChangeHandler;
+                        _DTPProxyPlugin.Esi_IsWALLockCountdownStartedChanged_ChangeEvent += OnEsi_IsWALLockCountdownStartedStatusChangeHandler;
+                        _DTPProxyPlugin.Esi_WALLockCountdownChanged_ChangeEvent += OnEsi_WALLockCountdownChangeHandler;
+
                         writelog($"{nameof(GetCurrentDTPProxyPluginCondition)} - DTPProxy Plugin is in a started condition");
                         _DTPProxyPlugin.ZoomChanged_Notify += ZoomChanged;
                         _DTPProxyPlugin.ZoomMeetingTypeChanged_Notify += ZoomMeetingTypeChanged;
@@ -13518,7 +13532,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                             settings.easyArrangementDDPM = new EasyArrangementDDPM();
                             settings.ImpExpSettings = new ImpExpSettings();
                             settings.hotkeyData = new List<HotkeyData>();
-                            settings.scheduleInfo = new scheduleInfo();
+                            settings.scheduleInfo = new scheduleInfo()
+                            {
+                                model = m.modelName,
+                                serviceTag = m.edid.ServiceTag
+                            };
                             settings.ALSConfig = 0;
                             monitorSettingsList.Add(settings);
                             bool b = _SettingsPlugin.WriteMonitorSettings(m.modelName, monitorSettingsList).Result;
@@ -14270,6 +14288,26 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         private void OnNightLightStatusChangeHandler(object sender, string e)
         {
             NightLightStatus_ChangeEvent?.AsyncFireAndForget(this, e, System.Threading.CancellationToken.None);
+        }
+
+        private void OnEsi_IsCameraSensorCoverChangeHandler(object sender, bool e)
+        {
+            Esi_IsCameraSensorCover_ChangeEvent?.AsyncFireAndForget(this, e, System.Threading.CancellationToken.None);
+        }
+
+        private void OnWALSnoozeTimeLeftInSecondsChangeHandler(object sender, int e)
+        {
+            WALSnoozeTimeLeftInSeconds_ChangeEvent?.AsyncFireAndForget(this, e, System.Threading.CancellationToken.None);
+        }
+
+        private void OnEsi_IsWALLockCountdownStartedStatusChangeHandler(object sender, bool e)
+        {
+            Esi_IsWALLockCountdownStartedChanged_ChangeEvent?.AsyncFireAndForget(this, e, System.Threading.CancellationToken.None);
+        }
+
+        private void OnEsi_WALLockCountdownChangeHandler(object sender, int e)
+        {
+            Esi_WALLockCountdownChanged_ChangeEvent?.AsyncFireAndForget(this, e, System.Threading.CancellationToken.None);
         }
 
         #endregion

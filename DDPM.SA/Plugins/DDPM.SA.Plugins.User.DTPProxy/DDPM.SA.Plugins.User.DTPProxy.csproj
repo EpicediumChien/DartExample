@@ -7,6 +7,7 @@
 
 	<ItemGroup>
 		<PackageReference Include="Dell.TechHub.Commodity.Sdk" Version="3.2.2" />
+		<PackageReference Include="MessagePack" Version="2.5.192" />
 	</ItemGroup>
 
 	<ItemGroup>

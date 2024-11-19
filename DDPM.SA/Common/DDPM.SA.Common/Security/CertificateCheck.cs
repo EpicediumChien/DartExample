@@ -15,7 +15,7 @@ namespace DDPM.SA.Common.Security
     public class CertificateCheck
     {
         private Logs? _logs;
-        private string[] Issuer = new string[] { "Entrust Certification Authority - L1F" };
+        //private string[] Issuer = new string[] { "Entrust Certification Authority - L1F" };
         private string[] Subject = new string[] { "content-cdn.dell.com", "*.dell.com" };
         public CertificateCheck(Logs logs)
         {
@@ -319,13 +319,14 @@ namespace DDPM.SA.Common.Security
                         isSubjectCNMatch = true;
                     }
                 }
-                foreach (string iss in Issuer)
-                {
-                    if (ExtractCN(certificate.Issuer).Equals(iss))
-                    {
-                        isIssuerCNMatch = true;
-                    }
-                }
+                //[Dean 1119 remove Isuer check by Wendy's commit]
+                //foreach (string iss in Issuer)
+                //{
+                //    if (ExtractCN(certificate.Issuer).Equals(iss))
+                //    {
+                //        isIssuerCNMatch = true;
+                //    }
+                //}
                 var sanList = GetSubjectAlternativeNames(certificate);
                 //_logs?.DebugMsg_1("Subject Alternative Names:");
                 //_logs?.DebugMsg_1("---SAN---");
@@ -412,8 +413,9 @@ namespace DDPM.SA.Common.Security
 
             foreach (var cert1 in chain.ChainElements)
             {
-                if (cert1.Certificate.Issuer == cert1.Certificate.Subject)
-                {
+                //[Dean 1119 remove issuer check by Wendy's commit]
+                //if (cert1.Certificate.Issuer == cert1.Certificate.Subject)
+                //{
                     X509Certificate2 rootCertificate = cert1.Certificate;
                     //_logs?.DebugMsg_1($"Validate Root Certificate:  {cert1.Certificate.Issuer} {cert1.Certificate.Subject}");
 
@@ -430,7 +432,7 @@ namespace DDPM.SA.Common.Security
                             }
                         }
                     }
-                }
+                //}
             }
             // Close the store
             store.Close();

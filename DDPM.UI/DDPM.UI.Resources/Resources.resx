@@ -451,7 +451,7 @@
     <value>Synchronize between monitors</value>
   </data>
   <data name="Brightness.5" xml:space="preserve">
-    <value>Apply the above brightness/luminance, contrast, and color&amp;#x000A;preset controls to your connected monitors.</value>
+    <value>Apply the above brightness/luminance, contrast, and color\npreset controls to your connected monitors.</value>
   </data>
   <data name="Luminance" xml:space="preserve">
     <value>Luminance</value>
@@ -499,7 +499,7 @@
     <value>Transison Length</value>
   </data>
   <data name="Brightness.17" xml:space="preserve">
-    <value>TEST.</value>
+    <value>This feature enables our eyes to adapt to a desired setting</value>
   </data>
   <data name="Min" xml:space="preserve">
     <value>min</value>
@@ -918,7 +918,7 @@
   <data name="InputSource.4" xml:space="preserve">
     <value>USB Upstream</value>
   </data>
-	<data name="InputSource.5" xml:space="preserve">
+  <data name="InputSource.5" xml:space="preserve">
     <value>Rename Input Source</value>
   </data>
   <data name="KeyCustomization.0" xml:space="preserve">
