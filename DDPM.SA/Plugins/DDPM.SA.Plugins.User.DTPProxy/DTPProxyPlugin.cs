@@ -483,15 +483,69 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
 
         }
+        public async Task<string> GetKeyboardKeystrokeDisplayData(string Guid)
+        {
+            if (!await GetItemIDAsync("Keyboard", Guid))
+            { return string.Empty; }
+
+            if (await GetCommodityInterfaceInstanceAsync(_keyboardMethodInfo) is ICommodity commodity)
+            {
+                var value = GetPropertyValue(_keyboardInterfaceType, commodity, "KeystrokeDisplayData");
+                Debug.WriteLine($"{value ?? ""}");
+                return (string)value;
+            }
+            else
+            {
+                Debug.WriteLine($"Could not retrieve the Commodity Interface {_keyboardInterfaceType} for the {Guid} item.");
+                writelog($"Could not retrieve the Commodity Interface {_keyboardInterfaceType} for the {Guid} item.");
+                return string.Empty;
+            }
+        }
+        public async Task<bool> StartKeyboardKeystrokeRecording(string Guid)
+        {
+            if (!await GetItemIDAsync("Keyboard", Guid))
+            { return false; }
+
+            if (await GetCommodityInterfaceInstanceAsync(_keyboardMethodInfo) is ICommodity commodity)
+            {
+                var value = GetPropertyValue(_keyboardInterfaceType, commodity, "StartKeystrokeRecording");
+                Debug.WriteLine($"{value ?? ""}");
+                return (bool)value;
+            }
+            else
+            {
+                Debug.WriteLine($"Could not retrieve the Commodity Interface {_keyboardInterfaceType} for the {Guid} item.");
+                writelog($"Could not retrieve the Commodity Interface {_keyboardInterfaceType} for the {Guid} item.");
+                return false;
+            }
+        }
+        public async Task<bool> StopKeyboardKeystrokeRecording(string Guid)
+        {
+            if (!await GetItemIDAsync("Keyboard", Guid))
+            { return false; }
+
+            if (await GetCommodityInterfaceInstanceAsync(_keyboardMethodInfo) is ICommodity commodity)
+            {
+                var value = GetPropertyValue(_keyboardInterfaceType, commodity, "StopKeystrokeRecording");
+                Debug.WriteLine($"{value ?? ""}");
+                return (bool)value;
+            }
+            else
+            {
+                Debug.WriteLine($"Could not retrieve the Commodity Interface {_keyboardInterfaceType} for the {Guid} item.");
+                writelog($"Could not retrieve the Commodity Interface {_keyboardInterfaceType} for the {Guid} item.");
+                return false;
+            }
+        }
 
 
-        public async Task SetKbAssignKeystrokeAction(string Guid, string newValue)
+        public async Task SetKbAssignKeystrokeAction(string Guid, byte[] newValue)
         {
             if (!await GetItemIDAsync("Keyboard", Guid))
             { return; }
             if (await GetCommodityInterfaceInstanceAsync(_keyboardMethodInfo) is ICommodity commodity)
             {
-                SetPropertyValue(_keyboardInterfaceType, commodity, "AssignKeystrokeAction", Encoding.UTF8.GetBytes(newValue));
+                SetPropertyValue(_keyboardInterfaceType, commodity, "AssignKeystrokeAction", newValue);
             }
             else
             {
@@ -500,14 +554,14 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
         }
 
-        public async Task SetKbAssignDialogAction(string Guid, string newValue)
+        public async Task SetKbAssignDialogAction(string Guid, byte[] newValue)
         {
             if (!await GetItemIDAsync("Keyboard", Guid))
             { return; }
 
             if (await GetCommodityInterfaceInstanceAsync(_keyboardMethodInfo) is ICommodity commodity)
             {
-                SetPropertyValue(_keyboardInterfaceType, commodity, "AssignDialogAction", Encoding.UTF8.GetBytes(newValue));
+                SetPropertyValue(_keyboardInterfaceType, commodity, "AssignDialogAction", newValue);
             }
             else
             {
@@ -516,14 +570,14 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
         }
 
-        public async Task SetKbAssignedAction(string Guid, string newValue)
+        public async Task SetKbAssignedAction(string Guid, byte[] newValue)
         {
             if (!await GetItemIDAsync("Keyboard", Guid))
             { return; }
 
             if (await GetCommodityInterfaceInstanceAsync(_keyboardMethodInfo) is ICommodity commodity)
             {
-                SetPropertyValue(_keyboardInterfaceType, commodity, "AssignedAction", Encoding.UTF8.GetBytes(newValue));
+                SetPropertyValue(_keyboardInterfaceType, commodity, "AssignedAction", newValue);
             }
             else
             {

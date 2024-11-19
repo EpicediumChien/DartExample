@@ -902,7 +902,7 @@ namespace DDPM.UI.Plugin.ViewModels
                     }
                     else
                     {
-                        //jobj.Add("Command", parameter);
+                        jobj.Add("Command", parameter);
                         byte[] newValue = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(jobj));
                         if (actionID == 14)
                             DdpmCommonHelper.DeviceManagerSA!.SetMouseAssignKeystrokeAction(CurrentDeviceID.ToString(), newValue);

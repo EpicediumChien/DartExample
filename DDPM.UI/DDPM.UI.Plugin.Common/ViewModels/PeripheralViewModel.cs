@@ -104,7 +104,7 @@ namespace DDPM.UI.Plugin.ViewModels
             int i = 0;
             foreach (var info in DeviceInfos.Values)
             {
-                if (info.ModelNumber == Model)
+                if (MappingModel(info.ModelNumber) == Model)
                 {
                     i++;
                     //OnPropertyChanged(nameof(MultiDevicesInfoVisibility));
@@ -162,29 +162,7 @@ namespace DDPM.UI.Plugin.ViewModels
                 IsIDInvalid = true;
                 return false;
             }
-            switch (CurrentDeviceInfo.ModelNumber)
-            {
-                case "KB740":
-                case "KB7120W":
-                    Model = "KB740";
-                    break;
-                case "KB500":
-                case "KB3121W":
-                    Model = "KB500";
-                    break;
-                case "KB700":
-                case "KB7221W":
-                    Model = "KB700";
-                    break;
-
-                case "MS300":
-                case "MS3121W":
-                    Model = "MS300";
-                    break;
-                default:
-                    Model = CurrentDeviceInfo.ModelNumber;
-                    break;
-            }
+            Model = MappingModel(CurrentDeviceInfo.ModelNumber);
             Name = CurrentDeviceInfo.Name;
             if (CurrentDeviceInfo.Type == DeviceType.PhysicalWiredDock || CurrentDeviceInfo.Type == DeviceType.LogicalDock)
             {
@@ -279,6 +257,31 @@ namespace DDPM.UI.Plugin.ViewModels
 
             CurrentCursor = Cursors.Arrow;
             return true;
+        }
+
+        private string MappingModel(string modelNumber)
+        {
+            switch (modelNumber)
+            {
+                case "KB740":
+                case "KB7120W":
+                    return "KB740";
+
+                case "KB500":
+                case "KB3121W":
+                    return "KB500";
+
+                case "KB700":
+                case "KB7221W":
+                    return "KB700";
+
+                case "MS300":
+                case "MS3121W":
+                    return "MS300";
+
+                default:
+                    return modelNumber;
+            }
         }
 
         public virtual void HandleNotification(DeviceChangedType changeType, DeviceInfo di, string property = "")
