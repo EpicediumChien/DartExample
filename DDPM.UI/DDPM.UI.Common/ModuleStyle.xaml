@@ -54,7 +54,7 @@
             </Setter.Value>
         </Setter>
     </Style>
-    <Style TargetType="{x:Type UXControls:UXRadioButton}">
+    <Style TargetType="{x:Type UXControls:UXRadioButton}"  BasedOn="{StaticResource {x:Type UXControls:UXRadioButton}}">
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type UXControls:UXRadioButton}">
