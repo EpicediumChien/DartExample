@@ -486,23 +486,32 @@ namespace DDPM.UI.Module.Color
 
                 index = get_index_of_json_config_for_cur_monitor(mo);
 
-                Test_AddAppCollectionData.GetInstance()._monitorConfigs[index].AppInfo.Add("Desktop Application", new ColorPresetSettings_AppInfo()
-                {
-                    //ColorPresetName = "Standard/Native",
-                    Color = 0,
-                    HDRColor = -1,
-                    IconName = "Assets/palette.png",
-                });
 
-                Test_AddAppCollectionData.GetInstance()._monitorConfigs[index].AppInfo.Add("UWP Application", new ColorPresetSettings_AppInfo()
+                if (index >= 0)
                 {
-                    //ColorPresetName = "Standard/Native",
-                    Color = 0,
-                    HDRColor = -1,
-                    IconName = "Assets/palette.png",
-                });
+                    Test_AddAppCollectionData.GetInstance()._monitorConfigs[index].AppInfo.Add("Desktop Application", new ColorPresetSettings_AppInfo()
+                    {
+                        //ColorPresetName = "Standard/Native",
+                        Color = 0,
+                        HDRColor = -1,
+                        IconName = "Assets/palette.png",
+                    });
+
+                    Test_AddAppCollectionData.GetInstance()._monitorConfigs[index].AppInfo.Add("UWP Application", new ColorPresetSettings_AppInfo()
+                    {
+                        //ColorPresetName = "Standard/Native",
+                        Color = 0,
+                        HDRColor = -1,
+                        IconName = "Assets/palette.png",
+                    });
+                }
+               
             }
-            return Test_AddAppCollectionData.GetInstance()._monitorConfigs[index];
+
+            if (index >= 0)
+                return Test_AddAppCollectionData.GetInstance()._monitorConfigs[index];
+            else
+                return null;
         }
 
         public void Invoke_RefreshData()
