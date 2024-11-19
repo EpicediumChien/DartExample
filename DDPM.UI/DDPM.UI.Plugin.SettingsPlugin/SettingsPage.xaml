@@ -77,7 +77,18 @@
                                                     FontSize="14"
                                                     Margin="8,25,145,25"
                                                     Text="{Binding [General], Source={x:Static lang:LangHelper.Instance}}"
-                                                    AutomationProperties.Name="Primary1" />
+                                                    AutomationProperties.Name="Primary1">
+                                <UXControls:UXTextBlock.Style>
+                                    <Style TargetType="UXControls:UXTextBlock">
+                                        <Setter Property="Foreground" Value="{DynamicResource DefaultTheme_TxtColor}" />
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding IsSelected[0]}" Value="True">
+                                                <Setter Property="Foreground" Value="#FFFFFF" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </UXControls:UXTextBlock.Style>
+                            </UXControls:UXTextBlock>
                         </Grid>
                     </Border>
                     <Border Margin="0,4,4,4"
@@ -118,7 +129,18 @@
                                                     Margin="8,25,5,25"
                                                     Text="{Binding [Updates], Source={x:Static lang:LangHelper.Instance}}"
                                                     AutomationProperties.Name="Primary1"
-                                                    Opacity="{Binding UpdatesPageUI_Opacity}" />
+                                                    Opacity="{Binding UpdatesPageUI_Opacity}">
+                                <UXControls:UXTextBlock.Style>
+                                    <Style TargetType="UXControls:UXTextBlock">
+                                        <Setter Property="Foreground" Value="{DynamicResource DefaultTheme_TxtColor}" />
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding IsSelected[1]}" Value="True">
+                                                <Setter Property="Foreground" Value="#FFFFFF" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </UXControls:UXTextBlock.Style>
+                            </UXControls:UXTextBlock>
                             <Grid Grid.Column="1"
                                   HorizontalAlignment="Center"
                                   VerticalAlignment="Center"
@@ -175,7 +197,18 @@
                                                     Margin="8,25,0,25"
                                                     Text="{Binding [Analytics], Source={x:Static lang:LangHelper.Instance}}"
                                                     AutomationProperties.Name="Primary1"
-                                                    Opacity="{Binding AnalyticsPage_Opacity}" />
+                                                    Opacity="{Binding AnalyticsPage_Opacity}">
+                                <UXControls:UXTextBlock.Style>
+                                    <Style TargetType="UXControls:UXTextBlock">
+                                        <Setter Property="Foreground" Value="{DynamicResource DefaultTheme_TxtColor}" />
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding IsSelected[2]}" Value="True">
+                                                <Setter Property="Foreground" Value="#FFFFFF" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </UXControls:UXTextBlock.Style>
+                            </UXControls:UXTextBlock>
                             <Grid Grid.Column="1"
                                   Visibility="{Binding AnalyticsPage_LockTooltip}"
                                   VerticalAlignment="Center"
@@ -212,7 +245,18 @@
                                                     FontSize="14"
                                                     Margin="8,25,-12,25"
                                                     Text="Widget Settings"
-                                                    AutomationProperties.Name="Primary1" />
+                                                    AutomationProperties.Name="Primary1">
+                                <UXControls:UXTextBlock.Style>
+                                    <Style TargetType="UXControls:UXTextBlock">
+                                        <Setter Property="Foreground" Value="{DynamicResource DefaultTheme_TxtColor}" />
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding IsSelected[3]}" Value="True">
+                                                <Setter Property="Foreground" Value="#FFFFFF" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </UXControls:UXTextBlock.Style>
+                            </UXControls:UXTextBlock>
                         </Grid>
                     </Border>
                     <Border Margin="0,4,4,4"
@@ -242,7 +286,18 @@
                                                     FontSize="14"
                                                     Margin="8,25,145,25"
                                                     Text="{Binding [About], Source={x:Static lang:LangHelper.Instance}}"
-                                                    AutomationProperties.Name="Primary1" />
+                                                    AutomationProperties.Name="Primary1">
+                                <UXControls:UXTextBlock.Style>
+                                    <Style TargetType="UXControls:UXTextBlock">
+                                        <Setter Property="Foreground" Value="{DynamicResource DefaultTheme_TxtColor}" />
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding IsSelected[4]}" Value="True">
+                                                <Setter Property="Foreground" Value="#FFFFFF" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </UXControls:UXTextBlock.Style>
+                            </UXControls:UXTextBlock>
                         </Grid>
                     </Border>
                 </Grid>

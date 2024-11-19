@@ -147,11 +147,11 @@ namespace DDPM.UI.Common.Tests
             // Assert
             Assert.That(result, Is.EqualTo(null));
 
-            result = DdpmCommonHelper.GetUINotifyPropertyValue_Boolean("Lock_Display_ColorPreset", new ITSettingEventArgs() { IT_Feature_TriggerList = new List<string>() , target_object = new DDPMITConfig() { Lock_Settings_Updates = true } });
+            result = DdpmCommonHelper.GetUINotifyPropertyValue_Boolean("Lock_Display_ColorPreset", new ITSettingEventArgs() { IT_Feature_TriggerList = new List<string>(), target_object = new DDPMITConfig() { Lock_Settings_Updates = true } });
             // Assert
             Assert.That(result, Is.EqualTo(null));
 
-            result = DdpmCommonHelper.GetUINotifyPropertyValue_Boolean("Lock_Display_ColorPreset",new ITSettingEventArgs() { IT_Feature_TriggerList=new List<string>() { "", "Lock_Display_ColorPreset" }, target_object = new DDPMITConfig() { Lock_Settings_Updates=true } });
+            result = DdpmCommonHelper.GetUINotifyPropertyValue_Boolean("Lock_Display_ColorPreset", new ITSettingEventArgs() { IT_Feature_TriggerList = new List<string>() { "", "Lock_Display_ColorPreset" }, target_object = new DDPMITConfig() { Lock_Settings_Updates = true } });
             // Assert
             Assert.That(result, Is.EqualTo(false));
         }
@@ -163,11 +163,11 @@ namespace DDPM.UI.Common.Tests
             // Assert
             Assert.That(result, Is.EqualTo(false));
 
-            result = DdpmCommonHelper.GetUINotify_IsSynchronizeBetweenMonitors_Locked(new DDPMSettings(new DDPMAppSettings(), new DDPMUserSettings(), new DDPMITConfig ()));
+            result = DdpmCommonHelper.GetUINotify_IsSynchronizeBetweenMonitors_Locked(new DDPMSettings(new DDPMAppSettings(), new DDPMUserSettings(), new DDPMITConfig()));
             // Assert
             Assert.That(result, Is.EqualTo(false));
 
-            result = DdpmCommonHelper.GetUINotify_IsSynchronizeBetweenMonitors_Locked(new DDPMSettings(new DDPMAppSettings(), new DDPMUserSettings(), new DDPMITConfig()) { LockSettings=new DDPMITConfig() {Lock_Display_BriCont=true,Lock_Display_ColorPreset=false,Lock_Display_AutoBriTemp=true} });
+            result = DdpmCommonHelper.GetUINotify_IsSynchronizeBetweenMonitors_Locked(new DDPMSettings(new DDPMAppSettings(), new DDPMUserSettings(), new DDPMITConfig()) { LockSettings = new DDPMITConfig() { Lock_Display_BriCont = true, Lock_Display_ColorPreset = false, Lock_Display_AutoBriTemp = true } });
             // Assert
             Assert.That(result, Is.EqualTo(true));
         }
@@ -179,7 +179,7 @@ namespace DDPM.UI.Common.Tests
             // Assert
             Assert.That(result, Is.EqualTo(false));
 
-            result = DdpmCommonHelper.GetUINotifyPropertyValue_isAnyLocked(new DDPMSettings(new DDPMAppSettings(), new DDPMUserSettings(), new DDPMITConfig()),null);
+            result = DdpmCommonHelper.GetUINotifyPropertyValue_isAnyLocked(new DDPMSettings(new DDPMAppSettings(), new DDPMUserSettings(), new DDPMITConfig()), null);
             // Assert
             Assert.That(result, Is.EqualTo(false));
 
@@ -253,8 +253,8 @@ namespace DDPM.UI.Common.Tests
             // Assert
             Assert.That(result, Is.EqualTo(false));
 
-            var deviceManagerSAMock=new Mock<IDeviceManagerSA>();
-            DdpmCommonHelper.DeviceManagerSA=deviceManagerSAMock.Object;
+            var deviceManagerSAMock = new Mock<IDeviceManagerSA>();
+            DdpmCommonHelper.DeviceManagerSA = deviceManagerSAMock.Object;
             deviceManagerSAMock.Setup(x => x.SetAppConfigData(It.IsAny<DDPMSettings>())).Returns(Task.FromResult(true));
             result = DdpmCommonHelper.WriteDDPMSettings(new DDPMSettings(new DDPMAppSettings(), new DDPMUserSettings(), new DDPMITConfig()));
             // Assert
@@ -280,6 +280,7 @@ namespace DDPM.UI.Common.Tests
             UXSystemParameters.Instance.OSTheme = OSThemeEnum.Dark;
             try
             {
+                //Fix build
                 DdpmCommonHelper.updateMergedDictionaries(new Dell.Client.Framework.UX.WPF.ResourceManager.ResourceManager());
                 Assert.True(true);
             }
@@ -309,7 +310,7 @@ namespace DDPM.UI.Common.Tests
             // Assert
             Assert.That(result, Is.EqualTo(false));
 
-            UXSystemParameters.Instance.OSTheme=OSThemeEnum.Dark;
+            UXSystemParameters.Instance.OSTheme = OSThemeEnum.Dark;
             result = DdpmCommonHelper.isDarkMode();
             // Assert
             Assert.That(result, Is.EqualTo(true));

@@ -42,7 +42,7 @@
                             BorderThickness="{TemplateBinding BorderThickness}">
 
                         <!-- Display the Top Background-->
-                        <Border x:Name="topBackgroundBorder" Background="{TemplateBinding Background}">
+                        <Border x:Name="topBackgroundBorder" Background="{TemplateBinding TopBackground}">
                             <Grid>
                                 <!-- 20240507-1639-Robert_Lin, try to use real size
                                 Put original code below inside <Grid>
