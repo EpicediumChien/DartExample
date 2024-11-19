@@ -49,7 +49,7 @@
             <Border
                 Width="366"
                 Height="135"
-                Background="#141D28"
+                Background="{DynamicResource Default_SA_OSD_Border_BkColor}"
                 BorderBrush="#0DFFFFFF"
                 BorderThickness="1.5"
                 CornerRadius="5"
@@ -61,17 +61,14 @@
                         <RowDefinition Height="*" />
                     </Grid.RowDefinitions>
 
-                    <Image
-                        x:Name="CloseIcon"
-                        Grid.Row="0"
-                        Width="16"
-                        Height="16"
-                        Margin="0,10,10,0"
-                        HorizontalAlignment="Right"
-                        VerticalAlignment="Top"
-                        MouseLeftButtonDown="close_Click"
-                        Source="./Img/Close.png"
-                        Stretch="Fill" />
+                    <!--Close-->
+                    <Canvas Grid.Row="0" Width="16" Height="16" Margin="0,10,10,0" 
+                            HorizontalAlignment="Right" VerticalAlignment="Top" 
+                            MouseLeftButtonDown="close_Click" 
+                            Tag="{DynamicResource Default_SA_OSD_PathColor}">
+                        <Path Data="M16,0.82 L15.18,0 L8,7.2 L0.82,0.05 L0,0.87 L7.15,8 L0.05,15.13 L0.87,16 L8,8.85 L15.13,16 L15.95,15.18 L8.8,8 L16,0.82 Z" 
+                            Fill="{Binding Tag, RelativeSource={RelativeSource AncestorType=Canvas}}" />
+                    </Canvas>
 
                     <Grid Grid.Row="1">
 
@@ -79,13 +76,19 @@
                             <RowDefinition Height="50*" />
                             <RowDefinition Height="50*" />
                         </Grid.RowDefinitions>
-                        <Image
-                            Grid.Row="0"
-                            Width="35"
-                            Height="35"
+                        <!--Unmute-->
+                        <Canvas Grid.Row="0"
+                            Width="35" Height="35"
                             HorizontalAlignment="Center"
                             VerticalAlignment="Top"
-                            Source="./Img/UnMute.png" />
+                            Tag="{DynamicResource Default_SA_OSD_PathColor}">
+                            <Path Data="M7.06172 12.0312H1.19922V22.9688H7.06172L14.1711 30.8438L18.8961 31.7406V3.30312L14.1711 4.15625L7.06172 12.0312ZM16.5555 6.08125V28.9406L15.3742 28.7L8.11172 20.7156H3.51797V14.35H8.11172L15.3742 6.3L16.5555 6.08125Z"
+                              Fill="{Binding Tag, RelativeSource={RelativeSource AncestorType=Canvas}}" />
+                            <Path Data="M25.0867 0.984375L23.9711 2.93125C26.5398 4.39858 28.6749 6.51898 30.1599 9.07751C31.645 11.636 32.4271 14.5417 32.4271 17.5C32.4271 20.4583 31.645 23.364 30.1599 25.9225C28.6749 28.481 26.5398 30.6014 23.9711 32.0688L25.0867 34.0156C28.0015 32.3545 30.4248 29.9515 32.1104 27.0508C33.796 24.1501 34.6838 20.8549 34.6838 17.5C34.6838 14.1451 33.796 10.8499 32.1104 7.94921C30.4248 5.04848 28.0015 2.64552 25.0867 0.984375Z"
+                              Fill="{Binding Tag, RelativeSource={RelativeSource AncestorType=Canvas}}" />
+                            <Path Data="M27.843 17.5C27.8619 15.5139 27.3834 13.5547 26.4511 11.8009C25.5188 10.0471 24.1624 8.5546 22.5055 7.45937L21.3242 9.3625C22.6789 10.2416 23.7899 11.4482 24.5546 12.8705C25.3194 14.2929 25.713 15.8852 25.6992 17.5C25.7207 19.0901 25.346 20.6606 24.6089 22.0698C23.8719 23.4789 22.7957 24.6825 21.4773 25.5719L22.6805 27.4531C24.2953 26.3488 25.6119 24.862 26.5126 23.1254C27.4134 21.3887 27.8704 19.4562 27.843 17.5Z"
+                              Fill="{Binding Tag, RelativeSource={RelativeSource AncestorType=Canvas}}" />
+                        </Canvas>
                         <TextBlock
                             x:Name="ShowStringText"
                             Grid.Row="1"
@@ -94,7 +97,7 @@
                             FontFamily="Roboto"
                             FontSize="14"
                             FontWeight="Medium"
-                            Foreground="#FFFFFF"
+                            Foreground="{DynamicResource Default_SA_OSD_PathColor}"
                             Text="" />
                     </Grid>
                 </Grid>

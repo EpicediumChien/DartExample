@@ -17,12 +17,15 @@ namespace DDPM.UI.Module.Brightness
         internal BrightnessViewModel? vm { get; set; }
 
         private Debouncer Leave_WriteToConfig_Debouncer;
+        private Debouncer Leave_Luminance_WriteToConfig_Debouncer;
 
         public BrightnessRightView()
         {
             InitializeComponent();
 
             Leave_WriteToConfig_Debouncer = new Debouncer(1000, WriteToConfig);
+            Leave_Luminance_WriteToConfig_Debouncer = new Debouncer(1000, WriteToConfig);
+
             //vm = BrightnessViewModel.GetInstance();
             if (DdpmCommonHelper.DeviceManagerSA != null)
             {
@@ -126,6 +129,7 @@ namespace DDPM.UI.Module.Brightness
             Expander_Manual_Luminance.IsExpanded = false;
             Expander_Auto.IsExpanded = false;
             Expander_Schedule.IsExpanded = false;
+            Expander_Schedule_Luminance.IsExpanded = false;
 
             try
             {
@@ -165,6 +169,7 @@ namespace DDPM.UI.Module.Brightness
             Expander_Auto.IsExpanded = false;
             Expander_Schedule.IsExpanded = false;
             Expander_Manual.IsExpanded = false;
+            Expander_Schedule_Luminance.IsExpanded = false;
 
             BrightnessViewModel vm = (BrightnessViewModel)DataContext;
             if (vm != null)
@@ -178,6 +183,7 @@ namespace DDPM.UI.Module.Brightness
             Expander_Manual.IsExpanded = false;
             Expander_Schedule.IsExpanded = false;
             Expander_Manual_Luminance.IsExpanded = false;
+            Expander_Schedule_Luminance.IsExpanded = false;
         }
 
         private void Expander_Schedule_Expanded(object sender, RoutedEventArgs e)
@@ -185,6 +191,15 @@ namespace DDPM.UI.Module.Brightness
             Expander_Auto.IsExpanded = false;
             Expander_Manual.IsExpanded = false;
             Expander_Manual_Luminance.IsExpanded = false;
+            Expander_Schedule_Luminance.IsExpanded = false;
+        }
+
+        private void Expander_Schedule_Luminance_Expanded(object sender, RoutedEventArgs e)
+        {
+            Expander_Auto.IsExpanded = false;
+            Expander_Manual.IsExpanded = false;
+            Expander_Manual_Luminance.IsExpanded = false;
+            Expander_Schedule.IsExpanded = false;
         }
 
         private void Hotkey_Click(object sender, RoutedEventArgs e)
@@ -228,6 +243,38 @@ namespace DDPM.UI.Module.Brightness
             }
         }
 
+        private void Schedule_Luminance_prest1_Border_MouseEnter(object sender, System.Windows.Input.MouseEventArgs e)
+        {
+            BrightnessViewModel vm = (BrightnessViewModel)DataContext;
+            vm.IsMouseEnterSchedule_1 = true;
+            vm.UpdataScheduleBoaderUI();
+
+            if (!vm.IsPR1_Luminance_Preview && !vm.IsPR2_Luminance_Preview)
+            {
+                Task.Run(() =>
+                {
+                    vm.StopScheduleManger();
+                    vm.LuminanceValue = vm.PR1LuminanceValue;
+                });
+            }
+        }
+
+        private void Schedule_Luminance_prest2_Border_MouseEnter(object sender, System.Windows.Input.MouseEventArgs e)
+        {
+            BrightnessViewModel vm = (BrightnessViewModel)DataContext;
+            vm.IsMouseEnterSchedule_2 = true;
+            vm.UpdataScheduleBoaderUI();
+
+            if (!vm.IsPR1_Luminance_Preview && !vm.IsPR2_Luminance_Preview)
+            {
+                Task.Run(() =>
+                {
+                    vm.StopScheduleManger();
+                    vm.LuminanceValue = vm.PR2LuminanceValue;
+                });
+            }
+        }
+
         private void Schedule_prest1_Border_MouseLeave(object sender, System.Windows.Input.MouseEventArgs e)
         {
             BrightnessViewModel vm = (BrightnessViewModel)DataContext;
@@ -256,6 +303,38 @@ namespace DDPM.UI.Module.Brightness
                 {
                     vm.CalculateNowValue();
                     Leave_WriteToConfig_Debouncer.Debounce(vm);
+                });
+            }
+        }
+
+        private void Schedule_Luminance_prest1_Border_MouseLeave(object sender, System.Windows.Input.MouseEventArgs e)
+        {
+            BrightnessViewModel vm = (BrightnessViewModel)DataContext;
+            vm.IsMouseEnterSchedule_1 = false;
+            vm.UpdataScheduleBoaderUI();
+
+            if (!vm.IsPR1_Luminance_Preview && !vm.IsPR2_Luminance_Preview)
+            {
+                Task.Run(() =>
+                {
+                    vm.CalculateNowValue();
+                    Leave_Luminance_WriteToConfig_Debouncer.Debounce(vm);
+                });
+            }
+        }
+
+        private void Schedule_Luminance_prest2_Border_MouseLeave(object sender, System.Windows.Input.MouseEventArgs e)
+        {
+            BrightnessViewModel vm = (BrightnessViewModel)DataContext;
+            vm.IsMouseEnterSchedule_2 = false;
+            vm.UpdataScheduleBoaderUI();
+
+            if (!vm.IsPR1_Luminance_Preview && !vm.IsPR2_Luminance_Preview)
+            {
+                Task.Run(() =>
+                {
+                    vm.CalculateNowValue();
+                    Leave_Luminance_WriteToConfig_Debouncer.Debounce(vm);
                 });
             }
         }
@@ -336,6 +415,83 @@ namespace DDPM.UI.Module.Brightness
             }
         }
 
+        private async void PR1_Luminance_Preview_UXButton_Click(object sender, RoutedEventArgs e)
+        {
+            BrightnessViewModel vm = (BrightnessViewModel)DataContext;
+            if (!vm.IsPR1_Luminance_Preview)
+            {
+                vm.IsPR1_Luminance_Preview = true;
+                vm.IsPR2_Luminance_Preview = false;
+
+                using (var tokenSource = new CancellationTokenSource())
+                {
+                    try
+                    {
+                        vm.PreviewToken = tokenSource;
+                        var token = vm.PreviewToken.Token;
+
+                        //TODO: May be you'll want to add .ConfigureAwait(false);
+                        await Task.Run(() => ShowPreview(1, vm, token), token).ConfigureAwait(false);
+                    }
+                    catch (TaskCanceledException)
+                    {
+                        // Task was canceled before running.
+                        // Cancelled due to timeout
+                    }
+                    catch (OperationCanceledException)
+                    {
+                        // Task was canceled while running.
+                        // Cancelled due to timeout
+                    }
+                    catch (Exception ex)
+                    {
+                        // Failed to complete due to e exception
+
+                        //Done: let's be nice and don't swallow the exception
+                        //throw;
+                    }
+                    finally
+                    {
+                        vm.IsPR1_Luminance_Preview = false;
+                        vm.IsPR2_Luminance_Preview = false;
+
+                        if (!(vm.isLuminanceSupport == Visibility.Visible))
+                        {
+                            vm.BrightnessValue = vm.PR1BrightnessValue;
+                            vm.ContrastValue = vm.PR1ContrastValue;
+                        }
+                        else
+                            vm.LuminanceValue = vm.PR1LuminanceValue;
+
+                        vm.PreviewToken.Dispose();
+                        tokenSource.Dispose();
+                    }
+                }
+            }
+            else
+            {
+                try
+                {
+                    if (vm.PreviewToken != null && !vm.PreviewToken.IsCancellationRequested)
+                        vm.PreviewToken.Cancel();
+                }
+                catch (Exception) { }
+                finally
+                {
+                    vm.IsPR1_Luminance_Preview = false;
+                    vm.IsPR2_Luminance_Preview = false;
+
+                    if (!(vm.isLuminanceSupport == Visibility.Visible))
+                    {
+                        vm.BrightnessValue = vm.PR1BrightnessValue;
+                        vm.ContrastValue = vm.PR1ContrastValue;
+                    }
+                    else
+                        vm.LuminanceValue = vm.PR1LuminanceValue;
+                }
+            }
+        }
+
         private async void PR2_Preview_UXButton_Click(object sender, RoutedEventArgs e)
         {
             BrightnessViewModel vm = (BrightnessViewModel)DataContext;
@@ -403,6 +559,83 @@ namespace DDPM.UI.Module.Brightness
             }
         }
 
+        private async void PR2_Luminance_Preview_UXButton_Click(object sender, RoutedEventArgs e)
+        {
+            BrightnessViewModel vm = (BrightnessViewModel)DataContext;
+            if (!vm.IsPR2_Luminance_Preview)
+            {
+                vm.IsPR2_Luminance_Preview = true;
+                vm.IsPR1_Luminance_Preview = false;
+
+                using (var tokenSource = new CancellationTokenSource())
+                {
+                    try
+                    {
+                        vm.PreviewToken = tokenSource;
+                        var token = vm.PreviewToken.Token;
+
+                        //TODO: May be you'll want to add .ConfigureAwait(false);
+                        await Task.Run(() => ShowPreview(2, vm, token), token).ConfigureAwait(false);
+                    }
+                    catch (TaskCanceledException)
+                    {
+                        // Task was canceled before running.
+                        // Cancelled due to timeout
+                    }
+                    catch (OperationCanceledException)
+                    {
+                        // Task was canceled while running.
+                        // Cancelled due to timeout
+                    }
+                    catch (Exception ex)
+                    {
+                        // Failed to complete due to e exception
+
+                        //Done: let's be nice and don't swallow the exception
+                        //throw;
+                    }
+                    finally
+                    {
+                        vm.IsPR2_Luminance_Preview = false;
+                        vm.IsPR1_Luminance_Preview = false;
+
+                        if (!(vm.isLuminanceSupport == Visibility.Visible))
+                        {
+                            vm.BrightnessValue = vm.PR2BrightnessValue;
+                            vm.ContrastValue = vm.PR2ContrastValue;
+                        }
+                        else
+                            vm.LuminanceValue = vm.PR2LuminanceValue;
+
+                        vm.PreviewToken.Dispose();
+                        tokenSource.Dispose();
+                    }
+                }
+            }
+            else
+            {
+                try
+                {
+                    if (vm.PreviewToken != null && !vm.PreviewToken.IsCancellationRequested)
+                        vm.PreviewToken.Cancel();
+                }
+                catch (Exception) { }
+                finally
+                {
+                    vm.IsPR2_Luminance_Preview = false;
+                    vm.IsPR1_Luminance_Preview = false;
+
+                    if (!(vm.isLuminanceSupport == Visibility.Visible))
+                    {
+                        vm.BrightnessValue = vm.PR2BrightnessValue;
+                        vm.ContrastValue = vm.PR2ContrastValue;
+                    }
+                    else
+                        vm.LuminanceValue = vm.PR2LuminanceValue;
+                }
+            }
+        }
+
         private void WriteToConfig(object VM_)
         {
             BrightnessViewModel vm = (BrightnessViewModel)VM_;
@@ -423,10 +656,19 @@ namespace DDPM.UI.Module.Brightness
                 vm.ScheduleMap.Hours2 = vm.hOurs2;
                 vm.ScheduleMap.Mins2 = vm.mIns2;
                 vm.ScheduleMap.Duration2 = vm.dUration2;
-                vm.ScheduleMap.Brightness1 = vm.PR1BrightnessValue;
                 vm.ScheduleMap.Contrast1 = vm.PR1ContrastValue;
-                vm.ScheduleMap.Brightness2 = vm.PR2BrightnessValue;
                 vm.ScheduleMap.Contrast2 = vm.PR2ContrastValue;
+
+                if (vm.isLuminanceSupport == Visibility.Visible)
+                {
+                    vm.ScheduleMap.Brightness1 = vm.PR1LuminanceValue;
+                    vm.ScheduleMap.Brightness2 = vm.PR2LuminanceValue;
+                }
+                else
+                {
+                    vm.ScheduleMap.Brightness1 = vm.PR1BrightnessValue;
+                    vm.ScheduleMap.Brightness2 = vm.PR2BrightnessValue;
+                }
 
                 if ((!vm.IsMouseEnterSchedule_1 && !vm.IsMouseEnterSchedule_2) && (!vm.CheckIsTimeOverlap()) && (!vm.IsPR1Preview && !vm.IsPR2Preview))
                 {
@@ -440,7 +682,9 @@ namespace DDPM.UI.Module.Brightness
         {
             var Brightness_PR1 = vm.PR1BrightnessValue;
             var Brightness_PR2 = vm.PR2BrightnessValue;
-            var Brightness_difference = Brightness_PR1 - Brightness_PR2;
+            var Luminance_PR1 = vm.PR1LuminanceValue;
+            var Luminance_PR2 = vm.PR2LuminanceValue;
+            var Brightness_difference = (vm.isLuminanceSupport == Visibility.Visible) ? (Luminance_PR1 - Luminance_PR2) : (Brightness_PR1 - Brightness_PR2);
             var Contrast_PR1 = vm.PR1ContrastValue;
             var Contrast_PR2 = vm.PR2ContrastValue;
             var Contrast_difference = Contrast_PR1 - Contrast_PR2;
@@ -452,12 +696,12 @@ namespace DDPM.UI.Module.Brightness
             if (Contrast_difference < 0) Contrast_difference = Contrast_difference * -1;
 
             var TimeDemoPreview_msec = 10000;
-            var PerStepValue = 20;
+            var PerStepValue = (!(vm.isLuminanceSupport == Visibility.Visible)) ? 20 : 50;
             var BrightnessSteps = Brightness_difference / PerStepValue;
-            var BrightnessSteps_msec = Convert.ToInt32(TimeDemoPreview_msec / BrightnessSteps);
+            var BrightnessSteps_msec = (BrightnessSteps == 0) ? 0 : Convert.ToInt32(TimeDemoPreview_msec / BrightnessSteps);
 
             var ContrastSteps = Contrast_difference / PerStepValue;
-            var ContrastSteps_msec = Convert.ToInt32(TimeDemoPreview_msec / ContrastSteps);
+            var ContrastSteps_msec = (ContrastSteps == 0) ? 0 : Convert.ToInt32(TimeDemoPreview_msec / ContrastSteps);
 
             int BrightnessSteps_msec_counter = 0;
             int ContrastSteps_msec_counter = 0;
@@ -466,79 +710,131 @@ namespace DDPM.UI.Module.Brightness
             {
                 case 1:
                     {
-                        vm.BrightnessValue = Brightness_PR2;
-                        vm.ContrastValue = Contrast_PR2;
-
-                        int Count = 0;
-                        while (Count <= TimeDemoPreview_msec)
+                        if (!(vm.isLuminanceSupport == Visibility.Visible))
                         {
-                            if (BrightnessSteps_msec_counter == BrightnessSteps_msec)
+                            vm.BrightnessValue = Brightness_PR2;
+                            vm.ContrastValue = Contrast_PR2;
+                        }
+                        else
+                            vm.LuminanceValue = Luminance_PR2;
+
+                        if ((!(BrightnessSteps_msec == 0 && ContrastSteps_msec == 0 && (!(vm.isLuminanceSupport == Visibility.Visible)))) || (!((BrightnessSteps_msec == 0) && (vm.isLuminanceSupport == Visibility.Visible))))
+                        {
+                            int Count = 0;
+                            while (Count <= TimeDemoPreview_msec)
                             {
-                                if (IsBrightnessPR1Plus)
-                                    vm.BrightnessValue += PerStepValue;
-                                else
-                                    vm.BrightnessValue -= PerStepValue;
+                                if (BrightnessSteps_msec_counter == BrightnessSteps_msec)
+                                {
+                                    if (IsBrightnessPR1Plus)
+                                    {
+                                        if ((!(vm.isLuminanceSupport == Visibility.Visible)))
+                                            vm.BrightnessValue += PerStepValue;
+                                        else
+                                            vm.LuminanceValue += PerStepValue;
+                                    }
+                                    else
+                                    {
+                                        if ((!(vm.isLuminanceSupport == Visibility.Visible)))
+                                            vm.BrightnessValue -= PerStepValue;
+                                        else
+                                            vm.LuminanceValue -= PerStepValue;
+                                    }
 
-                                BrightnessSteps_msec_counter = 0;
+                                    BrightnessSteps_msec_counter = 0;
+                                }
+
+                                if (!(vm.isLuminanceSupport == Visibility.Visible))
+                                {
+                                    if (ContrastSteps_msec_counter == ContrastSteps_msec)
+                                    {
+                                        if (IsContrastPR1Plus)
+                                            vm.ContrastValue += PerStepValue;
+                                        else
+                                            vm.ContrastValue -= PerStepValue;
+
+                                        ContrastSteps_msec_counter = 0;
+                                    }
+                                }
+
+                                Thread.Sleep(1);
+                                BrightnessSteps_msec_counter++;
+                                ContrastSteps_msec_counter++;
+                                Count++;
                             }
-
-                            if (ContrastSteps_msec_counter == ContrastSteps_msec)
-                            {
-                                if (IsContrastPR1Plus)
-                                    vm.ContrastValue += PerStepValue;
-                                else
-                                    vm.ContrastValue -= PerStepValue;
-
-                                ContrastSteps_msec_counter = 0;
-                            }
-
-                            Thread.Sleep(1);
-                            BrightnessSteps_msec_counter++;
-                            ContrastSteps_msec_counter++;
-                            Count++;
                         }
 
-                        vm.BrightnessValue = Brightness_PR1;
-                        vm.ContrastValue = Contrast_PR1;
+                        if (!(vm.isLuminanceSupport == Visibility.Visible))
+                        {
+                            vm.BrightnessValue = Brightness_PR1;
+                            vm.ContrastValue = Contrast_PR1;
+                        }
+                        else
+                            vm.LuminanceValue = Luminance_PR1;
                     }
                     break;
 
                 case 2:
                     {
-                        vm.BrightnessValue = Brightness_PR1;
-                        vm.ContrastValue = Contrast_PR1;
-
-                        int Count = 0;
-                        while (Count <= TimeDemoPreview_msec)
+                        if (!(vm.isLuminanceSupport == Visibility.Visible))
                         {
-                            if (BrightnessSteps_msec_counter == BrightnessSteps_msec)
+                            vm.BrightnessValue = Brightness_PR1;
+                            vm.ContrastValue = Contrast_PR1;
+                        }
+                        else
+                            vm.LuminanceValue = Luminance_PR1;
+
+                        if ((!(BrightnessSteps_msec == 0 && ContrastSteps_msec == 0 && (!(vm.isLuminanceSupport == Visibility.Visible)))) || (!((BrightnessSteps_msec == 0) && (vm.isLuminanceSupport == Visibility.Visible))))
+                        {
+                            int Count = 0;
+                            while (Count <= TimeDemoPreview_msec)
                             {
-                                if (IsBrightnessPR2Plus)
-                                    vm.BrightnessValue += PerStepValue;
-                                else
-                                    vm.BrightnessValue -= PerStepValue;
+                                if (BrightnessSteps_msec_counter == BrightnessSteps_msec)
+                                {
+                                    if (IsBrightnessPR2Plus)
+                                    {
+                                        if ((!(vm.isLuminanceSupport == Visibility.Visible)))
+                                            vm.BrightnessValue += PerStepValue;
+                                        else
+                                            vm.LuminanceValue += PerStepValue;
+                                    }
+                                    else
+                                    {
+                                        if ((!(vm.isLuminanceSupport == Visibility.Visible)))
+                                            vm.BrightnessValue -= PerStepValue;
+                                        else
+                                            vm.LuminanceValue -= PerStepValue;
+                                    }
 
-                                BrightnessSteps_msec_counter = 0;
+                                    BrightnessSteps_msec_counter = 0;
+                                }
+
+                                if (!(vm.isLuminanceSupport == Visibility.Visible))
+                                {
+                                    if (ContrastSteps_msec_counter == ContrastSteps_msec)
+                                    {
+                                        if (IsContrastPR2Plus)
+                                            vm.ContrastValue += PerStepValue;
+                                        else
+                                            vm.ContrastValue -= PerStepValue;
+
+                                        ContrastSteps_msec_counter = 0;
+                                    }
+                                }
+
+                                Thread.Sleep(1);
+                                BrightnessSteps_msec_counter++;
+                                ContrastSteps_msec_counter++;
+                                Count++;
                             }
-
-                            if (ContrastSteps_msec_counter == ContrastSteps_msec)
-                            {
-                                if (IsContrastPR2Plus)
-                                    vm.ContrastValue += PerStepValue;
-                                else
-                                    vm.ContrastValue -= PerStepValue;
-
-                                ContrastSteps_msec_counter = 0;
-                            }
-
-                            Thread.Sleep(1);
-                            BrightnessSteps_msec_counter++;
-                            ContrastSteps_msec_counter++;
-                            Count++;
                         }
 
-                        vm.BrightnessValue = Brightness_PR2;
-                        vm.ContrastValue = Contrast_PR2;
+                        if (!(vm.isLuminanceSupport == Visibility.Visible))
+                        {
+                            vm.BrightnessValue = Brightness_PR2;
+                            vm.ContrastValue = Contrast_PR2;
+                        }
+                        else
+                            vm.LuminanceValue = Luminance_PR2;
                     }
                     break;
 

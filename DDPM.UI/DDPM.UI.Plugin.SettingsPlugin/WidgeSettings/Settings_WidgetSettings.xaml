@@ -21,17 +21,18 @@
     </UserControl.Resources>
     <Grid>
         <UXControls:UXScrollViewer>
-            <Border Style="{DynamicResource RightGroupBorderStyle}"
+            <Border Style="{StaticResource GroupBorderStyle}"
                     CornerRadius="13">
                 <StackPanel>
                     <Grid Margin="20,20,8,8">
                         <UXControls:UXTextBlock Text="Widget Settings"
                                                 FontSize="20"
                                                 TextBlockType="Header1"
-                                                TextWrapping="WrapWithOverflow"/>
+                                                TextWrapping="WrapWithOverflow"
+                                                Foreground="{DynamicResource DefaultTheme_TxtColor}"/>
                     </Grid>
-                    <Grid Margin="20,20,0,8">
-                        <Border Style="{DynamicResource RightPartBorderStyle}" x:Name="borderContent"
+                    <Grid Margin="20,20,8,8">
+                        <Border Style="{StaticResource PartBorderStyle}" x:Name="borderContent"
                                 CornerRadius="6">
                             <StackPanel Orientation="Vertical"
                                         Margin="15,0,0,0">
@@ -44,10 +45,13 @@
                                     <UXControls:UXTextBlock Grid.Column="0" x:Name="activateTextBlock"
                                                             Text="Activate Quick Access widget during Zoom conference calls"
                                                             FontSize="16"
+                                                            FontFamily="Roboto"
                                                             TextBlockType="Caption"
-                                                            TextWrapping="WrapWithOverflow"/>
+                                                            TextWrapping="WrapWithOverflow"
+                                                            Foreground="{DynamicResource DefaultTheme_TxtColor}"/>
 
                                     <UXControls:UXToggleSwitch Grid.Column="1" Height="Auto"
+                                                               FontSize="14"
                                                                IsChecked="{Binding Path= GlobalSettingParam.GlobalSetting_WidgetSettings.EnableQuickAccessWidget}"
                                                                ContentTextVisibility="True"
                                                                Content="{Binding Path=EnableQuickAccessWidget_String}"
@@ -59,20 +63,23 @@
                                 <UXControls:UXTextBlock Text="Widget will automatically appear when meeting begins to customize settings for supported webcams"
                                                         FontSize="14"
                                                         TextBlockType="Caption"
-                                                        TextWrapping="WrapWithOverflow"/>
+                                                        TextWrapping="WrapWithOverflow"
+                                                        Foreground="{DynamicResource DefaultTheme_TxtColor}"/>
                                 <Grid Height="40"
-                                      Margin="0,8">
+                                      Margin="0,9">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="*" />
                                         <ColumnDefinition Width="*" />
                                     </Grid.ColumnDefinitions>
-                                    <UXControls:UXTextBlock Grid.Column="0" x:Name="enableShortcutTextBlock"
+                                    <UXControls:UXTextBlock Grid.Column="0"
+                                                            x:Name="enableShortcutTextBlock"
                                                             Text="Enable shortcut reminder for Quick Accesswidget"
                                                             FontSize="16"
                                                             TextBlockType="Caption"
-                                                            TextWrapping="WrapWithOverflow"/>
-                                    
+                                                            TextWrapping="WrapWithOverflow"
+                                                            Foreground="{DynamicResource DefaultTheme_TxtColor}" />
                                     <UXControls:UXToggleSwitch Grid.Column="1"
+                                                               FontSize="14"
                                                                IsChecked="{Binding Path= GlobalSettingParam.GlobalSetting_WidgetSettings.EnableQuickAccessWidget_Reminder}"
                                                                ContentTextVisibility="True"
                                                                Content="{Binding Path=EnableQuickAccessWidget_Reminder_String}"

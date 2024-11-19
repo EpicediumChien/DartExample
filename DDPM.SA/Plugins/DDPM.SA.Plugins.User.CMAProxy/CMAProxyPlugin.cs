@@ -22,8 +22,8 @@ namespace DDPM.SA.Plugins.User.CMAProxy
         private const string pluginName = "CMAProxyPlugin";
         private const string pluginVersion = "1.0.0";
         private const string pluginDescription = "This plugin implements CMA Proxy Plugin.";
-        private const string publisherCompany = "Wistron";
-        private const string publisherWebsite = "https://www.wistron.com";
+        private const string publisherCompany = "Dell Inc.";
+        private const string publisherWebsite = "https://www.dell.com";
         private const string publisherSupport = "This plugin implements CMA Proxy Plugin.";
 
         private IAgent _agent;
@@ -129,10 +129,13 @@ namespace DDPM.SA.Plugins.User.CMAProxy
         {
             text = "[CMAProxyPlugin] " + text;
             Console.WriteLine(text);
-            if (log_type == log_type.info)
-                Log.Info(text);
-            else
-                Log.Error(text);
+            if (Log != null)
+            {
+                if (log_type == log_type.info)
+                    Log.Info(text);
+                else
+                    Log.Error(text);
+            }
         }
 
         private void InitializeCMAManagerPlugin()

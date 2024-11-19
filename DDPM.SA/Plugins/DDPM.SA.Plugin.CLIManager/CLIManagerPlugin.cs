@@ -39,8 +39,8 @@ namespace DDPM.SA.Plugin.CLIManager
         private const string pluginName = "CLIManagerPlugin";
         private const string pluginVersion = "1.0.0";
         private const string pluginDescription = "This plugin implements CLI Manager Plugin.";
-        private const string publisherCompany = "Wistron";
-        private const string publisherWebsite = "https://www.wistron.com";
+        private const string publisherCompany = "Dell Inc.";
+        private const string publisherWebsite = "https://www.dell.com";
         private const string publisherSupport = "This plugin implements CLI Manager Plugin.";
 
         private IAgent _agent;
@@ -151,15 +151,18 @@ namespace DDPM.SA.Plugin.CLIManager
         /// <param name="log_type">0 means info, others means error</param>
         private void WriteLog(string text, log_type log_type = log_type.info)
         {
-            if(text.Length >= 500) 
+            if (text.Length >= 500)
                 text = text.Substring(0, 500);
             string logString = $"[CLIManager] {System.Security.SecurityElement.Escape(text)}";
             //text = "[CLIManager] " + text;
             Console.WriteLine(logString);
-            if (log_type == log_type.info)
-                Log.Info(logString);
-            else
-                Log.Error(logString);
+            if (Log != null)
+            {
+                if (log_type == log_type.info)
+                    Log.Info(logString);
+                else
+                    Log.Error(logString);
+            }
         }
 
         #endregion

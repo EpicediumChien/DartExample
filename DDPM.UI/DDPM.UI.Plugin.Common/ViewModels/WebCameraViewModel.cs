@@ -61,7 +61,7 @@ namespace DDPM.UI.Plugin.ViewModels
     public class WebCameraViewModel : PeripheralViewModel, INotifyPropertyChanged
     {
         #region Variables
-        private readonly ILog _log;
+        public readonly ILog _log;
         private List<ProfileItem> _profileItems = new();
         private List<string> _resolutions = new();
 
@@ -1067,10 +1067,17 @@ namespace DDPM.UI.Plugin.ViewModels
             get => CurrentProfile.IsHDROn;
             set
             {
+                AlertType = WebcamAlert.Alert1;
+                AlertVisibility = Visibility.Visible;
                 DdpmCommonHelper.DeviceManagerSA!.SetIsHDROn(CurrentDeviceInfo!.ID.ToString(), value);
                 SetProfileProperty(nameof(IsHDROn), value, OperationModule.ColorAndImage);
                 OnPropertyChanged();
                 OnPropertyChanged(nameof(IsHDROnText));
+                new Thread(() =>
+                {
+                    Thread.Sleep(300);
+                    AlertVisibility = Visibility.Collapsed;
+                }).Start();
             }
         }
         public string IsHDROnText

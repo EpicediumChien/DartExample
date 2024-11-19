@@ -11,6 +11,7 @@ using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Media;
+using System.Windows.Media.Imaging;
 using VcpCore.Common;
 
 namespace DDPM.UI.Common.Models
@@ -503,21 +504,15 @@ namespace DDPM.UI.Common.Models
         #region DetermineDeviceImage - Robert_Lin 2024-6-20 added
         private void DeterminePeripheralDeviceImage()
         {
-            if (DeviceInfo == null)
-                return;
-
-            //Copy from PeripheralViewModel.cs
-            string assemblyName = "DDPM.UI.Resources";
-            string name = DeviceInfo.Name; //"Dell Mobile Wireless Mouse MS3320W"
-            var arr = name.Split(' ');
-            string model = DeviceInfo.ModelNumber;
-            //if (arr.Length > 0)
-            //{
-            //    model = arr[arr.Length - 1];
-            //}
-            var colorCode = DeviceInfo.ColorCode == 0 ? "" : $"_{DeviceInfo.ColorCode}";
-
-            DeviceImage = DdpmCommonHelper.GetImageSourceFromCommonResource($"Resources/Images/{model}{colorCode}.png", assemblyName);
+            //Robert_Lin, 2024-11-16, PIMS-295748, "MS300" no image at homepage
+            //move this code to DDPM.UI.Common/DdpmCommonHelper
+            string imageFileName = DdpmCommonHelper.DeterminePeripheralProductImageFileName(DeviceInfo);
+            //If fail to get the image will show the info, so we can easily to see the information
+            if (!String.IsNullOrEmpty(imageFileName))
+            {
+                string assemblyName = "DDPM.UI.Resources";
+                DeviceImage = DdpmCommonHelper.GetImageSourceFromCommonResource($"Resources/Images/{imageFileName}.png", assemblyName);
+            }
         }
 
         /// <summary>

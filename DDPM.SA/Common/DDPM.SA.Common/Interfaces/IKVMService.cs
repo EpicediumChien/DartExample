@@ -74,5 +74,6 @@ namespace DDPM.SA.Common
         Task<bool> CallNKVMConnent();
 
         //Task ChangeNKVMState(bool state);
+        Task CallShowNKVM(int num, int x, int y);
     }
 }

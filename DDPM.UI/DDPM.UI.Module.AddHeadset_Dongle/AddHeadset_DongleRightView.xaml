@@ -50,7 +50,7 @@
     </UserControl.Resources>
     <Grid>
         <UXControls:UXScrollViewer>
-            <Border>
+            <Border Background="Transparent">
                 <StackPanel Orientation="Vertical">
                     <Border Name="bdrAlert" Background="{DynamicResource bdrAlert_BgColor}" CornerRadius="4" Margin="17,2,0,10" BorderThickness="7,0,0,0" BorderBrush="{DynamicResource bdrAlert_BgColor}" Visibility="{Binding DongleAlertHeadsetVisibility}">
                         <StackPanel Orientation="Horizontal">

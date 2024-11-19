@@ -21,14 +21,15 @@
     </UserControl.Resources>
     <Grid>
         <UXControls:UXScrollViewer>
-            <Border Style="{DynamicResource RightGroupBorderStyle}"
+            <Border Style="{StaticResource GroupBorderStyle}"
                     CornerRadius="13">
                 <StackPanel>
                     <StackPanel Margin="20,20,8,8"
                                 Orientation="Horizontal">
                         <UXControls:UXTextBlock Text="On screen notifications"
                                                 FontSize="20"
-                                                TextBlockType="Header1"/>
+                                                TextBlockType="Header1"
+                                                Foreground="{DynamicResource DefaultTheme_TxtColor}" />
                         <Grid Margin="15,0,0,0"
                               VerticalAlignment="Center"
                               Visibility="{Binding GeneralUI_LockTooltip}">
@@ -38,12 +39,14 @@
                     </StackPanel>
                     <Grid Margin="20,20,8,8"
                           >
-                        <Border Style="{DynamicResource RightPartBorderStyle}"
+                        <Border Style="{StaticResource PartBorderStyle}"
                                 CornerRadius="6">
                             <StackPanel Orientation="Vertical"
                                         Margin="15,0,0,0">
                                 <UXControls:UXTextBlock Margin="0,20,0,0"
-                                                        Text="All Devices" />
+                                                        Text="All Devices"
+                                                        FontSize="16"
+                                                        Foreground="{DynamicResource DefaultTheme_TxtColor}" />
                                 <UXControls:UXCheckBox Margin="0,20,0,15"
                                                        HorizontalAlignment="Left"
                                                        VerticalAlignment="Center"
@@ -63,12 +66,14 @@
                     </Grid>
                     <Grid Margin="20,20,8,8"
                           >
-                        <Border Style="{DynamicResource RightPartBorderStyle}"
+                        <Border Style="{StaticResource PartBorderStyle}"
                                 CornerRadius="6">
                             <StackPanel Orientation="Vertical"
                                         Margin="15,0,0,0">
                                 <UXControls:UXTextBlock Margin="0,20,0,0"
-                                                        Text="Device-specific"/>
+                                                        Text="Device-specific"
+                                                        FontSize="16"
+                                                        Foreground="{DynamicResource DefaultTheme_TxtColor}" />
                                 <UXControls:UXCheckBox Margin="0,20,0,15"
                                                        Height="{Binding checkBoxHeight}"
                                                        Content="Keyboard lock key"
@@ -118,10 +123,11 @@
                     <Grid Margin="20,20,8,8">
                         <UXControls:UXTextBlock Text="Reports"
                                                 FontSize="20"
-                                                TextBlockType="Header1" />
+                                                TextBlockType="Header1"
+                                                Foreground="{DynamicResource DefaultTheme_TxtColor}" />
                     </Grid>
                     <Grid Margin="20,20,8,8">
-                        <Border Style="{DynamicResource RightPartBorderStyle}"
+                        <Border Style="{StaticResource PartBorderStyle}"
                                 CornerRadius="6">
                             <StackPanel Orientation="Horizontal" x:Name="reportsStackPanel"
                                         Margin="15,0,0,0">

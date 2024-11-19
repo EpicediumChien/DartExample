@@ -5,18 +5,13 @@ using Dell.Client.Framework.Common.Annotations;
 using Dell.Client.Framework.Common.PluginConditions;
 using Dell.Client.Framework.Interfaces;
 using Microsoft;
-using MS.WindowsAPICodePack.Internal;
 using Newtonsoft.Json.Linq;
-using StreamJsonRpc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using VcpCore.Common;
-using Windows.ApplicationModel;
-using Windows.UI.Composition.Scenes;
 using static DDPM.SA.Common.ICLICommandTable;
-using static DDPM.SA.Plugins.CMAManager.CMAManagerPlugin;
 using IDs = DDPM.SA.Common.IDs;
 
 namespace DDPM.SA.Plugins.CMAManager
@@ -43,8 +38,8 @@ namespace DDPM.SA.Plugins.CMAManager
         private const string pluginName = "DDPMRemoteManagerPlugin";
         private const string pluginVersion = "1.0.0";
         private const string pluginDescription = "This plugin implements Remote Manager Plugin.";
-        private const string publisherCompany = "Wistron";
-        private const string publisherWebsite = "https://www.wistron.com";
+        private const string publisherCompany = "Dell Inc.";
+        private const string publisherWebsite = "https://www.dell.com";
         private const string publisherSupport = "This plugin implements Remote Manager Plugin.";
 
         private IAgent _agent;
@@ -109,8 +104,9 @@ namespace DDPM.SA.Plugins.CMAManager
             {
                 if (disposing)
                 {
-                    if(_CliManagerPlugin != null)
+                    if (_CliManagerPlugin != null)
                         _CliManagerPlugin.CLIActionResult -= OnCLIManagerResultHandler;
+
                     _agent.PluginManager.PluginsStarted -= PluginManagerOnPluginsStarted;
                     _agent = null;
                 }
@@ -167,10 +163,13 @@ namespace DDPM.SA.Plugins.CMAManager
         {
             text = "[CMA Manager] " + text;
             Console.WriteLine(text);
-            if (log_type == log_type.info)
-                Log.Info(text);
-            else
-                Log.Error(text);
+            if (Log != null)
+            {
+                if (log_type == log_type.info)
+                    Log.Info(text);
+                else
+                    Log.Error(text);
+            }
         }
         #endregion
         #endregion
@@ -196,10 +195,11 @@ namespace DDPM.SA.Plugins.CMAManager
             {
                 command = command + ("app=" + task.command);
 
-                if (!task.devicetype.ToLower().Equals(Params.DeviceType.APP.ToLower())) {
+                if (!task.devicetype.ToLower().Equals(Params.DeviceType.APP.ToLower()))
+                {
                     command = command + (" value=" + task.devicetype);
                 }
-                
+
             }
             else if (Params.App.DeviceData.ToLower().Equals(task.command.ToLower()))
             {
@@ -356,10 +356,10 @@ namespace DDPM.SA.Plugins.CMAManager
             }*/
 
             // modified @ 20241112 stephen : remove servicetag
-/*            if (option.servicetag != null && option.servicetag.Length > 0)
-            {
-                command = command + (" value=" + option.servicetag + ",servicetag");
-            }*/
+            /*            if (option.servicetag != null && option.servicetag.Length > 0)
+                        {
+                            command = command + (" value=" + option.servicetag + ",servicetag");
+                        }*/
 
             if (option.minversion != null && option.minversion.Length > 0)
             {
@@ -379,6 +379,12 @@ namespace DDPM.SA.Plugins.CMAManager
                 command = command + (" value=" + option.model + ",model");
             }
 
+            // add @ 20241113 stephen
+            if (option.uod)
+            {
+                command = command + (" value=" + option.uod + ",uod");
+            }
+
             return command;
         }
 
@@ -390,8 +396,44 @@ namespace DDPM.SA.Plugins.CMAManager
             comLock = comLock.ToLower();
 
             command = command + ("set ");
+            command = command + (task.devicetype + "=" + task.command);
 
             switch (task.command.ToLower())
+            {
+                case Params.Lock.PrimaryMonitorSync:  // #5.14.9
+                    if (isLock)
+                    {
+                        command = command + (" value=on");
+                    }
+                    else {
+                        command = command + (" value=off");
+                    }
+                    break;
+
+                case Params.Lock.InAppUSBKVM:   // # 5.14.12
+                case Params.Lock.PresenceDetection: // 5.14.22 Enable/Disable
+                case Params.Lock.ancMode:   // 5.14.23 Enable/Disable
+                case Params.Lock.wearDetection: // 5.14.25
+                case Params.Lock.IsProximitySensorEnable:   // add @ 20241116 stephen the same as 'wearDetection'
+                    if (isLock)
+                    {
+                        command = command + (" value=enable");
+                    }
+                    else
+                    {
+                        command = command + (" value=disable");
+                    }
+                    break;
+
+                default:
+                    command = command + (" value=" + comLock);
+                    break;
+
+            }
+
+            return command;
+
+            /*switch (task.command.ToLower())
             {
                 case Params.Lock.InAppUpdate:
                     command = command + ("app=" + task.command);
@@ -419,17 +461,17 @@ namespace DDPM.SA.Plugins.CMAManager
                     command = command + (task.devicetype + "=" + task.command);
                     break;
 
-                /*case Params.Lock.InAppBriCont:    // #5.14.7
+                case Params.Lock.InAppAutoBriTemp:    // #5.14.7
                     command = command + (task.devicetype + "=" + task.command);
                     break;
 
-                case Params.Lock.InAppBriCont:  // #5.14.8
+                *//*case Params.Lock.InAppBriCont:  // #5.14.8
                     command = command + (task.devicetype + "=" + task.command);
-                    break;
+                    break;*//*
 
                 case Params.Lock.PrimaryMonitorSync:  // #5.14.9
                     command = command + (task.devicetype + "=" + task.command);
-                    break;*/
+                    break;
 
                 case Params.Lock.ResolutionRefreshRate:
                     command = command + (task.devicetype + "=" + task.command);
@@ -439,9 +481,9 @@ namespace DDPM.SA.Plugins.CMAManager
                     command = command + (task.devicetype + "=" + task.command);
                     break;
 
-                /*case Params.Lock.InAppUSBKVM:   // # 5.14.12
+                case Params.Lock.InAppUSBKVM:   // # 5.14.12
                     command = command + (task.devicetype + "=" + task.command);
-                    break;*/
+                    break;
 
 
                 case Params.Lock.InAppNetworkKVM:
@@ -481,30 +523,32 @@ namespace DDPM.SA.Plugins.CMAManager
                     command = command + (task.devicetype + "=" + task.command);
                     break;
 
-                    /*                case Params.Lock.PresenceDetection: // 5.14.22 Enable/Disable
-                                        command = command + (task.devicetype + "=" + task.command);
-                                        break;
+                case Params.Lock.PresenceDetection: // 5.14.22 Enable/Disable
+                    command = command + (task.devicetype + "=" + task.command);
+                    break;
 
-                                    case Params.Lock.ancMode:   // 5.14.23 Enable/Disable
-                                        command = command + (task.devicetype + "=" + task.command);
-                                        break;
+                case Params.Lock.ancMode:   // 5.14.23 Enable/Disable
+                    command = command + (task.devicetype + "=" + task.command);
+                    break;
 
-                                    case Params.Lock.micNoiseCancellation:  // 5.14.24
-                                        command = command + (task.devicetype + "=" + task.command);
-                                        break;
+                case Params.Lock.micNoiseCancellation:  // 5.14.24
+                    command = command + (task.devicetype + "=" + task.command);
+                    break;
 
-                                    case Params.Lock.wearDetection: // 5.14.25
-                                        command = command + (task.devicetype + "=" + task.command);
-                                        break;*/
+                case Params.Lock.wearDetection: // 5.14.25
+                    command = command + (task.devicetype + "=" + task.command);
+                    break;
 
 
                     // default: // TODO: Error Command
 
-            }
+            }*/
 
-            command = command + (" value=" + comLock);
 
-            return command;
+
+            //command = command + (" value=" + comLock);
+
+            //return command;
         }
 
         private void initCommandTask(String guid, String request)
@@ -768,9 +812,11 @@ namespace DDPM.SA.Plugins.CMAManager
 
                 }
             }
-            catch (Exception e) {
+            catch (Exception e)
+            {
 
-                if (src.ToLower().Contains("success") || src.ToLower().Contains("pass") || src.ToLower().Contains("completed")) {
+                if (src.ToLower().Contains("success") || src.ToLower().Contains("pass") || src.ToLower().Contains("completed"))
+                {
                     isSuccess = true;
                     return isSuccess;
                 }
@@ -782,9 +828,9 @@ namespace DDPM.SA.Plugins.CMAManager
             return isSuccess;
         }
 
-        private string checkRemoteRequest(string src) 
+        private string checkRemoteRequest(string src)
         {
-            
+
 
             string data = src;
 
@@ -799,7 +845,8 @@ namespace DDPM.SA.Plugins.CMAManager
 
             do
             {
-                if (data[index + 1] != '\\') {
+                if (data[index + 1] != '\\')
+                {
                     data = data.Insert(index, "\\");
                 }
 
@@ -921,6 +968,7 @@ namespace DDPM.SA.Plugins.CMAManager
                          {
                              DoRelayRegister();
                          }*/
+
                         _CliManagerPlugin.CLIActionResult += OnCLIManagerResultHandler;
                     }
                 }
@@ -931,7 +979,6 @@ namespace DDPM.SA.Plugins.CMAManager
         {
             //Paring the result
         }
-
 
         #region ICMAManagerSA implementation
         public Task WriteResult(RemoteManagementResult result)

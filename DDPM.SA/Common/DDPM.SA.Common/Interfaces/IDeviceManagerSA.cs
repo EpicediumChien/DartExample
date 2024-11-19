@@ -442,6 +442,7 @@ namespace DDPM.SA.Common
         /// HDR change event，return HDR status
         /// </summary>
         event EventHandler<bool> HDRChangeEvent;
+        event EventHandler<DisplayOrientation> OSDOrientationChangeEvent;
 
         Task<DisplayPropertiesInfo> GetDisplayPropertiesInfo(MonitorInfo monitorInfos);
 
@@ -449,7 +450,7 @@ namespace DDPM.SA.Common
 
         Task<bool> SetResolutions(MonitorInfo monitorInfos, Properties properties);
 
-        Task<bool> SetOrientation(MonitorInfo monitorInfos, DisplayOrientation orientation);
+        Task<bool?> SetOrientation(MonitorInfo monitorInfos, DisplayOrientation orientation);
 
         Task<bool> CallWindowsDisplaySetting();
 
@@ -615,6 +616,8 @@ namespace DDPM.SA.Common
 
         Task CallNKVMConnent();
 
+        Task CallShowNKVM(int num, int x, int y);
+
         #endregion for NKVM
 
         #region public for SW Update
@@ -622,6 +625,7 @@ namespace DDPM.SA.Common
         Task<SWUpdateInfoPackage> SW_GetSWUpdateInfo(bool isShowNotify = true, bool isForce = false, bool isDefer = false, bool reScan = true, bool isUItrigger = false);
 
         Task<List<SWUpdateInfo>> SW_DownloadAndInstall(List<SWUpdateInfo> swUpdateInfos, bool isUItrigger = false, string installPath = "");
+        Task<InterruptScreenRoot> InterruptScreen_Metadata();
 
         #endregion public for SW Update
 
@@ -727,7 +731,6 @@ namespace DDPM.SA.Common
 
         #region Pen
 
-        Task<JArray> GetPenDeviceItemsEx();
 
         Task<string> GetEraserDoublePressValues();
 
@@ -758,8 +761,12 @@ namespace DDPM.SA.Common
         Task<bool> GetIsSideTopButtonHoverClick();
 
         Task<bool> GetIsSideBottomButtonHoverClick();
-
         Task<string> PairingPen();
+        Task<JArray> GetPenDeviceItemsEx();
+        Task<bool> StartKeyCapturePen();
+        Task<bool> FinishKeyCapturePen();
+        Task<string> KeyCaptureData();
+
 
         Task UnPairPen(string Guid);
 
@@ -788,6 +795,11 @@ namespace DDPM.SA.Common
         #endregion Pen
 
         #region Webcam
+
+        event EventHandler<bool>? Esi_IsCameraSensorCover_ChangeEvent;
+        event EventHandler<int>? WALSnoozeTimeLeftInSeconds_ChangeEvent;
+        event EventHandler<bool>? Esi_IsWALLockCountdownStartedChanged_ChangeEvent;
+        event EventHandler<int>? Esi_WALLockCountdownChanged_ChangeEvent;
 
         Task<JArray> GetPresetProfiles(string Guid);
         Task<JArray> GetCustomProfiles(string Guid);
@@ -1071,6 +1083,8 @@ namespace DDPM.SA.Common
         Task<bool> GetIsWiredAudioIMicNSEnableAsync(string Guid);
 
         Task<bool> GetIsAudioEqualizerSupportedAsync(string Guid);
+
+        Task<bool> GetMuteStatusAsyncForSpeaker(string guid);
 
         #endregion Wires Audio
 

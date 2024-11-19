@@ -9,7 +9,7 @@
 		<TargetFramework>net8.0-windows10.0.19041.0</TargetFramework>
 		<ImplicitUsings>disable</ImplicitUsings>
 		<BaseOutputPath>..\bin\$(MSBuildProjectName)\</BaseOutputPath>
-		<Version>2.0.0.49</Version>
+		<Version>2.0.0.50</Version>
 		<Configurations>Debug;Release;Debug_NKVM</Configurations>
 		<ApplicationIcon>MyDell_Blue.ico</ApplicationIcon>
 	</PropertyGroup>
@@ -24,6 +24,7 @@
 
 	<ItemGroup>
 		<PackageReference Include="Dell.UnifiedAgent.Client" Version="1.4.8.2" />
+		<PackageReference Include="MessagePack" Version="2.5.192" />
 	</ItemGroup>
 
 	<ItemGroup>

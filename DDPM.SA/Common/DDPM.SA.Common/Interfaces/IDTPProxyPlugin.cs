@@ -13,6 +13,7 @@
 using Dell.Client.Framework.Common;
 using DPeMPublic.Common.Enums;
 using Newtonsoft.Json.Linq;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -100,10 +101,22 @@ namespace DDPM.SA.Common
         Task<bool> GetMenuCenterRightClickSetting();
         Task<bool> GetIsSideTopButtonHoverClick();
         Task<bool> GetIsSideBottomButtonHoverClick();
+        Task<bool> StartKeyCapturePen();
+        Task<bool> FinishKeyCapturePen();
+        Task<string> KeyCaptureData();
 
         #endregion
 
         #region webcam
+
+        /// <summary>
+        /// Webcam change event
+        /// </summary>
+        event EventHandler<bool>? Esi_IsCameraSensorCover_ChangeEvent;
+        event EventHandler<int>? WALSnoozeTimeLeftInSeconds_ChangeEvent;
+        event EventHandler<bool>? Esi_IsWALLockCountdownStartedChanged_ChangeEvent;
+        event EventHandler<int>? Esi_WALLockCountdownChanged_ChangeEvent;
+
         Task<JArray> GetPresetProfiles(string Guid);
         Task<JArray> GetCustomProfiles(string Guid);
         Task<string> GetProfile(string Guid);
@@ -269,6 +282,7 @@ namespace DDPM.SA.Common
         Task<int> GetWiredAudioVolumeAdjustmentToneAsync(string Guid);
         Task<bool> GetIsWiredAudioIMicNSEnableAsync(string Guid);
         Task<bool> GetIsAudioEqualizerSupportedAsync(string Guid);
+        Task<bool> GetMuteStatusAsyncForSpeaker(string Guid);
 
         #endregion
 
