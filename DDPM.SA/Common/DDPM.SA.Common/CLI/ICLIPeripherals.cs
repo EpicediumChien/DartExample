@@ -154,12 +154,21 @@ namespace DDPM.SA.Common
                     }
                     return;
                 case "PRESENCEDETECTION":
-                    retcode = _devMgr.GetIsProximitySensorEnable(Guid).Result;
-                    Value = (retcode) ? "ON" : "OFF";
-                    Value += "," + (data.LockSettings.Lock_Webcam_PresenceDetection ? "LOCK" : "UNLOCK");
-                    Result = "PASS";
-                    Message = "N/A";
-                    TargetFeature = targetFeature;
+                    if (di.IsESISupported)
+                    {
+                        retcode = _devMgr.GetIsProximitySensorEnable(Guid).Result;
+                        Value = (retcode) ? "ON" : "OFF";
+                        Value += "," + (data.LockSettings.Lock_Webcam_PresenceDetection ? "LOCK" : "UNLOCK");
+                        Result = "PASS";
+                        Message = "N/A";
+                        TargetFeature = targetFeature;
+                    }
+                    else
+                    {
+                        Value = "N/A";
+                        Result = "FAIL";
+                        Message = "Webcam not support PresenceDetection";
+                    }
                     return;
                 case "FWVERSION":
                     TargetFeature = "FIRMWAREVERSION";
