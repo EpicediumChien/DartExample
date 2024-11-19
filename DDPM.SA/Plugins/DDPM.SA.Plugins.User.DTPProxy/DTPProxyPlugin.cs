@@ -5595,8 +5595,6 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 }
             }
 
-
-        }
             writelog($"Register Commodity event...");
             _comdity = await _commSdk.GetCommodityAsync<IWebcamCommodity>(new ItemId("DellPeripheral.Webcam"), CancellationToken.None);
             if (_comdity is Dell.TechHub.Commodity.Peripheral.IWebcamCommodity _Webcamlecom)
