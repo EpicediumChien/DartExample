@@ -5427,26 +5427,6 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                     writelog($"Find IDockCommodity not find  time: {DateTime.Now.ToString("hh.mm.ss.ffffff") + " Message: " + e.Message}");
                 }
             }
-
-
-            //leo add start
-            writelog($"Register WebCam Commodity event...");
-            _comdity = await _commSdk.GetCommodityAsync<IWebcamCommodity>(new ItemId("DellPeripheral.Webcam"), CancellationToken.None);
-            if (_comdity is Dell.TechHub.Commodity.Peripheral.IWebcamCommodity _webcamcom)
-            {
-                try
-                {
-                    _webcamcom.IsHDROnChanged += _comdity_WebCamera_IsHDROnChanged;
-                    writelog($"WebCam Commodity event registered");
-                }
-                catch (Exception e)
-                {
-                    writelog($"Find IWebcamCommodity not find  time: {DateTime.Now.ToString("hh.mm.ss.ffffff") + " Message: " + e.Message}");
-                }
-            }
-            //leo add end
-
-
         }
 
         private void _pencom_KeyCaptureDataChanged(object sender, KeyCaptureDataChangedArgs e)
@@ -5546,13 +5526,6 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         {
             writelog($"Dock Connected Device ID: {e.DeviceId} !!!!!!!!!!!!!!!");
         }
-
-        #region webcam event leo add
-        private void _comdity_WebCamera_IsHDROnChanged(object sender, IsHDROnChangedArgs e)
-        {
-            writelog($"Webcamera HDROnChanged Device ID: {e.DeviceId} !!!!!!!!!!!!!!!");
-        }
-        #endregion
 
         #region Headset Event
 

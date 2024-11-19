@@ -1340,6 +1340,44 @@
             </Setter.Value>
         </Setter>
     </Style>
+
+    <!-- Dialog start-->
+    <SolidColorBrush x:Key="BorderStyle1_BgColor" Color="#99132F54"/>
+
+    <SolidColorBrush x:Key="TextBlockStyle1_FgColor" Color="#FFFFFF"/>
+
+    <SolidColorBrush x:Key="LabelStyle1_FgColor" Color="#CCCCCC"/>
+
+    <SolidColorBrush x:Key="RadialMenuModalDialogToggleSwitch_FgColor" Color="#FFFFFF"/>
+
+    <SolidColorBrush x:Key="txtLabelText_BgColor" Color="#141D28"/>
+    <SolidColorBrush x:Key="txtLabelText_FgColor" Color="#F5F6F7"/>
+
+    <SolidColorBrush x:Key="PairTileModalDialogTextStyle1FgColor" Color="#CFD2D3" />
+
+    <SolidColorBrush x:Key="PairTileModalDialogBgColor" Color="#0D121A" />
+
+    <SolidColorBrush x:Key="UnpairModalDialogTxtColor" Color="#F5F6F7"/>
+
+    <SolidColorBrush x:Key="UnpairModalDialogBorder1" Color="#E00C1827" />
+
+    <SolidColorBrush x:Key="BorderContinueBackground" Color="#0E1C2F"/>
+    <SolidColorBrush x:Key="BorderContinueBorderBrush" Color="#F5F6F7"/>
+
+    <SolidColorBrush x:Key="BorderYesBackground" Color="#0E1C2F" />
+    <SolidColorBrush x:Key="BorderYesBorderBrush" Color="#F5F6F7" />
+
+    <SolidColorBrush x:Key="txtAlert_BgColor" Color="#364861"/>
+    <SolidColorBrush x:Key="txtAlert_FgColor" Color="#F5F6F7"/>
+
+    <SolidColorBrush x:Key="WaitingModalDialogBorderBackground" Color="#E00B172C"/>
+    <SolidColorBrush x:Key="WaitingModalDialogBorderBorderBrush" Color="#293B4D"/>
+
+    <SolidColorBrush x:Key="bdrAlertBackground" Color="#364861"/>
+    <SolidColorBrush x:Key="bdrAlertBorderBrush" Color="#E67F01"/>
+
+    <!-- Dialog end-->
+
     <!--leo add end-->
 
 
