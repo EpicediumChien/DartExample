@@ -4,6 +4,7 @@ using DDPM.UI.Common.Models;
 using DDPM.UI.Plugin.Common;
 using DDPM.UI.Plugin.DdpmHomePlugin.ViewModels;
 using Dell.Client.Framework.UX.WPF;
+using Dell.Client.Framework.UX.WPF.Controls;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -43,6 +44,12 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                 //}
                 _ddpmHomePageViewModel.ShowConsentRequested += _ddpmHomePageViewModel_ShowConsent;
                 _ddpmHomePageViewModel.ImportNotify += ImportNotifyEventHandler;
+            }
+            Dispatcher.BeginInvoke(new Action(() => {
+                // TODO Change the UXControls:UXTextBlock
+            }), System.Windows.Threading.DispatcherPriority.Background);
+            if (DdpmCommonHelper.UIDebugModeFlag) {
+                UIDebugPanel.Visibility = Visibility.Visible;
             }
         }
 
@@ -916,7 +923,10 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
             {
                 DeviceCategory = eDeviceCategory.KB,
                 DeviceName = $"Demo {id}",
-                DeviceImage = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Product_KB900.png")
+                DeviceImage = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Product_KB900.png"),
+                DeviceInfo = new DeviceInfo() { 
+                    Name = "KB900"
+                }
             };
             _ddpmHomePageViewModel.AddDemoHomeDevice(demo);
             RefreshListViewItemWidth();
@@ -930,7 +940,11 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
             {
                 DeviceCategory = eDeviceCategory.Mouse,
                 DeviceName = $"Demo {id}",
-                DeviceImage = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Product_Mouse.png")
+                DeviceImage = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Product_Mouse.png"),
+                DeviceInfo = new DeviceInfo()
+                {
+                    Name = "Mouse"
+                }
             };
             _ddpmHomePageViewModel.AddDemoHomeDevice(demo);
             RefreshListViewItemWidth();

@@ -42,7 +42,7 @@
               VerticalAlignment="Bottom">
             <Border Width="417"
                     Height="148"
-                    Background="#141D28"
+                    Background="{DynamicResource Default_SA_OSD_Border_BkColor}"
                     BorderBrush="#0DFFFFFF"
                     BorderThickness="1.5"
                     CornerRadius="5"
@@ -58,7 +58,7 @@
                                FontSize="20"
                                Margin="10,10,31,10"
                                Grid.Row="0"
-                               Foreground="White" />
+                               Foreground="{DynamicResource Default_SA_OSD_PathColor}" />
                     <Image x:Name="CloseIcon"
                            Grid.Row="0"
                            Width="16"
@@ -78,7 +78,7 @@
                                    Margin="6"
                                    TextWrapping="WrapWithOverflow"
                                    VerticalAlignment="Center"
-                                   Foreground="White" />
+                                   Foreground="{DynamicResource Default_SA_OSD_PathColor}" />
                     </Grid>
                 </Grid>
             </Border>

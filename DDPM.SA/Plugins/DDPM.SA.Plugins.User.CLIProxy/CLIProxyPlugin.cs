@@ -166,10 +166,13 @@ namespace DDPM.SA.Plugin.User.CLIManager
         {
             text = "[CLIProxyPlugin] " + text;
             Console.WriteLine(text);
-            if (log_type == log_type.info)
-                Log.Info(text);
-            else
-                Log.Error(text);
+            if (Log != null)
+            {
+                if (log_type == log_type.info)
+                    Log.Info(text);
+                else
+                    Log.Error(text);
+            }
         }
 
         private static void OutputLog(string output, CommandLineInput commandLineInput)

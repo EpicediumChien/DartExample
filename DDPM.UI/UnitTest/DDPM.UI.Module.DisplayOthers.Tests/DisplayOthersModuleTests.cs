@@ -1,4 +1,5 @@
-﻿using DDPM.UI.Common;
+﻿using DDPM.SA.Common;
+using DDPM.UI.Common;
 using DDPM.UI.Common.Interfaces;
 using DDPM.UI.Common.Models;
 using Moq;
@@ -9,12 +10,15 @@ using System.Windows.Controls;
 
 namespace DDPM.UI.Module.DisplayOthers.Tests
 {
+    [Apartment(ApartmentState.STA)]
     [TestFixture]
     public class DisplayOthersModuleTests
     {
         private DisplayOthersModule? displayOthersModule;
         private PrivateObject? privateObject;
         private Mock<IModuleOwner>? moduleOwnerMock;
+        private Mock<IDeviceManagerSA>? DeviceManagerSAMock;
+
 
         [SetUp]
         public void SetUp()
@@ -29,15 +33,27 @@ namespace DDPM.UI.Module.DisplayOthers.Tests
             var moduleOwerMock = new Mock<IModuleOwner>();
             var moduleOwer = moduleOwerMock.Object;
             DdpmCommonHelper.ModuleOwner = moduleOwer;
+            DeviceManagerSAMock = new Mock<IDeviceManagerSA>();
+            DdpmCommonHelper.DeviceManagerSA = DeviceManagerSAMock.Object;
             var selectedHomeDevice = new HomeDevice();
             moduleOwerMock.Setup(x => x.SelectedHomeDevice).Returns(new HomeDevice());
             displayOthersModule = new DisplayOthersModule();
+            displayOthersModule.SelectedHomeDevice = selectedHomeDevice;
+            displayOthersModule.SelectedHomeDevice.MonitorInfo=new VcpCore.Common.MonitorInfo();
+            displayOthersModule.SelectedHomeDevice.MonitorInfo.edid = new VcpCore.Common.EDID();
+            displayOthersModule.SelectedHomeDevice.MonitorInfo.edid.SerialNumber = "sdfad";
             privateObject = new PrivateObject(displayOthersModule);
             moduleOwnerMock = new Mock<IModuleOwner>();
         }
 
         [Test]
-        [Apartment(ApartmentState.STA)]
+        public void TestConstructor_DisplayOthersModule()
+        {
+            // Assert
+            Assert.That(displayOthersModule, Is.Not.Null);
+        }
+
+        [Test]
         public void TestModuleName()
         {
             // Act
@@ -48,7 +64,6 @@ namespace DDPM.UI.Module.DisplayOthers.Tests
         }
 
         [Test]
-        [Apartment(ApartmentState.STA)]
         public void TestGetLeftView()
         {
             // Act
@@ -59,7 +74,6 @@ namespace DDPM.UI.Module.DisplayOthers.Tests
         }
 
         [Test]
-        [Apartment(ApartmentState.STA)]
         public void TestGetRightView()
         {
             // Act
@@ -71,7 +85,6 @@ namespace DDPM.UI.Module.DisplayOthers.Tests
         }
 
         [Test]
-        [Apartment(ApartmentState.STA)]
         public void TestSelectedHomeDevice()
         {
             // Arrange
@@ -86,7 +99,6 @@ namespace DDPM.UI.Module.DisplayOthers.Tests
         }
 
         [Test]
-        [Apartment(ApartmentState.STA)]
         public void TestModuleOwner()
         {
             // Arrange
@@ -101,7 +113,6 @@ namespace DDPM.UI.Module.DisplayOthers.Tests
         }
 
         [Test]
-        [Apartment(ApartmentState.STA)]
         public void TestViewModelInitialization()
         {
             // Act
@@ -112,7 +123,6 @@ namespace DDPM.UI.Module.DisplayOthers.Tests
         }
 
         [Test]
-        [Apartment(ApartmentState.STA)]
         public void TestOnSelectedHomeDeviceChanged()
         {
             var displayOthersModule = new DisplayOthersModule();
@@ -121,7 +131,6 @@ namespace DDPM.UI.Module.DisplayOthers.Tests
         }
 
         [Test]
-        [Apartment(ApartmentState.STA)]
         public void TestOnActivated()
         {
             var displayOthersModule = new DisplayOthersModule();
@@ -130,7 +139,6 @@ namespace DDPM.UI.Module.DisplayOthers.Tests
         }
 
         [Test]
-        [Apartment(ApartmentState.STA)]
         public void TestOnDeactivated()
         {
             var displayOthersModule = new DisplayOthersModule();

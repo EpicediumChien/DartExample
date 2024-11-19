@@ -95,7 +95,7 @@
                                      ButtonType="Secondary" ButtonSize="Medium"
                                      Foreground="#F5F6F7" BorderBrush="#F5F6F7"
                                      FontSize="14" Content="{Binding [Kvm.14], Source={x:Static lang:LangHelper.Instance}}"
-                                     Click="EditPXP_Click" />
+                                     Click="EditPXP_Click" Visibility="{Binding NoPxP}"/>
             </StackPanel>
         </Grid>
     </Grid>

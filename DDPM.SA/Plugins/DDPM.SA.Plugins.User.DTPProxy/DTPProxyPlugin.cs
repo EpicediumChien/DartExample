@@ -2130,7 +2130,6 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 writelog($"[GetMenuSinglePressSetting]Could not retrieve the Commodity Interface for the {_itemID} item. _penMethodInfo is null");
                 return "";
             }
-
         }
         public async Task<bool> GetMenuCenterRightClickSetting()
         {
@@ -2182,7 +2181,6 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 writelog($"[GetIsSideTopButtonHoverClick]Could not retrieve the Commodity Interface for the {_itemID} item. _penMethodInfo is null");
                 return false;
             }
-
         }
         public async Task<bool> GetIsSideBottomButtonHoverClick()
         {
@@ -2207,6 +2205,84 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 Debug.WriteLine($"[GetIsSideBottomButtonHoverClick]Could not retrieve the Commodity Interface for the {_itemID} item. _penMethodInfo is null");
                 writelog($"[GetIsSideBottomButtonHoverClick]Could not retrieve the Commodity Interface for the {_itemID} item. _penMethodInfo is null");
                 return false;
+            }
+
+        }
+        public async Task<bool> StartKeyCapturePen()
+        {
+            _itemID = new ItemId(PenItemID0);
+
+            if (_penMethodInfo != null)
+            {
+                if (await GetCommodityInterfaceInstanceAsync(_penMethodInfo) is ICommodity commodity)
+                {
+                    var value = GetPropertyValue(_penInterfaceType, commodity, "StartKeyCapture");
+                    return (bool)value;
+                }
+                else
+                {
+                    Debug.WriteLine($"Could not retrieve the Commodity Interface {_penInterfaceType} for the {_itemID} item.");
+                    writelog($"Could not retrieve the Commodity Interface {_penInterfaceType} for the {_itemID} item.");
+                    return false;
+                }
+            }
+            else
+            {
+                Debug.WriteLine($"[GetIsSideBottomButtonHoverClick]Could not retrieve the Commodity Interface for the {_itemID} item. _penMethodInfo is null");
+                writelog($"[GetIsSideBottomButtonHoverClick]Could not retrieve the Commodity Interface for the {_itemID} item. _penMethodInfo is null");
+                return false;
+            }
+
+        }
+        public async Task<bool> FinishKeyCapturePen()
+        {
+            _itemID = new ItemId(PenItemID0);
+
+            if (_penMethodInfo != null)
+            {
+                if (await GetCommodityInterfaceInstanceAsync(_penMethodInfo) is ICommodity commodity)
+                {
+                    var value = GetPropertyValue(_penInterfaceType, commodity, "FinishKeyCapture");
+                    return (bool)value;
+                }
+                else
+                {
+                    Debug.WriteLine($"Could not retrieve the Commodity Interface {_penInterfaceType} for the {_itemID} item.");
+                    writelog($"Could not retrieve the Commodity Interface {_penInterfaceType} for the {_itemID} item.");
+                    return false;
+                }
+            }
+            else
+            {
+                Debug.WriteLine($"[GetIsSideBottomButtonHoverClick]Could not retrieve the Commodity Interface for the {_itemID} item. _penMethodInfo is null");
+                writelog($"[GetIsSideBottomButtonHoverClick]Could not retrieve the Commodity Interface for the {_itemID} item. _penMethodInfo is null");
+                return false;
+            }
+
+        }
+        public async Task<string> KeyCaptureData()
+        {
+            _itemID = new ItemId(PenItemID0);
+
+            if (_penMethodInfo != null)
+            {
+                if (await GetCommodityInterfaceInstanceAsync(_penMethodInfo) is ICommodity commodity)
+                {
+                    var value = GetPropertyValue(_penInterfaceType, commodity, "KeyCaptureData");
+                    return (string)value;
+                }
+                else
+                {
+                    Debug.WriteLine($"Could not retrieve the Commodity Interface {_penInterfaceType} for the {_itemID} item.");
+                    writelog($"Could not retrieve the Commodity Interface {_penInterfaceType} for the {_itemID} item.");
+                    return string.Empty;
+                }
+            }
+            else
+            {
+                Debug.WriteLine($"[GetIsSideBottomButtonHoverClick]Could not retrieve the Commodity Interface for the {_itemID} item. _penMethodInfo is null");
+                writelog($"[GetIsSideBottomButtonHoverClick]Could not retrieve the Commodity Interface for the {_itemID} item. _penMethodInfo is null");
+                return string.Empty;
             }
 
         }
@@ -4713,6 +4789,31 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
         }
 
+        public async Task<bool> GetMuteStatusAsyncForSpeaker(string guid)
+        {
+            try
+            {
+                if (!await GetItemIDAsync("Speaker", guid))
+                    return false;
+
+                var commodity = await GetCommodityInterfaceInstanceAsync(_speakerMethodInfo);
+                if (commodity is ICommodity)
+                {
+                    var value = GetPropertyValue(_speakerInterfaceType, commodity, "MuteStatus");
+                    writelog($"[Speaker] GetMuteStatusAsyncForSpeaker succeeded for {guid}");
+                    return (bool)value;
+                }
+
+                writelog($"[Speaker] GetMuteStatusAsyncForSpeaker failed: Could not retrieve commodity interface for {guid}");
+                return false;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[Headset] GetMuteStatusAsyncForSpeaker failed for {guid} - Exception: {ex.Message}");
+                return false;
+            }
+        }
+
         #endregion
 
         #region Dongle
@@ -5239,6 +5340,20 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 }
             }
 
+            _comdity = await _commSdk.GetCommodityAsync<IPenCommodity>(new ItemId("DellPeripheral.Pen"), CancellationToken.None);
+            if (_comdity is Dell.TechHub.Commodity.Peripheral.IPenCommodity _pencom)
+            {
+                try
+                {
+                    _pencom.KeyCaptureDataChanged += _pencom_KeyCaptureDataChanged;
+                    writelog($"Pen Commodity event registered");
+                }
+                catch (Exception e)
+                {
+                    writelog($"Find IPenCommodity not find  time: {DateTime.Now.ToString("hh.mm.ss.ffffff") + " Message: " + e.Message}");
+                }
+            }
+
             writelog($"Register Commodity event...");
             _comdity = await _commSdk.GetCommodityAsync<IHeadsetCommodity>(new ItemId("DellPeripheral.Headset"), CancellationToken.None);
             if (_comdity is Dell.TechHub.Commodity.Peripheral.IHeadsetCommodity _headsetcom)
@@ -5332,6 +5447,12 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             //leo add end
 
 
+        }
+
+        private void _pencom_KeyCaptureDataChanged(object sender, KeyCaptureDataChangedArgs e)
+        {
+            Debug.WriteLine($"[Pen]KeystrokeDisplayDataChanged {e.KeyCaptureData} Changed for Device ID: {e.DeviceId}  !!!!!!!!!!!!!!!");
+            writelog($"[Headset]FirmwareVersionChanged {e.KeyCaptureData} Changed for Device ID: {e.DeviceId}  !!!!!!!!!!!!!!!");
         }
 
         private void OnDTPProxyPluginConditionChangeHandler(object sender, EventArgs e)

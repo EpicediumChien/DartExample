@@ -363,11 +363,12 @@ namespace DDPM.UI.Module.EzMemory
                     {
                         if (ps.StartUpLaunch)
                         {
-                            if (_vm.currentEditprofileSetting.ID != ps.ID)
+                            if (_vm.currentEditprofileSetting == null || _vm.currentEditprofileSetting.ID != ps.ID)
                             {
                                 if (DdpmCommonHelper.DDPMMesssageBox(Strings.ezMemoryStartupErrorTitleStringForLaunchOptionPage, Strings.ezMemoryStartupErrorStringForLaunchOptionPage))
                                 {
                                     _vm.IsLaunchAtStartup = true;
+                                    //break;
                                 }
                                 else
                                 {

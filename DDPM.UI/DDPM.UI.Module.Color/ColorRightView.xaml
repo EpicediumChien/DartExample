@@ -129,7 +129,7 @@
 
                             <Expander.Content>
                                 <Grid>
-                                    <Border>
+                                    <Border Background="Transparent">
                                         <Grid Height="50" Margin="0,10">
 
                                             <Grid.ColumnDefinitions>
@@ -373,7 +373,13 @@
                             <UXControls:UXLink Name="nightlight_config" Grid.Column="1" Content="{Binding [WindowsSettings], Source={x:Static lang:LangHelper.Instance}}" Click="nightlight_config_Click"
                                                IconPosition="IconRight" LinkSize="Medium" LinkColorScheme="Primary"
                                                LinkType="InLine" Icon="M29.86 29.86h-27.74v-27.72h13.88v-2.14h-16v32h32v-16h-2.12zM20.86 0v2.12h7.56l-15.060 15.060 1.52 1.5 14.98-15v7.46h2.14v-11.14z"
-                                               HorizontalAlignment="Right" VerticalAlignment="Center" Height="40" />
+                                               HorizontalAlignment="Right" VerticalAlignment="Center" Height="40">
+                                <UXControls:UXLink.Resources>
+                                    <Style TargetType="Border">
+                                        <Setter Property="Background" Value="Transparent" />
+                                    </Style>
+                                </UXControls:UXLink.Resources>
+                            </UXControls:UXLink>
                         </Grid>
                     </Border>
 

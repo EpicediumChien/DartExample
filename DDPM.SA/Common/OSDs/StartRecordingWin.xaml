@@ -48,7 +48,7 @@
             <Border
                 Width="87"
                 Height="80"
-                Background="#141D28"
+                Background="{DynamicResource Default_SA_OSD_Border_BkColor}"
                 BorderBrush="#0DFFFFFF"
                 BorderThickness="1.5"
                 CornerRadius="5"
@@ -63,7 +63,7 @@
                         FontFamily="Roboto"
                         FontSize="64"
                         FontWeight="ExtraLight"
-                        Foreground="#FFFFFF"
+                        Foreground="{DynamicResource Default_SA_OSD_PathColor}"
                         Text="3" />
                 </Grid>
             </Border>
