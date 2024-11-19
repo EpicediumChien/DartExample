@@ -39,6 +39,9 @@
             public const string MOUSE = "mouse";
             public const string PEN = "pen";
             public const string DOCK = "dock";
+            public const string SPEAKER = "speaker";
+            public const string HEADSET = "headset";
+            public const string DONGLE = "dongle";
         }
 
         // 0 : success
@@ -81,12 +84,12 @@
             public const string ScreenNotification = "screennotification ";
             public const string TelemetryConsent = "telemetryconsent";
             public const string InAppBriCont = "inappbricont";
-            //public const string InAppUpdate = "inappupdate";  // #5.13.7
-            //public const string InAppUpdate = "inappupdate";  // #5.13.8
+            public const string InAppAutoBriTemp = "inappautobritemp";  // #5.13.7
+            //public const string InAppAutoBriTemp = "inappautobritemp";  // #5.13.8
             public const string PrimaryMonitorSync = "primarymonitorsync";
             public const string ResolutionRefreshRate = "resolutionrefreshrate";
             public const string USBCPrioritization = "usbcprioritization";
-            //public const string InAppUpdate = "inappusbkvm";  // #5.13.12
+            public const string InAppUSBKVM = "inappusbkvm";  // #5.13.12
             public const string InAppNetworkKVM = "inappnetworkkvm";
             public const string InAppColorPreset = "inappcolorpreset";
             public const string PowerNap = "powernap";
@@ -96,10 +99,17 @@
             public const string AntiFlicker = "antiflicker";
             public const string MicSwitch = "micswitch";
             public const string AIAutoFraming = "aiautoframing";
-            //public const string InAppUpdate = "inappupdate";  // #5.13.22
-            //public const string InAppUpdate = "inappupdate";  // #5.13.23
-            //public const string InAppUpdate = "inappupdate";  // #5.13.24
-            //public const string InAppUpdate = "inappupdate";  // #5.13.25
+            public const string PresenceDetection = "presencedetection";  // #5.13.22
+            public const string ancMode = "ancmode";  // #5.13.23
+            public const string micNoiseCancellation  = "micnoisecancellation ";  // #5.13.24
+            public const string wearDetection = "weardetection";  // #5.13.25
+
+            // add @ 20241116 stephen
+            public const string IsCollaborationScreenShareEnable = "IsCollaborationScreenShareEnable"; // CollabScreenShare
+            public const string IsHDROn = "IsHDROn";  // hdr
+            public const string IsMicEnumerationOn = "IsMicEnumerationOn";  // MicSwitch
+            public const string IsAutoFramingOn = "IsAutoFramingOn";  // AIAutoFraming 
+            public const string IsProximitySensorEnable = "IsProximitySensorEnable";  // PresenceDetection
 
         }
 

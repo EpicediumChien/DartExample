@@ -10,15 +10,17 @@
              d:DesignHeight="450" d:DesignWidth="800"
              SizeChanged="UserControl_SizeChanged">
     <Grid>
-        <Border Background="#99132F54" CornerRadius="13">
+        <Border Style="{StaticResource GroupBorderStyle}" CornerRadius="13">
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="auto" />
                     <RowDefinition Height="150" />
                     <RowDefinition Height="*" />
                 </Grid.RowDefinitions>
-                <UXControls:UXTextBlock Text="{Binding [Analytics.0], Source={x:Static lang:LangHelper.Instance}}" Foreground="White" Margin="20" FontSize="24" Grid.Row="0"/>
-                <Border Background="#99132F54" CornerRadius="13" Grid.Row="1" Margin="20,0,20,0" >
+                <UXControls:UXTextBlock Text="{Binding [Analytics.0], Source={x:Static lang:LangHelper.Instance}}"
+                                        Foreground="{DynamicResource DefaultTheme_TxtColor}"
+                                        Margin="20" FontSize="24" Grid.Row="0" />
+                <Border Style="{StaticResource PartBorderStyle}" CornerRadius="13" Grid.Row="1" Margin="20,0,20,0" >
                     <Grid>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="*" />
@@ -28,23 +30,23 @@
                         <UXControls:UXCheckBox Name="chk_analytics" Content="{Binding [Analytics.1], Source={x:Static lang:LangHelper.Instance}}"
                                                Grid.Row="0"
                                                Margin="20,14,0,0"
-                                               Foreground="White"
+                                               Foreground="{DynamicResource DefaultTheme_TxtColor}"
+                                               Background="{DynamicResource DefaultTheme_RbBkColor}"
                                                FontSize="18"
                                                HorizontalAlignment="Left"
                                                IsTabStop="{Binding isTabStoppable}"
                                                IsChecked="{Binding isConsentChecked}" />
-                        <UXControls:UXButton Name="url_btn"
-                                             Content="{Binding [Analytics.2], Source={x:Static lang:LangHelper.Instance}}"
-                                             ButtonType="Secondary"
-                                             Margin="20,0,20,0"
-                                             Foreground="White"
-                                             FontSize="16"
-                                             Grid.Row="1"
-                                             Width="250"
-                                             HorizontalAlignment="Left"
-                                             Click="url_btn_Click"
-                                             BorderBrush="White"
-                                             IsTabStop="{Binding isTabStoppable}" />
+                        <Button Name="url_btn"
+                                Height="40"
+                                Style="{DynamicResource Button_WhiteFrame}"
+                                Content="{Binding [Analytics.2], Source={x:Static lang:LangHelper.Instance}}"
+                                Margin="20,0,20,0"
+                                FontSize="16"
+                                Grid.Row="1"
+                                Width="250"
+                                HorizontalAlignment="Left"
+                                Click="url_btn_Click"
+                                IsTabStop="{Binding isTabStoppable}" />
                     </Grid>
                 </Border>
             </Grid>

@@ -44,8 +44,8 @@ namespace DDPM.CLI.Plugins.Display
         private const string pluginName = "CLIDisplayPlugin";
         private const string pluginVersion = "1.0.0";
         private const string pluginDescription = "This plugin implements CLI Display Plugin.";
-        private const string publisherCompany = "Wistron";
-        private const string publisherWebsite = "https://www.wistron.com";
+        private const string publisherCompany = "Dell Inc.";
+        private const string publisherWebsite = "https://www.dell.com";
         private const string publisherSupport = "This plugin implements CLI Display Plugin.";
 
         private IAgent _agent;
@@ -7081,6 +7081,7 @@ namespace DDPM.CLI.Plugins.Display
             CLI_Get_Properties_USBCPrioritization_RESPONSE cli_USBCPrioritization_RESPONSE = o as CLI_Get_Properties_USBCPrioritization_RESPONSE;
             CLI_Get_Properties_Orientation_RESPONSE cli_Orientation_RESPONSE = o as CLI_Get_Properties_Orientation_RESPONSE;
             CLI_Get_Properties_CurrentResolutionRefreshRate_RESPONSE cli_CurrentResolutionRefreshRate_RESPONSE = o as CLI_Get_Properties_CurrentResolutionRefreshRate_RESPONSE;
+            DDPMSettings ddpmSettings = _devMgr.ReloadAppConfigData().Result;
 
             string[] Orientations_Str = new string[] { "Landscape", "Portrait", "Landscape(flipped)", "Portrait(flipped)" };
             if (cli_HDR_RESPONSE != null)
@@ -7090,6 +7091,7 @@ namespace DDPM.CLI.Plugins.Display
             else if (cli_USBCPrioritization_RESPONSE != null)
             {
                 cli_USBCPrioritization_RESPONSE.Value = displayPropertiesInfo.USBCPrioritizationType == USBCPrioritizationType.HighDataSpeed ? "High Data Speed" : "High Resolution";
+                cli_USBCPrioritization_RESPONSE.Value += "," + (ddpmSettings.LockSettings.Lock_Display_USBCPrioritization ? "LOCK" : "UNLOCK");
             }
             else if (cli_Orientation_RESPONSE != null)
             {
@@ -7375,13 +7377,25 @@ namespace DDPM.CLI.Plugins.Display
                             writelog("USBCPRIORITIZATION set entry");
                             if (commandLineInput.Options.Count > 1)
                             {
-                                cLI_RESPONSE.Result = "FAIL";
-                                cLI_RESPONSE.Message = "Bring in extra strings:";
+                                USBCPrioritization_RESPONSE.Result = "FAIL";
+                                USBCPrioritization_RESPONSE.Message = "Bring in extra strings:";
                                 for (int i = 0; i < commandLineInput.Options.Count; i++)
                                 {
-                                    cLI_RESPONSE.Message += $"{commandLineInput.Options[i].Option_Name}={commandLineInput.Options[i].Option_Value}";
+                                    USBCPrioritization_RESPONSE.Message += $"{commandLineInput.Options[i].Option_Name}={commandLineInput.Options[i].Option_Value}";
                                 }
-                                break;
+                                output = JsonConvert.SerializeObject(USBCPrioritization_RESPONSE, Formatting.Indented);
+                                writelog(commandLineInput.TargetFeature + $" Return value{output}");
+                                System.Console.WriteLine(output);
+                                return ((int)CLI_ExitCode.fail_option_value, output);
+                            }
+                            else if (commandLineInput.Options.Count == 0)
+                            {
+                                USBCPrioritization_RESPONSE.Result = "FAIL";
+                                USBCPrioritization_RESPONSE.Message = "Invalid command line syntax, missing -value=...";
+                                output = JsonConvert.SerializeObject(USBCPrioritization_RESPONSE, Formatting.Indented);
+                                writelog(commandLineInput.TargetFeature + $" Return value{output}");
+                                System.Console.WriteLine(output);
+                                return ((int)CLI_ExitCode.fail_option_value, output);
                             }
 
                             commandLineInput.Options[0].Option_Value.Replace(".", ",");
@@ -7400,35 +7414,36 @@ namespace DDPM.CLI.Plugins.Display
                                 }
                             }
 
-                            for (int i = 0; i < commandLineInput.Options.Count; i++)
+                            if (!String.IsNullOrEmpty(commandLineInput.Options[0].Option_Name) && commandLineInput.Options[0].Option_Name.ToUpper().Equals("VALUE")) //ex: /set -name=Display.Brightness -index=[0] -value=60
                             {
-                                if (!String.IsNullOrEmpty(commandLineInput.Options[i].Option_Name) && commandLineInput.Options[i].Option_Name.ToUpper().Equals("VALUE")) //ex: /set -name=Display.Brightness -index=[0] -value=60
+                                //USBCPrioritization_RESPONSE.USBCPrioritizationType = commandLineInput.Options[i].Option_Value;
+
+                                USBCPrioritization_RESPONSE.Value = op_values[0];
+                                if (!String.IsNullOrEmpty(op_values[0]) && op_values[0].ToUpper().Equals("HIGHSPEED"))
                                 {
-                                    //USBCPrioritization_RESPONSE.USBCPrioritizationType = commandLineInput.Options[i].Option_Value;
+                                    op_values[0] = "HighDataSpeed";
+                                    USBCPrioritization_RESPONSE.Value = op_values[0];
+                                }
 
-                                    USBCPrioritization_RESPONSE.Value = commandLineInput.Options[i].Option_Value;
-                                    if (!String.IsNullOrEmpty(commandLineInput.Options[i].Option_Value) && commandLineInput.Options[i].Option_Value.ToUpper().Equals("HIGHSPEED"))
-                                    {
-                                        commandLineInput.Options[i].Option_Value = "HighDataSpeed";
-                                        USBCPrioritization_RESPONSE.Value = commandLineInput.Options[i].Option_Value;
-                                    }
+                                USBCPrioritization_RESPONSE.Value += "," + (data.LockSettings.Lock_Display_USBCPrioritization ? "LOCK" : "UNLOCK");
 
-                                    if (commandLineInput.Options[i].Option_Value.ToUpper() != "HIGHDATASPEED" && commandLineInput.Options[i].Option_Value.ToUpper() != "HIGHRESOLUTION")
-                                    {
-                                        USBCPrioritization_RESPONSE.Result = "FAIL";
-                                        USBCPrioritization_RESPONSE.Message = "Wrong option value";
-                                        output = JsonConvert.SerializeObject(USBCPrioritization_RESPONSE, Formatting.Indented);
-                                        writelog(commandLineInput.TargetFeature + $" Return value{output}");
-                                        System.Console.WriteLine(output);
-                                        return ((int)CLI_ExitCode.fail_option_value, output);
-                                    }
+                                if (op_values[0].ToUpper() != "HIGHDATASPEED" && op_values[0].ToUpper() != "HIGHRESOLUTION")
+                                {
+                                    USBCPrioritization_RESPONSE.Result = "FAIL";
+                                    USBCPrioritization_RESPONSE.Message = $"Option value [{commandLineInput.Options[0].Option_Value}] not support";
+                                    output = JsonConvert.SerializeObject(USBCPrioritization_RESPONSE, Formatting.Indented);
+                                    writelog(commandLineInput.TargetFeature + $" Return value{output}");
+                                    System.Console.WriteLine(output);
+                                    return ((int)CLI_ExitCode.fail_option_value, output);
+                                }
 
-                                    USBCPrioritizationType usbcPrioritizationType = commandLineInput.Options[i].Option_Value.ToUpper().Equals(USBCPrioritizationType.HighDataSpeed.ToString().ToUpper()) ? USBCPrioritizationType.HighDataSpeed : USBCPrioritizationType.HighResolution;
-                                    if (displayPropertiesInfo.USBCPrioritizationType.ToString().ToUpper().Equals(commandLineInput.Options[i].Option_Value.ToUpper()))
-                                    {
-                                        ret = true;
-                                        break;
-                                    }
+                                USBCPrioritizationType usbcPrioritizationType = op_values[0].ToUpper().Equals(USBCPrioritizationType.HighDataSpeed.ToString().ToUpper()) ? USBCPrioritizationType.HighDataSpeed : USBCPrioritizationType.HighResolution;
+                                if (displayPropertiesInfo.USBCPrioritizationType.ToString().ToUpper().Equals(op_values[0].ToUpper()))
+                                {
+                                    ret = true;
+                                }
+                                else
+                                {
                                     ret = _devMgr.SetUSBCPrioritizationType(monitorInfo, usbcPrioritizationType).Result;
                                 }
                             }
@@ -7597,7 +7612,7 @@ namespace DDPM.CLI.Plugins.Display
                         else
                         {
                             writelog($"ORIENTATION VCP not support");
-                            cLI_RESPONSE.Message = "ORIENTATION VCP not support";
+                            CurrentOrientation_RESPONSE.Message = "ORIENTATION VCP not support";
                             output += $"\n  \"Result: \": \"ORIENTATION VCP not support\"";
                         }
 
@@ -9368,6 +9383,7 @@ namespace DDPM.CLI.Plugins.Display
                                 get_DeviceData.ManufacturingWeek = "ISO week " + monitor.edid.Week.ToString();
                                 get_DeviceData.FirmwareVersion = monitor.FwVersion;
 
+                                Trace.WriteLine(monitor.edid.Edid);
                                 if (monitor.CapabilityDic.ContainsKey("C0"))
                                 {
                                     writelog($"MonitorActiveHour Entry");
@@ -9388,8 +9404,12 @@ namespace DDPM.CLI.Plugins.Display
                                 string text = HexString.Substring("00FFFFFFFFFFFF00".Length + 26, 4);
                                 int num_x = 0;
                                 int num_y = 0;
-                                num_x = int.Parse(text.Substring(0, 2), NumberStyles.HexNumber);
-                                num_y = int.Parse(text.Substring(2, 2), NumberStyles.HexNumber);
+
+                                if (IsHexNumeric(text.Substring(0, 2)))
+                                {
+                                    num_x = int.Parse(text.Substring(0, 2), NumberStyles.HexNumber);
+                                    num_y = int.Parse(text.Substring(2, 2), NumberStyles.HexNumber);
+                                }
                                 writelog($"ScreenSize Entry");
                                 get_DeviceData.ScreenSize = $"{num_x}0 x {num_y}0 mm ({monitor.edid.Size.ToString("0.00")} in)";
                                 writelog($"ScreenSize Exit return value: {$"{num_x}0 x {num_y}0 mm ({monitor.edid.Size.ToString("0.00")} in)"}");
@@ -9484,9 +9504,14 @@ namespace DDPM.CLI.Plugins.Display
                                 }
 
                                 writelog($"AspectRatio Entry");
-                                int gcd = (int)GCD((ulong)MaxWidth, (ulong)MaxHigh);
-                                get_DeviceData.AspectRatio = $"{MaxWidth / gcd}:{MaxHigh / gcd}";
-                                writelog($"AspectRatio Exit return value: {$"{MaxWidth / gcd}:{MaxHigh / gcd}"}");
+                                //int gcd = (int)GCD((ulong)MaxWidth, (ulong)MaxHigh);
+                                //get_DeviceData.AspectRatio = $"{MaxWidth / gcd}:{MaxHigh / gcd}";
+                                //writelog($"AspectRatio Exit return value: {$"{MaxWidth / gcd}:{MaxHigh / gcd}"}");
+                                string gcd = "N/A";
+                                if(num_x != 0 && num_y != 0)
+                                    gcd = Get_AR((double)num_x / (double)num_y);
+                                get_DeviceData.AspectRatio = $"{gcd}";
+                                writelog($"AspectRatio Exit return value: {$"{gcd}"}");
 
                                 writelog($"USB_CPrioritization, USBCPrioritizationType Entry");
                                 if (displayPropertiesInfo.SupportedUSBCPrioritization)
@@ -9795,8 +9820,11 @@ namespace DDPM.CLI.Plugins.Display
                     string text = HexString.Substring("00FFFFFFFFFFFF00".Length + 26, 4);
                     int num_x = 0;
                     int num_y = 0;
-                    num_x = int.Parse(text.Substring(0, 2), NumberStyles.HexNumber);
-                    num_y = int.Parse(text.Substring(2, 2), NumberStyles.HexNumber);
+                    if (IsHexNumeric(text.Substring(0, 2)))
+                    {
+                        num_x = int.Parse(text.Substring(0, 2), NumberStyles.HexNumber);
+                        num_y = int.Parse(text.Substring(2, 2), NumberStyles.HexNumber);
+                    }
                     writelog($"ScreenSize Entry");
                     get_DeviceData.ScreenSize = $"{num_x}0 x {num_y}0 mm ({monitor.edid.Size.ToString("0.00")} in)";
                     writelog($"ScreenSize Exit return value: {$"{num_x}0 x {num_y}0 mm ({monitor.edid.Size.ToString("0.00")} in)"}");
@@ -9891,9 +9919,14 @@ namespace DDPM.CLI.Plugins.Display
                     }
 
                     writelog($"AspectRatio Entry");
-                    int gcd = (int)GCD((ulong)MaxWidth, (ulong)MaxHigh);
-                    get_DeviceData.AspectRatio = $"{MaxWidth / gcd}:{MaxHigh / gcd}";
-                    writelog($"AspectRatio Exit return value: {$"{MaxWidth / gcd}:{MaxHigh / gcd}"}");
+                    //int gcd = (int)GCD((ulong)MaxWidth, (ulong)MaxHigh);
+                    //get_DeviceData.AspectRatio = $"{MaxWidth / gcd}:{MaxHigh / gcd}";
+                    //writelog($"AspectRatio Exit return value: {$"{MaxWidth / gcd}:{MaxHigh / gcd}"}");
+                    string gcd = "N/A";
+                    if (num_x != 0 && num_y != 0)
+                        gcd = Get_AR((double)num_x / (double)num_y);
+                    get_DeviceData.AspectRatio = $"{gcd}";
+                    writelog($"AspectRatio Exit return value: {$"{gcd}"}");
 
                     writelog($"USB_CPrioritization, USBCPrioritizationType Entry");
                     if (displayPropertiesInfo.SupportedUSBCPrioritization)
@@ -10132,6 +10165,35 @@ namespace DDPM.CLI.Plugins.Display
                     b %= a;
             }
             return a | b;
+        }
+
+        private static string Get_AR(double value)
+        {
+            switch (value)
+            {
+                case double n when n == 1.25:
+                    return "5:4";
+                case double n when n > 1.25 && n < 1.5://1.333
+                    return "4:3";
+                case double n when n == 1.5:
+                    return "3:2";
+                case double n when n == 1.6:
+                    return "16:10";
+                case double n when n > 1.6 && n < 1.7://1.666
+                    return "15:9";
+                case double n when (n > 1.7 && n < 2.0)://1.777
+                    return "16:9";
+                case double n when n == 2.0:
+                    return "18:9";
+                case double n when n > 2.0 && n < 2.3://2.222
+                    return "20:9";
+                case double n when n > 2.2 && n < 3.5://2.3....
+                    return "21:9";
+                case double n when n > 3.5://3.555
+                    return "32:9";
+                default:
+                    return "N/A";
+            }
         }
 
         private (int code, string result) Getcapabilitystringx(IDeviceManagerSA devMgr, CommandLineInput commandLineInput)
@@ -11101,7 +11163,7 @@ namespace DDPM.CLI.Plugins.Display
                 cli_Response.Message = "Invalid command line syntax or missing -value=file";
                 return ((int)CLI_ExitCode.invalide_cmdline_syntax, cli_Response.ToJson());
             }
-            else if (commandLineInput.Command == "GET" && commandLineInput.Options.Count == 0)
+            else if (commandLineInput.Command == "GET" && commandLineInput.Options.Count <= 1)
             {
                 return DiagnosticReportv2(devMgr, commandLineInput).Result;
             }
@@ -11736,9 +11798,14 @@ namespace DDPM.CLI.Plugins.Display
                     ApplyConfiguration.Resolution = ApplyConfiguration.OptimalResolution;
                     writelog($"OptimalResolution={ApplyConfiguration.OptimalResolution}");
 
-                    int gcd = (int)GCD((ulong)displayProperties.Resolutions_Width, (ulong)displayProperties.Resolutions_High);
-                    ApplyConfiguration.AspectRatio = $"{displayProperties.Resolutions_Width / gcd}:{displayProperties.Resolutions_High / gcd}";
-                    writelog($"AspectRatio={ApplyConfiguration.AspectRatio}");
+                    //int gcd = (int)GCD((ulong)displayProperties.Resolutions_Width, (ulong)displayProperties.Resolutions_High);
+                    //ApplyConfiguration.AspectRatio = $"{displayProperties.Resolutions_Width / gcd}:{displayProperties.Resolutions_High / gcd}";
+                    //writelog($"AspectRatio={ApplyConfiguration.AspectRatio}");
+                    string gcd = "N/A";
+                    if(displayProperties.Resolutions_Width != 0 && displayProperties.Resolutions_High!= 0)
+                        gcd = Get_AR((double)displayProperties.Resolutions_Width / (double)displayProperties.Resolutions_High);
+                    ApplyConfiguration.AspectRatio = $"{gcd}";
+                    writelog($"AspectRatio= {gcd}");
 
                     if (monitor.CapabilityDic.ContainsKey("12"))
                     {

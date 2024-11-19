@@ -119,12 +119,25 @@ namespace DDPM.RemoteManagement.Common.Interfaces
                 // add @ 20241110 stephen
                 public bool upgradetolatest { get; set; }
 
+                public bool uod { get; set; }
+
 
                 public string toString()
                 {
 
                     bool hasValue = false;
                     string result = "";
+
+                    // add @ 20241113 stephen
+                    if (uod)
+                    {
+                        if (hasValue)
+                        {
+                            result = result + ",";
+                        }
+                        result = result + $"\"uod\":true";
+                        hasValue = true;
+                    }
 
 
                     if (!String.IsNullOrEmpty(index))

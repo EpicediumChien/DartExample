@@ -40,8 +40,8 @@ namespace NetworkKVM.Plugins
         private const string pluginName = "NKVMPlugin";
         private const string pluginVersion = "1.0.0";
         private const string pluginDescription = "This plugin implements NKVM Plugin.";
-        private const string publisherCompany = "Wistron";
-        private const string publisherWebsite = "https://www.wistron.com";
+        private const string publisherCompany = "Dell Inc.";
+        private const string publisherWebsite = "https://www.dell.com";
         private const string publisherSupport = "This plugin implements NKVM Plugin.";
 
         private IAgent _agent;
@@ -1027,6 +1027,23 @@ namespace NetworkKVM.Plugins
             return Task.FromResult(false);
         }
 
+        public Task CallShowNKVM(int num, int x, int y)
+        {
+            _logs.DebugMsg("[NetworkKVM] CallShowNKVM....");
+            SHOW_NKVM show_NKVM = new SHOW_NKVM();
+            show_NKVM.cid = cid + 1;
+            show_NKVM.MonitorNum = num;
+            show_NKVM.MonitorX = x; 
+            show_NKVM.MonitorY = y;
+            show_NKVM.UpdateChecksum();
+            if (show_NKVM.ToJson() != string.Empty)
+            {
+                WriteAsync(show_NKVM.ToJson()).Wait();
+            }
+
+            return Task.CompletedTask;
+        }
+
 #endregion INKVM implementation
 
         #region Private Methods
@@ -1374,7 +1391,7 @@ namespace NetworkKVM.Plugins
                                                 foreach (string resp in respList)
                                                 {
                                                     _logs.DebugMsg("[NetworkKVM] response string :" + resp);
-                                                    JsonstringParse(resp).Wait(); //read json type
+                                                    JsonstringParse(resp); //read json type
                                                 }
                                             }
                                         }
@@ -1517,11 +1534,11 @@ namespace NetworkKVM.Plugins
             _logs.DebugMsg("[NetworkKVM] Client Connect....");
             try
             {
-//#if RELEASE
+#if RELEASE
             string info;
             if (NPipeSecurity.NamedPipeClientSecurity(pipeServer, out info))
             {
-//#endif
+#endif
                 _logs.DebugMsg("[NetworkKVM] Client Security Pass....");
                 if (isMonintorChange)
                 {
@@ -1530,7 +1547,7 @@ namespace NetworkKVM.Plugins
                 }
                 ResponseSupportedMonitor().Wait();
                 OnNKVM().Wait();
-//#if RELEASE
+#if RELEASE
             }
             else
             {
@@ -1538,7 +1555,7 @@ namespace NetworkKVM.Plugins
                 Disconnect();
                 CreateNamedPipe_init();
             }
-//#endif
+#endif
             }
             catch (Exception ex)
             {
@@ -1743,6 +1760,13 @@ namespace NetworkKVM.Plugins
                                             if (!ResponseSucces(json).Result)
                                             {
                                                 GetContentTransfedPortResponse(jsonstring);
+                                            }
+                                            break;
+
+                                        case "SHOW_NKVM_RESPONSE":
+                                            if (!ResponseSucces(json).Result)
+                                            {
+                                                CallShowNKVM(0, 100, 100);
                                             }
                                             break;
 
@@ -2287,12 +2311,12 @@ namespace NetworkKVM.Plugins
             if (isON)
             {
                 _logs.DebugMsg("[NetworkKVM] SendChangeLimitedSW true");
-                chanage_LIMITED_SW.Reason = "true";
+                chanage_LIMITED_SW.LimitedSW = true;
             }
             else
             {
                 _logs.DebugMsg("[NetworkKVM] SendChangeLimitedSW false");
-                chanage_LIMITED_SW.Reason = "false";
+                chanage_LIMITED_SW.LimitedSW = false;
             }
             chanage_LIMITED_SW.UpdateChecksum();
 

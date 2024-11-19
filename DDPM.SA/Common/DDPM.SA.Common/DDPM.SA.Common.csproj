@@ -52,6 +52,7 @@
 
   <ItemGroup>
     <Folder Include="Hotkey\" />
+    <Folder Include="UI\" />
   </ItemGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">

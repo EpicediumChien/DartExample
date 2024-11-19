@@ -442,6 +442,7 @@ namespace DDPM.SA.Common
         /// HDR change event，return HDR status
         /// </summary>
         event EventHandler<bool> HDRChangeEvent;
+        event EventHandler<DisplayOrientation> OSDOrientationChangeEvent;
 
         Task<DisplayPropertiesInfo> GetDisplayPropertiesInfo(MonitorInfo monitorInfos);
 
@@ -449,7 +450,7 @@ namespace DDPM.SA.Common
 
         Task<bool> SetResolutions(MonitorInfo monitorInfos, Properties properties);
 
-        Task<bool> SetOrientation(MonitorInfo monitorInfos, DisplayOrientation orientation);
+        Task<bool?> SetOrientation(MonitorInfo monitorInfos, DisplayOrientation orientation);
 
         Task<bool> CallWindowsDisplaySetting();
 
@@ -614,6 +615,8 @@ namespace DDPM.SA.Common
         Task NKVM_State(bool state);
 
         Task CallNKVMConnent();
+
+        Task CallShowNKVM(int num, int x, int y);
 
         #endregion for NKVM
 
@@ -795,6 +798,11 @@ namespace DDPM.SA.Common
         #endregion Pen
 
         #region Webcam
+
+        event EventHandler<bool>? Esi_IsCameraSensorCover_ChangeEvent;
+        event EventHandler<int>? WALSnoozeTimeLeftInSeconds_ChangeEvent;
+        event EventHandler<bool>? Esi_IsWALLockCountdownStartedChanged_ChangeEvent;
+        event EventHandler<int>? Esi_WALLockCountdownChanged_ChangeEvent;
 
         Task<JArray> GetPresetProfiles(string Guid);
         Task<JArray> GetCustomProfiles(string Guid);
