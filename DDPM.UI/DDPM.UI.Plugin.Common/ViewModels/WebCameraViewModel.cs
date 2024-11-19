@@ -744,6 +744,9 @@ namespace DDPM.UI.Plugin.ViewModels
                         CurrentDeviceInfo = DeviceInfos[CurrentDeviceID];
                         switch (property)
                         {
+                            case "IsHDROnChanged":
+                                IsHDROn = DdpmCommonHelper.DeviceManagerSA!.GetIsHDROn(di.ID.ToString()).Result;
+                                break;
                             //case "MousePrimaryButtonChanged":
                             //  PrimaryButtonIndex = (int)di.MousePrimaryButton;
                             //  break;
