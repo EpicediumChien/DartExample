@@ -203,21 +203,24 @@ namespace DDPM.SA.Plugins.User.TelementryScheduler
                 #region DisplayInformation Collection
 
                 {
-                    DisplayInformation_Function _dp = new DisplayInformation_Function();
-                    foreach (var monitor in _Allmonitors)
+                    if (_Allmonitors.Count > 0)
                     {
-                        var Orientation = _DisplayManagerPlugin.GetCurrentDisplayOrientation(monitor.DisplayName).Result;
-                        var RefreshRate = _DisplayManagerPlugin.GetMonitorRefreshRate(monitor).Result;
-                        var HDRStatus = _DisplayManagerPlugin.GetHDRStatus(monitor).Result;
-                        var currentResolution = _DisplayManagerPlugin.GetMonitorCurrentResolution(monitor).Result;
-                        var maxResolution = _DisplayManagerPlugin.GetMonitorMaxResolution(monitor).Result;
-                        var rc = _dp.DisplayInformation_Telementry(monitor, Orientation, RefreshRate, HDRStatus, currentResolution, maxResolution);
-                        var r = ReceiveTelemetryInfo("DisplayInformation", rc.ToJson(), Telementry_Frequency.PerDay).Result;
+                        DisplayInformation_Function _dp = new DisplayInformation_Function();
+                        foreach (var monitor in _Allmonitors)
+                        {
+                            var Orientation = _DisplayManagerPlugin.GetCurrentDisplayOrientation(monitor.DisplayName).Result;
+                            var RefreshRate = _DisplayManagerPlugin.GetMonitorRefreshRate(monitor).Result;
+                            var HDRStatus = _DisplayManagerPlugin.GetHDRStatus(monitor).Result;
+                            var currentResolution = _DisplayManagerPlugin.GetMonitorCurrentResolution(monitor).Result;
+                            var maxResolution = _DisplayManagerPlugin.GetMonitorMaxResolution(monitor).Result;
+                            var rc = _dp.DisplayInformation_Telementry(monitor, Orientation, RefreshRate, HDRStatus, currentResolution, maxResolution);
+                            var r = ReceiveTelemetryInfo("DisplayInformation", rc.ToJson(), Telementry_Frequency.PerDay).Result;
 
-                        if (r)
-                            _logs.DebugMsg("[TelementryScheduler] Send Telementry for DisplayInformation Success ...");
-                        else
-                            _logs.DebugMsg("[TelementryScheduler] Send Telementry for DisplayInformation Fail ...");
+                            if (r)
+                                _logs.DebugMsg("[TelementryScheduler] Send Telementry for DisplayInformation Success ...");
+                            else
+                                _logs.DebugMsg("[TelementryScheduler] Send Telementry for DisplayInformation Fail ...");
+                        }
                     }
                 }
 
@@ -226,37 +229,40 @@ namespace DDPM.SA.Plugins.User.TelementryScheduler
                 #region ScreenTimeInfo Collection
 
                 {
-                    ScreenTimeInfo_Function _sf = new ScreenTimeInfo_Function();
-                    List<uint> screetimes = new List<uint>();
-                    List<string> serviceTags = new List<string>();
-                    List<string> Models = new List<string>();
-                    foreach (var monitor in _Allmonitors)
+                    if (_Allmonitors.Count > 0)
                     {
-                        if (!string.IsNullOrWhiteSpace(monitor.modelName))
-                            Models.Add(monitor.modelName);
-                        else
-                            Models.Add(string.Empty);
+                        ScreenTimeInfo_Function _sf = new ScreenTimeInfo_Function();
+                        List<uint> screetimes = new List<uint>();
+                        List<string> serviceTags = new List<string>();
+                        List<string> Models = new List<string>();
+                        foreach (var monitor in _Allmonitors)
+                        {
+                            if (!string.IsNullOrWhiteSpace(monitor.modelName))
+                                Models.Add(monitor.modelName);
+                            else
+                                Models.Add(string.Empty);
 
-                        if (!string.IsNullOrWhiteSpace(monitor.edid.ServiceTag))
-                            serviceTags.Add(monitor.edid.ServiceTag);
-                        else
-                            serviceTags.Add(string.Empty);
+                            if (!string.IsNullOrWhiteSpace(monitor.edid.ServiceTag))
+                                serviceTags.Add(monitor.edid.ServiceTag);
+                            else
+                                serviceTags.Add(string.Empty);
 
-                        var screetime = _DisplayManagerPlugin.GetVCPCapability(monitor, 0xC0).Result;
+                            var screetime = _DisplayManagerPlugin.GetVCPCapability(monitor, 0xC0).Result;
 
-                        if (screetime.result)
-                            screetimes.Add((uint)screetime.value);
+                            if (screetime.result)
+                                screetimes.Add((uint)screetime.value);
+                            else
+                                screetimes.Add(0x0);
+                        }
+
+                        var rc = _sf.ScreenTimeInfo_Telementry(screetimes, serviceTags, Models);
+                        var r = ReceiveTelemetryInfo("ScreenTimeInfo", rc.ToJson(), Telementry_Frequency.PerDay).Result;
+
+                        if (r)
+                            _logs.DebugMsg("[TelementryScheduler] Send Telementry for ScreenTimeInfo Success ...");
                         else
-                            screetimes.Add(0x0);
+                            _logs.DebugMsg("[TelementryScheduler] Send Telementry for ScreenTimeInfo Fail ...");
                     }
-
-                    var rc = _sf.ScreenTimeInfo_Telementry(screetimes, serviceTags, Models);
-                    var r = ReceiveTelemetryInfo("ScreenTimeInfo", rc.ToJson(), Telementry_Frequency.PerDay).Result;
-
-                    if (r)
-                        _logs.DebugMsg("[TelementryScheduler] Send Telementry for ScreenTimeInfo Success ...");
-                    else
-                        _logs.DebugMsg("[TelementryScheduler] Send Telementry for ScreenTimeInfo Fail ...");
                 }
 
                 #endregion ScreenTimeInfo Collection
