@@ -45,8 +45,8 @@ namespace DDPM.SA.Plugins.User.PipPbpManger
         private const string pluginName = "PipPbpMangerPlugin";
         private const string pluginVersion = "1.0.0";
         private const string pluginDescription = "This plugin implements PIP PBP Manager Plugin.";
-        private const string publisherCompany = "Wistron";
-        private const string publisherWebsite = "https://www.wistron.com";
+        private const string publisherCompany = "Dell Inc.";
+        private const string publisherWebsite = "https://www.dell.com";
         private const string publisherSupport = "This plugin implements PIP PBP Manager Plugin.";
 
         private bool _IsAdministrator = ProcessSecurityHelperWrapper.IsCurrentProcessRunningElevated();

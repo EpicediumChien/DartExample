@@ -8,6 +8,7 @@
 
 	<ItemGroup>
 		<PackageReference Include="DellClientFramework" Version="6.4.11.2" />
+		<PackageReference Include="MessagePack" Version="2.5.192" />
 	</ItemGroup>
 
 	<ItemGroup>
