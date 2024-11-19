@@ -12,7 +12,7 @@
              mc:Ignorable="d" Margin="5,4,60,120"
              d:DesignHeight="450" d:DesignWidth="800"
              SizeChanged="UserControl_SizeChanged">
-    
+
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -73,7 +73,7 @@
                                                                 HorizontalAlignment="Left"
                                                                 VerticalAlignment="Center"
                                                                 Margin="4,21,8,8" />
-                                    </StackPanel>                                    
+                                    </StackPanel>
                                 </StackPanel>
                                 <!-- change to stackpanel as above for RWD  Derek 10/15 -->
                                 <!-- 
@@ -91,7 +91,8 @@
                                     <Image Grid.Column="1" Source="Resources\double arrow.png" Height="20" Margin="16,0,4,0" />
                                     <UXControls:UXTextBlock Grid.Column="2" FontSize="14" Text="{Binding Path=LastCheckDate}" TextBlockType="Caption" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="4,8,8,8" />
                                 </Grid> -->
-                                <StackPanel Grid.Row="1" Margin="0,0,0,24" Visibility="{Binding NoUpdateAlert}" x:Name="spSAAlert"> <!-- Updates.3 for testing Derek 10/12 -->
+                                <StackPanel Grid.Row="1" Margin="0,0,0,24" Visibility="{Binding NoUpdateAlert}" x:Name="spSAAlert">
+                                    <!-- Updates.3 for testing Derek 10/12 -->
                                     <SAAlert:AlertBase Height="53" x:Name="alertBase" Margin="20,16,0,0" AlertType="Info" Message="{Binding [Updates.3], Source={x:Static lang:LangHelper.Instance}}"/>
                                 </StackPanel>
                                 <StackPanel Grid.Row="1" Margin="0,0,0,24" Visibility="{Binding NoNetwork}">
@@ -99,7 +100,6 @@
                                         <UXControls:UXAlertItem AlertItemType="Critical" Margin="8,8,8,8" Label="" Message="{Binding [Updates.4], Source={x:Static lang:LangHelper.Instance}}" />
                                     </UXControls:UXAlert>
                                 </StackPanel>
-                               
                                 <StackPanel Grid.Row="1" Margin="0,0,0,24" Visibility="{Binding Critical_UpdateList}">
                                     <UXControls:UXTextBlock Foreground="{DynamicResource DefaultTheme_TxtColor}" Margin="20,16,0,0" FontSize="16" Grid.Row="0" Text="Critical" TextBlockType="Header1" HorizontalAlignment="Left" />
                                     <ListBox ItemsSource="{Binding Critical_UpdateList_UI}" Name="listTopics" Background="Transparent" BorderThickness="0" Margin="20,0,0,0">
@@ -121,13 +121,11 @@
                                                                                 AlertItemType="Info"
                                                                                 Message="{Binding UXAlertItemMessage_2}"
                                                                                 Opacity="0.6" />
-                                                            </UXControls:UXAlert>
-                                                         </StackPanel>
-                                                    </DataTemplate>
-                                                 </ListBox.ItemTemplate>
-                                             </ListBox>
-                                        </StackPanel>
-                                    </Border>
+                                                    </UXControls:UXAlert>
+                                                </StackPanel>
+                                            </DataTemplate>
+                                        </ListBox.ItemTemplate>
+                                    </ListBox>
                                 </StackPanel>
                                 <StackPanel Grid.Row="2" Margin="0,0,0,24" Visibility="{Binding Recommended_UpdateList}">
                                     <UXControls:UXTextBlock Foreground="{DynamicResource DefaultTheme_TxtColor}" FontSize="16" Grid.Row="0" Text="Recommended" TextBlockType="Header1" HorizontalAlignment="Left" Margin="20,16,0,0" />
@@ -155,8 +153,6 @@
                                             </DataTemplate>
                                         </ListBox.ItemTemplate>
                                     </ListBox>
-                                        </StackPanel>
-                                    </Border>
                                 </StackPanel>
                                 <StackPanel Grid.Row="3" Visibility="{Binding Optional_UpdateList}">
                                     <UXControls:UXTextBlock Foreground="{DynamicResource DefaultTheme_TxtColor}" FontSize="16" Grid.Row="0" Text="Optional" TextBlockType="Header1" HorizontalAlignment="Left" Margin="20,4,4,4" />
@@ -179,14 +175,12 @@
                                                                                 AlertItemType="Info"
                                                                                 Message="{Binding UXAlertItemMessage_2}"
                                                                                 Opacity="0.6" />
-                                                         </UXControls:UXAlert>
-                                                     </StackPanel>
-                                                </DataTemplate>
-                                            </ListBox.ItemTemplate>
-                                        </ListBox>
-                                    </StackPanel>
-                                </Border>
-                            </StackPanel>
+                                                    </UXControls:UXAlert>
+                                                </StackPanel>
+                                            </DataTemplate>
+                                        </ListBox.ItemTemplate>
+                                    </ListBox>
+                                </StackPanel>
                                 <Grid Grid.Row="4" Margin="4" Visibility="{Binding IsAnyUpdate}">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="Auto" />
