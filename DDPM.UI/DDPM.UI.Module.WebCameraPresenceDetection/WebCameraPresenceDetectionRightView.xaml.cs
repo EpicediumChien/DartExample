@@ -11,6 +11,7 @@ using static System.Net.Mime.MediaTypeNames;
 using System.Reflection;
 using System.Windows.Threading;
 using System.Xml.Linq;
+using System.Windows.Forms;
 
 namespace DDPM.UI.Module.WebCameraPresenceDetection
 {
@@ -28,6 +29,14 @@ namespace DDPM.UI.Module.WebCameraPresenceDetection
         {
             InitializeComponent();
             _vm = vm;
+
+
+            // webcam event hander
+            DdpmCommonHelper.DeviceManagerSA.Esi_IsCameraSensorCover_ChangeEvent += OnEsi_IsCameraSensorCoverChangeHandler;
+            DdpmCommonHelper.DeviceManagerSA.WALSnoozeTimeLeftInSeconds_ChangeEvent += OnWALSnoozeTimeLeftInSecondsChangeHandler;
+            DdpmCommonHelper.DeviceManagerSA.Esi_IsWALLockCountdownStartedChanged_ChangeEvent += OnEsi_IsWALLockCountdownStartedChangeHandler;
+            DdpmCommonHelper.DeviceManagerSA.Esi_WALLockCountdownChanged_ChangeEvent += OnEsi_WALLockCountdownChangeHandler;
+
 
             //_vm.UPD_Visibility = Visibility.Visible;
             //_vm.MPS_Setting_Visibility = Visibility.Collapsed;
@@ -123,7 +132,7 @@ namespace DDPM.UI.Module.WebCameraPresenceDetection
             _vm.SelectedSnoozeLength = _vm.SnoozeLength_ItemsCollection.Find(x => (x.SnoozeLength == nRes));
 
             if (_vm.IsChecked_Snooze == false)
-                DdpmCommonHelper.DeviceManagerSA!.SetSnooze(-100, _vm.CurrentDeviceInfo!.ID);
+                DdpmCommonHelper.DeviceManagerSA!.SetSnooze(-1, _vm.CurrentDeviceInfo!.ID);
 
             //lock/unlock init, 9/23 add lock
             if (DdpmCommonHelper.DeviceManagerSA != null)
@@ -297,11 +306,11 @@ namespace DDPM.UI.Module.WebCameraPresenceDetection
             if (_vm.IsChecked_Snooze)
             {
                 txtTimer.Visibility = Visibility.Visible;
-                _countdown = DdpmCommonHelper.DeviceManagerSA!.GetSnoozeLength(_vm.CurrentDeviceInfo!.ID.ToString()).Result;
-                _timer = new DispatcherTimer();
-                _timer.Interval = TimeSpan.FromSeconds(1);
-                _timer.Tick += Timer_Tick;
-                _timer.Start();
+                //_countdown = DdpmCommonHelper.DeviceManagerSA!.GetSnoozeLength(_vm.CurrentDeviceInfo!.ID.ToString()).Result;
+                //_timer = new DispatcherTimer();
+                //_timer.Interval = TimeSpan.FromSeconds(1);
+                //_timer.Tick += Timer_Tick;
+                //_timer.Start();
             }
         }
 
@@ -309,10 +318,10 @@ namespace DDPM.UI.Module.WebCameraPresenceDetection
         {
             if (_vm.IsChecked_Snooze == false)
             {
-                _timer.Stop();
+                //_timer.Stop();
                 txtTimer.Visibility = Visibility.Collapsed;
                 txtTimer.Text = "00:00:00";
-                _countdown = 0;
+                //_countdown = 0;
             }
 
         }
@@ -333,5 +342,30 @@ namespace DDPM.UI.Module.WebCameraPresenceDetection
 
             txtTimer.Text = ts.ToString(@"hh\:mm\:ss");
         }
+
+        private void OnEsi_IsCameraSensorCoverChangeHandler(object sender, bool e)
+        {
+            if (e) 
+                DdpmCommonHelper.DeviceManagerSA!.ShowOSD(Screen.PrimaryScreen!.DeviceName, OSDType.Fingerprint);
+        }
+
+        private void OnWALSnoozeTimeLeftInSecondsChangeHandler(object sender, int e)
+        {
+            TimeSpan ts = TimeSpan.FromSeconds(e);
+
+            txtTimer.Text = ts.ToString(@"hh\:mm\:ss");
+        }
+
+        private void OnEsi_IsWALLockCountdownStartedChangeHandler(object sender, bool e)
+        {
+            if (e)
+                DdpmCommonHelper.DeviceManagerSA!.ShowOSD(Screen.PrimaryScreen!.DeviceName, OSDType.WalkAwayLock);
+        }
+
+        private void OnEsi_WALLockCountdownChangeHandler(object sender, int e)
+        {
+          
+        }
+
     }
 }
