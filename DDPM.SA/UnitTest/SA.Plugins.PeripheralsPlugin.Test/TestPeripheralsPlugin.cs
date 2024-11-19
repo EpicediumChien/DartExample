@@ -3288,6 +3288,72 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin.Test
             }
         }
 
+        [Test]
+        public void TestInitializeDeviceManagerPlugin()
+        {
+            Mock<IDeviceManagerSA> mockDeviceManagerSA = new Mock<IDeviceManagerSA>();
+            var mockDeviceManagerSAObject = mockDeviceManagerSA.Object;
+            privatetePeripheralsPlugin.SetFieldOrProperty("_DeviceManagerPlugin", mockDeviceManagerSAObject);  //_DeviceManagerPlugin not null
+            privatetePeripheralsPlugin.Invoke("InitializeDeviceManagerPlugin");
+            var InitializeDeviceManagerPlugin_result = privatetePeripheralsPlugin.GetFieldOrProperty("_DeviceManagerPlugin");
+            Assert.IsNotNull(InitializeDeviceManagerPlugin_result);
+        }
+
+        [Test]
+        public void TestUpdateAudioDongleParingStausText()
+        {
+            var pairingStatus1 = AudioDonglePairingStatus.AudioDonglePairingStatusStopped;
+
+            if (pairingStatus1 == AudioDonglePairingStatus.AudioDonglePairingStatusStopped)
+            {
+                var UpdateAudioDongleParingStausText_result1 = privatetePeripheralsPlugin.Invoke("UpdateParingStausText", pairingStatus1);  //AudioDongle PairingStatus
+                Assert.That(UpdateAudioDongleParingStausText_result1, Is.EqualTo("Stopped"));
+            }
+
+            var pairingStatus2 = AudioDonglePairingStatus.AudioDonglePairingStatusStarted;
+
+            if (pairingStatus2 == AudioDonglePairingStatus.AudioDonglePairingStatusStarted)
+            {
+                var UpdateAudioDongleParingStausText_result2 = privatetePeripheralsPlugin.Invoke("UpdateParingStausText", pairingStatus2);
+                Assert.That(UpdateAudioDongleParingStausText_result2, Is.EqualTo("Started"));
+            }
+
+            var pairingStatus3 = AudioDonglePairingStatus.AudioDonglePairingStatusRequest;
+
+            if (pairingStatus3 == AudioDonglePairingStatus.AudioDonglePairingStatusRequest)
+            {
+                var UpdateAudioDongleParingStausText_result3 = privatetePeripheralsPlugin.Invoke("UpdateParingStausText", pairingStatus3);
+                Assert.That(UpdateAudioDongleParingStausText_result3, Is.EqualTo("Request"));
+            }
+
+            var pairingStatus4 = AudioDonglePairingStatus.AudioDonglePairingStatusTimeOut;
+
+            if (pairingStatus4 == AudioDonglePairingStatus.AudioDonglePairingStatusTimeOut)
+            {
+                var UpdateAudioDongleParingStausText_result4 = privatetePeripheralsPlugin.Invoke("UpdateParingStausText", pairingStatus4);
+                Assert.That(UpdateAudioDongleParingStausText_result4, Is.EqualTo("TimeOut"));
+            }
+
+            var pairingStatus5 = AudioDonglePairingStatus.AudioDonglePairingStatusAlreadyPaired;
+
+            if (pairingStatus5 == AudioDonglePairingStatus.AudioDonglePairingStatusAlreadyPaired)
+            {
+                var UpdateAudioDongleParingStausText_result5 = privatetePeripheralsPlugin.Invoke("UpdateParingStausText", pairingStatus5);
+                Assert.That(UpdateAudioDongleParingStausText_result5, Is.EqualTo("Already Paired"));
+            }
+
+        }
+
+        [Test]
+        public void TestPhysicalAudioDeviceDongle_PairingStatusChanged()
+        {
+            Mock<IPhysicalAudioDeviceDongle> mockDongle = new Mock<IPhysicalAudioDeviceDongle>();
+            var device = mockDongle.Object;
+            var pairingStatus = AudioDonglePairingStatus.AudioDonglePairingStatusStarted;
+            Assert.Throws<NotImplementedException>(() =>
+            privatetePeripheralsPlugin.Invoke("PhysicalAudioDeviceDongle_PairingStatusChanged", device, pairingStatus));
+        }
+
         [OneTimeTearDown]
         public void TearDown()
         {

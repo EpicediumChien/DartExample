@@ -7,10 +7,10 @@
 
     <IsPackable>false</IsPackable>
     <IsTestProject>true</IsTestProject>
+    <OutputType>Exe</OutputType>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="MessagePack" Version="2.5.192" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.8.0" />
     <PackageReference Include="NUnit" Version="3.14.0" />
     <PackageReference Include="NUnit.Analyzers" Version="3.9.0" />
@@ -19,14 +19,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\Common\DDPM.SA.Common\DDPM.SA.Common.csproj" />
-    <ProjectReference Include="..\..\Common\VcpCore.Common\VcpCore.Common.csproj" />
-    <ProjectReference Include="..\..\Plugins\DDPM.SA.Plugins.User.DisplayManager\DDPM.SA.Plugins.User.DisplayManager.csproj" />
-    <ProjectReference Include="..\..\Plugins\DDPM.SA.Plugins.User.EasyArrange\DDPM.SA.Plugins.User.EasyArrange.csproj" />
-    <ProjectReference Include="..\..\Plugins\DDPM.SA.Plugins.User.NetworkKVM\DDPM.SA.Plugins.User.NetworkKVM.csproj" />
-    <ProjectReference Include="..\..\Plugins\DDPM.SA.Plugins.User.PipPbpManager\DDPM.SA.Plugins.User.PipPbpManager.csproj" />
-    <ProjectReference Include="..\..\Plugins\VcpCore.Plugins\VcpCore.Plugins.csproj" />
+    <ProjectReference Include="..\..\Plugins\DDPM.SA.Plugins.User.CLIProxy\DDPM.SA.Plugins.User.CLIProxy.csproj" />
     <ProjectReference Include="..\SA.Plugins.User.DisplayManager.Test\SA.Plugins.User.DisplayManager.Test.csproj" />
-    <ProjectReference Include="..\VcpCore.Plugins.Test\VcpCore.Plugins.Test.csproj" />
   </ItemGroup>
 
   <ItemGroup>
