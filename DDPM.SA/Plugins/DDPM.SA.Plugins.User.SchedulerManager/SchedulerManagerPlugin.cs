@@ -17,10 +17,10 @@ using Dell.Client.Framework.Common.Annotations;
 using Dell.Client.Framework.Common.PluginConditions;
 using Dell.Client.Framework.Interfaces;
 using Microsoft;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using VcpCore.Common;
 using IDs = DDPM.SA.Common.IDs;
@@ -51,7 +51,7 @@ namespace DDPM.SA.Plugins.User.SchedulerManager
         private IDisplayService _DisplayManagerPlugin;
         private static readonly object _PluginConditionLock = new object();
         private static readonly object _PluginConditionLock_Display = new object();
-        private static System.Timers.Timer _SchedulerCheckTimer = new System.Timers.Timer(600000);
+        private static System.Timers.Timer _SchedulerCheckTimer = new System.Timers.Timer(60000);
         private static List<MonitorInfo> _AllInfoMonitors;
         private static scheduleInfo _ScheduleMap;
         private static DDPMSettings _DDPMSettings;
@@ -136,8 +136,8 @@ namespace DDPM.SA.Plugins.User.SchedulerManager
         #endregion
 
         #region Private Methods
-		
-		protected virtual void OnServiceRequest(ReadWriteRequest e)
+
+        protected virtual void OnServiceRequest(ReadWriteRequest e)
         {
             _logs.DebugMsg_1("Brocast OnServiceRequest ...");
 
@@ -168,10 +168,10 @@ namespace DDPM.SA.Plugins.User.SchedulerManager
             {
                 _logs.DebugMsg_1("SchedulerManager InitializeMonitorInfo ...");
 
-                if (_AllInfoMonitors != null) _AllInfoMonitors.Clear();
-                else _AllInfoMonitors = new List<MonitorInfo>();
+                if (_AllInfoMonitors != null)
+                    _AllInfoMonitors.Clear();
 
-                _AllInfoMonitors.AddRange(_DisplayManagerPlugin.GetMonitors().Result);
+                _AllInfoMonitors = new List<MonitorInfo>(_DisplayManagerPlugin.GetMonitors().Result);
 
                 _logs.DebugMsg_1("_AllInfoMonitors count : " + _AllInfoMonitors.Count);
             }
@@ -181,7 +181,7 @@ namespace DDPM.SA.Plugins.User.SchedulerManager
         {
             _logs.DebugMsg_1("[Hook] OnSchedulerTimedRaise");
 
-            if (_DisplayManagerPlugin != null )
+            if (_DisplayManagerPlugin != null)
             {
                 InitializeMonitorInfo();
 
@@ -198,16 +198,21 @@ namespace DDPM.SA.Plugins.User.SchedulerManager
         {
             _logs.DebugMsg_1("Into CalculateNowValue ...");
 
-            foreach (MonitorInfo monitor in _AllInfoMonitors)
+            for (int i = 0; i < _AllInfoMonitors.Count; i++) //foreach (MonitorInfo monitor in _AllInfoMonitors)
             {
+                var monitor = _AllInfoMonitors[i];
+                var IssupportLuminance = (!(monitor.CapabilityDic.ContainsKey("12")));
                 InitializeScheduleInfo(monitor);
                 int countx = 0;
                 do
                 {
                     countx++;
-                } while (_WaitTag && countx < 10);
+                    SpinWait.SpinUntil(() => false, 250);
+                } while (_WaitTag && countx < 40);
 
-                if (_ScheduleMap != null)
+                _logs.DebugMsg_1("_WaitTag result " + _WaitTag.ToString());
+
+                if (_ScheduleMap != null && !_WaitTag)
                 {
                     if (_ScheduleMap.IsEnable)
                     {
@@ -238,7 +243,7 @@ namespace DDPM.SA.Plugins.User.SchedulerManager
                             var Pre_PR2Time = new DateTime(CurDateTime.Year, CurDateTime.Month, CurDateTime.Day, Hour_PR2, Min_PR2, 0).AddMinutes(Duration_PR2 * -1);
                             if (Brightness_difference < 0) Brightness_difference = Brightness_difference * -1;
                             if (Contrast_difference < 0) Contrast_difference = Contrast_difference * -1;
-                            var PerStepValue = 5;
+                            var PerStepValue = IssupportLuminance ? 20 : 5;
                             byte Bvcp = 0x10;
                             byte Cvcp = 0x12;
                             if (CurDateTime.Hour < 12)  // AM
@@ -251,25 +256,27 @@ namespace DDPM.SA.Plugins.User.SchedulerManager
                                         var BrightnessSteps_min = (PR2Time - Pre_PR2Time).TotalMinutes / BrightnessSteps;
                                         var Brightness_steps = Convert.ToInt32((CurDateTime - Pre_PR2Time).TotalMinutes / BrightnessSteps_min);
 
-                                            var ContrastSteps = Contrast_difference / PerStepValue;
-                                            var ContrastSteps_min = (PR2Time - Pre_PR2Time).TotalMinutes / ContrastSteps;
-                                            var Contrast_steps = Convert.ToInt32((CurDateTime - Pre_PR2Time).TotalMinutes / ContrastSteps_min);
+                                        var ContrastSteps = Contrast_difference / PerStepValue;
+                                        var ContrastSteps_min = (PR2Time - Pre_PR2Time).TotalMinutes / ContrastSteps;
+                                        var Contrast_steps = Convert.ToInt32((CurDateTime - Pre_PR2Time).TotalMinutes / ContrastSteps_min);
 
-                                            if (IsBrightnessPR2Plus)
-                                            {
-                                                var value = Convert.ToUInt32(Brightness_PR1 + (PerStepValue * Brightness_steps));
-                                                _DisplayManagerPlugin.SetVCPCapability(monitor, Bvcp, value);
+                                        if (IsBrightnessPR2Plus)
+                                        {
+                                            var value = Convert.ToUInt32(Brightness_PR1 + (PerStepValue * Brightness_steps));
+                                            _DisplayManagerPlugin.SetVCPCapability(monitor, Bvcp, value);
 
-                                                _logs.DebugMsg_1("CalculateNowValue Set Brightness to : " + value.ToString());
-                                            }
-                                            else
-                                            {
-                                                var value = Convert.ToUInt32(Brightness_PR1 - (PerStepValue * Brightness_steps));
-                                                _DisplayManagerPlugin.SetVCPCapability(monitor, Bvcp, value);
+                                            _logs.DebugMsg_1("CalculateNowValue Set Brightness to : " + value.ToString());
+                                        }
+                                        else
+                                        {
+                                            var value = Convert.ToUInt32(Brightness_PR1 - (PerStepValue * Brightness_steps));
+                                            _DisplayManagerPlugin.SetVCPCapability(monitor, Bvcp, value);
 
-                                                _logs.DebugMsg_1("CalculateNowValue Set Brightness to : " + value.ToString());
-                                            }
+                                            _logs.DebugMsg_1("CalculateNowValue Set Brightness to : " + value.ToString());
+                                        }
 
+                                        if (!IssupportLuminance)
+                                        {
                                             if (IsContrastPR2Plus)
                                             {
                                                 var value = Convert.ToUInt32(Contrast_PR1 + (PerStepValue * Contrast_steps));
@@ -285,110 +292,67 @@ namespace DDPM.SA.Plugins.User.SchedulerManager
                                                 _logs.DebugMsg_1("CalculateNowValue Set Contrast to : " + value.ToString());
                                             }
                                         }
-                                        else  //CurDateTime is same as or earlier than Pre_PR2Time
-                                        {
-                                            var valueI = Convert.ToUInt32(Brightness_PR1);
-                                            _DisplayManagerPlugin.SetVCPCapability(monitor, Bvcp, valueI);
-                                            var valueII = Convert.ToUInt32(Contrast_PR1);
-                                            _DisplayManagerPlugin.SetVCPCapability(monitor, Cvcp, valueII);
-
-                                            _logs.DebugMsg_1("CalculateNowValue Set Brightness to : " + valueI.ToString());
-                                            _logs.DebugMsg_1("CalculateNowValue Set Contrast to : " + valueII.ToString());
-                                        }
                                     }
-                                    else if (DateTime.Compare(CurDateTime, PR1Time) == 0) //The same as PR1Time
+                                    else  //CurDateTime is same as or earlier than Pre_PR2Time
                                     {
                                         var valueI = Convert.ToUInt32(Brightness_PR1);
                                         _DisplayManagerPlugin.SetVCPCapability(monitor, Bvcp, valueI);
-                                        var valueII = Convert.ToUInt32(Contrast_PR1);
-                                        _DisplayManagerPlugin.SetVCPCapability(monitor, Cvcp, valueII);
 
                                         _logs.DebugMsg_1("CalculateNowValue Set Brightness to : " + valueI.ToString());
-                                        _logs.DebugMsg_1("CalculateNowValue Set Contrast to : " + valueII.ToString());
-                                    }
-                                    else //CurDateTime is earlier than PR1Time
-                                    {
-                                        if (DateTime.Compare(CurDateTime, Pre_PR1Time) > 0)  //CurDateTime is later than Pre_PR1Time.
+
+                                        if (!IssupportLuminance)
                                         {
-                                            var BrightnessSteps = Brightness_difference / PerStepValue;
-                                            var BrightnessSteps_min = (PR1Time - Pre_PR1Time).TotalMinutes / BrightnessSteps;
-                                            var Brightness_steps = Convert.ToInt32((CurDateTime - Pre_PR1Time).TotalMinutes / BrightnessSteps_min);
-
-                                            var ContrastSteps = Contrast_difference / PerStepValue;
-                                            var ContrastSteps_min = (PR1Time - Pre_PR1Time).TotalMinutes / ContrastSteps;
-                                            var Contrast_steps = Convert.ToInt32((CurDateTime - Pre_PR1Time).TotalMinutes / ContrastSteps_min);
-
-                                            if (IsBrightnessPR1Plus)
-                                            {
-                                                var value = Convert.ToUInt32(Brightness_PR2 + (PerStepValue * Brightness_steps));
-                                                _DisplayManagerPlugin.SetVCPCapability(monitor, Bvcp, value);
-
-                                                _logs.DebugMsg_1("CalculateNowValue Set Brightness to : " + value.ToString());
-                                            }
-                                            else
-                                            {
-                                                var value = Convert.ToUInt32(Brightness_PR2 - (PerStepValue * Brightness_steps));
-                                                _DisplayManagerPlugin.SetVCPCapability(monitor, Bvcp, value);
-
-                                                _logs.DebugMsg_1("CalculateNowValue Set Brightness to : " + value.ToString());
-                                            }
-
-                                            if (IsContrastPR1Plus)
-                                            {
-                                                var value = Convert.ToUInt32(Contrast_PR2 + (PerStepValue * Contrast_steps));
-                                                _DisplayManagerPlugin.SetVCPCapability(monitor, Cvcp, value);
-
-                                                _logs.DebugMsg_1("CalculateNowValue Set Contrast to : " + value.ToString());
-                                            }
-                                            else
-                                            {
-                                                var value = Convert.ToUInt32(Contrast_PR2 - (PerStepValue * Contrast_steps));
-                                                _DisplayManagerPlugin.SetVCPCapability(monitor, Cvcp, value);
-
-                                                _logs.DebugMsg_1("CalculateNowValue Set Contrast to : " + value.ToString());
-                                            }
-                                        }
-                                        else  //CurDateTime is same as  or  earlier than Pre_PR1Time
-                                        {
-                                            var valueI = Convert.ToUInt32(Brightness_PR2);
-                                            _DisplayManagerPlugin.SetVCPCapability(monitor, Bvcp, valueI);
-                                            var valueII = Convert.ToUInt32(Contrast_PR2);
+                                            var valueII = Convert.ToUInt32(Contrast_PR1);
                                             _DisplayManagerPlugin.SetVCPCapability(monitor, Cvcp, valueII);
 
-                                            _logs.DebugMsg_1("CalculateNowValue Set Brightness to : " + valueI.ToString());
                                             _logs.DebugMsg_1("CalculateNowValue Set Contrast to : " + valueII.ToString());
                                         }
                                     }
                                 }
-                                else //PM
+                                else if (DateTime.Compare(CurDateTime, PR1Time) == 0) //The same as PR1Time
                                 {
-                                    if (DateTime.Compare(CurDateTime, PR2Time) > 0) //CurDateTime is later than PR2Time.
+                                    var valueI = Convert.ToUInt32(Brightness_PR1);
+                                    _DisplayManagerPlugin.SetVCPCapability(monitor, Bvcp, valueI);
+
+                                    _logs.DebugMsg_1("CalculateNowValue Set Brightness to : " + valueI.ToString());
+
+                                    if (!IssupportLuminance)
                                     {
-                                        if (DateTime.Compare(CurDateTime, Pre_PR1Timee_ADD1D) > 0)  //CurDateTime is later than Pre_PR1Timee_ADD1D.
+                                        var valueII = Convert.ToUInt32(Contrast_PR1);
+                                        _DisplayManagerPlugin.SetVCPCapability(monitor, Cvcp, valueII);
+
+                                        _logs.DebugMsg_1("CalculateNowValue Set Contrast to : " + valueII.ToString());
+                                    }
+                                }
+                                else //CurDateTime is earlier than PR1Time
+                                {
+                                    if (DateTime.Compare(CurDateTime, Pre_PR1Time) > 0)  //CurDateTime is later than Pre_PR1Time.
+                                    {
+                                        var BrightnessSteps = Brightness_difference / PerStepValue;
+                                        var BrightnessSteps_min = (PR1Time - Pre_PR1Time).TotalMinutes / BrightnessSteps;
+                                        var Brightness_steps = Convert.ToInt32((CurDateTime - Pre_PR1Time).TotalMinutes / BrightnessSteps_min);
+
+                                        var ContrastSteps = Contrast_difference / PerStepValue;
+                                        var ContrastSteps_min = (PR1Time - Pre_PR1Time).TotalMinutes / ContrastSteps;
+                                        var Contrast_steps = Convert.ToInt32((CurDateTime - Pre_PR1Time).TotalMinutes / ContrastSteps_min);
+
+                                        if (IsBrightnessPR1Plus)
                                         {
-                                            var BrightnessSteps = Brightness_difference / PerStepValue;
-                                            var BrightnessSteps_min = (PR1Time - Pre_PR1Time).TotalMinutes / BrightnessSteps;
-                                            var Brightness_steps = Convert.ToInt32((CurDateTime - Pre_PR1Time).TotalMinutes / BrightnessSteps_min);
+                                            var value = Convert.ToUInt32(Brightness_PR2 + (PerStepValue * Brightness_steps));
+                                            _DisplayManagerPlugin.SetVCPCapability(monitor, Bvcp, value);
 
-                                            var ContrastSteps = Contrast_difference / PerStepValue;
-                                            var ContrastSteps_min = (PR1Time - Pre_PR1Time).TotalMinutes / ContrastSteps;
-                                            var Contrast_steps = Convert.ToInt32((CurDateTime - Pre_PR1Time).TotalMinutes / ContrastSteps_min);
+                                            _logs.DebugMsg_1("CalculateNowValue Set Brightness to : " + value.ToString());
+                                        }
+                                        else
+                                        {
+                                            var value = Convert.ToUInt32(Brightness_PR2 - (PerStepValue * Brightness_steps));
+                                            _DisplayManagerPlugin.SetVCPCapability(monitor, Bvcp, value);
 
-                                            if (IsBrightnessPR1Plus)
-                                            {
-                                                var value = Convert.ToUInt32(Brightness_PR2 + (PerStepValue * Brightness_steps));
-                                                _DisplayManagerPlugin.SetVCPCapability(monitor, Bvcp, value);
+                                            _logs.DebugMsg_1("CalculateNowValue Set Brightness to : " + value.ToString());
+                                        }
 
-                                                _logs.DebugMsg_1("CalculateNowValue Set Brightness to : " + value.ToString());
-                                            }
-                                            else
-                                            {
-                                                var value = Convert.ToUInt32(Brightness_PR2 - (PerStepValue * Brightness_steps));
-                                                _DisplayManagerPlugin.SetVCPCapability(monitor, Bvcp, value);
-
-                                                _logs.DebugMsg_1("CalculateNowValue Set Brightness to : " + value.ToString());
-                                            }
-
+                                        if (!IssupportLuminance)
+                                        {
                                             if (IsContrastPR1Plus)
                                             {
                                                 var value = Convert.ToUInt32(Contrast_PR2 + (PerStepValue * Contrast_steps));
@@ -404,54 +368,131 @@ namespace DDPM.SA.Plugins.User.SchedulerManager
                                                 _logs.DebugMsg_1("CalculateNowValue Set Contrast to : " + value.ToString());
                                             }
                                         }
-                                        else  //CurDateTime is same as or earlier than Pre_PR1Timee_ADD1D
-                                        {
-                                            var valueI = Convert.ToUInt32(Brightness_PR2);
-                                            _DisplayManagerPlugin.SetVCPCapability(monitor, Bvcp, valueI);
-                                            var valueII = Convert.ToUInt32(Contrast_PR2);
-                                            _DisplayManagerPlugin.SetVCPCapability(monitor, Cvcp, valueII);
-
-                                            _logs.DebugMsg_1("CalculateNowValue Set Brightness to : " + valueI.ToString());
-                                            _logs.DebugMsg_1("CalculateNowValue Set Contrast to : " + valueII.ToString());
-                                        }
                                     }
-                                    else if (DateTime.Compare(CurDateTime, PR2Time) == 0) //The same as PR2Time.
+                                    else  //CurDateTime is same as  or  earlier than Pre_PR1Time
                                     {
                                         var valueI = Convert.ToUInt32(Brightness_PR2);
                                         _DisplayManagerPlugin.SetVCPCapability(monitor, Bvcp, valueI);
-                                        var valueII = Convert.ToUInt32(Contrast_PR2);
-                                        _DisplayManagerPlugin.SetVCPCapability(monitor, Cvcp, valueII);
 
                                         _logs.DebugMsg_1("CalculateNowValue Set Brightness to : " + valueI.ToString());
-                                        _logs.DebugMsg_1("CalculateNowValue Set Contrast to : " + valueII.ToString());
-                                    }
-                                    else //CurDateTime is earlier than PR2Time.
-                                    {
-                                        if (DateTime.Compare(CurDateTime, Pre_PR2Time) > 0)  //CurDateTime is later than Pre_PR2Time.
+
+                                        if (!IssupportLuminance)
                                         {
-                                            var BrightnessSteps = Brightness_difference / PerStepValue;
-                                            var BrightnessSteps_min = (PR2Time - Pre_PR2Time).TotalMinutes / BrightnessSteps;
-                                            var Brightness_steps = Convert.ToInt32((CurDateTime - Pre_PR2Time).TotalMinutes / BrightnessSteps_min);
+                                            var valueII = Convert.ToUInt32(Contrast_PR2);
+                                            _DisplayManagerPlugin.SetVCPCapability(monitor, Cvcp, valueII);
 
-                                            var ContrastSteps = Contrast_difference / PerStepValue;
-                                            var ContrastSteps_min = (PR2Time - Pre_PR2Time).TotalMinutes / ContrastSteps;
-                                            var Contrast_steps = Convert.ToInt32((CurDateTime - Pre_PR2Time).TotalMinutes / ContrastSteps_min);
+                                            _logs.DebugMsg_1("CalculateNowValue Set Contrast to : " + valueII.ToString());
+                                        }
+                                    }
+                                }
+                            }
+                            else //PM
+                            {
+                                if (DateTime.Compare(CurDateTime, PR2Time) > 0) //CurDateTime is later than PR2Time.
+                                {
+                                    if (DateTime.Compare(CurDateTime, Pre_PR1Timee_ADD1D) > 0)  //CurDateTime is later than Pre_PR1Timee_ADD1D.
+                                    {
+                                        var BrightnessSteps = Brightness_difference / PerStepValue;
+                                        var BrightnessSteps_min = (PR1Time - Pre_PR1Time).TotalMinutes / BrightnessSteps;
+                                        var Brightness_steps = Convert.ToInt32((CurDateTime - Pre_PR1Time).TotalMinutes / BrightnessSteps_min);
 
-                                            if (IsBrightnessPR2Plus)
+                                        var ContrastSteps = Contrast_difference / PerStepValue;
+                                        var ContrastSteps_min = (PR1Time - Pre_PR1Time).TotalMinutes / ContrastSteps;
+                                        var Contrast_steps = Convert.ToInt32((CurDateTime - Pre_PR1Time).TotalMinutes / ContrastSteps_min);
+
+                                        if (IsBrightnessPR1Plus)
+                                        {
+                                            var value = Convert.ToUInt32(Brightness_PR2 + (PerStepValue * Brightness_steps));
+                                            _DisplayManagerPlugin.SetVCPCapability(monitor, Bvcp, value);
+
+                                            _logs.DebugMsg_1("CalculateNowValue Set Brightness to : " + value.ToString());
+                                        }
+                                        else
+                                        {
+                                            var value = Convert.ToUInt32(Brightness_PR2 - (PerStepValue * Brightness_steps));
+                                            _DisplayManagerPlugin.SetVCPCapability(monitor, Bvcp, value);
+
+                                            _logs.DebugMsg_1("CalculateNowValue Set Brightness to : " + value.ToString());
+                                        }
+
+                                        if (!IssupportLuminance)
+                                        {
+                                            if (IsContrastPR1Plus)
                                             {
-                                                var value = Convert.ToUInt32(Brightness_PR1 + (PerStepValue * Brightness_steps));
-                                                _DisplayManagerPlugin.SetVCPCapability(monitor, Bvcp, value);
+                                                var value = Convert.ToUInt32(Contrast_PR2 + (PerStepValue * Contrast_steps));
+                                                _DisplayManagerPlugin.SetVCPCapability(monitor, Cvcp, value);
 
-                                                _logs.DebugMsg_1("CalculateNowValue Set Brightness to : " + value.ToString());
+                                                _logs.DebugMsg_1("CalculateNowValue Set Contrast to : " + value.ToString());
                                             }
                                             else
                                             {
-                                                var value = Convert.ToUInt32(Brightness_PR1 - (PerStepValue * Brightness_steps));
-                                                _DisplayManagerPlugin.SetVCPCapability(monitor, Bvcp, value);
+                                                var value = Convert.ToUInt32(Contrast_PR2 - (PerStepValue * Contrast_steps));
+                                                _DisplayManagerPlugin.SetVCPCapability(monitor, Cvcp, value);
 
-                                                _logs.DebugMsg_1("CalculateNowValue Set Brightness to : " + value.ToString());
+                                                _logs.DebugMsg_1("CalculateNowValue Set Contrast to : " + value.ToString());
                                             }
+                                        }
+                                    }
+                                    else  //CurDateTime is same as or earlier than Pre_PR1Timee_ADD1D
+                                    {
+                                        var valueI = Convert.ToUInt32(Brightness_PR2);
+                                        _DisplayManagerPlugin.SetVCPCapability(monitor, Bvcp, valueI);
 
+                                        _logs.DebugMsg_1("CalculateNowValue Set Brightness to : " + valueI.ToString());
+
+                                        if (!IssupportLuminance)
+                                        {
+                                            var valueII = Convert.ToUInt32(Contrast_PR2);
+                                            _DisplayManagerPlugin.SetVCPCapability(monitor, Cvcp, valueII);
+
+                                            _logs.DebugMsg_1("CalculateNowValue Set Contrast to : " + valueII.ToString());
+                                        }
+                                    }
+                                }
+                                else if (DateTime.Compare(CurDateTime, PR2Time) == 0) //The same as PR2Time.
+                                {
+                                    var valueI = Convert.ToUInt32(Brightness_PR2);
+                                    _DisplayManagerPlugin.SetVCPCapability(monitor, Bvcp, valueI);
+
+                                    _logs.DebugMsg_1("CalculateNowValue Set Brightness to : " + valueI.ToString());
+
+                                    if (!IssupportLuminance)
+                                    {
+                                        var valueII = Convert.ToUInt32(Contrast_PR2);
+                                        _DisplayManagerPlugin.SetVCPCapability(monitor, Cvcp, valueII);
+
+                                        _logs.DebugMsg_1("CalculateNowValue Set Contrast to : " + valueII.ToString());
+                                    }
+                                }
+                                else //CurDateTime is earlier than PR2Time.
+                                {
+                                    if (DateTime.Compare(CurDateTime, Pre_PR2Time) > 0)  //CurDateTime is later than Pre_PR2Time.
+                                    {
+                                        var BrightnessSteps = Brightness_difference / PerStepValue;
+                                        var BrightnessSteps_min = (PR2Time - Pre_PR2Time).TotalMinutes / BrightnessSteps;
+                                        var Brightness_steps = Convert.ToInt32((CurDateTime - Pre_PR2Time).TotalMinutes / BrightnessSteps_min);
+
+                                        var ContrastSteps = Contrast_difference / PerStepValue;
+                                        var ContrastSteps_min = (PR2Time - Pre_PR2Time).TotalMinutes / ContrastSteps;
+                                        var Contrast_steps = Convert.ToInt32((CurDateTime - Pre_PR2Time).TotalMinutes / ContrastSteps_min);
+
+                                        if (IsBrightnessPR2Plus)
+                                        {
+                                            var value = Convert.ToUInt32(Brightness_PR1 + (PerStepValue * Brightness_steps));
+                                            _DisplayManagerPlugin.SetVCPCapability(monitor, Bvcp, value);
+
+                                            _logs.DebugMsg_1("CalculateNowValue Set Brightness to : " + value.ToString());
+                                        }
+                                        else
+                                        {
+                                            var value = Convert.ToUInt32(Brightness_PR1 - (PerStepValue * Brightness_steps));
+                                            _DisplayManagerPlugin.SetVCPCapability(monitor, Bvcp, value);
+
+                                            _logs.DebugMsg_1("CalculateNowValue Set Brightness to : " + value.ToString());
+                                        }
+
+                                        if (!IssupportLuminance)
+                                        {
                                             if (IsContrastPR2Plus)
                                             {
                                                 var value = Convert.ToUInt32(Contrast_PR1 + (PerStepValue * Contrast_steps));
@@ -467,15 +508,21 @@ namespace DDPM.SA.Plugins.User.SchedulerManager
                                                 _logs.DebugMsg_1("CalculateNowValue Set Contrast to : " + value.ToString());
                                             }
                                         }
-                                        else  //CurDateTime is same as  or  earlier than Pre_PR2Time
+                                    }
+                                    else  //CurDateTime is same as  or  earlier than Pre_PR2Time
+                                    {
+                                        var valueI = Convert.ToUInt32(Brightness_PR1);
+                                        _DisplayManagerPlugin.SetVCPCapability(monitor, Bvcp, valueI);
+
+                                        _logs.DebugMsg_1("CalculateNowValue Set Brightness to : " + valueI.ToString());
+
+                                        if (!IssupportLuminance)
                                         {
-                                            var valueI = Convert.ToUInt32(Brightness_PR1);
-                                            _DisplayManagerPlugin.SetVCPCapability(monitor, Bvcp, valueI);
                                             var valueII = Convert.ToUInt32(Contrast_PR1);
                                             _DisplayManagerPlugin.SetVCPCapability(monitor, Cvcp, valueII);
 
-                                        _logs.DebugMsg_1("CalculateNowValue Set Brightness to : " + valueI.ToString());
-                                        _logs.DebugMsg_1("CalculateNowValue Set Contrast to : " + valueII.ToString());
+                                            _logs.DebugMsg_1("CalculateNowValue Set Contrast to : " + valueII.ToString());
+                                        }
                                     }
                                 }
                             }
@@ -528,8 +575,6 @@ namespace DDPM.SA.Plugins.User.SchedulerManager
             });
         }
 
-        
-
         #endregion
 
         #region IDisposableObservable Support
@@ -567,7 +612,6 @@ namespace DDPM.SA.Plugins.User.SchedulerManager
         {
             GetCurrentDisplayManagerCondition();
         }
-
 
         private void PluginManagerOnPluginsStarted(object sender, PluginsStartedEventArgs e)
         {
