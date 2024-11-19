@@ -596,7 +596,7 @@ namespace DDPM.UI.Plugin.ViewModels
                     break;
             }
         }
-        public void RestoreToDefault()
+        public async void RestoreToDefault()
         {
             try
             {
@@ -618,7 +618,7 @@ namespace DDPM.UI.Plugin.ViewModels
                 _log.Info($"[HeadsetViewModel] DeviceInfoDTP.VoiceGuidance .......= {DeviceInfoDTP.VoiceGuidance.ToString()}");
                 _log.Info($"[HeadsetViewModel] DeviceInfoDTP.WearDetection .......= {DeviceInfoDTP.WearDetection.ToString()}");
                 _deviceManager.SetFactoryResetAsyncValueForHeadset(CurrentDeviceInfo!.ID.ToString(), true).Wait();
-                UpdateDTPValue();
+                await UpdateDTPValue();
                 CheckHeadsetFunc();
             }
             catch (Exception ex)
