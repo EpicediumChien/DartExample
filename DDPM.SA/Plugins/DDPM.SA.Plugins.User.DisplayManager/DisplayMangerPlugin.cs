@@ -1842,8 +1842,8 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             _VCPchangedEventArgs.monitor = e.monitor;
             OnVCPchanged(_VCPchangedEventArgs);
 
-            //0607 Bruce 自動旋轉畫面顧新增下面兩行程式碼
-            SetDisplayOrientation(_VCPchangedEventArgs);
+            ////0607 Bruce 自動旋轉畫面顧新增下面兩行程式碼
+            //SetDisplayOrientation(_VCPchangedEventArgs);
 
             //0611 Dean
             if (e.vcpcode.Equals("66"))
@@ -2448,9 +2448,9 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                         DisplayOrientation orientation = (DisplayOrientation)(retValue - 1);
                         _logs.DebugMsg($"[DisplayMangerPlugin] SetDisplayOrientation orientation:{orientation}");
                         //OSDOrientationChangeEvent?.AsyncFireAndForget(this, orientation, System.Threading.CancellationToken.None);
-                        //Properties properties = new Properties();
-                        //_logs.DebugMsg($"[DisplayMangerPlugin] SetDisplayOrientation go");
-                        //ret = SetDisplayPropertiest(vcpchangedEventArgs.monitor, properties, orientation).Result;
+                        Properties properties = new Properties();
+                        _logs.DebugMsg($"[DisplayMangerPlugin] SetDisplayOrientation go");
+                        ret = SetDisplayPropertiest(vcpchangedEventArgs.monitor, properties, orientation).Result;
                     }
                 }
             }
