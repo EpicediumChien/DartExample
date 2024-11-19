@@ -539,13 +539,13 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         }
 
 
-        public async Task SetKbAssignKeystrokeAction(string Guid, string newValue)
+        public async Task SetKbAssignKeystrokeAction(string Guid, byte[] newValue)
         {
             if (!await GetItemIDAsync("Keyboard", Guid))
             { return; }
             if (await GetCommodityInterfaceInstanceAsync(_keyboardMethodInfo) is ICommodity commodity)
             {
-                SetPropertyValue(_keyboardInterfaceType, commodity, "AssignKeystrokeAction", Encoding.UTF8.GetBytes(newValue));
+                SetPropertyValue(_keyboardInterfaceType, commodity, "AssignKeystrokeAction", newValue);
             }
             else
             {
@@ -554,14 +554,14 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
         }
 
-        public async Task SetKbAssignDialogAction(string Guid, string newValue)
+        public async Task SetKbAssignDialogAction(string Guid, byte[] newValue)
         {
             if (!await GetItemIDAsync("Keyboard", Guid))
             { return; }
 
             if (await GetCommodityInterfaceInstanceAsync(_keyboardMethodInfo) is ICommodity commodity)
             {
-                SetPropertyValue(_keyboardInterfaceType, commodity, "AssignDialogAction", Encoding.UTF8.GetBytes(newValue));
+                SetPropertyValue(_keyboardInterfaceType, commodity, "AssignDialogAction", newValue);
             }
             else
             {
@@ -570,14 +570,14 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
         }
 
-        public async Task SetKbAssignedAction(string Guid, string newValue)
+        public async Task SetKbAssignedAction(string Guid, byte[] newValue)
         {
             if (!await GetItemIDAsync("Keyboard", Guid))
             { return; }
 
             if (await GetCommodityInterfaceInstanceAsync(_keyboardMethodInfo) is ICommodity commodity)
             {
-                SetPropertyValue(_keyboardInterfaceType, commodity, "AssignedAction", Encoding.UTF8.GetBytes(newValue));
+                SetPropertyValue(_keyboardInterfaceType, commodity, "AssignedAction", newValue);
             }
             else
             {

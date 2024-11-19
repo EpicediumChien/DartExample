@@ -724,11 +724,11 @@ namespace DDPM.SA.Common
         Task<bool> StopKeyboardKeystrokeRecording(string Guid);
 
         Task DeleteKeyboardAssignedAction(string Guid, int newValue);
-        Task SetKbAssignedAction(string Guid, string newValue);
+        Task SetKbAssignedAction(string Guid, byte[] newValue);
 
-        Task SetKbAssignDialogAction(string Guid, string newValue);
+        Task SetKbAssignDialogAction(string Guid, byte[] newValue);
 
-        Task SetKbAssignKeystrokeAction(string Guid, string newValue);
+        Task SetKbAssignKeystrokeAction(string Guid, byte[] newValue);
 
         #endregion Keyboard
 

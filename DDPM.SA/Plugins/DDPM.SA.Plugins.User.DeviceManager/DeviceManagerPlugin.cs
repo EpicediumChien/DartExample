@@ -529,11 +529,12 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             if (e.PropertyName == nameof(UXSystemParameters.Instance.OSTheme))
             {
                 OSThemeEnum oSTheme = UXSystemParameters.Instance.OSTheme;
-                if (previousOsTheme == oSTheme) return;
+                if (previousOsTheme == oSTheme)
+                    return;
                 var applicationSettings_Function = new ApplicationSettings_Function();
                 string appModeTelementryData = loadResourceDictionary(oSTheme);
-                if(string.IsNullOrEmpty(appModeTelementryData))
-                Debug.WriteLine($"AppModeTelemetry=> {appModeTelementryData}");
+                if (string.IsNullOrEmpty(appModeTelementryData))
+                    Debug.WriteLine($"AppModeTelemetry=> {appModeTelementryData}");
                 writelog("[DeviceMangerPlugin] [Telementry] Send Telementry for AppMode...");
                 Task.Run(() => applicationSettings_Function.Send_AppMode_Telementry(_TelementryScheduler, _AllInfoMonitors, appModeTelementryData)).ConfigureAwait(false);
                 /* if (rt) writelog("[DeviceMangerPlugin] [Telementry] Send Telementry for AppMode Success ...");
@@ -1727,7 +1728,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
                 Task.Run(() => //support last selected monitor info from settings
                 {
-                    if(_SettingsPlugin != null)
+                    if (_SettingsPlugin != null)
                     {
                         try
                         {
@@ -1752,7 +1753,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                             else
                                 throw new ArgumentNullException("data");
                         }
-                        catch(Exception ex)
+                        catch (Exception ex)
                         {
                             writelog($"Read last selected monitor from settings failed. ({ex.Message})");
                         }
@@ -2321,7 +2322,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                             writelog("[SetUSBUpstream] inputSourceList is not find " + inputsource);
                         }
                     }
-                    else 
+                    else
                     {
                         writelog("[SetUSBUpstream] inputSourceList is null ");
                     }
@@ -8285,21 +8286,21 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             return await Task.Run(() => _DTPProxyPlugin.StopKeyboardKeystrokeRecording(Guid));
         }
 
-        public Task SetKbAssignKeystrokeAction(string Guid, string newValue)
+        public Task SetKbAssignKeystrokeAction(string Guid, byte[] newValue)
         {
             writelog("DeviceMangerPlugin received SetKbAssignKeystrokeAction requested ...");
             _DTPProxyPlugin.SetKbAssignKeystrokeAction(Guid, newValue);
             return Task.FromResult(true);
         }
 
-        public Task SetKbAssignDialogAction(string Guid, string newValue)
+        public Task SetKbAssignDialogAction(string Guid, byte[] newValue)
         {
             writelog("DeviceMangerPlugin received SetKbAssignDialogAction requested ...");
             _DTPProxyPlugin.SetKbAssignDialogAction(Guid, newValue);
             return Task.FromResult(true);
         }
 
-        public Task SetKbAssignedAction(string Guid, string newValue)
+        public Task SetKbAssignedAction(string Guid, byte[] newValue)
         {
             writelog("DeviceMangerPlugin received SetKbAssignedAction requested ...");
             _DTPProxyPlugin.SetKbAssignedAction(Guid, newValue);
@@ -10063,7 +10064,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             //1106 add PBP mode status
             Task.Run(() => updatePBPModeStatus(e.monitor, e.vcpcode)).ConfigureAwait(false);
             //Jason add USB change
-            if(e.vcpcode.Equals("E7"))
+            if (e.vcpcode.Equals("E7"))
             {
                 if (_DisplayManagerPlugin != null)
                 {
@@ -11739,12 +11740,12 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             lastSelectedMonitor_UI = mo;
             Task.Run(() =>
             {
-                if(mo != null && _SettingsPlugin != null)
+                if (mo != null && _SettingsPlugin != null)
                 {
                     DDPMSettings settings = _SettingsPlugin.ReloadAppConfigData().Result;
-                    if(settings != null && settings.UserSettings != null)
+                    if (settings != null && settings.UserSettings != null)
                     {
-                        settings.UserSettings.lastUISelectedMonitor = new DDPMSimpleMonitorRecord() { ModelName = mo.modelName, ServiceTag = mo.edid.ServiceTag};
+                        settings.UserSettings.lastUISelectedMonitor = new DDPMSimpleMonitorRecord() { ModelName = mo.modelName, ServiceTag = mo.edid.ServiceTag };
                         _SettingsPlugin.SetAppConfigData(settings);
                     }
                 }
