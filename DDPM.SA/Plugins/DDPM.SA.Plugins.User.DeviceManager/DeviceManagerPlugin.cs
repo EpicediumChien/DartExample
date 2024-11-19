@@ -524,8 +524,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 if (previousOsTheme == oSTheme) return;
                 var applicationSettings_Function = new ApplicationSettings_Function();
                 string appModeTelementryData = loadResourceDictionary(oSTheme);
-                if(string.IsNullOrEmpty(appModeTelementryData))
-                Debug.WriteLine($"AppModeTelemetry=> {appModeTelementryData}");
+                if (string.IsNullOrEmpty(appModeTelementryData))
+                    Debug.WriteLine($"AppModeTelemetry=> {appModeTelementryData}");
                 writelog("[DeviceMangerPlugin] [Telementry] Send Telementry for AppMode...");
                 Task.Run(() => applicationSettings_Function.Send_AppMode_Telementry(_TelementryScheduler, _AllInfoMonitors, appModeTelementryData)).ConfigureAwait(false);
                 /* if (rt) writelog("[DeviceMangerPlugin] [Telementry] Send Telementry for AppMode Success ...");
@@ -1711,7 +1711,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
                 Task.Run(() => //support last selected monitor info from settings
                 {
-                    if(_SettingsPlugin != null)
+                    if (_SettingsPlugin != null)
                     {
                         try
                         {
@@ -1736,7 +1736,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                             else
                                 throw new ArgumentNullException("data");
                         }
-                        catch(Exception ex)
+                        catch (Exception ex)
                         {
                             writelog($"Read last selected monitor from settings failed. ({ex.Message})");
                         }
@@ -2297,7 +2297,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                             writelog("[SetUSBUpstream] inputSourceList is not find " + inputsource);
                         }
                     }
-                    else 
+                    else
                     {
                         writelog("[SetUSBUpstream] inputSourceList is null ");
                     }
@@ -9400,9 +9400,9 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         private void HandleQAM()
         {
             writelog($"HandleQAM start");
-            writelog($"CallQAM_UI: GetDevices_WithoutAwait go");
+            writelog($"HandleQAM: GetDevices_WithoutAwait go");
             List<DeviceInfo> deviceInfos = GetDevices_WithoutAwait().Result.deviceInfo.FindAll(x => (x.PhysicalDeviceType.Equals(DeviceType.LogicalWebcam) || x.PhysicalDeviceType.Equals(DeviceType.PhysicalWebcam)));
-            writelog($"CallQAM_UI: deviceInfos.Count:{deviceInfos.Count}");
+            writelog($"HandleQAM: deviceInfos.Count:{deviceInfos.Count}");
             if (_ZoomMeetingType == ZoomMeetingType.CONF_3RD_EVENT_MEETING)
             {
                 if (_QAM == null)
@@ -9532,39 +9532,40 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             if (_QAM == null)
             {
                 writelog($"CallQAM_UI: Go");
+                List<DeviceInfo> deviceInfos = GetDevices_WithoutAwait().Result.deviceInfo.FindAll(x => (x.PhysicalDeviceType.Equals(DeviceType.LogicalWebcam) || x.PhysicalDeviceType.Equals(DeviceType.PhysicalWebcam)));
+                writelog($"CallQAM_UI: deviceInfos.Count:{deviceInfos.Count}");
+                if (deviceInfos.Count == 1)
                 {
+                    writelog($"CallQAM_UI: have Webcam show QAM");
+                    Thread thread1 = new Thread(() =>
                     {
-                        writelog($"CallQAM_UI: have Webcam show QAM");
-                        Thread thread1 = new Thread(() =>
+                        _QAM = new QAMPage(deviceMangerPlugin);
+                        _QAM.Closed += QAMCloseEvent;
+                        if (QAM_Position != null && (QAM_Position.X != 0 && QAM_Position.Y != 0))
                         {
-                            _QAM = new QAMPage(deviceMangerPlugin);
-                            _QAM.Closed += QAMCloseEvent;
-                            if (QAM_Position != null && (QAM_Position.X != 0 && QAM_Position.Y != 0))
+                            _QAM.Top = QAM_Position.Y;
+                            _QAM.Left = QAM_Position.X;
+                        }
+                        else
+                        {
+                            float scaleFactorX = 1;
+                            float scaleFactorY = 1;
+                            using (Graphics graphics = Graphics.FromHwnd(IntPtr.Zero))
                             {
-                                _QAM.Top = QAM_Position.Y;
-                                _QAM.Left = QAM_Position.X;
+                                float dpiX = graphics.DpiX;
+                                float dpiY = graphics.DpiY;
+                                float logicalDpi = 96.0f;
+                                scaleFactorX = dpiX / logicalDpi;
+                                scaleFactorY = dpiY / logicalDpi;
                             }
-                            else
-                            {
-                                float scaleFactorX = 1;
-                                float scaleFactorY = 1;
-                                using (Graphics graphics = Graphics.FromHwnd(IntPtr.Zero))
-                                {
-                                    float dpiX = graphics.DpiX;
-                                    float dpiY = graphics.DpiY;
-                                    float logicalDpi = 96.0f;
-                                    scaleFactorX = dpiX / logicalDpi;
-                                    scaleFactorY = dpiY / logicalDpi;
-                                }
-                                _QAM.Top = (Screen.PrimaryScreen.Bounds.Height / scaleFactorX / 2) - (_QAM.Height / scaleFactorX / 2);
-                                _QAM.Left = 0;
-                            }
-                            _QAM.Dispatcher.Invoke(() => _QAM.Show());
-                            Dispatcher.Run();
-                        });
-                        thread1.SetApartmentState(ApartmentState.STA);
-                        thread1.Start();
-                    }
+                            _QAM.Top = (Screen.PrimaryScreen.Bounds.Height / scaleFactorX / 2) - (_QAM.Height / scaleFactorX / 2);
+                            _QAM.Left = 0;
+                        }
+                        _QAM.Dispatcher.Invoke(() => _QAM.Show());
+                        Dispatcher.Run();
+                    });
+                    thread1.SetApartmentState(ApartmentState.STA);
+                    thread1.Start();
                 }
             }
             writelog($"CallQAM_UI: done");
@@ -10117,7 +10118,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             //1106 add PBP mode status
             Task.Run(() => updatePBPModeStatus(e.monitor, e.vcpcode)).ConfigureAwait(false);
             //Jason add USB change
-            if(e.vcpcode.Equals("E7"))
+            if (e.vcpcode.Equals("E7"))
             {
                 if (_DisplayManagerPlugin != null)
                 {
@@ -11106,7 +11107,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 }
             });
         }
-
         private void GetCurrentDTPProxyPluginCondition()
         {
             _ = Task.Run(async () =>
@@ -11121,10 +11121,18 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     else if (pluginCondition is PluginRunningCondition)
                     {
                         writelog($"{nameof(GetCurrentDTPProxyPluginCondition)} - DTPProxy Plugin is in a running condition");
+                        _DTPProxyPlugin.ZoomChanged_Notify += ZoomChanged;
+                        _DTPProxyPlugin.ZoomMeetingTypeChanged_Notify += ZoomMeetingTypeChanged;
+                        _DTPProxyPlugin.IsZoomMeetingActive_Notify += IsZoomMeetingActiveChanged;
+                        _DTPProxyPlugin.IsZoomScreenShareActive_Notify += IsZoomScreenShareActiveChanged;
                     }
                     else if (pluginCondition is PluginStartedCondition)
                     {
                         writelog($"{nameof(GetCurrentDTPProxyPluginCondition)} - DTPProxy Plugin is in a started condition");
+                        _DTPProxyPlugin.ZoomChanged_Notify += ZoomChanged;
+                        _DTPProxyPlugin.ZoomMeetingTypeChanged_Notify += ZoomMeetingTypeChanged;
+                        _DTPProxyPlugin.IsZoomMeetingActive_Notify += IsZoomMeetingActiveChanged;
+                        _DTPProxyPlugin.IsZoomScreenShareActive_Notify += IsZoomScreenShareActiveChanged;
                     }
                 }
             });
@@ -11784,12 +11792,12 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             lastSelectedMonitor_UI = mo;
             Task.Run(() =>
             {
-                if(mo != null && _SettingsPlugin != null)
+                if (mo != null && _SettingsPlugin != null)
                 {
                     DDPMSettings settings = _SettingsPlugin.ReloadAppConfigData().Result;
-                    if(settings != null && settings.UserSettings != null)
+                    if (settings != null && settings.UserSettings != null)
                     {
-                        settings.UserSettings.lastUISelectedMonitor = new DDPMSimpleMonitorRecord() { ModelName = mo.modelName, ServiceTag = mo.edid.ServiceTag};
+                        settings.UserSettings.lastUISelectedMonitor = new DDPMSimpleMonitorRecord() { ModelName = mo.modelName, ServiceTag = mo.edid.ServiceTag };
                         _SettingsPlugin.SetAppConfigData(settings);
                     }
                 }

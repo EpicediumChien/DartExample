@@ -172,9 +172,10 @@ namespace DDPM.SA.Common
         Task<bool> GetZoomMeetingType(string Guid);
         Task<bool> GetIsZoomScreenShareActive(string Guid);
 
-        public event EventHandler<ZoomChangedArgs> ZoomChanged_Notify;
-
-        public event EventHandler<ZoomMeetingTypeChangedArgs> ZoomMeetingTypeChanged_Notify;
+        event EventHandler<ZoomChangedArgs> ZoomChanged_Notify;
+        event EventHandler<ZoomMeetingTypeChangedArgs> ZoomMeetingTypeChanged_Notify;
+        event EventHandler<IsZoomMeetingActiveChangedArgs> IsZoomMeetingActive_Notify;
+        event EventHandler<IsZoomScreenShareActiveChangedArgs> IsZoomScreenShareActive_Notify;
 
         Task<bool> GetIsESISupported(string Guid);
 
