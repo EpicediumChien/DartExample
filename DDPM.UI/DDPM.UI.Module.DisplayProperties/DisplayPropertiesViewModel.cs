@@ -320,7 +320,7 @@ namespace DDPM.UI.Module.DisplayProperties
                 }));
 
                 _selectedResolution = Resolution_ItemsCollection.Find(x => (x.Properties.isCurrent));
-                if (displayPropertiesInfo.CurrentOrientation == DisplayOrientation.Unknow)
+                if (displayPropertiesInfo.Supported_OSD_Orientation == null)
                 {
                     Orientation_IsVisibility = Visibility.Collapsed;
                 }

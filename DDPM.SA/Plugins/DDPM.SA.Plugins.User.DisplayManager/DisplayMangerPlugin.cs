@@ -522,7 +522,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                         }
                         USBUpstream.Clear();
                         string str = string.Empty;
-                        foreach(var _usb in _USBs)
+                        foreach (var _usb in _USBs)
                         {
                             str = _usb.Key;
                             if (_usb.Key == "USB-B1")
@@ -2188,7 +2188,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                 _logs.DebugMsg($"[DisplayMangerPlugin] SetOSDOrientation go");
                 SetOSDOrientation(monitorInfos, OrientationString[(int)orientation + 1]).Wait();
                 isSWSetOrientation = true;
-                ret =_DisplayPropertiesPlugin.SetOrientation(monitorInfos.DisplayName, orientation).Result;
+                ret = _DisplayPropertiesPlugin.SetOrientation(monitorInfos.DisplayName, orientation).Result;
                 isSWSetOrientation = false;
             }
             _logs.DebugMsg($"[DisplayMangerPlugin] SetOrientation done");
@@ -2325,20 +2325,33 @@ namespace DDPM.SA.Plugins.User.DisplayManager
 
             for (int i = 0; i < monitorInfos.Count; i++)
             {
-                if (string.IsNullOrEmpty(monitorInfos[i].CapabilityString) || !monitorInfos[i].CapabilityString.Contains("AA"))
+                bool? supportWriteOSD = IsSupportWriteOSDOrientation(monitorInfos[i].CapabilityString);
+                if (supportWriteOSD != true)
                 {
-                    _logs.DebugMsg($"[DisplayMangerPlugin] SetDisplayOrientation {monitorInfos[i].modelName} is no contains AA");
+                    _logs.DebugMsg($"[DisplayMangerPlugin] SetDisplayOrientation {monitorInfos[i].modelName} support write OSD : {supportWriteOSD}");
                     continue;
                 }
-                int count = 0;
-                ObjGetVCP ObjGetVCP;
-                _logs.DebugMsg($"[DisplayMangerPlugin] SetDisplayOrientation GetVCPCapability go");
-                do
+                /* 1119 Bruce
+                  int count = 0;
+                  ObjGetVCP ObjGetVCP;
+                  _logs.DebugMsg($"[DisplayMangerPlugin] SetDisplayOrientation GetVCPCapability go");
+               do
+               {
+                   ObjGetVCP = GetVCPCapability(monitorInfos[i], 0xAA).Result;
+                   count++;
+               } while (ObjGetVCP.result != true && count < 3);*/
+                _logs.DebugMsg($"[DisplayMangerPlugin] GetCurrentDisplayOrientation go");
+                DisplayOrientation displayOrientation = GetCurrentDisplayOrientation(monitorInfos[i].DisplayName).Result;
+                _logs.DebugMsg($"[DisplayMangerPlugin] GetCurrentDisplayOrientation done displayOrientation : {displayOrientation}");
+                if ((int)displayOrientation + 1 < OrientationString.Length)
                 {
-                    ObjGetVCP = GetVCPCapability(monitorInfos[i], 0xAA).Result;
-                    count++;
-                } while (ObjGetVCP.result != true && count < 3);
-                _logs.DebugMsg($"[DisplayMangerPlugin] SetDisplayOrientation ObjGetVCP.result :{ObjGetVCP.result}");
+                    _logs.DebugMsg($"[DisplayMangerPlugin] SetOSDOrientation go");
+                    bool? ret = SetOSDOrientation(monitorInfos[i], OrientationString[(int)displayOrientation + 1]).Result;
+                    bools[i] = ret == true ? true : false;
+                    _logs.DebugMsg($"[DisplayMangerPlugin] SetOSDOrientation done ret : {ret}");
+                }
+                /* 1119 Bruce
+                  _logs.DebugMsg($"[DisplayMangerPlugin] SetDisplayOrientation ObjGetVCP.result :{ObjGetVCP.result}");
                 if (ObjGetVCP.result == true)
                 {
                     uint retValue;
@@ -2361,7 +2374,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                             }
                         }
                     }
-                }
+                }*/
             }
             _logs.DebugMsg($"[DisplayMangerPlugin] SetDisplayOrientation done");
             return Task.FromResult(bools.ToList());
@@ -4000,7 +4013,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                     if (!string.IsNullOrEmpty(jsonString))
                     {
                         string testServer = GetTestServerURL();
-                        
+
                         Dictionary<string, Display_Firmwares_item> data = JsonSerializer.Deserialize<Dictionary<string, Display_Firmwares_item>>(jsonString);
                         foreach (MonitorInfo monitorInfo in monitorInfos)
                         {
