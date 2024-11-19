@@ -9389,8 +9389,12 @@ namespace DDPM.CLI.Plugins.Display
                                 string text = HexString.Substring("00FFFFFFFFFFFF00".Length + 26, 4);
                                 int num_x = 0;
                                 int num_y = 0;
-                                num_x = int.Parse(text.Substring(0, 2), NumberStyles.HexNumber);
-                                num_y = int.Parse(text.Substring(2, 2), NumberStyles.HexNumber);
+
+                                if (IsHexNumeric(text.Substring(0, 2)))
+                                {
+                                    num_x = int.Parse(text.Substring(0, 2), NumberStyles.HexNumber);
+                                    num_y = int.Parse(text.Substring(2, 2), NumberStyles.HexNumber);
+                                }
                                 writelog($"ScreenSize Entry");
                                 get_DeviceData.ScreenSize = $"{num_x}0 x {num_y}0 mm ({monitor.edid.Size.ToString("0.00")} in)";
                                 writelog($"ScreenSize Exit return value: {$"{num_x}0 x {num_y}0 mm ({monitor.edid.Size.ToString("0.00")} in)"}");
@@ -9488,7 +9492,9 @@ namespace DDPM.CLI.Plugins.Display
                                 //int gcd = (int)GCD((ulong)MaxWidth, (ulong)MaxHigh);
                                 //get_DeviceData.AspectRatio = $"{MaxWidth / gcd}:{MaxHigh / gcd}";
                                 //writelog($"AspectRatio Exit return value: {$"{MaxWidth / gcd}:{MaxHigh / gcd}"}");
-                                string gcd = Get_AR((double)num_x / (double)num_y);
+                                string gcd = "N/A";
+                                if(num_x != 0 && num_y != 0)
+                                    gcd = Get_AR((double)num_x / (double)num_y);
                                 get_DeviceData.AspectRatio = $"{gcd}";
                                 writelog($"AspectRatio Exit return value: {$"{gcd}"}");
 
@@ -9799,8 +9805,11 @@ namespace DDPM.CLI.Plugins.Display
                     string text = HexString.Substring("00FFFFFFFFFFFF00".Length + 26, 4);
                     int num_x = 0;
                     int num_y = 0;
-                    num_x = int.Parse(text.Substring(0, 2), NumberStyles.HexNumber);
-                    num_y = int.Parse(text.Substring(2, 2), NumberStyles.HexNumber);
+                    if (IsHexNumeric(text.Substring(0, 2)))
+                    {
+                        num_x = int.Parse(text.Substring(0, 2), NumberStyles.HexNumber);
+                        num_y = int.Parse(text.Substring(2, 2), NumberStyles.HexNumber);
+                    }
                     writelog($"ScreenSize Entry");
                     get_DeviceData.ScreenSize = $"{num_x}0 x {num_y}0 mm ({monitor.edid.Size.ToString("0.00")} in)";
                     writelog($"ScreenSize Exit return value: {$"{num_x}0 x {num_y}0 mm ({monitor.edid.Size.ToString("0.00")} in)"}");
@@ -9898,7 +9907,9 @@ namespace DDPM.CLI.Plugins.Display
                     //int gcd = (int)GCD((ulong)MaxWidth, (ulong)MaxHigh);
                     //get_DeviceData.AspectRatio = $"{MaxWidth / gcd}:{MaxHigh / gcd}";
                     //writelog($"AspectRatio Exit return value: {$"{MaxWidth / gcd}:{MaxHigh / gcd}"}");
-                    string gcd = Get_AR((double)num_x / (double)num_y);
+                    string gcd = "N/A";
+                    if (num_x != 0 && num_y != 0)
+                        gcd = Get_AR((double)num_x / (double)num_y);
                     get_DeviceData.AspectRatio = $"{gcd}";
                     writelog($"AspectRatio Exit return value: {$"{gcd}"}");
 
@@ -11775,7 +11786,9 @@ namespace DDPM.CLI.Plugins.Display
                     //int gcd = (int)GCD((ulong)displayProperties.Resolutions_Width, (ulong)displayProperties.Resolutions_High);
                     //ApplyConfiguration.AspectRatio = $"{displayProperties.Resolutions_Width / gcd}:{displayProperties.Resolutions_High / gcd}";
                     //writelog($"AspectRatio={ApplyConfiguration.AspectRatio}");
-                    string gcd = Get_AR((double)displayProperties.Resolutions_Width / (double)displayProperties.Resolutions_High);
+                    string gcd = "N/A";
+                    if(displayProperties.Resolutions_Width != 0 && displayProperties.Resolutions_High!= 0)
+                        gcd = Get_AR((double)displayProperties.Resolutions_Width / (double)displayProperties.Resolutions_High);
                     ApplyConfiguration.AspectRatio = $"{gcd}";
                     writelog($"AspectRatio= {gcd}");
 
