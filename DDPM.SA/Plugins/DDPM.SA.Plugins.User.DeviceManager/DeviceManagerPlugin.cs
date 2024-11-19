@@ -701,7 +701,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         /// HDR status change event，return HDR status
         /// </summary>
         public event EventHandler<bool> HDRChangeEvent;
-        public event EventHandler<DisplayOrientation> OSDOrientationChangeEvent;
 
         /// <summary>
         /// gaming parameter changes event，return gaming parameter
@@ -4437,9 +4436,9 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             return Task.FromResult(ret);
         }
 
-        public Task<bool?> SetOrientation(MonitorInfo monitorInfo, DisplayOrientation orientation)
+        public Task<bool> SetOrientation(MonitorInfo monitorInfo, DisplayOrientation orientation)
         {
-            bool? ret = false;
+            bool ret = false;
             if (_DisplayManagerPlugin != null)
             {
                 ret = _DisplayManagerPlugin.SetOrientation(monitorInfo, orientation).Result;
@@ -10455,8 +10454,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         _DisplayManagerPlugin.GamingChangeEvent += OnGamingParamChangeHandler;
                         //Robert_Lin, 2024-10-8, for EasyArrange when EA Settings changed
                         _DisplayManagerPlugin.EASettingsChanged += _DisplayManagerPlugin_EASettingsChanged;
-                        //Bruce, 2024-1117 add new event
-                        _DisplayManagerPlugin.OSDOrientationChangeEvent += OSDOrientationChangeHandler;
 
                         writelog($"{nameof(GetCurrentDisplayManagerCondition)} - Display Manager Plugin is in a running condition");
                     }
@@ -10482,8 +10479,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         _DisplayManagerPlugin.GamingChangeEvent += OnGamingParamChangeHandler;
                         //Robert_Lin, 2024-10-8, for EasyArrange when EA Settings changed
                         _DisplayManagerPlugin.EASettingsChanged += _DisplayManagerPlugin_EASettingsChanged;
-                        //Bruce, 2024-1117 add new event
-                        _DisplayManagerPlugin.OSDOrientationChangeEvent += OSDOrientationChangeHandler;
 
                         writelog($"{nameof(GetCurrentDisplayManagerCondition)} - Display Manager Plugin is in a started condition");
                     }
@@ -14082,10 +14077,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         private void OnHDRStatusChangeHandler(object sender, bool e)
         {
             HDRChangeEvent?.AsyncFireAndForget(this, e, System.Threading.CancellationToken.None);
-        }
-        private void OSDOrientationChangeHandler(object sender, DisplayOrientation e)
-        {
-            OSDOrientationChangeEvent?.AsyncFireAndForget(this, e, System.Threading.CancellationToken.None);
         }
 
         //Bruce, 2024-08-09 add new event

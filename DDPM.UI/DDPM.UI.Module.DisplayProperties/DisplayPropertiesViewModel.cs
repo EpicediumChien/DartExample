@@ -47,21 +47,21 @@ namespace DDPM.UI.Module.DisplayProperties
                 SetProperty(ref _selectedOrientation, value);
                 if (DdpmCommonHelper.DeviceManagerSA.SetOrientation(DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo,
                     _selectedOrientation.Orientation
-                    ).Result == true)
+                    ).Result)
                 {
-                    //DisplayPropertiesInfo displayPropertiesInfo = DdpmCommonHelper.DeviceManagerSA.GetDisplayPropertiesInfo(DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo).Result;
-                    //Resolution_ItemsCollection.Clear();
-                    //MyModule.GetRightView().Dispatcher.Invoke((Action)(() =>
-                    //{
-                    //    foreach (Properties Properties in displayPropertiesInfo.SupportedProperties.Properties)
-                    //    {
-                    //        Resolution_ItemsCollection.Add(new UI_Properties
-                    //        {
-                    //            Properties = Properties
-                    //        });
-                    //    }
-                    //}));
-                    //_selectedResolution = Resolution_ItemsCollection.Find(x => (x.Properties.isCurrent));
+                    DisplayPropertiesInfo displayPropertiesInfo = DdpmCommonHelper.DeviceManagerSA.GetDisplayPropertiesInfo(DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo).Result;
+                    Resolution_ItemsCollection.Clear();
+                    MyModule.GetRightView().Dispatcher.Invoke((Action)(() =>
+                    {
+                        foreach (Properties Properties in displayPropertiesInfo.SupportedProperties.Properties)
+                        {
+                            Resolution_ItemsCollection.Add(new UI_Properties
+                            {
+                                Properties = Properties
+                            });
+                        }
+                    }));
+                    _selectedResolution = Resolution_ItemsCollection.Find(x => (x.Properties.isCurrent));
                     RefreshUI();
                     //DdpmCommonHelper.MyShowPluginManager?.ShowHomePage("GeHomeFirst");
                 }
@@ -320,29 +320,22 @@ namespace DDPM.UI.Module.DisplayProperties
                 }));
 
                 _selectedResolution = Resolution_ItemsCollection.Find(x => (x.Properties.isCurrent));
-                if (displayPropertiesInfo.CurrentOrientation == DisplayOrientation.Unknow || displayPropertiesInfo.Supported_OSD_Orientation == null)
+                if (displayPropertiesInfo.CurrentOrientation == DisplayOrientation.Unknow)
                 {
                     Orientation_IsVisibility = Visibility.Collapsed;
                 }
                 else
                 {
                     Orientation_IsVisibility = Visibility.Visible;
-                    if (displayPropertiesInfo.Supported_OSD_Orientation == false)
-                    {
-                        Orientation_IsEnabled = false;
-                    }
-                    else
-                    {
-                        Orientation_IsEnabled = true;
-                    }
-                    foreach (DisplayOrientation orientation in displayPropertiesInfo.SupportedProperties.OSD_Orientations)
+                    Orientation_IsEnabled = true;
+                    foreach (DisplayOrientation orientation in displayPropertiesInfo.SupportedProperties.Orientations)
                     {
                         Orientation_ItemsCollection.Add(new UI_Orientation()
                         {
                             Orientation = orientation
                         });
                     }
-                    _selectedOrientation = Orientation_ItemsCollection.Find(x => (x.Orientation == displayPropertiesInfo.Current_OSD_Orientation));
+                    _selectedOrientation = Orientation_ItemsCollection.Find(x => (x.Orientation == displayPropertiesInfo.CurrentOrientation));
                 }
                 //Lock/unlock UI init data here (user's lock data should be synced up from IT config, so read user's data directly)
                 DDPMSettings data = DdpmCommonHelper.ReadDDPMSettings();//DeviceManagerSA.ReloadAppConfigData().Result;
