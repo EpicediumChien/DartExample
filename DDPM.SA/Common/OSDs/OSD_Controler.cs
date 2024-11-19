@@ -21,6 +21,7 @@
         private WalkAwayLockWin WalkAwayLockWinx;
         private EasyMemoryWin EasyMemoryWinx;
         private ErrorWin ErrorWin;
+        private QAMHotKeyWin QAMHotKeyWin;
 
         public OSD_Controler()
         { }
@@ -293,6 +294,19 @@
         {
             if (ErrorWin != null)
                 ErrorWin.CloseWindow();
+        }
+        public void QAMHotKeyWin_ShowWindow(double Top, double Left)
+        {
+            QAMHotKeyWin = new QAMHotKeyWin();
+
+            QAMHotKeyWin.Top = Top;
+            QAMHotKeyWin.Left = Left;
+            QAMHotKeyWin.ShowWindow();
+        }
+        public void QAMHotKeyWin_CloseWindow()
+        {
+            if (QAMHotKeyWin != null)
+                QAMHotKeyWin.CloseWindow();
         }
     }
 }
