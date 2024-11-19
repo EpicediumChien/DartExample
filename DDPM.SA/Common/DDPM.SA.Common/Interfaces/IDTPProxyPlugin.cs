@@ -49,12 +49,15 @@ namespace DDPM.SA.Common
         Task<JArray> GetKbProgrammableKeys(string Guid);
         Task<bool> DeleteKeyboardAllAssignedActions(string Guid);
         Task<JArray> GetKbAssignableActions(string Guid);
+        Task<string> GetKeyboardKeystrokeDisplayData(string Guid);
+        Task<bool> StartKeyboardKeystrokeRecording(string Guid);
+        Task<bool> StopKeyboardKeystrokeRecording(string Guid);
 
 
         Task DeleteKeyboardAssignedAction(string Guid, int newValue);
-        Task SetKbAssignedAction(string Guid, string newValue);
-        Task SetKbAssignDialogAction(string Guid, string newValue);
-        Task SetKbAssignKeystrokeAction(string Guid, string newValue);
+        Task SetKbAssignedAction(string Guid, byte[] newValue);
+        Task SetKbAssignDialogAction(string Guid, byte[] newValue);
+        Task SetKbAssignKeystrokeAction(string Guid, byte[] newValue);
 
         #endregion
 

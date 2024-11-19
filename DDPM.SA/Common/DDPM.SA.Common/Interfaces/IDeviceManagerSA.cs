@@ -540,7 +540,7 @@ namespace DDPM.SA.Common
         //Task<FWUpdateInfoPackage> GetFWUpdateInfo(bool isShowNotify = true, bool isForce = false, bool isDefer = false, List<DeviceType> deviceTypeList = null, bool UODMode = false);
 
         Task<FWUpdateInfoPackage> GetFWUpdateInfo(bool isShowNotify = true, bool isForce = false, bool isDefer = false, List<DeviceType> deviceTypeList = null, bool UODMode = false, bool isOnlyDisplay = false, bool reScan = true, bool isUItrigger = false, List<string> giuds = null, List<string> serviceTags = null, List<string> models = null, string minVersion = "");
-        Task<FWUErrorCode> Install(string installPath, bool isOnlyDisplay = false, DeviceType deviceType= DeviceType.Unknown);
+        Task<FWUErrorCode> Install(string installPath, bool isOnlyDisplay = false, DeviceType deviceType = DeviceType.Unknown);
 
         //0531 Bruce 因應IL的現有安裝包修改判斷，IDeviceManagerSA.cs中三個關於FWUpdate的方法移除並修改DownloadAndInstall回傳值
         Task<List<FWUpdateInfo>> DownloadAndInstall(List<FWUpdateInfo> fwUpdateInfos, bool isUITrigger = false, string installPath = "");
@@ -718,13 +718,16 @@ namespace DDPM.SA.Common
         Task<JArray> GetKbProgrammableKeys(string Guid);
         Task<bool> DeleteKeyboardAllAssignedActions(string Guid);
         Task<JArray> GetKbAssignableActions(string Guid);
+        Task<string> GetKeyboardKeystrokeDisplayData(string Guid);
+        Task<bool> StartKeyboardKeystrokeRecording(string Guid);
+        Task<bool> StopKeyboardKeystrokeRecording(string Guid);
 
         Task DeleteKeyboardAssignedAction(string Guid, int newValue);
-        Task SetKbAssignedAction(string Guid, string newValue);
+        Task SetKbAssignedAction(string Guid, byte[] newValue);
 
-        Task SetKbAssignDialogAction(string Guid, string newValue);
+        Task SetKbAssignDialogAction(string Guid, byte[] newValue);
 
-        Task SetKbAssignKeystrokeAction(string Guid, string newValue);
+        Task SetKbAssignKeystrokeAction(string Guid, byte[] newValue);
 
         #endregion Keyboard
 
