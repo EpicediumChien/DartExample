@@ -472,6 +472,60 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
 
         }
+        public async Task<string> GetKeyboardKeystrokeDisplayData(string Guid)
+        {
+            if (!await GetItemIDAsync("Keyboard", Guid))
+            { return string.Empty; }
+
+            if (await GetCommodityInterfaceInstanceAsync(_keyboardMethodInfo) is ICommodity commodity)
+            {
+                var value = GetPropertyValue(_keyboardInterfaceType, commodity, "KeystrokeDisplayData");
+                Debug.WriteLine($"{value ?? ""}");
+                return (string)value;
+            }
+            else
+            {
+                Debug.WriteLine($"Could not retrieve the Commodity Interface {_keyboardInterfaceType} for the {Guid} item.");
+                writelog($"Could not retrieve the Commodity Interface {_keyboardInterfaceType} for the {Guid} item.");
+                return string.Empty;
+            }
+        }
+        public async Task<bool> StartKeyboardKeystrokeRecording(string Guid)
+        {
+            if (!await GetItemIDAsync("Keyboard", Guid))
+            { return false; }
+
+            if (await GetCommodityInterfaceInstanceAsync(_keyboardMethodInfo) is ICommodity commodity)
+            {
+                var value = GetPropertyValue(_keyboardInterfaceType, commodity, "StartKeystrokeRecording");
+                Debug.WriteLine($"{value ?? ""}");
+                return (bool)value;
+            }
+            else
+            {
+                Debug.WriteLine($"Could not retrieve the Commodity Interface {_keyboardInterfaceType} for the {Guid} item.");
+                writelog($"Could not retrieve the Commodity Interface {_keyboardInterfaceType} for the {Guid} item.");
+                return false;
+            }
+        }
+        public async Task<bool> StopKeyboardKeystrokeRecording(string Guid)
+        {
+            if (!await GetItemIDAsync("Keyboard", Guid))
+            { return false; }
+
+            if (await GetCommodityInterfaceInstanceAsync(_keyboardMethodInfo) is ICommodity commodity)
+            {
+                var value = GetPropertyValue(_keyboardInterfaceType, commodity, "StopKeystrokeRecording");
+                Debug.WriteLine($"{value ?? ""}");
+                return (bool)value;
+            }
+            else
+            {
+                Debug.WriteLine($"Could not retrieve the Commodity Interface {_keyboardInterfaceType} for the {Guid} item.");
+                writelog($"Could not retrieve the Commodity Interface {_keyboardInterfaceType} for the {Guid} item.");
+                return false;
+            }
+        }
 
 
         public async Task SetKbAssignKeystrokeAction(string Guid, string newValue)
