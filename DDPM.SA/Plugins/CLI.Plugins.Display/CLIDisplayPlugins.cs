@@ -7612,7 +7612,7 @@ namespace DDPM.CLI.Plugins.Display
                         else
                         {
                             writelog($"ORIENTATION VCP not support");
-                            cLI_RESPONSE.Message = "ORIENTATION VCP not support";
+                            CurrentOrientation_RESPONSE.Message = "ORIENTATION VCP not support";
                             output += $"\n  \"Result: \": \"ORIENTATION VCP not support\"";
                         }
 
@@ -9383,6 +9383,7 @@ namespace DDPM.CLI.Plugins.Display
                                 get_DeviceData.ManufacturingWeek = "ISO week " + monitor.edid.Week.ToString();
                                 get_DeviceData.FirmwareVersion = monitor.FwVersion;
 
+                                Trace.WriteLine(monitor.edid.Edid);
                                 if (monitor.CapabilityDic.ContainsKey("C0"))
                                 {
                                     writelog($"MonitorActiveHour Entry");
@@ -9403,8 +9404,12 @@ namespace DDPM.CLI.Plugins.Display
                                 string text = HexString.Substring("00FFFFFFFFFFFF00".Length + 26, 4);
                                 int num_x = 0;
                                 int num_y = 0;
-                                num_x = int.Parse(text.Substring(0, 2), NumberStyles.HexNumber);
-                                num_y = int.Parse(text.Substring(2, 2), NumberStyles.HexNumber);
+
+                                if (IsHexNumeric(text.Substring(0, 2)))
+                                {
+                                    num_x = int.Parse(text.Substring(0, 2), NumberStyles.HexNumber);
+                                    num_y = int.Parse(text.Substring(2, 2), NumberStyles.HexNumber);
+                                }
                                 writelog($"ScreenSize Entry");
                                 get_DeviceData.ScreenSize = $"{num_x}0 x {num_y}0 mm ({monitor.edid.Size.ToString("0.00")} in)";
                                 writelog($"ScreenSize Exit return value: {$"{num_x}0 x {num_y}0 mm ({monitor.edid.Size.ToString("0.00")} in)"}");
@@ -9499,9 +9504,14 @@ namespace DDPM.CLI.Plugins.Display
                                 }
 
                                 writelog($"AspectRatio Entry");
-                                int gcd = (int)GCD((ulong)MaxWidth, (ulong)MaxHigh);
-                                get_DeviceData.AspectRatio = $"{MaxWidth / gcd}:{MaxHigh / gcd}";
-                                writelog($"AspectRatio Exit return value: {$"{MaxWidth / gcd}:{MaxHigh / gcd}"}");
+                                //int gcd = (int)GCD((ulong)MaxWidth, (ulong)MaxHigh);
+                                //get_DeviceData.AspectRatio = $"{MaxWidth / gcd}:{MaxHigh / gcd}";
+                                //writelog($"AspectRatio Exit return value: {$"{MaxWidth / gcd}:{MaxHigh / gcd}"}");
+                                string gcd = "N/A";
+                                if(num_x != 0 && num_y != 0)
+                                    gcd = Get_AR((double)num_x / (double)num_y);
+                                get_DeviceData.AspectRatio = $"{gcd}";
+                                writelog($"AspectRatio Exit return value: {$"{gcd}"}");
 
                                 writelog($"USB_CPrioritization, USBCPrioritizationType Entry");
                                 if (displayPropertiesInfo.SupportedUSBCPrioritization)
@@ -9810,8 +9820,11 @@ namespace DDPM.CLI.Plugins.Display
                     string text = HexString.Substring("00FFFFFFFFFFFF00".Length + 26, 4);
                     int num_x = 0;
                     int num_y = 0;
-                    num_x = int.Parse(text.Substring(0, 2), NumberStyles.HexNumber);
-                    num_y = int.Parse(text.Substring(2, 2), NumberStyles.HexNumber);
+                    if (IsHexNumeric(text.Substring(0, 2)))
+                    {
+                        num_x = int.Parse(text.Substring(0, 2), NumberStyles.HexNumber);
+                        num_y = int.Parse(text.Substring(2, 2), NumberStyles.HexNumber);
+                    }
                     writelog($"ScreenSize Entry");
                     get_DeviceData.ScreenSize = $"{num_x}0 x {num_y}0 mm ({monitor.edid.Size.ToString("0.00")} in)";
                     writelog($"ScreenSize Exit return value: {$"{num_x}0 x {num_y}0 mm ({monitor.edid.Size.ToString("0.00")} in)"}");
@@ -9906,9 +9919,14 @@ namespace DDPM.CLI.Plugins.Display
                     }
 
                     writelog($"AspectRatio Entry");
-                    int gcd = (int)GCD((ulong)MaxWidth, (ulong)MaxHigh);
-                    get_DeviceData.AspectRatio = $"{MaxWidth / gcd}:{MaxHigh / gcd}";
-                    writelog($"AspectRatio Exit return value: {$"{MaxWidth / gcd}:{MaxHigh / gcd}"}");
+                    //int gcd = (int)GCD((ulong)MaxWidth, (ulong)MaxHigh);
+                    //get_DeviceData.AspectRatio = $"{MaxWidth / gcd}:{MaxHigh / gcd}";
+                    //writelog($"AspectRatio Exit return value: {$"{MaxWidth / gcd}:{MaxHigh / gcd}"}");
+                    string gcd = "N/A";
+                    if (num_x != 0 && num_y != 0)
+                        gcd = Get_AR((double)num_x / (double)num_y);
+                    get_DeviceData.AspectRatio = $"{gcd}";
+                    writelog($"AspectRatio Exit return value: {$"{gcd}"}");
 
                     writelog($"USB_CPrioritization, USBCPrioritizationType Entry");
                     if (displayPropertiesInfo.SupportedUSBCPrioritization)
@@ -10147,6 +10165,35 @@ namespace DDPM.CLI.Plugins.Display
                     b %= a;
             }
             return a | b;
+        }
+
+        private static string Get_AR(double value)
+        {
+            switch (value)
+            {
+                case double n when n == 1.25:
+                    return "5:4";
+                case double n when n > 1.25 && n < 1.5://1.333
+                    return "4:3";
+                case double n when n == 1.5:
+                    return "3:2";
+                case double n when n == 1.6:
+                    return "16:10";
+                case double n when n > 1.6 && n < 1.7://1.666
+                    return "15:9";
+                case double n when (n > 1.7 && n < 2.0)://1.777
+                    return "16:9";
+                case double n when n == 2.0:
+                    return "18:9";
+                case double n when n > 2.0 && n < 2.3://2.222
+                    return "20:9";
+                case double n when n > 2.2 && n < 3.5://2.3....
+                    return "21:9";
+                case double n when n > 3.5://3.555
+                    return "32:9";
+                default:
+                    return "N/A";
+            }
         }
 
         private (int code, string result) Getcapabilitystringx(IDeviceManagerSA devMgr, CommandLineInput commandLineInput)
@@ -11751,9 +11798,14 @@ namespace DDPM.CLI.Plugins.Display
                     ApplyConfiguration.Resolution = ApplyConfiguration.OptimalResolution;
                     writelog($"OptimalResolution={ApplyConfiguration.OptimalResolution}");
 
-                    int gcd = (int)GCD((ulong)displayProperties.Resolutions_Width, (ulong)displayProperties.Resolutions_High);
-                    ApplyConfiguration.AspectRatio = $"{displayProperties.Resolutions_Width / gcd}:{displayProperties.Resolutions_High / gcd}";
-                    writelog($"AspectRatio={ApplyConfiguration.AspectRatio}");
+                    //int gcd = (int)GCD((ulong)displayProperties.Resolutions_Width, (ulong)displayProperties.Resolutions_High);
+                    //ApplyConfiguration.AspectRatio = $"{displayProperties.Resolutions_Width / gcd}:{displayProperties.Resolutions_High / gcd}";
+                    //writelog($"AspectRatio={ApplyConfiguration.AspectRatio}");
+                    string gcd = "N/A";
+                    if(displayProperties.Resolutions_Width != 0 && displayProperties.Resolutions_High!= 0)
+                        gcd = Get_AR((double)displayProperties.Resolutions_Width / (double)displayProperties.Resolutions_High);
+                    ApplyConfiguration.AspectRatio = $"{gcd}";
+                    writelog($"AspectRatio= {gcd}");
 
                     if (monitor.CapabilityDic.ContainsKey("12"))
                     {
