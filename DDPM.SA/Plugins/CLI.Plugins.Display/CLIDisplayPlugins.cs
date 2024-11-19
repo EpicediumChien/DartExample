@@ -8276,6 +8276,9 @@ namespace DDPM.CLI.Plugins.Display
                                 RunType = PowerNapType.Off
                             };
                             await devMgr.SavePowerNapSetting(setting);
+                            UpdateUINotify off = new UpdateUINotify();
+                            off.UI_Field_Name = "POWERNAP;OFF";
+                            devMgr.OnUIUpdateNotify(off);
                             S_PowerNap_RESPONSE.Result = "PASS";
                             S_PowerNap_RESPONSE.Value = setting.RunType.ToString();
                         }
@@ -8390,6 +8393,9 @@ namespace DDPM.CLI.Plugins.Display
                                 RunType = PowerNapType.Off
                             };
                             await devMgr.SavePowerNapSetting(setting);
+                            UpdateUINotify off = new UpdateUINotify();
+                            off.UI_Field_Name = "POWERNAP;OFF";
+                            devMgr.OnUIUpdateNotify(off);
                             S_PowerNap_RESPONSE.Result = "PASS";
                             S_PowerNap_RESPONSE.Value = setting.RunType.ToString();
                         }
@@ -8418,6 +8424,9 @@ namespace DDPM.CLI.Plugins.Display
                                                 RunType = PowerNapType.Off
                                             };
                                             await devMgr.SavePowerNapSetting(setting);
+                                            UpdateUINotify off = new UpdateUINotify();
+                                            off.UI_Field_Name = "POWERNAP;OFF";
+                                            devMgr.OnUIUpdateNotify(off);
                                             break;
                                         }
                                     case "SLEEP":
@@ -8430,6 +8439,9 @@ namespace DDPM.CLI.Plugins.Display
                                                 RunType = PowerNapType.SleepIfRunning
                                             };
                                             await devMgr.SavePowerNapSetting(setting);
+                                            UpdateUINotify sleep = new UpdateUINotify();
+                                            sleep.UI_Field_Name = "POWERNAP;SLEEP";
+                                            devMgr.OnUIUpdateNotify(sleep);
                                             break;
                                         }
                                     case "REDUCEBRIGHTNESS":
@@ -8442,6 +8454,9 @@ namespace DDPM.CLI.Plugins.Display
                                                 RunType = PowerNapType.ReduceBrightness
                                             };
                                             await devMgr.SavePowerNapSetting(setting);
+                                            UpdateUINotify reduce = new UpdateUINotify();
+                                            reduce.UI_Field_Name = "POWERNAP;REDUCE";
+                                            devMgr.OnUIUpdateNotify(reduce);
                                             break;
                                         }
                                     default:
@@ -8497,6 +8512,9 @@ namespace DDPM.CLI.Plugins.Display
                                     RunType = PowerNapType.Off
                                 };
                                 await devMgr.SavePowerNapSetting(setting);
+                                UpdateUINotify off = new UpdateUINotify();
+                                off.UI_Field_Name = "POWERNAP;OFF";
+                                devMgr.OnUIUpdateNotify(off);
                                 S_PowerNap_RESPONSE.Result = "PASS";
                                 S_PowerNap_RESPONSE.Value = setting.RunType.ToString();
                             }
@@ -8525,6 +8543,9 @@ namespace DDPM.CLI.Plugins.Display
                                                     RunType = PowerNapType.Off
                                                 };
                                                 await devMgr.SavePowerNapSetting(setting);
+                                                UpdateUINotify off = new UpdateUINotify();
+                                                off.UI_Field_Name = "POWERNAP;OFF";
+                                                devMgr.OnUIUpdateNotify(off);
                                                 break;
                                             }
                                         case "SLEEP":
@@ -8537,6 +8558,9 @@ namespace DDPM.CLI.Plugins.Display
                                                     RunType = PowerNapType.SleepIfRunning
                                                 };
                                                 await devMgr.SavePowerNapSetting(setting);
+                                                UpdateUINotify sleep = new UpdateUINotify();
+                                                sleep.UI_Field_Name = "POWERNAP;SLEEP";
+                                                devMgr.OnUIUpdateNotify(sleep);
                                                 break;
                                             }
                                         case "REDUCEBRIGHTNESS":
@@ -8549,6 +8573,9 @@ namespace DDPM.CLI.Plugins.Display
                                                     RunType = PowerNapType.ReduceBrightness
                                                 };
                                                 await devMgr.SavePowerNapSetting(setting);
+                                                UpdateUINotify reduce = new UpdateUINotify();
+                                                reduce.UI_Field_Name = "POWERNAP;REDUCE";
+                                                devMgr.OnUIUpdateNotify(reduce);
                                                 break;
                                             }
                                         default:
@@ -8605,6 +8632,9 @@ namespace DDPM.CLI.Plugins.Display
                                     RunType = PowerNapType.Off
                                 };
                                 await devMgr.SavePowerNapSetting(setting);
+                                UpdateUINotify off = new UpdateUINotify();
+                                off.UI_Field_Name = "POWERNAP;OFF";
+                                devMgr.OnUIUpdateNotify(off);
                                 S_PowerNap_RESPONSE.Result = "PASS";
                                 S_PowerNap_RESPONSE.Value = setting.RunType.ToString();
                             }
@@ -8633,6 +8663,9 @@ namespace DDPM.CLI.Plugins.Display
                                                     RunType = PowerNapType.Off
                                                 };
                                                 await devMgr.SavePowerNapSetting(setting);
+                                                UpdateUINotify off = new UpdateUINotify();
+                                                off.UI_Field_Name = "POWERNAP;OFF";
+                                                devMgr.OnUIUpdateNotify(off);
                                                 break;
                                             }
                                         case "SLEEP":
@@ -8645,6 +8678,9 @@ namespace DDPM.CLI.Plugins.Display
                                                     RunType = PowerNapType.SleepIfRunning
                                                 };
                                                 await devMgr.SavePowerNapSetting(setting);
+                                                UpdateUINotify sleep = new UpdateUINotify();
+                                                sleep.UI_Field_Name = "POWERNAP;SLEEP";
+                                                devMgr.OnUIUpdateNotify(sleep);
                                                 break;
                                             }
                                         case "REDUCEBRIGHTNESS":
@@ -8657,6 +8693,9 @@ namespace DDPM.CLI.Plugins.Display
                                                     RunType = PowerNapType.ReduceBrightness
                                                 };
                                                 await devMgr.SavePowerNapSetting(setting);
+                                                UpdateUINotify reduce = new UpdateUINotify();
+                                                reduce.UI_Field_Name = "POWERNAP;REDUCE";
+                                                devMgr.OnUIUpdateNotify(reduce);
                                                 break;
                                             }
                                         default:
@@ -8716,6 +8755,9 @@ namespace DDPM.CLI.Plugins.Display
                                 RunType = PowerNapType.Off
                             };
                             await devMgr.SavePowerNapSetting(setting);
+                            UpdateUINotify off = new UpdateUINotify();
+                            off.UI_Field_Name = "POWERNAP;OFF";
+                            devMgr.OnUIUpdateNotify(off);
                             S_PowerNap_RESPONSE.Result = "PASS";
                             S_PowerNap_RESPONSE.Value = setting.RunType.ToString();
                         }
@@ -8759,6 +8801,9 @@ namespace DDPM.CLI.Plugins.Display
                                 RunType = PowerNapType.Off
                             };
                             await devMgr.SavePowerNapSetting(setting);
+                            UpdateUINotify off = new UpdateUINotify();
+                            off.UI_Field_Name = "POWERNAP;OFF";
+                            devMgr.OnUIUpdateNotify(off);
                             S_PowerNap_RESPONSE.Result = "PASS";
                             S_PowerNap_RESPONSE.Value = setting.RunType.ToString();
                         }
@@ -8804,6 +8849,9 @@ namespace DDPM.CLI.Plugins.Display
                                     RunType = PowerNapType.Off
                                 };
                                 await devMgr.SavePowerNapSetting(setting);
+                                UpdateUINotify off = new UpdateUINotify();
+                                off.UI_Field_Name = "POWERNAP;OFF";
+                                devMgr.OnUIUpdateNotify(off);
                                 S_PowerNap_RESPONSE.Result = "PASS";
                                 S_PowerNap_RESPONSE.Value = setting.RunType.ToString();
                             }
@@ -9584,6 +9632,9 @@ namespace DDPM.CLI.Plugins.Display
                                         RunType = PowerNapType.Off
                                     };
                                     await devMgr.SavePowerNapSetting(setting);
+                                    UpdateUINotify off = new UpdateUINotify();
+                                    off.UI_Field_Name = "POWERNAP;OFF";
+                                    devMgr.OnUIUpdateNotify(off);
                                 }
                                 else if (read_list.Count != 0)
                                 {
@@ -9991,6 +10042,9 @@ namespace DDPM.CLI.Plugins.Display
                             RunType = PowerNapType.Off
                         };
                         await devMgr.SavePowerNapSetting(setting);
+                        UpdateUINotify off = new UpdateUINotify();
+                        off.UI_Field_Name = "POWERNAP;OFF";
+                        devMgr.OnUIUpdateNotify(off);
                     }
                     else if (read_list.Count != 0)
                     {
@@ -11879,6 +11933,9 @@ namespace DDPM.CLI.Plugins.Display
                         RunType = get_PowerNapType_code(devicedata.PowerNap)
                     };
                     retcode = await devMgr.SavePowerNapSetting(setting);
+                    UpdateUINotify off = new UpdateUINotify();
+                    off.UI_Field_Name = "POWERNAP;" + devicedata.PowerNap;
+                    devMgr.OnUIUpdateNotify(off);
                     if (!retcode) ispass = false;
                     else ApplyConfiguration.PowerNap = devicedata.PowerNap;
                     writelog($"PowerNap={ApplyConfiguration.PowerNap}");
@@ -12412,6 +12469,9 @@ namespace DDPM.CLI.Plugins.Display
                                                 RunType = get_PowerNapType_code(property.Value.ToString())
                                             };
                                             retcode = await devMgr.SavePowerNapSetting(setting);
+                                            UpdateUINotify off = new UpdateUINotify();
+                                            off.UI_Field_Name = "POWERNAP;"+ property.Value.ToString();
+                                            devMgr.OnUIUpdateNotify(off);
                                             if (!retcode) ispass = false;
                                             else ApplyConfiguration.PowerNap = property.Value.ToString();
                                             writelog($"PowerNap={ApplyConfiguration.PowerNap}");
