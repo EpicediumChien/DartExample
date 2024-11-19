@@ -1215,15 +1215,16 @@ namespace DDPM.CLI.Plugins.Peripherals
                         x.Value = "";
                         if (x.Result == "")
                         {
-                            if (_devMgr.GetIsPropertyHDRSupported(x.Guid).Result)
+                            var di = _deviceinfo.Where(_ => _.ID.ToString() == x.Guid && _.LogicalDeviceType.ToUpper().Contains(_commandLineInput.PluginsType)).FirstOrDefault();
+                            if (di.IsMicEnumerationSupported)
                             {
-                                var result = RunAsyncTimeout(_devMgr.SetIsHDROn(x.Guid, bl)).Result;
+                                var result = RunAsyncTimeout(_devMgr.SetIsMicEnumerationOn(bl, Guid.Parse(x.Guid))).Result;
                                 if (result == "0")
                                 {
                                     x.Result = "PASS";
-                                    retcode_ = _devMgr.GetIsHDROn(x.Guid).Result;
-                                    x.Value = (retcode_) ? "ON" : "OFF";
-                                    x.Value += "," + (data.LockSettings.Lock_Webcam_hdr ? "LOCK" : "UNLOCK");
+                                    retcode = di.IsMicEnumerationOn;
+                                    x.Value = (retcode) ? "ON" : "OFF";
+                                    x.Value += "," + (data.LockSettings.Lock_Webcam_MicSwitch ? "LOCK" : "UNLOCK");
                                     x.Message = "N/A";
                                 }
                                 else if (result == "1")
@@ -1242,7 +1243,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                             {
                                 x.Value = "N/A";
                                 x.Result = "FAIL";
-                                x.Message = "Webcam not support HDR";
+                                x.Message = "Webcam not support MicSwitch";
                                 retcode = false;
                             }
                         }
