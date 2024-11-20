@@ -196,7 +196,7 @@ namespace DDPM.UI.Module.EzMemory
 
                 if (userSettingsSuccess)
                 {
-                    UpdateSplitListUI(profileID, layout, isEditMode);
+                    UpdateSplitListUI(profileID, _vm.ispCtrlForEm, isEditMode);
 
                     _log.Info($"@{nameof(EzMemoryLaunchOption)} FinishBtn_Click: User Settings PASS");
                 }
@@ -315,8 +315,32 @@ namespace DDPM.UI.Module.EzMemory
             return DdpmCommonHelper.DeviceManagerSA.WriteMonitorEasyArrangement(monitorInfo, easyArrangement).Result;
         }
 
-        private void UpdateSplitListUI(int profileID, int layout, bool isEditMode)
+        //Robert_Lin, 2024-11-19 Change to pass ISpitCtrl (origial) into this method
+        //private void UpdateSplitListUI(int profileID, int layout, bool isEditMode)
+        private void UpdateSplitListUI(int profileID, ISplitCtrl ispAdd, bool isEditMode)
         {
+            //1 Duplicate a ISplitCtrl from current editing/adding
+            ISplitCtrl? ispNew = ispAdd.Clone();
+            ispNew.SplitMode = eSplitModes.Icon;
+
+            //If it's Edit mode, then replace current edit selected item with ispNew
+            if (isEditMode)
+            {
+                SplitItem? spItem = _vm.splitListRightView.FindItemByCustomId(ispAdd.EAID);
+                spItem.ReplaceWithISplitICtrl(ispNew);
+            }
+            else
+            {
+                //Add new item into SplitListView
+                SplitItem newItem = _vm.splitListRightView.AddItemToList(ispNew.UC);
+                newItem.SplitOwner = Common.EAEM.eSplitOwner.EaRecent;
+                newItem.ProfileID = profileID;
+                newItem.IsHoverable = true;
+                newItem.IsDeleteEnabled = true;
+                newItem.IsEditEnabled = true;
+                newItem.LayoutID = ispNew.EAID;
+            }
+            /* OLD Code by Wayn 
             //ISplitCtrl? splitCtrl = ISplitCtrl.Create(_vm.SelectedSplitItem.CellCount, _vm.SelectedSplitItem.SplitKey);
             ISplitCtrl? splitCtrl = ISplitCtrl.Create(layout);
             splitCtrl.FriendlyName = "Off"; // Need multilingual support
@@ -334,6 +358,9 @@ namespace DDPM.UI.Module.EzMemory
             {
                 _vm.splitListRightView.DeleteSplitItem(_vm.CurrentEditSelectspItem);
             }
+            */
+            //NEW code by Robert
+
         }
 
         /// <summary>

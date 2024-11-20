@@ -1006,6 +1006,23 @@ namespace DDPM.UI.Module.EzArrange
             //Check if this custom layout is used by EasyMemory?
             //Debug, assume YES
             bool isLayoutUsedByEM = false;
+            try
+            {
+                int eaId = 0;
+                if (spItem.ISplitCtrl != null)
+                {
+                    eaId = spItem.ISplitCtrl.EAID;
+                }
+                if (eaId != 0)
+                {
+                    _vm.LogInfo($"EasyArrange, CheckEAIDExit(EAID={eaId})");
+                    isLayoutUsedByEM = _deviceManagerSA.CheckEAIDExit(_homeDevice.MonitorInfo, eaId).Result;
+                }
+            }
+            catch (Exception e1)
+            {
+                _vm.LogInfo($"CheckEAIDExit() causes exception: {e1.Message}");
+            }
             if (isLayoutUsedByEM)
             {
                 //Try to get hWnd of MainWindow

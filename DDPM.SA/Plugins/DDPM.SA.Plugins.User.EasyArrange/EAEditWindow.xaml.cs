@@ -28,6 +28,8 @@ namespace DDPM.SA.Plugins.User.EasyArrange
         public EAEditWindow()
         {
             InitializeComponent();
+            //You should not use this class, you should use the EAEditWindow in EABroker instead
+            throw new NotImplementedException();
         }
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
