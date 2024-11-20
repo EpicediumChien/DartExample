@@ -30,6 +30,8 @@ using static DDPM.UI.Common.User32;
 using ProgressBar = System.Windows.Controls.ProgressBar;
 using UserControl = System.Windows.Controls.UserControl;
 using DDPM.UI.Common.ViewModels;
+using Rect = System.Windows.Rect;
+
 
 namespace DDPM.UI.Module.EzMemory
 {
@@ -433,10 +435,20 @@ namespace DDPM.UI.Module.EzMemory
                     spCtrl.Settings = new List<double>(spj.Settings);
                     spCtrl.SplitMode = eSplitModes.Icon;
                     spCtrl.FriendlyName = spj.CustomName;
+                    spCtrl.EAID = spj.EAID;
+
+                    if (spCtrl.IsAddedCustomLayout)
+                    {
+                        CreateCellBorderListToSplitCtrlFromCellJsons(spj.Cells, ref spCtrl);
+                    }
 
                     SplitItem itemCustom = splitListView_Custom.AddItemToList(spCtrl.UC);
                     itemCustom.SplitOwner = Common.EAEM.eSplitOwner.EaCustom;
                     itemCustom.CustomId = (int)spj.CustomId;
+
+                    //Robert_Lin, 2024-10-4 add max items check
+                    if (splitListView_Custom.ItemCount >= EAEMConstants.MaxCustomItems)
+                        break;
                 }
             } //if (eaSettings != null)
 
@@ -634,6 +646,33 @@ namespace DDPM.UI.Module.EzMemory
                 }
             }
         }
+
+        private void CreateCellBorderListToSplitCtrlFromCellJsons(CellJson[] cellJsons, ref ISplitCtrl ispCtrl)
+        {
+            if (!ispCtrl.IsAddedCustomLayout)
+                return;
+
+            SplitCtrl0B spCtrl0B = (SplitCtrl0B)ispCtrl;
+            spCtrl0B.CellList.Clear();
+            if (spCtrl0B.CellBorders != null)
+                spCtrl0B.CellBorders.Clear();
+            else
+                spCtrl0B.CellBorders = new List<CellBorder>();
+
+            foreach (CellJson cellJson in cellJsons)
+            {
+                CellBorder cellBorder = new CellBorder();
+                cellBorder.CellName = cellJson.Name;
+                cellBorder.rcRatio = new Rect(cellJson.x, cellJson.y, cellJson.w, cellJson.h);
+                spCtrl0B.CellBorders.Add(cellBorder);
+
+                CellObj cellObj = new CellObj(cellJson.Name);
+                cellObj.rcRatio = new Rect(cellJson.x, cellJson.y, cellJson.w, cellJson.h);
+                spCtrl0B.CellList.Add(cellObj);
+            }
+
+        }
+
         #endregion
         #region SplitListView Operations
         private SplitItem? FindSplitItemFromWindowLists(int cellCount, char splitKey)
