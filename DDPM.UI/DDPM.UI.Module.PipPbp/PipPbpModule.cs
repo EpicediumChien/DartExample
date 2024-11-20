@@ -102,7 +102,8 @@ namespace DDPM.UI.Module.PipPbp
             }
             else
             {
-                vm.Invoke_RefreshInputSourceList();
+                //vm.Invoke_RefreshInputSourceList();
+                vm.RefreshData();
             }
             vm.OnActivated();
         }

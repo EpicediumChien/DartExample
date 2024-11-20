@@ -259,7 +259,7 @@ namespace DDPM.EABroker
 
         private void OnLocationChangedProc(int x, int y) 
         {
-            _vm.IsShiftPressed = WinEventHook.IsShiftPressed();
+            //_vm.IsShiftPressed = WinEventHook.IsShiftPressed();
             double deltaX = Math.Abs(x - _vm.xCursor);
             double deltaY = Math.Abs(y - _vm.yCursor);
 

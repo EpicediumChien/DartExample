@@ -530,9 +530,13 @@ namespace DDPM.EABroker
             get => _isShiftPressed;
             set
             {
-                SetProperty(ref _isShiftPressed, value);
-                OnPropertyChanged("IsAwsWindowVisible");
-                OnPropertyChanged("IsWorkWindowVisible");
+                bool isChanged = (_isShiftPressed != value);
+                if (isChanged)
+                {
+                    SetProperty(ref _isShiftPressed, value);
+                    OnPropertyChanged("IsAwsWindowVisible");
+                    OnPropertyChanged("IsWorkWindowVisible");
+                }
             }
         }
         public bool IsWithoutGap
@@ -621,7 +625,15 @@ namespace DDPM.EABroker
                 {
                     return IsShiftPressed;
                 }
-                return true;
+                else
+                {
+                    //PIMS-317659
+                    //When IsOnlySift is OFF
+                    //IsShiftPress ShowWorkWindow?
+                    // True        Hide (False)
+                    // False       Show (True)
+                    return !IsShiftPressed;
+                }
             }
         }
 
@@ -1058,7 +1070,12 @@ namespace DDPM.EABroker
                         }
                         else
                         {
-                            newValue = true;
+                            //PIMS-317659
+                            //When IsOnlySift is OFF
+                            //IsShiftPress AWS window?
+                            // True        Hide (False)
+                            // False       Show (True)
+                            newValue = !IsShiftPressed;
                         }
                     }
                 }
