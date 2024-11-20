@@ -534,7 +534,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     return;
                 var applicationSettings_Function = new ApplicationSettings_Function();
                 string appModeTelementryData = loadResourceDictionary(oSTheme);
-                if (string.IsNullOrEmpty(appModeTelementryData))
+                if (!string.IsNullOrEmpty(appModeTelementryData))
                     Debug.WriteLine($"AppModeTelemetry=> {appModeTelementryData}");
                 writelog("[DeviceMangerPlugin] [Telementry] Send Telementry for AppMode...");
                 Task.Run(() => applicationSettings_Function.Send_AppMode_Telementry(_TelementryScheduler, _AllInfoMonitors, appModeTelementryData)).ConfigureAwait(false);
