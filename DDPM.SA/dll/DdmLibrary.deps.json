@@ -9,7 +9,7 @@
       "DdmLibrary/1.0.0": {
         "dependencies": {
           "Newtonsoft.Json": "13.0.3",
-          "runtimepack.Microsoft.Windows.SDK.NET.Ref": "10.0.19041.53"
+          "runtimepack.Microsoft.Windows.SDK.NET.Ref": "10.0.19041.44"
         },
         "runtime": {
           "DdmLibrary.dll": {}
