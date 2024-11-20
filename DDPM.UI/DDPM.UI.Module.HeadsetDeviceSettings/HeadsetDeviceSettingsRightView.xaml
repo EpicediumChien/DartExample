@@ -14,7 +14,7 @@
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="/DDPM.UI.Common;component/PluginStyles.xaml" />
+                <!--<ResourceDictionary Source="/DDPM.UI.Common;component/PluginStyles.xaml" />-->
                 <!-- <ResourceDictionary Source="/DDPM.UI.Common;component/ModuleStyle.xaml" /> -->
             </ResourceDictionary.MergedDictionaries>
 
@@ -203,10 +203,10 @@
                                     <UXControls:UXToggleSwitch x:Name="LearnmoreButton" Grid.Row="2" Grid.Column="0" BorderBrush="#FF1E3F6C" BorderThickness="1.5" Width="135" Height="40" Margin="8,8,0,0" HorizontalAlignment="Left" Background="{StaticResource SplitItem_NormalBdColor}" Click="LearnmoreButton_Click">
                                         <UXControls:UXToggleSwitch.Template>
                                             <ControlTemplate TargetType="UXControls:UXToggleSwitch">
-                                                <Border x:Name="AllButtonBorder" Background="{StaticResource NormalBackground}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="4,4,4,4">
+                                                <Border x:Name="AllButtonBorder" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="4,4,4,4">
                                                     <Grid>
                                                         <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
-                                                            <UXControls:UXTextBlock Text="{Binding [HeadsetDeviceSettings.6], Source={x:Static lang:LangHelper.Instance}}" FontSize="14" Foreground="White" TextAlignment="Center" />
+                                                            <UXControls:UXTextBlock Text="{Binding [HeadsetDeviceSettings.6], Source={x:Static lang:LangHelper.Instance}}" FontSize="14" Foreground="{DynamicResource TextBlock_ForegroundColor}" TextAlignment="Center" />
                                                         </StackPanel>
                                                     </Grid>
                                                 </Border>
