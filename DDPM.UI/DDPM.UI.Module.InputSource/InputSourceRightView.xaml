@@ -95,10 +95,10 @@
                                                 </Grid.ColumnDefinitions>
                                                 <UXControls:UXTextBox Grid.Column="{Binding NameColumn}" x:Name="InputName" Margin="2" Height="20"
                                                                       Text="{Binding InputName}" TextChanged="TextBox_TextChanged" MaxLength="30"
-                                                                      Tag="{Binding Index}"
+                                                                      Tag="{Binding Index}" PreviewTextInput="InputName_PreviewTextInput"
                                                                       Background="#141D28" Foreground="White"
                                                                       BorderBrush="#7E7E7E" BorderThickness="1" FontSize="14"
-                                                                      VerticalContentAlignment="Center" KeyDown="KeyDown_KeyDown" />
+                                                                      VerticalContentAlignment="Center" />
                                                 <ComboBox Grid.Column="1" x:Name="USBCB" Margin="4"
                                                           AutomationProperties.Name="SelectedCheck"
                                                           Style="{StaticResource DdpmComboBoxStyle}"

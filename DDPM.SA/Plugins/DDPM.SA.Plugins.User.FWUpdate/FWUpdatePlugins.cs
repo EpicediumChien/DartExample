@@ -1484,7 +1484,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                 }
                 if (fwUpdateInfo.DeviceType == DeviceType.LogicalDock || fwUpdateInfo.DeviceType == DeviceType.PhysicalWiredDock)
                 {
-                    arguments += $" /l=\"{logPath}\\{DateTime.Now.ToString("yyyy-MM-dd_HH_mm_ss")}\"";
+                    arguments += $" /f /l=\"{logPath}\\{DateTime.Now.ToString("yyyy-MM-dd_HH_mm_ss")}\"";
                 }
                 else
                 {
