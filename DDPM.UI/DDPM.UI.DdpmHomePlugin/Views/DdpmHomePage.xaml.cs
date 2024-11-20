@@ -984,7 +984,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                 _ddpmHomePageViewModel.RaiseShowAddDevicePlugin();
         }
 
-        #region Read/Write INI file
+        #region Read/Write INI file - Move to DDPM.UI.Common/User32.cs, can be removed
 
         //Robert_Lin 2024-7-5 copy from VCPCorePlugin.cs, shared with other projects
         public static int IniReadInt(string sec, string key, int def, string pathName)

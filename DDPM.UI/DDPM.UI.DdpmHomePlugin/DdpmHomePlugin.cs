@@ -320,7 +320,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                 {
                     _log.Info($"[Walkthrough] {nameof(_deviceManager_DeviceChanged)} Start");
                     await CollectAndCompareDevicesAsync();
-                    //// Check Queue�Afirst use device need to show WalkThroughPage
+                    //// Check Queue¡Afirst use device need to show WalkThroughPage
                     if (WalkThroughQueue.Count > 0 && _showPluginById == false)
                     {
                         _log.Info($"[Walkthrough] {nameof(_deviceManager_DeviceChanged)} WalkThroughQueue has items, ShowPluginById.");

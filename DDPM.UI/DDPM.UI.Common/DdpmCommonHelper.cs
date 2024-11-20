@@ -5,7 +5,6 @@ using DDPM.UI.Common.Views;
 using Dell.Client.Framework.UX.WPF;
 using Dell.Client.Framework.UX.WPF.Controls;
 using Dell.Client.Framework.UX.WPF.ResourceManager;
-using System.ComponentModel;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
@@ -13,11 +12,8 @@ using System.Reflection;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Media.Media3D;
-using System.Windows.Threading;
 using static DDPM.UI.Common.Views.DDPMMsgBox;
 using Application = System.Windows.Application;
-using Image = System.Windows.Controls.Image;
 
 namespace DDPM.UI.Common
 {
@@ -58,7 +54,8 @@ namespace DDPM.UI.Common
         public static IConsole? MyConsole { get; set; }
         public static IShowPluginManager? MyShowPluginManager { get; set; }
 
-        public static IDeviceManagerSA? DeviceManagerSA { get; set; } = null;
+        public static IDeviceManagerSA? DeviceManagerSA { get; set; }
+
         public static DDPMSettings? Settings_Cache { get; set; }
 
         public static IModuleOwner? ModuleOwner { get; set; }

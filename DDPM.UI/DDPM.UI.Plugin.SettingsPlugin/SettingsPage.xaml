@@ -65,9 +65,9 @@
                                     <DataTrigger Binding="{Binding IsSelected[0]}"
                                                  Value="True">
                                         <Setter Property="Background"
-                                                Value="{StaticResource VbarItem_HiBkColor}" />
+                                                Value="{DynamicResource VbarItem_HiBkColor}" />
                                         <Setter Property="BorderBrush"
-                                                Value="{StaticResource VbarItem_HiBdColor}" />
+                                                Value="{DynamicResource VbarItem_HiBdColor}" />
                                     </DataTrigger>
                                 </Style.Triggers>
                             </Style>
@@ -105,9 +105,9 @@
                                     <DataTrigger Binding="{Binding IsSelected[1]}"
                                                  Value="True">
                                         <Setter Property="Background"
-                                                Value="{StaticResource VbarItem_HiBkColor}" />
+                                                Value="{DynamicResource VbarItem_HiBkColor}" />
                                         <Setter Property="BorderBrush"
-                                                Value="{StaticResource VbarItem_HiBdColor}" />
+                                                Value="{DynamicResource VbarItem_HiBdColor}" />
                                     </DataTrigger>
                                     <DataTrigger Binding="{Binding UpdatesPageUI_IsEnable}"
                                                  Value="False">
@@ -172,9 +172,9 @@
                                     <DataTrigger Binding="{Binding IsSelected[2]}"
                                                  Value="True">
                                         <Setter Property="Background"
-                                                Value="{StaticResource VbarItem_HiBkColor}" />
+                                                Value="{DynamicResource VbarItem_HiBkColor}" />
                                         <Setter Property="BorderBrush"
-                                                Value="{StaticResource VbarItem_HiBdColor}" />
+                                                Value="{DynamicResource VbarItem_HiBdColor}" />
                                     </DataTrigger>
                                     <DataTrigger Binding="{Binding AnalyticsPage_IsEnable}"
                                                  Value="False">
@@ -233,9 +233,9 @@
                                     <DataTrigger Binding="{Binding IsSelected[3]}"
                                                  Value="True">
                                         <Setter Property="Background"
-                                                Value="{StaticResource VbarItem_HiBkColor}" />
+                                                Value="{DynamicResource VbarItem_HiBkColor}" />
                                         <Setter Property="BorderBrush"
-                                                Value="{StaticResource VbarItem_HiBdColor}" />
+                                                Value="{DynamicResource VbarItem_HiBdColor}" />
                                     </DataTrigger>
                                 </Style.Triggers>
                             </Style>
@@ -273,9 +273,9 @@
                                     <DataTrigger Binding="{Binding IsSelected[4]}"
                                                  Value="True">
                                         <Setter Property="Background"
-                                                Value="{StaticResource VbarItem_HiBkColor}" />
+                                                Value="{DynamicResource VbarItem_HiBkColor}" />
                                         <Setter Property="BorderBrush"
-                                                Value="{StaticResource VbarItem_HiBdColor}" />
+                                                Value="{DynamicResource VbarItem_HiBdColor}" />
                                     </DataTrigger>
                                 </Style.Triggers>
                             </Style>
