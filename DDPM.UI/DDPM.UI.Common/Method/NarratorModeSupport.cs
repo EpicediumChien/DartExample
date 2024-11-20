@@ -1,7 +1,9 @@
 ﻿using Dell.Client.Framework.UX.WPF.Controls;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Controls;
@@ -12,301 +14,81 @@ namespace DDPM.UI.Common.Method
 {
     public static class NarratorModeSupport
     {
-        public static bool Use_NarratorModeSupport = true;
-        public static void RecurseUitemsStackPanel(StackPanel stackpanel)
+        //public static bool Use_NarratorModeSupport = true;
+        public static void RecurseUitems(object item)
         {
-            foreach (var item in stackpanel.Children)
-            {
-                string typename = item.GetType().Name.ToLower();
-                switch (typename)
-                {
-                    case "button":
-                        Button bt = (Button)item;
-                        bt.Focusable = true;
-                        bt.MouseEnter += Bt_MouseEnter;
-                        break;
-                    case "textblock":
-                        TextBlock tb = (TextBlock)item;
-                        tb.Focusable = true;
-                        tb.MouseEnter += Tb_MouseEnter;
-                        break;
+            //if (Use_NarratorModeSupport != true) return;
 
-                    case "uxtextblock":
-                        UXTextBlock utb = (UXTextBlock)item;
-                        Console.WriteLine("utb:" + utb.Text);
-                        utb.Focusable = true;
-                        utb.MouseEnter += Utb_MouseEnter;
-                        break;
-
-                    case "grid":
-                        Grid gd = (Grid)item;
-                        RecurseUitemsGrid(gd);
-                        break;
-
-                    case "stackpanel":
-                        StackPanel sp = (StackPanel)item;
-                        RecurseUitemsStackPanel(sp);
-                        break;
-
-                    case "border":
-                        Border bd = (Border)item;
-                        RecurseUitemsBorder(bd);
-                        break;
-
-                    case "dockpanel":
-                        DockPanel dp = (DockPanel)item;
-                        RecurseUitemsDockPanel(dp);
-                        break;
-
-                    case "uxscrollviewer":
-                        UXScrollViewer sv = (UXScrollViewer)item;
-                        RecurseUitemsUXScrollViewer(sv);
-                        break;
-
-                    default:
-                        Console.WriteLine("未處理類型:" + typename);
-                        //MessageBox.Show("未處理類型:"+typename);
-                        break;
-                }
-            }
-        }
-
-        public static void RecurseUitemsUXScrollViewer(UXScrollViewer uxscrollviewer)
-        {
-            var item = uxscrollviewer.Content;
-            //foreach (var item in uxscrollviewer.Content )
-            //{
+            //避免大小寫寫錯問題,一律轉小寫處理 
             string typename = item.GetType().Name.ToLower();
             switch (typename)
             {
+                //可自行添加UI項目支援
                 case "button":
                     Button bt = (Button)item;
                     bt.Focusable = true;
-                    bt.MouseEnter += Bt_MouseEnter;
+                    bt.MouseEnter += delegate (object s, MouseEventArgs e) { ((Button)s).Focus(); };
                     break;
                 case "textblock":
                     TextBlock tb = (TextBlock)item;
                     tb.Focusable = true;
-                    tb.MouseEnter += Tb_MouseEnter;
+                    tb.MouseEnter += delegate (object s, MouseEventArgs e) { ((TextBlock)s).Focus(); };
                     break;
 
                 case "uxtextblock":
                     UXTextBlock utb = (UXTextBlock)item;
-                    Console.WriteLine("utb:" + utb.Text);
                     utb.Focusable = true;
-                    utb.MouseEnter += Utb_MouseEnter;
+                    utb.MouseEnter += delegate (object s, MouseEventArgs e) { ((UXTextBlock)s).Focus(); };
                     break;
 
+                case "uxtoggleswitch":
+                    UXToggleSwitch toggle = (UXToggleSwitch)item;
+                    toggle.Focusable = true;
+                    toggle.MouseEnter += delegate (object s, MouseEventArgs e) { ((UXToggleSwitch)s).Focus(); };
+                    break;
+
+                //容器類型UI項目,有可能需要添加類型
                 case "grid":
-                    Grid gd = (Grid)item;
-                    RecurseUitemsGrid(gd);
+                    {
+                        foreach (var _item in ((Grid)item).Children)
+                            RecurseUitems(_item);
+                    }
                     break;
 
                 case "stackpanel":
-                    StackPanel sp = (StackPanel)item;
-                    RecurseUitemsStackPanel(sp);
+                    {
+                        foreach (var _item in ((StackPanel)item).Children)
+                            RecurseUitems(_item);
+                    }
                     break;
 
                 case "border":
-                    Border bd = (Border)item;
-                    RecurseUitemsBorder(bd);
+                    {
+                        var _item = ((Border)item).Child;
+                        if (_item != null) RecurseUitems(_item);
+                    }
                     break;
 
                 case "dockpanel":
-                    DockPanel dp = (DockPanel)item;
-                    RecurseUitemsDockPanel(dp);
+                    {
+                        foreach (var _item in ((DockPanel)item).Children)
+                            RecurseUitems(_item);
+                    }
                     break;
 
                 case "uxscrollviewer":
-                    UXScrollViewer sv = (UXScrollViewer)item;
-                    RecurseUitemsUXScrollViewer(sv);
+                    {
+                        var _item = ((UXScrollViewer)item).Content;
+                        RecurseUitems(_item);
+                    }
                     break;
 
                 default:
-                    Console.WriteLine("未處理類型:" + typename);
-                    //MessageBox.Show("未處理類型:"+typename);
-                    break;
-            }
-            //}
-        }
-
-        public static void RecurseUitemsDockPanel(DockPanel dockpanel)
-        {
-            foreach (var item in dockpanel.Children)
-            {
-                string typename = item.GetType().Name.ToLower();
-                switch (typename)
-                {
-                    case "button":
-                        Button bt = (Button)item;
-                        bt.Focusable = true;
-                        bt.MouseEnter += Bt_MouseEnter;
-                        break;
-                    case "textblock":
-                        TextBlock tb = (TextBlock)item;
-                        tb.Focusable = true;
-                        tb.MouseEnter += Tb_MouseEnter;
-                        break;
-
-                    case "uxtextblock":
-                        UXTextBlock utb = (UXTextBlock)item;
-                        Console.WriteLine("utb:" + utb.Text);
-                        utb.Focusable = true;
-                        utb.MouseEnter += Utb_MouseEnter;
-                        break;
-
-                    case "grid":
-                        Grid gd = (Grid)item;
-                        RecurseUitemsGrid(gd);
-                        break;
-
-                    case "stackpanel":
-                        StackPanel sp = (StackPanel)item;
-                        RecurseUitemsStackPanel(sp);
-                        break;
-
-                    case "border":
-                        Border bd = (Border)item;
-                        RecurseUitemsBorder(bd);
-                        break;
-
-                    case "dockpanel":
-                        DockPanel dp = (DockPanel)item;
-                        RecurseUitemsDockPanel(dp);
-                        break;
-
-                    case "uxscrollviewer":
-                        UXScrollViewer sv = (UXScrollViewer)item;
-                        RecurseUitemsUXScrollViewer(sv);
-                        break;
-
-                    default:
-                        Console.WriteLine("未處理類型:" + typename);
-                        //MessageBox.Show("未處理類型:"+typename);
-                        break;
-                }
-            }
-        }
-
-        public static void RecurseUitemsBorder(Border border)
-        {
-            var item = border.Child;
-            if (item == null) return;
-            string typename = item.GetType().Name.ToLower();
-            switch (typename)
-            {
-                case "button":
-                    Button bt = (Button)item;
-                    bt.Focusable = true;
-                    bt.MouseEnter += Bt_MouseEnter;
-                    break;
-                case "textblock":
-                    TextBlock tb = (TextBlock)item;
-                    tb.Focusable = true;
-                    tb.MouseEnter += Tb_MouseEnter;
-                    break;
-
-                case "uxtextblock":
-                    UXTextBlock utb = (UXTextBlock)item;
-                    Console.WriteLine("utb:" + utb.Text);
-                    utb.Focusable = true;
-                    utb.MouseEnter += Utb_MouseEnter;
-                    break;
-
-                case "grid":
-                    Grid gd = (Grid)item;
-                    RecurseUitemsGrid(gd);
-                    break;
-
-                case "stackpanel":
-                    StackPanel sp = (StackPanel)item;
-                    RecurseUitemsStackPanel(sp);
-                    break;
-
-                case "border":
-                    Border bd = (Border)item;
-                    RecurseUitemsBorder(bd);
-                    break;
-
-                case "dockpanel":
-                    DockPanel dp = (DockPanel)item;
-                    RecurseUitemsDockPanel(dp);
-                    break;
-
-                case "uxscrollviewer":
-                    UXScrollViewer sv = (UXScrollViewer)item;
-                    RecurseUitemsUXScrollViewer(sv);
-                    break;
-
-                default:
-                    Console.WriteLine("未處理類型:" + typename);
+                    Debug.WriteLine("NarratorMode未處理類型:" + typename);
                     //MessageBox.Show("未處理類型:"+typename);
                     break;
 
             }
-        }
-
-        public static void RecurseUitemsGrid(Grid grid)
-        {
-            if (Use_NarratorModeSupport != true) return;
-
-            foreach (var item in grid.Children)
-            {
-                string typename = item.GetType().Name.ToLower();
-                switch (typename)
-                {
-                    case "button":
-                        Button bt = (Button)item;
-                        bt.Focusable = true;
-                        bt.MouseEnter += Bt_MouseEnter;
-                        break;
-                    case "textblock":
-                        TextBlock tb = (TextBlock)item;
-                        tb.Focusable = true;
-                        tb.MouseEnter += Tb_MouseEnter;
-                        break;
-
-                    case "uxtextblock":
-                        UXTextBlock utb = (UXTextBlock)item;
-                        Console.WriteLine("utb:" + utb.Text);
-                        utb.Focusable = true;
-                        utb.MouseEnter += Utb_MouseEnter;
-                        break;
-
-                    case "grid":
-                        Grid gd = (Grid)item;
-                        RecurseUitemsGrid(gd);
-                        break;
-
-                    case "stackpanel":
-                        StackPanel sp = (StackPanel)item;
-                        RecurseUitemsStackPanel(sp);
-                        break;
-
-                    case "border":
-                        Border bd = (Border)item;
-                        RecurseUitemsBorder(bd);
-                        break;
-
-                    case "dockpanel":
-                        DockPanel dp = (DockPanel)item;
-                        RecurseUitemsDockPanel(dp);
-                        break;
-
-                    case "uxscrollviewer":
-                        UXScrollViewer sv = (UXScrollViewer)item;
-                        RecurseUitemsUXScrollViewer(sv);
-                        break;
-
-                    default:
-                        Console.WriteLine("未處理類型:" + typename);
-                        //MessageBox.Show("未處理類型:"+typename);
-                        break;
-
-                }
-            }
-
-
         }
 
         private static void Utb_MouseEnter(object sender, MouseEventArgs e)
