@@ -1004,7 +1004,8 @@ namespace NetworkKVM.Plugins
                         proc.Start();
 #else
                         //Check process with inbox thumbprint and with argument via startInfo
-                        DDPMFileSecurity.StartProcessSafely(Log, proc.StartInfo, true);
+                        //DDPMFileSecurity.StartProcessSafely(Log, proc.StartInfo, true);
+                        DDPMFileSecurity.StartProcessSafely(Log, proc.StartInfo, true, "", "", false, true);//lock nkvm
 #endif
 
                         return Task.FromResult(true);

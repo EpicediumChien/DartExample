@@ -204,7 +204,7 @@
   <data name="Failed_to_open_application" xml:space="preserve">
     <value>アプリケーションを開くことができませんでした</value>
   </data>
-  <data name="will_be_updated_to " xml:space="preserve">
+  <data name="will_be_updated_to" xml:space="preserve">
     <value>が次にアップデートされます: </value>
   </data>
   <data name="can_be_updated_to" xml:space="preserve">
@@ -241,7 +241,7 @@
     <value>ファームウェア アップデートを開始するにはマウスの左ボタンをダブルクリックしてください</value>
   </data>
   <data name="M2_Please_press_key_on_keyboard_to_start_firmware_update" xml:space="preserve">
-    <value>ファームウェア アップデートを開始するにはキーボードの\&quot;U\&quot;キーを押してください</value>
+    <value>ファームウェア アップデートを開始するにはキーボードの\"U\"キーを押してください</value>
   </data>
   <data name="A0_Device_connected" xml:space="preserve">
     <value>デバイスが接続されました</value>

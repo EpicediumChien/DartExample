@@ -1149,6 +1149,50 @@ namespace DDPM.SA.Common.Settings
                              .ToArray();
         }
 
+        public static bool VerifyFileCertWithInboxThumbprint(string filePath, out string info)
+        {
+            info = "success";
+            if (!IsFilePathValid(filePath, out info))
+            {
+#if DEBUG
+                Console.WriteLine(info);
+#endif
+                return false;
+            }
+            try
+            {
+                X509Certificate2 cert = LoadFileCertificate(filePath);
+                if (cert == null)
+                {
+                    info = "Can't retrieve cert from file.";
+                    return false;
+                }
+
+                //compare thumbprint
+                //source array DDPM.SA.Obfuscation.ThumbprintHash.certificateHash
+                //Target cert.Thumbprint
+                bool contains = DDPM.SA.Obfuscation.ThumbprintHash.certificateHash.Any(arr => arr.SequenceEqual(ConvertThumbprintToByteArray(cert.Thumbprint)));
+                if (!contains)
+                {
+                    info = $"No matched cert. thumbprint in file is {cert.Thumbprint}";
+                    return false;
+                }
+                if (!VerifyExecutableFileSignature(filePath, out info))
+                {
+#if DEBUG
+                    Console.WriteLine(info);
+#endif
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                info = ex.Message;
+                return false;
+            }
+            return true;
+        }
+
         public static bool VerifyFileCertWithoutThumbprint(string filePath, out string info)
         {
             info = "success";
@@ -1161,27 +1205,6 @@ namespace DDPM.SA.Common.Settings
             }
             try
             {
-                //X509Certificate2 cert = new X509Certificate2(filePath);
-                //if (cert == null)
-                //{
-                //    info = "Can't retrieve cert from file.";
-                //    return false;
-                //}
-
-                //compare thumbprint
-                //source array DDPM.SA.Obfuscation.ThumbprintHash.certificateHash
-                //Target cert.Thumbprint
-                //if(!CheckCertificateIsVaild(cert, ref info))
-                //{                    
-                //    return false;
-                //}
-                //
-                //bool contains = DDPM.SA.Obfuscation.ThumbprintHash.certificateHash.Any(arr => arr.SequenceEqual(ConvertThumbprintToByteArray(cert.Thumbprint)));
-                //if (!contains)
-                //{
-                //    info = $"No matched cert. thumbprint in file is {cert.Thumbprint}";
-                //    return false;
-                //}
                 if (!VerifyExecutableFileSignature(filePath, out info))
                 {
 #if DEBUG
@@ -1229,11 +1252,6 @@ namespace DDPM.SA.Common.Settings
                     info = "Can't retrieve cert from file.";
                     return false;
                 }
-
-                //if (!CheckCertificateIsVaild(cert, ref info))
-                //{
-                //    return false;
-                //}
 
                 //compare thumbprint from input
                 //Target cert.Thumbprint{
@@ -1653,7 +1671,8 @@ namespace DDPM.SA.Common.Settings
             }
             if (needCheckThumbprintInbox)
             {
-                if (!VerifyFileCertWithoutThumbprint(filePath, out info))
+                //if (!VerifyFileCertWithoutThumbprint(filePath, out info))
+                if(!VerifyFileCertWithInboxThumbprint(filePath, out info))
                 {
                     if (log != null)
                         log.Error($"[IsProcessInfoValid] VerifyFileCertWithThumbprint: {info}");

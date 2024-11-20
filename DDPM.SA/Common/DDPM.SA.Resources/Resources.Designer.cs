@@ -169,15 +169,6 @@ namespace DDPM.SA.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Caps Lock Off.
-        /// </summary>
-        internal static string Caps_Lock_Off {
-            get {
-                return ResourceManager.GetString("Caps_Lock_Off", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Caps Lock On.
         /// </summary>
         internal static string Caps_Lock_On {
@@ -381,6 +372,15 @@ namespace DDPM.SA.Resources {
         internal static string EA_MSG_0 {
             get {
                 return ResourceManager.GetString("EA_MSG_0", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to There are Easy Memory profiles associated to this custom layout.\nSaving this custom layout will update the layout for all the associated profiles.\nDo you want to save the layout?.
+        /// </summary>
+        internal static string EABroker_updateToEmProfilePrompt {
+            get {
+                return ResourceManager.GetString("EABroker_updateToEmProfilePrompt", resourceCulture);
             }
         }
         
