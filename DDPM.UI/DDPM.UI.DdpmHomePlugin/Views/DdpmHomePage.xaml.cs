@@ -278,7 +278,18 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
 
             //Robert_Lin, 2024-8-7, skip refresh if Homepage is not displayed (cxView==0)
             if ((cxView == 0) || (cyView == 0))
+            {
+                //Add a retry after 300 msec
+                System.Threading.Timer timer1 = new System.Threading.Timer((obj) => 
+                {
+                    Dispatcher.BeginInvoke(new Action(() =>
+                    {
+                        RefreshListViewItemWidth();
+                    }));
+
+                }, null, 300, Timeout.Infinite);
                 return;
+            }
 
             var primaryScreenScalingRatio = Screen.PrimaryScreen.Bounds.Width / SystemParameters.PrimaryScreenWidth;
 
