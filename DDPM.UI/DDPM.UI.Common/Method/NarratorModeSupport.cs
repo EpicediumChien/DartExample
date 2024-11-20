@@ -90,23 +90,5 @@ namespace DDPM.UI.Common.Method
 
             }
         }
-
-        private static void Utb_MouseEnter(object sender, MouseEventArgs e)
-        {
-            UXTextBlock utb = (UXTextBlock)sender;
-            utb.Focus();
-        }
-
-        private static void Bt_MouseEnter(object sender, MouseEventArgs e)
-        {
-            Button bt = (Button)sender;
-            bt.Focus();
-        }
-
-        private static void Tb_MouseEnter(object sender, MouseEventArgs e)
-        {
-            TextBlock tb = (TextBlock)sender;
-            tb.Focus();
-        }
     }
 }
