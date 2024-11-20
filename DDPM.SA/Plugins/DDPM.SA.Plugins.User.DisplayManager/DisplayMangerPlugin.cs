@@ -595,6 +595,14 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                     if (objGetVCPEE.result)
                     {
                         string strUSB = Convert.ToString((uint)objGetVCPEE.value, 2);
+                        string _strUSB = strUSB;
+                        if (_strUSB.Length < 16)
+                        {
+                            for (int i = 0; i < (16 - _strUSB.Length); i++)
+                            {
+                                strUSB = "0" + strUSB;
+                            }
+                        }
                         //USBUplink[strUSB.Substring(0, 4)];
                     }
                 }
