@@ -204,7 +204,7 @@
   <data name="Failed_to_open_application" xml:space="preserve">
     <value>Öffnen der Anwendung ist fehlgeschlagen</value>
   </data>
-  <data name="will_be_updated_to " xml:space="preserve">
+  <data name="will_be_updated_to" xml:space="preserve">
     <value>wird aktualisiert auf </value>
   </data>
   <data name="can_be_updated_to" xml:space="preserve">
@@ -241,7 +241,7 @@
     <value>Mit der linken Maustaste doppelklicken, um das Firmware-Update zu starten</value>
   </data>
   <data name="M2_Please_press_key_on_keyboard_to_start_firmware_update" xml:space="preserve">
-    <value>Die Taste \&quot;U\&quot; auf der Tastatur drücken, um das Firmwareupdate zu starten</value>
+    <value>Die Taste \"U\" auf der Tastatur drücken, um das Firmwareupdate zu starten</value>
   </data>
   <data name="A0_Device_connected" xml:space="preserve">
     <value>Gerät verbunden</value>

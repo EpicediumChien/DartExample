@@ -114,9 +114,9 @@ namespace DDPM.Easy.Common
         }
 
         /// <summary>
-        /// Create a ISplitCtrl by EAID
+        /// Create a Preset Layout ISplitCtrl by EAID
         /// </summary>
-        /// <param name="eaId"></param>
+        /// <param name="eaId">Range [1~48] cannot used to create custom layout (which EAID=[1000~1004]</param>
         /// <returns></returns>
         public static ISplitCtrl? Create(int eaId)
         {

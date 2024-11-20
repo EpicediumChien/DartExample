@@ -19,6 +19,8 @@ using DDPM.SA.Common.Settings;
 using System.Diagnostics;
 using System.Collections.ObjectModel;
 using System.Windows.Threading;
+using System.Windows.Documents;
+using System.Windows.Media.Media3D;
 
 namespace DDPM.EABroker
 {
@@ -45,6 +47,7 @@ namespace DDPM.EABroker
         private int _yCursor = 0;
         private double _screenScale = 1;
         private Screen? _workScreen = null;
+        private EAScreen? _workEaScreen = null;
 
         //EzSettings
         private bool _isOnlyShift = EzSettings.Default_IsOnlyAllowWhenShiftKeyPressed;
@@ -91,6 +94,9 @@ namespace DDPM.EABroker
         //ScreenIdWindows
         private List<ScreenIdWindow> _screenIdWindows = new List<ScreenIdWindow>();
         private bool _isScreenIdWindowsVisible = false;
+
+        //Span across multiple monitors
+        private SpanScreen _spanScreen = new SpanScreen();
         #endregion Private members
 
         #region Constants
@@ -186,7 +192,25 @@ namespace DDPM.EABroker
             return _deviceManagerSA.WriteEAMonitorSettings(mi, eaSettings).Result;
         }
 
-         #endregion
+        public void SendNotifyToUI_SetIsSpanEnabled()
+        {
+
+        }
+
+        #endregion
+
+        #region System Event Handlers
+        /// <summary>
+        /// Called from EAPlugin, when it receive a DisplaySettings event
+        /// </summary>
+        public void HandleDisplaySettings()
+        {
+            //1 Check if Span across multiple monitors state changed
+            //Original state
+            //Execute refresh
+
+        }
+        #endregion
 
         #region Foreground Window Info
         public IntPtr hWndForeground
@@ -506,9 +530,13 @@ namespace DDPM.EABroker
             get => _isShiftPressed;
             set
             {
-                SetProperty(ref _isShiftPressed, value);
-                OnPropertyChanged("IsAwsWindowVisible");
-                OnPropertyChanged("IsWorkWindowVisible");
+                bool isChanged = (_isShiftPressed != value);
+                if (isChanged)
+                {
+                    SetProperty(ref _isShiftPressed, value);
+                    OnPropertyChanged("IsAwsWindowVisible");
+                    OnPropertyChanged("IsWorkWindowVisible");
+                }
             }
         }
         public bool IsWithoutGap
@@ -540,7 +568,15 @@ namespace DDPM.EABroker
                     IsOnlyShift = ezSettings.IsOnlyAllowWhenShiftKeyPressed;
                     IsAwsEnabled = ezSettings.IsAwsEnabled;
                     IsWithoutGap = ezSettings.IsWidthoutGap;
+
+                    //To detect IsSpanMultiMonitors changed
+                    bool isSpanOnOffChanged = (IsSpanMultiMonitors != ezSettings.IsSpanAcrossMultiMonitors);
                     IsSpanMultiMonitors = ezSettings.IsSpanAcrossMultiMonitors;
+
+                    if (isSpanOnOffChanged)
+                    {
+                        RefreshWorkWindows();
+                    }
 
                     ////Robert_Lin, 2024-10-20 Debug purpose, need to comment out in release build
                     //IsAwsEnabled = true;
@@ -589,10 +625,44 @@ namespace DDPM.EABroker
                 {
                     return IsShiftPressed;
                 }
-                return true;
+                else
+                {
+                    //PIMS-317659
+                    //When IsOnlySift is OFF
+                    //IsShiftPress ShowWorkWindow?
+                    // True        Hide (False)
+                    // False       Show (True)
+                    return !IsShiftPressed;
+                }
             }
         }
 
+        private void ResetWorkWindows()
+        {
+            SplitJson spjEmpty = new SplitJson()
+            {
+                EAID = 0,
+                CellCount = 0,
+                SplitKey = 'A',
+                Settings = new List<double>()
+            };
+            //Clear InUsed flag for all WorkWindows
+            foreach (EAWorkWindow workWindow in _workWindows)
+            {
+                if (workWindow != null)
+                {
+                    if (workWindow.IsUsed)
+                    {
+                        workWindow.SetWorkingSplit(spjEmpty);
+                    }
+                    workWindow.IsUsed = false;
+                }
+            }
+
+            //Refresh process loop
+            _workWindowUsedCount = 0;
+            OnPropertyChanged("WorkWindowUsedCount");
+        }
         public void InitWorkWindows()
         {
             int added = 0;
@@ -631,7 +701,8 @@ namespace DDPM.EABroker
             }
         }
 
-        public void RefreshWorkWindows()
+        //To be removed, do use and test
+        public void RefreshWorkWindows_v1()
         {
             bool isSupportNonDellMonitors = false;
 
@@ -713,6 +784,165 @@ namespace DDPM.EABroker
                 }
             }
 
+        }
+
+        //(v2)Robert_Lin, 2024-11-18, new version consider when SpanScreen is ON
+        public void RefreshWorkWindows(bool isInit=false)
+        {
+            WriteLog("@ArrangeVM.RefreshWorkWindows()");
+            bool isSupportNonDellMonitors = false;
+
+            RefreshScreenScale();
+
+            //Clear InUsed flag for all WorkWindows
+            ResetWorkWindows();
+            //foreach (EAWorkWindow workWindow in _workWindows)
+            //{
+            //    if (workWindow != null)
+            //        workWindow.IsUsed = false;
+            //}
+
+            //Refresh process loop
+            _workWindowUsedCount = 0;
+
+            List<MonitorInfo> monitors = GetMonitors();
+            List<EAScreen> eaScreens = EAScreen.GetEAScreens(monitors);
+
+            //Allocate WorkWindow for SpanScreen at first
+            if (_spanScreen != null)
+            {
+                //SpanScreen is enabled and ON
+                if (IsSpanScreenWorking)
+                {
+                    //Get an unused WorkWindow
+                    EAWorkWindow? workWindow = GetUnusedWorkWindow();
+                    if (workWindow == null)
+                    {
+                        //No more available workWindow
+                        return;
+                    }
+
+                    //
+                    workWindow.SetWorkScreenToSpanScreen();
+
+                    MonitorInfo? miPrimary = _spanScreen.GetPrimaryMonitor();
+                    if (miPrimary != null)
+                    {
+                        //Get SelectedSplit from MonitorSettings
+                        EAMonitorSettings? eaSettings = ReadEAMonitorSettings(miPrimary);
+                        if (eaSettings == null)
+                        {
+                            int cellCount = 0;
+                            char splitKey = 'A';
+                            List<double> settings = new List<double>() { 1 };
+
+                            //workWindow.SetWorkingSplit(cellCount, splitKey, settings);
+
+                            SplitJson spj0A = new SplitJson();
+                            spj0A.CellCount = cellCount;
+                            spj0A.SplitKey = splitKey;
+                            spj0A.Settings = settings;
+                            workWindow.SetWorkingSplit(spj0A);
+                        }
+                        else
+                        {
+                            int cellCount = eaSettings.SelectedSplit.CellCount;
+                            char splitKey = eaSettings.SelectedSplit.SplitKey;
+                            List<double> settings = eaSettings.SelectedSplit.Settings;
+                            //workWindow.SetWorkingSplit(cellCount, splitKey, settings);
+                            workWindow.SetWorkingSplit(eaSettings.SelectedSplit, isInit);
+                        }
+                    }
+
+                    workWindow.IsUsed = true;
+                }
+                else
+                {
+                    //Remove the WorkWindow of the SpanScreen
+                    EAWorkWindow? workForSpan = _workWindows.FirstOrDefault(x => x.IsWorkForSpanScreen);
+                    if (workForSpan != null) 
+                    {
+                        workForSpan.ResetToUnused();
+                    }
+                }
+            }
+
+
+            foreach (EAScreen eaScr in eaScreens)
+            {
+                //Check if this eaScr is included in the SpanScreen
+                if (IsSpanScreenWorking)
+                {
+                    if (_spanScreen.IsExistScreen(eaScr.ScreenDeviceName))
+                        continue;
+                }
+                //If the EAScreen has no a Dell monitor attached, we will not allocate a WorkWindow for it
+                if (!eaScr.HasAttachedMonitor)
+                {
+                    if (!isSupportNonDellMonitors)
+                        continue;
+                    //If this flag is true, then we will allow non-dell monitor to go
+                }
+
+                //Get an unused WorkWindow
+                EAWorkWindow? workWindow = GetUnusedWorkWindow();
+                if (workWindow == null)
+                {
+                    //No more available workWindow
+                    break;
+                }
+
+                //Check if this EA
+
+                workWindow.IsUsed = true;
+                workWindow.SetWorkScreen(eaScr, eaScr.AttachedMonitors);
+                _workWindowUsedCount++;
+
+                if (eaScr.HasAttachedMonitor)
+                {
+                    //Get SelectedSplit from MonitorSettings
+                    EAMonitorSettings? eaSettings = ReadEAMonitorSettings(eaScr.AttachedMonitors[0]);
+                    if (eaSettings == null)
+                    {
+                        int cellCount = 0;
+                        char splitKey = 'A';
+                        List<double> settings = new List<double>() { 1 };
+
+                        //workWindow.SetWorkingSplit(cellCount, splitKey, settings);
+
+                        SplitJson spj0A = new SplitJson();
+                        spj0A.CellCount = cellCount;
+                        spj0A.SplitKey = splitKey;
+                        spj0A.Settings = settings;
+                        workWindow.SetWorkingSplit(spj0A);
+                    }
+                    else
+                    {
+                        int cellCount = eaSettings.SelectedSplit.CellCount;
+                        char splitKey = eaSettings.SelectedSplit.SplitKey;
+                        List<double> settings = eaSettings.SelectedSplit.Settings;
+                        //workWindow.SetWorkingSplit(cellCount, splitKey, settings);
+                        workWindow.SetWorkingSplit(eaSettings.SelectedSplit, isInit);
+                    }
+                }
+
+            } //foreach
+
+            OnPropertyChanged("WorkWindowUsedCount");
+            RefreshWorkWinInfos();
+
+            //Robert_Lin, 2024-10-18 Workaround
+            //If ScreenCount>2, we assume it may have one Dell monitor, but no WorkWindow created, then we will
+            //Redo this method by raise a "DisplaySettingsChanged" event
+            if (System.Windows.Forms.Screen.AllScreens.Length >= 2)
+            {
+                if (WorkWindowUsedCount == 0)
+                {
+                    System.Threading.Timer timer1 = new System.Threading.Timer((obj) => {
+                        _agent.RaiseEvent(AgentEventNames.DisplaySettingsChanged, this, new EventManagerArgs());
+                    }, null, 2000, Timeout.Infinite);
+                }
+            }
         }
 
         private EAWorkWindow? GetUnusedWorkWindow()
@@ -840,7 +1070,12 @@ namespace DDPM.EABroker
                         }
                         else
                         {
-                            newValue = true;
+                            //PIMS-317659
+                            //When IsOnlySift is OFF
+                            //IsShiftPress AWS window?
+                            // True        Hide (False)
+                            // False       Show (True)
+                            newValue = !IsShiftPressed;
                         }
                     }
                 }
@@ -1405,5 +1640,79 @@ namespace DDPM.EABroker
             }
 
         }
+
+        #region Span across multiple monitors
+
+        public bool DetectSpanCondition()
+        {
+            if (_spanScreen != null)
+            {
+                List<MonitorInfo>? monitors = GetMonitors();
+                bool res = _spanScreen.DetectSpanScreens(_log, monitors);
+                OnPropertyChanged("IsSpanEnabled");
+                OnPropertyChanged("IsHorzSpan");
+                OnPropertyChanged("SpanWorkingArea");
+                OnPropertyChanged("IsSpanScreenWorking");
+                return res;
+            }
+            return false;
+        }
+
+        public bool IsSpanEnabled
+        {
+            get 
+            { 
+                if (_spanScreen != null)
+                {
+                    return _spanScreen.IsSpanEnabled;
+                }
+                return false;
+            }
+        }
+
+        public SpanScreen SpanScreen => _spanScreen;
+
+        public bool IsHorzSpan
+        {
+            get
+            {
+                if (_spanScreen != null)
+                {
+                    return _spanScreen.IsHorzSpan;
+                }
+                return false;
+            }
+        }
+        public Rectangle SpanWorkingArea
+        {
+            get
+            {
+                if (_spanScreen != null)
+                {
+                    return _spanScreen.WorkingArea;
+                }
+                return Rectangle.Empty;
+            }
+        }
+
+        public bool IsSpanScreenWorking
+        {
+            get
+            {
+                return (IsSpanEnabled && IsSpanMultiMonitors);
+            }
+        }
+
+        public Rect GetSpanWorkingArea(Screen scr)
+        {
+            Rectangle rcWorkingArea = (IsSpanScreenWorking ? scr.WorkingArea : SpanScreen.WorkingArea);
+            return new Rect(
+                (double)rcWorkingArea.Left / ScreenScale,
+                (double)rcWorkingArea.Top / ScreenScale,
+                (double)rcWorkingArea.Width / ScreenScale,
+                (double)rcWorkingArea.Height / ScreenScale
+                );
+        }
+        #endregion
     }
 }
