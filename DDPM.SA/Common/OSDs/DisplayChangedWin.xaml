@@ -60,13 +60,14 @@
                         <RowDefinition Height="50*" />
                         <RowDefinition Height="50*" />
                     </Grid.RowDefinitions>
-                    <Image
-                        Grid.Row="0"
-                        Width="60"
-                        Height="48"
-                        HorizontalAlignment="Center"
-                        VerticalAlignment="Center"
-                        Source="./Img/Display.png" />
+                    <Canvas Grid.Row="0" 
+                            Width="60" Height="48"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            Tag="{DynamicResource Default_SA_OSD_PathColor}">
+                        <Path Data="M60,40.3125 V6.5625 H0 V40.3125 H23.4375 V49.6125 H14.0625 V53.5875 H45.9375 V49.6125 H36.5625 V40.3125 H60 Z M32.55,40.3125 V49.575 H27.45 V40.3125 H32.55 Z M4.0125,10.3125 H55.9875 V36.3 H4.0125 V10.3125 Z" 
+                        Fill="{Binding Tag, RelativeSource={RelativeSource AncestorType=Canvas}}"/>
+                    </Canvas>
                     <TextBlock
                         x:Name="ShowStringText"
                         Grid.Row="1"
