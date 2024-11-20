@@ -324,5 +324,9 @@ namespace DDPM.EABroker
         }
         #endregion
 
+        private void IsSpanMultipleMonitorsCheckbox_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
     }
 }
