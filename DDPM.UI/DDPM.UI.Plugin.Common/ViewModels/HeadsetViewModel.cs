@@ -35,6 +35,20 @@ namespace DDPM.UI.Plugin.ViewModels
             _log!.Info($"[HeadsetViewModel] HeadsetViewModel Start...");
         }
 
+        private bool _isDarkTheme;
+        public bool IsDarkTheme
+        {
+            get => _isDarkTheme;
+            set
+            {
+                if (_isDarkTheme != value)
+                {
+                    _isDarkTheme = value;
+                    OnPropertyChanged(nameof(IsDarkTheme));
+                }
+            }
+        }
+        
         public async Task DetectPageShow(string model)
         {
             _log!.Info($"[HeadsetViewModel] DetectPageShow ... {model}");
