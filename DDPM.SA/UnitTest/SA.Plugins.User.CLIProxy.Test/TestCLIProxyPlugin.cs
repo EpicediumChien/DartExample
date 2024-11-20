@@ -122,7 +122,60 @@ namespace DDPM.SA.Plugin.User.CLIManage.Test
             var InitializeDevManagerPlugin_result = privateteCLIProxyPlugin.GetFieldOrProperty("_DevManagerPlugin");
             Assert.IsNotNull(InitializeDevManagerPlugin_result);
         }
-  
+
+        [Test]
+        public void TestInitializeCLIDisplayPlugin()
+        {
+            Mock<ICLIDisplay> mockCLIDisplay = new Mock<ICLIDisplay>();
+            var CLIDisplayObject = mockCLIDisplay.Object;
+            privateteCLIProxyPlugin.SetFieldOrProperty("_CLIDisplay", CLIDisplayObject);  //_CLIDisplay not null
+            privateteCLIProxyPlugin.Invoke("InitializeCLIDisplayPlugin");
+            var InitializeCLIDisplayPlugin_result = privateteCLIProxyPlugin.GetFieldOrProperty("_CLIDisplay");
+            Assert.IsNotNull(InitializeCLIDisplayPlugin_result);
+        }
+
+        [Test]
+        public void TestInitializeCLIPeripheralsPlugin()
+        {
+            Mock<ICLIPeripherals> mockCLIPeripherals = new Mock<ICLIPeripherals>();
+            var CLIPeripheralsObject = mockCLIPeripherals.Object;
+            privateteCLIProxyPlugin.SetFieldOrProperty("_CLIPeripherals", CLIPeripheralsObject);  //_CLIPeripherals not null
+            privateteCLIProxyPlugin.Invoke("InitializeCLIPeripheralsPlugin");
+            var InitializeCLIPeripheralsPlugin_result = privateteCLIProxyPlugin.GetFieldOrProperty("_CLIPeripherals");
+            Assert.IsNotNull(InitializeCLIPeripheralsPlugin_result);
+        }
+
+        [Test]
+        public void TestDoRelayRegister()
+        {
+            ICliManagerSA? CliManagerSA = null;
+            IDeviceManagerSA? DevManagerPlugin = null;
+            privateteCLIProxyPlugin.SetFieldOrProperty("_DevManagerPlugin", DevManagerPlugin);
+            privateteCLIProxyPlugin.SetFieldOrProperty("_CliManagerPlugin", CliManagerSA);
+            privateteCLIProxyPlugin.Invoke("DoRelayRegister");
+            var DevManagerPlugin_result = privateteCLIProxyPlugin.GetFieldOrProperty("_DevManagerPlugin");   //_CliManagerPlugin  null
+            var CliManagerPlugin_result = privateteCLIProxyPlugin.GetFieldOrProperty("_CliManagerPlugin");
+            var relay_registered_result = (bool)privateteCLIProxyPlugin.GetFieldOrProperty("relay_registered");
+            Assert.IsNull(DevManagerPlugin_result);
+            Assert.IsNull(CliManagerPlugin_result);
+            Assert.IsFalse(relay_registered_result);
+
+            var mockCMAManagerPlugin = new Mock<ICliManagerSA>();
+            var mockDevManagerPlugin = new Mock<IDeviceManagerSA>();
+
+            var CMAManagerPluginobj = mockCMAManagerPlugin.Object;
+            var DevManagerPluginobj = mockDevManagerPlugin.Object;
+            privateteCLIProxyPlugin.SetFieldOrProperty("_DevManagerPlugin", DevManagerPluginobj);
+            privateteCLIProxyPlugin.SetFieldOrProperty("_CliManagerPlugin", CMAManagerPluginobj);
+
+            privateteCLIProxyPlugin.Invoke("DoRelayRegister");
+            var DevManagerPlugin_result2 = privateteCLIProxyPlugin.GetFieldOrProperty("_DevManagerPlugin");   //_CliManagerPlugin not null
+            var CliManagerPlugin_result2 = privateteCLIProxyPlugin.GetFieldOrProperty("_CliManagerPlugin");
+            var relay_registered_result2 = (bool)privateteCLIProxyPlugin.GetFieldOrProperty("relay_registered");
+            Assert.IsNotNull(DevManagerPlugin_result2);
+            Assert.IsNotNull(CliManagerPlugin_result2);
+            Assert.IsTrue(relay_registered_result2);
+        }
 
         [OneTimeTearDown]
         public void TearDown()

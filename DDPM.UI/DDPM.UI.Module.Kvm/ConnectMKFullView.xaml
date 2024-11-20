@@ -131,7 +131,7 @@
                                                 HorizontalContentAlignment="Center"
                                                 VerticalContentAlignment="Center"
                                                 Padding="40,8" Margin="10,0" Width="164" Height="40"
-                                                Visibility="{Binding NoPXP}" />
+                                                Visibility="{Binding NoPxP}" />
                         </Grid>
                         <Grid Grid.Column="2">
                             <UXControls:UXButton ButtonSize="Medium" Width="90" Height="40"
