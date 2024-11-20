@@ -765,6 +765,12 @@
     <SolidColorBrush  x:Key="RightView_Btn_BdColor" Color="#FFFFFFFF" />
     <!-- End BrightnessRightView-->
 
+    <!-- Border Color
+    Disabled: the same with Vbar_BkColor_Disabled; Default: the same with Vbar_BkColor_Default.
+    LandingHover, (non-selected) Hover will be Vbar_BdColor_Hover
+    Selected and SelectedHover have the same BorderBrush:
+    <Color x:Key="Vbar_BdColor_Hover">#991B385F</Color>
+    -->
     <!-- #region VberItem1 -->
     <Color x:Key="Vbar_BdColor_Hover">#FF1B385F</Color>
     <Color x:Key="Vbar_BdColor_LockHover">#FF1B385F</Color>

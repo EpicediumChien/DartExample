@@ -13,6 +13,8 @@ namespace DDPM.UI.Common
         public string GroupName { get; set; } = "";
         public ImageSource? GroupIcon { get; set; }
 
+        public Canvas? GroupIconCanvas { get; set; }
+
         #endregion Module Group Data
 
         #region Headers

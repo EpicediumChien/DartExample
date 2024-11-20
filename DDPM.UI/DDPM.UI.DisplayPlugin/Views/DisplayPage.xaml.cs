@@ -270,7 +270,8 @@ namespace DDPM.UI.Plugin.DisplayPlugin.Views
                 GroupName = Constants.GroupName_DisplaySettings, // "DisplaySettings",
                 VbarText = Strings.VbarText_DisplaySettings,
                 IconTemplate = (ControlTemplate)this.TryFindResource("iconTemplate_DisplaySettings"),
-                GroupIcon = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Vbar.Display.Settings.png")
+                GroupIcon = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Vbar.Display.Settings.png"),
+                GroupIconCanvas = DdpmCommonHelper.CanvasIconCreator("Display.Settings")
             };
             bool? support_contrast = _ivm.SelectedHomeDevice.HasCapability_Contrast;
             //If the monitor has Brightness/Contrast capability
@@ -338,7 +339,8 @@ namespace DDPM.UI.Plugin.DisplayPlugin.Views
                 GroupName = Constants.GroupName_InputSource, // "InputSource",
                 VbarText = Strings.VbarText_InputSource,
                 IconTemplate = (ControlTemplate)this.TryFindResource("iconTemplate_InputSource"),
-                GroupIcon = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Vbar.Display.InputSource.png")
+                GroupIcon = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Vbar.Display.InputSource.png"),
+                GroupIconCanvas = DdpmCommonHelper.CanvasIconCreator("Display.InputSource")
             };
             //If the monitor has InputSource capability
             //if (moduleCapabilities.InputSource)
@@ -390,7 +392,8 @@ namespace DDPM.UI.Plugin.DisplayPlugin.Views
                 GroupName = Constants.GroupName_EasyArrange, // "EasyArrange",
                 VbarText = Strings.VbarText_EasyArrange,
                 IconTemplate = (ControlTemplate)this.TryFindResource("iconTemplate_EasyArrange"),
-                GroupIcon = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Vbar.Display.EA.png")
+                GroupIcon = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Vbar.Display.EA.png"),
+                GroupIconCanvas = DdpmCommonHelper.CanvasIconCreator("Display.KVM")
             };
             //If the monitor has EasyArrange capability
             //if (moduleCapabilities.EzArrange)
@@ -438,7 +441,8 @@ namespace DDPM.UI.Plugin.DisplayPlugin.Views
                 GroupName = Constants.GroupName_Gaming, // "Gaming",
                 VbarText = Strings.VbarText_Gaming,
                 IconTemplate = (ControlTemplate)this.TryFindResource("iconTemplate_Gaming"),
-                GroupIcon = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Vbar.Display.Gaming.png")
+                GroupIcon = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Vbar.Display.Gaming.png"),
+                GroupIconCanvas = DdpmCommonHelper.CanvasIconCreator("Display.Gaming")
             };
 
             //If the monitor has Gaming capability
@@ -473,7 +477,8 @@ namespace DDPM.UI.Plugin.DisplayPlugin.Views
                 GroupName = Constants.GroupName_KVM, // "KVM",
                 VbarText = Strings.VbarText_KVM,
                 IconTemplate = (ControlTemplate)this.TryFindResource("iconTemplate_KVM"),
-                GroupIcon = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Vbar.Display.KVM.png")
+                GroupIcon = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Vbar.Display.KVM.png"),
+                GroupIconCanvas = DdpmCommonHelper.CanvasIconCreator("Display.KVM")
             };
             //If the monitor has KVM capability
             //if (moduleCapabilities.Kvm)
@@ -498,7 +503,8 @@ namespace DDPM.UI.Plugin.DisplayPlugin.Views
                 GroupName = Constants.GroupName_DisplayOthers, //  "Others",
                 VbarText = Strings.VbarText_DisplayOthers,
                 IconTemplate = (ControlTemplate)this.TryFindResource("iconTemplate_DisplayOthers"),
-                GroupIcon = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Vbar.Display.Others.png")
+                GroupIcon = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Vbar.Display.Others.png"),
+                GroupIconCanvas = DdpmCommonHelper.CanvasIconCreator("Display.Others")
             };
             //If the monitor has DisplayOthers capability
             //if (moduleCapabilities.DisplayOthers)
