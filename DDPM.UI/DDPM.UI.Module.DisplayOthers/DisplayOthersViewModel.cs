@@ -237,8 +237,8 @@ namespace DDPM.UI.Module.DisplayOthers
                 if (DdpmCommonHelper.DeviceManagerSA.DisplayImportSettings(DisplayOthersModule.SelectedHomeDevice.MonitorInfo, AutoApply_Checked, impPath).Result)
                 {
                     string fileName = Path.GetFileNameWithoutExtension(impPath);
-                    OnMessageDlgInvoke("close_loading_" + fileName);
-                    OnMessageDlgInvoke("result_success");
+                    OnMessageDlgInvoke("close_loading");
+                    OnMessageDlgInvoke("result_success_" + fileName);
                 }
                 else
                 {
