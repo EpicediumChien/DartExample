@@ -78,6 +78,11 @@ namespace DDPM.SA.Plugins.User.EasyArrange
         private bool _telementrySchedulerPluginUsable = false;
         private GlobalSettingParam? _globalSettingParam = null;
 
+        //DDPM Subagent Plugins - Hotkey
+        private IHotkey _HotkeyPlugin;
+        private PluginCondition _hotkeyPluginCondition;
+        private readonly object _PluginConditionLock_Hotkey = new object();
+
         //Lock objects
         private readonly object _PluginConditionLock = new object();
 
@@ -186,6 +191,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange
                 InitializeSettingsManagerPlugin();
                 InitializeDeviceManagerPlugin();
                 InitializeDisplayManagerPlugin();
+                InitializeHotkeyPlugin();
             }
 #endif
         }
@@ -463,6 +469,59 @@ namespace DDPM.SA.Plugins.User.EasyArrange
                 }
             });
         }
+
+        // Hotkey Plugin
+        //
+        private void InitializeHotkeyPlugin()
+        {
+            if (_HotkeyPlugin != null)
+                return;
+
+            _HotkeyPlugin = _agent.PluginManager.FindPluginByType<IHotkey>(PluginResolution.Dynamic);
+            if (_HotkeyPlugin is IFrameworkPluginConditionNotification pluginCondition)
+            {
+                pluginCondition.PluginConditionChangeHandler += OnHotkeyPluginConditionChangeHandler;
+                GetCurrentHotkeyPluginCondition();
+            }
+        }
+        private void OnHotkeyPluginConditionChangeHandler(object sender, EventArgs e)
+        {
+            GetCurrentHotkeyPluginCondition();
+        }
+        private void GetCurrentHotkeyPluginCondition()
+        {
+            _ = Task.Run(async () =>
+            {
+                var pluginCondition = await (_HotkeyPlugin as IFrameworkPluginConditionNotification)?.CurrentConditionAsync();
+                //PluginCondition _HotkeyPluginCondition;
+                lock (_PluginConditionLock_Hotkey)
+                {
+                    if (pluginCondition is PluginErrorCondition)
+                    {
+                        WriteLog($"{nameof(GetCurrentHotkeyPluginCondition)} - Hotkey Plugin is in an error condition");
+                        //_HotkeyPluginCondition = pluginCondition;
+                        //unhook keyboard
+                        _HotkeyPlugin.KeyUp -= Keyboard_KeyUpProc;
+                        _HotkeyPlugin.KeyDown -= Keyboard_KeyDownProc;
+                        _HotkeyPlugin.Unhook();
+                    }
+                    else if (pluginCondition is PluginRunningCondition)
+                    {
+                        WriteLog($"{nameof(GetCurrentHotkeyPluginCondition)} - Hotkey Plugin is in a running condition");
+                    }
+                    else if (pluginCondition is PluginStartedCondition)
+                    {
+                        WriteLog($"{nameof(GetCurrentHotkeyPluginCondition)} - Hotkey Plugin is in a started condition");
+                        //_HotkeyPluginCondition = pluginCondition;
+                        //hook keyboard
+                        _HotkeyPlugin.Hook();
+                        _HotkeyPlugin.KeyUp += Keyboard_KeyUpProc;
+                        _HotkeyPlugin.KeyDown += Keyboard_KeyDownProc;
+                    }
+                }
+            });
+        }
+
         private GlobalSettingParam? _GlobalSettingParam
         {
             get
@@ -591,8 +650,8 @@ namespace DDPM.SA.Plugins.User.EasyArrange
         {
             if (_eaBroker != null)
             {
-                _eaBroker.NotifyEASelectedLayoutChanged(monitorInfo, spJson);
-                return Task.FromResult(true);
+                bool res = _eaBroker.NotifyEASelectedLayoutChanged(monitorInfo, spJson);
+                return Task.FromResult(res);
             }
             return Task.FromResult(false);
         }
@@ -2263,5 +2322,94 @@ namespace DDPM.SA.Plugins.User.EasyArrange
         }
         #endregion Telemetry
 
+        #region Hotkey
+        //public Task<bool> Hook()
+        //{
+        //    bool result = false;
+        //    if (_HotkeyPlugin != null)
+        //    {
+        //        result = _HotkeyPlugin.Hook();
+        //        _HotkeyPlugin.KeyUp += Keyboard_KeyUpProc;
+        //        _HotkeyPlugin.KeyDown += Keyboard_KeyDownProc;
+
+        //        return Task.FromResult(result);
+        //    }
+        //    return Task.FromResult(result);
+        //}
+
+        //public Task<bool> UnHook()
+        //{
+        //    bool result = false;
+        //    if (_HotkeyPlugin != null)
+        //    {
+        //        _HotkeyPlugin.KeyUp -= Keyboard_KeyUpProc;
+        //        _HotkeyPlugin.KeyDown -= Keyboard_KeyDownProc;
+        //        result = _HotkeyPlugin.Unhook();
+        //        return Task.FromResult(result);
+        //    }
+        //    return Task.FromResult(result);
+        //}
+
+        //Robert_Lin, 2024-11-20 for the Shift key option 
+        //To detecte if [Shift] is down in real-time
+        //1 GetAsycKeyStart(ShiftKey) will return the previous state not current.
+        //2 In Keyboard_KeyDownProc() when you pressing LShift (or RShift)
+        //  GetAsycKeyStart(ShiftKey) will return False (Up)
+        //3 Keyboard_KeyDownProc() will be continute called if you hold down the Shift key
+        //  GetAsycKeyStart(ShiftKey) will return True (Down)
+        //4 When you release Shift key, Keyboard_KeyUpProc() will be called once
+        //  GetAsycKeyStart(ShiftKey) will return True (Down)
+        //  => Problem: this event is triggered when Shift key is released
+        //So chnage the logic to check the event Down-Up and record which key are Up/Down
+        //  _isLShiftDown is true when [LShift] is pressing down, and false when it's up
+        //  _isRShiftDown is the same for [RShift]
+        //  To check if any [Shift] is down:  (_isLShiftDown || _isRShiftDown)
+
+        private bool _isLShiftDown = false;
+        private bool _isRShiftDown = false;
+        private void Keyboard_KeyUpProc(object sender, KeyEventArgs e)
+        {
+            string strKey = e.KeyCode.ToString().ToUpper();
+           // Debug.WriteLine($"Keyboard_KeyUpProc ---{strKey}");
+            //bool _altPressed = _HotkeyPlugin.IsKeyPushedDown(System.Windows.Forms.Keys.Menu);
+            //bool _ctrlPressed = _HotkeyPlugin.IsKeyPushedDown(System.Windows.Forms.Keys.ControlKey);
+            //bool _shiftPressed = _HotkeyPlugin.IsKeyPushedDown(System.Windows.Forms.Keys.ShiftKey);
+
+            if (e.KeyCode == Keys.LShiftKey)
+                _isLShiftDown = false;
+            else if (e.KeyCode == Keys.RShiftKey)
+                _isRShiftDown = false;
+
+            if (_eaBroker != null)
+            {
+                bool isShiftDown = (_isLShiftDown || _isRShiftDown);
+                _eaBroker.VM.IsShiftPressed = isShiftDown;
+                Debug.WriteLine($"KeyDown({strKey})--LShift({_isLShiftDown}), RShift({_isRShiftDown}) => IsShiftDown{isShiftDown}");
+            }
+        }
+
+        private void Keyboard_KeyDownProc(object sender, KeyEventArgs e)
+        {
+            string strKey = e.KeyCode.ToString().ToUpper();
+           //// Debug.WriteLine($"Keyboard_KeyUpProc ---{strKey}");
+           // bool _altPressed = _HotkeyPlugin.IsKeyPushedDown(System.Windows.Forms.Keys.Menu);
+           // bool _ctrlPressed = _HotkeyPlugin.IsKeyPushedDown(System.Windows.Forms.Keys.ControlKey);
+           // bool _shiftPressed = _HotkeyPlugin.IsKeyPushedDown(System.Windows.Forms.Keys.ShiftKey);
+
+            if (e.KeyCode == Keys.LShiftKey)
+                _isLShiftDown = true;
+            else if (e.KeyCode == Keys.RShiftKey)
+                _isRShiftDown = true;
+
+            if (_eaBroker != null)
+            {
+                bool isShiftDown = (_isLShiftDown || _isRShiftDown);
+                //Debug.WriteLine($"Keyboard_KeyDownProc --- Shift is down? {isShiftDown}");
+                _eaBroker.VM.IsShiftPressed = isShiftDown;
+                Debug.WriteLine($"KeyDown({strKey})--LShift({_isLShiftDown}), RShift({_isRShiftDown}) => IsShiftDown{isShiftDown}");
+            }
+
+        }
+        #endregion Hotkey
     }
 }

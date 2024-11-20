@@ -172,13 +172,14 @@ namespace DDPM.EABroker
             }
         }
 
-        public void NotifyEASelectedLayoutChanged(MonitorInfo monitorInfo, SplitJson spJson)
+        public bool NotifyEASelectedLayoutChanged(MonitorInfo monitorInfo, SplitJson spJson)
         {
             EAWorkWindow? workWindow = _vm.FindWorkWindowByMonitor(monitorInfo);
             if (workWindow != null)
             {
-                workWindow.SetWorkingSplit(spJson, true);
+                return workWindow.SetWorkingSplit(spJson, true);
             }
+            return false;
         }
 
         /// <summary>
