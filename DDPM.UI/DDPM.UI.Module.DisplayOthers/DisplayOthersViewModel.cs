@@ -14,6 +14,7 @@ using System.Windows;
 using DDPM.SA.Common.Settings;
 using DDPM.UI.Plugin.Common;
 using System.IO;
+using Dell.Client.Framework.Common;
 
 namespace DDPM.UI.Module.DisplayOthers
 {
@@ -23,6 +24,8 @@ namespace DDPM.UI.Module.DisplayOthers
 
         public IModuleOwner? ModuleOwner { get; set; }
         public DisplayOthersModule DisplayOthersModule { get; set; }
+
+        public readonly ILog _log;
 
         private string _powerNapText = Strings.Off;
 
@@ -231,31 +234,38 @@ namespace DDPM.UI.Module.DisplayOthers
         private void ImpExpSettings_Dowork(object sender, DoWorkEventArgs e)
         {
             string ImpExppath = e.Argument.ToString();
-            if (ImpExppath.Substring(0, 3) == "Imp")
+            if (DisplayOthersModule.SelectedHomeDevice.MonitorInfo != null)
             {
-                string impPath = ImpExppath.Substring(3);
-                if (DdpmCommonHelper.DeviceManagerSA.DisplayImportSettings(DisplayOthersModule.SelectedHomeDevice.MonitorInfo, AutoApply_Checked, impPath).Result)
+                if (ImpExppath.Substring(0, 3) == "Imp")
                 {
-                    string fileName = Path.GetFileNameWithoutExtension(impPath);
-                    OnMessageDlgInvoke("close_loading");
-                    OnMessageDlgInvoke("result_success_" + fileName);
+                    string impPath = ImpExppath.Substring(3);
+                    if (DdpmCommonHelper.DeviceManagerSA.DisplayImportSettings(DisplayOthersModule.SelectedHomeDevice.MonitorInfo, AutoApply_Checked, impPath).Result)
+                    {
+                        //string fileName = Path.GetFileNameWithoutExtension(impPath);
+                        OnMessageDlgInvoke("close_loading");
+                        OnMessageDlgInvoke("result_success_" + DisplayOthersModule.SelectedHomeDevice.MonitorInfo.modelName);
+                    }
+                    else
+                    {
+                        OnMessageDlgInvoke("close_loading");
+                    }
                 }
-                else
+                else if (ImpExppath.Substring(0, 3) == "Exp")
                 {
-                    OnMessageDlgInvoke("close_loading");
+                    if (DdpmCommonHelper.DeviceManagerSA.DisplayExportSettings(DisplayOthersModule.SelectedHomeDevice.MonitorInfo, ImpExppath.Substring(3)).Result)
+                    {
+                        OnMessageDlgInvoke("close_loading");
+                        OnMessageDlgInvoke("result_success");
+                    }
+                    else
+                    {
+                        OnMessageDlgInvoke("close_loading");
+                    }
                 }
             }
-            else if (ImpExppath.Substring(0, 3) == "Exp")
+            else
             {
-                if (DdpmCommonHelper.DeviceManagerSA.DisplayExportSettings(DisplayOthersModule.SelectedHomeDevice.MonitorInfo, ImpExppath.Substring(3)).Result)
-                {
-                    OnMessageDlgInvoke("close_loading");
-                    OnMessageDlgInvoke("result_success");
-                }
-                else
-                {
-                    OnMessageDlgInvoke("close_loading");
-                }
+                _log.Debug("MonitorInfo is null.");
             }
         }
         private void ImpExpSettings_Done(object sender, RunWorkerCompletedEventArgs e)

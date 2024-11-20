@@ -644,53 +644,60 @@ namespace DDPM.UI.Module.Kvm
             directory = $"C:\\Program Files\\Dell\\Dell Display and Peripheral Manager";
             string strFullPath = string.Format("{0}\\Plugins\\NKVM\\DDM.exe", directory);
 
-            MonitorInfo mi = DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo;
-            if (DdpmCommonHelper.DeviceManagerSA.isNKVMSupportMonitor(mi).Result && File.Exists(strFullPath))
+            if (DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo != null)
             {
-                SupportNKVM = Visibility.Visible;
-            }
+                MonitorInfo mi = DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo;
+                if (DdpmCommonHelper.DeviceManagerSA.isNKVMSupportMonitor(mi).Result && File.Exists(strFullPath))
+                {
+                    SupportNKVM = Visibility.Visible;
+                }
 
-            USBKVMisON = KvmModule.isUSBKVM;//DdpmCommonHelper.DeviceManagerSA.GetOnNKVM().Result;
-            NKVMisON = DdpmCommonHelper.DeviceManagerSA.GetOnNKVM(mi).Result;
-            if (mi.CapabilityDic.ContainsKey("EE"))
-            {
-                SupportUSBKVM = Visibility.Visible;
-                //inputList = new Dictionary<string, InputInfo>();
-                //subInputs = new List<InputSourceObj>();
-                //usbsList = new List<string>();
-                isUSBKVMButton = true;
-                USBKVMButtonOpacity = 1;
-                //_isUSBKVM = KvmModule.isUSBKVM;
-                if (USBKVMisON)
+                USBKVMisON = KvmModule.isUSBKVM;//DdpmCommonHelper.DeviceManagerSA.GetOnNKVM().Result;
+                NKVMisON = DdpmCommonHelper.DeviceManagerSA.GetOnNKVM(mi).Result;
+                if (mi.CapabilityDic.ContainsKey("EE"))
                 {
-                    _isUSBKVM = true;
-                }
-                else if (NKVMisON)
-                {
-                    _isNKVM = true;
-                }
-                else
-                {
-                    _isNoKVM = true;
-                }
-                //pcsList = new Dictionary<string, PCsInfo>();
-                //pcsList = DdpmCommonHelper.DeviceManagerSA.GetUSBKVMPCsList(KvmModule.SelectedHomeDevice.MonitorInfo, inputList, subInputs).Result;
-                //usbsList = DdpmCommonHelper.DeviceManagerSA.GetUSBUpstreamList(KvmModule.SelectedHomeDevice.MonitorInfo).Result;
-                //original_pcsList = DdpmCommonHelper.DeviceManagerSA.GetUSBKVMPCsList(KvmModule.SelectedHomeDevice.MonitorInfo, inputList, subInputs).Result;
-
-                if (mi.CapabilityDic.ContainsKey("E8"))
-                {
-                    if (DdpmCommonHelper.DeviceManagerSA.isScreenPartition(mi).Result)
+                    SupportUSBKVM = Visibility.Visible;
+                    //inputList = new Dictionary<string, InputInfo>();
+                    //subInputs = new List<InputSourceObj>();
+                    //usbsList = new List<string>();
+                    isUSBKVMButton = true;
+                    USBKVMButtonOpacity = 1;
+                    //_isUSBKVM = KvmModule.isUSBKVM;
+                    if (USBKVMisON)
                     {
-                        isUSBKVMButton = false;
-                        USBKVMButtonOpacity = 0.5;
+                        _isUSBKVM = true;
+                    }
+                    else if (NKVMisON)
+                    {
+                        _isNKVM = true;
+                    }
+                    else
+                    {
+                        _isNoKVM = true;
+                    }
+                    //pcsList = new Dictionary<string, PCsInfo>();
+                    //pcsList = DdpmCommonHelper.DeviceManagerSA.GetUSBKVMPCsList(KvmModule.SelectedHomeDevice.MonitorInfo, inputList, subInputs).Result;
+                    //usbsList = DdpmCommonHelper.DeviceManagerSA.GetUSBUpstreamList(KvmModule.SelectedHomeDevice.MonitorInfo).Result;
+                    //original_pcsList = DdpmCommonHelper.DeviceManagerSA.GetUSBKVMPCsList(KvmModule.SelectedHomeDevice.MonitorInfo, inputList, subInputs).Result;
+
+                    if (mi.CapabilityDic.ContainsKey("E8"))
+                    {
+                        if (DdpmCommonHelper.DeviceManagerSA.isScreenPartition(mi).Result)
+                        {
+                            isUSBKVMButton = false;
+                            USBKVMButtonOpacity = 0.5;
+                        }
                     }
                 }
+                bw.DoWork += DoWork_RefreshData;
+                bw.RunWorkerCompleted += RunWorkerCompleted_RefreshData;
+                bw.RunWorkerAsync(); //myArg is the optional argument
+                IsBusy = true;
             }
-            bw.DoWork += DoWork_RefreshData;
-            bw.RunWorkerCompleted += RunWorkerCompleted_RefreshData;
-            bw.RunWorkerAsync(); //myArg is the optional argument
-            IsBusy = true;
+            else
+            {
+                _log.Debug("MonitorInfo is null.");
+            }
         }
 
         private void DoWork_RefreshData(object sender, DoWorkEventArgs e)
