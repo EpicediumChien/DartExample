@@ -11,6 +11,7 @@
 #endregion
 
 using Dell.Client.Framework.Common;
+using Dell.TechHub.Commodity.Peripheral;
 using DPeMPublic.Common.Enums;
 using Newtonsoft.Json.Linq;
 using System;
@@ -49,12 +50,15 @@ namespace DDPM.SA.Common
         Task<JArray> GetKbProgrammableKeys(string Guid);
         Task<bool> DeleteKeyboardAllAssignedActions(string Guid);
         Task<JArray> GetKbAssignableActions(string Guid);
+        Task<string> GetKeyboardKeystrokeDisplayData(string Guid);
+        Task<bool> StartKeyboardKeystrokeRecording(string Guid);
+        Task<bool> StopKeyboardKeystrokeRecording(string Guid);
 
 
         Task DeleteKeyboardAssignedAction(string Guid, int newValue);
-        Task SetKbAssignedAction(string Guid, string newValue);
-        Task SetKbAssignDialogAction(string Guid, string newValue);
-        Task SetKbAssignKeystrokeAction(string Guid, string newValue);
+        Task SetKbAssignedAction(string Guid, byte[] newValue);
+        Task SetKbAssignDialogAction(string Guid, byte[] newValue);
+        Task SetKbAssignKeystrokeAction(string Guid, byte[] newValue);
 
         #endregion
 
@@ -176,6 +180,14 @@ namespace DDPM.SA.Common
         Task<bool> GetIsWakeonApproachEnable(string Guid);
         Task<bool> GetIsWalkAwayLockEnable(string Guid);
         Task<bool> GetIsPrioritizeExternalWebcam(string Guid);
+        Task<bool> GetIsZoomMeetingActive(string Guid);
+        Task<bool> GetZoomMeetingType(string Guid);
+        Task<bool> GetIsZoomScreenShareActive(string Guid);
+
+        event EventHandler<ZoomChangedArgs> ZoomChanged_Notify;
+        event EventHandler<ZoomMeetingTypeChangedArgs> ZoomMeetingTypeChanged_Notify;
+        event EventHandler<IsZoomMeetingActiveChangedArgs> IsZoomMeetingActive_Notify;
+        event EventHandler<IsZoomScreenShareActiveChangedArgs> IsZoomScreenShareActive_Notify;
 
         Task<bool> GetIsESISupported(string Guid);
 

@@ -322,6 +322,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager.Test
             Dictionary<string, List<string>> capabilityDic = new Dictionary<string, List<string>>();
             capabilityDic.Add("EE", new List<string> { "value1" });
             capabilityDic.Add("EF", new List<string> { "value2" });
+            capabilityDic.Add("E7", new List<string> { "value4" });
             monitorInfo1.CapabilityDic = capabilityDic;  //GetUSBUpstreamList 里面包含EE
             string inputsource1 = "HDMI-1";
             PrivateObject privatedispalypluginObject = new PrivateObject(displayPlugin);
@@ -342,11 +343,19 @@ namespace DDPM.SA.Plugins.User.DisplayManager.Test
             Usbpstream.Add("USB-B2", "00");
             privatedispalypluginObject.SetField("USBUpstream", Usbpstream);
             string Usbpstream1 = Usbpstream.Keys.First<string>();
-            if (monitorInfo1.CapabilityDic.ContainsKey("EE"))
+            if (monitorInfo1.CapabilityDic.ContainsKey("E7"))
             {
-                var GetUSBUpstreamResulit = displayPlugin.GetUSBUpstream(monitorInfo1, inputsource1).Result;
-                Assert.IsNotNull(GetUSBUpstreamResulit);
-                Assert.That(Usbpstream1, Is.EqualTo(GetUSBUpstreamResulit));
+                if (monitorInfo1.CapabilityDic.ContainsKey("EE"))
+                {
+                    var GetUSBUpstreamResulit = displayPlugin.GetUSBUpstream(monitorInfo1, inputsource1).Result;
+                    Assert.IsNotNull(GetUSBUpstreamResulit);
+                    Assert.That(Usbpstream1, Is.EqualTo(GetUSBUpstreamResulit));
+                }
+                else
+                {
+                    var GetUSBUpstreamResulit = displayPlugin.GetUSBUpstream(monitorInfo1, inputsource1).Result;
+                    Assert.IsNull(GetUSBUpstreamResulit);
+                }
             }
             else
             {
@@ -681,15 +690,21 @@ namespace DDPM.SA.Plugins.User.DisplayManager.Test
 
             if (PipPbpService != null)
             {
-                var GetSubInputListResult = displayPlugin.GetSubInputList(monitorInfo1).Result;
-                Assert.That(SubInputList, Is.EqualTo(GetSubInputListResult));
-                PipPbpService.Verify(s => s.GetSubInputList(monitorInfo1), Times.Once);
+                var GetSubInputListResult = displayPlugin.GetSubInputList(monitorInfo1).Result;   //capabilityDic 里面不包含E8
+                Assert.IsNotNull(GetSubInputListResult);
             }
             else
             {
                 var GetSubInputListResult = displayPlugin.GetSubInputList(monitorInfo1).Result;
                 Assert.That(SubInputList2, Is.EqualTo(GetSubInputListResult));
             }
+
+            Dictionary<string, List<string>> capabilityDic = new Dictionary<string, List<string>>();  //monitorInfo1.CapabilityDic = capabilityDic;  里面包含E8
+            capabilityDic.Add("E8", new List<string> { "value3" });
+            monitorInfo1.CapabilityDic = capabilityDic;
+            var GetSubInputListResult3 = displayPlugin.GetSubInputList(monitorInfo1).Result;
+            Assert.That(SubInputList, Is.EqualTo(GetSubInputListResult3));
+            PipPbpService.Verify(s => s.GetSubInputList(monitorInfo1), Times.Once);
         }
 
         [Test]
