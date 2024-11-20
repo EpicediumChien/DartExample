@@ -242,6 +242,8 @@ namespace DDPM.SA.Common
 
         Task<bool> SetOnUSBKVM(MonitorInfo monitorInfo, bool isON);
 
+        Task<bool> isScreenPartition(MonitorInfo monitorInfo);
+
         #endregion public for USBKVM
 
         #region EasyArrange

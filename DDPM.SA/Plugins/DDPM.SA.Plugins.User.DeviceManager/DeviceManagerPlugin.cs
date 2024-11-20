@@ -2396,6 +2396,15 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             return Task.FromResult(false);
         }
 
+        public Task<bool> isScreenPartition(MonitorInfo monitorInfo)
+        {
+            if (_DisplayManagerPlugin != null)
+            {
+                return _DisplayManagerPlugin.isScreenPartition(monitorInfo);
+            }
+            return Task.FromResult(false);
+        }
+
         #endregion
 
         #endregion

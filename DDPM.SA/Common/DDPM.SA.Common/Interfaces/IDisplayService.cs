@@ -133,6 +133,8 @@ namespace DDPM.SA.Common
 
         Task<Dictionary<string, PCsInfo>> GetUSBKVMPCsList(MonitorInfo monitorInfo, Dictionary<string, InputInfo> inputList, List<InputSourceObj> subInputList);
 
+        Task<bool> isScreenPartition(MonitorInfo monitorInfo);
+
         #endregion USBKVM
 
         #region EasyArange

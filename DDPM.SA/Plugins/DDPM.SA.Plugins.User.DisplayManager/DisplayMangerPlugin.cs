@@ -803,6 +803,37 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             return Task.FromResult(false);
         }
 
+        public Task<bool> isScreenPartition(MonitorInfo monitorInfo)
+        {
+            ObjGetVCP objGetVCP = GetVCPCapability(monitorInfo, 0xF2).Result;
+            if (objGetVCP != null && objGetVCP.result) 
+            {
+                if ((uint)objGetVCP.value != 0)
+                {
+                    string strSP = Convert.ToString((uint)objGetVCP.value, 2);
+                    string strSP_16 = strSP;
+                    //add 16 to string
+                    if (strSP.Length < 16)
+                    {
+                        for (int i = 0; i < (16 - strSP.Length); i++)
+                        {
+                            strSP_16 = "0" + strSP_16;
+                        }
+                    }
+                    _logs.DebugMsg("[DisplayMangerPlugin][isScreenPartition] strSP_16 : " + strSP_16);
+                    //find 8
+                    if (strSP_16.Length == 16)
+                    {
+                        if (strSP_16.Substring(7, 1) == "1")
+                        {
+                            return Task.FromResult(true);
+                        }
+                    }
+                }
+            }
+            return Task.FromResult(false);
+        }
+
         #region ALS Function
 
         /// <summary>
