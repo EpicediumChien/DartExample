@@ -393,7 +393,7 @@ namespace DDPM.UI.Plugin.DisplayPlugin.Views
                 VbarText = Strings.VbarText_EasyArrange,
                 IconTemplate = (ControlTemplate)this.TryFindResource("iconTemplate_EasyArrange"),
                 GroupIcon = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Vbar.Display.EA.png"),
-                GroupIconCanvas = DdpmCommonHelper.CanvasIconCreator("Display.KVM")
+                GroupIconCanvas = DdpmCommonHelper.CanvasIconCreator("Display.EA")
             };
             //If the monitor has EasyArrange capability
             //if (moduleCapabilities.EzArrange)
