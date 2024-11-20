@@ -204,7 +204,7 @@
   <data name="Failed_to_open_application" xml:space="preserve">
     <value>애플리케이션을 열지 못했습니다.</value>
   </data>
-  <data name="will_be_updated_to " xml:space="preserve">
+  <data name="will_be_updated_to" xml:space="preserve">
     <value>업데이트 예정: </value>
   </data>
   <data name="can_be_updated_to" xml:space="preserve">
@@ -241,7 +241,7 @@
     <value>마우스 왼쪽 버튼을 두 번 클릭하여 펌웨어 업데이트를 시작하십시오.</value>
   </data>
   <data name="M2_Please_press_key_on_keyboard_to_start_firmware_update" xml:space="preserve">
-    <value>펌웨어 업데이트를 시작하려면 키보드의 \&quot;U\&quot; 키를 누르십시오.</value>
+    <value>펌웨어 업데이트를 시작하려면 키보드의 \"U\" 키를 누르십시오.</value>
   </data>
   <data name="A0_Device_connected" xml:space="preserve">
     <value>디바이스 연결됨</value>
@@ -427,7 +427,7 @@
     <value>창 정렬</value>
   </data>
   <data name="EA_MSG_0" xml:space="preserve">
-    <value>현재 창 배열을 조정하고 원하는 경우 이름을 편집한 다음 &quot;저장&quot;을 클릭하여 배열을 저장합니다.</value>
+    <value>현재 창 배열을 조정하고 원하는 경우 이름을 편집한 다음 "저장"을 클릭하여 배열을 저장합니다.</value>
   </data>
   <data name="Battery_Low" xml:space="preserve">
     <value>배터리 충전 상태 낮음</value>
