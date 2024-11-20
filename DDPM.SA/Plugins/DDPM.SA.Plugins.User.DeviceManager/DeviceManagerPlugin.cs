@@ -529,17 +529,22 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         {
             if (e.PropertyName == nameof(UXSystemParameters.Instance.OSTheme))
             {
-                OSThemeEnum oSTheme = UXSystemParameters.Instance.OSTheme;
-                if (previousOsTheme == oSTheme)
-                    return;
-                var applicationSettings_Function = new ApplicationSettings_Function();
-                string appModeTelementryData = loadResourceDictionary(oSTheme);
-                if (!string.IsNullOrEmpty(appModeTelementryData))
+                try
+                {
+                    OSThemeEnum oSTheme = UXSystemParameters.Instance.OSTheme;
+                    if (previousOsTheme == oSTheme)
+                        return;
+                    var applicationSettings_Function = new ApplicationSettings_Function();
+                    string appModeTelementryData = loadResourceDictionary(oSTheme);
                     Debug.WriteLine($"AppModeTelemetry=> {appModeTelementryData}");
-                writelog("[DeviceMangerPlugin] [Telementry] Send Telementry for AppMode...");
-                Task.Run(() => applicationSettings_Function.Send_AppMode_Telementry(_TelementryScheduler, _AllInfoMonitors, appModeTelementryData)).ConfigureAwait(false);
-                /* if (rt) writelog("[DeviceMangerPlugin] [Telementry] Send Telementry for AppMode Success ...");
-                 else writelog("[DeviceMangerPlugin] [Telementry] Send Telementry for AppMode Fail ...");*/
+                    writelog("[DeviceMangerPlugin] [Telementry] Send Telementry for AppMode...");
+                    Task.Run(() => applicationSettings_Function.Send_AppMode_Telementry(_TelementryScheduler, _AllInfoMonitors, appModeTelementryData)).ConfigureAwait(false);
+                    /* if (rt) writelog("[DeviceMangerPlugin] [Telementry] Send Telementry for AppMode Success ...");
+                     else writelog("[DeviceMangerPlugin] [Telementry] Send Telementry for AppMode Fail ...");*/
+                }
+                catch (Exception ex) { 
+                    writelog($"Exception msg: {ex.Message} Exception StackTrace: {ex.StackTrace}", nameof(UXSystemParametersChanged), "DeviceManagerPlugin.cs");
+                }
             }
         }
 
