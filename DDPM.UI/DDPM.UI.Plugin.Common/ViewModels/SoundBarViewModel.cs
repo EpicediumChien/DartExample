@@ -39,7 +39,7 @@ namespace DDPM.UI.Plugin.ViewModels
             _current_soundBar = string.Empty;       
         }
 
-        public void UpdateDTPValue()
+        private async Task UpdateDTPValue()
         {
             try
             {
@@ -47,16 +47,19 @@ namespace DDPM.UI.Plugin.ViewModels
                 if (SpeakerInfoValueDTP == null)
                 {
                     SpeakerInfoValueDTP = new SpeakerInfoValue();
+                    _log.Info($"[SoundBarViewModel] Print before property ...UpdateDTPValue new DeviceInfo...");
                 }
 
-                SpeakerInfoValueDTP.SpeakerProfile = _deviceManager.GetProfileAsync(CurrentDeviceID.ToString()).Result;
-                SpeakerInfoValueDTP.SpeakerBass = _deviceManager.GetBassAsync(CurrentDeviceID.ToString()).Result;
-                SpeakerInfoValueDTP.SpeakerMidRange = _deviceManager.GetMidRangeAsync(CurrentDeviceID.ToString()).Result;
-                SpeakerInfoValueDTP.SpeakerTreble = _deviceManager.GetTrebleAsync(CurrentDeviceID.ToString()).Result;
-                SpeakerInfoValueDTP.IsWiredAudioMicMuteSoundEnable = _deviceManager.GetIsWiredAudioMicMuteSoundEnableAsync(CurrentDeviceID.ToString()).Result;
-                SpeakerInfoValueDTP.WiredAudioVolumeAdjustmentTone = _deviceManager.GetWiredAudioVolumeAdjustmentToneAsync(CurrentDeviceID.ToString()).Result;
-                SpeakerInfoValueDTP.IsWiredAudioIMicNSEnable = _deviceManager.GetIsWiredAudioIMicNSEnableAsync(CurrentDeviceID.ToString()).Result;
-                SpeakerInfoValueDTP.IsAudioEqualizerSupported = _deviceManager.GetIsAudioEqualizerSupportedAsync(CurrentDeviceID.ToString()).Result;
+                SpeakerInfoValueDTP.SpeakerProfile = await _deviceManager.GetProfileAsync(CurrentDeviceID.ToString());
+                SpeakerInfoValueDTP.SpeakerBass = await _deviceManager.GetBassAsync(CurrentDeviceID.ToString());
+                SpeakerInfoValueDTP.SpeakerMidRange = await _deviceManager.GetMidRangeAsync(CurrentDeviceID.ToString());
+                SpeakerInfoValueDTP.SpeakerTreble = await _deviceManager.GetTrebleAsync(CurrentDeviceID.ToString());
+                SpeakerInfoValueDTP.IsWiredAudioMicMuteSoundEnable = await _deviceManager.GetIsWiredAudioMicMuteSoundEnableAsync(CurrentDeviceID.ToString());
+                SpeakerInfoValueDTP.WiredAudioVolumeAdjustmentTone = await _deviceManager.GetWiredAudioVolumeAdjustmentToneAsync(CurrentDeviceID.ToString());
+                SpeakerInfoValueDTP.IsWiredAudioIMicNSEnable = await _deviceManager.GetIsWiredAudioIMicNSEnableAsync(CurrentDeviceID.ToString());
+                SpeakerInfoValueDTP.IsAudioEqualizerSupported = await _deviceManager.GetIsAudioEqualizerSupportedAsync(CurrentDeviceID.ToString());
+                SpeakerInfoValueDTP.MuteStatus = await _deviceManager.GetMuteStatusAsyncForSpeaker(CurrentDeviceID.ToString());
+                ChangeImage(Model, "MuteStatusChanged");
                 _log.Info($"[SoundBarViewModel] ***********************************************************************");
                 _log.Info($"[SoundBarViewModel] SpeakerInfoValueDTP.SpeakerProfile .............= {SpeakerInfoValueDTP.SpeakerProfile.ToString()}");
                 _log.Info($"[SoundBarViewModel] SpeakerInfoValueDTP.SpeakerBass .............= {SpeakerInfoValueDTP.SpeakerBass.ToString()}");
@@ -66,10 +69,47 @@ namespace DDPM.UI.Plugin.ViewModels
                 _log.Info($"[SoundBarViewModel] SpeakerInfoValueDTP.WiredAudioVolumeAdjustmentTone .......= {SpeakerInfoValueDTP.WiredAudioVolumeAdjustmentTone.ToString()}");
                 _log.Info($"[SoundBarViewModel] SpeakerInfoValueDTP.IsWiredAudioIMicNSEnable ............= {SpeakerInfoValueDTP.IsWiredAudioIMicNSEnable.ToString()}");
                 _log.Info($"[SoundBarViewModel] SpeakerInfoValueDTP.IsAudioEqualizerSupported .......= {SpeakerInfoValueDTP.IsAudioEqualizerSupported.ToString()}");
+                _log.Info($"[SoundBarViewModel] SpeakerInfoValueDTP.GetMuteStatusAsync .......= {SpeakerInfoValueDTP.MuteStatus.ToString()}");
             }
             catch(Exception ex)
             {
                 _log!.Error($"[SoundBarViewModel] UpdateDTPValue ...... {ex.ToString()}");
+            }
+        }
+
+        private async Task DoWork_PleaseWait(string model, SoundBarViewModel vm)
+        {
+            _log.Info($"[SoundBarViewModel] DoWork_PleaseWait .......");
+            // Simulate time-consuming operation
+            Thread.Sleep(500);
+            await UpdateDTPValue();
+            // Call DetectPageShow
+            await DetectPageShow(model);
+        }
+
+        public async Task Invoke_PleaseWaitAsync(string model, SoundBarViewModel vm)
+        {
+            //vm.ShowPleaseWait();
+            try
+            {
+                using (var cts = new CancellationTokenSource(TimeSpan.FromSeconds(10)))
+                {
+                    await Task.Run(() => DoWork_PleaseWait(model, vm), cts.Token);
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                _log!.Error("[SoundBarViewModel] Invoke_PleaseWaitAsync timed out");
+                throw;
+            }
+            catch (Exception ex)
+            {
+                vm._log!.Error($"[SoundBarViewModel] Invoke_PleaseWaitAsync exception: {ex.Message}");
+                throw;
+            }
+            finally
+            {
+                //vm.HidePleaseWait();
             }
         }
 
@@ -116,7 +156,7 @@ namespace DDPM.UI.Plugin.ViewModels
                     OnPropertyChanged("IsTrebleBoostChecked");
             }
         }
-        public void DetectPageShow(string model)
+        public async Task DetectPageShow(string model)
         {
             _log!.Info($"[SoundBarViewModel] DetectPageShow ......");
             modelTest = model;
@@ -194,8 +234,25 @@ namespace DDPM.UI.Plugin.ViewModels
                         ImageFilePath = "/DDPM.UI.Common;component/Resources/Speaker_SP3022_RedLight.png";
                         break;
 
+                    case "MuteStatusChanged":
+                        if (SpeakerInfoValueDTP.MuteStatus)
+                        {
+                            ImageFilePath = "/DDPM.UI.Common;component/Resources/Speaker_SP3022_RedLight.png";
+                        }
+                        else
+                        {
+                            ImageFilePath = "/DDPM.UI.Common;component/Resources/Speaker_SP3022.png";
+                        }
+                        break;
                     default:
-                        ImageFilePath = "/DDPM.UI.Common;component/Resources/Speaker_SP3022.png";
+                        if (SpeakerInfoValueDTP.MuteStatus)
+                        {
+                            ImageFilePath = "/DDPM.UI.Common;component/Resources/Speaker_SP3022_RedLight.png";
+                        }
+                        else
+                        {
+                            ImageFilePath = "/DDPM.UI.Common;component/Resources/Speaker_SP3022.png";
+                        }
                         break;
                 }
             }
@@ -225,7 +282,14 @@ namespace DDPM.UI.Plugin.ViewModels
             switch (model)
             {
                 case "SP3022":
-                    ImageFilePath = "/DDPM.UI.Common;component/Resources/Speaker_SP3022.png";
+                    if (SpeakerInfoValueDTP.MuteStatus)
+                    {
+                        ImageFilePath = "/DDPM.UI.Common;component/Resources/Speaker_SP3022_RedLight.png";
+                    }
+                    else
+                    {
+                        ImageFilePath = "/DDPM.UI.Common;component/Resources/Speaker_SP3022.png";
+                    }
                     break;
 
                 case "SB522A":
@@ -267,6 +331,15 @@ namespace DDPM.UI.Plugin.ViewModels
         {
             _log.Info($"[SoundBarViewModel] HandleNotification ... Receive {property.ToString()}");
             base.HandleNotification(changeType, di, property);
+            switch (property)
+            {
+                case "MuteStatusChanged":
+                    SpeakerInfoValueDTP.MuteStatus = _deviceManager.GetMuteStatusAsyncForSpeaker(CurrentDeviceID.ToString()).Result;
+                    ChangeImage(Model, "MuteStatusChanged");
+                    break;
+                default:
+                    break;
+            }
             switch (changeType)
             {
                 case DeviceChangedType.Peripherals_SettingsChange:
@@ -295,7 +368,7 @@ namespace DDPM.UI.Plugin.ViewModels
                     break;
             }
         }
-        public void RestoreToDefault()
+        public async void RestoreToDefault()
         {
             try
             {
@@ -309,7 +382,7 @@ namespace DDPM.UI.Plugin.ViewModels
                 _log.Info($"[SoundBarViewModel] SpeakerInfoValueDTP.IsWiredAudioIMicNSEnable ............= {SpeakerInfoValueDTP.IsWiredAudioIMicNSEnable.ToString()}");
                 _log.Info($"[SoundBarViewModel] SpeakerInfoValueDTP.IsAudioEqualizerSupported .......= {SpeakerInfoValueDTP.IsAudioEqualizerSupported.ToString()}");
                 _deviceManager.SetResetToDefaultAsyncForSoundbar(CurrentDeviceInfo!.ID.ToString(), true).Wait();
-                UpdateDTPValue();
+                await UpdateDTPValue();
                 CheckHeadsetFunc();
             }
             catch (Exception ex)
@@ -873,6 +946,7 @@ namespace DDPM.UI.Plugin.ViewModels
             public int WiredAudioVolumeAdjustmentTone { get; set; }
             public bool IsWiredAudioIMicNSEnable { get; set; }
             public bool IsAudioEqualizerSupported { get; set; }
+            public bool MuteStatus { get; set; }
         }
     }
 }

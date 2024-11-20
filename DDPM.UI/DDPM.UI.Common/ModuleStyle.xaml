@@ -31,7 +31,8 @@
     <SolidColorBrush x:Key="DefaultTheme_SetupScanBdColor" Color="#FFFFFF" />
     <SolidColorBrush x:Key="DefaultTheme_SetupSelectBdColor" Color="#1B385F" />
     <SolidColorBrush x:Key="DefaultTheme_ListBoxBkColor" Color="#80141D27" />
-    <Style TargetType="UXControls:UXTextBlock" >
+    <Style TargetType="UXControls:UXTextBlock"
+           BasedOn="{StaticResource {x:Type UXControls:UXTextBlock}}">
         <Setter Property="Foreground" Value="{DynamicResource DefaultTheme_TxtColor}" />
         <Setter Property="Background" Value="{DynamicResource FakeTransparent}" />
     </Style>
@@ -53,7 +54,7 @@
             </Setter.Value>
         </Setter>
     </Style>
-    <Style TargetType="{x:Type UXControls:UXRadioButton}">
+    <Style TargetType="{x:Type UXControls:UXRadioButton}"  BasedOn="{StaticResource {x:Type UXControls:UXRadioButton}}">
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type UXControls:UXRadioButton}">
@@ -64,21 +65,8 @@
             </Setter.Value>
         </Setter>
     </Style>
-    <Style TargetType="{x:Type UXControls:UXLink}">
-        <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate TargetType="{x:Type UXControls:UXLink}">
-                    <Border x:Name="FocusBorder" Background="Transparent">
-                        <ContentPresenter />
-                    </Border>
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
-        <Setter Property="Background" Value="{DynamicResource DefaultTheme_RbBkColor}" />
-        <Setter Property="Foreground" Value="{DynamicResource DefaultTheme_TxtColor}" />
-    </Style>
-    <!-- BasedOn="{StaticResource {x:Type UXControls:UXTextBox}}-->
-    <Style TargetType="UXControls:UXTextBox" >
+    <!--BasedOn to implement self-->
+    <Style TargetType="UXControls:UXTextBox" BasedOn="{StaticResource {x:Type UXControls:UXTextBox}}">
         <Setter Property="Background" Value="{DynamicResource DefaultTheme_TbBkColor}" />
         <Setter Property="Foreground" Value="{DynamicResource DefaultTheme_TbFgColor}" />
         <Setter Property="BorderBrush" Value="{DynamicResource DefaultTheme_TbBdColor}" />
@@ -254,7 +242,7 @@
     <SolidColorBrush x:Key="ExpanderHeader_TextColor" Color="White" />
 
     <!-- #region RightView.Content Container Background Color -->
-    <SolidColorBrush x:Key="RightViewContainerBkColor" Color="#F2F8FA" />
+    <SolidColorBrush x:Key="RightViewContainerBkColor" Color="#99194784" />
     <SolidColorBrush x:Key="GroupExpanderHeaderBottomLineColor" Color="#FF1E3F6C" />
     <SolidColorBrush x:Key="RightView_Option_BkColor" Color="#FF1E3F6C" />
     <SolidColorBrush x:Key="RightView_Option_BdColor" Color="#FF1E3F6C" />

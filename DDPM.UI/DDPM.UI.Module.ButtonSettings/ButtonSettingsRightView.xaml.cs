@@ -304,24 +304,33 @@ namespace DDPM.UI.Module.ButtonSettings
                 modalDialog.Left = windowLeft;
                 modalDialog.Top = windowTop;
 
-                if (action == AdvancedAction.AssignKeystroke)
+                if (action == AdvancedAction.AssignKeystroke && DdpmCommonHelper.DeviceManagerSA != null)
                 {
-                    Task<bool> task = DdpmCommonHelper.DeviceManagerSA!.StartMouseKeystrokeRecording(_vm.CurrentDeviceID.ToString());
+                    Task<bool> task = DdpmCommonHelper.DeviceManagerSA.StartMouseKeystrokeRecording(_vm.CurrentDeviceID.ToString());
                     _ = task.Result;
                 }
                 if (modalDialog.ShowDialog()!.Value)
                 {
-                    Task<bool> task1 = DdpmCommonHelper.DeviceManagerSA!.StopMouseKeystrokeRecording(_vm.CurrentDeviceID.ToString());
-                    _ = task1.Result;
-                    Task<string> task2 = DdpmCommonHelper.DeviceManagerSA!.GetMouseKeystrokeDisplayData(_vm.CurrentDeviceID.ToString());
-                    var keystroke = task2.Result;
-                    parameter = modalDialog.Parameter;
-                    parameter = keystroke;
+                    if (action == AdvancedAction.AssignKeystroke && DdpmCommonHelper.DeviceManagerSA != null)
+                    {
+                        Task<bool> task1 = DdpmCommonHelper.DeviceManagerSA.StopMouseKeystrokeRecording(_vm.CurrentDeviceID.ToString());
+                        _ = task1.Result;
+                        Task<string> task2 = DdpmCommonHelper.DeviceManagerSA.GetMouseKeystrokeDisplayData(_vm.CurrentDeviceID.ToString());
+                        var keystroke = task2.Result;
+                        parameter = keystroke;
+                    }
+                    else
+                    {
+                        parameter = modalDialog.Parameter;
+                    }
                 }
                 else
                 {
-                    Task<bool> task1 = DdpmCommonHelper.DeviceManagerSA!.StopMouseKeystrokeRecording(_vm.CurrentDeviceID.ToString());
-                    _ = task1.Result;
+                    if (action == AdvancedAction.AssignKeystroke && DdpmCommonHelper.DeviceManagerSA != null)
+                    {
+                        Task<bool> task1 = DdpmCommonHelper.DeviceManagerSA.StopMouseKeystrokeRecording(_vm.CurrentDeviceID.ToString());
+                        _ = task1.Result;
+                    }
                     Initialize();
                     return;
                 }
@@ -373,12 +382,29 @@ namespace DDPM.UI.Module.ButtonSettings
             modalDialog.WindowStartupLocation = WindowStartupLocation.Manual;
             modalDialog.Left = windowLeft;
             modalDialog.Top = windowTop;
-            if (action == AdvancedAction.AssignKeystroke)
-            { DdpmCommonHelper.DeviceManagerSA!.StartMouseKeystrokeRecording(_vm.CurrentDeviceID.ToString()); }
+            if (action == AdvancedAction.AssignKeystroke && DdpmCommonHelper.DeviceManagerSA != null)
+            {
+                Task<bool> task = DdpmCommonHelper.DeviceManagerSA.StartMouseKeystrokeRecording(_vm.CurrentDeviceID.ToString());
+                _ = task.Result;
+            }
 
             if (modalDialog.ShowDialog()!.Value && modalDialog.Parameter != parameter)
             {
-                _vm.UpdateAction(_vm.SelectedActionID, modalDialog.Parameter);
+                string para;
+                if (action == AdvancedAction.AssignKeystroke && DdpmCommonHelper.DeviceManagerSA != null)
+                {
+                    Task<bool> task1 = DdpmCommonHelper.DeviceManagerSA.StopMouseKeystrokeRecording(_vm.CurrentDeviceID.ToString());
+                    _ = task1.Result;
+                    Task<string> task2 = DdpmCommonHelper.DeviceManagerSA.GetMouseKeystrokeDisplayData(_vm.CurrentDeviceID.ToString());
+                    var keystroke = task2.Result;
+                    para = keystroke;
+                }
+                else
+                {
+                    para = modalDialog.Parameter;
+                }
+                if (para != parameter)
+                    _vm.UpdateAction(_vm.SelectedActionID, modalDialog.Parameter);
             }
         }
 
@@ -659,6 +685,12 @@ namespace DDPM.UI.Module.ButtonSettings
                     ActiveActionSection = "";
                     break;
             }
+        }
+
+
+        private void txtSearchText_PreviewTextInput(object sender, System.Windows.Input.TextCompositionEventArgs e)
+        {
+            e.Handled = !_vm.CheckChar(e.Text);
         }
     }
 }

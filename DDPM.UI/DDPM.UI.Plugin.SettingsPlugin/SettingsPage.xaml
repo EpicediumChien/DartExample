@@ -33,12 +33,12 @@
                                 FontFamily="Segoe UI Symbol" FontSize="30"
                                 HorizontalAlignment="Left" TextBlockType="Header2"
                                 TextBlockSemanticColorType="Light"
-                                MouseLeftButtonDown="leftArrow_MouseLeftButtonDown" />
+                                MouseLeftButtonDown="leftArrow_MouseLeftButtonDown"
+                                Foreground="{DynamicResource DefaultTheme_TxtColor}" />
         <UXControls:UXTextBlock Grid.Row="0" Grid.Column="1" Text="{Binding [Settings], Source={x:Static lang:LangHelper.Instance}}"
                                 HorizontalAlignment="Left" TextBlockType="Header2"
-                                TextBlockSemanticColorType="DefaultHeader"
-                                Foreground="White"
-                                FontSize="28" />
+                                FontSize="28"
+                                Foreground="{DynamicResource DefaultTheme_TxtColor}" />
         <Grid Grid.Row="1" Grid.Column="1" Margin="0,10,0,0">
             <Grid>
                 <Grid.ColumnDefinitions>

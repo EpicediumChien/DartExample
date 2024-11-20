@@ -47,8 +47,8 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
         private const string pluginName = "PeripheralsPlugin";
         private const string pluginVersion = "1.0.0";
         private const string pluginDescription = "This plugin implements DDPM Peripherals Plugin.";
-        private const string publisherCompany = "Wistron";
-        private const string publisherWebsite = "https://www.wistron.com";
+        private const string publisherCompany = "Dell Inc.";
+        private const string publisherWebsite = "https://www.dell.com";
         private const string publisherSupport = "This plugin implements DDPM Peripherals Plugin.";
 
         private readonly IAgent _agent;
@@ -1158,6 +1158,8 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                             if (!LogicalDevicesPen.Contains(pen.Id))
                             {
                                 pen.PenSettingChanged += Pen_PenSettingChanged;
+                                pen.KeyCaptureStarted += Pen_KeyCaptureStarted;
+                                pen.KeyCaptureDataChanged += Pen_KeyCaptureDataChanged;
                                 LogicalDevicesPen.Add(pen.Id);
                             }
                         }
@@ -1575,6 +1577,36 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
             writelog(_deviceHelper.ToString());
         }
 
+        private void Pen_KeyCaptureDataChanged(ILogicalDevicePen arg1, string arg2)
+        {
+            Debug.WriteLine($"Pen: {arg1.Id} KeyCaptureDataChangedString, newValue: {arg2}");
+            writelog($"Pen: {arg1.Id} KeyCaptureDataChanged, newValue: {arg2}");
+            if (_deviceHelper is { deviceInfo: not null })
+            {
+                var deviceInfo = _deviceHelper.deviceInfo.FirstOrDefault(x => x.ID.ToString() == arg1.Id.ToString());
+                DeviceChangedEventArgs _EventArgs = new();
+                _EventArgs.type = DeviceChangedType.Peripherals_SettingsChange;
+                _EventArgs.device_peripherals = deviceInfo;
+                _EventArgs.changedProperty = "PenKeyCaptureDataChanged";
+                OnNotify(_EventArgs);
+            }
+        }
+
+        private void Pen_KeyCaptureStarted(ILogicalDevicePen obj)
+        {
+            Debug.WriteLine($"Pen: {obj.Id} KeyCaptureStarted!");
+            writelog($"Pen: {obj.Id} KeyCaptureStarted!");
+            if (_deviceHelper is { deviceInfo: not null })
+            {
+                var deviceInfo = _deviceHelper.deviceInfo.FirstOrDefault(x => x.ID.ToString() == obj.Id.ToString());
+                DeviceChangedEventArgs _EventArgs = new();
+                _EventArgs.type = DeviceChangedType.Peripherals_SettingsChange;
+                _EventArgs.device_peripherals = deviceInfo;
+                _EventArgs.changedProperty = "PenKeyCaptureStarted";
+                OnNotify(_EventArgs);
+            }
+        }
+
         private void ILogicalDevice_PairedHostNameChanged(ILogicalDevice3 arg1, int arg2, string arg3)
         {
             if (_deviceHelper is { deviceInfo: not null })
@@ -1863,17 +1895,17 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
 
         private void _iCTKMessageHelper_IsZoomCallbacksRegisteredChanged(bool obj)
         {
-            IsZoomCallbacksRegisteredChanged.Invoke(this, obj);
+            IsZoomCallbacksRegisteredChanged?.Invoke(this, obj);
         }
 
         private void _iCTKMessageHelper_IsZoomMultipleCallsDetectedChanged(bool obj)
         {
-            IsZoomMultipleCallsDetectedChanged.Invoke(this, obj);
+            IsZoomMultipleCallsDetectedChanged?.Invoke(this, obj);
         }
 
         private void _iCTKMessageHelper_CollabMultipleCallsDetectedChanged(bool obj)
         {
-            CollabMultipleCallsDetectedChanged.Invoke(this, obj);
+            CollabMultipleCallsDetectedChanged?.Invoke(this, obj);
         }
 
         private void _iCTKMessageHelper_CollaborationMsgChanged(CollaborationMsg collaborationMsg)

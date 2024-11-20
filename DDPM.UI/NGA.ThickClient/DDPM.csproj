@@ -37,6 +37,10 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <PackageReference Include="MessagePack" Version="2.5.192" />
+	</ItemGroup>
+
+	<ItemGroup>
 	  <ProjectReference Include="..\DDPM.UI.Common\DDPM.UI.Common.csproj" />
 	  <ProjectReference Include="..\DDPM.UI.Resources\DDPM.UI.Resources.csproj" />
 	  <ProjectReference Include="..\Dell.UCA.ThickClientCore\Dell.UCA.ThickClientCore.csproj" />
