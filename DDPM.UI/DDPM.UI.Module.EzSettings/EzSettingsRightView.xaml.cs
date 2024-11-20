@@ -1,6 +1,7 @@
 ﻿using DDPM.SA.Common;
 using DDPM.SA.Common.Display;
 using DDPM.UI.Common;
+using DDPM.UI.Resources.Helper;
 using Dell.Client.Framework.UX.WPF.Controls;
 using System.Windows.Controls;
 using Windows.System;
@@ -13,6 +14,8 @@ namespace DDPM.UI.Module.EzSettings
     public partial class EzSettingsRightView : UserControl
     {
         #region Private members
+        private string RecentHotkeyTooltipText = LangHelper.Instance["EazyMemorySettings.1"];
+        private string ApplicationWindowSnapTooltipText = LangHelper.Instance["EazyMemorySettings.2"];
         private readonly EzSettingsViewModel _viewModel;
 
         private bool alphabetKey = false;
@@ -28,9 +31,7 @@ namespace DDPM.UI.Module.EzSettings
         private string OnlyShiftPressed = "Only allow zone positioning when SHIFT is pressed";
         private string SpanMultiMonitors = "Snap across multiple monitors";
         private string AWS = "Application Window Snap";
-        //Tooltip
-        private const string RecentHotkeyTooltipText = "Example: \"Alt + P\",\"Shift + F\",\"Ctrl + Shift + F\"";
-        private const string ApplicationWindowSnapTooltipText = "Snap any application into a split screen layout easily by dragging into a partition";
+
         #endregion
 
         #region ctor
