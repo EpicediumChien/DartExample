@@ -57,8 +57,8 @@ namespace DDPM.SA.Plugins.User.DisplayManager
         private const string pluginName = "DisplayManagerPlugin";
         private const string pluginVersion = "1.0.0";
         private const string pluginDescription = "This plugin implements Display Manager Plugin.";
-        private const string publisherCompany = "Wistron";
-        private const string publisherWebsite = "https://www.wistron.com";
+        private const string publisherCompany = "Dell Inc.";
+        private const string publisherWebsite = "https://www.dell.com";
         private const string publisherSupport = "This plugin implements Display Manager Plugin.";
 
         private bool _IsAdministrator = ProcessSecurityHelperWrapper.IsCurrentProcessRunningElevated();
@@ -134,10 +134,6 @@ namespace DDPM.SA.Plugins.User.DisplayManager
         /// gaming parameter changes event，return gaming parameter
         /// </summary>
         public event EventHandler<GamingDisplayPropertiesInfo> GamingChangeEvent;
-        /// <summary>
-        /// OSD Orientation changes event，return OSD Orientation parameter
-        /// </summary>
-        public event EventHandler<DisplayOrientation> OSDOrientationChangeEvent;
 
         #endregion
 
@@ -526,7 +522,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                         }
                         USBUpstream.Clear();
                         string str = string.Empty;
-                        foreach(var _usb in _USBs)
+                        foreach (var _usb in _USBs)
                         {
                             str = _usb.Key;
                             if (_usb.Key == "USB-B1")
@@ -1846,8 +1842,8 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             _VCPchangedEventArgs.monitor = e.monitor;
             OnVCPchanged(_VCPchangedEventArgs);
 
-            //0607 Bruce 自動旋轉畫面顧新增下面兩行程式碼
-            SetDisplayOrientation(_VCPchangedEventArgs);
+            ////0607 Bruce 自動旋轉畫面顧新增下面兩行程式碼
+            //SetDisplayOrientation(_VCPchangedEventArgs);
 
             //0611 Dean
             if (e.vcpcode.Equals("66"))
@@ -2159,10 +2155,8 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                 bool? set_OSD_Orientation_Ret = SetOSDOrientation(monitorInfos, OrientationString[(int)orientation + 1]).Result;
                 _logs.DebugMsg($"[DisplayMangerPlugin] set_OSD_Orientation set_OSD_Orienset_OSD_Orientation_Rettation : {set_OSD_Orientation_Ret}");
                 isSWSetOrientation = true;
-                //Bruce 11/17 The specification requirements are modified to not rotate the screen.
-                orientation = DisplayOrientation.Unknow;
                 _logs.DebugMsg($"[DisplayMangerPlugin] _DisplayPropertiesPlugin.SetDisplayPropertiest go");
-                ret = _DisplayPropertiesPlugin.SetDisplayPropertiest(monitorInfos.DisplayName, properties, orientation).Result && set_OSD_Orientation_Ret == true;
+                ret = _DisplayPropertiesPlugin.SetDisplayPropertiest(monitorInfos.DisplayName, properties, orientation).Result;
                 isSWSetOrientation = false;
             }
             _logs.DebugMsg($"[DisplayMangerPlugin] SetDisplayPropertiest ret : {ret}");
@@ -2185,17 +2179,17 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             return Task.FromResult(ret);
         }
 
-        public Task<bool?> SetOrientation(MonitorInfo monitorInfos, DisplayOrientation orientation)
+        public Task<bool> SetOrientation(MonitorInfo monitorInfos, DisplayOrientation orientation)
         {
             _logs.DebugMsg($"[DisplayMangerPlugin] SetOrientation start");
-            bool? ret = false;
+            bool ret = false;
             if (monitorInfos != null)
             {
                 _logs.DebugMsg($"[DisplayMangerPlugin] SetOSDOrientation go");
-                ret = SetOSDOrientation(monitorInfos, OrientationString[(int)orientation + 1]).Result;
-                /*isSWSetOrientation = true;
-                ret =_DisplayPropertiesPlugin.SetOrientation(monitorInfos.DisplayName, orientation).Result;
-                isSWSetOrientation = false;*/
+                SetOSDOrientation(monitorInfos, OrientationString[(int)orientation + 1]).Wait();
+                isSWSetOrientation = true;
+                ret = _DisplayPropertiesPlugin.SetOrientation(monitorInfos.DisplayName, orientation).Result;
+                isSWSetOrientation = false;
             }
             _logs.DebugMsg($"[DisplayMangerPlugin] SetOrientation done");
             return Task.FromResult(ret);
@@ -2331,20 +2325,33 @@ namespace DDPM.SA.Plugins.User.DisplayManager
 
             for (int i = 0; i < monitorInfos.Count; i++)
             {
-                if (string.IsNullOrEmpty(monitorInfos[i].CapabilityString) || !monitorInfos[i].CapabilityString.Contains("AA"))
+                bool? supportWriteOSD = IsSupportWriteOSDOrientation(monitorInfos[i].CapabilityString);
+                if (supportWriteOSD != true)
                 {
-                    _logs.DebugMsg($"[DisplayMangerPlugin] SetDisplayOrientation {monitorInfos[i].modelName} is no contains AA");
+                    _logs.DebugMsg($"[DisplayMangerPlugin] SetDisplayOrientation {monitorInfos[i].modelName} support write OSD : {supportWriteOSD}");
                     continue;
                 }
-                int count = 0;
-                ObjGetVCP ObjGetVCP;
-                _logs.DebugMsg($"[DisplayMangerPlugin] SetDisplayOrientation GetVCPCapability go");
-                do
+                /* 1119 Bruce
+                  int count = 0;
+                  ObjGetVCP ObjGetVCP;
+                  _logs.DebugMsg($"[DisplayMangerPlugin] SetDisplayOrientation GetVCPCapability go");
+               do
+               {
+                   ObjGetVCP = GetVCPCapability(monitorInfos[i], 0xAA).Result;
+                   count++;
+               } while (ObjGetVCP.result != true && count < 3);*/
+                _logs.DebugMsg($"[DisplayMangerPlugin] GetCurrentDisplayOrientation go");
+                DisplayOrientation displayOrientation = GetCurrentDisplayOrientation(monitorInfos[i].DisplayName).Result;
+                _logs.DebugMsg($"[DisplayMangerPlugin] GetCurrentDisplayOrientation done displayOrientation : {displayOrientation}");
+                if ((int)displayOrientation + 1 < OrientationString.Length)
                 {
-                    ObjGetVCP = GetVCPCapability(monitorInfos[i], 0xAA).Result;
-                    count++;
-                } while (ObjGetVCP.result != true && count < 3);
-                _logs.DebugMsg($"[DisplayMangerPlugin] SetDisplayOrientation ObjGetVCP.result :{ObjGetVCP.result}");
+                    _logs.DebugMsg($"[DisplayMangerPlugin] SetOSDOrientation go");
+                    bool? ret = SetOSDOrientation(monitorInfos[i], OrientationString[(int)displayOrientation + 1]).Result;
+                    bools[i] = ret == true ? true : false;
+                    _logs.DebugMsg($"[DisplayMangerPlugin] SetOSDOrientation done ret : {ret}");
+                }
+                /* 1119 Bruce
+                  _logs.DebugMsg($"[DisplayMangerPlugin] SetDisplayOrientation ObjGetVCP.result :{ObjGetVCP.result}");
                 if (ObjGetVCP.result == true)
                 {
                     uint retValue;
@@ -2367,7 +2374,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                             }
                         }
                     }
-                }
+                }*/
             }
             _logs.DebugMsg($"[DisplayMangerPlugin] SetDisplayOrientation done");
             return Task.FromResult(bools.ToList());
@@ -2453,10 +2460,10 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                         _logs.DebugMsg($"[DisplayMangerPlugin] SetDisplayOrientation retValue:{retValue}");
                         DisplayOrientation orientation = (DisplayOrientation)(retValue - 1);
                         _logs.DebugMsg($"[DisplayMangerPlugin] SetDisplayOrientation orientation:{orientation}");
-                        OSDOrientationChangeEvent?.AsyncFireAndForget(this, orientation, System.Threading.CancellationToken.None);
-                        //Properties properties = new Properties();
-                        //_logs.DebugMsg($"[DisplayMangerPlugin] SetDisplayOrientation go");
-                        //ret = SetDisplayPropertiest(vcpchangedEventArgs.monitor, properties, orientation).Result;
+                        //OSDOrientationChangeEvent?.AsyncFireAndForget(this, orientation, System.Threading.CancellationToken.None);
+                        Properties properties = new Properties();
+                        _logs.DebugMsg($"[DisplayMangerPlugin] SetDisplayOrientation go");
+                        ret = SetDisplayPropertiest(vcpchangedEventArgs.monitor, properties, orientation).Result;
                     }
                 }
             }
@@ -3926,8 +3933,17 @@ namespace DDPM.SA.Plugins.User.DisplayManager
 
         private void SetDisplayFWUServer()
         {
-            RegistryKey localKey64 = RegistryKey.OpenBaseKey(Microsoft.Win32.RegistryHive.LocalMachine, RegistryView.Registry64);
             Display_FWU_URL = Display_FWU_URL + Display_FWU_URL_Folder;
+            string testServer = GetTestServerURL();
+            if (!string.IsNullOrEmpty(testServer))
+            {
+                Display_FWU_URL = testServer + Display_FWU_URL_Folder;
+            }
+        }
+        private string GetTestServerURL()
+        {
+            RegistryKey localKey64 = RegistryKey.OpenBaseKey(Microsoft.Win32.RegistryHive.LocalMachine, RegistryView.Registry64);
+            string ret = string.Empty;
             if (localKey64 != null)
             {
                 RegistryKey registryKey = localKey64.OpenSubKey("SOFTWARE\\Dell\\DDPM Subagent\\", false);
@@ -3939,11 +3955,12 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                         string s = obj.ToString();
                         if (!string.IsNullOrEmpty(s))
                         {
-                            Display_FWU_URL = obj + Display_FWU_URL_Folder;
+                            ret = s;
                         }
                     }
                 }
             }
+            return ret;
         }
 
         private DisplayUpdateHelper GetDisplayFWMetadata(bool isSkipCA, ISettingsManagerDev settingsPlugin)
@@ -3995,6 +4012,8 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                     }
                     if (!string.IsNullOrEmpty(jsonString))
                     {
+                        string testServer = GetTestServerURL();
+
                         Dictionary<string, Display_Firmwares_item> data = JsonSerializer.Deserialize<Dictionary<string, Display_Firmwares_item>>(jsonString);
                         foreach (MonitorInfo monitorInfo in monitorInfos)
                         {
@@ -4016,7 +4035,18 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                                 if (firmwares_item != null)
                                 {
                                     firmwares_item.id = model;
-                                    firmwares_item.url = Display_FWU_URL + firmwares_item.url;
+                                    if (firmwares_item.url.Contains("%2"))
+                                    {
+                                        if (!string.IsNullOrEmpty(testServer))
+                                        {
+                                            firmwares_item.url.Replace("%2", testServer);
+                                        }
+                                    }
+                                    else
+                                    {
+                                        firmwares_item.url = Display_FWU_URL + firmwares_item.url;
+
+                                    }
                                     firmwares_item.CurrentVersion = monitorInfo.FwVersion;
                                     firmwares_item.TheLastVersion = firmwares_item.TheLastVersion;
                                     firmwares_item.ServiceTag = monitorInfo.edid.ServiceTag;

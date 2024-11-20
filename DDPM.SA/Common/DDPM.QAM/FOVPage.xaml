@@ -11,11 +11,11 @@
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="/DDPM.QAM;component/PluginStyles.xaml" />
+                <!--<ResourceDictionary Source="/DDPM.QAM;component/PluginStyles.xaml" />-->
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
-    <Border Background="#141D28"
+    <Border Background="{DynamicResource Default_SA_QAM_Menu_BackGround}"
             Height="216"
             CornerRadius="0,0,10,10">
         <StackPanel>
@@ -33,23 +33,23 @@
                             <DataTrigger Binding="{Binding FOV_IsSelected[0]}"
                                          Value="True">
                                 <Setter Property="Background"
-                                        Value="#293B4D" />
+                                        Value="{DynamicResource Border_Hover_Color}" />
                             </DataTrigger>
                             <Trigger Property="IsMouseOver"
                                      Value="True">
                                 <Setter Property="Background"
-                                        Value="#293B4D" />
+                                        Value="{DynamicResource Border_Hover_Color}" />
                             </Trigger>
                             <Trigger Property="IsMouseCaptured"
                                      Value="True">
                                 <Setter Property="Background"
-                                        Value="#293B4D" />
+                                        Value="{DynamicResource Border_Hover_Color}" />
                             </Trigger>
                         </Style.Triggers>
                     </Style>
                 </Border.Style>
                 <Grid>
-                    <UXControls:UXTextBlock Foreground="#F5F6F7"
+                    <UXControls:UXTextBlock Foreground="{DynamicResource Button_UXStyleColor_ForWhiteFrame}"
                                             VerticalAlignment="Center"
                                             HorizontalAlignment="Center"
                                             FontFamily="Roboto"
@@ -71,23 +71,23 @@
                             <DataTrigger Binding="{Binding FOV_IsSelected[1]}"
                                          Value="True">
                                 <Setter Property="Background"
-                                        Value="#293B4D" />
+                                        Value="{DynamicResource Border_Hover_Color}" />
                             </DataTrigger>
                             <Trigger Property="IsMouseOver"
                                      Value="True">
                                 <Setter Property="Background"
-                                        Value="#293B4D" />
+                                        Value="{DynamicResource Border_Hover_Color}" />
                             </Trigger>
                             <Trigger Property="IsMouseCaptured"
                                      Value="True">
                                 <Setter Property="Background"
-                                        Value="#293B4D" />
+                                        Value="{DynamicResource Border_Hover_Color}" />
                             </Trigger>
                         </Style.Triggers>
                     </Style>
                 </Border.Style>
                 <Grid>
-                    <UXControls:UXTextBlock Foreground="#F5F6F7"
+                    <UXControls:UXTextBlock Foreground="{DynamicResource Button_UXStyleColor_ForWhiteFrame}"
                                             VerticalAlignment="Center"
                                             HorizontalAlignment="Center"
                                             FontFamily="Roboto"
@@ -109,23 +109,23 @@
                             <DataTrigger Binding="{Binding FOV_IsSelected[2]}"
                                          Value="True">
                                 <Setter Property="Background"
-                                        Value="#293B4D" />
+                                        Value="{DynamicResource Border_Hover_Color}" />
                             </DataTrigger>
                             <Trigger Property="IsMouseOver"
                                      Value="True">
                                 <Setter Property="Background"
-                                        Value="#293B4D" />
+                                        Value="{DynamicResource Border_Hover_Color}" />
                             </Trigger>
                             <Trigger Property="IsMouseCaptured"
                                      Value="True">
                                 <Setter Property="Background"
-                                        Value="#293B4D" />
+                                        Value="{DynamicResource Border_Hover_Color}" />
                             </Trigger>
                         </Style.Triggers>
                     </Style>
                 </Border.Style>
                 <Grid>
-                    <UXControls:UXTextBlock Foreground="#F5F6F7"
+                    <UXControls:UXTextBlock Foreground="{DynamicResource Button_UXStyleColor_ForWhiteFrame}"
                                             VerticalAlignment="Center"
                                             HorizontalAlignment="Center"
                                             FontFamily="Roboto"

@@ -368,7 +368,7 @@ namespace DDPM.UI.Plugin.ViewModels
                     break;
             }
         }
-        public void RestoreToDefault()
+        public async void RestoreToDefault()
         {
             try
             {
@@ -382,7 +382,7 @@ namespace DDPM.UI.Plugin.ViewModels
                 _log.Info($"[SoundBarViewModel] SpeakerInfoValueDTP.IsWiredAudioIMicNSEnable ............= {SpeakerInfoValueDTP.IsWiredAudioIMicNSEnable.ToString()}");
                 _log.Info($"[SoundBarViewModel] SpeakerInfoValueDTP.IsAudioEqualizerSupported .......= {SpeakerInfoValueDTP.IsAudioEqualizerSupported.ToString()}");
                 _deviceManager.SetResetToDefaultAsyncForSoundbar(CurrentDeviceInfo!.ID.ToString(), true).Wait();
-                UpdateDTPValue();
+                await UpdateDTPValue();
                 CheckHeadsetFunc();
             }
             catch (Exception ex)

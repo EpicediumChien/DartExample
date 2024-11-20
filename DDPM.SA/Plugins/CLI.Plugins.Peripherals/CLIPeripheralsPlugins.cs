@@ -30,8 +30,8 @@ namespace DDPM.CLI.Plugins.Peripherals
         private const string pluginName = "CLIPeripheralsPlugin";
         private const string pluginVersion = "1.0.0";
         private const string pluginDescription = "This plugin implements CLI Peripherals Plugin.";
-        private const string publisherCompany = "Wistron";
-        private const string publisherWebsite = "https://www.wistron.com";
+        private const string publisherCompany = "Dell Inc.";
+        private const string publisherWebsite = "https://www.dell.com";
         private const string publisherSupport = "This plugin implements CLI Peripherals Plugin.";
 
         //private IAgent _agent; //Dean 0626 fix SAST issue
@@ -1215,15 +1215,16 @@ namespace DDPM.CLI.Plugins.Peripherals
                         x.Value = "";
                         if (x.Result == "")
                         {
-                            if (_devMgr.GetIsPropertyHDRSupported(x.Guid).Result)
+                            var di = _deviceinfo.Where(_ => _.ID.ToString() == x.Guid && _.LogicalDeviceType.ToUpper().Contains(_commandLineInput.PluginsType)).FirstOrDefault();
+                            if (di.IsMicEnumerationSupported)
                             {
-                                var result = RunAsyncTimeout(_devMgr.SetIsHDROn(x.Guid, bl)).Result;
+                                var result = RunAsyncTimeout(_devMgr.SetIsMicEnumerationOn(bl, Guid.Parse(x.Guid))).Result;
                                 if (result == "0")
                                 {
                                     x.Result = "PASS";
-                                    retcode_ = _devMgr.GetIsHDROn(x.Guid).Result;
-                                    x.Value = (retcode_) ? "ON" : "OFF";
-                                    x.Value += "," + (data.LockSettings.Lock_Webcam_hdr ? "LOCK" : "UNLOCK");
+                                    retcode = di.IsMicEnumerationOn;
+                                    x.Value = (retcode) ? "ON" : "OFF";
+                                    x.Value += "," + (data.LockSettings.Lock_Webcam_MicSwitch ? "LOCK" : "UNLOCK");
                                     x.Message = "N/A";
                                 }
                                 else if (result == "1")
@@ -1242,7 +1243,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                             {
                                 x.Value = "N/A";
                                 x.Result = "FAIL";
-                                x.Message = "Webcam not support HDR";
+                                x.Message = "Webcam not support MicSwitch";
                                 retcode = false;
                             }
                         }
@@ -1504,26 +1505,37 @@ namespace DDPM.CLI.Plugins.Peripherals
                         x.Value = "";
                         if (x.Result == "")
                         {
-                            var result = RunAsyncTimeout(_devMgr.SetIsProximitySensorEnable(x.Guid, bl)).Result;
-                            if (result == "0")
+                            var di = _deviceinfo.Where(_ => _.ID.ToString() == x.Guid && _.LogicalDeviceType.ToUpper().Contains(_commandLineInput.PluginsType)).FirstOrDefault();
+                            if (di.IsESISupported)
                             {
-                                x.Result = "PASS";
-                                retcode_ = _devMgr.GetIsProximitySensorEnable(x.Guid).Result;
-                                x.Value = (retcode_) ? "ON" : "OFF";
-                                x.Value += "," + (data.LockSettings.Lock_Webcam_PresenceDetection ? "LOCK" : "UNLOCK");
-                                x.Message = "N/A";
-                            }
-                            else if (result == "1")
-                            {
-                                x.Result = "FAIL";
-                                x.Message = "Timeout";
+                                var result = RunAsyncTimeout(_devMgr.SetIsProximitySensorEnable(x.Guid, bl)).Result;
+                                if (result == "0")
+                                {
+                                    x.Result = "PASS";
+                                    retcode_ = _devMgr.GetIsProximitySensorEnable(x.Guid).Result;
+                                    x.Value = (retcode_) ? "ON" : "OFF";
+                                    x.Value += "," + (data.LockSettings.Lock_Webcam_PresenceDetection ? "LOCK" : "UNLOCK");
+                                    x.Message = "N/A";
+                                }
+                                else if (result == "1")
+                                {
+                                    x.Result = "FAIL";
+                                    x.Message = "Timeout";
+                                }
+                                else
+                                {
+                                    x.Result = "FAIL";
+                                    x.Message = result;
+                                }
+                                retcode = (result == "0") ? true : false;
                             }
                             else
                             {
+                                x.Value = "N/A";
                                 x.Result = "FAIL";
-                                x.Message = result;
+                                x.Message = "Webcam not support PresenceDetection";
+                                retcode = false;
                             }
-                            retcode = (result == "0") ? true : false;
                         }
                     });
                     return (retcode) ? (int)CLI_ExitCode.success : (int)CLI_ExitCode.functional_error;

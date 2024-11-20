@@ -63,16 +63,19 @@
                         <RowDefinition Height="50*" />
                     </Grid.RowDefinitions>
 
-                    <Canvas Width="50" Height="50" Tag="{DynamicResource Default_SA_OSD_PathColor}">
-                        <!-- Main Container Shape -->
+                    <Canvas Grid.Row="0" 
+                            Width="50" Height="50"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Bottom" 
+                            Tag="{DynamicResource Default_SA_OSD_PathColor}">
+                         <!--Main Container Shape--> 
                         <Path Data="M16.5625 20V12.5C16.25 7.8125 20 4.0625 24.375 3.75H25.625C30.625 3.75 34.375 7.8125 34.375 12.5H37.8125C38.125 5.625 32.8125 0.3125 25.9375 0H25.625C18.75 0 13.125 5.625 13.125 12.5V20H5.625V50H44.0625V20H16.5625ZM40.9375 46.5625H9.375V23.4375H40.9375V46.5625Z"
                               Fill="{Binding Tag, RelativeSource={RelativeSource AncestorType=Canvas}}" />
-                        <!-- Inner Details -->
+                         <!--Inner Details--> 
                         <Path Data="M25.2842 30.1885L21.8037 40.7969H19L23.7549 28H25.5391L25.2842 30.1885Z" Fill="{Binding Tag, RelativeSource={RelativeSource AncestorType=Canvas}}" />
                         <Path Data="M28.1758 40.7969L24.6865 30.1885L24.4053 28H26.207L30.9883 40.7969H28.1758Z" Fill="{Binding Tag, RelativeSource={RelativeSource AncestorType=Canvas}}" />
                         <Path Data="M28.0176 36.0332V38.0986H21.2588V36.0332H28.0176Z" Fill="{Binding Tag, RelativeSource={RelativeSource AncestorType=Canvas}}" />
                     </Canvas>
-
                     <TextBlock
                         Grid.Row="1"
                         HorizontalAlignment="Center"

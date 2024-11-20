@@ -17,6 +17,7 @@ using Windows.System;
 [assembly: InternalsVisibleTo("DDPM.UI.Module.Brightness.Tests")]
 [assembly: InternalsVisibleTo("DDPM.UI.Common.Tests")]
 [assembly: InternalsVisibleTo("DDPM.UI.Plugin.Common.Tests")]
+
 namespace DDPM.UI.Module.Brightness
 {
     internal class BrightnessViewModel : ObservableObject, INotifyPropertyChanged
@@ -93,6 +94,9 @@ namespace DDPM.UI.Module.Brightness
         private double PR2Brightness_Value = -1;
         private double PR2Contrast_Value = -1;
 
+        private double PR1Luminance_Value = -1;
+        private double PR2Luminance_Value = -1;
+
         private int dUration_1 = -1;
         private int mIns_1 = -1;
         private int hOurs_1 = -1;
@@ -105,14 +109,26 @@ namespace DDPM.UI.Module.Brightness
         public Debouncer PR2Brightness_Debouncer;
         public Debouncer PR2Contrast_Debouncer;
 
+        public Debouncer PR1Luminance_Debouncer;
+        public Debouncer PR2Luminance_Debouncer;
+
         private string PR1_Name = string.Empty;
         private string PR2_Name = string.Empty;
+
+        private string PR1_Luminance_Name = string.Empty;
+        private string PR2_Luminance_Name = string.Empty;
 
         public bool IsPR1Preview_ = false;
         public bool IsPR2Preview_ = false;
 
+        public bool IsPR1_Luminance_Preview_ = false;
+        public bool IsPR2_Luminance_Preview_ = false;
+
         public string PR1ButtonContent { get; set; } = "Preview Changes";
         public string PR2ButtonContent { get; set; } = "Preview Changes";
+
+        public string PR1_Luminance_ButtonContent { get; set; } = "Preview Changes";
+        public string PR2_Luminance_ButtonContent { get; set; } = "Preview Changes";
 
         public CancellationTokenSource PreviewToken = new CancellationTokenSource();
 
@@ -306,6 +322,7 @@ namespace DDPM.UI.Module.Brightness
             }
             Invoke_RefreshHotkeySettings();
         }
+
         public void Invoke_RefreshHotkeySettings()
         {
             BackgroundWorker bw = new BackgroundWorker()
@@ -316,6 +333,8 @@ namespace DDPM.UI.Module.Brightness
             bw.DoWork += DoWork_RefreshData;
             bw.RunWorkerCompleted += RunWorkerCompleted_RefreshData;
             bw.RunWorkerAsync();
+            IsBusy = true;
+            NotifyPropertyChanged("IsBusy");
         }
 
         private void DoWork_RefreshData(object sender, DoWorkEventArgs e)
@@ -373,6 +392,13 @@ namespace DDPM.UI.Module.Brightness
 
         private void RunWorkerCompleted_RefreshData(object sender, RunWorkerCompletedEventArgs e)
         {
+            MyModule.GetRightView().Dispatcher.Invoke((Action)(() =>
+            {
+                RefreshUI();
+                IsBusy = false;
+                NotifyPropertyChanged("IsBusy");
+            }));
+
             //Handling the result and final process
             Debug.WriteLine("RefreshHotkeySettings done");
         }
@@ -491,6 +517,9 @@ namespace DDPM.UI.Module.Brightness
             PR1Brightness_Debouncer = new Debouncer(1000, Set_Brightness_Value);
             PR2Contrast_Debouncer = new Debouncer(1000, Set_Contrast_Value);
             PR2Brightness_Debouncer = new Debouncer(1000, Set_Brightness_Value);
+
+            PR1Luminance_Debouncer = new Debouncer(1000, Set_Luminance_Value);
+            PR2Luminance_Debouncer = new Debouncer(1000, Set_Luminance_Value);
 
             DdpmCommonHelper.MyConsole.RegisterForEvent("DisplayHDRStatusChanged", OnHDRChangedEvent);
         }
@@ -1020,6 +1049,7 @@ namespace DDPM.UI.Module.Brightness
             bw.RunWorkerCompleted += RunWorkerCompleted_RefreshBrightnessPage;
             bw.RunWorkerAsync();
             IsBusy = true;
+            NotifyPropertyChanged("IsBusy");
         }
 
         private void DoWork_RefreshBrightnessPage(object sender, DoWorkEventArgs e)
@@ -1038,7 +1068,6 @@ namespace DDPM.UI.Module.Brightness
 
             Invoke_RefreshHotkeySettings();
             Invoke_RefreshManualValue();
-
             UpdateHDRStatus();
         }
 
@@ -1052,6 +1081,8 @@ namespace DDPM.UI.Module.Brightness
             bw.DoWork += DoWork_RefreshManualValue;
             bw.RunWorkerCompleted += RunWorkerCompleted_RefreshManualValue;
             bw.RunWorkerAsync();
+            IsBusy = true;
+            NotifyPropertyChanged("IsBusy");
         }
 
         private void DoWork_RefreshManualValue(object sender, DoWorkEventArgs e)
@@ -1077,6 +1108,8 @@ namespace DDPM.UI.Module.Brightness
                     NotifyPropertyChanged("ContrastValue");
                     NotifyPropertyChanged("AutoBrightnessRangeLevel_String");
                 }
+                IsBusy = false;
+                NotifyPropertyChanged("IsBusy");
             }));
 
             Invoke_RefreshScheduleValue();
@@ -1092,16 +1125,20 @@ namespace DDPM.UI.Module.Brightness
             bw.DoWork += DoWork_RefreshScheduleValue;
             bw.RunWorkerCompleted += RunWorkerCompleted_RefreshScheduleValue;
             bw.RunWorkerAsync();
+            IsBusy = true;
+            NotifyPropertyChanged("IsBusy");
         }
 
         private void DoWork_RefreshScheduleValue(object sender, DoWorkEventArgs e)
         {
-            if (isLuminanceSupport == Visibility.Visible)
+            MyModule.GetRightView().Dispatcher.Invoke((Action)(() =>
             {
-                //UpdateLuminance();
-            }
-            else
-                UpdateScheduleInfo();
+                RefreshUI();
+                IsBusy = false;
+                NotifyPropertyChanged("IsBusy");
+            }));
+
+            UpdateScheduleInfo();
         }
 
         private void RunWorkerCompleted_RefreshScheduleValue(object sender, RunWorkerCompletedEventArgs e)
@@ -1112,6 +1149,16 @@ namespace DDPM.UI.Module.Brightness
                 {
                     //NotifyPropertyChanged("LuminanceValue");
                     //NotifyPropertyChanged("LuminanceMaxValue");
+                    NotifyPropertyChanged("PR1Name");
+                    NotifyPropertyChanged("PR2Name");
+                    NotifyPropertyChanged("hOurs1");
+                    NotifyPropertyChanged("mIns1");
+                    NotifyPropertyChanged("dUration1");
+                    NotifyPropertyChanged("hOurs2");
+                    NotifyPropertyChanged("mIns2");
+                    NotifyPropertyChanged("dUration2");
+                    NotifyPropertyChanged("PR1LuminanceValue");
+                    NotifyPropertyChanged("PR2LuminanceValue");
                 }
                 else
                 {
@@ -1190,11 +1237,51 @@ namespace DDPM.UI.Module.Brightness
             }
         }
 
+        public bool IsPR1_Luminance_Preview
+        {
+            get
+            {
+                return IsPR1_Luminance_Preview_;
+            }
+            set
+            {
+                IsPR1_Luminance_Preview_ = value;
+                PR1_Luminance_ButtonContent = (value) ? "Stop Preview" : "Preview Changes";
+                NotifyPropertyChanged("IsPR1_Luminance_Preview");
+                NotifyPropertyChanged("IsPR_Luminance_Preview");
+                NotifyPropertyChanged("PR1_Luminance_ButtonContent");
+            }
+        }
+
+        public bool IsPR2_Luminance_Preview
+        {
+            get
+            {
+                return IsPR2_Luminance_Preview_;
+            }
+            set
+            {
+                IsPR2_Luminance_Preview_ = value;
+                PR2_Luminance_ButtonContent = (value) ? "Stop Preview" : "Preview Changes";
+                NotifyPropertyChanged("IsPR2_Luminance_Preview");
+                NotifyPropertyChanged("IsPR_Luminance_Preview");
+                NotifyPropertyChanged("PR2_Luminance_ButtonContent");
+            }
+        }
+
         public bool IsPRPreview
         {
             get
             {
                 return (IsPR1Preview || IsPR2Preview);
+            }
+        }
+
+        public bool IsPR_Luminance_Preview
+        {
+            get
+            {
+                return (IsPR1_Luminance_Preview || IsPR2_Luminance_Preview);
             }
         }
 
@@ -1428,6 +1515,74 @@ namespace DDPM.UI.Module.Brightness
             }
         }
 
+        public double PR1LuminanceValue
+        {
+            get
+            {
+                if (PR1Luminance_Value < 0)
+                {
+                    if (isNormalBrightness.Equals(Visibility.Visible))
+                    {
+                        PR1Luminance_Value = 100;
+                        return PR1Luminance_Value;
+                    }
+                    else
+                    {
+                        return 45;
+                    }
+                }
+                else
+                    return PR1Luminance_Value;
+            }
+
+            set
+            {
+                PR1Luminance_Value = value;
+                PR1Luminance_Debouncer.Debounce(value);
+
+                if (ScheduleMap != null)
+                    ScheduleMap.Brightness1 = PR1Luminance_Value;
+                else
+                    ScheduleMap = new scheduleInfo() { Brightness1 = PR1Luminance_Value };
+
+                NotifyPropertyChanged("PR1LuminanceValue");
+            }
+        }
+
+        public double PR2LuminanceValue
+        {
+            get
+            {
+                if (PR2Luminance_Value < 0)
+                {
+                    if (isNormalBrightness.Equals(Visibility.Visible))
+                    {
+                        PR2Luminance_Value = 100;
+                        return PR2Luminance_Value;
+                    }
+                    else
+                    {
+                        return 45;
+                    }
+                }
+                else
+                    return PR2Luminance_Value;
+            }
+
+            set
+            {
+                PR2Luminance_Value = value;
+                PR1Luminance_Debouncer.Debounce(value);
+
+                if (ScheduleMap != null)
+                    ScheduleMap.Brightness2 = PR2Luminance_Value;
+                else
+                    ScheduleMap = new scheduleInfo() { Brightness2 = PR2Luminance_Value };
+
+                NotifyPropertyChanged("PR2LuminanceValue");
+            }
+        }
+
         public double PR1ContrastValue
         {
             get
@@ -1511,9 +1666,6 @@ namespace DDPM.UI.Module.Brightness
             if (SelectedHomeDevice == null)
                 return;
 
-            if (ScheduleMap == null)
-                ScheduleMap = new scheduleInfo();
-
             ScheduleMap = DdpmCommonHelper.DeviceManagerSA.ReadScheduleMonitorSettings(SelectedHomeDevice.MonitorInfo).Result;
 
             if (ScheduleMap != null)
@@ -1530,6 +1682,8 @@ namespace DDPM.UI.Module.Brightness
                 PR1Contrast_Value = ScheduleMap.Contrast1;
                 PR2Brightness_Value = ScheduleMap.Brightness2;
                 PR2Contrast_Value = ScheduleMap.Contrast2;
+                PR1Luminance_Value = ScheduleMap.Brightness1;
+                PR2Luminance_Value = ScheduleMap.Brightness2;
             }
             else
             {
@@ -1564,6 +1718,8 @@ namespace DDPM.UI.Module.Brightness
                 PR1Contrast_Value = ScheduleMap.Contrast1;
                 PR2Brightness_Value = ScheduleMap.Brightness2;
                 PR2Contrast_Value = ScheduleMap.Contrast2;
+                PR1Luminance_Value = ScheduleMap.Brightness1;
+                PR2Luminance_Value = ScheduleMap.Brightness2;
             }
 
             NotifyPropertyChanged("PR1Name");
@@ -1578,6 +1734,8 @@ namespace DDPM.UI.Module.Brightness
             NotifyPropertyChanged("PR1ContrastValue");
             NotifyPropertyChanged("PR2BrightnessValue");
             NotifyPropertyChanged("PR2ContrastValue");
+            NotifyPropertyChanged("PR1LuminanceValue");
+            NotifyPropertyChanged("PR2LuminanceValue");
         }
 
         public void CloseSchedule()
@@ -1645,12 +1803,16 @@ namespace DDPM.UI.Module.Brightness
                 var CurDateTime = DateTime.Now;
                 var Brightness_PR1 = PR1BrightnessValue;
                 var Brightness_PR2 = PR2BrightnessValue;
-                var Brightness_difference = Brightness_PR1 - Brightness_PR2;
+                var Luminance_PR1 = PR1LuminanceValue;
+                var Luminance_PR2 = PR2LuminanceValue;
+                var Brightness_difference = (isLuminanceSupport == Visibility.Visible) ? (Luminance_PR1 - Luminance_PR2) : (Brightness_PR1 - Brightness_PR2);
                 var Contrast_PR1 = PR1ContrastValue;
                 var Contrast_PR2 = PR2ContrastValue;
                 var Contrast_difference = Contrast_PR1 - Contrast_PR2;
                 bool IsBrightnessPR1Plus = Brightness_difference > 0 ? true : false;
                 bool IsBrightnessPR2Plus = Brightness_difference > 0 ? false : true;
+                bool IsLuminancePR1Plus = Brightness_difference > 0 ? true : false;
+                bool IsLuminancePR2Plus = Brightness_difference > 0 ? false : true;
                 bool IsContrastPR1Plus = Contrast_difference > 0 ? true : false;
                 bool IsContrastPR2Plus = Contrast_difference > 0 ? false : true;
                 var Hour_PR1 = (hOurs1 < 12) ? hOurs1 : (hOurs1 - 12);
@@ -1667,7 +1829,7 @@ namespace DDPM.UI.Module.Brightness
                 var Pre_PR2Time = new DateTime(CurDateTime.Year, CurDateTime.Month, CurDateTime.Day, Hour_PR2, Min_PR2, 0).AddMinutes(Duration_PR2 * -1);
                 if (Brightness_difference < 0) Brightness_difference = Brightness_difference * -1;
                 if (Contrast_difference < 0) Contrast_difference = Contrast_difference * -1;
-                var PerStepValue = 5;
+                var PerStepValue = (isLuminanceSupport == Visibility.Visible) ? 20 : 5;
                 if (CurDateTime.Hour < 12)  // AM
                 {
                     if (DateTime.Compare(CurDateTime, PR1Time) > 0) //CurDateTime is later than PR1Time.
@@ -1685,31 +1847,49 @@ namespace DDPM.UI.Module.Brightness
                             if (IsBrightnessPR2Plus)
                             {
                                 if ((!IsMouseEnterSchedule_1 && !IsMouseEnterSchedule_2) && (!IsPR1Preview && !IsPR2Preview))
-                                    BrightnessValue = Brightness_PR1 + (PerStepValue * Brightness_steps);
+                                {
+                                    if ((isLuminanceSupport == Visibility.Visible))
+                                        LuminanceValue = Luminance_PR1 + (PerStepValue * Brightness_steps);
+                                    else
+                                        BrightnessValue = Brightness_PR1 + (PerStepValue * Brightness_steps);
+                                }
                             }
                             else
                             {
                                 if ((!IsMouseEnterSchedule_1 && !IsMouseEnterSchedule_2) && (!IsPR1Preview && !IsPR2Preview))
-                                    BrightnessValue = Brightness_PR1 - (PerStepValue * Brightness_steps);
+                                {
+                                    if ((isLuminanceSupport == Visibility.Visible))
+                                        LuminanceValue = Luminance_PR1 - (PerStepValue * Brightness_steps);
+                                    else
+                                        BrightnessValue = Brightness_PR1 - (PerStepValue * Brightness_steps);
+                                }
                             }
 
-                            if (IsContrastPR2Plus)
+                            if (!(isLuminanceSupport == Visibility.Visible))
                             {
-                                if ((!IsMouseEnterSchedule_1 && !IsMouseEnterSchedule_2) && (!IsPR1Preview && !IsPR2Preview))
-                                    ContrastValue = Contrast_PR1 + (PerStepValue * Contrast_steps);
-                            }
-                            else
-                            {
-                                if ((!IsMouseEnterSchedule_1 && !IsMouseEnterSchedule_2) && (!IsPR1Preview && !IsPR2Preview))
-                                    ContrastValue = Contrast_PR1 - (PerStepValue * Contrast_steps);
+                                if (IsContrastPR2Plus)
+                                {
+                                    if ((!IsMouseEnterSchedule_1 && !IsMouseEnterSchedule_2) && (!IsPR1Preview && !IsPR2Preview))
+                                        ContrastValue = Contrast_PR1 + (PerStepValue * Contrast_steps);
+                                }
+                                else
+                                {
+                                    if ((!IsMouseEnterSchedule_1 && !IsMouseEnterSchedule_2) && (!IsPR1Preview && !IsPR2Preview))
+                                        ContrastValue = Contrast_PR1 - (PerStepValue * Contrast_steps);
+                                }
                             }
                         }
                         else  //CurDateTime is same as or earlier than Pre_PR2Time
                         {
                             if ((!IsMouseEnterSchedule_1 && !IsMouseEnterSchedule_2) && (!IsPR1Preview && !IsPR2Preview))
                             {
-                                BrightnessValue = Brightness_PR1;
-                                ContrastValue = Contrast_PR1;
+                                if ((isLuminanceSupport == Visibility.Visible))
+                                    LuminanceValue = Luminance_PR1;
+                                else
+                                {
+                                    BrightnessValue = Brightness_PR1;
+                                    ContrastValue = Contrast_PR1;
+                                }
                             }
                         }
                     }
@@ -1717,8 +1897,13 @@ namespace DDPM.UI.Module.Brightness
                     {
                         if ((!IsMouseEnterSchedule_1 && !IsMouseEnterSchedule_2) && (!IsPR1Preview && !IsPR2Preview))
                         {
-                            BrightnessValue = Brightness_PR1;
-                            ContrastValue = Contrast_PR1;
+                            if ((isLuminanceSupport == Visibility.Visible))
+                                LuminanceValue = Luminance_PR1;
+                            else
+                            {
+                                BrightnessValue = Brightness_PR1;
+                                ContrastValue = Contrast_PR1;
+                            }
                         }
                     }
                     else //CurDateTime is earlier than PR1Time
@@ -1736,31 +1921,50 @@ namespace DDPM.UI.Module.Brightness
                             if (IsBrightnessPR1Plus)
                             {
                                 if ((!IsMouseEnterSchedule_1 && !IsMouseEnterSchedule_2) && (!IsPR1Preview && !IsPR2Preview))
-                                    BrightnessValue = Brightness_PR2 + (PerStepValue * Brightness_steps);
+                                {
+                                    if ((isLuminanceSupport == Visibility.Visible))
+                                        LuminanceValue = Luminance_PR2 + (PerStepValue * Brightness_steps);
+                                    else
+                                        BrightnessValue = Brightness_PR2 + (PerStepValue * Brightness_steps);
+                                }
                             }
                             else
                             {
                                 if ((!IsMouseEnterSchedule_1 && !IsMouseEnterSchedule_2) && (!IsPR1Preview && !IsPR2Preview))
-                                    BrightnessValue = Brightness_PR2 - (PerStepValue * Brightness_steps);
+                                {
+                                    if ((isLuminanceSupport == Visibility.Visible))
+
+                                        LuminanceValue = Luminance_PR2 - (PerStepValue * Brightness_steps);
+                                    else
+                                        BrightnessValue = Brightness_PR2 - (PerStepValue * Brightness_steps);
+                                }
                             }
 
-                            if (IsContrastPR1Plus)
+                            if (!(isLuminanceSupport == Visibility.Visible))
                             {
-                                if ((!IsMouseEnterSchedule_1 && !IsMouseEnterSchedule_2) && (!IsPR1Preview && !IsPR2Preview))
-                                    ContrastValue = Contrast_PR2 + (PerStepValue * Contrast_steps);
-                            }
-                            else
-                            {
-                                if ((!IsMouseEnterSchedule_1 && !IsMouseEnterSchedule_2) && (!IsPR1Preview && !IsPR2Preview))
-                                    ContrastValue = Contrast_PR2 - (PerStepValue * Contrast_steps);
+                                if (IsContrastPR1Plus)
+                                {
+                                    if ((!IsMouseEnterSchedule_1 && !IsMouseEnterSchedule_2) && (!IsPR1Preview && !IsPR2Preview))
+                                        ContrastValue = Contrast_PR2 + (PerStepValue * Contrast_steps);
+                                }
+                                else
+                                {
+                                    if ((!IsMouseEnterSchedule_1 && !IsMouseEnterSchedule_2) && (!IsPR1Preview && !IsPR2Preview))
+                                        ContrastValue = Contrast_PR2 - (PerStepValue * Contrast_steps);
+                                }
                             }
                         }
                         else  //CurDateTime is same as  or  earlier than Pre_PR1Time
                         {
                             if ((!IsMouseEnterSchedule_1 && !IsMouseEnterSchedule_2) && (!IsPR1Preview && !IsPR2Preview))
                             {
-                                BrightnessValue = Brightness_PR2;
-                                ContrastValue = Contrast_PR2;
+                                if (!(isLuminanceSupport == Visibility.Visible))
+                                {
+                                    BrightnessValue = Brightness_PR2;
+                                    ContrastValue = Contrast_PR2;
+                                }
+                                else
+                                    LuminanceValue = Luminance_PR2;
                             }
                         }
                     }
@@ -1782,31 +1986,48 @@ namespace DDPM.UI.Module.Brightness
                             if (IsBrightnessPR1Plus)
                             {
                                 if ((!IsMouseEnterSchedule_1 && !IsMouseEnterSchedule_2) && (!IsPR1Preview && !IsPR2Preview))
-                                    BrightnessValue = Brightness_PR2 + (PerStepValue * Brightness_steps);
+                                {
+                                    if (!(isLuminanceSupport == Visibility.Visible))
+                                        BrightnessValue = Brightness_PR2 + (PerStepValue * Brightness_steps);
+                                    else
+                                        LuminanceValue = Luminance_PR2 + (PerStepValue * Brightness_steps);
+                                }
                             }
                             else
                             {
                                 if ((!IsMouseEnterSchedule_1 && !IsMouseEnterSchedule_2) && (!IsPR1Preview && !IsPR2Preview))
-                                    BrightnessValue = Brightness_PR2 - (PerStepValue * Brightness_steps);
+                                {
+                                    if (!(isLuminanceSupport == Visibility.Visible))
+                                        BrightnessValue = Brightness_PR2 - (PerStepValue * Brightness_steps);
+                                    else
+                                        LuminanceValue = Luminance_PR2 - (PerStepValue * Brightness_steps);
+                                }
                             }
-
-                            if (IsContrastPR1Plus)
+                            if (!(isLuminanceSupport == Visibility.Visible))
                             {
-                                if ((!IsMouseEnterSchedule_1 && !IsMouseEnterSchedule_2) && (!IsPR1Preview && !IsPR2Preview))
-                                    ContrastValue = Contrast_PR2 + (PerStepValue * Contrast_steps);
-                            }
-                            else
-                            {
-                                if ((!IsMouseEnterSchedule_1 && !IsMouseEnterSchedule_2) && (!IsPR1Preview && !IsPR2Preview))
-                                    ContrastValue = Contrast_PR2 - (PerStepValue * Contrast_steps);
+                                if (IsContrastPR1Plus)
+                                {
+                                    if ((!IsMouseEnterSchedule_1 && !IsMouseEnterSchedule_2) && (!IsPR1Preview && !IsPR2Preview))
+                                        ContrastValue = Contrast_PR2 + (PerStepValue * Contrast_steps);
+                                }
+                                else
+                                {
+                                    if ((!IsMouseEnterSchedule_1 && !IsMouseEnterSchedule_2) && (!IsPR1Preview && !IsPR2Preview))
+                                        ContrastValue = Contrast_PR2 - (PerStepValue * Contrast_steps);
+                                }
                             }
                         }
                         else  //CurDateTime is same as or earlier than Pre_PR1Timee_ADD1D
                         {
                             if ((!IsMouseEnterSchedule_1 && !IsMouseEnterSchedule_2) && (!IsPR1Preview && !IsPR2Preview))
                             {
-                                BrightnessValue = Brightness_PR2;
-                                ContrastValue = Contrast_PR2;
+                                if (!(isLuminanceSupport == Visibility.Visible))
+                                {
+                                    BrightnessValue = Brightness_PR2;
+                                    ContrastValue = Contrast_PR2;
+                                }
+                                else
+                                    LuminanceValue = Luminance_PR2;
                             }
                         }
                     }
@@ -1814,8 +2035,13 @@ namespace DDPM.UI.Module.Brightness
                     {
                         if ((!IsMouseEnterSchedule_1 && !IsMouseEnterSchedule_2) && (!IsPR1Preview && !IsPR2Preview))
                         {
-                            BrightnessValue = Brightness_PR2;
-                            ContrastValue = Contrast_PR2;
+                            if (!(isLuminanceSupport == Visibility.Visible))
+                            {
+                                BrightnessValue = Brightness_PR2;
+                                ContrastValue = Contrast_PR2;
+                            }
+                            else
+                                LuminanceValue = Luminance_PR2;
                         }
                     }
                     else //CurDateTime is earlier than PR2Time.
@@ -1833,31 +2059,49 @@ namespace DDPM.UI.Module.Brightness
                             if (IsBrightnessPR2Plus)
                             {
                                 if ((!IsMouseEnterSchedule_1 && !IsMouseEnterSchedule_2) && (!IsPR1Preview && !IsPR2Preview))
-                                    BrightnessValue = Brightness_PR1 + (PerStepValue * Brightness_steps);
+                                {
+                                    if (!(isLuminanceSupport == Visibility.Visible))
+                                        BrightnessValue = Brightness_PR1 + (PerStepValue * Brightness_steps);
+                                    else
+                                        LuminanceValue = Luminance_PR1 + (PerStepValue * Brightness_steps);
+                                }
                             }
                             else
                             {
                                 if ((!IsMouseEnterSchedule_1 && !IsMouseEnterSchedule_2) && (!IsPR1Preview && !IsPR2Preview))
-                                    BrightnessValue = Brightness_PR1 - (PerStepValue * Brightness_steps);
+                                {
+                                    if (!(isLuminanceSupport == Visibility.Visible))
+                                        BrightnessValue = Brightness_PR1 - (PerStepValue * Brightness_steps);
+                                    else
+                                        LuminanceValue = Luminance_PR1 - (PerStepValue * Brightness_steps);
+                                }
                             }
 
-                            if (IsContrastPR2Plus)
+                            if (!(isLuminanceSupport == Visibility.Visible))
                             {
-                                if ((!IsMouseEnterSchedule_1 && !IsMouseEnterSchedule_2) && (!IsPR1Preview && !IsPR2Preview))
-                                    ContrastValue = Contrast_PR1 + (PerStepValue * Contrast_steps);
-                            }
-                            else
-                            {
-                                if ((!IsMouseEnterSchedule_1 && !IsMouseEnterSchedule_2) && (!IsPR1Preview && !IsPR2Preview))
-                                    ContrastValue = Contrast_PR1 - (PerStepValue * Contrast_steps);
+                                if (IsContrastPR2Plus)
+                                {
+                                    if ((!IsMouseEnterSchedule_1 && !IsMouseEnterSchedule_2) && (!IsPR1Preview && !IsPR2Preview))
+                                        ContrastValue = Contrast_PR1 + (PerStepValue * Contrast_steps);
+                                }
+                                else
+                                {
+                                    if ((!IsMouseEnterSchedule_1 && !IsMouseEnterSchedule_2) && (!IsPR1Preview && !IsPR2Preview))
+                                        ContrastValue = Contrast_PR1 - (PerStepValue * Contrast_steps);
+                                }
                             }
                         }
                         else  //CurDateTime is same as  or  earlier than Pre_PR2Time
                         {
                             if ((!IsMouseEnterSchedule_1 && !IsMouseEnterSchedule_2) && (!IsPR1Preview && !IsPR2Preview))
                             {
-                                BrightnessValue = Brightness_PR1;
-                                ContrastValue = Contrast_PR1;
+                                if (!(isLuminanceSupport == Visibility.Visible))
+                                {
+                                    BrightnessValue = Brightness_PR1;
+                                    ContrastValue = Contrast_PR1;
+                                }
+                                else
+                                    LuminanceValue = Luminance_PR1;
                             }
                         }
                     }
@@ -2070,7 +2314,7 @@ namespace DDPM.UI.Module.Brightness
 
         public void UpdateScheduleInfo()
         {
-            if (PR1Brightness_Value < 0 || PR2Brightness_Value < 0 || PR1Contrast_Value < 0 || PR2Contrast_Value < 0 || hOurs_1 < 0 || hOurs_2 < 0 || mIns_1 < 0 || mIns_2 < 0 || dUration_1 < 0 || dUration_2 < 0)
+            if (PR1Luminance_Value < 0 || PR2Luminance_Value < 0 || PR1Brightness_Value < 0 || PR2Brightness_Value < 0 || PR1Contrast_Value < 0 || PR2Contrast_Value < 0 || hOurs_1 < 0 || hOurs_2 < 0 || mIns_1 < 0 || mIns_2 < 0 || dUration_1 < 0 || dUration_2 < 0)
                 GetScheduleInfo();
         }
 
@@ -2146,7 +2390,6 @@ namespace DDPM.UI.Module.Brightness
 
             void SET_Brightness()
             {
-
                 var value = Convert.ToDouble(value_);
                 uint nNewValue = Convert.ToUInt32(value);
 
@@ -2161,9 +2404,8 @@ namespace DDPM.UI.Module.Brightness
                 else
                     DdpmCommonHelper.DeviceManagerSA.SetVCPCapability(ModuleOwner.SelectedHomeDevice.MonitorInfo, 0x10, nNewValue);
 
-                //NotifyPropertyChanged("BrightnessValue");                
+                //NotifyPropertyChanged("BrightnessValue");
             }
-
 
             if (Start_ALSConfig != null && Start_ALSConfig.isSupportALS > 0)
             {
@@ -2556,6 +2798,38 @@ namespace DDPM.UI.Module.Brightness
         }
 
         public Visibility isAlsSupported { get; set; } = Visibility.Collapsed;
+
+        public Visibility IsScheduledShow
+        {
+            get
+            {
+                if (isAlsSupported.Equals(Visibility.Collapsed) || isAlsSupported.Equals(Visibility.Hidden))
+                {
+                    if (isLuminanceSupport.Equals(Visibility.Visible))
+                        return Visibility.Collapsed;
+                    else
+                        return Visibility.Visible;
+                }
+                else
+                    return Visibility.Collapsed;
+            }
+        }
+
+        public Visibility IsScheduledLuminanceShow
+        {
+            get
+            {
+                if (isAlsSupported.Equals(Visibility.Collapsed) || isAlsSupported.Equals(Visibility.Hidden))
+                {
+                    if (isLuminanceSupport.Equals(Visibility.Visible))
+                        return Visibility.Visible;
+                    else
+                        return Visibility.Collapsed;
+                }
+                else
+                    return Visibility.Collapsed;
+            }
+        }
 
         /// <summary>
         /// Set VCP command to monitor

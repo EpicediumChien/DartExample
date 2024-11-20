@@ -65,20 +65,7 @@
             </Setter.Value>
         </Setter>
     </Style>
-    <!--<Style TargetType="{x:Type UXControls:UXLink}">
-        <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate TargetType="{x:Type UXControls:UXLink}">
-                    <Border x:Name="FocusBorder" Background="Transparent">
-                        <ContentPresenter />
-                    </Border>
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
-        <Setter Property="Background" Value="{DynamicResource DefaultTheme_RbBkColor}" />
-        <Setter Property="Foreground" Value="{DynamicResource DefaultTheme_TxtColor}" />
-    </Style>-->
-    <!-- BasedOn="{StaticResource {x:Type UXControls:UXTextBox}}-->
+    <!--BasedOn to implement self-->
     <Style TargetType="UXControls:UXTextBox" BasedOn="{StaticResource {x:Type UXControls:UXTextBox}}">
         <Setter Property="Background" Value="{DynamicResource DefaultTheme_TbBkColor}" />
         <Setter Property="Foreground" Value="{DynamicResource DefaultTheme_TbFgColor}" />

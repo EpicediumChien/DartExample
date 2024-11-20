@@ -13,6 +13,7 @@
         StartRecording,
         EasyMemory,
         Error,
+        QAM
     }
 
     public enum OSDType_Device

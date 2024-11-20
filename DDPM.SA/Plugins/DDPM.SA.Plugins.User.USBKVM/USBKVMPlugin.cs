@@ -19,8 +19,8 @@ namespace DDPM.SA.Plugins.User.USBKVM
         private const string pluginName = "USBKVMPlugin";
         private const string pluginVersion = "1.0.0";
         private const string pluginDescription = "This plugin implements USBKVM Plugin.";
-        private const string publisherCompany = "Wistron";
-        private const string publisherWebsite = "https://www.wistron.com";
+        private const string publisherCompany = "Dell Inc.";
+        private const string publisherWebsite = "https://www.dell.com";
         private const string publisherSupport = "This plugin implements USBKVM Plugin.";
 
         private IAgent _agent;

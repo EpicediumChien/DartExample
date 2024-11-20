@@ -55,8 +55,8 @@ namespace VcpCore.Plugins
         private const string pluginName = "VcpCorePlugin";
         private const string pluginVersion = "1.0.0";
         private const string pluginDescription = "This plugin implements Vcp Core Plugin.";
-        private const string publisherCompany = "Wistron";
-        private const string publisherWebsite = "https://www.wistron.com";
+        private const string publisherCompany = "Dell Inc.";
+        private const string publisherWebsite = "https://www.dell.com";
         private const string publisherSupport = "This plugin implements Vcp Core Plugin.";
 
         private bool _IsAdministrator = ProcessSecurityHelperWrapper.IsCurrentProcessRunningElevated();
@@ -1975,14 +1975,6 @@ namespace VcpCore.Plugins
 
                     foreach (var MonitorInfoX in _AllInfoMonitors)
                     {
-                        if (MonitorInfoX.DDCisON)
-                        {
-                            GetVCPCapability_(MonitorInfoX, "inputsourcelist", 0);
-                            var tmp = GetInputSource(MonitorInfoX);
-                            MonitorInfoX.inputSource = tmp.Item2;
-                            MonitorInfoX.inputCable = tmp.Item1;
-                        }
-
                         MonitorInfo monitorInfo = new MonitorInfo()
                         {
                             AliasDeviceName = MonitorInfoX.AliasDeviceName,
@@ -2005,43 +1997,60 @@ namespace VcpCore.Plugins
                             scalingFactor = MonitorInfoX.scalingFactor,
                         };
                         _AllInfoMonitors_Mix.Add((MonitorInfoX, monitorInfo));
+                    }
+
+                    foreach (var Monitor in _AllInfoMonitors_Mix)
+                    {
+                        if (Monitor.Item1.DDCisON)
+                        {
+                            GetVCPCapability_(Monitor.Item1, "inputsourcelist", 0);
+                            var tmp = GetInputSource(Monitor.Item1);
+                            Monitor.Item1.inputSource = tmp.Item2;
+                            Monitor.Item1.inputCable = tmp.Item1;
+                            Monitor.Item2.inputSource = tmp.Item2;
+                            Monitor.Item2.inputCable = tmp.Item1;
+                        }
 
                         //--------------------------------------------------------------
                         _logs.DebugMsg("//----------------Show MonitorInfo------------//");
                         _logs.DebugMsg("[VcpCorePlugin] Show*** monitorInfo : ");
-                        _logs.DebugMsg("[VcpCorePlugin] Show*** AliasDeviceName : " + monitorInfo.AliasDeviceName);
-                        _logs.DebugMsg("[VcpCorePlugin] Show*** IsDellMonitor : " + monitorInfo.IsDellMonitor.ToString());
-                        _logs.DebugMsg("[VcpCorePlugin] Show*** Index : " + monitorInfo.Index.ToString());
-                        _logs.DebugMsg("[VcpCorePlugin] Show*** CapabilityString : " + monitorInfo.CapabilityString);
-                        _logs.DebugMsg("[VcpCorePlugin] Show*** DDCisON : " + monitorInfo.DDCisON.ToString());
-                        _logs.DebugMsg("[VcpCorePlugin] Show*** DisplayName : " + monitorInfo.DisplayName);
-                        _logs.DebugMsg("[VcpCorePlugin] Show*** edid : " + monitorInfo.edid.Edid);
-                        _logs.DebugMsg("[VcpCorePlugin] Show*** edid.ManufactureID : " + monitorInfo.edid.ManufactureID);
-                        _logs.DebugMsg("[VcpCorePlugin] Show*** edid.PID : " + monitorInfo.edid.PID);
-                        _logs.DebugMsg("[VcpCorePlugin] Show*** edid.VendorID : " + monitorInfo.edid.VendorID);
-                        _logs.DebugMsg("[VcpCorePlugin] Show*** edid.Year : " + monitorInfo.edid.Year.ToString());
-                        _logs.DebugMsg("[VcpCorePlugin] Show*** edid.Month : " + monitorInfo.edid.Month.ToString());
-                        _logs.DebugMsg("[VcpCorePlugin] Show*** edid.Week : " + monitorInfo.edid.Week.ToString());
-                        _logs.DebugMsg("[VcpCorePlugin] Show*** edid.ModelName : " + monitorInfo.edid.ModelName);
-                        _logs.DebugMsg("[VcpCorePlugin] Show*** edid.EdidVersion : " + monitorInfo.edid.EdidVersion);
-                        _logs.DebugMsg("[VcpCorePlugin] Show*** edid.VideoInputType : " + monitorInfo.edid.VideoInputType);
-                        _logs.DebugMsg("[VcpCorePlugin] Show*** edid.Size : " + monitorInfo.edid.Size.ToString());
-                        _logs.DebugMsg("[VcpCorePlugin] Show*** edid.ServiceTag : " + monitorInfo.edid.ServiceTag);
-                        _logs.DebugMsg("[VcpCorePlugin] Show*** edid.SerialNumber : " + monitorInfo.edid.SerialNumber);
-                        _logs.DebugMsg("[VcpCorePlugin] Show*** FwVersion : " + monitorInfo.FwVersion);
-                        _logs.DebugMsg("[VcpCorePlugin] Show*** inputSource : " + monitorInfo.inputSource);
-                        _logs.DebugMsg("[VcpCorePlugin] Show*** inputCable : " + monitorInfo.inputCable);
-                        _logs.DebugMsg("[VcpCorePlugin] Show*** modelName : " + monitorInfo.modelName);
-                        _logs.DebugMsg("[VcpCorePlugin] Show*** series : " + monitorInfo.series);
-                        _logs.DebugMsg("[VcpCorePlugin] Show*** MarketingName : " + monitorInfo.MarketingName);
-                        _logs.DebugMsg("[VcpCorePlugin] Show*** ImageFileName : " + monitorInfo.ImageFileName);
-                        _logs.DebugMsg("[VcpCorePlugin] Show*** SupplierID : " + monitorInfo.SupplierID);
-                        _logs.DebugMsg("[VcpCorePlugin] Show*** D_Ctrl : " + monitorInfo.D_Ctrl);
-                        _logs.DebugMsg("[VcpCorePlugin] Show*** scalingFactor : " + monitorInfo.scalingFactor.ToString());
+                        _logs.DebugMsg("[VcpCorePlugin] Show*** AliasDeviceName : " + Monitor.Item1.AliasDeviceName);
+                        _logs.DebugMsg("[VcpCorePlugin] Show*** IsDellMonitor : " + Monitor.Item1.IsDellMonitor.ToString());
+                        _logs.DebugMsg("[VcpCorePlugin] Show*** Index : " + Monitor.Item1.Index.ToString());
+                        _logs.DebugMsg("[VcpCorePlugin] Show*** CapabilityString : " + Monitor.Item1.CapabilityString);
+                        _logs.DebugMsg("[VcpCorePlugin] Show*** DDCisON : " + Monitor.Item1.DDCisON.ToString());
+                        _logs.DebugMsg("[VcpCorePlugin] Show*** DisplayName : " + Monitor.Item1.DisplayName);
+                        _logs.DebugMsg("[VcpCorePlugin] Show*** edid : " + Monitor.Item1.edid.Edid);
+                        _logs.DebugMsg("[VcpCorePlugin] Show*** edid.ManufactureID : " + Monitor.Item1.edid.ManufactureID);
+                        _logs.DebugMsg("[VcpCorePlugin] Show*** edid.PID : " + Monitor.Item1.edid.PID);
+                        _logs.DebugMsg("[VcpCorePlugin] Show*** edid.VendorID : " + Monitor.Item1.edid.VendorID);
+                        _logs.DebugMsg("[VcpCorePlugin] Show*** edid.Year : " + Monitor.Item1.edid.Year.ToString());
+                        _logs.DebugMsg("[VcpCorePlugin] Show*** edid.Month : " + Monitor.Item1.edid.Month.ToString());
+                        _logs.DebugMsg("[VcpCorePlugin] Show*** edid.Week : " + Monitor.Item1.edid.Week.ToString());
+                        _logs.DebugMsg("[VcpCorePlugin] Show*** edid.ModelName : " + Monitor.Item1.edid.ModelName);
+                        _logs.DebugMsg("[VcpCorePlugin] Show*** edid.EdidVersion : " + Monitor.Item1.edid.EdidVersion);
+                        _logs.DebugMsg("[VcpCorePlugin] Show*** edid.VideoInputType : " + Monitor.Item1.edid.VideoInputType);
+                        _logs.DebugMsg("[VcpCorePlugin] Show*** edid.Size : " + Monitor.Item1.edid.Size.ToString());
+                        _logs.DebugMsg("[VcpCorePlugin] Show*** edid.ServiceTag : " + Monitor.Item1.edid.ServiceTag);
+                        _logs.DebugMsg("[VcpCorePlugin] Show*** edid.SerialNumber : " + Monitor.Item1.edid.SerialNumber);
+                        _logs.DebugMsg("[VcpCorePlugin] Show*** FwVersion : " + Monitor.Item1.FwVersion);
+                        _logs.DebugMsg("[VcpCorePlugin] Show*** inputSource : " + Monitor.Item1.inputSource);
+                        _logs.DebugMsg("[VcpCorePlugin] Show*** inputCable : " + Monitor.Item1.inputCable);
+                        _logs.DebugMsg("[VcpCorePlugin] Show*** modelName : " + Monitor.Item1.modelName);
+                        _logs.DebugMsg("[VcpCorePlugin] Show*** series : " + Monitor.Item1.series);
+                        _logs.DebugMsg("[VcpCorePlugin] Show*** MarketingName : " + Monitor.Item1.MarketingName);
+                        _logs.DebugMsg("[VcpCorePlugin] Show*** ImageFileName : " + Monitor.Item1.ImageFileName);
+                        _logs.DebugMsg("[VcpCorePlugin] Show*** SupplierID : " + Monitor.Item1.SupplierID);
+                        _logs.DebugMsg("[VcpCorePlugin] Show*** D_Ctrl : " + Monitor.Item1.D_Ctrl);
+                        _logs.DebugMsg("[VcpCorePlugin] Show*** scalingFactor : " + Monitor.Item1.scalingFactor.ToString());
                         _logs.DebugMsg("//----------------Show END------------//");
                         //--------------------------------------------------------------
                     }
+
+                    Initialize2TypesMonitorInfo(false);
                 }
+
+                _Isinitializing = false;
             }
             else
             {
@@ -2055,7 +2064,7 @@ namespace VcpCore.Plugins
                         _AllInfoMonitors.Add(x);
                 }
             }
-            _Isinitializing = false;
+
             _logs.DebugMsg("[VcpCorePlugin] Initialize2TypesMonitorInfo finishi : count => " + _AllInfoMonitors_Mix.Count);
         }
 
