@@ -680,20 +680,11 @@ namespace DDPM.UI.Module.Kvm
 
                 if (mi.CapabilityDic.ContainsKey("E8"))
                 {
-                    //ret_PxP = DdpmCommonHelper.DeviceManagerSA.GetPxpMode(mi).Result;
-                    //if (ret_PxP != null && ret_PxP.result)
-                    //{
-                        if (DdpmCommonHelper.DeviceManagerSA.isScreenPartition(mi).Result)
-                        {
-                            isUSBKVMButton = false;
-                            USBKVMButtonOpacity = 0.5;
-                        }
-                        //else
-                        //{
-                        //    inputList = DdpmCommonHelper.DeviceManagerSA.GetInputSourcelist(KvmModule.SelectedHomeDevice.MonitorInfo).Result;
-                        //    subInputList = DdpmCommonHelper.DeviceManagerSA.GetSubInputList(KvmModule.SelectedHomeDevice.MonitorInfo).Result;
-                        //}
-                    //}
+                    if (DdpmCommonHelper.DeviceManagerSA.isScreenPartition(mi).Result)
+                    {
+                        isUSBKVMButton = false;
+                        USBKVMButtonOpacity = 0.5;
+                    }
                 }
             }
             bw.DoWork += DoWork_RefreshData;
@@ -872,90 +863,93 @@ namespace DDPM.UI.Module.Kvm
                     #region PIP/PIP
                     if (mi.CapabilityDic.ContainsKey("E8"))
                     {
-                        isPxP = Visibility.Visible;
-                        NoPxP = Visibility.Collapsed;
-                        //Get the Pxp Capabilities
-                        _pipPbpCaps = DdpmCommonHelper.DeviceManagerSA.GetPipPbpCapabilitiesWords(mi).Result;
-                        OnPipPbpCapsChanged();
-
-                        //Check if this monitor has Pxp mode capabilities
-                        if ((_pipPbpCaps != null) && (_pipPbpCaps.Length > 0))
+                        if (!DdpmCommonHelper.DeviceManagerSA.isScreenPartition(mi).Result)
                         {
-                            //Get current monitor's Pxp mode
-                            ObjGetVCP ret_PxP = DdpmCommonHelper.DeviceManagerSA.GetPxpMode(mi).Result;
-                            if (ret_PxP != null && ret_PxP.result)
+                            isPxP = Visibility.Visible;
+                            NoPxP = Visibility.Collapsed;
+                            //Get the Pxp Capabilities
+                            _pipPbpCaps = DdpmCommonHelper.DeviceManagerSA.GetPipPbpCapabilitiesWords(mi).Result;
+                            OnPipPbpCapsChanged();
+
+                            //Check if this monitor has Pxp mode capabilities
+                            if ((_pipPbpCaps != null) && (_pipPbpCaps.Length > 0))
                             {
-                                //UInt64 u64 = (UInt64)ret.result;
-                                _curPxpMode = Convert.ToUInt16(ret_PxP.value);
-                                PxPCode = _curPxpMode;
-                                VideoSwapContent = PxPcodeDictionary[_curPxpMode];
-                                switch (_curPxpMode)
+                                //Get current monitor's Pxp mode
+                                ObjGetVCP ret_PxP = DdpmCommonHelper.DeviceManagerSA.GetPxpMode(mi).Result;
+                                if (ret_PxP != null && ret_PxP.result)
                                 {
-                                    case 0x11:
-                                        isPipSmall = true;
-                                        isPipLarge = false;
-                                        isPBP = false;
-                                        break;
+                                    //UInt64 u64 = (UInt64)ret.result;
+                                    _curPxpMode = Convert.ToUInt16(ret_PxP.value);
+                                    PxPCode = _curPxpMode;
+                                    VideoSwapContent = PxPcodeDictionary[_curPxpMode];
+                                    switch (_curPxpMode)
+                                    {
+                                        case 0x11:
+                                            isPipSmall = true;
+                                            isPipLarge = false;
+                                            isPBP = false;
+                                            break;
 
-                                    case 0x12:
-                                        isPipSmall = true;
-                                        isPipLarge = false;
-                                        isPBP = false;
-                                        break;
+                                        case 0x12:
+                                            isPipSmall = true;
+                                            isPipLarge = false;
+                                            isPBP = false;
+                                            break;
 
-                                    case 0x24:
-                                    case 0x2F:
-                                    case 0x26:
-                                    case 0x28:
-                                    case 0x2A:
-                                    case 0x2C:
-                                    case 0x2E:
-                                    case 0x25:
-                                    case 0x27:
-                                    case 0x29:
-                                    case 0x2B:
-                                    case 0x2D:
-                                    case 0x31:
-                                    case 0x32:
-                                    case 0x33:
-                                    case 0x34:
-                                    case 0x35:
-                                    case 0x41:
-                                    case 0x42:
-                                        isPipSmall = false;
-                                        isPipLarge = false;
-                                        isPBP = true;
-                                        break;
+                                        case 0x24:
+                                        case 0x2F:
+                                        case 0x26:
+                                        case 0x28:
+                                        case 0x2A:
+                                        case 0x2C:
+                                        case 0x2E:
+                                        case 0x25:
+                                        case 0x27:
+                                        case 0x29:
+                                        case 0x2B:
+                                        case 0x2D:
+                                        case 0x31:
+                                        case 0x32:
+                                        case 0x33:
+                                        case 0x34:
+                                        case 0x35:
+                                        case 0x41:
+                                        case 0x42:
+                                            isPipSmall = false;
+                                            isPipLarge = false;
+                                            isPBP = true;
+                                            break;
 
-                                    default:
-                                        isPipSmall = false;
-                                        isPipLarge = false;
-                                        isPBP = false;
-                                        break;
+                                        default:
+                                            isPipSmall = false;
+                                            isPipLarge = false;
+                                            isPBP = false;
+                                            break;
+                                    }
                                 }
                             }
-                        }
-                        else
-                        {
-                            isUSBKVMButton = false;
-                            USBKVMButtonOpacity = 0.5;
-                        }
+                            else
+                            {
+                                isUSBKVMButton = false;
+                                USBKVMButtonOpacity = 0.5;
+                            }
 
-                        //Get current Main InputSource from MonitorInfo
-                        //
-                        string currentInput = mi.inputSource;
-                        MainInputSource = new InputSourceObj(currentInput);
+                            //Get current Main InputSource from MonitorInfo
+                            //
+                            string currentInput = mi.inputSource;
+                            MainInputSource = new InputSourceObj(currentInput);
 
-                        //Get Sub inputs
-                        //List<InputSourceObj> subInputs = DdpmCommonHelper.DeviceManagerSA.GetSubInputs(mi).Result;
+                            //Get Sub inputs
+                            //List<InputSourceObj> subInputs = DdpmCommonHelper.DeviceManagerSA.GetSubInputs(mi).Result;
 
-                        if (subInputs != null)
-                        {
-                            SubInputs = subInputs;
-                        }
-                        else
-                        {
-                            //Not support SubInput or fail to query
+                            if (subInputs != null)
+                            {
+                                SubInputs = subInputs;
+                            }
+                            else
+                            {
+                                //Not support SubInput or fail to query
+                            }
                         }
                     }
                     else
