@@ -934,9 +934,13 @@ namespace DDPM.SA.Common
         Task<bool> SetBandsGainAsync(string Guid, byte[] newValue);
 
         Task<bool> SetBand1GainAsync(string Guid, int newValue);
+
         Task<bool> SetBand2GainAsync(string Guid, int newValue);
+
         Task<bool> SetBand3GainAsync(string Guid, int newValue);
+
         Task<bool> SetBand4GainAsync(string Guid, int newValue);
+
         Task<bool> SetBand5GainAsync(string Guid, int newValue);
 
         Task<bool> SetAncModeAsync(string Guid, int newValue);

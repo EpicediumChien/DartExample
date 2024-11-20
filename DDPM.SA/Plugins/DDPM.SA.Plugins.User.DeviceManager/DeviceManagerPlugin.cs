@@ -2914,6 +2914,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
         }
 
+
         public async Task<bool> SetBand2GainAsync(string guid, int newValue)
         {
             try
@@ -2948,7 +2949,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         {
             try
             {
-                await _DTPProxyPlugin.SetAncModeAsync(guid, newValue);
+                await _DTPProxyPlugin.SetBand4GainAsync(guid, newValue);
                 writelog($"[DeviceManagerPlugin] [Headset] SetBand4GainAsync success, value is {newValue.ToString()}");
                 return true;
             }
@@ -2963,7 +2964,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         {
             try
             {
-                await _DTPProxyPlugin.SetAncModeAsync(guid, newValue);
+                await _DTPProxyPlugin.SetBand5GainAsync(guid, newValue);
                 writelog($"[DeviceManagerPlugin] [Headset] SetBand5GainAsync success, value is {newValue.ToString()}");
                 return true;
             }
