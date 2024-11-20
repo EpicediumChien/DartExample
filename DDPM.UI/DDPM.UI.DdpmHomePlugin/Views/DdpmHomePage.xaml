@@ -224,7 +224,7 @@
             -->
             <!-- Multi rows design -->
             <!-- Robert_Lin, 2024-8-5 Add handle PreviewKeyboard to eneble slecte a device with keyboard -->
-            <ListView x:Name="HomeDevicesListView"
+      <ListView x:Name="HomeDevicesListView"  StylusDown="Pairing"
                       Style="{StaticResource ListViewStyle1}"
                       Background="Transparent" BorderBrush="Transparent"
                       ItemContainerStyle="{StaticResource ListViewItemContainerStyle1}"
@@ -468,7 +468,7 @@
             </ListView>
 
             <!-- Please Wait -->
-            <Grid Background="#CC000000"
+      <Grid Background="#CC000000" 
                   Visibility="{Binding IsPleaseWaitVisible, Converter={StaticResource BoolToVisibilityConverter}}">
                 <Border Width="587" Height="265" Background="{DynamicResource SpinnerBkColor}"
                         BorderBrush="#293D4D" BorderThickness="1" CornerRadius="4"

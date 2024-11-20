@@ -174,6 +174,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.ViewModels
                 //New code, which will replace with new list
                 //List<HomeDevice> tempList = new List<HomeDevice>();
 
+                IsPandoraPaired = false;
                 foreach (DeviceInfo di in deviceInfos)
                 {
                     //Check if duplicate device is existing in list already
@@ -235,6 +236,8 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.ViewModels
                         dev.DeviceCategory = eDeviceCategory.Pen;
                         dev.SortOrder = (int)dev.DeviceCategory + idxPen;
                         idxPen++;
+                        if (di.ModelNumber == "PN5122W")
+                            IsPandoraPaired = true;
                     }
                     //0710 Jim 修改WebCamera
                     else if (devType.ToString().Contains("Webcam"))
@@ -643,6 +646,12 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.ViewModels
             EventHandler<MonitorInfo> handler = ImportNotify;
             handler?.Invoke(this, mo);
         }
+        #endregion
+
+        #region Pairing Pen
+
+        public bool IsPandoraPaired = false;
+
         #endregion
     }
 }
