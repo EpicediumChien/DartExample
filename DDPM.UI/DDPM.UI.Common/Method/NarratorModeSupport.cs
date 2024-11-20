@@ -27,18 +27,27 @@ namespace DDPM.UI.Common.Method
                 case "button":
                     Button bt = (Button)item;
                     bt.Focusable = true;
-                    bt.MouseEnter += delegate (object s, MouseEventArgs e) { ((Button)s).Focus(); };
+                    bt.MouseEnter += delegate (object s, MouseEventArgs e) 
+                    {
+                        ((Button)s).Focus();
+                    };
                     break;
                 case "textblock":
                     TextBlock tb = (TextBlock)item;
                     tb.Focusable = true;
-                    tb.MouseEnter += delegate (object s, MouseEventArgs e) { ((TextBlock)s).Focus(); };
+                    tb.MouseEnter += delegate (object s, MouseEventArgs e) 
+                    {
+                        ((TextBlock)s).Focus();
+                    };
                     break;
 
                 case "uxtextblock":
                     UXTextBlock utb = (UXTextBlock)item;
                     utb.Focusable = true;
-                    utb.MouseEnter += delegate (object s, MouseEventArgs e) { ((UXTextBlock)s).Focus(); };
+                    utb.MouseEnter += delegate (object s, MouseEventArgs e) 
+                    { 
+                        ((UXTextBlock)s).Focus();
+                    };
                     break;
 
                 case "uxtoggleswitch":
@@ -84,7 +93,7 @@ namespace DDPM.UI.Common.Method
                     break;
 
                 default:
-                    Debug.WriteLine("NarratorMode未處理類型:" + typename);
+                    Console.WriteLine("NarratorMode未處理類型:" + typename);
                     //MessageBox.Show("未處理類型:"+typename);
                     break;
 
