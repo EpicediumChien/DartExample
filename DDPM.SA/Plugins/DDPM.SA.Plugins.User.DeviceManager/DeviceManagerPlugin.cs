@@ -58,6 +58,7 @@ using VcpCore.Common;
 using Windows.System;
 using static DDPM.SA.Common.Telementry_GeneralFunction;
 using static DDPM.SA.Plugins.User.DeviceManager.DisplayDeviceHelper;
+using static VcpCore.Common.User32;
 using IDs = DDPM.SA.Common.IDs;
 
 //using MonitorProfile = DDPM.SA.Common.MonitorProfile;
@@ -696,6 +697,10 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         public event EventHandler<EAArgs> EASettingsChanged;
 
+        /// <summary>
+        /// A general event to UI from EABroker. Subagents can trigger this event with SentEANotify()
+        /// </summary>
+        public event EventHandler<EAArgs> EANotify;
         //End of EasyArrange
         ///////////////////////
 
@@ -6508,6 +6513,36 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             return Task.FromResult(false);
         }
 
+        //Robert_Lin, 2024-11-18, a general method for Subagent to send event to UI
+        /// <summary>
+        /// A general method for EABroker, to send a notification to UI. 
+        /// It will trigger EANotify event.
+        /// </summary>
+        /// <param name="args"></param>
+        /// <param name="monitorInfo"></param>
+        public Task SendEANotify(EAArgs args)
+        {
+            if (EANotify != null)
+            {
+                Task.Run(() => EANotify.Invoke(this, args));
+            }
+            return Task.CompletedTask;
+        }
+
+        /// <summary>
+        /// Return current Span across multiple monitor option is Enabled/Disabled;
+        /// Note that it's different with EzSettings.IsSpanAcrossMultiMonitors (=ON|OFF)
+        /// </summary>
+        /// <returns>True=Enabled; False=Disabled</returns>
+        public Task<bool> GetIsSpanEnabled()
+        {
+            if (_DisplayManagerPlugin != null)
+            {
+                return _DisplayManagerPlugin.GetIsSpanEnabled();
+            }
+            writelog("@ DeviceManaerPlugin.GetIsSpanEnabled(), _DisplayManagerPlugin is null.");
+            return Task.FromResult(false);
+        }
         #endregion EasyArrage
 
         #region EasyMemory

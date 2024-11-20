@@ -60,9 +60,12 @@ namespace DDPM.UI.Module.EzMemory
 
             // 這裡排編號
             //_vm.ispCtrlForEm = ISplitCtrl.Create(_vm.SelectedSplitItem.CellCount, _vm.SelectedSplitItem.SplitKey);
-            _vm.ispCtrlForEm = ISplitCtrl.Create(_vm.CurrentSelectsEAID);
+            //Robert_Lin, 2024-11-19, ISplitCtrl.Create(EAID) can only create preset layout (EAID=[1~48]
+            //_vm.ispCtrlForEm = ISplitCtrl.Create(_vm.CurrentSelectsEAID);
+            //You can use Clone() to clone a ISplitCtrl from SplitIte.ISplitCtrl
+            _vm.ispCtrlForEm = _vm.SelectedSplitItem.ISplitCtrl.Clone();
             //_vm.ispCtrlForEm = ISplitCtrl.Create(_vm.SelectedSplitItem.);
-            _vm.ispCtrlForEm!.IsEditable = true;
+            _vm.ispCtrlForEm!.IsEditable = true; //If you do need the 'pencil' icon, please set it to false
             _vm.ispCtrlForEm.SplitMode = eSplitModes.Em;
             EMsplitCtrl.Content = _vm.ispCtrlForEm.UC;
 

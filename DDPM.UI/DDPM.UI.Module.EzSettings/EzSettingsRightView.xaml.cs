@@ -1,4 +1,5 @@
-﻿using DDPM.SA.Common.Display;
+﻿using DDPM.SA.Common;
+using DDPM.SA.Common.Display;
 using DDPM.UI.Common;
 using Dell.Client.Framework.UX.WPF.Controls;
 using System.Windows.Controls;
@@ -12,8 +13,6 @@ namespace DDPM.UI.Module.EzSettings
     public partial class EzSettingsRightView : UserControl
     {
         #region Private members
-        private const string RecentHotkeyTooltipText = "Example: \"Alt + P\",\"Shift + F\",\"Ctrl + Shift + F\"";
-        private const string ApplicationWindowSnapTooltipText = "Snap any application into a split screen layout easily by dragging into a partition";
         private readonly EzSettingsViewModel _viewModel;
 
         private bool alphabetKey = false;
@@ -21,6 +20,18 @@ namespace DDPM.UI.Module.EzSettings
         private List<VirtualKey> newKeys = new List<VirtualKey>();
         private List<VirtualKey> BundleNewKeys = new List<VirtualKey>();
         #endregion Private members
+
+        #region Multilingual
+        //UI Text
+        private string Hotkey_Recent = "Hotkey: Recent";
+        private string AllowWithoutGap = "Allow app to split side by side without gap";
+        private string OnlyShiftPressed = "Only allow zone positioning when SHIFT is pressed";
+        private string SpanMultiMonitors = "Snap across multiple monitors";
+        private string AWS = "Application Window Snap";
+        //Tooltip
+        private const string RecentHotkeyTooltipText = "Example: \"Alt + P\",\"Shift + F\",\"Ctrl + Shift + F\"";
+        private const string ApplicationWindowSnapTooltipText = "Snap any application into a split screen layout easily by dragging into a partition";
+        #endregion
 
         #region ctor
         public EzSettingsRightView(EzSettingsViewModel vm)
