@@ -520,13 +520,12 @@ namespace DDPM.UI.Plugin.ViewModels
             if (!base.SetCurrentDevice(deviceID))
             { return false; }
 
-            InitializeWebcam();
-            PrepareProfileItems();
 
-            //Application.Current.Dispatcher.Invoke(() =>
-            //{
-
-            //});
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                InitializeWebcam();
+                PrepareProfileItems();
+            });
 
             OnPropertyChanged(nameof(IsMicEnumerationOn));
             OnPropertyChanged(nameof(IsMicEnumerationOnText));
@@ -1265,7 +1264,7 @@ namespace DDPM.UI.Plugin.ViewModels
 
         public Visibility PanArrowVisibility
         {
-            get => CurrentProfile.Zoom != CurrentDeviceInfo!.ZoomMin && !CurrentProfile.IsAutoFramingOn ? Visibility.Visible : Visibility.Collapsed;
+            get => CurrentProfile.Zoom != (CurrentDeviceInfo?.ZoomMin ?? 100) && !CurrentProfile.IsAutoFramingOn ? Visibility.Visible : Visibility.Collapsed;
         }
 
         public Visibility UndoVisibility
