@@ -182,9 +182,15 @@ namespace DDPM.UI.Module.WebCameraPresenceDetection
 
         ~WebCameraPresenceDetectionRightView()
         {
+            // Add to unsubscribe corresponding event if there is an event subscribe
             if (DdpmCommonHelper.DeviceManagerSA != null)
             {
                 DdpmCommonHelper.DeviceManagerSA.ITSettingsActionEvent -= DeviceManagerSA_ITSettingsActionEvent;
+                // unsubscribe webcam event
+                DdpmCommonHelper.DeviceManagerSA.Esi_IsCameraSensorCover_ChangeEvent -= OnEsi_IsCameraSensorCoverChangeHandler;
+                DdpmCommonHelper.DeviceManagerSA.WALSnoozeTimeLeftInSeconds_ChangeEvent -= OnWALSnoozeTimeLeftInSecondsChangeHandler;
+                DdpmCommonHelper.DeviceManagerSA.Esi_IsWALLockCountdownStartedChanged_ChangeEvent -= OnEsi_IsWALLockCountdownStartedChangeHandler;
+                DdpmCommonHelper.DeviceManagerSA.Esi_WALLockCountdownChanged_ChangeEvent -= OnEsi_WALLockCountdownChangeHandler;
             }
         }
         private void DeviceManagerSA_ITSettingsActionEvent(object? sender, SA.Common.ITSettingEventArgs e)
