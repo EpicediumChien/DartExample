@@ -84,6 +84,7 @@ namespace DDPM.UI.Module.DisplayProperties
 
         public void OnDeactivated()
         {
+            
         }
 
         #endregion Event Handlers

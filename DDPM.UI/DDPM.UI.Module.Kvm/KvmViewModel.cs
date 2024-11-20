@@ -1447,14 +1447,15 @@ namespace DDPM.UI.Module.Kvm
             if (!DdpmCommonHelper.DeviceManagerSA.IsNamedpipeConnected().Result)
             {
                 DdpmCommonHelper.DeviceManagerSA.CreatNewNamedpipe().Wait();
-                DdpmCommonHelper.DeviceManagerSA.CallShowNKVM(0, 100, 100).Wait();
+                //DdpmCommonHelper.DeviceManagerSA.CallShowNKVM(0, 100, 100).Wait();
+                OpenNKVMUI(0, 100, 100);
             }
             else
             {
-                DdpmCommonHelper.DeviceManagerSA.CallShowNKVM(0, 100, 100).Wait();
+                //DdpmCommonHelper.DeviceManagerSA.CallShowNKVM(0, 100, 100).Wait();
+                OpenNKVMUI(0, 100, 100);
             }
-            //OpenNKVMUI(0, 100, 100);
-            
+
             isOnNKVM(true);
         }
         private void NKVMOpenUI_Done(object sender, RunWorkerCompletedEventArgs e)

@@ -63,8 +63,8 @@ namespace DDPM.SA.Plugins.User.FWUpdate
         private const string pluginName = "FWUpdatePlugin";
         private const string pluginVersion = "1.0.0";
         private const string pluginDescription = "This plugin implements FW Update Plugin.";
-        private const string publisherCompany = "Wistron";
-        private const string publisherWebsite = "https://www.wistron.com";
+        private const string publisherCompany = "Dell Inc.";
+        private const string publisherWebsite = "https://www.dell.com";
         private const string publisherSupport = "This plugin implements FW Update Plugin.";
 
         private IAgent _agent;
@@ -1484,7 +1484,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                 }
                 if (fwUpdateInfo.DeviceType == DeviceType.LogicalDock || fwUpdateInfo.DeviceType == DeviceType.PhysicalWiredDock)
                 {
-                    arguments += $" /l=\"{logPath}\\{DateTime.Now.ToString("yyyy-MM-dd_HH_mm_ss")}\"";
+                    arguments += $" /f /l=\"{logPath}\\{DateTime.Now.ToString("yyyy-MM-dd_HH_mm_ss")}\"";
                 }
                 else
                 {

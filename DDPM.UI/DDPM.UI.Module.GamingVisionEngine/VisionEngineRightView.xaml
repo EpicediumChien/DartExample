@@ -19,21 +19,39 @@
             <Grid>
                 <Border Style="{StaticResource RightGroupBorderStyle}">
                     <StackPanel>
-                        <UXControls:UXTextBlock HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="20" Foreground="White" Text="Vision Engine" TextBlockSemanticColorType="Light" TextBlockType="Caption" />
+                        <UXControls:UXTextBlock HorizontalAlignment="Left"
+                                                VerticalAlignment="Center"
+                                                FontSize="20"
+                                                Foreground="{DynamicResource TextBlock_ForegroundColor}"
+                                                Text="Vision Engine" TextBlockSemanticColorType="Light" TextBlockType="Caption" />
                         <StackPanel Margin="15" Height="150">
                             <ItemsControl ItemsSource="{Binding VisionEngineList}" IsEnabled="{Binding VisionEngineIsEnable}" Name="listTopics" Background="Transparent" BorderThickness="0">
                                 <ItemsControl.ItemTemplate>
                                     <DataTemplate>
                                         <StackPanel>
-                                            <UXControls:UXCheckBox FontSize="14" Content="{Binding DisplayText}" IsChecked="{Binding VisionEngine_Enable}" Foreground="WhiteSmoke" Click="UXCheckBox_Click" Unchecked="UXCheckBox_Unchecked" Background="Transparent"/>
+                                            <UXControls:UXCheckBox FontSize="14"
+                                                                   Content="{Binding DisplayText}"
+                                                                   IsChecked="{Binding VisionEngine_Enable}"
+                                                                   Foreground="{DynamicResource TextBlock_ForegroundColor}"
+                                                                   Click="UXCheckBox_Click" Unchecked="UXCheckBox_Unchecked" Background="Transparent"/>
                                         </StackPanel>
                                     </DataTemplate>
                                 </ItemsControl.ItemTemplate>
                             </ItemsControl>
                         </StackPanel>
                         <Grid>
-                            <UXControls:UXTextBlock HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="20" Foreground="White" Text="Toggle Vision Engine" TextBlockSemanticColorType="Light" TextBlockType="Caption" />
-                            <UXControls:UXTextBox Width="260" Height="40" HorizontalAlignment="Right" VerticalAlignment="Center" FontSize="14" Foreground="#FFA4B8CD" Name="tbVisionEngineToggle" AcceptsReturn="True" PreviewKeyDown="tbVisionEngineToggle_PreviewKeyDown" PreviewKeyUp="tbVisionEngineToggle_PreviewKeyUp" GotFocus="tbVisionEngineToggle_GotFocus" LostFocus="tbVisionEngineToggle_LostFocus" ContextMenuOpening="tbVisionEngineToggle_ContextMenuOpening" ContextMenu="{x:Null}" Text="{Binding VisionEngineToggleKey,Mode=TwoWay}" />
+                            <UXControls:UXTextBlock HorizontalAlignment="Left"
+                                                    VerticalAlignment="Center"
+                                                    FontSize="20"
+                                                    Foreground="{DynamicResource TextBlock_ForegroundColor}"
+                                                    Text="Toggle Vision Engine" TextBlockSemanticColorType="Light" TextBlockType="Caption" />
+                            <UXControls:UXTextBox Width="200"
+                                                  Height="40"
+                                                  HorizontalAlignment="Right"
+                                                  VerticalAlignment="Center"
+                                                  FontSize="14"
+                                                  Foreground="{DynamicResource TextBlock_ForegroundColor}"
+                                                  Name="tbVisionEngineToggle" AcceptsReturn="True" PreviewKeyDown="tbVisionEngineToggle_PreviewKeyDown" PreviewKeyUp="tbVisionEngineToggle_PreviewKeyUp" GotFocus="tbVisionEngineToggle_GotFocus" LostFocus="tbVisionEngineToggle_LostFocus" ContextMenuOpening="tbVisionEngineToggle_ContextMenuOpening" ContextMenu="{x:Null}" Text="{Binding VisionEngineToggleKey,Mode=TwoWay}" />
                         </Grid>
                     </StackPanel>
                 </Border>

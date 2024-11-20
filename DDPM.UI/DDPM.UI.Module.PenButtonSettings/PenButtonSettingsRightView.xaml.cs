@@ -377,6 +377,8 @@ namespace DDPM.UI.Module.PenButtonSettings
                 }
                 else
                 {
+                    Task<bool> task1 = DdpmCommonHelper.DeviceManagerSA!.FinishKeyCapturePen();
+                    _ = task1.Result;
                     txtSearchText.Clear();
                     ShowAction();
                     return;

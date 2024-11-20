@@ -64,7 +64,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             };
             timer.Tick += Timer_Tick;
 
-            if(_console != null)
+            if (_console != null)
             {
                 _console.RegisterForEvent(ConsoleEventNames.MainWindow_Activate, MainWindowActivate);
                 _console.RegisterForEvent(ConsoleEventNames.MainWindow_DeActivate, MainWindowDeActivate);
@@ -95,10 +95,13 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                     if (e.device_peripherals.Name == _viewModel!.CurrentDeviceInfo!.Name)
                     {
                         timer.Stop();
+                        //Mouse.OverrideCursor = null;
+                        //_viewModel.CurrentCursor = Cursors.Arrow;
+                        //_viewModel.IsMicEnumerationOnEnabled = true;
+                        _viewModel.AlertVisibility = Visibility.Collapsed;
                         _console.ShowPluginById(PluginId);
                         GetPeripheralsAsync();
                         _viewModel!.SetCurrentDevice(e.device_peripherals.ID.ToString());
-                        Mouse.OverrideCursor = null;
                     }
                     return;
                 }
@@ -181,7 +184,8 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
         private void MainWindowActivate(object sender, EventManagerArgs e)
         {
             this._log?.Write(LogMsgType.Debug, "WebCamera plugin receive MainWindow Activate event");
-            if (_viewModel == null) return;
+            if (_viewModel == null)
+                return;
             _viewModel.running_state = true;
             _viewModel.mre.Set();
         }
@@ -190,7 +194,8 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
         {
             this._log?.Write(LogMsgType.Debug, "WebCamera plugin receive MainWindow DeActivate event");
 
-            if (_viewModel == null) return;
+            if (_viewModel == null)
+                return;
             _viewModel.running_state = false;
             _viewModel.mre.Set();
         }

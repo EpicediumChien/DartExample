@@ -49,7 +49,7 @@
             <Border
                 Width="366"
                 Height="135"
-                Background="#141D28"
+                Background="{DynamicResource Default_SA_OSD_Border_BkColor}"
                 BorderBrush="#0DFFFFFF"
                 BorderThickness="1.5"
                 CornerRadius="5"
@@ -61,17 +61,14 @@
                         <RowDefinition Height="*" />
                     </Grid.RowDefinitions>
 
-                    <Image
-                        x:Name="CloseIcon"
-                        Grid.Row="0"
-                        Width="16"
-                        Height="16"
-                        Margin="0,10,10,0"
-                        HorizontalAlignment="Right"
-                        VerticalAlignment="Top"
-                        MouseLeftButtonDown="close_Click"
-                        Source="./Img/Close.png"
-                        Stretch="Fill" />
+                    <!--Close-->
+                    <Canvas Grid.Row="0" Width="16" Height="16" Margin="0,10,10,0" 
+                            HorizontalAlignment="Right" VerticalAlignment="Top" 
+                            MouseLeftButtonDown="close_Click" 
+                            Tag="{DynamicResource Default_SA_OSD_PathColor}">
+                        <Path Data="M16,0.82 L15.18,0 L8,7.2 L0.82,0.05 L0,0.87 L7.15,8 L0.05,15.13 L0.87,16 L8,8.85 L15.13,16 L15.95,15.18 L8.8,8 L16,0.82 Z" 
+                            Fill="{Binding Tag, RelativeSource={RelativeSource AncestorType=Canvas}}" />
+                    </Canvas>
 
                     <Grid Grid.Row="1">
 
@@ -79,13 +76,27 @@
                             <RowDefinition Height="50*" />
                             <RowDefinition Height="50*" />
                         </Grid.RowDefinitions>
-                        <Image
-                            Grid.Row="0"
-                            Width="35"
-                            Height="35"
+                        <!--Mute-->
+                        <Canvas Grid.Row="0"
+                            Width="35" Height="35"
                             HorizontalAlignment="Center"
-                            VerticalAlignment="Top"
-                            Source="./Img/Mute.png" />
+                            VerticalAlignment="Top" 
+                            Tag="{DynamicResource Default_SA_OSD_PathColor}">
+                            <Path Data="M7.91563 20.8031H3.3875V14.2406H8.025L15.3313 6.19062L16.6 5.95V14.7L18.7875 13.1687V3.28125L14.1719 4.15625L7.0625 12.0094H1.17813V22.9469H4.875L7.91563 20.8031Z"
+                              Fill="{Binding Tag, RelativeSource={RelativeSource AncestorType=Canvas}}" />
+                            <Path Data="M16.6 29.05L15.3313 28.8094L12.0281 25.2L10.1906 26.4688L14.1938 30.8438L18.8094 31.7188V20.475L16.6219 22.0063L16.6 29.05Z"
+                              Fill="{Binding Tag, RelativeSource={RelativeSource AncestorType=Canvas}}" />
+                            <Path Data="M30.2937 5.25C28.8447 3.48991 27.088 2.00753 25.1094 0.875L24.0156 2.82187C25.6702 3.80122 27.149 5.0508 28.3906 6.51875L30.25 5.22813L30.2937 5.25Z"
+                              Fill="{Binding Tag, RelativeSource={RelativeSource AncestorType=Canvas}}" />
+                            <Path Data="M31.5188 11.8125C32.9046 15.529 32.9217 19.6175 31.5668 23.3454C30.2119 27.0733 27.5737 30.1969 24.125 32.1562L25.2406 34.1031C29.2307 31.8201 32.2596 28.1699 33.7675 23.8272C35.2754 19.4844 35.1604 14.7427 33.4438 10.4781L31.5188 11.8125Z"
+                              Fill="{Binding Tag, RelativeSource={RelativeSource AncestorType=Canvas}}" />
+                            <Path Data="M24.5625 9.1875C23.9072 8.52362 23.1725 7.94318 22.375 7.45937L21.1719 9.3625C21.683 9.69269 22.1594 10.0738 22.5938 10.5L24.5625 9.1875Z"
+                              Fill="{Binding Tag, RelativeSource={RelativeSource AncestorType=Canvas}}" />
+                            <Path Data="M27.8875 17.5C27.8939 16.5049 27.7763 15.5129 27.5375 14.5469L25.525 15.9469C25.6022 16.4612 25.6461 16.98 25.6562 17.5C25.6728 19.0978 25.294 20.6748 24.5536 22.0908C23.8132 23.5067 22.7341 24.7176 21.4125 25.6156L22.6156 27.5188C24.2545 26.4151 25.594 24.9222 26.514 23.1737C27.4341 21.4252 27.906 19.4757 27.8875 17.5Z"
+                              Fill="{Binding Tag, RelativeSource={RelativeSource AncestorType=Canvas}}" />
+                            <Path Data="M0.5 27.9563L34.2313 5.18437L35.5 7.04375L1.76875 29.8156L0.5 27.9563Z"
+                              Fill="{Binding Tag, RelativeSource={RelativeSource AncestorType=Canvas}}" />
+                        </Canvas>
                         <TextBlock
                             x:Name="ShowStringText"
                             Grid.Row="1"
@@ -94,7 +105,7 @@
                             FontFamily="Roboto"
                             FontSize="14"
                             FontWeight="Medium"
-                            Foreground="#FFFFFF"
+                            Foreground="{DynamicResource Default_SA_OSD_PathColor}"
                             Text="" />
                     </Grid>
                 </Grid>

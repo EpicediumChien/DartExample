@@ -21,7 +21,7 @@ namespace DDPM.UI.Plugin.DockPlugin
     /// </summary>
     [Plugin(PluginId, PluginName, Version = PluginVersion, Category = Category.Utility)]
     [Descriptor(Description = TileDetailText)]
-    [Publisher(Name = "DDPM DisplayPlugin", Support = "DDPM Wistron Team")]
+    [Publisher(Name = "DDPM DisplayPlugin", Support = "Wistron DDPM Team")]
     [ExcludeFromCodeCoverage]
     public class DockPlugin : IConsoleTakeoverPagePlugin, IConsolePluginSupportsActivations, IThickClientPlugin
     {
