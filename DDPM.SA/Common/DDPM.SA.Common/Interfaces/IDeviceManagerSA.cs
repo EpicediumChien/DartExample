@@ -442,7 +442,6 @@ namespace DDPM.SA.Common
         /// HDR change event，return HDR status
         /// </summary>
         event EventHandler<bool> HDRChangeEvent;
-        event EventHandler<DisplayOrientation> OSDOrientationChangeEvent;
 
         Task<DisplayPropertiesInfo> GetDisplayPropertiesInfo(MonitorInfo monitorInfos);
 
@@ -450,7 +449,7 @@ namespace DDPM.SA.Common
 
         Task<bool> SetResolutions(MonitorInfo monitorInfos, Properties properties);
 
-        Task<bool?> SetOrientation(MonitorInfo monitorInfos, DisplayOrientation orientation);
+        Task<bool> SetOrientation(MonitorInfo monitorInfos, DisplayOrientation orientation);
 
         Task<bool> CallWindowsDisplaySetting();
 
