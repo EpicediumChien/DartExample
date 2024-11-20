@@ -12,9 +12,8 @@
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="/DDPM.QAM;component/PluginStyles.xaml" />
+                <!--<ResourceDictionary Source="/DDPM.QAM;component/PluginStyles.xaml" />-->
             </ResourceDictionary.MergedDictionaries>
-            <!-- ToggleButton的样式 -->
             <Style TargetType="ToggleButton">
                 <Setter Property="Template">
                     <Setter.Value>
@@ -31,7 +30,7 @@
                                            Height="20"
                                            VerticalAlignment="Center"
                                            HorizontalAlignment="Right"
-                                           Foreground="White" />
+                                           Foreground="{DynamicResource TextBlock_ForegroundColor}" />
                                 <Border Grid.Column="2" x:Name="BackgroundBorder"
                                         Width="37"
                                         Height="17"
@@ -68,7 +67,7 @@
             </Style>
         </ResourceDictionary>
     </UserControl.Resources>
-    <Border Background="#141D28"
+    <Border Background="{DynamicResource Default_SA_QAM_Menu_BackGround}"
             Height="72"
             CornerRadius="0,0,10,10">
         <Grid Margin="10,5,10,5">
@@ -77,7 +76,7 @@
                         Orientation="Horizontal">
                 <UXControls:UXTextBlock Text="{Binding [AI_Auto_Framing], Source={x:Static lang:LangHelper.Instance}, Mode=OneWay}"
                                         FontSize="16"
-                                        Foreground="White"
+                                        Foreground="{DynamicResource TextBlock_ForegroundColor}"
                                         TextBlockSemanticColorType="Light"
                                         TextBlockType="Caption"
                                         VerticalAlignment="Center"
@@ -85,7 +84,7 @@
                 <Path Data="M8 5.05005C8.55228 5.05005 9 4.60233 9 4.05005C9 3.49776 8.55228 3.05005 8 3.05005C7.44772 3.05005 7 3.49776 7 4.05005C7 4.60233 7.44772 5.05005 8 5.05005Z
                       M8.75 6.44995H7.25V12.65H8.75V6.44995Z
                       M8 1C11.85 1 15 4.15 15 8C15 11.85 11.85 15 8 15C4.15 15 1 11.85 1 8C1 4.15 4.15 1 8 1ZM8 0C3.6 0 0 3.6 0 8C0 12.4 3.6 16 8 16C12.4 16 16 12.4 16 8C16 3.6 12.4 0 8 0Z"
-                      Fill="White"
+                      Fill="{DynamicResource Default_SA_QAM_Path_IsTrigger_Color}"
                       Margin="8"
                       VerticalAlignment="Center">
                     <Path.ToolTip>

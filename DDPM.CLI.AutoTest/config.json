@@ -146,6 +146,7 @@
             "/get -app=DeviceData",
             "/set -app=DeviceConfiguration -value=display,D:\\DDPM_CLI\\device_data.json",
             "/get -app=DiagnosticsReport",
+            "/get -app=DiagnosticsReport -value=D:\\DDPM_CLI",
             "/set -app=InAppUpdate -value=unlock",
             "/set -app=ScreenNotification -value=unlock",
             "/set -app=InAppRestoreDefaults -value=unlock"
