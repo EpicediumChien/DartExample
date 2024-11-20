@@ -755,7 +755,7 @@
                                             <UXControls:UXToggleSwitch Name="IncomingAudioToggleSwitch" FontSize="16" Content="{Binding Path=IncomingAudio_String, FallbackValue='OFF'}" IsChecked="{Binding Path=IncomingAudioStatus}" IsEnabled="{Binding Path=SupportedIncomingAudio}" Grid.Column="2" HorizontalAlignment="Right" VerticalAlignment="Center" VerticalContentAlignment="Center" AutomationProperties.Name="IncomingAudioToggleSwitch" ContentPlacement="Left" ContentTextVisibility="True" Foreground="{DynamicResource TextBlock_ForegroundColor}" Margin="0,0,20,0" IsTabStop="{Binding isMicTabStopped}"/>
                                         </Grid>
 
-                                        <Border Background="#132F54"
+                                        <Border 
                                                 Opacity="0.6" Grid.Row="1" Grid.RowSpan="2"
                                                 CornerRadius="13" 
                                                 Visibility="{Binding isMicCancelLocked}"/>
