@@ -15,7 +15,7 @@ namespace DDPM.SA.Common.Security
     public class CertificateCheck
     {
         private Logs? _logs;
-        private string[] Issuer = new string[] { "Entrust Certification Authority - L1F" };
+        //private string[] Issuer = new string[] { "Entrust Certification Authority - L1F" };
         private string[] Subject = new string[] { "content-cdn.dell.com", "*.dell.com" };
         public CertificateCheck(Logs logs)
         {
@@ -79,7 +79,7 @@ namespace DDPM.SA.Common.Security
                         return false;
                     }
                     // 讀取憑證檔案並創建 X509Certificate2 物件
-                    X509Certificate2 certificate = new X509Certificate2(CertificateFilePath);
+                    X509Certificate2 certificate = DDPMFileSecurity.LoadFileCertificate(CertificateFilePath);//new X509Certificate2(CertificateFilePath);
                     ret = certificate.Thumbprint.ToLower().Equals(Stande_Thumbprint.ToLower());
                     if(!ret)
                         Info = "Load file cert to check thumbprint and the result is not matched";
@@ -107,7 +107,7 @@ namespace DDPM.SA.Common.Security
                         return false;
                     }
                     // 讀取憑證檔案並創建 X509Certificate2 物件
-                    X509Certificate2 certificate = new X509Certificate2(CertificateFilePath);
+                    X509Certificate2 certificate = DDPMFileSecurity.LoadFileCertificate(CertificateFilePath); //new X509Certificate2(CertificateFilePath);
 
                     for (int i = 0; i < Stande_Thumbprint.Count; i++)
                     {
@@ -208,16 +208,16 @@ namespace DDPM.SA.Common.Security
             }
             return CheckCertificateExpiration(certificate) && CheckCertificateRevocation(certificate) && CheckIssuerAndSubject(certificate, chain);
         }
-        private bool PinPublicKey(object sender, X509Certificate certificate, X509Chain chain, SslPolicyErrors sslPolicyErrors)
+        private bool PinPublicKey(object sender, X509Certificate2 certificate, X509Chain chain, SslPolicyErrors sslPolicyErrors)
         {
-            X509Certificate2 certificate2 = new X509Certificate2(certificate);
+            //X509Certificate2 certificate2 = new X509Certificate2(certificate);
             if (certificate == null)
             {
                 _logs?.DebugMsg_1("[PinPublicKey] certificate null.");
                 return false;
             }
 
-            if(!CheckCertificateIsVaild(certificate2))
+            if(!CheckCertificateIsVaild(certificate))
             {
                 return false;
             }
@@ -233,7 +233,7 @@ namespace DDPM.SA.Common.Security
                 return false;
             }
             bool flag = false;
-            flag = CheckCertificateExpiration(certificate2) && CheckCertificateRevocation(certificate2) && CheckIssuerAndSubject(certificate2, chain);
+            flag = CheckCertificateExpiration(certificate) && CheckCertificateRevocation(certificate) && CheckIssuerAndSubject(certificate, chain);
             return flag;
         }
         private bool CheckHTTPAvailable(string URL)
@@ -319,13 +319,14 @@ namespace DDPM.SA.Common.Security
                         isSubjectCNMatch = true;
                     }
                 }
-                foreach (string iss in Issuer)
-                {
-                    if (ExtractCN(certificate.Issuer).Equals(iss))
-                    {
-                        isIssuerCNMatch = true;
-                    }
-                }
+                //[Dean 1119 remove Isuer check by Wendy's commit]
+                //foreach (string iss in Issuer)
+                //{
+                //    if (ExtractCN(certificate.Issuer).Equals(iss))
+                //    {
+                //        isIssuerCNMatch = true;
+                //    }
+                //}
                 var sanList = GetSubjectAlternativeNames(certificate);
                 //_logs?.DebugMsg_1("Subject Alternative Names:");
                 //_logs?.DebugMsg_1("---SAN---");
@@ -412,8 +413,9 @@ namespace DDPM.SA.Common.Security
 
             foreach (var cert1 in chain.ChainElements)
             {
-                if (cert1.Certificate.Issuer == cert1.Certificate.Subject)
-                {
+                //[Dean 1119 remove issuer check by Wendy's commit]
+                //if (cert1.Certificate.Issuer == cert1.Certificate.Subject)
+                //{
                     X509Certificate2 rootCertificate = cert1.Certificate;
                     //_logs?.DebugMsg_1($"Validate Root Certificate:  {cert1.Certificate.Issuer} {cert1.Certificate.Subject}");
 
@@ -430,7 +432,7 @@ namespace DDPM.SA.Common.Security
                             }
                         }
                     }
-                }
+                //}
             }
             // Close the store
             store.Close();

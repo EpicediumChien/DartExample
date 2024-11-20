@@ -29,7 +29,7 @@ namespace DDPM.UI.Module.DisplayProperties
             vm.Invoke_RefreshData();
         }
 
-        public string ModuleName { get => "DisplayPropertiesModule"; }
+        public string ModuleName { get => Constants.ModuleName_DisplayProperties; } //"DisplayPropertiesModule"
 
         public UserControl? GetLeftView()
         {
@@ -74,6 +74,7 @@ namespace DDPM.UI.Module.DisplayProperties
 
         public void OnActivated()
         {
+            DdpmCommonHelper.DeviceManagerSA.OSDOrientationChangeEvent += vm.OSDOrientationChang;
             Trace.WriteLine("DisplayPropertiesModule.OnActivated");
             if (isSelectChanged)
             {
@@ -84,6 +85,7 @@ namespace DDPM.UI.Module.DisplayProperties
 
         public void OnDeactivated()
         {
+            DdpmCommonHelper.DeviceManagerSA.OSDOrientationChangeEvent -= vm.OSDOrientationChang;
         }
 
         #endregion Event Handlers

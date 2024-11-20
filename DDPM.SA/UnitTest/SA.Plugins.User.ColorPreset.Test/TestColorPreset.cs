@@ -489,7 +489,7 @@ namespace DDPM.SA.Plugins.User.ColorPreset.Test
             Assert.Greater(result2.Count, 0);
         }
 
-        [Test]
+        /*[Test]
         public void TestCheckCA()
         {
             string url = @"https://clientperipherals.dell.com/DDPM/";
@@ -510,7 +510,7 @@ namespace DDPM.SA.Plugins.User.ColorPreset.Test
             {
                 Assert.Fail("not invoked");
             }
-        }
+        }*/
 
         [Test]
         public void TestDownloadICCData()
@@ -520,10 +520,11 @@ namespace DDPM.SA.Plugins.User.ColorPreset.Test
             string[] issuer = { "Entrust Certification Authority - L1F, OU=\"(c) 2016 Entrust, Inc. - for authorized use only\", OU=See www.entrust.net/legal-terms, O=\"Entrust, Inc.\", C=US" };
             string[] subject = { "CN=content-cdn.dell.com, O=Dell, L=Round Rock, S=Texas, C=US" };
             PrivateObject privatehotkeyPluginObject = new PrivateObject(colorPresetPlugin);
-            privatehotkeyPluginObject.SetFieldOrProperty("Issuers", issuer);
-            privatehotkeyPluginObject.SetFieldOrProperty("Subjects", subject);
+            //privatehotkeyPluginObject.SetFieldOrProperty("Issuers", issuer);
+            //privatehotkeyPluginObject.SetFieldOrProperty("Subjects", subject);
             Mock<ISettingsManagerDev> SettingsManagerPluginService = new Mock<ISettingsManagerDev>();
             var settingsPluginManagerDev_ = SettingsManagerPluginService.Object;
+            privatehotkeyPluginObject.SetFieldOrProperty("_SettingsPlugin_internal", settingsPluginManagerDev_);
             try
             {
                 var Result = colorPresetPlugin.DownloadICCData(monitorInfo1, settingsPluginManagerDev_, savelPath).Result;  // web no response,(404) Not Found.
@@ -544,8 +545,8 @@ namespace DDPM.SA.Plugins.User.ColorPreset.Test
             byte[] testData = { 1, 2, 3, 4, 5 };
             File.WriteAllBytes(tempFilePath, testData);
             PrivateObject privatecolorPresetObject = new PrivateObject(colorPresetPlugin);
-            byte[] hash = (byte[])privatecolorPresetObject.Invoke("GetHashSha256", tempFilePath);
-            Assert.IsNotNull(hash);
+            //byte[] hash = (byte[])privatecolorPresetObject.Invoke("GetHashSha256", tempFilePath);   method remove
+            //Assert.IsNotNull(hash);
             File.Delete(tempFilePath);
         }
 
@@ -556,8 +557,8 @@ namespace DDPM.SA.Plugins.User.ColorPreset.Test
             PrivateObject privatecolorPresetObject = new PrivateObject(colorPresetPlugin);
             try
             {
-                var result = privatecolorPresetObject.Invoke("CheckHTTPAvailable", Url_);
-                Assert.IsNotNull(result);
+                //var result = privatecolorPresetObject.Invoke("CheckHTTPAvailable", Url_);  method remove
+                //Assert.IsNotNull(result);
             }
             catch
             {

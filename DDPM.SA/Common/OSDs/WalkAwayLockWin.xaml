@@ -50,7 +50,7 @@
             <Border
                 Width="366"
                 Height="199"
-                Background="#141D28"
+                Background="{DynamicResource Default_SA_OSD_Border_BkColor}"
                 BorderBrush="#0DFFFFFF"
                 BorderThickness="1.5"
                 CornerRadius="5"
@@ -63,13 +63,19 @@
                         <RowDefinition Height="33*" />
                         <RowDefinition Height="33*" />
                     </Grid.RowDefinitions>
-                    <Image
-                        Grid.Row="0"
-                        Width="35"
-                        Height="35"
-                        HorizontalAlignment="Center"
-                        VerticalAlignment="Bottom"
-                        Source="./Img/Lock.png" />
+                    <!--Walk away lock-->
+                    <Canvas Grid.Row="0" 
+                            Width="35" Height="35"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Bottom" 
+                            Tag="{DynamicResource Default_SA_OSD_PathColor}">
+                        <!-- Path 1 (Main Shape) -->
+                        <Path Data="M26.9688 14V8.75C27.1875 3.9375 23.4688 0.21875 18.6562 0H18.2188C13.4062 0 9.46875 3.9375 9.46875 8.75V14H4.4375V35H31.3438V14H26.9688ZM12.0938 8.75C11.875 5.46875 14.5 2.84375 17.5625 2.625H18.4375C21.9375 2.625 24.5625 5.46875 24.5625 8.75V14H12.0938V8.75ZM29.1562 32.5938H7.0625V16.4062H29.1562V32.5938Z"
+                              Fill="{Binding Tag, RelativeSource={RelativeSource AncestorType=Canvas}}" />
+                        <!-- Path 2 (Cross Shape) -->
+                        <Path Data="M17.125 27.3438H19.3125V20.3438H15.375V22.5312H17.125V27.3438Z"
+                              Fill="{Binding Tag, RelativeSource={RelativeSource AncestorType=Canvas}}" />
+                    </Canvas>
                     <TextBlock
                         Grid.Row="1"
                         HorizontalAlignment="Center"
@@ -77,7 +83,7 @@
                         FontFamily="Roboto"
                         FontSize="20"
                         FontWeight="Medium"
-                        Foreground="#FFFFFF"
+                        Foreground="{DynamicResource Default_SA_OSD_PathColor}"
                         Text="{Binding [Walk_Away_Lock], Source={x:Static lang:LangHelper.Instance}, Mode=OneWay}" />
                     <TextBlock
                         x:Name="ShowStringText"
@@ -87,7 +93,7 @@
                         FontFamily="Roboto"
                         FontSize="40"
                         FontWeight="ExtraLight"
-                        Foreground="#FFFFFF"
+                        Foreground="{DynamicResource Default_SA_OSD_PathColor}"
                         Text="5" />
                 </Grid>
             </Border>

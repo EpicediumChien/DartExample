@@ -22,6 +22,7 @@ using System.Windows;
 using System.Windows.Input;
 using System.Windows.Interop;
 using Screen = System.Windows.Forms.Screen;
+using ResourceManager = Dell.Client.Framework.UX.WPF.ResourceManager.ResourceManager;
 
 namespace NGA.ThickClient
 {
@@ -61,6 +62,7 @@ namespace NGA.ThickClient
 
         private const int WM_EXITSIZEMOVE = 0x0232;
         private const int WM_QUERYENDSESSION = 0x11;
+        private readonly ResourceManager resourceManager;
 
         /// <summary>
         /// Constructor
@@ -115,6 +117,7 @@ namespace NGA.ThickClient
                 RegisterEvents(console);
             }
             _log?.Info($"{nameof(MainWindow)} - Constructed");
+            resourceManager = new ResourceManager();
             _Console = console;
         }
 
@@ -166,7 +169,7 @@ namespace NGA.ThickClient
             if (e.PropertyName == nameof(UXSystemParameters.Instance.OSTheme))
             {
                 //update dark/light mode
-                //DdpmCommonHelper.updateMergedDictionarie();
+                DdpmCommonHelper.updateMergedDictionaries(resourceManager);
             }
             if (e.PropertyName != nameof(UXSystemParameters.Instance.HighContrast))
                 return;

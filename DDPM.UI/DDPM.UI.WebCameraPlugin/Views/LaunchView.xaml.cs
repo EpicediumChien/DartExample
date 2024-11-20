@@ -86,8 +86,10 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
         private string EditingProfileName = string.Empty;
         private static PowerEventControl _pwr_Mon = null;
 
-        //每一秒偵測前後景狀態是否改變,以切換相機狀態
-        private DispatcherTimer timer_ststus;
+        public Thread status_thread = null;
+        public bool exit_status_thread = false;
+
+        enum PresenceDetectionView { InternalUPDSupport, MicrosoftHPDSupport, MicrosoftHPDNotSupport }
 
         public LaunchView()
         {
@@ -164,40 +166,76 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             Preview();
             EnableMonitorOnEvent();
 
-            timer_ststus = new DispatcherTimer();
-            timer_ststus.Tick += status_Tick;
-            timer_ststus.Interval = TimeSpan.FromMilliseconds(1);
-            timer_ststus.Start();
 
             _timer = new DispatcherTimer();
             _timer.Interval = TimeSpan.FromSeconds(3);
             _timer.Tick += Timer_Tick;
+
+            exit_status_thread = false;
+            if (status_thread == null)
+            {
+                status_thread = new Thread(() =>
+                {
+                    DateTime dt = DateTime.Now;
+                    while (_vm.mre.WaitOne())
+                    {
+
+                        if (exit_status_thread) return;
+
+                        if (!_vm.IsRecording)
+                        {
+                            Dispatcher.Invoke(new Action(() =>
+                            {
+                                status_change();
+                            }));
+                        }
+
+                        _vm.mre.Reset();
+                    }
+                });
+                _vm.mre.Reset();
+                status_thread.Start();
+            }
+
+            in_CameraPlugin = true;
         }
 
-        private void status_Tick(object? sender, EventArgs e)
+        bool WebcamGrid_old_ststus = false;
+        private void status_change()
         {
-            //每一秒檢測一下前警景與背景狀態,以及Camera狀態
+
+            if (!in_CameraPlugin) return;
+            if (_vm == null) return;
+
             if (_vm.running_state)
             {
-                if (_vm!.MediaCapture == null)
+                if (_vm!.MediaCapture == null || _vm.MediaFrameReader == null)
                 {
                     _ = CameraImage.Dispatcher.BeginInvoke(() =>
                     {
                         imgDevice.Visibility = Visibility.Hidden;
                         Preview();
                         CameraImage.Visibility = Visibility.Visible;
+
+                        //恢復9宮格線
+                        _vm.WebcamGrid = WebcamGrid_old_ststus;
+
+
                     });
 
                 }
             }
             else
             {
-                if (_vm!.MediaCapture != null)
+                if (_vm!.MediaCapture != null || _vm.MediaFrameReader != null)
                 {
-                    _ = CameraImage.Dispatcher.BeginInvoke(() =>
+                    _ = CameraImage.Dispatcher.BeginInvoke(async () =>
                     {
                         CameraImage.Visibility = Visibility.Hidden;
-                        _ = CleanupMediaCaptureAsync();
+                        _= CleanupMediaCaptureAsync();
+
+                        WebcamGrid_old_ststus = _vm.WebcamGrid;
+                        _vm.WebcamGrid = false;
 
                         imgDevice.Visibility = Visibility.Visible;
                         DoubleAnimation visibilityAnimation = new()
@@ -350,14 +388,14 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                     return;
                 }
 
-                /*DoubleAnimation visibilityAnimation = new()
+                DoubleAnimation visibilityAnimation = new()
                 {
                     From = 1,
                     To = 0,
                     Duration = new Duration(TimeSpan.FromSeconds(0.3))
                 };
                 visibilityAnimation.Completed += ShowGrid;
-                imgDevice.BeginAnimation(OpacityProperty, visibilityAnimation);*/
+                imgDevice.BeginAnimation(OpacityProperty, visibilityAnimation);
 
                 writeableBitmap = new(
                     (int)mediaFrameSource.CurrentFormat.VideoFormat.Width,
@@ -419,13 +457,23 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             }));
         }
 
+        bool in_CameraPlugin = true;
         private async void LaunchView_Unloaded(object sender, RoutedEventArgs e)
         {
+
+            in_CameraPlugin = false;
+            exit_status_thread = true;
+            _vm?.mre.Set();
+
             if (DdpmCommonHelper.DeviceManagerSA != null)
             {
                 DdpmCommonHelper.DeviceManagerSA.ITSettingsActionEvent -= DeviceManagerSA_ITSettingsActionEvent;
             }
-            _vm!.MediaFrameReader.FrameArrived -= MediaFrameReader_FrameArrived;
+            try
+            {
+                _vm!.MediaFrameReader!.FrameArrived -= MediaFrameReader_FrameArrived;
+            }
+            catch{ }
             _vm.ProfilePropertyChanged -= ProfilePropertyChanged;
             _vm.WebcamSettingChanged -= WebcamSettingChanged;
             try
@@ -473,9 +521,10 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
 
             if (_vm!.Model == "WB7022" || _vm.Model == "P2424HEB" || _vm.Model == "P2724DEB" || _vm.Model == "P3424WEB" || _vm.Model == "U3223QZ" || _vm.Model == "U3224KB" || _vm.Model == "U3224KBA")
             {
-                bool blRet = true;
+                //bool blRet = true;
 
-                blRet = CheckPresenceDetection_UI();
+                //blRet = CheckPresenceDetection_UI();
+                GetPresenceDetectionView();
 
                 moduleGroup = new ModuleGroup()
                 {
@@ -785,8 +834,6 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
         {
             _vm!.IsRecording = true;
 
-            //關閉前後景處理機制
-            timer_ststus.Stop();
 
             if (_vm!.WebcamCountdown)
             {
@@ -798,15 +845,13 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             }
             else
                 StartRecordingAsync().RunSynchronously();
-            
+
         }
 
         private void StopRecord()
         {
             _ = StopRecordingAsync();
 
-            //開啟前後景處理機制
-            timer_ststus.Start();
         }
         private void Timer_Tick(object? sender, EventArgs e)
         {
@@ -1331,6 +1376,35 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             _vm.TooltipVisibility = Visibility.Collapsed;
         }
 
+        //Derek 1115 for Webcam PIMS 319099 and 319086
+        private PresenceDetectionView GetPresenceDetectionView()
+        {
+            if (_vm!.CurrentDeviceInfo!.IsESISupported)
+            {
+                _vm.UPD_Visibility = Visibility.Visible;
+                _vm.MPS_Setting_Visibility = Visibility.Collapsed;
+                _vm.MPS_UpdateFW_Visibility = Visibility.Collapsed;
+
+                return PresenceDetectionView.InternalUPDSupport;
+            }
+            else if (_vm!.CurrentDeviceInfo!.IsWindowsHelloSupported)
+            {
+                _vm.UPD_Visibility = Visibility.Collapsed;
+                _vm.MPS_Setting_Visibility = Visibility.Visible;
+                _vm.MPS_UpdateFW_Visibility = Visibility.Collapsed;
+
+                return PresenceDetectionView.MicrosoftHPDSupport;
+            }
+            else
+            {
+                _vm.UPD_Visibility = Visibility.Collapsed;
+                _vm.MPS_Setting_Visibility = Visibility.Collapsed;
+                _vm.MPS_UpdateFW_Visibility = Visibility.Visible;
+
+                return PresenceDetectionView.MicrosoftHPDNotSupport;
+            }
+        }
+
         private bool CheckPresenceDetection_UI()
         {
             bool blWebcamFW_UPD = false;
@@ -1459,6 +1533,11 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
         private void RightFrame_SizeChanged(object sender, SizeChangedEventArgs e)
         {
             ChangeDevNameWidth();
+        }
+
+        private void txtSearchText_PreviewTextInput(object sender, TextCompositionEventArgs e)
+        {
+            e.Handled = !_vm!.CheckChar(e.Text);
         }
     }
 }

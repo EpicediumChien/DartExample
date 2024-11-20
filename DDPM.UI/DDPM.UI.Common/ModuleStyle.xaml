@@ -1,60 +1,210 @@
 ﻿<ResourceDictionary
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="clr-namespace:DDPM.UI.Common"
     xmlns:UXControls="clr-namespace:Dell.Client.Framework.UX.WPF.Controls;assembly=DCF.UX.WPF"
     xmlns:sys="clr-namespace:System;assembly=mscorlib">
 
-    <!-- Add reference to this ResourceDictionary
-    Add below to your xaml file, For example, in your UserControl xaml:
-    <UserControl.Resources>
-    <ResourceDictionary>
-    <ResourceDictionary.MergedDictionaries>
-     <ResourceDictionary Source="/DDPM.UI.Common;component/ModuleStyle.xaml" />
-    </ResourceDictionary.MergedDictionaries>
+    <!-- #region Control Element Default Styles-->
+    <SolidColorBrush x:Key="DefaultTheme_TxtColor" Color="#FFFFFF" />
+    <SolidColorBrush x:Key="DefaultTheme_BdBkColor" Color="#99194784" />
+    <SolidColorBrush x:Key="DefaultTheme_BdBdColor" Color="#132F54" />
+    <SolidColorBrush x:Key="DefaultTheme_RbBkColor" Color="#800A0E14" />
+    <SolidColorBrush x:Key="DefaultTheme_RbBdColor" Color="#7E7E7E" />
+    <SolidColorBrush x:Key="DefaultTheme_BtFgColor" Color="#FFF5F6F7" />
+    <SolidColorBrush x:Key="DefaultTheme_BtBkColor" Color="#FF0E1C2F" />
+    <SolidColorBrush x:Key="DefaultTheme_BtBdColor" Color="#FFFFFFFF" />
+    <SolidColorBrush x:Key="DefaultTheme_TbBkColor" Color="#141D28" />
+    <SolidColorBrush x:Key="DefaultTheme_TbFgColor" Color="#FFFFFFFF" />
+    <SolidColorBrush x:Key="DefaultTheme_TbBdColor" Color="#7E7E7E" />
+    <SolidColorBrush x:Key="DefaultTheme_PathColor" Color="#FFFFFF" />
+    <SolidColorBrush x:Key="DefaultTheme_ComboBkColor" Color="#293B4D" />
+    <SolidColorBrush x:Key="DefaultTheme_ComboBdColor" Color="#40586D" />
+    <SolidColorBrush x:Key="DefaultTheme_USBKVMComboBkColor" Color="#204A8299" />
+    <SolidColorBrush x:Key="DefaultTheme_USBKVMComboBdColor" Color="#1B385F" />
+    <SolidColorBrush x:Key="DefaultTheme_HyperlinkHoverColor" Color="#31A2E3" />
+    <SolidColorBrush x:Key="DefaultTheme_PbHeaderColor" Color="#DAF5FD" />
+    <SolidColorBrush x:Key="DefaultTheme_USBKVMPCColor" Color="#A4B8CD" />
+    <SolidColorBrush x:Key="DefaultTheme_USBKVMPCGridBkColor" Color="#19345799" />
+    <SolidColorBrush x:Key="DefaultTheme_GridBkColor" Color="#132F5499" />
+    <SolidColorBrush x:Key="DefaultTheme_SetupScanBkColor" Color="#193457" />
+    <SolidColorBrush x:Key="DefaultTheme_SetupScanBdColor" Color="#FFFFFF" />
+    <SolidColorBrush x:Key="DefaultTheme_SetupSelectBdColor" Color="#1B385F" />
+    <SolidColorBrush x:Key="DefaultTheme_ListBoxBkColor" Color="#80141D27" />
+    <Style TargetType="UXControls:UXTextBlock"
+           BasedOn="{StaticResource {x:Type UXControls:UXTextBlock}}">
+        <Setter Property="Foreground" Value="{DynamicResource DefaultTheme_TxtColor}" />
+        <Setter Property="Background" Value="{DynamicResource FakeTransparent}" />
+    </Style>
+    <!--<Style TargetType="TextBlock">
+        <Setter Property="Foreground" Value="{DynamicResource DefaultTheme_TxtColor}" />
+    </Style>-->
+    <Style TargetType="Border">
+        <Setter Property="Background" Value="{DynamicResource DefaultTheme_BdBkColor}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource DefaultTheme_BdBdColor}" />
+    </Style>
+    <Style TargetType="{x:Type UXControls:UXFrame}">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type UXControls:UXFrame}">
+                    <Border x:Name="FirstLayerBorder" Background="Transparent">
+                        <ContentPresenter />
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    <Style TargetType="{x:Type UXControls:UXRadioButton}"  BasedOn="{StaticResource {x:Type UXControls:UXRadioButton}}">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type UXControls:UXRadioButton}">
+                    <Border x:Name="FocusBorder" Background="Transparent">
+                        <ContentPresenter />
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    <!--BasedOn to implement self-->
+    <Style TargetType="UXControls:UXTextBox" BasedOn="{StaticResource {x:Type UXControls:UXTextBox}}">
+        <Setter Property="Background" Value="{DynamicResource DefaultTheme_TbBkColor}" />
+        <Setter Property="Foreground" Value="{DynamicResource DefaultTheme_TbFgColor}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource DefaultTheme_TbBdColor}" />
+    </Style>
+    <Style TargetType="Path">
+        <Setter Property="Fill" Value="{DynamicResource DefaultTheme_PathColor}" />
+    </Style>
+    <Style TargetType="ComboBox">
+        <Setter Property="Background" Value="{DynamicResource DefaultTheme_ComboBkColor}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource DefaultTheme_ComboBdColor}" />
+        <Setter Property="BorderThickness" Value="1px" />
+    </Style>
+    <Style TargetType="Hyperlink">
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Foreground" Value="{DynamicResource DefaultTheme_HyperlinkHoverColor}" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+    <Style TargetType="ListBox">
+        <Setter Property="Background" Value="{DynamicResource DefaultTheme_ListBoxBkColor}" />
+    </Style>
+    <!-- The System Default FocusVisual for Controls, It will draw a dash-line around the control when the control get keyboard focus.-->
+    <Style x:Key="FocusVisual">
+        <Setter Property="Control.Template">
+            <Setter.Value>
+                <ControlTemplate>
+                    <Rectangle Margin="2" StrokeDashArray="1 2" Stroke="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}" SnapsToDevicePixels="true" StrokeThickness="1"/>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    <SolidColorBrush x:Key="GroupBorderColor" Color="#99132F54" />
+    <SolidColorBrush x:Key="PartBorderColor" Color="#132F54" />
+    <SolidColorBrush x:Key="Border_Btn_txt" Color="#132F54" />
+    <SolidColorBrush x:Key="CheckBox_Brush" Color="#7E7E7E" />
+    <Style x:Key="GroupBorderStyle" TargetType="Border">
+        <Setter Property="CornerRadius" Value="6" />
+        <Setter Property="Padding" Value="16,16,16,0" />
+        <Setter Property="Background" Value="{DynamicResource GroupBorderColor}" />
+    </Style>
+    <Style x:Key="PartBorderStyle"
+         TargetType="Border">
+        <Setter Property="CornerRadius" Value="6" />
+        <Setter Property="Padding" Value="16" />
+        <Setter Property="Background" Value="{DynamicResource PartBorderColor}" />
+    </Style>
+    <Style x:Key="Border_Btn" TargetType="Border">
+        <Setter Property="Background" Value="{DynamicResource PartBorderColor}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource Border_Btn_txt}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="Width" Value="206" />
+        <Setter Property="Height" Value="43" />
+    </Style>
+    <Style x:Key="UXControls:UXCheckBox"
+         TargetType="UXControls:UXCheckBox">
+        <Setter Property="Background" Value="{DynamicResource DefaultTheme_RbBkColor}" />
+        <Setter Property="Foreground" Value="{DynamicResource DefaultTheme_TxtColor}" />
+    </Style>
+    <SolidColorBrush x:Key="BorderBrushColor" Color="#132F54" />
+    <SolidColorBrush x:Key="Button_UXStyleColor"  Color="#0672CB" />
+    <SolidColorBrush x:Key="Button_UXStyleTxtColor" Color="#F5F6F7" />
+    <SolidColorBrush x:Key="Button_UXStyleColor_ForWhiteFrame" Color="#F5F6F7" />
+    <Style x:Key="Buttom_BlueFrame" TargetType="Button">
+        <Setter Property="Background" Value="{DynamicResource Button_UXStyleColor}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource Button_UXStyleColor}" />
+        <Setter Property="Foreground" Value="{DynamicResource Button_UXStyleTxtColor}" />
+        <Setter Property="BorderThickness"  Value="1" />
+    </Style>
+    <Style  x:Key="UXButton_WhiteFrame" TargetType="UXControls:UXButton">
+        <Setter Property="Foreground" Value="{DynamicResource Button_UXStyleColor_ForWhiteFrame}" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border CornerRadius="2" Background="#00FFFFFF"
+                            BorderBrush="{DynamicResource Button_UXStyleColor_ForWhiteFrame}"
+                            BorderThickness="1" Padding="29.5, 8">
+                        <!-- Set your desired corner radius here -->
+                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    <!-- #endregion -->
 
-    . . . your other resources...
-</ResourceDictionary>
-</UserControl.Resources>
-
--->
-    <ImageBrush x:Key="bkImage" ImageSource="/DDPM;component/Resources/Images/Background.png" Stretch="UniformToFill" />
+    <!-- #region Main Background-->
     <SolidColorBrush x:Key="mainWindowBkColor" Color="#F20D121A" />
+    <ImageBrush x:Key="bkImage" ImageSource="/DDPM;component/Resources/Images/Background.png" Stretch="UniformToFill" />
+    <SolidColorBrush x:Key="SpinnerBkColor" Color="#F20D121A" />
+    <SolidColorBrush x:Key="SpinnerWaitTxtColor" Color="#F5F6F7" />
+    <!-- #endregion -->
+
+    <!-- #region PathIcon-->
+    <SolidColorBrush x:Key="PathIcon_Color" Color="#FFFFFF" />
+    <SolidColorBrush x:Key="MouseHover_BkColor" Color="#33444E" />
+    <SolidColorBrush x:Key="Window_FgColor" Color="#FFFFFF" />
+    <!-- #endregion -->
+
+    <!-- #region HomePage Color-->
+    <SolidColorBrush x:Key="HomePageFeature_TxtColor" Color="#FF97DCF4" />
+    <SolidColorBrush x:Key="HomePageKeyFeature_TxtColor" Color="#FFFFFF" />
+    <SolidColorBrush x:Key="HomePageButton_BkColor" Color="#0672CB" />
+    <SolidColorBrush x:Key="HomePageButton_TxtColor" Color="#F5F6F7" />
+
+    <!-- #endregion-->
+
+    <!-- #region batteryIndicator -->
     <SolidColorBrush x:Key="BatteryIndicator_BkColor" Color="#99193457" />
-    <SolidColorBrush x:Key="TextBlock_ForegroundColor" Color="White" />
-    <!-- batteryIndicator.xaml -->
-    <BitmapImage x:Key="ConnectionTypeImageKey" UriSource="/DDPM.UI.Common;component/Resources/Port.png"/>
-    <!-- DeviceBasePage.xaml -->
+    <SolidColorBrush x:Key="TextBlock_ForegroundColor" Color="#FFFFFF" />
+    <!-- #endregion -->
+
+    <!-- #region DeviceBasePage -->
+    <SolidColorBrush x:Key="DisplayName_FgColor" Color="#FFFFFF" />
+    <BitmapImage x:Key="ConnectionTypeImageKey" UriSource="pack://application:,,,/DDPM.UI.Common;component/Resources/Port.png"/>
+    <!-- #endregion -->
+
+    <!-- #region DisplayLeftView -->
+    <SolidColorBrush x:Key="retoreToDefault_BdColor" Color="#FFF5F6F7" />
+    <SolidColorBrush x:Key="retoreToDefault_TextColor" Color="#FFF5F6F7" />
+    <!--#endregion-->
+
+    <!-- #region BarItem Styles -->
+    <BitmapImage x:Key="Arrow_Left" UriSource="pack://application:,,,/DDPM.UI.Resources;component/Resources/Images/arrow-left.png" />
+    <!-- #endregion -->
+
     <!-- Common -->
     <!-- FakeTransparent: When you need a transparent color and need can response mouse click -->
     <Color x:Key="Color_FakeTransparent">#02000000</Color>
     <SolidColorBrush x:Key="FakeTransparent" Color="{StaticResource Color_FakeTransparent}" />
+    <SolidColorBrush x:Key="Transparent" Color="{StaticResource Color_FakeTransparent}" />
 
-    <!--  Tooltip  -->
-    <!-- Tooltip example
-
-    <ToolTip>
-    <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
-    <Border.Resources>
-    <Style TargetType="TextBlock" BasedOn="{StaticResource Tooltip_TextBlockStyle}" />
-    </Border.Resources>
-
-    <StackPanel>
-    <StackPanel Orientation="Horizontal">
-    <TextBlock Text="Firmware Version " />
-    <TextBlock Text="{Binding SelectedHomeDevice.FwVer}" />
-    </StackPanel>
-    <StackPanel Orientation="Horizontal">
-    <TextBlock Text="Service Tag " />
-    <TextBlock Text="{Binding SelectedHomeDevice.ServiceTag}" />
-    </StackPanel>
-    </StackPanel>
-    </Border>
-    </ToolTip>
-
-    -->
+    <!-- #region Tooltip Styles-->
+    <!-- Robert_Lin, 2024-10-25 below 3 brishes will be changed by Theme -->
     <SolidColorBrush x:Key="Tooltip_BkColor" Color="#FF1D2C3B" />
     <SolidColorBrush x:Key="Tooltip_BdColor" Color="#FF293B4D" />
     <SolidColorBrush x:Key="Tooltip_TextColor" Color="#FFF5F6F7" />
+
     <sys:Double x:Key="Tooltip_FontSize">12</sys:Double>
     <Thickness x:Key="Tooltip_BdThick">1</Thickness>
     <CornerRadius x:Key="Tooltip_Radius">4</CornerRadius>
@@ -63,8 +213,8 @@
     <Thickness x:Key="Tooltip_Padding">12,8</Thickness>
 
     <Style x:Key="Tooltip_OutterBorderStyle" TargetType="Border">
-        <Setter Property="Background" Value="{StaticResource Tooltip_BkColor}" />
-        <Setter Property="BorderBrush" Value="{StaticResource Tooltip_BdColor}" />
+        <Setter Property="Background" Value="{DynamicResource Tooltip_BkColor}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource Tooltip_BdColor}" />
         <Setter Property="BorderThickness" Value="{StaticResource Tooltip_BdThick}" />
         <Setter Property="CornerRadius" Value="{StaticResource Tooltip_Radius}" />
         <Setter Property="Padding" Value="{StaticResource Tooltip_Padding}" />
@@ -78,43 +228,49 @@
 
     <Style x:Key="Tooltip_TextBlockStyle" TargetType="TextBlock">
         <Setter Property="FontFamily" Value="Roboto"/>
-        <Setter Property="Foreground" Value="{StaticResource Tooltip_TextColor}" />
+        <Setter Property="Foreground" Value="{DynamicResource Tooltip_TextColor}" />
         <Setter Property="FontSize" Value="{StaticResource Tooltip_FontSize}" />
         <Setter Property="LineStackingStrategy" Value="BlockLineHeight"/>
         <Setter Property="LineHeight" Value="20"/>
         <Setter Property="Margin" Value="0,4" />
         <Setter Property="VerticalAlignment" Value="Center" />
     </Style>
+    <!-- #endregion -->
 
     <!--  ExpanderHeader  -->
     <sys:Double x:Key="ExpanderHeader_FontSize">20</sys:Double>
     <SolidColorBrush x:Key="ExpanderHeader_TextColor" Color="White" />
 
-    <!-- RightView.Content Container Background Color
-
-    <SolidColorBrush x:Key="RightViewContainerBkColor" Color="#9C193457" />
-    -->
-    <SolidColorBrush x:Key="RightViewContainerBkColor" Color="#9C193457" />
+    <!-- #region RightView.Content Container Background Color -->
+    <SolidColorBrush x:Key="RightViewContainerBkColor" Color="#99194784" />
     <SolidColorBrush x:Key="GroupExpanderHeaderBottomLineColor" Color="#FF1E3F6C" />
-    <SolidColorBrush x:Key="RightGroupBkColor" Color="#99193457" />
-    <SolidColorBrush x:Key="RightPartBkColor" Color="#99193457" />
-    <SolidColorBrush x:Key="RightPartBdColor" Color="#FF1B385F" />
+    <SolidColorBrush x:Key="RightView_Option_BkColor" Color="#FF1E3F6C" />
+    <SolidColorBrush x:Key="RightView_Option_BdColor" Color="#FF1E3F6C" />
+    <SolidColorBrush x:Key="RightGroupBkColor" Color="#99194784" />
+    <SolidColorBrush x:Key="RightView_Group_BkColor" Color="#99194784" />
+    <SolidColorBrush x:Key="RightView_Group_BdColor" Color="#FF1B385F" />
+    <SolidColorBrush x:Key="RightView_Combo_TxtColor" Color="#F5F6F7" />
+    <SolidColorBrush x:Key="RightView_Combo_BkColor" Color="#293B4D" />
+    <SolidColorBrush x:Key="RightView_Combo_BdColor" Color="#40586D" />
+    <SolidColorBrush x:Key="RightBaseBkColor" Color="#99193457" />
 
-    <SolidColorBrush x:Key="PercentageTextColor" Color="#FFA4B8CD" />
+    <SolidColorBrush x:Key="RightView_PercentageTextColor" Color="#A4B8CD" />
+    <SolidColorBrush x:Key="PercentageTextColor" Color="#A4B8CD" />
 
     <Style x:Key="RightGroupBorderStyle" TargetType="Border">
-        <Setter Property="CornerRadius" Value="6" />
+        <Setter Property="CornerRadius" Value="4,0,0,4" />
         <Setter Property="Padding" Value="16,16,16,0" />
-        <Setter Property="Background" Value="{StaticResource RightGroupBkColor}" />
+        <Setter Property="Background" Value="{DynamicResource RightGroupBkColor}" />
     </Style>
 
     <Style x:Key="RightPartBorderStyle" TargetType="Border">
         <Setter Property="CornerRadius" Value="6" />
         <Setter Property="Padding" Value="16" />
-        <Setter Property="Background" Value="{StaticResource RightPartBkColor}" />
-        <Setter Property="BorderBrush" Value="{StaticResource RightPartBdColor}" />
+        <Setter Property="Background" Value="{DynamicResource RightView_Group_BkColor}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource RightView_Group_BdColor}" />
         <Setter Property="BorderThickness" Value="2" />
     </Style>
+    <!-- #endregion -->
 
     <!--
     Expander template for Group header
@@ -143,7 +299,7 @@
                 <ControlTemplate TargetType="ToggleButton">
                     <Border
                         Padding="{TemplateBinding Padding}"
-                        BorderBrush="{StaticResource GroupExpanderHeaderBottomLineColor}"
+                        Background="{DynamicResource FakeTransparent}"
                         BorderThickness="0,0,0,1">
                         <Grid Background="Transparent" SnapsToDevicePixels="False">
                             <Grid.ColumnDefinitions>
@@ -156,7 +312,13 @@
                                 Grid.Column="0"
                                 HorizontalAlignment="Left"
                                 VerticalAlignment="Center"
-                                IsChecked="{Binding IsChecked, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}" />
+                                IsChecked="{Binding IsChecked, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}">
+                                <UXControls:UXRadioButton.Resources>
+                                    <Style TargetType="Border">
+                                        <Setter Property="Background" Value="Transparent" />
+                                    </Style>
+                                </UXControls:UXRadioButton.Resources>
+                            </UXControls:UXRadioButton>
 
                             <ContentPresenter
                                 Grid.Column="0"
@@ -227,11 +389,6 @@
 
     <!--
     UXComboBox
-    <UXControls:UXComboBox  Background="{StaticResource UXComboBoxBackground}"
-    BorderBrush="{StaticResource UXComboBoxBorderBrush}"
-    BorderThickness="{StaticResource UXComboBoxBorderThickness}"
-    Foreground="{StaticResource UXComboBoxForeground}"
-    . . .
     -->
     <SolidColorBrush x:Key="UXComboBox_Background" Color="#FF293B4D" />
     <SolidColorBrush x:Key="UXComboBox_BorderBrush" Color="#FF40586D" />
@@ -243,19 +400,21 @@
         Right="1"
         Top="1" />
 
-    <!--  **************** DdpmComboBoxStyle: Custom WPF ComboBox  ****************  -->
+    <!-- #region **************** DdpmComboBoxStyle: Custom WPF ComboBox  ****************  -->
 
     <!--  Resources of DdpmComboBox  -->
     <!--  DdomCB_BdColor=(64,88,109,1) : the BorderBrush of the ComboBox ToggleButton part.  -->
     <SolidColorBrush x:Key="DdpmCB_BdColor" Color="#FF40586D" />
+    <!--  DdomCB_BdColor=(35,45,54,255) : the ComboBox Border Background Color.  -->
+    <SolidColorBrush x:Key="DdpmCB_BdBkColor" Color="#FF232D36" />
     <!--  DdpmCD_BkColor=(41,59,77,1): The background color of the DdpmComboBox  -->
     <SolidColorBrush x:Key="DdpmCB_BkColor" Color="#FF2F3B4D" />
-    <!--  DdpmCB_TextColor=(255,255,255,1): The normal item text color of Text in Dropdown list  -->
-    <SolidColorBrush x:Key="DdpmCB_TextColor" Color="White" />
-    <!--  DdpmCB_HiTextColor=(49,162,227,1): The highlight item color of Text in Dropdown list  -->
-    <SolidColorBrush x:Key="DdpmCB_HiTextColor" Color="#FFFF6C6C" />
+    <!--  DdpmCB_FgColor=(255,255,255,1): The foreground color of the DdpmComboBox  -->
+    <SolidColorBrush x:Key="DdpmCB_FgColor" Color="#FFFFFF" />
     <!--  DdpmCB_SelTextColor=(49,162,227,1): The selected item color of Text in Dropdown list  -->
     <SolidColorBrush x:Key="DdpmCB_SelTextColor" Color="#FF31A2E3" />
+    <!--  DdpmCB_HoverItemBkColor=(49,162,227,1): The selected item color of Text in Dropdown list  -->
+    <SolidColorBrush x:Key="DdpmCB_HoverItemBkColor" Color="#FF232D36" />
 
     <!--  ToogleButton PART of DdpmComboBox  -->
     <!--
@@ -264,7 +423,9 @@
     [3] When mouse over on the toggle button, hi light the button background color.
     -->
     <ControlTemplate x:Key="DdpmComboBoxToggleButtonTemplate" TargetType="ToggleButton">
-        <Grid x:Name="toggleBtnRoot" Background="#19000000">
+        <!--<Grid x:Name="toggleBtnRoot" Background="#19000000">-->
+
+        <Grid x:Name="toggleBtnRoot" Background="#01000000">
 
             <!--  [1]  -->
             <Viewbox
@@ -278,8 +439,7 @@
                 <Grid Width="20" Height="20">
                     <Path
                         Name="Arrow"
-                        Data="M1,0 L0,1 L10,11 L20,1 L19,0 L10,9 z"
-                        Fill="White" />
+                        Data="M1,0 L0,1 L10,11 L20,1 L19,0 L10,9 z" />
                 </Grid>
             </Viewbox>
         </Grid>
@@ -312,7 +472,7 @@
     -->
     <Style x:Key="DdpmComboBoxItemContainerStyle" TargetType="{x:Type ComboBoxItem}">
         <Setter Property="SnapsToDevicePixels" Value="true" />
-        <Setter Property="Foreground" Value="White" />
+        <!--<Setter Property="Foreground" Value="{DynamicResource DdpmCB_FgColor}" />-->
         <Setter Property="OverridesDefaultStyle" Value="true" />
         <Setter Property="Template">
             <Setter.Value>
@@ -326,17 +486,15 @@
                     </Border>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsHighlighted" Value="true">
-                            <!-- -->
-                            <Setter TargetName="Border" Property="Background" Value="#FF232D36" />
+                            <!--<Setter TargetName="Border" Property="Background" Value="{DynamicResource DdpmCB_BdBgColor}" />-->
+                            <Setter TargetName="Border" Property="Background" Value="{DynamicResource DdpmCB_HoverItemBkColor}" />
 
-                            <!--
-                            <Setter Property="Foreground" Value="{StaticResource DdpmCB_HiTextColor}" /> -->
                         </Trigger>
                         <Trigger Property="IsEnabled" Value="false">
                             <Setter Property="Foreground" Value="#888888" />
                         </Trigger>
                         <Trigger Property="IsSelected" Value="True">
-                            <Setter Property="Foreground" Value="{StaticResource DdpmCB_SelTextColor}" />
+                            <Setter Property="Foreground" Value="{DynamicResource DdpmCB_SelTextColor}" />
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
@@ -375,8 +533,8 @@
                 <Border
                     Name="dropDownBorder"
                     Margin="0,0,0,0"
-                    Background="{StaticResource DdpmCB_BkColor}"
-                    BorderBrush="{StaticResource DdpmCB_BdColor}"
+                    Background="{DynamicResource DdpmCB_BkColor}"
+                    BorderBrush="{DynamicResource DdpmCB_BdColor}"
                     BorderThickness="1"
                     CornerRadius="4">
                     <!--  [3] ScrollViewer of Popup  -->
@@ -411,8 +569,8 @@
 
             <!--  [4]  -->
             <Border
-                Background="{StaticResource DdpmCB_BkColor}"
-                BorderBrush="{StaticResource DdpmCB_BdColor}"
+                Background="{DynamicResource DdpmCB_BkColor}"
+                BorderBrush="{DynamicResource DdpmCB_BdColor}"
                 BorderThickness="1"
                 CornerRadius="4">
                 <Grid>
@@ -479,8 +637,8 @@
         <Setter Property="MinWidth" Value="120" />
         <Setter Property="MinHeight" Value="20" />
         <Setter Property="Height" Value="48" />
-        <Setter Property="Foreground" Value="White" />
-        <Setter Property="Background" Value="{StaticResource DdpmCB_BkColor}" />
+        <Setter Property="Foreground" Value="{DynamicResource DdpmCB_FgColor}" />
+        <Setter Property="Background" Value="{DynamicResource DdpmCB_BkColor}" />
         <Setter Property="VerticalContentAlignment" Value="Center" />
         <Setter Property="Template" Value="{StaticResource DdpmComboBoxControlTemplate}" />
         <Setter Property="ItemContainerStyle" Value="{StaticResource DdpmComboBoxItemContainerStyle}" />
@@ -492,7 +650,7 @@
             <TextBlock Text="{Binding Type}" HorizontalAlignment="Center"/>
             <!-- Path Data binding -->
             <Path Data="{Binding PathData}" Margin="8" 
-                  HorizontalAlignment="Center" Fill="White"/>
+                  HorizontalAlignment="Center" />
         </StackPanel>
     </DataTemplate>
 
@@ -504,14 +662,15 @@
         <Setter Property="MinWidth" Value="120" />
         <Setter Property="MinHeight" Value="80" />
         <Setter Property="Foreground" Value="White" />
-        <Setter Property="Background" Value="{StaticResource DdpmCB_BkColor}" />
+        <Setter Property="Background" Value="{DynamicResource DdpmCB_BkColor}" />
         <Setter Property="VerticalContentAlignment" Value="Center" />
         <Setter Property="Template" Value="{StaticResource DdpmComboBoxControlTemplate}" />
         <Setter Property="ItemContainerStyle" Value="{StaticResource DdpmComboBoxItemContainerStyle}" />
         <Setter Property="ItemTemplate" Value="{StaticResource ComboBoxItemTemplate}"/>
     </Style>
+    <!-- #endregion -->
 
-    <!-- General Control Colors
+    <!-- #region General Control Colors
     There are many buttons,headers use this brush as their background color in hover state.
     When you see the colors in Figma are:
     #0672CB    100%
@@ -549,6 +708,7 @@
             </GradientStopCollection>
         </LinearGradientBrush.GradientStops>
     </LinearGradientBrush>
+    <!-- #endregion -->
 
     <!-- Buttons -->
     <!-- BlackButton -->
@@ -567,7 +727,7 @@
             </Trigger>
         </Style.Triggers>
     </Style>
-    <Style x:Key="BlackButtonText" TargetType="UXControls:UXTextBlock">
+    <Style TargetType="UXControls:UXTextBlock" x:Key="BlackButtonText" >
         <Setter Property="Foreground" Value="#FFFFFF" />
         <Setter Property="VerticalAlignment" Value="Center" />
         <Setter Property="HorizontalAlignment" Value="Center" />
@@ -596,9 +756,581 @@
         </DrawingBrush.Drawing>
     </DrawingBrush>
 
+    <!-- BrightnessRightView-->
+    <SolidColorBrush  x:Key="Brightness_TimeText_ForegroundColor" Color="#A4B8CD" />
+    <SolidColorBrush  x:Key="Brightness_TimeAMPM_ForegroundColor" Color="#FFFFFF" />
+    <BitmapImage x:Key="BrightnessImage" UriSource="/DDPM.UI.Common;component/Resources/Brightness.png"/>
+    <BitmapImage x:Key="ContrastImage" UriSource="/DDPM.UI.Common;component/Resources/Contrast.png"/>
+    <SolidColorBrush  x:Key="RightView_Btn_TextColor" Color="#FFFFFFFF" />
+    <SolidColorBrush  x:Key="RightView_Btn_BdColor" Color="#FFFFFFFF" />
+    <!-- End BrightnessRightView-->
+
+    <!-- #region VberItem1 -->
+    <Color x:Key="Vbar_BdColor_Hover">#FF1B385F</Color>
+    <Color x:Key="Vbar_BdColor_LockHover">#FF1B385F</Color>
+    <Color x:Key="Vbar_BkColor_Default">#99132F54</Color>
+    <Color x:Key="Vbar_BkColor_Disabled">#FF596067</Color>
+    <Color x:Key="Vbar_BkColor_LockHover">#FFB6B6B6</Color>
+    <!-- Landing Default -->
+    <SolidColorBrush x:Key="Vbar_BkBrush_LandingDefault" Color="#99132F54" />
+    <SolidColorBrush x:Key="Vbar_BdBrush_LandingDefault" Color="#99132F54" />
+    <!-- Landing Hover -->
+    <SolidColorBrush x:Key="Vbar_BkBrush_LandingHover" Color="#99132F54" />
+    <SolidColorBrush x:Key="Vbar_BdBrush_LandingHover" Color="#FF1B385F" />
+    <!-- Default -->
+    <SolidColorBrush x:Key="Vbar_BkBrush_Default" Color="#99132F54" />
+    <SolidColorBrush x:Key="Vbar_BdBrush_Default" Color="#99132F54" />
+    <!-- Hover -->
+    <SolidColorBrush x:Key="Vbar_BkBrush_Hover" Color="#99132F54" />
+    <SolidColorBrush x:Key="Vbar_BdBrush_Hover" Color="#FF1B385F" />
+    <!-- Disabled -->
+    <SolidColorBrush x:Key="Vbar_BkBrush_Disabled" Color="#FF596067" />
+    <SolidColorBrush x:Key="Vbar_BdBrush_Disabled" Color="#FF596067" />
+    <!-- LockHover -->
+    <SolidColorBrush x:Key="Vbar_BdBrush_LockHover" Color="#FF1B385F" />
+    <SolidColorBrush x:Key="Vbar_BkBrush_LockHover" Color="#FFB6B6B6" />
+    <!-- Foreground -->
+    <SolidColorBrush x:Key="Vbar_FgBrush_Default" Color="#FFFFFF" />
+    <SolidColorBrush x:Key="Vbar_FgBrush_Disabled" Color="#FFF5F6F7" />
+    <!-- Text -->
+    <SolidColorBrush x:Key="Vbar_TextColor_Normal" Color="#FFFFFF"/>
+    <SolidColorBrush x:Key="Vbar_TextColor_Selected" Color="#FFFFFF"/>
+
+    <SolidColorBrush x:Key="VbarItem_BkDisableColor" Color="#596067" />
+
     <LinearGradientBrush x:Key="VbarItem_HiBdColor" StartPoint="0,0" EndPoint="1,1">
         <GradientStop Offset="0" Color="#FF55B4FD" />
         <GradientStop Offset="1" Color="#FF6E69CF" />
     </LinearGradientBrush>
+
+
+    <Style x:Key="VBar_BorderStyle" TargetType="Border">
+        <Setter Property="Background" Value="{DynamicResource Vbar_BkBrush_Default}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource Vbar_BdBrush_Default}" />
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding IsSelected}"  Value="True">
+                <Setter Property="Background"  Value="{DynamicResource VbarItem_HiBkColor}" />
+                <Setter Property="BorderBrush" Value="{DynamicResource VbarItem_HiBdColor}" />
+            </DataTrigger>
+            <Trigger Property="IsEnabled"  Value="False">
+                <Setter Property="Background"  Value="{DynamicResource VbarItem_BkDisableColor}" />
+                <Setter Property="BorderBrush" Value="{DynamicResource VbarItem_BkDisableColor}" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+    <!-- #endregion -->
+
+    <SolidColorBrush x:Key="UXRadioButtonFgColor" Color="#F5F6F7" />
+
+    <!-- #region DisplayRightView -->
+    <SolidColorBrush x:Key="btn_BkColor" Color="#FF0E1C2F" />
+
+    <!-- #endregion  DisplayRightView -->
+
+    <!-- #region PrimaryButton - Copy from ButtonStyle.xaml -->
+
+    <!-- PrimaryButton -->
+    <Color x:Key="Button.TextColor">#FFF5F6F7</Color>
+    <Color x:Key="PrimaryButton.DefaultBkColor">#FF0672CB</Color>
+    <Color x:Key="PrimaryButton.HoverBkColor">#FF0063B8</Color>
+    <Color x:Key="PrimaryButton.PressedBkColor">#FF00468B</Color>
+    <Color x:Key="PrimaryButton.DisabledBkColor">#333436</Color>
+
+    <SolidColorBrush x:Key="PrimaryButton.Text.Foreground" Color="{StaticResource Button.TextColor}"/>
+    <SolidColorBrush x:Key="PrimaryButton.Static.Background" Color="{StaticResource PrimaryButton.DefaultBkColor}"/>
+    <SolidColorBrush x:Key="PrimaryButton.Static.Border" Color="{StaticResource PrimaryButton.DefaultBkColor}"/>
+
+    <SolidColorBrush x:Key="PrimaryButton.MouseOver.Background" Color="{StaticResource PrimaryButton.HoverBkColor}"/>
+    <SolidColorBrush x:Key="PrimaryButton.MouseOver.Border" Color="{StaticResource PrimaryButton.HoverBkColor}"/>
+
+    <SolidColorBrush x:Key="PrimaryButton.Pressed.Background" Color="{StaticResource PrimaryButton.PressedBkColor}"/>
+    <SolidColorBrush x:Key="PrimaryButton.Pressed.Border" Color="{StaticResource PrimaryButton.PressedBkColor}"/>
+
+    <SolidColorBrush x:Key="PrimaryButton.Disabled.Background" Color="{StaticResource PrimaryButton.DisabledBkColor}"/>
+    <SolidColorBrush x:Key="PrimaryButton.Disabled.Border" Color="{StaticResource PrimaryButton.DisabledBkColor}"/>
+    <SolidColorBrush x:Key="PrimaryButton.Disabled.Foreground" Color="#FF6A6A6A"/>
+
+    <Style x:Key="PrimaryButtonStyle" TargetType="{x:Type Button}">
+        <Setter Property="FocusVisualStyle" Value="{StaticResource FocusVisual}"/>
+        <Setter Property="Background" Value="{StaticResource PrimaryButton.Static.Background}"/>
+        <Setter Property="BorderBrush" Value="{StaticResource PrimaryButton.Static.Border}"/>
+        <Setter Property="Foreground" Value="{StaticResource PrimaryButton.Text.Foreground}"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="HorizontalContentAlignment" Value="Center"/>
+        <Setter Property="VerticalContentAlignment" Value="Center"/>
+        <Setter Property="Padding" Value="8,8"/>
+        <Setter Property="FontFamily" Value="Roboto"/>
+        <Setter Property="FontSize" Value="14"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <Border x:Name="border" 
+                               Background="{TemplateBinding Background}" 
+                               BorderBrush="{TemplateBinding BorderBrush}" 
+                               BorderThickness="{TemplateBinding BorderThickness}" 
+                               SnapsToDevicePixels="true"
+                               CornerRadius="2">
+                        <ContentPresenter x:Name="contentPresenter" 
+                                             Focusable="False" 
+                                             HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" 
+                                             Margin="{TemplateBinding Padding}" RecognizesAccessKey="True" 
+                                             SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" 
+                                             VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsDefaulted" Value="true">
+                            <Setter Property="BorderBrush" TargetName="border" Value="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}"/>
+                        </Trigger>
+                        <Trigger Property="IsMouseOver" Value="true">
+                            <Setter Property="Background" TargetName="border" Value="{StaticResource PrimaryButton.MouseOver.Background}"/>
+                            <Setter Property="BorderBrush" TargetName="border" Value="{StaticResource PrimaryButton.MouseOver.Border}"/>
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="true">
+                            <Setter Property="Background" TargetName="border" Value="{StaticResource PrimaryButton.Pressed.Background}"/>
+                            <Setter Property="BorderBrush" TargetName="border" Value="{StaticResource PrimaryButton.Pressed.Border}"/>
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="false">
+                            <Setter Property="Background" TargetName="border" Value="{StaticResource PrimaryButton.Disabled.Background}"/>
+                            <Setter Property="BorderBrush" TargetName="border" Value="{StaticResource PrimaryButton.Disabled.Border}"/>
+                            <Setter Property="TextElement.Foreground" TargetName="contentPresenter" Value="{StaticResource PrimaryButton.Disabled.Foreground}"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+
+    <!-- #endregion PrimaryButton -->
+
+    <!-- #region SecondaryButton - Copy from ButtonStyle.xaml -->
+    <SolidColorBrush x:Key="SecondaryButton_DefaultBkColor" Color="#01FFFFFF"/>
+    <SolidColorBrush x:Key="SecondaryButton_DefaultBdColor" Color="#F5F6F7"/>
+    <SolidColorBrush x:Key="SecondaryButton_DefaultTextColor" Color="#F5F6F7"/>
+    <SolidColorBrush x:Key="SecondaryButton_HoverBkColor" Color="#FF1D2C3B"/>
+    <SolidColorBrush x:Key="SecondaryButton_HoverBdColor" Color="#F5F6F7"/>
+    <SolidColorBrush x:Key="SecondaryButton_HoverTextColor" Color="#F5F6F7"/>
+    <SolidColorBrush x:Key="SecondaryButton_PressedBkColor" Color="#FF293B4D"/>
+    <SolidColorBrush x:Key="SecondaryButton_PressedBdColor" Color="#F5F6F7"/>
+    <SolidColorBrush x:Key="SecondaryButton_PressedTextColor" Color="#F5F6F7"/>
+    <SolidColorBrush x:Key="SecondaryButton_DisabledBkColor" Color="#01FFFFFF"/>
+    <SolidColorBrush x:Key="SecondaryButton_DisabledBdColor" Color="#A3A3A3"/>
+    <SolidColorBrush x:Key="SecondaryButton_DisabledTextColor" Color="#40586D"/>
+
+    <!-- Dark theme -->
+    <Color x:Key="SecondaryButton.DefaultBkColor">#00FFFFFF</Color>
+    <Color x:Key="SecondaryButton.HoverBkColor">#FF1D2C3B</Color>
+    <Color x:Key="SecondaryButton.PressedBkColor">#FF293B4D</Color>
+    <Color x:Key="SecondaryButton.DisabledBkColor">#00000000</Color>
+    <Color x:Key="SecondaryButton.DefaultBdColor">#FFF5F6F7</Color>
+    <Color x:Key="SecondaryButton.DisabledBdColor">#A3A3A3</Color>
+
+    <SolidColorBrush x:Key="SecondaryButton.Text.Foreground" Color="{StaticResource Button.TextColor}"/>
+    <SolidColorBrush x:Key="SecondaryButton.Static.Background" Color="{StaticResource SecondaryButton.DefaultBkColor}"/>
+    <SolidColorBrush x:Key="SecondaryButton.Static.Border" Color="{StaticResource SecondaryButton.DefaultBdColor}"/>
+
+    <SolidColorBrush x:Key="SecondaryButton.MouseOver.Background" Color="{StaticResource SecondaryButton.HoverBkColor}"/>
+    <SolidColorBrush x:Key="SecondaryButton.MouseOver.Border" Color="{StaticResource SecondaryButton.DefaultBdColor}"/>
+
+    <SolidColorBrush x:Key="SecondaryButton.Pressed.Background" Color="{StaticResource SecondaryButton.PressedBkColor}"/>
+    <SolidColorBrush x:Key="SecondaryButton.Pressed.Border" Color="{StaticResource SecondaryButton.DefaultBdColor}"/>
+
+    <SolidColorBrush x:Key="SecondaryButton.Disabled.Background" Color="{StaticResource SecondaryButton.DisabledBkColor}"/>
+    <SolidColorBrush x:Key="SecondaryButton.Disabled.Border" Color="{StaticResource SecondaryButton.DisabledBdColor}"/>
+    <SolidColorBrush x:Key="SecondaryButton.Disabled.Foreground" Color="#FF40586D"/>
+
+    <Style x:Key="SecondaryButtonStyle" TargetType="{x:Type Button}">
+        <Setter Property="FocusVisualStyle" Value="{StaticResource FocusVisual}"/>
+        <Setter Property="Background" Value="{DynamicResource SecondaryButton_DefaultBkColor}"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource SecondaryButton_DefaultBdColor}"/>
+        <Setter Property="Foreground" Value="{DynamicResource SecondaryButton_DefaultTextColor}"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="HorizontalContentAlignment" Value="Center"/>
+        <Setter Property="VerticalContentAlignment" Value="Center"/>
+        <Setter Property="Padding" Value="8,8"/>
+        <Setter Property="FontFamily" Value="Roboto"/>
+        <Setter Property="FontSize" Value="14"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <Border x:Name="border" 
+                               Background="{TemplateBinding Background}" 
+                               BorderBrush="{TemplateBinding BorderBrush}" 
+                               BorderThickness="{TemplateBinding BorderThickness}" 
+                               SnapsToDevicePixels="true"
+                               CornerRadius="2">
+                        <Border.Resources>
+                            <Style TargetType="ContentPresenter">
+                                <Setter Property="TextElement.Foreground" Value="{DynamicResource SecondaryButton_DefaultTextColor}"/>
+                            </Style>
+                        </Border.Resources>
+                        <ContentPresenter x:Name="contentPresenter" 
+                                             Focusable="False" 
+                                             HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" 
+                                             Margin="{TemplateBinding Padding}" RecognizesAccessKey="True" 
+                                             SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" 
+                                             VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsDefaulted" Value="true">
+                            <Setter Property="BorderBrush" TargetName="border" Value="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}"/>
+                        </Trigger>
+                        <Trigger Property="IsMouseOver" Value="true">
+                            <Setter Property="Background" TargetName="border" Value="{DynamicResource SecondaryButton_HoverBkColor}"/>
+                            <Setter Property="BorderBrush" TargetName="border" Value="{DynamicResource SecondaryButton_HoverBdColor}"/>
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="true">
+                            <Setter Property="Background" TargetName="border" Value="{DynamicResource SecondaryButton_PressedBkColor}"/>
+                            <Setter Property="BorderBrush" TargetName="border" Value="{DynamicResource SecondaryButton_PressedBdColor}"/>
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="false">
+                            <Setter Property="Background" TargetName="border" Value="{DynamicResource SecondaryButton_DisabledBkColor}"/>
+                            <Setter Property="BorderBrush" TargetName="border" Value="{DynamicResource SecondaryButton_DisabledBdColor}"/>
+                            <Setter Property="TextElement.Foreground" TargetName="contentPresenter" Value="{DynamicResource SecondaryButton_DisabledTextColor}"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    <!-- #endregion SecondaryButton -->
+
+    <!-- #region SplitListVew -->
+    <!-- #region EzBtn -->
+    <SolidColorBrush x:Key="EzBtn_BkColor_Default" Color="#FF193457" />
+    <!--<SolidColorBrush x:Key="EzBtn_BkColor_Hover" Color="Brush_GradientButtonCyan" />-->
+    <SolidColorBrush x:Key="EzBtn_BkColor_Disabled" Color="#FF596067" />
+
+    <Color x:Key="EzBtn_BdColor">#FF132F54</Color>
+    <SolidColorBrush x:Key="EzBtn_BdColor_Default" Color="#FF132F54" />
+    <SolidColorBrush x:Key="EzBtn_BdColor_Hover" Color="#FF132F54" />
+    <SolidColorBrush x:Key="EzBtn_BdColor_Disabled" Color="#FF132F54" />
+
+    <SolidColorBrush x:Key="EzBtn_Arrow_Default" Color="#FFFFFF" />
+    <SolidColorBrush x:Key="EzBtn_Arrow_Hover" Color="#FFFFFF" />
+    <SolidColorBrush x:Key="EzBtn_Arrow_Disabled" Color="#FFF5F6F7" />
+    <!-- #endregion EzBtn: PrevBtn and nextBtn -->
+
+    <!-- #endregion SplitListVew -->
+
+    <!-- #region SplitItem of PipPbp -->
+    <SolidColorBrush x:Key="BorderColor_SplitNormal" Color="#FFF2F2F2" />
+    <!-- #endregion SplitItem of PipPbp -->
+
+    <!-- #region SplitItem of EasyArrange -->
+    <SolidColorBrush x:Key="SplitCtrl_OuterBorder_BdColor_Icon_Normal" Color="#FFFFFFFF" />
+    <SolidColorBrush x:Key="SplitSplitter_Icon" Color="#FFFFFFFF" />
+    <SolidColorBrush x:Key="SplitCtrl0B_IconFill"  Color="#FF132F54"/>
+    <!-- #endregion SplitItem of EasyArrange -->
+
+    <!-- #region LockIcon -->
+    <SolidColorBrush x:Key="LockIcon_Fill"  Color="#FFFFFFFF"/>
+    <!-- #endregion LockIcon -->
+
+
+    <!-- #region For Headset -->
+    <SolidColorBrush x:Key="ProgressBar_BkColor" Color="#293B4D" />
+    <SolidColorBrush x:Key="Unpair_FgColor" Color="#F5F6F7" />
+    <SolidColorBrush x:Key="WalkThroughBox_BkColor" Color="#0B172D" />
+    <SolidColorBrush x:Key="EQLine_Color" Color="#1B385F" />
+    <Style x:Key="RightGroupBorderStyleForAudio" TargetType="Border">
+        <Setter Property="CornerRadius" Value="6" />
+        <Setter Property="Background" Value="{DynamicResource RightGroupBkColor}" />
+    </Style>
+
+    <Style x:Key="ModuleCaptionStyle" TargetType="UXControls:UXTextBlock">
+        <Setter Property="Foreground" Value="{DynamicResource DefaultTheme_TxtColor}"/>
+        <Setter Property="FontFamily" Value="Roboto" />
+        <Setter Property="FontSize" Value="20" />
+        <Setter Property="FontWeight" Value="Normal" />
+        <Setter Property="VerticalAlignment" Value="Top" />
+        <Setter Property="HorizontalAlignment" Value="Left" />
+    </Style>
+    <Style x:Key="InfoToolTipStyle" TargetType="ToolTip">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ToolTip">
+                    <Border Background="{TemplateBinding Background}"
+                            BorderBrush="#293B4D"
+                            BorderThickness="1"
+                            CornerRadius="4">
+                        <!--<TextBlock Text="{TemplateBinding Content}"
+                        FontFamily="Arial" ToolTipService.InitialShowDelay="1"
+                        FontSize="12"
+                        FontWeight="Normal"
+                        Foreground="#F5F6F7"
+                        Background="#193475F2"
+                        Padding="8,12,8,12" />-->
+                        <ContentPresenter />
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    <Style x:Key="TabInfoToolTipTextStyle" TargetType="TextBlock">
+        <Setter Property="ToolTipService.InitialShowDelay" Value="1" />
+        <Setter Property="Background" Value="#1D2C3B" />
+        <Setter Property="FontFamily" Value="Roboto" />
+        <Setter Property="FontSize" Value="12" />
+        <Setter Property="Foreground" Value="#F5F6F7" />
+        <Setter Property="Padding" Value="8" />
+        <Setter Property="LineHeight" Value="20" />
+        <Setter Property="TextWrapping" Value="Wrap" />
+    </Style>
+    <Style x:Key="ModuleItemStyle" TargetType="UXControls:UXTextBlock">
+        <Setter Property="Foreground" Value="{DynamicResource DefaultTheme_TxtColor}" />
+        <Setter Property="FontFamily" Value="Roboto" />
+        <Setter Property="FontSize" Value="16" />
+        <Setter Property="FontWeight" Value="Medium" />
+        <Style.Triggers>
+            <Trigger Property="IsEnabled" Value="False">
+                <Setter Property="Foreground" Value="#8995A5" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+    <SolidColorBrush x:Key="ToggleSwitch_NormalBackground" Color="#0B1E38" />
+    <SolidColorBrush x:Key="ToggleSwitch_PressedBackground" Color="#0672CB" />
+    <SolidColorBrush x:Key="ToggleSwitch_PressedBorderBrush" Color="#55B4FD" />
+    <SolidColorBrush x:Key="ToggleSwitch_BorderBrush" Color="#1E3F6C" />
+
+    <Style TargetType="UXControls:UXTextBlock" x:Key="ProductNameTextStyle">
+        <Setter Property="Foreground" Value="{DynamicResource HomePageKeyFeature_TxtColor}" />
+        <Setter Property="FontSize" Value="24" />
+        <Setter Property="FontFamily" Value="Roboto" />
+    </Style>
+
+
+    <LinearGradientBrush x:Key="VbarItem_HiBkColor"
+                         StartPoint="0,0"
+                         EndPoint="1,1">
+        <GradientStop Offset="0"
+                      Color="#FF0672CB" />
+        <GradientStop Offset="0.5"
+                      Color="#FF0078D2" />
+        <GradientStop Offset="1"
+                      Color="#FF6E69CF" />
+    </LinearGradientBrush>
+    <Style x:Key="BorderBase" TargetType="Border" >
+        <Setter Property="Background" Value="{DynamicResource Vbar_BkBrush_Default}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource Vbar_BdBrush_Default}" />
+    </Style>
+
+    <!-- #region Setting Styles -->
+    <SolidColorBrush x:Key="RightView_Header_BkColor" Color="#0A2343" />
+    <SolidColorBrush x:Key="RightView_Header_Text_FgColor" Color="#FFFFFF" />
+    <SolidColorBrush x:Key="RightView_Header_Text_HighlightColor" Color="#FFFFFF" />
+    <Style x:Key="RigthViewHeaderCtrl_TextBlock_HeaderTextStyle" TargetType="TextBlock">
+        <Setter Property="Foreground" Value="{DynamicResource RightView_Header_Text_FgColor}" />
+        <Setter Property="HorizontalAlignment" Value="Center" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="FontSize" Value="14" />
+    </Style>
+    <SolidColorBrush x:Key="RightView_BkColor" Color="#99193457" />
+    <LinearGradientBrush x:Key="RightView_Header_HiColor" StartPoint="0,0" EndPoint="1,0">
+        <GradientStop Offset="0" Color="#FF0672CB" />
+        <GradientStop Offset="1" Color="#FF6E69CF" />
+    </LinearGradientBrush>
+
+
+    <Style x:Key="BorderUnpair" TargetType="Border">
+        <Setter Property="CornerRadius" Value="2" />
+        <Setter Property="Width" Value="105" />
+        <Setter Property="Height" Value="40" />
+        <Setter Property="BorderThickness" Value="1" />
+    </Style>
+
+    <!-- light #f4f7f9  dark #0F2641-->
+
+    <SolidColorBrush x:Key="SearchBoxBorder_BgColor" Color="#0F2641" />
+    <SolidColorBrush x:Key="SearchBoxBorderBorderBrush" Color="#1E3F6C" />
+    <Style x:Key="SearchBoxBorderStyle" TargetType="Border">
+        <Setter Property="Background" Value="{DynamicResource SearchBoxBorder_BgColor}" />
+        <Setter Property="CornerRadius" Value="6" />
+        <Setter Property="Width" Value="288" />
+        <Setter Property="Height" Value="34" />
+        <Setter Property="VerticalAlignment" Value="Top" />
+        <Setter Property="BorderBrush" Value="{DynamicResource Button_UXStyleColor_ForWhiteFrame}" />
+        <Setter Property="Background" Value="#00FFFFFF" />
+        <Setter Property="BorderBrush" Value="{DynamicResource Button_UXStyleColor}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="BorderBrush" Value="{DynamicResource SearchBoxBorderBorderBrush}" />
+    </Style>
+
+    <Style x:Key="UXTextBlockWhiteFrame_Style" TargetType="UXControls:UXTextBlock" >
+        <Setter Property="Foreground" Value="{DynamicResource Button_UXStyleColor_ForWhiteFrame}" />
+    </Style>
+    <!-- #endregion -->
+
+
+    <!--leo add start-->
+    <SolidColorBrush x:Key="AddDeviceTxtCaption_TxtColor" Color="#ffffff" />
+    <SolidColorBrush x:Key="AddDeviceBorder1_BgColor" Color="#99132F54" />
+    <SolidColorBrush x:Key="AddDeviceTextStyle1_TxtColor" Color="#ffffff" />
+
+    <SolidColorBrush x:Key="txtCaption_TxtColor" Color="White" />
+    <Style TargetType="UXControls:UXTextBlock" x:Key="txtCaptionStyle">
+        <Setter Property="Foreground" Value="{DynamicResource txtCaption_TxtColor}" />
+        <Setter Property="FontSize" Value="20" />
+        <Setter Property="FontFamily" Value="Roboto" />
+    </Style>
+
+    <SolidColorBrush x:Key="RightMenuBg_BgColor" Color="#99132F54" />
+    <Style TargetType="Border" x:Key="RightMenuBgStyle">
+        <Setter Property="Background" Value="{DynamicResource RightMenuBg_BgColor}" />
+    </Style>
+
+    <SolidColorBrush x:Key="ActionsTextBlock_TxtColor" Color="White" />
+    <Style x:Key="ActionsTextBlockStyle" TargetType="UXControls:UXTextBlock">
+        <Setter Property="Foreground" Value="{DynamicResource ActionsTextBlock_TxtColor}" />
+        <Setter Property="FontFamily" Value="Roboto" />
+        <Setter Property="FontSize" Value="16" />
+        <Setter Property="FontWeight" Value="Normal" />
+        <Setter Property="VerticalAlignment" Value="Top" />
+        <Setter Property="HorizontalAlignment" Value="Left" />
+        <Setter Property="Margin" Value="15,16,0,0" />
+    </Style>
+
+    <SolidColorBrush x:Key="ActionsGrid_BgColor" Color="#354e6e" />
+    <Style TargetType="StackPanel" x:Key="ActionsGridBgStyle">
+        <Setter Property="Background" Value="{DynamicResource ActionsGrid_BgColor}" />
+    </Style>
+
+
+    <SolidColorBrush x:Key="ActionsBorderBorderBrush" Color="#1E3F6C" />
+    <SolidColorBrush x:Key="ActionsBorder_BgColor" Color="#99132F54" />
+    <Style x:Key="ActionsBorderStyle" TargetType="Border">
+        <Setter Property="Background" Value="{DynamicResource ActionsBorder_BgColor}" />
+        <!--<Setter Property="Background" Value="#99132F54" />-->
+        <Setter Property="CornerRadius" Value="6" />
+        <Setter Property="Width" Value="288" />
+        <Setter Property="VerticalAlignment" Value="Top" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="BorderBrush" Value="{DynamicResource ActionsBorderBorderBrush}" />
+    </Style>
+
+    <SolidColorBrush x:Key="ActionsRadio_BgColor" Color="Black" />
+    <SolidColorBrush x:Key="ActionsRadio_FgColor" Color="White" />
+    <SolidColorBrush x:Key="ActionsRadio_TxtColor" Color="White" />
+
+    <SolidColorBrush x:Key="SearchTextBox_BgColor" Color="#0F2641" />
+    <SolidColorBrush x:Key="SearchTextBox_FgColor" Color="#FFFFFF" />
+
+    <LinearGradientBrush x:Key="LinerGradientBrush1" StartPoint="0,0" EndPoint="1,0">
+        <GradientStop Color="#55B4FD" Offset="0.0" />
+        <GradientStop Color="#6E69CF" Offset="1.0" />
+    </LinearGradientBrush>
+
+    <SolidColorBrush x:Key="SeachResultBorder_BgColor" Color="#99132F54" />
+    <Style x:Key="SeachResultBorderStyle" TargetType="Border">
+        <Setter Property="Background" Value="{DynamicResource SeachResultBorder_BgColor}" />
+        <Setter Property="CornerRadius" Value="6" />
+        <Setter Property="Width" Value="288" />
+        <Setter Property="VerticalAlignment" Value="Top" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="BorderBrush" Value="{StaticResource LinerGradientBrush1}" />
+    </Style>
+
+    <SolidColorBrush x:Key="ModelNumberText_TxtColor" Color="#A4B8CD" />
+    <Style TargetType="UXControls:UXTextBlock" x:Key="ModelNumberTextStyle">
+        <Setter Property="Foreground" Value="{DynamicResource ModelNumberText_TxtColor}" />
+        <Setter Property="FontSize" Value="20" />
+        <Setter Property="FontFamily" Value="Roboto" />
+    </Style>
+
+    <SolidColorBrush x:Key="KeyToolTipText_BgColor" Color="#1D2C3B" />
+    <SolidColorBrush x:Key="KeyToolTipText_FgColor" Color="#F5F6F7" />
+    <Style x:Key="KeyToolTipTextStyle" TargetType="TextBlock">
+        <Setter Property="ToolTipService.InitialShowDelay" Value="0" />
+        <Setter Property="Background" Value="{DynamicResource KeyToolTipText_BgColor}" />
+        <Setter Property="FontFamily" Value="Roboto" />
+        <Setter Property="FontSize" Value="12" />
+        <Setter Property="Foreground" Value="{DynamicResource KeyToolTipText_FgColor}" />
+        <Setter Property="Padding" Value="12,16,12,10" />
+        <Setter Property="LineHeight" Value="20" />
+        <Setter Property="VerticalAlignment" Value="center" />
+        <Setter Property="HorizontalAlignment" Value="center" />
+    </Style>
+
+    <!-- ActionParameterModalDialog start-->
+    <SolidColorBrush x:Key="ActionParameterModalDialog_BgColor" Color="#0D121A" />
+    <SolidColorBrush x:Key="CaptionText_FgColor" Color="#A4B8CD" />
+    <SolidColorBrush x:Key="DescriptionText_FgColor" Color="#A4B8CD" />
+    <SolidColorBrush x:Key="Keystroke_BgColor" Color="#141D28"/>
+    <SolidColorBrush x:Key="Keystroke_FgColor" Color="#F5F6F7"/>
+    <SolidColorBrush x:Key="txtOpen_BgColor" Color="#141D28"/>
+    <SolidColorBrush x:Key="txtOpen_FgColor" Color="#F5F6F7"/>
+    <SolidColorBrush x:Key="CancelButton_BgColor" Color="#0D121A"/>
+    <SolidColorBrush x:Key="CancelButton_FgColor" Color="#FFFFFF"/>
+    <SolidColorBrush x:Key="CancelButtonBorderBrush" Color="#818488"/>
+    <SolidColorBrush x:Key="SaveButtonDisa_BgColor" Color="#333941"/>
+    <SolidColorBrush x:Key="SaveButtonDisa_FgColor" Color="#818488"/>
+    <!-- ActionParameterModalDialog end-->
+
+    <SolidColorBrush x:Key="txtActionCaption_TxtColor" Color="#A4B8CD"/>
+    <SolidColorBrush x:Key="txtMessage_TxtColor" Color="#ffffff"/>
+    <SolidColorBrush x:Key="MouseSettingMenu_BgColor99" Color="#99132F54"/>
+    <SolidColorBrush x:Key="MouseSettingMenu_BgColor60" Color="#60132F54"/>
+
+    <SolidColorBrush x:Key="bdrAlert_BgColor" Color="#364861"/>
+    <SolidColorBrush x:Key="bdrAlert_FgColor" Color="#F5F6F7"/>
+
+    <SolidColorBrush x:Key="ModuleCaption_TxtColor" Color="#FFFFFF"/>
+    <SolidColorBrush x:Key="ModuleItem_TxtColor" Color="#FFFFFF"/>
+
+    <SolidColorBrush x:Key="txtUnpair_TxtColor" Color="#F5F6F7"/>
+
+
+    <SolidColorBrush x:Key="ActionParameterModalDialogTextBoxBorderColor" Color="#7E7E7E" />
+
+    <SolidColorBrush x:Key="Border1BorderBrush" Color="#132F54"/>
+
+
+    <SolidColorBrush x:Key="Button1BorderEnColor" Color="#0672CB"/>
+    <Style x:Key="Button1BorderStyle" TargetType="Border">
+        <Setter Property="Background" Value="{DynamicResource Button1BorderEnColor}" />
+        <Setter Property="CornerRadius" Value="2" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Style.Triggers>
+            <Trigger Property="IsEnabled" Value="False">
+                <Setter Property="Background" Value="#344354" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <SolidColorBrush x:Key="Button1TextEnColor" Color="#F5F6F7"/>
+    <Style x:Key="Button1TextStyle" TargetType="UXControls:UXTextBlock">
+        <Setter Property="Foreground" Value="{DynamicResource Button1TextEnColor}" />
+        <Setter Property="FontFamily" Value="Roboto" />
+        <Setter Property="FontSize" Value="14" />
+        <Setter Property="FontWeight" Value="Medium" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="HorizontalAlignment" Value="Center" />
+        <Style.Triggers>
+            <Trigger Property="IsEnabled" Value="False">
+                <Setter Property="Foreground" Value="#828E9C" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style x:Key="Button_WhiteFrame" TargetType="Button">
+        <Setter Property="Foreground" Value="{DynamicResource Button_UXStyleColor_ForWhiteFrame}" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border CornerRadius="2" Background="{DynamicResource PartBorderColor}"
+                            BorderBrush="{DynamicResource Button_UXStyleColor_ForWhiteFrame}"
+                            BorderThickness="1">
+                        <!-- Set your desired corner radius here -->
+                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    <!--leo add end-->
+
+
+
+
 
 </ResourceDictionary>

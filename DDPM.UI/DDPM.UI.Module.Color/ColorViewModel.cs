@@ -486,23 +486,32 @@ namespace DDPM.UI.Module.Color
 
                 index = get_index_of_json_config_for_cur_monitor(mo);
 
-                Test_AddAppCollectionData.GetInstance()._monitorConfigs[index].AppInfo.Add("Desktop Application", new ColorPresetSettings_AppInfo()
-                {
-                    //ColorPresetName = "Standard/Native",
-                    Color = 0,
-                    HDRColor = -1,
-                    IconName = "Assets/palette.png",
-                });
 
-                Test_AddAppCollectionData.GetInstance()._monitorConfigs[index].AppInfo.Add("UWP Application", new ColorPresetSettings_AppInfo()
+                if (index >= 0)
                 {
-                    //ColorPresetName = "Standard/Native",
-                    Color = 0,
-                    HDRColor = -1,
-                    IconName = "Assets/palette.png",
-                });
+                    Test_AddAppCollectionData.GetInstance()._monitorConfigs[index].AppInfo.Add("Desktop Application", new ColorPresetSettings_AppInfo()
+                    {
+                        //ColorPresetName = "Standard/Native",
+                        Color = 0,
+                        HDRColor = -1,
+                        IconName = "Assets/palette.png",
+                    });
+
+                    Test_AddAppCollectionData.GetInstance()._monitorConfigs[index].AppInfo.Add("UWP Application", new ColorPresetSettings_AppInfo()
+                    {
+                        //ColorPresetName = "Standard/Native",
+                        Color = 0,
+                        HDRColor = -1,
+                        IconName = "Assets/palette.png",
+                    });
+                }
+               
             }
-            return Test_AddAppCollectionData.GetInstance()._monitorConfigs[index];
+
+            if (index < 0 || Test_AddAppCollectionData.GetInstance()._monitorConfigs == null || index >= Test_AddAppCollectionData.GetInstance()._monitorConfigs.Count)
+                return null;
+            else
+                return Test_AddAppCollectionData.GetInstance()._monitorConfigs[index];
         }
 
         public void Invoke_RefreshData()
@@ -712,12 +721,16 @@ namespace DDPM.UI.Module.Color
             try //2024-06-19 Elie, add try catch to get exception.
             {
                 DDPMSettings data = DdpmCommonHelper.ReadDDPMSettings();//DeviceManagerSA.ReloadAppConfigData().Result;
-                if (data == null)
-                    return;
-                if (data.LockSettings == null)
-                    return;
 
-                PerformLockUnlockUIAction(data.LockSettings.Lock_Display_ColorPreset, data.LockSettings.Lock_Display_AutoBriTemp);
+                // if data = null, represents read setting file (ColorSetting.json) has something went wrong 
+
+                //if (data == null)
+                //    return;
+                //if (data.LockSettings == null)
+                //    return;
+                
+                if (data != null)
+                    PerformLockUnlockUIAction(data.LockSettings.Lock_Display_ColorPreset, data.LockSettings.Lock_Display_AutoBriTemp);
 
                 UpdateHDRStatus();
 
@@ -806,114 +819,136 @@ namespace DDPM.UI.Module.Color
 
                 ColorPresetSettings config = get_cur_monitor_preset_config(MyModule.SelectedHomeDevice.MonitorInfo, DdpmCommonHelper.DeviceManagerSA.ReadColorPresetSettings().Result);
 
-                if (config.AppInfo.Count <= 0)
+                // Add to check if  config setting is null
+                if (config != null)
                 {
-                    config.AppInfo.Add("Desktop Application", new ColorPresetSettings_AppInfo()
+                    if (config.AppInfo.Count <= 0)
                     {
-                        //ColorPresetName = "Standard/Native",
-                        Color = 0,
-                        HDRColor = -1,
-                        IconName = "Assets/palette.png",
-                    });
-                    config.AppInfo.Add("UWP Application", new ColorPresetSettings_AppInfo()
-                    {
-                        //ColorPresetName = "Standard/Native",
-                        Color = 0,
-                        HDRColor = -1,
-                        IconName = "Assets/palette.png",
-                    });
-                }
-
-                DdpmCommonHelper.DeviceManagerSA.WriteColorPresetSettings(Test_AddAppCollectionData.GetInstance()._monitorConfigs);
-                Thread.Sleep(100);
-
-                foreach (string key in config.AppInfo.Keys)
-                {
-                    ColorPresetSettings_AppInfo value = config.AppInfo[key];
-
-                    string strColorPresetName = string.Empty;
-
-                    if (SmartHDR_ON)
-                        strColorPresetName = DdpmCommonHelper.DeviceManagerSA.GetColorPresetName(value.HDRColor).Result;
-                    else 
-                        strColorPresetName = DdpmCommonHelper.DeviceManagerSA.GetColorPresetName(value.Color).Result;
-
-                    //string strSync_ColorPresetName = string.Empty;
-                    //strSync_ColorPresetName = Sync_CurrentColorPreset(strColorPresetName);
-                    //strSync_CurrentColorPreset = DdpmCommonHelper.DeviceManagerSA?.Sync_ColorPresetName(DdpmCommonHelper.ModuleOwner?.SelectedHomeDevice?.MonitorInfo, curPreset).Result;
-                    if (DdpmCommonHelper.ModuleOwner?.SelectedHomeDevice?.MonitorInfo != null)
-                        strSync_CurrentColorPreset = DdpmCommonHelper.DeviceManagerSA?.Sync_ColorPresetName(DdpmCommonHelper.ModuleOwner?.SelectedHomeDevice?.MonitorInfo, strColorPresetName).Result;
-
-                    //int pIdx = SupportColorPresets.FindIndex(x =>
-                    //                    x.Trim() == value.ColorPresetName.Trim());
-
-                    //int pIdx = SupportColorPresets.FindIndex(x =>
-                    //                    x.Trim() == strSync_ColorPresetName.Trim());
-
-                    int pIdx = SupportColorPresets.FindIndex(x =>
-                                        x.Trim() == strSync_CurrentColorPreset.Trim());
-
-
-                    Visibility vis = (key.Trim() == "Desktop Application" || key.Trim() == "UWP Application") ?
-                        Visibility.Collapsed : Visibility.Visible;
-
-                    if (pIdx <= 0)
-                        pIdx = 0;
-
-                    if ((key.Trim() == "Desktop Application" || key.Trim() == "UWP Application"))
-                    {
-                        //Test_AddAppCollectionData.GetInstance().AppsList.Add(new AppData
-                        //  //Robert_Lin, 20240528
-                        //OLD Code:
-                        //Test_AddAppCollectionData.GetInstance().AppsList.Add(new AppData
-                        //NEW Code:
-                        tempList.Add(new AppData
+                        config.AppInfo.Add("Desktop Application", new ColorPresetSettings_AppInfo()
                         {
-                            AppName = key,
-                            AppPresetIdx = pIdx,
-                            IsDeleteAble = vis,
-                            SupportPreset = SupportColorPresets,
-                            AppIcon = "Assets/palette.png"
+                            //ColorPresetName = "Standard/Native",
+                            Color = 0,
+                            HDRColor = -1,
+                            IconName = "Assets/palette.png",
+                        });
+                        config.AppInfo.Add("UWP Application", new ColorPresetSettings_AppInfo()
+                        {
+                            //ColorPresetName = "Standard/Native",
+                            Color = 0,
+                            HDRColor = -1,
+                            IconName = "Assets/palette.png",
                         });
                     }
-                    else
-                    {
-                        AppData new_Appdata = new AppData();
-                        new_Appdata.AppName = key;
-                        new_Appdata.AppPresetIdx = pIdx;
-                        new_Appdata.IsDeleteAble = vis;
-                        new_Appdata.SupportPreset = SupportColorPresets;
 
-                        if (System.IO.File.Exists(value.IconName))
+                    DdpmCommonHelper.DeviceManagerSA.WriteColorPresetSettings(Test_AddAppCollectionData.GetInstance()._monitorConfigs);
+                    Thread.Sleep(100);
+
+                    foreach (string key in config.AppInfo.Keys)
+                    {
+                        ColorPresetSettings_AppInfo value = config.AppInfo[key];
+
+                        string strColorPresetName = string.Empty;
+
+                        if (SmartHDR_ON)
+                            strColorPresetName = DdpmCommonHelper.DeviceManagerSA.GetColorPresetName(value.HDRColor).Result;
+                        else
+                            strColorPresetName = DdpmCommonHelper.DeviceManagerSA.GetColorPresetName(value.Color).Result;
+
+                        //string strSync_ColorPresetName = string.Empty;
+                        //strSync_ColorPresetName = Sync_CurrentColorPreset(strColorPresetName);
+                        //strSync_CurrentColorPreset = DdpmCommonHelper.DeviceManagerSA?.Sync_ColorPresetName(DdpmCommonHelper.ModuleOwner?.SelectedHomeDevice?.MonitorInfo, curPreset).Result;
+                        if (DdpmCommonHelper.ModuleOwner?.SelectedHomeDevice?.MonitorInfo != null)
+                            strSync_CurrentColorPreset = DdpmCommonHelper.DeviceManagerSA?.Sync_ColorPresetName(DdpmCommonHelper.ModuleOwner?.SelectedHomeDevice?.MonitorInfo, strColorPresetName).Result;
+
+                        //int pIdx = SupportColorPresets.FindIndex(x =>
+                        //                    x.Trim() == value.ColorPresetName.Trim());
+
+                        //int pIdx = SupportColorPresets.FindIndex(x =>
+                        //                    x.Trim() == strSync_ColorPresetName.Trim());
+
+                        int pIdx = SupportColorPresets.FindIndex(x =>
+                                            x.Trim() == strSync_CurrentColorPreset.Trim());
+
+
+                        Visibility vis = (key.Trim() == "Desktop Application" || key.Trim() == "UWP Application") ?
+                            Visibility.Collapsed : Visibility.Visible;
+
+                        if (pIdx <= 0)
+                            pIdx = 0;
+
+                        if ((key.Trim() == "Desktop Application" || key.Trim() == "UWP Application"))
                         {
-                            new_Appdata.AppIcon = value.IconName;
+                            //Test_AddAppCollectionData.GetInstance().AppsList.Add(new AppData
+                            //  //Robert_Lin, 20240528
+                            //OLD Code:
+                            //Test_AddAppCollectionData.GetInstance().AppsList.Add(new AppData
+                            //NEW Code:
+                            tempList.Add(new AppData
+                            {
+                                AppName = key,
+                                AppPresetIdx = pIdx,
+                                IsDeleteAble = vis,
+                                SupportPreset = SupportColorPresets,
+                                AppIcon = "Assets/palette.png"
+                            });
                         }
                         else
                         {
-                            new_Appdata.AppIcon = "Assets/palette.png";
+                            AppData new_Appdata = new AppData();
+                            new_Appdata.AppName = key;
+                            new_Appdata.AppPresetIdx = pIdx;
+                            new_Appdata.IsDeleteAble = vis;
+                            new_Appdata.SupportPreset = SupportColorPresets;
+
+                            if (System.IO.File.Exists(value.IconName))
+                            {
+                                new_Appdata.AppIcon = value.IconName;
+                            }
+                            else
+                            {
+                                new_Appdata.AppIcon = "Assets/palette.png";
+                            }
+                            //Robert_Lin, 20240528
+                            //OLD Code:
+                            //Test_AddAppCollectionData.GetInstance().AppsList.Add(new_Appdata);
+                            //NEW Code:
+                            tempList.Add(new_Appdata);
                         }
-                        //Robert_Lin, 20240528
-                        //OLD Code:
-                        //Test_AddAppCollectionData.GetInstance().AppsList.Add(new_Appdata);
-                        //NEW Code:
-                        tempList.Add(new_Appdata);
                     }
+
+                    //DdpmCommonHelper.DeviceManagerSA.SyncNightlightStatus();
+
+                    //Robert_Lin, 20240528
+                    //NEW Added code:
+                    Test_AddAppCollectionData.GetInstance().AppsList = new ObservableCollection<AppData>(tempList);
+
+                    AppsList = Test_AddAppCollectionData.GetInstance().AppsList;
+
+                    _ICC_Metadata = DdpmCommonHelper.DeviceManagerSA?.DownloadICCData(DdpmCommonHelper.ModuleOwner?.SelectedHomeDevice?.MonitorInfo).Result;
+
+                    MyModule.GetRightView().Dispatcher.Invoke((Action)(() =>
+                    {                        
+                        update_ui_over_runtype(config);                        
+                    }));
+                                 
                 }
 
-                //DdpmCommonHelper.DeviceManagerSA.SyncNightlightStatus();
+                // // if data = null, represents read setting file (ColorSetting.json) has something went wrong 
+                if (data != null)
+                {
+                    LockMaskVisible = data.LockSettings.Lock_Display_ColorPreset ? Visibility.Visible : Visibility.Collapsed;
+                    ShowLockMask = data.LockSettings.Lock_Display_ColorPreset;
+                    isTabStoppable = !data.LockSettings.Lock_Display_ColorPreset;
 
-                //Robert_Lin, 20240528
-                //NEW Added code:
-                Test_AddAppCollectionData.GetInstance().AppsList = new ObservableCollection<AppData>(tempList);
+                    //Read user default lock value, these values are synced from IT lock event          
+                    Trace.WriteLine($"[SettingsPage] Color right page(Lock) : {data.LockSettings.Lock_Display_ColorPreset}");
+                }
 
-                AppsList = Test_AddAppCollectionData.GetInstance().AppsList;
-
-                _ICC_Metadata = DdpmCommonHelper.DeviceManagerSA?.DownloadICCData(DdpmCommonHelper.ModuleOwner?.SelectedHomeDevice?.MonitorInfo).Result;
-
+                // Update UI
                 MyModule.GetRightView().Dispatcher.Invoke((Action)(() =>
                 {
                     DdpmCommonHelper.DeviceManagerSA.SyncNightlightStatus();
-                    update_ui_over_runtype(config);
+                    //update_ui_over_runtype(config);
                     RefreshUI();
                 }));
 
@@ -976,17 +1011,17 @@ namespace DDPM.UI.Module.Color
                     IsisAdvanced_Settings = vis_ad;               
                 }
                 */
-               
+
                 //Lock/unlock mask and tabstop init here
                 //DDPMSettings data = DdpmCommonHelper.ReadDDPMSettings();//DeviceManagerSA.ReloadAppConfigData().Result;//Be careful if spend much time here                
-                                                                        //ex: vm.LockMaskVisible = data.LockSettings.Lock_Display_ColorPreset ? Visibility.Visible : Visibility.Collapsed;
+                //ex: vm.LockMaskVisible = data.LockSettings.Lock_Display_ColorPreset ? Visibility.Visible : Visibility.Collapsed;
 
-                LockMaskVisible = data.LockSettings.Lock_Display_ColorPreset ? Visibility.Visible : Visibility.Collapsed;
-                ShowLockMask = data.LockSettings.Lock_Display_ColorPreset;
-                isTabStoppable = !data.LockSettings.Lock_Display_ColorPreset;
+                //LockMaskVisible = data.LockSettings.Lock_Display_ColorPreset ? Visibility.Visible : Visibility.Collapsed;
+                //ShowLockMask = data.LockSettings.Lock_Display_ColorPreset;
+                //isTabStoppable = !data.LockSettings.Lock_Display_ColorPreset;
 
                 //Read user default lock value, these values are synced from IT lock event          
-                Trace.WriteLine($"[SettingsPage] Color right page(Lock) : {data.LockSettings.Lock_Display_ColorPreset}"); 
+                //Trace.WriteLine($"[SettingsPage] Color right page(Lock) : {data.LockSettings.Lock_Display_ColorPreset}"); 
             }
             catch (System.Exception)
             {

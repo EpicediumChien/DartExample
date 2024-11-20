@@ -25,7 +25,7 @@ namespace DDPM.UI.Module.GamingVisionEngine
             vm.Invoke_RefreshData();
         }
 
-        public string ModuleName { get => "VisionEngineModule"; }
+        public string ModuleName { get => Constants.ModuleName_VisionEngine; } //"VisionEngineModule"
 
         public UserControl? GetLeftView()
         {

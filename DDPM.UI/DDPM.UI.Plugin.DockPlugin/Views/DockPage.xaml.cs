@@ -227,7 +227,7 @@ namespace DDPM.UI.Plugin.DockPlugin.Views
         {
         }
 
-        private void FWUpdate_Click(object sender, MouseButtonEventArgs e)
+        private void FWUpdate_Click(object sender, RoutedEventArgs e)
         {
             //IConsole? console = DockPlugin.PluginIoc.GetService<IConsole>();
             //console?.ShowPluginById(DDPM.UI.Common.Constants.SettingsPluginId);

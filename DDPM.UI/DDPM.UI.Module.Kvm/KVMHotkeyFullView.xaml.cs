@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using VcpCore.Common;
 using Windows.System;
 
 namespace DDPM.UI.Module.Kvm
@@ -45,6 +46,23 @@ namespace DDPM.UI.Module.Kvm
             KeysHelper.setUXTextBoxPreviewKey(sender, e, ref newKeys, ref BundleNewKeys, ref alphabetKey);
         }
 
+        private void SaveHotkeySettings(HotkeyInfo hotkeyInfo)
+        {
+            tbCleanFocus.Focus();
+            KvmViewModel dataContext = (KvmViewModel)DataContext;
+            if (dataContext != null)
+            {
+                Common.Models.HomeDevice? selectedHomeDevice = dataContext.KvmModule.SelectedHomeDevice;
+                if (selectedHomeDevice?.MonitorInfo != null)
+                {
+                    Task.Run(() =>
+                    {
+                        dataContext.SaveHotkeySettings(selectedHomeDevice.MonitorInfo, hotkeyInfo);
+                    });
+                }
+            }
+
+        }
         private void tbSwitchPCsKey_PreviewKeyUp(object sender, KeyEventArgs e)
         {
             HotkeyInfo hotkeyInfo = KeysHelper.getUXTextBoxHotkeyInfo(sender, e, ref newKeys, HotkeyType.KvmSwitchInputSource);
@@ -87,14 +105,7 @@ namespace DDPM.UI.Module.Kvm
                     }
                     if (KeysHelper.hotKeyConflictsCheck(hotkeyInfo))
                     {
-                        vm.IsBusy = true;
-                        bool saveSettings = DdpmCommonHelper.DeviceManagerSA.SaveHotkeySetting(vm.KvmModule.SelectedHomeDevice.MonitorInfo, hotkeyInfo).Result;
-                        vm.Invoke_RefreshHotkeySettings();
-                        if (saveSettings)
-                        {
-                            DdpmCommonHelper.isHotkeyBypass = DdpmCommonHelper.DeviceManagerSA.ByPassHotkey(false).Result;
-                            vm.IsBusy = false;
-                        }
+                        SaveHotkeySettings(hotkeyInfo);
                     }
                     else
                     {
@@ -110,22 +121,20 @@ namespace DDPM.UI.Module.Kvm
 
         private void tbSwitchPCsKey_GotFocus(object sender, RoutedEventArgs e)
         {
-            bool isUnhook = DdpmCommonHelper.DeviceManagerSA.UnHook().Result;
-            if (isUnhook)
-            {
-                alphabetKey = false;
-                newKeys.Clear();
-                _strPreviousKey = vm.SwitchPCsKey;
-                //vm.SwitchPCsKey = string.Empty;
-                var texBox = (sender as UXTextBox);
-                texBox?.Select(vm.SwitchPCsKey.Length, 1);
-            }
+
+            alphabetKey = false;
+            newKeys.Clear();
+            _strPreviousKey = vm.SwitchPCsKey;
+            //vm.SwitchPCsKey = string.Empty;
+            var texBox = (sender as UXTextBox);
+            texBox?.Select(vm.SwitchPCsKey.Length, 1);
+
         }
 
         private void tbSwitchPCsKey_LostFocus(object sender, RoutedEventArgs e)
         {
             //hook
-            bool isHook = DdpmCommonHelper.DeviceManagerSA.Hook().Result;
+            //bool isHook = DdpmCommonHelper.DeviceManagerSA.Hook().Result;
         }
 
         private void tbSwitchPCsKey_ContextMenuOpening(object sender, ContextMenuEventArgs e)
@@ -160,14 +169,7 @@ namespace DDPM.UI.Module.Kvm
 
                     if (KeysHelper.hotKeyConflictsCheck(hotkeyInfo))
                     {
-                        vm.IsBusy = true;
-                        bool saveSettings = DdpmCommonHelper.DeviceManagerSA.SaveHotkeySetting(vm.KvmModule.SelectedHomeDevice.MonitorInfo, hotkeyInfo).Result;
-                        vm.Invoke_RefreshHotkeySettings();
-                        if (saveSettings)
-                        {
-                            DdpmCommonHelper.isHotkeyBypass = DdpmCommonHelper.DeviceManagerSA.ByPassHotkey(false).Result;
-                            vm.IsBusy = false;
-                        }
+                        SaveHotkeySettings(hotkeyInfo);
                     }
                     else
                     {
@@ -183,22 +185,18 @@ namespace DDPM.UI.Module.Kvm
 
         private void tbSwitchKbMsKey_GotFocus(object sender, RoutedEventArgs e)
         {
-            bool isUnhook = DdpmCommonHelper.DeviceManagerSA.UnHook().Result;
-            if (isUnhook)
-            {
-                alphabetKey = false;
-                newKeys.Clear();
-                _strPreviousKey = vm.SwitchKbMsKey;
-                //vm.SwitchKbMsKey = string.Empty;
-                var texBox = (sender as UXTextBox);
-                texBox?.Select(vm.SwitchKbMsKey.Length, 1);
-            }
+            alphabetKey = false;
+            newKeys.Clear();
+            _strPreviousKey = vm.SwitchKbMsKey;
+            //vm.SwitchKbMsKey = string.Empty;
+            var texBox = (sender as UXTextBox);
+            texBox?.Select(vm.SwitchKbMsKey.Length, 1);
         }
 
         private void tbSwitchKbMsKey_LostFocus(object sender, RoutedEventArgs e)
         {
             //hook
-            bool isHook = DdpmCommonHelper.DeviceManagerSA.Hook().Result;
+            //bool isHook = DdpmCommonHelper.DeviceManagerSA.Hook().Result;
         }
 
         private void tbSwitchKbMsKey_ContextMenuOpening(object sender, ContextMenuEventArgs e)
@@ -233,14 +231,7 @@ namespace DDPM.UI.Module.Kvm
 
                     if (KeysHelper.hotKeyConflictsCheck(hotkeyInfo))
                     {
-                        vm.IsBusy = true;
-                        bool saveSettings = DdpmCommonHelper.DeviceManagerSA.SaveHotkeySetting(vm.KvmModule.SelectedHomeDevice.MonitorInfo, hotkeyInfo).Result;
-                        vm.Invoke_RefreshHotkeySettings();
-                        if (saveSettings)
-                        {
-                            DdpmCommonHelper.isHotkeyBypass = DdpmCommonHelper.DeviceManagerSA.ByPassHotkey(false).Result;
-                            vm.IsBusy = false;
-                        }
+                        SaveHotkeySettings(hotkeyInfo);
                     }
                     else
                     {
@@ -256,22 +247,18 @@ namespace DDPM.UI.Module.Kvm
 
         private void tbChangePipKey_GotFocus(object sender, RoutedEventArgs e)
         {
-            bool isUnhook = DdpmCommonHelper.DeviceManagerSA.UnHook().Result;
-            if (isUnhook)
-            {
-                alphabetKey = false;
-                newKeys.Clear();
-                _strPreviousKey = vm.ChangePipKey;
-                //vm.ChangePipKey = string.Empty;
-                var texBox = (sender as UXTextBox);
-                texBox?.Select(vm.ChangePipKey.Length, 1);
-            }
+            alphabetKey = false;
+            newKeys.Clear();
+            _strPreviousKey = vm.ChangePipKey;
+            //vm.ChangePipKey = string.Empty;
+            var texBox = (sender as UXTextBox);
+            texBox?.Select(vm.ChangePipKey.Length, 1);
         }
 
         private void tbChangePipKey_LostFocus(object sender, RoutedEventArgs e)
         {
             //hook
-            bool isHook = DdpmCommonHelper.DeviceManagerSA.Hook().Result;
+            // bool isHook = DdpmCommonHelper.DeviceManagerSA.Hook().Result;
         }
 
         private void tbChangePipKey_ContextMenuOpening(object sender, ContextMenuEventArgs e)
@@ -293,6 +280,10 @@ namespace DDPM.UI.Module.Kvm
         private void InputSourceHotkey_Click(object sender, RoutedEventArgs e)
         {
             //todo
+            if (DdpmCommonHelper.ModuleOwner != null)
+            {
+                DdpmCommonHelper.ModuleOwner.ShowSpecificModule(Constants.GroupName_InputSource, Constants.ModuleName_DisplayHotkeys);
+            }
         }
 
 

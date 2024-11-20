@@ -13,6 +13,7 @@
 using DDPM.SA.Common;
 using Dell.Client.Framework.Common;
 using Dell.Client.Framework.Common.Annotations;
+using Dell.Client.Framework.Common.Extensions;
 using Dell.Client.Framework.Common.PluginConditions;
 using Dell.Client.Framework.Interfaces;
 using Dell.TechHub.Commodity;
@@ -45,8 +46,8 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         private const string pluginName = "DTPProxyPlugin";
         private const string pluginVersion = "1.0.0";
         private const string pluginDescription = "This plugin implements DTP Proxy Plugin.";
-        private const string publisherCompany = "Wistron";
-        private const string publisherWebsite = "https://www.wistron.com";
+        private const string publisherCompany = "Dell Inc.";
+        private const string publisherWebsite = "https://www.dell.com";
         private const string publisherSupport = "This plugin implements DTP Proxy Plugin.";
 
         private readonly IAgent _agent;
@@ -83,6 +84,16 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
         public const string PluginLogId = "DTPProxy";
 
+
+        /// <summary>
+        /// Webcam change event
+        /// </summary>
+        public event EventHandler<bool>? Esi_IsCameraSensorCover_ChangeEvent;
+        public event EventHandler<int>? WALSnoozeTimeLeftInSeconds_ChangeEvent;
+        public event EventHandler<bool>? Esi_IsWALLockCountdownStartedChanged_ChangeEvent;
+        public event EventHandler<int>? Esi_WALLockCountdownChanged_ChangeEvent;
+
+
         #endregion
 
         #region Constructor
@@ -104,6 +115,13 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         public event EventHandler<DeviceChangedEventArgs> Notify;
 
         public event EventHandler<bool> UpdateNotify;
+
+        public event EventHandler<ZoomChangedArgs> ZoomChanged_Notify;
+
+        public event EventHandler<ZoomMeetingTypeChangedArgs> ZoomMeetingTypeChanged_Notify;
+        public event EventHandler<IsZoomMeetingActiveChangedArgs> IsZoomMeetingActive_Notify;
+
+        public event EventHandler<IsZoomScreenShareActiveChangedArgs> IsZoomScreenShareActive_Notify;
 
         public void NotifyNow()
         {
@@ -472,15 +490,69 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
 
         }
+        public async Task<string> GetKeyboardKeystrokeDisplayData(string Guid)
+        {
+            if (!await GetItemIDAsync("Keyboard", Guid))
+            { return string.Empty; }
+
+            if (await GetCommodityInterfaceInstanceAsync(_keyboardMethodInfo) is ICommodity commodity)
+            {
+                var value = GetPropertyValue(_keyboardInterfaceType, commodity, "KeystrokeDisplayData");
+                Debug.WriteLine($"{value ?? ""}");
+                return (string)value;
+            }
+            else
+            {
+                Debug.WriteLine($"Could not retrieve the Commodity Interface {_keyboardInterfaceType} for the {Guid} item.");
+                writelog($"Could not retrieve the Commodity Interface {_keyboardInterfaceType} for the {Guid} item.");
+                return string.Empty;
+            }
+        }
+        public async Task<bool> StartKeyboardKeystrokeRecording(string Guid)
+        {
+            if (!await GetItemIDAsync("Keyboard", Guid))
+            { return false; }
+
+            if (await GetCommodityInterfaceInstanceAsync(_keyboardMethodInfo) is ICommodity commodity)
+            {
+                var value = GetPropertyValue(_keyboardInterfaceType, commodity, "StartKeystrokeRecording");
+                Debug.WriteLine($"{value ?? ""}");
+                return (bool)value;
+            }
+            else
+            {
+                Debug.WriteLine($"Could not retrieve the Commodity Interface {_keyboardInterfaceType} for the {Guid} item.");
+                writelog($"Could not retrieve the Commodity Interface {_keyboardInterfaceType} for the {Guid} item.");
+                return false;
+            }
+        }
+        public async Task<bool> StopKeyboardKeystrokeRecording(string Guid)
+        {
+            if (!await GetItemIDAsync("Keyboard", Guid))
+            { return false; }
+
+            if (await GetCommodityInterfaceInstanceAsync(_keyboardMethodInfo) is ICommodity commodity)
+            {
+                var value = GetPropertyValue(_keyboardInterfaceType, commodity, "StopKeystrokeRecording");
+                Debug.WriteLine($"{value ?? ""}");
+                return (bool)value;
+            }
+            else
+            {
+                Debug.WriteLine($"Could not retrieve the Commodity Interface {_keyboardInterfaceType} for the {Guid} item.");
+                writelog($"Could not retrieve the Commodity Interface {_keyboardInterfaceType} for the {Guid} item.");
+                return false;
+            }
+        }
 
 
-        public async Task SetKbAssignKeystrokeAction(string Guid, string newValue)
+        public async Task SetKbAssignKeystrokeAction(string Guid, byte[] newValue)
         {
             if (!await GetItemIDAsync("Keyboard", Guid))
             { return; }
             if (await GetCommodityInterfaceInstanceAsync(_keyboardMethodInfo) is ICommodity commodity)
             {
-                SetPropertyValue(_keyboardInterfaceType, commodity, "AssignKeystrokeAction", Encoding.UTF8.GetBytes(newValue));
+                SetPropertyValue(_keyboardInterfaceType, commodity, "AssignKeystrokeAction", newValue);
             }
             else
             {
@@ -489,14 +561,14 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
         }
 
-        public async Task SetKbAssignDialogAction(string Guid, string newValue)
+        public async Task SetKbAssignDialogAction(string Guid, byte[] newValue)
         {
             if (!await GetItemIDAsync("Keyboard", Guid))
             { return; }
 
             if (await GetCommodityInterfaceInstanceAsync(_keyboardMethodInfo) is ICommodity commodity)
             {
-                SetPropertyValue(_keyboardInterfaceType, commodity, "AssignDialogAction", Encoding.UTF8.GetBytes(newValue));
+                SetPropertyValue(_keyboardInterfaceType, commodity, "AssignDialogAction", newValue);
             }
             else
             {
@@ -505,14 +577,14 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
         }
 
-        public async Task SetKbAssignedAction(string Guid, string newValue)
+        public async Task SetKbAssignedAction(string Guid, byte[] newValue)
         {
             if (!await GetItemIDAsync("Keyboard", Guid))
             { return; }
 
             if (await GetCommodityInterfaceInstanceAsync(_keyboardMethodInfo) is ICommodity commodity)
             {
-                SetPropertyValue(_keyboardInterfaceType, commodity, "AssignedAction", Encoding.UTF8.GetBytes(newValue));
+                SetPropertyValue(_keyboardInterfaceType, commodity, "AssignedAction", newValue);
             }
             else
             {
@@ -1673,8 +1745,81 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
 
         }
+        public async Task<bool> GetIsZoomMeetingActive(string Guid)
+        {
+            if (!await GetItemIDAsync("Webcam", Guid))
+            { return false; }
 
+            if (_webcamMethodInfo != null)
+            {
+                if (await GetCommodityInterfaceInstanceAsync(_webcamMethodInfo) is ICommodity commodity)
+                {
+                    var value = GetPropertyValue(_webcamInterfaceType, commodity, "IsZoomMeetingActive");
+                    return (bool)value;
+                }
+                else
+                {
+                    writelog($"[GetIsZoomMeetingActive]Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {_itemID} item.");
+                    return false;
+                }
+            }
+            else
+            {
+                writelog($"[GetIsZoomMeetingActive]Could not retrieve the Commodity Interface for the {_itemID} item. _webcamMethodInfo is null");
+                return false;
+            }
 
+        }
+        public async Task<bool> GetZoomMeetingType(string Guid)
+        {
+            if (!await GetItemIDAsync("Webcam", Guid))
+            { return false; }
+
+            if (_webcamMethodInfo != null)
+            {
+                if (await GetCommodityInterfaceInstanceAsync(_webcamMethodInfo) is ICommodity commodity)
+                {
+                    var value = GetPropertyValue(_webcamInterfaceType, commodity, "ZoomMeetingType");
+                    return (bool)value;
+                }
+                else
+                {
+                    writelog($"[GetZoomMeetingType]Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {_itemID} item.");
+                    return false;
+                }
+            }
+            else
+            {
+                writelog($"[GetZoomMeetingType]Could not retrieve the Commodity Interface for the {_itemID} item. _webcamMethodInfo is null");
+                return false;
+            }
+
+        }
+        public async Task<bool> GetIsZoomScreenShareActive(string Guid)
+        {
+            if (!await GetItemIDAsync("Webcam", Guid))
+            { return false; }
+
+            if (_webcamMethodInfo != null)
+            {
+                if (await GetCommodityInterfaceInstanceAsync(_webcamMethodInfo) is ICommodity commodity)
+                {
+                    var value = GetPropertyValue(_webcamInterfaceType, commodity, "IsZoomScreenShareActive");
+                    return (bool)value;
+                }
+                else
+                {
+                    writelog($"[GetIsZoomScreenShareActive]Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {_itemID} item.");
+                    return false;
+                }
+            }
+            else
+            {
+                writelog($"[GetIsZoomScreenShareActive]Could not retrieve the Commodity Interface for the {_itemID} item. _webcamMethodInfo is null");
+                return false;
+            }
+
+        }
         private async Task<bool> GetItemIDAsync(string type, string guid)
         {
             if (string.IsNullOrEmpty(type))
@@ -2130,7 +2275,6 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 writelog($"[GetMenuSinglePressSetting]Could not retrieve the Commodity Interface for the {_itemID} item. _penMethodInfo is null");
                 return "";
             }
-
         }
         public async Task<bool> GetMenuCenterRightClickSetting()
         {
@@ -2182,7 +2326,6 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 writelog($"[GetIsSideTopButtonHoverClick]Could not retrieve the Commodity Interface for the {_itemID} item. _penMethodInfo is null");
                 return false;
             }
-
         }
         public async Task<bool> GetIsSideBottomButtonHoverClick()
         {
@@ -2207,6 +2350,84 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 Debug.WriteLine($"[GetIsSideBottomButtonHoverClick]Could not retrieve the Commodity Interface for the {_itemID} item. _penMethodInfo is null");
                 writelog($"[GetIsSideBottomButtonHoverClick]Could not retrieve the Commodity Interface for the {_itemID} item. _penMethodInfo is null");
                 return false;
+            }
+
+        }
+        public async Task<bool> StartKeyCapturePen()
+        {
+            _itemID = new ItemId(PenItemID0);
+
+            if (_penMethodInfo != null)
+            {
+                if (await GetCommodityInterfaceInstanceAsync(_penMethodInfo) is ICommodity commodity)
+                {
+                    var value = GetPropertyValue(_penInterfaceType, commodity, "StartKeyCapture");
+                    return (bool)value;
+                }
+                else
+                {
+                    Debug.WriteLine($"Could not retrieve the Commodity Interface {_penInterfaceType} for the {_itemID} item.");
+                    writelog($"Could not retrieve the Commodity Interface {_penInterfaceType} for the {_itemID} item.");
+                    return false;
+                }
+            }
+            else
+            {
+                Debug.WriteLine($"[GetIsSideBottomButtonHoverClick]Could not retrieve the Commodity Interface for the {_itemID} item. _penMethodInfo is null");
+                writelog($"[GetIsSideBottomButtonHoverClick]Could not retrieve the Commodity Interface for the {_itemID} item. _penMethodInfo is null");
+                return false;
+            }
+
+        }
+        public async Task<bool> FinishKeyCapturePen()
+        {
+            _itemID = new ItemId(PenItemID0);
+
+            if (_penMethodInfo != null)
+            {
+                if (await GetCommodityInterfaceInstanceAsync(_penMethodInfo) is ICommodity commodity)
+                {
+                    var value = GetPropertyValue(_penInterfaceType, commodity, "FinishKeyCapture");
+                    return (bool)value;
+                }
+                else
+                {
+                    Debug.WriteLine($"Could not retrieve the Commodity Interface {_penInterfaceType} for the {_itemID} item.");
+                    writelog($"Could not retrieve the Commodity Interface {_penInterfaceType} for the {_itemID} item.");
+                    return false;
+                }
+            }
+            else
+            {
+                Debug.WriteLine($"[GetIsSideBottomButtonHoverClick]Could not retrieve the Commodity Interface for the {_itemID} item. _penMethodInfo is null");
+                writelog($"[GetIsSideBottomButtonHoverClick]Could not retrieve the Commodity Interface for the {_itemID} item. _penMethodInfo is null");
+                return false;
+            }
+
+        }
+        public async Task<string> KeyCaptureData()
+        {
+            _itemID = new ItemId(PenItemID0);
+
+            if (_penMethodInfo != null)
+            {
+                if (await GetCommodityInterfaceInstanceAsync(_penMethodInfo) is ICommodity commodity)
+                {
+                    var value = GetPropertyValue(_penInterfaceType, commodity, "KeyCaptureData");
+                    return (string)value;
+                }
+                else
+                {
+                    Debug.WriteLine($"Could not retrieve the Commodity Interface {_penInterfaceType} for the {_itemID} item.");
+                    writelog($"Could not retrieve the Commodity Interface {_penInterfaceType} for the {_itemID} item.");
+                    return string.Empty;
+                }
+            }
+            else
+            {
+                Debug.WriteLine($"[GetIsSideBottomButtonHoverClick]Could not retrieve the Commodity Interface for the {_itemID} item. _penMethodInfo is null");
+                writelog($"[GetIsSideBottomButtonHoverClick]Could not retrieve the Commodity Interface for the {_itemID} item. _penMethodInfo is null");
+                return string.Empty;
             }
 
         }
@@ -4713,6 +4934,31 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
         }
 
+        public async Task<bool> GetMuteStatusAsyncForSpeaker(string guid)
+        {
+            try
+            {
+                if (!await GetItemIDAsync("Speaker", guid))
+                    return false;
+
+                var commodity = await GetCommodityInterfaceInstanceAsync(_speakerMethodInfo);
+                if (commodity is ICommodity)
+                {
+                    var value = GetPropertyValue(_speakerInterfaceType, commodity, "MuteStatus");
+                    writelog($"[Speaker] GetMuteStatusAsyncForSpeaker succeeded for {guid}");
+                    return (bool)value;
+                }
+
+                writelog($"[Speaker] GetMuteStatusAsyncForSpeaker failed: Could not retrieve commodity interface for {guid}");
+                return false;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[Headset] GetMuteStatusAsyncForSpeaker failed for {guid} - Exception: {ex.Message}");
+                return false;
+            }
+        }
+
         #endregion
 
         #region Dongle
@@ -5239,6 +5485,20 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 }
             }
 
+            _comdity = await _commSdk.GetCommodityAsync<IPenCommodity>(new ItemId("DellPeripheral.Pen"), CancellationToken.None);
+            if (_comdity is Dell.TechHub.Commodity.Peripheral.IPenCommodity _pencom)
+            {
+                try
+                {
+                    _pencom.KeyCaptureDataChanged += _pencom_KeyCaptureDataChanged;
+                    writelog($"Pen Commodity event registered");
+                }
+                catch (Exception e)
+                {
+                    writelog($"Find IPenCommodity not find  time: {DateTime.Now.ToString("hh.mm.ss.ffffff") + " Message: " + e.Message}");
+                }
+            }
+
             writelog($"Register Commodity event...");
             _comdity = await _commSdk.GetCommodityAsync<IHeadsetCommodity>(new ItemId("DellPeripheral.Headset"), CancellationToken.None);
             if (_comdity is Dell.TechHub.Commodity.Peripheral.IHeadsetCommodity _headsetcom)
@@ -5303,8 +5563,8 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             {
                 try
                 {
-                    _Dockcom.Connected += _comdity_Connected;
-                    _Dockcom.Disconnected += _comdity_Disconnected;
+                    _Dockcom.Connected += _comdity_Dock_Connected;
+                    _Dockcom.Disconnected += _comdity_Dock_Disconnected;
                     writelog($"Dock Commodity event registered");
                 }
                 catch (Exception e)
@@ -5312,6 +5572,54 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                     writelog($"Find IDockCommodity not find  time: {DateTime.Now.ToString("hh.mm.ss.ffffff") + " Message: " + e.Message}");
                 }
             }
+
+            writelog($"Register Webcam Commodity event...");
+            _comdity = await _commSdk.GetCommodityAsync<IWebcamCommodity>(new ItemId("DellPeripheral.Webcam"), CancellationToken.None);
+            if (_comdity is Dell.TechHub.Commodity.Peripheral.IWebcamCommodity _webcamcom)
+            {
+                try
+                {
+                    _webcamcom.Connected += _comdity_Connected;
+                    _webcamcom.Disconnected += _comdity_Disconnected;
+
+                    _webcamcom.Esi_IsCameraSensorCoveredChanged += _webcamcom_Esi_IsCameraSensorCoveredChanged;
+                    _webcamcom.WALSnoozeTimeLeftInSecondsChanged += _webcamcom_WALSnoozeTimeLeftInSecondsChanged;
+                    _webcamcom.Esi_IsWALLockCountdownStartedChanged += _webcamcom_Esi_IsWALLockCountdownStartedChanged;
+                    _webcamcom.Esi_WALLockCountdownChanged += _webcamcom_Esi_WALLockCountdownChanged;
+
+                    writelog($"Webcam Commodity event registered");
+                }
+                catch (Exception e)
+                {
+                    writelog($"Find IWebcamCommodity not find  time: {DateTime.Now.ToString("hh.mm.ss.ffffff") + " Message: " + e.Message}");
+                }
+            }
+
+            writelog($"Register Commodity event...");
+            _comdity = await _commSdk.GetCommodityAsync<IWebcamCommodity>(new ItemId("DellPeripheral.Webcam"), CancellationToken.None);
+            if (_comdity is Dell.TechHub.Commodity.Peripheral.IWebcamCommodity _Webcamlecom)
+            {
+                try
+                {
+                    _Webcamlecom.Connected += _comdity_Connected;
+                    _Webcamlecom.Disconnected += _comdity_Disconnected;
+                    _Webcamlecom.ZoomChanged += ZoomChanged;
+                    _Webcamlecom.ZoomMeetingTypeChanged += ZoomMeetingTypeChanged;
+                    _Webcamlecom.IsZoomMeetingActiveChanged += IsZoomMeetingActiveChanged;
+                    _Webcamlecom.IsZoomScreenShareActiveChanged += IsZoomScreenShareActiveChanged;
+                    writelog($"Webcam Commodity event registered");
+                }
+                catch (Exception e)
+                {
+                    writelog($"Find IWebcamCommodity not find  time: {DateTime.Now.ToString("hh.mm.ss.ffffff") + " Message: " + e.Message}");
+                }
+            }
+        }
+
+        private void _pencom_KeyCaptureDataChanged(object sender, KeyCaptureDataChangedArgs e)
+        {
+            Debug.WriteLine($"[Pen]KeystrokeDisplayDataChanged {e.KeyCaptureData} Changed for Device ID: {e.DeviceId}  !!!!!!!!!!!!!!!");
+            writelog($"[Headset]FirmwareVersionChanged {e.KeyCaptureData} Changed for Device ID: {e.DeviceId}  !!!!!!!!!!!!!!!");
         }
 
         private void OnDTPProxyPluginConditionChangeHandler(object sender, EventArgs e)
@@ -5389,12 +5697,41 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         }
         private void _comdity_Disconnected(object sender, DisconnectedArgs e)
         {
-            Debug.WriteLine($"Disconnected Device ID: {e.DeviceId} !!!!!!!!!!!!!!!");
+            writelog($"[DTPProxy] Disconnected Device ID: {e.DeviceId} !!!!!!!!!!!!!!!");
         }
 
         private void _comdity_Connected(object sender, ConnectedArgs e)
         {
-            Debug.WriteLine($"Connected Device ID: {e.DeviceId} !!!!!!!!!!!!!!!");
+            writelog($"[DTPProxy] Connected Device ID: {e.DeviceId} !!!!!!!!!!!!!!!");
+        }
+        private void ZoomChanged(object sender, ZoomChangedArgs e)
+        {
+            writelog($"[DTPProxy] ZoomChanged e : {e}");
+            ZoomChanged_Notify?.Invoke(this, e);
+        }
+        private void ZoomMeetingTypeChanged(object sender, ZoomMeetingTypeChangedArgs e)
+        {
+            writelog($"[DTPProxy] ZoomMeetingTypeChanged e : {e}");
+            ZoomMeetingTypeChanged_Notify?.Invoke(this, e);
+        }
+        private void IsZoomMeetingActiveChanged(object sender, IsZoomMeetingActiveChangedArgs e)
+        {
+            writelog($"[DTPProxy] IsZoomMeetingActiveChanged e : {e}");
+            IsZoomMeetingActive_Notify?.Invoke(this, e);
+        }
+        private void IsZoomScreenShareActiveChanged(object sender, IsZoomScreenShareActiveChangedArgs e)
+        {
+            writelog($"[DTPProxy] ZoomMeetingTypeChanged e : {e}");
+            IsZoomScreenShareActive_Notify?.Invoke(this, e);
+        }
+        private void _comdity_Dock_Disconnected(object sender, DisconnectedArgs e)
+        {
+            writelog($"Dock Disconnected Device ID: {e.DeviceId} !!!!!!!!!!!!!!!");
+        }
+
+        private void _comdity_Dock_Connected(object sender, ConnectedArgs e)
+        {
+            writelog($"Dock Connected Device ID: {e.DeviceId} !!!!!!!!!!!!!!!");
         }
 
         #region Headset Event
@@ -5441,6 +5778,43 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             Debug.WriteLine($"[Speaker] IsMuteStatusChanged {e.MuteStatus} Changed for Device ID: {e.DeviceId}  !!!!!!!!!!!!!!!");
             writelog($"[Speaker] IsMuteStatusChanged {e.MuteStatus} Changed for Device ID: {e.DeviceId}  !!!!!!!!!!!!!!!");
         }
+        #endregion
+
+
+        #region Webcam
+
+        private void _webcamcom_Esi_IsCameraSensorCoveredChanged(object sender, Esi_IsCameraSensorCoveredChangedArgs e)
+        {
+            Esi_IsCameraSensorCover_ChangeEvent?.AsyncFireAndForget(this, e.IsCameraSensorCovered, System.Threading.CancellationToken.None);
+
+            Debug.WriteLine($"[Speaker] IsMuteStatusChanged {e.IsCameraSensorCovered} Changed for Device ID: {e.DeviceId}  !!!!!!!!!!!!!!!");
+            writelog($"[Speaker] IsMuteStatusChanged {e.IsCameraSensorCovered} Changed for Device ID: {e.DeviceId}  !!!!!!!!!!!!!!!");
+        }
+
+        private void _webcamcom_WALSnoozeTimeLeftInSecondsChanged(object sender, WALSnoozeTimeLeftInSecondsChangedArgs e)
+        {
+            WALSnoozeTimeLeftInSeconds_ChangeEvent?.AsyncFireAndForget(this, e.WALSnoozeTimeLeftInSeconds, System.Threading.CancellationToken.None);
+
+            Debug.WriteLine($"[Speaker] IsMuteStatusChanged {e.WALSnoozeTimeLeftInSeconds} Changed for Device ID: {e.DeviceId}  !!!!!!!!!!!!!!!");
+            writelog($"[Speaker] IsMuteStatusChanged {e.WALSnoozeTimeLeftInSeconds} Changed for Device ID: {e.DeviceId}  !!!!!!!!!!!!!!!");
+        }
+
+        private void _webcamcom_Esi_IsWALLockCountdownStartedChanged(object sender, Esi_IsWALLockCountdownStartedChangedArgs e)
+        {
+            Esi_IsWALLockCountdownStartedChanged_ChangeEvent?.AsyncFireAndForget(this, e.IsWALLockCountdownStarted, System.Threading.CancellationToken.None);
+
+            Debug.WriteLine($"[Speaker] IsMuteStatusChanged {e.IsWALLockCountdownStarted} Changed for Device ID: {e.DeviceId}  !!!!!!!!!!!!!!!");
+            writelog($"[Speaker] IsMuteStatusChanged {e.IsWALLockCountdownStarted} Changed for Device ID: {e.DeviceId}  !!!!!!!!!!!!!!!");
+        }
+
+        private void _webcamcom_Esi_WALLockCountdownChanged(object sender, Esi_WALLockCountdownChangedArgs e)
+        {
+            Esi_WALLockCountdownChanged_ChangeEvent?.AsyncFireAndForget(this, e.WALLockCountdown, System.Threading.CancellationToken.None);
+
+            Debug.WriteLine($"[Speaker] IsMuteStatusChanged {e.WALLockCountdown} Changed for Device ID: {e.DeviceId}  !!!!!!!!!!!!!!!");
+            writelog($"[Speaker] IsMuteStatusChanged {e.WALLockCountdown} Changed for Device ID: {e.DeviceId}  !!!!!!!!!!!!!!!");
+        }
+
         #endregion
     }
 }

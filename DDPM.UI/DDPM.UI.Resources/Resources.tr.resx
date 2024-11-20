@@ -187,7 +187,7 @@
     <value>Güncelleştirme mevcut</value>
   </data>
   <data name="Updates.1" xml:space="preserve">
-    <value>Güncelleştirmeler tamamlandıktan sonra Dell Display and Peripheral Manager kapanacak ve yeniden açılacaktır. Güncelleştirmeler başladıktan sonra iptal edilemez.</value>
+    <value>Güncelleştirmeler tamamlandıktan sonra Dell Display and Dell Peripheral Manager kapanacak ve yeniden açılacaktır. Güncelleştirmeler, başladıktan sonra iptal edilemez.</value>
   </data>
   <data name="Updates.2" xml:space="preserve">
     <value>Güncelleştirmeleri denetle</value>
@@ -2032,7 +2032,7 @@
     <value>Farklı profiller kaydedin ve bunları manuel olarak, planlanan zamana göre veya sistem başlangıcında geri yükleyin.\r\n\r\nKolay Bellek Profiliniz için bir ad belirleyerek ve bir düzen seçerek başlayın.</value>
   </data>
   <data name="EazyMemory.37" xml:space="preserve">
-    <value>Uygulama ve belgeleri pencerelere atayın veya uygulama simgesini ilgili bölüme sürükleyin.\r\n\r\nNot: Kolay Düzenleme Belleği kullanılabilirliği, uygulama türüne ve başlatma davranışına göre değişebilir.</value>
+    <value>Uygulama ve belgeleri pencerelere atayın veya uygulama simgesini ilgili bölüme sürükleyin.\r\n\r\nNot: Easy Arrange Belleği kullanılabilirliği, uygulama türüne ve başlatma davranışına göre değişebilir.</value>
   </data>
   <data name="EazyMemory.38" xml:space="preserve">
     <value>Bir başlangıç türü seçin</value>
@@ -2048,5 +2048,224 @@
   </data>
   <data name="No" xml:space="preserve">
     <value>Hayır</value>
+  </data>
+  <data name="Camera.12" xml:space="preserve">
+    <value>Ön ayar eklerken kullanılamaz</value>
+  </data>
+  <data name="Camera.13" xml:space="preserve">
+    <value>Ön ayar eklerken tüm özellikler kullanılamaz</value>
+  </data>
+  <data name="HeadsetAudioSettings.20" xml:space="preserve">
+    <value>Duyduğunuz harici ses miktarını kontrol eder</value>
+  </data>
+  <data name="HeadsetAudioSettings.21" xml:space="preserve">
+    <value>Çevredeki gürültüyü ortadan kaldırır</value>
+  </data>
+  <data name="HeadsetAudioSettings.22" xml:space="preserve">
+    <value>Ortam sesinin duyulmasını sağlar. Ortam sesinin duyulma düzeyini ayarlar.</value>
+  </data>
+  <data name="HeadsetAudioSettings.23" xml:space="preserve">
+    <value>Gürültü Engelleme özelliklerini kapatır</value>
+  </data>
+  <data name="HeadsetAudioSettings.24" xml:space="preserve">
+    <value>Başkaları için daha iyi bir ses deneyimi oluşturmak amacıyla yakın uç mikrofon gürültünüzü sınırlar</value>
+  </data>
+  <data name="HeadsetAudioSettings.25" xml:space="preserve">
+    <value>Size daha iyi bir ses deneyimi sunmak amacıyla uzak uç mikrofon gürültüsünü sınırlar</value>
+  </data>
+  <data name="HeadsetAudioSettings.26" xml:space="preserve">
+    <value>Ekolayzer, seçilen ön ayara göre ayarlanır</value>
+  </data>
+  <data name="HeadsetAudioSettings.27" xml:space="preserve">
+    <value>Bir aramada konuşurken kendi sesinizi ne kadar duyabileceğinizi ayarlar. (Şeffaflık modunda kullanılamaz.)</value>
+  </data>
+  <data name="HeadsetAudioSettings.28" xml:space="preserve">
+    <value>Sesinizin net bir şekilde duyulması için arka plan gürültüsünü kaldırır</value>
+  </data>
+  <data name="HeadsetAutomatedActions.9" xml:space="preserve">
+    <value>Kulaklığınızı çıkardığınızda gerçekleşecek otomatik eylemler</value>
+  </data>
+  <data name="HeadsetAutomatedActions.10" xml:space="preserve">
+    <value>Kulaklık çıkarıldığında müziği otomatik olarak duraklatır. Kulaklık takıldığında, müzik otomatik olarak devam eder.</value>
+  </data>
+  <data name="HeadsetAutomatedActions.11" xml:space="preserve">
+    <value>Kulaklık çıkarıldığında mikrofonun sesini otomatik olarak kapatır</value>
+  </data>
+  <data name="HeadsetAutomatedActions.12" xml:space="preserve">
+    <value>Aramaları cevaplamak için çubuk mikrofonu aşağı indirin</value>
+  </data>
+  <data name="HeadsetAutomatedActions.13" xml:space="preserve">
+    <value>Bir kulaklık yastığını kulağınızdan çıkardığınızda gerçekleşen otomatik eylemler</value>
+  </data>
+  <data name="HeadsetDeviceSettings.7" xml:space="preserve">
+    <value>Görüşme sırasında gösterge ışığı</value>
+  </data>
+  <data name="HeadsetDeviceSettings.8" xml:space="preserve">
+    <value>Aygıt özellikleri için sesli uyarılar ve duyurular</value>
+  </data>
+  <data name="SpeakerToolTip.0" xml:space="preserve">
+    <value>Sesinizin net bir şekilde duyulması için arka plan gürültüsünü kaldırır</value>
+  </data>
+  <data name="SpeakerToolTip.1" xml:space="preserve">
+    <value>Aygıt sessize alındığında bir ses çalar</value>
+  </data>
+  <data name="SpeakerToolTip.2" xml:space="preserve">
+    <value>Ses seviyesi ayarlandığında bir ses çalar</value>
+  </data>
+  <data name="Continue" xml:space="preserve">
+    <value>Devam</value>
+  </data>
+  <data name="ImpExp_RestartMsg.0" xml:space="preserve">
+    <value>Ayarlar değişti. Dell Display and Peripheral Manager yeniden başlatılacak.</value>
+  </data>
+  <data name="ImpExp_SuccessMsg.0" xml:space="preserve">
+    <value>Uygulama ayarları başarıyla dışa aktarıldı</value>
+  </data>
+  <data name="ImpExp_SuccessMsg.1" xml:space="preserve">
+    <value>Uygulama ayarları, %1 kapsamında başarıyla uygulandı. Monitörünüzü kullanmanın keyfini çıkarın.</value>
+  </data>
+  <data name="ImpExp_WarningMsg.0" xml:space="preserve">
+    <value>Bu, sizin birincil monitörünüz değil. Devam etmek ve bunu Senkronizasyon için Birincil Monitörünüz olarak ayarlamak istiyor musunuz?</value>
+  </data>
+  <data name="ImpExp_WarningMsg.1" xml:space="preserve">
+    <value>geçerli düzenle ilişkilendirildi. Üzerine yazmak istiyor musunuz?</value>
+  </data>
+  <data name="RestartNeeded" xml:space="preserve">
+    <value>Yeniden başlatma gerekiyor</value>
+  </data>
+  <data name="Success" xml:space="preserve">
+    <value>Başarılı</value>
+  </data>
+  <data name="Warning" xml:space="preserve">
+    <value>Uyarı</value>
+  </data>
+  <data name="ImpExp_Message.0" xml:space="preserve">
+    <value>Aynı model algılandığında ayarları otomatik olarak uygulayın</value>
+  </data>
+  <data name="DisplayDefault.0" xml:space="preserve">
+    <value>Monitörünüzü şimdi fabrika ayarlarına sıfırlamak istiyor musunuz?</value>
+  </data>
+  <data name="RestoreToDefaultActions" xml:space="preserve">
+    <value>Varsayılan eylemlere geri yükle</value>
+  </data>
+  <data name="Game_Enhance_Mode" xml:space="preserve">
+    <value>Oyun İyileştirme Modu</value>
+  </data>
+  <data name="Response_Time" xml:space="preserve">
+    <value>Tepki Süresi</value>
+  </data>
+  <data name="Dark_Stabilizer" xml:space="preserve">
+    <value>Karanlık Sabitleyici</value>
+  </data>
+  <data name="Dark_Stabilizer_Toggle" xml:space="preserve">
+    <value>Karanlık Sabitleyiciyi Açma/Kapatma</value>
+  </data>
+  <data name="Dual_Resolution" xml:space="preserve">
+    <value>Çift Çözünürlük</value>
+  </data>
+  <data name="Dual_Resolution_Toggle" xml:space="preserve">
+    <value>Çift Çözünürlüğü Açma/Kapatma</value>
+  </data>
+  <data name="Resolution_and_Refresh_Rate" xml:space="preserve">
+    <value>Çözünürlük ve Yenileme Hızı</value>
+  </data>
+  <data name="Toggle_Vision_Engine" xml:space="preserve">
+    <value>Vision Engine&apos;ı Açma/Kapatma</value>
+  </data>
+  <data name="Third_Party_Licenses" xml:space="preserve">
+    <value>Üçüncü Taraf Lisansları</value>
+  </data>
+  <data name="Help" xml:space="preserve">
+    <value>Yardım</value>
+  </data>
+  <data name="Need_help" xml:space="preserve">
+    <value>Yardıma mı ihtiyacınız var? Bu yazılım hakkında daha fazla bilgi için aşağıdaki düğmeye tıklayın.</value>
+  </data>
+  <data name="Learn_more" xml:space="preserve">
+    <value>Daha fazla bilgi edinin</value>
+  </data>
+  <data name="On_screen_notifications" xml:space="preserve">
+    <value>Ekran bildirimleri</value>
+  </data>
+  <data name="All_Devices" xml:space="preserve">
+    <value>Tüm Aygıtlar</value>
+  </data>
+  <data name="Low_battery_level" xml:space="preserve">
+    <value>Düşük pil seviyesi</value>
+  </data>
+  <data name="Device_specific" xml:space="preserve">
+    <value>Aygıta özel</value>
+  </data>
+  <data name="Keyboard_lock_key" xml:space="preserve">
+    <value>Klavye kilit tuşu</value>
+  </data>
+  <data name="Webcam_WB7022_Presence_Detection_sensor_cover_state" xml:space="preserve">
+    <value>Web kamerası WB7022 Varlık Algılama sensörü kapak durumu</value>
+  </data>
+  <data name="Headset_speakerphone_and_soundbar_mute_unmute" xml:space="preserve">
+    <value>Kulaklık, hoparlör ve soundbar&apos;da sesi kapatma/açma</value>
+  </data>
+  <data name="Display_Color_Preset_and_Easy_Memory" xml:space="preserve">
+    <value>Ekran Rengi Ön Ayarı ve Kolay Bellek</value>
+  </data>
+  <data name="Reports" xml:space="preserve">
+    <value>Raporlar</value>
+  </data>
+  <data name="Save_diagnostic_report" xml:space="preserve">
+    <value>Tanılama raporunu kaydet</value>
+  </data>
+  <data name="Save_monitor_asset_report" xml:space="preserve">
+    <value>Monitör varlık raporunu kaydet</value>
+  </data>
+  <data name="Widget_Settings" xml:space="preserve">
+    <value>Parçacık Ayarları</value>
+  </data>
+  <data name="Activate_Quick_Access_widget_during_Zoom_conference_calls" xml:space="preserve">
+    <value>Zoom konferans görüşmeleri sırasında Hızlı Erişim parçacığını etkinleştirme</value>
+  </data>
+  <data name="Widget_will_automatically_appear_when_meeting_begins" xml:space="preserve">
+    <value>Toplantı başladığında desteklenen web kameraları için ayarları özelleştirmek üzere parçacık otomatik olarak görünür</value>
+  </data>
+  <data name="Enable_shortcut_reminder_for_Quick_Accesswidget" xml:space="preserve">
+    <value>Hızlı Erişim parçacığı için kısayol hatırlatıcısını etkinleştirme</value>
+  </data>
+  <data name="Critical" xml:space="preserve">
+    <value>Kritik</value>
+  </data>
+  <data name="Recommended" xml:space="preserve">
+    <value>Önerilen</value>
+  </data>
+  <data name="Optional" xml:space="preserve">
+    <value>İsteğe Bağlı</value>
+  </data>
+  <data name="VisionEngine_Night" xml:space="preserve">
+    <value>Gece</value>
+  </data>
+  <data name="VisionEngine_Clear" xml:space="preserve">
+    <value>Temizle</value>
+  </data>
+  <data name="VisionEngine_Bino" xml:space="preserve">
+    <value>Dürbün</value>
+  </data>
+  <data name="VisionEngine_Chroma" xml:space="preserve">
+    <value>Renkli</value>
+  </data>
+  <data name="VisionEngine_Crosshair" xml:space="preserve">
+    <value>İnce Ayrıntı</value>
+  </data>
+  <data name="Software_version" xml:space="preserve">
+    <value>Yazılım sürümü</value>
+  </data>
+  <data name="Driver_version" xml:space="preserve">
+    <value>Sürücü sürümü</value>
+  </data>
+  <data name="Preview_Changes" xml:space="preserve">
+    <value>Değişikliklerin Önizlemesini Gör</value>
+  </data>
+  <data name="Stop_Preview" xml:space="preserve">
+    <value>Önizlemeyi Durdur</value>
+  </data>
+  <data name="Tooltips_Schedule" xml:space="preserve">
+    <value>Bu özellik, gözlerimizin istenilen bir ortama uyum sağlamasını sağlar.</value>
   </data>
 </root>

@@ -745,7 +745,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   查詢類似 TEST. 的當地語系化字串。
+        ///   查詢類似 This feature enables our eyes to adapt to a desired setting 的當地語系化字串。
         /// </summary>
         internal static string Brightness_17 {
             get {
@@ -808,7 +808,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   查詢類似 Apply the above brightness/luminance, contrast, and color&amp;#x000A;preset controls to your connected monitors. 的當地語系化字串。
+        ///   查詢類似 Apply the above brightness/luminance, contrast, and color\npreset controls to your connected monitors. 的當地語系化字串。
         /// </summary>
         internal static string Brightness_5 {
             get {
@@ -862,7 +862,16 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   查詢類似 Scroll Wheel Click 的當地語系化字串。
+        ///   Looks up a localized string similar to Bug Fixes.
+        /// </summary>
+        internal static string Bug_Fixes {
+            get {
+                return ResourceManager.GetString("Bug_Fixes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Scroll Wheel Click.
         /// </summary>
         internal static string ButtonSettings_0 {
             get {
@@ -2968,6 +2977,33 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
+        ///   查詢類似 Hotkey Warning 的當地語系化字串。
+        /// </summary>
+        internal static string hotkey_7 {
+            get {
+                return ResourceManager.GetString("hotkey.7", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 The hotkey you configured is a single key.It may interfere with how you intend that key to work in other applications.Are you sure you want to proceed? 的當地語系化字串。
+        /// </summary>
+        internal static string hotkey_8 {
+            get {
+                return ResourceManager.GetString("hotkey.8", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 This hotkey is used by another Dell Display and Peripheral Manager function. Do you want to replace it? 的當地語系化字串。
+        /// </summary>
+        internal static string hotkey_9 {
+            get {
+                return ResourceManager.GetString("hotkey.9", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查詢類似 Hotkeys 的當地語系化字串。
         /// </summary>
         internal static string Hotkeys {
@@ -3166,7 +3202,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Rename Input Source.
+        ///   查詢類似 Rename Input Source 的當地語系化字串。
         /// </summary>
         internal static string InputSource_5 {
             get {
@@ -3175,7 +3211,6 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Invalid URL.
         ///   查詢類似 Invalid URL 的當地語系化字串。
         /// </summary>
         internal static string InvalidURL {
@@ -3896,7 +3931,25 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   查詢類似 No 的當地語系化字串。
+        ///   Looks up a localized string similar to New Features.
+        /// </summary>
+        internal static string New_Features {
+            get {
+                return ResourceManager.GetString("New_Features", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to New Supported Devices.
+        /// </summary>
+        internal static string New_Supported_Devices {
+            get {
+                return ResourceManager.GetString("New_Supported_Devices", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No.
         /// </summary>
         internal static string No {
             get {
@@ -5012,7 +5065,25 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   查詢類似 Update Firmware 的當地語系化字串。
+        ///   Looks up a localized string similar to Update.
+        /// </summary>
+        internal static string Update {
+            get {
+                return ResourceManager.GetString("Update", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Update Available Version.
+        /// </summary>
+        internal static string Update_Available_Version {
+            get {
+                return ResourceManager.GetString("Update_Available_Version", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Update Firmware.
         /// </summary>
         internal static string UpdateFirmware {
             get {

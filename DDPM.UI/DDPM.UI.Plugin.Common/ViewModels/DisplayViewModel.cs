@@ -567,5 +567,10 @@ namespace DDPM.UI.Plugin.Common.ViewModels
         }
 
         #endregion HandleSelectedHomeDeviceChanged
+
+        public bool ShowSpecificModule(string groupName, string moduleName)
+        {
+            return false;
+        }
     }
 }

@@ -237,7 +237,7 @@ namespace VcpCore.Plugins.Test
             _AllInfoMonitors_mix.Add((monitorInfoComplex1, monitorInfo1));
             PrivateObject privatevcp = new PrivateObject(vcpCorePlugin);
             privatevcp.SetFieldOrProperty("_AllInfoMonitors_Mix", _AllInfoMonitors_mix);
-            var getMonitors = vcpCorePlugin.Re_GetMonitors(new CancellationTokenSource().Token).Result; 
+            var getMonitors = vcpCorePlugin.Re_GetMonitors(new CancellationTokenSource().Token).Result;
             Assert.IsNotNull(getMonitors);
         }
 
@@ -280,8 +280,9 @@ namespace VcpCore.Plugins.Test
             PrivateObject privatevcp = new PrivateObject(vcpCorePlugin);
             privatevcp.SetFieldOrProperty("_AllInfoMonitors", _allInfoMonitors);
 
-            _AllInfoMonitors_mix.Add((monitorInfoComplex1, monitorInfo1));
-            privatevcp.SetFieldOrProperty("_AllInfoMonitors_Mix", _AllInfoMonitors_mix);
+            List<(MonitorInfo_complex, MonitorInfo)> _AllInfoMonitors_mix1 = new List<(MonitorInfo_complex, MonitorInfo)>();
+            _AllInfoMonitors_mix1.Add((monitorInfoComplex1, monitorInfo1));
+            privatevcp.SetFieldOrProperty("_AllInfoMonitors_Mix", _AllInfoMonitors_mix1);
 
             _taskQueueExecutor.DoWork += TaskQueueExecutor_DoWork;
             privatevcp.SetFieldOrProperty("_TaskQueueExecutor", _taskQueueExecutor);
@@ -304,8 +305,9 @@ namespace VcpCore.Plugins.Test
             PrivateObject privatevcp = new PrivateObject(vcpCorePlugin);
             privatevcp.SetFieldOrProperty("_AllInfoMonitors", _allInfoMonitors);
 
-            _AllInfoMonitors_mix.Add((monitorInfoComplex1, monitorInfo1));
-            privatevcp.SetFieldOrProperty("_AllInfoMonitors_Mix", _AllInfoMonitors_mix);
+            List<(MonitorInfo_complex, MonitorInfo)> _AllInfoMonitors_mix1 = new List<(MonitorInfo_complex, MonitorInfo)>();
+            _AllInfoMonitors_mix1.Add((monitorInfoComplex1, monitorInfo1));
+            privatevcp.SetFieldOrProperty("_AllInfoMonitors_Mix", _AllInfoMonitors_mix1);
 
             _taskQueueExecutor.DoWork += TaskQueueExecutor_DoWork;
             privatevcp.SetFieldOrProperty("_TaskQueueExecutor", _taskQueueExecutor);
@@ -329,8 +331,9 @@ namespace VcpCore.Plugins.Test
             PrivateObject privatevcp = new PrivateObject(vcpCorePlugin);
             privatevcp.SetFieldOrProperty("_AllInfoMonitors", _allInfoMonitors);
 
-            _AllInfoMonitors_mix.Add((monitorInfoComplex1, monitorInfo1));
-            privatevcp.SetFieldOrProperty("_AllInfoMonitors_Mix", _AllInfoMonitors_mix);
+            List<(MonitorInfo_complex, MonitorInfo)> _AllInfoMonitors_mix1 = new List<(MonitorInfo_complex, MonitorInfo)>();
+            _AllInfoMonitors_mix1.Add((monitorInfoComplex1, monitorInfo1));
+            privatevcp.SetFieldOrProperty("_AllInfoMonitors_Mix", _AllInfoMonitors_mix1);
             bool getvcpresult = true;
 
             _taskQueueExecutor.DoWork += TaskQueueExecutor_DoWork;
@@ -355,8 +358,9 @@ namespace VcpCore.Plugins.Test
             PrivateObject privatevcp = new PrivateObject(vcpCorePlugin);
             privatevcp.SetFieldOrProperty("_AllInfoMonitors", _allInfoMonitors);
 
-            _AllInfoMonitors_mix.Add((monitorInfoComplex1, monitorInfo1));
-            privatevcp.SetFieldOrProperty("_AllInfoMonitors_Mix", _AllInfoMonitors_mix);
+            List<(MonitorInfo_complex, MonitorInfo)> _AllInfoMonitors_mix1 = new List<(MonitorInfo_complex, MonitorInfo)>();
+            _AllInfoMonitors_mix1.Add((monitorInfoComplex1, monitorInfo1));
+            privatevcp.SetFieldOrProperty("_AllInfoMonitors_Mix", _AllInfoMonitors_mix1);
 
             _taskQueueExecutor.DoWork += TaskQueueExecutor_DoWork;
             privatevcp.SetFieldOrProperty("_TaskQueueExecutor", _taskQueueExecutor);
@@ -381,8 +385,9 @@ namespace VcpCore.Plugins.Test
             PrivateObject privatevcp = new PrivateObject(vcpCorePlugin);
             privatevcp.SetFieldOrProperty("_AllInfoMonitors", _allInfoMonitors);
 
-            _AllInfoMonitors_mix.Add((monitorInfoComplex1, monitorInfo1));
-            privatevcp.SetFieldOrProperty("_AllInfoMonitors_Mix", _AllInfoMonitors_mix);
+            List<(MonitorInfo_complex, MonitorInfo)> _AllInfoMonitors_mix1 = new List<(MonitorInfo_complex, MonitorInfo)>();
+            _AllInfoMonitors_mix1.Add((monitorInfoComplex1, monitorInfo1));
+            privatevcp.SetFieldOrProperty("_AllInfoMonitors_Mix", _AllInfoMonitors_mix1);
 
             _taskQueueExecutor.DoWork += TaskQueueExecutor_DoWork;
             privatevcp.SetFieldOrProperty("_TaskQueueExecutor", _taskQueueExecutor);

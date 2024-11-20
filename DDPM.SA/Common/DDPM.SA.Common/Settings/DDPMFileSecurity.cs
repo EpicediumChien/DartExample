@@ -12,6 +12,7 @@ using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net.Http.Json;
@@ -27,19 +28,6 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace DDPM.SA.Common.Settings
 {
-    public class ICC_SupportDeviceName
-    {
-        public string File { get; set; } = string.Empty;
-        public string ColorPreset { get; set; } = string.Empty;
-        public string SHA256 { get; set; } = string.Empty;
-    }
-
-    public class IIC_Metadata
-    {
-        public string Signature { get; set; } = string.Empty;
-        public Dictionary<string, List<ICC_SupportDeviceName>> _support_ICC_DeviceName = new Dictionary<string, List<ICC_SupportDeviceName>>() { };
-    }
-
     public class DDPMFileSecurity
     {
         private static void WriteLog(ILog log, string message, bool isError = false)
@@ -136,7 +124,7 @@ namespace DDPM.SA.Common.Settings
                 DateTimeOffset utcNow = DateTimeOffset.UtcNow;
                 string strTicket = SettingsAccess.GenerateReferenceTicket(utcNow);
                 strRandom = SettingsAccess.GenerateReferenceInfo();                
-                strTicketToFile = utcNow.ToString();
+                strTicketToFile = utcNow.ToString("M/d/yyyy h:mm:ss tt zzz", CultureInfo.InvariantCulture);
                 signature = SettingsAccess.GenerateSignature(strTicket, strRandom, serialized_string);
                 //signature = strRandom + ";;" + strTicketToFile + ";;" + signature; //combine as single key
             }
@@ -352,9 +340,9 @@ namespace DDPM.SA.Common.Settings
                     }
                     modifiedJson = array.ToString();
                 }
-                if (string.IsNullOrEmpty(signature))
+                if (string.IsNullOrEmpty(signature) || string.IsNullOrEmpty(sInfo) || string.IsNullOrEmpty(ticket))
                 {
-                    info = "No signature in json file";
+                    info = $"a part of key is null (1){signature},(2){sInfo},(3){ticket}";
 #if DEBUG 
                     Console.WriteLine(info);
 #endif
@@ -372,24 +360,8 @@ namespace DDPM.SA.Common.Settings
 
             // Convert the modified JObject back to a JSON string
             string cal_sign;
-            //string strRandom;
-            //string strTicket;
             try
             {
-                //string[] strArray = signature.Split(";;");
-                //if(strArray.Length != 3)
-                //{
-                //    info = "signature key is not composed with DDPM key format!";
-                //    return string.Empty;
-                //}
-                //strRandom = strArray[0];
-                //strTicket = strArray[1];
-                //signature = strArray[2];
-                if (string.IsNullOrEmpty(sInfo) || string.IsNullOrEmpty(ticket) || string.IsNullOrEmpty(signature))
-                {
-                    info = $"a part of key is null (1){signature},(2){sInfo},(3){ticket}";
-                    return string.Empty;
-                }
                 //cal_sign = SettingsAccess.ComputeAccessInfo2(Encoding.UTF8.GetBytes(accessInfo), modifiedJson);
                 cal_sign = SettingsAccess.GenerateSignature(ticket, sInfo, modifiedJson);
                 if (string.IsNullOrEmpty(cal_sign))
@@ -479,7 +451,7 @@ namespace DDPM.SA.Common.Settings
             return false;
         }
 
-        public static uint GetCheckSum(byte[] content, int count)
+        /*public static uint GetCheckSum(byte[] content, int count)
         {
             uint num = 0u;
             for (int i = 0; i < count; i++)
@@ -487,13 +459,13 @@ namespace DDPM.SA.Common.Settings
                 num += content[i];
             }
             return num;
-        }
+        }*/
 
-        public static byte[] GetSHA256(byte[] message, int offset, int count)
+        /*public static byte[] GetSHA256(byte[] message, int offset, int count)
         {
             using SHA256 sHA = SHA256.Create();
             return sHA.ComputeHash(message, offset, count);
-        }
+        }*/
 
         /// <summary>
         /// This function is used to provide hash as file checksum or json content signature
@@ -502,16 +474,16 @@ namespace DDPM.SA.Common.Settings
         /// <param name="offset"></param>
         /// <param name="count"></param>
         /// <returns></returns>
-        public static byte[] GetSHA512(byte[] message, int offset, int count)//output 64bytes=512bits
+        /*public static byte[] GetSHA512(byte[] message, int offset, int count)//output 64bytes=512bits
         {
             using SHA512 sHA = SHA512.Create();
             return sHA.ComputeHash(message, offset, count);
-        }
+        }*/
 
-        private static bool CompareByteArrays(byte[] array1, byte[] array2)
+        /*private static bool CompareByteArrays(byte[] array1, byte[] array2)
         {
             return array1.SequenceEqual(array2);
-        }
+        }*/
 
         public static bool IsFilePathValid(string filePath, out string info)
         {
@@ -1922,6 +1894,12 @@ namespace DDPM.SA.Common.Settings
                 return false;
 
             return StartProcessByOptions(log, startInfo, "", "", isLockNeeded, isWaitExitCode);
+        }
+
+        public static X509Certificate2 LoadFileCertificate(string strFilePath)
+        {
+            X509Certificate2 certificate = new X509Certificate2(strFilePath);
+            return certificate;
         }
     }
 }

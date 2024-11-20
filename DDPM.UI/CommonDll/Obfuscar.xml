@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Obfuscator>
 		<Var name="InPath" value="." />
-		<Var name="OutPath" value=".\Obfuscar" />
+		<Var name="OutPath" value=".Obfuscated" />
+		<Var name="KeepPublicApi" value="true" />
 		<Var name="HidePrivateApi" value="true" />
 		<Var name="HideStrings" value="true" />
 		<Var name="UseControlFlow" value="true" />
-		<AssemblySearchPath path="c:\progra~1\dotnet\shared\microsoft.netcore.app\8.0.10" />
-		<AssemblySearchPath path="c:\progra~1\dotnet\shared\microsoft.aspnetcore.app\8.0.10" />
-		<Module file="$(InPath)\DDPM.SA.Obfuscation.dll" />
+		<AssemblySearchPath path="c:\progra~1\dotnet\shared\microsoft.netcore.app\8.0.11" />
+		<AssemblySearchPath path="c:\progra~1\dotnet\shared\microsoft.aspnetcore.app\8.0.11" />
+		<Module file="DDPM.SA.Obfuscation.dll" />
 </Obfuscator>

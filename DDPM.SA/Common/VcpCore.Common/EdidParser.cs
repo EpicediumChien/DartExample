@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace VcpCore.Common
 {
@@ -212,31 +213,44 @@ namespace VcpCore.Common
             int num = HexString.IndexOf(ModelName_Header);
             if (num != -1)
             {
-                string text = HexString.Substring(num + ModelName_Header.Length, 26);
-                List<byte> list = new List<byte>();
-                for (int i = 0; i < 13; i++)
+                if (HexString.Length >= (num + ModelName_Header.Length + 26))
                 {
-                    byte[] bytes = BitConverter.GetBytes(int.Parse(text.Substring(2 * i, 2), NumberStyles.HexNumber));
-                    list.AddRange(bytes);
+                    string text = HexString.Substring(num + ModelName_Header.Length, 26);
+                    List<byte> list = new List<byte>();
+                    bool rc = true;
+                    for (int i = 0; i < 13; i++)
+                    {
+                        var r = int.TryParse(text.AsSpan(2 * i, 2), NumberStyles.HexNumber, new CultureInfo("en-US"), out int outint);
+                        rc = rc && r;
+                        if (rc)
+                        {
+                            byte[] bytes = BitConverter.GetBytes(outint);
+                            list.AddRange(bytes);
+                        }
+                    }
+                    if (rc)
+                    {
+                        byte[] bytes2 = list.ToArray();
+                        string text2 = string.Empty;
+                        string Modelstring = Encoding.ASCII.GetString(bytes2);
+                        for (int j = (Modelstring.Length) - 1; j >= 0; j--)
+                        {
+                            char value = Modelstring[j];
+                            if (Convert.ToInt32(value) >= 48)
+                                text2 += value;
+                        }
+                        char[] text2_charArray = text2.ToCharArray();
+                        Array.Reverse(text2_charArray);
+                        text2 = new string(text2_charArray);
+                        text2 = Regex.Replace(text2, "DELL", string.Empty, RegexOptions.IgnoreCase);
+                        text2 = Regex.Replace(text2, "ALIENWARE", string.Empty, RegexOptions.IgnoreCase);
+                        return text2.Trim().ToUpper();
+                    }
+                    else
+                        return string.Empty;
                 }
-                byte[] bytes2 = list.ToArray();
-                string text2 = "";
-                string @string = Encoding.ASCII.GetString(bytes2);
-                bool collectStart = false;
-                for (int j = (@string.Length) - 1; j >= 0; j--)
-                {
-                    char value = @string[j];
-                    if (Convert.ToInt32(value) == 10)
-                        collectStart = true;
-                    else if (collectStart && (Convert.ToInt32(value) >= 48))
-                        text2 += value;
-                    else if (collectStart && (Convert.ToInt32(value) == 32))
-                        break;
-                }
-                char[] text2_charArray = text2.ToCharArray();
-                Array.Reverse(text2_charArray);
-                text2 = new string(text2_charArray);
-                return text2.ToUpper();
+                else
+                    return string.Empty;
             }
             return string.Empty;
         }

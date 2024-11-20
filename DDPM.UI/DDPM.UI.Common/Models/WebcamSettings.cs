@@ -41,7 +41,7 @@ namespace DDPM.UI.Common
                         "1280x720" => "HD",
                         "1920x1080" => "Full HD",
                         "2560x1440" => "2K QHD",
-                        "3840x2160" => "2K QHD",
+                        "3840x2160" => "4K QHD",
                         _ => "8K UHD"
                     };
                     SupportedFPSs.Add(resName, res.FPS);

@@ -61,7 +61,7 @@ namespace DDPM.UI.Plugin.ViewModels
     public class WebCameraViewModel : PeripheralViewModel, INotifyPropertyChanged
     {
         #region Variables
-        private readonly ILog _log;
+        public readonly ILog _log;
         private List<ProfileItem> _profileItems = new();
         private List<string> _resolutions = new();
 
@@ -90,6 +90,9 @@ namespace DDPM.UI.Plugin.ViewModels
 
         // 20240926 jim add
         private bool showLockMask = false;
+
+        public ManualResetEvent mre = new ManualResetEvent(false);
+
 
         public bool ShowLockMask
         {
@@ -517,13 +520,12 @@ namespace DDPM.UI.Plugin.ViewModels
             if (!base.SetCurrentDevice(deviceID))
             { return false; }
 
-            InitializeWebcam();
-            PrepareProfileItems();
 
-            //Application.Current.Dispatcher.Invoke(() =>
-            //{
-
-            //});
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                InitializeWebcam();
+                PrepareProfileItems();
+            });
 
             OnPropertyChanged(nameof(IsMicEnumerationOn));
             OnPropertyChanged(nameof(IsMicEnumerationOnText));
@@ -1064,10 +1066,17 @@ namespace DDPM.UI.Plugin.ViewModels
             get => CurrentProfile.IsHDROn;
             set
             {
+                AlertType = WebcamAlert.Alert1;
+                AlertVisibility = Visibility.Visible;
                 DdpmCommonHelper.DeviceManagerSA!.SetIsHDROn(CurrentDeviceInfo!.ID.ToString(), value);
                 SetProfileProperty(nameof(IsHDROn), value, OperationModule.ColorAndImage);
                 OnPropertyChanged();
                 OnPropertyChanged(nameof(IsHDROnText));
+                new Thread(() =>
+                {
+                    Thread.Sleep(300);
+                    AlertVisibility = Visibility.Collapsed;
+                }).Start();
             }
         }
         public string IsHDROnText
@@ -1255,7 +1264,7 @@ namespace DDPM.UI.Plugin.ViewModels
 
         public Visibility PanArrowVisibility
         {
-            get => CurrentProfile.Zoom != CurrentDeviceInfo!.ZoomMin && !CurrentProfile.IsAutoFramingOn ? Visibility.Visible : Visibility.Collapsed;
+            get => CurrentProfile.Zoom != (CurrentDeviceInfo?.ZoomMin ?? 100) && !CurrentProfile.IsAutoFramingOn ? Visibility.Visible : Visibility.Collapsed;
         }
 
         public Visibility UndoVisibility

@@ -19,6 +19,8 @@ using System.IO;
 using VcpCore.Common;
 using Windows.System;
 using Dell.Client.Framework.Common;
+using DDPM.UI.Resources.Helper;
+using System.Collections.ObjectModel;
 
 namespace DDPM.UI.Module.Kvm
 {
@@ -415,8 +417,22 @@ namespace DDPM.UI.Module.Kvm
         public bool isUSBKVMEanble { get; set; } = true;
         public double USBKVM_Opacity { get; set; } = 1;
         public Visibility LockUSBKVM_Visibility { get; set; } = Visibility.Collapsed;
+        public Visibility isPxP {  get; set; } = Visibility.Collapsed;
+        public Visibility NoPxP {  get; set; } = Visibility.Collapsed;
 
         #region Hotkey
+
+        private string _kvmHotkeyTooltip = "None";
+
+        public string KvmHotkeyTooltip
+        {
+            get => _kvmHotkeyTooltip;
+            set
+            {
+                SetProperty(ref _kvmHotkeyTooltip, value);
+                OnPropertyChanged("KvmHotkeyTooltip");
+            }
+        }
 
         private string _switchPCsKey = "None";
 
@@ -467,6 +483,22 @@ namespace DDPM.UI.Module.Kvm
             }
         }
 
+        public void SaveHotkeySettings(MonitorInfo monitorInfo, HotkeyInfo hotkeyInfo)
+        {
+            if (DdpmCommonHelper.DeviceManagerSA != null)
+            {
+                IsBusy = true;
+                OnPropertyChanged("IsBusy");
+                bool saveSettings = DdpmCommonHelper.DeviceManagerSA.SaveHotkeySetting(monitorInfo, hotkeyInfo).Result;
+                if (saveSettings)
+                {
+                    DdpmCommonHelper.isHotkeyBypass = DdpmCommonHelper.DeviceManagerSA.ByPassHotkey(false).Result;
+                    IsBusy = false;
+                    OnPropertyChanged("IsBusy");
+                }
+            }
+            Invoke_RefreshHotkeySettings();
+        }
         private void saveKvmHotkeyOption()
         {
             HotkeySettings hotkeySettings = new HotkeySettings
@@ -499,41 +531,56 @@ namespace DDPM.UI.Module.Kvm
                 //sender is the ‘bw’ object
                 BackgroundWorker bwk = (BackgroundWorker)sender;
                 //load hotkey setting
-                var temp = DdpmCommonHelper.DeviceManagerSA.ReadCurrentHotkey(KvmModule.SelectedHomeDevice.MonitorInfo).Result;
-                HotkeySettings curHotkey = temp.Item1;
-                //0708 error handling for non-EE support monitor
-                string swHortcutText = string.Empty;
-                if (curHotkey.HotkeyInfo.Count > 0)
+                if (DdpmCommonHelper.DeviceManagerSA != null)
                 {
-                    foreach (var hotkeyInfo in curHotkey.HotkeyInfo)
+                    var temp = DdpmCommonHelper.DeviceManagerSA.ReadCurrentHotkey(KvmModule?.SelectedHomeDevice?.MonitorInfo).Result;
+                    HotkeySettings curHotkey = temp.Item1;
+                    //0708 error handling for non-EE support monitor
+                    string swHortcutText = string.Empty;
+                    string HeadCaption = LangHelper.Instance["Hotkeys"];
+                    string SwitchPCsKeyCaption = LangHelper.Instance["Kvm.8"];
+                    string SwitchKbMsKeyCaption = LangHelper.Instance["Kvm.9"];
+                    string ChangePipKeyCaption = LangHelper.Instance["Kvm.10"];
+                    if (curHotkey.HotkeyInfo.Count > 0)
                     {
-                        List<VirtualKey> hotkeys = hotkeyInfo.Hotkey;
-                        switch (hotkeyInfo.Job)
+                        foreach (var hotkeyInfo in curHotkey.HotkeyInfo)
                         {
-                            case HotkeyType.KvmSwitchInputSource:
-                                KeysHelper.ReSetHotKeyText(ref swHortcutText, ref hotkeys);
-                                hotkeys.Clear();
-                                SwitchPCsKey = swHortcutText;
-                                break;
+                            List<VirtualKey> hotkeys = hotkeyInfo.Hotkey;
+                            switch (hotkeyInfo.Job)
+                            {
+                                case HotkeyType.KvmSwitchInputSource:
+                                    KeysHelper.ReSetHotKeyText(ref swHortcutText, ref hotkeys);
+                                    hotkeys.Clear();
+                                    SwitchPCsKey = swHortcutText;
+                                    break;
 
-                            case HotkeyType.KvmSwitchKbMsKey:
-                                KeysHelper.ReSetHotKeyText(ref swHortcutText, ref hotkeys);
-                                hotkeys.Clear();
-                                SwitchKbMsKey = swHortcutText;
-                                break;
+                                case HotkeyType.KvmSwitchKbMsKey:
+                                    KeysHelper.ReSetHotKeyText(ref swHortcutText, ref hotkeys);
+                                    hotkeys.Clear();
+                                    SwitchKbMsKey = swHortcutText;
+                                    break;
 
-                            case HotkeyType.KvmChangePIPPosition:
-                                KeysHelper.ReSetHotKeyText(ref swHortcutText, ref hotkeys);
-                                hotkeys.Clear();
-                                ChangePipKey = swHortcutText;
-                                break;
+                                case HotkeyType.KvmChangePIPPosition:
+                                    KeysHelper.ReSetHotKeyText(ref swHortcutText, ref hotkeys);
+                                    hotkeys.Clear();
+                                    ChangePipKey = swHortcutText;
+                                    break;
+                            }
                         }
+                        _kvmHotkeyTooltip = $"{HeadCaption} - {SwitchPCsKeyCaption}: {SwitchPCsKey}\r\n{HeadCaption} - {SwitchKbMsKeyCaption}: {SwitchKbMsKey}\r\n{HeadCaption} - {ChangePipKeyCaption}: {ChangePipKey}";
+                    }
+                    else
+                    {
+                        string StrNone = LangHelper.Instance["None"];
+                        _kvmHotkeyTooltip = $"{HeadCaption} - {SwitchPCsKeyCaption}: {StrNone}\r\n{HeadCaption} - {SwitchKbMsKeyCaption}: {StrNone}\r\n{HeadCaption} - {ChangePipKeyCaption}: {StrNone}";
+                    }
+                    if (curHotkey.HotkeyOptions.Count > 0 && curHotkey.HotkeyOptions.Any(x => x.Equals(HotkeyOption.KvmAutoApply)))
+                    {
+                        _autoSwitchChecked = true;
                     }
                 }
-                if (curHotkey.HotkeyOptions.Count > 0 && curHotkey.HotkeyOptions.Any(x => x.Equals(HotkeyOption.KvmAutoApply)))
-                {
-                    _autoSwitchChecked = true;
-                }
+
+                OnPropertyChanged("KvmHotkeyTooltip");
             }
             catch (Exception ex)
             {
@@ -548,6 +595,24 @@ namespace DDPM.UI.Module.Kvm
         }
 
         #endregion Hotkey
+
+        public KvmViewModel()
+        {
+            if (DdpmCommonHelper.DeviceManagerSA != null)
+            {
+                //OSD/VCP control back event
+                DdpmCommonHelper.DeviceManagerSA.VCPchanged += OnVCPChangedEvent;
+            }
+        }
+
+        ~KvmViewModel()
+        {
+            if (DdpmCommonHelper.DeviceManagerSA != null)
+            {
+                //OSD/VCP control back event
+                DdpmCommonHelper.DeviceManagerSA.VCPchanged -= OnVCPChangedEvent;
+            }
+        }
 
         #region UI Enable Flags
 
@@ -568,6 +633,22 @@ namespace DDPM.UI.Module.Kvm
                 WorkerReportsProgress = false,
                 WorkerSupportsCancellation = false
             };
+            SupportNKVM = Visibility.Collapsed;
+            SupportUSBKVM = Visibility.Collapsed;
+            var directory = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
+
+            directory = $"C:\\Program Files\\Dell\\Dell Display and Peripheral Manager";
+            string strFullPath = string.Format("{0}\\Plugins\\NKVM\\DDM.exe", directory);
+
+            if (DdpmCommonHelper.DeviceManagerSA.isNKVMSupportMonitor(DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo).Result && File.Exists(strFullPath))
+            {
+                SupportNKVM = Visibility.Visible;
+            }
+
+            if (DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo.CapabilityDic.ContainsKey("EE"))
+            {
+                SupportUSBKVM = Visibility.Visible;
+            }
             bw.DoWork += DoWork_RefreshData;
             bw.RunWorkerCompleted += RunWorkerCompleted_RefreshData;
             bw.RunWorkerAsync(); //myArg is the optional argument
@@ -577,7 +658,7 @@ namespace DDPM.UI.Module.Kvm
         private void DoWork_RefreshData(object sender, DoWorkEventArgs e)
         {
             try // 2024-06-19 Fix exception when close Main UI or device remove.
-            {
+            { 
                 //sender is the ‘bw’ object
                 BackgroundWorker bwk = (BackgroundWorker)sender;
 
@@ -594,24 +675,10 @@ namespace DDPM.UI.Module.Kvm
                     return;
                 }
 
-                SupportNKVM = Visibility.Collapsed;
-                SupportUSBKVM = Visibility.Collapsed;
-
-                var directory = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
-
-                directory = $"C:\\Program Files\\Dell\\Dell Display and Peripheral Manager";
-                string strFullPath = string.Format("{0}\\Plugins\\NKVM\\DDM.exe", directory);
-
-                if (DdpmCommonHelper.DeviceManagerSA.isNKVMSupportMonitor(mi).Result && File.Exists(strFullPath))
-                {
-                    SupportNKVM = Visibility.Visible;
-                }
-
                 USBKVMisON = KvmModule.isUSBKVM;//DdpmCommonHelper.DeviceManagerSA.GetOnNKVM().Result;
                 NKVMisON = DdpmCommonHelper.DeviceManagerSA.GetOnNKVM(selHomeDevice.MonitorInfo).Result;
                 if (mi.CapabilityDic.ContainsKey("EE"))
                 {
-                    SupportUSBKVM = Visibility.Visible;
                     isUSBKVMButton = true;
                     USBKVMButtonOpacity = 1;
                     //_isUSBKVM = KvmModule.isUSBKVM;
@@ -637,7 +704,7 @@ namespace DDPM.UI.Module.Kvm
                     //Dictionary<string, PCsInfo> pcsList = new Dictionary<string, PCsInfo>();
                     inputList = DdpmCommonHelper.DeviceManagerSA.GetInputSourcelist(KvmModule.SelectedHomeDevice.MonitorInfo).Result;
                     subInputList = DdpmCommonHelper.DeviceManagerSA.GetSubInputList(KvmModule.SelectedHomeDevice.MonitorInfo).Result;
-                    List<InputSourceObj> result = DdpmCommonHelper.DeviceManagerSA.GetSubInputs(KvmModule.SelectedHomeDevice.MonitorInfo).Result;
+                    //List<InputSourceObj> result = DdpmCommonHelper.DeviceManagerSA.GetSubInputs(KvmModule.SelectedHomeDevice.MonitorInfo).Result;
                     if (subInputList != null)
                     {
                         subInputs.Clear();
@@ -668,18 +735,19 @@ namespace DDPM.UI.Module.Kvm
                             _inputsList.Clear();
                             foreach (string item in inputList.Keys)
                             {
-                                if (item.StartsWith("HDMI"))
-                                {
-                                    pathData = "M2.5 0.197266C1.39543 0.197266 0.5 1.0927 0.5 2.19727V6.58877C0.5 7.27835 0.855239 7.91929 1.44 8.28477L12.0136 14.8933C12.3315 15.0919 12.6988 15.1973 13.0736 15.1973H39.9264C40.3012 15.1973 40.6685 15.0919 40.9864 14.8933L51.56 8.28477C52.1448 7.91929 52.5 7.27835 52.5 6.58877V2.19727C52.5 1.0927 51.6046 0.197266 50.5 0.197266H2.5ZM14 7.19727C13.7239 7.19727 13.5 7.42112 13.5 7.69727C13.5 7.97341 13.7239 8.19727 14 8.19727H40C40.2761 8.19727 40.5 7.97341 40.5 7.69727C40.5 7.42112 40.2761 7.19727 40 7.19727H14Z";
-                                }
-                                else if (item.StartsWith("USB-C") || item.StartsWith("Thunderbolt"))
-                                {
-                                    pathData = "M6 0.394531C2.96243 0.394531 0.5 2.85697 0.5 5.89453C0.5 8.9321 2.96243 11.3945 6 11.3945H25C28.0376 11.3945 30.5 8.9321 30.5 5.89453C30.5 2.85697 28.0376 0.394531 25 0.394531H6ZM7 5.39453C6.72386 5.39453 6.5 5.61839 6.5 5.89453C6.5 6.17067 6.72386 6.39453 7 6.39453H24C24.2761 6.39453 24.5 6.17067 24.5 5.89453C24.5 5.61839 24.2761 5.39453 24 5.39453H7Z";
-                                }
-                                else if (item.StartsWith("DisplayPort"))
-                                {
-                                    pathData = "M2.5 0.183594C1.39543 0.183594 0.5 1.07902 0.5 2.18359V9.55121C0.5 10.2537 0.868598 10.9048 1.47101 11.2662L7.52498 14.8986C7.83581 15.0851 8.19148 15.1836 8.55397 15.1836H50.5C51.6046 15.1836 52.5 14.2882 52.5 13.1836V7.68359V2.18359C52.5 1.07902 51.6046 0.183594 50.5 0.183594H2.5ZM14 7.18359C13.7239 7.18359 13.5 7.40745 13.5 7.68359C13.5 7.95974 13.7239 8.18359 14 8.18359H40C40.2761 8.18359 40.5 7.95974 40.5 7.68359C40.5 7.40745 40.2761 7.18359 40 7.18359H14Z";
-                                }
+                                pathData = InputTypeCommon.GetInputImage(item);
+                                //if (item.StartsWith("HDMI"))
+                                //{
+                                //    pathData = "M2.5 0.197266C1.39543 0.197266 0.5 1.0927 0.5 2.19727V6.58877C0.5 7.27835 0.855239 7.91929 1.44 8.28477L12.0136 14.8933C12.3315 15.0919 12.6988 15.1973 13.0736 15.1973H39.9264C40.3012 15.1973 40.6685 15.0919 40.9864 14.8933L51.56 8.28477C52.1448 7.91929 52.5 7.27835 52.5 6.58877V2.19727C52.5 1.0927 51.6046 0.197266 50.5 0.197266H2.5ZM14 7.19727C13.7239 7.19727 13.5 7.42112 13.5 7.69727C13.5 7.97341 13.7239 8.19727 14 8.19727H40C40.2761 8.19727 40.5 7.97341 40.5 7.69727C40.5 7.42112 40.2761 7.19727 40 7.19727H14Z";
+                                //}
+                                //else if (item.StartsWith("USB-C") || item.StartsWith("Thunderbolt"))
+                                //{
+                                //    pathData = "M6 0.394531C2.96243 0.394531 0.5 2.85697 0.5 5.89453C0.5 8.9321 2.96243 11.3945 6 11.3945H25C28.0376 11.3945 30.5 8.9321 30.5 5.89453C30.5 2.85697 28.0376 0.394531 25 0.394531H6ZM7 5.39453C6.72386 5.39453 6.5 5.61839 6.5 5.89453C6.5 6.17067 6.72386 6.39453 7 6.39453H24C24.2761 6.39453 24.5 6.17067 24.5 5.89453C24.5 5.61839 24.2761 5.39453 24 5.39453H7Z";
+                                //}
+                                //else if (item.StartsWith("DisplayPort"))
+                                //{
+                                //    pathData = "M2.5 0.183594C1.39543 0.183594 0.5 1.07902 0.5 2.18359V9.55121C0.5 10.2537 0.868598 10.9048 1.47101 11.2662L7.52498 14.8986C7.83581 15.0851 8.19148 15.1836 8.55397 15.1836H50.5C51.6046 15.1836 52.5 14.2882 52.5 13.1836V7.68359V2.18359C52.5 1.07902 51.6046 0.183594 50.5 0.183594H2.5ZM14 7.18359C13.7239 7.18359 13.5 7.40745 13.5 7.68359C13.5 7.95974 13.7239 8.18359 14 8.18359H40C40.2761 8.18359 40.5 7.95974 40.5 7.68359C40.5 7.40745 40.2761 7.18359 40 7.18359H14Z";
+                                //}
                                 _inputsList.Add(new InputSourceList()
                                 {
                                     PathData = pathData,
@@ -690,14 +758,15 @@ namespace DDPM.UI.Module.Kvm
                             _usbsList.Clear();
                             foreach (string str in usbsList)
                             {
-                                if (str.StartsWith("USB-C") || str.StartsWith("Thunderbolt"))
-                                {
-                                    pathData = "M6 0.394531C2.96243 0.394531 0.5 2.85697 0.5 5.89453C0.5 8.9321 2.96243 11.3945 6 11.3945H25C28.0376 11.3945 30.5 8.9321 30.5 5.89453C30.5 2.85697 28.0376 0.394531 25 0.394531H6ZM7 5.39453C6.72386 5.39453 6.5 5.61839 6.5 5.89453C6.5 6.17067 6.72386 6.39453 7 6.39453H24C24.2761 6.39453 24.5 6.17067 24.5 5.89453C24.5 5.61839 24.2761 5.39453 24 5.39453H7Z";
-                                }
-                                else if (str.StartsWith("USB-B"))
-                                {
-                                    pathData = "M0.5 14.1064C0.5 13.7835 0.655966 13.4804 0.918762 13.2927L3.58124 11.3909C3.84403 11.2032 4 10.9001 4 10.5772V1.5918C4 1.03951 4.44771 0.591797 5 0.591797H22C22.5523 0.591797 23 1.03951 23 1.5918V10.5772C23 10.9001 23.156 11.2032 23.4188 11.3909L26.0812 13.2927C26.344 13.4804 26.5 13.7835 26.5 14.1064V31.5918C26.5 32.1441 26.0523 32.5918 25.5 32.5918H1.5C0.947715 32.5918 0.5 32.1441 0.5 31.5918V14.1064ZM4.5 16.5918C4.5 16.0395 4.94772 15.5918 5.5 15.5918H21.5C22.0523 15.5918 22.5 16.0395 22.5 16.5918V25.5918C22.5 26.1441 22.0523 26.5918 21.5 26.5918H5.5C4.94772 26.5918 4.5 26.1441 4.5 25.5918V16.5918ZM20.5 3.5918C20.5 3.03951 20.0523 2.5918 19.5 2.5918H7.5C6.94772 2.5918 6.5 3.03951 6.5 3.5918V5.5918C6.5 6.14408 6.94772 6.5918 7.5 6.5918H19.5C20.0523 6.5918 20.5 6.14408 20.5 5.5918V3.5918Z";
-                                }
+                                pathData = InputTypeCommon.GetInputImage(str);
+                                //if (str.StartsWith("USB-C") || str.StartsWith("Thunderbolt"))
+                                //{
+                                //    pathData = "M6 0.394531C2.96243 0.394531 0.5 2.85697 0.5 5.89453C0.5 8.9321 2.96243 11.3945 6 11.3945H25C28.0376 11.3945 30.5 8.9321 30.5 5.89453C30.5 2.85697 28.0376 0.394531 25 0.394531H6ZM7 5.39453C6.72386 5.39453 6.5 5.61839 6.5 5.89453C6.5 6.17067 6.72386 6.39453 7 6.39453H24C24.2761 6.39453 24.5 6.17067 24.5 5.89453C24.5 5.61839 24.2761 5.39453 24 5.39453H7Z";
+                                //}
+                                //else if (str.StartsWith("USB-B"))
+                                //{
+                                //    pathData = "M0.5 14.1064C0.5 13.7835 0.655966 13.4804 0.918762 13.2927L3.58124 11.3909C3.84403 11.2032 4 10.9001 4 10.5772V1.5918C4 1.03951 4.44771 0.591797 5 0.591797H22C22.5523 0.591797 23 1.03951 23 1.5918V10.5772C23 10.9001 23.156 11.2032 23.4188 11.3909L26.0812 13.2927C26.344 13.4804 26.5 13.7835 26.5 14.1064V31.5918C26.5 32.1441 26.0523 32.5918 25.5 32.5918H1.5C0.947715 32.5918 0.5 32.1441 0.5 31.5918V14.1064ZM4.5 16.5918C4.5 16.0395 4.94772 15.5918 5.5 15.5918H21.5C22.0523 15.5918 22.5 16.0395 22.5 16.5918V25.5918C22.5 26.1441 22.0523 26.5918 21.5 26.5918H5.5C4.94772 26.5918 4.5 26.1441 4.5 25.5918V16.5918ZM20.5 3.5918C20.5 3.03951 20.0523 2.5918 19.5 2.5918H7.5C6.94772 2.5918 6.5 3.03951 6.5 3.5918V5.5918C6.5 6.14408 6.94772 6.5918 7.5 6.5918H19.5C20.0523 6.5918 20.5 6.14408 20.5 5.5918V3.5918Z";
+                                //}
                                 _usbsList.Add(new USBList()
                                 {
                                     Type = str,
@@ -707,34 +776,55 @@ namespace DDPM.UI.Module.Kvm
                             }
                             PCInputsList = _inputsList;
                             USBsList = _usbsList;
-                            _PC1selectInput = _inputsList.Find(x => (x.Type == KvmModule.SelectedHomeDevice.MonitorInfo.inputSource));
-                            _PC1selectUSB = _usbsList.Find(x => (x.Type == pcsList["PC1"].USBUpstream));
-                            _PC2selectInput = _inputsList.Find(x => (x.Type == pcsList["PC2"].InputType));
-                            _PC2selectUSB = _usbsList.Find(x => (x.Type == pcsList["PC2"].USBUpstream));
-                            InputName1 = pcsList["PC1"].InputName;
-                            InputName2 = pcsList["PC2"].InputName;
-                            if (pcsList.Count >= 3)
+                            if (pcsList.TryGetValue("PC1", out var pc1) && pcsList.TryGetValue("PC2", out var pc2))
                             {
-                                _PC3selectInput = _inputsList.Find(x => (x.Type == pcsList["PC3"].InputType));
-                                _PC3selectUSB = _usbsList.Find(x => (x.Type == pcsList["PC3"].USBUpstream));
-                                InputName3 = pcsList["PC3"].InputName;
-                                PC3_Visibility = Visibility.Visible;
-                                if (pcsList.Count == 4)
+                                _PC1selectInput = _inputsList.Find(x => (x.Type == KvmModule.SelectedHomeDevice.MonitorInfo.inputSource));
+                                _PC1selectUSB = _usbsList.Find(x => (x.Type == pcsList["PC1"].USBUpstream));
+                                _PC2selectInput = _inputsList.Find(x => (x.Type == pcsList["PC2"].InputType));
+                                _PC2selectUSB = _usbsList.Find(x => (x.Type == pcsList["PC2"].USBUpstream));
+                                InputName1 = pcsList["PC1"].InputName;
+                                InputName2 = pcsList["PC2"].InputName;
+                                if (pcsList.Count >= 3)
                                 {
-                                    _PC4selectInput = _inputsList.Find(x => (x.Type == pcsList["PC4"].InputType));
-                                    _PC4selectUSB = _usbsList.Find(x => (x.Type == pcsList["PC4"].USBUpstream));
-                                    InputName4 = pcsList["PC4"].InputName;
-                                    PC4_Visibility = Visibility.Visible;
-                                    PCImage = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/USBKVM_4PCs.png");
+                                    if (pcsList.TryGetValue("PC3", out var pc3))
+                                    {
+                                        _PC3selectInput = _inputsList.Find(x => (x.Type == pcsList["PC3"].InputType));
+                                        _PC3selectUSB = _usbsList.Find(x => (x.Type == pcsList["PC3"].USBUpstream));
+                                        InputName3 = pcsList["PC3"].InputName;
+                                        PC3_Visibility = Visibility.Visible;
+                                        if (pcsList.Count == 4)
+                                        {
+                                            if (pcsList.TryGetValue("PC4", out var pc4))
+                                            {
+                                                _PC4selectInput = _inputsList.Find(x => (x.Type == pcsList["PC4"].InputType));
+                                                _PC4selectUSB = _usbsList.Find(x => (x.Type == pcsList["PC4"].USBUpstream));
+                                                InputName4 = pcsList["PC4"].InputName;
+                                                PC4_Visibility = Visibility.Visible;
+                                                PCImage = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/USBKVM_4PCs.png");
+                                            }
+                                            else
+                                            {
+                                                _log.Debug("PC4 not found in pcsList.");
+                                            }
+                                        }
+                                        else
+                                        {
+                                            PCImage = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/USBKVM_3PCs.png");
+                                        }
+                                    }
+                                    else
+                                    {
+                                        _log.Debug("PC3 not found in pcsList.");
+                                    }
                                 }
                                 else
                                 {
-                                    PCImage = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/USBKVM_3PCs.png");
+                                    PCImage = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/USBKVM_2PCs.png");
                                 }
                             }
                             else
                             {
-                                PCImage = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/USBKVM_2PCs.png");
+                                _log.Debug("PC1 or PC2 not found in pcsList.");
                             }
                         }
                     }
@@ -750,91 +840,99 @@ namespace DDPM.UI.Module.Kvm
                     OnPropertyChanged("PCImage");
 
                     #region PIP/PIP
-
-                    //Get the Pxp Capabilities
-                    _pipPbpCaps = DdpmCommonHelper.DeviceManagerSA.GetPipPbpCapabilitiesWords(mi).Result;
-                    OnPipPbpCapsChanged();
-
-                    //Check if this monitor has Pxp mode capabilities
-                    if ((_pipPbpCaps != null) && (_pipPbpCaps.Length > 0))
+                    if (mi.CapabilityDic.ContainsKey("E8"))
                     {
-                        //Get current monitor's Pxp mode
-                        ObjGetVCP ret = DdpmCommonHelper.DeviceManagerSA.GetPxpMode(mi).Result;
-                        if (ret.result)
+                        isPxP = Visibility.Visible;
+                        NoPxP = Visibility.Collapsed;
+                        //Get the Pxp Capabilities
+                        _pipPbpCaps = DdpmCommonHelper.DeviceManagerSA.GetPipPbpCapabilitiesWords(mi).Result;
+                        OnPipPbpCapsChanged();
+
+                        //Check if this monitor has Pxp mode capabilities
+                        if ((_pipPbpCaps != null) && (_pipPbpCaps.Length > 0))
                         {
-                            //UInt64 u64 = (UInt64)ret.result;
-                            _curPxpMode = Convert.ToUInt16(ret.value);
-                            PxPCode = _curPxpMode;
-                            VideoSwapContent = PxPcodeDictionary[_curPxpMode];
-                            switch (_curPxpMode)
+                            //Get current monitor's Pxp mode
+                            ObjGetVCP ret = DdpmCommonHelper.DeviceManagerSA.GetPxpMode(mi).Result;
+                            if (ret.result)
                             {
-                                case 0x11:
-                                    isPipSmall = true;
-                                    isPipLarge = false;
-                                    isPBP = false;
-                                    break;
+                                //UInt64 u64 = (UInt64)ret.result;
+                                _curPxpMode = Convert.ToUInt16(ret.value);
+                                PxPCode = _curPxpMode;
+                                VideoSwapContent = PxPcodeDictionary[_curPxpMode];
+                                switch (_curPxpMode)
+                                {
+                                    case 0x11:
+                                        isPipSmall = true;
+                                        isPipLarge = false;
+                                        isPBP = false;
+                                        break;
 
-                                case 0x12:
-                                    isPipSmall = true;
-                                    isPipLarge = false;
-                                    isPBP = false;
-                                    break;
+                                    case 0x12:
+                                        isPipSmall = true;
+                                        isPipLarge = false;
+                                        isPBP = false;
+                                        break;
 
-                                case 0x24:
-                                case 0x2F:
-                                case 0x26:
-                                case 0x28:
-                                case 0x2A:
-                                case 0x2C:
-                                case 0x2E:
-                                case 0x25:
-                                case 0x27:
-                                case 0x29:
-                                case 0x2B:
-                                case 0x2D:
-                                case 0x31:
-                                case 0x32:
-                                case 0x33:
-                                case 0x34:
-                                case 0x35:
-                                case 0x41:
-                                case 0x42:
-                                    isPipSmall = false;
-                                    isPipLarge = false;
-                                    isPBP = true;
-                                    break;
+                                    case 0x24:
+                                    case 0x2F:
+                                    case 0x26:
+                                    case 0x28:
+                                    case 0x2A:
+                                    case 0x2C:
+                                    case 0x2E:
+                                    case 0x25:
+                                    case 0x27:
+                                    case 0x29:
+                                    case 0x2B:
+                                    case 0x2D:
+                                    case 0x31:
+                                    case 0x32:
+                                    case 0x33:
+                                    case 0x34:
+                                    case 0x35:
+                                    case 0x41:
+                                    case 0x42:
+                                        isPipSmall = false;
+                                        isPipLarge = false;
+                                        isPBP = true;
+                                        break;
 
-                                default:
-                                    isPipSmall = false;
-                                    isPipLarge = false;
-                                    isPBP = false;
-                                    break;
+                                    default:
+                                        isPipSmall = false;
+                                        isPipLarge = false;
+                                        isPBP = false;
+                                        break;
+                                }
                             }
+                        }
+                        else
+                        {
+                            isUSBKVMButton = false;
+                            USBKVMButtonOpacity = 0.5;
+                        }
+
+                        //Get current Main InputSource from MonitorInfo
+                        //
+                        string currentInput = mi.inputSource;
+                        MainInputSource = new InputSourceObj(currentInput);
+
+                        //Get Sub inputs
+                        //List<InputSourceObj> subInputs = DdpmCommonHelper.DeviceManagerSA.GetSubInputs(mi).Result;
+
+                        if (subInputs != null)
+                        {
+                            SubInputs = subInputs;
+                        }
+                        else
+                        {
+                            //Not support SubInput or fail to query
                         }
                     }
                     else
                     {
-                        isUSBKVMButton = false;
-                        USBKVMButtonOpacity = 0.5;
+                        NoPxP = Visibility.Visible;
+                        isPxP = Visibility.Collapsed;
                     }
-
-                    //Get current Main InputSource from MonitorInfo
-                    //
-                    string currentInput = mi.inputSource;
-                    MainInputSource = new InputSourceObj(currentInput);
-
-                    //Get Sub inputs
-                    //List<InputSourceObj> subInputs = DdpmCommonHelper.DeviceManagerSA.GetSubInputs(mi).Result;
-
-                    if (subInputs != null)
-                    {
-                        SubInputs = subInputs;
-                    }
-                    else
-                    {
-                        //Not support SubInput or fail to query
-                    }
-
                     #endregion PIP/PIP
 
                     //ConnectionType = KvmModule.SelectedHomeDevice.ConnectionType;
@@ -848,10 +946,6 @@ namespace DDPM.UI.Module.Kvm
                     //OnPropertyChanged("NoBattery");
                     //OnPropertyChanged("Text1");
                 }
-                //else
-                //{
-                //    SupportUSBKVM = Visibility.Collapsed;
-                //}
             }
             catch (Exception)
             {
@@ -890,23 +984,37 @@ namespace DDPM.UI.Module.Kvm
 
         private void SelectUSB(string usb, string pcnum)
         {
-            pcsList[pcnum].USBUpstream = usb;
-            //bool b = DdpmCommonHelper.DeviceManagerSA.SetUSBKVMPCsList(KvmModule.SelectedHomeDevice.MonitorInfo, pcsList).Result;
-            OnPropertyChanged("PC1USB_Selected");
-            OnPropertyChanged("PC2USB_Selected");
-            OnPropertyChanged("PC3USB_Selected");
-            OnPropertyChanged("PC4USB_Selected");
+            if (pcsList.TryGetValue(pcnum, out var pc))
+            {
+                pcsList[pcnum].USBUpstream = usb;
+                //bool b = DdpmCommonHelper.DeviceManagerSA.SetUSBKVMPCsList(KvmModule.SelectedHomeDevice.MonitorInfo, pcsList).Result;
+                OnPropertyChanged("PC1USB_Selected");
+                OnPropertyChanged("PC2USB_Selected");
+                OnPropertyChanged("PC3USB_Selected");
+                OnPropertyChanged("PC4USB_Selected");
+            }
+            else
+            {
+                _log.Debug(pcnum + " not found in pcsList.");
+            }
         }
 
         public void CurrentInputChange()
         {
-            if (pcsList["PC1"].InputType != KvmModule.SelectedHomeDevice.MonitorInfo.inputSource)
+            if (pcsList.TryGetValue("PC1", out var pc1))
             {
-                bool b = DdpmCommonHelper.DeviceManagerSA.SetVCPCapability(KvmModule.SelectedHomeDevice.MonitorInfo, "Input Select", pcsList["PC1"].InputType).Result;
-                if (b)
+                if (pcsList["PC1"].InputType != KvmModule.SelectedHomeDevice.MonitorInfo.inputSource)
                 {
-                    KvmModule.SelectedHomeDevice.MonitorInfo.inputSource = pcsList["PC1"].InputType;
+                    bool b = DdpmCommonHelper.DeviceManagerSA.SetVCPCapability(KvmModule.SelectedHomeDevice.MonitorInfo, "Input Select", pcsList["PC1"].InputType).Result;
+                    if (b)
+                    {
+                        KvmModule.SelectedHomeDevice.MonitorInfo.inputSource = pcsList["PC1"].InputType;
+                    }
                 }
+            }
+            else
+            {
+                _log.Debug("PC1 not found in pcsList.");
             }
         }
 
@@ -1309,8 +1417,15 @@ namespace DDPM.UI.Module.Kvm
             if (!DdpmCommonHelper.DeviceManagerSA.IsNamedpipeConnected().Result)
             {
                 DdpmCommonHelper.DeviceManagerSA.CreatNewNamedpipe().Wait();
+                //DdpmCommonHelper.DeviceManagerSA.CallShowNKVM(0, 100, 100).Wait();
+                OpenNKVMUI(0, 100, 100);
             }
-            OpenNKVMUI(0, 100, 100);
+            else
+            {
+                //DdpmCommonHelper.DeviceManagerSA.CallShowNKVM(0, 100, 100).Wait();
+                OpenNKVMUI(0, 100, 100);
+            }
+
             isOnNKVM(true);
         }
         private void NKVMOpenUI_Done(object sender, RunWorkerCompletedEventArgs e)
@@ -1330,5 +1445,85 @@ namespace DDPM.UI.Module.Kvm
             OnPropertyChanged("USBKVM_Opacity");
             OnPropertyChanged("LockUSBKVM_Visibility");
         }
+
+        #region Event
+        /// <summary>
+        /// Catch OSD menu event
+        /// </summary>
+        /// <param name="sender">object type</param>
+        /// <param name="e">changed event</param>
+        private void OnVCPChangedEvent(object? sender, VCPchangedEventArgs e)
+        {
+            if (e.vcpcode.Equals("E7"))
+            {
+                pcsList = new Dictionary<string, PCsInfo>();
+                usbsList = new List<string>();
+                pcsList = DdpmCommonHelper.DeviceManagerSA.GetUSBKVMPCsList(KvmModule.SelectedHomeDevice.MonitorInfo, inputList, subInputs).Result;
+                usbsList = DdpmCommonHelper.DeviceManagerSA.GetUSBUpstreamList(KvmModule.SelectedHomeDevice.MonitorInfo).Result;
+                if ((inputList != null) && (pcsList.Count > 0))   // 2024-06-19 Elie, fix exception.
+                {
+                    string pathData = string.Empty;
+                    _usbsList.Clear();
+                    if (usbsList != null && usbsList.Count != 0)
+                    {
+                        foreach (string str in usbsList)
+                        {
+                            pathData = InputTypeCommon.GetInputImage(str);
+                            _usbsList.Add(new USBList()
+                            {
+                                Type = str,
+                                PathData = pathData,
+                                kvmModule = KvmModule
+                            });
+                        }
+                        USBsList = _usbsList;
+                        if (pcsList.TryGetValue("PC1", out var pc1) && pcsList.TryGetValue("PC2", out var pc2))
+                        {
+                            _PC1selectUSB = _usbsList.Find(x => (x.Type == pcsList["PC1"].USBUpstream));
+                            _PC2selectUSB = _usbsList.Find(x => (x.Type == pcsList["PC2"].USBUpstream));
+                            if (pcsList.Count >= 3)
+                            {
+                                if (pcsList.TryGetValue("PC3", out var pc3))
+                                {
+                                    _PC3selectUSB = _usbsList.Find(x => (x.Type == pcsList["PC3"].USBUpstream));
+                                    if (pcsList.Count == 4)
+                                    {
+                                        if (pcsList.TryGetValue("PC4", out var pc4))
+                                        {
+                                            _PC4selectUSB = _usbsList.Find(x => (x.Type == pcsList["PC4"].USBUpstream));
+                                        }
+                                        else
+                                        {
+                                            _log.Debug("PC4 not found in pcsList.");
+                                        }
+                                    }
+                                }
+                                else
+                                {
+                                    _log.Debug("PC3 not found in pcsList.");
+                                }
+                            }
+                            OnPropertyChanged("PC1USB_Selected");
+                            OnPropertyChanged("PC2USB_Selected");
+                            OnPropertyChanged("PC3USB_Selected");
+                            OnPropertyChanged("PC4USB_Selected");
+                        }
+                        else
+                        {
+                            _log.Debug("PC1 or PC2 not found in pcsList.");
+                        }
+                    }
+                    else
+                    {
+                        _log.Debug("[KvmViewModel] usbsList is null or count is 0");
+                    }
+                }
+                else
+                {
+                    _log.Debug("[KvmViewModel] inputList is null or count is 0");
+                }
+            }
+        }
+        #endregion
     }
 }

@@ -49,7 +49,7 @@
             <Border
                 Width="366"
                 Height="135"
-                Background="#141D28"
+                Background="{DynamicResource Default_SA_OSD_Border_BkColor}"
                 BorderBrush="#0DFFFFFF"
                 BorderThickness="1.5"
                 CornerRadius="5"
@@ -61,17 +61,14 @@
                         <RowDefinition Height="*" />
                     </Grid.RowDefinitions>
 
-                    <Image
-                        x:Name="CloseIcon"
-                        Grid.Row="0"
-                        Width="16"
-                        Height="16"
-                        Margin="0,10,10,0"
-                        HorizontalAlignment="Right"
-                        VerticalAlignment="Top"
-                        MouseLeftButtonDown="close_Click"
-                        Source="./Img/Close.png"
-                        Stretch="Fill" />
+                    <!--Close-->
+                    <Canvas Grid.Row="0" Width="16" Height="16" Margin="0,10,10,0" 
+                            HorizontalAlignment="Right" VerticalAlignment="Top" 
+                            MouseLeftButtonDown="close_Click" 
+                            Tag="{DynamicResource Default_SA_OSD_PathColor}">
+                        <Path Data="M16,0.82 L15.18,0 L8,7.2 L0.82,0.05 L0,0.87 L7.15,8 L0.05,15.13 L0.87,16 L8,8.85 L15.13,16 L15.95,15.18 L8.8,8 L16,0.82 Z" 
+                            Fill="{Binding Tag, RelativeSource={RelativeSource AncestorType=Canvas}}" />
+                    </Canvas>
 
                     <Grid Grid.Row="1">
 
@@ -80,13 +77,18 @@
                             <RowDefinition Height="50*" />
                         </Grid.RowDefinitions>
 
-                        <Image
-                            Grid.Row="0"
-                            Width="35"
-                            Height="35"
-                            HorizontalAlignment="Center"
-                            VerticalAlignment="Top"
-                            Source="./Img/Headset.png" />
+                        <!--Headset-->
+                        <Canvas Grid.Row="0"
+                                Width="35" Height="35"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Top" 
+                                Tag="{DynamicResource Default_SA_OSD_PathColor}">
+                            <Canvas.Clip>
+                                <RectangleGeometry Rect="0,0,35,35" />
+                            </Canvas.Clip>
+                            <Path Data="M18 -0.000238569C16.2417 -0.0674173 14.4876 0.215547 12.8396 0.832207C11.1916 1.44887 9.68265 2.38693 8.40037 3.59186C7.11809 4.7968 6.08808 6.24458 5.37022 7.85106C4.65235 9.45755 4.26095 11.1907 4.21875 12.9498V22.5091H5.90312V22.881C5.90312 23.4929 6.02364 24.0988 6.2578 24.6641C6.49195 25.2294 6.83516 25.743 7.26782 26.1757C7.70049 26.6083 8.21413 26.9516 8.77943 27.1857C9.34474 27.4199 9.95062 27.5404 10.5625 27.5404H12.75V15.3123H10.5625C9.75111 15.3167 8.95496 15.533 8.25283 15.9397C7.55071 16.3464 6.96697 16.9294 6.55937 17.631V12.9498C6.60138 11.4979 6.93214 10.069 7.53234 8.74635C8.13254 7.42372 8.99016 6.23387 10.0552 5.24625C11.1202 4.25864 12.3712 3.49303 13.7353 2.99411C15.0993 2.4952 16.5491 2.27297 18 2.34039C19.4512 2.25755 20.9042 2.46954 22.2712 2.96357C23.6383 3.45761 24.8911 4.22345 25.9541 5.2149C27.0171 6.20634 27.8682 7.40284 28.4562 8.73221C29.0441 10.0616 29.3567 11.4963 29.375 12.9498V17.631C28.9731 16.9389 28.3997 16.3619 27.71 15.9558C27.0204 15.5497 26.2377 15.328 25.4375 15.3123H23.25V27.5404H25.4375C26.2489 27.5359 27.045 27.3196 27.7472 26.9129C28.4493 26.5062 29.033 25.9232 29.4406 25.2216V28.9623L22.375 32.6591H19.1594V30.6248H16.8406V34.9998H22.9875L31.7375 30.3623V12.8623C31.7043 11.1081 31.3198 9.37838 30.6067 7.77537C29.8935 6.17237 28.8662 4.72862 27.5855 3.52947C26.3048 2.33032 24.7966 1.40012 23.1502 0.793855C21.5038 0.187591 19.7526 -0.0824278 18 -0.000238569ZM8.24375 19.9716C8.2428 19.3787 8.469 18.808 8.87585 18.3767C9.28271 17.9455 9.83931 17.6864 10.4312 17.6529V25.1998C9.83931 25.1662 9.28271 24.9072 8.87585 24.4759C8.469 24.0446 8.2428 23.4739 8.24375 22.881V19.9716ZM27.7563 22.881C27.7572 23.4739 27.531 24.0446 27.1241 24.4759C26.7173 24.9072 26.1607 25.1662 25.5688 25.1998V17.6529C26.1607 17.6864 26.7173 17.9455 27.1241 18.3767C27.531 18.808 27.7572 19.3787 27.7563 19.9716V22.881Z"
+                               Fill="{Binding Tag, RelativeSource={RelativeSource AncestorType=Canvas}}" />
+                        </Canvas>
 
                         <StackPanel
                             Grid.Row="1"
@@ -101,7 +103,7 @@
                                 FontFamily="Roboto"
                                 FontSize="14"
                                 FontWeight="Medium"
-                                Foreground="#FFFFFF"
+                                Foreground="{DynamicResource Default_SA_OSD_PathColor}"
                                 Text="" />
 
                             <TextBlock
@@ -110,7 +112,7 @@
                                 FontFamily="Roboto"
                                 FontSize="14"
                                 FontWeight="Medium"
-                                Foreground="#FFFFFF"
+                                Foreground="{DynamicResource Default_SA_OSD_PathColor}"
                                 Text="{Binding [Battery_Low], Source={x:Static lang:LangHelper.Instance}, Mode=OneWay}" />
                         </StackPanel>
                     </Grid>
