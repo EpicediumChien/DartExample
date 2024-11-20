@@ -79,6 +79,7 @@ namespace DDPM.CLI.Plugins.Display
 
         #endregion Constructor
 
+        
         #region interface implementation
 
         private bool input_param_validation(IDeviceManagerSA devMgr, CommandLineInput commandLineInput, ref CLIEventResult result)

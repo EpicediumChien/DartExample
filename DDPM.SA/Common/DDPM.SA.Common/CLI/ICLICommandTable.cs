@@ -704,7 +704,7 @@ namespace DDPM.SA.Common
             public static readonly List<Dictionary<string, object>> FeatureList = new List<Dictionary<string, object>>
             {
                 // Display | Application settings 
-                new Dictionary<string, object> {{ "TargetType", "DISPLAY" }, { "TargetFeature", "AutoColorPreset" },            { "Value", "N/A" },         { "Type", 0 }},
+                new Dictionary<string, object> {{ "TargetType", "DISPLAY" }, { "TargetFeature", "AutoColorPreset" },            { "Value", "N/A" },         { "Type", 0 },  { "VCP", "" } },
                 new Dictionary<string, object> {{ "TargetType", "DISPLAY" }, { "TargetFeature", "AutoColorPreset" },            { "Value", "N/A" },         { "Type", 1 }},
                 new Dictionary<string, object> {{ "TargetType", "DISPLAY" }, { "TargetFeature", "NetworkKVMVersion" },          { "Value", "N/A" },         { "Type", 0 }},
                 new Dictionary<string, object> {{ "TargetType", "DISPLAY" }, { "TargetFeature", "ChangeMonitorId" },            { "Value", "[id]" },        { "Type", 1 }},  // ChangeMonitorId[id]
@@ -731,8 +731,8 @@ namespace DDPM.SA.Common
                 new Dictionary<string, object> {{ "TargetType", "DISPLAY" }, { "TargetFeature", "FWVersion" },                  { "Value", "N/A" }, { "Type", 0 }},
                 new Dictionary<string, object> {{ "TargetType", "DISPLAY" }, { "TargetFeature", "BrightnessLevel" },            { "Value", "N/A" }, { "Type", 0 }},
                 new Dictionary<string, object> {{ "TargetType", "DISPLAY" }, { "TargetFeature", "BrightnessLevel" },            { "Value", "[Level]" }, { "Type", 1 }},
-                new Dictionary<string, object> {{ "TargetType", "DISPLAY" }, { "TargetFeature", "ContrastLevel" },              { "Value", "N/A" }, { "Type", 0 }},
-                new Dictionary<string, object> {{ "TargetType", "DISPLAY" }, { "TargetFeature", "ContrastLevel" },              { "Value", "[Level]" }, { "Type", 1 }},
+                new Dictionary<string, object> {{ "TargetType", "DISPLAY" }, { "TargetFeature", "ContrastLevel" },              { "Value", "N/A" }, { "Type", 0 },      { "VCP", "12"}},// 10? LuminanceLevel
+                new Dictionary<string, object> {{ "TargetType", "DISPLAY" }, { "TargetFeature", "ContrastLevel" },              { "Value", "[Level]" }, { "Type", 1 },  { "VCP", "12"}},// 10? LuminanceLevel
                 new Dictionary<string, object> {{ "TargetType", "DISPLAY" }, { "TargetFeature", "ColorPreset" },                { "Value", "N/A" }, { "Type", 0 }},
                 new Dictionary<string, object> {{ "TargetType", "DISPLAY" }, { "TargetFeature", "ColorPreset" },                { "Value", "[BT.709 or movie or etc.]" }, { "Type", 1 }},
                 new Dictionary<string, object> {{ "TargetType", "DISPLAY" }, { "TargetFeature", "ActiveInputSource" },          { "Value", "N/A" }, { "Type", 0 }},
@@ -802,8 +802,8 @@ namespace DDPM.SA.Common
                 //new Dictionary<string, object> {{ "TargetType", "DISPLAY" }, { "TargetFeature", "CapabilitiesString" },        { "Value", "N/A" }, { "Type", 0 }}, // TO CHECK
                 //new Dictionary<string, object> {{ "TargetType", "DISPLAY" }, { "TargetFeature", "AdvancedControl" },           { "Value", "N/A" }, { "Type", 1 }}, // TO DROP
 
-                new Dictionary<string, object> {{ "TargetType", "DISPLAY" }, { "TargetFeature", "Orientation" },               { "Value", "N/A" }, { "Type", 0 }},
-                new Dictionary<string, object> {{ "TargetType", "DISPLAY" }, { "TargetFeature", "Orientation" },               { "Value", "N/A" }, { "Type", 1 }},
+                new Dictionary<string, object> {{ "TargetType", "DISPLAY" }, { "TargetFeature", "Orientation" },               { "Value", "N/A" }, { "Type", 0 },   { "VCP", "AA"}},
+                new Dictionary<string, object> {{ "TargetType", "DISPLAY" }, { "TargetFeature", "Orientation" },               { "Value", "N/A" }, { "Type", 1 },   { "VCP", "AA"}},
 
                 // new Dictionary<string, object> {{ "TargetType", "DISPLAY" }, { "TargetFeature", "LockRotate" },                { "Value", "N/A" }, { "Type", 0 }},
                 // new Dictionary<string, object> {{ "TargetType", "DISPLAY" }, { "TargetFeature", "LockRotate" },                { "Value", "N/A" }, { "Type", 1 }},
@@ -941,6 +941,22 @@ namespace DDPM.SA.Common
             {
                 var targetFeatures = FeatureList
                     .Where(f => f["TargetType"].ToString().Equals(targetType, StringComparison.OrdinalIgnoreCase))
+                    .Select(f => f["TargetFeature"].ToString())
+                    .Distinct()
+                    .ToList();
+
+                var result = new Dictionary<string, List<string>>
+                {
+                    { targetType, targetFeatures }
+                };
+                string json = JsonConvert.SerializeObject(result, Formatting.Indented);
+                Console.WriteLine(json);
+            }
+
+            public static void PrintFormattedJsonTargetFeature(string targetType, Dictionary<string, List<string>> vcpList)
+            {
+                var targetFeatures = FeatureList
+                    .Where(f => (f["TargetType"].ToString().Equals(targetType, StringComparison.OrdinalIgnoreCase)) && vcpList.ContainsKey(f["VCP"].ToString()))
                     .Select(f => f["TargetFeature"].ToString())
                     .Distinct()
                     .ToList();

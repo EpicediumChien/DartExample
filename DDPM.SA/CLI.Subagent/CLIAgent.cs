@@ -128,11 +128,11 @@ namespace CLI.Subagent
             }
 
             // 2024-08-24 Casper: Add Help command
-            if (commandLineInput.Command.Equals("HELP"))
-            {
-                _exitcode = ICLICommandTable.Response_HelpCommand(commandLineInput);
-                return;
-            }
+            //if (commandLineInput.Command.Equals("HELP"))
+            //{
+            //    _exitcode = ICLICommandTable.Response_HelpCommand(commandLineInput);
+            //    return;
+            //}
 
             if (commandLineInput.DeviceIndex.Contains("-1"))
             {
