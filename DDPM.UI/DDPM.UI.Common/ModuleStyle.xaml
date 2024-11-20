@@ -1378,6 +1378,9 @@
 
     <!-- Dialog end-->
 
+    <BitmapImage x:Key="mouse_setting_title_back" UriSource="pack://application:,,,/DDPM.UI.Resources;component/Resources/Images/arrow-left.png" />
+    <BitmapImage x:Key="title_back" UriSource="pack://application:,,,/DDPM.UI.Resources;component/Resources/Images/arrow-left.png" />
+
     <!--leo add end-->
 
 
