@@ -1,6 +1,7 @@
 ﻿using DDPM.SA.Common;
 using DDPM.SA.Common.Settings;
 using DDPM.UI.Common;
+using DDPM.UI.Common.Method;
 using DDPM.UI.Plugin.ViewModels;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
@@ -162,7 +163,7 @@ namespace DDPM.UI.Module.WebCameraSettings
         //  Jim add 20240628
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
-            if (_vm != null && _vm.MediaCapture != null)
+           if (_vm != null && _vm.MediaCapture != null)
             {
                 if (_vm.MediaCapture.VideoDeviceController.Zoom.Capabilities.Supported)
                 {
@@ -202,6 +203,8 @@ namespace DDPM.UI.Module.WebCameraSettings
                     //}
                 }
             }
+            NarratorModeSupport.RecurseUitems(start  );
+
         }
 
         private void SetZoomLevel(float level)
