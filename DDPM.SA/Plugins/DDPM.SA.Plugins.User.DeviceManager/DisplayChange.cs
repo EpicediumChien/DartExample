@@ -104,6 +104,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 };
             }
 
+            private readonly object lockObj = new();
+
             protected override void WndProc(ref Message m)
             {
                 base.WndProc(ref m);
@@ -111,7 +113,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 {
                     case WM_DISPLAYCHANGE:
                         _logs.DebugMsg_1($"WM_DISPLAYCHANGE");
-                        lock (this)
+                        lock (lockObj)
                         {
                             displayInOut = false;
                             // Cancel any previous delay task
