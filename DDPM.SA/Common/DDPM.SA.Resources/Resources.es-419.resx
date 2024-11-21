@@ -204,7 +204,7 @@
   <data name="Failed_to_open_application" xml:space="preserve">
     <value>No se pudo abrir la aplicación</value>
   </data>
-  <data name="will_be_updated_to " xml:space="preserve">
+  <data name="will_be_updated_to" xml:space="preserve">
     <value>se actualizará a </value>
   </data>
   <data name="can_be_updated_to" xml:space="preserve">
@@ -241,7 +241,7 @@
     <value>Haga doble clic con el botón izquierdo del mouse para iniciar la actualización del firmware</value>
   </data>
   <data name="M2_Please_press_key_on_keyboard_to_start_firmware_update" xml:space="preserve">
-    <value>Presione la tecla \&quot;U\&quot; en el teclado para iniciar la actualización del firmware</value>
+    <value>Presione la tecla \"U\" en el teclado para iniciar la actualización del firmware</value>
   </data>
   <data name="A0_Device_connected" xml:space="preserve">
     <value>Dispositivo conectado</value>

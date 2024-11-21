@@ -133,6 +133,8 @@ namespace DDPM.SA.Common
 
         Task<Dictionary<string, PCsInfo>> GetUSBKVMPCsList(MonitorInfo monitorInfo, Dictionary<string, InputInfo> inputList, List<InputSourceObj> subInputList);
 
+        Task<bool> isScreenPartition(MonitorInfo monitorInfo);
+
         #endregion USBKVM
 
         #region EasyArange
@@ -164,6 +166,12 @@ namespace DDPM.SA.Common
 
         public Task<bool> SetEASelectedLayout(MonitorInfo monitorInfo, SplitJson spJson);
 
+        /// <summary>
+        /// Return current Span across multiple monitor option is Enabled/Disabled;
+        /// Note that it's different with EzSettings.IsSpanAcrossMultiMonitors (=ON|OFF)
+        /// </summary>
+        /// <returns>True=Enabled; False=Disabled</returns>
+        public Task<bool> GetIsSpanEnabled();
         #endregion EasyArange
 
         #region Gaming

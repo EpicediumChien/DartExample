@@ -189,6 +189,20 @@
                     </WrapPanel>
                 </Grid>
             </TabItem>
+            <TabItem Header="SpanMonitors">
+                <ScrollViewer>
+                    <StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="IsSpanEnabled="/>
+                            <TextBlock Text="{Binding IsSpanEnabled}"/>
+                            <TextBlock Text=", IsHorzSpan="/>
+                            <TextBlock Text="{Binding IsHorzSpan}"/>
+                            <CheckBox IsChecked="{Binding IsSpanMultiMonitors, Mode=TwoWay}" Content="IsSpanMultiMonitors"
+                                      Margin="8,0,0,0" Click="IsSpanMultipleMonitorsCheckbox_Click"/>
+                        </StackPanel>
+                    </StackPanel>
+                </ScrollViewer>
+            </TabItem>
         </TabControl>
         
         <!-- Row 0: Window Moving info -->

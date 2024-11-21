@@ -41,6 +41,10 @@ namespace DDPM.EABroker
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             idText.Text=_screenId.ToString();
+
+            //Hide window from Alt+tab
+            System.Windows.Interop.WindowInteropHelper wndHelper = new System.Windows.Interop.WindowInteropHelper(this);
+            Win32Lib.Win32.HideWinFromAltTab(wndHelper.Handle);
         }
 
         public int GetScreenId()

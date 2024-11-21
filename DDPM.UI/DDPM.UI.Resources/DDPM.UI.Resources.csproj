@@ -9,10 +9,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <EmbeddedResource Remove="Resources.zh-TW.resx" />
-  </ItemGroup>
-
-  <ItemGroup>
     <None Remove="Resources\Images\Alert.png" />
     <None Remove="Resources\Images\arrow-left.png" />
 	<None Remove="Resources\Images\arrow-left-light.png" />
