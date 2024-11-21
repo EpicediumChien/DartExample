@@ -147,7 +147,7 @@
             <Grid VerticalAlignment="Top" HorizontalAlignment="Left">
                 <StackPanel Orientation="Vertical">
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
-                        <Image Margin="64,21,0,0" Source="/DDPM.UI.Resources;component/Resources/Images/arrow-left.png" Stretch="Fill"
+                        <Image Margin="64,21,0,0" Source="{DynamicResource title_back}" Stretch="Fill"
                                VerticalAlignment="Top" HorizontalAlignment="Left" Cursor="" Width="24" Height="24">
                             <Image.InputBindings>
                                 <MouseBinding Gesture="LeftClick" Command="{Binding GoBackClickedCommand, Mode=OneTime}" />
@@ -193,7 +193,7 @@
                                     <ColumnDefinition Width="*"/>
                                     <ColumnDefinition Width="auto"/>
                                 </Grid.ColumnDefinitions>
-                                <UXControls:UXTextBlock Name="txtRestore" Foreground="#F5F6F7" VerticalAlignment="Center" Grid.Column="0"
+                                <UXControls:UXTextBlock Name="txtRestore" Foreground="{DynamicResource txtUnpair_TxtColor}" VerticalAlignment="Center" Grid.Column="0"
                                                         HorizontalAlignment="Center" FontFamily="Roboto" FontSize="14" Text="{Binding [RestoreToDefault], Source={x:Static lang:LangHelper.Instance}}"/>
                                 <Image Grid.Column="1" Name="RestoreLockIcon" Visibility="Collapsed" Margin="0,0,6,0"
                                        Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Lock.png"

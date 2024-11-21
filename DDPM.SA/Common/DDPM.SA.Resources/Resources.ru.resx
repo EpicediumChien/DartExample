@@ -204,7 +204,7 @@
   <data name="Failed_to_open_application" xml:space="preserve">
     <value>Не удалось открыть приложение</value>
   </data>
-  <data name="will_be_updated_to " xml:space="preserve">
+  <data name="will_be_updated_to" xml:space="preserve">
     <value>будет обновлено до </value>
   </data>
   <data name="can_be_updated_to" xml:space="preserve">

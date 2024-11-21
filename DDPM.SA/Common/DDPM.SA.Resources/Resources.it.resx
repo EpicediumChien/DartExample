@@ -136,10 +136,10 @@
     <value>Aggiornamento non riuscito a causa di un errore di rete. Riprovare.</value>
   </data>
   <data name="Dock_FW_is_loaded" xml:space="preserve">
-    <value>Il firmware del dock è caricato. Scollegare il dock per completare l&apos;applicazione del firmware e ricollegarlo dopo 1 min.</value>
+    <value>Il firmware del dock è caricato. Scollegare il dock per completare l'applicazione del firmware e ricollegarlo dopo 1 min.</value>
   </data>
   <data name="Dock_UOD_FW_update_info" xml:space="preserve">
-    <value>Informazioni sull&apos;aggiornamento del firmware UOD del dock</value>
+    <value>Informazioni sull'aggiornamento del firmware UOD del dock</value>
   </data>
   <data name="Firmware_update_unsuccessful" xml:space="preserve">
     <value>Aggiornamento del firmware non riuscito.</value>
@@ -154,7 +154,7 @@
     <value>Il firmware del dock è in fase di caricamento. Non scollegare il dock.</value>
   </data>
   <data name="Dock_FW_is_loaded_successful" xml:space="preserve">
-    <value>Il firmware del dock è stato caricato correttamente. Scollegare il dock per completare l&apos;applicazione del firmware e ricollegarlo dopo 1 min.</value>
+    <value>Il firmware del dock è stato caricato correttamente. Scollegare il dock per completare l'applicazione del firmware e ricollegarlo dopo 1 min.</value>
   </data>
   <data name="Dock_FW_loaded_failed" xml:space="preserve">
     <value>Caricamento del firmware del dock non riuscito.</value>
@@ -202,9 +202,9 @@
     <value>ID non valido. Fornire un ID azione valido.</value>
   </data>
   <data name="Failed_to_open_application" xml:space="preserve">
-    <value>Impossibile aprire l&apos;applicazione</value>
+    <value>Impossibile aprire l'applicazione</value>
   </data>
-  <data name="will_be_updated_to " xml:space="preserve">
+  <data name="will_be_updated_to" xml:space="preserve">
     <value>sarà aggiornato a </value>
   </data>
   <data name="can_be_updated_to" xml:space="preserve">
@@ -214,13 +214,13 @@
     <value>Aggiornamento disponibile</value>
   </data>
   <data name="UpdateWillBeApplied" xml:space="preserve">
-    <value>L&apos;aggiornamento verrà applicato</value>
+    <value>L'aggiornamento verrà applicato</value>
   </data>
   <data name="UpdateAvailable_Info" xml:space="preserve">
-    <value>Il dispositivo e/o l&apos;applicazione verranno aggiornati. Il dispositivo e/o l&apos;applicazione potrebbero essere disponibili in modo intermittente. Non scollegare il dispositivo durante l&apos;aggiornamento.</value>
+    <value>Il dispositivo e/o l'applicazione verranno aggiornati. Il dispositivo e/o l'applicazione potrebbero essere disponibili in modo intermittente. Non scollegare il dispositivo durante l'aggiornamento.</value>
   </data>
   <data name="UpdateWillBeApplied_Info" xml:space="preserve">
-    <value>Il dispositivo e/o l&apos;applicazione verranno aggiornati. Il dispositivo e/o l&apos;applicazione potrebbero essere disponibili in modo intermittente. Non scollegare il dispositivo durante l&apos;aggiornamento.</value>
+    <value>Il dispositivo e/o l'applicazione verranno aggiornati. Il dispositivo e/o l'applicazione potrebbero essere disponibili in modo intermittente. Non scollegare il dispositivo durante l'aggiornamento.</value>
   </data>
   <data name="UpdateNow" xml:space="preserve">
     <value>Aggiorna ora</value>
@@ -238,10 +238,10 @@
     <value>Errore di timeout</value>
   </data>
   <data name="M1_Please_double_click_mouse_left_button_to_start_firmware_update" xml:space="preserve">
-    <value>Cliccare due volte con il pulsante sinistro del mouse per avviare l&apos;aggiornamento del firmware</value>
+    <value>Cliccare due volte con il pulsante sinistro del mouse per avviare l'aggiornamento del firmware</value>
   </data>
   <data name="M2_Please_press_key_on_keyboard_to_start_firmware_update" xml:space="preserve">
-    <value>Premere il tasto \&quot;U\&quot; sulla tastiera per avviare l&apos;aggiornamento del firmware</value>
+    <value>Premere il tasto \"U\" sulla tastiera per avviare l'aggiornamento del firmware</value>
   </data>
   <data name="A0_Device_connected" xml:space="preserve">
     <value>Dispositivo connesso</value>
@@ -253,13 +253,13 @@
     <value>Aggiornamento del firmware eseguito correttamente</value>
   </data>
   <data name="E4_USB_wireless_receiver_firmware_is_unable_to_support_device_firmware_upgrade" xml:space="preserve">
-    <value>Il firmware del ricevitore senza fili USB non supporta l&apos;aggiornamento del firmware del dispositivo</value>
+    <value>Il firmware del ricevitore senza fili USB non supporta l'aggiornamento del firmware del dispositivo</value>
   </data>
   <data name="update_failed_with_unknown_error" xml:space="preserve">
     <value>aggiornamento non riuscito con errore sconosciuto</value>
   </data>
   <data name="User_aborted_firmware_update" xml:space="preserve">
-    <value>Aggiornamento del firmware interrotto dall&apos;utente</value>
+    <value>Aggiornamento del firmware interrotto dall'utente</value>
   </data>
   <data name="Installing" xml:space="preserve">
     <value>Installazione</value>
@@ -271,7 +271,7 @@
     <value>Download e installazione</value>
   </data>
   <data name="DDPM_will_reopen_soon_after_update" xml:space="preserve">
-    <value>Il DDPM verrà riaperto subito dopo l&apos;aggiornamento</value>
+    <value>Il DDPM verrà riaperto subito dopo l'aggiornamento</value>
   </data>
   <data name="Processing" xml:space="preserve">
     <value>Elaborazione</value>
@@ -427,7 +427,7 @@
     <value>Disponi finestre</value>
   </data>
   <data name="EA_MSG_0" xml:space="preserve">
-    <value>Modificare la disposizione corrente delle finestre, modificare il nome (se desiderato) e cliccare su &quot;Salva&quot; per memorizzare la disposizione.</value>
+    <value>Modificare la disposizione corrente delle finestre, modificare il nome (se desiderato) e cliccare su "Salva" per memorizzare la disposizione.</value>
   </data>
   <data name="Battery_Low" xml:space="preserve">
     <value>Batteria scarica</value>

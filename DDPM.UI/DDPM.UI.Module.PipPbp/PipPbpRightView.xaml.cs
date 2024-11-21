@@ -36,8 +36,8 @@ namespace DDPM.UI.Module.PipPbp
             pipSmall.InnerContent = new SplitCtrl1A(null) { Description = "PIP Small" };
             pipLarge.InnerContent = new SplitCtrl1B(null) { Description = "PIP Large" };
 
-            //_vm.On
-            _vm.RefreshData();
+            //Robert_Lin, 2024-11-20 Do not RefreshData at ctor, it will  call RefreshData in Onactivate() later
+            //_vm.RefreshData();
         }
 
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
@@ -167,6 +167,11 @@ namespace DDPM.UI.Module.PipPbp
         private void usbSwitchButton_Click(object sender, RoutedEventArgs e)
         {
             vm.ExecuteUsbSwitch();
+        }
+
+        private void cbMainInput_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+
         }
     }
 }

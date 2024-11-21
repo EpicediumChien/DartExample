@@ -10,263 +10,263 @@
              d:DataContext="{d:DesignInstance Type=plugin:PenViewModel}"
              mc:Ignorable="d"
              d:DesignHeight="675" d:DesignWidth="320" VerticalAlignment="Top" HorizontalAlignment="Left">
-  <UserControl.Resources>
-    <ResourceDictionary>
-      <ResourceDictionary.MergedDictionaries>
-        <ResourceDictionary Source="/DDPM.UI.Common;component/PluginStyles.xaml" />
-      </ResourceDictionary.MergedDictionaries>
-      <PluginCommon:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
-      <PluginCommon:HeightConverter x:Key="HeightConverter" />
-      <Style x:Key="UXTextBlockStyle1" TargetType="UXControls:UXTextBlock">
-        <Setter Property="Foreground" Value="White" />
-        <Setter Property="FontFamily" Value="Roboto" />
-        <Setter Property="FontSize" Value="20" />
-        <Setter Property="FontWeight" Value="Normal" />
-        <Setter Property="VerticalAlignment" Value="Center" />
-        <Setter Property="HorizontalAlignment" Value="Left" />
-      </Style>
-      <Style x:Key="Border1" TargetType="Border">
-        <Setter Property="Background" Value="#99132F54" />
-        <Setter Property="CornerRadius" Value="6" />
-        <Setter Property="Width" Value="288" />
-        <Setter Property="Height" Value="56" />
-        <Setter Property="VerticalAlignment" Value="Top" />
-        <Setter Property="BorderThickness" Value="1" />
-        <Setter Property="BorderBrush" Value="#1E3F6C" />
-      </Style>
-      <Style x:Key="Border2" TargetType="Border">
-        <Setter Property="Background" Value="#0F2641" />
-        <Setter Property="CornerRadius" Value="6" />
-        <Setter Property="Width" Value="288" />
-        <Setter Property="Height" Value="36" />
-        <Setter Property="VerticalAlignment" Value="Top" />
-        <Setter Property="BorderThickness" Value="1" />
-        <Setter Property="BorderBrush" Value="#1E3F6C" />
-      </Style>
-      <Style x:Key="TextStyle1" TargetType="UXControls:UXTextBlock">
-        <Setter Property="FontSize" Value="16" />
-        <Setter Property="FontFamily" Value="Roboto" />
-        <Setter Property="FontWeight" Value="Medium" />
-        <Setter Property="Foreground" Value="White" />
-      </Style>
-    </ResourceDictionary>
-  </UserControl.Resources>
-  <Grid Margin="0,0,0,15">
-    <Border Name="ParentBorder" Background="#99132F54" CornerRadius="13" Width="320" Margin="0,10,0,0">
-      <Border.Height>
-        <MultiBinding Converter="{StaticResource HeightConverter}">
-          <Binding Path="Height" RelativeSource="{RelativeSource AncestorType=Grid}" />
-        </MultiBinding>
-      </Border.Height>
-      <StackPanel Orientation="Vertical" Margin="16,16,16,0">
-        <StackPanel Orientation="Horizontal" Margin="0,12,0,0" Height="24">
-          <Image Name="imgBack" Margin="0,0,10,0" Source="/DDPM.UI.Resources;component/Resources/Images/Left.png" Stretch="Uniform"
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/DDPM.UI.Common;component/PluginStyles.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+            <PluginCommon:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
+            <PluginCommon:HeightConverter x:Key="HeightConverter" />
+            <Style x:Key="UXTextBlockStyle1" TargetType="UXControls:UXTextBlock">
+                <Setter Property="Foreground" Value="White" />
+                <Setter Property="FontFamily" Value="Roboto" />
+                <Setter Property="FontSize" Value="20" />
+                <Setter Property="FontWeight" Value="Normal" />
+                <Setter Property="VerticalAlignment" Value="Center" />
+                <Setter Property="HorizontalAlignment" Value="Left" />
+            </Style>
+            <Style x:Key="Border1" TargetType="Border">
+                <Setter Property="Background" Value="#99132F54" />
+                <Setter Property="CornerRadius" Value="6" />
+                <Setter Property="Width" Value="288" />
+                <Setter Property="Height" Value="56" />
+                <Setter Property="VerticalAlignment" Value="Top" />
+                <Setter Property="BorderThickness" Value="1" />
+                <Setter Property="BorderBrush" Value="#1E3F6C" />
+            </Style>
+            <Style x:Key="Border2" TargetType="Border">
+                <Setter Property="Background" Value="#0F2641" />
+                <Setter Property="CornerRadius" Value="6" />
+                <Setter Property="Width" Value="288" />
+                <Setter Property="Height" Value="36" />
+                <Setter Property="VerticalAlignment" Value="Top" />
+                <Setter Property="BorderThickness" Value="1" />
+                <Setter Property="BorderBrush" Value="#1E3F6C" />
+            </Style>
+            <Style x:Key="TextStyle1" TargetType="UXControls:UXTextBlock">
+                <Setter Property="FontSize" Value="16" />
+                <Setter Property="FontFamily" Value="Roboto" />
+                <Setter Property="FontWeight" Value="Medium" />
+                <Setter Property="Foreground" Value="White" />
+            </Style>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <Grid Margin="0,0,0,15">
+        <Border Name="ParentBorder" Background="{DynamicResource MouseSettingMenu_BgColor99}" CornerRadius="13" Width="320" Margin="0,10,0,0">
+            <Border.Height>
+                <MultiBinding Converter="{StaticResource HeightConverter}">
+                    <Binding Path="Height" RelativeSource="{RelativeSource AncestorType=Grid}" />
+                </MultiBinding>
+            </Border.Height>
+            <StackPanel Orientation="Vertical" Margin="16,16,16,0">
+                <StackPanel Orientation="Horizontal" Margin="0,12,0,0" Height="24">
+                    <Image Name="imgBack" Margin="0,0,10,0" Source="{DynamicResource left_img}" Stretch="Uniform"
                            HorizontalAlignment="Left" VerticalAlignment="Center" Cursor="Hand" Width="16" Height="16" MouseLeftButtonDown="GoBackClicked">
-          </Image>
-          <UXControls:UXTextBlock Name="txtCaption" FontSize="20" Foreground="White" FontFamily="Roboto"
+                    </Image>
+                    <UXControls:UXTextBlock Name="txtCaption" FontSize="20" Style="{StaticResource txtCaptionStyle}" FontFamily="Roboto"
                                             VerticalAlignment="Center" HorizontalAlignment="Left" Focusable="True" />
-        </StackPanel>
-        <Line X1="0" Y1="17" X2="288" Y2="17" Stroke="#1E3F6C" StrokeThickness="1" />
-        <StackPanel Orientation="Vertical" x:Name="Section1" Margin="0,0,0,2000" Visibility="Collapsed">
-          <UXControls:UXTextBlock Name="txtMessage" FontSize="16" Foreground="White" FontFamily="Roboto" FontWeight="Medium" TextWrapping="Wrap"
+                </StackPanel>
+                <Line X1="0" Y1="17" X2="288" Y2="17" Stroke="#1E3F6C" StrokeThickness="1" />
+                <StackPanel Orientation="Vertical" x:Name="Section1" Margin="0,0,0,2000" Visibility="Collapsed">
+                    <UXControls:UXTextBlock Name="txtMessage" FontSize="16" Foreground="{DynamicResource txtMessage_TxtColor}"  FontFamily="Roboto" FontWeight="Medium" TextWrapping="Wrap"
                                             Margin="0,18,0,0" Width="290" LineHeight="24" VerticalAlignment="Top" HorizontalAlignment="Left" />
 
-          <Border x:Name="btnRestore" Style="{StaticResource Button1BorderStyle}" Cursor="Hand" Width="245" Height="40" IsEnabled="{Binding IsRestoreEnable}" MouseLeftButtonDown="btnRestoreClicked" Margin="0,431,0,0">
-            <UXControls:UXTextBlock Name="txtRestore" Style="{StaticResource Button1TextStyle}" IsEnabled="{Binding IsRestoreEnable}" />
-          </Border>
-        </StackPanel>
-        <StackPanel Orientation="Vertical" x:Name="Section2" Margin="0,16,0,5000">
-          <StackPanel x:Name="HoverClick" Orientation="Horizontal">
-            <Grid Width="288">
-              <UXControls:UXTextBlock Name="txtHoverClick" Style="{StaticResource TextStyle1}" Margin="0,10,0,25" VerticalAlignment="Center" HorizontalAlignment="Left" />
-              <UXControls:UXToggleSwitch Margin="0,10,0,25" IsChecked="{Binding IsHoverClickOn}" HorizontalAlignment="Right" VerticalAlignment="Center"
+                    <Border x:Name="btnRestore" Style="{StaticResource Button1BorderStyle}" Cursor="Hand" Width="245" Height="40" IsEnabled="{Binding IsRestoreEnable}" MouseLeftButtonDown="btnRestoreClicked" Margin="0,431,0,0">
+                        <UXControls:UXTextBlock Name="txtRestore" Style="{StaticResource Button1TextStyle}" IsEnabled="{Binding IsRestoreEnable}" />
+                    </Border>
+                </StackPanel>
+                <StackPanel Orientation="Vertical" x:Name="Section2" Margin="0,16,0,5000">
+                    <StackPanel x:Name="HoverClick" Orientation="Horizontal">
+                        <Grid Width="288">
+                            <UXControls:UXTextBlock Name="txtHoverClick" Style="{StaticResource TextStyle1}" Margin="0,10,0,25" VerticalAlignment="Center" HorizontalAlignment="Left" />
+                            <UXControls:UXToggleSwitch Margin="0,10,0,25" IsChecked="{Binding IsHoverClickOn}" HorizontalAlignment="Right" VerticalAlignment="Center"
                                                        Foreground="White" FontFamily="Roboto" FontSize="16" FontWeight="Normal"
                                                        Content="{Binding IsHoverClickToggleText}" />
-            </Grid>
-          </StackPanel>
-          <Border Style="{StaticResource SearchBoxBorderStyle}" Margin="0,0,0,8">
-            <Grid>
-              <UXControls:UXTextBox AutomationProperties.Name="TextBoxWithWaterMark"  Name="txtSearchText" Width="270" Height="0" Margin="12,-.8,0,0" Watermark="Search actions"
-                                                  VerticalContentAlignment="Top" HorizontalAlignment="Left" Background="#0F2641" BorderThickness="0" Foreground="#FFFFFF" MaxLength="30" PreviewTextInput="txtSearchText_PreviewTextInput"
+                        </Grid>
+                    </StackPanel>
+                    <Border Style="{StaticResource SearchBoxBorderStyle}" Margin="0,0,0,8">
+                        <Grid>
+                            <UXControls:UXTextBox AutomationProperties.Name="TextBoxWithWaterMark"  Name="txtSearchText" Width="270" Height="0" Margin="12,-.8,0,0" Watermark="Search actions"
+                                                  VerticalContentAlignment="Top" HorizontalAlignment="Left" Background="{DynamicResource SearchTextBox_BgColor}" Foreground="{DynamicResource SearchTextBox_FgColor}"  BorderThickness="0" MaxLength="30" PreviewTextInput="txtSearchText_PreviewTextInput"
                                                   TextChanged="SearchBox_TextChanged" IsEnabled="{Binding IsSearchEnabled}" PreviewKeyDown="txtSearchText_PreviewKeyDown" />
-              <Image Margin="7,0,18,0" Source="/DDPM.UI.Resources;component/Resources/Images/Search.png" Stretch="Uniform"
+                            <Image Margin="7,0,18,0" Source="{DynamicResource Search_img}" Stretch="Uniform"
                                    HorizontalAlignment="Left" VerticalAlignment="Center" Cursor="" Width="12" Height="12" />
-            </Grid>
-          </Border>
-          <StackPanel Name="Behaviors">
-            <Border Name="bdrClickOnce" MouseLeftButtonDown="Behavior_MouseLeftButtonDown" Cursor="Hand">
-              <Grid HorizontalAlignment="Left" Width="288" Height="45" Margin="0,0,0,0">
-                <UXControls:UXTextBlock Name="txtClickOnce" Style="{StaticResource UXTextBlockStyle1}" />
-                <Image Name="imgClickOnce" Source="/DDPM.UI.Resources;component/Resources/Images/Down.png" Stretch="Uniform"
+                        </Grid>
+                    </Border>
+                    <StackPanel Name="Behaviors">
+                        <Border Name="bdrClickOnce" MouseLeftButtonDown="Behavior_MouseLeftButtonDown" Cursor="Hand">
+                            <Grid HorizontalAlignment="Left" Width="288" Height="45" Margin="0,0,0,0">
+                                <UXControls:UXTextBlock Name="txtClickOnce" Style="{StaticResource UXTextBlockStyle1}" />
+                                <Image Name="imgClickOnce" Source="{DynamicResource down_Expand}" Stretch="Uniform"
                                        Style="{StaticResource ActionArrowStyle}" HorizontalAlignment="Right" VerticalAlignment="Center" Cursor="Hand" Width="16" Height="16">
-                </Image>
-              </Grid>
-            </Border>
-            <Border Name="bdrDoubleClick" MouseLeftButtonDown="Behavior_MouseLeftButtonDown" Cursor="Hand">
-              <Grid HorizontalAlignment="Left" Width="288" Height="45">
-                <UXControls:UXTextBlock Name="txtDoubleClick" Style="{StaticResource UXTextBlockStyle1}" />
-                <Image Name="imgDoubleClick" Source="/DDPM.UI.Resources;component/Resources/Images/Down.png" Stretch="Uniform"
+                                </Image>
+                            </Grid>
+                        </Border>
+                        <Border Name="bdrDoubleClick" MouseLeftButtonDown="Behavior_MouseLeftButtonDown" Cursor="Hand">
+                            <Grid HorizontalAlignment="Left" Width="288" Height="45">
+                                <UXControls:UXTextBlock Name="txtDoubleClick" Style="{StaticResource UXTextBlockStyle1}" />
+                                <Image Name="imgDoubleClick" Source="{DynamicResource down_Expand}" Stretch="Uniform"
                                        Style="{StaticResource ActionArrowStyle}" HorizontalAlignment="Right" VerticalAlignment="Center" Cursor="Hand" Width="16" Height="16">
-                </Image>
-              </Grid>
-            </Border>
-            <Border Name="bdrPressAndHold" MouseLeftButtonDown="Behavior_MouseLeftButtonDown" Cursor="Hand">
-              <Grid HorizontalAlignment="Left" Width="288" Height="45">
-                <UXControls:UXTextBlock Name="txtPressAndHold" Style="{StaticResource UXTextBlockStyle1}" />
-                <Image Name="imgPressAndHold" Source="/DDPM.UI.Resources;component/Resources/Images/Down.png" Stretch="Uniform"
+                                </Image>
+                            </Grid>
+                        </Border>
+                        <Border Name="bdrPressAndHold" MouseLeftButtonDown="Behavior_MouseLeftButtonDown" Cursor="Hand">
+                            <Grid HorizontalAlignment="Left" Width="288" Height="45">
+                                <UXControls:UXTextBlock Name="txtPressAndHold" Style="{StaticResource UXTextBlockStyle1}" />
+                                <Image Name="imgPressAndHold" Source="{DynamicResource down_Expand}"  Stretch="Uniform"
                                        Style="{StaticResource ActionArrowStyle}" HorizontalAlignment="Right" VerticalAlignment="Center" Cursor="Hand" Width="16" Height="16">
-                </Image>
-              </Grid>
-            </Border>
-            <StackPanel x:Name="SectionAction" MouseLeftButtonDown="UnfocusSearchBox" Visibility="Collapsed">
-              <StackPanel Name="SectionAction2">
-                <Border Name="bdrSuggested" Style="{StaticResource ActionsBorderStyle}" MouseLeftButtonDown="SectionBorderClick" Margin="0,8,0,0" MouseEnter="SectionBorderMouseEnter" MouseLeave="SectionBorderMouseLeave" HorizontalAlignment="Right">
-                  <StackPanel>
-                    <Grid>
-                      <UXControls:UXTextBlock Name="txtSuggestedActions" Style="{StaticResource ActionsTextBlockStyle}" />
-                      <Image x:Name="imgSuggested" Source="/DDPM.UI.Resources;component/Resources/Images/Down.png" MouseLeftButtonDown="SectionButtonClick" HorizontalAlignment="Right" VerticalAlignment="Top"
+                                </Image>
+                            </Grid>
+                        </Border>
+                        <StackPanel x:Name="SectionAction" MouseLeftButtonDown="UnfocusSearchBox" Visibility="Collapsed">
+                            <StackPanel Name="SectionAction2">
+                                <Border Name="bdrSuggested" Style="{StaticResource ActionsBorderStyle}" MouseLeftButtonDown="SectionBorderClick" Margin="0,8,0,0" MouseEnter="SectionBorderMouseEnter" MouseLeave="SectionBorderMouseLeave" HorizontalAlignment="Right">
+                                    <StackPanel>
+                                        <Grid>
+                                            <UXControls:UXTextBlock Name="txtSuggestedActions" Style="{StaticResource ActionsTextBlockStyle}" />
+                                            <Image x:Name="imgSuggested" Source="{DynamicResource down_Expand}" MouseLeftButtonDown="SectionButtonClick" HorizontalAlignment="Right" VerticalAlignment="Top"
                                                    Style="{StaticResource ActionArrowStyle}" Margin="0,19,15,19">
-                      </Image>
-                    </Grid>
-                    <DockPanel Name="SuggestedPanel" Margin="0,-9,0,0" Visibility="Collapsed">
-                      <ItemsControl Name="SuggestedItems">
-                        <ItemsControl.ItemTemplate>
-                          <DataTemplate>
-                            <StackPanel>
-                              <UXControls:UXRadioButton Background="Black" Foreground="White" Margin="30,2,0,6" Tag="_A" Padding="8,0,0,0"
+                                            </Image>
+                                        </Grid>
+                                        <DockPanel Name="SuggestedPanel" Margin="0,-9,0,0" Visibility="Collapsed">
+                                            <ItemsControl Name="SuggestedItems">
+                                                <ItemsControl.ItemTemplate>
+                                                    <DataTemplate>
+                                                        <StackPanel>
+                                                            <UXControls:UXRadioButton Background="{DynamicResource ActionsRadio_BgColor}" Foreground="{DynamicResource ActionsRadio_FgColor}" TextBlock.Foreground="{DynamicResource ActionsRadio_TxtColor}" Margin="30,2,0,6" Tag="_A" Padding="8,0,0,0"
                                                                                       GroupName="OptionsA" Click="ActionRadioButton_Click" Loaded="ActionButtonLoaded" />
-                              <StackPanel Orientation="Horizontal" Margin="58,4,0,4" Tag="_A" Loaded="ActionButtonLoaded" Visibility="Collapsed">
-                                <common:ActionButton Style="{StaticResource EditActionButtonStyle}" Margin="0,0,7,0" Loaded="ActionButtonLoaded" Tag="Edit" MouseDown="EditActionClick" />
-                                <common:ActionButton Style="{StaticResource RemoveActionButtonStyle}" Loaded="ActionButtonLoaded" Tag="Remove" MouseDown="RemoveActionClick" />
-                              </StackPanel>
-                            </StackPanel>
-                          </DataTemplate>
-                        </ItemsControl.ItemTemplate>
-                      </ItemsControl>
-                      <Border  Margin="0,12,0,0" />
-                    </DockPanel>
-                  </StackPanel>
-                </Border>
-                <Border Name="bdrProductivity" Style="{StaticResource ActionsBorderStyle}" MouseLeftButtonDown="SectionBorderClick" Margin="0,16,0,0" MouseEnter="SectionBorderMouseEnter" MouseLeave="SectionBorderMouseLeave" HorizontalAlignment="Right">
-                  <StackPanel>
-                    <Grid>
-                      <UXControls:UXTextBlock Name="txtProductivityActions" Style="{StaticResource ActionsTextBlockStyle}" />
-                      <Image x:Name="imgProductivity" Source="/DDPM.UI.Resources;component/Resources/Images/Down.png" MouseLeftButtonDown="SectionButtonClick" HorizontalAlignment="Right" VerticalAlignment="Top"
+                                                            <StackPanel Orientation="Horizontal" Margin="58,4,0,4" Tag="_A" Loaded="ActionButtonLoaded" Visibility="Collapsed">
+                                                                <common:ActionButton Style="{StaticResource EditActionButtonStyle}" Margin="0,0,7,0" Loaded="ActionButtonLoaded" Tag="Edit" MouseDown="EditActionClick" />
+                                                                <common:ActionButton Style="{StaticResource RemoveActionButtonStyle}" Loaded="ActionButtonLoaded" Tag="Remove" MouseDown="RemoveActionClick" />
+                                                            </StackPanel>
+                                                        </StackPanel>
+                                                    </DataTemplate>
+                                                </ItemsControl.ItemTemplate>
+                                            </ItemsControl>
+                                            <!--<Border  Margin="0,12,0,0" />-->
+                                        </DockPanel>
+                                    </StackPanel>
+                                </Border>
+                                <Border Name="bdrProductivity" Style="{StaticResource ActionsBorderStyle}" MouseLeftButtonDown="SectionBorderClick" Margin="0,16,0,0" MouseEnter="SectionBorderMouseEnter" MouseLeave="SectionBorderMouseLeave" HorizontalAlignment="Right">
+                                    <StackPanel>
+                                        <Grid>
+                                            <UXControls:UXTextBlock Name="txtProductivityActions" Style="{StaticResource ActionsTextBlockStyle}" />
+                                            <Image x:Name="imgProductivity" Source="{DynamicResource down_Expand}" MouseLeftButtonDown="SectionButtonClick" HorizontalAlignment="Right" VerticalAlignment="Top"
                                                    Style="{StaticResource ActionArrowStyle}" Margin="0,19,15,19">
-                      </Image>
-                    </Grid>
-                    <DockPanel Name="ProductivityPanel" Margin="0,-9,0,12" Visibility="Collapsed">
-                      <DockPanel.Height>
-                        <MultiBinding Converter="{StaticResource HeightConverter}" ConverterParameter="330">
-                          <Binding Path="ActualHeight" RelativeSource="{RelativeSource AncestorType=Border, AncestorLevel=2}" />
-                        </MultiBinding>
-                      </DockPanel.Height>
-                      <UXControls:UXScrollViewer x:Name="svProductivity" VerticalScrollBarVisibility="Auto">
-                        <ItemsControl Name="ProductivityItems">
-                          <ItemsControl.ItemTemplate>
-                            <DataTemplate>
-                              <StackPanel>
-                                <UXControls:UXRadioButton Background="Black" Foreground="White" Margin="30,2,0,6" Tag="_A" Padding="8,0,0,0"
+                                            </Image>
+                                        </Grid>
+                                        <DockPanel Name="ProductivityPanel" Margin="0,-9,0,12" Visibility="Collapsed">
+                                            <DockPanel.Height>
+                                                <MultiBinding Converter="{StaticResource HeightConverter}" ConverterParameter="330">
+                                                    <Binding Path="ActualHeight" RelativeSource="{RelativeSource AncestorType=Border, AncestorLevel=2}" />
+                                                </MultiBinding>
+                                            </DockPanel.Height>
+                                            <UXControls:UXScrollViewer x:Name="svProductivity" VerticalScrollBarVisibility="Auto">
+                                                <ItemsControl Name="ProductivityItems">
+                                                    <ItemsControl.ItemTemplate>
+                                                        <DataTemplate>
+                                                            <StackPanel>
+                                                                <UXControls:UXRadioButton Background="{DynamicResource ActionsRadio_BgColor}" Foreground="{DynamicResource ActionsRadio_FgColor}" TextBlock.Foreground="{DynamicResource ActionsRadio_TxtColor}" Margin="30,2,0,6" Tag="_A" Padding="8,0,0,0"
                                                                                           GroupName="Options" Click="ActionRadioButton_Click" Loaded="ActionButtonLoaded" />
-                                <StackPanel Orientation="Horizontal" Margin="58,4,0,4" Tag="_A" Loaded="ActionButtonLoaded" Visibility="Collapsed">
-                                  <common:ActionButton Style="{StaticResource EditActionButtonStyle}" Margin="0,0,7,0" Loaded="ActionButtonLoaded" Tag="Edit" MouseDown="EditActionClick" />
-                                  <common:ActionButton Style="{StaticResource RemoveActionButtonStyle}" Loaded="ActionButtonLoaded" Tag="Remove" MouseDown="RemoveActionClick" />
-                                </StackPanel>
-                              </StackPanel>
-                            </DataTemplate>
-                          </ItemsControl.ItemTemplate>
-                        </ItemsControl>
-                      </UXControls:UXScrollViewer>
-                    </DockPanel>
-                  </StackPanel>
-                </Border>
-                <Border Name="bdrWindows" Style="{StaticResource ActionsBorderStyle}" MouseLeftButtonDown="SectionBorderClick" Margin="0,16,0,0" MouseEnter="SectionBorderMouseEnter" MouseLeave="SectionBorderMouseLeave" HorizontalAlignment="Right">
-                  <StackPanel>
-                    <Grid>
-                      <UXControls:UXTextBlock Name="txtWindowsActions" Style="{StaticResource ActionsTextBlockStyle}" />
-                      <Image x:Name="imgWindows" Source="/DDPM.UI.Resources;component/Resources/Images/Down.png" MouseLeftButtonDown="SectionButtonClick" HorizontalAlignment="Right" VerticalAlignment="Top"
+                                                                <StackPanel Orientation="Horizontal" Margin="58,4,0,4" Tag="_A" Loaded="ActionButtonLoaded" Visibility="Collapsed">
+                                                                    <common:ActionButton Style="{StaticResource EditActionButtonStyle}" Margin="0,0,7,0" Loaded="ActionButtonLoaded" Tag="Edit" MouseDown="EditActionClick" />
+                                                                    <common:ActionButton Style="{StaticResource RemoveActionButtonStyle}" Loaded="ActionButtonLoaded" Tag="Remove" MouseDown="RemoveActionClick" />
+                                                                </StackPanel>
+                                                            </StackPanel>
+                                                        </DataTemplate>
+                                                    </ItemsControl.ItemTemplate>
+                                                </ItemsControl>
+                                            </UXControls:UXScrollViewer>
+                                        </DockPanel>
+                                    </StackPanel>
+                                </Border>
+                                <Border Name="bdrWindows" Style="{StaticResource ActionsBorderStyle}" MouseLeftButtonDown="SectionBorderClick" Margin="0,16,0,0" MouseEnter="SectionBorderMouseEnter" MouseLeave="SectionBorderMouseLeave" HorizontalAlignment="Right">
+                                    <StackPanel>
+                                        <Grid>
+                                            <UXControls:UXTextBlock Name="txtWindowsActions" Style="{StaticResource ActionsTextBlockStyle}" />
+                                            <Image x:Name="imgWindows" Source="{DynamicResource down_Expand}" MouseLeftButtonDown="SectionButtonClick" HorizontalAlignment="Right" VerticalAlignment="Top"
                                                    Style="{StaticResource ActionArrowStyle}" Margin="0,19,15,19">
-                      </Image>
-                    </Grid>
-                    <DockPanel Name="WindowsPanel" Margin="0,-9,0,12" Visibility="Collapsed">
-                      <UXControls:UXScrollViewer x:Name="svWindows" VerticalScrollBarVisibility="Auto">
-                        <ItemsControl Name="WindowsItems">
-                          <ItemsControl.ItemTemplate>
-                            <DataTemplate>
-                              <StackPanel>
-                                <UXControls:UXRadioButton Background="Black" Foreground="White" Margin="30,2,0,6" Tag="_A" Padding="8,0,0,0"
+                                            </Image>
+                                        </Grid>
+                                        <DockPanel Name="WindowsPanel" Margin="0,-9,0,12" Visibility="Collapsed">
+                                            <UXControls:UXScrollViewer x:Name="svWindows" VerticalScrollBarVisibility="Auto">
+                                                <ItemsControl Name="WindowsItems">
+                                                    <ItemsControl.ItemTemplate>
+                                                        <DataTemplate>
+                                                            <StackPanel>
+                                                                <UXControls:UXRadioButton Background="{DynamicResource ActionsRadio_BgColor}" Foreground="{DynamicResource ActionsRadio_FgColor}" TextBlock.Foreground="{DynamicResource ActionsRadio_TxtColor}" Margin="30,2,0,6" Tag="_A" Padding="8,0,0,0"
                                                                                           GroupName="Options" Click="ActionRadioButton_Click" Loaded="ActionButtonLoaded" />
-                                <StackPanel Orientation="Horizontal" Margin="58,4,0,4" Tag="_A" Loaded="ActionButtonLoaded" Visibility="Collapsed">
-                                  <common:ActionButton Style="{StaticResource EditActionButtonStyle}" Margin="0,0,7,0" Loaded="ActionButtonLoaded" Tag="Edit" MouseDown="EditActionClick" />
-                                  <common:ActionButton Style="{StaticResource RemoveActionButtonStyle}" Loaded="ActionButtonLoaded" Tag="Remove" MouseDown="RemoveActionClick" />
-                                </StackPanel>
-                              </StackPanel>
-                            </DataTemplate>
-                          </ItemsControl.ItemTemplate>
-                        </ItemsControl>
-                      </UXControls:UXScrollViewer>
-                    </DockPanel>
-                  </StackPanel>
-                </Border>
-                <Border Name="bdrMultimedia" MaxHeight="420" Style="{StaticResource ActionsBorderStyle}" MouseLeftButtonDown="SectionBorderClick" Margin="0,16,0,0" MouseEnter="SectionBorderMouseEnter" MouseLeave="SectionBorderMouseLeave" HorizontalAlignment="Right">
-                  <StackPanel>
-                    <Grid>
-                      <UXControls:UXTextBlock Name="txtMultimediaActions" Style="{StaticResource ActionsTextBlockStyle}" />
-                      <Image x:Name="imgMultimedia" Source="/DDPM.UI.Resources;component/Resources/Images/Down.png" MouseLeftButtonDown="SectionButtonClick" HorizontalAlignment="Right" VerticalAlignment="Top"
+                                                                <StackPanel Orientation="Horizontal" Margin="58,4,0,4" Tag="_A" Loaded="ActionButtonLoaded" Visibility="Collapsed">
+                                                                    <common:ActionButton Style="{StaticResource EditActionButtonStyle}" Margin="0,0,7,0" Loaded="ActionButtonLoaded" Tag="Edit" MouseDown="EditActionClick" />
+                                                                    <common:ActionButton Style="{StaticResource RemoveActionButtonStyle}" Loaded="ActionButtonLoaded" Tag="Remove" MouseDown="RemoveActionClick" />
+                                                                </StackPanel>
+                                                            </StackPanel>
+                                                        </DataTemplate>
+                                                    </ItemsControl.ItemTemplate>
+                                                </ItemsControl>
+                                            </UXControls:UXScrollViewer>
+                                        </DockPanel>
+                                    </StackPanel>
+                                </Border>
+                                <Border Name="bdrMultimedia" MaxHeight="420" Style="{StaticResource ActionsBorderStyle}" MouseLeftButtonDown="SectionBorderClick" Margin="0,16,0,0" MouseEnter="SectionBorderMouseEnter" MouseLeave="SectionBorderMouseLeave" HorizontalAlignment="Right">
+                                    <StackPanel>
+                                        <Grid>
+                                            <UXControls:UXTextBlock Name="txtMultimediaActions" Style="{StaticResource ActionsTextBlockStyle}" />
+                                            <Image x:Name="imgMultimedia" Source="{DynamicResource down_Expand}" MouseLeftButtonDown="SectionButtonClick" HorizontalAlignment="Right" VerticalAlignment="Top"
                                                    Style="{StaticResource ActionArrowStyle}" Margin="0,19,15,19" Cursor="">
-                      </Image>
-                    </Grid>
-                    <DockPanel Name="MultimediaPanel" Margin="0,-9,0,12" Visibility="Collapsed">
-                      <UXControls:UXScrollViewer x:Name="svMultimedia" VerticalScrollBarVisibility="Auto">
-                        <ItemsControl Name="MultimediaItems">
-                          <ItemsControl.ItemTemplate>
-                            <DataTemplate>
-                              <StackPanel>
-                                <UXControls:UXRadioButton Background="Black" Foreground="White" Margin="30,2,0,6" Tag="_A" Padding="8,0,0,0"
+                                            </Image>
+                                        </Grid>
+                                        <DockPanel Name="MultimediaPanel" Margin="0,-9,0,12" Visibility="Collapsed">
+                                            <UXControls:UXScrollViewer x:Name="svMultimedia" VerticalScrollBarVisibility="Auto">
+                                                <ItemsControl Name="MultimediaItems">
+                                                    <ItemsControl.ItemTemplate>
+                                                        <DataTemplate>
+                                                            <StackPanel>
+                                                                <UXControls:UXRadioButton Background="{DynamicResource ActionsRadio_BgColor}" Foreground="{DynamicResource ActionsRadio_FgColor}" TextBlock.Foreground="{DynamicResource ActionsRadio_TxtColor}" Margin="30,2,0,6" Tag="_A" Padding="8,0,0,0"
                                                                                           GroupName="Options" Click="ActionRadioButton_Click" Loaded="ActionButtonLoaded" />
-                                <StackPanel Orientation="Horizontal" Margin="58,10,0,3.5" Tag="_A" Loaded="ActionButtonLoaded" Visibility="Collapsed">
-                                  <common:ActionButton Style="{StaticResource EditActionButtonStyle}" Margin="0,0,7,0" Loaded="ActionButtonLoaded" Tag="Edit" MouseDown="EditActionClick" />
-                                  <common:ActionButton Style="{StaticResource RemoveActionButtonStyle}" Loaded="ActionButtonLoaded" Tag="Remove" MouseDown="RemoveActionClick" />
-                                </StackPanel>
-                              </StackPanel>
-                            </DataTemplate>
-                          </ItemsControl.ItemTemplate>
-                        </ItemsControl>
-                      </UXControls:UXScrollViewer>
-                    </DockPanel>
-                  </StackPanel>
-                </Border>
-              </StackPanel>
-              <Border Name="bdrSearch" Style="{StaticResource SeachResultBorderStyle}" Margin="0" MinHeight="52" Visibility="Collapsed">
-                <StackPanel>
-                  <Grid>
-                    <UXControls:UXTextBlock Name="txtSearchResult" Style="{StaticResource ActionsTextBlockStyle}" Padding="0,0,0,20" />
-                  </Grid>
-                  <DockPanel Name="SearchPanel" Margin="0,-9,0,12">
-                    <!--<DockPanel.Height>
+                                                                <StackPanel Orientation="Horizontal" Margin="58,10,0,3.5" Tag="_A" Loaded="ActionButtonLoaded" Visibility="Collapsed">
+                                                                    <common:ActionButton Style="{StaticResource EditActionButtonStyle}" Margin="0,0,7,0" Loaded="ActionButtonLoaded" Tag="Edit" MouseDown="EditActionClick" />
+                                                                    <common:ActionButton Style="{StaticResource RemoveActionButtonStyle}" Loaded="ActionButtonLoaded" Tag="Remove" MouseDown="RemoveActionClick" />
+                                                                </StackPanel>
+                                                            </StackPanel>
+                                                        </DataTemplate>
+                                                    </ItemsControl.ItemTemplate>
+                                                </ItemsControl>
+                                            </UXControls:UXScrollViewer>
+                                        </DockPanel>
+                                    </StackPanel>
+                                </Border>
+                            </StackPanel>
+                            <Border Name="bdrSearch" Style="{StaticResource SeachResultBorderStyle}" Margin="0" MinHeight="52" Visibility="Collapsed">
+                                <StackPanel>
+                                    <Grid>
+                                        <UXControls:UXTextBlock Name="txtSearchResult" Style="{StaticResource ActionsTextBlockStyle}" Padding="0,0,0,20" />
+                                    </Grid>
+                                    <DockPanel Name="SearchPanel" Margin="0,-9,0,12">
+                                        <!--<DockPanel.Height>
                                         <MultiBinding Converter="{StaticResource HeightConverter}" ConverterParameter="207">
                                         <Binding Path="ActualHeight" RelativeSource="{RelativeSource AncestorType=Border, AncestorLevel=2}" />
                                         </MultiBinding>
                                         </DockPanel.Height>-->
-                    <UXControls:UXScrollViewer x:Name="svSearch" VerticalScrollBarVisibility="Auto">
-                      <ItemsControl Name="SearchItems">
-                        <ItemsControl.ItemTemplate>
-                          <DataTemplate>
-                            <StackPanel>
-                              <UXControls:UXRadioButton Background="Black" Foreground="White" Margin="30,2,0,6" Tag="search" Padding="8,0,0,0"
+                                        <UXControls:UXScrollViewer x:Name="svSearch" VerticalScrollBarVisibility="Auto">
+                                            <ItemsControl Name="SearchItems">
+                                                <ItemsControl.ItemTemplate>
+                                                    <DataTemplate>
+                                                        <StackPanel>
+                                                            <UXControls:UXRadioButton Background="{DynamicResource ActionsRadio_BgColor}" Foreground="{DynamicResource ActionsRadio_FgColor}" TextBlock.Foreground="{DynamicResource ActionsRadio_TxtColor}" Margin="30,2,0,6" Tag="search" Padding="8,0,0,0"
                                                                                       GroupName="search" Click="ActionRadioButton_Click" Loaded="ActionButtonLoaded" />
-                            </StackPanel>
-                          </DataTemplate>
-                        </ItemsControl.ItemTemplate>
-                      </ItemsControl>
-                    </UXControls:UXScrollViewer>
-                  </DockPanel>
+                                                        </StackPanel>
+                                                    </DataTemplate>
+                                                </ItemsControl.ItemTemplate>
+                                            </ItemsControl>
+                                        </UXControls:UXScrollViewer>
+                                    </DockPanel>
+                                </StackPanel>
+                            </Border>
+                        </StackPanel>
+                    </StackPanel>
                 </StackPanel>
-              </Border>
             </StackPanel>
-          </StackPanel>
-        </StackPanel>
-      </StackPanel>
-    </Border>
-  </Grid>
+        </Border>
+    </Grid>
 </UserControl>

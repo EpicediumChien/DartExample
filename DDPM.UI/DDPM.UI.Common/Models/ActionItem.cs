@@ -307,7 +307,7 @@ namespace DDPM.UI.Common
         {
             get
             {
-                return KnMActions.OrderBy(x => x.Value.Caption).Select(x => x.Key).ToList();
+                return KnMActions.Where(x => x.Value.Category != ActionCategory.None || x.Key == 0).OrderBy(x => x.Value.Caption).Select(x => x.Key).ToList();
             }
         }
 

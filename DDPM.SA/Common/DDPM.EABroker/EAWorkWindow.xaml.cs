@@ -18,6 +18,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using VcpCore.Common;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
+using Rectangle = System.Drawing.Rectangle;
 using Window = System.Windows.Window;
 
 namespace DDPM.EABroker
@@ -30,11 +31,13 @@ namespace DDPM.EABroker
         #region Private members
         private readonly ArrangeVM _vm;
         private Screen _workScreen;
+        private EAScreen _workEaScreen;
         private List<MonitorInfo> _attachedMonitors = new List<MonitorInfo>();
         private bool _isVertical = false;
         private ISplitCtrl? _workingSplit = null;
         private bool _isSplitCtrl0A = false;
         private readonly bool _isAwsBuddy;
+        private bool _isWorkForSpanScreen = false;
         #endregion
 
         #region Init
@@ -64,6 +67,13 @@ namespace DDPM.EABroker
             _workScreen = screen;
             _attachedMonitors = attachedMonitors;
             Dispatcher_MoveToScreen(screen);
+        }
+        public void SetWorkScreen(EAScreen screen, List<MonitorInfo> attachedMonitors)
+        {
+            _workEaScreen = screen;
+            _workScreen = _workEaScreen.FormsScreen;
+            _attachedMonitors = attachedMonitors;
+            Dispatcher_MoveToScreen(_workEaScreen.FormsScreen);
         }
 
 
@@ -105,6 +115,35 @@ namespace DDPM.EABroker
 
             return (mi.DisplayName.Equals(_workScreen.DeviceName));
         }
+
+        public void SetWorkScreenToSpanScreen()
+        {
+            if (!_vm.IsSpanEnabled)
+                return;
+            MonitorInfo? miPrimary = _vm.SpanScreen.GetPrimaryMonitor();
+
+            _isWorkForSpanScreen = true;
+            
+            //Set the Primary screen
+            _attachedMonitors = new List<MonitorInfo>();
+            _attachedMonitors.Add(miPrimary);
+
+            Dispatcher.BeginInvoke(new Action(() =>
+            {
+                double screenScale = _vm.ScreenScale;
+                Rectangle rcSpan = _vm.SpanScreen.WorkingArea;
+
+                Left = (double)rcSpan.Left / screenScale;
+                Top = rcSpan.Top / screenScale;
+                Width = rcSpan.Width / screenScale;
+                Height = rcSpan.Height / screenScale;
+                _isVertical = (Width < Height);
+                if (_workingSplit != null)
+                    _workingSplit.IsVertical = _isVertical;
+
+            }));
+
+        }
         #endregion
 
         #region Flags
@@ -112,7 +151,7 @@ namespace DDPM.EABroker
         #endregion
 
         #region [Input] Working SplitCtrl
-        public bool SetWorkingSplit(SplitJson splitJson)
+        public bool SetWorkingSplit(SplitJson splitJson, bool showFadeOut=false)
         {
             this.Dispatcher.Invoke(() =>
             {
@@ -186,6 +225,8 @@ namespace DDPM.EABroker
 
                     return;
                 }
+                if (!showFadeOut)
+                    return;
 
                 ISplitCtrl? fadeSplit = ISplitCtrl.Create(cellCount, splitKey);
                 if (fadeSplit != null)
@@ -585,6 +626,21 @@ namespace DDPM.EABroker
                 return outString;
             }
         }
+
+        #region Span
+        public bool IsWorkForSpanScreen => _isWorkForSpanScreen;
+        #endregion Span
+
+        #region InUse
+        public void ResetToUnused()
+        {
+            //Change the _working split
+            SetWorkingSplit(0, 'A');
+            //Clear InUse flag
+            IsUsed = false;
+        }
+
+        #endregion InUse
 
     }
 }

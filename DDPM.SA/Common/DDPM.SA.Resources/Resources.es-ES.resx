@@ -204,7 +204,7 @@
   <data name="Failed_to_open_application" xml:space="preserve">
     <value>No se ha podido abrir la aplicación</value>
   </data>
-  <data name="will_be_updated_to " xml:space="preserve">
+  <data name="will_be_updated_to" xml:space="preserve">
     <value>se actualizará a </value>
   </data>
   <data name="can_be_updated_to" xml:space="preserve">
@@ -241,7 +241,7 @@
     <value>Haga doble clic con el botón izquierdo del ratón para iniciar la actualización del firmware</value>
   </data>
   <data name="M2_Please_press_key_on_keyboard_to_start_firmware_update" xml:space="preserve">
-    <value>Pulse la tecla \&quot;U\&quot; del teclado para iniciar la actualización del firmware</value>
+    <value>Pulse la tecla \"U\" del teclado para iniciar la actualización del firmware</value>
   </data>
   <data name="A0_Device_connected" xml:space="preserve">
     <value>Dispositivo conectado</value>
@@ -427,7 +427,7 @@
     <value>Organizar ventanas</value>
   </data>
   <data name="EA_MSG_0" xml:space="preserve">
-    <value>Ajuste la disposición de ventanas actual, edite el nombre (si lo desea) y haga clic en &quot;Guardar&quot; para almacenar la disposición.</value>
+    <value>Ajuste la disposición de ventanas actual, edite el nombre (si lo desea) y haga clic en "Guardar" para almacenar la disposición.</value>
   </data>
   <data name="Battery_Low" xml:space="preserve">
     <value>Batería baja</value>
