@@ -306,6 +306,16 @@ namespace DDPM.SA.Common
 
         public Task<bool> WriteEACustomList(SplitJson[] customList);
 
+        public event EventHandler<EAArgs> EANotify;
+        public Task SendEANotify(EAArgs args);
+
+        /// <summary>
+        /// Return current Span across multiple monitor option is Enabled/Disabled;
+        /// Note that it's different with EzSettings.IsSpanAcrossMultiMonitors (=ON|OFF)
+        /// </summary>
+        /// <returns>True=Enabled; False=Disabled</returns>
+        public Task<bool> GetIsSpanEnabled();
+
         #endregion EasyArrange
 
         #region EasyMemory

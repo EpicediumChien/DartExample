@@ -36,6 +36,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using VcpCore.Common;
 using VcpCore.Interfaces;
+using static DDPM.SA.Common.Settings.DDPMUserSettings;
 using static VcpCore.Common.EDIDReader;
 using static VcpCore.Common.User32;
 using IDs = DDPM.SA.Common.IDs;
@@ -3238,6 +3239,23 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             return Task.FromResult(false);
         }
 
+        /// <summary>
+        /// Return current Span across multiple monitor option is Enabled/Disabled;
+        /// Note that it's different with EzSettings.IsSpanAcrossMultiMonitors (=ON|OFF)
+        /// </summary>
+        /// <returns>True=Enabled; False=Disabled</returns>
+        public Task<bool> GetIsSpanEnabled()
+        {
+            if (_eaService != null)
+            {
+                return _eaService.GetIsSpanEnabled();
+            }
+            else
+            {
+                _logs.DebugMsg($"[DisplayMangerPlugin] @ DisplayManager.GetIsSpanEnabled(): _eaService is in null");
+            }
+            return Task.FromResult(false);
+        }
         #endregion
 
         #region OutReport

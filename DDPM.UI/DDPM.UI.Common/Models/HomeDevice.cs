@@ -1329,8 +1329,16 @@ namespace DDPM.UI.Common.Models
                 //Determine if it has Network KVM capability
                 if (DeviceManagerSA != null)
                 {
-                    _hasCapability_NetworkKvm = DeviceManagerSA.isNKVMSupportMonitor(MonitorInfo).Result;
-                    return _hasCapability_NetworkKvm.Value;
+                    //Robert_Lin, 2024-11-18 add try-catch
+                    try
+                    {
+                        _hasCapability_NetworkKvm = DeviceManagerSA.isNKVMSupportMonitor(MonitorInfo).Result;
+                        return _hasCapability_NetworkKvm.Value;
+                    }
+                    catch (Exception e)
+                    {
+                        string errMsg = e.Message;   
+                    }
                 }
                 return false;
             }
