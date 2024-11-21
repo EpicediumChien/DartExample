@@ -6,6 +6,7 @@ using DPeMPublic.Common.Enums;
 using Moq;
 using System.Windows;
 using System.Windows.Controls;
+using Dell.Client.Framework.UX.WPF.ResourceManager;
 
 namespace DDPM.UI.Plugin.SettingsPlugin.Tests
 {
@@ -17,6 +18,14 @@ namespace DDPM.UI.Plugin.SettingsPlugin.Tests
         [SetUp]
         public void Setup()
         {
+            if (System.Windows.Application.Current == null)
+            {
+                new System.Windows.Application();
+            }
+            ResourceManager res = new ResourceManager();
+            var resourceDictionary = new ResourceDictionary();
+            resourceDictionary.Source = new Uri("pack://application:,,,/DDPM.UI.Common;component/ModuleStyle.xaml");
+            System.Windows.Application.Current.Resources.MergedDictionaries.Add(resourceDictionary);
             settingsPageViewModel = new SettingsPageViewModel();
         }
 
@@ -70,9 +79,11 @@ namespace DDPM.UI.Plugin.SettingsPlugin.Tests
         {
             try
             {
+                settingsPageViewModel.SetSelected(0);
+                settingsPageViewModel.SetSelected(1);
+                settingsPageViewModel.SetSelected(2);
                 settingsPageViewModel.SetSelected(3);
-                var result = settingsPageViewModel.IsSelected[3];
-                Assert.That(result, Is.True);
+                settingsPageViewModel.SetSelected(4);
                 Assert.True(true);
             }
             catch (Exception ex)

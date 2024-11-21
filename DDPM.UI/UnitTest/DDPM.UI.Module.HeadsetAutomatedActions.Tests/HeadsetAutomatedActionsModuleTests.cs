@@ -10,6 +10,7 @@ using Dell.Client.Framework.Common;
 using Dell.Client.Framework.UX.WPF;
 using System.Windows.Controls;
 using System.Windows;
+using Dell.Client.Framework.UX.WPF.ResourceManager;
 
 namespace DDPM.UI.Module.HeadsetAutomatedActions.Tests
 {
@@ -35,6 +36,7 @@ namespace DDPM.UI.Module.HeadsetAutomatedActions.Tests
             {
                 new System.Windows.Application();
             }
+            ResourceManager res = new ResourceManager();
             var resourceDictionary = new ResourceDictionary();
             resourceDictionary.Source = new Uri("pack://application:,,,/DDPM.UI.Common;component/ModuleStyle.xaml");
             System.Windows.Application.Current.Resources.MergedDictionaries.Add(resourceDictionary);

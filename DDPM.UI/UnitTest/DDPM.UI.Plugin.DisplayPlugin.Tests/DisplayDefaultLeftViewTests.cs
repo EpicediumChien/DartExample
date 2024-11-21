@@ -10,6 +10,8 @@ using DDPM.UI.Plugin.DisplayPlugin.Views;
 using DDPM.UI.Module.Color;
 using static System.Net.Mime.MediaTypeNames;
 using NGA.UnitTest.PrivateObject;
+using Dell.Client.Framework.UX.WPF.ResourceManager;
+using System.Windows;
 
 namespace DDPM.UI.Plugin.DisplayPlugin.Tests
 {
@@ -22,6 +24,15 @@ namespace DDPM.UI.Plugin.DisplayPlugin.Tests
         [SetUp]
         public void Setup()
         {
+            if (System.Windows.Application.Current == null)
+            {
+                new System.Windows.Application();
+            }
+            ResourceManager res = new ResourceManager();
+            var resourceDictionary = new ResourceDictionary();
+            resourceDictionary.Source = new Uri("pack://application:,,,/DDPM.UI.Common;component/ModuleStyle.xaml");
+            System.Windows.Application.Current.Resources.MergedDictionaries.Add(resourceDictionary);
+
             displayDefaultLeftView = new DisplayDefaultLeftView();
             privateObject = new PrivateObject(displayDefaultLeftView);
         }
