@@ -122,6 +122,86 @@ namespace DDPM.SA.Plugins.User.CMAProxy.Test
             Assert.IsNotNull(InitializeDevManagerPlugin_result);
         }
 
+        [Test]
+        public void TestDoRelayRegister()
+        {
+            ICMAManagerSA? CMAManagerSA = null;
+            IDeviceManagerSA? DevManagerPlugin = null;
+            privateteCMAProxyPlugin.SetFieldOrProperty("_DevManagerPlugin", DevManagerPlugin);
+            privateteCMAProxyPlugin.SetFieldOrProperty("_CMAManagerPlugin", CMAManagerSA);
+            privateteCMAProxyPlugin.Invoke("DoRelayRegister");
+            var DevManagerPlugin_result = privateteCMAProxyPlugin.GetFieldOrProperty("_DevManagerPlugin");    //_CMAManagerPlugin null
+            var CMAManagerPlugin_result = privateteCMAProxyPlugin.GetFieldOrProperty("_CMAManagerPlugin");
+            var relay_registered_result = (bool)privateteCMAProxyPlugin.GetFieldOrProperty("relay_registered");
+            Assert.IsNull(DevManagerPlugin_result);
+            Assert.IsNull(CMAManagerPlugin_result);
+            Assert.IsFalse(relay_registered_result);
+
+            var mockCMAManagerPlugin = new Mock<ICMAManagerSA>();
+            var mockDevManagerPlugin = new Mock<IDeviceManagerSA>();
+
+            var CMAManagerPluginobj = mockCMAManagerPlugin.Object;
+            var DevManagerPluginobj = mockDevManagerPlugin.Object;
+            privateteCMAProxyPlugin.SetFieldOrProperty("_DevManagerPlugin", DevManagerPluginobj);
+            privateteCMAProxyPlugin.SetFieldOrProperty("_CMAManagerPlugin", CMAManagerPluginobj);
+
+            privateteCMAProxyPlugin.Invoke("DoRelayRegister");
+            var DevManagerPlugin_result2 = privateteCMAProxyPlugin.GetFieldOrProperty("_DevManagerPlugin");   ////_CMAManagerPlugin not null
+            var CMAManagerPlugin_result2 = privateteCMAProxyPlugin.GetFieldOrProperty("_CMAManagerPlugin");
+            var relay_registered_result2 = (bool)privateteCMAProxyPlugin.GetFieldOrProperty("relay_registered");
+            Assert.IsNotNull(DevManagerPlugin_result2);
+            Assert.IsNotNull(CMAManagerPlugin_result2);
+            Assert.IsTrue(relay_registered_result2);
+        }
+
+        [Test]
+        public void TestGetDdpmDevices()
+        {
+            IDeviceManagerSA? DevManagerPlugin = null;
+            privateteCMAProxyPlugin.SetFieldOrProperty("_DevManagerPlugin", DevManagerPlugin);
+            privateteCMAProxyPlugin.Invoke("GetDdpmDevices", "all");
+            var DevManagerPlugin_result = privateteCMAProxyPlugin.GetFieldOrProperty("_DevManagerPlugin");    //_DevManagerPlugin null
+            Assert.IsNull(DevManagerPlugin_result);
+
+            List<MonitorInfo> monitorInfos = new List<MonitorInfo>();
+            monitorInfos.Add(monitorInfo1);
+
+            DeviceHelper deviceHelper = new DeviceHelper()
+            {
+                deviceInfo = new List<DeviceInfo>()
+                {
+                    new DeviceInfo()
+                    {
+                        DeviceName="Mouse",
+                        Name="Test mouse",
+                        DpiLevel=20,
+                        DpiValue="20",
+                    }
+                },
+                DCFVersion = "1.0",
+                DPeMSDKVersion = "1.0",
+                DPeMSubAgentVersion = "1.0",
+                IsdDriverVersion = "1.0",
+            };
+
+            string condition = "displaychanged";
+            Mock<ICMAManagerSA> mockCMAManagerPlugin = new Mock<ICMAManagerSA>();
+            Mock<IDeviceManagerSA> mockDevManagerPlugin = new Mock<IDeviceManagerSA>();
+
+            mockDevManagerPlugin.Setup(x => x.GetMonitors()).Returns(Task.FromResult(monitorInfos));
+            mockDevManagerPlugin.Setup(x => x.GetDevices(It.IsAny<bool>())).Returns(Task.FromResult(deviceHelper));
+            mockCMAManagerPlugin.Setup(x => x.Update_DeviceChanged(It.IsAny<CMADeviceChanges>()));
+
+            var CMAManagerPluginobj = mockCMAManagerPlugin.Object;
+            var DevManagerPluginobj = mockDevManagerPlugin.Object;
+            privateteCMAProxyPlugin.SetFieldOrProperty("_DevManagerPlugin", DevManagerPluginobj);   //_DevManagerPlugin not null,_CMAManagerPlugin not null
+            privateteCMAProxyPlugin.SetFieldOrProperty("_CMAManagerPlugin", CMAManagerPluginobj);
+
+            privateteCMAProxyPlugin.Invoke("GetDdpmDevices", condition);
+            Assert.IsTrue(true);
+            mockDevManagerPlugin.Verify(p => p.GetMonitors(), Times.Once);
+            mockCMAManagerPlugin.Verify(p => p.Update_DeviceChanged(It.Is<CMADeviceChanges>(c => c.type == "display" && c.mos == monitorInfos && c.devices == null)), Times.Once);
+        }
 
         [OneTimeTearDown]
         public void TearDown()
