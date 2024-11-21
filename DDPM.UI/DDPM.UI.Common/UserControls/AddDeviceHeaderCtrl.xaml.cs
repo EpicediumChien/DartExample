@@ -38,27 +38,6 @@ namespace DDPM.UI.Common
         public void SetHeaders(RightViewHeader[] headers)
         {
             vm.SetHeaders(headers);
-            if (headers.Length > 1)
-            {
-                Icon1.Visibility = Visibility.Collapsed;
-                if (headers[0].ImageFile != "")
-                {
-                    Icon1.Source = DdpmCommonHelper.GetImageSourceFromCommonResource($"Resources/Images/{headers[0].ImageFile}", "DDPM.UI.Resources");
-                    Icon1.Visibility = Visibility.Visible;
-                }
-                Icon2.Visibility = Visibility.Collapsed;
-                if (headers[1].ImageFile != "")
-                {
-                    Icon2.Source = DdpmCommonHelper.GetImageSourceFromCommonResource($"Resources/Images/{headers[1].ImageFile}", "DDPM.UI.Resources");
-                    Icon2.Visibility = Visibility.Visible;
-                }
-            }
-            Icon3.Visibility = Visibility.Collapsed;
-            if (headers.Length > 2 && headers[2].ImageFile != "")
-            {
-                Icon3.Source = DdpmCommonHelper.GetImageSourceFromCommonResource($"Resources/Images/{headers[2].ImageFile}", "DDPM.UI.Resources");
-                Icon3.Visibility = Visibility.Visible;
-            }
         }
 
         public IEnumerable ItemsSource
