@@ -12,7 +12,7 @@
              mc:Ignorable="d" Margin="5,4,60,120"
              d:DesignHeight="450" d:DesignWidth="800"
              SizeChanged="UserControl_SizeChanged">
-    
+
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -59,7 +59,7 @@
                                             HorizontalAlignment="Left"
                                             AutomationProperties.Name="Primary1"
                                             Content="{Binding [Updates.2], Source={x:Static lang:LangHelper.Instance}}"
-                                            Style="{DynamicResource Button_WhiteFrame}" />
+                                            Style="{StaticResource Button_WhiteFrame}" />
                                     <StackPanel Orientation="Horizontal">
                                         <Grid  Height="20"
                                                Margin="16,20,4,0"
@@ -73,7 +73,7 @@
                                                                 HorizontalAlignment="Left"
                                                                 VerticalAlignment="Center"
                                                                 Margin="4,21,8,8" />
-                                    </StackPanel>                                    
+                                    </StackPanel>
                                 </StackPanel>
                                 <!-- change to stackpanel as above for RWD  Derek 10/15 -->
                                 <!-- 
