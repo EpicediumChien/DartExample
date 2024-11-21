@@ -410,9 +410,10 @@ namespace DDPM.UI.Module.ButtonSettings
 
         private void RemoveActionClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
-            _vm.SelectedMouseAction!.AssignedAction = new AssignedAction(_vm.SelectedMouseAction.DefaultActionID);
+            var actionID = _vm.SelectedApp == "AllApp" ? _vm.SelectedMouseAction!.DefaultActionID : -1;
+            _vm.SelectedMouseAction!.AssignedAction = new AssignedAction(actionID);
             _vm.RefreshButtonImageFile(_vm.SelectedButton);
-            _vm.UpdateAction(_vm.SelectedMouseAction.DefaultActionID);
+            _vm.UpdateAction(actionID);
 
             var button = sender as ActionButton;
             var parent = Utility.FindParent<ItemsControl>(button!);

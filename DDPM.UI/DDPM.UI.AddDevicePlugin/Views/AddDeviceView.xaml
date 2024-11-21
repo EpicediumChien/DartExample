@@ -52,19 +52,20 @@
                         </Grid>
                         </StackPanel>
                         </Border>-->
-                        <!-- RightViewHeader -->
-                        <common:AddDeviceHeaderCtrl Grid.Row="0" Name="rightViewHeaderCtrl" Margin="17,17,17,0"
+          <!-- RightViewHeader -->
+          <common:AddDeviceHeaderCtrl Grid.Row="0" Name="rightViewHeaderCtrl" Margin="17,17,17,0"
                                                     SelectedIndex="{Binding RightViewHeaderSelectedIndex, Mode=TwoWay}"
                                                     ItemsSource="{Binding RightViewHeaders, Mode=TwoWay}"
                                                     SelectionChanged="RightViewHeaderCtrl_SelectionChanged" />
 
-                    <ContentControl Grid.Row="1" Name="RightFrame2" Content="{Binding RightView, Mode=TwoWay}" />
-                </Grid>
-            </Border>
-            <Grid Grid.Column="0">
-                <!-- DeviceBar -->
-                <Grid HorizontalAlignment="Right" VerticalAlignment="Top" Name="VbarGrid">
-                    <ItemsControl Name="vbarList" Margin="0,80,0,0"
+          <ContentControl Grid.Row="1" Name="RightFrame2" Content="{Binding RightView, Mode=TwoWay}" />
+        </Grid>
+      </Border>
+      <Grid Grid.Column="0">
+        <!--<Border Background="Transparent" StylusDown="Pairing"></Border>-->
+        <!-- DeviceBar -->
+        <Grid HorizontalAlignment="Right" VerticalAlignment="Top" Name="VbarGrid">
+          <ItemsControl Name="vbarList" Margin="0,80,0,0"
                                   HorizontalAlignment="Right" VerticalAlignment="Top"
                                   ItemsSource="{Binding DeviceBarItems}">
                         <ItemsControl.ItemTemplate>
@@ -83,18 +84,11 @@
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
                     <Image x:Name="ArrowLeft" Margin="64,19,0,0" Source="{DynamicResource Arrow_Left}" Stretch="Fill"
                            VerticalAlignment="Top" HorizontalAlignment="Left" Cursor="Hand" Width="24" Height="24" MouseLeftButtonDown="GoBackHomepage">
-                    </Image>
-                    <UXControls:UXTextBlock Name="txtCaption" 
-                                            FontSize="20"
-                                            FontFamily="Roboto"
-                                            FontWeight="Normal"
-                                            Margin="12,16,0,0"
-                                            HorizontalAlignment="Left" 
-                                            VerticalAlignment="Top"
-                                            Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=UserControl}}"/>
-                </StackPanel>
-                <UXControls:UXTextBox Name="txtPairingStatus" Text="{Binding PairingStatus}" TextChanged="PairingStatusChanged" Visibility="Hidden" />
-            </StackPanel>
-        </Grid>
+          </Image>
+          <UXControls:UXTextBlock Name="txtCaption" Margin="12,16,0,0" HorizontalAlignment="Left" Style="{StaticResource ProductNameTextStyle}" VerticalAlignment="Top" />
+        </StackPanel>
+        <UXControls:UXTextBox Name="txtPairingStatus" Text="{Binding PairingStatus}" TextChanged="PairingStatusChanged" Visibility="Hidden" />
+      </StackPanel>
     </Grid>
+  </Grid>
 </UserControl>

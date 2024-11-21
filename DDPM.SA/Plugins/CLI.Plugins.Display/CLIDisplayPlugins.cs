@@ -13159,12 +13159,14 @@ namespace DDPM.CLI.Plugins.Display
             List<int> _monitorIndeies = new List<int>();
 
             if (_AllInfoMonitors == null)
-            _AllInfoMonitors = devMgr.GetMonitors().Result;
-            _monitorIndeies = GetMonitorIndeies(commandLineInput, _AllInfoMonitors);
+                _AllInfoMonitors = devMgr.GetMonitors().Result;
 
-            foreach (int idx in _monitorIndeies)
+            var serviceTags = _AllInfoMonitors.Select(_ => _.edid.ServiceTag).Distinct().ToList();
+
+            foreach (string serviceTag in serviceTags)
             {
-                MonitorInfo monitor = _AllInfoMonitors[idx];
+                MonitorInfo monitor = _AllInfoMonitors.FirstOrDefault(_ => _.edid.ServiceTag == serviceTag);
+
                 CLI_RESPONSE cli_Response = new CLI_RESPONSE();
                 cli_Response.Command = commandLineInput.Command;
                 cli_Response.TargetFeature = commandLineInput.TargetFeature;
@@ -13252,6 +13254,13 @@ namespace DDPM.CLI.Plugins.Display
                                 else
                                     somethingfail |= 0x01;
 
+                                while (!_AllInfoMonitors.Any(_ => _.edid.ServiceTag == monitor.edid.ServiceTag))
+                                {
+                                    _AllInfoMonitors = devMgr.GetMonitors().Result;
+                                }
+
+                                monitor = _AllInfoMonitors.FirstOrDefault(_ => _.edid.ServiceTag == serviceTag);
+
                                 rc = GetVCPCode(devMgr, monitor, "0x8D").Result;
                                 int getvalue2 = Convert.ToInt32(rc.value);
                                 string setvalue2 = get_SpeakerMicrophone(commandLineInput.Options[0].Option_Value, getvalue2);
@@ -13302,6 +13311,7 @@ namespace DDPM.CLI.Plugins.Display
                 System.Console.WriteLine(JsonConvert.SerializeObject(cli_Response, Formatting.Indented));
                 output += "\n" + JsonConvert.SerializeObject(cli_Response, Formatting.Indented);
             }
+
             return (retcode ? (int)CLI_ExitCode.success : (int)CLI_ExitCode.functional_error, output);
         }
 
