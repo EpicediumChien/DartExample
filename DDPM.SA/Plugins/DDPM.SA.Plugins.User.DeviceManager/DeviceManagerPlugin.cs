@@ -9166,10 +9166,13 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 } while (!folderValid && count < 2);
 
                 string programdataPath = Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData);
+                writelog("folderPath - programdataPath Line 9169: " + programdataPath);
                 string appDataPath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+                writelog("folderPath - appDataPath Line 9171: " + appDataPath);
                 if (!string.IsNullOrEmpty(appDataPath))
                 {
                     string LogFolder = @$"{appDataPath}\Dell\Dell Display and Peripheral Manager\Log\DDPM.Subagent.User";
+                    writelog("folderPath - LogFolder Line 9175: " + LogFolder);
                     if (DirectoryContainsFiles(LogFolder))
                     {
                         // 取得資料夾名稱
@@ -9179,6 +9182,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         CopyLogFolder(LogFolder, savePath);
                     }
                     LogFolder = @$"{appDataPath}\Dell\Dell Display and Peripheral Manager\Log\DDPM.GUI";
+                    writelog("folderPath - LogFolder Line 9185: " + LogFolder);
                     if (DirectoryContainsFiles(LogFolder))
                     {
                         // 取得資料夾名稱
@@ -9188,6 +9192,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         CopyLogFolder(LogFolder, savePath);
                     }
                     LogFolder = @$"{appDataPath}\Dell\Dell Display and Peripheral Manager\Log\DDPM-Setup-DdpmSwUpdater";
+                    writelog("folderPath - LogFolder Line 9195: " + LogFolder);
                     if (DirectoryContainsFiles(LogFolder))
                     {
                         // 取得資料夾名稱
@@ -9197,6 +9202,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         CopyLogFolder(LogFolder, savePath);
                     }
                     LogFolder = @$"{appDataPath}\Dell\Dell Display and Peripheral Manager\Log\FWUpdataLog";
+                    writelog("folderPath - LogFolder Line 9205: " + LogFolder);
                     if (DirectoryContainsFiles(LogFolder))
                     {
                         // 取得資料夾名稱
@@ -9209,6 +9215,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 if (!string.IsNullOrEmpty(programdataPath))
                 {
                     string LogFolder = @$"{programdataPath}\Dell\DDPM.Subagent";
+                    writelog("folderPath - LogFolder Line 9218: " + LogFolder);
                     if (DirectoryContainsFiles(LogFolder))
                     {
                         // 取得資料夾名稱
@@ -9218,6 +9225,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         CopyLogFolder(LogFolder, savePath);
                     }
                     LogFolder = @$"{programdataPath}\Dell\Dell TechHub";
+                    writelog("folderPath - LogFolder Line 9228: " + LogFolder);
                     if (DirectoryContainsFiles(LogFolder))
                     {
                         // 取得資料夾名稱
@@ -9227,6 +9235,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         CopyLogFolder(LogFolder, savePath);
                     }
                     LogFolder = @$"{programdataPath}\Dell\DTP\Logs";
+                    writelog("folderPath - LogFolder Line 9238: " + LogFolder);
                     if (DirectoryContainsFiles(LogFolder))
                     {
                         // 取得資料夾名稱
@@ -9240,6 +9249,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     if (o != null && o is string && !string.IsNullOrEmpty(o.ToString()))
                     {
                         LogFolder = @$"{programdataPath}\{o.ToString()}\DDPMW-NKVM";
+                        writelog("folderPath - LogFolder Line 9252: " + LogFolder);
                         if (DirectoryContainsFiles(LogFolder))
                         {
                             // 取得資料夾名稱
@@ -9250,6 +9260,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         }
                     }
                     LogFolder = @$"{programdataPath}\Dell\Dell Peripheral Manager\DPMService\Log";
+                    writelog("folderPath - LogFolder Line 9263: " + LogFolder);
                     if (DirectoryContainsFiles(LogFolder))
                     {
                         // 取得資料夾名稱
@@ -9259,6 +9270,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         CopyLogFolder(LogFolder, savePath);
                     }
                     LogFolder = @$"{programdataPath}\Dell\Dell Peripheral Manager\DPM\Log";
+                    writelog("folderPath - LogFolder Line 9273: " + LogFolder);
                     if (DirectoryContainsFiles(LogFolder))
                     {
                         // 取得資料夾名稱
@@ -9268,6 +9280,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         CopyLogFolder(LogFolder, savePath);
                     }
                     LogFolder = @$"{programdataPath}\Dell\Dell Peripheral Manager\DPeMSDK\Log";
+                    writelog("folderPath - LogFolder Line 9283: " + LogFolder);
                     if (DirectoryContainsFiles(LogFolder))
                     {
                         // 取得資料夾名稱

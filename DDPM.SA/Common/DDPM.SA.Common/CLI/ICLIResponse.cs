@@ -397,7 +397,7 @@ namespace DDPM.SA.Common
 
     public class CLI_RESPONSE_SubInput : CLI_RESPONSE
     {
-        public int SubInputCount { get; set; } = 0;
+        //public int SubInputCount { get; set; } = 0;
         public string Sub1InputSource { get; set; }
         public string Sub2InputSource { get; set; }
         public string Sub3InputSource { get; set; }

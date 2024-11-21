@@ -683,17 +683,17 @@ namespace CLI.Plugins.Display
                     errCount++;
                     response.Result = "ERROR";
                     response.Message = "Fail to get SubInputs.";
-                    response.SubInputCount = 0;
+                    //response.SubInputCount = 0;
                 }
                 else if (inputSources.Count <= 0)
                 {
                     response.Result = "No sub input.";
                     response.Message = "No sub input.";
-                    response.SubInputCount = 0;
+                    //response.SubInputCount = 0;
                 }
                 else
                 {
-                    response.SubInputCount = inputSources.Count;
+                    //response.SubInputCount = inputSources.Count;
                     response.Sub1InputSource = inputSources[0].Name;
                     if (inputSources.Count > 1)
                         response.Sub2InputSource = inputSources[1].Name;
