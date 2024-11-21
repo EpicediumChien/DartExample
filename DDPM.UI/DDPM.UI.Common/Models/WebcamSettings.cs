@@ -34,10 +34,12 @@ namespace DDPM.UI.Common
             if (di != null && di.ID != new Guid())
             {
                 Task<string> task = DdpmCommonHelper.DeviceManagerSA!.GetSupportedResolutions(di.ID.ToString());
-                var resolutions = JsonConvert.DeserializeObject<List<ResolutionItem>>(task.Result)!;
-                foreach (var res in resolutions)
+                var str = task.Result;
+                //var resolutions = JsonConvert.DeserializeObject<List<ResolutionItem>>(str)!;
+                var resolutions = JsonConvert.DeserializeObject<Dictionary<string, ResolutionItem>>(str)!;
+                foreach (var res in resolutions.OrderByDescending(x => x.Key))
                 {
-                    var resName = res.Resolution switch
+                    var resName = res.Key switch
                     {
                         "1280x720" => "HD",
                         "1920x1080" => "Full HD",
@@ -45,8 +47,8 @@ namespace DDPM.UI.Common
                         "3840x2160" => "4K QHD",
                         _ => "8K UHD"
                     };
-                    SupportedFPSs.Add(resName, res.FPS);
-                    Resolutions.Add(resName, res.Resolution);
+                    SupportedFPSs.Add(resName, res.Value.FPS);
+                    Resolutions.Add(resName, res.Value.Resolution);
                 }
                 task = DdpmCommonHelper.DeviceManagerSA!.GetSelectedResolution(di.ID.ToString());
                 var currentRes = JsonConvert.DeserializeObject<ResolutionItem>(task.Result)!;
