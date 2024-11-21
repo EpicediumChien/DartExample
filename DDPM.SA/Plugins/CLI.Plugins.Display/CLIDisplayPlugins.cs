@@ -215,7 +215,13 @@ namespace DDPM.CLI.Plugins.Display
 
             if (!input_param_validation(devMgr, commandLineInput, ref result))
                 return result;
-
+            if (commandLineInput.Command == "HELP")
+            {
+                var ret = HelpCommandX(commandLineInput, devMgr);
+                result.serialize_Json_response = ret.result;
+                result.ExitCode = ret.code;
+                return result;
+            }
             switch (commandLineInput.TargetFeature)
             {
                 case "CONNECTEDDEVICES":
@@ -1872,6 +1878,10 @@ namespace DDPM.CLI.Plugins.Display
             //return exitcode;
         }
 
+        private (int code, string result) HelpCommandX(CommandLineInput commandLineInput, IDeviceManagerSA devMgr)
+        {
+            return HelpCommand(devMgr, commandLineInput.TargetFeature).Result;
+        }
         private (int code, string result) EDIDX(CommandLineInput commandLineInput, IDeviceManagerSA devMgr)
         {
             if (commandLineInput.Command.Equals("GET"))
@@ -3370,7 +3380,20 @@ namespace DDPM.CLI.Plugins.Display
                 return ((int)CLI_ExitCode.unknow_command, JsonConvert.SerializeObject(S_Luminus_RESPONSE, Formatting.Indented));
             }
         }
-
+        private async Task<(int code, string result)> HelpCommand(IDeviceManagerSA devMgr, string targetFeature)
+        {
+            string output = string.Empty;
+            if (_AllInfoMonitors == null)
+                _AllInfoMonitors = await devMgr.GetMonitors();
+            if(_AllInfoMonitors.Count == 0)
+                return ((int)CLI_ExitCode.no_monitor_connected, "No Monitor Connected");
+            foreach (MonitorInfo monitor in _AllInfoMonitors)
+            {
+                var result = ICLICommandTable.Response_HelpCommand_ByDisplay(targetFeature, monitor.CapabilityDic);
+                output += "\n" + result;
+            }
+            return ((int)CLI_ExitCode.success, output);
+        }
         private async Task<(int code, string result)> EDID(IDeviceManagerSA devMgr, string type, List<string> index, List<string> serviceTag, List<string> model, string value = "")
         {
             CLI_Get_EDID_RESPONSE G_EDID_RESPONSE = new CLI_Get_EDID_RESPONSE();
