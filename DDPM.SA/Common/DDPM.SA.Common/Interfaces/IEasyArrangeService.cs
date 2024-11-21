@@ -32,6 +32,13 @@ namespace DDPM.SA.Common.Interfaces
         public Task<bool> ReloadEzSettings();
 
         public Task<bool> SetEASelectedLayout(MonitorInfo monitorInfo, SplitJson spJson);
+
+        /// <summary>
+        /// Return current Span across multiple monitor option is Enabled/Disabled;
+        /// Note that it's different with EzSettings.IsSpanAcrossMultiMonitors (=ON|OFF)
+        /// </summary>
+        /// <returns>True=Enabled; False=Disabled</returns>
+        public Task<bool> GetIsSpanEnabled();
         #endregion
 
         #region Telemetry - Used by EABroker only
