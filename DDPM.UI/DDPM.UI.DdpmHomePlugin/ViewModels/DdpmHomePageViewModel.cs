@@ -17,6 +17,7 @@ using System.ServiceProcess;
 using System.Windows;
 using System.Windows.Data;
 using System.Windows.Input;
+using System.Windows.Media;
 using VcpCore.Common;
 using static DDPM.UI.Common.User32;
 
@@ -319,7 +320,16 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.ViewModels
                         (devType.ToString().ToUpper().Contains("23")))
                     {
                         dev.DeviceCategory = eDeviceCategory.Dock;
-                        dev.DeviceImage = DdpmCommonHelper.GetImageSourceFromCommonResource($"Resources/{di.ModelNumber}.png");
+                        ImageSource dockImg = DdpmCommonHelper.GetImageSourceFromCommonResource($"Resources/{di.ModelNumber}.png");
+
+                        if (dockImg != null)
+                            dev.DeviceImage = dockImg;
+                        else
+                        {
+                            // Elie, we set a WD25.png as Dock default picture.
+                            dev.DeviceImage = DdpmCommonHelper.GetImageSourceFromCommonResource($"Resources/WD25.png"); ;
+                        }
+
                         dev.SortOrder = (int)dev.DeviceCategory + idxDock;
                         idxDock++;
                     }
