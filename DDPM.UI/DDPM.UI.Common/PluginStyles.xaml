@@ -9,16 +9,16 @@
     <GradientStop Color="#55B4FD" Offset="0.0" />
     <GradientStop Color="#6E69CF" Offset="1.0" />
   </LinearGradientBrush>
-  <Style TargetType="UXControls:UXTextBlock" x:Key="ProductNameTextStyle">
+  <!--<Style TargetType="UXControls:UXTextBlock" x:Key="ProductNameTextStyle">
     <Setter Property="Foreground" Value="White" />
     <Setter Property="FontSize" Value="24" />
     <Setter Property="FontFamily" Value="Roboto" />
-  </Style>
-  <Style TargetType="UXControls:UXTextBlock" x:Key="ModelNumberTextStyle">
+  </Style>-->
+  <!--<Style TargetType="UXControls:UXTextBlock" x:Key="ModelNumberTextStyle">
     <Setter Property="Foreground" Value="#A4B8CD" />
     <Setter Property="FontSize" Value="20" />
     <Setter Property="FontFamily" Value="Roboto" />
-  </Style>
+  </Style>-->
   <Style x:Key="InfoToolTipStyle" TargetType="ToolTip">
     <Setter Property="Template">
       <Setter.Value>
@@ -72,14 +72,14 @@
     <GradientStop Color="#55B4FD" Offset="0.0" />
     <GradientStop Color="#5051DA" Offset="1.0" />
   </LinearGradientBrush>
-  <Style x:Key="BorderUnpair" TargetType="Border">
+  <!--<Style x:Key="BorderUnpair" TargetType="Border">
     <Setter Property="Background" Value="#0E1C2F" />
     <Setter Property="CornerRadius" Value="2" />
     <Setter Property="Width" Value="105" />
     <Setter Property="Height" Value="40" />
     <Setter Property="BorderThickness" Value="1" />
     <Setter Property="BorderBrush" Value="#F5F6F7" />
-  </Style>
+  </Style>-->
   <Style x:Key="Border1" TargetType="Border">
     <Setter Property="Background" Value="{StaticResource Border1Brush}" />
     <Setter Property="CornerRadius" Value="1.5" />
@@ -122,7 +122,7 @@
     <Setter Property="FontSize" Value="14" />
     <Setter Property="FontWeight" Value="Medium" />
   </Style>
-  <Style x:Key="ModuleCaptionStyle" TargetType="UXControls:UXTextBlock">
+  <!--<Style x:Key="ModuleCaptionStyle" TargetType="UXControls:UXTextBlock">
     <Setter Property="Foreground" Value="#FFFFFF" />
     <Setter Property="FontFamily" Value="Roboto" />
     <Setter Property="FontSize" Value="20" />
@@ -163,8 +163,8 @@
         <Setter Property="Foreground" Value="#828E9C" />
       </Trigger>
     </Style.Triggers>
-  </Style>
-  <Style x:Key="SearchBoxBorderStyle" TargetType="Border">
+  </Style>-->
+  <!--<Style x:Key="SearchBoxBorderStyle" TargetType="Border">
     <Setter Property="Background" Value="#0F2641" />
     <Setter Property="CornerRadius" Value="6" />
     <Setter Property="Width" Value="288" />
@@ -172,24 +172,24 @@
     <Setter Property="VerticalAlignment" Value="Top" />
     <Setter Property="BorderThickness" Value="1" />
     <Setter Property="BorderBrush" Value="#1E3F6C" />
-  </Style>
-  <Style x:Key="ActionsBorderStyle" TargetType="Border">
+  </Style>-->
+  <!--<Style x:Key="ActionsBorderStyle" TargetType="Border">
     <Setter Property="Background" Value="#99132F54" />
     <Setter Property="CornerRadius" Value="6" />
     <Setter Property="Width" Value="288" />
     <Setter Property="VerticalAlignment" Value="Top" />
     <Setter Property="BorderThickness" Value="1" />
     <Setter Property="BorderBrush" Value="#1E3F6C" />
-  </Style>
-  <Style x:Key="SeachResultBorderStyle" TargetType="Border">
+  </Style>-->
+  <!--<Style x:Key="SeachResultBorderStyle" TargetType="Border">
     <Setter Property="Background" Value="#99132F54" />
     <Setter Property="CornerRadius" Value="6" />
     <Setter Property="Width" Value="288" />
     <Setter Property="VerticalAlignment" Value="Top" />
     <Setter Property="BorderThickness" Value="1" />
     <Setter Property="BorderBrush" Value="{StaticResource LinerGradientBrush1}" />
-  </Style>
-  <Style x:Key="ActionsTextBlockStyle" TargetType="UXControls:UXTextBlock">
+  </Style>-->
+  <!--<Style x:Key="ActionsTextBlockStyle" TargetType="UXControls:UXTextBlock">
     <Setter Property="Foreground" Value="White" />
     <Setter Property="FontFamily" Value="Roboto" />
     <Setter Property="FontSize" Value="16" />
@@ -197,7 +197,7 @@
     <Setter Property="VerticalAlignment" Value="Top" />
     <Setter Property="HorizontalAlignment" Value="Left" />
     <Setter Property="Margin" Value="15,16,0,0" />
-  </Style>
+  </Style>-->
   <Style x:Key="ActionArrowStyle" TargetType="Image">
     <Setter Property="RenderTransformOrigin" Value="0.5,0.5" />
     <Setter Property="Width" Value="16" />
@@ -399,7 +399,7 @@
     <Setter Property="Template" Value="{StaticResource MouseComboBoxControlTemplate}" />
     <Setter Property="ItemContainerStyle" Value="{StaticResource MouseComboBoxItemContainerStyle}" />
   </Style>
-  <Style x:Key="KeyToolTipTextStyle" TargetType="TextBlock">
+  <!--<Style x:Key="KeyToolTipTextStyle" TargetType="TextBlock">
     <Setter Property="ToolTipService.InitialShowDelay" Value="0" />
     <Setter Property="Background" Value="#1D2C3B" />
     <Setter Property="FontFamily" Value="Roboto" />
@@ -409,7 +409,7 @@
     <Setter Property="LineHeight" Value="20" />
     <Setter Property="VerticalAlignment" Value="center" />
     <Setter Property="HorizontalAlignment" Value="center" />
-  </Style>
+  </Style>-->
   <SolidColorBrush x:Key="VbarItem_BkColor" Color="#132F54" />
   <SolidColorBrush x:Key="VbarItem_TextColor" Color="White" />
 

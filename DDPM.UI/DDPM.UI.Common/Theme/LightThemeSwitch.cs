@@ -67,7 +67,7 @@ namespace DDPM.UI.Common
             UpdateBitmapImage("down_Expand", new Uri($"pack://application:,,,/DDPM.UI.Resources;component/Resources/Images/Down-light.png", UriKind.RelativeOrAbsolute));
             UpdateFreezable("txtMessage_TxtColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#000000"));
             UpdateFreezable("MouseSettingMenu_BgColor99", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#99f5f8f9"));
-            UpdateFreezable("MouseSettingMenu_BgColor99", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#60f5f8f9"));
+            UpdateFreezable("MouseSettingMenu_BgColor60", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#60f5f8f9"));
 
             UpdateFreezable("AddDeviceTxtCaption_TxtColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#000000"));
             UpdateFreezable("AddDeviceBorder1_BgColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#99f5f8f9"));
@@ -101,6 +101,42 @@ namespace DDPM.UI.Common
             UpdateBitmapImage("left_img", new Uri($"pack://application:,,,/DDPM.UI.Resources;component/Resources/Images/Left_light.png", UriKind.RelativeOrAbsolute));
             #endregion
 
+            #region dialog
+            //Dialog start
+            UpdateFreezable("BorderStyle1_BgColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#f4f7f9"));
+
+            UpdateFreezable("TextBlockStyle1_FgColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#000000"));
+
+            UpdateFreezable("LabelStyle1_FgColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#040404"));
+
+            UpdateFreezable("RadialMenuModalDialogToggleSwitch_FgColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#000000"));
+
+            UpdateFreezable("txtLabelText_BgColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#F5F6F7"));
+            UpdateFreezable("txtLabelText_FgColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#141D28"));
+
+            UpdateFreezable("PairTileModalDialogTextStyle1FgColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#000000"));
+
+            UpdateFreezable("PairTileModalDialogBgColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#f4f7f9"));
+
+            UpdateFreezable("UnpairModalDialogBorder1", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#F5F6F7"));
+
+            UpdateFreezable("BorderContinueBackground", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#0672CB"));
+            UpdateFreezable("BorderContinueBorderBrush", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#0E1C2F"));
+
+            UpdateFreezable("BorderYesBackground", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#0672CB"));
+            UpdateFreezable("BorderYesBorderBrush", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#0E1C2F"));
+
+            UpdateFreezable("txtAlert_BgColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#F5F6F7"));
+            UpdateFreezable("txtAlert_FgColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#364861"));
+
+            UpdateFreezable("WaitingModalDialogBorderBackground", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#E0f4f7f9"));
+            UpdateFreezable("WaitingModalDialogBorderBorderBrush", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#F5F6F7"));
+
+            UpdateFreezable("bdrAlertBackground", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#616130"));
+            UpdateFreezable("WaitingModalDialogBorderBorderBrush", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#FF8040"));
+            //Dialog end
+            #endregion
+
             #region keyboard
             UpdateFreezable("RightMenuBg_BgColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#f4f7f9"));
             UpdateFreezable("txtCaption_TxtColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#000000"));
@@ -111,8 +147,6 @@ namespace DDPM.UI.Common
 
             UpdateFreezable("SearchBoxBorder_BgColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#f4f7f9"));
 
-            UpdateFreezable("SearchTextBox_BgColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#404040"));
-            UpdateFreezable("SearchTextBox_FgColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#404040"));
             #endregion
 
             #region Main Window Background
@@ -263,6 +297,17 @@ namespace DDPM.UI.Common
             UpdateFreezable("Unpair_FgColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#0063B8"));
             UpdateFreezable("WalkThroughBox_BkColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#FFFFFF"));
             UpdateFreezable("EQLine_Color", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#C5D4E3"));
+            #endregion
+
+            #region Grid Background
+            UpdateFreezable("DefaultTheme_USBKVMPCGridBkColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#A4B8CD"));
+            UpdateFreezable("DefaultTheme_GridBkColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#FFFFFF99"));
+            #endregion
+
+            #region Setup Border Background
+            UpdateFreezable("DefaultTheme_SetupScanBkColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#F0F0F0"));
+            UpdateFreezable("DefaultTheme_SetupScanBdColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#0E0E0E"));
+            UpdateFreezable("DefaultTheme_SetupSelectBdColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#C5D4E3"));
             #endregion
         }
     }

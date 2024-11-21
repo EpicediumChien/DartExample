@@ -6,15 +6,15 @@
         xmlns:local="clr-namespace:DDPM.UI.Plugin.Common"
         mc:Ignorable="d"
         xmlns:UXControls="clr-namespace:Dell.Client.Framework.UX.WPF.Controls;assembly=DCF.UX.WPF" 
-        Background="{DynamicResource bkImage}"
+        Background="Transparent"
         Title="ConsentModalDialog" ResizeMode="NoResize" ShowInTaskbar="False" 
         WindowStartupLocation="Manual" WindowStyle="None">
-  <Window.Resources>
-    <ResourceDictionary>
-      <ResourceDictionary.MergedDictionaries>
-        <ResourceDictionary Source="/DDPM.UI.Common;component/ModuleStyle.xaml" />
-      </ResourceDictionary.MergedDictionaries>
-      <Style x:Key="BorderNo" TargetType="Border">
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <!-- <ResourceDictionary Source="/DDPM.UI.Common;component/ModuleStyle.xaml" /> -->
+            </ResourceDictionary.MergedDictionaries>
+            <!--<Style x:Key="BorderNo" TargetType="Border">
         <Setter Property="Background" Value="#0E1C2F" />
         <Setter Property="CornerRadius" Value="4" />
         <Setter Property="Width" Value="136.5" />
@@ -29,37 +29,52 @@
         <Setter Property="Height" Value="40" />
         <Setter Property="BorderThickness" Value="0" />
         <Setter Property="BorderBrush" Value="#F5F6F7" />
-      </Style>
-    </ResourceDictionary>
-  </Window.Resources>
-  <Grid>
-    <Border CornerRadius="4" Height="320" Width="801" BorderThickness="1" BorderBrush="#293B4D" VerticalAlignment="Center" HorizontalAlignment="Center">
-      <Grid>
-        <Image Source="/DDPM.UI.Resources;component/Resources/Images/ConsentBg.png" Stretch="Fill" Opacity="0.2" />
-        <StackPanel Orientation="Vertical" Margin="0" HorizontalAlignment="Center" VerticalAlignment="Center">
-          <UXControls:UXTextBlock Name="txtCaption" Foreground="#FFFFFF" VerticalAlignment="Center" FontWeight="Light"
+      </Style>-->
+        </ResourceDictionary>
+    </Window.Resources>
+    <Grid>
+        <Border CornerRadius="4" Height="320" Width="801" BorderThickness="1" VerticalAlignment="Center" HorizontalAlignment="Center">
+            <Grid>
+                <Image Source="/DDPM.UI.Resources;component/Resources/Images/ConsentBg.png" Stretch="Fill" Opacity="0.2" />
+                <StackPanel Orientation="Vertical" Margin="0" HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <UXControls:UXTextBlock Name="txtCaption" VerticalAlignment="Center" FontWeight="Light"
                                         HorizontalAlignment="Center" FontFamily="Roboto" FontSize="40" Margin="0" />
-          <UXControls:UXTextBlock Name="txtCaption2" Foreground="#FFFFFF" VerticalAlignment="Center" FontWeight="Light"
+                    <UXControls:UXTextBlock Name="txtCaption2" VerticalAlignment="Center" FontWeight="Light"
                                         HorizontalAlignment="Center" FontFamily="Roboto" FontSize="40" Margin="0,0,0,10" />
-          <UXControls:UXTextBlock Name="txtMessage" Foreground="#FFFFFF" VerticalAlignment="Center" FontWeight="Normal" TextWrapping="Wrap" TextAlignment="Center"
+                    <UXControls:UXTextBlock Name="txtMessage" VerticalAlignment="Center" FontWeight="Normal" TextWrapping="Wrap" TextAlignment="Center"
                                         HorizontalAlignment="Center" FontFamily="Roboto" FontSize="16" LineHeight="24" Width="660" >
-            <Run Name="txt1" FontFamily="Roboto" FontWeight="Normal"/>
-            <Run Name="txt2" FontFamily="Roboto" Foreground="#31A2E3" FontWeight="Normal" Cursor="Hand" TextDecorations="Underline" MouseLeftButtonDown="OpenPrivacy" />
-          </UXControls:UXTextBlock>
+                        <Run Name="txt1" FontFamily="Roboto" FontWeight="Normal"/>
+                        <Run Name="txt2" FontFamily="Roboto" FontWeight="Normal" Cursor="Hand" TextDecorations="Underline" MouseLeftButtonDown="OpenPrivacy" />
+                    </UXControls:UXTextBlock>
 
 
-          <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,30,0,0">
-            <Border Style="{StaticResource BorderNo}" Cursor="Hand" MouseLeftButtonDown="No_MouseLeftButtonDown">
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,30,0,0">
+                        <!--  <Border Style="{StaticResource BorderNo}" Cursor="Hand" MouseLeftButtonDown="No_MouseLeftButtonDown">
               <UXControls:UXTextBlock Name="txtNo" Foreground="#F5F6F7" VerticalAlignment="Center" FontWeight="Medium"
                                       HorizontalAlignment="Center" FontFamily="Roboto" FontSize="14"/>
             </Border>
             <Border Style="{StaticResource BorderYes}" Cursor="Hand" Margin="6,0,0,0" MouseLeftButtonDown="Yes_MouseLeftButtonDown">
               <UXControls:UXTextBlock Name="txtYes" Foreground="#F5F6F7" VerticalAlignment="Center" FontWeight="Medium"
                                       HorizontalAlignment="Center" FontFamily="Roboto" FontSize="14" />
-            </Border>
-          </StackPanel>
-        </StackPanel>
-      </Grid>
-    </Border>
-  </Grid>
+            </Border> -->
+                        <UXControls:UXButton
+            Name="txtNo" MinWidth="136.5" MinHeight="40"
+            HorizontalAlignment="Center"                     
+            ButtonType="Secondary"
+            Click="No_MouseLeftButtonDown"
+            Content="N/A" FontFamily="Roboto" FontSize="14" FontWeight="Medium"
+            CornerRadius="2"/>
+                        <UXControls:UXButton
+            Name="txtYes" MinWidth="136.5" MinHeight="40"
+            Margin="12,0,0,0"
+            ButtonType="Primary"
+            HorizontalAlignment="Center"
+            Click="Yes_MouseLeftButtonDown"
+            Content="N/A" FontFamily="Roboto" FontSize="14" FontWeight="Medium"
+            CornerRadius="2" />
+                    </StackPanel>
+                </StackPanel>
+            </Grid>
+        </Border>
+    </Grid>
 </Window>

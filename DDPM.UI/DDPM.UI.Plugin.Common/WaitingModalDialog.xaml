@@ -12,12 +12,12 @@
         WindowStartupLocation="CenterOwner" WindowStyle="None">
     <Window.Resources>
         <Style x:Key="BorderYes" TargetType="Border">
-            <Setter Property="Background" Value="#0E1C2F" />
+            <Setter Property="Background" Value="{DynamicResource BorderYesBackground}" />
             <Setter Property="CornerRadius" Value="2" />
             <Setter Property="Width" Value="87" />
             <Setter Property="Height" Value="40" />
             <Setter Property="BorderThickness" Value="1" />
-            <Setter Property="BorderBrush" Value="#F5F6F7" />
+            <Setter Property="BorderBrush" Value="{DynamicResource BorderYesBorderBrush}" />
         </Style>
         <Style x:Key="BorderNo" TargetType="Border">
             <Setter Property="Background" Value="#0672CB" />
@@ -29,20 +29,20 @@
         </Style>
     </Window.Resources>
     <Grid>
-        <Border Background="#E00B172C" CornerRadius="4" Width="587" BorderThickness="1" BorderBrush="#293B4D">
+        <Border Background="{DynamicResource WaitingModalDialogBorderBackground}" CornerRadius="4" Width="587" BorderThickness="1" BorderBrush="{DynamicResource WaitingModalDialogBorderBorderBrush}">
             <StackPanel Orientation="Vertical" Margin="0">
-                <UXControls:UXTextBlock Name="txtCaption" Foreground="#FFFFFF" VerticalAlignment="Center" FontWeight="Light"
+                <UXControls:UXTextBlock Name="txtCaption" Foreground="{DynamicResource txtCaption_TxtColor}" VerticalAlignment="Center" FontWeight="Light"
                                         HorizontalAlignment="Center" FontFamily="Roboto" FontSize="32" Margin="0,36,0,20" />
                 <UXControls:UXBusyIndicator BusyIndicatorType="Secondary" Foreground="#0672CB" VerticalAlignment="Center" FontWeight="Normal"
                                             HorizontalAlignment="Center"  Width="64" Height="64" IsActive="True" Margin="0,10,0,0" />
-                <UXControls:UXTextBlock Name="txtMessage" Foreground="#FFFFFF" FontWeight="Normal" TextWrapping="Wrap" Margin="0,35,0,0"
+                <UXControls:UXTextBlock Name="txtMessage" Foreground="{DynamicResource txtMessage_TxtColor}" FontWeight="Normal" TextWrapping="Wrap" Margin="0,35,0,0"
                                         HorizontalAlignment="Center" FontFamily="Roboto" FontSize="20" LineHeight="28" />
-                <Border Name="bdrAlert" Background="#364861" CornerRadius="4" Margin="30,25,30,0" BorderThickness="7,0,0,0" Height="57" BorderBrush="#E67F01">
+                <Border Name="bdrAlert" Background="{DynamicResource bdrAlertBackground}" CornerRadius="4" Margin="30,25,30,0" BorderThickness="7,0,0,0" Height="57" BorderBrush="{DynamicResource bdrAlertBorderBrush}">
                     <StackPanel Orientation="Horizontal">
                         <Image x:Name="InfoIcon" Margin="12,0,0,0" Source="/DDPM.UI.Resources;component/Resources/Images/Alert.png" Stretch="Fill"
                                VerticalAlignment="Center" HorizontalAlignment="Left" Width="18" Height="18">
                         </Image>
-                        <UXControls:UXTextBlock Name="txtAlert" FontSize="13" Background="#364861" Foreground="#F5F6F7" TextWrapping="Wrap"
+                        <UXControls:UXTextBlock Name="txtAlert" FontSize="13" Background="{DynamicResource txtAlert_BgColor}" Foreground="{DynamicResource txtAlert_FgColor}" TextWrapping="Wrap"
                                                 VerticalAlignment="Center" HorizontalAlignment="Left" Margin="5,16,0,13" LineHeight="24" Padding="0,3,35,2">
                             <Run Name="txtAlert1" FontFamily="Roboto" FontWeight="Normal" />
                         </UXControls:UXTextBlock>

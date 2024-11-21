@@ -87,8 +87,7 @@ namespace DDPM.EABroker
         //WorkWindows
         private List<EAWorkWindow> _workWindows = new List<EAWorkWindow>();
         private int _workWindowUsedCount = 0;
-        private bool _isWorkUIEnabled = true;
-        private bool _isWorkWindowVisible = false;
+        private bool _isWorkUIEnabled = true;        
         private ObservableCollection<string> _workWinCellInfos = new ObservableCollection<string>();
 
         //ScreenIdWindows

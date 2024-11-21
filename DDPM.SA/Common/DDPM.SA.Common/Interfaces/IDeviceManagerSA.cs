@@ -383,8 +383,6 @@ namespace DDPM.SA.Common
 
         Task StopPairing(Guid deviceId);
 
-        Task StopPairingPen();
-
         Task SetWiredAudioIMicNSEnable(bool newValue, Guid deviceId);
 
         Task SetWiredAudioMicMuteSoundEnable(bool newValue, Guid deviceId);

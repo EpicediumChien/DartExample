@@ -17,7 +17,6 @@ namespace DDPM.EABroker
         private readonly IDeviceManagerSA? _deviceManagerSA;
         private ObservableCollection<SplitJson> _customList = new ObservableCollection<SplitJson>();
         private SplitJson _selectedCustomItem;
-        private bool _isSaveButtonEnabled = true;
         private string _windowTitle = "";
         private bool _isAdjustTextVisible = false;
         private bool _isOverlapLayout = false;

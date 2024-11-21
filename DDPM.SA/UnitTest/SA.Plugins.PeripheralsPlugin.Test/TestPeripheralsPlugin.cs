@@ -1063,7 +1063,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin.Test
             var DeviceManagerObj = mockDeviceManager.Object;
             privatetePeripheralsPlugin.SetFieldOrProperty("_iDeviceManager", DeviceManagerObj);
 
-            peripheralsPlugin.StopPairingPen();                                     // device is physicalPenDevice
+            //peripheralsPlugin.StopPairingPen();                                     // device is physicalPenDevice
             var devicemanager = privatetePeripheralsPlugin.GetFieldOrProperty("_iDeviceManager");
             Assert.IsTrue(true);
             Assert.IsNotNull(devicemanager);
