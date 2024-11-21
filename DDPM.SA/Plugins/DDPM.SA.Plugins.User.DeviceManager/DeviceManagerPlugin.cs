@@ -2580,13 +2580,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             return Task.FromResult(true);
         }
 
-        public Task StopPairingPen()
-        {
-            writelog("DeviceMangerPlugin received StopPairingPen requested ...");
-            _PeripheralsPlugin.StopPairingPen();
-            return Task.FromResult(true);
-        }
-
         public Task SetWiredAudioIMicNSEnable(bool newValue, Guid deviceId)
         {
             writelog("DeviceMangerPlugin received SetWiredAudioIMicNSEnable requested ...");
@@ -9837,7 +9830,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                         }).ConfigureAwait(false);
                                         ////1117 Bruce 不用自動旋轉把下兩行註解
                                         //if (displayDeviceNumChange && _AllInfoMonitors.Count > 0)
-                                            _DisplayManagerPlugin.SetDisplayOrientation(_AllInfoMonitors).Wait();
+                                        _DisplayManagerPlugin.SetDisplayOrientation(_AllInfoMonitors).Wait();
 
                                         writelog("[DeviceMangerPlugin] SystemEvents_DisplaySettingsChanged() SetDisplayOrientation finish ...");
 
@@ -14550,15 +14543,15 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         return Task.CompletedTask;
                     }
                     case OSDType.StartRecording:
-                        {
-                            _showosd(monitorInfo, OSDType.StartRecording, OSDType_Device.Unknown, "3");
-                            return Task.CompletedTask;
-                        }
+                    {
+                        _showosd(monitorInfo, OSDType.StartRecording, OSDType_Device.Unknown, "3");
+                        return Task.CompletedTask;
+                    }
                     case OSDType.QAM:
-                        {
-                            _showosd(monitorInfo, OSDType.QAM, OSDType_Device.Unknown, string.Empty);
-                            return Task.CompletedTask;
-                        }
+                    {
+                        _showosd(monitorInfo, OSDType.QAM, OSDType_Device.Unknown, string.Empty);
+                        return Task.CompletedTask;
+                    }
                     default:
                         return Task.CompletedTask;
                 }
