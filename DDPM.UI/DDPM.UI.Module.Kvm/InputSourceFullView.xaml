@@ -79,17 +79,15 @@
                     </Grid>
                     <Grid Grid.Row="1" Margin="0, 50, 0, 0" Width="400" Height="30" HorizontalAlignment="Left">
                         <UXControls:UXTextBlock Text="{Binding [Kvm.2], Source={x:Static lang:LangHelper.Instance}}"
-                                                Foreground="#DAF5FD"
+                                                Foreground="{DynamicResource DefaultTheme_PbHeaderColor}"
                                                 FontSize="20" LineHeight="28" />
                     </Grid>
                     <Grid Grid.Row="2" Margin="0, 8, 0 ,0" Width="476" Height="150" HorizontalAlignment="Left">
                         <UXControls:UXTextBlock Text="{Binding [Kvm.6], Source={x:Static lang:LangHelper.Instance}}"
-                                                Foreground="#F5F6F7"
                                                 FontSize="48" LineHeight="76" />
                     </Grid>
                     <Grid Grid.Row="3" Margin="0, 16, 0, 0" Width="476" Height="120" HorizontalAlignment="Left">
                         <UXControls:UXTextBlock Text="{Binding [Kvm.7], Source={x:Static lang:LangHelper.Instance}}"
-                                                Foreground="#F5F6F7"
                                                 FontSize="16" LineHeight="24" />
                     </Grid>
                     <Grid Grid.Row="4" Margin="0, 93, 0 ,0">
@@ -146,7 +144,7 @@
                             <ColumnDefinition Width="Auto" />
                             <ColumnDefinition Width="Auto" />
                         </Grid.ColumnDefinitions>
-                        <Grid Grid.Column="0" Background="#193457" Margin="0, 0, 8, 0">
+                        <Grid Grid.Column="0" Background="{DynamicResource DefaultTheme_USBKVMPCGridBkColor}" Margin="0, 0, 8, 0">
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="Auto" />
                                 <RowDefinition Height="Auto" />
@@ -157,17 +155,17 @@
                             </Grid.RowDefinitions>
                             <Grid Grid.Row="0" Margin="16, 16, 16, 0">
                                 <UXControls:UXTextBlock Text="{Binding [Kvm.0], Source={x:Static lang:LangHelper.Instance},StringFormat={}{0}1}"
-                                                        Foreground="#A4B8CD"
+                                                        Foreground="{DynamicResource DefaultTheme_USBKVMPCColor}"
                                                         FontSize="16" LineHeight="24"
                                                         HorizontalAlignment="Center" />
                             </Grid>
                             <Grid Grid.Row="1" Margin="16, 2, 16, 8">
-                                <UXControls:UXTextBox Text="{Binding InputName1}" Background="#141D28" Foreground="White"
-                                                      BorderBrush="#7E7E7E" BorderThickness="1" VerticalContentAlignment="Center" MaxLength="30" KeyDown="KeyDown_KeyDown1" />
+                                <UXControls:UXTextBox Text="{Binding InputName1}" BorderThickness="1" 
+                                                      VerticalContentAlignment="Center" MaxLength="30" KeyDown="KeyDown_KeyDown1" />
                             </Grid>
                             <Grid Grid.Row="2" Margin="16, 8, 16, 0">
                                 <UXControls:UXTextBlock Text="{Binding [Video], Source={x:Static lang:LangHelper.Instance}}"
-                                                        Foreground="#A4B8CD"
+                                                        Foreground="{DynamicResource DefaultTheme_USBKVMPCColor}"
                                                         FontSize="16" LineHeight="24"
                                                         HorizontalAlignment="Center" />
                             </Grid>
@@ -182,11 +180,12 @@
                                           ItemsSource="{Binding PCInputsList}"
                                           SelectedItem="{Binding PC1Inputs_Selected, Mode=TwoWay}"
                                           DisplayMemberPath="inputDisplayText" Grid.ColumnSpan="2"
-                                          BorderBrush="#293B4D" BorderThickness="1.5" />
+                                          Background="{DynamicResource DefaultTheme_USBKVMComboBkColor}"
+                                          BorderBrush="{DynamicResource DefaultTheme_USBKVMComboBdColor}" BorderThickness="1.5" />
                             </Grid>
                             <Grid Grid.Row="4" Margin="16, 8, 16, 0">
                                 <UXControls:UXTextBlock Text="{Binding [USB], Source={x:Static lang:LangHelper.Instance}}"
-                                                        Foreground="#A4B8CD"
+                                                        Foreground="{DynamicResource DefaultTheme_USBKVMPCColor}"
                                                         FontSize="16" LineHeight="24"
                                                         HorizontalAlignment="Center" />
                             </Grid>
@@ -200,10 +199,12 @@
                                           HorizontalAlignment="Left" VerticalAlignment="Center"
                                           ItemsSource="{Binding USBsList}"
                                           SelectedItem="{Binding PC1USB_Selected, Mode=TwoWay}"
-                                          DisplayMemberPath="inputDisplayText" Grid.ColumnSpan="3" />
+                                          DisplayMemberPath="inputDisplayText" Grid.ColumnSpan="3" 
+                                          Background="{DynamicResource DefaultTheme_USBKVMComboBkColor}"
+                                          BorderBrush="{DynamicResource DefaultTheme_USBKVMComboBdColor}" BorderThickness="1.5"/>
                             </Grid>
                         </Grid>
-                        <Grid Grid.Column="1" Background="#193457" Margin="0, 0, 8, 0">
+                        <Grid Grid.Column="1" Background="{DynamicResource DefaultTheme_USBKVMPCGridBkColor}" Margin="0, 0, 8, 0">
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="Auto" />
                                 <RowDefinition Height="Auto" />
@@ -214,17 +215,17 @@
                             </Grid.RowDefinitions>
                             <Grid Grid.Row="0" Margin="16, 16, 16, 0">
                                 <UXControls:UXTextBlock Text="{Binding [Kvm.0], Source={x:Static lang:LangHelper.Instance},StringFormat={}{0}2}"
-                                                        Foreground="#A4B8CD"
+                                                        Foreground="{DynamicResource DefaultTheme_USBKVMPCColor}"
                                                         FontSize="16" LineHeight="24"
                                                         HorizontalAlignment="Center" />
                             </Grid>
                             <Grid Grid.Row="1" Margin="16, 2, 16, 8">
-                                <UXControls:UXTextBox Text="{Binding InputName2}" Background="#141D28" Foreground="White"
+                                <UXControls:UXTextBox Text="{Binding InputName2}" Background="#141D28"
                                                       BorderBrush="#7E7E7E" BorderThickness="1" VerticalContentAlignment="Center" MaxLength="30" KeyDown="KeyDown_KeyDown2" />
                             </Grid>
                             <Grid Grid.Row="2"  Margin="16, 8, 16, 0">
                                 <UXControls:UXTextBlock Text="{Binding [Video], Source={x:Static lang:LangHelper.Instance}}"
-                                                        Foreground="#A4B8CD"
+                                                        Foreground="{DynamicResource DefaultTheme_USBKVMPCColor}"
                                                         FontSize="16" LineHeight="24"
                                                         HorizontalAlignment="Center" />
                             </Grid>
@@ -234,11 +235,12 @@
                                           ItemsSource="{Binding PCInputsList}" Width="103"
                                           SelectedItem="{Binding PC2Inputs_Selected, Mode=TwoWay}"
                                           DisplayMemberPath="inputDisplayText"
-                                          BorderBrush="#293B4D" BorderThickness="1.5" />
+                                          Background="{DynamicResource DefaultTheme_USBKVMComboBkColor}"
+                                          BorderBrush="{DynamicResource DefaultTheme_USBKVMComboBdColor}" BorderThickness="1.5" />
                             </Grid>
                             <Grid Grid.Row="4" Margin="16, 8, 16, 0">
                                 <UXControls:UXTextBlock Text="{Binding [USB], Source={x:Static lang:LangHelper.Instance}}"
-                                                        Foreground="#A4B8CD"
+                                                        Foreground="{DynamicResource DefaultTheme_USBKVMPCColor}"
                                                         FontSize="16" LineHeight="24"
                                                         HorizontalAlignment="Center" />
                             </Grid>
@@ -247,10 +249,12 @@
                                           HorizontalAlignment="Center" VerticalAlignment="Center"
                                           ItemsSource="{Binding USBsList}" Width="103"
                                           SelectedItem="{Binding PC2USB_Selected, Mode=TwoWay}"
-                                          DisplayMemberPath="inputDisplayText" />
+                                          DisplayMemberPath="inputDisplayText"
+                                          Background="{DynamicResource DefaultTheme_USBKVMComboBkColor}"
+                                          BorderBrush="{DynamicResource DefaultTheme_USBKVMComboBdColor}" BorderThickness="1.5"/>
                             </Grid>
                         </Grid>
-                        <Grid Grid.Column="2" Background="#193457" Margin="0, 0, 8, 0" Visibility="{Binding PC3_Visibility}">
+                        <Grid Grid.Column="2" Background="{DynamicResource DefaultTheme_USBKVMPCGridBkColor}" Margin="0, 0, 8, 0" Visibility="{Binding PC3_Visibility}">
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="Auto" />
                                 <RowDefinition Height="Auto" />
@@ -261,17 +265,17 @@
                             </Grid.RowDefinitions>
                             <Grid Grid.Row="0" Margin="16, 16, 16, 0">
                                 <UXControls:UXTextBlock Text="{Binding [Kvm.0], Source={x:Static lang:LangHelper.Instance},StringFormat={}{0}3}"
-                                                        Foreground="#A4B8CD"
+                                                        Foreground="{DynamicResource DefaultTheme_USBKVMPCColor}"
                                                         FontSize="16" LineHeight="24"
                                                         HorizontalAlignment="Center" />
                             </Grid>
                             <Grid Grid.Row="1" Margin="16, 2, 16, 8">
-                                <UXControls:UXTextBox Text="{Binding InputName3}" Background="#141D28" Foreground="White"
+                                <UXControls:UXTextBox Text="{Binding InputName3}" Background="#141D28"
                                                       BorderBrush="#7E7E7E" BorderThickness="1" VerticalContentAlignment="Center" MaxLength="30" KeyDown="KeyDown_KeyDown3" />
                             </Grid>
                             <Grid Grid.Row="2" Margin="16, 8, 16, 0">
                                 <UXControls:UXTextBlock Text="{Binding [Video], Source={x:Static lang:LangHelper.Instance}}"
-                                                        Foreground="#A4B8CD"
+                                                        Foreground="{DynamicResource DefaultTheme_USBKVMPCColor}"
                                                         FontSize="16" LineHeight="24"
                                                         HorizontalAlignment="Center" />
                             </Grid>
@@ -281,11 +285,12 @@
                                           ItemsSource="{Binding PCInputsList}" Width="100"
                                           SelectedItem="{Binding PC3Inputs_Selected, Mode=TwoWay}"
                                           DisplayMemberPath="inputDisplayText"
-                                          BorderBrush="#293B4D" BorderThickness="1.5" />
+                                          Background="{DynamicResource DefaultTheme_USBKVMComboBkColor}"
+                                          BorderBrush="{DynamicResource DefaultTheme_USBKVMComboBdColor}" BorderThickness="1.5" />
                             </Grid>
                             <Grid Grid.Row="4" Margin="16, 8, 16, 0">
                                 <UXControls:UXTextBlock Text="{Binding [USB], Source={x:Static lang:LangHelper.Instance}}"
-                                                        Foreground="#A4B8CD"
+                                                        Foreground="{DynamicResource DefaultTheme_USBKVMPCColor}"
                                                         FontSize="16"
                                                         HorizontalAlignment="Center" />
                             </Grid>
@@ -294,10 +299,12 @@
                                           HorizontalAlignment="Center" VerticalAlignment="Center"
                                           ItemsSource="{Binding USBsList}" Width="103"
                                           SelectedItem="{Binding PC3USB_Selected, Mode=TwoWay}"
-                                          DisplayMemberPath="inputDisplayText" />
+                                          DisplayMemberPath="inputDisplayText"
+                                          Background="{DynamicResource DefaultTheme_USBKVMComboBkColor}"
+                                          BorderBrush="{DynamicResource DefaultTheme_USBKVMComboBdColor}" BorderThickness="1.5"/>
                             </Grid>
                         </Grid>
-                        <Grid Grid.Column="3" Background="#193457" Visibility="{Binding PC4_Visibility}">
+                        <Grid Grid.Column="3" Background="{DynamicResource DefaultTheme_USBKVMPCGridBkColor}" Visibility="{Binding PC4_Visibility}">
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="Auto" />
                                 <RowDefinition Height="Auto" />
@@ -308,17 +315,17 @@
                             </Grid.RowDefinitions>
                             <Grid Grid.Row="0" Margin="16, 16, 16, 0">
                                 <UXControls:UXTextBlock Text="{Binding [Kvm.0], Source={x:Static lang:LangHelper.Instance},StringFormat={}{0}4}"
-                                                        Foreground="#A4B8CD"
+                                                        Foreground="{DynamicResource DefaultTheme_USBKVMPCColor}"
                                                         FontSize="16" LineHeight="24"
                                                         HorizontalAlignment="Center" />
                             </Grid>
                             <Grid Grid.Row="1" Margin="16, 2, 16, 8">
-                                <UXControls:UXTextBox Text="{Binding InputName4}" Background="#141D28" Foreground="White"
+                                <UXControls:UXTextBox Text="{Binding InputName4}" Background="#141D28"
                                                       BorderBrush="#7E7E7E" BorderThickness="1" MaxLength="30" KeyDown="KeyDown_KeyDown4" />
                             </Grid>
                             <Grid Grid.Row="2" Margin="16, 8, 16, 0">
                                 <UXControls:UXTextBlock Text="{Binding [Video], Source={x:Static lang:LangHelper.Instance}}"
-                                                        Foreground="#A4B8CD"
+                                                        Foreground="{DynamicResource DefaultTheme_USBKVMPCColor}"
                                                         FontSize="16" LineHeight="24"
                                                         HorizontalAlignment="Center" />
                             </Grid>
@@ -328,11 +335,12 @@
                                           ItemsSource="{Binding PCInputsList}"
                                           SelectedItem="{Binding PC4Inputs_Selected, Mode=TwoWay}"
                                           DisplayMemberPath="inputDisplayText"
-                                          BorderBrush="#293B4D" BorderThickness="1.5" />
+                                          Background="{DynamicResource DefaultTheme_USBKVMComboBkColor}"
+                                          BorderBrush="{DynamicResource DefaultTheme_USBKVMComboBdColor}" BorderThickness="1.5" />
                             </Grid>
                             <Grid Grid.Row="4" Margin="16, 8, 16, 0">
                                 <UXControls:UXTextBlock Text="{Binding [USB], Source={x:Static lang:LangHelper.Instance}}"
-                                                        Foreground="#A4B8CD"
+                                                        Foreground="{DynamicResource DefaultTheme_USBKVMPCColor}"
                                                         FontSize="16" LineHeight="24"
                                                         HorizontalAlignment="Center" />
                             </Grid>
@@ -341,7 +349,9 @@
                                           HorizontalAlignment="Center" VerticalAlignment="Center"
                                           ItemsSource="{Binding USBsList}" Width="103"
                                           SelectedItem="{Binding PC4USB_Selected, Mode=TwoWay}"
-                                          DisplayMemberPath="inputDisplayText" />
+                                          DisplayMemberPath="inputDisplayText" 
+                                          Background="{DynamicResource DefaultTheme_USBKVMComboBkColor}"
+                                          BorderBrush="{DynamicResource DefaultTheme_USBKVMComboBdColor}" BorderThickness="1.5"/>
                             </Grid>
                         </Grid>
                     </Grid>

@@ -74,17 +74,15 @@
                     <StackPanel>
                         <Grid Grid.Row="1" Margin="0, 50, 0, 0"  Width="400" Height="30" HorizontalAlignment="Left">
                             <UXControls:UXTextBlock Text="{Binding [Kvm.16], Source={x:Static lang:LangHelper.Instance}}"
-                                                    Foreground="#DAF5FD"
+                                                    Foreground="{DynamicResource DefaultTheme_PbHeaderColor}"
                                                     FontSize="20"  LineHeight="28" />
                         </Grid>
                         <Grid Grid.Row="2" Margin="0, 8, 0, 0" Width="476" Height="150" HorizontalAlignment="Left">
                             <UXControls:UXTextBlock Text="{Binding [Kvm.17], Source={x:Static lang:LangHelper.Instance}}"
-                                                    Foreground="#F5F6F7"
                                                     FontSize="48" LineHeight="76" />
                         </Grid>
                         <Grid Grid.Row="3" Margin="0, 16, 0, 0"  Width="476" Height="120" HorizontalAlignment="Left">
                             <UXControls:UXTextBlock Text="{Binding [Kvm.18], Source={x:Static lang:LangHelper.Instance}}"
-                                                    Foreground="#F5F6F7"
                                                     FontSize="16" LineHeight="24" />
                         </Grid>
                     </StackPanel>
@@ -98,10 +96,10 @@
                                          ButtonSize="Medium"
                                          IconAnimation="Move"
                                          Click="BackMKFullView"
-                                         Margin="0" Padding="16,8" Foreground="#F5F6F7"
-                                         FontSize="14" BorderBrush="#F5F6F7"
+                                         Margin="0" Padding="16,8"
+                                         FontSize="14"
                                          Visibility="{Binding SetPXP}">
-                        <Path Data="M0.620372 7.67441L0.341461 7.9998L0.620372 8.3252L6.62037 15.3252L7.37963 14.6744L2.08711 8.4998L18 8.4998L18 7.4998L2.08711 7.4998L7.37963 1.3252L6.62037 0.674405L0.620372 7.67441Z" Fill="#F5F6F7"/>
+                        <Path Data="M0.620372 7.67441L0.341461 7.9998L0.620372 8.3252L6.62037 15.3252L7.37963 14.6744L2.08711 8.4998L18 8.4998L18 7.4998L2.08711 7.4998L7.37963 1.3252L6.62037 0.674405L0.620372 7.67441Z"/>
                     </UXControls:UXButton>
                     <UXControls:UXButton IconPosition="IconRight" HorizontalContentAlignment="Center"
                                          ButtonType="Primary" Padding="40, 8"
@@ -131,15 +129,15 @@
             <!-- Video Swap Control-->
             <Grid Grid.Row="0" Grid.Column="1" Margin="83,50">
                 <Border Width="544" Height="306" CornerRadius="4" BorderThickness="1"
-                        Background="#193457" BorderBrush="Gray" VerticalAlignment="Top">
+                        Background="{DynamicResource DefaultTheme_SetupScanBkColor}" BorderBrush="{DynamicResource DefaultTheme_SetupScanBdColor}" VerticalAlignment="Top">
                     <ContentControl Content="{Binding VideoSwapContent}" Margin="6" />
                 </Border>
             </Grid>
 
             <!-- PIP/PBP Mode Selection -->
             <Border Grid.Row="1" Grid.Column="1"
-                    Background="#99132F54" Padding="8"
-                    BorderBrush="#FF1B385F" BorderThickness="2"
+                    Background="{DynamicResource DefaultTheme_GridBkColor}" Padding="8"
+                    BorderBrush="{DynamicResource DefaultTheme_SetupSelectBdColor}" BorderThickness="2"
                     CornerRadius="13" Width="560" Height="140">
 
                 <Grid Grid.Height="150">
