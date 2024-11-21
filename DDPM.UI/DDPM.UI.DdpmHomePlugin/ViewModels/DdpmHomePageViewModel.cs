@@ -1,6 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using DDPM.SA.Common;
+using DDPM.SA.Common.Settings;
 using DDPM.UI.Common;
 using DDPM.UI.Common.Models;
 using DDPM.UI.Plugin.Common;
@@ -18,6 +19,7 @@ using System.Windows;
 using System.Windows.Data;
 using System.Windows.Input;
 using VcpCore.Common;
+using Windows.UI.ViewManagement;
 using static DDPM.UI.Common.User32;
 
 namespace DDPM.UI.Plugin.DdpmHomePlugin.ViewModels
@@ -111,6 +113,16 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.ViewModels
                         //Robert_Lin, 2024-9-30, Comment-out after phase in Monitor Product images
                         //DeviceImage = mi.modelName.ToUpper().StartsWith("G") ? DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/G.png") : mi.modelName.ToUpper().StartsWith("AW") ? DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/AW.png") : DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Product_Display.png")
                     };
+
+                    //Robert_Lin, 2024-11-20 PIMS-302436, Show the user input name to replace InputCable
+                    Dictionary<string, InputInfo> inputList = DdpmCommonHelper.DeviceManagerSA.GetInputSourcelist(mi).Result;
+                    InputInfo mainInput;
+                    if (inputList.TryGetValue(mi.inputCable, out mainInput))
+                    {
+                        dev.InputName = mainInput.InputName;
+                    }
+                    //
+                    ///////////////////////////////////////////////////////////////////////////////
 
                     //2024-6-20 Robert_Lin, check if any some model already in list
                     List<HomeDevice> sameModel = tempList.FindAll(x => x.IsSameModel(dev));
