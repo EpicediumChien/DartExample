@@ -398,6 +398,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                     DeviceInfo _deviceInfo = _deviceHelper.deviceInfo.Where(x => x.ID == deviceId).FirstOrDefault();
                     if (_deviceInfo != null && _deviceInfo.BackLightingControls != newValue)
                     {
+                        Debug.WriteLine($"SetBackLightingControls: GUID:{deviceId} NewValue:{newValue}");
                         _logicalDevice3.SetBackLightingControls(newValue);
                         _deviceInfo.BackLightingControls = newValue;
                         break;
