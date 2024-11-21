@@ -1329,8 +1329,32 @@
     </Style>
     <!--leo add end-->
 
-
-
-
+    <!-- BorderConnection -->
+    <Style x:Key="BorderConnection" TargetType="Border">
+        <Setter Property="Background" Value="#99193457" />
+        <Setter Property="CornerRadius" Value="2" />
+        <Setter Property="Width" Value="252" />
+        <Setter Property="BorderThickness" Value="2" />
+        <Setter Property="BorderBrush" Value="#1B385F" />
+    </Style>
+    <Style x:Key="ConnectionStyle1" TargetType="UXControls:UXTextBlock">
+        <Setter Property="Foreground" Value="#FFFFFF" />
+        <Setter Property="FontFamily" Value="Roboto" />
+        <Setter Property="FontSize" Value="14" />
+        <Setter Property="FontWeight" Value="Bold" />
+    </Style>
+    <Style x:Key="ConnectionStyle2" TargetType="UXControls:UXTextBlock">
+        <Setter Property="Foreground" Value="#839DB4" />
+        <Setter Property="FontFamily" Value="Roboto" />
+        <Setter Property="FontSize" Value="14" />
+        <Setter Property="FontWeight" Value="Normal" />
+    </Style>
+    <Style x:Key="ConnectionStyle3" TargetType="UXControls:UXTextBlock">
+        <Setter Property="Foreground" Value="#FFFFFF " />
+        <Setter Property="FontFamily" Value="Roboto" />
+        <Setter Property="FontSize" Value="14" />
+        <Setter Property="FontWeight" Value="Medium" />
+    </Style>
+    <!--BorderConnection end-->
 
 </ResourceDictionary>

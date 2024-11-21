@@ -13,9 +13,9 @@
              d:DesignHeight="671" d:DesignWidth="1374">
     <UserControl.Resources>
         <ResourceDictionary>
-            <ResourceDictionary.MergedDictionaries>
+            <!--<ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="/DDPM.UI.Common;component/PluginStyles.xaml" />
-            </ResourceDictionary.MergedDictionaries>
+            </ResourceDictionary.MergedDictionaries>-->
             <Storyboard x:Key="StoryGotoTwoView">
                 <DoubleAnimation Storyboard.TargetName="RightGrid" Storyboard.TargetProperty="Width"
                                  Duration="0:0:0.4" From="{Binding RightFrameWidthFrom}" To="{Binding RightFrameWidthTo}" FillBehavior="HoldEnd" />
@@ -110,7 +110,7 @@
                             </Image.InputBindings>
                             <Image.ToolTip>
                                 <ToolTip Style="{StaticResource InfoToolTipStyle}" Placement="Top" VerticalOffset="6" HorizontalOffset="8">
-                                    <TextBlock Style="{StaticResource InfoToolTipTextStyle}" Text="{Binding FirmwareVersion2}" />
+                                    <TextBlock Style="{StaticResource TabInfoToolTipTextStyle}" Text="{Binding FirmwareVersion2}" />
                                 </ToolTip>
                             </Image.ToolTip>
                         </Image>
@@ -218,15 +218,15 @@
         </Grid>
 
         <!-- Please Wait -->
-        <Grid x:Name="PleaseWaitGrid" Background="#CC000000" Visibility="{Binding IsPleaseWaitVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
-            <Border Width="587" Height="265" Background="#F20D121A"
-                    BorderBrush="#293D4D" BorderThickness="1" CornerRadius="4"
+        <Grid x:Name="PleaseWaitGrid" Visibility="{Binding IsPleaseWaitVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
+            <Border Width="587" Height="265"
+                     BorderThickness="1" CornerRadius="4"
                     HorizontalAlignment="Center" VerticalAlignment="Center">
                 <StackPanel>
                     <Grid Height="40" HorizontalAlignment="Center" VerticalAlignment="Top"
                           Margin="0,64,0,32">
                         <UXControls:UXTextBlock Text="{Binding [HomePage.0], Source={x:Static lang:LangHelper.Instance}}"
-                                                Foreground="#F5F6F7" FontSize="32" />
+                                                 FontSize="32" />
                     </Grid>
                     <Grid Height="64">
                         <UXControls:UXBusyIndicator Width="64" Height="64"

@@ -1168,8 +1168,8 @@ namespace DDPM.UI.Plugin.ViewModels
                         DeviceInfoDTP.AncMode = 1;
                         _isTransparencyChecked = false;
                         _isNoiseOffChecked = false;
-                        OnPropertyChanged(nameof(IsTransparencyChecked));
-                        OnPropertyChanged(nameof(IsNoiseOffChecked));
+                        //OnPropertyChanged(nameof(IsTransparencyChecked));
+                        //OnPropertyChanged(nameof(IsNoiseOffChecked));
                     }
                 }
             }
@@ -1197,10 +1197,10 @@ namespace DDPM.UI.Plugin.ViewModels
 
                         _isActiveNoiseCancellingChecked = false;
                         _isNoiseOffChecked = false;
-                        OnPropertyChanged(nameof(IsActiveNoiseCancellingChecked));
-                        OnPropertyChanged(nameof(IsNoiseOffChecked));
-                        OnPropertyChanged("IsTransparencyChecked");
-                        OnPropertyChanged("TransparencylevelSliderValue");
+                        //OnPropertyChanged(nameof(IsActiveNoiseCancellingChecked));
+                        //OnPropertyChanged(nameof(IsNoiseOffChecked));
+                        //OnPropertyChanged("IsTransparencyChecked");
+                        //OnPropertyChanged("TransparencylevelSliderValue");
                     }
                 }
             }
@@ -1228,8 +1228,8 @@ namespace DDPM.UI.Plugin.ViewModels
 
                         _isActiveNoiseCancellingChecked = false;
                         _isTransparencyChecked = false;
-                        OnPropertyChanged(nameof(IsActiveNoiseCancellingChecked));
-                        OnPropertyChanged(nameof(IsTransparencyChecked));
+                        //OnPropertyChanged(nameof(IsActiveNoiseCancellingChecked));
+                        //OnPropertyChanged(nameof(IsTransparencyChecked));
                     }
                 }
             }
