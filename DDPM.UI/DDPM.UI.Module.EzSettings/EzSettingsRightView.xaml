@@ -5,6 +5,7 @@
              xmlns:UXControls="clr-namespace:Dell.Client.Framework.UX.WPF.Controls;assembly=DCF.UX.WPF"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local="clr-namespace:DDPM.UI.Module.EzSettings"
+             xmlns:lang="clr-namespace:DDPM.UI.Resources.Helper;assembly=DDPM.UI.Resources"
              mc:Ignorable="d"
              d:DesignHeight="450" d:DesignWidth="800" Loaded="UserControl_Loaded">
     <UserControl.Resources>
@@ -43,7 +44,7 @@
                             </Grid.ColumnDefinitions>
                             <StackPanel Grid.Column="0" Orientation="Horizontal">
                                 <!-- Text "Hotkey: Recent"-->
-                                <UXControls:UXTextBlock Text="Hotkey: Recent" Style="{StaticResource ItemDescriptionTextStyle}"/>
+                                <UXControls:UXTextBlock Text="{Binding [EazyMemorySettings.0], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource ItemDescriptionTextStyle}"/>
                                 <!-- (i) icon and tooltip -->
                                 <Viewbox Width="16" Height="16"  Margin="16,0,0,0" Stretch="Uniform">
                                     <Grid Width="16" Height="16" Background="{StaticResource FakeTransparent}">
@@ -96,7 +97,7 @@
                             </Grid.ColumnDefinitions>
 
                             <!-- Text "Allow app to split side by side without gap"-->
-                            <UXControls:UXTextBlock Grid.Column="0" Text="Allow app to split side by side without gap" Style="{StaticResource ItemDescriptionTextStyle}"/>
+                            <UXControls:UXTextBlock Grid.Column="0" Text="{Binding [EazyMemorySettings.3], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource ItemDescriptionTextStyle}"/>
                             <!-- ToogleSwitch -->
                             <UXControls:UXToggleSwitch Grid.Column="2" IsChecked="{Binding IsWithoutGap}" ContentTextVisibility="True" 
                                                    Content="{Binding Path=IsWithoutGap_String}" HorizontalAlignment="Right" VerticalAlignment="Center"  
@@ -112,7 +113,7 @@
                             </Grid.ColumnDefinitions>
 
                             <!-- Text "Only allow zone positioning when SHIFT is pressed"-->
-                            <UXControls:UXTextBlock Grid.Column="0" Text="Only allow zone positioning when SHIFT is pressed" Style="{StaticResource ItemDescriptionTextStyle}"/>
+                            <UXControls:UXTextBlock Grid.Column="0" Text="{Binding [EazyMemorySettings.4], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource ItemDescriptionTextStyle}"/>
                             <!-- ToogleSwitch 
                         Content="{Binding Path=IsOnlyAllowWhenShiftKeyPressed_String}"
                         -->
@@ -136,7 +137,7 @@
                         <UXControls:UXTextBlock Grid.Column="0" Text="Snap across multiple monitors" Style="{StaticResource ItemDescriptionTextStyle}"
                                                 IsEnabled="{Binding IsSpanAcrossEnabled}"/>
                         -->
-                            <TextBlock Grid.Column="0" Text="Snap across multiple monitors" FontFamily="Roboto" FontSize="16"
+                            <TextBlock Grid.Column="0" Text="{Binding [EazyMemorySettings.5], Source={x:Static lang:LangHelper.Instance}}" FontFamily="Roboto" FontSize="16"
                                    VerticalAlignment="Center" IsEnabled="{Binding IsSpanAcrossEnabled}">
                                 <TextBlock.Style>
                                     <Style TargetType="TextBlock">
@@ -166,7 +167,7 @@
 
                             <StackPanel Grid.Column="0" Orientation="Horizontal">
                                 <!-- Text "Application Window Snap"-->
-                                <UXControls:UXTextBlock Text="Application Window Snap" Style="{StaticResource ItemDescriptionTextStyle}"/>
+                                <UXControls:UXTextBlock Text="{Binding [EazyMemorySettings.6], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource ItemDescriptionTextStyle}"/>
                                 <!-- (i) icon and tooltip -->
                                 <Viewbox Width="16" Height="16"  Margin="16,0,0,0" Stretch="Uniform">
                                     <Grid Width="16" Height="16" Background="{StaticResource FakeTransparent}">

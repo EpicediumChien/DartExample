@@ -39,7 +39,7 @@ namespace DDPM.UI.Module.WebCameraPresenceDetection
 
         public void OnSelectedHomeDeviceChanged()
         {
-            Trace.WriteLine("BrightnessModule.OnSelectedHomeDeviceChanged");
+            Trace.WriteLine("WebCameraPresenceDetectionModule.OnSelectedHomeDeviceChanged");
             isSelectChanged = true;
             if (IsModuleActive)
             {
@@ -55,7 +55,7 @@ namespace DDPM.UI.Module.WebCameraPresenceDetection
 
         public void OnActivated()
         {
-            Trace.WriteLine("BrightnessModule.OnActivated");
+            Trace.WriteLine("WebCameraPresenceDetectionModule.OnActivated");
             if (isSelectChanged)
             {
                 isSelectChanged = false;
@@ -65,7 +65,7 @@ namespace DDPM.UI.Module.WebCameraPresenceDetection
 
         public void OnDeactivated()
         {
-            Trace.WriteLine("BrightnessModule.OnDeactivated");
+            Trace.WriteLine("WebCameraPresenceDetectionModule.OnDeactivated");
         }
 
         #endregion Event Handlers

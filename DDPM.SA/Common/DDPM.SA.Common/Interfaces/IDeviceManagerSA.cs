@@ -242,6 +242,8 @@ namespace DDPM.SA.Common
 
         Task<bool> SetOnUSBKVM(MonitorInfo monitorInfo, bool isON);
 
+        Task<bool> isScreenPartition(MonitorInfo monitorInfo);
+
         #endregion public for USBKVM
 
         #region EasyArrange
@@ -303,6 +305,16 @@ namespace DDPM.SA.Common
         public Task<SplitJson[]> ReadEACustomList();
 
         public Task<bool> WriteEACustomList(SplitJson[] customList);
+
+        public event EventHandler<EAArgs> EANotify;
+        public Task SendEANotify(EAArgs args);
+
+        /// <summary>
+        /// Return current Span across multiple monitor option is Enabled/Disabled;
+        /// Note that it's different with EzSettings.IsSpanAcrossMultiMonitors (=ON|OFF)
+        /// </summary>
+        /// <returns>True=Enabled; False=Disabled</returns>
+        public Task<bool> GetIsSpanEnabled();
 
         #endregion EasyArrange
 
@@ -442,7 +454,6 @@ namespace DDPM.SA.Common
         /// HDR change event，return HDR status
         /// </summary>
         event EventHandler<bool> HDRChangeEvent;
-        event EventHandler<DisplayOrientation> OSDOrientationChangeEvent;
 
         Task<DisplayPropertiesInfo> GetDisplayPropertiesInfo(MonitorInfo monitorInfos);
 
@@ -450,7 +461,7 @@ namespace DDPM.SA.Common
 
         Task<bool> SetResolutions(MonitorInfo monitorInfos, Properties properties);
 
-        Task<bool?> SetOrientation(MonitorInfo monitorInfos, DisplayOrientation orientation);
+        Task<bool> SetOrientation(MonitorInfo monitorInfos, DisplayOrientation orientation);
 
         Task<bool> CallWindowsDisplaySetting();
 

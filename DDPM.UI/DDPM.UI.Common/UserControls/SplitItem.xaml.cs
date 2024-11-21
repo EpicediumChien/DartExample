@@ -386,6 +386,15 @@ namespace DDPM.UI.Common.UserControls
 
             vm.NotifyPropertyChanged_TooltipText();
         }
+        public void ReplaceWithISplitICtrl(ISplitCtrl ispSource)
+        {
+            //Copy the another's ISplitCtrl
+            ISplitCtrl? isp = ispSource.Clone();
+            //Put into /replace with SplitItem's Content
+            InnerContent = isp.UC;
+
+            vm.NotifyPropertyChanged_TooltipText();
+        }
         #endregion
 
         #region Add Custom Layout Button
