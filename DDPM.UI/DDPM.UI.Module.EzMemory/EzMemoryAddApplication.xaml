@@ -8,7 +8,7 @@
              xmlns:lang="clr-namespace:DDPM.UI.Resources.Helper;assembly=DDPM.UI.Resources" 
              xmlns:viewmodels="clr-namespace:DDPM.UI.Common.ViewModels;assembly=DDPM.UI.Common" 
              d:DataContext="{d:DesignInstance Type=viewmodels:EzArrangeViewModel}"
-             mc:Ignorable="d" Background="#0D121A" Loaded="UserControl_Loaded"
+             mc:Ignorable="d" Background="{DynamicResource mainWindowBkColor}"
              d:DesignHeight="735" d:DesignWidth="1378">
     <Grid>
         <Grid.ColumnDefinitions>
@@ -26,8 +26,15 @@
         <!-- 上方的返回按鈕與標題 -->
         <Grid Grid.Column="0" Margin="50,0,0,0">
             <StackPanel Grid.Column="0" Margin="0,0,0,0" Orientation="Horizontal" HorizontalAlignment="left">
-                <Button Margin="0,0,0,0"   FontFamily="Segoe MDL2 Assets" FontSize="16" Content="&#xE72B;" Height="30" Width="40"  Click="btnCancel_Click" Foreground="White" Background="Transparent" BorderThickness="0" VerticalAlignment="Top" />
-                <UXControls:UXTextBlock  FontSize="24" Text="{Binding [Color.0], Source={x:Static lang:LangHelper.Instance}}" Foreground="White" />
+                <Border Grid.Column="0" Name="prevBtn" IsEnabled="{Binding IsPrevButtonEnabled}" MouseLeftButtonDown="btnCancel_Click" Background="Transparent">
+                    <Viewbox Width="16" Height="16">
+                        <Grid Width="16" Height="16">
+                            <Path Name="ezBtnLeftArrow" Data="M7.79 14.79L8.49 13.99L2.23 8.53004L16 8.53004L16 7.47004L2.23 7.47004L8.49 2.00004L7.79 1.20004L5.93601e-07 8.00004L7.79 14.79Z" Fill="{DynamicResource DefaultTheme_TxtColor}"/>
+                        </Grid>
+                    </Viewbox>
+                </Border>
+                <!--<Button Margin="0,0,0,0"   FontFamily="Segoe MDL2 Assets" FontSize="16" Content="&#xE72B;" Height="30" Width="40"  Click="btnCancel_Click" Foreground="White" Background="Transparent" BorderThickness="0" VerticalAlignment="Top" />-->
+                <UXControls:UXTextBlock Margin="10,0,0,0" FontSize="24" Text="{Binding [Color.0], Source={x:Static lang:LangHelper.Instance}}"  />
             </StackPanel>
         </Grid>
 
@@ -41,13 +48,13 @@
             </Grid.RowDefinitions>
 
             <Grid Grid.Row="0" Margin="50,0,0,0">
-                <UXControls:UXTextBox x:Name="edFilter" FontSize="14" Width="487" Height="40" Background="#141D28" TextChanged="edFilter_TextChanged" HorizontalContentAlignment="Left" VerticalAlignment="Center"/>
+                <UXControls:UXTextBox x:Name="edFilter" FontSize="14" Width="487" Height="40" TextChanged="edFilter_TextChanged" HorizontalContentAlignment="Left" VerticalAlignment="Center"/>
             </Grid>
 
             <!-- 排序按鈕 -->
             <Grid Grid.Row="1" Margin="50,0,0,0">
                 <StackPanel Orientation="horizontal" Grid.Row="1" >
-                    <UXControls:UXButton x:Name="btnSortbyName_Ascending" Content="{Binding [Color.1], Source={x:Static lang:LangHelper.Instance}}"  Width="237.5" Height="40" Margin="24,8,16,0" Background="#293B4D" HorizontalContentAlignment="Left" VerticalAlignment="Center"  Click="btnSortbyName_Ascending_Click"/>
+                    <UXControls:UXButton x:Name="btnSortbyName_Ascending" Content="{Binding [Color.1], Source={x:Static lang:LangHelper.Instance}}"  Width="237.5" Height="40" Margin="24,8,16,0"  Background="#293B4D" HorizontalContentAlignment="Left" VerticalAlignment="Center"  Click="btnSortbyName_Ascending_Click"/>
                     <UXControls:UXButton x:Name="btnSortbyDate_Ascending" Content="{Binding [Color.2], Source={x:Static lang:LangHelper.Instance}}" Width="237.5" Height="40" Margin="0,8,24,0" Background="#293B4D" HorizontalContentAlignment="Left" VerticalAlignment="Center" Click="btnSortbyDate_Ascending_Click"/>
                 </StackPanel>
             </Grid>
@@ -55,7 +62,7 @@
             <!-- 安裝的應用程式列表 -->
             <UXControls:UXScrollViewer Grid.Row="2">
                 <Grid Grid.Row="2" Margin="50,10,0,0">
-                    <ListView x:Name="lb_Installed_App" Margin="20,10,0,0" Width="487" Height="275" Background="#132F54" SelectionMode="Multiple" SelectedIndex="{Binding Selected}">
+                    <ListView x:Name="lb_Installed_App" Margin="20,10,0,0" Width="487" Height="275" Background="{DynamicResource DefaultTheme_BdBdColor}" SelectionMode="Multiple" SelectedIndex="{Binding Selected}">
                         <ListView.ItemTemplate>
                             <DataTemplate>
                                 <Grid>
@@ -71,7 +78,7 @@
                                     </Grid.RowDefinitions>
                                     <UXControls:UXRadioButton  Grid.Column="0" Grid.Row="1" GroupName="Group" IsChecked="{Binding RelativeSource={RelativeSource AncestorType={x:Type ListViewItem}}, Path=IsSelected}" />
                                     <Image Grid.Column="1" Grid.Row="1" x:Name="appIcon" Source="{Binding AppIcon}" Width="40" Margin="20,0,10,0" VerticalAlignment="Center" />
-                                    <UXControls:UXTextBlock Grid.Column="2" Grid.Row="1" x:Name="appName" Text="{Binding AppName}" Foreground="White" VerticalAlignment="Center" />
+                                    <UXControls:UXTextBlock Grid.Column="2" Grid.Row="1" x:Name="appName" Text="{Binding AppName}"  VerticalAlignment="Center" />
                                 </Grid>
                             </DataTemplate>
                         </ListView.ItemTemplate>
@@ -81,11 +88,11 @@
             <!-- 底部按鈕 -->
             <Grid Grid.Row="3" Margin="0,0,0,0">
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
-                    <UXControls:UXButton x:Name="btnSelect" Content="{Binding [EazyMemory.33], Source={x:Static lang:LangHelper.Instance}, Mode=OneWay}" Width="177" Height="40" Margin="150,20,0,0" CornerRadius="2" Foreground="White" Background="#0672CB" Click="btnSelect_Click" />
+                    <UXControls:UXButton x:Name="btnSelect" Content="{Binding [EazyMemory.33], Source={x:Static lang:LangHelper.Instance}, Mode=OneWay}" Width="177" Height="40" Margin="150,20,0,0" CornerRadius="2" Foreground="{DynamicResource DefaultTheme_TxtColor}" Background="#0672CB" Click="btnSelect_Click" />
                 </StackPanel>
 
                 <StackPanel  Orientation="Horizontal" HorizontalAlignment="Center">
-                    <UXControls:UXButton x:Name="btnAdd" Content="{Binding [Confirm], Source={x:Static lang:LangHelper.Instance}}" Width="114" Height="40" Margin="220,20,0,0" CornerRadius="2" Foreground="White" Background="#0672CB" Click="btnAdd_Click" />
+                    <UXControls:UXButton x:Name="btnAdd" Content="{Binding [Confirm], Source={x:Static lang:LangHelper.Instance}}" Width="114" Height="40" Margin="220,20,0,0" CornerRadius="2" Foreground="{DynamicResource DefaultTheme_TxtColor}" Background="#0672CB" Click="btnAdd_Click" />
                 </StackPanel>
             </Grid>
         </Grid>

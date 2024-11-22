@@ -9,8 +9,8 @@ namespace VcpCore.Common
         public string PID { get; set; } = string.Empty;
         public string VendorID { get; set; } = string.Empty;
         public int Year { get; set; } = 0x0;
-        public int Month = 0x0;
-        public int Week = 0x0;
+        public int Month { get; set; } = 0x0;
+        public int Week { get; set; } = 0x0;
         public string ModelName { get; set; } = string.Empty;
         public string EdidVersion { get; set; } = string.Empty;
         public string VideoInputType { get; set; } = string.Empty;
