@@ -225,19 +225,40 @@ namespace DDPM.UI.Module.InputSource
                         //}
                         if (isUSB)
                         {
-                            items.Add(new Item()
+                            if (j == 0)
                             {
-                                Index = j,
-                                InputImage = InputSourceImage,
-                                InputType = input.Key,
-                                InputName = input.Value.InputName,
-                                USBUpstream = USBUpstream_ItemsCollection,
-                                UpstreamIndex = 0,
-                                IsUSBCB = Visibility.Visible,
-                                NameWidth = "1*",
-                                USBWidth = "1*",
-                                NameColumn = "0"
-                            });
+                                items.Add(new Item()
+                                {
+                                    Index = j,
+                                    InputImage = InputSourceImage,
+                                    InputType = input.Key,
+                                    InputName = input.Value.InputName,
+                                    USBUpstream = USBUpstream_ItemsCollection,
+                                    UpstreamIndex = 0,
+                                    IsUSBCB = Visibility.Visible,
+                                    NameWidth = "1*",
+                                    USBWidth = "1*",
+                                    NameColumn = "0",
+                                    NoGrey = false
+                                });
+                            }
+                            else
+                            {
+                                items.Add(new Item()
+                                {
+                                    Index = j,
+                                    InputImage = InputSourceImage,
+                                    InputType = input.Key,
+                                    InputName = input.Value.InputName,
+                                    USBUpstream = USBUpstream_ItemsCollection,
+                                    UpstreamIndex = 0,
+                                    IsUSBCB = Visibility.Visible,
+                                    NameWidth = "1*",
+                                    USBWidth = "1*",
+                                    NameColumn = "0",
+                                    NoGrey = true
+                                });
+                            }
                         }
                         else
                         {
@@ -252,7 +273,8 @@ namespace DDPM.UI.Module.InputSource
                                 IsUSBCB = Visibility.Collapsed,
                                 NameWidth = "0.5*",
                                 USBWidth = "1.5*",
-                                NameColumn = "1"
+                                NameColumn = "1",
+                                NoGrey = false
                             });
                         }
                         if (!String.IsNullOrEmpty(input.Value.USBUpstream))
@@ -393,18 +415,18 @@ namespace DDPM.UI.Module.InputSource
                         string strtUpstream = String.Empty;
                         InputSourceImage = InputTypeCommon.GetInputImage(input.Key);
                         items.Add(new Item()
-                            {
-                                Index = j,
-                                InputImage = InputSourceImage,
-                                InputType = input.Key,
-                                InputName = input.Value.InputName,
-                                USBUpstream = USBUpstream_ItemsCollection,
-                                UpstreamIndex = 0,
-                                IsUSBCB = Visibility.Visible,
-                                NameWidth = "1*",
-                                USBWidth = "1*",
-                                NameColumn = "0"
-                            });
+                        {
+                            Index = j,
+                            InputImage = InputSourceImage,
+                            InputType = input.Key,
+                            InputName = input.Value.InputName,
+                            USBUpstream = USBUpstream_ItemsCollection,
+                            UpstreamIndex = 0,
+                            IsUSBCB = Visibility.Visible,
+                            NameWidth = "1*",
+                            USBWidth = "1*",
+                            NameColumn = "0"
+                        });
                         
                         if (!String.IsNullOrEmpty(input.Value.USBUpstream))
                         {

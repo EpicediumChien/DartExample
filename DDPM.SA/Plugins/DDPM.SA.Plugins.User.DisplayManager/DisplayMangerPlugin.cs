@@ -2986,7 +2986,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             InputInfo outValue;
             if (inputList.TryGetValue(currentInput, out outValue))
             {
-                PC.InputName = outValue.InputName;
+                PC.InputName = "PC1";
                 PC.USBUpstream = outValue.USBUpstream;
                 _PCsList.Add("PC1", PC);
                 int i = 1;
@@ -3004,7 +3004,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
 
                     if (inputList.TryGetValue(item.Name, out outSubValue))
                     {
-                        PC.InputName = outSubValue.InputName;
+                        PC.InputName = "PC" + (i + 1).ToString();
                         PC.USBUpstream = outSubValue.USBUpstream;
                         _PCsList.Add("PC" + (i + 1).ToString(), PC);
                     }
