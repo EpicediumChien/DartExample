@@ -4612,12 +4612,8 @@ namespace DDPM.CLI.Plugins.Display
                                 break;
                             }
                             writelog($"ActiveInputSource get entry");
-                            CLI_Input_RESPONSE _Input_RESPONSE = new CLI_Input_RESPONSE();
+                            CLI_RESPONSE _Input_RESPONSE = new CLI_RESPONSE(mo);
                             string src = String.Empty;
-                            _Input_RESPONSE.Model = mo.edid.ModelName;
-                            _Input_RESPONSE.SerialNumber = mo.edid.SerialNumber;
-                            _Input_RESPONSE.Index = change_0base_to_1base((i).ToString());
-                            _Input_RESPONSE.ServiceTag = mo.edid.ServiceTag;
                             _Input_RESPONSE.Command = commandLineInput.Command;
                             _Input_RESPONSE.TargetFeature = commandLineInput.TargetFeature;
                             if (commandLineInput.Options.Count != 0)
@@ -4671,12 +4667,8 @@ namespace DDPM.CLI.Plugins.Display
                                 break;
                             }
                             writelog($"ActiveInputSource get entry");
-                            CLI_Input_RESPONSE _Input_RESPONSE = new CLI_Input_RESPONSE();
+                            CLI_RESPONSE _Input_RESPONSE = new CLI_RESPONSE(mo);
                             string src = String.Empty;
-                            _Input_RESPONSE.Model = mo.edid.ModelName;
-                            _Input_RESPONSE.SerialNumber = mo.edid.SerialNumber;
-                            _Input_RESPONSE.Index = change_0base_to_1base((commandLineInput.DeviceIndex[i]).ToString());
-                            _Input_RESPONSE.ServiceTag = mo.edid.ServiceTag;
                             _Input_RESPONSE.Command = commandLineInput.Command;
                             _Input_RESPONSE.TargetFeature = commandLineInput.TargetFeature;
                             if (commandLineInput.Options.Count != 0)
@@ -4739,7 +4731,7 @@ namespace DDPM.CLI.Plugins.Display
                         output = "";
                         for (int i = 0; i < commandLineInput.ServiceTag.Count; i++)
                         {
-                            CLI_Input_RESPONSE _Input_RESPONSE = new CLI_Input_RESPONSE();
+                            CLI_RESPONSE _Input_RESPONSE = new CLI_RESPONSE();
                             var targetMoTemp = serviceTagList.FirstOrDefault(_ => _.ServiceTag == commandLineInput.ServiceTag[i]);
                             if (targetMoTemp == null)
                             {
@@ -4758,10 +4750,7 @@ namespace DDPM.CLI.Plugins.Display
                             }
                             writelog($"ActiveInputSource get entry");
                             string src = String.Empty;
-                            _Input_RESPONSE.Model = mo.edid.ModelName;
-                            _Input_RESPONSE.SerialNumber = mo.edid.SerialNumber;
-                            _Input_RESPONSE.Index = change_0base_to_1base((targetMoTemp.Index).ToString());
-                            _Input_RESPONSE.ServiceTag = mo.edid.ServiceTag;
+                            _Input_RESPONSE = new CLI_RESPONSE(mo);
                             _Input_RESPONSE.Command = commandLineInput.Command;
                             _Input_RESPONSE.TargetFeature = commandLineInput.TargetFeature;
                             if (commandLineInput.Options.Count != 0)
@@ -4816,7 +4805,7 @@ namespace DDPM.CLI.Plugins.Display
                         output = "";
                         for (int i = 0; i < commandLineInput.Model.Count; i++)
                         {
-                            CLI_Input_RESPONSE _Input_RESPONSE = new CLI_Input_RESPONSE();
+                            CLI_RESPONSE _Input_RESPONSE = new CLI_RESPONSE();
                             var targetMoTemp = serviceTagList.FirstOrDefault(_ => _.modelName == commandLineInput.Model[i]);
                             if (targetMoTemp == null)
                             {
@@ -4835,10 +4824,7 @@ namespace DDPM.CLI.Plugins.Display
                             }
                             writelog($"ActiveInputSource get entry");
                             string src = String.Empty;
-                            _Input_RESPONSE.Model = mo.edid.ModelName;
-                            _Input_RESPONSE.SerialNumber = mo.edid.SerialNumber;
-                            _Input_RESPONSE.Index = change_0base_to_1base((targetMoTemp.Index).ToString());
-                            _Input_RESPONSE.ServiceTag = mo.edid.ServiceTag;
+                            _Input_RESPONSE = new CLI_RESPONSE(mo);
                             _Input_RESPONSE.Command = commandLineInput.Command;
                             _Input_RESPONSE.TargetFeature = commandLineInput.TargetFeature;
                             if (commandLineInput.Options.Count != 0)
