@@ -455,6 +455,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
             if ("E9".Equals(vcpcode, StringComparison.OrdinalIgnoreCase) || vcpcode.Equals("2"))
             {
+                if (!monitorInfo.CapabilityDic.ContainsKey("E9")) return;
                 ObjGetVCP ret = GetPxpMode(monitorInfo).Result;
                 UsbKvmPBP usbKvmPBP = new UsbKvmPBP { MonitorInfo = monitorInfo, isPBPmode = false };
                 UInt16 _curPxpMode = 0;
@@ -9062,7 +9063,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             LauchNightLightStatusMonitor();
             foreach (var monitor in _AllInfoMonitors)
             {
-                Task.Run(() => updatePBPModeStatus(monitor, "E9")).ConfigureAwait(false);
+                if (monitor.CapabilityDic.ContainsKey("E9"))
+                    Task.Run(() => updatePBPModeStatus(monitor, "E9")).ConfigureAwait(false);
             }
             //register hotkey
             RegistHotkey(false);
@@ -12419,6 +12421,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         private void Kvm_SwitchInputSource(MonitorInfo monitorInfo, Object[] param)
         {
+            if (!GetOnUSBKVM(monitorInfo).Result)
+            {
+                writelog($"Kvm_SwitchInputSource:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] USB KVM is off, do nothing");
+                return;
+            }
             HotkeyInfo hotkey = (HotkeyInfo)param[0];
             //mock data
             /* Dictionary<string, InputInfo> inputList = GetInputSourcelist(monitorInfo).Result;
@@ -12460,12 +12467,22 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         private void Kvm_SwitchKbMsKey(MonitorInfo monitorInfo, Object[] param)
         {
+            if (!GetOnUSBKVM(monitorInfo).Result)
+            {
+                writelog($"Kvm_SwitchKbMsKey:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] USB KVM is off, do nothing");
+                return;
+            }
             bool usbSwitch = UsbSwitch1(monitorInfo).Result;
             writelog($"Kvm_SwitchKbMsKey:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}]" + (usbSwitch ? "success" : "fail"));
         }
 
         private void Kvm_ChangePIPPosition(MonitorInfo monitorInfo, Object[] param)
         {
+            if (!GetOnUSBKVM(monitorInfo).Result)
+            {
+                writelog($"Kvm_ChangePIPPosition:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] USB KVM is off, do nothing");
+                return;
+            }
             Change_PIPPosition(monitorInfo, param);
         }
 
@@ -12490,6 +12507,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         private bool IsPIPMode(MonitorInfo mo)
         {
+            if (!mo.CapabilityDic.ContainsKey("E9")) return false;
             ObjGetVCP pxpMode = GetPxpMode(mo).Result;
             Debug.WriteLine($"GetPxpMode result={pxpMode?.result}, value={(UInt32)pxpMode.value}");
             if (pxpMode != null && pxpMode.result == true)
@@ -12714,170 +12732,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
         }
 
-        private string GetCurrentInputSource(MonitorInfo monitorInfo)
-        {
-            string crtInput = string.Empty;
-            ObjGetVCP obInput = GetVCPCapability(monitorInfo, "Input Select", 0).Result;
-            if (obInput.result)
-            {
-                uint val = (Convert.ToUInt32(obInput.value) & 0XFFFF);
-                string valstring = val.ToString("X2");
-                int pos = valstring.Length - 2;
-                crtInput = valstring.Substring(pos);
-                switch (crtInput.ToLower())
-                {
-                    case "01":
-                        crtInput = "VGA-1";
-                        break;
-
-                    case "02":
-                        crtInput = "VGA-2";
-                        break;
-
-                    case "03":
-                        crtInput = "DVI-1";
-                        break;
-
-                    case "04":
-                        crtInput = "DVI-2";
-                        break;
-
-                    case "05":
-                        crtInput = "Composite video 1";
-                        break;
-
-                    case "06":
-                        crtInput = "Composite video 2";
-                        break;
-
-                    case "07":
-                        crtInput = "S-Video-1";
-                        break;
-
-                    case "08":
-                        crtInput = "S-Video-2";
-                        break;
-
-                    case "09":
-                        crtInput = "Tuner-1";
-                        break;
-
-                    case "0a":
-                        crtInput = "Tuner-2";
-                        break;
-
-                    case "0b":
-                        crtInput = "Tuner-3";
-                        break;
-
-                    case "0c":
-                        crtInput = "Component video (YPrPb/YCrCb) 1";
-                        break;
-
-                    case "0d":
-                        crtInput = "Component video (YPrPb/YCrCb) 2";
-                        break;
-
-                    case "0e":
-                        crtInput = "Component video (YPrPb/YCrCb) 3";
-                        break;
-
-                    case "0f":
-                        crtInput = "DisplayPort-1";
-                        break;
-
-                    case "10":
-                        crtInput = "Mini DisplayPort-1";
-                        break;
-
-                    case "11":
-                        crtInput = "HDMI-1";
-                        break;
-
-                    case "12":
-                        crtInput = "HDMI-2";
-                        break;
-
-                    case "13":
-                        crtInput = "DisplayPort-2";
-                        break;
-
-                    case "14":
-                        crtInput = "Mini DisplayPort-2";
-                        break;
-
-                    case "15":
-                        crtInput = "HDMI3";
-                        break;
-
-                    case "16":
-                        crtInput = "HDMI4";
-                        break;
-
-                    case "17":
-                        crtInput = "DisplayPort-3";
-                        break;
-
-                    case "18":
-                        crtInput = "Mini DisplayPort-3";
-                        break;
-
-                    case "19":
-                        crtInput = "Thunderbolt-1";
-                        break;
-
-                    case "1a":
-                        crtInput = "Thunderbolt-2";
-                        break;
-
-                    case "1b":
-                        crtInput = "USB-C1";
-                        break;
-
-                    case "1c":
-                        crtInput = "USB-C2";
-                        break;
-
-                    case "1d":
-                        crtInput = "USB-C3";
-                        break;
-
-                    case "1e":
-                        crtInput = "USB-C4";
-                        break;
-
-                    case "80":
-                        crtInput = "USB Comm from USB1 (Type-B, port 1)";
-                        break;
-
-                    case "81":
-                        crtInput = "USB Comm from USB2 (Type-B, port 2)";
-                        break;
-
-                    case "82":
-                        crtInput = "USB Comm from USB-C1 (Type-C, port 1)";
-                        break;
-
-                    case "83":
-                        crtInput = "USB Comm from USB-C2 (Type-C, port 2)";
-                        break;
-
-                    case "84":
-                        crtInput = "USB Comm from USB-C3 (Type-C, port 3)";
-                        break;
-
-                    case "85":
-                        crtInput = "USB Comm from USB-C4 (Type-C, port 4)";
-                        break;
-
-                    default:
-                        crtInput = string.Empty;
-                        break;
-                }
-                return crtInput;
-            }
-            return string.Empty;
-        }
 
         private bool IsALSautobrightness(MonitorInfo monitorInfo)
         {
@@ -14583,15 +14437,15 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                             return Task.CompletedTask;
                         }
                     case OSDType.StartRecording:
-                    {
-                        _showosd(monitorInfo, OSDType.StartRecording, OSDType_Device.Unknown, "3");
-                        return Task.CompletedTask;
-                    }
+                        {
+                            _showosd(monitorInfo, OSDType.StartRecording, OSDType_Device.Unknown, "3");
+                            return Task.CompletedTask;
+                        }
                     case OSDType.QAM:
-                    {
-                        _showosd(monitorInfo, OSDType.QAM, OSDType_Device.Unknown, string.Empty);
-                        return Task.CompletedTask;
-                    }
+                        {
+                            _showosd(monitorInfo, OSDType.QAM, OSDType_Device.Unknown, string.Empty);
+                            return Task.CompletedTask;
+                        }
                     default:
                         return Task.CompletedTask;
                 }

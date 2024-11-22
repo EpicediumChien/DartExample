@@ -1404,5 +1404,6 @@
         <Setter Property="FontWeight" Value="Medium" />
     </Style>
     <!--BorderConnection end-->
+    <SolidColorBrush x:Key="DefaultThemeFullPageBkColor" Color="#FF0D121A"/>
 
 </ResourceDictionary>
