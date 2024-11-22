@@ -60,6 +60,28 @@ namespace DDPM.UI.Common.UserControls
             set { SetValue(IconImageProperty, value); }
         }
 
+        public bool NoCanvasIcon
+        {
+            get { return (bool)GetValue(NoCanvasIconProperty); }
+            set { SetValue(NoCanvasIconProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for IsLocked.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty NoCanvasIconProperty =
+            DependencyProperty.Register("NoCanvasIcon", typeof(bool), typeof(VbarItem1), new PropertyMetadata(true));
+
+        private Canvas? _canvas;
+        public Canvas? IconCanvas {
+            get { return _canvas; } 
+            set
+            {
+                _canvas = value;
+                IconCanvasContent.Content = value;
+                if (value != null)
+                    NoCanvasIcon = false;
+            }
+        }
+
         // Using a DependencyProperty as the backing store for IconImage.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty IconImageProperty =
             DependencyProperty.Register("IconImage", typeof(ImageSource), typeof(VbarItem1), new PropertyMetadata(null));

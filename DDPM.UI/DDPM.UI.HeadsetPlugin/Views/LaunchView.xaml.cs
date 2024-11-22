@@ -11,6 +11,7 @@ using System.Diagnostics;
 using System.Net;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 
@@ -115,7 +116,7 @@ namespace DDPM.UI.Plugin.HeadsetPlugin
         #region Init for Modules
 
         /// <summary>
-        /// Base on specified monitor's capabiliies to build the Vbar items, and headers/modules
+        /// Base on specified monitor's capabilities to build the Vbar items, and headers/modules
         /// </summary>
         private void BuildModuleGroups()
         {
@@ -125,7 +126,8 @@ namespace DDPM.UI.Plugin.HeadsetPlugin
             moduleGroup = new ModuleGroup()
             {
                 GroupName = AudioSettings,
-                GroupIcon = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Headset_Setting.png")
+                GroupIcon = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Headset_Setting.png"),
+                GroupIconCanvas = DdpmCommonHelper.CanvasIconCreator(VbarIcon.AudioSettings)
             };
             moduleGroup.AddHeader(AudioSettings, new HeadsetAudioSettingsModule(_vm!));
             groups.Add(moduleGroup);
@@ -135,9 +137,10 @@ namespace DDPM.UI.Plugin.HeadsetPlugin
             moduleGroup = new ModuleGroup()
             {
                 GroupName = AutomatedActions,
-                GroupIcon = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Headset_Media.png")
+                GroupIcon = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Headset_Media.png"),
+                GroupIconCanvas = DdpmCommonHelper.CanvasIconCreator(VbarIcon.HeadsetAutoActions)
             };
-            moduleGroup.AddHeader(AutomatedActions, new HeadsetAutomatedActionsModule(_vm));
+            moduleGroup.AddHeader(AutomatedActions, new HeadsetAutomatedActionsModule(_vm!));
             groups.Add(moduleGroup);
             //}
             //if (!_vm.IsIlluminationSupported)
@@ -145,9 +148,10 @@ namespace DDPM.UI.Plugin.HeadsetPlugin
             moduleGroup = new ModuleGroup()
             {
                 GroupName = DeviceSettings,
-                GroupIcon = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Headset_Main.png")
+                GroupIcon = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Headset_Main.png"),
+                GroupIconCanvas = DdpmCommonHelper.CanvasIconCreator(VbarIcon.HeadsetSettings)
             };
-            moduleGroup.AddHeader(DeviceSettings, new HeadsetDeviceSettingsModule(_vm));
+            moduleGroup.AddHeader(DeviceSettings, new HeadsetDeviceSettingsModule(_vm!));
             groups.Add(moduleGroup);
             //}
 
