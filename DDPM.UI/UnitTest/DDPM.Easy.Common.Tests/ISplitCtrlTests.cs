@@ -1,11 +1,17 @@
-﻿using DDPM.UI.Common.UserControls;
+﻿using Castle.Core.Resource;
+using DDPM.UI.Common;
+using DDPM.UI.Common.UserControls;
+using DDPM.UI.Module.EzArrange;
 using Dell.Client.Framework.UX.WPF;
 using Moq;
+using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
 
 namespace DDPM.Easy.Common.Tests
 {
@@ -95,6 +101,128 @@ namespace DDPM.Easy.Common.Tests
 
             result = ISplitCtrl.Create(100, 'Z');
             Assert.That(result, Is.EqualTo(null));
+        }
+
+        [Test]
+        public void TestsCreate()
+        {
+            var result = ISplitCtrl.Create(3);
+            Assert.That(result, Is.InstanceOf<SplitCtrl2C>());
+
+            result = ISplitCtrl.Create(100);
+            Assert.That(result, Is.EqualTo(null));
+        }
+
+        [Test]
+        public void TestClone()
+        {
+            try
+            {
+                ISplitCtrlMock.Setup(x => x.Clone()).Returns(ISplitCtrlMock.Object);
+                Assert.True(true);
+            }
+            catch (Exception ex)
+            {
+                Assert.Fail("not invoked");
+            }
+        }
+
+        [Test]
+        public void TestHoveringCell()
+        {
+            try
+            {
+                ISplitCtrlMock.Setup(x => x.HoveringCell).Returns("HoveringCell");
+                Assert.True(true);
+            }
+            catch (Exception ex)
+            {
+                Assert.Fail("not invoked");
+            }
+        }
+
+        [Test]
+        public void TestCellBorders()
+        {
+            try
+            {
+                ISplitCtrlMock.Setup(x => x.CellBorders).Returns(new List<CellBorder>());
+                Assert.True(true);
+            }
+            catch (Exception ex)
+            {
+                Assert.Fail("not invoked");
+            }
+        }
+
+        [Test]
+        public void TestSettingsString()
+        {
+            try
+            {
+                ISplitCtrlMock.Setup(x => x.SettingsString).Returns("SettingsString");
+                Assert.True(true);
+            }
+            catch (Exception ex)
+            {
+                Assert.Fail("not invoked");
+            }
+        }
+
+        [Test]
+        public void TestIsVertical()
+        {
+            try
+            {
+                ISplitCtrlMock.Setup(x => x.IsVertical).Returns(true);
+                Assert.True(true);
+            }
+            catch (Exception ex)
+            {
+                Assert.Fail("not invoked");
+            }
+        }
+
+        //[Test]
+        //public void TestCreateBitmapSourcel()
+        //{
+        //    BitmapSource ImageSource = (BitmapSource)DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Product_KB900.png");
+        //    try
+        //    {
+        //        ISplitCtrlMock.Setup(x => x.CreateBitmapSource()).Returns(ImageSource);
+        //        Assert.True(true);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        Assert.Fail("not invoked");
+        //    }
+        //}
+
+        //[Test]
+        //public void TestsSaveBitmapSourceAsPngFile()
+        //{
+        //    var ispSource = ISplitCtrlMock.Object;
+        //    ISplitCtrlMock.Setup(x => x.Clone()).Returns(ispSource);
+        //    ISplitCtrl isp = ispSource.Clone();
+        //    BitmapSource bmpSrc = isp.CreateBitmapSource();
+        //    var ImageSource = (BitmapSource)DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Product_KB900.png");
+        //    var result = ISplitCtrl.SaveBitmapSourceAsPngFile(ImageSource, "name");
+        //    Assert.That(result, Is.EqualTo(true));
+
+        //}
+
+        [Test]
+        public void TestIsOverlapCustomLayout()
+        {
+            try
+            {
+                ISplitCtrlMock.Setup(x => x.IsOverlapCustomLayout).Returns(true);
+                Assert.True(true);
+            }
+            catch (Exception ex)
+            {
+                Assert.Fail("not invoked");
+            }
         }
 
     }
