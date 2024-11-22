@@ -6,7 +6,7 @@
              xmlns:UXControls="clr-namespace:Dell.Client.Framework.UX.WPF.Controls;assembly=DCF.UX.WPF"
              xmlns:local="clr-namespace:DDPM.UI.Module.Kvm"
              xmlns:lang="clr-namespace:DDPM.UI.Resources.Helper;assembly=DDPM.UI.Resources"
-             mc:Ignorable="d" Background="#FF0D121A"
+             mc:Ignorable="d" Background="{DynamicResource mainWindowBkColor}"
              d:DesignHeight="671" d:DesignWidth="1378">
     <UserControl.Resources>
         <ResourceDictionary>
@@ -220,7 +220,7 @@
                                                         HorizontalAlignment="Center" />
                             </Grid>
                             <Grid Grid.Row="1" Margin="16, 2, 16, 8">
-                                <UXControls:UXTextBox Text="{Binding InputName2}" Background="#141D28"
+                                <UXControls:UXTextBox Text="{Binding InputName2}"
                                                       BorderBrush="#7E7E7E" BorderThickness="1" VerticalContentAlignment="Center" MaxLength="30" KeyDown="KeyDown_KeyDown2" />
                             </Grid>
                             <Grid Grid.Row="2"  Margin="16, 8, 16, 0">
@@ -270,7 +270,7 @@
                                                         HorizontalAlignment="Center" />
                             </Grid>
                             <Grid Grid.Row="1" Margin="16, 2, 16, 8">
-                                <UXControls:UXTextBox Text="{Binding InputName3}" Background="#141D28"
+                                <UXControls:UXTextBox Text="{Binding InputName3}"
                                                       BorderBrush="#7E7E7E" BorderThickness="1" VerticalContentAlignment="Center" MaxLength="30" KeyDown="KeyDown_KeyDown3" />
                             </Grid>
                             <Grid Grid.Row="2" Margin="16, 8, 16, 0">
@@ -320,8 +320,12 @@
                                                         HorizontalAlignment="Center" />
                             </Grid>
                             <Grid Grid.Row="1" Margin="16, 2, 16, 8">
-                                <UXControls:UXTextBox Text="{Binding InputName4}" Background="#141D28"
-                                                      BorderBrush="#7E7E7E" BorderThickness="1" MaxLength="30" KeyDown="KeyDown_KeyDown4" />
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="49*"/>
+                                    <ColumnDefinition Width="54*"/>
+                                </Grid.ColumnDefinitions>
+                                <UXControls:UXTextBox Text="{Binding InputName4}"
+                                                      BorderBrush="#7E7E7E" BorderThickness="1" MaxLength="30" KeyDown="KeyDown_KeyDown4" Grid.ColumnSpan="2" />
                             </Grid>
                             <Grid Grid.Row="2" Margin="16, 8, 16, 0">
                                 <UXControls:UXTextBlock Text="{Binding [Video], Source={x:Static lang:LangHelper.Instance}}"

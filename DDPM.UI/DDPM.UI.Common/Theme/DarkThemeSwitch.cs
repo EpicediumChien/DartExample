@@ -193,7 +193,7 @@ namespace DDPM.UI.Common
 
             #region VbarItem1
             UpdateFreezable("DdpmCB_HoverItemBkColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#FF232D36"));
-            UpdateFreezable("DefaultTheme_USBKVMComboBkColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#204A8299"));
+            UpdateFreezable("DefaultTheme_USBKVMComboBkColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#99204A82"));
             UpdateFreezable("DefaultTheme_USBKVMComboBdColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#1B385F"));
             UpdateFreezable("Vbar_FgBrush_Default", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#FFFFFF"));
             UpdateFreezable("Vbar_BkBrush_Default", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#99132F54"));
@@ -288,8 +288,8 @@ namespace DDPM.UI.Common
             #endregion
 
             #region Grid Background
-            UpdateFreezable("DefaultTheme_USBKVMPCGridBkColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#19345799"));
-            UpdateFreezable("DefaultTheme_GridBkColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#132F5499"));
+            UpdateFreezable("DefaultTheme_USBKVMPCGridBkColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#99193457"));
+            UpdateFreezable("DefaultTheme_GridBkColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#99132F54"));
             #endregion
 
             #region Setup Border Background
