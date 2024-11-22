@@ -2419,24 +2419,25 @@ namespace ColorPreset.Plugins
 
                     if (!string.IsNullOrEmpty(url))
                     {
+                        //[Dean 1122] remove this action
                         //20240920 Add Security
-                        string FileInfo;
-                        if (!DDPM.SA.Common.Settings.DDPMFileSecurity.SRemoveSymbolicFolder(strICC_Folder, out FileInfo))
-                        {
-                            writelog($"[DownloadICCData] {FileInfo}");
-                            return System.Threading.Tasks.Task.FromResult(_ICC_Metadata);
-                        }
+                        //string FileInfo;
+                        //if (!DDPM.SA.Common.Settings.DDPMFileSecurity.SRemoveSymbolicFolder(strICC_Folder, out FileInfo))
+                        //{
+                        //    writelog($"[DownloadICCData] {FileInfo}");
+                        //    return System.Threading.Tasks.Task.FromResult(_ICC_Metadata);
+                        //}
 
                         strFilePath = Path.Combine(strICC_Folder, Path.GetFileName(url));
-
+                        string Info;
                         if (download.DownloadFile(url, strFilePath, out downloadInfo))
                         {
                             if (System.IO.File.Exists(strFilePath))
                             {
                                 //Elsa Add Security
-                                if (!DDPM.SA.Common.Settings.DDPMFileSecurity.IsFilePathValid(strFilePath, out FileInfo))
+                                if (!DDPM.SA.Common.Settings.DDPMFileSecurity.IsFilePathValid(strFilePath, out Info))
                                 {
-                                    writelog($"[DownloadICCData] {FileInfo}");
+                                    writelog($"[DownloadICCData] {Info}");
                                     //return null;
                                     return System.Threading.Tasks.Task.FromResult(_ICC_Metadata);
                                 }

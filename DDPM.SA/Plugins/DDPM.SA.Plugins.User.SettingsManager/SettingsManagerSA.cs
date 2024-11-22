@@ -2768,17 +2768,12 @@ namespace DDPM.SA.Plugins.User.SettingsManager
                 WriteLog($"[ReadSerializedContentFromFile][File.Exists] File:{fileInfo.Name}, failed with(file is not exist)");
                 return Task.FromResult(result);
             }
-            if (DDPMFileSecurity.IsPathSymbolicLinked(filePath, out info))
+            //if (DDPMFileSecurity.IsPathSymbolicLinked(filePath, out info))
+            if (!DDPMFileSecurity.IsFilePathValid(filePath, out info))
             {
-                WriteLog($"[ReadSerializedContentFromFile][IsPathSymbolicLinked] File:{fileInfo.Name}, failed with({info})");
+                WriteLog($"[ReadSerializedContentFromFile][IsFilePathValid] File:{fileInfo.Name}, failed with({info})");
                 return Task.FromResult(result);
             }
-            //Already inluded in function DDPMFileSecurity.GetSerializedJsonString
-            //if (DDPMFileSecurity.IsFilePathValid(filePath, out info))
-            //{
-            //    WriteLog($"[ReadSerializedContentFromFile][IsFilePathValid] File:{fileInfo.Name}, failed with({info})");
-            //    return Task.FromResult(result);
-            //}
             result = DDPMFileSecurity.GetSerializedJsonString(filePath, out info);
             if(string.IsNullOrEmpty(result))
             {
@@ -2792,9 +2787,10 @@ namespace DDPM.SA.Plugins.User.SettingsManager
             bool result = false;
             string info = string.Empty;
             FileInfo fileInfo = new FileInfo(filePath);
-            if (DDPMFileSecurity.IsPathSymbolicLinked(filePath, out info))
+            //if (DDPMFileSecurity.IsPathSymbolicLinked(filePath, out info))
+            if (!DDPMFileSecurity.IsFilePathValid(filePath, out info)) 
             {
-                WriteLog($"[WriteSerializedContentToFile][IsPathSymbolicLinked] File:{fileInfo.Name}, failed with({info})");
+                WriteLog($"[WriteSerializedContentToFile][IsFilePathValid] File:{fileInfo.Name}, failed with({info})");
                 File.Delete(filePath);
                 return Task.FromResult(result);
             }
