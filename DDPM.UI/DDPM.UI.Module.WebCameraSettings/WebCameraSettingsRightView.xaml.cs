@@ -203,7 +203,7 @@ namespace DDPM.UI.Module.WebCameraSettings
                     //}
                 }
             }
-            NarratorModeSupport.RecurseUitems(start  );
+            //NarratorModeSupport.RecurseUitems(start  );
 
         }
 
