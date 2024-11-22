@@ -1372,14 +1372,14 @@
 
     <!-- BorderConnection -->
     <Style x:Key="BorderConnection" TargetType="Border">
-        <Setter Property="Background" Value="#99193457" />
+        <Setter Property="Background" Value="{DynamicResource BatteryIndicator_BkColor}" />
         <Setter Property="CornerRadius" Value="2" />
         <Setter Property="Width" Value="252" />
         <Setter Property="BorderThickness" Value="2" />
-        <Setter Property="BorderBrush" Value="#1B385F" />
+        <Setter Property="BorderBrush" Value="{DynamicResource RightView_Group_BdColor}" /> 
     </Style>
     <Style x:Key="ConnectionStyle1" TargetType="UXControls:UXTextBlock">
-        <Setter Property="Foreground" Value="#FFFFFF" />
+        <Setter Property="Foreground" Value="{DynamicResource DefaultTheme_TxtColor}" /> 
         <Setter Property="FontFamily" Value="Roboto" />
         <Setter Property="FontSize" Value="14" />
         <Setter Property="FontWeight" Value="Bold" />
@@ -1391,7 +1391,7 @@
         <Setter Property="FontWeight" Value="Normal" />
     </Style>
     <Style x:Key="ConnectionStyle3" TargetType="UXControls:UXTextBlock">
-        <Setter Property="Foreground" Value="#FFFFFF " />
+        <Setter Property="Foreground" Value="{DynamicResource DefaultTheme_TxtColor}" />
         <Setter Property="FontFamily" Value="Roboto" />
         <Setter Property="FontSize" Value="14" />
         <Setter Property="FontWeight" Value="Medium" />

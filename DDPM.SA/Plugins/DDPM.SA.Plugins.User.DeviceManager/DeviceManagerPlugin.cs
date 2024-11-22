@@ -3304,6 +3304,51 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
         }
 
+        public async Task<string> GetPairedHostName1Async(string guid)
+        {
+            try
+            {
+                var result = await _DTPProxyPlugin.GetPairedHostName1Async(guid);
+                writelog($"[DeviceManagerPlugin] [Headset] GetPairedHostName1Async succeeded, value is {result.ToString()}");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [Headset] GetPairedHostName1Async failed for {guid} - Exception: {ex.Message}");
+                return null;
+            }
+        }
+
+        public async Task<string> GetPairedHostName2Async(string guid)
+        {
+            try
+            {
+                var result = await _DTPProxyPlugin.GetPairedHostName2Async(guid);
+                writelog($"[DeviceManagerPlugin] [Headset] GetPairedHostName2Async succeeded, value is {result.ToString()}");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [Headset] GetPairedHostName2Async failed for {guid} - Exception: {ex.Message}");
+                return null;
+            }
+        }
+
+        public async Task<string> GetPairedHostName3Async(string guid)
+        {
+            try
+            {
+                var result = await _DTPProxyPlugin.GetPairedHostName3Async(guid);
+                writelog($"[DeviceManagerPlugin] [Headset] GetPairedHostName3Async succeeded, value is {result.ToString()}");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [Headset] GetPairedHostName3Async failed for {guid} - Exception: {ex.Message}");
+                return null;
+            }
+        }
+
         public async Task<int> GetMaxPairingSlotsAsync(string guid)
         {
             try
