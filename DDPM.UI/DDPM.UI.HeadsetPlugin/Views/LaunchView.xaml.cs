@@ -92,13 +92,22 @@ namespace DDPM.UI.Plugin.HeadsetPlugin
                     }
                 }
             }
+            DdpmCommonHelper.BitmapImageUpdated += ArrowLeftImageUpdate;
         }
-
         ~LaunchView()
         {
             if (DdpmCommonHelper.DeviceManagerSA != null)
             {
                 DdpmCommonHelper.DeviceManagerSA.ITSettingsActionEvent -= DeviceManagerSA_ITSettingsActionEvent;
+            }
+        }
+
+        private void ArrowLeftImageUpdate(string resourceKey)
+        {
+            if (resourceKey == "Arrow_Left")
+            {
+                ArrowLeft.Source = null;
+                ArrowLeft.Source = (BitmapImage)Application.Current.Resources[resourceKey];
             }
         }
 

@@ -62,7 +62,10 @@ namespace DDPM.UI.Plugin.SoundBarPlugin
             txtSystemName3.Text = _vm.VisiblePairedHostName1;
             txtFirmware.Text = string.Format(Strings.DockDongle1, _vm.PhysicalDeviceFWVersion);
             txtSlot.Text = string.Format(Strings.DockDongle0, _vm.CurrentDeviceInfo!.MaxPairingSlots - _vm.CurrentDeviceInfo.PairedDeviceCount, _vm.CurrentDeviceInfo.MaxPairingSlots);
+
+            DdpmCommonHelper.BitmapImageUpdated += ArrowLeftImageUpdate;
         }
+
 
         #region Init for Modules
 
@@ -101,6 +104,14 @@ namespace DDPM.UI.Plugin.SoundBarPlugin
             _vm!.ModuleGroups = groups;
         }
 
+        private void ArrowLeftImageUpdate(string resourceKey)
+        {
+            if (resourceKey == "Arrow_Left")
+            {
+                ArrowLeft.Source = null;
+                ArrowLeft.Source = (BitmapImage)Application.Current.Resources[resourceKey];
+            }
+        }
         #endregion Init for Modules
 
         #region Vbar

@@ -19,6 +19,8 @@ using Dell.Client.Framework.UX.WPF;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
 
 namespace DDPM.UI.Plugin.AddDevicePlugin
 {
@@ -63,6 +65,16 @@ namespace DDPM.UI.Plugin.AddDevicePlugin
                 rightViewHeaderCtrl.SetHeaders(_vm.RightViewHeaders.ToArray());
             }
             txtCaption.Text = Caption;
+            DdpmCommonHelper.BitmapImageUpdated += ArrowLeftImageUpdate;
+        }
+
+        private void ArrowLeftImageUpdate(string resourceKey)
+        {
+            if (resourceKey == "Arrow_Left")
+            {
+                ArrowLeft.Source = null;
+                ArrowLeft.Source = (BitmapImage)Application.Current.Resources[resourceKey];
+            }
         }
 
         private void BuildModuleGroups()

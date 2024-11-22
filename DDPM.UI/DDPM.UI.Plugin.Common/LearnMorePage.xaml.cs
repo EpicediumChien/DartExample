@@ -1,6 +1,8 @@
-﻿using System.Diagnostics;
+﻿using DDPM.UI.Common;
+using System.Diagnostics;
 using System.Windows;
 using System.Windows.Input;
+using System.Windows.Media.Imaging;
 
 namespace DDPM.UI.Plugin.Common
 {
@@ -22,6 +24,17 @@ namespace DDPM.UI.Plugin.Common
             Caption = parameter;
             txtTitleBar.Text = Caption;
             txtCaption.Text = Caption;
+
+            DdpmCommonHelper.BitmapImageUpdated += ArrowLeftImageUpdate;
+        }
+
+        private void ArrowLeftImageUpdate(string resourceKey)
+        {
+            if (resourceKey == "Arrow_Left")
+            {
+                ArrowLeft.Source = null;
+                ArrowLeft.Source = (BitmapImage)Application.Current.Resources[resourceKey];
+            }
         }
 
         private void CancelClick(object sender, MouseButtonEventArgs e)
