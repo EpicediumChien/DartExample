@@ -1995,10 +1995,11 @@ namespace DDPM.SA.Plugins.User.EasyArrange
             Screen workScreen = _saveCustomWindow.WorkScreen;
             Rectangle workingArea = _saveCustomWindow.WorkingArea;
 
+            _editWindow.EditReturn += _editWindow_EditReturn;
+
             //4 When user click "Save" from SaveCustomWindow
             //5 Show the EditWindow to capture Windows and frame them
             _editWindow.ShowAndEdit(_eaArgs, workingArea);
-            _editWindow.EditReturn += _editWindow_EditReturn;
             //6 Delay for 3 sec
         }
 
