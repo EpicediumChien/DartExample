@@ -1077,6 +1077,8 @@ namespace ColorPreset.Plugins
                 }
 
                 localKey64.Close();
+
+                return System.Threading.Tasks.Task.FromResult(true);
             }
             else
             {
@@ -1094,8 +1096,12 @@ namespace ColorPreset.Plugins
                         _DeviceManagerPlugin_SA.Send_NightLightStatus_Telementry_SA(Active_monitorInfo, "Off");
                     });
                 }
+
+                return System.Threading.Tasks.Task.FromResult(true);
             }
 
+            // If it has not been turned on nightlight settings, nightlight status is off by default
+            NightLightStatus_ChangeEvent?.AsyncFireAndForget(this, "Off", System.Threading.CancellationToken.None);
             return System.Threading.Tasks.Task.FromResult(true);
         }
 

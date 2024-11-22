@@ -83,7 +83,6 @@ namespace DDPM.SA.Common
 
         void StartPairing(Guid physicalDeviceId);
         void StopPairing(Guid physicalDeviceId);
-        void StopPairingPen();
 
         void UnPair(Guid logicalDeviceId);
 

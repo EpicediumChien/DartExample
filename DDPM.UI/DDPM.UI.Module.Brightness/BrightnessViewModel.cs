@@ -509,17 +509,17 @@ namespace DDPM.UI.Module.Brightness
             LuminanceImage = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Luminance.png");
 
             SelectedHomeDevice = DdpmCommonHelper.ModuleOwner.SelectedHomeDevice;
-            Contrast_Debouncer = new Debouncer(1000, Set_Contrast_Value);
-            Brightness_Debouncer = new Debouncer(1000, Set_Brightness_Value);
-            Luminance_Debouncer = new Debouncer(1000, Set_Luminance_Value);
+            Contrast_Debouncer = new Debouncer(2000, Set_Contrast_Value);
+            Brightness_Debouncer = new Debouncer(2000, Set_Brightness_Value);
+            Luminance_Debouncer = new Debouncer(2000, Set_Luminance_Value);
 
-            PR1Contrast_Debouncer = new Debouncer(1000, Set_Contrast_Value);
-            PR1Brightness_Debouncer = new Debouncer(1000, Set_Brightness_Value);
-            PR2Contrast_Debouncer = new Debouncer(1000, Set_Contrast_Value);
-            PR2Brightness_Debouncer = new Debouncer(1000, Set_Brightness_Value);
+            PR1Contrast_Debouncer = new Debouncer(2000, Set_Contrast_Value);
+            PR1Brightness_Debouncer = new Debouncer(2000, Set_Brightness_Value);
+            PR2Contrast_Debouncer = new Debouncer(2000, Set_Contrast_Value);
+            PR2Brightness_Debouncer = new Debouncer(2000, Set_Brightness_Value);
 
-            PR1Luminance_Debouncer = new Debouncer(1000, Set_Luminance_Value);
-            PR2Luminance_Debouncer = new Debouncer(1000, Set_Luminance_Value);
+            PR1Luminance_Debouncer = new Debouncer(2000, Set_Luminance_Value);
+            PR2Luminance_Debouncer = new Debouncer(2000, Set_Luminance_Value);
 
             DdpmCommonHelper.MyConsole.RegisterForEvent("DisplayHDRStatusChanged", OnHDRChangedEvent);
         }
@@ -2398,11 +2398,27 @@ namespace DDPM.UI.Module.Brightness
                     foreach (HomeDevice hd in ModuleOwner.HomeDevices)
                     {
                         if (hd.MonitorInfo.IsDellMonitor)
-                            DdpmCommonHelper.DeviceManagerSA.SetVCPCapability(hd.MonitorInfo, 0x10, nNewValue);
+                        {
+                            _ = DdpmCommonHelper.DeviceManagerSA.SetVCPCapability(hd.MonitorInfo, 0x10, nNewValue).Result;
+                            var o = (DdpmCommonHelper.DeviceManagerSA.GetVCPCapability(hd.MonitorInfo, 0x10).Result);
+                            if (o.result)
+                            {
+                                Brightness_Value = Convert.ToDouble(o.value);
+                                NotifyPropertyChanged("BrightnessValue");
+                            }
+                        }
                     }
                 }
                 else
-                    DdpmCommonHelper.DeviceManagerSA.SetVCPCapability(ModuleOwner.SelectedHomeDevice.MonitorInfo, 0x10, nNewValue);
+                {
+                    _ = DdpmCommonHelper.DeviceManagerSA.SetVCPCapability(ModuleOwner.SelectedHomeDevice.MonitorInfo, 0x10, nNewValue).Result;
+                    var o = (DdpmCommonHelper.DeviceManagerSA.GetVCPCapability(ModuleOwner.SelectedHomeDevice.MonitorInfo, 0x10).Result);
+                    if (o.result)
+                    {
+                        Brightness_Value = Convert.ToDouble(o.value);
+                        NotifyPropertyChanged("BrightnessValue");
+                    }
+                }
 
                 //NotifyPropertyChanged("BrightnessValue");
             }

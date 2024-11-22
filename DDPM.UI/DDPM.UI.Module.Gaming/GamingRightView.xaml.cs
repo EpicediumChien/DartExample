@@ -85,6 +85,22 @@ namespace DDPM.UI.Module.Gaming
             KeysHelper.setUXTextBoxPreviewKey(sender, e, ref newKeys, ref BundleNewKeys, ref alphabetKey);
         }
 
+        private void SaveHotkeySettings(HotkeyInfo hotkeyInfo)
+        {
+            tbCleanFocus.Focus();
+            GamingViewModel dataContext = (GamingViewModel)DataContext;
+            if (dataContext != null)
+            {
+                Common.Models.HomeDevice? selectedHomeDevice = dataContext.MyModule.SelectedHomeDevice;
+                if (selectedHomeDevice?.MonitorInfo != null)
+                {
+                    Task.Run(() =>
+                    {
+                        dataContext.SaveHotkeySettings(selectedHomeDevice.MonitorInfo, hotkeyInfo);
+                    });
+                }
+            }
+        }
         private void tbDarkStabilizerToggle_PreviewKeyUp(object sender, System.Windows.Input.KeyEventArgs e)
         {
             HotkeyInfo hotkeyInfo = KeysHelper.getUXTextBoxHotkeyInfo(sender, e, ref newKeys, HotkeyType.DarkStabilizerToggle);
@@ -107,8 +123,7 @@ namespace DDPM.UI.Module.Gaming
 
                     if (KeysHelper.hotKeyConflictsCheck(hotkeyInfo))
                     {
-                        bool saveSettings = DdpmCommonHelper.DeviceManagerSA.SaveHotkeySetting(vm.MyModule.SelectedHomeDevice.MonitorInfo, hotkeyInfo).Result;
-                        //vm.Invoke_RefreshData();
+                        SaveHotkeySettings(hotkeyInfo);
                     }
                     else
                     {
@@ -124,22 +139,18 @@ namespace DDPM.UI.Module.Gaming
 
         private void tbDarkStabilizerToggle_GotFocus(object sender, RoutedEventArgs e)
         {
-            bool isUnhook = DdpmCommonHelper.DeviceManagerSA.UnHook().Result;
-            if (isUnhook)
-            {
-                alphabetKey = false;
-                newKeys.Clear();
-                _strPreviousKey = vm.DarkStabilizerToggleKey;
-                //vm.DarkStabilizerToggleKey = string.Empty;
-                var texBox = (sender as UXTextBox);
-                texBox?.Select(vm.DarkStabilizerToggleKey.Length, 1);
-            }
+            alphabetKey = false;
+            newKeys.Clear();
+            _strPreviousKey = vm.DarkStabilizerToggleKey;
+            //vm.DarkStabilizerToggleKey = string.Empty;
+            var texBox = (sender as UXTextBox);
+            texBox?.Select(vm.DarkStabilizerToggleKey.Length, 1);
         }
 
         private void tbDarkStabilizerToggle_LostFocus(object sender, RoutedEventArgs e)
         {
             //hook
-            bool isHook = DdpmCommonHelper.DeviceManagerSA.Hook().Result;
+            //bool isHook = DdpmCommonHelper.DeviceManagerSA.Hook().Result;
         }
 
         private void tbDarkStabilizerToggle_ContextMenuOpening(object sender, ContextMenuEventArgs e)
@@ -174,8 +185,9 @@ namespace DDPM.UI.Module.Gaming
 
                     if (KeysHelper.hotKeyConflictsCheck(hotkeyInfo))
                     {
-                        bool saveSettings = DdpmCommonHelper.DeviceManagerSA.SaveHotkeySetting(vm.MyModule.SelectedHomeDevice.MonitorInfo, hotkeyInfo).Result;
+                        //bool saveSettings = DdpmCommonHelper.DeviceManagerSA.SaveHotkeySetting(vm.MyModule.SelectedHomeDevice.MonitorInfo, hotkeyInfo).Result;
                         //vm.Invoke_RefreshData();
+                        SaveHotkeySettings(hotkeyInfo);
                     }
                     else
                     {
@@ -191,16 +203,12 @@ namespace DDPM.UI.Module.Gaming
 
         private void tbDualResolutionToggle_GotFocus(object sender, RoutedEventArgs e)
         {
-            bool isUnhook = DdpmCommonHelper.DeviceManagerSA.UnHook().Result;
-            if (isUnhook)
-            {
-                alphabetKey = false;
-                newKeys.Clear();
-                _strPreviousKey = vm.DualResolutionToggleKey;
-                //vm.DualResolutionToggleKey = string.Empty;
-                var texBox = (sender as UXTextBox);
-                texBox?.Select(vm.DualResolutionToggleKey.Length, 1);
-            }
+            alphabetKey = false;
+            newKeys.Clear();
+            _strPreviousKey = vm.DualResolutionToggleKey;
+            //vm.DualResolutionToggleKey = string.Empty;
+            var texBox = (sender as UXTextBox);
+            texBox?.Select(vm.DualResolutionToggleKey.Length, 1);
         }
 
         private void tbDualResolutionToggle_ContextMenuOpening(object sender, ContextMenuEventArgs e)
@@ -211,7 +219,7 @@ namespace DDPM.UI.Module.Gaming
         private void tbDualResolutionToggle_LostFocus(object sender, RoutedEventArgs e)
         {
             //hook
-            bool isHook = DdpmCommonHelper.DeviceManagerSA.Hook().Result;
+            //bool isHook = DdpmCommonHelper.DeviceManagerSA.Hook().Result;
         }
     }
 }

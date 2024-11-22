@@ -223,7 +223,9 @@ namespace DDPM.UI.Common.Models
                     {
                         return DeviceInfo.Name.Replace("_", " ");
                     }
-                    return DeviceInfo.Name;
+                    //Robert_Lin, 2024-11-20, change the tooltip on homepage to DeviceName
+                    //return DeviceInfo.Name;
+                    return DeviceInfo.DeviceName;
                 }
                 else if (MonitorInfo != null)
                 {
@@ -359,6 +361,24 @@ namespace DDPM.UI.Common.Models
                 }
                 else if (MonitorInfo != null)
                 {
+                    //Robert_Lin, 2024-11-20 The display text in BatteryIndicator changed to {inputCable}-{InputName}
+                    //  or {DIsplayName) PIMS-302436
+                    //IF InputName is empty                 => Show MonitorInput.inputCable
+                    //IF InputName==MonitorInfo.inputCable => show Monitor.InputCable
+                    //ELSE                                  => Show "{MonitorInfo.inputCable} - {InputName}"
+                    if (String.IsNullOrWhiteSpace(InputName))
+                    {
+                        return MonitorInfo.inputCable;
+                    }
+                    else if (InputName.Equals(MonitorInfo.inputCable))
+                    {
+                        return MonitorInfo.inputCable;
+                    }
+                    else
+                    {
+                        return MonitorInfo.inputCable + " - " + InputName;
+                    }
+
                     //Robert_Lin, 2024-10-15 Change the Text1 of BatteryIndicator to inputCable.
                     //The inputCable has been remove unwant - and number, so we should show it directly
                     string strOut = MonitorInfo.inputCable;
@@ -373,12 +393,17 @@ namespace DDPM.UI.Common.Models
                     //strOut = strOut.TrimEnd(digits);
                     //strOut = strOut.TrimEnd(digits);
                     //strOut = strOut.TrimEnd(digits);
-                    return strOut;
+                    //return strOut;
                 }
                 return "";
             }
             //set => _text1 = value;
         }
+
+        //Robert_Lin, 2024-11-20 PIMS-302436, need to show user's input name on BatteryIndicatior
+        //Add a new property to stroe the user input name
+        public string InputName { get; set; } = "";
+     
         #endregion BatteryIndicator
 
         #region DisplayName
@@ -1329,8 +1354,16 @@ namespace DDPM.UI.Common.Models
                 //Determine if it has Network KVM capability
                 if (DeviceManagerSA != null)
                 {
-                    _hasCapability_NetworkKvm = DeviceManagerSA.isNKVMSupportMonitor(MonitorInfo).Result;
-                    return _hasCapability_NetworkKvm.Value;
+                    //Robert_Lin, 2024-11-18 add try-catch
+                    try
+                    {
+                        _hasCapability_NetworkKvm = DeviceManagerSA.isNKVMSupportMonitor(MonitorInfo).Result;
+                        return _hasCapability_NetworkKvm.Value;
+                    }
+                    catch (Exception e)
+                    {
+                        string errMsg = e.Message;   
+                    }
                 }
                 return false;
             }
