@@ -808,10 +808,10 @@ namespace DDPM.SA.Common
 
         #region Webcam
 
-        event EventHandler<bool>? Esi_IsCameraSensorCover_ChangeEvent;
-        event EventHandler<int>? WALSnoozeTimeLeftInSeconds_ChangeEvent;
-        event EventHandler<bool>? Esi_IsWALLockCountdownStartedChanged_ChangeEvent;
-        event EventHandler<int>? Esi_WALLockCountdownChanged_ChangeEvent;
+        //event EventHandler<bool>? Esi_IsCameraSensorCover_ChangeEvent;
+        //event EventHandler<int>? WALSnoozeTimeLeftInSeconds_ChangeEvent;
+        //event EventHandler<bool>? Esi_IsWALLockCountdownStartedChanged_ChangeEvent;
+        //event EventHandler<int>? Esi_WALLockCountdownChanged_ChangeEvent;
 
         Task<JArray> GetPresetProfiles(string Guid);
         Task<JArray> GetCustomProfiles(string Guid);

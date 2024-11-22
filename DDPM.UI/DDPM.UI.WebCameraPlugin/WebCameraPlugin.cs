@@ -153,13 +153,21 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
         public void OnActivated()
         {
             DdpmCommonHelper.DeviceManagerSA!.DeviceChanged += DeviceManager_DeviceChanged;
+            DdpmCommonHelper.DeviceManagerSA!.UIUpdateNotify += WebCameraplugin_UIUpdateNotify;
             Mouse.OverrideCursor = null;
+        }
+
+        private void WebCameraplugin_UIUpdateNotify(object? sender, UpdateUINotify e)
+        {
+            //Open this to get the message format of Webcam event
+            //System.Windows.MessageBox.Show(e.UI_Field_Name);
         }
 
         /// <inheritdoc/>
         public void OnDeactivated()
         {
             DdpmCommonHelper.DeviceManagerSA!.DeviceChanged -= DeviceManager_DeviceChanged;
+            DdpmCommonHelper.DeviceManagerSA!.UIUpdateNotify -= WebCameraplugin_UIUpdateNotify;
             Mouse.OverrideCursor = Cursors.Wait;
         }
 
