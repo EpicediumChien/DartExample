@@ -1,4 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.Input;
+using DDPM.SA.Common;
 using DDPM.SA.Common.Settings;
 using DDPM.UI.Common;
 using DDPM.UI.Interfaces;
@@ -55,13 +56,14 @@ namespace DDPM.UI.Plugin.HeadsetPlugin
             //txtUnpair.Text = Unpair;
             //txtRestore.Text = Restore;
 
-            //ConnectionStyle1 = (Style)FindResource("ConnectionStyle1");
-            //ConnectionStyle2 = (Style)FindResource("ConnectionStyle2");
+            ConnectionStyle1 = (Style)FindResource("ConnectionStyle1");
+            ConnectionStyle2 = (Style)FindResource("ConnectionStyle2");
             //txtSystemName1.Text = Dns.GetHostName(); ;// _vm!.VisiblePairedHostName1;
             //txtSystemName2.Text = _vm.VisiblePairedHostName1;
-            //txtSystemName3.Text = _vm.VisiblePairedHostName1;
-            //txtFirmware.Text = "Dongle " + _vm.PhysicalDeviceFWVersion;
-            //txtSlot.Text = $"{_vm.CurrentDeviceInfo!.MaxPairingSlots - _vm.CurrentDeviceInfo.PairedDeviceCount} of {_vm.CurrentDeviceInfo.MaxPairingSlots} slots available";
+            txtSystemName3.Text = _vm.VisiblePairedHostName1;
+            txtFirmware.Text = "Dongle " + _vm.PhysicalDeviceFWVersion;
+            txtSlot.Text = $"{_vm.CurrentDeviceInfo!.MaxPairingSlots - _vm.CurrentDeviceInfo.PairedDeviceCount} of {_vm.CurrentDeviceInfo.MaxPairingSlots} slots available";
+            txtAudioBLText.Text = string.Format(Strings.Paired_Info, _vm.CurrentDeviceInfo.TotalNumberOfPairedHostName);
             if (DdpmCommonHelper.DeviceManagerSA != null)
             {
                 DdpmCommonHelper.DeviceManagerSA.ITSettingsActionEvent += DeviceManagerSA_ITSettingsActionEvent;
@@ -350,14 +352,14 @@ namespace DDPM.UI.Plugin.HeadsetPlugin
             else if (_vm!.ConnectionType == "Bluetooth")//I can't get Headset connection HostName, FW issue?
             {
                 string hostName = Dns.GetHostName();
-                var hostIndex = _vm!.VisiblePairedHostName1.ToUpper() == "VISIBLE" ? 1 : (_vm.VisiblePairedHostName2.ToUpper() == "VISIBLE" ? 2 : 3);
-                txt1.Style = ConnectionStyle2;
-                imgBL1.Source = img2;
-                txtBLHost1.Style = ConnectionStyle2;
-                txt2.Style = ConnectionStyle2;
-                imgBL2.Source = img2;
-                txtBLHost2.Style = ConnectionStyle2;
-                txt3.Style = ConnectionStyle2;
+                //var hostIndex = _vm!.VisiblePairedHostName1.ToUpper() == "VISIBLE" ? 1 : (_vm.VisiblePairedHostName2.ToUpper() == "VISIBLE" ? 2 : 3);
+                txt1.Style = ConnectionStyle1;
+                //imgBL1.Source = img2;
+                txtBLHost1.Style = ConnectionStyle1;
+                txt2.Style = ConnectionStyle1;
+                //imgBL2.Source = img2;
+                txtBLHost2.Style = ConnectionStyle1;
+                txt3.Style = ConnectionStyle1;
                 txtBLHost1.Text = string.IsNullOrEmpty(_vm.PairedHostName1) ? Strings.ReadyToBePaired : _vm.PairedHostName1;
                 txtBLHost2.Text = string.IsNullOrEmpty(_vm.PairedHostName2) ? Strings.ReadyToBePaired : _vm.PairedHostName2;
                 BLConnection.Visibility = Visibility.Visible;

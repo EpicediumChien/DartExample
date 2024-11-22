@@ -2427,4 +2427,7 @@
   <data name="EazyMemorySettings.6" xml:space="preserve">
     <value>Application Window Snap</value>
   </data>
+  <data name="PairedInfo.0" xml:space="preserve">
+    <value>This device can be paired with {0} hosts simultaneously</value>
+  </data>
 </root>
