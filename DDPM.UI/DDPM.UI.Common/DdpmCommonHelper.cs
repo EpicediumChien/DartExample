@@ -456,7 +456,12 @@ namespace DDPM.UI.Common
 
             if (deviceInfo != null)
             {
-                switch(deviceInfo.ModelNumber)
+                //[#PeripheralModelMap] This mapping table has a duplicate code in
+                //1 DdpmCommonHelpers.cs    DeterminePeripheralProductImageFileName()
+                //2 HomeDevices             TooltipModelName property
+                //3 PeripheralViewModel.cs  MappingModel()
+                //If you need to modify, please also modify them.
+                switch (deviceInfo.ModelNumber)
                 {
                     //Keyboard
                     case "KB740":

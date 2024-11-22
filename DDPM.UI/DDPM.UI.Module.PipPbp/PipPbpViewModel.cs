@@ -1462,12 +1462,15 @@ namespace DDPM.UI.Module.PipPbp
             if (SplitListView_Pbp == null)
                 return;
 
+            //Robert_Lin, 2024-11-22, To verify Pxp SplitItem tooltip text
+            bool isAddAllModeToListView = (DDPM.UI.Common.User32.IniReadInt("DDPMDebug", "PipPbp.PbpModeListView.AddAllModes", 0, @"C:\temp\DDPMDebug.txt") == 1);
+
             SplitListView_Pbp.ClearList();
             bool isSelectedItemInList = false;
             foreach (ISplit isp in ISplit.PipClasses)
             {
                 //Check if SelectedHomeDevice have the capability
-                if (HasPxpCap(isp.PbpCapabilityCode))
+                if (HasPxpCap(isp.PbpCapabilityCode) || isAddAllModeToListView)
                 {
                     SplitItem spItem = SplitListView_Pbp.AddSplitToList(isp);
                     if (CurPxpMode == isp.PbpCapabilityCode)
