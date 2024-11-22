@@ -360,8 +360,6 @@ namespace DDPM.UI.Plugin.Common.Tests
             privateObjecta.SetFieldOrProperty("_headers", _headers);
             moduleGroups = new List<ModuleGroup>() { moduleGroup, moduleGroup };
             privateObject.SetFieldOrProperty("_moduleGroups", moduleGroups);
-            //var _vbarItems = new List<VbarItem1>() { new VbarItem1(), new VbarItem1() };
-            //privateObject.SetFieldOrProperty("_vbarItems", _vbarItems);
             displayViewModel.GroupSelectedIndex = 1;
             displayViewModel.RightViewHeaderSelectedIndex = 0;
             // Assert

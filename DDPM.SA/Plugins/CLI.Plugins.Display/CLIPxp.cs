@@ -247,11 +247,6 @@ namespace CLI.Plugins.Display
                 errCount = 0;
                 for (int i = 0; i < serviceTagList.Count; i++)
                 {
-                    CLI_RESPONSE response = new CLI_RESPONSE()
-                    {
-                        Command = _cmdLineInput.Command,
-                        TargetFeature = _cmdLineInput.TargetFeature
-                    };
                     string stIsDone = swapIsDone.FirstOrDefault(_ => _ == serviceTagList[i]);
                     if (!String.IsNullOrWhiteSpace(stIsDone))
                         continue;
@@ -261,12 +256,17 @@ namespace CLI.Plugins.Display
                         _AllInfoMonitors = _devMgr.GetMonitors().Result;
                         break;
                     }
+                    CLI_RESPONSE response = new CLI_RESPONSE(mo)
+                    {
+                        Command = _cmdLineInput.Command,
+                        TargetFeature = _cmdLineInput.TargetFeature
+                    };
                     response.Value = rawValue;
-                    response.Index = change_0base_to_1base(i.ToString());
-                    response.Model = mo.modelName;
-                    response.SerialNumber = mo.edid.SerialNumber;
-                    response.ServiceTag = mo.edid.ServiceTag;
-                    response.Value = rawValue;
+                    //response.Index = change_0base_to_1base(i.ToString());
+                    //response.Model = mo.modelName;
+                    //response.SerialNumber = mo.edid.SerialNumber;
+                    //response.ServiceTag = mo.edid.ServiceTag;
+                    //response.Value = rawValue;
                     ObjGetVCP objGetVCP = _devMgr.GetPxpMode(mo).Result;
                     if ((objGetVCP == null) || (!objGetVCP.result))
                     {
@@ -323,12 +323,12 @@ namespace CLI.Plugins.Display
             int errCount = 0;
             foreach (int idx in _monitorIndeies)
             {
-                CLI_RESPONSE_PxpMode response = new CLI_RESPONSE_PxpMode();
+                CLI_RESPONSE_PxpMode response = new CLI_RESPONSE_PxpMode(_AllInfoMonitors[idx]);
                 response.Command = _cmdLineInput.Command;
                 response.TargetFeature = _cmdLineInput.TargetFeature;
-                response.Model = _AllInfoMonitors[idx].modelName;
-                response.SerialNumber = _AllInfoMonitors[idx].edid.SerialNumber;
-                response.Index = change_0base_to_1base(idx.ToString());
+                //response.Model = _AllInfoMonitors[idx].modelName;
+                //response.SerialNumber = _AllInfoMonitors[idx].edid.SerialNumber;
+                //response.Index = change_0base_to_1base(idx.ToString());
 
                 //1 Get supported modes
                 UInt16[] caps = _devMgr.GetPipPbpCapabilitiesWords(_AllInfoMonitors[idx]).Result;
@@ -499,11 +499,58 @@ namespace CLI.Plugins.Display
             Trace.WriteLine(serviceTagList.Count);
             bool flag = true;
             List<string> swapIsDone = new List<string>();
+            // if command is /set -Display=PxP -value=<off, pip, pip-large & etc> -value=<HDMI, DP, USB-C & etc>
+            // step1 change inputsource 
+            // step2 set pxp mode
+            // step3 change subinput
+            if (_cmdLineInput.Options.Count == 2)
+            {
+                swapIsDone = new List<string>();
+                flag = true;
+                while (flag)
+                {
+                    for (int i = 0; i < serviceTagList.Count; i++)
+                    {
+                        string stIsDone = swapIsDone.FirstOrDefault(_ => _ == serviceTagList[i]);
+                        if (!String.IsNullOrWhiteSpace(stIsDone))
+                            continue;
+                        MonitorInfo mo = _AllInfoMonitors.FirstOrDefault(_ => _.edid.ServiceTag == serviceTagList[i]);
+                        if (mo == null)
+                        {
+                            _AllInfoMonitors = _devMgr.GetMonitors().Result;
+                            break;
+                        }
+                        if (!String.IsNullOrWhiteSpace(_cmdLineInput.Options[1].Option_Value))
+                        {
+                            string[] ss = _cmdLineInput.Options[1].Option_Value.Split(',');
+                            if (ss.Length == 2)
+                            {
+                                List<InputSourceObj> inputSources = _devMgr.GetSubInputs(mo).Result;
+                                // "Input Select"
+                                string vcpcode = "0x60";
+                                string value = get_InputSource_code(get_inputsource_type(ss[0]).ToString());
+                                Trace.WriteLine(value);
+                                isOK = _devMgr.SetVCPCapability(mo, (Convert.ToByte(vcpcode, 16)), (Convert.ToUInt32(value, 16))).Result;
+                                if (!isOK)
+                                {
+                                    isOK = false;
+                                    _AllInfoMonitors = _devMgr.GetMonitors().Result;
+                                    break;
+                                }
+                                swapIsDone.Add(mo.edid.ServiceTag);
+                            }
+                        }
+                    }
+                    if (serviceTagList.Count == swapIsDone.Count)
+                        flag = false;
+                }
+            }
+            swapIsDone = new List<string>();
+            flag = true;
             while (flag)
             {
                 for (int i = 0; i < serviceTagList.Count; i++)
                 {
-                    Trace.WriteLine(serviceTagList[i]);
                     string stIsDone = swapIsDone.FirstOrDefault(_ => _ == serviceTagList[i]);
                     if (!String.IsNullOrWhiteSpace(stIsDone))
                         continue;
@@ -515,59 +562,22 @@ namespace CLI.Plugins.Display
                     }
                     bool isPass = _devMgr.SetPbpMode(mo, (UInt16)pxpModeObj.ModeCode).Result;
                     if (!isPass)
-                        break;
-
-                    if (_cmdLineInput.Options.Count == 2)
                     {
-                        if (!String.IsNullOrWhiteSpace(_cmdLineInput.Options[1].Option_Value))
-                        {
-                            string[] ss = _cmdLineInput.Options[1].Option_Value.Split(',');
-                            if (ss.Length == 2)
-                            {
-                                string[] allSource = ["HDMI", "USB-C", "DP"];
-                                string sourceA = allSource.FirstOrDefault(_ => _ == ss[0]);
-                                if (String.IsNullOrWhiteSpace(sourceA))
-                                {
-                                    isOK = false;
-                                    break;
-                                }
-                                string sourceB = allSource.FirstOrDefault(_ => _ == ss[1]);
-                                if (String.IsNullOrWhiteSpace(sourceB))
-                                {
-                                    isOK = false;
-                                    break;
-                                }
-                                string vcpcode2 = "0xE8";
-                                string value2 = get_InputSource_code(get_inputsource_type(ss[1]).ToString());
-                                isOK = _devMgr.SetVCPCapability(mo, (Convert.ToByte(vcpcode2, 16)), (Convert.ToUInt32(value2, 16))).Result;
-                                if (!isOK)
-                                {
-                                    isOK = false;
-                                    break;
-                                }
-                                string vcpcode = "0x60";
-                                string value = get_InputSource_code(get_inputsource_type(ss[0]).ToString());
-                                isOK = _devMgr.SetVCPCapability(mo, (Convert.ToByte(vcpcode, 16)), (Convert.ToUInt32(value, 16))).Result;
-                                if (!isOK)
-                                {
-                                    isOK = false;
-                                    break;
-                                }
-                            }
-                        }
+                        _AllInfoMonitors = _devMgr.GetMonitors().Result;
+                        break;
                     }
-                    CLI_RESPONSE response = new CLI_RESPONSE()
+                    CLI_RESPONSE response = new CLI_RESPONSE(mo)
                     {
                         Command = _cmdLineInput.Command,
                         TargetFeature = _cmdLineInput.TargetFeature
                     };
-                    response.Index = change_0base_to_1base(i.ToString());
-                    response.Model = mo.modelName;
-                    response.SerialNumber = mo.edid.SerialNumber;
-                    response.ServiceTag = mo.edid.ServiceTag;
+                    //response.Index = change_0base_to_1base(i.ToString());
+                    //response.Model = mo.modelName;
+                    //response.SerialNumber = mo.edid.SerialNumber;
+                    //response.ServiceTag = mo.edid.ServiceTag;
                     response.Value = rawValue;
                     swapIsDone.Add(mo.edid.ServiceTag);
-                    if (isPass || isOK)
+                    if (isPass)
                     {
                         response.Result = "PASS";
                         response.Message = "";
@@ -578,10 +588,75 @@ namespace CLI.Plugins.Display
                         response.Message = "Fail to SetPxPMode.";
                         errCount++;
                     }
-                    _responses.Add(response);
+                    if (_cmdLineInput.Options.Count != 2)
+                        _responses.Add(response);
                 }
                 if (serviceTagList.Count == swapIsDone.Count)
                     flag = false;
+            }
+            if (_cmdLineInput.Options.Count == 2)
+            {
+                swapIsDone = new List<string>();
+                flag = true;
+                while (flag)
+                {
+                    for (int i = 0; i < serviceTagList.Count; i++)
+                    {
+                        Trace.WriteLine(serviceTagList[i]);
+                        string stIsDone = swapIsDone.FirstOrDefault(_ => _ == serviceTagList[i]);
+                        if (!String.IsNullOrWhiteSpace(stIsDone))
+                            continue;
+                        MonitorInfo mo = _AllInfoMonitors.FirstOrDefault(_ => _.edid.ServiceTag == serviceTagList[i]);
+                        if (mo == null)
+                        {
+                            _AllInfoMonitors = _devMgr.GetMonitors().Result;
+                            break;
+                        }
+                        if (!String.IsNullOrWhiteSpace(_cmdLineInput.Options[1].Option_Value))
+                        {
+                            string[] ss = _cmdLineInput.Options[1].Option_Value.Split(',');
+                            if (ss.Length == 2)
+                            {
+                                //"PIP/PBP Input"
+                                string vcpcode3 = "0xE8";
+                                string value3 = get_InputSource_code(get_inputsource_type(ss[1]).ToString());
+                                Trace.WriteLine(value3);
+                                isOK = _devMgr.SetVCPCapability(mo, (Convert.ToByte(vcpcode3, 16)), (Convert.ToUInt32(value3, 16))).Result;
+                                if (!isOK)
+                                {
+                                    isOK = false;
+                                    _AllInfoMonitors = _devMgr.GetMonitors().Result;
+                                    break;
+                                }
+                            }
+                        }
+                        CLI_RESPONSE response = new CLI_RESPONSE(mo)
+                        {
+                            Command = _cmdLineInput.Command,
+                            TargetFeature = _cmdLineInput.TargetFeature
+                        };
+                        //response.Index = change_0base_to_1base(i.ToString());
+                        //response.Model = mo.modelName;
+                        //response.SerialNumber = mo.edid.SerialNumber;
+                        //response.ServiceTag = mo.edid.ServiceTag;
+                        response.Value = rawValue;
+                        swapIsDone.Add(mo.edid.ServiceTag);
+                        if (isOK)
+                        {
+                            response.Result = "PASS";
+                            response.Message = "";
+                        }
+                        else
+                        {
+                            response.Result = "FAIL";
+                            response.Message = "Fail to SetPxPMode.";
+                            errCount++;
+                        }
+                        _responses.Add(response);
+                    }
+                    if (serviceTagList.Count == swapIsDone.Count)
+                        flag = false;
+                }
             }
             if (errCount == 0)
                 return (int)CLI_ExitCode.success;
@@ -595,12 +670,12 @@ namespace CLI.Plugins.Display
             int errCount = 0;
             foreach (int idx in _monitorIndeies)
             {
-                CLI_RESPONSE_SubInput response = new CLI_RESPONSE_SubInput();
+                CLI_RESPONSE_SubInput response = new CLI_RESPONSE_SubInput(_AllInfoMonitors[idx]);
                 response.Command = _cmdLineInput.Command;
                 response.TargetFeature = _cmdLineInput.TargetFeature;
-                response.Model = _AllInfoMonitors[idx].modelName;
-                response.SerialNumber = _AllInfoMonitors[idx].edid.SerialNumber;
-                response.Index = change_0base_to_1base(idx.ToString());
+                //response.Model = _AllInfoMonitors[idx].modelName;
+                //response.SerialNumber = _AllInfoMonitors[idx].edid.SerialNumber;
+                //response.Index = change_0base_to_1base(idx.ToString());
 
                 List<InputSourceObj> inputSources = _devMgr.GetSubInputs(_AllInfoMonitors[idx]).Result;
                 if (inputSources == null)
@@ -608,17 +683,17 @@ namespace CLI.Plugins.Display
                     errCount++;
                     response.Result = "ERROR";
                     response.Message = "Fail to get SubInputs.";
-                    response.SubInputCount = 0;
+                    //response.SubInputCount = 0;
                 }
                 else if (inputSources.Count <= 0)
                 {
                     response.Result = "No sub input.";
                     response.Message = "No sub input.";
-                    response.SubInputCount = 0;
+                    //response.SubInputCount = 0;
                 }
                 else
                 {
-                    response.SubInputCount = inputSources.Count;
+                    //response.SubInputCount = inputSources.Count;
                     response.Sub1InputSource = inputSources[0].Name;
                     if (inputSources.Count > 1)
                         response.Sub2InputSource = inputSources[1].Name;
@@ -713,12 +788,12 @@ namespace CLI.Plugins.Display
             int errCount = 0;
             foreach (int idx in _monitorIndeies)
             {
-                CLI_RESPONSE_SubInput response = new CLI_RESPONSE_SubInput();
+                CLI_RESPONSE_SubInput response = new CLI_RESPONSE_SubInput(_AllInfoMonitors[idx]);
                 response.Command = _cmdLineInput.Command;
                 response.TargetFeature = _cmdLineInput.TargetFeature;
-                response.Model = _AllInfoMonitors[idx].modelName;
-                response.SerialNumber = _AllInfoMonitors[idx].edid.SerialNumber;
-                response.Index = change_0base_to_1base(idx.ToString());
+                //response.Model = _AllInfoMonitors[idx].modelName;
+                //response.SerialNumber = _AllInfoMonitors[idx].edid.SerialNumber;
+                //response.Index = change_0base_to_1base(idx.ToString());
                 response.Sub1InputSource = (sub1 == null) ? "" : sub1.Name;
                 response.Sub2InputSource = (sub2 == null) ? "" : sub2.Name;
                 response.Sub3InputSource = (sub3 == null) ? "" : sub3.Name;
@@ -879,15 +954,15 @@ namespace CLI.Plugins.Display
             {
                 bool isPass = _devMgr.SetVCPCapability(_AllInfoMonitors[idx], 0xE5, 0x02).Result;
 
-                CLI_RESPONSE response = new CLI_RESPONSE()
+                CLI_RESPONSE response = new CLI_RESPONSE(_AllInfoMonitors[idx])
                 {
                     Command = _cmdLineInput.Command,
                     TargetFeature = _cmdLineInput.TargetFeature
                 };
-                response.Model = _AllInfoMonitors[idx].modelName;
-                response.SerialNumber = _AllInfoMonitors[idx].edid.SerialNumber;
-                response.Index = change_0base_to_1base(idx.ToString());
-                response.ServiceTag = _AllInfoMonitors[idx].edid.ServiceTag;
+                //response.Model = _AllInfoMonitors[idx].modelName;
+                //response.SerialNumber = _AllInfoMonitors[idx].edid.SerialNumber;
+                //response.Index = change_0base_to_1base(idx.ToString());
+                //response.ServiceTag = _AllInfoMonitors[idx].edid.ServiceTag;
                 if (isPass)
                 {
                     response.Result = "PASS";
@@ -914,7 +989,7 @@ namespace CLI.Plugins.Display
             foreach (int idx in _monitorIndeies)
             {
                 ObjGetVCP rc = new ObjGetVCP();
-                CLI_RESPONSE response = new CLI_RESPONSE()
+                CLI_RESPONSE response = new CLI_RESPONSE(_AllInfoMonitors[idx])
                 {
                     Command = _cmdLineInput.Command,
                     TargetFeature = _cmdLineInput.TargetFeature
@@ -926,18 +1001,18 @@ namespace CLI.Plugins.Display
                     if (rc != null)
                         isPass = true;
                     response.Value = (rc.value).ToString();
-                    response.Model = _AllInfoMonitors[idx].modelName;
-                    response.SerialNumber = _AllInfoMonitors[idx].edid.SerialNumber;
-                    response.Index = change_0base_to_1base(idx.ToString());
-                    response.ServiceTag = _AllInfoMonitors[idx].edid.ServiceTag;
+                    //response.Model = _AllInfoMonitors[idx].modelName;
+                    //response.SerialNumber = _AllInfoMonitors[idx].edid.SerialNumber;
+                    //response.Index = change_0base_to_1base(idx.ToString());
+                    //response.ServiceTag = _AllInfoMonitors[idx].edid.ServiceTag;
                 }
                 else
                 {
                     response.Value = "Not support PxPzoom";
-                    response.Model = _AllInfoMonitors[idx].modelName;
-                    response.SerialNumber = _AllInfoMonitors[idx].edid.SerialNumber;
-                    response.Index = change_0base_to_1base(idx.ToString());
-                    response.ServiceTag = _AllInfoMonitors[idx].edid.ServiceTag;
+                    //response.Model = _AllInfoMonitors[idx].modelName;
+                    //response.SerialNumber = _AllInfoMonitors[idx].edid.SerialNumber;
+                    //response.Index = change_0base_to_1base(idx.ToString());
+                    //response.ServiceTag = _AllInfoMonitors[idx].edid.ServiceTag;
                 }
                     
                 if (isPass)
@@ -1029,15 +1104,15 @@ namespace CLI.Plugins.Display
             foreach (int idx in _monitorIndeies)
             {
                 bool isPass = _devMgr.SetVCPCapability(_AllInfoMonitors[idx], (byte)0xE7, writeValue).Result;
-                CLI_RESPONSE response = new CLI_RESPONSE()
+                CLI_RESPONSE response = new CLI_RESPONSE(_AllInfoMonitors[idx])
                 {
                     Command = _cmdLineInput.Command,
                     TargetFeature = _cmdLineInput.TargetFeature
                 };
-                response.Index = change_0base_to_1base(idx.ToString());
-                response.Model = _AllInfoMonitors[idx].modelName;
-                response.SerialNumber = _AllInfoMonitors[idx].edid.SerialNumber;
-                response.ServiceTag = _AllInfoMonitors[idx].edid.ServiceTag;
+                //response.Index = change_0base_to_1base(idx.ToString());
+                //response.Model = _AllInfoMonitors[idx].modelName;
+                //response.SerialNumber = _AllInfoMonitors[idx].edid.SerialNumber;
+                //response.ServiceTag = _AllInfoMonitors[idx].edid.ServiceTag;
                 response.Value = rawValue;
                 if (isPass)
                 {

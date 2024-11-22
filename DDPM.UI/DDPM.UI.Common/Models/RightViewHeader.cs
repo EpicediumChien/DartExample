@@ -30,5 +30,11 @@ namespace DDPM.UI.Common.Models
 
         //Robert_Lin, 2024-7-26, To hide the header which is not supported
         public bool IsShown { get; set; } = true;
+
+        //Robert_Lin, 2024-11-15 add a ModuleName
+        //In general, we can get ModuleName from DdpmModule.ModuleName
+        //But in case of DdpmModule is null (the module has not been created/shown)
+        //We did need the ModuleName when we would like to find the RightViewHeader of that Module
+        public string ModuleName { get; set; } = "";
     }
 }

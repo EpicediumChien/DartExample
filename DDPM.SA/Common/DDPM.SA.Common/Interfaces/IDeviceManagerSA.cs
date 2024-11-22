@@ -242,6 +242,8 @@ namespace DDPM.SA.Common
 
         Task<bool> SetOnUSBKVM(MonitorInfo monitorInfo, bool isON);
 
+        Task<bool> isScreenPartition(MonitorInfo monitorInfo);
+
         #endregion public for USBKVM
 
         #region EasyArrange
@@ -303,6 +305,16 @@ namespace DDPM.SA.Common
         public Task<SplitJson[]> ReadEACustomList();
 
         public Task<bool> WriteEACustomList(SplitJson[] customList);
+
+        public event EventHandler<EAArgs> EANotify;
+        public Task SendEANotify(EAArgs args);
+
+        /// <summary>
+        /// Return current Span across multiple monitor option is Enabled/Disabled;
+        /// Note that it's different with EzSettings.IsSpanAcrossMultiMonitors (=ON|OFF)
+        /// </summary>
+        /// <returns>True=Enabled; False=Disabled</returns>
+        public Task<bool> GetIsSpanEnabled();
 
         #endregion EasyArrange
 
@@ -370,8 +382,6 @@ namespace DDPM.SA.Common
         Task StartPairing(Guid deviceId);
 
         Task StopPairing(Guid deviceId);
-
-        Task StopPairingPen();
 
         Task SetWiredAudioIMicNSEnable(bool newValue, Guid deviceId);
 
@@ -540,7 +550,7 @@ namespace DDPM.SA.Common
         //Task<FWUpdateInfoPackage> GetFWUpdateInfo(bool isShowNotify = true, bool isForce = false, bool isDefer = false, List<DeviceType> deviceTypeList = null, bool UODMode = false);
 
         Task<FWUpdateInfoPackage> GetFWUpdateInfo(bool isShowNotify = true, bool isForce = false, bool isDefer = false, List<DeviceType> deviceTypeList = null, bool UODMode = false, bool isOnlyDisplay = false, bool reScan = true, bool isUItrigger = false, List<string> giuds = null, List<string> serviceTags = null, List<string> models = null, string minVersion = "");
-        Task<FWUErrorCode> Install(string installPath, bool isOnlyDisplay = false, DeviceType deviceType= DeviceType.Unknown);
+        Task<FWUErrorCode> Install(string installPath, bool isOnlyDisplay = false, DeviceType deviceType = DeviceType.Unknown);
 
         //0531 Bruce 因應IL的現有安裝包修改判斷，IDeviceManagerSA.cs中三個關於FWUpdate的方法移除並修改DownloadAndInstall回傳值
         Task<List<FWUpdateInfo>> DownloadAndInstall(List<FWUpdateInfo> fwUpdateInfos, bool isUITrigger = false, string installPath = "");
@@ -615,6 +625,8 @@ namespace DDPM.SA.Common
 
         Task CallNKVMConnent();
 
+        Task CallShowNKVM(int num, int x, int y);
+
         #endregion for NKVM
 
         #region public for SW Update
@@ -622,6 +634,7 @@ namespace DDPM.SA.Common
         Task<SWUpdateInfoPackage> SW_GetSWUpdateInfo(bool isShowNotify = true, bool isForce = false, bool isDefer = false, bool reScan = true, bool isUItrigger = false);
 
         Task<List<SWUpdateInfo>> SW_DownloadAndInstall(List<SWUpdateInfo> swUpdateInfos, bool isUItrigger = false, string installPath = "");
+        Task<InterruptScreenRoot> InterruptScreen_Metadata();
 
         #endregion public for SW Update
 
@@ -715,19 +728,21 @@ namespace DDPM.SA.Common
         Task<JArray> GetKbProgrammableKeys(string Guid);
         Task<bool> DeleteKeyboardAllAssignedActions(string Guid);
         Task<JArray> GetKbAssignableActions(string Guid);
+        Task<string> GetKeyboardKeystrokeDisplayData(string Guid);
+        Task<bool> StartKeyboardKeystrokeRecording(string Guid);
+        Task<bool> StopKeyboardKeystrokeRecording(string Guid);
 
         Task DeleteKeyboardAssignedAction(string Guid, int newValue);
-        Task SetKbAssignedAction(string Guid, string newValue);
+        Task SetKbAssignedAction(string Guid, byte[] newValue);
 
-        Task SetKbAssignDialogAction(string Guid, string newValue);
+        Task SetKbAssignDialogAction(string Guid, byte[] newValue);
 
-        Task SetKbAssignKeystrokeAction(string Guid, string newValue);
+        Task SetKbAssignKeystrokeAction(string Guid, byte[] newValue);
 
         #endregion Keyboard
 
         #region Pen
 
-        Task<JArray> GetPenDeviceItemsEx();
 
         Task<string> GetEraserDoublePressValues();
 
@@ -758,8 +773,12 @@ namespace DDPM.SA.Common
         Task<bool> GetIsSideTopButtonHoverClick();
 
         Task<bool> GetIsSideBottomButtonHoverClick();
-
         Task<string> PairingPen();
+        Task<JArray> GetPenDeviceItemsEx();
+        Task<bool> StartKeyCapturePen();
+        Task<bool> FinishKeyCapturePen();
+        Task<string> KeyCaptureData();
+
 
         Task UnPairPen(string Guid);
 
@@ -788,6 +807,11 @@ namespace DDPM.SA.Common
         #endregion Pen
 
         #region Webcam
+
+        event EventHandler<bool>? Esi_IsCameraSensorCover_ChangeEvent;
+        event EventHandler<int>? WALSnoozeTimeLeftInSeconds_ChangeEvent;
+        event EventHandler<bool>? Esi_IsWALLockCountdownStartedChanged_ChangeEvent;
+        event EventHandler<int>? Esi_WALLockCountdownChanged_ChangeEvent;
 
         Task<JArray> GetPresetProfiles(string Guid);
         Task<JArray> GetCustomProfiles(string Guid);
@@ -1071,6 +1095,8 @@ namespace DDPM.SA.Common
         Task<bool> GetIsWiredAudioIMicNSEnableAsync(string Guid);
 
         Task<bool> GetIsAudioEqualizerSupportedAsync(string Guid);
+
+        Task<bool> GetMuteStatusAsyncForSpeaker(string guid);
 
         #endregion Wires Audio
 

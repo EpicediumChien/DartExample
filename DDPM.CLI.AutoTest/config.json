@@ -1,9 +1,11 @@
 {
     "cli_path": "D:/Projects/DDPM/DDPM.SA/bin/CLI.Subagent/Debug/net8.0-windows10.0.19041.0/CLI.Subagent.exe",
     "delay": 10,
+    "check_connect_device": false,
+    "save_device_data_file": false,
+    "check_device_data_before_set_config": false,
     "commands": {
         "Display": [
-			"/get -app=CONNECTEDDEVICES",
 			"/get -display=DETECTMONITORS",
             "/get -Display=FWVersion",
             "/get -Display=MonitorCount",
@@ -146,6 +148,7 @@
             "/get -app=DeviceData",
             "/set -app=DeviceConfiguration -value=display,D:\\DDPM_CLI\\device_data.json",
             "/get -app=DiagnosticsReport",
+            "/get -app=DiagnosticsReport -value=D:\\DDPM_CLI",
             "/set -app=InAppUpdate -value=unlock",
             "/set -app=ScreenNotification -value=unlock",
             "/set -app=InAppRestoreDefaults -value=unlock"

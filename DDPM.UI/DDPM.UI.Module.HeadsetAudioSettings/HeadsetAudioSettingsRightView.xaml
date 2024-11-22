@@ -15,7 +15,7 @@
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="/DDPM.UI.Common;component/PluginStyles.xaml" />
+                <!--<ResourceDictionary Source="/DDPM.UI.Common;component/PluginStyles.xaml" />-->
                 <!-- <ResourceDictionary Source="/DDPM.UI.Common;component/ModuleStyle.xaml" /> -->
             </ResourceDictionary.MergedDictionaries>
 
@@ -91,22 +91,83 @@
             <local:ValueToVisibilityConverter x:Key="ValueToVisibilityConverter" />
             <local:InverseBooleanConverter x:Key="InverseBooleanConverter" />
             <local:BooleanToInverseForegroundConverter x:Key="BooleanToInverseForegroundConverter" />
+            <local:BooleanToForegroundConverter x:Key="BooleanToForegroundConverter" />
+
+            <Style x:Key="ToggleButtonTextStyle" TargetType="TextBlock">
+                <Style.Triggers>
+
+                    <MultiDataTrigger>
+                        <MultiDataTrigger.Conditions>
+                            <Condition Binding="{Binding IsDarkTheme}" Value="True" />
+                            <Condition Binding="{Binding IsChecked, RelativeSource={RelativeSource TemplatedParent}}" Value="True" />
+                        </MultiDataTrigger.Conditions>
+                        <Setter Property="Foreground" Value="White" />
+                    </MultiDataTrigger>
+                    <MultiDataTrigger>
+                        <MultiDataTrigger.Conditions>
+                            <Condition Binding="{Binding IsDarkTheme}" Value="True" />
+                            <Condition Binding="{Binding IsChecked, RelativeSource={RelativeSource TemplatedParent}}" Value="False" />
+                        </MultiDataTrigger.Conditions>
+                        <Setter Property="Foreground" Value="White" />
+                    </MultiDataTrigger>
+
+                    <MultiDataTrigger>
+                        <MultiDataTrigger.Conditions>
+                            <Condition Binding="{Binding IsDarkTheme}" Value="False" />
+                            <Condition Binding="{Binding IsChecked, RelativeSource={RelativeSource TemplatedParent}}" Value="True" />
+                        </MultiDataTrigger.Conditions>
+                        <Setter Property="Foreground" Value="White" />
+                    </MultiDataTrigger>
+                    <MultiDataTrigger>
+                        <MultiDataTrigger.Conditions>
+                            <Condition Binding="{Binding IsDarkTheme}" Value="False" />
+                            <Condition Binding="{Binding IsChecked, RelativeSource={RelativeSource TemplatedParent}}" Value="False" />
+                        </MultiDataTrigger.Conditions>
+                        <Setter Property="Foreground" Value="Black" />
+                    </MultiDataTrigger>
+                </Style.Triggers>
+            </Style>
+
+            <Style x:Key="ToggleButtonPathStyle" TargetType="Path">
+                <Style.Triggers>
+
+                    <MultiDataTrigger>
+                        <MultiDataTrigger.Conditions>
+                            <Condition Binding="{Binding IsDarkTheme}" Value="True" />
+                            <Condition Binding="{Binding IsChecked, RelativeSource={RelativeSource TemplatedParent}}" Value="True" />
+                        </MultiDataTrigger.Conditions>
+                        <Setter Property="Fill" Value="White" />
+                    </MultiDataTrigger>
+   
+                </Style.Triggers>
+            </Style>
+
+            <Style x:Key="ToggleButtonBorderStyle" TargetType="Border">
+                <Style.Triggers>
+                    <DataTrigger Binding="{Binding IsChecked, RelativeSource={RelativeSource TemplatedParent}}" Value="True">
+                        <Setter Property="Background" Value="{StaticResource PressedBackground}" />
+                        <Setter Property="BorderBrush" Value="{StaticResource PressedBorderBrush}" />
+                    </DataTrigger>
+                </Style.Triggers>
+            </Style>
+
+            
         </ResourceDictionary>
     </UserControl.Resources>
     <UXControls:UXScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
-        <Grid x:Name="MainGrid" Width="520" Margin="0,0,0,15">
-            <Border x:Name="MainBorder" Background="#99132F54" CornerRadius="13" Margin="0,10,0,0">
+        <Grid x:Name="MainGrid" Width="520">
+            <Border x:Name="MainBorder" Style="{DynamicResource RightGroupBorderStyleForAudio}" CornerRadius="13" Width="520" Height="auto"  Margin="0,10,0,0">
                 <StackPanel x:Name="MainStackPanel" Orientation="Vertical" Margin="16">
                     <Grid x:Name="TitleGrid" VerticalAlignment="Top" Margin="0,0,0,0">
-                        <UXControls:UXTextBlock x:Name="AudioSettingsTextBlock" Text="{Binding [AudioSettings], Source={x:Static lang:LangHelper.Instance}}" FontFamily="Roboto" FontSize="20" Foreground="White" Height="28" Width="200" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="0,20,20,20" />
+                        <UXControls:UXTextBlock x:Name="AudioSettingsTextBlock" Text="{Binding [AudioSettings], Source={x:Static lang:LangHelper.Instance}}" FontFamily="Roboto" FontSize="20" Foreground="{DynamicResource TextBlock_ForegroundColor}" Height="28" Width="200" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="0,20,20,20" />
                     </Grid>
 
                     <!-- Control the noise I hear -->                 
                     <Grid x:Name="NoiseControlGrid" VerticalAlignment="Top" Margin="0,0,0,20">
-                        <Border Visibility="{Binding ControlTheNoiseIHearPageShow, Converter={StaticResource BooleanToVisibilityConverter}}" x:Name="NoiseControlBorder" Background="#99132F54" CornerRadius="6" Width="488" Height="Auto" VerticalAlignment="Top">
+                        <Border Visibility="{Binding ControlTheNoiseIHearPageShow, Converter={StaticResource BooleanToVisibilityConverter}}" x:Name="NoiseControlBorder" Style="{DynamicResource RightGroupBorderStyleForAudio}" CornerRadius="6" Width="488" Height="Auto" VerticalAlignment="Top">
                             <StackPanel x:Name="NoiseControlStackPanel" Orientation="Vertical">
                                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="8">
-                                    <UXControls:UXTextBlock x:Name="NoiseControlTextBlock" Text="{Binding [HeadsetAudioSettings.0], Source={x:Static lang:LangHelper.Instance}}" Foreground="White" FontSize="16" Margin="8,20,8,20" />
+                                    <UXControls:UXTextBlock x:Name="NoiseControlTextBlock" Text="{Binding [HeadsetAudioSettings.0], Source={x:Static lang:LangHelper.Instance}}" Foreground="{DynamicResource TextBlock_ForegroundColor}" FontSize="16" Margin="8,20,8,20" />
                                     <Image Width="16" Height="16" Margin="0" Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Icon_Info.png" Stretch="Uniform">
                                         <Image.ToolTip>
                                             <ToolTip>
@@ -142,7 +203,7 @@
                                         </Image.ToolTip>
                                     </Image>
                                 </StackPanel>
-                                <Border x:Name="AncModeLockBorder" Background="#132F54" CornerRadius="13" >
+                                <Border x:Name="AncModeLockBorder" CornerRadius="13" >
                                     <Border.Style>
                                         <Style TargetType="Border">
                                             <Setter Property="Opacity" Value="1" />
@@ -156,89 +217,163 @@
                                             </Style.Triggers>
                                         </Style>
                                     </Border.Style>
-                                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" >                                    
-                                    <UXControls:UXToggleSwitch x:Name="ActiveNoiseCancellingButton" Width="146.67" Height="96" Opacity="1" BorderBrush="#1E3F6C" BorderThickness="1.5,1.5,1.5,1.5" Margin="0,0,8,20" IsChecked="{Binding IsActiveNoiseCancellingChecked, Mode=TwoWay}" IsEnabled="{Binding isAncEnabled}">
-                                        <UXControls:UXToggleSwitch.Template>
-                                            <ControlTemplate TargetType="UXControls:UXToggleSwitch">
-                                                <Border x:Name="ActiveNoiseCancellingButtonBorder" Background="{StaticResource NormalBackground}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="4,4,4,4">
-                                                    <Grid>
-                                                        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
-                                                            <Image Source="/DDPM.UI.Common;component/Resources/Headset_Noise.png" Width="24" Height="24" />
-                                                            <UXControls:UXTextBlock x:Name="ActiveNoiseCancellingTextBlock" Text="{Binding [HeadsetAudioSettings.1], Source={x:Static lang:LangHelper.Instance}}" TextWrapping="WrapWithOverflow" FontSize="14" Foreground="White" TextAlignment="Center" Margin="0,8,0,0" />
-                                                        </StackPanel>
-                                                        <Image Width="16" Height="16" Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Icon_Info.png" Stretch="Uniform" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,8,8,0">
-                                                            <Image.ToolTip>
-                                                                <ToolTip>
-                                                                    <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
-                                                                        <Border.Resources>
-                                                                            <Style BasedOn="{StaticResource Tooltip_TextBlockStyle}" TargetType="TextBlock" />
-                                                                        </Border.Resources>
-                                                                        <StackPanel>
-                                                                            <StackPanel Orientation="Horizontal">
-                                                                                <TextBlock Text="{Binding NoiseCancellingInfoTip}" />
-                                                                            </StackPanel>
-                                                                        </StackPanel>
-                                                                    </Border>
-                                                                </ToolTip>
-                                                            </Image.ToolTip>
-                                                        </Image>
-                                                    </Grid>
-                                                </Border>
-                                                <ControlTemplate.Triggers>
-                                                    <Trigger Property="IsChecked" Value="True">
-                                                        <Setter TargetName="ActiveNoiseCancellingButtonBorder" Property="Background" Value="{StaticResource PressedBackground}" />
-                                                        <Setter TargetName="ActiveNoiseCancellingButtonBorder" Property="BorderBrush" Value="{StaticResource PressedBorderBrush}" />
-                                                    </Trigger>
-                                                </ControlTemplate.Triggers>
-                                            </ControlTemplate>
-                                        </UXControls:UXToggleSwitch.Template>
-                                    </UXControls:UXToggleSwitch>
+                                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" >
 
-                                    <UXControls:UXToggleSwitch x:Name="TransparencyButton" Width="146.67" Height="96" Opacity="1" BorderBrush="#1E3F6C" BorderThickness="1.5,1.5,1.5,1.5" Margin="0,0,8,20" IsChecked="{Binding IsTransparencyChecked, Mode=TwoWay}" IsEnabled="{Binding isAncEnabled}">
-                                        <UXControls:UXToggleSwitch.Template>
-                                            <ControlTemplate TargetType="UXControls:UXToggleSwitch">
-                                                <Border x:Name="TransparencyButtonBorder" Background="{StaticResource NormalBackground}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="4,4,4,4">
-                                                    <Grid>
-                                                        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
-                                                            <Image Source="/DDPM.UI.Common;component/Resources/Headset_Transparency.png" Width="24" Height="24" />
-                                                            <UXControls:UXTextBlock x:Name="TransparencyButtonTextBlock" Text="{Binding [HeadsetAudioSettings.2], Source={x:Static lang:LangHelper.Instance}}" TextWrapping="WrapWithOverflow" FontSize="14" Foreground="White" TextAlignment="Center" Margin="0,8,0,0" />
-                                                        </StackPanel>
-                                                        <Image Width="16" Height="16" Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Icon_Info.png" Stretch="Uniform" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,8,8,0">
-                                                            <Image.ToolTip>
-                                                                <ToolTip>
-                                                                    <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
-                                                                        <Border.Resources>
-                                                                            <Style BasedOn="{StaticResource Tooltip_TextBlockStyle}" TargetType="TextBlock" />
-                                                                        </Border.Resources>
-                                                                        <StackPanel>
-                                                                            <StackPanel Orientation="Horizontal">
-                                                                                <TextBlock Text="{Binding TransparencyInfoTip}" />
-                                                                            </StackPanel>
-                                                                        </StackPanel>
-                                                                    </Border>
-                                                                </ToolTip>
-                                                            </Image.ToolTip>
-                                                        </Image>
-                                                    </Grid>
-                                                </Border>
-                                                <ControlTemplate.Triggers>
-                                                    <Trigger Property="IsChecked" Value="True">
-                                                        <Setter TargetName="TransparencyButtonBorder" Property="Background" Value="{StaticResource PressedBackground}" />
-                                                        <Setter TargetName="TransparencyButtonBorder" Property="BorderBrush" Value="{StaticResource PressedBorderBrush}" />
-                                                    </Trigger>
-                                                </ControlTemplate.Triggers>
-                                            </ControlTemplate>
-                                        </UXControls:UXToggleSwitch.Template>
-                                    </UXControls:UXToggleSwitch>
-
-                                        <UXControls:UXToggleSwitch x:Name="NoiseOffButton" Width="146.67" Height="96" Opacity="1" BorderBrush="#1E3F6C" BorderThickness="1.5,1.5,1.5,1.5" Margin="0,0,0,20" IsChecked="{Binding IsNoiseOffChecked, Mode=TwoWay}" IsEnabled="{Binding isAncEnabled}">
+                                        <UXControls:UXToggleSwitch x:Name="ActiveNoiseCancellingButton" Width="146.67" Height="96" Opacity="1"  BorderThickness="1.5,1.5,1.5,1.5" Margin="0,0,8,20" IsChecked="{Binding IsActiveNoiseCancellingChecked, Mode=TwoWay}" IsEnabled="{Binding isAncEnabled}">
                                             <UXControls:UXToggleSwitch.Template>
                                                 <ControlTemplate TargetType="UXControls:UXToggleSwitch">
-                                                    <Border x:Name="NoiseOffButtonBorder" Background="{StaticResource NormalBackground}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="4,4,4,4">
+                                                    <Border x:Name="ActiveNoiseCancellingButtonBorder" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="4,4,4,4">
                                                         <Grid>
                                                             <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
-                                                                <Image Source="/DDPM.UI.Common;component/Resources/Headset_off.png" Width="24" Height="24" />
-                                                                <UXControls:UXTextBlock x:Name="NoiseOffButtonTextBlock" Text="{Binding [HeadsetAudioSettings.3], Source={x:Static lang:LangHelper.Instance}}" TextWrapping="WrapWithOverflow" FontSize="14" Foreground="White" TextAlignment="Center" Margin="0,8,0,0" />
+                                                                <Path x:Name= "ActiveNoiseCancellingPath" Width="24" Height="24" Data="M3.67539 12.0004C3.67539 7.40262 7.40262 3.67539 12.0004 3.67539C16.5982 3.67539 20.3254 7.40262 20.3254 12.0004V13.1254H18.6004C18.2276 13.1254 17.9254 13.4276 17.9254 13.8004V21.0004C17.9254 21.3732 18.2276 21.6754 18.6004 21.6754H19.2004C20.5673 21.6754 21.6754 20.5673 21.6754 19.2004V12.0004C21.6754 6.65704 17.3437 2.32539 12.0004 2.32539C6.65704 2.32539 2.32539 6.65704 2.32539 12.0004V19.2004C2.32539 20.5673 3.43349 21.6754 4.80039 21.6754H5.40039C5.77318 21.6754 6.07539 21.3732 6.07539 21.0004V13.8004C6.07539 13.4276 5.77318 13.1254 5.40039 13.1254H3.67539V12.0004ZM4.72539 14.4754V20.3229C4.13904 20.2843 3.67539 19.7965 3.67539 19.2004V14.4754H4.72539ZM19.2754 14.4754H20.3254V19.2004C20.3254 19.7965 19.8617 20.2843 19.2754 20.3229V14.4754ZM12.6754 12.6004C12.6754 12.2276 12.3732 11.9254 12.0004 11.9254C11.6276 11.9254 11.3254 12.2276 11.3254 12.6004V21.0004C11.3254 21.3732 11.6276 21.6754 12.0004 21.6754C12.3732 21.6754 12.6754 21.3732 12.6754 21.0004V12.6004ZM9.67539 15.0004C9.67539 14.6276 9.37318 14.3254 9.00039 14.3254C8.6276 14.3254 8.32539 14.6276 8.32539 15.0004V19.8004C8.32539 20.1732 8.6276 20.4754 9.00039 20.4754C9.37318 20.4754 9.67539 20.1732 9.67539 19.8004V15.0004ZM15.6754 15.0004C15.6754 14.6276 15.3732 14.3254 15.0004 14.3254C14.6276 14.3254 14.3254 14.6276 14.3254 15.0004V19.8004C14.3254 20.1732 14.6276 20.4754 15.0004 20.4754C15.3732 20.4754 15.6754 20.1732 15.6754 19.8004V15.0004Z" />
+                                                                <UXControls:UXTextBlock x:Name="ActiveNoiseCancellingTextBlock" Text="{Binding [HeadsetAudioSettings.1], Source={x:Static lang:LangHelper.Instance}}" TextWrapping="WrapWithOverflow" TextAlignment="Center" Margin="0,8,0,0" />
+                                                            </StackPanel>
+                                                            <Image Width="16" Height="16" Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Icon_Info.png" Stretch="Uniform" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,8,8,0">
+                                                                <Image.ToolTip>
+                                                                    <ToolTip>
+                                                                        <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
+                                                                            <Border.Resources>
+                                                                                <Style BasedOn="{StaticResource Tooltip_TextBlockStyle}" TargetType="TextBlock" />
+                                                                            </Border.Resources>
+                                                                            <StackPanel>
+                                                                                <StackPanel Orientation="Horizontal">
+                                                                                    <TextBlock Text="{Binding NoiseCancellingInfoTip}" />
+                                                                                </StackPanel>
+                                                                            </StackPanel>
+                                                                        </Border>
+                                                                    </ToolTip>
+                                                                </Image.ToolTip>
+                                                            </Image>
+                                                        </Grid>
+                                                    </Border>
+                                                    <ControlTemplate.Triggers>
+                                                        <Trigger Property="IsChecked" Value="True">
+                                                            <Setter TargetName="ActiveNoiseCancellingButtonBorder" Property="Background" Value="{StaticResource PressedBackground}" />
+                                                            <Setter TargetName="ActiveNoiseCancellingButtonBorder" Property="BorderBrush" Value="{StaticResource PressedBorderBrush}" />
+                                                        </Trigger>
+                                                        <!-- Dark Mode且ToggleSwitch被選中 -->
+                                                        <MultiDataTrigger>
+                                                            <MultiDataTrigger.Conditions>
+                                                                <Condition Binding="{Binding IsDarkTheme}" Value="True" />
+                                                                <Condition Binding="{Binding IsActiveNoiseCancellingChecked}" Value="True" />
+                                                            </MultiDataTrigger.Conditions>
+                                                            <Setter TargetName="ActiveNoiseCancellingTextBlock" Property="Foreground" Value="White" />
+                                                        </MultiDataTrigger>
+
+                                                        <!-- Dark Mode且ToggleSwitch未選中 -->
+                                                        <MultiDataTrigger>
+                                                            <MultiDataTrigger.Conditions>
+                                                                <Condition Binding="{Binding IsDarkTheme}" Value="True" />
+                                                                <Condition Binding="{Binding IsActiveNoiseCancellingChecked}" Value="False" />
+                                                            </MultiDataTrigger.Conditions>
+                                                            <Setter TargetName="ActiveNoiseCancellingTextBlock" Property="Foreground" Value="White" />
+                                                        </MultiDataTrigger>
+
+                                                        <!-- Light Mode且ToggleSwitch被選中 -->
+                                                        <MultiDataTrigger>
+                                                            <MultiDataTrigger.Conditions>
+                                                                <Condition Binding="{Binding IsDarkTheme}" Value="False" />
+                                                                <Condition Binding="{Binding IsActiveNoiseCancellingChecked}" Value="True" />
+                                                            </MultiDataTrigger.Conditions>
+                                                            <Setter TargetName="ActiveNoiseCancellingTextBlock" Property="Foreground" Value="White" />
+                                                            <Setter TargetName="ActiveNoiseCancellingPath" Property="Fill" Value="White" />
+                                                        </MultiDataTrigger>
+
+                                                        <!-- Light Mode且ToggleSwitch未選中 -->
+                                                        <MultiDataTrigger>
+                                                            <MultiDataTrigger.Conditions>
+                                                                <Condition Binding="{Binding IsDarkTheme}" Value="False" />
+                                                                <Condition Binding="{Binding IsActiveNoiseCancellingChecked}" Value="False" />
+                                                            </MultiDataTrigger.Conditions>
+                                                            <Setter TargetName="ActiveNoiseCancellingTextBlock" Property="Foreground" Value="Black" />
+                                                        </MultiDataTrigger>
+                                                    </ControlTemplate.Triggers>
+                                                </ControlTemplate>
+                                            </UXControls:UXToggleSwitch.Template>
+                                        </UXControls:UXToggleSwitch>
+                                        
+                                        
+                                        <UXControls:UXToggleSwitch x:Name="TransparencyButton" Width="146.67" Height="96" Opacity="1" BorderThickness="1.5,1.5,1.5,1.5" Margin="0,0,8,20" IsChecked="{Binding IsTransparencyChecked, Mode=TwoWay}" IsEnabled="{Binding isAncEnabled}">
+                                            <UXControls:UXToggleSwitch.Template>
+                                                <ControlTemplate TargetType="UXControls:UXToggleSwitch">
+                                                    <Border x:Name="TransparencyButtonBorder" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="4,4,4,4">
+                                                        <Grid>
+                                                            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                                                                <Path x:Name="TransparencyButtonPath" Width="36" Height="36" Data="M32.1058 18.1425C32.1058 17.7653 31.8275 17.4406 31.4621 17.4406C31.0967 17.4406 30.8184 17.7653 30.8184 18.1425V26.4946C30.8184 26.8718 31.0967 27.1964 31.4621 27.1964C31.8275 27.1964 32.1058 26.8718 32.1058 26.4946V18.1425ZM29.4136 20.5288C29.4136 20.1516 29.1353 19.8269 28.7699 19.8269C28.4045 19.8269 28.1262 20.1516 28.1262 20.5288V25.3014C28.1262 25.6786 28.4045 26.0032 28.7699 26.0032C29.1353 26.0032 29.4136 25.6786 29.4136 25.3014V20.5288Z M3.8952 18.1425C3.8952 17.7653 4.1735 17.4406 4.5389 17.4406C4.9043 17.4406 5.1826 17.7653 5.1826 18.1425V26.4946C5.1826 26.8718 4.9043 27.1964 4.5389 27.1964C4.1735 27.1964 3.8952 26.8718 3.8952 26.4946V18.1425ZM6.58739 20.5288C6.58739 20.1516 6.86569 19.8269 7.23109 19.8269C7.59649 19.8269 7.8748 20.1516 7.8748 20.5288V25.3014C7.8748 25.6786 7.59649 26.0032 7.23109 26.0032C6.86569 26.0032 6.58739 25.6786 6.58739 25.3014V20.5288Z M10.565 17.5452C10.565 12.9802 13.9027 9.29842 17.9978 9.29842C22.093 9.29842 25.4307 12.9802 25.4307 17.5452V18.6331H23.9207C23.5553 18.6331 23.2769 18.9578 23.2769 19.335V26.4939C23.2769 26.8711 23.5553 27.1957 23.9207 27.1957H24.4591C25.7166 27.1957 26.7181 26.0698 26.7181 24.7041V17.5452C26.7181 12.2258 22.8238 7.89474 17.9978 7.89474C13.1719 7.89474 9.27755 12.2258 9.27755 17.5452V24.7041C9.27755 26.0698 10.2791 27.1957 11.5366 27.1957H12.075C12.4404 27.1957 12.7187 26.8711 12.7187 26.4939V19.335C12.7187 18.9578 12.4404 18.6331 12.075 18.6331H10.565V17.5452ZM11.4313 20.0368V25.7857C10.9519 25.7272 10.565 25.2742 10.565 24.7041V20.0368H11.4313ZM24.5644 20.0368H25.4307V24.7041C25.4307 25.2742 25.0437 25.7272 24.5644 25.7857V20.0368Z"/>
+                                                                <UXControls:UXTextBlock x:Name="TransparencyButtonTextBlock" Text="{Binding [HeadsetAudioSettings.2], Source={x:Static lang:LangHelper.Instance}}" TextWrapping="WrapWithOverflow" FontSize="14" Foreground="{DynamicResource TextBlock_ForegroundColor}" TextAlignment="Center" Margin="0,8,0,0" />
+                                                            </StackPanel>
+                                                            <Image Width="16" Height="16" Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Icon_Info.png" Stretch="Uniform" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,8,8,0">
+                                                                <Image.ToolTip>
+                                                                    <ToolTip>
+                                                                        <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
+                                                                            <Border.Resources>
+                                                                                <Style BasedOn="{StaticResource Tooltip_TextBlockStyle}" TargetType="TextBlock" />
+                                                                            </Border.Resources>
+                                                                            <StackPanel>
+                                                                                <StackPanel Orientation="Horizontal">
+                                                                                    <TextBlock Text="{Binding TransparencyInfoTip}" />
+                                                                                </StackPanel>
+                                                                            </StackPanel>
+                                                                        </Border>
+                                                                    </ToolTip>
+                                                                </Image.ToolTip>
+                                                            </Image>
+                                                        </Grid>
+                                                    </Border>
+                                                    <ControlTemplate.Triggers>
+                                                        <Trigger Property="IsChecked" Value="True">
+                                                            <Setter TargetName="TransparencyButtonBorder" Property="Background" Value="{StaticResource PressedBackground}" />
+                                                            <Setter TargetName="TransparencyButtonBorder" Property="BorderBrush" Value="{StaticResource PressedBorderBrush}" />
+                                                        </Trigger>
+                                                        <!-- Dark Mode且ToggleSwitch被選中 -->
+                                                        <MultiDataTrigger>
+                                                            <MultiDataTrigger.Conditions>
+                                                                <Condition Binding="{Binding IsDarkTheme}" Value="True" />
+                                                                <Condition Binding="{Binding IsTransparencyChecked}" Value="True" />
+                                                            </MultiDataTrigger.Conditions>
+                                                            <Setter TargetName="TransparencyButtonTextBlock" Property="Foreground" Value="White" />
+                                                        </MultiDataTrigger>
+
+                                                        <!-- Dark Mode且ToggleSwitch未選中 -->
+                                                        <MultiDataTrigger>
+                                                            <MultiDataTrigger.Conditions>
+                                                                <Condition Binding="{Binding IsDarkTheme}" Value="True" />
+                                                                <Condition Binding="{Binding IsTransparencyChecked}" Value="False" />
+                                                            </MultiDataTrigger.Conditions>
+                                                            <Setter TargetName="TransparencyButtonTextBlock" Property="Foreground" Value="White" />
+                                                        </MultiDataTrigger>
+
+                                                        <!-- Light Mode且ToggleSwitch被選中 -->
+                                                        <MultiDataTrigger>
+                                                            <MultiDataTrigger.Conditions>
+                                                                <Condition Binding="{Binding IsDarkTheme}" Value="False" />
+                                                                <Condition Binding="{Binding IsTransparencyChecked}" Value="True" />
+                                                            </MultiDataTrigger.Conditions>
+                                                            <Setter TargetName="TransparencyButtonTextBlock" Property="Foreground" Value="White" />
+                                                            <Setter TargetName="TransparencyButtonPath" Property="Fill" Value="White" />
+                                                        </MultiDataTrigger>
+
+                                                        <!-- Light Mode且ToggleSwitch未選中 -->
+                                                        <MultiDataTrigger>
+                                                            <MultiDataTrigger.Conditions>
+                                                                <Condition Binding="{Binding IsDarkTheme}" Value="False" />
+                                                                <Condition Binding="{Binding IsTransparencyChecked}" Value="False" />
+                                                            </MultiDataTrigger.Conditions>
+                                                            <Setter TargetName="TransparencyButtonTextBlock" Property="Foreground" Value="Black" />
+                                                        </MultiDataTrigger>
+                                                    </ControlTemplate.Triggers>
+                                                </ControlTemplate>
+                                            </UXControls:UXToggleSwitch.Template>
+                                        </UXControls:UXToggleSwitch>
+
+                                        <UXControls:UXToggleSwitch x:Name="NoiseOffButton" Width="146.67" Height="96" Opacity="1"  BorderThickness="1.5,1.5,1.5,1.5" Margin="0,0,0,20" IsChecked="{Binding IsNoiseOffChecked, Mode=TwoWay}" IsEnabled="{Binding isAncEnabled}">
+                                            <UXControls:UXToggleSwitch.Template>
+                                                <ControlTemplate TargetType="UXControls:UXToggleSwitch">
+                                                    <Border x:Name="NoiseOffButtonBorder" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="4,4,4,4">
+                                                        <Grid>
+                                                            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                                                                <Path x:Name="NoiseOffButtonPath" Width="24" Height="24" Data="M4.34238 12.0004C4.34238 7.40262 8.06961 3.67539 12.6674 3.67539C17.2652 3.67539 20.9924 7.40262 20.9924 12.0004V13.1254H19.2674C18.8946 13.1254 18.5924 13.4276 18.5924 13.8004V21.0004C18.5924 21.3732 18.8946 21.6754 19.2674 21.6754H19.8674C21.2343 21.6754 22.3424 20.5673 22.3424 19.2004V12.0004C22.3424 6.65704 18.0107 2.32539 12.6674 2.32539C7.32403 2.32539 2.99238 6.65704 2.99238 12.0004V19.2004C2.99238 20.5673 4.10048 21.6754 5.46738 21.6754H6.06738C6.44018 21.6754 6.74238 21.3732 6.74238 21.0004V13.8004C6.74238 13.4276 6.44017 13.1254 6.06738 13.1254H4.34238V12.0004ZM5.39238 14.4754V20.3229C4.80603 20.2843 4.34238 19.7965 4.34238 19.2004V14.4754H5.39238ZM19.9424 14.4754H20.9924V19.2004C20.9924 19.7965 20.5287 20.2843 19.9424 20.3229V14.4754Z"/>
+                                                                <UXControls:UXTextBlock x:Name="NoiseOffButtonTextBlock" Text="{Binding [HeadsetAudioSettings.3], Source={x:Static lang:LangHelper.Instance}}" TextWrapping="WrapWithOverflow" FontSize="14" Foreground="{DynamicResource TextBlock_ForegroundColor}" TextAlignment="Center" Margin="0,16,0,0" />
                                                             </StackPanel>
                                                             <Image Width="16" Height="16" Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Icon_Info.png" Stretch="Uniform" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,8,8,0">
                                                                 <Image.ToolTip>
@@ -263,6 +398,42 @@
                                                             <Setter TargetName="NoiseOffButtonBorder" Property="Background" Value="{StaticResource PressedBackground}" />
                                                             <Setter TargetName="NoiseOffButtonBorder" Property="BorderBrush" Value="{StaticResource PressedBorderBrush}" />
                                                         </Trigger>
+                                                        <!-- Dark Mode且ToggleSwitch被選中 -->
+                                                        <MultiDataTrigger>
+                                                            <MultiDataTrigger.Conditions>
+                                                                <Condition Binding="{Binding IsDarkTheme}" Value="True" />
+                                                                <Condition Binding="{Binding IsNoiseOffChecked}" Value="True" />
+                                                            </MultiDataTrigger.Conditions>
+                                                            <Setter TargetName="NoiseOffButtonTextBlock" Property="Foreground" Value="White" />
+                                                        </MultiDataTrigger>
+
+                                                        <!-- Dark Mode且ToggleSwitch未選中 -->
+                                                        <MultiDataTrigger>
+                                                            <MultiDataTrigger.Conditions>
+                                                                <Condition Binding="{Binding IsDarkTheme}" Value="True" />
+                                                                <Condition Binding="{Binding IsNoiseOffChecked}" Value="False" />
+                                                            </MultiDataTrigger.Conditions>
+                                                            <Setter TargetName="NoiseOffButtonTextBlock" Property="Foreground" Value="White" />
+                                                        </MultiDataTrigger>
+
+                                                        <!-- Light Mode且ToggleSwitch被選中 -->
+                                                        <MultiDataTrigger>
+                                                            <MultiDataTrigger.Conditions>
+                                                                <Condition Binding="{Binding IsDarkTheme}" Value="False" />
+                                                                <Condition Binding="{Binding IsNoiseOffChecked}" Value="True" />
+                                                            </MultiDataTrigger.Conditions>
+                                                            <Setter TargetName="NoiseOffButtonTextBlock" Property="Foreground" Value="White" />
+                                                            <Setter TargetName="NoiseOffButtonPath" Property="Fill" Value="White" />
+                                                        </MultiDataTrigger>
+
+                                                        <!-- Light Mode且ToggleSwitch未選中 -->
+                                                        <MultiDataTrigger>
+                                                            <MultiDataTrigger.Conditions>
+                                                                <Condition Binding="{Binding IsDarkTheme}" Value="False" />
+                                                                <Condition Binding="{Binding IsNoiseOffChecked}" Value="False" />
+                                                            </MultiDataTrigger.Conditions>
+                                                            <Setter TargetName="NoiseOffButtonTextBlock" Property="Foreground" Value="Black" />
+                                                        </MultiDataTrigger>
                                                     </ControlTemplate.Triggers>
                                                 </ControlTemplate>
                                             </UXControls:UXToggleSwitch.Template>
@@ -276,7 +447,7 @@
                                         <Line X1="0" Y1="0" X2="456" Y2="0" Stroke="#1E3F6C" Margin="0,0,0,20" StrokeThickness="1" HorizontalAlignment="Center" />
                                     </Grid>
                                     <StackPanel>
-                                        <TextBlock Text="{Binding [HeadsetAudioSettings.4], Source={x:Static lang:LangHelper.Instance}}" FontSize="16" Foreground="White" Margin="20,20,0,20" />
+                                        <TextBlock Text="{Binding [HeadsetAudioSettings.4], Source={x:Static lang:LangHelper.Instance}}" FontSize="16" Foreground="{DynamicResource TextBlock_ForegroundColor}" Margin="20,20,0,20" />
                                         <Grid Margin="0,10,0,20">
                                             <Grid.ColumnDefinitions>
                                                 <ColumnDefinition Width="*" />
@@ -305,18 +476,18 @@
 
                     <!-- Configure my audio modes -->
                     <Grid Visibility="{Binding ConfigureMyAudioModesPageShow, Converter={StaticResource BooleanToVisibilityConverter}}" x:Name="AudioModesGrid" VerticalAlignment="Top" Margin="0,0,0,15">
-                        <Border x:Name="AudioModesBorder" Background="#99132F54" CornerRadius="6" Width="488" Height="Auto" VerticalAlignment="Top">
+                        <Border x:Name="AudioModesBorder" Style="{DynamicResource RightGroupBorderStyleForAudio}" CornerRadius="6" Width="488" Height="Auto" VerticalAlignment="Top">
                             <StackPanel x:Name="AudioModesStackPanel" Orientation="Vertical">
-                                <UXControls:UXTextBlock x:Name="AudioModesTextBlock" Text="{Binding [HeadsetAudioSettings.5], Source={x:Static lang:LangHelper.Instance}}" Foreground="White" FontSize="16" Margin="20" />
+                                <UXControls:UXTextBlock x:Name="AudioModesTextBlock" Text="{Binding [HeadsetAudioSettings.5], Source={x:Static lang:LangHelper.Instance}}" Foreground="{DynamicResource TextBlock_ForegroundColor}" FontSize="16" Margin="20" />
                                 <StackPanel x:Name="AudioModesButtonsStackPanel" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,16">
-                                    <UXControls:UXToggleSwitch x:Name="CollaborationButton" BorderBrush="#FF1E3F6C" BorderThickness="1.5" Width="224" Height="89" Margin="4" Padding="16" Background="{StaticResource SplitItem_NormalBdColor}" IsChecked="{Binding IsCollaborationChecked, Mode=TwoWay}">
+                                    <UXControls:UXToggleSwitch x:Name="CollaborationButton"  BorderThickness="1.5" Width="224" Height="89" Margin="4" Padding="16" Background="{StaticResource SplitItem_NormalBdColor}" IsChecked="{Binding IsCollaborationChecked, Mode=TwoWay}">
                                         <UXControls:UXToggleSwitch.Template>
                                             <ControlTemplate TargetType="UXControls:UXToggleSwitch">
-                                                <Border x:Name="CollaborationButtonBorder" Background="{StaticResource NormalBackground}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="4,4,4,4">
+                                                <Border x:Name="CollaborationButtonBorder" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="4,4,4,4">
                                                     <Grid>
                                                         <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
-                                                            <Image x:Name="CollaborationImage" Width="25" Height="25" Source="/DDPM.UI.Common;component/Resources/Headset_Collaboration.png" Margin="0,0,0,8" />
-                                                            <UXControls:UXTextBlock x:Name="CollaborationTextBlock" Text="{Binding [Collaboration], Source={x:Static lang:LangHelper.Instance}}" FontSize="14" Foreground="White" TextAlignment="Center" />
+                                                            <Path x:Name="CollaborationPath" Width="25" Height="25" Data="M15.1875 14.5625C16.125 14.5625 16.9062 15.3013 16.9062 16.1878V19.4384H9.09375V16.1878C9.09375 15.3013 9.875 14.5625 10.7344 14.5625H15.1875ZM15.1875 13.085H10.7344C8.9375 13.085 7.53125 14.4886 7.53125 16.1878V20.9159H18.4688V16.1878C18.4688 14.4886 16.9844 13.085 15.1875 13.085Z M12.8438 4.88477C10.8906 4.88477 9.25 6.36231 9.25 8.20923C9.25 10.0562 10.8125 11.5337 12.8438 11.5337C14.7969 11.5337 16.4375 10.0562 16.4375 8.20923C16.3594 6.43618 14.7969 4.88477 12.8438 4.88477ZM12.8438 10.13C11.75 10.13 10.8125 9.31739 10.8125 8.28311C10.8125 7.24883 11.75 6.43618 12.8438 6.43618C13.9375 6.43618 14.875 7.24883 14.875 8.28311C14.7969 9.31739 13.9375 10.13 12.8438 10.13Z M22.1406 8.2832H17.8438C17.8438 8.80034 17.7656 9.31748 17.6094 9.76074H22.1406C23.0781 9.76074 23.9375 10.4995 23.9375 11.4599V15.0799H19.875C19.9531 15.4493 20.0313 15.8925 20.0313 16.2619V16.5574H25.5V11.4599C25.5 9.68687 24.0156 8.2832 22.1406 8.2832Z M3.85938 9.76074H7.92188C7.76562 9.31748 7.6875 8.80034 7.6875 8.2832H3.85938C1.98438 8.2832 0.5 9.68687 0.5 11.4599V16.5574H5.96875V16.2619C5.96875 15.8187 6.04688 15.4493 6.125 15.0799H2.0625V11.4599C2.0625 10.4995 2.84375 9.76074 3.85938 9.76074Z M5.96875 0.0830078C4.01562 0.0830078 2.375 1.56055 2.375 3.48135C2.375 5.32828 3.9375 6.80582 5.96875 6.80582C6.82813 6.80582 7.6875 6.51031 8.3125 5.99317C8.54688 5.54991 8.85938 5.18052 9.25 4.81114C9.48438 4.36788 9.5625 3.92461 9.5625 3.40748C9.48438 1.56055 7.92188 0.0830078 5.96875 0.0830078ZM5.96875 5.32828C4.79688 5.32828 3.9375 4.51563 3.9375 3.48135C3.9375 2.3732 4.79688 1.56055 5.96875 1.56055C7.0625 1.56055 8 2.44707 8 3.48135C7.92188 4.51563 7.0625 5.32828 5.96875 5.32828Z M19.7188 0.0830078C17.7656 0.0830078 16.125 1.56055 16.125 3.48135C16.125 4.07237 16.2812 4.58951 16.5156 5.03277C16.75 5.32828 16.9844 5.54991 17.2187 5.9193C17.8437 6.51031 18.7031 6.8797 19.7188 6.8797C21.6719 6.8797 23.3125 5.40216 23.3125 3.48135C23.2344 1.56055 21.6719 0.0830078 19.7188 0.0830078ZM19.7188 5.32828C18.5469 5.32828 17.6875 4.51563 17.6875 3.48135C17.6875 2.44707 18.625 1.56055 19.7188 1.56055C20.8125 1.56055 21.75 2.44707 21.75 3.48135C21.6719 4.51563 20.8125 5.32828 19.7188 5.32828Z"/>
+                                                            <UXControls:UXTextBlock x:Name="CollaborationTextBlock" Text="{Binding [Collaboration], Source={x:Static lang:LangHelper.Instance}}" FontSize="14" Foreground="{DynamicResource TextBlock_ForegroundColor}" TextAlignment="Center" />
                                                         </StackPanel>
                                                         <Image Width="16" Height="16" Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Icon_Info.png" Stretch="Uniform" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,8,8,0">
                                                             <Image.ToolTip>
@@ -341,18 +512,54 @@
                                                         <Setter TargetName="CollaborationButtonBorder" Property="Background" Value="{StaticResource PressedBackground}" />
                                                         <Setter TargetName="CollaborationButtonBorder" Property="BorderBrush" Value="{StaticResource PressedBorderBrush}" />
                                                     </Trigger>
+                                                    <!-- Dark Mode且ToggleSwitch被選中 -->
+                                                    <MultiDataTrigger>
+                                                        <MultiDataTrigger.Conditions>
+                                                            <Condition Binding="{Binding IsDarkTheme}" Value="True" />
+                                                            <Condition Binding="{Binding IsCollaborationChecked}" Value="True" />
+                                                        </MultiDataTrigger.Conditions>
+                                                        <Setter TargetName="CollaborationTextBlock" Property="Foreground" Value="White" />
+                                                    </MultiDataTrigger>
+
+                                                    <!-- Dark Mode且ToggleSwitch未選中 -->
+                                                    <MultiDataTrigger>
+                                                        <MultiDataTrigger.Conditions>
+                                                            <Condition Binding="{Binding IsDarkTheme}" Value="True" />
+                                                            <Condition Binding="{Binding IsCollaborationChecked}" Value="False" />
+                                                        </MultiDataTrigger.Conditions>
+                                                        <Setter TargetName="CollaborationTextBlock" Property="Foreground" Value="White" />
+                                                    </MultiDataTrigger>
+
+                                                    <!-- Light Mode且ToggleSwitch被選中 -->
+                                                    <MultiDataTrigger>
+                                                        <MultiDataTrigger.Conditions>
+                                                            <Condition Binding="{Binding IsDarkTheme}" Value="False" />
+                                                            <Condition Binding="{Binding IsCollaborationChecked}" Value="True" />
+                                                        </MultiDataTrigger.Conditions>
+                                                        <Setter TargetName="CollaborationTextBlock" Property="Foreground" Value="White" />
+                                                        <Setter TargetName="CollaborationPath" Property="Fill" Value="White" />
+                                                    </MultiDataTrigger>
+
+                                                    <!-- Light Mode且ToggleSwitch未選中 -->
+                                                    <MultiDataTrigger>
+                                                        <MultiDataTrigger.Conditions>
+                                                            <Condition Binding="{Binding IsDarkTheme}" Value="False" />
+                                                            <Condition Binding="{Binding IsCollaborationChecked}" Value="False" />
+                                                        </MultiDataTrigger.Conditions>
+                                                        <Setter TargetName="CollaborationTextBlock" Property="Foreground" Value="Black" />
+                                                    </MultiDataTrigger>
                                                 </ControlTemplate.Triggers>
                                             </ControlTemplate>
                                         </UXControls:UXToggleSwitch.Template>
                                     </UXControls:UXToggleSwitch>
-                                    <UXControls:UXToggleSwitch x:Name="MultimediaButton" BorderBrush="#FF1E3F6C" BorderThickness="1.5" Width="224" Height="89" Margin="4" Padding="16" Background="{StaticResource SplitItem_NormalBdColor}" IsChecked="{Binding IsMultimediaChecked, Mode=TwoWay}">
+                                    <UXControls:UXToggleSwitch x:Name="MultimediaButton" BorderThickness="1.5" Width="224" Height="89" Margin="4" Padding="16" Background="{StaticResource SplitItem_NormalBdColor}" IsChecked="{Binding IsMultimediaChecked, Mode=TwoWay}">
                                         <UXControls:UXToggleSwitch.Template>
                                             <ControlTemplate TargetType="UXControls:UXToggleSwitch">
-                                                <Border x:Name="MultimediaButtonBorder" Background="{StaticResource NormalBackground}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="4,4,4,4">
+                                                <Border x:Name="MultimediaButtonBorder" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="4,4,4,4">
                                                     <Grid>
                                                         <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
-                                                            <Image x:Name="MultimediaImage" Width="25" Height="25" Source="/DDPM.UI.Common;component/Resources/Headset_Multimedia.png"  Margin="0,0,0,8" />
-                                                            <UXControls:UXTextBlock x:Name="MultimediaTextBlock" Text="{Binding [Multimedia], Source={x:Static lang:LangHelper.Instance}}" FontSize="14" Foreground="White" TextAlignment="Center" />
+                                                            <Path x:Name="MultimediaPath" Width="25" Height="25" Data="M21.5156 17.1875H21.125L18.3906 22.0313H18.3125L15.5 17.1875H15.1094C12.9219 17.1875 11.5156 18.8281 11.5156 20.9375V25H24.7969V20.9375C24.7187 18.8281 23.7031 17.1875 21.5156 17.1875Z M22.2188 12.5C22.2188 10.3125 20.5 8.59375 18.3125 8.59375C16.125 8.59375 14.4062 10.3125 14.4062 12.5C14.4062 14.6875 16.125 16.4062 18.3125 16.4062C20.5 16.4062 22.2188 14.6875 22.2188 12.5Z M12.2969 16.4062H2.0625V1.5625H20.0312V7.26562C20.5781 7.5 21.125 7.73437 21.5938 8.125V1.01562C21.5938 0.46875 21.125 0 20.5781 0H1.51562C0.96875 0 0.5 0.46875 0.5 1.01562V16.9531C0.5 17.5 0.96875 17.9688 1.51562 17.9688H10.7344C11.2031 17.3438 11.6719 16.7969 12.2969 16.4062Z M12.8662 8.85384L6.68319 12.0112L6.68319 5.69646L12.8662 8.85384Z"/>
+                                                            <UXControls:UXTextBlock x:Name="MultimediaTextBlock" Text="{Binding [Multimedia], Source={x:Static lang:LangHelper.Instance}}" FontSize="14" Foreground="{DynamicResource TextBlock_ForegroundColor}" TextAlignment="Center" />
                                                         </StackPanel>
                                                         <Image Width="16" Height="16" Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Icon_Info.png" Stretch="Uniform" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,8,8,0">
                                                             <Image.ToolTip>
@@ -377,6 +584,42 @@
                                                         <Setter TargetName="MultimediaButtonBorder" Property="Background" Value="{StaticResource PressedBackground}" />
                                                         <Setter TargetName="MultimediaButtonBorder" Property="BorderBrush" Value="{StaticResource PressedBorderBrush}" />
                                                     </Trigger>
+                                                    <!-- Dark Mode且ToggleSwitch被選中 -->
+                                                    <MultiDataTrigger>
+                                                        <MultiDataTrigger.Conditions>
+                                                            <Condition Binding="{Binding IsDarkTheme}" Value="True" />
+                                                            <Condition Binding="{Binding IsMultimediaChecked}" Value="True" />
+                                                        </MultiDataTrigger.Conditions>
+                                                        <Setter TargetName="MultimediaTextBlock" Property="Foreground" Value="White" />
+                                                    </MultiDataTrigger>
+
+                                                    <!-- Dark Mode且ToggleSwitch未選中 -->
+                                                    <MultiDataTrigger>
+                                                        <MultiDataTrigger.Conditions>
+                                                            <Condition Binding="{Binding IsDarkTheme}" Value="True" />
+                                                            <Condition Binding="{Binding IsMultimediaChecked}" Value="False" />
+                                                        </MultiDataTrigger.Conditions>
+                                                        <Setter TargetName="MultimediaTextBlock" Property="Foreground" Value="White" />
+                                                    </MultiDataTrigger>
+
+                                                    <!-- Light Mode且ToggleSwitch被選中 -->
+                                                    <MultiDataTrigger>
+                                                        <MultiDataTrigger.Conditions>
+                                                            <Condition Binding="{Binding IsDarkTheme}" Value="False" />
+                                                            <Condition Binding="{Binding IsMultimediaChecked}" Value="True" />
+                                                        </MultiDataTrigger.Conditions>
+                                                        <Setter TargetName="MultimediaTextBlock" Property="Foreground" Value="White" />
+                                                        <Setter TargetName="MultimediaPath" Property="Fill" Value="White" />
+                                                    </MultiDataTrigger>
+
+                                                    <!-- Light Mode且ToggleSwitch未選中 -->
+                                                    <MultiDataTrigger>
+                                                        <MultiDataTrigger.Conditions>
+                                                            <Condition Binding="{Binding IsDarkTheme}" Value="False" />
+                                                            <Condition Binding="{Binding IsMultimediaChecked}" Value="False" />
+                                                        </MultiDataTrigger.Conditions>
+                                                        <Setter TargetName="MultimediaTextBlock" Property="Foreground" Value="Black" />
+                                                    </MultiDataTrigger>
                                                 </ControlTemplate.Triggers>
                                             </ControlTemplate>
                                         </UXControls:UXToggleSwitch.Template>
@@ -400,7 +643,7 @@
                                     </Grid.ColumnDefinitions>
 
                                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
-                                        <UXControls:UXTextBlock x:Name="AudioOutputPresetsTextBlock1" Text="{Binding [HeadsetAudioSettings.6], Source={x:Static lang:LangHelper.Instance}}" Grid.Row="0" Grid.Column="0"  Foreground="White" FontSize="16" Margin="20,20,0,20" />
+                                        <UXControls:UXTextBlock x:Name="AudioOutputPresetsTextBlock1" Text="{Binding [HeadsetAudioSettings.6], Source={x:Static lang:LangHelper.Instance}}" Grid.Row="0" Grid.Column="0"  Foreground="{DynamicResource TextBlock_ForegroundColor}" FontSize="16" Margin="20,20,0,20" />
                                         <Image Width="16" Height="16" Grid.Row="0" Grid.Column="0" Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Icon_Info.png" Stretch="Uniform" Margin="8,20,0,20" HorizontalAlignment="Left">
                                             <Image.ToolTip>
                                                 <ToolTip>
@@ -420,13 +663,13 @@
                                     </StackPanel>
 
                                     <UniformGrid Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,0,0,0">
-                                        <UXControls:UXToggleSwitch x:Name="DefaultButton" Grid.Row="1" Grid.Column="0" BorderBrush="#FF1E3F6C" BorderThickness="1.5" Width="224" Height="52" Margin="16,0,4,8" Background="{StaticResource SplitItem_NormalBdColor}" IsChecked="{Binding IsDefaultChecked, Mode=TwoWay}">
+                                        <UXControls:UXToggleSwitch x:Name="DefaultButton" Grid.Row="1" Grid.Column="0" BorderThickness="1.5" Width="224" Height="52" Margin="16,0,4,8" Background="{StaticResource SplitItem_NormalBdColor}" IsChecked="{Binding IsDefaultChecked, Mode=TwoWay}">
                                             <UXControls:UXToggleSwitch.Template>
                                                 <ControlTemplate TargetType="UXControls:UXToggleSwitch">
-                                                    <Border x:Name="DefaultButtonBorder" Background="{StaticResource NormalBackground}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="4,4,4,4">
+                                                    <Border x:Name="DefaultButtonBorder" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="4,4,4,4">
                                                         <Grid>
                                                             <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
-                                                                <UXControls:UXTextBlock Text="{Binding [Default], Source={x:Static lang:LangHelper.Instance}}" FontSize="14" Foreground="White" TextAlignment="Center" />
+                                                                <UXControls:UXTextBlock x:Name="DefaultButtonTextBlock" Text="{Binding [Default], Source={x:Static lang:LangHelper.Instance}}" FontSize="14" Foreground="{DynamicResource TextBlock_ForegroundColor}" TextAlignment="Center" />
                                                             </StackPanel>
                                                         </Grid>
                                                     </Border>
@@ -435,17 +678,52 @@
                                                             <Setter TargetName="DefaultButtonBorder" Property="Background" Value="{StaticResource PressedBackground}" />
                                                             <Setter TargetName="DefaultButtonBorder" Property="BorderBrush" Value="{StaticResource PressedBorderBrush}" />
                                                         </Trigger>
+                                                        <!-- Dark Mode且ToggleSwitch被選中 -->
+                                                        <MultiDataTrigger>
+                                                            <MultiDataTrigger.Conditions>
+                                                                <Condition Binding="{Binding IsDarkTheme}" Value="True" />
+                                                                <Condition Binding="{Binding IsDefaultChecked}" Value="True" />
+                                                            </MultiDataTrigger.Conditions>
+                                                            <Setter TargetName="DefaultButtonTextBlock" Property="Foreground" Value="White" />
+                                                        </MultiDataTrigger>
+
+                                                        <!-- Dark Mode且ToggleSwitch未選中 -->
+                                                        <MultiDataTrigger>
+                                                            <MultiDataTrigger.Conditions>
+                                                                <Condition Binding="{Binding IsDarkTheme}" Value="True" />
+                                                                <Condition Binding="{Binding IsDefaultChecked}" Value="False" />
+                                                            </MultiDataTrigger.Conditions>
+                                                            <Setter TargetName="DefaultButtonTextBlock" Property="Foreground" Value="White" />
+                                                        </MultiDataTrigger>
+
+                                                        <!-- Light Mode且ToggleSwitch被選中 -->
+                                                        <MultiDataTrigger>
+                                                            <MultiDataTrigger.Conditions>
+                                                                <Condition Binding="{Binding IsDarkTheme}" Value="False" />
+                                                                <Condition Binding="{Binding IsDefaultChecked}" Value="True" />
+                                                            </MultiDataTrigger.Conditions>
+                                                            <Setter TargetName="DefaultButtonTextBlock" Property="Foreground" Value="White" />
+                                                        </MultiDataTrigger>
+
+                                                        <!-- Light Mode且ToggleSwitch未選中 -->
+                                                        <MultiDataTrigger>
+                                                            <MultiDataTrigger.Conditions>
+                                                                <Condition Binding="{Binding IsDarkTheme}" Value="False" />
+                                                                <Condition Binding="{Binding IsDefaultChecked}" Value="False" />
+                                                            </MultiDataTrigger.Conditions>
+                                                            <Setter TargetName="DefaultButtonTextBlock" Property="Foreground" Value="Black" />
+                                                        </MultiDataTrigger>
                                                     </ControlTemplate.Triggers>
                                                 </ControlTemplate>
                                             </UXControls:UXToggleSwitch.Template>
                                         </UXControls:UXToggleSwitch>
-                                        <UXControls:UXToggleSwitch x:Name="BassBoostButton" Grid.Row="1" Grid.Column="1" BorderBrush="#FF1E3F6C" BorderThickness="1.5" Width="224" Height="52" Margin="4,0,0,8" Background="{StaticResource SplitItem_NormalBdColor}" IsChecked="{Binding IsBassBoostChecked, Mode=TwoWay}">
+                                        <UXControls:UXToggleSwitch x:Name="BassBoostButton" Grid.Row="1" Grid.Column="1" BorderThickness="1.5" Width="224" Height="52" Margin="4,0,0,8" Background="{StaticResource SplitItem_NormalBdColor}" IsChecked="{Binding IsBassBoostChecked, Mode=TwoWay}">
                                             <UXControls:UXToggleSwitch.Template>
                                                 <ControlTemplate TargetType="UXControls:UXToggleSwitch">
-                                                    <Border x:Name="BassBoostButtonBorder" Background="{StaticResource NormalBackground}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="4,4,4,4">
+                                                    <Border x:Name="BassBoostButtonBorder"  BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="4,4,4,4">
                                                         <Grid>
                                                             <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
-                                                                <UXControls:UXTextBlock Text="{Binding [HeadsetAudioSettings.7], Source={x:Static lang:LangHelper.Instance}}" FontSize="14" Foreground="White" TextAlignment="Center" />
+                                                                <UXControls:UXTextBlock  x:Name="BassBoostButtonTextBlock" Text="{Binding [HeadsetAudioSettings.7], Source={x:Static lang:LangHelper.Instance}}" FontSize="14" Foreground="{DynamicResource TextBlock_ForegroundColor}" TextAlignment="Center" />
                                                             </StackPanel>
                                                         </Grid>
                                                     </Border>
@@ -454,18 +732,53 @@
                                                             <Setter TargetName="BassBoostButtonBorder" Property="Background" Value="{StaticResource PressedBackground}" />
                                                             <Setter TargetName="BassBoostButtonBorder" Property="BorderBrush" Value="{StaticResource PressedBorderBrush}" />
                                                         </Trigger>
+                                                        <!-- Dark Mode且ToggleSwitch被選中 -->
+                                                        <MultiDataTrigger>
+                                                            <MultiDataTrigger.Conditions>
+                                                                <Condition Binding="{Binding IsDarkTheme}" Value="True" />
+                                                                <Condition Binding="{Binding IsBassBoostChecked}" Value="True" />
+                                                            </MultiDataTrigger.Conditions>
+                                                            <Setter TargetName="BassBoostButtonTextBlock" Property="Foreground" Value="White" />
+                                                        </MultiDataTrigger>
+
+                                                        <!-- Dark Mode且ToggleSwitch未選中 -->
+                                                        <MultiDataTrigger>
+                                                            <MultiDataTrigger.Conditions>
+                                                                <Condition Binding="{Binding IsDarkTheme}" Value="True" />
+                                                                <Condition Binding="{Binding IsBassBoostChecked}" Value="False" />
+                                                            </MultiDataTrigger.Conditions>
+                                                            <Setter TargetName="BassBoostButtonTextBlock" Property="Foreground" Value="White" />
+                                                        </MultiDataTrigger>
+
+                                                        <!-- Light Mode且ToggleSwitch被選中 -->
+                                                        <MultiDataTrigger>
+                                                            <MultiDataTrigger.Conditions>
+                                                                <Condition Binding="{Binding IsDarkTheme}" Value="False" />
+                                                                <Condition Binding="{Binding IsBassBoostChecked}" Value="True" />
+                                                            </MultiDataTrigger.Conditions>
+                                                            <Setter TargetName="BassBoostButtonTextBlock" Property="Foreground" Value="White" />
+                                                        </MultiDataTrigger>
+
+                                                        <!-- Light Mode且ToggleSwitch未選中 -->
+                                                        <MultiDataTrigger>
+                                                            <MultiDataTrigger.Conditions>
+                                                                <Condition Binding="{Binding IsDarkTheme}" Value="False" />
+                                                                <Condition Binding="{Binding IsBassBoostChecked}" Value="False" />
+                                                            </MultiDataTrigger.Conditions>
+                                                            <Setter TargetName="BassBoostButtonTextBlock" Property="Foreground" Value="Black" />
+                                                        </MultiDataTrigger>
                                                     </ControlTemplate.Triggers>
                                                 </ControlTemplate>
                                             </UXControls:UXToggleSwitch.Template>
                                         </UXControls:UXToggleSwitch>
 
-                                        <UXControls:UXToggleSwitch x:Name="SpeechBoostButton" Grid.Row="2" Grid.Column="0" BorderBrush="#FF1E3F6C" BorderThickness="1.5" Width="224" Height="52" Margin="16,0,4,8" Background="{StaticResource SplitItem_NormalBdColor}" IsChecked="{Binding IsSpeechBoostChecked, Mode=TwoWay}">
+                                        <UXControls:UXToggleSwitch x:Name="SpeechBoostButton" Grid.Row="2" Grid.Column="0" BorderThickness="1.5" Width="224" Height="52" Margin="16,0,4,8" Background="{StaticResource SplitItem_NormalBdColor}" IsChecked="{Binding IsSpeechBoostChecked, Mode=TwoWay}">
                                             <UXControls:UXToggleSwitch.Template>
                                                 <ControlTemplate TargetType="UXControls:UXToggleSwitch">
-                                                    <Border x:Name="SpeechBoostButtonBorder" Background="{StaticResource NormalBackground}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="4,4,4,4">
+                                                    <Border x:Name="SpeechBoostButtonBorder"  BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="4,4,4,4">
                                                         <Grid>
                                                             <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
-                                                                <UXControls:UXTextBlock Text="{Binding [HeadsetAudioSettings.8], Source={x:Static lang:LangHelper.Instance}}" FontSize="14" Foreground="White" TextAlignment="Center" />
+                                                                <UXControls:UXTextBlock  x:Name="SpeechBoostButtonTextBlock" Text="{Binding [HeadsetAudioSettings.8], Source={x:Static lang:LangHelper.Instance}}" FontSize="14" Foreground="{DynamicResource TextBlock_ForegroundColor}" TextAlignment="Center" />
                                                             </StackPanel>
                                                         </Grid>
                                                     </Border>
@@ -474,18 +787,53 @@
                                                             <Setter TargetName="SpeechBoostButtonBorder" Property="Background" Value="{StaticResource PressedBackground}" />
                                                             <Setter TargetName="SpeechBoostButtonBorder" Property="BorderBrush" Value="{StaticResource PressedBorderBrush}" />
                                                         </Trigger>
+                                                        <!-- Dark Mode且ToggleSwitch被選中 -->
+                                                        <MultiDataTrigger>
+                                                            <MultiDataTrigger.Conditions>
+                                                                <Condition Binding="{Binding IsDarkTheme}" Value="True" />
+                                                                <Condition Binding="{Binding IsSpeechBoostChecked}" Value="True" />
+                                                            </MultiDataTrigger.Conditions>
+                                                            <Setter TargetName="SpeechBoostButtonTextBlock" Property="Foreground" Value="White" />
+                                                        </MultiDataTrigger>
+
+                                                        <!-- Dark Mode且ToggleSwitch未選中 -->
+                                                        <MultiDataTrigger>
+                                                            <MultiDataTrigger.Conditions>
+                                                                <Condition Binding="{Binding IsDarkTheme}" Value="True" />
+                                                                <Condition Binding="{Binding IsSpeechBoostChecked}" Value="False" />
+                                                            </MultiDataTrigger.Conditions>
+                                                            <Setter TargetName="SpeechBoostButtonTextBlock" Property="Foreground" Value="White" />
+                                                        </MultiDataTrigger>
+
+                                                        <!-- Light Mode且ToggleSwitch被選中 -->
+                                                        <MultiDataTrigger>
+                                                            <MultiDataTrigger.Conditions>
+                                                                <Condition Binding="{Binding IsDarkTheme}" Value="False" />
+                                                                <Condition Binding="{Binding IsSpeechBoostChecked}" Value="True" />
+                                                            </MultiDataTrigger.Conditions>
+                                                            <Setter TargetName="SpeechBoostButtonTextBlock" Property="Foreground" Value="White" />
+                                                        </MultiDataTrigger>
+
+                                                        <!-- Light Mode且ToggleSwitch未選中 -->
+                                                        <MultiDataTrigger>
+                                                            <MultiDataTrigger.Conditions>
+                                                                <Condition Binding="{Binding IsDarkTheme}" Value="False" />
+                                                                <Condition Binding="{Binding IsSpeechBoostChecked}" Value="False" />
+                                                            </MultiDataTrigger.Conditions>
+                                                            <Setter TargetName="SpeechBoostButtonTextBlock" Property="Foreground" Value="Black" />
+                                                        </MultiDataTrigger>
                                                     </ControlTemplate.Triggers>
                                                 </ControlTemplate>
                                             </UXControls:UXToggleSwitch.Template>
                                         </UXControls:UXToggleSwitch>
 
-                                        <UXControls:UXToggleSwitch x:Name="TrebleBoostButton" Grid.Row="2" Grid.Column="1" BorderBrush="#FF1E3F6C" BorderThickness="1.5" Width="224" Height="52" Margin="4,0,0,8" Background="{StaticResource SplitItem_NormalBdColor}" IsChecked="{Binding IsTrebleBoostChecked, Mode=TwoWay}">
+                                        <UXControls:UXToggleSwitch x:Name="TrebleBoostButton" Grid.Row="2" Grid.Column="1" BorderThickness="1.5" Width="224" Height="52" Margin="4,0,0,8" Background="{StaticResource SplitItem_NormalBdColor}" IsChecked="{Binding IsTrebleBoostChecked, Mode=TwoWay}">
                                             <UXControls:UXToggleSwitch.Template>
                                                 <ControlTemplate TargetType="UXControls:UXToggleSwitch">
-                                                    <Border x:Name="TrebleBoostButtonBorder" Background="{StaticResource NormalBackground}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="4,4,4,4">
+                                                    <Border x:Name="TrebleBoostButtonBorder" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="4,4,4,4">
                                                         <Grid>
                                                             <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
-                                                                <UXControls:UXTextBlock Text="{Binding [HeadsetAudioSettings.9], Source={x:Static lang:LangHelper.Instance}}" FontSize="14" Foreground="White" TextAlignment="Center" />
+                                                                <UXControls:UXTextBlock x:Name="TrebleBoostButtonTextBlock" Text="{Binding [HeadsetAudioSettings.9], Source={x:Static lang:LangHelper.Instance}}" FontSize="14" Foreground="{DynamicResource TextBlock_ForegroundColor}" TextAlignment="Center" />
                                                             </StackPanel>
                                                         </Grid>
                                                     </Border>
@@ -494,19 +842,54 @@
                                                             <Setter TargetName="TrebleBoostButtonBorder" Property="Background" Value="{StaticResource PressedBackground}" />
                                                             <Setter TargetName="TrebleBoostButtonBorder" Property="BorderBrush" Value="{StaticResource PressedBorderBrush}" />
                                                         </Trigger>
+                                                        <!-- Dark Mode且ToggleSwitch被選中 -->
+                                                        <MultiDataTrigger>
+                                                            <MultiDataTrigger.Conditions>
+                                                                <Condition Binding="{Binding IsDarkTheme}" Value="True" />
+                                                                <Condition Binding="{Binding IsTrebleBoostChecked}" Value="True" />
+                                                            </MultiDataTrigger.Conditions>
+                                                            <Setter TargetName="TrebleBoostButtonTextBlock" Property="Foreground" Value="White" />
+                                                        </MultiDataTrigger>
+
+                                                        <!-- Dark Mode且ToggleSwitch未選中 -->
+                                                        <MultiDataTrigger>
+                                                            <MultiDataTrigger.Conditions>
+                                                                <Condition Binding="{Binding IsDarkTheme}" Value="True" />
+                                                                <Condition Binding="{Binding IsTrebleBoostChecked}" Value="False" />
+                                                            </MultiDataTrigger.Conditions>
+                                                            <Setter TargetName="TrebleBoostButtonTextBlock" Property="Foreground" Value="White" />
+                                                        </MultiDataTrigger>
+
+                                                        <!-- Light Mode且ToggleSwitch被選中 -->
+                                                        <MultiDataTrigger>
+                                                            <MultiDataTrigger.Conditions>
+                                                                <Condition Binding="{Binding IsDarkTheme}" Value="False" />
+                                                                <Condition Binding="{Binding IsTrebleBoostChecked}" Value="True" />
+                                                            </MultiDataTrigger.Conditions>
+                                                            <Setter TargetName="TrebleBoostButtonTextBlock" Property="Foreground" Value="White" />
+                                                        </MultiDataTrigger>
+
+                                                        <!-- Light Mode且ToggleSwitch未選中 -->
+                                                        <MultiDataTrigger>
+                                                            <MultiDataTrigger.Conditions>
+                                                                <Condition Binding="{Binding IsDarkTheme}" Value="False" />
+                                                                <Condition Binding="{Binding IsTrebleBoostChecked}" Value="False" />
+                                                            </MultiDataTrigger.Conditions>
+                                                            <Setter TargetName="TrebleBoostButtonTextBlock" Property="Foreground" Value="Black" />
+                                                        </MultiDataTrigger>
                                                     </ControlTemplate.Triggers>
                                                 </ControlTemplate>
                                             </UXControls:UXToggleSwitch.Template>
                                         </UXControls:UXToggleSwitch>
                                     </UniformGrid>
 
-                                    <UXControls:UXToggleSwitch x:Name="CustomButton" Grid.Row="3" Grid.ColumnSpan="1" BorderBrush="#FF1E3F6C" BorderThickness="1.5" Width="456" Height="52" Margin="16,4,0,20" Background="{StaticResource SplitItem_NormalBdColor}" IsChecked="{Binding IsCustomChecked, Mode=TwoWay}">
+                                    <UXControls:UXToggleSwitch x:Name="CustomButton" Grid.Row="3" Grid.ColumnSpan="1" BorderThickness="1.5" Width="456" Height="52" Margin="16,4,0,20" Background="{StaticResource SplitItem_NormalBdColor}" IsChecked="{Binding IsCustomChecked, Mode=TwoWay}">
                                         <UXControls:UXToggleSwitch.Template>
                                             <ControlTemplate TargetType="UXControls:UXToggleSwitch">
-                                                <Border x:Name="CustomButtonBorder" Background="{StaticResource NormalBackground}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="4,4,4,4">
+                                                <Border x:Name="CustomButtonBorder" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="4,4,4,4">
                                                     <Grid>
                                                         <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
-                                                            <UXControls:UXTextBlock Text="{Binding [Custom], Source={x:Static lang:LangHelper.Instance}}" FontSize="14" Foreground="White" TextAlignment="Center" />
+                                                            <UXControls:UXTextBlock x:Name="CustomButtonTextBlock" Text="{Binding [Custom], Source={x:Static lang:LangHelper.Instance}}" FontSize="14" Foreground="{DynamicResource TextBlock_ForegroundColor}" TextAlignment="Center" />
                                                         </StackPanel>
                                                     </Grid>
                                                 </Border>
@@ -515,12 +898,47 @@
                                                         <Setter TargetName="CustomButtonBorder" Property="Background" Value="{StaticResource PressedBackground}" />
                                                         <Setter TargetName="CustomButtonBorder" Property="BorderBrush" Value="{StaticResource PressedBorderBrush}" />
                                                     </Trigger>
+                                                    <!-- Dark Mode且ToggleSwitch被選中 -->
+                                                    <MultiDataTrigger>
+                                                        <MultiDataTrigger.Conditions>
+                                                            <Condition Binding="{Binding IsDarkTheme}" Value="True" />
+                                                            <Condition Binding="{Binding IsCustomChecked}" Value="True" />
+                                                        </MultiDataTrigger.Conditions>
+                                                        <Setter TargetName="CustomButtonTextBlock" Property="Foreground" Value="White" />
+                                                    </MultiDataTrigger>
+
+                                                    <!-- Dark Mode且ToggleSwitch未選中 -->
+                                                    <MultiDataTrigger>
+                                                        <MultiDataTrigger.Conditions>
+                                                            <Condition Binding="{Binding IsDarkTheme}" Value="True" />
+                                                            <Condition Binding="{Binding IsCustomChecked}" Value="False" />
+                                                        </MultiDataTrigger.Conditions>
+                                                        <Setter TargetName="CustomButtonTextBlock" Property="Foreground" Value="White" />
+                                                    </MultiDataTrigger>
+
+                                                    <!-- Light Mode且ToggleSwitch被選中 -->
+                                                    <MultiDataTrigger>
+                                                        <MultiDataTrigger.Conditions>
+                                                            <Condition Binding="{Binding IsDarkTheme}" Value="False" />
+                                                            <Condition Binding="{Binding IsCustomChecked}" Value="True" />
+                                                        </MultiDataTrigger.Conditions>
+                                                        <Setter TargetName="CustomButtonTextBlock" Property="Foreground" Value="White" />
+                                                    </MultiDataTrigger>
+
+                                                    <!-- Light Mode且ToggleSwitch未選中 -->
+                                                    <MultiDataTrigger>
+                                                        <MultiDataTrigger.Conditions>
+                                                            <Condition Binding="{Binding IsDarkTheme}" Value="False" />
+                                                            <Condition Binding="{Binding IsCustomChecked}" Value="False" />
+                                                        </MultiDataTrigger.Conditions>
+                                                        <Setter TargetName="CustomButtonTextBlock" Property="Foreground" Value="Black" />
+                                                    </MultiDataTrigger>
                                                 </ControlTemplate.Triggers>
                                             </ControlTemplate>
                                         </UXControls:UXToggleSwitch.Template>
                                     </UXControls:UXToggleSwitch>
 
-                                    <Grid Visibility="{Binding IsCustomChecked, Converter={StaticResource BooleanToVisibilityConverter}}" Background="#FF132F54" x:Name="AudioEqualizerGrid" Grid.Row="4" Grid.ColumnSpan="1" Width="456" Height="324" VerticalAlignment="Top" Margin="0,0,0,20">
+                                    <Grid Visibility="{Binding IsCustomChecked, Converter={StaticResource BooleanToVisibilityConverter}}"  x:Name="AudioEqualizerGrid" Grid.Row="4" Grid.ColumnSpan="1" Width="456" Height="324" VerticalAlignment="Top" Margin="0,0,0,20">
                                         <Grid.RowDefinitions>
                                             <RowDefinition Height="Auto" />
                                             <RowDefinition Height="Auto" />
@@ -528,21 +946,21 @@
                                             <RowDefinition Height="*" />
                                         </Grid.RowDefinitions>
                                         <StackPanel Grid.Row="0" HorizontalAlignment="Left" Margin="20,20,0,0">
-                                            <UXControls:UXTextBlock Text="{Binding [HeadsetAudioSettings.10], Source={x:Static lang:LangHelper.Instance}}" Foreground="White" FontSize="16" />
+                                            <UXControls:UXTextBlock Text="{Binding [HeadsetAudioSettings.10], Source={x:Static lang:LangHelper.Instance}}" Foreground="{DynamicResource TextBlock_ForegroundColor}" FontSize="16" />
                                         </StackPanel>
                                         <StackPanel Grid.Row="1" HorizontalAlignment="Left" Margin="20,20,0,20">
-                                            <UXControls:UXTextBlock Text="{Binding [HeadsetAudioSettings.11], Source={x:Static lang:LangHelper.Instance}}" Foreground="White" FontSize="14" />
+                                            <UXControls:UXTextBlock Text="{Binding [HeadsetAudioSettings.11], Source={x:Static lang:LangHelper.Instance}}" Foreground="{DynamicResource TextBlock_ForegroundColor}" FontSize="14" />
                                         </StackPanel>
                                         <StackPanel Grid.Row="2" HorizontalAlignment="Left" Margin="20,20,0,0">
                                             <Canvas x:Name="EqualizerCanvas" HorizontalAlignment="Center" VerticalAlignment="Center" Width="456" Height="324" Margin="0,0,0,0">
                                                 <!-- 中間橫線 -->
-                                                <Image Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Headset_Line1.png" Canvas.Left="20" Canvas.Top="-8" Width="423.32" Height="150" />
+                                                <Line X1="30" Y1="66" X2="433.32" Y2="66" Stroke="{DynamicResource EQLine_Color}" StrokeThickness="2" />
                                                 <!-- 垂直線條 -->
-                                                <Image Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Headset_Line2.png" Canvas.Left="50" Canvas.Top="0" Width="5" Height="155.3" />
-                                                <Image Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Headset_Line2.png" Canvas.Left="140" Canvas.Top="0" Width="5" Height="155.3" />
-                                                <Image Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Headset_Line2.png" Canvas.Left="230" Canvas.Top="0" Width="5" Height="155.3" />
-                                                <Image Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Headset_Line2.png" Canvas.Left="320" Canvas.Top="0" Width="5" Height="155.3" />
-                                                <Image Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Headset_Line2.png" Canvas.Left="410" Canvas.Top="0" Width="5" Height="155.3" />
+                                                <Line X1="52.5" Y1="0" X2="52.5" Y2="155.3" Stroke="{DynamicResource EQLine_Color}" StrokeThickness="2" />
+                                                <Line X1="142.5" Y1="0" X2="142.5" Y2="155.3" Stroke="{DynamicResource EQLine_Color}" StrokeThickness="2" />
+                                                <Line X1="233" Y1="0" X2="233" Y2="155.3" Stroke="{DynamicResource EQLine_Color}" StrokeThickness="2" />
+                                                <Line X1="323" Y1="0" X2="323" Y2="155.3" Stroke="{DynamicResource EQLine_Color}" StrokeThickness="2" />
+                                                <Line X1="413" Y1="0" X2="413" Y2="155.3" Stroke="{DynamicResource EQLine_Color}" StrokeThickness="2" />
                                                 <!-- 陰影效果曲線 -->
                                                 <!--<Path x:Name="ShadowPath" StrokeThickness="0" Fill="{StaticResource GradientBrush}">
                                                 <Path.Data>
@@ -562,7 +980,7 @@
                                                 </Path.Data>
                                                 </Path>-->
                                                 <!-- 曲線 -->
-                                                <Path Name="CurvePath" Stroke="#FF0672CB" Canvas.Left="0" Canvas.Top="0" StrokeThickness="2.3" Width="410">
+                                                <Path Name="CurvePath" Stroke="#FF0672CB" Canvas.Left="0" Canvas.Top="0" StrokeThickness="2.3" Width="410" Fill="Transparent">
                                                     <Path.Data>
                                                         <PathGeometry>
                                                             <PathFigure StartPoint="50,60" IsClosed="False" x:Name="CurvePathFigure">
@@ -577,43 +995,43 @@
                                                 <!-- 節點 -->
                                                 <Image x:Name="Node1" Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Headset_Dot.png" Canvas.Left="46" Canvas.Top="54" Width="13.79" Height="13.79" MouseLeftButtonDown="Node_MouseLeftButtonDown" MouseMove="Node_MouseMove" MouseLeftButtonUp="Node_MouseLeftButtonUp" />
                                                 <Border x:Name="Node1TextBackground" Background="{StaticResource UnselectedNodeImage}" Width="28" Height="28" Canvas.Left="46" Canvas.Top="35" Visibility="Collapsed">
-                                                    <TextBlock x:Name="Node1Text" Text="0" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                                    <TextBlock x:Name="Node1Text" Text="0" Foreground="{DynamicResource TextBlock_ForegroundColor}" HorizontalAlignment="Center" VerticalAlignment="Center" />
                                                 </Border>
 
                                                 <Image x:Name="Node2" Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Headset_Dot.png" Canvas.Left="136" Canvas.Top="54" Width="13.79" Height="13.79" MouseLeftButtonDown="Node_MouseLeftButtonDown" MouseMove="Node_MouseMove" MouseLeftButtonUp="Node_MouseLeftButtonUp" />
                                                 <Border x:Name="Node2TextBackground" Background="{StaticResource UnselectedNodeImage}" Width="28" Height="28" Canvas.Left="136" Canvas.Top="35" Visibility="Collapsed">
-                                                    <TextBlock x:Name="Node2Text" Text="0" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                                    <TextBlock x:Name="Node2Text" Text="0" Foreground="{DynamicResource TextBlock_ForegroundColor}" HorizontalAlignment="Center" VerticalAlignment="Center" />
                                                 </Border>
 
                                                 <Image x:Name="Node3" Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Headset_Dot.png" Canvas.Left="226" Canvas.Top="54" Width="13.79" Height="13.79" MouseLeftButtonDown="Node_MouseLeftButtonDown" MouseMove="Node_MouseMove" MouseLeftButtonUp="Node_MouseLeftButtonUp" />
                                                 <Border x:Name="Node3TextBackground" Background="{StaticResource UnselectedNodeImage}" Width="28" Height="28" Canvas.Left="226" Canvas.Top="35" Visibility="Collapsed">
-                                                    <TextBlock x:Name="Node3Text" Text="0" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                                    <TextBlock x:Name="Node3Text" Text="0" Foreground="{DynamicResource TextBlock_ForegroundColor}" HorizontalAlignment="Center" VerticalAlignment="Center" />
                                                 </Border>
 
                                                 <Image x:Name="Node4" Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Headset_Dot.png" Canvas.Left="316" Canvas.Top="54" Width="13.79" Height="13.79" MouseLeftButtonDown="Node_MouseLeftButtonDown" MouseMove="Node_MouseMove" MouseLeftButtonUp="Node_MouseLeftButtonUp" />
                                                 <Border x:Name="Node4TextBackground" Background="{StaticResource UnselectedNodeImage}" Width="28" Height="28" Canvas.Left="316" Canvas.Top="35" Visibility="Collapsed">
-                                                    <TextBlock x:Name="Node4Text" Text="0" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                                    <TextBlock x:Name="Node4Text" Text="0" Foreground="{DynamicResource TextBlock_ForegroundColor}" HorizontalAlignment="Center" VerticalAlignment="Center" />
                                                 </Border>
 
                                                 <Image x:Name="Node5" Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Headset_Dot.png" Canvas.Left="406" Canvas.Top="54" Width="13.79" Height="13.79" MouseLeftButtonDown="Node_MouseLeftButtonDown" MouseMove="Node_MouseMove" MouseLeftButtonUp="Node_MouseLeftButtonUp" />
                                                 <Border x:Name="Node5TextBackground" Background="{StaticResource UnselectedNodeImage}" Width="28" Height="28" Canvas.Left="406" Canvas.Top="35" Visibility="Collapsed">
-                                                    <TextBlock x:Name="Node5Text" Text="0" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                                    <TextBlock x:Name="Node5Text" Text="0" Foreground="{DynamicResource TextBlock_ForegroundColor}" HorizontalAlignment="Center" VerticalAlignment="Center" />
                                                 </Border>
 
                                                 <StackPanel Grid.Row="3" HorizontalAlignment="Stretch" Margin="-5,51,0,0">
-                                                    <UXControls:UXTextBlock Text="{Binding [HeadsetAudioSettings.12], Source={x:Static lang:LangHelper.Instance},StringFormat={}0 {0}}" Foreground="White" FontSize="12" />
+                                                    <UXControls:UXTextBlock Text="{Binding [HeadsetAudioSettings.12], Source={x:Static lang:LangHelper.Instance},StringFormat={}0 {0}}" Foreground="{DynamicResource TextBlock_ForegroundColor}" FontSize="12" />
                                                 </StackPanel>
 
                                                 <StackPanel Grid.Row="3" HorizontalAlignment="Stretch" Margin="40,165,0,0">
-                                                    <UXControls:UXTextBlock Text="{Binding [HeadsetAudioSettings.13], Source={x:Static lang:LangHelper.Instance}}" Foreground="White" FontSize="12" />
+                                                    <UXControls:UXTextBlock Text="{Binding [HeadsetAudioSettings.13], Source={x:Static lang:LangHelper.Instance}}" Foreground="{DynamicResource TextBlock_ForegroundColor}" FontSize="12" />
                                                 </StackPanel>
 
                                                 <StackPanel Grid.Row="3" HorizontalAlignment="Stretch" Margin="205,165,0,0">
-                                                    <UXControls:UXTextBlock Text="{Binding [HeadsetAudioSettings.14], Source={x:Static lang:LangHelper.Instance}}" Foreground="White" FontSize="12" />
+                                                    <UXControls:UXTextBlock Text="{Binding [HeadsetAudioSettings.14], Source={x:Static lang:LangHelper.Instance}}" Foreground="{DynamicResource TextBlock_ForegroundColor}" FontSize="12" />
                                                 </StackPanel>
 
                                                 <StackPanel Grid.Row="3" HorizontalAlignment="Stretch" Margin="395,165,0,0">
-                                                    <UXControls:UXTextBlock Text="{Binding [HeadsetAudioSettings.15], Source={x:Static lang:LangHelper.Instance}}" Foreground="White" FontSize="12" />
+                                                    <UXControls:UXTextBlock Text="{Binding [HeadsetAudioSettings.15], Source={x:Static lang:LangHelper.Instance}}" Foreground="{DynamicResource TextBlock_ForegroundColor}" FontSize="12" />
                                                 </StackPanel>
                                             </Canvas>
                                         </StackPanel>
@@ -639,7 +1057,7 @@
                                                 <ColumnDefinition Width="*" />
                                             </Grid.ColumnDefinitions>
                                             <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
-                                                <UXControls:UXTextBlock HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="16" Foreground="White" Text="{Binding [HeadsetAudioSettings.16], Source={x:Static lang:LangHelper.Instance}}" Margin="20,0,0,0" />
+                                                <UXControls:UXTextBlock HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="16" Foreground="{DynamicResource TextBlock_ForegroundColor}" Text="{Binding [HeadsetAudioSettings.16], Source={x:Static lang:LangHelper.Instance}}" Margin="20,0,0,0" />
                                                 <Image Name="LockIconMic" Visibility="{Binding isMicCancelLocked}" Margin="10,0,0,0"
                                                        Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Lock.png"
                                                        VerticalAlignment="Center" HorizontalAlignment="Center" Width="16" Height="16">
@@ -668,7 +1086,7 @@
                                                 <ColumnDefinition Width="Auto" />
                                                 <ColumnDefinition Width="*" />
                                             </Grid.ColumnDefinitions>
-                                            <UXControls:UXTextBlock Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="16" Foreground="White" Text="{Binding [HeadsetAudioSettings.17], Source={x:Static lang:LangHelper.Instance}}" Margin="20,0,0,0" />
+                                            <UXControls:UXTextBlock Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="16" Foreground="{DynamicResource TextBlock_ForegroundColor}" Text="{Binding [HeadsetAudioSettings.17], Source={x:Static lang:LangHelper.Instance}}" Margin="20,0,0,0" />
                                             <Image Grid.Column="1" Width="16" Height="16" Margin="8,0" Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Icon_Info.png" Stretch="Uniform">
                                                 <Image.ToolTip>
                                                     <ToolTip>
@@ -685,7 +1103,7 @@
                                                     </ToolTip>
                                                 </Image.ToolTip>
                                             </Image>
-                                            <UXControls:UXToggleSwitch Name="OutgoingAudioToggleSwitch" FontSize="16" Content="{Binding Path=OutgoingAudio_String, FallbackValue='OFF'}" IsChecked="{Binding Path=OutgoingAudioStatus}" IsEnabled="{Binding Path=SupportedOutgoingAudio}" Grid.Column="2" HorizontalAlignment="Right" VerticalAlignment="Center" VerticalContentAlignment="Center" AutomationProperties.Name="OutgoingAudioToggleSwitch" ContentPlacement="Left" ContentTextVisibility="True" Foreground="White" Margin="0,0,20,0" IsTabStop="{Binding isMicTabStopped}"/>
+                                            <UXControls:UXToggleSwitch Name="OutgoingAudioToggleSwitch" FontSize="16" Content="{Binding Path=OutgoingAudio_String, FallbackValue='OFF'}" IsChecked="{Binding Path=OutgoingAudioStatus}" IsEnabled="{Binding Path=SupportedOutgoingAudio}" Grid.Column="2" HorizontalAlignment="Right" VerticalAlignment="Center" VerticalContentAlignment="Center" AutomationProperties.Name="OutgoingAudioToggleSwitch" ContentPlacement="Left" ContentTextVisibility="True" Foreground="{DynamicResource TextBlock_ForegroundColor}" Margin="0,0,20,0" IsTabStop="{Binding isMicTabStopped}"/>
                                         </Grid>
 
                                         <!--Incoming Audio-->
@@ -695,7 +1113,7 @@
                                                 <ColumnDefinition Width="Auto" />
                                                 <ColumnDefinition Width="*" />
                                             </Grid.ColumnDefinitions>
-                                            <UXControls:UXTextBlock Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="16" Foreground="White" Text="{Binding [HeadsetAudioSettings.18], Source={x:Static lang:LangHelper.Instance}}" Margin="20,0,0,0" />
+                                            <UXControls:UXTextBlock Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="16" Foreground="{DynamicResource TextBlock_ForegroundColor}" Text="{Binding [HeadsetAudioSettings.18], Source={x:Static lang:LangHelper.Instance}}" Margin="20,0,0,0" />
                                             <Image Grid.Column="1" Width="16" Height="16" Margin="8,0" Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Icon_Info.png" Stretch="Uniform">
                                                 <Image.ToolTip>
                                                     <ToolTip>
@@ -712,10 +1130,10 @@
                                                     </ToolTip>
                                                 </Image.ToolTip>
                                             </Image>
-                                            <UXControls:UXToggleSwitch Name="IncomingAudioToggleSwitch" FontSize="16" Content="{Binding Path=IncomingAudio_String, FallbackValue='OFF'}" IsChecked="{Binding Path=IncomingAudioStatus}" IsEnabled="{Binding Path=SupportedIncomingAudio}" Grid.Column="2" HorizontalAlignment="Right" VerticalAlignment="Center" VerticalContentAlignment="Center" AutomationProperties.Name="IncomingAudioToggleSwitch" ContentPlacement="Left" ContentTextVisibility="True" Foreground="White" Margin="0,0,20,0" IsTabStop="{Binding isMicTabStopped}"/>
+                                            <UXControls:UXToggleSwitch Name="IncomingAudioToggleSwitch" FontSize="16" Content="{Binding Path=IncomingAudio_String, FallbackValue='OFF'}" IsChecked="{Binding Path=IncomingAudioStatus}" IsEnabled="{Binding Path=SupportedIncomingAudio}" Grid.Column="2" HorizontalAlignment="Right" VerticalAlignment="Center" VerticalContentAlignment="Center" AutomationProperties.Name="IncomingAudioToggleSwitch" ContentPlacement="Left" ContentTextVisibility="True" Foreground="{DynamicResource TextBlock_ForegroundColor}" Margin="0,0,20,0" IsTabStop="{Binding isMicTabStopped}"/>
                                         </Grid>
 
-                                        <Border Background="#132F54"
+                                        <Border 
                                                 Opacity="0.6" Grid.Row="1" Grid.RowSpan="2"
                                                 CornerRadius="13" 
                                                 Visibility="{Binding isMicCancelLocked}"/>
@@ -744,7 +1162,7 @@
                                                 <ColumnDefinition Width="Auto" />
                                                 <ColumnDefinition Width="*" />
                                             </Grid.ColumnDefinitions>
-                                            <UXControls:UXTextBlock  HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="16" Foreground="White" Text="{Binding [HeadsetAudioSettings.16], Source={x:Static lang:LangHelper.Instance}}" Margin="20,20,0,0" />
+                                            <UXControls:UXTextBlock  HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="16" Foreground="{DynamicResource TextBlock_ForegroundColor}" Text="{Binding [HeadsetAudioSettings.16], Source={x:Static lang:LangHelper.Instance}}" Margin="20,20,0,0" />
                                             <Image Grid.Column="1" Width="16" Height="16" Margin="8,20,0,0" Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Icon_Info.png" Stretch="Uniform">
                                                 <Image.ToolTip>
                                                     <ToolTip>
@@ -779,7 +1197,7 @@
                                                     </ToolTip>
                                                 </Image.ToolTip>
                                             </Image>
-                                            <UXControls:UXToggleSwitch Name="MicNoiseCancellationToggleSwitch" FontSize="16" Content="{Binding Path=MicNoiseCancellation_String, FallbackValue='OFF'}" IsChecked="{Binding Path=MicNoiseCancellationStatus}" IsEnabled="{Binding Path=SupportedMicNoiseCancellation}" Grid.Column="3" HorizontalAlignment="Right" VerticalAlignment="Center" VerticalContentAlignment="Center" AutomationProperties.Name="OutgoingAudioToggleSwitch" ContentPlacement="Left" ContentTextVisibility="True" Foreground="White" Margin="0,20,20,0" IsTabStop="{Binding isMicTabStopped}"/>
+                                            <UXControls:UXToggleSwitch Name="MicNoiseCancellationToggleSwitch" FontSize="16" Content="{Binding Path=MicNoiseCancellation_String, FallbackValue='OFF'}" IsChecked="{Binding Path=MicNoiseCancellationStatus}" IsEnabled="{Binding Path=SupportedMicNoiseCancellation}" Grid.Column="3" HorizontalAlignment="Right" VerticalAlignment="Center" VerticalContentAlignment="Center" AutomationProperties.Name="OutgoingAudioToggleSwitch" ContentPlacement="Left" ContentTextVisibility="True" Foreground="{DynamicResource TextBlock_ForegroundColor}" Margin="0,20,20,0" IsTabStop="{Binding isMicTabStopped}"/>
                                             <Border Background="#132F54"
                                                     Opacity="0.6" Grid.Column="3"
                                                     CornerRadius="13" Margin="150,20,20,0"
@@ -810,7 +1228,15 @@
                                             <ColumnDefinition Width="315*" />
                                             <ColumnDefinition Width="67*"/>
                                         </Grid.ColumnDefinitions>
-                                        <UXControls:UXTextBlock Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Top" FontSize="16" Foreground="{Binding Path=IsTransparencyChecked, Converter={StaticResource BooleanToInverseForegroundConverter}}" Text="{Binding [HeadsetAudioSettings.19], Source={x:Static lang:LangHelper.Instance}}" TextBlockSemanticColorType="Light" TextBlockType="Display1" Margin="20,26,0,0" />
+                                        <!--<UXControls:UXTextBlock Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Top" FontSize="16" Foreground="{Binding Path=IsTransparencyChecked, Converter={StaticResource BooleanToInverseForegroundConverter}}" Text="{Binding [HeadsetAudioSettings.19], Source={x:Static lang:LangHelper.Instance}}" TextBlockSemanticColorType="Light" TextBlockType="Display1" Margin="20,26,0,0" />-->
+                                        <UXControls:UXTextBlock Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Top" FontSize="16" Text="{Binding [HeadsetAudioSettings.19], Source={x:Static lang:LangHelper.Instance}}" TextBlockSemanticColorType="Light" TextBlockType="Display1" Margin="20,26,0,0">
+                                            <UXControls:UXTextBlock.Foreground>
+                                                <MultiBinding Converter="{StaticResource BooleanToForegroundConverter}">
+                                                    <Binding Path="IsChecked" ElementName="TransparencyButton" />
+                                                    <Binding Path="IsDarkTheme" />
+                                                </MultiBinding>
+                                            </UXControls:UXTextBlock.Foreground>
+                                        </UXControls:UXTextBlock>
                                         <Image Grid.Column="1" Width="16" Height="16" Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Icon_Info.png" Stretch="Uniform" Margin="8,23,0,2">
                                             <Image.ToolTip>
                                                 <ToolTip>
@@ -827,13 +1253,54 @@
                                                 </ToolTip>
                                             </Image.ToolTip>
                                         </Image>
-                                        <UXControls:UXToggleSwitch Name="SidetoneToggleSwitch" FontSize="16" Content="{Binding Path=Sidetone_String, FallbackValue='OFF'}" IsChecked="{Binding Path=SidetoneStatus}" IsEnabled="{Binding Path=IsTransparencyChecked, Converter={StaticResource InverseBooleanConverter}}" Grid.Column="3" HorizontalAlignment="Right" VerticalAlignment="Top" VerticalContentAlignment="Center" AutomationProperties.Name="SidetoneToggleSwitch" ContentPlacement="Left" ContentTextVisibility="True" Foreground="{Binding Path=IsTransparencyChecked, Converter={StaticResource BooleanToInverseForegroundConverter}}" Margin="-26,31,20,0" />
+                                        <!--<UXControls:UXToggleSwitch Name="SidetoneToggleSwitch" FontSize="16" Content="{Binding Path=Sidetone_String, FallbackValue='OFF'}" IsChecked="{Binding Path=SidetoneStatus}" IsEnabled="{Binding Path=IsTransparencyChecked, Converter={StaticResource InverseBooleanConverter}}" Grid.Column="3" HorizontalAlignment="Right" VerticalAlignment="Top" VerticalContentAlignment="Center" AutomationProperties.Name="SidetoneToggleSwitch" ContentPlacement="Left" ContentTextVisibility="True" Foreground="{Binding Path=IsTransparencyChecked, Converter={StaticResource BooleanToInverseForegroundConverter}}" Margin="-26,31,20,0" />-->
+                                        <UXControls:UXToggleSwitch Name="SidetoneToggleSwitch" FontSize="16" Content="{Binding Path=Sidetone_String, FallbackValue='OFF'}" IsChecked="{Binding Path=SidetoneStatus}" IsEnabled="{Binding Path=IsTransparencyChecked, Converter={StaticResource InverseBooleanConverter}}" Grid.Column="3" HorizontalAlignment="Right" VerticalAlignment="Top" VerticalContentAlignment="Center" AutomationProperties.Name="SidetoneToggleSwitch" ContentPlacement="Left" ContentTextVisibility="True" Margin="-26,31,20,0">
+                                            <UXControls:UXTextBlock.Foreground>
+                                                <MultiBinding Converter="{StaticResource BooleanToForegroundConverter}">
+                                                    <Binding Path="IsChecked" ElementName="TransparencyButton" />
+                                                    <Binding Path="IsDarkTheme" />
+                                                </MultiBinding>
+                                            </UXControls:UXTextBlock.Foreground>
+                                        </UXControls:UXToggleSwitch>
                                     </Grid>
-                                    <UXControls:UXTextBlock x:Name="SidetoneSliderMinValueTextBlock2_2" Grid.Row="1" Text="2" FontSize="14" Margin="0,-20,0,0" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="{Binding Path=IsTransparencyChecked, Converter={StaticResource BooleanToInverseForegroundConverter}}" />
+                                    <!--<UXControls:UXTextBlock x:Name="SidetoneSliderMinValueTextBlock2_2" Grid.Row="1" Text="2" FontSize="14" Margin="0,-20,0,0" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="{Binding Path=IsTransparencyChecked, Converter={StaticResource BooleanToInverseForegroundConverter}}" />-->
+                                    <UXControls:UXTextBlock x:Name="SidetoneSliderMinValueTextBlock2_2" Grid.Row="1" Text="2" FontSize="14" Margin="0,-20,0,0" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                        <UXControls:UXTextBlock.Foreground>
+                                            <MultiBinding Converter="{StaticResource BooleanToForegroundConverter}">
+                                                <Binding Path="IsChecked" ElementName="TransparencyButton" />
+                                                <Binding Path="IsDarkTheme" />
+                                            </MultiBinding>
+                                        </UXControls:UXTextBlock.Foreground>
+                                    </UXControls:UXTextBlock>
+                                    
                                     <StackPanel x:Name="SidetoneSliderStackPanel" Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,20,0,20">
-                                        <UXControls:UXTextBlock x:Name="SidetoneSliderMinValueTextBlock2_1" Text="1" FontSize="14" Foreground="{Binding Path=IsTransparencyChecked, Converter={StaticResource BooleanToInverseForegroundConverter}}" Margin="4,20,0,0" VerticalAlignment="Center" />
-                                        <UXControls:UXSlider x:Name="SidetoneSlider" Width="426" Height="14" Minimum="1" Maximum="3" LargeChange="1" SmallChange="1" IsEnabled="{Binding Path=SidetoneSliderStatus}" Value="{Binding Path=SidetoneSliderValue, Mode=TwoWay}" Foreground="{Binding Path=IsTransparencyChecked, Converter={StaticResource BooleanToInverseForegroundConverter}}" Margin="4,20,0,0" VerticalAlignment="Center" IsSnapToTickEnabled="True" TickFrequency="1"/>
-                                        <UXControls:UXTextBlock x:Name="SidetoneSliderMaxValueTextBlock2_3" Text="3" FontSize="14" Foreground="{Binding Path=IsTransparencyChecked, Converter={StaticResource BooleanToInverseForegroundConverter}}" Margin="4,20,0,0" VerticalAlignment="Center" />
+                                        <!--<UXControls:UXTextBlock x:Name="SidetoneSliderMinValueTextBlock2_1" Text="1" FontSize="14" Foreground="{Binding Path=IsTransparencyChecked, Converter={StaticResource BooleanToInverseForegroundConverter}}" Margin="4,20,0,0" VerticalAlignment="Center" />-->
+                                        <UXControls:UXTextBlock x:Name="SidetoneSliderMinValueTextBlock2_1" Text="1" FontSize="14" Margin="4,20,0,0" VerticalAlignment="Center" >
+                                            <UXControls:UXTextBlock.Foreground>
+                                                <MultiBinding Converter="{StaticResource BooleanToForegroundConverter}">
+                                                    <Binding Path="IsChecked" ElementName="TransparencyButton" />
+                                                    <Binding Path="IsDarkTheme" />
+                                                </MultiBinding>
+                                            </UXControls:UXTextBlock.Foreground>
+                                        </UXControls:UXTextBlock>
+                                        <!--<UXControls:UXSlider x:Name="SidetoneSlider" Width="426" Height="14" Minimum="1" Maximum="3" LargeChange="1" SmallChange="1" IsEnabled="{Binding Path=SidetoneSliderStatus}" Value="{Binding Path=SidetoneSliderValue, Mode=TwoWay}" Foreground="{Binding Path=IsTransparencyChecked, Converter={StaticResource BooleanToInverseForegroundConverter}}" Margin="4,20,0,0" VerticalAlignment="Center" IsSnapToTickEnabled="True" TickFrequency="1"/>-->
+                                        <UXControls:UXSlider x:Name="SidetoneSlider" Width="426" Height="14" Minimum="1" Maximum="3" LargeChange="1" SmallChange="1" IsEnabled="{Binding Path=SidetoneSliderStatus}" Value="{Binding Path=SidetoneSliderValue, Mode=TwoWay}" Margin="4,20,0,0" VerticalAlignment="Center" IsSnapToTickEnabled="True" TickFrequency="1" >
+                                            <UXControls:UXTextBlock.Foreground>
+                                                <MultiBinding Converter="{StaticResource BooleanToForegroundConverter}">
+                                                    <Binding Path="IsChecked" ElementName="TransparencyButton" />
+                                                    <Binding Path="IsDarkTheme" />
+                                                </MultiBinding>
+                                            </UXControls:UXTextBlock.Foreground>
+                                        </UXControls:UXSlider>
+                                        <!--<UXControls:UXTextBlock x:Name="SidetoneSliderMaxValueTextBlock2_3" Text="3" FontSize="14" Foreground="{Binding Path=IsTransparencyChecked, Converter={StaticResource BooleanToInverseForegroundConverter}}" Margin="4,20,0,0" VerticalAlignment="Center" />-->
+                                        <UXControls:UXTextBlock x:Name="SidetoneSliderMaxValueTextBlock2_3" Text="3" FontSize="14" Margin="4,20,0,0" VerticalAlignment="Center" >
+                                            <UXControls:UXTextBlock.Foreground>
+                                                <MultiBinding Converter="{StaticResource BooleanToForegroundConverter}">
+                                                    <Binding Path="IsChecked" ElementName="TransparencyButton" />
+                                                    <Binding Path="IsDarkTheme" />
+                                                </MultiBinding>
+                                            </UXControls:UXTextBlock.Foreground>
+                                        </UXControls:UXTextBlock>
                                     </StackPanel>
                                 </Grid>
                             </StackPanel>

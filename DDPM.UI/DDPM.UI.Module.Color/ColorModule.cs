@@ -30,7 +30,7 @@ namespace DDPM.UI.Module.Color
             //vm.Invoke_DownloadICCData();
         }
 
-        public string ModuleName { get => "ColorModule"; }
+        public string ModuleName { get => Constants.ModuleName_Color; } //"ColorModule"
 
         public UserControl? GetLeftView()
         {

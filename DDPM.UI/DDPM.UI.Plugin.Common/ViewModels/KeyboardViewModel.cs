@@ -148,7 +148,12 @@ namespace DDPM.UI.Plugin.ViewModels
                 TabManualCaption = Strings.Manual;
                 TabManualInfoTip = LangHelper.Instance["Illumination.4"];
 
-                IlluminationSelectedTabIndex = CurrentDeviceInfo.BackLightTabIndex;
+                IlluminationSelectedTabIndex = CurrentDeviceInfo.BackLightingControls switch
+                {
+                    6 => 1,
+                    3 => 2,
+                    _ => 0
+                };
                 BackLightingLevel = CurrentDeviceInfo.BackLightingLevel;
                 SwitchTab(IlluminationSelectedTabIndex);
             }
@@ -1127,25 +1132,32 @@ namespace DDPM.UI.Plugin.ViewModels
                 int pkId = (int)(KeyName)Enum.Parse(typeof(KeyName), SelectedKey, true);
                 pkId = CheckPKID(pkId);
 
-                JObject json_obj = new JObject();
-                json_obj.Add("PkId", pkId);
-                json_obj.Add("ActionId", Actions.ActionIdToGuid[actionID]);
-                string json_str = JsonConvert.SerializeObject(json_obj);
+                //string json_str = JsonConvert.SerializeObject(json_obj);
                 if (actionID == -1 || actionID > 40)
                 {
                     DdpmCommonHelper.DeviceManagerSA!.DeleteKeyboardAssignedAction(CurrentDeviceID.ToString(), pkId);
                 }
                 else
                 {
+                    JObject jobj = new()
+                    {
+                        { "PkId", pkId },
+                        { "ActionId", Actions.ActionIdToGuid[actionID] }
+                    };
+
                     if (parameter == "")
                     {
-                        DdpmCommonHelper.DeviceManagerSA!.SetKbAssignedAction(CurrentDeviceID.ToString(), json_str);
+                        byte[] newValue = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(jobj));
+                        DdpmCommonHelper.DeviceManagerSA!.SetKbAssignedAction(CurrentDeviceID.ToString(), newValue);
                     }
                     else
                     {
-                        json_obj.Add("Command", parameter);
-                        json_str = JsonConvert.SerializeObject(json_obj);
-                        DdpmCommonHelper.DeviceManagerSA!.SetKbAssignDialogAction(CurrentDeviceID.ToString(), json_str);
+                        jobj.Add("Command", parameter);
+                        byte[] newValue = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(jobj));
+                        if (actionID == 14)
+                            DdpmCommonHelper.DeviceManagerSA!.SetKbAssignKeystrokeAction(CurrentDeviceID.ToString(), newValue);
+                        else
+                            DdpmCommonHelper.DeviceManagerSA!.SetKbAssignDialogAction(CurrentDeviceID.ToString(), newValue);
                     }
                 }
 

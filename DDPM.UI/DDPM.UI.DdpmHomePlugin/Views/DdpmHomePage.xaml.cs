@@ -4,6 +4,7 @@ using DDPM.UI.Common.Models;
 using DDPM.UI.Plugin.Common;
 using DDPM.UI.Plugin.DdpmHomePlugin.ViewModels;
 using Dell.Client.Framework.UX.WPF;
+using Dell.Client.Framework.UX.WPF.Controls;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -43,6 +44,14 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                 //}
                 _ddpmHomePageViewModel.ShowConsentRequested += _ddpmHomePageViewModel_ShowConsent;
                 _ddpmHomePageViewModel.ImportNotify += ImportNotifyEventHandler;
+            }
+            Dispatcher.BeginInvoke(new Action(() =>
+            {
+                // TODO Change the UXControls:UXTextBlock
+            }), System.Windows.Threading.DispatcherPriority.Background);
+            if (DdpmCommonHelper.UIDebugModeFlag)
+            {
+                UIDebugPanel.Visibility = Visibility.Visible;
             }
         }
 
@@ -271,7 +280,18 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
 
             //Robert_Lin, 2024-8-7, skip refresh if Homepage is not displayed (cxView==0)
             if ((cxView == 0) || (cyView == 0))
+            {
+                //Add a retry after 300 msec
+                System.Threading.Timer timer1 = new System.Threading.Timer((obj) => 
+                {
+                    Dispatcher.BeginInvoke(new Action(() =>
+                    {
+                        RefreshListViewItemWidth();
+                    }));
+
+                }, null, 300, Timeout.Infinite);
                 return;
+            }
 
             var primaryScreenScalingRatio = Screen.PrimaryScreen.Bounds.Width / SystemParameters.PrimaryScreenWidth;
 
@@ -916,7 +936,11 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
             {
                 DeviceCategory = eDeviceCategory.KB,
                 DeviceName = $"Demo {id}",
-                DeviceImage = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Product_KB900.png")
+                DeviceImage = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Product_KB900.png"),
+                DeviceInfo = new DeviceInfo()
+                {
+                    Name = "KB900"
+                }
             };
             _ddpmHomePageViewModel.AddDemoHomeDevice(demo);
             RefreshListViewItemWidth();
@@ -930,7 +954,11 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
             {
                 DeviceCategory = eDeviceCategory.Mouse,
                 DeviceName = $"Demo {id}",
-                DeviceImage = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Product_Mouse.png")
+                DeviceImage = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Product_Mouse.png"),
+                DeviceInfo = new DeviceInfo()
+                {
+                    Name = "Mouse"
+                }
             };
             _ddpmHomePageViewModel.AddDemoHomeDevice(demo);
             RefreshListViewItemWidth();
@@ -1080,7 +1108,8 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
 
         private void _ddpmHomePageViewModel_ShowConsent(object? sender, EventArgs e)
         {
-            Dispatcher.Invoke(() => {
+            Dispatcher.Invoke(() =>
+            {
                 Window parentWindow = Window.GetWindow(this);
                 double windowLeft = 0;
                 double windowTop = 0;
@@ -1104,6 +1133,73 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                     _ = DdpmCommonHelper.DeviceManagerSA.Set_GlobalSetting_EnableTelemetryConsent(false).Result;
                 }
             });
+        }
+
+        private void Pairing(object sender, System.Windows.Input.StylusDownEventArgs e)
+        {
+            if (sender is System.Windows.Controls.ListView listView)
+            {
+                //var listView = sender as ListView;             
+                // Find the ItemsPresenter (or the ScrollViewer that hosts it)
+                var scrollViewer = FindVisualChild<ScrollViewer>(listView);
+                if (scrollViewer == null)
+                    return;
+
+                // Get the bounds of the ScrollViewer (occupied area)
+                var scrollViewerPosition = scrollViewer.TransformToAncestor(listView).Transform(new System.Windows.Point(0, 0));
+                var scrollViewerBounds = new Rect(scrollViewerPosition, new System.Windows.Size(scrollViewer.ActualWidth, scrollViewer.ActualHeight));
+                
+                // Get the position of the Stylusvar stylusPosition = e.GetPosition(listView);             // Check if the StylusDown occurred outside the ItemsPanel areaif (!scrollViewerBounds.Contains(stylusPosition)) { MessageBox.Show("StylusDown occurred outside the ItemsPanel!"); } else { MessageBox.Show("StylusDown occurred inside the ItemsPanel."); } e.Handled = true; // Mark the event as handled            }
+                                                                                                                                                                                                                                                                                                                                                                                                               //var listView = sender as System.Windows.Controls.ListView;
+                // Get the bounds of the ScrollViewer (occupied area)
+                // var scrollViewerPosition = scrollViewer.TransformToAncestor(listView)                                                    .Transform(new Point(0, 0));             var scrollViewerBounds = new Rect(scrollViewerPosition,                                               new Size(scrollViewer.ActualWidth, scrollViewer.ActualHeight));             // Get the position of the Stylus
+                var stylusPosition = e.GetPosition(listView);
+                // Check if the StylusDown occurred outside the ItemsPanel area
+                if (!scrollViewerBounds.Contains(stylusPosition))
+                {
+                    MessageModalDialog messageModalDialog;
+                    Window parentWindow = Window.GetWindow(this);
+                    if (_ddpmHomePageViewModel!.IsPandoraPaired)
+                    {
+                        messageModalDialog = new(Strings.Error, Strings.PenAlreadyPaired, Strings.Cancel);
+                        if (parentWindow != null)
+                        {
+                            messageModalDialog.Owner = parentWindow;
+                        }
+                        messageModalDialog.ShowDialog();
+                        return;
+                    }
+                    messageModalDialog = new(Strings.PairYourPen, Strings.PairYourPenMessage, Strings.No, Strings.Yes);
+                    if (parentWindow != null)
+                    {
+                        messageModalDialog.Owner = parentWindow;
+                    }
+                    if (messageModalDialog.ShowDialog()!.Value)
+                    {
+                        DdpmCommonHelper.DeviceManagerSA!.PairingPen();
+                    }
+                }
+                else
+                {
+
+                }
+                e.Handled = true; 
+            }
+        }
+
+        private static T? FindVisualChild<T>(DependencyObject obj) where T : DependencyObject
+        {
+            for (int i = 0; i < VisualTreeHelper.GetChildrenCount(obj); i++)
+            {
+                var child = VisualTreeHelper.GetChild(obj, i);
+                if (child is T t)
+                    return t;
+
+                var childOfChild = FindVisualChild<T>(child);
+                if (childOfChild != null)
+                    return childOfChild;
+            }
+            return null;
         }
     }
 }

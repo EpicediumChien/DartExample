@@ -2,7 +2,9 @@
 using DDPM.UI.Common;
 using DDPM.UI.Common.Models;
 using DDPM.UI.Plugin.DdpmHomePlugin.Interfaces;
+using Dell.Client.Framework.Common;
 using Dell.Client.Framework.UX.WPF;
+using Dell.Client.Framework.UX.WPF.Controls;
 using System;
 using System.Collections.Generic;
 using System.Drawing.Drawing2D;
@@ -23,7 +25,7 @@ namespace DDPM.UI.Plugin.WalkThroughPlugin
         public string _currentDeviceModel = string.Empty;
         private Dictionary<string, List<WalkThroughPageData>> _devicePages = DDPM.UI.WalkThroughData.WalkThroughData.GetDevicePages((int)DdpmCommonHelper.previousOsTheme);
         public object _currentDeviceinfo = string.Empty;
-        private string last_logicalDeviceType = string.Empty;
+        public string last_logicalDeviceType = string.Empty;
 
         public WalkThroughPageViewModel()
         {
@@ -33,9 +35,17 @@ namespace DDPM.UI.Plugin.WalkThroughPlugin
                 IsDDPMVisibility = true;
                 //IsOtherVisibility = false;
                 //初始頁固定
-                Img1Source = DdpmCommonHelper.GetImageSourceFromCommonResource("WalkThrough/DDPM/DDPM1-1.png", "DDPM.UI.WalkThroughData");
-                Img2Source = DdpmCommonHelper.GetImageSourceFromCommonResource("WalkThrough/DDPM/DDPM1-2.png", "DDPM.UI.WalkThroughData");
-                //Img3Source = DdpmCommonHelper.GetImageSourceFromCommonResource("WalkThrough/DDPM/DDPM2.png", "DDPM.UI.WalkThroughData");
+                if (DdpmCommonHelper.previousOsTheme == (OSThemeEnum)1)
+                {
+                    Img1Source = DdpmCommonHelper.GetImageSourceFromCommonResource("WalkThrough/DDPM/DDPM1-1.png", "DDPM.UI.WalkThroughData");
+                    Img2Source = DdpmCommonHelper.GetImageSourceFromCommonResource("WalkThrough/DDPM/DDPM1-2.png", "DDPM.UI.WalkThroughData");
+                    //Img3Source = DdpmCommonHelper.GetImageSourceFromCommonResource("WalkThrough/DDPM/DDPM2.png", "DDPM.UI.WalkThroughData");
+                }
+                else
+                {
+                    Img1Source = DdpmCommonHelper.GetImageSourceFromCommonResource("WalkThrough/DDPM/Light_Mode/DDPM1-1.png", "DDPM.UI.WalkThroughData");
+                    Img2Source = DdpmCommonHelper.GetImageSourceFromCommonResource("WalkThrough/DDPM/Light_Mode/DDPM1-2.png", "DDPM.UI.WalkThroughData");
+                }
             }
             else
             {
@@ -61,6 +71,7 @@ namespace DDPM.UI.Plugin.WalkThroughPlugin
                 }
                 else
                 {
+                    UpdateLastlogicalDeviceType();
                     // If _devicePages No ModelNumber, remove and next 
                     DdpmHomePlugin.DdpmHomePlugin.WalkThroughQueue.RemoveAt(0);
                 }
@@ -118,10 +129,7 @@ namespace DDPM.UI.Plugin.WalkThroughPlugin
             }
             else
             {
-                if(DdpmHomePlugin.DdpmHomePlugin.WalkThroughQueue.Count == 1)
-                {
-                    last_logicalDeviceType = DdpmHomePlugin.DdpmHomePlugin.WalkThroughQueue[0].ModelType;
-                }
+                UpdateLastlogicalDeviceType();
                 DdpmHomePlugin.DdpmHomePlugin.WalkThroughQueue.RemoveAt(0);
                 if (DdpmHomePlugin.DdpmHomePlugin.WalkThroughQueue.Count > 0)
                 {
@@ -185,6 +193,14 @@ namespace DDPM.UI.Plugin.WalkThroughPlugin
                     _showPluginManager?.ShowHomePage();
                     break;
             }
+            ControlIcon(true);
+        }
+        public void UpdateLastlogicalDeviceType()
+        {
+            if (DdpmHomePlugin.DdpmHomePlugin.WalkThroughQueue.Count == 1)
+            {
+                last_logicalDeviceType = DdpmHomePlugin.DdpmHomePlugin.WalkThroughQueue[0].ModelType;
+            }
         }
 
         public void UpdateButtonVisibility()
@@ -192,6 +208,19 @@ namespace DDPM.UI.Plugin.WalkThroughPlugin
             // refresh button
             ArrowButtonVisibility = (_currentPageIndex == 0) ? Visibility.Collapsed : Visibility.Visible;
             SkipButtonVisibility = _currentPageIndex < _currentTotalPage ? Visibility.Visible : Visibility.Collapsed;
+        }
+
+        public void ControlIcon(bool show_hide)
+        {
+            IConsole? console = DdpmCommonHelper.MyConsole;
+            if (console != null)
+            {
+
+                var args = new EventManagerArgs();
+                args.Tag = show_hide; //true=Show, false=Hide
+                console.RaiseEvent(ConsoleEventNames.Masthead_ShowAddDeviceIcon, this, args);
+                console.RaiseEvent(ConsoleEventNames.Masthead_ShowSettingsIcon, this, args);
+            }
         }
 
         private Visibility _arrowButtonVisibility = Visibility.Visible;

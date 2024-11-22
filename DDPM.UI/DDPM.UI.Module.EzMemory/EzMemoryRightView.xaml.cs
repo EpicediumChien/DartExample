@@ -206,16 +206,16 @@ namespace DDPM.UI.Module.EzMemory
                 if (clickedEAProfileDDPM != null)
                 {
                     // 找相同 ID 的 Profile ID
-                    EAProfileDDPM profileToRemove = clickedEAProfileDDPM.FirstOrDefault(p => p.ID == spItem.LayoutID);
+                    EAProfileDDPM profileToRemove = clickedEAProfileDDPM.FirstOrDefault(p => p.ID == spItem.ProfileID);//LayoutID);
 
                     if (profileToRemove != null)
                     {
                         _vm.currentEditprofile = profileToRemove;
-                        _log.Info($"@[EzMemoryRightView] OnListViewItemEdited, Profile with ID {spItem.LayoutID} removed from UserSettings.");
+                        _log.Info($"@[EzMemoryRightView] OnListViewItemEdited, Profile with ID {spItem.ProfileID} removed from UserSettings.");
                     }
                     else
                     {
-                        _log.Info($"@[EzMemoryRightView] OnListViewItemEdited, Profile with ID {spItem.LayoutID} not found in UserSettings.");
+                        _log.Info($"@[EzMemoryRightView] OnListViewItemEdited, Profile with ID {spItem.ProfileID} not found in UserSettings.");
                     }
                 }
                 else
@@ -236,16 +236,16 @@ namespace DDPM.UI.Module.EzMemory
                 if (_easyArrangementDDPM != null && _easyArrangementDDPM.Desktops.Count > 0)
                 {
                     // 找相同 ID
-                    EzProfileSettingDDPM profileSettingToRemove = _easyArrangementDDPM.Desktops[0].ProfileSettings.FirstOrDefault(ps => ps.ID == spItem.LayoutID);
+                    EzProfileSettingDDPM profileSettingToRemove = _easyArrangementDDPM.Desktops[0].ProfileSettings.FirstOrDefault(ps => ps.ID == spItem.ProfileID);//LayoutID);
 
                     if (profileSettingToRemove != null)
                     {
                         _vm.currentEditprofileSetting = profileSettingToRemove;
-                        _log.Info($"@[EzMemoryRightView] OnListViewItemEdited, ProfileSetting with Monitor Model {_homeDevice.MonitorInfo.modelName}, ID {spItem.LayoutID} removed from MonitorSettings.");
+                        _log.Info($"@[EzMemoryRightView] OnListViewItemEdited, ProfileSetting with Monitor Model {_homeDevice.MonitorInfo.modelName}, ID {spItem.ProfileID} removed from MonitorSettings.");
                     }
                     else
                     {
-                        _log.Info($"@[EzMemoryRightView] OnListViewItemEdited, ProfileSetting with Monitor Model {_homeDevice.MonitorInfo.modelName}, ID {spItem.LayoutID} not found in MonitorSettings.");
+                        _log.Info($"@[EzMemoryRightView] OnListViewItemEdited, ProfileSetting with Monitor Model {_homeDevice.MonitorInfo.modelName}, ID {spItem.ProfileID} not found in MonitorSettings.");
                     }
                 }
                 else

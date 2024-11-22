@@ -29,7 +29,7 @@ namespace DDPM.UI.Module.DisplayProperties
             vm.Invoke_RefreshData();
         }
 
-        public string ModuleName { get => "DisplayPropertiesModule"; }
+        public string ModuleName { get => Constants.ModuleName_DisplayProperties; } //"DisplayPropertiesModule"
 
         public UserControl? GetLeftView()
         {
@@ -84,6 +84,7 @@ namespace DDPM.UI.Module.DisplayProperties
 
         public void OnDeactivated()
         {
+            
         }
 
         #endregion Event Handlers

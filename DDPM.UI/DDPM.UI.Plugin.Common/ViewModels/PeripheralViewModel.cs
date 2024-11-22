@@ -13,10 +13,12 @@ using Microsoft;
 using System.Collections.ObjectModel;
 using System.Runtime.CompilerServices;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Threading;
+using static System.Net.Mime.MediaTypeNames;
 using MessageBox = System.Windows.MessageBox;
 using UserControl = System.Windows.Controls.UserControl;
 
@@ -57,6 +59,7 @@ namespace DDPM.UI.Plugin.ViewModels
         public List<string> EOLMouseList = new() { "WK717", "KM714", "KM717", "WM126", "WM116", "WM326", "WM527", "WM514", "UV514" };
         //public DDPMSettings? DDPMSettings;
         //public WebcamSettings WebcamSettings = new();
+
         public PeripheralViewModel(IConsole console, ILog log, IDeviceManagerSA deviceManager)
         {
             Requires.NotNull(console, nameof(console));
@@ -101,7 +104,7 @@ namespace DDPM.UI.Plugin.ViewModels
             int i = 0;
             foreach (var info in DeviceInfos.Values)
             {
-                if (info.ModelNumber == Model)
+                if (MappingModel(info.ModelNumber) == Model)
                 {
                     i++;
                     //OnPropertyChanged(nameof(MultiDevicesInfoVisibility));
@@ -113,6 +116,17 @@ namespace DDPM.UI.Plugin.ViewModels
             else
                 MultiDevicesInfoVisibility = Visibility.Collapsed;
             OnPropertyChanged(nameof(MultiDevicesInfoVisibility));
+        }
+
+        private void CheckCopilot()
+        {
+            string regPath2 = $@"SOFTWARE\Dell\Dell Display And Peripheral Manager\UserSettings\Local";
+            string regKey2 = $"IsFirstTimeWalkThroughDone_com.dell.DPM.Plugin.LogicalDevice.DDPM";
+            var regValue2 = DdpmCommonHelper.DeviceManagerSA!.ReadRegistryData(RegistryHive.LocalMachine, regPath2, regKey2).Result;
+            string regPath = $@"SOFTWARE\Policies\Microsoft\Windows\WindowsCopilot";
+            string regKey = $"TurnOffWindowsCopilot";
+            var regValue = DdpmCommonHelper.DeviceManagerSA!.ReadRegistryData(RegistryHive.CurrentUser, regPath, regKey).Result;
+            Actions.IsCopilotEnabled = regValue == null || Convert.ToInt32(regValue) != 1;
         }
 
         public bool IsIDInvalid = false;
@@ -159,29 +173,9 @@ namespace DDPM.UI.Plugin.ViewModels
                 IsIDInvalid = true;
                 return false;
             }
-            switch (CurrentDeviceInfo.ModelNumber)
-            {
-                case "KB740":
-                case "KB7120W":
-                    Model = "KB740";
-                    break;
-                case "KB500":
-                case "KB3121W":
-                    Model = "KB500";
-                    break;
-                case "KB700":
-                case "KB7221W":
-                    Model = "KB700";
-                    break;
 
-                case "MS300":
-                case "MS3121W":
-                    Model = "MS300";
-                    break;
-                default:
-                    Model = CurrentDeviceInfo.ModelNumber;
-                    break;
-            }
+            CheckCopilot();
+            Model = MappingModel(CurrentDeviceInfo.ModelNumber);
             Name = CurrentDeviceInfo.Name;
             if (CurrentDeviceInfo.Type == DeviceType.PhysicalWiredDock || CurrentDeviceInfo.Type == DeviceType.LogicalDock)
             {
@@ -215,6 +209,7 @@ namespace DDPM.UI.Plugin.ViewModels
             {
                 case DeviceType.PhysicalWebcam:
                     ConnectionType = "Wired";
+                    Name = Name.Replace(Model, "").Trim();
                     break;
                 case DeviceType.PhysicalAudioDongle:
                 case DeviceType.PhysicalBluetoothAudio:
@@ -276,6 +271,31 @@ namespace DDPM.UI.Plugin.ViewModels
 
             CurrentCursor = Cursors.Arrow;
             return true;
+        }
+
+        private string MappingModel(string modelNumber)
+        {
+            switch (modelNumber)
+            {
+                case "KB740":
+                case "KB7120W":
+                    return "KB740";
+
+                case "KB500":
+                case "KB3121W":
+                    return "KB500";
+
+                case "KB700":
+                case "KB7221W":
+                    return "KB700";
+
+                case "MS300":
+                case "MS3121W":
+                    return "MS300";
+
+                default:
+                    return modelNumber;
+            }
         }
 
         public virtual void HandleNotification(DeviceChangedType changeType, DeviceInfo di, string property = "")
@@ -1214,6 +1234,17 @@ namespace DDPM.UI.Plugin.ViewModels
                     OnPropertyChanged();
                 }
             }
+        }
+
+        public bool CheckChar(string ch)
+        {
+            //if (char.IsLetterOrDigit(ch))
+            //    return true;
+            //if (ch == ' ' || ch == '@' || ch == 'e')
+            //    return true;
+            //return false;
+            Regex regex = new Regex("^[0-9a-zA-Z @-]+$");
+            return regex.IsMatch(ch);
         }
 
         #region Handle Module Activated/Deactivated

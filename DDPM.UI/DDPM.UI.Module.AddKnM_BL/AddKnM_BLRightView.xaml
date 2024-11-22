@@ -15,7 +15,7 @@
     <UserControl.Resources>
         <ResourceDictionary>
             <Style x:Key="TextStyle1" TargetType="UXControls:UXTextBlock">
-                <Setter Property="Foreground" Value="White" />
+                <Setter Property="Foreground" Value="{DynamicResource AddDeviceTextStyle1_TxtColor}" />
                 <Setter Property="FontFamily" Value="Roboto" />
                 <Setter Property="FontSize" Value="16" />
                 <Setter Property="FontWeight" Value="Normal" />
@@ -36,26 +36,27 @@
                 <Setter Property="HorizontalAlignment" Value="Left" />
             </Style>
             <Style x:Key="Border1" TargetType="Border">
-                <Setter Property="Background" Value="#99132F54" />
+                <!-- <Setter Property="Background" Value="#99132F54" />-->
+                <Setter Property="Background" Value="{DynamicResource AddDeviceBorder1_BgColor}" />
                 <Setter Property="CornerRadius" Value="13" />
                 <!-- Setter Property="Width" Value="303" / -->
                 <!--Setter Property="Height" Value="262" / -->
                 <Setter Property="VerticalAlignment" Value="Top" />
                 <Setter Property="BorderThickness" Value="2" />
-                <Setter Property="BorderBrush" Value="#132F54" />
+                <Setter Property="BorderBrush" Value="{DynamicResource Border1BorderBrush}" />
                 <Setter Property="Margin" Value="7,7,0,7"/>
             </Style>
         </ResourceDictionary>
     </UserControl.Resources>
     <Grid>
         <UXControls:UXScrollViewer>
-            <Border>
+            <Border Background="Transparent">
                 <StackPanel Orientation="Vertical" x:Name="topStackPanel">
                     <UXControls:UXTextBlock Name="txtCaption" FontFamily="Roboto" FontSize="20" FontWeight="Normal"
-                                    Margin="18,14,0,0" Foreground="White"
+                                    Margin="18,14,0,0" Foreground="{DynamicResource AddDeviceTxtCaption_TxtColor}"
                                     VerticalAlignment="Top" HorizontalAlignment="Left" Text="{Binding [AddDevice.KnM.0], Source={x:Static lang:LangHelper.Instance}}"/>
                     <UXControls:UXTextBlock Name="txtCaption2" Margin="18,17,0,0" FontFamily="Roboto"
-                                    HorizontalAlignment="Left" Foreground="#FFFFFF" FontSize="14" FontWeight="Normal" 
+                                    HorizontalAlignment="Left" Foreground="{DynamicResource AddDeviceTxtCaption_TxtColor}" FontSize="14" FontWeight="Normal" 
                                             TextWrapping="WrapWithOverflow" Width="{Binding Path=ActualWidth, ElementName=stepsStackPanel}"
                                             Text="{Binding [AddDevice.KnM.1], Source={x:Static lang:LangHelper.Instance}}"/>
                     

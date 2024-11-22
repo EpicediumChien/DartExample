@@ -331,6 +331,8 @@ namespace DDPM.UI.Module.PipPbp
         {
             IsBusy = false;
 
+            OnPropertyChanged_AllCapabilities();
+
             //If BackgroundWorker. WorkerSupportsCancellation is true, and you set e.Cancel=true in DoWorker
             if (e.Cancelled)
             {
@@ -408,7 +410,8 @@ namespace DDPM.UI.Module.PipPbp
 
             //In below code section, we will build a List<VideoSwapComboBoxInputSourceItem> as the ItemSource of ComboBoxes
             //
-            List<VideoSwapComboBoxInputSourceItem> videoSwapList = new List<VideoSwapComboBoxInputSourceItem>();
+            //List<VideoSwapComboBoxInputSourceItem> videoSwapList = new List<VideoSwapComboBoxInputSourceItem>();
+            VideoSwapItems.Clear();
             int idxSource = 0;
             if (inputList != null)
             {
@@ -421,13 +424,14 @@ namespace DDPM.UI.Module.PipPbp
                         USBUpstream = inputItem.Value.USBUpstream,
                         Code = inputItem.Value.Code
                     };
-                    videoSwapList.Add(cbItem);
+                    VideoSwapItems.Add(cbItem);
                     LogInfo($"  [{idxSource}] {cbItem.DisplayName}");
                     idxSource++;
                 }
             }
             //Assign to ViewModel.VideoSwapItems
-            VideoSwapItems = videoSwapList;
+            //VideoSwapItems = videoSwapList;
+            //OnPropertyChanged("VideoSwapItems");
 
             //Get current Main InputSource from MonitorInfo
             //
@@ -437,8 +441,16 @@ namespace DDPM.UI.Module.PipPbp
             //Robert_Lin, 2024-10-31, Change to VideoSwapComboBoxInputSourceItem type
             if (VideoSwapItems != null)
             {
-                _mainInputSource = VideoSwapItems.Find(x => x.InputSourceKey.Equals(currentInput, StringComparison.OrdinalIgnoreCase));
-                OnPropertyChanged("MainInputSource");
+                _mainInputSource = null;
+                //int idxMain = VideoSwapItems.FindIndex(x => x.InputSourceKey.Equals(currentInput, StringComparison.OrdinalIgnoreCase));
+                //if (idxMain >= 0)
+                //{
+                //    _mainInputSource = VideoSwapItems[idxMain];
+                //    OnPropertyChanged("MainInputSource");
+                //}
+                VideoSwapComboBoxInputSourceItem? selItem = VideoSwapItems.Find(x => x.InputSourceKey.Equals(currentInput, StringComparison.OrdinalIgnoreCase));
+                MainInputSource = selItem;
+                //OnPropertyChanged("MainInputSource");
             }
             if (_mainInputSource == null)
             {
@@ -513,6 +525,10 @@ namespace DDPM.UI.Module.PipPbp
                 //Not support SubInput or fail to query
                 LogInfo("=> SubInputSources error");
             }
+
+            //OnPropertyChanged("VideoSwapItems");
+            //OnPropertyChanged("MainInputSource");
+
             sw.Stop();
             LogInfo($"  * RefreshInputSourceList done, elapsed {sw.ElapsedMilliseconds} msec.");
             e.Result = "OK";
@@ -802,7 +818,45 @@ namespace DDPM.UI.Module.PipPbp
             string pxpCapString = capabilityString.Substring(idxPipPbpCapsStart, pipPbpCapsLen);
             LogInfo($"  * PxpCapabilitise={pxpCapString}");
             _pipPbpCaps = DdpmCommonHelper.ParsingHexStringToWords(pxpCapString);
+
+            OnPropertyChanged_AllCapabilities();
             return true;
+        }
+
+        public void OnPropertyChanged_AllCapabilities()
+        {
+            OnPropertyChanged("HasCapability_PipSmall");
+            OnPropertyChanged("HasCapability_PipLarge");
+            OnPropertyChanged("HasCapability_PipTogglePosition");
+            OnPropertyChanged("HasCapabiliy_AnyPip");
+        }
+        public bool HasCapability_PipSmall
+        {
+            get { return HasPxpCap(PipMode_Small); }
+            //get { return false; }
+        }
+        public bool HasCapability_PipLarge
+        {
+            get { return HasPxpCap(PipMode_Large); }
+            //get { return false; }
+        }
+        public bool HasCapability_PipTogglePosition
+        {
+            get { return HasPxpCap(PipMode_PositionToggle); }
+            //get { return false; }
+        }
+        public bool HasCapabiliy_AnyPip
+        {
+            get
+            {
+                if (HasCapability_PipSmall)
+                    return true;
+                if (HasCapability_PipLarge)
+                    return true;
+                if (HasCapability_PipTogglePosition)
+                    return true;
+                return false;
+            }
         }
 
         #endregion PIP/PBP Capabilities
@@ -998,28 +1052,28 @@ namespace DDPM.UI.Module.PipPbp
 
         //Robert_Lin, 2024-10-31, Unused, to be removed
         //Debug purpose
-        private List<InputInfo> GetFakeInputSourceList()
-        {
-            List<InputInfo> fakeList = new List<InputInfo>();
-            fakeList.Add(new InputInfo() { InputName = "HDMI-1" });
-            fakeList.Add(new InputInfo() { InputName = "HDMI-2" });
-            fakeList.Add(new InputInfo() { InputName = "USB-C1" });
-            return fakeList;
-        }
+        //private List<InputInfo> GetFakeInputSourceList()
+        //{
+        //    List<InputInfo> fakeList = new List<InputInfo>();
+        //    fakeList.Add(new InputInfo() { InputName = "HDMI-1" });
+        //    fakeList.Add(new InputInfo() { InputName = "HDMI-2" });
+        //    fakeList.Add(new InputInfo() { InputName = "USB-C1" });
+        //    return fakeList;
+        //}
 
         //Robert_Lin, 2024-10-31, Unused, to be removed
-        private void OnMainInputSourceSelectionChanged()
-        {
-        }
+        //private void OnMainInputSourceSelectionChanged()
+        //{
+        //}
 
         //Robert_Lin, 2024-10-31, Unused, to be removed
-        private int InputSourceCount
-        {
-            get
-            {
-                return _inputSourceList.Count;
-            }
-        }
+        //private int InputSourceCount
+        //{
+        //    get
+        //    {
+        //        return _inputSourceList.Count;
+        //    }
+        //}
 
         #endregion InputSourceList
 
@@ -1033,13 +1087,36 @@ namespace DDPM.UI.Module.PipPbp
             get => _mainInputSource;
             set
             {
-                bool isNeedUpdateToDevice =
-                //It's  NOT the first time set value (we assume it's assigned from RefreshData())
-                (_mainInputSource != null) &&
-                //AND value is changed
-                (_mainInputSource != value);
+                bool isNeedUpdateToDevice = false;
 
-                SetProperty(ref _mainInputSource, value);
+                //It's  NOT the first time set value (we assume it's assigned from RefreshData())
+                if ( _mainInputSource != null) 
+                {
+                    if (value == null)
+                    {
+                        //Accept this null value, but do not update to DeviceManager
+                        SetProperty(ref _mainInputSource, value);
+                        return;
+                    }
+                    else
+                    {
+                        //Value is changed
+                        if (_mainInputSource.Code != value.Code)
+                        {
+                            //AND value is changed
+                            isNeedUpdateToDevice = true;
+                        }
+                        SetProperty(ref _mainInputSource, value);
+                    }
+                }
+                else
+                {
+                    //_mainInputSource is null, it may be changed from init state
+                    //Accept this value, but don't update to DeviceManager
+                    isNeedUpdateToDevice = false;
+                    SetProperty(ref _mainInputSource, value);
+                }
+
                 if (isNeedUpdateToDevice)
                 {
                     BackgroundWorker bw = new BackgroundWorker()
@@ -1137,7 +1214,7 @@ namespace DDPM.UI.Module.PipPbp
                 (_sub1InputSource != value);
 
                 SetProperty(ref _sub1InputSource, value);
-                if (isNeedUpdateToDevice)
+                if (isNeedUpdateToDevice && (_sub1InputSource != null))
                 {
                     BackgroundWorker bw = new BackgroundWorker()
                     {
@@ -1172,7 +1249,7 @@ namespace DDPM.UI.Module.PipPbp
                 (_sub2InputSource != value);
 
                 SetProperty(ref _sub2InputSource, value);
-                if (isNeedUpdateToDevice)
+                if (isNeedUpdateToDevice && (_sub2InputSource != null))
                 {
                     BackgroundWorker bw = new BackgroundWorker()
                     {
@@ -1208,7 +1285,7 @@ namespace DDPM.UI.Module.PipPbp
                 (_sub3InputSource != value);
 
                 SetProperty(ref _sub3InputSource, value);
-                if (isNeedUpdateToDevice)
+                if (isNeedUpdateToDevice && (_sub3InputSource!= null))
                 {
                     BackgroundWorker bw = new BackgroundWorker()
                     {

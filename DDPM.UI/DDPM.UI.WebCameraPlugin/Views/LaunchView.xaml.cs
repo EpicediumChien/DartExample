@@ -50,6 +50,7 @@ using LangHelper = DDPM.UI.Resources.Helper.LangHelper;
 using MessageBox = System.Windows.MessageBox;
 using WebcamProfile = DDPM.UI.Common.WebcamProfile;
 using System.Windows.Threading;
+using System.Windows.Forms.VisualStyles;
 
 namespace DDPM.UI.Plugin.WebCameraPlugin
 {
@@ -88,6 +89,8 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
 
         public Thread status_thread = null;
         public bool exit_status_thread = false;
+
+        enum PresenceDetectionView { InternalUPDSupport, MicrosoftHPDSupport, MicrosoftHPDNotSupport }
 
         public LaunchView()
         {
@@ -198,12 +201,13 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             in_CameraPlugin = true;
         }
 
+        bool WebcamGrid_old_ststus = false;
         private void status_change()
         {
 
             if (!in_CameraPlugin) return;
+            if (_vm == null) return;
 
-            //每一秒檢測一下前警景與背景狀態,以及Camera狀態
             if (_vm.running_state)
             {
                 if (_vm!.MediaCapture == null || _vm.MediaFrameReader == null)
@@ -213,6 +217,11 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                         imgDevice.Visibility = Visibility.Hidden;
                         Preview();
                         CameraImage.Visibility = Visibility.Visible;
+
+                        //恢復9宮格線
+                        _vm.WebcamGrid = WebcamGrid_old_ststus;
+
+
                     });
 
                 }
@@ -221,10 +230,13 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             {
                 if (_vm!.MediaCapture != null || _vm.MediaFrameReader != null)
                 {
-                    _ = CameraImage.Dispatcher.BeginInvoke(() =>
+                    _ = CameraImage.Dispatcher.BeginInvoke(async () =>
                     {
                         CameraImage.Visibility = Visibility.Hidden;
-                        _ = CleanupMediaCaptureAsync();
+                        _= CleanupMediaCaptureAsync();
+
+                        WebcamGrid_old_ststus = _vm.WebcamGrid;
+                        _vm.WebcamGrid = false;
 
                         imgDevice.Visibility = Visibility.Visible;
                         DoubleAnimation visibilityAnimation = new()
@@ -458,7 +470,11 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             {
                 DdpmCommonHelper.DeviceManagerSA.ITSettingsActionEvent -= DeviceManagerSA_ITSettingsActionEvent;
             }
-            _vm!.MediaFrameReader!.FrameArrived -= MediaFrameReader_FrameArrived;
+            try
+            {
+                _vm!.MediaFrameReader!.FrameArrived -= MediaFrameReader_FrameArrived;
+            }
+            catch{ }
             _vm.ProfilePropertyChanged -= ProfilePropertyChanged;
             _vm.WebcamSettingChanged -= WebcamSettingChanged;
             try
@@ -506,9 +522,10 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
 
             if (_vm!.Model == "WB7022" || _vm.Model == "P2424HEB" || _vm.Model == "P2724DEB" || _vm.Model == "P3424WEB" || _vm.Model == "U3223QZ" || _vm.Model == "U3224KB" || _vm.Model == "U3224KBA")
             {
-                bool blRet = true;
+                //bool blRet = true;
 
-                blRet = CheckPresenceDetection_UI();
+                //blRet = CheckPresenceDetection_UI();
+                GetPresenceDetectionView();
 
                 moduleGroup = new ModuleGroup()
                 {
@@ -1360,6 +1377,35 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             _vm.TooltipVisibility = Visibility.Collapsed;
         }
 
+        //Derek 1115 for Webcam PIMS 319099 and 319086
+        private PresenceDetectionView GetPresenceDetectionView()
+        {
+            if (_vm!.CurrentDeviceInfo!.IsESISupported)
+            {
+                _vm.UPD_Visibility = Visibility.Visible;
+                _vm.MPS_Setting_Visibility = Visibility.Collapsed;
+                _vm.MPS_UpdateFW_Visibility = Visibility.Collapsed;
+
+                return PresenceDetectionView.InternalUPDSupport;
+            }
+            else if (_vm!.CurrentDeviceInfo!.IsWindowsHelloSupported)
+            {
+                _vm.UPD_Visibility = Visibility.Collapsed;
+                _vm.MPS_Setting_Visibility = Visibility.Visible;
+                _vm.MPS_UpdateFW_Visibility = Visibility.Collapsed;
+
+                return PresenceDetectionView.MicrosoftHPDSupport;
+            }
+            else
+            {
+                _vm.UPD_Visibility = Visibility.Collapsed;
+                _vm.MPS_Setting_Visibility = Visibility.Collapsed;
+                _vm.MPS_UpdateFW_Visibility = Visibility.Visible;
+
+                return PresenceDetectionView.MicrosoftHPDNotSupport;
+            }
+        }
+
         private bool CheckPresenceDetection_UI()
         {
             bool blWebcamFW_UPD = false;
@@ -1488,6 +1534,16 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
         private void RightFrame_SizeChanged(object sender, SizeChangedEventArgs e)
         {
             ChangeDevNameWidth();
+        }
+
+        private void txtSearchText_PreviewTextInput(object sender, TextCompositionEventArgs e)
+        {
+            e.Handled = !_vm!.CheckChar(e.Text);
+        }
+
+        private void UserControl_Loaded(object sender, RoutedEventArgs e)
+        {
+           NarratorModeSupport.RecurseUitems( start) ;
         }
     }
 }

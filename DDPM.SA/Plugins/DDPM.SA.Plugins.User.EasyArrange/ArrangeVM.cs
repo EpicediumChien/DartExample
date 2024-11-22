@@ -1156,7 +1156,8 @@ namespace DDPM.SA.Plugins.User.EasyArrange
         {
             if (Log != null)
             {
-                Log.Info(message);
+                string logDatetime = DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss.fff");
+                Log.Info($"[{logDatetime}] {message}");
             }
         }
 

@@ -28,6 +28,8 @@ namespace DDPM.SA.Plugins.User.EasyArrange
         public EAEditWindow()
         {
             InitializeComponent();
+            //You should not use this class, you should use the EAEditWindow in EABroker instead
+            throw new NotImplementedException();
         }
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
@@ -65,7 +67,8 @@ namespace DDPM.SA.Plugins.User.EasyArrange
         #region Log
         private void LogInfo(string msg)
         {
-            _log?.Info(msg);
+            string logDatetime = DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss.fff");
+            _log?.Info($"[{logDatetime}] {msg}");
         }
         #endregion Log
 

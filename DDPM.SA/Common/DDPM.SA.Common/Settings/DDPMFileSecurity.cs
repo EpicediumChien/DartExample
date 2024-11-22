@@ -28,19 +28,6 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace DDPM.SA.Common.Settings
 {
-    public class ICC_SupportDeviceName
-    {
-        public string File { get; set; } = string.Empty;
-        public string ColorPreset { get; set; } = string.Empty;
-        public string SHA256 { get; set; } = string.Empty;
-    }
-
-    public class IIC_Metadata
-    {
-        public string Signature { get; set; } = string.Empty;
-        public Dictionary<string, List<ICC_SupportDeviceName>> _support_ICC_DeviceName = new Dictionary<string, List<ICC_SupportDeviceName>>() { };
-    }
-
     public class DDPMFileSecurity
     {
         private static void WriteLog(ILog log, string message, bool isError = false)
@@ -464,7 +451,7 @@ namespace DDPM.SA.Common.Settings
             return false;
         }
 
-        public static uint GetCheckSum(byte[] content, int count)
+        /*public static uint GetCheckSum(byte[] content, int count)
         {
             uint num = 0u;
             for (int i = 0; i < count; i++)
@@ -472,13 +459,13 @@ namespace DDPM.SA.Common.Settings
                 num += content[i];
             }
             return num;
-        }
+        }*/
 
-        public static byte[] GetSHA256(byte[] message, int offset, int count)
+        /*public static byte[] GetSHA256(byte[] message, int offset, int count)
         {
             using SHA256 sHA = SHA256.Create();
             return sHA.ComputeHash(message, offset, count);
-        }
+        }*/
 
         /// <summary>
         /// This function is used to provide hash as file checksum or json content signature
@@ -487,16 +474,16 @@ namespace DDPM.SA.Common.Settings
         /// <param name="offset"></param>
         /// <param name="count"></param>
         /// <returns></returns>
-        public static byte[] GetSHA512(byte[] message, int offset, int count)//output 64bytes=512bits
+        /*public static byte[] GetSHA512(byte[] message, int offset, int count)//output 64bytes=512bits
         {
             using SHA512 sHA = SHA512.Create();
             return sHA.ComputeHash(message, offset, count);
-        }
+        }*/
 
-        private static bool CompareByteArrays(byte[] array1, byte[] array2)
+        /*private static bool CompareByteArrays(byte[] array1, byte[] array2)
         {
             return array1.SequenceEqual(array2);
-        }
+        }*/
 
         public static bool IsFilePathValid(string filePath, out string info)
         {
@@ -1162,6 +1149,50 @@ namespace DDPM.SA.Common.Settings
                              .ToArray();
         }
 
+        public static bool VerifyFileCertWithInboxThumbprint(string filePath, out string info)
+        {
+            info = "success";
+            if (!IsFilePathValid(filePath, out info))
+            {
+#if DEBUG
+                Console.WriteLine(info);
+#endif
+                return false;
+            }
+            try
+            {
+                X509Certificate2 cert = LoadFileCertificate(filePath);
+                if (cert == null)
+                {
+                    info = "Can't retrieve cert from file.";
+                    return false;
+                }
+
+                //compare thumbprint
+                //source array DDPM.SA.Obfuscation.ThumbprintHash.certificateHash
+                //Target cert.Thumbprint
+                bool contains = DDPM.SA.Obfuscation.ThumbprintHash.certificateHash.Any(arr => arr.SequenceEqual(ConvertThumbprintToByteArray(cert.Thumbprint)));
+                if (!contains)
+                {
+                    info = $"No matched cert. thumbprint in file is {cert.Thumbprint}";
+                    return false;
+                }
+                if (!VerifyExecutableFileSignature(filePath, out info))
+                {
+#if DEBUG
+                    Console.WriteLine(info);
+#endif
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                info = ex.Message;
+                return false;
+            }
+            return true;
+        }
+
         public static bool VerifyFileCertWithoutThumbprint(string filePath, out string info)
         {
             info = "success";
@@ -1174,27 +1205,6 @@ namespace DDPM.SA.Common.Settings
             }
             try
             {
-                //X509Certificate2 cert = new X509Certificate2(filePath);
-                //if (cert == null)
-                //{
-                //    info = "Can't retrieve cert from file.";
-                //    return false;
-                //}
-
-                //compare thumbprint
-                //source array DDPM.SA.Obfuscation.ThumbprintHash.certificateHash
-                //Target cert.Thumbprint
-                //if(!CheckCertificateIsVaild(cert, ref info))
-                //{                    
-                //    return false;
-                //}
-                //
-                //bool contains = DDPM.SA.Obfuscation.ThumbprintHash.certificateHash.Any(arr => arr.SequenceEqual(ConvertThumbprintToByteArray(cert.Thumbprint)));
-                //if (!contains)
-                //{
-                //    info = $"No matched cert. thumbprint in file is {cert.Thumbprint}";
-                //    return false;
-                //}
                 if (!VerifyExecutableFileSignature(filePath, out info))
                 {
 #if DEBUG
@@ -1242,11 +1252,6 @@ namespace DDPM.SA.Common.Settings
                     info = "Can't retrieve cert from file.";
                     return false;
                 }
-
-                //if (!CheckCertificateIsVaild(cert, ref info))
-                //{
-                //    return false;
-                //}
 
                 //compare thumbprint from input
                 //Target cert.Thumbprint{
@@ -1666,7 +1671,8 @@ namespace DDPM.SA.Common.Settings
             }
             if (needCheckThumbprintInbox)
             {
-                if (!VerifyFileCertWithoutThumbprint(filePath, out info))
+                //if (!VerifyFileCertWithoutThumbprint(filePath, out info))
+                if(!VerifyFileCertWithInboxThumbprint(filePath, out info))
                 {
                     if (log != null)
                         log.Error($"[IsProcessInfoValid] VerifyFileCertWithThumbprint: {info}");
@@ -1907,6 +1913,12 @@ namespace DDPM.SA.Common.Settings
                 return false;
 
             return StartProcessByOptions(log, startInfo, "", "", isLockNeeded, isWaitExitCode);
+        }
+
+        public static X509Certificate2 LoadFileCertificate(string strFilePath)
+        {
+            X509Certificate2 certificate = new X509Certificate2(strFilePath);
+            return certificate;
         }
     }
 }

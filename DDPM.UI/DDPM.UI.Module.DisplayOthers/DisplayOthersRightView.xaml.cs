@@ -1,4 +1,5 @@
-﻿using DDPM.SA.Common.Settings;
+﻿using DDPM.SA.Common;
+using DDPM.SA.Common.Settings;
 using DDPM.UI.Common;
 using DDPM.UI.Plugin.Common;
 using System.Diagnostics;
@@ -27,6 +28,7 @@ namespace DDPM.UI.Module.DisplayOthers
             if (DdpmCommonHelper.DeviceManagerSA != null)
             {
                 DdpmCommonHelper.DeviceManagerSA.ITSettingsActionEvent += DeviceManagerSA_ITSettingsActionEvent;
+                DdpmCommonHelper.DeviceManagerSA.UIUpdateNotify += DeviceManagerSA_UIUpdateNotifyEvent;
 
                 DDPMSettings data = DdpmCommonHelper.ReadDDPMSettings();//DeviceManagerSA.ReloadAppConfigData().Result;
                 if (data != null)
@@ -65,6 +67,7 @@ namespace DDPM.UI.Module.DisplayOthers
             if (DdpmCommonHelper.DeviceManagerSA != null)
             {
                 DdpmCommonHelper.DeviceManagerSA.ITSettingsActionEvent -= DeviceManagerSA_ITSettingsActionEvent;
+                DdpmCommonHelper.DeviceManagerSA.UIUpdateNotify -= DeviceManagerSA_UIUpdateNotifyEvent;
             }
             DisplayOthersViewModel vm = (DisplayOthersViewModel)DataContext;
             if (vm != null)
@@ -145,6 +148,29 @@ namespace DDPM.UI.Module.DisplayOthers
                             Trace.WriteLine($"[SettingsPage] Apply Import/Export(Lock) to lock due to 1 or more settings be locked");
                             vm.OnPropertyChanged_Lock();
                         }
+                    }
+                }));
+            }
+        }
+
+        private void DeviceManagerSA_UIUpdateNotifyEvent(object? sender, SA.Common.UpdateUINotify e)
+        {
+            if (e == null || string.IsNullOrEmpty(e.UI_Field_Name))
+            {
+                Trace.WriteLine("Got [DeviceManagerSA_UIUpdateNotifyEvent] event but its argument is empty!");
+                return;
+            }
+            //Catch event if belong to telemetry consent
+            if (e.UI_Field_Name.ToUpper().Trim().StartsWith("POWERNAP") &&
+                e.UI_Field_Name.ToUpper().Trim().Split(";") != null &&
+                e.UI_Field_Name.ToUpper().Trim().Split(";").Length == 2)
+            {
+                Dispatcher.Invoke(new Action(() =>
+                {
+                    DisplayOthersViewModel vm = (DisplayOthersViewModel)this.DataContext;
+                    if (vm != null)
+                    {
+                        vm.updatePowerNapUISetting();
                     }
                 }));
             }

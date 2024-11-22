@@ -46,8 +46,8 @@ namespace DDPM.SA.Plugins.User.EasyArrange
         private const string pluginName = "EAPlugin";
         private const string pluginVersion = "1.0.0";
         private const string pluginDescription = "This plugin implements EasyArrange Plugin functions.";
-        private const string publisherCompany = "Wistron";
-        private const string publisherWebsite = "https://www.wistron.com";
+        private const string publisherCompany = "Dell Inc.";
+        private const string publisherWebsite = "https://www.dell.com";
         private const string publisherSupport = "This plugin implements EasyArrange Plugin functions.";
         private const string PluginLogId = "EAPlugin";
 
@@ -78,6 +78,11 @@ namespace DDPM.SA.Plugins.User.EasyArrange
         private bool _telementrySchedulerPluginUsable = false;
         private GlobalSettingParam? _globalSettingParam = null;
 
+        //DDPM Subagent Plugins - Hotkey
+        private IHotkey _HotkeyPlugin;
+        private PluginCondition _hotkeyPluginCondition;
+        private readonly object _PluginConditionLock_Hotkey = new object();
+
         //Lock objects
         private readonly object _PluginConditionLock = new object();
 
@@ -92,6 +97,10 @@ namespace DDPM.SA.Plugins.User.EasyArrange
         private DDPM.EABroker.SaveCustomWindow? _saveCustomWindow = null;
         private EAArgs? _eaArgs = null; //Temporary keep when EditCommand(), and add result when EditReturn
 
+        //Edit Overlap Custom process ways
+        //0 = DDM v2 : 1 Show SaveCustomWindow until click "Save"; 2 Frame windows, auto close in 3 sec
+        //1 = DDPM : 1 Show EditWindow and SaveCustomWindow at the same time; 2 Wait until click "Save"
+        private int _editOverlapCutsomWay = 0;
         #endregion Private Members
 
         #region Public members
@@ -182,6 +191,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange
                 InitializeSettingsManagerPlugin();
                 InitializeDeviceManagerPlugin();
                 InitializeDisplayManagerPlugin();
+                InitializeHotkeyPlugin();
             }
 #endif
         }
@@ -459,6 +469,59 @@ namespace DDPM.SA.Plugins.User.EasyArrange
                 }
             });
         }
+
+        // Hotkey Plugin
+        //
+        private void InitializeHotkeyPlugin()
+        {
+            if (_HotkeyPlugin != null)
+                return;
+
+            _HotkeyPlugin = _agent.PluginManager.FindPluginByType<IHotkey>(PluginResolution.Dynamic);
+            if (_HotkeyPlugin is IFrameworkPluginConditionNotification pluginCondition)
+            {
+                pluginCondition.PluginConditionChangeHandler += OnHotkeyPluginConditionChangeHandler;
+                GetCurrentHotkeyPluginCondition();
+            }
+        }
+        private void OnHotkeyPluginConditionChangeHandler(object sender, EventArgs e)
+        {
+            GetCurrentHotkeyPluginCondition();
+        }
+        private void GetCurrentHotkeyPluginCondition()
+        {
+            _ = Task.Run(async () =>
+            {
+                var pluginCondition = await (_HotkeyPlugin as IFrameworkPluginConditionNotification)?.CurrentConditionAsync();
+                //PluginCondition _HotkeyPluginCondition;
+                lock (_PluginConditionLock_Hotkey)
+                {
+                    if (pluginCondition is PluginErrorCondition)
+                    {
+                        WriteLog($"{nameof(GetCurrentHotkeyPluginCondition)} - Hotkey Plugin is in an error condition");
+                        //_HotkeyPluginCondition = pluginCondition;
+                        //unhook keyboard
+                        _HotkeyPlugin.KeyUp -= Keyboard_KeyUpProc;
+                        _HotkeyPlugin.KeyDown -= Keyboard_KeyDownProc;
+                        _HotkeyPlugin.Unhook();
+                    }
+                    else if (pluginCondition is PluginRunningCondition)
+                    {
+                        WriteLog($"{nameof(GetCurrentHotkeyPluginCondition)} - Hotkey Plugin is in a running condition");
+                    }
+                    else if (pluginCondition is PluginStartedCondition)
+                    {
+                        WriteLog($"{nameof(GetCurrentHotkeyPluginCondition)} - Hotkey Plugin is in a started condition");
+                        //_HotkeyPluginCondition = pluginCondition;
+                        //hook keyboard
+                        _HotkeyPlugin.Hook();
+                        _HotkeyPlugin.KeyUp += Keyboard_KeyUpProc;
+                        _HotkeyPlugin.KeyDown += Keyboard_KeyDownProc;
+                    }
+                }
+            });
+        }
+
         private GlobalSettingParam? _GlobalSettingParam
         {
             get
@@ -587,8 +650,8 @@ namespace DDPM.SA.Plugins.User.EasyArrange
         {
             if (_eaBroker != null)
             {
-                _eaBroker.NotifyEASelectedLayoutChanged(monitorInfo, spJson);
-                return Task.FromResult(true);
+                bool res = _eaBroker.NotifyEASelectedLayoutChanged(monitorInfo, spJson);
+                return Task.FromResult(res);
             }
             return Task.FromResult(false);
         }
@@ -696,28 +759,63 @@ namespace DDPM.SA.Plugins.User.EasyArrange
 
             _eaArgs = args;
 
+            //Determine the WorkingArea
+            //
+            Rectangle workingArea = new Rectangle();
+            if (_eaBroker.VM.IsSpanScreenWorking)
+            {
+                workingArea = _eaBroker.VM.SpanWorkingArea;
+            }
+            else
+            {
+                workingArea = scr.WorkingArea;
+            }
+
             //Show EditWindow and SaveCustomWindow, and start editing
             //
             if (_eaArgs.SplitJson.IsOverlapLayout)
             {
-                //1 Signal EditStart event to UI, UI will Minimized to taskbar
-                if (EditStarted != null)
-                    EditStarted(this, "");
+                if (_editOverlapCutsomWay == 0)
+                {
+                    //1 Signal EditStart event to UI, UI will Minimized to taskbar
+                    if (EditStarted != null)
+                        EditStarted(this, "");
 
-                //2 To notify EABroker, we are in Edit process, disable WorkWindow/AwsWindow
-                _eaBroker.VM.IsWorkUIEnabled = false;
+                    //2 To notify EABroker, we are in Edit process, disable WorkWindow/AwsWindow
+                    _eaBroker.VM.IsWorkUIEnabled = false;
 
-                //3 Show SaveCustomWindow, until user click Save or Cancel
-                _saveCustomWindow.ShowAndEdit(args, scr);
+                    //3 Show SaveCustomWindow, until user click Save or Cancel
+                    _saveCustomWindow.ShowAndEdit(args, workingArea);
+                }
+                else //_editOverlapCutsomWay=1
+                {
+                    //1 Show EditWindow
+                    if (!_editWindow.ShowAndEdit(args, workingArea))
+                    {
+                        if (EditStarted != null)
+                        {
+                            EditStarted(this, "Error");
+                        }
+                        return false;
+                    }
 
-                //4 EditWindow will be shown if user click Save later
-                //_editWindow.ShowAndEdit(args, scr);
+                    //2 Show SaveCustomWindow at the same time
+                    _saveCustomWindow.ShowAndEdit(args, workingArea);
+
+                    //3 Signal EditStart event to UI, UI will Minimized to taskbar
+                    if (EditStarted != null)
+                        EditStarted(this, "");
+
+                    //4 To notify EABroker, we are in Edit process, disable WorkWindow/AwsWindow
+                    _eaBroker.VM.IsWorkUIEnabled = false;
+
+                }
             }
             else
             {
                 //Non-Overlap edit steps
                 //1 Show the layout for editing
-                if (!_editWindow.ShowAndEdit(args, scr))
+                if (!_editWindow.ShowAndEdit(args, workingArea))
                 {
                     if (EditStarted != null)
                     {
@@ -727,7 +825,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange
                 }
 
                 //2 Show the SaveCustomWindow in the same time
-                _saveCustomWindow.ShowAndEdit(args, scr);
+                _saveCustomWindow.ShowAndEdit(args, workingArea);
 
                 //3 Signal EditStart event to UI, UI will Minimized to taskbar
                 if (EditStarted != null)
@@ -959,6 +1057,38 @@ namespace DDPM.SA.Plugins.User.EasyArrange
                 }
             }
         }
+
+        /// <summary>
+        /// Set Selected EA Layout by EAID (Robert_Lin, 2024-11-18 not completed)
+        /// It can be used to replace  STA_SetEASelectedLayout(MonitorInfo monitorInfo, SplitJson spJson)
+        /// The SplitJson will be created in thid method from the input EAID, then calling the method above.
+        /// A new method for CLI /WriteEALayout [x]
+        /// </summary>
+        /// <param name="monitorInfo"></param>
+        /// <param name="eaId"></param>
+        /// <returns></returns>
+        public Task<bool> SetEASelectedLayout(MonitorInfo monitorInfo, int eaId)
+        {
+            //EAID=0 => Empty Layout, SplitCtrl0A
+            return Task.FromResult(true);
+        }
+
+        /// <summary>
+        /// Return current Span across multiple monitor option is Enabled/Disabled;
+        /// Note that it's different with EzSettings.IsSpanAcrossMultiMonitors (=ON|OFF)
+        /// </summary>
+        /// <returns>True=Enabled; False=Disabled</returns>
+        public Task<bool> GetIsSpanEnabled()
+        {
+            if (_eaBroker != null)
+            {
+                if (_eaBroker.VM != null)
+                {
+                    return Task.FromResult(_eaBroker.VM.IsSpanEnabled);
+                }
+            }
+            return Task.FromResult(false);
+        }
         #endregion Methods
 
         #endregion IEasyArrangeService Implementation
@@ -1019,7 +1149,8 @@ namespace DDPM.SA.Plugins.User.EasyArrange
 
             //Microsoft.Win32.SystemEvents.DisplaySettingsChanged += SystemEvents_DisplaySettingsChanged;
             _agent.RegisterForEvent(AgentEventNames.DisplaySettingsChanged, DisplaySettingsChangedHandler);
-            _agent.RaiseEvent(AgentEventNames.DisplaySettingsChanged, this, new EventManagerArgs());
+            EventManagerArgs evtArgs = new EventManagerArgs() { Tag = "init" };
+            _agent.RaiseEvent(AgentEventNames.DisplaySettingsChanged, this, evtArgs);
             ConsoleWriteLine(" = = = = = = = = = =   EABroker Exit");
         }
 
@@ -1303,7 +1434,18 @@ namespace DDPM.SA.Plugins.User.EasyArrange
 
             if (_eaBroker != null)
             {
-                _eaBroker.VM.RefreshWorkWindows();
+                bool isInit = false;
+                if (e.Tag != null)
+                {
+                    if (e.Tag is string)
+                    {
+                        if (e.Tag == "init")
+                            isInit = true;
+                    }
+                }
+                _eaBroker.Handle_DisplaySettingsChanged(isInit);
+                //Move blew statement into Handle_DisplaySettingsChanged()
+                //_eaBroker.VM.RefreshWorkWindows();
                 return;
             }
             else
@@ -1759,6 +1901,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange
                     _editWindow = new DDPM.EABroker.EAEditWindow(_log);
                     LogInfo("After new EAEditWindow");
                     _editWindow.Show();
+                    _editWindow.Hide();
 
                     _saveCustomWindow = new DDPM.EABroker.SaveCustomWindow(_deviceManagerPlugin);
                     _saveCustomWindow.Owner = _editWindow;
@@ -1850,10 +1993,11 @@ namespace DDPM.SA.Plugins.User.EasyArrange
         private void EditForOverlapLayout()
         {
             Screen workScreen = _saveCustomWindow.WorkScreen;
+            Rectangle workingArea = _saveCustomWindow.WorkingArea;
 
             //4 When user click "Save" from SaveCustomWindow
             //5 Show the EditWindow to capture Windows and frame them
-            _editWindow.ShowAndEdit(_eaArgs, workScreen);
+            _editWindow.ShowAndEdit(_eaArgs, workingArea);
             _editWindow.EditReturn += _editWindow_EditReturn;
             //6 Delay for 3 sec
         }
@@ -2178,5 +2322,94 @@ namespace DDPM.SA.Plugins.User.EasyArrange
         }
         #endregion Telemetry
 
+        #region Hotkey
+        //public Task<bool> Hook()
+        //{
+        //    bool result = false;
+        //    if (_HotkeyPlugin != null)
+        //    {
+        //        result = _HotkeyPlugin.Hook();
+        //        _HotkeyPlugin.KeyUp += Keyboard_KeyUpProc;
+        //        _HotkeyPlugin.KeyDown += Keyboard_KeyDownProc;
+
+        //        return Task.FromResult(result);
+        //    }
+        //    return Task.FromResult(result);
+        //}
+
+        //public Task<bool> UnHook()
+        //{
+        //    bool result = false;
+        //    if (_HotkeyPlugin != null)
+        //    {
+        //        _HotkeyPlugin.KeyUp -= Keyboard_KeyUpProc;
+        //        _HotkeyPlugin.KeyDown -= Keyboard_KeyDownProc;
+        //        result = _HotkeyPlugin.Unhook();
+        //        return Task.FromResult(result);
+        //    }
+        //    return Task.FromResult(result);
+        //}
+
+        //Robert_Lin, 2024-11-20 for the Shift key option 
+        //To detecte if [Shift] is down in real-time
+        //1 GetAsycKeyStart(ShiftKey) will return the previous state not current.
+        //2 In Keyboard_KeyDownProc() when you pressing LShift (or RShift)
+        //  GetAsycKeyStart(ShiftKey) will return False (Up)
+        //3 Keyboard_KeyDownProc() will be continute called if you hold down the Shift key
+        //  GetAsycKeyStart(ShiftKey) will return True (Down)
+        //4 When you release Shift key, Keyboard_KeyUpProc() will be called once
+        //  GetAsycKeyStart(ShiftKey) will return True (Down)
+        //  => Problem: this event is triggered when Shift key is released
+        //So chnage the logic to check the event Down-Up and record which key are Up/Down
+        //  _isLShiftDown is true when [LShift] is pressing down, and false when it's up
+        //  _isRShiftDown is the same for [RShift]
+        //  To check if any [Shift] is down:  (_isLShiftDown || _isRShiftDown)
+
+        private bool _isLShiftDown = false;
+        private bool _isRShiftDown = false;
+        private void Keyboard_KeyUpProc(object sender, KeyEventArgs e)
+        {
+            string strKey = e.KeyCode.ToString().ToUpper();
+           // Debug.WriteLine($"Keyboard_KeyUpProc ---{strKey}");
+            //bool _altPressed = _HotkeyPlugin.IsKeyPushedDown(System.Windows.Forms.Keys.Menu);
+            //bool _ctrlPressed = _HotkeyPlugin.IsKeyPushedDown(System.Windows.Forms.Keys.ControlKey);
+            //bool _shiftPressed = _HotkeyPlugin.IsKeyPushedDown(System.Windows.Forms.Keys.ShiftKey);
+
+            if (e.KeyCode == Keys.LShiftKey)
+                _isLShiftDown = false;
+            else if (e.KeyCode == Keys.RShiftKey)
+                _isRShiftDown = false;
+
+            if (_eaBroker != null)
+            {
+                bool isShiftDown = (_isLShiftDown || _isRShiftDown);
+                _eaBroker.VM.IsShiftPressed = isShiftDown;
+                Debug.WriteLine($"KeyDown({strKey})--LShift({_isLShiftDown}), RShift({_isRShiftDown}) => IsShiftDown{isShiftDown}");
+            }
+        }
+
+        private void Keyboard_KeyDownProc(object sender, KeyEventArgs e)
+        {
+            string strKey = e.KeyCode.ToString().ToUpper();
+           //// Debug.WriteLine($"Keyboard_KeyUpProc ---{strKey}");
+           // bool _altPressed = _HotkeyPlugin.IsKeyPushedDown(System.Windows.Forms.Keys.Menu);
+           // bool _ctrlPressed = _HotkeyPlugin.IsKeyPushedDown(System.Windows.Forms.Keys.ControlKey);
+           // bool _shiftPressed = _HotkeyPlugin.IsKeyPushedDown(System.Windows.Forms.Keys.ShiftKey);
+
+            if (e.KeyCode == Keys.LShiftKey)
+                _isLShiftDown = true;
+            else if (e.KeyCode == Keys.RShiftKey)
+                _isRShiftDown = true;
+
+            if (_eaBroker != null)
+            {
+                bool isShiftDown = (_isLShiftDown || _isRShiftDown);
+                //Debug.WriteLine($"Keyboard_KeyDownProc --- Shift is down? {isShiftDown}");
+                _eaBroker.VM.IsShiftPressed = isShiftDown;
+                Debug.WriteLine($"KeyDown({strKey})--LShift({_isLShiftDown}), RShift({_isRShiftDown}) => IsShiftDown{isShiftDown}");
+            }
+
+        }
+        #endregion Hotkey
     }
 }

@@ -15,7 +15,7 @@
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="/DDPM.UI.Common;component/PluginStyles.xaml" />
+                <!--<ResourceDictionary Source="/DDPM.UI.Common;component/PluginStyles.xaml" />-->
                 <!-- <ResourceDictionary Source="/DDPM.UI.Common;component/ModuleStyle.xaml" /> -->
             </ResourceDictionary.MergedDictionaries>
 
@@ -90,15 +90,15 @@
             <local:BooleanToForegroundConverter x:Key="BooleanToForegroundConverter" />
         </ResourceDictionary>
     </UserControl.Resources>
-    <Grid Margin="0,0,0,20">
-        <Border x:Name="MainBorder" Background="#99132F54" CornerRadius="13" Width="520" Margin="0,10,0,0">
+    <Grid>
+        <Border x:Name="MainBorder" Style="{DynamicResource RightGroupBorderStyleForAudio}" CornerRadius="13" Width="520" Height="655" Margin="0,10,0,0">
             <StackPanel x:Name="MainStackPanel" Orientation="Vertical" Margin="16">
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="auto"/>
                         <ColumnDefinition Width="auto"/>
                     </Grid.ColumnDefinitions>
-                    <UXControls:UXTextBlock Grid.Column="0" x:Name="txtCaption" Style="{StaticResource ModuleCaptionStyle}" Text="{Binding [AutomatedActions], Source={x:Static lang:LangHelper.Instance}}" FontFamily="Roboto" FontSize="20" Foreground="White" Height="28" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="0,20,20,20" />
+                    <UXControls:UXTextBlock Grid.Column="0" x:Name="txtCaption" Style="{StaticResource ModuleCaptionStyle}" Text="{Binding [AutomatedActions], Source={x:Static lang:LangHelper.Instance}}" FontFamily="Roboto" FontSize="20" Foreground="{DynamicResource TextBlock_ForegroundColor}" Height="28" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="0,20,20,20" />
                     <Image Name="LockIconMic" Visibility="{Binding isWearLocked}" Grid.Column="1" Margin="0,0,0,5"
                            Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Lock.png"
                            VerticalAlignment="Center" HorizontalAlignment="Center" Width="16" Height="16">
@@ -119,7 +119,7 @@
                     </Image>
                 </Grid>
                 <Grid x:Name="WearDetectionGrid" Visibility="{Binding WearDetectionPageShow, Converter={StaticResource BooleanToVisibilityConverter}}" VerticalAlignment="Top" Margin="0,0,0,15">
-                    <Border x:Name="MainContentBorder" Background="#99132F54" CornerRadius="6" Width="488" Height="auto" VerticalAlignment="Top" Margin="0,0,0,0">
+                    <Border x:Name="MainContentBorder" Style="{DynamicResource RightGroupBorderStyleForAudio}" CornerRadius="6" Width="488" Height="auto" VerticalAlignment="Top" Margin="0,0,0,0">
                         <StackPanel x:Name="MainContentStackPanel" Orientation="Vertical" Margin="0,20,0,10">
                             <!-- Wear Detection -->
                             <Grid>
@@ -128,7 +128,7 @@
                                     <ColumnDefinition Width="Auto" />
                                     <ColumnDefinition Width="*" />
                                 </Grid.ColumnDefinitions>
-                                <UXControls:UXTextBlock x:Name="WearDetectionText" Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="16" Foreground="White" Text="{Binding [HeadsetAutomatedActions.0], Source={x:Static lang:LangHelper.Instance}}" Margin="18,0,0,0" />
+                                <UXControls:UXTextBlock x:Name="WearDetectionText" Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="16" Foreground="{DynamicResource TextBlock_ForegroundColor}" Text="{Binding [HeadsetAutomatedActions.0], Source={x:Static lang:LangHelper.Instance}}" Margin="18,0,0,0" />
                                 <Image x:Name="WearDetectionImage" Grid.Column="1" Width="16" Height="16" Margin="9,0,0,0" Source="/DDPM.UI.Common;component/Resources/info.png" Stretch="Uniform">
                                     <Image.ToolTip>
                                         <ToolTip x:Name="WearDetectionToolTip" Style="{StaticResource InfoToolTipStyle}" Placement="Top" VerticalOffset="8" HorizontalOffset="6">
@@ -136,7 +136,7 @@
                                         </ToolTip>
                                     </Image.ToolTip>
                                 </Image>
-                                <UXControls:UXToggleSwitch x:Name="WearDetectionToggleSwitch" FontSize="16" Foreground="White" Content="{Binding Path=WearDetection_String, FallbackValue='OFF'}" IsChecked="{Binding Path=WearDetectionStatus}" IsEnabled="{Binding Path=SupportedWearDetection}" Grid.Column="2" HorizontalAlignment="Right" VerticalAlignment="Center" VerticalContentAlignment="Center" Margin="8" IsTabStop="{Binding isWearTabStopped}"/>
+                                <UXControls:UXToggleSwitch x:Name="WearDetectionToggleSwitch" FontSize="16" Foreground="{DynamicResource TextBlock_ForegroundColor}" Content="{Binding Path=WearDetection_String, FallbackValue='OFF'}" IsChecked="{Binding Path=WearDetectionStatus}" IsEnabled="{Binding Path=SupportedWearDetection}" Grid.Column="2" HorizontalAlignment="Right" VerticalAlignment="Center" VerticalContentAlignment="Center" Margin="8" IsTabStop="{Binding isWearTabStopped}"/>
                             </Grid>
 
                             <!-- Second Type Page -->
@@ -145,7 +145,7 @@
                                     <RowDefinition Height="Auto" />
                                     <RowDefinition Height="*" />
                                 </Grid.RowDefinitions>
-                                <Border x:Name="SubContentBorder2" Grid.Row="0" Background="#99132F54" CornerRadius="6" Width="456" VerticalAlignment="Top" Margin="0,20,0,20">
+                                <Border x:Name="SubContentBorder2" Grid.Row="0" Style="{DynamicResource RightGroupBorderStyleForAudio}" CornerRadius="6" Width="456" VerticalAlignment="Top" Margin="0,20,0,20">
                                     <Grid x:Name="SubContentGrid2">
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="Auto" />
@@ -155,15 +155,15 @@
                                             <RowDefinition Height="Auto" />
                                             <RowDefinition Height="*" />
                                         </Grid.RowDefinitions>
-                                        <UXControls:UXTextBlock x:Name="Sensitivity2TextBlock" Foreground="White" Text="{Binding [HeadsetAutomatedActions.1], Source={x:Static lang:LangHelper.Instance}}"  FontSize="14" Margin="20,20,0,8" />
+                                        <UXControls:UXTextBlock x:Name="Sensitivity2TextBlock" Foreground="{DynamicResource TextBlock_ForegroundColor}" Text="{Binding [HeadsetAutomatedActions.1], Source={x:Static lang:LangHelper.Instance}}"  FontSize="14" Margin="20,20,0,8" />
                                         <StackPanel x:Name="Sensitivity2StackPanel" Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Center" Margin="16,0,0,8">
-                                            <UXControls:UXToggleSwitch x:Name="LowButton" BorderBrush="#FF1E3F6C" BorderThickness="1.5" Width="208" Height="52" Margin="0,0,4,8" Background="{StaticResource SplitItem_NormalBdColor}" IsEnabled="{Binding ElementName=WearDetectionToggleSwitch, Path=IsChecked}" IsChecked="{Binding IsLowChecked, Mode=TwoWay}" IsTabStop="{Binding isWearTabStopped}">
+                                            <UXControls:UXToggleSwitch x:Name="LowButton" BorderBrush="#FF1E3F6C" BorderThickness="1.5" Width="208" Height="52" Margin="0,0,4,8" IsEnabled="{Binding ElementName=WearDetectionToggleSwitch, Path=IsChecked}" IsChecked="{Binding IsLowChecked, Mode=TwoWay}" IsTabStop="{Binding isWearTabStopped}">
                                                 <UXControls:UXToggleSwitch.Template>
                                                     <ControlTemplate TargetType="UXControls:UXToggleSwitch">
                                                         <Border x:Name="LowButtonBorder" Background="{StaticResource NormalBackground}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="4,4,4,4">
                                                             <Grid>
                                                                 <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
-                                                                    <UXControls:UXTextBlock Text="{Binding [HeadsetAutomatedActions.2], Source={x:Static lang:LangHelper.Instance}}" FontSize="14" Foreground="White" TextAlignment="Center" />
+                                                                    <UXControls:UXTextBlock x:Name="LowButtonTextBlock" Text="{Binding [HeadsetAutomatedActions.2], Source={x:Static lang:LangHelper.Instance}}" FontSize="14" Foreground="{DynamicResource TextBlock_ForegroundColor}" TextAlignment="Center" />
                                                                 </StackPanel>
                                                             </Grid>
                                                         </Border>
@@ -172,6 +172,41 @@
                                                                 <Setter TargetName="LowButtonBorder" Property="Background" Value="{StaticResource PressedBackground}" />
                                                                 <Setter TargetName="LowButtonBorder" Property="BorderBrush" Value="{StaticResource PressedBorderBrush}" />
                                                             </Trigger>
+                                                            <!-- Dark Mode且ToggleSwitch被選中 -->
+                                                            <MultiDataTrigger>
+                                                                <MultiDataTrigger.Conditions>
+                                                                    <Condition Binding="{Binding IsDarkTheme}" Value="True" />
+                                                                    <Condition Binding="{Binding IsLowChecked}" Value="True" />
+                                                                </MultiDataTrigger.Conditions>
+                                                                <Setter TargetName="LowButtonTextBlock" Property="Foreground" Value="White" />
+                                                            </MultiDataTrigger>
+
+                                                            <!-- Dark Mode且ToggleSwitch未選中 -->
+                                                            <MultiDataTrigger>
+                                                                <MultiDataTrigger.Conditions>
+                                                                    <Condition Binding="{Binding IsDarkTheme}" Value="True" />
+                                                                    <Condition Binding="{Binding IsLowChecked}" Value="False" />
+                                                                </MultiDataTrigger.Conditions>
+                                                                <Setter TargetName="LowButtonTextBlock" Property="Foreground" Value="White" />
+                                                            </MultiDataTrigger>
+
+                                                            <!-- Light Mode且ToggleSwitch被選中 -->
+                                                            <MultiDataTrigger>
+                                                                <MultiDataTrigger.Conditions>
+                                                                    <Condition Binding="{Binding IsDarkTheme}" Value="False" />
+                                                                    <Condition Binding="{Binding IsLowChecked}" Value="True" />
+                                                                </MultiDataTrigger.Conditions>
+                                                                <Setter TargetName="LowButtonTextBlock" Property="Foreground" Value="White" />
+                                                            </MultiDataTrigger>
+
+                                                            <!-- Light Mode且ToggleSwitch未選中 -->
+                                                            <MultiDataTrigger>
+                                                                <MultiDataTrigger.Conditions>
+                                                                    <Condition Binding="{Binding IsDarkTheme}" Value="False" />
+                                                                    <Condition Binding="{Binding IsLowChecked}" Value="False" />
+                                                                </MultiDataTrigger.Conditions>
+                                                                <Setter TargetName="LowButtonTextBlock" Property="Foreground" Value="Black" />
+                                                            </MultiDataTrigger>
                                                         </ControlTemplate.Triggers>
                                                     </ControlTemplate>
                                                 </UXControls:UXToggleSwitch.Template>
@@ -179,10 +214,10 @@
                                             <UXControls:UXToggleSwitch x:Name="Normal2Button" BorderBrush="#FF1E3F6C" BorderThickness="1.5" Width="208" Height="52" Margin="4,0,0,8" Background="{StaticResource SplitItem_NormalBdColor}" IsEnabled="{Binding ElementName=WearDetectionToggleSwitch, Path=IsChecked}" IsChecked="{Binding IsNormal2Checked, Mode=TwoWay}" IsTabStop="{Binding isWearTabStopped}">
                                                 <UXControls:UXToggleSwitch.Template>
                                                     <ControlTemplate TargetType="UXControls:UXToggleSwitch">
-                                                        <Border x:Name="Normal2ButtonBorder" Background="{StaticResource NormalBackground}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="4,4,4,4">
+                                                        <Border x:Name="Normal2ButtonBorder" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="4,4,4,4">
                                                             <Grid>
                                                                 <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
-                                                                    <UXControls:UXTextBlock Text="{Binding [HeadsetAutomatedActions.3], Source={x:Static lang:LangHelper.Instance}}" FontSize="14" Foreground="White" TextAlignment="Center" />
+                                                                    <UXControls:UXTextBlock x:Name="Normal2ButtonTextBlock" Text="{Binding [HeadsetAutomatedActions.3], Source={x:Static lang:LangHelper.Instance}}" FontSize="14" Foreground="{DynamicResource TextBlock_ForegroundColor}" TextAlignment="Center" />
                                                                 </StackPanel>
                                                             </Grid>
                                                         </Border>
@@ -191,6 +226,41 @@
                                                                 <Setter TargetName="Normal2ButtonBorder" Property="Background" Value="{StaticResource PressedBackground}" />
                                                                 <Setter TargetName="Normal2ButtonBorder" Property="BorderBrush" Value="{StaticResource PressedBorderBrush}" />
                                                             </Trigger>
+                                                            <!-- Dark Mode且ToggleSwitch被選中 -->
+                                                            <MultiDataTrigger>
+                                                                <MultiDataTrigger.Conditions>
+                                                                    <Condition Binding="{Binding IsDarkTheme}" Value="True" />
+                                                                    <Condition Binding="{Binding IsNormal2Checked}" Value="True" />
+                                                                </MultiDataTrigger.Conditions>
+                                                                <Setter TargetName="Normal2ButtonTextBlock" Property="Foreground" Value="White" />
+                                                            </MultiDataTrigger>
+
+                                                            <!-- Dark Mode且ToggleSwitch未選中 -->
+                                                            <MultiDataTrigger>
+                                                                <MultiDataTrigger.Conditions>
+                                                                    <Condition Binding="{Binding IsDarkTheme}" Value="True" />
+                                                                    <Condition Binding="{Binding IsNormal2Checked}" Value="False" />
+                                                                </MultiDataTrigger.Conditions>
+                                                                <Setter TargetName="Normal2ButtonTextBlock" Property="Foreground" Value="White" />
+                                                            </MultiDataTrigger>
+
+                                                            <!-- Light Mode且ToggleSwitch被選中 -->
+                                                            <MultiDataTrigger>
+                                                                <MultiDataTrigger.Conditions>
+                                                                    <Condition Binding="{Binding IsDarkTheme}" Value="False" />
+                                                                    <Condition Binding="{Binding IsNormal2Checked}" Value="True" />
+                                                                </MultiDataTrigger.Conditions>
+                                                                <Setter TargetName="Normal2ButtonTextBlock" Property="Foreground" Value="White" />
+                                                            </MultiDataTrigger>
+
+                                                            <!-- Light Mode且ToggleSwitch未選中 -->
+                                                            <MultiDataTrigger>
+                                                                <MultiDataTrigger.Conditions>
+                                                                    <Condition Binding="{Binding IsDarkTheme}" Value="False" />
+                                                                    <Condition Binding="{Binding IsNormal2Checked}" Value="False" />
+                                                                </MultiDataTrigger.Conditions>
+                                                                <Setter TargetName="Normal2ButtonTextBlock" Property="Foreground" Value="Black" />
+                                                            </MultiDataTrigger>
                                                         </ControlTemplate.Triggers>
                                                     </ControlTemplate>
                                                 </UXControls:UXToggleSwitch.Template>
@@ -201,9 +271,20 @@
                             </Grid>
 
                             <Grid Visibility="{Binding AutomatedActionsWhenHeadsetIsRemovedPageShow, Converter={StaticResource BooleanToVisibilityConverter}}">
-                                <Border x:Name="SubContentBorder" Background="#99132F54" CornerRadius="6" Width="456" VerticalAlignment="Top">
+                                <Border x:Name="SubContentBorder" Style="{DynamicResource RightGroupBorderStyleForAudio}" CornerRadius="6" Width="456" VerticalAlignment="Top">
                                     <StackPanel x:Name="SubContentStackPanel" Orientation="Vertical">
-                                        <UXControls:UXTextBlock x:Name="WhenHeadsetIsRemovedText" Style="{StaticResource ModuleItemStyle}" Foreground="{Binding IsChecked, ElementName=WearDetectionToggleSwitch, Converter={StaticResource BooleanToForegroundConverter}}" Text="{Binding [HeadsetAutomatedActions.4], Source={x:Static lang:LangHelper.Instance}}" Margin="20" FontSize="14" />
+                                        <!--<UXControls:UXTextBlock x:Name="WhenHeadsetIsRemovedText" Style="{StaticResource ModuleItemStyle}" Foreground="{Binding IsChecked, ElementName=WearDetectionToggleSwitch, Converter={StaticResource BooleanToForegroundConverter}}" Text="{Binding [HeadsetAutomatedActions.4], Source={x:Static lang:LangHelper.Instance}}" Margin="20" FontSize="14" />-->
+                                        <UXControls:UXTextBlock x:Name="WhenHeadsetIsRemovedText" Style="{StaticResource ModuleItemStyle}" Margin="20" FontSize="14">
+                                            <UXControls:UXTextBlock.Foreground>
+                                                <MultiBinding Converter="{StaticResource BooleanToForegroundConverter}">
+                                                    <Binding Path="IsChecked" ElementName="WearDetectionToggleSwitch" />
+                                                    <Binding Path="IsDarkTheme" />
+                                                </MultiBinding>
+                                            </UXControls:UXTextBlock.Foreground>
+                                            <UXControls:UXTextBlock.Text>
+                                                <Binding Path="[HeadsetAutomatedActions.4]" Source="{x:Static lang:LangHelper.Instance}" />
+                                            </UXControls:UXTextBlock.Text>
+                                        </UXControls:UXTextBlock>
                                         <!-- Pause Music -->
                                         <Grid x:Name="PauseMusicGrid">
                                             <Grid.ColumnDefinitions>
@@ -211,7 +292,19 @@
                                                 <ColumnDefinition Width="Auto" />
                                                 <ColumnDefinition Width="*" />
                                             </Grid.ColumnDefinitions>
-                                            <UXControls:UXTextBlock x:Name="PauseMusicText" Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="16" Foreground="{Binding IsChecked, ElementName=WearDetectionToggleSwitch, Converter={StaticResource BooleanToForegroundConverter}}" Text="{Binding [HeadsetAutomatedActions.5], Source={x:Static lang:LangHelper.Instance}}" Margin="20,0,0,0" />
+                                            <!--<UXControls:UXTextBlock x:Name="PauseMusicText" Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="16" Foreground="{Binding IsChecked, ElementName=WearDetectionToggleSwitch, Converter={StaticResource BooleanToForegroundConverter},ConverterParameter={Binding IsDarkTheme}}" Text="{Binding [HeadsetAutomatedActions.5], Source={x:Static lang:LangHelper.Instance}}" Margin="20,0,0,0" />-->
+                                            <UXControls:UXTextBlock x:Name="PauseMusicText" Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="16" Margin="20,0,0,0">
+                                                <UXControls:UXTextBlock.Foreground>
+                                                    <MultiBinding Converter="{StaticResource BooleanToForegroundConverter}">
+                                                        <Binding Path="IsChecked" ElementName="WearDetectionToggleSwitch" />
+                                                        <Binding Path="IsDarkTheme" />
+                                                    </MultiBinding>
+                                                </UXControls:UXTextBlock.Foreground>
+                                                <UXControls:UXTextBlock.Text>
+                                                    <Binding Path="[HeadsetAutomatedActions.5]" Source="{x:Static lang:LangHelper.Instance}" />
+                                                </UXControls:UXTextBlock.Text>
+                                            </UXControls:UXTextBlock>
+
                                             <Image x:Name="PauseMusicImage" Grid.Column="1" Width="16" Height="16" Margin="8" Source="/DDPM.UI.Common;component/Resources/info.png" Stretch="Uniform">
                                                 <Image.ToolTip>
                                                     <ToolTip x:Name="PauseMusicToolTip" Style="{StaticResource InfoToolTipStyle}" Placement="Top" VerticalOffset="8" HorizontalOffset="6">
@@ -219,7 +312,7 @@
                                                     </ToolTip>
                                                 </Image.ToolTip>
                                             </Image>
-                                            <UXControls:UXToggleSwitch x:Name="PauseMusicToggleSwitch" FontSize="16" Foreground="White" Content="{Binding Path=PauseMusic_String, FallbackValue='OFF'}" IsChecked="{Binding Path=PauseMusicStatus}" IsEnabled="{Binding ElementName=WearDetectionToggleSwitch, Path=IsChecked}" Grid.Column="2" HorizontalAlignment="Right" VerticalAlignment="Center" VerticalContentAlignment="Center" Margin="0,0,20,0" IsTabStop="{Binding isWearTabStopped}"/>
+                                            <UXControls:UXToggleSwitch x:Name="PauseMusicToggleSwitch" FontSize="16" Foreground="{DynamicResource TextBlock_ForegroundColor}" Content="{Binding Path=PauseMusic_String, FallbackValue='OFF'}" IsChecked="{Binding Path=PauseMusicStatus}" IsEnabled="{Binding ElementName=WearDetectionToggleSwitch, Path=IsChecked}" Grid.Column="2" HorizontalAlignment="Right" VerticalAlignment="Center" VerticalContentAlignment="Center" Margin="0,0,20,0" IsTabStop="{Binding isWearTabStopped}"/>
                                         </Grid>
 
                                         <!-- Mute Microphone -->
@@ -229,7 +322,18 @@
                                                 <ColumnDefinition Width="Auto" />
                                                 <ColumnDefinition Width="*" />
                                             </Grid.ColumnDefinitions>
-                                            <UXControls:UXTextBlock x:Name="MuteMicrophoneText" Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="16" Foreground="{Binding IsChecked, ElementName=WearDetectionToggleSwitch, Converter={StaticResource BooleanToForegroundConverter}}" Text="{Binding [HeadsetAutomatedActions.6], Source={x:Static lang:LangHelper.Instance}}" Margin="20,0,0,0" />
+                                            <!--<UXControls:UXTextBlock x:Name="MuteMicrophoneText" Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="16" Foreground="{Binding IsChecked, ElementName=WearDetectionToggleSwitch, Converter={StaticResource BooleanToForegroundConverter}}" Text="{Binding [HeadsetAutomatedActions.6], Source={x:Static lang:LangHelper.Instance}}" Margin="20,0,0,0" />-->
+                                            <UXControls:UXTextBlock x:Name="MuteMicrophoneText" Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="16" Margin="20,0,0,0">
+                                                <UXControls:UXTextBlock.Foreground>
+                                                    <MultiBinding Converter="{StaticResource BooleanToForegroundConverter}">
+                                                        <Binding Path="IsChecked" ElementName="WearDetectionToggleSwitch" />
+                                                        <Binding Path="IsDarkTheme" />
+                                                    </MultiBinding>
+                                                </UXControls:UXTextBlock.Foreground>
+                                                <UXControls:UXTextBlock.Text>
+                                                    <Binding Path="[HeadsetAutomatedActions.6]" Source="{x:Static lang:LangHelper.Instance}" />
+                                                </UXControls:UXTextBlock.Text>
+                                            </UXControls:UXTextBlock>
                                             <Image x:Name="MuteMicrophoneImage" Grid.Column="1" Width="16" Height="16" Margin="8" Source="/DDPM.UI.Common;component/Resources/info.png" Stretch="Uniform">
                                                 <Image.ToolTip>
                                                     <ToolTip x:Name="MuteMicrophoneToolTip" Style="{StaticResource InfoToolTipStyle}" Placement="Top" VerticalOffset="8" HorizontalOffset="6">
@@ -237,7 +341,7 @@
                                                     </ToolTip>
                                                 </Image.ToolTip>
                                             </Image>
-                                            <UXControls:UXToggleSwitch x:Name="MuteMicrophoneToggleSwitch" FontSize="16" Foreground="White" Content="{Binding Path=MuteMicrophone_String, FallbackValue='OFF'}" IsChecked="{Binding Path=MuteMicrophoneStatus}" IsEnabled="{Binding ElementName=WearDetectionToggleSwitch, Path=IsChecked}" Grid.Column="2" HorizontalAlignment="Right" VerticalAlignment="Center" VerticalContentAlignment="Center" Margin="0,0,20,0" IsTabStop="{Binding isWearTabStopped}"/>
+                                            <UXControls:UXToggleSwitch x:Name="MuteMicrophoneToggleSwitch" FontSize="16" Foreground="{DynamicResource TextBlock_ForegroundColor}" Content="{Binding Path=MuteMicrophone_String, FallbackValue='OFF'}" IsChecked="{Binding Path=MuteMicrophoneStatus}" IsEnabled="{Binding ElementName=WearDetectionToggleSwitch, Path=IsChecked}" Grid.Column="2" HorizontalAlignment="Right" VerticalAlignment="Center" VerticalContentAlignment="Center" Margin="0,0,20,0" IsTabStop="{Binding isWearTabStopped}"/>
                                         </Grid>
 
                                         <Line x:Name="SeparatorLine" X1="0" Y1="0" X2="456" Y2="0" Stroke="#1E3F6C" StrokeThickness="1" HorizontalAlignment="Center" Margin="18,16,0,16" />
@@ -249,7 +353,18 @@
                                                 <ColumnDefinition Width="Auto" />
                                                 <ColumnDefinition Width="*" />
                                             </Grid.ColumnDefinitions>
-                                            <UXControls:UXTextBlock x:Name="QuickPauseText" Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="16" Foreground="{Binding IsChecked, ElementName=WearDetectionToggleSwitch, Converter={StaticResource BooleanToForegroundConverter}}" Text="{Binding [HeadsetAutomatedActions.7], Source={x:Static lang:LangHelper.Instance}}" Margin="20,0,0,0" />
+                                            <!--<UXControls:UXTextBlock x:Name="QuickPauseText" Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="16" Foreground="{Binding IsChecked, ElementName=WearDetectionToggleSwitch, Converter={StaticResource BooleanToForegroundConverter}}" Text="{Binding [HeadsetAutomatedActions.7], Source={x:Static lang:LangHelper.Instance}}" Margin="20,0,0,0" />-->
+                                            <UXControls:UXTextBlock x:Name="QuickPauseText" Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="16" Margin="20,0,0,0">
+                                                <UXControls:UXTextBlock.Foreground>
+                                                    <MultiBinding Converter="{StaticResource BooleanToForegroundConverter}">
+                                                        <Binding Path="IsChecked" ElementName="WearDetectionToggleSwitch" />
+                                                        <Binding Path="IsDarkTheme" />
+                                                    </MultiBinding>
+                                                </UXControls:UXTextBlock.Foreground>
+                                                <UXControls:UXTextBlock.Text>
+                                                    <Binding Path="[HeadsetAutomatedActions.7]" Source="{x:Static lang:LangHelper.Instance}" />
+                                                </UXControls:UXTextBlock.Text>
+                                            </UXControls:UXTextBlock>
                                             <Image x:Name="QuickPauseImage" Grid.Column="1" Width="16" Height="16" Margin="8" Source="/DDPM.UI.Common;component/Resources/info.png" Stretch="Uniform">
                                                 <Image.ToolTip>
                                                     <ToolTip x:Name="QuickPauseToolTip" Style="{StaticResource InfoToolTipStyle}" Placement="Top" VerticalOffset="8" HorizontalOffset="6">
@@ -257,19 +372,41 @@
                                                     </ToolTip>
                                                 </Image.ToolTip>
                                             </Image>
-                                            <UXControls:UXToggleSwitch x:Name="QuickPauseToggleSwitch" FontSize="16" Foreground="White" Content="{Binding Path=QuickPause_String, FallbackValue='OFF'}" IsChecked="{Binding Path=QuickPauseStatus}" IsEnabled="{Binding ElementName=WearDetectionToggleSwitch, Path=IsChecked}" Grid.Column="2" HorizontalAlignment="Right" VerticalAlignment="Center" VerticalContentAlignment="Center" Margin="0,0,20,0" IsTabStop="{Binding isWearTabStopped}"/>
+                                            <UXControls:UXToggleSwitch x:Name="QuickPauseToggleSwitch" FontSize="16" Foreground="{DynamicResource TextBlock_ForegroundColor}" Content="{Binding Path=QuickPause_String, FallbackValue='OFF'}" IsChecked="{Binding Path=QuickPauseStatus}" IsEnabled="{Binding ElementName=WearDetectionToggleSwitch, Path=IsChecked}" Grid.Column="2" HorizontalAlignment="Right" VerticalAlignment="Center" VerticalContentAlignment="Center" Margin="0,0,20,0" IsTabStop="{Binding isWearTabStopped}"/>
                                         </Grid>
                                         <!-- SensitivityText -->
                                         <Grid x:Name="SensitivityTextGrid" Visibility="{Binding AutomatedActionsSensitivityPageShow, Converter={StaticResource BooleanToVisibilityConverter}}" Margin="0,0,0,0">
-                                            <UXControls:UXTextBlock x:Name="SensitivityTextBlock" Text="{Binding [HeadsetAutomatedActions.1], Source={x:Static lang:LangHelper.Instance}}" Foreground="{Binding IsChecked, ElementName=WearDetectionToggleSwitch, Converter={StaticResource BooleanToForegroundConverter}}" FontSize="14" Margin="20,0,0,0" />
+                                            <!--<UXControls:UXTextBlock x:Name="SensitivityTextBlock" Text="{Binding [HeadsetAutomatedActions.1], Source={x:Static lang:LangHelper.Instance}}" Foreground="{Binding IsChecked, ElementName=WearDetectionToggleSwitch, Converter={StaticResource BooleanToForegroundConverter}}" FontSize="14" Margin="20,0,0,0" />-->
+                                            <UXControls:UXTextBlock x:Name="SensitivityTextBlock" FontSize="14" Margin="20,0,0,0">
+                                                <UXControls:UXTextBlock.Foreground>
+                                                    <MultiBinding Converter="{StaticResource BooleanToForegroundConverter}">
+                                                        <Binding Path="IsChecked" ElementName="WearDetectionToggleSwitch" />
+                                                        <Binding Path="IsDarkTheme" />
+                                                    </MultiBinding>
+                                                </UXControls:UXTextBlock.Foreground>
+                                                <UXControls:UXTextBlock.Text>
+                                                    <Binding Path="[HeadsetAutomatedActions.1]" Source="{x:Static lang:LangHelper.Instance}" />
+                                                </UXControls:UXTextBlock.Text>
+                                            </UXControls:UXTextBlock>
                                             <StackPanel x:Name="SensitivityStackPanel" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,8,0,0">
                                                 <UXControls:UXToggleSwitch x:Name="NormalButton" BorderBrush="#FF1E3F6C" BorderThickness="1.5" Width="208" Height="52" Margin="0,20,0,20" Background="{StaticResource SplitItem_NormalBdColor}" IsEnabled="{Binding ElementName=WearDetectionToggleSwitch, Path=IsChecked}" IsChecked="{Binding IsNormalChecked, Mode=TwoWay}" IsTabStop="{Binding isWearTabStopped}">
                                                     <UXControls:UXToggleSwitch.Template>
                                                         <ControlTemplate TargetType="UXControls:UXToggleSwitch">
-                                                            <Border x:Name="NormalButtonBorder" Background="{StaticResource NormalBackground}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="4,4,4,4">
+                                                            <Border x:Name="NormalButtonBorder" CornerRadius="4,4,4,4">
                                                                 <Grid>
                                                                     <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
-                                                                        <UXControls:UXTextBlock Text="{Binding [HeadsetAutomatedActions.3], Source={x:Static lang:LangHelper.Instance}}" FontSize="14" Foreground="{Binding IsChecked, ElementName=WearDetectionToggleSwitch, Converter={StaticResource BooleanToForegroundConverter}}" TextAlignment="Center" />
+                                                                        <!--<UXControls:UXTextBlock Text="{Binding [HeadsetAutomatedActions.3], Source={x:Static lang:LangHelper.Instance}}" FontSize="14" Foreground="{Binding IsChecked, ElementName=WearDetectionToggleSwitch, Converter={StaticResource BooleanToForegroundConverter}}" TextAlignment="Center" />-->
+                                                                        <UXControls:UXTextBlock x:Name="NormalButtonTextBlock" FontSize="14" TextAlignment="Center">
+                                                                            <UXControls:UXTextBlock.Foreground>
+                                                                                <MultiBinding Converter="{StaticResource BooleanToForegroundConverter}">
+                                                                                    <Binding Path="IsChecked" ElementName="WearDetectionToggleSwitch" />
+                                                                                    <Binding Path="IsDarkTheme" />
+                                                                                </MultiBinding>
+                                                                            </UXControls:UXTextBlock.Foreground>
+                                                                            <UXControls:UXTextBlock.Text>
+                                                                                <Binding Path="[HeadsetAutomatedActions.3]" Source="{x:Static lang:LangHelper.Instance}" />
+                                                                            </UXControls:UXTextBlock.Text>
+                                                                        </UXControls:UXTextBlock>
                                                                     </StackPanel>
                                                                 </Grid>
                                                             </Border>
@@ -278,6 +415,41 @@
                                                                     <Setter TargetName="NormalButtonBorder" Property="Background" Value="{StaticResource PressedBackground}" />
                                                                     <Setter TargetName="NormalButtonBorder" Property="BorderBrush" Value="{StaticResource PressedBorderBrush}" />
                                                                 </Trigger>
+                                                                <!-- Dark Mode且ToggleSwitch被選中 -->
+                                                                <MultiDataTrigger>
+                                                                    <MultiDataTrigger.Conditions>
+                                                                        <Condition Binding="{Binding IsDarkTheme}" Value="True" />
+                                                                        <Condition Binding="{Binding IsNormalChecked}" Value="True" />
+                                                                    </MultiDataTrigger.Conditions>
+                                                                    <Setter TargetName="NormalButtonTextBlock" Property="Foreground" Value="White" />
+                                                                </MultiDataTrigger>
+
+                                                                <!-- Dark Mode且ToggleSwitch未選中 -->
+                                                                <MultiDataTrigger>
+                                                                    <MultiDataTrigger.Conditions>
+                                                                        <Condition Binding="{Binding IsDarkTheme}" Value="True" />
+                                                                        <Condition Binding="{Binding IsNormalChecked}" Value="False" />
+                                                                    </MultiDataTrigger.Conditions>
+                                                                    <Setter TargetName="NormalButtonTextBlock" Property="Foreground" Value="White" />
+                                                                </MultiDataTrigger>
+
+                                                                <!-- Light Mode且ToggleSwitch被選中 -->
+                                                                <MultiDataTrigger>
+                                                                    <MultiDataTrigger.Conditions>
+                                                                        <Condition Binding="{Binding IsDarkTheme}" Value="False" />
+                                                                        <Condition Binding="{Binding IsNormalChecked}" Value="True" />
+                                                                    </MultiDataTrigger.Conditions>
+                                                                    <Setter TargetName="NormalButtonTextBlock" Property="Foreground" Value="White" />
+                                                                </MultiDataTrigger>
+
+                                                                <!-- Light Mode且ToggleSwitch未選中 -->
+                                                                <MultiDataTrigger>
+                                                                    <MultiDataTrigger.Conditions>
+                                                                        <Condition Binding="{Binding IsDarkTheme}" Value="False" />
+                                                                        <Condition Binding="{Binding IsNormalChecked}" Value="False" />
+                                                                    </MultiDataTrigger.Conditions>
+                                                                    <Setter TargetName="NormalButtonTextBlock" Property="Foreground" Value="Black" />
+                                                                </MultiDataTrigger>
                                                             </ControlTemplate.Triggers>
                                                         </ControlTemplate>
                                                     </UXControls:UXToggleSwitch.Template>
@@ -285,10 +457,21 @@
                                                 <UXControls:UXToggleSwitch x:Name="SensitiveButton" BorderBrush="#FF1E3F6C" BorderThickness="1.5" Width="208" Height="52" Margin="8,0,0,0" Background="{StaticResource SplitItem_NormalBdColor}" IsEnabled="{Binding ElementName=WearDetectionToggleSwitch, Path=IsChecked}" IsChecked="{Binding IsSensitiveChecked, Mode=TwoWay}" IsTabStop="{Binding isWearTabStopped}">
                                                     <UXControls:UXToggleSwitch.Template>
                                                         <ControlTemplate TargetType="UXControls:UXToggleSwitch">
-                                                            <Border x:Name="SensitiveButtonBorder" Background="{StaticResource NormalBackground}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="4,4,4,4">
+                                                            <Border x:Name="SensitiveButtonBorder" CornerRadius="4,4,4,4">
                                                                 <Grid>
                                                                     <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
-                                                                        <UXControls:UXTextBlock Text="{Binding [HeadsetAutomatedActions.1], Source={x:Static lang:LangHelper.Instance}}" FontSize="14" Foreground="{Binding IsChecked, ElementName=WearDetectionToggleSwitch, Converter={StaticResource BooleanToForegroundConverter}}" TextAlignment="Center" />
+                                                                        <!--<UXControls:UXTextBlock Text="{Binding [HeadsetAutomatedActions.1], Source={x:Static lang:LangHelper.Instance}}" FontSize="14" Foreground="{Binding IsChecked, ElementName=WearDetectionToggleSwitch, Converter={StaticResource BooleanToForegroundConverter}}" TextAlignment="Center" />-->
+                                                                        <UXControls:UXTextBlock x:Name="SensitiveButtonTextBlock" FontSize="14" TextAlignment="Center">
+                                                                            <UXControls:UXTextBlock.Foreground>
+                                                                                <MultiBinding Converter="{StaticResource BooleanToForegroundConverter}">
+                                                                                    <Binding Path="IsChecked" ElementName="WearDetectionToggleSwitch" />
+                                                                                    <Binding Path="IsDarkTheme" />
+                                                                                </MultiBinding>
+                                                                            </UXControls:UXTextBlock.Foreground>
+                                                                            <UXControls:UXTextBlock.Text>
+                                                                                <Binding Path="[HeadsetAutomatedActions.1]" Source="{x:Static lang:LangHelper.Instance}" />
+                                                                            </UXControls:UXTextBlock.Text>
+                                                                        </UXControls:UXTextBlock>
                                                                     </StackPanel>
                                                                 </Grid>
                                                             </Border>
@@ -297,6 +480,41 @@
                                                                     <Setter TargetName="SensitiveButtonBorder" Property="Background" Value="{StaticResource PressedBackground}" />
                                                                     <Setter TargetName="SensitiveButtonBorder" Property="BorderBrush" Value="{StaticResource PressedBorderBrush}" />
                                                                 </Trigger>
+                                                                <!-- Dark Mode且ToggleSwitch被選中 -->
+                                                                <MultiDataTrigger>
+                                                                    <MultiDataTrigger.Conditions>
+                                                                        <Condition Binding="{Binding IsDarkTheme}" Value="True" />
+                                                                        <Condition Binding="{Binding IsSensitiveChecked}" Value="True" />
+                                                                    </MultiDataTrigger.Conditions>
+                                                                    <Setter TargetName="SensitiveButtonTextBlock" Property="Foreground" Value="White" />
+                                                                </MultiDataTrigger>
+
+                                                                <!-- Dark Mode且ToggleSwitch未選中 -->
+                                                                <MultiDataTrigger>
+                                                                    <MultiDataTrigger.Conditions>
+                                                                        <Condition Binding="{Binding IsDarkTheme}" Value="True" />
+                                                                        <Condition Binding="{Binding IsSensitiveChecked}" Value="False" />
+                                                                    </MultiDataTrigger.Conditions>
+                                                                    <Setter TargetName="SensitiveButtonTextBlock" Property="Foreground" Value="White" />
+                                                                </MultiDataTrigger>
+
+                                                                <!-- Light Mode且ToggleSwitch被選中 -->
+                                                                <MultiDataTrigger>
+                                                                    <MultiDataTrigger.Conditions>
+                                                                        <Condition Binding="{Binding IsDarkTheme}" Value="False" />
+                                                                        <Condition Binding="{Binding IsSensitiveChecked}" Value="True" />
+                                                                    </MultiDataTrigger.Conditions>
+                                                                    <Setter TargetName="SensitiveButtonTextBlock" Property="Foreground" Value="White" />
+                                                                </MultiDataTrigger>
+
+                                                                <!-- Light Mode且ToggleSwitch未選中 -->
+                                                                <MultiDataTrigger>
+                                                                    <MultiDataTrigger.Conditions>
+                                                                        <Condition Binding="{Binding IsDarkTheme}" Value="False" />
+                                                                        <Condition Binding="{Binding IsSensitiveChecked}" Value="False" />
+                                                                    </MultiDataTrigger.Conditions>
+                                                                    <Setter TargetName="SensitiveButtonTextBlock" Property="Foreground" Value="Black" />
+                                                                </MultiDataTrigger>
                                                             </ControlTemplate.Triggers>
                                                         </ControlTemplate>
                                                     </UXControls:UXToggleSwitch.Template>
@@ -316,14 +534,14 @@
 
                 <!-- Answer Calls Page -->
                 <Grid Visibility="{Binding AutomatedActionsAnswerCallPageShow, Converter={StaticResource BooleanToVisibilityConverter}}">
-                    <Border x:Name="SubContentBorder4" Grid.Row="0" Background="#99132F54" CornerRadius="6" Width="488" Height="72" VerticalAlignment="Top" Margin="0,0,0,20">
+                    <Border x:Name="SubContentBorder4" Grid.Row="0" Style="{DynamicResource RightGroupBorderStyleForAudio}" CornerRadius="6" Width="488" Height="72" VerticalAlignment="Top" Margin="0,0,0,20">
                         <Grid x:Name="AnswerCallsGrid">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="Auto" />
                                 <ColumnDefinition Width="Auto" />
                                 <ColumnDefinition Width="*" />
                             </Grid.ColumnDefinitions>
-                            <UXControls:UXTextBlock x:Name="AnswerCallsText" Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="16" Foreground="White" Text="{Binding [HeadsetAutomatedActions.8], Source={x:Static lang:LangHelper.Instance}}" Margin="20,20,0,20" />
+                            <UXControls:UXTextBlock x:Name="AnswerCallsText" Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="16" Foreground="{DynamicResource TextBlock_ForegroundColor}" Text="{Binding [HeadsetAutomatedActions.8], Source={x:Static lang:LangHelper.Instance}}" Margin="20,20,0,20" />
                             <Image x:Name="AnswerCallsImage" Grid.Column="1" Width="16" Height="16" Margin="8,0,0,0" Source="/DDPM.UI.Common;component/Resources/info.png" Stretch="Uniform">
                                 <Image.ToolTip>
                                     <ToolTip x:Name="AnswerCallsToolTip" Style="{StaticResource InfoToolTipStyle}" Placement="Top" VerticalOffset="8" HorizontalOffset="6">
@@ -331,7 +549,7 @@
                                     </ToolTip>
                                 </Image.ToolTip>
                             </Image>
-                            <UXControls:UXToggleSwitch x:Name="AnswerCallsToggleSwitch" FontSize="16" Foreground="White" Content="{Binding Path=AnswerCalls_String, FallbackValue='OFF'}" IsChecked="{Binding Path=AnswerCallsStatus}" IsEnabled="{Binding Path=SupportedAnswerCalls}" Grid.Column="2" HorizontalAlignment="Right" VerticalAlignment="Center" VerticalContentAlignment="Center" Margin="20" />
+                            <UXControls:UXToggleSwitch x:Name="AnswerCallsToggleSwitch" FontSize="16" Foreground="{DynamicResource TextBlock_ForegroundColor}" Content="{Binding Path=AnswerCalls_String, FallbackValue='OFF'}" IsChecked="{Binding Path=AnswerCallsStatus}" IsEnabled="{Binding Path=SupportedAnswerCalls}" Grid.Column="2" HorizontalAlignment="Right" VerticalAlignment="Center" VerticalContentAlignment="Center" Margin="20" />
                         </Grid>
                     </Border>
                 </Grid>

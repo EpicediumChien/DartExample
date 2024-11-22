@@ -14,7 +14,7 @@
              d:DesignHeight="735" d:DesignWidth="1378"
              Cursor="{Binding CurrentCursor}"
                      SizeChanged="UserControl_SizeChanged"
-  Unloaded="LaunchView_Unloaded">
+  Unloaded="LaunchView_Unloaded" Loaded="UserControl_Loaded">
   <UserControl.Resources>
     <ResourceDictionary>
       <ResourceDictionary.MergedDictionaries>
@@ -117,7 +117,7 @@
       </Style>
     </ResourceDictionary>
   </UserControl.Resources>
-  <Grid>
+  <Grid Name="start">
     <Grid>
       <Grid.ColumnDefinitions>
         <ColumnDefinition Width="*" />
@@ -355,7 +355,7 @@
           <StackPanel Orientation="Vertical">
             <Border x:Name="bdrName" BorderThickness="1" BorderBrush="#7E7E7E" CornerRadius="4" Margin="16,0,0,0">
               <UXControls:UXTextBox Name="txbName" Width="260" Height="40" Padding="8,12" FontWeight="Medium" FontFamily="Roboto" MaxLength="30" FontSize="14"
-                                HorizontalAlignment="Center" Margin="0,0,0,0" Background="#141D28" BorderThickness="0" Foreground="#F5F6F7" 
+                                HorizontalAlignment="Center" Margin="0,0,0,0" Background="#141D28" BorderThickness="0" Foreground="#F5F6F7" PreviewTextInput="txtSearchText_PreviewTextInput"
                                 TextChanged="NameTextChanged" TextWrapping="NoWrap" FocusVisualStyle="{StaticResource BorderFocused}"/>
 
             </Border>

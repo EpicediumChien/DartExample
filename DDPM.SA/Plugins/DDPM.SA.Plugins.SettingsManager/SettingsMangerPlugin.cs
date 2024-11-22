@@ -54,8 +54,8 @@ namespace DDPM.SA.Plugins.SettingsManager
         private const string pluginName = "SettingsManagerPlugin";
         private const string pluginVersion = "1.0.0";
         private const string pluginDescription = "This plugin implements Settings Manager Plugin.";
-        private const string publisherCompany = "Wistron";
-        private const string publisherWebsite = "https://www.wistron.com";
+        private const string publisherCompany = "Dell Inc.";
+        private const string publisherWebsite = "https://www.dell.com";
         private const string publisherSupport = "This plugin implements Settings Manager Plugin.";
         //private static string _settingsAccess = SettingsAccess.AppAccessInfo;
         private static string _settingsAccessVer = SettingsAccess.AppAccessVer;
@@ -362,10 +362,13 @@ namespace DDPM.SA.Plugins.SettingsManager
 #if DEBUG
             Console.WriteLine(text);
 #endif
-            if (log_type == log_type.info)
-                Log.Info(text);
-            else
-                Log.Error(text);
+            if (Log != null)
+            {
+                if (log_type == log_type.info)
+                    Log.Info(text);
+                else
+                    Log.Error(text);
+            }
         }
 
         private DDPMITConfig InitDDPMITConfigFile()
@@ -624,9 +627,10 @@ namespace DDPM.SA.Plugins.SettingsManager
 
         public Task<object> ReadRegistryData(Common.Settings.RegistryHive hive, string keyPath, string keyName)
         {
+            object obj = null;
+
             try
             {
-                object obj = null;
                 if (hive == Common.Settings.RegistryHive.CurrentUser)
                 {
                     obj = WTSFunction.ImpersonateUser_ReadRegistry(Log, keyPath, keyName);
@@ -648,7 +652,7 @@ namespace DDPM.SA.Plugins.SettingsManager
             catch (Exception e)
             {
                 WriteLog($"[System settings plugin] ReadRegistryData exception ({e.Message})");
-                return null;
+                return Task.FromResult(obj);
             }
         }
 

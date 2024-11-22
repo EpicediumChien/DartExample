@@ -9,12 +9,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <EmbeddedResource Remove="Resources.zh-TW.resx" />
-  </ItemGroup>
-
-  <ItemGroup>
     <None Remove="Resources\Images\Alert.png" />
     <None Remove="Resources\Images\arrow-left.png" />
+	<None Remove="Resources\Images\arrow-left-light.png" />
     <None Remove="Resources\Images\AW.png" />
     <None Remove="Resources\Images\Battery00.png" />
     <None Remove="Resources\Images\Battery01.png" />
@@ -42,8 +39,10 @@
     <None Remove="Resources\Images\ConsentBg.png" />
     <None Remove="Resources\Images\Disconnected.png" />
     <None Remove="Resources\Images\Dock.png" />
+    <None Remove="Resources\Images\Dock_light.png" />
     <None Remove="Resources\Images\Dongle.png" />
     <None Remove="Resources\Images\DongleC.png" />
+    <None Remove="Resources\Images\Down-light.png" />
     <None Remove="Resources\Images\Down.png" />
     <None Remove="Resources\Images\DownloadTileA.png" />
     <None Remove="Resources\Images\DownloadTileG.png" />
@@ -75,16 +74,20 @@
     <None Remove="Resources\Images\Headset_GooglePlayStoreQR.png" />
     <None Remove="Resources\Images\Headset_GooglePlayStoreQR.svg" />
     <None Remove="Resources\Images\Headset_Info.png" />
+    <None Remove="Resources\Images\Headset_light.png" />
     <None Remove="Resources\Images\Headset_Line1.png" />
     <None Remove="Resources\Images\Headset_Line2.png" />
     <None Remove="Resources\Images\Headset_Line3.png" />
     <None Remove="Resources\Images\Headset_LineFive.png" />
     <None Remove="Resources\Images\Headset_Main.png" />
+    <None Remove="Resources\Images\Headset_Main_light.png" />
     <None Remove="Resources\Images\Headset_Media.png" />
+    <None Remove="Resources\Images\Headset_Media_light.png" />
     <None Remove="Resources\Images\Headset_Multimedia.png" />
     <None Remove="Resources\Images\Headset_Noise.png" />
     <None Remove="Resources\Images\Headset_Off.png" />
     <None Remove="Resources\Images\Headset_Setting.png" />
+    <None Remove="Resources\Images\Headset_Setting_light.png" />
     <None Remove="Resources\Images\Headset_Transparency.png" />
     <None Remove="Resources\Images\Headset_whitedot.png" />
     <None Remove="Resources\Images\info.png" />
@@ -104,7 +107,9 @@
     <None Remove="Resources\Images\KM714.png" />
     <None Remove="Resources\Images\KM717.png" />
     <None Remove="Resources\Images\KnM.png" />
+    <None Remove="Resources\Images\KnM_light.png" />
     <None Remove="Resources\Images\Left.png" />
+    <None Remove="Resources\Images\Left_light.png" />
     <None Remove="Resources\Images\Link.png" />
     <None Remove="Resources\Images\Loading.png" />
     <None Remove="Resources\Images\MButton11.png" />
@@ -134,6 +139,7 @@
     <None Remove="Resources\Images\Mic.png" />
     <None Remove="Resources\Images\Microphone.png" />
     <None Remove="Resources\Images\Monitor.png" />
+    <None Remove="Resources\Images\Monitor_light.png" />
     <None Remove="Resources\Images\MS300.png" />
     <None Remove="Resources\Images\MS3220.png" />
     <None Remove="Resources\Images\MS3220T.png" />
@@ -188,6 +194,7 @@
     <None Remove="Resources\Images\PenC6.png" />
     <None Remove="Resources\Images\PencilMark.png" />
     <None Remove="Resources\Images\PenRadialCenter.png" />
+    <None Remove="Resources\Images\Pen_light.png" />
     <None Remove="Resources\Images\Play.png" />
     <None Remove="Resources\Images\PN5122W.png" />
     <None Remove="Resources\Images\PN7522W.png" />
@@ -214,15 +221,20 @@
     <None Remove="Resources\Images\SD25TB4.png" />
     <None Remove="Resources\Images\SD25TB5.png" />
     <None Remove="Resources\Images\Search.png" />
+    <None Remove="Resources\Images\Search_light.png" />
     <None Remove="Resources\Images\Share.png" />
     <None Remove="Resources\Images\SP3022.png" />
     <None Remove="Resources\Images\SpeakerOn.png" />
+    <None Remove="Resources\Images\SpeakerOn_light.png" />
     <None Remove="Resources\Images\Speaker_AudioPreset.png" />
+    <None Remove="Resources\Images\Speaker_AudioPreset_light.png" />
     <None Remove="Resources\Images\Speaker_AudioSettings.png" />
+    <None Remove="Resources\Images\Speaker_AudioSettings_light.png" />
     <None Remove="Resources\Images\Speaker_EllipseLeft.png" />
     <None Remove="Resources\Images\Speaker_EllipseRight.png" />
     <None Remove="Resources\Images\Speaker_Highlight.png" />
     <None Remove="Resources\Images\Speaker_Interactions.png" />
+    <None Remove="Resources\Images\Speaker_Interactions_light.png" />
     <None Remove="Resources\Images\Speaker_SB3022.png" />
     <None Remove="Resources\Images\Speaker_SB3022_AllLight.png" />
     <None Remove="Resources\Images\Speaker_SB522A_AllLight.png" />
@@ -264,6 +276,7 @@
     <None Remove="Resources\Images\WD25TB5.png" />
     <None Remove="Resources\Images\WD25Z.png" />
     <None Remove="Resources\Images\WebCamera.png" />
+    <None Remove="Resources\Images\Webcamera_light.png" />
     <None Remove="Resources\Images\WebCamModel_P2424HEB_Large.png" />
     <None Remove="Resources\Images\WebCamModel_U3223QZ_Large.png" />
     <None Remove="Resources\Images\WebCamModel_U3223QZ_Small.png" />
@@ -352,6 +365,7 @@
   <ItemGroup>
     <Resource Include="Resources\Images\Alert.png" />
     <Resource Include="Resources\Images\arrow-left.png" />
+	<Resource Include="Resources\Images\arrow-left-light.png" />
     <Resource Include="Resources\Images\AW.png" />
     <Resource Include="Resources\Images\Battery00.png" />
     <Resource Include="Resources\Images\Battery01.png" />
@@ -387,8 +401,10 @@
     <Resource Include="Resources\Images\ConsentBg.png" />
     <Resource Include="Resources\Images\Disconnected.png" />
     <Resource Include="Resources\Images\Dock.png" />
+    <Resource Include="Resources\Images\Dock_light.png" />
     <Resource Include="Resources\Images\Dongle.png" />
     <Resource Include="Resources\Images\DongleC.png" />
+    <Resource Include="Resources\Images\Down-light.png" />
     <Resource Include="Resources\Images\Down.png" />
     <Resource Include="Resources\Images\DownloadTileA.png" />
     <Resource Include="Resources\Images\DownloadTileG.png" />
@@ -413,14 +429,28 @@
     <Resource Include="Resources\Images\HeadsetModel_7024-mall.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
+    <Resource Include="Resources\Images\Headset_light.png" />
+    <Resource Include="Resources\Images\Headset_Main_light.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Images\Headset_Media_light.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Images\Headset_Setting_light.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
     <Resource Include="Resources\Images\info18.png" />
     <Resource Include="Resources\Images\KB740.png" />
     <Resource Include="Resources\Images\KM717.png" />
+    <Resource Include="Resources\Images\KnM_light.png" />
+    <Resource Include="Resources\Images\Left_light.png" />
+    <Resource Include="Resources\Images\Monitor_light.png" />
     <Resource Include="Resources\Images\PanD.png" />
     <Resource Include="Resources\Images\PanL.png" />
     <Resource Include="Resources\Images\PanR.png" />
     <Resource Include="Resources\Images\PanT.png" />
     <Resource Include="Resources\Images\Pause.png" />
+    <Resource Include="Resources\Images\Pen_light.png" />
     <Resource Include="Resources\Images\Play.png" />
     <Resource Include="Resources\Images\RedCircle.png" />
     <Resource Include="Resources\Images\redo.png" />
@@ -471,13 +501,21 @@
     <Resource Include="Resources\Images\SD25TB5.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
+    <Resource Include="Resources\Images\Search_light.png" />
     <Resource Include="Resources\Images\SP3022.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
+    <Resource Include="Resources\Images\SpeakerOn_light.png" />
     <Resource Include="Resources\Images\Speaker_AudioPreset.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
+    <Resource Include="Resources\Images\Speaker_AudioPreset_light.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
     <Resource Include="Resources\Images\Speaker_AudioSettings.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Images\Speaker_AudioSettings_light.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
     <Resource Include="Resources\Images\Speaker_EllipseLeft.png">
@@ -490,6 +528,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
     <Resource Include="Resources\Images\Speaker_Interactions.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Images\Speaker_Interactions_light.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
     <Resource Include="Resources\Images\Speaker_SB522A_AllLight.png">
@@ -548,6 +589,7 @@
     <Resource Include="Resources\Images\WD25Z.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
+    <Resource Include="Resources\Images\Webcamera_light.png" />
     <Resource Include="Resources\Images\WH3024.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
