@@ -327,7 +327,10 @@ namespace DDPM.UI.Module.EzMemory
             if (isEditMode)
             {
                 SplitItem? spItem = _vm.splitListRightView.FindItemByCustomId(ispAdd.EAID);
-                spItem.ReplaceWithISplitICtrl(ispNew);
+                if (spItem != null)
+                {
+                    spItem.ReplaceWithISplitICtrl(ispNew);
+                }
             }
             else
             {
@@ -370,6 +373,7 @@ namespace DDPM.UI.Module.EzMemory
         /// <param name="e"></param>
         private void CancelBtn_Click(object sender, RoutedEventArgs e)
         {
+            _vm.ClearTextBlockAppName();
             DdpmCommonHelper.ModuleOwner?.CloseFullView();
         }
 
