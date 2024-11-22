@@ -10,12 +10,6 @@
              d:DataContext="{d:DesignInstance Type=viewmodels:EzArrangeViewModel}"
              mc:Ignorable="d" Background="{DynamicResource mainWindowBkColor}"
              d:DesignHeight="735" d:DesignWidth="1378">
-    <UserControl.Resources>
-        <ResourceDictionary>
-
-            
-        </ResourceDictionary>
-    </UserControl.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto" />
