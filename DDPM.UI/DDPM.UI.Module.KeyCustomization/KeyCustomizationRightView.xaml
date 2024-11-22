@@ -73,7 +73,13 @@
                                             <DataTemplate>
                                                 <StackPanel>
                                                     <UXControls:UXRadioButton Background="{DynamicResource ActionsRadio_BgColor}" Foreground="{DynamicResource ActionsRadio_FgColor}" TextBlock.Foreground="{DynamicResource ActionsRadio_TxtColor}" Margin="30,2,0,6" Tag="_A" Padding="8,0,0,0"
-                                                                              GroupName="OptionsA" Click="ActionRadioButton_Click" Loaded="ActionButtonLoaded" />
+                                                                              GroupName="OptionsA" Click="ActionRadioButton_Click" Loaded="ActionButtonLoaded" >
+                                                        <UXControls:UXRadioButton.Resources>
+                                                            <Style TargetType="Border">
+                                                                <Setter Property="Background" Value="Transparent" />
+                                                            </Style>
+                                                        </UXControls:UXRadioButton.Resources>
+                                                    </UXControls:UXRadioButton>
                                                     <StackPanel Orientation="Horizontal" Margin="58,4,0,4" Tag="_A" Loaded="ActionButtonLoaded" Visibility="Collapsed">
                                                         <common:ActionButton Style="{StaticResource EditActionButtonStyle}" Margin="0,0,7,0" Loaded="ActionButtonLoaded" Tag="Edit" MouseDown="EditActionClick" />
                                                         <common:ActionButton Style="{StaticResource RemoveActionButtonStyle}" Loaded="ActionButtonLoaded" Tag="Remove" MouseDown="RemoveActionClick" />
@@ -109,7 +115,13 @@
                                                 <DataTemplate>
                                                     <StackPanel>
                                                         <UXControls:UXRadioButton Background="{DynamicResource ActionsRadio_BgColor}" Foreground="{DynamicResource ActionsRadio_FgColor}" TextBlock.Foreground="{DynamicResource ActionsRadio_TxtColor}" Margin="30,2,0,6" Tag="_A" Padding="8,0,0,0"
-                                                                                  GroupName="Options" Click="ActionRadioButton_Click" Loaded="ActionButtonLoaded" />
+                                                                                  GroupName="Options" Click="ActionRadioButton_Click" Loaded="ActionButtonLoaded" >
+                                                            <UXControls:UXRadioButton.Resources>
+                                                                <Style TargetType="Border">
+                                                                    <Setter Property="Background" Value="Transparent" />
+                                                                </Style>
+                                                            </UXControls:UXRadioButton.Resources>
+                                                        </UXControls:UXRadioButton>
                                                         <StackPanel Orientation="Horizontal" Margin="58,4,0,4" Tag="_A" Loaded="ActionButtonLoaded" Visibility="Collapsed">
                                                             <common:ActionButton Style="{StaticResource EditActionButtonStyle}" Margin="0,0,7,0" Loaded="ActionButtonLoaded" Tag="Edit" MouseDown="EditActionClick" />
                                                             <common:ActionButton Style="{StaticResource RemoveActionButtonStyle}" Loaded="ActionButtonLoaded" Tag="Remove" MouseDown="RemoveActionClick" />
@@ -145,7 +157,13 @@
                                                 <DataTemplate>
                                                     <StackPanel>
                                                         <UXControls:UXRadioButton Background="{DynamicResource ActionsRadio_BgColor}" Foreground="{DynamicResource ActionsRadio_FgColor}" TextBlock.Foreground="{DynamicResource ActionsRadio_TxtColor}" Margin="30,2,0,6" Tag="_A" Padding="8,0,0,0"
-                                                                                  GroupName="Options" Click="ActionRadioButton_Click" Loaded="ActionButtonLoaded" />
+                                                                                  GroupName="Options" Click="ActionRadioButton_Click" Loaded="ActionButtonLoaded" >
+                                                            <UXControls:UXRadioButton.Resources>
+                                                                <Style TargetType="Border">
+                                                                    <Setter Property="Background" Value="Transparent" />
+                                                                </Style>
+                                                            </UXControls:UXRadioButton.Resources>
+                                                        </UXControls:UXRadioButton>
                                                         <StackPanel Orientation="Horizontal" Margin="58,4,0,4" Tag="_A" Loaded="ActionButtonLoaded" Visibility="Collapsed">
                                                             <common:ActionButton Style="{StaticResource EditActionButtonStyle}" Margin="0,0,7,0" Loaded="ActionButtonLoaded" Tag="Edit" MouseDown="EditActionClick" />
                                                             <common:ActionButton Style="{StaticResource RemoveActionButtonStyle}" Loaded="ActionButtonLoaded" Tag="Remove" MouseDown="RemoveActionClick" />
@@ -181,7 +199,13 @@
                                                 <DataTemplate>
                                                     <StackPanel>
                                                         <UXControls:UXRadioButton Background="{DynamicResource ActionsRadio_BgColor}" Foreground="{DynamicResource ActionsRadio_FgColor}" TextBlock.Foreground="{DynamicResource ActionsRadio_TxtColor}"  Margin="30,2,0,6" Tag="_A" Padding="8,0,0,0"
-                                                                                  GroupName="Options" Click="ActionRadioButton_Click" Loaded="ActionButtonLoaded" />
+                                                                                  GroupName="Options" Click="ActionRadioButton_Click" Loaded="ActionButtonLoaded" >
+                                                            <UXControls:UXRadioButton.Resources>
+                                                                <Style TargetType="Border">
+                                                                    <Setter Property="Background" Value="Transparent" />
+                                                                </Style>
+                                                            </UXControls:UXRadioButton.Resources>
+                                                        </UXControls:UXRadioButton>
                                                         <StackPanel Orientation="Horizontal" Margin="58,10,0,3.5" Tag="_A" Loaded="ActionButtonLoaded" Visibility="Collapsed">
                                                             <common:ActionButton Style="{StaticResource EditActionButtonStyle}" Margin="0,0,7,0" Loaded="ActionButtonLoaded" Tag="Edit" MouseDown="EditActionClick" />
                                                             <common:ActionButton Style="{StaticResource RemoveActionButtonStyle}" Loaded="ActionButtonLoaded" Tag="Remove" MouseDown="RemoveActionClick" />
@@ -212,7 +236,13 @@
                                             <DataTemplate>
                                                 <StackPanel>
                                                     <UXControls:UXRadioButton Background="{DynamicResource ActionsRadio_BgColor}" Foreground="{DynamicResource ActionsRadio_FgColor}" TextBlock.Foreground="{DynamicResource ActionsRadio_TxtColor}"  Margin="30,2,0,6" Tag="search" Padding="8,0,0,0"
-                                                                              GroupName="search" Click="ActionRadioButton_Click" Loaded="ActionButtonLoaded" />
+                                                                              GroupName="search" Click="ActionRadioButton_Click" Loaded="ActionButtonLoaded" >
+                                                        <UXControls:UXRadioButton.Resources>
+                                                            <Style TargetType="Border">
+                                                                <Setter Property="Background" Value="Transparent" />
+                                                            </Style>
+                                                        </UXControls:UXRadioButton.Resources>
+                                                    </UXControls:UXRadioButton>
                                                     <!--<StackPanel Orientation="Horizontal" Margin="58,10,0,3.5" Tag="_A" Loaded="ActionButtonLoaded" Visibility="Collapsed">
                                                     <common:ActionButton Style="{StaticResource EditActionButtonStyle}" Margin="0,0,7,0" Loaded="ActionButtonLoaded" Tag="Edit" MouseDown="EditActionClick" />
                                                     <common:ActionButton Style="{StaticResource RemoveActionButtonStyle}" Loaded="ActionButtonLoaded" Tag="Remove" MouseDown="RemoveActionClick" />

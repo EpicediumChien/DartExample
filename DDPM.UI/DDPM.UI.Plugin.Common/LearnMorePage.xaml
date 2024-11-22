@@ -8,11 +8,11 @@
         xmlns:UXControls="clr-namespace:Dell.Client.Framework.UX.WPF.Controls;assembly=DCF.UX.WPF" xmlns:common="clr-namespace:DDPM.UI.Common;assembly=DDPM.UI.Common" AllowsTransparency="True"
         Title="ActionParameterModalDialog" ResizeMode="NoResize" ShowInTaskbar="False"
         InputMethod.IsInputMethodEnabled="False"
-        WindowStartupLocation="Manual" WindowStyle="None" Background="#0D121A">
+        WindowStartupLocation="Manual" WindowStyle="None" Background="{StaticResource mainWindowBkColor}">
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="/DDPM.UI.Common;component/PluginStyles.xaml" />
+                <!--<ResourceDictionary Source="/DDPM.UI.Common;component/PluginStyles.xaml" />-->
             </ResourceDictionary.MergedDictionaries>
             <Style x:Key="CaptionTextStyle" TargetType="UXControls:UXTextBlock">
                 <Setter Property="FontFamily" Value="Roboto" />
@@ -34,7 +34,8 @@
         <Grid VerticalAlignment="Top" HorizontalAlignment="Left">
             <StackPanel Orientation="Vertical">
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="0,65">
-                    <Image Margin="64,21,0,0" Source="/DDPM.UI.Resources;component/Resources/Images/arrow-left.png" Stretch="Uniform"
+                    <!--<Path Margin="64,21,0,0" Width="24" Height="24" Data="M19 12H5 M12 19L5 12L12 5" Stretch="Uniform" VerticalAlignment="Top" HorizontalAlignment="Left" Cursor="Hand" MouseLeftButtonDown="CancelClick"/>-->
+                    <Image Margin="64,21,0,0" Source="{DynamicResource Arrow_Left}" Stretch="Uniform"
                            VerticalAlignment="Top" HorizontalAlignment="Left" Cursor="Hand" Width="24" Height="24" MouseLeftButtonDown="CancelClick">
                     </Image>
                     <UXControls:UXTextBlock Name="txtTitleBar" Margin="14,19,0,0" HorizontalAlignment="Left"
@@ -44,8 +45,8 @@
         </Grid>
         <Grid VerticalAlignment="Center" Width="404" Height="363">
             <StackPanel Orientation="Vertical" HorizontalAlignment="Left" Margin="0,0" VerticalAlignment="Center">
-                <UXControls:UXTextBlock Name="txtCaption" Style="{StaticResource CaptionTextStyle}" HorizontalAlignment="Left" />
-                <UXControls:UXTextBlock Name="txtDescription" Style="{StaticResource DescriptionTextStyle}"  Margin="0,0,0,0" />
+                <UXControls:UXTextBlock Name="txtCaption"  HorizontalAlignment="Left" />
+                <UXControls:UXTextBlock Name="txtDescription"   Margin="0,0,0,0" />
                 <!--<StackPanel Name="spKeystroke" Visibility="Collapsed">
                 <UXControls:UXTextBox Name="txtKeystroke" Width="404" Height="64" Padding="8,11" FontWeight="Medium" FontFamily="Roboto"
                 HorizontalAlignment="Left" Background="#141D28" BorderThickness="1" Foreground="#F5F6F7" BorderBrush="#7E7E7E" IsEnabled="False"
@@ -58,7 +59,7 @@
                         <RowDefinition Height="*" />
                     </Grid.RowDefinitions>
                     <StackPanel Grid.Row="0" Margin="0,0,0,5" Orientation="Horizontal" HorizontalAlignment="left">
-                        <UXControls:UXTextBlock FontSize="24" Text="Scan to download the Dell Audio app to customize your headset" Height="64" Width="404" TextWrapping="Wrap" TextAlignment="Center" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="White" />
+                        <UXControls:UXTextBlock FontSize="24" Text="Scan to download the Dell Audio app to customize your headset" Height="64" Width="404" TextWrapping="Wrap" TextAlignment="Center" HorizontalAlignment="Center" VerticalAlignment="Center" />
                     </StackPanel>
                     <StackPanel Grid.Row="1" Margin="0,0,0,0" Orientation="Horizontal" HorizontalAlignment="left">
                         <Image x:Name="appleQR" Width="178" Height="178" Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Headset_AppleStoreQR.png" Stretch="Uniform" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="20,20,10,8" MouseLeftButtonDown="AppleQR_Click" Cursor="Hand"/>

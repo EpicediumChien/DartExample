@@ -147,8 +147,9 @@ namespace DDPM.SA.Plugins.User.DisplayProperties.Test
             PrivateObject privateObject = new PrivateObject(edidparser);
             int Month_ = 10;
             int Week_ = 0;
+            var edid = new EDID() { Month = Month_, Week = Week_ };
             privateObject.SetFieldOrProperty("HexString", hexString);
-            var result = edidparser.GetManufactureYearAndMonth(ref Month_, ref Week_);
+            var result = edidparser.GetManufactureYearAndMonth(ref edid);
             int expectedManufactureYear = 2023;
             int actualManufactureYear = result;
             int expectedManufactureMonth = 5;
