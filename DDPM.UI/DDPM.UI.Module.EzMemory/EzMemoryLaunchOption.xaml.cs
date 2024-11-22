@@ -184,6 +184,8 @@ namespace DDPM.UI.Module.EzMemory
             {
                 _log.Info($"@{nameof(EzMemoryLaunchOption)} FinishBtn_Click: ... in");
 
+                CheckedAutoLunchTime();
+
                 // Determine if adding a new profile or editing an existing one
                 bool isEditMode = _vm.IsEditProfile;
                 int profileID = isEditMode ? _vm.currentEditprofile.ID : GetNewProfileID();
@@ -454,6 +456,48 @@ namespace DDPM.UI.Module.EzMemory
             catch (Exception ex)
             {
                 _log.Error($"[EzMemoryLaunchOption] StartupCB_Checked Exception occurred: {ex.Message}");
+            }
+        }
+
+        private void CheckedAutoLunchTime()
+        {
+            try
+            {
+                _log.Info("[EzMemoryLaunchOption] AutoRB_Checked ... in");
+
+                EasyArrangementDDPM clickedeasyArrangementDDPM = DdpmCommonHelper.DeviceManagerSA.ReadMonitorEasyArrangement(_selecthomeDevice.MonitorInfo).Result;
+
+                if (clickedeasyArrangementDDPM != null && clickedeasyArrangementDDPM.Desktops.Count > 0)
+                {
+                    long autoLaunchTime = _vm.IsAutoLaunch ? GetAutoLaunchTime() : default;
+
+                    foreach (var ps in clickedeasyArrangementDDPM.Desktops[0].ProfileSettings)
+                    {
+                        if (ps.AutoStartTime == autoLaunchTime)
+                        {
+                            if (_vm.currentEditprofileSetting == null || _vm.currentEditprofileSetting.ID != ps.ID)
+                            {
+                                if (DdpmCommonHelper.DDPMMesssageBox(Strings.ezMemoryStartupErrorTitleStringForLaunchOptionPage, Strings.ezMemoryStartupErrorStringForLaunchOptionPage))
+                                {
+                                    _vm.IsLaunchAtStartup = true;
+                                    //break;
+                                }
+                                else
+                                {
+                                    _vm.IsLaunchAtStartup = false;
+                                }
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    _log.Info("[EzMemoryLaunchOption] AutoRB_Checked  can not found Auto Launch By Time = True file");
+                }
+            }
+            catch (Exception ex)
+            {
+                _log.Error($"[EzMemoryLaunchOption] AutoRB_Checked Exception occurred: {ex.Message}");
             }
         }
     }
