@@ -1,14 +1,10 @@
-﻿using Dell.Client.Framework.Common;
-using Microsoft.Win32;
+﻿using Microsoft.Win32;
 using System;
-using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Management;
 using System.Runtime.CompilerServices;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using static VcpCore.Common.EDIDReader;
 
 [assembly: InternalsVisibleTo("VcpCore.Common.Test")]
@@ -43,8 +39,8 @@ namespace VcpCore.Common
                                 //if (InstanceName.Split("\\").Count() < 1 || InstanceName.Split("\\")[1] != MontitorID.Split("\\")[1])
                                 //    continue;
 
-                                name += "\\Device Parameters";                                
-                                
+                                name += "\\Device Parameters";
+
                                 //ManagementBaseObject methodParameters = TempMonitor.GetMethodParameters("WmiGetMonitorRawEEdidV1Block");
                                 //methodParameters["BlockId"] = 0;
                                 using RegistryKey registryKeyII = Registry.LocalMachine.OpenSubKey(name);
@@ -65,7 +61,7 @@ namespace VcpCore.Common
                                         edid.PID = classEdidParser.GetPID(blocks);
                                         //  string text2 = classEdidParser.GetManufacturerID() + classEdidParser.GetVendorID();
                                         edid.SerialNumber = classEdidParser.GetSerialNum();
-                                        edid.Year = classEdidParser.GetManufactureYearAndMonth(ref edid.Month, ref edid.Week);
+                                        edid.Year = classEdidParser.GetManufactureYearAndMonth(ref edid);
                                         edid.ServiceTag = classEdidParser.GetServiceTag();
                                         edid.ModelName = classEdidParser.GetModelName();
                                         edid.Size = classEdidParser.GetScreenSize();
@@ -100,7 +96,7 @@ namespace VcpCore.Common
                 edid.VendorID = classEdidParser.GetVendorID();
                 edid.PID = classEdidParser.GetPID(edid_byte);
                 edid.SerialNumber = classEdidParser.GetSerialNum();
-                edid.Year = classEdidParser.GetManufactureYearAndMonth(ref edid.Month, ref edid.Week);
+                edid.Year = classEdidParser.GetManufactureYearAndMonth(ref edid);
                 edid.ServiceTag = classEdidParser.GetServiceTag();
                 edid.ModelName = classEdidParser.GetModelName();
                 edid.Size = classEdidParser.GetScreenSize();
@@ -109,7 +105,6 @@ namespace VcpCore.Common
                     var strEDID = BitConverter.ToString(StringToByteArray(edid.Edid));
                 }
                 catch (Exception) { }
-
             }
             catch (Exception) { }
 

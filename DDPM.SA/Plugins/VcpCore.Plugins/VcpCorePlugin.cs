@@ -1300,6 +1300,35 @@ namespace VcpCore.Plugins
 
                                 if (rc)
                                 {
+                                    var inputsourcelist = GetFromCacheTable(monitorInfoX, "inputsourcelist");
+                                    if (inputsourcelist != null)
+                                    {                                        
+                                        var inputsourcelist_ = inputsourcelist as List<InputSourceObject>;
+
+                                        var IsExist = false;
+                                        foreach (var input in inputsourcelist_)
+                                        {
+                                            if (input.Name.Equals(val, StringComparison.CurrentCultureIgnoreCase))
+                                            {
+                                                IsExist = true;
+                                                val = input.Name;
+                                                break;
+                                            }
+                                        }
+                                        if (!IsExist)
+                                        {
+                                            val = System.Text.RegularExpressions.Regex.Replace(val, @"\d", string.Empty);
+                                            foreach (var input in inputsourcelist_)
+                                            {
+                                                if (input.Name.Equals(val, StringComparison.CurrentCultureIgnoreCase))
+                                                {
+                                                    val = input.Name;
+                                                    break;
+                                                }
+                                            }
+                                        }
+                                    }
+
                                     SetToCacheTable(monitorInfoX, FunctionName.ToLower(), val);
 
                                     foreach ((MonitorInfo_complex x, MonitorInfo o) in _AllInfoMonitors_Mix)
@@ -2281,8 +2310,13 @@ namespace VcpCore.Plugins
                 }
                 else if (category.Equals(@"Input Select"))
                 {
-                    if (VcpCodeList.VCP60.ContainsKey(str))
-                        VcpCodeList.VCP60.TryGetValue(str, out rc);
+                    var defaultValue = default(KeyValuePair<string, uint>);
+                    var input = VcpCodeList.VCP60.Where(x => x.Key.ToLower().Equals(str.ToLower())).FirstOrDefault();
+                    if (!input.Equals(defaultValue))
+                        rc = input.Value;
+
+                    //if (VcpCodeList.VCP60.ContainsKey(str))
+                    //    VcpCodeList.VCP60.TryGetValue(str, out rc);
                 }
 
                 return rc;
