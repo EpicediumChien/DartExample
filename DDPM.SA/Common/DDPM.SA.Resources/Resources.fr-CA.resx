@@ -204,7 +204,7 @@
   <data name="Failed_to_open_application" xml:space="preserve">
     <value>Échec de l’ouverture de l’application</value>
   </data>
-  <data name="will_be_updated_to " xml:space="preserve">
+  <data name="will_be_updated_to" xml:space="preserve">
     <value>sera mis à jour vers </value>
   </data>
   <data name="can_be_updated_to" xml:space="preserve">
@@ -241,7 +241,7 @@
     <value>Veuillez double-cliquer sur le bouton gauche de la souris pour lancer la mise à jour du micrologiciel</value>
   </data>
   <data name="M2_Please_press_key_on_keyboard_to_start_firmware_update" xml:space="preserve">
-    <value>Appuyez sur la touche \&quot;U\&quot; du clavier pour lancer la mise à jour du micrologiciel</value>
+    <value>Appuyez sur la touche \"U\" du clavier pour lancer la mise à jour du micrologiciel</value>
   </data>
   <data name="A0_Device_connected" xml:space="preserve">
     <value>Appareil connecté</value>

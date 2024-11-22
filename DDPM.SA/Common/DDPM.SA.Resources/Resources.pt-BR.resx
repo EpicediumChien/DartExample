@@ -204,7 +204,7 @@
   <data name="Failed_to_open_application" xml:space="preserve">
     <value>Falha ao abrir o aplicativo</value>
   </data>
-  <data name="will_be_updated_to " xml:space="preserve">
+  <data name="will_be_updated_to" xml:space="preserve">
     <value>será atualizado para </value>
   </data>
   <data name="can_be_updated_to" xml:space="preserve">
@@ -241,7 +241,7 @@
     <value>Clique duas vezes no botão esquerdo do mouse para iniciar a atualização do firmware</value>
   </data>
   <data name="M2_Please_press_key_on_keyboard_to_start_firmware_update" xml:space="preserve">
-    <value>Pressione a tecla \&quot;U\&quot; no teclado para iniciar a atualização do firmware</value>
+    <value>Pressione a tecla \"U\" no teclado para iniciar a atualização do firmware</value>
   </data>
   <data name="A0_Device_connected" xml:space="preserve">
     <value>Dispositivo conectado</value>
@@ -427,7 +427,7 @@
     <value>Organizar janelas</value>
   </data>
   <data name="EA_MSG_0" xml:space="preserve">
-    <value>Ajuste a disposição atual da janela, edite o nome (se desejar) e clique em &quot;Salvar&quot; para armazenar a organização.</value>
+    <value>Ajuste a disposição atual da janela, edite o nome (se desejar) e clique em "Salvar" para armazenar a organização.</value>
   </data>
   <data name="Battery_Low" xml:space="preserve">
     <value>Bateria fraca</value>

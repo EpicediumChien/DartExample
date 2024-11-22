@@ -7,6 +7,7 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using DDPM.SA.Common;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace DDPM.UI.Common
 {
@@ -33,10 +34,12 @@ namespace DDPM.UI.Common
             if (di != null && di.ID != new Guid())
             {
                 Task<string> task = DdpmCommonHelper.DeviceManagerSA!.GetSupportedResolutions(di.ID.ToString());
-                var resolutions = JsonConvert.DeserializeObject<List<ResolutionItem>>(task.Result)!;
-                foreach (var res in resolutions)
+                var str = task.Result;
+                //var resolutions = JsonConvert.DeserializeObject<List<ResolutionItem>>(str)!;
+                var resolutions = JsonConvert.DeserializeObject<Dictionary<string, ResolutionItem>>(str)!;
+                foreach (var res in resolutions.OrderByDescending(x => x.Key))
                 {
-                    var resName = res.Resolution switch
+                    var resName = res.Key switch
                     {
                         "1280x720" => "HD",
                         "1920x1080" => "Full HD",
@@ -44,8 +47,8 @@ namespace DDPM.UI.Common
                         "3840x2160" => "4K QHD",
                         _ => "8K UHD"
                     };
-                    SupportedFPSs.Add(resName, res.FPS);
-                    Resolutions.Add(resName, res.Resolution);
+                    SupportedFPSs.Add(resName, res.Value.FPS);
+                    Resolutions.Add(resName, res.Value.Resolution);
                 }
                 task = DdpmCommonHelper.DeviceManagerSA!.GetSelectedResolution(di.ID.ToString());
                 var currentRes = JsonConvert.DeserializeObject<ResolutionItem>(task.Result)!;
@@ -53,11 +56,18 @@ namespace DDPM.UI.Common
                 SelectedFPSs.Add(SelectedResolution, currentRes.FPS[0]);
 
                 var customProfiles = di.CustomProfiles.ToObject<List<WebcamProfile>>()!.ToList();
+                //Task<JArray> task1 = DdpmCommonHelper.DeviceManagerSA!.GetCustomProfiles(di.ID.ToString());
+                //var jArray = JArray.FromObject(task1.Result);
+                //var customProfiles = jArray.ToObject<List<WebcamProfile>>()!.ToList();
                 for (var l = customProfiles.Count - 1; l >= 0; l--)
                 {
                     CustomProfiles.Add(customProfiles[l].Name, customProfiles[l]);
                 }
-                foreach (var profile in di.PresetProfiles.ToObject<List<WebcamProfile>>()!.ToList().OrderBy(x => x.Name))
+                var presetProfiles = di.PresetProfiles.ToObject<List<WebcamProfile>>()!.ToList();
+                //task1 = DdpmCommonHelper.DeviceManagerSA!.GetPresetProfiles(di.ID.ToString());
+                //jArray = JArray.FromObject(task1.Result);
+                //var presetProfiles = jArray.ToObject<List<WebcamProfile>>()!.ToList();
+                foreach (var profile in presetProfiles.OrderBy(x => x.Name))
                 {
                     profile.Focus = di.FocusMin;
                     PresetProfiles.Add(profile.Name, profile);

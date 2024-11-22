@@ -36,6 +36,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using VcpCore.Common;
 using VcpCore.Interfaces;
+using static DDPM.SA.Common.Settings.DDPMUserSettings;
 using static VcpCore.Common.EDIDReader;
 using static VcpCore.Common.User32;
 using IDs = DDPM.SA.Common.IDs;
@@ -796,6 +797,37 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                         uint code = Convert.ToUInt16(strsetUpstream2, 2);
                         bool b = SetVCPCapability(monitorInfo, 0xE7, code).Result;
                         return Task.FromResult(b);
+                    }
+                }
+            }
+            return Task.FromResult(false);
+        }
+
+        public Task<bool> isScreenPartition(MonitorInfo monitorInfo)
+        {
+            ObjGetVCP objGetVCP = GetVCPCapability(monitorInfo, 0xF2).Result;
+            if (objGetVCP != null && objGetVCP.result) 
+            {
+                if ((uint)objGetVCP.value != 0)
+                {
+                    string strSP = Convert.ToString((uint)objGetVCP.value, 2);
+                    string strSP_16 = strSP;
+                    //add 16 to string
+                    if (strSP.Length < 16)
+                    {
+                        for (int i = 0; i < (16 - strSP.Length); i++)
+                        {
+                            strSP_16 = "0" + strSP_16;
+                        }
+                    }
+                    _logs.DebugMsg("[DisplayMangerPlugin][isScreenPartition] strSP_16 : " + strSP_16);
+                    //find 8
+                    if (strSP_16.Length == 16)
+                    {
+                        if (strSP_16.Substring(7, 1) == "1")
+                        {
+                            return Task.FromResult(true);
+                        }
                     }
                 }
             }
@@ -3207,6 +3239,23 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             return Task.FromResult(false);
         }
 
+        /// <summary>
+        /// Return current Span across multiple monitor option is Enabled/Disabled;
+        /// Note that it's different with EzSettings.IsSpanAcrossMultiMonitors (=ON|OFF)
+        /// </summary>
+        /// <returns>True=Enabled; False=Disabled</returns>
+        public Task<bool> GetIsSpanEnabled()
+        {
+            if (_eaService != null)
+            {
+                return _eaService.GetIsSpanEnabled();
+            }
+            else
+            {
+                _logs.DebugMsg($"[DisplayMangerPlugin] @ DisplayManager.GetIsSpanEnabled(): _eaService is in null");
+            }
+            return Task.FromResult(false);
+        }
         #endregion
 
         #region OutReport

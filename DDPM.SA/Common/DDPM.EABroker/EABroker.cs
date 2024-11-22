@@ -172,13 +172,14 @@ namespace DDPM.EABroker
             }
         }
 
-        public void NotifyEASelectedLayoutChanged(MonitorInfo monitorInfo, SplitJson spJson)
+        public bool NotifyEASelectedLayoutChanged(MonitorInfo monitorInfo, SplitJson spJson)
         {
             EAWorkWindow? workWindow = _vm.FindWorkWindowByMonitor(monitorInfo);
             if (workWindow != null)
             {
-                workWindow.SetWorkingSplit(spJson);
+                return workWindow.SetWorkingSplit(spJson, true);
             }
+            return false;
         }
 
         /// <summary>
@@ -195,6 +196,38 @@ namespace DDPM.EABroker
             MonitorInfo moinfo = new MonitorInfo();
             _deviceManagerSA.CheckEAIDExit( moinfo, 0);
             _deviceManagerSA.DeleteEAID(moinfo, 0);
+        }
+
+        public void Handle_DisplaySettingsChanged(bool isInit=false)
+        {
+            if (_vm != null)
+            {
+                _vm.WriteLog("@EABroker.Handle_DisplaySettingsChanged()");
+                //Check for Span across multiple monitors
+                //
+                //1 Save original settings
+                bool orgSpanEnabled = _vm.IsSpanEnabled;
+                bool newSpanEnabled = orgSpanEnabled;
+ 
+                //2 Refresh settings
+                _vm.DetectSpanCondition();
+                //3 Check if changed
+                newSpanEnabled = _vm.IsSpanEnabled;
+
+                //4 Notify to UI if it's changed
+                if (newSpanEnabled != orgSpanEnabled)
+                {
+                    if (_deviceManagerSA != null)
+                    {
+                        EAArgs eAArgs = new EAArgs();
+                        eAArgs.Command = EAEMConstants.EACommand_SetIsSpanEnabled;
+                        eAArgs.Result = newSpanEnabled;
+                        _deviceManagerSA.SendEANotify(eAArgs);
+                    }
+                }
+
+                _vm.RefreshWorkWindows(isInit);
+            }
         }
     }
 

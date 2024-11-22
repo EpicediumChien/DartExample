@@ -147,8 +147,9 @@ namespace VcpCore.Plugins.Test.ParserTest
             PrivateObject privateObject = new PrivateObject(edidparser);
             int Month_ = 10;
             int week_ = 20;
+            var edid = new EDID() { Month = Month_, Week = week_, };
             privateObject.SetFieldOrProperty("HexString", hexString);
-            var result = edidparser.GetManufactureYearAndMonth(ref Month_, ref week_);
+            var result = edidparser.GetManufactureYearAndMonth(ref edid);
             int expectedManufactureYear = 2023;
             int actualManufactureYear = result;
             int expectedManufactureMonth = 5;

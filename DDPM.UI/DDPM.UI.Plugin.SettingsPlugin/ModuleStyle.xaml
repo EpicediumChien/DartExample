@@ -35,7 +35,7 @@
             <Setter.Value>
                 <ControlTemplate TargetType="ToggleButton">
                     <Border Padding="{TemplateBinding Padding}"
-                            BorderBrush="{StaticResource GroupExpanderHeaderBottomLineColor}"
+                            BorderBrush="{DynamicResource GroupExpanderHeaderBottomLineColor}"
                             BorderThickness="0,0,0,1">
                         <Grid Background="Transparent" SnapsToDevicePixels="False">
                             <Grid.ColumnDefinitions>
@@ -122,24 +122,6 @@
         <GradientStop Offset="0" Color="#FF55B4FD" />
         <GradientStop Offset="1" Color="#FF6E69CF" />
     </LinearGradientBrush>
-    <Style TargetType="Border" x:Key="Border_Test">
-        <Setter Property="BorderBrush" Value="{StaticResource VbarItem_BkColor}" />
-        <Setter Property="Background" Value="{StaticResource VbarItem_BkColor}" />
-        <!--Style.Triggers>
-        <DataTrigger Binding="{Binding IsSelected}"  Value="True">
-        <Setter Property="Background"  Value="{StaticResource VbarItem_HiBkColor}" />
-        <Setter Property="BorderBrush" Value="{StaticResource VbarItem_HiBdColor}" />
-        </DataTrigger>
-        </Style.Triggers-->
-    </Style>
-    <Style x:Key="BorderUnpair" TargetType="Border">
-        <Setter Property="Background" Value="#0E1C2F" />
-        <Setter Property="CornerRadius" Value="2" />
-        <Setter Property="Width" Value="105" />
-        <Setter Property="Height" Value="40" />
-        <Setter Property="BorderThickness" Value="1" />
-        <Setter Property="BorderBrush" Value="#F5F6F7" />
-    </Style>
     <!--<Style x:Key="GroupExpanderStyle" TargetType="UXControls:UXExpander">
     <Setter Property="ExpanderType" Value="Primary" />
     <Setter Property="FontSize" Value="20" />

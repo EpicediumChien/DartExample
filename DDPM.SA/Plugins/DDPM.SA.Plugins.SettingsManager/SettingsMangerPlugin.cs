@@ -627,9 +627,10 @@ namespace DDPM.SA.Plugins.SettingsManager
 
         public Task<object> ReadRegistryData(Common.Settings.RegistryHive hive, string keyPath, string keyName)
         {
+            object obj = null;
+
             try
             {
-                object obj = null;
                 if (hive == Common.Settings.RegistryHive.CurrentUser)
                 {
                     obj = WTSFunction.ImpersonateUser_ReadRegistry(Log, keyPath, keyName);
@@ -651,7 +652,7 @@ namespace DDPM.SA.Plugins.SettingsManager
             catch (Exception e)
             {
                 WriteLog($"[System settings plugin] ReadRegistryData exception ({e.Message})");
-                return null;
+                return Task.FromResult(obj);
             }
         }
 
