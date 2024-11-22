@@ -445,6 +445,7 @@ namespace DDPM.UI.Common
         public static readonly string CustomListTooltipText = GetString("EazyMemory.10");
         public static readonly string ezMemoryStartupErrorTitleStringForLaunchOptionPage = GetString("EazyMemory.5");
         public static readonly string ezMemoryStartupErrorStringForLaunchOptionPage = GetString("EazyMemory.11");
+        public static readonly string ezMemoryAutoLaunchErrorStringForLaunchOptionPage = GetString("EazyMemory.41");
         public static readonly string TitleTBForLaunchOptionPage = GetString("EazyMemory.12");
         public static readonly string StartupCBContentForLaunchOptionPage = GetString("EazyMemory.13");
         public static readonly string ManulRBContentForLaunchOptionPage = GetString("EazyMemory.14");
