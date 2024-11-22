@@ -28,7 +28,7 @@ namespace DDPM.UI.Module.EzMemory
         #region Private Members
         private HomeDevice _homeDevice;
         private IDeviceManagerSA _deviceManagerSA;
-        private DDPM.UI.Common.ViewModels.EzArrangeViewModel _vm;  
+        private DDPM.UI.Common.ViewModels.EzArrangeViewModel _vm;
         private readonly DisplayViewModel _vmDisplay;
         private readonly IConsole _console;
         private readonly ILog _log;
@@ -285,101 +285,118 @@ namespace DDPM.UI.Module.EzMemory
         /// <param name="e"></param>
         private void AddButton1_Click(object sender, RoutedEventArgs e)
         {
-            if (sender is System.Windows.Controls.Button button)
+            try
             {
-                string buttonName = button.Name;
-                var image = button.Template.FindName("PART_Image", button) as Image;
+                _log.Info($"[EzMemoryAssignProgram] AddButton1_Click ... in");
 
-                if (image != null)
+                if (sender is System.Windows.Controls.Button button)
                 {
-                    string source = image.Source.ToString();
-                    string imageState = source.Contains("EzAdd.png") ? "EzAdd" : "EzRemove";
+                    string buttonName = button.Name;
+                    var image = button.Template.FindName("PART_Image", button) as Image;
 
-                    if (imageState == "EzRemove")
+                    if (image != null)
                     {
-                        if(buttonName == "AddButton2_1" || buttonName == "AddButton1")
+                        string source = image.Source.ToString();
+                        string imageState = source.Contains("EzAdd.png") ? "EzAdd" : "EzRemove";
+
+                        if (imageState == "EzRemove")
                         {
-                            _vm.UpdateTextBlockAppName("AddButton2_1", "");
-                            _vm.UpdateTextBlockAppName("AddButton1", "");
-                            _vm._sortApps.Remove("AddButton2_1");
-                            _vm._sortApps.Remove("AddButton1");
-                        }
-                        else if (buttonName == "AddButton2_2" || buttonName == "AddButton2")
-                        {
-                            _vm.UpdateTextBlockAppName("AddButton2_2", "");
-                            _vm.UpdateTextBlockAppName("AddButton2", "");
-                            _vm._sortApps.Remove("AddButton2_2");
-                            _vm._sortApps.Remove("AddButton2");
+                            if (buttonName == "AddButton2_1" || buttonName == "AddButton1")
+                            {
+                                _vm.UpdateTextBlockAppName("AddButton2_1", "");
+                                _vm.UpdateTextBlockAppName("AddButton1", "");
+                                _vm._sortApps.Remove("AddButton2_1");
+                                _vm._sortApps.Remove("AddButton1");
+                            }
+                            else if (buttonName == "AddButton2_2" || buttonName == "AddButton2")
+                            {
+                                _vm.UpdateTextBlockAppName("AddButton2_2", "");
+                                _vm.UpdateTextBlockAppName("AddButton2", "");
+                                _vm._sortApps.Remove("AddButton2_2");
+                                _vm._sortApps.Remove("AddButton2");
+                            }
+                            else
+                            {
+                                _vm.UpdateTextBlockAppName(buttonName, "");
+                                _vm._sortApps.Remove(buttonName);
+                            }
+
+                            int cellno = _vm.GetTextBlockNumber(buttonName);
+
+                            int _no = 1;
+                            foreach (var cellBorder in _vm.ispCtrlForEm.CellList)
+                            {
+                                if (_no == cellno)
+                                {
+                                    cellBorder.CellBd.CellNumber = _no;
+                                    cellBorder.CellBd.MemoryText = _no.ToString();
+                                    cellBorder.CellBd.MemoryImage = null;
+                                    //_vm.AlignCellNumberAndAppName(_no, cellBorder);
+                                }
+                                _no++;
+                            }
+                            return;
                         }
                         else
                         {
-                            _vm.UpdateTextBlockAppName(buttonName, "");
-                            _vm._sortApps.Remove(buttonName);
+                            _vm.ButtonName = button.Name;
+                            EzMemoryAddApplication _ezMemoryAddApplication = new EzMemoryAddApplication(_vmDisplay, _vm, _selecthomeDevice);
+                            DdpmCommonHelper.ModuleOwner?.OpenFullView(_ezMemoryAddApplication);
                         }
-
-                        int cellno = _vm.GetTextBlockNumber(buttonName);
-
-                        int _no = 1;
-                        foreach (var cellBorder in _vm.ispCtrlForEm.CellList)
-                        {
-                            if(_no == cellno)
-                            {
-                                cellBorder.CellBd.CellNumber = _no;
-                                cellBorder.CellBd.MemoryText = _no.ToString();
-                                cellBorder.CellBd.MemoryImage = null;
-                                //_vm.AlignCellNumberAndAppName(_no, cellBorder);
-                            }
-                            _no++;
-                        }
-                        return;
-                    }
-                    else
-                    {
-                        _vm.ButtonName = button.Name;
-                        EzMemoryAddApplication _ezMemoryAddApplication = new EzMemoryAddApplication(_vmDisplay, _vm, _selecthomeDevice);
-                        DdpmCommonHelper.ModuleOwner?.OpenFullView(_ezMemoryAddApplication);
                     }
                 }
-
+            }
+            catch (Exception ex)
+            {
+                _log.Error($"[EzMemoryAssignProgram] AddButton1_Click Exception occurred: {ex.Message}");
             }
         }
 
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
-            if (_vm._bind_apps.Count != 0 && _vm._apps_all.Count != 0)
-                return;
-            _vm._bind_apps.Clear();
-            _vm._apps_all.Clear();
-            Dictionary<string, InstalledAppInfo> data = DdpmCommonHelper.DeviceManagerSA.GetAllAppList().Result;
-
-            string strFolder = DdpmCommonHelper.DeviceManagerSA.GetAppIconFolderPath().Result;
-            strFolder += "\\";
-
-            if (!System.IO.Directory.Exists(strFolder))
-                System.IO.Directory.CreateDirectory(strFolder);
-
-            foreach (KeyValuePair<string, InstalledAppInfo> kvp in data)
+            try
             {
-                Bind_AddFullPage_AppCollectionData new_Appdata = new Bind_AddFullPage_AppCollectionData();
+                _log.Info($"@{nameof(EzMemoryAssignProgram)} UserControl_Loaded: ... in");
 
-                new_Appdata.AppName = kvp.Value.AppName;
-                new_Appdata.InstalledDate = kvp.Value.lastModifyTime;
-                new_Appdata.AppPath = kvp.Value.AppInstallPath;
-                new_Appdata.AppUserModelID = kvp.Value.AppUserModelID;
-                new_Appdata.AppType = kvp.Value.isDesktopApp.ToString();
+                if (_vm._bind_apps.Count != 0 && _vm._apps_all.Count != 0)
+                    return;
+                _vm._bind_apps.Clear();
+                _vm._apps_all.Clear();
+                Dictionary<string, InstalledAppInfo> data = DdpmCommonHelper.DeviceManagerSA.GetAllAppList().Result;
 
-                if (System.IO.File.Exists(strFolder + kvp.Value.IconName + ".png"))
+                string strFolder = DdpmCommonHelper.DeviceManagerSA.GetAppIconFolderPath().Result;
+                strFolder += "\\";
+
+                if (!System.IO.Directory.Exists(strFolder))
+                    System.IO.Directory.CreateDirectory(strFolder);
+
+                foreach (KeyValuePair<string, InstalledAppInfo> kvp in data)
                 {
-                    new_Appdata.AppIcon = strFolder + kvp.Value.IconName + ".png";
-                }
-                else
-                {
-                    new_Appdata.AppIcon = "Assets/palette.png";
-                }
+                    Bind_AddFullPage_AppCollectionData new_Appdata = new Bind_AddFullPage_AppCollectionData();
 
-                _vm._bind_apps.Add(new_Appdata);
-                _vm._apps_all.Add(new_Appdata);
+                    new_Appdata.AppName = kvp.Value.AppName;
+                    new_Appdata.InstalledDate = kvp.Value.lastModifyTime;
+                    new_Appdata.AppPath = kvp.Value.AppInstallPath;
+                    new_Appdata.AppUserModelID = kvp.Value.AppUserModelID;
+                    new_Appdata.AppType = kvp.Value.isDesktopApp.ToString();
 
+                    if (System.IO.File.Exists(strFolder + kvp.Value.IconName + ".png"))
+                    {
+                        new_Appdata.AppIcon = strFolder + kvp.Value.IconName + ".png";
+                    }
+                    else
+                    {
+                        new_Appdata.AppIcon = "Assets/palette.png";
+                    }
+
+                    _vm._bind_apps.Add(new_Appdata);
+                    _vm._apps_all.Add(new_Appdata);
+
+                }
+            }
+            catch (Exception ex)
+            {
+                _log.Error($"@{nameof(EzMemoryAssignProgram)} UserControl_Loaded: Error occurred - {ex.Message}");
             }
         }
     }
@@ -404,4 +421,5 @@ namespace DDPM.UI.Module.EzMemory
             throw new NotImplementedException();
         }
     }
+
 }

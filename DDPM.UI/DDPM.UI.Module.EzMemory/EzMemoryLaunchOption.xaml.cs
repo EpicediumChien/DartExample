@@ -77,83 +77,92 @@ namespace DDPM.UI.Module.EzMemory
         /// </summary>
         public void InitializePage()
         {
-            TitleTB.Text = Strings.TitleTBForLaunchOptionPage;
-            StartupCB.Content = Strings.StartupCBContentForLaunchOptionPage;
-            ManulRB.Content = Strings.ManulRBContentForLaunchOptionPage;
-            AutoRB.Content = Strings.AutoRBContentForLaunchOptionPage;
-            _vm.ezPages = _vm.GetEzPages();
-
-            if (_vm.ezPages.ContainsKey(_vm._currentDeviceModel))
+            try
             {
-                _vm.CurrentAnimationPage = _vm.ezPages[_vm._currentDeviceModel].Count;
-                var pageData = _vm.ezPages[_vm._currentDeviceModel][2];
-                MainText.Text = pageData.MainText!;
-                SubText.Text = pageData.SubText!;
-            }
+                _log.Error($"@{nameof(EzMemoryLaunchOption)} InitializePage: ... in");
 
-            if (_vm.IsEditProfile)
-            {
-                _vm.IsLaunchAtStartup = _vm.currentEditprofileSetting.StartUpLaunch;
-                if (_vm.currentEditprofileSetting.Auto)
+                TitleTB.Text = Strings.TitleTBForLaunchOptionPage;
+                StartupCB.Content = Strings.StartupCBContentForLaunchOptionPage;
+                ManulRB.Content = Strings.ManulRBContentForLaunchOptionPage;
+                AutoRB.Content = Strings.AutoRBContentForLaunchOptionPage;
+                _vm.ezPages = _vm.GetEzPages();
+
+                if (_vm.ezPages.ContainsKey(_vm._currentDeviceModel))
                 {
-                    _vm.IsAutoLaunch = true;
-                    _vm.IsManualLaunch = false;
-                }
-                else
-                {
-                    _vm.IsAutoLaunch = false;
-                    _vm.IsManualLaunch = true;
+                    _vm.CurrentAnimationPage = _vm.ezPages[_vm._currentDeviceModel].Count;
+                    var pageData = _vm.ezPages[_vm._currentDeviceModel][2];
+                    MainText.Text = pageData.MainText!;
+                    SubText.Text = pageData.SubText!;
                 }
 
-                long autoStartTimeInSeconds = (long)_vm.currentEditprofileSetting.AutoStartTime!;
-                TimeSpan time = TimeSpan.FromSeconds(autoStartTimeInSeconds);
-
-                // 使用 CultureInfo 來取得 AM 和 PM
-                string amDesignator = CultureInfo.CurrentCulture.DateTimeFormat.AMDesignator;
-                string pmDesignator = CultureInfo.CurrentCulture.DateTimeFormat.PMDesignator;
-
-                int hourValue = time.Hours;
-                if (hourValue == 0)
+                if (_vm.IsEditProfile)
                 {
-                    _vm.SelectedHour = "12";
-                    _vm.SelectedAMPM = amDesignator; // AM
-                }
-                else if (hourValue >= 12)
-                {
-                    _vm.SelectedAMPM = pmDesignator; // PM
-                    if (hourValue > 12)
+                    _vm.IsLaunchAtStartup = _vm.currentEditprofileSetting.StartUpLaunch;
+                    if (_vm.currentEditprofileSetting.Auto)
                     {
-                        _vm.SelectedHour = (hourValue - 12).ToString("D2");
+                        _vm.IsAutoLaunch = true;
+                        _vm.IsManualLaunch = false;
                     }
                     else
                     {
-                        _vm.SelectedHour = "12";
+                        _vm.IsAutoLaunch = false;
+                        _vm.IsManualLaunch = true;
                     }
+
+                    long autoStartTimeInSeconds = (long)_vm.currentEditprofileSetting.AutoStartTime!;
+                    TimeSpan time = TimeSpan.FromSeconds(autoStartTimeInSeconds);
+
+                    // 使用 CultureInfo 來取得 AM 和 PM
+                    string amDesignator = CultureInfo.CurrentCulture.DateTimeFormat.AMDesignator;
+                    string pmDesignator = CultureInfo.CurrentCulture.DateTimeFormat.PMDesignator;
+
+                    int hourValue = time.Hours;
+                    if (hourValue == 0)
+                    {
+                        _vm.SelectedHour = "12";
+                        _vm.SelectedAMPM = amDesignator; // AM
+                    }
+                    else if (hourValue >= 12)
+                    {
+                        _vm.SelectedAMPM = pmDesignator; // PM
+                        if (hourValue > 12)
+                        {
+                            _vm.SelectedHour = (hourValue - 12).ToString("D2");
+                        }
+                        else
+                        {
+                            _vm.SelectedHour = "12";
+                        }
+                    }
+                    else
+                    {
+                        _vm.SelectedAMPM = amDesignator; // AM
+                        _vm.SelectedHour = hourValue.ToString("D2");
+                    }
+
+                    _vm.SelectedMinute = time.Minutes.ToString("D2");
                 }
                 else
                 {
-                    _vm.SelectedAMPM = amDesignator; // AM
-                    _vm.SelectedHour = hourValue.ToString("D2");
+                    DateTime now = DateTime.Now;
+
+                    string ampm = now.Hour >= 12
+                        ? CultureInfo.CurrentCulture.DateTimeFormat.PMDesignator
+                        : CultureInfo.CurrentCulture.DateTimeFormat.AMDesignator;
+
+                    string hour = now.ToString("hh");
+                    string minute = now.ToString("mm");
+
+                    _vm.SelectedHour = hour;
+                    _vm.SelectedMinute = minute;
+                    _vm.SelectedAMPM = ampm;
+
+                    _vm.IsLaunchAtStartup = false;
                 }
-
-                _vm.SelectedMinute = time.Minutes.ToString("D2");
             }
-            else
+            catch (Exception ex)
             {
-                DateTime now = DateTime.Now;
-
-                string ampm = now.Hour >= 12
-                    ? CultureInfo.CurrentCulture.DateTimeFormat.PMDesignator
-                    : CultureInfo.CurrentCulture.DateTimeFormat.AMDesignator;
-
-                string hour = now.ToString("hh");
-                string minute = now.ToString("mm");
-
-                _vm.SelectedHour = hour;
-                _vm.SelectedMinute = minute;
-                _vm.SelectedAMPM = ampm;
-
-                _vm.IsLaunchAtStartup = false;
+                _log.Error($"@{nameof(EzMemoryLaunchOption)} InitializePage: Error occurred - {ex.Message}");
             }
         }
 
@@ -173,6 +182,8 @@ namespace DDPM.UI.Module.EzMemory
         {
             try
             {
+                _log.Info($"@{nameof(EzMemoryLaunchOption)} FinishBtn_Click: ... in");
+
                 // Determine if adding a new profile or editing an existing one
                 bool isEditMode = _vm.IsEditProfile;
                 int profileID = isEditMode ? _vm.currentEditprofile.ID : GetNewProfileID();
@@ -213,6 +224,8 @@ namespace DDPM.UI.Module.EzMemory
                 }
                 if(_vm.IsLaunchAtStartup)
                 {
+                    _log.Info($"@{nameof(EzMemoryLaunchOption)} _vm.IsLaunchAtStartup True ");
+
                     EasyArrangementDDPM clickedeasyArrangementDDPM = DdpmCommonHelper.DeviceManagerSA.ReadMonitorEasyArrangement(_selecthomeDevice.MonitorInfo).Result;
 
                     if (clickedeasyArrangementDDPM != null && clickedeasyArrangementDDPM.Desktops.Count > 0)
@@ -294,75 +307,97 @@ namespace DDPM.UI.Module.EzMemory
 
         private bool HandleMonitorEasyArrangement(MonitorInfo monitorInfo, EzProfileSettingDDPM ezProfileSetting)
         {
-            EasyArrangementDDPM easyArrangement = DdpmCommonHelper.DeviceManagerSA.ReadMonitorEasyArrangement(monitorInfo).Result;
-            if (easyArrangement == null)
+            try
             {
-                _log.Info($"@{nameof(EzMemoryLaunchOption)} ReadMonitorEasyArrangement returned null. Initializing a new EasyArrangementDDPM.");
-                easyArrangement = new EasyArrangementDDPM();
-            }
+                _log.Info($"[EzMemoryLaunchOption] HandleMonitorEasyArrangement ... in");
 
-            if (easyArrangement.Desktops == null || easyArrangement.Desktops.Count == 0)
-            {
-                DesktopDDPM newDesktop = new DesktopDDPM(string.Empty, 0);
-                newDesktop.ProfileSettings.Add(ezProfileSetting);
-                easyArrangement.Desktops = new List<DesktopDDPM> { newDesktop };
-            }
-            else
-            {
-                easyArrangement.Desktops[0].ProfileSettings.Add(ezProfileSetting);
-            }
+                EasyArrangementDDPM easyArrangement = DdpmCommonHelper.DeviceManagerSA.ReadMonitorEasyArrangement(monitorInfo).Result;
+                if (easyArrangement == null)
+                {
+                    _log.Info($"@{nameof(EzMemoryLaunchOption)} ReadMonitorEasyArrangement returned null. Initializing a new EasyArrangementDDPM.");
+                    easyArrangement = new EasyArrangementDDPM();
+                }
 
-            return DdpmCommonHelper.DeviceManagerSA.WriteMonitorEasyArrangement(monitorInfo, easyArrangement).Result;
+                if (easyArrangement.Desktops == null || easyArrangement.Desktops.Count == 0)
+                {
+                    DesktopDDPM newDesktop = new DesktopDDPM(string.Empty, 0);
+                    newDesktop.ProfileSettings.Add(ezProfileSetting);
+                    easyArrangement.Desktops = new List<DesktopDDPM> { newDesktop };
+                }
+                else
+                {
+                    easyArrangement.Desktops[0].ProfileSettings.Add(ezProfileSetting);
+                }
+
+                return DdpmCommonHelper.DeviceManagerSA.WriteMonitorEasyArrangement(monitorInfo, easyArrangement).Result;
+            }
+            catch (Exception ex)
+            {
+                _log.Error($"[EzMemoryLaunchOption] HandleMonitorEasyArrangement Exception occurred: {ex.Message}");
+                return false;
+            }
         }
 
         //Robert_Lin, 2024-11-19 Change to pass ISpitCtrl (origial) into this method
         //private void UpdateSplitListUI(int profileID, int layout, bool isEditMode)
         private void UpdateSplitListUI(int profileID, ISplitCtrl ispAdd, bool isEditMode)
         {
-            //1 Duplicate a ISplitCtrl from current editing/adding
-            ISplitCtrl? ispNew = ispAdd.Clone();
-            ispNew.SplitMode = eSplitModes.Icon;
+            try
+            {
+                _log.Info("[EzMemoryLaunchOption] UpdateSplitListUI  ... in");
+                //1 Duplicate a ISplitCtrl from current editing/adding
+                ISplitCtrl? ispNew = ispAdd.Clone();
+                ispNew.SplitMode = eSplitModes.Icon;
 
-            //If it's Edit mode, then replace current edit selected item with ispNew
-            if (isEditMode)
-            {
-                SplitItem? spItem = _vm.splitListRightView.FindItemByCustomId(ispAdd.EAID);
-                if (spItem != null)
+                //If it's Edit mode, then replace current edit selected item with ispNew
+                if (isEditMode)
                 {
-                    spItem.ReplaceWithISplitICtrl(ispNew);
+                    _log.Info("[EzMemoryLaunchOption] UpdateSplitListUI  ... isEditMode True");
+                    SplitItem? spItem = _vm.splitListRightView.FindItemByCustomId(ispAdd.EAID);
+                    if (spItem != null)
+                    {
+                        spItem.ReplaceWithISplitICtrl(ispNew);
+                    }
                 }
-            }
-            else
-            {
-                //Add new item into SplitListView
-                SplitItem newItem = _vm.splitListRightView.AddItemToList(ispNew.UC);
+                else
+                {
+                    _log.Info("[EzMemoryLaunchOption] UpdateSplitListUI  ... isEditMode False");
+                    //Add new item into SplitListView
+                    SplitItem newItem = _vm.splitListRightView.AddItemToList(ispNew.UC);
+                    newItem.SplitOwner = Common.EAEM.eSplitOwner.EaRecent;
+                    newItem.ProfileID = profileID;
+                    newItem.IsHoverable = true;
+                    newItem.IsDeleteEnabled = true;
+                    newItem.IsEditEnabled = true;
+                    newItem.LayoutID = ispNew.EAID;
+                }
+
+                /* OLD Code by Wayn 
+                //ISplitCtrl? splitCtrl = ISplitCtrl.Create(_vm.SelectedSplitItem.CellCount, _vm.SelectedSplitItem.SplitKey);
+                ISplitCtrl? splitCtrl = ISplitCtrl.Create(layout);
+                splitCtrl.FriendlyName = "Off"; // Need multilingual support
+                splitCtrl.SplitMode = eSplitModes.Icon;
+                
+                SplitItem newItem = _vm.splitListRightView.AddItemToList(splitCtrl.UC);
                 newItem.SplitOwner = Common.EAEM.eSplitOwner.EaRecent;
                 newItem.ProfileID = profileID;
                 newItem.IsHoverable = true;
                 newItem.IsDeleteEnabled = true;
                 newItem.IsEditEnabled = true;
-                newItem.LayoutID = ispNew.EAID;
+                newItem.LayoutID = layout;
+                
+                if (isEditMode)
+                {
+                    _vm.splitListRightView.DeleteSplitItem(_vm.CurrentEditSelectspItem);
+                }
+                */
+                //NEW code by Robert
+
             }
-            /* OLD Code by Wayn 
-            //ISplitCtrl? splitCtrl = ISplitCtrl.Create(_vm.SelectedSplitItem.CellCount, _vm.SelectedSplitItem.SplitKey);
-            ISplitCtrl? splitCtrl = ISplitCtrl.Create(layout);
-            splitCtrl.FriendlyName = "Off"; // Need multilingual support
-            splitCtrl.SplitMode = eSplitModes.Icon;
-
-            SplitItem newItem = _vm.splitListRightView.AddItemToList(splitCtrl.UC);
-            newItem.SplitOwner = Common.EAEM.eSplitOwner.EaRecent;
-            newItem.ProfileID = profileID;
-            newItem.IsHoverable = true;
-            newItem.IsDeleteEnabled = true;
-            newItem.IsEditEnabled = true;
-            newItem.LayoutID = layout;
-
-            if (isEditMode)
+            catch (Exception ex)
             {
-                _vm.splitListRightView.DeleteSplitItem(_vm.CurrentEditSelectspItem);
+                _log.Error($"[EzMemoryLaunchOption] UpdateSplitListUI Exception occurred: {ex.Message}");
             }
-            */
-            //NEW code by Robert
 
         }
 
@@ -386,6 +421,8 @@ namespace DDPM.UI.Module.EzMemory
         {
             try
             {
+                _log.Info("[EzMemoryLaunchOption] StartupCB_Checked ... in");
+
                 EasyArrangementDDPM clickedeasyArrangementDDPM = DdpmCommonHelper.DeviceManagerSA.ReadMonitorEasyArrangement(_selecthomeDevice.MonitorInfo).Result;
 
                 if (clickedeasyArrangementDDPM != null && clickedeasyArrangementDDPM.Desktops.Count > 0)
@@ -411,12 +448,12 @@ namespace DDPM.UI.Module.EzMemory
                 }
                 else
                 {
-                    _log.Info("[EzMemoryLaunchOption] StartupCB_Checked ");
+                    _log.Info("[EzMemoryLaunchOption] StartupCB_Checked  can not found StartUp Launch = True file");
                 }
             }
             catch (Exception ex)
             {
-                _log.Info($"[EzMemoryLaunchOption] StartupCB_Checked Exception occurred: {ex.Message}");
+                _log.Error($"[EzMemoryLaunchOption] StartupCB_Checked Exception occurred: {ex.Message}");
             }
         }
     }
