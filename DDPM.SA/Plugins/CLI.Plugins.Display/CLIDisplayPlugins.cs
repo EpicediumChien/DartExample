@@ -1539,8 +1539,8 @@ namespace DDPM.CLI.Plugins.Display
                 var value = string.Empty;
                 var message = "N/A";
 
-                commandLineInput.Options[0].Option_Value.Replace(".", ",");
-                List<string> values = commandLineInput.Options[0].Option_Value.Split(",").ToList();
+                //commandLineInput.Options[0].Option_Value.Replace(".", ",");
+                List<string> values = commandLineInput.Options[0].Option_Value.Replace(".", ",").Split(",").ToList();
                 foreach (string v in values)
                 {
                     switch (v.ToUpper())
