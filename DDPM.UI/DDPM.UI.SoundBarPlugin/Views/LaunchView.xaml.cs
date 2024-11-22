@@ -7,6 +7,7 @@ using DDPM.UI.Module.SpeakerAudioSettings;
 using DDPM.UI.Module.SpeakerInteractions;
 using DDPM.UI.Plugin.Common;
 using DDPM.UI.Plugin.ViewModels;
+using Dell.Client.Framework.UX.WPF.Controls;
 using Newtonsoft.Json.Linq;
 using System.Diagnostics;
 using System.Net;
@@ -63,9 +64,14 @@ namespace DDPM.UI.Plugin.SoundBarPlugin
             txtFirmware.Text = string.Format(Strings.DockDongle1, _vm.PhysicalDeviceFWVersion);
             txtSlot.Text = string.Format(Strings.DockDongle0, _vm.CurrentDeviceInfo!.MaxPairingSlots - _vm.CurrentDeviceInfo.PairedDeviceCount, _vm.CurrentDeviceInfo.MaxPairingSlots);
 
-            DdpmCommonHelper.BitmapImageUpdated += ArrowLeftImageUpdate;
+            DdpmCommonHelper.BitmapImageUpdated += ImageUpdate;
         }
 
+        private void ImageUpdate(OSThemeEnum oSThemeEnum)
+        {
+            ArrowLeft.Source = null;
+            ArrowLeft.Source = (BitmapImage)Application.Current.Resources["Arrow_Left"];
+        }
 
         #region Init for Modules
 

@@ -1,4 +1,5 @@
-﻿using System.Windows.Media;
+﻿using Dell.Client.Framework.UX.WPF.Controls;
+using System.Windows.Media;
 using Color = System.Windows.Media.Color;
 using ColorConverter = System.Windows.Media.ColorConverter;
 
@@ -27,7 +28,6 @@ namespace DDPM.UI.Common
             UpdateFreezable("DefaultTheme_BtBkColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#D9E1F2"));
             UpdateFreezable("DefaultTheme_BtBdColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#0063B8"));
             UpdateBitmapImage("popup_ArrowCorner", new Uri($"pack://application:,,,/DDPM.UI.Common;component/Resources/LightMode/popup_ArrowCorner.png", UriKind.RelativeOrAbsolute));
-            BitmapImageUpdated?.Invoke("popup_ArrowCorner");
             UpdateFreezable("DefaultTheme_TbBkColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#FFFFFFFF"));
             UpdateFreezable("DefaultTheme_TbFgColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#FF0E0E0E"));
             UpdateFreezable("DefaultTheme_TbBdColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#0063B8"));
@@ -65,7 +65,6 @@ namespace DDPM.UI.Common
             UpdateBitmapImage("title_back", new Uri($"pack://application:,,,/DDPM.UI.Resources;component/Resources/Images/arrow-left-light.png", UriKind.RelativeOrAbsolute));
             UpdateBitmapImage("mouse_setting_title_back", new Uri($"pack://application:,,,/DDPM.UI.Resources;component/Resources/Images/arrow-left-light.png", UriKind.RelativeOrAbsolute));
             UpdateBitmapImage("down_Expand", new Uri($"pack://application:,,,/DDPM.UI.Resources;component/Resources/Images/Down-light.png", UriKind.RelativeOrAbsolute));
-            BitmapImageUpdated?.Invoke("down_Expand");
             UpdateFreezable("txtMessage_TxtColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#000000"));
             UpdateFreezable("MouseSettingMenu_BgColor99", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#99f5f8f9"));
             UpdateFreezable("MouseSettingMenu_BgColor60", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#60f5f8f9"));
@@ -183,7 +182,6 @@ namespace DDPM.UI.Common
             #region Display port icon
             UpdateFreezable("DisplayName_FgColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#40586D"));
             UpdateBitmapImage("ConnectionTypeImageKey", new Uri("pack://application:,,,/DDPM.UI.Common;component/Resources/LightMode/Port.png", UriKind.Absolute));
-            BitmapImageUpdated?.Invoke("ConnectionTypeImageKey");
             #endregion
 
             #region Combo Box
@@ -196,7 +194,6 @@ namespace DDPM.UI.Common
 
             #region BarItem Colors
             UpdateBitmapImage("Arrow_Left", new Uri($"pack://application:,,,/DDPM.UI.Resources;component/Resources/Images/arrow-left-light.png", UriKind.RelativeOrAbsolute));
-            BitmapImageUpdated?.Invoke("Arrow_Left");
             UpdateFreezable("btn_BkColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#2B6FC7"));
             #endregion
 
@@ -310,6 +307,8 @@ namespace DDPM.UI.Common
             UpdateFreezable("DefaultTheme_SetupScanBdColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#0E0E0E"));
             UpdateFreezable("DefaultTheme_SetupSelectBdColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#C5D4E3"));
             #endregion
+
+            BitmapImageUpdated?.Invoke(OSThemeEnum.Light);
         }
     }
 }

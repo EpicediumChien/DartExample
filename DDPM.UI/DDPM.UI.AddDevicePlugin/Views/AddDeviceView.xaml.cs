@@ -16,6 +16,7 @@ using DDPM.UI.Module.AddWebcam;
 using DDPM.UI.Plugin.Common;
 using DDPM.UI.Plugin.ViewModels;
 using Dell.Client.Framework.UX.WPF;
+using Dell.Client.Framework.UX.WPF.Controls;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -65,16 +66,13 @@ namespace DDPM.UI.Plugin.AddDevicePlugin
                 rightViewHeaderCtrl.SetHeaders(_vm.RightViewHeaders.ToArray());
             }
             txtCaption.Text = Caption;
-            DdpmCommonHelper.BitmapImageUpdated += ArrowLeftImageUpdate;
+            DdpmCommonHelper.BitmapImageUpdated += ImageUpdate;
         }
 
-        private void ArrowLeftImageUpdate(string resourceKey)
+        private void ImageUpdate(OSThemeEnum oSThemeEnum)
         {
-            if (resourceKey == "Arrow_Left")
-            {
-                ArrowLeft.Source = null;
-                ArrowLeft.Source = (BitmapImage)Application.Current.Resources[resourceKey];
-            }
+            ArrowLeft.Source = null;
+            ArrowLeft.Source = (BitmapImage)Application.Current.Resources["Arrow_Left"];
         }
 
         private void BuildModuleGroups()

@@ -82,13 +82,10 @@ namespace DDPM.UI.Plugin.Common
             DdpmCommonHelper.BitmapImageUpdated += imgComboImageUpdate;
         }
 
-        private void imgComboImageUpdate(string resourceKey)
+        private void imgComboImageUpdate(OSThemeEnum oSThemeEnum)
         {
-            if (resourceKey == "down_Expand")
-            {
-                imgCombo.Source = null;
-                imgCombo.Source = (BitmapImage)System.Windows.Application.Current.Resources[resourceKey];
-            }
+            imgCombo.Source = null;
+            imgCombo.Source = (BitmapImage)System.Windows.Application.Current.Resources["down_Expand"];
         }
 
         private void DrawPieChart()

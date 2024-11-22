@@ -323,7 +323,6 @@ namespace DDPM.UI.Common
                 resourceManager.StageResources();
                 resourceManager.CommitResources();
                 Application.Current.MainWindow?.InvalidateVisual();
-                BitmapImageUpdated?.Invoke("AddDeviceVBarRefresh");
             }, System.Windows.Threading.DispatcherPriority.Loaded);
             // Debug.WriteLine($"updateMergedDictionarie to {oSTheme.ToString()}");
             previousOsTheme = oSTheme;
@@ -379,7 +378,7 @@ namespace DDPM.UI.Common
         }
 
         // Need refine
-        public static event Action<string>? BitmapImageUpdated;
+        public static event Action<OSThemeEnum>? BitmapImageUpdated;
 
         //Derek 10/30
         public static int GetBreakPoints()

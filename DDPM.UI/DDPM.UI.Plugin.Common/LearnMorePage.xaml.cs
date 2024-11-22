@@ -1,4 +1,5 @@
 ﻿using DDPM.UI.Common;
+using Dell.Client.Framework.UX.WPF.Controls;
 using System.Diagnostics;
 using System.Windows;
 using System.Windows.Input;
@@ -25,16 +26,13 @@ namespace DDPM.UI.Plugin.Common
             txtTitleBar.Text = Caption;
             txtCaption.Text = Caption;
 
-            DdpmCommonHelper.BitmapImageUpdated += ArrowLeftImageUpdate;
+            DdpmCommonHelper.BitmapImageUpdated += ImageUpdate;
         }
 
-        private void ArrowLeftImageUpdate(string resourceKey)
+        private void ImageUpdate(OSThemeEnum oSThemeEnum)
         {
-            if (resourceKey == "Arrow_Left")
-            {
-                ArrowLeft.Source = null;
-                ArrowLeft.Source = (BitmapImage)Application.Current.Resources[resourceKey];
-            }
+            ArrowLeft.Source = null;
+            ArrowLeft.Source = (BitmapImage)Application.Current.Resources["Arrow_Left"];
         }
 
         private void CancelClick(object sender, MouseButtonEventArgs e)
