@@ -1130,6 +1130,7 @@
         <Setter Property="HorizontalAlignment" Value="Center" />
         <Setter Property="VerticalAlignment" Value="Center" />
         <Setter Property="FontSize" Value="14" />
+        <Setter Property="Background" Value="Transparent" />
     </Style>
     <SolidColorBrush x:Key="RightView_BkColor" Color="#99193457" />
     <LinearGradientBrush x:Key="RightView_Header_HiColor" StartPoint="0,0" EndPoint="1,0">
