@@ -1110,9 +1110,9 @@ namespace DDPM.UI.Common.Models
                 //Workaround, if Hostname is empty, then show {hostName}
                 BleHost2Text = string.IsNullOrEmpty(DeviceInfo.PairedHostName2) ? hostName : DeviceInfo.PairedHostName2;
             }
-            string AudioBleConnectionTotalPairCountText = "This device can be paired with {0} hosts simultaneously";
-            int totalPairedHostCount = DeviceInfo.TotalNumberOfPairedHostName;
-            AudioBleText = String.Format(AudioBleConnectionTotalPairCountText, totalPairedHostCount);
+            AudioBleText = string.Format(Strings.Paired_Info, DeviceInfo.TotalNumberOfPairedHostName); //"This device can be paired with {0} hosts simultaneously";
+            //int totalPairedHostCount = DeviceInfo.TotalNumberOfPairedHostName;
+            //AudioBleText = String.Format(AudioBleConnectionTotalPairCountText, totalPairedHostCount);
             //BLConnection.Visibility = Visibility.Visible;
         }
 

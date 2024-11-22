@@ -445,6 +445,7 @@ namespace DDPM.UI.Common
         public static readonly string CustomListTooltipText = GetString("EazyMemory.10");
         public static readonly string ezMemoryStartupErrorTitleStringForLaunchOptionPage = GetString("EazyMemory.5");
         public static readonly string ezMemoryStartupErrorStringForLaunchOptionPage = GetString("EazyMemory.11");
+        public static readonly string ezMemoryAutoLaunchErrorStringForLaunchOptionPage = GetString("EazyMemory.41");
         public static readonly string TitleTBForLaunchOptionPage = GetString("EazyMemory.12");
         public static readonly string StartupCBContentForLaunchOptionPage = GetString("EazyMemory.13");
         public static readonly string ManulRBContentForLaunchOptionPage = GetString("EazyMemory.14");
@@ -590,6 +591,7 @@ namespace DDPM.UI.Common
         public static readonly string PenAlreadyPaired = "This device is already paired. Unpair the device first if you would like to pair again.";
         public static readonly string PairYourPen = "Pair your pen";
         public static readonly string PairYourPenMessage = "Would you like to pair your pen with your system?";
+        public static readonly string Paired_Info = GetString("PairedInfo.0");
 
         // Display Restore to Default
         public static readonly string RestoreToDefalutText = "Are you sure you want to restore all default settings on your device?";

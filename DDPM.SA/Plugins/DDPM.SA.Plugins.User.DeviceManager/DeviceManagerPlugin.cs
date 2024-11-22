@@ -2917,6 +2917,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
         }
 
+
         public async Task<bool> SetBand2GainAsync(string guid, int newValue)
         {
             try
@@ -2951,7 +2952,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         {
             try
             {
-                await _DTPProxyPlugin.SetAncModeAsync(guid, newValue);
+                await _DTPProxyPlugin.SetBand4GainAsync(guid, newValue);
                 writelog($"[DeviceManagerPlugin] [Headset] SetBand4GainAsync success, value is {newValue.ToString()}");
                 return true;
             }
@@ -2966,7 +2967,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         {
             try
             {
-                await _DTPProxyPlugin.SetAncModeAsync(guid, newValue);
+                await _DTPProxyPlugin.SetBand5GainAsync(guid, newValue);
                 writelog($"[DeviceManagerPlugin] [Headset] SetBand5GainAsync success, value is {newValue.ToString()}");
                 return true;
             }
@@ -3305,6 +3306,51 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             catch (Exception ex)
             {
                 writelog($"[DeviceManagerPlugin] [Headset] GetPairingStatusAsync failed for {guid} - Exception: {ex.Message}");
+                return null;
+            }
+        }
+
+        public async Task<string> GetPairedHostName1Async(string guid)
+        {
+            try
+            {
+                var result = await _DTPProxyPlugin.GetPairedHostName1Async(guid);
+                writelog($"[DeviceManagerPlugin] [Headset] GetPairedHostName1Async succeeded, value is {result.ToString()}");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [Headset] GetPairedHostName1Async failed for {guid} - Exception: {ex.Message}");
+                return null;
+            }
+        }
+
+        public async Task<string> GetPairedHostName2Async(string guid)
+        {
+            try
+            {
+                var result = await _DTPProxyPlugin.GetPairedHostName2Async(guid);
+                writelog($"[DeviceManagerPlugin] [Headset] GetPairedHostName2Async succeeded, value is {result.ToString()}");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [Headset] GetPairedHostName2Async failed for {guid} - Exception: {ex.Message}");
+                return null;
+            }
+        }
+
+        public async Task<string> GetPairedHostName3Async(string guid)
+        {
+            try
+            {
+                var result = await _DTPProxyPlugin.GetPairedHostName3Async(guid);
+                writelog($"[DeviceManagerPlugin] [Headset] GetPairedHostName3Async succeeded, value is {result.ToString()}");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [Headset] GetPairedHostName3Async failed for {guid} - Exception: {ex.Message}");
                 return null;
             }
         }

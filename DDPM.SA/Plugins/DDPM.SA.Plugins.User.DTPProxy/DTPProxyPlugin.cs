@@ -3618,6 +3618,81 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
         }
 
+        public async Task<string> GetPairedHostName1Async(string guid)
+        {
+            try
+            {
+                if (!await GetItemIDAsync("Headset", guid))
+                    return null;
+
+                var commodity = await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo);
+                if (commodity is ICommodity)
+                {
+                    var value = GetPropertyValue(_headsetInterfaceType, commodity, "PairedHostName1");
+                    writelog($"[Headset] GetPairedHostName1Async succeeded for {guid}");
+                    return (string)value;
+                }
+
+                writelog($"[Headset] GetPairedHostName1Async failed: Could not retrieve commodity interface for {guid}");
+                return null;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[Headset] GetPairedHostName1Async failed for {guid} - Exception: {ex.Message}");
+                return null;
+            }
+        }
+
+        public async Task<string> GetPairedHostName2Async(string guid)
+        {
+            try
+            {
+                if (!await GetItemIDAsync("Headset", guid))
+                    return null;
+
+                var commodity = await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo);
+                if (commodity is ICommodity)
+                {
+                    var value = GetPropertyValue(_headsetInterfaceType, commodity, "PairedHostName2");
+                    writelog($"[Headset] GetPairedHostName2Async succeeded for {guid}");
+                    return (string)value;
+                }
+
+                writelog($"[Headset] GetPairedHostName2Async failed: Could not retrieve commodity interface for {guid}");
+                return null;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[Headset] GetPairedHostName2Async failed for {guid} - Exception: {ex.Message}");
+                return null;
+            }
+        }
+
+        public async Task<string> GetPairedHostName3Async(string guid)
+        {
+            try
+            {
+                if (!await GetItemIDAsync("Headset", guid))
+                    return null;
+
+                var commodity = await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo);
+                if (commodity is ICommodity)
+                {
+                    var value = GetPropertyValue(_headsetInterfaceType, commodity, "PairedHostName3");
+                    writelog($"[Headset] GetPairedHostName3Async succeeded for {guid}");
+                    return (string)value;
+                }
+
+                writelog($"[Headset] GetPairedHostName3Async failed: Could not retrieve commodity interface for {guid}");
+                return null;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[Headset] GetPairedHostName3Async failed for {guid} - Exception: {ex.Message}");
+                return null;
+            }
+        }
+
         public async Task<int> GetMaxPairingSlotsAsync(string guid)
         {
             try
