@@ -157,7 +157,10 @@ namespace DDPM.UI.Plugin.AddDevicePlugin
             //if(newItem.Id == _vm!.DeviceBarSelectedIndex) { return; }
 
             if (_vm!.DeviceBarSelectedIndex >= 0)
+            {
                 _vm.DeviceBarItems[_vm.DeviceBarSelectedIndex].IsSelected = false;
+                _vm.DeviceBarItems[_vm.DeviceBarSelectedIndex].RenewBarItem();
+            }
 
             _vm.DeviceBarSelectedIndex = newItem.Id;
 
