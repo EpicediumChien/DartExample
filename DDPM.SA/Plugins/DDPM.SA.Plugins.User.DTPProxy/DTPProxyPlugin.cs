@@ -5627,8 +5627,6 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                     _WebcamComConnectEvent.Connected += Webcam_Connected;
                     _WebcamComConnectEvent.Disconnected += Webcam_Disconnected;
 
-                    _WebcamComConnectEvent.Esi_IsCameraSensorCoveredChanged += Webcam_Esi_IsCameraSensorCoveredChanged;
-
                     writelog($"Webcam Commodity event(connected/disconnected) registered");
                 }
                 catch (Exception e)
