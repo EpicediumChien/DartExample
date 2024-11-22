@@ -6,6 +6,7 @@ using Microsoft;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows;
+using Windows.Devices.Geolocation;
 
 namespace DDPM.UI.Plugin.ViewModels
 {
@@ -15,6 +16,7 @@ namespace DDPM.UI.Plugin.ViewModels
 
         public readonly ILog _log;
         public IDeviceManagerSA _deviceManager;
+        public IShowPluginManager _showPluginManager;
         public DeviceInfo DeviceInfoDTP;
         public string _current_headset;
 
@@ -22,14 +24,14 @@ namespace DDPM.UI.Plugin.ViewModels
 
         public new event PropertyChangedEventHandler? PropertyChanged;
         //public string modelTest;
-        public HeadsetViewModel(IConsole console, ILog log, IDeviceManagerSA deviceManager) : base(console, log, deviceManager)
+        public HeadsetViewModel(IShowPluginManager showPluginManager, IConsole console, ILog log, IDeviceManagerSA deviceManager) : base(console, log, deviceManager)
         {
             Requires.NotNull(console, nameof(console));
             Requires.NotNull(log, nameof(log));
 
             _log = log;
             _deviceManager = deviceManager;
-
+            _showPluginManager = showPluginManager;
             DeviceInfoDTP = new DeviceInfo();
             _current_headset = string.Empty;
             _log!.Info($"[HeadsetViewModel] HeadsetViewModel Start...");
@@ -634,6 +636,10 @@ namespace DDPM.UI.Plugin.ViewModels
                 _deviceManager.SetFactoryResetAsyncValueForHeadset(CurrentDeviceInfo!.ID.ToString(), true).Wait();
                 await UpdateDTPValue();
                 CheckHeadsetFunc();
+
+                //_showPluginManager = HeadsetPlugin.PluginIoc.GetService<IShowPluginManager>();
+                //_showPluginManager?.ShowPluginById(DDPM.UI.Common.Constants.HeadsetPluginId, CurrentDeviceInfo!.ID.ToString());
+                _showPluginManager?.ShowHomePage();
             }
             catch (Exception ex)
             {
