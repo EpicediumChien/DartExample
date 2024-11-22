@@ -193,8 +193,6 @@ namespace DDPM.UI.Module.DisplayHotkeys
             }
         }
 
-        public Visibility PxPkeySettings_Visibility { get; set; } = Visibility.Collapsed;
-
         public void SaveHotkeySettings(InputSourceObj inputSourceObj, string inputNo)
         {
             var temp = DdpmCommonHelper.DeviceManagerSA.ReadCurrentHotkey(this.DisplayHotkeysModule.SelectedHomeDevice.MonitorInfo).Result;
@@ -515,13 +513,6 @@ namespace DDPM.UI.Module.DisplayHotkeys
 
                 OnPropertyChanged("HasCapability_PipTogglePosition");
                 //OnPropertyChanged("FavoriteInput_Selected_Index");
-
-                MonitorInfo? monitorInfo = DisplayHotkeysModule.SelectedHomeDevice.MonitorInfo;
-                if (monitorInfo != null)
-                {
-                    PxPkeySettings_Visibility = monitorInfo.CapabilityDic.ContainsKey("E9") ? Visibility.Visible : Visibility.Collapsed;
-                }
-                OnPropertyChanged("PxPkeySettings_Visibility");
                 string swHortcutText = string.Empty;
                 if (curHotkey != null && curHotkey.HotkeyInfo.Count > 0)
                 {

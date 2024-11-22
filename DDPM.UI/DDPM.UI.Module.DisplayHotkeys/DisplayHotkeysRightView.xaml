@@ -137,7 +137,7 @@
                             </Grid>
                         </StackPanel>
                     </Border>
-                    <Border Style="{StaticResource RightGroupBorderStyle}" Margin="0,16,0,0" Visibility="{Binding PxPkeySettings_Visibility}">
+                    <Border Style="{StaticResource RightGroupBorderStyle}" Margin="0,16,0,0" Visibility="{Binding HasCapability_Pxp, Converter={StaticResource BoolToVisibilityConverter}}">
                         <StackPanel>
                             <StackPanel.Resources>
                                 <Style TargetType="{x:Type UXControls:UXTextBlock}">
