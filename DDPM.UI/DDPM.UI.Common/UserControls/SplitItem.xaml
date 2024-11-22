@@ -15,7 +15,16 @@
                 <!-- <ResourceDictionary Source="/DDPM.UI.Common;component/ModuleStyle.xaml" /> -->
             </ResourceDictionary.MergedDictionaries>
 
+            <!-- #region Key Resource for Theme -->
+            <!--
             <SolidColorBrush x:Key="SplitItem_BkColor" Color="#FF132F54" />
+            <SolidColorBrush x:Key="ToolipBkColor" Color="#FF1D2C3B" />
+            <SolidColorBrush x:Key="ToolipBdColor" Color="#FF293B4D" />
+            <SolidColorBrush x:Key="ToolipTextColor" Color="#FFF5F6F7" />
+
+            -->
+
+            <!-- #endregion Key Resource for Theme -->
             <SolidColorBrush x:Key="SplitItem_NormalBdColor" Color="{StaticResource Color_FakeTransparent}" />
             <!--
             <SolidColorBrush x:Key="SplitItem_SelectedColor" Color="#FF5CC1EE" />
@@ -36,9 +45,6 @@
                 <GradientStop Offset="1" Color="#FF6E69CF" />
             </LinearGradientBrush>
 
-            <SolidColorBrush x:Key="ToolipBkColor" Color="#FF1D2C3B" />
-            <SolidColorBrush x:Key="ToolipBdColor" Color="#FF293B4D" />
-            <SolidColorBrush x:Key="ToolipTextColor" Color="#FFF5F6F7" />
 
             <uiCommon:StringEmptyToVisibilityConverter x:Key="StringEmptyToVisibilityConverter" />
             
@@ -86,12 +92,12 @@
     <Grid Background="{StaticResource FakeTransparent}" MouseLeftButtonDown="rootGrid_MouseLeftButtonDown">
         <Grid.ToolTip>
             <ToolTip Visibility="{Binding ToolTipText, Converter={StaticResource StringEmptyToVisibilityConverter}}">
-                <Border Background="{StaticResource ToolipBkColor}"
-                        BorderBrush="{StaticResource ToolipBdColor}"
+                <Border Background="{DynamicResource Tooltip_BkColor}"
+                        BorderBrush="{DynamicResource Tooltip_BdColor}"
                         CornerRadius="4" Padding="8,12">
                     <Border.Resources>
                         <Style TargetType="TextBlock">
-                            <Setter Property="Foreground" Value="{StaticResource ToolipTextColor}" />
+                            <Setter Property="Foreground" Value="{DynamicResource Tooltip_TextColor}" />
                             <Setter Property="FontSize" Value="12" />
                         </Style>
                     </Border.Resources>
@@ -103,8 +109,13 @@
             </ToolTip>
         </Grid.ToolTip>
 
+
+        <Border BorderBrush="{DynamicResource FakeTransparent}" Margin="4"
+                CornerRadius="6" BorderThickness="1"
+                Background="{DynamicResource SplitItem_BkColor}"/>
+        
         <ContentControl Content="{Binding InnerContent, ElementName=root}" Margin="4"
-                        Background="{StaticResource FakeTransparent}"
+                        Background="{DynamicResource FakeTransparent}"
                         MouseLeftButtonDown="spItem_MouseLeftButtonDown" />
 
         <!-- Hover Layer 
@@ -173,14 +184,14 @@
             </Grid>
 
             <!-- It seems unused, Robert_Lin, 2024-11-21-->
-            <Border.ToolTip>
+            <!--<Border.ToolTip>
                 <ToolTip MaxWidth="200" Visibility="{Binding ToolTipText, Converter={StaticResource StringEmptyToVisibilityConverter}}">
-                    <Border Background="{StaticResource ToolipBkColor}"
-                            BorderBrush="{StaticResource ToolipBdColor}"
+                    <Border Background="{DynamicResource ToolipBkColor}"
+                            BorderBrush="{DynamicResource ToolipBdColor}"
                             CornerRadius="4" Padding="8,12">
                         <Border.Resources>
                             <Style TargetType="TextBlock">
-                                <Setter Property="Foreground" Value="{StaticResource ToolipTextColor}" />
+                                <Setter Property="Foreground" Value="{DynamicResource ToolipTextColor}" />
                                 <Setter Property="FontSize" Value="12" />
                                 <Setter Property="TextWrapping" Value="Wrap"/>
                             </Style>
@@ -191,7 +202,7 @@
                         </StackPanel>
                     </Border>
                 </ToolTip>
-            </Border.ToolTip>
+            </Border.ToolTip>-->
         </Border>
 
         <!--  Background="{StaticResource FakeTransparent}" 
@@ -215,14 +226,14 @@
                     </Style.Triggers>
                 </Style>
             </Border.Style>
-            <Border.ToolTip>
+            <!--<Border.ToolTip>
                 <ToolTip MaxWidth="200" Visibility="{Binding ToolTipText, Converter={StaticResource StringEmptyToVisibilityConverter}}">
-                    <Border Background="{StaticResource ToolipBkColor}"
-                            BorderBrush="{StaticResource ToolipBdColor}"
+                    <Border Background="{DynamicResource ToolipBkColor}"
+                            BorderBrush="{DynamicResource ToolipBdColor}"
                             CornerRadius="4" Padding="8,12">
                         <Border.Resources>
                             <Style TargetType="TextBlock">
-                                <Setter Property="Foreground" Value="{StaticResource ToolipTextColor}" />
+                                <Setter Property="Foreground" Value="{DynamicResource ToolipTextColor}" />
                                 <Setter Property="FontSize" Value="12" />
                                 <Setter Property="TextWrapping" Value="Wrap"/>
                             </Style>
@@ -233,7 +244,7 @@
                         </StackPanel>
                     </Border>
                 </ToolTip>
-            </Border.ToolTip>
+            </Border.ToolTip>-->
         </Border>
     </Grid>
 </UserControl>
