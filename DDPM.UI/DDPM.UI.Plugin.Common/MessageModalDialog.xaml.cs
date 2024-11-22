@@ -16,27 +16,27 @@ namespace DDPM.UI.Plugin.Common
             txtCaption.Text = Caption;
             txtMessage.Text = Message;
             txtMessage.Width = width - 70;
-            txtButton1.Text = Button1Caption;
+            txtButton1.Content = Button1Caption;
             if (Button1Caption == "")
             {
-                Button1.Visibility = Visibility.Collapsed;
-                Button2.Width = 82;
-                Button2.Margin = new Thickness(0, 5, 0, 0);
+                txtButton1.Visibility = Visibility.Collapsed;
+                txtButton2.Width = 82;
+                txtButton2.Margin = new Thickness(0, 5, 0, 0);
             }
             else
             {
-                txtButton1.Text = Button1Caption;
+                txtButton1.Content = Button1Caption;
             }
             if (Button2Caption == "")
             {
-                Button2.Visibility = Visibility.Collapsed;
+                txtButton2.Visibility = Visibility.Collapsed;
             }
             else
             {
-                txtButton2.Text = Button2Caption;
+                txtButton2.Content = Button2Caption;
             }
         }
-
+        /*
         private void Yes_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             DialogResult = true;
@@ -47,10 +47,22 @@ namespace DDPM.UI.Plugin.Common
         {
             DialogResult = false;
             Close();
-        }
+        }*/
 
         public void CloseByCaller()
         {
+            Close();
+        }
+
+        private void Yes_MouseLeftButtonDown(object sender, RoutedEventArgs e)
+        {
+            DialogResult = true;
+            Close();
+        }
+
+        private void No_MouseLeftButtonDown(object sender, RoutedEventArgs e)
+        {
+            DialogResult = false;
             Close();
         }
     }

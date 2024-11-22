@@ -180,6 +180,22 @@ namespace DDPM.UI.Module.Gaming
                 //NotifyPropertyChanged("DualResolutionToggleKey");
             }
         }
+        public void SaveHotkeySettings(MonitorInfo monitorInfo, HotkeyInfo hotkeyInfo)
+        {
+            if (DdpmCommonHelper.DeviceManagerSA != null)
+            {
+                IsBusy = true;
+                OnPropertyChanged("IsBusy");
+                bool saveSettings = DdpmCommonHelper.DeviceManagerSA.SaveHotkeySetting(monitorInfo, hotkeyInfo).Result;
+                if (saveSettings)
+                {
+                    DdpmCommonHelper.isHotkeyBypass = DdpmCommonHelper.DeviceManagerSA.ByPassHotkey(false).Result;
+                    IsBusy = false;
+                    OnPropertyChanged("IsBusy");
+                }
+            }
+            Invoke_RefreshHotkeySettings();
+        }
 
         public void Invoke_RefreshHotkeySettings()
         {
