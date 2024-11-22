@@ -31,17 +31,17 @@ namespace DDPM.UI.Module.WebCameraPresenceDetection
             _vm = vm;
 
             // webcam event hander
-            _vm._log.Info($" subscribe event  {nameof(DdpmCommonHelper.DeviceManagerSA.Esi_IsCameraSensorCover_ChangeEvent)} , Handler Name: {nameof(OnEsi_IsCameraSensorCoverChangeHandler)} ");
-            DdpmCommonHelper.DeviceManagerSA.Esi_IsCameraSensorCover_ChangeEvent += OnEsi_IsCameraSensorCoverChangeHandler;
+            //_vm._log.Info($" subscribe event  {nameof(DdpmCommonHelper.DeviceManagerSA.Esi_IsCameraSensorCover_ChangeEvent)} , Handler Name: {nameof(OnEsi_IsCameraSensorCoverChangeHandler)} ");
+            //DdpmCommonHelper.DeviceManagerSA.Esi_IsCameraSensorCover_ChangeEvent += OnEsi_IsCameraSensorCoverChangeHandler;
             
-            _vm._log.Info($" subscribe event  {nameof(DdpmCommonHelper.DeviceManagerSA.WALSnoozeTimeLeftInSeconds_ChangeEvent)} , Handler Name: {nameof(OnWALSnoozeTimeLeftInSecondsChangeHandler)} ");
-            DdpmCommonHelper.DeviceManagerSA.WALSnoozeTimeLeftInSeconds_ChangeEvent += OnWALSnoozeTimeLeftInSecondsChangeHandler;
+            //_vm._log.Info($" subscribe event  {nameof(DdpmCommonHelper.DeviceManagerSA.WALSnoozeTimeLeftInSeconds_ChangeEvent)} , Handler Name: {nameof(OnWALSnoozeTimeLeftInSecondsChangeHandler)} ");
+            //DdpmCommonHelper.DeviceManagerSA.WALSnoozeTimeLeftInSeconds_ChangeEvent += OnWALSnoozeTimeLeftInSecondsChangeHandler;
 
-            _vm._log.Info($" subscribe event  {nameof(DdpmCommonHelper.DeviceManagerSA.Esi_IsWALLockCountdownStartedChanged_ChangeEvent)} , Handler Name: {nameof(OnEsi_IsWALLockCountdownStartedChangeHandler)} ");
-            DdpmCommonHelper.DeviceManagerSA.Esi_IsWALLockCountdownStartedChanged_ChangeEvent += OnEsi_IsWALLockCountdownStartedChangeHandler;
+            //_vm._log.Info($" subscribe event  {nameof(DdpmCommonHelper.DeviceManagerSA.Esi_IsWALLockCountdownStartedChanged_ChangeEvent)} , Handler Name: {nameof(OnEsi_IsWALLockCountdownStartedChangeHandler)} ");
+            //DdpmCommonHelper.DeviceManagerSA.Esi_IsWALLockCountdownStartedChanged_ChangeEvent += OnEsi_IsWALLockCountdownStartedChangeHandler;
 
-            _vm._log.Info($" subscribe event  {nameof(DdpmCommonHelper.DeviceManagerSA.Esi_WALLockCountdownChanged_ChangeEvent)} , Handler Name: {nameof(OnEsi_WALLockCountdownChangeHandler)} ");
-            DdpmCommonHelper.DeviceManagerSA.Esi_WALLockCountdownChanged_ChangeEvent += OnEsi_WALLockCountdownChangeHandler;
+            //_vm._log.Info($" subscribe event  {nameof(DdpmCommonHelper.DeviceManagerSA.Esi_WALLockCountdownChanged_ChangeEvent)} , Handler Name: {nameof(OnEsi_WALLockCountdownChangeHandler)} ");
+            //DdpmCommonHelper.DeviceManagerSA.Esi_WALLockCountdownChanged_ChangeEvent += OnEsi_WALLockCountdownChangeHandler;
 
 
             //_vm.UPD_Visibility = Visibility.Visible;
@@ -194,17 +194,17 @@ namespace DDPM.UI.Module.WebCameraPresenceDetection
                 DdpmCommonHelper.DeviceManagerSA.ITSettingsActionEvent -= DeviceManagerSA_ITSettingsActionEvent;
                 // unsubscribe webcam event
 
-                _vm._log.Info($" unsubscribe event  {nameof(DdpmCommonHelper.DeviceManagerSA.Esi_IsCameraSensorCover_ChangeEvent)} , Handler Name: {nameof(OnEsi_IsCameraSensorCoverChangeHandler)} ");
-                DdpmCommonHelper.DeviceManagerSA.Esi_IsCameraSensorCover_ChangeEvent -= OnEsi_IsCameraSensorCoverChangeHandler;
+                //_vm._log.Info($" unsubscribe event  {nameof(DdpmCommonHelper.DeviceManagerSA.Esi_IsCameraSensorCover_ChangeEvent)} , Handler Name: {nameof(OnEsi_IsCameraSensorCoverChangeHandler)} ");
+                //DdpmCommonHelper.DeviceManagerSA.Esi_IsCameraSensorCover_ChangeEvent -= OnEsi_IsCameraSensorCoverChangeHandler;
 
-                _vm._log.Info($" unsubscribe event  {nameof(DdpmCommonHelper.DeviceManagerSA.WALSnoozeTimeLeftInSeconds_ChangeEvent)} , Handler Name: {nameof(OnWALSnoozeTimeLeftInSecondsChangeHandler)} ");
-                DdpmCommonHelper.DeviceManagerSA.WALSnoozeTimeLeftInSeconds_ChangeEvent -= OnWALSnoozeTimeLeftInSecondsChangeHandler;
+                //_vm._log.Info($" unsubscribe event  {nameof(DdpmCommonHelper.DeviceManagerSA.WALSnoozeTimeLeftInSeconds_ChangeEvent)} , Handler Name: {nameof(OnWALSnoozeTimeLeftInSecondsChangeHandler)} ");
+                //DdpmCommonHelper.DeviceManagerSA.WALSnoozeTimeLeftInSeconds_ChangeEvent -= OnWALSnoozeTimeLeftInSecondsChangeHandler;
 
-                _vm._log.Info($" unsubscribe event  {nameof(DdpmCommonHelper.DeviceManagerSA.Esi_IsWALLockCountdownStartedChanged_ChangeEvent)} , Handler Name: {nameof(OnEsi_IsWALLockCountdownStartedChangeHandler)} ");
-                DdpmCommonHelper.DeviceManagerSA.Esi_IsWALLockCountdownStartedChanged_ChangeEvent -= OnEsi_IsWALLockCountdownStartedChangeHandler;
+                //_vm._log.Info($" unsubscribe event  {nameof(DdpmCommonHelper.DeviceManagerSA.Esi_IsWALLockCountdownStartedChanged_ChangeEvent)} , Handler Name: {nameof(OnEsi_IsWALLockCountdownStartedChangeHandler)} ");
+                //DdpmCommonHelper.DeviceManagerSA.Esi_IsWALLockCountdownStartedChanged_ChangeEvent -= OnEsi_IsWALLockCountdownStartedChangeHandler;
 
-                _vm._log.Info($" unsubscribe event  {nameof(DdpmCommonHelper.DeviceManagerSA.Esi_WALLockCountdownChanged_ChangeEvent)} , Handler Name: {nameof(OnEsi_WALLockCountdownChangeHandler)} ");
-                DdpmCommonHelper.DeviceManagerSA.Esi_WALLockCountdownChanged_ChangeEvent -= OnEsi_WALLockCountdownChangeHandler;
+                //_vm._log.Info($" unsubscribe event  {nameof(DdpmCommonHelper.DeviceManagerSA.Esi_WALLockCountdownChanged_ChangeEvent)} , Handler Name: {nameof(OnEsi_WALLockCountdownChangeHandler)} ");
+                //DdpmCommonHelper.DeviceManagerSA.Esi_WALLockCountdownChanged_ChangeEvent -= OnEsi_WALLockCountdownChangeHandler;
             }
         }
         private void DeviceManagerSA_ITSettingsActionEvent(object? sender, SA.Common.ITSettingEventArgs e)
@@ -363,35 +363,35 @@ namespace DDPM.UI.Module.WebCameraPresenceDetection
             txtTimer.Text = ts.ToString(@"hh\:mm\:ss");
         }
 
-        private void OnEsi_IsCameraSensorCoverChangeHandler(object sender, bool e)
-        {
-            _vm._log.Info($" Catch event {nameof(OnEsi_IsCameraSensorCoverChangeHandler)} , Caller Name: {nameof(DdpmCommonHelper.DeviceManagerSA.Esi_IsCameraSensorCover_ChangeEvent)} ");
+        //private void OnEsi_IsCameraSensorCoverChangeHandler(object sender, bool e)
+        //{
+        //    _vm._log.Info($" Catch event {nameof(OnEsi_IsCameraSensorCoverChangeHandler)} , Caller Name: {nameof(DdpmCommonHelper.DeviceManagerSA.Esi_IsCameraSensorCover_ChangeEvent)} ");
 
-            if (e) 
-                DdpmCommonHelper.DeviceManagerSA!.ShowOSD(Screen.PrimaryScreen!.DeviceName, OSDType.Fingerprint);
-        }
+        //    if (e) 
+        //        DdpmCommonHelper.DeviceManagerSA!.ShowOSD(Screen.PrimaryScreen!.DeviceName, OSDType.Fingerprint);
+        //}
 
-        private void OnWALSnoozeTimeLeftInSecondsChangeHandler(object sender, int e)
-        {
-            _vm._log.Info($" Catch event {nameof(OnWALSnoozeTimeLeftInSecondsChangeHandler)} , Caller Name: {nameof(DdpmCommonHelper.DeviceManagerSA.WALSnoozeTimeLeftInSeconds_ChangeEvent)} ");
+        //private void OnWALSnoozeTimeLeftInSecondsChangeHandler(object sender, int e)
+        //{
+        //    _vm._log.Info($" Catch event {nameof(OnWALSnoozeTimeLeftInSecondsChangeHandler)} , Caller Name: {nameof(DdpmCommonHelper.DeviceManagerSA.WALSnoozeTimeLeftInSeconds_ChangeEvent)} ");
 
-            TimeSpan ts = TimeSpan.FromSeconds(e);
+        //    TimeSpan ts = TimeSpan.FromSeconds(e);
 
-            txtTimer.Text = ts.ToString(@"hh\:mm\:ss");
-        }
+        //    txtTimer.Text = ts.ToString(@"hh\:mm\:ss");
+        //}
 
-        private void OnEsi_IsWALLockCountdownStartedChangeHandler(object sender, bool e)
-        {
-            _vm._log.Info($" Catch event {nameof(OnEsi_IsWALLockCountdownStartedChangeHandler)} , Caller Name: {nameof(DdpmCommonHelper.DeviceManagerSA.Esi_IsWALLockCountdownStartedChanged_ChangeEvent)} ");
+        //private void OnEsi_IsWALLockCountdownStartedChangeHandler(object sender, bool e)
+        //{
+        //    _vm._log.Info($" Catch event {nameof(OnEsi_IsWALLockCountdownStartedChangeHandler)} , Caller Name: {nameof(DdpmCommonHelper.DeviceManagerSA.Esi_IsWALLockCountdownStartedChanged_ChangeEvent)} ");
 
-            if (e)
-                DdpmCommonHelper.DeviceManagerSA!.ShowOSD(Screen.PrimaryScreen!.DeviceName, OSDType.WalkAwayLock);
-        }
+        //    if (e)
+        //        DdpmCommonHelper.DeviceManagerSA!.ShowOSD(Screen.PrimaryScreen!.DeviceName, OSDType.WalkAwayLock);
+        //}
 
-        private void OnEsi_WALLockCountdownChangeHandler(object sender, int e)
-        {
-            _vm._log.Info($" Catch event {nameof(OnEsi_WALLockCountdownChangeHandler)} , Caller Name: {nameof(DdpmCommonHelper.DeviceManagerSA.Esi_WALLockCountdownChanged_ChangeEvent)} ");
-        }
+        //private void OnEsi_WALLockCountdownChangeHandler(object sender, int e)
+        //{
+        //    _vm._log.Info($" Catch event {nameof(OnEsi_WALLockCountdownChangeHandler)} , Caller Name: {nameof(DdpmCommonHelper.DeviceManagerSA.Esi_WALLockCountdownChanged_ChangeEvent)} ");
+        //}
 
     }
 }

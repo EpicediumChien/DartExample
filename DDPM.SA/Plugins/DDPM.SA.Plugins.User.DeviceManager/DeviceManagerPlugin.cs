@@ -153,10 +153,10 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         /// <summary>
         /// Webcam change event
         /// </summary>
-        public event EventHandler<bool>? Esi_IsCameraSensorCover_ChangeEvent;
-        public event EventHandler<int>? WALSnoozeTimeLeftInSeconds_ChangeEvent;
-        public event EventHandler<bool>? Esi_IsWALLockCountdownStartedChanged_ChangeEvent;
-        public event EventHandler<int>? Esi_WALLockCountdownChanged_ChangeEvent;
+        //public event EventHandler<bool>? Esi_IsCameraSensorCover_ChangeEvent;
+        //public event EventHandler<int>? WALSnoozeTimeLeftInSeconds_ChangeEvent;
+        //public event EventHandler<bool>? Esi_IsWALLockCountdownStartedChanged_ChangeEvent;
+        //public event EventHandler<int>? Esi_WALLockCountdownChanged_ChangeEvent;
 
 
         //Monitor objects
@@ -251,6 +251,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             _isSubagentActive = WTSFunction.IsYourProcessInActiveSession(Log);
             SACommonHelper.GetResourceDictionary();
             loadResourceDictionary(UXSystemParameters.Instance.OSTheme);
+        }
+
+        private void _DTPProxyPlugin_WebcamEventHandler(object sender, UpdateUINotify e)
+        {
+            OnUIUpdateNotify(e);
         }
 
         private string debugPreMsg = string.Empty;
@@ -11255,23 +11260,30 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     else if (pluginCondition is PluginRunningCondition)
                     {
                         writelog($"{nameof(GetCurrentDTPProxyPluginCondition)} - DTPProxy Plugin is in a running condition");
-                        _DTPProxyPlugin.ZoomChanged_Notify += ZoomChanged;
-                        _DTPProxyPlugin.ZoomMeetingTypeChanged_Notify += ZoomMeetingTypeChanged;
-                        _DTPProxyPlugin.IsZoomMeetingActive_Notify += IsZoomMeetingActiveChanged;
-                        _DTPProxyPlugin.IsZoomScreenShareActive_Notify += IsZoomScreenShareActiveChanged;
+                        //_DTPProxyPlugin.ZoomChanged_Notify += ZoomChanged;
+                        //_DTPProxyPlugin.ZoomMeetingTypeChanged_Notify += ZoomMeetingTypeChanged;
+                        //_DTPProxyPlugin.IsZoomMeetingActive_Notify += IsZoomMeetingActiveChanged;
+                        //_DTPProxyPlugin.IsZoomScreenShareActive_Notify += IsZoomScreenShareActiveChanged;
+
+                        //Derek 1119
+                        _DTPProxyPlugin.WebcamEventHandler += _DTPProxyPlugin_WebcamEventHandler;
                     }
                     else if (pluginCondition is PluginStartedCondition)
                     {
-                        _DTPProxyPlugin.Esi_IsCameraSensorCover_ChangeEvent += OnEsi_IsCameraSensorCoverChangeHandler;
-                        _DTPProxyPlugin.WALSnoozeTimeLeftInSeconds_ChangeEvent += OnWALSnoozeTimeLeftInSecondsChangeHandler;
-                        _DTPProxyPlugin.Esi_IsWALLockCountdownStartedChanged_ChangeEvent += OnEsi_IsWALLockCountdownStartedStatusChangeHandler;
-                        _DTPProxyPlugin.Esi_WALLockCountdownChanged_ChangeEvent += OnEsi_WALLockCountdownChangeHandler;
+                        //Marded by Derek 1121
+                        //_DTPProxyPlugin.Esi_IsCameraSensorCover_ChangeEvent += OnEsi_IsCameraSensorCoverChangeHandler;
+                        //_DTPProxyPlugin.WALSnoozeTimeLeftInSeconds_ChangeEvent += OnWALSnoozeTimeLeftInSecondsChangeHandler;
+                        //_DTPProxyPlugin.Esi_IsWALLockCountdownStartedChanged_ChangeEvent += OnEsi_IsWALLockCountdownStartedStatusChangeHandler;
+                        //_DTPProxyPlugin.Esi_WALLockCountdownChanged_ChangeEvent += OnEsi_WALLockCountdownChangeHandler;
 
                         writelog($"{nameof(GetCurrentDTPProxyPluginCondition)} - DTPProxy Plugin is in a started condition");
-                        _DTPProxyPlugin.ZoomChanged_Notify += ZoomChanged;
-                        _DTPProxyPlugin.ZoomMeetingTypeChanged_Notify += ZoomMeetingTypeChanged;
-                        _DTPProxyPlugin.IsZoomMeetingActive_Notify += IsZoomMeetingActiveChanged;
-                        _DTPProxyPlugin.IsZoomScreenShareActive_Notify += IsZoomScreenShareActiveChanged;
+                        //_DTPProxyPlugin.ZoomChanged_Notify += ZoomChanged;
+                        //_DTPProxyPlugin.ZoomMeetingTypeChanged_Notify += ZoomMeetingTypeChanged;
+                        //_DTPProxyPlugin.IsZoomMeetingActive_Notify += IsZoomMeetingActiveChanged;
+                        //_DTPProxyPlugin.IsZoomScreenShareActive_Notify += IsZoomScreenShareActiveChanged;
+
+                        //Derek 1119
+                        _DTPProxyPlugin.WebcamEventHandler += _DTPProxyPlugin_WebcamEventHandler;
                     }
                 }
             });
@@ -14425,25 +14437,26 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             NightLightStatus_ChangeEvent?.AsyncFireAndForget(this, e, System.Threading.CancellationToken.None);
         }
 
-        private void OnEsi_IsCameraSensorCoverChangeHandler(object sender, bool e)
-        {
-            Esi_IsCameraSensorCover_ChangeEvent?.AsyncFireAndForget(this, e, System.Threading.CancellationToken.None);
-        }
+        //removed by Derek 1121
+        //private void OnEsi_IsCameraSensorCoverChangeHandler(object sender, bool e)
+        //{
+        //    Esi_IsCameraSensorCover_ChangeEvent?.AsyncFireAndForget(this, e, System.Threading.CancellationToken.None);
+        //}
 
-        private void OnWALSnoozeTimeLeftInSecondsChangeHandler(object sender, int e)
-        {
-            WALSnoozeTimeLeftInSeconds_ChangeEvent?.AsyncFireAndForget(this, e, System.Threading.CancellationToken.None);
-        }
+        //private void OnWALSnoozeTimeLeftInSecondsChangeHandler(object sender, int e)
+        //{
+        //    WALSnoozeTimeLeftInSeconds_ChangeEvent?.AsyncFireAndForget(this, e, System.Threading.CancellationToken.None);
+        //}
 
-        private void OnEsi_IsWALLockCountdownStartedStatusChangeHandler(object sender, bool e)
-        {
-            Esi_IsWALLockCountdownStartedChanged_ChangeEvent?.AsyncFireAndForget(this, e, System.Threading.CancellationToken.None);
-        }
+        //private void OnEsi_IsWALLockCountdownStartedStatusChangeHandler(object sender, bool e)
+        //{
+        //    Esi_IsWALLockCountdownStartedChanged_ChangeEvent?.AsyncFireAndForget(this, e, System.Threading.CancellationToken.None);
+        //}
 
-        private void OnEsi_WALLockCountdownChangeHandler(object sender, int e)
-        {
-            Esi_WALLockCountdownChanged_ChangeEvent?.AsyncFireAndForget(this, e, System.Threading.CancellationToken.None);
-        }
+        //private void OnEsi_WALLockCountdownChangeHandler(object sender, int e)
+        //{
+        //    Esi_WALLockCountdownChanged_ChangeEvent?.AsyncFireAndForget(this, e, System.Threading.CancellationToken.None);
+        //}
 
         #endregion
 
