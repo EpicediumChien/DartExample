@@ -1669,16 +1669,18 @@ namespace DDPM.SA.Common.Settings
                     return false;
                 }
             }
-            if (needCheckThumbprintInbox)
-            {
-                //if (!VerifyFileCertWithoutThumbprint(filePath, out info))
-                if(!VerifyFileCertWithInboxThumbprint(filePath, out info))
-                {
-                    if (log != null)
-                        log.Error($"[IsProcessInfoValid] VerifyFileCertWithThumbprint: {info}");
-                    return false;
-                }
-            }
+
+            // [20241122] SonarQube: needCheckThumbprintInbox is always false
+            //if (needCheckThumbprintInbox)
+            //{
+            //    //if (!VerifyFileCertWithoutThumbprint(filePath, out info))
+            //    if(!VerifyFileCertWithInboxThumbprint(filePath, out info))
+            //    {
+            //        if (log != null)
+            //            log.Error($"[IsProcessInfoValid] VerifyFileCertWithThumbprint: {info}");
+            //        return false;
+            //    }
+            //}
             if (!string.IsNullOrEmpty(givenThumbprintCheck) && givenThumbprintCheck.Length > 0)
             {
                 if (!VerifyFileCertWithThumbprint(filePath, givenThumbprintCheck, out info))
