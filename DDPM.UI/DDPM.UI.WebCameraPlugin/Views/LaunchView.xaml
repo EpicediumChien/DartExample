@@ -14,7 +14,7 @@
              d:DesignHeight="735" d:DesignWidth="1378"
              Cursor="{Binding CurrentCursor}"
                      SizeChanged="UserControl_SizeChanged"
-  Unloaded="LaunchView_Unloaded">
+  Unloaded="LaunchView_Unloaded" Loaded="UserControl_Loaded">
   <UserControl.Resources>
     <ResourceDictionary>
       <ResourceDictionary.MergedDictionaries>
@@ -117,7 +117,7 @@
       </Style>
     </ResourceDictionary>
   </UserControl.Resources>
-  <Grid>
+  <Grid Name="start">
     <Grid>
       <Grid.ColumnDefinitions>
         <ColumnDefinition Width="*" />

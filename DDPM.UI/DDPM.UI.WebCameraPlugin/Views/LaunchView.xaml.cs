@@ -50,6 +50,7 @@ using LangHelper = DDPM.UI.Resources.Helper.LangHelper;
 using MessageBox = System.Windows.MessageBox;
 using WebcamProfile = DDPM.UI.Common.WebcamProfile;
 using System.Windows.Threading;
+using System.Windows.Forms.VisualStyles;
 
 namespace DDPM.UI.Plugin.WebCameraPlugin
 {
@@ -1542,6 +1543,11 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
         private void txtSearchText_PreviewTextInput(object sender, TextCompositionEventArgs e)
         {
             e.Handled = !_vm!.CheckChar(e.Text);
+        }
+
+        private void UserControl_Loaded(object sender, RoutedEventArgs e)
+        {
+           NarratorModeSupport.RecurseUitems( start) ;
         }
     }
 }

@@ -2,16 +2,12 @@
 using DDPM.SA.Common.Settings;
 using DDPM.UI.Common.Interfaces;
 using DDPM.UI.Common.Views;
-using Dell.Client.Framework.Common;
 using Dell.Client.Framework.UX.WPF;
 using Dell.Client.Framework.UX.WPF.Controls;
 using Dell.Client.Framework.UX.WPF.ResourceManager;
-using Microsoft.Toolkit.Uwp.Notifications;
-using System.ComponentModel;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
-using System.Net.Http.Headers;
 using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
@@ -19,8 +15,6 @@ using System.Windows.Data;
 using System.Windows.Forms.VisualStyles;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Media.Media3D;
-using System.Windows.Threading;
 using static DDPM.UI.Common.Views.DDPMMsgBox;
 using Application = System.Windows.Application;
 using Path = System.Windows.Shapes.Path;
@@ -65,6 +59,7 @@ namespace DDPM.UI.Common
         public static IShowPluginManager? MyShowPluginManager { get; set; }
 
         public static IDeviceManagerSA? DeviceManagerSA { get; set; }
+
         public static DDPMSettings? Settings_Cache { get; set; }
 
         public static IModuleOwner? ModuleOwner { get; set; }

@@ -118,6 +118,17 @@ namespace DDPM.UI.Plugin.ViewModels
             OnPropertyChanged(nameof(MultiDevicesInfoVisibility));
         }
 
+        private void CheckCopilot()
+        {
+            string regPath2 = $@"SOFTWARE\Dell\Dell Display And Peripheral Manager\UserSettings\Local";
+            string regKey2 = $"IsFirstTimeWalkThroughDone_com.dell.DPM.Plugin.LogicalDevice.DDPM";
+            var regValue2 = DdpmCommonHelper.DeviceManagerSA!.ReadRegistryData(RegistryHive.LocalMachine, regPath2, regKey2).Result;
+            string regPath = $@"SOFTWARE\Policies\Microsoft\Windows\WindowsCopilot";
+            string regKey = $"TurnOffWindowsCopilot";
+            var regValue = DdpmCommonHelper.DeviceManagerSA!.ReadRegistryData(RegistryHive.CurrentUser, regPath, regKey).Result;
+            Actions.IsCopilotEnabled = regValue == null || Convert.ToInt32(regValue) != 1;
+        }
+
         public bool IsIDInvalid = false;
 
         public virtual bool SetCurrentDevice(string deviceID)
@@ -162,6 +173,8 @@ namespace DDPM.UI.Plugin.ViewModels
                 IsIDInvalid = true;
                 return false;
             }
+
+            CheckCopilot();
             Model = MappingModel(CurrentDeviceInfo.ModelNumber);
             Name = CurrentDeviceInfo.Name;
             if (CurrentDeviceInfo.Type == DeviceType.PhysicalWiredDock || CurrentDeviceInfo.Type == DeviceType.LogicalDock)
@@ -196,6 +209,7 @@ namespace DDPM.UI.Plugin.ViewModels
             {
                 case DeviceType.PhysicalWebcam:
                     ConnectionType = "Wired";
+                    Name = Name.Replace(Model, "").Trim();
                     break;
                 case DeviceType.PhysicalAudioDongle:
                 case DeviceType.PhysicalBluetoothAudio:
