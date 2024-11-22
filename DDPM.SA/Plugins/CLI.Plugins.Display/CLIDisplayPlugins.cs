@@ -4771,22 +4771,42 @@ namespace DDPM.CLI.Plugins.Display
             {
                 if (commandLineInput.DeviceIndex.Count == 0 && commandLineInput.ServiceTag.Count == 0 && commandLineInput.Model.Count == 0)
                 {
-                    foreach (var monitor in _AllInfoMonitors)
+                    var serviceTagList = _AllInfoMonitors.Select(_ => _.edid.ServiceTag).ToList();
+                    bool flag = true;
+                    while (flag)
                     {
-                        writelog($"ActiveInputSource get entry");
-                        CLI_Input_RESPONSE _Input_RESPONSE = new CLI_Input_RESPONSE();
-                        string src = String.Empty;
-                        _Input_RESPONSE.Model = monitor.edid.ModelName;
-                        _Input_RESPONSE.SerialNumber = monitor.edid.SerialNumber;
-                        _Input_RESPONSE.Index = change_0base_to_1base((monitor.Index).ToString());
-                        _Input_RESPONSE.ServiceTag = monitor.edid.ServiceTag;
-                        _Input_RESPONSE.Command = commandLineInput.Command;
-                        _Input_RESPONSE.TargetFeature = commandLineInput.TargetFeature;
-                        if (commandLineInput.Options.Count == 0)
+                        output = "";
+                        for (int i = 0; i < serviceTagList.Count; i++)
                         {
-                            src = GetCurrentInput(devMgr, (monitor.Index).ToString()).Result;
-                            //_Input_RESPONSE.ActiveInputSource = src;
-                            _Input_RESPONSE.Value = src;
+                            MonitorInfo mo = _AllInfoMonitors[i];
+                            if (mo == null)
+                            {
+                                _AllInfoMonitors = _devMgr.GetMonitors().Result;
+                                break;
+                            }
+                            writelog($"ActiveInputSource get entry");
+                            CLI_Input_RESPONSE _Input_RESPONSE = new CLI_Input_RESPONSE();
+                            string src = String.Empty;
+                            _Input_RESPONSE.Model = mo.edid.ModelName;
+                            _Input_RESPONSE.SerialNumber = mo.edid.SerialNumber;
+                            _Input_RESPONSE.Index = change_0base_to_1base((i).ToString());
+                            _Input_RESPONSE.ServiceTag = mo.edid.ServiceTag;
+                            _Input_RESPONSE.Command = commandLineInput.Command;
+                            _Input_RESPONSE.TargetFeature = commandLineInput.TargetFeature;
+                            if (commandLineInput.Options.Count != 0)
+                            {
+                                _Input_RESPONSE.Result = "FAIL";
+                                _Input_RESPONSE.Message = "Too Many Value";
+                                System.Console.WriteLine(_Input_RESPONSE.ToJson());
+                                output += "\n" + _Input_RESPONSE.ToJson();
+                                writelog($"ActiveInputSource get fail {output}");
+                                return ((int)CLI_ExitCode.fail_Value, output);
+                            }
+                            // set VCP
+                            ObjGetVCP vcpTemp = GetVCPCode(devMgr, mo, "0x60").Result;
+                            string vcpHex = Convert.ToString(Convert.ToInt32(vcpTemp.value), 16);
+                            vcpHex = vcpHex.Length >= 2 ? vcpHex.Substring(vcpHex.Length - 2, 2) : "0" + vcpHex;
+                            src = get_InputSource_name("0x" + vcpHex);
                             if (src == String.Empty)
                             {
                                 _Input_RESPONSE.Result = "FAIL";
@@ -4794,45 +4814,74 @@ namespace DDPM.CLI.Plugins.Display
                                 System.Console.WriteLine(_Input_RESPONSE.ToJson());
                                 output += "\n" + _Input_RESPONSE.ToJson();
                             }
-                            else
-                            {
-                                _Input_RESPONSE.Result = "PASS";
-                                _Input_RESPONSE.Value += "," + (data.LockSettings.Lock_Display_ActiveInputSource ? "LOCK" : "UNLOCK");
-                                System.Console.WriteLine(_Input_RESPONSE.ToJson());
-                                output += "\n" + _Input_RESPONSE.ToJson();
-                            }
-                        }
-                        else
-                        {
-                            //_Input_RESPONSE.ActiveInputSource = src;
-                            _Input_RESPONSE.Result = "FAIL";
-                            _Input_RESPONSE.Message = "Too Many Value";
+                            _Input_RESPONSE.Value = src;
+                            _Input_RESPONSE.Result = "PASS";
+                            _Input_RESPONSE.Value += "," + (data.LockSettings.Lock_Display_ActiveInputSource ? "LOCK" : "UNLOCK");
                             System.Console.WriteLine(_Input_RESPONSE.ToJson());
                             output += "\n" + _Input_RESPONSE.ToJson();
-                            writelog($"ActiveInputSource get fail {output}");
-                            return ((int)CLI_ExitCode.fail_Value, output);
+                            if (serviceTagList.Count == _AllInfoMonitors.Count)
+                                flag = false;
                         }
                     }
                 }
                 else if (commandLineInput.DeviceIndex.Count != 0)
                 {
-                    foreach (string idx in commandLineInput.DeviceIndex)
+                    var serviceTagList = _AllInfoMonitors.Select(_ => new
                     {
-                        writelog($"ActiveInputSource set idx entry");
-                        CLI_Input_RESPONSE _Input_RESPONSE = new CLI_Input_RESPONSE();
-                        string src = String.Empty;
-                        MonitorInfo monitor = _AllInfoMonitors[int.Parse(idx)];
-                        _Input_RESPONSE.Model = monitor.edid.ModelName;
-                        _Input_RESPONSE.SerialNumber = monitor.edid.SerialNumber;
-                        _Input_RESPONSE.Index = change_0base_to_1base(idx);
-                        _Input_RESPONSE.ServiceTag = monitor.edid.ServiceTag;
-                        _Input_RESPONSE.Command = commandLineInput.Command;
-                        _Input_RESPONSE.TargetFeature = commandLineInput.TargetFeature;
-                        if (commandLineInput.Options.Count == 0)
+                        _.edid.ServiceTag,
+                        _.Index
+                    }).ToList();
+                    bool flag = true;
+                    while (flag)
+                    {
+                        output = "";
+                        for (int i = 0; i < commandLineInput.DeviceIndex.Count; i++)
                         {
-                            src = GetCurrentInput(devMgr, idx).Result;
-                            //_Input_RESPONSE.ActiveInputSource = src;
-                            _Input_RESPONSE.Value = src;
+                            MonitorInfo mo = _AllInfoMonitors[int.Parse(commandLineInput.DeviceIndex[i])];
+                            if (mo == null)
+                            {
+                                _AllInfoMonitors = _devMgr.GetMonitors().Result;
+                                break;
+                            }
+                            writelog($"ActiveInputSource get entry");
+                            CLI_Input_RESPONSE _Input_RESPONSE = new CLI_Input_RESPONSE();
+                            string src = String.Empty;
+                            _Input_RESPONSE.Model = mo.edid.ModelName;
+                            _Input_RESPONSE.SerialNumber = mo.edid.SerialNumber;
+                            _Input_RESPONSE.Index = change_0base_to_1base((commandLineInput.DeviceIndex[i]).ToString());
+                            _Input_RESPONSE.ServiceTag = mo.edid.ServiceTag;
+                            _Input_RESPONSE.Command = commandLineInput.Command;
+                            _Input_RESPONSE.TargetFeature = commandLineInput.TargetFeature;
+                            if (commandLineInput.Options.Count != 0)
+                            {
+                                _Input_RESPONSE.Result = "FAIL";
+                                _Input_RESPONSE.Message = "Too Many Value";
+                                System.Console.WriteLine(_Input_RESPONSE.ToJson());
+                                output += "\n" + _Input_RESPONSE.ToJson();
+                                writelog($"ActiveInputSource get fail {output}");
+                                return ((int)CLI_ExitCode.fail_Value, output);
+                            }
+                            if (!int.TryParse(commandLineInput.DeviceIndex[i], out _))
+                            {
+                                _Input_RESPONSE.Result = "FAIL";
+                                _Input_RESPONSE.Message = "Incorrect Value";
+                                System.Console.WriteLine(_Input_RESPONSE.ToJson());
+                                output += "\n" + _Input_RESPONSE.ToJson();
+                                writelog($"ActiveInputSource get fail {output}");
+                                return ((int)CLI_ExitCode.fail_Value, output);
+                            }
+                            var targetMoTemp = serviceTagList.FirstOrDefault(_ => _.Index == int.Parse(commandLineInput.DeviceIndex[i]));
+                            MonitorInfo targetMo = _AllInfoMonitors.FirstOrDefault(_ => _.edid.ServiceTag == targetMoTemp.ServiceTag);
+                            if (targetMo == null)
+                            {
+                                _AllInfoMonitors = _devMgr.GetMonitors().Result;
+                                break;
+                            }
+                            // set VCP
+                            ObjGetVCP vcpTemp = GetVCPCode(devMgr, mo, "0x60").Result;
+                            string vcpHex = Convert.ToString(Convert.ToInt32(vcpTemp.value), 16);
+                            vcpHex = vcpHex.Length >= 2 ? vcpHex.Substring(vcpHex.Length - 2, 2) : "0" + vcpHex;
+                            src = get_InputSource_name("0x" + vcpHex);
                             if (src == String.Empty)
                             {
                                 _Input_RESPONSE.Result = "FAIL";
@@ -4840,121 +4889,166 @@ namespace DDPM.CLI.Plugins.Display
                                 System.Console.WriteLine(_Input_RESPONSE.ToJson());
                                 output += "\n" + _Input_RESPONSE.ToJson();
                             }
-                            else
-                            {
-                                _Input_RESPONSE.Result = "PASS";
-                                _Input_RESPONSE.Value += "," + (data.LockSettings.Lock_Display_ActiveInputSource ? "LOCK" : "UNLOCK");
-                                System.Console.WriteLine(_Input_RESPONSE.ToJson());
-                                output += "\n" + _Input_RESPONSE.ToJson();
-                            }
-                        }
-                        else
-                        {
-                            //_Input_RESPONSE.ActiveInputSource = src;
-                            _Input_RESPONSE.Result = "FAIL";
-                            _Input_RESPONSE.Message = "Too Many Value";
+                            _Input_RESPONSE.Value = src;
+                            _Input_RESPONSE.Result = "PASS";
+                            _Input_RESPONSE.Value += "," + (data.LockSettings.Lock_Display_ActiveInputSource ? "LOCK" : "UNLOCK");
                             System.Console.WriteLine(_Input_RESPONSE.ToJson());
                             output += "\n" + _Input_RESPONSE.ToJson();
-                            writelog($"ActiveInputSource get idx fail {output}");
-                            return ((int)CLI_ExitCode.fail_Value, output);
+                            if (i + 1 == commandLineInput.DeviceIndex.Count)
+                                flag = false;
                         }
                     }
                 }
                 else if (commandLineInput.ServiceTag.Count != 0)
                 {
-                    foreach (string tag in commandLineInput.ServiceTag)
+                    var serviceTagList = _AllInfoMonitors.Select(_ => new
                     {
-                        var tmp = _AllInfoMonitors.FindAll(x => x.edid.ServiceTag.ToUpper().Equals(tag.ToUpper()));
-                        foreach (MonitorInfo mo in tmp)
+                        _.edid.ServiceTag,
+                        _.Index
+                    }).ToList();
+                    bool flag = true;
+                    while (flag)
+                    {
+                        output = "";
+                        for (int i = 0; i < commandLineInput.ServiceTag.Count; i++)
                         {
-                            writelog($"ActiveInputSource get tag entry");
                             CLI_Input_RESPONSE _Input_RESPONSE = new CLI_Input_RESPONSE();
+                            var targetMoTemp = serviceTagList.FirstOrDefault(_ => _.ServiceTag == commandLineInput.ServiceTag[i]);
+                            if (targetMoTemp == null)
+                            {
+                                _Input_RESPONSE.Result = "FAIL";
+                                _Input_RESPONSE.Message = "Incorrect Value";
+                                System.Console.WriteLine(_Input_RESPONSE.ToJson());
+                                output += "\n" + _Input_RESPONSE.ToJson();
+                                writelog($"ActiveInputSource get fail {output}");
+                                return ((int)CLI_ExitCode.fail_Value, output);
+                            }
+                            MonitorInfo mo = _AllInfoMonitors[targetMoTemp.Index];
+                            if (mo == null)
+                            {
+                                _AllInfoMonitors = _devMgr.GetMonitors().Result;
+                                break;
+                            }
+                            writelog($"ActiveInputSource get entry");
                             string src = String.Empty;
                             _Input_RESPONSE.Model = mo.edid.ModelName;
                             _Input_RESPONSE.SerialNumber = mo.edid.SerialNumber;
-                            _Input_RESPONSE.Index = change_0base_to_1base((mo.Index).ToString());
-                            _Input_RESPONSE.ServiceTag = tag;
+                            _Input_RESPONSE.Index = change_0base_to_1base((targetMoTemp.Index).ToString());
+                            _Input_RESPONSE.ServiceTag = mo.edid.ServiceTag;
                             _Input_RESPONSE.Command = commandLineInput.Command;
                             _Input_RESPONSE.TargetFeature = commandLineInput.TargetFeature;
-                            if (commandLineInput.Options.Count == 0)
+                            if (commandLineInput.Options.Count != 0)
                             {
-                                src = GetCurrentInput(devMgr, mo).Result;
-                                //_Input_RESPONSE.ActiveInputSource = src;
-                                _Input_RESPONSE.Value = src;
-                                if (src == String.Empty)
-                                {
-                                    _Input_RESPONSE.Result = "FAIL";
-                                    _Input_RESPONSE.Message = "FAIL_SetVCP";
-                                    System.Console.WriteLine(_Input_RESPONSE.ToJson());
-                                    output += "\n" + _Input_RESPONSE.ToJson();
-                                }
-                                else
-                                {
-                                    _Input_RESPONSE.Result = "PASS";
-                                    _Input_RESPONSE.Value += "," + (data.LockSettings.Lock_Display_ActiveInputSource ? "LOCK" : "UNLOCK");
-                                    System.Console.WriteLine(_Input_RESPONSE.ToJson());
-                                    output += "\n" + _Input_RESPONSE.ToJson();
-                                }
-                            }
-                            else
-                            {
-                                //_Input_RESPONSE.ActiveInputSource = src;
                                 _Input_RESPONSE.Result = "FAIL";
                                 _Input_RESPONSE.Message = "Too Many Value";
                                 System.Console.WriteLine(_Input_RESPONSE.ToJson());
                                 output += "\n" + _Input_RESPONSE.ToJson();
-                                writelog($"ActiveInputSource get option value fail {output}");
+                                writelog($"ActiveInputSource get fail {output}");
                                 return ((int)CLI_ExitCode.fail_Value, output);
                             }
+                            targetMoTemp = serviceTagList.FirstOrDefault(_ => _.ServiceTag == commandLineInput.ServiceTag[i]);
+                            MonitorInfo targetMo = _AllInfoMonitors.FirstOrDefault(_ => _.edid.ServiceTag == targetMoTemp.ServiceTag);
+                            if (targetMo == null)
+                            {
+                                _AllInfoMonitors = _devMgr.GetMonitors().Result;
+                                break;
+                            }
+                            // set VCP
+                            ObjGetVCP vcpTemp = GetVCPCode(devMgr, mo, "0x60").Result;
+                            string vcpHex = Convert.ToString(Convert.ToInt32(vcpTemp.value), 16);
+                            vcpHex = vcpHex.Length >= 2 ? vcpHex.Substring(vcpHex.Length - 2, 2) : "0" + vcpHex;
+                            src = get_InputSource_name("0x" + vcpHex);
+                            if (src == String.Empty)
+                            {
+                                _Input_RESPONSE.Result = "FAIL";
+                                _Input_RESPONSE.Message = "FAIL_SetVCP";
+                                System.Console.WriteLine(_Input_RESPONSE.ToJson());
+                                output += "\n" + _Input_RESPONSE.ToJson();
+                            }
+                            _Input_RESPONSE.Value = src;
+                            _Input_RESPONSE.Result = "PASS";
+                            _Input_RESPONSE.Value += "," + (data.LockSettings.Lock_Display_ActiveInputSource ? "LOCK" : "UNLOCK");
+                            System.Console.WriteLine(_Input_RESPONSE.ToJson());
+                            output += "\n" + _Input_RESPONSE.ToJson();
+                            if (i + 1 == commandLineInput.ServiceTag.Count)
+                                flag = false;
                         }
                     }
                 }
                 else if (commandLineInput.Model.Count != 0)
                 {
-                    foreach (string modelName in commandLineInput.Model)
+                    var serviceTagList = _AllInfoMonitors.Select(_ => new
                     {
-                        var tmp = _AllInfoMonitors.FindAll(x => x.edid.ModelName.ToUpper().Equals(modelName.ToUpper()));
-                        foreach (MonitorInfo mo in tmp)
+                        _.edid.ServiceTag,
+                        _.Index,
+                        _.modelName
+                    }).ToList();
+                    bool flag = true;
+                    while (flag)
+                    {
+                        output = "";
+                        for (int i = 0; i < commandLineInput.Model.Count; i++)
                         {
-                            writelog($"ActiveInputSource get tag entry");
                             CLI_Input_RESPONSE _Input_RESPONSE = new CLI_Input_RESPONSE();
+                            var targetMoTemp = serviceTagList.FirstOrDefault(_ => _.modelName == commandLineInput.Model[i]);
+                            if (targetMoTemp == null)
+                            {
+                                _Input_RESPONSE.Result = "FAIL";
+                                _Input_RESPONSE.Message = "Incorrect Value";
+                                System.Console.WriteLine(_Input_RESPONSE.ToJson());
+                                output += "\n" + _Input_RESPONSE.ToJson();
+                                writelog($"ActiveInputSource get fail {output}");
+                                return ((int)CLI_ExitCode.fail_Value, output);
+                            }
+                            MonitorInfo mo = _AllInfoMonitors[targetMoTemp.Index];
+                            if (mo == null)
+                            {
+                                _AllInfoMonitors = _devMgr.GetMonitors().Result;
+                                break;
+                            }
+                            writelog($"ActiveInputSource get entry");
                             string src = String.Empty;
                             _Input_RESPONSE.Model = mo.edid.ModelName;
                             _Input_RESPONSE.SerialNumber = mo.edid.SerialNumber;
-                            _Input_RESPONSE.Index = change_0base_to_1base((mo.Index).ToString());
-                            _Input_RESPONSE.ServiceTag = mo.edid.ModelName;
+                            _Input_RESPONSE.Index = change_0base_to_1base((targetMoTemp.Index).ToString());
+                            _Input_RESPONSE.ServiceTag = mo.edid.ServiceTag;
                             _Input_RESPONSE.Command = commandLineInput.Command;
                             _Input_RESPONSE.TargetFeature = commandLineInput.TargetFeature;
-                            if (commandLineInput.Options.Count == 0)
+                            if (commandLineInput.Options.Count != 0)
                             {
-                                src = GetCurrentInput(devMgr, mo).Result;
-                                //_Input_RESPONSE.ActiveInputSource = src;
-                                _Input_RESPONSE.Value = src;
-                                if (src == String.Empty)
-                                {
-                                    _Input_RESPONSE.Result = "FAIL";
-                                    _Input_RESPONSE.Message = "FAIL_SetVCP";
-                                    System.Console.WriteLine(_Input_RESPONSE.ToJson());
-                                    output += "\n" + _Input_RESPONSE.ToJson();
-                                }
-                                else
-                                {
-                                    _Input_RESPONSE.Result = "PASS";
-                                    _Input_RESPONSE.Value += "," + (data.LockSettings.Lock_Display_ActiveInputSource ? "LOCK" : "UNLOCK");
-                                    System.Console.WriteLine(_Input_RESPONSE.ToJson());
-                                    output += "\n" + _Input_RESPONSE.ToJson();
-                                }
-                            }
-                            else
-                            {
-                                //_Input_RESPONSE.ActiveInputSource = src;
                                 _Input_RESPONSE.Result = "FAIL";
                                 _Input_RESPONSE.Message = "Too Many Value";
                                 System.Console.WriteLine(_Input_RESPONSE.ToJson());
                                 output += "\n" + _Input_RESPONSE.ToJson();
-                                writelog($"ActiveInputSource get option value fail {output}");
+                                writelog($"ActiveInputSource get fail {output}");
                                 return ((int)CLI_ExitCode.fail_Value, output);
                             }
+                            targetMoTemp = serviceTagList.FirstOrDefault(_ => _.modelName == commandLineInput.Model[i]);
+                            MonitorInfo targetMo = _AllInfoMonitors.FirstOrDefault(_ => _.modelName == targetMoTemp.modelName);
+                            if (targetMo == null)
+                            {
+                                _AllInfoMonitors = _devMgr.GetMonitors().Result;
+                                break;
+                            }
+                            // set VCP
+                            ObjGetVCP vcpTemp = GetVCPCode(devMgr, mo, "0x60").Result;
+                            string vcpHex = Convert.ToString(Convert.ToInt32(vcpTemp.value), 16);
+                            vcpHex = vcpHex.Length >= 2 ? vcpHex.Substring(vcpHex.Length - 2, 2) : "0" + vcpHex;
+                            src = get_InputSource_name("0x" + vcpHex);
+                            if (src == String.Empty)
+                            {
+                                _Input_RESPONSE.Result = "FAIL";
+                                _Input_RESPONSE.Message = "FAIL_SetVCP";
+                                System.Console.WriteLine(_Input_RESPONSE.ToJson());
+                                output += "\n" + _Input_RESPONSE.ToJson();
+                            }
+                            _Input_RESPONSE.Value = src;
+                            _Input_RESPONSE.Result = "PASS";
+                            _Input_RESPONSE.Value += "," + (data.LockSettings.Lock_Display_ActiveInputSource ? "LOCK" : "UNLOCK");
+                            System.Console.WriteLine(_Input_RESPONSE.ToJson());
+                            output += "\n" + _Input_RESPONSE.ToJson();
+                            if (i + 1 == commandLineInput.Model.Count)
+                                flag = false;
                         }
                     }
                 }
@@ -12841,6 +12935,50 @@ namespace DDPM.CLI.Plugins.Display
                 case "USB Comm from USB-C3 (Type-C, port 3)": return "0x84";
                 case "USB Comm from USB-C4 (Type-C, port 4)": return "0x85";
                 default: return "0x11";
+            }
+        }
+
+        private static string get_InputSource_name(string input)
+        {
+            switch (input)
+            {
+                case "0x01": return "VGA-1";
+                case "0x02": return "VGA-2";
+                case "0x03": return "DVI-1";
+                case "0x04": return "DVI-2";
+                case "0x05": return "Composite video 1";
+                case "0x06": return "Composite video 2";
+                case "0x07": return "S-Video-1";
+                case "0x08": return "S-Video-2";
+                case "0x09": return "Tuner-1";
+                case "0x0a": return "Tuner-2";
+                case "0x0b": return "Tuner-3";
+                case "0x0c": return "Component video (YPrPb/YCrCb) 1";
+                case "0x0d": return "Component video (YPrPb/YCrCb) 2";
+                case "0x0e": return "Component video (YPrPb/YCrCb) 3";
+                case "0x0f": return "DISPLAYPORT-1";
+                case "0x10": return "Mini DisplayPort-1";
+                case "0x11": return "HDMI-1";
+                case "0x12": return "HDMI-2";
+                case "0x13": return "DISPLAYPORT-2";
+                case "0x14": return "Mini DisplayPort-2";
+                case "0x15": return "HDMI3";
+                case "0x16": return "HDMI4";
+                case "0x17": return "DISPLAYPORT-3";
+                case "0x18": return "Mini DisplayPort-3";
+                case "0x19": return "Thunderbolt-1";
+                case "0x1a": return "Thunderbolt-2";
+                case "0x1b": return "USB-C1";
+                case "0x1c": return "USB-C2";
+                case "0x1d": return "USB-C3";
+                case "0x1e": return "USB-C4";
+                case "0x80": return "USB Comm from USB1 (Type-B, port 1)";
+                case "0x81": return "USB Comm from USB2 (Type-B, port 2)";
+                case "0x82": return "USB Comm from USB-C1 (Type-C, port 1)";
+                case "0x83": return "USB Comm from USB-C2 (Type-C, port 2)";
+                case "0x84": return "USB Comm from USB-C3 (Type-C, port 3)";
+                case "0x85": return "USB Comm from USB-C4 (Type-C, port 4)";
+                default: return "N/A";
             }
         }
 
