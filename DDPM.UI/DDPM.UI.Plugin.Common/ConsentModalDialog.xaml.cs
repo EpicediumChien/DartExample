@@ -29,21 +29,21 @@ namespace DDPM.UI.Plugin.Common
             InitializeComponent();
             this.Width = width;
             this.Height = height;
-            txtYes.Text = LangHelper.Instance["ConsentYes"];
-            txtNo.Text = LangHelper.Instance["ConsentNo"];
+            txtYes.Content = LangHelper.Instance["ConsentYes"];
+            txtNo.Content = LangHelper.Instance["ConsentNo"];
             txtCaption.Text = LangHelper.Instance["Consent.1"];
             txtCaption2.Text = LangHelper.Instance["AppName"];
             txt1.Text = LangHelper.Instance["Consent.2"];
             txt2.Text = LangHelper.Instance["Analytics.2"];
         }
 
-        private void No_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        private void No_MouseLeftButtonDown(object sender, RoutedEventArgs e)
         {
             DialogResult = false;
             Close();
         }
 
-        private void Yes_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        private void Yes_MouseLeftButtonDown(object sender, RoutedEventArgs e)
         {
             DialogResult = true;
             Close();

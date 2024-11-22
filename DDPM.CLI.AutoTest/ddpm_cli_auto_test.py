@@ -7,6 +7,7 @@ import argparse
 import sys
 import logging
 import time
+import ctypes
 
 import pandas as pd
 from colorlog import ColoredFormatter
@@ -71,11 +72,12 @@ class CLIAutoTest():
             self.append_result(data, command, model, output, result)
 
         if self.check_result_pass(result):
-            path = os.path.join(self.device_data_dir, f"device_data_{self.time}.json")
-            with open(path, "w") as f:
-                f.writelines(output)
+            if self.config["save_device_data_file"]:
+                path = os.path.join(self.device_data_dir, f"device_data_{self.time}.json")
+                with open(path, "w") as f:
+                    f.writelines(output)
 
-            logger.info(f"Device data have been saved to '{path}'.")
+                logger.info(f"Device data have been saved to '{path}'.")
 
             self.get_device_data_pass = True
             if not data:
@@ -104,6 +106,8 @@ class CLIAutoTest():
         return False
 
     def main(self):
+        logger.info("Start DDPM.CLI.AutoTest.")
+        
         if not os.path.exists(self.cli_path):
             logger.error(f"'{self.cli_path}' not exist.")
             sys.exit(1)
@@ -111,7 +115,7 @@ class CLIAutoTest():
         os.makedirs(self.device_data_dir, exist_ok=True)
         os.makedirs(self.report_dir, exist_ok=True)
 
-        if self.check_get_connect_devices():
+        if not self.config["check_connect_device"] or self.check_get_connect_devices():
             for category in self.categories:
                 data = {
                     "Command": [],
@@ -128,10 +132,12 @@ class CLIAutoTest():
                         self.record_result(category, index, total_count, command, result)
                         continue
 
-                    if "-app=deviceconfiguration" in command.lower():
+                    if self.config["check_device_data_before_set_config"] and "-app=deviceconfiguration" in command.lower():
                         if not self.get_device_data_pass and not self.get_device_data(None)[0]:
+                            logger.info("Fail to get device data, set deviceconfiguration command will not be executed.")
                             result = "Fail to get device data"
                         else:
+                            logger.info("Successfully get device data, set deviceconfiguration command will be executed.")
                             result = self.set_device_data(command, data)
 
                         self.record_result(category, index, total_count, command, result)
@@ -243,9 +249,18 @@ def setup_logging():
         handlers=[stream_handler, file_handler], level=logging.INFO
     )
 
+def is_admin():
+    try:
+        return ctypes.windll.shell32.IsUserAnAdmin()
+    except:
+        return False
 
 if __name__ == "__main__":
     setup_logging()
+
+    if not is_admin():
+        logger.error("The script is not running with admin privileges.")
+        sys.exit(1)
 
     parser = argparse.ArgumentParser()
     parser.add_argument("--category", dest="category", help="test category")

@@ -148,7 +148,12 @@ namespace DDPM.UI.Plugin.ViewModels
                 TabManualCaption = Strings.Manual;
                 TabManualInfoTip = LangHelper.Instance["Illumination.4"];
 
-                IlluminationSelectedTabIndex = CurrentDeviceInfo.BackLightTabIndex;
+                IlluminationSelectedTabIndex = CurrentDeviceInfo.BackLightingControls switch
+                {
+                    6 => 1,
+                    3 => 2,
+                    _ => 0
+                };
                 BackLightingLevel = CurrentDeviceInfo.BackLightingLevel;
                 SwitchTab(IlluminationSelectedTabIndex);
             }
