@@ -5627,6 +5627,8 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                     _WebcamComConnectEvent.Connected += Webcam_Connected;
                     _WebcamComConnectEvent.Disconnected += Webcam_Disconnected;
 
+                    _WebcamComConnectEvent.Esi_IsCameraSensorCoveredChanged += Webcam_Esi_IsCameraSensorCoveredChanged;
+
                     writelog($"Webcam Commodity event(connected/disconnected) registered");
                 }
                 catch (Exception e)
@@ -5683,7 +5685,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                             _Webcamcom.Esi_IsCameraSensorCoveredChanged += Webcam_Esi_IsCameraSensorCoveredChanged;
                             _Webcamcom.Esi_WALLockCountdownChanged += Webcam_Esi_WALLockCountdownChanged;
 
-                            writelog($"Webcam{i} Commodity event registered");
+                            writelog($"Webcam{i} Commodity events registered");
                         }
                         catch (Exception e)
                         {
@@ -6134,10 +6136,10 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
         private void SendWebcamEventToUI(string sendMsg)
         {
-            UpdateUINotify webcamConnectedNotify = new UpdateUINotify();
-            webcamConnectedNotify.UI_Field_Name = $"{sendMsg}";
+            UpdateUINotify webcamEventNotify = new UpdateUINotify();
+            webcamEventNotify.UI_Field_Name = $"{sendMsg}";
 
-            OnUIUpdateNotify(webcamConnectedNotify);
+            OnUIUpdateNotify(webcamEventNotify);
         }
         #endregion
     }

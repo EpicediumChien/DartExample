@@ -153,10 +153,10 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         /// <summary>
         /// Webcam change event
         /// </summary>
-        public event EventHandler<bool>? Esi_IsCameraSensorCover_ChangeEvent;
-        public event EventHandler<int>? WALSnoozeTimeLeftInSeconds_ChangeEvent;
-        public event EventHandler<bool>? Esi_IsWALLockCountdownStartedChanged_ChangeEvent;
-        public event EventHandler<int>? Esi_WALLockCountdownChanged_ChangeEvent;
+        //public event EventHandler<bool>? Esi_IsCameraSensorCover_ChangeEvent;
+        //public event EventHandler<int>? WALSnoozeTimeLeftInSeconds_ChangeEvent;
+        //public event EventHandler<bool>? Esi_IsWALLockCountdownStartedChanged_ChangeEvent;
+        //public event EventHandler<int>? Esi_WALLockCountdownChanged_ChangeEvent;
 
 
         //Monitor objects
@@ -14417,25 +14417,26 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             NightLightStatus_ChangeEvent?.AsyncFireAndForget(this, e, System.Threading.CancellationToken.None);
         }
 
-        private void OnEsi_IsCameraSensorCoverChangeHandler(object sender, bool e)
-        {
-            Esi_IsCameraSensorCover_ChangeEvent?.AsyncFireAndForget(this, e, System.Threading.CancellationToken.None);
-        }
+        //removed by Derek 1121
+        //private void OnEsi_IsCameraSensorCoverChangeHandler(object sender, bool e)
+        //{
+        //    Esi_IsCameraSensorCover_ChangeEvent?.AsyncFireAndForget(this, e, System.Threading.CancellationToken.None);
+        //}
 
-        private void OnWALSnoozeTimeLeftInSecondsChangeHandler(object sender, int e)
-        {
-            WALSnoozeTimeLeftInSeconds_ChangeEvent?.AsyncFireAndForget(this, e, System.Threading.CancellationToken.None);
-        }
+        //private void OnWALSnoozeTimeLeftInSecondsChangeHandler(object sender, int e)
+        //{
+        //    WALSnoozeTimeLeftInSeconds_ChangeEvent?.AsyncFireAndForget(this, e, System.Threading.CancellationToken.None);
+        //}
 
-        private void OnEsi_IsWALLockCountdownStartedStatusChangeHandler(object sender, bool e)
-        {
-            Esi_IsWALLockCountdownStartedChanged_ChangeEvent?.AsyncFireAndForget(this, e, System.Threading.CancellationToken.None);
-        }
+        //private void OnEsi_IsWALLockCountdownStartedStatusChangeHandler(object sender, bool e)
+        //{
+        //    Esi_IsWALLockCountdownStartedChanged_ChangeEvent?.AsyncFireAndForget(this, e, System.Threading.CancellationToken.None);
+        //}
 
-        private void OnEsi_WALLockCountdownChangeHandler(object sender, int e)
-        {
-            Esi_WALLockCountdownChanged_ChangeEvent?.AsyncFireAndForget(this, e, System.Threading.CancellationToken.None);
-        }
+        //private void OnEsi_WALLockCountdownChangeHandler(object sender, int e)
+        //{
+        //    Esi_WALLockCountdownChanged_ChangeEvent?.AsyncFireAndForget(this, e, System.Threading.CancellationToken.None);
+        //}
 
         #endregion
 
