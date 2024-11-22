@@ -19,6 +19,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\DDPM.Easy.Common\DDPM.Easy.Common.csproj" />
+    <ProjectReference Include="..\..\DDPM.UI.Common\DDPM.UI.Common.csproj" />
     <ProjectReference Include="..\NGA.UnitTest.PrivateObject\NGA.UnitTest.PrivateObject.csproj" />
   </ItemGroup>
 
