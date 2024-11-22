@@ -1,5 +1,6 @@
 ﻿using DDPM.UI.Common;
 using DDPM.UI.Common.Method;
+using DDPM.UI.Common.Models;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Windows;
@@ -30,18 +31,50 @@ namespace DDPM.UI.Module.InputSource
 
         private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
+            //Robert_Lin, 2024-11-21, If user cleanup content of TextBox, will auto fill in InputSourceKey
+            //1 If the TextBox.Text is empty or blank, then will fill with inputsource key
+            //2 Not empty, will call CheckChar,
+            //2.1 If CheckChar pass, will accet the InputName, and save to settings file
+
             TextString textString = new TextString();
             TextBox tb = sender as TextBox;
-            if (textString.CheckChar(tb.Text))
+            string inputText = tb.Text;
+            InputSourceViewModel vm = (InputSourceViewModel)DataContext;
+
+            //1 Check if the input is blank or empty
+            if (String.IsNullOrWhiteSpace(inputText))
             {
-                InputSourceViewModel vm = (InputSourceViewModel)DataContext;
-                if (vm != null)
+                //TextBox.Text will fill in the InputSOurceKey
+                if (vm != null) 
                 {
-                    //vm.items[(int)tb.Tag].InputName = tb.Text;
-                    vm.inputList[vm.items[(int)tb.Tag].InputType].InputName = tb.Text;
-                    //DdpmCommonHelper.DeviceManagerSA.SetInputName(vm.items[(int)tb.Tag].InputType, vm.items[(int)tb.Tag].InputName);
-                    bool b = DdpmCommonHelper.DeviceManagerSA.SetInputSourcelist(vm.InputSourceModule.SelectedHomeDevice.MonitorInfo, vm.inputList).Result;
-                    vm.OnInputNameChange();
+                    tb.Text = vm.items[(int)tb.Tag].InputType;
+                    tb.SelectAll();
+                }
+            }
+            //Not blank, will check char
+            else if (!textString.CheckChar(tb.Text))
+            {
+                //Ignore char input if check failed
+                return;
+            }
+            if (vm != null)
+            {
+                //Robert_Lin, 2024-11-21, If user cleanup content of TextBox, will auto fill in InputSourceKey
+                //1 If the TextBox.Text is empty or blank, then will fill with inputsource key
+                //2 Not empty, will call CheckChar,
+                //2.1 If CheckChar pass, will accet the InputName, and save to settings file
+                //vm.items[(int)tb.Tag].InputName = tb.Text;
+                vm.inputList[vm.items[(int)tb.Tag].InputType].InputName = tb.Text;
+                //DdpmCommonHelper.DeviceManagerSA.SetInputName(vm.items[(int)tb.Tag].InputType, vm.items[(int)tb.Tag].InputName);
+                bool b = DdpmCommonHelper.DeviceManagerSA.SetInputSourcelist(vm.InputSourceModule.SelectedHomeDevice.MonitorInfo, vm.inputList).Result;
+                vm.OnInputNameChange();
+
+                HomeDevice selHome = vm.InputSourceModule.SelectedHomeDevice;
+                if (vm.items[(int)tb.Tag].InputType.Equals(selHome.MonitorInfo.inputCable))
+                {
+                    //Robert_Lin, 2024-11-20 PIMS-302436, real-time update to BatteryIndicator
+                    selHome.InputName = vm.Items_Selected.inputName;
+                    selHome.UpdateBatteryIndicator();
                 }
             }
         }
