@@ -346,6 +346,8 @@ namespace DDPM.UI.Module.EzMemory
 
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
+            if (_vm._bind_apps.Count != 0 && _vm._apps_all.Count != 0)
+                return;
             _vm._bind_apps.Clear();
             _vm._apps_all.Clear();
             Dictionary<string, InstalledAppInfo> data = DdpmCommonHelper.DeviceManagerSA.GetAllAppList().Result;

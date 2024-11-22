@@ -657,30 +657,129 @@ namespace DDPM.UI.Plugin.ViewModels
                     _log.Info($"[HeadsetViewModel] Print before property ...UpdateDTPValue new DeviceInfo...");
                 }
 
-                DeviceInfoDTP.Band1Gain = await _deviceManager.GetBand1GainAsync(CurrentDeviceID.ToString());
-                DeviceInfoDTP.Band2Gain = await _deviceManager.GetBand2GainAsync(CurrentDeviceID.ToString());
-                DeviceInfoDTP.Band3Gain = await _deviceManager.GetBand3GainAsync(CurrentDeviceID.ToString());
-                DeviceInfoDTP.Band4Gain = await _deviceManager.GetBand4GainAsync(CurrentDeviceID.ToString());
-                DeviceInfoDTP.Band5Gain = await _deviceManager.GetBand5GainAsync(CurrentDeviceID.ToString());
-                DeviceInfoDTP.AncGain = await _deviceManager.GetAncGainAsync(CurrentDeviceID.ToString());
-                DeviceInfoDTP.AncMode = await _deviceManager.GetAncModeAsync(CurrentDeviceID.ToString());
+                if(await _deviceManager.GetIsANCSupportedAsync(CurrentDeviceID.ToString()))
+                {
+                    DeviceInfoDTP.AncMode = await _deviceManager.GetAncModeAsync(CurrentDeviceID.ToString());
+                    DeviceInfoDTP.AncGain = await _deviceManager.GetAncGainAsync(CurrentDeviceID.ToString());
+                    _log.Info($"[HeadsetViewModel] DeviceInfoDTP.AncMode .....................= {DeviceInfoDTP.AncMode.ToString()}");
+                    _log.Info($"[HeadsetViewModel] DeviceInfoDTP.AncGain .....................= {DeviceInfoDTP.AncGain.ToString()}");
+                }
+                else
+                {
+                    _log.Info($"[HeadsetViewModel] GetIsANCSupportedAsync .............................. NO");
+                }
+                //------------------------------------------------------------------------------------
+                if (await _deviceManager.GetIsBusyLightSupportedAsync(CurrentDeviceID.ToString()))
+                {
+                    DeviceInfoDTP.BusyLight = await _deviceManager.GetBusyLightAsync(CurrentDeviceID.ToString());
+                    _log.Info($"[HeadsetViewModel] DeviceInfoDTP.BusyLight ...................= {DeviceInfoDTP.BusyLight.ToString()}");
+                }
+                else
+                {
+                    _log.Info($"[HeadsetViewModel] GetIsBusyLightSupportedAsync ........................ NO");
+                }
+                //------------------------------------------------------------------------------------
+
+                if (await _deviceManager.GetIsMicNoiseCancellationSupportedAsync(CurrentDeviceID.ToString()))
+                {
+                    DeviceInfoDTP.MicNoiseCancellation = await _deviceManager.GetMicNoiseCancellationAsync(CurrentDeviceID.ToString());
+                    _log.Info($"[HeadsetViewModel] DeviceInfoDTP.MicNoiseCancellation .............= {DeviceInfoDTP.MicNoiseCancellation.ToString()}");
+                }
+                else
+                {
+                    _log.Info($"[HeadsetViewModel] GetIsMicNoiseCancellationSupportedAsync ............. NO");
+                }
+                //------------------------------------------------------------------------------------
+
+                if (await _deviceManager.GetIsSidetoneSupportedAsync(CurrentDeviceID.ToString()))
+                {
+                    DeviceInfoDTP.Sidetone = await _deviceManager.GetSidetoneAsync(CurrentDeviceID.ToString());
+                    _log.Info($"[HeadsetViewModel] DeviceInfoDTP.Sidetone ...................= {DeviceInfoDTP.Sidetone.ToString()}");
+                }
+                else
+                {
+                    _log.Info($"[HeadsetViewModel] GetIsSidetoneSupportedAsync ......................... NO");
+                }
+                //------------------------------------------------------------------------------------
+
+                if (await _deviceManager.GetIsVoiceGuidanceSupportedAsync(CurrentDeviceID.ToString()))
+                {
+                    DeviceInfoDTP.VoiceGuidance = await _deviceManager.GetVoiceGuidanceAsync(CurrentDeviceID.ToString());
+                    _log.Info($"[HeadsetViewModel] DeviceInfoDTP.VoiceGuidance ..............= {DeviceInfoDTP.VoiceGuidance.ToString()}");
+                }
+                else
+                {
+                    _log.Info($"[HeadsetViewModel] GetIsVoiceGuidanceSupportedAsync .................... NO");
+                }
+                //------------------------------------------------------------------------------------
+
+                if (await _deviceManager.GetIsPresetsSupportedAsync(CurrentDeviceID.ToString()))
+                {
+                    DeviceInfoDTP.SelectedPreset = await _deviceManager.GetSelectedPresetAsync(CurrentDeviceID.ToString());
+                    DeviceInfoDTP.Band1Gain = await _deviceManager.GetBand1GainAsync(CurrentDeviceID.ToString());
+                    DeviceInfoDTP.Band2Gain = await _deviceManager.GetBand2GainAsync(CurrentDeviceID.ToString());
+                    DeviceInfoDTP.Band3Gain = await _deviceManager.GetBand3GainAsync(CurrentDeviceID.ToString());
+                    DeviceInfoDTP.Band4Gain = await _deviceManager.GetBand4GainAsync(CurrentDeviceID.ToString());
+                    DeviceInfoDTP.Band5Gain = await _deviceManager.GetBand5GainAsync(CurrentDeviceID.ToString());
+                    _log.Info($"[HeadsetViewModel] DeviceInfoDTP.SelectedPreset .............= {DeviceInfoDTP.SelectedPreset.ToString()}");
+                    _log.Info($"[HeadsetViewModel] DeviceInfoDTP.Band1Gain ..................= {DeviceInfoDTP.Band1Gain.ToString()}");
+                    _log.Info($"[HeadsetViewModel] DeviceInfoDTP.Band2Gain ..................= {DeviceInfoDTP.Band2Gain.ToString()}");
+                    _log.Info($"[HeadsetViewModel] DeviceInfoDTP.Band3Gain ..................= {DeviceInfoDTP.Band3Gain.ToString()}");
+                    _log.Info($"[HeadsetViewModel] DeviceInfoDTP.Band4Gain ..................= {DeviceInfoDTP.Band4Gain.ToString()}");
+                    _log.Info($"[HeadsetViewModel] DeviceInfoDTP.Band5Gain ..................= {DeviceInfoDTP.Band5Gain.ToString()}");
+                }
+                else
+                {
+                    _log.Info($"[HeadsetViewModel] GetIsPresetsSupportedAsync ................... NO");
+                }
+                //------------------------------------------------------------------------------------
+
+                if (await _deviceManager.GetIsMicNCIncomingSupportedAsync(CurrentDeviceID.ToString()))
+                {
+                    DeviceInfoDTP.MicNCIncoming = await _deviceManager.GetMicNCIncomingAsync(CurrentDeviceID.ToString());
+                    _log.Info($"[HeadsetViewModel] DeviceInfoDTP.MicNCIncoming .............= {DeviceInfoDTP.MicNCIncoming.ToString()}");
+                }
+                else
+                {
+                    _log.Info($"[HeadsetViewModel] GetIsMicNCIncomingSupportedAsync ............. NO");
+                }
+                //------------------------------------------------------------------------------------
+
+                if (await _deviceManager.GetIsWearDetectionSupportedAsync(CurrentDeviceID.ToString()))
+                {
+                    DeviceInfoDTP.WearDetection = await _deviceManager.GetWearDetectionAsync(CurrentDeviceID.ToString());
+                    _log.Info($"[HeadsetViewModel] DeviceInfoDTP.WearDetection .............= {DeviceInfoDTP.WearDetection.ToString()}");
+                }
+                else
+                {
+                    _log.Info($"[HeadsetViewModel] GetIsWearDetectionSupportedAsync ............. NO");
+                }
+                //------------------------------------------------------------------------------------
+
+                //DeviceInfoDTP.Band1Gain = await _deviceManager.GetBand1GainAsync(CurrentDeviceID.ToString());
+                //DeviceInfoDTP.Band2Gain = await _deviceManager.GetBand2GainAsync(CurrentDeviceID.ToString());
+                //DeviceInfoDTP.Band3Gain = await _deviceManager.GetBand3GainAsync(CurrentDeviceID.ToString());
+                //DeviceInfoDTP.Band4Gain = await _deviceManager.GetBand4GainAsync(CurrentDeviceID.ToString());
+                //DeviceInfoDTP.Band5Gain = await _deviceManager.GetBand5GainAsync(CurrentDeviceID.ToString());
+                //DeviceInfoDTP.AncGain = await _deviceManager.GetAncGainAsync(CurrentDeviceID.ToString());
+                //DeviceInfoDTP.AncMode = await _deviceManager.GetAncModeAsync(CurrentDeviceID.ToString());
                 DeviceInfoDTP.BatteryLevel = await _deviceManager.GetBatteryLevelAsync(CurrentDeviceID.ToString());
-                DeviceInfoDTP.BusyLight = await _deviceManager.GetBusyLightAsync(CurrentDeviceID.ToString());
-                DeviceInfoDTP.MicNoiseCancellation = await _deviceManager.GetMicNoiseCancellationAsync(CurrentDeviceID.ToString());
-                DeviceInfoDTP.MicNCIncoming = await _deviceManager.GetMicNCIncomingAsync(CurrentDeviceID.ToString());
-                DeviceInfoDTP.Sidetone = await _deviceManager.GetSidetoneAsync(CurrentDeviceID.ToString());
+                //DeviceInfoDTP.BusyLight = await _deviceManager.GetBusyLightAsync(CurrentDeviceID.ToString());
+                //DeviceInfoDTP.MicNoiseCancellation = await _deviceManager.GetMicNoiseCancellationAsync(CurrentDeviceID.ToString());
+                //DeviceInfoDTP.MicNCIncoming = await _deviceManager.GetMicNCIncomingAsync(CurrentDeviceID.ToString());
+                //DeviceInfoDTP.Sidetone = await _deviceManager.GetSidetoneAsync(CurrentDeviceID.ToString());
                 DeviceInfoDTP.SidetoneLevel = await _deviceManager.GetSidetoneLevelAsync(CurrentDeviceID.ToString());
-                DeviceInfoDTP.SelectedPreset = await _deviceManager.GetSelectedPresetAsync(CurrentDeviceID.ToString());
-                DeviceInfoDTP.VoiceGuidance = await _deviceManager.GetVoiceGuidanceAsync(CurrentDeviceID.ToString());
-                DeviceInfoDTP.WearDetection = await _deviceManager.GetWearDetectionAsync(CurrentDeviceID.ToString());
-                DeviceInfoDTP.IsANCSupported = await _deviceManager.GetIsANCSupportedAsync(CurrentDeviceID.ToString());
-                DeviceInfoDTP.IsBusyLightSupported = await _deviceManager.GetIsBusyLightSupportedAsync(CurrentDeviceID.ToString());
-                DeviceInfoDTP.IsMicNoiseCancellationSupported = await _deviceManager.GetIsMicNoiseCancellationSupportedAsync(CurrentDeviceID.ToString());
-                DeviceInfoDTP.IsSidetoneSupported = await _deviceManager.GetIsSidetoneSupportedAsync(CurrentDeviceID.ToString());
-                DeviceInfoDTP.IsVoiceGuidanceSupported = await _deviceManager.GetIsVoiceGuidanceSupportedAsync(CurrentDeviceID.ToString());
-                DeviceInfoDTP.IsPresetsSupported = await _deviceManager.GetIsPresetsSupportedAsync(CurrentDeviceID.ToString());
-                DeviceInfoDTP.IsMicNCIncomingSupported = await _deviceManager.GetIsMicNCIncomingSupportedAsync(CurrentDeviceID.ToString());
-                DeviceInfoDTP.IsWearDetectionSupported = await _deviceManager.GetIsWearDetectionSupportedAsync(CurrentDeviceID.ToString());
+                //DeviceInfoDTP.SelectedPreset = await _deviceManager.GetSelectedPresetAsync(CurrentDeviceID.ToString());
+                //DeviceInfoDTP.VoiceGuidance = await _deviceManager.GetVoiceGuidanceAsync(CurrentDeviceID.ToString());
+                //DeviceInfoDTP.WearDetection = await _deviceManager.GetWearDetectionAsync(CurrentDeviceID.ToString());
+                //DeviceInfoDTP.IsANCSupported = await _deviceManager.GetIsANCSupportedAsync(CurrentDeviceID.ToString());
+                //DeviceInfoDTP.IsBusyLightSupported = await _deviceManager.GetIsBusyLightSupportedAsync(CurrentDeviceID.ToString());
+                //DeviceInfoDTP.IsMicNoiseCancellationSupported = await _deviceManager.GetIsMicNoiseCancellationSupportedAsync(CurrentDeviceID.ToString());
+                //DeviceInfoDTP.IsSidetoneSupported = await _deviceManager.GetIsSidetoneSupportedAsync(CurrentDeviceID.ToString());
+                //DeviceInfoDTP.IsVoiceGuidanceSupported = await _deviceManager.GetIsVoiceGuidanceSupportedAsync(CurrentDeviceID.ToString());
+                //DeviceInfoDTP.IsPresetsSupported = await _deviceManager.GetIsPresetsSupportedAsync(CurrentDeviceID.ToString());
+                //DeviceInfoDTP.IsMicNCIncomingSupported = await _deviceManager.GetIsMicNCIncomingSupportedAsync(CurrentDeviceID.ToString());
+                //DeviceInfoDTP.IsWearDetectionSupported = await _deviceManager.GetIsWearDetectionSupportedAsync(CurrentDeviceID.ToString());
                 //DeviceInfoDTP.BandsGain = _deviceManager.GetBandsGainAsync(CurrentDeviceID.ToString()).Result;
                 _log.Info($"[HeadsetViewModel] Print after property ......");
                 _log.Info($"[HeadsetViewModel] ***********************************************************************");
@@ -690,7 +789,7 @@ namespace DDPM.UI.Plugin.ViewModels
                 _log.Info($"[HeadsetViewModel] DeviceInfoDTP.Band4Gain .............= {DeviceInfoDTP.Band4Gain.ToString()}");
                 _log.Info($"[HeadsetViewModel] DeviceInfoDTP.Band5Gain .............= {DeviceInfoDTP.Band5Gain.ToString()}");
                 _log.Info($"[HeadsetViewModel] DeviceInfoDTP.AncGain .............= {DeviceInfoDTP.AncGain.ToString()}");
-                _log.Info($"[HeadsetViewModel] DeviceInfoDTP.AncMode .............= {DeviceInfoDTP.AncMode.ToString()}");
+                //_log.Info($"[HeadsetViewModel] DeviceInfoDTP.AncMode .............= {DeviceInfoDTP.AncMode.ToString()}");
                 _log.Info($"[HeadsetViewModel] DeviceInfoDTP.BatteryLevel ........= {DeviceInfoDTP.BatteryLevel.ToString()}");
                 _log.Info($"[HeadsetViewModel] DeviceInfoDTP.BusyLight ...........= {DeviceInfoDTP.BusyLight.ToString()}");
                 _log.Info($"[HeadsetViewModel] DeviceInfoDTP.MicNoiseCancellation = {DeviceInfoDTP.MicNoiseCancellation.ToString()}");
