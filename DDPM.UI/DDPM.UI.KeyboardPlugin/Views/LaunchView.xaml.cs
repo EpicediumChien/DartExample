@@ -145,7 +145,8 @@ namespace DDPM.UI.Plugin.KeyboardPlugin
             moduleGroup = new ModuleGroup()
             {
                 GroupName = Strings.KeyCustomizationCaption,
-                GroupIcon = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Vbar.Keyboard.Key.png")
+                GroupIcon = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Vbar.Keyboard.Key.png"),
+                GroupIconCanvas = DdpmCommonHelper.CanvasIconCreator(VbarIcon.KeyboardKeyCustom)
             };
             moduleGroup.AddHeader(Strings.KeyCustomizationCaption, new KeyCustomizationModule(_vm!));
             groups.Add(moduleGroup);
@@ -155,7 +156,8 @@ namespace DDPM.UI.Plugin.KeyboardPlugin
                 moduleGroup = new ModuleGroup()
                 {
                     GroupName = Strings.CollaborationCaption,
-                    GroupIcon = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Vbar.Keyboard.Collaboration.png")
+                    GroupIcon = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Vbar.Keyboard.Collaboration.png"),
+                    GroupIconCanvas = DdpmCommonHelper.CanvasIconCreator(VbarIcon.KeyboardCollaboration)
                 };
                 moduleGroup.AddHeader(Strings.CollaborationCaption, new CollaborationModule(_vm));
                 groups.Add(moduleGroup);
@@ -165,7 +167,8 @@ namespace DDPM.UI.Plugin.KeyboardPlugin
                 moduleGroup = new ModuleGroup()
                 {
                     GroupName = Strings.IlluminationCaption,
-                    GroupIcon = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Vbar.Keyboard.Illumination.png")
+                    GroupIcon = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Vbar.Keyboard.Illumination.png"),
+                    GroupIconCanvas = DdpmCommonHelper.CanvasIconCreator(VbarIcon.KeyboardIllumination)
                 };
                 moduleGroup.AddHeader(Strings.IlluminationCaption, new IlluminationModule(_vm));
                 groups.Add(moduleGroup);

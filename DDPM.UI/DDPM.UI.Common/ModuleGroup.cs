@@ -28,6 +28,7 @@ namespace DDPM.UI.Common
 
         public string VbarText { get; set; } = "";
         public ImageSource? VbarIcon { get; set; }
+        public Canvas? VbarIconCanvas => GroupIconCanvas;
         public ControlTemplate? IconTemplate { get; set; }
 
         #endregion VbarItem
