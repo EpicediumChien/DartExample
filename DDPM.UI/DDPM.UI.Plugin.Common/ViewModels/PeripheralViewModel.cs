@@ -275,6 +275,11 @@ namespace DDPM.UI.Plugin.ViewModels
 
         private string MappingModel(string modelNumber)
         {
+            //[#PeripheralModelMap] This mapping table has a duplicate code in
+            //1 DdpmCommonHelpers.cs    DeterminePeripheralProductImageFileName()
+            //2 HomeDevices             TooltipModelName property
+            //3 PeripheralViewModel.cs  MappingModel()
+            //If you need to modify, please also modify them.
             switch (modelNumber)
             {
                 case "KB740":

@@ -12,6 +12,7 @@ using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Windows.Media.Media3D;
 using VcpCore.Common;
 
 namespace DDPM.UI.Common.Models
@@ -223,9 +224,61 @@ namespace DDPM.UI.Common.Models
                     {
                         return DeviceInfo.Name.Replace("_", " ");
                     }
-                    //Robert_Lin, 2024-11-20, change the tooltip on homepage to DeviceName
-                    //return DeviceInfo.Name;
-                    return DeviceInfo.DeviceName;
+                    //Robert_Lin, 2024-11-22, [PIMS-316846], DeviceName is "MouseSettings" so it seems that should be
+                    // Name="Dell Pro Premium Mouse" + ModelNumber="MS900" => "Dell Pro Premium Mouse MS900"
+                    //Based on Indilogic reply:
+                    //Gayathri Iyer1(INDILOGIC) added a comment - 11/Nov/24 10:37 AM
+                    //Hess Cheng(WISTRON) DPeM core provides two properties: DeviceName and ModelNumber.Please combine both to show in the UI. 
+
+                    //Robert_Lin, 2024-11-22, Only Keyboard/Mouse need to combine {Name}+{Model}
+                    //Other peripheals will display {Name} only, because Indilogical has combine {Model} inside {Name}
+
+                    if ((DeviceCategory == eDeviceCategory.Mouse) ||
+                        (DeviceCategory == eDeviceCategory.KB))
+                    {
+                        string model = DeviceInfo.ModelNumber;
+                        //[#PeripheralModelMap] This mapping table has a duplicate code in
+                        //1 DdpmCommonHelpers.cs    DeterminePeripheralProductImageFileName()
+                        //2 HomeDevices             TooltipModelName property
+                        //3 PeripheralViewModel.cs  MappingModel()
+                        //If you need to modify, please also modify them.
+                        switch (DeviceInfo.ModelNumber)
+                        {
+                            //Keyboard
+                            case "KB740":
+                            case "KB7120W":
+                                model = "KB740";
+                                break;
+                            case "KB500":
+                            case "KB3121W":
+                                model = "KB500";
+                                break;
+                            case "KB700":
+                            case "KB7221W":
+                                model = "KB700";
+                                break;
+
+                            //Mouse
+                            case "MS300":
+                            case "MS3121W":
+                                model = "MS300";
+                                break;
+
+                            //Default
+                            default:
+                                //model = deviceInfo.ModelNumber;
+                                break;
+                        } //switch(deviceInfo.ModelNumber)
+
+                        return DeviceInfo.Name + $" {model}";
+                    }
+                    else
+                    {
+                        return DeviceInfo.Name;
+                    }
+                    //Robert_Lin, 2024-11-20, [PIMS-316846] change the tooltip on homepage to DeviceName
+                    //return DeviceInfo.DeviceName;
+                    //return DeviceInfo.Name; 
                 }
                 else if (MonitorInfo != null)
                 {
