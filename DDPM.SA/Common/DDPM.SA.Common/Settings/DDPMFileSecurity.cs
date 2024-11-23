@@ -1672,7 +1672,7 @@ namespace DDPM.SA.Common.Settings
             if (needCheckThumbprintInbox)
             {
                 //if (!VerifyFileCertWithoutThumbprint(filePath, out info))
-                if (!VerifyFileCertWithInboxThumbprint(filePath, out info))
+                if(!VerifyFileCertWithInboxThumbprint(filePath, out info))
                 {
                     if (log != null)
                         log.Error($"[IsProcessInfoValid] VerifyFileCertWithThumbprint: {info}");
