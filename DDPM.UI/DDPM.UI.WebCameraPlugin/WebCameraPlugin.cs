@@ -164,37 +164,41 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
 
             //cmd format sample
             //5;Device:Webcam;EventType:Webcam_IsHDROnChanged;DeviceId:28d64fee-3544-45c7-a1b0-10db20a4cf8e;NewValue:True
-            Dictionary<string,string> event_param = deal_param(e.UI_Field_Name);
+            Dictionary<string, string> event_param = deal_param(e.UI_Field_Name);
             try
             {
-                if (event_param["Device"] == "WebCam")
+                if (event_param["Device"] == "Webcam")
                 {
                     switch (event_param["EventType"])
                     {
                         case "Webcam_IsHDROnChanged":
-                            _viewModel!.IsHDROn = DdpmCommonHelper.DeviceManagerSA!.GetIsHDROn(_viewModel!.CurrentDeviceID.ToString()).Result;
+                            Application.Current.Dispatcher.Invoke(() =>
+                            {
+                                _viewModel!.IsHDROn = DdpmCommonHelper.DeviceManagerSA!.GetIsHDROn(_viewModel!.CurrentDeviceID.ToString()).Result;
+                            });
                             break;
                     }
                 }
             }
-            catch (Exception ex) 
-            { 
+            catch (Exception ex)
+            {
+                //MessageBox.Show(ex.Message);
             }
         }
 
-        private Dictionary<string, string> deal_param(string param )
+        private Dictionary<string, string> deal_param(string param)
         {
-            Dictionary<string,string> tmp = new Dictionary<string, string>();
+            Dictionary<string, string> tmp = new Dictionary<string, string>();
 
             try
             {
-                List<string> list = param.Split(new char[] {';' }).ToList();
-                foreach (string s in list) 
+                List<string> list = param.Split(new char[] { ';' }).ToList();
+                foreach (string s in list)
                 {
                     List<string> item = s.Split(new char[] { ':' }).ToList();
-                    if( item.Count == 2 )
+                    if (item.Count == 2)
                     {
-                        tmp.Add(item[0], item[1]);  
+                        tmp.Add(item[0], item[1]);
                     }
                 }
             }
