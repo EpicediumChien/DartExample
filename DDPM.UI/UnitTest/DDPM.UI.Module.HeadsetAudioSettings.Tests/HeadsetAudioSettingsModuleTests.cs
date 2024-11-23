@@ -9,6 +9,7 @@ using Moq;
 using NGA.UnitTest.PrivateObject;
 using System.Windows;
 using System.Windows.Controls;
+using Dell.Client.Framework.UX.WPF.ResourceManager;
 
 namespace DDPM.UI.Module.HeadsetAudioSettings.Tests
 {
@@ -36,6 +37,7 @@ namespace DDPM.UI.Module.HeadsetAudioSettings.Tests
             {
                 new System.Windows.Application();
             }
+            ResourceManager res = new ResourceManager();
             var resourceDictionary = new ResourceDictionary();
             resourceDictionary.Source = new Uri("pack://application:,,,/DDPM.UI.Common;component/ModuleStyle.xaml");
             System.Windows.Application.Current.Resources.MergedDictionaries.Add(resourceDictionary);
