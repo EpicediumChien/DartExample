@@ -5768,6 +5768,12 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                     }
                 }
             }
+            else
+            {
+                writelog($"No any webcam instance to unregister.");
+                //try to force release current --> will catch exception  1123
+                //await UnregisterEventsForWebcamAsync(0);
+            }
         }
 
         private async Task UnregisterEventsForAllWebcamsAsync()
@@ -5783,6 +5789,8 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                     bool result = await UnregisterEventsForWebcamAsync(i);
                 }
             }
+            else
+                writelog($"No any webcam instance to unregister.");
         }
 
         private async Task<bool> RegisterEventsForWebcamAsync(int index)
@@ -6331,7 +6339,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             //SendWebcamEventToUI($"3;Device:Webcam;Event:Disconnected;DeviceId:{e.DeviceId}");
             SendWebcamEventToUI(CreateEventMsg("Webcam", "Webcam_Disconnected", e.DeviceId));
 
-            writelog($"Catch event _Webcam_Disconnected, current devCount is {GetWebcamDevsCountAsync()} : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+            writelog($"Catch event _Webcam_Disconnected, current devCount is {GetWebcamDevsCountAsync().Result} : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
         }
 
         private void Webcam_Connected(object sender, ConnectedArgs e)

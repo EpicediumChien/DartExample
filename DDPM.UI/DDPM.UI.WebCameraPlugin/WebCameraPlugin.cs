@@ -160,7 +160,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
         private void WebCameraplugin_UIUpdateNotify(object? sender, UpdateUINotify e)
         {
             //Open this to get the message format of Webcam event
-            System.Windows.MessageBox.Show(e.UI_Field_Name);
+            //System.Windows.MessageBox.Show(e.UI_Field_Name);
         }
 
         /// <inheritdoc/>
