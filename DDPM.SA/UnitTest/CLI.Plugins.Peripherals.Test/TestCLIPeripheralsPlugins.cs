@@ -358,7 +358,78 @@ namespace DDPM.CLI.Plugins.Peripherals.Test
                 Assert.IsNotNull(SetCommandArgs_result10.serialize_Json_response);
             }
         }
-       
+
+        [Test]
+        public void TestSetFailResults()
+        {
+            string message = "Test SetFailResults message";
+            privateteCLIPeripheralsPlugins.Invoke("SetFailResults", message);
+            Assert.IsTrue(true);
+        }
+
+        [Test]
+        public void TestNoDeviceConnectResponse()
+        {
+            CommandLineInput commandLineInput;
+            commandLineInput = new CommandLineInput()
+            {
+                PluginsType = "AUDIO",
+                Command = "Test",
+                TargetType = "TestAPP",
+                TargetFeature = "TestTargetFeature",
+                isCliRunAdmin = true,
+
+            };
+            var result = ((int code, string json))privateteCLIPeripheralsPlugins.Invoke("NoDeviceConnectResponse", commandLineInput);
+            Assert.IsNotNull(result);
+            Assert.IsNotNull(result.code);
+            Assert.IsNotNull(result.json);
+        }
+
+        [Test]
+        public void TestDownload_Event()
+        {
+            object obj = new object();
+            List<FWUpdateInfo> fwUpdateInfo = new List<FWUpdateInfo>() { new FWUpdateInfo() { DeviceVersion = "1.0", DeviceName = "TestDeviceName", DeviceId = "123", Model = "Testmodel" } };
+            privateteCLIPeripheralsPlugins.Invoke("Download_Event", obj, fwUpdateInfo);
+            var Download_Event_result = (List<FWUpdateInfo>)privateteCLIPeripheralsPlugins.GetFieldOrProperty("retFWUpdateInfos");
+            Assert.IsNotNull(Download_Event_result);
+            Assert.That(fwUpdateInfo, Is.EqualTo(Download_Event_result));
+        }
+
+        [Test]
+        public void TestProcessListPeripheralsOptionAsync()
+        {
+            IDeviceManagerSA devMgr;
+            devMgr = null;
+            int CLI_ExitCode = 1;
+            if (devMgr == null)
+            {
+                var Download_Event_result = (Task<int>)privateteCLIPeripheralsPlugins.Invoke("ProcessListPeripheralsOptionAsync", devMgr);  //devMgr= null
+                Assert.IsNotNull(Download_Event_result);
+                Assert.That(CLI_ExitCode, Is.EqualTo(Download_Event_result.Result));
+            }
+
+            int CLI_ExitCode2 = 0;
+            Mock<IDeviceManagerSA> devMgr2 = new Mock<IDeviceManagerSA>();
+            DeviceHelper deviceHelper = new DeviceHelper
+            {
+                deviceInfo = new List<DeviceInfo>
+                {
+                new DeviceInfo {LogicalDeviceType = "LogicalHeadset",DeviceName = "LogicalHeadset",},
+                new DeviceInfo {LogicalDeviceType = "LogicalWiredAudio",DeviceName = "LogicalWiredAudio",}
+                }
+            };
+            devMgr2.Setup(m => m.GetDevices(It.IsAny<bool>())).Returns(Task.FromResult(deviceHelper));
+            var devMgrObj2 = devMgr2.Object;
+
+            if (devMgrObj2 != null)
+            {
+                var Download_Event_result2 = (Task<int>)privateteCLIPeripheralsPlugins.Invoke("ProcessListPeripheralsOptionAsync", devMgrObj2);  //devMgr ! = null
+                Assert.IsNotNull(Download_Event_result2);
+                Assert.That(CLI_ExitCode2, Is.EqualTo(Download_Event_result2.Result));
+            }
+        }
 
         [OneTimeTearDown]
         public void TearDown()
