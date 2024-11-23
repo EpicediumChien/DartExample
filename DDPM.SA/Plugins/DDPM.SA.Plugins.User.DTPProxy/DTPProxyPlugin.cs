@@ -5709,7 +5709,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                     writelog($"Find IWebcamCommodity not find  time: {DateTime.Now.ToString("hh.mm.ss.ffffff") + " Message: " + e.Message}");
                 }
             }
-            /*
+            
 
             var webcams = await GetWebcamDeviceItemsEx();
             if (webcams != null && webcams.Count > 0)
@@ -5778,11 +5778,11 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 //{
                     //string webID = $"DellPeripheral.Webcam.{i}";
 
-                    _comdity = await _commSdk.GetCommodityAsync<IWebcamCommodity>(new ItemId($"DellPeripheral.Webcam.0"), CancellationToken.None);
-                    if (_comdity is Dell.TechHub.Commodity.Peripheral.IWebcamCommodity _Webcamcom)
-                    {
-                        try
-                        {
+                    //_comdity = await _commSdk.GetCommodityAsync<IWebcamCommodity>(new ItemId($"DellPeripheral.Webcam.0"), CancellationToken.None);
+                    //if (_comdity is Dell.TechHub.Commodity.Peripheral.IWebcamCommodity _Webcamcom)
+                    //{
+                        //try
+                        //{
                             //_Webcamcom.ProfileManagerAdded += Webcam_ProfileManagerAdded;
                             //_Webcamcom.IsMicEnumerationOnChanged += Webcam_IsMicEnumerationOnChanged;
                             //_Webcamcom.CurrentSelectedProfileChanged += Webcam_CurrentSelectedProfileChanged;
@@ -5812,18 +5812,18 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                             //_Webcamcom.IsZoomMeetingActiveChanged += Webcam_IsZoomMeetingActiveChanged;
                             //_Webcamcom.IsZoomScreenShareActiveChanged += Webcam_IsZoomScreenShareActiveChanged;
 
-                            _Webcamcom.WALSnoozeTimeLeftInSecondsChanged += _webcamcom_WALSnoozeTimeLeftInSecondsChanged;
-                            _Webcamcom.Esi_IsWALLockCountdownStartedChanged += _webcamcom_Esi_IsWALLockCountdownStartedChanged;
-                            _Webcamcom.Esi_IsCameraSensorCoveredChanged += _webcamcom_Esi_IsCameraSensorCoveredChanged;
-                            _Webcamcom.Esi_WALLockCountdownChanged += _webcamcom_Esi_WALLockCountdownChanged;
+                            //_Webcamcom.WALSnoozeTimeLeftInSecondsChanged += _webcamcom_WALSnoozeTimeLeftInSecondsChanged;
+                            //_Webcamcom.Esi_IsWALLockCountdownStartedChanged += _webcamcom_Esi_IsWALLockCountdownStartedChanged;
+                            //_Webcamcom.Esi_IsCameraSensorCoveredChanged += _webcamcom_Esi_IsCameraSensorCoveredChanged;
+                            //_Webcamcom.Esi_WALLockCountdownChanged += _webcamcom_Esi_WALLockCountdownChanged;
 
                             //writelog($"Webcam{i} Commodity event registered");
-                        }
-                        catch (Exception e)
-                        {
+                        //}
+                        //catch (Exception e)
+                        //{
                            // writelog($"IWebcamCommodity{i} not find  time: {DateTime.Now.ToString("hh.mm.ss.ffffff") + " Message: " + e.Message}");
-                        }
-                    }
+                        //}
+                    //}
                 //}
             //}
         }
