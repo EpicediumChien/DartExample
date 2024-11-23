@@ -12,6 +12,7 @@ using System.Windows.Ink;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
+using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 
 namespace DDPM.UI.Plugin.Common
@@ -77,6 +78,14 @@ namespace DDPM.UI.Plugin.Common
             FocusBorderBrush.EndPoint = new Point(1, 0);
             FocusBorderBrush.GradientStops.Add(new GradientStop(Color.FromRgb(0x55, 0xB4, 0xFD), 0));
             FocusBorderBrush.GradientStops.Add(new GradientStop(Color.FromRgb(0x6E, 0x69, 0xCF), 1));
+
+            DdpmCommonHelper.BitmapImageUpdated += imgComboImageUpdate;
+        }
+
+        private void imgComboImageUpdate(OSThemeEnum oSThemeEnum)
+        {
+            imgCombo.Source = null;
+            imgCombo.Source = (BitmapImage)System.Windows.Application.Current.Resources["down_Expand"];
         }
 
         private void DrawPieChart()

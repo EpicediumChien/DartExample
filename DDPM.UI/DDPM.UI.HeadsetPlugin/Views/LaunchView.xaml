@@ -91,7 +91,7 @@
             <Grid VerticalAlignment="Top" HorizontalAlignment="Left">
                 <StackPanel Orientation="Vertical">
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
-                        <Image Margin="64,21,0,0" Source="{DynamicResource Arrow_Left}" Stretch="Fill"
+                        <Image x:Name="ArrowLeft" Margin="64,21,0,0" Source="{DynamicResource Arrow_Left}" Stretch="Fill"
                                VerticalAlignment="Top" HorizontalAlignment="Left" Cursor="" Width="24" Height="24">
                             <Image.InputBindings>
                                 <MouseBinding Gesture="LeftClick" Command="{Binding GoBackClickedCommand, Mode=OneTime}" />
