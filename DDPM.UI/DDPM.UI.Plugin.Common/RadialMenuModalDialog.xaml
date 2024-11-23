@@ -128,7 +128,7 @@
                         <StackPanel>
                             <Grid>
                                 <UXControls:UXTextBlock Name="txtMenu" Style="{StaticResource TextBlockStyle1}" />
-                                <Image x:Name="imgCombo" Source="{DynamicResource down_Expand}" MouseLeftButtonDown="ComboButtonClick" HorizontalAlignment="Right" VerticalAlignment="Top"
+                <Image x:Name="imgCombo" Source="/DDPM.UI.Resources;component/Resources/Images/Down.png" MouseLeftButtonDown="ComboButtonClick" HorizontalAlignment="Right" VerticalAlignment="Top"
                            Style="{StaticResource ActionArrowStyle}" Margin="0,19,15,19">
                                 </Image>
                             </Grid>

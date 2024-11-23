@@ -181,7 +181,8 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                     while (_vm.mre.WaitOne())
                     {
 
-                        if (exit_status_thread) return;
+                        if (exit_status_thread)
+                            return;
 
                         if (!_vm.IsRecording)
                         {
@@ -205,8 +206,10 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
         private void status_change()
         {
 
-            if (!in_CameraPlugin) return;
-            if (_vm == null) return;
+            if (!in_CameraPlugin)
+                return;
+            if (_vm == null)
+                return;
 
             if (_vm.running_state)
             {
@@ -233,7 +236,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                     _ = CameraImage.Dispatcher.BeginInvoke(async () =>
                     {
                         CameraImage.Visibility = Visibility.Hidden;
-                        _= CleanupMediaCaptureAsync();
+                        _ = CleanupMediaCaptureAsync();
 
                         WebcamGrid_old_ststus = _vm.WebcamGrid;
                         _vm.WebcamGrid = false;
@@ -474,7 +477,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             {
                 _vm!.MediaFrameReader!.FrameArrived -= MediaFrameReader_FrameArrived;
             }
-            catch{ }
+            catch { }
             _vm.ProfilePropertyChanged -= ProfilePropertyChanged;
             _vm.WebcamSettingChanged -= WebcamSettingChanged;
             try
@@ -1547,7 +1550,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
 
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
-           NarratorModeSupport.RecurseUitems( start) ;
+            //NarratorModeSupport.RecurseUitems( start) ;
         }
     }
 }

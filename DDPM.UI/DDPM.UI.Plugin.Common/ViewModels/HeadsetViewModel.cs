@@ -10,6 +10,31 @@ using Windows.Devices.Geolocation;
 
 namespace DDPM.UI.Plugin.ViewModels
 {
+    public class DeviceInfoDTP : DeviceInfo
+    {
+        private bool _isAnswerCallSupported;
+        private bool _isAnswerCall;
+
+        public bool AnswerCall
+        {
+            get => _isAnswerCall;
+            set
+            {
+                _isAnswerCall = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public bool IsAnswerCallSupported
+        {
+            get => _isAnswerCallSupported;
+            set
+            {
+                _isAnswerCallSupported = value;
+                OnPropertyChanged();
+            }
+        }
+    }
     public class HeadsetViewModel : PeripheralViewModel, INotifyPropertyChanged
     {
         #region Variables
@@ -17,7 +42,7 @@ namespace DDPM.UI.Plugin.ViewModels
         public readonly ILog _log;
         public IDeviceManagerSA _deviceManager;
         public IShowPluginManager _showPluginManager;
-        public DeviceInfo DeviceInfoDTP;
+        public DeviceInfoDTP DeviceInfoDTP;
         public string _current_headset;
 
         #endregion Variables
@@ -32,7 +57,7 @@ namespace DDPM.UI.Plugin.ViewModels
             _log = log;
             _deviceManager = deviceManager;
             _showPluginManager = showPluginManager;
-            DeviceInfoDTP = new DeviceInfo();
+            DeviceInfoDTP = new DeviceInfoDTP();
             _current_headset = string.Empty;
             _log!.Info($"[HeadsetViewModel] HeadsetViewModel Start...");
         }
@@ -191,6 +216,7 @@ namespace DDPM.UI.Plugin.ViewModels
             CheckPresetsUI(false);
             CheckVoiceGuidanceUI(false);
             CheckANCUI(false);
+            CheckAnswerCallUI(false);
         }
 
         private void CheckSidetoneUI(bool PropertyChange)
@@ -225,6 +251,17 @@ namespace DDPM.UI.Plugin.ViewModels
                         UpdateCollaborationAndultimediaUI(true, false);
                     }
                 }
+            }
+        }
+
+        private void CheckAnswerCallUI(bool PropertyChange)
+        {
+            if (DeviceInfoDTP!.IsAnswerCallSupported)
+                _isAnswerCallsStatus = DeviceInfoDTP.AnswerCall;
+            if (PropertyChange)
+            {
+                OnPropertyChanged("AnswerCallsStatus");
+                OnPropertyChanged("AnswerCalls_String");
             }
         }
 
@@ -637,6 +674,7 @@ namespace DDPM.UI.Plugin.ViewModels
                 _log.Info($"[HeadsetViewModel] DeviceInfoDTP.SelectedPreset ......= {DeviceInfoDTP.SelectedPreset.ToString()}");
                 _log.Info($"[HeadsetViewModel] DeviceInfoDTP.VoiceGuidance .......= {DeviceInfoDTP.VoiceGuidance.ToString()}");
                 _log.Info($"[HeadsetViewModel] DeviceInfoDTP.WearDetection .......= {DeviceInfoDTP.WearDetection.ToString()}");
+                _log.Info($"[HeadsetViewModel] DeviceInfoDTP.WearDetection .......= {DeviceInfoDTP.AnswerCall.ToString()}");
                 _deviceManager.SetFactoryResetAsyncValueForHeadset(CurrentDeviceInfo!.ID.ToString(), true).Wait();
                 await UpdateDTPValue();
                 CheckHeadsetFunc();
@@ -662,7 +700,7 @@ namespace DDPM.UI.Plugin.ViewModels
                 _log.Info($"[HeadsetViewModel] Print before property ...UpdateDTPValue ... in");
                 if (DeviceInfoDTP == null)
                 {
-                    DeviceInfoDTP = new DeviceInfo();
+                    DeviceInfoDTP = new DeviceInfoDTP();
                     _log.Info($"[HeadsetViewModel] Print before property ...UpdateDTPValue new DeviceInfo...");
                 }
 
@@ -793,6 +831,18 @@ namespace DDPM.UI.Plugin.ViewModels
                 }
                 //------------------------------------------------------------------------------------
 
+                if (await _deviceManager.GetIsBoomMicSupportedAsync(CurrentDeviceID.ToString()))
+                {
+                    DeviceInfoDTP.IsAnswerCallSupported = true;
+                    DeviceInfoDTP.AnswerCall = await _deviceManager.GetBoomMicAsync(CurrentDeviceID.ToString());
+                    _log.Info($"[HeadsetViewModel] DeviceInfoDTP.AnswerCall .............= {DeviceInfoDTP.AnswerCall.ToString()}");
+                }
+                else
+                {
+                    DeviceInfoDTP.IsAnswerCallSupported = false;
+                    _log.Info($"[HeadsetViewModel] GetIsBoomMicSupportedAsync ............. NO");
+                }
+                //------------------------------------------------------------------------------------
                 DeviceInfoDTP.BatteryLevel = await _deviceManager.GetBatteryLevelAsync(CurrentDeviceID.ToString());
                 DeviceInfoDTP.SidetoneLevel = await _deviceManager.GetSidetoneLevelAsync(CurrentDeviceID.ToString());
 
@@ -1876,20 +1926,24 @@ namespace DDPM.UI.Plugin.ViewModels
         {
             get
             {
+                _isAnswerCallsStatus = DeviceInfoDTP.AnswerCall;
                 return _isAnswerCallsStatus;
             }
             set
             {
+                _log.Info($"[HeadsetViewModel] SetBoomMicAsync ....... {value.ToString()}");
+                _deviceManager.SetBoomMicAsync(CurrentDeviceInfo!.ID.ToString(), value);
                 _isAnswerCallsStatus = value;
+                DeviceInfoDTP.AnswerCall = value;
                 OnPropertyChanged("AnswerCalls_String");
             }
         }
 
-        #endregion HeadsetAutomatedActions ToggleSwitch Binding
+    #endregion HeadsetAutomatedActions ToggleSwitch Binding
 
-        #region HeadsetAutomatedActions Grid Show/Hide
+    #region HeadsetAutomatedActions Grid Show/Hide
 
-        private bool _wearDetectionPageShow = false;
+    private bool _wearDetectionPageShow = false;
 
         public bool WearDetectionPageShow
         {
