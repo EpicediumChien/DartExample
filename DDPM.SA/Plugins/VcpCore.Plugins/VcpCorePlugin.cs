@@ -4661,15 +4661,6 @@ namespace VcpCore.Plugins
             return rc;
         }
 
-        private bool IsVcpFunctionSupport(MonitorInfo monitor, string FunctionName)
-        {
-            _logs.DebugMsg("[VcpCorePlugin] [QueueTrigger] VcpCorePlugin IsVcpFunctionSupport ...");
-
-            var rc = false;
-
-            return rc;
-        }
-
         //---------------------------------------------------
 
         #endregion
