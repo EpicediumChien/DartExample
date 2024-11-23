@@ -118,14 +118,15 @@ namespace DDPM.UI.Module.WebCameraPresenceDetection
                 _vm.IsChecked_Snooze = true;
             else
                 _vm.IsChecked_Snooze = false;
-            
 
-            nRes = DdpmCommonHelper.DeviceManagerSA!.GetSnoozeLength(_vm.CurrentDeviceInfo!.ID.ToString()).Result;
+
+            //nRes = DdpmCommonHelper.DeviceManagerSA!.GetSnoozeLength(_vm.CurrentDeviceInfo!.ID.ToString()).Result;
             //nRes = DdpmCommonHelper.DeviceManagerSA!.GetSnoozeLength(_vm.CurrentDeviceInfo!.ID).Result;
 
             //if (nRes != 30 && nRes != 60 && nRes != 90 && nRes != 120)
             //    nRes = 60;
 
+            /*
             if (nRes <= 1800)
                 nRes = 30;
             else if (nRes > 1800 && nRes <= 3600)
@@ -133,6 +134,18 @@ namespace DDPM.UI.Module.WebCameraPresenceDetection
             else if (nRes > 3600 && nRes <= 5400)
                 nRes = 90;
             else if (nRes > 5400 && nRes <= 7200)
+                nRes = 120;
+            */
+
+            if (nRes < 0)
+                nRes = 30;
+            else if (nRes == 0)
+                nRes = 30;
+            else if (nRes == 1)
+                nRes = 60;
+            else if (nRes == 2)
+                nRes = 90;
+            else if (nRes == 3)
                 nRes = 120;
 
             _vm.SelectedSnoozeLength = _vm.SnoozeLength_ItemsCollection.Find(x => (x.SnoozeLength == nRes));
@@ -351,7 +364,7 @@ namespace DDPM.UI.Module.WebCameraPresenceDetection
         {            
             if (_vm.IsChecked_Snooze)
             {
-                _countdown = DdpmCommonHelper.DeviceManagerSA!.GetSnoozeLength(_vm.CurrentDeviceInfo!.ID.ToString()).Result;             
+                //_countdown = DdpmCommonHelper.DeviceManagerSA!.GetSnoozeLength(_vm.CurrentDeviceInfo!.ID.ToString()).Result;             
             }         
         }
 

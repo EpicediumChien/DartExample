@@ -11,6 +11,9 @@ using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
 using VcpCore.Common;
+using Dell.Client.Framework.UX.WPF.ResourceManager;
+using DDPM.SA.Common.Settings;
+using Windows.System;
 
 namespace DDPM.UI.Module.Kvm.Tests
 {
@@ -32,9 +35,12 @@ namespace DDPM.UI.Module.Kvm.Tests
             {
                 new System.Windows.Application();
             }
+            ResourceManager res = new ResourceManager();
             var resourceDictionary = new ResourceDictionary();
             resourceDictionary.Source = new Uri("pack://application:,,,/DDPM.UI.Common;component/ModuleStyle.xaml");
             System.Windows.Application.Current.Resources.MergedDictionaries.Add(resourceDictionary);
+
+            kvmViewModel = new KvmViewModel();
             deviceManagerMock = new Mock<IDeviceManagerSA>();
             deviceManagerSA = deviceManagerMock.Object;
             DdpmCommonHelper.DeviceManagerSA = deviceManagerSA;
@@ -42,6 +48,14 @@ namespace DDPM.UI.Module.Kvm.Tests
             moduleOwner = moduleOwnerMock!.Object;
             DdpmCommonHelper.ModuleOwner = moduleOwner;
             moduleOwnerMock.Setup(x => x.SelectedHomeDevice).Returns(new HomeDevice());
+            DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo = new VcpCore.Common.MonitorInfo();
+            DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo.CapabilityDic = new Dictionary<string, List<string>>() { { "AA", new List<string>() }, { "EE", new List<string>() } };
+            deviceManagerMock.Setup(x => x.ReadCurrentHotkey(It.IsAny<MonitorInfo>())).Returns(Task.FromResult(new ValueTuple<HotkeySettings, List<HotkeyData>>(new HotkeySettings() { HotkeyInfo = new List<HotkeyInfo>() { new HotkeyInfo() { Hotkey = new List<VirtualKey>() { VirtualKey.Q, VirtualKey.M } } } }, new List<HotkeyData>())));
+            KvmModule kvmModule = new KvmModule(moduleOwner);
+            kvmViewModel.KvmModule = kvmModule;
+            kvmViewModel.KvmModule.SelectedHomeDevice = new HomeDevice();
+            kvmViewModel.KvmModule.SelectedHomeDevice.MonitorInfo = new VcpCore.Common.MonitorInfo();
+
             inputSourceList = new InputSourceList();
             privateObject = new PrivateObject(inputSourceList);
             kvmViewModel = new KvmViewModel();

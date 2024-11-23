@@ -87,8 +87,8 @@ namespace DDPM.UI.Common.EAEM
         {
             get
             {
-                if (String.IsNullOrEmpty(_pxpInfo.Description))
-                    return $"PBP Capability Code={PbpCapabilityCode:X02}h";
+                //if (String.IsNullOrEmpty(_pxpInfo.Description))
+                //    return $"PBP Capability Code={PbpCapabilityCode:X02}h";
                 return _pxpInfo.Description;
             }
             set

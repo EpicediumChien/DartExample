@@ -76,8 +76,8 @@ namespace DDPM.UI.Common.EAEM
         {
             get
             {
-                if (String.IsNullOrEmpty(_pxpInfo.Description))
-                    return $"Full screen";
+                //if (String.IsNullOrEmpty(_pxpInfo.Description))
+                //    return $"Full screen";
                 return _pxpInfo.Description;
             }
             set

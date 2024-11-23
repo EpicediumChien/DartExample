@@ -506,7 +506,8 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             moduleGroup = new ModuleGroup()
             {
                 GroupName = CameraControl,
-                GroupIcon = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Images/CameraControl.png", "DDPM.UI.Resources")
+                GroupIcon = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Images/CameraControl.png", "DDPM.UI.Resources"),
+                GroupIconCanvas = DdpmCommonHelper.CanvasIconCreator(VbarIcon.WebcamControl)
             };
             moduleGroup.AddHeader(CameraControl, new WebCameraSettingsModule(_vm!));
             groups.Add(moduleGroup);
@@ -514,7 +515,8 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             moduleGroup = new ModuleGroup()
             {
                 GroupName = ColorandImage,
-                GroupIcon = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Images/CameraColorImage.png", "DDPM.UI.Resources")
+                GroupIcon = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Images/CameraColorImage.png", "DDPM.UI.Resources"),
+                GroupIconCanvas = DdpmCommonHelper.CanvasIconCreator(VbarIcon.WebcamColorImg)
             };
             moduleGroup.AddHeader(ColorandImage, new WebCameraColorImageModule(_vm!));
             groups.Add(moduleGroup);
@@ -530,7 +532,8 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                 moduleGroup = new ModuleGroup()
                 {
                     GroupName = PresenceDetection,
-                    GroupIcon = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Images/CameraPresenceDetection.png", "DDPM.UI.Resources")
+                    GroupIcon = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Images/CameraPresenceDetection.png", "DDPM.UI.Resources"),
+                    GroupIconCanvas = DdpmCommonHelper.CanvasIconCreator(VbarIcon.WebcamDetection)
                 };
                 moduleGroup.AddHeader(PresenceDetection, new WebCameraPresenceDetectionModule(_vm!));
                 groups.Add(moduleGroup);
@@ -539,7 +542,8 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             moduleGroup = new ModuleGroup()
             {
                 GroupName = Capture,
-                GroupIcon = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Images/CameraCapture.png", "DDPM.UI.Resources")
+                GroupIcon = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Images/CameraCapture.png", "DDPM.UI.Resources"),
+                GroupIconCanvas = DdpmCommonHelper.CanvasIconCreator(VbarIcon.WebcamCapture)
             };
             moduleGroup.AddHeader(Capture, new WebCameraCaptureModule(_vm!));
             groups.Add(moduleGroup);

@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:uiCommon="clr-namespace:DDPM.UI.Common"
              xmlns:local="clr-namespace:DDPM.UI.Common.UserControls"
              mc:Ignorable="d"
              d:DesignHeight="68" d:DesignWidth="88"
@@ -39,6 +40,8 @@
             <SolidColorBrush x:Key="ToolipBdColor" Color="#FF293B4D" />
             <SolidColorBrush x:Key="ToolipTextColor" Color="#FFF5F6F7" />
 
+            <uiCommon:StringEmptyToVisibilityConverter x:Key="StringEmptyToVisibilityConverter" />
+            
             <!-- Border Style of Normal State -->
             <Style x:Key="SplitItemBorder_Normal" TargetType="Border">
                 <Setter Property="BorderBrush" Value="{StaticResource SplitItem_NormalBdColor}" />
@@ -82,7 +85,7 @@
 
     <Grid Background="{StaticResource FakeTransparent}" MouseLeftButtonDown="rootGrid_MouseLeftButtonDown">
         <Grid.ToolTip>
-            <ToolTip>
+            <ToolTip Visibility="{Binding ToolTipText, Converter={StaticResource StringEmptyToVisibilityConverter}}">
                 <Border Background="{StaticResource ToolipBkColor}"
                         BorderBrush="{StaticResource ToolipBdColor}"
                         CornerRadius="4" Padding="8,12">
@@ -169,8 +172,9 @@
                 </Border>
             </Grid>
 
+            <!-- It seems unused, Robert_Lin, 2024-11-21-->
             <Border.ToolTip>
-                <ToolTip MaxWidth="200">
+                <ToolTip MaxWidth="200" Visibility="{Binding ToolTipText, Converter={StaticResource StringEmptyToVisibilityConverter}}">
                     <Border Background="{StaticResource ToolipBkColor}"
                             BorderBrush="{StaticResource ToolipBdColor}"
                             CornerRadius="4" Padding="8,12">
@@ -212,7 +216,7 @@
                 </Style>
             </Border.Style>
             <Border.ToolTip>
-                <ToolTip MaxWidth="200">
+                <ToolTip MaxWidth="200" Visibility="{Binding ToolTipText, Converter={StaticResource StringEmptyToVisibilityConverter}}">
                     <Border Background="{StaticResource ToolipBkColor}"
                             BorderBrush="{StaticResource ToolipBdColor}"
                             CornerRadius="4" Padding="8,12">

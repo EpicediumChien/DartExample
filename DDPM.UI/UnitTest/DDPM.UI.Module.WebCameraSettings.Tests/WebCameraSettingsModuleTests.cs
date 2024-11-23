@@ -8,6 +8,8 @@ using Dell.Client.Framework.UX.WPF;
 using Moq;
 using NGA.UnitTest.PrivateObject;
 using System.Windows.Controls;
+using Dell.Client.Framework.UX.WPF.ResourceManager;
+using System.Windows;
 
 namespace DDPM.UI.Module.WebCameraSettings.Tests
 {
@@ -27,6 +29,14 @@ namespace DDPM.UI.Module.WebCameraSettings.Tests
         [SetUp]
         public void Setup()
         {
+            if (System.Windows.Application.Current == null)
+            {
+                new System.Windows.Application();
+            }
+            ResourceManager res = new ResourceManager();
+            var resourceDictionary = new ResourceDictionary();
+            resourceDictionary.Source = new Uri("pack://application:,,,/DDPM.UI.Common;component/ModuleStyle.xaml");
+            System.Windows.Application.Current.Resources.MergedDictionaries.Add(resourceDictionary);
             consoleMock = new Mock<IConsole>();
             console = consoleMock.Object;
             logMock = new Mock<ILog>();

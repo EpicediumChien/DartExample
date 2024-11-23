@@ -806,7 +806,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
         public Task<bool> isScreenPartition(MonitorInfo monitorInfo)
         {
             ObjGetVCP objGetVCP = GetVCPCapability(monitorInfo, 0xF2).Result;
-            if (objGetVCP != null && objGetVCP.result) 
+            if (objGetVCP != null && objGetVCP.result)
             {
                 if ((uint)objGetVCP.value != 0)
                 {
@@ -2228,7 +2228,8 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                 _logs.DebugMsg($"[DisplayMangerPlugin] SetOSDOrientation go");
                 SetOSDOrientation(monitorInfos, OrientationString[(int)orientation + 1]).Wait();
                 isSWSetOrientation = true;
-                ret = _DisplayPropertiesPlugin.SetOrientation(monitorInfos.DisplayName, orientation).Result;
+                ret = _DisplayPropertiesPlugin.SetOrientation_New(monitorInfos.DisplayName, orientation).Result;
+                //ret = _DisplayPropertiesPlugin.SetOrientation(monitorInfos.DisplayName, orientation).Result;
                 isSWSetOrientation = false;
             }
             _logs.DebugMsg($"[DisplayMangerPlugin] SetOrientation done");

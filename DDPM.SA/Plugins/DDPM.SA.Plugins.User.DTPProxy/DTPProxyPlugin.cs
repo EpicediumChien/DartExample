@@ -3619,6 +3619,81 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
         }
 
+        public async Task<string> GetPairedHostName1Async(string guid)
+        {
+            try
+            {
+                if (!await GetItemIDAsync("Headset", guid))
+                    return null;
+
+                var commodity = await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo);
+                if (commodity is ICommodity)
+                {
+                    var value = GetPropertyValue(_headsetInterfaceType, commodity, "PairedHostName1");
+                    writelog($"[Headset] GetPairedHostName1Async succeeded for {guid}");
+                    return (string)value;
+                }
+
+                writelog($"[Headset] GetPairedHostName1Async failed: Could not retrieve commodity interface for {guid}");
+                return null;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[Headset] GetPairedHostName1Async failed for {guid} - Exception: {ex.Message}");
+                return null;
+            }
+        }
+
+        public async Task<string> GetPairedHostName2Async(string guid)
+        {
+            try
+            {
+                if (!await GetItemIDAsync("Headset", guid))
+                    return null;
+
+                var commodity = await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo);
+                if (commodity is ICommodity)
+                {
+                    var value = GetPropertyValue(_headsetInterfaceType, commodity, "PairedHostName2");
+                    writelog($"[Headset] GetPairedHostName2Async succeeded for {guid}");
+                    return (string)value;
+                }
+
+                writelog($"[Headset] GetPairedHostName2Async failed: Could not retrieve commodity interface for {guid}");
+                return null;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[Headset] GetPairedHostName2Async failed for {guid} - Exception: {ex.Message}");
+                return null;
+            }
+        }
+
+        public async Task<string> GetPairedHostName3Async(string guid)
+        {
+            try
+            {
+                if (!await GetItemIDAsync("Headset", guid))
+                    return null;
+
+                var commodity = await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo);
+                if (commodity is ICommodity)
+                {
+                    var value = GetPropertyValue(_headsetInterfaceType, commodity, "PairedHostName3");
+                    writelog($"[Headset] GetPairedHostName3Async succeeded for {guid}");
+                    return (string)value;
+                }
+
+                writelog($"[Headset] GetPairedHostName3Async failed: Could not retrieve commodity interface for {guid}");
+                return null;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[Headset] GetPairedHostName3Async failed for {guid} - Exception: {ex.Message}");
+                return null;
+            }
+        }
+
         public async Task<int> GetMaxPairingSlotsAsync(string guid)
         {
             try
@@ -5637,6 +5712,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                     writelog($"Find IWebcamCommodity not find  time: {DateTime.Now.ToString("hh.mm.ss.ffffff") + " Message: " + e.Message}");
                 }
             }
+            
 
             var webcams = await GetWebcamDevsCountAsync();
             if (webcams > 0)
@@ -5707,6 +5783,64 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                     }
                 }
             }
+
+            //var webcams = await GetWebcamDeviceItemsEx();
+            //if (webcams != null && webcams.Count > 0)
+            //{
+                //writelog($"Webcam instance count: {webcams.Count}");
+
+                //for (int i = 0; i < webcams.Count; i++)
+                //{
+                    //string webID = $"DellPeripheral.Webcam.{i}";
+
+                    //_comdity = await _commSdk.GetCommodityAsync<IWebcamCommodity>(new ItemId($"DellPeripheral.Webcam.0"), CancellationToken.None);
+                    //if (_comdity is Dell.TechHub.Commodity.Peripheral.IWebcamCommodity _Webcamcom)
+                    //{
+                        //try
+                        //{
+                            //_Webcamcom.ProfileManagerAdded += Webcam_ProfileManagerAdded;
+                            //_Webcamcom.IsMicEnumerationOnChanged += Webcam_IsMicEnumerationOnChanged;
+                            //_Webcamcom.CurrentSelectedProfileChanged += Webcam_CurrentSelectedProfileChanged;
+                            //_Webcamcom.CustomProfileAdded += Webcam_CustomProfileAdded;
+                            //_Webcamcom.CustomProfileRemoved += Webcam_CustomProfileRemoved;
+
+                            //_Webcamcom.PriorityChanged += Webcam_PriorityChanged;
+                            //_Webcamcom.IsFocusOnChanged += Webcam_IsFocusOnChanged;
+                            //_Webcamcom.FocusChanged += Webcam_FocusChanged;
+                            //_Webcamcom.PanChanged += Webcam_PanChanged;
+                            //_Webcamcom.TiltChanged += Webcam_TiltChanged;
+                            //_Webcamcom.ZoomChanged += Webcam_ZoomChanged;
+                            //_Webcamcom.BrightnessChanged += Webcam_BrightnessChanged;
+                            //_Webcamcom.ContrastChanged += Webcam_ContrastChanged;
+                            //_Webcamcom.AntiFlickerChanged += Webcam_AntiFlickerChanged;
+                            //_Webcamcom.SaturationChanged += Webcam_SaturationChanged;
+                            //_Webcamcom.SharpnessChanged += Webcam_SharpnessChanged;
+                            //_Webcamcom.IsAutoWhiteBalanceOnChanged += Webcam_IsAutoWhiteBalanceOnChanged;
+                            //_Webcamcom.AutoWhiteBalanceChanged += Webcam_AutoWhiteBalanceChanged;
+                            //_Webcamcom.IsAutoFramingTransitionOnChanged += Webcam_IsAutoFramingTransitionOnChanged;
+                            //_Webcamcom.IsAutoFramingOnChanged += Webcam_IsAutoFramingOnChanged;
+                            //_Webcamcom.AutoFramingSensitivityChanged += Webcam_AutoFramingSensitivityChanged;
+                            //_Webcamcom.AutoFramingFrameSizeChanged += Webcam_AutoFramingFrameSizeChanged;
+                            //_Webcamcom.FieldOfViewChanged += Webcam_FieldOfViewChanged;
+                            //_Webcamcom.IsHDROnChanged += Webcam_IsHDROnChanged;
+                            //_Webcamcom.SerialNumberChanged += Webcam_SerialNumberChanged;
+                            //_Webcamcom.IsZoomMeetingActiveChanged += Webcam_IsZoomMeetingActiveChanged;
+                            //_Webcamcom.IsZoomScreenShareActiveChanged += Webcam_IsZoomScreenShareActiveChanged;
+
+                            //_Webcamcom.WALSnoozeTimeLeftInSecondsChanged += _webcamcom_WALSnoozeTimeLeftInSecondsChanged;
+                            //_Webcamcom.Esi_IsWALLockCountdownStartedChanged += _webcamcom_Esi_IsWALLockCountdownStartedChanged;
+                            //_Webcamcom.Esi_IsCameraSensorCoveredChanged += _webcamcom_Esi_IsCameraSensorCoveredChanged;
+                            //_Webcamcom.Esi_WALLockCountdownChanged += _webcamcom_Esi_WALLockCountdownChanged;
+
+                            //writelog($"Webcam{i} Commodity event registered");
+                        //}
+                        //catch (Exception e)
+                        //{
+                           // writelog($"IWebcamCommodity{i} not find  time: {DateTime.Now.ToString("hh.mm.ss.ffffff") + " Message: " + e.Message}");
+                        //}
+                    //}
+                //}
+            //}
         }
 
         private async Task<int> GetWebcamDevsCountAsync()

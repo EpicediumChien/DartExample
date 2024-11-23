@@ -235,6 +235,13 @@ namespace DDPM.SA.Common
         Task<int> GetBatteryLevelAsync(string Guid);
         Task<string> GetDeviceBatteryStatusAsync(string Guid);
         Task<string> GetPairingStatusAsync(string Guid);
+
+        Task<string> GetPairedHostName1Async(string Guid);
+
+        Task<string> GetPairedHostName2Async(string Guid);
+
+        Task<string> GetPairedHostName3Async(string Guid);
+
         Task<int> GetMaxPairingSlotsAsync(string Guid);
         Task<int> GetPairedDeviceCountAsync(string Guid);
         Task<int> GetTotalNumberOfPairedHostNameAsync(string Guid);

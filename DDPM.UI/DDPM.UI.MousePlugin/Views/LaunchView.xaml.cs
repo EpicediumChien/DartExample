@@ -193,7 +193,8 @@ namespace DDPM.UI.Plugin.MousePlugin
             moduleGroup = new ModuleGroup()
             {
                 GroupName = Strings.MouseSettingsCaption,
-                GroupIcon = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Vbar.Mouse.Cursor.png")
+                GroupIcon = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Vbar.Mouse.Cursor.png"),
+                GroupIconCanvas = DdpmCommonHelper.CanvasIconCreator(VbarIcon.MouseSettings)
             };
             moduleGroup.AddHeader(Strings.MouseSettingsCaption, new MouseSettingsModule(_vm!));
             groups.Add(moduleGroup);
@@ -203,7 +204,8 @@ namespace DDPM.UI.Plugin.MousePlugin
                 moduleGroup = new ModuleGroup()
                 {
                     GroupName = Strings.ButtonCustomizationCaption,
-                    GroupIcon = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Vbar.Mouse.Mouse.png")
+                    GroupIcon = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Vbar.Mouse.Mouse.png"),
+                    GroupIconCanvas = DdpmCommonHelper.CanvasIconCreator(VbarIcon.MouseButton)
                 };
                 moduleGroup.AddHeader(Strings.ButtonCustomizationCaption, new ButtonSettingsModule(_vm!));
                 groups.Add(moduleGroup);
