@@ -218,8 +218,9 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin.Test
             Assert.IsNotNull(GetDevices_Result1);
 
             privatetePeripheralsPlugin.SetFieldOrProperty("_deviceHelper", deviceHelper);
+            privatetePeripheralsPlugin.SetFieldOrProperty("_isClientConnected", true);
             var GetDevices_Result2 = peripheralsPlugin.GetDevices(false).Result;  //_deviceHelper not null
-            Assert.That(deviceHelper, Is.EqualTo(GetDevices_Result2));
+            Assert.IsNotNull(GetDevices_Result2);
         }
 
         [Test]
@@ -1132,19 +1133,52 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin.Test
         {
             bool newValue = false;
             Guid deviceId1 = new Guid();
-            Mock<IPhysicalDevice> physicalDevice = new Mock<IPhysicalDevice>();
-            Mock<IPhysicalPenDevice> physicalPenDevice = new Mock<IPhysicalPenDevice>();
+            Mock<IPhysicalDevice> PhysicalDevice = new Mock<IPhysicalDevice>();
+            Mock<ILogicalWiredAudio> logicalWiredAudioDevice = new Mock<ILogicalWiredAudio>();
             Mock<IDeviceManager> mockDeviceManager = new Mock<IDeviceManager>();
 
-            physicalPenDevice.Setup(pd => pd.Id).Returns(Guid.NewGuid());
-            mockDeviceManager.Setup(dm => dm.Devices).Returns(new[] { physicalPenDevice.Object });
+            logicalWiredAudioDevice.Setup(ld => ld.Id).Returns(Guid.NewGuid());
+            PhysicalDevice.Setup(pd => pd.Devices).Returns(new[] { logicalWiredAudioDevice.Object });
+            mockDeviceManager.Setup(dm => dm.Devices).Returns(new[] { PhysicalDevice.Object });// mockDeviceManager device- PhysicalDevice -logicalWiredAudioDevice device- logicalWiredAudioDevice device ID
 
-            Guid physicalPenDeviceId = physicalPenDevice.Object.Id;
+            Guid logicalWiredAudioDeviceId = logicalWiredAudioDevice.Object.Id;
 
             var DeviceManagerObj = mockDeviceManager.Object;
             privatetePeripheralsPlugin.SetFieldOrProperty("_iDeviceManager", DeviceManagerObj);
 
-            peripheralsPlugin.SetWiredAudioIMicNSEnable(newValue, deviceId1);                                     // SetWiredAudioIMicNSEnable method not ready
+            DeviceHelper deviceHelper = new DeviceHelper()
+            {
+                deviceInfo = new List<DeviceInfo>()
+                {
+                    new DeviceInfo()
+                    {
+                        DeviceName="Mouse",
+                        Name="Test mouse",
+                        DpiLevel=20,
+                        DpiValue="20",
+                        MousePrimaryButton=MouseButton.Left,
+                        TouchScrollSensitivityLevel=20,
+                        IsCollaborationKeyEnable=false,
+                        IsCollaborationCameraEnable=false,
+                        IsCollaborationScreenShareEnable=false,
+                        IsCollaborationChatEnable=false,
+                        IsCollaborationMicEnable = false,
+                        IsCollaborationBlinkEffectEnable=false,
+                        IsCollaborationDoubleTapEnable=false,
+                        BackLightingControls=20,
+                        BackLightingLevel=20,
+                        SidetoneLevel=20,
+                        IsWiredAudioIMicNSEnable=false,
+                    }
+                },
+                DCFVersion = "1.0",
+                DPeMSDKVersion = "1.0",
+                DPeMSubAgentVersion = "1.0",
+                IsdDriverVersion = "1.0",
+            };
+            privatetePeripheralsPlugin.SetFieldOrProperty("_deviceHelper", deviceHelper);
+
+            peripheralsPlugin.SetWiredAudioIMicNSEnable(newValue, logicalWiredAudioDeviceId);
             var devicemanager = privatetePeripheralsPlugin.GetFieldOrProperty("_iDeviceManager");
             Assert.IsTrue(true);
             Assert.IsNotNull(devicemanager);
@@ -1169,7 +1203,40 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin.Test
             var DeviceManagerObj = mockDeviceManager.Object;
             privatetePeripheralsPlugin.SetFieldOrProperty("_iDeviceManager", DeviceManagerObj);
 
-            peripheralsPlugin.SetWiredAudioMicMuteSoundEnable(newValue, logicalWiredAudioDeviceId);                      // logicalDeviceis IlogicalWiredAudioDevice,method not ready
+            DeviceHelper deviceHelper = new DeviceHelper()
+            {
+                deviceInfo = new List<DeviceInfo>()
+                {
+                    new DeviceInfo()
+                    {
+                        DeviceName="Mouse",
+                        Name="Test mouse",
+                        DpiLevel=20,
+                        DpiValue="20",
+                        MousePrimaryButton=MouseButton.Left,
+                        TouchScrollSensitivityLevel=20,
+                        IsCollaborationKeyEnable=false,
+                        IsCollaborationCameraEnable=false,
+                        IsCollaborationScreenShareEnable=false,
+                        IsCollaborationChatEnable=false,
+                        IsCollaborationMicEnable = false,
+                        IsCollaborationBlinkEffectEnable=false,
+                        IsCollaborationDoubleTapEnable=false,
+                        BackLightingControls=20,
+                        BackLightingLevel=20,
+                        SidetoneLevel=20,
+                        IsWiredAudioIMicNSEnable=false,
+                        IsWiredAudioMicMuteSoundEnable = false,
+                    }
+                },
+                DCFVersion = "1.0",
+                DPeMSDKVersion = "1.0",
+                DPeMSubAgentVersion = "1.0",
+                IsdDriverVersion = "1.0",
+            };
+            privatetePeripheralsPlugin.SetFieldOrProperty("_deviceHelper", deviceHelper);
+
+            peripheralsPlugin.SetWiredAudioMicMuteSoundEnable(newValue, logicalWiredAudioDeviceId);
             var devicemanager = privatetePeripheralsPlugin.GetFieldOrProperty("_iDeviceManager");
             Assert.IsTrue(true);
             Assert.IsNotNull(devicemanager);

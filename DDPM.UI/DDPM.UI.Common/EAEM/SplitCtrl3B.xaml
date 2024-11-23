@@ -25,10 +25,15 @@
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
+            <Grid.Resources>
+                <Style TargetType="Border">
+                    <Setter Property="Background" Value="{DynamicResource FakeTransparent}"/>
+                </Style>
+            </Grid.Resources>
 
-            <Border Name="cell_3b1" Grid.Column="0" BorderBrush="{StaticResource BorderColor_SplitNormal}" />
-            <Border Name="cell_3b2" Grid.Column="2" BorderBrush="{StaticResource BorderColor_SplitNormal}" />
-            <Border Name="cell_3b3" Grid.Column="4" BorderBrush="{StaticResource BorderColor_SplitNormal}" />
+            <Border Name="cell_3b1" Grid.Column="0" BorderBrush="{DynamicResource SplitSplitter_Icon}" />
+            <Border Name="cell_3b2" Grid.Column="2" BorderBrush="{DynamicResource SplitSplitter_Icon}" />
+            <Border Name="cell_3b3" Grid.Column="4" BorderBrush="{DynamicResource SplitSplitter_Icon}" />
 
             <Rectangle Name="v1" Grid.Column="1"
                        Width="{StaticResource ThickSplitter}" Style="{StaticResource RectangleStyle_Splitter}" />

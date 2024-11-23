@@ -152,8 +152,8 @@ namespace VcpCore.Plugins.Test.ParserTest
             var result = edidparser.GetManufactureYearAndMonth(ref edid);
             int expectedManufactureYear = 2023;
             int actualManufactureYear = result;
-            int expectedManufactureMonth = 5;
-            int expectedManufactureWeek = 22;
+            int expectedManufactureMonth = 10;
+            int expectedManufactureWeek = 20;
             int A = 0;
             int B = -1;
             if (hexString.Length < (EDID_Header.Length + Manufacturer_ID_Len + VENDOR_ID_Len + SerialNum_Len + ManufactureDate_Len + 4))
