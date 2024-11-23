@@ -9114,6 +9114,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
             //register hotkey
             RegistHotkey(false);
+            //
+            _disDevHelper?.UpdateDDPMPluginInstances(_SettingsPlugin, this, _DisplayManagerPlugin);
         }
 
         private void RegistHotkey(bool unRegisterAll)
