@@ -11081,110 +11081,59 @@ namespace DDPM.CLI.Plugins.Display
         private async Task<(int code, string result)> DiagnosticReportv2(IDeviceManagerSA devMgr, CommandLineInput commandLineInput)
         {
             string output = string.Empty;
-            string filepath = @$"C:\Temp\";
+            //string filepath = @$"C:\Temp\";
             string filepath_ = @$"C:\Temp\Log";
             string file = @$"C:\Temp\Log.zip";
             if (commandLineInput.Options.Count == 1)
             {
-                filepath = commandLineInput.Options[0].Option_Value;
+                //filepath = commandLineInput.Options[0].Option_Value;
                 filepath_ = @$"{commandLineInput.Options[0].Option_Value}\Temp";
-                file = @$"{commandLineInput.Options[0].Option_Value}\Temp.zip";
+                file = @$"{commandLineInput.Options[0].Option_Value}\Log.zip";
             }
 
             string folderinfo = string.Empty;
             string symblinkinfo = string.Empty;
-
-            //if (_AllInfoMonitors == null)
-            //    _AllInfoMonitors = await devMgr.GetMonitors();
-
-            DDPMFileSecurity.CheckFold(filepath, out folderinfo, out symblinkinfo);
-            if (!Directory.Exists(filepath))
-            {
-                Directory.CreateDirectory(filepath);
-            }
-
             var result = "PASS";
             var message = "N/A";
 
-            devMgr.SaveLogFile(filepath_);
+            if (!Directory.Exists(filepath_))
+            {
+                Directory.CreateDirectory(filepath_);
+            }
+
+            CLI_RESPONSE cli_Response = new CLI_RESPONSE();
+            cli_Response.Command = commandLineInput.Command;
+            cli_Response.TargetFeature = commandLineInput.TargetFeature;
+
+            //[Dean 1123] SaveLogFile function has symlink check function already
+            //if (!DDPMFileSecurity.CheckFold(filepath_, out folderinfo, out symblinkinfo))
+            //{
+            //    result = "FAIL";
+            //    message = "Target folder has symlink.";
+            //    cli_Response.Result = result;
+            //    cli_Response.Message = message;
+            //    output += "\n" + JsonConvert.SerializeObject(cli_Response, Formatting.Indented);
+            //    return ((int)CLI_ExitCode.Diagnostic_Report_fail, output);
+            //}
+
+            if (!devMgr.SaveLogFile(filepath_).Result)
+            {
+                cli_Response.Result = "FAIL";
+                cli_Response.Message = "Collect files to save report failed.";
+                output += "\n" + JsonConvert.SerializeObject(cli_Response, Formatting.Indented);
+                return ((int)CLI_ExitCode.Diagnostic_Report_fail, output);
+            }
 
             if (!File.Exists(file))
             {
                 result = "FAIL";
                 message = "file is not exist.";
+                cli_Response.Result = result;
+                cli_Response.Message = message;
+                output += "\n" + JsonConvert.SerializeObject(cli_Response, Formatting.Indented);
+                return ((int)CLI_ExitCode.Diagnostic_Report_fail, output);
             }
 
-            //if (commandLineInput.DeviceIndex.Count == 0 && commandLineInput.ServiceTag.Count == 0 && commandLineInput.Model.Count == 0)
-            //{
-            //    foreach (MonitorInfo monitor in _AllInfoMonitors)
-            //    {
-            //        CLI_RESPONSE cli_Response = new CLI_RESPONSE();
-            //        cli_Response.Command = commandLineInput.Command;
-            //        cli_Response.TargetFeature = commandLineInput.TargetFeature;
-            //        cli_Response.Model = monitor.modelName;
-            //        cli_Response.SerialNumber = monitor.edid.SerialNumber;
-            //        cli_Response.Index = change_0base_to_1base((monitor.Index).ToString());
-            //        cli_Response.ServiceTag = monitor.edid.ServiceTag;
-            //        cli_Response.Result = result;
-            //        cli_Response.Message = message;
-            //        output += "\n" + JsonConvert.SerializeObject(cli_Response, Formatting.Indented);
-            //    }
-            //}
-            //else
-            //{
-            //    foreach (string idx in commandLineInput.DeviceIndex)
-            //    {
-            //        MonitorInfo monitor = _AllInfoMonitors[Convert.ToInt32(idx)];
-            //        CLI_RESPONSE cli_Response = new CLI_RESPONSE();
-            //        cli_Response.Command = commandLineInput.Command;
-            //        cli_Response.TargetFeature = commandLineInput.TargetFeature;
-            //        cli_Response.Model = monitor.modelName;
-            //        cli_Response.SerialNumber = monitor.edid.SerialNumber;
-            //        cli_Response.Index = change_0base_to_1base(idx);
-            //        cli_Response.ServiceTag = monitor.edid.ServiceTag;
-            //        cli_Response.Result = result;
-            //        cli_Response.Message = message;
-            //        output += "\n" + JsonConvert.SerializeObject(cli_Response, Formatting.Indented);
-            //    }
-            //    foreach (string tag in commandLineInput.ServiceTag)
-            //    {
-            //        var tmp = _AllInfoMonitors.FindAll(x => x.edid.ServiceTag.ToUpper().Equals(tag.ToUpper()));
-            //        foreach (MonitorInfo monitor in tmp)
-            //        {
-            //            CLI_RESPONSE cli_Response = new CLI_RESPONSE();
-            //            cli_Response.Command = commandLineInput.Command;
-            //            cli_Response.TargetFeature = commandLineInput.TargetFeature;
-            //            cli_Response.Model = monitor.modelName;
-            //            cli_Response.SerialNumber = monitor.edid.SerialNumber;
-            //            cli_Response.Index = change_0base_to_1base((monitor.Index).ToString());
-            //            cli_Response.ServiceTag = monitor.edid.ServiceTag;
-            //            cli_Response.Result = result;
-            //            cli_Response.Message = message;
-            //            output += "\n" + JsonConvert.SerializeObject(cli_Response, Formatting.Indented);
-            //        }
-            //    }
-            //    foreach (string modelName in commandLineInput.Model)
-            //    {
-            //        var tmp = _AllInfoMonitors.FindAll(x => x.edid.ModelName.ToUpper().Equals(modelName.ToUpper()));
-            //        foreach (MonitorInfo monitor in tmp)
-            //        {
-            //            CLI_RESPONSE cli_Response = new CLI_RESPONSE();
-            //            cli_Response.Command = commandLineInput.Command;
-            //            cli_Response.TargetFeature = commandLineInput.TargetFeature;
-            //            cli_Response.Model = monitor.edid.ModelName;
-            //            cli_Response.SerialNumber = monitor.edid.SerialNumber;
-            //            cli_Response.Index = change_0base_to_1base((monitor.Index).ToString());
-            //            cli_Response.ServiceTag = monitor.edid.ServiceTag;
-            //            cli_Response.Result = result;
-            //            cli_Response.Message = message;
-            //            output += "\n" + JsonConvert.SerializeObject(cli_Response, Formatting.Indented);
-            //        }
-            //    }
-            //}
-            
-            CLI_RESPONSE cli_Response = new CLI_RESPONSE();
-            cli_Response.Command = commandLineInput.Command;
-            cli_Response.TargetFeature = commandLineInput.TargetFeature;
             cli_Response.Result = result;
             cli_Response.Message = message;
             output += "\n" + JsonConvert.SerializeObject(cli_Response, Formatting.Indented);
