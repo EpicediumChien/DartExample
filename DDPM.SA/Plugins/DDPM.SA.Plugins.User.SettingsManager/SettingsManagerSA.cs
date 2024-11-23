@@ -25,6 +25,7 @@ using Windows.Web.Http;
 using DDPM.SA.Obfuscation;
 using System.Security.Cryptography;
 using System.Text;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace DDPM.SA.Plugins.User.SettingsManager
 {
@@ -470,12 +471,18 @@ namespace DDPM.SA.Plugins.User.SettingsManager
             _export_path = folder_appdatapath_export;
             string folderInfo = string.Empty, info = string.Empty;
             try
-            {
-                DDPMFileSecurity.CheckFold(_display_path, out folderInfo, out info);
+            {                
                 if (!Directory.Exists(_display_path))
                 {
                     DirectoryInfo di = System.IO.Directory.CreateDirectory(_display_path);
                     WriteLog($"create folder {_display_path} success");
+                }
+                if(!DDPMFileSecurity.CheckFold(_display_path, out folderInfo, out info))
+                {
+                    WriteLog($"CreateDirectory path check result is invalid: {_display_path}, {info}.");
+                    _AllMonitorSettings = null;
+                    binit = false;
+                    return Task.FromResult(monitorSettingList);
                 }
             }
             catch
@@ -487,11 +494,17 @@ namespace DDPM.SA.Plugins.User.SettingsManager
             }
             try
             {
-                DDPMFileSecurity.CheckFold(_export_path, out folderInfo, out info);
                 if (!Directory.Exists(_export_path))
                 {
                     DirectoryInfo di = System.IO.Directory.CreateDirectory(_export_path);
                     WriteLog($"create folder {_export_path} success");
+                }
+                if (!DDPMFileSecurity.CheckFold(_export_path, out folderInfo, out info))
+                {
+                    WriteLog($"CreateDirectory path check result is invalid: {_export_path}, {info}.");
+                    _AllMonitorSettings = null;
+                    binit = false;
+                    return Task.FromResult(monitorSettingList);
                 }
             }
             catch
@@ -2105,9 +2118,14 @@ namespace DDPM.SA.Plugins.User.SettingsManager
             string folderInfo = string.Empty, info = string.Empty;
             try
             {
-                DDPMFileSecurity.CheckFold(folder_appdatapath_ddpm, out folderInfo, out info);
                 DirectoryInfo di = System.IO.Directory.CreateDirectory(folder_appdatapath_ddpm);
                 WriteLog($"create folder {folder_appdatapath_ddpm} success");
+                if (!DDPMFileSecurity.CheckFold(folder_appdatapath_ddpm, out folderInfo, out info))
+                {
+                    WriteLog($"CreateDirectory path check result is invalid: {folder_appdatapath_ddpm}, {info}.");
+                    _settings = null;
+                    return null;
+                }
             }
             catch
             {
@@ -2268,11 +2286,12 @@ namespace DDPM.SA.Plugins.User.SettingsManager
                 return null;
             }
 
-            if (!DDPMFileSecurity.SRemoveSymbolicFolder(fileFolder, out info))
-            {
-                WriteLog($"{nameof(InitDDPMUserSettings_Common)} {info}");
-                return null;
-            }
+            //[Dean 1123] merge the check into DDPMFileSecurity.IsFolderPathValid and don't remove symlink to avoid attack
+            //if (!DDPMFileSecurity.SRemoveSymbolicFolder(fileFolder, out info))
+            //{
+            //    WriteLog($"{nameof(InitDDPMUserSettings_Common)} {info}");
+            //    return null;
+            //}
 
             //WriteLog($"config path is {ConfigPath}.");
             object new_obj = null;
