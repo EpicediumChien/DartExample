@@ -96,7 +96,7 @@ namespace DDPM.SA.Common.Security
                 return false;
             }
 
-            if (!Settings.DDPMFileSecurity.IsFilePathValid(filePathFileName, opt, out info))
+            if (!Settings.DDPMFileSecurity.IsFilePathValid(filePathFileName, out info, opt))
             {
 #if DEBUG 
                 Console.WriteLine(info);
@@ -104,13 +104,14 @@ namespace DDPM.SA.Common.Security
                 return false;
             }
 
-            if (Settings.DDPMFileSecurity.IsPathSymbolicLinked(filePathFileName, out info))
+            //merged to DDPMFileSecurity.IsFilePathValid
+            /*if (Settings.DDPMFileSecurity.IsPathSymbolicLinked(filePathFileName, out info))
             {
 #if DEBUG
                 Console.WriteLine(info);
 #endif
                 return false;
-            }
+            }*/
 
             string filename = System.IO.Path.GetFileNameWithoutExtension(filePathFileName);
             if ( string.IsNullOrEmpty(filename))

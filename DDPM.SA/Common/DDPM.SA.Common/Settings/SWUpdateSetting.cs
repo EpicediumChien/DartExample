@@ -100,7 +100,7 @@ namespace DDPM.SA.Common.Settings
                             {
                                 foreach (Software software in data.Softwares)
                                 {
-                                    software.SoftwareVersion = software.SoftwareVersion;
+                                    //software.SoftwareVersion = software.SoftwareVersion;
                                     software.ServerPath = software.ServerPath.Replace("%2", $"{software.SoftwareName}-Setup-v{software.SoftwareVersion}");
                                     software.DdpmSwUpdaterServer_path = software.DdpmSwUpdaterServer_path.Replace("%21", $"DdpmSwUpdater");
                                 }
