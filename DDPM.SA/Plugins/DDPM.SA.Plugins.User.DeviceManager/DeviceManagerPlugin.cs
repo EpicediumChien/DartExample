@@ -10230,8 +10230,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
             if (type == DeviceChangedType.NotifyOnly)
             {
-
-                Trace.WriteLine("AAAAAAAAAAAAAAAAAAAA OnDeviceChanged BBBBBBBBBB");
                 //writelog("[OnDeviceChanged] Notify event to registers");
                 //Task.Run(() => updateALSwithAllMonitors());
             }
