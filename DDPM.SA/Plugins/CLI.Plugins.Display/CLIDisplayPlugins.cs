@@ -4600,6 +4600,7 @@ namespace DDPM.CLI.Plugins.Display
             }
             else if (commandLineInput.Command == "GET")
             {
+                _AllInfoMonitors = await devMgr.GetMonitors();
                 if (commandLineInput.DeviceIndex.Count == 0 && commandLineInput.ServiceTag.Count == 0 && commandLineInput.Model.Count == 0)
                 {
                     foreach (MonitorInfo mo in _AllInfoMonitors)
