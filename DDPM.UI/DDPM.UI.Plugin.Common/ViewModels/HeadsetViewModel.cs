@@ -216,6 +216,7 @@ namespace DDPM.UI.Plugin.ViewModels
             CheckPresetsUI(false);
             CheckVoiceGuidanceUI(false);
             CheckANCUI(false);
+            CheckAnswerCallUI(false);
         }
 
         private void CheckSidetoneUI(bool PropertyChange)
@@ -250,6 +251,17 @@ namespace DDPM.UI.Plugin.ViewModels
                         UpdateCollaborationAndultimediaUI(true, false);
                     }
                 }
+            }
+        }
+
+        private void CheckAnswerCallUI(bool PropertyChange)
+        {
+            if (DeviceInfoDTP!.IsAnswerCallSupported)
+                _isAnswerCallsStatus = DeviceInfoDTP.AnswerCall;
+            if (PropertyChange)
+            {
+                OnPropertyChanged("AnswerCallsStatus");
+                OnPropertyChanged("AnswerCalls_String");
             }
         }
 
