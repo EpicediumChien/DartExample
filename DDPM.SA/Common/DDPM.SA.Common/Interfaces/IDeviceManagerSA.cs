@@ -583,6 +583,7 @@ namespace DDPM.SA.Common
         Task<List<ALSConfig>> UpdateExistAlsConfig(List<MonitorInfo> monitorInfoMain);
 
         Task<bool> SynchronizeALSFeatureValue(ALSConfig monitorALS);
+
         Task<String> CheckisShowSynchronize(MonitorInfo currentMoInfo, List<ALSConfig> alsSynchronizeList);
 
         #endregion public ALS functions
