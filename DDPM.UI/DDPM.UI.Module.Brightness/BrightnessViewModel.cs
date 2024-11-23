@@ -2379,7 +2379,7 @@ namespace DDPM.UI.Module.Brightness
             var value = Convert.ToDouble(value_);
             uint nNewValue = Convert.ToUInt32(value);
 
-            DdpmCommonHelper.DeviceManagerSA.SetVCPCapability(ModuleOwner.SelectedHomeDevice.MonitorInfo, 0x10, nNewValue);
+            _ = DdpmCommonHelper.DeviceManagerSA.SetVCPCapability(ModuleOwner.SelectedHomeDevice.MonitorInfo, 0x10, nNewValue).Result;
 
             //NotifyPropertyChanged("LuminanceValue");
         }
@@ -2400,24 +2400,12 @@ namespace DDPM.UI.Module.Brightness
                         if (hd.MonitorInfo.IsDellMonitor)
                         {
                             _ = DdpmCommonHelper.DeviceManagerSA.SetVCPCapability(hd.MonitorInfo, 0x10, nNewValue).Result;
-                            var o = (DdpmCommonHelper.DeviceManagerSA.GetVCPCapability(hd.MonitorInfo, 0x10).Result);
-                            if (o.result)
-                            {
-                                Brightness_Value = Convert.ToDouble(o.value);
-                                NotifyPropertyChanged("BrightnessValue");
-                            }
                         }
                     }
                 }
                 else
                 {
                     _ = DdpmCommonHelper.DeviceManagerSA.SetVCPCapability(ModuleOwner.SelectedHomeDevice.MonitorInfo, 0x10, nNewValue).Result;
-                    var o = (DdpmCommonHelper.DeviceManagerSA.GetVCPCapability(ModuleOwner.SelectedHomeDevice.MonitorInfo, 0x10).Result);
-                    if (o.result)
-                    {
-                        Brightness_Value = Convert.ToDouble(o.value);
-                        NotifyPropertyChanged("BrightnessValue");
-                    }
                 }
 
                 //NotifyPropertyChanged("BrightnessValue");
@@ -2485,11 +2473,11 @@ namespace DDPM.UI.Module.Brightness
                 foreach (HomeDevice hd in ModuleOwner.HomeDevices)
                 {
                     if (hd.MonitorInfo.IsDellMonitor)
-                        DdpmCommonHelper.DeviceManagerSA.SetVCPCapability(hd.MonitorInfo, 0x12, nNewValue);
+                        _ = DdpmCommonHelper.DeviceManagerSA.SetVCPCapability(hd.MonitorInfo, 0x12, nNewValue).Result;
                 }
             }
             else
-                DdpmCommonHelper.DeviceManagerSA.SetVCPCapability(ModuleOwner.SelectedHomeDevice.MonitorInfo, 0x12, nNewValue);
+                _ = DdpmCommonHelper.DeviceManagerSA.SetVCPCapability(ModuleOwner.SelectedHomeDevice.MonitorInfo, 0x12, nNewValue).Result;
 
             //NotifyPropertyChanged("ContrastValue");
         }

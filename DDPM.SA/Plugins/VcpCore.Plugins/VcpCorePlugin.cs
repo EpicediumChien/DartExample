@@ -1257,6 +1257,12 @@ namespace VcpCore.Plugins
                             case 0xEC:
                                 break;
 
+                            case 0x10:
+                                break;
+
+                            case 0x12:
+                                break;
+
                             case 0X04:
                                 InitializeCacheTable();
                                 break;
