@@ -213,6 +213,7 @@ namespace DDPM.SA.Common
         Task<bool> SetMicNCIncomingAsync(string Guid, bool newValue);
         Task<bool> SetUnPairAsync(string Guid, bool newValue);
         Task<bool> SetFactoryResetAsyncValueForHeadset(string Guid, bool newValue);
+        Task<bool> SetBoomMicAsync(string Guid, bool newValue);
 
         //Peripheral Common Properties Get
         Task<JArray> GetDeviceItemsExAsync(string Guid);
@@ -277,6 +278,10 @@ namespace DDPM.SA.Common
         Task<int> GetAncGainAsync(string Guid);
         Task<int> GetWearDetectionAsync(string Guid);
         Task<bool> GetIsMicNCIncomingSupportedAsync(string Guid);
+
+        Task<bool> GetIsBoomMicSupportedAsync(string Guid);
+
+        Task<bool> GetBoomMicAsync(string Guid);
 
         #endregion
 

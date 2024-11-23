@@ -3177,6 +3177,33 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
         }
 
+        public async Task<bool> SetBoomMicAsync(string guidString, bool newValue)
+        {
+            try
+            {
+                if (!await GetItemIDAsync("Headset", guidString))
+                    return false;
+
+                if (await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo) is ICommodity commodity)
+                {
+                    SetPropertyValue(_headsetInterfaceType, commodity, "BoomMic", newValue);
+                    writelog(" [Headset] SetBoomMicAsync Success !");
+                    return true;
+                }
+                else
+                {
+                    Debug.WriteLine($"Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
+                    writelog($"Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                writelog($" [Headset] SetBoomMicAsync failed: {ex.Message}");
+                return false;
+            }
+        }
+
         #endregion Headset set
 
         #region Headset Get
@@ -4578,6 +4605,56 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             catch (Exception ex)
             {
                 writelog($"[Headset] GetIsMicNCIncomingSupportedAsync failed for {guid} - Exception: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> GetIsBoomMicSupportedAsync(string guid)
+        {
+            try
+            {
+                if (!await GetItemIDAsync("Headset", guid))
+                    return false;
+
+                var commodity = await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo);
+                if (commodity is ICommodity)
+                {
+                    var value = GetPropertyValue(_headsetInterfaceType, commodity, "IsBoomMicSupported");
+                    writelog($"[Headset] GetIsBoomMicSupportedAsync succeeded for {guid}");
+                    return (bool)value;
+                }
+
+                writelog($"[Headset] GetIsBoomMicSupportedAsync failed: Could not retrieve commodity interface for {guid}");
+                return false;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[Headset] GetIsBoomMicSupportedAsync failed for {guid} - Exception: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> GetBoomMicAsync(string guid)
+        {
+            try
+            {
+                if (!await GetItemIDAsync("Headset", guid))
+                    return false;
+
+                var commodity = await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo);
+                if (commodity is ICommodity)
+                {
+                    var value = GetPropertyValue(_headsetInterfaceType, commodity, "BoomMic");
+                    writelog($"[Headset] GetBoomMicAsync succeeded for {guid}");
+                    return (bool)value;
+                }
+
+                writelog($"[Headset] GetBoomMicAsync failed: Could not retrieve commodity interface for {guid}");
+                return false;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[Headset] GetBoomMicAsync failed for {guid} - Exception: {ex.Message}");
                 return false;
             }
         }

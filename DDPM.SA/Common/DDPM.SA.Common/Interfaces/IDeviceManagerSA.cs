@@ -953,6 +953,8 @@ namespace DDPM.SA.Common
 
         Task<bool> SetFactoryResetAsyncValueForHeadset(string Guid, bool newValue);
 
+        Task<bool> SetBoomMicAsync(string Guid, bool newValue);
+
         #endregion Headset Set
 
         #region Headset Get
@@ -1052,10 +1054,15 @@ namespace DDPM.SA.Common
         Task<bool> GetMuteStatusAsync(string Guid);
 
         Task<byte[]> GetBandsGainAsync(string Guid);
+
         Task<int> GetBand1GainAsync(string Guid);
+
         Task<int> GetBand2GainAsync(string Guid);
+
         Task<int> GetBand3GainAsync(string Guid);
+
         Task<int> GetBand4GainAsync(string Guid);
+
         Task<int> GetBand5GainAsync(string Guid);
 
         Task<int> GetAncModeAsync(string Guid);
@@ -1065,6 +1072,10 @@ namespace DDPM.SA.Common
         Task<int> GetWearDetectionAsync(string Guid);
 
         Task<bool> GetIsMicNCIncomingSupportedAsync(string Guid);
+
+        Task<bool> GetIsBoomMicSupportedAsync(string Guid);
+
+        Task<bool> GetBoomMicAsync(string Guid);
 
         #endregion Headset Get
 
