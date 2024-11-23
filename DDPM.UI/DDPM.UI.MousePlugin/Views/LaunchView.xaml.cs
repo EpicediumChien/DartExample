@@ -194,7 +194,7 @@ namespace DDPM.UI.Plugin.MousePlugin
             {
                 GroupName = Strings.MouseSettingsCaption,
                 GroupIcon = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Vbar.Mouse.Cursor.png"),
-                GroupIconCanvas = DdpmCommonHelper.CanvasIconCreator(VbarIcon.SpeakerPhoneInteractions)
+                GroupIconCanvas = DdpmCommonHelper.CanvasIconCreator(VbarIcon.MouseSettings)
             };
             moduleGroup.AddHeader(Strings.MouseSettingsCaption, new MouseSettingsModule(_vm!));
             groups.Add(moduleGroup);

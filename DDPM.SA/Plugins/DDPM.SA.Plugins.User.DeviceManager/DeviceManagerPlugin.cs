@@ -607,7 +607,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             thread.SetApartmentState(ApartmentState.STA);
             thread.Start();
 
-            _disDevHelper = new DisplayDeviceHelper(Log);
+            _disDevHelper = new DisplayDeviceHelper(Log);           
         }
 
         private void HotkeyPressed(object sender, KeyPressedEventArgs e)
@@ -9114,6 +9114,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
             //register hotkey
             RegistHotkey(false);
+            //
+            _disDevHelper?.UpdateDDPMPluginInstances(_SettingsPlugin, this, _DisplayManagerPlugin);
         }
 
         private void RegistHotkey(bool unRegisterAll)
@@ -9197,21 +9199,24 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     FolderInfo = string.Empty;
                     PathSymbolicLinInfo = string.Empty;
                     folderValid = false;
-                    folderValid = !DDPMFileSecurity.IsPathSymbolicLinked(saveFolderPath, out PathSymbolicLinInfo);
+                    /*folderValid = !DDPMFileSecurity.IsPathSymbolicLinked(saveFolderPath, out PathSymbolicLinInfo);
                     if (!folderValid)
                     {
                         writelog(nameof(DownloadAndInstall) + " FolderIsNotSafe:" + PathSymbolicLinInfo + " Retry:" + (count++));
                         //Do remove Symbolic Link than delete folder
-                        Directory.Delete(saveFolderPath, true);
-                        Directory.CreateDirectory(saveFolderPath);
-                    }
-                    folderValid = DDPMFileSecurity.IsFolderPathValid(saveFolderPath, out FolderInfo) && folderValid;
+                        //Directory.Delete(saveFolderPath, true);
+                        //Directory.CreateDirectory(saveFolderPath);
+                        
+                    }*/
+                    // The function call IsPathSymbolicLinked is merged to "IsFolderPathValid"
+                    folderValid = DDPMFileSecurity.IsFolderPathValid(saveFolderPath, out FolderInfo);// && folderValid;
                     if (!folderValid)
                     {
                         writelog(nameof(DownloadAndInstall) + " FolderIsNotSafe:" + FolderInfo + " Retry:" + (count++));
-                        //Do remove Symbolic Link than delete folder
+                        /*//Do remove Symbolic Link than delete folder
                         Directory.Delete(saveFolderPath, true);
-                        Directory.CreateDirectory(saveFolderPath);
+                        Directory.CreateDirectory(saveFolderPath);*/
+                        return Task.FromResult(false); //[Dean] don't remove folder to avoid callback attack
                     }
                 } while (!folderValid && count < 2);
 
@@ -9351,11 +9356,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
             writelog($"{nameof(SaveLogFile)} end");
             //Telementry Collection
-            var rt = false;
+            //var rt = false;
             var ApplicationSettings_Function = new ApplicationSettings_Function();
             writelog("[DeviceMangerPlugin] Send Telementry for SaveDiagnosticReport...");
-            rt = ApplicationSettings_Function.Send_SaveDiagnosticReport_Telementry(_TelementryScheduler, _AllInfoMonitors, 1);
-            if (rt)
+            ret = ApplicationSettings_Function.Send_SaveDiagnosticReport_Telementry(_TelementryScheduler, _AllInfoMonitors, 1);
+            if (ret)
                 writelog("[DeviceMangerPlugin] Send Telementry for SaveDiagnosticReport Success ...");
             else
                 writelog("[DeviceMangerPlugin] Send Telementry for SaveDiagnosticReport Fail ...");

@@ -327,7 +327,6 @@ namespace DDPM.UI.Common
                 resourceManager.StageResources();
                 resourceManager.CommitResources();
                 Application.Current.MainWindow?.InvalidateVisual();
-                BitmapImageUpdated?.Invoke("AddDeviceVBarRefresh");
             }, System.Windows.Threading.DispatcherPriority.Loaded);
             // Debug.WriteLine($"updateMergedDictionarie to {oSTheme.ToString()}");
             previousOsTheme = oSTheme;
@@ -383,7 +382,7 @@ namespace DDPM.UI.Common
         }
 
         // Need refine
-        public static event Action<string>? BitmapImageUpdated;
+        public static event Action<OSThemeEnum>? BitmapImageUpdated;
 
         //Derek 10/30
         public static int GetBreakPoints()
@@ -1402,6 +1401,25 @@ namespace DDPM.UI.Common
             }
 
             return uIElements;
+        }
+    }
+
+    public class BindingProxy : Freezable
+    {
+        // Define a DependencyProperty to hold the data
+        public static readonly DependencyProperty DataProperty =
+            DependencyProperty.Register(
+                nameof(Data), typeof(object), typeof(BindingProxy), new UIPropertyMetadata(null));
+
+        public object Data
+        {
+            get => GetValue(DataProperty);
+            set => SetValue(DataProperty, value);
+        }
+
+        protected override Freezable CreateInstanceCore()
+        {
+            return new BindingProxy();
         }
     }
 }

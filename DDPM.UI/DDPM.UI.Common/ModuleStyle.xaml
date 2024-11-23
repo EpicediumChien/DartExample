@@ -1027,6 +1027,9 @@
     <SolidColorBrush x:Key="SplitCtrl_OuterBorder_BdColor_Icon_Normal" Color="#FFFFFFFF" />
     <SolidColorBrush x:Key="SplitSplitter_Icon" Color="#FFFFFFFF" />
     <SolidColorBrush x:Key="SplitCtrl0B_IconFill"  Color="#FF132F54"/>
+
+    <SolidColorBrush x:Key="SplitItem_BkColor" Color="#FF132F54" />
+
     <!-- #endregion SplitItem of EasyArrange -->
 
     <!-- #region LockIcon -->
@@ -1404,6 +1407,11 @@
         <Setter Property="FontWeight" Value="Medium" />
     </Style>
     <!--BorderConnection end-->
+    <BitmapImage x:Key="popup_ArrowCorner" UriSource="pack://application:,,,/DDPM.UI.Common;component/Resources/popup_ArrowCorner.png" />
+    <BitmapImage x:Key="down_Expand" UriSource="pack://application:,,,/DDPM.UI.Resources;component/Resources/Images/Down.png" />
+    <BitmapImage x:Key="Search_img" UriSource="pack://application:,,,/DDPM.UI.Resources;component/Resources/Images/Search.png" />
+    <BitmapImage x:Key="Close_img" UriSource="pack://application:,,,/DDPM.UI.Common;component/Resources/Close.png" />
+    <BitmapImage x:Key="left_img" UriSource="pack://application:,,,/DDPM.UI.Resources;component/Resources/Images/Left.png" />
     <SolidColorBrush x:Key="DefaultThemeFullPageBkColor" Color="#FF0D121A"/>
 
 </ResourceDictionary>

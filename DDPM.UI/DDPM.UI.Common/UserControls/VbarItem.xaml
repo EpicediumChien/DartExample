@@ -18,6 +18,9 @@
             </ResourceDictionary.MergedDictionaries>
             <local:VbarItemViewModel x:Key="vmDesign" Text="Robert" />
             <local:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
+            <Style TargetType="UserControl">
+                <Setter Property="Foreground" Value="{DynamicResource DefaultTheme_PathColor}" />
+            </Style>
         </ResourceDictionary>
     </UserControl.Resources>
 

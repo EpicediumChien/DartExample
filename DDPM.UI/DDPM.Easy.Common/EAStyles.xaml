@@ -3,18 +3,25 @@
                     xmlns:local="clr-namespace:DDPM.Easy.Common"
                     xmlns:sys="clr-namespace:System;assembly=mscorlib">
 
+    
+    <!-- #region Key Resources for Theme -->
+    
+    <SolidColorBrush x:Key="SplitCtrl_OuterBorder_BdColor_Icon_Normal" Color="White" />
+    <SolidColorBrush x:Key="SplitSplitter_Icon" Color="White" />
+
+    <!-- #endregion Key Resources for Theme -->
+    
     <!-- Key Synax: SplitCtrl_{ElementName}_{Propertty}_{Mode}_{State}
     for example: SplitCtrl_OuterBorder_BdColor_Hover
     -->
     <!-- OuterBorder -->
-    <SolidColorBrush x:Key="SplitCtrl_OuterBorder_BdColor_Icon_Normal" Color="White" />
     <SolidColorBrush x:Key="SplitCtrl_OuterBorder_BdColor_Edit_Normal" Color="#FF7AA809" />
     <SolidColorBrush x:Key="SplitCtrl_OuterBorder_BdColor_Aws_Normal" Color="White" />
 
     <Style x:Key="OuterBorderStyle" TargetType="Border">
         <Setter Property="BorderThickness" Value="1" />
         <Setter Property="CornerRadius" Value="6" />
-        <Setter Property="BorderBrush" Value="{StaticResource SplitCtrl_OuterBorder_BdColor_Icon_Normal}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource SplitCtrl_OuterBorder_BdColor_Icon_Normal}" />
         <Style.Triggers>
             <DataTrigger Binding="{Binding IsWorkMode}" Value="True">
                 <Setter Property="BorderThickness" Value="0" />
@@ -86,7 +93,7 @@
     </Style>
 
     <!-- Splitter -->
-    <SolidColorBrush x:Key="SplitSplitter_Icon" Color="White" />
+    <!--<SolidColorBrush x:Key="SplitSplitter_Icon" Color="White" />-->
     <SolidColorBrush x:Key="SplitSplitter_Edit_Normal" Color="#FF70A809" />
     <SolidColorBrush x:Key="SplitSplitter_Edit_Hover" Color="#FF0672CB" />
     <SolidColorBrush x:Key="SplitSplitter_Work" Color="White" />
@@ -96,7 +103,7 @@
 
     <!-- Horz Splitter -->
     <Style x:Key="SplitterStyle_Horz" TargetType="GridSplitter">
-        <Setter Property="Background" Value="{StaticResource SplitSplitter_Icon}" />
+        <Setter Property="Background" Value="{DynamicResource SplitSplitter_Icon}" />
         <Setter Property="Height" Value="{StaticResource SplitterThick_Icon}" />
         <Setter Property="HorizontalAlignment" Value="Stretch" />
         <Setter Property="IsEnabled" Value="False" />
@@ -154,7 +161,7 @@
 
     <!-- Vert Splitter -->
     <Style x:Key="SplitterStyle_Vert" TargetType="GridSplitter">
-        <Setter Property="Background" Value="{StaticResource SplitSplitter_Icon}" />
+        <Setter Property="Background" Value="{DynamicResource SplitSplitter_Icon}" />
         <Setter Property="Width" Value="{StaticResource SplitterThick_Icon}" />
         <Setter Property="VerticalAlignment" Value="Stretch" />
         <Setter Property="HorizontalAlignment" Value="Stretch" />

@@ -8,6 +8,7 @@ using DDPM.UI.Module.HeadsetAutomatedActions;
 using DDPM.UI.Module.HeadsetDeviceSettings;
 using DDPM.UI.Plugin.Common;
 using DDPM.UI.Plugin.ViewModels;
+using Dell.Client.Framework.UX.WPF.Controls;
 using System.Diagnostics;
 using System.Net;
 using System.Windows;
@@ -95,14 +96,20 @@ namespace DDPM.UI.Plugin.HeadsetPlugin
                     }
                 }
             }
+            DdpmCommonHelper.BitmapImageUpdated += ImageUpdate;
         }
-
         ~LaunchView()
         {
             if (DdpmCommonHelper.DeviceManagerSA != null)
             {
                 DdpmCommonHelper.DeviceManagerSA.ITSettingsActionEvent -= DeviceManagerSA_ITSettingsActionEvent;
             }
+        }
+
+        private void ImageUpdate(OSThemeEnum oSThemeEnum)
+        {
+            ArrowLeft.Source = null;
+            ArrowLeft.Source = (BitmapImage)Application.Current.Resources["Arrow_Left"];
         }
 
         private void DeviceManagerSA_ITSettingsActionEvent(object? sender, SA.Common.ITSettingEventArgs e)
