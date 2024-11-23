@@ -86,7 +86,7 @@ namespace DDPM.SA.Common.Security
 
             if(thumbPrint == null) // check with inbox thumbPrint
             {
-                if(!DDPMFileSecurity.VerifyFileCertWithoutThumbprint(filePath, out info))
+                if (!DDPMFileSecurity.VerifyFileCertWithInboxThumbprint(filePath, out info)) // VerifyFileCertWithoutThumbprint(filePath, out info))
                 {
                     return false;
                 }
