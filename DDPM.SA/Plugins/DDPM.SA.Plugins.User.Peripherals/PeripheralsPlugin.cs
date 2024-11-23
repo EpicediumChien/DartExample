@@ -715,7 +715,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                 var logicalDevice = device.Devices.FirstOrDefault(x => x.Id == deviceId);
                 if (logicalDevice is ILogicalDeviceHeadset _logicalDeviceHeadset)
                 {
-                    _logicalDeviceHeadset.SetWearDetection(newValue);
+                    //_logicalDeviceHeadset.SetWearDetection(newValue);
                     DeviceInfo _deviceInfo = _deviceHelper.deviceInfo.Where(x => x.ID == deviceId).FirstOrDefault();
                     if (_deviceInfo != null)
                     {
@@ -736,7 +736,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                         newValue |= 0b00000000;
                     else
                         newValue |= 0b00000111;
-                    _logicalDeviceHeadset.SetWearDetection(newValue);
+                    //_logicalDeviceHeadset.SetWearDetection(newValue);
                     DeviceInfo _deviceInfo = _deviceHelper.deviceInfo.Where(x => x.ID == deviceId).FirstOrDefault();
                     if (_deviceInfo != null)
                     {
@@ -1342,7 +1342,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                                 info.IsANCSupported = _logicalDeviceHeadset.IsANCSupported;
                                 info.AncMode = _logicalDeviceHeadset.AncMode;
                                 info.AncGain = _logicalDeviceHeadset.AncGain;
-                                info.WearDetection = _logicalDeviceHeadset.WearDetection;
+                                //info.WearDetection = _logicalDeviceHeadset.WearDetection;
                                 info.IsMicNCIncomingSupported = _logicalDeviceHeadset.IsMicNCIncomingSupported;
                                 info.IsWearDetectionSupported = _logicalDeviceHeadset.IsWearDetectionSupported; //Visibile in Peagsus/Mito
                                 info.IsWearDetectionSensitivitySupported = _logicalDeviceHeadset.IsWearDetectionSensitivitySupported; //Visibile in Peagsus/Mito
@@ -1378,7 +1378,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                                 _logicalDeviceHeadset.BandsGainChanged += _logicalDeviceHeadset_BandsGainChanged;
                                 _logicalDeviceHeadset.AncModeChanged += _logicalDeviceHeadset_AncModeChanged;
                                 _logicalDeviceHeadset.AncGainChanged += _logicalDeviceHeadset_AncGainChanged;
-                                _logicalDeviceHeadset.WearDetectionChanged += _logicalDeviceHeadset_WearDetectionChanged;
+                                //_logicalDeviceHeadset.WearDetectionChanged += _logicalDeviceHeadset_WearDetectionChanged;
                             }
 
                             if (item is ILogicalDeviceDock _logicalDeviceDock)

@@ -75,7 +75,7 @@
                 </StackPanel>
                 <UXControls:UXToggleSwitch IsChecked="{Binding Path= IsChecked_ProximitySensor}" ContentTextVisibility="True" Content="{Binding Path=ProximitySensorStatus_String}" HorizontalAlignment="Right" VerticalAlignment="Center" Foreground="White" IsTabStop="{Binding isTabStoppable}"/>
               </Grid>
-              <Border Background="#132F54" CornerRadius="6" Margin="16">
+              <Border  CornerRadius="6" Margin="16">
                 <StackPanel Orientation="Vertical">
                   <Grid Margin="18,20,18,0">
                     <StackPanel Orientation="Horizontal">

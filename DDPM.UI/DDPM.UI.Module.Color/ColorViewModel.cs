@@ -67,8 +67,8 @@ namespace DDPM.UI.Module.Color
         //public RegistryMonitor_ICC registryMonitor_ICC = null;     
 
         // jim mofidy 20240606
-        public ManagementEventWatcher startWatcher;
-        public ManagementEventWatcher endProcWatcher;
+        public ManagementEventWatcher startWatcher = null;
+        public ManagementEventWatcher endProcWatcher = null;
 
         public DDPM.SA.Common.IIC_Metadata _ICC_Metadata = new DDPM.SA.Common.IIC_Metadata();
 
@@ -548,17 +548,20 @@ namespace DDPM.UI.Module.Color
             string queryString =
                 "SELECT TargetInstance" +
                 "  FROM __InstanceCreationEvent " +
-                "WITHIN  .025 " +
+                "WITHIN 1 " +
                 " WHERE TargetInstance ISA 'Win32_Process' "
-                + "   AND TargetInstance.Name like '%'";
+                + "   AND TargetInstance.Name like 'ColorManagement.exe'";
 
             // The dot in the scope means use the current machine
             string scope = @"\\.\root\CIMV2";
 
-            // Create a watcher and listen for events
-            startWatcher = new ManagementEventWatcher(scope, queryString);
-            startWatcher.EventArrived += startWatcher_EventArrived;
-            startWatcher.Start();
+            if (startWatcher == null)
+            {
+                // Create a watcher and listen for events
+                startWatcher = new ManagementEventWatcher(scope, queryString);
+                startWatcher.EventArrived += startWatcher_EventArrived;
+                startWatcher.Start();
+            }           
         }
 
         // add jim 20240606
@@ -567,9 +570,9 @@ namespace DDPM.UI.Module.Color
             string queryString =
                 "SELECT TargetInstance" +
                 "  FROM __InstanceCreationEvent " +
-                "WITHIN  .025 " +
+                "WITHIN 1 " +
                 " WHERE TargetInstance ISA 'Win32_Process' "
-                + "   AND TargetInstance.Name like '%'";
+                + "   AND TargetInstance.Name like 'ColorManagement.exe'";
 
             // The dot in the scope means use the current machine
             string scope = @"\\.\root\CIMV2";
@@ -582,6 +585,8 @@ namespace DDPM.UI.Module.Color
             {
                 startWatcher.EventArrived -= startWatcher_EventArrived;
                 startWatcher.Stop();
+                startWatcher.Dispose();
+                startWatcher = null;
             }
         }
 
@@ -619,16 +624,20 @@ namespace DDPM.UI.Module.Color
             string queryString =
                 "SELECT TargetInstance" +
                 "  FROM __InstanceDeletionEvent " +
-                "WITHIN  .025 " +
+                "WITHIN 1 " +
                 " WHERE TargetInstance ISA 'Win32_Process' "
-                + "   AND TargetInstance.Name like '%'";
+                + "   AND TargetInstance.Name like 'ColorManagement.exe'";
 
             string scope = @"\\.\root\CIMV2";
 
-            // Create a watcher and listen for events
-            endProcWatcher = new ManagementEventWatcher(scope, queryString);
-            endProcWatcher.EventArrived += ProcessEnded;
-            endProcWatcher.Start();
+            if (endProcWatcher == null)
+            {
+                // Create a watcher and listen for events
+                endProcWatcher = new ManagementEventWatcher(scope, queryString);
+                endProcWatcher.EventArrived += ProcessEnded;
+                endProcWatcher.Start();
+            }
+          
         }
 
         // jim modify 20240606
@@ -637,9 +646,9 @@ namespace DDPM.UI.Module.Color
             string queryString =
                 "SELECT TargetInstance" +
                 "  FROM __InstanceDeletionEvent " +
-                "WITHIN  .025 " +
+                "WITHIN 1 " +
                 " WHERE TargetInstance ISA 'Win32_Process' "
-                + "   AND TargetInstance.Name like '%'";
+                + "   AND TargetInstance.Name like 'ColorManagement.exe'";
 
             string scope = @"\\.\root\CIMV2";
 
@@ -650,6 +659,8 @@ namespace DDPM.UI.Module.Color
             {
                 endProcWatcher.EventArrived -= ProcessEnded;
                 endProcWatcher.Stop();
+                endProcWatcher.Dispose();
+                endProcWatcher = null;
             }
         }
 
@@ -720,6 +731,10 @@ namespace DDPM.UI.Module.Color
         {
             try //2024-06-19 Elie, add try catch to get exception.
             {
+                WatchForProcessStart_Stop();
+                WatchForProcessEnd_Stop();
+
+
                 DDPMSettings data = DdpmCommonHelper.ReadDDPMSettings();//DeviceManagerSA.ReloadAppConfigData().Result;
 
                 // if data = null, represents read setting file (ColorSetting.json) has something went wrong 
@@ -948,6 +963,9 @@ namespace DDPM.UI.Module.Color
                 MyModule.GetRightView().Dispatcher.Invoke((Action)(() =>
                 {
                     DdpmCommonHelper.DeviceManagerSA.SyncNightlightStatus();
+
+                    if (System.String.IsNullOrEmpty(NightlightStatus))
+                        NightlightStatus = "Off";
                     //update_ui_over_runtype(config);
                     RefreshUI();
                 }));
@@ -1082,6 +1100,9 @@ namespace DDPM.UI.Module.Color
 
         ~ColorViewModel()
         {
+            WatchForProcessStart_Stop();
+            WatchForProcessEnd_Stop();
+
             if (DdpmCommonHelper.DeviceManagerSA != null)
             {
                 DdpmCommonHelper.DeviceManagerSA.VCPchanged -= OnVCPChangedEvent;

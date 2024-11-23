@@ -18,6 +18,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Media;
 using System.Windows.Threading;
 using Windows.Graphics.Imaging;
+using System.Windows.Forms;
 
 namespace DDPM.UI.Plugin.WebCameraPlugin
 {
@@ -161,6 +162,37 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
         {
             //Open this to get the message format of Webcam event
             //System.Windows.MessageBox.Show(e.UI_Field_Name);
+
+            if (!String.IsNullOrEmpty(e.UI_Field_Name))
+            {
+                string[] separators = { ";" };
+                string[] Webcam_EventMessages = e.UI_Field_Name.Split(separators, StringSplitOptions.None);
+
+                if (Webcam_EventMessages.Length == 5)
+                {
+                    if (Webcam_EventMessages[0] == "5")
+                    {
+                        if (Webcam_EventMessages[1].Contains("Webcam", StringComparison.OrdinalIgnoreCase))
+                        {
+                            if (Webcam_EventMessages[2].Contains("Webcam_Esi_IsCameraSensorCoveredChanged", StringComparison.OrdinalIgnoreCase))
+                            {
+                                if (Webcam_EventMessages[4].Contains("True", StringComparison.OrdinalIgnoreCase))
+                                    DdpmCommonHelper.DeviceManagerSA!.ShowOSD(Screen.PrimaryScreen!.DeviceName, OSDType.Fingerprint);
+                            }
+                            else if (Webcam_EventMessages[2].Contains("Webcam_Esi_IsWALLockCountdownStartedChanged", StringComparison.OrdinalIgnoreCase))
+                            {
+                                if (Webcam_EventMessages[4].Contains("True", StringComparison.OrdinalIgnoreCase))
+                                    DdpmCommonHelper.DeviceManagerSA!.ShowOSD(Screen.PrimaryScreen!.DeviceName, OSDType.WalkAwayLock);
+                            }
+                        }
+                    }
+
+                }
+
+            }
+
+           
+
         }
 
         /// <inheritdoc/>
@@ -168,7 +200,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
         {
             DdpmCommonHelper.DeviceManagerSA!.DeviceChanged -= DeviceManager_DeviceChanged;
             DdpmCommonHelper.DeviceManagerSA!.UIUpdateNotify -= WebCameraplugin_UIUpdateNotify;
-            Mouse.OverrideCursor = Cursors.Wait;
+            Mouse.OverrideCursor = System.Windows.Input.Cursors.Wait;
         }
 
         /// <inheritdoc/>
