@@ -713,6 +713,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
 
             Thread.Sleep(60);
 
+            if (_vm.IsRecording) _vm.running_state = true;
             if (softwareBitmap != null && _vm.running_state)
             {
                 _ = CameraImage.Dispatcher.BeginInvoke(() =>
