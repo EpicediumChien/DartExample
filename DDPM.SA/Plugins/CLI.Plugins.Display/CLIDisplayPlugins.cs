@@ -1539,8 +1539,8 @@ namespace DDPM.CLI.Plugins.Display
                 var value = string.Empty;
                 var message = "N/A";
 
-                commandLineInput.Options[0].Option_Value.Replace(".", ",");
-                List<string> values = commandLineInput.Options[0].Option_Value.Split(",").ToList();
+                //commandLineInput.Options[0].Option_Value.Replace(".", ",");
+                List<string> values = commandLineInput.Options[0].Option_Value.Replace(".", ",").Split(",").ToList();
                 foreach (string v in values)
                 {
                     switch (v.ToUpper())
@@ -4434,8 +4434,8 @@ namespace DDPM.CLI.Plugins.Display
                                 _Input_RESPONSE.Command = commandLineInput.Command;
                                 _Input_RESPONSE.TargetFeature = commandLineInput.TargetFeature;
 
-                                commandLineInput.Options[0].Option_Value.Replace(".", ",");
-                                string[] op_values = commandLineInput.Options[0].Option_Value.Split(",");
+                                //commandLineInput.Options[0].Option_Value.Replace(".", ",");
+                                string[] op_values = commandLineInput.Options[0].Option_Value.Replace(".", ",").Split(",");
 
                                 foreach (string v in op_values)
                                 {
@@ -4518,8 +4518,8 @@ namespace DDPM.CLI.Plugins.Display
                                 _Input_RESPONSE.Command = commandLineInput.Command;
                                 _Input_RESPONSE.TargetFeature = commandLineInput.TargetFeature;
 
-                                commandLineInput.Options[0].Option_Value.Replace(".", ",");
-                                string[] op_values = commandLineInput.Options[0].Option_Value.Split(",");
+                                //commandLineInput.Options[0].Option_Value.Replace(".", ",");
+                                string[] op_values = commandLineInput.Options[0].Option_Value.Replace(".", ",").Split(",");
 
                                 foreach (string v in op_values)
                                 {
