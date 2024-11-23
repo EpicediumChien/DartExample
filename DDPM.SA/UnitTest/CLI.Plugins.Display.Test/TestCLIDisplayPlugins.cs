@@ -245,126 +245,126 @@ namespace DDPM.CLI.Plugins.Display.Test
 
             //VGA input
             index = "VGA";
-            inputsource_type = "VGA-1";
+            inputsource_type = "VGA1";
             get_inputsource_type_Result = (string)privatetecLIDisplayPlugins.Invoke("get_inputsource_type", index);
             Assert.IsNotNull(get_inputsource_type_Result);
             Assert.That(inputsource_type, Is.EqualTo(get_inputsource_type_Result));
 
             index = "VGA1";
-            inputsource_type = "VGA-1";
+            inputsource_type = "VGA1";
             get_inputsource_type_Result = (string)privatetecLIDisplayPlugins.Invoke("get_inputsource_type", index);
             Assert.IsNotNull(get_inputsource_type_Result);
             Assert.That(inputsource_type, Is.EqualTo(get_inputsource_type_Result));
 
             index = "VGA-1";
-            inputsource_type = "VGA-1";
+            inputsource_type = "VGA1";
             get_inputsource_type_Result = (string)privatetecLIDisplayPlugins.Invoke("get_inputsource_type", index);
             Assert.IsNotNull(get_inputsource_type_Result);
             Assert.That(inputsource_type, Is.EqualTo(get_inputsource_type_Result));
 
             // VGA2 input
             index = "VGA2";
-            inputsource_type = "VGA-2";
+            inputsource_type = "VGA2";
             get_inputsource_type_Result = (string)privatetecLIDisplayPlugins.Invoke("get_inputsource_type", index);
             Assert.IsNotNull(get_inputsource_type_Result);
             Assert.That(inputsource_type, Is.EqualTo(get_inputsource_type_Result));
 
             index = "VGA-2";
-            inputsource_type = "VGA-2";
+            inputsource_type = "VGA2";
             get_inputsource_type_Result = (string)privatetecLIDisplayPlugins.Invoke("get_inputsource_type", index);
             Assert.IsNotNull(get_inputsource_type_Result);
             Assert.That(inputsource_type, Is.EqualTo(get_inputsource_type_Result));
 
             // HDMI input
             index = "HDMI";
-            inputsource_type = "HDMI-1";
+            inputsource_type = "HDMI1";
             get_inputsource_type_Result = (string)privatetecLIDisplayPlugins.Invoke("get_inputsource_type", index);
             Assert.IsNotNull(get_inputsource_type_Result);
             Assert.That(inputsource_type, Is.EqualTo(get_inputsource_type_Result));
 
             index = "HDMI1";
-            inputsource_type = "HDMI-1";
+            inputsource_type = "HDMI1";
             get_inputsource_type_Result = (string)privatetecLIDisplayPlugins.Invoke("get_inputsource_type", index);
             Assert.IsNotNull(get_inputsource_type_Result);
             Assert.That(inputsource_type, Is.EqualTo(get_inputsource_type_Result));
 
             index = "HDMI-1";
-            inputsource_type = "HDMI-1";
+            inputsource_type = "HDMI1";
             get_inputsource_type_Result = (string)privatetecLIDisplayPlugins.Invoke("get_inputsource_type", index);
             Assert.IsNotNull(get_inputsource_type_Result);
             Assert.That(inputsource_type, Is.EqualTo(get_inputsource_type_Result));
 
             // HDMI2 input
             index = "HDMI2";
-            inputsource_type = "HDMI-2";
+            inputsource_type = "HDMI2";
             get_inputsource_type_Result = (string)privatetecLIDisplayPlugins.Invoke("get_inputsource_type", index);
             Assert.IsNotNull(get_inputsource_type_Result);
             Assert.That(inputsource_type, Is.EqualTo(get_inputsource_type_Result));
 
             index = "HDMI-2";
-            inputsource_type = "HDMI-2";
+            inputsource_type = "HDMI2";
             get_inputsource_type_Result = (string)privatetecLIDisplayPlugins.Invoke("get_inputsource_type", index);
             Assert.IsNotNull(get_inputsource_type_Result);
             Assert.That(inputsource_type, Is.EqualTo(get_inputsource_type_Result));
 
             // DP input
             index = "DP";
-            inputsource_type = "DISPLAYPORT-1";
+            inputsource_type = "DISPLAYPORT1";
             get_inputsource_type_Result = (string)privatetecLIDisplayPlugins.Invoke("get_inputsource_type", index);
             Assert.IsNotNull(get_inputsource_type_Result);
             Assert.That(inputsource_type, Is.EqualTo(get_inputsource_type_Result));
 
             index = "DP1";
-            inputsource_type = "DISPLAYPORT-1";
+            inputsource_type = "DISPLAYPORT1";
             get_inputsource_type_Result = (string)privatetecLIDisplayPlugins.Invoke("get_inputsource_type", index);
             Assert.IsNotNull(get_inputsource_type_Result);
             Assert.That(inputsource_type, Is.EqualTo(get_inputsource_type_Result));
 
             index = "DP-1";
-            inputsource_type = "DISPLAYPORT-1";
+            inputsource_type = "DISPLAYPORT1";
             get_inputsource_type_Result = (string)privatetecLIDisplayPlugins.Invoke("get_inputsource_type", index);
             Assert.IsNotNull(get_inputsource_type_Result);
             Assert.That(inputsource_type, Is.EqualTo(get_inputsource_type_Result));
 
             index = "DISPLAYPORT";
-            inputsource_type = "DISPLAYPORT-1";
+            inputsource_type = "DISPLAYPORT1";
             get_inputsource_type_Result = (string)privatetecLIDisplayPlugins.Invoke("get_inputsource_type", index);
             Assert.IsNotNull(get_inputsource_type_Result);
             Assert.That(inputsource_type, Is.EqualTo(get_inputsource_type_Result));
 
             index = "DISPLAYPORT1";
-            inputsource_type = "DISPLAYPORT-1";
+            inputsource_type = "DISPLAYPORT1";
             get_inputsource_type_Result = (string)privatetecLIDisplayPlugins.Invoke("get_inputsource_type", index);
             Assert.IsNotNull(get_inputsource_type_Result);
             Assert.That(inputsource_type, Is.EqualTo(get_inputsource_type_Result));
 
             index = "DISPLAYPORT-1";
-            inputsource_type = "DISPLAYPORT-1";
+            inputsource_type = "DISPLAYPORT1";
             get_inputsource_type_Result = (string)privatetecLIDisplayPlugins.Invoke("get_inputsource_type", index);
             Assert.IsNotNull(get_inputsource_type_Result);
             Assert.That(inputsource_type, Is.EqualTo(get_inputsource_type_Result));
 
             // 测试DP2相关输入源类型
             index = "DP2";
-            inputsource_type = "DISPLAYPORT-2";
+            inputsource_type = "DISPLAYPORT2";
             get_inputsource_type_Result = (string)privatetecLIDisplayPlugins.Invoke("get_inputsource_type", index);
             Assert.IsNotNull(get_inputsource_type_Result);
             Assert.That(inputsource_type, Is.EqualTo(get_inputsource_type_Result));
 
             index = "DP-2";
-            inputsource_type = "DISPLAYPORT-2";
+            inputsource_type = "DISPLAYPORT2";
             get_inputsource_type_Result = (string)privatetecLIDisplayPlugins.Invoke("get_inputsource_type", index);
             Assert.IsNotNull(get_inputsource_type_Result);
             Assert.That(inputsource_type, Is.EqualTo(get_inputsource_type_Result));
 
             index = "DISPLAYPORT2";
-            inputsource_type = "DISPLAYPORT-2";
+            inputsource_type = "DISPLAYPORT2";
             get_inputsource_type_Result = (string)privatetecLIDisplayPlugins.Invoke("get_inputsource_type", index);
             Assert.IsNotNull(get_inputsource_type_Result);
             Assert.That(inputsource_type, Is.EqualTo(get_inputsource_type_Result));
 
             index = "DISPLAYPORT-2";
-            inputsource_type = "DISPLAYPORT-2";
+            inputsource_type = "DISPLAYPORT2";
             get_inputsource_type_Result = (string)privatetecLIDisplayPlugins.Invoke("get_inputsource_type", index);
             Assert.IsNotNull(get_inputsource_type_Result);
             Assert.That(inputsource_type, Is.EqualTo(get_inputsource_type_Result));
@@ -403,50 +403,50 @@ namespace DDPM.CLI.Plugins.Display.Test
 
             // TBT input
             index = "TBT";
-            inputsource_type = "Thunderbolt-1";
+            inputsource_type = "Thunderbolt1";
             get_inputsource_type_Result = (string)privatetecLIDisplayPlugins.Invoke("get_inputsource_type", index);
             Assert.IsNotNull(get_inputsource_type_Result);
             Assert.That(inputsource_type, Is.EqualTo(get_inputsource_type_Result));
 
             index = "TBT1";
-            inputsource_type = "Thunderbolt-1";
+            inputsource_type = "Thunderbolt1";
             get_inputsource_type_Result = (string)privatetecLIDisplayPlugins.Invoke("get_inputsource_type", index);
             Assert.IsNotNull(get_inputsource_type_Result);
             Assert.That(inputsource_type, Is.EqualTo(get_inputsource_type_Result));
 
             index = "THUNDERBOLT";
-            inputsource_type = "Thunderbolt-1";
+            inputsource_type = "Thunderbolt1";
             get_inputsource_type_Result = (string)privatetecLIDisplayPlugins.Invoke("get_inputsource_type", index);
             Assert.IsNotNull(get_inputsource_type_Result);
             Assert.That(inputsource_type, Is.EqualTo(get_inputsource_type_Result));
 
             index = "THUNDERBOLT1";
-            inputsource_type = "Thunderbolt-1";
+            inputsource_type = "Thunderbolt1";
             get_inputsource_type_Result = (string)privatetecLIDisplayPlugins.Invoke("get_inputsource_type", index);
             Assert.IsNotNull(get_inputsource_type_Result);
             Assert.That(inputsource_type, Is.EqualTo(get_inputsource_type_Result));
 
             index = "THUNDERBOLT-1";
-            inputsource_type = "Thunderbolt-1";
+            inputsource_type = "Thunderbolt1";
             get_inputsource_type_Result = (string)privatetecLIDisplayPlugins.Invoke("get_inputsource_type", index);
             Assert.IsNotNull(get_inputsource_type_Result);
             Assert.That(inputsource_type, Is.EqualTo(get_inputsource_type_Result));
 
             // TBT2 input
             index = "TBT2";
-            inputsource_type = "Thunderbolt-2";
+            inputsource_type = "Thunderbolt2";
             get_inputsource_type_Result = (string)privatetecLIDisplayPlugins.Invoke("get_inputsource_type", index);
             Assert.IsNotNull(get_inputsource_type_Result);
             Assert.That(inputsource_type, Is.EqualTo(get_inputsource_type_Result));
 
             index = "THUNDERBOLT2";
-            inputsource_type = "Thunderbolt-2";
+            inputsource_type = "Thunderbolt2";
             get_inputsource_type_Result = (string)privatetecLIDisplayPlugins.Invoke("get_inputsource_type", index);
             Assert.IsNotNull(get_inputsource_type_Result);
             Assert.That(inputsource_type, Is.EqualTo(get_inputsource_type_Result));
 
             index = "THUNDERBOLT-2";
-            inputsource_type = "Thunderbolt-2";
+            inputsource_type = "Thunderbolt2";
             get_inputsource_type_Result = (string)privatetecLIDisplayPlugins.Invoke("get_inputsource_type", index);
             Assert.IsNotNull(get_inputsource_type_Result);
             Assert.That(inputsource_type, Is.EqualTo(get_inputsource_type_Result));
@@ -693,6 +693,280 @@ namespace DDPM.CLI.Plugins.Display.Test
             get_inputsource_type_Result = (int)privatetecLIDisplayPlugins.Invoke("get_inputsource_vcp", index);
             Assert.IsNotNull(get_inputsource_type_Result);
             Assert.That(inputsource_vcp, Is.EqualTo(get_inputsource_type_Result));
+        }
+
+        [Test]
+        public void Testget_language()
+        {
+            string index;
+            string get_language;
+            string get_language_Result;
+
+            // Case 01
+            index = "01";
+            get_language = "Chinese";
+            get_language_Result = (string)privatetecLIDisplayPlugins.Invoke("get_language", index);
+            Assert.IsNotNull(get_language_Result);
+            Assert.That(get_language, Is.EqualTo(get_language_Result));
+
+            // Case 02
+            index = "02";
+            get_language = "English";
+            get_language_Result = (string)privatetecLIDisplayPlugins.Invoke("get_language", index);
+            Assert.IsNotNull(get_language_Result);
+            Assert.That(get_language, Is.EqualTo(get_language_Result));
+
+            // Case 03
+            index = "03";
+            get_language = "French";
+            get_language_Result = (string)privatetecLIDisplayPlugins.Invoke("get_language", index);
+            Assert.IsNotNull(get_language_Result);
+            Assert.That(get_language, Is.EqualTo(get_language_Result));
+
+            // Case 04
+            index = "04";
+            get_language = "German";
+            get_language_Result = (string)privatetecLIDisplayPlugins.Invoke("get_language", index);
+            Assert.IsNotNull(get_language_Result);
+            Assert.That(get_language, Is.EqualTo(get_language_Result));
+
+            // Case 05
+            index = "05";
+            get_language = "Italian";
+            get_language_Result = (string)privatetecLIDisplayPlugins.Invoke("get_language", index);
+            Assert.IsNotNull(get_language_Result);
+            Assert.That(get_language, Is.EqualTo(get_language_Result));
+
+            // Case 06
+            index = "06";
+            get_language = "Japanese";
+            get_language_Result = (string)privatetecLIDisplayPlugins.Invoke("get_language", index);
+            Assert.IsNotNull(get_language_Result);
+            Assert.That(get_language, Is.EqualTo(get_language_Result));
+
+            // Case 07
+            index = "07";
+            get_language = "Korean";
+            get_language_Result = (string)privatetecLIDisplayPlugins.Invoke("get_language", index);
+            Assert.IsNotNull(get_language_Result);
+            Assert.That(get_language, Is.EqualTo(get_language_Result));
+
+            // Case 08
+            index = "08";
+            get_language = "Portuguese";
+            get_language_Result = (string)privatetecLIDisplayPlugins.Invoke("get_language", index);
+            Assert.IsNotNull(get_language_Result);
+            Assert.That(get_language, Is.EqualTo(get_language_Result));
+
+            // Case 09
+            index = "09";
+            get_language = "Russian";
+            get_language_Result = (string)privatetecLIDisplayPlugins.Invoke("get_language", index);
+            Assert.IsNotNull(get_language_Result);
+            Assert.That(get_language, Is.EqualTo(get_language_Result));
+
+            // Case 0a=10
+            index = "10";
+            get_language = "Spanish";
+            get_language_Result = (string)privatetecLIDisplayPlugins.Invoke("get_language", index);
+            Assert.IsNotNull(get_language_Result);
+            Assert.That(get_language, Is.EqualTo(get_language_Result));
+
+            // Case 0b=11
+            index = "11";
+            get_language = "Swedish";
+            get_language_Result = (string)privatetecLIDisplayPlugins.Invoke("get_language", index);
+            Assert.IsNotNull(get_language_Result);
+            Assert.That(get_language, Is.EqualTo(get_language_Result));
+
+            //// Case 0c=12
+            index = "12";
+            get_language = "Turkish";
+            get_language_Result = (string)privatetecLIDisplayPlugins.Invoke("get_language", index);
+            Assert.IsNotNull(get_language_Result);
+            Assert.That(get_language, Is.EqualTo(get_language_Result));
+
+            //// Case 0d=13
+            index = "13";
+            get_language = "Chinese-Simplified";
+            get_language_Result = (string)privatetecLIDisplayPlugins.Invoke("get_language", index);
+            Assert.IsNotNull(get_language_Result);
+            Assert.That(get_language, Is.EqualTo(get_language_Result));
+
+            //// Case 0e=14
+            index = "14";
+            get_language = "BrazilianPortuguese";
+            get_language_Result = (string)privatetecLIDisplayPlugins.Invoke("get_language", index);
+            Assert.IsNotNull(get_language_Result);
+            Assert.That(get_language, Is.EqualTo(get_language_Result));
+
+            //// Case 0f=15
+            index = "15";
+            get_language = "Arabic";
+            get_language_Result = (string)privatetecLIDisplayPlugins.Invoke("get_language", index);
+            Assert.IsNotNull(get_language_Result);
+            Assert.That(get_language, Is.EqualTo(get_language_Result));
+
+            // Case 10=16
+            index = "16";
+            get_language = "Bulgarian";
+            get_language_Result = (string)privatetecLIDisplayPlugins.Invoke("get_language", index);
+            Assert.IsNotNull(get_language_Result);
+            Assert.That(get_language, Is.EqualTo(get_language_Result));
+
+            // Case 11=17
+            index = "17";
+            get_language = "Croatian";
+            get_language_Result = (string)privatetecLIDisplayPlugins.Invoke("get_language", index);
+            Assert.IsNotNull(get_language_Result);
+            Assert.That(get_language, Is.EqualTo(get_language_Result));
+
+            // Case 12=18
+            index = "18";
+            get_language = "Czech";
+            get_language_Result = (string)privatetecLIDisplayPlugins.Invoke("get_language", index);
+            Assert.IsNotNull(get_language_Result);
+            Assert.That(get_language, Is.EqualTo(get_language_Result));
+
+            // Case 13=19
+            index = "19";
+            get_language = "Danish";
+            get_language_Result = (string)privatetecLIDisplayPlugins.Invoke("get_language", index);
+            Assert.IsNotNull(get_language_Result);
+            Assert.That(get_language, Is.EqualTo(get_language_Result));
+
+            // Case 14=20
+            index = "20";
+            get_language = "Dutch";
+            get_language_Result = (string)privatetecLIDisplayPlugins.Invoke("get_language", index);
+            Assert.IsNotNull(get_language_Result);
+            Assert.That(get_language, Is.EqualTo(get_language_Result));
+
+            // Case 15=21
+            index = "21";
+            get_language = "Estonian";
+            get_language_Result = (string)privatetecLIDisplayPlugins.Invoke("get_language", index);
+            Assert.IsNotNull(get_language_Result);
+            Assert.That(get_language, Is.EqualTo(get_language_Result));
+
+            // Case 16=22
+            index = "22";
+            get_language = "Finnish";
+            get_language_Result = (string)privatetecLIDisplayPlugins.Invoke("get_language", index);
+            Assert.IsNotNull(get_language_Result);
+            Assert.That(get_language, Is.EqualTo(get_language_Result));
+
+            // Case 17=23
+            index = "23";
+            get_language = "Greek";
+            get_language_Result = (string)privatetecLIDisplayPlugins.Invoke("get_language", index);
+            Assert.IsNotNull(get_language_Result);
+            Assert.That(get_language, Is.EqualTo(get_language_Result));
+
+            // Case 18=24
+            index = "24";
+            get_language = "Hebrew";
+            get_language_Result = (string)privatetecLIDisplayPlugins.Invoke("get_language", index);
+            Assert.IsNotNull(get_language_Result);
+            Assert.That(get_language, Is.EqualTo(get_language_Result));
+
+            // Case 19=25
+            index = "25";
+            get_language = "Hindi";
+            get_language_Result = (string)privatetecLIDisplayPlugins.Invoke("get_language", index);
+            Assert.IsNotNull(get_language_Result);
+            Assert.That(get_language, Is.EqualTo(get_language_Result));
+
+            // Case 1a=26
+            index = "26";
+            get_language = "Hungarian";
+            get_language_Result = (string)privatetecLIDisplayPlugins.Invoke("get_language", index);
+            Assert.IsNotNull(get_language_Result);
+            Assert.That(get_language, Is.EqualTo(get_language_Result));
+
+            // Case 1b=27
+            index = "27";
+            get_language = "Latvian";
+            get_language_Result = (string)privatetecLIDisplayPlugins.Invoke("get_language", index);
+            Assert.IsNotNull(get_language_Result);
+            Assert.That(get_language, Is.EqualTo(get_language_Result));
+
+            // Case 1c=28
+            index = "28";
+            get_language = "Lithuanian";
+            get_language_Result = (string)privatetecLIDisplayPlugins.Invoke("get_language", index);
+            Assert.IsNotNull(get_language_Result);
+            Assert.That(get_language, Is.EqualTo(get_language_Result));
+
+            // Case 1d=29
+            index = "29";
+            get_language = "Norwegian";
+            get_language_Result = (string)privatetecLIDisplayPlugins.Invoke("get_language", index);
+            Assert.IsNotNull(get_language_Result);
+            Assert.That(get_language, Is.EqualTo(get_language_Result));
+
+            // Case 1e=30
+            index = "30";
+            get_language = "Polish";
+            get_language_Result = (string)privatetecLIDisplayPlugins.Invoke("get_language", index);
+            Assert.IsNotNull(get_language_Result);
+            Assert.That(get_language, Is.EqualTo(get_language_Result));
+
+            // Case 1f=31
+            index = "31";
+            get_language = "Romanian";
+            get_language_Result = (string)privatetecLIDisplayPlugins.Invoke("get_language", index);
+            Assert.IsNotNull(get_language_Result);
+            Assert.That(get_language, Is.EqualTo(get_language_Result));
+
+            // Case 20=32
+            index = "32";
+            get_language = "Serbian";
+            get_language_Result = (string)privatetecLIDisplayPlugins.Invoke("get_language", index);
+            Assert.IsNotNull(get_language_Result);
+            Assert.That(get_language, Is.EqualTo(get_language_Result));
+
+            // Case 21=33
+            index = "33";
+            get_language = "Slovak";
+            get_language_Result = (string)privatetecLIDisplayPlugins.Invoke("get_language", index);
+            Assert.IsNotNull(get_language_Result);
+            Assert.That(get_language, Is.EqualTo(get_language_Result));
+
+            // Case 22=34
+            index = "34";
+            get_language = "Slovenian";
+            get_language_Result = (string)privatetecLIDisplayPlugins.Invoke("get_language", index);
+            Assert.IsNotNull(get_language_Result);
+            Assert.That(get_language, Is.EqualTo(get_language_Result));
+
+            // Case 23=35
+            index = "35";
+            get_language = "Thai";
+            get_language_Result = (string)privatetecLIDisplayPlugins.Invoke("get_language", index);
+            Assert.IsNotNull(get_language_Result);
+            Assert.That(get_language, Is.EqualTo(get_language_Result));
+
+            // Case 24=36
+            index = "36";
+            get_language = "Ukrainian";
+            get_language_Result = (string)privatetecLIDisplayPlugins.Invoke("get_language", index);
+            Assert.IsNotNull(get_language_Result);
+            Assert.That(get_language, Is.EqualTo(get_language_Result));
+
+            // Case 25=37
+            index = "37";
+            get_language = "Vietnamese";
+            get_language_Result = (string)privatetecLIDisplayPlugins.Invoke("get_language", index);
+            Assert.IsNotNull(get_language_Result);
+            Assert.That(get_language, Is.EqualTo(get_language_Result));
+
+            // Default
+            index = "38";
+            get_language = "Unknown";
+            get_language_Result = (string)privatetecLIDisplayPlugins.Invoke("get_language", index);
+            Assert.IsNotNull(get_language_Result);
+            Assert.That(get_language, Is.EqualTo(get_language_Result));
         }
 
         [OneTimeTearDown]

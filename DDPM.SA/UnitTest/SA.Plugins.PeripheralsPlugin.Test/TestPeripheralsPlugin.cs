@@ -1883,7 +1883,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin.Test
             Assert.IsTrue(true);
             Assert.IsNotNull(devicemanager2);
             Assert.IsNotNull(deviceHelper2);
-            Assert.That(deviceHelper2.deviceInfo[0].WearDetection, Is.EqualTo(newValue));
+            //Assert.That(deviceHelper2.deviceInfo[0].WearDetection, Is.EqualTo(newValue));  method update R17.1 drop this function
         }
 
         [Test]
@@ -1969,7 +1969,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin.Test
                 Assert.IsTrue(true);
                 Assert.IsNotNull(devicemanager2);
                 Assert.IsNotNull(deviceHelper2);
-                Assert.That(deviceHelper2.deviceInfo[0].WearDetection, Is.EqualTo(newValue2));
+                //Assert.That(deviceHelper2.deviceInfo[0].WearDetection, Is.EqualTo(newValue2)); method update R17.1 drop this function
             }
         }
 
