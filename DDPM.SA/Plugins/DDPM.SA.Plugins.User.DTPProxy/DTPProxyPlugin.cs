@@ -29,7 +29,6 @@ using Newtonsoft.Json.Linq;
 using System.Text;
 using DPeMPublic.Common.Enums;
 using System.Text.Json;
-using Microsoft.VisualStudio.Threading;
 
 namespace DDPM.SA.Plugins.User.DTPProxy
 {
