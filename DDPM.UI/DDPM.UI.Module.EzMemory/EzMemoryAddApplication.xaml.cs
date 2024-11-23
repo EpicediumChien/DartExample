@@ -210,39 +210,48 @@ namespace DDPM.UI.Module.EzMemory
         /// <param name="e"></param>
         private void btnAdd_Click(object sender, RoutedEventArgs e)
         {
-            if (lb_Installed_App.SelectedItems.Count == 0)
-                return;
-            var app = lb_Installed_App.SelectedItems.Cast<Bind_AddFullPage_AppCollectionData>().ToList();
-
-            // 如果有重複的應用程式，直接返回
-            if (_vm._sortApps.Values.Any(a =>
-                a.AppName.Equals(app[0].AppName, StringComparison.OrdinalIgnoreCase) ||
-                a.AppUserModelID.Equals(app[0].AppUserModelID, StringComparison.OrdinalIgnoreCase) ||
-                a.AppPath.Equals(app[0].AppPath, StringComparison.OrdinalIgnoreCase)))
+            try
             {
-                Thickness headMargin = new Thickness(24, 30, 45, 24);
-                Thickness subMargin = new Thickness(24, -16, 24, 8);
-                DdpmCommonHelper.DDPMEzMesssageBox(Strings.msgboxTitleForFirstPage, Strings.subTitleForFirstPage, true, Window.GetWindow(this), 417, 148, headMargin, subMargin);
-                return;
-            }
+                _log.Info($"@{nameof(EzMemoryAddApplication)} btnAdd_Click: ... in");
 
-            // 同樣的button重選
-            if (_vm._sortApps.ContainsKey(_vm.ButtonName))
+                if (lb_Installed_App.SelectedItems.Count == 0)
+                    return;
+                var app = lb_Installed_App.SelectedItems.Cast<Bind_AddFullPage_AppCollectionData>().ToList();
+
+                // 如果有重複的應用程式，直接返回
+                if (_vm._sortApps.Values.Any(a =>
+                    a.AppName.Equals(app[0].AppName, StringComparison.OrdinalIgnoreCase) ||
+                    a.AppUserModelID.Equals(app[0].AppUserModelID, StringComparison.OrdinalIgnoreCase) ||
+                    a.AppPath.Equals(app[0].AppPath, StringComparison.OrdinalIgnoreCase)))
+                {
+                    Thickness headMargin = new Thickness(24, 30, 45, 24);
+                    Thickness subMargin = new Thickness(24, -16, 24, 8);
+                    DdpmCommonHelper.DDPMEzMesssageBox(Strings.msgboxTitleForFirstPage, Strings.subTitleForFirstPage, true, Window.GetWindow(this), 417, 148, headMargin, subMargin);
+                    return;
+                }
+
+                // 同樣的button重選
+                if (_vm._sortApps.ContainsKey(_vm.ButtonName))
+                {
+                    _vm._sortApps.Remove(_vm.ButtonName);
+                }
+
+                _vm._sortApps.Add(_vm.ButtonName, app[0]);
+
+                _vm.UpdateTextBlockAppName(_vm.ButtonName, app[0].AppName);
+
+                if (_vm.IsEditProfile)
+                {
+                    _vm.IsAddPageBack = true;
+                }
+
+                EzMemoryAssignProgram _ezMemoryAssignProgram = new EzMemoryAssignProgram(_vmDisplay, _vm, _selecthomeDevice);
+                DdpmCommonHelper.ModuleOwner?.OpenFullView(_ezMemoryAssignProgram);
+            }
+            catch (Exception ex)
             {
-                _vm._sortApps.Remove(_vm.ButtonName);
+                _log.Error($"@{nameof(EzMemoryAddApplication)} btnAdd_Click: Error occurred - {ex.Message}");
             }
-            
-            _vm._sortApps.Add(_vm.ButtonName, app[0]);
-
-            _vm.UpdateTextBlockAppName(_vm.ButtonName, app[0].AppName);
-
-            if (_vm.IsEditProfile)
-            {
-                _vm.IsAddPageBack = true;
-            }
-
-            EzMemoryAssignProgram _ezMemoryAssignProgram = new EzMemoryAssignProgram(_vmDisplay, _vm, _selecthomeDevice);
-            DdpmCommonHelper.ModuleOwner?.OpenFullView(_ezMemoryAssignProgram);
         }
 
         /// <summary>
@@ -254,6 +263,8 @@ namespace DDPM.UI.Module.EzMemory
         {
             try
             {
+                _log.Info($"@{nameof(EzMemoryAddApplication)} btnSelect_Click: ... in");
+
                 // OpenFileDialog
                 OpenFileDialog openFileDialog = new OpenFileDialog
                 {

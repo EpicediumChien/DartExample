@@ -162,4 +162,25 @@ namespace DDPM.UI.Plugin.Common
             return false;
         }
     }
+
+    /// <summary>
+    /// If the string is empty or blank then convert to Collapsed. Robert_Lin, 2024-11-21
+    /// Tooltip can use this converter to hide the tooltip if the content is empty.
+    /// </summary>
+    public class StringEmptyToVisibilityConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value is string)
+                return String.IsNullOrWhiteSpace(value as string) ? Visibility.Collapsed : Visibility.Visible;
+            else
+                return Visibility.Visible;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotSupportedException();
+        }
+    }
+
 }
