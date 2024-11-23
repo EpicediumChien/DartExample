@@ -28,7 +28,7 @@
             </Grid.ColumnDefinitions>
 
             <Border Name="bdPip" Grid.Row="0" Grid.Column="1"
-                    Background="{StaticResource BorderColor_SplitNormal}"
+                    Background="{DynamicResource SplitSplitter_Icon}"
                     CornerRadius="{StaticResource SplitItem_CornerRadius}" />
         </Grid>
     </Grid>

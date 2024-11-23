@@ -12,27 +12,30 @@
                 <!-- <ResourceDictionary Source="/DDPM.UI.Common;component/ModuleStyle.xaml" /> -->
             </ResourceDictionary.MergedDictionaries>
 
+            <!-- #region EzBtn Theme-->
+            <!-- Key Resources for Dark/Light Theme, so move to ModuleStyle.xaml -->
             <!-- EzBtn (Left/Right Arrow button) Colors -->
-            <SolidColorBrush x:Key="EzBtn_BkColor_Default" Color="#FF193457" />
-            <SolidColorBrush x:Key="EzBtn_BkColor_Disabled" Color="#FF596067" />
+            <!--<SolidColorBrush x:Key="EzBtn_BkColor_Default" Color="#FF193457" />-->
+            <!--<SolidColorBrush x:Key="EzBtn_BkColor_Disabled" Color="#FF596067" />-->
             <!-- EzBtn_BkColor_Hover: Use Brush_GradientButtonCyan -->
 
-            <Color x:Key="EzBtn_BdColor">#FF132F54</Color>
-            <SolidColorBrush x:Key="EzBtn_BdColor_Default" Color="{StaticResource EzBtn_BdColor}" />
+            <!--<Color x:Key="EzBtn_BdColor">#FF132F54</Color>
+            <SolidColorBrush x:Key="EzBtn_BdColor_Default" Color="#132F54" />
             <SolidColorBrush x:Key="EzBtn_BdColor_Disabled" Color="{StaticResource EzBtn_BdColor}" />
-            <SolidColorBrush x:Key="EzBtn_BdColor_Hover" Color="{StaticResource EzBtn_BdColor}" />
+            <SolidColorBrush x:Key="EzBtn_BdColor_Hover" Color="{StaticResource EzBtn_BdColor}" />-->
 
-            <SolidColorBrush x:Key="EzBtn_Arrow_Default" Color="White" />
-            <SolidColorBrush x:Key="EzBtn_Arrow_Disabled" Color="#FFF5F6F7" />
-            <SolidColorBrush x:Key="EzBtn_Arrow_Hover" Color="White" />
-
+            <!--<SolidColorBrush x:Key="EzBtn_Arrow_Default" Color="White" />-->
+            <!--<SolidColorBrush x:Key="EzBtn_Arrow_Disabled" Color="#FFF5F6F7" />
+            <SolidColorBrush x:Key="EzBtn_Arrow_Hover" Color="White" />-->
+    
+            <!-- #endregion EzBtn Theme -->        
             <Style x:Key="EzBtnStyle" TargetType="Border">
                 <Setter Property="Width" Value="46" />
                 <Setter Property="Height" Value="60" />
                 <Setter Property="BorderThickness" Value="1" />
                 <Setter Property="CornerRadius" Value="6" />
-                <Setter Property="BorderBrush" Value="{StaticResource EzBtn_BdColor_Default}" />
-                <Setter Property="Background" Value="{StaticResource EzBtn_BkColor_Default}" />
+                <Setter Property="BorderBrush" Value="{DynamicResource EzBtn_BdColor_Default}" />
+                <Setter Property="Background" Value="{DynamicResource EzBtn_BkColor_Default}" />
                 <Setter Property="Effect">
                     <Setter.Value>
                         <DropShadowEffect Color="#7F000000" ShadowDepth="0" BlurRadius="12" Opacity="1" Direction="0" />
@@ -193,10 +196,10 @@
                             <!--
                             <Setter Property="Background" Value="{StaticResource EzBtn_BkColor_Hover}" />
                             -->
-                            <Setter Property="Background" Value="{StaticResource Brush_GradientButtonCyan}" />
+                            <Setter Property="Background" Value="{DynamicResource Brush_GradientButtonCyan}" />
                         </Trigger>
                         <DataTrigger Binding="{Binding IsPrevButtonEnabled}" Value="False">
-                            <Setter Property="Background" Value="{StaticResource EzBtn_BkColor_Disabled}" />
+                            <Setter Property="Background" Value="{DynamicResource EzBtn_BkColor_Disabled}" />
                         </DataTrigger>
                     </Style.Triggers>
                 </Style>
@@ -207,14 +210,14 @@
                           Data="M7.79 14.79L8.49 13.99L2.23 8.53004L16 8.53004L16 7.47004L2.23 7.47004L8.49 2.00004L7.79 1.20004L5.93601e-07 8.00004L7.79 14.79Z">
                         <Path.Style>
                             <Style TargetType="Path">
-                                <Setter Property="Fill" Value="{StaticResource EzBtn_Arrow_Default}" />
+                                <Setter Property="Fill" Value="{DynamicResource EzBtn_Arrow_Default}" />
                                 <Style.Triggers>
                                     <DataTrigger Binding="{Binding ElementName=prevBtn, Path=IsMouseOver}" Value="True">
-                                        <Setter Property="Fill" Value="{StaticResource EzBtn_Arrow_Hover}" />
+                                        <Setter Property="Fill" Value="{DynamicResource EzBtn_Arrow_Hover}" />
                                     </DataTrigger>
                                     <DataTrigger Binding="{Binding IsEnabled, RelativeSource={RelativeSource AncestorType=Border}}"
                                                  Value="False">
-                                        <Setter Property="Fill" Value="{StaticResource EzBtn_Arrow_Disabled}" />
+                                        <Setter Property="Fill" Value="{DynamicResource EzBtn_Arrow_Disabled}" />
                                     </DataTrigger>
                                 </Style.Triggers>
                             </Style>
@@ -232,10 +235,10 @@
                             <!--
                             <Setter Property="Background" Value="{StaticResource EzBtn_BkColor_Hover}" />
                             -->
-                            <Setter Property="Background" Value="{StaticResource Brush_GradientButtonCyan}" />
+                            <Setter Property="Background" Value="{DynamicResource Brush_GradientButtonCyan}" />
                         </Trigger>
                         <DataTrigger Binding="{Binding IsNextButtonEnabled}" Value="False">
-                            <Setter Property="Background" Value="{StaticResource EzBtn_BkColor_Disabled}" />
+                            <Setter Property="Background" Value="{DynamicResource EzBtn_BkColor_Disabled}" />
                         </DataTrigger>
                     </Style.Triggers>
                 </Style>
@@ -246,13 +249,13 @@
                           Data="M8.21 1.20996L7.51 2.00996L13.77 7.46996H0V8.52996H13.77L7.51 14L8.21 14.8L16 7.99996L8.21 1.20996Z">
                         <Path.Style>
                             <Style TargetType="Path">
-                                <Setter Property="Fill" Value="{StaticResource EzBtn_Arrow_Default}" />
+                                <Setter Property="Fill" Value="{DynamicResource EzBtn_Arrow_Default}" />
                                 <Style.Triggers>
                                     <DataTrigger Binding="{Binding ElementName=nextBtn, Path=IsMouseOver}" Value="True">
-                                        <Setter Property="Fill" Value="{StaticResource EzBtn_Arrow_Hover}" />
+                                        <Setter Property="Fill" Value="{DynamicResource EzBtn_Arrow_Hover}" />
                                     </DataTrigger>
                                     <DataTrigger Binding="{Binding ElementName=nextBtn, Path=IsEnabled}" Value="False">
-                                        <Setter Property="Fill" Value="{StaticResource EzBtn_Arrow_Disabled}" />
+                                        <Setter Property="Fill" Value="{DynamicResource EzBtn_Arrow_Disabled}" />
                                     </DataTrigger>
                                     <!--
                                     <DataTrigger Binding="{Binding IsEnabled, RelativeSource={RelativeSource AncestorType=Border}}"

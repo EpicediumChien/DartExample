@@ -30,12 +30,12 @@
                             <Polyline Points="0.5,0.5 7.5,7.5"
                                       StrokeStartLineCap="Flat"
                                       StrokeEndLineCap="Flat"
-                                      Stroke="{StaticResource SplitCtrl_OuterBorder_BdColor_Icon_Normal}"
+                                      Stroke="{DynamicResource SplitCtrl_OuterBorder_BdColor_Icon_Normal}"
                                       StrokeThickness="1" />
                             <Polyline Points="7.5,0.5 0.5,7.5"
                                       StrokeStartLineCap="Flat"
                                       StrokeEndLineCap="Flat"
-                                      Stroke="{StaticResource SplitCtrl_OuterBorder_BdColor_Icon_Normal}"
+                                      Stroke="{DynamicResource SplitCtrl_OuterBorder_BdColor_Icon_Normal}"
                                       StrokeThickness="1" />
                         </Grid>
                     </Grid>

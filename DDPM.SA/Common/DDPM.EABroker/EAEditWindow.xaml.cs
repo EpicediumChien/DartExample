@@ -21,6 +21,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 //using static DDPM.Win32Lib.Win32;
 using Rectangle = System.Drawing.Rectangle;
+using System.Windows.Threading;
 
 namespace DDPM.EABroker
 {
@@ -343,6 +344,31 @@ namespace DDPM.EABroker
             Show();
 
             CaptureCustomLayout(workingArea);
+
+            //Set a timeer to finished edit process
+            //System.Threading.Timer timer1 = new System.Threading.Timer((obj) =>
+            //{
+            //    if (EditReturn != null)
+            //        EditReturn(this, _inputArgs);
+            //    //Hide();
+            //}, null, 3000, Timeout.Infinite);
+
+            DispatcherTimer timer  = new DispatcherTimer();
+            timer.Tick += Timer_Tick;
+            timer.Interval = TimeSpan.FromSeconds(3);
+            timer.Start();
+        }
+
+        private void Timer_Tick(object? sender, EventArgs e)
+        {
+            if(sender != null)
+            {
+                DispatcherTimer timer = sender as DispatcherTimer;
+                if (timer != null) 
+                    timer.Stop();
+            }
+            if (EditReturn != null)
+                EditReturn(this, _inputArgs);
         }
         #endregion
 
@@ -687,14 +713,7 @@ namespace DDPM.EABroker
                 ///spCtrl0B.RatioRects.Add(new Rect(cellJson.x, cellJson.y, cellJson.w, cellJson.h));
             }
 
-            //Set a timeer to finished edit process
-            System.Threading.Timer timer1 = new System.Threading.Timer((obj) =>
-            {
-                if (EditReturn != null)
-                    EditReturn(this, _inputArgs);
-                //Hide();
-            }, null, 3000, Timeout.Infinite);
-        }
+         }
 
 
         //Reference: https://stackoverflow.com/questions/210504/enumerate-windows-like-alt-tab-does
