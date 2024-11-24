@@ -5769,7 +5769,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
             else
             {
-                writelog($"No any webcam instance to unregister.");
+                writelog($"No any webcam instance to register.");
                 //try to force release current --> will catch exception  1123
                 //await UnregisterEventsForWebcamAsync(0);
             }
@@ -5905,6 +5905,65 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             catch (Exception e)
             {
                 writelog($"Webcam{index} UnregisterEventsForWebcam Exception {e.Message}");
+
+                return false;
+            }
+
+            return false;
+        }
+
+        private async Task<bool> UnregisterEventsForWebcamAsync()
+        {
+            if (null == _commSdk || null == _comdity)
+                return false;
+
+            try
+            {
+                _comdity = await _commSdk.GetCommodityAsync<IWebcamCommodity>(new ItemId($"DellPeripheral.Webcam"), CancellationToken.None);
+
+                if (_comdity is Dell.TechHub.Commodity.Peripheral.IWebcamCommodity _Webcamcom)
+                {
+                    _Webcamcom.ProfileManagerAdded -= Webcam_ProfileManagerAdded;
+                    _Webcamcom.IsMicEnumerationOnChanged -= Webcam_IsMicEnumerationOnChanged;
+                    _Webcamcom.CurrentSelectedProfileChanged -= Webcam_CurrentSelectedProfileChanged;
+                    _Webcamcom.CustomProfileAdded -= Webcam_CustomProfileAdded;
+                    _Webcamcom.CustomProfileRemoved -= Webcam_CustomProfileRemoved;
+
+                    _Webcamcom.PriorityChanged -= Webcam_PriorityChanged;
+                    _Webcamcom.IsFocusOnChanged -= Webcam_IsFocusOnChanged;
+                    _Webcamcom.FocusChanged -= Webcam_FocusChanged;
+                    _Webcamcom.PanChanged -= Webcam_PanChanged;
+                    _Webcamcom.TiltChanged -= Webcam_TiltChanged;
+                    _Webcamcom.ZoomChanged -= Webcam_ZoomChanged;
+                    _Webcamcom.BrightnessChanged -= Webcam_BrightnessChanged;
+                    _Webcamcom.ContrastChanged -= Webcam_ContrastChanged;
+                    _Webcamcom.AntiFlickerChanged -= Webcam_AntiFlickerChanged;
+                    _Webcamcom.SaturationChanged -= Webcam_SaturationChanged;
+                    _Webcamcom.SharpnessChanged -= Webcam_SharpnessChanged;
+                    _Webcamcom.IsAutoWhiteBalanceOnChanged -= Webcam_IsAutoWhiteBalanceOnChanged;
+                    _Webcamcom.AutoWhiteBalanceChanged -= Webcam_AutoWhiteBalanceChanged;
+                    _Webcamcom.IsAutoFramingTransitionOnChanged -= Webcam_IsAutoFramingTransitionOnChanged;
+                    _Webcamcom.IsAutoFramingOnChanged -= Webcam_IsAutoFramingOnChanged;
+                    _Webcamcom.AutoFramingSensitivityChanged -= Webcam_AutoFramingSensitivityChanged;
+                    _Webcamcom.AutoFramingFrameSizeChanged -= Webcam_AutoFramingFrameSizeChanged;
+                    _Webcamcom.FieldOfViewChanged -= Webcam_FieldOfViewChanged;
+                    _Webcamcom.IsHDROnChanged -= Webcam_IsHDROnChanged;
+                    _Webcamcom.SerialNumberChanged -= Webcam_SerialNumberChanged;
+                    _Webcamcom.IsZoomMeetingActiveChanged -= Webcam_IsZoomMeetingActiveChanged;
+                    _Webcamcom.IsZoomScreenShareActiveChanged -= Webcam_IsZoomScreenShareActiveChanged;
+
+                    _Webcamcom.WALSnoozeTimeLeftInSecondsChanged -= Webcam_WALSnoozeTimeLeftInSecondsChanged;
+                    _Webcamcom.Esi_IsWALLockCountdownStartedChanged -= Webcam_Esi_IsWALLockCountdownStartedChanged;
+                    _Webcamcom.Esi_IsCameraSensorCoveredChanged -= Webcam_Esi_IsCameraSensorCoveredChanged;
+                    _Webcamcom.Esi_WALLockCountdownChanged -= Webcam_Esi_WALLockCountdownChanged;
+
+                    writelog($"Webcam Commodity events unregistered successfully");
+                    return true;
+                }
+            }
+            catch (Exception e)
+            {
+                writelog($"Webcam UnregisterEventsForWebcam Exception {e.Message}");
 
                 return false;
             }
@@ -6333,6 +6392,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         private void Webcam_Disconnected(object sender, DisconnectedArgs e)
         {
             _ = UnregisterEventsForAllWebcamsAsync();
+            //_ = UnregisterEventsForWebcamAsync();
             _ = RegisterEventsForAllWebcamsAsync();
 
             //SendWebcamEventToUI($"3;Device:Webcam;Event:Disconnected;DeviceId:{e.DeviceId}");

@@ -9588,6 +9588,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         private bool _IsZoomScreenShareActive;
         private bool _IsZoomMeetingActive;
         private ZoomMeetingType _ZoomMeetingType;
+        private bool isActiveConditionsMet = false; //Derek 1124 
         private void HandleQAM()
         {
             writelog($"HandleQAM start");
