@@ -605,5 +605,8 @@ namespace DDPM.UI.Common
         //InputSource
         public static readonly string InputTitle0 = GetString("InputSource.1");
         public static readonly string InputTitle1 = GetString("InputSource.5");
+
+
+        public static readonly string DTPUnavailable = "DTP service is unavailable!";
     }
 }
