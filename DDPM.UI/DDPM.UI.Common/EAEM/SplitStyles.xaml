@@ -2,15 +2,19 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:sys="clr-namespace:System;assembly=mscorlib">
 
+    <!-- #region Key Resource for Theme -->
+    <!--<SolidColorBrush x:Key="SplitItem_BkColor" Color="#FF132F54" />-->
+    <SolidColorBrush x:Key="BorderColor_SplitNormal" Color="#FFF2F2F2" />
+
+    <!-- #endregion Key Resource for Theme -->
+    
     <SolidColorBrush x:Key="FakeTransparent" Color="#02000000" />
-    <SolidColorBrush x:Key="SplitItem_BkColor" Color="#FF132F54" />
     <SolidColorBrush x:Key="SplitItem_NormalBdColor" Color="#02000000" />
     <SolidColorBrush x:Key="SplitItem_SelectedColor" Color="#FF5CC1EE" />
-    <SolidColorBrush x:Key="BorderColor_SplitNormal" Color="#FFF2F2F2" />
 
     <!-- Splitter -->
     <Style x:Key="RectangleStyle_Splitter" TargetType="Rectangle">
-        <Setter Property="Fill" Value="{StaticResource BorderColor_SplitNormal}" />
+        <Setter Property="Fill" Value="{DynamicResource SplitSplitter_Icon}" />
     </Style>
 
     <sys:Double x:Key="ThickSplitter">1</sys:Double>
@@ -30,7 +34,7 @@
                   BottomLeft="{StaticResource SplitItem_BdRadius}" />
 
     <Style x:Key="SplitCtrl_OutterBorder" TargetType="Border">
-        <Setter Property="BorderBrush" Value="{StaticResource BorderColor_SplitNormal}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource SplitSplitter_Icon}" />
         <Setter Property="BorderThickness" Value="{StaticResource SplitItem_bdThickness}" />
         <Setter Property="CornerRadius" Value="{StaticResource SplitItem_CornerRadius}" />
     </Style>

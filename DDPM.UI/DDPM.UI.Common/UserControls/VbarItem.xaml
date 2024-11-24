@@ -18,9 +18,6 @@
             </ResourceDictionary.MergedDictionaries>
             <local:VbarItemViewModel x:Key="vmDesign" Text="Robert" />
             <local:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
-            <Style TargetType="UserControl">
-                <Setter Property="Foreground" Value="{DynamicResource DefaultTheme_PathColor}" />
-            </Style>
         </ResourceDictionary>
     </UserControl.Resources>
 
@@ -86,7 +83,7 @@
                 <ContentControl x:Name="IconCanvasContent" Grid.Column="0">
                     <ContentControl.Style>
                         <Style TargetType="ContentControl">
-                            <Setter Property="Foreground" Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=UserControl}}" />
+                            <Setter Property="Foreground" Value="{DynamicResource DefaultTheme_PathColor}" />
                             <Style.Triggers>
                                 <DataTrigger Binding="{Binding IsSelected}"  Value="True">
                                     <Setter Property="Foreground"  Value="#FFFFFF" />

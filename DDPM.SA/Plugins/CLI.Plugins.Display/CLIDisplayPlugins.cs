@@ -4166,31 +4166,31 @@ namespace DDPM.CLI.Plugins.Display
         {
             switch (index)
             {
-                case "VGA": return "VGA-1";
-                case "VGA1": return "VGA-1";
-                case "VGA-1": return "VGA-1";
+                case "VGA": return "VGA1";
+                case "VGA1": return "VGA1";
+                case "VGA-1": return "VGA1";
 
-                case "VGA2": return "VGA-2";
-                case "VGA-2": return "VGA-2";
+                case "VGA2": return "VGA2";
+                case "VGA-2": return "VGA2";
 
-                case "HDMI": return "HDMI-1";
-                case "HDMI1": return "HDMI-1";
-                case "HDMI-1": return "HDMI-1";
+                case "HDMI": return "HDMI1";
+                case "HDMI1": return "HDMI1";
+                case "HDMI-1": return "HDMI1";
 
-                case "HDMI2": return "HDMI-2";
-                case "HDMI-2": return "HDMI-2";
+                case "HDMI2": return "HDMI2";
+                case "HDMI-2": return "HDMI2";
 
-                case "DP": return "DISPLAYPORT-1";
-                case "DP1": return "DISPLAYPORT-1";
-                case "DP-1": return "DISPLAYPORT-1";
-                case "DISPLAYPORT": return "DISPLAYPORT-1";
-                case "DISPLAYPORT1": return "DISPLAYPORT-1";
-                case "DISPLAYPORT-1": return "DISPLAYPORT-1";
+                case "DP": return "DISPLAYPORT1";
+                case "DP1": return "DISPLAYPORT1";
+                case "DP-1": return "DISPLAYPORT1";
+                case "DISPLAYPORT": return "DISPLAYPORT1";
+                case "DISPLAYPORT1": return "DISPLAYPORT1";
+                case "DISPLAYPORT-1": return "DISPLAYPORT1";
 
-                case "DP2": return "DISPLAYPORT-2";
-                case "DP-2": return "DISPLAYPORT-2";
-                case "DISPLAYPORT2": return "DISPLAYPORT-2";
-                case "DISPLAYPORT-2": return "DISPLAYPORT-2";
+                case "DP2": return "DISPLAYPORT2";
+                case "DP-2": return "DISPLAYPORT2";
+                case "DISPLAYPORT2": return "DISPLAYPORT2";
+                case "DISPLAYPORT-2": return "DISPLAYPORT2";
 
                 case "USBC": return "USB-C1";
                 case "USBC1": return "USB-C1";
@@ -4200,15 +4200,15 @@ namespace DDPM.CLI.Plugins.Display
                 case "USBC2": return "USB-C2";
                 case "USB-C2": return "USB-C2";
 
-                case "TBT": return "Thunderbolt-1";
-                case "TBT1": return "Thunderbolt-1";
-                case "THUNDERBOLT": return "Thunderbolt-1";
-                case "THUNDERBOLT1": return "Thunderbolt-1";
-                case "THUNDERBOLT-1": return "Thunderbolt-1";
+                case "TBT": return "Thunderbolt1";
+                case "TBT1": return "Thunderbolt1";
+                case "THUNDERBOLT": return "Thunderbolt1";
+                case "THUNDERBOLT1": return "Thunderbolt1";
+                case "THUNDERBOLT-1": return "Thunderbolt1";
 
-                case "TBT2": return "Thunderbolt-2";
-                case "THUNDERBOLT2": return "Thunderbolt-2";
-                case "THUNDERBOLT-2": return "Thunderbolt-2";
+                case "TBT2": return "Thunderbolt2";
+                case "THUNDERBOLT2": return "Thunderbolt2";
+                case "THUNDERBOLT-2": return "Thunderbolt2";
 
                 default: return "Unknown";
             }
@@ -4285,13 +4285,14 @@ namespace DDPM.CLI.Plugins.Display
                                 }
                             }
                             string get_inputvpccode = get_inputsource_type(op_values[0]);
-                            int getvcp = get_inputsource_vcp(get_inputvpccode);
+                            // int getvcp = get_inputsource_vcp(get_inputvpccode);
 
-                            if (getvcp != 0)
+                            if (get_inputvpccode != "Unknown")
                             {
                                 if (commandLineInput.Options.Count == 1)
                                 {
-                                    bool retcode = SetVCPCode(devMgr, monitor, "0x60", "0x" + get_inputsource_vcp(get_inputvpccode).ToString("X2")).Result;
+                                    // bool retcode = SetVCPCode(devMgr, monitor, "0x60", "0x" + get_inputsource_vcp(get_inputvpccode).ToString("X2")).Result;
+                                    bool retcode = SetVCPCode(devMgr, monitor, "Input Select", get_inputvpccode).Result;
                                     if (!retcode) ispass = false;
 
                                     //_Input_RESPONSE.ActiveInputSource = commandLineInput.Options[0].Option_Value;
@@ -4367,13 +4368,14 @@ namespace DDPM.CLI.Plugins.Display
                                 }
                             }
                             string get_inputvpccode = get_inputsource_type(op_values[0]);
-                            int getvcp = get_inputsource_vcp(get_inputvpccode);
+                            //int getvcp = get_inputsource_vcp(get_inputvpccode);
 
-                            if (getvcp != 0)
+                            if (get_inputvpccode != "Unknown")
                             {
                                 if (commandLineInput.Options.Count == 1)
                                 {
-                                    bool retcode = SetVCPCode(devMgr, monitor, "0x60", "0x" + get_inputsource_vcp(get_inputvpccode).ToString("X2")).Result;
+                                    //bool retcode = SetVCPCode(devMgr, monitor, "0x60", "0x" + get_inputsource_vcp(get_inputvpccode).ToString("X2")).Result;
+                                    bool retcode = SetVCPCode(devMgr, monitor, "Input Select", get_inputvpccode).Result;
                                     if (!retcode) ispass = false;
                                     //_Input_RESPONSE.ActiveInputSource = commandLineInput.Options[0].Option_Value;
                                     _Input_RESPONSE.Value = op_values[0];
@@ -4450,15 +4452,16 @@ namespace DDPM.CLI.Plugins.Display
                                     }
                                 }
                                 string get_inputvpccode = get_inputsource_type(op_values[0]);
-                                int getvcp = get_inputsource_vcp(get_inputvpccode);
+                                // int getvcp = get_inputsource_vcp(get_inputvpccode);
 
-                                if (getvcp != 0)
+                                if (get_inputvpccode != "Unknown")
                                 {
                                     if (commandLineInput.Options.Count == 1)
                                     {
                                         //_Input_RESPONSE.ActiveInputSource = commandLineInput.Options[0].Option_Value;
                                         _Input_RESPONSE.Value = op_values[0];
-                                        bool retcode = SetVCPCode(devMgr, mo.Index, "0x60", "0x" + get_inputsource_vcp(get_inputvpccode).ToString("X2")).Result;
+                                        //bool retcode = SetVCPCode(devMgr, mo.Index, "0x60", "0x" + get_inputsource_vcp(get_inputvpccode).ToString("X2")).Result;
+                                        bool retcode = SetVCPCode(devMgr, mo, "Input Select", get_inputvpccode).Result;
                                         if (!retcode) ispass = false;
                                         if (!ispass)
                                         {
@@ -4534,15 +4537,16 @@ namespace DDPM.CLI.Plugins.Display
                                     }
                                 }
                                 string get_inputvpccode = get_inputsource_type(op_values[0]);
-                                int getvcp = get_inputsource_vcp(get_inputvpccode);
+                                //int getvcp = get_inputsource_vcp(get_inputvpccode);
 
-                                if (getvcp != 0)
+                                if (get_inputvpccode != "Unknown")
                                 {
                                     if (commandLineInput.Options.Count == 1)
                                     {
                                         //_Input_RESPONSE.ActiveInputSource = commandLineInput.Options[0].Option_Value;
                                         _Input_RESPONSE.Value = op_values[0];
-                                        bool retcode = SetVCPCode(devMgr, mo.Index, "0x60", "0x" + get_inputsource_vcp(get_inputvpccode).ToString("X2")).Result;
+                                        //bool retcode = SetVCPCode(devMgr, mo.Index, "0x60", "0x" + get_inputsource_vcp(get_inputvpccode).ToString("X2")).Result;
+                                        bool retcode = SetVCPCode(devMgr, mo, "Input Select", get_inputvpccode).Result;
                                         if (!retcode) ispass = false;
                                         if (!ispass)
                                         {
@@ -4596,38 +4600,18 @@ namespace DDPM.CLI.Plugins.Display
             }
             else if (commandLineInput.Command == "GET")
             {
+                _AllInfoMonitors = await devMgr.GetMonitors();
                 if (commandLineInput.DeviceIndex.Count == 0 && commandLineInput.ServiceTag.Count == 0 && commandLineInput.Model.Count == 0)
                 {
-                    foreach (var monitor in _AllInfoMonitors)
+                    foreach (MonitorInfo mo in _AllInfoMonitors)
                     {
                         writelog($"ActiveInputSource get entry");
-                        CLI_RESPONSE _Input_RESPONSE = new CLI_RESPONSE(monitor);
+                        CLI_RESPONSE _Input_RESPONSE = new CLI_RESPONSE(mo);
                         string src = String.Empty;
                         _Input_RESPONSE.Command = commandLineInput.Command;
                         _Input_RESPONSE.TargetFeature = commandLineInput.TargetFeature;
-                        if (commandLineInput.Options.Count == 0)
+                        if (commandLineInput.Options.Count != 0)
                         {
-                            src = GetCurrentInput(devMgr, (monitor.Index).ToString()).Result;
-                            //_Input_RESPONSE.ActiveInputSource = src;
-                            _Input_RESPONSE.Value = src;
-                            if (src == String.Empty)
-                            {
-                                _Input_RESPONSE.Result = "FAIL";
-                                _Input_RESPONSE.Message = "FAIL_SetVCP";
-                                System.Console.WriteLine(_Input_RESPONSE.ToJson());
-                                output += "\n" + _Input_RESPONSE.ToJson();
-                            }
-                            else
-                            {
-                                _Input_RESPONSE.Result = "PASS";
-                                _Input_RESPONSE.Value += "," + (data.LockSettings.Lock_Display_ActiveInputSource ? "LOCK" : "UNLOCK");
-                                System.Console.WriteLine(_Input_RESPONSE.ToJson());
-                                output += "\n" + _Input_RESPONSE.ToJson();
-                            }
-                        }
-                        else
-                        {
-                            //_Input_RESPONSE.ActiveInputSource = src;
                             _Input_RESPONSE.Result = "FAIL";
                             _Input_RESPONSE.Message = "Too Many Value";
                             System.Console.WriteLine(_Input_RESPONSE.ToJson());
@@ -4635,23 +4619,101 @@ namespace DDPM.CLI.Plugins.Display
                             writelog($"ActiveInputSource get fail {output}");
                             return ((int)CLI_ExitCode.fail_Value, output);
                         }
+                        src = GetCurrentInput(devMgr, mo).Result;
+                        if (src == String.Empty)
+                        {
+                            _Input_RESPONSE.Result = "FAIL";
+                            _Input_RESPONSE.Message = "FAIL_SetVCP";
+                            System.Console.WriteLine(_Input_RESPONSE.ToJson());
+                            output += "\n" + _Input_RESPONSE.ToJson();
+                        }
+                        _Input_RESPONSE.Value = src;
+                        _Input_RESPONSE.Result = "PASS";
+                        _Input_RESPONSE.Value += "," + (data.LockSettings.Lock_Display_ActiveInputSource ? "LOCK" : "UNLOCK");
+                        System.Console.WriteLine(_Input_RESPONSE.ToJson());
+                        output += "\n" + _Input_RESPONSE.ToJson();
                     }
                 }
                 else if (commandLineInput.DeviceIndex.Count != 0)
                 {
                     foreach (string idx in commandLineInput.DeviceIndex)
                     {
-                        writelog($"ActiveInputSource set idx entry");
+                        writelog($"ActiveInputSource get entry");
+                        CLI_RESPONSE _Input_RESPONSE = new CLI_RESPONSE();
                         string src = String.Empty;
-                        MonitorInfo monitor = _AllInfoMonitors[int.Parse(idx)];
-                        CLI_RESPONSE _Input_RESPONSE = new CLI_RESPONSE(monitor);
                         _Input_RESPONSE.Command = commandLineInput.Command;
                         _Input_RESPONSE.TargetFeature = commandLineInput.TargetFeature;
-                        if (commandLineInput.Options.Count == 0)
+                        if (commandLineInput.Options.Count != 0)
                         {
-                            src = GetCurrentInput(devMgr, idx).Result;
-                            //_Input_RESPONSE.ActiveInputSource = src;
-                            _Input_RESPONSE.Value = src;
+                            _Input_RESPONSE.Result = "FAIL";
+                            _Input_RESPONSE.Message = "Too Many Value";
+                            System.Console.WriteLine(_Input_RESPONSE.ToJson());
+                            output += "\n" + _Input_RESPONSE.ToJson();
+                            writelog($"ActiveInputSource get fail {output}");
+                            return ((int)CLI_ExitCode.fail_Value, output);
+                        }
+                        if (!int.TryParse(idx, out _))
+                        {
+                            _Input_RESPONSE.Result = "FAIL";
+                            _Input_RESPONSE.Message = "Incorrect Value";
+                            System.Console.WriteLine(_Input_RESPONSE.ToJson());
+                            output += "\n" + _Input_RESPONSE.ToJson();
+                            writelog($"ActiveInputSource get fail {output}");
+                            return ((int)CLI_ExitCode.fail_Value, output);
+                        }
+                        _Input_RESPONSE = new CLI_RESPONSE(_AllInfoMonitors[int.Parse(idx)]);
+                        _Input_RESPONSE.Command = commandLineInput.Command;
+                        _Input_RESPONSE.TargetFeature = commandLineInput.TargetFeature;
+
+                        src = GetCurrentInput(devMgr, _AllInfoMonitors[int.Parse(idx)]).Result;
+                        if (src == String.Empty)
+                        {
+                            _Input_RESPONSE.Result = "FAIL";
+                            _Input_RESPONSE.Message = "FAIL_SetVCP";
+                            System.Console.WriteLine(_Input_RESPONSE.ToJson());
+                            output += "\n" + _Input_RESPONSE.ToJson();
+                        }
+                        _Input_RESPONSE.Value = src;
+                        _Input_RESPONSE.Result = "PASS";
+                        _Input_RESPONSE.Value += "," + (data.LockSettings.Lock_Display_ActiveInputSource ? "LOCK" : "UNLOCK");
+                        System.Console.WriteLine(_Input_RESPONSE.ToJson());
+                        output += "\n" + _Input_RESPONSE.ToJson();
+                    }
+                }
+                else if (commandLineInput.ServiceTag.Count != 0)
+                {
+                    foreach (string tag in commandLineInput.ServiceTag)
+                    {
+                        var moTemp = _AllInfoMonitors.FindAll(x => x.edid.ServiceTag.ToUpper().Equals(tag.ToUpper()));
+                        CLI_RESPONSE _Input_RESPONSE = new CLI_RESPONSE();
+                        _Input_RESPONSE.Command = commandLineInput.Command;
+                        _Input_RESPONSE.TargetFeature = commandLineInput.TargetFeature;
+                        if (moTemp == null)
+                        {
+                            _Input_RESPONSE.Result = "FAIL";
+                            _Input_RESPONSE.Message = "Incorrect Value";
+                            System.Console.WriteLine(_Input_RESPONSE.ToJson());
+                            output += "\n" + _Input_RESPONSE.ToJson();
+                            writelog($"ActiveInputSource get fail {output}");
+                            return ((int)CLI_ExitCode.fail_Value, output);
+                        }
+                        foreach (MonitorInfo mt in moTemp)
+                        {
+                            writelog($"ActiveInputSource get entry");
+                            string src = String.Empty;
+                            _Input_RESPONSE = new CLI_RESPONSE(mt);
+                            _Input_RESPONSE.Command = commandLineInput.Command;
+                            _Input_RESPONSE.TargetFeature = commandLineInput.TargetFeature;
+                            if (commandLineInput.Options.Count != 0)
+                            {
+                                _Input_RESPONSE.Result = "FAIL";
+                                _Input_RESPONSE.Message = "Too Many Value";
+                                System.Console.WriteLine(_Input_RESPONSE.ToJson());
+                                output += "\n" + _Input_RESPONSE.ToJson();
+                                writelog($"ActiveInputSource get fail {output}");
+                                return ((int)CLI_ExitCode.fail_Value, output);
+                            }
+                            src = GetCurrentInput(devMgr, mt).Result;
                             if (src == String.Empty)
                             {
                                 _Input_RESPONSE.Result = "FAIL";
@@ -4659,113 +4721,60 @@ namespace DDPM.CLI.Plugins.Display
                                 System.Console.WriteLine(_Input_RESPONSE.ToJson());
                                 output += "\n" + _Input_RESPONSE.ToJson();
                             }
-                            else
-                            {
-                                _Input_RESPONSE.Result = "PASS";
-                                _Input_RESPONSE.Value += "," + (data.LockSettings.Lock_Display_ActiveInputSource ? "LOCK" : "UNLOCK");
-                                System.Console.WriteLine(_Input_RESPONSE.ToJson());
-                                output += "\n" + _Input_RESPONSE.ToJson();
-                            }
-                        }
-                        else
-                        {
-                            //_Input_RESPONSE.ActiveInputSource = src;
-                            _Input_RESPONSE.Result = "FAIL";
-                            _Input_RESPONSE.Message = "Too Many Value";
+                            _Input_RESPONSE.Value = src;
+                            _Input_RESPONSE.Result = "PASS";
+                            _Input_RESPONSE.Value += "," + (data.LockSettings.Lock_Display_ActiveInputSource ? "LOCK" : "UNLOCK");
                             System.Console.WriteLine(_Input_RESPONSE.ToJson());
                             output += "\n" + _Input_RESPONSE.ToJson();
-                            writelog($"ActiveInputSource get idx fail {output}");
-                            return ((int)CLI_ExitCode.fail_Value, output);
-                        }
-                    }
-                }
-                else if (commandLineInput.ServiceTag.Count != 0)
-                {
-                    foreach (string tag in commandLineInput.ServiceTag)
-                    {
-                        var tmp = _AllInfoMonitors.FindAll(x => x.edid.ServiceTag.ToUpper().Equals(tag.ToUpper()));
-                        foreach (MonitorInfo mo in tmp)
-                        {
-                            writelog($"ActiveInputSource get tag entry");
-                            CLI_RESPONSE _Input_RESPONSE = new CLI_RESPONSE(mo);
-                            string src = String.Empty;
-                            _Input_RESPONSE.Command = commandLineInput.Command;
-                            _Input_RESPONSE.TargetFeature = commandLineInput.TargetFeature;
-                            if (commandLineInput.Options.Count == 0)
-                            {
-                                src = GetCurrentInput(devMgr, mo).Result;
-                                //_Input_RESPONSE.ActiveInputSource = src;
-                                _Input_RESPONSE.Value = src;
-                                if (src == String.Empty)
-                                {
-                                    _Input_RESPONSE.Result = "FAIL";
-                                    _Input_RESPONSE.Message = "FAIL_SetVCP";
-                                    System.Console.WriteLine(_Input_RESPONSE.ToJson());
-                                    output += "\n" + _Input_RESPONSE.ToJson();
-                                }
-                                else
-                                {
-                                    _Input_RESPONSE.Result = "PASS";
-                                    _Input_RESPONSE.Value += "," + (data.LockSettings.Lock_Display_ActiveInputSource ? "LOCK" : "UNLOCK");
-                                    System.Console.WriteLine(_Input_RESPONSE.ToJson());
-                                    output += "\n" + _Input_RESPONSE.ToJson();
-                                }
-                            }
-                            else
-                            {
-                                //_Input_RESPONSE.ActiveInputSource = src;
-                                _Input_RESPONSE.Result = "FAIL";
-                                _Input_RESPONSE.Message = "Too Many Value";
-                                System.Console.WriteLine(_Input_RESPONSE.ToJson());
-                                output += "\n" + _Input_RESPONSE.ToJson();
-                                writelog($"ActiveInputSource get option value fail {output}");
-                                return ((int)CLI_ExitCode.fail_Value, output);
-                            }
                         }
                     }
                 }
                 else if (commandLineInput.Model.Count != 0)
                 {
-                    foreach (string modelName in commandLineInput.Model)
+                    foreach (string md in commandLineInput.Model)
                     {
-                        var tmp = _AllInfoMonitors.FindAll(x => x.edid.ModelName.ToUpper().Equals(modelName.ToUpper()));
-                        foreach (MonitorInfo mo in tmp)
+                        var moTemp = _AllInfoMonitors.FindAll(x => x.modelName.ToUpper().Equals(md.ToUpper()));
+                        CLI_RESPONSE _Input_RESPONSE = new CLI_RESPONSE();
+                        _Input_RESPONSE.Command = commandLineInput.Command;
+                        _Input_RESPONSE.TargetFeature = commandLineInput.TargetFeature;
+                        if (moTemp == null)
                         {
-                            writelog($"ActiveInputSource get tag entry");
-                            CLI_RESPONSE _Input_RESPONSE = new CLI_RESPONSE(mo);
+                            _Input_RESPONSE.Result = "FAIL";
+                            _Input_RESPONSE.Message = "Incorrect Value";
+                            System.Console.WriteLine(_Input_RESPONSE.ToJson());
+                            output += "\n" + _Input_RESPONSE.ToJson();
+                            writelog($"ActiveInputSource get fail {output}");
+                            return ((int)CLI_ExitCode.fail_Value, output);
+                        }
+                        foreach (MonitorInfo mt in moTemp)
+                        {
+                            writelog($"ActiveInputSource get entry");
                             string src = String.Empty;
+                            _Input_RESPONSE = new CLI_RESPONSE(mt);
                             _Input_RESPONSE.Command = commandLineInput.Command;
                             _Input_RESPONSE.TargetFeature = commandLineInput.TargetFeature;
-                            if (commandLineInput.Options.Count == 0)
+                            if (commandLineInput.Options.Count != 0)
                             {
-                                src = GetCurrentInput(devMgr, mo).Result;
-                                //_Input_RESPONSE.ActiveInputSource = src;
-                                _Input_RESPONSE.Value = src;
-                                if (src == String.Empty)
-                                {
-                                    _Input_RESPONSE.Result = "FAIL";
-                                    _Input_RESPONSE.Message = "FAIL_SetVCP";
-                                    System.Console.WriteLine(_Input_RESPONSE.ToJson());
-                                    output += "\n" + _Input_RESPONSE.ToJson();
-                                }
-                                else
-                                {
-                                    _Input_RESPONSE.Result = "PASS";
-                                    _Input_RESPONSE.Value += "," + (data.LockSettings.Lock_Display_ActiveInputSource ? "LOCK" : "UNLOCK");
-                                    System.Console.WriteLine(_Input_RESPONSE.ToJson());
-                                    output += "\n" + _Input_RESPONSE.ToJson();
-                                }
-                            }
-                            else
-                            {
-                                //_Input_RESPONSE.ActiveInputSource = src;
                                 _Input_RESPONSE.Result = "FAIL";
                                 _Input_RESPONSE.Message = "Too Many Value";
                                 System.Console.WriteLine(_Input_RESPONSE.ToJson());
                                 output += "\n" + _Input_RESPONSE.ToJson();
-                                writelog($"ActiveInputSource get option value fail {output}");
+                                writelog($"ActiveInputSource get fail {output}");
                                 return ((int)CLI_ExitCode.fail_Value, output);
                             }
+                            src = GetCurrentInput(devMgr, mt).Result;
+                            if (src == String.Empty)
+                            {
+                                _Input_RESPONSE.Result = "FAIL";
+                                _Input_RESPONSE.Message = "FAIL_SetVCP";
+                                System.Console.WriteLine(_Input_RESPONSE.ToJson());
+                                output += "\n" + _Input_RESPONSE.ToJson();
+                            }
+                            _Input_RESPONSE.Value = src;
+                            _Input_RESPONSE.Result = "PASS";
+                            _Input_RESPONSE.Value += "," + (data.LockSettings.Lock_Display_ActiveInputSource ? "LOCK" : "UNLOCK");
+                            System.Console.WriteLine(_Input_RESPONSE.ToJson());
+                            output += "\n" + _Input_RESPONSE.ToJson();
                         }
                     }
                 }
@@ -12476,7 +12485,6 @@ namespace DDPM.CLI.Plugins.Display
                 default: return "0x11";
             }
         }
-
         private (int code, string result) SetPowerSetting(IDeviceManagerSA devMgr, CommandLineInput commandLineInput)
         {
             if (commandLineInput.Command == "GET" && commandLineInput.Options.Count == 0)

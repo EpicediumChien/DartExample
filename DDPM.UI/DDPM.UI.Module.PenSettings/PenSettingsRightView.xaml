@@ -47,8 +47,8 @@
                             </StackPanel>
                             <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="0,23,0,0">
                                 <UXControls:UXTextBlock Text="0" FontSize="14" Foreground="{DynamicResource txtCaption_TxtColor}" Margin="42,1,7,0" FontFamily="Roboto" />
-                                <UXControls:UXSlider x:Name="TipSlider" TickFrequency="1"  TickPlacement="Both" IsSnapToTickEnabled="True" Value="{Binding TipSensitivity}"  
-                                         Minimum="0" Maximum="6" Width="375" Thumb.DragStarted="Slider_DragStarted" Thumb.DragCompleted="TipSlider_DragCompleted" />
+                                <UXControls:UXSlider x:Name="TipSlider" Ticks="12.5,25,50,62.5,75"  TickPlacement="Both" IsSnapToTickEnabled="True" Value="{Binding TipSensitivity}" AutoToolTipPlacement="TopLeft"  
+                                         Minimum="0" Maximum="100" Width="375" Thumb.DragStarted="Slider_DragStarted" Thumb.DragCompleted="TipSlider_DragCompleted" AutoToolTipPrecision="1" />
                                 <UXControls:UXTextBlock Text="100" FontSize="14" Foreground="{DynamicResource txtCaption_TxtColor}" Margin="16,1,0,0" FontFamily="Roboto"/>
                             </StackPanel>
                             <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="18,25,0,0">
@@ -63,8 +63,8 @@
                             </StackPanel>
                             <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="0,23,0,0">
                                 <UXControls:UXTextBlock Text="0" FontSize="14" Foreground="{DynamicResource txtCaption_TxtColor}" Margin="42,1,7,0" FontFamily="Roboto" />
-                                <UXControls:UXSlider x:Name="TiltSlider" TickFrequency="1"  TickPlacement="Both" IsSnapToTickEnabled="True" Value="{Binding TiltSensitivity}"  
-                                         Minimum="0" Maximum="2" Width="375" Thumb.DragStarted="Slider_DragStarted" Thumb.DragCompleted="TiltSlider_DragCompleted" />
+                                <UXControls:UXSlider x:Name="TiltSlider" TickFrequency="50"  TickPlacement="Both" IsSnapToTickEnabled="True" Value="{Binding TiltSensitivity}"  
+                                         Minimum="0" Maximum="100" Width="375" Thumb.DragStarted="Slider_DragStarted" Thumb.DragCompleted="TiltSlider_DragCompleted" AutoToolTipPlacement="TopLeft" />
                                 <UXControls:UXTextBlock Text="100" FontSize="14" Foreground="{DynamicResource txtCaption_TxtColor}" Margin="16,1,0,0" FontFamily="Roboto"/>
                             </StackPanel>
                         </StackPanel>

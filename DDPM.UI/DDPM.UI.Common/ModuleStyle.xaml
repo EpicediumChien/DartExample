@@ -1027,6 +1027,9 @@
     <SolidColorBrush x:Key="SplitCtrl_OuterBorder_BdColor_Icon_Normal" Color="#FFFFFFFF" />
     <SolidColorBrush x:Key="SplitSplitter_Icon" Color="#FFFFFFFF" />
     <SolidColorBrush x:Key="SplitCtrl0B_IconFill"  Color="#FF132F54"/>
+
+    <SolidColorBrush x:Key="SplitItem_BkColor" Color="#FF132F54" />
+
     <!-- #endregion SplitItem of EasyArrange -->
 
     <!-- #region LockIcon -->

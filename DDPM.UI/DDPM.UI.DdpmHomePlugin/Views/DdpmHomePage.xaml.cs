@@ -964,6 +964,12 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
             RefreshListViewItemWidth();
         }
 
+        private void addAllTest_Click(object sender, RoutedEventArgs e)
+        {
+            AddAll();
+            RefreshListViewItemWidth();
+        }
+
         #endregion Debug - RWD self testing
 
         #region CollectionView for HomeDevice Sort and grouping
@@ -1200,6 +1206,102 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                     return childOfChild;
             }
             return null;
+        }
+
+        private void AddAll()
+        {
+            int id = _ddpmHomePageViewModel.HomeDevices.Count;
+
+            HomeDevice demo = new HomeDevice()
+            {
+                DeviceCategory = eDeviceCategory.Display,
+                DeviceName = $"Demo {id}",
+                // DeviceImage = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Monitors/aw2521hf.png"),
+                DeviceInfo = new DeviceInfo()
+                {
+                    Name = "aw2521hf",
+                    ModelNumber = "AW2521HF"
+                }
+            };
+            _ddpmHomePageViewModel.AddDemoHomeDevice(demo);
+            id++;
+            demo = new HomeDevice()
+            {
+                DeviceCategory = eDeviceCategory.KB,
+                DeviceName = $"Demo {id}",
+                //DeviceImage = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Images/KB900.png"),
+                DeviceInfo = new DeviceInfo()
+                {
+                    Name = "KB900",
+                    ModelNumber = "KB900"
+                }
+            };
+            _ddpmHomePageViewModel.AddDemoHomeDevice(demo);
+            id++;
+            demo = new HomeDevice()
+            {
+                DeviceCategory = eDeviceCategory.Mouse,
+                DeviceName = $"Demo {id}",
+                //DeviceImage = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Images/MS300.png"),
+                DeviceInfo = new DeviceInfo()
+                {
+                    Name = "MS300",
+                    ModelNumber = "MS300"
+                }
+            };
+            _ddpmHomePageViewModel.AddDemoHomeDevice(demo);
+            id++;
+            demo = new HomeDevice()
+            {
+                DeviceCategory = eDeviceCategory.Soundbar,
+                DeviceName = $"Demo {id}",
+                //DeviceImage = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Images/SB522A.png"),
+                DeviceInfo = new DeviceInfo()
+                {
+                    Name = "SB522A",
+                    ModelNumber = "SB522A"
+                }
+            };
+            _ddpmHomePageViewModel.AddDemoHomeDevice(demo);
+            id++;
+            demo = new HomeDevice()
+            {
+                DeviceCategory = eDeviceCategory.Headset,
+                DeviceName = $"Demo {id}",
+                //DeviceImage = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Images/WH3024.png"),
+                DeviceInfo = new DeviceInfo()
+                {
+                    Name = "WH3024",
+                    ModelNumber = "WH3024"
+                }
+            };
+            _ddpmHomePageViewModel.AddDemoHomeDevice(demo);
+            id++;
+            demo = new HomeDevice()
+            {
+                DeviceCategory = eDeviceCategory.Webcam,
+                DeviceName = $"Demo {id}",
+                //DeviceImage = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Images/WB3023.png"),
+                DeviceInfo = new DeviceInfo()
+                {
+                    Name = "WB3023",
+                    ModelNumber = "WB3023"
+                }
+            };
+            _ddpmHomePageViewModel.AddDemoHomeDevice(demo);
+            id++;
+            demo = new HomeDevice()
+            {
+                DeviceCategory = eDeviceCategory.Pen,
+                DeviceName = $"Demo {id}",
+                //DeviceImage = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Images/PN5122W.png"),
+                DeviceInfo = new DeviceInfo()
+                {
+                    Name = "PN5122W",
+                    ModelNumber = "PN5122W"
+                }
+            };
+            _ddpmHomePageViewModel.AddDemoHomeDevice(demo);
         }
     }
 }
