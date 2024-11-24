@@ -1341,34 +1341,44 @@ namespace DDPM.CLI.Plugins.Peripherals
                         x.Value = "";
                         if (x.Result == "")
                         {
-                            if (_devMgr.GetIsPropertyAntiFlickerSupported(x.Guid).Result)
+                            if(val == 50 || val == 60)
                             {
-                                var result = RunAsyncTimeout(_devMgr.SetAntiFlicker(x.Guid, val)).Result;
-                                if (result == "0")
+                                if (_devMgr.GetIsPropertyAntiFlickerSupported(x.Guid).Result)
                                 {
-                                    x.Result = "PASS";
-                                    retvalue = _devMgr.GetAntiFlickerValueByDTP(x.Guid).Result;
-                                    x.Value = retvalue.ToString();
-                                    x.Value += "," + (data.LockSettings.Lock_Webcam_AntiFlicker ? "LOCK" : "UNLOCK");
-                                    x.Message = "N/A";
-                                }
-                                else if (result == "1")
-                                {
-                                    x.Result = "FAIL";
-                                    x.Message = "Timeout";
+                                    var result = RunAsyncTimeout(_devMgr.SetAntiFlicker(x.Guid, val)).Result;
+                                    if (result == "0")
+                                    {
+                                        x.Result = "PASS";
+                                        retvalue = _devMgr.GetAntiFlickerValueByDTP(x.Guid).Result;
+                                        x.Value = retvalue.ToString();
+                                        x.Value += "," + (data.LockSettings.Lock_Webcam_AntiFlicker ? "LOCK" : "UNLOCK");
+                                        x.Message = "N/A";
+                                    }
+                                    else if (result == "1")
+                                    {
+                                        x.Result = "FAIL";
+                                        x.Message = "Timeout";
+                                    }
+                                    else
+                                    {
+                                        x.Result = "FAIL";
+                                        x.Message = result;
+                                    }
+                                    retcode = (result == "0") ? true : false;
                                 }
                                 else
                                 {
+                                    x.Value = "N/A";
                                     x.Result = "FAIL";
-                                    x.Message = result;
+                                    x.Message = "Webcam not support AntiFlicker";
+                                    retcode = false;
                                 }
-                                retcode = (result == "0") ? true : false;
                             }
                             else
                             {
-                                x.Value = "N/A";
                                 x.Result = "FAIL";
-                                x.Message = "Webcam not support AntiFlicker";
+                                x.Message = "Wrong option value: ";
+                                x.Message += $"{val}";
                                 retcode = false;
                             }
                         }

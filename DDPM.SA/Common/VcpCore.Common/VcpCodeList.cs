@@ -1,10 +1,11 @@
+using System;
 using System.Collections.Generic;
 
 namespace VcpCore.Common
 {
     public static class VcpCodeList
     {
-        public static Dictionary<string, byte> VCPctr = new Dictionary<string, byte>
+        public static Dictionary<string, byte> VCPctr = new Dictionary<string, byte>(StringComparer.OrdinalIgnoreCase)
         {
             {"VCP Code Page" , 0x00 },
             {"Degauss" , 0x01 },
@@ -173,7 +174,7 @@ namespace VcpCore.Common
             {"Gaming" , 0xF4 },
         };
 
-        public static Dictionary<string, uint> VCP60 = new Dictionary<string, uint>
+        public static Dictionary<string, uint> VCP60 = new Dictionary<string, uint>(StringComparer.OrdinalIgnoreCase)
         {
             {"VGA1" , 0x01 },
             {"VGA2" , 0x02 },
@@ -213,7 +214,7 @@ namespace VcpCore.Common
             {"USB Comm from USB-C4, Type-C, port 4" , 0x85 }
         };
 
-        public static Dictionary<string, uint> VCPF8 = new Dictionary<string, uint> // USB-C Prioritization
+        public static Dictionary<string, uint> VCPF8 = new Dictionary<string, uint>(StringComparer.OrdinalIgnoreCase) // USB-C Prioritization
         {
             { "High Resolution", 0xF800 },
             { "High Data Speed", 0xF801 },
@@ -221,7 +222,7 @@ namespace VcpCore.Common
             { "FHD", 0xF810 }
         };
 
-        public static Dictionary<string, byte> VCPDC = new Dictionary<string, byte>
+        public static Dictionary<string, byte> VCPDC = new Dictionary<string, byte>(StringComparer.OrdinalIgnoreCase)
         {
             { "Standard/Native", 0 }, // 20240731 jim add  "Game/Game1"
             { "Standard", 0 },
@@ -235,7 +236,7 @@ namespace VcpCore.Common
             { "Sport", 6 }
         };
 
-        public static Dictionary<string, byte> VCPF0 = new Dictionary<string, byte>
+        public static Dictionary<string, byte> VCPF0 = new Dictionary<string, byte>(StringComparer.OrdinalIgnoreCase)
         {
             { "Text", 1 },
             { "AdobeRGB", 2 },
@@ -298,7 +299,7 @@ namespace VcpCore.Common
             { "Display P3", 161 }
         };
 
-        public static Dictionary<string, byte> VCP14 = new Dictionary<string, byte>
+        public static Dictionary<string, byte> VCP14 = new Dictionary<string, byte>(StringComparer.OrdinalIgnoreCase)
         {
             { "sRGB", 1 },
             { "sRGB D65 sRGB L120", 1 },
@@ -392,7 +393,7 @@ namespace VcpCore.Common
             { 47, "SPORTS Game" },
         };
 
-        public static Dictionary<string, int> VCPE2_HardCode = new Dictionary<string, int>
+        public static Dictionary<string, int> VCPE2_HardCode = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase)
         {
             { "Native", 0 },
             { "User 1", 44 },
@@ -415,9 +416,10 @@ namespace VcpCore.Common
             { "BT.709", 26 },
             { "Rec709", 26 }
         };
+
         public static Dictionary<uint, string> VCPC8 = new Dictionary<uint, string>
         {
-            { 0x00, "Reserved" }, 
+            { 0x00, "Reserved" },
             { 0x01, "Conexant" },
             { 0x02, "Genesis Microchip" },
             { 0x03, "Macronix" },
@@ -449,7 +451,7 @@ namespace VcpCore.Common
             { 0X1D, "Micronas" }
         };
 
-        public static Dictionary<string, int> VCPE2_ref = new Dictionary<string, int>
+        public static Dictionary<string, int> VCPE2_ref = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase)
         {
             {"Standard/Native", 0},
             {"Standard", 0 },
@@ -466,7 +468,7 @@ namespace VcpCore.Common
             {"AdobeRGB1 (D65G2.2L250)", 42},
             {"AdobeRGB2 (D50G2.2L250)", 43},
             {"AdobeRGB1", 42},
-            {"AdobeRGB2", 43},           
+            {"AdobeRGB2", 43},
             {"xvMode", 8},
             {"DICOM", 9},
             {"CAL1", 10},
@@ -522,7 +524,7 @@ namespace VcpCore.Common
             {"DisplayHDR", 58},
             {"HDR10", 59},
             {"HLG", 60},
-            {"Presets Disabled", 127}            
+            {"Presets Disabled", 127}
         };
 
         public struct VcpValue
