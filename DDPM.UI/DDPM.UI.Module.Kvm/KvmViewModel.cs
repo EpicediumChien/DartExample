@@ -586,6 +586,7 @@ namespace DDPM.UI.Module.Kvm
 
         public KvmViewModel()
         {
+            _log = DdpmCommonHelper.MyConsole.CreateLog("KvmViewModel");
             if (DdpmCommonHelper.DeviceManagerSA != null)
             {
                 //OSD/VCP control back event
@@ -686,7 +687,7 @@ namespace DDPM.UI.Module.Kvm
             }
             else
             {
-                _log.Debug("MonitorInfo is null.");
+                _log?.Debug("MonitorInfo is null.");
             }
         }
 
@@ -817,7 +818,7 @@ namespace DDPM.UI.Module.Kvm
                                             }
                                             else
                                             {
-                                                _log.Debug("PC4 not found in pcsList.");
+                                                _log?.Debug("PC4 not found in pcsList.");
                                             }
                                         }
                                         else
@@ -827,7 +828,7 @@ namespace DDPM.UI.Module.Kvm
                                     }
                                     else
                                     {
-                                        _log.Debug("PC3 not found in pcsList.");
+                                        _log?.Debug("PC3 not found in pcsList.");
                                     }
                                 }
                                 else
@@ -837,13 +838,13 @@ namespace DDPM.UI.Module.Kvm
                             }
                             else
                             {
-                                _log.Debug("PC1 or PC2 not found in pcsList.");
+                                _log?.Debug("PC1 or PC2 not found in pcsList.");
                             }
                         }
                     }
                     else
                     {
-                        _log.Debug("inputList is null or pcsList is null or count < 2.");
+                        _log?.Debug("inputList is null or pcsList is null or count < 2.");
                         isUSBKVMButton = false;
                         USBKVMButtonOpacity = 0.5;
                     }
@@ -1024,7 +1025,7 @@ namespace DDPM.UI.Module.Kvm
             }
             else
             {
-                _log.Debug(pcnum + " not found in pcsList.");
+                _log?.Debug(pcnum + " not found in pcsList.");
             }
         }
 
@@ -1510,7 +1511,7 @@ namespace DDPM.UI.Module.Kvm
                                     }
                                     else
                                     {
-                                        _log.Debug("PC4 not found in pcsList.");
+                                        _log?.Debug("PC4 not found in pcsList.");
                                     }
                                 }
                                 else
@@ -1526,7 +1527,7 @@ namespace DDPM.UI.Module.Kvm
                             }
                             else
                             {
-                                _log.Debug("PC3 not found in pcsList.");
+                                _log?.Debug("PC3 not found in pcsList.");
                             }
                         }
                         else
@@ -1570,13 +1571,13 @@ namespace DDPM.UI.Module.Kvm
                     }
                     else
                     {
-                        _log.Debug("PC1 or PC2 not found in pcsList.");
+                        _log?.Debug("PC1 or PC2 not found in pcsList.");
                     }
                 }
             }
             else
             {
-                _log.Debug("pcsList is null");
+                _log?.Debug("pcsList is null");
             }
         }
 
@@ -1637,13 +1638,13 @@ namespace DDPM.UI.Module.Kvm
                                         }
                                         else
                                         {
-                                            _log.Debug("PC4 not found in pcsList.");
+                                            _log?.Debug("PC4 not found in pcsList.");
                                         }
                                     }
                                 }
                                 else
                                 {
-                                    _log.Debug("PC3 not found in pcsList.");
+                                    _log?.Debug("PC3 not found in pcsList.");
                                 }
                             }
                             OnPropertyChanged("PC1USB_Selected");
@@ -1653,17 +1654,17 @@ namespace DDPM.UI.Module.Kvm
                         }
                         else
                         {
-                            _log.Debug("PC1 or PC2 not found in pcsList.");
+                            _log?.Debug("PC1 or PC2 not found in pcsList.");
                         }
                     }
                     else
                     {
-                        _log.Debug("[KvmViewModel] usbsList is null or count is 0");
+                        _log?.Debug("[KvmViewModel] usbsList is null or count is 0");
                     }
                 }
                 else
                 {
-                    _log.Debug("[KvmViewModel] inputList is null or count is 0");
+                    _log?.Debug("[KvmViewModel] inputList is null or count is 0");
                 }
             }
         }

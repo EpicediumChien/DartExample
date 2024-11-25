@@ -336,7 +336,7 @@ namespace DDPM.UI.Module.Kvm
             bool bt = false;
             if (vm.isPipSmall)
             {
-                vm._log!.Info("[KVMPIPPBPFullView]SetPipModeSmall");
+                vm._log?.Info("[KVMPIPPBPFullView]SetPipModeSmall");
                 bool bpxp = DdpmCommonHelper.DeviceManagerSA.SetPipModeSmall(DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo).Result;
                 if (bpxp)
                 {
@@ -346,7 +346,7 @@ namespace DDPM.UI.Module.Kvm
             }
             else if (vm.isPipLarge)
             {
-                vm._log!.Info("[KVMPIPPBPFullView]SetPipModeLarge");
+                vm._log?.Info("[KVMPIPPBPFullView]SetPipModeLarge");
                 bool bpxp = DdpmCommonHelper.DeviceManagerSA.SetPipModeLarge(DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo).Result;
                 if (bpxp)
                 {
@@ -356,7 +356,7 @@ namespace DDPM.UI.Module.Kvm
             }
             else if (vm.isPBP)
             {
-                vm._log!.Info("[KVMPIPPBPFullView]SetPbpMode");
+                vm._log?.Info("[KVMPIPPBPFullView]SetPbpMode");
                 bool bpxp = DdpmCommonHelper.DeviceManagerSA.SetPbpMode(DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo, vm.PxPCode).Result;
                 if (bpxp)
                 {
@@ -377,7 +377,7 @@ namespace DDPM.UI.Module.Kvm
             }
             else
             {
-                vm._log!.Info("[KVMPIPPBPFullView]SaveFull");
+                vm._log?.Info("[KVMPIPPBPFullView]SaveFull");
                 bool bpxp = DdpmCommonHelper.DeviceManagerSA.SetPipModeOff(DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo).Result;
                 if (bpxp)
                 {
