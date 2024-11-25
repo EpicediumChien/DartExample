@@ -984,22 +984,35 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             List<ALSConfig> existAlsConfig = _DisplayManagerPlugin. GetAllExistAlsConfig().Result;
             ALSConfig findconfig = existAlsConfig.Find(x => x.Edid.Equals(m.edid));
 
-            Trace.WriteLine("findconfig.ModelName = " + findconfig.ModelName.ToString() + " ; & findconfig.isPrimaryMonitorSync = " + findconfig.isPrimaryMonitorSync.ToString());
-            if (findconfig != null && findconfig.isPrimaryMonitorSync)// Find PrimaryMonitorSync on Monitor
+            Trace.WriteLine("Into MonitorInfo = " + m.edid.ModelName.ToString());
+            for (int i = 0; i < existAlsConfig.Count; i++)
             {
-                for (int i = 0; i < _AllInfoMonitors.Count; i++)// Compare AllInfoMonitors
+                Trace.WriteLine("GetAllExistAlsConfig ModelName = " + i.ToString() + " : " + existAlsConfig[i].ModelName.ToString());
+            }
+            if (findconfig != null)
+            {
+                Trace.WriteLine("findconfig.ModelName = " + findconfig.ModelName.ToString() + " ; & findconfig.isPrimaryMonitorSync = " + findconfig.isPrimaryMonitorSync.ToString());
+                if (findconfig != null && findconfig.isPrimaryMonitorSync)// Find PrimaryMonitorSync on Monitor
                 {
-                    MonitorInfo mo = _AllInfoMonitors[i];
-
-                    if (m.edid.Equals(mo.edid) == false)// Find different Monitor with PrimaryMonitorSync on Monitor
+                    for (int i = 0; i < _AllInfoMonitors.Count; i++)// Compare AllInfoMonitors
                     {
-                        Trace.WriteLine("e.monitor.ModelName = " + m.edid.ModelName.ToString() + " ||  mo.ModelName = " + mo.edid.ModelName.ToString());
-                        writelog("[DeviceMangerPlugin] SyncPrimaryMonitorAndColorPresetStatus ..... SetVCPCapability => " + mo.edid.ModelName.ToString() + ColorPreset_Name);
-                        Task.Run(() => SetVCPCapability(mo, "colorpreset", ColorPreset_Name).Result).ConfigureAwait(false);
+                        MonitorInfo mo = _AllInfoMonitors[i];
+
+                        if (m.edid.Equals(mo.edid) == false)// Find different Monitor with PrimaryMonitorSync on Monitor
+                        {
+                            Trace.WriteLine("e.monitor.ModelName = " + m.edid.ModelName.ToString() + " ||  mo.ModelName = " + mo.edid.ModelName.ToString());
+                            writelog("[DeviceMangerPlugin] SyncPrimaryMonitorAndColorPresetStatus ..... SetVCPCapability => " + mo.edid.ModelName.ToString() + ColorPreset_Name);
+                            Task.Run(() => SetVCPCapability(mo, "colorpreset", ColorPreset_Name).Result).ConfigureAwait(false);
+                        }
                     }
                 }
+                return Task.FromResult(blRet);
             }
-            return Task.FromResult(blRet);
+            else
+            {
+                writelog("[DeviceMangerPlugin] SyncPrimaryMonitorAndColorPresetStatus ..... findconfig == null");
+                return Task.FromResult(false);
+            }
         }
 
         public Task<bool> Send_NightLightStatus_Telementry_SA(MonitorInfo m, string NightLightStatus)
