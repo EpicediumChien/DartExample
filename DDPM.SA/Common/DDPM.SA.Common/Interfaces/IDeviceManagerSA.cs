@@ -191,6 +191,8 @@ namespace DDPM.SA.Common
 
         Task<List<string>> GetUSBUpstreamList(MonitorInfo monitorInfo);
 
+        Task<string> GetUSBUpstream(MonitorInfo monitorInfo, string inputsource);
+
         Task<bool> SetUSBUpstream(MonitorInfo monitorInfo, string inputsource, string upstream);
 
         Task<bool> USBSwitch(MonitorInfo monitorInfo, string inputsource1, string upstream1, string inputsource2, string upstream2);
