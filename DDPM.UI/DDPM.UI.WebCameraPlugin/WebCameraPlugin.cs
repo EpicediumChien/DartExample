@@ -183,7 +183,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                     {
                         case "Webcam_IsHDROnChanged":
                             {
-                                if (!event_param.TryGetValue("EventType", out var NewValue))
+                                if (!event_param.TryGetValue("NewValue", out var NewValue))
                                 {
                                     _log.Debug("NewValue cannot be found in event_param");
                                     return;
