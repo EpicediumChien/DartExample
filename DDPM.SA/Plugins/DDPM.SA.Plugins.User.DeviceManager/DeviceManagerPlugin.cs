@@ -4547,6 +4547,9 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             if (UIUpdateNotify == null || e == null || e == EventArgs.Empty)
                 return;
 
+            //Derek 1125
+            HandleQAMEvent(e.UI_Field_Name);
+
             EventHandler<UpdateUINotify> Handler = UIUpdateNotify;
             if (Handler != null)
             {
@@ -9670,6 +9673,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         private bool _IsZoomMeetingActive;
         private ZoomMeetingType _ZoomMeetingType;
         private bool isActiveConditionsMet = false; //Derek 1124 
+        private bool isHiddenConditionsMet = false;
         private void HandleQAM()
         {
             writelog($"HandleQAM start");
@@ -9718,41 +9722,47 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
             writelog($"HandleQAM done");
         }
-        private void ZoomChanged(object sender, ZoomChangedArgs e)
-        {
-            writelog($"[DeviceManager] IsZoomScreenShareActiveChanged e == null: {e == null}");
-            if (e != null)
-            {
-                writelog($"[DeviceManager] IsZoomScreenShareActiveChanged e.Zoom: {e.Zoom}");
-            }
+
+        private void HandleQAMEvent(string eventMsg)
+        { 
         }
-        private void ZoomMeetingTypeChanged(object sender, ZoomMeetingTypeChangedArgs e)
-        {
-            writelog($"[DeviceManager] ZoomMeetingTypeChanged e == null: {e == null}");
-            if (e != null)
-            {
-                writelog($"[DeviceManager] ZoomMeetingTypeChanged e.ZoomMeetingType: {e.ZoomMeetingType}");
-                _ZoomMeetingType = (ZoomMeetingType)e.ZoomMeetingType;
-            }
-        }
-        private void IsZoomMeetingActiveChanged(object sender, IsZoomMeetingActiveChangedArgs e)
-        {
-            writelog($"[DeviceManager] IsZoomMeetingActiveChanged e == null: {e == null}");
-            if (e != null)
-            {
-                writelog($"[DeviceManager] IsZoomMeetingActiveChanged e.IsZoomMeetingActive: {e.IsZoomMeetingActive}");
-                _IsZoomMeetingActive = e.IsZoomMeetingActive;
-            }
-        }
-        private void IsZoomScreenShareActiveChanged(object sender, IsZoomScreenShareActiveChangedArgs e)
-        {
-            writelog($"[DeviceManager] IsZoomScreenShareActiveChanged e == null: {e == null}");
-            if (e != null)
-            {
-                writelog($"[DeviceManager] IsZoomScreenShareActiveChanged e.IsZoomScreenShareActive: {e.IsZoomScreenShareActive}");
-                _IsZoomScreenShareActive = e.IsZoomScreenShareActive;
-            }
-        }
+
+        //Marked by Derek 1125 because they had covered by WebcamEventHandler
+        //private void ZoomChanged(object sender, ZoomChangedArgs e)
+        //{
+        //    writelog($"[DeviceManager] IsZoomScreenShareActiveChanged e == null: {e == null}");
+        //    if (e != null)
+        //    {
+        //        writelog($"[DeviceManager] IsZoomScreenShareActiveChanged e.Zoom: {e.Zoom}");
+        //    }
+        //}
+        //private void ZoomMeetingTypeChanged(object sender, ZoomMeetingTypeChangedArgs e)
+        //{
+        //    writelog($"[DeviceManager] ZoomMeetingTypeChanged e == null: {e == null}");
+        //    if (e != null)
+        //    {
+        //        writelog($"[DeviceManager] ZoomMeetingTypeChanged e.ZoomMeetingType: {e.ZoomMeetingType}");
+        //        _ZoomMeetingType = (ZoomMeetingType)e.ZoomMeetingType;
+        //    }
+        //}
+        //private void IsZoomMeetingActiveChanged(object sender, IsZoomMeetingActiveChangedArgs e)
+        //{
+        //    writelog($"[DeviceManager] IsZoomMeetingActiveChanged e == null: {e == null}");
+        //    if (e != null)
+        //    {
+        //        writelog($"[DeviceManager] IsZoomMeetingActiveChanged e.IsZoomMeetingActive: {e.IsZoomMeetingActive}");
+        //        _IsZoomMeetingActive = e.IsZoomMeetingActive;
+        //    }
+        //}
+        //private void IsZoomScreenShareActiveChanged(object sender, IsZoomScreenShareActiveChangedArgs e)
+        //{
+        //    writelog($"[DeviceManager] IsZoomScreenShareActiveChanged e == null: {e == null}");
+        //    if (e != null)
+        //    {
+        //        writelog($"[DeviceManager] IsZoomScreenShareActiveChanged e.IsZoomScreenShareActive: {e.IsZoomScreenShareActive}");
+        //        _IsZoomScreenShareActive = e.IsZoomScreenShareActive;
+        //    }
+        //}
         private void QAMCloseEvent(object o, EventArgs e)
         {
             if (_QAM != null)

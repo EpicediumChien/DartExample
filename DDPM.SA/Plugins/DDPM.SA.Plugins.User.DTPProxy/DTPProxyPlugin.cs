@@ -117,12 +117,11 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
         public event EventHandler<bool> UpdateNotify;
 
-        public event EventHandler<ZoomChangedArgs> ZoomChanged_Notify;
-
-        public event EventHandler<ZoomMeetingTypeChangedArgs> ZoomMeetingTypeChanged_Notify;
-        public event EventHandler<IsZoomMeetingActiveChangedArgs> IsZoomMeetingActive_Notify;
-
-        public event EventHandler<IsZoomScreenShareActiveChangedArgs> IsZoomScreenShareActive_Notify;
+        //Marked by Derek 1125 because they had covered by WebcamEventHandler
+        //public event EventHandler<ZoomChangedArgs> ZoomChanged_Notify;
+        //public event EventHandler<ZoomMeetingTypeChangedArgs> ZoomMeetingTypeChanged_Notify;
+        //public event EventHandler<IsZoomMeetingActiveChangedArgs> IsZoomMeetingActive_Notify;
+        //public event EventHandler<IsZoomScreenShareActiveChangedArgs> IsZoomScreenShareActive_Notify;
 
         //Derek 1120
         public event EventHandler<UpdateUINotify> WebcamEventHandler;
@@ -5893,7 +5892,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                     _Webcamcom.FocusChanged += Webcam_FocusChanged;
                     _Webcamcom.PanChanged += Webcam_PanChanged;
                     _Webcamcom.TiltChanged += Webcam_TiltChanged;
-                    _Webcamcom.ZoomChanged += Webcam_ZoomChanged;
+                    _Webcamcom.ZoomChanged += Webcam_ZoomChanged; //QAM also use this event
                     _Webcamcom.BrightnessChanged += Webcam_BrightnessChanged;
                     _Webcamcom.ContrastChanged += Webcam_ContrastChanged;
                     _Webcamcom.AntiFlickerChanged += Webcam_AntiFlickerChanged;
@@ -5908,8 +5907,9 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                     _Webcamcom.FieldOfViewChanged += Webcam_FieldOfViewChanged;
                     _Webcamcom.IsHDROnChanged += Webcam_IsHDROnChanged;
                     _Webcamcom.SerialNumberChanged += Webcam_SerialNumberChanged;
-                    _Webcamcom.IsZoomMeetingActiveChanged += Webcam_IsZoomMeetingActiveChanged;
-                    _Webcamcom.IsZoomScreenShareActiveChanged += Webcam_IsZoomScreenShareActiveChanged;
+                    _Webcamcom.IsZoomMeetingActiveChanged += Webcam_IsZoomMeetingActiveChanged; //for QAM
+                    _Webcamcom.IsZoomScreenShareActiveChanged += Webcam_IsZoomScreenShareActiveChanged; //for QAM
+                    _Webcamcom.ZoomMeetingTypeChanged += Webcam_ZoomMeetingTypeChanged; //for QAM
 
                     _Webcamcom.WALSnoozeTimeLeftInSecondsChanged += Webcam_WALSnoozeTimeLeftInSecondsChanged;
                     _Webcamcom.Esi_IsWALLockCountdownStartedChanged += Webcam_Esi_IsWALLockCountdownStartedChanged;
@@ -6136,26 +6136,26 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         {
             writelog($"[DTPProxy] Connected Device ID: {e.DeviceId} !!!!!!!!!!!!!!!");
         }
-        private void ZoomChanged(object sender, ZoomChangedArgs e)
-        {
-            writelog($"[DTPProxy] ZoomChanged e : {e}");
-            ZoomChanged_Notify?.Invoke(this, e);
-        }
-        private void ZoomMeetingTypeChanged(object sender, ZoomMeetingTypeChangedArgs e)
-        {
-            writelog($"[DTPProxy] ZoomMeetingTypeChanged e : {e}");
-            ZoomMeetingTypeChanged_Notify?.Invoke(this, e);
-        }
-        private void IsZoomMeetingActiveChanged(object sender, IsZoomMeetingActiveChangedArgs e)
-        {
-            writelog($"[DTPProxy] IsZoomMeetingActiveChanged e : {e}");
-            IsZoomMeetingActive_Notify?.Invoke(this, e);
-        }
-        private void IsZoomScreenShareActiveChanged(object sender, IsZoomScreenShareActiveChangedArgs e)
-        {
-            writelog($"[DTPProxy] ZoomMeetingTypeChanged e : {e}");
-            IsZoomScreenShareActive_Notify?.Invoke(this, e);
-        }
+        //private void ZoomChanged(object sender, ZoomChangedArgs e)
+        //{
+        //    writelog($"[DTPProxy] ZoomChanged e : {e}");
+        //    ZoomChanged_Notify?.Invoke(this, e);
+        //}
+        //private void ZoomMeetingTypeChanged(object sender, ZoomMeetingTypeChangedArgs e)
+        //{
+        //    writelog($"[DTPProxy] ZoomMeetingTypeChanged e : {e}");
+        //    ZoomMeetingTypeChanged_Notify?.Invoke(this, e);
+        //}
+        //private void IsZoomMeetingActiveChanged(object sender, IsZoomMeetingActiveChangedArgs e)
+        //{
+        //    writelog($"[DTPProxy] IsZoomMeetingActiveChanged e : {e}");
+        //    IsZoomMeetingActive_Notify?.Invoke(this, e);
+        //}
+        //private void IsZoomScreenShareActiveChanged(object sender, IsZoomScreenShareActiveChangedArgs e)
+        //{
+        //    writelog($"[DTPProxy] ZoomMeetingTypeChanged e : {e}");
+        //    IsZoomScreenShareActive_Notify?.Invoke(this, e);
+        //}
         private void _comdity_Dock_Disconnected(object sender, DisconnectedArgs e)
         {
             writelog($"Dock Disconnected Device ID: {e.DeviceId} !!!!!!!!!!!!!!!");
@@ -6218,12 +6218,21 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         //1. some devices has connected before DTPPlugin init
         //   A. register events for them, and remove events when disconnected
         //2. new devices connected --> register
+
+        private void Webcam_ZoomMeetingTypeChanged(object sender, ZoomMeetingTypeChangedArgs e)
+        {
+            SendWebcamEventToUI(CreateEventMsg("Webcam", "Webcam_ZoomMeetingTypeChanged",
+                                    e.DeviceId, $"NewValue:{e.ZoomMeetingType}"));
+
+            writelog($"Catch event Webcam_ZoomMeetingTypeChanged : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+        }
+
         private void Webcam_SharpnessChanged(object sender, SharpnessChangedArgs e)
         {
             SendWebcamEventToUI(CreateEventMsg("Webcam", "Webcam_SharpnessChanged",
                                     e.DeviceId, $"NewValue:{e.Sharpness}"));
 
-            throw new NotImplementedException();
+            writelog($"Catch event Webcam_SharpnessChanged : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
         }
 
         private void Webcam_Esi_WALLockCountdownChanged(object sender, Esi_WALLockCountdownChangedArgs e)
