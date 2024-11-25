@@ -9725,6 +9725,12 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         private void HandleQAMEvent(string eventMsg)
         { 
+            string[] msgs = eventMsg!.Split(';');
+
+            if (5 == msgs.Length)
+            {
+
+            }
         }
 
         //Marked by Derek 1125 because they had covered by WebcamEventHandler

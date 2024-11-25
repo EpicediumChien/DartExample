@@ -6422,7 +6422,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         private void Webcam_PriorityChanged(object sender, PriorityChangedArgs e)
         {
             SendWebcamEventToUI(CreateEventMsg("Webcam", "Webcam_PriorityChanged",
-                                    e.DeviceId, $"NewPriority:{e.Priority}"));
+                                    e.DeviceId, $"NewValue:{e.Priority}"));
 
             writelog($"Catch event _Webcamcom_PriorityChanged : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
         }
