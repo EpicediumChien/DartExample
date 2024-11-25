@@ -167,10 +167,18 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             Dictionary<string, string> event_param = deal_param(e.UI_Field_Name);
             try
             {
-                if (!event_param.TryGetValue("Device", out var device)) return;
+                if (!event_param.TryGetValue("Device", out var device))
+                {
+                    _log.Debug("Device cannot be found in event_param");
+                    return;
+                }
                 if (device == "Webcam")
                 {
-                    if (!event_param.TryGetValue("EventType", out var eventtype)) return;
+                    if (!event_param.TryGetValue("EventType", out var eventtype))
+                    {
+                        _log.Debug("EventType cannot be found in event_param");
+                        return;
+                    }
                     switch (eventtype)
                     {
                         case "Webcam_IsHDROnChanged":
