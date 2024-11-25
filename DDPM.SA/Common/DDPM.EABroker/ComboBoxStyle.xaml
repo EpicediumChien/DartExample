@@ -9,12 +9,19 @@
     <Color x:Key="DdpmCB_ItemHoverBkColor">#FF232D36</Color>
     <Color x:Key="DdpmCB_DisableBkColor">#FF293B4D</Color>
 
-    <SolidColorBrush x:Key="DdpmCB_BdBrush" Color="{StaticResource DdpmCB_BdColor}" />
+    <!--<SolidColorBrush x:Key="DdpmCB_BdBrush" Color="{StaticResource DdpmCB_BdColor}" />
+    <SolidColorBrush x:Key="DdpmCB_BkBrush" Color="{StaticResource DdpmCB_BkColor}" />
+    <SolidColorBrush x:Key="DdpmCB_TextColor" Color="White" />
+    <SolidColorBrush x:Key="DdpmCB_SelTextColor" Color="#FF31A2E3" />
+    <SolidColorBrush x:Key="DdpmCB_ItemHoverBkBrush" Color="{StaticResource DdpmCB_ItemHoverBkColor}"/>
+    <SolidColorBrush x:Key="DdpmCB_DisableBkBrush" Color="{StaticResource DdpmCB_DisableBkColor}"/>-->
+    <SolidColorBrush x:Key="DdpmCB_BdBrush" Color="#FF40586D" />
     <SolidColorBrush x:Key="DdpmCB_BkBrush" Color="{StaticResource DdpmCB_BkColor}" />
     <SolidColorBrush x:Key="DdpmCB_TextColor" Color="White" />
     <SolidColorBrush x:Key="DdpmCB_SelTextColor" Color="#FF31A2E3" />
     <SolidColorBrush x:Key="DdpmCB_ItemHoverBkBrush" Color="{StaticResource DdpmCB_ItemHoverBkColor}"/>
     <SolidColorBrush x:Key="DdpmCB_DisableBkBrush" Color="{StaticResource DdpmCB_DisableBkColor}"/>
+
 
     <!-- **************************************************************************** -->
     <!-- ComboBox ItemContainer Style -->
@@ -189,9 +196,9 @@
         <SolidColorBrush x:Key="ComboBox.Disabled.Editable.Button.Background" Color="Transparent"/>
         <SolidColorBrush x:Key="ComboBox.Disabled.Editable.Button.Border" Color="Transparent"/>        
         -->
-    <SolidColorBrush x:Key="ComboBox.Static.Border" Color="{StaticResource DdpmCB_BdColor}"/>
+    <SolidColorBrush x:Key="ComboBox.Static.Border" Color="#FF40586D"/>
     <SolidColorBrush x:Key="ComboBox.Static.Glyph" Color="Transparent"/>
-    <SolidColorBrush x:Key="ComboBox.Static.Editable.Background" Color="{StaticResource DdpmCB_BkColor}"/>
+    <SolidColorBrush x:Key="ComboBox.Static.Editable.Background" Color="#FF40586D"/>
     <SolidColorBrush x:Key="ComboBox.Static.Editable.Border" Color="#FFABADB3"/>
     <SolidColorBrush x:Key="ComboBox.Static.Editable.Button.Background" Color="Transparent"/>
     <SolidColorBrush x:Key="ComboBox.Static.Editable.Button.Border" Color="Transparent"/>
