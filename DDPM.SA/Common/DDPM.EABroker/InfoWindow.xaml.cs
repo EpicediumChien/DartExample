@@ -52,7 +52,7 @@ namespace DDPM.EABroker
             System.Windows.Interop.WindowInteropHelper wndHelper = new System.Windows.Interop.WindowInteropHelper(this);
             Win32Lib.Win32.HideWinFromAltTab(wndHelper.Handle);
 
-            InitLayoutList();
+          //  InitLayoutList();
             //InitPresetLayoutsComboBox();
         }
         #endregion Init
