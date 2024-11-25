@@ -101,14 +101,14 @@ namespace DDPM.UI.Plugin.Common
 
         private void SaveClick(object sender, MouseButtonEventArgs e)
         {
-            if (_deviceCat == AdvancedAction.OpenWebPage)
-            {
-                if (!InputHelper.InputValidation_WebURL(txtKeystroke.Text, out string info))
-                {
-                    MessageBox.Show(LangHelper.Instance["InvalidURL"]);
-                    return;
-                }
-            }
+            //if (_deviceCat == AdvancedAction.OpenWebPage)
+            //{
+            //    if (!InputHelper.InputValidation_WebURL(txtKeystroke.Text, out string info))
+            //    {
+            //        MessageBox.Show(LangHelper.Instance["InvalidURL"]);
+            //        return;
+            //    }
+            //}
             DialogResult = true;
             Close();
         }

@@ -900,6 +900,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             writelog("DeviceManagerPlugin received WriteColorPreset requested ...");
 
             bool r = false;
+
             if (_ColorPresetPlugin == null)
             {
                 writelog("null _ColorPresetPlugin in [DeviceManagerPlugin - WriteColorPreset]");
@@ -954,6 +955,14 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             //r = SetVCPCapability(m, "colorpreset", ColorPreset_Name).Result;
             r = await Task.Run(() => SetVCPCapability(m, "colorpreset", ColorPreset_Name).Result).ConfigureAwait(false);
 
+            // 11/23 Wayn Add
+            bool result = false;
+            result = await Task.Run(() => SyncPrimaryMonitorAndColorPresetStatus(m, ColorPreset_Name, colorPresetRunType).Result).ConfigureAwait(false);
+            if(!result)
+            {
+                writelog("[DeviceMangerPlugin] SyncPrimaryMonitorAndColorPresetStatus ... False");
+            }
+
             Trace.Write($"ColorPreset_Name = {ColorPreset_Name}");
             //}
             //return Task.FromResult(r);
@@ -988,6 +997,31 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
 
             return r;
+        }
+
+        public Task<bool> SyncPrimaryMonitorAndColorPresetStatus(MonitorInfo m, string ColorPreset_Name, int colorPresetRunType)
+        {
+            bool blRet = true;
+            writelog("[DeviceMangerPlugin] SyncPrimaryMonitorAndColorPresetStatus ... in");
+            List<ALSConfig> existAlsConfig = _DisplayManagerPlugin. GetAllExistAlsConfig().Result;
+            ALSConfig findconfig = existAlsConfig.Find(x => x.Edid.Equals(m.edid));
+
+            Trace.WriteLine("findconfig.ModelName = " + findconfig.ModelName.ToString() + " ; & findconfig.isPrimaryMonitorSync = " + findconfig.isPrimaryMonitorSync.ToString());
+            if (findconfig != null && findconfig.isPrimaryMonitorSync)// Find PrimaryMonitorSync on Monitor
+            {
+                for (int i = 0; i < _AllInfoMonitors.Count; i++)// Compare AllInfoMonitors
+                {
+                    MonitorInfo mo = _AllInfoMonitors[i];
+
+                    if (m.edid.Equals(mo.edid) == false)// Find different Monitor with PrimaryMonitorSync on Monitor
+                    {
+                        Trace.WriteLine("e.monitor.ModelName = " + m.edid.ModelName.ToString() + " ||  mo.ModelName = " + mo.edid.ModelName.ToString());
+                        writelog("[DeviceMangerPlugin] SyncPrimaryMonitorAndColorPresetStatus ..... SetVCPCapability => " + mo.edid.ModelName.ToString() + ColorPreset_Name);
+                        Task.Run(() => SetVCPCapability(mo, "colorpreset", ColorPreset_Name).Result).ConfigureAwait(false);
+                    }
+                }
+            }
+            return Task.FromResult(blRet);
         }
 
         public Task<bool> Send_NightLightStatus_Telementry_SA(MonitorInfo m, string NightLightStatus)
@@ -3090,6 +3124,21 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
         }
 
+        public async Task<bool> SetBoomMicAsync(string guid, bool newValue)
+        {
+            try
+            {
+                await _DTPProxyPlugin.SetBoomMicAsync(guid, newValue);
+                writelog($"[DeviceManagerPlugin] [Headset] SetBoomMicAsync success, value is {newValue.ToString()}");
+                return true;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [Headset] SetBoomMicAsync failed for GUID: {guid}, Error: {ex.Message}");
+                return false;
+            }
+        }
+
         //////////////////////////////////// Get//////////////////////////////////////////
 
         public async Task<JArray> GetDeviceItemsExAsync(string guid)
@@ -3935,6 +3984,36 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             catch (Exception ex)
             {
                 writelog($"[DeviceManagerPlugin] [Headset] GetIsMicNCIncomingSupportedAsync failed for {guid} - Exception: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> GetIsBoomMicSupportedAsync(string guid)
+        {
+            try
+            {
+                var result = await _DTPProxyPlugin.GetIsBoomMicSupportedAsync(guid);
+                writelog($"[DeviceManagerPlugin] [Headset] GetIsBoomMicSupportedAsync succeeded for {result.ToString()}");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [Headset] GetIsBoomMicSupportedAsync failed for {guid} - Exception: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> GetBoomMicAsync(string guid)
+        {
+            try
+            {
+                var result = await _DTPProxyPlugin.GetBoomMicAsync(guid);
+                writelog($"[DeviceManagerPlugin] [Headset] GetBoomMicAsync succeeded for {result.ToString()}");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [Headset] GetBoomMicAsync failed for {guid} - Exception: {ex.Message}");
                 return false;
             }
         }
@@ -8456,6 +8535,16 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             return await Task.Run(() => _DTPProxyPlugin.GetCameraFirmwareVersion(Guid));
         }
 
+        public async Task<bool> GetIsWindowsHelloCapabilityVerified(string Guid)
+        {
+            return await Task.Run(() => _DTPProxyPlugin.GetIsWindowsHelloCapabilityVerified(Guid));
+        }
+
+        public async Task<bool> GetIsAllSupportedResolutionsFound(string Guid)
+        {
+            return await Task.Run(() => _DTPProxyPlugin.GetIsAllSupportedResolutionsFound(Guid));
+        }
+
         public async Task<bool> GetIsPropertyFOVSupportedByDTP(string Guid)
         {
             return await Task.Run(() => _DTPProxyPlugin.GetIsPropertyFOVSupported(Guid));
@@ -8556,13 +8645,14 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             return Task.FromResult(true);
         }
 
-        public Task SetZoom(string guid, int newValue)
+        public Task<bool> SetZoom(string guid, int newValue)
         {
             writelog("DeviceMangerPlugin received SetZoom requested ...");
             writelog($"Target Guid is {guid}");
             writelog($"Target Value is {newValue}");
-            _DTPProxyPlugin.SetZoom(guid, newValue);
-            return Task.FromResult(true);
+            //_DTPProxyPlugin.SetZoom(guid, newValue);
+            //return Task.FromResult(true);
+            return _DTPProxyPlugin.SetZoom(guid, newValue);
         }
 
         public Task SetAutoFramingSensitivity(string guid, int newValue)
@@ -8583,13 +8673,13 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             return Task.FromResult(true);
         }
 
-        public Task SetIsAutoFramingOn(string guid, bool newValue)
+        public Task<bool> SetIsAutoFramingOn(string guid, bool newValue)
         {
             writelog("DeviceMangerPlugin received SetIsAutoFramingOn requested ...");
             writelog($"Target Guid is {guid}");
             writelog($"Target Value is {newValue}");
-            _DTPProxyPlugin.SetIsAutoFramingOn(guid, newValue);
-            return Task.FromResult(true);
+            //_DTPProxyPlugin.SetIsAutoFramingOn(guid, newValue);
+            return _DTPProxyPlugin.SetIsAutoFramingOn(guid, newValue);
         }
 
         public Task SetIsAutoFramingTransitionOn(string guid, bool newValue)
@@ -8601,7 +8691,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             return Task.FromResult(true);
         }
 
-        public Task SetFieldOfView(string guid, int newValue)
+        public Task<bool> SetFieldOfView(string guid, int newValue)
         {
             writelog("DeviceMangerPlugin received SetFieldOfView requested ...");
             writelog($"Target Guid is {guid}");
@@ -8829,7 +8919,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             return await Task.Run(() => _DTPProxyPlugin.GetIsWalkAwayLockEnable(guid));
         }
 
-        public async Task<bool> GetIsPrioritizeExternalWebcam(string guid)
+        public async Task<bool?> GetIsPrioritizeExternalWebcam(string guid)
         {
             return await Task.Run(() => _DTPProxyPlugin.GetIsPrioritizeExternalWebcam(guid));
         }

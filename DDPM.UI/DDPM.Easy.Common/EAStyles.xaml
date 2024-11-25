@@ -6,8 +6,8 @@
     
     <!-- #region Key Resources for Theme -->
     
-    <SolidColorBrush x:Key="SplitCtrl_OuterBorder_BdColor_Icon_Normal" Color="White" />
-    <SolidColorBrush x:Key="SplitSplitter_Icon" Color="White" />
+    <!--<SolidColorBrush x:Key="SplitCtrl_OuterBorder_BdColor_Icon_Normal" Color="White" />
+    <SolidColorBrush x:Key="SplitSplitter_Icon" Color="White" />-->
 
     <!-- #endregion Key Resources for Theme -->
     

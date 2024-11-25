@@ -1,12 +1,12 @@
 ﻿<UserControl
     x:Class="DDPM.UI.Module.Brightness.BrightnessRightView"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:UXControls="clr-namespace:Dell.Client.Framework.UX.WPF.Controls;assembly=DCF.UX.WPF"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:lang="clr-namespace:DDPM.UI.Resources.Helper;assembly=DDPM.UI.Resources"
-    xmlns:local="clr-namespace:DDPM.UI.Module.Brightness"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:local="clr-namespace:DDPM.UI.Module.Brightness"
+    xmlns:lang="clr-namespace:DDPM.UI.Resources.Helper;assembly=DDPM.UI.Resources"
+    xmlns:UXControls="clr-namespace:Dell.Client.Framework.UX.WPF.Controls;assembly=DCF.UX.WPF"
     d:DesignHeight="950"
     d:DesignWidth="800"
     mc:Ignorable="d">
@@ -960,8 +960,8 @@
                                                     FontSize="14"
                                                     Foreground="White"
                                                     IsEnabled="{Binding IsPRPreview, Converter={StaticResource boolReverseConverter}}"
-                                                    KeyDown="KeyDown_KeyDown"
                                                     MaxLength="30"
+                                                    PreviewTextInput="InputName_PreviewTextInput"
                                                     Text="{Binding PR1Name}"
                                                     TextChanged="PR1Name_TextChanged" />
                                             </Grid>
@@ -1282,8 +1282,8 @@
                                                     FontSize="14"
                                                     Foreground="White"
                                                     IsEnabled="{Binding IsPRPreview, Converter={StaticResource boolReverseConverter}}"
-                                                    KeyDown="KeyDown_KeyDown"
                                                     MaxLength="30"
+                                                    PreviewTextInput="InputName_PreviewTextInput"
                                                     Text="{Binding PR2Name}"
                                                     TextChanged="PR2Name_TextChanged" />
                                             </Grid>
@@ -1707,8 +1707,8 @@
                                                     FontSize="14"
                                                     Foreground="White"
                                                     IsEnabled="{Binding IsPR_Luminance_Preview, Converter={StaticResource boolReverseConverter}}"
-                                                    KeyDown="KeyDown_KeyDown"
                                                     MaxLength="30"
+                                                    PreviewTextInput="InputName_PreviewTextInput"
                                                     Text="{Binding PR1Name}"
                                                     TextChanged="PR1Name_TextChanged" />
                                             </Grid>
@@ -1978,8 +1978,8 @@
                                                     FontSize="14"
                                                     Foreground="White"
                                                     IsEnabled="{Binding IsPR_Luminance_Preview, Converter={StaticResource boolReverseConverter}}"
-                                                    KeyDown="KeyDown_KeyDown"
                                                     MaxLength="30"
+                                                    PreviewTextInput="InputName_PreviewTextInput"
                                                     Text="{Binding PR2Name}"
                                                     TextChanged="PR2Name_TextChanged" />
                                             </Grid>

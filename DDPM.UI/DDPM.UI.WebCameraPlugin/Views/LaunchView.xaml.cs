@@ -51,6 +51,8 @@ using MessageBox = System.Windows.MessageBox;
 using WebcamProfile = DDPM.UI.Common.WebcamProfile;
 using System.Windows.Threading;
 using System.Windows.Forms.VisualStyles;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.Window;
+using Dell.Client.Framework.UX.WPF;
 
 namespace DDPM.UI.Plugin.WebCameraPlugin
 {
@@ -94,119 +96,171 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
 
         public LaunchView()
         {
-            InitializeComponent();
 
             _vm = (WebCameraViewModel?)WebCameraplugin.PluginIoc?.GetService<IPeripheralViewModel>()!;
 
             if (_vm != null)
             {
-                _vm.Reset();
-                DataContext = _vm;
-                _vm.VbarItemClickCommand = new RelayCommand<VbarItem>(OnVbarItemClicked!);
-                BuildModuleGroups();
-
-                if (PresetNames.Contains(_vm!.CurrentProfileName))
+                if (!_vm.IsDTPReady)
                 {
-                    txtPreset.Text = $"{Strings.Preset}: {_vm.CurrentProfileName}";
+                    MessageModalDialog messageModalDialog = new(Strings.Error, Strings.DTPUnavailable, "");
+                    Window mainWindow = System.Windows.Application.Current.MainWindow;
+                    if (mainWindow != null)
+                    {
+                        messageModalDialog.Owner = mainWindow;
+                        messageModalDialog.Left = mainWindow.Left + (mainWindow!.ActualWidth - 417) / 2;
+                        messageModalDialog.Top = mainWindow.Top + 300;
+                    }
+                    Mouse.OverrideCursor = null;
+                    messageModalDialog.WindowStartupLocation = WindowStartupLocation.Manual;
+                    messageModalDialog.ShowDialog();
+                    this.Loaded += LaunchView_Loaded;
                 }
                 else
                 {
-                    txtPreset.Text = Utility.CheckTextLength($"{_vm!.CurrentProfileName}", 140, 14);
-                }
-                txtAddPreset.Text = LangHelper.Instance["Camera.5"];
+                    InitializeComponent();
+                    _vm.Reset();
+                    DataContext = _vm;
+                    _vm.VbarItemClickCommand = new RelayCommand<VbarItem>(OnVbarItemClicked!);
+                    BuildModuleGroups();
 
-                //ProfileItems.ItemsSource = _vm.ProfileNames;
-                ProfileItems.ItemsSource = _vm.ProfileItems;
-                Mouse.OverrideCursor = null;
-            }
-            txtName.Text = Strings.Name;
-            txtMsg.Text = Strings.NameIsTaken;
-            btnCancel.Caption = Strings.Cancel;
-            btnSave.Caption = Strings.Save;
-
-            //lock/unlock, no ui element currently
-            if (DdpmCommonHelper.DeviceManagerSA != null)
-            {
-                DdpmCommonHelper.DeviceManagerSA.ITSettingsActionEvent += DeviceManagerSA_ITSettingsActionEvent;
-
-                DDPMSettings data = DdpmCommonHelper.DeviceManagerSA.ReloadAppConfigData().Result;
-                if (data != null)
-                {
-                    if (data.LockSettings.Lock_Setting_RestoreDefaults)
+                    if (PresetNames.Contains(_vm!.CurrentProfileName))
                     {
-                        //RestoreLockIcon.Visibility = Visibility.Visible;
-                        //txtRestore.IsEnabled = false;
+                        txtPreset.Text = $"{Strings.Preset}: {_vm.CurrentProfileName}";
                     }
                     else
                     {
-                        //txtRestore.IsEnabled = !data.LockSettings.Lock_Webcam_RestoreFactoryDefaults;
-                        //RestoreLockIcon.Visibility = data.LockSettings.Lock_Webcam_RestoreFactoryDefaults ? Visibility.Visible : Visibility.Collapsed;
+                        txtPreset.Text = Utility.CheckTextLength($"{_vm!.CurrentProfileName}", 140, 14);
+                    }
+                    txtAddPreset.Text = LangHelper.Instance["Camera.5"];
 
-                        //Lock Functionality 9/7
-                        //When a 1 or more settings are locked, automatically lock 'Restore to default'/'factory reset' control [Webcam]                        
-                        if (data.LockSettings != null)
+                    //ProfileItems.ItemsSource = _vm.ProfileNames;
+                    ProfileItems.ItemsSource = _vm.ProfileItems;
+                    Mouse.OverrideCursor = null;
+                    txtName.Text = Strings.Name;
+                    txtMsg.Text = Strings.NameIsTaken;
+                    btnCancel.Caption = Strings.Cancel;
+                    btnSave.Caption = Strings.Save;
+
+                    //lock/unlock, no ui element currently
+                    if (DdpmCommonHelper.DeviceManagerSA != null)
+                    {
+                        DdpmCommonHelper.DeviceManagerSA.ITSettingsActionEvent += DeviceManagerSA_ITSettingsActionEvent;
+
+                        DDPMSettings data = DdpmCommonHelper.DeviceManagerSA.ReloadAppConfigData().Result;
+                        if (data != null)
                         {
-                            if (DdpmCommonHelper.GetUINotifyPropertyValue_isAnyLocked(data, "Lock_Webcam"))
+                            if (data.LockSettings.Lock_Setting_RestoreDefaults)
                             {
                                 //RestoreLockIcon.Visibility = Visibility.Visible;
                                 //txtRestore.IsEnabled = false;
                             }
+                            else
+                            {
+                                //txtRestore.IsEnabled = !data.LockSettings.Lock_Webcam_RestoreFactoryDefaults;
+                                //RestoreLockIcon.Visibility = data.LockSettings.Lock_Webcam_RestoreFactoryDefaults ? Visibility.Visible : Visibility.Collapsed;
+
+                                //Lock Functionality 9/7
+                                //When a 1 or more settings are locked, automatically lock 'Restore to default'/'factory reset' control [Webcam]                        
+                                if (data.LockSettings != null)
+                                {
+                                    if (DdpmCommonHelper.GetUINotifyPropertyValue_isAnyLocked(data, "Lock_Webcam"))
+                                    {
+                                        //RestoreLockIcon.Visibility = Visibility.Visible;
+                                        //txtRestore.IsEnabled = false;
+                                    }
+                                }
+                            }
                         }
+                    }
+
+                    RecordingTimer = new DispatcherTimer();
+                    RecordingTimer.Interval = TimeSpan.FromSeconds(1);
+                    RecordingTimer.Tick += RecordingTimer_Tick;
+
+                    _vm!.WebcamSettingChanged += WebcamSettingChanged;
+                    _vm!.ProfilePropertyChanged += ProfilePropertyChanged;
+
+                    imgDevice.Visibility = Visibility.Hidden;
+                    Preview();
+                    EnableMonitorOnEvent();
+
+
+                    _timer = new DispatcherTimer();
+                    _timer.Interval = TimeSpan.FromSeconds(3);
+                    _timer.Tick += Timer_Tick;
+
+                    exit_status_thread = false;
+                    if (status_thread == null)
+                    {
+                        status_thread = new Thread(() =>
+                        {
+                            DateTime dt = DateTime.Now;
+                            while (_vm.mre.WaitOne())
+                            {
+
+                                if (exit_status_thread)
+                                    return;
+
+                                if (!_vm.IsRecording)
+                                {
+                                    Dispatcher.Invoke(new Action(() =>
+                                    {
+                                        status_change();
+                                    }));
+                                }
+
+                                _vm.mre.Reset();
+                            }
+                        });
+                        _vm.mre.Reset();
+                        status_thread.Start();
                     }
                 }
             }
 
-            RecordingTimer = new DispatcherTimer();
-            RecordingTimer.Interval = TimeSpan.FromSeconds(1);
-            RecordingTimer.Tick += RecordingTimer_Tick;
-
-            _vm!.WebcamSettingChanged += WebcamSettingChanged;
-            _vm!.ProfilePropertyChanged += ProfilePropertyChanged;
-
-            imgDevice.Visibility = Visibility.Hidden;
-            Preview();
-            EnableMonitorOnEvent();
-
-
-            _timer = new DispatcherTimer();
-            _timer.Interval = TimeSpan.FromSeconds(3);
-            _timer.Tick += Timer_Tick;
-
-            exit_status_thread = false;
-            if (status_thread == null)
-            {
-                status_thread = new Thread(() =>
-                {
-                    DateTime dt = DateTime.Now;
-                    while (_vm.mre.WaitOne())
-                    {
-
-                        if (exit_status_thread) return;
-
-                        if (!_vm.IsRecording)
-                        {
-                            Dispatcher.Invoke(new Action(() =>
-                            {
-                                status_change();
-                            }));
-                        }
-
-                        _vm.mre.Reset();
-                    }
-                });
-                _vm.mre.Reset();
-                status_thread.Start();
-            }
-
             in_CameraPlugin = true;
+
+            CheckUSBtype();
+            CheckWindowsHello();
+        }
+
+        public void CheckUSBtype()
+        {
+            //需要特殊邏輯處理的型號
+            List<string> SpecialCase = new List<string>() 
+            {
+                "U3223QZ","U3224KB","U3224KBA","P2424HEB","P2724DEB","P3424WEB"
+            };
+
+            string model = _vm.CurrentDeviceInfo!.ModelNumber;
+
+            if (!SpecialCase.Contains(model)) return;
+
+            //check usb 2.0 / 3.0
+            bool AllSupportedResolutions = DdpmCommonHelper.DeviceManagerSA!.GetIsAllSupportedResolutionsFound(_vm.CurrentDeviceInfo!.ID.ToString()).Result;
+
+        }
+
+        public void CheckWindowsHello()
+        {
+            bool WHelloOk = false;
+        }
+
+        private void LaunchView_Loaded(object sender, RoutedEventArgs e)
+        {
+            if(!_vm!.IsDTPReady)
+                DdpmCommonHelper.MyConsole!.ShowHomePage();
         }
 
         bool WebcamGrid_old_ststus = false;
         private void status_change()
         {
 
-            if (!in_CameraPlugin) return;
-            if (_vm == null) return;
+            if (!in_CameraPlugin)
+                return;
+            if (_vm == null)
+                return;
 
             if (_vm.running_state)
             {
@@ -233,7 +287,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                     _ = CameraImage.Dispatcher.BeginInvoke(async () =>
                     {
                         CameraImage.Visibility = Visibility.Hidden;
-                        _= CleanupMediaCaptureAsync();
+                        _ = CleanupMediaCaptureAsync();
 
                         WebcamGrid_old_ststus = _vm.WebcamGrid;
                         _vm.WebcamGrid = false;
@@ -474,7 +528,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             {
                 _vm!.MediaFrameReader!.FrameArrived -= MediaFrameReader_FrameArrived;
             }
-            catch{ }
+            catch { }
             _vm.ProfilePropertyChanged -= ProfilePropertyChanged;
             _vm.WebcamSettingChanged -= WebcamSettingChanged;
             try
@@ -713,7 +767,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
 
             Thread.Sleep(60);
 
-            if (softwareBitmap != null && _vm.running_state)
+            if (softwareBitmap != null && (_vm.running_state || _vm.IsRecording))
             {
                 _ = CameraImage.Dispatcher.BeginInvoke(() =>
                 {
@@ -1547,7 +1601,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
 
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
-           NarratorModeSupport.RecurseUitems( start) ;
+            //NarratorModeSupport.RecurseUitems( start) ;
         }
     }
 }
