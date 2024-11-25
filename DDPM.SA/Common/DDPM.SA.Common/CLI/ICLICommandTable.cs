@@ -943,13 +943,13 @@ namespace DDPM.SA.Common
                 new Dictionary<string, object> { { "TargetType", "DISPLAY" }, { "TargetFeature", "PowerSetting" },              { "VCP", "D6" } },
                 new Dictionary<string, object> { { "TargetType", "DISPLAY" }, { "TargetFeature", "OSDLanguage" },               { "VCP", "CC" } },
                 new Dictionary<string, object> { { "TargetType", "DISPLAY" }, { "TargetFeature", "OSDAccess" },                 { "VCP", "CA" } },
-                new Dictionary<string, object> { { "TargetType", "DISPLAY" }, { "TargetFeature", "ExportSettings" },            { "VCP", "ALL" } },
-                new Dictionary<string, object> { { "TargetType", "DISPLAY" }, { "TargetFeature", "ImportSettings" },            { "VCP", "ALL" } },
-                new Dictionary<string, object> { { "TargetType", "DISPLAY" }, { "TargetFeature", "AllResolutionRefreshRate" },  { "VCP", "ALL" } },
-                new Dictionary<string, object> { { "TargetType", "DISPLAY" }, { "TargetFeature", "CurrentResolutionRefreshRate" },{ "VCP", "ALL" } },
                 new Dictionary<string, object> { { "TargetType", "DISPLAY" }, { "TargetFeature", "Resolution" },                { "VCP", "ALL" } },
                 new Dictionary<string, object> { { "TargetType", "DISPLAY" }, { "TargetFeature", "RefreshRate" },               { "VCP", "ALL" } },
                 new Dictionary<string, object> { { "TargetType", "DISPLAY" }, { "TargetFeature", "ResolutionRefreshRate" },     { "VCP", "ALL" } },
+                new Dictionary<string, object> { { "TargetType", "DISPLAY" }, { "TargetFeature", "SpeakerMicrophone" },         { "VCP", "62,8D" } },
+                new Dictionary<string, object> { { "TargetType", "DISPLAY" }, { "TargetFeature", "SpeakerVolume" },             { "VCP", "62" } },
+                new Dictionary<string, object> { { "TargetType", "DISPLAY" }, { "TargetFeature", "Microphone" },                { "VCP", "8D" } },
+                new Dictionary<string, object> { { "TargetType", "DISPLAY" }, { "TargetFeature", "ColorPreset" },                { "VCP", "14" } },
             };
             // [HELP]: Print all the data in the command set
             public static void PrintFormattedJson()
