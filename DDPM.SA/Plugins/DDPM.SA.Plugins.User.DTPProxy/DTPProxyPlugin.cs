@@ -6430,7 +6430,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         private void Webcam_CustomProfileRemoved(object sender, CustomProfileRemovedArgs e)
         {
             SendWebcamEventToUI(CreateEventMsg("Webcam", "Webcam_CustomProfileRemoved",
-                                    e.DeviceId, $"RemovedCustomProfile:{e.ProfileId}"));
+                                    e.DeviceId, $"NewValue:{e.ProfileId}"));
 
             writelog($"Catch event _Webcamcom_CustomProfileRemoved : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
         }
@@ -6497,7 +6497,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             writelog($"Catch event _Webcam_Connected, register evnet result is {result} : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
         }
 
-        private string CreateEventMsg(string devType, string eventType, string devID, string eventContent = "NoContent")
+        private string CreateEventMsg(string devType, string eventType, string devID, string eventContent = "NewValue:NoContent")
         {
             return $"WebcamEvent_5;Device:{devType};EventType:{eventType};DeviceId:{devID};{eventContent}";
         }
