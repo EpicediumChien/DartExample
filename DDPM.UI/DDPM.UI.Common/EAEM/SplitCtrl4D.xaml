@@ -27,13 +27,18 @@
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
+            <Grid.Resources>
+                <Style TargetType="Border">
+                    <Setter Property="Background" Value="{DynamicResource FakeTransparent}"/>
+                </Style>
+            </Grid.Resources>
 
-            <Border Name="cell_4d1" Grid.Column="0" BorderBrush="{StaticResource BorderColor_SplitNormal}" />
-            <Border Name="cell_4d2" Grid.Column="2" BorderBrush="{StaticResource BorderColor_SplitNormal}" />
+            <Border Name="cell_4d1" Grid.Column="0" BorderBrush="{DynamicResource SplitSplitter_Icon}" />
+            <Border Name="cell_4d2" Grid.Column="2" BorderBrush="{DynamicResource SplitSplitter_Icon}" />
 
-            <Border Name="cell_4d3" Grid.Column="4" BorderBrush="{StaticResource BorderColor_SplitNormal}" />
+            <Border Name="cell_4d3" Grid.Column="4" BorderBrush="{DynamicResource SplitSplitter_Icon}" />
 
-            <Border Name="cell_4d4" Grid.Column="6" BorderBrush="{StaticResource BorderColor_SplitNormal}" />
+            <Border Name="cell_4d4" Grid.Column="6" BorderBrush="{DynamicResource SplitSplitter_Icon}" />
 
             <Rectangle Name="v1" Grid.Column="1"
                        Width="{StaticResource ThickSplitter}"

@@ -264,7 +264,7 @@ namespace DDPM.UI.WalkThroughData
                 },
                 
                 // Dell Conferencing Monitor (U3224KB/A)
-                { "U3224KB/A", new List<WalkThroughPageData>
+                { "U3224KBA", new List<WalkThroughPageData>
                     {
                         new WalkThroughPageData { MainText = Strings.WalkThroughWebCamWB3023_Main0, SubText = Strings.WalkThroughWebCamWB3023_Sub0, MainImageSource = "WalkThrough/Webcam/U3224KBA/U3224KBA_1.png" },
                         new WalkThroughPageData { MainText = Strings.WalkThroughWebCamWB3023_Main1, SubText = Strings.WalkThroughWebCamWB3023_Sub1, MainImageSource = "WalkThrough/Webcam/U3224KBA/U3224KBA_2.png" },

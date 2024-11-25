@@ -63,6 +63,11 @@ namespace VcpCore.Plugins.Test
             //UnDefinedColorPreset,
             //ColorPresentDescription,
             //CapabilityDic,
+            CapabilityDic = new Dictionary<string, List<string>>()
+            {
+                { "14", new List<string> { "value1" } },
+                { "12", new List<string> { "value2" } }
+            },
             AliasDeviceName = "Dell U2724DE (HDMI)",
             Handle = 0x0000000000000000,
             IsDellMonitor = true,

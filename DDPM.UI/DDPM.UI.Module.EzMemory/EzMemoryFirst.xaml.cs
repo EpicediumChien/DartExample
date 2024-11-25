@@ -30,6 +30,10 @@ using static DDPM.UI.Common.User32;
 using ProgressBar = System.Windows.Controls.ProgressBar;
 using UserControl = System.Windows.Controls.UserControl;
 using DDPM.UI.Common.ViewModels;
+using Rect = System.Windows.Rect;
+using DDPM.UI.Common.Method;
+using TextBox = System.Windows.Controls.TextBox;
+
 
 namespace DDPM.UI.Module.EzMemory
 {
@@ -433,10 +437,20 @@ namespace DDPM.UI.Module.EzMemory
                     spCtrl.Settings = new List<double>(spj.Settings);
                     spCtrl.SplitMode = eSplitModes.Icon;
                     spCtrl.FriendlyName = spj.CustomName;
+                    spCtrl.EAID = spj.EAID;
+
+                    if (spCtrl.IsAddedCustomLayout)
+                    {
+                        CreateCellBorderListToSplitCtrlFromCellJsons(spj.Cells, ref spCtrl);
+                    }
 
                     SplitItem itemCustom = splitListView_Custom.AddItemToList(spCtrl.UC);
                     itemCustom.SplitOwner = Common.EAEM.eSplitOwner.EaCustom;
                     itemCustom.CustomId = (int)spj.CustomId;
+
+                    //Robert_Lin, 2024-10-4 add max items check
+                    if (splitListView_Custom.ItemCount >= EAEMConstants.MaxCustomItems)
+                        break;
                 }
             } //if (eaSettings != null)
 
@@ -634,6 +648,33 @@ namespace DDPM.UI.Module.EzMemory
                 }
             }
         }
+
+        private void CreateCellBorderListToSplitCtrlFromCellJsons(CellJson[] cellJsons, ref ISplitCtrl ispCtrl)
+        {
+            if (!ispCtrl.IsAddedCustomLayout)
+                return;
+
+            SplitCtrl0B spCtrl0B = (SplitCtrl0B)ispCtrl;
+            spCtrl0B.CellList.Clear();
+            if (spCtrl0B.CellBorders != null)
+                spCtrl0B.CellBorders.Clear();
+            else
+                spCtrl0B.CellBorders = new List<CellBorder>();
+
+            foreach (CellJson cellJson in cellJsons)
+            {
+                CellBorder cellBorder = new CellBorder();
+                cellBorder.CellName = cellJson.Name;
+                cellBorder.rcRatio = new Rect(cellJson.x, cellJson.y, cellJson.w, cellJson.h);
+                spCtrl0B.CellBorders.Add(cellBorder);
+
+                CellObj cellObj = new CellObj(cellJson.Name);
+                cellObj.rcRatio = new Rect(cellJson.x, cellJson.y, cellJson.w, cellJson.h);
+                spCtrl0B.CellList.Add(cellObj);
+            }
+
+        }
+
         #endregion
         #region SplitListView Operations
         private SplitItem? FindSplitItemFromWindowLists(int cellCount, char splitKey)
@@ -864,35 +905,11 @@ namespace DDPM.UI.Module.EzMemory
         #endregion
 
         #region For security
-        private void KeyDown_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+
+        private void InputName_PreviewTextInput(object sender, TextCompositionEventArgs e)
         {
-            if (((e.KeyStates == Keyboard.GetKeyStates(Key.D1)) || (e.KeyStates == Keyboard.GetKeyStates(Key.D3))) && (Keyboard.Modifiers == ModifierKeys.Shift))
-            {
-                e.Handled = true;
-            }
-            else if ((e.KeyStates == Keyboard.GetKeyStates(Key.D2)) && (Keyboard.Modifiers == ModifierKeys.Shift))
-            {
-                // Handle "@"
-            }
-            else if ((Keyboard.Modifiers == ModifierKeys.Shift))
-            {
-                e.Handled = true;
-            }
-            else if (Keyboard.IsKeyDown(Key.D0) || Keyboard.IsKeyDown(Key.D1) || Keyboard.IsKeyDown(Key.D2) || Keyboard.IsKeyDown(Key.D3) || Keyboard.IsKeyDown(Key.D4) ||
-                Keyboard.IsKeyDown(Key.D5) || Keyboard.IsKeyDown(Key.D6) || Keyboard.IsKeyDown(Key.D7) || Keyboard.IsKeyDown(Key.D8) || Keyboard.IsKeyDown(Key.D9) ||
-                Keyboard.IsKeyDown(Key.A) || Keyboard.IsKeyDown(Key.B) || Keyboard.IsKeyDown(Key.C) || Keyboard.IsKeyDown(Key.D) || Keyboard.IsKeyDown(Key.E) ||
-                Keyboard.IsKeyDown(Key.F) || Keyboard.IsKeyDown(Key.G) || Keyboard.IsKeyDown(Key.H) || Keyboard.IsKeyDown(Key.I) || Keyboard.IsKeyDown(Key.J) ||
-                Keyboard.IsKeyDown(Key.K) || Keyboard.IsKeyDown(Key.L) || Keyboard.IsKeyDown(Key.M) || Keyboard.IsKeyDown(Key.N) || Keyboard.IsKeyDown(Key.O) ||
-                Keyboard.IsKeyDown(Key.P) || Keyboard.IsKeyDown(Key.Q) || Keyboard.IsKeyDown(Key.R) || Keyboard.IsKeyDown(Key.S) || Keyboard.IsKeyDown(Key.T) ||
-                Keyboard.IsKeyDown(Key.U) || Keyboard.IsKeyDown(Key.V) || Keyboard.IsKeyDown(Key.W) || Keyboard.IsKeyDown(Key.X) || Keyboard.IsKeyDown(Key.Y) ||
-                Keyboard.IsKeyDown(Key.Z) || Keyboard.IsKeyDown(Key.OemMinus) || Keyboard.IsKeyDown(Key.Space))
-            {
-                // Handle 0-9, a-z, A-Z, " ", "-" 
-            }
-            else
-            {
-                e.Handled = true;
-            }
+            TextString textString = new TextString();
+            e.Handled = !textString.CheckChar(e.Text);
         }
         #endregion
     }

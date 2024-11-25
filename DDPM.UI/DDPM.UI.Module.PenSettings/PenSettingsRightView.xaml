@@ -21,7 +21,7 @@
         </ResourceDictionary>
     </UserControl.Resources>
     <Grid Margin="0,0,0,15">
-        <Border Background="#99132F54" CornerRadius="13" Width="520" Margin="0,10,0,0">
+        <Border Background="{DynamicResource MouseSettingMenu_BgColor99}" CornerRadius="13" Width="520" Margin="0,10,0,0">
             <!--
             <Border.Height>
                 <MultiBinding Converter="{StaticResource HeightConverter}">
@@ -33,7 +33,7 @@
                     <UXControls:UXTextBlock Name="txtCaption" Margin="18,24" Style="{StaticResource ModuleCaptionStyle}" />
                 </Grid>
                 <Grid VerticalAlignment="top" Margin="0,0,0,20">
-                    <Border Background="#99132F54" CornerRadius="6" Width="488" Height="190" VerticalAlignment="Top">
+                    <Border Background="{DynamicResource MouseSettingMenu_BgColor99}"  CornerRadius="6" Width="488" Height="190" VerticalAlignment="Top">
                         <StackPanel Orientation="Vertical">
                             <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="18,22,0,0">
                                 <UXControls:UXTextBlock Name="txtTipSensitivity" Style="{StaticResource ModuleItemStyle}" />
@@ -46,10 +46,10 @@
                                 </Image>
                             </StackPanel>
                             <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="0,23,0,0">
-                                <UXControls:UXTextBlock Text="0" FontSize="14" Foreground="#A4B8CD" Margin="42,1,7,0" FontFamily="Roboto" />
-                                <UXControls:UXSlider x:Name="TipSlider" TickFrequency="1"  TickPlacement="Both" IsSnapToTickEnabled="True" Value="{Binding TipSensitivity}"  
-                                         Minimum="0" Maximum="6" Width="375" Thumb.DragStarted="Slider_DragStarted" Thumb.DragCompleted="TipSlider_DragCompleted" />
-                                <UXControls:UXTextBlock Text="100" FontSize="14" Foreground="#A4B8CD" Margin="16,1,0,0" FontFamily="Roboto"/>
+                                <UXControls:UXTextBlock Text="0" FontSize="14" Foreground="{DynamicResource txtCaption_TxtColor}" Margin="42,1,7,0" FontFamily="Roboto" />
+                                <UXControls:UXSlider x:Name="TipSlider" Ticks="12.5,25,50,62.5,75"  TickPlacement="Both" IsSnapToTickEnabled="True" Value="{Binding TipSensitivity}" AutoToolTipPlacement="TopLeft"  
+                                         Minimum="0" Maximum="100" Width="375" Thumb.DragStarted="Slider_DragStarted" Thumb.DragCompleted="TipSlider_DragCompleted" AutoToolTipPrecision="1" />
+                                <UXControls:UXTextBlock Text="100" FontSize="14" Foreground="{DynamicResource txtCaption_TxtColor}" Margin="16,1,0,0" FontFamily="Roboto"/>
                             </StackPanel>
                             <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="18,25,0,0">
                                 <UXControls:UXTextBlock Name="txtTiltSensitivity" Style="{StaticResource ModuleItemStyle}" />
@@ -62,16 +62,16 @@
                                 </Image>
                             </StackPanel>
                             <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="0,23,0,0">
-                                <UXControls:UXTextBlock Text="0" FontSize="14" Foreground="#A4B8CD" Margin="42,1,7,0" FontFamily="Roboto" />
-                                <UXControls:UXSlider x:Name="TiltSlider" TickFrequency="1"  TickPlacement="Both" IsSnapToTickEnabled="True" Value="{Binding TiltSensitivity}"  
-                                         Minimum="0" Maximum="2" Width="375" Thumb.DragStarted="Slider_DragStarted" Thumb.DragCompleted="TiltSlider_DragCompleted" />
-                                <UXControls:UXTextBlock Text="100" FontSize="14" Foreground="#A4B8CD" Margin="16,1,0,0" FontFamily="Roboto"/>
+                                <UXControls:UXTextBlock Text="0" FontSize="14" Foreground="{DynamicResource txtCaption_TxtColor}" Margin="42,1,7,0" FontFamily="Roboto" />
+                                <UXControls:UXSlider x:Name="TiltSlider" TickFrequency="50"  TickPlacement="Both" IsSnapToTickEnabled="True" Value="{Binding TiltSensitivity}"  
+                                         Minimum="0" Maximum="100" Width="375" Thumb.DragStarted="Slider_DragStarted" Thumb.DragCompleted="TiltSlider_DragCompleted" AutoToolTipPlacement="TopLeft" />
+                                <UXControls:UXTextBlock Text="100" FontSize="14" Foreground="{DynamicResource txtCaption_TxtColor}" Margin="16,1,0,0" FontFamily="Roboto"/>
                             </StackPanel>
                         </StackPanel>
                     </Border>
                 </Grid>
                 <Grid>
-                    <Border Background="#99132F54" CornerRadius="6" Width="488" Height="120" VerticalAlignment="Top" Margin="0,0,0,20">
+                    <Border Background="{DynamicResource MouseSettingMenu_BgColor99}" CornerRadius="6" Width="488" Height="120" VerticalAlignment="Top" Margin="0,0,0,20">
                         <StackPanel Orientation="Vertical">
                             <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="18,25,0,0">
                                 <UXControls:UXTextBlock Name="txtPairWithTile" Style="{StaticResource ModuleItemStyle}" />

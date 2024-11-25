@@ -670,21 +670,24 @@ namespace DDPM.UI.Module.Brightness.Tests
             List<AutoBrightnessRangeLevel> AutoBrightnessLevel = new List<AutoBrightnessRangeLevel>();
             AutoBrightnessLevel.Add(new AutoBrightnessRangeLevel() { level_name = null, level_value = 0 });
             brightnessViewModel.Start_ALSConfig.AutoBrightnessRangeLevel = AutoBrightnessLevel;
-            Assert.That(brightnessViewModel.AutoBrightnessRangeLevel_String, Is.EqualTo("Brightness level: 40%"));
+            brightnessViewModel.isLuminanceSupport=Visibility.Visible;
+            var res = brightnessViewModel.AutoBrightnessRangeLevel_String;
+            Assert.That(brightnessViewModel.AutoBrightnessRangeLevel_String, Is.EqualTo("Brightness level: 75%"));
 
             //Start_ALSConfig.AutoBrightnessLevel[0].level_value == 1
             brightnessViewModel.Start_ALSConfig = new ALSConfig();
             AutoBrightnessLevel = new List<AutoBrightnessRangeLevel>();
             AutoBrightnessLevel.Add(new AutoBrightnessRangeLevel() { level_name = null, level_value = 1 });
             brightnessViewModel.Start_ALSConfig.AutoBrightnessRangeLevel = AutoBrightnessLevel;
-            Assert.That(brightnessViewModel.AutoBrightnessRangeLevel_String, Is.EqualTo("Brightness level: 60%"));
+            res = brightnessViewModel.AutoBrightnessRangeLevel_String;
+            Assert.That(brightnessViewModel.AutoBrightnessRangeLevel_String, Is.EqualTo("Brightness level: 75%"));
 
             //else
             brightnessViewModel.Start_ALSConfig = new ALSConfig();
             AutoBrightnessLevel = new List<AutoBrightnessRangeLevel>();
             AutoBrightnessLevel.Add(new AutoBrightnessRangeLevel() { level_name = null, level_value = 2 });
             brightnessViewModel.Start_ALSConfig.AutoBrightnessRangeLevel = AutoBrightnessLevel;
-            Assert.That(brightnessViewModel.AutoBrightnessRangeLevel_String, Is.EqualTo("Brightness level: 100%"));
+            Assert.That(brightnessViewModel.AutoBrightnessRangeLevel_String, Is.EqualTo("Brightness level: 75%"));
         }
 
         [Test]

@@ -77,8 +77,8 @@ namespace DDPM.UI.Common.EAEM
         {
             get
             {
-                if (String.IsNullOrEmpty(_pxpInfo.Description))
-                    return $"PIP Small";
+                //if (String.IsNullOrEmpty(_pxpInfo.Description))
+                //    return $"PIP Small";
                 return _pxpInfo.Description;
             }
             set

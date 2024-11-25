@@ -99,7 +99,6 @@ namespace DDPM.UI.Module.GamingVisionEngine.Tests
         {
             visionEngineViewModel.VisionEngineList = new ObservableCollection<UI_VisionEngine>() {new UI_VisionEngine(true,new Gaming_VisionEngineType()),new UI_VisionEngine(true,new Gaming_VisionEngineType()) };
             var e = new GamingDisplayPropertiesInfo() { IsEnable_VisionEngineType = new bool[] { true, false } };
-            //gamingViewModel.GameEnhanceMode_ItemsCollection = new List<UI_GameEnhancementMode>() { new UI_GameEnhancementMode() { GameEnhancementMode = Gaming_GameEnhancementMode.Disable } };
             try
             {
                 visionEngineViewModel.GamingParamChang(null, e);

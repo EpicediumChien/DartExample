@@ -8,7 +8,7 @@
         xmlns:UXControls="clr-namespace:Dell.Client.Framework.UX.WPF.Controls;assembly=DCF.UX.WPF" xmlns:common="clr-namespace:DDPM.UI.Common;assembly=DDPM.UI.Common" AllowsTransparency="True"
         Title="OpenRunModalDialog" ResizeMode="NoResize" ShowInTaskbar="False"
         InputMethod.IsInputMethodEnabled="False"
-        WindowStartupLocation="Manual" WindowStyle="None" Background="#0D121A">
+        WindowStartupLocation="Manual" WindowStyle="None" Background="{DynamicResource ActionParameterModalDialog_BgColor}">
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -19,13 +19,13 @@
                 <Setter Property="FontSize" Value="14" />
                 <Setter Property="FontWeight" Value="Bold" />
                 <Setter Property="LineHeight" Value="18" />
-                <Setter Property="Foreground" Value="#A4B8CD" />
+                <Setter Property="Foreground" Value="{DynamicResource CaptionText_FgColor}"/>
             </Style>
             <Style x:Key="DescriptionTextStyle" TargetType="UXControls:UXTextBlock">
                 <Setter Property="FontFamily" Value="Roboto" />
                 <Setter Property="FontSize" Value="13" />
                 <Setter Property="FontWeight" Value="Normal" />
-                <Setter Property="Foreground" Value="#A4B8CD" />
+                <Setter Property="Foreground" Value="{DynamicResource DescriptionText_FgColor}"  />
             </Style>
             <Style x:Key="CancelButtonStyle" TargetType="common:ActionButton">
                 <Setter Property="Height" Value="40" />
@@ -40,17 +40,18 @@
             </Style>
             <Style x:Key="SaveButtonStyle" TargetType="common:ActionButton">
                 <Setter Property="Height" Value="40" />
-                <Setter Property="Background" Value="#0672CB" />
-                <Setter Property="Foreground" Value="#F5F6F7" />
+                <Setter Property="Background" Value="{DynamicResource CancelButton_BgColor}" />
+                <Setter Property="Foreground" Value="{DynamicResource CancelButton_FgColor}" />
                 <Setter Property="CornerRadius" Value="2" />
-                <Setter Property="BorderThickness" Value="0" />
+                <Setter Property="BorderThickness" Value="1" />
+                <Setter Property="BorderBrush" Value="{DynamicResource CancelButtonBorderBrush}" />
                 <Setter Property="FontSize" Value="14" />
                 <Setter Property="FontFamily" Value="Roboto" />
                 <Setter Property="FontWeight" Value="Medium" />
                 <Style.Triggers>
                     <Trigger Property="IsEnabled" Value="False">
-                        <Setter Property="Background" Value="#333941" />
-                        <Setter Property="Foreground" Value="#818488" />
+                        <Setter Property="Background" Value="{DynamicResource SaveButtonDisa_BgColor}" />
+                        <Setter Property="Foreground" Value="{DynamicResource SaveButtonDisa_FgColor}" />
                     </Trigger>
                 </Style.Triggers>
             </Style>
@@ -66,7 +67,7 @@
                 <Setter Property="FontWeight" Value="Medium" />
             </Style>
             <Style x:Key="BorderStyle1" TargetType="Border">
-                <Setter Property="Background" Value="#99132F54" />
+                <Setter Property="Background" Value="{DynamicResource BorderStyle1_BgColor}" />
                 <Setter Property="CornerRadius" Value="6" />
                 <Setter Property="Width" Value="487" />
                 <Setter Property="Height" Value="275" />
@@ -79,7 +80,7 @@
         <Grid VerticalAlignment="Top" HorizontalAlignment="Left">
             <StackPanel Orientation="Vertical">
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="0,65">
-                    <Image Margin="64,21,0,0" Source="/DDPM.UI.Resources;component/Resources/Images/arrow-left.png" Stretch="Uniform"
+                    <Image Margin="64,21,0,0" Source="{DynamicResource title_back}" Stretch="Uniform"
                            VerticalAlignment="Top" HorizontalAlignment="Left" Cursor="Hand" Width="24" Height="24" MouseLeftButtonDown="CancelClick">
                     </Image>
                     <UXControls:UXTextBlock Name="txtTitleBar" Margin="14,19,0,0" HorizontalAlignment="Left"
@@ -98,7 +99,7 @@
                                 <ItemsControl.ItemTemplate>
                                     <DataTemplate>
                                         <StackPanel>
-                                            <UXControls:UXRadioButton Background="Black" Foreground="White" Margin="0" Padding="12,0,0,0" Height="36"
+                                            <UXControls:UXRadioButton Background="{DynamicResource ActionsRadio_BgColor}" Foreground="{DynamicResource ActionsRadio_FgColor}" TextBlock.Foreground="{DynamicResource ActionsRadio_TxtColor}" Margin="0" Padding="12,0,0,0" Height="36"
                                                                       GroupName="OpenRun" Click="ActionRadioButton_Click" Loaded="ActionButtonLoaded" />
                                         </StackPanel>
                                     </DataTemplate>
@@ -111,7 +112,7 @@
                     <common:ActionButton Name="btnBrowse" Style="{StaticResource BrowseButtonStyle}" MouseDown="BrowseClick" Margin="0,0,0,0" />
                     <Grid x:Name="FilePath" Height="50" Margin="0,0,0,-10">
                         <StackPanel Orientation="Horizontal">
-                            <Image x:Name="CloseIcon" Source="/DDPM.UI.Resources;component/Resources/Images/CloseXX.png" Stretch="Uniform" Margin="0,0,0,0"
+                            <Image x:Name="CloseIcon" Source="{DynamicResource Close_img}" Stretch="Uniform" Margin="0,0,0,0"
                                    VerticalAlignment="Center" Width="16" Height="16" MouseLeftButtonDown="ClearBrowse" Cursor="Hand" />
                             <UXControls:UXTextBlock Name="txtBrowse" Style="{StaticResource DescriptionTextStyle}" Margin="12,0,0,0" Width="480" TextWrapping="Wrap" VerticalAlignment="Center" />
                         </StackPanel>

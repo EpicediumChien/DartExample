@@ -42,7 +42,7 @@
 
                     <!-- Progress Bar -->
                     <Grid Grid.Row="0">
-                        <ProgressBar x:Name="WalkThroughProgressbar" Background="#293B4D" BorderBrush="Transparent" BorderThickness="0" HorizontalAlignment="Left" Height="5" Width="281" Minimum="0" Maximum="{Binding CurrentAnimationPage}" Value="{Binding ProgressValue}">
+                        <ProgressBar x:Name="WalkThroughProgressbar" Background="{DynamicResource ProgressBar_BkColor}" BorderThickness="0" HorizontalAlignment="Left" Height="5" Width="281" Minimum="0" Maximum="{Binding CurrentAnimationPage}" Value="{Binding ProgressValue}">
                             <ProgressBar.Style>
                                 <Style TargetType="ProgressBar">
                                     <Setter Property="Foreground" Value="#A4B8CD" />
@@ -63,23 +63,19 @@
 
                     <!-- Feature Highlight Title -->
                     <Grid Grid.Row="1" Margin="0, 50, 0, 0" Width="196" HorizontalAlignment="Left">
-                        <UXControls:UXTextBlock Text="{Binding [WalkThrough.0], Source={x:Static lang:LangHelper.Instance}, Mode=OneWay}" 
-                                                Foreground="#DAF5FD" FontSize="20" LineHeight="28"  TextWrapping="WrapWithOverflow"/>
+                        <UXControls:UXTextBlock Foreground="{DynamicResource DefaultTheme_PbHeaderColor}" Text="{Binding [WalkThrough.0], Source={x:Static lang:LangHelper.Instance}, Mode=OneWay}" FontSize="20" LineHeight="28" />
                     </Grid>
 
                     <!-- Customizable Keys Title -->
                     <Grid Grid.Row="2" Margin="0, 8, 0, 0" Width="476" HorizontalAlignment="Left">
-                        <UXControls:UXTextBlock x:Name="MainText" Text="{Binding MainText}" Foreground="#F5F6F7" FontSize="58" 
-                                                TextWrapping="WrapWithOverflow"/>
+                        <UXControls:UXTextBlock x:Name="MainText" Text="{Binding MainText}" FontSize="58" TextWrapping="Wrap"/>
                     </Grid>
 
                     <!-- Description Text -->
                     <Grid Grid.Row="3" Margin="0, 16, 0, 0" Width="476" HorizontalAlignment="Left">
-                        <UXControls:UXTextBlock x:Name="SubText" Text="{Binding SubText}" Foreground="#F5F6F7" FontSize="15"  
-                                                TextWrapping="WrapWithOverflow" />
+                        <UXControls:UXTextBlock x:Name="SubText" Text="{Binding SubText}"  FontSize="15"  TextWrapping="Wrap" />
                     </Grid>
                 </Grid>
-
 
                 <!-- Buttons -->
                 <Grid Grid.Row="4" Margin="72,532, 0, 0">
@@ -91,14 +87,12 @@
                     <!-- First Button Group -->
                     <Grid Grid.Column="0">
                         <StackPanel Orientation="Horizontal">
-                            <UXControls:UXButton x:Name="ArrowButton" Visibility="{Binding ArrowButtonVisibility}" Width="48" Height="40" ButtonType="Secondary" ButtonSize="Medium" IconAnimation="Move" Margin="0" Padding="16,8" Foreground="#F5F6F7" BorderBrush="#F5F6F7" Click="ArrowButton_Click">
-                                <Path Data="M3.62037 11.6746L3.34146 12L3.62037 12.3254L9.62037 19.3254L10.3796 18.6746L5.08711 12.5L21 12.5L21 11.5L5.08711 11.5L10.3796 5.32538L9.62037 4.67459L3.62037 11.6746Z" Fill="#F5F6F7" Stretch="Uniform" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            <UXControls:UXButton x:Name="ArrowButton" Visibility="{Binding ArrowButtonVisibility}" Width="48" Height="40" ButtonType="Secondary" ButtonSize="Medium" IconAnimation="Move" Margin="0" Padding="16,8" Click="ArrowButton_Click">
+                                <Path Data="M3.62037 11.6746L3.34146 12L3.62037 12.3254L9.62037 19.3254L10.3796 18.6746L5.08711 12.5L21 12.5L21 11.5L5.08711 11.5L10.3796 5.32538L9.62037 4.67459L3.62037 11.6746Z" Fill="{DynamicResource DefaultTheme_PbHeaderColor}" Stretch="Uniform" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                             </UXControls:UXButton>
                             <!-- Next Button -->
                             <!--<UXControls:UXButton x:Name="NextBtn" IconPosition="IconRight" HorizontalContentAlignment="Center" ButtonType="Primary" Padding="40, 8" ButtonSize="Medium" VerticalContentAlignment="Center" Content="{Binding [Kvm.1], Source={x:Static lang:LangHelper.Instance}}" ContentStringFormat="{}{0} ⭢" Margin="10, 0, 0, 0" IconAnimation="Move" Width="164" Height="40" Click="NextBtn_Click" />-->
-                            <UXControls:UXButton x:Name="NextBtn" IconPosition="IconRight" HorizontalContentAlignment="Center" 
-                                                     ButtonType="Primary" Padding="40, 8" ButtonSize="Medium" VerticalContentAlignment="Center" 
-                                                     Margin="10, 0, 0, 0" IconAnimation="Move" Width="164" Height="40" Click="NextBtn_Click">
+                            <UXControls:UXButton x:Name="NextBtn" IconPosition="IconRight" HorizontalContentAlignment="Center" ButtonType="Primary" Padding="40, 8" ButtonSize="Medium" VerticalContentAlignment="Center" Margin="10, 0, 0, 0" IconAnimation="Move" Width="164" Height="40" Click="NextBtn_Click">
                                 <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
                                     <UXControls:UXTextBlock Margin="8,0" Text="{Binding [Kvm.1], Source={x:Static lang:LangHelper.Instance}}" Foreground="White"/>
                                     <Path x:Name="ArrowPath" Margin="0,2" Data="M17.3796 8.3256L17.6585 8.0002L17.3796 7.67481L11.3796 0.674805L10.6204 1.3256L15.9129 7.5002H0V8.5002H15.9129L10.6204 14.6748L11.3796 15.3256L17.3796 8.3256Z" Fill="white">
@@ -137,10 +131,10 @@
 
                     <!-- Second Button Group -->
                     <Grid Grid.Column="1">
-                        <UXControls:UXButton x:Name="SkipBtn" Visibility="{Binding SkipButtonVisibility}" ButtonType="Tertiary" Width="90" Height="40" ButtonSize="Medium" Margin="10, 0" Content="{Binding [WalkThrough.1], Source={x:Static lang:LangHelper.Instance}, Mode=OneWay}" IconAnimation="Move" Click="SkipBtn_Click"/>
+                        <UXControls:UXButton x:Name="SkipBtn" Visibility="{Binding SkipButtonVisibility}" ButtonType="Tertiary" Width="90" Height="40" ButtonSize="Medium" Margin="10, 0" Content="Skip" IconAnimation="Move" Click="SkipBtn_Click"/>
                     </Grid>
                 </Grid>
-                
+
                 <!-- Keyboard Image -->
                 <Grid Grid.Column="1" Margin="64, 64, 96, 0" HorizontalAlignment="Center">
                     <Grid.RowDefinitions>
@@ -151,12 +145,6 @@
                 </Grid>
             </Grid>
         </StackPanel>
-
-
-
-
-
-
 
         <StackPanel>
             <Grid Margin="0" Visibility="{Binding DDPMVisibility}">
@@ -172,12 +160,12 @@
 
                     <!-- Customizable Keys Title -->
                     <Grid Grid.Row="0" Margin="0, 8, 0, 0" Width="Auto" Height="Auto" HorizontalAlignment="Center">
-                        <UXControls:UXTextBlock x:Name="AppMainText" Text="{Binding [WalkThroughDDPM_Main.0], Source={x:Static lang:LangHelper.Instance}, Mode=OneWay}" Foreground="#F5F6F7" FontSize="64" TextWrapping="Wrap" HorizontalAlignment="Center" TextAlignment="Center"/>
+                        <UXControls:UXTextBlock x:Name="AppMainText" Text="{Binding [WalkThroughDDPM_Main.0], Source={x:Static lang:LangHelper.Instance}, Mode=OneWay}" FontSize="64" TextWrapping="Wrap" HorizontalAlignment="Center" TextAlignment="Center"/>
                     </Grid>
 
                     <!-- Description Text -->
                     <Grid Grid.Row="1" Margin="0, 16, 0, 0" Width="Auto" Height="Auto" HorizontalAlignment="Center">
-                        <UXControls:UXTextBlock x:Name="AppSubText" Text="{Binding [WalkThroughDDPM_Sub.0], Source={x:Static lang:LangHelper.Instance}, Mode=OneWay}" Foreground="#F5F6F7" FontSize="18" TextWrapping="Wrap" />
+                        <UXControls:UXTextBlock x:Name="AppSubText" Text="{Binding [WalkThroughDDPM_Sub.0], Source={x:Static lang:LangHelper.Instance}, Mode=OneWay}"  FontSize="18" TextWrapping="Wrap" />
                     </Grid>
 
 
@@ -185,7 +173,7 @@
                     <Grid Grid.Row="2" Margin="607, 16, 0, 0">
                         <StackPanel Orientation="Horizontal">
                             <!-- Next Button -->
-                            <UXControls:UXButton x:Name="MainNextBtn" IconPosition="IconRight" HorizontalContentAlignment="Center" ButtonType="Primary" Padding="40, 8" ButtonSize="Medium" VerticalContentAlignment="Center" Margin="10, 0, 0, 0" IconAnimation="Move" Width="194" Height="40" Click="MainNextBtn_Click">
+                            <UXControls:UXButton x:Name="MainNextBtn" IconPosition="IconRight" HorizontalContentAlignment="Center" ButtonType="Primary" Padding="40, 8" ButtonSize="Medium" VerticalContentAlignment="Center" Margin="-5, 0, 0, 0" IconAnimation="Move" Width="194" Height="40" Click="MainNextBtn_Click">
                                 <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
                                     <UXControls:UXTextBlock Margin="8,0" Text="{Binding [WalkThrough.2], Source={x:Static lang:LangHelper.Instance}}" Foreground="White"/>
                                     <Path x:Name="MainArrowPath" Margin="0,2" Data="M17.3796 8.3256L17.6585 8.0002L17.3796 7.67481L11.3796 0.674805L10.6204 1.3256L15.9129 7.5002H0V8.5002H15.9129L10.6204 14.6748L11.3796 15.3256L17.3796 8.3256Z" Fill="white">

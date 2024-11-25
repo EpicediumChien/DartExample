@@ -6,4 +6,113 @@
     xmlns:sys="clr-namespace:System;assembly=mscorlib">
     <SolidColorBrush x:Key="Default_SA_OSD_Border_BkColor" Color="#141D28" />
     <SolidColorBrush x:Key="Default_SA_OSD_PathColor" Color="#FFFFFF" />
+    
+    <SolidColorBrush x:Key="VbarItem_BkColor"
+                     Color="#132F54" />
+    <SolidColorBrush x:Key="VbarItem_TextColor"
+                     Color="White" />
+    <LinearGradientBrush x:Key="VbarItem_HiBkColor"
+                         StartPoint="0,0"
+                         EndPoint="1,1">
+        <GradientStop Offset="0"
+                      Color="#FF0672CB" />
+        <GradientStop Offset="0.5"
+                      Color="#FF0078D2" />
+        <GradientStop Offset="1"
+                      Color="#FF6E69CF" />
+    </LinearGradientBrush>
+    <LinearGradientBrush x:Key="VbarItem_HiBdColor"
+                         StartPoint="0,0"
+                         EndPoint="1,1">
+        <GradientStop Offset="0"
+                      Color="#FF55B4FD" />
+        <GradientStop Offset="1"
+                      Color="#FF6E69CF" />
+    </LinearGradientBrush>
+    
+    <SolidColorBrush x:Key="Default_SA_QAM_Path_BkColor"
+                     Color="#FFFFFF" />
+    <SolidColorBrush x:Key="Default_SA_QAM_Path_IsTrigger_Color"
+                     Color="#FFFFFF" />
+    <SolidColorBrush x:Key="Default_SA_QAM_BackGround"
+                     Color="#141D28" />
+    <SolidColorBrush x:Key="Default_SA_QAM_BackGround_1"
+                     Color="#1D2C3B" />
+    <SolidColorBrush x:Key="Default_SA_QAM_Select_BackGround"
+                     Color="#1D2C3B" />
+    <SolidColorBrush x:Key="Button_UXStyleColor_ForWhiteFrame"
+                     Color="#F5F6F7" />
+    <SolidColorBrush x:Key="PartBorderColor"
+                     Color="#141D28" />
+    <SolidColorBrush x:Key="Border_Hover_Color"
+                     Color="#293B4D" />
+    <SolidColorBrush x:Key="Default_SA_QAM_CameraSetting_BackGround"
+                     Color="#0A0E14" />
+    <SolidColorBrush x:Key="Default_SA_QAM_Menu_BackGround"
+                     Color="#141D28" />
+    <SolidColorBrush x:Key="TextBlock_ForegroundColor"
+                     Color="#FFFFFF" />
+    <Style TargetType="Border"
+           x:Key="Border_Test">
+        <Setter Property="BorderBrush"
+                Value="{DynamicResource Default_SA_QAM_Select_BackGround}" />
+        <Setter Property="Background"
+                Value="{DynamicResource Default_SA_QAM_Select_BackGround}" />
+    </Style>
+    <Style x:Key="BorderUnpair"
+           TargetType="Border">
+        <Setter Property="Background"
+                Value="{DynamicResource Default_SA_QAM_BackGround}" />
+        <Setter Property="CornerRadius"
+                Value="2" />
+        <Setter Property="Width"
+                Value="105" />
+        <Setter Property="Height"
+                Value="40" />
+        <Setter Property="BorderThickness"
+                Value="1" />
+        <Setter Property="BorderBrush"
+                Value="{DynamicResource Button_UXStyleColor_ForWhiteFrame}" />
+    </Style>
+    <Style x:Key="InfoToolTipStyle"
+           TargetType="ToolTip">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ToolTip">
+                    <Border Background="{TemplateBinding Background}"
+                            BorderBrush="#293B4D"
+                            BorderThickness="1"
+                            CornerRadius="4">
+                        <!--<TextBlock Text="{TemplateBinding Content}"
+                      FontFamily="Arial" ToolTipService.InitialShowDelay="1"
+                      FontSize="12"
+                      FontWeight="Normal"
+                      Foreground="#F5F6F7"
+                      Background="#193475F2"
+                      Padding="8,12,8,12" />-->
+                        <ContentPresenter />
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    <Style x:Key="TabInfoToolTipTextStyle"
+           TargetType="TextBlock">
+        <Setter Property="ToolTipService.InitialShowDelay"
+                Value="1" />
+        <Setter Property="Background"
+                Value="#1D2C3B" />
+        <Setter Property="FontFamily"
+                Value="Roboto" />
+        <Setter Property="FontSize"
+                Value="12" />
+        <Setter Property="Foreground"
+                Value="#F5F6F7" />
+        <Setter Property="Padding"
+                Value="8" />
+        <Setter Property="LineHeight"
+                Value="20" />
+        <Setter Property="TextWrapping"
+                Value="Wrap" />
+    </Style>
 </ResourceDictionary>

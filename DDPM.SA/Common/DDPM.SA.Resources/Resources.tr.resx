@@ -204,7 +204,7 @@
   <data name="Failed_to_open_application" xml:space="preserve">
     <value>Uygulama açılamadı</value>
   </data>
-  <data name="will_be_updated_to " xml:space="preserve">
+  <data name="will_be_updated_to" xml:space="preserve">
     <value>şuna güncelleştirilecek: </value>
   </data>
   <data name="can_be_updated_to" xml:space="preserve">
@@ -241,7 +241,7 @@
     <value>Bellenim güncelleştirmesini başlatmak için lütfen farenin sol düğmesine çift tıklayın</value>
   </data>
   <data name="M2_Please_press_key_on_keyboard_to_start_firmware_update" xml:space="preserve">
-    <value>Bellenim güncelleştirmesini başlatmak için lütfen klavyedeki \&quot;U\&quot; tuşuna basın</value>
+    <value>Bellenim güncelleştirmesini başlatmak için lütfen klavyedeki \"U\" tuşuna basın</value>
   </data>
   <data name="A0_Device_connected" xml:space="preserve">
     <value>Aygıt bağlı</value>
@@ -427,7 +427,7 @@
     <value>Pencereleri Düzenleme</value>
   </data>
   <data name="EA_MSG_0" xml:space="preserve">
-    <value>Geçerli pencere düzeninizi ayarlayın, adı düzenleyin (isteğe bağlı) ve düzenlemeyi kaydetmek için &quot;Kaydet&quot; seçeneğine tıklayın.</value>
+    <value>Geçerli pencere düzeninizi ayarlayın, adı düzenleyin (isteğe bağlı) ve düzenlemeyi kaydetmek için "Kaydet" seçeneğine tıklayın.</value>
   </data>
   <data name="Battery_Low" xml:space="preserve">
     <value>Pil Düşük Seviyede</value>

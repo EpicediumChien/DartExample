@@ -23,9 +23,14 @@
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
+            <Grid.Resources>
+                <Style TargetType="Border">
+                    <Setter Property="Background" Value="{DynamicResource FakeTransparent}"/>
+                </Style>
+            </Grid.Resources>
 
-            <Border Name="cell_2b1" Grid.Row="0" BorderBrush="{StaticResource BorderColor_SplitNormal}" BorderThickness="0,0,0,0" />
-            <Border Name="cell_2b2" Grid.Row="2" BorderBrush="{StaticResource BorderColor_SplitNormal}" BorderThickness="0,0,0,0" />
+            <Border Name="cell_2b1" Grid.Row="0" BorderBrush="{DynamicResource SplitSplitter_Icon}" BorderThickness="0,0,0,0" />
+            <Border Name="cell_2b2" Grid.Row="2" BorderBrush="{DynamicResource SplitSplitter_Icon}" BorderThickness="0,0,0,0" />
 
             <Rectangle Name="h1" Grid.Row="1"
                        Height="{StaticResource ThickSplitter}"

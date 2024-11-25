@@ -36,6 +36,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using VcpCore.Common;
 using VcpCore.Interfaces;
+using static DDPM.SA.Common.Settings.DDPMUserSettings;
 using static VcpCore.Common.EDIDReader;
 using static VcpCore.Common.User32;
 using IDs = DDPM.SA.Common.IDs;
@@ -595,6 +596,14 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                     if (objGetVCPEE.result)
                     {
                         string strUSB = Convert.ToString((uint)objGetVCPEE.value, 2);
+                        string _strUSB = strUSB;
+                        if (_strUSB.Length < 16)
+                        {
+                            for (int i = 0; i < (16 - _strUSB.Length); i++)
+                            {
+                                strUSB = "0" + strUSB;
+                            }
+                        }
                         //USBUplink[strUSB.Substring(0, 4)];
                     }
                 }
@@ -794,6 +803,37 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             return Task.FromResult(false);
         }
 
+        public Task<bool> isScreenPartition(MonitorInfo monitorInfo)
+        {
+            ObjGetVCP objGetVCP = GetVCPCapability(monitorInfo, 0xF2).Result;
+            if (objGetVCP != null && objGetVCP.result)
+            {
+                if ((uint)objGetVCP.value != 0)
+                {
+                    string strSP = Convert.ToString((uint)objGetVCP.value, 2);
+                    string strSP_16 = strSP;
+                    //add 16 to string
+                    if (strSP.Length < 16)
+                    {
+                        for (int i = 0; i < (16 - strSP.Length); i++)
+                        {
+                            strSP_16 = "0" + strSP_16;
+                        }
+                    }
+                    _logs.DebugMsg("[DisplayMangerPlugin][isScreenPartition] strSP_16 : " + strSP_16);
+                    //find 8
+                    if (strSP_16.Length == 16)
+                    {
+                        if (strSP_16.Substring(7, 1) == "1")
+                        {
+                            return Task.FromResult(true);
+                        }
+                    }
+                }
+            }
+            return Task.FromResult(false);
+        }
+
         #region ALS Function
 
         /// <summary>
@@ -820,6 +860,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                         {
                             GetALSAll(als, ref als_param);
                         }
+                        als_param.Edid = als.edid;
                         als_param.ModelName = als.modelName;
                         als_param.serialNumber = als.edid.SerialNumber;
                         als_param.DisplayName = als.DisplayName;
@@ -855,6 +896,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                     {
                         GetALSAll(monitorInfos, ref aconfig);
                     }
+                    aconfig.Edid = monitorInfos.edid;
                     aconfig.ModelName = monitorInfos.modelName;
                     aconfig.serialNumber = monitorInfos.edid.SerialNumber;
                     aconfig.DisplayName = monitorInfos.DisplayName;
@@ -945,6 +987,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                     foreach (MonitorInfo mon in monitorALS)//copy to als_connected first
                     {
                         ALSConfig als_nowtemp = new ALSConfig();
+                        als_nowtemp.Edid = mon.edid;
                         als_nowtemp.ModelName = mon.modelName;
                         als_nowtemp.DisplayName = mon.DisplayName;
                         als_nowtemp.serialNumber = mon.edid.SerialNumber;
@@ -1023,12 +1066,12 @@ namespace DDPM.SA.Plugins.User.DisplayManager
         {
             List<ALSConfig> als_connecte = new List<ALSConfig>();
             List<MonitorInfo> monitorALS = GetMonitors().Result;
-            foreach (MonitorInfo monitorInfo in monitorALS)
+            for(int i = 0; i < monitorALS.Count; i++)
             {
                 ALSConfig tempALSConfig = new ALSConfig();
-                tempALSConfig.ModelName = monitorInfo.modelName;
-                tempALSConfig.DisplayName = monitorInfo.DisplayName;
-                tempALSConfig.serialNumber = monitorInfo.edid.SerialNumber;
+                tempALSConfig.ModelName = monitorALS[i].modelName;
+                tempALSConfig.DisplayName = monitorALS[i].DisplayName;
+                tempALSConfig.serialNumber = monitorALS[i].edid.SerialNumber;
                 als_connecte.Add(tempALSConfig);
             }
             return Task.FromResult(als_connecte);
@@ -1040,21 +1083,35 @@ namespace DDPM.SA.Plugins.User.DisplayManager
         /// <returns>Return static AllALSConfig</returns>
         public Task<List<ALSConfig>> GetAllExistAlsConfig()
         {
-            var uniqueALSConfigs = new HashSet<(string DisplayName, string SerialNumber)>();
-            var distinctALSConfigList = new List<ALSConfig>();
-            if (AllALSConfig.Count > 1)
+            try
             {
-                foreach (var config in AllALSConfig)
+                _logs.DebugMsg($"[DisplayMangerPlugin] GetAllExistAlsConfig ... in");
+                var uniqueALSConfigs = new HashSet<(string DisplayName, string SerialNumber)>();
+                var distinctALSConfigList = new List<ALSConfig>();
+                Trace.WriteLine("GetAllExistAlsConfig AllALSConfig.Count " + AllALSConfig.Count.ToString());
+                if (AllALSConfig.Count > 1)
                 {
-                    var key = (config.DisplayName, config.serialNumber);
-                    if (uniqueALSConfigs.Add(key))
+                    for (int i = 0; i < AllALSConfig.Count; i++)
                     {
-                        distinctALSConfigList.Add(config);
+                        Trace.WriteLine("GetAllExistAlsConfig config.DisplayName, config.serialNumber " + AllALSConfig[i].DisplayName.ToString() + " || " + AllALSConfig[i].serialNumber.ToString());
+                        var key = (AllALSConfig[i].DisplayName, AllALSConfig[i].serialNumber);
+                        if (uniqueALSConfigs.Add(key))
+                        {
+                            Trace.WriteLine("GetAllExistAlsConfig uniqueALSConfigs true " + AllALSConfig[i].DisplayName.ToString() + " || " + AllALSConfig[i].serialNumber.ToString());
+                            distinctALSConfigList.Add(AllALSConfig[i]);
+                        }
                     }
+                    AllALSConfig = distinctALSConfigList;
                 }
-                AllALSConfig = distinctALSConfigList;
+                _logs.DebugMsg($"[DisplayMangerPlugin] GetAllExistAlsConfig ... out");
+                return Task.FromResult(AllALSConfig);
             }
-            return Task.FromResult(AllALSConfig);
+            catch (Exception ex)
+            {
+                Trace.WriteLine(ex.ToString());
+                _logs.DebugMsg($"[DisplayMangerPlugin] GetAllExistAlsConfig Exception {ex.Message}");
+                return Task.FromResult(new List<ALSConfig>());
+            }
         }
 
         /// <summary>
@@ -1063,16 +1120,29 @@ namespace DDPM.SA.Plugins.User.DisplayManager
         /// <returns>Return List<ALSConfig> type</returns>
         public Task<List<ALSConfig>> UpdateExistAlsConfig(List<MonitorInfo> monitorInfoMain)
         {
-            List<ALSConfig> als_connecte = new List<ALSConfig>();
-            List<MonitorInfo> monitorALS = GetMonitors().Result;
-            foreach (MonitorInfo monitorInfo in monitorInfoMain)
+            try
             {
-                ALSConfig aconfig = AllALSConfig.Find(x => x.DisplayName.ToUpper().Equals(monitorInfo.DisplayName.ToUpper()) && x.serialNumber.ToUpper().Equals(monitorInfo.edid.SerialNumber.ToUpper()));
-                if (aconfig != null)
-                    als_connecte.Add(aconfig);
+                _logs.DebugMsg($"[DisplayMangerPlugin] UpdateExistAlsConfig ... in");
+                List<ALSConfig> als_connecte = new List<ALSConfig>();
+                for (int i = 0; i < monitorInfoMain.Count; i++)
+                {
+                    ALSConfig aconfig = AllALSConfig.Find(x => x.DisplayName.ToUpper().Equals(monitorInfoMain[i].DisplayName.ToUpper()) && x.serialNumber.ToUpper().Equals(monitorInfoMain[i].edid.SerialNumber.ToUpper()));
+                    if (aconfig != null)
+                    {
+                        Trace.WriteLine("UpdateExistAlsConfig aconfig " + aconfig.DisplayName.ToString() + " || " + aconfig.serialNumber.ToString());
+                        als_connecte.Add(aconfig);
+                    }
+                }
+                AllALSConfig = als_connecte;
+                _logs.DebugMsg($"[DisplayMangerPlugin] UpdateExistAlsConfig ... out");
+                return Task.FromResult(als_connecte);
             }
-            AllALSConfig = als_connecte;
-            return Task.FromResult(als_connecte);
+            catch (Exception ex)
+            {
+                Trace.WriteLine(ex.ToString());
+                _logs.DebugMsg($"[DisplayMangerPlugin] UpdateExistAlsConfig Exception {ex.Message}");
+                return Task.FromResult(new List<ALSConfig>());
+            }
         }
 
         /// <summary>
@@ -1085,6 +1155,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             ALSConfig aconfig = AllALSConfig.Find(x => x.DisplayName.Equals(monitorALS.DisplayName) && x.serialNumber.Equals(monitorALS.serialNumber));//Dean 0624
             for (int i = 0; i < AllALSConfig.Count; i++)
             {
+                AllALSConfig[i].Edid = monitorALS.Edid;
                 AllALSConfig[i].AllValue = monitorALS.AllValue;
                 AllALSConfig[i].isAutoBrightness = monitorALS.isAutoBrightness;
                 AllALSConfig[i].isAutoColorTemp = monitorALS.isAutoColorTemp;
@@ -1123,6 +1194,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                     _logs.DebugMsg("[DisplayMangerPlugin] UpdateALSFeatureValue GetALSAll False...");
                     return Task.FromResult(false);
                 }
+                aconfig.Edid = monitorInfos.edid;
                 aconfig.ModelName = monitorInfos.modelName;
                 aconfig.DisplayName = monitorInfos.DisplayName;
                 aconfig.serialNumber = monitorInfos.edid.SerialNumber;//Dean 0624
@@ -1148,6 +1220,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                 if (alsConfig == null)
                 {
                     GetALSupport(monitorInfos, ref alsTemp);
+                    alsTemp.Edid = monitorInfos.edid;
                     alsTemp.ModelName = monitorInfos.modelName;
                     alsTemp.serialNumber = monitorInfos.edid.SerialNumber;
                     alsTemp.DisplayName = monitorInfos.DisplayName;
@@ -1890,26 +1963,26 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                             {
                                 if (uint.TryParse(e.value, NumberStyles.Integer, CultureInfo.CurrentCulture, out uint result))
                                 {
-                                    //No need sync, PIMS - 285803
-                                    //if (e.vcpcode.Equals("10"))
-                                    //    SetVCPCapability(mo, 0x10, Convert.ToUInt32(e.value));
-                                    //else if (e.vcpcode.Equals("12"))
-                                    //    SetVCPCapability(mo, 0x12, Convert.ToUInt32(e.value));
-                                    //else
-                                    //if (e.vcpcode.Equals("14") || e.vcpcode.Equals("F0") || e.vcpcode.Equals("DC"))
-                                    //{
-                                    //    r = int.TryParse(e.vcpcode, System.Globalization.NumberStyles.HexNumber, CultureInfo.CurrentCulture, out int number);
-                                    //    if (r) SetVCPCapability(mo, Convert.ToByte(number), Convert.ToUInt32(e.value));
-                                    //}
+                                //No need sync, PIMS - 285803
+                                //if (e.vcpcode.Equals("10"))
+                                //    SetVCPCapability(mo, 0x10, Convert.ToUInt32(e.value));
+                                //else if (e.vcpcode.Equals("12"))
+                                //    SetVCPCapability(mo, 0x12, Convert.ToUInt32(e.value));
+                                //else
+                                //if (e.vcpcode.Equals("14") || e.vcpcode.Equals("F0") || e.vcpcode.Equals("DC"))
+                                //{
+                                //    r = int.TryParse(e.vcpcode, System.Globalization.NumberStyles.HexNumber, CultureInfo.CurrentCulture, out int number);
+                                //    if (r) SetVCPCapability(mo, Convert.ToByte(number), Convert.ToUInt32(e.value));
+                                //}
                                 }
                                 else
                                 {
-                                    if (e.vcpcode.Equals("E2"))
-                                    {
-                                        SetVCPCapability(mo, "colorpreset", e.value);
-                                    }
-                                    else
-                                        break;
+                                if (e.vcpcode.Equals("E2"))
+                                {
+                                    SetVCPCapability(mo, "colorpreset", e.value);
+                                }
+                                else
+                                    break;
                                 }
                             }
                         }
@@ -2188,7 +2261,8 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                 _logs.DebugMsg($"[DisplayMangerPlugin] SetOSDOrientation go");
                 SetOSDOrientation(monitorInfos, OrientationString[(int)orientation + 1]).Wait();
                 isSWSetOrientation = true;
-                ret = _DisplayPropertiesPlugin.SetOrientation(monitorInfos.DisplayName, orientation).Result;
+                ret = _DisplayPropertiesPlugin.SetOrientation_New(monitorInfos.DisplayName, orientation).Result;
+                //ret = _DisplayPropertiesPlugin.SetOrientation(monitorInfos.DisplayName, orientation).Result;
                 isSWSetOrientation = false;
             }
             _logs.DebugMsg($"[DisplayMangerPlugin] SetOrientation done");
@@ -3199,6 +3273,23 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             return Task.FromResult(false);
         }
 
+        /// <summary>
+        /// Return current Span across multiple monitor option is Enabled/Disabled;
+        /// Note that it's different with EzSettings.IsSpanAcrossMultiMonitors (=ON|OFF)
+        /// </summary>
+        /// <returns>True=Enabled; False=Disabled</returns>
+        public Task<bool> GetIsSpanEnabled()
+        {
+            if (_eaService != null)
+            {
+                return _eaService.GetIsSpanEnabled();
+            }
+            else
+            {
+                _logs.DebugMsg($"[DisplayMangerPlugin] @ DisplayManager.GetIsSpanEnabled(): _eaService is in null");
+            }
+            return Task.FromResult(false);
+        }
         #endregion
 
         #region OutReport

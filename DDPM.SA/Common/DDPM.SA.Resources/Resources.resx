@@ -204,9 +204,6 @@
   <data name="Failed_to_open_application" xml:space="preserve">
     <value>Failed to open application</value>
   </data>
-  <data name="will_be_updated_to" xml:space="preserve">
-    <value>will be updated to </value>
-  </data>
   <data name="can_be_updated_to" xml:space="preserve">
     <value>can be updated to</value>
   </data>
@@ -497,5 +494,14 @@
   </data>
   <data name="Unable_to_synchronize_the_corresponding_ICC_profile" xml:space="preserve">
     <value>Unable to synchronize the corresponding ICC profile for</value>
+  </data>
+  <data name="will_be_updated_to" xml:space="preserve">
+    <value>will be updated to </value>
+  </data>
+  <data name="Caps Lock Off" xml:space="preserve">
+    <value>Caps Lock Off</value>
+  </data>
+  <data name="EABroker_updateToEmProfilePrompt" xml:space="preserve">
+    <value>There are Easy Memory profiles associated to this custom layout.\nSaving this custom layout will update the layout for all the associated profiles.\nDo you want to save the layout?</value>
   </data>
 </root>

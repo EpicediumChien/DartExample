@@ -13,9 +13,9 @@
              d:DesignHeight="671" d:DesignWidth="1374">
     <UserControl.Resources>
         <ResourceDictionary>
-            <ResourceDictionary.MergedDictionaries>
+            <!--<ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="/DDPM.UI.Common;component/PluginStyles.xaml" />
-            </ResourceDictionary.MergedDictionaries>
+            </ResourceDictionary.MergedDictionaries>-->
             <Storyboard x:Key="StoryGotoTwoView">
                 <DoubleAnimation Storyboard.TargetName="RightGrid" Storyboard.TargetProperty="Width"
                                  Duration="0:0:0.4" From="{Binding RightFrameWidthFrom}" To="{Binding RightFrameWidthTo}" FillBehavior="HoldEnd" />
@@ -91,7 +91,7 @@
             <Grid VerticalAlignment="Top" HorizontalAlignment="Left">
                 <StackPanel Orientation="Vertical">
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
-                        <Image Margin="64,21,0,0" Source="/DDPM.UI.Resources;component/Resources/Images/arrow-left.png" Stretch="Fill"
+                        <Image x:Name="ArrowLeft" Margin="64,21,0,0" Source="{DynamicResource Arrow_Left}" Stretch="Fill"
                                VerticalAlignment="Top" HorizontalAlignment="Left" Cursor="" Width="24" Height="24">
                             <Image.InputBindings>
                                 <MouseBinding Gesture="LeftClick" Command="{Binding GoBackClickedCommand, Mode=OneTime}" />
@@ -110,7 +110,7 @@
                             </Image.InputBindings>
                             <Image.ToolTip>
                                 <ToolTip Style="{StaticResource InfoToolTipStyle}" Placement="Top" VerticalOffset="6" HorizontalOffset="8">
-                                    <TextBlock Style="{StaticResource InfoToolTipTextStyle}" Text="{Binding FirmwareVersion2}" />
+                                    <TextBlock Style="{StaticResource TabInfoToolTipTextStyle}" Text="{Binding FirmwareVersion2}" />
                                 </ToolTip>
                             </Image.ToolTip>
                         </Image>
@@ -155,8 +155,10 @@
                                                            ConnectionType="{Binding ConnectionType}" VerticalAlignment="Bottom" />
                         <Border Style="{StaticResource BorderUnpair}" Width="176" MouseLeftButtonDown="Restore_Click" Cursor="Hand" Margin="8,0,0,70" Visibility="Visible" x:Name="btnRestore">
                             <Grid>
-                                <UXControls:UXTextBlock Name="txtRestore" Foreground="#F5F6F7" VerticalAlignment="Center"
+                                <Border BorderBrush="{DynamicResource Unpair_FgColor}" Background="Transparent" BorderThickness="1"  >
+                                    <UXControls:UXTextBlock Name="txtRestore"  VerticalAlignment="Center" Foreground="{DynamicResource Unpair_FgColor}"
                                                         HorizontalAlignment="Center" FontFamily="Roboto" FontSize="14" Text="{Binding [RestoreToDefault], Source={x:Static lang:LangHelper.Instance}}"/>
+                                </Border>
                             </Grid>
                         </Border>
                         <!--<Border Style="{StaticResource BorderUnpair}" MouseLeftButtonDown="Unpair_Click" Cursor="Hand" Margin="8,0,0,70" Visibility="Visible" x:Name="btnUnpair">

@@ -4,8 +4,10 @@ using DDPM.SA.Common.Settings;
 using DDPM.SA.Resources.Helper;
 using Dell.Client.Framework.Common;
 using Microsoft.Toolkit.Uwp.Notifications;
+using MS.WindowsAPICodePack.Internal;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
 using VcpCore.Common;
@@ -46,6 +48,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 devManagerSA = devMgr;
             if (displaySrv != null)
                 displayService = displaySrv;
+            Debug.WriteLine("[UpdateDDPMPluginInstances] devManagerSA is " + (devMgr == null ? "NULL" : "NOTNULL"));
+            WriteLog("[UpdateDDPMPluginInstances] devManagerSA is " + (devMgr == null ? "NULL" : "NOTNULL"));
         }
 
         private static ILog _log = null;
@@ -267,6 +271,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             if (devManagerSA == null)
             {
                 WriteLog("[PerformHotKeyBrightnessContrastLuminanceAction] null devManagerSA");
+                Debug.WriteLine("[PerformHotKeyBrightnessContrastLuminanceAction] null devManagerSA");
                 return;
             }
             bool doSync = isHotkeySyncBrightnessContrastToAllMonitors(job, moLists, currentMoInfo, alsSynchronizeList);
@@ -296,6 +301,32 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             {
                 WriteLog($"[PerformHotKeyBrightnessContrastLuminanceAction] un-support job2: {job}");
                 return;
+            }
+            //PIMS-298672 Use UP3221Q and enter hotkey that assigned for Luminance from keyboard, the luminance value is increasing/decreasing by 15 nits per interval.
+            if ("UP3221Q".Equals(currentMoInfo.modelName, StringComparison.OrdinalIgnoreCase))
+            {
+                if (job == HotkeyType.LuminanceIncrease)
+                    targetValue = ((uint)obVCPValue.value) >= 85 ? 100 : ((uint)obVCPValue.value + 15);
+                else if (job == HotkeyType.LuminanceReduce)
+                    targetValue = ((uint)obVCPValue.value) <= 15 ? 0 : ((uint)obVCPValue.value - 15);
+                else
+                {
+                    WriteLog($"[PerformHotKeyBrightnessContrastLuminanceAction] un-support job2: {job}");
+                    return;
+                }
+            }
+            //PIMS-298672 Use UP2720Q and enter hotkey that assigned for Luminance from keyboard, the luminance value is increasing/decreasing by 10 nits per interval.
+            if ("UP2720Q".Equals(currentMoInfo.modelName, StringComparison.OrdinalIgnoreCase))
+            {
+                if (job == HotkeyType.LuminanceIncrease)
+                    targetValue = ((uint)obVCPValue.value) >= 90 ? 100 : ((uint)obVCPValue.value + 10);
+                else if (job == HotkeyType.LuminanceReduce)
+                    targetValue = ((uint)obVCPValue.value) <= 10 ? 0 : ((uint)obVCPValue.value - 10);
+                else
+                {
+                    WriteLog($"[PerformHotKeyBrightnessContrastLuminanceAction] un-support job2: {job}");
+                    return;
+                }
             }
             bool ret = devManagerSA.SetVCPCapability(currentMoInfo, code, targetValue).Result;
             WriteLog($"{job}:[{currentMoInfo.edid.ModelName}:{currentMoInfo.edid.SerialNumber}] from [{(uint)obVCPValue.value}] to [{targetValue}]" + (ret ? "success" : "fail"));
