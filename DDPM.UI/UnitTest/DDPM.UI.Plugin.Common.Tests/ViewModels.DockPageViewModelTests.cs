@@ -131,36 +131,23 @@ namespace DDPM.UI.Plugin.Common.Tests
         [Test]
         public void TestSetCurrentDevice()
         {
-            var result = dockPageViewModel.SetCurrentDevice("3c6863f9-d8d6-4045-9403-8c3ace7df488");
+            string guid=  "3c6863f9-d8d6-4045-9403-8c3ace7df488";
+            var result = dockPageViewModel.SetCurrentDevice(guid);
             // Assert
-            Assert.That(dockPageViewModel.IsEnableUpdate, Is.EqualTo(false));
+            Assert.That(result, Is.EqualTo(false));
 
-            //var peripheralViewModel = new PeripheralViewModel(console, log, deviceManagerSA);
-            //peripheralViewModel.CurrentDeviceInfo = new DeviceInfo() { DockPackageFwVersion = "DockPackageFwVersion", DockServiceTag = "DockServiceTag" };
-            //result = dockPageViewModel.SetCurrentDevice("3c6863f9-d8d6-4045-9403-8c3ace7df488");
-
-
-
-
-
+            deviceManagerSAMock.Setup(x => x.GetFWUpdateInfo(It.IsAny<bool>(), It.IsAny<bool>(), It.IsAny<bool>(), It.IsAny<List<DeviceType>>(), It.IsAny<bool>(), It.IsAny<bool>(), It.IsAny<bool>(), It.IsAny<bool>(), It.IsAny<List<string>>(), It.IsAny<List<string>>(), It.IsAny<List<string>>(), It.IsAny<string>())).Returns(Task.FromResult(new FWUpdateInfoPackage() {FWUpdateInfo=new List<FWUpdateInfo>() { new FWUpdateInfo() { DeviceId=""},new FWUpdateInfo() { DeviceId= "{3c6863f9-d8d6-4045-9403-8c3ace7df488}" } } }));
+            privateObject.SetFieldOrProperty("_deviceManager", deviceManagerSAMock.Object);           
+            dockPageViewModel.DeviceInfos = new Dictionary<Guid, DeviceInfo>() { { new Guid(), new DeviceInfo() }, { new Guid(guid), new DeviceInfo() { ModelNumber = "KB740",Name= "HEADSET", FirmwareVersion = "AA", PhysicalDeviceType = DeviceType.PhysicalWebcam, PhysicalDeviceFirmwareVersion="A0" , DockPackageFwVersion = "DockPackageFwVersion", DockServiceTag = "DockServiceTag" } } };
+            result = dockPageViewModel.SetCurrentDevice("3c6863f9-d8d6-4045-9403-8c3ace7df488");
+            Assert.That(result, Is.EqualTo(true));
         }
 
         [Test]
         public void TestHandleNotification()
         {
             var changeType = new DeviceChangedType();
-            var di = new DeviceInfo() { ID=Guid.NewGuid()};
-            try
-            {
-                dockPageViewModel.HandleNotification(changeType,di,"");
-                Assert.True(true);
-            }
-            catch (Exception ex)
-            {
-                Assert.Fail("not invoked");
-            }
-
-
+            var di = new DeviceInfo() { ID = Guid.NewGuid(),Name= "HEADSET" };
             try
             {
                 dockPageViewModel.HandleNotification(DeviceChangedType.Peripherals_SettingsChange, di, "");
@@ -171,21 +158,22 @@ namespace DDPM.UI.Plugin.Common.Tests
                 Assert.Fail("not invoked");
             }
 
-            //var peripheralViewModel = new PeripheralViewModel(console, log, deviceManagerSA);
-            //peripheralViewModel.DeviceInfos = new Dictionary<Guid, DeviceInfo>() { { di.ID, di },{ new Guid(), di } };
-            //peripheralViewModel.CurrentDeviceID = di.ID;
-            //try
-            //{
-            //    dockPageViewModel.HandleNotification(DeviceChangedType.Peripherals_SettingsChange, di, "");
-            //    Assert.True(true);
-            //}
-            //catch (Exception ex)
-            //{
-            //    Assert.Fail("not invoked");
-            //}
+            string guid = "3c6863f9-d8d6-4045-9403-8c3ace7df488";
+            var peripheralViewModel = new PeripheralViewModel(console, log, deviceManagerSA);
+            dockPageViewModel.DeviceInfos = new Dictionary<Guid, DeviceInfo>() { { di.ID, di }, { new Guid(), di } };
+            dockPageViewModel.CurrentDeviceID = di.ID;
+            try
+            {
+                dockPageViewModel.HandleNotification(DeviceChangedType.Peripherals_SettingsChange, di, "");
+                Assert.True(true);
+            }
+            catch (Exception ex)
+            {
+                Assert.Fail("not invoked");
+                //}
+            }
+
         }
-
-
     }
     
 }

@@ -65,7 +65,8 @@ namespace DDPM.SA.Common.UI
                 // Replace the old object with the updated one in the resources
                 Application.Current.Resources[resourceKey] = newFreezable;
 
-                Application.Current.Resources[resourceKey] = Application.Current.Resources[resourceKey];// Force Refresh
+                // [20241122] SonarQube: Remove or correct this useless self-assignment.
+                //Application.Current.Resources[resourceKey] = Application.Current.Resources[resourceKey];// Force Refresh
             }
         }
     }

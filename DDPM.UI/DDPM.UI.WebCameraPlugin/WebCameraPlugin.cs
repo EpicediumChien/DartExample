@@ -136,6 +136,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
 
             PluginIoc.ConfigureServices(new ServiceCollection()
                 .AddSingleton(_console)
+                .AddSingleton(_pluginManager)
                 .AddSingleton(_log)
                 .AddSingleton<IPeripheralViewModel, WebCameraViewModel>()
                 .BuildServiceProvider());
@@ -153,13 +154,88 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
         public void OnActivated()
         {
             DdpmCommonHelper.DeviceManagerSA!.DeviceChanged += DeviceManager_DeviceChanged;
+            DdpmCommonHelper.DeviceManagerSA!.UIUpdateNotify += WebCameraplugin_UIUpdateNotify;
             Mouse.OverrideCursor = null;
         }
+
+        private void WebCameraplugin_UIUpdateNotify(object? sender, UpdateUINotify e)
+        {
+            //Open this to get the message format of Webcam event
+            //System.Windows.MessageBox.Show(e.UI_Field_Name);
+
+            //cmd format sample
+            //5;Device:Webcam;EventType:Webcam_IsHDROnChanged;DeviceId:28d64fee-3544-45c7-a1b0-10db20a4cf8e;NewValue:True
+            Dictionary<string, string> event_param = deal_param(e.UI_Field_Name);
+            try
+            {
+                if (!event_param.TryGetValue("Device", out var device))
+                {
+                    _log.Debug("Device cannot be found in event_param");
+                    return;
+                }
+                if (device == "Webcam")
+                {
+                    if (!event_param.TryGetValue("EventType", out var eventtype))
+                    {
+                        _log.Debug("EventType cannot be found in event_param");
+                        return;
+                    }
+                    switch (eventtype)
+                    {
+                        case "Webcam_IsHDROnChanged":
+                            {
+                                if (!event_param.TryGetValue("NewValue", out var NewValue))
+                                {
+                                    _log.Debug("NewValue cannot be found in event_param");
+                                    return;
+                                }
+                                Application.Current.Dispatcher.Invoke(() =>
+                                {
+                                    if (NewValue.ToLower() == "true")
+                                        _viewModel!.IsHDROn = true;
+                                    else
+                                        _viewModel!.IsHDROn = false;
+                                });
+                            }
+                            break;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                _log.Debug(ex , "WebCameraplugin_UIUpdateNotify");
+            }
+        }
+
+        private Dictionary<string, string> deal_param(string param)
+        {
+            Dictionary<string, string> tmp = new Dictionary<string, string>();
+
+            try
+            {
+                List<string> list = param.Split(new char[] { ';' }).ToList();
+                foreach (string s in list)
+                {
+                    List<string> item = s.Split(new char[] { ':' }).ToList();
+                    if (item.Count == 2)
+                    {
+                        tmp.Add(item[0], item[1]);
+                    }
+                }
+            }
+            catch
+            {
+
+            }
+            return tmp;
+        }
+
 
         /// <inheritdoc/>
         public void OnDeactivated()
         {
             DdpmCommonHelper.DeviceManagerSA!.DeviceChanged -= DeviceManager_DeviceChanged;
+            DdpmCommonHelper.DeviceManagerSA!.UIUpdateNotify -= WebCameraplugin_UIUpdateNotify;
             Mouse.OverrideCursor = Cursors.Wait;
         }
 

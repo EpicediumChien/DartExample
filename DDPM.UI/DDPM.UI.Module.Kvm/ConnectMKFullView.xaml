@@ -6,7 +6,7 @@
              xmlns:UXControls="clr-namespace:Dell.Client.Framework.UX.WPF.Controls;assembly=DCF.UX.WPF"
              xmlns:local="clr-namespace:DDPM.UI.Module.Kvm"
              xmlns:lang="clr-namespace:DDPM.UI.Resources.Helper;assembly=DDPM.UI.Resources"
-             mc:Ignorable="d" Background="#FF0D121A"
+             mc:Ignorable="d" Background="{DynamicResource mainWindowBkColor}"
              d:DesignHeight="671" d:DesignWidth="1378"
              SizeChanged="UserControl_SizeChanged">
     

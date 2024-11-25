@@ -81,6 +81,8 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         private const string PenItemID0 = "DellPeripheral.Pen.0";
         private const string KeyboardItemID = "DellPeripheral.Keyboard";
         private const string KeyboardItemID0 = "DellPeripheral.Keyboard.0";
+        private const string WebcamItemID = "DellPeripheral.Webcam";
+        private bool IsDTPReady = false;
 
         public const string PluginLogId = "DTPProxy";
 
@@ -88,10 +90,10 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         /// <summary>
         /// Webcam change event
         /// </summary>
-        public event EventHandler<bool>? Esi_IsCameraSensorCover_ChangeEvent;
-        public event EventHandler<int>? WALSnoozeTimeLeftInSeconds_ChangeEvent;
-        public event EventHandler<bool>? Esi_IsWALLockCountdownStartedChanged_ChangeEvent;
-        public event EventHandler<int>? Esi_WALLockCountdownChanged_ChangeEvent;
+        //public event EventHandler<bool>? Esi_IsCameraSensorCover_ChangeEvent;
+        //public event EventHandler<int>? WALSnoozeTimeLeftInSeconds_ChangeEvent;
+        //public event EventHandler<bool>? Esi_IsWALLockCountdownStartedChanged_ChangeEvent;
+        //public event EventHandler<int>? Esi_WALLockCountdownChanged_ChangeEvent;
 
 
         #endregion
@@ -122,6 +124,13 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         public event EventHandler<IsZoomMeetingActiveChangedArgs> IsZoomMeetingActive_Notify;
 
         public event EventHandler<IsZoomScreenShareActiveChangedArgs> IsZoomScreenShareActive_Notify;
+
+        //Derek 1120
+        public event EventHandler<UpdateUINotify> WebcamEventHandler;
+        public void OnUIUpdateNotify(UpdateUINotify e)
+        {
+            WebcamEventHandler?.Invoke(this, e);
+        }
 
         public void NotifyNow()
         {
@@ -464,6 +473,35 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 return new JArray();
             }
         }
+
+        //Derek 1120
+        public async Task<JArray> GetWebcamDeviceItemsEx()
+        {
+            _itemID = new ItemId(WebcamItemID);
+
+            if (_webcamMethodInfo != null)
+            {
+                if (await GetCommodityInterfaceInstanceAsync(_webcamMethodInfo) is ICommodity commodity)
+                {
+                    var value = GetPropertyValue(_webcamInterfaceType, commodity, "DeviceItemsEx");
+                    return value == null ? new JArray() : (JArray)value;
+                }
+                else
+                {
+                    Debug.WriteLine($"Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {_itemID} item.");
+                    writelog($"Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {_itemID} item.");
+                    return new JArray();
+                }
+            }
+            else
+            {
+                Debug.WriteLine($"[GetDeviceItemsEx]Could not retrieve the Commodity Interface for the {_itemID} item. _webcamMethodInfo is null");
+                writelog($"[GetDeviceItemsEx]Could not retrieve the Commodity Interface for the {_itemID} item. _webcamMethodInfo is null");
+                return new JArray();
+            }
+
+        }
+
         public async Task<JArray> GetKeyboardDeviceItemsEx()
         {
             _itemID = new ItemId(KeyboardItemID);
@@ -713,6 +751,60 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 return string.Empty;
             }
 
+        }
+
+        public async Task<bool> GetIsWindowsHelloCapabilityVerified(string Guid)
+        {
+            if (!await GetItemIDAsync("Webcam", Guid))
+            { return false; }
+
+            if (_webcamMethodInfo != null)
+            {
+                if (await GetCommodityInterfaceInstanceAsync(_webcamMethodInfo) is ICommodity commodity)
+                {
+                    var value = GetPropertyValue(_webcamInterfaceType, commodity, "IsWindowsHelloCapabilityVerified");
+                    return (bool)value;
+                }
+                else
+                {
+                    Debug.WriteLine($"[IsWindowsHelloCapabilityVerified]Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {_itemID} item.");
+                    writelog($"[IsWindowsHelloCapabilityVerified]Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {_itemID} item.");
+                    return false;
+                }
+            }
+            else
+            {
+                Debug.WriteLine($"[IsWindowsHelloCapabilityVerified]Could not retrieve the Commodity Interface for the {_itemID} item. _webcamMethodInfo is null");
+                writelog($"[IsWindowsHelloCapabilityVerified]Could not retrieve the Commodity Interface for the {_itemID} item. _webcamMethodInfo is null");
+                return false;
+            }
+        }
+
+        public async Task<bool> GetIsAllSupportedResolutionsFound(string Guid)
+        {
+            if (!await GetItemIDAsync("Webcam", Guid))
+            { return false; }
+
+            if (_webcamMethodInfo != null)
+            {
+                if (await GetCommodityInterfaceInstanceAsync(_webcamMethodInfo) is ICommodity commodity)
+                {
+                    var value = GetPropertyValue(_webcamInterfaceType, commodity, "IsAllSupportedResolutionsFound");
+                    return (bool)value;
+                }
+                else
+                {
+                    Debug.WriteLine($"[IsAllSupportedResolutionsFound]Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {_itemID} item.");
+                    writelog($"[IsAllSupportedResolutionsFound]Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {_itemID} item.");
+                    return false;
+                }
+            }
+            else
+            {
+                Debug.WriteLine($"[IsAllSupportedResolutionsFound]Could not retrieve the Commodity Interface for the {_itemID} item. _webcamMethodInfo is null");
+                writelog($"[IsAllSupportedResolutionsFound]Could not retrieve the Commodity Interface for the {_itemID} item. _webcamMethodInfo is null");
+                return false;
+            }
         }
 
         public async Task<bool> GetIsPropertyFOVSupported(string Guid)
@@ -1081,19 +1173,20 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 writelog($"Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {_itemID} item.");
             }
         }
-        public async Task SetZoom(string Guid, int newValue)
+        public async Task<bool> SetZoom(string Guid, int newValue)
         {
             if (!await GetItemIDAsync("Webcam", Guid))
-            { return; }
+            { return false; }
 
             if (await GetCommodityInterfaceInstanceAsync(_webcamMethodInfo) is ICommodity commodity)
             {
-                SetPropertyValue(_webcamInterfaceType, commodity, "Zoom", newValue);
+                return SetPropertyValue(_webcamInterfaceType, commodity, "Zoom", newValue);
             }
             else
             {
                 Debug.WriteLine($"Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {_itemID} item.");
                 writelog($"Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {_itemID} item.");
+                return false;
             }
         }
         public async Task SetAutoFramingSensitivity(string Guid, int newValue)
@@ -1126,19 +1219,20 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 writelog($"Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {_itemID} item.");
             }
         }
-        public async Task SetIsAutoFramingOn(string Guid, bool newValue)
+        public async Task<bool> SetIsAutoFramingOn(string Guid, bool newValue)
         {
             if (!await GetItemIDAsync("Webcam", Guid))
-            { return; }
+            { return false; }
 
             if (await GetCommodityInterfaceInstanceAsync(_webcamMethodInfo) is ICommodity commodity)
             {
-                SetPropertyValue(_webcamInterfaceType, commodity, "IsAutoFramingOn", newValue);
+                return SetPropertyValue(_webcamInterfaceType, commodity, "IsAutoFramingOn", newValue);
             }
             else
             {
                 Debug.WriteLine($"Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {_itemID} item.");
                 writelog($"Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {_itemID} item.");
+                return false;
             }
         }
         public async Task SetIsAutoFramingTransitionOn(string Guid, bool newValue)
@@ -1156,19 +1250,20 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 writelog($"Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {_itemID} item.");
             }
         }
-        public async Task SetFieldOfView(string Guid, int newValue)
+        public async Task<bool> SetFieldOfView(string Guid, int newValue)
         {
             if (!await GetItemIDAsync("Webcam", Guid))
-            { return; }
+            { return false; }
 
             if (await GetCommodityInterfaceInstanceAsync(_webcamMethodInfo) is ICommodity commodity)
             {
-                SetPropertyValue(_webcamInterfaceType, commodity, "FieldOfView", newValue);
+                return SetPropertyValue(_webcamInterfaceType, commodity, "FieldOfView", newValue);
             }
             else
             {
                 Debug.WriteLine($"Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {_itemID} item.");
                 writelog($"Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {_itemID} item.");
+                return false;
             }
         }
         public async Task SetIsFocusOn(string Guid, bool newValue)
@@ -1718,30 +1813,30 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
         }
 
-        public async Task<bool> GetIsPrioritizeExternalWebcam(string Guid)
+        public async Task<bool?> GetIsPrioritizeExternalWebcam(string Guid)
         {
             if (!await GetItemIDAsync("Webcam", Guid))
-            { return false; }
+            { return null; }
 
             if (_webcamMethodInfo != null)
             {
                 if (await GetCommodityInterfaceInstanceAsync(_webcamMethodInfo) is ICommodity commodity)
                 {
                     var value = GetPropertyValue(_webcamInterfaceType, commodity, "IsPrioritizeExternalWebcam");
-                    return (bool)value;
+                    return (bool?)value;
                 }
                 else
                 {
                     Debug.WriteLine($"[GetIsPrioritizeExternalWebcam]Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {_itemID} item.");
                     writelog($"[GetIsPrioritizeExternalWebcam]Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {_itemID} item.");
-                    return false;
+                    return null;
                 }
             }
             else
             {
                 Debug.WriteLine($"[GetIsPrioritizeExternalWebcam]Could not retrieve the Commodity Interface for the {_itemID} item. _webcamMethodInfo is null");
                 writelog($"[GetIsPrioritizeExternalWebcam]Could not retrieve the Commodity Interface for the {_itemID} item. _webcamMethodInfo is null");
-                return false;
+                return null;
             }
 
         }
@@ -3177,6 +3272,33 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
         }
 
+        public async Task<bool> SetBoomMicAsync(string guidString, bool newValue)
+        {
+            try
+            {
+                if (!await GetItemIDAsync("Headset", guidString))
+                    return false;
+
+                if (await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo) is ICommodity commodity)
+                {
+                    SetPropertyValue(_headsetInterfaceType, commodity, "BoomMic", newValue);
+                    writelog(" [Headset] SetBoomMicAsync Success !");
+                    return true;
+                }
+                else
+                {
+                    Debug.WriteLine($"Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
+                    writelog($"Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                writelog($" [Headset] SetBoomMicAsync failed: {ex.Message}");
+                return false;
+            }
+        }
+
         #endregion Headset set
 
         #region Headset Get
@@ -3577,6 +3699,81 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             catch (Exception ex)
             {
                 writelog($"[Headset] GetPairingStatusAsync failed for {guid} - Exception: {ex.Message}");
+                return null;
+            }
+        }
+
+        public async Task<string> GetPairedHostName1Async(string guid)
+        {
+            try
+            {
+                if (!await GetItemIDAsync("Headset", guid))
+                    return null;
+
+                var commodity = await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo);
+                if (commodity is ICommodity)
+                {
+                    var value = GetPropertyValue(_headsetInterfaceType, commodity, "PairedHostName1");
+                    writelog($"[Headset] GetPairedHostName1Async succeeded for {guid}");
+                    return (string)value;
+                }
+
+                writelog($"[Headset] GetPairedHostName1Async failed: Could not retrieve commodity interface for {guid}");
+                return null;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[Headset] GetPairedHostName1Async failed for {guid} - Exception: {ex.Message}");
+                return null;
+            }
+        }
+
+        public async Task<string> GetPairedHostName2Async(string guid)
+        {
+            try
+            {
+                if (!await GetItemIDAsync("Headset", guid))
+                    return null;
+
+                var commodity = await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo);
+                if (commodity is ICommodity)
+                {
+                    var value = GetPropertyValue(_headsetInterfaceType, commodity, "PairedHostName2");
+                    writelog($"[Headset] GetPairedHostName2Async succeeded for {guid}");
+                    return (string)value;
+                }
+
+                writelog($"[Headset] GetPairedHostName2Async failed: Could not retrieve commodity interface for {guid}");
+                return null;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[Headset] GetPairedHostName2Async failed for {guid} - Exception: {ex.Message}");
+                return null;
+            }
+        }
+
+        public async Task<string> GetPairedHostName3Async(string guid)
+        {
+            try
+            {
+                if (!await GetItemIDAsync("Headset", guid))
+                    return null;
+
+                var commodity = await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo);
+                if (commodity is ICommodity)
+                {
+                    var value = GetPropertyValue(_headsetInterfaceType, commodity, "PairedHostName3");
+                    writelog($"[Headset] GetPairedHostName3Async succeeded for {guid}");
+                    return (string)value;
+                }
+
+                writelog($"[Headset] GetPairedHostName3Async failed: Could not retrieve commodity interface for {guid}");
+                return null;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[Headset] GetPairedHostName3Async failed for {guid} - Exception: {ex.Message}");
                 return null;
             }
         }
@@ -4507,6 +4704,56 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
         }
 
+        public async Task<bool> GetIsBoomMicSupportedAsync(string guid)
+        {
+            try
+            {
+                if (!await GetItemIDAsync("Headset", guid))
+                    return false;
+
+                var commodity = await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo);
+                if (commodity is ICommodity)
+                {
+                    var value = GetPropertyValue(_headsetInterfaceType, commodity, "IsBoomMicSupported");
+                    writelog($"[Headset] GetIsBoomMicSupportedAsync succeeded for {guid}");
+                    return (bool)value;
+                }
+
+                writelog($"[Headset] GetIsBoomMicSupportedAsync failed: Could not retrieve commodity interface for {guid}");
+                return false;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[Headset] GetIsBoomMicSupportedAsync failed for {guid} - Exception: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> GetBoomMicAsync(string guid)
+        {
+            try
+            {
+                if (!await GetItemIDAsync("Headset", guid))
+                    return false;
+
+                var commodity = await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo);
+                if (commodity is ICommodity)
+                {
+                    var value = GetPropertyValue(_headsetInterfaceType, commodity, "BoomMic");
+                    writelog($"[Headset] GetBoomMicAsync succeeded for {guid}");
+                    return (bool)value;
+                }
+
+                writelog($"[Headset] GetBoomMicAsync failed: Could not retrieve commodity interface for {guid}");
+                return false;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[Headset] GetBoomMicAsync failed for {guid} - Exception: {ex.Message}");
+                return false;
+            }
+        }
+
         #endregion Headset Get
 
         #endregion
@@ -5341,129 +5588,137 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
             _commSdk = (ICommodityClientSdk)_agent.PluginManager.FindPluginByType(typeof(ICommodityClientSdk));
 
-            if (_commSdk != null)
+            try 
             {
-                _ = Task.Run(async () =>
+                if (_commSdk != null)
                 {
-                    await _commSdk.InitializeAsync(appId, new CancellationTokenSource().Token);
+                    _ = Task.Run(async () =>
+                    {
+                        await _commSdk.InitializeAsync(appId, new CancellationTokenSource().Token);
 
-                    writelog($"Find IMouseCommodity Init time : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
-                    _mouseInterfaceType = FindCommodityInterfaceType("IMouseCommodity");
-                    if (_mouseInterfaceType != null)
-                    {
-                        _mouseMethodInfo = typeof(ICommodityClientSdk).GetMethod("GetCommodityAsync", new[] { typeof(ItemId), typeof(CancellationToken) })
-                                                      .MakeGenericMethod(_mouseInterfaceType);
+                        IsDTPReady = true;
+                        writelog($"Find IMouseCommodity Init time : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+                        _mouseInterfaceType = FindCommodityInterfaceType("IMouseCommodity");
+                        if (_mouseInterfaceType != null)
+                        {
+                            _mouseMethodInfo = typeof(ICommodityClientSdk).GetMethod("GetCommodityAsync", new[] { typeof(ItemId), typeof(CancellationToken) })
+                                                          .MakeGenericMethod(_mouseInterfaceType);
 
-                        writelog($"Find IMouseCommodity found time : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
-                    }
-                    else
-                    {
-                        writelog($"Find IMouseCommodity not find  time: {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
-                    }
+                            writelog($"Find IMouseCommodity found time : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+                        }
+                        else
+                        {
+                            writelog($"Find IMouseCommodity not find  time: {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+                        }
 
-                    writelog($"Find IKeyboardCommodity Init time : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
-                    _keyboardInterfaceType = FindCommodityInterfaceType("IKeyboardCommodity");
-                    if (_keyboardInterfaceType != null)
-                    {
-                        _keyboardMethodInfo = typeof(ICommodityClientSdk).GetMethod("GetCommodityAsync", new[] { typeof(ItemId), typeof(CancellationToken) })
-                                                        .MakeGenericMethod(_keyboardInterfaceType);
-                        writelog($"Find IKeyboardCommodity found time : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
-                    }
-                    else
-                    {
-                        writelog($"Find IKeyboardCommodity not find  time: {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
-                    }
+                        writelog($"Find IKeyboardCommodity Init time : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+                        _keyboardInterfaceType = FindCommodityInterfaceType("IKeyboardCommodity");
+                        if (_keyboardInterfaceType != null)
+                        {
+                            _keyboardMethodInfo = typeof(ICommodityClientSdk).GetMethod("GetCommodityAsync", new[] { typeof(ItemId), typeof(CancellationToken) })
+                                                            .MakeGenericMethod(_keyboardInterfaceType);
+                            writelog($"Find IKeyboardCommodity found time : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+                        }
+                        else
+                        {
+                            writelog($"Find IKeyboardCommodity not find  time: {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+                        }
 
-                    writelog($"Find IWebcamCommodity Init time : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
-                    _webcamInterfaceType = FindCommodityInterfaceType("IWebcamCommodity");
+                        writelog($"Find IWebcamCommodity Init time : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+                        _webcamInterfaceType = FindCommodityInterfaceType("IWebcamCommodity");
 
-                    if (_webcamInterfaceType != null)
-                    {
-                        _webcamMethodInfo = typeof(ICommodityClientSdk).GetMethod("GetCommodityAsync", new[] { typeof(ItemId), typeof(CancellationToken) })
-                                                        .MakeGenericMethod(_webcamInterfaceType);
-                        writelog($"Find IWebcamCommodity found time : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
-                    }
-                    else
-                    {
-                        writelog($"Find IWebcamCommodity not find  time: {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
-                    }
+                        if (_webcamInterfaceType != null)
+                        {
+                            _webcamMethodInfo = typeof(ICommodityClientSdk).GetMethod("GetCommodityAsync", new[] { typeof(ItemId), typeof(CancellationToken) })
+                                                            .MakeGenericMethod(_webcamInterfaceType);
+                            writelog($"Find IWebcamCommodity found time : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+                        }
+                        else
+                        {
+                            writelog($"Find IWebcamCommodity not find  time: {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+                        }
 
-                    writelog($"Find IPenCommodity Init time : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
-                    _penInterfaceType = FindCommodityInterfaceType("IPenCommodity");
-                    if (_penInterfaceType != null)
-                    {
-                        _penMethodInfo = typeof(ICommodityClientSdk).GetMethod("GetCommodityAsync", new[] { typeof(ItemId), typeof(CancellationToken) })
-                                                                    .MakeGenericMethod(_penInterfaceType);
-                        writelog($"Find IPenCommodity found time : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
-                    }
-                    else
-                    {
-                        writelog($"Find IPenCommodity not find  time: {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
-                    }
+                        writelog($"Find IPenCommodity Init time : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+                        _penInterfaceType = FindCommodityInterfaceType("IPenCommodity");
+                        if (_penInterfaceType != null)
+                        {
+                            _penMethodInfo = typeof(ICommodityClientSdk).GetMethod("GetCommodityAsync", new[] { typeof(ItemId), typeof(CancellationToken) })
+                                                                        .MakeGenericMethod(_penInterfaceType);
+                            writelog($"Find IPenCommodity found time : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+                        }
+                        else
+                        {
+                            writelog($"Find IPenCommodity not find  time: {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+                        }
 
-                    writelog($"Find IHeadsetCommodity Init time : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
-                    _headsetInterfaceType = FindCommodityInterfaceType("IHeadsetCommodity");
-                    if (_headsetInterfaceType != null)
-                    {
-                        _headsetMethodInfo = typeof(ICommodityClientSdk).GetMethod("GetCommodityAsync", new[] { typeof(ItemId), typeof(CancellationToken) })
-                                                                    .MakeGenericMethod(_headsetInterfaceType);
+                        writelog($"Find IHeadsetCommodity Init time : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+                        _headsetInterfaceType = FindCommodityInterfaceType("IHeadsetCommodity");
+                        if (_headsetInterfaceType != null)
+                        {
+                            _headsetMethodInfo = typeof(ICommodityClientSdk).GetMethod("GetCommodityAsync", new[] { typeof(ItemId), typeof(CancellationToken) })
+                                                                        .MakeGenericMethod(_headsetInterfaceType);
 
-                        writelog($"Find IHeadsetCommodity found time : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
-                    }
-                    else
-                    {
-                        writelog($"Find IHeadsetCommodity not find  time: {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
-                    }
+                            writelog($"Find IHeadsetCommodity found time : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+                        }
+                        else
+                        {
+                            writelog($"Find IHeadsetCommodity not find  time: {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+                        }
 
-                    writelog($"Find ISpeakerCommodity Init time : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
-                    _speakerInterfaceType = FindCommodityInterfaceType("ISpeakerCommodity");
-                    if (_speakerInterfaceType != null)
-                    {
-                        _speakerMethodInfo = typeof(ICommodityClientSdk).GetMethod("GetCommodityAsync", new[] { typeof(ItemId), typeof(CancellationToken) })
-                                                                    .MakeGenericMethod(_speakerInterfaceType);
-                        writelog($"Find ISpeakerCommodity found time : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
-                    }
-                    else
-                    {
-                        writelog($"Find ISpeakerCommodity not find  time: {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
-                    }
+                        writelog($"Find ISpeakerCommodity Init time : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+                        _speakerInterfaceType = FindCommodityInterfaceType("ISpeakerCommodity");
+                        if (_speakerInterfaceType != null)
+                        {
+                            _speakerMethodInfo = typeof(ICommodityClientSdk).GetMethod("GetCommodityAsync", new[] { typeof(ItemId), typeof(CancellationToken) })
+                                                                        .MakeGenericMethod(_speakerInterfaceType);
+                            writelog($"Find ISpeakerCommodity found time : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+                        }
+                        else
+                        {
+                            writelog($"Find ISpeakerCommodity not find  time: {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+                        }
 
-                    writelog($"Find IDongleCommodity Init time : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
-                    _dongleInterfaceType = FindCommodityInterfaceType("IDongleCommodity");
-                    if (_dongleInterfaceType != null)
-                    {
-                        _dongleMethodInfo = typeof(ICommodityClientSdk).GetMethod("GetCommodityAsync", new[] { typeof(ItemId), typeof(CancellationToken) })
-                                                                    .MakeGenericMethod(_dongleInterfaceType);
-                        writelog($"Find IDongleCommodity found time : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
-                    }
-                    else
-                    {
-                        writelog($"Find IDongleCommodity not find  time: {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
-                    }
+                        writelog($"Find IDongleCommodity Init time : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+                        _dongleInterfaceType = FindCommodityInterfaceType("IDongleCommodity");
+                        if (_dongleInterfaceType != null)
+                        {
+                            _dongleMethodInfo = typeof(ICommodityClientSdk).GetMethod("GetCommodityAsync", new[] { typeof(ItemId), typeof(CancellationToken) })
+                                                                        .MakeGenericMethod(_dongleInterfaceType);
+                            writelog($"Find IDongleCommodity found time : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+                        }
+                        else
+                        {
+                            writelog($"Find IDongleCommodity not find  time: {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+                        }
 
-                    writelog($"Find IDockCommodity Init time : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
-                    _dockInterfaceType = FindCommodityInterfaceType("IDockCommodity");
-                    if (_dockInterfaceType != null)
-                    {
-                        _dockMethodInfo = typeof(ICommodityClientSdk).GetMethod("GetCommodityAsync", new[] { typeof(ItemId), typeof(CancellationToken) })
-                                                                    .MakeGenericMethod(_dockInterfaceType);
-                        writelog($"Find IDockCommodity found time : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
-                    }
-                    else
-                    {
-                        writelog($"Find IDockCommodity not find  time: {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
-                    }
+                        writelog($"Find IDockCommodity Init time : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+                        _dockInterfaceType = FindCommodityInterfaceType("IDockCommodity");
+                        if (_dockInterfaceType != null)
+                        {
+                            _dockMethodInfo = typeof(ICommodityClientSdk).GetMethod("GetCommodityAsync", new[] { typeof(ItemId), typeof(CancellationToken) })
+                                                                        .MakeGenericMethod(_dockInterfaceType);
+                            writelog($"Find IDockCommodity found time : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+                        }
+                        else
+                        {
+                            writelog($"Find IDockCommodity not find  time: {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+                        }
 
-                    _ = RegisterEventAsync();
-                });
-            }
-            else
-            {
-                if (_commSdk is IFrameworkPluginConditionNotification pluginCondition)
-                {
-                    pluginCondition.PluginConditionChangeHandler += OnDTPProxyPluginConditionChangeHandler;
-                    GetCurrentDTPProxyPluginCondition();
+                        _ = RegisterEventAsync();
+                    });
                 }
+                else
+                {
+                    if (_commSdk is IFrameworkPluginConditionNotification pluginCondition)
+                    {
+                        pluginCondition.PluginConditionChangeHandler += OnDTPProxyPluginConditionChangeHandler;
+                        GetCurrentDTPProxyPluginCondition();
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                writelog($"Catch exception[{e.Message}] in InitializeDTPProxy function");
             }
         }
 
@@ -5573,49 +5828,141 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 }
             }
 
+            //Derek 1119 for Webcam event
             writelog($"Register Webcam Commodity event...");
             _comdity = await _commSdk.GetCommodityAsync<IWebcamCommodity>(new ItemId("DellPeripheral.Webcam"), CancellationToken.None);
-            if (_comdity is Dell.TechHub.Commodity.Peripheral.IWebcamCommodity _webcamcom)
+            if (_comdity is Dell.TechHub.Commodity.Peripheral.IWebcamCommodity _WebcamComConnectEvent)
             {
                 try
                 {
-                    _webcamcom.Connected += _comdity_Connected;
-                    _webcamcom.Disconnected += _comdity_Disconnected;
+                    _WebcamComConnectEvent.Connected += Webcam_Connected;
+                    _WebcamComConnectEvent.Disconnected += Webcam_Disconnected;
 
-                    _webcamcom.Esi_IsCameraSensorCoveredChanged += _webcamcom_Esi_IsCameraSensorCoveredChanged;
-                    _webcamcom.WALSnoozeTimeLeftInSecondsChanged += _webcamcom_WALSnoozeTimeLeftInSecondsChanged;
-                    _webcamcom.Esi_IsWALLockCountdownStartedChanged += _webcamcom_Esi_IsWALLockCountdownStartedChanged;
-                    _webcamcom.Esi_WALLockCountdownChanged += _webcamcom_Esi_WALLockCountdownChanged;
-
-                    writelog($"Webcam Commodity event registered");
+                    writelog($"Webcam Commodity event(connected/disconnected) registered");
                 }
                 catch (Exception e)
                 {
                     writelog($"Find IWebcamCommodity not find  time: {DateTime.Now.ToString("hh.mm.ss.ffffff") + " Message: " + e.Message}");
                 }
             }
+            
 
-            writelog($"Register Commodity event...");
-            _comdity = await _commSdk.GetCommodityAsync<IWebcamCommodity>(new ItemId("DellPeripheral.Webcam"), CancellationToken.None);
-            if (_comdity is Dell.TechHub.Commodity.Peripheral.IWebcamCommodity _Webcamlecom)
+            var webcams = await GetWebcamDeviceItemsEx();
+            if (webcams != null && webcams.Count > 0)
             {
-                try
+                writelog($"Webcam instance count: {webcams.Count}");
+
+                for (int i = 0; i < webcams.Count; i++)
                 {
-                    _Webcamlecom.Connected += _comdity_Connected;
-                    _Webcamlecom.Disconnected += _comdity_Disconnected;
-                    _Webcamlecom.ZoomChanged += ZoomChanged;
-                    _Webcamlecom.ZoomMeetingTypeChanged += ZoomMeetingTypeChanged;
-                    _Webcamlecom.IsZoomMeetingActiveChanged += IsZoomMeetingActiveChanged;
-                    _Webcamlecom.IsZoomScreenShareActiveChanged += IsZoomScreenShareActiveChanged;
-                    writelog($"Webcam Commodity event registered");
-                }
-                catch (Exception e)
-                {
-                    writelog($"Find IWebcamCommodity not find  time: {DateTime.Now.ToString("hh.mm.ss.ffffff") + " Message: " + e.Message}");
+                    //string webID = $"DellPeripheral.Webcam.{i}";
+
+                    _comdity = await _commSdk.GetCommodityAsync<IWebcamCommodity>(new ItemId($"DellPeripheral.Webcam.{i}"), CancellationToken.None);
+                    if (_comdity is Dell.TechHub.Commodity.Peripheral.IWebcamCommodity _Webcamcom)
+                    {
+                        try
+                        {
+                            _Webcamcom.ProfileManagerAdded += Webcam_ProfileManagerAdded;
+                            _Webcamcom.IsMicEnumerationOnChanged += Webcam_IsMicEnumerationOnChanged;
+                            _Webcamcom.CurrentSelectedProfileChanged += Webcam_CurrentSelectedProfileChanged;
+                            _Webcamcom.CustomProfileAdded += Webcam_CustomProfileAdded;
+                            _Webcamcom.CustomProfileRemoved += Webcam_CustomProfileRemoved;
+
+                            _Webcamcom.PriorityChanged += Webcam_PriorityChanged;
+                            _Webcamcom.IsFocusOnChanged += Webcam_IsFocusOnChanged;
+                            _Webcamcom.FocusChanged += Webcam_FocusChanged;
+                            _Webcamcom.PanChanged += Webcam_PanChanged;
+                            _Webcamcom.TiltChanged += Webcam_TiltChanged;
+                            _Webcamcom.ZoomChanged += Webcam_ZoomChanged;
+                            _Webcamcom.BrightnessChanged += Webcam_BrightnessChanged;
+                            _Webcamcom.ContrastChanged += Webcam_ContrastChanged;
+                            _Webcamcom.AntiFlickerChanged += Webcam_AntiFlickerChanged;
+                            _Webcamcom.SaturationChanged += Webcam_SaturationChanged;
+                            _Webcamcom.SharpnessChanged += Webcam_SharpnessChanged;
+                            _Webcamcom.IsAutoWhiteBalanceOnChanged += Webcam_IsAutoWhiteBalanceOnChanged;
+                            _Webcamcom.AutoWhiteBalanceChanged += Webcam_AutoWhiteBalanceChanged;
+                            _Webcamcom.IsAutoFramingTransitionOnChanged += Webcam_IsAutoFramingTransitionOnChanged;
+                            _Webcamcom.IsAutoFramingOnChanged += Webcam_IsAutoFramingOnChanged;
+                            _Webcamcom.AutoFramingSensitivityChanged += Webcam_AutoFramingSensitivityChanged;
+                            _Webcamcom.AutoFramingFrameSizeChanged += Webcam_AutoFramingFrameSizeChanged;
+                            _Webcamcom.FieldOfViewChanged += Webcam_FieldOfViewChanged;
+                            _Webcamcom.IsHDROnChanged += Webcam_IsHDROnChanged;
+                            _Webcamcom.SerialNumberChanged += Webcam_SerialNumberChanged;
+                            _Webcamcom.IsZoomMeetingActiveChanged += Webcam_IsZoomMeetingActiveChanged;
+                            _Webcamcom.IsZoomScreenShareActiveChanged += Webcam_IsZoomScreenShareActiveChanged;
+
+                            _Webcamcom.WALSnoozeTimeLeftInSecondsChanged += Webcam_WALSnoozeTimeLeftInSecondsChanged;
+                            _Webcamcom.Esi_IsWALLockCountdownStartedChanged += Webcam_Esi_IsWALLockCountdownStartedChanged;
+                            _Webcamcom.Esi_IsCameraSensorCoveredChanged += Webcam_Esi_IsCameraSensorCoveredChanged;
+                            _Webcamcom.Esi_WALLockCountdownChanged += Webcam_Esi_WALLockCountdownChanged;
+
+                            writelog($"Webcam{i} Commodity events registered");
+                        }
+                        catch (Exception e)
+                        {
+                            writelog($"IWebcamCommodity{i} not find  time: {DateTime.Now.ToString("hh.mm.ss.ffffff") + " Message: " + e.Message}");
+                        }
+                    }
                 }
             }
+
+            //var webcams = await GetWebcamDeviceItemsEx();
+            //if (webcams != null && webcams.Count > 0)
+            //{
+                //writelog($"Webcam instance count: {webcams.Count}");
+
+                //for (int i = 0; i < webcams.Count; i++)
+                //{
+                    //string webID = $"DellPeripheral.Webcam.{i}";
+
+                    //_comdity = await _commSdk.GetCommodityAsync<IWebcamCommodity>(new ItemId($"DellPeripheral.Webcam.0"), CancellationToken.None);
+                    //if (_comdity is Dell.TechHub.Commodity.Peripheral.IWebcamCommodity _Webcamcom)
+                    //{
+                        //try
+                        //{
+                            //_Webcamcom.ProfileManagerAdded += Webcam_ProfileManagerAdded;
+                            //_Webcamcom.IsMicEnumerationOnChanged += Webcam_IsMicEnumerationOnChanged;
+                            //_Webcamcom.CurrentSelectedProfileChanged += Webcam_CurrentSelectedProfileChanged;
+                            //_Webcamcom.CustomProfileAdded += Webcam_CustomProfileAdded;
+                            //_Webcamcom.CustomProfileRemoved += Webcam_CustomProfileRemoved;
+
+                            //_Webcamcom.PriorityChanged += Webcam_PriorityChanged;
+                            //_Webcamcom.IsFocusOnChanged += Webcam_IsFocusOnChanged;
+                            //_Webcamcom.FocusChanged += Webcam_FocusChanged;
+                            //_Webcamcom.PanChanged += Webcam_PanChanged;
+                            //_Webcamcom.TiltChanged += Webcam_TiltChanged;
+                            //_Webcamcom.ZoomChanged += Webcam_ZoomChanged;
+                            //_Webcamcom.BrightnessChanged += Webcam_BrightnessChanged;
+                            //_Webcamcom.ContrastChanged += Webcam_ContrastChanged;
+                            //_Webcamcom.AntiFlickerChanged += Webcam_AntiFlickerChanged;
+                            //_Webcamcom.SaturationChanged += Webcam_SaturationChanged;
+                            //_Webcamcom.SharpnessChanged += Webcam_SharpnessChanged;
+                            //_Webcamcom.IsAutoWhiteBalanceOnChanged += Webcam_IsAutoWhiteBalanceOnChanged;
+                            //_Webcamcom.AutoWhiteBalanceChanged += Webcam_AutoWhiteBalanceChanged;
+                            //_Webcamcom.IsAutoFramingTransitionOnChanged += Webcam_IsAutoFramingTransitionOnChanged;
+                            //_Webcamcom.IsAutoFramingOnChanged += Webcam_IsAutoFramingOnChanged;
+                            //_Webcamcom.AutoFramingSensitivityChanged += Webcam_AutoFramingSensitivityChanged;
+                            //_Webcamcom.AutoFramingFrameSizeChanged += Webcam_AutoFramingFrameSizeChanged;
+                            //_Webcamcom.FieldOfViewChanged += Webcam_FieldOfViewChanged;
+                            //_Webcamcom.IsHDROnChanged += Webcam_IsHDROnChanged;
+                            //_Webcamcom.SerialNumberChanged += Webcam_SerialNumberChanged;
+                            //_Webcamcom.IsZoomMeetingActiveChanged += Webcam_IsZoomMeetingActiveChanged;
+                            //_Webcamcom.IsZoomScreenShareActiveChanged += Webcam_IsZoomScreenShareActiveChanged;
+
+                            //_Webcamcom.WALSnoozeTimeLeftInSecondsChanged += _webcamcom_WALSnoozeTimeLeftInSecondsChanged;
+                            //_Webcamcom.Esi_IsWALLockCountdownStartedChanged += _webcamcom_Esi_IsWALLockCountdownStartedChanged;
+                            //_Webcamcom.Esi_IsCameraSensorCoveredChanged += _webcamcom_Esi_IsCameraSensorCoveredChanged;
+                            //_Webcamcom.Esi_WALLockCountdownChanged += _webcamcom_Esi_WALLockCountdownChanged;
+
+                            //writelog($"Webcam{i} Commodity event registered");
+                        //}
+                        //catch (Exception e)
+                        //{
+                           // writelog($"IWebcamCommodity{i} not find  time: {DateTime.Now.ToString("hh.mm.ss.ffffff") + " Message: " + e.Message}");
+                        //}
+                    //}
+                //}
+            //}
         }
-
         private void _pencom_KeyCaptureDataChanged(object sender, KeyCaptureDataChangedArgs e)
         {
             Debug.WriteLine($"[Pen]KeystrokeDisplayDataChanged {e.KeyCaptureData} Changed for Device ID: {e.DeviceId}  !!!!!!!!!!!!!!!");
@@ -5654,6 +6001,9 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
         private object GetPropertyValue(Type interfaceType, ICommodity commodity, string property)
         {
+            if (!IsDTPReady)
+                return null;
+
             try
             {
                 writelog($"commodity: {commodity.GetType().Name} Property: {property}");
@@ -5670,29 +6020,39 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
         }
 
-        private void SetPropertyValue(Type interfaceType, ICommodity commodity, string property, object value)
+        private bool SetPropertyValue(Type interfaceType, ICommodity commodity, string property, object value)
         {
             Debug.WriteLine($"ItemID: {_itemID}; Type: {interfaceType.Name}; property: {property}; value: {value ?? ""}");
+            if (!IsDTPReady)
+                return false;
+
             try
             {
                 interfaceType.GetProperty(property).GetSetMethod().Invoke(commodity, new[] { value });
+                return true;
             }
             catch (Exception ex)
             {
                 writelog($"Error while setting {interfaceType}.{property} on item \"{_itemID}\".\n{ex}");
+                return false;
             }
         }
 
-        private void SetPropertyValue(Type interfaceType, ICommodity commodity, string property, byte[] value)
+        private bool SetPropertyValue(Type interfaceType, ICommodity commodity, string property, byte[] value)
         {
             Debug.WriteLine($"ItemID: {_itemID}; Type: {interfaceType.Name}; property: {property}; value: {Encoding.UTF8.GetString(value)}");
+            if (!IsDTPReady)
+                return false;
+
             try
             {
                 interfaceType.GetProperty(property).GetSetMethod().Invoke(commodity, new[] { value });
+                return true;
             }
             catch (Exception ex)
             {
                 writelog($"Error while setting {interfaceType}.{property} on item \"{_itemID}\".\n{ex}");
+                return false;
             }
         }
         private void _comdity_Disconnected(object sender, DisconnectedArgs e)
@@ -5781,40 +6141,287 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         #endregion
 
 
-        #region Webcam
-
-        private void _webcamcom_Esi_IsCameraSensorCoveredChanged(object sender, Esi_IsCameraSensorCoveredChangedArgs e)
+        #region Webcam event
+        //webcam register condition
+        //1. some devices has connected before DTPPlugin init
+        //   A. register events for them, and remove events when disconnected
+        //2. new devices connected --> register
+        private void Webcam_SharpnessChanged(object sender, SharpnessChangedArgs e)
         {
-            Esi_IsCameraSensorCover_ChangeEvent?.AsyncFireAndForget(this, e.IsCameraSensorCovered, System.Threading.CancellationToken.None);
+            SendWebcamEventToUI(CreateEventMsg("Webcam", "Webcam_SharpnessChanged",
+                                    e.DeviceId, $"NewValue:{e.Sharpness}"));
 
-            Debug.WriteLine($"[Speaker] IsMuteStatusChanged {e.IsCameraSensorCovered} Changed for Device ID: {e.DeviceId}  !!!!!!!!!!!!!!!");
-            writelog($"[Speaker] IsMuteStatusChanged {e.IsCameraSensorCovered} Changed for Device ID: {e.DeviceId}  !!!!!!!!!!!!!!!");
+            throw new NotImplementedException();
         }
 
-        private void _webcamcom_WALSnoozeTimeLeftInSecondsChanged(object sender, WALSnoozeTimeLeftInSecondsChangedArgs e)
+        private void Webcam_Esi_WALLockCountdownChanged(object sender, Esi_WALLockCountdownChangedArgs e)
         {
-            WALSnoozeTimeLeftInSeconds_ChangeEvent?.AsyncFireAndForget(this, e.WALSnoozeTimeLeftInSeconds, System.Threading.CancellationToken.None);
+            SendWebcamEventToUI(CreateEventMsg("Webcam", "Webcam_Esi_WALLockCountdownChanged",
+                                    e.DeviceId, $"NewValue:{e.WALLockCountdown}"));
 
-            Debug.WriteLine($"[Speaker] IsMuteStatusChanged {e.WALSnoozeTimeLeftInSeconds} Changed for Device ID: {e.DeviceId}  !!!!!!!!!!!!!!!");
-            writelog($"[Speaker] IsMuteStatusChanged {e.WALSnoozeTimeLeftInSeconds} Changed for Device ID: {e.DeviceId}  !!!!!!!!!!!!!!!");
+            writelog($"Catch event _Webcamcom_Esi_WALLockCountdownChanged : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
         }
 
-        private void _webcamcom_Esi_IsWALLockCountdownStartedChanged(object sender, Esi_IsWALLockCountdownStartedChangedArgs e)
+        private void Webcam_Esi_IsWALLockCountdownStartedChanged(object sender, Esi_IsWALLockCountdownStartedChangedArgs e)
         {
-            Esi_IsWALLockCountdownStartedChanged_ChangeEvent?.AsyncFireAndForget(this, e.IsWALLockCountdownStarted, System.Threading.CancellationToken.None);
+            SendWebcamEventToUI(CreateEventMsg("Webcam", "Webcam_Esi_IsWALLockCountdownStartedChanged",
+                                    e.DeviceId, $"NewValue:{e.IsWALLockCountdownStarted}"));
 
-            Debug.WriteLine($"[Speaker] IsMuteStatusChanged {e.IsWALLockCountdownStarted} Changed for Device ID: {e.DeviceId}  !!!!!!!!!!!!!!!");
-            writelog($"[Speaker] IsMuteStatusChanged {e.IsWALLockCountdownStarted} Changed for Device ID: {e.DeviceId}  !!!!!!!!!!!!!!!");
+            writelog($"Catch event _Webcamcom_Esi_IsWALLockCountdownStartedChanged : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
         }
 
-        private void _webcamcom_Esi_WALLockCountdownChanged(object sender, Esi_WALLockCountdownChangedArgs e)
+        private void Webcam_WALSnoozeTimeLeftInSecondsChanged(object sender, WALSnoozeTimeLeftInSecondsChangedArgs e)
         {
-            Esi_WALLockCountdownChanged_ChangeEvent?.AsyncFireAndForget(this, e.WALLockCountdown, System.Threading.CancellationToken.None);
+            SendWebcamEventToUI(CreateEventMsg("Webcam", "Webcam_WALSnoozeTimeLeftInSecondsChanged",
+                                    e.DeviceId, $"NewValue:{e.WALSnoozeTimeLeftInSeconds}"));
 
-            Debug.WriteLine($"[Speaker] IsMuteStatusChanged {e.WALLockCountdown} Changed for Device ID: {e.DeviceId}  !!!!!!!!!!!!!!!");
-            writelog($"[Speaker] IsMuteStatusChanged {e.WALLockCountdown} Changed for Device ID: {e.DeviceId}  !!!!!!!!!!!!!!!");
+            writelog($"Catch event _Webcamcom_WALSnoozeTimeLeftInSecondsChanged : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
         }
 
+        private void Webcam_IsZoomScreenShareActiveChanged(object sender, IsZoomScreenShareActiveChangedArgs e)
+        {
+            SendWebcamEventToUI(CreateEventMsg("Webcam", "Webcam_IsZoomScreenShareActiveChanged",
+                                    e.DeviceId, $"NewValue:{e.IsZoomScreenShareActive}"));
+
+            writelog($"Catch event _Webcamcom_IsZoomScreenShareActiveChanged : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+        }
+
+        private void Webcam_IsZoomMeetingActiveChanged(object sender, IsZoomMeetingActiveChangedArgs e)
+        {
+            SendWebcamEventToUI(CreateEventMsg("Webcam", "Webcam_IsZoomMeetingActiveChanged",
+                                    e.DeviceId, $"NewValue:{e.IsZoomMeetingActive}"));
+
+            writelog($"Catch event _Webcamcom_IsZoomMeetingActiveChanged : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+        }
+
+        private void Webcam_SerialNumberChanged(object sender, SerialNumberChangedArgs e)
+        {
+            SendWebcamEventToUI(CreateEventMsg("Webcam", "Webcam_SerialNumberChanged",
+                                    e.DeviceId, $"NewValue:{e.SerialNumber}"));
+
+            writelog($"Catch event _Webcamcom_SerialNumberChanged : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+        }
+
+        private void Webcam_IsHDROnChanged(object sender, IsHDROnChangedArgs e)
+        {
+            SendWebcamEventToUI(CreateEventMsg("Webcam", "Webcam_IsHDROnChanged",
+                                    e.DeviceId, $"NewValue:{e.IsHDROn}"));
+
+            writelog($"Catch event _Webcamcom_IsHDROnChanged : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+        }
+
+        private void Webcam_FieldOfViewChanged(object sender, FieldOfViewChangedArgs e)
+        {
+            SendWebcamEventToUI(CreateEventMsg("Webcam", "Webcam_FieldOfViewChanged",
+                                    e.DeviceId, $"NewValue:{e.FieldOfView}"));
+
+            writelog($"Catch event _Webcamcom_FieldOfViewChanged : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+        }
+
+        private void Webcam_AutoFramingFrameSizeChanged(object sender, AutoFramingFrameSizeChangedArgs e)
+        {
+            SendWebcamEventToUI(CreateEventMsg("Webcam", "Webcam_AutoFramingFrameSizeChanged",
+                                    e.DeviceId, $"NewValue:{e.AutoFramingFrameSize}"));
+
+            writelog($"Catch event _Webcamcom_AutoFramingFrameSizeChanged : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+        }
+
+        private void Webcam_AutoFramingSensitivityChanged(object sender, AutoFramingSensitivityChangedArgs e)
+        {
+            SendWebcamEventToUI(CreateEventMsg("Webcam", "Webcam_AutoFramingSensitivityChanged",
+                                    e.DeviceId, $"NewValue:{e.AutoFramingSensitivity}"));
+
+            writelog($"Catch event _Webcamcom_AutoFramingSensitivityChanged : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+        }
+
+        private void Webcam_IsAutoFramingOnChanged(object sender, IsAutoFramingOnChangedArgs e)
+        {
+            SendWebcamEventToUI(CreateEventMsg("Webcam", "Webcam_IsAutoFramingOnChanged",
+                                    e.DeviceId, $"NewValue:{e.IsAutoFramingOn}"));
+
+            writelog($"Catch event _Webcamcom_IsAutoFramingOnChanged : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+        }
+
+        private void Webcam_IsAutoFramingTransitionOnChanged(object sender, IsAutoFramingTransitionOnChangedArgs e)
+        {
+            SendWebcamEventToUI(CreateEventMsg("Webcam", "Webcam_IsAutoFramingTransitionOnChanged",
+                                    e.DeviceId, $"NewValue:{e.IsAutoFramingTransitionOn}"));
+
+            writelog($"Catch event _Webcamcom_IsAutoFramingTransitionOnChanged : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+        }
+
+        private void Webcam_AutoWhiteBalanceChanged(object sender, AutoWhiteBalanceChangedArgs e)
+        {
+            SendWebcamEventToUI(CreateEventMsg("Webcam", "Webcam_AutoWhiteBalanceChanged",
+                                    e.DeviceId, $"NewValue:{e.AutoWhiteBalance}"));
+
+            writelog($"Catch event _Webcamcom_AutoWhiteBalanceChanged : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+        }
+
+        private void Webcam_IsAutoWhiteBalanceOnChanged(object sender, IsAutoWhiteBalanceOnChangedArgs e)
+        {
+            SendWebcamEventToUI(CreateEventMsg("Webcam", "Webcam_IsAutoWhiteBalanceOnChanged",
+                                    e.DeviceId, $"NewValue:{e.IsAutoWhiteBalanceOn}"));
+
+            writelog($"Catch event _Webcamcom_IsAutoWhiteBalanceOnChanged : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+        }
+
+        private void Webcam_SaturationChanged(object sender, SaturationChangedArgs e)
+        {
+            SendWebcamEventToUI(CreateEventMsg("Webcam", "Webcam_SaturationChanged",
+                                    e.DeviceId, $"NewValue:{e.Saturation}"));
+
+            writelog($"Catch event _Webcamcom_SaturationChanged : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+        }
+
+        private void Webcam_AntiFlickerChanged(object sender, AntiFlickerChangedArgs e)
+        {
+            SendWebcamEventToUI(CreateEventMsg("Webcam", "Webcam_AntiFlickerChanged",
+                                    e.DeviceId, $"NewValue:{e.AntiFlicker}"));
+
+            writelog($"Catch event _Webcamcom_AntiFlickerChanged : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+        }
+
+        private void Webcam_ContrastChanged(object sender, ContrastChangedArgs e)
+        {
+            SendWebcamEventToUI(CreateEventMsg("Webcam", "Webcam_ContrastChanged",
+                                    e.DeviceId, $"NewValue:{e.Contrast}"));
+
+            writelog($"Catch event _Webcamcom_ContrastChanged : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+        }
+
+        private void Webcam_BrightnessChanged(object sender, BrightnessChangedArgs e)
+        {
+            SendWebcamEventToUI(CreateEventMsg("Webcam", "Webcam_BrightnessChanged",
+                                    e.DeviceId, $"NewValue:{e.Brightness}"));
+
+            writelog($"Catch event _Webcamcom_BrightnessChanged : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+        }
+
+        private void Webcam_ZoomChanged(object sender, ZoomChangedArgs e)
+        {
+            SendWebcamEventToUI(CreateEventMsg("Webcam", "Webcam_ZoomChanged",
+                                    e.DeviceId, $"NewValue:{e.Zoom}"));
+
+            writelog($"Catch event _Webcamcom_ZoomChanged : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+        }
+
+        private void Webcam_TiltChanged(object sender, TiltChangedArgs e)
+        {
+            SendWebcamEventToUI(CreateEventMsg("Webcam", "Webcam_TiltChanged",
+                                    e.DeviceId, $"NewValue:{e.Tilt}"));
+
+            writelog($"Catch event _Webcamcom_TiltChanged : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+        }
+
+        private void Webcam_PanChanged(object sender, PanChangedArgs e)
+        {
+            SendWebcamEventToUI(CreateEventMsg("Webcam", "Webcam_PanChanged",
+                                    e.DeviceId, $"NewValue:{e.Pan}"));
+
+            writelog($"Catch event _Webcamcom_PanChanged : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+        }
+
+        private void Webcam_FocusChanged(object sender, FocusChangedArgs e)
+        {
+            SendWebcamEventToUI(CreateEventMsg("Webcam", "Webcam_FocusChanged",
+                                    e.DeviceId, $"NewValue:{e.Focus}"));
+
+            writelog($"Catch event _Webcamcom_FocusChanged : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+        }
+
+        private void Webcam_IsFocusOnChanged(object sender, IsFocusOnChangedArgs e)
+        {
+            SendWebcamEventToUI(CreateEventMsg("Webcam", "Webcam_IsFocusOnChanged",
+                                    e.DeviceId, $"NewValue:{e.IsFocusOn}"));
+
+            writelog($"Catch event _Webcamcom_IsFocusOnChanged : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+        }
+
+        private void Webcam_PriorityChanged(object sender, PriorityChangedArgs e)
+        {
+            SendWebcamEventToUI(CreateEventMsg("Webcam", "Webcam_PriorityChanged",
+                                    e.DeviceId, $"NewPriority:{e.Priority}"));
+
+            writelog($"Catch event _Webcamcom_PriorityChanged : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+        }
+
+        private void Webcam_CustomProfileRemoved(object sender, CustomProfileRemovedArgs e)
+        {
+            SendWebcamEventToUI(CreateEventMsg("Webcam", "Webcam_CustomProfileRemoved",
+                                    e.DeviceId, $"RemovedCustomProfile:{e.ProfileId}"));
+
+            writelog($"Catch event _Webcamcom_CustomProfileRemoved : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+        }
+
+        private void Webcam_CustomProfileAdded(object sender, CustomProfileAddedArgs e)
+        {
+            SendWebcamEventToUI(CreateEventMsg("Webcam", "Webcam_CustomProfileAdded",
+                                    e.DeviceId, $"NewValue:{e.ProfileId}"));
+
+            writelog($"Catch event _Webcamcom_CustomProfileAdded : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+        }
+
+        private void Webcam_CurrentSelectedProfileChanged(object sender, CurrentSelectedProfileChangedArgs e)
+        {
+            SendWebcamEventToUI(CreateEventMsg("Webcam", "Webcam_CurrentSelectedProfileChanged",
+                                    e.DeviceId, $"NewValue:{e.ProfileId}"));
+
+            writelog($"Catch event _Webcamcom_CurrentSelectedProfileChanged : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+        }
+
+        private void Webcam_IsMicEnumerationOnChanged(object sender, IsMicEnumerationOnChangedArgs e)
+        {
+            SendWebcamEventToUI(CreateEventMsg("Webcam", "Webcam_IsMicEnumerationOnChanged",
+                                    e.DeviceId, $"NewValue:{e.IsMicEnumerationOn}"));
+
+            writelog($"Catch event _Webcamcom_IsMicEnumerationOnChanged : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+        }
+
+        private void Webcam_ProfileManagerAdded(object sender, ProfileManagerAddedArgs e)
+        {
+            SendWebcamEventToUI(CreateEventMsg("Webcam", "Webcam_ProfileManagerAdded",
+                                    e.DeviceId, $"NewValue:{e.ProfileMangerId}"));
+
+            writelog($"Catch event _Webcamcom_ProfileManagerAdded : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+        }
+
+        private void Webcam_Esi_IsCameraSensorCoveredChanged(object sender, Esi_IsCameraSensorCoveredChangedArgs e)
+        {
+            SendWebcamEventToUI(CreateEventMsg("Webcam", "Webcam_Esi_IsCameraSensorCoveredChanged", 
+                                    e.DeviceId, $"NewValue:{e.IsCameraSensorCovered}"));
+
+            writelog($"Catch event _Webcamcom_Esi_IsCameraSensorCoveredChanged : new IsCameraSensorCovered is {e.IsCameraSensorCovered} {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+        }
+
+        private void Webcam_Disconnected(object sender, DisconnectedArgs e)
+        {
+            //SendWebcamEventToUI($"3;Device:Webcam;Event:Disconnected;DeviceId:{e.DeviceId}");
+            SendWebcamEventToUI(CreateEventMsg("Webcam", "Webcam_Disconnected", e.DeviceId));
+
+            writelog($"Catch event _Webcam_Disconnected : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+        }
+
+        private void Webcam_Connected(object sender, ConnectedArgs e)
+        {
+            //SendWebcamEventToUI($"3;Device:Webcam;Event:Connected;DeviceId:{e.DeviceId}");
+            SendWebcamEventToUI(CreateEventMsg("Webcam", "Webcam_Connected", e.DeviceId));
+
+            writelog($"Catch event _Webcam_Connected : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+        }
+
+        private string CreateEventMsg(string devType, string eventType, string devID, string eventContent = "NoContent")
+        {
+            return $"5;Device:{devType};EventType:{eventType};DeviceId:{devID};{eventContent}";
+        }
+
+        private void SendWebcamEventToUI(string sendMsg)
+        {
+            UpdateUINotify webcamEventNotify = new UpdateUINotify();
+            webcamEventNotify.UI_Field_Name = $"{sendMsg}";
+
+            OnUIUpdateNotify(webcamEventNotify);
+        }
         #endregion
     }
 }

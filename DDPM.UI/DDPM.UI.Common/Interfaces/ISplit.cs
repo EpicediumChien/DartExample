@@ -89,17 +89,17 @@ namespace DDPM.UI.Common.Interfaces
         public static List<ISplit> PipClasses = new List<ISplit>()
         {
             //23h: PBP 2 windows h-split
-            new SplitCtrl2A(new List<double>() {1,1}) { PbpCapabilityCode = (UInt16)0x0023, Description="PBP 2 windows h-split" },
+            new SplitCtrl2A(new List<double>() {1,1}) { PbpCapabilityCode = (UInt16)0x0023, Description="50% - 50%" },
             //24h: PBP 2 windows h-split, Fill
-            new SplitCtrl2A(new List<double>() {1,1}) { PbpCapabilityCode = (UInt16)0x0024, Description = "PBP 2 windows h-split, Fill" },
+            new SplitCtrl2A(new List<double>() {1,1}) { PbpCapabilityCode = (UInt16)0x0024, Description = "50% - 50%" },
             //25h: PBP 2 windows h-split, 3:7
-            new SplitCtrl2D(new List<double>() {3,7}) { PbpCapabilityCode = (UInt16)0x0025, Description="3 - 7" },
+            new SplitCtrl2D(new List<double>() {3,7}) { PbpCapabilityCode = (UInt16)0x0025, Description="30% - 70%" },
             //26h: PBP 2 windows h-split, 7:3
-            new SplitCtrl2C(new List<double>() {7,3}) { PbpCapabilityCode = (UInt16)0x0026, Description="7 - 3" },
+            new SplitCtrl2C(new List<double>() {7,3}) { PbpCapabilityCode = (UInt16)0x0026, Description="70% - 30%" },
             //27h: PBP 2 windows h-split, 2:8
-            new SplitCtrl2A(new List<double>() {2,8}) { PbpCapabilityCode = (UInt16)0x0027, Description="2 - 8" },
+            new SplitCtrl2A(new List<double>() {2,8}) { PbpCapabilityCode = (UInt16)0x0027, Description="20% - 80%" },
             //28h: PBP 2 windows h-split, 8:2
-            new SplitCtrl2A(new List<double>() {8,2}) { PbpCapabilityCode = (UInt16)0x0028, Description="8 - 2" },
+            new SplitCtrl2A(new List<double>() {8,2}) { PbpCapabilityCode = (UInt16)0x0028, Description="80% - 20%" },
             //29h: PBP 2 windows h-split, 25%:75%
             new SplitCtrl2A(new List<double>() {25,75}) { PbpCapabilityCode = (UInt16)0x0029, Description="25% - 75%" },
             //2Ah: PBP 2 windows h-split, 75%:25%
@@ -113,23 +113,23 @@ namespace DDPM.UI.Common.Interfaces
             //2Eh: PBP 2 windows h-split, 67%:33%
             new SplitCtrl2A(new List<double>() {67,33}) { PbpCapabilityCode = (UInt16)0x002E, Description="67% - 33%" },
             //2Fh: PBP 2 windows v-split
-            new SplitCtrl2B(new List<double>() {1,1}) { PbpCapabilityCode = (UInt16)0x002F, Description="v-split" },
+            new SplitCtrl2B(new List<double>() {1,1}) { PbpCapabilityCode = (UInt16)0x002F, Description="50% - 50%" },
 
             //31h: PBP 3 windows-L1(half)/R2(up|down split)
-            new SplitCtrl3E(new List<double>() {1,1,1,1}) { PbpCapabilityCode = (UInt16)0x0031, Description="PBP 3 windows-L1(half)/R2(up|down split)" },
+            new SplitCtrl3E(new List<double>() {1,1,1,1}) { PbpCapabilityCode = (UInt16)0x0031, Description="" },
             //32h: PBP 3 windows-L2(up|down split)/R1(half)
-            new SplitCtrl3D(new List<double>() {1,1,1,1}) { PbpCapabilityCode = (UInt16)0x0032, Description="PBP 3 windows-L2(up|down split)/R1(half)" },
+            new SplitCtrl3D(new List<double>() {1,1,1,1}) { PbpCapabilityCode = (UInt16)0x0032, Description="" },
             //33h: PBP 3 windows-Up1(half)/Down2(left|right split)
-            new SplitCtrl3H(new List<double>() {1,1,1,1 }) { PbpCapabilityCode = (UInt16)0x0033, Description="PBP 3 windows-Up1(half)/Down2(left|right split)" },
+            new SplitCtrl3H(new List<double>() {1,1,1,1 }) { PbpCapabilityCode = (UInt16)0x0033, Description="" },
             //34h: PBP 3 windows-1row, 3column
-            new SplitCtrl3B(new List<double>() {1,1,1,1}) { PbpCapabilityCode = (UInt16)0x0034, Description="PBP 3 windows-1row, 3column" },
+            new SplitCtrl3B(new List<double>() {1,1,1,1}) { PbpCapabilityCode = (UInt16)0x0034, Description="" },
             //35h: PBP 3 windows-Up2(left|right split)/Down1(half)
-            new SplitCtrl3I(new List<double>() {1,1,1,1}) { PbpCapabilityCode = (UInt16)0x0035, Description="PBP 3 windows-Up2(left|right split)/Down1(half)" },
+            new SplitCtrl3I(new List<double>() {1,1,1,1}) { PbpCapabilityCode = (UInt16)0x0035, Description="" },
 
             //41h: PBP 4 windows-quadrant
-            new SplitCtrl4A(new List<double>() {1,1,1,1}) { PbpCapabilityCode = (UInt16)0x0041, Description="PBP 4 windows-quadrant" },
+            new SplitCtrl4A(new List<double>() {1,1,1,1}) { PbpCapabilityCode = (UInt16)0x0041, Description="" },
             //42h: PBP 4 windows-1row, 4column
-            new SplitCtrl4D(new List<double>() {1,1,1,1}) { PbpCapabilityCode = (UInt16)0x004D, Description="PBP 4 windows-1row, 4column" },
+            new SplitCtrl4D(new List<double>() {1,1,1,1}) { PbpCapabilityCode = (UInt16)0x004D, Description="" },
         };
 
         #endregion Used for PIP/PBP

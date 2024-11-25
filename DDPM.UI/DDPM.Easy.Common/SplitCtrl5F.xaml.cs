@@ -207,7 +207,7 @@ namespace DDPM.Easy.Common
 
         #region Settings
 
-        public List<double> DefaultSettings => new List<double>() { 1, 2, 1, 1, 1, 1 };
+        public List<double> DefaultSettings => new List<double>() { 3, 7, 1, 1, 1, 1 };
         #endregion Settings
 
         #region FriendlyName

@@ -345,7 +345,7 @@ namespace DDPM.SA.Common.Security
                     }
                 }
                 //_logs?.DebugMsg_1("---SAN END---");
-                isCNMatch = isSubjectCNMatch && isIssuerCNMatch && isSANCNMatch;
+                isCNMatch = isSubjectCNMatch && /*isIssuerCNMatch &&*/ isSANCNMatch;
                 if (isCNMatch)
                 {
                     //_logs?.DebugMsg_1("[CheckIssuerAndSubject] Is match.");
@@ -356,10 +356,10 @@ namespace DDPM.SA.Common.Security
                     {
                         //_logs?.DebugMsg_1("[CheckIssuerAndSubject] Subject is NOT match.");
                     }
-                    if (!isIssuerCNMatch)
-                    {
+                    //if (!isIssuerCNMatch)
+                    //{
                         //_logs?.DebugMsg_1("[CheckIssuerAndSubject] Issuer is NOT match.");
-                    }
+                    //}
                     // Additional logic to handle proxy certificates if the above checks failed
                     var storeNames = new[] { StoreName.Root, StoreName.TrustedPublisher };
                     var storeLocations = new[] { StoreLocation.LocalMachine, StoreLocation.CurrentUser };

@@ -710,20 +710,21 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
 
         public void SetWearDetection(int newValue, Guid deviceId)
         {
-            foreach (var device in _iDeviceManager.Devices)
-            {
-                var logicalDevice = device.Devices.FirstOrDefault(x => x.Id == deviceId);
-                if (logicalDevice is ILogicalDeviceHeadset _logicalDeviceHeadset)
-                {
-                    _logicalDeviceHeadset.SetWearDetection(newValue);
-                    DeviceInfo _deviceInfo = _deviceHelper.deviceInfo.Where(x => x.ID == deviceId).FirstOrDefault();
-                    if (_deviceInfo != null)
-                    {
-                        _deviceInfo.WearDetection = newValue;
-                        break;
-                    }
-                }
-            }
+            //Elie. R17.1 drop this function. 1123
+            //foreach (var device in _iDeviceManager.Devices)
+            //{
+            //    var logicalDevice = device.Devices.FirstOrDefault(x => x.Id == deviceId);
+            //    if (logicalDevice is ILogicalDeviceHeadset _logicalDeviceHeadset)
+            //    {
+            //        _logicalDeviceHeadset.SetWearDetection(newValue);
+            //        DeviceInfo _deviceInfo = _deviceHelper.deviceInfo.Where(x => x.ID == deviceId).FirstOrDefault();
+            //        if (_deviceInfo != null)
+            //        {
+            //            _deviceInfo.WearDetection = newValue;
+            //            break;
+            //        }
+            //    }
+            //}
         }
         public void SetWearDetectionForCLI(int newValue, Guid deviceId)
         {
@@ -736,13 +737,14 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                         newValue |= 0b00000000;
                     else
                         newValue |= 0b00000111;
-                    _logicalDeviceHeadset.SetWearDetection(newValue);
-                    DeviceInfo _deviceInfo = _deviceHelper.deviceInfo.Where(x => x.ID == deviceId).FirstOrDefault();
-                    if (_deviceInfo != null)
-                    {
-                        _deviceInfo.WearDetection = newValue;
-                        break;
-                    }
+                    //Elie. R17.1 drop this function. 1123
+                    //_logicalDeviceHeadset.SetWearDetection(newValue);
+                    //DeviceInfo _deviceInfo = _deviceHelper.deviceInfo.Where(x => x.ID == deviceId).FirstOrDefault();
+                    //if (_deviceInfo != null)
+                    //{
+                    //    _deviceInfo.WearDetection = newValue;
+                    //    break;
+                    //}
                 }
             }
         }
@@ -1304,7 +1306,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                                 info.SharpnessSteppingDelta = _iLogicalDeviceWebcam.SharpnessSteppingDelta;
                                 info.SupportedFeatures = _iLogicalDeviceWebcam.SupportedFeatures;
                                 info.SupportedProperties = _iLogicalDeviceWebcam.SupportedProperties;
-                                //info.SupportedResolutions = _iLogicalDeviceWebcam.SupportedResolutions;
+                                info.SupportedResolutions = Encoding.UTF8.GetString(_iLogicalDeviceWebcam.SupportedResolutions);
                                 info.TiltMax = _iLogicalDeviceWebcam.TiltMax;
                                 info.TiltMin = _iLogicalDeviceWebcam.TiltMin;
                                 info.TiltSteppingDelta = _iLogicalDeviceWebcam.TiltSteppingDelta;
@@ -1342,7 +1344,8 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                                 info.IsANCSupported = _logicalDeviceHeadset.IsANCSupported;
                                 info.AncMode = _logicalDeviceHeadset.AncMode;
                                 info.AncGain = _logicalDeviceHeadset.AncGain;
-                                info.WearDetection = _logicalDeviceHeadset.WearDetection;
+                                //Elie. R17.1 drop this function.1123
+                                //info.WearDetection = _logicalDeviceHeadset.WearDetection;
                                 info.IsMicNCIncomingSupported = _logicalDeviceHeadset.IsMicNCIncomingSupported;
                                 info.IsWearDetectionSupported = _logicalDeviceHeadset.IsWearDetectionSupported; //Visibile in Peagsus/Mito
                                 info.IsWearDetectionSensitivitySupported = _logicalDeviceHeadset.IsWearDetectionSensitivitySupported; //Visibile in Peagsus/Mito
@@ -1378,7 +1381,8 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                                 _logicalDeviceHeadset.BandsGainChanged += _logicalDeviceHeadset_BandsGainChanged;
                                 _logicalDeviceHeadset.AncModeChanged += _logicalDeviceHeadset_AncModeChanged;
                                 _logicalDeviceHeadset.AncGainChanged += _logicalDeviceHeadset_AncGainChanged;
-                                _logicalDeviceHeadset.WearDetectionChanged += _logicalDeviceHeadset_WearDetectionChanged;
+                                //Elie. R17.1 drop this function.1123
+                                //_logicalDeviceHeadset.WearDetectionChanged += _logicalDeviceHeadset_WearDetectionChanged;
                             }
 
                             if (item is ILogicalDeviceDock _logicalDeviceDock)

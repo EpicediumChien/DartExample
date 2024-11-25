@@ -115,4 +115,10 @@
         <Setter Property="TextWrapping"
                 Value="Wrap" />
     </Style>
+    
+    <!-- #region EA SplitCtrl Styles -->
+    <SolidColorBrush x:Key="SplitCtrl_OuterBorder_BdColor_Icon_Normal" Color="White" />
+    <SolidColorBrush x:Key="SplitSplitter_Icon" Color="White" />
+
+    <!-- Endregion EA SplitCtrl Styles -->
 </ResourceDictionary>

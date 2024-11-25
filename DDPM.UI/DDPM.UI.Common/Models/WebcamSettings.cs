@@ -21,6 +21,17 @@ namespace DDPM.UI.Common
         public Dictionary<string, string> SelectedFPSs = new();
         public Dictionary<string, string> Resolutions = new();
 
+        public bool IsFocusOn { get; set; }
+        public int Focus { get; set; }
+        public int Pan { get; set; }
+        public int Tilt { get; set; }
+        public int Zoom { get; set; }
+        public int AntiFlicker { get; set; }
+        public bool IsAutoFramingTransitionOn { get; set; }
+        public int AutoFramingSensitivity { get; set; }
+        public int AutoFramingFrameSize { get; set; }
+        public int AutoWhiteBalance { get; set; }
+
         public string SelectedProfile = "";
         public string SelectedProfileName = "";
         public Dictionary<string, WebcamProfile> PresetProfiles = new();
@@ -35,6 +46,23 @@ namespace DDPM.UI.Common
             {
                 Task<string> task = DdpmCommonHelper.DeviceManagerSA!.GetSupportedResolutions(di.ID.ToString());
                 var str = task.Result;
+                if (string.IsNullOrEmpty(str))
+                {
+                    Task<DeviceHelper> task1 = DdpmCommonHelper.DeviceManagerSA.GetDevices(true);
+                    var dis = task1.Result.deviceInfo;
+                    foreach (var item in dis)
+                    {
+                        if (item.ID == di.ID)
+                        {
+                            di = item;
+                            str = di.SupportedResolutions;
+                            break;
+                        }
+                    }
+                }
+                if (string.IsNullOrEmpty(str))
+                    return;
+
                 //var resolutions = JsonConvert.DeserializeObject<List<ResolutionItem>>(str)!;
                 var resolutions = JsonConvert.DeserializeObject<Dictionary<string, ResolutionItem>>(str)!;
                 foreach (var res in resolutions.OrderByDescending(x => x.Key))
@@ -67,12 +95,74 @@ namespace DDPM.UI.Common
                 //task1 = DdpmCommonHelper.DeviceManagerSA!.GetPresetProfiles(di.ID.ToString());
                 //jArray = JArray.FromObject(task1.Result);
                 //var presetProfiles = jArray.ToObject<List<WebcamProfile>>()!.ToList();
-                foreach (var profile in presetProfiles.OrderBy(x => x.Name))
+                //foreach (var profile in presetProfiles.OrderBy(x => x.Name))
+                //{
+                //    profile.Focus = di.FocusMin;
+                //    PresetProfiles.Add(profile.Name, profile);
+                //    //ProfileIDs.Add(profile.Name, profile.Id);
+                //}
+
+                switch (di.ModelNumber.ToUpper())
                 {
-                    profile.Focus = di.FocusMin;
-                    PresetProfiles.Add(profile.Name, profile);
-                    //ProfileIDs.Add(profile.Name, profile.Id);
+                    case "U3223QZ":
+                    case "U3224KB":
+
+                        break;
+                    default:
+                        WebcamProfile profile = new();
+                        profile.Name = "Default";
+                        profile.Description = "default";
+                        profile.IsHDROn = false;
+                        profile.Brightness = 128;
+                        profile.Contrast = 128;
+                        profile.Saturation = 128;
+                        profile.Sharpness = 128;
+                        profile.IsAutoFramingOn = false;
+                        profile.FieldOfView = 78;
+                        profile.IsAutoWhiteBalanceOn = true;
+                        PresetProfiles.Add(profile.Name, profile);
+
+                        profile = new();
+                        profile.Name = "Smooth";
+                        profile.Description = "Smooth";
+                        profile.IsHDROn = true;
+                        profile.Brightness = 160;
+                        profile.Contrast = 128;
+                        profile.Saturation = 128;
+                        profile.Sharpness = 0;
+                        profile.IsAutoFramingOn = false;
+                        profile.FieldOfView = 78;
+                        profile.IsAutoWhiteBalanceOn = true;
+                        PresetProfiles.Add(profile.Name, profile);
+
+                        profile = new();
+                        profile.Name = "Vibrant";
+                        profile.Description = "Vibrant";
+                        profile.IsHDROn = true;
+                        profile.Brightness = 192;
+                        profile.Contrast = 167;
+                        profile.Saturation = 152;
+                        profile.Sharpness = 181;
+                        profile.IsAutoFramingOn = false;
+                        profile.FieldOfView = 78;
+                        profile.IsAutoWhiteBalanceOn = true;
+                        PresetProfiles.Add(profile.Name, profile);
+
+                        profile = new();
+                        profile.Name = "Warm";
+                        profile.Description = "Warm";
+                        profile.IsHDROn = true;
+                        profile.Brightness = 169;
+                        profile.Contrast = 166;
+                        profile.Saturation = 134;
+                        profile.Sharpness = 168;
+                        profile.IsAutoFramingOn = false;
+                        profile.FieldOfView = 78;
+                        profile.IsAutoWhiteBalanceOn = true;
+                        PresetProfiles.Add(profile.Name, profile);
+                        break;
                 }
+
                 SelectedProfileName = PresetProfiles.Values.ToList()[0].Name;
             }
         }
@@ -93,12 +183,12 @@ namespace DDPM.UI.Common
                 {
                     return DdpmCommonHelper.DeviceManagerSA.WriteSerializedContentToFile(strPath, json).Result;//1007 apply signature
                 }
-                return true;
+                //return true;
             }
             catch (Exception)
             {
-                return false;
             }
+            return false;
         }
 
         public static WebcamSettings ImportWebcamSettings(string model, DeviceInfo di)
@@ -135,25 +225,26 @@ namespace DDPM.UI.Common
         public string Name { get; set; } = "";
         public string Description { get; set; } = "";
         public int Priority { get; set; }
+        public bool IsHDROn { get; set; }
+        public int Brightness { get; set; }
+        public int Contrast { get; set; }
+        public int Saturation { get; set; }
+        public int Sharpness { get; set; }
+        public bool IsAutoFramingOn { get; set; }
+        public int FieldOfView { get; set; }
+        public bool IsAutoWhiteBalanceOn { get; set; }
+
+
         public bool IsFocusOn { get; set; }
         public int Focus { get; set; }
         public int Pan { get; set; }
         public int Tilt { get; set; }
         public int Zoom { get; set; }
-        public int Brightness { get; set; }
-        public int Contrast { get; set; }
         public int AntiFlicker { get; set; }
-        public int Saturation { get; set; }
-        public int Sharpness { get; set; }
-        public bool IsAutoWhiteBalanceOn { get; set; }
-        public int AutoWhiteBalance { get; set; }
-        public bool IsAutoFramingOn { get; set; }
         public int AutoFramingSensitivity { get; set; }
         public int AutoFramingFrameSize { get; set; }
         public bool IsAutoFramingTransitionOn { get; set; }
-        public int FieldOfView { get; set; }
-        public bool IsHDROn { get; set; }
-
+        public int AutoWhiteBalance { get; set; }
     }
 
     public enum OperationModule
