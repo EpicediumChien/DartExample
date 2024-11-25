@@ -9685,6 +9685,13 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             List<DeviceInfo> deviceInfos = GetDevices_WithoutAwait().Result.deviceInfo.FindAll(x => (x.PhysicalDeviceType.Equals(DeviceType.LogicalWebcam) || x.PhysicalDeviceType.Equals(DeviceType.PhysicalWebcam)));
             writelog($"HandleQAM: deviceInfos.Count:{deviceInfos.Count}");
 
+            if (deviceInfos == null || _GlobalSettingParam == null || _GlobalSettingParam.GlobalSetting_WidgetSettings == null)
+            {
+                writelog($"Get null object when handleQAM start");
+
+                return;
+            }
+
             if (_ZoomMeetingType == ZoomMeetingType.CONF_3RD_EVENT_MEETING)
             {
                 if (_QAM == null && _GlobalSettingParam != null && _GlobalSettingParam.GlobalSetting_WidgetSettings != null)
