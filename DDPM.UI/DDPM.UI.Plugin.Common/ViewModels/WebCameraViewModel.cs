@@ -217,7 +217,7 @@ namespace DDPM.UI.Plugin.ViewModels
         {
             get
             {
-                return IsChecked_ProximitySensor ? "ON" : "OFF";
+                return IsChecked_ProximitySensor ? Strings.On : Strings.Off;
             }
         }
 
@@ -239,7 +239,7 @@ namespace DDPM.UI.Plugin.ViewModels
         {
             get
             {
-                return IsChecked_WakeOnApproach ? "ON" : "OFF";
+                return IsChecked_WakeOnApproach ? Strings.On : Strings.Off;
             }
         }
 
@@ -264,7 +264,7 @@ namespace DDPM.UI.Plugin.ViewModels
         {
             get
             {
-                return IsChecked_WalkAwayLock ? "ON" : "OFF";
+                return IsChecked_WalkAwayLock ? Strings.On : Strings.Off;
             }
         }
 
@@ -333,7 +333,7 @@ namespace DDPM.UI.Plugin.ViewModels
         {
             get
             {
-                return IsChecked_Snooze ? "ON" : "OFF";
+                return IsChecked_Snooze ? Strings.On : Strings.Off;
             }
         }
 
