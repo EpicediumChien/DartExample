@@ -882,6 +882,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                             GetALSAll(als, ref als_param);
                         }
                         als_param.Edid = als.edid;
+                        als_param.CapDict = als.CapabilityDic;
                         als_param.ModelName = als.modelName;
                         als_param.serialNumber = als.edid.SerialNumber;
                         als_param.DisplayName = als.DisplayName;
@@ -918,6 +919,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                         GetALSAll(monitorInfos, ref aconfig);
                     }
                     aconfig.Edid = monitorInfos.edid;
+                    aconfig.CapDict = monitorInfos.CapabilityDic;
                     aconfig.ModelName = monitorInfos.modelName;
                     aconfig.serialNumber = monitorInfos.edid.SerialNumber;
                     aconfig.DisplayName = monitorInfos.DisplayName;
@@ -1008,6 +1010,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                     foreach (MonitorInfo mon in monitorALS)//copy to als_connected first
                     {
                         ALSConfig als_nowtemp = new ALSConfig();
+                        als_nowtemp.CapDict = mon.CapabilityDic;
                         als_nowtemp.Edid = mon.edid;
                         als_nowtemp.ModelName = mon.modelName;
                         als_nowtemp.DisplayName = mon.DisplayName;
@@ -1029,6 +1032,11 @@ namespace DDPM.SA.Plugins.User.DisplayManager
 
                     als_connected = new List<ALSConfig>();//clear
 
+                    // Read monitorInfoMain value one times
+                    ObjGetVCP obBrightness = GetVCPCapability(monitorInfoMain, 0x10).Result;
+                    ObjGetVCP obContrast = GetVCPCapability(monitorInfoMain, 0x12).Result;
+                    ObjGetVCP obColor = GetVCPCapability(monitorInfoMain, "colorpreset").Result;
+                    var isprimarysupportlum = !monitorInfoMain.CapabilityDic.ContainsKey("12");
                     for (int i = 0; i < als_connected2.Count; i++)
                     {
                         //Dean 0624, check with displayname and serialnumber at the same time
@@ -1038,38 +1046,80 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                             if (!(als_connected2[i].isSupportALS == 2))
                                 return Task.FromResult(true);
 
-                            //Dean 0624, add object check as well
-                            var mo_tmp = monitorALS.Find(x => x.DisplayName.Equals(als_connected2[i].DisplayName));
-                            if (mo_tmp == null)
+                            if(isprimarysupportlum) // Lum True
                             {
-                                continue;
-                            }
-                            SetVCPCapability(mo_tmp, 0x66, SetBitsValue(value.AllValue, 5, 0));//set VCP command value, but bit5 need to change to 0
-                            value.AllValue = SetBitsValue(value.AllValue, 5, 0);
-                            als_connected2[i].isAutoBrightness = value.isAutoBrightness;
-                            als_connected2[i].isAutoColorTemp = value.isAutoColorTemp;
-                            als_connected2[i].isPrimaryMonitorSync = false;//set isPrimaryMonitorSync off
+                                if(!als_connected2[i].CapDict.ContainsKey("12"))// Lum True
+                                {
+                                    //only Do 0x10 and colorpreset
+                                    if (obBrightness.result)
+                                    {
+                                        uint brightnessValue = (uint)obBrightness.value;
+                                        SetVCPCapability(monitorALS.Find(x => x.DisplayName.Equals(als_connected2[i].DisplayName)), 0x10, brightnessValue);
+                                    }
 
-                            // Dean 0614 handle brightness/ contrast
-                            ObjGetVCP obBrightness = GetVCPCapability(monitorInfoMain, 0x10).Result;
-                            if (obBrightness.result)
-                            {
-                                uint brightnessValue = (uint)obBrightness.value;
-                                SetVCPCapability(monitorALS.Find(x => x.DisplayName.Equals(als_connected2[i].DisplayName)), 0x10, brightnessValue);
+
+                                    if (obColor.result)
+                                    {
+                                        string obColorValue = obColor.value.ToString();
+                                        SetVCPCapability(monitorALS.Find(x => x.DisplayName.Equals(als_connected2[i].DisplayName)), "colorpreset", obColorValue);
+                                    }
+                                }
+                                else// Lum False
+                                {
+                                    //only colorpreset
+                                    if (obColor.result)
+                                    {
+                                        string obColorValue = obColor.value.ToString();
+                                        SetVCPCapability(monitorALS.Find(x => x.DisplayName.Equals(als_connected2[i].DisplayName)), "colorpreset", obColorValue);
+                                    }
+                                }
                             }
 
-                            ObjGetVCP obContrast = GetVCPCapability(monitorInfoMain, 0x12).Result;
-                            if (obContrast.result)
-                            {
-                                uint obcontrastValue = (uint)obContrast.value;
-                                SetVCPCapability(monitorALS.Find(x => x.DisplayName.Equals(als_connected2[i].DisplayName)), 0x12, obcontrastValue);
-                            }
 
-                            ObjGetVCP obColor = GetVCPCapability(monitorInfoMain, "colorpreset").Result;
-                            if (obColor.result)
+                            if (!isprimarysupportlum) // Lum False
                             {
-                                string obColorValue = obColor.value.ToString();
-                                SetVCPCapability(monitorALS.Find(x => x.DisplayName.Equals(als_connected2[i].DisplayName)), "colorpreset", obColorValue);
+                                if (!als_connected2[i].CapDict.ContainsKey("12"))// Lum True
+                                {
+                                    //only colorpreset
+                                    if (obColor.result)
+                                    {
+                                        string obColorValue = obColor.value.ToString();
+                                        SetVCPCapability(monitorALS.Find(x => x.DisplayName.Equals(als_connected2[i].DisplayName)), "colorpreset", obColorValue);
+                                    }
+                                }
+                                else// Lum False
+                                {
+                                    //Dean 0624, add object check as well
+                                    var mo_tmp = monitorALS.Find(x => x.DisplayName.Equals(als_connected2[i].DisplayName));
+                                    if (mo_tmp == null)
+                                    {
+                                        continue;
+                                    }
+                                    SetVCPCapability(mo_tmp, 0x66, SetBitsValue(value.AllValue, 5, 0));//set VCP command value, but bit5 need to change to 0
+                                    value.AllValue = SetBitsValue(value.AllValue, 5, 0);
+                                    als_connected2[i].isAutoBrightness = value.isAutoBrightness;
+                                    als_connected2[i].isAutoColorTemp = value.isAutoColorTemp;
+                                    als_connected2[i].isPrimaryMonitorSync = false;//set isPrimaryMonitorSync off
+
+                                    // Dean 0614 handle brightness/ contrast
+                                    if (obBrightness.result)
+                                    {
+                                        uint brightnessValue = (uint)obBrightness.value;
+                                        SetVCPCapability(monitorALS.Find(x => x.DisplayName.Equals(als_connected2[i].DisplayName)), 0x10, brightnessValue);
+                                    }
+
+                                    if (obContrast.result)
+                                    {
+                                        uint obcontrastValue = (uint)obContrast.value;
+                                        SetVCPCapability(monitorALS.Find(x => x.DisplayName.Equals(als_connected2[i].DisplayName)), 0x12, obcontrastValue);
+                                    }
+
+                                    if (obColor.result)
+                                    {
+                                        string obColorValue = obColor.value.ToString();
+                                        SetVCPCapability(monitorALS.Find(x => x.DisplayName.Equals(als_connected2[i].DisplayName)), "colorpreset", obColorValue);
+                                    }
+                                }
                             }
                         }
                     }
@@ -1090,6 +1140,8 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             for(int i = 0; i < monitorALS.Count; i++)
             {
                 ALSConfig tempALSConfig = new ALSConfig();
+                tempALSConfig.Edid = monitorALS[i].edid;
+                tempALSConfig.CapDict = monitorALS[i].CapabilityDic;
                 tempALSConfig.ModelName = monitorALS[i].modelName;
                 tempALSConfig.DisplayName = monitorALS[i].DisplayName;
                 tempALSConfig.serialNumber = monitorALS[i].edid.SerialNumber;
@@ -1177,6 +1229,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             for (int i = 0; i < AllALSConfig.Count; i++)
             {
                 AllALSConfig[i].Edid = monitorALS.Edid;
+                AllALSConfig[i].CapDict = monitorALS.CapDict;
                 AllALSConfig[i].AllValue = monitorALS.AllValue;
                 AllALSConfig[i].isAutoBrightness = monitorALS.isAutoBrightness;
                 AllALSConfig[i].isAutoColorTemp = monitorALS.isAutoColorTemp;
@@ -1216,6 +1269,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                     return Task.FromResult(false);
                 }
                 aconfig.Edid = monitorInfos.edid;
+                aconfig.CapDict = monitorInfos.CapabilityDic;
                 aconfig.ModelName = monitorInfos.modelName;
                 aconfig.DisplayName = monitorInfos.DisplayName;
                 aconfig.serialNumber = monitorInfos.edid.SerialNumber;//Dean 0624
@@ -1242,6 +1296,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                 {
                     GetALSupport(monitorInfos, ref alsTemp);
                     alsTemp.Edid = monitorInfos.edid;
+                    alsTemp.CapDict = monitorInfos.CapabilityDic;
                     alsTemp.ModelName = monitorInfos.modelName;
                     alsTemp.serialNumber = monitorInfos.edid.SerialNumber;
                     alsTemp.DisplayName = monitorInfos.DisplayName;

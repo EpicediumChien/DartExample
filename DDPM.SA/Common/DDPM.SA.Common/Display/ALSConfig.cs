@@ -30,6 +30,7 @@ namespace DDPM.SA.Common
     public class ALSConfig
     {
         public EDID Edid { get; set; } = new EDID();
+        public Dictionary<string, List<string>> CapDict { get; set; } = new Dictionary<string, List<string>>();
         public string ModelName { get; set; } = string.Empty;
         public string DisplayName { get; set; } = string.Empty;
         public string serialNumber { get; set; } = string.Empty;
@@ -60,6 +61,7 @@ namespace DDPM.SA.Common
                 case ALSFeatureQueryType.All:
                     {
                         target.Edid = source.Edid;
+                        target.CapDict = source.CapDict;
                         target.isSupportALS = source.isSupportALS;
                         target.isAutoBrightness = source.isAutoBrightness;
                         target.isAutoColorTemp = source.isAutoColorTemp;
@@ -74,6 +76,7 @@ namespace DDPM.SA.Common
                 case ALSFeatureQueryType.no_SerialNumber:
                     {
                         target.Edid = source.Edid;
+                        target.CapDict = source.CapDict;
                         target.isSupportALS = source.isSupportALS;
                         target.isAutoBrightness = source.isAutoBrightness;
                         target.isAutoColorTemp = source.isAutoColorTemp;
