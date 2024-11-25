@@ -32,6 +32,7 @@ namespace DDPM.UI.Module.Brightness
             {
                 DdpmCommonHelper.DeviceManagerSA.ITSettingsActionEvent += DeviceManagerSA_ITSettingsActionEvent;
             }
+            DdpmCommonHelper.WriteUILog("BrightnessRightView, init");
         }
 
         ~BrightnessRightView()
@@ -40,6 +41,7 @@ namespace DDPM.UI.Module.Brightness
             {
                 DdpmCommonHelper.DeviceManagerSA.ITSettingsActionEvent -= DeviceManagerSA_ITSettingsActionEvent;
             }
+            DdpmCommonHelper.WriteUILog("~BrightnessRightView, exit");
         }
 
         private void DeviceManagerSA_ITSettingsActionEvent(object? sender, SA.Common.ITSettingEventArgs e)
@@ -47,7 +49,7 @@ namespace DDPM.UI.Module.Brightness
             DDPMSettings data = null;
             if (DdpmCommonHelper.DeviceManagerSA != null)
                 data = DdpmCommonHelper.ReadDDPMSettings(true);// DeviceManagerSA.ReloadAppConfigData().Result;
-
+            string log = string.Empty;
             bool? isLocked_BriCont = DdpmCommonHelper.GetUINotifyPropertyValue_Boolean("Lock_Display_BriCont", e);
             if (isLocked_BriCont != null)
             {
@@ -57,7 +59,8 @@ namespace DDPM.UI.Module.Brightness
                     if (vm != null)
                     {
                         vm.Update_BriContLockStatus(isLocked_BriCont ?? false);
-                        Trace.WriteLine($"[SettingsPage] Apply Brightness/Contrast(Lock) : {isLocked_BriCont}");
+                        log = $"[SettingsPage] Apply Brightness/Contrast(Lock) : {isLocked_BriCont}";
+                        DdpmCommonHelper.WriteUILog(log);
                     }
                 }));
             }
@@ -71,7 +74,8 @@ namespace DDPM.UI.Module.Brightness
                     {
                         //vm.LockMaskVisible = (bool)isLocked ? Visibility.Visible : Visibility.Collapsed;
                         vm.Update_ALSLockStatus(isLocked_ALS ?? false);
-                        Trace.WriteLine($"[SettingsPage] Apply Auto Brightness(Lock) : {isLocked_ALS}");
+                        log = $"[SettingsPage] Apply Auto Brightness(Lock) : {isLocked_ALS}";
+                        DdpmCommonHelper.WriteUILog(log);
                     }
                 }));
             }
@@ -84,7 +88,8 @@ namespace DDPM.UI.Module.Brightness
                     if (vm != null)
                     {
                         vm.Update_SyncLockStatus(isSyncLocked);
-                        Trace.WriteLine($"[SettingsPage] Apply Synchroniz Button(Lock) : {isSyncLocked}");
+                        log = $"[SettingsPage] Apply Synchronize Button(Lock) : {isSyncLocked}";
+                        DdpmCommonHelper.WriteUILog(log);
                     }
                 }));
 

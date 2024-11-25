@@ -1,4 +1,5 @@
 ﻿using Dell.Client.Framework.UX.WPF.Controls;
+using System.Windows.Input;
 using System.Windows.Media;
 using Color = System.Windows.Media.Color;
 using ColorConverter = System.Windows.Media.ColorConverter;
@@ -272,6 +273,7 @@ namespace DDPM.UI.Common
             UpdateFreezable("SplitCtrl_OuterBorder_BdColor_Icon_Normal", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#FFFFFFFF"));
             UpdateFreezable("SplitSplitter_Icon", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#FFFFFFFF"));
             UpdateFreezable("SplitCtrl0B_IconFill", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#FF132F54"));
+            UpdateFreezable("DdpmCB_HoverItemBkColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#FF232D36"));
             UpdateFreezable("SplitItem_BkColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#FF132F54"));
             #endregion
 
