@@ -234,9 +234,15 @@ namespace DDPM.SA.Plugins.User.SettingsManager
         /// </summary>
         /// <param name="text"></param>
         /// <param name="log_type">0 means info, others means error</param>
-        private void WriteLog(string text, log_type log_type = log_type.info)
+        private void WriteLog(string text, log_type log_type = log_type.info, 
+            [System.Runtime.CompilerServices.CallerMemberName] string memberName = "",
+            [System.Runtime.CompilerServices.CallerFilePath] string sourceFilePath = "",
+            [System.Runtime.CompilerServices.CallerLineNumber] int sourceLineNumber = 0)
         {
-            text = "[User.SettingsManager] " + text;
+            if (string.IsNullOrEmpty(text))
+                text = "";
+
+            text = $"[User.SettingsManager] {text}, Caller Name:{memberName}, Source Line {sourceLineNumber}";
             Console.WriteLine(text);
             if (Log != null)
             {
