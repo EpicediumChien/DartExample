@@ -983,8 +983,15 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             writelog("[DeviceMangerPlugin] SyncPrimaryMonitorAndColorPresetStatus ... in");
             List<ALSConfig> existAlsConfig = _DisplayManagerPlugin. GetAllExistAlsConfig().Result;
             ALSConfig findconfig = existAlsConfig.Find(x => x.Edid.Equals(m.edid));
+
+            Trace.WriteLine("Into MonitorInfo = " + m.edid.ModelName.ToString());
+            for (int i = 0; i < existAlsConfig.Count; i++)
+            {
+                Trace.WriteLine("GetAllExistAlsConfig ModelName = " + i.ToString() + " : " + existAlsConfig[i].ModelName.ToString());
+            }
             if (findconfig != null)
             {
+                Trace.WriteLine("findconfig.ModelName = " + findconfig.ModelName.ToString() + " ; & findconfig.isPrimaryMonitorSync = " + findconfig.isPrimaryMonitorSync.ToString());
                 if (findconfig != null && findconfig.isPrimaryMonitorSync)// Find PrimaryMonitorSync on Monitor
                 {
                     for (int i = 0; i < _AllInfoMonitors.Count; i++)// Compare AllInfoMonitors
@@ -993,6 +1000,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
                         if (m.edid.Equals(mo.edid) == false)// Find different Monitor with PrimaryMonitorSync on Monitor
                         {
+                            Trace.WriteLine("e.monitor.ModelName = " + m.edid.ModelName.ToString() + " ||  mo.ModelName = " + mo.edid.ModelName.ToString());
                             writelog("[DeviceMangerPlugin] SyncPrimaryMonitorAndColorPresetStatus ..... SetVCPCapability => " + mo.edid.ModelName.ToString() + ColorPreset_Name);
                             Task.Run(() => SetVCPCapability(mo, "colorpreset", ColorPreset_Name).Result).ConfigureAwait(false);
                         }
@@ -1002,7 +1010,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
             else
             {
-                writelog("[DeviceMangerPlugin] SyncPrimaryMonitorAndColorPresetStatus ... findconfig == null");
+                writelog("[DeviceMangerPlugin] SyncPrimaryMonitorAndColorPresetStatus ..... findconfig == null");
                 return Task.FromResult(false);
             }
         }

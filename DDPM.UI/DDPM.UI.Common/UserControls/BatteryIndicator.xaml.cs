@@ -60,11 +60,11 @@ namespace DDPM.UI.Common
         {
             InitializeComponent();
             UpdateConnectionType();
-            DdpmCommonHelper.BitmapImageUpdated += ImageUpdate;
 
             // Unregister event
             this.Unloaded += OnUnloaded;
         }
+
 
         private void OnUnloaded(object sender, RoutedEventArgs e)
         {
