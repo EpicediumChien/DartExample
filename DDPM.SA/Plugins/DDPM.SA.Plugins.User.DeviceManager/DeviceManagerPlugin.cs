@@ -8513,6 +8513,16 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             return await Task.Run(() => _DTPProxyPlugin.GetCameraFirmwareVersion(Guid));
         }
 
+        public async Task<bool> GetIsWindowsHelloCapabilityVerified(string Guid)
+        {
+            return await Task.Run(() => _DTPProxyPlugin.GetIsWindowsHelloCapabilityVerified(Guid));
+        }
+
+        public async Task<bool> GetIsAllSupportedResolutionsFound(string Guid)
+        {
+            return await Task.Run(() => _DTPProxyPlugin.GetIsAllSupportedResolutionsFound(Guid));
+        }
+
         public async Task<bool> GetIsPropertyFOVSupportedByDTP(string Guid)
         {
             return await Task.Run(() => _DTPProxyPlugin.GetIsPropertyFOVSupported(Guid));

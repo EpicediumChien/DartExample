@@ -753,6 +753,60 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
         }
 
+        public async Task<bool> GetIsWindowsHelloCapabilityVerified(string Guid)
+        {
+            if (!await GetItemIDAsync("Webcam", Guid))
+            { return false; }
+
+            if (_webcamMethodInfo != null)
+            {
+                if (await GetCommodityInterfaceInstanceAsync(_webcamMethodInfo) is ICommodity commodity)
+                {
+                    var value = GetPropertyValue(_webcamInterfaceType, commodity, "IsWindowsHelloCapabilityVerified");
+                    return (bool)value;
+                }
+                else
+                {
+                    Debug.WriteLine($"[IsWindowsHelloCapabilityVerified]Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {_itemID} item.");
+                    writelog($"[IsWindowsHelloCapabilityVerified]Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {_itemID} item.");
+                    return false;
+                }
+            }
+            else
+            {
+                Debug.WriteLine($"[IsWindowsHelloCapabilityVerified]Could not retrieve the Commodity Interface for the {_itemID} item. _webcamMethodInfo is null");
+                writelog($"[IsWindowsHelloCapabilityVerified]Could not retrieve the Commodity Interface for the {_itemID} item. _webcamMethodInfo is null");
+                return false;
+            }
+        }
+
+        public async Task<bool> GetIsAllSupportedResolutionsFound(string Guid)
+        {
+            if (!await GetItemIDAsync("Webcam", Guid))
+            { return false; }
+
+            if (_webcamMethodInfo != null)
+            {
+                if (await GetCommodityInterfaceInstanceAsync(_webcamMethodInfo) is ICommodity commodity)
+                {
+                    var value = GetPropertyValue(_webcamInterfaceType, commodity, "IsAllSupportedResolutionsFound");
+                    return (bool)value;
+                }
+                else
+                {
+                    Debug.WriteLine($"[IsAllSupportedResolutionsFound]Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {_itemID} item.");
+                    writelog($"[IsAllSupportedResolutionsFound]Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {_itemID} item.");
+                    return false;
+                }
+            }
+            else
+            {
+                Debug.WriteLine($"[IsAllSupportedResolutionsFound]Could not retrieve the Commodity Interface for the {_itemID} item. _webcamMethodInfo is null");
+                writelog($"[IsAllSupportedResolutionsFound]Could not retrieve the Commodity Interface for the {_itemID} item. _webcamMethodInfo is null");
+                return false;
+            }
+        }
+
         public async Task<bool> GetIsPropertyFOVSupported(string Guid)
         {
             if (!await GetItemIDAsync("Webcam", Guid))

@@ -128,6 +128,8 @@ namespace DDPM.SA.Common
         Task<string> GetProfileName(string Guid);
         Task<int> GetBrightness(string Guid);
         Task<string> GetCameraFirmwareVersion(string Guid);
+        Task<bool> GetIsWindowsHelloCapabilityVerified(string Guid);
+        Task<bool> GetIsAllSupportedResolutionsFound(string Guid);
         Task<bool> GetIsPropertyFOVSupported(string Guid);
         Task<int> GetFieldOfView(string Guid);
         Task<bool> GetIsPropertyHDRSupported(string Guid);
