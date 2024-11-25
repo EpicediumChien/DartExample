@@ -106,7 +106,7 @@
                                          ButtonSize="Medium" VerticalContentAlignment="Center"
                                          Content="{Binding [Save], Source={x:Static lang:LangHelper.Instance}}"  Margin="0"
                                          IconAnimation="Move" Width="164" Height="40"
-                                         Click="SaveInput" Visibility="{Binding EditPXP}" />
+                                         Click="SavePxP" Visibility="{Binding EditPXP}" />
                     <UXControls:UXButton IconPosition="IconRight"
                                          ButtonType="Primary"
                                          ButtonSize="Medium"

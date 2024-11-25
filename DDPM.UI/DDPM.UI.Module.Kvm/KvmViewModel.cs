@@ -639,7 +639,7 @@ namespace DDPM.UI.Module.Kvm
                     SupportNKVM = Visibility.Visible;
                 }
 
-                USBKVMisON = KvmModule.isUSBKVM;//DdpmCommonHelper.DeviceManagerSA.GetOnNKVM().Result;
+                USBKVMisON = KvmModule.isUSBKVM; /*DdpmCommonHelper.DeviceManagerSA.GetOnNKVM(mi).Result;*/
                 NKVMisON = DdpmCommonHelper.DeviceManagerSA.GetOnNKVM(mi).Result;
                 if (mi.CapabilityDic.ContainsKey("EE"))
                 {
@@ -672,6 +672,11 @@ namespace DDPM.UI.Module.Kvm
                             isUSBKVMButton = false;
                             USBKVMButtonOpacity = 0.5;
                         }
+                    }
+                    else
+                    {
+                        isPxP = Visibility.Collapsed;
+                        NoPxP = Visibility.Visible;
                     }
                 }
                 bw.DoWork += DoWork_RefreshData;
@@ -740,7 +745,7 @@ namespace DDPM.UI.Module.Kvm
                     pcsList = DdpmCommonHelper.DeviceManagerSA.GetUSBKVMPCsList(KvmModule.SelectedHomeDevice.MonitorInfo, inputList, subInputs).Result;
                     usbsList = DdpmCommonHelper.DeviceManagerSA.GetUSBUpstreamList(KvmModule.SelectedHomeDevice.MonitorInfo).Result;
                     original_pcsList = DdpmCommonHelper.DeviceManagerSA.GetUSBKVMPCsList(KvmModule.SelectedHomeDevice.MonitorInfo, inputList, subInputs).Result;
-                    if ((inputList != null) && (pcsList.Count > 1))   // 2024-06-19 Elie, fix exception.
+                    if ((inputList != null) && (pcsList != null && pcsList.Count > 1))   // 2024-06-19 Elie, fix exception.
                     {
                         if (inputList.Count != _inputsList.Count && usbsList.Count != _usbsList.Count)
                         {
@@ -777,6 +782,11 @@ namespace DDPM.UI.Module.Kvm
                                 _PC1selectUSB = _usbsList.Find(x => (x.Type == pcsList["PC1"].USBUpstream));
                                 _PC2selectInput = _inputsList.Find(x => (x.Type == pcsList["PC2"].InputType));
                                 _PC2selectUSB = _usbsList.Find(x => (x.Type == pcsList["PC2"].USBUpstream));
+                                if (!USBKVMisON)
+                                {
+                                    pcsList["PC1"].InputName = "PC1";
+                                    pcsList["PC2"].InputName = "PC2";
+                                }
                                 InputName1 = pcsList["PC1"].InputName;
                                 InputName2 = pcsList["PC2"].InputName;
                                 if (pcsList.Count >= 3)
@@ -785,6 +795,10 @@ namespace DDPM.UI.Module.Kvm
                                     {
                                         _PC3selectInput = _inputsList.Find(x => (x.Type == pcsList["PC3"].InputType));
                                         _PC3selectUSB = _usbsList.Find(x => (x.Type == pcsList["PC3"].USBUpstream));
+                                        if (!USBKVMisON)
+                                        {
+                                            pcsList["PC3"].InputName = "PC3";
+                                        }
                                         InputName3 = pcsList["PC3"].InputName;
                                         PC3_Visibility = Visibility.Visible;
                                         if (pcsList.Count == 4)
@@ -793,6 +807,10 @@ namespace DDPM.UI.Module.Kvm
                                             {
                                                 _PC4selectInput = _inputsList.Find(x => (x.Type == pcsList["PC4"].InputType));
                                                 _PC4selectUSB = _usbsList.Find(x => (x.Type == pcsList["PC4"].USBUpstream));
+                                                if (!USBKVMisON)
+                                                {
+                                                    pcsList["PC4"].InputName = "PC4";
+                                                }
                                                 InputName4 = pcsList["PC4"].InputName;
                                                 PC4_Visibility = Visibility.Visible;
                                                 PCImage = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/USBKVM_4PCs.png");
@@ -825,6 +843,7 @@ namespace DDPM.UI.Module.Kvm
                     }
                     else
                     {
+                        _log.Debug("inputList is null or pcsList is null or count < 2.");
                         isUSBKVMButton = false;
                         USBKVMButtonOpacity = 0.5;
                     }
@@ -832,6 +851,10 @@ namespace DDPM.UI.Module.Kvm
                     OnPropertyChanged("PC2Inputs_Selected");
                     OnPropertyChanged("PC3Inputs_Selected");
                     OnPropertyChanged("PC4Inputs_Selected");
+                    OnPropertyChanged("PC1USB_Selected");
+                    OnPropertyChanged("PC2USB_Selected");
+                    OnPropertyChanged("PC3USB_Selected");
+                    OnPropertyChanged("PC4USB_Selected");
                     OnPropertyChanged("PCImage");
 
                     #region PIP/PIP
@@ -961,11 +984,31 @@ namespace DDPM.UI.Module.Kvm
                 }
             }
             pcsList[pcnum] = pcInfo;
+            if (pcnum == "PC1")
+            {
+                _PC1selectUSB = _usbsList.Find(x => (x.Type == pcsList[pcnum].USBUpstream));
+            }
+            else if (pcnum == "PC2")
+            {
+                _PC2selectUSB = _usbsList.Find(x => (x.Type == pcsList[pcnum].USBUpstream));
+            }
+            else if (pcnum == "PC3")
+            {
+                _PC3selectUSB = _usbsList.Find(x => (x.Type == pcsList[pcnum].USBUpstream));
+            }
+            else if (pcnum == "PC4")
+            {
+                _PC4selectUSB = _usbsList.Find(x => (x.Type == pcsList[pcnum].USBUpstream));
+            }
             //bool b = DdpmCommonHelper.DeviceManagerSA.SetUSBKVMPCsList(KvmModule.SelectedHomeDevice.MonitorInfo, pcsList).Result;
             OnPropertyChanged("PC1Inputs_Selected");
             OnPropertyChanged("PC2Inputs_Selected");
             OnPropertyChanged("PC3Inputs_Selected");
             OnPropertyChanged("PC4Inputs_Selected");
+            OnPropertyChanged("PC1USB_Selected");
+            OnPropertyChanged("PC2USB_Selected");
+            OnPropertyChanged("PC3USB_Selected");
+            OnPropertyChanged("PC4USB_Selected");
         }
 
         private void SelectUSB(string usb, string pcnum)
@@ -1435,98 +1478,115 @@ namespace DDPM.UI.Module.Kvm
         public void FinishtoSetPCs()
         {
             //set input source
-            if (pcsList != original_pcsList)
+            if (pcsList != null)
             {
-                if (pcsList.TryGetValue("PC1", out var pc1) && pcsList.TryGetValue("PC2", out var pc2))
+                if (pcsList != original_pcsList)
                 {
-                    InputSourceObj pc1input = new InputSourceObj(pcsList["PC1"].InputType);
-                    InputSourceObj pc2input = new InputSourceObj(pcsList["PC2"].InputType);
-                    inputList[pcsList["PC1"].InputType].InputName = pcsList["PC1"].InputName;
-                    inputList[pcsList["PC1"].InputType].USBUpstream = pcsList["PC1"].USBUpstream;
-                    inputList[pcsList["PC2"].InputType].InputName = pcsList["PC2"].InputName;
-                    inputList[pcsList["PC2"].InputType].USBUpstream = pcsList["PC2"].USBUpstream;
-                    if (pcsList.Count >= 3)
+                    if (pcsList.TryGetValue("PC1", out var pc1) && pcsList.TryGetValue("PC2", out var pc2))
                     {
-                        if (pcsList.TryGetValue("PC3", out var pc3))
+                        InputSourceObj pc1input = new InputSourceObj((UInt16)pcsList["PC1"].Code, pcsList["PC1"].InputType);
+                        InputSourceObj pc2input = new InputSourceObj((UInt16)pcsList["PC2"].Code, pcsList["PC2"].InputType);
+                        inputList[pcsList["PC1"].InputType].InputName = pcsList["PC1"].InputName;
+                        inputList[pcsList["PC2"].InputType].InputName = pcsList["PC2"].InputName;
+                        if (pcsList.Count >= 3)
                         {
-                            InputSourceObj pc3input = new InputSourceObj(pcsList["PC3"].InputType);
-                            inputList[pcsList["PC3"].InputType].InputName = pcsList["PC3"].InputName;
-                            inputList[pcsList["PC3"].InputType].USBUpstream = pcsList["PC3"].USBUpstream;
-                            if (pcsList.Count == 4)
+                            if (pcsList.TryGetValue("PC3", out var pc3))
                             {
-                                if (pcsList.TryGetValue("PC4", out var pc4))
+                                InputSourceObj pc3input = new InputSourceObj((UInt16)pcsList["PC3"].Code, pcsList["PC3"].InputType);
+                                inputList[pcsList["PC3"].InputType].InputName = pcsList["PC3"].InputName;
+                                if (pcsList.Count == 4)
                                 {
-                                    InputSourceObj pc4input = new InputSourceObj(pcsList["PC4"].InputType);
-                                    inputList[pcsList["PC4"].InputType].InputName = pcsList["PC4"].InputName;
-                                    inputList[pcsList["PC4"].InputType].USBUpstream = pcsList["PC4"].USBUpstream;
-                                    bool res = DdpmCommonHelper.DeviceManagerSA.SetSubInputs(
-                                        DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo,
-                                        pc2input, pc3input, pc4input).Result;
-                                    if (res)
+                                    if (pcsList.TryGetValue("PC4", out var pc4))
                                     {
-                                        Thread.Sleep(500);
+                                        InputSourceObj pc4input = new InputSourceObj((UInt16)pcsList["PC4"].Code, pcsList["PC4"].InputType);
+                                        inputList[pcsList["PC4"].InputType].InputName = pcsList["PC4"].InputName;
+                                        bool res = DdpmCommonHelper.DeviceManagerSA.SetSubInputs(
+                                            DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo,
+                                            pc2input, pc3input, pc4input).Result;
+                                        if (res)
+                                        {
+                                            Thread.Sleep(1000);
+                                        }
+                                    }
+                                    else
+                                    {
+                                        _log.Debug("PC4 not found in pcsList.");
                                     }
                                 }
                                 else
                                 {
-                                    _log.Debug("PC4 not found in pcsList.");
+                                    bool res = DdpmCommonHelper.DeviceManagerSA.SetSubInputs(
+                                        DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo,
+                                        pc2input, pc3input, null).Result;
+                                    if (res)
+                                    {
+                                        Thread.Sleep(1000);
+                                    }
                                 }
                             }
                             else
                             {
-                                bool res = DdpmCommonHelper.DeviceManagerSA.SetSubInputs(
-                                    DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo,
-                                    pc2input, pc3input, null).Result;
-                                if (res)
-                                {
-                                    Thread.Sleep(500);
-                                }
+                                _log.Debug("PC3 not found in pcsList.");
                             }
                         }
                         else
                         {
-                            _log.Debug("PC3 not found in pcsList.");
+                            bool res = DdpmCommonHelper.DeviceManagerSA.SetSubInputs(
+                                    DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo,
+                                    pc2input, null, null).Result;
+                            if (res)
+                            {
+                                Thread.Sleep(1000);
+                            }
                         }
-                    }
-                    else
-                    {
-                        bool res = DdpmCommonHelper.DeviceManagerSA.SetSubInputs(
-                                DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo,
-                                pc2input, null, null).Result;
-                        if (res)
-                        {
-                            Thread.Sleep(500);
-                        }
-                    }
 
-                    foreach (var pcs in pcsList)
-                    {
-                        if (pcs.Key == "PC1" && pcs.Value.InputType != original_pcsList["PC1"].InputType)
+                        foreach (var pcs in pcsList)
+                        {
+                            //if (pcs.Key == "PC1" && pcs.Value.InputType != original_pcsList["PC1"].InputType)
+                            //{
+                            //    CurrentInputChange();
+                            //}
+                            //if (pcs.Value.InputName != vm.original_pcsList[pcs.Key].InputName)
+                            //{
+                            //    bool binputname = DdpmCommonHelper.DeviceManagerSA.SetInputName(pcs.Value.InputType, pcs.Value.InputName).Result;
+                            //}
+                            if (pcs.Value.USBUpstream != original_pcsList[pcs.Key].USBUpstream)
+                            {
+                                bool bUSBuptream = DdpmCommonHelper.DeviceManagerSA.SetUSBUpstream(KvmModule.SelectedHomeDevice.MonitorInfo, pcs.Value.InputType, pcs.Value.USBUpstream).Result;
+                                if (bUSBuptream)
+                                {
+                                    Thread.Sleep(1000);
+                                }
+                            }
+                        }
+
+                        if (pcsList["PC1"].InputType != KvmModule.SelectedHomeDevice.MonitorInfo.inputSource)
                         {
                             CurrentInputChange();
                         }
-                        //if (pcs.Value.InputName != vm.original_pcsList[pcs.Key].InputName)
-                        //{
-                        //    bool binputname = DdpmCommonHelper.DeviceManagerSA.SetInputName(pcs.Value.InputType, pcs.Value.InputName).Result;
-                        //}
-                        if (pcs.Value.USBUpstream != original_pcsList[pcs.Key].USBUpstream)
-                        {
-                            bool bUSBuptream = DdpmCommonHelper.DeviceManagerSA.SetUSBUpstream(KvmModule.SelectedHomeDevice.MonitorInfo, pcs.Value.InputType, pcs.Value.USBUpstream).Result;
-                            if (bUSBuptream)
-                            {
-                                Thread.Sleep(500);
-                            }
-                        }
+                        bool bin = DdpmCommonHelper.DeviceManagerSA.SetInputSourcelist(KvmModule.SelectedHomeDevice.MonitorInfo, inputList).Result;
+                        //bool bpcs = DdpmCommonHelper.DeviceManagerSA.SetUSBKVMPCsList(KvmModule.SelectedHomeDevice.MonitorInfo, pcsList).Result;
+                        //isOnUSBKVM(true);//bool b = DdpmCommonHelper.DeviceManagerSA.SetOnUSBKVM(true).Result;
                     }
-                    bool bin = DdpmCommonHelper.DeviceManagerSA.SetInputSourcelist(KvmModule.SelectedHomeDevice.MonitorInfo, inputList).Result;
-                    bool bpcs = DdpmCommonHelper.DeviceManagerSA.SetUSBKVMPCsList(KvmModule.SelectedHomeDevice.MonitorInfo, pcsList).Result;
-                    isOnUSBKVM(true);//bool b = DdpmCommonHelper.DeviceManagerSA.SetOnUSBKVM(true).Result;
-                }
-                else
-                {
-                    _log.Debug("PC1 or PC2 not found in pcsList.");
+                    else
+                    {
+                        _log.Debug("PC1 or PC2 not found in pcsList.");
+                    }
                 }
             }
+            else
+            {
+                _log.Debug("pcsList is null");
+            }
+        }
+
+        public void PCInputChange()
+        {
+            OnPropertyChanged("PC1Inputs_Selected");
+            OnPropertyChanged("PC2Inputs_Selected");
+            OnPropertyChanged("PC3Inputs_Selected");
+            OnPropertyChanged("PC4Inputs_Selected");
+            OnPropertyChanged("PCImage");
         }
 
         #region Event
