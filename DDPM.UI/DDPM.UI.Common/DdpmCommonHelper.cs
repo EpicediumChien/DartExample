@@ -2,6 +2,7 @@
 using DDPM.SA.Common.Settings;
 using DDPM.UI.Common.Interfaces;
 using DDPM.UI.Common.Views;
+using Dell.Client.Framework.Common;
 using Dell.Client.Framework.UX.WPF;
 using Dell.Client.Framework.UX.WPF.Controls;
 using Dell.Client.Framework.UX.WPF.ResourceManager;
@@ -64,6 +65,8 @@ namespace DDPM.UI.Common
 
         public static IModuleOwner? ModuleOwner { get; set; }
 
+        public static ILog? Log { get; set; }
+
         /// <summary>
         /// Flag to switch the Light Mode Feature
         /// </summary>
@@ -72,7 +75,39 @@ namespace DDPM.UI.Common
         /// <summary>
         /// Flag to turn on and off UI Test buttons
         /// </summary>
-        public static bool UIDebugModeFlag { get; set; } = false; 
+        public static bool UIDebugModeFlag { get; set; } = false;
+
+        public enum log_type
+        {
+            info = 0,
+            error
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="text"></param>
+        /// <param name="log_type">0 means info, others means error</param>
+        public static void WriteUILog(string text, log_type log_type = log_type.info,
+            [System.Runtime.CompilerServices.CallerMemberName] string memberName = "",
+            [System.Runtime.CompilerServices.CallerFilePath] string sourceFilePath = "",
+            [System.Runtime.CompilerServices.CallerLineNumber] int sourceLineNumber = 0)
+        {
+            if (string.IsNullOrEmpty(text))
+                text = "";
+
+            text = $"[Caller:{memberName}][SourceLine:{sourceLineNumber}] {text}";
+#if DEBUG
+            Trace.WriteLine(text);
+#endif
+            if (Log != null)
+            {
+                if (log_type == log_type.info)
+                    Log.Info(text);
+                else
+                    Log.Error(text);
+            }
+        }
 
         public static bool DDPMMesssageBox(string title, string text, DependencyObject obj = null)
         {
