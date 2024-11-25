@@ -167,9 +167,11 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             Dictionary<string, string> event_param = deal_param(e.UI_Field_Name);
             try
             {
-                if (event_param["Device"] == "Webcam")
+                if (!event_param.TryGetValue("Device", out var device)) return;
+                if (device == "Webcam")
                 {
-                    switch (event_param["EventType"])
+                    if (!event_param.TryGetValue("EventType", out var eventtype)) return;
+                    switch (eventtype)
                     {
                         case "Webcam_IsHDROnChanged":
                             Application.Current.Dispatcher.Invoke(() =>
@@ -182,7 +184,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             }
             catch (Exception ex)
             {
-                //MessageBox.Show(ex.Message);
+                _log.Debug(ex , "WebCameraplugin_UIUpdateNotify");
             }
         }
 
