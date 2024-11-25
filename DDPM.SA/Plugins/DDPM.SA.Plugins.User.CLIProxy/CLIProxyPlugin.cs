@@ -542,6 +542,17 @@ namespace DDPM.SA.Plugin.User.CLIManager
                             return;
                     }
                 }
+                else if (commandLineInput.Command.Equals("HELP"))
+                {
+                    if (commandLineInput.TargetFeature.ToUpper() == "DISPLAY" && _CLIDisplay != null)
+                        cliEventResult = _CLIDisplay.SetCommandArgs(e, _DevManagerPlugin);
+                    else
+                    {
+                        WriteLog($"{nameof(ICLIDisplay)} was missing.");
+                        _CliManagerPlugin.WriteCommandResult(Response_PluginNotReady(commandLineInput, nameof(ICLIDisplay), e.command_guid_string));
+                        return;
+                    }
+                }
                 else
                 {
                     CLIEventResult result = new CLIEventResult()

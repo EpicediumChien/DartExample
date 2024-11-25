@@ -184,10 +184,12 @@ namespace SA.Plugins.User.DeviceManager.Test
             var _ColorPresetPlugin = _ColorPresetPluginMock.Object;
             privateObject.SetFieldOrProperty("_ColorPresetPlugin", _ColorPresetPlugin);
 
+            List<ALSConfig> aLSConfigs = new List<ALSConfig>() { new ALSConfig() { Edid = monitorInfo.edid, ModelName = monitorInfo.modelName, isPrimaryMonitorSync = false } };
             var _DisplayManagerPluginMock = new Mock<IDisplayService>();
             _DisplayManagerPluginMock.Setup(x => x.SetVCPCapability(It.IsAny<MonitorInfo>(), It.IsAny<string>(), It.IsAny<string>())).Returns(Task.FromResult(true));
             _DisplayManagerPluginMock.Setup(x => x.GetMonitorCurrentResolution(It.IsAny<MonitorInfo>())).Returns(Task.FromResult("1920*1080"));
             _DisplayManagerPluginMock.Setup(x => x.GetMonitorMaxResolution(It.IsAny<MonitorInfo>())).Returns(Task.FromResult("1920*1080"));
+            _DisplayManagerPluginMock.Setup(x => x.GetAllExistAlsConfig()).Returns(Task.FromResult(aLSConfigs));
             var _DisplayManagerPlugin = _DisplayManagerPluginMock.Object;
             privateObject.SetFieldOrProperty("_DisplayManagerPlugin", _DisplayManagerPlugin);
 
