@@ -200,7 +200,33 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             }
 
             in_CameraPlugin = true;
+
+            CheckUSBtype();
+            CheckWindowsHello();
         }
+
+        public void CheckUSBtype()
+        {
+            //需要特殊邏輯處理的型號
+            List<string> SpecialCase = new List<string>() 
+            {
+                "U3223QZ","U3224KB","U3224KBA","P2424HEB","P2724DEB","P3424WEB"
+            };
+
+            string model = _vm.CurrentDeviceInfo!.ModelNumber;
+
+            if (!SpecialCase.Contains(model)) return;
+
+            //check usb 2.0 / 3.0
+            bool AllSupportedResolutions = DdpmCommonHelper.DeviceManagerSA!.GetIsAllSupportedResolutionsFound(_vm.CurrentDeviceInfo!.ID.ToString()).Result;
+
+        }
+
+        public void CheckWindowsHello()
+        {
+            bool WHelloOk = false;
+        }
+
 
         bool WebcamGrid_old_ststus = false;
         private void status_change()

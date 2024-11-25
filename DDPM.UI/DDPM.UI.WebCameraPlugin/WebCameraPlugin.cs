@@ -182,10 +182,20 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                     switch (eventtype)
                     {
                         case "Webcam_IsHDROnChanged":
-                            Application.Current.Dispatcher.Invoke(() =>
                             {
-                                _viewModel!.IsHDROn = DdpmCommonHelper.DeviceManagerSA!.GetIsHDROn(_viewModel!.CurrentDeviceID.ToString()).Result;
-                            });
+                                if (!event_param.TryGetValue("EventType", out var NewValue))
+                                {
+                                    _log.Debug("NewValue cannot be found in event_param");
+                                    return;
+                                }
+                                Application.Current.Dispatcher.Invoke(() =>
+                                {
+                                    if (NewValue.ToLower() == "true")
+                                        _viewModel!.IsHDROn = true;
+                                    else
+                                        _viewModel!.IsHDROn = false;
+                                });
+                            }
                             break;
                     }
                 }
