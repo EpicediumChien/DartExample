@@ -2787,6 +2787,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
         #region Headset set
 
+        // 1125 Add log
         public async Task<bool> SetMicNoiseCancellationAsync(string guidString, bool newValue)
         {
             try
