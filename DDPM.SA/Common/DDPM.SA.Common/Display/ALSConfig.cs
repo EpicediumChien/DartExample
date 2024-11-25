@@ -61,6 +61,7 @@ namespace DDPM.SA.Common
                 case ALSFeatureQueryType.All:
                     {
                         target.Edid = source.Edid;
+                        target.CapDict = source.CapDict;
                         target.isSupportALS = source.isSupportALS;
                         target.isAutoBrightness = source.isAutoBrightness;
                         target.isAutoColorTemp = source.isAutoColorTemp;
@@ -75,6 +76,7 @@ namespace DDPM.SA.Common
                 case ALSFeatureQueryType.no_SerialNumber:
                     {
                         target.Edid = source.Edid;
+                        target.CapDict = source.CapDict;
                         target.isSupportALS = source.isSupportALS;
                         target.isAutoBrightness = source.isAutoBrightness;
                         target.isAutoColorTemp = source.isAutoColorTemp;

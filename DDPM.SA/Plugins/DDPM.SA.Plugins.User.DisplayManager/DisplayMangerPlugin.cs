@@ -861,6 +861,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                             GetALSAll(als, ref als_param);
                         }
                         als_param.Edid = als.edid;
+                        als_param.CapDict = als.CapabilityDic;
                         als_param.ModelName = als.modelName;
                         als_param.serialNumber = als.edid.SerialNumber;
                         als_param.DisplayName = als.DisplayName;
@@ -897,6 +898,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                         GetALSAll(monitorInfos, ref aconfig);
                     }
                     aconfig.Edid = monitorInfos.edid;
+                    aconfig.CapDict = monitorInfos.CapabilityDic;
                     aconfig.ModelName = monitorInfos.modelName;
                     aconfig.serialNumber = monitorInfos.edid.SerialNumber;
                     aconfig.DisplayName = monitorInfos.DisplayName;
@@ -1117,6 +1119,8 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             for(int i = 0; i < monitorALS.Count; i++)
             {
                 ALSConfig tempALSConfig = new ALSConfig();
+                tempALSConfig.Edid = monitorALS[i].edid;
+                tempALSConfig.CapDict = monitorALS[i].CapabilityDic;
                 tempALSConfig.ModelName = monitorALS[i].modelName;
                 tempALSConfig.DisplayName = monitorALS[i].DisplayName;
                 tempALSConfig.serialNumber = monitorALS[i].edid.SerialNumber;
@@ -1204,6 +1208,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             for (int i = 0; i < AllALSConfig.Count; i++)
             {
                 AllALSConfig[i].Edid = monitorALS.Edid;
+                AllALSConfig[i].CapDict = monitorALS.CapDict;
                 AllALSConfig[i].AllValue = monitorALS.AllValue;
                 AllALSConfig[i].isAutoBrightness = monitorALS.isAutoBrightness;
                 AllALSConfig[i].isAutoColorTemp = monitorALS.isAutoColorTemp;
@@ -1243,6 +1248,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                     return Task.FromResult(false);
                 }
                 aconfig.Edid = monitorInfos.edid;
+                aconfig.CapDict = monitorInfos.CapabilityDic;
                 aconfig.ModelName = monitorInfos.modelName;
                 aconfig.DisplayName = monitorInfos.DisplayName;
                 aconfig.serialNumber = monitorInfos.edid.SerialNumber;//Dean 0624
@@ -1269,6 +1275,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                 {
                     GetALSupport(monitorInfos, ref alsTemp);
                     alsTemp.Edid = monitorInfos.edid;
+                    alsTemp.CapDict = monitorInfos.CapabilityDic;
                     alsTemp.ModelName = monitorInfos.modelName;
                     alsTemp.serialNumber = monitorInfos.edid.SerialNumber;
                     alsTemp.DisplayName = monitorInfos.DisplayName;
