@@ -244,7 +244,7 @@ namespace DDPM.UI.Module.Kvm
                 vm.FromProgressValue = 0;
                 vm.ToProgressValue = 1;
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 //Return to DdpmHomePage
                 IConsole? console = DdpmHomePlugin.PluginIoc.GetService<IConsole>();

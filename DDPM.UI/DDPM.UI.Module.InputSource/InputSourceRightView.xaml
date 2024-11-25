@@ -109,7 +109,8 @@
                                                           VerticalContentAlignment="Center" FontSize="14"
                                                           Width="150"
                                                           BorderThickness="1"
-                                                          Visibility="{Binding IsUSBCB}" />
+                                                          Visibility="{Binding IsUSBCB}"
+                                                          IsEnabled="{Binding NoGrey}"/>
                                             </Grid>
                                         </Grid>
                                     </DataTemplate>

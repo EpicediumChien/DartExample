@@ -125,33 +125,34 @@ namespace DDPM.UI.Module.Kvm
                             }
                         }
 
-                        foreach (var pcs in vm.pcsList)
-                        {
-                            if (pcs.Key == "PC1" && pcs.Value.InputType != vm.original_pcsList["PC1"].InputType)
-                            {
-                                vm.CurrentInputChange();
-                            }
-                            //if (pcs.Value.InputName != vm.original_pcsList[pcs.Key].InputName)
-                            //{
-                            //    bool binputname = DdpmCommonHelper.DeviceManagerSA.SetInputName(pcs.Value.InputType, pcs.Value.InputName).Result;
-                            //}
-                            if (pcs.Value.USBUpstream != vm.original_pcsList[pcs.Key].USBUpstream)
-                            {
-                                bool bUSBuptream = DdpmCommonHelper.DeviceManagerSA.SetUSBUpstream(vm.KvmModule.SelectedHomeDevice.MonitorInfo, pcs.Value.InputType, pcs.Value.USBUpstream).Result;
-                                if (bUSBuptream)
-                                {
-                                    Thread.Sleep(500);
-                                }
-                            }
-                        }
-                        bool bpcs = DdpmCommonHelper.DeviceManagerSA.SetUSBKVMPCsList(vm.KvmModule.SelectedHomeDevice.MonitorInfo, vm.pcsList).Result;
-                        vm.isOnUSBKVM(true);//bool b = DdpmCommonHelper.DeviceManagerSA.SetOnUSBKVM(true).Result;
-                    }
-                    else
-                    {
-                        vm._log.Debug("PC1 or PC2 not found in pcsList.");
-                    }
-                }
+                //        foreach (var pcs in vm.pcsList)
+                //        {
+                //            if (pcs.Key == "PC1" && pcs.Value.InputType != vm.original_pcsList["PC1"].InputType)
+                //            {
+                //                vm.CurrentInputChange();
+                //            }
+                //            //if (pcs.Value.InputName != vm.original_pcsList[pcs.Key].InputName)
+                //            //{
+                //            //    bool binputname = DdpmCommonHelper.DeviceManagerSA.SetInputName(pcs.Value.InputType, pcs.Value.InputName).Result;
+                //            //}
+                //            if (pcs.Value.USBUpstream != vm.original_pcsList[pcs.Key].USBUpstream)
+                //            {
+                //                bool bUSBuptream = DdpmCommonHelper.DeviceManagerSA.SetUSBUpstream(vm.KvmModule.SelectedHomeDevice.MonitorInfo, pcs.Value.InputType, pcs.Value.USBUpstream).Result;
+                //                if (bUSBuptream)
+                //                {
+                //                    Thread.Sleep(500);
+                //                }
+                //            }
+                //        }
+                //        bool bin = DdpmCommonHelper.DeviceManagerSA.SetInputSourcelist(vm.KvmModule.SelectedHomeDevice.MonitorInfo, vm.inputList).Result;
+                //        bool bpcs = DdpmCommonHelper.DeviceManagerSA.SetUSBKVMPCsList(vm.KvmModule.SelectedHomeDevice.MonitorInfo, vm.pcsList).Result;
+                //        vm.isOnUSBKVM(true);//bool b = DdpmCommonHelper.DeviceManagerSA.SetOnUSBKVM(true).Result;
+                //    }
+                //    else
+                //    {
+                //        vm._log.Debug("PC1 or PC2 not found in pcsList.");
+                //    }
+                //}
                 //Return to DdpmHomePage              
                 IConsole? console = DdpmHomePlugin.PluginIoc.GetService<IConsole>();
                 console?.ShowPluginById(DDPM.UI.Common.Constants.DdpmHomePluginId);
