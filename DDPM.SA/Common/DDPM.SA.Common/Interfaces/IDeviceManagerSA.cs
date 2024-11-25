@@ -946,7 +946,15 @@ namespace DDPM.SA.Common
 
         Task<bool> SetAncGainAsync(string Guid, int newValue);
 
-        Task<bool> SetWearDetectionAsync(string Guid, int newValue);
+        Task<bool> SetWearDetectionAsync(string Guid, bool newValue);
+
+        Task<bool> SetIsWearDetectionMuteMicEnabledAsync(string Guid, bool newValue);
+
+        Task<bool> SetIsWearDetectionPauseMusicEnabledAsync(string Guid, bool newValue);
+
+        Task<bool> SetWearDetectionQuickPauseAsync(string Guid, int newValue);
+
+        Task<bool> SetWearDetectionSensitivityAsync(string Guid, int newValue);
 
         Task<bool> SetMicNCIncomingAsync(string Guid, bool newValue);
 
@@ -1070,7 +1078,15 @@ namespace DDPM.SA.Common
 
         Task<int> GetAncGainAsync(string Guid);
 
-        Task<int> GetWearDetectionAsync(string Guid);
+        Task<bool> GetWearDetectionAsync(string Guid);
+
+        Task<bool> GetIsWearDetectionPauseMusicEnabledAsync(string Guid);
+
+        Task<bool> GetIsWearDetectionMuteMicEnabledAsync(string Guid);
+
+        Task<int> GetWearDetectionSensitivityAsync(string Guid);
+
+        Task<int> GetWearDetectionQuickPauseAsync(string Guid);
 
         Task<bool> GetIsMicNCIncomingSupportedAsync(string Guid);
 
