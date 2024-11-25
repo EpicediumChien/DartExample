@@ -158,8 +158,21 @@ namespace DDPM.UI.Plugin.AddDevicePlugin
 
             if (_vm!.DeviceBarSelectedIndex >= 0 && _vm!.DeviceBarItems.Find(x => x.Id == _vm!.DeviceBarSelectedIndex) != null)
             {
-                _vm.DeviceBarItems[_vm.DeviceBarSelectedIndex].IsSelected = false;
-                _vm.DeviceBarItems[_vm.DeviceBarSelectedIndex].RenewBarItem();
+                if (_vm.DeviceBarItems.Find(item => item.IsSelected == true) == null)
+                {
+                    _vm.DeviceBarItems[0].SelectBarItem();
+                }
+                else
+                {
+                    if (_vm.DeviceBarSelectedIndex == newItem.Id)
+                        return;
+                    else
+                    {
+                        _vm.DeviceBarItems[_vm.DeviceBarSelectedIndex].IsSelected = false;
+                        _vm.DeviceBarItems[_vm.DeviceBarSelectedIndex].RenewBarItem();
+                        _vm.DeviceBarItems[newItem.Id].SelectBarItem();
+                    }
+                }
             }
 
             _vm.DeviceBarSelectedIndex = newItem.Id;

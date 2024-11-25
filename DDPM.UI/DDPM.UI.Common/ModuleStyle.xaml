@@ -825,7 +825,7 @@
         </Style.Triggers>
     </Style>
     <!-- #endregion -->
-
+    
     <SolidColorBrush x:Key="UXRadioButtonFgColor" Color="#F5F6F7" />
 
     <!-- #region DisplayRightView -->

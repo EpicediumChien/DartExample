@@ -84,12 +84,11 @@
             <StackPanel Orientation="Vertical">
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
                     <Image x:Name="ArrowLeft" Margin="64,19,0,0" Source="{DynamicResource Arrow_Left}" Stretch="Fill"
-                           VerticalAlignment="Top" HorizontalAlignment="Left" Cursor="Hand" Width="24" Height="24" MouseLeftButtonDown="GoBackHomepage">
-          </Image>
-          <UXControls:UXTextBlock Name="txtCaption" Margin="12,16,0,0" HorizontalAlignment="Left" Style="{StaticResource ProductNameTextStyle}" VerticalAlignment="Top" />
-        </StackPanel>
-        <UXControls:UXTextBox Name="txtPairingStatus" Text="{Binding PairingStatus}" TextChanged="PairingStatusChanged" Visibility="Hidden" />
-      </StackPanel>
-    </Grid>
+                           VerticalAlignment="Top" HorizontalAlignment="Left" Cursor="Hand" Width="24" Height="24" MouseLeftButtonDown="GoBackHomepage"/>
+                    <UXControls:UXTextBlock Name="txtCaption" Margin="12,16,0,0" HorizontalAlignment="Left" Style="{StaticResource ProductNameTextStyle}" VerticalAlignment="Top" />
+                </StackPanel>
+                <UXControls:UXTextBox Name="txtPairingStatus" Text="{Binding PairingStatus}" TextChanged="PairingStatusChanged" Visibility="Hidden" />
+            </StackPanel>
+        </Grid>
   </Grid>
 </UserControl>

@@ -1,4 +1,5 @@
 ﻿using Dell.Client.Framework.UX.WPF.Controls;
+using System.Windows;
 using System.Windows.Media;
 using Color = System.Windows.Media.Color;
 using ColorConverter = System.Windows.Media.ColorConverter;
@@ -187,6 +188,11 @@ namespace DDPM.UI.Common
             #region BarItem Colors
             UpdateBitmapImage("Arrow_Left", new Uri($"pack://application:,,,/DDPM.UI.Resources;component/Resources/Images/arrow-left.png", UriKind.RelativeOrAbsolute));
             UpdateFreezable("btn_BkColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#0E1C2F"));
+            #endregion
+
+            #region VbarItem
+            System.Windows.Application.Current.Resources["Vbar_BdColor_Hover"] = Color.FromArgb(0xFF, 0x1B, 0x38, 0x5F); 
+            UpdateFreezable("Vbar_BkBrush_Hover", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#FF1B385F"));
             #endregion
 
             #region VbarItem1

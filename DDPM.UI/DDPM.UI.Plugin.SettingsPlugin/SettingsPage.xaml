@@ -57,6 +57,9 @@
                             BorderThickness="2"
                             CornerRadius="13"
                             Focusable="True"
+                            x:Name="Vbar_0"
+                            MouseEnter="vbar_MouseEnter" 
+                            MouseLeave="vbar_MouseLeave"
                             MouseLeftButtonDown="GeneralButton_Click">
                         <Border.Style>
                             <Style TargetType="Border"
@@ -97,6 +100,9 @@
                             BorderThickness="2"
                             CornerRadius="13"
                             Focusable="True"
+                            x:Name="Vbar_1"
+                            MouseEnter="vbar_MouseEnter" 
+                            MouseLeave="vbar_MouseLeave"
                             MouseLeftButtonDown="UpdatesButton_Click">
                         <Border.Style>
                             <Style TargetType="Border"
@@ -164,6 +170,9 @@
                             BorderThickness="2"
                             CornerRadius="13"
                             Focusable="True"
+                            x:Name="Vbar_2"
+                            MouseEnter="vbar_MouseEnter" 
+                            MouseLeave="vbar_MouseLeave"
                             MouseLeftButtonDown="AnalyticsButton_Click">
                         <Border.Style>
                             <Style TargetType="Border"
@@ -225,6 +234,9 @@
                             BorderThickness="2"
                             CornerRadius="13"
                             Focusable="True"
+                            x:Name="Vbar_3"
+                            MouseEnter="vbar_MouseEnter" 
+                            MouseLeave="vbar_MouseLeave"
                             MouseLeftButtonDown="WidgetSettingsButton_Click">
                         <Border.Style>
                             <Style TargetType="Border"
@@ -265,6 +277,9 @@
                             BorderThickness="2"
                             CornerRadius="13"
                             Focusable="True"
+                            x:Name="Vbar_4"
+                            MouseEnter="vbar_MouseEnter" 
+                            MouseLeave="vbar_MouseLeave"
                             MouseLeftButtonDown="AboutButton_Click">
                         <Border.Style>
                             <Style TargetType="Border"
