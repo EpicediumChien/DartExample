@@ -416,7 +416,7 @@ namespace DDPM.SA.Plugins.SWUpdate
                     Directory.CreateDirectory(savePath);
                 }
                 //0926 Bruce Add Security
-                if (!CheckFold(savePath, out string FolderInfo, out string PathSymbolicLinInfo))
+                if (!DDPMFileSecurity.CheckFold(savePath, out string FolderInfo, out string PathSymbolicLinInfo))
                 {
                     foreach (SWUpdateInfo swUpdateInfo in swUpdateInfos)
                     {
@@ -435,7 +435,7 @@ namespace DDPM.SA.Plugins.SWUpdate
                     _notificationStr = "";
                     _logs.DebugMsg_1(_SWUpdateInfo.SoftwareName + nameof(DownloadAndInstall) + " start");
                     string url = swUpdateInfos[i].ServerPath;
-                    if (!CheckFold(savePath, out FolderInfo, out PathSymbolicLinInfo))
+                    if (!DDPMFileSecurity.CheckFold(savePath, out FolderInfo, out PathSymbolicLinInfo))
                     {
                         swUpdateInfos[i].SWUErrorCode = SWUErrorCode.FolderIsNotSafe;
                         _notificationStr = $"Software update unsuccessful.";
@@ -482,7 +482,7 @@ namespace DDPM.SA.Plugins.SWUpdate
                     {
                         Directory.CreateDirectory(extractPath);
                     }
-                    if (!CheckFold(extractPath, out FolderInfo, out PathSymbolicLinInfo))
+                    if (!DDPMFileSecurity.CheckFold(extractPath, out FolderInfo, out PathSymbolicLinInfo))
                     {
                         swUpdateInfos[i].SWUErrorCode = SWUErrorCode.FolderIsNotSafe;
                         _logs.DebugMsg_1(swUpdateInfos[i].SoftwareName + " FolderIsNotSafe:" + FolderInfo + "--or--" + PathSymbolicLinInfo);
@@ -821,7 +821,7 @@ namespace DDPM.SA.Plugins.SWUpdate
                 return Task.FromResult(_updateErrorCode);
             }
         }
-        private bool CheckFold(string path, out string folderInfo, out string pathSymbolicLinInfo)
+        /*private bool CheckFold(string path, out string folderInfo, out string pathSymbolicLinInfo)
         {
             folderInfo = "Error";
             pathSymbolicLinInfo = "Error";
@@ -832,12 +832,13 @@ namespace DDPM.SA.Plugins.SWUpdate
                 folderInfo = string.Empty;
                 pathSymbolicLinInfo = string.Empty;
                 folderValid = false;
-                folderValid = DDPMFileSecurity.SRemoveSymbolicFolder(path, out pathSymbolicLinInfo);//0924 Bruce Add Security
-                if (!folderValid)
-                {
-                    _logs.DebugMsg_1(nameof(DownloadAndInstall) + " FolderIsNotSafe:" + pathSymbolicLinInfo + " Retry:" + (count++));
-                }
-                folderValid = DDPMFileSecurity.IsFolderPathValid(path, out folderInfo) && folderValid;
+                //[Dean 1122] remove this action
+                //folderValid = DDPMFileSecurity.SRemoveSymbolicFolder(path, out pathSymbolicLinInfo);//0924 Bruce Add Security
+                //if (!folderValid)
+                //{
+                //    _logs.DebugMsg_1(nameof(DownloadAndInstall) + " FolderIsNotSafe:" + pathSymbolicLinInfo + " Retry:" + (count++));
+                //}
+                folderValid = DDPMFileSecurity.IsFolderPathValid(path, out folderInfo);// && folderValid;
                 if (!folderValid)
                 {
                     _logs.DebugMsg_1(nameof(DownloadAndInstall) + " FolderIsNotSafe:" + folderInfo + " Retry:" + (count++));
@@ -846,7 +847,7 @@ namespace DDPM.SA.Plugins.SWUpdate
                 }
             } while (!folderValid && count < 2);
             return folderValid;
-        }
+        }*/
         private bool CheckSHA(string filePath, out string fileCAInfo)
         {
             CertificateCheck certificateCheck = new CertificateCheck(_logs);

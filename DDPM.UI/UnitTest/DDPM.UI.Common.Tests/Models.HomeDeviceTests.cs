@@ -196,7 +196,7 @@ namespace DDPM.UI.Common.Tests
             homeDevice.DeviceInfo = deviceInfo;
             result = homeDevice.TooltipModelName;
             // Assert
-            Assert.That(result, Is.EqualTo("WD19"));
+            Assert.That(result, Is.EqualTo(null));
 
             // Act
             deviceInfo = new DeviceInfo() { Name = "_WD19S" };

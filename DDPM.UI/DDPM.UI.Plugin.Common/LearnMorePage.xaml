@@ -35,7 +35,7 @@
             <StackPanel Orientation="Vertical">
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="0,65">
                     <!--<Path Margin="64,21,0,0" Width="24" Height="24" Data="M19 12H5 M12 19L5 12L12 5" Stretch="Uniform" VerticalAlignment="Top" HorizontalAlignment="Left" Cursor="Hand" MouseLeftButtonDown="CancelClick"/>-->
-                    <Image Margin="64,21,0,0" Source="{DynamicResource Arrow_Left}" Stretch="Uniform"
+                    <Image x:Name="ArrowLeft" Margin="64,21,0,0" Source="{DynamicResource Arrow_Left}" Stretch="Uniform"
                            VerticalAlignment="Top" HorizontalAlignment="Left" Cursor="Hand" Width="24" Height="24" MouseLeftButtonDown="CancelClick">
                     </Image>
                     <UXControls:UXTextBlock Name="txtTitleBar" Margin="14,19,0,0" HorizontalAlignment="Left"

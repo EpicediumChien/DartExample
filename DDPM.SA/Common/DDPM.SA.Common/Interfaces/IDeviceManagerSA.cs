@@ -583,6 +583,7 @@ namespace DDPM.SA.Common
         Task<List<ALSConfig>> UpdateExistAlsConfig(List<MonitorInfo> monitorInfoMain);
 
         Task<bool> SynchronizeALSFeatureValue(ALSConfig monitorALS);
+
         Task<String> CheckisShowSynchronize(MonitorInfo currentMoInfo, List<ALSConfig> alsSynchronizeList);
 
         #endregion public ALS functions
@@ -808,10 +809,10 @@ namespace DDPM.SA.Common
 
         #region Webcam
 
-        event EventHandler<bool>? Esi_IsCameraSensorCover_ChangeEvent;
-        event EventHandler<int>? WALSnoozeTimeLeftInSeconds_ChangeEvent;
-        event EventHandler<bool>? Esi_IsWALLockCountdownStartedChanged_ChangeEvent;
-        event EventHandler<int>? Esi_WALLockCountdownChanged_ChangeEvent;
+        //event EventHandler<bool>? Esi_IsCameraSensorCover_ChangeEvent;
+        //event EventHandler<int>? WALSnoozeTimeLeftInSeconds_ChangeEvent;
+        //event EventHandler<bool>? Esi_IsWALLockCountdownStartedChanged_ChangeEvent;
+        //event EventHandler<int>? Esi_WALLockCountdownChanged_ChangeEvent;
 
         Task<JArray> GetPresetProfiles(string Guid);
         Task<JArray> GetCustomProfiles(string Guid);
@@ -932,9 +933,13 @@ namespace DDPM.SA.Common
         Task<bool> SetBandsGainAsync(string Guid, byte[] newValue);
 
         Task<bool> SetBand1GainAsync(string Guid, int newValue);
+
         Task<bool> SetBand2GainAsync(string Guid, int newValue);
+
         Task<bool> SetBand3GainAsync(string Guid, int newValue);
+
         Task<bool> SetBand4GainAsync(string Guid, int newValue);
+
         Task<bool> SetBand5GainAsync(string Guid, int newValue);
 
         Task<bool> SetAncModeAsync(string Guid, int newValue);
@@ -948,6 +953,8 @@ namespace DDPM.SA.Common
         Task<bool> SetUnPairAsync(string Guid, bool newValue);
 
         Task<bool> SetFactoryResetAsyncValueForHeadset(string Guid, bool newValue);
+
+        Task<bool> SetBoomMicAsync(string Guid, bool newValue);
 
         #endregion Headset Set
 
@@ -986,6 +993,12 @@ namespace DDPM.SA.Common
         Task<string> GetDeviceBatteryStatusAsync(string Guid);
 
         Task<string> GetPairingStatusAsync(string Guid);
+
+        Task<string> GetPairedHostName1Async(string Guid);
+
+        Task<string> GetPairedHostName2Async(string Guid);
+
+        Task<string> GetPairedHostName3Async(string Guid);
 
         Task<int> GetMaxPairingSlotsAsync(string Guid);
 
@@ -1042,10 +1055,15 @@ namespace DDPM.SA.Common
         Task<bool> GetMuteStatusAsync(string Guid);
 
         Task<byte[]> GetBandsGainAsync(string Guid);
+
         Task<int> GetBand1GainAsync(string Guid);
+
         Task<int> GetBand2GainAsync(string Guid);
+
         Task<int> GetBand3GainAsync(string Guid);
+
         Task<int> GetBand4GainAsync(string Guid);
+
         Task<int> GetBand5GainAsync(string Guid);
 
         Task<int> GetAncModeAsync(string Guid);
@@ -1055,6 +1073,10 @@ namespace DDPM.SA.Common
         Task<int> GetWearDetectionAsync(string Guid);
 
         Task<bool> GetIsMicNCIncomingSupportedAsync(string Guid);
+
+        Task<bool> GetIsBoomMicSupportedAsync(string Guid);
+
+        Task<bool> GetBoomMicAsync(string Guid);
 
         #endregion Headset Get
 

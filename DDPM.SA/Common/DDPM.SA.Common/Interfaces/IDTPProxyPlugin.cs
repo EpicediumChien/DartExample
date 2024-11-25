@@ -116,10 +116,11 @@ namespace DDPM.SA.Common
         /// <summary>
         /// Webcam change event
         /// </summary>
-        event EventHandler<bool>? Esi_IsCameraSensorCover_ChangeEvent;
-        event EventHandler<int>? WALSnoozeTimeLeftInSeconds_ChangeEvent;
-        event EventHandler<bool>? Esi_IsWALLockCountdownStartedChanged_ChangeEvent;
-        event EventHandler<int>? Esi_WALLockCountdownChanged_ChangeEvent;
+        //event EventHandler<bool>? Esi_IsCameraSensorCover_ChangeEvent;
+        //event EventHandler<int>? WALSnoozeTimeLeftInSeconds_ChangeEvent;
+        //event EventHandler<bool>? Esi_IsWALLockCountdownStartedChanged_ChangeEvent;
+        //event EventHandler<int>? Esi_WALLockCountdownChanged_ChangeEvent;
+        event EventHandler<UpdateUINotify>? WebcamEventHandler;
 
         Task<JArray> GetPresetProfiles(string Guid);
         Task<JArray> GetCustomProfiles(string Guid);
@@ -184,10 +185,11 @@ namespace DDPM.SA.Common
         Task<bool> GetZoomMeetingType(string Guid);
         Task<bool> GetIsZoomScreenShareActive(string Guid);
 
-        event EventHandler<ZoomChangedArgs> ZoomChanged_Notify;
-        event EventHandler<ZoomMeetingTypeChangedArgs> ZoomMeetingTypeChanged_Notify;
-        event EventHandler<IsZoomMeetingActiveChangedArgs> IsZoomMeetingActive_Notify;
-        event EventHandler<IsZoomScreenShareActiveChangedArgs> IsZoomScreenShareActive_Notify;
+        //Marked by Derek 1121
+        //event EventHandler<ZoomChangedArgs> ZoomChanged_Notify;
+        //event EventHandler<ZoomMeetingTypeChangedArgs> ZoomMeetingTypeChanged_Notify;
+        //event EventHandler<IsZoomMeetingActiveChangedArgs> IsZoomMeetingActive_Notify;
+        //event EventHandler<IsZoomScreenShareActiveChangedArgs> IsZoomScreenShareActive_Notify;
 
         Task<bool> GetIsESISupported(string Guid);
 
@@ -213,6 +215,7 @@ namespace DDPM.SA.Common
         Task<bool> SetMicNCIncomingAsync(string Guid, bool newValue);
         Task<bool> SetUnPairAsync(string Guid, bool newValue);
         Task<bool> SetFactoryResetAsyncValueForHeadset(string Guid, bool newValue);
+        Task<bool> SetBoomMicAsync(string Guid, bool newValue);
 
         //Peripheral Common Properties Get
         Task<JArray> GetDeviceItemsExAsync(string Guid);
@@ -233,6 +236,13 @@ namespace DDPM.SA.Common
         Task<int> GetBatteryLevelAsync(string Guid);
         Task<string> GetDeviceBatteryStatusAsync(string Guid);
         Task<string> GetPairingStatusAsync(string Guid);
+
+        Task<string> GetPairedHostName1Async(string Guid);
+
+        Task<string> GetPairedHostName2Async(string Guid);
+
+        Task<string> GetPairedHostName3Async(string Guid);
+
         Task<int> GetMaxPairingSlotsAsync(string Guid);
         Task<int> GetPairedDeviceCountAsync(string Guid);
         Task<int> GetTotalNumberOfPairedHostNameAsync(string Guid);
@@ -270,6 +280,10 @@ namespace DDPM.SA.Common
         Task<int> GetAncGainAsync(string Guid);
         Task<int> GetWearDetectionAsync(string Guid);
         Task<bool> GetIsMicNCIncomingSupportedAsync(string Guid);
+
+        Task<bool> GetIsBoomMicSupportedAsync(string Guid);
+
+        Task<bool> GetBoomMicAsync(string Guid);
 
         #endregion
 

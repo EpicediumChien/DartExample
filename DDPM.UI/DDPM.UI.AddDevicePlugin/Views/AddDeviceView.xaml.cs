@@ -16,9 +16,12 @@ using DDPM.UI.Module.AddWebcam;
 using DDPM.UI.Plugin.Common;
 using DDPM.UI.Plugin.ViewModels;
 using Dell.Client.Framework.UX.WPF;
+using Dell.Client.Framework.UX.WPF.Controls;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
 
 namespace DDPM.UI.Plugin.AddDevicePlugin
 {
@@ -63,6 +66,13 @@ namespace DDPM.UI.Plugin.AddDevicePlugin
                 rightViewHeaderCtrl.SetHeaders(_vm.RightViewHeaders.ToArray());
             }
             txtCaption.Text = Caption;
+            DdpmCommonHelper.BitmapImageUpdated += ImageUpdate;
+        }
+
+        private void ImageUpdate(OSThemeEnum oSThemeEnum)
+        {
+            ArrowLeft.Source = null;
+            ArrowLeft.Source = (BitmapImage)Application.Current.Resources["Arrow_Left"];
         }
 
         private void BuildModuleGroups()
@@ -146,8 +156,11 @@ namespace DDPM.UI.Plugin.AddDevicePlugin
         {
             //if(newItem.Id == _vm!.DeviceBarSelectedIndex) { return; }
 
-            if (_vm!.DeviceBarSelectedIndex >= 0)
+            if (_vm!.DeviceBarSelectedIndex >= 0 && _vm!.DeviceBarItems.Find(x => x.Id == _vm!.DeviceBarSelectedIndex) != null)
+            {
                 _vm.DeviceBarItems[_vm.DeviceBarSelectedIndex].IsSelected = false;
+                _vm.DeviceBarItems[_vm.DeviceBarSelectedIndex].RenewBarItem();
+            }
 
             _vm.DeviceBarSelectedIndex = newItem.Id;
 

@@ -629,9 +629,15 @@ namespace DDPM.SA.Plugins.User.EzMemory
 
             Dictionary<string, InstalledAppInfo> installedApp = new Dictionary<string, InstalledAppInfo>();
             string fileinfo = string.Empty, info = string.Empty;
-            DDPMFileSecurity.CheckFold(IconFolder, out fileinfo, out info);
+            
             if (!System.IO.Directory.Exists(IconFolder))
                 System.IO.Directory.CreateDirectory(IconFolder);
+
+            if(!DDPMFileSecurity.CheckFold(IconFolder, out fileinfo, out info))
+            {
+                _logs.Info($"[EzMemoryManagerPlugin][CheckFold] folder path invalid: {info}");
+                return Task.FromResult(installedApp);
+            }
 
             Dictionary<string, List<AppItemInfo>> dictionary = new Dictionary<string, List<AppItemInfo>>();
             IKnownFolder ikf = null;

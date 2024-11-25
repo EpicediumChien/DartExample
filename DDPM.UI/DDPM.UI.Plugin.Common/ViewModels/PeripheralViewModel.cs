@@ -10,7 +10,9 @@ using Dell.Client.Framework.Common;
 using Dell.Client.Framework.UX.WPF;
 using DPeMPublic.Common.Enums;
 using Microsoft;
+using Microsoft.Win32;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -18,6 +20,7 @@ using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Threading;
+using Windows.Devices.Geolocation;
 using static System.Net.Mime.MediaTypeNames;
 using MessageBox = System.Windows.MessageBox;
 using UserControl = System.Windows.Controls.UserControl;
@@ -59,6 +62,7 @@ namespace DDPM.UI.Plugin.ViewModels
         public List<string> EOLMouseList = new() { "WK717", "KM714", "KM717", "WM126", "WM116", "WM326", "WM527", "WM514", "UV514" };
         //public DDPMSettings? DDPMSettings;
         //public WebcamSettings WebcamSettings = new();
+        public bool IsCopilotEnabled = true;
 
         public PeripheralViewModel(IConsole console, ILog log, IDeviceManagerSA deviceManager)
         {
@@ -118,15 +122,44 @@ namespace DDPM.UI.Plugin.ViewModels
             OnPropertyChanged(nameof(MultiDevicesInfoVisibility));
         }
 
-        private void CheckCopilot()
+        public void CheckCopilot()
         {
-            string regPath2 = $@"SOFTWARE\Dell\Dell Display And Peripheral Manager\UserSettings\Local";
-            string regKey2 = $"IsFirstTimeWalkThroughDone_com.dell.DPM.Plugin.LogicalDevice.DDPM";
-            var regValue2 = DdpmCommonHelper.DeviceManagerSA!.ReadRegistryData(RegistryHive.LocalMachine, regPath2, regKey2).Result;
+            //string regPath2 = $@"SOFTWARE\Dell\Dell Display And Peripheral Manager\UserSettings\Local";
+            //string regKey2 = $"IsFirstTimeWalkThroughDone_com.dell.DPM.Plugin.LogicalDevice.DDPM";
+            //var regValue2 = DdpmCommonHelper.DeviceManagerSA!.ReadRegistryData(RegistryHive.LocalMachine, regPath2, regKey2).Result;
             string regPath = $@"SOFTWARE\Policies\Microsoft\Windows\WindowsCopilot";
             string regKey = $"TurnOffWindowsCopilot";
-            var regValue = DdpmCommonHelper.DeviceManagerSA!.ReadRegistryData(RegistryHive.CurrentUser, regPath, regKey).Result;
-            Actions.IsCopilotEnabled = regValue == null || Convert.ToInt32(regValue) != 1;
+            //var regValue = DdpmCommonHelper.DeviceManagerSA!.ReadRegistryData(RegistryHive.CurrentUser, regPath, regKey).Result;
+            try
+            {
+                // Open the registry key under the current user
+                using (RegistryKey? key = Registry.CurrentUser.OpenSubKey(regPath))
+                {
+                    if (key != null)
+                    {
+                        // Read the value
+                        object value = key.GetValue(regKey);
+
+                        if (value != null && Convert.ToInt32(value) == 1)
+                        {
+                            IsCopilotEnabled = false;
+                        }
+                        else
+                        {
+                            IsCopilotEnabled = true;
+                        }
+                    }
+                    else
+                    {
+                        IsCopilotEnabled = true;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                IsCopilotEnabled = true;
+            }
+            //Actions.IsCopilotEnabled = regValue == null || Convert.ToInt32(regValue) != 1;
         }
 
         public bool IsIDInvalid = false;
@@ -917,7 +950,7 @@ namespace DDPM.UI.Plugin.ViewModels
             {
                 if (mg.GroupIcon != null)
                 {
-                    VbarItem vbarItem = new(idx, mg.GroupIcon, mg.GroupName)
+                    VbarItem vbarItem = new(idx, mg.GroupIcon, mg.GroupName, mg.GroupIconCanvas)
                     {
                         ClickCommand = VbarItemClickCommand
                     };

@@ -66,6 +66,20 @@ namespace DDPM.Easy.Common.Tests
         }
 
         [Test]
+        public void TestUpdateRatioRectsFromSettings()
+        {
+            try
+            {
+                splitCtrl0A.UpdateRatioRectsFromSettings();
+                Assert.True(true);
+            }
+            catch (Exception ex)
+            {
+                Assert.Fail("not invoked");
+            }
+        }
+
+        [Test]
         public void TestVSplitterList()
         {
             // Act

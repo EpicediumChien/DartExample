@@ -18,8 +18,8 @@
     mc:Ignorable="d">
     <Grid>
         <Border
-            Background="#0B172D"
-            BorderBrush="#0D121A"
+            Background="{DynamicResource DefaultTheme_BdBdColor}"
+            BorderBrush="{DynamicResource DefaultTheme_BdBdColor}"
             BorderThickness="2"
             CornerRadius="10">
             <Grid>
@@ -33,20 +33,20 @@
                 Content="X" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,15,15,0" Height="30" Width="30" Click="close_Click" />-->
                 <Image
                     x:Name="CloseIcon"
-                    Width="20"
-                    Height="20"
+                    Width="15"
+                    Height="15"
                     Margin="0,15,15,0"
                     HorizontalAlignment="Right"
                     VerticalAlignment="Top"
                     MouseLeftButtonDown="close_Click"
-                    Source="/DDPM.UI.Common;component/Resources/Close.png"
-                    Stretch="Fill" />
+                    Source="{DynamicResource Close_img}"
+                    Stretch="Uniform" />
                 <controls:UXTextBlock
                     Name="HeaderText"
                     Margin="{Binding HeaderMargin}"
                     FontFamily="Roboto"
                     FontSize="20"
-                    Foreground="White"
+                    
                     Text="{Binding strTitle}" />
                 <controls:UXTextBlock
                     Name="SubHeaderText"
@@ -56,7 +56,7 @@
                     Margin="{Binding SubHeaderMargin}"
                     FontFamily="Roboto"
                     FontSize="15"
-                    Foreground="White"
+                  
                     Text="{Binding strContent}"
                     TextWrapping="WrapWithOverflow" />
                 <StackPanel
@@ -74,7 +74,7 @@
                         ButtonType="Secondary"
                         Click="lefe_btn_Click"
                         Content="Yes"
-                        Foreground="White" />
+                         />
                     <controls:UXButton
                         Name="right_btn"
                         MinWidth="80"
@@ -84,7 +84,7 @@
                         ButtonType="Primary"
                         Click="right_btn_Click"
                         Content="No"
-                        Foreground="White"
+                        
                         IconPosition="IconRight" />
                 </StackPanel>
             </Grid>

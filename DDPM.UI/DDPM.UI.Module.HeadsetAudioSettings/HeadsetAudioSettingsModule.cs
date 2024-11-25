@@ -28,7 +28,7 @@ namespace DDPM.UI.Module.HeadsetAudioSettings
         }
 
         public UserControl GetRightView()
-        {
+        {          
             return _rightView;
         }
 
