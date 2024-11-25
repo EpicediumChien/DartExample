@@ -25,7 +25,6 @@ namespace DDPM.SA.Common.UI
             UpdateFreezable<SolidColorBrush>("Default_SA_QAM_CameraSetting_BackGround", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#E7E7E7"));
             UpdateFreezable<SolidColorBrush>("Default_SA_QAM_Menu_BackGround", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#FFFFFF"));
             UpdateFreezable("TextBlock_ForegroundColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#0E0E0E"));
-            //DDPM.SA.Common.Method.Algorithm.UpdateBitmapImage("ProgressBarImg", new Uri($"pack://application:,,,/DDPM.SA.Common;component/UpdateProgressPage/ProgressBackground_Light.png", UriKind.RelativeOrAbsolute));
         }
     }
 }

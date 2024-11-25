@@ -121,6 +121,4 @@
     <SolidColorBrush x:Key="SplitSplitter_Icon" Color="White" />
 
     <!-- Endregion EA SplitCtrl Styles -->
-    <BitmapImage x:Key="ProgressBarImg"
-                 UriSource="pack://application:,,,/DDPM.SA.Common;component/UpdateProgressPage/ProgressBackground.png" />
 </ResourceDictionary>
