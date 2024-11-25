@@ -269,8 +269,8 @@ namespace DDPM.Easy.Common
 
         #region FriendlyName
         private string _friendlyName = string.Empty;
-        private string _defaultHorzName = "Option 4.1: 4 quadrants.";
-        private string _defaultVertName = "Option 4.1: 4 quadrants.";
+        private string _defaultHorzName = "Option 4.1: split in 4 quadrants.";
+        private string _defaultVertName = "Option 4.1: split in 4 quadrants.";
         public string FriendlyName
         {
             get

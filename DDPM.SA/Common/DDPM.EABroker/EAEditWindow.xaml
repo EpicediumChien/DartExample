@@ -10,6 +10,15 @@
         AllowsTransparency="True" Topmost="True"
         WindowStyle="None" ResizeMode="NoResize" Background="Transparent" ShowInTaskbar="False"
         >
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <!--<ResourceDictionary Source="EAStyles.xaml"/>-->
+            </ResourceDictionary.MergedDictionaries>
+
+        </ResourceDictionary>
+
+    </Window.Resources>
     <Grid>
         <ContentControl Name="splitCtrl" />
         <Canvas Name="canvas"/>

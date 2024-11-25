@@ -211,13 +211,14 @@ namespace DDPM.Easy.Common
 
         #region Settings
 
-        public List<double> DefaultSettings => new List<double>() { 1, 2, 1, 1, 1, 1, 1 };
+        public List<double> DefaultSettings => new List<double>() { 3, 7, 1, 1, 1, 1, 1 };
         #endregion Settings
 
         #region FriendlyName
         private string _friendlyName = string.Empty;
         private string _defaultHorzName = "Option 5.3: 2 rows, split 30/70% split. Row 1, split equally in 3 sections. Row 2, split equally.";
         private string _defaultVertName = "Option 5.3: 2 columns, split 30/70%, Row 1, split equally in 3 sections. Row 2, split equally.";
+        //                                                                     Column                              Column
         public string FriendlyName
         {
             get
