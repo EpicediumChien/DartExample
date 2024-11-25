@@ -115,4 +115,6 @@
         <Setter Property="TextWrapping"
                 Value="Wrap" />
     </Style>
+    <BitmapImage x:Key="ProgressBarImg"
+                 UriSource="pack://application:,,,/DDPM.SA.Common;component/UpdateProgressPage/ProgressBackground.png" />
 </ResourceDictionary>

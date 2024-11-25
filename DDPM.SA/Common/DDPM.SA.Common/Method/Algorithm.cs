@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Windows;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
 
 namespace DDPM.SA.Common.Method
 {
@@ -25,6 +28,15 @@ namespace DDPM.SA.Common.Method
                 hexString += hexValue.ToString("X");
             }
             return hexString;
+        }
+        public static void UpdateBitmapImage(string resourceKey, Uri uri)
+        {
+            BitmapImage bitmapImage = new BitmapImage();
+            bitmapImage.BeginInit();
+            bitmapImage.UriSource = uri;
+            bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
+            bitmapImage.EndInit();
+            Application.Current.Resources[resourceKey] = bitmapImage;
         }
     }
 }
