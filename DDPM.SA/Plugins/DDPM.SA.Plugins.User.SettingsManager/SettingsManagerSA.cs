@@ -1841,7 +1841,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager
                 }
                 else
                 {
-                    WriteLog("[ReadImportSettingsFile] path : " + path);
+                    WriteLog("[ReadImportSettingsFile] file isn't exist : " + path);
                 }
             }
             return Task.FromResult(ImpSettings);
@@ -1881,6 +1881,8 @@ namespace DDPM.SA.Plugins.User.SettingsManager
                         ;
                     }
                 }
+                else
+                    WriteLog($"[ReadImportSettingsFile]strReadJson: selected file isn't exist" + path);
             }
 
             return Task.FromResult(ImpSettings);
@@ -2300,8 +2302,9 @@ namespace DDPM.SA.Plugins.User.SettingsManager
             {
                 if (!DDPMFileSecurity.IsFilePathValid(ConfigPath, out info))
                 {
-                    WriteLog($"{nameof(InitDDPMUserSettings_Common)} {info}");
-                    File.Delete(ConfigPath);
+                    WriteLog($"{nameof(InitDDPMUserSettings_Common)}[IsFilePathValid] {info}");
+                    //File.Delete(ConfigPath);
+                    return null;
                 }
                 else
                 {
@@ -2807,12 +2810,13 @@ namespace DDPM.SA.Plugins.User.SettingsManager
             string info = string.Empty;
             FileInfo fileInfo = new FileInfo(filePath);
             //if (DDPMFileSecurity.IsPathSymbolicLinked(filePath, out info))
-            if (!DDPMFileSecurity.IsFilePathValid(filePath, out info)) 
+            if (!DDPMFileSecurity.IsFilePathValid(filePath, out info, Dell.Client.Framework.Security.Interfaces.PathCheckOption.IgnoreFileExists))
             {
                 WriteLog($"[WriteSerializedContentToFile][IsFilePathValid] File:{fileInfo.Name}, failed with({info})");
-                File.Delete(filePath);
+                //File.Delete(filePath);
                 return Task.FromResult(result);
             }
+
             result = DDPMFileSecurity.SetJsonContentFromSerializedString(content, filePath, out info);
             if(!result)
             {
