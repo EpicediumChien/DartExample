@@ -9687,18 +9687,15 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
             if (_ZoomMeetingType == ZoomMeetingType.CONF_3RD_EVENT_MEETING)
             {
-                if (_QAM == null)
+                if (_QAM == null && _GlobalSettingParam != null && _GlobalSettingParam.GlobalSetting_WidgetSettings != null)
                 {
-                    if (_GlobalSettingParam != null && _GlobalSettingParam.GlobalSetting_WidgetSettings != null && _GlobalSettingParam.GlobalSetting_WidgetSettings.EnableQuickAccessWidget_Reminder)
+                    if (_GlobalSettingParam.GlobalSetting_WidgetSettings.EnableQuickAccessWidget_Reminder)
                     {
                         ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.QAM);
                     }
-                    else if (_GlobalSettingParam != null && _GlobalSettingParam.GlobalSetting_WidgetSettings != null && _GlobalSettingParam.GlobalSetting_WidgetSettings.EnableQuickAccessWidget)
+                    else if (deviceInfos.Count == 1 && _GlobalSettingParam.GlobalSetting_WidgetSettings.EnableQuickAccessWidget)
                     {
-                        if (deviceInfos != null && deviceInfos.Count == 1)
-                        {
-                            CallQAM_UI(this);
-                        }
+                        CallQAM_UI(this);
                     }
                 }
                 else
