@@ -8623,13 +8623,14 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             return Task.FromResult(true);
         }
 
-        public Task SetZoom(string guid, int newValue)
+        public Task<bool> SetZoom(string guid, int newValue)
         {
             writelog("DeviceMangerPlugin received SetZoom requested ...");
             writelog($"Target Guid is {guid}");
             writelog($"Target Value is {newValue}");
-            _DTPProxyPlugin.SetZoom(guid, newValue);
-            return Task.FromResult(true);
+            //_DTPProxyPlugin.SetZoom(guid, newValue);
+            //return Task.FromResult(true);
+            return _DTPProxyPlugin.SetZoom(guid, newValue);
         }
 
         public Task SetAutoFramingSensitivity(string guid, int newValue)
@@ -8650,13 +8651,13 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             return Task.FromResult(true);
         }
 
-        public Task SetIsAutoFramingOn(string guid, bool newValue)
+        public Task<bool> SetIsAutoFramingOn(string guid, bool newValue)
         {
             writelog("DeviceMangerPlugin received SetIsAutoFramingOn requested ...");
             writelog($"Target Guid is {guid}");
             writelog($"Target Value is {newValue}");
-            _DTPProxyPlugin.SetIsAutoFramingOn(guid, newValue);
-            return Task.FromResult(true);
+            //_DTPProxyPlugin.SetIsAutoFramingOn(guid, newValue);
+            return _DTPProxyPlugin.SetIsAutoFramingOn(guid, newValue);
         }
 
         public Task SetIsAutoFramingTransitionOn(string guid, bool newValue)
@@ -8668,7 +8669,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             return Task.FromResult(true);
         }
 
-        public Task SetFieldOfView(string guid, int newValue)
+        public Task<bool> SetFieldOfView(string guid, int newValue)
         {
             writelog("DeviceMangerPlugin received SetFieldOfView requested ...");
             writelog($"Target Guid is {guid}");
@@ -8896,7 +8897,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             return await Task.Run(() => _DTPProxyPlugin.GetIsWalkAwayLockEnable(guid));
         }
 
-        public async Task<bool> GetIsPrioritizeExternalWebcam(string guid)
+        public async Task<bool?> GetIsPrioritizeExternalWebcam(string guid)
         {
             return await Task.Run(() => _DTPProxyPlugin.GetIsPrioritizeExternalWebcam(guid));
         }

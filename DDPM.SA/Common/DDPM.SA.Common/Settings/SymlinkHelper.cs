@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Diagnostics;
 
 namespace DDPM.SA.Common.Settings
 {
@@ -239,6 +240,7 @@ namespace DDPM.SA.Common.Settings
                 if (PathHelper.ValidateFilePath(path, option) != PathCheckErrorCodes.SUCCESS)
                 {
                     info = $"Invalid file path string - {path}";
+                    Debug.WriteLine(info);
                     return true;
                 }
 

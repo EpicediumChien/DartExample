@@ -843,9 +843,9 @@ namespace DDPM.SA.Common
 
         Task DeleteProfile(string Guid, string newValue);
 
-        Task SetZoom(string Guid, int newValue);
+        Task<bool> SetZoom(string Guid, int newValue);
 
-        Task SetIsAutoFramingOn(string Guid, bool newValue);
+        Task<bool> SetIsAutoFramingOn(string Guid, bool newValue);
 
         Task SetIsAutoFramingTransitionOn(string Guid, bool newValue);
 
@@ -853,7 +853,7 @@ namespace DDPM.SA.Common
 
         Task SetAutoFramingFrameSize(string Guid, int newValue);
 
-        Task SetFieldOfView(string Guid, int newValue);
+        Task<bool> SetFieldOfView(string Guid, int newValue);
 
         Task SetIsFocusOn(string Guid, bool newValue);
 
@@ -910,7 +910,7 @@ namespace DDPM.SA.Common
 
         Task<bool> GetIsWalkAwayLockEnable(string Guid);
 
-        Task<bool> GetIsPrioritizeExternalWebcam(string Guid);
+        Task<bool?> GetIsPrioritizeExternalWebcam(string Guid);
 
         Task<bool> GetIsESISupported(string Guid);
 
