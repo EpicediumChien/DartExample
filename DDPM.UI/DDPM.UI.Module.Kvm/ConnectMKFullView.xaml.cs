@@ -67,24 +67,24 @@ namespace DDPM.UI.Module.Kvm
         {
             try
             {
-                bool b = DdpmCommonHelper.DeviceManagerSA.SetUSBKVMPCsList(DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo, vm.pcsList).Result;
+                //bool b = DdpmCommonHelper.DeviceManagerSA.SetUSBKVMPCsList(DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo, vm.pcsList).Result;
                 //set input source
                 if (vm.pcsList != vm.original_pcsList)
                 {
                     if (vm.pcsList.TryGetValue("PC1", out var pc1) && vm.pcsList.TryGetValue("PC2", out var pc2))
                     {
-                        InputSourceObj pc1input = new InputSourceObj(vm.pcsList["PC1"].InputType);
-                        InputSourceObj pc2input = new InputSourceObj(vm.pcsList["PC2"].InputType);
+                        InputSourceObj pc1input = new InputSourceObj((UInt16)vm.pcsList["PC1"].Code, vm.pcsList["PC1"].InputType);
+                        InputSourceObj pc2input = new InputSourceObj((UInt16)vm.pcsList["PC2"].Code, vm.pcsList["PC2"].InputType);
                         if (vm.pcsList.Count >= 3)
                         {
                             if (vm.pcsList.TryGetValue("PC3", out var pc3))
                             {
-                                InputSourceObj pc3input = new InputSourceObj(vm.pcsList["PC3"].InputType);
+                                InputSourceObj pc3input = new InputSourceObj((UInt16)vm.pcsList["PC3"].Code, vm.pcsList["PC3"].InputType);
                                 if (vm.pcsList.Count == 4)
                                 {
                                     if (vm.pcsList.TryGetValue("PC4", out var pc4))
                                     {
-                                        InputSourceObj pc4input = new InputSourceObj(vm.pcsList["PC4"].InputType);
+                                        InputSourceObj pc4input = new InputSourceObj((UInt16)vm.pcsList["PC4"].Code, vm.pcsList["PC4"].InputType);
                                         bool res = DdpmCommonHelper.DeviceManagerSA.SetSubInputs(
                                             DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo,
                                             pc2input, pc3input, pc4input).Result;

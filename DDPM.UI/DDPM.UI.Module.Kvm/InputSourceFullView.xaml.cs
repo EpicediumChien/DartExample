@@ -106,10 +106,10 @@ namespace DDPM.UI.Module.Kvm
 
                         foreach (var pcs in vm.pcsList)
                         {
-                            if (pcs.Key == "PC1" && pcs.Value.InputType != vm.original_pcsList["PC1"].InputType)
-                            {
-                                vm.CurrentInputChange();
-                            }
+                            //if (pcs.Key == "PC1" && pcs.Value.InputType != vm.original_pcsList["PC1"].InputType)
+                            //{
+                            //    vm.CurrentInputChange();
+                            //}
                             //if (pcs.Value.InputName != vm.original_pcsList[pcs.Key].InputName)
                             //{
                             //    bool binputname = DdpmCommonHelper.DeviceManagerSA.SetInputName(pcs.Value.InputType, pcs.Value.InputName).Result;

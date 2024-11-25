@@ -257,15 +257,8 @@ namespace DDPM.UI.Module.Kvm
                 SetProperty(ref _isNoKVM, value);
                 if (value)
                 {
-                    if (USBKVMisON)
-                    {
-                        isOnUSBKVM(false);
-                    }
-                    if (_isNKVM)
-                    {
-                        _isNKVM = false;
-                        //isOnNKVM(false);
-                    }
+                    isOnUSBKVM(false);
+                    _isNKVM = false;
                     DdpmCommonHelper.DeviceManagerSA.SentKVMtoTelementry(DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo, "KVMMode", "NoKVM");
                 }
             }
@@ -279,11 +272,7 @@ namespace DDPM.UI.Module.Kvm
                 SetProperty(ref _isUSBKVM, value);
                 if (value)
                 {
-                    if (_isNKVM)
-                    {
-                        _isNKVM = false;
-                        //isOnNKVM(false);
-                    }
+                    _isNKVM = false;
                     _isNoKVM = false;
                 }
             }
@@ -297,13 +286,9 @@ namespace DDPM.UI.Module.Kvm
                 SetProperty(ref _isNKVM, value);
                 if (value)
                 {
-                    if (USBKVMisON)
-                    {
-                        isOnUSBKVM(false);
-                    }
+                    isOnUSBKVM(false);
                     _isNoKVM = false;
                     _isNKVM = true;
-                    //isOnNKVM(true);
                 }
             }
         }
@@ -643,7 +628,7 @@ namespace DDPM.UI.Module.Kvm
 
             directory = $"C:\\Program Files\\Dell\\Dell Display and Peripheral Manager";
             string strFullPath = string.Format("{0}\\Plugins\\NKVM\\DDM.exe", directory);
-
+            
             if (DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo != null)
             {
                 MonitorInfo mi = DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo;
@@ -675,13 +660,11 @@ namespace DDPM.UI.Module.Kvm
                     {
                         _isNoKVM = true;
                     }
-                    //pcsList = new Dictionary<string, PCsInfo>();
-                    //pcsList = DdpmCommonHelper.DeviceManagerSA.GetUSBKVMPCsList(KvmModule.SelectedHomeDevice.MonitorInfo, inputList, subInputs).Result;
-                    //usbsList = DdpmCommonHelper.DeviceManagerSA.GetUSBUpstreamList(KvmModule.SelectedHomeDevice.MonitorInfo).Result;
-                    //original_pcsList = DdpmCommonHelper.DeviceManagerSA.GetUSBKVMPCsList(KvmModule.SelectedHomeDevice.MonitorInfo, inputList, subInputs).Result;
 
                     if (mi.CapabilityDic.ContainsKey("E8"))
                     {
+                        isPxP = Visibility.Visible;
+                        NoPxP = Visibility.Collapsed;
                         if (DdpmCommonHelper.DeviceManagerSA.isScreenPartition(mi).Result)
                         {
                             isUSBKVMButton = false;
@@ -720,26 +703,8 @@ namespace DDPM.UI.Module.Kvm
                     return;
                 }
 
-                //USBKVMisON = KvmModule.isUSBKVM;//DdpmCommonHelper.DeviceManagerSA.GetOnNKVM().Result;
-                //NKVMisON = DdpmCommonHelper.DeviceManagerSA.GetOnNKVM(selHomeDevice.MonitorInfo).Result;
                 if (mi.CapabilityDic.ContainsKey("EE"))
                 {
-                    //isUSBKVMButton = true;
-                    //USBKVMButtonOpacity = 1;
-                    ////_isUSBKVM = KvmModule.isUSBKVM;
-                    //if (USBKVMisON)
-                    //{
-                    //    _isUSBKVM = true;
-                    //}
-                    //else if (NKVMisON)
-                    //{
-                    //    _isNKVM = true;
-                    //}
-                    //else
-                    //{
-                    //    _isNoKVM = true;
-                    //}
-
                     //If arg is specified, you can get it with below code
                     //myArgType arg = (myArgType)e.Argument;
                     inputList = new Dictionary<string, InputInfo>();
@@ -773,7 +738,7 @@ namespace DDPM.UI.Module.Kvm
                     pcsList = DdpmCommonHelper.DeviceManagerSA.GetUSBKVMPCsList(KvmModule.SelectedHomeDevice.MonitorInfo, inputList, subInputs).Result;
                     usbsList = DdpmCommonHelper.DeviceManagerSA.GetUSBUpstreamList(KvmModule.SelectedHomeDevice.MonitorInfo).Result;
                     original_pcsList = DdpmCommonHelper.DeviceManagerSA.GetUSBKVMPCsList(KvmModule.SelectedHomeDevice.MonitorInfo, inputList, subInputs).Result;
-                    if ((inputList != null) && (pcsList.Count > 0))   // 2024-06-19 Elie, fix exception.
+                    if ((inputList != null) && (pcsList.Count > 1))   // 2024-06-19 Elie, fix exception.
                     {
                         if (inputList.Count != _inputsList.Count && usbsList.Count != _usbsList.Count)
                         {
@@ -872,8 +837,8 @@ namespace DDPM.UI.Module.Kvm
                     {
                         if (!DdpmCommonHelper.DeviceManagerSA.isScreenPartition(mi).Result)
                         {
-                            isPxP = Visibility.Visible;
-                            NoPxP = Visibility.Collapsed;
+                            //isPxP = Visibility.Visible;
+                            //NoPxP = Visibility.Collapsed;
                             //Get the Pxp Capabilities
                             _pipPbpCaps = DdpmCommonHelper.DeviceManagerSA.GetPipPbpCapabilitiesWords(mi).Result;
                             OnPipPbpCapsChanged();
@@ -965,23 +930,10 @@ namespace DDPM.UI.Module.Kvm
                         isPxP = Visibility.Collapsed;
                     }
                     #endregion PIP/PIP
-
-                    //ConnectionType = KvmModule.SelectedHomeDevice.ConnectionType;
-                    //BatteryLevel = KvmModule.SelectedHomeDevice.BatteryLevel;
-                    //BatteryStatus = KvmModule.SelectedHomeDevice.BatteryStatus;
-                    //NoBattery = KvmModule.SelectedHomeDevice.NoBattery;
-                    //Text1 = KvmModule.SelectedHomeDevice.Text1;
-                    //OnPropertyChanged("ConnectionType");
-                    //OnPropertyChanged("BatteryLevel");
-                    //OnPropertyChanged("BatteryStatus");
-                    //OnPropertyChanged("NoBattery");
-                    //OnPropertyChanged("Text1");
                 }
             }
             catch (Exception)
             {
-                //SupportUSBKVM = Visibility.Collapsed;
-                //SupportNKVM = Visibility.Collapsed;
                 ;
             }
         }
@@ -1002,6 +954,7 @@ namespace DDPM.UI.Module.Kvm
                     pcInfo.InputType = input.Key;
                     pcInfo.InputName = input.Value.InputName;
                     pcInfo.USBUpstream = input.Value.USBUpstream;
+                    pcInfo.Code = input.Value.Code;
                     break;
                 }
             }
@@ -1034,14 +987,14 @@ namespace DDPM.UI.Module.Kvm
         {
             if (pcsList.TryGetValue("PC1", out var pc1))
             {
-                if (pcsList["PC1"].InputType != KvmModule.SelectedHomeDevice.MonitorInfo.inputSource)
-                {
+                //if (pcsList["PC1"].InputType != KvmModule.SelectedHomeDevice.MonitorInfo.inputSource)
+                //{
                     bool b = DdpmCommonHelper.DeviceManagerSA.SetVCPCapability(KvmModule.SelectedHomeDevice.MonitorInfo, "Input Select", pcsList["PC1"].InputType).Result;
                     if (b)
                     {
                         KvmModule.SelectedHomeDevice.MonitorInfo.inputSource = pcsList["PC1"].InputType;
                     }
-                }
+                //}
             }
             else
             {

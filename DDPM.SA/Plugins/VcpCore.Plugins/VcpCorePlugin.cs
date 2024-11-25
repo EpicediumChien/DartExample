@@ -382,6 +382,7 @@ namespace VcpCore.Plugins
                             object or = GetResultObjectAsync(_guid).Result;
                             ObjGetVCP r = (or != null) ? (new ObjGetVCP() { value = or, result = true }) : (new ObjGetVCP() { value = or, result = false });
 
+                            Trace.WriteLine("***"+ or.ToString());
                             return Task.FromResult(r);
                             //
                         }
