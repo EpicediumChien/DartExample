@@ -6,28 +6,34 @@ namespace DDPM.Easy.Common.Tests
     [Apartment(ApartmentState.STA)]
     public class CellObjTests
     {
-        private CellObj? cellObj;
+        private CellObj? cellObja;
+        private CellObj? cellObjb;
+        private CellObj? cellObjc;
 
         [SetUp]
         public void Setup()
         {
-            cellObj=new CellObj("aa", new Border());
+            cellObja = new CellObj("aa", new Border());
+            cellObjb = new CellObj("A");
+            cellObjc = new CellObj("B",new CellBorder());
         }
 
         [Test]
         public void TestConstructor_CellObj()
         {
             // Assert
-            Assert.That(cellObj, Is.Not.Null);
+            Assert.That(cellObja, Is.Not.Null);
+            Assert.That(cellObjb, Is.Not.Null);
+            Assert.That(cellObjc, Is.Not.Null);
         }
 
         [Test]
         public void TestName()
         {
             // Act        
-            cellObj.Name = "A";
+            cellObja.Name = "A";
             // Assert
-            Assert.That(cellObj.Name, Is.EqualTo("A"));
+            Assert.That(cellObja.Name, Is.EqualTo("A"));
         }
 
         [Test]
@@ -35,9 +41,9 @@ namespace DDPM.Easy.Common.Tests
         {
             // Act        
             var rc=new Rect();
-            cellObj.rc = rc;
+            cellObja.rc = rc;
             // Assert
-            Assert.That(cellObj.rc, Is.EqualTo(rc));
+            Assert.That(cellObja.rc, Is.EqualTo(rc));
         }
 
         [Test]
@@ -45,9 +51,29 @@ namespace DDPM.Easy.Common.Tests
         {
             // Act        
             var bd = new Border();
-            cellObj.bd = bd;
+            cellObja.bd = bd;
             // Assert
-            Assert.That(cellObj.bd, Is.EqualTo(bd));
+            Assert.That(cellObja.bd, Is.EqualTo(bd));
+        }
+
+        [Test]
+        public void TestrcRatio()
+        {
+            // Act        
+            var rcRatio = new Rect();
+            cellObja.rcRatio = rcRatio;
+            // Assert
+            Assert.That(cellObja.rcRatio, Is.EqualTo(rcRatio));
+        }
+
+        [Test]
+        public void TestCellBd()
+        {
+            // Act        
+            var cellBd = new CellBorder();
+            cellObja.CellBd = cellBd;
+            // Assert
+            Assert.That(cellObja.CellBd, Is.EqualTo(cellBd));
         }
     }
 }

@@ -50,6 +50,7 @@ using LangHelper = DDPM.UI.Resources.Helper.LangHelper;
 using MessageBox = System.Windows.MessageBox;
 using WebcamProfile = DDPM.UI.Common.WebcamProfile;
 using System.Windows.Threading;
+using System.Windows.Forms.VisualStyles;
 
 namespace DDPM.UI.Plugin.WebCameraPlugin
 {
@@ -180,7 +181,8 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                     while (_vm.mre.WaitOne())
                     {
 
-                        if (exit_status_thread) return;
+                        if (exit_status_thread)
+                            return;
 
                         if (!_vm.IsRecording)
                         {
@@ -198,14 +200,42 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             }
 
             in_CameraPlugin = true;
+
+            CheckUSBtype();
+            CheckWindowsHello();
         }
+
+        public void CheckUSBtype()
+        {
+            //需要特殊邏輯處理的型號
+            List<string> SpecialCase = new List<string>() 
+            {
+                "U3223QZ","U3224KB","U3224KBA","P2424HEB","P2724DEB","P3424WEB"
+            };
+
+            string model = _vm.CurrentDeviceInfo!.ModelNumber;
+
+            if (!SpecialCase.Contains(model)) return;
+
+            //check usb 2.0 / 3.0
+            bool AllSupportedResolutions = DdpmCommonHelper.DeviceManagerSA!.GetIsAllSupportedResolutionsFound(_vm.CurrentDeviceInfo!.ID.ToString()).Result;
+
+        }
+
+        public void CheckWindowsHello()
+        {
+            bool WHelloOk = false;
+        }
+
 
         bool WebcamGrid_old_ststus = false;
         private void status_change()
         {
 
-            if (!in_CameraPlugin) return;
-            if (_vm == null) return;
+            if (!in_CameraPlugin)
+                return;
+            if (_vm == null)
+                return;
 
             if (_vm.running_state)
             {
@@ -232,7 +262,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                     _ = CameraImage.Dispatcher.BeginInvoke(async () =>
                     {
                         CameraImage.Visibility = Visibility.Hidden;
-                        _= CleanupMediaCaptureAsync();
+                        _ = CleanupMediaCaptureAsync();
 
                         WebcamGrid_old_ststus = _vm.WebcamGrid;
                         _vm.WebcamGrid = false;
@@ -473,7 +503,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             {
                 _vm!.MediaFrameReader!.FrameArrived -= MediaFrameReader_FrameArrived;
             }
-            catch{ }
+            catch { }
             _vm.ProfilePropertyChanged -= ProfilePropertyChanged;
             _vm.WebcamSettingChanged -= WebcamSettingChanged;
             try
@@ -505,7 +535,8 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             moduleGroup = new ModuleGroup()
             {
                 GroupName = CameraControl,
-                GroupIcon = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Images/CameraControl.png", "DDPM.UI.Resources")
+                GroupIcon = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Images/CameraControl.png", "DDPM.UI.Resources"),
+                GroupIconCanvas = DdpmCommonHelper.CanvasIconCreator(VbarIcon.WebcamControl)
             };
             moduleGroup.AddHeader(CameraControl, new WebCameraSettingsModule(_vm!));
             groups.Add(moduleGroup);
@@ -513,7 +544,8 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             moduleGroup = new ModuleGroup()
             {
                 GroupName = ColorandImage,
-                GroupIcon = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Images/CameraColorImage.png", "DDPM.UI.Resources")
+                GroupIcon = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Images/CameraColorImage.png", "DDPM.UI.Resources"),
+                GroupIconCanvas = DdpmCommonHelper.CanvasIconCreator(VbarIcon.WebcamColorImg)
             };
             moduleGroup.AddHeader(ColorandImage, new WebCameraColorImageModule(_vm!));
             groups.Add(moduleGroup);
@@ -529,7 +561,8 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                 moduleGroup = new ModuleGroup()
                 {
                     GroupName = PresenceDetection,
-                    GroupIcon = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Images/CameraPresenceDetection.png", "DDPM.UI.Resources")
+                    GroupIcon = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Images/CameraPresenceDetection.png", "DDPM.UI.Resources"),
+                    GroupIconCanvas = DdpmCommonHelper.CanvasIconCreator(VbarIcon.WebcamDetection)
                 };
                 moduleGroup.AddHeader(PresenceDetection, new WebCameraPresenceDetectionModule(_vm!));
                 groups.Add(moduleGroup);
@@ -538,7 +571,8 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             moduleGroup = new ModuleGroup()
             {
                 GroupName = Capture,
-                GroupIcon = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Images/CameraCapture.png", "DDPM.UI.Resources")
+                GroupIcon = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Images/CameraCapture.png", "DDPM.UI.Resources"),
+                GroupIconCanvas = DdpmCommonHelper.CanvasIconCreator(VbarIcon.WebcamCapture)
             };
             moduleGroup.AddHeader(Capture, new WebCameraCaptureModule(_vm!));
             groups.Add(moduleGroup);
@@ -708,7 +742,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
 
             Thread.Sleep(60);
 
-            if (softwareBitmap != null && _vm.running_state)
+            if (softwareBitmap != null && (_vm.running_state || _vm.IsRecording))
             {
                 _ = CameraImage.Dispatcher.BeginInvoke(() =>
                 {
@@ -1538,6 +1572,11 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
         private void txtSearchText_PreviewTextInput(object sender, TextCompositionEventArgs e)
         {
             e.Handled = !_vm!.CheckChar(e.Text);
+        }
+
+        private void UserControl_Loaded(object sender, RoutedEventArgs e)
+        {
+            //NarratorModeSupport.RecurseUitems( start) ;
         }
     }
 }

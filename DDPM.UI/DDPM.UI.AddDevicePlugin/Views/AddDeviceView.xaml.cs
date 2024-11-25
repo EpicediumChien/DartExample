@@ -16,9 +16,12 @@ using DDPM.UI.Module.AddWebcam;
 using DDPM.UI.Plugin.Common;
 using DDPM.UI.Plugin.ViewModels;
 using Dell.Client.Framework.UX.WPF;
+using Dell.Client.Framework.UX.WPF.Controls;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
 
 namespace DDPM.UI.Plugin.AddDevicePlugin
 {
@@ -63,6 +66,13 @@ namespace DDPM.UI.Plugin.AddDevicePlugin
                 rightViewHeaderCtrl.SetHeaders(_vm.RightViewHeaders.ToArray());
             }
             txtCaption.Text = Caption;
+            DdpmCommonHelper.BitmapImageUpdated += ImageUpdate;
+        }
+
+        private void ImageUpdate(OSThemeEnum oSThemeEnum)
+        {
+            ArrowLeft.Source = null;
+            ArrowLeft.Source = (BitmapImage)Application.Current.Resources["Arrow_Left"];
         }
 
         private void BuildModuleGroups()
@@ -146,8 +156,11 @@ namespace DDPM.UI.Plugin.AddDevicePlugin
         {
             //if(newItem.Id == _vm!.DeviceBarSelectedIndex) { return; }
 
-            if (_vm!.DeviceBarSelectedIndex >= 0)
+            if (_vm!.DeviceBarSelectedIndex >= 0 && _vm!.DeviceBarItems.Find(x => x.Id == _vm!.DeviceBarSelectedIndex) != null)
+            {
                 _vm.DeviceBarItems[_vm.DeviceBarSelectedIndex].IsSelected = false;
+                _vm.DeviceBarItems[_vm.DeviceBarSelectedIndex].RenewBarItem();
+            }
 
             _vm.DeviceBarSelectedIndex = newItem.Id;
 
@@ -288,6 +301,33 @@ namespace DDPM.UI.Plugin.AddDevicePlugin
         {
             OnDeviceBarItemClicked(_vm!.DeviceBarItems[_vm.DeviceBarSelectedIndex]);
             _vm.DeviceBarItems[_vm.DeviceBarSelectedIndex].IsSelected = true;
+        }
+
+        private void Pairing(object sender, StylusDownEventArgs e)
+        {
+            if (_vm!.DeviceBarSelectedIndex != 3 || rightViewHeaderCtrl.SelectedIndex != 1)
+                return;
+            MessageModalDialog messageModalDialog;
+            Window parentWindow = Window.GetWindow(this);
+            if (_vm!.IsPandoraPaired)
+            {
+                messageModalDialog = new(Strings.Error, Strings.PenAlreadyPaired, Strings.Cancel);
+                if (parentWindow != null)
+                {
+                    messageModalDialog.Owner = parentWindow;
+                }
+                messageModalDialog.ShowDialog();
+                return;
+            }
+            messageModalDialog = new(Strings.PairYourPen, Strings.PairYourPenMessage, Strings.No, Strings.Yes);
+            if (parentWindow != null)
+            {
+                messageModalDialog.Owner = parentWindow;
+            }
+            if (messageModalDialog.ShowDialog()!.Value)
+            {
+                _vm.StartPairingPen();
+            }
         }
     }
 }

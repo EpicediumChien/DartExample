@@ -1077,6 +1077,8 @@ namespace ColorPreset.Plugins
                 }
 
                 localKey64.Close();
+
+                return System.Threading.Tasks.Task.FromResult(true);
             }
             else
             {
@@ -1094,8 +1096,12 @@ namespace ColorPreset.Plugins
                         _DeviceManagerPlugin_SA.Send_NightLightStatus_Telementry_SA(Active_monitorInfo, "Off");
                     });
                 }
+
+                return System.Threading.Tasks.Task.FromResult(true);
             }
 
+            // If it has not been turned on nightlight settings, nightlight status is off by default
+            NightLightStatus_ChangeEvent?.AsyncFireAndForget(this, "Off", System.Threading.CancellationToken.None);
             return System.Threading.Tasks.Task.FromResult(true);
         }
 
@@ -2413,24 +2419,31 @@ namespace ColorPreset.Plugins
 
                     if (!string.IsNullOrEmpty(url))
                     {
+                        //[Dean 1122] remove this action and change to return directly if folder has symlink
                         //20240920 Add Security
-                        string FileInfo;
-                        if (!DDPM.SA.Common.Settings.DDPMFileSecurity.SRemoveSymbolicFolder(strICC_Folder, out FileInfo))
+                        //string FileInfo;
+                        //if (!DDPM.SA.Common.Settings.DDPMFileSecurity.SRemoveSymbolicFolder(strICC_Folder, out FileInfo))
+                        //{
+                        //    writelog($"[DownloadICCData] {FileInfo}");
+                        //    return System.Threading.Tasks.Task.FromResult(_ICC_Metadata);
+                        //}
+                        string info = string.Empty;
+                        if(!DDPMFileSecurity.IsFolderPathValid(strICC_Folder, out info))
                         {
-                            writelog($"[DownloadICCData] {FileInfo}");
+                            writelog($"[DownloadICCData][IsFolderPathValid] {info}");
                             return System.Threading.Tasks.Task.FromResult(_ICC_Metadata);
                         }
 
                         strFilePath = Path.Combine(strICC_Folder, Path.GetFileName(url));
-
+                        string Info;
                         if (download.DownloadFile(url, strFilePath, out downloadInfo))
                         {
                             if (System.IO.File.Exists(strFilePath))
                             {
                                 //Elsa Add Security
-                                if (!DDPM.SA.Common.Settings.DDPMFileSecurity.IsFilePathValid(strFilePath, out FileInfo))
+                                if (!DDPM.SA.Common.Settings.DDPMFileSecurity.IsFilePathValid(strFilePath, out Info))
                                 {
-                                    writelog($"[DownloadICCData] {FileInfo}");
+                                    writelog($"[DownloadICCData] {Info}");
                                     //return null;
                                     return System.Threading.Tasks.Task.FromResult(_ICC_Metadata);
                                 }
@@ -2505,7 +2518,7 @@ namespace ColorPreset.Plugins
                             str_url_prefix += m.modelName;
                             str_url_prefix += @"/";
 
-                            string info = string.Empty;
+                            info = string.Empty;
                             for (int i = 0; i < count; i++)
                             {
                                 url = string.Empty;

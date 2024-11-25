@@ -506,17 +506,18 @@ namespace DDPM.SA.Plugins.SettingsManager
                     directoryInfo = System.IO.Directory.CreateDirectory(folder);
                     WriteLog($"[{type}]re-create system settings folder success");
                 }
-                //AclChecker aclChecker = new AclChecker();
-                //if (aclChecker.ContainsUnprivilegedWriteAccess(directoryInfo)) // apply acl at the bottom of function
+
                 string info2 = string.Empty;
-                if (DDPMFileSecurity.IsPathSymbolicLinked(folder, out info2))
+                //if (DDPMFileSecurity.IsPathSymbolicLinked(folder, out info2))
+                if (!DDPMFileSecurity.IsFolderPathValid(folder, out info2))
                 {
                     //WriteLog($"[{type}]Directory ACLs for system setting contained unprivileged write access for one or more identity");
-                    WriteLog($"[{type}]Directory symbolic check got symlink ({info2})");
-                    Directory.Delete(folder, true);
+                    WriteLog($"[{type}] *** Directory path and symbolic check GOT ISSUE *** ({info2})");
+                    /*Directory.Delete(folder, true);
                     WriteLog($"[{type}]Exist folder deleted.");
                     directoryInfo = System.IO.Directory.CreateDirectory(folder);
-                    WriteLog($"[{type}]re-create system settings folder success");
+                    WriteLog($"[{type}]re-create system settings folder success");*/
+                    return null;
                 }
             }
             string info = string.Empty;
@@ -627,9 +628,10 @@ namespace DDPM.SA.Plugins.SettingsManager
 
         public Task<object> ReadRegistryData(Common.Settings.RegistryHive hive, string keyPath, string keyName)
         {
+            object obj = null;
+
             try
             {
-                object obj = null;
                 if (hive == Common.Settings.RegistryHive.CurrentUser)
                 {
                     obj = WTSFunction.ImpersonateUser_ReadRegistry(Log, keyPath, keyName);
@@ -651,7 +653,7 @@ namespace DDPM.SA.Plugins.SettingsManager
             catch (Exception e)
             {
                 WriteLog($"[System settings plugin] ReadRegistryData exception ({e.Message})");
-                return null;
+                return Task.FromResult(obj);
             }
         }
 

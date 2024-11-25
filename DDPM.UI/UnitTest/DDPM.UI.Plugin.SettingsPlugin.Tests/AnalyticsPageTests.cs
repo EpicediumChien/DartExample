@@ -7,6 +7,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
+using Dell.Client.Framework.UX.WPF.ResourceManager;
 
 namespace DDPM.UI.Plugin.SettingsPlugin.Tests
 {
@@ -20,6 +22,14 @@ namespace DDPM.UI.Plugin.SettingsPlugin.Tests
         [SetUp]
         public void Setup()
         {
+            if (System.Windows.Application.Current == null)
+            {
+                new System.Windows.Application();
+            }
+            ResourceManager res = new ResourceManager();
+            var resourceDictionary = new ResourceDictionary();
+            resourceDictionary.Source = new Uri("pack://application:,,,/DDPM.UI.Common;component/ModuleStyle.xaml");
+            System.Windows.Application.Current.Resources.MergedDictionaries.Add(resourceDictionary);
             DeviceManagerSAMock = new Mock<IDeviceManagerSA>();
             DdpmCommonHelper.DeviceManagerSA = DeviceManagerSAMock.Object;
         }
@@ -34,22 +44,6 @@ namespace DDPM.UI.Plugin.SettingsPlugin.Tests
 
         //internal class AnalyticsViewModel
         [Test]
-        public void TeststrCheckBtnText()
-        {
-            AnalyticsViewModel analyticsViewModel = new AnalyticsViewModel();
-            //analyticsViewModel.strCheckBtnText = "strCheckBtnText";
-            //Assert.That(analyticsViewModel.strCheckBtnText, Is.EqualTo("strCheckBtnText"));
-        }
-
-        [Test]
-        public void TeststrUrlBtnContent()
-        {
-            AnalyticsViewModel analyticsViewModel = new AnalyticsViewModel();
-            //analyticsViewModel.strUrlBtnContent = "strUrlBtnContent";
-            //Assert.That(analyticsViewModel.strUrlBtnContent, Is.EqualTo("strUrlBtnContent"));
-        }
-
-        [Test]
         public void TeststrPrivacyUrl()
         {
             AnalyticsViewModel analyticsViewModel = new AnalyticsViewModel();
@@ -58,19 +52,20 @@ namespace DDPM.UI.Plugin.SettingsPlugin.Tests
         }
 
         [Test]
-        public void TeststrTitle()
+        public void TestShowLockMask()
         {
             AnalyticsViewModel analyticsViewModel = new AnalyticsViewModel();
-            //analyticsViewModel.strTitle = "strTitle";
-            //Assert.That(analyticsViewModel.strTitle, Is.EqualTo("strTitle"));
+            analyticsViewModel.ShowLockMask = true;
+            Assert.That(analyticsViewModel.ShowLockMask, Is.EqualTo(true));
+            Assert.That(analyticsViewModel.LockMaskVisible, Is.EqualTo(Visibility.Visible));
         }
 
         [Test]
-        public void TeststrContent()
+        public void TestLockMaskVisible()
         {
             AnalyticsViewModel analyticsViewModel = new AnalyticsViewModel();
-            //analyticsViewModel.strContent = "strContent";
-            //Assert.That(analyticsViewModel.strContent, Is.EqualTo("strContent"));
+            analyticsViewModel.LockMaskVisible = Visibility.Visible;
+            Assert.That(analyticsViewModel.LockMaskVisible, Is.EqualTo(Visibility.Visible));
         }
 
         [Test]

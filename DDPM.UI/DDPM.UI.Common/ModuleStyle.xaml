@@ -37,7 +37,7 @@
         <Setter Property="Background" Value="{DynamicResource FakeTransparent}" />
     </Style>
     <!--<Style TargetType="TextBlock">
-        <Setter Property="Foreground" Value="{DynamicResource DefaultTheme_TxtColor}" />
+    <Setter Property="Foreground" Value="{DynamicResource DefaultTheme_TxtColor}" />
     </Style>-->
     <Style TargetType="Border">
         <Setter Property="Background" Value="{DynamicResource DefaultTheme_BdBkColor}" />
@@ -109,7 +109,7 @@
         <Setter Property="Background" Value="{DynamicResource GroupBorderColor}" />
     </Style>
     <Style x:Key="PartBorderStyle"
-         TargetType="Border">
+           TargetType="Border">
         <Setter Property="CornerRadius" Value="6" />
         <Setter Property="Padding" Value="16" />
         <Setter Property="Background" Value="{DynamicResource PartBorderColor}" />
@@ -122,7 +122,7 @@
         <Setter Property="Height" Value="43" />
     </Style>
     <Style x:Key="UXControls:UXCheckBox"
-         TargetType="UXControls:UXCheckBox">
+           TargetType="UXControls:UXCheckBox">
         <Setter Property="Background" Value="{DynamicResource DefaultTheme_RbBkColor}" />
         <Setter Property="Foreground" Value="{DynamicResource DefaultTheme_TxtColor}" />
     </Style>
@@ -344,8 +344,8 @@
                     x:Name="HeaderSite"
                     MinWidth="0"
                     MinHeight="0"
-                    Margin="1"
-                    Padding="{TemplateBinding Padding}"
+                    Margin="-20,0"
+                    Padding="20,0"
                     HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
                     VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
                     Content="{TemplateBinding Header}"
@@ -649,7 +649,7 @@
             <!-- Text binding -->
             <TextBlock Text="{Binding Type}" HorizontalAlignment="Center"/>
             <!-- Path Data binding -->
-            <Path Data="{Binding PathData}" Margin="8" 
+            <Path Data="{Binding PathData}" Margin="8"
                   HorizontalAlignment="Center" />
         </StackPanel>
     </DataTemplate>
@@ -765,6 +765,12 @@
     <SolidColorBrush  x:Key="RightView_Btn_BdColor" Color="#FFFFFFFF" />
     <!-- End BrightnessRightView-->
 
+    <!-- Border Color
+    Disabled: the same with Vbar_BkColor_Disabled; Default: the same with Vbar_BkColor_Default.
+    LandingHover, (non-selected) Hover will be Vbar_BdColor_Hover
+    Selected and SelectedHover have the same BorderBrush:
+    <Color x:Key="Vbar_BdColor_Hover">#991B385F</Color>
+    -->
     <!-- #region VberItem1 -->
     <Color x:Key="Vbar_BdColor_Hover">#FF1B385F</Color>
     <Color x:Key="Vbar_BdColor_LockHover">#FF1B385F</Color>
@@ -864,18 +870,18 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type Button}">
-                    <Border x:Name="border" 
-                               Background="{TemplateBinding Background}" 
-                               BorderBrush="{TemplateBinding BorderBrush}" 
-                               BorderThickness="{TemplateBinding BorderThickness}" 
-                               SnapsToDevicePixels="true"
-                               CornerRadius="2">
-                        <ContentPresenter x:Name="contentPresenter" 
-                                             Focusable="False" 
-                                             HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" 
-                                             Margin="{TemplateBinding Padding}" RecognizesAccessKey="True" 
-                                             SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" 
-                                             VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                    <Border x:Name="border"
+                            Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            SnapsToDevicePixels="true"
+                            CornerRadius="2">
+                        <ContentPresenter x:Name="contentPresenter"
+                                          Focusable="False"
+                                          HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                          Margin="{TemplateBinding Padding}" RecognizesAccessKey="True"
+                                          SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
+                                          VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
                     </Border>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsDefaulted" Value="true">
@@ -953,23 +959,23 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type Button}">
-                    <Border x:Name="border" 
-                               Background="{TemplateBinding Background}" 
-                               BorderBrush="{TemplateBinding BorderBrush}" 
-                               BorderThickness="{TemplateBinding BorderThickness}" 
-                               SnapsToDevicePixels="true"
-                               CornerRadius="2">
+                    <Border x:Name="border"
+                            Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            SnapsToDevicePixels="true"
+                            CornerRadius="2">
                         <Border.Resources>
                             <Style TargetType="ContentPresenter">
                                 <Setter Property="TextElement.Foreground" Value="{DynamicResource SecondaryButton_DefaultTextColor}"/>
                             </Style>
                         </Border.Resources>
-                        <ContentPresenter x:Name="contentPresenter" 
-                                             Focusable="False" 
-                                             HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" 
-                                             Margin="{TemplateBinding Padding}" RecognizesAccessKey="True" 
-                                             SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" 
-                                             VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                        <ContentPresenter x:Name="contentPresenter"
+                                          Focusable="False"
+                                          HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                          Margin="{TemplateBinding Padding}" RecognizesAccessKey="True"
+                                          SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
+                                          VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
                     </Border>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsDefaulted" Value="true">
@@ -1021,6 +1027,9 @@
     <SolidColorBrush x:Key="SplitCtrl_OuterBorder_BdColor_Icon_Normal" Color="#FFFFFFFF" />
     <SolidColorBrush x:Key="SplitSplitter_Icon" Color="#FFFFFFFF" />
     <SolidColorBrush x:Key="SplitCtrl0B_IconFill"  Color="#FF132F54"/>
+
+    <SolidColorBrush x:Key="SplitItem_BkColor" Color="#FF132F54" />
+
     <!-- #endregion SplitItem of EasyArrange -->
 
     <!-- #region LockIcon -->
@@ -1124,6 +1133,7 @@
         <Setter Property="HorizontalAlignment" Value="Center" />
         <Setter Property="VerticalAlignment" Value="Center" />
         <Setter Property="FontSize" Value="14" />
+        <Setter Property="Background" Value="Transparent" />
     </Style>
     <SolidColorBrush x:Key="RightView_BkColor" Color="#99193457" />
     <LinearGradientBrush x:Key="RightView_Header_HiColor" StartPoint="0,0" EndPoint="1,0">
@@ -1327,10 +1337,81 @@
             </Setter.Value>
         </Setter>
     </Style>
+
+    <!-- Dialog start-->
+    <SolidColorBrush x:Key="BorderStyle1_BgColor" Color="#99132F54"/>
+
+    <SolidColorBrush x:Key="TextBlockStyle1_FgColor" Color="#FFFFFF"/>
+
+    <SolidColorBrush x:Key="LabelStyle1_FgColor" Color="#CCCCCC"/>
+
+    <SolidColorBrush x:Key="RadialMenuModalDialogToggleSwitch_FgColor" Color="#FFFFFF"/>
+
+    <SolidColorBrush x:Key="txtLabelText_BgColor" Color="#141D28"/>
+    <SolidColorBrush x:Key="txtLabelText_FgColor" Color="#F5F6F7"/>
+
+    <SolidColorBrush x:Key="PairTileModalDialogTextStyle1FgColor" Color="#CFD2D3" />
+
+    <SolidColorBrush x:Key="PairTileModalDialogBgColor" Color="#0D121A" />
+
+    <SolidColorBrush x:Key="UnpairModalDialogTxtColor" Color="#F5F6F7"/>
+
+    <SolidColorBrush x:Key="UnpairModalDialogBorder1" Color="#E00C1827" />
+
+    <SolidColorBrush x:Key="BorderContinueBackground" Color="#0E1C2F"/>
+    <SolidColorBrush x:Key="BorderContinueBorderBrush" Color="#F5F6F7"/>
+
+    <SolidColorBrush x:Key="BorderYesBackground" Color="#0E1C2F" />
+    <SolidColorBrush x:Key="BorderYesBorderBrush" Color="#F5F6F7" />
+
+    <SolidColorBrush x:Key="txtAlert_BgColor" Color="#364861"/>
+    <SolidColorBrush x:Key="txtAlert_FgColor" Color="#F5F6F7"/>
+
+    <SolidColorBrush x:Key="WaitingModalDialogBorderBackground" Color="#E00B172C"/>
+    <SolidColorBrush x:Key="WaitingModalDialogBorderBorderBrush" Color="#293B4D"/>
+
+    <SolidColorBrush x:Key="bdrAlertBackground" Color="#364861"/>
+    <SolidColorBrush x:Key="bdrAlertBorderBrush" Color="#E67F01"/>
+
+    <!-- Dialog end-->
+
+    <BitmapImage x:Key="mouse_setting_title_back" UriSource="pack://application:,,,/DDPM.UI.Resources;component/Resources/Images/arrow-left.png" />
+    <BitmapImage x:Key="title_back" UriSource="pack://application:,,,/DDPM.UI.Resources;component/Resources/Images/arrow-left.png" />
+
     <!--leo add end-->
 
-
-
-
+    <!-- BorderConnection -->
+    <Style x:Key="BorderConnection" TargetType="Border">
+        <Setter Property="Background" Value="{DynamicResource BatteryIndicator_BkColor}" />
+        <Setter Property="CornerRadius" Value="2" />
+        <Setter Property="Width" Value="252" />
+        <Setter Property="BorderThickness" Value="2" />
+        <Setter Property="BorderBrush" Value="{DynamicResource RightView_Group_BdColor}" /> 
+    </Style>
+    <Style x:Key="ConnectionStyle1" TargetType="UXControls:UXTextBlock">
+        <Setter Property="Foreground" Value="{DynamicResource DefaultTheme_TxtColor}" /> 
+        <Setter Property="FontFamily" Value="Roboto" />
+        <Setter Property="FontSize" Value="14" />
+        <Setter Property="FontWeight" Value="Bold" />
+    </Style>
+    <Style x:Key="ConnectionStyle2" TargetType="UXControls:UXTextBlock">
+        <Setter Property="Foreground" Value="#839DB4" />
+        <Setter Property="FontFamily" Value="Roboto" />
+        <Setter Property="FontSize" Value="14" />
+        <Setter Property="FontWeight" Value="Normal" />
+    </Style>
+    <Style x:Key="ConnectionStyle3" TargetType="UXControls:UXTextBlock">
+        <Setter Property="Foreground" Value="{DynamicResource DefaultTheme_TxtColor}" />
+        <Setter Property="FontFamily" Value="Roboto" />
+        <Setter Property="FontSize" Value="14" />
+        <Setter Property="FontWeight" Value="Medium" />
+    </Style>
+    <!--BorderConnection end-->
+    <BitmapImage x:Key="popup_ArrowCorner" UriSource="pack://application:,,,/DDPM.UI.Common;component/Resources/popup_ArrowCorner.png" />
+    <BitmapImage x:Key="down_Expand" UriSource="pack://application:,,,/DDPM.UI.Resources;component/Resources/Images/Down.png" />
+    <BitmapImage x:Key="Search_img" UriSource="pack://application:,,,/DDPM.UI.Resources;component/Resources/Images/Search.png" />
+    <BitmapImage x:Key="Close_img" UriSource="pack://application:,,,/DDPM.UI.Common;component/Resources/Close.png" />
+    <BitmapImage x:Key="left_img" UriSource="pack://application:,,,/DDPM.UI.Resources;component/Resources/Images/Left.png" />
+    <SolidColorBrush x:Key="DefaultThemeFullPageBkColor" Color="#FF0D121A"/>
 
 </ResourceDictionary>

@@ -25,6 +25,7 @@ using System.Security.Principal;
 using System.Text;
 using static System.Net.Mime.MediaTypeNames;
 using static System.Runtime.InteropServices.JavaScript.JSType;
+using HashType = Dell.Client.Framework.Security.Interfaces.HashType;
 
 namespace DDPM.SA.Common.Settings
 {
@@ -123,7 +124,7 @@ namespace DDPM.SA.Common.Settings
             {
                 DateTimeOffset utcNow = DateTimeOffset.UtcNow;
                 string strTicket = SettingsAccess.GenerateReferenceTicket(utcNow);
-                strRandom = SettingsAccess.GenerateReferenceInfo();                
+                strRandom = SettingsAccess.GenerateReferenceInfo();
                 strTicketToFile = utcNow.ToString("M/d/yyyy h:mm:ss tt zzz", CultureInfo.InvariantCulture);
                 signature = SettingsAccess.GenerateSignature(strTicket, strRandom, serialized_string);
                 //signature = strRandom + ";;" + strTicketToFile + ";;" + signature; //combine as single key
@@ -176,7 +177,7 @@ namespace DDPM.SA.Common.Settings
                 //convert whole content and protect it as bytes array
                 byte[] body_array = Encoding.UTF8.GetBytes(modifiedJson);
                 //3. Data protect if need (11/11 drop this action)
-                
+
                 write_string = modifiedJson;
             }
             catch (Exception ex)
@@ -485,9 +486,9 @@ namespace DDPM.SA.Common.Settings
             return array1.SequenceEqual(array2);
         }*/
 
-        public static bool IsFilePathValid(string filePath, out string info)
+        public static bool IsFilePathValid(string filePath, out string info, PathCheckOption option = PathCheckOption.None)
         {
-            info = "Valid";
+            /*info = "Valid";
             //check return code with Enum PathCheckErrorCodes
             PathCheckErrorCodes result = PathHelper.ValidateFilePath(filePath);
             if (result != PathCheckErrorCodes.SUCCESS)
@@ -495,12 +496,13 @@ namespace DDPM.SA.Common.Settings
                 info = $"IsFilePathValid: {nameof(result)}";
                 return false;
             }
-            return true;
+            return true;*/
+            return !SymlinkHelper.IsFilePathHasSymlink(filePath, out info, option);
         }
 
         public static bool IsFolderPathValid(string folderPath, out string info)
         {
-            info = "Valid";
+            /*info = "Valid";
             //check return code with Enum PathCheckErrorCodes
             PathCheckErrorCodes result = PathHelper.ValidateDirectoryPath(folderPath);
             if (result != PathCheckErrorCodes.SUCCESS)
@@ -508,10 +510,11 @@ namespace DDPM.SA.Common.Settings
                 info = $"IsFolderPathValid: {nameof(result)}";
                 return false;
             }
-            return true;
+            return true;*/
+            return !SymlinkHelper.IsFolderHasSymlink(folderPath, out info);
         }
 
-        public static bool IsFilePathValid(string filePath, PathCheckOption option, out string info)
+        /*public static bool IsFilePathValid(string filePath, PathCheckOption option, out string info)
         {
             info = "Valid";
             //check return code with Enum PathCheckErrorCodes
@@ -522,7 +525,7 @@ namespace DDPM.SA.Common.Settings
                 return false;
             }
             return true;
-        }
+        }*/
 
         /// <summary>
         /// Check if the path redirected/junction/Mountpoint
@@ -967,7 +970,7 @@ namespace DDPM.SA.Common.Settings
                     }
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 info = "[CalculateFileSHA256] exception, message: " + ex.Message;
             }
@@ -1149,6 +1152,50 @@ namespace DDPM.SA.Common.Settings
                              .ToArray();
         }
 
+        public static bool VerifyFileCertWithInboxThumbprint(string filePath, out string info)
+        {
+            info = "success";
+            if (!IsFilePathValid(filePath, out info))
+            {
+#if DEBUG
+                Console.WriteLine(info);
+#endif
+                return false;
+            }
+            try
+            {
+                X509Certificate2 cert = LoadFileCertificate(filePath);
+                if (cert == null)
+                {
+                    info = "Can't retrieve cert from file.";
+                    return false;
+                }
+
+                //compare thumbprint
+                //source array DDPM.SA.Obfuscation.ThumbprintHash.certificateHash
+                //Target cert.Thumbprint
+                bool contains = DDPM.SA.Obfuscation.ThumbprintHash.certificateHash.Any(arr => arr.SequenceEqual(ConvertThumbprintToByteArray(cert.Thumbprint)));
+                if (!contains)
+                {
+                    info = $"No matched cert. thumbprint in file is {cert.Thumbprint}";
+                    return false;
+                }
+                if (!VerifyExecutableFileSignature(filePath, out info))
+                {
+#if DEBUG
+                    Console.WriteLine(info);
+#endif
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                info = ex.Message;
+                return false;
+            }
+            return true;
+        }
+
         public static bool VerifyFileCertWithoutThumbprint(string filePath, out string info)
         {
             info = "success";
@@ -1161,27 +1208,6 @@ namespace DDPM.SA.Common.Settings
             }
             try
             {
-                //X509Certificate2 cert = new X509Certificate2(filePath);
-                //if (cert == null)
-                //{
-                //    info = "Can't retrieve cert from file.";
-                //    return false;
-                //}
-
-                //compare thumbprint
-                //source array DDPM.SA.Obfuscation.ThumbprintHash.certificateHash
-                //Target cert.Thumbprint
-                //if(!CheckCertificateIsVaild(cert, ref info))
-                //{                    
-                //    return false;
-                //}
-                //
-                //bool contains = DDPM.SA.Obfuscation.ThumbprintHash.certificateHash.Any(arr => arr.SequenceEqual(ConvertThumbprintToByteArray(cert.Thumbprint)));
-                //if (!contains)
-                //{
-                //    info = $"No matched cert. thumbprint in file is {cert.Thumbprint}";
-                //    return false;
-                //}
                 if (!VerifyExecutableFileSignature(filePath, out info))
                 {
 #if DEBUG
@@ -1215,32 +1241,28 @@ namespace DDPM.SA.Common.Settings
             }
             try
             {
-                if (!VerifyExecutableFileSignature(filePath, out info))
+                /*if (!VerifyExecutableFileSignature(filePath, out info))
                 {
 #if DEBUG
                     Console.WriteLine(info);
 #endif
                     return false;
-                }
+                }*/
 
-                X509Certificate2 cert = new X509Certificate2(filePath);
+                /*X509Certificate2 cert = new X509Certificate2(filePath);
                 if (cert == null)
                 {
                     info = "Can't retrieve cert from file.";
                     return false;
                 }
 
-                //if (!CheckCertificateIsVaild(cert, ref info))
-                //{
-                //    return false;
-                //}
-
                 //compare thumbprint from input
                 //Target cert.Thumbprint{
                 bool contains = targetThumbprint.ToUpper().Trim().Equals(cert.Thumbprint.ToUpper().Trim());
-                if (!contains)
+                if (!contains)*/
+                if(!SignedFileThumbprintVerifier(null, filePath, targetThumbprint, out info))
                 {
-                    info = $"No matched cert. thumbprint in file is {cert.Thumbprint}";
+                    info = $"No matched cert. thumbprint in file {targetThumbprint}";
                     return false;
                 }
             }
@@ -1248,10 +1270,8 @@ namespace DDPM.SA.Common.Settings
             {
                 info = e.Message;
                 return false;
-
             }
             return true;
-
         }
 
         #region Bruce 0814 Move this method to DDPM.SA.Common
@@ -1391,7 +1411,8 @@ namespace DDPM.SA.Common.Settings
         }
 
         #endregion Bruce 0814 Move this method to DDPM.SA.Common
-        public static bool SRemoveSymbolicFile(string filePath, out string info)
+        //[Dean 1122] remove this function since the attacker may use callback to do injection while triggering file remove.
+        /*public static bool SRemoveSymbolicFile(string filePath, out string info)
         {
             info = "pass";
             if (!DDPMFileSecurity.IsPathSymbolicLinked(filePath, out info))  // filePath contain symbolic
@@ -1419,7 +1440,7 @@ namespace DDPM.SA.Common.Settings
                 }
             }
             return true;
-        }
+        }*/
 
         public static bool SRemoveSymbolicFolder(string filePath, out string info)
         {
@@ -1474,7 +1495,7 @@ namespace DDPM.SA.Common.Settings
         public static bool CheckFold(string folderPath, out string folderInfo, out string pathSymbolicLinInfo)    // Move from Bruce code
         {
             folderInfo = "Error";
-            pathSymbolicLinInfo = "Error";
+            pathSymbolicLinInfo = "refer to folderInfo";// "Error";
             int count = 0;
             bool folderValid = false;
 
@@ -1484,7 +1505,8 @@ namespace DDPM.SA.Common.Settings
                 return folderValid;
             }
 
-            do
+            //[Dean 1122] merge function to single call "IsFolderPathValid", and no need remove folder to avoid attack
+            /*do
             {
                 folderInfo = string.Empty;
                 pathSymbolicLinInfo = string.Empty;
@@ -1501,7 +1523,8 @@ namespace DDPM.SA.Common.Settings
                     count++;
                 }
             } while (!folderValid && count < 2);
-            return folderValid;
+            return folderValid;*/
+            return DDPMFileSecurity.IsFolderPathValid(folderPath, out folderInfo);
         }
 
         public static bool VerifyDDPMMetadata(ILog log, string filePath, List<string> InfoPkey, out string inline_info, out string strJson)
@@ -1653,7 +1676,8 @@ namespace DDPM.SA.Common.Settings
             }
             if (needCheckThumbprintInbox)
             {
-                if (!VerifyFileCertWithoutThumbprint(filePath, out info))
+                //if (!VerifyFileCertWithoutThumbprint(filePath, out info))
+                if (!VerifyFileCertWithInboxThumbprint(filePath, out info))
                 {
                     if (log != null)
                         log.Error($"[IsProcessInfoValid] VerifyFileCertWithThumbprint: {info}");
@@ -1900,6 +1924,36 @@ namespace DDPM.SA.Common.Settings
         {
             X509Certificate2 certificate = new X509Certificate2(strFilePath);
             return certificate;
+        }
+
+        public static bool SignedFileThumbprintVerifier(ILog log, string filePath, string ThumbprintHash, out string info)
+        {
+            VerifierOption myVerifierOptions = VerifierOption.UseOfflineRevocationCheck | VerifierOption.IgnoreExpiredCerts;
+            Dell.Client.Framework.Security.ThumbprintHashes thumbprintHashes = new Dell.Client.Framework.Security.ThumbprintHashes(HashType.Sha1);
+            thumbprintHashes.Add(ThumbprintHash);
+
+            var verifier = new PeAuthenticodeVerifier(myVerifierOptions)
+            {
+                Constraints = new LeafCertConstraints(thumbprintHashes)
+            };
+
+            using (var fileLock = new FileLock(filePath, PathCheckOption.None, lockNow: true))
+            {
+                var result = verifier.Verify(fileLock);
+
+                if (result == Win32ErrorCodes.ERROR_SUCCESS)
+                {
+                    log?.Info($"File has valid signature {filePath}");
+                    info = $"File has valid signature {filePath}";
+                    return true;
+                }
+                else
+                {
+                    log?.Error($"File has invalid signature, last error: {filePath} {result}");
+                    info = $"File has invalid signature, last error: {filePath} {result}";
+                    return false;
+                }
+            }
         }
     }
 }

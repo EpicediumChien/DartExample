@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using VcpCore.Common;
 using static DDPM.SA.Common.ICLICommandTable;
 
 namespace DDPM.SA.Common
@@ -12,29 +13,28 @@ namespace DDPM.SA.Common
 
     public class CLI_RESPONSE
     {
-        public string Model { get; set; }
-        public string SerialNumber { get; set; }
-        public string Index { get; set; }
-        //public List<string> GUID { get; set; }
-        public string ServiceTag { get; set; }
-        public string Command { get; set; }
-        public string TargetFeature { get; set; }
-        public string Value { get; set; }
-        public string Result { get; set; }
-        public string Message { get; set; }
+        public string Model { get; set; } = "N/A";
+        public string SerialNumber { get; set; } = "N/A";
+        public string MarketingName { get; set; } = "N/A";
+        public string Index { get; set; } = "N/A";
+        public string ServiceTag { get; set; } = "N/A";
+        public string Command { get; set; } = "N/A";
+        public string TargetFeature { get; set; } = "N/A";
+        public string Value { get; set; } = "N/A";
+        public string Result { get; set; } = "N/A";
+        public string Message { get; set; } = "N/A";
+
+        public CLI_RESPONSE(MonitorInfo monitor)
+        {
+            Model = monitor.modelName;
+            SerialNumber = monitor.edid.SerialNumber;
+            MarketingName = monitor.MarketingName;
+            Index = (monitor.Index + 1).ToString();
+            ServiceTag = monitor.edid.ServiceTag;
+        }
 
         public CLI_RESPONSE()
         {
-            Model = "N/A";
-            SerialNumber = "N/A";
-            Command = "N/A";
-            TargetFeature = "N/A";
-            Result = "N/A";
-            Index = "N/A";
-            ServiceTag = "N/A";
-            Value = "N/A";
-            Message = "N/A";
-            //GUID = new List<string>();
         }
 
         public string ToJson()
@@ -72,6 +72,14 @@ namespace DDPM.SA.Common
 
     public class CLI_Read_EDID_RESPONSE : CLI_RESPONSE
     {
+        public CLI_Read_EDID_RESPONSE(MonitorInfo monitor) : base(monitor)
+        {
+        }
+
+        public CLI_Read_EDID_RESPONSE() : base()
+        {
+        }
+
         public string AliasDeviceName { get; set; } = "N/A";
         public string Edid { get; set; } = "N/A";
         public string ManufactureID { get; set; } = "N/A";
@@ -89,12 +97,15 @@ namespace DDPM.SA.Common
 
     public class CLI_Get_EDID_RESPONSE : CLI_RESPONSE
     {
-        public string EDID_RAW { get; set; } = "N/A";
-    }
+        public CLI_Get_EDID_RESPONSE(MonitorInfo monitor) : base(monitor)
+        {
+        }
 
-    public class CLI_Get_FW_RESPONSE : CLI_RESPONSE
-    {
-        //public string FWVer { get; set; } = "N/A";
+        public CLI_Get_EDID_RESPONSE() : base()
+        {
+        }
+
+        public string EDID_RAW { get; set; } = "N/A";
     }
 
     public class ConnectedDevices
@@ -170,28 +181,29 @@ namespace DDPM.SA.Common
         }
     }
 
-    public class CLI_Get_Brightness_RESPONSE : CLI_RESPONSE
-    {
-        //public string Brightness { get; set; } = "N/A";
-    }
-
-    public class CLI_Get_Contrast_RESPONSE : CLI_RESPONSE
-    {
-        //public string Contrast { get; set; } = "N/A";
-    }
-
     public class CLI_Get_Luminus_RESPONSE : CLI_RESPONSE
     {
-        public string Luminus { get; set; } = "N/A";
-    }
+        public CLI_Get_Luminus_RESPONSE(MonitorInfo monitor) : base(monitor)
+        {
+        }
 
-    public class CLI_Input_RESPONSE : CLI_RESPONSE
-    {
-        //public string ActiveInputSource { get; set; }
+        public CLI_Get_Luminus_RESPONSE() : base()
+        {
+        }
+
+        public string Luminus { get; set; } = "N/A";
     }
 
     public class CLI_InputList_RESPONSE : CLI_RESPONSE
     {
+        public CLI_InputList_RESPONSE(MonitorInfo monitor) : base(monitor)
+        {
+        }
+
+        public CLI_InputList_RESPONSE() : base()
+        {
+        }
+
         public List<string> InputSourceList { get; set; }
     }
 
@@ -208,6 +220,7 @@ namespace DDPM.SA.Common
             this.TargetFeature = cli_RESPONSE.TargetFeature;
             this.SerialNumber = cli_RESPONSE.SerialNumber;
             this.Model = cli_RESPONSE.Model;
+            this.MarketingName = cli_RESPONSE.MarketingName;
         }
     }
 
@@ -224,6 +237,7 @@ namespace DDPM.SA.Common
             this.TargetFeature = cli_RESPONSE.TargetFeature;
             this.SerialNumber = cli_RESPONSE.SerialNumber;
             this.Model = cli_RESPONSE.Model;
+            this.MarketingName = cli_RESPONSE.MarketingName;
         }
     }
 
@@ -240,6 +254,7 @@ namespace DDPM.SA.Common
             this.TargetFeature = cli_RESPONSE.TargetFeature;
             this.SerialNumber = cli_RESPONSE.SerialNumber;
             this.Model = cli_RESPONSE.Model;
+            this.MarketingName = cli_RESPONSE.MarketingName;
         }
     }
 
@@ -256,12 +271,15 @@ namespace DDPM.SA.Common
             this.TargetFeature = cli_RESPONSE.TargetFeature;
             this.SerialNumber = cli_RESPONSE.SerialNumber;
             this.Model = cli_RESPONSE.Model;
+            this.MarketingName = cli_RESPONSE.MarketingName;
         }
     }
+
     public class CLI_Get_Properties_SupportedResolutionRefreshRate_RESPONSE
     {
         public string Model { get; set; } = "N/A";
         public string SerialNumber { get; set; } = "N/A";
+        public string MarketingName { get; set; } = "N/A";
         public string Index { get; set; } = "N/A";
         public string ServiceTag { get; set; } = "N/A";
         public string Command { get; set; } = "N/A";
@@ -279,8 +297,10 @@ namespace DDPM.SA.Common
             this.TargetFeature = cli_RESPONSE.TargetFeature;
             this.SerialNumber = cli_RESPONSE.SerialNumber;
             this.Model = cli_RESPONSE.Model;
+            this.MarketingName = cli_RESPONSE.MarketingName;
         }
     }
+
     //public class CLI_Get_Properties_SupportedResolutionRefreshRate_RESPONSE : CLI_RESPONSE
     //{
     //    public List<string> AllResolutionRefreshRate { get; set; }
@@ -310,6 +330,7 @@ namespace DDPM.SA.Common
             this.TargetFeature = cli_RESPONSE.TargetFeature;
             this.SerialNumber = cli_RESPONSE.SerialNumber;
             this.Model = cli_RESPONSE.Model;
+            this.MarketingName = cli_RESPONSE.MarketingName;
         }
     }
 
@@ -327,8 +348,10 @@ namespace DDPM.SA.Common
             this.TargetFeature = cli_RESPONSE.TargetFeature;
             this.SerialNumber = cli_RESPONSE.SerialNumber;
             this.Model = cli_RESPONSE.Model;
+            this.MarketingName = cli_RESPONSE.MarketingName;
         }
     }
+
     public class CLI_SWU_RESPONSE : CLI_RESPONSE
     {
         public List<string> SWUpdateRESPONSE { get; set; }
@@ -342,45 +365,50 @@ namespace DDPM.SA.Common
             this.TargetFeature = cli_RESPONSE.TargetFeature;
             this.SerialNumber = cli_RESPONSE.SerialNumber;
             this.Model = cli_RESPONSE.Model;
+            this.MarketingName = cli_RESPONSE.MarketingName;
         }
-    }
-    public class CLI_Set_Input_RESPONSE : CLI_RESPONSE
-    {
-        public string Set_ActiveInputSource { get; set; }
     }
 
     #region ColorProfile
-
-    public class CLI_Get_ActiveColorPresetList_RESPONSE : CLI_RESPONSE
-    {
-        //public string Get_ActiveColorPresetList { get; set; }
-    }
-
-    public class CLI_Get_AllSupportedColorPresetList_RESPONSE : CLI_RESPONSE
-    {
-        //public List<string> Get_AllSupportedColorPresetList { get; set; }
-    }
-
-    public class CLI_Set_SupportedColorPreset_RESPONSE : CLI_RESPONSE
-    {
-        //public string Set_SupportedColorPreset { get; set; }
-    }
-
     // jim modify 20240608
     public class CLI_Set_AllActiveColorPreset_RESPONSE : CLI_RESPONSE
     {
+        public CLI_Set_AllActiveColorPreset_RESPONSE(MonitorInfo monitor) : base(monitor)
+        {
+        }
+
+        public CLI_Set_AllActiveColorPreset_RESPONSE() : base()
+        {
+        }
+
         public string Set_AllActiveColorPreset { get; set; }
     }
 
     // jim modify 20240608
     public class CLI_Set_AllMonitorProfile_RESPONSE : CLI_RESPONSE
     {
+        public CLI_Set_AllMonitorProfile_RESPONSE(MonitorInfo monitor) : base(monitor)
+        {
+        }
+
+        public CLI_Set_AllMonitorProfile_RESPONSE() : base()
+        {
+        }
+
         public string Set_AllMonitorProfile { get; set; }
     }
 
     // jim modify 20240608
     public class CLI_Get_AllMonitorProfile_RESPONSE : CLI_RESPONSE
     {
+        public CLI_Get_AllMonitorProfile_RESPONSE(MonitorInfo monitor) : base(monitor)
+        {
+        }
+
+        public CLI_Get_AllMonitorProfile_RESPONSE() : base()
+        {
+        }
+
         public string Get_AllMonitorProfile { get; set; }
     }
 
@@ -390,6 +418,14 @@ namespace DDPM.SA.Common
 
     public class CLI_RESPONSE_PxpMode : CLI_RESPONSE
     {
+        public CLI_RESPONSE_PxpMode(MonitorInfo monitor) : base(monitor)
+        {
+        }
+
+        public CLI_RESPONSE_PxpMode() : base()
+        {
+        }
+
         public string[] SupportedModes { get; set; }
         public string CurrentMode { get; set; }
         public UInt16 CurrentModeCode { get; set; }
@@ -397,7 +433,15 @@ namespace DDPM.SA.Common
 
     public class CLI_RESPONSE_SubInput : CLI_RESPONSE
     {
-        public int SubInputCount { get; set; } = 0;
+        public CLI_RESPONSE_SubInput(MonitorInfo monitor) : base(monitor)
+        {
+        }
+
+        public CLI_RESPONSE_SubInput() : base()
+        {
+        }
+
+        // public int SubInputCount { get; set; } = 0;
         public string Sub1InputSource { get; set; }
         public string Sub2InputSource { get; set; }
         public string Sub3InputSource { get; set; }
@@ -407,9 +451,23 @@ namespace DDPM.SA.Common
 
     public class Get_DeviceData
     {
+        public Get_DeviceData(MonitorInfo monitor)
+        {
+            Model = monitor.modelName;
+            SerialNumber = monitor.edid.SerialNumber;
+            MarketingName = monitor.MarketingName;
+            Index = (monitor.Index + 1).ToString();
+            ServiceTag = monitor.edid.ServiceTag;
+        }
+
+        public Get_DeviceData()
+        {
+        }
+
         public string Index { get; set; }
         public string DeviceType { get; set; } = "Display";
         public string Model { get; set; }
+        public string MarketingName { get; set; }
         public string SerialNumber { get; set; }
         public string ServiceTag { get; set; }
         public string Manufacturer { get; set; } = "N/A";
@@ -575,11 +633,27 @@ namespace DDPM.SA.Common
 
     public class Get_Capabilitystring : CLI_RESPONSE
     {
+        public Get_Capabilitystring(MonitorInfo monitor) : base(monitor)
+        {
+        }
+
+        public Get_Capabilitystring() : base()
+        {
+        }
+
         public string CapabilityString { get; set; }
     }
 
     public class Apply_Configuration : CLI_RESPONSE
     {
+        public Apply_Configuration(MonitorInfo monitor) : base(monitor)
+        {
+        }
+
+        public Apply_Configuration() : base()
+        {
+        }
+
         public string OptimalResolution { get; set; } = "N/A";
         public string Resolution { get; set; } = "N/A";
         public string ActiveInputSource { get; set; } = "N/A";

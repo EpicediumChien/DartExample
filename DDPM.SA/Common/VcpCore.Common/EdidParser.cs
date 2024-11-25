@@ -165,11 +165,11 @@ namespace VcpCore.Common
             return text3;
         }
 
-        public int GetManufactureYearAndMonth(ref int nMonth, ref int week)
+        public int GetManufactureYearAndMonth(ref EDID eDID)
         {
-            nMonth = -1;
+            eDID.Month = -1;
             int year = -1;
-            week = -1;
+            eDID.Week = -1;
             if (HexString.Length < (EDID_Header.Length + Manufacturer_ID_Len + VENDOR_ID_Len + SerialNum_Len + ManufactureDate_Len + 4))
             {
                 return 0;
@@ -186,19 +186,19 @@ namespace VcpCore.Common
 
             try
             {
-                week = int.Parse(HexString.Substring(EDID_Header.Length + Manufacturer_ID_Len + VENDOR_ID_Len + SerialNum_Len, ManufactureDate_Len).Substring(0, 2), NumberStyles.HexNumber);
+                eDID.Week = int.Parse(HexString.Substring(EDID_Header.Length + Manufacturer_ID_Len + VENDOR_ID_Len + SerialNum_Len, ManufactureDate_Len).Substring(0, 2), NumberStyles.HexNumber);
             }
             catch (Exception)
             {
                 return year;
             }
 
-            nMonth = new DateTime(year, 1, 1).AddDays(7 * (week - 1)).Month;
+            eDID.Month = new DateTime(year, 1, 1).AddDays(7 * (eDID.Week - 1)).Month;
             //DateTime dt = new DateTime(year, 1, 1).AddDays(7 * (Week - 1);
 
             try
             {
-                string strMonth = DateTimeFormatInfo.CurrentInfo.GetAbbreviatedMonthName(nMonth);
+                string strMonth = DateTimeFormatInfo.CurrentInfo.GetAbbreviatedMonthName(eDID.Month);
             }
             catch (Exception)
             {

@@ -5,6 +5,7 @@ using DDPM.UI.Common;
 using DDPM.UI.Plugin.Common;
 using static Dell.Client.Framework.UX.WPF.WinApi;
 using System.Reflection.Metadata;
+using System.Windows.Media;
 
 namespace DDPM.UI.Module.PenSettings
 {
@@ -21,15 +22,25 @@ namespace DDPM.UI.Module.PenSettings
             InitializeComponent();
             _vm = vm;
 
-      txtCaption.Text = Strings.PenSettings;
-      txtTipSensitivity.Text = Strings.TipSensitivity;
-      txtTipTooltip.Text = Strings.TipTooltip;
-      txtTiltSensitivity.Text = Strings.TiltSensitivity;
-      txtTiltTooltip.Text = Strings.TiltTooltip;
-      txtPairWithTile.Text = Strings.PairWithTile;
-      txtPairTooltip.Text = Strings.PairTooltip;
-      btnGetStart.Content = Strings.GetStarted2;
-    }
+            txtCaption.Text = Strings.PenSettings;
+            txtTipSensitivity.Text = Strings.TipSensitivity;
+            txtTipTooltip.Text = Strings.TipTooltip;
+            txtTiltSensitivity.Text = Strings.TiltSensitivity;
+            txtTiltTooltip.Text = Strings.TiltTooltip;
+            txtPairWithTile.Text = Strings.PairWithTile;
+            txtPairTooltip.Text = Strings.PairTooltip;
+            btnGetStart.Content = Strings.GetStarted2;
+
+            //DoubleCollection tickMarks = new DoubleCollection();
+            //tickMarks.Add(0);
+            //tickMarks.Add(12.5);
+            //tickMarks.Add(25);
+            //tickMarks.Add(60);
+            //tickMarks.Add(62.5);
+            //tickMarks.Add(75);
+            //tickMarks.Add(100);
+            //TipSlider.Ticks = tickMarks;
+        }
 
         private void Slider_DragStarted(object sender, System.Windows.Controls.Primitives.DragStartedEventArgs e)
         {

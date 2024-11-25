@@ -249,6 +249,65 @@ namespace DDPM.SA.Plugins.User.DisplayProperties
                 return Task.FromResult(false);
             }
         }
+
+        public Task<bool> SetOrientation_New(string DisplayName, DisplayOrientation Orientation)
+        {
+            int result = DISP_CHANGE_BADMODE;
+
+            try
+            {
+                _logs?.DebugMsg_1("SetOrientation_New start");
+                _logs?.DebugMsg_1($"     Setting param:  DN:{DisplayName} Orientation:{Orientation.ToString()}");
+                DEVMODE devMode = new DEVMODE();
+                devMode.dmSize = (short)Marshal.SizeOf(typeof(DEVMODE));
+                if (_EnumDisplaySettings(DisplayName, ENUM_CURRENT_SETTINGS, ref devMode))
+                {
+                    if ((int)(devMode.dmDisplayOrientation + Orientation) % 2 == 1)
+                    {
+                        int dmPelsHeight = devMode.dmPelsHeight;
+                        devMode.dmPelsHeight = devMode.dmPelsWidth;
+                        devMode.dmPelsWidth = dmPelsHeight;
+                    }
+                    switch (Orientation)
+                    {
+                        case DisplayOrientation.Angle90:
+                            devMode.dmDisplayOrientation = 1;//3;
+                            break;
+                        case DisplayOrientation.Angle180:
+                            devMode.dmDisplayOrientation = 2;
+                            break;
+                        case DisplayOrientation.Angle270:
+                            devMode.dmDisplayOrientation = 3;// 1;
+                            break;
+                        case DisplayOrientation.Angle0:
+                            devMode.dmDisplayOrientation = 0;
+                            break;
+                    }
+
+                    result = _ChangeDisplaySettingsEx(DisplayName, ref devMode, IntPtr.Zero, ChangeDisplaySettingsFlags.CDS_UPDATEREGISTRY, IntPtr.Zero);
+                }
+                else
+                {
+                    long errorCode = _GetLastError();
+                    _logs?.DebugMsg_1($"     EnumDisplaySettings error. 0x{errorCode:X}");
+                }
+            }
+            catch (Exception ex)
+            {
+                _logs?.DebugMsg_1($"     SetOrientation_New, got exception: {ex.ToString()}"); ;
+            }
+
+            _logs?.DebugMsg_1($"SetOrientation_New, End...(result:{result})");
+            if (result == DISP_CHANGE_SUCCESSFUL)
+            {
+                return Task.FromResult(true);
+            }
+            else
+            {
+                return Task.FromResult(false);
+            }
+        }
+
         public Task<bool> SetOrientation(string DisplayName, DisplayOrientation orientation)
         {
             int result = DISP_CHANGE_BADMODE;
@@ -304,9 +363,11 @@ namespace DDPM.SA.Plugins.User.DisplayProperties
                 {
                 }
             }
-            catch
+            catch (Exception ex)
             {
+                _logs?.DebugMsg_1($"{nameof(SetOrientation)}, got exception: {ex.ToString()}");
             }
+
             if (result == DISP_CHANGE_SUCCESSFUL)
             {
                 return Task.FromResult(true);

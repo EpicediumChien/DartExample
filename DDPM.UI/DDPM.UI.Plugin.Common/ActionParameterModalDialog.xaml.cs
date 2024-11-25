@@ -1,6 +1,7 @@
 ﻿using DDPM.SA.Common.Security;
 using DDPM.UI.Common;
 using DDPM.UI.Resources.Helper;
+using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -64,6 +65,7 @@ namespace DDPM.UI.Plugin.Common
                 case AdvancedAction.OpenWebPage:
                     Caption = Strings.OpenWebPage;
                     txtKeystroke.Text = parameter;
+                    txtKeystroke.PreviewTextInput += TxtKeystroke_PreviewTextInput;
                     txtDescription.Text = Strings.OpenWebPageDesc;
                     spKeystroke.Visibility = Visibility.Visible;
                     txtKeystroke.Watermark = LangHelper.Instance["URL"];
@@ -76,6 +78,12 @@ namespace DDPM.UI.Plugin.Common
             btnClear.Caption = Strings.Clear;
             btnSave.Caption = Strings.Save;
             btnBrowse.Caption = Strings.Browse;
+        }
+
+        private void TxtKeystroke_PreviewTextInput(object sender, TextCompositionEventArgs e)
+        {
+            Regex regex = new Regex(@"^[0-9a-zA-Z _.~:@/?&=#%+[\]!$()*,.;-]+$");
+            e.Handled = !regex.IsMatch(e.Text);
         }
 
         private void CancelClick(object sender, MouseButtonEventArgs e)
@@ -93,14 +101,14 @@ namespace DDPM.UI.Plugin.Common
 
         private void SaveClick(object sender, MouseButtonEventArgs e)
         {
-            if (_deviceCat == AdvancedAction.OpenWebPage)
-            {
-                if (!InputHelper.InputValidation_WebURL(txtKeystroke.Text, out string info))
-                {
-                    MessageBox.Show(LangHelper.Instance["InvalidURL"]);
-                    return;
-                }
-            }
+            //if (_deviceCat == AdvancedAction.OpenWebPage)
+            //{
+            //    if (!InputHelper.InputValidation_WebURL(txtKeystroke.Text, out string info))
+            //    {
+            //        MessageBox.Show(LangHelper.Instance["InvalidURL"]);
+            //        return;
+            //    }
+            //}
             DialogResult = true;
             Close();
         }

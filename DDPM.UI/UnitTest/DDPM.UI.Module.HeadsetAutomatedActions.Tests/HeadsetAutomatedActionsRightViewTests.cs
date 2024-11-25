@@ -20,6 +20,8 @@ namespace DDPM.UI.Module.HeadsetAutomatedActions.Tests
         private HeadsetViewModel? vm;
         private Mock<ILog>? logMock;
         private ILog? log;
+        private Mock<IShowPluginManager>? showPluginManagerMock;
+        private IShowPluginManager? showPluginManager;
         private Mock<IDeviceManagerSA>? deviceManagerSAMock;
         private IDeviceManagerSA? deviceManagerSA;
         private Mock<IConsole>? consoleMock;
@@ -38,11 +40,13 @@ namespace DDPM.UI.Module.HeadsetAutomatedActions.Tests
             System.Windows.Application.Current.Resources.MergedDictionaries.Add(resourceDictionary);
             logMock = new Mock<ILog>();
             log = logMock.Object;
+            showPluginManagerMock = new Mock<IShowPluginManager>();
+            showPluginManager = showPluginManagerMock.Object;
             deviceManagerSAMock = new Mock<IDeviceManagerSA>();
             deviceManagerSA = deviceManagerSAMock.Object;
             consoleMock = new Mock<IConsole>();
             console = consoleMock.Object;
-            vm = new HeadsetViewModel(console, log, deviceManagerSA);
+            vm = new HeadsetViewModel(showPluginManager, console, log, deviceManagerSA);
             var currentDeviceInfo = new DeviceInfo();
             vm.CurrentDeviceInfo = currentDeviceInfo;
             HeadsetAutomatedActionsRightView = new HeadsetAutomatedActionsRightView(vm);

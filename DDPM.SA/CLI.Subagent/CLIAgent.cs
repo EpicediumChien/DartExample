@@ -24,6 +24,7 @@ using System.Threading.Tasks;
 using static DDPM.SA.Common.ICLICommandTable;
 using DDPM.SA.Obfuscation;
 using System.IO;
+using System.Collections.Generic;
 
 namespace CLI.Subagent
 {
@@ -116,39 +117,48 @@ namespace CLI.Subagent
         private void RunManagement(string[] args, bool runMode)
         {
             // 2024-08-28 Casper: move upper to let command parser work earlier
-            ICLICommandTable iCLICommandTable = new ICLICommandTable(_Log);
-            CommandLineInput commandLineInput = iCLICommandTable.StringProcessing(args);
+            ICLICommandTable iCLICommandTable = new ICLICommandTable(_Log);            
+            List<CommandLineInput> commandLineInputs = new List<CommandLineInput>();
 
-            // 2024-06-07 Elie, we have to check if it's null before using it.
-            if (true != commandLineInput.isCliCommandsProcessCompleted)
+            //support multi-command one line, Dean 1115
+            if (iCLICommandTable.isContainMultipleCommand(args))
             {
-                _exitcode = ICLICommandTable.Response_FormatErrorRecommendation(commandLineInput); //parsing fail
-                //_exitcode = ICLICommandTable.Response_FormatError();
+                commandLineInputs = iCLICommandTable.StringProcessing_multi(args);
+            }
+            else
+            {
+                CommandLineInput commandLineInput = iCLICommandTable.StringProcessing(args);
+                commandLineInputs.Add(commandLineInput);
+            }
+            //1115 Dean add null check
+            if (commandLineInputs == null || commandLineInputs.Count == 0)
+            {
+                _exitcode = ICLICommandTable.Response_FormatError();
+                return;
+            }
+            // 2024-06-07 Elie, we have to check if it's null before using it.
+            //if (true != commandLineInput.isCliCommandsProcessCompleted)
+            int idx = commandLineInputs.FindIndex(x => x.isCliCommandsProcessCompleted == false);
+            if (idx >= 0)
+            {
+                _exitcode = ICLICommandTable.Response_FormatErrorRecommendation(commandLineInputs[idx]); //parsing fail
                 return;
             }
 
             // 2024-08-24 Casper: Add Help command
             if (commandLineInput.Command.Equals("HELP") && commandLineInput.TargetFeature != "DISPLAY")
             {
-                _exitcode = ICLICommandTable.Response_HelpCommand(commandLineInput);
+                _exitcode = ICLICommandTable.Response_HelpCommand(commandLineInputs[idx]);
                 return;
             }
-
-            if (commandLineInput.DeviceIndex.Contains("-1"))
+            idx = commandLineInputs.FindIndex(x => x.DeviceIndex.Contains("-1"));
+            if (idx >= 0)
             {
-                _exitcode = ICLICommandTable.Response_WrongIndex(commandLineInput);
+                _exitcode = ICLICommandTable.Response_WrongIndex(commandLineInputs[idx]);
                 return;
             }
 
             InitializeCliManagerPlugin();
-
-            commandLineInput.isCliRunAdmin = runMode;
-            if (!runMode)//0724 only allow elevated privilege to perform action
-            {
-                _exitcode = ICLICommandTable.Response_UnelevatedError(commandLineInput);
-                return;
-            }
-
             if (_PluginAvailabilityTrigger_CliManager.WaitOne(TimeSpan.FromSeconds(TIMEOUT_IN_SECONDS)))
             {
                 if (_CliManagerPlugin == null)
@@ -156,21 +166,42 @@ namespace CLI.Subagent
                     _exitcode = (int)CLI_ExitCode.null_cli_manager;
                     return;
                 }
+                List<int> returnCode = new List<int>();
+                foreach (CommandLineInput commandLineInput in commandLineInputs)
+                {
+                    commandLineInput.isCliRunAdmin = runMode;
+                    if (!runMode)//0724 only allow elevated privilege to perform action
+                    {
+                        _exitcode = ICLICommandTable.Response_UnelevatedError(commandLineInput);
+                        return;
+                    }
 
-                //***
-                //Assign command line input to CLIManager and it will pass data to CLIProxy (Relay)
-                //CLIProxy should handle all possible condition and return json serialize string included in CLIEventResult
-                //***
-                CLIEventResult result = _CliManagerPlugin.PerformCommandLineRelay(commandLineInput).Result;
-                _exitcode = result.ExitCode;
-                System.Console.WriteLine(result.serialize_Json_response);
-                return;
+
+
+                    //***
+                    //Assign command line input to CLIManager and it will pass data to CLIProxy (Relay)
+                    //CLIProxy should handle all possible condition and return json serialize string included in CLIEventResult
+                    //***
+                    CLIEventResult result = _CliManagerPlugin.PerformCommandLineRelay(commandLineInput).Result;
+                    //_exitcode = result.ExitCode;
+                    returnCode.Add(result.ExitCode);
+                    System.Console.WriteLine(result.serialize_Json_response);
+                    continue;
+
+                }
+                int n = returnCode.FindIndex(x => (x != (int)CLI_ExitCode.success));
+                if (n >= 0)
+                {
+                    _exitcode = returnCode[n];
+                }
+                else
+                    _exitcode = (int)CLI_ExitCode.success;
             }
             else
             {
                 //_Log.Error($"{nameof(IDisplayService)} was not found after {TIMEOUT_IN_SECONDS}s.");
                 _Log.Error($"{nameof(ICliManagerIT)} was not found after {TIMEOUT_IN_SECONDS}s.");
-                _exitcode = ICLICommandTable.Response_TimeoutError(commandLineInput);
+                _exitcode = ICLICommandTable.Response_TimeoutError(commandLineInputs[0]);
                 return;
             }
         }

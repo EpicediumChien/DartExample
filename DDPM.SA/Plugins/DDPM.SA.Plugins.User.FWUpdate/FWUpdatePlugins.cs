@@ -811,7 +811,8 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                         Directory.CreateDirectory(savePath);
                     }
                     //0926 Bruce Add Security
-                    if (!CheckFold(savePath, out string FolderInfo, out string PathSymbolicLinInfo))
+                    //if (!CheckFold(savePath, out string FolderInfo, out string PathSymbolicLinInfo))
+                    if (!DDPMFileSecurity.CheckFold(savePath, out string FolderInfo, out string PathSymbolicLinInfo))
                     {
                         foreach (FWUpdateInfo fwUpdateInfo in fwUpdateInfos)
                         {
@@ -843,7 +844,8 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                     }
                     string url = fwUpdateInfos[i].ServerPath;
                     //0926 Bruce Add Security
-                    if (!CheckFold(savePath, out FolderInfo, out PathSymbolicLinInfo))
+                    //if (!CheckFold(savePath, out FolderInfo, out PathSymbolicLinInfo))
+                    if (!DDPMFileSecurity.CheckFold(savePath, out FolderInfo, out PathSymbolicLinInfo))
                     {
                         fwUpdateInfos[i].FWUErrorCode = FWUErrorCode.FolderIsNotSafe;
                         _notificationStr = $"Firmware update unsuccessful.";
@@ -892,7 +894,8 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                         Directory.CreateDirectory(extractPath);
                     }
                     //0926 Bruce Add Security
-                    if (!CheckFold(extractPath, out FolderInfo, out PathSymbolicLinInfo))
+                    //if (!CheckFold(extractPath, out FolderInfo, out PathSymbolicLinInfo))
+                    if (!DDPMFileSecurity.CheckFold(savePath, out FolderInfo, out PathSymbolicLinInfo))
                     {
                         fwUpdateInfos[i].FWUErrorCode = FWUErrorCode.FolderIsNotSafe;
                         _logs.DebugMsg_1(fwUpdateInfos[i].DeviceName + " FolderIsNotSafe:" + FolderInfo);
@@ -1484,7 +1487,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                 }
                 if (fwUpdateInfo.DeviceType == DeviceType.LogicalDock || fwUpdateInfo.DeviceType == DeviceType.PhysicalWiredDock)
                 {
-                    arguments += $" /l=\"{logPath}\\{DateTime.Now.ToString("yyyy-MM-dd_HH_mm_ss")}\"";
+                    arguments += $" /f /l=\"{logPath}\\{DateTime.Now.ToString("yyyy-MM-dd_HH_mm_ss")}\"";
                 }
                 else
                 {
@@ -2013,7 +2016,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
             ProgressUpdate_Notify?.AsyncFireAndForget(this, fWUpdateInfo, System.Threading.CancellationToken.None);
             _logs.DebugMsg_1($"sendMessageToEvent {fWUpdateInfo.DeviceName} {fWUpdateInfo.TheLatestVersion} {fWUpdateInfo.ProcessName} {fWUpdateInfo.ProcessProgress} {DateTime.Now}");
         }
-        private bool CheckFold(string path, out string folderInfo, out string pathSymbolicLinInfo)
+        /*private bool CheckFold(string path, out string folderInfo, out string pathSymbolicLinInfo)
         {
             folderInfo = "Error";
             pathSymbolicLinInfo = "Error";
@@ -2038,7 +2041,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                 }
             } while (!folderValid && count < 2);
             return folderValid;
-        }
+        }*/
         private bool CheckSHA(string filePath, out string fileCAInfo)
         {
             CertificateCheck certificateCheck = new CertificateCheck(_logs);

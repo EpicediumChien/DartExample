@@ -42,7 +42,6 @@ namespace DDPM.SA.Common
         /// HDR變更事件，回傳HDR狀態
         /// </summary>
         event EventHandler<bool> HDRChangeEvent;
-        event EventHandler<DisplayOrientation> OSDOrientationChangeEvent;
 
         Task<DisplaySupportedProperties> GetDisplaySupportedProperties(MonitorInfo monitorInfo);
 
@@ -54,7 +53,7 @@ namespace DDPM.SA.Common
 
         Task<bool> SetResolutions(MonitorInfo monitorInfos, Properties properties);
 
-        Task<bool?> SetOrientation(MonitorInfo monitorInfos, DisplayOrientation orientation);
+        Task<bool> SetOrientation(MonitorInfo monitorInfos, DisplayOrientation orientation);
 
         Task<bool> CallWindowsDisplaySetting();
 
@@ -134,6 +133,8 @@ namespace DDPM.SA.Common
 
         Task<Dictionary<string, PCsInfo>> GetUSBKVMPCsList(MonitorInfo monitorInfo, Dictionary<string, InputInfo> inputList, List<InputSourceObj> subInputList);
 
+        Task<bool> isScreenPartition(MonitorInfo monitorInfo);
+
         #endregion USBKVM
 
         #region EasyArange
@@ -165,6 +166,12 @@ namespace DDPM.SA.Common
 
         public Task<bool> SetEASelectedLayout(MonitorInfo monitorInfo, SplitJson spJson);
 
+        /// <summary>
+        /// Return current Span across multiple monitor option is Enabled/Disabled;
+        /// Note that it's different with EzSettings.IsSpanAcrossMultiMonitors (=ON|OFF)
+        /// </summary>
+        /// <returns>True=Enabled; False=Disabled</returns>
+        public Task<bool> GetIsSpanEnabled();
         #endregion EasyArange
 
         #region Gaming

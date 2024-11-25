@@ -176,7 +176,8 @@ namespace DDPM.UI.Common.ViewModels
                     //Text = mg.GroupName, //Robert_Lin,2024-7-26, GroupName is ID used to identify a Group
                     Text = mg.VbarText,      // VbarText is the display string on VbarItem
                     //IconTemplate = mg.IconTemplate
-                    IconImage = mg.GroupIcon
+                    IconImage = mg.GroupIcon,
+                    IconCanvas = mg.GroupIconCanvas
                 };
                 //Use IconTemplate (But it not workable)
                 //VbarItem1 vbarItem = new VbarItem1()
