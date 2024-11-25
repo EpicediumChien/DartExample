@@ -213,7 +213,16 @@ namespace DDPM.SA.Common
         Task<bool> SetBand5GainAsync(string Guid, int newValue);
         Task<bool> SetAncModeAsync(string Guid, int newValue);
         Task<bool> SetAncGainAsync(string Guid, int newValue);
-        Task<bool> SetWearDetectionAsync(string Guid, int newValue);
+        Task<bool> SetWearDetectionAsync(string Guid, bool newValue);
+
+        Task<bool> SetIsWearDetectionMuteMicEnabledAsync(string Guid, bool newValue);
+
+        Task<bool> SetIsWearDetectionPauseMusicEnabledAsync(string Guid, bool newValue);
+
+        Task<bool> SetWearDetectionQuickPauseAsync(string Guid, int newValue);
+
+        Task<bool> SetWearDetectionSensitivityAsync(string Guid, int newValue);
+
         Task<bool> SetMicNCIncomingAsync(string Guid, bool newValue);
         Task<bool> SetUnPairAsync(string Guid, bool newValue);
         Task<bool> SetFactoryResetAsyncValueForHeadset(string Guid, bool newValue);
@@ -280,7 +289,15 @@ namespace DDPM.SA.Common
         Task<int> GetBand5GainAsync(string Guid);
         Task<int> GetAncModeAsync(string Guid);
         Task<int> GetAncGainAsync(string Guid);
-        Task<int> GetWearDetectionAsync(string Guid);
+        Task<bool> GetWearDetectionAsync(string Guid);
+        Task<bool> GetIsWearDetectionPauseMusicEnabledAsync(string Guid);
+
+        Task<bool> GetIsWearDetectionMuteMicEnabledAsync(string Guid);
+
+        Task<int> GetWearDetectionSensitivityAsync(string Guid);
+
+        Task<int> GetWearDetectionQuickPauseAsync(string Guid);
+
         Task<bool> GetIsMicNCIncomingSupportedAsync(string Guid);
 
         Task<bool> GetIsBoomMicSupportedAsync(string Guid);
