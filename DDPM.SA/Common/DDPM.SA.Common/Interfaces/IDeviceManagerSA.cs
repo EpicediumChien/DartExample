@@ -822,6 +822,8 @@ namespace DDPM.SA.Common
         Task<string> GetCameraFirmwareVersionByDTP(string Guid);
         Task<bool> GetIsPropertyFOVSupportedByDTP(string Guid);
         Task<int> GetFieldOfView(string Guid);
+        Task<bool> GetIsWindowsHelloCapabilityVerified(string Guid);
+        Task<bool> GetIsAllSupportedResolutionsFound(string Guid);
         Task<bool> GetIsPropertyHDRSupported(string Guid);
         Task<bool> GetIsHDROn(string Guid);
         Task<bool> GetIsPropertyAntiFlickerSupported(string Guid);
