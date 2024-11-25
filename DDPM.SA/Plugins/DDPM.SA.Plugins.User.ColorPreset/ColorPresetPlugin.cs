@@ -2573,6 +2573,207 @@ namespace ColorPreset.Plugins
         }
 
         /// <summary>
+        /// 從伺服端下載ICC.json檔，下載後會 Run Deserialize
+        /// </summary>
+        /// <param name="m">Monitor Info</param>
+        /// <returns> Run Deserialize ICC.json後的 object   </returns>
+        public Task<IIC_Metadata> DownloadColorManagementData(MonitorInfo m, ISettingsManagerDev _SettingsPlugin, string savelPath = "")
+        {
+            writelog("ColorPresetPlugin DownloadColorManagementData requested ...");
+
+            try
+            {
+                if (_SettingsPlugin_internal == null)
+                {
+                    writelog("ColorPresetPlugin DownloadColorManagementData SettingsPlugin initiate");
+                    _SettingsPlugin_internal = _SettingsPlugin;
+                }
+
+                string strFilePath = string.Empty;
+                string strReadJson = string.Empty;
+
+                // ICC profiles mapping schema
+                FileStream fileStream;
+                FileStream fileStream_ICM;
+
+                _ICC_Metadata.Is_Support_ICC_DeviceName = false;
+
+                string strICC_Folder;
+                if (string.IsNullOrEmpty(savelPath))
+                {
+                    strICC_Folder = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\Dell\\Dell Display and Peripheral Manager" + @"\ICC\";
+                }
+                else
+                {
+                    strICC_Folder = savelPath;
+                }
+
+                writelog($"DownloadColorManagementData Folder = {strICC_Folder}");
+
+                if (!Directory.Exists(strICC_Folder))
+                {
+                    Directory.CreateDirectory(strICC_Folder);
+                    writelog("DownloadColorManagementData Folder created.");
+                }
+
+                _ICC_Metadata.strICC_Folder = String.Format($"{strICC_Folder}");
+
+                string url = string.Empty;
+                //string strFilePath = string.Empty;
+                download = new Download(_logs);
+                string downloadInfo = string.Empty;
+                // 20240627 jim add
+                string str_EnableDDPMMetadataTest = string.Empty;
+                string str_IncludeTestPath = string.Empty;
+
+                // 20240627 jim add
+                RegistryKey localKey64 = RegistryKey.OpenBaseKey(Microsoft.Win32.RegistryHive.LocalMachine, RegistryView.Registry64);
+
+                if (localKey64 != null)
+                {
+                    writelog("DownloadColorManagementData read UpdateServer requested ...");
+
+                    RegistryKey registryKey = localKey64.OpenSubKey(@"SOFTWARE\DELL\Dell Display and Peripheral Manager\UpdateServer", false);
+
+                    if (registryKey != null)
+                    {
+                        writelog("DownloadColorManagementData read EnableDDPMMetadataTest / IncludeTestPath requested ...");
+
+                        object obj_tmp_key_EnableDDPMMetadataTest = registryKey?.GetValue("EnableDDPMMetadataTest");
+                        object obj_tmp_keyIncludeTestPath = registryKey?.GetValue("IncludeTestPath");
+
+                        if (obj_tmp_key_EnableDDPMMetadataTest != null)
+                        {
+                            str_EnableDDPMMetadataTest = (string)obj_tmp_key_EnableDDPMMetadataTest;
+                            writelog($"DownloadColorManagementData EnableDDPMMetadataTest = {str_EnableDDPMMetadataTest}");
+                        }
+
+                        if (obj_tmp_keyIncludeTestPath != null)
+                        {
+                            str_IncludeTestPath = (string)obj_tmp_keyIncludeTestPath;
+                            writelog($"DownloadColorManagementData IncludeTestPath = {str_IncludeTestPath}");
+                        }
+                    }
+                }
+
+                if (str_EnableDDPMMetadataTest.ToUpper().Contains("TRUE"))
+                {
+                    string str_url_prefix = @"https://clientperipherals.dell.com/DDPM/";
+                    str_url_prefix += str_IncludeTestPath;
+                    str_url_prefix += @"/Windows/Display/ICC/";
+                    str_url_prefix += @"icc_profile_sha256_new.json";
+
+                    url = str_url_prefix;
+
+                    if (!string.IsNullOrEmpty(url))
+                    {
+                        //[Dean 1122] remove this action and change to return directly if folder has symlink
+                        //20240920 Add Security
+                        //string FileInfo;
+                        //if (!DDPM.SA.Common.Settings.DDPMFileSecurity.SRemoveSymbolicFolder(strICC_Folder, out FileInfo))
+                        //{
+                        //    writelog($"[DownloadICCData] {FileInfo}");
+                        //    return System.Threading.Tasks.Task.FromResult(_ICC_Metadata);
+                        //}
+                        string info = string.Empty;
+                        if (!DDPMFileSecurity.IsFolderPathValid(strICC_Folder, out info))
+                        {
+                            writelog($"[DownloadColorManagementData][IsFolderPathValid] {info}");
+                            return System.Threading.Tasks.Task.FromResult(_ICC_Metadata);
+                        }
+
+                        strFilePath = Path.Combine(strICC_Folder, Path.GetFileName(url));
+                        string Info;
+                        if (download.DownloadFile(url, strFilePath, out downloadInfo))
+                        {
+                            if (System.IO.File.Exists(strFilePath))
+                            {
+                                //Elsa Add Security
+                                if (!DDPM.SA.Common.Settings.DDPMFileSecurity.IsFilePathValid(strFilePath, out Info))
+                                {
+                                    writelog($"[DownloadColorManagementData] {Info}");
+                                    //return null;
+                                    return System.Threading.Tasks.Task.FromResult(_ICC_Metadata);
+                                }
+
+                                strReadJson = string.Empty;
+                                if (!CheckICC_JSON_Security(strFilePath, out strReadJson))
+                                {
+                                    writelog($"[DownloadColorManagementData] CheckICC_JSON_Security Fail. {strFilePath}");
+                                    return System.Threading.Tasks.Task.FromResult(_ICC_Metadata);
+                                }
+
+                                if (strReadJson.Length < 1)
+                                {
+                                    using (var reader = new StreamReader(strFilePath))
+                                    {
+                                        strReadJson = reader.ReadToEnd();
+                                    }
+                                }
+
+                                if (strReadJson == string.Empty || strReadJson.Length == 0)
+                                    return System.Threading.Tasks.Task.FromResult(_ICC_Metadata);
+
+                                try
+                                {
+
+                                    _ICC_Metadata = RunDeserializeObject(strReadJson);
+                                    _ICC_Metadata.strICC_Folder = strICC_Folder;
+                                    _ICC_Metadata.Is_Support_ICC_DeviceName = false;
+                                }
+                                catch (System.Exception ex)
+                                {
+                                    //Console.WriteLine("[DownloadICCData] RunDeserializeObject error:" + ex.Message.ToString());
+                                    writelog("[DownloadColorManagementData] RunDeserializeObject error:" + ex.Message.ToString());
+                                }
+                            }
+
+
+                            foreach (var kvp in _ICC_Metadata._support_ICC_DeviceName)
+                            {
+                                Trace.WriteLine($" Model name = {kvp.Key}");
+                            }
+
+                            Trace.WriteLine($"m.modelName = {m.modelName} ");
+
+                            var lookup = _ICC_Metadata._support_ICC_DeviceName.First(x => x.Key.Equals(m.modelName, StringComparison.OrdinalIgnoreCase));
+
+                            Trace.WriteLine($"lookup.Key = {lookup.Key} ");
+
+                            if (lookup.Key != null)
+                            {
+                                _ICC_Metadata._match_ICC_DeviceName = lookup.Value;
+                                _ICC_Metadata.Is_Support_ICC_DeviceName = true;
+
+                                writelog($"[DownloadColorManagementData] DeviceName = {m.modelName} is Support ICC.");
+                            }
+                            else
+                            {
+                                _ICC_Metadata._match_ICC_DeviceName.Clear();
+                                _ICC_Metadata.Is_Support_ICC_DeviceName = false;
+
+                                writelog($"[DownloadColorManagementData] DeviceName = {m.modelName} is not Support ICC.");
+                            }  
+                        }
+                        else
+                        {
+                            writelog($"[DownloadColorManagementData] Download ICC Metadata failed = {downloadInfo}");
+                        }
+
+                    }
+                }
+
+                writelog("ColorPresetPlugin DownloadColorManagementData exit ...");
+                return System.Threading.Tasks.Task.FromResult(_ICC_Metadata);
+            }
+            catch (Exception ex)
+            {
+                writelog($"ColorPresetPlugin DownloadColorManagementData Exception = {ex.Message.ToString()}");
+                return System.Threading.Tasks.Task.FromResult(_ICC_Metadata);
+            }
+        }
+
+        /// <summary>
         ///  Set Monitor ICC color Profile
         /// </summary>
         /// <param name="m"> Monitor Info </param>

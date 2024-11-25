@@ -965,7 +965,7 @@ namespace DDPM.UI.Module.Color
                     DdpmCommonHelper.DeviceManagerSA.SyncNightlightStatus();
 
                     if (System.String.IsNullOrEmpty(NightlightStatus))
-                        NightlightStatus = "Off";
+                        NightlightStatus = Strings.Off;
                     //update_ui_over_runtype(config);
                     RefreshUI();
                 }));
@@ -1178,8 +1178,13 @@ namespace DDPM.UI.Module.Color
         {
             NightlightStatus = e;
 
+            if (NightlightStatus.Equals("On", StringComparison.OrdinalIgnoreCase))
+                NightlightStatus = Strings.On;
+            else
+                NightlightStatus = Strings.Off;
+
             MyModule.GetRightView().Dispatcher.Invoke((Action)(() =>
-            { 
+            {
                 RefreshUI();
             }));
         }

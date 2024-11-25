@@ -113,6 +113,7 @@ namespace DDPM.SA.Common
 
         //Jim add 20240801
         Task<IIC_Metadata> DownloadICCData(MonitorInfo m, string savelPath = "");
+        Task<bool> Check_support_ColorManagement(MonitorInfo m);
 
         //Jim add 20240904
         Task<string> GetAutoColorPresetStatus(MonitorInfo m);

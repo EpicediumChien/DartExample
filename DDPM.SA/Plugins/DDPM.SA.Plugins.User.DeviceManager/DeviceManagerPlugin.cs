@@ -749,6 +749,28 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             return Task.FromResult(_ICC_Metadata);
         }
 
+        public Task<bool> Check_support_ColorManagement(MonitorInfo m)
+        {
+            bool blRet = false;
+
+            DDPM.SA.Common.IIC_Metadata _ICC_Metadata = new DDPM.SA.Common.IIC_Metadata();
+
+            if (_ColorPresetPlugin == null)
+            {
+                writelog("null _ColorPresetPlugin in [Check_support_ColorManagement]");
+                return Task.FromResult(blRet);
+            }
+            else
+            {
+                _ICC_Metadata = _ColorPresetPlugin.DownloadColorManagementData(m, _SettingsPlugin).Result;
+
+                if (_ICC_Metadata.Is_Support_ICC_DeviceName)
+                    blRet = true;
+            }
+
+            return Task.FromResult(blRet);
+        }
+
         public Task<List<string>> ReadColorPreset(MonitorInfo m)
         {
             //Log.Info($"ReadColorPreset requested ...");
@@ -10938,9 +10960,9 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
                 foreach (var _InfoMonitors in _AllInfoMonitors)
                 {
-                    //Check if actived monitor has its color preset section in config file
+                    //Check if actived monitor has its color preset section in config file                   
                     if (_InfoMonitors.edid.ModelName.Trim().IndexOf(config.ModelName.Trim()) >= 0 &&
-                         _InfoMonitors.edid.SerialNumber.Trim() == config.SerialNumber.Trim())
+                        (_InfoMonitors.edid.SerialNumber.Trim() == config.SerialNumber.Trim() || _InfoMonitors.edid.ServiceTag.Trim() == config.ServiceTag.Trim()) )
                     {
                         if (config.RunType == (int)ColorPresetRunType.Auto)
                         {
@@ -10980,6 +11002,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
             writelog("CheckAutoColorManagementEnableOnStartedCondition, Enter");
 
+
             List<ColorPresetSettings> appconfigs = ReadColorPresetSettings().Result;
 
             foreach (var config in appconfigs)
@@ -10993,9 +11016,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
                 foreach (var _InfoMonitors in _AllInfoMonitors)
                 {
+                    //DownloadICCData(_InfoMonitors);
+
                     //Check if actived monitor has its color preset section in config file
                     if (_InfoMonitors.edid.ModelName.Trim().IndexOf(config.ModelName.Trim()) >= 0 &&
-                         _InfoMonitors.edid.SerialNumber.Trim() == config.SerialNumber.Trim())
+                         (_InfoMonitors.edid.SerialNumber.Trim() == config.SerialNumber.Trim() || _InfoMonitors.edid.ServiceTag.Trim() == config.ServiceTag.Trim()) )
                     {
                         if (config.ColorManagement_Status == (int)ColorManagementStatus.Off)
                         {
@@ -11037,6 +11062,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                             break;
                         }
                     }
+                    
                 }
 
                 writelog("CheckAutoColorManagementEnableOnStartedCondition, exit(break) for foreach (var _InfoMonitors in _AllInfoMonitors)");
