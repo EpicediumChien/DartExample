@@ -233,6 +233,7 @@ namespace DDPM.UI.Common
         public bool IsAutoFramingOn { get; set; }
         public int FieldOfView { get; set; }
         public bool IsAutoWhiteBalanceOn { get; set; }
+        public int AutoWhiteBalance { get; set; }
 
 
         public bool IsFocusOn { get; set; }
@@ -244,7 +245,6 @@ namespace DDPM.UI.Common
         public int AutoFramingSensitivity { get; set; }
         public int AutoFramingFrameSize { get; set; }
         public bool IsAutoFramingTransitionOn { get; set; }
-        public int AutoWhiteBalance { get; set; }
     }
 
     public enum OperationModule

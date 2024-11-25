@@ -224,7 +224,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
 
         private void LaunchView_Loaded(object sender, RoutedEventArgs e)
         {
-            if(!_vm!.IsDTPReady)
+            if (!_vm!.IsDTPReady)
                 DdpmCommonHelper.MyConsole!.ShowHomePage();
         }
 
@@ -1561,7 +1561,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
 
         private void ChangeDevNameWidth()
         {
-            txtCaption.Width = this.ActualWidth - RightGrid.ActualWidth - VbarGrid.ActualWidth - 100;
+            //txtCaption.Width = this.ActualWidth - RightGrid.ActualWidth - VbarGrid.ActualWidth - 100;
         }
 
         private void RightFrame_SizeChanged(object sender, SizeChangedEventArgs e)
