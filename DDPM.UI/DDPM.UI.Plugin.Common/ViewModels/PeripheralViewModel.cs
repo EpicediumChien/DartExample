@@ -63,6 +63,7 @@ namespace DDPM.UI.Plugin.ViewModels
         //public DDPMSettings? DDPMSettings;
         //public WebcamSettings WebcamSettings = new();
         public bool IsCopilotEnabled = true;
+        public bool IsDTPReady = false;
 
         public PeripheralViewModel(IConsole console, ILog log, IDeviceManagerSA deviceManager)
         {
