@@ -190,13 +190,39 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                                     _log.Debug("NewValue cannot be found in event_param");
                                     return;
                                 }
-                                Application.Current.Dispatcher.Invoke(() =>
+                                System.Windows.Application.Current.Dispatcher.Invoke(() =>
                                 {
                                     if (NewValue.ToLower() == "true")
                                         _viewModel!.IsHDROn = true;
                                     else
                                         _viewModel!.IsHDROn = false;
                                 });
+                            }
+                            break;
+
+                        case "Webcam_Esi_IsCameraSensorCoveredChanged":
+                            {
+                                if (!event_param.TryGetValue("NewValue", out var NewValue))
+                                {
+                                    _log.Debug("NewValue cannot be found in event_param");
+                                    return;
+                                }
+
+                                if (NewValue.ToLower() == "true")
+                                    DdpmCommonHelper.DeviceManagerSA!.ShowOSD(Screen.PrimaryScreen!.DeviceName, OSDType.Fingerprint);
+                            }
+                            break;
+
+                        case "Webcam_Esi_IsWALLockCountdownStartedChanged":
+                            {
+                                if (!event_param.TryGetValue("NewValue", out var NewValue))
+                                {
+                                    _log.Debug("NewValue cannot be found in event_param");
+                                    return;
+                                }
+
+                                if (NewValue.ToLower() == "true")
+                                    DdpmCommonHelper.DeviceManagerSA!.ShowOSD(Screen.PrimaryScreen!.DeviceName, OSDType.WalkAwayLock);
                             }
                             break;
                     }
@@ -229,13 +255,6 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
 
             }
             return tmp;
-        }
-
-
-            }
-
-           
-
         }
 
         /// <inheritdoc/>
