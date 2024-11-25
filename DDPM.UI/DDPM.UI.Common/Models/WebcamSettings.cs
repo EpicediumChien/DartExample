@@ -47,6 +47,20 @@ namespace DDPM.UI.Common
                 Task<string> task = DdpmCommonHelper.DeviceManagerSA!.GetSupportedResolutions(di.ID.ToString());
                 var str = task.Result;
                 if (string.IsNullOrEmpty(str))
+                {
+                    Task<DeviceHelper> task1 = DdpmCommonHelper.DeviceManagerSA.GetDevices(true);
+                    var dis = task1.Result.deviceInfo;
+                    foreach (var item in dis)
+                    {
+                        if (item.ID == di.ID)
+                        {
+                            di = item;
+                            str = di.SupportedResolutions;
+                            break;
+                        }
+                    }
+                }
+                if (string.IsNullOrEmpty(str))
                     return;
 
                 //var resolutions = JsonConvert.DeserializeObject<List<ResolutionItem>>(str)!;
@@ -87,57 +101,67 @@ namespace DDPM.UI.Common
                 //    PresetProfiles.Add(profile.Name, profile);
                 //    //ProfileIDs.Add(profile.Name, profile.Id);
                 //}
-                WebcamProfile profile = new();
-                profile.Name = "Default";
-                profile.Description = "default";
-                profile.IsHDROn = false;
-                profile.Brightness = 128;
-                profile.Contrast = 128;
-                profile.Saturation = 128;
-                profile.Sharpness = 128;
-                profile.IsAutoFramingOn = false;
-                profile.FieldOfView = 78;
-                profile.IsAutoWhiteBalanceOn = true;
-                PresetProfiles.Add(profile.Name, profile);
 
-                profile = new();
-                profile.Name = "Smooth";
-                profile.Description = "Smooth";
-                profile.IsHDROn = true;
-                profile.Brightness = 160;
-                profile.Contrast = 128;
-                profile.Saturation = 128;
-                profile.Sharpness = 0;
-                profile.IsAutoFramingOn = false;
-                profile.FieldOfView = 78;
-                profile.IsAutoWhiteBalanceOn = true;
-                PresetProfiles.Add(profile.Name, profile);
+                switch (di.ModelNumber.ToUpper())
+                {
+                    case "U3223QZ":
+                    case "U3224KB":
 
-                profile = new();
-                profile.Name = "Vibrant";
-                profile.Description = "Vibrant";
-                profile.IsHDROn = true;
-                profile.Brightness = 192;
-                profile.Contrast = 167;
-                profile.Saturation = 152;
-                profile.Sharpness = 181;
-                profile.IsAutoFramingOn = false;
-                profile.FieldOfView = 78;
-                profile.IsAutoWhiteBalanceOn = true;
-                PresetProfiles.Add(profile.Name, profile);
+                        break;
+                    default:
+                        WebcamProfile profile = new();
+                        profile.Name = "Default";
+                        profile.Description = "default";
+                        profile.IsHDROn = false;
+                        profile.Brightness = 128;
+                        profile.Contrast = 128;
+                        profile.Saturation = 128;
+                        profile.Sharpness = 128;
+                        profile.IsAutoFramingOn = false;
+                        profile.FieldOfView = 78;
+                        profile.IsAutoWhiteBalanceOn = true;
+                        PresetProfiles.Add(profile.Name, profile);
 
-                profile = new();
-                profile.Name = "Warm";
-                profile.Description = "Warm";
-                profile.IsHDROn = true;
-                profile.Brightness = 169;
-                profile.Contrast = 166;
-                profile.Saturation = 134;
-                profile.Sharpness = 168;
-                profile.IsAutoFramingOn = false;
-                profile.FieldOfView = 78;
-                profile.IsAutoWhiteBalanceOn = true;
-                PresetProfiles.Add(profile.Name, profile);
+                        profile = new();
+                        profile.Name = "Smooth";
+                        profile.Description = "Smooth";
+                        profile.IsHDROn = true;
+                        profile.Brightness = 160;
+                        profile.Contrast = 128;
+                        profile.Saturation = 128;
+                        profile.Sharpness = 0;
+                        profile.IsAutoFramingOn = false;
+                        profile.FieldOfView = 78;
+                        profile.IsAutoWhiteBalanceOn = true;
+                        PresetProfiles.Add(profile.Name, profile);
+
+                        profile = new();
+                        profile.Name = "Vibrant";
+                        profile.Description = "Vibrant";
+                        profile.IsHDROn = true;
+                        profile.Brightness = 192;
+                        profile.Contrast = 167;
+                        profile.Saturation = 152;
+                        profile.Sharpness = 181;
+                        profile.IsAutoFramingOn = false;
+                        profile.FieldOfView = 78;
+                        profile.IsAutoWhiteBalanceOn = true;
+                        PresetProfiles.Add(profile.Name, profile);
+
+                        profile = new();
+                        profile.Name = "Warm";
+                        profile.Description = "Warm";
+                        profile.IsHDROn = true;
+                        profile.Brightness = 169;
+                        profile.Contrast = 166;
+                        profile.Saturation = 134;
+                        profile.Sharpness = 168;
+                        profile.IsAutoFramingOn = false;
+                        profile.FieldOfView = 78;
+                        profile.IsAutoWhiteBalanceOn = true;
+                        PresetProfiles.Add(profile.Name, profile);
+                        break;
+                }
 
                 SelectedProfileName = PresetProfiles.Values.ToList()[0].Name;
             }
