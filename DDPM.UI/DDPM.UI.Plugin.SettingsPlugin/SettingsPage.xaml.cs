@@ -22,7 +22,6 @@ namespace DDPM.UI.Plugin.SettingsPlugin
     /// </summary>
     public partial class SettingsPage : UserControl
     {
-        private Color vbarBorderColor ;
         private SettingsPageViewModel vm
         {
             get { return (SettingsPageViewModel)DataContext; }
@@ -42,7 +41,6 @@ namespace DDPM.UI.Plugin.SettingsPlugin
                     DdpmCommonHelper.DeviceManagerSA.GlobalSettingChangeEvent += GlobalSettingChangeEvent;
                 }
             }
-            vbarBorderColor = (Color)FindResource("Vbar_BdColor_Hover");
         }
 
         ~SettingsPage()
@@ -128,47 +126,16 @@ namespace DDPM.UI.Plugin.SettingsPlugin
         {
             //Dean 0618 add analytics page
             vm.SetSelected(2);
-            
         }
 
         private void WidgetSettingsButton_Click(object sender, MouseButtonEventArgs e)
         {
             vm.SetSelected(3);
-            
         }
 
         private void AboutButton_Click(object sender, MouseButtonEventArgs e)
         {
             vm.SetSelected(4);
-            
-        }
-
-        private void vbar_MouseEnter(object sender, MouseEventArgs e)
-        {
-            if (sender != null)
-            {
-                Border hoverBorder = (Border)sender;
-                int idx = int.Parse(hoverBorder.Name.Substring(hoverBorder.Name.Length - 1, 1));
-                if (!vm.IsSelected[idx])
-                {
-                    hoverBorder.Background = (SolidColorBrush)FindResource("Vbar_BkBrush_Hover");
-                    hoverBorder.BorderBrush = (SolidColorBrush)FindResource("Vbar_BkBrush_Hover");
-                }
-            }
-        }
-
-        private void vbar_MouseLeave(object sender, MouseEventArgs e)
-        {
-            if (sender != null)
-            {
-                Border leaveBorder = (Border)sender;
-                int idx = int.Parse(leaveBorder.Name.Substring(leaveBorder.Name.Length - 1, 1));
-                if (!vm.IsSelected[idx])
-                {
-                    leaveBorder.Background = (SolidColorBrush)FindResource("Vbar_BkBrush_Default");
-                    leaveBorder.BorderBrush = (SolidColorBrush)FindResource("Vbar_BdBrush_Default");
-                }
-            }
         }
     }
 }

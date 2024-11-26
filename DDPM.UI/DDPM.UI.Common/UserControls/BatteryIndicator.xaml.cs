@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using Dell.Client.Framework.UX.WPF.Controls;
+using System.Diagnostics;
 using System.Windows;
 using System.Windows.Media.Imaging;
 using UserControl = System.Windows.Controls.UserControl;
@@ -59,6 +60,12 @@ namespace DDPM.UI.Common
         {
             InitializeComponent();
             UpdateConnectionType();
+            DdpmCommonHelper.BitmapImageUpdated += ImageUpdate;
+        }
+
+        private void ImageUpdate(OSThemeEnum oSThemeEnum)
+        {
+            UpdateConnectionType();
         }
 
         private static void OnBatteryChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
@@ -114,7 +121,6 @@ namespace DDPM.UI.Common
                 }
                 else
                 {
-
                     ConnectionTypeImage.Source = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/LightMode/Port.png");
                 }
                 stackPanel.Visibility = Visibility.Collapsed;

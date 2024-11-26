@@ -191,7 +191,8 @@ namespace DDPM.UI.Common
             #endregion
 
             #region VbarItem
-            System.Windows.Application.Current.Resources["Vbar_BdColor_Hover"] = Color.FromArgb(0xFF, 0x1B, 0x38, 0x5F); 
+            System.Windows.Application.Current.Resources["Vbar_BdColor_Hover"] = Color.FromArgb(0xFF, 0x1B, 0x38, 0x5F);
+            System.Windows.Application.Current.Resources["Vbar_BkColor_Hover"] = Color.FromArgb(0x00, 0x0E, 0x0E, 0x0E);
             UpdateFreezable("Vbar_BkBrush_Hover", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#FF1B385F"));
             #endregion
 

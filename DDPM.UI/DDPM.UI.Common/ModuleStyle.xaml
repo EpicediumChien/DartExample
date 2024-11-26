@@ -773,6 +773,7 @@
     -->
     <!-- #region VberItem1 -->
     <Color x:Key="Vbar_BdColor_Hover">#FF1B385F</Color>
+    <Color x:Key="Vbar_BkColor_Hover">#000E0E0E</Color>
     <Color x:Key="Vbar_BdColor_LockHover">#FF1B385F</Color>
     <Color x:Key="Vbar_BkColor_Default">#99132F54</Color>
     <Color x:Key="Vbar_BkColor_Disabled">#FF596067</Color>
@@ -1147,6 +1148,7 @@
         <Setter Property="Width" Value="105" />
         <Setter Property="Height" Value="40" />
         <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="Background" Value="#00FFFFFF" />
     </Style>
 
     <!-- light #f4f7f9  dark #0F2641-->

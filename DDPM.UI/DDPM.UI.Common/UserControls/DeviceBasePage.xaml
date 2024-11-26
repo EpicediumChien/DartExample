@@ -180,8 +180,7 @@
                                                     TextTrimming="CharacterEllipsis" x:Name="tbDisplayName"
                                                     HorizontalAlignment="Left" 
                                                     MaxWidth="{Binding Path=ActualWidth, ElementName=markeyNameWidthGrid}"
-                                                    Visibility="{Binding SelectedHomeDeviceTextVisibiliity}"
-                                                    Foreground="White" FontSize="18" />
+                                                    Visibility="{Binding SelectedHomeDeviceTextVisibiliity}" FontSize="18" />
                                         </Grid>
 
                                         <!-- HomeDeviceComboBox - Option1: Using UXComboBox
