@@ -21,8 +21,8 @@
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Window.Resources>
-    <Border BorderThickness="1"
-            BorderBrush="#293B4D"
+    <Border BorderThickness="2"
+            BorderBrush="{StaticResource VbarItem_HiBdColor}" 
             CornerRadius="10">
         <Border Background="{DynamicResource Default_SA_QAM_BackGround}"
                 CornerRadius="10">

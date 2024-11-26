@@ -14,7 +14,7 @@ namespace DDPM.QAM
         public string? DeviceId { get; set; }
         public string? NewValue { get; set; }
 
-        public static EventMsg? CreateEventMsgFromEventMsg(string eventMsg)
+        public static EventMsg? CreateEventObjectFromEventMsg(string eventMsg)
         {
             if (eventMsg == null || eventMsg.Length == 0)
                 return null;
@@ -23,33 +23,40 @@ namespace DDPM.QAM
 
             if (5 == msgs.Length)
             {
-                EventMsg result = new EventMsg();
+                try
+                {
+                    EventMsg result = new EventMsg();
 
-                string[] subMsg = msgs[1].Split(':');
-                if (2 == subMsg.Length)
-                    result.DeviceType = subMsg[1];
-                else
+                    string[] subMsg = msgs[1].Split(':');
+                    if (2 == subMsg.Length)
+                        result.DeviceType = subMsg[1];
+                    else
+                        return null;
+
+                    subMsg = msgs[2].Split(':');
+                    if (2 == subMsg.Length)
+                        result.EventType = subMsg[1];
+                    else
+                        return null;
+
+                    subMsg = msgs[3].Split(':');
+                    if (2 == subMsg.Length)
+                        result.DeviceId = subMsg[1];
+                    else
+                        return null;
+
+                    subMsg = msgs[4].Split(':');
+                    if (2 == subMsg.Length)
+                        result.NewValue = subMsg[1];
+                    else
+                        return null;
+
+                    return result;
+                }
+                catch (Exception)
+                {
                     return null;
-
-                subMsg = msgs[2].Split(':');
-                if (2 == subMsg.Length)
-                    result.EventType = subMsg[1];
-                else
-                    return null;
-
-                subMsg = msgs[3].Split(':');
-                if (2 == subMsg.Length)
-                    result.DeviceId = subMsg[1];
-                else
-                    return null;
-
-                subMsg = msgs[4].Split(':');
-                if (2 == subMsg.Length)
-                    result.NewValue = subMsg[1];
-                else
-                    return null;
-
-                return result;
+                }
             }
             else
                 return null;
