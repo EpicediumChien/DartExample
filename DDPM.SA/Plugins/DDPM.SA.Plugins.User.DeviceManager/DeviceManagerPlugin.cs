@@ -9836,7 +9836,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         private bool _IsZoomScreenShareActive = false;
         private bool _IsZoomMeetingActive = false;
         private ZoomMeetingType _ZoomMeetingType = ZoomMeetingType.ZOOM_MEETING_TYPE_UNKNOW;
-        //private bool isActiveConditionsMet = false; //Derek 1124 
+        private bool isWindowsScreenNotLocked = true; //
         //private bool isHiddenConditionsMet = false;
         private int currentZoomValue = -1;
         private EventMsg eventMsg = new EventMsg();
@@ -9854,50 +9854,71 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 return;
             }
 
-            if (_ZoomMeetingType == ZoomMeetingType.CONF_3RD_EVENT_MEETING)
+            //Active state
+            if (_IsZoomMeetingActive && _ZoomMeetingType == ZoomMeetingType.CONF_3RD_EVENT_MEETING 
+                && deviceInfos.Count == 1 && _GlobalSettingParam.GlobalSetting_WidgetSettings.EnableQuickAccessWidget 
+                && isWindowsScreenNotLocked)
             {
-                if (_QAM == null && _GlobalSettingParam != null && _GlobalSettingParam.GlobalSetting_WidgetSettings != null)
-                {
-                    if (_GlobalSettingParam.GlobalSetting_WidgetSettings.EnableQuickAccessWidget_Reminder)
-                    {
-                        ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.QAM);
-                    }
-                    else if (deviceInfos.Count == 1 && _GlobalSettingParam.GlobalSetting_WidgetSettings.EnableQuickAccessWidget)
-                    {
-                        CallQAM_UI(this);
-                    }
-                }
-                else
-                {
-                    if (deviceInfos != null && deviceInfos.Count == 1)
-                    {
-                        CallQAM_UI(this);
-                    }
-                    if (deviceInfos != null && deviceInfos.Count > 1)
-                    {
-                        QAMClose();
-                    }
-                    if (_IsZoomScreenShareActive)
-                    {
-                        QAMHide();
-                    }
-                    else
-                    {
-                        QAMShow();
-                    }
-                }
+                CallQAM_UI(this);
             }
+            //Hidden state
+            else if (_IsZoomScreenShareActive)
+            {
+                QAMHide();
+            }
+            //OSD
+            //else if (true)
+            //{
+            //    ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.QAM);
+            //}
             else
-            {
                 QAMClose();
-            }
+
+            //if (_ZoomMeetingType == ZoomMeetingType.CONF_3RD_EVENT_MEETING)
+            //{
+            //    //if (_QAM == null && _GlobalSettingParam != null && _GlobalSettingParam.GlobalSetting_WidgetSettings != null)
+            //    if (_QAM == null)
+            //    {
+            //        if (_GlobalSettingParam.GlobalSetting_WidgetSettings.EnableQuickAccessWidget_Reminder)
+            //        {
+            //            ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.QAM);
+            //        }
+            //        else if (deviceInfos.Count == 1 && _GlobalSettingParam.GlobalSetting_WidgetSettings.EnableQuickAccessWidget)
+            //        {
+            //            CallQAM_UI(this);
+            //        }
+            //    }
+            //    else
+            //    {
+            //        if (deviceInfos != null && deviceInfos.Count == 1)
+            //        {
+            //            CallQAM_UI(this);
+            //        }
+            //        if (deviceInfos != null && deviceInfos.Count > 1)
+            //        {
+            //            QAMClose();
+            //        }
+            //        if (_IsZoomScreenShareActive)
+            //        {
+            //            QAMHide();
+            //        }
+            //        else
+            //        {
+            //            QAMShow();
+            //        }
+            //    }
+            //}
+            //else
+            //{
+            //    QAMClose();
+            //}
 
             writelog($"HandleQAM done");
         }
 
         private void HandleQAMEvent(string msg)
         {
-            eventMsg = EventMsg.CreateEventMsgFromEventMsg(msg);
+            eventMsg = EventMsg.CreateEventObjectFromEventMsg(msg);
 
             if (null == eventMsg)
                 return;
@@ -9982,7 +10003,9 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 QAM_Position = new Point(_QAM.Left, _QAM.Top);
                 _QAM.Closed -= QAMCloseEvent;
                 _QAM = null;
-                if (_GlobalSettingParam != null && _GlobalSettingParam.GlobalSetting_WidgetSettings != null && _GlobalSettingParam.GlobalSetting_WidgetSettings.EnableQuickAccessWidget_Reminder)
+
+                if (_GlobalSettingParam != null && _GlobalSettingParam.GlobalSetting_WidgetSettings != null
+                    && _GlobalSettingParam.GlobalSetting_WidgetSettings.EnableQuickAccessWidget_Reminder)
                 {
                     ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.QAM);
                 }
@@ -9991,52 +10014,63 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         private void QAMHide()
         {
             writelog($"QAMHide Start");
-            if (_QAM == null)
+
+            if (_QAM != null)
             {
-                writelog($"QAMHide QAMHide go");
+                //writelog($"QAMHide QAMHide go");
                 _QAM.Hide();
-                writelog($"QAMHide QAMHide done");
+                //writelog($"QAMHide QAMHide done");
             }
+
             writelog($"QAMHide done");
         }
-        private void QAMShow()
-        {
-            writelog($"QAMHide Start");
-            if (_QAM == null)
-            {
-                writelog($"QAMHide QAMHide go");
-                _QAM.Show();
-                writelog($"QAMHide QAMHide done");
-            }
-            writelog($"QAMHide done");
-        }
+        //private void QAMShow()
+        //{
+        //    writelog($"QAMShow Start");
+
+        //    if (_QAM != null)
+        //    {
+        //        //writelog($"QAMHide QAMShow go");
+        //        _QAM.Show();
+        //        //writelog($"QAMHide QAMShow done");
+        //    }
+
+        //    writelog($"QAMShow done");
+        //}
         private void QAMClose()
         {
             writelog($"QAMClose Start");
-            if (_QAM == null)
+
+            if (_QAM != null)
             {
-                writelog($"QAMClose _QAM.Close go");
+                //writelog($"QAMClose _QAM.Close go");
                 _QAM.Close();
-                writelog($"QAMClose _QAM.Close done");
+                //writelog($"QAMClose _QAM.Close done");
             }
+
             writelog($"QAMClose done");
         }
+
         private void CallQAM_UI(DeviceMangerPlugin deviceMangerPlugin)
         {
             writelog($"CallQAM_UI: Start");
+
             if (_QAM == null)
             {
-                writelog($"CallQAM_UI: Go");
-                List<DeviceInfo> deviceInfos = GetDevices_WithoutAwait().Result.deviceInfo.FindAll(x => (x.PhysicalDeviceType.Equals(DeviceType.LogicalWebcam) || x.PhysicalDeviceType.Equals(DeviceType.PhysicalWebcam)));
-                writelog($"CallQAM_UI: deviceInfos.Count:{deviceInfos.Count}");
-                if (deviceInfos.Count == 1)
+                //writelog($"CallQAM_UI: Go");
+                //List<DeviceInfo> deviceInfos = GetDevices_WithoutAwait().Result.deviceInfo.FindAll(x => (x.PhysicalDeviceType.Equals(DeviceType.LogicalWebcam) || x.PhysicalDeviceType.Equals(DeviceType.PhysicalWebcam)));
+                //writelog($"CallQAM_UI: deviceInfos.Count:{deviceInfos.Count}");
+                //if (deviceInfos.Count == 1)
                 {
                     writelog($"CallQAM_UI: have Webcam show QAM");
+
                     Thread thread1 = new Thread(() =>
                     {
                         _QAM = new QAMPage(deviceMangerPlugin);
                         _QAM.Closed += QAMCloseEvent;
-                        if (QAM_Position != null && (QAM_Position.X != 0 && QAM_Position.Y != 0))
+
+                        //if (QAM_Position != null && (QAM_Position.X != 0 && QAM_Position.Y != 0))
+                        if (QAM_Position.X != 0 && QAM_Position.Y != 0)
                         {
                             _QAM.Top = QAM_Position.Y;
                             _QAM.Left = QAM_Position.X;
@@ -10045,6 +10079,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         {
                             float scaleFactorX = 1;
                             float scaleFactorY = 1;
+
                             using (Graphics graphics = Graphics.FromHwnd(IntPtr.Zero))
                             {
                                 float dpiX = graphics.DpiX;
@@ -10053,16 +10088,22 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                 scaleFactorX = dpiX / logicalDpi;
                                 scaleFactorY = dpiY / logicalDpi;
                             }
+
                             _QAM.Top = (Screen.PrimaryScreen.Bounds.Height / scaleFactorX / 2) - (_QAM.Height / scaleFactorX / 2);
                             _QAM.Left = 0;
                         }
+
                         _QAM.Dispatcher.Invoke(() => _QAM.Show());
                         Dispatcher.Run();
                     });
+
                     thread1.SetApartmentState(ApartmentState.STA);
                     thread1.Start();
                 }
             }
+            else
+                _QAM.Show();
+
             writelog($"CallQAM_UI: done");
         }
 
@@ -15155,7 +15196,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
                                     case OSDType.QAM:
                                         {
-                                            if (State)
+                                            //if (State)
                                             {
                                                 try
                                                 {
@@ -15167,18 +15208,18 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                                     writelog($"[_showosd] ERROR - OSDType.QAM: {ex.Message}, State:{State}");
                                                 }
                                             }
-                                            else
-                                            {
-                                                try
-                                                {
-                                                    _OSD_Controler.QAMHotKeyWin_CloseWindow();
-                                                    _OSD_Controler.QAMHotKeyWin_ShowWindow((sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX));
-                                                }
-                                                catch (Exception ex)
-                                                {
-                                                    writelog($"[_showosd] ERROR - OSDType.QAM: {ex.Message}, State:{State}");
-                                                }
-                                            }
+                                            //else
+                                            //{
+                                            //    try
+                                            //    {
+                                            //        _OSD_Controler.QAMHotKeyWin_CloseWindow();
+                                            //        _OSD_Controler.QAMHotKeyWin_ShowWindow((sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX));
+                                            //    }
+                                            //    catch (Exception ex)
+                                            //    {
+                                            //        writelog($"[_showosd] ERROR - OSDType.QAM: {ex.Message}, State:{State}");
+                                            //    }
+                                            //}
                                         }
                                         break;
 
