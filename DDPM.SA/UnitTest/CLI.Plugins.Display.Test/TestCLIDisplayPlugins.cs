@@ -969,6 +969,568 @@ namespace DDPM.CLI.Plugins.Display.Test
             Assert.That(get_language, Is.EqualTo(get_language_Result));
         }
 
+        [Test]
+        public void Testget_display_technology_type()
+        {
+            string index;
+            string display_technology_type;
+            string get_display_technology_type_Result;
+
+            // Case 1
+            index = "1";
+            display_technology_type = "CRT (shadow mask)";
+            get_display_technology_type_Result = (string)privatetecLIDisplayPlugins.Invoke("get_display_technology_type", index);
+            Assert.IsNotNull(get_display_technology_type_Result);
+            Assert.That(display_technology_type, Is.EqualTo(get_display_technology_type_Result));
+
+            // Case 2
+            index = "2";
+            display_technology_type = "CRT (aperture grill)";
+            get_display_technology_type_Result = (string)privatetecLIDisplayPlugins.Invoke("get_display_technology_type", index);
+            Assert.IsNotNull(get_display_technology_type_Result);
+            Assert.That(display_technology_type, Is.EqualTo(get_display_technology_type_Result));
+
+            // Case 3
+            index = "3";
+            display_technology_type = "LCD (active matrix)";
+            get_display_technology_type_Result = (string)privatetecLIDisplayPlugins.Invoke("get_display_technology_type", index);
+            Assert.IsNotNull(get_display_technology_type_Result);
+            Assert.That(display_technology_type, Is.EqualTo(get_display_technology_type_Result));
+
+            // Case 4
+            index = "4";
+            display_technology_type = "LCoS";
+            get_display_technology_type_Result = (string)privatetecLIDisplayPlugins.Invoke("get_display_technology_type", index);
+            Assert.IsNotNull(get_display_technology_type_Result);
+            Assert.That(display_technology_type, Is.EqualTo(get_display_technology_type_Result));
+
+            // Case 5
+            index = "5";
+            display_technology_type = "Plasma";
+            get_display_technology_type_Result = (string)privatetecLIDisplayPlugins.Invoke("get_display_technology_type", index);
+            Assert.IsNotNull(get_display_technology_type_Result);
+            Assert.That(display_technology_type, Is.EqualTo(get_display_technology_type_Result));
+
+            // Case 6
+            index = "6";
+            display_technology_type = "OLED";
+            get_display_technology_type_Result = (string)privatetecLIDisplayPlugins.Invoke("get_display_technology_type", index);
+            Assert.IsNotNull(get_display_technology_type_Result);
+            Assert.That(display_technology_type, Is.EqualTo(get_display_technology_type_Result));
+
+            // Case 7
+            index = "7";
+            display_technology_type = "EL";
+            get_display_technology_type_Result = (string)privatetecLIDisplayPlugins.Invoke("get_display_technology_type", index);
+            Assert.IsNotNull(get_display_technology_type_Result);
+            Assert.That(display_technology_type, Is.EqualTo(get_display_technology_type_Result));
+
+            // Case 8
+            index = "8";
+            display_technology_type = "Dynamic MEM  e.g. DLP";
+            get_display_technology_type_Result = (string)privatetecLIDisplayPlugins.Invoke("get_display_technology_type", index);
+            Assert.IsNotNull(get_display_technology_type_Result);
+            Assert.That(display_technology_type, Is.EqualTo(get_display_technology_type_Result));
+
+            // Case 9
+            index = "9";
+            display_technology_type = "Static MEM  e.g. iMOD";
+            get_display_technology_type_Result = (string)privatetecLIDisplayPlugins.Invoke("get_display_technology_type", index);
+            Assert.IsNotNull(get_display_technology_type_Result);
+            Assert.That(display_technology_type, Is.EqualTo(get_display_technology_type_Result));
+
+            // Default 
+            index = "10";
+            display_technology_type = "Unknown";
+            get_display_technology_type_Result = (string)privatetecLIDisplayPlugins.Invoke("get_display_technology_type", index);
+            Assert.IsNotNull(get_display_technology_type_Result);
+            Assert.That(display_technology_type, Is.EqualTo(get_display_technology_type_Result));
+        }
+
+        [Test]
+        public void Testget_osd()
+        {
+            string index;
+            string get_osd;
+            string get_osd_Result;
+
+            // Case 01
+            index = "01";
+            get_osd = "OSDLock";
+            get_osd_Result = (string)privatetecLIDisplayPlugins.Invoke("get_osd", index);
+            Assert.IsNotNull(get_osd_Result);
+            Assert.That(get_osd, Is.EqualTo(get_osd_Result));
+
+            // Case 02
+            index = "02";
+            get_osd = "OSDUnlock";
+            get_osd_Result = (string)privatetecLIDisplayPlugins.Invoke("get_osd", index);
+            Assert.IsNotNull(get_osd_Result);
+            Assert.That(get_osd, Is.EqualTo(get_osd_Result));
+
+            // Case 03
+            index = "03";
+            get_osd = "Unknown";
+            get_osd_Result = (string)privatetecLIDisplayPlugins.Invoke("get_osd", index);
+            Assert.IsNotNull(get_osd_Result);
+            Assert.That(get_osd, Is.EqualTo(get_osd_Result));
+        }
+
+        [Test]
+        public void TestGCD()
+        {
+            ulong a;
+            ulong b;
+            a = 20;
+            b = 10;
+            if (a > b)
+            {
+                var GCD_Result = (ulong)privatetecLIDisplayPlugins.Invoke("GCD", a, b);
+                Assert.IsNotNull(GCD_Result);
+                Assert.That(b, Is.EqualTo(GCD_Result));
+            }
+
+            a = 10;
+            b = 20;
+            if (a < b)
+            {
+                var GCD_Result = (ulong)privatetecLIDisplayPlugins.Invoke("GCD", a, b);
+                Assert.IsNotNull(GCD_Result);
+                Assert.That(a, Is.EqualTo(GCD_Result));
+            }
+        }
+
+        [Test]
+        public void TestGet_AR()
+        {
+            double value;
+            string Get_AR;
+            string Get_AR_Result;
+
+            // Case 01  n == 1.25
+            value = 1.25;
+            Get_AR = "5:4";
+            Get_AR_Result = (string)privatetecLIDisplayPlugins.Invoke("Get_AR", value);
+            Assert.IsNotNull(Get_AR_Result);
+            Assert.That(Get_AR, Is.EqualTo(Get_AR_Result));
+
+            // Case 02  n > 1.25 && n < 1.5://1.333
+            value = 1.333;
+            Get_AR = "4:3";
+            Get_AR_Result = (string)privatetecLIDisplayPlugins.Invoke("Get_AR", value);
+            Assert.IsNotNull(Get_AR_Result);
+            Assert.That(Get_AR, Is.EqualTo(Get_AR_Result));
+
+            // Case 03  n == 1.5
+            value = 1.5;
+            Get_AR = "3:2";
+            Get_AR_Result = (string)privatetecLIDisplayPlugins.Invoke("Get_AR", value);
+            Assert.IsNotNull(Get_AR_Result);
+            Assert.That(Get_AR, Is.EqualTo(Get_AR_Result));
+
+            // Case 04  n == 1.6
+            value = 1.6;
+            Get_AR = "16:10";
+            Get_AR_Result = (string)privatetecLIDisplayPlugins.Invoke("Get_AR", value);
+            Assert.IsNotNull(Get_AR_Result);
+            Assert.That(Get_AR, Is.EqualTo(Get_AR_Result));
+
+            // Case 05  n > 1.6 && n < 1.7://1.666
+            value = 1.666;
+            Get_AR = "15:9";
+            Get_AR_Result = (string)privatetecLIDisplayPlugins.Invoke("Get_AR", value);
+            Assert.IsNotNull(Get_AR_Result);
+            Assert.That(Get_AR, Is.EqualTo(Get_AR_Result));
+
+            // Case 06  (n > 1.7 && n < 2.0)://1.777
+            value = 1.777;
+            Get_AR = "16:9";
+            Get_AR_Result = (string)privatetecLIDisplayPlugins.Invoke("Get_AR", value);
+            Assert.IsNotNull(Get_AR_Result);
+            Assert.That(Get_AR, Is.EqualTo(Get_AR_Result));
+
+            // Case 07  n == 2.0:
+            value = 2.0;
+            Get_AR = "18:9";
+            Get_AR_Result = (string)privatetecLIDisplayPlugins.Invoke("Get_AR", value);
+            Assert.IsNotNull(Get_AR_Result);
+            Assert.That(Get_AR, Is.EqualTo(Get_AR_Result));
+
+            // Case 08  n > 2.0 && n < 2.3://2.222
+            value = 2.222;
+            Get_AR = "20:9";
+            Get_AR_Result = (string)privatetecLIDisplayPlugins.Invoke("Get_AR", value);
+            Assert.IsNotNull(Get_AR_Result);
+            Assert.That(Get_AR, Is.EqualTo(Get_AR_Result));
+
+            // Case 09  n > 2.2 && n < 3.5://2.3....
+            value = 2.3;
+            Get_AR = "21:9";
+            Get_AR_Result = (string)privatetecLIDisplayPlugins.Invoke("Get_AR", value);
+            Assert.IsNotNull(Get_AR_Result);
+            Assert.That(Get_AR, Is.EqualTo(Get_AR_Result));
+
+            // Case 10   n > 3.5://3.555
+            value = 3.555;
+            Get_AR = "32:9";
+            Get_AR_Result = (string)privatetecLIDisplayPlugins.Invoke("Get_AR", value);
+            Assert.IsNotNull(Get_AR_Result);
+            Assert.That(Get_AR, Is.EqualTo(Get_AR_Result));
+
+            // default  
+            value = 1;
+            Get_AR = "N/A";
+            Get_AR_Result = (string)privatetecLIDisplayPlugins.Invoke("Get_AR", value);
+            Assert.IsNotNull(Get_AR_Result);
+            Assert.That(Get_AR, Is.EqualTo(Get_AR_Result));
+        }
+
+        [Test]
+        public void TestGetOSDLanguage_index()
+        {
+            string language;
+            int GetOSDLanguage_index;
+            int GetOSDLanguage_index_Result;
+
+            // Case 01
+            language = "Chinese";
+            GetOSDLanguage_index = 0x01;
+            GetOSDLanguage_index_Result = (int)privatetecLIDisplayPlugins.Invoke("GetOSDLanguage_index", language);
+            Assert.IsNotNull(GetOSDLanguage_index_Result);
+            Assert.That(GetOSDLanguage_index, Is.EqualTo(GetOSDLanguage_index_Result));
+
+            // Case 02
+            language = "English";
+            GetOSDLanguage_index = 0x02;
+            GetOSDLanguage_index_Result = (int)privatetecLIDisplayPlugins.Invoke("GetOSDLanguage_index", language);
+            Assert.IsNotNull(GetOSDLanguage_index_Result);
+            Assert.That(GetOSDLanguage_index, Is.EqualTo(GetOSDLanguage_index_Result));
+
+            // Case 03
+            language = "French";
+            GetOSDLanguage_index = 0x03;
+            GetOSDLanguage_index_Result = (int)privatetecLIDisplayPlugins.Invoke("GetOSDLanguage_index", language);
+            Assert.IsNotNull(GetOSDLanguage_index_Result);
+            Assert.That(GetOSDLanguage_index, Is.EqualTo(GetOSDLanguage_index_Result));
+
+            // Case 04
+            language = "German";
+            GetOSDLanguage_index = 0x04;
+            GetOSDLanguage_index_Result = (int)privatetecLIDisplayPlugins.Invoke("GetOSDLanguage_index", language);
+            Assert.IsNotNull(GetOSDLanguage_index_Result);
+            Assert.That(GetOSDLanguage_index, Is.EqualTo(GetOSDLanguage_index_Result));
+
+            // Case 05
+            language = "Italian";
+            GetOSDLanguage_index = 0x05;
+            GetOSDLanguage_index_Result = (int)privatetecLIDisplayPlugins.Invoke("GetOSDLanguage_index", language);
+            Assert.IsNotNull(GetOSDLanguage_index_Result);
+            Assert.That(GetOSDLanguage_index, Is.EqualTo(GetOSDLanguage_index_Result));
+
+            // Case 06
+            language = "Japanese";
+            GetOSDLanguage_index = 0x06;
+            GetOSDLanguage_index_Result = (int)privatetecLIDisplayPlugins.Invoke("GetOSDLanguage_index", language);
+            Assert.IsNotNull(GetOSDLanguage_index_Result);
+            Assert.That(GetOSDLanguage_index, Is.EqualTo(GetOSDLanguage_index_Result));
+
+            // Case 07
+            language = "Korean";
+            GetOSDLanguage_index = 0x07;
+            GetOSDLanguage_index_Result = (int)privatetecLIDisplayPlugins.Invoke("GetOSDLanguage_index", language);
+            Assert.IsNotNull(GetOSDLanguage_index_Result);
+            Assert.That(GetOSDLanguage_index, Is.EqualTo(GetOSDLanguage_index_Result));
+
+            // Case 08
+            language = "Portuguese";
+            GetOSDLanguage_index = 0x08;
+            GetOSDLanguage_index_Result = (int)privatetecLIDisplayPlugins.Invoke("GetOSDLanguage_index", language);
+            Assert.IsNotNull(GetOSDLanguage_index_Result);
+            Assert.That(GetOSDLanguage_index, Is.EqualTo(GetOSDLanguage_index_Result));
+
+            // Case 09
+            language = "Russian";
+            GetOSDLanguage_index = 0x09;
+            GetOSDLanguage_index_Result = (int)privatetecLIDisplayPlugins.Invoke("GetOSDLanguage_index", language);
+            Assert.IsNotNull(GetOSDLanguage_index_Result);
+            Assert.That(GetOSDLanguage_index, Is.EqualTo(GetOSDLanguage_index_Result));
+
+            // Case 0a
+            language = "Spanish";
+            GetOSDLanguage_index = 0x0a;
+            GetOSDLanguage_index_Result = (int)privatetecLIDisplayPlugins.Invoke("GetOSDLanguage_index", language);
+            Assert.IsNotNull(GetOSDLanguage_index_Result);
+            Assert.That(GetOSDLanguage_index, Is.EqualTo(GetOSDLanguage_index_Result));
+
+            // Case 0b
+            language = "Swedish";
+            GetOSDLanguage_index = 0x0b;
+            GetOSDLanguage_index_Result = (int)privatetecLIDisplayPlugins.Invoke("GetOSDLanguage_index", language);
+            Assert.IsNotNull(GetOSDLanguage_index_Result);
+            Assert.That(GetOSDLanguage_index, Is.EqualTo(GetOSDLanguage_index_Result));
+
+            // Case 0c
+            language = "Turkish";
+            GetOSDLanguage_index = 0x0c;
+            GetOSDLanguage_index_Result = (int)privatetecLIDisplayPlugins.Invoke("GetOSDLanguage_index", language);
+            Assert.IsNotNull(GetOSDLanguage_index_Result);
+            Assert.That(GetOSDLanguage_index, Is.EqualTo(GetOSDLanguage_index_Result));
+
+            // Case 0d
+            language = "Chinese-Simplified";
+            GetOSDLanguage_index = 0x0d;
+            GetOSDLanguage_index_Result = (int)privatetecLIDisplayPlugins.Invoke("GetOSDLanguage_index", language);
+            Assert.IsNotNull(GetOSDLanguage_index_Result);
+            Assert.That(GetOSDLanguage_index, Is.EqualTo(GetOSDLanguage_index_Result));
+
+            // Case 0e
+            language = "BrazilianPortuguese";
+            GetOSDLanguage_index = 0x0e;
+            GetOSDLanguage_index_Result = (int)privatetecLIDisplayPlugins.Invoke("GetOSDLanguage_index", language);
+            Assert.IsNotNull(GetOSDLanguage_index_Result);
+            Assert.That(GetOSDLanguage_index, Is.EqualTo(GetOSDLanguage_index_Result));
+
+            // Case 0f
+            language = "Arabic";
+            GetOSDLanguage_index = 0x0f;
+            GetOSDLanguage_index_Result = (int)privatetecLIDisplayPlugins.Invoke("GetOSDLanguage_index", language);
+            Assert.IsNotNull(GetOSDLanguage_index_Result);
+            Assert.That(GetOSDLanguage_index, Is.EqualTo(GetOSDLanguage_index_Result));
+
+            // Case 10
+            language = "Bulgarian";
+            GetOSDLanguage_index = 0x10;
+            GetOSDLanguage_index_Result = (int)privatetecLIDisplayPlugins.Invoke("GetOSDLanguage_index", language);
+            Assert.IsNotNull(GetOSDLanguage_index_Result);
+            Assert.That(GetOSDLanguage_index, Is.EqualTo(GetOSDLanguage_index_Result));
+
+            // Case 11
+            language = "Croatian";
+            GetOSDLanguage_index = 0x11;
+            GetOSDLanguage_index_Result = (int)privatetecLIDisplayPlugins.Invoke("GetOSDLanguage_index", language);
+            Assert.IsNotNull(GetOSDLanguage_index_Result);
+            Assert.That(GetOSDLanguage_index, Is.EqualTo(GetOSDLanguage_index_Result));
+
+            // Case 12
+            language = "Czech";
+            GetOSDLanguage_index = 0x12;
+            GetOSDLanguage_index_Result = (int)privatetecLIDisplayPlugins.Invoke("GetOSDLanguage_index", language);
+            Assert.IsNotNull(GetOSDLanguage_index_Result);
+            Assert.That(GetOSDLanguage_index, Is.EqualTo(GetOSDLanguage_index_Result));
+
+            // Case 13
+            language = "Danish";
+            GetOSDLanguage_index = 0x13;
+            GetOSDLanguage_index_Result = (int)privatetecLIDisplayPlugins.Invoke("GetOSDLanguage_index", language);
+            Assert.IsNotNull(GetOSDLanguage_index_Result);
+            Assert.That(GetOSDLanguage_index, Is.EqualTo(GetOSDLanguage_index_Result));
+
+            // Case 14
+            language = "Dutch";
+            GetOSDLanguage_index = 0x14;
+            GetOSDLanguage_index_Result = (int)privatetecLIDisplayPlugins.Invoke("GetOSDLanguage_index", language);
+            Assert.IsNotNull(GetOSDLanguage_index_Result);
+            Assert.That(GetOSDLanguage_index, Is.EqualTo(GetOSDLanguage_index_Result));
+
+            // Case 15
+            language = "Estonian";
+            GetOSDLanguage_index = 0x15;
+            GetOSDLanguage_index_Result = (int)privatetecLIDisplayPlugins.Invoke("GetOSDLanguage_index", language);
+            Assert.IsNotNull(GetOSDLanguage_index_Result);
+            Assert.That(GetOSDLanguage_index, Is.EqualTo(GetOSDLanguage_index_Result));
+
+            // Case 16
+            language = "Finnish";
+            GetOSDLanguage_index = 0x16;
+            GetOSDLanguage_index_Result = (int)privatetecLIDisplayPlugins.Invoke("GetOSDLanguage_index", language);
+            Assert.IsNotNull(GetOSDLanguage_index_Result);
+            Assert.That(GetOSDLanguage_index, Is.EqualTo(GetOSDLanguage_index_Result));
+
+            // Case 17
+            language = "Greek";
+            GetOSDLanguage_index = 0x17;
+            GetOSDLanguage_index_Result = (int)privatetecLIDisplayPlugins.Invoke("GetOSDLanguage_index", language);
+            Assert.IsNotNull(GetOSDLanguage_index_Result);
+            Assert.That(GetOSDLanguage_index, Is.EqualTo(GetOSDLanguage_index_Result));
+
+            // Case 18
+            language = "Hebrew";
+            GetOSDLanguage_index = 0x18;
+            GetOSDLanguage_index_Result = (int)privatetecLIDisplayPlugins.Invoke("GetOSDLanguage_index", language);
+            Assert.IsNotNull(GetOSDLanguage_index_Result);
+            Assert.That(GetOSDLanguage_index, Is.EqualTo(GetOSDLanguage_index_Result));
+
+            // Case 19
+            language = "Hindi";
+            GetOSDLanguage_index = 0x19;
+            GetOSDLanguage_index_Result = (int)privatetecLIDisplayPlugins.Invoke("GetOSDLanguage_index", language);
+            Assert.IsNotNull(GetOSDLanguage_index_Result);
+            Assert.That(GetOSDLanguage_index, Is.EqualTo(GetOSDLanguage_index_Result));
+
+            // Case 1a
+            language = "Hungarian";
+            GetOSDLanguage_index = 0x1a;
+            GetOSDLanguage_index_Result = (int)privatetecLIDisplayPlugins.Invoke("GetOSDLanguage_index", language);
+            Assert.IsNotNull(GetOSDLanguage_index_Result);
+            Assert.That(GetOSDLanguage_index, Is.EqualTo(GetOSDLanguage_index_Result));
+
+            // Case 1b
+            language = "Latvian";
+            GetOSDLanguage_index = 0x1b;
+            GetOSDLanguage_index_Result = (int)privatetecLIDisplayPlugins.Invoke("GetOSDLanguage_index", language);
+            Assert.IsNotNull(GetOSDLanguage_index_Result);
+            Assert.That(GetOSDLanguage_index, Is.EqualTo(GetOSDLanguage_index_Result));
+
+            // Case 1c
+            language = "Lithuanian";
+            GetOSDLanguage_index = 0x1c;
+            GetOSDLanguage_index_Result = (int)privatetecLIDisplayPlugins.Invoke("GetOSDLanguage_index", language);
+            Assert.IsNotNull(GetOSDLanguage_index_Result);
+            Assert.That(GetOSDLanguage_index, Is.EqualTo(GetOSDLanguage_index_Result));
+
+            // Case 1d
+            language = "Norwegian";
+            GetOSDLanguage_index = 0x1d;
+            GetOSDLanguage_index_Result = (int)privatetecLIDisplayPlugins.Invoke("GetOSDLanguage_index", language);
+            Assert.IsNotNull(GetOSDLanguage_index_Result);
+            Assert.That(GetOSDLanguage_index, Is.EqualTo(GetOSDLanguage_index_Result));
+
+            // Case 1e
+            language = "Polish";
+            GetOSDLanguage_index = 0x1e;
+            GetOSDLanguage_index_Result = (int)privatetecLIDisplayPlugins.Invoke("GetOSDLanguage_index", language);
+            Assert.IsNotNull(GetOSDLanguage_index_Result);
+            Assert.That(GetOSDLanguage_index, Is.EqualTo(GetOSDLanguage_index_Result));
+
+            // Case 1f
+            language = "Romanian";
+            GetOSDLanguage_index = 0x1f;
+            GetOSDLanguage_index_Result = (int)privatetecLIDisplayPlugins.Invoke("GetOSDLanguage_index", language);
+            Assert.IsNotNull(GetOSDLanguage_index_Result);
+            Assert.That(GetOSDLanguage_index, Is.EqualTo(GetOSDLanguage_index_Result));
+
+            // Case 20
+            language = "Serbian";
+            GetOSDLanguage_index = 0x20;
+            GetOSDLanguage_index_Result = (int)privatetecLIDisplayPlugins.Invoke("GetOSDLanguage_index", language);
+            Assert.IsNotNull(GetOSDLanguage_index_Result);
+            Assert.That(GetOSDLanguage_index, Is.EqualTo(GetOSDLanguage_index_Result));
+
+            // Case 21
+            language = "Slovak";
+            GetOSDLanguage_index = 0x21;
+            GetOSDLanguage_index_Result = (int)privatetecLIDisplayPlugins.Invoke("GetOSDLanguage_index", language);
+            Assert.IsNotNull(GetOSDLanguage_index_Result);
+            Assert.That(GetOSDLanguage_index, Is.EqualTo(GetOSDLanguage_index_Result));
+
+            // Case 22
+            language = "Slovenian";
+            GetOSDLanguage_index = 0x22;
+            GetOSDLanguage_index_Result = (int)privatetecLIDisplayPlugins.Invoke("GetOSDLanguage_index", language);
+            Assert.IsNotNull(GetOSDLanguage_index_Result);
+            Assert.That(GetOSDLanguage_index, Is.EqualTo(GetOSDLanguage_index_Result));
+
+            // Case 23
+            language = "Thai";
+            GetOSDLanguage_index = 0x23;
+            GetOSDLanguage_index_Result = (int)privatetecLIDisplayPlugins.Invoke("GetOSDLanguage_index", language);
+            Assert.IsNotNull(GetOSDLanguage_index_Result);
+            Assert.That(GetOSDLanguage_index, Is.EqualTo(GetOSDLanguage_index_Result));
+
+            // Case 24
+            language = "Ukrainian";
+            GetOSDLanguage_index = 0x24;
+            GetOSDLanguage_index_Result = (int)privatetecLIDisplayPlugins.Invoke("GetOSDLanguage_index", language);
+            Assert.IsNotNull(GetOSDLanguage_index_Result);
+            Assert.That(GetOSDLanguage_index, Is.EqualTo(GetOSDLanguage_index_Result));
+
+            // Case 25
+            language = "Vietnamese";
+            GetOSDLanguage_index = 0x25;
+            GetOSDLanguage_index_Result = (int)privatetecLIDisplayPlugins.Invoke("GetOSDLanguage_index", language);
+            Assert.IsNotNull(GetOSDLanguage_index_Result);
+            Assert.That(GetOSDLanguage_index, Is.EqualTo(GetOSDLanguage_index_Result));
+
+            // Default 
+            language = "OtherLanguage";
+            GetOSDLanguage_index = 0xff;
+            GetOSDLanguage_index_Result = (int)privatetecLIDisplayPlugins.Invoke("GetOSDLanguage_index", language);
+            Assert.IsNotNull(GetOSDLanguage_index_Result);
+            Assert.That(GetOSDLanguage_index, Is.EqualTo(GetOSDLanguage_index_Result));
+        }
+
+        [Test]
+        public void Testmodify_Manufactur()
+        {
+            string temp;
+            string modify_Manufactur;
+            string modify_Manufactur_Result;
+
+            // Case 01
+            temp = "del";
+            modify_Manufactur = "Dell";
+            modify_Manufactur_Result = (string)privatetecLIDisplayPlugins.Invoke("modify_Manufactur", temp);
+            Assert.IsNotNull(modify_Manufactur_Result);
+            Assert.That(modify_Manufactur, Is.EqualTo(modify_Manufactur_Result));
+
+            // Case 02
+            temp = "aw";
+            modify_Manufactur = "Alienware";
+            modify_Manufactur_Result = (string)privatetecLIDisplayPlugins.Invoke("modify_Manufactur", temp);
+            Assert.IsNotNull(modify_Manufactur_Result);
+            Assert.That(modify_Manufactur, Is.EqualTo(modify_Manufactur_Result));
+
+            // Case 03
+            temp = "Test Dell";
+            modify_Manufactur = "Test Dell";
+            modify_Manufactur_Result = (string)privatetecLIDisplayPlugins.Invoke("modify_Manufactur", temp);
+            Assert.IsNotNull(modify_Manufactur_Result);
+            Assert.That(modify_Manufactur, Is.EqualTo(modify_Manufactur_Result));
+        }
+
+        [Test]
+        public void Testget_ScreenOrientation_code()
+        {
+            string Orientation;
+            string get_ScreenOrientation_code;
+            string get_ScreenOrientation_code_Result;
+
+            // Case 01  Landscape
+            Orientation = "Landscape";
+            get_ScreenOrientation_code = "1";
+            get_ScreenOrientation_code_Result = (string)privatetecLIDisplayPlugins.Invoke("get_ScreenOrientation_code", Orientation);
+            Assert.IsNotNull(get_ScreenOrientation_code_Result);
+            Assert.That(get_ScreenOrientation_code, Is.EqualTo(get_ScreenOrientation_code_Result));
+
+            // Case 02 Portrait
+            Orientation = "Portrait";
+            get_ScreenOrientation_code = "2";
+            get_ScreenOrientation_code_Result = (string)privatetecLIDisplayPlugins.Invoke("get_ScreenOrientation_code", Orientation);
+            Assert.IsNotNull(get_ScreenOrientation_code_Result);
+            Assert.That(get_ScreenOrientation_code, Is.EqualTo(get_ScreenOrientation_code_Result));
+
+            // Case 03 Landscape_flipped
+            Orientation = "Landscape_flipped";
+            get_ScreenOrientation_code = "3";
+            get_ScreenOrientation_code_Result = (string)privatetecLIDisplayPlugins.Invoke("get_ScreenOrientation_code", Orientation);
+            Assert.IsNotNull(get_ScreenOrientation_code_Result);
+            Assert.That(get_ScreenOrientation_code, Is.EqualTo(get_ScreenOrientation_code_Result));
+
+            // Case 04 Portrait_flipped
+            Orientation = "Portrait_flipped";
+            get_ScreenOrientation_code = "4";
+            get_ScreenOrientation_code_Result = (string)privatetecLIDisplayPlugins.Invoke("get_ScreenOrientation_code", Orientation);
+            Assert.IsNotNull(get_ScreenOrientation_code_Result);
+            Assert.That(get_ScreenOrientation_code, Is.EqualTo(get_ScreenOrientation_code_Result));
+
+            // Case 05 default
+            Orientation = "TestOrientation";
+            get_ScreenOrientation_code = "1";
+            get_ScreenOrientation_code_Result = (string)privatetecLIDisplayPlugins.Invoke("get_ScreenOrientation_code", Orientation);
+            Assert.IsNotNull(get_ScreenOrientation_code_Result);
+            Assert.That(get_ScreenOrientation_code, Is.EqualTo(get_ScreenOrientation_code_Result));
+        }
+
         [OneTimeTearDown]
         public void TearDown()
         {

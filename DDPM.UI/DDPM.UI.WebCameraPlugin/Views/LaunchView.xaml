@@ -211,7 +211,7 @@
         </Grid>
       </Grid>
       <!--Name & Model-->
-      <Grid VerticalAlignment="Top" HorizontalAlignment="Left">
+      <Grid VerticalAlignment="Top" Height="125">
         <StackPanel Orientation="Vertical">
           <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
             <Image Margin="64,21,0,0" Source="/DDPM.UI.Resources;component/Resources/Images/arrow-left.png" Stretch="Fill"
