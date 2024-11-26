@@ -119,7 +119,7 @@ namespace DDPM.SA.Common
         private bool _isESISupported;
         private string[] _supportedProperties;
         private string[] _fOVValues;
-        private string[] _supportedResolutions;
+        private string _supportedResolutions;
         private int _supportedFeatures;
         private int _currentFeatures;
         private bool _isMicEnumerationSupported;
@@ -1135,7 +1135,7 @@ namespace DDPM.SA.Common
         public bool IsWakeonApproachEnable { get; set; }
         public bool IsWalkAwayLockEnable { get; set; }
         public int WALTime { get; set; }
-        
+
 
         public string DeviceSymbolicLink
         {
@@ -1187,7 +1187,7 @@ namespace DDPM.SA.Common
             }
         }
 
-        public string[] SupportedResolutions
+        public string SupportedResolutions
         {
             get => _supportedResolutions;
             set

@@ -7,6 +7,7 @@ using DDPM.UI.Module.SpeakerAudioSettings;
 using DDPM.UI.Module.SpeakerInteractions;
 using DDPM.UI.Plugin.Common;
 using DDPM.UI.Plugin.ViewModels;
+using Dell.Client.Framework.UX.WPF.Controls;
 using Newtonsoft.Json.Linq;
 using System.Diagnostics;
 using System.Net;
@@ -62,6 +63,14 @@ namespace DDPM.UI.Plugin.SoundBarPlugin
             txtSystemName3.Text = _vm.VisiblePairedHostName1;
             txtFirmware.Text = string.Format(Strings.DockDongle1, _vm.PhysicalDeviceFWVersion);
             txtSlot.Text = string.Format(Strings.DockDongle0, _vm.CurrentDeviceInfo!.MaxPairingSlots - _vm.CurrentDeviceInfo.PairedDeviceCount, _vm.CurrentDeviceInfo.MaxPairingSlots);
+
+            DdpmCommonHelper.BitmapImageUpdated += ImageUpdate;
+        }
+
+        private void ImageUpdate(OSThemeEnum oSThemeEnum)
+        {
+            ArrowLeft.Source = null;
+            ArrowLeft.Source = (BitmapImage)Application.Current.Resources["Arrow_Left"];
         }
 
         #region Init for Modules
@@ -77,7 +86,8 @@ namespace DDPM.UI.Plugin.SoundBarPlugin
             moduleGroup = new ModuleGroup()
             {
                 GroupName = AudioPreset,
-                GroupIcon = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Speaker_AudioPreset.png")
+                GroupIcon = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Speaker_AudioPreset.png"),
+                GroupIconCanvas = DdpmCommonHelper.CanvasIconCreator(VbarIcon.SpeakerPhonePreset)
             };
             moduleGroup.AddHeader(AudioPreset, new SpeakerAudioPresetModule(_vm!));
             groups.Add(moduleGroup);
@@ -85,7 +95,8 @@ namespace DDPM.UI.Plugin.SoundBarPlugin
             moduleGroup = new ModuleGroup()
             {
                 GroupName = AudioSettings,
-                GroupIcon = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Speaker_AudioSettings.png")
+                GroupIcon = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Speaker_AudioSettings.png"),
+                GroupIconCanvas = DdpmCommonHelper.CanvasIconCreator(VbarIcon.AudioSettings)
             };
             moduleGroup.AddHeader(AudioSettings, new SpeakerAudioSettingsModule(_vm!));
             groups.Add(moduleGroup);
@@ -93,7 +104,8 @@ namespace DDPM.UI.Plugin.SoundBarPlugin
             moduleGroup = new ModuleGroup()
             {
                 GroupName = Interactions,
-                GroupIcon = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Speaker_Interactions.png")
+                GroupIcon = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Speaker_Interactions.png"),
+                GroupIconCanvas = DdpmCommonHelper.CanvasIconCreator(VbarIcon.SpeakerPhoneInteractions)
             };
             moduleGroup.AddHeader(Interactions, new SpeakerInteractionsModule(_vm!));
             groups.Add(moduleGroup);
@@ -101,6 +113,14 @@ namespace DDPM.UI.Plugin.SoundBarPlugin
             _vm!.ModuleGroups = groups;
         }
 
+        private void ArrowLeftImageUpdate(string resourceKey)
+        {
+            if (resourceKey == "Arrow_Left")
+            {
+                ArrowLeft.Source = null;
+                ArrowLeft.Source = (BitmapImage)Application.Current.Resources[resourceKey];
+            }
+        }
         #endregion Init for Modules
 
         #region Vbar

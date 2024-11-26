@@ -1,4 +1,5 @@
-﻿using System.Windows.Media;
+﻿using Dell.Client.Framework.UX.WPF.Controls;
+using System.Windows.Media;
 using Color = System.Windows.Media.Color;
 using ColorConverter = System.Windows.Media.ColorConverter;
 
@@ -27,7 +28,6 @@ namespace DDPM.UI.Common
             UpdateFreezable("DefaultTheme_BtBkColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#D9E1F2"));
             UpdateFreezable("DefaultTheme_BtBdColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#0063B8"));
             UpdateBitmapImage("popup_ArrowCorner", new Uri($"pack://application:,,,/DDPM.UI.Common;component/Resources/LightMode/popup_ArrowCorner.png", UriKind.RelativeOrAbsolute));
-            BitmapImageUpdated?.Invoke("popup_ArrowCorner");
             UpdateFreezable("DefaultTheme_TbBkColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#FFFFFFFF"));
             UpdateFreezable("DefaultTheme_TbFgColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#FF0E0E0E"));
             UpdateFreezable("DefaultTheme_TbBdColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#0063B8"));
@@ -182,7 +182,6 @@ namespace DDPM.UI.Common
             #region Display port icon
             UpdateFreezable("DisplayName_FgColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#40586D"));
             UpdateBitmapImage("ConnectionTypeImageKey", new Uri("pack://application:,,,/DDPM.UI.Common;component/Resources/LightMode/Port.png", UriKind.Absolute));
-            BitmapImageUpdated?.Invoke("ConnectionTypeImageKey");
             #endregion
 
             #region Combo Box
@@ -190,18 +189,18 @@ namespace DDPM.UI.Common
             UpdateFreezable("DdpmCB_BdBkColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#FFE1EAF3"));
             UpdateFreezable("DdpmCB_BkColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#FFFFFFFF"));
             UpdateFreezable("DdpmCB_FgColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#0E0E0E"));
+            UpdateFreezable("DdpmCB_HoverItemBkColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#FFEEEEEE"));
             UpdateFreezable("DdpmCB_SelTextColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#FF49A3E5"));
             #endregion
 
             #region BarItem Colors
             UpdateBitmapImage("Arrow_Left", new Uri($"pack://application:,,,/DDPM.UI.Resources;component/Resources/Images/arrow-left-light.png", UriKind.RelativeOrAbsolute));
-            BitmapImageUpdated?.Invoke("Arrow_Left");
             UpdateFreezable("btn_BkColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#2B6FC7"));
             #endregion
 
             #region VberItem1
             UpdateFreezable("DdpmCB_HoverItemBkColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#FFF0F0F0"));
-            UpdateFreezable("DefaultTheme_USBKVMComboBkColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#FFFFFFE5"));
+            UpdateFreezable("DefaultTheme_USBKVMComboBkColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#E5FFFFFF"));
             UpdateFreezable("DefaultTheme_USBKVMComboBdColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#E1E6EF"));
             UpdateFreezable("Vbar_FgBrush_Default", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#0E0E0E"));
             UpdateFreezable("Vbar_BkBrush_Default", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#99FFFFFF"));
@@ -285,7 +284,8 @@ namespace DDPM.UI.Common
             #region SplitItem of EasyArrange
             UpdateFreezable("SplitCtrl_OuterBorder_BdColor_Icon_Normal", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#0E0E0E"));
             UpdateFreezable("SplitSplitter_Icon", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#0E0E0E"));
-            UpdateFreezable("SplitCtrl0B_IconFill", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#FFC1F4F4"));
+            UpdateFreezable("SplitCtrl0B_IconFill", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#FFFFFF"));
+            UpdateFreezable("SplitItem_BkColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#FFF0F0F0"));
             #endregion
 
             #region LockIcon
@@ -301,7 +301,7 @@ namespace DDPM.UI.Common
 
             #region Grid Background
             UpdateFreezable("DefaultTheme_USBKVMPCGridBkColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#A4B8CD"));
-            UpdateFreezable("DefaultTheme_GridBkColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#FFFFFF99"));
+            UpdateFreezable("DefaultTheme_GridBkColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#99FFFFFF"));
             #endregion
 
             #region Setup Border Background
@@ -309,6 +309,11 @@ namespace DDPM.UI.Common
             UpdateFreezable("DefaultTheme_SetupScanBdColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#0E0E0E"));
             UpdateFreezable("DefaultTheme_SetupSelectBdColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#C5D4E3"));
             #endregion
+
+            UpdateFreezable("DefaultThemeFullPageBkColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#E5ECF9"));
+
+
+            BitmapImageUpdated?.Invoke(OSThemeEnum.Light);
         }
     }
 }

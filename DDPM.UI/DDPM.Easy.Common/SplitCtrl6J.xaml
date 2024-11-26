@@ -14,8 +14,8 @@
                 <ResourceDictionary Source="EAStyles.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
-            <local:SplitCtrlVM x:Key="vmDesign" IsVertical="False" SplitMode="AWS" 
-                               IsEditable="True" HoveringCell="6j1" />
+            <local:SplitCtrlVM x:Key="vmDesign" IsVertical="True" SplitMode="AWS" 
+                               IsEditable="True" HoveringCell="6J5" />
         </ResourceDictionary>
     </UserControl.Resources>
 

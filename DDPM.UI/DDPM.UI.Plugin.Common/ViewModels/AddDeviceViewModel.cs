@@ -7,6 +7,7 @@ using DDPM.UI.Common.Views;
 using DDPM.UI.Interfaces;
 using Dell.Client.Framework.Common;
 using Dell.Client.Framework.UX.WPF;
+using Dell.Client.Framework.UX.WPF.Controls;
 using DPeMPublic.Common.Enums;
 using Microsoft;
 using System.Collections.ObjectModel;
@@ -40,6 +41,7 @@ namespace DDPM.UI.Plugin.ViewModels
             _showPluginManager = showPluginManager;
             _console = console;
             _log = log;
+            DdpmCommonHelper.BitmapImageUpdated += ImageUpdate;
         }
 
         public bool IsPandoraPaired = false;
@@ -485,6 +487,15 @@ namespace DDPM.UI.Plugin.ViewModels
                     break;
             }
             NewDevice = null;
+        }
+
+        private void ImageUpdate(OSThemeEnum oSThemeEnum)
+        {
+            foreach (DeviceBarItem barItem in _deviceBarItems)
+            {
+                if (!barItem.IsSelected)
+                    barItem.RenewBarItem();
+            }
         }
     }
 }

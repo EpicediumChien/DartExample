@@ -425,6 +425,255 @@ namespace DDPM.SA.Common
             return commandInput;
         }
 
+        public bool isContainMultipleCommand(string[] args)
+        {
+            int count = 0;
+            foreach (string arg in args)
+            {
+                var command = arg.Replace("/", "").Replace("-", "").ToUpper();
+                //parse command code
+                if (commands.Exists(v => v == command))
+                {
+                    count = count + 1;
+                }
+            }      
+            return (count > 1);
+        }
+
+        //20241115
+        //To support multiple command per command input, it means the command sequence contains /set, /get more than once.
+        public List<CommandLineInput> StringProcessing_multi(string[] args)
+        {
+            ICLICommandTable iCLICommandTable = new ICLICommandTable(_Log);
+            List<CommandLineInput> commandInputs = new List<CommandLineInput>();
+
+            foreach (string arg in args)
+            {
+                if (string.IsNullOrWhiteSpace(arg))
+                {
+                    _Log.Error("[ICLICommandTable] Exception error: string is null or white space");
+                    return null;
+                }
+                if (arg.Length > 260)
+                {
+                    string logString = arg;
+                    if (logString.Length >= 500)
+                        logString = logString.Substring(0, 500);
+
+                    _Log.Error("[ICLICommandTable] Exception error: string too long. Arg:" + System.Security.SecurityElement.Escape(logString));
+                    return null;
+                }
+            }
+            if ((args.Length < 2))
+            {
+                CommandLineInput commandInput = new CommandLineInput();
+                commandInput.isCliCommandsProcessCompleted = true;
+                if (commandInput.Command.Equals("HELP"))                {
+                    
+                    commandInputs.Add(commandInput);
+                    return commandInputs;
+                }
+                _Log.Error("[CLI] command length is too small");
+                return commandInputs;
+            }
+
+            int start_index = 0;
+            while (start_index < args.Length)
+            {
+                var command = args[start_index].Replace("/", "").Replace("-", "").ToUpper();
+                //parse command code
+                CommandLineInput input = new CommandLineInput();
+                input.isCliCommandsProcessCompleted = false;
+                if (commands.Exists(v => v == command))
+                {
+                    input.Command = command;
+                }
+                else
+                {
+                    _Log.Error($"[CLI] input unknown command {command}");
+                    commandInputs.Add(input);
+                    return commandInputs;
+                }
+
+                var in_type = args[start_index+1].Trim().ToUpper();
+                //parse target type and target feature
+                string[] str = in_type.Split('=');
+                if (str.Length < 2)
+                {
+                    _Log.Error($"[CLI] 2nd code should be the format like -Display=targetFeature (fail string: {args[start_index + 1]})");
+                    commandInputs.Add(input);
+                    return commandInputs;
+                }
+
+                input.TargetType = str[0].Replace("-", "");
+                input.TargetFeature = str[1];
+                //check if no input value for targetFeature .\CLI.Subagent.exe /get -Display=
+                if (string.IsNullOrEmpty(input.TargetFeature))
+                {
+                    commandInputs.Add(input);
+                    return commandInputs;
+                }
+                input.PluginsType = "";
+                //parse target plugin
+                foreach (string plugin in pluginType)
+                {
+                    if (input.TargetType.ToUpper().Trim().Equals(plugin))
+                    {
+                        input.PluginsType = plugin;
+                        break;
+                    }
+                }
+                if (string.IsNullOrEmpty(input.PluginsType))
+                {
+                    _Log.Error("[CLI] no target feature be found in DDPM");
+                    commandInputs.Add(input);
+                    return commandInputs;
+                }                
+                try
+                {                    
+                    if ((start_index + 2) < args.Length)
+                    {
+                        int offset = 0;
+                        bool new_loop = false;
+                        for (int i = start_index + 2; i < args.Length; i++) //arg[0] should be command (ex: get, set, ...), arg[1] should be Type (ex: -display= or -keyboard=...)
+                        {
+                            if (commands.Exists(v => v == args[i].Replace("/", "").Replace("-", "").ToUpper())) //check if next loop with GET or SET code
+                            {
+                                start_index = start_index + i;
+                                new_loop = true;
+                                break;
+                            }
+                            offset += 1;
+                            if (args[i] != "")
+                            {
+                                args[i] = args[i].Trim();
+                                string tmp = args[i];
+                                if (args[i].IndexOf("/") == 0 || args[i].IndexOf("-") == 0)
+                                {
+                                    args[i] = args[i].Substring(1);
+                                }
+                                if (args[i].ToUpper().IndexOf("SERVICETAG") == 0 ||
+                                    args[i].ToUpper().IndexOf("MODEL") == 0 ||
+                                    args[i].ToUpper().IndexOf("INDEX") == 0 ||
+                                    args[i].ToUpper().IndexOf("GUID") == 0 ||
+                                    args[i].ToUpper().IndexOf("PPID") == 0 ||
+                                    args[i].ToUpper().IndexOf("SERIALNUMBER") == 0)
+                                {
+                                    string[] tmpSS = args[i].Split("=");
+                                    if (tmpSS.Length != 2)
+                                    {
+                                        if (tmp.Length >= 500)
+                                            tmp = tmp.Substring(0, 500);
+                                        _Log.Warning($"[CLI] ignore a part of commands => {System.Security.SecurityElement.Escape(tmp)}");
+                                        continue;
+                                    }
+
+                                    if (tmpSS[1].Contains("]."))
+                                    {
+                                        tmpSS[1] = tmpSS[1].Replace("].", "],");
+                                    }
+                                    string[] tmpS = tmpSS[1].Split(",");
+                                    {
+                                        foreach (string tS in tmpS)
+                                        {
+                                            string t = tS;
+                                            if (tS.Length > 1 && tS.StartsWith("["))
+                                                t = tS.Substring(1);
+                                            else
+                                                t = tS;
+                                            if (t.Length > 1 && t.EndsWith("]"))
+                                                t = t.Substring(0, t.Length - 1);
+                                            if (tmpSS[0].ToUpper().Contains("SERVICETAG"))
+                                            {
+                                                input.ServiceTag.Add(t);
+                                            }
+                                            else if (tmpSS[0].ToUpper().Contains("MODEL"))
+                                            {
+                                                input.Model.Add(t);
+                                            }
+                                            else if (tmpSS[0].ToUpper().Contains("GUID"))
+                                            {
+                                                input.GuidString.Add(t);
+                                            }
+                                            else if (tmpSS[0].ToUpper().Contains("INDEX"))
+                                            {
+                                                int temp = int.Parse(t) - 1;
+                                                input.DeviceIndex.Add(temp.ToString());
+                                            }
+                                            else if (tmpSS[0].ToUpper().Contains("PPID"))
+                                            {
+                                                int temp = int.Parse(t) - 1;
+                                                input.PPID.Add(temp.ToString());
+                                            }
+                                            else if (tmpSS[0].ToUpper().Contains("SERIALNUMBER"))
+                                            {
+                                                int temp = int.Parse(t) - 1;
+                                                input.SerialNumber.Add(temp.ToString());
+                                            }
+                                            else
+                                            {
+                                                //_Log.Error("[ICLICommandTable] ");
+                                            }
+                                        }
+                                    }
+                                }
+                                else if (args[i].ToUpper().Contains("LOGPATH"))
+                                {
+                                    string[] tmpSS = args[i].Split("=");
+                                    if (tmpSS.Length != 2)
+                                    {
+                                        if (tmp.Length >= 500)
+                                            tmp = tmp.Substring(0, 500);
+
+                                        _Log.Warning($"[CLI] ignore a part of commands => {System.Security.SecurityElement.Escape(tmp)}");
+                                        continue;
+                                    }
+                                    if (!tmpSS[1].Contains(".txt"))
+                                    {
+                                        tmpSS[1] += ".txt";
+                                    }
+                                    input.LogPath = Path.GetFullPath(tmpSS[1]);
+                                }
+                                else
+                                {
+                                    //remove first "-" or "/" as well
+                                    if (args[i].IndexOf("/") == 0 || args[i].IndexOf("-") == 0)
+                                    {
+                                        args[i] = args[i].Substring(1);
+                                    }
+                                    string[] tmpSS = args[i].ToUpper().Split("=");
+                                    if (tmpSS.Length > 1)
+                                    {
+                                        input.Options.Add(new CommandType_Option(tmpSS[0], tmpSS[1]));
+                                    }
+                                    else
+                                    {
+                                        input.Options.Add(new CommandType_Option(tmpSS[0]));
+                                    }
+                                }
+                            }
+                        }
+                        if (!new_loop)
+                            start_index += (offset + 2);
+                    }
+                    else
+                        start_index += 2;
+                }
+                catch (Exception ex)
+                {
+                    _Log.Error("[ICLICommandTable] Exception error:" + ex.ToString());
+                }
+
+                //check the command is belong to IT/normal or both
+                CheckCommandRoutePath(ref input);
+                CheckTimeoutAndAssignValue(ref input);
+                input.isCliCommandsProcessCompleted = true;
+                commandInputs.Add(input);
+                //start_index = start_index + offset;
+            }
+            return commandInputs;
+        }
+
         private void CheckTimeoutAndAssignValue(ref CommandLineInput commandInput)
         {
             CommandLineInput commandInput_temp = commandInput;

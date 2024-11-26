@@ -12,57 +12,6 @@
              d:DesignHeight="74" d:DesignWidth="212" PreviewKeyDown="UserControl_PreviewKeyDown">
     <UserControl.Resources>
         <ResourceDictionary>
-            <ResourceDictionary.MergedDictionaries>
-                <!-- <ResourceDictionary Source="/DDPM.UI.Common;component/ModuleStyle.xaml" /> -->
-            </ResourceDictionary.MergedDictionaries>
-
-            <!-- The Color resources are used for ColorAnimation in Story -->
-            <!-- Background Color -->
-            <Color x:Key="Vbar_BkColor_Default">#99132F54</Color>
-            <Color x:Key="Vbar_BkColor_Disabled">#FF596067</Color>
-            <Color x:Key="Vbar_BkColor_LockHover">#FFB6B6B6</Color>
-            <!-- The Selected state is LinearGradientBrush see below in Brush section -->
-
-            <!-- Border Color
-            Disabled: the same with Vbar_BkColor_Disabled; Default: the same with Vbar_BkColor_Default.
-            LandingHover, (non-selected) Hover will be Vbar_BdColor_Hover
-            Selected and SelectedHover have the same BorderBrush:
-            <Color x:Key="Vbar_BdColor_Hover">#991B385F</Color>
-            -->
-            <Color x:Key="Vbar_BdColor_Hover">#FF1B385F</Color>
-            <Color x:Key="Vbar_BdColor_LockHover">#FF1B385F</Color>
-
-            <!-- Foreground or Icon/Text Color -->
-            <Color x:Key="Vbar_FgColor_Default">White</Color>
-            <Color x:Key="Vbar_FgColor_Disabled">#FFF5F6F7</Color>
-
-            <!-- The Brushes -->
-            <!-- Landing Default -->
-            <SolidColorBrush x:Key="Vbar_BkBrush_LandingDefault" Color="{StaticResource Vbar_BkColor_Default}" />
-            <SolidColorBrush x:Key="Vbar_BdBrush_LandingDefault" Color="{StaticResource Vbar_BkColor_Default}" />
-            <!-- Landing Hover -->
-            <SolidColorBrush x:Key="Vbar_BkBrush_LandingHover" Color="{StaticResource Vbar_BkColor_Default}" />
-            <SolidColorBrush x:Key="Vbar_BdBrush_LandingHover" Color="{StaticResource Vbar_BdColor_Hover}" />
-            <!-- Default -->
-            <SolidColorBrush x:Key="Vbar_BkBrush_Default" Color="{StaticResource Vbar_BkColor_Default}" />
-            <SolidColorBrush x:Key="Vbar_BdBrush_Default" Color="{StaticResource Vbar_BkColor_Default}" />
-            <!-- Hover -->
-            <SolidColorBrush x:Key="Vbar_BkBrush_Hover" Color="{StaticResource Vbar_BkColor_Default}" />
-            <SolidColorBrush x:Key="Vbar_BdBrush_Hover" Color="{StaticResource Vbar_BdColor_Hover}" />
-            <!-- Disabled -->
-            <SolidColorBrush x:Key="Vbar_BkBrush_Disabled" Color="{StaticResource Vbar_BkColor_Disabled}" />
-            <SolidColorBrush x:Key="Vbar_BdBrush_Disabled" Color="{StaticResource Vbar_BkColor_Disabled}" />
-            <!-- LockHover -->
-            <SolidColorBrush x:Key="Vbar_BdBrush_LockHover" Color="{StaticResource Vbar_BdColor_LockHover}" />
-            <SolidColorBrush x:Key="Vbar_BkBrush_LockHover" Color="{StaticResource Vbar_BkColor_LockHover}" />
-            <!-- Selected
-            BkBrush: Brush_GradientButtonCyan
-            BdBrush: Brush_GradientBorderCyan
-            -->
-            <!-- Foreground -->
-            <SolidColorBrush x:Key="Vbar_FgBrush_Default" Color="{StaticResource Vbar_FgColor_Default}" />
-            <SolidColorBrush x:Key="Vbar_FgBrush_Disabled" Color="{StaticResource Vbar_FgColor_Disabled}" />
-
             <Common:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
         </ResourceDictionary>
     </UserControl.Resources>
@@ -82,10 +31,10 @@
     -->
     <UserControl.Style>
         <Style TargetType="UserControl">
-            <Setter Property="Foreground" Value="{StaticResource Vbar_FgBrush_Default}" />
+            <Setter Property="Foreground" Value="{DynamicResource Vbar_FgBrush_Default}" />
             <Style.Triggers>
                 <Trigger Property="IsEnabled" Value="False">
-                    <Setter Property="Foreground" Value="{StaticResource Vbar_FgBrush_Disabled}" />
+                    <Setter Property="Foreground" Value="{DynamicResource Vbar_FgBrush_Disabled}" />
                 </Trigger>
             </Style.Triggers>
         </Style>
@@ -153,26 +102,26 @@
         <Border x:Name="bdOuter" Height="64" BorderThickness="2" CornerRadius="13" Focusable="True">
             <Border.Style>
                 <Style TargetType="Border">
-                    <Setter Property="Background" Value="{StaticResource Vbar_BkBrush_Default}" />
-                    <Setter Property="BorderBrush" Value="{StaticResource Vbar_BdBrush_Default}" />
+                    <Setter Property="Background" Value="{DynamicResource Vbar_BkBrush_Default}" />
+                    <Setter Property="BorderBrush" Value="{DynamicResource Vbar_BdBrush_Default}" />
                     <Setter Property="Width" Value="212" />
                     <Style.Triggers>
                         <!-- Selected state -->
                         <DataTrigger Binding="{Binding IsSelected, RelativeSource={RelativeSource AncestorType=UserControl}}"  Value="True">
-                            <Setter Property="Background"  Value="{StaticResource Brush_GradientButtonCyan}" />
-                            <Setter Property="BorderBrush" Value="{StaticResource  Brush_GradientBorderCyan}" />
+                            <Setter Property="Background"  Value="{DynamicResource Brush_GradientButtonCyan}" />
+                            <Setter Property="BorderBrush" Value="{DynamicResource  Brush_GradientBorderCyan}" />
                         </DataTrigger>
                         <!-- Disabled state -->
                         <DataTrigger Binding="{Binding IsEnabled, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="False">
-                            <Setter Property="Background"  Value="{StaticResource Vbar_BkBrush_Disabled}" />
-                            <Setter Property="BorderBrush" Value="{StaticResource Vbar_BdBrush_Disabled}" />
+                            <Setter Property="Background"  Value="{DynamicResource Vbar_BkBrush_Disabled}" />
+                            <Setter Property="BorderBrush" Value="{DynamicResource Vbar_BdBrush_Disabled}" />
                             <!--
                             <Setter Property="Width" Value="64" />
                             -->
                         </DataTrigger>
                         <!-- KeyboardFocus state -->
                         <Trigger Property="IsKeyboardFocused" Value="True">
-                            <Setter Property="BorderBrush" Value="{StaticResource FocusDotBrush}" />
+                            <Setter Property="BorderBrush" Value="{DynamicResource FocusDotBrush}" />
                         </Trigger>
                         <!-- Locked & Landing -->
                         <MultiDataTrigger>
@@ -180,8 +129,8 @@
                                 <Condition Binding="{Binding IsLocked, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="True"/>
                                 <Condition Binding="{Binding IsLandingMode, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="True"/>
                             </MultiDataTrigger.Conditions>
-                            <Setter Property="Background"  Value="{StaticResource Vbar_BkBrush_Disabled}" />
-                            <Setter Property="BorderBrush" Value="{StaticResource Vbar_BdBrush_Disabled}" />
+                            <Setter Property="Background"  Value="{DynamicResource Vbar_BkBrush_Disabled}" />
+                            <Setter Property="BorderBrush" Value="{DynamicResource Vbar_BdBrush_Disabled}" />
                         </MultiDataTrigger>
                         <!-- Locked & NonLanding -->
                         <MultiDataTrigger>
@@ -189,8 +138,8 @@
                                 <Condition Binding="{Binding IsLocked, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="True"/>
                                 <Condition Binding="{Binding IsLandingMode, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="False"/>
                             </MultiDataTrigger.Conditions>
-                            <Setter Property="Background"  Value="{StaticResource Vbar_BkBrush_Disabled}" />
-                            <Setter Property="BorderBrush" Value="{StaticResource Vbar_BdBrush_Disabled}" />
+                            <Setter Property="Background"  Value="{DynamicResource Vbar_BkBrush_Disabled}" />
+                            <Setter Property="BorderBrush" Value="{DynamicResource Vbar_BdBrush_Disabled}" />
                         </MultiDataTrigger>
                     </Style.Triggers>
                 </Style>
@@ -205,9 +154,8 @@
 
                 <!-- Icon -->
                 <ContentControl Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="Collapsed"
-                                Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=UserControl}}"
                                 Template="{Binding VisualTemplate, RelativeSource={RelativeSource AncestorType=UserControl}}" />
-                <Image Grid.Column="0" Width="24" Height="24" Visibility="Visible"
+                <Image Grid.Column="0" Width="24" Height="24" Visibility="{Binding NoCanvasIcon, RelativeSource={RelativeSource AncestorType=UserControl}, Converter={StaticResource BoolToVisibilityConverter}}"
                        VerticalAlignment="Center" HorizontalAlignment="Center"
                        Source="{Binding IconImage, RelativeSource={RelativeSource AncestorType=UserControl}}">
                     <Image.Style>
@@ -222,15 +170,37 @@
                         </Style>
                     </Image.Style>
                 </Image>
+                <ContentControl x:Name="IconCanvasContent" Grid.Column="0">
+                    <ContentControl.Style>
+                        <Style TargetType="ContentControl">
+                            <Setter Property="Foreground" Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=UserControl}}" />
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsSelected, RelativeSource={RelativeSource AncestorType=UserControl}}"  Value="True">
+                                    <Setter Property="Foreground"  Value="#FFFFFF" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </ContentControl.Style>
+                </ContentControl>
 
                 <!-- Text -->
                 <UXControls:UXTextBlock Grid.Column="1" FontSize="14"
                                         Text="{Binding Text, RelativeSource={RelativeSource AncestorType=UserControl}}"
-                                        Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=UserControl}}"
-                                        VerticalAlignment="Center" HorizontalAlignment="Left" />
-                
+                                        VerticalAlignment="Center" HorizontalAlignment="Left">
+                    <UXControls:UXTextBlock.Style>
+                        <Style TargetType="UXControls:UXTextBlock">
+                            <Setter Property="Foreground" Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=UserControl}}" />
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsSelected, RelativeSource={RelativeSource AncestorType=UserControl}}"  Value="True">
+                                    <Setter Property="Foreground"  Value="#FFFFFF" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </UXControls:UXTextBlock.Style>
+                </UXControls:UXTextBlock>
+
                 <!-- LockIcon -->
-                <Grid Grid.Column="1"
+                <Grid Grid.Column="1" 
                       Visibility="{Binding IsLocked, RelativeSource={RelativeSource AncestorType=UserControl}, Converter={StaticResource BoolToVisibilityConverter}}"
                       VerticalAlignment="Center" HorizontalAlignment="Right" Width="16" Height="16"
                       Margin="0,0,20,0">

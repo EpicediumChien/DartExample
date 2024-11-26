@@ -509,6 +509,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
             if (deviceManager != null)
             {
                 DdpmCommonHelper.DeviceManagerSA = deviceManager;
+                DdpmCommonHelper.Log = this._log;//assign this log for global using
                 DdpmCommonHelper.Settings_Cache = deviceManager.ReloadAppConfigData().Result;
                 //List<MonitorInfo> monitorInfos = deviceManager.GetMonitors().Result;
                 if (condition.Equals("all") || condition.Equals("displaychanged"))

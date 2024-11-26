@@ -22,6 +22,8 @@ namespace DDPM.UI.Module.HeadsetDeviceSettings.Tests
         private HeadsetViewModel? vm;
         private Mock<ILog>? logMock;
         private ILog? log;
+        private Mock<IShowPluginManager>? showPluginManagerMock;
+        private IShowPluginManager? showPluginManager;
         private Mock<IDeviceManagerSA>? deviceManagerSAMock;
         private IDeviceManagerSA? deviceManagerSA;
         private Mock<IConsole>? consoleMock;
@@ -45,7 +47,9 @@ namespace DDPM.UI.Module.HeadsetDeviceSettings.Tests
             deviceManagerSA = deviceManagerSAMock.Object;
             consoleMock = new Mock<IConsole>();
             console = consoleMock.Object;
-            vm = new HeadsetViewModel(console, log, deviceManagerSA);
+            showPluginManagerMock = new Mock<IShowPluginManager>();
+            showPluginManager = showPluginManagerMock.Object;
+            vm = new HeadsetViewModel(showPluginManager, console, log, deviceManagerSA);
             var currentDeviceInfo = new DeviceInfo();
             vm.CurrentDeviceInfo = currentDeviceInfo;
             headsetDeviceSettingsRightView = new HeadsetDeviceSettingsRightView(vm);

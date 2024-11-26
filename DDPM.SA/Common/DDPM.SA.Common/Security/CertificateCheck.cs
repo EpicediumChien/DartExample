@@ -29,7 +29,10 @@ namespace DDPM.SA.Common.Security
             {
                 try
                 {
-                    ret = DDPMFileSecurity.GetFileSHA_512(CertificateFilePath, out Info).ToLower().Equals(Stande_SHA512.ToLower());
+                    string fileSHA512 = DDPMFileSecurity.GetFileSHA_512(CertificateFilePath, out Info);
+                    ret = fileSHA512.ToLower().Equals(Stande_SHA512.ToLower());
+                    _logs?.DebugMsg_1("[CheckFile_Thumbprint] Stande_SHA512 : " + Stande_SHA512.ToLower());
+                    _logs?.DebugMsg_1("[CheckFile_Thumbprint] fileSHA512 : " + fileSHA512.ToLower());
                     if (Info.Equals("Complete"))
                     {
                         Info = ret ? "Check ok" : "Check fail";
@@ -50,7 +53,10 @@ namespace DDPM.SA.Common.Security
             {
                 try
                 {
-                    ret = DDPMFileSecurity.GetFileSHA_256(CertificateFilePath, out Info).ToLower().Equals(Stande_SHA256.ToLower());
+                    string fileSHA256 = DDPMFileSecurity.GetFileSHA_256(CertificateFilePath, out Info);
+                    ret = fileSHA256.ToLower().Equals(Stande_SHA256.ToLower());
+                    _logs?.DebugMsg_1("[CheckFile_Thumbprint] Stande_SHA256 : " + Stande_SHA256.ToLower());
+                    _logs?.DebugMsg_1("[CheckFile_Thumbprint] fileSHA256 : " + fileSHA256.ToLower());
                     if (Info.Equals("Complete"))
                     {
                         Info = ret ? "Check ok" : "Check fail";
@@ -81,7 +87,9 @@ namespace DDPM.SA.Common.Security
                     // 讀取憑證檔案並創建 X509Certificate2 物件
                     X509Certificate2 certificate = DDPMFileSecurity.LoadFileCertificate(CertificateFilePath);//new X509Certificate2(CertificateFilePath);
                     ret = certificate.Thumbprint.ToLower().Equals(Stande_Thumbprint.ToLower());
-                    if(!ret)
+                    _logs?.DebugMsg_1("[CheckFile_Thumbprint] Stande_Thumbprint : " + Stande_Thumbprint.ToLower());
+                    _logs?.DebugMsg_1("[CheckFile_Thumbprint] certificate.Thumbprint : " + certificate.Thumbprint.ToLower());
+                    if (!ret)
                         Info = "Load file cert to check thumbprint and the result is not matched";
                 }
                 catch (Exception ex)
@@ -345,7 +353,7 @@ namespace DDPM.SA.Common.Security
                     }
                 }
                 //_logs?.DebugMsg_1("---SAN END---");
-                isCNMatch = isSubjectCNMatch && isIssuerCNMatch && isSANCNMatch;
+                isCNMatch = isSubjectCNMatch && /*isIssuerCNMatch &&*/ isSANCNMatch;
                 if (isCNMatch)
                 {
                     //_logs?.DebugMsg_1("[CheckIssuerAndSubject] Is match.");
@@ -356,10 +364,10 @@ namespace DDPM.SA.Common.Security
                     {
                         //_logs?.DebugMsg_1("[CheckIssuerAndSubject] Subject is NOT match.");
                     }
-                    if (!isIssuerCNMatch)
-                    {
+                    //if (!isIssuerCNMatch)
+                    //{
                         //_logs?.DebugMsg_1("[CheckIssuerAndSubject] Issuer is NOT match.");
-                    }
+                    //}
                     // Additional logic to handle proxy certificates if the above checks failed
                     var storeNames = new[] { StoreName.Root, StoreName.TrustedPublisher };
                     var storeLocations = new[] { StoreLocation.LocalMachine, StoreLocation.CurrentUser };

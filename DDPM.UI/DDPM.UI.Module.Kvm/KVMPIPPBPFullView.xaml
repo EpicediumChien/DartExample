@@ -8,7 +8,7 @@
              xmlns:commonCtrls="clr-namespace:DDPM.UI.Common.UserControls;assembly=DDPM.UI.Common"
              xmlns:eaem="clr-namespace:DDPM.UI.Common.EAEM;assembly=DDPM.UI.Common"
              xmlns:lang="clr-namespace:DDPM.UI.Resources.Helper;assembly=DDPM.UI.Resources"
-             mc:Ignorable="d" Background="#FF0D121A"
+             mc:Ignorable="d" Background="{DynamicResource mainWindowBkColor}"
              d:DesignHeight="671" d:DesignWidth="1378"
              Loaded="UserControl_Loaded">
     <UserControl.Resources>
@@ -106,7 +106,7 @@
                                          ButtonSize="Medium" VerticalContentAlignment="Center"
                                          Content="{Binding [Save], Source={x:Static lang:LangHelper.Instance}}"  Margin="0"
                                          IconAnimation="Move" Width="164" Height="40"
-                                         Click="SaveInput" Visibility="{Binding EditPXP}" />
+                                         Click="SavePxP" Visibility="{Binding EditPXP}" />
                     <UXControls:UXButton IconPosition="IconRight"
                                          ButtonType="Primary"
                                          ButtonSize="Medium"

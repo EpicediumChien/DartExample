@@ -34,7 +34,6 @@ namespace DDPM.UI.Module.DisplayHotkeys
         {
             InitializeComponent();
             DataContext = vm;
-            vm.PxPkeySettings_Visibility = vm.DisplayHotkeysModule.SelectedHomeDevice.MonitorInfo.CapabilityDic.ContainsKey("E9") ? Visibility.Visible : Visibility.Collapsed;
         }
 
         private void tbToggleInputSource_PreviewKeyDown(object sender, KeyEventArgs e)

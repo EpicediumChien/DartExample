@@ -1,8 +1,11 @@
-﻿using System;
+﻿using Dell.Client.Framework.Security.Interfaces;
+using Dell.Client.Framework.Security;
+using System;
 using System.ComponentModel;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Diagnostics;
 
 namespace DDPM.SA.Common.Settings
 {
@@ -88,7 +91,7 @@ namespace DDPM.SA.Common.Settings
             return null;
         }
 
-        public static bool RemoveFileSymlink(string path, out string info)
+        /*public static bool RemoveFileSymlink(string path, out string info)
         {
             //Dean 0911: basic function, no function mix with other file checking
             //Elsa Add Security
@@ -119,9 +122,9 @@ namespace DDPM.SA.Common.Settings
             }
             info = "Success";
             return true;
-        }
+        }*/
 
-	public static bool RemoveFileSymlink2(string path, out string info)
+	/*public static bool RemoveFileSymlink2(string path, out string info)
         {
             try
             {
@@ -142,9 +145,9 @@ namespace DDPM.SA.Common.Settings
 
             info = "Success";
             return true;
-        }
+        }*/
 
-        public static bool RemoveFolderSymlink(string path, out string info)
+        /*public static bool RemoveFolderSymlink(string path, out string info)
         {
             //Dean 0911: basic function, no function mix with other file checking
             //Elsa Add Security
@@ -175,7 +178,7 @@ namespace DDPM.SA.Common.Settings
             }
             info = "Success";
             return true;
-        }
+        }*/
 
 	public static bool RemoveFolderSymlink2(string path, out string info)
         {
@@ -200,7 +203,7 @@ namespace DDPM.SA.Common.Settings
             return true;
         }
 
-        public static bool IsFileHasSymlink(string path, out string info)
+        /*public static bool IsFileHasSymlink(string path, out string info)
         {
             info = $"File {path} has symlink";
             //Dean 0911: basic function, no function mix with other file checking
@@ -225,31 +228,65 @@ namespace DDPM.SA.Common.Settings
                 info = ex.Message;
             }
             return false;
+        }*/
+
+        public static bool IsFilePathHasSymlink(string path, out string info, PathCheckOption option = PathCheckOption.None)
+        {
+            info = string.Empty;// $"Folder {path} has symlink";
+
+            try
+            {
+                // Check our path string for invalid characters, null value, empty value, etc.
+                if (PathHelper.ValidateFilePath(path, option) != PathCheckErrorCodes.SUCCESS)
+                {
+                    info = $"Invalid file path string - {path}";
+                    Debug.WriteLine(info);
+                    return true;
+                }
+
+                //Check for path redirection (symlink, mountpoint, hardlink, etc.) at the path AND along the path
+                if (PathHelper.CheckPathRedirection(path) != PathRedirectionReturn.PathIsNormal)
+                {
+                    info = $"Redirection detected along file path - {path}";
+                    return true;
+                }
+
+                info = $"File {path} has no symlink";
+            }
+            catch (Exception ex)
+            {
+                info = "Verify path failed. " + ex.Message;
+                return true; //recognize the exception as abnormal condition
+            }
+            return false;
         }
 
         public static bool IsFolderHasSymlink(string path, out string info)
         {
-            info = $"Folder {path} has symlink";
-            //Dean 0911: basic function, no function mix with other file checking
-            //Elsa Add Security
-            //string FileInfo;
-            //if (!DDPMFileSecurity.IsFilePathValid(path, out FileInfo))
-            //{
-            //    info = $"{nameof(IsFolderHasSymlink)} {FileInfo}";
-            //    //_log.Info(info);
-            //    return false;
-            //}
+            info = string.Empty;// $"Folder {path} has symlink";
+
             try
             {
-                DirectoryInfo folder = new DirectoryInfo(path);
-                if (folder.LinkTarget != null)
+                // Check our path string for invalid characters, null value, empty value, etc.
+                if (PathHelper.ValidateDirectoryPath(path, PathCheckOption.None) != PathCheckErrorCodes.SUCCESS)
+                {
+                    info = $"Invalid folder path string - {path}";
                     return true;
+                }
+
+                //Check for path redirection (symlink, mountpoint, hardlink, etc.) at the path AND along the path
+                if (PathHelper.CheckPathRedirection(path) != PathRedirectionReturn.PathIsNormal)
+                {
+                    info = $"Redirection detected along folder path - {path}";
+                    return true;
+                }
 
                 info = $"Folder {path} has no symlink";
             }
             catch (Exception ex)
             {
-                info = ex.Message;
+                info = "Verify folder failed. " + ex.Message;
+                return true; //recognize the exception as abnormal condition
             }
             return false;
         }

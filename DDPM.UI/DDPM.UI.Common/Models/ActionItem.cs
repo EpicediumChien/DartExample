@@ -300,7 +300,6 @@ namespace DDPM.UI.Common
           { 91, new ActionItem(ActionCategory.None, Strings.WindowsSearch, false, true) }
         };
 
-        public static bool IsCopilotEnabled = true;
         public static List<int> OpenRunActionsList => OpenRunActions.Select(x => x.Key).ToList();
         public static List<int> RadialMenuActionsList => RadialMenuActions.Select(x => x.Key).ToList();
 
@@ -308,10 +307,7 @@ namespace DDPM.UI.Common
         {
             get
             {
-                if (IsCopilotEnabled)
-                    return KnMActions.Where(x => x.Value.Category != ActionCategory.None || x.Key == 0).OrderBy(x => x.Value.Caption).Select(x => x.Key).ToList();
-                else
-                    return KnMActions.Where(x => (x.Value.Category != ActionCategory.None || x.Key == 0) && x.Key != 1).OrderBy(x => x.Value.Caption).Select(x => x.Key).ToList();
+                return KnMActions.Where(x => x.Value.Category != ActionCategory.None || x.Key == 0).OrderBy(x => x.Value.Caption).Select(x => x.Key).ToList();
             }
         }
 
@@ -335,10 +331,7 @@ namespace DDPM.UI.Common
         {
             get
             {
-                if (IsCopilotEnabled)
-                    return KnMActions.Where(x => x.Value.Category == ActionCategory.WindowsAction).OrderBy(x => x.Value.Caption).Select(x => x.Key).ToList();
-                else
-                    return KnMActions.Where(x => x.Value.Category == ActionCategory.WindowsAction && x.Key != 1).OrderBy(x => x.Value.Caption).Select(x => x.Key).ToList();
+                return KnMActions.Where(x => x.Value.Category == ActionCategory.WindowsAction).OrderBy(x => x.Value.Caption).Select(x => x.Key).ToList();
             }
         }
 
