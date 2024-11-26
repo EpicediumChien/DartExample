@@ -2239,6 +2239,15 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Another profile has been configured to use the same time. Please use another time..
+        /// </summary>
+        internal static string EazyMemory_41 {
+            get {
+                return ResourceManager.GetString("EazyMemory.41", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Error.
         /// </summary>
         internal static string EazyMemory_5 {
@@ -4192,6 +4201,15 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to This device can be paired with {0} hosts simultaneously.
+        /// </summary>
+        internal static string PairedInfo_0 {
+            get {
+                return ResourceManager.GetString("PairedInfo.0", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Paste.
         /// </summary>
         internal static string Paste {
@@ -4525,7 +4543,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Ready to be paired.
+        ///   Looks up a localized string similar to Ready to be paired .
         /// </summary>
         internal static string ReadyToBePaired {
             get {
