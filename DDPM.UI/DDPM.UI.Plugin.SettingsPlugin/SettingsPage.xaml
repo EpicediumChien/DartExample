@@ -57,6 +57,7 @@
                             BorderThickness="2"
                             CornerRadius="13"
                             Focusable="True"
+                            x:Name="Vbar_0"
                             MouseLeftButtonDown="GeneralButton_Click">
                         <Border.Style>
                             <Style TargetType="Border"
@@ -69,6 +70,16 @@
                                         <Setter Property="BorderBrush"
                                                 Value="{DynamicResource VbarItem_HiBdColor}" />
                                     </DataTrigger>
+                                    <MultiDataTrigger>
+                                        <MultiDataTrigger.Conditions>
+                                            <!-- Check if the item is not selected -->
+                                            <Condition Binding="{Binding IsSelected[0]}" Value="False" />
+                                            <!-- Check if the mouse is over the item -->
+                                            <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsMouseOver}" Value="True" />
+                                        </MultiDataTrigger.Conditions>
+                                        <Setter Property="Background" Value="{DynamicResource Vbar_BkBrush_Hover}" />
+                                        <Setter Property="BorderBrush" Value="{DynamicResource Vbar_BkBrush_Hover}" />
+                                    </MultiDataTrigger>
                                 </Style.Triggers>
                             </Style>
                         </Border.Style>
@@ -97,6 +108,7 @@
                             BorderThickness="2"
                             CornerRadius="13"
                             Focusable="True"
+                            x:Name="Vbar_1"
                             MouseLeftButtonDown="UpdatesButton_Click">
                         <Border.Style>
                             <Style TargetType="Border"
@@ -116,6 +128,16 @@
                                         <Setter Property="BorderBrush"
                                                 Value="#596067" />
                                     </DataTrigger>
+                                    <MultiDataTrigger>
+                                        <MultiDataTrigger.Conditions>
+                                            <!-- Check if the item is not selected -->
+                                            <Condition Binding="{Binding IsSelected[1]}" Value="False" />
+                                            <!-- Check if the mouse is over the item -->
+                                            <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsMouseOver}" Value="True" />
+                                        </MultiDataTrigger.Conditions>
+                                        <Setter Property="Background" Value="{DynamicResource Vbar_BkBrush_Hover}" />
+                                        <Setter Property="BorderBrush" Value="{DynamicResource Vbar_BkBrush_Hover}" />
+                                    </MultiDataTrigger>
                                 </Style.Triggers>
                             </Style>
                         </Border.Style>
@@ -164,6 +186,7 @@
                             BorderThickness="2"
                             CornerRadius="13"
                             Focusable="True"
+                            x:Name="Vbar_2"
                             MouseLeftButtonDown="AnalyticsButton_Click">
                         <Border.Style>
                             <Style TargetType="Border"
@@ -183,6 +206,16 @@
                                         <Setter Property="BorderBrush"
                                                 Value="#596067" />
                                     </DataTrigger>
+                                    <MultiDataTrigger>
+                                        <MultiDataTrigger.Conditions>
+                                            <!-- Check if the item is not selected -->
+                                            <Condition Binding="{Binding IsSelected[2]}" Value="False" />
+                                            <!-- Check if the mouse is over the item -->
+                                            <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsMouseOver}" Value="True" />
+                                        </MultiDataTrigger.Conditions>
+                                        <Setter Property="Background" Value="{DynamicResource Vbar_BkBrush_Hover}" />
+                                        <Setter Property="BorderBrush" Value="{DynamicResource Vbar_BkBrush_Hover}" />
+                                    </MultiDataTrigger>
                                 </Style.Triggers>
                             </Style>
                         </Border.Style>
@@ -225,6 +258,7 @@
                             BorderThickness="2"
                             CornerRadius="13"
                             Focusable="True"
+                            x:Name="Vbar_3"
                             MouseLeftButtonDown="WidgetSettingsButton_Click">
                         <Border.Style>
                             <Style TargetType="Border"
@@ -237,6 +271,16 @@
                                         <Setter Property="BorderBrush"
                                                 Value="{DynamicResource VbarItem_HiBdColor}" />
                                     </DataTrigger>
+                                    <MultiDataTrigger>
+                                        <MultiDataTrigger.Conditions>
+                                            <!-- Check if the item is not selected -->
+                                            <Condition Binding="{Binding IsSelected[3]}" Value="False" />
+                                            <!-- Check if the mouse is over the item -->
+                                            <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsMouseOver}" Value="True" />
+                                        </MultiDataTrigger.Conditions>
+                                        <Setter Property="Background" Value="{DynamicResource Vbar_BkBrush_Hover}" />
+                                        <Setter Property="BorderBrush" Value="{DynamicResource Vbar_BkBrush_Hover}" />
+                                    </MultiDataTrigger>
                                 </Style.Triggers>
                             </Style>
                         </Border.Style>
@@ -265,6 +309,7 @@
                             BorderThickness="2"
                             CornerRadius="13"
                             Focusable="True"
+                            x:Name="Vbar_4"
                             MouseLeftButtonDown="AboutButton_Click">
                         <Border.Style>
                             <Style TargetType="Border"
@@ -277,6 +322,16 @@
                                         <Setter Property="BorderBrush"
                                                 Value="{DynamicResource VbarItem_HiBdColor}" />
                                     </DataTrigger>
+                                    <MultiDataTrigger>
+                                        <MultiDataTrigger.Conditions>
+                                            <!-- Check if the item is not selected -->
+                                            <Condition Binding="{Binding IsSelected[4]}" Value="False" />
+                                            <!-- Check if the mouse is over the item -->
+                                            <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsMouseOver}" Value="True" />
+                                        </MultiDataTrigger.Conditions>
+                                        <Setter Property="Background" Value="{DynamicResource Vbar_BkBrush_Hover}" />
+                                        <Setter Property="BorderBrush" Value="{DynamicResource Vbar_BkBrush_Hover}" />
+                                    </MultiDataTrigger>
                                 </Style.Triggers>
                             </Style>
                         </Border.Style>

@@ -1,0 +1,96 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v8.0",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v8.0": {
+      "DDPM.SA.Resources/1.0.0": {
+        "dependencies": {
+          "runtimepack.Microsoft.Windows.SDK.NET.Ref": "10.0.19041.53"
+        },
+        "runtime": {
+          "DDPM.SA.Resources.dll": {}
+        },
+        "resources": {
+          "ar-SA/DDPM.SA.Resources.resources.dll": {
+            "locale": "ar-SA"
+          },
+          "de-DE/DDPM.SA.Resources.resources.dll": {
+            "locale": "de-DE"
+          },
+          "es-419/DDPM.SA.Resources.resources.dll": {
+            "locale": "es-419"
+          },
+          "es-ES/DDPM.SA.Resources.resources.dll": {
+            "locale": "es-ES"
+          },
+          "fr-CA/DDPM.SA.Resources.resources.dll": {
+            "locale": "fr-CA"
+          },
+          "fr-FR/DDPM.SA.Resources.resources.dll": {
+            "locale": "fr-FR"
+          },
+          "it/DDPM.SA.Resources.resources.dll": {
+            "locale": "it"
+          },
+          "ja-JP/DDPM.SA.Resources.resources.dll": {
+            "locale": "ja-JP"
+          },
+          "ko-KR/DDPM.SA.Resources.resources.dll": {
+            "locale": "ko-KR"
+          },
+          "pl/DDPM.SA.Resources.resources.dll": {
+            "locale": "pl"
+          },
+          "pt-BR/DDPM.SA.Resources.resources.dll": {
+            "locale": "pt-BR"
+          },
+          "pt-PT/DDPM.SA.Resources.resources.dll": {
+            "locale": "pt-PT"
+          },
+          "ru/DDPM.SA.Resources.resources.dll": {
+            "locale": "ru"
+          },
+          "tr/DDPM.SA.Resources.resources.dll": {
+            "locale": "tr"
+          },
+          "uk/DDPM.SA.Resources.resources.dll": {
+            "locale": "uk"
+          },
+          "zh-CN/DDPM.SA.Resources.resources.dll": {
+            "locale": "zh-CN"
+          },
+          "zh-TW/DDPM.SA.Resources.resources.dll": {
+            "locale": "zh-TW"
+          }
+        }
+      },
+      "runtimepack.Microsoft.Windows.SDK.NET.Ref/10.0.19041.53": {
+        "runtime": {
+          "Microsoft.Windows.SDK.NET.dll": {
+            "assemblyVersion": "10.0.19041.38",
+            "fileVersion": "10.0.19041.52"
+          },
+          "WinRT.Runtime.dll": {
+            "assemblyVersion": "2.1.0.0",
+            "fileVersion": "2.1.6.47881"
+          }
+        }
+      }
+    }
+  },
+  "libraries": {
+    "DDPM.SA.Resources/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "runtimepack.Microsoft.Windows.SDK.NET.Ref/10.0.19041.53": {
+      "type": "runtimepack",
+      "serviceable": false,
+      "sha512": ""
+    }
+  }
+}

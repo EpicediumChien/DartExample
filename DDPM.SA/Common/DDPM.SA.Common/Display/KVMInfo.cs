@@ -12,6 +12,7 @@ namespace DDPM.SA.Common
         public string InputType { get; set; }
         public string InputName { get; set; }
         public string USBUpstream { get; set; }
+        public uint Code { get; set; }
     }
 
     public class NKVMRespone
