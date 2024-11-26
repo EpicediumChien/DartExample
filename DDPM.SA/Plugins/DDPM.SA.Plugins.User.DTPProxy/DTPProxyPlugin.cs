@@ -6445,7 +6445,6 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             SendWebcamEventToUI(CreateEventMsg("Webcam", "Webcam_SharpnessChanged",
                                     e.DeviceId, $"NewValue:{e.Sharpness}"));
 
-            throw new NotImplementedException();
         }
 
         private void Webcam_Esi_WALLockCountdownChanged(object sender, Esi_WALLockCountdownChangedArgs e)
