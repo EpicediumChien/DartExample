@@ -1081,7 +1081,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                             }
                             else
                             {
-                                x.Value = "N/A";
+                                x.Value = "Not supported";
                                 x.Result = "FAIL";
                                 x.Message = "HeadSet not support ANC";
                                 retcode = false;
@@ -1131,7 +1131,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                             }
                             else
                             {
-                                x.Value = "N/A";
+                                x.Value = "Not supported";
                                 x.Result = "FAIL";
                                 x.Message = "HeadSet not support MICNOISECANCELLATION";
                                 retcode = false;
@@ -1169,7 +1169,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                             }
                             else
                             {
-                                x.Value = "N/A";
+                                x.Value = "Not supported";
                                 x.Result = "FAIL";
                                 x.Message = "HeadSet not support WearDetection";
                                 retcode = false;
@@ -1241,7 +1241,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                             }
                             else
                             {
-                                x.Value = "N/A";
+                                x.Value = "Not supported";
                                 x.Result = "FAIL";
                                 x.Message = "Webcam not support MicSwitch";
                                 retcode = false;
@@ -1284,7 +1284,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                             }
                             else
                             {
-                                x.Value = "N/A";
+                                x.Value = "Not supported";
                                 x.Result = "FAIL";
                                 x.Message = "Webcam not support HDR";
                                 retcode = false;
@@ -1368,7 +1368,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                                 }
                                 else
                                 {
-                                    x.Value = "N/A";
+                                    x.Value = "Not supported";
                                     x.Result = "FAIL";
                                     x.Message = "Webcam not support AntiFlicker";
                                     retcode = false;
@@ -1458,7 +1458,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                             }
                             else
                             {
-                                x.Value = "N/A";
+                                x.Value = "Not supported";
                                 x.Result = "FAIL";
                                 x.Message = "Webcam not support AI AutoFraming";
                                 retcode = false;
@@ -1541,7 +1541,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                             }
                             else
                             {
-                                x.Value = "N/A";
+                                x.Value = "Not supported";
                                 x.Result = "FAIL";
                                 x.Message = "Webcam not support PresenceDetection";
                                 retcode = false;
