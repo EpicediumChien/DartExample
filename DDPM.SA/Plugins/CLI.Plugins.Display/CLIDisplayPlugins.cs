@@ -11144,7 +11144,7 @@ namespace DDPM.CLI.Plugins.Display
             }
 
             cli_Response.Result = result;
-            cli_Response.Message = message;
+            cli_Response.Message = $"Log path: {file}";            
             output += "\n" + JsonConvert.SerializeObject(cli_Response, Formatting.Indented);
             
             return ((int)CLI_ExitCode.success, output);
