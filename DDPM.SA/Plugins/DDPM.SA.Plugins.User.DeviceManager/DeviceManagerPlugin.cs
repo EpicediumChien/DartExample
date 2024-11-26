@@ -607,7 +607,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             thread.SetApartmentState(ApartmentState.STA);
             thread.Start();
 
-            _disDevHelper = new DisplayDeviceHelper(Log);           
+            _disDevHelper = new DisplayDeviceHelper(Log);
         }
 
         private void HotkeyPressed(object sender, KeyPressedEventArgs e)
@@ -936,7 +936,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             // 11/23 Wayn Add
             bool result = false;
             result = await Task.Run(() => SyncPrimaryMonitorAndColorPresetStatus(m, ColorPreset_Name, colorPresetRunType).Result).ConfigureAwait(false);
-            if(!result)
+            if (!result)
             {
                 writelog("[DeviceMangerPlugin] SyncPrimaryMonitorAndColorPresetStatus ... False");
             }
@@ -981,7 +981,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         {
             bool blRet = true;
             writelog("[DeviceMangerPlugin] SyncPrimaryMonitorAndColorPresetStatus ... in");
-            List<ALSConfig> existAlsConfig = _DisplayManagerPlugin. GetAllExistAlsConfig().Result;
+            List<ALSConfig> existAlsConfig = _DisplayManagerPlugin.GetAllExistAlsConfig().Result;
             ALSConfig findconfig = existAlsConfig.Find(x => x.Edid.Equals(m.edid));
 
             Trace.WriteLine("Into MonitorInfo = " + m.edid.ModelName.ToString());
@@ -5533,7 +5533,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             TaskCompletionSource<bool> tcs = new TaskCompletionSource<bool>();
             Thread thread1 = new Thread(() =>
             {
-                _UpdateProgress = new UpdateProgress();
+                _UpdateProgress = new UpdateProgress(new Logs(Log, "DeviceManager"));
                 _UpdateProgress.Closed += (sender2, e2) =>
                 {
                     _UpdateProgress.Dispatcher.InvokeShutdown();

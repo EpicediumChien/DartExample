@@ -21,6 +21,9 @@
     <Reference Include="DDPM.SA.Obfuscation">
       <HintPath>CommonDll\DDPM.SA.Obfuscation.dll</HintPath>
     </Reference>
+    <Reference Include="DDPM.SA.Resources">
+      <HintPath>CommonDll\DDPM.SA.Resources.dll</HintPath>
+    </Reference>
     <Reference Include="VcpCore.Common">
       <HintPath>CommonDll\VcpCore.Common.dll</HintPath>
     </Reference>
