@@ -2458,7 +2458,23 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         public async Task<DeviceHelper> GetDevices(bool Rescan = false)
         {
+            DeviceHelper deviceHelper = await Task.Run(() => _PeripheralsPlugin.GetDevices(Rescan));
+            ChangeSB725(deviceHelper);
             return await Task.Run(() => _PeripheralsPlugin.GetDevices(Rescan));
+        }
+
+        private static void ChangeSB725(DeviceHelper deviceHelper)
+        {
+            if (deviceHelper.deviceInfo.Any(x => x.Name.Contains("SB725")))
+            {
+                var GetDeviceInfos = deviceHelper.deviceInfo.Where(x => x.Name.Contains("SB725")).ToList();
+                foreach (var deviceInfo in GetDeviceInfos)
+                {
+                    deviceInfo.Type = DeviceType.LogicalWiredAudio;
+                    deviceInfo.ModelNumber = "SB725";
+                    deviceInfo.LogicalDeviceType = "LogicalWiredAudio";
+                }
+            }
         }
 
         public async Task<DeviceHelper> GetDevices_WithoutAwait(bool Rescan = false)
