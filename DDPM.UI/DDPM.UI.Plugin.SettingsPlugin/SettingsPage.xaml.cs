@@ -4,6 +4,7 @@ using DDPM.UI.Common;
 using DDPM.UI.Interfaces;
 using DDPM.UI.Plugin.ViewModels;
 using Dell.Client.Framework.UX.WPF;
+using Dell.Client.Framework.UX.WPF.Controls;
 using System.Diagnostics;
 using System.Net.Sockets;
 using System.Reflection;
@@ -11,6 +12,8 @@ using System.Security.Cryptography;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Media;
+using VcpCore.Common;
 
 namespace DDPM.UI.Plugin.SettingsPlugin
 {
@@ -123,19 +126,16 @@ namespace DDPM.UI.Plugin.SettingsPlugin
         {
             //Dean 0618 add analytics page
             vm.SetSelected(2);
-            
         }
 
         private void WidgetSettingsButton_Click(object sender, MouseButtonEventArgs e)
         {
             vm.SetSelected(3);
-            
         }
 
         private void AboutButton_Click(object sender, MouseButtonEventArgs e)
         {
             vm.SetSelected(4);
-            
         }
     }
 }
