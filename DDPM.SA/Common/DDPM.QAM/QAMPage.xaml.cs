@@ -55,6 +55,7 @@ namespace DDPM.QAM
             if (OperatingSystem.IsWindows())
             {
                 Process[] processes = Process.GetProcessesByName(processName);
+
                 if (processes.Length > 0)
                 {
                     IntPtr mainWindowHandle = processes[0].MainWindowHandle;
@@ -65,6 +66,7 @@ namespace DDPM.QAM
                 }
             }
         }
+
         public QAMPage(IDeviceManagerSA deviceMangerPlugin)
         {
             InitializeComponent();
@@ -95,8 +97,6 @@ namespace DDPM.QAM
 
         private void CloseMyself()
         {
-            //System.Windows.MessageBox.Show("CloseMyself");
-
             if (CameraSetting != null)
             {
                 CameraSetting.Close();
