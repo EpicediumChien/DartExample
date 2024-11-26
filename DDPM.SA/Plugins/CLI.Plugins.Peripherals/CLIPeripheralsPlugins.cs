@@ -3845,6 +3845,10 @@ namespace DDPM.CLI.Plugins.Peripherals
                 if (commandLineInput.Options.Count > 0)
                 {
                     cLI_FWU_RESPONSE.Value = commandLineInput.Options[0].Option_Value;
+                    if (!commandLineInput.Options[0].Option_Value.Contains(","))
+                    {
+                        commandLineInput.Options[0].Option_Value += ",FORCEWITHNONOTICE";
+                    }
                     string[] ss_1 = commandLineInput.Options[0].Option_Value.Split(",");
 
                     if (ss_1.Length == 2)
