@@ -498,15 +498,20 @@ namespace DDPM.SA.Plugins.SettingsManager
 
             if (Directory.Exists(folder))
             {
-                DirectoryInfo directoryInfo = new DirectoryInfo(folder);
-                if (directoryInfo == null)
+                DirectoryInfo directoryInfo = null;
+
+                try
+                {
+                    directoryInfo = new DirectoryInfo(folder);
+                }
+                catch (Exception ex) 
                 {
                     WriteLog($"[{type}]System config: retrieve Directory got null return");
                     Directory.Delete(folder, true);
                     directoryInfo = System.IO.Directory.CreateDirectory(folder);
                     WriteLog($"[{type}]re-create system settings folder success");
                 }
-
+                                                 
                 string info2 = string.Empty;
                 //if (DDPMFileSecurity.IsPathSymbolicLinked(folder, out info2))
                 if (!DDPMFileSecurity.IsFolderPathValid(folder, out info2))
@@ -547,15 +552,20 @@ namespace DDPM.SA.Plugins.SettingsManager
             //if yes, delete file and then apply right ACL
             if (File.Exists(filePath))
             {
-                FileInfo fileInfo = new FileInfo(filePath);
-                if (fileInfo == null)
+                FileInfo fileInfo = null;
+                try
+                {
+                    fileInfo = new FileInfo(filePath);
+                }
+                catch (Exception ex)
                 {
                     WriteLog($"[{type}]System config: retrieve FileInfo got null return");
                     File.Delete(filePath);
                     WriteLog($"[{type}]Exist file deleted.");
                 }
-                else
-                {
+
+                if (fileInfo != null)
+                {                
                     AclChecker aclChecker = new AclChecker();
                     if (aclChecker.ContainsUnprivilegedWriteAccess(fileInfo))
                     {
