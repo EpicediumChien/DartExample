@@ -86,9 +86,9 @@ namespace DDPM.UI.Module.DisplayOthers
             PowerNapSetting setting = new PowerNapSetting
             {
                 Status = PowerNap_Enable,
-                ModelName = DisplayOthersModule.SelectedHomeDevice.MonitorInfo.modelName,
-                SerialNumber = DisplayOthersModule.SelectedHomeDevice.MonitorInfo.edid.SerialNumber,
-                s
+                ModelName = DisplayOthersModule?.SelectedHomeDevice?.MonitorInfo?.modelName,
+                SerialNumber = DisplayOthersModule?.SelectedHomeDevice?.MonitorInfo?.edid.SerialNumber,
+                ServiceTag = DisplayOthersModule?.SelectedHomeDevice?.MonitorInfo?.edid.ServiceTag
             };
             if (!(PutTosleep_Checked || Reducebrt_Checked))
             {
@@ -98,7 +98,7 @@ namespace DDPM.UI.Module.DisplayOthers
             {
                 setting.RunType = PutTosleep_Checked ? PowerNapType.SleepIfRunning : PowerNapType.ReduceBrightness;
             }
-            DdpmCommonHelper.DeviceManagerSA.SavePowerNapSetting(setting);
+            DdpmCommonHelper.DeviceManagerSA?.SavePowerNapSetting(setting);
         }
 
         public System.Windows.Media.Brush PowerNap_Color { get; set; }
@@ -184,9 +184,9 @@ namespace DDPM.UI.Module.DisplayOthers
         {
             _powerNapEnabled = false;
             List<SA.Common.Display.PowerNapSetting> settings = DdpmCommonHelper.DeviceManagerSA.ReadPowerNapSettings().Result;
-            string crtSn = DisplayOthersModule.SelectedHomeDevice.MonitorInfo.edid.SerialNumber;
+            string crtSn = DisplayOthersModule.SelectedHomeDevice.MonitorInfo.edid.ServiceTag;
             settings.RemoveAll(x => x.SerialNumber == null);
-            PowerNapSetting crtSetting = settings.Find(x => x.SerialNumber == crtSn);
+            PowerNapSetting crtSetting = settings.FirstOrDefault(x => x.ServiceTag == crtSn);
             if (crtSetting != null)
             {
                 _powerNapEnabled = crtSetting.Status;
