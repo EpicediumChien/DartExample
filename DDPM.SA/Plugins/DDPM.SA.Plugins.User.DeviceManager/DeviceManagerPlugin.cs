@@ -53,8 +53,10 @@ using System.Threading.Tasks;
 using System.Timers;
 using System.Windows;
 using System.Windows.Forms;
+using System.Windows.Media.Media3D;
 using System.Windows.Threading;
 using VcpCore.Common;
+using Windows.Gaming.Preview.GamesEnumeration;
 using Windows.System;
 using static DDPM.SA.Common.Telementry_GeneralFunction;
 using static DDPM.SA.Plugins.User.DeviceManager.DisplayDeviceHelper;
@@ -9404,6 +9406,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     Debug.WriteLine($"Keyboard_KeyUpProc==> _hotkeySettings is null");
                 }
             }
+            //regist osd key as hotkey
+
         }
 
         #region OutReport
@@ -13325,34 +13329,50 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         public Task<bool> SavePowerNapSetting(PowerNapSetting powerNapSetting)
         {
+            Debug.WriteLine($"{powerNapSetting.ModelName}:{powerNapSetting.SerialNumber}:{powerNapSetting.ServiceTag}:{powerNapSetting.Status}:{powerNapSetting.RunType}");
             List<PowerNapSetting> saveList = new List<PowerNapSetting>();
-            List<PowerNapSetting> allSettings = ReadPowerNapSettings().Result;
-            allSettings.RemoveAll(x => x.SerialNumber == null);
-            saveList.Add(powerNapSetting);
+            bool ret = false;
+            List<DDPMMonitorSettings> monitorSettings = _SettingsPlugin.ReloadMonitorSettings(powerNapSetting.ModelName).Result;
+            if (monitorSettings != null)
+            {
+                DDPMMonitorSettings updateSettings = monitorSettings.FirstOrDefault(x => x.ServiceTag.Equals(powerNapSetting.ServiceTag));
+                if (updateSettings != null)
+                {
+                    updateSettings.PowerNap = powerNapSetting;
+                    ret = _SettingsPlugin.WriteMonitorSettings(powerNapSetting.ModelName, monitorSettings).Result;
+                }
+            }
+            else
+            {
+                writelog($"@ SavePowerNapSetting: ReloadMonitorSettings(model={powerNapSetting.ModelName}) return null.");
+                ret = false;
+            }
+
+            /*saveList.Add(powerNapSetting);
             foreach (PowerNapSetting setting in allSettings)
             {
                 if (saveList.Any(x => x.SerialNumber.Equals(setting.SerialNumber)))
                     continue;
                 saveList.Add(setting);
             }
-            WritePowerNapSettings(saveList);
-
+            WritePowerNapSettings(saveList);*/
             if (powerNapSetting.RunType == PowerNapType.Off)
             {
                 //only save btn status
-                return Task.FromResult(true);
+                ret = true;
             }
-
-            //reset powerNaptimer and status
-            _PowerNapTimer.Stop();
-            _powerNapJobQueue.Clear();
-            _screenSaver = false;
-            _PowerNapTimer.Start();
-
+            else
+            {
+                //reset powerNaptimer and status
+                _PowerNapTimer.Stop();
+                _powerNapJobQueue.Clear();
+                _screenSaver = false;
+                _PowerNapTimer.Start();
+            }
             //Telementry Collection
             var rt = false;
             var Displaysettings_Function = new Displaysettings_Function();
-            MonitorInfo monitorInfo = _AllInfoMonitors.SingleOrDefault(x => x.edid.SerialNumber.Equals(powerNapSetting.SerialNumber));
+            MonitorInfo monitorInfo = _AllInfoMonitors.FirstOrDefault(x => x.edid.ServiceTag.Equals(powerNapSetting.ServiceTag));
             if (monitorInfo != null)
             {
                 if (powerNapSetting.Status)
@@ -13381,14 +13401,53 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         writelog("[DeviceMangerPlugin] [Telementry] Send Telementry for PowerNap Fail ...");
                 }
             }
-            return Task.FromResult(true);
+            return Task.FromResult(ret);
         }
 
         public Task<List<PowerNapSetting>> ReadPowerNapSettings()
         {
-            List<PowerNapSetting> read = _SettingsPlugin.ReadPowerNapSettings().Result;
-            read.RemoveAll(x => x.SerialNumber == null);
-            return Task.FromResult(read);
+            List<PowerNapSetting> allSettings = _SettingsPlugin.ReadPowerNapSettings().Result;
+            List<PowerNapSetting> saveList = new List<PowerNapSetting>();
+            //update old place powerNap settings
+            if (allSettings != null && allSettings.Count > 0)
+            {
+                foreach (PowerNapSetting powerNap in allSettings)
+                {
+                    List<DDPMMonitorSettings> monitorSettings = _SettingsPlugin.ReloadMonitorSettings(powerNap.ModelName).Result;
+                    if (monitorSettings != null)
+                    {
+                        MonitorInfo monitorInfo1 = _AllInfoMonitors.FirstOrDefault(x => x.edid.SerialNumber.Equals(powerNap.SerialNumber));
+                        if (monitorInfo1 != null)
+                        {
+                            DDPMMonitorSettings updateSettings = monitorSettings.FirstOrDefault(x => x.ServiceTag.Equals(monitorInfo1.edid.ServiceTag));
+                            if (updateSettings != null)
+                            {
+                                updateSettings.PowerNap = powerNap;
+                                bool s = _SettingsPlugin.WriteMonitorSettings(powerNap.ModelName, monitorSettings).Result;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        saveList.Add(powerNap);
+                    }
+                }
+                WritePowerNapSettings(saveList);
+            }
+            //return all
+            List<PowerNapSetting> retList = new List<PowerNapSetting>();
+            foreach (var mo in _AllInfoMonitors)
+            {
+                List<DDPMMonitorSettings> result = _SettingsPlugin.ReloadMonitorSettings(mo.modelName).Result;
+                foreach (var item in result)
+                {
+                    if (item.PowerNap != null)
+                    {
+                        retList.Add(item.PowerNap);
+                    }
+                }
+            }
+            return Task.FromResult(retList);
         }
 
         #region InputSource
