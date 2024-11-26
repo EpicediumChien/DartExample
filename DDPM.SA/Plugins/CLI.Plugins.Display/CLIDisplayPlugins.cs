@@ -775,57 +775,15 @@ namespace DDPM.CLI.Plugins.Display
                     }
                     break;
                 case "NETWORKKVMVERSION":
-                    {
-                        var ret = NetworkkvmVersionx(commandLineInput);
-                        result.ExitCode = ret.code;
-                        result.serialize_Json_response = ret.result;
-                    }
-                    break;
                 case "NETWORKKVM":
-                    {
-                        var ret = Networkkvmx(devMgr, commandLineInput);
-                        result.ExitCode = ret.code;
-                        result.serialize_Json_response = ret.result;
-                    }
-                    break;
                 case "NETWORKKVMAUTOCONNECT":
-                    {
-                        var ret = Networkkvmautoconnectx(devMgr, commandLineInput);
-                        result.ExitCode = ret.code;
-                        result.serialize_Json_response = ret.result;
-                    }
-                    break;
                 case "NETWORKKVMCONTENTTRANSFER":
-                    {
-                        var ret = Networkkvmcontenttransferx(devMgr, commandLineInput);
-                        result.ExitCode = ret.code;
-                        result.serialize_Json_response = ret.result;
-                    }
-                    break;
                 case "NETWORKKVMINCOMINGPORT":
-                    {
-                        var ret = Networkkvmincomingportx(devMgr, commandLineInput);
-                        result.ExitCode = ret.code;
-                        result.serialize_Json_response = ret.result;
-                    }
-                    break;
                 case "NETWORKKVMOUTGOINGPORT":
-                    {
-                        var ret = Networkkvmoutgoingportx(devMgr, commandLineInput);
-                        result.ExitCode = ret.code;
-                        result.serialize_Json_response = ret.result;
-                    }
-                    break;
                 case "NETWORKKVMCONTENTTRANSFERPORT":
-                    {
-                        var ret = Networkkvmcontenttransferportx(devMgr, commandLineInput);
-                        result.ExitCode = ret.code;
-                        result.serialize_Json_response = ret.result;
-                    }
-                    break;
                 case "NETWORKKVMACCESSRESET":
                     {
-                        var ret = Networkkvmaccessresetx(devMgr, commandLineInput);
+                        var ret = CLINetworkKVM.Execute(commandLineInput);
                         result.ExitCode = ret.code;
                         result.serialize_Json_response = ret.result;
                     }
