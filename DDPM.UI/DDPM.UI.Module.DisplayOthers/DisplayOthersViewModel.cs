@@ -87,7 +87,8 @@ namespace DDPM.UI.Module.DisplayOthers
             {
                 Status = PowerNap_Enable,
                 ModelName = DisplayOthersModule.SelectedHomeDevice.MonitorInfo.modelName,
-                SerialNumber = DisplayOthersModule.SelectedHomeDevice.MonitorInfo.edid.SerialNumber
+                SerialNumber = DisplayOthersModule.SelectedHomeDevice.MonitorInfo.edid.SerialNumber,
+                s
             };
             if (!(PutTosleep_Checked || Reducebrt_Checked))
             {
