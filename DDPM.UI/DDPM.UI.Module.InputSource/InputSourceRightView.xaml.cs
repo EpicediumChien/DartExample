@@ -129,5 +129,6 @@ namespace DDPM.UI.Module.InputSource
         public string NameWidth { get; set; }
         public string USBWidth { get; set; }
         public string NameColumn { get; set; }
+        public bool NoGrey { get; set; }
     }
 }
