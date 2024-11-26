@@ -1483,7 +1483,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                 }
                 else
                 {
-                    arguments = $"-s --force -f";
+                    arguments = $"-q --force --skip-app-retry -f";
                 }
                 if (fwUpdateInfo.DeviceType == DeviceType.LogicalDock || fwUpdateInfo.DeviceType == DeviceType.PhysicalWiredDock)
                 {
@@ -1533,22 +1533,61 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                         };
                         sendMessageToEvent(updateProgressInfo);
                     }
-                    UserImpersonator.RunAsUser(token, () =>
+                    _logs.DebugMsg_1(fwUpdateInfo.DeviceName + " StartProcessAndBypassUACWithAdmin go");
+                    PInvoke.PROCESS_INFORMATION procInfo;
+                    bool b = WTSFunction.StartProcessAndBypassUACWithAdmin(fwUpdateInfo.InstallPaths + " " + arguments, out procInfo);
+                    string processName = Path.GetFileNameWithoutExtension(fwUpdateInfo.InstallPaths);
+                    _logs.DebugMsg_1($"{nameof(Install)} {fwUpdateInfo.DeviceName} Searching for process: {processName}");
+                    Process[] processes = Process.GetProcessesByName(processName);
+                    if (processes != null && processes.Length > 0)
                     {
-                        using (_clientProcess = new Process())
+                        _logs.DebugMsg_1($"{nameof(Install)} {fwUpdateInfo.DeviceName} {processName}.Length: {processes.Length}");
+                        _clientProcess = processes[0];
+                        if (fwUpdateInfo.IsDisplay)
                         {
-                            _clientProcess.StartInfo.UseShellExecute = false;
-                            _clientProcess.StartInfo.FileName = fwUpdateInfo.InstallPaths;
-                            _clientProcess.StartInfo.WorkingDirectory = Path.GetDirectoryName(_clientProcess.StartInfo.FileName);
-                            _clientProcess.StartInfo.Arguments = arguments;
-                            _clientProcess.Start();
-                            _clientProcess.WaitForExit();
-                            if (fwUpdateInfo.IsDisplay && _clientProcess != null)
+                            _clientProcess.EnableRaisingEvents = true;
+                            _clientProcess.Exited += (sender, e) =>
                             {
-                                exitCode = _clientProcess.ExitCode;
-                            }
+                                Process p = (Process)sender;
+                                if (fwUpdateInfo.IsDisplay && p != null)
+                                {
+                                    _logs.DebugMsg_1($"{processName} (Process)sender.ExitCode go");
+                                    exitCode = p.ExitCode;
+                                    _logs.DebugMsg_1($"{processName} (Process)sender.ExitCode done");
+                                }
+                            };
                         }
-                    });
+                        _clientProcess.WaitForExit();
+                        _logs.DebugMsg_1($"{processName} process is done.");
+                    }
+                    else
+                    {
+                        _logs.DebugMsg_1($"{processName} process not found.");
+                        resetState();
+                        _updateErrorCode = FWUErrorCode.Unknow;
+                        _logs.DebugMsg_1($"{fwUpdateInfo.DeviceName} {nameof(Install)} {LangHelper.Instance["Service_not_running_Try_again"]}");
+                        _notificationStr = LangHelper.Instance["Service_not_running_Try_again"];
+                        _namedPipeServer.Dispose();
+                        return _updateErrorCode;
+                    }
+
+                    _logs.DebugMsg_1(fwUpdateInfo.DeviceName + " StartProcessAndBypassUACWithAdmin done b : " + b);
+                    //UserImpersonator.RunAsUser(token, () =>
+                    //{
+                    //    using (_clientProcess = new Process())
+                    //    {
+                    //        _clientProcess.StartInfo.UseShellExecute = false;
+                    //        _clientProcess.StartInfo.FileName = fwUpdateInfo.InstallPaths;
+                    //        _clientProcess.StartInfo.WorkingDirectory = Path.GetDirectoryName(_clientProcess.StartInfo.FileName);
+                    //        _clientProcess.StartInfo.Arguments = arguments;
+                    //        _clientProcess.Start();
+                    //        _clientProcess.WaitForExit();
+                    //        if (fwUpdateInfo.IsDisplay && _clientProcess != null)
+                    //        {
+                    //            exitCode = _clientProcess.ExitCode;
+                    //        }
+                    //    }
+                    //});
                 }
                 if (fwUpdateInfo.IsDisplay)
                 {
@@ -1625,7 +1664,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                     _DelayFWUpdateInfoPackage.FWUpdateInfo.RemoveAll(obj => obj.Equals(fwUpdateInfo));
                 }
                 resetState();
-                _logs.DebugMsg_1($"{nameof(Install)} _notificationStr {_notificationStr}");
+                _logs.DebugMsg_1($"{nameof(Install)} {fwUpdateInfo.DeviceName} _notificationStr {_notificationStr}");
                 _logs.DebugMsg_1($"{nameof(Install)} done");
                 return _updateErrorCode;
             }
@@ -1979,9 +2018,9 @@ namespace DDPM.SA.Plugins.User.FWUpdate
 
         [SupportedOSPlatform("windows")]
         [SupportedOSPlatform("windows10.0.19041.0")]
-        private void resetState()
+        private void resetState([System.Runtime.CompilerServices.CallerLineNumber] int sourceLineNumber = 0)
         {
-            _logs.DebugMsg_1($"{nameof(resetState)} start");
+            _logs.DebugMsg_1($"{nameof(resetState)} start sourceLineNumber : {sourceLineNumber}");
             if (_timerTimeOut != null)
             {
                 _logs.DebugMsg_1($"{nameof(resetState)} _timerTimeOut is no null");
@@ -1993,7 +2032,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
             }
             if (OperatingSystem.IsWindowsVersionAtLeast(10, 0, 19041))
             {
-                _logs.DebugMsg_1($"{nameof(resetState)} _timerTimeOut.Stop()");
+                _logs.DebugMsg_1($"{nameof(resetState)} _clientProcess go");
                 if (_clientProcess != null)
                 {
                     _logs.DebugMsg_1($"{nameof(resetState)} _clientProcess is no null");
