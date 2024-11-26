@@ -191,6 +191,8 @@ namespace DDPM.SA.Common
 
         Task<List<string>> GetUSBUpstreamList(MonitorInfo monitorInfo);
 
+        Task<string> GetUSBUpstream(MonitorInfo monitorInfo, string inputsource);
+
         Task<bool> SetUSBUpstream(MonitorInfo monitorInfo, string inputsource, string upstream);
 
         Task<bool> USBSwitch(MonitorInfo monitorInfo, string inputsource1, string upstream1, string inputsource2, string upstream2);
@@ -822,6 +824,8 @@ namespace DDPM.SA.Common
         Task<string> GetCameraFirmwareVersionByDTP(string Guid);
         Task<bool> GetIsPropertyFOVSupportedByDTP(string Guid);
         Task<int> GetFieldOfView(string Guid);
+        Task<bool> GetIsWindowsHelloCapabilityVerified(string Guid);
+        Task<bool> GetIsAllSupportedResolutionsFound(string Guid);
         Task<bool> GetIsPropertyHDRSupported(string Guid);
         Task<bool> GetIsHDROn(string Guid);
         Task<bool> GetIsPropertyAntiFlickerSupported(string Guid);
@@ -841,9 +845,9 @@ namespace DDPM.SA.Common
 
         Task DeleteProfile(string Guid, string newValue);
 
-        Task SetZoom(string Guid, int newValue);
+        Task<bool> SetZoom(string Guid, int newValue);
 
-        Task SetIsAutoFramingOn(string Guid, bool newValue);
+        Task<bool> SetIsAutoFramingOn(string Guid, bool newValue);
 
         Task SetIsAutoFramingTransitionOn(string Guid, bool newValue);
 
@@ -851,7 +855,7 @@ namespace DDPM.SA.Common
 
         Task SetAutoFramingFrameSize(string Guid, int newValue);
 
-        Task SetFieldOfView(string Guid, int newValue);
+        Task<bool> SetFieldOfView(string Guid, int newValue);
 
         Task SetIsFocusOn(string Guid, bool newValue);
 
@@ -908,7 +912,7 @@ namespace DDPM.SA.Common
 
         Task<bool> GetIsWalkAwayLockEnable(string Guid);
 
-        Task<bool> GetIsPrioritizeExternalWebcam(string Guid);
+        Task<bool?> GetIsPrioritizeExternalWebcam(string Guid);
 
         Task<bool> GetIsESISupported(string Guid);
 
@@ -946,7 +950,15 @@ namespace DDPM.SA.Common
 
         Task<bool> SetAncGainAsync(string Guid, int newValue);
 
-        Task<bool> SetWearDetectionAsync(string Guid, int newValue);
+        Task<bool> SetWearDetectionAsync(string Guid, bool newValue);
+
+        Task<bool> SetIsWearDetectionMuteMicEnabledAsync(string Guid, bool newValue);
+
+        Task<bool> SetIsWearDetectionPauseMusicEnabledAsync(string Guid, bool newValue);
+
+        Task<bool> SetWearDetectionQuickPauseAsync(string Guid, int newValue);
+
+        Task<bool> SetWearDetectionSensitivityAsync(string Guid, int newValue);
 
         Task<bool> SetMicNCIncomingAsync(string Guid, bool newValue);
 
@@ -1070,7 +1082,15 @@ namespace DDPM.SA.Common
 
         Task<int> GetAncGainAsync(string Guid);
 
-        Task<int> GetWearDetectionAsync(string Guid);
+        Task<bool> GetWearDetectionAsync(string Guid);
+
+        Task<bool> GetIsWearDetectionPauseMusicEnabledAsync(string Guid);
+
+        Task<bool> GetIsWearDetectionMuteMicEnabledAsync(string Guid);
+
+        Task<int> GetWearDetectionSensitivityAsync(string Guid);
+
+        Task<int> GetWearDetectionQuickPauseAsync(string Guid);
 
         Task<bool> GetIsMicNCIncomingSupportedAsync(string Guid);
 

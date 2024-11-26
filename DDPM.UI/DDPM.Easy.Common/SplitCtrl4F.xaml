@@ -14,8 +14,8 @@
                 <ResourceDictionary Source="EAStyles.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
-            <local:SplitCtrlVM x:Key="vmDesign" IsVertical="True" SplitMode="Work"
-                               IsEditable="True" HoveringCell="4F2" />
+            <local:SplitCtrlVM x:Key="vmDesign" IsVertical="True" SplitMode="AWS"
+                               IsEditable="True" HoveringCell="4F1" />
         </ResourceDictionary>
     </UserControl.Resources>
 
@@ -144,14 +144,14 @@
             <!-- VertBase -->
             <Grid Name="G0" Style="{StaticResource SplitBaseStyle_Vert}">
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="{Binding Settings[0], Mode=TwoWay}" />
+                    <RowDefinition Height="{Binding Settings[2], Mode=TwoWay}" />
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="{Binding Settings[1], Mode=TwoWay}" />
                     <RowDefinition Height="Auto" />
-                    <RowDefinition Height="{Binding Settings[2], Mode=TwoWay}" />
+                    <RowDefinition Height="{Binding Settings[0], Mode=TwoWay}" />
                 </Grid.RowDefinitions>
 
-                <local:CellBorder x:Name="cell_4F1" Grid.Row="0">
+                <local:CellBorder x:Name="cell_4F1" Grid.Row="4">
                     <local:CellBorder.Style>
                         <Style TargetType="local:CellBorder" BasedOn="{StaticResource CellBorderStyle2}">
                             <Style.Triggers>
@@ -196,14 +196,14 @@
                     </local:CellBorder.Style>
                 </local:CellBorder>
 
-                <Grid Name="G1" Grid.Row="4">
+                <Grid Name="G1" Grid.Row="0">
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="{Binding Settings[4], Mode=TwoWay}" />
-                        <ColumnDefinition Width="Auto" />
                         <ColumnDefinition Width="{Binding Settings[3], Mode=TwoWay}" />
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="{Binding Settings[4], Mode=TwoWay}" />
                     </Grid.ColumnDefinitions>
 
-                    <local:CellBorder x:Name="cell_4F3" Grid.Column="2">
+                    <local:CellBorder x:Name="cell_4F3" Grid.Column="0">
                         <local:CellBorder.Style>
                             <Style TargetType="local:CellBorder" BasedOn="{StaticResource CellBorderStyle2}">
                                 <Style.Triggers>
@@ -225,7 +225,7 @@
                             </Style>
                         </local:CellBorder.Style>
                     </local:CellBorder>
-                    <local:CellBorder x:Name="cell_4F4" Grid.Column="0">
+                    <local:CellBorder x:Name="cell_4F4" Grid.Column="2">
                         <local:CellBorder.Style>
                             <Style TargetType="local:CellBorder" BasedOn="{StaticResource CellBorderStyle2}">
                                 <Style.Triggers>

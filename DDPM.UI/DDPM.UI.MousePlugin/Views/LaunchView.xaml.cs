@@ -664,12 +664,12 @@ namespace DDPM.UI.Plugin.MousePlugin
 
         private void ChangeDevNameWidth()
         {
-            devName.Width = this.ActualWidth - RightGrid.ActualWidth - VbarGrid.ActualWidth - 100;
+            //devName.Width = this.ActualWidth - RightGrid.ActualWidth - VbarGrid.ActualWidth - 100;
         }
 
         private void RightFrame_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            ChangeDevNameWidth();
+            //ChangeDevNameWidth();
         }
 
         private void PushBack(object sender, System.Windows.Input.MouseButtonEventArgs e)

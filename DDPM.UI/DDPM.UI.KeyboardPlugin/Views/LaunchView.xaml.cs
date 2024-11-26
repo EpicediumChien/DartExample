@@ -595,7 +595,7 @@ namespace DDPM.UI.Plugin.KeyboardPlugin
 
         private void ChangeDevNameWidth()
         {
-            devName.Width = this.ActualWidth - RightGrid.ActualWidth - VbarGrid.ActualWidth - 100;
+            //devName.Width = this.ActualWidth - RightGrid.ActualWidth - VbarGrid.ActualWidth - 100;
         }
 
         private void RightFrame_SizeChanged(object sender, SizeChangedEventArgs e)

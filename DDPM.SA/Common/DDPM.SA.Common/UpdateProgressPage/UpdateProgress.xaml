@@ -103,7 +103,7 @@
         </Style>
     </UXControls:UXWindow.Resources>
     <Grid MouseDown="Grid_MouseDown">
-        <Image Source="ProgressBackground.png" />
+        <Image Source="{Binding ProgressBarImage}" />
         <Grid Margin="20">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
@@ -120,7 +120,7 @@
                                         FontFamily="Roboto"
                                         HorizontalAlignment="Left"
                                         Margin="8,8,8,8"
-                                        Foreground="White" />
+                                        Foreground="{Binding TextForeground}" />
             </Grid>
             <Grid Grid.Row="1">
                 <UXControls:UXTextBlock Text="{Binding UpdateVersion}"
@@ -128,7 +128,7 @@
                                         FontFamily="Roboto"
                                         HorizontalAlignment="Left"
                                         Margin="8,8,8,8"
-                                        Foreground="White" />
+                                        Foreground="{Binding TextForeground}" />
             </Grid>
             <Grid Grid.Row="2">
                 <UXControls:UXTextBlock Text="{Binding UpdateSubTitle}"
@@ -136,7 +136,7 @@
                                         FontFamily="Roboto"
                                         HorizontalAlignment="Left"
                                         Margin="8,8,8,8"
-                                        Foreground="White" />
+                                        Foreground="{Binding TextForeground}" />
             </Grid>
             <Grid Grid.Row="4">
                 <Grid.ColumnDefinitions>
@@ -150,7 +150,7 @@
                                         FontFamily="Roboto"
                                         HorizontalAlignment="Left"
                                         Margin="8,8,8,8"
-                                        Foreground="White" />
+                                        Foreground="{Binding TextForeground}" />
                 <Grid Grid.Column="1"
                       HorizontalAlignment="Left"
                       VerticalAlignment="Center">

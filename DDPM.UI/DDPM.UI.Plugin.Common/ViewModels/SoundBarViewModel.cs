@@ -50,7 +50,7 @@ namespace DDPM.UI.Plugin.ViewModels
                     _log.Info($"[SoundBarViewModel] Print before property ...UpdateDTPValue new DeviceInfo...");
                 }
 
-                SpeakerInfoValueDTP.SpeakerProfile = await _deviceManager.GetProfileAsync(CurrentDeviceID.ToString());
+                SpeakerInfoValueDTP.SpeakerProfile = (await _deviceManager.GetProfileAsync(CurrentDeviceID.ToString()))??String.Empty;
                 SpeakerInfoValueDTP.SpeakerBass = await _deviceManager.GetBassAsync(CurrentDeviceID.ToString());
                 SpeakerInfoValueDTP.SpeakerMidRange = await _deviceManager.GetMidRangeAsync(CurrentDeviceID.ToString());
                 SpeakerInfoValueDTP.SpeakerTreble = await _deviceManager.GetTrebleAsync(CurrentDeviceID.ToString());
