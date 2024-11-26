@@ -66,11 +66,6 @@ namespace DDPM.UI.Common
             DdpmCommonHelper.BitmapImageUpdated += ImageUpdate;
         }
 
-        private void ImageUpdate(OSThemeEnum oSThemeEnum)
-        {
-            UpdateConnectionType();
-        }
-
         private void OnUnloaded(object sender, RoutedEventArgs e)
         {
             DdpmCommonHelper.BitmapImageUpdated -= ImageUpdate;
@@ -78,6 +73,7 @@ namespace DDPM.UI.Common
 
         private void ImageUpdate(OSThemeEnum oSThemeEnum)
         {
+            UpdateConnectionType();
             if (oSThemeEnum == OSThemeEnum.Dark)
             {
                 ConnectionTypeImage.Source = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Port.png");
