@@ -5535,7 +5535,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             TaskCompletionSource<bool> tcs = new TaskCompletionSource<bool>();
             Thread thread1 = new Thread(() =>
             {
-                _UpdateProgress = new UpdateProgress();
+                _UpdateProgress = new UpdateProgress(new Logs(Log, "DeviceManager"));
                 _UpdateProgress.Closed += (sender2, e2) =>
                 {
                     _UpdateProgress.Dispatcher.InvokeShutdown();

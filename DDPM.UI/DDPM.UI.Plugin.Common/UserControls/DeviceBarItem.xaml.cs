@@ -39,15 +39,18 @@ namespace DDPM.UI.Common
 
         private void rootGrid_MouseEnter(object sender, System.Windows.Input.MouseEventArgs e)
         {
-            SelectBarItem();
+            if (IsSelected)
+            { return; }
+            bdRoot.Background = (SolidColorBrush)FindResource("Vbar_BkBrush_Hover");
+            bdRoot.BorderBrush = (SolidColorBrush)FindResource("Vbar_BkBrush_Hover");
         }
 
         private void rootGrid_MouseLeave(object sender, System.Windows.Input.MouseEventArgs e)
         {
             if(IsSelected)
             { return; }
-
-            RenewBarItem();
+            bdRoot.Background = (SolidColorBrush)FindResource("Vbar_BkBrush_Default");
+            bdRoot.BorderBrush = (SolidColorBrush)FindResource("Vbar_BdBrush_Default");
         }
 
         public ICommand? ClickCommand { get; set; }
@@ -56,8 +59,9 @@ namespace DDPM.UI.Common
         {
             if(IsSelected)
             { return; }
+            bdRoot.BorderBrush = new SolidColorBrush((Color)FindResource("Vbar_BdColor_Hover"));
 
-            if(ClickCommand != null)
+            if (ClickCommand != null)
                 ClickCommand?.Execute(this);
 
             IsSelected = true;

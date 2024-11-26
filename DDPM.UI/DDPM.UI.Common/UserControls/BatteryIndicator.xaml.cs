@@ -63,8 +63,8 @@ namespace DDPM.UI.Common
 
             // Unregister event
             this.Unloaded += OnUnloaded;
+            DdpmCommonHelper.BitmapImageUpdated += ImageUpdate;
         }
-
 
         private void OnUnloaded(object sender, RoutedEventArgs e)
         {
@@ -73,6 +73,7 @@ namespace DDPM.UI.Common
 
         private void ImageUpdate(OSThemeEnum oSThemeEnum)
         {
+            UpdateConnectionType();
             if (oSThemeEnum == OSThemeEnum.Dark)
             {
                 ConnectionTypeImage.Source = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Port.png");
@@ -136,7 +137,6 @@ namespace DDPM.UI.Common
                 }
                 else
                 {
-
                     ConnectionTypeImage.Source = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/LightMode/Port.png");
                 }
                 stackPanel.Visibility = Visibility.Collapsed;

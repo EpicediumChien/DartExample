@@ -1,4 +1,5 @@
-﻿using System;
+﻿#define IL_Ready
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
