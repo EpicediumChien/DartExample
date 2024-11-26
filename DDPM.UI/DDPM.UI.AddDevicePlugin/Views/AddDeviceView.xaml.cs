@@ -249,10 +249,12 @@ namespace DDPM.UI.Plugin.AddDevicePlugin
         private void ShowMessage(string caption, string text, string button1Caption, string button2Caption = "")
         {
             MessageModalDialog messageModalDialog = new(caption, text, button1Caption, button2Caption);
-            Window parentWindow = Window.GetWindow(this);
-            if (parentWindow != null)
+            Window mainWindow = System.Windows.Application.Current.MainWindow;
+            if (mainWindow != null)
             {
-                messageModalDialog.Owner = parentWindow;
+                messageModalDialog.Owner = mainWindow;
+                messageModalDialog.Left = mainWindow.Left + (mainWindow!.ActualWidth - 417) / 2;
+                messageModalDialog.Top = mainWindow.Top + 300;
             }
             messageModalDialog.ShowDialog();
         }
@@ -265,13 +267,13 @@ namespace DDPM.UI.Plugin.AddDevicePlugin
                     if (_vm!.IsPairing)
                     {
                         WaitingModalDialog waitingModalDialog = new(WaitingCaption, $"{WaitingMessage} {_vm.RequestDeviceName}", WaitingAlert);
-                        Window parentWindow = Window.GetWindow(this);
+                        Window mainWindow = System.Windows.Application.Current.MainWindow;
                         waitingModalDialog.WindowStartupLocation = WindowStartupLocation.Manual;
-                        if (parentWindow != null)
+                        if (mainWindow != null)
                         {
-                            waitingModalDialog.Owner = parentWindow;
-                            waitingModalDialog.Left = parentWindow.Left + (parentWindow.ActualWidth - 587) / 2;
-                            waitingModalDialog.Top = parentWindow.Top + (parentWindow.ActualHeight - 349) / 2;
+                            waitingModalDialog.Owner = mainWindow;
+                            waitingModalDialog.Left = mainWindow.Left + (mainWindow.ActualWidth - 587) / 2;
+                            waitingModalDialog.Top = mainWindow.Top + (mainWindow.ActualHeight - 349) / 2;
                         }
                         waitingModalDialog.ShowDialog();
                         _vm.GotoNewDevice();

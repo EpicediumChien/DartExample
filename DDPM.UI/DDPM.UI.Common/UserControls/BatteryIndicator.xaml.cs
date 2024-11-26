@@ -60,12 +60,32 @@ namespace DDPM.UI.Common
         {
             InitializeComponent();
             UpdateConnectionType();
+
+            // Unregister event
+            this.Unloaded += OnUnloaded;
             DdpmCommonHelper.BitmapImageUpdated += ImageUpdate;
         }
 
         private void ImageUpdate(OSThemeEnum oSThemeEnum)
         {
             UpdateConnectionType();
+        }
+
+        private void OnUnloaded(object sender, RoutedEventArgs e)
+        {
+            DdpmCommonHelper.BitmapImageUpdated -= ImageUpdate;
+        }
+
+        private void ImageUpdate(OSThemeEnum oSThemeEnum)
+        {
+            if (oSThemeEnum == OSThemeEnum.Dark)
+            {
+                ConnectionTypeImage.Source = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Port.png");
+            }
+            else
+            {
+                ConnectionTypeImage.Source = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/LightMode/Port.png");
+            }
         }
 
         private static void OnBatteryChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)

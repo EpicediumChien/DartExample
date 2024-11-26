@@ -136,6 +136,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
 
             PluginIoc.ConfigureServices(new ServiceCollection()
                 .AddSingleton(_console)
+                .AddSingleton(_pluginManager)
                 .AddSingleton(_log)
                 .AddSingleton<IPeripheralViewModel, WebCameraViewModel>()
                 .BuildServiceProvider());
