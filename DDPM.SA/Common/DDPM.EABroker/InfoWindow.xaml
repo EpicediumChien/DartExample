@@ -10,16 +10,22 @@
         ShowInTaskbar="False"
         Loaded="Window_Loaded" Unloaded="Window_Unloaded">
     <Window.Resources>
-        <Style x:Key="InfoPropertyText" TargetType="TextBlock">
-            <Setter Property="FontSize" Value="10"/>
-            <Setter Property="Foreground" Value="Black"/>
-        </Style>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <!--<ResourceDictionary Source="EAStyles.xaml"/>-->
+            </ResourceDictionary.MergedDictionaries>
 
-        <Style x:Key="InfoValueText" TargetType="TextBlock">
-            <Setter Property="FontSize" Value="10"/>
-            <Setter Property="Foreground" Value="DarkCyan"/>
-        </Style>
-        
+            <Style x:Key="InfoPropertyText" TargetType="TextBlock">
+                <Setter Property="FontSize" Value="10"/>
+                <Setter Property="Foreground" Value="Black"/>
+            </Style>
+
+            <Style x:Key="InfoValueText" TargetType="TextBlock">
+                <Setter Property="FontSize" Value="10"/>
+                <Setter Property="Foreground" Value="DarkCyan"/>
+            </Style>
+
+        </ResourceDictionary>
     </Window.Resources>
     <Grid Margin="8">
         <Grid.RowDefinitions>

@@ -15,7 +15,7 @@
             </ResourceDictionary.MergedDictionaries>
 
             <local:SplitCtrlVM x:Key="vmDesign" IsVertical="True" SplitMode="Work" 
-                               IsEditable="True" HoveringCell="6D1" />
+                               IsEditable="True" HoveringCell="6D5" />
         </ResourceDictionary>
     </UserControl.Resources>
 

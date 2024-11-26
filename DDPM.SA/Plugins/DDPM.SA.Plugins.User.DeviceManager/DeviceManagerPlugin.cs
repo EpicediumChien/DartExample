@@ -984,22 +984,35 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             List<ALSConfig> existAlsConfig = _DisplayManagerPlugin.GetAllExistAlsConfig().Result;
             ALSConfig findconfig = existAlsConfig.Find(x => x.Edid.Equals(m.edid));
 
-            Trace.WriteLine("findconfig.ModelName = " + findconfig.ModelName.ToString() + " ; & findconfig.isPrimaryMonitorSync = " + findconfig.isPrimaryMonitorSync.ToString());
-            if (findconfig != null && findconfig.isPrimaryMonitorSync)// Find PrimaryMonitorSync on Monitor
+            Trace.WriteLine("Into MonitorInfo = " + m.edid.ModelName.ToString());
+            for (int i = 0; i < existAlsConfig.Count; i++)
             {
-                for (int i = 0; i < _AllInfoMonitors.Count; i++)// Compare AllInfoMonitors
+                Trace.WriteLine("GetAllExistAlsConfig ModelName = " + i.ToString() + " : " + existAlsConfig[i].ModelName.ToString());
+            }
+            if (findconfig != null)
+            {
+                Trace.WriteLine("findconfig.ModelName = " + findconfig.ModelName.ToString() + " ; & findconfig.isPrimaryMonitorSync = " + findconfig.isPrimaryMonitorSync.ToString());
+                if (findconfig != null && findconfig.isPrimaryMonitorSync)// Find PrimaryMonitorSync on Monitor
                 {
-                    MonitorInfo mo = _AllInfoMonitors[i];
-
-                    if (m.edid.Equals(mo.edid) == false)// Find different Monitor with PrimaryMonitorSync on Monitor
+                    for (int i = 0; i < _AllInfoMonitors.Count; i++)// Compare AllInfoMonitors
                     {
-                        Trace.WriteLine("e.monitor.ModelName = " + m.edid.ModelName.ToString() + " ||  mo.ModelName = " + mo.edid.ModelName.ToString());
-                        writelog("[DeviceMangerPlugin] SyncPrimaryMonitorAndColorPresetStatus ..... SetVCPCapability => " + mo.edid.ModelName.ToString() + ColorPreset_Name);
-                        Task.Run(() => SetVCPCapability(mo, "colorpreset", ColorPreset_Name).Result).ConfigureAwait(false);
+                        MonitorInfo mo = _AllInfoMonitors[i];
+
+                        if (m.edid.Equals(mo.edid) == false)// Find different Monitor with PrimaryMonitorSync on Monitor
+                        {
+                            Trace.WriteLine("e.monitor.ModelName = " + m.edid.ModelName.ToString() + " ||  mo.ModelName = " + mo.edid.ModelName.ToString());
+                            writelog("[DeviceMangerPlugin] SyncPrimaryMonitorAndColorPresetStatus ..... SetVCPCapability => " + mo.edid.ModelName.ToString() + ColorPreset_Name);
+                            Task.Run(() => SetVCPCapability(mo, "colorpreset", ColorPreset_Name).Result).ConfigureAwait(false);
+                        }
                     }
                 }
+                return Task.FromResult(blRet);
             }
-            return Task.FromResult(blRet);
+            else
+            {
+                writelog("[DeviceMangerPlugin] SyncPrimaryMonitorAndColorPresetStatus ..... findconfig == null");
+                return Task.FromResult(false);
+            }
         }
 
         public Task<bool> Send_NightLightStatus_Telementry_SA(MonitorInfo m, string NightLightStatus)
@@ -2172,35 +2185,44 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                 {
                                     if (inputSourcelist.Count != 0)
                                     {
-                                        copyinputlist = inputSourcelist;
-                                        foreach (var input in inputSourcelist)
-                                        {
-                                            //Maybe Migration...
-                                            if (input.Value.USBUpstream == string.Empty && monitorInfo.CapabilityDic.ContainsKey("EE") && monitorInfo.CapabilityDic.ContainsKey("E7"))
-                                            {
-                                                readinputlist = _DisplayManagerPlugin.GetInputSourcelist(monitorInfo).Result;
-                                                if (readinputlist != null)
-                                                {
-                                                    if (readinputlist.Count != 0)
-                                                    {
-                                                        foreach (var readinput in readinputlist)
-                                                        {
-                                                            foreach (var copyinput in copyinputlist)
-                                                            {
-                                                                if (readinput.Value.Code == copyinput.Value.Code)
-                                                                {
-                                                                    readinput.Value.InputName = copyinput.Value.InputName;
-                                                                    break;
-                                                                }
-                                                            }
-                                                        }
-                                                        bool b1 = SetInputSourcelist(monitorInfo, readinputlist).Result;
-                                                        return Task.FromResult(readinputlist);
-                                                    }
-                                                }
-                                                break;
-                                            }
-                                        }
+                                        //copyinputlist = inputSourcelist;
+                                        //foreach (var input in inputSourcelist)
+                                        //{
+                                        //    string usbUpstream = GetUSBUpstream(monitorInfo, input.Key).Result;
+                                        //    if (string.IsNullOrEmpty(usbUpstream))
+                                        //    {
+                                        //        writelog("[DeviceMangerPlugin] usbUpstream is null or empty ...");
+                                        //    }
+                                        //    else
+                                        //    {
+                                        //        input.Value.USBUpstream = usbUpstream;
+                                        //    }
+                                        //    //Maybe Migration...
+                                        //    //if (input.Value.USBUpstream == string.Empty && monitorInfo.CapabilityDic.ContainsKey("EE") && monitorInfo.CapabilityDic.ContainsKey("E7"))
+                                        //    //{
+                                        //    //readinputlist = _DisplayManagerPlugin.GetInputSourcelist(monitorInfo).Result;
+                                        //    //if (readinputlist != null)
+                                        //    //{
+                                        //    //    if (readinputlist.Count != 0)
+                                        //    //    {
+                                        //    //        foreach (var readinput in readinputlist)
+                                        //    //        {
+                                        //    //            foreach (var copyinput in copyinputlist)
+                                        //    //            {
+                                        //    //                if (readinput.Value.Code == copyinput.Value.Code)
+                                        //    //                {
+                                        //    //                    readinput.Value.InputName = copyinput.Value.InputName;
+                                        //    //                    break;
+                                        //    //                }
+                                        //    //            }
+                                        //    //        }
+                                        //    //        bool b1 = SetInputSourcelist(monitorInfo, readinputlist).Result;
+                                        //    //        return Task.FromResult(readinputlist);
+                                        //    //    }
+                                        //    //}
+                                        //    //break;
+                                        //    //}
+                                        //}
                                         return Task.FromResult(inputSourcelist);
                                     }
                                 }
@@ -2343,38 +2365,17 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             {
                 if (_DisplayManagerPlugin.SetUSBUpstream(monitorInfo, inputsource, upstream).Result)
                 {
-                    Dictionary<string, InputInfo> inputSourceList = GetInputSourcelist(monitorInfo).Result;
-                    if (inputSourceList != null)
+                    //Telementry Collection
+                    var Displaysettings_Function = new Displaysettings_Function();
+                    if (Displaysettings_Function.Send_USB_Telementry(_TelementryScheduler, monitorInfo, upstream, GetMonitorCurrentResolution(monitorInfo), GetMonitorMaxResolution(monitorInfo)))
                     {
-                        InputInfo outinput = new InputInfo();
-                        if (inputSourceList.TryGetValue(inputsource, out outinput))
-                        {
-                            inputSourceList[inputsource].USBUpstream = upstream;
-                            //string strInputList = InputSourceListSerialize(inputSourceList);
-                            if (SetInputSourcelist(monitorInfo, inputSourceList).Result)
-                            {
-                                //Telementry Collection
-                                var Displaysettings_Function = new Displaysettings_Function();
-                                if (Displaysettings_Function.Send_USB_Telementry(_TelementryScheduler, monitorInfo, upstream, GetMonitorCurrentResolution(monitorInfo), GetMonitorMaxResolution(monitorInfo)))
-                                {
-                                    writelog("[SetUSBUpstream] [Telementry] Send Telementry for USB Association Success ...");
-                                }
-                                else
-                                {
-                                    writelog("[SetUSBUpstream] [Telementry] Send Telementry for USB Association Fail ...");
-                                }
-                                return Task.FromResult(true);
-                            }
-                        }
-                        else
-                        {
-                            writelog("[SetUSBUpstream] inputSourceList is not find " + inputsource);
-                        }
+                        writelog("[SetUSBUpstream] [Telementry] Send Telementry for USB Association Success ...");
                     }
                     else
                     {
-                        writelog("[SetUSBUpstream] inputSourceList is null ");
+                        writelog("[SetUSBUpstream] [Telementry] Send Telementry for USB Association Fail ...");
                     }
+                    return Task.FromResult(true);
                 }
             }
             else
@@ -3042,7 +3043,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
         }
 
-        public async Task<bool> SetWearDetectionAsync(string guid, int newValue)
+        public async Task<bool> SetWearDetectionAsync(string guid, bool newValue)
         {
             try
             {
@@ -3053,6 +3054,66 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             catch (Exception ex)
             {
                 writelog($"[DeviceManagerPlugin] [Headset] SetWearDetectionAsync failed for GUID: {guid}, Error: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> SetIsWearDetectionMuteMicEnabledAsync(string guid, bool newValue)
+        {
+            try
+            {
+                await _DTPProxyPlugin.SetIsWearDetectionMuteMicEnabledAsync(guid, newValue);
+                writelog($"[DeviceManagerPlugin] [Headset] SetIsWearDetectionMuteMicEnabledAsync success, value is {newValue.ToString()}");
+                return true;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [Headset] SetIsWearDetectionMuteMicEnabledAsync failed for GUID: {guid}, Error: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> SetIsWearDetectionPauseMusicEnabledAsync(string guid, bool newValue)
+        {
+            try
+            {
+                await _DTPProxyPlugin.SetIsWearDetectionPauseMusicEnabledAsync(guid, newValue);
+                writelog($"[DeviceManagerPlugin] [Headset] SetIsWearDetectionPauseMusicEnabledAsync success, value is {newValue.ToString()}");
+                return true;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [Headset] SetIsWearDetectionPauseMusicEnabledAsync failed for GUID: {guid}, Error: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> SetWearDetectionQuickPauseAsync(string guid, int newValue)
+        {
+            try
+            {
+                await _DTPProxyPlugin.SetWearDetectionQuickPauseAsync(guid, newValue);
+                writelog($"[DeviceManagerPlugin] [Headset] SetWearDetectionQuickPauseAsync success, value is {newValue.ToString()}");
+                return true;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [Headset] SetWearDetectionQuickPauseAsync failed for GUID: {guid}, Error: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> SetWearDetectionSensitivityAsync(string guid, int newValue)
+        {
+            try
+            {
+                await _DTPProxyPlugin.SetWearDetectionSensitivityAsync(guid, newValue);
+                writelog($"[DeviceManagerPlugin] [Headset] SetWearDetectionSensitivityAsync success, value is {newValue.ToString()}");
+                return true;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [Headset] SetWearDetectionSensitivityAsync failed for GUID: {guid}, Error: {ex.Message}");
                 return false;
             }
         }
@@ -3936,7 +3997,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
         }
 
-        public async Task<int> GetWearDetectionAsync(string guid)
+        public async Task<bool> GetWearDetectionAsync(string guid)
         {
             try
             {
@@ -3947,6 +4008,66 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             catch (Exception ex)
             {
                 writelog($"[DeviceManagerPlugin] [Headset] GetWearDetectionAsync failed for {guid} - Exception: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> GetIsWearDetectionPauseMusicEnabledAsync(string guid)
+        {
+            try
+            {
+                var result = await _DTPProxyPlugin.GetIsWearDetectionPauseMusicEnabledAsync(guid);
+                writelog($"[DeviceManagerPlugin] [Headset] GetIsWearDetectionPauseMusicEnabledAsync succeeded for {result.ToString()}");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [Headset] GetIsWearDetectionPauseMusicEnabledAsync failed for {guid} - Exception: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> GetIsWearDetectionMuteMicEnabledAsync(string guid)
+        {
+            try
+            {
+                var result = await _DTPProxyPlugin.GetIsWearDetectionMuteMicEnabledAsync(guid);
+                writelog($"[DeviceManagerPlugin] [Headset] GetIsWearDetectionMuteMicEnabledAsync succeeded for {result.ToString()}");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [Headset] GetIsWearDetectionMuteMicEnabledAsync failed for {guid} - Exception: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<int> GetWearDetectionSensitivityAsync(string guid)
+        {
+            try
+            {
+                var result = await _DTPProxyPlugin.GetWearDetectionSensitivityAsync(guid);
+                writelog($"[DeviceManagerPlugin] [Headset] GetWearDetectionSensitivityAsync succeeded for {result.ToString()}");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [Headset] GetWearDetectionSensitivityAsync failed for {guid} - Exception: {ex.Message}");
+                return -1;
+            }
+        }
+
+        public async Task<int> GetWearDetectionQuickPauseAsync(string guid)
+        {
+            try
+            {
+                var result = await _DTPProxyPlugin.GetWearDetectionQuickPauseAsync(guid);
+                writelog($"[DeviceManagerPlugin] [Headset] GetWearDetectionQuickPauseAsync succeeded for {result.ToString()}");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [Headset] GetWearDetectionQuickPauseAsync failed for {guid} - Exception: {ex.Message}");
                 return -1;
             }
         }
@@ -5635,68 +5756,98 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         /// </returns>
         public Task<Dictionary<string, PCsInfo>> GetUSBKVMPCsList(MonitorInfo monitorInfo, Dictionary<string, InputInfo> inputList, List<InputSourceObj> subInputList)
         {
-            //_USBKVMPCsList = _DisplayManagerPlugin.GetUSBKVMPCsList(monitorInfo, inputList, subInputList).Result;
             Dictionary<string, PCsInfo> USBKVMPCsList = new Dictionary<string, PCsInfo>();
-            if (inputList != null && subInputList != null)
+            if (monitorInfo != null && inputList != null && subInputList != null)
             {
-                if (GetOnUSBKVM(monitorInfo).Result)
+                if (inputList.Count != 0 && subInputList.Count != 0)
                 {
-                    //get monitor settings
-                    List<DDPMMonitorSettings> settings = _SettingsPlugin.ReloadMonitorSettings(monitorInfo.modelName).Result;
-                    if (settings != null)
-                    {
-                        //get monitor setting
-                        DDPMMonitorSettings monitorSetting = settings.Find(x => x.ServiceTag == monitorInfo.edid.ServiceTag);
-                        if (monitorSetting == null)
-                        {
-                            USBKVMPCsList = _DisplayManagerPlugin.GetUSBKVMPCsList(monitorInfo, inputList, subInputList).Result;
-                            //bool b = SetUSBKVMPCsList(monitorInfo, USBKVMPCsList).Result;
-                        }
-                        else
-                        {
-                            try
-                            {
-                                if (!string.IsNullOrEmpty(monitorSetting.KVM.strUSBKVMPCsList))
-                                {
-                                    USBKVMPCsList = USBKVMPCsListDeserialize(monitorSetting.KVM.strUSBKVMPCsList);
-                                    if (USBKVMPCsList != null)
-                                    {
-                                        if (USBKVMPCsList.Count != 0)
-                                        {
-                                            foreach (var pc in USBKVMPCsList)
-                                            {
-                                                if (string.IsNullOrEmpty(pc.Key) || pc.Value == null)
-                                                {
-                                                    USBKVMPCsList = _DisplayManagerPlugin.GetUSBKVMPCsList(monitorInfo, inputList, subInputList).Result;
-                                                    break;
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                                else
-                                {
-                                    USBKVMPCsList = _DisplayManagerPlugin.GetUSBKVMPCsList(monitorInfo, inputList, subInputList).Result;
-                                    //bool b = SetUSBKVMPCsList(monitorInfo, USBKVMPCsList).Result;
-                                }
-                            }
-                            catch (Exception e)
-                            {
-                                USBKVMPCsList = _DisplayManagerPlugin.GetUSBKVMPCsList(monitorInfo, inputList, subInputList).Result;
-                                //bool b = SetUSBKVMPCsList(monitorInfo, USBKVMPCsList).Result;
-                            }
-                        }
-                    }
+                    USBKVMPCsList = _DisplayManagerPlugin.GetUSBKVMPCsList(monitorInfo, inputList, subInputList).Result;
                 }
                 else
                 {
-                    USBKVMPCsList = _DisplayManagerPlugin.GetUSBKVMPCsList(monitorInfo, inputList, subInputList).Result;
+                    writelog("[GetUSBKVMPCsList]inputList or subInputList count is 0");
                 }
             }
             else
             {
-                writelog("[GetUSBKVMPCsList]inputList or subInputList is null");
+                writelog("[GetUSBKVMPCsList]monitorInfo or inputList or subInputList is null");
             }
+            //if (inputList != null && subInputList != null)
+            //{
+            //    if (GetOnUSBKVM(monitorInfo).Result)
+            //    {
+            //        //get monitor settings
+            //        List<DDPMMonitorSettings> settings = _SettingsPlugin.ReloadMonitorSettings(monitorInfo.modelName).Result;
+            //        if (settings != null)
+            //        {
+            //            //get monitor setting
+            //            DDPMMonitorSettings monitorSetting = settings.Find(x => x.ServiceTag == monitorInfo.edid.ServiceTag);
+            //            if (monitorSetting == null)
+            //            {
+            //                USBKVMPCsList = _DisplayManagerPlugin.GetUSBKVMPCsList(monitorInfo, inputList, subInputList).Result;
+            //                //bool b = SetUSBKVMPCsList(monitorInfo, USBKVMPCsList).Result;
+            //            }
+            //            else
+            //            {
+            //                try
+            //                {
+            //                    if (!string.IsNullOrEmpty(monitorSetting.KVM.strUSBKVMPCsList))
+            //                    {
+            //                        USBKVMPCsList = USBKVMPCsListDeserialize(monitorSetting.KVM.strUSBKVMPCsList);
+            //                        if (USBKVMPCsList != null)
+            //                        {
+            //                            if (USBKVMPCsList.Count > 1)
+            //                            {
+            //                                foreach (var pc in USBKVMPCsList)
+            //                                {
+            //                                    if (string.IsNullOrEmpty(pc.Key) || pc.Value == null)
+            //                                    {
+            //                                        USBKVMPCsList = _DisplayManagerPlugin.GetUSBKVMPCsList(monitorInfo, inputList, subInputList).Result;
+            //                                        break;
+            //                                    }
+            //                                    else
+            //                                    {
+            //                                        string usbUpstream = GetUSBUpstream(monitorInfo, pc.Value.InputType).Result;
+            //                                        if (string.IsNullOrEmpty(usbUpstream))
+            //                                        {
+            //                                            writelog("[GetUSBKVMPCsList]usbUpstream is null or empty.");
+            //                                        }
+            //                                        else
+            //                                        {
+            //                                            pc.Value.USBUpstream = usbUpstream;
+            //                                        }
+            //                                    }
+            //                                }
+            //                            }
+            //                            else
+            //                            {
+            //                                USBKVMPCsList = _DisplayManagerPlugin.GetUSBKVMPCsList(monitorInfo, inputList, subInputList).Result;
+            //                            }
+            //                        }
+            //                    }
+            //                    else
+            //                    {
+            //                        USBKVMPCsList = _DisplayManagerPlugin.GetUSBKVMPCsList(monitorInfo, inputList, subInputList).Result;
+            //                        //bool b = SetUSBKVMPCsList(monitorInfo, USBKVMPCsList).Result;
+            //                    }
+            //                }
+            //                catch (Exception e)
+            //                {
+            //                    USBKVMPCsList = _DisplayManagerPlugin.GetUSBKVMPCsList(monitorInfo, inputList, subInputList).Result;
+            //                    //bool b = SetUSBKVMPCsList(monitorInfo, USBKVMPCsList).Result;
+            //                }
+            //            }
+            //        }
+            //    }
+            //    else
+            //    {
+            //        USBKVMPCsList = _DisplayManagerPlugin.GetUSBKVMPCsList(monitorInfo, inputList, subInputList).Result;
+            //    }
+            //}
+            //else
+            //{
+            //    writelog("[GetUSBKVMPCsList]inputList or subInputList is null");
+            //}
 
             return Task.FromResult(USBKVMPCsList);
         }
@@ -8517,6 +8668,16 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             return await Task.Run(() => _DTPProxyPlugin.GetCameraFirmwareVersion(Guid));
         }
 
+        public async Task<bool> GetIsWindowsHelloCapabilityVerified(string Guid)
+        {
+            return await Task.Run(() => _DTPProxyPlugin.GetIsWindowsHelloCapabilityVerified(Guid));
+        }
+
+        public async Task<bool> GetIsAllSupportedResolutionsFound(string Guid)
+        {
+            return await Task.Run(() => _DTPProxyPlugin.GetIsAllSupportedResolutionsFound(Guid));
+        }
+
         public async Task<bool> GetIsPropertyFOVSupportedByDTP(string Guid)
         {
             return await Task.Run(() => _DTPProxyPlugin.GetIsPropertyFOVSupported(Guid));
@@ -8617,13 +8778,14 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             return Task.FromResult(true);
         }
 
-        public Task SetZoom(string guid, int newValue)
+        public Task<bool> SetZoom(string guid, int newValue)
         {
             writelog("DeviceMangerPlugin received SetZoom requested ...");
             writelog($"Target Guid is {guid}");
             writelog($"Target Value is {newValue}");
-            _DTPProxyPlugin.SetZoom(guid, newValue);
-            return Task.FromResult(true);
+            //_DTPProxyPlugin.SetZoom(guid, newValue);
+            //return Task.FromResult(true);
+            return _DTPProxyPlugin.SetZoom(guid, newValue);
         }
 
         public Task SetAutoFramingSensitivity(string guid, int newValue)
@@ -8644,13 +8806,13 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             return Task.FromResult(true);
         }
 
-        public Task SetIsAutoFramingOn(string guid, bool newValue)
+        public Task<bool> SetIsAutoFramingOn(string guid, bool newValue)
         {
             writelog("DeviceMangerPlugin received SetIsAutoFramingOn requested ...");
             writelog($"Target Guid is {guid}");
             writelog($"Target Value is {newValue}");
-            _DTPProxyPlugin.SetIsAutoFramingOn(guid, newValue);
-            return Task.FromResult(true);
+            //_DTPProxyPlugin.SetIsAutoFramingOn(guid, newValue);
+            return _DTPProxyPlugin.SetIsAutoFramingOn(guid, newValue);
         }
 
         public Task SetIsAutoFramingTransitionOn(string guid, bool newValue)
@@ -8662,7 +8824,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             return Task.FromResult(true);
         }
 
-        public Task SetFieldOfView(string guid, int newValue)
+        public Task<bool> SetFieldOfView(string guid, int newValue)
         {
             writelog("DeviceMangerPlugin received SetFieldOfView requested ...");
             writelog($"Target Guid is {guid}");
@@ -8890,7 +9052,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             return await Task.Run(() => _DTPProxyPlugin.GetIsWalkAwayLockEnable(guid));
         }
 
-        public async Task<bool> GetIsPrioritizeExternalWebcam(string guid)
+        public async Task<bool?> GetIsPrioritizeExternalWebcam(string guid)
         {
             return await Task.Run(() => _DTPProxyPlugin.GetIsPrioritizeExternalWebcam(guid));
         }
