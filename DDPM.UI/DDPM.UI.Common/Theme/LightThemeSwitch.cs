@@ -323,6 +323,10 @@ namespace DDPM.UI.Common
             UpdateFreezable("ConnHover_DeactiveTextColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#40586D"));
             #endregion Connection Hover UI
 
+            //#region HomeDevice LineArt image [Robert_Lin, 2024-11-26]
+            UpdateBitmapImage("MonitorImage_LineArt", new Uri($"pack://application:,,,/DDPM.UI.Resources;component/Resources/Monitors/Lineart-w.png", UriKind.RelativeOrAbsolute));
+            //#endregion HomeDevice LineArt image
+
             UpdateFreezable("DefaultThemeFullPageBkColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#E5ECF9"));
 
 
