@@ -326,6 +326,7 @@
     <None Remove="Resources\Monitors\e2725h.png" />
     <None Remove="Resources\Monitors\g2422hs.png" />
     <None Remove="Resources\Monitors\g2724d.png" />
+    <None Remove="Resources\Monitors\Lineart-w.png" />
     <None Remove="Resources\Monitors\Lineart.png" />
     <None Remove="Resources\Monitors\p1424h.png" />
     <None Remove="Resources\Monitors\p1917s.png" />
@@ -821,6 +822,7 @@
     <Resource Include="Resources\Monitors\e2725h.png" />
     <Resource Include="Resources\Monitors\g2422hs.png" />
     <Resource Include="Resources\Monitors\g2724d.png" />
+    <Resource Include="Resources\Monitors\Lineart-w.png" />
     <Resource Include="Resources\Monitors\Lineart.png" />
     <Resource Include="Resources\Monitors\p1424h.png" />
     <Resource Include="Resources\Monitors\p1917s.png" />

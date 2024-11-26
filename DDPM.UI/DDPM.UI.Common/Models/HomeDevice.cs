@@ -3,6 +3,7 @@ using DDPM.SA.Common;
 using DDPM.UI.Common.ViewModels;
 using DDPM.UI.Resources.Helper;
 using Dell.Client.Framework.Common;
+using Dell.Client.Framework.UX.WPF.Controls;
 using DPeMPublic.Common.Enums;
 using System.Drawing.Imaging;
 using System.Globalization;
@@ -36,6 +37,8 @@ namespace DDPM.UI.Common.Models
         public HomeDevice()
         {
             NormalWidth = 400;
+            ////Register a handler for BitmapImageUpdated for Theme changed. Will update the image resources
+            //DdpmCommonHelper.BitmapImageUpdated += bitmapImageUpdate_OnThemeChanged;
         }
         public ImageSource? DeviceImage
         {
@@ -601,30 +604,69 @@ namespace DDPM.UI.Common.Models
             if (MonitorInfo == null)
                 return;
 
+            bool isLineArt = true;
+            string imageFileName = "Lineart";
             string assemblyName = "DDPM.UI.Resources";
+
+            //Determine filename
+            //1 If no ImageFileName provided => Show line art
+            //2 Not empty, use the filename provided
             if (!String.IsNullOrWhiteSpace(MonitorInfo.ImageFileName))
             {
                 //The filename will come from MonitorInfo.ImageFileName
-                string imageFileName = MonitorInfo.ImageFileName;
+                imageFileName = MonitorInfo.ImageFileName;
                 //The ImageFileName will not have extention file name
                 //(for example, ImageFileName="U4323QE"), we need to append ".PNG"
 
-                //Try to load image from DDPM.UI.Resources project (assembly), Path="/Resources/Monitor/"
-                ImageSource? imgSource = DdpmCommonHelper.GetImageSourceFromCommonResource($"Resources/Monitors/{imageFileName}.png", assemblyName);
-                if (imgSource != null)
+                //Robert_Lin, 2024-11-26 for LightMode Lineart.png 
+                //If the ImageFileName is NOT "LineArt" 
+                if (!imageFileName.Equals("LINEART", StringComparison.OrdinalIgnoreCase))
                 {
-                    DeviceImage = imgSource;
-                    return;
+                    isLineArt = false;
                 }
             }
-            //Use LineArt.png instead
-            ImageSource? imgLineart = DdpmCommonHelper.GetImageSourceFromCommonResource($"Resources/Monitors/Lineart.png", assemblyName);
-            if (imgLineart != null)
+            if (isLineArt)
             {
-                DeviceImage = imgLineart;
+                OSThemeEnum oSTheme = UXSystemParameters.Instance.OSTheme;
+                if (oSTheme == OSThemeEnum.Light)
+                {
+                    //LightMode: change filename to "LineArt-w"
+                    imageFileName = "Lineart-w";
+                }
+                //It's "Lineart", we need to change image when theme changed
+                DdpmCommonHelper.BitmapImageUpdated += bitmapImageUpdated_RefreshLineArt;
+            }
+
+            //Load the image
+            //Try to load image from DDPM.UI.Resources project (assembly), Path="/Resources/Monitor/"
+            ImageSource? imgSource = DdpmCommonHelper.GetImageSourceFromCommonResource($"Resources/Monitors/{imageFileName}.png", assemblyName);
+            if (imgSource != null)
+            {
+                DeviceImage = imgSource;
                 return;
             }
         }
+
+        private void bitmapImageUpdated_RefreshLineArt(OSThemeEnum obj)
+        {
+            //if (obj == OSThemeEnum.Dark)
+            //{
+            //    DdpmCommonHelper.UpdateBitmapImage("MonitorImage_LineArt", new Uri($"pack://application:,,,/DDPM.UI.Resources;component/Resources/Monitors/Lineart.png", UriKind.RelativeOrAbsolute));
+            //}
+            //else
+            //{
+            //    DdpmCommonHelper.UpdateBitmapImage("MonitorImage_LineArt", new Uri($"pack://application:,,,/DDPM.UI.Resources;component/Resources/Monitors/Lineart-w.png", UriKind.RelativeOrAbsolute));
+            //}
+            //Release original resource
+            DeviceImage = null;
+            //Allocate (refresh) new one
+            DeviceImage = (ImageSource?)System.Windows.Application.Current.Resources["MonitorImage_LineArt"];
+        }
+
+        //private void bitmapImageUpdate_OnThemeChanged(OSThemeEnum oSThemeEnum)
+        //{
+        //    //Reserved for future usage
+        //}
 
         #endregion DetermineDeviceImage - Robert_Lin 2024-6-20 added
 
