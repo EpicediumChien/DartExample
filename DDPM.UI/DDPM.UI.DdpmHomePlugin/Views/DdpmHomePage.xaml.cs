@@ -1210,22 +1210,9 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
 
         private void AddAll()
         {
-            int id = _ddpmHomePageViewModel.HomeDevices.Count;
-
+            _ddpmHomePageViewModel?.AddFakeMonitorToListView();
+            int id = _ddpmHomePageViewModel?.HomeDevices.Count ?? 0;
             HomeDevice demo = new HomeDevice()
-            {
-                DeviceCategory = eDeviceCategory.Display,
-                DeviceName = $"Demo {id}",
-                // DeviceImage = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Monitors/aw2521hf.png"),
-                DeviceInfo = new DeviceInfo()
-                {
-                    Name = "aw2521hf",
-                    ModelNumber = "AW2521HF"
-                }
-            };
-            _ddpmHomePageViewModel.AddDemoHomeDevice(demo);
-            id++;
-            demo = new HomeDevice()
             {
                 DeviceCategory = eDeviceCategory.KB,
                 DeviceName = $"Demo {id}",
@@ -1236,7 +1223,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                     ModelNumber = "KB900"
                 }
             };
-            _ddpmHomePageViewModel.AddDemoHomeDevice(demo);
+            _ddpmHomePageViewModel?.AddDemoHomeDevice(demo);
             id++;
             demo = new HomeDevice()
             {
@@ -1249,7 +1236,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                     ModelNumber = "MS300"
                 }
             };
-            _ddpmHomePageViewModel.AddDemoHomeDevice(demo);
+            _ddpmHomePageViewModel?.AddDemoHomeDevice(demo);
             id++;
             demo = new HomeDevice()
             {
@@ -1262,7 +1249,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                     ModelNumber = "SB522A"
                 }
             };
-            _ddpmHomePageViewModel.AddDemoHomeDevice(demo);
+            _ddpmHomePageViewModel?.AddDemoHomeDevice(demo);
             id++;
             demo = new HomeDevice()
             {
@@ -1275,7 +1262,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                     ModelNumber = "WH3024"
                 }
             };
-            _ddpmHomePageViewModel.AddDemoHomeDevice(demo);
+            _ddpmHomePageViewModel?.AddDemoHomeDevice(demo);
             id++;
             demo = new HomeDevice()
             {
@@ -1288,7 +1275,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                     ModelNumber = "WB3023"
                 }
             };
-            _ddpmHomePageViewModel.AddDemoHomeDevice(demo);
+            _ddpmHomePageViewModel?.AddDemoHomeDevice(demo);
             id++;
             demo = new HomeDevice()
             {
@@ -1301,7 +1288,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                     ModelNumber = "PN5122W"
                 }
             };
-            _ddpmHomePageViewModel.AddDemoHomeDevice(demo);
+            _ddpmHomePageViewModel?.AddDemoHomeDevice(demo);
         }
     }
 }
