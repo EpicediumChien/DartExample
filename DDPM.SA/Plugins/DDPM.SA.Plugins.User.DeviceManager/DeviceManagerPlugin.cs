@@ -732,7 +732,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         #region ColorPreset implementation
 
-        public Task<DDPM.SA.Common.IIC_Metadata> DownloadICCData(MonitorInfo m, string savelPath = "")
+        public Task<DDPM.SA.Common.IIC_Metadata> DownloadICCData(MonitorInfo m, bool blICCProfile = false, string savelPath = "")
         {
             DDPM.SA.Common.IIC_Metadata _ICC_Metadata = new DDPM.SA.Common.IIC_Metadata();
 
@@ -743,32 +743,10 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
             else
             {
-                _ICC_Metadata = _ColorPresetPlugin.DownloadICCData(m, _SettingsPlugin, savelPath).Result;
+                _ICC_Metadata = _ColorPresetPlugin.DownloadICCData(m, _SettingsPlugin, blICCProfile, savelPath).Result;
             }
 
             return Task.FromResult(_ICC_Metadata);
-        }
-
-        public Task<bool> Check_support_ColorManagement(MonitorInfo m)
-        {
-            bool blRet = false;
-
-            DDPM.SA.Common.IIC_Metadata _ICC_Metadata = new DDPM.SA.Common.IIC_Metadata();
-
-            if (_ColorPresetPlugin == null)
-            {
-                writelog("null _ColorPresetPlugin in [Check_support_ColorManagement]");
-                return Task.FromResult(blRet);
-            }
-            else
-            {
-                _ICC_Metadata = _ColorPresetPlugin.DownloadColorManagementData(m, _SettingsPlugin).Result;
-
-                if (_ICC_Metadata.Is_Support_ICC_DeviceName)
-                    blRet = true;
-            }
-
-            return Task.FromResult(blRet);
         }
 
         public Task<List<string>> ReadColorPreset(MonitorInfo m)
