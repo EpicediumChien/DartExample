@@ -1037,7 +1037,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
 
         #region Connection Hover View
 
-        private ConnectionHoverView? _connHoverView = null;
+        //private ConnectionHoverView? _connHoverView = null;
 
         private void batteryIndicator_MouseEnter(object sender, System.Windows.Input.MouseEventArgs e)
         {
