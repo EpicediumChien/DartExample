@@ -1,4 +1,4 @@
-﻿#define IL_NotReady
+﻿#define IL_Ready
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -1483,7 +1483,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                 }
                 else
                 {
-                    arguments = $"-s --force -f";
+                    arguments = $"-q --force --skip-app-retry -f";
                 }
                 if (fwUpdateInfo.DeviceType == DeviceType.LogicalDock || fwUpdateInfo.DeviceType == DeviceType.PhysicalWiredDock)
                 {
@@ -1543,12 +1543,22 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                     {
                         _logs.DebugMsg_1($"{nameof(Install)} {fwUpdateInfo.DeviceName} {processName}.Length: {processes.Length}");
                         _clientProcess = processes[0];
+                        if (fwUpdateInfo.IsDisplay)
+                        {
+                            _clientProcess.EnableRaisingEvents = true;
+                            _clientProcess.Exited += (sender, e) =>
+                            {
+                                Process p = (Process)sender;
+                                if (fwUpdateInfo.IsDisplay && p != null)
+                                {
+                                    _logs.DebugMsg_1($"{processName} (Process)sender.ExitCode go");
+                                    exitCode = p.ExitCode;
+                                    _logs.DebugMsg_1($"{processName} (Process)sender.ExitCode done");
+                                }
+                            };
+                        }
                         _clientProcess.WaitForExit();
                         _logs.DebugMsg_1($"{processName} process is done.");
-                        if (fwUpdateInfo.IsDisplay && _clientProcess != null)
-                        {
-                            exitCode = _clientProcess.ExitCode;
-                        }
                     }
                     else
                     {
@@ -1654,7 +1664,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                     _DelayFWUpdateInfoPackage.FWUpdateInfo.RemoveAll(obj => obj.Equals(fwUpdateInfo));
                 }
                 resetState();
-                _logs.DebugMsg_1($"{nameof(Install)} _notificationStr {_notificationStr}");
+                _logs.DebugMsg_1($"{nameof(Install)} {fwUpdateInfo.DeviceName} _notificationStr {_notificationStr}");
                 _logs.DebugMsg_1($"{nameof(Install)} done");
                 return _updateErrorCode;
             }
