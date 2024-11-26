@@ -317,6 +317,12 @@ namespace DDPM.UI.Common
             UpdateFreezable("DefaultTheme_SetupSelectBdColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#C5D4E3"));
             #endregion
 
+            #region Connection Hover UI
+            UpdateFreezable("ConnHover_BkColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#99FFFFFF"));
+            UpdateFreezable("ConnHover_ActiveTextColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#0E0E0E"));
+            UpdateFreezable("ConnHover_DeactiveTextColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#40586D"));
+            #endregion Connection Hover UI
+
             UpdateFreezable("DefaultThemeFullPageBkColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#E5ECF9"));
 
 

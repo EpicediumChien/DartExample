@@ -1383,33 +1383,64 @@
 
     <!--leo add end-->
 
+    <!-- #region Connection Hover UI -->
+    <SolidColorBrush x:Key="ConnHover_BkColor" Color="#99193457"/>
+
+    <SolidColorBrush x:Key="ConnHover_ActiveTextColor" Color="#FFFFFF"/>
+    <SolidColorBrush x:Key="ConnHover_DeactiveTextColor" Color="#839DB4"/>
+
     <!-- BorderConnection -->
     <Style x:Key="BorderConnection" TargetType="Border">
-        <Setter Property="Background" Value="{DynamicResource BatteryIndicator_BkColor}" />
+        <Setter Property="Background" Value="{DynamicResource ConnHover_BkColor}" />
         <Setter Property="CornerRadius" Value="2" />
         <Setter Property="Width" Value="252" />
         <Setter Property="BorderThickness" Value="2" />
         <Setter Property="BorderBrush" Value="{DynamicResource RightView_Group_BdColor}" /> 
     </Style>
+    <!--BorderConnection end-->
+    <!-- ConnectionStyle for TextBlock v1 -->
     <Style x:Key="ConnectionStyle1" TargetType="UXControls:UXTextBlock">
-        <Setter Property="Foreground" Value="{DynamicResource DefaultTheme_TxtColor}" /> 
+        <Setter Property="Foreground" Value="{DynamicResource ConnHover_ActiveTextColor}" /> 
         <Setter Property="FontFamily" Value="Roboto" />
         <Setter Property="FontSize" Value="14" />
         <Setter Property="FontWeight" Value="Bold" />
     </Style>
     <Style x:Key="ConnectionStyle2" TargetType="UXControls:UXTextBlock">
-        <Setter Property="Foreground" Value="#839DB4" />
+        <Setter Property="Foreground" Value="{DynamicResource ConnHover_DeactiveTextColor}" />
         <Setter Property="FontFamily" Value="Roboto" />
         <Setter Property="FontSize" Value="14" />
         <Setter Property="FontWeight" Value="Normal" />
     </Style>
     <Style x:Key="ConnectionStyle3" TargetType="UXControls:UXTextBlock">
-        <Setter Property="Foreground" Value="{DynamicResource DefaultTheme_TxtColor}" />
+        <Setter Property="Foreground" Value="{DynamicResource ConnHover_ActiveTextColor}" />
         <Setter Property="FontFamily" Value="Roboto" />
         <Setter Property="FontSize" Value="14" />
         <Setter Property="FontWeight" Value="Medium" />
     </Style>
-    <!--BorderConnection end-->
+    <!-- ConnectionStyle for TextBlock v2 -->
+    <!-- Robert_Lin, 2024-11-26 Base style of the ConnectionHoverUI text, using WPF TextBlock -->
+    <Style x:Key="ConnHoverTextBaseStyle" TargetType="TextBlock">
+        <Setter Property="FontFamily" Value="Roboto" />
+        <Setter Property="FontSize" Value="14" />
+    </Style>
+    <!-- ConnectionHoverUI Text Styles, 
+        1=Current/Active connection;    2=Not current/deactive connection;      3=Description text
+    -->
+    <Style x:Key="ConnHover_TextStyle1" TargetType="TextBlock" BasedOn="{StaticResource ConnHoverTextBaseStyle}">
+        <Setter Property="Foreground" Value="{DynamicResource ConnHover_ActiveTextColor}" />
+        <Setter Property="FontWeight" Value="Bold" />
+    </Style>
+    <Style x:Key="ConnHover_TextStyle2" TargetType="TextBlock" BasedOn="{StaticResource ConnHoverTextBaseStyle}">
+        <Setter Property="Foreground" Value="{DynamicResource ConnHover_DeactiveTextColor}" />
+        <Setter Property="FontWeight" Value="Normal" />
+    </Style>
+    <Style x:Key="ConnHover_TextStyle3" TargetType="TextBlock" BasedOn="{StaticResource ConnHoverTextBaseStyle}">
+        <Setter Property="Foreground" Value="{DynamicResource ConnHover_ActiveTextColor}" />
+        <Setter Property="FontWeight" Value="Medium" />
+    </Style>
+
+    <!-- #endregion Connection Hover UI -->
+    
     <BitmapImage x:Key="popup_ArrowCorner" UriSource="pack://application:,,,/DDPM.UI.Common;component/Resources/popup_ArrowCorner.png" />
     <BitmapImage x:Key="down_Expand" UriSource="pack://application:,,,/DDPM.UI.Resources;component/Resources/Images/Down.png" />
     <BitmapImage x:Key="Search_img" UriSource="pack://application:,,,/DDPM.UI.Resources;component/Resources/Images/Search.png" />
