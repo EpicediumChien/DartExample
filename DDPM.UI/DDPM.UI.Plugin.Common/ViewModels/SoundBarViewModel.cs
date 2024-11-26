@@ -36,7 +36,7 @@ namespace DDPM.UI.Plugin.ViewModels
             _deviceManager = deviceManager;
             _log!.Info($"[SoundBarViewModel] SoundBarViewModel Start...");
             SpeakerInfoValueDTP = new SpeakerInfoValue();
-            _current_soundBar = string.Empty;       
+            _current_soundBar = string.Empty;
         }
 
         private async Task UpdateDTPValue()
@@ -50,7 +50,7 @@ namespace DDPM.UI.Plugin.ViewModels
                     _log.Info($"[SoundBarViewModel] Print before property ...UpdateDTPValue new DeviceInfo...");
                 }
 
-                SpeakerInfoValueDTP.SpeakerProfile = (await _deviceManager.GetProfileAsync(CurrentDeviceID.ToString()))??String.Empty;
+                SpeakerInfoValueDTP.SpeakerProfile = (await _deviceManager.GetProfileAsync(CurrentDeviceID.ToString())) ?? String.Empty;
                 SpeakerInfoValueDTP.SpeakerBass = await _deviceManager.GetBassAsync(CurrentDeviceID.ToString());
                 SpeakerInfoValueDTP.SpeakerMidRange = await _deviceManager.GetMidRangeAsync(CurrentDeviceID.ToString());
                 SpeakerInfoValueDTP.SpeakerTreble = await _deviceManager.GetTrebleAsync(CurrentDeviceID.ToString());
@@ -71,7 +71,7 @@ namespace DDPM.UI.Plugin.ViewModels
                 _log.Info($"[SoundBarViewModel] SpeakerInfoValueDTP.IsAudioEqualizerSupported .......= {SpeakerInfoValueDTP.IsAudioEqualizerSupported.ToString()}");
                 _log.Info($"[SoundBarViewModel] SpeakerInfoValueDTP.GetMuteStatusAsync .......= {SpeakerInfoValueDTP.MuteStatus.ToString()}");
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 _log!.Error($"[SoundBarViewModel] UpdateDTPValue ...... {ex.ToString()}");
             }
@@ -150,10 +150,10 @@ namespace DDPM.UI.Plugin.ViewModels
                     default:
                         break;
                 }
-                    OnPropertyChanged("IsDefaultChecked");
-                    OnPropertyChanged("IsSpeechChecked");
-                    OnPropertyChanged("IsBassBoostChecked");
-                    OnPropertyChanged("IsTrebleBoostChecked");
+                OnPropertyChanged("IsDefaultChecked");
+                OnPropertyChanged("IsSpeechChecked");
+                OnPropertyChanged("IsBassBoostChecked");
+                OnPropertyChanged("IsTrebleBoostChecked");
             }
         }
         public async Task DetectPageShow(string model)
@@ -173,7 +173,7 @@ namespace DDPM.UI.Plugin.ViewModels
 
                 default:
                     break;
-            }          
+            }
         }
 
         public void CheckAudioSettingsUI()
@@ -267,9 +267,16 @@ namespace DDPM.UI.Plugin.ViewModels
                     case "Zoom":
                         ImageFilePath = "/DDPM.UI.Common;component/Resources/Speaker_SB522A_TwoLight.png";
                         break;
-
+                    case "MuteStatusChanged":
+                        ImageFilePath = $"/DDPM.UI.Common;component/Resources/Speaker_SB725.png";
+                        break;
                     default:
-                        ImageFilePath = "/DDPM.UI.Common;component/Resources/Speaker_SB522A.png";
+                        if (model == "SB725")
+                        {
+                            ImageFilePath = $"/DDPM.UI.Common;component/Resources/Speaker_SB725.png";
+                        }
+                        else
+                            ImageFilePath = "/DDPM.UI.Common;component/Resources/Speaker_SB522A.png";
                         break;
                 }
             }
@@ -295,8 +302,16 @@ namespace DDPM.UI.Plugin.ViewModels
                 case "SB522A":
                     ImageFilePath = "/DDPM.UI.Common;component/Resources/Speaker_SB522A.png";
                     break;
+                case "SB725":
+                    ImageFilePath = $"/DDPM.UI.Common;component/Resources/Speaker_SB725.png";
+                    break;
                 default:
-                    ImageFilePath = "/DDPM.UI.Common;component/Resources/Speaker_SP3022.png";
+                    if (model == "SB725")
+                    {
+                        ImageFilePath = $"/DDPM.UI.Common;component/Resources/Speaker_SB725.png";
+                    }
+                    else
+                        ImageFilePath = "/DDPM.UI.Common;component/Resources/Speaker_SP3022.png";
                     break;
             }
         }
@@ -748,7 +763,7 @@ namespace DDPM.UI.Plugin.ViewModels
                     return;
                 }
                 if (_isMinMaxOnlyChecked != value)
-                {                   
+                {
                     _isEveryLevelChecked = false;
                     _isMinMaxOnlyChecked = true;
                     _isVolumeAdjustmentToneMode = 2;
@@ -942,7 +957,7 @@ namespace DDPM.UI.Plugin.ViewModels
             public int SpeakerBass { get; set; }
             public int SpeakerMidRange { get; set; }
             public int SpeakerTreble { get; set; }
-            public bool IsWiredAudioMicMuteSoundEnable{ get; set; }
+            public bool IsWiredAudioMicMuteSoundEnable { get; set; }
             public int WiredAudioVolumeAdjustmentTone { get; set; }
             public bool IsWiredAudioIMicNSEnable { get; set; }
             public bool IsAudioEqualizerSupported { get; set; }

@@ -607,7 +607,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             thread.SetApartmentState(ApartmentState.STA);
             thread.Start();
 
-            _disDevHelper = new DisplayDeviceHelper(Log);           
+            _disDevHelper = new DisplayDeviceHelper(Log);
         }
 
         private void HotkeyPressed(object sender, KeyPressedEventArgs e)
@@ -936,7 +936,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             // 11/23 Wayn Add
             bool result = false;
             result = await Task.Run(() => SyncPrimaryMonitorAndColorPresetStatus(m, ColorPreset_Name, colorPresetRunType).Result).ConfigureAwait(false);
-            if(!result)
+            if (!result)
             {
                 writelog("[DeviceMangerPlugin] SyncPrimaryMonitorAndColorPresetStatus ... False");
             }
@@ -981,7 +981,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         {
             bool blRet = true;
             writelog("[DeviceMangerPlugin] SyncPrimaryMonitorAndColorPresetStatus ... in");
-            List<ALSConfig> existAlsConfig = _DisplayManagerPlugin. GetAllExistAlsConfig().Result;
+            List<ALSConfig> existAlsConfig = _DisplayManagerPlugin.GetAllExistAlsConfig().Result;
             ALSConfig findconfig = existAlsConfig.Find(x => x.Edid.Equals(m.edid));
 
             Trace.WriteLine("Into MonitorInfo = " + m.edid.ModelName.ToString());
@@ -2458,7 +2458,23 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         public async Task<DeviceHelper> GetDevices(bool Rescan = false)
         {
+            DeviceHelper deviceHelper = await Task.Run(() => _PeripheralsPlugin.GetDevices(Rescan));
+            ChangeSB725(deviceHelper);
             return await Task.Run(() => _PeripheralsPlugin.GetDevices(Rescan));
+        }
+
+        private static void ChangeSB725(DeviceHelper deviceHelper)
+        {
+            if (deviceHelper.deviceInfo.Any(x => x.Name.Contains("SB725")))
+            {
+                var GetDeviceInfos = deviceHelper.deviceInfo.Where(x => x.Name.Contains("SB725")).ToList();
+                foreach (var deviceInfo in GetDeviceInfos)
+                {
+                    deviceInfo.Type = DeviceType.LogicalWiredAudio;
+                    deviceInfo.ModelNumber = "SB725";
+                    deviceInfo.LogicalDeviceType = "LogicalWiredAudio";
+                }
+            }
         }
 
         public async Task<DeviceHelper> GetDevices_WithoutAwait(bool Rescan = false)
