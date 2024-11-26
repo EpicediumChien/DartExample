@@ -1,4 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.Input;
+using DDPM.SA.Common;
 using DDPM.SA.Common.Settings;
 using DDPM.UI.Common;
 using DDPM.UI.Interfaces;
@@ -7,10 +8,12 @@ using DDPM.UI.Module.HeadsetAutomatedActions;
 using DDPM.UI.Module.HeadsetDeviceSettings;
 using DDPM.UI.Plugin.Common;
 using DDPM.UI.Plugin.ViewModels;
+using Dell.Client.Framework.UX.WPF.Controls;
 using System.Diagnostics;
 using System.Net;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 
@@ -55,13 +58,14 @@ namespace DDPM.UI.Plugin.HeadsetPlugin
             //txtUnpair.Text = Unpair;
             //txtRestore.Text = Restore;
 
-            //ConnectionStyle1 = (Style)FindResource("ConnectionStyle1");
-            //ConnectionStyle2 = (Style)FindResource("ConnectionStyle2");
+            ConnectionStyle1 = (Style)FindResource("ConnectionStyle1");
+            ConnectionStyle2 = (Style)FindResource("ConnectionStyle2");
             //txtSystemName1.Text = Dns.GetHostName(); ;// _vm!.VisiblePairedHostName1;
             //txtSystemName2.Text = _vm.VisiblePairedHostName1;
-            //txtSystemName3.Text = _vm.VisiblePairedHostName1;
-            //txtFirmware.Text = "Dongle " + _vm.PhysicalDeviceFWVersion;
-            //txtSlot.Text = $"{_vm.CurrentDeviceInfo!.MaxPairingSlots - _vm.CurrentDeviceInfo.PairedDeviceCount} of {_vm.CurrentDeviceInfo.MaxPairingSlots} slots available";
+            txtSystemName3.Text = _vm.VisiblePairedHostName1;
+            txtFirmware.Text = "Dongle " + _vm.PhysicalDeviceFWVersion;
+            txtSlot.Text = $"{_vm.CurrentDeviceInfo!.MaxPairingSlots - _vm.CurrentDeviceInfo.PairedDeviceCount} of {_vm.CurrentDeviceInfo.MaxPairingSlots} slots available";
+            txtAudioBLText.Text = string.Format(Strings.Paired_Info, _vm.CurrentDeviceInfo.TotalNumberOfPairedHostName);
             if (DdpmCommonHelper.DeviceManagerSA != null)
             {
                 DdpmCommonHelper.DeviceManagerSA.ITSettingsActionEvent += DeviceManagerSA_ITSettingsActionEvent;
@@ -92,14 +96,20 @@ namespace DDPM.UI.Plugin.HeadsetPlugin
                     }
                 }
             }
+            DdpmCommonHelper.BitmapImageUpdated += ImageUpdate;
         }
-
         ~LaunchView()
         {
             if (DdpmCommonHelper.DeviceManagerSA != null)
             {
                 DdpmCommonHelper.DeviceManagerSA.ITSettingsActionEvent -= DeviceManagerSA_ITSettingsActionEvent;
             }
+        }
+
+        private void ImageUpdate(OSThemeEnum oSThemeEnum)
+        {
+            ArrowLeft.Source = null;
+            ArrowLeft.Source = (BitmapImage)Application.Current.Resources["Arrow_Left"];
         }
 
         private void DeviceManagerSA_ITSettingsActionEvent(object? sender, SA.Common.ITSettingEventArgs e)
@@ -115,7 +125,7 @@ namespace DDPM.UI.Plugin.HeadsetPlugin
         #region Init for Modules
 
         /// <summary>
-        /// Base on specified monitor's capabiliies to build the Vbar items, and headers/modules
+        /// Base on specified monitor's capabilities to build the Vbar items, and headers/modules
         /// </summary>
         private void BuildModuleGroups()
         {
@@ -125,7 +135,8 @@ namespace DDPM.UI.Plugin.HeadsetPlugin
             moduleGroup = new ModuleGroup()
             {
                 GroupName = AudioSettings,
-                GroupIcon = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Headset_Setting.png")
+                GroupIcon = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Headset_Setting.png"),
+                GroupIconCanvas = DdpmCommonHelper.CanvasIconCreator(VbarIcon.AudioSettings)
             };
             moduleGroup.AddHeader(AudioSettings, new HeadsetAudioSettingsModule(_vm!));
             groups.Add(moduleGroup);
@@ -135,9 +146,10 @@ namespace DDPM.UI.Plugin.HeadsetPlugin
             moduleGroup = new ModuleGroup()
             {
                 GroupName = AutomatedActions,
-                GroupIcon = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Headset_Media.png")
+                GroupIcon = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Headset_Media.png"),
+                GroupIconCanvas = DdpmCommonHelper.CanvasIconCreator(VbarIcon.HeadsetAutoActions)
             };
-            moduleGroup.AddHeader(AutomatedActions, new HeadsetAutomatedActionsModule(_vm));
+            moduleGroup.AddHeader(AutomatedActions, new HeadsetAutomatedActionsModule(_vm!));
             groups.Add(moduleGroup);
             //}
             //if (!_vm.IsIlluminationSupported)
@@ -145,9 +157,10 @@ namespace DDPM.UI.Plugin.HeadsetPlugin
             moduleGroup = new ModuleGroup()
             {
                 GroupName = DeviceSettings,
-                GroupIcon = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Headset_Main.png")
+                GroupIcon = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Headset_Main.png"),
+                GroupIconCanvas = DdpmCommonHelper.CanvasIconCreator(VbarIcon.HeadsetSettings)
             };
-            moduleGroup.AddHeader(DeviceSettings, new HeadsetDeviceSettingsModule(_vm));
+            moduleGroup.AddHeader(DeviceSettings, new HeadsetDeviceSettingsModule(_vm!));
             groups.Add(moduleGroup);
             //}
 
@@ -349,15 +362,17 @@ namespace DDPM.UI.Plugin.HeadsetPlugin
             }
             else if (_vm!.ConnectionType == "Bluetooth")//I can't get Headset connection HostName, FW issue?
             {
+                int pp = DdpmCommonHelper.DeviceManagerSA.GetTotalNumberOfPairedHostNameAsync(_vm.CurrentDeviceInfo.ID.ToString()).Result;
+                //_deviceManager.GetFirmwareVersionAsync(CurrentDeviceID.ToString()).Result;
                 string hostName = Dns.GetHostName();
-                var hostIndex = _vm!.VisiblePairedHostName1.ToUpper() == "VISIBLE" ? 1 : (_vm.VisiblePairedHostName2.ToUpper() == "VISIBLE" ? 2 : 3);
-                txt1.Style = ConnectionStyle2;
-                imgBL1.Source = img2;
-                txtBLHost1.Style = ConnectionStyle2;
-                txt2.Style = ConnectionStyle2;
-                imgBL2.Source = img2;
-                txtBLHost2.Style = ConnectionStyle2;
-                txt3.Style = ConnectionStyle2;
+                //var hostIndex = _vm!.VisiblePairedHostName1.ToUpper() == "VISIBLE" ? 1 : (_vm.VisiblePairedHostName2.ToUpper() == "VISIBLE" ? 2 : 3);
+                txt1.Style = ConnectionStyle1;
+                //imgBL1.Source = img2;
+                txtBLHost1.Style = ConnectionStyle1;
+                txt2.Style = ConnectionStyle1;
+                //imgBL2.Source = img2;
+                txtBLHost2.Style = ConnectionStyle1;
+                txt3.Style = ConnectionStyle1;
                 txtBLHost1.Text = string.IsNullOrEmpty(_vm.PairedHostName1) ? Strings.ReadyToBePaired : _vm.PairedHostName1;
                 txtBLHost2.Text = string.IsNullOrEmpty(_vm.PairedHostName2) ? Strings.ReadyToBePaired : _vm.PairedHostName2;
                 BLConnection.Visibility = Visibility.Visible;

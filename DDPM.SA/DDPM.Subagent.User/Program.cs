@@ -19,6 +19,7 @@ using System.Diagnostics;
 using System.Reflection;
 using DDPM.SA.Obfuscation;
 using System.IO;
+using System.Windows;
 
 namespace DDPM.Subagent.User
 {
@@ -164,6 +165,7 @@ namespace DDPM.Subagent.User
             };
 
             Console.WriteLine("DDPM.Subagent.User starting...");
+
 
             using (var agent = new Agent(agentConfig))
             {

@@ -28,9 +28,9 @@ namespace VcpCore.Common
                     {
                         InstanceName_spilit[(InstanceName_spilit.Length - 1)] = Regex.Replace(InstanceName_spilit[(InstanceName_spilit.Length - 1)], @"_\d", string.Empty) ?? string.Empty;
                         string name = "SYSTEM\\CurrentControlSet\\Enum\\DISPLAY\\" + InstanceName_spilit[1] + "\\" + InstanceName_spilit[2];
+                        using RegistryKey registryKey = Registry.LocalMachine.OpenSubKey(name);
                         try
                         {
-                            using RegistryKey registryKey = Registry.LocalMachine.OpenSubKey(name);
                             if (registryKey != null)
                             {
                                 string Path_Instance_DeviceID = (string)registryKey.GetValue("Driver");
@@ -72,9 +72,19 @@ namespace VcpCore.Common
                                     }
                                 }
                                 catch (Exception) { }
+                                finally
+                                {
+                                    registryKeyII.Close();
+                                    registryKeyII.Dispose();
+                                }
                             }
                         }
                         catch (Exception) { }
+                        finally
+                        {
+                            registryKey.Close();
+                            registryKey.Dispose();
+                        }
                     }
                 }
             }

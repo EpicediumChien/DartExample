@@ -25,6 +25,7 @@ using Windows.Web.Http;
 using DDPM.SA.Obfuscation;
 using System.Security.Cryptography;
 using System.Text;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace DDPM.SA.Plugins.User.SettingsManager
 {
@@ -233,9 +234,15 @@ namespace DDPM.SA.Plugins.User.SettingsManager
         /// </summary>
         /// <param name="text"></param>
         /// <param name="log_type">0 means info, others means error</param>
-        private void WriteLog(string text, log_type log_type = log_type.info)
+        private void WriteLog(string text, log_type log_type = log_type.info, 
+            [System.Runtime.CompilerServices.CallerMemberName] string memberName = "",
+            [System.Runtime.CompilerServices.CallerFilePath] string sourceFilePath = "",
+            [System.Runtime.CompilerServices.CallerLineNumber] int sourceLineNumber = 0)
         {
-            text = "[User.SettingsManager] " + text;
+            if (string.IsNullOrEmpty(text))
+                text = "";
+
+            text = $"[User.SettingsManager] {text}, Caller Name:{memberName}, Source Line {sourceLineNumber}";
             Console.WriteLine(text);
             if (Log != null)
             {
@@ -470,12 +477,18 @@ namespace DDPM.SA.Plugins.User.SettingsManager
             _export_path = folder_appdatapath_export;
             string folderInfo = string.Empty, info = string.Empty;
             try
-            {
-                DDPMFileSecurity.CheckFold(_display_path, out folderInfo, out info);
+            {                
                 if (!Directory.Exists(_display_path))
                 {
                     DirectoryInfo di = System.IO.Directory.CreateDirectory(_display_path);
                     WriteLog($"create folder {_display_path} success");
+                }
+                if(!DDPMFileSecurity.CheckFold(_display_path, out folderInfo, out info))
+                {
+                    WriteLog($"CreateDirectory path check result is invalid: {_display_path}, {info}.");
+                    _AllMonitorSettings = null;
+                    binit = false;
+                    return Task.FromResult(monitorSettingList);
                 }
             }
             catch
@@ -487,11 +500,17 @@ namespace DDPM.SA.Plugins.User.SettingsManager
             }
             try
             {
-                DDPMFileSecurity.CheckFold(_export_path, out folderInfo, out info);
                 if (!Directory.Exists(_export_path))
                 {
                     DirectoryInfo di = System.IO.Directory.CreateDirectory(_export_path);
                     WriteLog($"create folder {_export_path} success");
+                }
+                if (!DDPMFileSecurity.CheckFold(_export_path, out folderInfo, out info))
+                {
+                    WriteLog($"CreateDirectory path check result is invalid: {_export_path}, {info}.");
+                    _AllMonitorSettings = null;
+                    binit = false;
+                    return Task.FromResult(monitorSettingList);
                 }
             }
             catch
@@ -1828,7 +1847,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager
                 }
                 else
                 {
-                    WriteLog("[ReadImportSettingsFile] path : " + path);
+                    WriteLog("[ReadImportSettingsFile] file isn't exist : " + path);
                 }
             }
             return Task.FromResult(ImpSettings);
@@ -1868,6 +1887,8 @@ namespace DDPM.SA.Plugins.User.SettingsManager
                         ;
                     }
                 }
+                else
+                    WriteLog($"[ReadImportSettingsFile]strReadJson: selected file isn't exist" + path);
             }
 
             return Task.FromResult(ImpSettings);
@@ -2105,9 +2126,14 @@ namespace DDPM.SA.Plugins.User.SettingsManager
             string folderInfo = string.Empty, info = string.Empty;
             try
             {
-                DDPMFileSecurity.CheckFold(folder_appdatapath_ddpm, out folderInfo, out info);
                 DirectoryInfo di = System.IO.Directory.CreateDirectory(folder_appdatapath_ddpm);
                 WriteLog($"create folder {folder_appdatapath_ddpm} success");
+                if (!DDPMFileSecurity.CheckFold(folder_appdatapath_ddpm, out folderInfo, out info))
+                {
+                    WriteLog($"CreateDirectory path check result is invalid: {folder_appdatapath_ddpm}, {info}.");
+                    _settings = null;
+                    return null;
+                }
             }
             catch
             {
@@ -2268,11 +2294,12 @@ namespace DDPM.SA.Plugins.User.SettingsManager
                 return null;
             }
 
-            if (!DDPMFileSecurity.SRemoveSymbolicFolder(fileFolder, out info))
-            {
-                WriteLog($"{nameof(InitDDPMUserSettings_Common)} {info}");
-                return null;
-            }
+            //[Dean 1123] merge the check into DDPMFileSecurity.IsFolderPathValid and don't remove symlink to avoid attack
+            //if (!DDPMFileSecurity.SRemoveSymbolicFolder(fileFolder, out info))
+            //{
+            //    WriteLog($"{nameof(InitDDPMUserSettings_Common)} {info}");
+            //    return null;
+            //}
 
             //WriteLog($"config path is {ConfigPath}.");
             object new_obj = null;
@@ -2281,8 +2308,9 @@ namespace DDPM.SA.Plugins.User.SettingsManager
             {
                 if (!DDPMFileSecurity.IsFilePathValid(ConfigPath, out info))
                 {
-                    WriteLog($"{nameof(InitDDPMUserSettings_Common)} {info}");
-                    File.Delete(ConfigPath);
+                    WriteLog($"{nameof(InitDDPMUserSettings_Common)}[IsFilePathValid] {info}");
+                    //File.Delete(ConfigPath);
+                    return null;
                 }
                 else
                 {
@@ -2768,17 +2796,12 @@ namespace DDPM.SA.Plugins.User.SettingsManager
                 WriteLog($"[ReadSerializedContentFromFile][File.Exists] File:{fileInfo.Name}, failed with(file is not exist)");
                 return Task.FromResult(result);
             }
-            if (DDPMFileSecurity.IsPathSymbolicLinked(filePath, out info))
+            //if (DDPMFileSecurity.IsPathSymbolicLinked(filePath, out info))
+            if (!DDPMFileSecurity.IsFilePathValid(filePath, out info))
             {
-                WriteLog($"[ReadSerializedContentFromFile][IsPathSymbolicLinked] File:{fileInfo.Name}, failed with({info})");
+                WriteLog($"[ReadSerializedContentFromFile][IsFilePathValid] File:{fileInfo.Name}, failed with({info})");
                 return Task.FromResult(result);
             }
-            //Already inluded in function DDPMFileSecurity.GetSerializedJsonString
-            //if (DDPMFileSecurity.IsFilePathValid(filePath, out info))
-            //{
-            //    WriteLog($"[ReadSerializedContentFromFile][IsFilePathValid] File:{fileInfo.Name}, failed with({info})");
-            //    return Task.FromResult(result);
-            //}
             result = DDPMFileSecurity.GetSerializedJsonString(filePath, out info);
             if(string.IsNullOrEmpty(result))
             {
@@ -2792,12 +2815,14 @@ namespace DDPM.SA.Plugins.User.SettingsManager
             bool result = false;
             string info = string.Empty;
             FileInfo fileInfo = new FileInfo(filePath);
-            if (DDPMFileSecurity.IsPathSymbolicLinked(filePath, out info))
+            //if (DDPMFileSecurity.IsPathSymbolicLinked(filePath, out info))
+            if (!DDPMFileSecurity.IsFilePathValid(filePath, out info, Dell.Client.Framework.Security.Interfaces.PathCheckOption.IgnoreFileExists))
             {
-                WriteLog($"[WriteSerializedContentToFile][IsPathSymbolicLinked] File:{fileInfo.Name}, failed with({info})");
-                File.Delete(filePath);
+                WriteLog($"[WriteSerializedContentToFile][IsFilePathValid] File:{fileInfo.Name}, failed with({info})");
+                //File.Delete(filePath);
                 return Task.FromResult(result);
             }
+
             result = DDPMFileSecurity.SetJsonContentFromSerializedString(content, filePath, out info);
             if(!result)
             {

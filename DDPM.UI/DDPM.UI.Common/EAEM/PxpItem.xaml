@@ -37,6 +37,7 @@
             <Setter Property="BorderBrush" Value="{StaticResource SplitItem_SelectedColor}" />
             <Setter Property="BorderThickness" Value="1.5" />
         </Style>
+
     </UserControl.Resources>
 
     <Grid>

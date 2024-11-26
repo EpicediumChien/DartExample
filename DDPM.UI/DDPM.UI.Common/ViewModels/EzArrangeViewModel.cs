@@ -809,6 +809,8 @@ namespace DDPM.UI.Common.ViewModels
 
         public void ClearTextBlockAppName()
         {
+            _bind_apps.Clear();
+            _apps_all.Clear();
             _sortApps.Clear();
             Window2_1AppName = "";
             Window2_2AppName = "";

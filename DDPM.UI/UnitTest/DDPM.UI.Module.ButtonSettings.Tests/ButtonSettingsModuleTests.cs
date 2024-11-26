@@ -9,8 +9,9 @@ using Moq;
 using Newtonsoft.Json.Linq;
 using NGA.UnitTest.PrivateObject;
 using NUnit.Framework;
+using System.Windows;
 using System.Windows.Controls;
-
+using Dell.Client.Framework.UX.WPF.ResourceManager;
 namespace DDPM.UI.Module.ButtonSettings.Tests
 {
     [TestFixture, Apartment(ApartmentState.STA)]
@@ -26,6 +27,14 @@ namespace DDPM.UI.Module.ButtonSettings.Tests
         [SetUp]
         public void SetUp()
         {
+            if (System.Windows.Application.Current == null)
+            {
+                new System.Windows.Application();
+            }
+            ResourceManager res = new ResourceManager();
+            var resourceDictionary = new ResourceDictionary();
+            resourceDictionary.Source = new Uri("pack://application:,,,/DDPM.UI.Common;component/ModuleStyle.xaml");
+            System.Windows.Application.Current.Resources.MergedDictionaries.Add(resourceDictionary);
             consoleMock = new Mock<IConsole>();
             logMock = new Mock<ILog>();
             deviceManagerMock = new Mock<IDeviceManagerSA>();

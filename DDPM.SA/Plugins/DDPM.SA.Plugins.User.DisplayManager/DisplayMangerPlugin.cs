@@ -383,7 +383,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             inputSourcelist = new Dictionary<string, InputInfo>();
 
             //_getVCPCapabilities = GetVCPCapabilities(monitorInfo).Result;
-            usbUpstreamList = GetUSBUpstreamList(monitorInfo).Result;
+            //usbUpstreamList = GetUSBUpstreamList(monitorInfo).Result;
 
             int input_num = 0;
             ObjGetVCP objGetVCP = new ObjGetVCP();
@@ -402,57 +402,57 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                         InputInfo inputInfo = new InputInfo();
                         inputInfo.InputName = tmp.Name;
                         inputInfo.Code = tmp.value;
-                        if (objGetVCP.result && usbUpstreamList.Count > 0)
-                        {
-                            string getUpstream = Convert.ToString((uint)objGetVCP.value, 2);
-                            string newstrUpstream = getUpstream;
-                            if (getUpstream.Length < 16)
-                            {
-                                for (int i = 0; i < (16 - getUpstream.Length); i++)
-                                {
-                                    newstrUpstream = "0" + newstrUpstream;
-                                }
-                            }
-                            _logs.DebugMsg("[DisplayMangerPlugin][GetInputSourcelist] newstrUpstream : " + newstrUpstream);
-                            _logs.DebugMsg("[DisplayMangerPlugin][GetInputSourcelist] input_num : " + input_num);
-                            if (newstrUpstream.Length == 16)
-                            {
-                                string subUpstream = newstrUpstream.Substring(input_num * 2, 2);
-                                if (subUpstream == "11")
-                                {
-                                    //if (usbUpstreamList.Count > 0)//0708 non-EE issue
-                                    //    inputInfo.USBUpstream = usbUpstreamList[0];
-                                    inputInfo.USBUpstream = USBUpstream.FirstOrDefault(kv => kv.Value == "11").Key;
-                                }
-                                else if (subUpstream == "10")
-                                {
-                                    //if (usbUpstreamList.Count > 1)//0708 non-EE issue
-                                    //    inputInfo.USBUpstream = usbUpstreamList[1];
-                                    inputInfo.USBUpstream = USBUpstream.FirstOrDefault(kv => kv.Value == "10").Key;
-                                }
-                                else if (subUpstream == "01")
-                                {
-                                    //if (usbUpstreamList.Count > 2)//0708 non-EE issue
-                                    //    inputInfo.USBUpstream = usbUpstreamList[2];
-                                    inputInfo.USBUpstream = USBUpstream.FirstOrDefault(kv => kv.Value == "01").Key;
-                                }
-                                else if (subUpstream == "00")
-                                {
-                                    //if (usbUpstreamList.Count > 3)//0708 non-EE issue
-                                    //    inputInfo.USBUpstream = usbUpstreamList[3];
-                                    inputInfo.USBUpstream = USBUpstream.FirstOrDefault(kv => kv.Value == "00").Key;
-                                }
-                                //inputInfo.USBUpstream = GetUSBUpstream(monitorInfo, tmp.Name).Result;
-                            }
-                            else
-                            {
-                                _logs.DebugMsg("[DisplayMangerPlugin][GetInputSourcelist] newstrUpstream length is not 16");
-                            }
-                        }
-                        else
-                        {
+                        //if (objGetVCP.result && usbUpstreamList.Count > 0)
+                        //{
+                        //    string getUpstream = Convert.ToString((uint)objGetVCP.value, 2);
+                        //    string newstrUpstream = getUpstream;
+                        //    if (getUpstream.Length < 16)
+                        //    {
+                        //        for (int i = 0; i < (16 - getUpstream.Length); i++)
+                        //        {
+                        //            newstrUpstream = "0" + newstrUpstream;
+                        //        }
+                        //    }
+                        //    _logs.DebugMsg("[DisplayMangerPlugin][GetInputSourcelist] newstrUpstream : " + newstrUpstream);
+                        //    _logs.DebugMsg("[DisplayMangerPlugin][GetInputSourcelist] input_num : " + input_num);
+                        //    if (newstrUpstream.Length == 16)
+                        //    {
+                        //        string subUpstream = newstrUpstream.Substring(input_num * 2, 2);
+                        //        if (subUpstream == "11")
+                        //        {
+                        //            //if (usbUpstreamList.Count > 0)//0708 non-EE issue
+                        //            //    inputInfo.USBUpstream = usbUpstreamList[0];
+                        //            inputInfo.USBUpstream = USBUpstream.FirstOrDefault(kv => kv.Value == "11").Key;
+                        //        }
+                        //        else if (subUpstream == "10")
+                        //        {
+                        //            //if (usbUpstreamList.Count > 1)//0708 non-EE issue
+                        //            //    inputInfo.USBUpstream = usbUpstreamList[1];
+                        //            inputInfo.USBUpstream = USBUpstream.FirstOrDefault(kv => kv.Value == "10").Key;
+                        //        }
+                        //        else if (subUpstream == "01")
+                        //        {
+                        //            //if (usbUpstreamList.Count > 2)//0708 non-EE issue
+                        //            //    inputInfo.USBUpstream = usbUpstreamList[2];
+                        //            inputInfo.USBUpstream = USBUpstream.FirstOrDefault(kv => kv.Value == "01").Key;
+                        //        }
+                        //        else if (subUpstream == "00")
+                        //        {
+                        //            //if (usbUpstreamList.Count > 3)//0708 non-EE issue
+                        //            //    inputInfo.USBUpstream = usbUpstreamList[3];
+                        //            inputInfo.USBUpstream = USBUpstream.FirstOrDefault(kv => kv.Value == "00").Key;
+                        //        }
+                        //        //inputInfo.USBUpstream = GetUSBUpstream(monitorInfo, tmp.Name).Result;
+                        //    }
+                        //    else
+                        //    {
+                        //        _logs.DebugMsg("[DisplayMangerPlugin][GetInputSourcelist] newstrUpstream length is not 16");
+                        //    }
+                        //}
+                        //else
+                        //{
                             inputInfo.USBUpstream = string.Empty;
-                        }
+                        //}
                         inputSourcelist.Add(tmp.Name, inputInfo);
                         input_num = input_num + 1;
                     }
@@ -624,67 +624,79 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             {
                 if (monitorInfo.CapabilityDic.ContainsKey("EE"))
                 {
-                    objGetVCP = GetVCPCapability(monitorInfo, 0xE7).Result;
-                    if (objGetVCP.result)
+                    usbUpstreamList = GetUSBUpstreamList(monitorInfo).Result;
+                    if (usbUpstreamList != null && usbUpstreamList.Count > 0)
                     {
-                        if (_getVCPCapabilities == string.Empty)
+                        objGetVCP = GetVCPCapability(monitorInfo, 0xE7).Result;
+                        if (objGetVCP.result)
                         {
-                            _getVCPCapabilities = GetVCPCapabilities(monitorInfo).Result;
-                        }
-                        if (!string.IsNullOrEmpty(_getVCPCapabilities))
-                        {
-                            JObject VCPjson = JObject.Parse(_getVCPCapabilities);
-
-                            JObject capsDataMap = (JObject)VCPjson["CapsDataMap"];
-                            JArray input = (JArray)capsDataMap["Input Select"];
-                            foreach (var tmp in input)
+                            if (_getVCPCapabilities == string.Empty)
                             {
-                                if (tmp.ToString() == inputsource)
-                                {
-                                    break;
-                                }
-                                input_num = input_num + 1;
+                                _getVCPCapabilities = GetVCPCapabilities(monitorInfo).Result;
                             }
+                            if (!string.IsNullOrEmpty(_getVCPCapabilities))
+                            {
+                                JObject VCPjson = JObject.Parse(_getVCPCapabilities);
 
-                            string getUpstream = Convert.ToString((uint)objGetVCP.value, 2);
-                            string newstrUpstream = getUpstream;
-                            if (getUpstream.Length < 16)
-                            {
-                                for (int i = 0; i < (16 - getUpstream.Length); i++)
+                                JObject capsDataMap = (JObject)VCPjson["CapsDataMap"];
+                                JArray input = (JArray)capsDataMap["Input Select"];
+                                foreach (var tmp in input)
                                 {
-                                    newstrUpstream = "0" + newstrUpstream;
-                                }
-                            }
-                            Trace.WriteLine(newstrUpstream);
-                            _logs.DebugMsg("[DisplayMangerPlugin][GetUSBUpstream] newstrUpstream : " + newstrUpstream);
-                            _logs.DebugMsg("[DisplayMangerPlugin][GetUSBUpstream] input_num : " + input_num);
-                            if (newstrUpstream.Length == 16)
-                            {
-                                string subUpstream = newstrUpstream.Substring(input_num * 2, 2);
-                                if (USBUpstream != null && USBUpstream.Count != 0)
-                                {
-                                    foreach (var tmp in USBUpstream)
+                                    if (tmp.ToString() == inputsource)
                                     {
-                                        if (subUpstream == tmp.Value)
+                                        break;
+                                    }
+                                    input_num = input_num + 1;
+                                }
+
+                                string getUpstream = Convert.ToString((uint)objGetVCP.value, 2);
+                                string newstrUpstream = getUpstream;
+                                if (getUpstream.Length < 16)
+                                {
+                                    for (int i = 0; i < (16 - getUpstream.Length); i++)
+                                    {
+                                        newstrUpstream = "0" + newstrUpstream;
+                                    }
+                                }
+                                Trace.WriteLine(newstrUpstream);
+                                _logs.DebugMsg("[DisplayMangerPlugin][GetUSBUpstream] newstrUpstream : " + newstrUpstream);
+                                _logs.DebugMsg("[DisplayMangerPlugin][GetUSBUpstream] input_num : " + input_num);
+                                if (newstrUpstream.Length == 16)
+                                {
+                                    string subUpstream = newstrUpstream.Substring(input_num * 2, 2);
+                                    if (USBUpstream != null && USBUpstream.Count != 0)
+                                    {
+                                        foreach (var tmp in USBUpstream)
                                         {
-                                            return Task.FromResult(tmp.Key);
+                                            if (subUpstream == tmp.Value)
+                                            {
+                                                return Task.FromResult(tmp.Key);
+                                            }
                                         }
                                     }
+                                    else
+                                    {
+                                        _logs.DebugMsg("[DisplayMangerPlugin][GetUSBUpstream] USBUpstream is null or Count = 0");
+                                    }
+                                }
+                                else
+                                {
+                                    _logs.DebugMsg("[DisplayMangerPlugin][GetUSBUpstream] newstrUpstream length is not 16");
                                 }
                             }
                             else
                             {
-                                _logs.DebugMsg("[DisplayMangerPlugin][GetUSBUpstream] newstrUpstream length is not 16");
+                                _logs.DebugMsg("[DisplayMangerPlugin][GetUSBUpstream] _getVCPCapabilities is null or empty.");
                             }
                         }
                         else
                         {
-                            _logs.DebugMsg("[DisplayMangerPlugin][GetUSBUpstream] _getVCPCapabilities is null or empty.");
+                            _logs.DebugMsg("[DisplayMangerPlugin][GetUSBUpstream] GetVCPCapability 0xE7 fail.");
                         }
                     }
                     else
                     {
-                        _logs.DebugMsg("[DisplayMangerPlugin][GetUSBUpstream] GetVCPCapability 0xE7 fail.");
+                        _logs.DebugMsg("[DisplayMangerPlugin][GetUSBUpstream] usbUpstreamList is null or count = 0.");
                     }
                 }
             }
@@ -708,6 +720,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                     }
                     if (!string.IsNullOrEmpty(_getVCPCapabilities))
                     {
+                        usbUpstreamList = GetUSBUpstreamList(monitorInfo).Result;
                         JObject VCPjson = JObject.Parse(_getVCPCapabilities);
 
                         JObject capsDataMap = (JObject)VCPjson["CapsDataMap"];
@@ -731,10 +744,18 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                                     newstrUpstream = "0" + newstrUpstream;
                                 }
                             }
-                            string strsetUpstream = newstrUpstream.Substring(0, input_num * 2) + USBUpstream[upstream] + newstrUpstream.Substring((input_num + 1) * 2, newstrUpstream.Length - ((input_num + 1) * 2));
-                            uint code = Convert.ToUInt16(strsetUpstream, 2);
-                            bool b = SetVCPCapability(monitorInfo, 0xE7, code).Result;
-                            return Task.FromResult(b);
+                            if (USBUpstream != null && USBUpstream.Count != 0)
+                            {
+                                string strsetUpstream = newstrUpstream.Substring(0, input_num * 2) + USBUpstream[upstream] + newstrUpstream.Substring((input_num + 1) * 2, newstrUpstream.Length - ((input_num + 1) * 2));
+                                uint code = Convert.ToUInt16(strsetUpstream, 2);
+                                Trace.WriteLine("strsetUpstream:" + code.ToString());
+                                bool b = SetVCPCapability(monitorInfo, 0xE7, code).Result;
+                                return Task.FromResult(b);
+                            }
+                            else
+                            {
+                                _logs.DebugMsg("[DisplayMangerPlugin][SetUSBUpstream] USBUpstream is null or Count = 0");
+                            }
                         }
                     }
                 }
@@ -806,7 +827,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
         public Task<bool> isScreenPartition(MonitorInfo monitorInfo)
         {
             ObjGetVCP objGetVCP = GetVCPCapability(monitorInfo, 0xF2).Result;
-            if (objGetVCP != null && objGetVCP.result) 
+            if (objGetVCP != null && objGetVCP.result)
             {
                 if ((uint)objGetVCP.value != 0)
                 {
@@ -860,6 +881,8 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                         {
                             GetALSAll(als, ref als_param);
                         }
+                        als_param.Edid = als.edid;
+                        als_param.CapDict = als.CapabilityDic;
                         als_param.ModelName = als.modelName;
                         als_param.serialNumber = als.edid.SerialNumber;
                         als_param.DisplayName = als.DisplayName;
@@ -895,6 +918,8 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                     {
                         GetALSAll(monitorInfos, ref aconfig);
                     }
+                    aconfig.Edid = monitorInfos.edid;
+                    aconfig.CapDict = monitorInfos.CapabilityDic;
                     aconfig.ModelName = monitorInfos.modelName;
                     aconfig.serialNumber = monitorInfos.edid.SerialNumber;
                     aconfig.DisplayName = monitorInfos.DisplayName;
@@ -985,6 +1010,8 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                     foreach (MonitorInfo mon in monitorALS)//copy to als_connected first
                     {
                         ALSConfig als_nowtemp = new ALSConfig();
+                        als_nowtemp.CapDict = mon.CapabilityDic;
+                        als_nowtemp.Edid = mon.edid;
                         als_nowtemp.ModelName = mon.modelName;
                         als_nowtemp.DisplayName = mon.DisplayName;
                         als_nowtemp.serialNumber = mon.edid.SerialNumber;
@@ -1005,6 +1032,11 @@ namespace DDPM.SA.Plugins.User.DisplayManager
 
                     als_connected = new List<ALSConfig>();//clear
 
+                    // Read monitorInfoMain value one times
+                    ObjGetVCP obBrightness = GetVCPCapability(monitorInfoMain, 0x10).Result;
+                    ObjGetVCP obContrast = GetVCPCapability(monitorInfoMain, 0x12).Result;
+                    ObjGetVCP obColor = GetVCPCapability(monitorInfoMain, "colorpreset").Result;
+                    var isprimarysupportlum = !monitorInfoMain.CapabilityDic.ContainsKey("12");
                     for (int i = 0; i < als_connected2.Count; i++)
                     {
                         //Dean 0624, check with displayname and serialnumber at the same time
@@ -1014,38 +1046,80 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                             if (!(als_connected2[i].isSupportALS == 2))
                                 return Task.FromResult(true);
 
-                            //Dean 0624, add object check as well
-                            var mo_tmp = monitorALS.Find(x => x.DisplayName.Equals(als_connected2[i].DisplayName));
-                            if (mo_tmp == null)
+                            if(isprimarysupportlum) // Lum True
                             {
-                                continue;
-                            }
-                            SetVCPCapability(mo_tmp, 0x66, SetBitsValue(value.AllValue, 5, 0));//set VCP command value, but bit5 need to change to 0
-                            value.AllValue = SetBitsValue(value.AllValue, 5, 0);
-                            als_connected2[i].isAutoBrightness = value.isAutoBrightness;
-                            als_connected2[i].isAutoColorTemp = value.isAutoColorTemp;
-                            als_connected2[i].isPrimaryMonitorSync = false;//set isPrimaryMonitorSync off
+                                if(!als_connected2[i].CapDict.ContainsKey("12"))// Lum True
+                                {
+                                    //only Do 0x10 and colorpreset
+                                    if (obBrightness.result)
+                                    {
+                                        uint brightnessValue = (uint)obBrightness.value;
+                                        SetVCPCapability(monitorALS.Find(x => x.DisplayName.Equals(als_connected2[i].DisplayName)), 0x10, brightnessValue);
+                                    }
 
-                            // Dean 0614 handle brightness/ contrast
-                            ObjGetVCP obBrightness = GetVCPCapability(monitorInfoMain, 0x10).Result;
-                            if (obBrightness.result)
-                            {
-                                uint brightnessValue = (uint)obBrightness.value;
-                                SetVCPCapability(monitorALS.Find(x => x.DisplayName.Equals(als_connected2[i].DisplayName)), 0x10, brightnessValue);
+
+                                    if (obColor.result)
+                                    {
+                                        string obColorValue = obColor.value.ToString();
+                                        SetVCPCapability(monitorALS.Find(x => x.DisplayName.Equals(als_connected2[i].DisplayName)), "colorpreset", obColorValue);
+                                    }
+                                }
+                                else// Lum False
+                                {
+                                    //only colorpreset
+                                    if (obColor.result)
+                                    {
+                                        string obColorValue = obColor.value.ToString();
+                                        SetVCPCapability(monitorALS.Find(x => x.DisplayName.Equals(als_connected2[i].DisplayName)), "colorpreset", obColorValue);
+                                    }
+                                }
                             }
 
-                            ObjGetVCP obContrast = GetVCPCapability(monitorInfoMain, 0x12).Result;
-                            if (obContrast.result)
-                            {
-                                uint obcontrastValue = (uint)obContrast.value;
-                                SetVCPCapability(monitorALS.Find(x => x.DisplayName.Equals(als_connected2[i].DisplayName)), 0x12, obcontrastValue);
-                            }
 
-                            ObjGetVCP obColor = GetVCPCapability(monitorInfoMain, "colorpreset").Result;
-                            if (obColor.result)
+                            if (!isprimarysupportlum) // Lum False
                             {
-                                string obColorValue = obColor.value.ToString();
-                                SetVCPCapability(monitorALS.Find(x => x.DisplayName.Equals(als_connected2[i].DisplayName)), "colorpreset", obColorValue);
+                                if (!als_connected2[i].CapDict.ContainsKey("12"))// Lum True
+                                {
+                                    //only colorpreset
+                                    if (obColor.result)
+                                    {
+                                        string obColorValue = obColor.value.ToString();
+                                        SetVCPCapability(monitorALS.Find(x => x.DisplayName.Equals(als_connected2[i].DisplayName)), "colorpreset", obColorValue);
+                                    }
+                                }
+                                else// Lum False
+                                {
+                                    //Dean 0624, add object check as well
+                                    var mo_tmp = monitorALS.Find(x => x.DisplayName.Equals(als_connected2[i].DisplayName));
+                                    if (mo_tmp == null)
+                                    {
+                                        continue;
+                                    }
+                                    SetVCPCapability(mo_tmp, 0x66, SetBitsValue(value.AllValue, 5, 0));//set VCP command value, but bit5 need to change to 0
+                                    value.AllValue = SetBitsValue(value.AllValue, 5, 0);
+                                    als_connected2[i].isAutoBrightness = value.isAutoBrightness;
+                                    als_connected2[i].isAutoColorTemp = value.isAutoColorTemp;
+                                    als_connected2[i].isPrimaryMonitorSync = false;//set isPrimaryMonitorSync off
+
+                                    // Dean 0614 handle brightness/ contrast
+                                    if (obBrightness.result)
+                                    {
+                                        uint brightnessValue = (uint)obBrightness.value;
+                                        SetVCPCapability(monitorALS.Find(x => x.DisplayName.Equals(als_connected2[i].DisplayName)), 0x10, brightnessValue);
+                                    }
+
+                                    if (obContrast.result)
+                                    {
+                                        uint obcontrastValue = (uint)obContrast.value;
+                                        SetVCPCapability(monitorALS.Find(x => x.DisplayName.Equals(als_connected2[i].DisplayName)), 0x12, obcontrastValue);
+                                    }
+
+                                    if (obColor.result)
+                                    {
+                                        string obColorValue = obColor.value.ToString();
+                                        SetVCPCapability(monitorALS.Find(x => x.DisplayName.Equals(als_connected2[i].DisplayName)), "colorpreset", obColorValue);
+                                    }
+                                }
                             }
                         }
                     }
@@ -1063,12 +1137,14 @@ namespace DDPM.SA.Plugins.User.DisplayManager
         {
             List<ALSConfig> als_connecte = new List<ALSConfig>();
             List<MonitorInfo> monitorALS = GetMonitors().Result;
-            foreach (MonitorInfo monitorInfo in monitorALS)
+            for(int i = 0; i < monitorALS.Count; i++)
             {
                 ALSConfig tempALSConfig = new ALSConfig();
-                tempALSConfig.ModelName = monitorInfo.modelName;
-                tempALSConfig.DisplayName = monitorInfo.DisplayName;
-                tempALSConfig.serialNumber = monitorInfo.edid.SerialNumber;
+                tempALSConfig.Edid = monitorALS[i].edid;
+                tempALSConfig.CapDict = monitorALS[i].CapabilityDic;
+                tempALSConfig.ModelName = monitorALS[i].modelName;
+                tempALSConfig.DisplayName = monitorALS[i].DisplayName;
+                tempALSConfig.serialNumber = monitorALS[i].edid.SerialNumber;
                 als_connecte.Add(tempALSConfig);
             }
             return Task.FromResult(als_connecte);
@@ -1080,21 +1156,35 @@ namespace DDPM.SA.Plugins.User.DisplayManager
         /// <returns>Return static AllALSConfig</returns>
         public Task<List<ALSConfig>> GetAllExistAlsConfig()
         {
-            var uniqueALSConfigs = new HashSet<(string DisplayName, string SerialNumber)>();
-            var distinctALSConfigList = new List<ALSConfig>();
-            if (AllALSConfig.Count > 1)
+            try
             {
-                foreach (var config in AllALSConfig)
+                _logs.DebugMsg($"[DisplayMangerPlugin] GetAllExistAlsConfig ... in");
+                var uniqueALSConfigs = new HashSet<(string DisplayName, string SerialNumber)>();
+                var distinctALSConfigList = new List<ALSConfig>();
+                Trace.WriteLine("GetAllExistAlsConfig AllALSConfig.Count " + AllALSConfig.Count.ToString());
+                if (AllALSConfig.Count > 1)
                 {
-                    var key = (config.DisplayName, config.serialNumber);
-                    if (uniqueALSConfigs.Add(key))
+                    for (int i = 0; i < AllALSConfig.Count; i++)
                     {
-                        distinctALSConfigList.Add(config);
+                        Trace.WriteLine("GetAllExistAlsConfig config.DisplayName, config.serialNumber " + AllALSConfig[i].DisplayName.ToString() + " || " + AllALSConfig[i].serialNumber.ToString());
+                        var key = (AllALSConfig[i].DisplayName, AllALSConfig[i].serialNumber);
+                        if (uniqueALSConfigs.Add(key))
+                        {
+                            Trace.WriteLine("GetAllExistAlsConfig uniqueALSConfigs true " + AllALSConfig[i].DisplayName.ToString() + " || " + AllALSConfig[i].serialNumber.ToString());
+                            distinctALSConfigList.Add(AllALSConfig[i]);
+                        }
                     }
+                    AllALSConfig = distinctALSConfigList;
                 }
-                AllALSConfig = distinctALSConfigList;
+                _logs.DebugMsg($"[DisplayMangerPlugin] GetAllExistAlsConfig ... out");
+                return Task.FromResult(AllALSConfig);
             }
-            return Task.FromResult(AllALSConfig);
+            catch (Exception ex)
+            {
+                Trace.WriteLine(ex.ToString());
+                _logs.DebugMsg($"[DisplayMangerPlugin] GetAllExistAlsConfig Exception {ex.Message}");
+                return Task.FromResult(new List<ALSConfig>());
+            }
         }
 
         /// <summary>
@@ -1103,16 +1193,29 @@ namespace DDPM.SA.Plugins.User.DisplayManager
         /// <returns>Return List<ALSConfig> type</returns>
         public Task<List<ALSConfig>> UpdateExistAlsConfig(List<MonitorInfo> monitorInfoMain)
         {
-            List<ALSConfig> als_connecte = new List<ALSConfig>();
-            List<MonitorInfo> monitorALS = GetMonitors().Result;
-            foreach (MonitorInfo monitorInfo in monitorInfoMain)
+            try
             {
-                ALSConfig aconfig = AllALSConfig.Find(x => x.DisplayName.ToUpper().Equals(monitorInfo.DisplayName.ToUpper()) && x.serialNumber.ToUpper().Equals(monitorInfo.edid.SerialNumber.ToUpper()));
-                if (aconfig != null)
-                    als_connecte.Add(aconfig);
+                _logs.DebugMsg($"[DisplayMangerPlugin] UpdateExistAlsConfig ... in");
+                List<ALSConfig> als_connecte = new List<ALSConfig>();
+                for (int i = 0; i < monitorInfoMain.Count; i++)
+                {
+                    ALSConfig aconfig = AllALSConfig.Find(x => x.DisplayName.ToUpper().Equals(monitorInfoMain[i].DisplayName.ToUpper()) && x.serialNumber.ToUpper().Equals(monitorInfoMain[i].edid.SerialNumber.ToUpper()));
+                    if (aconfig != null)
+                    {
+                        Trace.WriteLine("UpdateExistAlsConfig aconfig " + aconfig.DisplayName.ToString() + " || " + aconfig.serialNumber.ToString());
+                        als_connecte.Add(aconfig);
+                    }
+                }
+                AllALSConfig = als_connecte;
+                _logs.DebugMsg($"[DisplayMangerPlugin] UpdateExistAlsConfig ... out");
+                return Task.FromResult(als_connecte);
             }
-            AllALSConfig = als_connecte;
-            return Task.FromResult(als_connecte);
+            catch (Exception ex)
+            {
+                Trace.WriteLine(ex.ToString());
+                _logs.DebugMsg($"[DisplayMangerPlugin] UpdateExistAlsConfig Exception {ex.Message}");
+                return Task.FromResult(new List<ALSConfig>());
+            }
         }
 
         /// <summary>
@@ -1125,6 +1228,8 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             ALSConfig aconfig = AllALSConfig.Find(x => x.DisplayName.Equals(monitorALS.DisplayName) && x.serialNumber.Equals(monitorALS.serialNumber));//Dean 0624
             for (int i = 0; i < AllALSConfig.Count; i++)
             {
+                AllALSConfig[i].Edid = monitorALS.Edid;
+                AllALSConfig[i].CapDict = monitorALS.CapDict;
                 AllALSConfig[i].AllValue = monitorALS.AllValue;
                 AllALSConfig[i].isAutoBrightness = monitorALS.isAutoBrightness;
                 AllALSConfig[i].isAutoColorTemp = monitorALS.isAutoColorTemp;
@@ -1163,6 +1268,8 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                     _logs.DebugMsg("[DisplayMangerPlugin] UpdateALSFeatureValue GetALSAll False...");
                     return Task.FromResult(false);
                 }
+                aconfig.Edid = monitorInfos.edid;
+                aconfig.CapDict = monitorInfos.CapabilityDic;
                 aconfig.ModelName = monitorInfos.modelName;
                 aconfig.DisplayName = monitorInfos.DisplayName;
                 aconfig.serialNumber = monitorInfos.edid.SerialNumber;//Dean 0624
@@ -1188,6 +1295,8 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                 if (alsConfig == null)
                 {
                     GetALSupport(monitorInfos, ref alsTemp);
+                    alsTemp.Edid = monitorInfos.edid;
+                    alsTemp.CapDict = monitorInfos.CapabilityDic;
                     alsTemp.ModelName = monitorInfos.modelName;
                     alsTemp.serialNumber = monitorInfos.edid.SerialNumber;
                     alsTemp.DisplayName = monitorInfos.DisplayName;
@@ -1930,26 +2039,26 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                             {
                                 if (uint.TryParse(e.value, NumberStyles.Integer, CultureInfo.CurrentCulture, out uint result))
                                 {
-                                    //No need sync, PIMS - 285803
-                                    //if (e.vcpcode.Equals("10"))
-                                    //    SetVCPCapability(mo, 0x10, Convert.ToUInt32(e.value));
-                                    //else if (e.vcpcode.Equals("12"))
-                                    //    SetVCPCapability(mo, 0x12, Convert.ToUInt32(e.value));
-                                    //else
-                                    //if (e.vcpcode.Equals("14") || e.vcpcode.Equals("F0") || e.vcpcode.Equals("DC"))
-                                    //{
-                                    //    r = int.TryParse(e.vcpcode, System.Globalization.NumberStyles.HexNumber, CultureInfo.CurrentCulture, out int number);
-                                    //    if (r) SetVCPCapability(mo, Convert.ToByte(number), Convert.ToUInt32(e.value));
-                                    //}
+                                //No need sync, PIMS - 285803
+                                //if (e.vcpcode.Equals("10"))
+                                //    SetVCPCapability(mo, 0x10, Convert.ToUInt32(e.value));
+                                //else if (e.vcpcode.Equals("12"))
+                                //    SetVCPCapability(mo, 0x12, Convert.ToUInt32(e.value));
+                                //else
+                                //if (e.vcpcode.Equals("14") || e.vcpcode.Equals("F0") || e.vcpcode.Equals("DC"))
+                                //{
+                                //    r = int.TryParse(e.vcpcode, System.Globalization.NumberStyles.HexNumber, CultureInfo.CurrentCulture, out int number);
+                                //    if (r) SetVCPCapability(mo, Convert.ToByte(number), Convert.ToUInt32(e.value));
+                                //}
                                 }
                                 else
                                 {
-                                    if (e.vcpcode.Equals("E2"))
-                                    {
-                                        SetVCPCapability(mo, "colorpreset", e.value);
-                                    }
-                                    else
-                                        break;
+                                if (e.vcpcode.Equals("E2"))
+                                {
+                                    SetVCPCapability(mo, "colorpreset", e.value);
+                                }
+                                else
+                                    break;
                                 }
                             }
                         }
@@ -2228,7 +2337,8 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                 _logs.DebugMsg($"[DisplayMangerPlugin] SetOSDOrientation go");
                 SetOSDOrientation(monitorInfos, OrientationString[(int)orientation + 1]).Wait();
                 isSWSetOrientation = true;
-                ret = _DisplayPropertiesPlugin.SetOrientation(monitorInfos.DisplayName, orientation).Result;
+                ret = _DisplayPropertiesPlugin.SetOrientation_New(monitorInfos.DisplayName, orientation).Result;
+                //ret = _DisplayPropertiesPlugin.SetOrientation(monitorInfos.DisplayName, orientation).Result;
                 isSWSetOrientation = false;
             }
             _logs.DebugMsg($"[DisplayMangerPlugin] SetOrientation done");
@@ -2986,8 +3096,9 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             InputInfo outValue;
             if (inputList.TryGetValue(currentInput, out outValue))
             {
-                PC.InputName = "PC1";
+                PC.InputName = outValue.InputName;
                 PC.USBUpstream = outValue.USBUpstream;
+                PC.Code = outValue.Code;
                 _PCsList.Add("PC1", PC);
                 int i = 1;
                 int loop = subInputList.Count + 1; // get input sub
@@ -3004,8 +3115,9 @@ namespace DDPM.SA.Plugins.User.DisplayManager
 
                     if (inputList.TryGetValue(item.Name, out outSubValue))
                     {
-                        PC.InputName = "PC" + (i + 1).ToString();
+                        PC.InputName = outSubValue.InputName;
                         PC.USBUpstream = outSubValue.USBUpstream;
+                        PC.Code = outSubValue.Code;
                         _PCsList.Add("PC" + (i + 1).ToString(), PC);
                     }
                     i = i + 1;

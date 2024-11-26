@@ -188,7 +188,8 @@ namespace DDPM.UI.Plugin.Common.ViewModels
                         {
                             Index = idx++,
                             Text = mg.GroupName,
-                            IconTemplate = mg.IconTemplate
+                            IconTemplate = mg.IconTemplate,
+                            IconCanvas = mg.GroupIconCanvas
                         };
                         _vbarItems1.Add(vbarItem);
                     }

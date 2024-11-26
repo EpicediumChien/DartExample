@@ -31,6 +31,7 @@
     <SolidColorBrush x:Key="DefaultTheme_SetupScanBdColor" Color="#FFFFFF" />
     <SolidColorBrush x:Key="DefaultTheme_SetupSelectBdColor" Color="#1B385F" />
     <SolidColorBrush x:Key="DefaultTheme_ListBoxBkColor" Color="#80141D27" />
+    <SolidColorBrush x:Key="DefaultTheme_DialogBoxBkColor" Color="#132F54"/>
     <Style TargetType="UXControls:UXTextBlock"
            BasedOn="{StaticResource {x:Type UXControls:UXTextBlock}}">
         <Setter Property="Foreground" Value="{DynamicResource DefaultTheme_TxtColor}" />
@@ -765,8 +766,15 @@
     <SolidColorBrush  x:Key="RightView_Btn_BdColor" Color="#FFFFFFFF" />
     <!-- End BrightnessRightView-->
 
+    <!-- Border Color
+    Disabled: the same with Vbar_BkColor_Disabled; Default: the same with Vbar_BkColor_Default.
+    LandingHover, (non-selected) Hover will be Vbar_BdColor_Hover
+    Selected and SelectedHover have the same BorderBrush:
+    <Color x:Key="Vbar_BdColor_Hover">#991B385F</Color>
+    -->
     <!-- #region VberItem1 -->
     <Color x:Key="Vbar_BdColor_Hover">#FF1B385F</Color>
+    <Color x:Key="Vbar_BkColor_Hover">#000E0E0E</Color>
     <Color x:Key="Vbar_BdColor_LockHover">#FF1B385F</Color>
     <Color x:Key="Vbar_BkColor_Default">#99132F54</Color>
     <Color x:Key="Vbar_BkColor_Disabled">#FF596067</Color>
@@ -819,7 +827,7 @@
         </Style.Triggers>
     </Style>
     <!-- #endregion -->
-
+    
     <SolidColorBrush x:Key="UXRadioButtonFgColor" Color="#F5F6F7" />
 
     <!-- #region DisplayRightView -->
@@ -1021,6 +1029,9 @@
     <SolidColorBrush x:Key="SplitCtrl_OuterBorder_BdColor_Icon_Normal" Color="#FFFFFFFF" />
     <SolidColorBrush x:Key="SplitSplitter_Icon" Color="#FFFFFFFF" />
     <SolidColorBrush x:Key="SplitCtrl0B_IconFill"  Color="#FF132F54"/>
+
+    <SolidColorBrush x:Key="SplitItem_BkColor" Color="#FF132F54" />
+
     <!-- #endregion SplitItem of EasyArrange -->
 
     <!-- #region LockIcon -->
@@ -1124,6 +1135,7 @@
         <Setter Property="HorizontalAlignment" Value="Center" />
         <Setter Property="VerticalAlignment" Value="Center" />
         <Setter Property="FontSize" Value="14" />
+        <Setter Property="Background" Value="Transparent" />
     </Style>
     <SolidColorBrush x:Key="RightView_BkColor" Color="#99193457" />
     <LinearGradientBrush x:Key="RightView_Header_HiColor" StartPoint="0,0" EndPoint="1,0">
@@ -1137,6 +1149,7 @@
         <Setter Property="Width" Value="105" />
         <Setter Property="Height" Value="40" />
         <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="Background" Value="#00FFFFFF" />
     </Style>
 
     <!-- light #f4f7f9  dark #0F2641-->
@@ -1372,14 +1385,14 @@
 
     <!-- BorderConnection -->
     <Style x:Key="BorderConnection" TargetType="Border">
-        <Setter Property="Background" Value="#99193457" />
+        <Setter Property="Background" Value="{DynamicResource BatteryIndicator_BkColor}" />
         <Setter Property="CornerRadius" Value="2" />
         <Setter Property="Width" Value="252" />
         <Setter Property="BorderThickness" Value="2" />
-        <Setter Property="BorderBrush" Value="#1B385F" />
+        <Setter Property="BorderBrush" Value="{DynamicResource RightView_Group_BdColor}" /> 
     </Style>
     <Style x:Key="ConnectionStyle1" TargetType="UXControls:UXTextBlock">
-        <Setter Property="Foreground" Value="#FFFFFF" />
+        <Setter Property="Foreground" Value="{DynamicResource DefaultTheme_TxtColor}" /> 
         <Setter Property="FontFamily" Value="Roboto" />
         <Setter Property="FontSize" Value="14" />
         <Setter Property="FontWeight" Value="Bold" />
@@ -1391,11 +1404,17 @@
         <Setter Property="FontWeight" Value="Normal" />
     </Style>
     <Style x:Key="ConnectionStyle3" TargetType="UXControls:UXTextBlock">
-        <Setter Property="Foreground" Value="#FFFFFF " />
+        <Setter Property="Foreground" Value="{DynamicResource DefaultTheme_TxtColor}" />
         <Setter Property="FontFamily" Value="Roboto" />
         <Setter Property="FontSize" Value="14" />
         <Setter Property="FontWeight" Value="Medium" />
     </Style>
     <!--BorderConnection end-->
+    <BitmapImage x:Key="popup_ArrowCorner" UriSource="pack://application:,,,/DDPM.UI.Common;component/Resources/popup_ArrowCorner.png" />
+    <BitmapImage x:Key="down_Expand" UriSource="pack://application:,,,/DDPM.UI.Resources;component/Resources/Images/Down.png" />
+    <BitmapImage x:Key="Search_img" UriSource="pack://application:,,,/DDPM.UI.Resources;component/Resources/Images/Search.png" />
+    <BitmapImage x:Key="Close_img" UriSource="pack://application:,,,/DDPM.UI.Common;component/Resources/Close.png" />
+    <BitmapImage x:Key="left_img" UriSource="pack://application:,,,/DDPM.UI.Resources;component/Resources/Images/Left.png" />
+    <SolidColorBrush x:Key="DefaultThemeFullPageBkColor" Color="#FF0D121A"/>
 
 </ResourceDictionary>

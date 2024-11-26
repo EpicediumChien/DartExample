@@ -1,4 +1,7 @@
-﻿using System.Windows.Media;
+﻿using Dell.Client.Framework.UX.WPF.Controls;
+using System.Windows;
+using System.Windows.Input;
+using System.Windows.Media;
 using Color = System.Windows.Media.Color;
 using ColorConverter = System.Windows.Media.ColorConverter;
 
@@ -27,11 +30,11 @@ namespace DDPM.UI.Common
             UpdateFreezable("DefaultTheme_BtBkColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#FF0E1C2F"));
             UpdateFreezable("DefaultTheme_BtBdColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#FFFFFFFF"));
             UpdateBitmapImage("popup_ArrowCorner", new Uri($"pack://application:,,,/DDPM.UI.Common;component/Resources/popup_ArrowCorner.png", UriKind.RelativeOrAbsolute));
-            BitmapImageUpdated?.Invoke("popup_ArrowCorner");
             UpdateFreezable("DefaultTheme_TbBkColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#141D28"));
             UpdateFreezable("DefaultTheme_TbFgColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#FFFFFFFF"));
             UpdateFreezable("DefaultTheme_TbBdColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#7E7E7E"));
             UpdateFreezable("DefaultTheme_ListBoxBkColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#80141D27"));
+            UpdateFreezable("DefaultTheme_DialogBoxBkColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#132F54"));
             #endregion
 
             #region Add Device
@@ -174,7 +177,6 @@ namespace DDPM.UI.Common
             #region DeviceBasePage
             UpdateFreezable("DisplayName_FgColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#FFFFFF"));
             UpdateBitmapImage("ConnectionTypeImageKey", new Uri("pack://application:,,,/DDPM.UI.Common;component/Resources/Port.png", UriKind.Absolute));
-            BitmapImageUpdated?.Invoke("ConnectionTypeImageKey");
             #endregion
 
             #region Combo Box
@@ -187,13 +189,18 @@ namespace DDPM.UI.Common
 
             #region BarItem Colors
             UpdateBitmapImage("Arrow_Left", new Uri($"pack://application:,,,/DDPM.UI.Resources;component/Resources/Images/arrow-left.png", UriKind.RelativeOrAbsolute));
-            BitmapImageUpdated?.Invoke("Arrow_Left");
             UpdateFreezable("btn_BkColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#0E1C2F"));
+            #endregion
+
+            #region VbarItem
+            System.Windows.Application.Current.Resources["Vbar_BdColor_Hover"] = Color.FromArgb(0xFF, 0x1B, 0x38, 0x5F);
+            System.Windows.Application.Current.Resources["Vbar_BkColor_Hover"] = Color.FromArgb(0x00, 0x0E, 0x0E, 0x0E);
+            UpdateFreezable("Vbar_BkBrush_Hover", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#FF1B385F"));
             #endregion
 
             #region VbarItem1
             UpdateFreezable("DdpmCB_HoverItemBkColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#FF232D36"));
-            UpdateFreezable("DefaultTheme_USBKVMComboBkColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#204A8299"));
+            UpdateFreezable("DefaultTheme_USBKVMComboBkColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#99204A82"));
             UpdateFreezable("DefaultTheme_USBKVMComboBdColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#1B385F"));
             UpdateFreezable("Vbar_FgBrush_Default", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#FFFFFF"));
             UpdateFreezable("Vbar_BkBrush_Default", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#99132F54"));
@@ -274,6 +281,8 @@ namespace DDPM.UI.Common
             UpdateFreezable("SplitCtrl_OuterBorder_BdColor_Icon_Normal", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#FFFFFFFF"));
             UpdateFreezable("SplitSplitter_Icon", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#FFFFFFFF"));
             UpdateFreezable("SplitCtrl0B_IconFill", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#FF132F54"));
+            UpdateFreezable("DdpmCB_HoverItemBkColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#FF232D36"));
+            UpdateFreezable("SplitItem_BkColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#FF132F54"));
             #endregion
 
             #region LockIcon
@@ -288,8 +297,8 @@ namespace DDPM.UI.Common
             #endregion
 
             #region Grid Background
-            UpdateFreezable("DefaultTheme_USBKVMPCGridBkColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#19345799"));
-            UpdateFreezable("DefaultTheme_GridBkColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#132F5499"));
+            UpdateFreezable("DefaultTheme_USBKVMPCGridBkColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#99193457"));
+            UpdateFreezable("DefaultTheme_GridBkColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#99132F54"));
             #endregion
 
             #region Setup Border Background
@@ -297,6 +306,11 @@ namespace DDPM.UI.Common
             UpdateFreezable("DefaultTheme_SetupScanBdColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#FFFFFF"));
             UpdateFreezable("DefaultTheme_SetupSelectBdColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#1B385F"));
             #endregion
+
+            UpdateFreezable("DefaultThemeFullPageBkColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#FF0D121A"));
+
+
+            BitmapImageUpdated?.Invoke(OSThemeEnum.Dark);
         }
     }
 }

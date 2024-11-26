@@ -28,7 +28,6 @@
             <SolidColorBrush x:Key="ToolipBkColor" Color="#FF1D2C3B" />
             <SolidColorBrush x:Key="ToolipBdColor" Color="#FF293B4D" />
             <SolidColorBrush x:Key="ToolipTextColor" Color="#FFF5F6F7" />
-            <SolidColorBrush x:Key="RightBaseBkColor" Color="#99193457" />
 
             <!-- Dashed Brush for Focus border -->
             <DrawingBrush x:Key="FocusDotBrush" Viewport="0,0,1,1" ViewportUnits="Absolute" TileMode="Tile">
@@ -181,8 +180,7 @@
                                                     TextTrimming="CharacterEllipsis" x:Name="tbDisplayName"
                                                     HorizontalAlignment="Left" 
                                                     MaxWidth="{Binding Path=ActualWidth, ElementName=markeyNameWidthGrid}"
-                                                    Visibility="{Binding SelectedHomeDeviceTextVisibiliity}"
-                                                    Foreground="White" FontSize="18" />
+                                                    Visibility="{Binding SelectedHomeDeviceTextVisibiliity}" FontSize="18" />
                                         </Grid>
 
                                         <!-- HomeDeviceComboBox - Option1: Using UXComboBox
@@ -326,7 +324,7 @@
                         <!-- RightFrame -->
                         <Grid x:Name="RightGrid" HorizontalAlignment="Right" MinWidth="660">
                             <Border CornerRadius="13" Margin="10,0,0,20" Padding="16,0" 
-                                    Background="{StaticResource RightBaseBkColor}">
+                                    Background="{DynamicResource RightBaseBkColor}">
                                 <Grid>
                                     <Grid.RowDefinitions>
                                         <RowDefinition Height="Auto" />

@@ -144,7 +144,7 @@ namespace DDPM.UI.Module.HeadsetAudioSettings
                     }
                 }
             }
-
+            SystemParameters_StaticPropertyChanged(null, null);
             SystemParameters.StaticPropertyChanged += SystemParameters_StaticPropertyChanged;
         }
         ~HeadsetAudioSettingsRightView()

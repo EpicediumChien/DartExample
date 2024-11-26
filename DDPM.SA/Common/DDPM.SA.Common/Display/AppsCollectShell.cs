@@ -199,7 +199,9 @@ namespace DDPM.SA.Common
             Dictionary<string, InstalledAppInfo> installedApp = new Dictionary<string, InstalledAppInfo>();
             //logger.WriteLog($"[ColorApp][FindAppsbyShell] App Icon folder: {IconFolder}");
             string folderInfo = string.Empty, info = string.Empty;
-            DDPMFileSecurity.CheckFold(IconFolder, out folderInfo, out info);
+            if (!DDPMFileSecurity.CheckFold(IconFolder, out folderInfo, out info))
+                return installedApp;
+
             if (!System.IO.Directory.Exists(IconFolder))
                 System.IO.Directory.CreateDirectory(IconFolder);
 
@@ -419,7 +421,8 @@ namespace DDPM.SA.Common
             Dictionary<string, InstalledAppInfo> installedApp = new Dictionary<string, InstalledAppInfo>();
             //logger.WriteLog($"[ColorApp][FindAppsbyShell] App Icon folder: {IconFolder}");
             string folderInfo = string.Empty, info = string.Empty;
-            DDPMFileSecurity.CheckFold(IconFolder, out folderInfo, out info);
+            if (!DDPMFileSecurity.CheckFold(IconFolder, out folderInfo, out info))
+                return installedApp;
             if (!System.IO.Directory.Exists(IconFolder))
                 System.IO.Directory.CreateDirectory(IconFolder);
 
