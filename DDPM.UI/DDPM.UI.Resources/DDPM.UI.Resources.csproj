@@ -9,6 +9,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+	 	<None Remove="Resources\Monitors\Lineart-w.png" />
 		<None Remove="Resources\Images\Alert.png" />
 		<None Remove="Resources\Images\arrow-left.png" />
 		<None Remove="Resources\Images\arrow-left-light.png" />
