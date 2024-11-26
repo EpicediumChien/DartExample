@@ -7,7 +7,8 @@
         mc:Ignorable="d"
         xmlns:UXControls="clr-namespace:Dell.Client.Framework.UX.WPF.Controls;assembly=DCF.UX.WPF" Background="Transparent" AllowsTransparency="True"
         Title="RestoreModalDialog" Height="196" Width="417" ResizeMode="NoResize" ShowInTaskbar="False"
-        WindowStartupLocation="CenterOwner" WindowStyle="None">
+        WindowStartupLocation="CenterOwner" WindowStyle="None"
+        Background="{DynamicResource DefaultTheme_DialogBoxBkColor}">
     <Window.Resources>
         <!--
         <Style x:Key="BorderYes" TargetType="Border">

@@ -6,9 +6,9 @@
         xmlns:local="clr-namespace:DDPM.UI.Plugin.Common"
         mc:Ignorable="d"
         xmlns:UXControls="clr-namespace:Dell.Client.Framework.UX.WPF.Controls;assembly=DCF.UX.WPF" 
-        Background="Transparent"
         Title="ConsentModalDialog" ResizeMode="NoResize" ShowInTaskbar="False" 
-        WindowStartupLocation="Manual" WindowStyle="None">
+        WindowStartupLocation="Manual" WindowStyle="None"
+        Background="{DynamicResource DefaultTheme_DialogBoxBkColor}">
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
