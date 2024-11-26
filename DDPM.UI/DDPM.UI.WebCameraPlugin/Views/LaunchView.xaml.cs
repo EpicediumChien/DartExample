@@ -335,6 +335,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
 
         private void WebcamSettingChanged(object? sender, EventArgs e)
         {
+            //_vm!.mre.Reset();
             Preview();
         }
 

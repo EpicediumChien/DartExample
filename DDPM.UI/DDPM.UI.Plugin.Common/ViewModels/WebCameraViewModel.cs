@@ -1026,9 +1026,9 @@ namespace DDPM.UI.Plugin.ViewModels
             get => _zoom;
             set
             {
-                _zoom = value;
-                if (value != CurrentProfile.Zoom)
+                if (value != _zoom)
                 {
+                    _zoom = value;
                     if (!IsSliderDragging)
                     {
                         SetZoom();
@@ -1076,9 +1076,9 @@ namespace DDPM.UI.Plugin.ViewModels
             get => _focus;
             set
             {
-                _focus = value;
-                if (value != CurrentProfile.Focus)
+                if (value != _focus)
                 {
+                    _focus = value;
                     if (!IsSliderDragging)
                     {
                         SetFocus();
@@ -1160,9 +1160,9 @@ namespace DDPM.UI.Plugin.ViewModels
             get => _autoWhiteBalance;
             set
             {
-                _autoWhiteBalance = value;
                 if (value != _autoWhiteBalance)
                 {
+                    _autoWhiteBalance = value;
                     if (!IsSliderDragging)
                     {
                         SetAutoWhiteBalance();
@@ -1206,9 +1206,9 @@ namespace DDPM.UI.Plugin.ViewModels
             get => _sharpness;
             set
             {
-                _sharpness = value;
-                if (value != CurrentProfile.Sharpness)
+                if (value != _sharpness)
                 {
+                    _sharpness = value;
                     if (!IsSliderDragging)
                     {
                         SetSharpness();
@@ -1229,9 +1229,9 @@ namespace DDPM.UI.Plugin.ViewModels
             get => _contrast;
             set
             {
-                _contrast = value;
                 if (value != _contrast)
                 {
+                    _contrast = value;
                     if (!IsSliderDragging)
                     {
                         SetContrast();
@@ -1255,6 +1255,7 @@ namespace DDPM.UI.Plugin.ViewModels
                 _saturation = value;
                 if (value != _saturation)
                 {
+                    _saturation = value;
                     if (!IsSliderDragging)
                     {
                         SetSaturation();
@@ -1277,10 +1278,7 @@ namespace DDPM.UI.Plugin.ViewModels
                 if (value != CurrentProfile.AntiFlicker)
                 {
                     CurrentProfile.AntiFlicker = value;
-                    if (!IsSliderDragging)
-                    {
-                        SetAntiFlicker();
-                    }
+                    SetAntiFlicker();
                 }
                 OnPropertyChanged();
             }
