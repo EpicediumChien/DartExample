@@ -125,10 +125,10 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         //public event EventHandler<IsZoomScreenShareActiveChangedArgs> IsZoomScreenShareActive_Notify;
 
         //Derek 1120
-        public event EventHandler<UpdateUINotify> WebcamEventHandler;
+        public event EventHandler<UpdateUINotify> DTPEventHandler;
         public void OnUIUpdateNotify(UpdateUINotify e)
         {
-            WebcamEventHandler?.Invoke(this, e);
+            DTPEventHandler?.Invoke(this, e);
         }
 
         public void NotifyNow()

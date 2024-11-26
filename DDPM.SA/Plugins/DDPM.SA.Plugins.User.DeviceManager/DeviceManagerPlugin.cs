@@ -253,7 +253,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             loadResourceDictionary(UXSystemParameters.Instance.OSTheme);
         }
 
-        private void _DTPProxyPlugin_WebcamEventHandler(object sender, UpdateUINotify e)
+        private void _DTPProxyPlugin_DTPEventHandler(object sender, UpdateUINotify e)
         {
             OnUIUpdateNotify(e);
         }
@@ -11662,7 +11662,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         //_DTPProxyPlugin.IsZoomScreenShareActive_Notify += IsZoomScreenShareActiveChanged;
 
                         //Derek 1119
-                        _DTPProxyPlugin.WebcamEventHandler += _DTPProxyPlugin_WebcamEventHandler;
+                        _DTPProxyPlugin.DTPEventHandler += _DTPProxyPlugin_DTPEventHandler;
                     }
                     else if (pluginCondition is PluginStartedCondition)
                     {
@@ -11679,7 +11679,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         //_DTPProxyPlugin.IsZoomScreenShareActive_Notify += IsZoomScreenShareActiveChanged;
 
                         //Derek 1119
-                        _DTPProxyPlugin.WebcamEventHandler += _DTPProxyPlugin_WebcamEventHandler;
+                        _DTPProxyPlugin.DTPEventHandler += _DTPProxyPlugin_DTPEventHandler;
                     }
                 }
             });
