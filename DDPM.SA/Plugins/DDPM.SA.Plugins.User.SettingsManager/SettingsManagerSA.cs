@@ -2266,12 +2266,29 @@ namespace DDPM.SA.Plugins.User.SettingsManager
         private object InitDDPMUserSettings_Common(string ConfigPath, string config_type)
         {
             string info;
-            FileInfo fileInfo = new FileInfo(ConfigPath);
-            if (fileInfo == null)
+
+            if(!File.Exists(ConfigPath))
             {
                 WriteLog($"[InitDDPMUserSettings_Common]: File:{ConfigPath}, empty file info");
                 return null;
             }
+
+            FileInfo fileInfo = default;
+            try
+            {
+                fileInfo = new FileInfo(ConfigPath);
+            }
+            catch (Exception ex)
+            {
+                WriteLog($"[InitDDPMUserSettings_Common]: File:{ConfigPath}, get file info failed, message: {ex.Message}");
+                return null;
+            }
+
+            //if (fileInfo == null)
+            //{
+            //    WriteLog($"[InitDDPMUserSettings_Common]: File:{ConfigPath}, empty file info");
+            //    return null;
+            //}
             if (string.IsNullOrEmpty(fileInfo.DirectoryName))
             {
                 WriteLog($"[InitDDPMUserSettings_Common]: empty DirectoryName of fileInfo");
