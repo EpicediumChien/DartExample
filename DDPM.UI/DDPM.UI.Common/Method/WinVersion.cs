@@ -60,7 +60,12 @@ namespace DDPM.UI.Common.Method
             public byte wReserved;
         }
         [DllImport("ntdll.dll", CallingConvention = CallingConvention.StdCall)]
-        public static extern int RtlGetVersion(out OSVERSIONINFOEXW osv);
+        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
+        private static extern int RtlGetVersion(out OSVERSIONINFOEXW osv);
+        private static int _RtlGetVersion(out OSVERSIONINFOEXW osv)
+        {
+            return RtlGetVersion(out osv);
+        }
 
         public static bool GetVersion(out VersionInfo info)
         {
@@ -69,7 +74,7 @@ namespace DDPM.UI.Common.Method
             info.BuildNum = 0;
             OSVERSIONINFOEXW osv = new OSVERSIONINFOEXW();
             osv.dwOSVersionInfoSize = 284;
-            if (RtlGetVersion(out osv) == 0)
+            if (_RtlGetVersion(out osv) == 0)
             {
                 info.Major = osv.dwMajorVersion;
                 info.Minor = osv.dwMinorVersion;

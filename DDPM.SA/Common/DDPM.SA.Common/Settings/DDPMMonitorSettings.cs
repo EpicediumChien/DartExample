@@ -47,12 +47,12 @@ namespace DDPM.SA.Common.Settings
 
     public class Gaming()
     {
-        public Gaming_GameEnhancementMode Current_GameEnhancementMode {  get; set; } = new Gaming_GameEnhancementMode();
+        public Gaming_GameEnhancementMode Current_GameEnhancementMode { get; set; } = new Gaming_GameEnhancementMode();
         public Gaming_ResponseTime Current_ResponseTime { get; set; } = new Gaming_ResponseTime();
         public Gaming_DarkStabilizer Current_DarkStabilizer { get; set; } = new Gaming_DarkStabilizer();
-        public Gaming_HDRType Current_HDRType {  get; set; } = new Gaming_HDRType();
+        public Gaming_HDRType Current_HDRType { get; set; } = new Gaming_HDRType();
         public Gaming_DualResolutionType Current_DualResolutionType { get; set; } = new Gaming_DualResolutionType();
-        public bool[] IsEnable_VisionEngineType {  get; set; } = new bool[0];
+        public bool[] IsEnable_VisionEngineType { get; set; } = new bool[0];
     }
 
     /// <summary>
@@ -131,6 +131,7 @@ namespace DDPM.SA.Common.Settings
         public EasyArrangementDDPM easyArrangementDDPM { get; set; }
         public uint ALSConfig { get; set; } = 0;
         public Gaming Gaming { get; set; } = new Gaming();
+        public PowerNapSetting PowerNap { get; set; }//1126 move powerNap setting to here
     }
 
     public class HotkeyData
