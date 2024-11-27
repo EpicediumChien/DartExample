@@ -51,15 +51,17 @@ internal class CLINetworkKVM
         }
     }
 
-    private static (int exitCode, string message) RunDDMCommand(string command)
+    private static (int exitCode, string value, string message) RunDDMCommand(string command)
     {
         string filePath = @"C:\Program Files\Dell\Dell Display and Peripheral Manager\Plugins\NKVM\DDM.exe";
         int exitCode = -1;
+        string value = "N/A";
         string message = "N/A";
 
         if (!File.Exists(filePath))
         {
-            message = $"{filePath} is not exists.";
+            value = "Not Supported";
+            message = "NetworkKVM is not support";
         }
         else
         {
@@ -83,7 +85,7 @@ internal class CLINetworkKVM
             Trace.WriteLine($"{DateTime.Now} {command} (Exit code: {exitCode})");
         }
 
-        return (exitCode, message);
+        return (exitCode, value, message);
     }
 
     private static (int code, string result) NetworkKVMVersion()
@@ -124,7 +126,8 @@ internal class CLINetworkKVM
         else
         {
             response.Result = "FAIL";
-            response.Message = $"{filePath} is not exists.";
+            response.Message = "NetworkKVM is not support";
+            response.Value = "Not Supported";
         }
 
         Console.WriteLine(JsonConvert.SerializeObject(response, Formatting.Indented));
@@ -156,9 +159,9 @@ internal class CLINetworkKVM
             else
             {
                 command = $"/{command} {_commandLineInput.Options[0].Option_Value}";
-                var (exitCode, message) = RunDDMCommand(command);
+                var commandResult = RunDDMCommand(command);
 
-                if (exitCode == 0)
+                if (commandResult.exitCode == 0)
                 {
                     retcode = true;
                     response.Result = "PASS";
@@ -167,16 +170,17 @@ internal class CLINetworkKVM
                 {
                     retcode = false;
                     response.Result = "FAIL";
-                    response.Message = message;
+                    response.Message = commandResult.message;
+                    response.Value = commandResult.value;
                 }
             }
         }
         else if (_commandLineInput.Command == "GET" && _commandLineInput.Options.Count == 0)
         {
             command = $"/get {command}";
-            var (exitCode, message) = RunDDMCommand(command);
+            var commandResult = RunDDMCommand(command);
 
-            switch (exitCode)
+            switch (commandResult.exitCode)
             {
                 case 0:
                     retcode = true;
@@ -199,7 +203,8 @@ internal class CLINetworkKVM
                 default:
                     retcode = false;
                     response.Result = "FAIL";
-                    response.Message = message;
+                    response.Message = commandResult.message;
+                    response.Value = commandResult.value;
                     break;
             }
         }
@@ -231,9 +236,9 @@ internal class CLINetworkKVM
             if (int.TryParse(_commandLineInput.Options[0].Option_Value, out int port) && port >= 1024 && port <= 49151)
             {
                 command = $"/{command} {_commandLineInput.Options[0].Option_Value}";
-                var (exitCode, message) = RunDDMCommand(command);
+                var commandResult = RunDDMCommand(command);
 
-                if (exitCode == 0)
+                if (commandResult.exitCode == 0)
                 {
                     retcode = true;
                     response.Result = "PASS";
@@ -242,7 +247,8 @@ internal class CLINetworkKVM
                 {
                     retcode = false;
                     response.Result = "FAIL";
-                    response.Message = message;
+                    response.Message = commandResult.message;
+                    response.Value = commandResult.value;
                 }
             }
             else
@@ -255,19 +261,20 @@ internal class CLINetworkKVM
         else if (_commandLineInput.Command == "GET" && _commandLineInput.Options.Count == 0)
         {
             command = $"/get {command}";
-            var (exitCode, message) = RunDDMCommand(command);
+            var commandResult = RunDDMCommand(command);
 
-            if (exitCode == -1)
+            if (commandResult.exitCode == -1)
             {
                 retcode = false;
                 response.Result = "FAIL";
-                response.Message = message;
+                response.Message = commandResult.message;
+                response.Value = commandResult.value;
             }
             else
             {
                 retcode = true;
                 response.Result = "PASS";
-                response.Value = exitCode.ToString();
+                response.Value = commandResult.exitCode.ToString();
             }
         }
         else
@@ -294,9 +301,9 @@ internal class CLINetworkKVM
         if (_commandLineInput.Command == "SET" && _commandLineInput.Options.Count == 0)
         {
             command = $"/{command}";
-            var (exitCode, message) = RunDDMCommand(command);
+            var commandResult = RunDDMCommand(command);
 
-            if (exitCode == 0)
+            if (commandResult.exitCode == 0)
             {
                 retcode = true;
                 response.Result = "PASS";
@@ -305,7 +312,8 @@ internal class CLINetworkKVM
             {
                 retcode = false;
                 response.Result = "FAIL";
-                response.Message = message;
+                response.Message = commandResult.message;
+                response.Value = commandResult.value;
             }
         }
         else
