@@ -1667,7 +1667,7 @@ namespace SA.Plugins.User.DeviceManager.Test
             var _FWUpdatePluginMock = new Mock<IFWUpdateService>();
             privateObject.SetFieldOrProperty("_FWUpdatePlugin", _FWUpdatePluginMock.Object);
             _FWUpdatePluginMock.Setup(x => x.Install(It.IsAny<string>(), It.IsAny<bool>(), It.IsAny<DeviceType>())).Returns(Task.FromResult(new FWUErrorCode()));
-            privateObject.SetFieldOrProperty("_UpdateProgress", new UpdateProgress());
+            privateObject.SetFieldOrProperty("_UpdateProgress", new UpdateProgress(null));
             // Execute and Verify
 
             Assert.IsNotNull(deviceMangerPlugin.Install(""), $"Install() returns null");

@@ -22,7 +22,6 @@
             <!-- 20240617  jim add -->
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="/DDPM.UI.Common;component/PluginStyles.xaml" />
-                <!--<ResourceDictionary Source="/DDPM.UI.Common;component/ModuleStyle.xaml" />-->
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
@@ -98,8 +97,7 @@
                 <!-- Robert_Lin,2024-11-25 Add LightMode support -->
                 <!-- 
                 <Border Grid.Row="1" Style="{StaticResource BorderUnpair}"  Width="176" MouseLeftButtonDown="Restore_Click"  Cursor="Hand" Margin="8,0,0,70" Visibility="Visible" x:Name="btnRestore"
-                        BorderBrush="{DynamicResource RightView_Header_Text_FgColor}">
-                 
+                        BorderBrush="{DynamicResource Button_UXStyleColor_ForWhiteFrame}">
                 -->
                 <Border Grid.Row="1" Style="{StaticResource BorderUnpair}"  Width="176" MouseLeftButtonDown="Restore_Click"  Cursor="Hand" Margin="8,0,0,70" Visibility="Visible" x:Name="btnRestore"
                         BorderBrush="{DynamicResource SecondaryButton_DefaultBdColor}">
