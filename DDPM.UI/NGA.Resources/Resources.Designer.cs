@@ -151,7 +151,7 @@ namespace NGA.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to MyDell.
+        ///   Looks up a localized string similar to DDPM.
         /// </summary>
         public static string ApplicationName {
             get {

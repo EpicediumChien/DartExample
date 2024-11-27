@@ -75,7 +75,7 @@
                 </StackPanel>
                 <UXControls:UXToggleSwitch IsChecked="{Binding Path= IsChecked_ProximitySensor}" ContentTextVisibility="True" Content="{Binding Path=ProximitySensorStatus_String}" HorizontalAlignment="Right" VerticalAlignment="Center" Foreground="White" IsTabStop="{Binding isTabStoppable}"/>
               </Grid>
-              <Border Background="#132F54" CornerRadius="6" Margin="16">
+              <Border  CornerRadius="6" Margin="16">
                 <StackPanel Orientation="Vertical">
                   <Grid Margin="18,20,18,0">
                     <StackPanel Orientation="Horizontal">
@@ -117,7 +117,7 @@
                       <UXControls:UXTextBlock Text="{Binding [WebCameraPresenceDetection.8], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource ModuleItemStyle}" VerticalAlignment="Center" />
                       <UXControls:UXToggleSwitch IsChecked="{Binding Path= IsChecked_Snooze}" IsEnabled="{Binding Path= IsChecked_WalkAwayLock}" ContentTextVisibility="True" Content="{Binding Path=SnoozeStatus_String}" HorizontalAlignment="Right" VerticalAlignment="Center"  Foreground="White" IsTabStop="{Binding isTabStoppable}" Checked = "HandleSnoozeCheck" Unchecked = "HandleSnoozeUnchecked"/>
                       <!--Timer-->
-                      <UXControls:UXTextBlock Name="txtTimer" AutomationProperties.Name="Description" FontSize="16" Background="Transparent" Foreground="#FBA433" TextWrapping="Wrap" Text="00:00:00"
+                      <UXControls:UXTextBlock Name="txtTimer" AutomationProperties.Name="Description" FontSize="16" Background="Transparent" Foreground="#FBA433" TextWrapping="Wrap" Text="{Binding WALSnoozeTimeLeft}"
                             VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,0,75,0" FontFamily="Roboto" FontWeight="Normal" Visibility="Collapsed" />
                     </Grid>
                     <Grid Margin="0,20,0,15">

@@ -734,7 +734,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         #region ColorPreset implementation
 
-        public Task<DDPM.SA.Common.IIC_Metadata> DownloadICCData(MonitorInfo m, string savelPath = "")
+        public Task<DDPM.SA.Common.IIC_Metadata> DownloadICCData(MonitorInfo m, bool blICCProfile = false, string savelPath = "")
         {
             DDPM.SA.Common.IIC_Metadata _ICC_Metadata = new DDPM.SA.Common.IIC_Metadata();
 
@@ -745,7 +745,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
             else
             {
-                _ICC_Metadata = _ColorPresetPlugin.DownloadICCData(m, _SettingsPlugin, savelPath).Result;
+                _ICC_Metadata = _ColorPresetPlugin.DownloadICCData(m, _SettingsPlugin, blICCProfile, savelPath).Result;
             }
 
             return Task.FromResult(_ICC_Metadata);
@@ -5499,7 +5499,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         {
             if (_PeripheralsPlugin != null && _FWUpdatePlugin != null)
             {
-                _FWUpdatePlugin.SetDeviceinfo(_PeripheralsPlugin.GetDevices().Result.deviceInfo);
+                _FWUpdatePlugin.SetDeviceinfo(_PeripheralsPlugin.GetDevices().Result.deviceInfo, _PeripheralsPlugin.GetDongleCount());
                 return Task.FromResult(true);
             }
             return Task.FromResult(false);
@@ -6054,7 +6054,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             if (_NKVMPlugin != null && _SettingsPlugin != null)
             {
                 DDPMSettings config = _SettingsPlugin.ReloadAppConfigData().Result;
-                _SupportedMonitorList = _NKVMPlugin.UpdateSupportMonitors().Result;
+                //_SupportedMonitorList = _NKVMPlugin.UpdateSupportMonitors().Result;
                 if (config != null)
                 {
                     config.UserSettings.SupportedMonitorList = _SupportedMonitorList;
@@ -6093,8 +6093,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                             bool b = _SettingsPlugin.WriteMonitorSettings(monitorInfo.modelName, settings).Result;
                             if (ison)
                             {
-                                _SupportedMonitorList = _NKVMPlugin.GetSupportedNKVM().Result;
-                                //_NKVMPlugin.OnNKVM().Wait();
+                                //_SupportedMonitorList = _NKVMPlugin.GetSupportedNKVM().Result;
+                                _NKVMPlugin.OnNKVM().Wait();
                                 bool bt = SentKVMtoTelementry(monitorInfo, "KVMMode", "Network").Result;
                             }
                             else
@@ -10330,7 +10330,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                         }).ConfigureAwait(false);
                                         ////1117 Bruce 不用自動旋轉把下兩行註解
                                         //if (displayDeviceNumChange && _AllInfoMonitors.Count > 0)
-                                        _DisplayManagerPlugin.SetDisplayOrientation(_AllInfoMonitors).Wait();
+                                        //_DisplayManagerPlugin.SetDisplayOrientation(_AllInfoMonitors).Wait();
 
                                         writelog("[DeviceMangerPlugin] SystemEvents_DisplaySettingsChanged() SetDisplayOrientation finish ...");
 
@@ -10423,12 +10423,12 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             EventHandler<DisplaychangedEventArgs> handler = Displaychanged;
             //if (handler != null)
             //    handler.Invoke(this, e);
-            if (_DisplayManagerPlugin != null)
-            {
-                //displayInOut = false;
-                _DisplayManagerPlugin.SetDisplayOrientation(e.monitors).Wait();
-                //displayInOut = true;
-            }
+            //if (_DisplayManagerPlugin != null)
+            //{
+            //    displayInOut = false;
+            //    _DisplayManagerPlugin.SetDisplayOrientation(e.monitors).Wait();
+            //    displayInOut = true;
+            //}
             DeviceChangedEventArgs arg = new DeviceChangedEventArgs();
             arg.changedProperty = "DisplayChanged";
             arg.type = DeviceChangedType.NotifyOnly;
@@ -10441,7 +10441,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 var Cancellation = new CancellationTokenSource();
                 var CancellationToken = Cancellation.Token;
                 _NKVMPlugin.UpdateMonitorInfo(_AllInfoMonitors, CancellationToken);
-                SupportedNKVMMonitors();
+                //SupportedNKVMMonitors();
             }
 
             if (_AllInfoMonitors != null && _AllInfoMonitors.Count > 0)
@@ -10639,7 +10639,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     //    SupportedNKVMMonitors();
                     //}
                     _NKVMPlugin.UpdateMonitorInfo(_AllInfoMonitors, CancellationToken);
-                    SupportedNKVMMonitors();
+                    //SupportedNKVMMonitors();
                 }
             }
         }
@@ -11363,9 +11363,9 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
                 foreach (var _InfoMonitors in _AllInfoMonitors)
                 {
-                    //Check if actived monitor has its color preset section in config file
+                    //Check if actived monitor has its color preset section in config file                   
                     if (_InfoMonitors.edid.ModelName.Trim().IndexOf(config.ModelName.Trim()) >= 0 &&
-                         _InfoMonitors.edid.SerialNumber.Trim() == config.SerialNumber.Trim())
+                        (_InfoMonitors.edid.SerialNumber.Trim() == config.SerialNumber.Trim() || _InfoMonitors.edid.ServiceTag.Trim() == config.ServiceTag.Trim()) )
                     {
                         if (config.RunType == (int)ColorPresetRunType.Auto)
                         {
@@ -11405,6 +11405,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
             writelog("CheckAutoColorManagementEnableOnStartedCondition, Enter");
 
+
             List<ColorPresetSettings> appconfigs = ReadColorPresetSettings().Result;
 
             foreach (var config in appconfigs)
@@ -11418,9 +11419,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
                 foreach (var _InfoMonitors in _AllInfoMonitors)
                 {
+                    //DownloadICCData(_InfoMonitors);
+
                     //Check if actived monitor has its color preset section in config file
                     if (_InfoMonitors.edid.ModelName.Trim().IndexOf(config.ModelName.Trim()) >= 0 &&
-                         _InfoMonitors.edid.SerialNumber.Trim() == config.SerialNumber.Trim())
+                         (_InfoMonitors.edid.SerialNumber.Trim() == config.SerialNumber.Trim() || _InfoMonitors.edid.ServiceTag.Trim() == config.ServiceTag.Trim()) )
                     {
                         if (config.ColorManagement_Status == (int)ColorManagementStatus.Off)
                         {
@@ -11462,6 +11465,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                             break;
                         }
                     }
+                    
                 }
 
                 writelog("CheckAutoColorManagementEnableOnStartedCondition, exit(break) for foreach (var _InfoMonitors in _AllInfoMonitors)");
@@ -11520,7 +11524,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                             //CheckUODFWUInfoPackage();
                             //load hotkeysetting
                             //ReloadHotkeyConfigData();
-                            ToNKVM_SupportedMonitorList();
+                            //ToNKVM_SupportedMonitorList();
                             //ToNKVM_initHotKeys();
                         }
 
@@ -11644,7 +11648,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         //_NKVMPluginCondition = pluginCondition;
                         _NKVMPlugin.NKVMCLIEvent += NKVMCLIEvent;
                         _NKVMPlugin.NKVMSetHotkey += NKVMSetHotkey;
-                        ToNKVM_SupportedMonitorList();
+                        //ToNKVM_SupportedMonitorList();
                         //ToNKVM_initHotKeys();
                     }
                     else if (pluginCondition is PluginStartedCondition)
@@ -11653,7 +11657,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         //_NKVMPluginCondition = pluginCondition;
                         _NKVMPlugin.NKVMCLIEvent += NKVMCLIEvent;
                         _NKVMPlugin.NKVMSetHotkey += NKVMSetHotkey;
-                        ToNKVM_SupportedMonitorList();
+                        //ToNKVM_SupportedMonitorList();
                         //ToNKVM_initHotKeys();
                     }
                 }
@@ -12296,6 +12300,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         if (isCapsLockOn)
                         {
                             ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.CapsLock, true);
+                            //ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.BatteryLow, OSDType_Device.Headset, "Content");
+                            //ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.CollaborationNotAvailable, OSDType_Device.Keyboard, "Collaboration controls are not available during multiple conference calls");
                         }
                         else
                         {
@@ -13888,7 +13894,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 if (config != null)
                 {
                     _SupportedMonitorList = config.UserSettings.SupportedMonitorList;
-                    _NKVMPlugin.ToNKVM_SupportedMonitorList(_SupportedMonitorList);
+                    //_NKVMPlugin.ToNKVM_SupportedMonitorList(_SupportedMonitorList);
                 }
             }
         }
@@ -14882,6 +14888,35 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                             else
                                 return Task.CompletedTask;
                         }
+                    case OSDType.CollaborationNotAvailable:
+                        {
+                            if (Device is OSDType_Device.Headset)
+                            {
+                                if (!string.IsNullOrWhiteSpace(Content))
+                                    _showosd(monitorInfo, OSDType.CollaborationNotAvailable, OSDType_Device.Headset, Content);
+                                else
+                                    writelog("[_showosd*******] Content error can't be NullOrWhiteSpace");
+                                return Task.CompletedTask;
+                            }
+                            else if (Device is OSDType_Device.Keyboard)
+                            {
+                                if (!string.IsNullOrWhiteSpace(Content))
+                                    _showosd(monitorInfo, OSDType.CollaborationNotAvailable, OSDType_Device.Keyboard, Content);
+                                else
+                                    writelog("[_showosd*******] Content error can't be NullOrWhiteSpace");
+                                return Task.CompletedTask;
+                            }
+                            else if (Device is OSDType_Device.Mouse)
+                            {
+                                if (!string.IsNullOrWhiteSpace(Content))
+                                    _showosd(monitorInfo, OSDType.CollaborationNotAvailable, OSDType_Device.Mouse, Content);
+                                else
+                                    writelog("[_showosd*******] Content error can't be NullOrWhiteSpace");
+                                return Task.CompletedTask;
+                            }
+                            else
+                                return Task.CompletedTask;
+                        }
                     default:
                         return Task.CompletedTask;
                 }
@@ -15359,7 +15394,22 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                             //}
                                         }
                                         break;
-
+                                    case OSDType.CollaborationNotAvailable:
+                                        {
+                                            if (_DeviceType is OSDType_Device.Keyboard)
+                                            {
+                                                try
+                                                {
+                                                    _OSD_Controler.CollaborationNotAvailableWin_CloseWindow();
+                                                    _OSD_Controler.CollaborationNotAvailableWin_ShowWindow(Content, (sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX));
+                                                }
+                                                catch (Exception ex)
+                                                {
+                                                    writelog($"[_showosd] ERROR - OSDType_Device.Keyboard: {ex.Message}");
+                                                }
+                                            }
+                                        }
+                                        break;
                                     default:
                                         break;
                                 }
