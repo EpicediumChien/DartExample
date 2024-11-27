@@ -897,9 +897,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                     if (AllALSConfig.Count > 0)
                     {
                         var firstPrimaryMonitorSyncConfig = AllALSConfig.FirstOrDefault(config => config.isPrimaryMonitorSync);
-                        Trace.WriteLine("111111111111111 = " + firstPrimaryMonitorSyncConfig.AllValue.ToString());
                         uint newVal = SetBitValue(firstPrimaryMonitorSyncConfig.AllValue, 5, 0);
-                        Trace.WriteLine("222222222222222 = " + newVal.ToString());
                         _logs.DebugMsg($"[DisplayMangerPlugin] InitializeAllALSInfo() Primary Monitor ModelName = {firstPrimaryMonitorSyncConfig.Edid.ModelName}, SerialNumber = {firstPrimaryMonitorSyncConfig.Edid.SerialNumber}, ServiceTag = {firstPrimaryMonitorSyncConfig.Edid.ServiceTag}, AllValue = {firstPrimaryMonitorSyncConfig.AllValue}");
                         for (int i = 0; i < AllALSConfig.Count; i++)
                         {
