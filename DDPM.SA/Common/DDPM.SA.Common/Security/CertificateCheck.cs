@@ -85,10 +85,11 @@ namespace DDPM.SA.Common.Security
                         return false;
                     }
                     // 讀取憑證檔案並創建 X509Certificate2 物件
-                    X509Certificate2 certificate = DDPMFileSecurity.LoadFileCertificate(CertificateFilePath);//new X509Certificate2(CertificateFilePath);
-                    ret = certificate.Thumbprint.ToLower().Equals(Stande_Thumbprint.ToLower());
+                    //X509Certificate2 certificate = DDPMFileSecurity.LoadFileCertificate(CertificateFilePath);//new X509Certificate2(CertificateFilePath);
+                    //ret = certificate.Thumbprint.ToLower().Equals(Stande_Thumbprint.ToLower());
+                    ret = DDPMFileSecurity.VerifyFileCertWithThumbprint(CertificateFilePath, Stande_Thumbprint, out Info);
                     _logs?.DebugMsg_1("[CheckFile_Thumbprint] Stande_Thumbprint : " + Stande_Thumbprint.ToLower());
-                    _logs?.DebugMsg_1("[CheckFile_Thumbprint] certificate.Thumbprint : " + certificate.Thumbprint.ToLower());
+                    _logs?.DebugMsg_1($"[CheckFile_Thumbprint] Using WinTrustVerify result is [{ret}]" + (ret ? "." : $" Fail with {Info}"));
                     if (!ret)
                         Info = "Load file cert to check thumbprint and the result is not matched";
                 }
@@ -115,11 +116,12 @@ namespace DDPM.SA.Common.Security
                         return false;
                     }
                     // 讀取憑證檔案並創建 X509Certificate2 物件
-                    X509Certificate2 certificate = DDPMFileSecurity.LoadFileCertificate(CertificateFilePath); //new X509Certificate2(CertificateFilePath);
+                    //X509Certificate2 certificate = DDPMFileSecurity.LoadFileCertificate(CertificateFilePath); //new X509Certificate2(CertificateFilePath);
 
                     for (int i = 0; i < Stande_Thumbprint.Count; i++)
                     {
-                        ret = certificate.Thumbprint.ToLower().Equals(Stande_Thumbprint[i].ToLower());
+                        //ret = certificate.Thumbprint.ToLower().Equals(Stande_Thumbprint[i].ToLower());
+                        ret = DDPMFileSecurity.SignedFileThumbprintVerifier(null, CertificateFilePath, Stande_Thumbprint[i], out Info);
                         if (ret)
                         {
                             break;
