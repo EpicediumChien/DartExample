@@ -85,7 +85,7 @@ namespace DDPM.CLI.Plugins.Display
         {
             //check if no monitor connected, direct response no monitor
             _AllInfoMonitors = devMgr.GetMonitors().Result;
-            if ((_AllInfoMonitors == null || _AllInfoMonitors.Count == 0) && !commandLineInput.TargetFeature.Equals("NETWORKKVM") && !commandLineInput.TargetFeature.Equals("NETWORKKVMAUTOCONNECT") && !commandLineInput.TargetFeature.Equals("NETWORKKVMCONTENTTRANSFER") && !commandLineInput.TargetFeature.Equals("NETWORKKVMINCOMINGPORT") && !commandLineInput.TargetFeature.Equals("NETWORKKVMOUTGOINGPORT") && !commandLineInput.TargetFeature.Equals("NETWORKKVMCONTENTTRANSFERPORT") && !commandLineInput.TargetFeature.Equals("NETWORKKVMACCESSRESET") && commandLineInput.TargetType != "APP")
+            if ((_AllInfoMonitors == null || _AllInfoMonitors.Count == 0) && commandLineInput.TargetType != "APP" && !commandLineInput.TargetFeature.Contains("NETWORKKVM"))
             {
                 CLI_RESPONSE rsp = new CLI_RESPONSE()
                 {
@@ -775,57 +775,15 @@ namespace DDPM.CLI.Plugins.Display
                     }
                     break;
                 case "NETWORKKVMVERSION":
-                    {
-                        var ret = NetworkkvmVersionx(commandLineInput);
-                        result.ExitCode = ret.code;
-                        result.serialize_Json_response = ret.result;
-                    }
-                    break;
                 case "NETWORKKVM":
-                    {
-                        var ret = Networkkvmx(devMgr, commandLineInput);
-                        result.ExitCode = ret.code;
-                        result.serialize_Json_response = ret.result;
-                    }
-                    break;
                 case "NETWORKKVMAUTOCONNECT":
-                    {
-                        var ret = Networkkvmautoconnectx(devMgr, commandLineInput);
-                        result.ExitCode = ret.code;
-                        result.serialize_Json_response = ret.result;
-                    }
-                    break;
                 case "NETWORKKVMCONTENTTRANSFER":
-                    {
-                        var ret = Networkkvmcontenttransferx(devMgr, commandLineInput);
-                        result.ExitCode = ret.code;
-                        result.serialize_Json_response = ret.result;
-                    }
-                    break;
                 case "NETWORKKVMINCOMINGPORT":
-                    {
-                        var ret = Networkkvmincomingportx(devMgr, commandLineInput);
-                        result.ExitCode = ret.code;
-                        result.serialize_Json_response = ret.result;
-                    }
-                    break;
                 case "NETWORKKVMOUTGOINGPORT":
-                    {
-                        var ret = Networkkvmoutgoingportx(devMgr, commandLineInput);
-                        result.ExitCode = ret.code;
-                        result.serialize_Json_response = ret.result;
-                    }
-                    break;
                 case "NETWORKKVMCONTENTTRANSFERPORT":
-                    {
-                        var ret = Networkkvmcontenttransferportx(devMgr, commandLineInput);
-                        result.ExitCode = ret.code;
-                        result.serialize_Json_response = ret.result;
-                    }
-                    break;
                 case "NETWORKKVMACCESSRESET":
                     {
-                        var ret = Networkkvmaccessresetx(devMgr, commandLineInput);
+                        var ret = CLINetworkKVM.Execute(commandLineInput);
                         result.ExitCode = ret.code;
                         result.serialize_Json_response = ret.result;
                     }
@@ -6930,7 +6888,8 @@ namespace DDPM.CLI.Plugins.Display
                 var serviceTagList = _AllInfoMonitors.Select(_ => _.edid.ServiceTag).Distinct().ToList();
                 Trace.WriteLine(serviceTagList.Count);
                 List<string> swapIsDone = new List<string>();
-                while (flag)
+                int count = 0;
+                while (flag && count < 10)
                 {
                     for (int i = 0; i < serviceTagList.Count; i++)
                     {
@@ -6963,6 +6922,7 @@ namespace DDPM.CLI.Plugins.Display
                     }
                     if (serviceTagList.Count == swapIsDone.Count)
                         flag = false;
+                    count++;
                 }
                 //while (flag)
                 //{
@@ -7140,7 +7100,6 @@ namespace DDPM.CLI.Plugins.Display
                     else
                     {
                         HDR_RESPONSE.Message = "HDR not supported";
-                        HDR_RESPONSE.Value = "HDR not supported";
                         HDR_RESPONSE.HDR = "N/A";
                         ret = null;
                     }
@@ -7250,7 +7209,6 @@ namespace DDPM.CLI.Plugins.Display
                     else
                     {
                         USBCPrioritization_RESPONSE.Message = "USB-C Prioritization not supported";
-                        USBCPrioritization_RESPONSE.Value = "USB-C Prioritization not supported";
                         // USBCPrioritization_RESPONSE.USBCPrioritizationType = "N/A";
                         ret = null;
                     }
@@ -11146,7 +11104,7 @@ namespace DDPM.CLI.Plugins.Display
             }
 
             cli_Response.Result = result;
-            cli_Response.Message = message;
+            cli_Response.Message = $"Log path: {file}";            
             output += "\n" + JsonConvert.SerializeObject(cli_Response, Formatting.Indented);
             
             return ((int)CLI_ExitCode.success, output);
@@ -13021,7 +12979,6 @@ namespace DDPM.CLI.Plugins.Display
                             else
                             {
                                 cli_Response.Result = "FAIL";
-                                cli_Response.Value = "Not supported";
                                 cli_Response.Message = $"VCP code {commandLineInput.Options[0].Option_Value} is not supported";
                             }
                             System.Console.WriteLine(JsonConvert.SerializeObject(cli_Response, Formatting.Indented));
@@ -13061,7 +13018,6 @@ namespace DDPM.CLI.Plugins.Display
                             else
                             {
                                 cli_Response.Result = "FAIL";
-                                cli_Response.Value = "Not supported";
                                 cli_Response.Message = $"VCP code {commandLineInput.Options[0].Option_Value} is not supported";
                             }
                             System.Console.WriteLine(JsonConvert.SerializeObject(cli_Response, Formatting.Indented));
@@ -13101,7 +13057,6 @@ namespace DDPM.CLI.Plugins.Display
                                 else
                                 {
                                     cli_Response.Result = "FAIL";
-                                    cli_Response.Value = "Not supported";
                                     cli_Response.Message = $"VCP code {commandLineInput.Options[0].Option_Value} is not supported";
                                 }
                                 System.Console.WriteLine(JsonConvert.SerializeObject(cli_Response, Formatting.Indented));
@@ -13142,7 +13097,6 @@ namespace DDPM.CLI.Plugins.Display
                                 else
                                 {
                                     cli_Response.Result = "FAIL";
-                                    cli_Response.Value = "Not supported";
                                     cli_Response.Message = $"VCP code {commandLineInput.Options[0].Option_Value} is not supported";
                                 }
                                 System.Console.WriteLine(JsonConvert.SerializeObject(cli_Response, Formatting.Indented));
@@ -13206,7 +13160,6 @@ namespace DDPM.CLI.Plugins.Display
                             else if (!commandLineInput.Options[1].Option_Name.ToUpper().Equals("VALUE"))
                             {
                                 cli_Response.Result = "FAIL";
-                                cli_Response.Value = "Not supported";
                                 cli_Response.Message = $"{commandLineInput.Options[1].Option_Name} option is not supported.";
                             }
                             else if (!vcp_value)
@@ -13217,7 +13170,6 @@ namespace DDPM.CLI.Plugins.Display
                             else
                             {
                                 cli_Response.Result = "FAIL";
-                                cli_Response.Value = "Not supported";
                                 cli_Response.Message = $"VCP code {commandLineInput.Options[0].Option_Value} is not supported";
                             }
                             System.Console.WriteLine(JsonConvert.SerializeObject(cli_Response, Formatting.Indented));
@@ -13277,7 +13229,6 @@ namespace DDPM.CLI.Plugins.Display
                             else if (!commandLineInput.Options[1].Option_Name.ToUpper().Equals("VALUE"))
                             {
                                 cli_Response.Result = "FAIL";
-                                cli_Response.Value = "Not supported";
                                 cli_Response.Message = $"{commandLineInput.Options[1].Option_Name} value is not supported.";
                             }
                             else if (!vcp_value)
@@ -13288,7 +13239,6 @@ namespace DDPM.CLI.Plugins.Display
                             else
                             {
                                 cli_Response.Result = "FAIL";
-                                cli_Response.Value = "Not supported";
                                 cli_Response.Message = $"VCP code {commandLineInput.Options[0].Option_Value} is not supported";
                             }
                             System.Console.WriteLine(JsonConvert.SerializeObject(cli_Response, Formatting.Indented));
@@ -13353,13 +13303,11 @@ namespace DDPM.CLI.Plugins.Display
                                 else if (!commandLineInput.Options[1].Option_Name.ToUpper().Equals("VALUE"))
                                 {
                                     cli_Response.Result = "FAIL";
-                                    cli_Response.Value = "Not supported";
                                     cli_Response.Message = $"{commandLineInput.Options[1].Option_Name} value is not supported.";
                                 }
                                 else
                                 {
                                     cli_Response.Result = "FAIL";
-                                    cli_Response.Value = "Not supported";
                                     cli_Response.Message = $"VCP code {commandLineInput.Options[0].Option_Value} is not supported";
                                 }
                                 System.Console.WriteLine(JsonConvert.SerializeObject(cli_Response, Formatting.Indented));
@@ -13426,13 +13374,11 @@ namespace DDPM.CLI.Plugins.Display
                                 else if (!commandLineInput.Options[1].Option_Name.ToUpper().Equals("VALUE"))
                                 {
                                     cli_Response.Result = "FAIL";
-                                    cli_Response.Value = "Not supported";
                                     cli_Response.Message = $"{commandLineInput.Options[1].Option_Name} value is not supported.";
                                 }
                                 else
                                 {
                                     cli_Response.Result = "FAIL";
-                                    cli_Response.Value = "Not supported";
                                     cli_Response.Message = $"VCP code {commandLineInput.Options[0].Option_Value} is not supported";
                                 }
                                 System.Console.WriteLine(JsonConvert.SerializeObject(cli_Response, Formatting.Indented));

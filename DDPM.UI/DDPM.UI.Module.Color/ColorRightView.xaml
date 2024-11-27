@@ -9,6 +9,11 @@
              xmlns:lang="clr-namespace:DDPM.UI.Resources.Helper;assembly=DDPM.UI.Resources"
              mc:Ignorable="d"
              d:DesignHeight="850" d:DesignWidth="800" Loaded="UserControl_Loaded" Unloaded="UserControl_UnLoaded">
+    <UserControl.Resources>
+        <Style TargetType="TextBlock">
+            <Setter Property="Foreground" Value="{DynamicResource DefaultTheme_TxtColor}" />
+        </Style>
+    </UserControl.Resources>
     <Grid>
         <UXControls:UXScrollViewer HorizontalScrollBarVisibility="Disabled">
             <Grid>
@@ -196,7 +201,7 @@
 
                             <Expander.Content>
                                 <Grid>
-                                    <Border>
+                                    <Border Background="Transparent">
                                         <StackPanel Margin="16">
 
                                             <UXControls:UXTextBlock Text="{Binding [Color.7], Source={x:Static lang:LangHelper.Instance}}" FontSize="16"
@@ -204,7 +209,7 @@
                                                                     VerticalAlignment="Center" HorizontalAlignment="Left" />
 
                                             <!-- RightPartBorder.App -->
-                                            <Border Style="{DynamicResource RightPartBorderStyle}" Margin="0,16,0,0">
+                                            <Border Style="{StaticResource RightPartBorderStyle}" Margin="0,16,0,0">
                                                 <StackPanel>
                                                     <ListBox Background="{DynamicResource DefaultTheme_ListBoxBkColor}"
                                                              Margin="8" Grid.Row="1"
@@ -220,9 +225,6 @@
                                                         <ListBox.Resources>
                                                             <Style TargetType="Border">
                                                                 <Setter Property="CornerRadius" Value="5" />
-                                                            </Style>
-                                                            <Style TargetType="TextBlock">
-                                                                <Setter Property="Foreground" Value="{DynamicResource DefaultTheme_TxtColor}" />
                                                             </Style>
                                                         </ListBox.Resources>
                                                         <ListBox.ItemTemplate>
@@ -257,7 +259,8 @@
 
                                                                     <TextBlock Grid.Column="1" x:Name="appName"
                                                                                Text="{Binding AppName , UpdateSourceTrigger=PropertyChanged}"
-                                                                               VerticalAlignment="Center" HorizontalAlignment="Left" />
+                                                                               VerticalAlignment="Center" HorizontalAlignment="Left"
+                                                                               Foreground="{DynamicResource DefaultTheme_TxtColor}" />
 
                                                                     <!-- -->
                                                                     <ComboBox Grid.Column="2" x:Name="appPreset"
@@ -361,7 +364,13 @@
                             <UXControls:UXLink Name="nightlight_config" Grid.Column="1" Content="{Binding [WindowsSettings], Source={x:Static lang:LangHelper.Instance}}" Click="nightlight_config_Click"
                                                IconPosition="IconRight" LinkSize="Medium" LinkColorScheme="Primary"
                                                LinkType="InLine" Icon="M29.86 29.86h-27.74v-27.72h13.88v-2.14h-16v32h32v-16h-2.12zM20.86 0v2.12h7.56l-15.060 15.060 1.52 1.5 14.98-15v7.46h2.14v-11.14z"
-                                               HorizontalAlignment="Right" VerticalAlignment="Center" Height="40" />
+                                               HorizontalAlignment="Right" VerticalAlignment="Center" Height="40">
+                                <UXControls:UXLink.Resources>
+                                    <Style TargetType="Border">
+                                        <Setter Property="Background" Value="Transparent" />
+                                    </Style>
+                                </UXControls:UXLink.Resources>
+                            </UXControls:UXLink>
                         </Grid>
                     </Border>
 
@@ -482,7 +491,13 @@
                                                     <UXControls:UXRadioButton  x:Name="rb_Colorpreset_based_ICCprofile" IsEnabled="False" Content="{Binding [Color.4], Source={x:Static lang:LangHelper.Instance}}" FontSize="14" Click="rb_Colorpreset_based_ICCprofile_click" KeyboardNavigation.TabNavigation="{Binding TabNavigation}" IsTabStop="{Binding isTabStoppable}" KeyboardNavigation.AcceptsReturn="{Binding isTabStoppable}" KeyboardNavigation.IsTabStop="{Binding isTabStoppable}" />
                                                     <UXControls:UXLink Margin="-8,0,0,0" Name="ICC_profile_config" Content="{Binding [Color.5], Source={x:Static lang:LangHelper.Instance}}" Click="ICC_profile_config_Click"
                                                                        IconPosition="IconRight" LinkSize="Medium" LinkColorScheme="Primary"
-                                                                       HorizontalAlignment="Left" VerticalAlignment="Center" />
+                                                                       HorizontalAlignment="Left" VerticalAlignment="Center">
+                                                        <UXControls:UXLink.Resources>
+                                                            <Style TargetType="Border">
+                                                                <Setter Property="Background" Value="Transparent" />
+                                                            </Style>
+                                                        </UXControls:UXLink.Resources>
+                                                    </UXControls:UXLink>
                                                 </StackPanel>
                                             </Grid>
                                         </Grid>

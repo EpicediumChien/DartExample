@@ -57,7 +57,7 @@ namespace DDPM.QAM
             {
                 PresetsPage presetsPage = new PresetsPage();
                 presetsPage.DataContext = vm;
-                double newHeight = 128 + presetsPage.Height;
+                double newHeight = 145 + presetsPage.Height; //origin value is 128 
                 this.Height = newHeight;
                 vm.FullView_Height = presetsPage.Height.ToString();
                 vm.Settings_Selected(0);
