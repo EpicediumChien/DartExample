@@ -32,14 +32,6 @@ namespace DDPM.Subagent.User
     /// </summary>
     internal class Program
     {
-        //[DllImport("kernel32.dll")]
-        //static extern IntPtr GetConsoleWindow();
-        //
-        //[DllImport("user32.dll")]
-        //static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
-        //
-        //const int SW_HIDE = 0;
-
         /// <summary>
         ///     A name for your product.
         /// </summary>

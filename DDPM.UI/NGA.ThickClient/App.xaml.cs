@@ -54,7 +54,12 @@ namespace NGA.ThickClient
         #endregion
 
         [DllImport("kernel32.dll", CharSet = CharSet.Auto)]
+        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
         private static extern int GetPrivateProfileInt(string lpAppName, string lpKeyName, int nDefault, string lpFileName);
+        private static int _GetPrivateProfileInt(string lpAppName, string lpKeyName, int nDefault, string lpFileName)
+        {
+            return GetPrivateProfileInt(lpAppName, lpKeyName, nDefault, lpFileName);
+        }
 
         //2024-5-8 Robert_Lin, to fix the issue that will cause exception in filelock.cs,
         // FileLock ctor below code:
@@ -68,7 +73,7 @@ namespace NGA.ThickClient
         /// Constructor
         /// </summary>
         public App() : base(NGA.Resources.Resources.ResourceManager, ThickClientUniqueGuid)
-            => DdpmCommonHelper.UIDebugModeFlag = GetPrivateProfileInt("DDPMDebug", "UIDebugFlag", 0, @"C:\DDPMDebug.ini") == 1;
+            => DdpmCommonHelper.UIDebugModeFlag = _GetPrivateProfileInt("DDPMDebug", "UIDebugFlag", 0, @"C:\DDPMDebug.ini") == 1;
 
         /// <summary>
         /// Configures the ConsoleConfig.

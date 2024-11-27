@@ -71,7 +71,7 @@ namespace DDPM.UI.Plugin.ViewModels
         public bool[] Resolution_IsSelected { get; set; } = new bool[4];
         public bool[] FPS_IsSelected { get; set; } = new bool[3];
         public bool[] FOV_IsSelected { get; set; } = new bool[3];
-        public Dictionary<string, string> ProfileIDs = new();
+        public Dictionary<string, string> ProfileCaptions = new();
 
 
         public List<UI_Delay_WalkAwayLock> Delay_ItemsCollection { get; set; }
@@ -281,29 +281,33 @@ namespace DDPM.UI.Plugin.ViewModels
                     {
                         if (_SelectedSnoozeLength.SnoozeLength == 30)
                         {
-                            //DdpmCommonHelper.DeviceManagerSA!.SetSnooze(CurrentDeviceInfo!.ID.ToString(), 0);
-                            DdpmCommonHelper.DeviceManagerSA!.SetSnooze(0, CurrentDeviceInfo!.ID);
+                            DdpmCommonHelper.DeviceManagerSA!.SetSnooze(CurrentDeviceInfo!.ID.ToString(), -1);
+                            DdpmCommonHelper.DeviceManagerSA!.SetSnooze(CurrentDeviceInfo!.ID.ToString(), 0);
+                            //DdpmCommonHelper.DeviceManagerSA!.SetSnooze(0, CurrentDeviceInfo!.ID);
                             //_SelectedSnoozeLength.SnoozeLength = 1800;
                             //DdpmCommonHelper.DeviceManagerSA!.SetSnoozeLength(CurrentDeviceInfo!.ID.ToString(), _SelectedSnoozeLength.SnoozeLength_sec);
                         }
                         else if (_SelectedSnoozeLength.SnoozeLength == 60)
                         {
-                            //DdpmCommonHelper.DeviceManagerSA!.SetSnooze(CurrentDeviceInfo!.ID.ToString(), 1);
-                            DdpmCommonHelper.DeviceManagerSA!.SetSnooze(1, CurrentDeviceInfo!.ID);
+                            DdpmCommonHelper.DeviceManagerSA!.SetSnooze(CurrentDeviceInfo!.ID.ToString(), -1);
+                            DdpmCommonHelper.DeviceManagerSA!.SetSnooze(CurrentDeviceInfo!.ID.ToString(), 1);
+                            //DdpmCommonHelper.DeviceManagerSA!.SetSnooze(1, CurrentDeviceInfo!.ID);
                             //_SelectedSnoozeLength.SnoozeLength = 3600;
                             //DdpmCommonHelper.DeviceManagerSA!.SetSnoozeLength(CurrentDeviceInfo!.ID.ToString(), _SelectedSnoozeLength.SnoozeLength_sec);
                         }
                         else if (_SelectedSnoozeLength.SnoozeLength == 90)
                         {
-                            //DdpmCommonHelper.DeviceManagerSA!.SetSnooze(CurrentDeviceInfo!.ID.ToString(), 2);
-                            DdpmCommonHelper.DeviceManagerSA!.SetSnooze(2, CurrentDeviceInfo!.ID);
+                            DdpmCommonHelper.DeviceManagerSA!.SetSnooze(CurrentDeviceInfo!.ID.ToString(), -1);
+                            DdpmCommonHelper.DeviceManagerSA!.SetSnooze(CurrentDeviceInfo!.ID.ToString(), 2);
+                            //DdpmCommonHelper.DeviceManagerSA!.SetSnooze(2, CurrentDeviceInfo!.ID);
                             //_SelectedSnoozeLength.SnoozeLength = 5400;
                             //DdpmCommonHelper.DeviceManagerSA!.SetSnoozeLength(CurrentDeviceInfo!.ID.ToString(), _SelectedSnoozeLength.SnoozeLength_sec);
                         }
                         else if (_SelectedSnoozeLength.SnoozeLength == 120)
                         {
-                            //DdpmCommonHelper.DeviceManagerSA!.SetSnooze(CurrentDeviceInfo!.ID.ToString(), 3);
-                            DdpmCommonHelper.DeviceManagerSA!.SetSnooze(3, CurrentDeviceInfo!.ID);
+                            DdpmCommonHelper.DeviceManagerSA!.SetSnooze(CurrentDeviceInfo!.ID.ToString(), -1);
+                            DdpmCommonHelper.DeviceManagerSA!.SetSnooze(CurrentDeviceInfo!.ID.ToString(), 3);
+                            //DdpmCommonHelper.DeviceManagerSA!.SetSnooze(3, CurrentDeviceInfo!.ID);
                             //_SelectedSnoozeLength.SnoozeLength = 7200;
                             //DdpmCommonHelper.DeviceManagerSA!.SetSnoozeLength(CurrentDeviceInfo!.ID.ToString(), _SelectedSnoozeLength.SnoozeLength_sec);
                         }
@@ -320,8 +324,8 @@ namespace DDPM.UI.Plugin.ViewModels
 
                 else //(_isChecked_Snooze == false)
                 {
-                    //DdpmCommonHelper.DeviceManagerSA!.SetSnooze(CurrentDeviceInfo!.ID.ToString(), -100);
-                    DdpmCommonHelper.DeviceManagerSA!.SetSnooze(-1, CurrentDeviceInfo!.ID);
+                    DdpmCommonHelper.DeviceManagerSA!.SetSnooze(CurrentDeviceInfo!.ID.ToString(), -1);
+                    //DdpmCommonHelper.DeviceManagerSA!.SetSnooze(-1, CurrentDeviceInfo!.ID);
                 }
 
                 OnPropertyChanged("IsChecked_Snooze");
@@ -395,6 +399,18 @@ namespace DDPM.UI.Plugin.ViewModels
                 //DdpmCommonHelper.DeviceManagerSA!.SetSnoozeLength(CurrentDeviceInfo!.ID.ToString(), _SelectedSnoozeLength.SnoozeLength);
                 //DdpmCommonHelper.DeviceManagerSA!.SetSnoozeLength(_SelectedSnoozeLength.SnoozeLength, CurrentDeviceInfo!.ID);
                 OnPropertyChanged("SelectedSnoozeLength");
+            }
+        }
+
+
+        private string? _WALSnoozeTimeLeft;
+        public string WALSnoozeTimeLeft
+        {
+            get => _WALSnoozeTimeLeft;
+            set
+            {
+                SetProperty(ref _WALSnoozeTimeLeft, value); 
+                OnPropertyChanged("WALSnoozeTimeLeft");
             }
         }
 
@@ -616,6 +632,7 @@ namespace DDPM.UI.Plugin.ViewModels
         //    WebcamSettings.ExportWebcamSettings(WebcamSettings, Model);
         //}
 
+        public bool IsSettingProfile = false;
         public void SetProfile()
         {
             if (WebcamSettings.CustomProfiles.TryGetValue(CurrentProfileName, out WebcamProfile? value))
@@ -623,6 +640,7 @@ namespace DDPM.UI.Plugin.ViewModels
             else
                 CurrentProfile = JsonConvert.DeserializeObject<WebcamProfile>(JsonConvert.SerializeObject(WebcamSettings.PresetProfiles[CurrentProfileName]))!;
 
+            var IsNormalProfile = CurrentProfileName != "Smooth" && CurrentProfileName != "Vibrant" && CurrentProfileName != "Warm";
             Task<bool> task;
             if (CurrentDeviceInfo!.IsPropertyAutoFramingSensitivitySupported || CurrentDeviceInfo.IsPropertyAutoFramingSizeSupported || CurrentDeviceInfo.IsPropertyAutoFramingTransitionSupported)
             {
@@ -686,7 +704,7 @@ namespace DDPM.UI.Plugin.ViewModels
                 }
             }
 
-            if (CurrentDeviceInfo.IsPropertyZoomSupported)
+            if (CurrentDeviceInfo.IsPropertyZoomSupported && IsNormalProfile)
             {
                 task = DdpmCommonHelper.DeviceManagerSA!.SetZoom(CurrentDeviceInfo!.ID.ToString(), CurrentProfile.Zoom);
                 if (task.Result)
@@ -702,7 +720,7 @@ namespace DDPM.UI.Plugin.ViewModels
                 //OnPropertyChanged(nameof(Zoom));
             }
 
-            if (CurrentDeviceInfo.IsPropertyFocusSupported)
+            if (CurrentDeviceInfo.IsPropertyFocusSupported && IsNormalProfile)
             {
                 DdpmCommonHelper.DeviceManagerSA!.SetIsFocusOn(CurrentDeviceInfo!.ID.ToString(), CurrentProfile.IsFocusOn);
                 DdpmCommonHelper.DeviceManagerSA!.SetFocus(CurrentDeviceInfo!.ID.ToString(), CurrentProfile.Focus);
@@ -712,7 +730,7 @@ namespace DDPM.UI.Plugin.ViewModels
                 //OnPropertyChanged(nameof(Focus));
             }
 
-            if (CurrentDeviceInfo.IsPropertyPrioritySupported)
+            if (CurrentDeviceInfo.IsPropertyPrioritySupported && IsNormalProfile)
             {
                 DdpmCommonHelper.DeviceManagerSA!.SetPriority(CurrentDeviceInfo!.ID.ToString(), CurrentProfile.Priority);
                 OnPropertyChanged(nameof(Priority));
@@ -762,7 +780,7 @@ namespace DDPM.UI.Plugin.ViewModels
                 //OnPropertyChanged(nameof(Saturation));
             }
 
-            if (CurrentDeviceInfo.IsPropertyAntiFlickerSupported)
+            if (CurrentDeviceInfo.IsPropertyAntiFlickerSupported && IsNormalProfile)
             {
                 DdpmCommonHelper.DeviceManagerSA!.SetAntiFlicker(CurrentDeviceInfo!.ID.ToString(), CurrentProfile.AntiFlicker);
                 OnPropertyChanged(nameof(AntiFlicker));
@@ -1024,9 +1042,9 @@ namespace DDPM.UI.Plugin.ViewModels
             get => _zoom;
             set
             {
-                _zoom = value;
-                if (value != CurrentProfile.Zoom)
+                if (value != _zoom)
                 {
+                    _zoom = value;
                     if (!IsSliderDragging)
                     {
                         SetZoom();
@@ -1074,9 +1092,9 @@ namespace DDPM.UI.Plugin.ViewModels
             get => _focus;
             set
             {
-                _focus = value;
-                if (value != CurrentProfile.Focus)
+                if (value != _focus)
                 {
+                    _focus = value;
                     if (!IsSliderDragging)
                     {
                         SetFocus();
@@ -1158,9 +1176,9 @@ namespace DDPM.UI.Plugin.ViewModels
             get => _autoWhiteBalance;
             set
             {
-                _autoWhiteBalance = value;
                 if (value != _autoWhiteBalance)
                 {
+                    _autoWhiteBalance = value;
                     if (!IsSliderDragging)
                     {
                         SetAutoWhiteBalance();
@@ -1204,9 +1222,9 @@ namespace DDPM.UI.Plugin.ViewModels
             get => _sharpness;
             set
             {
-                _sharpness = value;
-                if (value != CurrentProfile.Sharpness)
+                if (value != _sharpness)
                 {
+                    _sharpness = value;
                     if (!IsSliderDragging)
                     {
                         SetSharpness();
@@ -1227,9 +1245,9 @@ namespace DDPM.UI.Plugin.ViewModels
             get => _contrast;
             set
             {
-                _contrast = value;
                 if (value != _contrast)
                 {
+                    _contrast = value;
                     if (!IsSliderDragging)
                     {
                         SetContrast();
@@ -1253,6 +1271,7 @@ namespace DDPM.UI.Plugin.ViewModels
                 _saturation = value;
                 if (value != _saturation)
                 {
+                    _saturation = value;
                     if (!IsSliderDragging)
                     {
                         SetSaturation();
@@ -1275,10 +1294,7 @@ namespace DDPM.UI.Plugin.ViewModels
                 if (value != CurrentProfile.AntiFlicker)
                 {
                     CurrentProfile.AntiFlicker = value;
-                    if (!IsSliderDragging)
-                    {
-                        SetAntiFlicker();
-                    }
+                    SetAntiFlicker();
                 }
                 OnPropertyChanged();
             }
@@ -1401,7 +1417,7 @@ namespace DDPM.UI.Plugin.ViewModels
         {
             //RefreshProfiles();
 
-            ProfileIDs.Clear();
+            ProfileCaptions.Clear();
             _profileItems.Clear();
             foreach (var pofile in WebcamSettings.CustomProfiles.Values)
             {
@@ -1413,16 +1429,16 @@ namespace DDPM.UI.Plugin.ViewModels
                     TooltipVisibility = Visibility.Collapsed,
                     ButtonVisibility = Visibility.Visible
                 });
-                ProfileIDs.Add(pofile.Name, pofile.Id);
+                ProfileCaptions.Add(pofile.Name, pofile.Name);
             }
             foreach (var pofile in WebcamSettings.PresetProfiles.Values)
             {
-                ProfileIDs.Add(pofile.Name, pofile.Id);
+                ProfileCaptions.Add(pofile.Name, LangHelper.Instance[pofile.Name]);
             }
 
             _profileItems.Add(new ProfileItem
             {
-                ID = LangHelper.Instance["Default"],
+                ID = "Default",
                 Caption = LangHelper.Instance["Default"],
                 Tooltip = Strings.DefaultProfileTooltip,
                 TooltipVisibility = Visibility.Visible,
@@ -1430,24 +1446,24 @@ namespace DDPM.UI.Plugin.ViewModels
             });
             _profileItems.Add(new ProfileItem
             {
-                ID = Strings.Smooth,
-                Caption = Strings.Smooth,
+                ID = "Smooth",
+                Caption = LangHelper.Instance["Smooth"],
                 Tooltip = Strings.SmoothProfileTooltip,
                 TooltipVisibility = Visibility.Visible,
                 ButtonVisibility = Visibility.Collapsed
             });
             _profileItems.Add(new ProfileItem
             {
-                ID = Strings.Vibrant,
-                Caption = Strings.Vibrant,
+                ID = "Vibrant",
+                Caption = LangHelper.Instance["Vibrant"],
                 Tooltip = Strings.VibrantProfileTooltip,
                 TooltipVisibility = Visibility.Visible,
                 ButtonVisibility = Visibility.Collapsed
             });
             _profileItems.Add(new ProfileItem
             {
-                ID = Strings.Warm,
-                Caption = Strings.Warm,
+                ID = "Warm",
+                Caption = LangHelper.Instance["Warm"],
                 Tooltip = Strings.WarmProfileTooltip,
                 TooltipVisibility = Visibility.Visible,
                 ButtonVisibility = Visibility.Collapsed
@@ -1519,13 +1535,17 @@ namespace DDPM.UI.Plugin.ViewModels
                         case nameof(Contrast):
                         case nameof(Saturation):
                         case nameof(Sharpness):
-                            ProfilePropertyChanged?.Invoke(this, EventArgs.Empty);
+                            if (!IsSettingProfile)
+                                ProfilePropertyChanged?.Invoke(this, EventArgs.Empty);
                             break;
                         default:
                             break;
                     }
                 else
-                    ProfilePropertyChanged?.Invoke(this, EventArgs.Empty);
+                {
+                    if (!IsSettingProfile)
+                        ProfilePropertyChanged?.Invoke(this, EventArgs.Empty);
+                }
             }
             propertyInfo.SetValue(CurrentProfile, convertedValue);
             //WebcamSettings.ExportWebcamSettings(WebcamSettings, Model);

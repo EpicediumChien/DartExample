@@ -962,14 +962,14 @@ namespace DDPM.SA.Plugins.User.DisplayManager.Test
             uint GetBitsValue = 1;
             if (GetBitsValue == 1)
             {
-                var CheckisPrimaryMonitorSyncOnOffResult = displayPlugin.CheckisPrimaryMonitorSyncOnOff(monitorInfo1, monitorALS).Result;
+                var CheckisPrimaryMonitorSyncOnOffResult = displayPlugin.CheckisPrimaryMonitorSyncOnOff(monitorInfo1, monitorALS, "0").Result;
                 Assert.IsTrue(CheckisPrimaryMonitorSyncOnOffResult);
                 Assert.That(allALSConfig_[0].serialNumber, Is.EqualTo(monitorInfo1.edid.SerialNumber));
                 Assert.That(allALSConfig_[0].DisplayName, Is.EqualTo(monitorInfo1.DisplayName));
             }
             else
             {
-                var CheckisPrimaryMonitorSyncOnOffResult = displayPlugin.CheckisPrimaryMonitorSyncOnOff(monitorInfo1, aconfig).Result;
+                var CheckisPrimaryMonitorSyncOnOffResult = displayPlugin.CheckisPrimaryMonitorSyncOnOff(monitorInfo1, aconfig, "0").Result;
                 Assert.IsTrue(CheckisPrimaryMonitorSyncOnOffResult);
             }
         }

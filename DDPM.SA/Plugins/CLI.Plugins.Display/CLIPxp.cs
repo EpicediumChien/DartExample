@@ -74,8 +74,8 @@ namespace CLI.Plugins.Display
             }
             _devMgr = devMgr;
 
-            _AllInfoMonitors = devMgr.GetMonitors().Result;
-            _monitorIndeies = GetMonitorIndeies(cmdLineInput, _AllInfoMonitors);
+            _AllInfoMonitors = devMgr.GetMonitors().Result.ToList();
+            _monitorIndeies = GetMonitorIndeies(cmdLineInput, _AllInfoMonitors).ToList();
 
             int monitorCount = _AllInfoMonitors.Count;
 
@@ -242,7 +242,8 @@ namespace CLI.Plugins.Display
             bool flag = true;
             List<string> swapIsDone = new List<string>();
             int errCount = 0;
-            while (flag)
+            int count = 0;
+            while (flag && count < 10)
             {
                 errCount = 0;
                 for (int i = 0; i < serviceTagList.Count; i++)
@@ -310,6 +311,7 @@ namespace CLI.Plugins.Display
                 }
                 if (serviceTagList.Count == swapIsDone.Count)
                     flag = false;
+                count++;
             }
             if (errCount == 0)
                 return (int)CLI_ExitCode.success;
@@ -498,6 +500,7 @@ namespace CLI.Plugins.Display
             var serviceTagList = _AllInfoMonitors.Select(_ => _.edid.ServiceTag).Distinct().ToList();
             Trace.WriteLine(serviceTagList.Count);
             bool flag = true;
+            int count = 0;
             List<string> swapIsDone = new List<string>();
             // if command is /set -Display=PxP -value=<off, pip, pip-large & etc> -value=<HDMI, DP, USB-C & etc>
             // step1 change inputsource 
@@ -506,8 +509,8 @@ namespace CLI.Plugins.Display
             if (_cmdLineInput.Options.Count == 2)
             {
                 swapIsDone = new List<string>();
-                flag = true;
-                while (flag)
+                flag = true;              
+                while (flag && count < 10)
                 {
                     for (int i = 0; i < serviceTagList.Count; i++)
                     {
@@ -543,29 +546,43 @@ namespace CLI.Plugins.Display
                     }
                     if (serviceTagList.Count == swapIsDone.Count)
                         flag = false;
+                    count++;
                 }
             }
             swapIsDone = new List<string>();
             flag = true;
-            while (flag)
+            bool isPass = false;
+            count = 0;
+            while (flag && count < 10)
             {
                 for (int i = 0; i < serviceTagList.Count; i++)
                 {
                     string stIsDone = swapIsDone.FirstOrDefault(_ => _ == serviceTagList[i]);
                     if (!String.IsNullOrWhiteSpace(stIsDone))
                         continue;
+                    Thread.Sleep(3000);
                     MonitorInfo mo = _AllInfoMonitors.FirstOrDefault(_ => _.edid.ServiceTag == serviceTagList[i]);
+                    Thread.Sleep(3000);
+                    Trace.WriteLine($"serviceTagList[i] = {serviceTagList[i]}");
+                    //Trace.WriteLine($"serviceTagList[i] = {serviceTagLisi]}");
+                    Trace.WriteLine($"i = {i}");
+                    Trace.WriteLine($"serviceTagList.Count = {serviceTagList.Count}");
                     if (mo == null)
                     {
                         _AllInfoMonitors = _devMgr.GetMonitors().Result;
                         break;
                     }
-                    bool isPass = _devMgr.SetPbpMode(mo, (UInt16)pxpModeObj.ModeCode).Result;
-                    if (!isPass)
+                    Trace.WriteLine($"(UInt16)pxpModeObj.ModeCode = {(UInt16)pxpModeObj.ModeCode}");
+                    if (mo.CapabilityDic.ContainsKey("E9"))
                     {
-                        _AllInfoMonitors = _devMgr.GetMonitors().Result;
-                        break;
-                    }
+                        isPass = _devMgr.SetPbpMode(mo, (UInt16)pxpModeObj.ModeCode).Result;
+                        Thread.Sleep(8000);
+                        if (!isPass)
+                        {
+                            _AllInfoMonitors = _devMgr.GetMonitors().Result;
+                            break;
+                        }
+                    }                                            
                     CLI_RESPONSE response = new CLI_RESPONSE(mo)
                     {
                         Command = _cmdLineInput.Command,
@@ -593,12 +610,14 @@ namespace CLI.Plugins.Display
                 }
                 if (serviceTagList.Count == swapIsDone.Count)
                     flag = false;
+                count++;
             }
             if (_cmdLineInput.Options.Count == 2)
             {
                 swapIsDone = new List<string>();
                 flag = true;
-                while (flag)
+                count = 0;
+                while (flag && count < 10)
                 {
                     for (int i = 0; i < serviceTagList.Count; i++)
                     {
@@ -656,8 +675,195 @@ namespace CLI.Plugins.Display
                     }
                     if (serviceTagList.Count == swapIsDone.Count)
                         flag = false;
+                    count++;
                 }
             }
+            if (errCount == 0)
+                return (int)CLI_ExitCode.success;
+            else
+                return (int)CLI_ExitCode.functional_error;
+        }
+
+        private static int SetPxpMode_v1()
+        {
+            //Phase 1. Get the -value=pxpMode
+            // Case_1. No -value specify => return error.
+            // Case_2. -value=pxpArg, for example: -value=pip-large
+            // Case_3. -value=pxpMode, for example: -value=34
+            // Case_4. pxpMode is hexdecimal integiter, for example: -value=0x22
+            // Case_5. pxpArg or pxpMode is not a valide value => return error
+
+            bool isOK = false;
+            InputSourceObj? sub1 = null, sub2 = null, sub3 = null;
+            //Find the first -value option
+            CommandType_Option? valueOption = _cmdLineInput.Options.FirstOrDefault(x => x.Option_Name.Equals("value", StringComparison.OrdinalIgnoreCase));
+
+            // Case_1. No -value specify => return error.
+            if (valueOption == null)
+            {
+                CLI_RESPONSE response = new CLI_RESPONSE()
+                {
+                    Command = _cmdLineInput.Command,
+                    TargetFeature = _cmdLineInput.TargetFeature
+                };
+                response.Index = change_0base_to_1base(String.Join(",", _cmdLineInput.DeviceIndex.ToArray()));
+                response.ServiceTag = String.Join(",", _cmdLineInput.ServiceTag.ToArray());
+                response.Result = "ERROR";
+                response.Message = "Invalid command line syntax, missing (-value=pxpMode).";
+                _responses.Add(response);
+                return (int)CLI_ExitCode.invalide_cmdline_syntax;
+            }
+
+            // more than one -value => return error.
+            if (_cmdLineInput.Options.Count > 2)
+            {
+                CLI_RESPONSE response = new CLI_RESPONSE()
+                {
+                    Command = _cmdLineInput.Command,
+                    TargetFeature = _cmdLineInput.TargetFeature
+                };
+                response.Index = change_0base_to_1base(String.Join(",", _cmdLineInput.DeviceIndex.ToArray()));
+                response.ServiceTag = String.Join(",", _cmdLineInput.ServiceTag.ToArray());
+                response.Result = "ERROR";
+                response.Message = "Invalid command line syntax, only one value (-value=pxpMode).";
+                _responses.Add(response);
+                return (int)CLI_ExitCode.invalide_cmdline_syntax;
+            }
+
+            string rawValue = valueOption.Option_Value;
+            //Try for Case_2
+            PxpModeObj? pxpModeObj = Array.Find(PxpModeObj.Table, x => x.Arg.Equals(rawValue, StringComparison.OrdinalIgnoreCase));
+            //It's Case_2. -value=pxpArg, for example: -value=pip-large
+            //Not Case_2
+            if (pxpModeObj == null)
+            {
+                UInt16 modeCode = 0xffff;
+                //Try Case_4
+                if (rawValue.StartsWith("0x") || rawValue.StartsWith("0X"))
+                {
+                    //It's not Case_4, but start with "0x" => error
+                    if (!UInt16.TryParse(rawValue.Substring(2), System.Globalization.NumberStyles.HexNumber,
+                        CultureInfo.CurrentCulture, out modeCode))
+                    {
+                        CLI_RESPONSE response = new CLI_RESPONSE()
+                        {
+                            Command = _cmdLineInput.Command,
+                            TargetFeature = _cmdLineInput.TargetFeature
+                        };
+                        response.Index = change_0base_to_1base(String.Join(",", _cmdLineInput.DeviceIndex.ToArray()));
+                        response.ServiceTag = String.Join(",", _cmdLineInput.ServiceTag.ToArray());
+                        response.Result = "ERROR";
+                        response.Message = "Invalid pxpMode value in (-value=pxpMode).";
+                        response.Value = rawValue;
+                        _responses.Add(response);
+                        return (int)CLI_ExitCode.invalide_cmdline_syntax;
+                    }
+                    //It's Case_4
+                } //END of Try Case_4
+                else
+                {
+                    //Try Case_3
+                    if (!UInt16.TryParse(rawValue, out modeCode))
+                    {
+                        //It's not Case_3, return error
+                        CLI_RESPONSE response = new CLI_RESPONSE()
+                        {
+                            Command = _cmdLineInput.Command,
+                            TargetFeature = _cmdLineInput.TargetFeature
+                        };
+                        response.Index = change_0base_to_1base(string.Join(",", _cmdLineInput.DeviceIndex.ToArray()));
+                        response.ServiceTag = String.Join(",", _cmdLineInput.ServiceTag.ToArray());
+                        response.Result = "ERROR";
+                        response.Message = "Invalid pxpMode value in (-value=pxpMode).";
+                        response.Value = rawValue;
+                        _responses.Add(response);
+                        return (int)CLI_ExitCode.invalide_cmdline_syntax;
+                    }
+                    //It's Case_3
+                }
+
+                //Case_3 or Case_4, value in modeCode, need to verify if it's a valide code
+                string pxpArg = PxpModeObj.GetArgFromModeCode(modeCode);
+                if (String.IsNullOrWhiteSpace(pxpArg))
+                {
+                    //It's not Case_3, return error
+                    CLI_RESPONSE response = new CLI_RESPONSE()
+                    {
+                        Command = _cmdLineInput.Command,
+                        TargetFeature = _cmdLineInput.TargetFeature
+                    };
+                    response.Index = change_0base_to_1base(String.Join(",", _cmdLineInput.DeviceIndex.ToArray()));
+                    response.ServiceTag = String.Join(",", _cmdLineInput.ServiceTag.ToArray());
+                    response.Result = "ERROR";
+                    response.Message = "Invalid pxpMode value in (-value=pxpMode). Try /get command.";
+                    response.Value = rawValue;
+                    _responses.Add(response);
+                    return (int)CLI_ExitCode.invalide_cmdline_syntax;
+                }
+
+                pxpModeObj = new PxpModeObj(modeCode);
+            } //END of Not Case_2
+
+            //Phase 2. Call SA method to set PXP mode
+            int errCount = 0;
+            bool isPass = false;
+            //foreach (int idx in _monitorIndeies)
+                for (int idx = 0; idx < _AllInfoMonitors.Count; idx++)
+                {
+                
+
+
+
+                CLI_RESPONSE response = new CLI_RESPONSE()
+                {
+                    Command = _cmdLineInput.Command,
+                    TargetFeature = _cmdLineInput.TargetFeature
+                };
+                Trace.WriteLine($"_AllInfoMonitors[idx].edid.ServiceTag = {_AllInfoMonitors[idx].edid.ServiceTag}");
+                if (response.ServiceTag == _AllInfoMonitors[idx].edid.ServiceTag)
+                {
+                    idx--;
+                }
+                else
+                {
+                    response.Index = change_0base_to_1base(idx.ToString());
+                    response.Model = _AllInfoMonitors[idx].AliasDeviceName;
+                    response.SerialNumber = _AllInfoMonitors[idx].edid.SerialNumber;
+                    response.ServiceTag = _AllInfoMonitors[idx].edid.ServiceTag;
+                    response.Value = rawValue;
+                    isPass = _devMgr.SetPbpMode(_AllInfoMonitors[idx], (UInt16)pxpModeObj.ModeCode).Result;
+                    if (_cmdLineInput.Options.Count == 2)
+                    {
+                        if (!String.IsNullOrWhiteSpace(_cmdLineInput.Options[1].Option_Value))
+                        {
+                            string[] ss = _cmdLineInput.Options[1].Option_Value.Split(',');
+                            if (ss.Length == 2)
+                            {
+                                sub1 = InputSourceObj.FindFirstByName(get_inputsource_type(ss[0]));
+                                sub2 = InputSourceObj.FindFirstByName(get_inputsource_type(ss[1]));
+                                sub3 = InputSourceObj.FindFirstByName(get_inputsource_type(ss[0]));
+                                isOK = _devMgr.SetSubInputs(_AllInfoMonitors[idx], sub2, null, null).Result;
+                            }
+                        }
+                    }
+                }
+                
+                
+                
+                if (isPass || isOK)
+                {
+                    response.Result = "PASS";
+                    response.Message = "";
+                }
+                else
+                {
+                    response.Result = "FAIL";
+                    response.Message = "Fail to SetPxPMode.";
+                    errCount++;
+                }
+                _responses.Add(response);
+            } //for (idx)
+
             if (errCount == 0)
                 return (int)CLI_ExitCode.success;
             else

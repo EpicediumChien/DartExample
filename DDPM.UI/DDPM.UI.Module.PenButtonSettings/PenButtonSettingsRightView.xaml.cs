@@ -353,7 +353,7 @@ namespace DDPM.UI.Module.PenButtonSettings
                 Window parentWindow = Window.GetWindow(this);
                 double windowLeft = 0;
                 double windowTop = 0;
-                ActionParameterModalDialog modalDialog = new(action, parentWindow.ActualWidth, parentWindow.ActualHeight);
+                ActionParameterModalDialog modalDialog = new(action, parentWindow.ActualWidth, parentWindow.ActualHeight, "", true);
                 if (parentWindow != null)
                 {
                     modalDialog.Owner = parentWindow;
@@ -364,21 +364,12 @@ namespace DDPM.UI.Module.PenButtonSettings
                 modalDialog.Left = windowLeft;
                 modalDialog.Top = windowTop;
 
-                Task<bool> task = DdpmCommonHelper.DeviceManagerSA!.StartKeyCapturePen();
-                _ = task.Result;
                 if (modalDialog.ShowDialog()!.Value)
                 {
-                    Task<bool> task1 = DdpmCommonHelper.DeviceManagerSA!.FinishKeyCapturePen();
-                    _ = task1.Result;
-                    Task<string> task2 = DdpmCommonHelper.DeviceManagerSA!.KeyCaptureData();
-                    var keystroke = task2.Result;
                     parameter = modalDialog.Parameter;
-                    parameter = keystroke;
                 }
                 else
                 {
-                    Task<bool> task1 = DdpmCommonHelper.DeviceManagerSA!.FinishKeyCapturePen();
-                    _ = task1.Result;
                     txtSearchText.Clear();
                     ShowAction();
                     return;
@@ -485,7 +476,7 @@ namespace DDPM.UI.Module.PenButtonSettings
             double windowTop = 0;
             if (id == 8)
             {
-                ActionParameterModalDialog modalDialog = new(AdvancedAction.AssignKeystroke, parentWindow.ActualWidth, parentWindow.ActualHeight, parameter);
+                ActionParameterModalDialog modalDialog = new(AdvancedAction.AssignKeystroke, parentWindow.ActualWidth, parentWindow.ActualHeight, parameter, true);
                 if (parentWindow != null)
                 {
                     modalDialog.Owner = parentWindow;

@@ -509,29 +509,5 @@ namespace DDPM.SA.Common
 
             return blRes;
         }
-
-        /*
-        [DllImport("Mscms.dll", CharSet = CharSet.Unicode, SetLastError = true)]
-        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
-        private static extern bool GetColorDirectory(IntPtr pMachineName, StringBuilder pBuffer, ref uint pdwSize);
-        private static bool _GetColorDirectory(IntPtr pMachineName, StringBuilder pBuffer, ref uint pdwSize)
-        {
-            return GetColorDirectory(pMachineName, pBuffer, ref pdwSize);
-        }
-        public static string GetColorDirectory()
-        {
-            // s. http://stackoverflow.com/questions/14792764/is-there-an-equivalent-to-winapi-getcolordirectory-in-net
-            uint pdwSize = 260;  // MAX_PATH
-            StringBuilder sb = new StringBuilder((int)pdwSize);
-            if (_GetColorDirectory(IntPtr.Zero, sb, ref pdwSize))
-            {
-                return sb.ToString();
-            }
-            else
-            {
-                throw new System.ComponentModel.Win32Exception(Marshal.GetLastWin32Error());
-            }
-        }
-        */
     }
 }

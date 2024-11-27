@@ -441,7 +441,7 @@ namespace DDPM.UI.Module.Brightness
                 if (tmp == null || tmp.Count == 0)
                     return;
 
-                int idx = tmp.FindIndex(x => x.DisplayName.Equals(mo.DisplayName));
+                int idx = tmp.FindIndex(x => x.Edid.Equals(mo.edid));
                 if (idx < 0)
                     return;
 
