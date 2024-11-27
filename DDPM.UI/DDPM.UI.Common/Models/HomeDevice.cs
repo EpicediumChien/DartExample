@@ -642,7 +642,10 @@ namespace DDPM.UI.Common.Models
             ImageSource? imgSource = DdpmCommonHelper.GetImageSourceFromCommonResource($"Resources/Monitors/{imageFileName}.png", assemblyName);
             if (imgSource != null)
             {
-                DeviceImage = imgSource;
+                if (isLineArt)
+                    DeviceImage = (BitmapImage)System.Windows.Application.Current.Resources["MonitorImage_LineArt"];
+                else
+                    DeviceImage = imgSource;
                 return;
             }
         }
