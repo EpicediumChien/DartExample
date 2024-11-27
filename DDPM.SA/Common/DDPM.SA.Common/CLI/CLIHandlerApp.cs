@@ -805,8 +805,8 @@ namespace DDPM.SA.Common.CLI
                     return CLI_Response_OptionNameNotSupport(commandLineInput, result, op);
                 }
 
-                op.Option_Value.Replace(".", ",");
-                List<string> values = op.Option_Value.Split(",").ToList();
+                //op.Option_Value.Replace(".", ",");
+                List<string> values = op.Option_Value.Replace(".", ",").Split(",").ToList();
                 List<string> inputSourceList = new List<string>()
                 {
                     "HDMI",
