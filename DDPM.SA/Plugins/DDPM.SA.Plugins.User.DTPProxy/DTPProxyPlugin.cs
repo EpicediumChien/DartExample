@@ -6469,6 +6469,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             SendWebcamEventToUI(CreateEventMsg("Webcam", "Webcam_WALSnoozeTimeLeftInSecondsChanged",
                                     e.DeviceId, $"NewValue:{e.WALSnoozeTimeLeftInSeconds}"));
 
+            writelog($"Catch event _Webcamcom_WALSnoozeTimeLeftInSecondsChanged NewValue:{e.WALSnoozeTimeLeftInSeconds}");
             writelog($"Catch event _Webcamcom_WALSnoozeTimeLeftInSecondsChanged : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
         }
 

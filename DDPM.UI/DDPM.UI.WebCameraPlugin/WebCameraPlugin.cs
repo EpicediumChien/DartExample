@@ -209,7 +209,13 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                                 }
 
                                 if (NewValue.ToLower() == "true")
-                                    DdpmCommonHelper.DeviceManagerSA!.ShowOSD(Screen.PrimaryScreen!.DeviceName, OSDType.Fingerprint);
+                                {
+                                    var _globalSettings = DdpmCommonHelper.DeviceManagerSA!.GetGlobalSettingParam().Result;
+
+                                    // check if show OSD for Presence Detection Sensor Cover
+                                    if (_globalSettings.GlobalSetting_General.Webcam_WB7022_Presence_Detection_Sensor_Cover_State)
+                                        DdpmCommonHelper.DeviceManagerSA!.ShowOSD(Screen.PrimaryScreen!.DeviceName, OSDType.Fingerprint);
+                                }
                             }
                             break;
 
@@ -223,6 +229,25 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
 
                                 if (NewValue.ToLower() == "true")
                                     DdpmCommonHelper.DeviceManagerSA!.ShowOSD(Screen.PrimaryScreen!.DeviceName, OSDType.WalkAwayLock);
+                            }
+                            break;
+
+                        case "Webcam_WALSnoozeTimeLeftInSecondsChanged":
+                            {
+                                if (!event_param.TryGetValue("NewValue", out var NewValue))
+                                {
+                                    _log.Debug("NewValue cannot be found in event_param");
+                                    return;
+                                }
+
+                                if (!String.IsNullOrEmpty(NewValue))
+                                {
+                                    if (Int32.TryParse(NewValue, out int numValue))
+                                    {
+                                        TimeSpan ts = TimeSpan.FromSeconds(numValue);
+                                        _viewModel.WALSnoozeTimeLeft = ts.ToString(@"hh\:mm\:ss");
+                                    }  
+                                }                                   
                             }
                             break;
                     }
