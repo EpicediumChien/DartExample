@@ -9485,151 +9485,185 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 writelog("folderPath - programdataPath Line 9169: " + programdataPath);
                 string appDataPath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
                 writelog("folderPath - appDataPath Line 9171: " + appDataPath);
-                if (!string.IsNullOrEmpty(appDataPath))
+                string fail_info = string.Empty;
+                try
                 {
-                    string LogFolder = @$"{appDataPath}\Dell\Dell Display and Peripheral Manager\Log\DDPM.Subagent.User";
-                    writelog("folderPath - LogFolder Line 9175: " + LogFolder);
-                    if (DirectoryContainsFiles(LogFolder))
+                    if (!string.IsNullOrEmpty(appDataPath))
                     {
-                        // 取得資料夾名稱
-                        string folderName = GetFolderName(LogFolder);
-                        string savePath = Path.Combine(saveFolderPath, folderName);
-                        // 複製指定的 log 文件到選擇的資料夾
-                        CopyLogFolder(LogFolder, savePath);
-                    }
-                    LogFolder = @$"{appDataPath}\Dell\Dell Display and Peripheral Manager\Log\DDPM.GUI";
-                    writelog("folderPath - LogFolder Line 9185: " + LogFolder);
-                    if (DirectoryContainsFiles(LogFolder))
-                    {
-                        // 取得資料夾名稱
-                        string folderName = GetFolderName(LogFolder);
-                        string savePath = Path.Combine(saveFolderPath, folderName);
-                        // 複製指定的 log 文件到選擇的資料夾
-                        CopyLogFolder(LogFolder, savePath);
-                    }
-                    LogFolder = @$"{appDataPath}\Dell\Dell Display and Peripheral Manager\Log\DDPM-Setup-DdpmSwUpdater";
-                    writelog("folderPath - LogFolder Line 9195: " + LogFolder);
-                    if (DirectoryContainsFiles(LogFolder))
-                    {
-                        // 取得資料夾名稱
-                        string folderName = GetFolderName(LogFolder);
-                        string savePath = Path.Combine(saveFolderPath, folderName);
-                        // 複製指定的 log 文件到選擇的資料夾
-                        CopyLogFolder(LogFolder, savePath);
-                    }
-                    LogFolder = @$"{appDataPath}\Dell\Dell Display and Peripheral Manager\Log\FWUpdataLog";
-                    writelog("folderPath - LogFolder Line 9205: " + LogFolder);
-                    if (DirectoryContainsFiles(LogFolder))
-                    {
-                        // 取得資料夾名稱
-                        string folderName = GetFolderName(LogFolder);
-                        string savePath = Path.Combine(saveFolderPath, folderName);
-                        // 複製指定的 log 文件到選擇的資料夾
-                        CopyLogFolder(LogFolder, savePath);
-                    }
-                }
-                if (!string.IsNullOrEmpty(programdataPath))
-                {
-                    string LogFolder = @$"{programdataPath}\Dell\DDPM.Subagent";
-                    writelog("folderPath - LogFolder Line 9218: " + LogFolder);
-                    if (DirectoryContainsFiles(LogFolder))
-                    {
-                        // 取得資料夾名稱
-                        string folderName = GetFolderName(LogFolder);
-                        string savePath = Path.Combine(saveFolderPath, folderName);
-                        // 複製指定的 log 文件到選擇的資料夾
-                        CopyLogFolder(LogFolder, savePath);
-                    }
-                    LogFolder = @$"{programdataPath}\Dell\Dell TechHub";
-                    writelog("folderPath - LogFolder Line 9228: " + LogFolder);
-                    if (DirectoryContainsFiles(LogFolder))
-                    {
-                        // 取得資料夾名稱
-                        string folderName = GetFolderName(LogFolder);
-                        string savePath = Path.Combine(saveFolderPath, folderName);
-                        // 複製指定的 log 文件到選擇的資料夾
-                        CopyLogFolder(LogFolder, savePath);
-                    }
-                    LogFolder = @$"{programdataPath}\Dell\DTP\Logs";
-                    writelog("folderPath - LogFolder Line 9238: " + LogFolder);
-                    if (DirectoryContainsFiles(LogFolder))
-                    {
-                        // 取得資料夾名稱
-                        string folderName = "DTP_Log";
-                        string savePath = Path.Combine(saveFolderPath, folderName);
-                        // 複製指定的 log 文件到選擇的資料夾
-                        CopyLogFolder(LogFolder, savePath);
-                    }
-                    string registryKey = @"SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\DDPMW-NKVM";
-                    object o = ReadRegistryData(RegistryHive.LocalMachine, registryKey, "GUID").Result;
-                    if (o != null && o is string && !string.IsNullOrEmpty(o.ToString()))
-                    {
-                        LogFolder = @$"{programdataPath}\{o.ToString()}\DDPMW-NKVM";
-                        writelog("folderPath - LogFolder Line 9252: " + LogFolder);
+                        string LogFolder = @$"{appDataPath}\Dell\Dell Display and Peripheral Manager\Log\DDPM.Subagent.User";
+                        writelog("folderPath - LogFolder Line 9175: " + LogFolder);
                         if (DirectoryContainsFiles(LogFolder))
                         {
                             // 取得資料夾名稱
                             string folderName = GetFolderName(LogFolder);
                             string savePath = Path.Combine(saveFolderPath, folderName);
                             // 複製指定的 log 文件到選擇的資料夾
-                            CopyLogFolder(LogFolder, savePath);
+                            if (!CopyLogFolder(LogFolder, savePath))
+                                fail_info += "[DDPM.Subagent.User]";
+                        }
+                        LogFolder = @$"{appDataPath}\Dell\Dell Display and Peripheral Manager\Log\DDPM.GUI";
+                        writelog("folderPath - LogFolder Line 9185: " + LogFolder);
+                        if (DirectoryContainsFiles(LogFolder))
+                        {
+                            // 取得資料夾名稱
+                            string folderName = GetFolderName(LogFolder);
+                            string savePath = Path.Combine(saveFolderPath, folderName);
+                            // 複製指定的 log 文件到選擇的資料夾
+                            if(!CopyLogFolder(LogFolder, savePath))
+                                fail_info += "[DDPM.GUI]";
+                        }
+                        LogFolder = @$"{appDataPath}\Dell\Dell Display and Peripheral Manager\Log\DDPM-Setup-DdpmSwUpdater";
+                        writelog("folderPath - LogFolder Line 9195: " + LogFolder);
+                        if (DirectoryContainsFiles(LogFolder))
+                        {
+                            // 取得資料夾名稱
+                            string folderName = GetFolderName(LogFolder);
+                            string savePath = Path.Combine(saveFolderPath, folderName);
+                            // 複製指定的 log 文件到選擇的資料夾
+                            if(!CopyLogFolder(LogFolder, savePath))
+                                fail_info += "[DDPM.SwUpdater]";
+                        }
+                        LogFolder = @$"{appDataPath}\Dell\Dell Display and Peripheral Manager\Log\FWUpdataLog";
+                        writelog("folderPath - LogFolder Line 9205: " + LogFolder);
+                        if (DirectoryContainsFiles(LogFolder))
+                        {
+                            // 取得資料夾名稱
+                            string folderName = GetFolderName(LogFolder);
+                            string savePath = Path.Combine(saveFolderPath, folderName);
+                            // 複製指定的 log 文件到選擇的資料夾
+                            if(!CopyLogFolder(LogFolder, savePath))
+                                fail_info += "[DDPM.FwUpdate]";
                         }
                     }
-                    LogFolder = @$"{programdataPath}\Dell\Dell Peripheral Manager\DPMService\Log";
-                    writelog("folderPath - LogFolder Line 9263: " + LogFolder);
-                    if (DirectoryContainsFiles(LogFolder))
+                    if (!string.IsNullOrEmpty(programdataPath))
                     {
-                        // 取得資料夾名稱
-                        string folderName = "DPMService_Log";
-                        string savePath = Path.Combine(saveFolderPath, folderName);
-                        // 複製指定的 log 文件到選擇的資料夾
-                        CopyLogFolder(LogFolder, savePath);
+                        string LogFolder = @$"{programdataPath}\Dell\DDPM.Subagent";
+                        writelog("folderPath - LogFolder Line 9218: " + LogFolder);
+                        if (DirectoryContainsFiles(LogFolder))
+                        {
+                            // 取得資料夾名稱
+                            string folderName = GetFolderName(LogFolder);
+                            string savePath = Path.Combine(saveFolderPath, folderName);
+                            // 複製指定的 log 文件到選擇的資料夾
+                            if(!CopyLogFolder(LogFolder, savePath))
+                                fail_info += "[DDPM.Subagent]";
+                        }
+                        LogFolder = @$"{programdataPath}\Dell\Dell TechHub";
+                        writelog("folderPath - LogFolder Line 9228: " + LogFolder);
+                        if (DirectoryContainsFiles(LogFolder))
+                        {
+                            // 取得資料夾名稱
+                            string folderName = GetFolderName(LogFolder);
+                            string savePath = Path.Combine(saveFolderPath, folderName);
+                            // 複製指定的 log 文件到選擇的資料夾
+                            if(!CopyLogFolder(LogFolder, savePath))
+                                fail_info += "[Dell TechHub]";
+                        }
+                        LogFolder = @$"{programdataPath}\Dell\DTP\Logs";
+                        writelog("folderPath - LogFolder Line 9238: " + LogFolder);
+                        if (DirectoryContainsFiles(LogFolder))
+                        {
+                            // 取得資料夾名稱
+                            string folderName = "DTP_Log";
+                            string savePath = Path.Combine(saveFolderPath, folderName);
+                            // 複製指定的 log 文件到選擇的資料夾
+                            if(!CopyLogFolder(LogFolder, savePath))
+                                fail_info += "[DTP_log]";
+                        }
+                        string registryKey = @"SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\DDPMW-NKVM";
+                        object o = ReadRegistryData(RegistryHive.LocalMachine, registryKey, "GUID").Result;
+                        if (o != null && o is string && !string.IsNullOrEmpty(o.ToString()))
+                        {
+                            LogFolder = @$"{programdataPath}\{o.ToString()}\DDPMW-NKVM";
+                            writelog("folderPath - LogFolder Line 9252: " + LogFolder);
+                            if (DirectoryContainsFiles(LogFolder))
+                            {
+                                // 取得資料夾名稱
+                                string folderName = GetFolderName(LogFolder);
+                                string savePath = Path.Combine(saveFolderPath, folderName);
+                                // 複製指定的 log 文件到選擇的資料夾
+                                if(!CopyLogFolder(LogFolder, savePath))
+                                    fail_info += "[DDPMW-NKVM]";
+                            }
+                        }
+                        LogFolder = @$"{programdataPath}\Dell\Dell Peripheral Manager\DPMService\Log";
+                        writelog("folderPath - LogFolder Line 9263: " + LogFolder);
+                        if (DirectoryContainsFiles(LogFolder))
+                        {
+                            // 取得資料夾名稱
+                            string folderName = "DPMService_Log";
+                            string savePath = Path.Combine(saveFolderPath, folderName);
+                            // 複製指定的 log 文件到選擇的資料夾
+                            if(!CopyLogFolder(LogFolder, savePath))
+                                fail_info += "[DPMService_Log]";
+                        }
+                        LogFolder = @$"{programdataPath}\Dell\Dell Peripheral Manager\DPM\Log";
+                        writelog("folderPath - LogFolder Line 9273: " + LogFolder);
+                        if (DirectoryContainsFiles(LogFolder))
+                        {
+                            // 取得資料夾名稱
+                            string folderName = "DPM_Log";
+                            string savePath = Path.Combine(saveFolderPath, folderName);
+                            // 複製指定的 log 文件到選擇的資料夾
+                            if(!CopyLogFolder(LogFolder, savePath))
+                                fail_info += "[DPM_Log]";
+                        }
+                        LogFolder = @$"{programdataPath}\Dell\Dell Peripheral Manager\DPeMSDK\Log";
+                        writelog("folderPath - LogFolder Line 9283: " + LogFolder);
+                        if (DirectoryContainsFiles(LogFolder))
+                        {
+                            // 取得資料夾名稱
+                            string folderName = "DPeMSDK_Log";
+                            string savePath = Path.Combine(saveFolderPath, folderName);
+                            // 複製指定的 log 文件到選擇的資料夾
+                            if(!CopyLogFolder(LogFolder, savePath))
+                                fail_info += "[DPeMSDK_Log]";
+                        }
                     }
-                    LogFolder = @$"{programdataPath}\Dell\Dell Peripheral Manager\DPM\Log";
-                    writelog("folderPath - LogFolder Line 9273: " + LogFolder);
-                    if (DirectoryContainsFiles(LogFolder))
+                    string logFileName = "EventLog.evtx";
+                    string logFilePath = Path.Combine(saveFolderPath, logFileName);
+                    if(!ExecuteWevtutilCommand(logFilePath))
+                        fail_info += "[EventLog]";
+
+                    string zipFilePath = saveFolderPath + ".zip";
+                    FileInfo info = new FileInfo(zipFilePath);
+                    zipFilePath = Path.Combine(info.DirectoryName, "Log.zip");//force to set zip file name as Log.zip
+                                                                              // 壓縮資料夾
+                    if(!CreateZipFile(saveFolderPath, zipFilePath))
+                        fail_info += "[Compression]";
+                    Directory.Delete(saveFolderPath, true);
+                                        
+                    ret = true;
+                    if (fail_info.Length > 0)
                     {
-                        // 取得資料夾名稱
-                        string folderName = "DPM_Log";
-                        string savePath = Path.Combine(saveFolderPath, folderName);
-                        // 複製指定的 log 文件到選擇的資料夾
-                        CopyLogFolder(LogFolder, savePath);
-                    }
-                    LogFolder = @$"{programdataPath}\Dell\Dell Peripheral Manager\DPeMSDK\Log";
-                    writelog("folderPath - LogFolder Line 9283: " + LogFolder);
-                    if (DirectoryContainsFiles(LogFolder))
-                    {
-                        // 取得資料夾名稱
-                        string folderName = "DPeMSDK_Log";
-                        string savePath = Path.Combine(saveFolderPath, folderName);
-                        // 複製指定的 log 文件到選擇的資料夾
-                        CopyLogFolder(LogFolder, savePath);
+                        ret = false;
+                        writelog($"SaveLog was failed at following step(s): {fail_info}");
                     }
                 }
-                string logFileName = "EventLog.evtx";
-                string logFilePath = Path.Combine(saveFolderPath, logFileName);
-                ExecuteWevtutilCommand(logFilePath);
-
-                string zipFilePath = saveFolderPath + ".zip";
-                // 壓縮資料夾
-                CreateZipFile(saveFolderPath, zipFilePath);
-                Directory.Delete(saveFolderPath, true);
+                catch (Exception ex)
+                {
+                    writelog($"{nameof(SaveLogFile)} got exception ({ex.Message})");
+                    ret = false;
+                }
             }
             writelog($"{nameof(SaveLogFile)} end");
-            //Telementry Collection
-            //var rt = false;
+
+            //Telemetry Collection
             var ApplicationSettings_Function = new ApplicationSettings_Function();
-            writelog("[DeviceMangerPlugin] Send Telementry for SaveDiagnosticReport...");
-            ret = ApplicationSettings_Function.Send_SaveDiagnosticReport_Telementry(_TelementryScheduler, _AllInfoMonitors, 1);
-            if (ret)
-                writelog("[DeviceMangerPlugin] Send Telementry for SaveDiagnosticReport Success ...");
+            writelog("[DeviceMangerPlugin] Send Telemetry for SaveDiagnosticReport...");
+            bool dtm = false;//[Dean 1126] Telemetry result should not impact original result
+            dtm = ApplicationSettings_Function.Send_SaveDiagnosticReport_Telementry(_TelementryScheduler, _AllInfoMonitors, 1);
+            if (dtm)
+                writelog("[DeviceMangerPlugin] Send Telemetry for SaveDiagnosticReport Success ...");
             else
-                writelog("[DeviceMangerPlugin] Send Telementry for SaveDiagnosticReport Fail ...");
+                writelog("[DeviceMangerPlugin] Send Telemetry for SaveDiagnosticReport Fail ...");
+
             return Task.FromResult(ret);
         }
 
-        private void CreateZipFile(string folderPath, string zipFilePath)
+        private bool CreateZipFile(string folderPath, string zipFilePath)
         {
+            bool result = false;
             writelog($"{nameof(CreateZipFile)} start");
             try
             {
@@ -9638,12 +9672,14 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     File.Delete(zipFilePath);
                 }
                 ZipFile.CreateFromDirectory(folderPath, zipFilePath, CompressionLevel.Fastest, includeBaseDirectory: true);
+                result = true;
             }
             catch (Exception ex)
             {
                 writelog($"{nameof(CreateZipFile)} Exception occurred while creating ZIP file: {ex.Message}");
             }
             writelog($"{nameof(CreateZipFile)} end");
+            return result;
         }
 
         private bool SaveMonitorAssetReport(List<MonitorAssetReport> monitorAssetReports, string savePath)
@@ -9695,8 +9731,9 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             return ret;
         }
 
-        private void ExecuteWevtutilCommand(string exportFilePath)
+        private bool ExecuteWevtutilCommand(string exportFilePath)
         {
+            bool result = false;
             try
             {
                 // 設定要查詢的日誌名稱
@@ -9743,11 +9780,13 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         Console.WriteLine($"Error exporting events: {error}");
                     }
                 }
+                result = true;
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"Exception occurred: {ex.Message}");
             }
+            return result;
         }
 
         private string GetFolderName(string path)
@@ -9786,29 +9825,37 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             return ret;
         }
 
-        private void CopyLogFolder(string sourceFolder, string destinationFolder)
+        private bool CopyLogFolder(string sourceFolder, string destinationFolder)
         {
+            bool result = false;
             try
             {
                 if (Directory.Exists(sourceFolder))
                 {
                     // 複製資料夾及其內容
-                    DirectoryCopy(sourceFolder, destinationFolder, true);
-                    Console.WriteLine("Log folder copied successfully.");
+                    if (!DirectoryCopy(sourceFolder, destinationFolder, true))
+                    {
+                        writelog("[DirectoryCopy] got some files copy failed");
+                    }
+                    else
+                        result = true;
+                    writelog("Log folder copy action finish.");                    
                 }
                 else
                 {
-                    Console.WriteLine("Source folder does not exist.");
+                    writelog("Source folder does not exist.");
                 }
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Exception occurred while copying log folder: {ex.Message}");
+                writelog($"Exception occurred while copying log folder: {ex.Message}");
             }
+            return result;
         }
 
-        private void DirectoryCopy(string sourceDirName, string destDirName, bool copySubDirs)
+        private bool DirectoryCopy(string sourceDirName, string destDirName, bool copySubDirs)
         {
+            bool all_pass = true;
             // 確保目標資料夾存在
             Directory.CreateDirectory(destDirName);
             // 複製檔案
@@ -9822,7 +9869,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"[DirectoryCopy] Get files in folder failed, message: {ex.Message}");
+                writelog($"[DirectoryCopy] Get files in folder failed, message: {ex.Message}");
+                all_pass = false;
             }
 
             // 複製子資料夾
@@ -9831,9 +9879,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 foreach (string subDir in Directory.GetDirectories(sourceDirName))
                 {
                     string destSubDir = Path.Combine(destDirName, Path.GetFileName(subDir));
-                    DirectoryCopy(subDir, destSubDir, true);
+                    if (!DirectoryCopy(subDir, destSubDir, true))
+                        all_pass = false;
                 }
             }
+            return all_pass;
         }
 
         #endregion

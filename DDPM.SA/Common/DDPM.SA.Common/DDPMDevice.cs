@@ -68,7 +68,7 @@ namespace DDPM.SA.Common
         [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
         private static extern bool SwapMouseButton([param: MarshalAs(UnmanagedType.Bool)] bool fSwap);
 
-        public static bool _SwapMouseButton(bool fSwap)
+        private static bool _SwapMouseButton(bool fSwap)
         {
             return SwapMouseButton(fSwap);
         }
