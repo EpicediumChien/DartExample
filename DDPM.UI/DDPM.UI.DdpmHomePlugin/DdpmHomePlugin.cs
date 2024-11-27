@@ -212,6 +212,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                             _HasRegisted = true;
                             _deviceManager.DeviceChanged += _deviceManager_DeviceChanged;
                             _deviceManager.VCPchanged += _deviceManager_VCPchanged;
+                            _deviceManager.UIUpdateNotify += _deviceManager_UIUpdateNotify;
 
                             //Move to call from OnActivated( ) => Failed, it's called too late
                             //So uncommented below code
@@ -266,6 +267,9 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                             _log.Info($"[Walkthrough] {nameof(GetCurrentDeviceManagerPluginPluginCondition)} Start");
                             await CollectAndCompareDevicesAsync();
 
+                            //Derek 1127
+                            //_showPluginManager?.ShowPluginById(DDPM.UI.Common.Constants.WebCameraPluginId);
+
                             //Robert_Lin 2024-8-2 DDPMW-579, If there is any FW/SW update available,
                             //then the Gear icon on masthead will show breathe & glow animation.
                             //Call once
@@ -298,6 +302,11 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                 _lock.Release();
                 _log.Trace($"{nameof(GetCurrentDeviceManagerPluginPluginCondition)} unlock");
             }
+        }
+
+        private void _deviceManager_UIUpdateNotify(object? sender, UpdateUINotify e)
+        {
+            System.Windows.MessageBox.Show(e.UI_Field_Name);
         }
 
         private async void _deviceManager_DeviceChanged(object? sender, DeviceChangedEventArgs e)
