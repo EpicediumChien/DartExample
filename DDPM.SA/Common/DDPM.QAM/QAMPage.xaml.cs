@@ -25,6 +25,7 @@ namespace DDPM.QAM
     public partial class QAMPage : Window
     {
         CameraSetting CameraSetting;
+
         [DllImport("user32.dll", SetLastError = true)]
         [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
         private static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
@@ -54,6 +55,7 @@ namespace DDPM.QAM
             if (OperatingSystem.IsWindows())
             {
                 Process[] processes = Process.GetProcessesByName(processName);
+
                 if (processes.Length > 0)
                 {
                     IntPtr mainWindowHandle = processes[0].MainWindowHandle;
@@ -64,21 +66,48 @@ namespace DDPM.QAM
                 }
             }
         }
+
         public QAMPage(IDeviceManagerSA deviceMangerPlugin)
         {
             InitializeComponent();
             DdpmCommonHelper.DeviceManagerSA = deviceMangerPlugin;
             DdpmCommonHelper.QAMPageViewModel = new QAMPageViewModel();
             DataContext = DdpmCommonHelper.QAMPageViewModel;
+
+            Microsoft.Win32.SystemEvents.SessionSwitch += SystemEvents_SessionSwitch;
         }
+
+        private void SystemEvents_SessionSwitch(object sender, Microsoft.Win32.SessionSwitchEventArgs e)
+        {
+            if (e.Reason == Microsoft.Win32.SessionSwitchReason.SessionLock)
+            {
+                Microsoft.Win32.SystemEvents.SessionSwitch -= SystemEvents_SessionSwitch;
+
+                CloseMyself();
+            }
+            //else if (e.Reason == Microsoft.Win32.SessionSwitchReason.SessionUnlock)
+            //{
+            //}
+        }
+
         private void Close_Click(object sender, MouseButtonEventArgs e)
+        {
+            CloseMyself();
+        }
+
+        private void CloseMyself()
         {
             if (CameraSetting != null)
             {
                 CameraSetting.Close();
                 CameraSetting = null;
             }
-            this.Close();
+
+            Dispatcher.Invoke(() =>
+            {
+                // Access UI elements or objects owned by a different thread
+                this.Close();
+            });
         }
 
         private void CameraSetting_Click(object sender, MouseButtonEventArgs e)
