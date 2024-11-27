@@ -897,43 +897,52 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                     if (AllALSConfig.Count > 0)
                     {
                         var firstPrimaryMonitorSyncConfig = AllALSConfig.FirstOrDefault(config => config.isPrimaryMonitorSync);
-                        uint newVal = SetBitValue(firstPrimaryMonitorSyncConfig.AllValue, 5, 0);
-                        _logs.DebugMsg($"[DisplayMangerPlugin] InitializeAllALSInfo() Primary Monitor ModelName = {firstPrimaryMonitorSyncConfig.Edid.ModelName}, SerialNumber = {firstPrimaryMonitorSyncConfig.Edid.SerialNumber}, ServiceTag = {firstPrimaryMonitorSyncConfig.Edid.ServiceTag}, AllValue = {firstPrimaryMonitorSyncConfig.AllValue}");
-                        for (int i = 0; i < AllALSConfig.Count; i++)
+                        if (firstPrimaryMonitorSyncConfig != null)
                         {
-                            //MonitorInfo tmp = monitorALS.Find(x => x.edid.Equals(AllALSConfig[i].Edid));
-                            if(!firstPrimaryMonitorSyncConfig.MoInfo.Equals(AllALSConfig[i].MoInfo))//If find Primary, do not need do this.
+
+                            uint newVal = SetBitValue(firstPrimaryMonitorSyncConfig.AllValue, 5, 0);
+                            _logs.DebugMsg($"[DisplayMangerPlugin] InitializeAllALSInfo() Primary Monitor ModelName = {firstPrimaryMonitorSyncConfig.Edid.ModelName}, SerialNumber = {firstPrimaryMonitorSyncConfig.Edid.SerialNumber}, ServiceTag = {firstPrimaryMonitorSyncConfig.Edid.ServiceTag}, AllValue = {firstPrimaryMonitorSyncConfig.AllValue}");
+                            for (int i = 0; i < AllALSConfig.Count; i++)
                             {
-                                _logs.DebugMsg($"[DisplayMangerPlugin] InitializeAllALSInfo() Non Primary Monitor ModelName = {AllALSConfig[i].MoInfo.edid.ModelName}, SerialNumber = {AllALSConfig[i].MoInfo.edid.SerialNumber}, ServiceTag = {AllALSConfig[i].MoInfo.edid.ServiceTag}, AllValue = {AllALSConfig[i].AllValue} will change to {newVal.ToString()}");
-                                if (SetVCPCapability(AllALSConfig[i].MoInfo, 0x66, newVal).Result)//set ALS value, but bit5 need to change to 0
+                                //MonitorInfo tmp = monitorALS.Find(x => x.edid.Equals(AllALSConfig[i].Edid));
+                                if (!firstPrimaryMonitorSyncConfig.MoInfo.Equals(AllALSConfig[i].MoInfo))//If find Primary, do not need do this.
                                 {
-                                    _logs.DebugMsg($"[DisplayMangerPlugin] InitializeAllALSInfo() SetVCPCapability 0x66 value {newVal.ToString()}, result = true ... ");
-                                }
-                                else
-                                {
-                                    _logs.DebugMsg($"[DisplayMangerPlugin] InitializeAllALSInfo() SetVCPCapability 0x66 {newVal.ToString()}, result = false ... ");
-                                }
-                                _logs.DebugMsg($"[DisplayMangerPlugin] InitializeAllALSInfo() Sync ALS Data Finish ... ");
-
-                                ObjGetVCP obColor = GetVCPCapability(firstPrimaryMonitorSyncConfig.MoInfo, "colorpreset").Result;
-
-                                if (obColor.result)
-                                {
-                                    if (SetVCPCapability(AllALSConfig[i].MoInfo, "colorpreset", obColor.value.ToString()).Result)
+                                    _logs.DebugMsg($"[DisplayMangerPlugin] InitializeAllALSInfo() Non Primary Monitor ModelName = {AllALSConfig[i].MoInfo.edid.ModelName}, SerialNumber = {AllALSConfig[i].MoInfo.edid.SerialNumber}, ServiceTag = {AllALSConfig[i].MoInfo.edid.ServiceTag}, AllValue = {AllALSConfig[i].AllValue} will change to {newVal.ToString()}");
+                                    if (SetVCPCapability(AllALSConfig[i].MoInfo, 0x66, newVal).Result)//set ALS value, but bit5 need to change to 0
                                     {
-                                        _logs.DebugMsg($"[DisplayMangerPlugin] InitializeAllALSInfo() SetVCPCapability colorpreset = {obColor.value.ToString()}, true  {AllALSConfig[i].MoInfo.modelName.ToString()} ... ");
+                                        _logs.DebugMsg($"[DisplayMangerPlugin] InitializeAllALSInfo() SetVCPCapability 0x66 value {newVal.ToString()}, result = true ... ");
                                     }
                                     else
                                     {
-                                        _logs.DebugMsg($"[DisplayMangerPlugin] InitializeAllALSInfo() SetVCPCapability colorpreset = {obColor.value.ToString()}, fail  {AllALSConfig[i].MoInfo.modelName.ToString()} ... ");
+                                        _logs.DebugMsg($"[DisplayMangerPlugin] InitializeAllALSInfo() SetVCPCapability 0x66 {newVal.ToString()}, result = false ... ");
                                     }
+                                    _logs.DebugMsg($"[DisplayMangerPlugin] InitializeAllALSInfo() Sync ALS Data Finish ... ");
+
+                                    ObjGetVCP obColor = GetVCPCapability(firstPrimaryMonitorSyncConfig.MoInfo, "colorpreset").Result;
+
+                                    if (obColor.result)
+                                    {
+                                        if (SetVCPCapability(AllALSConfig[i].MoInfo, "colorpreset", obColor.value.ToString()).Result)
+                                        {
+                                            _logs.DebugMsg($"[DisplayMangerPlugin] InitializeAllALSInfo() SetVCPCapability colorpreset = {obColor.value.ToString()}, true  {AllALSConfig[i].MoInfo.modelName.ToString()} ... ");
+                                        }
+                                        else
+                                        {
+                                            _logs.DebugMsg($"[DisplayMangerPlugin] InitializeAllALSInfo() SetVCPCapability colorpreset = {obColor.value.ToString()}, fail  {AllALSConfig[i].MoInfo.modelName.ToString()} ... ");
+                                        }
+                                    }
+                                    else
+                                    {
+                                        _logs.DebugMsg($"[DisplayMangerPlugin] InitializeAllALSInfo() GetVCPCapability colorpreset = {obColor.value.ToString()}, fail  {AllALSConfig[i].MoInfo.modelName.ToString()} ... ");
+                                    }
+                                    _logs.DebugMsg($"[DisplayMangerPlugin] InitializeAllALSInfo() Sync colorpreset Data Finish ... ");
                                 }
-                                else
-                                {
-                                    _logs.DebugMsg($"[DisplayMangerPlugin] InitializeAllALSInfo() GetVCPCapability colorpreset = {obColor.value.ToString()}, fail  {AllALSConfig[i].MoInfo.modelName.ToString()} ... ");
-                                }
-                                _logs.DebugMsg($"[DisplayMangerPlugin] InitializeAllALSInfo() Sync colorpreset Data Finish ... ");
-                            }                          
+                            }
+                        }
+                        else
+                        {
+                            _logs.DebugMsg($"[DisplayMangerPlugin] InitializeAllALSInfo() Non Find Primary Monitor ... ");
+                            return;
                         }
                     }
                     _logs.DebugMsg("[DisplayMangerPlugin] InitializeAllALSInfo ... Monitor.Count = " + monitorALS.Count().ToString() + " || AllALSConfig.Count = " + AllALSConfig.Count().ToString());
