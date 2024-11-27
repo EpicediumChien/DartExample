@@ -9,6 +9,11 @@
              xmlns:lang="clr-namespace:DDPM.UI.Resources.Helper;assembly=DDPM.UI.Resources"
              mc:Ignorable="d"
              d:DesignHeight="850" d:DesignWidth="800" Loaded="UserControl_Loaded" Unloaded="UserControl_UnLoaded">
+    <UserControl.Resources>
+        <Style TargetType="TextBlock">
+            <Setter Property="Foreground" Value="{DynamicResource DefaultTheme_TxtColor}" />
+        </Style>
+    </UserControl.Resources>
     <Grid>
         <UXControls:UXScrollViewer HorizontalScrollBarVisibility="Disabled">
             <Grid>
@@ -221,9 +226,6 @@
                                                             <Style TargetType="Border">
                                                                 <Setter Property="CornerRadius" Value="5" />
                                                             </Style>
-                                                            <Style TargetType="TextBlock">
-                                                                <Setter Property="Foreground" Value="{DynamicResource DefaultTheme_TxtColor}" />
-                                                            </Style>
                                                         </ListBox.Resources>
                                                         <ListBox.ItemTemplate>
                                                             <DataTemplate>
@@ -257,7 +259,8 @@
 
                                                                     <TextBlock Grid.Column="1" x:Name="appName"
                                                                                Text="{Binding AppName , UpdateSourceTrigger=PropertyChanged}"
-                                                                               VerticalAlignment="Center" HorizontalAlignment="Left" />
+                                                                               VerticalAlignment="Center" HorizontalAlignment="Left"
+                                                                               Foreground="{DynamicResource DefaultTheme_TxtColor}" />
 
                                                                     <!-- -->
                                                                     <ComboBox Grid.Column="2" x:Name="appPreset"
