@@ -313,13 +313,20 @@ namespace DDPM.UI.Module.WebCameraPresenceDetection
             //    FileName = url,
             //    UseShellExecute = true
             //});
-            DDPM.SA.Common.Settings.DDPMFileSecurity.StartProcessSafely(
+            try
+            {
+                DDPM.SA.Common.Settings.DDPMFileSecurity.StartProcessSafely(
                 null,
                 new ProcessStartInfo
                 {
                     FileName = url,
                     UseShellExecute = true
                 });
+            }
+            catch (Exception)
+            {
+            }
+            
         }
 
         private void Image_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
