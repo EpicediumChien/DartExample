@@ -610,9 +610,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             thread.Start();
 
             _disDevHelper = new DisplayDeviceHelper(Log);
-
-            string info = string.Empty;
-            DDPMFileSecurity.VerifyFileCertWithInboxThumbprint("D:\\DDPM\\metadata\\DDPM-Setup_v2.0.0.51.exe", out info);
         }
 
         private void HotkeyPressed(object sender, KeyPressedEventArgs e)
