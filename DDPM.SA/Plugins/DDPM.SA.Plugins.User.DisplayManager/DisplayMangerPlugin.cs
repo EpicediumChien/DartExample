@@ -885,6 +885,10 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                         {
                             GetALSAll(als, ref als_param);
                         }
+                        else
+                        {
+                            ParseMonitorInfo(als, ref als_param);
+                        }
                         AllALSConfig.Add(als_param);
                         _logs.DebugMsg($"{i.ToString()} AllALSConfig {AllALSConfig[i].Edid.ModelName} {AllALSConfig[i].Edid.SerialNumber} {AllALSConfig[i].Edid.ServiceTag}");
 
