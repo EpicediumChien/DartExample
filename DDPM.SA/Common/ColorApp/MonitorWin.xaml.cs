@@ -558,23 +558,19 @@ namespace DDPM.ColorApp
             // check Color Preset Strings Game or Game1
 
             if (_supported_preset!= null)
-            {
-                if (_supported_preset.Count >= 0)
+            {                
+                index = _supported_preset.FindIndex(x => x == "Game2");
+
+                if (index >= 0)
                 {
-                    index = _supported_preset.FindIndex(x => x == "Game2");
-
-                    if (index >= 0)
-                    {
-                        if (curcolorPreset == "Game/Game1")
-                            strSync_CurrentColorPreset = "Game1";
-                    }
-                    else
-                    {
-                        if (curcolorPreset == "Game/Game1")
-                            strSync_CurrentColorPreset = "Game";
-                    }
-
-                }              
+                    if (curcolorPreset == "Game/Game1")
+                        strSync_CurrentColorPreset = "Game1";
+                }
+                else
+                {
+                    if (curcolorPreset == "Game/Game1")
+                        strSync_CurrentColorPreset = "Game";
+                }                            
             }          
 
             // check Color Preset Strings Rec.709 or BT.709 / Rec.709 or BT.709
