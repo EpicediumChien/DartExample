@@ -5489,7 +5489,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         {
             if (_PeripheralsPlugin != null && _FWUpdatePlugin != null)
             {
-                _FWUpdatePlugin.SetDeviceinfo(_PeripheralsPlugin.GetDevices().Result.deviceInfo);
+                _FWUpdatePlugin.SetDeviceinfo(_PeripheralsPlugin.GetDevices().Result.deviceInfo, _PeripheralsPlugin.GetDongleCount());
                 return Task.FromResult(true);
             }
             return Task.FromResult(false);

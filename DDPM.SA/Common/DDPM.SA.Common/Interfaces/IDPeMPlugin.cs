@@ -52,6 +52,8 @@ namespace DDPM.SA.Common
         Task<UpdateItemInfo> GetDPeMAssemblyUpdateInfo();
 
         Task<UpdateHelper> GetFWUpdateInfo();
+        //Bruce, FWU need it
+        int GetDongleCount();
 
         void SetDPIValue(int newDPIValue, Guid deviceId);
 

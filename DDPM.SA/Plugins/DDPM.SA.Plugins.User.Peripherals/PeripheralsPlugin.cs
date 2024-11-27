@@ -2783,6 +2783,11 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                 UpdateItems = new List<UpdateItemInfo>()
             };
         }
+        //Bruce, FWU need it
+        public int GetDongleCount()
+        {
+            return _DongleCount;
+        }
 
         public void DisplayNotification(string bannerInfo, string hyperlinkText, string bannerItemType)
         {
