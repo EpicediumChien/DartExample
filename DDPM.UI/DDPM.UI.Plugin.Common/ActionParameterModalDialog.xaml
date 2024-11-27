@@ -8,6 +8,7 @@
         xmlns:UXControls="clr-namespace:Dell.Client.Framework.UX.WPF.Controls;assembly=DCF.UX.WPF" xmlns:common="clr-namespace:DDPM.UI.Common;assembly=DDPM.UI.Common" AllowsTransparency="True"
         Title="ActionParameterModalDialog" ResizeMode="NoResize" ShowInTaskbar="False"
         InputMethod.IsInputMethodEnabled="False"
+        Unloaded="Window_Unloaded"
         WindowStartupLocation="Manual" WindowStyle="None" Background="{DynamicResource ActionParameterModalDialog_BgColor}">
     <!--Background="#0D121A" -->
 

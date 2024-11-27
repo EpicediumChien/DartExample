@@ -270,5 +270,15 @@ namespace DDPM.UI.Plugin.Common
                 }
             }
         }
+
+        private void Window_Unloaded(object sender, RoutedEventArgs e)
+        {
+            if (IsForPen)
+            {
+                Task<bool> task1 = DdpmCommonHelper.DeviceManagerSA!.FinishKeyCapturePen();
+                _ = task1.Result;
+
+            }
+        }
     }
 }
