@@ -10166,7 +10166,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                         }).ConfigureAwait(false);
                                         ////1117 Bruce 不用自動旋轉把下兩行註解
                                         //if (displayDeviceNumChange && _AllInfoMonitors.Count > 0)
-                                        _DisplayManagerPlugin.SetDisplayOrientation(_AllInfoMonitors).Wait();
+                                        //_DisplayManagerPlugin.SetDisplayOrientation(_AllInfoMonitors).Wait();
 
                                         writelog("[DeviceMangerPlugin] SystemEvents_DisplaySettingsChanged() SetDisplayOrientation finish ...");
 
@@ -10259,12 +10259,12 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             EventHandler<DisplaychangedEventArgs> handler = Displaychanged;
             //if (handler != null)
             //    handler.Invoke(this, e);
-            if (_DisplayManagerPlugin != null)
-            {
-                //displayInOut = false;
-                _DisplayManagerPlugin.SetDisplayOrientation(e.monitors).Wait();
-                //displayInOut = true;
-            }
+            //if (_DisplayManagerPlugin != null)
+            //{
+            //    displayInOut = false;
+            //    _DisplayManagerPlugin.SetDisplayOrientation(e.monitors).Wait();
+            //    displayInOut = true;
+            //}
             DeviceChangedEventArgs arg = new DeviceChangedEventArgs();
             arg.changedProperty = "DisplayChanged";
             arg.type = DeviceChangedType.NotifyOnly;
