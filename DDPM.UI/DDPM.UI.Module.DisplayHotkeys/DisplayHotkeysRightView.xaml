@@ -26,7 +26,7 @@
                         <StackPanel>
                             <StackPanel.Resources>
                                 <Style TargetType="{x:Type UXControls:UXTextBlock}">
-                                    <Setter Property="Foreground" Value="White" />
+                                    <Setter Property="Foreground" Value="{DynamicResource DefaultTheme_TxtColor}" />
                                     <Setter Property="FontSize" Value="16" />
                                     <Setter Property="Margin" Value="16,12,0,12" />
                                     <Setter Property="HorizontalAlignment" Value="Left" />
@@ -63,7 +63,7 @@
                         <StackPanel>
                             <StackPanel.Resources>
                                 <Style TargetType="{x:Type UXControls:UXTextBlock}">
-                                    <Setter Property="Foreground" Value="White" />
+                                    <Setter Property="Foreground" Value="{DynamicResource DefaultTheme_TxtColor}" />
                                     <Setter Property="FontSize" Value="16" />
                                     <Setter Property="Margin" Value="16,12,0,12" />
                                     <Setter Property="HorizontalAlignment" Value="Left" />
@@ -141,7 +141,7 @@
                         <StackPanel>
                             <StackPanel.Resources>
                                 <Style TargetType="{x:Type UXControls:UXTextBlock}">
-                                    <Setter Property="Foreground" Value="White" />
+                                    <Setter Property="Foreground" Value="{DynamicResource DefaultTheme_TxtColor}" />
                                     <Setter Property="FontSize" Value="16" />
                                     <Setter Property="Margin" Value="16,12,0,12" />
                                     <Setter Property="HorizontalAlignment" Value="Left" />

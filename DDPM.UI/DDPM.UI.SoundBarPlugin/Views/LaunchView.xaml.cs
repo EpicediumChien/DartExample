@@ -100,7 +100,7 @@ namespace DDPM.UI.Plugin.SoundBarPlugin
             };
             moduleGroup.AddHeader(AudioSettings, new SpeakerAudioSettingsModule(_vm!));
             groups.Add(moduleGroup);
-
+            
             moduleGroup = new ModuleGroup()
             {
                 GroupName = Interactions,
@@ -109,7 +109,10 @@ namespace DDPM.UI.Plugin.SoundBarPlugin
             };
             moduleGroup.AddHeader(Interactions, new SpeakerInteractionsModule(_vm!));
             groups.Add(moduleGroup);
-
+            if (_vm?.CurrentDeviceInfo?.ModelNumber == "SB725") 
+            {
+                groups.RemoveAt(groups.Count - 1);
+            }
             _vm!.ModuleGroups = groups;
         }
 

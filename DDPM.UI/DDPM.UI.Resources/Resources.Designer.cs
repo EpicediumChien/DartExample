@@ -2617,7 +2617,16 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   查詢類似 Another profile has been configured to use the same time. Please use another time. 的當地語系化字串。
+        ///   Looks up a localized string similar to Another profile has been configured to use the same time. Please use another time..
+        /// </summary>
+        internal static string EazyMemory_41 {
+            get {
+                return ResourceManager.GetString("EazyMemory.41", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Error.
         /// </summary>
         internal static string EazyMemory_41 {
             get {
@@ -4773,6 +4782,15 @@ namespace DDPM.UI.Resources {
         internal static string Orientation {
             get {
                 return ResourceManager.GetString("Orientation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This device can be paired with {0} hosts simultaneously.
+        /// </summary>
+        internal static string PairedInfo_0 {
+            get {
+                return ResourceManager.GetString("PairedInfo.0", resourceCulture);
             }
         }
         

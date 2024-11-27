@@ -1,4 +1,5 @@
 ﻿using Dell.Client.Framework.UX.WPF.Controls;
+using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
 using Color = System.Windows.Media.Color;
@@ -33,6 +34,7 @@ namespace DDPM.UI.Common
             UpdateFreezable("DefaultTheme_TbFgColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#FFFFFFFF"));
             UpdateFreezable("DefaultTheme_TbBdColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#7E7E7E"));
             UpdateFreezable("DefaultTheme_ListBoxBkColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#80141D27"));
+            UpdateFreezable("DefaultTheme_DialogBoxBkColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#132F54"));
             #endregion
 
             #region Add Device
@@ -190,6 +192,12 @@ namespace DDPM.UI.Common
             UpdateFreezable("btn_BkColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#0E1C2F"));
             #endregion
 
+            #region VbarItem
+            System.Windows.Application.Current.Resources["Vbar_BdColor_Hover"] = Color.FromArgb(0xFF, 0x1B, 0x38, 0x5F);
+            System.Windows.Application.Current.Resources["Vbar_BkColor_Hover"] = Color.FromArgb(0x00, 0x0E, 0x0E, 0x0E);
+            UpdateFreezable("Vbar_BkBrush_Hover", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#FF1B385F"));
+            #endregion
+
             #region VbarItem1
             UpdateFreezable("DdpmCB_HoverItemBkColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#FF232D36"));
             UpdateFreezable("DefaultTheme_USBKVMComboBkColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#99204A82"));
@@ -298,6 +306,16 @@ namespace DDPM.UI.Common
             UpdateFreezable("DefaultTheme_SetupScanBdColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#FFFFFF"));
             UpdateFreezable("DefaultTheme_SetupSelectBdColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#1B385F"));
             #endregion
+
+            #region Connection Hover UI
+            UpdateFreezable("ConnHover_BkColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#99193457"));
+            UpdateFreezable("ConnHover_ActiveTextColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#FFFFFF"));
+            UpdateFreezable("ConnHover_DeactiveTextColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#839DB4"));//839DB4
+            #endregion Connection Hover UI
+
+            //#region HomeDevice LineArt image [Robert_Lin, 2024-11-26]
+            UpdateBitmapImage("MonitorImage_LineArt", new Uri($"pack://application:,,,/DDPM.UI.Resources;component/Resources/Monitors/Lineart.png", UriKind.RelativeOrAbsolute));
+            //#endregion HomeDevice LineArt image
 
             UpdateFreezable("DefaultThemeFullPageBkColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#FF0D121A"));
 

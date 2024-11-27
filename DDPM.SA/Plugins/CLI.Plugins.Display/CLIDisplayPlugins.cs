@@ -7140,6 +7140,7 @@ namespace DDPM.CLI.Plugins.Display
                     else
                     {
                         HDR_RESPONSE.Message = "HDR not supported";
+                        HDR_RESPONSE.Value = "HDR not supported";
                         HDR_RESPONSE.HDR = "N/A";
                         ret = null;
                     }
@@ -7249,6 +7250,7 @@ namespace DDPM.CLI.Plugins.Display
                     else
                     {
                         USBCPrioritization_RESPONSE.Message = "USB-C Prioritization not supported";
+                        USBCPrioritization_RESPONSE.Value = "USB-C Prioritization not supported";
                         // USBCPrioritization_RESPONSE.USBCPrioritizationType = "N/A";
                         ret = null;
                     }
@@ -13019,6 +13021,7 @@ namespace DDPM.CLI.Plugins.Display
                             else
                             {
                                 cli_Response.Result = "FAIL";
+                                cli_Response.Value = "Not supported";
                                 cli_Response.Message = $"VCP code {commandLineInput.Options[0].Option_Value} is not supported";
                             }
                             System.Console.WriteLine(JsonConvert.SerializeObject(cli_Response, Formatting.Indented));
@@ -13058,6 +13061,7 @@ namespace DDPM.CLI.Plugins.Display
                             else
                             {
                                 cli_Response.Result = "FAIL";
+                                cli_Response.Value = "Not supported";
                                 cli_Response.Message = $"VCP code {commandLineInput.Options[0].Option_Value} is not supported";
                             }
                             System.Console.WriteLine(JsonConvert.SerializeObject(cli_Response, Formatting.Indented));
@@ -13097,6 +13101,7 @@ namespace DDPM.CLI.Plugins.Display
                                 else
                                 {
                                     cli_Response.Result = "FAIL";
+                                    cli_Response.Value = "Not supported";
                                     cli_Response.Message = $"VCP code {commandLineInput.Options[0].Option_Value} is not supported";
                                 }
                                 System.Console.WriteLine(JsonConvert.SerializeObject(cli_Response, Formatting.Indented));
@@ -13137,6 +13142,7 @@ namespace DDPM.CLI.Plugins.Display
                                 else
                                 {
                                     cli_Response.Result = "FAIL";
+                                    cli_Response.Value = "Not supported";
                                     cli_Response.Message = $"VCP code {commandLineInput.Options[0].Option_Value} is not supported";
                                 }
                                 System.Console.WriteLine(JsonConvert.SerializeObject(cli_Response, Formatting.Indented));
@@ -13200,6 +13206,7 @@ namespace DDPM.CLI.Plugins.Display
                             else if (!commandLineInput.Options[1].Option_Name.ToUpper().Equals("VALUE"))
                             {
                                 cli_Response.Result = "FAIL";
+                                cli_Response.Value = "Not supported";
                                 cli_Response.Message = $"{commandLineInput.Options[1].Option_Name} option is not supported.";
                             }
                             else if (!vcp_value)
@@ -13210,6 +13217,7 @@ namespace DDPM.CLI.Plugins.Display
                             else
                             {
                                 cli_Response.Result = "FAIL";
+                                cli_Response.Value = "Not supported";
                                 cli_Response.Message = $"VCP code {commandLineInput.Options[0].Option_Value} is not supported";
                             }
                             System.Console.WriteLine(JsonConvert.SerializeObject(cli_Response, Formatting.Indented));
@@ -13269,6 +13277,7 @@ namespace DDPM.CLI.Plugins.Display
                             else if (!commandLineInput.Options[1].Option_Name.ToUpper().Equals("VALUE"))
                             {
                                 cli_Response.Result = "FAIL";
+                                cli_Response.Value = "Not supported";
                                 cli_Response.Message = $"{commandLineInput.Options[1].Option_Name} value is not supported.";
                             }
                             else if (!vcp_value)
@@ -13279,6 +13288,7 @@ namespace DDPM.CLI.Plugins.Display
                             else
                             {
                                 cli_Response.Result = "FAIL";
+                                cli_Response.Value = "Not supported";
                                 cli_Response.Message = $"VCP code {commandLineInput.Options[0].Option_Value} is not supported";
                             }
                             System.Console.WriteLine(JsonConvert.SerializeObject(cli_Response, Formatting.Indented));
@@ -13343,11 +13353,13 @@ namespace DDPM.CLI.Plugins.Display
                                 else if (!commandLineInput.Options[1].Option_Name.ToUpper().Equals("VALUE"))
                                 {
                                     cli_Response.Result = "FAIL";
+                                    cli_Response.Value = "Not supported";
                                     cli_Response.Message = $"{commandLineInput.Options[1].Option_Name} value is not supported.";
                                 }
                                 else
                                 {
                                     cli_Response.Result = "FAIL";
+                                    cli_Response.Value = "Not supported";
                                     cli_Response.Message = $"VCP code {commandLineInput.Options[0].Option_Value} is not supported";
                                 }
                                 System.Console.WriteLine(JsonConvert.SerializeObject(cli_Response, Formatting.Indented));
@@ -13414,11 +13426,13 @@ namespace DDPM.CLI.Plugins.Display
                                 else if (!commandLineInput.Options[1].Option_Name.ToUpper().Equals("VALUE"))
                                 {
                                     cli_Response.Result = "FAIL";
+                                    cli_Response.Value = "Not supported";
                                     cli_Response.Message = $"{commandLineInput.Options[1].Option_Name} value is not supported.";
                                 }
                                 else
                                 {
                                     cli_Response.Result = "FAIL";
+                                    cli_Response.Value = "Not supported";
                                     cli_Response.Message = $"VCP code {commandLineInput.Options[0].Option_Value} is not supported";
                                 }
                                 System.Console.WriteLine(JsonConvert.SerializeObject(cli_Response, Formatting.Indented));
