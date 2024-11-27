@@ -159,7 +159,18 @@ namespace DDPM.QAM
         private void CallDDPM_Click(object sender, MouseButtonEventArgs e)
         {
             ShowDDPM();
-            OnUpdateUINotify("CallDDPM_Click");
+
+            //while (true) 
+            {
+                Thread.Sleep(10000);
+                if (2000 == DdpmCommonHelper.DeviceManagerSA?.GetCurrentPollingRate())
+                {
+                    OnUpdateUINotify("CallDDPM_Click");
+
+                    //break;
+                }
+            }
+
             Close_Click(this, null);
         }
 

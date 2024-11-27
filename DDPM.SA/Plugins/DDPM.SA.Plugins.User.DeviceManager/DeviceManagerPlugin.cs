@@ -1766,6 +1766,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             return Task.FromResult(Task.CompletedTask);
         }
 
+        public int GetCurrentPollingRate()
+        {
+            return _millisecond;
+        }
+
         public Task<List<MonitorInfo>> GetMonitors()
         {
             lock (_MoLock)//this) //Dean 0626 fix SAST issue, do not lock over this object
