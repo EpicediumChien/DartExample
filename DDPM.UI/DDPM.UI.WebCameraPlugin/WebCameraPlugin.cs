@@ -183,27 +183,29 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                     switch (eventtype)
                     {
                         case "Webcam_IsHDROnChanged":
+                        {
+                            if (!event_param.TryGetValue("NewValue", out var NewValue))
                             {
-                                if (!event_param.TryGetValue("NewValue", out var NewValue))
-                                {
-                                    _log.Debug("NewValue cannot be found in event_param");
-                                    return;
-                                }
-                                Application.Current.Dispatcher.Invoke(() =>
-                                {
-                                    if (NewValue.ToLower() == "true")
-                                        _viewModel!.IsHDROn = true;
-                                    else
-                                        _viewModel!.IsHDROn = false;
-                                });
+                                _log.Debug("NewValue cannot be found in event_param");
+                                return;
                             }
-                            break;
+                            Application.Current.Dispatcher.Invoke(() =>
+                            {
+                                _viewModel!.IsSettingProfile = true;
+                                if (NewValue.ToLower() == "true")
+                                    _viewModel.IsHDROn = true;
+                                else
+                                    _viewModel.IsHDROn = false;
+                                _viewModel!.IsSettingProfile = false;
+                            });
+                        }
+                        break;
                     }
                 }
             }
             catch (Exception ex)
             {
-                _log.Debug(ex , "WebCameraplugin_UIUpdateNotify");
+                _log.Debug(ex, "WebCameraplugin_UIUpdateNotify");
             }
         }
 

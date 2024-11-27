@@ -353,7 +353,7 @@ namespace DDPM.UI.Module.PenButtonSettings
                 Window parentWindow = Window.GetWindow(this);
                 double windowLeft = 0;
                 double windowTop = 0;
-                ActionParameterModalDialog modalDialog = new(action, parentWindow.ActualWidth, parentWindow.ActualHeight);
+                ActionParameterModalDialog modalDialog = new(action, parentWindow.ActualWidth, parentWindow.ActualHeight, "", true);
                 if (parentWindow != null)
                 {
                     modalDialog.Owner = parentWindow;
@@ -485,7 +485,7 @@ namespace DDPM.UI.Module.PenButtonSettings
             double windowTop = 0;
             if (id == 8)
             {
-                ActionParameterModalDialog modalDialog = new(AdvancedAction.AssignKeystroke, parentWindow.ActualWidth, parentWindow.ActualHeight, parameter);
+                ActionParameterModalDialog modalDialog = new(AdvancedAction.AssignKeystroke, parentWindow.ActualWidth, parentWindow.ActualHeight, parameter, true);
                 if (parentWindow != null)
                 {
                     modalDialog.Owner = parentWindow;

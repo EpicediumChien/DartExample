@@ -1,6 +1,8 @@
-﻿using DDPM.SA.Common.Security;
+﻿using DDPM.SA.Common;
+using DDPM.SA.Common.Security;
 using DDPM.UI.Common;
 using DDPM.UI.Resources.Helper;
+using DPeMPublic.Common.Enums;
 using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
@@ -18,10 +20,11 @@ namespace DDPM.UI.Plugin.Common
         private readonly Microsoft.Win32.OpenFileDialog? openFileDialog;
         private readonly System.Windows.Forms.FolderBrowserDialog? folderBrowserDialog;
         private AdvancedAction _deviceCat;
+        private bool IsForPen = false;
 
         public string Parameter { get; private set; } = "";
 
-        public ActionParameterModalDialog(AdvancedAction deviceCat, double width, double height, string parameter = "")
+        public ActionParameterModalDialog(AdvancedAction deviceCat, double width, double height, string parameter = "", bool isForPen = false)
         {
             InitializeComponent();
             this.Width = width;
@@ -38,7 +41,13 @@ namespace DDPM.UI.Plugin.Common
                     txtKeystroke.Text = parameter;
                     btnClear.IsEnabled = parameter != "";
                     spKeystroke.Visibility = Visibility.Visible;
-                    this.PreviewKeyDown += Keystroke_PreviewKeyDown;
+                    if (isForPen)
+                    {
+                        DdpmCommonHelper.DeviceManagerSA!.DeviceChanged += DeviceManagerSA_DeviceChanged;
+                        IsForPen = true;
+                    }
+                    else
+                        this.PreviewKeyDown += Keystroke_PreviewKeyDown;
                     break;
 
                 case AdvancedAction.OpenFile:
@@ -80,6 +89,27 @@ namespace DDPM.UI.Plugin.Common
             btnBrowse.Caption = Strings.Browse;
         }
 
+        private void DeviceManagerSA_DeviceChanged(object? sender, SA.Common.DeviceChangedEventArgs e)
+        {
+            if (e.type == DeviceChangedType.Peripherals_SettingsChange)
+            {
+                if (e.changedProperty.Split("|")[0] == "PenKeyCaptureProgressDataChanged")
+                {
+                    var txt = e.changedProperty.Substring(32);
+                    if (txt.Length > 30)
+                    {
+                        Task<bool> task1 = DdpmCommonHelper.DeviceManagerSA!.FinishKeyCapturePen();
+                        _ = task1.Result;
+                        Task<string> task2 = DdpmCommonHelper.DeviceManagerSA!.KeyCaptureData();
+                        var keystroke = task2.Result;
+                    }
+                    Application.Current.Dispatcher.Invoke(() => {
+                        txtKeystroke.Text = e.changedProperty.Substring(32);
+                    });
+                }
+            }
+        }
+
         private void TxtKeystroke_PreviewTextInput(object sender, TextCompositionEventArgs e)
         {
             Regex regex = new Regex(@"^[0-9a-zA-Z _.~:@/?&=#%+[\]!$()*,.;-]+$");
@@ -88,6 +118,9 @@ namespace DDPM.UI.Plugin.Common
 
         private void CancelClick(object sender, MouseButtonEventArgs e)
         {
+            if (IsForPen)
+                DdpmCommonHelper.DeviceManagerSA!.DeviceChanged -= DeviceManagerSA_DeviceChanged;
+
             DialogResult = false;
             Close();
         }
@@ -109,6 +142,9 @@ namespace DDPM.UI.Plugin.Common
             //        return;
             //    }
             //}
+            if (IsForPen)
+                DdpmCommonHelper.DeviceManagerSA!.DeviceChanged -= DeviceManagerSA_DeviceChanged;
+
             DialogResult = true;
             Close();
         }
