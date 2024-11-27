@@ -364,21 +364,12 @@ namespace DDPM.UI.Module.PenButtonSettings
                 modalDialog.Left = windowLeft;
                 modalDialog.Top = windowTop;
 
-                Task<bool> task = DdpmCommonHelper.DeviceManagerSA!.StartKeyCapturePen();
-                _ = task.Result;
                 if (modalDialog.ShowDialog()!.Value)
                 {
-                    Task<bool> task1 = DdpmCommonHelper.DeviceManagerSA!.FinishKeyCapturePen();
-                    _ = task1.Result;
-                    Task<string> task2 = DdpmCommonHelper.DeviceManagerSA!.KeyCaptureData();
-                    var keystroke = task2.Result;
                     parameter = modalDialog.Parameter;
-                    parameter = keystroke;
                 }
                 else
                 {
-                    Task<bool> task1 = DdpmCommonHelper.DeviceManagerSA!.FinishKeyCapturePen();
-                    _ = task1.Result;
                     txtSearchText.Clear();
                     ShowAction();
                     return;

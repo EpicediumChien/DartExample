@@ -4,6 +4,7 @@ using DDPM.UI.Common;
 using DDPM.UI.Resources.Helper;
 using DPeMPublic.Common.Enums;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -45,6 +46,8 @@ namespace DDPM.UI.Plugin.Common
                     {
                         DdpmCommonHelper.DeviceManagerSA!.DeviceChanged += DeviceManagerSA_DeviceChanged;
                         IsForPen = true;
+                        Task<bool> task = DdpmCommonHelper.DeviceManagerSA!.StartKeyCapturePen();
+                        _ = task.Result;
                     }
                     else
                         this.PreviewKeyDown += Keystroke_PreviewKeyDown;
@@ -95,7 +98,7 @@ namespace DDPM.UI.Plugin.Common
             {
                 if (e.changedProperty.Split("|")[0] == "PenKeyCaptureProgressDataChanged")
                 {
-                    var txt = e.changedProperty.Substring(32);
+                    var txt = e.changedProperty.Substring(33);
                     if (txt.Length > 30)
                     {
                         Task<bool> task1 = DdpmCommonHelper.DeviceManagerSA!.FinishKeyCapturePen();
@@ -104,7 +107,7 @@ namespace DDPM.UI.Plugin.Common
                         var keystroke = task2.Result;
                     }
                     Application.Current.Dispatcher.Invoke(() => {
-                        txtKeystroke.Text = e.changedProperty.Substring(32);
+                        txtKeystroke.Text = e.changedProperty.Substring(33);
                     });
                 }
             }
@@ -119,7 +122,7 @@ namespace DDPM.UI.Plugin.Common
         private void CancelClick(object sender, MouseButtonEventArgs e)
         {
             if (IsForPen)
-                DdpmCommonHelper.DeviceManagerSA!.DeviceChanged -= DeviceManagerSA_DeviceChanged;
+                StopPenCapture();
 
             DialogResult = false;
             Close();
@@ -130,6 +133,8 @@ namespace DDPM.UI.Plugin.Common
             txtKeystroke.Text = "";
 
             btnClear.IsEnabled = false;
+            if (IsForPen)
+                RestartPenCapture();
         }
 
         private void SaveClick(object sender, MouseButtonEventArgs e)
@@ -143,7 +148,7 @@ namespace DDPM.UI.Plugin.Common
             //    }
             //}
             if (IsForPen)
-                DdpmCommonHelper.DeviceManagerSA!.DeviceChanged -= DeviceManagerSA_DeviceChanged;
+            StopPenCapture();
 
             DialogResult = true;
             Close();
@@ -271,14 +276,26 @@ namespace DDPM.UI.Plugin.Common
             }
         }
 
+        private void StopPenCapture()
+        {
+            Task<bool> task1 = DdpmCommonHelper.DeviceManagerSA!.FinishKeyCapturePen();
+            _ = task1.Result;
+            Task<string> task2 = DdpmCommonHelper.DeviceManagerSA!.KeyCaptureData();
+            var keystroke = task2.Result;
+            DdpmCommonHelper.DeviceManagerSA!.DeviceChanged -= DeviceManagerSA_DeviceChanged;
+        }
+        private void RestartPenCapture()
+        {
+            Task<bool> task = DdpmCommonHelper.DeviceManagerSA!.FinishKeyCapturePen();
+            _ = task.Result;
+            task = DdpmCommonHelper.DeviceManagerSA!.StartKeyCapturePen();
+            _ = task.Result;
+        }
+
         private void Window_Unloaded(object sender, RoutedEventArgs e)
         {
             if (IsForPen)
-            {
-                Task<bool> task1 = DdpmCommonHelper.DeviceManagerSA!.FinishKeyCapturePen();
-                _ = task1.Result;
-
-            }
+                StopPenCapture();
         }
     }
 }
