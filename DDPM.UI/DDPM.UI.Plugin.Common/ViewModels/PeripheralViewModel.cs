@@ -63,6 +63,8 @@ namespace DDPM.UI.Plugin.ViewModels
         //public DDPMSettings? DDPMSettings;
         //public WebcamSettings WebcamSettings = new();
         public bool IsCopilotEnabled = true;
+        public bool IsDTPReady = false;
+        public int CurrentVersion = 0;
 
         public PeripheralViewModel(IConsole console, ILog log, IDeviceManagerSA deviceManager)
         {
@@ -81,6 +83,21 @@ namespace DDPM.UI.Plugin.ViewModels
                 Interval = TimeSpan.FromSeconds(0.5)
             };
             timer.Tick += Timer_Tick;
+
+            if (CurrentVersion == 0)
+            {
+                string regPath = $@"SOFTWARE\Microsoft\Windows NT\CurrentVersion";
+                string regKey = $"CurrentBuild";
+                var regValue = DdpmCommonHelper.DeviceManagerSA!.ReadRegistryData(SA.Common.Settings.RegistryHive.LocalMachine, regPath, regKey).Result;
+                if (int.TryParse((string)regValue, out int build))
+                {
+                    CurrentVersion = build >= 22000 ? 11 : 10;
+                }
+                else
+                {
+                    CurrentVersion = 10;
+                }
+            }
         }
 
         public void Unpair()

@@ -217,7 +217,7 @@ namespace DDPM.UI.Plugin.ViewModels
         {
             get
             {
-                return IsChecked_ProximitySensor ? "ON" : "OFF";
+                return IsChecked_ProximitySensor ? Strings.On : Strings.Off;
             }
         }
 
@@ -239,7 +239,7 @@ namespace DDPM.UI.Plugin.ViewModels
         {
             get
             {
-                return IsChecked_WakeOnApproach ? "ON" : "OFF";
+                return IsChecked_WakeOnApproach ? Strings.On : Strings.Off;
             }
         }
 
@@ -264,7 +264,7 @@ namespace DDPM.UI.Plugin.ViewModels
         {
             get
             {
-                return IsChecked_WalkAwayLock ? "ON" : "OFF";
+                return IsChecked_WalkAwayLock ? Strings.On : Strings.Off;
             }
         }
 
@@ -333,7 +333,7 @@ namespace DDPM.UI.Plugin.ViewModels
         {
             get
             {
-                return IsChecked_Snooze ? "ON" : "OFF";
+                return IsChecked_Snooze ? Strings.On : Strings.Off;
             }
         }
 
@@ -524,8 +524,11 @@ namespace DDPM.UI.Plugin.ViewModels
             Application.Current.Dispatcher.Invoke(() =>
             {
                 InitializeWebcam();
-                PrepareProfileItems();
+                if (IsDTPReady)
+                    PrepareProfileItems();
             });
+            if (!IsDTPReady)
+                return false;
 
             OnPropertyChanged(nameof(IsMicEnumerationOn));
             OnPropertyChanged(nameof(IsMicEnumerationOnText));
@@ -542,6 +545,13 @@ namespace DDPM.UI.Plugin.ViewModels
         private void InitializeWebcam()
         {
             WebcamSettings = WebcamSettings.ImportWebcamSettings(Model, CurrentDeviceInfo!);
+            if (WebcamSettings.SelectedProfileName == "")
+            {
+                IsDTPReady = false;
+                return;
+            }
+            else
+            { IsDTPReady = true; }
 
             //var id = CurrentDeviceID.ToString();
             //Task<JArray> task2 = DdpmCommonHelper.DeviceManagerSA!.GetPresetProfiles(id);
@@ -560,6 +570,8 @@ namespace DDPM.UI.Plugin.ViewModels
 
             PrepareProfileItems();
             SetProfile();
+            if (!IsDTPReady)
+                return;
 
             _resolutions = WebcamSettings.Resolutions.Keys.ToList();
             var i = WebcamSettings.Resolutions.Keys.ToList().IndexOf(WebcamSettings.SelectedResolution);
@@ -569,31 +581,40 @@ namespace DDPM.UI.Plugin.ViewModels
 
             if (CurrentDeviceInfo.IsWindowsHelloSupported)
             {
-                Task<bool> task = DdpmCommonHelper.DeviceManagerSA!.GetIsPrioritizeExternalWebcam(CurrentDeviceID.ToString());
-                _isPrioritizeExternalWebcam = task.Result;
+                Task<bool?> task = DdpmCommonHelper.DeviceManagerSA!.GetIsPrioritizeExternalWebcam(CurrentDeviceID.ToString());
+                var result = task.Result;
+                if (result == null)
+                {
+                    IsDTPReady = false;
+                }
+                else
+                {
+                    _isPrioritizeExternalWebcam = result.Value;
+                    IsDTPReady = true;
+                }
             }
         }
 
-        public void RefreshProfiles()
-        {
-            var id = CurrentDeviceID.ToString();
-            Task<string> task1 = DdpmCommonHelper.DeviceManagerSA!.GetProfile(id);
-            WebcamSettings.SelectedProfile = task1.Result;
-            task1 = DdpmCommonHelper.DeviceManagerSA!.GetProfileName(id);
-            WebcamSettings.SelectedProfileName = task1.Result;
+        //public void RefreshProfiles()
+        //{
+        //    var id = CurrentDeviceID.ToString();
+        //    Task<string> task1 = DdpmCommonHelper.DeviceManagerSA!.GetProfile(id);
+        //    WebcamSettings.SelectedProfile = task1.Result;
+        //    task1 = DdpmCommonHelper.DeviceManagerSA!.GetProfileName(id);
+        //    WebcamSettings.SelectedProfileName = task1.Result;
 
 
-            Task<JArray> task2 = DdpmCommonHelper.DeviceManagerSA.GetCustomProfiles(id);
-            List<WebcamProfile> Profiles = JArray.FromObject(task2.Result).ToObject<List<WebcamProfile>>()!;
-            for (var l = Profiles.Count - 1; l >= 0; l--)
-            {
-                if (!ProfileIDs.ContainsKey(Profiles[l].Name))
-                    ProfileIDs.Add(Profiles[l].Name, Profiles[l].Id);
+        //    Task<JArray> task2 = DdpmCommonHelper.DeviceManagerSA.GetCustomProfiles(id);
+        //    List<WebcamProfile> Profiles = JArray.FromObject(task2.Result).ToObject<List<WebcamProfile>>()!;
+        //    for (var l = Profiles.Count - 1; l >= 0; l--)
+        //    {
+        //        if (!ProfileIDs.ContainsKey(Profiles[l].Name))
+        //            ProfileIDs.Add(Profiles[l].Name, Profiles[l].Id);
 
-                WebcamSettings.CustomProfiles.Add(Profiles[l].Name, Profiles[l]);
-            }
-            WebcamSettings.ExportWebcamSettings(WebcamSettings, Model);
-        }
+        //        WebcamSettings.CustomProfiles.Add(Profiles[l].Name, Profiles[l]);
+        //    }
+        //    WebcamSettings.ExportWebcamSettings(WebcamSettings, Model);
+        //}
 
         public void SetProfile()
         {
@@ -602,9 +623,19 @@ namespace DDPM.UI.Plugin.ViewModels
             else
                 CurrentProfile = JsonConvert.DeserializeObject<WebcamProfile>(JsonConvert.SerializeObject(WebcamSettings.PresetProfiles[CurrentProfileName]))!;
 
+            Task<bool> task;
             if (CurrentDeviceInfo!.IsPropertyAutoFramingSensitivitySupported || CurrentDeviceInfo.IsPropertyAutoFramingSizeSupported || CurrentDeviceInfo.IsPropertyAutoFramingTransitionSupported)
             {
-                DdpmCommonHelper.DeviceManagerSA!.SetIsAutoFramingOn(CurrentDeviceInfo!.ID.ToString(), CurrentProfile.IsAutoFramingOn);
+                task = DdpmCommonHelper.DeviceManagerSA!.SetIsAutoFramingOn(CurrentDeviceInfo!.ID.ToString(), CurrentProfile.IsAutoFramingOn);
+                if (task.Result)
+                {
+                    IsDTPReady = true;
+                }
+                else
+                {
+                    IsDTPReady = false;
+                    return;
+                }
                 OnPropertyChanged(nameof(IsAutoFramingOn));
                 OnPropertyChanged(nameof(IsAutoFramingOnText));
                 if (CurrentDeviceInfo.IsPropertyAutoFramingTransitionSupported)
@@ -628,7 +659,16 @@ namespace DDPM.UI.Plugin.ViewModels
 
             if (CurrentDeviceInfo.IsPropertyFOVSupported)
             {
-                DdpmCommonHelper.DeviceManagerSA!.SetFieldOfView(CurrentDeviceInfo!.ID.ToString(), CurrentProfile.FieldOfView);
+                task = DdpmCommonHelper.DeviceManagerSA!.SetFieldOfView(CurrentDeviceInfo!.ID.ToString(), CurrentProfile.FieldOfView);
+                if (task.Result)
+                {
+                    IsDTPReady = true;
+                }
+                else
+                {
+                    IsDTPReady = false;
+                    return;
+                }
                 if (_fOVs[0] == CurrentProfile.FieldOfView)
                 {
                     SetFOV_Selected(0);
@@ -648,7 +688,16 @@ namespace DDPM.UI.Plugin.ViewModels
 
             if (CurrentDeviceInfo.IsPropertyZoomSupported)
             {
-                DdpmCommonHelper.DeviceManagerSA!.SetZoom(CurrentDeviceInfo!.ID.ToString(), CurrentProfile.Zoom);
+                task = DdpmCommonHelper.DeviceManagerSA!.SetZoom(CurrentDeviceInfo!.ID.ToString(), CurrentProfile.Zoom);
+                if (task.Result)
+                {
+                    IsDTPReady = true;
+                }
+                else
+                {
+                    IsDTPReady = false;
+                    return;
+                }
                 Zoom = CurrentProfile.Zoom;
                 //OnPropertyChanged(nameof(Zoom));
             }
@@ -684,7 +733,6 @@ namespace DDPM.UI.Plugin.ViewModels
                 OnPropertyChanged(nameof(IsAutoWhiteBalanceOnText));
                 //OnPropertyChanged(nameof(AutoWhiteBalance));
             }
-
 
             if (CurrentDeviceInfo.IsPropertyBrightnessSupported)
             {

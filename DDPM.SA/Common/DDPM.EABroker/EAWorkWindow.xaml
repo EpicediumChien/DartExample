@@ -11,11 +11,17 @@
         Loaded="Window_Loaded"
         >
     <Window.Resources>
-        <Storyboard x:Key="FadeOut">
-            <DoubleAnimation Storyboard.TargetName="fadeOutCtrl" Storyboard.TargetProperty="Opacity"
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <!--<ResourceDictionary Source="EAStyles.xaml"/>-->
+            </ResourceDictionary.MergedDictionaries>
+
+            <Storyboard x:Key="FadeOut">
+                <DoubleAnimation Storyboard.TargetName="fadeOutCtrl" Storyboard.TargetProperty="Opacity"
                              BeginTime="0:0:0.5" Duration="0:0:3"
                              From="1.0" To="0" FillBehavior="HoldEnd" />
-        </Storyboard>
+            </Storyboard>
+        </ResourceDictionary>
 
     </Window.Resources>  
     <Grid>

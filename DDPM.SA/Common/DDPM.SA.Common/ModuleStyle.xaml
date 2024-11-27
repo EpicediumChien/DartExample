@@ -115,4 +115,19 @@
         <Setter Property="TextWrapping"
                 Value="Wrap" />
     </Style>
+    
+    <!-- #region EA SplitCtrl Styles, Must be aligned with DDPM.UI ModuleStyle.xaml -->
+    <SolidColorBrush x:Key="SplitCtrl_OuterBorder_BdColor_Icon_Normal" Color="White" />
+    <SolidColorBrush x:Key="SplitSplitter_Icon" Color="White" />
+
+    <!-- Endregion EA SplitCtrl Styles -->
+    
+    <!-- #region EA Dialog Styles  -->
+    <SolidColorBrush x:Key="Dlg_BkColor" Color="#F20D121A" />
+    <SolidColorBrush x:Key="Dlg_BdColor" Color="#293B4D" />
+    <SolidColorBrush x:Key="Dlg_TextColor" Color="#293B4D" />
+
+    <SolidColorBrush x:Key="Dlg_CloseX_Default" Color="#CCCCCC" />
+    <SolidColorBrush x:Key="Dlg_CloseX_HoverBkColor" Color="#33444E" />
+    <!-- #endregion EA Dialog Styles  -->
 </ResourceDictionary>

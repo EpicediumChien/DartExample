@@ -15,7 +15,7 @@
             </ResourceDictionary.MergedDictionaries>
 
             <local:SplitCtrlVM x:Key="vmDesign" IsVertical="True" SplitMode="AWS" 
-                               IsEditable="True" HoveringCell="6G1" />
+                               IsEditable="True" HoveringCell="6G5" />
         </ResourceDictionary>
     </UserControl.Resources>
 

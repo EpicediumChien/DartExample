@@ -59,14 +59,14 @@
                     <Storyboard>
                         <ColorAnimation Storyboard.TargetName="bdOuter"
                                         Storyboard.TargetProperty="BorderBrush.(SolidColorBrush.Color)"
-                                        Duration="0:0:0.3" To="{StaticResource Vbar_BdColor_Hover}" />
+                                        Duration="0:0:0.3" To="{DynamicResource Vbar_BdColor_Hover}" />
                     </Storyboard>
                 </VisualState>
                 <VisualState x:Name="LandingLockHover">
                     <Storyboard>
                         <ColorAnimation Storyboard.TargetName="bdOuter"
                                         Storyboard.TargetProperty="BorderBrush.(SolidColorBrush.Color)"
-                                        Duration="0:0:0.3" To="{StaticResource Vbar_BdColor_LockHover}" />
+                                        Duration="0:0:0.3" To="{DynamicResource Vbar_BdColor_LockHover}" />
                         <!--
                         <ColorAnimation Storyboard.TargetName="bdOuter"
                                         Storyboard.TargetProperty="Background.(SolidColorBrush.Color)"
@@ -83,7 +83,7 @@
                                          Duration="0:0:0.5" To="212" FillBehavior="HoldEnd" />
                         <ColorAnimation Storyboard.TargetName="bdOuter"
                                         Storyboard.TargetProperty="BorderBrush.(SolidColorBrush.Color)"
-                                        Duration="0:0:0.3" To="{StaticResource Vbar_BdColor_Hover}" />
+                                        Duration="0:0:0.3" To="{DynamicResource Vbar_BdColor_Hover}" />
                     </Storyboard>
                 </VisualState>
                 <VisualState x:Name="LockHover">
@@ -93,7 +93,7 @@
                                          Duration="0:0:0.5" To="212" FillBehavior="HoldEnd" />
                         <ColorAnimation Storyboard.TargetName="bdOuter"
                                         Storyboard.TargetProperty="Background.(SolidColorBrush.Color)"
-                                        Duration="0:0:0.3" To="{StaticResource Vbar_BkColor_LockHover}" />
+                                        Duration="0:0:0.3" To="{DynamicResource Vbar_BkColor_LockHover}" />
                     </Storyboard>
                 </VisualState>
             </VisualStateGroup>

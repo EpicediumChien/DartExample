@@ -7,9 +7,10 @@
         mc:Ignorable="d"
         xmlns:UXControls="clr-namespace:Dell.Client.Framework.UX.WPF.Controls;assembly=DCF.UX.WPF"
         xmlns:viewmodels="clr-namespace:DDPM.UI.Plugin.ViewModels"
-        d:DataContext="{d:DesignInstance Type=viewmodels:AddDeviceViewModel}" Background="Transparent" AllowsTransparency="True"
+        d:DataContext="{d:DesignInstance Type=viewmodels:AddDeviceViewModel}" AllowsTransparency="True"
         Title="WaitingModalDialog" Height="349" Width="587" ResizeMode="NoResize" ShowInTaskbar="False"
-        WindowStartupLocation="CenterOwner" WindowStyle="None">
+        WindowStartupLocation="CenterOwner" WindowStyle="None"
+        Background="{DynamicResource DefaultTheme_DialogBoxBkColor}">
     <Window.Resources>
         <Style x:Key="BorderYes" TargetType="Border">
             <Setter Property="Background" Value="{DynamicResource BorderYesBackground}" />

@@ -246,7 +246,7 @@ namespace DDPM.SA.Common
             sb.AppendLine($"{nameof(item.IsESISupported)} (get)                           : {item.IsESISupported}");
             sb.AppendLine($"{nameof(item.SupportedProperties)} (get)                      : {string.Join("," + Environment.NewLine + string.Empty.PadLeft(6, '\t') + " ", item.SupportedProperties.Select(i => i.Replace("'", "''")))}");
             sb.AppendLine($"{nameof(item.FOVValues)} (get)                                : {string.Join("," + Environment.NewLine + string.Empty.PadLeft(6, '\t') + " ", item.FOVValues.Select(i => i.Replace("'", "''")))}");
-            sb.AppendLine($"{nameof(item.SupportedResolutions)} (get)                     : {string.Join("," + Environment.NewLine + string.Empty.PadLeft(6, '\t') + " ", item.SupportedResolutions.Select(i => i.Replace("'", "''")))}");
+            sb.AppendLine($"{nameof(item.SupportedResolutions)} (get)                     : {item.SupportedResolutions}");
             sb.AppendLine($"{nameof(item.SupportedFeatures)} (get)                        : {item.SupportedFeatures}");
             sb.AppendLine($"{nameof(item.CurrentFeatures)} (get)                          : {item.CurrentFeatures}");
             sb.AppendLine($"{nameof(item.IsMicEnumerationSupported)} (get)                : {item.IsMicEnumerationSupported}");

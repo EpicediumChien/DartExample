@@ -146,11 +146,6 @@ namespace CLI.Subagent
             }
 
             // 2024-08-24 Casper: Add Help command
-            //if (commandLineInput.Command.Equals("HELP") && commandLineInput.TargetFeature != "DISPLAY")
-            //{
-            //    _exitcode = ICLICommandTable.Response_HelpCommand(commandLineInputs[idx]);
-            //    return;
-            //}
             idx = commandLineInputs.FindIndex(x => x.Command.Equals("HELP"));
             if (idx >= 0)
             {
