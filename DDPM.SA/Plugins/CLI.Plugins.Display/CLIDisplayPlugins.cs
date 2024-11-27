@@ -5101,7 +5101,23 @@ namespace DDPM.CLI.Plugins.Display
                 // jim modify 20240608
                 bool r = false;
                 bool ever_fail = false;
-
+                switch (value)
+                {
+                    case "CUSTOM":
+                        value = "CUSTOM COLOR";
+                        break;
+                    case "FPSGAME":
+                        value = "FPS GAME";
+                        break;
+                    case "RTSGAME":
+                        value = "RTS GAME";
+                        break;
+                    case "RPGGAME":
+                        value = "RPG GAME";
+                        break;
+                    default:
+                        break;
+                }
                 if (index.Count == 0 && serviceTag.Count == 0 && model.Count == 0)
                 {
                     foreach (var monitor in _AllInfoMonitors)
