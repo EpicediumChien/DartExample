@@ -21,7 +21,7 @@ namespace DDPM.SA.Common
         [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
         private static extern int RegOpenKeyEx(IntPtr hKey, string subKey, uint options, int samDesired,
                                                out IntPtr phkResult);
-        public static int _RegOpenKeyEx(IntPtr hKey, string subKey, uint options, int samDesired,
+        private static int _RegOpenKeyEx(IntPtr hKey, string subKey, uint options, int samDesired,
                                                out IntPtr phkResult)
         {
             return RegOpenKeyEx(hKey,  subKey,  options,  samDesired, out phkResult);
@@ -618,7 +618,7 @@ namespace DDPM.SA.Common
         [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
         private static extern int RegOpenKeyEx(IntPtr hKey, string subKey, uint options, int samDesired,
                                                out IntPtr phkResult);
-        public static int _RegOpenKeyEx(IntPtr hKey, string subKey, uint options, int samDesired,
+        private static int _RegOpenKeyEx(IntPtr hKey, string subKey, uint options, int samDesired,
                                                out IntPtr phkResult)
         {
             return RegOpenKeyEx(hKey, subKey, options, samDesired, out phkResult);

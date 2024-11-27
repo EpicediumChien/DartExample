@@ -9,14 +9,23 @@ namespace DDPM.SA.Common
         public const int WmHotKey = 0x0312;
 
         [DllImport("user32.dll", SetLastError = true)]
-        public static extern bool RegisterHotKey(IntPtr hWnd, int id, ModifierKeys fsModifiers, int vk);
+        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
+        private static extern bool RegisterHotKey(IntPtr hWnd, int id, ModifierKeys fsModifiers, int vk);
+        public static bool _RegisterHotKey(IntPtr hWnd, int id, ModifierKeys fsModifiers, int vk)
+        {
+            return RegisterHotKey(hWnd, id, fsModifiers, vk);
+        }
 
         [DllImport("user32.dll", SetLastError = true)]
-        public static extern bool UnregisterHotKey(IntPtr hWnd, int id);
+        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
+        private static extern bool UnregisterHotKey(IntPtr hWnd, int id);
+        public static bool _UnregisterHotKey(IntPtr hWnd, int id)
+        {
+            return UnregisterHotKey(hWnd, id);
+        }
 
-
-        [DllImport("Kernel32.dll", SetLastError = true)]
-        public static extern ulong GetLastError();
+        //[DllImport("Kernel32.dll", SetLastError = true)]
+        //public static extern ulong GetLastError();
 
 
         /*       [DllImport("kernel32.dll")]
@@ -30,7 +39,7 @@ namespace DDPM.SA.Common
                 [return: MarshalAs(UnmanagedType.Bool)]
                 public static extern bool UnregisterHotKey(IntPtr hWnd, int id);*/
 
-        [DllImport("kernel32.dll")]
+       /* [DllImport("kernel32.dll")]
         public static extern ushort GlobalAddAtom(string lpString);
 
         [DllImport("kernel32.dll")]
@@ -44,6 +53,6 @@ namespace DDPM.SA.Common
 
         [DllImport("Kernel32.dll", SetLastError = true)]
         [return: MarshalAs(UnmanagedType.SysInt)]
-        public static extern IntPtr OpenThread(uint dwDesiredAccess, [MarshalAs(UnmanagedType.Bool)] bool bInheritHandle, uint dwThreadId);
+        public static extern IntPtr OpenThread(uint dwDesiredAccess, [MarshalAs(UnmanagedType.Bool)] bool bInheritHandle, uint dwThreadId);*/
     }
 }
