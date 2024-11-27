@@ -88,15 +88,7 @@ namespace DDPM.ColorApp
                 AppStatusQuery.GetInstance(Log).ClearLastAppRecord("SET_MANUAL");
             }
 
-            if (b_SmartHDR_ON)
-            {
-                writelog("Set_AUTO_ColorPresetConfig SmartHDR_ON = " + b_SmartHDR_ON);               
-            }
-            else
-            {
-                writelog("Set_AUTO_ColorPresetConfig SmartHDR_ON = " + b_SmartHDR_ON);
-            
-            }
+            writelog("Set_AUTO_ColorPresetConfig SmartHDR_ON = " + b_SmartHDR_ON);                           
         }
 
         // jim add 20240620
