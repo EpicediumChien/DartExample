@@ -1440,41 +1440,49 @@ namespace VcpCore.Plugins
 
                         default:
                             {
-                                //byte fuc = TranslatorVCPctrCode(FunctionName);
-                                //uint value = TranslatorVCPcategory(FunctionName, val);
-                                //rc = SetVCPCapability_(monitorInfoX, fuc, value);
+                                byte fuc = TranslatorVCPctrCode(FunctionName);
 
-                                //if (rc)
-                                //{
-                                //    SetToCacheTable(monitorInfoX, FunctionName.ToLower(), val);
+                                if (fuc != default(byte))
+                                {
+                                    var value = TranslatorVCPcategory(FunctionName, val);
 
-                                //    VCPchangedEventArgs _VCPchangedEventArgs = new VCPchangedEventArgs();
-                                //    _VCPchangedEventArgs.vcpcode = FunctionName.ToLower();
-                                //    _VCPchangedEventArgs.value = val;
-                                //    _VCPchangedEventArgs.monitor = (_AllInfoMonitors_Mix.Find(M => M.Item1.edid.Equals(monitorInfoX.edid))).Item2.Clone();
-                                //    //new MonitorInfo()
-                                //    //{
-                                //    //    AliasDeviceName = monitorInfoX.AliasDeviceName,
-                                //    //    IsDellMonitor = monitorInfoX.IsDellMonitor,
-                                //    //    Index = monitorInfoX.Index,
-                                //    //    CapabilityString = monitorInfoX.CapabilityString,
-                                //    //    DDCisON = monitorInfoX.DDCisON,
-                                //    //    DisplayName = monitorInfoX.DisplayName,
-                                //    //    edid = monitorInfoX.edid,
-                                //    //    FwVersion = monitorInfoX.FwVersion,
-                                //    //    inputSource = monitorInfoX.inputSource,
-                                //    //    inputCable = monitorInfoX.inputCable,
-                                //    //    CapabilityDic = monitorInfoX.CapabilityDic,
-                                //    //    modelName = monitorInfoX.modelName,
-                                //    //    series = monitorInfoX.series,
-                                //    //    MarketingName = monitorInfoX.MarketingName,
-                                //    //    ImageFileName = monitorInfoX.ImageFileName,
-                                //    //    SupplierID = monitorInfoX.SupplierID,
-                                //    //    D_Ctrl = monitorInfoX.D_Ctrl,
-                                //    //    scalingFactor = monitorInfoX.scalingFactor,
-                                //    //};
-                                //    OnVCPchanged(_VCPchangedEventArgs);
-                                //}
+                                    if (value != default(uint?))
+                                    {
+                                        rc = SetVCPCapability_(monitorInfoX, fuc, value.Value);
+
+                                        if (rc)
+                                        {
+                                            SetToCacheTable(monitorInfoX, FunctionName.ToLower(), val);
+
+                                            VCPchangedEventArgs _VCPchangedEventArgs = new VCPchangedEventArgs();
+                                            _VCPchangedEventArgs.vcpcode = FunctionName.ToLower();
+                                            _VCPchangedEventArgs.value = val;
+                                            _VCPchangedEventArgs.monitor = (_AllInfoMonitors_Mix.Find(M => M.Item1.edid.Equals(monitorInfoX.edid))).Item2.Clone();
+                                            //new MonitorInfo()
+                                            //{
+                                            //    AliasDeviceName = monitorInfoX.AliasDeviceName,
+                                            //    IsDellMonitor = monitorInfoX.IsDellMonitor,
+                                            //    Index = monitorInfoX.Index,
+                                            //    CapabilityString = monitorInfoX.CapabilityString,
+                                            //    DDCisON = monitorInfoX.DDCisON,
+                                            //    DisplayName = monitorInfoX.DisplayName,
+                                            //    edid = monitorInfoX.edid,
+                                            //    FwVersion = monitorInfoX.FwVersion,
+                                            //    inputSource = monitorInfoX.inputSource,
+                                            //    inputCable = monitorInfoX.inputCable,
+                                            //    CapabilityDic = monitorInfoX.CapabilityDic,
+                                            //    modelName = monitorInfoX.modelName,
+                                            //    series = monitorInfoX.series,
+                                            //    MarketingName = monitorInfoX.MarketingName,
+                                            //    ImageFileName = monitorInfoX.ImageFileName,
+                                            //    SupplierID = monitorInfoX.SupplierID,
+                                            //    D_Ctrl = monitorInfoX.D_Ctrl,
+                                            //    scalingFactor = monitorInfoX.scalingFactor,
+                                            //};
+                                            OnVCPchanged(_VCPchangedEventArgs);
+                                        }
+                                    }
+                                }
                             }
                             break;
                     }
