@@ -267,9 +267,6 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                             _log.Info($"[Walkthrough] {nameof(GetCurrentDeviceManagerPluginPluginCondition)} Start");
                             await CollectAndCompareDevicesAsync();
 
-                            //Derek 1127
-                            //_showPluginManager?.ShowPluginById(DDPM.UI.Common.Constants.WebCameraPluginId);
-
                             //Robert_Lin 2024-8-2 DDPMW-579, If there is any FW/SW update available,
                             //then the Gear icon on masthead will show breathe & glow animation.
                             //Call once
@@ -306,7 +303,13 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
 
         private void _deviceManager_UIUpdateNotify(object? sender, UpdateUINotify e)
         {
-            System.Windows.MessageBox.Show(e.UI_Field_Name);
+            //System.Windows.MessageBox.Show(e.UI_Field_Name);
+            //Derek 1127
+            if (e == null || e.UI_Field_Name == null || e == UpdateUINotify.Empty)
+                return;
+
+            if (e.UI_Field_Name.StartsWith("QAMEvent_StartPreview"))
+                _showPluginManager?.ShowPluginById(DDPM.UI.Common.Constants.WebCameraPluginId);
         }
 
         private async void _deviceManager_DeviceChanged(object? sender, DeviceChangedEventArgs e)

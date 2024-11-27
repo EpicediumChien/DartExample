@@ -159,19 +159,31 @@ namespace DDPM.QAM
         private void CallDDPM_Click(object sender, MouseButtonEventArgs e)
         {
             ShowDDPM();
-
-            //while (true) 
-            {
-                Thread.Sleep(10000);
-                if (2000 == DdpmCommonHelper.DeviceManagerSA?.GetCurrentPollingRate())
-                {
-                    OnUpdateUINotify("CallDDPM_Click");
-
-                    //break;
-                }
-            }
-
+            SendMessageToDDPM(10);
             Close_Click(this, null);
+        }
+
+        private void SendMessageToDDPM(int timeout)
+        {
+            int i = 0;
+
+            while (true)
+            {
+                Thread.Sleep(1000);
+                ++i;
+
+                //wait for homepage is available
+                if (2000 == DdpmCommonHelper.DeviceManagerSA!.GetCurrentPollingRate())
+                {
+                    Thread.Sleep(2000);
+                    OnUpdateUINotify($"QAMEvent_StartPreview[{i}]");
+
+                    break;
+                }
+
+                if (i >= 10)
+                    break;
+            }
         }
 
         private void Grid_MouseDown(object sender, MouseButtonEventArgs e)
