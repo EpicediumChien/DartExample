@@ -1,4 +1,6 @@
-﻿using Dell.Client.Framework.Security;
+﻿using DDPM.SA.Common.Settings;
+using Dell.Client.Framework.Common;
+using Dell.Client.Framework.Security;
 using System.Diagnostics;
 using System.IO.Pipes;
 using System.Runtime.InteropServices;
@@ -15,20 +17,29 @@ namespace VCPSDK
         }
         public string jsonString { get; set; }
     }
+
     public class NamedPipeClient
     {
+        #region Native API
         [DllImport("kernel32.dll", SetLastError = true)]
         internal static extern bool GetNamedPipeServerProcessId(IntPtr Pipe, out UInt32 ClientProcessId);
+        private static bool _GetNamedPipeServerProcessId(IntPtr Pipe, out UInt32 ClientProcessId)
+        {
+            return GetNamedPipeServerProcessId(Pipe, out ClientProcessId);
+        }
+        #endregion
+
         private NamedPipeClientStream pipeClient;
         private CancellationTokenSource cancellationTokenSource;
+
         public delegate void VCPEventHandler(object sender, EventArgsjson eventArgsjson);
         public event VCPEventHandler DDPMEvent;
+
         public NamedPipeClient(string NamedpipeName)
         {
-            //pipeClient = new NamedPipeClientStream(".", "VCPNamedPipe", PipeDirection.InOut, PipeOptions.Asynchronous | PipeOptions.WriteThrough);
             pipeClient = new NamedPipeClientStream(".", NamedpipeName, PipeDirection.InOut, PipeOptions.Asynchronous | PipeOptions.WriteThrough);
-            //cancellationTokenSource = new CancellationTokenSource();
         }
+
         public async Task ConnectAsync(int timeout)
         {
             if (!pipeClient.IsConnected)
@@ -58,6 +69,7 @@ namespace VCPSDK
                 throw;
             }
         }
+
         public async Task<string> DDPMtoNKVM() //DDPM->NKVM json file
         {
             byte[] buffer = new byte[2048];
@@ -76,6 +88,7 @@ namespace VCPSDK
             //VCPResponse(Encoding.UTF8.GetString(buffer, 0, bytesRead));
             return Encoding.UTF8.GetString(buffer, 0, bytesRead);
         }
+
         public async void Disconnect()
         {
             //if (pipeClient.IsConnected)
@@ -87,35 +100,22 @@ namespace VCPSDK
             pipeClient.Close();
             pipeClient.Dispose();
         }
+
         public bool IsConnected()
         {
             return pipeClient.IsConnected;
         }
+
         public void VCPEvent(string response)
         {
             DDPMEvent?.Invoke(this, new EventArgsjson(response));
         }
-        /*public static X509Certificate2 LoadCertificate(string filePath)
-        {
-            byte[] certBytes = default;
-
-            try
-            {
-               certBytes = File.ReadAllBytes(filePath);
-            }
-            catch 
-            { 
-                return default;
-            }
-
-            return new X509Certificate2(certBytes);
-        }*/
 
         private bool NamedPipeServerSecurity(NamedPipeClientStream pipeServer)
         {
             string filePath = string.Empty;
             string info = string.Empty;
-            if (!GetNamedPipeServerProcessId(pipeServer.SafePipeHandle.DangerousGetHandle(), out uint pid))
+            if (!_GetNamedPipeServerProcessId(pipeServer.SafePipeHandle.DangerousGetHandle(), out uint pid))
             {
                 Console.WriteLine("Get server process id over pipeline failed");
                 return false;
@@ -124,6 +124,8 @@ namespace VCPSDK
             Process process = Process.GetProcessById((int)pid);
             filePath = process.MainModule.FileName;
             Console.WriteLine("File path: " + filePath);
+
+            /*
             //check file path security
             if(!IsFilePathValid(filePath, out info))
             {
@@ -132,13 +134,12 @@ namespace VCPSDK
             }
 
             //Need to check dll/exe thumbprint
-            X509Certificate2 cert = new X509Certificate2(filePath);//LoadCertificate(filePath);
+            X509Certificate2 cert = DDPMFileSecurity.LoadFileCertificate(filePath);// new X509Certificate2(filePath);
             if (cert == null)
             {
                 Console.WriteLine("Can't retrieve cert from file.");
                 return false;
             }
-
 
             try
             {
@@ -175,11 +176,25 @@ namespace VCPSDK
             {
                 Console.WriteLine(ex.Message);
                 return false;
+            }*/
+            try
+            {
+                if(!DDPMFileSecurity.VerifyFileCertWithInboxThumbprint(filePath, out info))
+                {
+                    Console.WriteLine(info);
+                    return false;
+                }
+                Console.WriteLine($"Checked pass with {filePath}");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return false;
             }
             return true;
         }
 
-        public static bool IsFilePathValid(string filePath, out string info)
+        /*public static bool IsFilePathValid(string filePath, out string info)
         {
             info = "Valid";
             //check return code with Enum PathCheckErrorCodes
@@ -198,6 +213,6 @@ namespace VCPSDK
                              .Where(x => x % 2 == 0)
                              .Select(x => Convert.ToByte(thumbprint.Substring(x, 2), 16))
                              .ToArray();
-        }
+        }*/
     }
 }
