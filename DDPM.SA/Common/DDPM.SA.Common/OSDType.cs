@@ -13,7 +13,8 @@
         StartRecording,
         EasyMemory,
         Error,
-        QAM
+        QAM,
+        CollaborationNotAvailable
     }
 
     public enum OSDType_Device

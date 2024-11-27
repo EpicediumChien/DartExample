@@ -12285,6 +12285,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         if (isCapsLockOn)
                         {
                             ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.CapsLock, true);
+                            //ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.BatteryLow, OSDType_Device.Headset, "Content");
+                            //ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.CollaborationNotAvailable, OSDType_Device.Keyboard, "Collaboration controls are not available during multiple conference calls");
                         }
                         else
                         {
@@ -14871,6 +14873,35 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                             else
                                 return Task.CompletedTask;
                         }
+                    case OSDType.CollaborationNotAvailable:
+                        {
+                            if (Device is OSDType_Device.Headset)
+                            {
+                                if (!string.IsNullOrWhiteSpace(Content))
+                                    _showosd(monitorInfo, OSDType.CollaborationNotAvailable, OSDType_Device.Headset, Content);
+                                else
+                                    writelog("[_showosd*******] Content error can't be NullOrWhiteSpace");
+                                return Task.CompletedTask;
+                            }
+                            else if (Device is OSDType_Device.Keyboard)
+                            {
+                                if (!string.IsNullOrWhiteSpace(Content))
+                                    _showosd(monitorInfo, OSDType.CollaborationNotAvailable, OSDType_Device.Keyboard, Content);
+                                else
+                                    writelog("[_showosd*******] Content error can't be NullOrWhiteSpace");
+                                return Task.CompletedTask;
+                            }
+                            else if (Device is OSDType_Device.Mouse)
+                            {
+                                if (!string.IsNullOrWhiteSpace(Content))
+                                    _showosd(monitorInfo, OSDType.CollaborationNotAvailable, OSDType_Device.Mouse, Content);
+                                else
+                                    writelog("[_showosd*******] Content error can't be NullOrWhiteSpace");
+                                return Task.CompletedTask;
+                            }
+                            else
+                                return Task.CompletedTask;
+                        }
                     default:
                         return Task.CompletedTask;
                 }
@@ -15348,7 +15379,22 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                             //}
                                         }
                                         break;
-
+                                    case OSDType.CollaborationNotAvailable:
+                                        {
+                                            if (_DeviceType is OSDType_Device.Keyboard)
+                                            {
+                                                try
+                                                {
+                                                    _OSD_Controler.CollaborationNotAvailableWin_CloseWindow();
+                                                    _OSD_Controler.CollaborationNotAvailableWin_ShowWindow(Content, (sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX));
+                                                }
+                                                catch (Exception ex)
+                                                {
+                                                    writelog($"[_showosd] ERROR - OSDType_Device.Keyboard: {ex.Message}");
+                                                }
+                                            }
+                                        }
+                                        break;
                                     default:
                                         break;
                                 }
