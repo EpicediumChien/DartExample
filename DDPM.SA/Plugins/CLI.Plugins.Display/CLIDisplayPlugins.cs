@@ -85,7 +85,7 @@ namespace DDPM.CLI.Plugins.Display
         {
             //check if no monitor connected, direct response no monitor
             _AllInfoMonitors = devMgr.GetMonitors().Result;
-            if ((_AllInfoMonitors == null || _AllInfoMonitors.Count == 0) && !commandLineInput.TargetFeature.Equals("NETWORKKVM") && !commandLineInput.TargetFeature.Equals("NETWORKKVMAUTOCONNECT") && !commandLineInput.TargetFeature.Equals("NETWORKKVMCONTENTTRANSFER") && !commandLineInput.TargetFeature.Equals("NETWORKKVMINCOMINGPORT") && !commandLineInput.TargetFeature.Equals("NETWORKKVMOUTGOINGPORT") && !commandLineInput.TargetFeature.Equals("NETWORKKVMCONTENTTRANSFERPORT") && !commandLineInput.TargetFeature.Equals("NETWORKKVMACCESSRESET") && commandLineInput.TargetType != "APP")
+            if ((_AllInfoMonitors == null || _AllInfoMonitors.Count == 0) && commandLineInput.TargetType != "APP" && !commandLineInput.TargetFeature.Contains("NETWORKKVM"))
             {
                 CLI_RESPONSE rsp = new CLI_RESPONSE()
                 {
@@ -775,57 +775,15 @@ namespace DDPM.CLI.Plugins.Display
                     }
                     break;
                 case "NETWORKKVMVERSION":
-                    {
-                        var ret = NetworkkvmVersionx(commandLineInput);
-                        result.ExitCode = ret.code;
-                        result.serialize_Json_response = ret.result;
-                    }
-                    break;
                 case "NETWORKKVM":
-                    {
-                        var ret = Networkkvmx(devMgr, commandLineInput);
-                        result.ExitCode = ret.code;
-                        result.serialize_Json_response = ret.result;
-                    }
-                    break;
                 case "NETWORKKVMAUTOCONNECT":
-                    {
-                        var ret = Networkkvmautoconnectx(devMgr, commandLineInput);
-                        result.ExitCode = ret.code;
-                        result.serialize_Json_response = ret.result;
-                    }
-                    break;
                 case "NETWORKKVMCONTENTTRANSFER":
-                    {
-                        var ret = Networkkvmcontenttransferx(devMgr, commandLineInput);
-                        result.ExitCode = ret.code;
-                        result.serialize_Json_response = ret.result;
-                    }
-                    break;
                 case "NETWORKKVMINCOMINGPORT":
-                    {
-                        var ret = Networkkvmincomingportx(devMgr, commandLineInput);
-                        result.ExitCode = ret.code;
-                        result.serialize_Json_response = ret.result;
-                    }
-                    break;
                 case "NETWORKKVMOUTGOINGPORT":
-                    {
-                        var ret = Networkkvmoutgoingportx(devMgr, commandLineInput);
-                        result.ExitCode = ret.code;
-                        result.serialize_Json_response = ret.result;
-                    }
-                    break;
                 case "NETWORKKVMCONTENTTRANSFERPORT":
-                    {
-                        var ret = Networkkvmcontenttransferportx(devMgr, commandLineInput);
-                        result.ExitCode = ret.code;
-                        result.serialize_Json_response = ret.result;
-                    }
-                    break;
                 case "NETWORKKVMACCESSRESET":
                     {
-                        var ret = Networkkvmaccessresetx(devMgr, commandLineInput);
+                        var ret = CLINetworkKVM.Execute(commandLineInput);
                         result.ExitCode = ret.code;
                         result.serialize_Json_response = ret.result;
                     }
