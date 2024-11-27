@@ -184,6 +184,26 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                     switch (eventtype)
                     {
                         case "Webcam_IsHDROnChanged":
+                        {
+                            if (!event_param.TryGetValue("NewValue", out var NewValue))
+                            {
+                                _log.Debug("NewValue cannot be found in event_param");
+                                return;
+                            }
+                            Application.Current.Dispatcher.Invoke(() =>
+                            {
+                                _viewModel!.IsSettingProfile = true;
+                                if (NewValue.ToLower() == "true")
+                                    _viewModel.IsHDROn = true;
+                                else
+                                    _viewModel.IsHDROn = false;
+                                _viewModel!.IsSettingProfile = false;
+                            });
+                        }
+                        break;
+                    }
+                }
+            }
                             {
                                 if (!event_param.TryGetValue("NewValue", out var NewValue))
                                 {
@@ -255,7 +275,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             }
             catch (Exception ex)
             {
-                _log.Debug(ex , "WebCameraplugin_UIUpdateNotify");
+                _log.Debug(ex, "WebCameraplugin_UIUpdateNotify");
             }
         }
 

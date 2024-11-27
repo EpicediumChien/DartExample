@@ -1144,17 +1144,18 @@ namespace DDPM.SA.Common.Settings
             return result;
         }*/
 
-        private static byte[] ConvertThumbprintToByteArray(string thumbprint)
+        /*private static byte[] ConvertThumbprintToByteArray(string thumbprint)
         {
             return Enumerable.Range(0, thumbprint.Length)
                              .Where(x => x % 2 == 0)
                              .Select(x => Convert.ToByte(thumbprint.Substring(x, 2), 16))
                              .ToArray();
-        }
+        }*/
 
         public static bool VerifyFileCertWithInboxThumbprint(string filePath, out string info)
         {
             info = "success";
+            bool gotMatched = false;
             if (!IsFilePathValid(filePath, out info))
             {
 #if DEBUG
@@ -1164,7 +1165,7 @@ namespace DDPM.SA.Common.Settings
             }
             try
             {
-                X509Certificate2 cert = LoadFileCertificate(filePath);
+                /*X509Certificate2 cert = LoadFileCertificate(filePath);
                 if (cert == null)
                 {
                     info = "Can't retrieve cert from file.";
@@ -1186,6 +1187,16 @@ namespace DDPM.SA.Common.Settings
                     Console.WriteLine(info);
 #endif
                     return false;
+                }*/
+
+                foreach(var hash in DDPM.SA.Obfuscation.ThumbprintHash.certificateHash)
+                {
+                    string thumbprintString = BitConverter.ToString(hash).Replace("-", string.Empty);
+                    if(SignedFileThumbprintVerifier(null, filePath, thumbprintString, out info))
+                    {
+                        gotMatched = true;
+                        break;
+                    }
                 }
             }
             catch (Exception ex)
@@ -1193,7 +1204,11 @@ namespace DDPM.SA.Common.Settings
                 info = ex.Message;
                 return false;
             }
-            return true;
+            if (!gotMatched)
+                info = $"No matched thumbprint with file {filePath}";
+            else
+                info = "File has valid cert with thumbprint check";
+            return gotMatched;
         }
 
         public static bool VerifyFileCertWithoutThumbprint(string filePath, out string info)
@@ -1920,11 +1935,11 @@ namespace DDPM.SA.Common.Settings
             return StartProcessByOptions(log, startInfo, "", "", isLockNeeded, isWaitExitCode);
         }
 
-        public static X509Certificate2 LoadFileCertificate(string strFilePath)
-        {
-            X509Certificate2 certificate = new X509Certificate2(strFilePath);
-            return certificate;
-        }
+        //public static X509Certificate2 LoadFileCertificate(string strFilePath)
+        //{
+        //    X509Certificate2 certificate = new X509Certificate2(strFilePath);
+        //    return certificate;
+        //}
 
         public static bool SignedFileThumbprintVerifier(ILog log, string filePath, string ThumbprintHash, out string info)
         {
