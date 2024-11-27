@@ -28,8 +28,8 @@ namespace DDPM.SA.Common
 
         private Dispatcher _currentDispatcher;
 
-        [DllImport("user32.dll")]
-        static extern IntPtr GetForegroundWindow();
+        //[DllImport("user32.dll")]
+        //static extern IntPtr GetForegroundWindow();
 
         public HotKey(ModifierKeys modifierKeys, VirtualKey key, Window window)
             : this(modifierKeys, key, new WindowInteropHelper(window), null)
@@ -120,7 +120,7 @@ namespace DDPM.SA.Common
                 UnregisterHotKey();
             }
 
-            isKeyRegistered = HotKeyWinApi.RegisterHotKey(_handle, _id, KeyModifier, InteropKey);
+            isKeyRegistered = HotKeyWinApi._RegisterHotKey(_handle, _id, KeyModifier, InteropKey);
             int lastError = Marshal.GetLastWin32Error();
             //ulong v = HotKeyWinApi.GetLastError();
             Debug.WriteLine($"HotKeyWinApi.GetLastError v1={lastError}");
@@ -164,7 +164,7 @@ namespace DDPM.SA.Common
 
         private void UnregisterHotKey()
         {
-            isKeyRegistered = !HotKeyWinApi.UnregisterHotKey(_handle, _id);
+            isKeyRegistered = !HotKeyWinApi._UnregisterHotKey(_handle, _id);
         }
 
         private void writelog(string text, log_type log_type = log_type.info)
