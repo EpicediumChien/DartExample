@@ -118,18 +118,17 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
         public event EventHandler<bool> UpdateNotify;
 
-        public event EventHandler<ZoomChangedArgs> ZoomChanged_Notify;
-
-        public event EventHandler<ZoomMeetingTypeChangedArgs> ZoomMeetingTypeChanged_Notify;
-        public event EventHandler<IsZoomMeetingActiveChangedArgs> IsZoomMeetingActive_Notify;
-
-        public event EventHandler<IsZoomScreenShareActiveChangedArgs> IsZoomScreenShareActive_Notify;
+        //Marked by Derek 1125 because they had covered by WebcamEventHandler
+        //public event EventHandler<ZoomChangedArgs> ZoomChanged_Notify;
+        //public event EventHandler<ZoomMeetingTypeChangedArgs> ZoomMeetingTypeChanged_Notify;
+        //public event EventHandler<IsZoomMeetingActiveChangedArgs> IsZoomMeetingActive_Notify;
+        //public event EventHandler<IsZoomScreenShareActiveChangedArgs> IsZoomScreenShareActive_Notify;
 
         //Derek 1120
-        public event EventHandler<UpdateUINotify> WebcamEventHandler;
+        public event EventHandler<UpdateUINotify> DTPEventHandler;
         public void OnUIUpdateNotify(UpdateUINotify e)
         {
-            WebcamEventHandler?.Invoke(this, e);
+            DTPEventHandler?.Invoke(this, e);
         }
 
         public void NotifyNow()
@@ -6114,7 +6113,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
             else
             {
-                writelog($"No any webcam instance to unregister.");
+                writelog($"No any webcam instance to register.");
                 //try to force release current --> will catch exception  1123
                 //await UnregisterEventsForWebcamAsync(0);
             }
@@ -6161,7 +6160,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                     _Webcamcom.FocusChanged += Webcam_FocusChanged;
                     _Webcamcom.PanChanged += Webcam_PanChanged;
                     _Webcamcom.TiltChanged += Webcam_TiltChanged;
-                    _Webcamcom.ZoomChanged += Webcam_ZoomChanged;
+                    _Webcamcom.ZoomChanged += Webcam_ZoomChanged; //QAM also use this event
                     _Webcamcom.BrightnessChanged += Webcam_BrightnessChanged;
                     _Webcamcom.ContrastChanged += Webcam_ContrastChanged;
                     _Webcamcom.AntiFlickerChanged += Webcam_AntiFlickerChanged;
@@ -6176,8 +6175,9 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                     _Webcamcom.FieldOfViewChanged += Webcam_FieldOfViewChanged;
                     _Webcamcom.IsHDROnChanged += Webcam_IsHDROnChanged;
                     _Webcamcom.SerialNumberChanged += Webcam_SerialNumberChanged;
-                    _Webcamcom.IsZoomMeetingActiveChanged += Webcam_IsZoomMeetingActiveChanged;
-                    _Webcamcom.IsZoomScreenShareActiveChanged += Webcam_IsZoomScreenShareActiveChanged;
+                    _Webcamcom.IsZoomMeetingActiveChanged += Webcam_IsZoomMeetingActiveChanged; //for QAM
+                    _Webcamcom.IsZoomScreenShareActiveChanged += Webcam_IsZoomScreenShareActiveChanged; //for QAM
+                    _Webcamcom.ZoomMeetingTypeChanged += Webcam_ZoomMeetingTypeChanged; //for QAM
 
                     _Webcamcom.WALSnoozeTimeLeftInSecondsChanged += Webcam_WALSnoozeTimeLeftInSecondsChanged;
                     _Webcamcom.Esi_IsWALLockCountdownStartedChanged += Webcam_Esi_IsWALLockCountdownStartedChanged;
@@ -6250,6 +6250,65 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             catch (Exception e)
             {
                 writelog($"Webcam{index} UnregisterEventsForWebcam Exception {e.Message}");
+
+                return false;
+            }
+
+            return false;
+        }
+
+        private async Task<bool> UnregisterEventsForWebcamAsync()
+        {
+            if (null == _commSdk || null == _comdity)
+                return false;
+
+            try
+            {
+                _comdity = await _commSdk.GetCommodityAsync<IWebcamCommodity>(new ItemId($"DellPeripheral.Webcam"), CancellationToken.None);
+
+                if (_comdity is Dell.TechHub.Commodity.Peripheral.IWebcamCommodity _Webcamcom)
+                {
+                    _Webcamcom.ProfileManagerAdded -= Webcam_ProfileManagerAdded;
+                    _Webcamcom.IsMicEnumerationOnChanged -= Webcam_IsMicEnumerationOnChanged;
+                    _Webcamcom.CurrentSelectedProfileChanged -= Webcam_CurrentSelectedProfileChanged;
+                    _Webcamcom.CustomProfileAdded -= Webcam_CustomProfileAdded;
+                    _Webcamcom.CustomProfileRemoved -= Webcam_CustomProfileRemoved;
+
+                    _Webcamcom.PriorityChanged -= Webcam_PriorityChanged;
+                    _Webcamcom.IsFocusOnChanged -= Webcam_IsFocusOnChanged;
+                    _Webcamcom.FocusChanged -= Webcam_FocusChanged;
+                    _Webcamcom.PanChanged -= Webcam_PanChanged;
+                    _Webcamcom.TiltChanged -= Webcam_TiltChanged;
+                    _Webcamcom.ZoomChanged -= Webcam_ZoomChanged;
+                    _Webcamcom.BrightnessChanged -= Webcam_BrightnessChanged;
+                    _Webcamcom.ContrastChanged -= Webcam_ContrastChanged;
+                    _Webcamcom.AntiFlickerChanged -= Webcam_AntiFlickerChanged;
+                    _Webcamcom.SaturationChanged -= Webcam_SaturationChanged;
+                    _Webcamcom.SharpnessChanged -= Webcam_SharpnessChanged;
+                    _Webcamcom.IsAutoWhiteBalanceOnChanged -= Webcam_IsAutoWhiteBalanceOnChanged;
+                    _Webcamcom.AutoWhiteBalanceChanged -= Webcam_AutoWhiteBalanceChanged;
+                    _Webcamcom.IsAutoFramingTransitionOnChanged -= Webcam_IsAutoFramingTransitionOnChanged;
+                    _Webcamcom.IsAutoFramingOnChanged -= Webcam_IsAutoFramingOnChanged;
+                    _Webcamcom.AutoFramingSensitivityChanged -= Webcam_AutoFramingSensitivityChanged;
+                    _Webcamcom.AutoFramingFrameSizeChanged -= Webcam_AutoFramingFrameSizeChanged;
+                    _Webcamcom.FieldOfViewChanged -= Webcam_FieldOfViewChanged;
+                    _Webcamcom.IsHDROnChanged -= Webcam_IsHDROnChanged;
+                    _Webcamcom.SerialNumberChanged -= Webcam_SerialNumberChanged;
+                    _Webcamcom.IsZoomMeetingActiveChanged -= Webcam_IsZoomMeetingActiveChanged;
+                    _Webcamcom.IsZoomScreenShareActiveChanged -= Webcam_IsZoomScreenShareActiveChanged;
+
+                    _Webcamcom.WALSnoozeTimeLeftInSecondsChanged -= Webcam_WALSnoozeTimeLeftInSecondsChanged;
+                    _Webcamcom.Esi_IsWALLockCountdownStartedChanged -= Webcam_Esi_IsWALLockCountdownStartedChanged;
+                    _Webcamcom.Esi_IsCameraSensorCoveredChanged -= Webcam_Esi_IsCameraSensorCoveredChanged;
+                    _Webcamcom.Esi_WALLockCountdownChanged -= Webcam_Esi_WALLockCountdownChanged;
+
+                    writelog($"Webcam Commodity events unregistered successfully");
+                    return true;
+                }
+            }
+            catch (Exception e)
+            {
+                writelog($"Webcam UnregisterEventsForWebcam Exception {e.Message}");
 
                 return false;
             }
@@ -6358,26 +6417,26 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         {
             writelog($"[DTPProxy] Connected Device ID: {e.DeviceId} !!!!!!!!!!!!!!!");
         }
-        private void ZoomChanged(object sender, ZoomChangedArgs e)
-        {
-            writelog($"[DTPProxy] ZoomChanged e : {e}");
-            ZoomChanged_Notify?.Invoke(this, e);
-        }
-        private void ZoomMeetingTypeChanged(object sender, ZoomMeetingTypeChangedArgs e)
-        {
-            writelog($"[DTPProxy] ZoomMeetingTypeChanged e : {e}");
-            ZoomMeetingTypeChanged_Notify?.Invoke(this, e);
-        }
-        private void IsZoomMeetingActiveChanged(object sender, IsZoomMeetingActiveChangedArgs e)
-        {
-            writelog($"[DTPProxy] IsZoomMeetingActiveChanged e : {e}");
-            IsZoomMeetingActive_Notify?.Invoke(this, e);
-        }
-        private void IsZoomScreenShareActiveChanged(object sender, IsZoomScreenShareActiveChangedArgs e)
-        {
-            writelog($"[DTPProxy] ZoomMeetingTypeChanged e : {e}");
-            IsZoomScreenShareActive_Notify?.Invoke(this, e);
-        }
+        //private void ZoomChanged(object sender, ZoomChangedArgs e)
+        //{
+        //    writelog($"[DTPProxy] ZoomChanged e : {e}");
+        //    ZoomChanged_Notify?.Invoke(this, e);
+        //}
+        //private void ZoomMeetingTypeChanged(object sender, ZoomMeetingTypeChangedArgs e)
+        //{
+        //    writelog($"[DTPProxy] ZoomMeetingTypeChanged e : {e}");
+        //    ZoomMeetingTypeChanged_Notify?.Invoke(this, e);
+        //}
+        //private void IsZoomMeetingActiveChanged(object sender, IsZoomMeetingActiveChangedArgs e)
+        //{
+        //    writelog($"[DTPProxy] IsZoomMeetingActiveChanged e : {e}");
+        //    IsZoomMeetingActive_Notify?.Invoke(this, e);
+        //}
+        //private void IsZoomScreenShareActiveChanged(object sender, IsZoomScreenShareActiveChangedArgs e)
+        //{
+        //    writelog($"[DTPProxy] ZoomMeetingTypeChanged e : {e}");
+        //    IsZoomScreenShareActive_Notify?.Invoke(this, e);
+        //}
         private void _comdity_Dock_Disconnected(object sender, DisconnectedArgs e)
         {
             writelog($"Dock Disconnected Device ID: {e.DeviceId} !!!!!!!!!!!!!!!");
@@ -6440,12 +6499,21 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         //1. some devices has connected before DTPPlugin init
         //   A. register events for them, and remove events when disconnected
         //2. new devices connected --> register
+
+        private void Webcam_ZoomMeetingTypeChanged(object sender, ZoomMeetingTypeChangedArgs e)
+        {
+            SendWebcamEventToUI(CreateEventMsg("Webcam", "Webcam_ZoomMeetingTypeChanged",
+                                    e.DeviceId, $"NewValue:{e.ZoomMeetingType}"));
+
+            writelog($"Catch event Webcam_ZoomMeetingTypeChanged : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+        }
+
         private void Webcam_SharpnessChanged(object sender, SharpnessChangedArgs e)
         {
             SendWebcamEventToUI(CreateEventMsg("Webcam", "Webcam_SharpnessChanged",
                                     e.DeviceId, $"NewValue:{e.Sharpness}"));
 
-            throw new NotImplementedException();
+            writelog($"Catch event Webcam_SharpnessChanged : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
         }
 
         private void Webcam_Esi_WALLockCountdownChanged(object sender, Esi_WALLockCountdownChangedArgs e)
@@ -6635,7 +6703,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         private void Webcam_PriorityChanged(object sender, PriorityChangedArgs e)
         {
             SendWebcamEventToUI(CreateEventMsg("Webcam", "Webcam_PriorityChanged",
-                                    e.DeviceId, $"NewPriority:{e.Priority}"));
+                                    e.DeviceId, $"NewValue:{e.Priority}"));
 
             writelog($"Catch event _Webcamcom_PriorityChanged : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
         }
@@ -6643,7 +6711,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         private void Webcam_CustomProfileRemoved(object sender, CustomProfileRemovedArgs e)
         {
             SendWebcamEventToUI(CreateEventMsg("Webcam", "Webcam_CustomProfileRemoved",
-                                    e.DeviceId, $"RemovedCustomProfile:{e.ProfileId}"));
+                                    e.DeviceId, $"NewValue:{e.ProfileId}"));
 
             writelog($"Catch event _Webcamcom_CustomProfileRemoved : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
         }
@@ -6691,6 +6759,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         private void Webcam_Disconnected(object sender, DisconnectedArgs e)
         {
             _ = UnregisterEventsForAllWebcamsAsync();
+            //_ = UnregisterEventsForWebcamAsync();
             _ = RegisterEventsForAllWebcamsAsync();
 
             //SendWebcamEventToUI($"3;Device:Webcam;Event:Disconnected;DeviceId:{e.DeviceId}");
@@ -6709,7 +6778,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             writelog($"Catch event _Webcam_Connected, register evnet result is {result} : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
         }
 
-        private string CreateEventMsg(string devType, string eventType, string devID, string eventContent = "NoContent")
+        private string CreateEventMsg(string devType, string eventType, string devID, string eventContent = "NewValue:NoContent")
         {
             return $"WebcamEvent_5;Device:{devType};EventType:{eventType};DeviceId:{devID};{eventContent}";
         }
