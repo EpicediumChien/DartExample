@@ -22,6 +22,7 @@
         private EasyMemoryWin EasyMemoryWinx;
         private ErrorWin ErrorWin;
         private QAMHotKeyWin QAMHotKeyWin;
+        private CollaborationNotAvailableWin CollaborationNotAvailableWinx;
 
         public OSD_Controler()
         { }
@@ -307,6 +308,19 @@
         {
             if (QAMHotKeyWin != null)
                 QAMHotKeyWin.CloseWindow();
+        }
+        public void CollaborationNotAvailableWin_ShowWindow(string Content, double Top, double Left)
+        {
+            CollaborationNotAvailableWinx = new CollaborationNotAvailableWin(Content);
+
+            CollaborationNotAvailableWinx.Top = Top;
+            CollaborationNotAvailableWinx.Left = Left;
+            CollaborationNotAvailableWinx.ShowWindow();
+        }
+        public void CollaborationNotAvailableWin_CloseWindow()
+        {
+            if (CollaborationNotAvailableWinx != null)
+                CollaborationNotAvailableWinx.CloseWindow();
         }
     }
 }
