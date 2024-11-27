@@ -10067,6 +10067,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     Thread thread1 = new Thread(() =>
                     {
                         _QAM = new QAMPage(deviceMangerPlugin);
+                        _QAM.UpdateUINotify += _QAM_UpdateUINotify;
                         _QAM.Closed += QAMCloseEvent;
 
                         //if (QAM_Position != null && (QAM_Position.X != 0 && QAM_Position.Y != 0))
@@ -10105,6 +10106,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 _QAM.Show();
 
             writelog($"CallQAM_UI: done");
+        }
+
+        private void _QAM_UpdateUINotify(object sender, UpdateUINotify e)
+        {
+            OnUIUpdateNotify(e);
         }
 
         #endregion
