@@ -1218,7 +1218,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                 List<MonitorInfo> monitorInfos = _deviceManager.GetMonitors().Result;
                 var deviceHelper = _deviceManager.GetDevices().Result;
 
-                // �ন WalkThroughInfo �å[�J
+                // WalkThroughInfo
                 foreach (var monitor in monitorInfos)
                 {
                     _log.Info($"[Walkthrough] CheckAndQueueDevice Start Add (Monitor)");
