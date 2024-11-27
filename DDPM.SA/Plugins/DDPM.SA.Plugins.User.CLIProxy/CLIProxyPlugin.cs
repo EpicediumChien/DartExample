@@ -544,14 +544,26 @@ namespace DDPM.SA.Plugin.User.CLIManager
                 }
                 else if (commandLineInput.Command.Equals("HELP"))
                 {
-                    if (commandLineInput.TargetFeature.ToUpper() == "DISPLAY" && _CLIDisplay != null)
-                        cliEventResult = _CLIDisplay.SetCommandArgs(e, _DevManagerPlugin);
-                    else
+                    var monitorInfos = _DevManagerPlugin.GetMonitors().Result;
+                    string output = string.Empty;
+                    //if (monitorInfos == null)
+                    //    return ((int)CLI_ExitCode.no_monitor_connected, "No Monitor Connected");
+                    foreach (var monitorInfo in monitorInfos)
                     {
-                        WriteLog($"{nameof(ICLIDisplay)} was missing.");
-                        _CliManagerPlugin.WriteCommandResult(Response_PluginNotReady(commandLineInput, nameof(ICLIDisplay), e.command_guid_string));
-                        return;
+                        var results = ICLICommandTable.Response_HelpCommand_ByDisplay(commandLineInput.TargetFeature, monitorInfo.CapabilityDic);
+                        output += "\n" + results;
                     }
+                    //return ((int)CLI_ExitCode.success, output);
+                    return;
+
+                    //if (commandLineInput.TargetFeature.ToUpper() == "DISPLAY" && _CLIDisplay != null)
+                    //    cliEventResult = _CLIDisplay.SetCommandArgs(e, _DevManagerPlugin);
+                    //else
+                    //{
+                    //    WriteLog($"{nameof(ICLIDisplay)} was missing.");
+                    //    _CliManagerPlugin.WriteCommandResult(Response_PluginNotReady(commandLineInput, nameof(ICLIDisplay), e.command_guid_string));
+                    //    return;
+                    //}
                 }
                 else
                 {
