@@ -394,7 +394,9 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.ViewModels
                             case "SB522A":
                                 imagepath = "Resources/Speaker_SB522A.png";
                                 break;
-
+                            case "SB725":
+                                imagepath = "Resources/Speaker_SB725.png";
+                                break;
                             default:
                                 imagepath = "Resources/Speaker_SP3022.png";
                                 break;

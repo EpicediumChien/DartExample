@@ -3,6 +3,7 @@ using DDPM.SA.Common;
 using DDPM.UI.Common.ViewModels;
 using DDPM.UI.Resources.Helper;
 using Dell.Client.Framework.Common;
+using Dell.Client.Framework.UX.WPF.Controls;
 using DPeMPublic.Common.Enums;
 using System.Drawing.Imaging;
 using System.Globalization;
@@ -36,6 +37,8 @@ namespace DDPM.UI.Common.Models
         public HomeDevice()
         {
             NormalWidth = 400;
+            ////Register a handler for BitmapImageUpdated for Theme changed. Will update the image resources
+            //DdpmCommonHelper.BitmapImageUpdated += bitmapImageUpdate_OnThemeChanged;
         }
         public ImageSource? DeviceImage
         {
@@ -601,30 +604,69 @@ namespace DDPM.UI.Common.Models
             if (MonitorInfo == null)
                 return;
 
+            bool isLineArt = true;
+            string imageFileName = "Lineart";
             string assemblyName = "DDPM.UI.Resources";
+
+            //Determine filename
+            //1 If no ImageFileName provided => Show line art
+            //2 Not empty, use the filename provided
             if (!String.IsNullOrWhiteSpace(MonitorInfo.ImageFileName))
             {
                 //The filename will come from MonitorInfo.ImageFileName
-                string imageFileName = MonitorInfo.ImageFileName;
+                imageFileName = MonitorInfo.ImageFileName;
                 //The ImageFileName will not have extention file name
                 //(for example, ImageFileName="U4323QE"), we need to append ".PNG"
 
-                //Try to load image from DDPM.UI.Resources project (assembly), Path="/Resources/Monitor/"
-                ImageSource? imgSource = DdpmCommonHelper.GetImageSourceFromCommonResource($"Resources/Monitors/{imageFileName}.png", assemblyName);
-                if (imgSource != null)
+                //Robert_Lin, 2024-11-26 for LightMode Lineart.png 
+                //If the ImageFileName is NOT "LineArt" 
+                if (!imageFileName.Equals("LINEART", StringComparison.OrdinalIgnoreCase))
                 {
-                    DeviceImage = imgSource;
-                    return;
+                    isLineArt = false;
                 }
             }
-            //Use LineArt.png instead
-            ImageSource? imgLineart = DdpmCommonHelper.GetImageSourceFromCommonResource($"Resources/Monitors/Lineart.png", assemblyName);
-            if (imgLineart != null)
+            if (isLineArt)
             {
-                DeviceImage = imgLineart;
+                OSThemeEnum oSTheme = UXSystemParameters.Instance.OSTheme;
+                if (oSTheme == OSThemeEnum.Light)
+                {
+                    //LightMode: change filename to "LineArt-w"
+                    imageFileName = "Lineart-w";
+                }
+                //It's "Lineart", we need to change image when theme changed
+                DdpmCommonHelper.BitmapImageUpdated += bitmapImageUpdated_RefreshLineArt;
+            }
+
+            //Load the image
+            //Try to load image from DDPM.UI.Resources project (assembly), Path="/Resources/Monitor/"
+            ImageSource? imgSource = DdpmCommonHelper.GetImageSourceFromCommonResource($"Resources/Monitors/{imageFileName}.png", assemblyName);
+            if (imgSource != null)
+            {
+                DeviceImage = imgSource;
                 return;
             }
         }
+
+        private void bitmapImageUpdated_RefreshLineArt(OSThemeEnum obj)
+        {
+            //if (obj == OSThemeEnum.Dark)
+            //{
+            //    DdpmCommonHelper.UpdateBitmapImage("MonitorImage_LineArt", new Uri($"pack://application:,,,/DDPM.UI.Resources;component/Resources/Monitors/Lineart.png", UriKind.RelativeOrAbsolute));
+            //}
+            //else
+            //{
+            //    DdpmCommonHelper.UpdateBitmapImage("MonitorImage_LineArt", new Uri($"pack://application:,,,/DDPM.UI.Resources;component/Resources/Monitors/Lineart-w.png", UriKind.RelativeOrAbsolute));
+            //}
+            //Release original resource
+            DeviceImage = null;
+            //Allocate (refresh) new one
+            DeviceImage = (ImageSource?)System.Windows.Application.Current.Resources["MonitorImage_LineArt"];
+        }
+
+        //private void bitmapImageUpdate_OnThemeChanged(OSThemeEnum oSThemeEnum)
+        //{
+        //    //Reserved for future usage
+        //}
 
         #endregion DetermineDeviceImage - Robert_Lin 2024-6-20 added
 
@@ -773,7 +815,7 @@ namespace DDPM.UI.Common.Models
             if (DeviceInfo == null)
                 return;
             var fv = Regex.Replace(DeviceInfo.DockPackageFwVersion, @"(\d{2})(?=\d)", "$1.");
-            Dokc_FirmwareVersion = $"Dock {Strings.FirmwareVersion} {fv}";
+            Dock_FirmwareVersion = $"Dock {Strings.FirmwareVersion} {fv}";
         }
         /// <summary>
         /// "USB Wireless Receiver"
@@ -806,7 +848,7 @@ namespace DDPM.UI.Common.Models
         //
         // {txt} PimgBL} {txtBLHost}          {IsBleHostVisible}
         // 1     {icon}  Window Machine 1      True/False     Color: ConnectionStyle=1|2|3
-
+        private const int maxHostNameLength = 15;
         private void SetBLConnectionStatus_Mouse()
         {
             if (DeviceInfo == null)
@@ -843,6 +885,7 @@ namespace DDPM.UI.Common.Models
                     if (BleHost1Text.Equals(hostName, StringComparison.CurrentCultureIgnoreCase))
                     {
                         BleHost1Style = "1";
+                        BleHost1Text = BleHost1Text.Substring(0, maxHostNameLength);
                         //txt1.Style = ConnectionStyle1;
                         //imgBL1.Source = img1;
                         //txtBLHost1.Style = ConnectionStyle1;
@@ -850,6 +893,7 @@ namespace DDPM.UI.Common.Models
                     else if (BleHost2Text.Equals(hostName, StringComparison.CurrentCultureIgnoreCase))
                     {
                         BleHost2Style = "1";
+                        BleHost2Text = BleHost2Text.Substring(0, maxHostNameLength);
                         //txt2.Style = ConnectionStyle1;
                         //imgBL2.Source = img1;
                         //txtBLHost2.Style = ConnectionStyle1;
@@ -857,6 +901,7 @@ namespace DDPM.UI.Common.Models
                     else
                     {
                         BleHost3Style = "1";
+                        BleHost3Text = BleHost3Text.Substring(0, maxHostNameLength);
                         //txt3.Style = ConnectionStyle1;
                         //imgBL3.Source = img1;
                         //txtBLHost3.Style = ConnectionStyle1;
@@ -865,21 +910,25 @@ namespace DDPM.UI.Common.Models
 
                 case "MS5320W":
                 case "MS7421W":
+                    //Host1 unused
                     BleHost1Style = "0";
+
+                    //Host2 data from PairedHostName1
+                    //Host3 data from PairedHostName2
                     BleHost2Text = string.IsNullOrEmpty(DeviceInfo.PairedHostName1) ? Strings.ReadyToBePaired : DeviceInfo.PairedHostName1;
                     BleHost3Text = string.IsNullOrEmpty(DeviceInfo.PairedHostName2) ? Strings.ReadyToBePaired : DeviceInfo.PairedHostName2;
 
                     if (BleHost2Text.Equals(hostName, StringComparison.CurrentCultureIgnoreCase))
                     {
                         BleHost2Style = "1";
-                        //txt2.Style = ConnectionStyle1;
+                        BleHost2Text = BleHost2Text.Substring(0, maxHostNameLength);
                         //imgBL2.Source = img1;
                         //txtBLHost2.Style = ConnectionStyle1;
                     }
                     else
                     {
                         BleHost3Style = "1";
-                        //txt3.Style = ConnectionStyle1;
+                        BleHost3Text = BleHost3Text.Substring(0, maxHostNameLength);
                         //imgBL3.Source = img1;
                         //txtBLHost3.Style = ConnectionStyle1;
                     }
@@ -894,14 +943,14 @@ namespace DDPM.UI.Common.Models
                     if (BleHost1Text.Equals(hostName, StringComparison.CurrentCultureIgnoreCase))
                     {
                         BleHost1Style = "1";
-                        //txt1.Style = ConnectionStyle1;
+                        BleHost1Text = BleHost1Text.Substring(0, maxHostNameLength);
                         //imgBL1.Source = img1;
                         //txtBLHost1.Style = ConnectionStyle1;
                     }
                     else
                     {
                         BleHost2Style = "1";
-                        //txt2.Style = ConnectionStyle1;
+                        BleHost2Text = BleHost2Text.Substring(0, maxHostNameLength);
                         //imgBL2.Source = img1;
                         //txtBLHost2.Style = ConnectionStyle1;
                     }
@@ -913,19 +962,19 @@ namespace DDPM.UI.Common.Models
                     //Host1.Visibility = Visibility.Collapsed;
                     //Host3.Visibility = Visibility.Collapsed;
                     BleHost2Style = "1";
-                    BleHost2Text = hostName;
+                    BleHost2Text = hostName.Substring(0, maxHostNameLength);
                     //txt2.Style = ConnectionStyle1;
                     //imgBL2.Source = img1;
                     //txtBLHost2.Style = ConnectionStyle1;
                     break;
             }
             //Trim string length to <= 15
-            if (BleHost1Text.Length > 15)
-                BleHost1Text = BleHost1Text.Substring(0, 15);
-            if (BleHost2Text.Length > 15)
-                BleHost2Text = BleHost2Text.Substring(0, 15);
-            if (BleHost3Text.Length > 15)
-                BleHost3Text = BleHost3Text.Substring(0, 15);
+            //if (BleHost1Text.Length > 15)
+            //    BleHost1Text = BleHost1Text.Substring(0, 15);
+            //if (BleHost2Text.Length > 15)
+            //    BleHost2Text = BleHost2Text.Substring(0, 15);
+            //if (BleHost3Text.Length > 15)
+            //    BleHost3Text = BleHost3Text.Substring(0, 15);
         }
 
         private void SetBLConnectionStatus_Keyboard()
@@ -1005,6 +1054,7 @@ namespace DDPM.UI.Common.Models
                     {
                         //Then show style 1 (white)
                         BleHost2Style = "1";
+                        BleHost2Text = BleHost2Text.Substring(0, maxHostNameLength);
                         //txt1.Style = ConnectionStyle1;
                         //imgBL1.Source = img1;
                         //txtBLHost1.Style = ConnectionStyle1;
@@ -1013,6 +1063,7 @@ namespace DDPM.UI.Common.Models
                     {
                         //Else host3 is current host
                         BleHost3Style = "1";
+                        BleHost3Text = BleHost3Text.Substring(0, maxHostNameLength);
                         //txt2.Style = ConnectionStyle1;
                         //imgBL2.Source = img1;
                         //txtBLHost2.Style = ConnectionStyle1;
@@ -1032,14 +1083,14 @@ namespace DDPM.UI.Common.Models
                     if (BleHost1Text.Equals(hostName, StringComparison.CurrentCultureIgnoreCase))
                     {
                         BleHost1Style = "1";
-                        //txt1.Style = ConnectionStyle1;
+                        BleHost1Text = BleHost1Text.Substring(0, maxHostNameLength);
                         //imgBL1.Source = img1;
                         //txtBLHost1.Style = ConnectionStyle1;
                     }
                     else
                     {
                         BleHost2Style = "1";
-                        //txt2.Style = ConnectionStyle1;
+                        BleHost2Text = BleHost2Text.Substring(0, maxHostNameLength);
                         //imgBL2.Source = img1;
                         //txtBLHost2.Style = ConnectionStyle1;
                     }
@@ -1054,7 +1105,7 @@ namespace DDPM.UI.Common.Models
 
                     //Host 2 show current computer
                     BleHost2Style = "1";
-                    BleHost2Text = hostName;
+                    BleHost2Text = hostName.Substring(0, maxHostNameLength);
                     //txt1.Style = ConnectionStyle1;
                     //imgBL1.Source = img1;
                     //txtBLHost1.Style = ConnectionStyle1;
@@ -1064,12 +1115,12 @@ namespace DDPM.UI.Common.Models
                     break;
             } //switch
             //Trim string length to <= 15
-            if (BleHost1Text.Length > 15)
-                BleHost1Text = BleHost1Text.Substring(0, 15);
-            if (BleHost2Text.Length > 15)
-                BleHost2Text = BleHost2Text.Substring(0, 15);
-            if (BleHost3Text.Length > 15)
-                BleHost3Text = BleHost3Text.Substring(0, 15);
+            //if (BleHost1Text.Length > 15)
+            //    BleHost1Text = BleHost1Text.Substring(0, 15);
+            //if (BleHost2Text.Length > 15)
+            //    BleHost2Text = BleHost2Text.Substring(0, 15);
+            //if (BleHost3Text.Length > 15)
+            //    BleHost3Text = BleHost3Text.Substring(0, 15);
         }
 
         //Need to fix: How to know Audio BLE have 1 or 2 slots?
@@ -1197,11 +1248,11 @@ namespace DDPM.UI.Common.Models
             get => _audioBleText;
             set => SetProperty(ref _audioBleText, value);
         }
-        private string _dokc_FirmwareVersion;
-        public string Dokc_FirmwareVersion
+        private string _dock_FirmwareVersion;
+        public string Dock_FirmwareVersion
         {
-            get => _dokc_FirmwareVersion;
-            set => SetProperty(ref _dokc_FirmwareVersion, value);
+            get => _dock_FirmwareVersion;
+            set => SetProperty(ref _dock_FirmwareVersion, value);
         }
         #endregion Connection Hover View
 
