@@ -6049,7 +6049,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             if (_NKVMPlugin != null && _SettingsPlugin != null)
             {
                 DDPMSettings config = _SettingsPlugin.ReloadAppConfigData().Result;
-                _SupportedMonitorList = _NKVMPlugin.UpdateSupportMonitors().Result;
+                //_SupportedMonitorList = _NKVMPlugin.UpdateSupportMonitors().Result;
                 if (config != null)
                 {
                     config.UserSettings.SupportedMonitorList = _SupportedMonitorList;
@@ -6088,8 +6088,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                             bool b = _SettingsPlugin.WriteMonitorSettings(monitorInfo.modelName, settings).Result;
                             if (ison)
                             {
-                                _SupportedMonitorList = _NKVMPlugin.GetSupportedNKVM().Result;
-                                //_NKVMPlugin.OnNKVM().Wait();
+                                //_SupportedMonitorList = _NKVMPlugin.GetSupportedNKVM().Result;
+                                _NKVMPlugin.OnNKVM().Wait();
                                 bool bt = SentKVMtoTelementry(monitorInfo, "KVMMode", "Network").Result;
                             }
                             else
@@ -10430,7 +10430,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 var Cancellation = new CancellationTokenSource();
                 var CancellationToken = Cancellation.Token;
                 _NKVMPlugin.UpdateMonitorInfo(_AllInfoMonitors, CancellationToken);
-                SupportedNKVMMonitors();
+                //SupportedNKVMMonitors();
             }
 
             if (_AllInfoMonitors != null && _AllInfoMonitors.Count > 0)
@@ -10628,7 +10628,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     //    SupportedNKVMMonitors();
                     //}
                     _NKVMPlugin.UpdateMonitorInfo(_AllInfoMonitors, CancellationToken);
-                    SupportedNKVMMonitors();
+                    //SupportedNKVMMonitors();
                 }
             }
         }
@@ -11509,7 +11509,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                             //CheckUODFWUInfoPackage();
                             //load hotkeysetting
                             //ReloadHotkeyConfigData();
-                            ToNKVM_SupportedMonitorList();
+                            //ToNKVM_SupportedMonitorList();
                             //ToNKVM_initHotKeys();
                         }
 
@@ -11633,7 +11633,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         //_NKVMPluginCondition = pluginCondition;
                         _NKVMPlugin.NKVMCLIEvent += NKVMCLIEvent;
                         _NKVMPlugin.NKVMSetHotkey += NKVMSetHotkey;
-                        ToNKVM_SupportedMonitorList();
+                        //ToNKVM_SupportedMonitorList();
                         //ToNKVM_initHotKeys();
                     }
                     else if (pluginCondition is PluginStartedCondition)
@@ -11642,7 +11642,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         //_NKVMPluginCondition = pluginCondition;
                         _NKVMPlugin.NKVMCLIEvent += NKVMCLIEvent;
                         _NKVMPlugin.NKVMSetHotkey += NKVMSetHotkey;
-                        ToNKVM_SupportedMonitorList();
+                        //ToNKVM_SupportedMonitorList();
                         //ToNKVM_initHotKeys();
                     }
                 }
@@ -13877,7 +13877,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 if (config != null)
                 {
                     _SupportedMonitorList = config.UserSettings.SupportedMonitorList;
-                    _NKVMPlugin.ToNKVM_SupportedMonitorList(_SupportedMonitorList);
+                    //_NKVMPlugin.ToNKVM_SupportedMonitorList(_SupportedMonitorList);
                 }
             }
         }
