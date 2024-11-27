@@ -1178,6 +1178,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                                         pen.PenSettingChanged += Pen_PenSettingChanged;
                                         pen.KeyCaptureStarted += Pen_KeyCaptureStarted;
                                         pen.KeyCaptureDataChanged += Pen_KeyCaptureDataChanged;
+                                        pen.KeyCaptureProgressDataChanged += Pen_KeyCaptureProgressDataChanged;
                                         LogicalDevicesPen.Add(pen.Id);
                                     }
                                 }
@@ -1596,6 +1597,21 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                 }
                 Console.WriteLine(_deviceHelper.ToString());
                 writelog(_deviceHelper.ToString());
+            }
+        }
+
+        private void Pen_KeyCaptureProgressDataChanged(ILogicalDevicePen arg1, string arg2)
+        {
+            Debug.WriteLine($"Pen: {arg1.Id} KeyCaptureProgressDataChangedString, newValue: {arg2}");
+            writelog($"Pen: {arg1.Id} KeyCaptureProgressDataChanged, newValue: {arg2}");
+            if (_deviceHelper is { deviceInfo: not null })
+            {
+                var deviceInfo = _deviceHelper.deviceInfo.FirstOrDefault(x => x.ID.ToString() == arg1.Id.ToString());
+                DeviceChangedEventArgs _EventArgs = new();
+                _EventArgs.type = DeviceChangedType.Peripherals_SettingsChange;
+                _EventArgs.device_peripherals = deviceInfo;
+                _EventArgs.changedProperty = $"PenKeyCaptureProgressDataChanged|{arg2}";
+                OnNotify(_EventArgs);
             }
         }
 

@@ -8,6 +8,7 @@
         xmlns:UXControls="clr-namespace:Dell.Client.Framework.UX.WPF.Controls;assembly=DCF.UX.WPF" xmlns:common="clr-namespace:DDPM.UI.Common;assembly=DDPM.UI.Common" AllowsTransparency="True"
         Title="ActionParameterModalDialog" ResizeMode="NoResize" ShowInTaskbar="False"
         InputMethod.IsInputMethodEnabled="False"
+        Unloaded="Window_Unloaded"
         WindowStartupLocation="Manual" WindowStyle="None" Background="{DynamicResource ActionParameterModalDialog_BgColor}">
     <!--Background="#0D121A" -->
 
@@ -85,7 +86,7 @@
                 <StackPanel Name="spKeystroke" Visibility="Collapsed">
                     <UXControls:UXTextBox Name="txtKeystroke" Width="338" Height="40" Padding="8,11" FontWeight="Medium" FontFamily="Roboto" MaxLength="8000"
                                 HorizontalAlignment="Left" Background="{DynamicResource Keystroke_BgColor}" BorderThickness="1" Foreground="{DynamicResource Keystroke_FgColor}" BorderBrush="{DynamicResource ActionParameterModalDialogTextBoxBorderColor}" IsEnabled="False"
-                                TextChanged="KeystrokeTextChanged" TextWrapping="NoWrap"/>
+                                TextChanged="KeystrokeTextChanged" TextWrapping="NoWrap" Cursor="None"/>
                 </StackPanel>
                 <StackPanel Name="spOpen" Orientation="Horizontal" Visibility="Collapsed">
                     <UXControls:UXTextBox Name="txtOpen" Width="194" Height="40" Padding="8,11,30,0" FontWeight="Medium" FontFamily="Roboto" IsEnabled="False" MaxLength="8000"

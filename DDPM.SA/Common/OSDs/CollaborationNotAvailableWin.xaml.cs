@@ -1,21 +1,33 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Documents;
 using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Animation;
+using System.Windows.Media.Imaging;
+using System.Windows.Shapes;
 using System.Windows.Threading;
 
 namespace DDPM.OSDs
 {
     /// <summary>
-    /// Interaction logic for MainWindow.xaml
+    /// Interaction logic for CollaborationNotAvailableWin.xaml
     /// </summary>
-    public partial class KeybordBatteryLowIWin : Window
+    public partial class CollaborationNotAvailableWin : Window
     {
+
         private DispatcherTimer? animationTimer = null;
         private TimeSpan time;
 
         private string showString = string.Empty;
 
-        public KeybordBatteryLowIWin(string Content)
+        public CollaborationNotAvailableWin(string Content)
         {
             InitializeComponent();
             DataContext = this;
@@ -33,8 +45,7 @@ namespace DDPM.OSDs
                 this.ShowStringText.Text = showString;
                 this.Topmost = true;
 
-                //PIMS-322110
-                /*time = TimeSpan.FromMilliseconds(3000);
+/*                time = TimeSpan.FromMilliseconds(3000);
                 animationTimer = new DispatcherTimer();
                 animationTimer.Interval = TimeSpan.FromMilliseconds(1000);
                 animationTimer.Tick += RunTimerTick;
@@ -46,7 +57,6 @@ namespace DDPM.OSDs
                 return;
             }
         }
-
         private void RunTimerTick(object sender, EventArgs e)
         {
             if (time == TimeSpan.Zero)
@@ -88,4 +98,5 @@ namespace DDPM.OSDs
             Close();
         }
     }
+
 }

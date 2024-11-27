@@ -52,7 +52,7 @@ namespace DDPM.SA.Plugins.User.EzMemory
 
         [DllImport("user32.dll", SetLastError = true)]
         [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
-        static extern int GetWindowTextLength(IntPtr hWnd);
+        private static extern int GetWindowTextLength(IntPtr hWnd);
         private int EzMemoryGetWindowTextLength(IntPtr hWnd)
         {
             return GetWindowTextLength(hWnd);
@@ -60,7 +60,7 @@ namespace DDPM.SA.Plugins.User.EzMemory
 
         [DllImport("user32.dll", SetLastError = true)]
         [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
-        static extern int GetWindowText(IntPtr hWnd, StringBuilder lpString, int nMaxCount);
+        private static extern int GetWindowText(IntPtr hWnd, StringBuilder lpString, int nMaxCount);
         private int EzMemoryGetWindowText(IntPtr hWnd, StringBuilder lpString, int nMaxCount)
         {
             return GetWindowText(hWnd, lpString, nMaxCount);
@@ -69,7 +69,7 @@ namespace DDPM.SA.Plugins.User.EzMemory
         [DllImport("user32.dll", SetLastError = true)]
         [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
         [return: MarshalAs(UnmanagedType.Bool)]
-        static extern bool SetWindowPos(IntPtr hWnd, IntPtr hWndInsertAfter, int X, int Y, int cx, int cy, uint uFlags);
+        private static extern bool SetWindowPos(IntPtr hWnd, IntPtr hWndInsertAfter, int X, int Y, int cx, int cy, uint uFlags);
         private bool EzMemorySetWindowPos(IntPtr hWnd, IntPtr hWndInsertAfter, int X, int Y, int cx, int cy, uint uFlags)
         {
             return SetWindowPos(hWnd, hWndInsertAfter, X, Y, cx, cy, uFlags);
@@ -77,7 +77,7 @@ namespace DDPM.SA.Plugins.User.EzMemory
 
         [DllImport("user32.dll", SetLastError = true)]
         [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
-        static extern int GetClassName(IntPtr hWnd, StringBuilder lpClassName, int nMaxCount);
+        private static extern int GetClassName(IntPtr hWnd, StringBuilder lpClassName, int nMaxCount);
         private int EzMemoryGetClassName(IntPtr hWnd, StringBuilder lpClassName, int nMaxCount)
         {
             return GetClassName(hWnd, lpClassName, nMaxCount);
@@ -85,8 +85,7 @@ namespace DDPM.SA.Plugins.User.EzMemory
         [DllImport("user32.dll", SetLastError = true)]
         [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
         [return: MarshalAs(UnmanagedType.Bool)]
-        static extern bool GetWindowRect(IntPtr hWnd, out RECT lpRect);
-
+        private static extern bool GetWindowRect(IntPtr hWnd, out RECT lpRect);
         private bool EzMemoryGetWindowRect(IntPtr hWnd, out RECT lpRect)
         {
             return GetWindowRect(hWnd, out lpRect);

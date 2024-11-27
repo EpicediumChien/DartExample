@@ -83,13 +83,12 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
         private MediaCapture _mediaCapture;
         private SoftwareBitmap backBitmapBuffer;
 
-        //private readonly string[] PresetNames = [LangHelper.Instance["Default"], LangHelper.Instance["Camera.10"], LangHelper.Instance["Camera.9"], LangHelper.Instance["Camera.8"]];
-        private readonly string[] PresetNames = [LangHelper.Instance["Default"], Strings.Smooth, Strings.Vibrant, Strings.Warm];
+        private readonly string[] PresetNames = [LangHelper.Instance["Default"], LangHelper.Instance["Smooth"], LangHelper.Instance["Vibrant"], LangHelper.Instance["Warm"]];
         private string EditMode = string.Empty;
         private string EditingProfileName = string.Empty;
-        private static PowerEventControl _pwr_Mon = null;
+        private static PowerEventControl _pwr_Mon;
 
-        public Thread status_thread = null;
+        public Thread status_thread;
         public bool exit_status_thread = false;
 
         enum PresenceDetectionView { InternalUPDSupport, MicrosoftHPDSupport, MicrosoftHPDNotSupport }
@@ -124,9 +123,10 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                     _vm.VbarItemClickCommand = new RelayCommand<VbarItem>(OnVbarItemClicked!);
                     BuildModuleGroups();
 
-                    if (PresetNames.Contains(_vm!.CurrentProfileName))
+                    var pName = _vm.ProfileCaptions[_vm.CurrentProfileName];
+                    if (PresetNames.Contains(pName))
                     {
-                        txtPreset.Text = $"{Strings.Preset}: {_vm.CurrentProfileName}";
+                        txtPreset.Text = $"{Strings.Preset}: {pName}";
                     }
                     else
                     {
@@ -228,14 +228,15 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
         public void CheckUSBtype()
         {
             //需要特殊邏輯處理的型號
-            List<string> SpecialCase = new List<string>() 
+            List<string> SpecialCase = new List<string>()
             {
                 "U3223QZ","U3224KB","U3224KBA","P2424HEB","P2724DEB","P3424WEB"
             };
 
             string model = _vm.CurrentDeviceInfo!.ModelNumber;
 
-            if (!SpecialCase.Contains(model)) return;
+            if (!SpecialCase.Contains(model))
+                return;
 
             //check usb 2.0 / 3.0
             bool AllSupportedResolutions = DdpmCommonHelper.DeviceManagerSA!.GetIsAllSupportedResolutionsFound(_vm.CurrentDeviceInfo!.ID.ToString()).Result;
@@ -334,6 +335,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
 
         private void WebcamSettingChanged(object? sender, EventArgs e)
         {
+            //_vm!.mre.Reset();
             Preview();
         }
 
@@ -742,8 +744,8 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
         {
             void GetBuffer(out byte* buffer, out uint capacity);
         }
-        [DllImport("Kernel32.dll", EntryPoint = "RtlMoveMemory")]
-        public static extern void CopyMemory(IntPtr Destination, IntPtr Source, int Length);
+        //[DllImport("Kernel32.dll", EntryPoint = "RtlMoveMemory")]
+        //public static extern void CopyMemory(IntPtr Destination, IntPtr Source, int Length);
         int ImageBufferSize = 0;
         int count = 0;
         private async void MediaFrameReader_FrameArrived(MediaFrameReader sender, MediaFrameArrivedEventArgs args)
@@ -1140,7 +1142,9 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             {
                 //DdpmCommonHelper.DeviceManagerSA!.SetProfile(_vm.CurrentDeviceInfo!.ID.ToString(), _vm.ProfileIDs[profileName]);
                 _vm!.CurrentProfileName = profileName;
+                _vm.IsSettingProfile = true;
                 _vm.SetProfile();
+                _vm.IsSettingProfile = false;
                 isProfilePropertyChanged = false;
             }
             btnPreset_Click(this, null);
@@ -1153,8 +1157,9 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             var AnimatedPanel = (StackPanel)FindName("spPresets");
             if (IsPresetOpen)
             {
-                var txt = $"{Strings.Preset}: {_vm!.CurrentProfileName}";
-                if (!PresetNames.Contains(_vm!.CurrentProfileName))
+                var pName = _vm!.ProfileCaptions[_vm.CurrentProfileName];
+                var txt = $"{Strings.Preset}: {pName}";
+                if (!PresetNames.Contains(pName))
                 {
                     txt = Utility.CheckTextLength($"{_vm!.CurrentProfileName}", 140, 14);
                 }
@@ -1198,7 +1203,9 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             if (profileName != _vm!.CurrentProfileName)
             {
                 _vm.CurrentProfileName = profileName;
+                _vm.IsSettingProfile = true;
                 _vm.SetProfile();
+                _vm.IsSettingProfile = false;
             }
             txbName.Text = profileName;
             _vm!.DisableVBar();
@@ -1224,7 +1231,9 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             if (profileName == _vm!.CurrentProfileName)
             {
                 _vm!.CurrentProfileName = "Default";
+                _vm.IsSettingProfile = true;
                 _vm.SetProfile();
+                _vm.IsSettingProfile = false;
             }
             btnPreset_Click(this, null);
 
@@ -1357,7 +1366,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
 
             }
 
-            if (_vm!.ProfileIDs.ContainsKey(txt) && txt != EditingProfileName)
+            if (_vm!.ProfileCaptions.ContainsKey(txt) && txt != EditingProfileName)
             {
                 txtMsg.Visibility = Visibility.Visible;
                 bdrName.BorderBrush = new SolidColorBrush(Color.FromArgb(0xFF, 0xFF, 0x3E, 0x3B));
@@ -1379,7 +1388,9 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             if (EditMode == "EDIT")
             {
                 _vm!.CurrentProfileName = EditingProfileName;
+                _vm.IsSettingProfile = true;
                 _vm.SetProfile();
+                _vm.IsSettingProfile = false;
             }
             txtCaption.Text = _vm!.Name;
             _vm.EnableVBar();

@@ -375,24 +375,24 @@ namespace DDPM.Win32Lib
         #region Actions (Wayn)
 
         // Import keybd_event function
-        [DllImport("user32.dll", SetLastError = true)]
+        /*[DllImport("user32.dll", SetLastError = true)]
         [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
         private static extern void keybd_event(byte bVk, byte bScan, uint dwFlags, UIntPtr dwExtraInfo);
 
         public static void _keybd_event(byte bVk, byte bScan, uint dwFlags, UIntPtr dwExtraInfo)
         {
             keybd_event(bVk, bScan, dwFlags, dwExtraInfo);
-        }
+        }*/
 
         // Import mouse_event function
-        [DllImport("user32.dll", SetLastError = true)]
+        /*[DllImport("user32.dll", SetLastError = true)]
         [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
         private static extern void mouse_event(uint dwFlags, uint dx, uint dy, uint dwData, UIntPtr dwExtraInfo);
 
         public static void _mouse_event(uint dwFlags, uint dx, uint dy, uint dwData, UIntPtr dwExtraInfo)
         {
             mouse_event(dwFlags, dx, dy, dwData, dwExtraInfo);
-        }
+        }*/
 
         // Constants for keybd events
         public const uint KEYEVENTF_KEYDOWN = 0x0000;
@@ -539,6 +539,7 @@ namespace DDPM.Win32Lib
         public const uint DWM_CLOAKED_INHERITED = 0x00000004; //封閉值繼承自其擁有者視窗。
 
         [DllImport("dwmapi.dll")]
+        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
         private static extern int DwmGetWindowAttribute(IntPtr hwnd, eDwmWindowAttribute dwAttribute, out uint pvAttribute, int cbAttribute);
         public static int _DwmGetWindowAttribute(IntPtr hwnd, eDwmWindowAttribute dwAttribute, out uint pvAttribute, int cbAttribute)
         {

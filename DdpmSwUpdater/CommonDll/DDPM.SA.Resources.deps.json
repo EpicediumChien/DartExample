@@ -8,7 +8,7 @@
     ".NETCoreApp,Version=v8.0": {
       "DDPM.SA.Resources/1.0.0": {
         "dependencies": {
-          "runtimepack.Microsoft.Windows.SDK.NET.Ref": "10.0.19041.53"
+          "runtimepack.Microsoft.Windows.SDK.NET.Ref": "10.0.19041.54"
         },
         "runtime": {
           "DDPM.SA.Resources.dll": {}
@@ -67,7 +67,7 @@
           }
         }
       },
-      "runtimepack.Microsoft.Windows.SDK.NET.Ref/10.0.19041.53": {
+      "runtimepack.Microsoft.Windows.SDK.NET.Ref/10.0.19041.54": {
         "runtime": {
           "Microsoft.Windows.SDK.NET.dll": {
             "assemblyVersion": "10.0.19041.38",
@@ -87,7 +87,7 @@
       "serviceable": false,
       "sha512": ""
     },
-    "runtimepack.Microsoft.Windows.SDK.NET.Ref/10.0.19041.53": {
+    "runtimepack.Microsoft.Windows.SDK.NET.Ref/10.0.19041.54": {
       "type": "runtimepack",
       "serviceable": false,
       "sha512": ""
