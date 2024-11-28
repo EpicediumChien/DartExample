@@ -896,7 +896,7 @@ namespace DDPM.SA.Plugins.User.EzMemory
             return true;
         }
 
-        public async Task<bool> LaunchAndArrangeAppsWithEzArrange(Dictionary<string, Bind_AddFullPage_AppCollectionData> sortApps, MonitorInfo moInfo, int eAid)
+        public async Task<bool> LaunchAndArrangeAppsWithEzArrange(Dictionary<String, Bind_AddFullPage_AppCollectionData> sortApps, MonitorInfo moInfo, int eAid)
         {
             try
             {

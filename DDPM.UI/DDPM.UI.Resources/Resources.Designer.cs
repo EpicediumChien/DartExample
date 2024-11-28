@@ -1489,6 +1489,17 @@ namespace DDPM.UI.Resources
         }
 
         /// <summary>
+        ///   查詢類似 Connect your monitor via USB 3.0 and select &apos;High Data Speed&apos; under USB-C Prioritization to enable 4K UHD resolution. 的當地語系化字串。
+        /// </summary>
+        internal static string Camera_25
+        {
+            get
+            {
+                return ResourceManager.GetString("Camera.25", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   查詢類似 Capture 的當地語系化字串。
         /// </summary>
         internal static string Camera_3
@@ -3194,7 +3205,7 @@ namespace DDPM.UI.Resources
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to Another profile has been configured to use the same time. Please use another time..
+        ///   查詢類似 Another profile has been configured to use the same time. Please use another time. 的當地語系化字串。
         /// </summary>
         internal static string EazyMemory_41
         {

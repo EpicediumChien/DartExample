@@ -1531,6 +1531,269 @@ namespace DDPM.CLI.Plugins.Display.Test
             Assert.That(get_ScreenOrientation_code, Is.EqualTo(get_ScreenOrientation_code_Result));
         }
 
+        [Test]
+        public void Testget_RangeLevel()
+        {
+            string level;
+            string get_RangeLevel;
+            string get_RangeLevel_Result;
+
+            // Case 01  LOW
+            level = "LOW";
+            get_RangeLevel = "0";
+            get_RangeLevel_Result = (string)privatetecLIDisplayPlugins.Invoke("get_RangeLevel", level);
+            Assert.IsNotNull(get_RangeLevel_Result);
+            Assert.That(get_RangeLevel, Is.EqualTo(get_RangeLevel_Result));
+
+            // Case 02  MID
+            level = "MID";
+            get_RangeLevel = "1";
+            get_RangeLevel_Result = (string)privatetecLIDisplayPlugins.Invoke("get_RangeLevel", level);
+            Assert.IsNotNull(get_RangeLevel_Result);
+            Assert.That(get_RangeLevel, Is.EqualTo(get_RangeLevel_Result));
+
+            // Case 03  HIGH
+            level = "HIGH";
+            get_RangeLevel = "2";
+            get_RangeLevel_Result = (string)privatetecLIDisplayPlugins.Invoke("get_RangeLevel", level);
+            Assert.IsNotNull(get_RangeLevel_Result);
+            Assert.That(get_RangeLevel, Is.EqualTo(get_RangeLevel_Result));
+
+            // default
+            level = "Testlevel";
+            get_RangeLevel = "1";
+            get_RangeLevel_Result = (string)privatetecLIDisplayPlugins.Invoke("get_RangeLevel", level);
+            Assert.IsNotNull(get_RangeLevel_Result);
+            Assert.That(get_RangeLevel, Is.EqualTo(get_RangeLevel_Result));
+        }
+
+        [Test]
+        public void Testget_MicrophoneControl()
+        {
+            string status;
+            int value;
+            string get_MicrophoneControl;
+            string get_MicrophoneControl_Result;
+
+            // Case 01  OSDDISABLE,0x01
+            status = "OSDDISABLE";
+            value = 0x01;
+            get_MicrophoneControl = "1";
+            get_MicrophoneControl_Result = (string)privatetecLIDisplayPlugins.Invoke("get_MicrophoneControl", status, value);
+            Assert.IsNotNull(get_MicrophoneControl_Result);
+            Assert.That(get_MicrophoneControl, Is.EqualTo(get_MicrophoneControl_Result));
+
+            // Case 02  OSDENABLE,0x02
+            status = "OSDENABLE";
+            value = 0x02;
+            get_MicrophoneControl = "2";
+            get_MicrophoneControl_Result = (string)privatetecLIDisplayPlugins.Invoke("get_MicrophoneControl", status, value);
+            Assert.IsNotNull(get_MicrophoneControl_Result);
+            Assert.That(get_MicrophoneControl, Is.EqualTo(get_MicrophoneControl_Result));
+
+            // Case 03  unknown_command,0x02
+            status = "TestMicrophoneControl";
+            value = 0x03;
+            get_MicrophoneControl = "unknown_command";
+            get_MicrophoneControl_Result = (string)privatetecLIDisplayPlugins.Invoke("get_MicrophoneControl", status, value);
+            Assert.IsNotNull(get_MicrophoneControl_Result);
+            Assert.That(get_MicrophoneControl, Is.EqualTo(get_MicrophoneControl_Result));
+        }
+
+        [Test]
+        public void Testget_MicrophoneControl_status()
+        {
+            int value;
+            string get_MicrophoneControl_status;
+            string get_MicrophoneControl_status_Result;
+
+            // Case 01  OSDDISABLE,0x01
+            value = 0x01;
+            get_MicrophoneControl_status = "OSDDISABLE";
+            get_MicrophoneControl_status_Result = (string)privatetecLIDisplayPlugins.Invoke("get_MicrophoneControl_status", value);
+            Assert.IsNotNull(get_MicrophoneControl_status_Result);
+            Assert.That(get_MicrophoneControl_status, Is.EqualTo(get_MicrophoneControl_status_Result));
+
+            // Case 02  OSDENABLE,0x02
+            value = 0x02;
+            get_MicrophoneControl_status = "OSDENABLE";
+            get_MicrophoneControl_status_Result = (string)privatetecLIDisplayPlugins.Invoke("get_MicrophoneControl_status", value);
+            Assert.IsNotNull(get_MicrophoneControl_status_Result);
+            Assert.That(get_MicrophoneControl_status, Is.EqualTo(get_MicrophoneControl_status_Result));
+
+            // Case 03  unknown_command,0x02
+            value = 0x03;
+            get_MicrophoneControl_status = "";
+            get_MicrophoneControl_status_Result = (string)privatetecLIDisplayPlugins.Invoke("get_MicrophoneControl_status", value);
+            Assert.IsNotNull(get_MicrophoneControl_status_Result);
+            Assert.That(get_MicrophoneControl_status, Is.EqualTo(get_MicrophoneControl_status_Result));
+        }
+
+        [Test]
+        public void Testget_SpeakerVolume()
+        {
+            string status;
+            int value;
+            string get_MicrophoneControl;
+            string get_MicrophoneControl_Result;
+
+            // Case 01  OSDDISABLE,0x10
+            status = "OSDDISABLE";
+            value = 0x10;
+            get_MicrophoneControl = "255";
+            get_MicrophoneControl_Result = (string)privatetecLIDisplayPlugins.Invoke("get_SpeakerVolume", status, value);
+            Assert.IsNotNull(get_MicrophoneControl_Result);
+            Assert.That(get_MicrophoneControl, Is.EqualTo(get_MicrophoneControl_Result));
+
+            // Case 02  OSDENABLE,0x20
+            status = "OSDENABLE";
+            value = 0x20;
+            get_MicrophoneControl = "254";
+            get_MicrophoneControl_Result = (string)privatetecLIDisplayPlugins.Invoke("get_SpeakerVolume", status, value);
+            Assert.IsNotNull(get_MicrophoneControl_Result);
+            Assert.That(get_MicrophoneControl, Is.EqualTo(get_MicrophoneControl_Result));
+
+            // Case 03  unknown_command,0x30
+            status = "TestMicrophoneControl";
+            value = 0x30;
+            get_MicrophoneControl = "unknown_command";
+            get_MicrophoneControl_Result = (string)privatetecLIDisplayPlugins.Invoke("get_SpeakerVolume", status, value);
+            Assert.IsNotNull(get_MicrophoneControl_Result);
+            Assert.That(get_MicrophoneControl, Is.EqualTo(get_MicrophoneControl_Result));
+        }
+
+        [Test]
+        public void Testget_SpeakerVolume_status()
+        {
+            int value;
+            string get_SpeakerVolume_status;
+            string get_SpeakerVolume_status_Result;
+
+            // Case 01  OSDDISABLE,0x00FF
+            value = 0x00FF;
+            get_SpeakerVolume_status = "OSDDISABLE";
+            get_SpeakerVolume_status_Result = (string)privatetecLIDisplayPlugins.Invoke("get_SpeakerVolume_status", value);
+            Assert.IsNotNull(get_SpeakerVolume_status_Result);
+            Assert.That(get_SpeakerVolume_status, Is.EqualTo(get_SpeakerVolume_status_Result));
+
+            // Case 02  OSDENABLE,0x00FF
+            value = 0x00FE;
+            get_SpeakerVolume_status = "OSDENABLE";
+            get_SpeakerVolume_status_Result = (string)privatetecLIDisplayPlugins.Invoke("get_SpeakerVolume_status", value);
+            Assert.IsNotNull(get_SpeakerVolume_status_Result);
+            Assert.That(get_SpeakerVolume_status, Is.EqualTo(get_SpeakerVolume_status_Result));
+
+            // Case 03  OSDENABLE,Volume:52
+            value = 0x1234;
+            get_SpeakerVolume_status = "Volume:52";
+            get_SpeakerVolume_status_Result = (string)privatetecLIDisplayPlugins.Invoke("get_SpeakerVolume_status", value);
+            Assert.IsNotNull(get_SpeakerVolume_status_Result);
+            Assert.That(get_SpeakerVolume_status, Is.EqualTo(get_SpeakerVolume_status_Result));
+        }
+
+        [Test]
+        public void Testget_SpeakerMicrophone()
+        {
+            string status;
+            int value;
+            string get_SpeakerMicrophone;
+            string get_SpeakerMicrophone_Result;
+
+            // Case 01  OSDDISABLE,0x01
+            status = "OSDDISABLE";
+            value = 0x01;
+            get_SpeakerMicrophone = "1";
+            get_SpeakerMicrophone_Result = (string)privatetecLIDisplayPlugins.Invoke("get_SpeakerMicrophone", status, value);
+            Assert.IsNotNull(get_SpeakerMicrophone_Result);
+            Assert.That(get_SpeakerMicrophone, Is.EqualTo(get_SpeakerMicrophone_Result));
+
+            // Case 02  OSDENABLE,0x02
+            status = "OSDENABLE";
+            value = 0x02;
+            get_SpeakerMicrophone = "16386";
+            get_SpeakerMicrophone_Result = (string)privatetecLIDisplayPlugins.Invoke("get_SpeakerMicrophone", status, value);
+            Assert.IsNotNull(get_SpeakerMicrophone_Result);
+            Assert.That(get_SpeakerMicrophone, Is.EqualTo(get_SpeakerMicrophone_Result));
+
+            // Case 03  OSDUNLOCK,0x03
+            status = "OSDUNLOCK";
+            value = 0x03;
+            get_SpeakerMicrophone = "3";
+            get_SpeakerMicrophone_Result = (string)privatetecLIDisplayPlugins.Invoke("get_SpeakerMicrophone", status, value);
+            Assert.IsNotNull(get_SpeakerMicrophone_Result);
+            Assert.That(get_SpeakerMicrophone, Is.EqualTo(get_SpeakerMicrophone_Result));
+
+            // Case 04  OSDLOCK,0x04
+            status = "OSDLOCK";
+            value = 0x04;
+            get_SpeakerMicrophone = "32772";
+            get_SpeakerMicrophone_Result = (string)privatetecLIDisplayPlugins.Invoke("get_SpeakerMicrophone", status, value);
+            Assert.IsNotNull(get_SpeakerMicrophone_Result);
+            Assert.That(get_SpeakerMicrophone, Is.EqualTo(get_SpeakerMicrophone_Result));
+
+            // Case 05  OSDUNLOCK,OSDDISABLE,0x05
+            status = "OSDUNLOCK,OSDDISABLE";
+            value = 0x05;
+            get_SpeakerMicrophone = "5";
+            get_SpeakerMicrophone_Result = (string)privatetecLIDisplayPlugins.Invoke("get_SpeakerMicrophone", status, value);
+            Assert.IsNotNull(get_SpeakerMicrophone_Result);
+            Assert.That(get_SpeakerMicrophone, Is.EqualTo(get_SpeakerMicrophone_Result));
+
+            // Case 06  OSDUNLOCK,OSDENABLE,0x06
+            status = "OSDUNLOCK,OSDENABLE";
+            value = 0x06;
+            get_SpeakerMicrophone = "16390";
+            get_SpeakerMicrophone_Result = (string)privatetecLIDisplayPlugins.Invoke("get_SpeakerMicrophone", status, value);
+            Assert.IsNotNull(get_SpeakerMicrophone_Result);
+            Assert.That(get_SpeakerMicrophone, Is.EqualTo(get_SpeakerMicrophone_Result));
+
+            // Case 07  OSDLOCK,OSDDISABLE,0x07
+            status = "OSDLOCK,OSDDISABLE";
+            value = 0x07;
+            get_SpeakerMicrophone = "32775";
+            get_SpeakerMicrophone_Result = (string)privatetecLIDisplayPlugins.Invoke("get_SpeakerMicrophone", status, value);
+            Assert.IsNotNull(get_SpeakerMicrophone_Result);
+            Assert.That(get_SpeakerMicrophone, Is.EqualTo(get_SpeakerMicrophone_Result));
+
+            // Case 08  OSDLOCK,OSDENABLE,0x08
+            status = "OSDLOCK,OSDENABLE";
+            value = 0x08;
+            get_SpeakerMicrophone = "49160";
+            get_SpeakerMicrophone_Result = (string)privatetecLIDisplayPlugins.Invoke("get_SpeakerMicrophone", status, value);
+            Assert.IsNotNull(get_SpeakerMicrophone_Result);
+            Assert.That(get_SpeakerMicrophone, Is.EqualTo(get_SpeakerMicrophone_Result));
+
+            // Case 09  OSDUNLOCK,0x03
+            status = "Test get_SpeakerMicrophone";
+            value = 0x09;
+            get_SpeakerMicrophone = "unknown_command";
+            get_SpeakerMicrophone_Result = (string)privatetecLIDisplayPlugins.Invoke("get_SpeakerMicrophone", status, value);
+            Assert.IsNotNull(get_SpeakerMicrophone_Result);
+            Assert.That(get_SpeakerMicrophone, Is.EqualTo(get_SpeakerMicrophone_Result));
+        }
+
+        [Test]
+        public void Testget_SpeakerMicrophone_status()
+        {
+            int value;
+            string get_SpeakerMicrophone_status;
+            string get_SpeakerMicrophone_status_Result;
+
+            // Case 01  OSDLOCK,OSDDISABLE,0x8000
+            value = 0x8000;
+            get_SpeakerMicrophone_status = "OSDLOCK,OSDDISABLE,";
+            get_SpeakerMicrophone_status_Result = (string)privatetecLIDisplayPlugins.Invoke("get_SpeakerMicrophone_status", value);
+            Assert.IsNotNull(get_SpeakerMicrophone_status_Result);
+            Assert.That(get_SpeakerMicrophone_status, Is.EqualTo(get_SpeakerMicrophone_status_Result));
+
+            // Case 01  OSDUNLOCK,OSDENABLE,0x4000
+            value = 0x4000;
+            get_SpeakerMicrophone_status = "OSDUNLOCK,OSDENABLE,";
+            get_SpeakerMicrophone_status_Result = (string)privatetecLIDisplayPlugins.Invoke("get_SpeakerMicrophone_status", value);
+            Assert.IsNotNull(get_SpeakerMicrophone_status_Result);
+            Assert.That(get_SpeakerMicrophone_status, Is.EqualTo(get_SpeakerMicrophone_status_Result));
+        }
+
         [OneTimeTearDown]
         public void TearDown()
         {
