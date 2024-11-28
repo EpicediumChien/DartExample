@@ -546,6 +546,7 @@ namespace DDPM.SA.Plugin.User.CLIManager
                 else if (commandLineInput.Command.Equals("HELP"))
                 {
                     CLIEventResult result;
+                    IIC_Metadata iIC_Metadata = new IIC_Metadata();
                     if (commandLineInput.TargetFeature.ToUpper() == "DISPLAY")
                     {
                         var monitorInfos = _DevManagerPlugin.GetMonitors().Result;
@@ -576,8 +577,8 @@ namespace DDPM.SA.Plugin.User.CLIManager
                         }
                         foreach (var monitorInfo in monitorInfos)
                         {
-
-                            var results = ICLICommandTable.Response_HelpCommand_ByDisplay(commandLineInput.TargetFeature, monitorInfo.CapabilityDic);
+                            iIC_Metadata = _DevManagerPlugin.DownloadICCData(monitorInfo).Result;
+                            var results = ICLICommandTable.Response_HelpCommand_ByDisplay(commandLineInput.TargetFeature, monitorInfo.CapabilityDic, iIC_Metadata.Is_Support_ICC_DeviceName);
                             output += "\n" + results;
                         }
                         result = new CLIEventResult()

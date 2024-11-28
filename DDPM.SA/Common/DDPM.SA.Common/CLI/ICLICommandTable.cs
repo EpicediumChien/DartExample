@@ -1206,13 +1206,15 @@ namespace DDPM.SA.Common
     new Dictionary<string, object> { { "TargetType", "DISPLAY" }, { "TargetFeature", "ExportSettings" },            { "VCP", "ALL" } },
     new Dictionary<string, object> { { "TargetType", "DISPLAY" }, { "TargetFeature", "ImportSettings" },            { "VCP", "ALL" } },
     new Dictionary<string, object> { { "TargetType", "DISPLAY" }, { "TargetFeature", "EasyArrangeLayout" },         { "VCP", "ALL" } },
+    new Dictionary<string, object> { { "TargetType", "DISPLAY" }, { "TargetFeature", "ColorManagement" },           { "VCP", "TRUE" } },
 };
 
-            public static string PrintFormattedJsonTargetFeature(string targetType, Dictionary<string, List<string>> vcpList)
+            public static string PrintFormattedJsonTargetFeature(string targetType, Dictionary<string, List<string>> vcpList, bool isColorMangerment)
             {
                 var targetFeatures = FeatureListByVCP
                 .Where(f => (f["TargetType"].ToString().Equals(targetType, StringComparison.OrdinalIgnoreCase))
-                && (f["VCP"].ToString().Split(",").ToList().Find(x => vcpList.ContainsKey(x)) != null) || f["VCP"].ToString().Equals("ALL", StringComparison.OrdinalIgnoreCase))
+                && (f["VCP"].ToString().Split(",").ToList().Find(x => vcpList.ContainsKey(x)) != null) || f["VCP"].ToString().Equals("ALL", StringComparison.OrdinalIgnoreCase)
+                || f["VCP"].ToString().Equals(isColorMangerment.ToString().ToUpper(), StringComparison.OrdinalIgnoreCase))
                 .Select(f => f["TargetFeature"].ToString())
                 .Distinct()
                 .ToList();
@@ -1270,12 +1272,10 @@ namespace DDPM.SA.Common
                     f["TargetType"].ToString().Equals(commandLineInput.TargetType, StringComparison.OrdinalIgnoreCase));
             }
         }
-        public static string Response_HelpCommand_ByDisplay(string targetType, Dictionary<string, List<string>> vcpList)
+        public static string Response_HelpCommand_ByDisplay(string targetType, Dictionary<string, List<string>> vcpList, bool isAutoColorMangerment)
         {
-             return CLIHelpCommandStructure.PrintFormattedJsonTargetFeature(targetType, vcpList);
+             return CLIHelpCommandStructure.PrintFormattedJsonTargetFeature(targetType, vcpList, isAutoColorMangerment);
         }
-        //DDPM.Subagent
-        private static ICliManagerIT _CliManagerPlugin;
         public static int Response_HelpCommand(CommandLineInput commandLineInput)
         {
             if (null == commandLineInput.TargetType)
@@ -1287,9 +1287,7 @@ namespace DDPM.SA.Common
             {
                 switch (commandLineInput.TargetFeature)
                 {
-                    case "DISPLAY":
-                        _CliManagerPlugin.PerformCommandLineRelay(commandLineInput);
-                        break;
+                    //case "DISPLAY":
                     case "ADVANCED":
                     case "APP":
                     case "AUDIO":
