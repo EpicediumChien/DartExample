@@ -1502,6 +1502,8 @@ namespace ColorPreset.Plugins
             //Console.WriteLine("[" + m.AliasDeviceName + "] Color Preset SupportList : ");
             writelog($"ColorPresetPlugin ReadColorPreset [" + m.modelName + "] Color Preset SupportList : ");
 
+            ColorPresetSupportList.Clear();
+
             foreach (var h in ColorPresetSupportList_)
             {
                 var temp = Sync_ColorPresetName(m, h).Result;
@@ -1768,8 +1770,8 @@ namespace ColorPreset.Plugins
 
             // check Color Preset Strings Game or Game1
 
-            if (ColorPresetSupportList.Count > 0)
-                index = ColorPresetSupportList.FindIndex(x => x == "Game2");
+            if (ColorPresetSupportList_.Count > 0)
+                index = ColorPresetSupportList_.FindIndex(x => x == "Game2");
 
             if (index >= 0)
             {
