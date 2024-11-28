@@ -378,7 +378,9 @@ namespace DDPM.UI.Module.EzMemory
 
             //Set as current Selected item
             _vm.SelectedSplitItem = spItem;
-            _vm.SetWorkSplit(spCtrl.CellCount, spCtrl.SplitKey, spCtrl.Settings);
+            //Robert_Lin, 2024-11-27, comment out, Don't call this method, it will change the selection of Easy Arrange to SA
+            //But UI do not get the notification.
+            //_vm.SetWorkSplit(spCtrl.CellCount, spCtrl.SplitKey, spCtrl.Settings);
 
             //Need to set it's buddy as IsSelected
 
