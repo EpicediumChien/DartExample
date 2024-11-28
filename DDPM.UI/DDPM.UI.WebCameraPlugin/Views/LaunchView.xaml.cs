@@ -222,31 +222,146 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             in_CameraPlugin = true;
 
             CheckUSBtype();
-            CheckWindowsHello();
+
         }
 
         public void CheckUSBtype()
         {
+
+            _vm!.MessageBoxVisibilityUsbType = Visibility.Hidden;
+
             //需要特殊邏輯處理的型號
             List<string> SpecialCase = new List<string>()
             {
-                "U3223QZ","U3224KB","U3224KBA","P2424HEB","P2724DEB","P3424WEB"
+                "U3223QZ","U3224KB","U3224KBA","P2424HEB","P2724DEB","P3424WEB","WB7022"
             };
 
             string model = _vm.CurrentDeviceInfo!.ModelNumber;
 
-            if (!SpecialCase.Contains(model))
+            if( model == null)
+            {
+                string log = $"[DDPM.UI.WebCameraPlugin\\Views\\LaunchView.xaml.cs] CheckUSBtype() model is null";
+                DdpmCommonHelper.WriteUILog(log);
                 return;
+            }
+
+
+
+            if (!SpecialCase.Contains(model)) return;
 
             //check usb 2.0 / 3.0
             bool AllSupportedResolutions = DdpmCommonHelper.DeviceManagerSA!.GetIsAllSupportedResolutionsFound(_vm.CurrentDeviceInfo!.ID.ToString()).Result;
 
+            switch (model)
+            {
+                case "WB7022":
+                    if (!AllSupportedResolutions)
+                    {
+                        //hdr on按鈕diable & 功能關閉
+                        _vm.is_hdr_enable = false;
+                        _vm.IsHDROn = false;
+
+                        // ProximitySensor按鈕diable & 功能關閉
+                        _vm.is_ProximitySensor_enable = false;
+                        _vm.IsChecked_ProximitySensor = false;
+
+                        //autoframe功能關閉 & 區域隱藏
+                        _vm.is_AutoFramingVisibility = false;
+                        _vm.IsAutoFramingOn = false;
+
+                        //身分偵測整個功能區域隱藏 
+                        //at BuildModuleGroups() to do
+
+
+                        //攝影機控制區域內windows hello隱藏
+                        _vm.brdHello_show_v = Visibility.Hidden;
+
+                        //連接usb 3.0提示訊息 Camera.14
+                        //Connect your monitor via USB 3.0 to enable 4K UHD resolution.
+                        _vm.MessageBoxVisibilityUsbType = Visibility.Visible;
+                        _vm.usbtype_info_v = LangHelper.Instance["Camera.25"];
+
+                        //fps與解析度,排除4k
+                        //Connect your monitor via USB 3.0 to enable 4K UHD resolution.
+                        _vm.btnRes0_show_v = Visibility.Collapsed;
+                        _vm.btnRes1_width_v = 201;
+                        _vm.btnRes1_radius_v = new CornerRadius(5, 0, 0, 5);
+                        _vm.btnRes2_width_v = 201;
+                    }
+                    break;
+                case "U3224KBA":
+                case "U3224KB":
+                    if (!AllSupportedResolutions)
+                    {
+
+                        //hdr.ProximitySensor.autoframe功能保留
+                        //身分偵測整個功能區域隱藏保留
+
+                        //關閉身份偵測內的windows hello設定
+                        _vm.UPD_Visibility = Visibility.Collapsed;
+
+
+                        //攝影機控制區域內windows hello隱藏
+                        _vm.brdHello_show_v = Visibility.Hidden;
+
+
+                        //連接usb 3.0提示訊息 Camera.14
+                        //Connect your monitor via USB 3.0 to enable 4K UHD resolution.
+                        _vm.MessageBoxVisibilityUsbType = Visibility.Visible;
+                        _vm.usbtype_info_v = LangHelper.Instance["Camera.25"];
+
+                        //fps與解析度,排除4k Camera.14
+                        _vm.btnRes0_show_v = Visibility.Collapsed;
+                        _vm.btnRes1_width_v = 201;
+                        _vm.btnRes1_radius_v = new CornerRadius(5, 0, 0, 5);
+                        _vm.btnRes2_width_v = 201;
+                    }
+                    break;
+                case "U3223QZ":
+                    if (!AllSupportedResolutions)
+                    {
+                        //hdr.ProximitySensor.autoframe功能保留
+                        //身分偵測整個功能區域隱藏保留
+
+                        //攝影機控制區域內windows hello隱藏
+                        _vm.brdHello_show_v = Visibility.Hidden;
+
+
+                        //連接usb 3.0提示訊息 Camera.15
+                        //Connect your monitor via USB 3.0 and select 'High Data Speed' under USB-C Prioritization to enable 4K UHD resolution.
+                        _vm.MessageBoxVisibilityUsbType = Visibility.Visible;
+                        _vm.usbtype_info_v = LangHelper.Instance["Camera.25"];
+
+                        //fps與解析度,排除4k 
+                        _vm.btnRes0_show_v = Visibility.Collapsed;
+                        _vm.btnRes1_width_v = 201;
+                        _vm.btnRes1_radius_v = new CornerRadius(5, 0, 0, 5);
+                        _vm.btnRes2_width_v = 201;
+
+                    }
+                    break;
+
+                case "P2424HEB":
+                case "P2724DEB":
+                case "P3424WEB":
+                    if (!AllSupportedResolutions)
+                    {
+
+                        //連接usb 3.0提示訊息 Camera.15
+                        //Connect your monitor via USB 3.0 and select 'High Data Speed' under USB-C Prioritization to enable 4K UHD resolution.
+                        _vm.MessageBoxVisibilityUsbType = Visibility.Visible;
+                        _vm.usbtype_info_v = LangHelper.Instance["Camera.25"].Replace("4K", "2K");
+
+                        //fps與解析度,排除2k 
+                        _vm.btnRes0_show_v = Visibility.Collapsed;
+                        _vm.btnRes1_width_v = 201;
+                        _vm.btnRes1_radius_v = new CornerRadius(5, 0, 0, 5);
+                        _vm.btnRes2_width_v = 201;
+                    }
+                    break;
+            }
         }
 
-        public void CheckWindowsHello()
-        {
-            bool WHelloOk = false;
-        }
 
         private void LaunchView_Loaded(object sender, RoutedEventArgs e)
         {
@@ -302,6 +417,9 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                         };
                         visibilityAnimation.Completed += ShowGrid;
                         imgDevice.BeginAnimation(OpacityProperty, visibilityAnimation);
+
+                        _vm.AlertType = WebcamAlert.Alert2;
+                        _vm.AlertVisibility = Visibility.Visible;
 
                     });
                 }
@@ -592,7 +710,18 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                     GroupIconCanvas = DdpmCommonHelper.CanvasIconCreator(VbarIcon.WebcamDetection)
                 };
                 moduleGroup.AddHeader(PresenceDetection, new WebCameraPresenceDetectionModule(_vm!));
-                groups.Add(moduleGroup);
+
+                bool addPresenceDetection = true;
+                bool usbtype = DdpmCommonHelper.DeviceManagerSA!.GetIsAllSupportedResolutionsFound(_vm.CurrentDeviceInfo!.ID.ToString()).Result;
+                if (!usbtype)
+                {
+                    //規格確認後,可能會再增加需要排除型號
+                    if (_vm!.Model == "WB7022") addPresenceDetection = false;
+                }
+
+                if (addPresenceDetection)
+                    groups.Add(moduleGroup);
+
             }
 
             moduleGroup = new ModuleGroup()
