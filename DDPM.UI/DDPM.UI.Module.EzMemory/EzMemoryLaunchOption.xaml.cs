@@ -31,6 +31,7 @@ using DDPM.Easy.Common;
 using DDPM.UI.Common.ViewModels;
 using static System.Reflection.Metadata.BlobBuilder;
 using System.Globalization;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.StartPanel;
 
 namespace DDPM.UI.Module.EzMemory
 {
@@ -271,6 +272,7 @@ namespace DDPM.UI.Module.EzMemory
                 // Clear UI and close view
                 _vm.ClearTextBlockAppName();
                 _vm.IsEditProfile = false;
+
                 DdpmCommonHelper.ModuleOwner?.CloseFullView();
             }
             catch (Exception ex)
