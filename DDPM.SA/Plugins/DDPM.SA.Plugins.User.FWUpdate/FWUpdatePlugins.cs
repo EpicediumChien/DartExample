@@ -1493,7 +1493,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                     break;
             }
         }
-
+        string _ProgressLogPath;
         /// <summary>
         /// 安裝下載好的更新檔
         /// </summary>
@@ -1571,11 +1571,13 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                 }
                 if (fwUpdateInfo.DeviceType == DeviceType.LogicalDock || fwUpdateInfo.DeviceType == DeviceType.PhysicalWiredDock)
                 {
-                    arguments += $" /f /l=\"{logPath}\\{DateTime.Now.ToString("yyyy-MM-dd_HH_mm_ss")}\"";
+                    arguments += $" /f /debuglog /l=\"{logPath}\\{DateTime.Now.ToString("yyyy-MM-dd_HH_mm_ss")}\"";
+                    _ProgressLogPath = $"{logPath}\\PrgoressResult";
                 }
                 else
                 {
                     arguments += $" \"{logPath}\"";
+                    _ProgressLogPath = $"{logPath}\\PrgoressResult";
                 }
                 var sessionId = Kernel32.WTSGetActiveConsoleSessionId();
                 if (sessionId is Advapi32.InvalidSessionId) throw new InvalidOperationException($"Cannot get session id");
@@ -1660,6 +1662,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                 }
                 if (fwUpdateInfo.IsDisplay)
                 {
+                    WriteLog($"{DateTime.Now}--DeviceName : {fwUpdateInfo.DeviceName} Model : {fwUpdateInfo.Model} to ver : {fwUpdateInfo.TheLatestVersion} exitCode : {exitCode}");
                     if (exitCode == 0)
                     {
                         _updateErrorCode = FWUErrorCode.NoError;
@@ -2143,6 +2146,24 @@ namespace DDPM.SA.Plugins.User.FWUpdate
         {
             ProgressUpdate_Notify?.AsyncFireAndForget(this, fWUpdateInfo, System.Threading.CancellationToken.None);
             _logs.DebugMsg_1($"sendMessageToEvent {fWUpdateInfo.DeviceName} {fWUpdateInfo.Model} {fWUpdateInfo.TheLatestVersion} {fWUpdateInfo.ProcessName} {fWUpdateInfo.ProcessProgress} {DateTime.Now}");
+            WriteLog($"{DateTime.Now}--DeviceName : {fWUpdateInfo.DeviceName} Model : {fWUpdateInfo.Model} to ver : {fWUpdateInfo.TheLatestVersion} ProcessName : {fWUpdateInfo.ProcessName}...{fWUpdateInfo.ProcessProgress}%");
+        }
+        private void WriteLog(string s)
+        {
+            try
+            {
+                if (!string.IsNullOrEmpty(_ProgressLogPath))
+                {
+                    using (StreamWriter writer = new StreamWriter(_ProgressLogPath, true))
+                    {
+                        writer.WriteLine($"{DateTime.Now}: {s}");
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                _logs.DebugMsg_1($"WriteLog Error : {ex.Message}");
+            }
         }
         /*private bool CheckFold(string path, out string folderInfo, out string pathSymbolicLinInfo)
         {
