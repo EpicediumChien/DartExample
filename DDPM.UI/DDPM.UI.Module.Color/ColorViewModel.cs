@@ -1227,6 +1227,37 @@ namespace DDPM.UI.Module.Color
                 }
             }
 
+            // PIMS-288131
+            try
+            {
+                if (Process.GetProcessesByName("ColorManagement").Length > 0)
+                {
+                    // Is running
+                    MyModule.GetRightView().Dispatcher.Invoke((Action)(() =>
+                    {
+                        ((Expander)(MyModule.GetRightView().FindName("Expander_Advanced_Settings"))).IsEnabled = false;
+                        ((Expander)(MyModule.GetRightView().FindName("Expander_Advanced_Settings"))).IsExpanded = false;
+
+                        ((StackPanel)(MyModule.GetRightView().FindName("stackpanel_DCM"))).Visibility = Visibility.Visible;
+                        DCM_Visibility = Visibility.Visible;
+
+                        /*
+                        if (registryMonitor_ICC != null)
+                        {
+                            if (registryMonitor_ICC.IsMonitoring)
+                                registryMonitor_ICC.Dispose();
+                            registryMonitor_ICC = null;
+                        }
+                        */
+                    }));
+                }
+            }
+            catch (System.Exception ex)
+            {
+                string log = $"[RunWorkerCompleted_RefreshData] Exception thrown when Process.GetProcessesByName : {ex.Message}\nStack Trace: {ex.StackTrace}";
+                DdpmCommonHelper.WriteUILog(log);
+            }
+
             WatchForProcessStart();
             WatchForProcessEnd();
 
@@ -1269,30 +1300,7 @@ namespace DDPM.UI.Module.Color
                 {
                     //Result is failed.
                 }
-            }
-
-            // PIMS-288131
-            if (Process.GetProcessesByName("ColorManagement").Length > 0)
-            {
-                // Is running
-                MyModule.GetRightView().Dispatcher.Invoke((Action)(() =>
-                {
-                    ((Expander)(MyModule.GetRightView().FindName("Expander_Advanced_Settings"))).IsEnabled = false;
-                    ((Expander)(MyModule.GetRightView().FindName("Expander_Advanced_Settings"))).IsExpanded = false;
-
-                    ((StackPanel)(MyModule.GetRightView().FindName("stackpanel_DCM"))).Visibility = Visibility.Visible;
-                    DCM_Visibility = Visibility.Visible;
-
-                    /*
-                    if (registryMonitor_ICC != null)
-                    {
-                        if (registryMonitor_ICC.IsMonitoring)
-                            registryMonitor_ICC.Dispose();
-                        registryMonitor_ICC = null;
-                    }
-                    */
-                }));
-            }
+            }          
 
             WatchForProcessStart();
             WatchForProcessEnd();
