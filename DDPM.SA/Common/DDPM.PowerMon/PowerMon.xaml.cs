@@ -52,6 +52,7 @@ namespace DDPM.PowerMon
             }
         }
 
+        #region native APIs
         [StructLayout(LayoutKind.Sequential)]
         private struct POWERBROADCAST_SETTING
         {
@@ -65,6 +66,7 @@ namespace DDPM.PowerMon
         private IntPtr m_hPowerNotify = IntPtr.Zero;
 
         [DllImport("user32.dll", SetLastError = true)]
+        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
         private static extern IntPtr RegisterPowerSettingNotification(IntPtr hRecipient, ref Guid PowerSettingGuid, uint Flags);
         private static IntPtr _RegisterPowerSettingNotification(IntPtr hRecipient, ref Guid PowerSettingGuid, uint Flags)
         {
@@ -72,6 +74,7 @@ namespace DDPM.PowerMon
         }
 
         [DllImport("user32.dll", SetLastError = true)]
+        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
         private static extern bool UnregisterPowerSettingNotification(IntPtr Handle);
         private static bool _UnregisterPowerSettingNotification(IntPtr Handle)
         {
@@ -81,14 +84,30 @@ namespace DDPM.PowerMon
         //for hotkey
 
         [DllImport("user32.dll", SetLastError = true)]
-        public static extern bool RegisterHotKey(IntPtr hWnd, int id, ModifierKeys fsModifiers, int vk);
+        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
+        private static extern bool RegisterHotKey(IntPtr hWnd, int id, ModifierKeys fsModifiers, int vk);
+        private static bool _RegisterHotKey(IntPtr hWnd, int id, ModifierKeys fsModifiers, int vk)
+        {
+            return RegisterHotKey(hWnd, id, fsModifiers, vk);
+        }
 
         [DllImport("user32.dll", SetLastError = true)]
-        public static extern bool UnregisterHotKey(IntPtr hWnd, int id);
+        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
+        private static extern bool UnregisterHotKey(IntPtr hWnd, int id);
+        private static bool _UnregisterHotKey(IntPtr hWnd, int id)
+        {
+            return UnregisterHotKey(hWnd, id);
+        }
 
 
         [DllImport("kernel32.dll")]
-        public static extern ushort GlobalAddAtom(string lpString);
+        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
+        private static extern ushort GlobalAddAtom(string lpString);
+        private static ushort _GlobalAddAtom(string lpString)
+        {
+            return GlobalAddAtom(lpString);
+        }
+        #endregion
 
         private List<ushort> _hotkeyIds = new List<ushort>();
         public event EventHandler<KeyPressedEventArgs> HotkeyPressed;
@@ -107,11 +126,11 @@ namespace DDPM.PowerMon
                         continue;
                     }
                     string uniqueID = Guid.NewGuid().ToString("N");
-                    _currentId = GlobalAddAtom(uniqueID);
+                    _currentId = _GlobalAddAtom(uniqueID);
                     int lastError = -1;
                     Dispatcher.Invoke((() =>
                     {
-                        isKeyRegistered = RegisterHotKey(_handle, _currentId, hotkeyInfo.ModifiersEnum, (int)hotkeyInfo.KeyCode);
+                        isKeyRegistered = _RegisterHotKey(_handle, _currentId, hotkeyInfo.ModifiersEnum, (int)hotkeyInfo.KeyCode);
                         lastError = Marshal.GetLastWin32Error();
                     }));
                     if (!isKeyRegistered)
@@ -147,7 +166,7 @@ namespace DDPM.PowerMon
             int lastError = -1;
             Dispatcher.Invoke((() =>
             {
-                v = UnregisterHotKey(_handle, id);
+                v = _UnregisterHotKey(_handle, id);
                 lastError = Marshal.GetLastWin32Error();
             }));
             if (!v)
@@ -180,7 +199,7 @@ namespace DDPM.PowerMon
             {
                 Dispatcher.Invoke((() =>
                 {
-                    v = UnregisterHotKey(_handle, id);
+                    v = _UnregisterHotKey(_handle, id);
                     lastError = Marshal.GetLastWin32Error();
                 }));
                 if (!v)

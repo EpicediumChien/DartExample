@@ -69,7 +69,7 @@ namespace DDPM.UI.Plugin.DisplayPlugin
         /// This property is required by the IConsolePagePlugin. It specifies the text to display when the page is shown.
         /// </summary>
         //public string HeaderText => string.Format(Resources.Resources.AboutView_Gear_Text, _applicationName);
-        public string HeaderText => "DisplayPlugin";
+        public string HeaderText => "Dell Display";
 
         /// <summary>
         /// Page Type

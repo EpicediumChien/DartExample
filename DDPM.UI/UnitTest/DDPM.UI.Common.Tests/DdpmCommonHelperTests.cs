@@ -113,24 +113,29 @@ namespace DDPM.UI.Common.Tests
             Assert.That(DdpmCommonHelper.UIDebugModeFlag, Is.EqualTo(true));
         }
 
-        [DllImport("user32.dll", EntryPoint = "SendMessageA")]
-        public static extern int SendMessage(IntPtr hwnd, int wMsg, int wParam, int lParam);
+        //[DllImport("user32.dll", EntryPoint = "SendMessageA")]
+        //public static extern int SendMessage(IntPtr hwnd, int wMsg, int wParam, int lParam);
 
         [DllImport("User32.dll", EntryPoint = "FindWindow")]
-        public static extern IntPtr FindWindow(string className, string windowName);
+        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
+        private static extern IntPtr FindWindow(string className, string windowName);
+        private static IntPtr _FindWindow(string className, string windowName)
+        {
+            return FindWindow(className, windowName);
+        }
         public const int WM_CLOSE = 0x10;
         [Test]
         public void TestDDPMMesssageBox()
         {
             IntPtr hwnd_win;
-            hwnd_win = FindWindow(null, "title");
+            hwnd_win = _FindWindow(null, "title");
             Thread t = new Thread(() => DdpmCommonHelper.DDPMMesssageBox("title", "text", null));
             t.ApartmentState = ApartmentState.STA;
             t.Start();
             while (hwnd_win == 0)
             {
                 Thread.Sleep(1000);
-                hwnd_win = FindWindow(null, "DDPMMsgBox");
+                hwnd_win = _FindWindow(null, "DDPMMsgBox");
             }
         }
 
@@ -138,14 +143,14 @@ namespace DDPM.UI.Common.Tests
         public void TestDDPMMesssageBoxa()
         {
             IntPtr hwnd_win;
-            hwnd_win = FindWindow(null, "title");
+            hwnd_win = _FindWindow(null, "title");
             Thread t = new Thread(() => DdpmCommonHelper.DDPMMesssageBox("title", "text", new DependencyObject()));
             t.ApartmentState = ApartmentState.STA;
             t.Start();
             while (hwnd_win == 0)
             {
                 Thread.Sleep(1000);
-                hwnd_win = FindWindow(null, "DDPMMsgBox");
+                hwnd_win = _FindWindow(null, "DDPMMsgBox");
             }
         }
 
@@ -153,14 +158,14 @@ namespace DDPM.UI.Common.Tests
         public void TestDDPMPureMesssageBox()
         {
             IntPtr hwnd_win;
-            hwnd_win = FindWindow(null, "title");
+            hwnd_win = _FindWindow(null, "title");
             Thread t = new Thread(() => DdpmCommonHelper.DDPMPureMesssageBox("title", "text", true, null));
             t.ApartmentState = ApartmentState.STA;
             t.Start();
             while (hwnd_win == 0)
             {
                 Thread.Sleep(1000);
-                hwnd_win = FindWindow(null, "DDPMMsgBox");
+                hwnd_win = _FindWindow(null, "DDPMMsgBox");
             }
         }
 
@@ -168,14 +173,14 @@ namespace DDPM.UI.Common.Tests
         public void TestDDPMEzMesssageBox()
         {
             IntPtr hwnd_win;
-            hwnd_win = FindWindow(null, "title");
+            hwnd_win = _FindWindow(null, "title");
             Thread t = new Thread(() => DdpmCommonHelper.DDPMEzMesssageBox("title", "text", true, null, 10, 10, new Thickness(), new Thickness()));
             t.ApartmentState = ApartmentState.STA;
             t.Start();
             while (hwnd_win == 0)
             {
                 Thread.Sleep(1000);
-                hwnd_win = FindWindow(null, "DDPMMsgBox");
+                hwnd_win = _FindWindow(null, "DDPMMsgBox");
             }
         }
 

@@ -40,7 +40,7 @@ namespace DDPM.UI.Plugin.WalkThroughPlugin
         /// <summary>
         /// This property is required by the IConsolePagePlugin. It specifies the text to display when the page is shown.
         /// </summary>
-        public string HeaderText => "DDPM WalkThroughpage";
+        public string HeaderText => "WalkThrough";
 
         /// <summary>
         /// Page Type

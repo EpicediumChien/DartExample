@@ -194,7 +194,7 @@ namespace NGA.Common
         /// <summary>
         /// MyDell Application Name.
         /// </summary>
-        public const string ApplicationName = "DUCA Application";
+        public const string ApplicationName = "DDPM Application";
 
         /// <summary>
         /// Notification Preference Guid
