@@ -159,7 +159,8 @@ namespace DDPM.QAM
         private void CallDDPM_Click(object sender, MouseButtonEventArgs e)
         {
             ShowDDPM();
-            SendMessageToDDPM(10);
+            //SendMessageToDDPM(10);
+            //Info SA that DDPM launched by QAM
             Close_Click(this, null);
         }
 
