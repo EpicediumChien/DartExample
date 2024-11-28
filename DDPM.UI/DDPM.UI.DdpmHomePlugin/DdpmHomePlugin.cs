@@ -73,7 +73,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
         /// <summary>
         /// This property is required by the IConsolePagePlugin. It specifies the text to display when the page is shown.
         /// </summary>
-        public string HeaderText => "DDPM Homepage";
+        public string HeaderText => "Homepage";
 
         /// <summary>
         /// Page Type

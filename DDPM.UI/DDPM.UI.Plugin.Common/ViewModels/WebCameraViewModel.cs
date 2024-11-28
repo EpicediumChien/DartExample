@@ -281,29 +281,33 @@ namespace DDPM.UI.Plugin.ViewModels
                     {
                         if (_SelectedSnoozeLength.SnoozeLength == 30)
                         {
-                            //DdpmCommonHelper.DeviceManagerSA!.SetSnooze(CurrentDeviceInfo!.ID.ToString(), 0);
-                            DdpmCommonHelper.DeviceManagerSA!.SetSnooze(0, CurrentDeviceInfo!.ID);
+                            DdpmCommonHelper.DeviceManagerSA!.SetSnooze(CurrentDeviceInfo!.ID.ToString(), -1);
+                            DdpmCommonHelper.DeviceManagerSA!.SetSnooze(CurrentDeviceInfo!.ID.ToString(), 0);
+                            //DdpmCommonHelper.DeviceManagerSA!.SetSnooze(0, CurrentDeviceInfo!.ID);
                             //_SelectedSnoozeLength.SnoozeLength = 1800;
                             //DdpmCommonHelper.DeviceManagerSA!.SetSnoozeLength(CurrentDeviceInfo!.ID.ToString(), _SelectedSnoozeLength.SnoozeLength_sec);
                         }
                         else if (_SelectedSnoozeLength.SnoozeLength == 60)
                         {
-                            //DdpmCommonHelper.DeviceManagerSA!.SetSnooze(CurrentDeviceInfo!.ID.ToString(), 1);
-                            DdpmCommonHelper.DeviceManagerSA!.SetSnooze(1, CurrentDeviceInfo!.ID);
+                            DdpmCommonHelper.DeviceManagerSA!.SetSnooze(CurrentDeviceInfo!.ID.ToString(), -1);
+                            DdpmCommonHelper.DeviceManagerSA!.SetSnooze(CurrentDeviceInfo!.ID.ToString(), 1);
+                            //DdpmCommonHelper.DeviceManagerSA!.SetSnooze(1, CurrentDeviceInfo!.ID);
                             //_SelectedSnoozeLength.SnoozeLength = 3600;
                             //DdpmCommonHelper.DeviceManagerSA!.SetSnoozeLength(CurrentDeviceInfo!.ID.ToString(), _SelectedSnoozeLength.SnoozeLength_sec);
                         }
                         else if (_SelectedSnoozeLength.SnoozeLength == 90)
                         {
-                            //DdpmCommonHelper.DeviceManagerSA!.SetSnooze(CurrentDeviceInfo!.ID.ToString(), 2);
-                            DdpmCommonHelper.DeviceManagerSA!.SetSnooze(2, CurrentDeviceInfo!.ID);
+                            DdpmCommonHelper.DeviceManagerSA!.SetSnooze(CurrentDeviceInfo!.ID.ToString(), -1);
+                            DdpmCommonHelper.DeviceManagerSA!.SetSnooze(CurrentDeviceInfo!.ID.ToString(), 2);
+                            //DdpmCommonHelper.DeviceManagerSA!.SetSnooze(2, CurrentDeviceInfo!.ID);
                             //_SelectedSnoozeLength.SnoozeLength = 5400;
                             //DdpmCommonHelper.DeviceManagerSA!.SetSnoozeLength(CurrentDeviceInfo!.ID.ToString(), _SelectedSnoozeLength.SnoozeLength_sec);
                         }
                         else if (_SelectedSnoozeLength.SnoozeLength == 120)
                         {
-                            //DdpmCommonHelper.DeviceManagerSA!.SetSnooze(CurrentDeviceInfo!.ID.ToString(), 3);
-                            DdpmCommonHelper.DeviceManagerSA!.SetSnooze(3, CurrentDeviceInfo!.ID);
+                            DdpmCommonHelper.DeviceManagerSA!.SetSnooze(CurrentDeviceInfo!.ID.ToString(), -1);
+                            DdpmCommonHelper.DeviceManagerSA!.SetSnooze(CurrentDeviceInfo!.ID.ToString(), 3);
+                            //DdpmCommonHelper.DeviceManagerSA!.SetSnooze(3, CurrentDeviceInfo!.ID);
                             //_SelectedSnoozeLength.SnoozeLength = 7200;
                             //DdpmCommonHelper.DeviceManagerSA!.SetSnoozeLength(CurrentDeviceInfo!.ID.ToString(), _SelectedSnoozeLength.SnoozeLength_sec);
                         }
@@ -320,8 +324,8 @@ namespace DDPM.UI.Plugin.ViewModels
 
                 else //(_isChecked_Snooze == false)
                 {
-                    //DdpmCommonHelper.DeviceManagerSA!.SetSnooze(CurrentDeviceInfo!.ID.ToString(), -100);
-                    DdpmCommonHelper.DeviceManagerSA!.SetSnooze(-1, CurrentDeviceInfo!.ID);
+                    DdpmCommonHelper.DeviceManagerSA!.SetSnooze(CurrentDeviceInfo!.ID.ToString(), -1);
+                    //DdpmCommonHelper.DeviceManagerSA!.SetSnooze(-1, CurrentDeviceInfo!.ID);
                 }
 
                 OnPropertyChanged("IsChecked_Snooze");
@@ -395,6 +399,18 @@ namespace DDPM.UI.Plugin.ViewModels
                 //DdpmCommonHelper.DeviceManagerSA!.SetSnoozeLength(CurrentDeviceInfo!.ID.ToString(), _SelectedSnoozeLength.SnoozeLength);
                 //DdpmCommonHelper.DeviceManagerSA!.SetSnoozeLength(_SelectedSnoozeLength.SnoozeLength, CurrentDeviceInfo!.ID);
                 OnPropertyChanged("SelectedSnoozeLength");
+            }
+        }
+
+
+        private string? _WALSnoozeTimeLeft;
+        public string WALSnoozeTimeLeft
+        {
+            get => _WALSnoozeTimeLeft;
+            set
+            {
+                SetProperty(ref _WALSnoozeTimeLeft, value); 
+                OnPropertyChanged("WALSnoozeTimeLeft");
             }
         }
 
@@ -851,6 +867,38 @@ namespace DDPM.UI.Plugin.ViewModels
             }
         }
         public bool IsNotRecording { get => !IsRecording; }
+
+        public int btnRes0_width { get => btnRes0_width_v; }
+        public int btnRes1_width { get => btnRes1_width_v; }
+        public int btnRes2_width { get => btnRes2_width_v; }
+        public int btnRes3_width { get => btnRes3_width_v; }
+
+        public int btnRes0_width_v = 100;
+        public int btnRes1_width_v = 100;
+        public int btnRes2_width_v = 100;
+        public int btnRes3_width_v = 100;
+
+        public CornerRadius btnRes1_radius { get => btnRes1_radius_v; }
+        public CornerRadius btnRes1_radius_v = new CornerRadius(0, 0, 0, 0);
+
+        public Visibility btnRes0_show { get => btnRes0_show_v; }
+        public Visibility btnRes1_show { get => btnRes1_show_v; }
+        public Visibility btnRes2_show { get => btnRes2_show_v; }
+        public Visibility btnRes3_show { get => btnRes3_show_v; }
+
+        public Visibility btnRes0_show_v = Visibility.Visible;
+        public Visibility btnRes1_show_v = Visibility.Visible;
+        public Visibility btnRes2_show_v = Visibility.Visible;
+        public Visibility btnRes3_show_v = Visibility.Visible;
+
+        public Visibility brdHello_show { get => brdHello_show_v; }
+        public Visibility brdHello_show_v = Visibility.Visible;
+
+        public bool is_hdr_enable = true;
+        public bool hdr_enable { get => IsNotRecording && is_hdr_enable; }
+
+        public bool is_ProximitySensor_enable = true;
+        public bool ProximitySensor_enable { get => is_ProximitySensor_enable; }
 
         private bool _isChecked_Autofocus;
 
@@ -1345,9 +1393,11 @@ namespace DDPM.UI.Plugin.ViewModels
             }
         }
 
+        public bool is_AutoFramingVisibility = true;
         public Visibility AutoFramingVisibility
         {
-            get => CurrentDeviceInfo!.IsPropertyAutoFramingSensitivitySupported || CurrentDeviceInfo.IsPropertyAutoFramingSizeSupported || CurrentDeviceInfo.IsPropertyAutoFramingTransitionSupported ? Visibility.Visible : Visibility.Collapsed;
+            get => is_AutoFramingVisibility && (CurrentDeviceInfo!.IsPropertyAutoFramingSensitivitySupported || CurrentDeviceInfo.IsPropertyAutoFramingSizeSupported || CurrentDeviceInfo.IsPropertyAutoFramingTransitionSupported) ? Visibility.Visible : Visibility.Collapsed;
+
         }
         public Visibility AutoFramingSensitivityVisibility
         {
@@ -1666,6 +1716,12 @@ namespace DDPM.UI.Plugin.ViewModels
             }
         }
         public Visibility MessageBoxVisibility { get; set; } = Visibility.Collapsed;
+
+        public Visibility MessageBoxVisibilityUsbType { get; set; } = Visibility.Collapsed;
+
+        public string usbtype_info_v = LangHelper.Instance["Camera.25"];
+
+        public string usbtype_info { get => usbtype_info_v; }
 
         public bool running_state = true;
     }

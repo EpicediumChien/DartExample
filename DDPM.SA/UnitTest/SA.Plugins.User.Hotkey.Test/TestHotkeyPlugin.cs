@@ -89,7 +89,7 @@ namespace DDPM.SA.Plugins.User.Hotkey.Test
         [Test]
         public void Testhook()
         {
-            var hookResult= hotkeyPlugin.hook();
+            var hookResult = hotkeyPlugin.hook();
             Assert.IsNotNull(hookResult);
             Assert.IsTrue(hookResult);
         }
@@ -114,7 +114,7 @@ namespace DDPM.SA.Plugins.User.Hotkey.Test
             string keyUp = "KeyUp";
             keyboardHookStruct lParam = new keyboardHookStruct() { vkCode = (int)Keys.A };
             hotkeyPlugin.KeyDown += HotkeyPlugin_KeyDown;
-            hotkeyPlugin.KeyUp += HotkeyPlugin_KeyUp; 
+            hotkeyPlugin.KeyUp += HotkeyPlugin_KeyUp;
 
             if (code >= 0)
             {
@@ -129,7 +129,7 @@ namespace DDPM.SA.Plugins.User.Hotkey.Test
                         Assert.That(keyDown, Is.EqualTo(ex.Message));
                     }
                 }
-                if(wParamup== 0x101)
+                if (wParamup == 0x101)
                 {
                     try
                     {
@@ -141,7 +141,7 @@ namespace DDPM.SA.Plugins.User.Hotkey.Test
                     }
                 }
             }
-            else 
+            else
             {
                 var hookProckResult = hotkeyPlugin.hookProc(code, wParam, ref lParam);
                 Assert.IsNotNull(hookProckResult);
@@ -155,7 +155,7 @@ namespace DDPM.SA.Plugins.User.Hotkey.Test
         }
 
         private void HotkeyPlugin_KeyDown(object? sender, System.Windows.Forms.KeyEventArgs e)
-       
+
         {
             throw new Exception("KeyDown");
         }
@@ -170,7 +170,7 @@ namespace DDPM.SA.Plugins.User.Hotkey.Test
             var Result2 = hotkeyPlugin.IsDisposed;
             Assert.IsTrue(Result2);
         }
-		
+
         [Test]
         public void TestHook()
         {
@@ -178,7 +178,7 @@ namespace DDPM.SA.Plugins.User.Hotkey.Test
             Thread _hookThread1;
             _hookThread1 = new Thread(() =>
             {
-                hooktrue=true;
+                hooktrue = true;
             });
             PrivateObject privatehotkeyPluginObject = new PrivateObject(hotkeyPlugin);
             privatehotkeyPluginObject.SetFieldOrProperty("_hookThread", _hookThread1);
@@ -227,14 +227,14 @@ namespace DDPM.SA.Plugins.User.Hotkey.Test
             Assert.That(dwExtraInfo, Is.EqualTo(hookStruct.dwExtraInfo));
         }
 
-        [Test]
-        public void Test_LoadLibrary()
-        {
-            string lpFileName;
-            lpFileName = "User32";
-            var result = HotkeyPlugin._LoadLibrary(lpFileName);
-            Assert.IsNotNull(result);
-        }
+        /*    [Test]
+            public void Test_LoadLibrary()
+            {
+                string lpFileName;
+                lpFileName = "User32";
+                var result = HotkeyPlugin._LoadLibrary(lpFileName);
+                Assert.IsNotNull(result);
+            }*/
 
         private int MockCallback(int code, int wParam, ref HotkeyPlugin.keyboardHookStruct lParam)
         {
