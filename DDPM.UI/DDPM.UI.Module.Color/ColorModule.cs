@@ -61,7 +61,7 @@ namespace DDPM.UI.Module.Color
             Trace.WriteLine("ColorModule.OnSelectedHomeDeviceChanged");
             isSelectChanged = true;
             if (IsModuleActive)
-            {
+            {              
                 isSelectChanged = false;
                 InitNewViewModel();
             }

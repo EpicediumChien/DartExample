@@ -320,90 +320,90 @@
                       <UXControls:UXSlider Name="ZoomSlider" Grid.Column="1" Margin="0,0,0,0" Width="360" Height="14" HorizontalAlignment="Center" VerticalAlignment="Center"  
                                            IsMoveToPointEnabled="True" IsEnabled="{Binding IsAutoFramingOn, Converter={StaticResource BooleanToInverseConverter}}"
                                            Value="{Binding Zoom}"  Thumb.DragStarted="ZoomSlider_DragStarted" Thumb.DragCompleted="ZoomSlider_DragCompleted"/>
-                      <Canvas Grid.Column="2" Width="16" Height="16">
-                        <Path Data="M16.0002 15.25L10.7402 10C11.4842 9.11157 11.9593 8.02928 12.1097 6.88024C12.2601 5.73121 12.0795 4.56312 11.5891 3.51313C11.0988 2.46315 10.3191 1.57486 9.34147 0.952577C8.3639 0.33029 7.22906 -0.000164308 6.07023 1.70432e-05C5.08894 -0.00230429 4.12162 0.232535 3.25063 0.684541C2.37964 1.13655 1.63077 1.79233 1.06778 2.59606C0.5048 3.3998 0.144373 4.32767 0.017189 5.30069C-0.109995 6.2737 -0.000167906 7.26304 0.337319 8.18447C0.674805 9.10591 1.22996 9.93214 1.95551 10.5928C2.68106 11.2535 3.55552 11.7291 4.50444 11.9791C5.45335 12.2291 6.44863 12.246 7.40552 12.0286C8.36241 11.8111 9.25257 11.3656 10.0002 10.73L15.2502 16L16.0002 15.25ZM6.07023 11.11C5.08132 11.11 4.11462 10.8168 3.29238 10.2674C2.47013 9.71796 1.82927 8.93707 1.45083 8.02343C1.07239 7.1098 0.973375 6.10447 1.1663 5.13457C1.35923 4.16466 1.83543 3.27375 2.53469 2.57448C3.23396 1.87522 4.12487 1.39902 5.09478 1.20609C6.06468 1.01316 7.07001 1.11218 7.98365 1.49062C8.89728 1.86906 9.67817 2.50992 10.2276 3.33217C10.777 4.15441 11.0702 5.12111 11.0702 6.11002C11.0702 7.4361 10.5434 8.70787 9.60576 9.64555C8.66808 10.5832 7.39631 11.11 6.07023 11.11Z" />
-                        <Path Data="M6.59023 2.93002H5.53023V5.58002H2.89023V6.64002H5.53023V9.29002H6.59023V6.64002H9.24023V5.58002H6.59023V2.93002Z" />
-                      </Canvas>
-                    </Grid>
-                  </StackPanel>
-                </StackPanel>
-              </Border>
-              <Border Background="#99132F54" CornerRadius="6" Margin="0,10,0,0" Visibility="{Binding AutofocusVisibility}">
-                <StackPanel Orientation="Vertical">
-                  <Grid Margin="16,25,16,0">
-                    <StackPanel Orientation="Horizontal">
-                      <UXControls:UXTextBlock Grid.Column="0" Text="{Binding [WebCameraSettings.16], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource ModuleItemStyle}" />
-                      <Image Margin="9,0,9,0" Source="/DDPM.UI.Common;component/Resources/info.png" Stretch="Uniform" Cursor="Hand" Width="16" Height="16" HorizontalAlignment="Left">
-                        <Image.ToolTip>
-                          <ToolTip Style="{StaticResource InfoToolTipStyle}" Placement="Top" VerticalOffset="8" HorizontalOffset="6">
-                            <TextBlock Text="{Binding [WebCameraSettings.17], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource TabInfoToolTipTextStyle}" MaxWidth="350" />
-                          </ToolTip>
-                        </Image.ToolTip>
-                      </Image>
-                    </StackPanel>
-                    <UXControls:UXToggleSwitch IsChecked="{Binding Path= IsFocusOn}" Content="{Binding Path=IsFocusOnText}" HorizontalAlignment="Right" VerticalAlignment="Center" FontFamily="Roboto" FontSize="16" />
-                  </Grid>
-                  <StackPanel Orientation="Vertical" Margin="16,16,16,16">
-                    <UXControls:UXSlider Name="AutofocusSlider" Width="402" Height="14" HorizontalAlignment="Center" VerticalAlignment="Center" AutoToolTipPlacement="None" IsEnabled="{Binding IsFocusOn, Converter={StaticResource BooleanToInverseConverter}}"
+                                            <Canvas Grid.Column="2" Width="16" Height="16">
+                                                <Path Data="M16.0002 15.25L10.7402 10C11.4842 9.11157 11.9593 8.02928 12.1097 6.88024C12.2601 5.73121 12.0795 4.56312 11.5891 3.51313C11.0988 2.46315 10.3191 1.57486 9.34147 0.952577C8.3639 0.33029 7.22906 -0.000164308 6.07023 1.70432e-05C5.08894 -0.00230429 4.12162 0.232535 3.25063 0.684541C2.37964 1.13655 1.63077 1.79233 1.06778 2.59606C0.5048 3.3998 0.144373 4.32767 0.017189 5.30069C-0.109995 6.2737 -0.000167906 7.26304 0.337319 8.18447C0.674805 9.10591 1.22996 9.93214 1.95551 10.5928C2.68106 11.2535 3.55552 11.7291 4.50444 11.9791C5.45335 12.2291 6.44863 12.246 7.40552 12.0286C8.36241 11.8111 9.25257 11.3656 10.0002 10.73L15.2502 16L16.0002 15.25ZM6.07023 11.11C5.08132 11.11 4.11462 10.8168 3.29238 10.2674C2.47013 9.71796 1.82927 8.93707 1.45083 8.02343C1.07239 7.1098 0.973375 6.10447 1.1663 5.13457C1.35923 4.16466 1.83543 3.27375 2.53469 2.57448C3.23396 1.87522 4.12487 1.39902 5.09478 1.20609C6.06468 1.01316 7.07001 1.11218 7.98365 1.49062C8.89728 1.86906 9.67817 2.50992 10.2276 3.33217C10.777 4.15441 11.0702 5.12111 11.0702 6.11002C11.0702 7.4361 10.5434 8.70787 9.60576 9.64555C8.66808 10.5832 7.39631 11.11 6.07023 11.11Z" />
+                                                <Path Data="M6.59023 2.93002H5.53023V5.58002H2.89023V6.64002H5.53023V9.29002H6.59023V6.64002H9.24023V5.58002H6.59023V2.93002Z" />
+                                            </Canvas>
+                                        </Grid>
+                                    </StackPanel>
+                                </StackPanel>
+                            </Border>
+                            <Border CornerRadius="6" Margin="0,10,0,0" Visibility="{Binding AutofocusVisibility}">
+                                <StackPanel Orientation="Vertical">
+                                    <Grid Margin="16,25,16,0">
+                                        <StackPanel Orientation="Horizontal">
+                                            <UXControls:UXTextBlock Grid.Column="0" Text="{Binding [WebCameraSettings.16], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource ModuleItemStyle}" />
+                                            <Image Margin="9,0,9,0" Source="/DDPM.UI.Common;component/Resources/info.png" Stretch="Uniform" Cursor="Hand" Width="16" Height="16" HorizontalAlignment="Left">
+                                                <Image.ToolTip>
+                                                    <ToolTip Style="{StaticResource InfoToolTipStyle}" Placement="Top" VerticalOffset="8" HorizontalOffset="6">
+                                                        <TextBlock Text="{Binding [WebCameraSettings.17], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource TabInfoToolTipTextStyle}" MaxWidth="350" />
+                                                    </ToolTip>
+                                                </Image.ToolTip>
+                                            </Image>
+                                        </StackPanel>
+                                        <UXControls:UXToggleSwitch IsChecked="{Binding Path= IsFocusOn}" Content="{Binding Path=IsFocusOnText}" HorizontalAlignment="Right" VerticalAlignment="Center" FontFamily="Roboto" FontSize="16" />
+                                    </Grid>
+                                    <StackPanel Orientation="Vertical" Margin="16,16,16,16">
+                                        <UXControls:UXSlider Name="AutofocusSlider" Width="402" Height="14" HorizontalAlignment="Center" VerticalAlignment="Center" AutoToolTipPlacement="None" IsEnabled="{Binding IsFocusOn, Converter={StaticResource BooleanToInverseConverter}}"
                                          Value="{Binding Focus}" IsMoveToPointEnabled="True" IsSnapToTickEnabled="True" Thumb.DragStarted="AutofocusSlider_DragStarted" Thumb.DragCompleted="AutofocusSlider_DragCompleted" />
-                  </StackPanel>
-                </StackPanel>
-              </Border>
-              <Border Background="#99132F54" CornerRadius="6" Margin="0,10,0,0" Visibility="{Binding PriorityVisibility}">
-                <StackPanel Orientation="Vertical" Margin="16,22,16,10">
-                  <StackPanel Orientation="Horizontal">
-                    <UXControls:UXTextBlock Text="{Binding [WebCameraSettings.18], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource ModuleItemStyle}" />
-                    <Image Margin="9,0,0,0" Source="/DDPM.UI.Common;component/Resources/info.png" Stretch="Uniform" Cursor="Hand" Width="16" Height="16">
-                      <Image.ToolTip>
-                        <ToolTip Style="{StaticResource InfoToolTipStyle}" Placement="Top" VerticalOffset="8" HorizontalOffset="6">
-                          <TextBlock Text="{Binding [WebCameraSettings.19], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource TabInfoToolTipTextStyle}" MaxWidth="350"/>
-                        </ToolTip>
-                      </Image.ToolTip>
-                    </Image>
-                  </StackPanel>
-                  <StackPanel Orientation="Horizontal" Margin="0,18,0,8">
-                    <Border x:Name="btnPriority0" CornerRadius="5,0,0,5" Focusable="True" MouseLeftButtonDown="Priority_Click" Height="30" Width="201" Tag="0" IsEnabled="{Binding IsHDROn, Converter={StaticResource BooleanToInverseConverter}}">
-                      <Border.Style>
-                        <Style TargetType="Border" BasedOn="{StaticResource Border_Test}">
-                          <Style.Triggers>
-                            <DataTrigger Binding="{Binding Priority}"  Value="0">
-                              <Setter Property="Background"  Value="{StaticResource VbarItem_HiBkColor}" />
-                              <Setter Property="BorderBrush" Value="{StaticResource VbarItem_HiBdColor}" />
-                            </DataTrigger>
-                            <DataTrigger Binding="{Binding Priority}"  Value="1">
-                              <Setter Property="Cursor" Value="Hand" />
-                            </DataTrigger>
-                            <Trigger Property="IsEnabled"  Value="false">
-                              <Setter Property="Opacity"  Value="0.5" />
-                            </Trigger>
-                          </Style.Triggers>
-                        </Style>
-                      </Border.Style>
-                      <UXControls:UXTextBlock Text="{Binding [WebCameraSettings.20], Source={x:Static lang:LangHelper.Instance}}" FontSize="14" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="White" FontFamily="Roboto" />
-                    </Border>
-                    <Border x:Name="btnPriority1" CornerRadius="0,5,5,0" Focusable="True" MouseLeftButtonDown="Priority_Click" Height="30" Width="201" Tag="1" IsEnabled="{Binding IsHDROn, Converter={StaticResource BooleanToInverseConverter}}">
-                      <Border.Style>
-                        <Style TargetType="Border" BasedOn="{StaticResource Border_Test}">
-                          <Style.Triggers>
-                            <DataTrigger Binding="{Binding Priority}"  Value="1">
-                              <Setter Property="Background"  Value="{StaticResource VbarItem_HiBkColor}" />
-                              <Setter Property="BorderBrush" Value="{StaticResource VbarItem_HiBdColor}" />
-                            </DataTrigger>
-                            <DataTrigger Binding="{Binding Priority}"  Value="0">
-                              <Setter Property="Cursor" Value="Hand" />
-                            </DataTrigger>
-                            <Trigger Property="IsEnabled"  Value="false">
-                              <Setter Property="Opacity"  Value="0.5" />
-                            </Trigger>
-                          </Style.Triggers>
-                        </Style>
-                      </Border.Style>
-                      <UXControls:UXTextBlock Text="{Binding [WebCameraSettings.21], Source={x:Static lang:LangHelper.Instance}}" FontSize="14" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="White" FontFamily="Roboto" />
-                    </Border>
-                  </StackPanel>
-                  <Border Name="bdrAlert2" Background="#364861" CornerRadius="4" Margin="0,12,0,8" BorderThickness="7,0,0,0" BorderBrush="#E67F01" Visibility="{Binding IsHDROn, Converter={StaticResource BoolToVisibilityConverter}}">
-                    <StackPanel Orientation="Horizontal">
-                      <Image x:Name="InfoIcon2" Margin="8,0,0,0" Source="/DDPM.UI.Resources;component/Resources/Images/Alert.png" Stretch="Fill"
+                                    </StackPanel>
+                                </StackPanel>
+                            </Border>
+                            <Border CornerRadius="6" Margin="0,10,0,0" Visibility="{Binding PriorityVisibility}">
+                                <StackPanel Orientation="Vertical" Margin="16,22,16,10">
+                                    <StackPanel Orientation="Horizontal">
+                                        <UXControls:UXTextBlock Text="{Binding [WebCameraSettings.18], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource ModuleItemStyle}" />
+                                        <Image Margin="9,0,0,0" Source="/DDPM.UI.Common;component/Resources/info.png" Stretch="Uniform" Cursor="Hand" Width="16" Height="16">
+                                            <Image.ToolTip>
+                                                <ToolTip Style="{StaticResource InfoToolTipStyle}" Placement="Top" VerticalOffset="8" HorizontalOffset="6">
+                                                    <TextBlock Text="{Binding [WebCameraSettings.19], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource TabInfoToolTipTextStyle}" MaxWidth="350"/>
+                                                </ToolTip>
+                                            </Image.ToolTip>
+                                        </Image>
+                                    </StackPanel>
+                                    <StackPanel Orientation="Horizontal" Margin="0,18,0,8">
+                                        <Border x:Name="btnPriority0" CornerRadius="5,0,0,5" Focusable="True" MouseLeftButtonDown="Priority_Click" Height="30" Width="201" Tag="0" IsEnabled="{Binding IsHDROn, Converter={StaticResource BooleanToInverseConverter}}">
+                                            <Border.Style>
+                                                <Style TargetType="Border" BasedOn="{StaticResource Border_Test}">
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding Priority}"  Value="0">
+                                                            <Setter Property="Background"  Value="{StaticResource VbarItem_HiBkColor}" />
+                                                            <Setter Property="BorderBrush" Value="{StaticResource VbarItem_HiBdColor}" />
+                                                        </DataTrigger>
+                                                        <DataTrigger Binding="{Binding Priority}"  Value="1">
+                                                            <Setter Property="Cursor" Value="Hand" />
+                                                        </DataTrigger>
+                                                        <Trigger Property="IsEnabled"  Value="false">
+                                                            <Setter Property="Opacity"  Value="0.5" />
+                                                        </Trigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </Border.Style>
+                                            <UXControls:UXTextBlock Text="{Binding [WebCameraSettings.20], Source={x:Static lang:LangHelper.Instance}}" FontSize="14" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="White" FontFamily="Roboto" />
+                                        </Border>
+                                        <Border x:Name="btnPriority1" CornerRadius="0,5,5,0" Focusable="True" MouseLeftButtonDown="Priority_Click" Height="30" Width="201" Tag="1" IsEnabled="{Binding IsHDROn, Converter={StaticResource BooleanToInverseConverter}}">
+                                            <Border.Style>
+                                                <Style TargetType="Border" BasedOn="{StaticResource Border_Test}">
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding Priority}"  Value="1">
+                                                            <Setter Property="Background"  Value="{StaticResource VbarItem_HiBkColor}" />
+                                                            <Setter Property="BorderBrush" Value="{StaticResource VbarItem_HiBdColor}" />
+                                                        </DataTrigger>
+                                                        <DataTrigger Binding="{Binding Priority}"  Value="0">
+                                                            <Setter Property="Cursor" Value="Hand" />
+                                                        </DataTrigger>
+                                                        <Trigger Property="IsEnabled"  Value="false">
+                                                            <Setter Property="Opacity"  Value="0.5" />
+                                                        </Trigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </Border.Style>
+                                            <UXControls:UXTextBlock Text="{Binding [WebCameraSettings.21], Source={x:Static lang:LangHelper.Instance}}" FontSize="14" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="White" FontFamily="Roboto" />
+                                        </Border>
+                                    </StackPanel>
+                                    <Border Name="bdrAlert2" Background="#364861" CornerRadius="4" Margin="0,12,0,8" BorderThickness="7,0,0,0" BorderBrush="#E67F01" Visibility="{Binding IsHDROn, Converter={StaticResource BoolToVisibilityConverter}}">
+                                        <StackPanel Orientation="Horizontal">
+                                            <Image x:Name="InfoIcon2" Margin="8,0,0,0" Source="/DDPM.UI.Resources;component/Resources/Images/Alert.png" Stretch="Fill"
                                VerticalAlignment="Center" HorizontalAlignment="Left" Width="18" Height="18">
                       </Image>
                       <UXControls:UXTextBlock Name="txtMessage1" FontSize="14" Background="#364861" Foreground="#F5F6F7" TextWrapping="Wrap" Width="416" Focusable="True"

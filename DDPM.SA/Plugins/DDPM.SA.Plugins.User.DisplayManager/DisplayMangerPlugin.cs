@@ -240,7 +240,10 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                 _logs.DebugMsg("[DisplayMangerPlugin] GetMonitors() AllInfoMonitors.count is " + _AllInfoMonitors.Count);
 
                 if (_AllInfoMonitors == null || _AllInfoMonitors.Count == 0)
+                {
                     AllALSConfig.Clear();
+                    _logs.DebugMsg("[DisplayMangerPlugin] GetMonitors() AllALSConfig Clear ");
+                }
 
                 return Task.FromResult(_AllInfoMonitors);
             }
@@ -255,7 +258,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                 var NewToken = Cancellation.Token;
 
                 _AllInfoMonitors = new List<MonitorInfo>(_VcpCorePlugin.Re_GetMonitors(NewToken).Result);
-
+                InitializeAllALSInfo();
                 _logs.DebugMsg("[DisplayMangerPlugin] Re_GetMonitors() AllInfoMonitors.count is " + _AllInfoMonitors.Count);
                 return Task.FromResult(_AllInfoMonitors);
             }
@@ -864,7 +867,8 @@ namespace DDPM.SA.Plugins.User.DisplayManager
         {
             Task.Run(() =>
             {
-                _logs.DebugMsg("[DisplayMangerPlugin] InitializeAllALSInfo");
+                AllALSConfig.Clear();
+                _logs.DebugMsg("[DisplayMangerPlugin] InitializeAllALSInfo() AllALSConfig Clear ... in");
                 List<MonitorInfo> monitorALS = GetMonitors().Result;
                 try
                 {
@@ -881,13 +885,58 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                         {
                             GetALSAll(als, ref als_param);
                         }
-                        als_param.Edid = als.edid;
-                        als_param.CapDict = als.CapabilityDic;
-                        als_param.ModelName = als.modelName;
-                        als_param.serialNumber = als.edid.SerialNumber;
-                        als_param.DisplayName = als.DisplayName;
+                        else
+                        {
+                            ParseMonitorInfo(als, ref als_param);
+                        }
                         AllALSConfig.Add(als_param);
+                        _logs.DebugMsg($"[DisplayMangerPlugin] InitializeAllALSInfo() {i.ToString()} : AllALSConfig {AllALSConfig[i].Edid.ModelName} {AllALSConfig[i].Edid.SerialNumber} {AllALSConfig[i].Edid.ServiceTag}");
+
                     }
+                    //If Monitors have Primary, need to sync ALS data to other monitor
+                    if (AllALSConfig.Count > 0)
+                    {
+                        var firstPrimaryMonitorSyncConfig = AllALSConfig.FirstOrDefault(config => config.isPrimaryMonitorSync);
+                        uint newVal = SetBitValue(firstPrimaryMonitorSyncConfig.AllValue, 5, 0);
+                        _logs.DebugMsg($"[DisplayMangerPlugin] InitializeAllALSInfo() Primary Monitor ModelName = {firstPrimaryMonitorSyncConfig.Edid.ModelName}, SerialNumber = {firstPrimaryMonitorSyncConfig.Edid.SerialNumber}, ServiceTag = {firstPrimaryMonitorSyncConfig.Edid.ServiceTag}, AllValue = {firstPrimaryMonitorSyncConfig.AllValue}");
+                        for (int i = 0; i < AllALSConfig.Count; i++)
+                        {
+                            //MonitorInfo tmp = monitorALS.Find(x => x.edid.Equals(AllALSConfig[i].Edid));
+                            if(!firstPrimaryMonitorSyncConfig.MoInfo.Equals(AllALSConfig[i].MoInfo))//If find Primary, do not need do this.
+                            {
+                                _logs.DebugMsg($"[DisplayMangerPlugin] InitializeAllALSInfo() Non Primary Monitor ModelName = {AllALSConfig[i].MoInfo.edid.ModelName}, SerialNumber = {AllALSConfig[i].MoInfo.edid.SerialNumber}, ServiceTag = {AllALSConfig[i].MoInfo.edid.ServiceTag}, AllValue = {AllALSConfig[i].AllValue} will change to {newVal.ToString()}");
+                                if (SetVCPCapability(AllALSConfig[i].MoInfo, 0x66, newVal).Result)//set ALS value, but bit5 need to change to 0
+                                {
+                                    _logs.DebugMsg($"[DisplayMangerPlugin] InitializeAllALSInfo() SetVCPCapability 0x66 value {newVal.ToString()}, result = true ... ");
+                                }
+                                else
+                                {
+                                    _logs.DebugMsg($"[DisplayMangerPlugin] InitializeAllALSInfo() SetVCPCapability 0x66 {newVal.ToString()}, result = false ... ");
+                                }
+                                _logs.DebugMsg($"[DisplayMangerPlugin] InitializeAllALSInfo() Sync ALS Data Finish ... ");
+
+                                ObjGetVCP obColor = GetVCPCapability(firstPrimaryMonitorSyncConfig.MoInfo, "colorpreset").Result;
+
+                                if (obColor.result)
+                                {
+                                    if (SetVCPCapability(AllALSConfig[i].MoInfo, "colorpreset", obColor.value.ToString()).Result)
+                                    {
+                                        _logs.DebugMsg($"[DisplayMangerPlugin] InitializeAllALSInfo() SetVCPCapability colorpreset = {obColor.value.ToString()}, true  {AllALSConfig[i].MoInfo.modelName.ToString()} ... ");
+                                    }
+                                    else
+                                    {
+                                        _logs.DebugMsg($"[DisplayMangerPlugin] InitializeAllALSInfo() SetVCPCapability colorpreset = {obColor.value.ToString()}, fail  {AllALSConfig[i].MoInfo.modelName.ToString()} ... ");
+                                    }
+                                }
+                                else
+                                {
+                                    _logs.DebugMsg($"[DisplayMangerPlugin] InitializeAllALSInfo() GetVCPCapability colorpreset = {obColor.value.ToString()}, fail  {AllALSConfig[i].MoInfo.modelName.ToString()} ... ");
+                                }
+                                _logs.DebugMsg($"[DisplayMangerPlugin] InitializeAllALSInfo() Sync colorpreset Data Finish ... ");
+                            }                          
+                        }
+                    }
+                    _logs.DebugMsg("[DisplayMangerPlugin] InitializeAllALSInfo ... Monitor.Count = " + monitorALS.Count().ToString() + " || AllALSConfig.Count = " + AllALSConfig.Count().ToString());
                 }
                 catch (Exception ex)
                 {
@@ -905,11 +954,11 @@ namespace DDPM.SA.Plugins.User.DisplayManager
         /// <returns></returns>
         public Task<ALSConfig> GetALSFeatureValue(MonitorInfo monitorInfos, ALSFeatureQueryType type, int val)
         {
+            _logs.DebugMsg($"[DisplayMangerPlugin] GetALSFeatureValue ... in");
             if (type != ALSFeatureQueryType.MMS)
             {
-                ALSConfig aconfig = AllALSConfig.Find(x =>   //Dean 0624, the comparison should with DisplayName and SerialNumber
-                                                        x.DisplayName.ToUpper().Equals(monitorInfos.DisplayName.ToUpper()) &&
-                                                        x.serialNumber.ToUpper().Equals(monitorInfos.edid.SerialNumber.ToUpper()));
+                //Dean 0624, the comparison should with DisplayName and SerialNumber
+                ALSConfig aconfig = AllALSConfig.Find(x => x.Edid.Equals(monitorInfos.edid));// && x.serialNumber.ToUpper().Equals(monitorInfos.edid.SerialNumber.ToUpper()));
                 if (aconfig == null)
                 {
                     aconfig = new ALSConfig(); // 2024-06-11 Wayn fixed.
@@ -918,19 +967,18 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                     {
                         GetALSAll(monitorInfos, ref aconfig);
                     }
-                    aconfig.Edid = monitorInfos.edid;
-                    aconfig.CapDict = monitorInfos.CapabilityDic;
-                    aconfig.ModelName = monitorInfos.modelName;
-                    aconfig.serialNumber = monitorInfos.edid.SerialNumber;
-                    aconfig.DisplayName = monitorInfos.DisplayName;
+                    ParseMonitorInfo(monitorInfos, ref aconfig);
                     AllALSConfig.Add(aconfig);
+                    _logs.DebugMsg($"[DisplayMangerPlugin] GetALSFeatureValue ModelName = {aconfig.ModelName} , SerialNumber = {aconfig.serialNumber}");
                 }
+                _logs.DebugMsg($"[DisplayMangerPlugin] GetALSFeatureValue ... out ");
                 return Task.FromResult(aconfig);
             }
             else//get MMS
             {
                 ALSConfig cfg = new ALSConfig();
                 GetALSMMS(monitorInfos, ref cfg);
+                _logs.DebugMsg($"[DisplayMangerPlugin] GetALSFeatureValue ... Else out ");
                 return Task.FromResult(cfg);
             }
         }
@@ -945,6 +993,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
         /// <returns></returns>
         public Task<bool> SetALSFeatureValue(MonitorInfo monitorInfos, ref ALSConfig param, ALSFeatureQueryType type, string value)
         {
+            _logs.DebugMsg("[DisplayMangerPlugin] SetALSFeatureValue ... in " + monitorInfos.edid.ModelName.ToString() + " || type = " + type.ToString());
             switch (type)
             {
                 case ALSFeatureQueryType.MMS:
@@ -975,19 +1024,30 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                     return Task.FromResult(false);
             }
 
+            if(AllALSConfig != null)
+            {
+                _logs.DebugMsg($"[DisplayMangerPlugin] SetALSFeatureValue AllALSConfig.Count = {AllALSConfig.Count.ToString()} || Into monitorInfos = {monitorInfos.edid.ModelName.ToString()} ,{monitorInfos.edid.SerialNumber.ToString()} ");
+                for (int i = 0; i < AllALSConfig.Count; i++)
+                {
+                    _logs.DebugMsg($"[DisplayMangerPlugin] SetALSFeatureValue AllALSConfig.ModelName = {AllALSConfig[i].Edid.ModelName.ToString()} ||  AllALSConfig.SerialNumber = {AllALSConfig[i].Edid.SerialNumber.ToString()}");
+                }
+            }
             //Dean 0624, the comparison should with DisplayName and SerialNumber
-            int idx = AllALSConfig.FindIndex(x => x.DisplayName.Equals(monitorInfos.DisplayName) ||
-                                                  x.serialNumber.Equals(monitorInfos.edid.SerialNumber));//Find if it exists
+            int idx = AllALSConfig.FindIndex(x => x.Edid.Equals(monitorInfos.edid));// || x.serialNumber.Equals(monitorInfos.edid.SerialNumber));//Find if it exists
+
+            _logs.DebugMsg("[DisplayMangerPlugin] SetALSFeatureValue idx = " + idx.ToString());
+
             if (idx >= 0)
             {
                 ALSConfig aconfig = AllALSConfig[idx];
                 AllALSConfig[idx] = param;
-                CheckisPrimaryMonitorSyncOnOff(monitorInfos, param);
+                CheckisPrimaryMonitorSyncOnOff(monitorInfos, param, "0");
             }
             else
             {
                 AllALSConfig.Add(param);//add in
             }
+            _logs.DebugMsg("[DisplayMangerPlugin] SetALSFeatureValue ... out ");
             return Task.FromResult(param.result);
         }
 
@@ -996,10 +1056,11 @@ namespace DDPM.SA.Plugins.User.DisplayManager
         /// </summary>
         /// <param name="value">VCP set value</param>
         /// <returns>success or false</returns>
-        public Task<bool> CheckisPrimaryMonitorSyncOnOff(MonitorInfo monitorInfoMain, ALSConfig value)
+        public Task<bool> CheckisPrimaryMonitorSyncOnOff(MonitorInfo monitorInfoMain, ALSConfig value, string vcpcode)
         {
             lock (_ALSVCPChangeLock)
             {
+                _logs.DebugMsg($"[DisplayMangerPlugin] CheckisPrimaryMonitorSyncOnOff ... in");
                 if (GetBitsValue(value.AllValue, 5) == 1)//check isPrimaryMonitorSync whether to change
                 {
                     List<ALSConfig> als_connected = new List<ALSConfig>();
@@ -1007,14 +1068,12 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                     List<MonitorInfo> monitorALS = GetMonitors().Result;//Get Monitor now
                     List<ALSConfig> temp = new List<ALSConfig>();
 
+                    _logs.DebugMsg($"[DisplayMangerPlugin] CheckisPrimaryMonitorSyncOnOff ... Monitors.Count = " + monitorALS.Count().ToString() + " || AllALSConfig.Count = " + AllALSConfig.Count().ToString());
+                    
                     foreach (MonitorInfo mon in monitorALS)//copy to als_connected first
                     {
                         ALSConfig als_nowtemp = new ALSConfig();
-                        als_nowtemp.CapDict = mon.CapabilityDic;
-                        als_nowtemp.Edid = mon.edid;
-                        als_nowtemp.ModelName = mon.modelName;
-                        als_nowtemp.DisplayName = mon.DisplayName;
-                        als_nowtemp.serialNumber = mon.edid.SerialNumber;
+                        ParseMonitorInfo(mon, ref als_nowtemp);
                         als_connected.Add(als_nowtemp);
                     }
 
@@ -1023,112 +1082,178 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                         foreach (ALSConfig aLs2 in AllALSConfig)
                         {
                             //Dean 0624, check with displayname and serialnumber at the same time
-                            if (aLs1.DisplayName.Equals(aLs2.DisplayName) && aLs1.serialNumber.Equals(aLs2.serialNumber))
+                            //if (aLs1.DisplayName.Equals(aLs2.DisplayName) && aLs1.serialNumber.Equals(aLs2.serialNumber))
+                            //{
+                            //    als_connected2.Add(aLs2);//find original info copy to als_connected2
+                            //}
+                            if (aLs1.Edid.Equals(aLs2.Edid) && aLs1.Edid.Equals(aLs2.Edid))
                             {
                                 als_connected2.Add(aLs2);//find original info copy to als_connected2
                             }
                         }
                     }
 
-                    als_connected = new List<ALSConfig>();//clear
+                    //als_connected = new List<ALSConfig>();//clear
 
-                    // Read monitorInfoMain value one times
-                    ObjGetVCP obBrightness = GetVCPCapability(monitorInfoMain, 0x10).Result;
-                    ObjGetVCP obContrast = GetVCPCapability(monitorInfoMain, 0x12).Result;
-                    ObjGetVCP obColor = GetVCPCapability(monitorInfoMain, "colorpreset").Result;
-                    var isprimarysupportlum = !monitorInfoMain.CapabilityDic.ContainsKey("12");
-                    for (int i = 0; i < als_connected2.Count; i++)
-                    {
-                        //Dean 0624, check with displayname and serialnumber at the same time
-                        if (!als_connected2[i].DisplayName.Equals(monitorInfoMain.DisplayName) ||
-                            !als_connected2[i].serialNumber.Equals(monitorInfoMain.edid.SerialNumber))//sync AutoBrightness & AutoColorTemp value
-                        {
-                            if (!(als_connected2[i].isSupportALS == 2))
-                                return Task.FromResult(true);
+                    if(SyncPrimaryMonitorValueToOtherMonitor(monitorInfoMain, monitorALS, ref als_connected2, value, vcpcode).Result)
+                        _logs.DebugMsg($"[DisplayMangerPlugin] SyncPrimaryMonitorValueToOtherMonitor ... True");
+                    else
+                        _logs.DebugMsg($"[DisplayMangerPlugin] SyncPrimaryMonitorValueToOtherMonitor ... Fail");
 
-                            if(isprimarysupportlum) // Lum True
-                            {
-                                if(!als_connected2[i].CapDict.ContainsKey("12"))// Lum True
-                                {
-                                    //only Do 0x10 and colorpreset
-                                    if (obBrightness.result)
-                                    {
-                                        uint brightnessValue = (uint)obBrightness.value;
-                                        SetVCPCapability(monitorALS.Find(x => x.DisplayName.Equals(als_connected2[i].DisplayName)), 0x10, brightnessValue);
-                                    }
-
-
-                                    if (obColor.result)
-                                    {
-                                        string obColorValue = obColor.value.ToString();
-                                        SetVCPCapability(monitorALS.Find(x => x.DisplayName.Equals(als_connected2[i].DisplayName)), "colorpreset", obColorValue);
-                                    }
-                                }
-                                else// Lum False
-                                {
-                                    //only colorpreset
-                                    if (obColor.result)
-                                    {
-                                        string obColorValue = obColor.value.ToString();
-                                        SetVCPCapability(monitorALS.Find(x => x.DisplayName.Equals(als_connected2[i].DisplayName)), "colorpreset", obColorValue);
-                                    }
-                                }
-                            }
-
-
-                            if (!isprimarysupportlum) // Lum False
-                            {
-                                if (!als_connected2[i].CapDict.ContainsKey("12"))// Lum True
-                                {
-                                    //only colorpreset
-                                    if (obColor.result)
-                                    {
-                                        string obColorValue = obColor.value.ToString();
-                                        SetVCPCapability(monitorALS.Find(x => x.DisplayName.Equals(als_connected2[i].DisplayName)), "colorpreset", obColorValue);
-                                    }
-                                }
-                                else// Lum False
-                                {
-                                    //Dean 0624, add object check as well
-                                    var mo_tmp = monitorALS.Find(x => x.DisplayName.Equals(als_connected2[i].DisplayName));
-                                    if (mo_tmp == null)
-                                    {
-                                        continue;
-                                    }
-                                    SetVCPCapability(mo_tmp, 0x66, SetBitsValue(value.AllValue, 5, 0));//set VCP command value, but bit5 need to change to 0
-                                    value.AllValue = SetBitsValue(value.AllValue, 5, 0);
-                                    als_connected2[i].isAutoBrightness = value.isAutoBrightness;
-                                    als_connected2[i].isAutoColorTemp = value.isAutoColorTemp;
-                                    als_connected2[i].isPrimaryMonitorSync = false;//set isPrimaryMonitorSync off
-
-                                    // Dean 0614 handle brightness/ contrast
-                                    if (obBrightness.result)
-                                    {
-                                        uint brightnessValue = (uint)obBrightness.value;
-                                        SetVCPCapability(monitorALS.Find(x => x.DisplayName.Equals(als_connected2[i].DisplayName)), 0x10, brightnessValue);
-                                    }
-
-                                    if (obContrast.result)
-                                    {
-                                        uint obcontrastValue = (uint)obContrast.value;
-                                        SetVCPCapability(monitorALS.Find(x => x.DisplayName.Equals(als_connected2[i].DisplayName)), 0x12, obcontrastValue);
-                                    }
-
-                                    if (obColor.result)
-                                    {
-                                        string obColorValue = obColor.value.ToString();
-                                        SetVCPCapability(monitorALS.Find(x => x.DisplayName.Equals(als_connected2[i].DisplayName)), "colorpreset", obColorValue);
-                                    }
-                                }
-                            }
-                        }
-                    }
                     AllALSConfig = als_connected2;//replace static AllALSConfig data
+                    _logs.DebugMsg($"2 [DisplayMangerPlugin] CheckisPrimaryMonitorSyncOnOff ... Monitors.Count = " + monitorALS.Count().ToString() + " || AllALSConfig.Count = " + AllALSConfig.Count().ToString());
                 }
                 return Task.FromResult(true);
             }
         }
 
+        /// <summary>
+        /// IF moMain SyncPrimaryMonitorStatus is on and isAutoBrightness on, should need to sync 0x67 value to other
+        /// IF moMain SyncPrimaryMonitorStatus is on and isAutoColorTemp on, should need to sync 0x68 value to other
+        /// </summary>
+        /// <param name="moMain">Change event Monitor</param>
+        /// <param name="monitorAll">All Monitor</param>
+        /// <param name="exitAls">Exit ALSConfig</param>
+        /// <param name="moMainvalue">Change event Monitor, ALS value</param>
+        /// <returns>True or False</returns>
+        public Task<bool> SyncPrimaryMonitorValueToOtherMonitor(MonitorInfo moMain, List<MonitorInfo> monitorAll, ref List<ALSConfig> exitAls, ALSConfig moMainvalue, string vcpcode)
+        {
+            _logs.DebugMsg($"[DisplayMangerPlugin] SyncPrimaryMonitorValueToOtherMonitor ... in");
+            var monitorInfoMain = moMain;
+            var monitorALS = monitorAll;
+            var als_connected2 = exitAls;
+            var value = moMainvalue;
+            // Read monitorInfoMain value one times
+            ObjGetVCP obBrightness = GetVCPCapability(monitorInfoMain, 0x10).Result;
+            ObjGetVCP obContrast = GetVCPCapability(monitorInfoMain, 0x12).Result;
+            ObjGetVCP obColor = GetVCPCapability(monitorInfoMain, "colorpreset").Result;
+            var isprimarysupportlum = !monitorInfoMain.CapabilityDic.ContainsKey("12");
+            for (int i = 0; i < als_connected2.Count; i++)
+            {
+                //Dean 0624, check with displayname and serialnumber at the same time
+                if (!als_connected2[i].Edid.Equals(monitorInfoMain.edid))//sync AutoBrightness & AutoColorTemp value
+                {
+                    if (!(als_connected2[i].isSupportALS == 2))
+                        return Task.FromResult(true);
+
+                    if (isprimarysupportlum) // Lum True
+                    {
+                        _logs.DebugMsg($"[DisplayMangerPlugin] SyncPrimaryMonitorValueToOtherMonitor ... Lum True");
+                        if (!als_connected2[i].CapDict.ContainsKey("12"))// Lum True
+                        {
+                            //only Do 0x10 and colorpreset
+                            if (obBrightness.result)
+                            {
+                                uint brightnessValue = (uint)obBrightness.value;
+                                SetVCPCapability(monitorALS.Find(x => x.edid.Equals(als_connected2[i].Edid)), 0x10, brightnessValue);
+                                _logs.DebugMsg($"[DisplayMangerPlugin] SyncPrimaryMonitorValueToOtherMonitor ... Lum True Do 0x10 ");
+                            }
+
+
+                            if (obColor.result)
+                            {
+                                string obColorValue = obColor.value.ToString();
+                                SetVCPCapability(monitorALS.Find(x => x.edid.Equals(als_connected2[i].Edid)), "colorpreset", obColorValue);
+                                _logs.DebugMsg($"[DisplayMangerPlugin] SyncPrimaryMonitorValueToOtherMonitor ... Lum True Do colorpreset ");
+                            }
+                        }
+                        else// Lum False
+                        {
+                            //only colorpreset
+                            if (obColor.result)
+                            {
+                                string obColorValue = obColor.value.ToString();
+                                SetVCPCapability(monitorALS.Find(x => x.edid.Equals(als_connected2[i].Edid)), "colorpreset", obColorValue);
+                                _logs.DebugMsg($"[DisplayMangerPlugin] SyncPrimaryMonitorValueToOtherMonitor ... Lum False Do colorpreset ");
+                            }
+                        }
+                    }
+
+
+                    if (!isprimarysupportlum) // Lum False
+                    {
+                        _logs.DebugMsg($"[DisplayMangerPlugin] SyncPrimaryMonitorValueToOtherMonitor ... Lum False");
+                        if (!als_connected2[i].CapDict.ContainsKey("12"))// Lum True
+                        {
+                            //only colorpreset
+                            if (obColor.result)
+                            {
+                                string obColorValue = obColor.value.ToString();
+                                SetVCPCapability(monitorALS.Find(x => x.edid.Equals(als_connected2[i].Edid)), "colorpreset", obColorValue);
+                                _logs.DebugMsg($"[DisplayMangerPlugin] SyncPrimaryMonitorValueToOtherMonitor ... Lum True Do colorpreset ");
+                            }
+                        }
+                        else// Lum False
+                        {
+                            //Dean 0624, add object check as well
+                            var mo_tmp = monitorALS.Find(x => x.edid.Equals(als_connected2[i].Edid));
+                            if (mo_tmp == null)
+                            {
+                                continue;
+                            }
+                            SetVCPCapability(mo_tmp, 0x66, SetBitValue(value.AllValue, 5, 0));//set VCP command value, but bit5 need to change to 0
+                            value.AllValue = SetBitValue(value.AllValue, 5, 0);
+                            als_connected2[i].isAutoBrightness = value.isAutoBrightness;
+                            als_connected2[i].isAutoColorTemp = value.isAutoColorTemp;
+                            als_connected2[i].isPrimaryMonitorSync = false;//set isPrimaryMonitorSync off
+                            _logs.DebugMsg($"[DisplayMangerPlugin] SyncPrimaryMonitorValueToOtherMonitor ... Lum False set isPrimaryMonitorSync off ");
+                            // Dean 0614 handle brightness/ contrast
+                            if (obBrightness.result)
+                            {
+                                uint brightnessValue = (uint)obBrightness.value;
+                                SetVCPCapability(monitorALS.Find(x => x.edid.Equals(als_connected2[i].Edid)), 0x10, brightnessValue);
+                                _logs.DebugMsg($"[DisplayMangerPlugin] SyncPrimaryMonitorValueToOtherMonitor ... Lum False set 0x10 ");
+                            }
+
+                            if (obContrast.result)
+                            {
+                                uint obcontrastValue = (uint)obContrast.value;
+                                SetVCPCapability(monitorALS.Find(x => x.edid.Equals(als_connected2[i].Edid)), 0x12, obcontrastValue);
+                                _logs.DebugMsg($"[DisplayMangerPlugin] SyncPrimaryMonitorValueToOtherMonitor ... Lum False set 0x12 ");
+                            }
+
+                            if (obColor.result)
+                            {
+                                string obColorValue = obColor.value.ToString();
+                                SetVCPCapability(monitorALS.Find(x => x.edid.Equals(als_connected2[i].Edid)), "colorpreset", obColorValue);
+                                _logs.DebugMsg($"[DisplayMangerPlugin] SyncPrimaryMonitorValueToOtherMonitor ... Lum False set colorpreset ");
+                            }
+                        }
+                    }
+                }
+            }
+            _logs.DebugMsg($"[DisplayMangerPlugin] SyncPrimaryMonitorValueToOtherMonitor ... out");
+            return Task.FromResult(true);
+        }
+
+        public Task<bool> SyncPrimaryMonitorBrightnessAndColorTemp(MonitorInfo monitorInfoMain, MonitorInfo monitorvalue, string vcpcode, ObjGetVCP val)
+        {
+            if (vcpcode == "67" || vcpcode == "68")
+            {
+                _logs.DebugMsg($"[DisplayMangerPlugin] SyncPrimaryMonitorBrightnessAndColorTemp {monitorInfoMain.edid.SerialNumber} isSupportALS = 2 ... in ");
+                if (vcpcode == "68")
+                {
+                    uint temp = (uint)val.value;
+                    uint temp2 = (temp & 0xFF);
+                    if (_VcpCorePlugin.SetVCPCapability(monitorvalue, 0x68, temp2).Result)
+                        _logs.DebugMsg($"[DisplayMangerPlugin] SyncPrimaryMonitorBrightnessAndColorTemp Success Set 0x68  = {temp2.ToString()}, e.monitor = {monitorInfoMain.edid.SerialNumber}, _AllInfoMonitors[i] = {monitorvalue.edid.SerialNumber}");
+                    else
+                        _logs.DebugMsg($"[DisplayMangerPlugin] SyncPrimaryMonitorBrightnessAndColorTemp Fail Set 0x68  = {temp2.ToString()}, e.monitor = {monitorInfoMain.edid.SerialNumber}, _AllInfoMonitors[i] = {monitorvalue.edid.SerialNumber}");
+                }
+                else
+                {
+                    uint temp = (uint)val.value;
+                    //uint temp2 = (temp & 0xFF);
+                    if(_VcpCorePlugin.SetVCPCapability(monitorvalue, 0x67, temp).Result)                   
+                        _logs.DebugMsg($"[DisplayMangerPlugin] SyncPrimaryMonitorBrightnessAndColorTemp Success Set 0x67  = {temp.ToString()}, e.monitor = {monitorInfoMain.edid.SerialNumber}, _AllInfoMonitors[i] = {monitorvalue.edid.SerialNumber}");
+                    else
+                        _logs.DebugMsg($"[DisplayMangerPlugin] SyncPrimaryMonitorBrightnessAndColorTemp Fail Set 0x67  = {temp.ToString()}, e.monitor = {monitorInfoMain.edid.SerialNumber}, _AllInfoMonitors[i] = {monitorvalue.edid.SerialNumber}");
+                }
+            }
+            _logs.DebugMsg("[DisplayMangerPlugin] SyncPrimaryMonitorBrightnessAndColorTemp vcpcode = 67 68 ... out ");
+        
+            return Task.FromResult(true);
+        }
         /// <summary>
         /// Get Connected ALS Config
         /// </summary>
@@ -1140,11 +1265,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             for(int i = 0; i < monitorALS.Count; i++)
             {
                 ALSConfig tempALSConfig = new ALSConfig();
-                tempALSConfig.Edid = monitorALS[i].edid;
-                tempALSConfig.CapDict = monitorALS[i].CapabilityDic;
-                tempALSConfig.ModelName = monitorALS[i].modelName;
-                tempALSConfig.DisplayName = monitorALS[i].DisplayName;
-                tempALSConfig.serialNumber = monitorALS[i].edid.SerialNumber;
+                ParseMonitorInfo(monitorALS[i], ref tempALSConfig);
                 als_connecte.Add(tempALSConfig);
             }
             return Task.FromResult(als_connecte);
@@ -1158,30 +1279,23 @@ namespace DDPM.SA.Plugins.User.DisplayManager
         {
             try
             {
-                _logs.DebugMsg($"[DisplayMangerPlugin] GetAllExistAlsConfig ... in");
-                var uniqueALSConfigs = new HashSet<(string DisplayName, string SerialNumber)>();
+                _logs.DebugMsg($"[DisplayMangerPlugin] GetAllExistAlsConfig ... in, AllALSConfig.Count = " + AllALSConfig.Count.ToString());
+
                 var distinctALSConfigList = new List<ALSConfig>();
-                Trace.WriteLine("GetAllExistAlsConfig AllALSConfig.Count " + AllALSConfig.Count.ToString());
-                if (AllALSConfig.Count > 1)
-                {
-                    for (int i = 0; i < AllALSConfig.Count; i++)
-                    {
-                        Trace.WriteLine("GetAllExistAlsConfig config.DisplayName, config.serialNumber " + AllALSConfig[i].DisplayName.ToString() + " || " + AllALSConfig[i].serialNumber.ToString());
-                        var key = (AllALSConfig[i].DisplayName, AllALSConfig[i].serialNumber);
-                        if (uniqueALSConfigs.Add(key))
-                        {
-                            Trace.WriteLine("GetAllExistAlsConfig uniqueALSConfigs true " + AllALSConfig[i].DisplayName.ToString() + " || " + AllALSConfig[i].serialNumber.ToString());
-                            distinctALSConfigList.Add(AllALSConfig[i]);
-                        }
-                    }
-                    AllALSConfig = distinctALSConfigList;
-                }
-                _logs.DebugMsg($"[DisplayMangerPlugin] GetAllExistAlsConfig ... out");
-                return Task.FromResult(AllALSConfig);
+
+
+                distinctALSConfigList = AllALSConfig.Where(config => config != null && config.Edid != null 
+                                                                                   && !string.IsNullOrWhiteSpace(config.ModelName) 
+                                                                                   && !string.IsNullOrWhiteSpace(config.serialNumber) 
+                                                                                   && !string.IsNullOrWhiteSpace(config.Edid.SerialNumber) 
+                                                                                   && !string.IsNullOrWhiteSpace(config.Edid.ServiceTag)).GroupBy(p => new { p.Edid }).Select(g => g.First()).ToList();
+
+                _logs.DebugMsg($"[DisplayMangerPlugin] GetAllExistAlsConfig ... out " + distinctALSConfigList.Count.ToString());
+                AllALSConfig = distinctALSConfigList;
+                return Task.FromResult(distinctALSConfigList);
             }
             catch (Exception ex)
             {
-                Trace.WriteLine(ex.ToString());
                 _logs.DebugMsg($"[DisplayMangerPlugin] GetAllExistAlsConfig Exception {ex.Message}");
                 return Task.FromResult(new List<ALSConfig>());
             }
@@ -1199,10 +1313,10 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                 List<ALSConfig> als_connecte = new List<ALSConfig>();
                 for (int i = 0; i < monitorInfoMain.Count; i++)
                 {
-                    ALSConfig aconfig = AllALSConfig.Find(x => x.DisplayName.ToUpper().Equals(monitorInfoMain[i].DisplayName.ToUpper()) && x.serialNumber.ToUpper().Equals(monitorInfoMain[i].edid.SerialNumber.ToUpper()));
+                    ALSConfig aconfig = AllALSConfig.Find(x => x.Edid.Equals(monitorInfoMain[i].edid));// && x.serialNumber.ToUpper().Equals(monitorInfoMain[i].edid.SerialNumber.ToUpper()));
                     if (aconfig != null)
                     {
-                        Trace.WriteLine("UpdateExistAlsConfig aconfig " + aconfig.DisplayName.ToString() + " || " + aconfig.serialNumber.ToString());
+                        _logs.DebugMsg($"[DisplayMangerPlugin]UpdateExistAlsConfig aconfig " + aconfig.DisplayName.ToString() + " || " + aconfig.serialNumber.ToString());
                         als_connecte.Add(aconfig);
                     }
                 }
@@ -1212,7 +1326,6 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             }
             catch (Exception ex)
             {
-                Trace.WriteLine(ex.ToString());
                 _logs.DebugMsg($"[DisplayMangerPlugin] UpdateExistAlsConfig Exception {ex.Message}");
                 return Task.FromResult(new List<ALSConfig>());
             }
@@ -1225,7 +1338,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
         /// <returns>success or fail</returns>
         public Task<bool> SynchronizeALSFeatureValue(ALSConfig monitorALS)
         {
-            ALSConfig aconfig = AllALSConfig.Find(x => x.DisplayName.Equals(monitorALS.DisplayName) && x.serialNumber.Equals(monitorALS.serialNumber));//Dean 0624
+            ALSConfig aconfig = AllALSConfig.Find(x => x.Edid.Equals(monitorALS.Edid));// && x.serialNumber.Equals(monitorALS.serialNumber));//Dean 0624
             for (int i = 0; i < AllALSConfig.Count; i++)
             {
                 AllALSConfig[i].Edid = monitorALS.Edid;
@@ -1249,7 +1362,8 @@ namespace DDPM.SA.Plugins.User.DisplayManager
         /// </summary>
         public Task<bool> UpdateALSFeatureValue(MonitorInfo monitorInfos)
         {
-            ALSConfig aconfig = AllALSConfig.Find(x => x.DisplayName.Equals(monitorInfos.DisplayName) && x.serialNumber.Equals(monitorInfos.edid.SerialNumber));//Dean 0624
+            _logs.DebugMsg("[DisplayMangerPlugin] UpdateALSFeatureValue ... in");
+            ALSConfig aconfig = AllALSConfig.Find(x => x.Edid.Equals(monitorInfos.edid));// && x.serialNumber.Equals(monitorInfos.edid.SerialNumber));//Dean 0624
             if (aconfig == null)
             {
                 aconfig = new ALSConfig();
@@ -1268,12 +1382,9 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                     _logs.DebugMsg("[DisplayMangerPlugin] UpdateALSFeatureValue GetALSAll False...");
                     return Task.FromResult(false);
                 }
-                aconfig.Edid = monitorInfos.edid;
-                aconfig.CapDict = monitorInfos.CapabilityDic;
-                aconfig.ModelName = monitorInfos.modelName;
-                aconfig.DisplayName = monitorInfos.DisplayName;
-                aconfig.serialNumber = monitorInfos.edid.SerialNumber;//Dean 0624
+                ParseMonitorInfo(monitorInfos, ref aconfig);
                 AllALSConfig.Add(aconfig);
+                _logs.DebugMsg("[DisplayMangerPlugin] UpdateALSFeatureValue ... out");
                 return Task.FromResult(true);
             }
             return Task.FromResult(true);
@@ -1284,23 +1395,30 @@ namespace DDPM.SA.Plugins.User.DisplayManager
         /// </summary>
         private ALSConfig UpdateALSFeatureByValue(MonitorInfo monitorInfos, uint value)
         {
+            _logs.DebugMsg("[DisplayMangerPlugin] UpdateALSFeatureByValue ... in");
             lock (_ALSVCPChangeLock)
             {
+                _logs.DebugMsg($"[DisplayMangerPlugin] UpdateALSFeatureByValue AllALSConfig {monitorInfos.edid.ModelName}  {monitorInfos.edid.SerialNumber} {{monitorInfos.edid.ServiceTag}} \")");
                 ALSConfig alsTemp = new ALSConfig();
                 ALSConfig? alsConfig = null;
-                int idx = AllALSConfig.FindIndex(x => x.DisplayName.Equals(monitorInfos.DisplayName) && x.serialNumber.Equals(monitorInfos.edid.SerialNumber));//Dean 0624
+                int idx = AllALSConfig.FindIndex(x => x.Edid.Equals(monitorInfos.edid));// && x.serialNumber.Equals(monitorInfos.edid.SerialNumber));//Dean 0624
                 if (idx >= 0)
                     alsConfig = AllALSConfig[idx];
-                ParseBitDefineToAlsObject(value, ref alsTemp);
+
+                _logs.DebugMsg($"[DisplayMangerPlugin] UpdateALSFeatureByValue idx = {idx.ToString()}, AllALSConfig.Count = {AllALSConfig.Count.ToString()}");
+
+                ParseBitDefineToAlsObject(value,  ref alsTemp);
+                ParseMonitorInfo(monitorInfos, ref alsTemp);
+
+                _logs.DebugMsg($"[DisplayMangerPlugin] UpdateALSFeatureByValue idx = {idx.ToString()}, AllALSConfig.Count = {AllALSConfig.Count.ToString()}");
+                _logs.DebugMsg($"[DisplayMangerPlugin] UpdateALSFeatureByValue ModelName {alsTemp.Edid.ModelName}, AllValue {alsTemp.AllValue.ToString()}, isAutoBrightness {alsTemp.isAutoBrightness.ToString()}, isAutoColorTemp {alsTemp.isAutoColorTemp.ToString()}, isPrimaryMonitorSync {alsTemp.isPrimaryMonitorSync.ToString()}");
+
                 if (alsConfig == null)
                 {
                     GetALSupport(monitorInfos, ref alsTemp);
-                    alsTemp.Edid = monitorInfos.edid;
-                    alsTemp.CapDict = monitorInfos.CapabilityDic;
-                    alsTemp.ModelName = monitorInfos.modelName;
-                    alsTemp.serialNumber = monitorInfos.edid.SerialNumber;
-                    alsTemp.DisplayName = monitorInfos.DisplayName;
+                    ParseMonitorInfo(monitorInfos, ref alsTemp);
                     AllALSConfig.Add(alsTemp);
+                    _logs.DebugMsg("[DisplayMangerPlugin] UpdateALSFeatureValue alsConfig == null ... out");
                     return alsTemp;
                 }
                 else
@@ -1309,6 +1427,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                     alsTemp.copyByType(ALSFeatureQueryType.no_SerialNumber, alsTemp, ref alsConfig);
                     alsConfig.isSupportALS = tmp;
                     AllALSConfig[idx] = alsConfig;
+                    _logs.DebugMsg("[DisplayMangerPlugin] UpdateALSFeatureValue alsConfig != null ... out");
                     return alsConfig;
                 }
             }
@@ -1441,7 +1560,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                 result = GetVCPCapability(monitorInfos, 0x66, 0).Result;
                 if (result != null && result.result)
                 {
-                    uint val = SetBitsValue((uint)result.value, 5, (int)StrConvertUint(value));
+                    uint val = SetBitValue((uint)result.value, 5, (int)StrConvertUint(value));
                     if (SetVCPCapability(monitorInfos, 0x66, val).Result)
                     {
                         param.isPrimaryMonitorSync = StrConvertOnOff(value);
@@ -1497,7 +1616,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                 result = GetVCPCapability(monitorInfos, 0x66, 0).Result;
                 if (result != null && result.result)
                 {
-                    uint val = SetBitsValue((uint)result.value, 4, (int)StrConvertUint(value));
+                    uint val = SetBitValue((uint)result.value, 4, (int)StrConvertUint(value));
                     if (SetVCPCapability(monitorInfos, 0x66, val).Result)
                     {
                         param.isAutoColorTemp = StrConvertOnOff(value);
@@ -1684,6 +1803,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             if (result != null && result.result)
             {
                 ParseBitDefineToAlsObject((uint)result.value, ref param);
+                ParseMonitorInfo(monitorInfos, ref param);
                 param.result = result.result;
             }
             else
@@ -1699,6 +1819,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
         /// <param name="param">ALSConfig</param>
         private void ParseBitDefineToAlsObject(uint vcp_value, ref ALSConfig param)
         {
+            _logs.DebugMsg("[DisplayMangerPlugin] ParseBitDefineToAlsObject ... in ");
             AutoBrightnessRangeLevel brightnessLevel = new AutoBrightnessRangeLevel();
 
             uint val = GetBitsValue(vcp_value, 0);
@@ -1727,6 +1848,22 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                     break;
             }
             param.AutoBrightnessRangeLevel.Add(brightnessLevel);
+            _logs.DebugMsg($"[DisplayMangerPlugin] ParseBitDefineToAlsObject param = vcp_value {vcp_value.ToString()}, isAutoBrightness {param.isAutoBrightness.ToString()}, isAutoColorTemp {param.isAutoColorTemp.ToString()}, isPrimaryMonitorSync {param.isPrimaryMonitorSync.ToString()}, level_name {brightnessLevel.level_name}  ");
+            _logs.DebugMsg("[DisplayMangerPlugin] ParseBitDefineToAlsObject ... out ");
+        }
+
+        private void ParseMonitorInfo(MonitorInfo moinfo, ref ALSConfig param)
+        {
+            _logs.DebugMsg("[DisplayMangerPlugin] ParseMonitorInfo ... in ");
+
+            param.MoInfo = moinfo;
+            param.ModelName = moinfo.edid.ModelName;
+            param.serialNumber = moinfo.edid.SerialNumber;
+            param.CapDict = moinfo.CapabilityDic;
+            param.Edid = moinfo.edid;
+            param.DisplayName = moinfo.DisplayName;
+
+            _logs.DebugMsg("[DisplayMangerPlugin] ParseMonitorInfo ... out ");
         }
 
         /// <summary>
@@ -1826,6 +1963,21 @@ namespace DDPM.SA.Plugins.User.DisplayManager
         {
             uint mask = 0b11u << startBitPosition;//Create mask to clear two bits at the specified position
             number &= ~mask;// Clear two bits at the specified position
+            number |= (uint)(value << startBitPosition);// Set the new value
+            return number;
+        }
+
+        /// <summary>
+        /// Set Bit Value
+        /// </summary>
+        /// <param name="number">ALS status (1bit)</param>
+        /// <param name="startBitPosition">Bit Position</param>
+        /// <param name="value">value</param>
+        /// <returns>return set value</returns>
+        private uint SetBitValue(uint number, int startBitPosition, int value)
+        {
+            uint mask = 0b1u << startBitPosition;//Create mask to clear one bits at the specified position
+            number &= ~mask;// Clear one bits at the specified position
             number |= (uint)(value << startBitPosition);// Set the new value
             return number;
         }
@@ -1982,15 +2134,17 @@ namespace DDPM.SA.Plugins.User.DisplayManager
         /// <param name="e">VCP changed Event Args</param>
         private void show_VCPchangedEventArgs(object sender, VCPchangedEventArgs e)
         {
+            uint.TryParse(e.value, NumberStyles.Integer, CultureInfo.CurrentCulture, out uint result2);
             _logs.DebugMsg("[DisplayMangerPlugin] Receive VcpChanged Event Notify from VcpCorePlugin");
             _logs.DebugMsg("[DisplayMangerPlugin] Send VcpChanged Event Notify from DisplayMangerPlugin");
+            _logs.DebugMsg("[DisplayMangerPlugin] show_VCPchangedEventArgs vcpcode = " + e.vcpcode.ToString() + " || monitor = " + e.monitor.edid.ModelName + " || Value = " + result2.ToString());
 
             VCPchangedEventArgs _VCPchangedEventArgs = new VCPchangedEventArgs();
             _VCPchangedEventArgs.vcpcode = e.vcpcode;
             _VCPchangedEventArgs.value = e.value;
             _VCPchangedEventArgs.monitor = e.monitor;
             OnVCPchanged(_VCPchangedEventArgs);
-
+            
             ////0607 Bruce 自動旋轉畫面顧新增下面兩行程式碼
             //SetDisplayOrientation(_VCPchangedEventArgs);
 
@@ -2002,9 +2156,100 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                     //update target als config via target monitorinfo with e.value
                     ALSConfig alsConfig = UpdateALSFeatureByValue(e.monitor, result);
                     if (alsConfig != null)
-                        Task.Run(() => CheckisPrimaryMonitorSyncOnOff(e.monitor, alsConfig));//JIRA DDPMW-770
+                        Task.Run(() => CheckisPrimaryMonitorSyncOnOff(e.monitor, alsConfig, e.vcpcode));//JIRA DDPMW-770
                 }
             }
+
+            if (e.vcpcode.Equals("67") || e.vcpcode.Equals("68"))
+            {
+                _logs.DebugMsg("[DisplayMangerPlugin] show_VCPchangedEventArgs vcpcode = 67 68 ... in");
+                ObjGetVCP valemp;
+                if (uint.TryParse(e.value, NumberStyles.Integer, CultureInfo.CurrentCulture, out uint result)) // Get ALS value
+                {
+                    if (GetBitsValue(result, 5) == 1) // Check monitor is Primary
+                    {
+                        var allInfoMonitorsSnapshot = _AllInfoMonitors.ToList();
+
+                        _logs.DebugMsg($"[DisplayMangerPlugin] show_VCPchangedEventArgs Total Monitors: {allInfoMonitorsSnapshot.Count}");
+
+                        ALSConfig aconfig = AllALSConfig.Find(x => x.Edid.Equals(e.monitor.edid));
+                        if (aconfig != null)
+                        {
+                            if (e.vcpcode.Equals("67"))// Check AutoBrightness is On
+                            {
+                                if (aconfig.isAutoBrightness)
+                                {
+                                    valemp = _VcpCorePlugin.GetVCPCapability(e.monitor, 0x67).Result;
+                                    if(!valemp.result)
+                                    {
+                                        _logs.DebugMsg($"[DisplayMangerPlugin] show_VCPchangedEventArgs GetVCPCapability 0x67 : {valemp.result.ToString()}");
+                                        return;
+                                    }
+                                }
+                                else
+                                {
+                                    _logs.DebugMsg($"[DisplayMangerPlugin] show_VCPchangedEventArgs aconfig.isAutoBrightness: {aconfig.isAutoBrightness.ToString()}");
+                                    return;
+                                }
+                            }
+                            else
+                            {
+                                if (aconfig.isAutoColorTemp)// Check AutoColorTemp is On
+                                {
+                                    valemp = _VcpCorePlugin.GetVCPCapability(e.monitor, 0x68).Result;
+                                    if (!valemp.result)
+                                    {
+                                        _logs.DebugMsg($"[DisplayMangerPlugin] show_VCPchangedEventArgs GetVCPCapability 0x68 : {valemp.result.ToString()}");
+                                        return;
+                                    }
+                                }
+                                else
+                                {
+                                    _logs.DebugMsg($"[DisplayMangerPlugin] show_VCPchangedEventArgs aconfig.isAutoBrightness: {aconfig.isAutoColorTemp.ToString()}");
+                                    return;
+                                }
+                            }
+                        }
+                        else
+                        {
+                            _logs.DebugMsg($"[DisplayMangerPlugin] show_VCPchangedEventArgs aconfig = null: Into ModelName = {e.monitor.edid.ModelName.ToString()} || Into SerialNumber =  {e.monitor.edid.SerialNumber.ToString()}");
+                            return;
+                        }
+                        foreach (var targetMonitor in allInfoMonitorsSnapshot)
+                        {
+                            if (!e.monitor.edid.Equals(targetMonitor.edid)) // Get other monitor
+                            {
+                                //ALSConfig aconfig = AllALSConfig.Find(x => x.Edid.Equals(targetMonitor.edid));
+                                if (aconfig != null)
+                                {
+                                    _logs.DebugMsg($"[DisplayMangerPlugin] show_VCPchangedEventArgs Syncing Monitor: {aconfig.Edid.SerialNumber}");
+
+                                    Task.Run(() =>
+                                    {
+                                        try
+                                        {
+                                            //待定義，先KEEP
+                                            //SyncPrimaryMonitorBrightnessAndColorTemp(e.monitor, targetMonitor, e.vcpcode, valemp);
+                                        }
+                                        catch (Exception ex)
+                                        {
+                                            _logs.DebugMsg($"[DisplayMangerPlugin] show_VCPchangedEventArgs Sync Task Exception: {ex.Message}");
+                                        }
+                                    });
+                                }
+                            }
+                        }
+                    }
+                    else
+                    {
+                        _logs.DebugMsg("[DisplayMangerPlugin] show_VCPchangedEventArgs Non Primary Monitor ...");
+                    }
+                }
+                _logs.DebugMsg("[DisplayMangerPlugin] show_VCPchangedEventArgs vcpcode = 67 68 ... out");
+            }
+
+
+
             //Dean 0614 handle brightness/contrast
             if (e.vcpcode.Equals("10") || e.vcpcode.Equals("12") || e.vcpcode.Equals("E2") || e.vcpcode.Equals("14") || e.vcpcode.Equals("F0") || e.vcpcode.Equals("DC"))
             {
@@ -2026,7 +2271,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                 //}
 
                 if (findconfig != null && findconfig.isPrimaryMonitorSync)//
-                {
+                {                  
                     //2.do value sync
                     for (int i = 0; i < _AllInfoMonitors.Count; i++)
                     {
@@ -2094,6 +2339,9 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             _displaychangedEventArgss.count = e.count;
             _displaychangedEventArgss.monitors = _AllInfoMonitors.ToList();
             OnDisplaychanged(_displaychangedEventArgss);
+
+            //Re Get ALS
+            InitializeAllALSInfo();
         }
 
         #endregion

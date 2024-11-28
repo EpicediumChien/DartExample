@@ -32,10 +32,7 @@ namespace DDPM.SA.Common.UpdateProgressPage
         private Visibility _AlertVisibility = Visibility.Collapsed;
         private string _ProgressStr_2_Color;
         ManagementEventWatcher watcher;
-#if DEBUG
-        string logFilePath = "UpdateProgress.log";
-        Logs logs;
-#endif
+        Logs _Logs;
 
         public string UpdateTitle
         {
@@ -137,6 +134,7 @@ namespace DDPM.SA.Common.UpdateProgressPage
             }
         }
         public BitmapSource ProgressBarImage { get; set; }
+        public string TextForeground { get; set; }
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -145,28 +143,13 @@ namespace DDPM.SA.Common.UpdateProgressPage
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
-        public UpdateProgress()
+        public UpdateProgress(Logs logs)
         {
             InitializeComponent();
             DataContext = this;
-            
-#if DEBUG
-            DDPMFileSecurity DDPMFileSecurity = new DDPMFileSecurity();
-            string AppDataPath = DDPMFileSecurity.GetActiveUserLocalAppDataPath();
-            if (!string.IsNullOrEmpty(AppDataPath))
-            {
-                string path = AppDataPath + "\\Dell\\Dell Display and Peripheral Manager\\Log\\DDPM-UpdateProgress";
-                if (!Directory.Exists(path))
-                {
-                    Directory.CreateDirectory(path);
-                }
-                logFilePath = path + "\\" + logFilePath;
-            }
-            logs = new Logs(logFilePath, "DdpmSwUpdater");
-            logs?.DebugMsg_1($"UpdateProgress go");
-#endif
+            _Logs = logs;
+            _Logs?.DebugMsg_1($"[UpdateProgress] UpdateProgress go");
             GetSystemTheme();
-            RegEvent();
         }
 
         public void ShowWindow()
@@ -186,7 +169,6 @@ namespace DDPM.SA.Common.UpdateProgressPage
                 Dispatcher.Invoke(CloseWindow);
                 return;
             }
-            CancelRegEvent();
             Close();
         }
 
@@ -223,7 +205,6 @@ namespace DDPM.SA.Common.UpdateProgressPage
                 UpdateSubTitle = LangHelper.Instance["Updating_firmware_Do_not_remove_or_power_off_the_device_Leave_the_device_undisturbed"];
             }
             UpdateVersion = $"{LangHelper.Instance["Version"]} {e.TheLatestVersion}";
-            AlertVisibility = Visibility.Collapsed;
             if (e.ProcessName.Equals(LangHelper.Instance["Installing"]))
             {
                 ProgressValue = (int)100;
@@ -233,6 +214,7 @@ namespace DDPM.SA.Common.UpdateProgressPage
                     ProgressStr_2 = $"{LangHelper.Instance["DDPM_will_reopen_soon_after_update"]}";
                     ProgressStr_2_Color = "#FFFFFF";
                 }
+                AlertVisibility = Visibility.Collapsed;
                 Progress_IsAnimated = true;
             }
             else if (e.ProcessName.Equals(LangHelper.Instance["Downloading_and_installing"]))
@@ -241,6 +223,7 @@ namespace DDPM.SA.Common.UpdateProgressPage
                 ProgressStr = $"{LangHelper.Instance["Downloading_and_installing"]}... {ProgressValue}%";
                 ProgressStr_2 = "";
                 Progress_IsAnimated = false;
+                AlertVisibility = Visibility.Collapsed;
             }
             else if (e.ProcessName.Equals(LangHelper.Instance["M1_Please_double_click_mouse_left_button_to_start_firmware_update"]) || e.ProcessName.Equals(LangHelper.Instance["M2_Please_press_key_on_keyboard_to_start_firmware_update"]))
             {
@@ -257,53 +240,7 @@ namespace DDPM.SA.Common.UpdateProgressPage
                 ProgressStr_2_Color = "#E6AC28";
                 Progress_IsAnimated = false;
             }
-#if DEBUG
-            logs?.DebugMsg_1($"{nameof(_FWUpdatePlugin_ProgressUpdate)} {e.DeviceName} {e.TheLatestVersion} {e.ProcessName} {e.ProcessProgress} {DateTime.Now}");
-#endif
-        }
-        private void RegEvent()
-        {
-            logs?.DebugMsg_1($"RegEvent start");
-            try
-            {
-                logs?.DebugMsg_1($"RegEvent go");
-                // 將反斜線進行正確轉義
-                WqlEventQuery query = new WqlEventQuery(
-                         "SELECT * FROM RegistryValueChangeEvent WHERE " +
-                         "Hive = 'HKEY_CURRENT_USER'" +
-                         @"AND KeyPath = 'Software\Microsoft\Windows\CurrentVersion\Themes\Personalize' AND ValueName='AppsUseLightTheme'");
-                watcher = new ManagementEventWatcher(query);
-                watcher.EventArrived += new EventArrivedEventHandler(OnRegistryValueChanged);
-                watcher.Start();
-            }
-            catch (ManagementException ex)
-            {
-#if DEBUG
-                logs?.DebugMsg_1($"ManagementException: {ex.Message}");
-#endif
-            }
-            catch (Exception ex)
-            {
-#if DEBUG
-                logs?.DebugMsg_1($"Exception: {ex.Message}");
-#endif
-            }
-            logs?.DebugMsg_1($"RegEvent done");
-        }
-        private void CancelRegEvent()
-        {
-            logs?.DebugMsg_1($"CancelRegEvent start");
-            if (watcher != null)
-            {
-                logs?.DebugMsg_1($"CancelRegEvent go");
-                watcher.Stop();
-                watcher.EventArrived -= new EventArrivedEventHandler(OnRegistryValueChanged);
-            }
-            logs?.DebugMsg_1($"CancelRegEvent done");
-        }
-        private void OnRegistryValueChanged(object sender, EventArrivedEventArgs e)
-        {
-            GetSystemTheme();
+            _Logs?.DebugMsg_1($"[UpdateProgress] {nameof(_FWUpdatePlugin_ProgressUpdate)} {e.DeviceName} {e.TheLatestVersion} {e.ProcessName} {e.ProcessProgress} {DateTime.Now}");
         }
         int GetSystemTheme()
         {
@@ -323,22 +260,21 @@ namespace DDPM.SA.Common.UpdateProgressPage
             }
             catch (Exception ex)
             {
-#if DEBUG
-                logs?.DebugMsg_1($"Error reading registry: {ex.Message}");
-#endif
+                _Logs?.DebugMsg_1($"[UpdateProgress] Error reading registry: {ex.Message}");
             }
-#if DEBUG
-            logs?.DebugMsg_1($"GetSystemTheme ret : {ret}");
-#endif
+            _Logs?.DebugMsg_1($"[UpdateProgress] GetSystemTheme ret : {ret}");
             if (ret == 1)
             {
                 ProgressBarImage = new BitmapImage(new Uri("ProgressBackground_Light.png", UriKind.RelativeOrAbsolute));
+                TextForeground = "#0E0E0E";
             }
             else
             {
                 ProgressBarImage = new BitmapImage(new Uri("ProgressBackground.png", UriKind.RelativeOrAbsolute));
+                TextForeground = "#FFFFFF";
             }
             OnPropertyChanged("ProgressBarImage");
+            OnPropertyChanged("TextForeground");
             return ret;
         }
     }

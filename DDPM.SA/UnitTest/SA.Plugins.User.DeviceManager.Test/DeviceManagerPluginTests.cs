@@ -78,14 +78,14 @@ namespace SA.Plugins.User.DeviceManager.Test
         public void TestDownloadICCData()
         {
             //_ColorPresetPlugin == null
-            var result = deviceMangerPlugin.DownloadICCData(monitorInfo, "");
+            var result = deviceMangerPlugin.DownloadICCData(monitorInfo,true,"");
             Assert.That(result, Is.Not.Null);
 
             //_ColorPresetPlugin != null
             var _ColorPresetPluginMock = new Mock<IColorPresetSA>();
             privateObject.SetFieldOrProperty("_ColorPresetPlugin", _ColorPresetPluginMock.Object);
             //_ColorPresetPluginMock.Setup(x => x.DownloadICCData(It.IsAny<MonitorInfo>(), It.IsAny<string>())).Returns(Task.FromResult(new DDPM.SA.Common.IIC_Metadata()));
-            result = deviceMangerPlugin.DownloadICCData(monitorInfo, "");
+            result = deviceMangerPlugin.DownloadICCData(monitorInfo, true, "");
             Assert.That(result, Is.Not.Null);
         }
 
@@ -1667,7 +1667,7 @@ namespace SA.Plugins.User.DeviceManager.Test
             var _FWUpdatePluginMock = new Mock<IFWUpdateService>();
             privateObject.SetFieldOrProperty("_FWUpdatePlugin", _FWUpdatePluginMock.Object);
             _FWUpdatePluginMock.Setup(x => x.Install(It.IsAny<string>(), It.IsAny<bool>(), It.IsAny<DeviceType>())).Returns(Task.FromResult(new FWUErrorCode()));
-            privateObject.SetFieldOrProperty("_UpdateProgress", new UpdateProgress());
+            privateObject.SetFieldOrProperty("_UpdateProgress", new UpdateProgress(null));
             // Execute and Verify
 
             Assert.IsNotNull(deviceMangerPlugin.Install(""), $"Install() returns null");

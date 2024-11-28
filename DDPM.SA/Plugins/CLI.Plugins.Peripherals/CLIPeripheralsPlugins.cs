@@ -128,27 +128,27 @@ namespace DDPM.CLI.Plugins.Peripherals
                     }
 
                 }
-                //if (commandLineInput.Command.Equals("SET"))
-                //{
-                //    if (commandLineInput.TargetType.Equals("DOCK"))
-                //    {
-                //        if (commandLineInput.TargetFeature.Equals("SILENTFWUPDATE"))// for dock firmware update.
-                //        {
-                //            //switch (commandLineInput.TargetFeature)
-                //            //{
-                //            //    case "FIRMWAREUPDATE":
-                //            //    case "UODFWUPDATE":
-                //            //    case "LOCKUIUPDATE":
-                //            //    case "UNLOCKUIUPDATE":
-                //            var ret = FWUpdate(commandLineInput);
-                //            result.ExitCode = ret.code;
-                //            result.serialize_Json_response = ret.json;
-                //            return result;
-                //            //}
-                //        }
-                //    }
+                if (commandLineInput.Command.Equals("SET"))
+                {
+                    if (commandLineInput.TargetType.Equals("DOCK"))
+                    {
+                        if (commandLineInput.TargetFeature.Equals("SILENTFWUPDATE"))// for dock firmware update.
+                        {
+                            //switch (commandLineInput.TargetFeature)
+                            //{
+                            //    case "FIRMWAREUPDATE":
+                            //    case "UODFWUPDATE":
+                            //    case "LOCKUIUPDATE":
+                            //    case "UNLOCKUIUPDATE":
+                            var ret = FWUpdate(commandLineInput);
+                            result.ExitCode = ret.code;
+                            result.serialize_Json_response = ret.json;
+                            return result;
+                            //}
+                        }
+                    }
 
-                //}
+                }
 
                 if (commandLineInput.Command.Equals("SET"))
                 {
@@ -1081,7 +1081,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                             }
                             else
                             {
-                                x.Value = "N/A";
+                                x.Value = "Not supported";
                                 x.Result = "FAIL";
                                 x.Message = "HeadSet not support ANC";
                                 retcode = false;
@@ -1131,7 +1131,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                             }
                             else
                             {
-                                x.Value = "N/A";
+                                x.Value = "Not supported";
                                 x.Result = "FAIL";
                                 x.Message = "HeadSet not support MICNOISECANCELLATION";
                                 retcode = false;
@@ -1169,7 +1169,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                             }
                             else
                             {
-                                x.Value = "N/A";
+                                x.Value = "Not supported";
                                 x.Result = "FAIL";
                                 x.Message = "HeadSet not support WearDetection";
                                 retcode = false;
@@ -1241,7 +1241,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                             }
                             else
                             {
-                                x.Value = "N/A";
+                                x.Value = "Not supported";
                                 x.Result = "FAIL";
                                 x.Message = "Webcam not support MicSwitch";
                                 retcode = false;
@@ -1284,7 +1284,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                             }
                             else
                             {
-                                x.Value = "N/A";
+                                x.Value = "Not supported";
                                 x.Result = "FAIL";
                                 x.Message = "Webcam not support HDR";
                                 retcode = false;
@@ -1368,7 +1368,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                                 }
                                 else
                                 {
-                                    x.Value = "N/A";
+                                    x.Value = "Not supported";
                                     x.Result = "FAIL";
                                     x.Message = "Webcam not support AntiFlicker";
                                     retcode = false;
@@ -1458,7 +1458,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                             }
                             else
                             {
-                                x.Value = "N/A";
+                                x.Value = "Not supported";
                                 x.Result = "FAIL";
                                 x.Message = "Webcam not support AI AutoFraming";
                                 retcode = false;
@@ -1541,7 +1541,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                             }
                             else
                             {
-                                x.Value = "N/A";
+                                x.Value = "Not supported";
                                 x.Result = "FAIL";
                                 x.Message = "Webcam not support PresenceDetection";
                                 retcode = false;
@@ -3845,6 +3845,32 @@ namespace DDPM.CLI.Plugins.Peripherals
                 if (commandLineInput.Options.Count > 0)
                 {
                     cLI_FWU_RESPONSE.Value = commandLineInput.Options[0].Option_Value;
+
+                    #region Parse Dock SilentFwUpdate command to unified format
+                    if (commandLineInput.TargetType == "DOCK")
+                    {
+                        var dockNoCommaOptions = commandLineInput.Options.Where(_ => !_.Option_Value.Contains(',')).ToList();
+
+                        foreach (var dockNoCommaOption in dockNoCommaOptions)
+                        {
+                            if (dockNoCommaOption.Option_Value.Equals("UOD", StringComparison.OrdinalIgnoreCase))
+                            {
+                                dockNoCommaOption.Option_Value = "TRUE,UOD";
+                            }
+                            else if (dockNoCommaOption.Option_Value.Contains(':'))
+                            {
+                                dockNoCommaOption.Option_Value = dockNoCommaOption.Option_Value + ",FILEPATH";
+                            }
+                        }
+
+                        commandLineInput.Options.Insert(0, new CommandType_Option("VALUE", "DOCK,FORCEWITHNONOTICE"));
+                    }
+                    #endregion
+
+                    if (!commandLineInput.Options[0].Option_Value.Contains(','))
+                    {
+                        commandLineInput.Options[0].Option_Value += ",FORCEWITHNONOTICE";
+                    }
                     string[] ss_1 = commandLineInput.Options[0].Option_Value.Split(",");
 
                     if (ss_1.Length == 2)
@@ -4043,7 +4069,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                                             {
                                                 if (!string.IsNullOrEmpty(ss_guid[0]) && !string.IsNullOrEmpty(ss_guid[1]))
                                                 {
-                                                    if (ss_1[0].ToUpper() == "DOCK")
+                                                    if (ss_1[0].ToUpper() == "DOCK" && commandLineInput.TargetType == "APP") // Checking for TargetType=APP
                                                     {
                                                         CLI_RESPONSE rsp = new CLI_RESPONSE()
                                                         {
@@ -4305,6 +4331,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                                                 switch (commandLineInput.TargetFeature)
                                                 {
                                                     case "FIRMWAREUPDATE":
+                                                    case "SILENTFWUPDATE":
                                                         switch (ss_2[1].ToUpper())
                                                         {
                                                             case "FORCEWITHNOTICE":

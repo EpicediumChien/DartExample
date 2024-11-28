@@ -53,8 +53,10 @@ using System.Threading.Tasks;
 using System.Timers;
 using System.Windows;
 using System.Windows.Forms;
+using System.Windows.Media.Media3D;
 using System.Windows.Threading;
 using VcpCore.Common;
+using Windows.Gaming.Preview.GamesEnumeration;
 using Windows.System;
 using static DDPM.SA.Common.Telementry_GeneralFunction;
 using static DDPM.SA.Plugins.User.DeviceManager.DisplayDeviceHelper;
@@ -253,7 +255,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             loadResourceDictionary(UXSystemParameters.Instance.OSTheme);
         }
 
-        private void _DTPProxyPlugin_WebcamEventHandler(object sender, UpdateUINotify e)
+        private void _DTPProxyPlugin_DTPEventHandler(object sender, UpdateUINotify e)
         {
             OnUIUpdateNotify(e);
         }
@@ -607,7 +609,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             thread.SetApartmentState(ApartmentState.STA);
             thread.Start();
 
-            _disDevHelper = new DisplayDeviceHelper(Log);           
+            _disDevHelper = new DisplayDeviceHelper(Log);
         }
 
         private void HotkeyPressed(object sender, KeyPressedEventArgs e)
@@ -732,7 +734,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         #region ColorPreset implementation
 
-        public Task<DDPM.SA.Common.IIC_Metadata> DownloadICCData(MonitorInfo m, string savelPath = "")
+        public Task<DDPM.SA.Common.IIC_Metadata> DownloadICCData(MonitorInfo m, bool blICCProfile = false, string savelPath = "")
         {
             DDPM.SA.Common.IIC_Metadata _ICC_Metadata = new DDPM.SA.Common.IIC_Metadata();
 
@@ -743,7 +745,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
             else
             {
-                _ICC_Metadata = _ColorPresetPlugin.DownloadICCData(m, _SettingsPlugin, savelPath).Result;
+                _ICC_Metadata = _ColorPresetPlugin.DownloadICCData(m, _SettingsPlugin, blICCProfile, savelPath).Result;
             }
 
             return Task.FromResult(_ICC_Metadata);
@@ -936,7 +938,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             // 11/23 Wayn Add
             bool result = false;
             result = await Task.Run(() => SyncPrimaryMonitorAndColorPresetStatus(m, ColorPreset_Name, colorPresetRunType).Result).ConfigureAwait(false);
-            if(!result)
+            if (!result)
             {
                 writelog("[DeviceMangerPlugin] SyncPrimaryMonitorAndColorPresetStatus ... False");
             }
@@ -979,9 +981,10 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         public Task<bool> SyncPrimaryMonitorAndColorPresetStatus(MonitorInfo m, string ColorPreset_Name, int colorPresetRunType)
         {
-            bool blRet = true;
+            bool blRet = true;          
             writelog("[DeviceMangerPlugin] SyncPrimaryMonitorAndColorPresetStatus ... in");
             List<ALSConfig> existAlsConfig = _DisplayManagerPlugin. GetAllExistAlsConfig().Result;
+            Trace.WriteLine($"SyncPrimaryMonitorAndColorPresetStatus = {m.edid.ModelName.ToString()} || existAlsConfig.Count = {existAlsConfig.Count.ToString()}");
             ALSConfig findconfig = existAlsConfig.Find(x => x.Edid.Equals(m.edid));
 
             Trace.WriteLine("Into MonitorInfo = " + m.edid.ModelName.ToString());
@@ -2458,7 +2461,23 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         public async Task<DeviceHelper> GetDevices(bool Rescan = false)
         {
+            DeviceHelper deviceHelper = await Task.Run(() => _PeripheralsPlugin.GetDevices(Rescan));
+            ChangeSB725(deviceHelper);
             return await Task.Run(() => _PeripheralsPlugin.GetDevices(Rescan));
+        }
+
+        private static void ChangeSB725(DeviceHelper deviceHelper)
+        {
+            if (deviceHelper.deviceInfo.Any(x => x.Name.Contains("SB725")))
+            {
+                var GetDeviceInfos = deviceHelper.deviceInfo.Where(x => x.Name.Contains("SB725")).ToList();
+                foreach (var deviceInfo in GetDeviceInfos)
+                {
+                    deviceInfo.Type = DeviceType.LogicalWiredAudio;
+                    deviceInfo.ModelNumber = "SB725";
+                    deviceInfo.LogicalDeviceType = "LogicalWiredAudio";
+                }
+            }
         }
 
         public async Task<DeviceHelper> GetDevices_WithoutAwait(bool Rescan = false)
@@ -4668,6 +4687,10 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             if (UIUpdateNotify == null || e == null || e == EventArgs.Empty)
                 return;
 
+            //Derek 1125
+            if (e.UI_Field_Name.StartsWith("WebcamEvent"))
+                HandleQAMEvent(e.UI_Field_Name);
+
             EventHandler<UpdateUINotify> Handler = UIUpdateNotify;
             if (Handler != null)
             {
@@ -5471,7 +5494,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         {
             if (_PeripheralsPlugin != null && _FWUpdatePlugin != null)
             {
-                _FWUpdatePlugin.SetDeviceinfo(_PeripheralsPlugin.GetDevices().Result.deviceInfo);
+                _FWUpdatePlugin.SetDeviceinfo(_PeripheralsPlugin.GetDevices().Result.deviceInfo, _PeripheralsPlugin.GetDongleCount());
                 return Task.FromResult(true);
             }
             return Task.FromResult(false);
@@ -5533,7 +5556,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             TaskCompletionSource<bool> tcs = new TaskCompletionSource<bool>();
             Thread thread1 = new Thread(() =>
             {
-                _UpdateProgress = new UpdateProgress();
+                _UpdateProgress = new UpdateProgress(new Logs(Log, "DeviceManager"));
                 _UpdateProgress.Closed += (sender2, e2) =>
                 {
                     _UpdateProgress.Dispatcher.InvokeShutdown();
@@ -6026,7 +6049,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             if (_NKVMPlugin != null && _SettingsPlugin != null)
             {
                 DDPMSettings config = _SettingsPlugin.ReloadAppConfigData().Result;
-                _SupportedMonitorList = _NKVMPlugin.UpdateSupportMonitors().Result;
+                //_SupportedMonitorList = _NKVMPlugin.UpdateSupportMonitors().Result;
                 if (config != null)
                 {
                     config.UserSettings.SupportedMonitorList = _SupportedMonitorList;
@@ -6065,8 +6088,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                             bool b = _SettingsPlugin.WriteMonitorSettings(monitorInfo.modelName, settings).Result;
                             if (ison)
                             {
-                                _SupportedMonitorList = _NKVMPlugin.GetSupportedNKVM().Result;
-                                //_NKVMPlugin.OnNKVM().Wait();
+                                //_SupportedMonitorList = _NKVMPlugin.GetSupportedNKVM().Result;
+                                _NKVMPlugin.OnNKVM().Wait();
                                 bool bt = SentKVMtoTelementry(monitorInfo, "KVMMode", "Network").Result;
                             }
                             else
@@ -9388,6 +9411,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     Debug.WriteLine($"Keyboard_KeyUpProc==> _hotkeySettings is null");
                 }
             }
+            //regist osd key as hotkey
+
         }
 
         #region OutReport
@@ -9465,151 +9490,185 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 writelog("folderPath - programdataPath Line 9169: " + programdataPath);
                 string appDataPath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
                 writelog("folderPath - appDataPath Line 9171: " + appDataPath);
-                if (!string.IsNullOrEmpty(appDataPath))
+                string fail_info = string.Empty;
+                try
                 {
-                    string LogFolder = @$"{appDataPath}\Dell\Dell Display and Peripheral Manager\Log\DDPM.Subagent.User";
-                    writelog("folderPath - LogFolder Line 9175: " + LogFolder);
-                    if (DirectoryContainsFiles(LogFolder))
+                    if (!string.IsNullOrEmpty(appDataPath))
                     {
-                        // 取得資料夾名稱
-                        string folderName = GetFolderName(LogFolder);
-                        string savePath = Path.Combine(saveFolderPath, folderName);
-                        // 複製指定的 log 文件到選擇的資料夾
-                        CopyLogFolder(LogFolder, savePath);
-                    }
-                    LogFolder = @$"{appDataPath}\Dell\Dell Display and Peripheral Manager\Log\DDPM.GUI";
-                    writelog("folderPath - LogFolder Line 9185: " + LogFolder);
-                    if (DirectoryContainsFiles(LogFolder))
-                    {
-                        // 取得資料夾名稱
-                        string folderName = GetFolderName(LogFolder);
-                        string savePath = Path.Combine(saveFolderPath, folderName);
-                        // 複製指定的 log 文件到選擇的資料夾
-                        CopyLogFolder(LogFolder, savePath);
-                    }
-                    LogFolder = @$"{appDataPath}\Dell\Dell Display and Peripheral Manager\Log\DDPM-Setup-DdpmSwUpdater";
-                    writelog("folderPath - LogFolder Line 9195: " + LogFolder);
-                    if (DirectoryContainsFiles(LogFolder))
-                    {
-                        // 取得資料夾名稱
-                        string folderName = GetFolderName(LogFolder);
-                        string savePath = Path.Combine(saveFolderPath, folderName);
-                        // 複製指定的 log 文件到選擇的資料夾
-                        CopyLogFolder(LogFolder, savePath);
-                    }
-                    LogFolder = @$"{appDataPath}\Dell\Dell Display and Peripheral Manager\Log\FWUpdataLog";
-                    writelog("folderPath - LogFolder Line 9205: " + LogFolder);
-                    if (DirectoryContainsFiles(LogFolder))
-                    {
-                        // 取得資料夾名稱
-                        string folderName = GetFolderName(LogFolder);
-                        string savePath = Path.Combine(saveFolderPath, folderName);
-                        // 複製指定的 log 文件到選擇的資料夾
-                        CopyLogFolder(LogFolder, savePath);
-                    }
-                }
-                if (!string.IsNullOrEmpty(programdataPath))
-                {
-                    string LogFolder = @$"{programdataPath}\Dell\DDPM.Subagent";
-                    writelog("folderPath - LogFolder Line 9218: " + LogFolder);
-                    if (DirectoryContainsFiles(LogFolder))
-                    {
-                        // 取得資料夾名稱
-                        string folderName = GetFolderName(LogFolder);
-                        string savePath = Path.Combine(saveFolderPath, folderName);
-                        // 複製指定的 log 文件到選擇的資料夾
-                        CopyLogFolder(LogFolder, savePath);
-                    }
-                    LogFolder = @$"{programdataPath}\Dell\Dell TechHub";
-                    writelog("folderPath - LogFolder Line 9228: " + LogFolder);
-                    if (DirectoryContainsFiles(LogFolder))
-                    {
-                        // 取得資料夾名稱
-                        string folderName = GetFolderName(LogFolder);
-                        string savePath = Path.Combine(saveFolderPath, folderName);
-                        // 複製指定的 log 文件到選擇的資料夾
-                        CopyLogFolder(LogFolder, savePath);
-                    }
-                    LogFolder = @$"{programdataPath}\Dell\DTP\Logs";
-                    writelog("folderPath - LogFolder Line 9238: " + LogFolder);
-                    if (DirectoryContainsFiles(LogFolder))
-                    {
-                        // 取得資料夾名稱
-                        string folderName = "DTP_Log";
-                        string savePath = Path.Combine(saveFolderPath, folderName);
-                        // 複製指定的 log 文件到選擇的資料夾
-                        CopyLogFolder(LogFolder, savePath);
-                    }
-                    string registryKey = @"SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\DDPMW-NKVM";
-                    object o = ReadRegistryData(RegistryHive.LocalMachine, registryKey, "GUID").Result;
-                    if (o != null && o is string && !string.IsNullOrEmpty(o.ToString()))
-                    {
-                        LogFolder = @$"{programdataPath}\{o.ToString()}\DDPMW-NKVM";
-                        writelog("folderPath - LogFolder Line 9252: " + LogFolder);
+                        string LogFolder = @$"{appDataPath}\Dell\Dell Display and Peripheral Manager\Log\DDPM.Subagent.User";
+                        writelog("folderPath - LogFolder Line 9175: " + LogFolder);
                         if (DirectoryContainsFiles(LogFolder))
                         {
                             // 取得資料夾名稱
                             string folderName = GetFolderName(LogFolder);
                             string savePath = Path.Combine(saveFolderPath, folderName);
                             // 複製指定的 log 文件到選擇的資料夾
-                            CopyLogFolder(LogFolder, savePath);
+                            if (!CopyLogFolder(LogFolder, savePath))
+                                fail_info += "[DDPM.Subagent.User]";
+                        }
+                        LogFolder = @$"{appDataPath}\Dell\Dell Display and Peripheral Manager\Log\DDPM.GUI";
+                        writelog("folderPath - LogFolder Line 9185: " + LogFolder);
+                        if (DirectoryContainsFiles(LogFolder))
+                        {
+                            // 取得資料夾名稱
+                            string folderName = GetFolderName(LogFolder);
+                            string savePath = Path.Combine(saveFolderPath, folderName);
+                            // 複製指定的 log 文件到選擇的資料夾
+                            if(!CopyLogFolder(LogFolder, savePath))
+                                fail_info += "[DDPM.GUI]";
+                        }
+                        LogFolder = @$"{appDataPath}\Dell\Dell Display and Peripheral Manager\Log\DDPM-Setup-DdpmSwUpdater";
+                        writelog("folderPath - LogFolder Line 9195: " + LogFolder);
+                        if (DirectoryContainsFiles(LogFolder))
+                        {
+                            // 取得資料夾名稱
+                            string folderName = GetFolderName(LogFolder);
+                            string savePath = Path.Combine(saveFolderPath, folderName);
+                            // 複製指定的 log 文件到選擇的資料夾
+                            if(!CopyLogFolder(LogFolder, savePath))
+                                fail_info += "[DDPM.SwUpdater]";
+                        }
+                        LogFolder = @$"{appDataPath}\Dell\Dell Display and Peripheral Manager\Log\FWUpdataLog";
+                        writelog("folderPath - LogFolder Line 9205: " + LogFolder);
+                        if (DirectoryContainsFiles(LogFolder))
+                        {
+                            // 取得資料夾名稱
+                            string folderName = GetFolderName(LogFolder);
+                            string savePath = Path.Combine(saveFolderPath, folderName);
+                            // 複製指定的 log 文件到選擇的資料夾
+                            if(!CopyLogFolder(LogFolder, savePath))
+                                fail_info += "[DDPM.FwUpdate]";
                         }
                     }
-                    LogFolder = @$"{programdataPath}\Dell\Dell Peripheral Manager\DPMService\Log";
-                    writelog("folderPath - LogFolder Line 9263: " + LogFolder);
-                    if (DirectoryContainsFiles(LogFolder))
+                    if (!string.IsNullOrEmpty(programdataPath))
                     {
-                        // 取得資料夾名稱
-                        string folderName = "DPMService_Log";
-                        string savePath = Path.Combine(saveFolderPath, folderName);
-                        // 複製指定的 log 文件到選擇的資料夾
-                        CopyLogFolder(LogFolder, savePath);
+                        string LogFolder = @$"{programdataPath}\Dell\DDPM.Subagent";
+                        writelog("folderPath - LogFolder Line 9218: " + LogFolder);
+                        if (DirectoryContainsFiles(LogFolder))
+                        {
+                            // 取得資料夾名稱
+                            string folderName = GetFolderName(LogFolder);
+                            string savePath = Path.Combine(saveFolderPath, folderName);
+                            // 複製指定的 log 文件到選擇的資料夾
+                            if(!CopyLogFolder(LogFolder, savePath))
+                                fail_info += "[DDPM.Subagent]";
+                        }
+                        LogFolder = @$"{programdataPath}\Dell\Dell TechHub";
+                        writelog("folderPath - LogFolder Line 9228: " + LogFolder);
+                        if (DirectoryContainsFiles(LogFolder))
+                        {
+                            // 取得資料夾名稱
+                            string folderName = GetFolderName(LogFolder);
+                            string savePath = Path.Combine(saveFolderPath, folderName);
+                            // 複製指定的 log 文件到選擇的資料夾
+                            if(!CopyLogFolder(LogFolder, savePath))
+                                fail_info += "[Dell TechHub]";
+                        }
+                        LogFolder = @$"{programdataPath}\Dell\DTP\Logs";
+                        writelog("folderPath - LogFolder Line 9238: " + LogFolder);
+                        if (DirectoryContainsFiles(LogFolder))
+                        {
+                            // 取得資料夾名稱
+                            string folderName = "DTP_Log";
+                            string savePath = Path.Combine(saveFolderPath, folderName);
+                            // 複製指定的 log 文件到選擇的資料夾
+                            if(!CopyLogFolder(LogFolder, savePath))
+                                fail_info += "[DTP_log]";
+                        }
+                        string registryKey = @"SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\DDPMW-NKVM";
+                        object o = ReadRegistryData(RegistryHive.LocalMachine, registryKey, "GUID").Result;
+                        if (o != null && o is string && !string.IsNullOrEmpty(o.ToString()))
+                        {
+                            LogFolder = @$"{programdataPath}\{o.ToString()}\DDPMW-NKVM";
+                            writelog("folderPath - LogFolder Line 9252: " + LogFolder);
+                            if (DirectoryContainsFiles(LogFolder))
+                            {
+                                // 取得資料夾名稱
+                                string folderName = GetFolderName(LogFolder);
+                                string savePath = Path.Combine(saveFolderPath, folderName);
+                                // 複製指定的 log 文件到選擇的資料夾
+                                if(!CopyLogFolder(LogFolder, savePath))
+                                    fail_info += "[DDPMW-NKVM]";
+                            }
+                        }
+                        LogFolder = @$"{programdataPath}\Dell\Dell Peripheral Manager\DPMService\Log";
+                        writelog("folderPath - LogFolder Line 9263: " + LogFolder);
+                        if (DirectoryContainsFiles(LogFolder))
+                        {
+                            // 取得資料夾名稱
+                            string folderName = "DPMService_Log";
+                            string savePath = Path.Combine(saveFolderPath, folderName);
+                            // 複製指定的 log 文件到選擇的資料夾
+                            if(!CopyLogFolder(LogFolder, savePath))
+                                fail_info += "[DPMService_Log]";
+                        }
+                        LogFolder = @$"{programdataPath}\Dell\Dell Peripheral Manager\DPM\Log";
+                        writelog("folderPath - LogFolder Line 9273: " + LogFolder);
+                        if (DirectoryContainsFiles(LogFolder))
+                        {
+                            // 取得資料夾名稱
+                            string folderName = "DPM_Log";
+                            string savePath = Path.Combine(saveFolderPath, folderName);
+                            // 複製指定的 log 文件到選擇的資料夾
+                            if(!CopyLogFolder(LogFolder, savePath))
+                                fail_info += "[DPM_Log]";
+                        }
+                        LogFolder = @$"{programdataPath}\Dell\Dell Peripheral Manager\DPeMSDK\Log";
+                        writelog("folderPath - LogFolder Line 9283: " + LogFolder);
+                        if (DirectoryContainsFiles(LogFolder))
+                        {
+                            // 取得資料夾名稱
+                            string folderName = "DPeMSDK_Log";
+                            string savePath = Path.Combine(saveFolderPath, folderName);
+                            // 複製指定的 log 文件到選擇的資料夾
+                            if(!CopyLogFolder(LogFolder, savePath))
+                                fail_info += "[DPeMSDK_Log]";
+                        }
                     }
-                    LogFolder = @$"{programdataPath}\Dell\Dell Peripheral Manager\DPM\Log";
-                    writelog("folderPath - LogFolder Line 9273: " + LogFolder);
-                    if (DirectoryContainsFiles(LogFolder))
+                    string logFileName = "EventLog.evtx";
+                    string logFilePath = Path.Combine(saveFolderPath, logFileName);
+                    if(!ExecuteWevtutilCommand(logFilePath))
+                        fail_info += "[EventLog]";
+
+                    string zipFilePath = saveFolderPath + ".zip";
+                    FileInfo info = new FileInfo(zipFilePath);
+                    zipFilePath = Path.Combine(info.DirectoryName, "Log.zip");//force to set zip file name as Log.zip
+                                                                              // 壓縮資料夾
+                    if(!CreateZipFile(saveFolderPath, zipFilePath))
+                        fail_info += "[Compression]";
+                    Directory.Delete(saveFolderPath, true);
+                                        
+                    ret = true;
+                    if (fail_info.Length > 0)
                     {
-                        // 取得資料夾名稱
-                        string folderName = "DPM_Log";
-                        string savePath = Path.Combine(saveFolderPath, folderName);
-                        // 複製指定的 log 文件到選擇的資料夾
-                        CopyLogFolder(LogFolder, savePath);
-                    }
-                    LogFolder = @$"{programdataPath}\Dell\Dell Peripheral Manager\DPeMSDK\Log";
-                    writelog("folderPath - LogFolder Line 9283: " + LogFolder);
-                    if (DirectoryContainsFiles(LogFolder))
-                    {
-                        // 取得資料夾名稱
-                        string folderName = "DPeMSDK_Log";
-                        string savePath = Path.Combine(saveFolderPath, folderName);
-                        // 複製指定的 log 文件到選擇的資料夾
-                        CopyLogFolder(LogFolder, savePath);
+                        ret = false;
+                        writelog($"SaveLog was failed at following step(s): {fail_info}");
                     }
                 }
-                string logFileName = "EventLog.evtx";
-                string logFilePath = Path.Combine(saveFolderPath, logFileName);
-                ExecuteWevtutilCommand(logFilePath);
-
-                string zipFilePath = saveFolderPath + ".zip";
-                // 壓縮資料夾
-                CreateZipFile(saveFolderPath, zipFilePath);
-                Directory.Delete(saveFolderPath, true);
+                catch (Exception ex)
+                {
+                    writelog($"{nameof(SaveLogFile)} got exception ({ex.Message})");
+                    ret = false;
+                }
             }
             writelog($"{nameof(SaveLogFile)} end");
-            //Telementry Collection
-            //var rt = false;
+
+            //Telemetry Collection
             var ApplicationSettings_Function = new ApplicationSettings_Function();
-            writelog("[DeviceMangerPlugin] Send Telementry for SaveDiagnosticReport...");
-            ret = ApplicationSettings_Function.Send_SaveDiagnosticReport_Telementry(_TelementryScheduler, _AllInfoMonitors, 1);
-            if (ret)
-                writelog("[DeviceMangerPlugin] Send Telementry for SaveDiagnosticReport Success ...");
+            writelog("[DeviceMangerPlugin] Send Telemetry for SaveDiagnosticReport...");
+            bool dtm = false;//[Dean 1126] Telemetry result should not impact original result
+            dtm = ApplicationSettings_Function.Send_SaveDiagnosticReport_Telementry(_TelementryScheduler, _AllInfoMonitors, 1);
+            if (dtm)
+                writelog("[DeviceMangerPlugin] Send Telemetry for SaveDiagnosticReport Success ...");
             else
-                writelog("[DeviceMangerPlugin] Send Telementry for SaveDiagnosticReport Fail ...");
+                writelog("[DeviceMangerPlugin] Send Telemetry for SaveDiagnosticReport Fail ...");
+
             return Task.FromResult(ret);
         }
 
-        private void CreateZipFile(string folderPath, string zipFilePath)
+        private bool CreateZipFile(string folderPath, string zipFilePath)
         {
+            bool result = false;
             writelog($"{nameof(CreateZipFile)} start");
             try
             {
@@ -9618,12 +9677,14 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     File.Delete(zipFilePath);
                 }
                 ZipFile.CreateFromDirectory(folderPath, zipFilePath, CompressionLevel.Fastest, includeBaseDirectory: true);
+                result = true;
             }
             catch (Exception ex)
             {
                 writelog($"{nameof(CreateZipFile)} Exception occurred while creating ZIP file: {ex.Message}");
             }
             writelog($"{nameof(CreateZipFile)} end");
+            return result;
         }
 
         private bool SaveMonitorAssetReport(List<MonitorAssetReport> monitorAssetReports, string savePath)
@@ -9675,8 +9736,9 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             return ret;
         }
 
-        private void ExecuteWevtutilCommand(string exportFilePath)
+        private bool ExecuteWevtutilCommand(string exportFilePath)
         {
+            bool result = false;
             try
             {
                 // 設定要查詢的日誌名稱
@@ -9723,11 +9785,13 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         Console.WriteLine($"Error exporting events: {error}");
                     }
                 }
+                result = true;
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"Exception occurred: {ex.Message}");
             }
+            return result;
         }
 
         private string GetFolderName(string path)
@@ -9766,29 +9830,37 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             return ret;
         }
 
-        private void CopyLogFolder(string sourceFolder, string destinationFolder)
+        private bool CopyLogFolder(string sourceFolder, string destinationFolder)
         {
+            bool result = false;
             try
             {
                 if (Directory.Exists(sourceFolder))
                 {
                     // 複製資料夾及其內容
-                    DirectoryCopy(sourceFolder, destinationFolder, true);
-                    Console.WriteLine("Log folder copied successfully.");
+                    if (!DirectoryCopy(sourceFolder, destinationFolder, true))
+                    {
+                        writelog("[DirectoryCopy] got some files copy failed");
+                    }
+                    else
+                        result = true;
+                    writelog("Log folder copy action finish.");                    
                 }
                 else
                 {
-                    Console.WriteLine("Source folder does not exist.");
+                    writelog("Source folder does not exist.");
                 }
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Exception occurred while copying log folder: {ex.Message}");
+                writelog($"Exception occurred while copying log folder: {ex.Message}");
             }
+            return result;
         }
 
-        private void DirectoryCopy(string sourceDirName, string destDirName, bool copySubDirs)
+        private bool DirectoryCopy(string sourceDirName, string destDirName, bool copySubDirs)
         {
+            bool all_pass = true;
             // 確保目標資料夾存在
             Directory.CreateDirectory(destDirName);
             // 複製檔案
@@ -9802,7 +9874,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"[DirectoryCopy] Get files in folder failed, message: {ex.Message}");
+                writelog($"[DirectoryCopy] Get files in folder failed, message: {ex.Message}");
+                all_pass = false;
             }
 
             // 複製子資料夾
@@ -9811,9 +9884,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 foreach (string subDir in Directory.GetDirectories(sourceDirName))
                 {
                     string destSubDir = Path.Combine(destDirName, Path.GetFileName(subDir));
-                    DirectoryCopy(subDir, destSubDir, true);
+                    if (!DirectoryCopy(subDir, destSubDir, true))
+                        all_pass = false;
                 }
             }
+            return all_pass;
         }
 
         #endregion
@@ -9826,94 +9901,172 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             CONF_3RD_EVENT_MEETING = 0,
             CONF_3RD_EVENT_PHONE = 1,
             CONF_3RD_EVENT_WEBINAR = 2,
-            CONF_3RD_EVENT_WEBINAR_VIEWONLY = 3
+            CONF_3RD_EVENT_WEBINAR_VIEWONLY = 3,
+            ZOOM_MEETING_TYPE_UNKNOW
         }
-        private bool _IsZoomScreenShareActive;
-        private bool _IsZoomMeetingActive;
-        private ZoomMeetingType _ZoomMeetingType;
+        private bool _IsZoomScreenShareActive = false;
+        private bool _IsZoomMeetingActive = false;
+        private ZoomMeetingType _ZoomMeetingType = ZoomMeetingType.ZOOM_MEETING_TYPE_UNKNOW;
+        private bool isWindowsScreenNotLocked = true; //
+        //private bool isHiddenConditionsMet = false;
+        private int currentZoomValue = -1;
+        private EventMsg eventMsg = new EventMsg();
         private void HandleQAM()
         {
             writelog($"HandleQAM start");
-            writelog($"HandleQAM: GetDevices_WithoutAwait go");
+            //writelog($"HandleQAM: GetDevices_WithoutAwait go");
             List<DeviceInfo> deviceInfos = GetDevices_WithoutAwait().Result.deviceInfo.FindAll(x => (x.PhysicalDeviceType.Equals(DeviceType.LogicalWebcam) || x.PhysicalDeviceType.Equals(DeviceType.PhysicalWebcam)));
             writelog($"HandleQAM: deviceInfos.Count:{deviceInfos.Count}");
-            if (_ZoomMeetingType == ZoomMeetingType.CONF_3RD_EVENT_MEETING)
+
+            if (deviceInfos == null || _GlobalSettingParam == null || _GlobalSettingParam.GlobalSetting_WidgetSettings == null)
             {
-                if (_QAM == null)
-                {
-                    if (_GlobalSettingParam != null && _GlobalSettingParam.GlobalSetting_WidgetSettings != null && _GlobalSettingParam.GlobalSetting_WidgetSettings.EnableQuickAccessWidget_Reminder)
-                    {
-                        ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.QAM);
-                    }
-                    else if (_GlobalSettingParam != null && _GlobalSettingParam.GlobalSetting_WidgetSettings != null && _GlobalSettingParam.GlobalSetting_WidgetSettings.EnableQuickAccessWidget)
-                    {
-                        if (deviceInfos != null && deviceInfos.Count == 1)
-                        {
-                            CallQAM_UI(this);
-                        }
-                    }
-                }
-                else
-                {
-                    if (deviceInfos != null && deviceInfos.Count == 1)
-                    {
-                        CallQAM_UI(this);
-                    }
-                    if (deviceInfos != null && deviceInfos.Count > 1)
-                    {
-                        QAMClose();
-                    }
-                    if (_IsZoomScreenShareActive)
-                    {
-                        QAMHide();
-                    }
-                    else
-                    {
-                        QAMShow();
-                    }
-                }
+                writelog($"Get null object when handleQAM start");
+
+                return;
             }
+
+            //Active state
+            if (_IsZoomMeetingActive && _ZoomMeetingType == ZoomMeetingType.CONF_3RD_EVENT_MEETING 
+                && deviceInfos.Count == 1 && _GlobalSettingParam.GlobalSetting_WidgetSettings.EnableQuickAccessWidget 
+                && isWindowsScreenNotLocked)
+            {
+                CallQAM_UI(this);
+            }
+            //Hidden state
+            else if (_IsZoomScreenShareActive)
+            {
+                QAMHide();
+            }
+            //OSD
+            //else if (true)
+            //{
+            //    ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.QAM);
+            //}
             else
-            {
                 QAMClose();
-            }
+
+            //if (_ZoomMeetingType == ZoomMeetingType.CONF_3RD_EVENT_MEETING)
+            //{
+            //    //if (_QAM == null && _GlobalSettingParam != null && _GlobalSettingParam.GlobalSetting_WidgetSettings != null)
+            //    if (_QAM == null)
+            //    {
+            //        if (_GlobalSettingParam.GlobalSetting_WidgetSettings.EnableQuickAccessWidget_Reminder)
+            //        {
+            //            ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.QAM);
+            //        }
+            //        else if (deviceInfos.Count == 1 && _GlobalSettingParam.GlobalSetting_WidgetSettings.EnableQuickAccessWidget)
+            //        {
+            //            CallQAM_UI(this);
+            //        }
+            //    }
+            //    else
+            //    {
+            //        if (deviceInfos != null && deviceInfos.Count == 1)
+            //        {
+            //            CallQAM_UI(this);
+            //        }
+            //        if (deviceInfos != null && deviceInfos.Count > 1)
+            //        {
+            //            QAMClose();
+            //        }
+            //        if (_IsZoomScreenShareActive)
+            //        {
+            //            QAMHide();
+            //        }
+            //        else
+            //        {
+            //            QAMShow();
+            //        }
+            //    }
+            //}
+            //else
+            //{
+            //    QAMClose();
+            //}
+
             writelog($"HandleQAM done");
         }
-        private void ZoomChanged(object sender, ZoomChangedArgs e)
+
+        private void HandleQAMEvent(string msg)
         {
-            writelog($"[DeviceManager] IsZoomScreenShareActiveChanged e == null: {e == null}");
-            if (e != null)
+            eventMsg = EventMsg.CreateEventObjectFromEventMsg(msg);
+
+            if (null == eventMsg)
+                return;
+
+            switch (eventMsg.EventType)
             {
-                writelog($"[DeviceManager] IsZoomScreenShareActiveChanged e.Zoom: {e.Zoom}");
+                case "Webcam_ZoomChanged":
+                    if (!int.TryParse(eventMsg.NewValue, out currentZoomValue))
+                        currentZoomValue = -1;
+
+                    break;
+
+                case "Webcam_IsZoomMeetingActiveChanged":
+                    if (!bool.TryParse(eventMsg.NewValue, out _IsZoomMeetingActive))
+                        _IsZoomMeetingActive = false;
+
+                    break;
+
+                case "Webcam_IsZoomScreenShareActiveChanged":
+                    if (!bool.TryParse(eventMsg.NewValue, out _IsZoomScreenShareActive))
+                        _IsZoomScreenShareActive = false;
+
+                    break;
+
+                case "Webcam_ZoomMeetingTypeChanged":
+                    int type = (int)ZoomMeetingType.ZOOM_MEETING_TYPE_UNKNOW;
+
+                    if (int.TryParse(eventMsg.NewValue, out type))
+                        _ZoomMeetingType = (ZoomMeetingType)type;
+                    else
+                        _ZoomMeetingType = ZoomMeetingType.ZOOM_MEETING_TYPE_UNKNOW;
+
+                    break;
+
+                default:
+                    break;
             }
+
+            HandleQAM();
         }
-        private void ZoomMeetingTypeChanged(object sender, ZoomMeetingTypeChangedArgs e)
-        {
-            writelog($"[DeviceManager] ZoomMeetingTypeChanged e == null: {e == null}");
-            if (e != null)
-            {
-                writelog($"[DeviceManager] ZoomMeetingTypeChanged e.ZoomMeetingType: {e.ZoomMeetingType}");
-                _ZoomMeetingType = (ZoomMeetingType)e.ZoomMeetingType;
-            }
-        }
-        private void IsZoomMeetingActiveChanged(object sender, IsZoomMeetingActiveChangedArgs e)
-        {
-            writelog($"[DeviceManager] IsZoomMeetingActiveChanged e == null: {e == null}");
-            if (e != null)
-            {
-                writelog($"[DeviceManager] IsZoomMeetingActiveChanged e.IsZoomMeetingActive: {e.IsZoomMeetingActive}");
-                _IsZoomMeetingActive = e.IsZoomMeetingActive;
-            }
-        }
-        private void IsZoomScreenShareActiveChanged(object sender, IsZoomScreenShareActiveChangedArgs e)
-        {
-            writelog($"[DeviceManager] IsZoomScreenShareActiveChanged e == null: {e == null}");
-            if (e != null)
-            {
-                writelog($"[DeviceManager] IsZoomScreenShareActiveChanged e.IsZoomScreenShareActive: {e.IsZoomScreenShareActive}");
-                _IsZoomScreenShareActive = e.IsZoomScreenShareActive;
-            }
-        }
+
+        //Marked by Derek 1125 because they had covered by WebcamEventHandler
+        //private void ZoomChanged(object sender, ZoomChangedArgs e)
+        //{
+        //    writelog($"[DeviceManager] IsZoomScreenShareActiveChanged e == null: {e == null}");
+        //    if (e != null)
+        //    {
+        //        writelog($"[DeviceManager] IsZoomScreenShareActiveChanged e.Zoom: {e.Zoom}");
+        //    }
+        //}
+        //private void ZoomMeetingTypeChanged(object sender, ZoomMeetingTypeChangedArgs e)
+        //{
+        //    writelog($"[DeviceManager] ZoomMeetingTypeChanged e == null: {e == null}");
+        //    if (e != null)
+        //    {
+        //        writelog($"[DeviceManager] ZoomMeetingTypeChanged e.ZoomMeetingType: {e.ZoomMeetingType}");
+        //        _ZoomMeetingType = (ZoomMeetingType)e.ZoomMeetingType;
+        //    }
+        //}
+        //private void IsZoomMeetingActiveChanged(object sender, IsZoomMeetingActiveChangedArgs e)
+        //{
+        //    writelog($"[DeviceManager] IsZoomMeetingActiveChanged e == null: {e == null}");
+        //    if (e != null)
+        //    {
+        //        writelog($"[DeviceManager] IsZoomMeetingActiveChanged e.IsZoomMeetingActive: {e.IsZoomMeetingActive}");
+        //        _IsZoomMeetingActive = e.IsZoomMeetingActive;
+        //    }
+        //}
+        //private void IsZoomScreenShareActiveChanged(object sender, IsZoomScreenShareActiveChangedArgs e)
+        //{
+        //    writelog($"[DeviceManager] IsZoomScreenShareActiveChanged e == null: {e == null}");
+        //    if (e != null)
+        //    {
+        //        writelog($"[DeviceManager] IsZoomScreenShareActiveChanged e.IsZoomScreenShareActive: {e.IsZoomScreenShareActive}");
+        //        _IsZoomScreenShareActive = e.IsZoomScreenShareActive;
+        //    }
+        //}
         private void QAMCloseEvent(object o, EventArgs e)
         {
             if (_QAM != null)
@@ -9921,7 +10074,9 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 QAM_Position = new Point(_QAM.Left, _QAM.Top);
                 _QAM.Closed -= QAMCloseEvent;
                 _QAM = null;
-                if (_GlobalSettingParam != null && _GlobalSettingParam.GlobalSetting_WidgetSettings != null && _GlobalSettingParam.GlobalSetting_WidgetSettings.EnableQuickAccessWidget_Reminder)
+
+                if (_GlobalSettingParam != null && _GlobalSettingParam.GlobalSetting_WidgetSettings != null
+                    && _GlobalSettingParam.GlobalSetting_WidgetSettings.EnableQuickAccessWidget_Reminder)
                 {
                     ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.QAM);
                 }
@@ -9930,52 +10085,63 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         private void QAMHide()
         {
             writelog($"QAMHide Start");
-            if (_QAM == null)
+
+            if (_QAM != null)
             {
-                writelog($"QAMHide QAMHide go");
+                //writelog($"QAMHide QAMHide go");
                 _QAM.Hide();
-                writelog($"QAMHide QAMHide done");
+                //writelog($"QAMHide QAMHide done");
             }
+
             writelog($"QAMHide done");
         }
-        private void QAMShow()
-        {
-            writelog($"QAMHide Start");
-            if (_QAM == null)
-            {
-                writelog($"QAMHide QAMHide go");
-                _QAM.Show();
-                writelog($"QAMHide QAMHide done");
-            }
-            writelog($"QAMHide done");
-        }
+        //private void QAMShow()
+        //{
+        //    writelog($"QAMShow Start");
+
+        //    if (_QAM != null)
+        //    {
+        //        //writelog($"QAMHide QAMShow go");
+        //        _QAM.Show();
+        //        //writelog($"QAMHide QAMShow done");
+        //    }
+
+        //    writelog($"QAMShow done");
+        //}
         private void QAMClose()
         {
             writelog($"QAMClose Start");
-            if (_QAM == null)
+
+            if (_QAM != null)
             {
-                writelog($"QAMClose _QAM.Close go");
+                //writelog($"QAMClose _QAM.Close go");
                 _QAM.Close();
-                writelog($"QAMClose _QAM.Close done");
+                //writelog($"QAMClose _QAM.Close done");
             }
+
             writelog($"QAMClose done");
         }
+
         private void CallQAM_UI(DeviceMangerPlugin deviceMangerPlugin)
         {
             writelog($"CallQAM_UI: Start");
+
             if (_QAM == null)
             {
-                writelog($"CallQAM_UI: Go");
-                List<DeviceInfo> deviceInfos = GetDevices_WithoutAwait().Result.deviceInfo.FindAll(x => (x.PhysicalDeviceType.Equals(DeviceType.LogicalWebcam) || x.PhysicalDeviceType.Equals(DeviceType.PhysicalWebcam)));
-                writelog($"CallQAM_UI: deviceInfos.Count:{deviceInfos.Count}");
-                if (deviceInfos.Count == 1)
+                //writelog($"CallQAM_UI: Go");
+                //List<DeviceInfo> deviceInfos = GetDevices_WithoutAwait().Result.deviceInfo.FindAll(x => (x.PhysicalDeviceType.Equals(DeviceType.LogicalWebcam) || x.PhysicalDeviceType.Equals(DeviceType.PhysicalWebcam)));
+                //writelog($"CallQAM_UI: deviceInfos.Count:{deviceInfos.Count}");
+                //if (deviceInfos.Count == 1)
                 {
                     writelog($"CallQAM_UI: have Webcam show QAM");
+
                     Thread thread1 = new Thread(() =>
                     {
                         _QAM = new QAMPage(deviceMangerPlugin);
                         _QAM.Closed += QAMCloseEvent;
-                        if (QAM_Position != null && (QAM_Position.X != 0 && QAM_Position.Y != 0))
+
+                        //if (QAM_Position != null && (QAM_Position.X != 0 && QAM_Position.Y != 0))
+                        if (QAM_Position.X != 0 && QAM_Position.Y != 0)
                         {
                             _QAM.Top = QAM_Position.Y;
                             _QAM.Left = QAM_Position.X;
@@ -9984,6 +10150,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         {
                             float scaleFactorX = 1;
                             float scaleFactorY = 1;
+
                             using (Graphics graphics = Graphics.FromHwnd(IntPtr.Zero))
                             {
                                 float dpiX = graphics.DpiX;
@@ -9992,16 +10159,22 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                 scaleFactorX = dpiX / logicalDpi;
                                 scaleFactorY = dpiY / logicalDpi;
                             }
+
                             _QAM.Top = (Screen.PrimaryScreen.Bounds.Height / scaleFactorX / 2) - (_QAM.Height / scaleFactorX / 2);
                             _QAM.Left = 0;
                         }
+
                         _QAM.Dispatcher.Invoke(() => _QAM.Show());
                         Dispatcher.Run();
                     });
+
                     thread1.SetApartmentState(ApartmentState.STA);
                     thread1.Start();
                 }
             }
+            else
+                _QAM.Show();
+
             writelog($"CallQAM_UI: done");
         }
 
@@ -10146,7 +10319,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                         }).ConfigureAwait(false);
                                         ////1117 Bruce 不用自動旋轉把下兩行註解
                                         //if (displayDeviceNumChange && _AllInfoMonitors.Count > 0)
-                                        _DisplayManagerPlugin.SetDisplayOrientation(_AllInfoMonitors).Wait();
+                                        //_DisplayManagerPlugin.SetDisplayOrientation(_AllInfoMonitors).Wait();
 
                                         writelog("[DeviceMangerPlugin] SystemEvents_DisplaySettingsChanged() SetDisplayOrientation finish ...");
 
@@ -10239,12 +10412,12 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             EventHandler<DisplaychangedEventArgs> handler = Displaychanged;
             //if (handler != null)
             //    handler.Invoke(this, e);
-            if (_DisplayManagerPlugin != null)
-            {
-                //displayInOut = false;
-                _DisplayManagerPlugin.SetDisplayOrientation(e.monitors).Wait();
-                //displayInOut = true;
-            }
+            //if (_DisplayManagerPlugin != null)
+            //{
+            //    displayInOut = false;
+            //    _DisplayManagerPlugin.SetDisplayOrientation(e.monitors).Wait();
+            //    displayInOut = true;
+            //}
             DeviceChangedEventArgs arg = new DeviceChangedEventArgs();
             arg.changedProperty = "DisplayChanged";
             arg.type = DeviceChangedType.NotifyOnly;
@@ -10257,7 +10430,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 var Cancellation = new CancellationTokenSource();
                 var CancellationToken = Cancellation.Token;
                 _NKVMPlugin.UpdateMonitorInfo(_AllInfoMonitors, CancellationToken);
-                SupportedNKVMMonitors();
+                //SupportedNKVMMonitors();
             }
 
             if (_AllInfoMonitors != null && _AllInfoMonitors.Count > 0)
@@ -10455,7 +10628,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     //    SupportedNKVMMonitors();
                     //}
                     _NKVMPlugin.UpdateMonitorInfo(_AllInfoMonitors, CancellationToken);
-                    SupportedNKVMMonitors();
+                    //SupportedNKVMMonitors();
                 }
             }
         }
@@ -11179,9 +11352,9 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
                 foreach (var _InfoMonitors in _AllInfoMonitors)
                 {
-                    //Check if actived monitor has its color preset section in config file
+                    //Check if actived monitor has its color preset section in config file                   
                     if (_InfoMonitors.edid.ModelName.Trim().IndexOf(config.ModelName.Trim()) >= 0 &&
-                         _InfoMonitors.edid.SerialNumber.Trim() == config.SerialNumber.Trim())
+                        (_InfoMonitors.edid.SerialNumber.Trim() == config.SerialNumber.Trim() || _InfoMonitors.edid.ServiceTag.Trim() == config.ServiceTag.Trim()) )
                     {
                         if (config.RunType == (int)ColorPresetRunType.Auto)
                         {
@@ -11221,6 +11394,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
             writelog("CheckAutoColorManagementEnableOnStartedCondition, Enter");
 
+
             List<ColorPresetSettings> appconfigs = ReadColorPresetSettings().Result;
 
             foreach (var config in appconfigs)
@@ -11234,9 +11408,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
                 foreach (var _InfoMonitors in _AllInfoMonitors)
                 {
+                    //DownloadICCData(_InfoMonitors);
+
                     //Check if actived monitor has its color preset section in config file
                     if (_InfoMonitors.edid.ModelName.Trim().IndexOf(config.ModelName.Trim()) >= 0 &&
-                         _InfoMonitors.edid.SerialNumber.Trim() == config.SerialNumber.Trim())
+                         (_InfoMonitors.edid.SerialNumber.Trim() == config.SerialNumber.Trim() || _InfoMonitors.edid.ServiceTag.Trim() == config.ServiceTag.Trim()) )
                     {
                         if (config.ColorManagement_Status == (int)ColorManagementStatus.Off)
                         {
@@ -11278,6 +11454,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                             break;
                         }
                     }
+                    
                 }
 
                 writelog("CheckAutoColorManagementEnableOnStartedCondition, exit(break) for foreach (var _InfoMonitors in _AllInfoMonitors)");
@@ -11336,7 +11513,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                             //CheckUODFWUInfoPackage();
                             //load hotkeysetting
                             //ReloadHotkeyConfigData();
-                            ToNKVM_SupportedMonitorList();
+                            //ToNKVM_SupportedMonitorList();
                             //ToNKVM_initHotKeys();
                         }
 
@@ -11460,7 +11637,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         //_NKVMPluginCondition = pluginCondition;
                         _NKVMPlugin.NKVMCLIEvent += NKVMCLIEvent;
                         _NKVMPlugin.NKVMSetHotkey += NKVMSetHotkey;
-                        ToNKVM_SupportedMonitorList();
+                        //ToNKVM_SupportedMonitorList();
                         //ToNKVM_initHotKeys();
                     }
                     else if (pluginCondition is PluginStartedCondition)
@@ -11469,7 +11646,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         //_NKVMPluginCondition = pluginCondition;
                         _NKVMPlugin.NKVMCLIEvent += NKVMCLIEvent;
                         _NKVMPlugin.NKVMSetHotkey += NKVMSetHotkey;
-                        ToNKVM_SupportedMonitorList();
+                        //ToNKVM_SupportedMonitorList();
                         //ToNKVM_initHotKeys();
                     }
                 }
@@ -11560,7 +11737,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         //_DTPProxyPlugin.IsZoomScreenShareActive_Notify += IsZoomScreenShareActiveChanged;
 
                         //Derek 1119
-                        _DTPProxyPlugin.WebcamEventHandler += _DTPProxyPlugin_WebcamEventHandler;
+                        _DTPProxyPlugin.DTPEventHandler += _DTPProxyPlugin_DTPEventHandler;
                     }
                     else if (pluginCondition is PluginStartedCondition)
                     {
@@ -11577,7 +11754,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         //_DTPProxyPlugin.IsZoomScreenShareActive_Notify += IsZoomScreenShareActiveChanged;
 
                         //Derek 1119
-                        _DTPProxyPlugin.WebcamEventHandler += _DTPProxyPlugin_WebcamEventHandler;
+                        _DTPProxyPlugin.DTPEventHandler += _DTPProxyPlugin_DTPEventHandler;
                     }
                 }
             });
@@ -12112,6 +12289,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         if (isCapsLockOn)
                         {
                             ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.CapsLock, true);
+                            //ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.BatteryLow, OSDType_Device.Headset, "Content");
+                            //ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.CollaborationNotAvailable, OSDType_Device.Keyboard, "Collaboration controls are not available during multiple conference calls");
                         }
                         else
                         {
@@ -13309,34 +13488,50 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         public Task<bool> SavePowerNapSetting(PowerNapSetting powerNapSetting)
         {
+            Debug.WriteLine($"{powerNapSetting.ModelName}:{powerNapSetting.SerialNumber}:{powerNapSetting.ServiceTag}:{powerNapSetting.Status}:{powerNapSetting.RunType}");
             List<PowerNapSetting> saveList = new List<PowerNapSetting>();
-            List<PowerNapSetting> allSettings = ReadPowerNapSettings().Result;
-            allSettings.RemoveAll(x => x.SerialNumber == null);
-            saveList.Add(powerNapSetting);
+            bool ret = false;
+            List<DDPMMonitorSettings> monitorSettings = _SettingsPlugin.ReloadMonitorSettings(powerNapSetting.ModelName).Result;
+            if (monitorSettings != null)
+            {
+                DDPMMonitorSettings updateSettings = monitorSettings.FirstOrDefault(x => x.ServiceTag.Equals(powerNapSetting.ServiceTag));
+                if (updateSettings != null)
+                {
+                    updateSettings.PowerNap = powerNapSetting;
+                    ret = _SettingsPlugin.WriteMonitorSettings(powerNapSetting.ModelName, monitorSettings).Result;
+                }
+            }
+            else
+            {
+                writelog($"@ SavePowerNapSetting: ReloadMonitorSettings(model={powerNapSetting.ModelName}) return null.");
+                ret = false;
+            }
+
+            /*saveList.Add(powerNapSetting);
             foreach (PowerNapSetting setting in allSettings)
             {
                 if (saveList.Any(x => x.SerialNumber.Equals(setting.SerialNumber)))
                     continue;
                 saveList.Add(setting);
             }
-            WritePowerNapSettings(saveList);
-
+            WritePowerNapSettings(saveList);*/
             if (powerNapSetting.RunType == PowerNapType.Off)
             {
                 //only save btn status
-                return Task.FromResult(true);
+                ret = true;
             }
-
-            //reset powerNaptimer and status
-            _PowerNapTimer.Stop();
-            _powerNapJobQueue.Clear();
-            _screenSaver = false;
-            _PowerNapTimer.Start();
-
+            else
+            {
+                //reset powerNaptimer and status
+                _PowerNapTimer.Stop();
+                _powerNapJobQueue.Clear();
+                _screenSaver = false;
+                _PowerNapTimer.Start();
+            }
             //Telementry Collection
             var rt = false;
             var Displaysettings_Function = new Displaysettings_Function();
-            MonitorInfo monitorInfo = _AllInfoMonitors.SingleOrDefault(x => x.edid.SerialNumber.Equals(powerNapSetting.SerialNumber));
+            MonitorInfo monitorInfo = _AllInfoMonitors.FirstOrDefault(x => x.edid.ServiceTag.Equals(powerNapSetting.ServiceTag));
             if (monitorInfo != null)
             {
                 if (powerNapSetting.Status)
@@ -13365,14 +13560,53 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         writelog("[DeviceMangerPlugin] [Telementry] Send Telementry for PowerNap Fail ...");
                 }
             }
-            return Task.FromResult(true);
+            return Task.FromResult(ret);
         }
 
         public Task<List<PowerNapSetting>> ReadPowerNapSettings()
         {
-            List<PowerNapSetting> read = _SettingsPlugin.ReadPowerNapSettings().Result;
-            read.RemoveAll(x => x.SerialNumber == null);
-            return Task.FromResult(read);
+            List<PowerNapSetting> allSettings = _SettingsPlugin.ReadPowerNapSettings().Result;
+            List<PowerNapSetting> saveList = new List<PowerNapSetting>();
+            //update old place powerNap settings
+            if (allSettings != null && allSettings.Count > 0)
+            {
+                foreach (PowerNapSetting powerNap in allSettings)
+                {
+                    List<DDPMMonitorSettings> monitorSettings = _SettingsPlugin.ReloadMonitorSettings(powerNap.ModelName).Result;
+                    if (monitorSettings != null)
+                    {
+                        MonitorInfo monitorInfo1 = _AllInfoMonitors.FirstOrDefault(x => x.edid.SerialNumber.Equals(powerNap.SerialNumber));
+                        if (monitorInfo1 != null)
+                        {
+                            DDPMMonitorSettings updateSettings = monitorSettings.FirstOrDefault(x => x.ServiceTag.Equals(monitorInfo1.edid.ServiceTag));
+                            if (updateSettings != null)
+                            {
+                                updateSettings.PowerNap = powerNap;
+                                bool s = _SettingsPlugin.WriteMonitorSettings(powerNap.ModelName, monitorSettings).Result;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        saveList.Add(powerNap);
+                    }
+                }
+                WritePowerNapSettings(saveList);
+            }
+            //return all
+            List<PowerNapSetting> retList = new List<PowerNapSetting>();
+            foreach (var mo in _AllInfoMonitors)
+            {
+                List<DDPMMonitorSettings> result = _SettingsPlugin.ReloadMonitorSettings(mo.modelName).Result;
+                foreach (var item in result)
+                {
+                    if (item.PowerNap != null)
+                    {
+                        retList.Add(item.PowerNap);
+                    }
+                }
+            }
+            return Task.FromResult(retList);
         }
 
         #region InputSource
@@ -13649,7 +13883,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 if (config != null)
                 {
                     _SupportedMonitorList = config.UserSettings.SupportedMonitorList;
-                    _NKVMPlugin.ToNKVM_SupportedMonitorList(_SupportedMonitorList);
+                    //_NKVMPlugin.ToNKVM_SupportedMonitorList(_SupportedMonitorList);
                 }
             }
         }
@@ -14643,6 +14877,35 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                             else
                                 return Task.CompletedTask;
                         }
+                    case OSDType.CollaborationNotAvailable:
+                        {
+                            if (Device is OSDType_Device.Headset)
+                            {
+                                if (!string.IsNullOrWhiteSpace(Content))
+                                    _showosd(monitorInfo, OSDType.CollaborationNotAvailable, OSDType_Device.Headset, Content);
+                                else
+                                    writelog("[_showosd*******] Content error can't be NullOrWhiteSpace");
+                                return Task.CompletedTask;
+                            }
+                            else if (Device is OSDType_Device.Keyboard)
+                            {
+                                if (!string.IsNullOrWhiteSpace(Content))
+                                    _showosd(monitorInfo, OSDType.CollaborationNotAvailable, OSDType_Device.Keyboard, Content);
+                                else
+                                    writelog("[_showosd*******] Content error can't be NullOrWhiteSpace");
+                                return Task.CompletedTask;
+                            }
+                            else if (Device is OSDType_Device.Mouse)
+                            {
+                                if (!string.IsNullOrWhiteSpace(Content))
+                                    _showosd(monitorInfo, OSDType.CollaborationNotAvailable, OSDType_Device.Mouse, Content);
+                                else
+                                    writelog("[_showosd*******] Content error can't be NullOrWhiteSpace");
+                                return Task.CompletedTask;
+                            }
+                            else
+                                return Task.CompletedTask;
+                        }
                     default:
                         return Task.CompletedTask;
                 }
@@ -15092,6 +15355,50 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                         }
                                         break;
 
+                                    case OSDType.QAM:
+                                        {
+                                            //if (State)
+                                            {
+                                                try
+                                                {
+                                                    _OSD_Controler.QAMHotKeyWin_CloseWindow();
+                                                    _OSD_Controler.QAMHotKeyWin_ShowWindow((sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX));
+                                                }
+                                                catch (Exception ex)
+                                                {
+                                                    writelog($"[_showosd] ERROR - OSDType.QAM: {ex.Message}, State:{State}");
+                                                }
+                                            }
+                                            //else
+                                            //{
+                                            //    try
+                                            //    {
+                                            //        _OSD_Controler.QAMHotKeyWin_CloseWindow();
+                                            //        _OSD_Controler.QAMHotKeyWin_ShowWindow((sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX));
+                                            //    }
+                                            //    catch (Exception ex)
+                                            //    {
+                                            //        writelog($"[_showosd] ERROR - OSDType.QAM: {ex.Message}, State:{State}");
+                                            //    }
+                                            //}
+                                        }
+                                        break;
+                                    case OSDType.CollaborationNotAvailable:
+                                        {
+                                            if (_DeviceType is OSDType_Device.Keyboard)
+                                            {
+                                                try
+                                                {
+                                                    _OSD_Controler.CollaborationNotAvailableWin_CloseWindow();
+                                                    _OSD_Controler.CollaborationNotAvailableWin_ShowWindow(Content, (sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX));
+                                                }
+                                                catch (Exception ex)
+                                                {
+                                                    writelog($"[_showosd] ERROR - OSDType_Device.Keyboard: {ex.Message}");
+                                                }
+                                            }
+                                        }
+                                        break;
                                     default:
                                         break;
                                 }
