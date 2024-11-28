@@ -145,7 +145,7 @@ namespace NetworkKVM.Plugins
 
                 //means unplug all connected dell monitors
                 //Call Func: OnMonitorUnPlug(_AllInfoMonitors);
-                _SupportedMonitors = GetSupportedNKVM().Result;
+                //_SupportedMonitors = GetSupportedNKVM().Result;
                 if (pipeServer.IsConnected)
                 {
                     MonitorPlug();
@@ -161,7 +161,7 @@ namespace NetworkKVM.Plugins
                     //means plugin 1 or more monitor in
                     _logs.DebugMsg("[NetworkKVM] monitor 0 -> 1");
                     //Call Func: OnMonitorPlugIn(List<MonitorInfo> mos);
-                    _SupportedMonitors = GetSupportedNKVM().Result;
+                    //_SupportedMonitors = GetSupportedNKVM().Result;
                     _logs.DebugMsg("[NetworkKVM] NKVMState:" + NKVMState);
                     //if (NKVMState)
                     //{
@@ -169,8 +169,9 @@ namespace NetworkKVM.Plugins
                     {
                         if (pipeServer.IsConnected)
                         {
-                            ResponseSupportedMonitor();
+                            //ResponseSupportedMonitor();
                             MonitorPlug();
+                            OnNKVM();
                         }
                         else
                         {
@@ -193,7 +194,7 @@ namespace NetworkKVM.Plugins
                     if (unplug.Count > 0)//means unplug
                     {
                         //Call Func: OnMonitorUnPlug(unplug);
-                        _SupportedMonitors = GetSupportedNKVM().Result;
+                        //_SupportedMonitors = GetSupportedNKVM().Result;
                         if (pipeServer.IsConnected)
                         {
                             MonitorPlug();
@@ -214,11 +215,12 @@ namespace NetworkKVM.Plugins
                     if (plugin.Count > 0)//means plugin
                     {
                         //Call Func: OnMonitorPlugIn(plugin);
-                        _SupportedMonitors = GetSupportedNKVM().Result;
+                        //_SupportedMonitors = GetSupportedNKVM().Result;
                         if (pipeServer.IsConnected)
                         {
-                            ResponseSupportedMonitor();
+                            //ResponseSupportedMonitor();
                             MonitorPlug();
+                            OnNKVM();
                         }
                         else
                         {
@@ -252,7 +254,7 @@ namespace NetworkKVM.Plugins
 
         public Task ToNKVM_SupportedMonitorList(List<string> supportedMonitorList)
         {
-            _SupportedMonitors = supportedMonitorList;
+            //_SupportedMonitors = supportedMonitorList;
             return Task.CompletedTask;
         }
 
@@ -546,6 +548,10 @@ namespace NetworkKVM.Plugins
                     _logs.DebugMsg("[NetworkKVM] SetVCPNotify value : " + value.ToString());
                     if (!isSetVCP || (isSetVCP && lockVCP != vcpcode))
                     {
+                        if (vcpcode == 0x60 && value == 0)
+                        {
+                            return Task.CompletedTask;
+                        }
                         SET_VCP_NOTIFY set_VCP_NOTIFY = new SET_VCP_NOTIFY();
                         set_VCP_NOTIFY.MonitorIndex = monitorInfo.Index;
                         set_VCP_NOTIFY.VcpCode = vcpcode;
@@ -1496,6 +1502,7 @@ namespace NetworkKVM.Plugins
             catch
             {
                 _logs.DebugMsg("[NetworkKVM] CreateNamedPipe_init is error");
+                Disconnect();
             }
         }
 
@@ -1513,7 +1520,7 @@ namespace NetworkKVM.Plugins
 
                 pipeServer = NamedPipeServerStreamAcl.Create(namedpipeName,
                                                             PipeDirection.InOut,
-                                                            1,
+                                                            NamedPipeServerStream.MaxAllowedServerInstances,
                                                             PipeTransmissionMode.Byte,
                                                             PipeOptions.Asynchronous | PipeOptions.WriteThrough,
                                                             0,
@@ -1536,6 +1543,7 @@ namespace NetworkKVM.Plugins
             catch
             {
                 _logs.DebugMsg("[NetworkKVM] CreateNamedPipe is error");
+                Disconnect();
             }
         }
 
@@ -1556,7 +1564,8 @@ namespace NetworkKVM.Plugins
                     MonitorPlug().Wait();
                     isMonintorChange = false;
                 }
-                ResponseSupportedMonitor().Wait();
+                //ResponseSupportedMonitor().Wait();
+                OnNKVM().Wait();
 #if RELEASE
             }
             else

@@ -43,7 +43,7 @@ namespace DDPM.UI.Plugin.SettingsPlugin
         /// <summary>
         /// This property is required by the IConsolePagePlugin. It specifies the text to display when the page is shown.
         /// </summary>
-        public string HeaderText => "DDPM Settingspage";
+        public string HeaderText => "Settings Page";
 
         /// <summary>
         /// Page Type
