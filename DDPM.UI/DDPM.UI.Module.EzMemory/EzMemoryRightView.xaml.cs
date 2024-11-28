@@ -19,6 +19,7 @@ using Microsoft;
 using String = System.String;
 using static DDPM.UI.Common.User32;
 using DDPM.UI.Common.ViewModels;
+using DDPM.UI.Common.Method;
 
 namespace DDPM.UI.Module.EzMemory
 {
@@ -35,6 +36,7 @@ namespace DDPM.UI.Module.EzMemory
         private readonly IConsole _console;
         private readonly ILog _log;
         private HomeDevice _homeDeviceSelect;//紀錄RightView切換CB的螢幕
+        private Debouncer _debouncerEmRightView;
         #endregion Private Members
 
         public EzMemoryRightView(DisplayViewModel vmDisplay)
@@ -61,6 +63,31 @@ namespace DDPM.UI.Module.EzMemory
             _vm.IsVertical = (currentScreen != null) ? (currentScreen.Bounds.Width < currentScreen.Bounds.Height) : false;
 
             InitListViewItems();
+
+            _debouncerEmRightView = new Debouncer(2000, ExecuteDebouncedAction);
+        }
+
+        private void ExecuteDebouncedAction(object param)
+        {
+            if (param is string mode)
+            {
+                switch (mode)
+                {
+                    case "EzMemoryStart_Click":
+                        EzMemoryStartClick();
+                        break;
+                    //------------------------------------------------------------------------------------------
+                    default:
+                        break;
+                }
+            }
+        }
+
+        private void EzMemoryStart_Click(object sender, RoutedEventArgs e)
+        {
+            _log.Info($"[EzMemoryRightView] EzMemoryStart_Click ... debouncer ... in");
+            _debouncerEmRightView.Debounce("EzMemoryStart_Click");
+            _log.Info($"[EzMemoryRightView] EzMemoryStart_Click ... debouncer ... out");
         }
 
         /// <summary>
@@ -68,11 +95,11 @@ namespace DDPM.UI.Module.EzMemory
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void EzMemoryStart_Click(object sender, RoutedEventArgs e)
+        private void EzMemoryStartClick()
         {
             try
             {
-                _log.Error($"[EzMemoryRightView] EzMemoryStart_Click Exception ... in");
+                _log.Info($"[EzMemoryRightView] EzMemoryStartClick ... in");
 
                 List<EAProfileDDPM> startEAProfileDDPM = DdpmCommonHelper.DeviceManagerSA.ReadUserEAProfileDDPM().Result;
                 List<object> rc = new List<object>();

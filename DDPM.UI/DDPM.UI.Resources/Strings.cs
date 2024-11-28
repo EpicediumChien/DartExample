@@ -20,7 +20,15 @@ namespace DDPM.UI.Common
             string str = resManager.GetString(key, CultureInfo.InstalledUICulture) ?? resManager.GetString(key, CultureInfo.InvariantCulture) ?? "";
             return System.Text.RegularExpressions.Regex.Unescape(str);
         }
+        //private static string GetString(string key, string culture = "en-US")
+        //{
+        //    CultureInfo cultureInfo = CultureInfo.CreateSpecificCulture(culture);
 
+        //    string str = resManager.GetString(key, cultureInfo) ??
+        //                 resManager.GetString(key, CultureInfo.InvariantCulture) ?? "";
+
+        //    return System.Text.RegularExpressions.Regex.Unescape(str);
+        //}
         public static readonly string AdaptiveLight = GetString("AdaptiveLight");
         public static readonly string Manual = GetString("Manual");
         public static readonly string On = GetString("On");
