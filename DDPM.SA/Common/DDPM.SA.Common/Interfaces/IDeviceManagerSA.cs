@@ -659,6 +659,8 @@ namespace DDPM.SA.Common
         event EventHandler<DeviceChangedEventArgs> DeviceChanged;
         int GetCurrentPollingRate();
 
+        int GetCurrentPollingRate();
+
         #region public for IT lock event
 
         //IT lock
