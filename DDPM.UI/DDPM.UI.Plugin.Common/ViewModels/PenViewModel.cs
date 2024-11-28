@@ -627,12 +627,17 @@ namespace DDPM.UI.Plugin.ViewModels
                 SelectedButton = "";
             }
         }
-        public void RestoreToDefault()
+        public bool RestoreToDefault()
         {
-            PenAction.RestoreToDefault();
-            RefreshButtonInfo();
-            IsRestoreEnable = false;
-            OnPropertyChanged(nameof(IsRestoreEnable));
+            if (PenAction.RestoreToDefault())
+            {
+                RefreshButtonInfo();
+                IsRestoreEnable = false;
+                OnPropertyChanged(nameof(IsRestoreEnable));
+                PenAction = (PenActions)ActionList.ImportActionList(eDeviceCategory.Pen, "PEN");
+                return true;
+            }
+            return false;
         }
 
         public void RefreshButtonInfo()
@@ -754,7 +759,8 @@ namespace DDPM.UI.Plugin.ViewModels
             {
                 { "menuIndex", index },
                 { "actionId", id },
-                { "actionName", PenAction.RadialLabels[index] }
+                { "actionName", PenAction.RadialLabels[index] },
+                { "menuLabel", PenAction.RadialLabels[index] }
             };
             byte[] newValue = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(jobj));
             DdpmCommonHelper.DeviceManagerSA!.SetMenuSinglePressSetting(itemID, newValue);

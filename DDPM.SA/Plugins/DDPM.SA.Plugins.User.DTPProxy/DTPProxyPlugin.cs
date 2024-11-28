@@ -29,6 +29,9 @@ using Newtonsoft.Json.Linq;
 using System.Text;
 using DPeMPublic.Common.Enums;
 using System.Text.Json;
+using Google.Protobuf.WellKnownTypes;
+using System.IO;
+using Type = System.Type;
 
 namespace DDPM.SA.Plugins.User.DTPProxy
 {
@@ -2354,7 +2357,9 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 if (await GetCommodityInterfaceInstanceAsync(_penMethodInfo) is ICommodity commodity)
                 {
                     var value = GetPropertyValue(_penInterfaceType, commodity, "MenuSinglePressSetting");
-                    return Encoding.UTF8.GetString((byte[])value);
+                    var str = Encoding.UTF8.GetString((byte[])value);
+                    Debug.WriteLine(str);
+                    return str;
                 }
                 else
                 {
@@ -2574,7 +2579,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
         public async Task SetEraserSinglePressSetting(string itemID, byte[] newValue)
         {
-            _itemID = new ItemId(itemID);
+            _itemID = new ItemId(PenItemID0);
 
             if (_penMethodInfo != null)
             {
@@ -2778,8 +2783,63 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 writelog($"[SetTipSensitivity]Could not retrieve the Commodity Interface for the  {_itemID}  item. _penMethodInfo is null");
             }
         }
-        public async Task ResetToDefault_Pen()
+        public async Task<bool> RestoreToDefaultPen()
         {
+            if (!IsDTPReady)
+                return false;
+
+            byte[] newValue = Encoding.UTF8.GetBytes($"{{\"actionId\":73,\"actionName\":\"\"}}");
+            await SetEraserSinglePressSetting(PenItemID0, newValue);
+            newValue = Encoding.UTF8.GetBytes($"{{\"actionId\":90,\"actionName\":\"\"}}");
+            await SetEraserDoublePressSetting(PenItemID0, newValue);
+            newValue = Encoding.UTF8.GetBytes($"{{\"actionId\":75,\"actionName\":\"\"}}");
+            await SetEraserLongPressSetting(PenItemID0, newValue);
+            newValue = Encoding.UTF8.GetBytes($"{{\"actionId\":27,\"actionName\":\"\"}}");
+            await SetSideTopSwitchSinglePressSetting(PenItemID0, newValue);
+            newValue = Encoding.UTF8.GetBytes($"{{\"actionId\":26,\"actionName\":\"\"}}");
+            await SetSideBottomSwitchSinglePressSetting(PenItemID0, newValue);
+            await SetTipSensitivity(PenItemID0, 3);
+            await SetTiltSensitivity(PenItemID0, 1);
+
+            await RestoreRadialMenuToDefault();
+
+            var filePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), @$"Dell\Dell Display and Peripheral Manager\Actions\pen.json");
+            if (File.Exists(filePath))
+            {
+                try
+                {
+                    File.Delete(filePath);
+                }
+                catch (Exception ex)
+                {
+                    writelog($"[DTPProxyPlugin] [RestoreToDefaultPen] Delete setting file failed: {ex}");
+                }
+            }
+            return true;
+        }
+        public async Task<bool> RestoreRadialMenuToDefault()
+        {
+            if (!IsDTPReady)
+                return false;
+
+            byte[] newValue = Encoding.UTF8.GetBytes($"{{\"menuIndex\":0,\"actionId\":82,\"actionName\":\"\"}}");
+            await SetMenuSinglePressSetting(PenItemID0, newValue);
+            newValue = Encoding.UTF8.GetBytes($"{{\"menuIndex\":1,\"actionId\":79,\"actionName\":\"\"}}");
+            await SetMenuSinglePressSetting(PenItemID0, newValue);
+            newValue = Encoding.UTF8.GetBytes($"{{\"menuIndex\":2,\"actionId\":86,\"actionName\":\"\"}}");
+            await SetMenuSinglePressSetting(PenItemID0, newValue);
+            newValue = Encoding.UTF8.GetBytes($"{{\"menuIndex\":3,\"actionId\":80,\"actionName\":\"\"}}");
+            await SetMenuSinglePressSetting(PenItemID0, newValue);
+            newValue = Encoding.UTF8.GetBytes($"{{\"menuIndex\":4,\"actionId\":83,\"actionName\":\"\"}}");
+            await SetMenuSinglePressSetting(PenItemID0, newValue);
+            newValue = Encoding.UTF8.GetBytes($"{{\"menuIndex\":5,\"actionId\":85,\"actionName\":\"\"}}");
+            await SetMenuSinglePressSetting(PenItemID0, newValue);
+            newValue = Encoding.UTF8.GetBytes($"{{\"menuIndex\":6,\"actionId\":81,\"actionName\":\"\"}}");
+            await SetMenuSinglePressSetting(PenItemID0, newValue);
+            newValue = Encoding.UTF8.GetBytes($"{{\"menuIndex\":7,\"actionId\":84,\"actionName\":\"\"}}");
+            await SetMenuSinglePressSetting(PenItemID0, newValue);
+            await SetMenuCenterRightClickSetting(PenItemID0, true);
+            return true;
         }
 
         #endregion
