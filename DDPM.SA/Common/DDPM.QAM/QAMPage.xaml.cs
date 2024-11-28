@@ -161,6 +161,7 @@ namespace DDPM.QAM
             ShowDDPM();
             //SendMessageToDDPM(10);
             //Info SA that DDPM launched by QAM
+            DdpmCommonHelper.DeviceManagerSA!.SetIsDDPMLaunchByQAM(true);
             Close_Click(this, null);
         }
 

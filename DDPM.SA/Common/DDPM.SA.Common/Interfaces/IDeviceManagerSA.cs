@@ -657,7 +657,6 @@ namespace DDPM.SA.Common
 
         //public for GUI to get the changes of display and peripherals
         event EventHandler<DeviceChangedEventArgs> DeviceChanged;
-        int GetCurrentPollingRate();
 
         #region public for IT lock event
 
@@ -1213,5 +1212,12 @@ namespace DDPM.SA.Common
         Task<bool> WriteSerializedContentToFile(string filePath, string content);
 
         #endregion GlobalSetting
+
+        #region QAM
+        int GetCurrentPollingRate();
+        void SetIsDDPMLaunchByQAM(bool newValue);
+        bool GetIsDDPMLaunchByQAM();
+        void SetIsDDPMHomepageReady(bool newValue);
+        #endregion
     }
 }

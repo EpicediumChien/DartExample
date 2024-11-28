@@ -219,6 +219,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         private QAMPage _QAM;
         private Point QAM_Position;
+        private bool isDDPMLaunchedByQAM = false;
+        private bool isDDPMHomepageReady = false;
 
         private static CancellationTokenSource _ReGetcancellationTokenSource;
 
@@ -10143,7 +10145,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     Thread thread1 = new Thread(() =>
                     {
                         _QAM = new QAMPage(deviceMangerPlugin);
-                        _QAM.UpdateUINotify += _QAM_UpdateUINotify;
+                        //_QAM.UpdateUINotify += _QAM_UpdateUINotify;
                         _QAM.Closed += QAMCloseEvent;
 
                         //if (QAM_Position != null && (QAM_Position.X != 0 && QAM_Position.Y != 0))
@@ -10189,6 +10191,34 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             OnUIUpdateNotify(e);
         }
 
+        public void SetIsDDPMLaunchByQAM(bool newValue)
+        {
+            isDDPMLaunchedByQAM = newValue;
+        }
+
+        public bool GetIsDDPMLaunchByQAM()
+        {
+            return isDDPMLaunchedByQAM;
+        }
+
+        public void SetIsDDPMHomepageReady(bool newValue)
+        {
+            isDDPMHomepageReady = newValue;
+
+            //info homepage navigate to webcam preview page
+            if (isDDPMLaunchedByQAM)
+            {
+                UpdateUINotify e = new UpdateUINotify();
+                e.UI_Field_Name = "QAMEvent_StartPreview";
+
+                OnUIUpdateNotify(e);
+            }
+        }
+
+        public void DDPMNavigateToWebcamPage()
+        {
+            QAMClose();
+        }
         #endregion
 
         #region Private Methods
