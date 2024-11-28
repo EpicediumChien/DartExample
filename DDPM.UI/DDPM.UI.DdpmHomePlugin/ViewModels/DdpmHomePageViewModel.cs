@@ -83,21 +83,14 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.ViewModels
             get => HomeDevices.Count;
         }
 
-        public double ItemMinWidth
+        public double ScrollViewMaxWidth
         {
             get 
             {
-                return _pictureMinWidth;
+                return _pictureMaxWidth * 4 + _gapMinWidth * 5;
             }
         }
 
-        public double ItemMaxWidth
-        {
-            get
-            {
-                return _pictureMaxWidth;
-            }
-        }
 
         public double MinWidth
         {
