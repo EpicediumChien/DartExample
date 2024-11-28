@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Security.Policy;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -25,6 +26,8 @@ namespace DDPM.QAM
     public partial class QAMPage : Window
     {
         CameraSetting CameraSetting;
+
+        public event EventHandler<UpdateUINotify> UpdateUINotify;
 
         [DllImport("user32.dll", SetLastError = true)]
         [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
@@ -54,15 +57,34 @@ namespace DDPM.QAM
 
             if (OperatingSystem.IsWindows())
             {
-                Process[] processes = Process.GetProcessesByName(processName);
-
-                if (processes.Length > 0)
+                try
                 {
-                    IntPtr mainWindowHandle = processes[0].MainWindowHandle;
-                    // 將窗口最大化
-                    _ShowWindow(mainWindowHandle, SW_SHOWNORMALSW_NORMAL);
-                    // 顯示到前景
-                    _SetForegroundWindow(mainWindowHandle);
+                    Process[] processes = Process.GetProcessesByName(processName);
+
+                    if (processes.Length > 0)
+                    {
+                        IntPtr mainWindowHandle = processes[0].MainWindowHandle;
+                        // 將窗口最大化
+                        _ShowWindow(mainWindowHandle, SW_SHOWNORMALSW_NORMAL);
+                        // 顯示到前景
+                        _SetForegroundWindow(mainWindowHandle);
+                    }
+                    else
+                    {
+                        //string ddpmExePath = @"C:\Program Files\Dell\Dell Display and Peripheral Manager\DDPM.exe";
+                        string debugPath = "D:\\DDPM\\DDPM.UI\\bin\\net8.0-windows10.0.19041.0\\DDPM.exe";
+
+                        DDPM.SA.Common.Settings.DDPMFileSecurity.StartProcessSafely(
+                            null,
+                            new ProcessStartInfo
+                            {
+                                FileName = debugPath,
+                                UseShellExecute = true
+                            });
+                    }
+                }
+                catch
+                {
                 }
             }
         }
@@ -120,18 +142,48 @@ namespace DDPM.QAM
             else
             {
                 CameraSetting = new CameraSetting();
+
                 CameraSetting.Left = this.Left + this.Width;
                 CameraSetting.Top = this.Top;
                 CameraSetting.Width = 288;
                 CameraSetting.Height = 128;
                 CameraSetting.Show();
             }
+
+            QAMPageViewModel vm = DataContext as QAMPageViewModel;
+
+            if (vm != null && vm.CurrentDeviceInfo != null)
+                vm.IsCameraSettingSelected = true;
         }
 
         private void CallDDPM_Click(object sender, MouseButtonEventArgs e)
         {
             ShowDDPM();
+            SendMessageToDDPM(10);
             Close_Click(this, null);
+        }
+
+        private void SendMessageToDDPM(int timeout)
+        {
+            int i = 0;
+
+            while (true)
+            {
+                Thread.Sleep(1000);
+                ++i;
+
+                //wait for homepage is available
+                if (2000 == DdpmCommonHelper.DeviceManagerSA!.GetCurrentPollingRate())
+                {
+                    Thread.Sleep(2000);
+                    OnUpdateUINotify($"QAMEvent_StartPreview[{i}]");
+
+                    break;
+                }
+
+                if (i >= 10)
+                    break;
+            }
         }
 
         private void Grid_MouseDown(object sender, MouseButtonEventArgs e)
@@ -145,6 +197,14 @@ namespace DDPM.QAM
                     CameraSetting.Top = this.Top;
                 }
             }
+        }
+
+        public void OnUpdateUINotify(string msg)
+        {
+            UpdateUINotify e = new UpdateUINotify();
+            e.UI_Field_Name = msg;
+
+            UpdateUINotify?.Invoke(this, e);
         }
     }
 }

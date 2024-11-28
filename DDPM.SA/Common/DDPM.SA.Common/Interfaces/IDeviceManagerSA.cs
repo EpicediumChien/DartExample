@@ -658,6 +658,8 @@ namespace DDPM.SA.Common
         //public for GUI to get the changes of display and peripherals
         event EventHandler<DeviceChangedEventArgs> DeviceChanged;
 
+        int GetCurrentPollingRate();
+
         #region public for IT lock event
 
         //IT lock
