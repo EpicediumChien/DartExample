@@ -460,3 +460,4 @@ testcoverage/
 /DdpmSwUpdater/CommonDll/zh-CN/DDPM.SA.Resources.resources.dll
 /DdpmSwUpdater/CommonDll/zh-TW/DDPM.SA.Resources.resources.dll
 /DdpmSwUpdater/CommonDll/DDPM.SA.Resources.dll
+/DdpmSwUpdater/CommonDll/DDPM.SA.Resources.deps.json

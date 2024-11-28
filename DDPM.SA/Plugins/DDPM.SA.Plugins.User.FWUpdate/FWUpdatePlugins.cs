@@ -785,6 +785,12 @@ namespace DDPM.SA.Plugins.User.FWUpdate
             {
                 _logs.DebugMsg_1(nameof(DownloadAndInstall) + " all start");
                 _IsUITrigger = isUITrigger;
+                List<FWUpdateInfo> temp_FWUpdateInfo = fwUpdateInfos.FindAll(o => o.IsDisplay);
+                //判斷是否有非Display更新，有的話停止DPM
+                if (temp_FWUpdateInfo.Count != fwUpdateInfos.Count)
+                {
+                    StopService();
+                }
                 for (int i = 0; i < fwUpdateInfos.Count; i++)
                 {
                     _logs.DebugMsg_1($"{nameof(DownloadAndInstall)} DeviceName : {fwUpdateInfos[i].DeviceName} Model : {fwUpdateInfos[i].Model} start");
@@ -969,6 +975,11 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                 {
                     CallSaveUpdateInfoPackage?.AsyncFireAndForget(this, _DelayFWUpdateInfoPackage, System.Threading.CancellationToken.None);
                 }
+                //判斷是否有非Display更新，有的話停止DPM
+                if (temp_FWUpdateInfo.Count != fwUpdateInfos.Count)
+                {
+                    StartService();
+                }
                 _isDefer = false;
                 _isForce = false;
                 _IsUITrigger = false;
@@ -983,6 +994,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                 _notificationStr = LangHelper.Instance["Update_failed_due_to_network_error"];
                 NotificationFWupdate(LangHelper.Instance["Error"], _notificationStr);
                 _logs.DebugMsg_1($"{nameof(DownloadAndInstall)} {_fWUpdateInfo.DeviceName} Error : {ex.Message}"); // 輸出錯誤訊息
+                StartService();
                 _isDefer = false;
                 _isForce = false;
                 _IsUITrigger = false;
@@ -1008,7 +1020,15 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                             InstallPaths = installPath,
                             IsDisplay = isOnlyDisplay
                         };
+                        if (!isOnlyDisplay)
+                        {
+                            StopService();
+                        }
                         ret = Install(fWUpdateInfo);
+                        if (!isOnlyDisplay)
+                        {
+                            StartService();
+                        }
                     }
                 }
                 catch (Exception ex)
@@ -1048,6 +1068,62 @@ namespace DDPM.SA.Plugins.User.FWUpdate
             catch (Exception ex)
             {
                 _logs.DebugMsg_1($"{nameof(RestartService)} Error: {ex.Message}");
+            }
+            return Task.FromResult(ret);
+        }
+        public Task<bool> StopService()
+        {
+            bool ret = false;
+            string serviceName = "DPMService";
+            try
+            {
+                using (ServiceController service = new ServiceController(serviceName))
+                {
+                    if (service.Status == ServiceControllerStatus.Running)
+                    {
+                        _logs.DebugMsg_1($"{nameof(StopService)} go");
+                        service.Stop();
+                        service.WaitForStatus(ServiceControllerStatus.Stopped);
+                        _logs.DebugMsg_1($"{nameof(StopService)} done");
+                    }
+                    else
+                    {
+                        _logs.DebugMsg_1($"{nameof(StartService)} service is not Running");
+                    }
+                }
+                ret = true;
+            }
+            catch (Exception ex)
+            {
+                _logs.DebugMsg_1($"{nameof(StopService)} Error: {ex.Message}");
+            }
+            return Task.FromResult(ret);
+        }
+        public Task<bool> StartService()
+        {
+            bool ret = false;
+            string serviceName = "DPMService";
+            try
+            {
+                using (ServiceController service = new ServiceController(serviceName))
+                {
+                    if (service.Status != ServiceControllerStatus.Running)
+                    {
+                        _logs.DebugMsg_1($"{nameof(StartService)} start go");
+                        service.Start();
+                        service.WaitForStatus(ServiceControllerStatus.Running);
+                        _logs.DebugMsg_1($"{nameof(StartService)} start done");
+                    }
+                    else
+                    {
+                        _logs.DebugMsg_1($"{nameof(StartService)} service is Running");
+                    }
+                }
+                ret = true;
+            }
+            catch (Exception ex)
+            {
+                _logs.DebugMsg_1($"{nameof(StartService)} Error: {ex.Message}");
             }
             return Task.FromResult(ret);
         }
