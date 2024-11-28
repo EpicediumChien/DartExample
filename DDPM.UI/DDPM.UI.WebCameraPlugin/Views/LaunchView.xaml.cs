@@ -240,7 +240,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
 
             if( model == null)
             {
-                string log = $"[DDPM.UI.WebCameraPlugin\Views\LaunchView.xaml.cs] CheckUSBtype() model is null";
+                string log = $"[DDPM.UI.WebCameraPlugin\\Views\\LaunchView.xaml.cs] CheckUSBtype() model is null";
                 DdpmCommonHelper.WriteUILog(log);
                 return;
             }
