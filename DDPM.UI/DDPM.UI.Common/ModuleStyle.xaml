@@ -1038,6 +1038,172 @@
     <SolidColorBrush x:Key="LockIcon_Fill"  Color="#FFFFFFFF"/>
     <!-- #endregion LockIcon -->
 
+    <!-- #region Down Arrow -->
+    <Canvas x:Key="DownArrow" Tag="{DynamicResource DefaultTheme_PathColor}" Width="16" Height="16">
+        <Path Data="M0.84961 3.7002L7.99961 10.9002L15.1496 3.7002L15.8496 4.4002L7.99961 12.2502L0.14961 4.4002L0.84961 3.7002Z"
+              Fill="{Binding Tag, RelativeSource={RelativeSource AncestorType=Canvas}}" />
+    </Canvas>
+    <!-- #endregion -->
+
+    <!-- #region Up Arrow -->
+    <Canvas x:Key="UpArrow" Tag="{DynamicResource DefaultTheme_PathColor}" Width="16" Height="16">
+        <Path Data="M8 4.12012L0 12.1201L0.76 12.8801L8 5.64012L15.24 12.8801L16 12.1201L8 4.12012Z"
+              Fill="{Binding Tag, RelativeSource={RelativeSource AncestorType=Canvas}}" />
+    </Canvas>
+    <!-- #endregion -->
+
+    <!-- #region For Mouse -->
+    <SolidColorBrush x:Key="MouseCB_BkColor" Color="#293B4D" />
+    <SolidColorBrush x:Key="MouseCB_HIBkColor" Color="#0672CB" />
+    <ControlTemplate x:Key="MouseComboBoxToggleButtonTemplate" TargetType="ToggleButton">
+        <Grid x:Name="toggleBtnRoot">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <ContentPresenter Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="3,3,23,3" />
+            <ContentControl x:Name="DBIcon" Grid.Column="1" Width="12" Height="12" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,0,11,2"
+                            Content="{StaticResource DownArrow}" />
+        </Grid>
+        <ControlTemplate.Triggers>
+            <Trigger Property="IsChecked" Value="True">
+                <Setter TargetName="DBIcon" Property="Content" Value="{StaticResource UpArrow}" />
+            </Trigger>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter TargetName="toggleBtnRoot" Property="Background" Value="#4CB1B0B0" />
+            </Trigger>
+        </ControlTemplate.Triggers>
+    </ControlTemplate>
+    <ControlTemplate x:Key="MouseComboBoxControlTemplate" TargetType="ComboBox">
+        <Grid x:Name="templateRoot">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+                <RowDefinition Height="7" />
+            </Grid.RowDefinitions>
+            <Popup Name="PART_Popup"
+                   Grid.Row="1"
+                   MinWidth="{Binding ActualWidth, ElementName=templateRoot}"
+                   Margin="0,30,0,0"
+                   AllowsTransparency="True"
+                   Focusable="False"
+                   IsOpen="{Binding IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource Mode=TemplatedParent}}"
+                   Placement="Bottom"
+                   PopupAnimation="Slide">
+                <Border     Name="dropDownBorder"
+                        Margin="0,0,0,0" Padding="0"
+                        Background="{DynamicResource DdpmCB_BkColor}"
+                        BorderBrush="{DynamicResource DdpmCB_BdColor}"
+                        BorderThickness="1"
+                        CornerRadius="4">
+                    <ScrollViewer
+                        x:Name="DropDownScrollViewer"
+                        Margin="2,7"
+                        SnapsToDevicePixels="True"
+                        VerticalScrollBarVisibility="Hidden">
+
+                        <Grid x:Name="grid" RenderOptions.ClearTypeHint="Enabled">
+                            <Canvas
+                                x:Name="canvas"
+                                Width="0"
+                                Height="0"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Top">
+                                <Rectangle
+                                    x:Name="opaqueRect"
+                                    Width="{Binding ActualWidth, ElementName=dropDownBorder}"
+                                    Height="{Binding ActualHeight, ElementName=dropDownBorder}"
+                                    Fill="{Binding Background, ElementName=dropDownBorder}" />
+                            </Canvas>
+
+                            <ItemsPresenter
+                                x:Name="ItemsPresenter"
+                                KeyboardNavigation.DirectionalNavigation="Contained"
+                                SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
+                        </Grid>
+                    </ScrollViewer>
+                </Border>
+            </Popup>
+            <Border
+                Background="{DynamicResource DdpmCB_BkColor}"
+                BorderBrush="{DynamicResource DdpmCB_BdColor}"
+                BorderThickness="1"
+                CornerRadius="4">
+                <Grid>
+                    <!--  Reserved Column 1 space for the up/down arrow  -->
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="32" />
+                    </Grid.ColumnDefinitions>
+                    <ToggleButton
+                        Name="toggleButton"
+                        Grid.ColumnSpan="2"
+                        HorizontalAlignment="Stretch"
+                        ClickMode="Press"
+                        Focusable="True"
+                        IsChecked="{Binding Path=IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"
+                        Template="{StaticResource MouseComboBoxToggleButtonTemplate}" />
+
+                    <ContentPresenter
+                        x:Name="contentPresenter"
+                        Grid.Column="0"
+                        Margin="10,0,0,0"
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Center"
+                        Content="{TemplateBinding SelectionBoxItem}"
+                        ContentStringFormat="{TemplateBinding SelectionBoxItemStringFormat}"
+                        ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}"
+                        ContentTemplateSelector="{TemplateBinding ItemTemplateSelector}"
+                        IsHitTestVisible="False" />
+                </Grid>
+            </Border>
+        </Grid>
+    </ControlTemplate>
+    <Style x:Key="MouseComboBoxItemContainerStyle" TargetType="{x:Type ComboBoxItem}">
+        <Setter Property="SnapsToDevicePixels" Value="true" />
+        <Setter Property="Foreground" Value="{DynamicResource DefaultTheme_TxtColor}" />
+        <Setter Property="OverridesDefaultStyle" Value="true" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type ComboBoxItem}">
+                    <Border Name="Border" Margin="0" Padding="0" SnapsToDevicePixels="true">
+                        <ContentPresenter
+                            Name="contentPresenter"
+                            Margin="13,10,40,10"
+                            VerticalAlignment="Center" />
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsHighlighted" Value="true">
+                            <Setter TargetName="Border" Property="Background" Value="{DynamicResource MouseCB_HIBkColor}" />
+                            <Setter Property="Foreground" Value="{DynamicResource DefaultTheme_TxtColor}" />
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="false">
+                            <Setter Property="Foreground" Value="#888888" />
+                        </Trigger>
+                        <!--<Trigger Property="IsSelected" Value="True">
+                        <Setter Property="Foreground" Value="{StaticResource DdpmCB_SelTextColor}" />
+                        </Trigger>-->
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    <Style x:Key="MouseComboBoxStyle" TargetType="ComboBox">
+        <Setter Property="SnapsToDevicePixels" Value="True" />
+        <Setter Property="OverridesDefaultStyle" Value="True" />
+        <Setter Property="ScrollViewer.CanContentScroll" Value="False" />
+        <Setter Property="MinWidth" Value="100" />
+        <Setter Property="MinHeight" Value="20" />
+        <Setter Property="Height" Value="46" />
+        <Setter Property="FontFamily" Value="Roboto" />
+        <Setter Property="FontSize" Value="14" />
+        <Setter Property="FontWeight" Value="Normal" />
+        <Setter Property="Foreground" Value="{DynamicResource DefaultTheme_TxtColor}" />
+        <Setter Property="Background" Value="{DynamicResource MouseCB_BkColor}" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+        <Setter Property="Template" Value="{StaticResource MouseComboBoxControlTemplate}" />
+        <Setter Property="ItemContainerStyle" Value="{StaticResource MouseComboBoxItemContainerStyle}" />
+    </Style>
+    <!-- #endregion -->
 
     <!-- #region For Headset -->
     <SolidColorBrush x:Key="ProgressBar_BkColor" Color="#293B4D" />
@@ -1103,6 +1269,7 @@
     <SolidColorBrush x:Key="ToggleSwitch_PressedBackground" Color="#0672CB" />
     <SolidColorBrush x:Key="ToggleSwitch_PressedBorderBrush" Color="#55B4FD" />
     <SolidColorBrush x:Key="ToggleSwitch_BorderBrush" Color="#1E3F6C" />
+    <!-- #endregion -->
 
     <Style TargetType="UXControls:UXTextBlock" x:Key="ProductNameTextStyle">
         <Setter Property="Foreground" Value="{DynamicResource HomePageKeyFeature_TxtColor}" />
@@ -1299,13 +1466,15 @@
 
 
     <SolidColorBrush x:Key="Button1BorderEnColor" Color="#0672CB"/>
+    <SolidColorBrush x:Key="Button1BorderDisColor" Color="#344354"/>
+    <SolidColorBrush x:Key="Button1TextDisColor" Color="#828E9C"/>
     <Style x:Key="Button1BorderStyle" TargetType="Border">
         <Setter Property="Background" Value="{DynamicResource Button1BorderEnColor}" />
         <Setter Property="CornerRadius" Value="2" />
         <Setter Property="BorderThickness" Value="0" />
         <Style.Triggers>
             <Trigger Property="IsEnabled" Value="False">
-                <Setter Property="Background" Value="#344354" />
+                <Setter Property="Background" Value="{DynamicResource Button1BorderDisColor}" />
             </Trigger>
         </Style.Triggers>
     </Style>
@@ -1320,7 +1489,7 @@
         <Setter Property="HorizontalAlignment" Value="Center" />
         <Style.Triggers>
             <Trigger Property="IsEnabled" Value="False">
-                <Setter Property="Foreground" Value="#828E9C" />
+                <Setter Property="Foreground" Value="{DynamicResource Button1TextDisColor}" />
             </Trigger>
         </Style.Triggers>
     </Style>
