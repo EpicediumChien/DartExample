@@ -31,6 +31,9 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.ViewModels
         private object _LockPeripheralList = new object();
         private readonly IConsole _console;
         private readonly ILog _log;
+        private readonly double _pictureMinWidth = 250;
+        private readonly double _pictureMaxWidth = 500;
+        private readonly double _gapMinWidth = 40;
 
         private ObservableCollection<HomeDevice> _homeDevices = new ObservableCollection<HomeDevice>();
         private HomeDevice? _selectedHomeDevice;
@@ -78,6 +81,34 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.ViewModels
         public int HomeDeviceCount
         {
             get => HomeDevices.Count;
+        }
+
+        public double ScrollViewMaxWidth
+        {
+            get 
+            {
+                return _pictureMaxWidth * 4 + _gapMinWidth * 5;
+            }
+        }
+
+
+        public double MinWidth
+        {
+            get 
+            {
+                switch(HomeDevices.Count)
+                {
+                    case 1:
+                        return _pictureMinWidth + _gapMinWidth * 2;
+                    case 2:
+                    case 4:
+                        return _pictureMinWidth*2 + _gapMinWidth * 3;
+                    case 3:
+                    default:
+                        return _pictureMinWidth * 3 + _gapMinWidth * 4;
+                }
+            
+            }
         }
 
         /// <summary>
