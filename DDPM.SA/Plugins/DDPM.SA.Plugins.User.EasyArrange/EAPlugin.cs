@@ -1146,6 +1146,8 @@ namespace DDPM.SA.Plugins.User.EasyArrange
             //    };
             //}
 
+            EzMemLauncher.DeviceManagerSA = _deviceManagerPlugin;
+            EzMemLauncher.Log = _log;
 
             //Microsoft.Win32.SystemEvents.DisplaySettingsChanged += SystemEvents_DisplaySettingsChanged;
             _agent.RegisterForEvent(AgentEventNames.DisplaySettingsChanged, DisplaySettingsChangedHandler);

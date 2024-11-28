@@ -1227,8 +1227,18 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
 
                 foreach (var device in deviceHelper.deviceInfo)
                 {
+                    // Check color code
+                    string _modelNumber = device.ModelNumber;
+                    if (device.ModelNumber == "MS700")
+                    {
+                        if (device.ColorCode != 0)
+                        {
+                            _modelNumber = _modelNumber + "/" + device.ColorCode.ToString();
+                            _log.Info($"[Walkthrough] CheckAndQueueDevice Check color code = {device.ColorCode.ToString()}");
+                        }
+                    }
                     _log.Info($"[Walkthrough] CheckAndQueueDevice Start Add (Device)");
-                    await CheckAndQueueDevice(device.ModelNumber, device.LogicalDeviceType.ToString(), device.ID);
+                    await CheckAndQueueDevice(_modelNumber, device.LogicalDeviceType.ToString(), device.ID);
                 }
 
                 if (WalkThroughQueue.Count != 0 && _showPluginById == false)

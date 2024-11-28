@@ -168,12 +168,12 @@
                                 <RowDefinition Height="Auto" />
                                 <RowDefinition Height="*" />
                             </Grid.RowDefinitions>
-                            
+
                             <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0">
-                            <!-- Title -->
+                                <!-- Title -->
                                 <UXControls:UXTextBlock x:Name="TitleTB" Grid.Row="0" Text="{Binding [EazyMemory.12], Source={x:Static lang:LangHelper.Instance}, Mode=OneWay}" FontSize="16"  Margin="0,0,0,8" />
 
-                            <!-- Radio Buttons for Manual or Automatic Launch -->
+                                <!-- Radio Buttons for Manual or Automatic Launch -->
                                 <StackPanel Orientation="Vertical" Margin="0,8,0,0">
                                     <StackPanel Orientation="Horizontal" Margin="0,8,0,0" Width="305" Height="28">
                                         <UXControls:UXRadioButton x:Name="ManulRB" Grid.Row="1" Content="{Binding [EazyMemory.14], Source={x:Static lang:LangHelper.Instance}, Mode=OneWay}" FontSize="16" Height="36"  Margin="8,2,0,2" IsChecked="{Binding IsManualLaunch}" />
@@ -181,9 +181,9 @@
 
                                     <StackPanel Orientation="Horizontal" Margin="0,8,0,0" Width="305" Height="28">
                                         <UXControls:UXRadioButton x:Name="AutoRB" Grid.Row="2" Content="{Binding [EazyMemory.15], Source={x:Static lang:LangHelper.Instance}, Mode=OneWay}" FontSize="16" Height="36"  Margin="8,2,0,2" IsChecked="{Binding IsAutoLaunch}" />
-                                </StackPanel>
+                                    </StackPanel>
 
-                                <!-- Time Picker Controls (Disabled when manually select is checked) -->
+                                    <!-- Time Picker Controls (Disabled when manually select is checked) -->
                                     <StackPanel Grid.Row="3" Orientation="Horizontal" Margin="46,8,0,0" >
                                         <UXControls:UXComboBox x:Name="HourCB" FontSize="14" Width="81" Height="40" Style="{StaticResource DdpmComboBoxStyleEzMemory}" BorderThickness="0.3" Margin="0,0,4,0" ItemsSource="{Binding HourList}"  SelectedItem="{Binding SelectedHour}"/>
 
@@ -193,19 +193,16 @@
                                         <UXControls:UXComboBox x:Name="AMPMCB" Width="81" Height="40" FontSize="14" Style="{StaticResource DdpmComboBoxStyleEzMemory}" BorderThickness="0.3" Margin="4,0,4,0" ItemsSource="{Binding AMPMList}" SelectedItem="{Binding SelectedAMPM}" />
 
                                     </StackPanel>
-                            </StackPanel>
+                                </StackPanel>
 
-                            <!-- Launch during PC startup Checkbox -->
+                                <!-- Launch during PC startup Checkbox -->
                                 <StackPanel Grid.Row="4" Orientation="Horizontal">
                                     <UXControls:UXCheckBox x:Name="StartupCB" Content="{Binding [EazyMemory.13], Source={x:Static lang:LangHelper.Instance}, Mode=OneWay}" FontSize="18"  Margin="0,16,0,0" IsChecked="{Binding IsLaunchAtStartup}" Checked="StartupCB_Checked"/>
                                 </StackPanel>
                             </StackPanel>
-                            </Grid>
+                        </Grid>
                     </Border>
-
                 </Grid>
-
-
             </Grid>
         </StackPanel>
     </Grid>

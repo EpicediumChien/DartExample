@@ -182,12 +182,21 @@ namespace DDPM.EABroker
 
         private void OnWindowEndMovingProc(IntPtr hWnd, bool isCanceled = false)
         {
-            _vm.IsShiftPressed = WinEventHook.IsShiftPressed();
+            //_vm.IsShiftPressed = WinEventHook.IsShiftPressed();
             if (!_vm.IsMoving)
             {
                 return;
             }
 
+            bool isActiveWindowVisible = false;
+            if (_vm.IsAwsEnabled)
+            {
+                isActiveWindowVisible = _vm.IsAwsWindowVisible;
+            }
+            else
+            {
+                isActiveWindowVisible = _vm.IsWorkWindowVisible;
+            }
             _vm.IsMoving = false;
             _vm.StartMovingMsg = "";
 
@@ -196,6 +205,9 @@ namespace DDPM.EABroker
             {
                 return;
             }
+            if (!isActiveWindowVisible)
+                return;
+
 
             Win32.RECT rcWnd = new Win32.RECT();
             Win32._GetWindowRect(hWnd, out rcWnd);
