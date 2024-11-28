@@ -18,6 +18,7 @@ using Dell.Client.Framework.Common.Annotations;
 using Dell.Client.Framework.Common.PluginConditions;
 using Dell.Client.Framework.Interfaces;
 using Microsoft;
+using Newtonsoft.Json;
 using static DDPM.SA.Common.ICLICommandTable;
 
 namespace DDPM.SA.Plugin.User.CLIManager
@@ -544,26 +545,57 @@ namespace DDPM.SA.Plugin.User.CLIManager
                 }
                 else if (commandLineInput.Command.Equals("HELP"))
                 {
-                    var monitorInfos = _DevManagerPlugin.GetMonitors().Result;
-                    string output = string.Empty;
-                    //if (monitorInfos == null)
-                    //    return ((int)CLI_ExitCode.no_monitor_connected, "No Monitor Connected");
-                    foreach (var monitorInfo in monitorInfos)
+                    CLIEventResult result;
+                    if (commandLineInput.TargetFeature.ToUpper() == "DISPLAY")
                     {
-                        var results = ICLICommandTable.Response_HelpCommand_ByDisplay(commandLineInput.TargetFeature, monitorInfo.CapabilityDic);
-                        output += "\n" + results;
-                    }
-                    //return ((int)CLI_ExitCode.success, output);
-                    return;
+                        var monitorInfos = _DevManagerPlugin.GetMonitors().Result;
+                        string output = string.Empty;
+                        if (monitorInfos == null || monitorInfos.Count == 0)
+                        {
+                            CLI_RESPONSE cLI_RESPONSE = new CLI_RESPONSE()
+                            {
+                                Model = "N/A",
+                                SerialNumber = "N/A",
+                                Command = "N/A",
+                                TargetFeature = "N/A",
+                                Result = "no monitor connected",
+                                Index = "N/A",
+                                ServiceTag = "N/A",
+                                Value = "N/A",
+                                Message = "no monitor connected"
+                            };
+                            result = new CLIEventResult()
+                            {
+                                command_guid_string = e.command_guid_string,
+                                serialize_Json_response = JsonConvert.SerializeObject(cLI_RESPONSE, Formatting.Indented),
+                                ExitCode = (int)CLI_ExitCode.no_monitor_connected,
+                                ticket = DateTime.Now
+                            };
+                            _CliManagerPlugin.WriteCommandResult(result);
+                            return;
+                        }
+                        foreach (var monitorInfo in monitorInfos)
+                        {
 
-                    //if (commandLineInput.TargetFeature.ToUpper() == "DISPLAY" && _CLIDisplay != null)
-                    //    cliEventResult = _CLIDisplay.SetCommandArgs(e, _DevManagerPlugin);
-                    //else
-                    //{
-                    //    WriteLog($"{nameof(ICLIDisplay)} was missing.");
-                    //    _CliManagerPlugin.WriteCommandResult(Response_PluginNotReady(commandLineInput, nameof(ICLIDisplay), e.command_guid_string));
-                    //    return;
-                    //}
+                            var results = ICLICommandTable.Response_HelpCommand_ByDisplay(commandLineInput.TargetFeature, monitorInfo.CapabilityDic);
+                            output += "\n" + results;
+                        }
+                        result = new CLIEventResult()
+                        {
+                            command_guid_string = e.command_guid_string,
+                            serialize_Json_response = output,
+                            ExitCode = (int)CLI_ExitCode.success,
+                            ticket = DateTime.Now
+                        };
+                        _CliManagerPlugin.WriteCommandResult(result);
+                        return;
+                    }
+                    else
+                    {
+                        WriteLog($"{nameof(ICLIDisplay)} was missing.");
+                        _CliManagerPlugin.WriteCommandResult(Response_PluginNotReady(commandLineInput, nameof(ICLIDisplay), e.command_guid_string));
+                        return;
+                    }
                 }
                 else
                 {
