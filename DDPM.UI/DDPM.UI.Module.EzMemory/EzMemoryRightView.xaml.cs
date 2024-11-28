@@ -20,7 +20,6 @@ using String = System.String;
 using static DDPM.UI.Common.User32;
 using DDPM.UI.Common.ViewModels;
 using DDPM.UI.Common.Method;
-using Dell.Client.Framework.Security;
 
 namespace DDPM.UI.Module.EzMemory
 {

@@ -4,11 +4,9 @@ using DDPM.UI.Common.Method;
 using Dell.Client.Framework.Common;
 using Dell.Client.Framework.UX.WPF;
 using Microsoft;
-using Newtonsoft.Json.Linq;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows;
-using Windows.Devices.Geolocation;
 
 namespace DDPM.UI.Plugin.ViewModels
 {

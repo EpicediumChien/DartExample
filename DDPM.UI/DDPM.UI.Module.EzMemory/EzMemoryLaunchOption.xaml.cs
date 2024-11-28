@@ -31,7 +31,6 @@ using DDPM.Easy.Common;
 using DDPM.UI.Common.ViewModels;
 using static System.Reflection.Metadata.BlobBuilder;
 using System.Globalization;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.StartPanel;
 
 namespace DDPM.UI.Module.EzMemory
 {
