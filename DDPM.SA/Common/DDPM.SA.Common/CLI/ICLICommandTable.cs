@@ -1182,10 +1182,11 @@ namespace DDPM.SA.Common
     new Dictionary<string, object> {{ "TargetType", "DISPLAY" }, { "TargetFeature", "PrimaryMonitorSync" },         { "VCP", "66" } },
     new Dictionary<string, object> { { "TargetType", "DISPLAY" }, { "TargetFeature", "ActiveHours" },               { "VCP", "ALL" } },//{ "VCP", "C0" }
     new Dictionary<string, object> { { "TargetType", "DISPLAY" }, { "TargetFeature", "AutoColorPreset" },           { "VCP", "23,24,25,26,27,3A,3B,3C" } },
-    new Dictionary<string, object> { { "TargetType", "DISPLAY" }, { "TargetFeature", "SubInput" },                  { "VCP", "E8" } },
-    new Dictionary<string, object> { { "TargetType", "DISPLAY" }, { "TargetFeature", "SwapVideo" },                 { "VCP", "E5" } },
-    new Dictionary<string, object> { { "TargetType", "DISPLAY" }, { "TargetFeature", "SwapUSB" },                   { "VCP", "E7" } },
-    new Dictionary<string, object> { { "TargetType", "DISPLAY" }, { "TargetFeature", "PxPZoom" },                   { "VCP", "E5" } },
+    new Dictionary<string, object> { { "TargetType", "DISPLAY" }, { "TargetFeature", "SubInput" },                  { "VCP", "E9" } },//{ "VCP", "E8" }
+    new Dictionary<string, object> { { "TargetType", "DISPLAY" }, { "TargetFeature", "SwapVideo" },                 { "VCP", "E9" } },//{ "VCP", "E5" }
+    new Dictionary<string, object> { { "TargetType", "DISPLAY" }, { "TargetFeature", "PxP" },                       { "VCP", "E9" } },
+    //new Dictionary<string, object> { { "TargetType", "DISPLAY" }, { "TargetFeature", "SwapUSB" },                   { "VCP", "E7" } },
+    new Dictionary<string, object> { { "TargetType", "DISPLAY" }, { "TargetFeature", "PxPZoom" },                   { "VCP", "E9" } },//{ "VCP", "E5" }
     new Dictionary<string, object> { { "TargetType", "DISPLAY" }, { "TargetFeature", "RestoreFactoryDefaults" },    { "VCP", "04" } },
     new Dictionary<string, object> { { "TargetType", "DISPLAY" }, { "TargetFeature", "RestoreLevelDefaults" },      { "VCP", "05" } },
     new Dictionary<string, object> { { "TargetType", "DISPLAY" }, { "TargetFeature", "RestoreColorDefaults" },      { "VCP", "08" } },
@@ -1202,6 +1203,9 @@ namespace DDPM.SA.Common
     new Dictionary<string, object> { { "TargetType", "DISPLAY" }, { "TargetFeature", "FWVersion" },                 { "VCP", "ALL" } },
     new Dictionary<string, object> { { "TargetType", "DISPLAY" }, { "TargetFeature", "PowerNap" },                  { "VCP", "E0" } },
     new Dictionary<string, object> { { "TargetType", "DISPLAY" }, { "TargetFeature", "USBCPrioritization" },        { "VCP", "EA" } },
+    new Dictionary<string, object> { { "TargetType", "DISPLAY" }, { "TargetFeature", "ExportSettings" },            { "VCP", "ALL" } },
+    new Dictionary<string, object> { { "TargetType", "DISPLAY" }, { "TargetFeature", "ImportSettings" },            { "VCP", "ALL" } },
+    new Dictionary<string, object> { { "TargetType", "DISPLAY" }, { "TargetFeature", "EasyArrangeLayout" },         { "VCP", "ALL" } },
 };
 
             public static string PrintFormattedJsonTargetFeature(string targetType, Dictionary<string, List<string>> vcpList)
