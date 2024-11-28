@@ -350,7 +350,7 @@ namespace DdpmSwUpdater
             {
                 _SWUpdateInfo = swUpdateInfo;
                 // 要運行的安裝程式路徑和命令行參數
-                string arguments = "/silent /CreateDesktopIcon";
+                string arguments = "/silent /SecLaunchOnEnd";
                 Process _clientProcess = new Process();
                 UpdateProgressInfo updateProgressInfo = new UpdateProgressInfo()
                 {
