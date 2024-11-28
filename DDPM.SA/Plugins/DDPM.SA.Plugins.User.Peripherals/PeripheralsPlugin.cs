@@ -2677,7 +2677,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
             }
         }
 
-        private void PhysicalAudioDeviceDongle_PairingStatusChanged(IPhysicalAudioDeviceDongle arg1, AudioDonglePairingStatus arg2)
+        private void PhysicalAudioDeviceDongle_PairingStatusChanged(IPhysicalAudioDeviceDongle Arg1, int nArg2, int nArg3, string strArg4)//(IPhysicalAudioDeviceDongle arg1, AudioDonglePairingStatus arg2)
         {
             throw new NotImplementedException();
         }
