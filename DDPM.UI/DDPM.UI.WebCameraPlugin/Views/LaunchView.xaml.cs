@@ -238,6 +238,15 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
 
             string model = _vm.CurrentDeviceInfo!.ModelNumber;
 
+            if( model == null)
+            {
+                string log = $"[DDPM.UI.WebCameraPlugin\Views\LaunchView.xaml.cs] CheckUSBtype() model is null";
+                DdpmCommonHelper.WriteUILog(log);
+                return;
+            }
+
+
+
             if (!SpecialCase.Contains(model)) return;
 
             //check usb 2.0 / 3.0
