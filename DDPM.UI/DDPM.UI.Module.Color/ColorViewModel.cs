@@ -1271,6 +1271,29 @@ namespace DDPM.UI.Module.Color
                 }
             }
 
+            // PIMS-288131
+            if (Process.GetProcessesByName("ColorManagement").Length > 0)
+            {
+                // Is running
+                MyModule.GetRightView().Dispatcher.Invoke((Action)(() =>
+                {
+                    ((Expander)(MyModule.GetRightView().FindName("Expander_Advanced_Settings"))).IsEnabled = false;
+                    ((Expander)(MyModule.GetRightView().FindName("Expander_Advanced_Settings"))).IsExpanded = false;
+
+                    ((StackPanel)(MyModule.GetRightView().FindName("stackpanel_DCM"))).Visibility = Visibility.Visible;
+                    DCM_Visibility = Visibility.Visible;
+
+                    /*
+                    if (registryMonitor_ICC != null)
+                    {
+                        if (registryMonitor_ICC.IsMonitoring)
+                            registryMonitor_ICC.Dispose();
+                        registryMonitor_ICC = null;
+                    }
+                    */
+                }));
+            }
+
             WatchForProcessStart();
             WatchForProcessEnd();
 
