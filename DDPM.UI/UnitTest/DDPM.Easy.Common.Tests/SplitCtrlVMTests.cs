@@ -43,6 +43,42 @@ namespace DDPM.Easy.Common.Tests
         }
 
         [Test]
+        public void TestIsEditMode()
+        {
+            // Act
+
+            // Assert
+            Assert.That(splitCtrlVM.IsEditMode, Is.EqualTo(false));
+        }
+
+        [Test]
+        public void TestIsWorkMode()
+        {
+            // Act
+
+            // Assert
+            Assert.That(splitCtrlVM.IsWorkMode, Is.EqualTo(false));
+        }
+
+        [Test]
+        public void TestIsIconMode()
+        {
+            // Act
+
+            // Assert
+            Assert.That(splitCtrlVM.IsIconMode, Is.EqualTo(true));
+        }
+
+        [Test]
+        public void TestIsAwsMode()
+        {
+            // Act
+
+            // Assert
+            Assert.That(splitCtrlVM.IsAwsMode, Is.EqualTo(false));
+        }
+
+        [Test]
         public void TestIsEditable()
         {
             // Act

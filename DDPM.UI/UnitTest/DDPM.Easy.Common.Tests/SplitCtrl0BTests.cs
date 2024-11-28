@@ -140,8 +140,7 @@ namespace DDPM.Easy.Common.Tests
             splitCtrl0B.CellBorders = cellBorders;
             Assert.That(splitCtrl0B.CellBorders,Is.Not.Null);
 
-            var privateObj = new PrivateObject(vm);
-            privateObj.SetFieldOrProperty("isVertical", true);
+            vm.IsVertical = true;
             splitCtrl0B.CellBorders = cellBorders;
             Assert.That(splitCtrl0B.CellBorders, Is.Not.Null);
         }

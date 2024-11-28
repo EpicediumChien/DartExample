@@ -32,6 +32,7 @@ namespace DDPM.UI.Module.SpeakerAudioPreset.Tests
             DdpmCommonHelper.ModuleOwner = moduleOwner;
             deviceManagerMock = new Mock<IDeviceManagerSA>();
             deviceManager = deviceManagerMock.Object;
+            DdpmCommonHelper.DeviceManagerSA = deviceManager;
             consoleMock = new Mock<IConsole>();
             console = consoleMock.Object;
             DdpmCommonHelper.MyConsole = console;
