@@ -1235,6 +1235,7 @@ namespace DDPM.UI.Module.Color
                 if (processes!=null && processes.Length > 0)
                 {
                     // Is running
+                    bool blIsPass = true;
                     foreach (Process process in processes)
                     {
                         string filepath = process.MainModule.FileName;
@@ -1244,24 +1245,27 @@ namespace DDPM.UI.Module.Color
                             string Info = "ColorManagement File Signature Is Null Or Empty";
                             if (!DDPMFileSecurity.VerifyExecutableFileSignature(filepath, out Info))
                             {
+                                blIsPass = false;   
                                 string log = $"[RunWorkerCompleted_RefreshData] VerifyExecutableFileSignature : {Info}\n";
                                 DdpmCommonHelper.WriteUILog(log);
+                                break;
                             }
-                            else
-                            {                                
-                                MyModule.GetRightView().Dispatcher.Invoke((Action)(() =>
-                                {
-                                    ((Expander)(MyModule.GetRightView().FindName("Expander_Advanced_Settings"))).IsEnabled = false;
-                                    ((Expander)(MyModule.GetRightView().FindName("Expander_Advanced_Settings"))).IsExpanded = false;
-
-                                    ((StackPanel)(MyModule.GetRightView().FindName("stackpanel_DCM"))).Visibility = Visibility.Visible;
-                                    DCM_Visibility = Visibility.Visible;
-                        
-                                }));
-                            }
-
+                       
                         }
                     }
+
+                    if (blIsPass)
+                    {
+                        MyModule.GetRightView().Dispatcher.Invoke((Action)(() =>
+                        {
+                            ((Expander)(MyModule.GetRightView().FindName("Expander_Advanced_Settings"))).IsEnabled = false;
+                            ((Expander)(MyModule.GetRightView().FindName("Expander_Advanced_Settings"))).IsExpanded = false;
+
+                            ((StackPanel)(MyModule.GetRightView().FindName("stackpanel_DCM"))).Visibility = Visibility.Visible;
+                            DCM_Visibility = Visibility.Visible;
+
+                        }));
+                    }                   
                 }  
             }
             catch (System.Exception ex)
