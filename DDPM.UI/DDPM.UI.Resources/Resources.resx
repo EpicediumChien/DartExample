@@ -2811,4 +2811,7 @@
   <data name="Word.9" xml:space="preserve">
     <value>Paste and Merge Formatting</value>
   </data>
+  <data name="HeadsetAutomatedActions.14" xml:space="preserve">
+    <value>Sensitivity</value>
+  </data>
 </root>

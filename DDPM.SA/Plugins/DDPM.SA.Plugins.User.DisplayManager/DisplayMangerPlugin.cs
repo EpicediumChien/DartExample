@@ -891,7 +891,6 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                         }
                         AllALSConfig.Add(als_param);
                         _logs.DebugMsg($"[DisplayMangerPlugin] InitializeAllALSInfo() {i.ToString()} : AllALSConfig {AllALSConfig[i].Edid.ModelName} {AllALSConfig[i].Edid.SerialNumber} {AllALSConfig[i].Edid.ServiceTag}");
-
                     }
                     //If Monitors have Primary, need to sync ALS data to other monitor
                     if (AllALSConfig.Count > 0)
@@ -899,7 +898,6 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                         var firstPrimaryMonitorSyncConfig = AllALSConfig.FirstOrDefault(config => config.isPrimaryMonitorSync);
                         if (firstPrimaryMonitorSyncConfig != null)
                         {
-
                             uint newVal = SetBitValue(firstPrimaryMonitorSyncConfig.AllValue, 5, 0);
                             _logs.DebugMsg($"[DisplayMangerPlugin] InitializeAllALSInfo() Primary Monitor ModelName = {firstPrimaryMonitorSyncConfig.Edid.ModelName}, SerialNumber = {firstPrimaryMonitorSyncConfig.Edid.SerialNumber}, ServiceTag = {firstPrimaryMonitorSyncConfig.Edid.ServiceTag}, AllValue = {firstPrimaryMonitorSyncConfig.AllValue}");
                             for (int i = 0; i < AllALSConfig.Count; i++)

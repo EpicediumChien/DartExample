@@ -24,6 +24,22 @@ namespace DDPM.UI.Resources.Helper
         /// <param name="name"></param>
         /// <returns></returns>
         /// <exception cref="ArgumentNullException"></exception>
+        //public string this[string name]
+        //{
+        //    get
+        //    {
+        //        if (name == null)
+        //        {
+        //            throw new ArgumentNullException(nameof(name));
+        //        }
+        //        //resManager.GetString(key, CultureInfo.InstalledUICulture) ?? resManager.GetString(key, CultureInfo.InvariantCulture) ?? "";
+        //        //CultureInfo cultureInfo = CultureInfo.CreateSpecificCulture("pl-PL");
+        //        //string str = _resourceManager.GetString(name, cultureInfo) ?? _resourceManager.GetString(name, CultureInfo.InvariantCulture) ?? "";
+        //        string str = _resourceManager.GetString(name, CultureInfo.InstalledUICulture) ?? _resourceManager.GetString(name, CultureInfo.InvariantCulture) ?? "";
+        //        return System.Text.RegularExpressions.Regex.Unescape(str);
+        //    }
+        //}
+
         public string this[string name]
         {
             get
@@ -32,10 +48,10 @@ namespace DDPM.UI.Resources.Helper
                 {
                     throw new ArgumentNullException(nameof(name));
                 }
-                //resManager.GetString(key, CultureInfo.InstalledUICulture) ?? resManager.GetString(key, CultureInfo.InvariantCulture) ?? "";
-                //CultureInfo cultureInfo = CultureInfo.CreateSpecificCulture("pl-PL");
-                //string str = _resourceManager.GetString(name, cultureInfo) ?? _resourceManager.GetString(name, CultureInfo.InvariantCulture) ?? "";
-                string str = _resourceManager.GetString(name, CultureInfo.InstalledUICulture) ?? _resourceManager.GetString(name, CultureInfo.InvariantCulture) ?? "";
+
+                CultureInfo cultureInfo = CultureInfo.CreateSpecificCulture("en-US");
+                string str = _resourceManager.GetString(name, cultureInfo) ??
+                             _resourceManager.GetString(name, CultureInfo.InvariantCulture) ?? "";
                 return System.Text.RegularExpressions.Regex.Unescape(str);
             }
         }
