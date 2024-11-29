@@ -1419,10 +1419,10 @@ namespace DDPM.UI.Module.Kvm
 
         public void isOnNKVM(bool ison)
         {
-            if (ison)
-            {
-                DdpmCommonHelper.DeviceManagerSA.SupportedNKVMMonitors().Wait();
-            }
+            //if (ison)
+            //{
+            //    DdpmCommonHelper.DeviceManagerSA.SupportedNKVMMonitors().Wait();
+            //}
             DdpmCommonHelper.DeviceManagerSA.SetOnNKVM(DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo, ison).Wait();
         }
 
@@ -1447,13 +1447,19 @@ namespace DDPM.UI.Module.Kvm
             if (!DdpmCommonHelper.DeviceManagerSA.IsNamedpipeConnected().Result)
             {
                 DdpmCommonHelper.DeviceManagerSA.CreatNewNamedpipe().Wait();
-                //DdpmCommonHelper.DeviceManagerSA.CallShowNKVM(0, 100, 100).Wait();
-                OpenNKVMUI(0, 100, 100);
+//#if DEBUG
+                DdpmCommonHelper.DeviceManagerSA.CallShowNKVM(0, 100, 100).Wait();
+//#else
+//                OpenNKVMUI(0, 100, 100);
+//#endif
             }
             else
             {
-                //DdpmCommonHelper.DeviceManagerSA.CallShowNKVM(0, 100, 100).Wait();
-                OpenNKVMUI(0, 100, 100);
+//#if DEBUG
+                DdpmCommonHelper.DeviceManagerSA.CallShowNKVM(0, 100, 100).Wait();
+//#else
+//                OpenNKVMUI(0, 100, 100);
+//#endif
             }
 
             isOnNKVM(true);
@@ -1464,7 +1470,7 @@ namespace DDPM.UI.Module.Kvm
             OnPropertyChanged("IsBusy");
         }
 
-        #endregion
+#endregion
 
         public void OnPropertyChanged_Lock()
         {

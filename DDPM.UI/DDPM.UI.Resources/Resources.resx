@@ -2433,4 +2433,388 @@
   <data name="EazyMemory.41" xml:space="preserve">
     <value>Another profile has been configured to use the same time. Please use another time.</value>
   </data>
+  <data name="Action.1" xml:space="preserve">
+    <value>Enter a key combination to create a shortcut</value>
+  </data>
+  <data name="Action.2" xml:space="preserve">
+    <value>Click the browse button to select a file</value>
+  </data>
+  <data name="Action.3" xml:space="preserve">
+    <value>Click the \"Browse\" button to select a folder</value>
+  </data>
+  <data name="Action.4" xml:space="preserve">
+    <value>Type the URL of the web page in the box below</value>
+  </data>
+  <data name="Action.5" xml:space="preserve">
+    <value>File Name</value>
+  </data>
+  <data name="Action.6" xml:space="preserve">
+    <value>Folder Name</value>
+  </data>
+  <data name="Camera.14" xml:space="preserve">
+    <value>Preset</value>
+  </data>
+  <data name="Camera.15" xml:space="preserve">
+    <value>Edit preset</value>
+  </data>
+  <data name="Camera.19" xml:space="preserve">
+    <value>Name</value>
+  </data>
+  <data name="Camera.20" xml:space="preserve">
+    <value>This name is taken</value>
+  </data>
+  <data name="Camera.21" xml:space="preserve">
+    <value>Neutralize your camera image and restore it to original settings</value>
+  </data>
+  <data name="Camera.22" xml:space="preserve">
+    <value>Touch up and smooth your appearance</value>
+  </data>
+  <data name="Camera.23" xml:space="preserve">
+    <value>Intensify the color and vibrancy of your image</value>
+  </data>
+  <data name="Camera.24" xml:space="preserve">
+    <value>Boost your appearance with warmer tones</value>
+  </data>
+  <data name="Collab.1" xml:space="preserve">
+    <value>Collaboration</value>
+  </data>
+  <data name="Collab.10" xml:space="preserve">
+    <value>Collaboration Keyboard cannot connect to Microsoft Teams because you blocked the request. To use Microsoft Teams with Collaboration Keyboard, click \"Learn more\" for instructions on how to re-connect.</value>
+  </data>
+  <data name="Collab.11" xml:space="preserve">
+    <value>To use Collaboration Keyboard with Zoom, install Zoom’s latest desktop version</value>
+  </data>
+  <data name="Collab.12" xml:space="preserve">
+    <value>To use Collaboration Keyboard with Microsoft Teams, ensure you are signed into Microsoft Teams, using the latest version, and have the Third-party app API enabled</value>
+  </data>
+  <data name="Collab.13" xml:space="preserve">
+    <value>Video</value>
+  </data>
+  <data name="Collab.14" xml:space="preserve">
+    <value>Share</value>
+  </data>
+  <data name="Collab.15" xml:space="preserve">
+    <value>Chat</value>
+  </data>
+  <data name="Collab.16" xml:space="preserve">
+    <value>Mic</value>
+  </data>
+  <data name="Collab.17" xml:space="preserve">
+    <value>OK</value>
+  </data>
+  <data name="Collab.2" xml:space="preserve">
+    <value>Provides quick access to conference controls. Toggling the\nkeys on/off will show or hide them on the keyboard while in\na Microsoft Teams or Zoom call.</value>
+  </data>
+  <data name="Collab.3" xml:space="preserve">
+    <value>Enable blink effect when there is a new chat message in conference\ncall</value>
+  </data>
+  <data name="Collab.4" xml:space="preserve">
+    <value>Activate icons on the keyboard by double tapping instead of single\ntapping</value>
+  </data>
+  <data name="Collab.5" xml:space="preserve">
+    <value>Learn More</value>
+  </data>
+  <data name="Collab.6" xml:space="preserve">
+    <value>To use Collaboration Keyboard with Microsoft Teams:\r\n1. Open Teams and go to privacy settings.\n\n2. Select Third-party app API and ensure that Dell Display and Peripheral Manager is not on the blocked list.\n\n3. Pair Microsoft Teams with Dell Display and Peripheral Manager by launching a Microsoft Teams conference call.</value>
+  </data>
+  <data name="Collab.7" xml:space="preserve">
+    <value>If you are still having trouble, contact your IT department (if applicable) as they may have policies in place that are prohibiting Collaboration Keyboard from connecting to Microsoft Teams.</value>
+  </data>
+  <data name="Collab.8" xml:space="preserve">
+    <value>To use Collaboration Keyboard you need the latest version of Zoom or Microsoft Teams</value>
+  </data>
+  <data name="Collab.9" xml:space="preserve">
+    <value>Connect Collaboration Keyboard with Microsoft Teams by starting a conference call and accepting the connection request</value>
+  </data>
+  <data name="Common.0" xml:space="preserve">
+    <value>Browse</value>
+  </data>
+  <data name="Common.1" xml:space="preserve">
+    <value>Clear</value>
+  </data>
+  <data name="Common.2" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="Common.3" xml:space="preserve">
+    <value>Choose the app from a list of apps</value>
+  </data>
+  <data name="Common.4" xml:space="preserve">
+    <value>Select a file</value>
+  </data>
+  <data name="Common.5" xml:space="preserve">
+    <value>Selected file</value>
+  </data>
+  <data name="DisplayDefault.1" xml:space="preserve">
+    <value>Are you sure you want to restore all default settings on your device?</value>
+  </data>
+  <data name="Dock.2" xml:space="preserve">
+    <value>USB-C (DP 1.4)</value>
+  </data>
+  <data name="Dock.3" xml:space="preserve">
+    <value>Dual USB-C (DP 1.4)</value>
+  </data>
+  <data name="Dock.4" xml:space="preserve">
+    <value>USB-C (TB 4)</value>
+  </data>
+  <data name="Dock.5" xml:space="preserve">
+    <value>USB-C (TB 5)</value>
+  </data>
+  <data name="Excel.1" xml:space="preserve">
+    <value>Align Center</value>
+  </data>
+  <data name="Excel.10" xml:space="preserve">
+    <value>Paste Format Only</value>
+  </data>
+  <data name="Excel.11" xml:space="preserve">
+    <value>Paste Formulas</value>
+  </data>
+  <data name="Excel.12" xml:space="preserve">
+    <value>Paste Value Only</value>
+  </data>
+  <data name="Excel.13" xml:space="preserve">
+    <value>Previous Sheet</value>
+  </data>
+  <data name="Excel.14" xml:space="preserve">
+    <value>Sort A to Z</value>
+  </data>
+  <data name="Excel.2" xml:space="preserve">
+    <value>Align Left</value>
+  </data>
+  <data name="Excel.3" xml:space="preserve">
+    <value>Align Right</value>
+  </data>
+  <data name="Excel.4" xml:space="preserve">
+    <value>Decrease Indent</value>
+  </data>
+  <data name="Excel.5" xml:space="preserve">
+    <value>Go to Bottom of Data Region</value>
+  </data>
+  <data name="Excel.6" xml:space="preserve">
+    <value>Go to Top of Data Region</value>
+  </data>
+  <data name="Excel.7" xml:space="preserve">
+    <value>Insert Chart</value>
+  </data>
+  <data name="Excel.8" xml:space="preserve">
+    <value>Insert Row Above</value>
+  </data>
+  <data name="Excel.9" xml:space="preserve">
+    <value>Pan (Hold and Move Mouse)</value>
+  </data>
+  <data name="Multimedia.1" xml:space="preserve">
+    <value>Media Next Track</value>
+  </data>
+  <data name="Multimedia.2" xml:space="preserve">
+    <value>Media Play/Pause</value>
+  </data>
+  <data name="Multimedia.3" xml:space="preserve">
+    <value>Media Previous Track</value>
+  </data>
+  <data name="Multimedia.4" xml:space="preserve">
+    <value>Music</value>
+  </data>
+  <data name="Multimedia.5" xml:space="preserve">
+    <value>Pictures</value>
+  </data>
+  <data name="Multimedia.6" xml:space="preserve">
+    <value>Volume Down</value>
+  </data>
+  <data name="Multimedia.7" xml:space="preserve">
+    <value>Volume Mute</value>
+  </data>
+  <data name="Multimedia.8" xml:space="preserve">
+    <value>Volume Up</value>
+  </data>
+  <data name="Outlook.1" xml:space="preserve">
+    <value>Attach File</value>
+  </data>
+  <data name="Outlook.2" xml:space="preserve">
+    <value>Forward Email</value>
+  </data>
+  <data name="Outlook.3" xml:space="preserve">
+    <value>New Email</value>
+  </data>
+  <data name="Outlook.4" xml:space="preserve">
+    <value>New Meeting</value>
+  </data>
+  <data name="Outlook.5" xml:space="preserve">
+    <value>Reply</value>
+  </data>
+  <data name="Outlook.6" xml:space="preserve">
+    <value>Reply to All</value>
+  </data>
+  <data name="PairedInfo.1" xml:space="preserve">
+    <value>Are you sure?</value>
+  </data>
+  <data name="PairedInfo.10" xml:space="preserve">
+    <value>Would you like to pair your pen with your system?</value>
+  </data>
+  <data name="PairedInfo.2" xml:space="preserve">
+    <value>Unpairing your mouse can limit your ability to use this computer. Make sure you have an alternative mouse setup before unpairing.</value>
+  </data>
+  <data name="PairedInfo.3" xml:space="preserve">
+    <value>Unpairing your keyboard can limit your ability to use this computer. Make sure you have an alternative keyboard setup before unpairing.</value>
+  </data>
+  <data name="PairedInfo.4" xml:space="preserve">
+    <value>Unpairing your pen can limit your ability to use this computer. Make sure you have an alternative pen setup before unpairing.</value>
+  </data>
+  <data name="PairedInfo.5" xml:space="preserve">
+    <value>This will unpair your headset from its USB wireless receiver. You can still pair and use the headset on this system via Bluetooth. If required, you may pair the headset back to the wireless receiver from + icon on top right of the home screen of DDPM.</value>
+  </data>
+  <data name="PairedInfo.6" xml:space="preserve">
+    <value>Continue</value>
+  </data>
+  <data name="PairedInfo.7" xml:space="preserve">
+    <value>This device is not compatible with</value>
+  </data>
+  <data name="PairedInfo.8" xml:space="preserve">
+    <value>This device is already paired. Unpair the device first if you would like to pair again.</value>
+  </data>
+  <data name="PairedInfo.9" xml:space="preserve">
+    <value>Pair your pen</value>
+  </data>
+  <data name="PenSettings.10" xml:space="preserve">
+    <value>Press and hold the two side buttons on the pen for 3 seconds to pair it to Tile.</value>
+  </data>
+  <data name="PenSettings.11" xml:space="preserve">
+    <value>Download tile</value>
+  </data>
+  <data name="PenSettings.8" xml:space="preserve">
+    <value>Enable Bluetooth on your device.</value>
+  </data>
+  <data name="PenSettings.9" xml:space="preserve">
+    <value>Scan the QR Code to download Tile on to your mobile device.</value>
+  </data>
+  <data name="PowerPoint.1" xml:space="preserve">
+    <value>Arrange Align Center</value>
+  </data>
+  <data name="PowerPoint.10" xml:space="preserve">
+    <value>Send to Back</value>
+  </data>
+  <data name="PowerPoint.2" xml:space="preserve">
+    <value>Arrange Align Left</value>
+  </data>
+  <data name="PowerPoint.3" xml:space="preserve">
+    <value>Arrange Align Right</value>
+  </data>
+  <data name="PowerPoint.4" xml:space="preserve">
+    <value>Bring to Front</value>
+  </data>
+  <data name="PowerPoint.5" xml:space="preserve">
+    <value>Decrease List Level</value>
+  </data>
+  <data name="PowerPoint.6" xml:space="preserve">
+    <value>Duplicate Selected Slides</value>
+  </data>
+  <data name="PowerPoint.7" xml:space="preserve">
+    <value>Increase List Level</value>
+  </data>
+  <data name="PowerPoint.8" xml:space="preserve">
+    <value>Play from Current Slide</value>
+  </data>
+  <data name="PowerPoint.9" xml:space="preserve">
+    <value>Previous Slide</value>
+  </data>
+  <data name="RadialMenu.1" xml:space="preserve">
+    <value>Disabled</value>
+  </data>
+  <data name="RadialMenu.2" xml:space="preserve">
+    <value>Go Back</value>
+  </data>
+  <data name="RadialMenu.3" xml:space="preserve">
+    <value>Go Forward</value>
+  </data>
+  <data name="RadialMenu.4" xml:space="preserve">
+    <value>Play/Pause</value>
+  </data>
+  <data name="RadialMenu.5" xml:space="preserve">
+    <value>Previous Track</value>
+  </data>
+  <data name="RadialMenu.6" xml:space="preserve">
+    <value>Mute</value>
+  </data>
+  <data name="RadialMenu.7" xml:space="preserve">
+    <value>Function for selected radial</value>
+  </data>
+  <data name="RadialMenu.8" xml:space="preserve">
+    <value>Label for selected radial</value>
+  </data>
+  <data name="RadialMenu.9" xml:space="preserve">
+    <value>Use center for emulating right click</value>
+  </data>
+  <data name="Smooth" xml:space="preserve">
+    <value>Smooth</value>
+  </data>
+  <data name="Vibrant" xml:space="preserve">
+    <value>Vibrant</value>
+  </data>
+  <data name="Warm" xml:space="preserve">
+    <value>Warm</value>
+  </data>
+  <data name="Word.1" xml:space="preserve">
+    <value>Autoscroll</value>
+  </data>
+  <data name="Word.10" xml:space="preserve">
+    <value>Paste and Match Formatting</value>
+  </data>
+  <data name="Word.11" xml:space="preserve">
+    <value>Previous Change</value>
+  </data>
+  <data name="Word.12" xml:space="preserve">
+    <value>Previous Comment</value>
+  </data>
+  <data name="Word.13" xml:space="preserve">
+    <value>Print</value>
+  </data>
+  <data name="Word.14" xml:space="preserve">
+    <value>Save</value>
+  </data>
+  <data name="Word.15" xml:space="preserve">
+    <value>Strikethrough</value>
+  </data>
+  <data name="Word.16" xml:space="preserve">
+    <value>Text Size -</value>
+  </data>
+  <data name="Word.17" xml:space="preserve">
+    <value>Text Size +</value>
+  </data>
+  <data name="Word.18" xml:space="preserve">
+    <value>Translate Selected Text</value>
+  </data>
+  <data name="Word.19" xml:space="preserve">
+    <value>View One Page</value>
+  </data>
+  <data name="Word.2" xml:space="preserve">
+    <value>Find</value>
+  </data>
+  <data name="Word.20" xml:space="preserve">
+    <value>View Page Width</value>
+  </data>
+  <data name="Word.3" xml:space="preserve">
+    <value>Increase Indent</value>
+  </data>
+  <data name="Word.4" xml:space="preserve">
+    <value>New Comment</value>
+  </data>
+  <data name="Word.5" xml:space="preserve">
+    <value>Next Change</value>
+  </data>
+  <data name="Word.6" xml:space="preserve">
+    <value>Next Comment</value>
+  </data>
+  <data name="Word.7" xml:space="preserve">
+    <value>Paste and Keep Source Formatting</value>
+  </data>
+  <data name="Word.8" xml:space="preserve">
+    <value>Paste and Keep Text Only</value>
+  </data>
+  <data name="Word.9" xml:space="preserve">
+    <value>Paste and Merge Formatting</value>
+  </data>
+  <data name="Camera.25" xml:space="preserve">
+    <value>Connect your monitor via USB 3.0 and select 'High Data Speed' under USB-C Prioritization to enable 4K UHD resolution.</value>
+  </data>
+  <data name="HeadsetAutomatedActions.14" xml:space="preserve">
+    <value>Sensitivity</value>
+  </data>
 </root>

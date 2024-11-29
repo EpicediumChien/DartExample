@@ -255,7 +255,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             loadResourceDictionary(UXSystemParameters.Instance.OSTheme);
         }
 
-        private void _DTPProxyPlugin_WebcamEventHandler(object sender, UpdateUINotify e)
+        private void _DTPProxyPlugin_DTPEventHandler(object sender, UpdateUINotify e)
         {
             OnUIUpdateNotify(e);
         }
@@ -734,7 +734,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         #region ColorPreset implementation
 
-        public Task<DDPM.SA.Common.IIC_Metadata> DownloadICCData(MonitorInfo m, string savelPath = "")
+        public Task<DDPM.SA.Common.IIC_Metadata> DownloadICCData(MonitorInfo m, bool blICCProfile = false, string savelPath = "")
         {
             DDPM.SA.Common.IIC_Metadata _ICC_Metadata = new DDPM.SA.Common.IIC_Metadata();
 
@@ -745,7 +745,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
             else
             {
-                _ICC_Metadata = _ColorPresetPlugin.DownloadICCData(m, _SettingsPlugin, savelPath).Result;
+                _ICC_Metadata = _ColorPresetPlugin.DownloadICCData(m, _SettingsPlugin, blICCProfile, savelPath).Result;
             }
 
             return Task.FromResult(_ICC_Metadata);
@@ -981,9 +981,10 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         public Task<bool> SyncPrimaryMonitorAndColorPresetStatus(MonitorInfo m, string ColorPreset_Name, int colorPresetRunType)
         {
-            bool blRet = true;
+            bool blRet = true;          
             writelog("[DeviceMangerPlugin] SyncPrimaryMonitorAndColorPresetStatus ... in");
-            List<ALSConfig> existAlsConfig = _DisplayManagerPlugin.GetAllExistAlsConfig().Result;
+            List<ALSConfig> existAlsConfig = _DisplayManagerPlugin. GetAllExistAlsConfig().Result;
+            Trace.WriteLine($"SyncPrimaryMonitorAndColorPresetStatus = {m.edid.ModelName.ToString()} || existAlsConfig.Count = {existAlsConfig.Count.ToString()}");
             ALSConfig findconfig = existAlsConfig.Find(x => x.Edid.Equals(m.edid));
 
             Trace.WriteLine("Into MonitorInfo = " + m.edid.ModelName.ToString());
@@ -4686,6 +4687,10 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             if (UIUpdateNotify == null || e == null || e == EventArgs.Empty)
                 return;
 
+            //Derek 1125
+            if (e.UI_Field_Name.StartsWith("WebcamEvent"))
+                HandleQAMEvent(e.UI_Field_Name);
+
             EventHandler<UpdateUINotify> Handler = UIUpdateNotify;
             if (Handler != null)
             {
@@ -5489,7 +5494,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         {
             if (_PeripheralsPlugin != null && _FWUpdatePlugin != null)
             {
-                _FWUpdatePlugin.SetDeviceinfo(_PeripheralsPlugin.GetDevices().Result.deviceInfo);
+                _FWUpdatePlugin.SetDeviceinfo(_PeripheralsPlugin.GetDevices().Result.deviceInfo, _PeripheralsPlugin.GetDongleCount());
                 return Task.FromResult(true);
             }
             return Task.FromResult(false);
@@ -6044,7 +6049,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             if (_NKVMPlugin != null && _SettingsPlugin != null)
             {
                 DDPMSettings config = _SettingsPlugin.ReloadAppConfigData().Result;
-                _SupportedMonitorList = _NKVMPlugin.UpdateSupportMonitors().Result;
+                //_SupportedMonitorList = _NKVMPlugin.UpdateSupportMonitors().Result;
                 if (config != null)
                 {
                     config.UserSettings.SupportedMonitorList = _SupportedMonitorList;
@@ -6083,8 +6088,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                             bool b = _SettingsPlugin.WriteMonitorSettings(monitorInfo.modelName, settings).Result;
                             if (ison)
                             {
-                                _SupportedMonitorList = _NKVMPlugin.GetSupportedNKVM().Result;
-                                //_NKVMPlugin.OnNKVM().Wait();
+                                //_SupportedMonitorList = _NKVMPlugin.GetSupportedNKVM().Result;
+                                _NKVMPlugin.OnNKVM().Wait();
                                 bool bt = SentKVMtoTelementry(monitorInfo, "KVMMode", "Network").Result;
                             }
                             else
@@ -9896,94 +9901,172 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             CONF_3RD_EVENT_MEETING = 0,
             CONF_3RD_EVENT_PHONE = 1,
             CONF_3RD_EVENT_WEBINAR = 2,
-            CONF_3RD_EVENT_WEBINAR_VIEWONLY = 3
+            CONF_3RD_EVENT_WEBINAR_VIEWONLY = 3,
+            ZOOM_MEETING_TYPE_UNKNOW
         }
-        private bool _IsZoomScreenShareActive;
-        private bool _IsZoomMeetingActive;
-        private ZoomMeetingType _ZoomMeetingType;
+        private bool _IsZoomScreenShareActive = false;
+        private bool _IsZoomMeetingActive = false;
+        private ZoomMeetingType _ZoomMeetingType = ZoomMeetingType.ZOOM_MEETING_TYPE_UNKNOW;
+        private bool isWindowsScreenNotLocked = true; //
+        //private bool isHiddenConditionsMet = false;
+        private int currentZoomValue = -1;
+        private EventMsg eventMsg = new EventMsg();
         private void HandleQAM()
         {
             writelog($"HandleQAM start");
-            writelog($"HandleQAM: GetDevices_WithoutAwait go");
+            //writelog($"HandleQAM: GetDevices_WithoutAwait go");
             List<DeviceInfo> deviceInfos = GetDevices_WithoutAwait().Result.deviceInfo.FindAll(x => (x.PhysicalDeviceType.Equals(DeviceType.LogicalWebcam) || x.PhysicalDeviceType.Equals(DeviceType.PhysicalWebcam)));
             writelog($"HandleQAM: deviceInfos.Count:{deviceInfos.Count}");
-            if (_ZoomMeetingType == ZoomMeetingType.CONF_3RD_EVENT_MEETING)
+
+            if (deviceInfos == null || _GlobalSettingParam == null || _GlobalSettingParam.GlobalSetting_WidgetSettings == null)
             {
-                if (_QAM == null)
-                {
-                    if (_GlobalSettingParam != null && _GlobalSettingParam.GlobalSetting_WidgetSettings != null && _GlobalSettingParam.GlobalSetting_WidgetSettings.EnableQuickAccessWidget_Reminder)
-                    {
-                        ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.QAM);
-                    }
-                    else if (_GlobalSettingParam != null && _GlobalSettingParam.GlobalSetting_WidgetSettings != null && _GlobalSettingParam.GlobalSetting_WidgetSettings.EnableQuickAccessWidget)
-                    {
-                        if (deviceInfos != null && deviceInfos.Count == 1)
-                        {
-                            CallQAM_UI(this);
-                        }
-                    }
-                }
-                else
-                {
-                    if (deviceInfos != null && deviceInfos.Count == 1)
-                    {
-                        CallQAM_UI(this);
-                    }
-                    if (deviceInfos != null && deviceInfos.Count > 1)
-                    {
-                        QAMClose();
-                    }
-                    if (_IsZoomScreenShareActive)
-                    {
-                        QAMHide();
-                    }
-                    else
-                    {
-                        QAMShow();
-                    }
-                }
+                writelog($"Get null object when handleQAM start");
+
+                return;
             }
+
+            //Active state
+            if (_IsZoomMeetingActive && _ZoomMeetingType == ZoomMeetingType.CONF_3RD_EVENT_MEETING 
+                && deviceInfos.Count == 1 && _GlobalSettingParam.GlobalSetting_WidgetSettings.EnableQuickAccessWidget 
+                && isWindowsScreenNotLocked)
+            {
+                CallQAM_UI(this);
+            }
+            //Hidden state
+            else if (_IsZoomScreenShareActive)
+            {
+                QAMHide();
+            }
+            //OSD
+            //else if (true)
+            //{
+            //    ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.QAM);
+            //}
             else
-            {
                 QAMClose();
-            }
+
+            //if (_ZoomMeetingType == ZoomMeetingType.CONF_3RD_EVENT_MEETING)
+            //{
+            //    //if (_QAM == null && _GlobalSettingParam != null && _GlobalSettingParam.GlobalSetting_WidgetSettings != null)
+            //    if (_QAM == null)
+            //    {
+            //        if (_GlobalSettingParam.GlobalSetting_WidgetSettings.EnableQuickAccessWidget_Reminder)
+            //        {
+            //            ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.QAM);
+            //        }
+            //        else if (deviceInfos.Count == 1 && _GlobalSettingParam.GlobalSetting_WidgetSettings.EnableQuickAccessWidget)
+            //        {
+            //            CallQAM_UI(this);
+            //        }
+            //    }
+            //    else
+            //    {
+            //        if (deviceInfos != null && deviceInfos.Count == 1)
+            //        {
+            //            CallQAM_UI(this);
+            //        }
+            //        if (deviceInfos != null && deviceInfos.Count > 1)
+            //        {
+            //            QAMClose();
+            //        }
+            //        if (_IsZoomScreenShareActive)
+            //        {
+            //            QAMHide();
+            //        }
+            //        else
+            //        {
+            //            QAMShow();
+            //        }
+            //    }
+            //}
+            //else
+            //{
+            //    QAMClose();
+            //}
+
             writelog($"HandleQAM done");
         }
-        private void ZoomChanged(object sender, ZoomChangedArgs e)
+
+        private void HandleQAMEvent(string msg)
         {
-            writelog($"[DeviceManager] IsZoomScreenShareActiveChanged e == null: {e == null}");
-            if (e != null)
+            eventMsg = EventMsg.CreateEventObjectFromEventMsg(msg);
+
+            if (null == eventMsg)
+                return;
+
+            switch (eventMsg.EventType)
             {
-                writelog($"[DeviceManager] IsZoomScreenShareActiveChanged e.Zoom: {e.Zoom}");
+                case "Webcam_ZoomChanged":
+                    if (!int.TryParse(eventMsg.NewValue, out currentZoomValue))
+                        currentZoomValue = -1;
+
+                    break;
+
+                case "Webcam_IsZoomMeetingActiveChanged":
+                    if (!bool.TryParse(eventMsg.NewValue, out _IsZoomMeetingActive))
+                        _IsZoomMeetingActive = false;
+
+                    break;
+
+                case "Webcam_IsZoomScreenShareActiveChanged":
+                    if (!bool.TryParse(eventMsg.NewValue, out _IsZoomScreenShareActive))
+                        _IsZoomScreenShareActive = false;
+
+                    break;
+
+                case "Webcam_ZoomMeetingTypeChanged":
+                    int type = (int)ZoomMeetingType.ZOOM_MEETING_TYPE_UNKNOW;
+
+                    if (int.TryParse(eventMsg.NewValue, out type))
+                        _ZoomMeetingType = (ZoomMeetingType)type;
+                    else
+                        _ZoomMeetingType = ZoomMeetingType.ZOOM_MEETING_TYPE_UNKNOW;
+
+                    break;
+
+                default:
+                    break;
             }
+
+            HandleQAM();
         }
-        private void ZoomMeetingTypeChanged(object sender, ZoomMeetingTypeChangedArgs e)
-        {
-            writelog($"[DeviceManager] ZoomMeetingTypeChanged e == null: {e == null}");
-            if (e != null)
-            {
-                writelog($"[DeviceManager] ZoomMeetingTypeChanged e.ZoomMeetingType: {e.ZoomMeetingType}");
-                _ZoomMeetingType = (ZoomMeetingType)e.ZoomMeetingType;
-            }
-        }
-        private void IsZoomMeetingActiveChanged(object sender, IsZoomMeetingActiveChangedArgs e)
-        {
-            writelog($"[DeviceManager] IsZoomMeetingActiveChanged e == null: {e == null}");
-            if (e != null)
-            {
-                writelog($"[DeviceManager] IsZoomMeetingActiveChanged e.IsZoomMeetingActive: {e.IsZoomMeetingActive}");
-                _IsZoomMeetingActive = e.IsZoomMeetingActive;
-            }
-        }
-        private void IsZoomScreenShareActiveChanged(object sender, IsZoomScreenShareActiveChangedArgs e)
-        {
-            writelog($"[DeviceManager] IsZoomScreenShareActiveChanged e == null: {e == null}");
-            if (e != null)
-            {
-                writelog($"[DeviceManager] IsZoomScreenShareActiveChanged e.IsZoomScreenShareActive: {e.IsZoomScreenShareActive}");
-                _IsZoomScreenShareActive = e.IsZoomScreenShareActive;
-            }
-        }
+
+        //Marked by Derek 1125 because they had covered by WebcamEventHandler
+        //private void ZoomChanged(object sender, ZoomChangedArgs e)
+        //{
+        //    writelog($"[DeviceManager] IsZoomScreenShareActiveChanged e == null: {e == null}");
+        //    if (e != null)
+        //    {
+        //        writelog($"[DeviceManager] IsZoomScreenShareActiveChanged e.Zoom: {e.Zoom}");
+        //    }
+        //}
+        //private void ZoomMeetingTypeChanged(object sender, ZoomMeetingTypeChangedArgs e)
+        //{
+        //    writelog($"[DeviceManager] ZoomMeetingTypeChanged e == null: {e == null}");
+        //    if (e != null)
+        //    {
+        //        writelog($"[DeviceManager] ZoomMeetingTypeChanged e.ZoomMeetingType: {e.ZoomMeetingType}");
+        //        _ZoomMeetingType = (ZoomMeetingType)e.ZoomMeetingType;
+        //    }
+        //}
+        //private void IsZoomMeetingActiveChanged(object sender, IsZoomMeetingActiveChangedArgs e)
+        //{
+        //    writelog($"[DeviceManager] IsZoomMeetingActiveChanged e == null: {e == null}");
+        //    if (e != null)
+        //    {
+        //        writelog($"[DeviceManager] IsZoomMeetingActiveChanged e.IsZoomMeetingActive: {e.IsZoomMeetingActive}");
+        //        _IsZoomMeetingActive = e.IsZoomMeetingActive;
+        //    }
+        //}
+        //private void IsZoomScreenShareActiveChanged(object sender, IsZoomScreenShareActiveChangedArgs e)
+        //{
+        //    writelog($"[DeviceManager] IsZoomScreenShareActiveChanged e == null: {e == null}");
+        //    if (e != null)
+        //    {
+        //        writelog($"[DeviceManager] IsZoomScreenShareActiveChanged e.IsZoomScreenShareActive: {e.IsZoomScreenShareActive}");
+        //        _IsZoomScreenShareActive = e.IsZoomScreenShareActive;
+        //    }
+        //}
         private void QAMCloseEvent(object o, EventArgs e)
         {
             if (_QAM != null)
@@ -9991,7 +10074,9 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 QAM_Position = new Point(_QAM.Left, _QAM.Top);
                 _QAM.Closed -= QAMCloseEvent;
                 _QAM = null;
-                if (_GlobalSettingParam != null && _GlobalSettingParam.GlobalSetting_WidgetSettings != null && _GlobalSettingParam.GlobalSetting_WidgetSettings.EnableQuickAccessWidget_Reminder)
+
+                if (_GlobalSettingParam != null && _GlobalSettingParam.GlobalSetting_WidgetSettings != null
+                    && _GlobalSettingParam.GlobalSetting_WidgetSettings.EnableQuickAccessWidget_Reminder)
                 {
                     ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.QAM);
                 }
@@ -10000,52 +10085,63 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         private void QAMHide()
         {
             writelog($"QAMHide Start");
-            if (_QAM == null)
+
+            if (_QAM != null)
             {
-                writelog($"QAMHide QAMHide go");
+                //writelog($"QAMHide QAMHide go");
                 _QAM.Hide();
-                writelog($"QAMHide QAMHide done");
+                //writelog($"QAMHide QAMHide done");
             }
+
             writelog($"QAMHide done");
         }
-        private void QAMShow()
-        {
-            writelog($"QAMHide Start");
-            if (_QAM == null)
-            {
-                writelog($"QAMHide QAMHide go");
-                _QAM.Show();
-                writelog($"QAMHide QAMHide done");
-            }
-            writelog($"QAMHide done");
-        }
+        //private void QAMShow()
+        //{
+        //    writelog($"QAMShow Start");
+
+        //    if (_QAM != null)
+        //    {
+        //        //writelog($"QAMHide QAMShow go");
+        //        _QAM.Show();
+        //        //writelog($"QAMHide QAMShow done");
+        //    }
+
+        //    writelog($"QAMShow done");
+        //}
         private void QAMClose()
         {
             writelog($"QAMClose Start");
-            if (_QAM == null)
+
+            if (_QAM != null)
             {
-                writelog($"QAMClose _QAM.Close go");
+                //writelog($"QAMClose _QAM.Close go");
                 _QAM.Close();
-                writelog($"QAMClose _QAM.Close done");
+                //writelog($"QAMClose _QAM.Close done");
             }
+
             writelog($"QAMClose done");
         }
+
         private void CallQAM_UI(DeviceMangerPlugin deviceMangerPlugin)
         {
             writelog($"CallQAM_UI: Start");
+
             if (_QAM == null)
             {
-                writelog($"CallQAM_UI: Go");
-                List<DeviceInfo> deviceInfos = GetDevices_WithoutAwait().Result.deviceInfo.FindAll(x => (x.PhysicalDeviceType.Equals(DeviceType.LogicalWebcam) || x.PhysicalDeviceType.Equals(DeviceType.PhysicalWebcam)));
-                writelog($"CallQAM_UI: deviceInfos.Count:{deviceInfos.Count}");
-                if (deviceInfos.Count == 1)
+                //writelog($"CallQAM_UI: Go");
+                //List<DeviceInfo> deviceInfos = GetDevices_WithoutAwait().Result.deviceInfo.FindAll(x => (x.PhysicalDeviceType.Equals(DeviceType.LogicalWebcam) || x.PhysicalDeviceType.Equals(DeviceType.PhysicalWebcam)));
+                //writelog($"CallQAM_UI: deviceInfos.Count:{deviceInfos.Count}");
+                //if (deviceInfos.Count == 1)
                 {
                     writelog($"CallQAM_UI: have Webcam show QAM");
+
                     Thread thread1 = new Thread(() =>
                     {
                         _QAM = new QAMPage(deviceMangerPlugin);
                         _QAM.Closed += QAMCloseEvent;
-                        if (QAM_Position != null && (QAM_Position.X != 0 && QAM_Position.Y != 0))
+
+                        //if (QAM_Position != null && (QAM_Position.X != 0 && QAM_Position.Y != 0))
+                        if (QAM_Position.X != 0 && QAM_Position.Y != 0)
                         {
                             _QAM.Top = QAM_Position.Y;
                             _QAM.Left = QAM_Position.X;
@@ -10054,6 +10150,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         {
                             float scaleFactorX = 1;
                             float scaleFactorY = 1;
+
                             using (Graphics graphics = Graphics.FromHwnd(IntPtr.Zero))
                             {
                                 float dpiX = graphics.DpiX;
@@ -10062,16 +10159,22 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                 scaleFactorX = dpiX / logicalDpi;
                                 scaleFactorY = dpiY / logicalDpi;
                             }
+
                             _QAM.Top = (Screen.PrimaryScreen.Bounds.Height / scaleFactorX / 2) - (_QAM.Height / scaleFactorX / 2);
                             _QAM.Left = 0;
                         }
+
                         _QAM.Dispatcher.Invoke(() => _QAM.Show());
                         Dispatcher.Run();
                     });
+
                     thread1.SetApartmentState(ApartmentState.STA);
                     thread1.Start();
                 }
             }
+            else
+                _QAM.Show();
+
             writelog($"CallQAM_UI: done");
         }
 
@@ -10216,7 +10319,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                         }).ConfigureAwait(false);
                                         ////1117 Bruce 不用自動旋轉把下兩行註解
                                         //if (displayDeviceNumChange && _AllInfoMonitors.Count > 0)
-                                        _DisplayManagerPlugin.SetDisplayOrientation(_AllInfoMonitors).Wait();
+                                        //_DisplayManagerPlugin.SetDisplayOrientation(_AllInfoMonitors).Wait();
 
                                         writelog("[DeviceMangerPlugin] SystemEvents_DisplaySettingsChanged() SetDisplayOrientation finish ...");
 
@@ -10309,12 +10412,12 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             EventHandler<DisplaychangedEventArgs> handler = Displaychanged;
             //if (handler != null)
             //    handler.Invoke(this, e);
-            if (_DisplayManagerPlugin != null)
-            {
-                //displayInOut = false;
-                _DisplayManagerPlugin.SetDisplayOrientation(e.monitors).Wait();
-                //displayInOut = true;
-            }
+            //if (_DisplayManagerPlugin != null)
+            //{
+            //    displayInOut = false;
+            //    _DisplayManagerPlugin.SetDisplayOrientation(e.monitors).Wait();
+            //    displayInOut = true;
+            //}
             DeviceChangedEventArgs arg = new DeviceChangedEventArgs();
             arg.changedProperty = "DisplayChanged";
             arg.type = DeviceChangedType.NotifyOnly;
@@ -10327,7 +10430,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 var Cancellation = new CancellationTokenSource();
                 var CancellationToken = Cancellation.Token;
                 _NKVMPlugin.UpdateMonitorInfo(_AllInfoMonitors, CancellationToken);
-                SupportedNKVMMonitors();
+                //SupportedNKVMMonitors();
             }
 
             if (_AllInfoMonitors != null && _AllInfoMonitors.Count > 0)
@@ -10525,7 +10628,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     //    SupportedNKVMMonitors();
                     //}
                     _NKVMPlugin.UpdateMonitorInfo(_AllInfoMonitors, CancellationToken);
-                    SupportedNKVMMonitors();
+                    //SupportedNKVMMonitors();
                 }
             }
         }
@@ -11249,9 +11352,9 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
                 foreach (var _InfoMonitors in _AllInfoMonitors)
                 {
-                    //Check if actived monitor has its color preset section in config file
+                    //Check if actived monitor has its color preset section in config file                   
                     if (_InfoMonitors.edid.ModelName.Trim().IndexOf(config.ModelName.Trim()) >= 0 &&
-                         _InfoMonitors.edid.SerialNumber.Trim() == config.SerialNumber.Trim())
+                        (_InfoMonitors.edid.SerialNumber.Trim() == config.SerialNumber.Trim() || _InfoMonitors.edid.ServiceTag.Trim() == config.ServiceTag.Trim()) )
                     {
                         if (config.RunType == (int)ColorPresetRunType.Auto)
                         {
@@ -11291,6 +11394,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
             writelog("CheckAutoColorManagementEnableOnStartedCondition, Enter");
 
+
             List<ColorPresetSettings> appconfigs = ReadColorPresetSettings().Result;
 
             foreach (var config in appconfigs)
@@ -11304,9 +11408,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
                 foreach (var _InfoMonitors in _AllInfoMonitors)
                 {
+                    //DownloadICCData(_InfoMonitors);
+
                     //Check if actived monitor has its color preset section in config file
                     if (_InfoMonitors.edid.ModelName.Trim().IndexOf(config.ModelName.Trim()) >= 0 &&
-                         _InfoMonitors.edid.SerialNumber.Trim() == config.SerialNumber.Trim())
+                         (_InfoMonitors.edid.SerialNumber.Trim() == config.SerialNumber.Trim() || _InfoMonitors.edid.ServiceTag.Trim() == config.ServiceTag.Trim()) )
                     {
                         if (config.ColorManagement_Status == (int)ColorManagementStatus.Off)
                         {
@@ -11348,6 +11454,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                             break;
                         }
                     }
+                    
                 }
 
                 writelog("CheckAutoColorManagementEnableOnStartedCondition, exit(break) for foreach (var _InfoMonitors in _AllInfoMonitors)");
@@ -11406,7 +11513,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                             //CheckUODFWUInfoPackage();
                             //load hotkeysetting
                             //ReloadHotkeyConfigData();
-                            ToNKVM_SupportedMonitorList();
+                            //ToNKVM_SupportedMonitorList();
                             //ToNKVM_initHotKeys();
                         }
 
@@ -11530,7 +11637,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         //_NKVMPluginCondition = pluginCondition;
                         _NKVMPlugin.NKVMCLIEvent += NKVMCLIEvent;
                         _NKVMPlugin.NKVMSetHotkey += NKVMSetHotkey;
-                        ToNKVM_SupportedMonitorList();
+                        //ToNKVM_SupportedMonitorList();
                         //ToNKVM_initHotKeys();
                     }
                     else if (pluginCondition is PluginStartedCondition)
@@ -11539,7 +11646,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         //_NKVMPluginCondition = pluginCondition;
                         _NKVMPlugin.NKVMCLIEvent += NKVMCLIEvent;
                         _NKVMPlugin.NKVMSetHotkey += NKVMSetHotkey;
-                        ToNKVM_SupportedMonitorList();
+                        //ToNKVM_SupportedMonitorList();
                         //ToNKVM_initHotKeys();
                     }
                 }
@@ -11630,7 +11737,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         //_DTPProxyPlugin.IsZoomScreenShareActive_Notify += IsZoomScreenShareActiveChanged;
 
                         //Derek 1119
-                        _DTPProxyPlugin.WebcamEventHandler += _DTPProxyPlugin_WebcamEventHandler;
+                        _DTPProxyPlugin.DTPEventHandler += _DTPProxyPlugin_DTPEventHandler;
                     }
                     else if (pluginCondition is PluginStartedCondition)
                     {
@@ -11647,7 +11754,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         //_DTPProxyPlugin.IsZoomScreenShareActive_Notify += IsZoomScreenShareActiveChanged;
 
                         //Derek 1119
-                        _DTPProxyPlugin.WebcamEventHandler += _DTPProxyPlugin_WebcamEventHandler;
+                        _DTPProxyPlugin.DTPEventHandler += _DTPProxyPlugin_DTPEventHandler;
                     }
                 }
             });
@@ -12182,6 +12289,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         if (isCapsLockOn)
                         {
                             ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.CapsLock, true);
+                            //ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.BatteryLow, OSDType_Device.Headset, "Content");
+                            //ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.CollaborationNotAvailable, OSDType_Device.Keyboard, "Collaboration controls are not available during multiple conference calls");
                         }
                         else
                         {
@@ -13774,7 +13883,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 if (config != null)
                 {
                     _SupportedMonitorList = config.UserSettings.SupportedMonitorList;
-                    _NKVMPlugin.ToNKVM_SupportedMonitorList(_SupportedMonitorList);
+                    //_NKVMPlugin.ToNKVM_SupportedMonitorList(_SupportedMonitorList);
                 }
             }
         }
@@ -14768,6 +14877,35 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                             else
                                 return Task.CompletedTask;
                         }
+                    case OSDType.CollaborationNotAvailable:
+                        {
+                            if (Device is OSDType_Device.Headset)
+                            {
+                                if (!string.IsNullOrWhiteSpace(Content))
+                                    _showosd(monitorInfo, OSDType.CollaborationNotAvailable, OSDType_Device.Headset, Content);
+                                else
+                                    writelog("[_showosd*******] Content error can't be NullOrWhiteSpace");
+                                return Task.CompletedTask;
+                            }
+                            else if (Device is OSDType_Device.Keyboard)
+                            {
+                                if (!string.IsNullOrWhiteSpace(Content))
+                                    _showosd(monitorInfo, OSDType.CollaborationNotAvailable, OSDType_Device.Keyboard, Content);
+                                else
+                                    writelog("[_showosd*******] Content error can't be NullOrWhiteSpace");
+                                return Task.CompletedTask;
+                            }
+                            else if (Device is OSDType_Device.Mouse)
+                            {
+                                if (!string.IsNullOrWhiteSpace(Content))
+                                    _showosd(monitorInfo, OSDType.CollaborationNotAvailable, OSDType_Device.Mouse, Content);
+                                else
+                                    writelog("[_showosd*******] Content error can't be NullOrWhiteSpace");
+                                return Task.CompletedTask;
+                            }
+                            else
+                                return Task.CompletedTask;
+                        }
                     default:
                         return Task.CompletedTask;
                 }
@@ -15217,6 +15355,50 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                         }
                                         break;
 
+                                    case OSDType.QAM:
+                                        {
+                                            //if (State)
+                                            {
+                                                try
+                                                {
+                                                    _OSD_Controler.QAMHotKeyWin_CloseWindow();
+                                                    _OSD_Controler.QAMHotKeyWin_ShowWindow((sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX));
+                                                }
+                                                catch (Exception ex)
+                                                {
+                                                    writelog($"[_showosd] ERROR - OSDType.QAM: {ex.Message}, State:{State}");
+                                                }
+                                            }
+                                            //else
+                                            //{
+                                            //    try
+                                            //    {
+                                            //        _OSD_Controler.QAMHotKeyWin_CloseWindow();
+                                            //        _OSD_Controler.QAMHotKeyWin_ShowWindow((sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX));
+                                            //    }
+                                            //    catch (Exception ex)
+                                            //    {
+                                            //        writelog($"[_showosd] ERROR - OSDType.QAM: {ex.Message}, State:{State}");
+                                            //    }
+                                            //}
+                                        }
+                                        break;
+                                    case OSDType.CollaborationNotAvailable:
+                                        {
+                                            if (_DeviceType is OSDType_Device.Keyboard)
+                                            {
+                                                try
+                                                {
+                                                    _OSD_Controler.CollaborationNotAvailableWin_CloseWindow();
+                                                    _OSD_Controler.CollaborationNotAvailableWin_ShowWindow(Content, (sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX));
+                                                }
+                                                catch (Exception ex)
+                                                {
+                                                    writelog($"[_showosd] ERROR - OSDType_Device.Keyboard: {ex.Message}");
+                                                }
+                                            }
+                                        }
+                                        break;
                                     default:
                                         break;
                                 }
@@ -15266,6 +15448,14 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         {
             if (_IEzMemoryPlugin != null)
                 return Task.FromResult(_IEzMemoryPlugin.LaunchAndArrangeApps(sortApps).Result);
+            else
+                return null;
+        }
+
+        public Task<bool> LaunchAndArrangeAppsWithEzArrange(Dictionary<String, Bind_AddFullPage_AppCollectionData> sortApps, MonitorInfo moInfo, int eAid)
+        {
+            if (_IEzMemoryPlugin != null)
+                return Task.FromResult(_IEzMemoryPlugin.LaunchAndArrangeAppsWithEzArrange(sortApps, moInfo, eAid).Result);
             else
                 return null;
         }

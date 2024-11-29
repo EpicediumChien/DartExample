@@ -52,7 +52,7 @@ namespace DDPM.SA.Plugins.User.EzMemory
 
         [DllImport("user32.dll", SetLastError = true)]
         [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
-        static extern int GetWindowTextLength(IntPtr hWnd);
+        private static extern int GetWindowTextLength(IntPtr hWnd);
         private int EzMemoryGetWindowTextLength(IntPtr hWnd)
         {
             return GetWindowTextLength(hWnd);
@@ -60,7 +60,7 @@ namespace DDPM.SA.Plugins.User.EzMemory
 
         [DllImport("user32.dll", SetLastError = true)]
         [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
-        static extern int GetWindowText(IntPtr hWnd, StringBuilder lpString, int nMaxCount);
+        private static extern int GetWindowText(IntPtr hWnd, StringBuilder lpString, int nMaxCount);
         private int EzMemoryGetWindowText(IntPtr hWnd, StringBuilder lpString, int nMaxCount)
         {
             return GetWindowText(hWnd, lpString, nMaxCount);
@@ -69,7 +69,7 @@ namespace DDPM.SA.Plugins.User.EzMemory
         [DllImport("user32.dll", SetLastError = true)]
         [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
         [return: MarshalAs(UnmanagedType.Bool)]
-        static extern bool SetWindowPos(IntPtr hWnd, IntPtr hWndInsertAfter, int X, int Y, int cx, int cy, uint uFlags);
+        private static extern bool SetWindowPos(IntPtr hWnd, IntPtr hWndInsertAfter, int X, int Y, int cx, int cy, uint uFlags);
         private bool EzMemorySetWindowPos(IntPtr hWnd, IntPtr hWndInsertAfter, int X, int Y, int cx, int cy, uint uFlags)
         {
             return SetWindowPos(hWnd, hWndInsertAfter, X, Y, cx, cy, uFlags);
@@ -77,7 +77,7 @@ namespace DDPM.SA.Plugins.User.EzMemory
 
         [DllImport("user32.dll", SetLastError = true)]
         [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
-        static extern int GetClassName(IntPtr hWnd, StringBuilder lpClassName, int nMaxCount);
+        private static extern int GetClassName(IntPtr hWnd, StringBuilder lpClassName, int nMaxCount);
         private int EzMemoryGetClassName(IntPtr hWnd, StringBuilder lpClassName, int nMaxCount)
         {
             return GetClassName(hWnd, lpClassName, nMaxCount);
@@ -85,8 +85,7 @@ namespace DDPM.SA.Plugins.User.EzMemory
         [DllImport("user32.dll", SetLastError = true)]
         [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
         [return: MarshalAs(UnmanagedType.Bool)]
-        static extern bool GetWindowRect(IntPtr hWnd, out RECT lpRect);
-
+        private static extern bool GetWindowRect(IntPtr hWnd, out RECT lpRect);
         private bool EzMemoryGetWindowRect(IntPtr hWnd, out RECT lpRect)
         {
             return GetWindowRect(hWnd, out lpRect);
@@ -897,7 +896,7 @@ namespace DDPM.SA.Plugins.User.EzMemory
             return true;
         }
 
-        public async Task<bool> LaunchAndArrangeAppsWithEzArrange(Dictionary<string, Bind_AddFullPage_AppCollectionData> sortApps, MonitorInfo moInfo, int eAid)
+        public async Task<bool> LaunchAndArrangeAppsWithEzArrange(Dictionary<String, Bind_AddFullPage_AppCollectionData> sortApps, MonitorInfo moInfo, int eAid)
         {
             try
             {
@@ -991,6 +990,7 @@ namespace DDPM.SA.Plugins.User.EzMemory
                     return Task.FromResult(false);
                 }
 
+
                 List<Bind_AddFullPage_AppCollectionData> seletcApps = new List<Bind_AddFullPage_AppCollectionData>();
                 double screenWidth = SystemParameters.PrimaryScreenWidth;
                 double screenHeight = SystemParameters.PrimaryScreenHeight;
@@ -999,15 +999,24 @@ namespace DDPM.SA.Plugins.User.EzMemory
                 var sortedByKey = sortApps.OrderBy(x => x.Key).ToList();
                 seletcApps = sortedByKey.Select(x => x.Value).ToList();
 
-                Task.Run(async () =>
-                {
+                //Task.Run(async () =>
+                //{
+                    EzMemLauncher ezMemLauncher = new EzMemLauncher();
+                    MonitorInfo mi = _AllInfoMonitors[0];
+                    int eaId = 9;
+                    ezMemLauncher.LaunchStart(mi, eaId);
+
                     List<IntPtr> windowHandles = new List<IntPtr>();
+
+                    //Robert_Lin, add to make sure all opened windows has been arranged
+                    int arrangeCount = 0;
+                    int addCount = 0;
 
                     for (int i = 0; i < appCount; i++)
                     {
                         var app = seletcApps[i];
                         IntPtr handle = IntPtr.Zero;
-
+                        
                         try
                         {
                             // 檢查應用程式是否已經存在
@@ -1038,7 +1047,7 @@ namespace DDPM.SA.Plugins.User.EzMemory
                                     if (handle != IntPtr.Zero && !windowHandles.Contains(handle))
                                         break;
 
-                                    await Task.Delay(500);
+                                    Task.Delay(500);
                                 }
 
                                 if (handle == IntPtr.Zero)
@@ -1048,42 +1057,57 @@ namespace DDPM.SA.Plugins.User.EzMemory
                                 }
                             }
 
-                            // 取得視窗的 DPI 設定
+                             // 取得視窗的 DPI 設定
                             float dpiScale = GetDpiScaleForWindow(handle);
 
-                            // 調整視窗位置與大小，考慮 DPI 比例
+                            /*
+                           // 調整視窗位置與大小，考慮 DPI 比例
                             EzMemorySetWindowPos(handle, IntPtr.Zero,
                                 (int)((i * widthPerApp) * dpiScale),
                                 0,
                                 (int)(widthPerApp * dpiScale),
                                 (int)(screenHeight * dpiScale),
                                 SWP_SHOWWINDOW);
+                            */
+
+                            ezMemLauncher.ArrangeWindow(handle, i);
+                            arrangeCount++;
+
 
                             // 確認視窗是否已移動到預期的位置
-                            for (int checkAttempt = 0; checkAttempt < 10; checkAttempt++)
-                            {
-                                if (EzMemoryGetWindowRect(handle, out RECT rect))
-                                {
-                                    if (rect.Left == (int)((i * widthPerApp) * dpiScale) && rect.Top == 0 &&
-                                        rect.Right == (int)(((i + 1) * widthPerApp) * dpiScale) && rect.Bottom == (int)(screenHeight * dpiScale))
-                                    {
-                                        _logs.Info($"[EzMemoryManagerPlugin] LaunchAndArrangeApps, App {app.AppName} positioned correctly.");
-                                        break;
-                                    }
-                                }
+                            //for (int checkAttempt = 0; checkAttempt < 10; checkAttempt++)
+                            //{
+                            //    if (EzMemoryGetWindowRect(handle, out RECT rect))
+                            //    {
+                            //        if (rect.Left == (int)((i * widthPerApp) * dpiScale) && rect.Top == 0 &&
+                            //            rect.Right == (int)(((i + 1) * widthPerApp) * dpiScale) && rect.Bottom == (int)(screenHeight * dpiScale))
+                            //        {
+                            //            _logs.Info($"[EzMemoryManagerPlugin] LaunchAndArrangeApps, App {app.AppName} positioned correctly.");
+                            //            break;
+                            //        }
+                            //    }
 
-                                await Task.Delay(500);
-                            }
+                                //Task.Delay(500);
+                            //}
 
-                            await Task.Delay(500);
+                            Task.Delay(1000);
+                            
                         }
                         catch (Exception ex)
                         {
                             _logs.Error($"[EzMemoryManagerPlugin] LaunchAndArrangeApps, Error arranging app {app.AppName}: {ex}");
                         }
-                    }
+                        
 
-                });
+                    } //for
+
+                    //Robert_Lin, 2024-11-27, Wait until all opened windows are arranged
+                    while (arrangeCount < appCount)
+                    {
+                        Task.Delay(100);
+                    }
+                    ezMemLauncher.LaunchEnd();
+                //});
 
                 return Task.FromResult(true);
             }

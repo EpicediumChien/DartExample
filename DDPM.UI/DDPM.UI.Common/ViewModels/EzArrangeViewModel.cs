@@ -537,6 +537,14 @@ namespace DDPM.UI.Common.ViewModels
 
         #region Assign page
 
+        public Dictionary<string, Bind_AddFullPage_AppCollectionData> SortAppsByTextBlockNumber(Dictionary<string, Bind_AddFullPage_AppCollectionData> sorrAppDic)
+        {
+            var sortedApps = sorrAppDic
+                .OrderBy(pair => GetTextBlockNumber(pair.Key))
+                .ToDictionary(pair => pair.Key, pair => pair.Value);
+
+            return sortedApps;
+        }
         public int GetTextBlockNumber(string btnName)
         {
             switch (btnName)

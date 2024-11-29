@@ -151,6 +151,10 @@ namespace DDPM.EABroker
         #endregion
 
         #region DDPM.SA Functions
+        /// <summary>
+        /// Call to DeviceManagerSA.GetMonitors() to get a list of MonitorInfo that current supported monitor.
+        /// </summary>
+        /// <returns></returns>
         public List<MonitorInfo>? GetMonitors()
         {
             if (_deviceManagerSA == null)
@@ -547,6 +551,9 @@ namespace DDPM.EABroker
                 OnPropertyChanged("IsWithoutGap");
             }
         }
+        /// <summary>
+        /// The option in DDPM UI, Easy Arrange / Settings page is set to ON.
+        /// </summary>
         public bool IsSpanMultiMonitors
         {
             get => _isSpanMultiMonitors;
@@ -788,7 +795,7 @@ namespace DDPM.EABroker
         //(v2)Robert_Lin, 2024-11-18, new version consider when SpanScreen is ON
         public void RefreshWorkWindows(bool isInit=false)
         {
-            WriteLog("@ArrangeVM.RefreshWorkWindows()");
+            WriteLog("@ ArrangeVM.RefreshWorkWindows()");
             bool isSupportNonDellMonitors = false;
 
             RefreshScreenScale();
@@ -806,8 +813,11 @@ namespace DDPM.EABroker
 
             List<MonitorInfo> monitors = GetMonitors();
             List<EAScreen> eaScreens = EAScreen.GetEAScreens(monitors);
+            WriteLog($"Count={eaScreens.Count}, {EAScreen.EAScreensToString(eaScreens)}");
+            WriteLog($"EzSettings.IsSpanMultiMonitors={IsSpanMultiMonitors}, IsSpanScreenWorking={IsSpanScreenWorking}");
 
             //Allocate WorkWindow for SpanScreen at first
+            WriteLog($"Beofre allocate for SpanScreen, WorkerWindow, UsedCount={WorkWindowUsedCount}");
             if (_spanScreen != null)
             {
                 //SpanScreen is enabled and ON
@@ -818,6 +828,7 @@ namespace DDPM.EABroker
                     if (workWindow == null)
                     {
                         //No more available workWindow
+                        WriteLog("GetUnusedWorkWindow() return null, No more available workWindow");
                         return;
                     }
 
@@ -866,6 +877,7 @@ namespace DDPM.EABroker
                 }
             }
 
+            WriteLog($"After allocate for SpanScreen, WorkerWindow, UsedCount={WorkWindowUsedCount}");
 
             foreach (EAScreen eaScr in eaScreens)
             {
@@ -1646,8 +1658,11 @@ namespace DDPM.EABroker
         {
             if (_spanScreen != null)
             {
+                Stopwatch sw = Stopwatch.StartNew();
                 List<MonitorInfo>? monitors = GetMonitors();
                 bool res = _spanScreen.DetectSpanScreens(_log, monitors);
+                sw.Stop();
+                WriteLog($"DetectSpanCondition, IsSpanEnabled={res}, Elapsed {sw.ElapsedMilliseconds} msec");
                 OnPropertyChanged("IsSpanEnabled");
                 OnPropertyChanged("IsHorzSpan");
                 OnPropertyChanged("SpanWorkingArea");
@@ -1657,6 +1672,9 @@ namespace DDPM.EABroker
             return false;
         }
 
+        /// <summary>
+        /// True if current Montor Configure is meet the requirement of Span screen.
+        /// </summary>
         public bool IsSpanEnabled
         {
             get 
@@ -1694,6 +1712,9 @@ namespace DDPM.EABroker
             }
         }
 
+        /// <summary>
+        /// True when "Span condition is meet"(IsSpanEnabled) and "Span option is ON"(IsSpanMultiMonitors)
+        /// </summary>
         public bool IsSpanScreenWorking
         {
             get

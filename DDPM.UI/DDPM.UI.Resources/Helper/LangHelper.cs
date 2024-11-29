@@ -40,6 +40,22 @@ namespace DDPM.UI.Resources.Helper
             }
         }
 
+        //public string this[string name]
+        //{
+        //    get
+        //    {
+        //        if (name == null)
+        //        {
+        //            throw new ArgumentNullException(nameof(name));
+        //        }
+
+        //        CultureInfo cultureInfo = CultureInfo.CreateSpecificCulture("en-US");
+        //        string str = _resourceManager.GetString(name, cultureInfo) ??
+        //                     _resourceManager.GetString(name, CultureInfo.InvariantCulture) ?? "";
+        //        return System.Text.RegularExpressions.Regex.Unescape(str);
+        //    }
+        //}
+
         public void ChangeLanguage(CultureInfo cultureInfo)
         {
             CultureInfo.CurrentCulture = cultureInfo;

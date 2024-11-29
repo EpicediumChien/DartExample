@@ -20,7 +20,15 @@ namespace DDPM.UI.Common
             string str = resManager.GetString(key, CultureInfo.InstalledUICulture) ?? resManager.GetString(key, CultureInfo.InvariantCulture) ?? "";
             return System.Text.RegularExpressions.Regex.Unescape(str);
         }
+        //private static string GetString(string key, string culture = "en-US")
+        //{
+        //    CultureInfo cultureInfo = CultureInfo.CreateSpecificCulture(culture);
 
+        //    string str = resManager.GetString(key, cultureInfo) ??
+        //                 resManager.GetString(key, CultureInfo.InvariantCulture) ?? "";
+
+        //    return System.Text.RegularExpressions.Regex.Unescape(str);
+        //}
         public static readonly string AdaptiveLight = GetString("AdaptiveLight");
         public static readonly string Manual = GetString("Manual");
         public static readonly string On = GetString("On");
@@ -136,7 +144,6 @@ namespace DDPM.UI.Common
 
         //pen
         public static readonly string BarrelButton = GetString("BarrelButton");//Barrel Button
-
         public static readonly string DefineBySystem = GetString("DefineBySystem");//Define by system
         public static readonly string EMail = GetString("EMail");//E-mail
         public static readonly string OneNote = GetString("OneNote");//One Note
@@ -150,7 +157,6 @@ namespace DDPM.UI.Common
 
         //Productivity Actions
         public static readonly string AssignKeystroke = GetString("AssignKeystroke");//Assign Keystroke
-
         public static readonly string Back = GetString("Back");//Back
         public static readonly string Calculator = GetString("Calculator");//Calculator
         public static readonly string CloseWindow = GetString("CloseWindow");//Close Window
@@ -185,22 +191,20 @@ namespace DDPM.UI.Common
         public static readonly string Undo = GetString("Undo");//"Undo";
 
         //Multimedia Actions
-        public static readonly string MediaNextTrack = "Media Next Track";
-
-        public static readonly string MediaPlayPause = "Media Play/Pause";
-        public static readonly string MediaPreviousTrack = "Media Previous Track";
-        public static readonly string Music = "Music";
-        public static readonly string Pictures = "Pictures";
-        public static readonly string VolumeDown = "Volume Down";
-        public static readonly string VolumeMute = "Volume Mute";
-        public static readonly string VolumeUp = "Volume Up";
+        public static readonly string MediaNextTrack = GetString("Multimedia.1");
+        public static readonly string MediaPlayPause = GetString("Multimedia.2");
+        public static readonly string MediaPreviousTrack = GetString("Multimedia.3");
+        public static readonly string Music = GetString("Multimedia.4");
+        public static readonly string Pictures = GetString("Multimedia.5");
+        public static readonly string VolumeDown = GetString("Multimedia.6");
+        public static readonly string VolumeMute = GetString("Multimedia.7");
+        public static readonly string VolumeUp = GetString("Multimedia.8");
 
         //pen
         public static readonly string NextTrack = "Next Track"; //MediaNextTrack?
 
         //Other
         public static readonly string PrtSc = "Print Screen";
-
         public static readonly string ScrollLock = "Scroll Lock";
         public static readonly string PauseBreak = "Pause Break";
         public static readonly string Home = "Home";
@@ -210,70 +214,65 @@ namespace DDPM.UI.Common
         public static readonly string WebBrowser = "Web Browser";
 
         //Word
-        public static readonly string Autoscroll = "Autoscroll";
-
-        public static readonly string Find = "Find";
-        public static readonly string IncreaseIndent = "Increase Indent";
-        public static readonly string NewComment = "New Comment";
-        public static readonly string NextChange = "Next Change";
-        public static readonly string NextComment = "Next Comment";
-        public static readonly string PasteAndKeepSourceFormatting = "Paste and Keep Source Formatting";
-        public static readonly string PasteAndKeepTextOnly = "Paste and Keep Text Only";
-        public static readonly string PasteAndMatchFormatting = "Paste and Merge Formatting";
-        public static readonly string PasteAndMergeFormatting = "Paste and Match Formatting";
-        public static readonly string PreviousChange = "Previous Change";
-        public static readonly string PreviousComment = "Previous Comment";
-        public static readonly string Print = "Print";
-        public static readonly string Save = "Save";
-        public static readonly string Strikethrough = "Strikethrough";
-        public static readonly string TextSizeMinus = "Text Size -";
-        public static readonly string TextSizePlus = "Text Size +";
-        public static readonly string TranslateSelectedText = "Translate Selected Text";
-        public static readonly string ViewOnePage = "View One Page";
-        public static readonly string ViewPageWidth = "View Page Width";
+        public static readonly string Autoscroll = GetString("Word.1");
+        public static readonly string Find = GetString("Word.2");
+        public static readonly string IncreaseIndent = GetString("Word.3");
+        public static readonly string NewComment = GetString("Word.4");
+        public static readonly string NextChange = GetString("Word.5");
+        public static readonly string NextComment = GetString("Word.6");
+        public static readonly string PasteAndKeepSourceFormatting = GetString("Word.7");
+        public static readonly string PasteAndKeepTextOnly = GetString("Word.8");
+        public static readonly string PasteAndMatchFormatting = GetString("Word.9");
+        public static readonly string PasteAndMergeFormatting = GetString("Word.10");
+        public static readonly string PreviousChange = GetString("Word.11");
+        public static readonly string PreviousComment = GetString("Word.12");
+        public static readonly string Print = GetString("Word.13");
+        public static readonly string Save = GetString("Word.14");
+        public static readonly string Strikethrough = GetString("Word.15");
+        public static readonly string TextSizeMinus = GetString("Word.16");
+        public static readonly string TextSizePlus = GetString("Word.17");
+        public static readonly string TranslateSelectedText = GetString("Word.18");
+        public static readonly string ViewOnePage = GetString("Word.19");
+        public static readonly string ViewPageWidth = GetString("Word.20");
 
         //Excel
-        public static readonly string AlignCenter = "Align Center";
-
-        public static readonly string AlignLeft = "Align Left";
-        public static readonly string AlignRight = "Align Right";
-        public static readonly string DecreaseIndent = "Decrease Indent";
-        public static readonly string GotoBottomOfDataRegion = "Go to Bottom of Data Region";
-        public static readonly string GotoTopOfDataRegion = "Go to Top of Data Region";
-        public static readonly string InsertChart = "Insert Chart";
-        public static readonly string InsertRowAbove = "Insert Row Above";
-        public static readonly string PanHoldAndMoveMouse = "Pan (Hold and Move Mouse)";
-        public static readonly string PasteFormatOnly = "Paste Format Only";
-        public static readonly string PasteFormulas = "Paste Formulas";
-        public static readonly string PasteValueOnly = "Paste Value Only";
-        public static readonly string PreviousSheet = "Previous Sheet";
-        public static readonly string SortAtoZ = "Sort A to Z";
+        public static readonly string AlignCenter = GetString("Excel.1");
+        public static readonly string AlignLeft = GetString("Excel.2");
+        public static readonly string AlignRight = GetString("Excel.3");
+        public static readonly string DecreaseIndent = GetString("Excel.4");
+        public static readonly string GotoBottomOfDataRegion = GetString("Excel.5");
+        public static readonly string GotoTopOfDataRegion = GetString("Excel.6");
+        public static readonly string InsertChart = GetString("Excel.7");
+        public static readonly string InsertRowAbove = GetString("Excel.8");
+        public static readonly string PanHoldAndMoveMouse = GetString("Excel.9");
+        public static readonly string PasteFormatOnly = GetString("Excel.10");
+        public static readonly string PasteFormulas = GetString("Excel.11");
+        public static readonly string PasteValueOnly = GetString("Excel.12");
+        public static readonly string PreviousSheet = GetString("Excel.13");
+        public static readonly string SortAtoZ = GetString("Excel.14");
 
         //PowerPoint
-        public static readonly string ArrangeAlignCenter = "Arrange Align Center";
-
-        public static readonly string ArrangeAlignLeft = "Arrange Align Left";
-        public static readonly string ArrangeAlignRight = "Arrange Align Right";
-        public static readonly string BringToFront = "Bring to Front";
-        public static readonly string DecreaseListLevel = "Decrease List Level";
-        public static readonly string DuplicateSelectedSlides = "Duplicate Selected Slides";
-        public static readonly string IncreaseListLevel = "Increase List Level";
-        public static readonly string PlayFromCurrentSlide = "Play from Current Slide";
-        public static readonly string PreviousSlide = "Previous Slide";
-        public static readonly string SendToBack = "Send to Back";
+        public static readonly string ArrangeAlignCenter = GetString("PowerPoint.1");
+        public static readonly string ArrangeAlignLeft = GetString("PowerPoint.2");
+        public static readonly string ArrangeAlignRight = GetString("PowerPoint.3");
+        public static readonly string BringToFront = GetString("PowerPoint.4");
+        public static readonly string DecreaseListLevel = GetString("PowerPoint.5");
+        public static readonly string DuplicateSelectedSlides = GetString("PowerPoint.6");
+        public static readonly string IncreaseListLevel = GetString("PowerPoint.7");
+        public static readonly string PlayFromCurrentSlide = GetString("PowerPoint.8");
+        public static readonly string PreviousSlide = GetString("PowerPoint.9");
+        public static readonly string SendToBack = GetString("PowerPoint.10");
 
         //Outlook
-        public static readonly string AttachFile = "Attach File";
-
-        public static readonly string ForwardEmail = "Forward Email";
-        public static readonly string NewEmail = "New Email";
-        public static readonly string NewMeeting = "New Meeting";
-        public static readonly string Reply = "Reply";
-        public static readonly string ReplyToAll = "Reply to All";
+        public static readonly string AttachFile = GetString("Outlook.1");
+        public static readonly string ForwardEmail = GetString("Outlook.2");
+        public static readonly string NewEmail = GetString("Outlook.3");
+        public static readonly string NewMeeting = GetString("Outlook.4");
+        public static readonly string Reply = GetString("Outlook.5");
+        public static readonly string ReplyToAll = GetString("Outlook.6");
 
         //Open/Run
         public static readonly string Calendar = "Calendar";
-
         public static readonly string Camera = "Camera";
         public static readonly string Clock = "Clock";
         public static readonly string Cortana = "Cortana";
@@ -318,27 +317,25 @@ namespace DDPM.UI.Common
         public static readonly string Xbox = "Xbox";
 
         //Radial Menu
-        public static readonly string Disabled = "Disabled";
-
-        public static readonly string GoBack = "Go Back";
-        public static readonly string GoForward = "Go Forward";
-        public static readonly string PlayPause = "Play/Pause";
-        public static readonly string PreviousTrack = "Previous Track";
-        public static readonly string Mute = "Mute";
-        public static readonly string FunctionForSelectedRadial = "Function for selected radial";
-        public static readonly string LabelForSelectedRadial = "Label for selected radial";
-        public static readonly string UseCenterForEmulatingRightClick = "Use center for emulating right click";
+        public static readonly string Disabled = GetString("RadialMenu.1");
+        public static readonly string GoBack = GetString("RadialMenu.2");
+        public static readonly string GoForward = GetString("RadialMenu.3");
+        public static readonly string PlayPause = GetString("RadialMenu.4");
+        public static readonly string PreviousTrack = GetString("RadialMenu.5");
+        public static readonly string Mute = GetString("RadialMenu.6");
+        public static readonly string FunctionForSelectedRadial = GetString("RadialMenu.7");
+        public static readonly string LabelForSelectedRadial = GetString("RadialMenu.8");
+        public static readonly string UseCenterForEmulatingRightClick = GetString("RadialMenu.9");
 
         //Common
-        public static readonly string Browse = "Browse";
-
-        public static readonly string Clear = "Clear";
-        public static readonly string Cancel = "Cancel";
+        public static readonly string Browse = GetString("Common.0");
+        public static readonly string Clear = GetString("Common.1");
+        public static readonly string Cancel = GetString("Common.2");
 
         //Dialog
-        public static readonly string OpenRunDesc = "Choose the app from a list of apps";
-        public static readonly string SelectAFile = "Select a file";
-        public static readonly string SelectedFile = "Selected file";
+        public static readonly string OpenRunDesc = GetString("Common.3");
+        public static readonly string SelectAFile = GetString("Common.4");
+        public static readonly string SelectedFile = GetString("Common.5");
 
         //Pen settings
         public static readonly string PenSettings = GetString("PenSettings.0");
@@ -349,14 +346,16 @@ namespace DDPM.UI.Common
         public static readonly string PairWithTile = GetString("PenSettings.5");
         public static readonly string PairTooltip = GetString("PenSettings.6");
         public static readonly string GetStarted2 = GetString("PenSettings.7");
-        public static readonly string PairTile1 = "Enable Bluetooth on your device.";
-        public static readonly string PairTile2 = "Scan the QR Code to download Tile on to your mobile device.";
-        public static readonly string PairTile3 = "Press and hold the two side buttons on the pen for 3 seconds to pair it to Tile.";
-        public static readonly string DownloadTile = "Download tile";
-        public static readonly string USB_C_DP_14 = "USB-C (DP 1.4)";
-        public static readonly string Dual_USB__C_DP_14 = "Dual USB-C (DP 1.4)";
-        public static readonly string DUSB__C_TB_4 = "USB-C (TB 4)";
-        public static readonly string DUSB__C_TB_5 = "USB-C (TB 5)";
+        public static readonly string PairTile1 = GetString("PenSettings.8");
+        public static readonly string PairTile2 = GetString("PenSettings.9");
+        public static readonly string PairTile3 = GetString("PenSettings.10");
+        public static readonly string DownloadTile = GetString("PenSettings.11");
+
+        //Dock
+        public static readonly string USB_C_DP_14 = GetString("Dock.2");
+        public static readonly string Dual_USB__C_DP_14 = GetString("Dock.3");
+        public static readonly string DUSB__C_TB_4 = GetString("Dock.4");
+        public static readonly string DUSB__C_TB_5 = GetString("Dock.5");
 
         // add device 
         public static readonly string AddDevice = GetString("AddDevice");
@@ -397,37 +396,37 @@ namespace DDPM.UI.Common
         public static readonly string Collaboration = GetString("Collaboration");
 
         //Collaboration
-        public static readonly string CollabsCaption = "Collaboration";
-        public static readonly string CollaborationToolTip = "Provides quick access to conference controls. Toggling the\nkeys on/off will show or hide them on the keyboard while in\na Microsoft Teams or Zoom call.";
-        public static readonly string CollaborationBlinkEffectText = "Enable blink effect when there is a new chat message in conference\ncall";
-        public static readonly string CollaborationDoubleTapText = "Activate icons on the keyboard by double tapping instead of single\ntapping";
-        public static readonly string LearnMoreCaption = "Learn More";
-        public static readonly string LearnMoreText1 = "To use Collaboration Keyboard with Microsoft Teams:\r\n1. Open Teams and go to privacy settings.\n\n2. Select Third-party app API and ensure that Dell Display and Peripheral Manager is not on the blocked list.\n\n3. Pair Microsoft Teams with Dell Display and Peripheral Manager by launching a Microsoft Teams conference call.";
-        public static readonly string LearnMoreText2 = "If you are still having trouble, contact your IT department (if applicable) as they may have policies in place that are prohibiting Collaboration Keyboard from connecting to Microsoft Teams.";
-        public static readonly string Alert1 = "To use Collaboration Keyboard you need the latest version of Zoom or Microsoft Teams";
-        public static readonly string Alert2 = "Connect Collaboration Keyboard with Microsoft Teams by starting a conference call and accepting the connection request";
-        public static readonly string Alert3 = "Collaboration Keyboard cannot connect to Microsoft Teams because you blocked the request. To use Microsoft Teams with Collaboration Keyboard, click \"Learn more\" for instructions on how to re-connect.";
-        public static readonly string Alert4 = "To use Collaboration Keyboard with Zoom, install Zoom’s latest desktop version";
-        public static readonly string Alert5 = "To use Collaboration Keyboard with Microsoft Teams, ensure you are signed into Microsoft Teams, using the latest version, and have the Third-party app API enabled";
-        public static readonly string LearnMoreLink = "Learn more";
-        public static readonly string VideoCaption = "Video";
-        public static readonly string ShareCaption = "Share";
-        public static readonly string ChatCaption = "Chat";
-        public static readonly string MicCaption = "Mic";
-        public static readonly string OKCaption = "OK";
+        public static readonly string CollabsCaption = GetString("Collab.1");
+        public static readonly string CollaborationToolTip = GetString("Collab.2");
+        public static readonly string CollaborationBlinkEffectText = GetString("Collab.3");
+        public static readonly string CollaborationDoubleTapText = GetString("Collab.4");
+        public static readonly string LearnMoreCaption = GetString("Collab.5");
+        public static readonly string LearnMoreText1 = GetString("Collab.6");
+        public static readonly string LearnMoreText2 = GetString("Collab.7");
+        public static readonly string Alert1 = GetString("Collab.8");
+        public static readonly string Alert2 = GetString("Collab.9");
+        public static readonly string Alert3 = GetString("Collab.10");
+        public static readonly string Alert4 = GetString("Collab.11");
+        public static readonly string Alert5 = GetString("Collab.12");
+        public static readonly string LearnMoreLink = GetString("Collab.5");
+        public static readonly string VideoCaption = GetString("Collab.13");
+        public static readonly string ShareCaption = GetString("Collab.14");
+        public static readonly string ChatCaption = GetString("Collab.15");
+        public static readonly string MicCaption = GetString("Collab.16");
+        public static readonly string OKCaption = GetString("Collab.17");
 
         //Camera
-        public static readonly string Preset = "Preset";
-        public static readonly string EditPreset = "Edit preset";
-        public static readonly string Smooth = "Smooth";
-        public static readonly string Vibrant = "Vibrant";
-        public static readonly string Warm = "Warm";
-        public static readonly string Name = "Name";
-        public static readonly string NameIsTaken = "This name is taken";
-        public static readonly string DefaultProfileTooltip = "Default Profile Tooltip";
-        public static readonly string SmoothProfileTooltip = "Smooth Profile Tooltip";
-        public static readonly string VibrantProfileTooltip = "Vibrant Profile Tooltip";
-        public static readonly string WarmProfileTooltip = "Warm Profile Tooltip";
+        public static readonly string Preset = GetString("Camera.14");
+        public static readonly string EditPreset = GetString("Camera.15");
+        public static readonly string Smooth = GetString("Camera.16");
+        public static readonly string Vibrant = GetString("Camera.17");
+        public static readonly string Warm = GetString("Camera.18");
+        public static readonly string Name = GetString("Camera.19");
+        public static readonly string NameIsTaken = GetString("Camera.20");
+        public static readonly string DefaultProfileTooltip = GetString("Camera.21");
+        public static readonly string SmoothProfileTooltip = GetString("Camera.22");
+        public static readonly string VibrantProfileTooltip = GetString("Camera.23");
+        public static readonly string WarmProfileTooltip = GetString("Camera.24");
 
         //EazyMemory
         public static readonly string Yes = GetString("Yes");
@@ -532,12 +531,12 @@ namespace DDPM.UI.Common
         public static readonly string WalkThroughHeadsetWL7024_Sub3 = GetString("WalkThroughHeadsetWL7024_Sub.3");
 
         //OpenAction
-        public static readonly string AssignKeystrokeDesc = "Enter a key combination to create a shortcut";
-        public static readonly string OpenFileDesc = "Click the browse button to select a file";
-        public static readonly string OpenFolderDesc = "Click the \"Browse\" button to select a folder";
-        public static readonly string OpenWebPageDesc = "Type the URL of the web page in the box below";
-        public static readonly string OpenFileWaterMark = "File Name";
-        public static readonly string OpenFolderWaterMark = "Folder Name";
+        public static readonly string AssignKeystrokeDesc = GetString("Action.1");
+        public static readonly string OpenFileDesc = GetString("Action.2");
+        public static readonly string OpenFolderDesc = GetString("Action.3");
+        public static readonly string OpenWebPageDesc = GetString("Action.4");
+        public static readonly string OpenFileWaterMark = GetString("Action.5");
+        public static readonly string OpenFolderWaterMark = GetString("Action.6");
 
         //Headset
         public static readonly string HeadsetAudioSettingsToolTip_1 = GetString("HeadsetAudioSettings.20");
@@ -581,20 +580,20 @@ namespace DDPM.UI.Common
         public static readonly string ImpExp_Tooltip2 = GetString("DisplayOthers.8");
 
         // Pair/Unpair
-        public static readonly string Caption = "Are you sure?";
-        public static readonly string MessageMouse = "Unpairing your mouse can limit your ability to use this computer. Make sure you have an alternative mouse setup before unpairing.";
-        public static readonly string MessageKeyboard = "Unpairing your keyboard can limit your ability to use this computer. Make sure you have an alternative keyboard setup before unpairing.";
-        public static readonly string MessagePen = "Unpairing your pen can limit your ability to use this computer. Make sure you have an alternative pen setup before unpairing.";
-        public static readonly string MessageHeadset = "This will unpair your headset from its USB wireless receiver. You can still pair and use the headset on this system via Bluetooth. If required, you may pair the headset back to the wireless receiver from + icon on top right of the home screen of DDPM.";
-        public static readonly string Continue = "Continue";
-        public static readonly string Imcompatible = "This device is not compatible with";
-        public static readonly string PenAlreadyPaired = "This device is already paired. Unpair the device first if you would like to pair again.";
-        public static readonly string PairYourPen = "Pair your pen";
-        public static readonly string PairYourPenMessage = "Would you like to pair your pen with your system?";
+        public static readonly string Caption = GetString("PairedInfo.1");
+        public static readonly string MessageMouse = GetString("PairedInfo.2");
+        public static readonly string MessageKeyboard = GetString("PairedInfo.3");
+        public static readonly string MessagePen = GetString("PairedInfo.4");
+        public static readonly string MessageHeadset = GetString("PairedInfo.5");
+        public static readonly string Continue = GetString("PairedInfo.6");
+        public static readonly string Imcompatible = GetString("PairedInfo.7");
+        public static readonly string PenAlreadyPaired = GetString("PairedInfo.8");
+        public static readonly string PairYourPen = GetString("PairedInfo.9");
+        public static readonly string PairYourPenMessage = GetString("PairedInfo.10");
         public static readonly string Paired_Info = GetString("PairedInfo.0");
 
         // Display Restore to Default
-        public static readonly string RestoreToDefalutText = "Are you sure you want to restore all default settings on your device?";
+        public static readonly string RestoreToDefalutText = GetString("DisplayDefault.1");
         public static readonly string DisplayDefault0 = GetString("DisplayDefault.0");
 
         //Brightness right view messagebox

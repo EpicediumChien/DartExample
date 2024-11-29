@@ -85,7 +85,7 @@ namespace DDPM.CLI.Plugins.Display
         {
             //check if no monitor connected, direct response no monitor
             _AllInfoMonitors = devMgr.GetMonitors().Result;
-            if ((_AllInfoMonitors == null || _AllInfoMonitors.Count == 0) && !commandLineInput.TargetFeature.Equals("NETWORKKVM") && !commandLineInput.TargetFeature.Equals("NETWORKKVMAUTOCONNECT") && !commandLineInput.TargetFeature.Equals("NETWORKKVMCONTENTTRANSFER") && !commandLineInput.TargetFeature.Equals("NETWORKKVMINCOMINGPORT") && !commandLineInput.TargetFeature.Equals("NETWORKKVMOUTGOINGPORT") && !commandLineInput.TargetFeature.Equals("NETWORKKVMCONTENTTRANSFERPORT") && !commandLineInput.TargetFeature.Equals("NETWORKKVMACCESSRESET") && commandLineInput.TargetType != "APP")
+            if ((_AllInfoMonitors == null || _AllInfoMonitors.Count == 0) && commandLineInput.TargetType != "APP" && !commandLineInput.TargetFeature.Contains("NETWORKKVM"))
             {
                 CLI_RESPONSE rsp = new CLI_RESPONSE()
                 {
@@ -775,57 +775,15 @@ namespace DDPM.CLI.Plugins.Display
                     }
                     break;
                 case "NETWORKKVMVERSION":
-                    {
-                        var ret = NetworkkvmVersionx(commandLineInput);
-                        result.ExitCode = ret.code;
-                        result.serialize_Json_response = ret.result;
-                    }
-                    break;
                 case "NETWORKKVM":
-                    {
-                        var ret = Networkkvmx(devMgr, commandLineInput);
-                        result.ExitCode = ret.code;
-                        result.serialize_Json_response = ret.result;
-                    }
-                    break;
                 case "NETWORKKVMAUTOCONNECT":
-                    {
-                        var ret = Networkkvmautoconnectx(devMgr, commandLineInput);
-                        result.ExitCode = ret.code;
-                        result.serialize_Json_response = ret.result;
-                    }
-                    break;
                 case "NETWORKKVMCONTENTTRANSFER":
-                    {
-                        var ret = Networkkvmcontenttransferx(devMgr, commandLineInput);
-                        result.ExitCode = ret.code;
-                        result.serialize_Json_response = ret.result;
-                    }
-                    break;
                 case "NETWORKKVMINCOMINGPORT":
-                    {
-                        var ret = Networkkvmincomingportx(devMgr, commandLineInput);
-                        result.ExitCode = ret.code;
-                        result.serialize_Json_response = ret.result;
-                    }
-                    break;
                 case "NETWORKKVMOUTGOINGPORT":
-                    {
-                        var ret = Networkkvmoutgoingportx(devMgr, commandLineInput);
-                        result.ExitCode = ret.code;
-                        result.serialize_Json_response = ret.result;
-                    }
-                    break;
                 case "NETWORKKVMCONTENTTRANSFERPORT":
-                    {
-                        var ret = Networkkvmcontenttransferportx(devMgr, commandLineInput);
-                        result.ExitCode = ret.code;
-                        result.serialize_Json_response = ret.result;
-                    }
-                    break;
                 case "NETWORKKVMACCESSRESET":
                     {
-                        var ret = Networkkvmaccessresetx(devMgr, commandLineInput);
+                        var ret = CLINetworkKVM.Execute(commandLineInput);
                         result.ExitCode = ret.code;
                         result.serialize_Json_response = ret.result;
                     }
@@ -5143,7 +5101,23 @@ namespace DDPM.CLI.Plugins.Display
                 // jim modify 20240608
                 bool r = false;
                 bool ever_fail = false;
-
+                switch (value)
+                {
+                    case "CUSTOM":
+                        value = "CUSTOM COLOR";
+                        break;
+                    case "FPSGAME":
+                        value = "FPS GAME";
+                        break;
+                    case "RTSGAME":
+                        value = "RTS GAME";
+                        break;
+                    case "RPGGAME":
+                        value = "RPG GAME";
+                        break;
+                    default:
+                        break;
+                }
                 if (index.Count == 0 && serviceTag.Count == 0 && model.Count == 0)
                 {
                     foreach (var monitor in _AllInfoMonitors)
@@ -6930,7 +6904,8 @@ namespace DDPM.CLI.Plugins.Display
                 var serviceTagList = _AllInfoMonitors.Select(_ => _.edid.ServiceTag).Distinct().ToList();
                 Trace.WriteLine(serviceTagList.Count);
                 List<string> swapIsDone = new List<string>();
-                while (flag)
+                int count = 0;
+                while (flag && count < 10)
                 {
                     for (int i = 0; i < serviceTagList.Count; i++)
                     {
@@ -6963,6 +6938,7 @@ namespace DDPM.CLI.Plugins.Display
                     }
                     if (serviceTagList.Count == swapIsDone.Count)
                         flag = false;
+                    count++;
                 }
                 //while (flag)
                 //{
@@ -7140,7 +7116,6 @@ namespace DDPM.CLI.Plugins.Display
                     else
                     {
                         HDR_RESPONSE.Message = "HDR not supported";
-                        HDR_RESPONSE.Value = "HDR not supported";
                         HDR_RESPONSE.HDR = "N/A";
                         ret = null;
                     }
@@ -7250,7 +7225,6 @@ namespace DDPM.CLI.Plugins.Display
                     else
                     {
                         USBCPrioritization_RESPONSE.Message = "USB-C Prioritization not supported";
-                        USBCPrioritization_RESPONSE.Value = "USB-C Prioritization not supported";
                         // USBCPrioritization_RESPONSE.USBCPrioritizationType = "N/A";
                         ret = null;
                     }
@@ -7334,8 +7308,8 @@ namespace DDPM.CLI.Plugins.Display
                     CurrentOrientation_RESPONSE = new CLI_Get_Properties_Orientation_RESPONSE(cLI_RESPONSE);
                     try
                     {
-                        if (monitorInfo.CapabilityDic.ContainsKey("AA") && monitorInfo.CapabilityDic["AA"] != null && monitorInfo.CapabilityDic["AA"].Contains("00"))
-                        {
+                        //if (monitorInfo.CapabilityDic.ContainsKey("AA") && monitorInfo.CapabilityDic["AA"] != null && monitorInfo.CapabilityDic["AA"].Contains("00"))
+                        //{
                             if (commandLineInput.Command.Equals("GET"))
                             {
                                 writelog("ORIENTATION get entry");
@@ -7405,14 +7379,13 @@ namespace DDPM.CLI.Plugins.Display
                                     }
                                 }
                             }
-                        }
-                        else
-                        {
-                            writelog($"ORIENTATION VCP not support");
-                            CurrentOrientation_RESPONSE.Message = "ORIENTATION VCP not support";
-                            output += $"\n  \"Result: \": \"ORIENTATION VCP not support\"";
-                        }
-
+                        //}
+                        //else
+                        //{
+                        //    writelog($"ORIENTATION VCP not support");
+                        //    CurrentOrientation_RESPONSE.Message = "ORIENTATION VCP not support";
+                        //    output += $"\n  \"Result: \": \"ORIENTATION VCP not support\"";
+                        //}
                     }
                     catch
                     {
@@ -9228,13 +9201,13 @@ namespace DDPM.CLI.Plugins.Display
                                 get_DeviceData.FirmwareVersion = monitor.FwVersion;
 
                                 Trace.WriteLine(monitor.edid.Edid);
-                                if (monitor.CapabilityDic.ContainsKey("C0"))
-                                {
+                                //if (monitor.CapabilityDic.ContainsKey("C0"))
+                                //{
                                     writelog($"MonitorActiveHour Entry");
                                     rc = GetVCPCode(devMgr, monitor, "0xC0").Result;
                                     get_DeviceData.MonitorActiveHour = (rc.value).ToString() + " hours";
                                     writelog($"MonitorActiveHour Exit return value: {(rc.value).ToString()}");
-                                }
+                                //}
 
                                 if (monitor.CapabilityDic.ContainsKey("B6"))
                                 {
@@ -9287,13 +9260,13 @@ namespace DDPM.CLI.Plugins.Display
                                 get_DeviceData.ColorPreset = devMgr.ReadCurrentColorPreset(monitor).Result;
                                 writelog($"ReadCurrentColorPreset Exit return value: {devMgr.ReadCurrentColorPreset(monitor).Result}");
 
-                                if (monitor.CapabilityDic.ContainsKey("AA") && monitor.CapabilityDic["AA"] != null && monitor.CapabilityDic["AA"].Contains("00"))
-                                {
+                                //if (monitor.CapabilityDic.ContainsKey("AA") && monitor.CapabilityDic["AA"] != null && monitor.CapabilityDic["AA"].Contains("00"))
+                                //{
                                     writelog($"ScreenOrientation Entry");
                                     rc = GetVCPCode(devMgr, monitor, "0xAA").Result;
                                     get_DeviceData.ScreenOrientation = Orientations_Str[((uint)rc.value) - 1];
                                     writelog($"ScreenOrientation Exit return value: {Orientations_Str[((uint)rc.value) - 1]}");
-                                }
+                                //}
 
                                 if (monitor.CapabilityDic.ContainsKey("12"))
                                 {
@@ -9648,13 +9621,13 @@ namespace DDPM.CLI.Plugins.Display
                     get_DeviceData.ManufacturingWeek = "ISO week " + monitor.edid.Week.ToString();
                     get_DeviceData.FirmwareVersion = monitor.FwVersion;
 
-                    if (monitor.CapabilityDic.ContainsKey("C0"))
-                    {
+                    //if (monitor.CapabilityDic.ContainsKey("C0"))
+                    //{
                         writelog($"MonitorActiveHour Entry");
                         rc = GetVCPCode(devMgr, monitor, "0xC0").Result;
                         get_DeviceData.MonitorActiveHour = (rc.value).ToString() + " hours";
                         writelog($"MonitorActiveHour Exit return value: {(rc.value).ToString()}");
-                    }
+                    //}
 
                     if (monitor.CapabilityDic.ContainsKey("B6"))
                     {
@@ -9706,13 +9679,13 @@ namespace DDPM.CLI.Plugins.Display
                     get_DeviceData.ColorPreset = devMgr.ReadCurrentColorPreset(monitor).Result;
                     writelog($"ReadCurrentColorPreset Exit return value: {devMgr.ReadCurrentColorPreset(monitor).Result}");
 
-                    if (monitor.CapabilityDic.ContainsKey("AA") && monitor.CapabilityDic["AA"] != null && monitor.CapabilityDic["AA"].Contains("00"))
-                    {
+                    //if (monitor.CapabilityDic.ContainsKey("AA") && monitor.CapabilityDic["AA"] != null && monitor.CapabilityDic["AA"].Contains("00"))
+                    //{
                         writelog($"ScreenOrientation Entry");
                         rc = GetVCPCode(devMgr, monitor, "0xAA").Result;
                         get_DeviceData.ScreenOrientation = Orientations_Str[((uint)rc.value) - 1];
                         writelog($"ScreenOrientation Exit return value: {Orientations_Str[((uint)rc.value) - 1]}");
-                    }
+                    //}
 
                     if (monitor.CapabilityDic.ContainsKey("12"))
                     {
@@ -11187,24 +11160,24 @@ namespace DDPM.CLI.Plugins.Display
                     cli_Response.Command = commandLineInput.Command;
                     cli_Response.TargetFeature = commandLineInput.TargetFeature;
 
-                    if (!monitor.CapabilityDic.ContainsKey("C0"))
-                    {
-                        cli_Response.Result = "FAIL";
-                        cli_Response.Message = "Un - supported Feature";
-                    }
-                    else
-                    {
-                        rc = GetVCPCode(devMgr, monitor, "0xC0").Result;
-                        cli_Response.Value = (rc.value).ToString() + " hours";
+                    //if (!monitor.CapabilityDic.ContainsKey("C0"))
+                    //{
+                    //    cli_Response.Result = "FAIL";
+                    //    cli_Response.Message = "Un - supported Feature";
+                    //}
+                    //else
+                    //{
+                    //    rc = GetVCPCode(devMgr, monitor, "0xC0").Result;
+                    //    cli_Response.Value = (rc.value).ToString() + " hours";
 
-                        cli_Response.Result = "PASS";
-                        cli_Response.Message = "N/A";
-                    }
-                    //rc = GetVCPCode(devMgr, monitor, "0xC0").Result;
-                    //cli_Response.Value = (rc.value).ToString() + " hours";
+                    //    cli_Response.Result = "PASS";
+                    //    cli_Response.Message = "N/A";
+                    //}
+                    rc = GetVCPCode(devMgr, monitor, "0xC0").Result;
+                    cli_Response.Value = (rc.value).ToString() + " hours";
 
-                    //cli_Response.Result = "PASS";
-                    //cli_Response.Message = "N/A";
+                    cli_Response.Result = "PASS";
+                    cli_Response.Message = "N/A";
                     output += "\n" + JsonConvert.SerializeObject(cli_Response, Formatting.Indented);
                 }
             }
@@ -11218,24 +11191,24 @@ namespace DDPM.CLI.Plugins.Display
                     cli_Response.Command = commandLineInput.Command;
                     cli_Response.TargetFeature = commandLineInput.TargetFeature;
 
-                    if (!monitor.CapabilityDic.ContainsKey("C0"))
-                    {
-                        cli_Response.Result = "FAIL";
-                        cli_Response.Message = "Un - supported Feature";
-                    }
-                    else
-                    {
-                        rc = GetVCPCode(devMgr, monitor, "0xC0").Result;
-                        cli_Response.Value = (rc.value).ToString() + " hours";
+                    //if (!monitor.CapabilityDic.ContainsKey("C0"))
+                    //{
+                    //    cli_Response.Result = "FAIL";
+                    //    cli_Response.Message = "Un - supported Feature";
+                    //}
+                    //else
+                    //{
+                    //    rc = GetVCPCode(devMgr, monitor, "0xC0").Result;
+                    //    cli_Response.Value = (rc.value).ToString() + " hours";
 
-                        cli_Response.Result = "PASS";
-                        cli_Response.Message = "N/A";
-                    }
-                    //rc = GetVCPCode(devMgr, monitor, "0xC0").Result;
-                    //cli_Response.Value = (rc.value).ToString() + " hours";
+                    //    cli_Response.Result = "PASS";
+                    //    cli_Response.Message = "N/A";
+                    //}
+                    rc = GetVCPCode(devMgr, monitor, "0xC0").Result;
+                    cli_Response.Value = (rc.value).ToString() + " hours";
 
-                    //cli_Response.Result = "PASS";
-                    //cli_Response.Message = "N/A";
+                    cli_Response.Result = "PASS";
+                    cli_Response.Message = "N/A";
                     output += "\n" + JsonConvert.SerializeObject(cli_Response, Formatting.Indented);
                 }
                 foreach (string tag in commandLineInput.ServiceTag)
@@ -11248,24 +11221,24 @@ namespace DDPM.CLI.Plugins.Display
                         cli_Response.Command = commandLineInput.Command;
                         cli_Response.TargetFeature = commandLineInput.TargetFeature;
 
-                        if (!monitor.CapabilityDic.ContainsKey("C0"))
-                        {
-                            cli_Response.Result = "FAIL";
-                            cli_Response.Message = "Un - supported Feature";
-                        }
-                        else
-                        {
-                            rc = GetVCPCode(devMgr, monitor, "0xC0").Result;
-                            cli_Response.Value = (rc.value).ToString() + " hours";
+                        //if (!monitor.CapabilityDic.ContainsKey("C0"))
+                        //{
+                        //    cli_Response.Result = "FAIL";
+                        //    cli_Response.Message = "Un - supported Feature";
+                        //}
+                        //else
+                        //{
+                        //    rc = GetVCPCode(devMgr, monitor, "0xC0").Result;
+                        //    cli_Response.Value = (rc.value).ToString() + " hours";
 
-                            cli_Response.Result = "PASS";
-                            cli_Response.Message = "N/A";
-                        }
-                        //rc = GetVCPCode(devMgr, monitor, "0xC0").Result;
-                        //cli_Response.Value = (rc.value).ToString() + " hours";
+                        //    cli_Response.Result = "PASS";
+                        //    cli_Response.Message = "N/A";
+                        //}
+                        rc = GetVCPCode(devMgr, monitor, "0xC0").Result;
+                        cli_Response.Value = (rc.value).ToString() + " hours";
 
-                        //cli_Response.Result = "PASS";
-                        //cli_Response.Message = "N/A";
+                        cli_Response.Result = "PASS";
+                        cli_Response.Message = "N/A";
                         output += "\n" + JsonConvert.SerializeObject(cli_Response, Formatting.Indented);
                     }
                 }
@@ -11279,24 +11252,24 @@ namespace DDPM.CLI.Plugins.Display
                         cli_Response.Command = commandLineInput.Command;
                         cli_Response.TargetFeature = commandLineInput.TargetFeature;
 
-                        if (!monitor.CapabilityDic.ContainsKey("C0"))
-                        {
-                            cli_Response.Result = "FAIL";
-                            cli_Response.Message = "Un - supported Feature";
-                        }
-                        else
-                        {
-                            rc = GetVCPCode(devMgr, monitor, "0xC0").Result;
-                            cli_Response.Value = (rc.value).ToString() + " hours";
+                        //if (!monitor.CapabilityDic.ContainsKey("C0"))
+                        //{
+                        //    cli_Response.Result = "FAIL";
+                        //    cli_Response.Message = "Un - supported Feature";
+                        //}
+                        //else
+                        //{
+                        //    rc = GetVCPCode(devMgr, monitor, "0xC0").Result;
+                        //    cli_Response.Value = (rc.value).ToString() + " hours";
 
-                            cli_Response.Result = "PASS";
-                            cli_Response.Message = "N/A";
-                        }
-                        //rc = GetVCPCode(devMgr, monitor, "0xC0").Result;
-                        //cli_Response.Value = (rc.value).ToString() + " hours";
+                        //    cli_Response.Result = "PASS";
+                        //    cli_Response.Message = "N/A";
+                        //}
+                        rc = GetVCPCode(devMgr, monitor, "0xC0").Result;
+                        cli_Response.Value = (rc.value).ToString() + " hours";
 
-                        //cli_Response.Result = "PASS";
-                        //cli_Response.Message = "N/A";
+                        cli_Response.Result = "PASS";
+                        cli_Response.Message = "N/A";
                         output += "\n" + JsonConvert.SerializeObject(cli_Response, Formatting.Indented);
                     }
                 }
@@ -11883,18 +11856,18 @@ namespace DDPM.CLI.Plugins.Display
                                     {
                                         case "SCREENORIENTATION":
                                             writelog($"ScreenOrientation entry");
-                                            if (monitor.CapabilityDic.ContainsKey("AA") && monitor.CapabilityDic["AA"] != null && monitor.CapabilityDic["AA"].Contains("00"))
-                                            {
+                                            //if (monitor.CapabilityDic.ContainsKey("AA") && monitor.CapabilityDic["AA"] != null && monitor.CapabilityDic["AA"].Contains("00"))
+                                            //{
                                                 retcode = SetVCPCode(devMgr, monitor, "0xAA", get_ScreenOrientation_code(property.Value.ToString())).Result;
                                                 if (!retcode) ispass = false;
                                                 else ApplyConfiguration.ScreenOrientation = property.Value.ToString();
                                                 writelog($"ScreenOrientation={ApplyConfiguration.ScreenOrientation}");
-                                            }
-                                            else
-                                            {
-                                                writelog($"ScreenOrientation VCP not support");
-                                                output += $"\n  \"Result: \": \"ScreenOrientation VCP not support\"";
-                                            }
+                                            //}
+                                            //else
+                                            //{
+                                            //    writelog($"ScreenOrientation VCP not support");
+                                            //    output += $"\n  \"Result: \": \"ScreenOrientation VCP not support\"";
+                                            //}
                                             break;
 
                                         case "ACTIVEINPUTSOURCE":
@@ -11915,8 +11888,8 @@ namespace DDPM.CLI.Plugins.Display
 
                                         case "OPTIMALRESOLUTION":
                                             writelog($"OptimalResolution entry");
-                                            if (monitor.CapabilityDic.ContainsKey("AA") && monitor.CapabilityDic["AA"] != null && monitor.CapabilityDic["AA"].Contains("00"))
-                                            {
+                                            //if (monitor.CapabilityDic.ContainsKey("AA") && monitor.CapabilityDic["AA"] != null && monitor.CapabilityDic["AA"].Contains("00"))
+                                            //{
                                                 string[] ss = property.Value.ToString().Split(" ");
                                                 displayProperties = new Properties() { Resolutions_Width = int.Parse(ss[0]), Resolutions_High = int.Parse(ss[2]), Frequency = int.Parse(ss[4].Split(".00HZ")[0]) };
                                                 retcode = devMgr.SetDisplayPropertiest(monitor, displayProperties, displayPropertiesInfo.CurrentOrientation).Result;
@@ -11924,12 +11897,12 @@ namespace DDPM.CLI.Plugins.Display
                                                 else ApplyConfiguration.OptimalResolution = property.Value.ToString();
                                                 ApplyConfiguration.Resolution = ApplyConfiguration.OptimalResolution;
                                                 writelog($"OptimalResolution={ApplyConfiguration.OptimalResolution}");
-                                            }
-                                            else
-                                            {
-                                                writelog($"OptimalResolution VCP not support");
-                                                output += $"\n  \"Result: \": \"OptimalResolution VCP not support\"";
-                                            }
+                                            //}
+                                            //else
+                                            //{
+                                            //    writelog($"OptimalResolution VCP not support");
+                                            //    output += $"\n  \"Result: \": \"OptimalResolution VCP not support\"";
+                                            //}
                                             break;
 
                                         //case "AspectRatio":
@@ -13021,7 +12994,6 @@ namespace DDPM.CLI.Plugins.Display
                             else
                             {
                                 cli_Response.Result = "FAIL";
-                                cli_Response.Value = "Not supported";
                                 cli_Response.Message = $"VCP code {commandLineInput.Options[0].Option_Value} is not supported";
                             }
                             System.Console.WriteLine(JsonConvert.SerializeObject(cli_Response, Formatting.Indented));
@@ -13061,7 +13033,6 @@ namespace DDPM.CLI.Plugins.Display
                             else
                             {
                                 cli_Response.Result = "FAIL";
-                                cli_Response.Value = "Not supported";
                                 cli_Response.Message = $"VCP code {commandLineInput.Options[0].Option_Value} is not supported";
                             }
                             System.Console.WriteLine(JsonConvert.SerializeObject(cli_Response, Formatting.Indented));
@@ -13101,7 +13072,6 @@ namespace DDPM.CLI.Plugins.Display
                                 else
                                 {
                                     cli_Response.Result = "FAIL";
-                                    cli_Response.Value = "Not supported";
                                     cli_Response.Message = $"VCP code {commandLineInput.Options[0].Option_Value} is not supported";
                                 }
                                 System.Console.WriteLine(JsonConvert.SerializeObject(cli_Response, Formatting.Indented));
@@ -13142,7 +13112,6 @@ namespace DDPM.CLI.Plugins.Display
                                 else
                                 {
                                     cli_Response.Result = "FAIL";
-                                    cli_Response.Value = "Not supported";
                                     cli_Response.Message = $"VCP code {commandLineInput.Options[0].Option_Value} is not supported";
                                 }
                                 System.Console.WriteLine(JsonConvert.SerializeObject(cli_Response, Formatting.Indented));
@@ -13206,7 +13175,6 @@ namespace DDPM.CLI.Plugins.Display
                             else if (!commandLineInput.Options[1].Option_Name.ToUpper().Equals("VALUE"))
                             {
                                 cli_Response.Result = "FAIL";
-                                cli_Response.Value = "Not supported";
                                 cli_Response.Message = $"{commandLineInput.Options[1].Option_Name} option is not supported.";
                             }
                             else if (!vcp_value)
@@ -13217,7 +13185,6 @@ namespace DDPM.CLI.Plugins.Display
                             else
                             {
                                 cli_Response.Result = "FAIL";
-                                cli_Response.Value = "Not supported";
                                 cli_Response.Message = $"VCP code {commandLineInput.Options[0].Option_Value} is not supported";
                             }
                             System.Console.WriteLine(JsonConvert.SerializeObject(cli_Response, Formatting.Indented));
@@ -13277,7 +13244,6 @@ namespace DDPM.CLI.Plugins.Display
                             else if (!commandLineInput.Options[1].Option_Name.ToUpper().Equals("VALUE"))
                             {
                                 cli_Response.Result = "FAIL";
-                                cli_Response.Value = "Not supported";
                                 cli_Response.Message = $"{commandLineInput.Options[1].Option_Name} value is not supported.";
                             }
                             else if (!vcp_value)
@@ -13288,7 +13254,6 @@ namespace DDPM.CLI.Plugins.Display
                             else
                             {
                                 cli_Response.Result = "FAIL";
-                                cli_Response.Value = "Not supported";
                                 cli_Response.Message = $"VCP code {commandLineInput.Options[0].Option_Value} is not supported";
                             }
                             System.Console.WriteLine(JsonConvert.SerializeObject(cli_Response, Formatting.Indented));
@@ -13353,13 +13318,11 @@ namespace DDPM.CLI.Plugins.Display
                                 else if (!commandLineInput.Options[1].Option_Name.ToUpper().Equals("VALUE"))
                                 {
                                     cli_Response.Result = "FAIL";
-                                    cli_Response.Value = "Not supported";
                                     cli_Response.Message = $"{commandLineInput.Options[1].Option_Name} value is not supported.";
                                 }
                                 else
                                 {
                                     cli_Response.Result = "FAIL";
-                                    cli_Response.Value = "Not supported";
                                     cli_Response.Message = $"VCP code {commandLineInput.Options[0].Option_Value} is not supported";
                                 }
                                 System.Console.WriteLine(JsonConvert.SerializeObject(cli_Response, Formatting.Indented));
@@ -13426,13 +13389,11 @@ namespace DDPM.CLI.Plugins.Display
                                 else if (!commandLineInput.Options[1].Option_Name.ToUpper().Equals("VALUE"))
                                 {
                                     cli_Response.Result = "FAIL";
-                                    cli_Response.Value = "Not supported";
                                     cli_Response.Message = $"{commandLineInput.Options[1].Option_Name} value is not supported.";
                                 }
                                 else
                                 {
                                     cli_Response.Result = "FAIL";
-                                    cli_Response.Value = "Not supported";
                                     cli_Response.Message = $"VCP code {commandLineInput.Options[0].Option_Value} is not supported";
                                 }
                                 System.Console.WriteLine(JsonConvert.SerializeObject(cli_Response, Formatting.Indented));

@@ -120,7 +120,7 @@ namespace DDPM.SA.Common
         //event EventHandler<int>? WALSnoozeTimeLeftInSeconds_ChangeEvent;
         //event EventHandler<bool>? Esi_IsWALLockCountdownStartedChanged_ChangeEvent;
         //event EventHandler<int>? Esi_WALLockCountdownChanged_ChangeEvent;
-        event EventHandler<UpdateUINotify>? WebcamEventHandler;
+        event EventHandler<UpdateUINotify>? DTPEventHandler;
 
         Task<JArray> GetPresetProfiles(string Guid);
         Task<JArray> GetCustomProfiles(string Guid);

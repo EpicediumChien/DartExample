@@ -238,6 +238,11 @@
     </Style>
     <!-- #endregion -->
 
+    <!-- #region (i) InfoIcon -->
+    <!-- Robert_Lin, 2024-11-26, (i) info icon color -->
+    <SolidColorBrush x:Key="InfoIconColor" Color="#B6B6B6"/>
+    <!-- #endregion (i) InfoIcon -->
+    
     <!--  ExpanderHeader  -->
     <sys:Double x:Key="ExpanderHeader_FontSize">20</sys:Double>
     <SolidColorBrush x:Key="ExpanderHeader_TextColor" Color="White" />
@@ -1446,6 +1451,7 @@
     <BitmapImage x:Key="Search_img" UriSource="pack://application:,,,/DDPM.UI.Resources;component/Resources/Images/Search.png" />
     <BitmapImage x:Key="Close_img" UriSource="pack://application:,,,/DDPM.UI.Common;component/Resources/Close.png" />
     <BitmapImage x:Key="left_img" UriSource="pack://application:,,,/DDPM.UI.Resources;component/Resources/Images/Left.png" />
+    <BitmapImage x:Key="MonitorImage_LineArt" UriSource="pack://application:,,,/DDPM.UI.Resources;component/Resources/Monitors/Lineart.png" />
     <SolidColorBrush x:Key="DefaultThemeFullPageBkColor" Color="#FF0D121A"/>
 
 </ResourceDictionary>

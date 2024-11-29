@@ -107,7 +107,8 @@ namespace DDPM.SA.Plugins.User.Hotkey
                 return true;
             }
 
-            IntPtr hInstance = _LoadLibrary("User32");
+            //IntPtr hInstance = _LoadLibrary("User32");
+            IntPtr hInstance = Marshal.GetHINSTANCE(System.Reflection.Assembly.GetExecutingAssembly().GetModules()[0]);
 
             callbackDelegate = new keyboardHookProc(hookProc);
             hhook = _SetWindowsHookEx(WH_KEYBOARD_LL, callbackDelegate, hInstance, 0);
@@ -400,19 +401,19 @@ namespace DDPM.SA.Plugins.User.Hotkey
             return CallNextHookEx(idHook, nCode, wParam, ref lParam);
         }
 
-        /// <summary>
-        /// Loads the library.
-        /// </summary>
-        /// <param name="lpFileName">Name of the library</param>
-        /// <returns>A handle to the library</returns>
-        [DllImport("kernel32.dll", SetLastError = true)]
-        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
-        private static extern IntPtr LoadLibrary(string lpFileName);
+        /*        /// <summary>
+                /// Loads the library.
+                /// </summary>
+                /// <param name="lpFileName">Name of the library</param>
+                /// <returns>A handle to the library</returns>
+                [DllImport("kernel32.dll", SetLastError = true)]
+                [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
+                private static extern IntPtr LoadLibrary(string lpFileName);
 
-        public static IntPtr _LoadLibrary(string lpFileName)
-        {
-            return LoadLibrary(lpFileName);
-        }
+                public static IntPtr _LoadLibrary(string lpFileName)
+                {
+                    return LoadLibrary(lpFileName);
+                }*/
 
         [DllImport("user32.dll", SetLastError = true)]
         [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]

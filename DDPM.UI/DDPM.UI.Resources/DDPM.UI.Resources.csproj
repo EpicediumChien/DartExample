@@ -9,7 +9,6 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-	 	<None Remove="Resources\Monitors\Lineart-w.png" />
 		<None Remove="Resources\Images\Alert.png" />
 		<None Remove="Resources\Images\arrow-left.png" />
 		<None Remove="Resources\Images\arrow-left-light.png" />
@@ -145,6 +144,7 @@
 		<None Remove="Resources\Images\MS3220.png" />
 		<None Remove="Resources\Images\MS3220T.png" />
 		<None Remove="Resources\Images\MS3320W.png" />
+		<None Remove="Resources\Images\MS3320W_1.png" />
 		<None Remove="Resources\Images\MS355.png" />
 		<None Remove="Resources\Images\MS5120W.png" />
 		<None Remove="Resources\Images\MS5320W.png" />
@@ -327,6 +327,7 @@
 		<None Remove="Resources\Monitors\e2725h.png" />
 		<None Remove="Resources\Monitors\g2422hs.png" />
 		<None Remove="Resources\Monitors\g2724d.png" />
+		<None Remove="Resources\Monitors\Lineart-w.png" />
 		<None Remove="Resources\Monitors\Lineart.png" />
 		<None Remove="Resources\Monitors\p1424h.png" />
 		<None Remove="Resources\Monitors\p1917s.png" />
@@ -446,6 +447,7 @@
 		<Resource Include="Resources\Images\KnM_light.png" />
 		<Resource Include="Resources\Images\Left_light.png" />
 		<Resource Include="Resources\Images\Monitor_light.png" />
+		<Resource Include="Resources\Images\MS3320W_1.png" />
 		<Resource Include="Resources\Images\PanD.png" />
 		<Resource Include="Resources\Images\PanL.png" />
 		<Resource Include="Resources\Images\PanR.png" />
@@ -822,6 +824,7 @@
 		<Resource Include="Resources\Monitors\e2725h.png" />
 		<Resource Include="Resources\Monitors\g2422hs.png" />
 		<Resource Include="Resources\Monitors\g2724d.png" />
+		<Resource Include="Resources\Monitors\Lineart-w.png" />
 		<Resource Include="Resources\Monitors\Lineart.png" />
 		<Resource Include="Resources\Monitors\p1424h.png" />
 		<Resource Include="Resources\Monitors\p1917s.png" />
