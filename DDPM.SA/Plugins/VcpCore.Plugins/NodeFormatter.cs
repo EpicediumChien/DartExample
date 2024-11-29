@@ -479,8 +479,10 @@ namespace VcpCore.Plugins
                 case "27": return "Desktop";
                 case "28": return "Reference";
                 case "29": return "Multiscreen Match";
-                case "2a": return "AdobeRGB1";
-                case "2b": return "AdobeRGB2";
+                case "2a": return "AdobeRGB1 (D65G2.2L250)";
+                case "2b": return "AdobeRGB2 (D50G2.2L250)";
+                //case "2a": return "AdobeRGB1";
+                //case "2b": return "AdobeRGB2";
                 case "2c": return "Custom 1 / User 1";
                 case "2d": return "Custom 2 / User 2";
                 case "2e": return "Custom 3 / User 3";

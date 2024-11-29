@@ -113,8 +113,8 @@
                         <UXControls:UXTextBlock Name="txtRestore" Foreground="{DynamicResource SecondaryButton_DefaultTextColor}" VerticalAlignment="Center" Grid.Column="0"
                                                 HorizontalAlignment="Center" FontFamily="Roboto" FontSize="14" />
                         <Image Grid.Column="1" Name="RestoreLockIcon" Visibility="Collapsed" Margin="0,0,6,0"
-                               Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Lock.png"
-                               VerticalAlignment="Center" HorizontalAlignment="Center" Width="12" Height="12">
+                        Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Lock.png"
+                        VerticalAlignment="Center" HorizontalAlignment="Center" Width="12" Height="12">
                             <Image.ToolTip>
                                 <ToolTip>
                                     <Border Style="{StaticResource Tooltip_OutterBorderStyle}">

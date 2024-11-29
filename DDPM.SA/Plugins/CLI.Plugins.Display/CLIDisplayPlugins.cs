@@ -5101,7 +5101,23 @@ namespace DDPM.CLI.Plugins.Display
                 // jim modify 20240608
                 bool r = false;
                 bool ever_fail = false;
-
+                switch (value)
+                {
+                    case "CUSTOM":
+                        value = "CUSTOM COLOR";
+                        break;
+                    case "FPSGAME":
+                        value = "FPS GAME";
+                        break;
+                    case "RTSGAME":
+                        value = "RTS GAME";
+                        break;
+                    case "RPGGAME":
+                        value = "RPG GAME";
+                        break;
+                    default:
+                        break;
+                }
                 if (index.Count == 0 && serviceTag.Count == 0 && model.Count == 0)
                 {
                     foreach (var monitor in _AllInfoMonitors)
@@ -7292,8 +7308,8 @@ namespace DDPM.CLI.Plugins.Display
                     CurrentOrientation_RESPONSE = new CLI_Get_Properties_Orientation_RESPONSE(cLI_RESPONSE);
                     try
                     {
-                        if (monitorInfo.CapabilityDic.ContainsKey("AA") && monitorInfo.CapabilityDic["AA"] != null && monitorInfo.CapabilityDic["AA"].Contains("00"))
-                        {
+                        //if (monitorInfo.CapabilityDic.ContainsKey("AA") && monitorInfo.CapabilityDic["AA"] != null && monitorInfo.CapabilityDic["AA"].Contains("00"))
+                        //{
                             if (commandLineInput.Command.Equals("GET"))
                             {
                                 writelog("ORIENTATION get entry");
@@ -7363,14 +7379,13 @@ namespace DDPM.CLI.Plugins.Display
                                     }
                                 }
                             }
-                        }
-                        else
-                        {
-                            writelog($"ORIENTATION VCP not support");
-                            CurrentOrientation_RESPONSE.Message = "ORIENTATION VCP not support";
-                            output += $"\n  \"Result: \": \"ORIENTATION VCP not support\"";
-                        }
-
+                        //}
+                        //else
+                        //{
+                        //    writelog($"ORIENTATION VCP not support");
+                        //    CurrentOrientation_RESPONSE.Message = "ORIENTATION VCP not support";
+                        //    output += $"\n  \"Result: \": \"ORIENTATION VCP not support\"";
+                        //}
                     }
                     catch
                     {
@@ -9186,13 +9201,13 @@ namespace DDPM.CLI.Plugins.Display
                                 get_DeviceData.FirmwareVersion = monitor.FwVersion;
 
                                 Trace.WriteLine(monitor.edid.Edid);
-                                if (monitor.CapabilityDic.ContainsKey("C0"))
-                                {
+                                //if (monitor.CapabilityDic.ContainsKey("C0"))
+                                //{
                                     writelog($"MonitorActiveHour Entry");
                                     rc = GetVCPCode(devMgr, monitor, "0xC0").Result;
                                     get_DeviceData.MonitorActiveHour = (rc.value).ToString() + " hours";
                                     writelog($"MonitorActiveHour Exit return value: {(rc.value).ToString()}");
-                                }
+                                //}
 
                                 if (monitor.CapabilityDic.ContainsKey("B6"))
                                 {
@@ -9245,13 +9260,13 @@ namespace DDPM.CLI.Plugins.Display
                                 get_DeviceData.ColorPreset = devMgr.ReadCurrentColorPreset(monitor).Result;
                                 writelog($"ReadCurrentColorPreset Exit return value: {devMgr.ReadCurrentColorPreset(monitor).Result}");
 
-                                if (monitor.CapabilityDic.ContainsKey("AA") && monitor.CapabilityDic["AA"] != null && monitor.CapabilityDic["AA"].Contains("00"))
-                                {
+                                //if (monitor.CapabilityDic.ContainsKey("AA") && monitor.CapabilityDic["AA"] != null && monitor.CapabilityDic["AA"].Contains("00"))
+                                //{
                                     writelog($"ScreenOrientation Entry");
                                     rc = GetVCPCode(devMgr, monitor, "0xAA").Result;
                                     get_DeviceData.ScreenOrientation = Orientations_Str[((uint)rc.value) - 1];
                                     writelog($"ScreenOrientation Exit return value: {Orientations_Str[((uint)rc.value) - 1]}");
-                                }
+                                //}
 
                                 if (monitor.CapabilityDic.ContainsKey("12"))
                                 {
@@ -9606,13 +9621,13 @@ namespace DDPM.CLI.Plugins.Display
                     get_DeviceData.ManufacturingWeek = "ISO week " + monitor.edid.Week.ToString();
                     get_DeviceData.FirmwareVersion = monitor.FwVersion;
 
-                    if (monitor.CapabilityDic.ContainsKey("C0"))
-                    {
+                    //if (monitor.CapabilityDic.ContainsKey("C0"))
+                    //{
                         writelog($"MonitorActiveHour Entry");
                         rc = GetVCPCode(devMgr, monitor, "0xC0").Result;
                         get_DeviceData.MonitorActiveHour = (rc.value).ToString() + " hours";
                         writelog($"MonitorActiveHour Exit return value: {(rc.value).ToString()}");
-                    }
+                    //}
 
                     if (monitor.CapabilityDic.ContainsKey("B6"))
                     {
@@ -9664,13 +9679,13 @@ namespace DDPM.CLI.Plugins.Display
                     get_DeviceData.ColorPreset = devMgr.ReadCurrentColorPreset(monitor).Result;
                     writelog($"ReadCurrentColorPreset Exit return value: {devMgr.ReadCurrentColorPreset(monitor).Result}");
 
-                    if (monitor.CapabilityDic.ContainsKey("AA") && monitor.CapabilityDic["AA"] != null && monitor.CapabilityDic["AA"].Contains("00"))
-                    {
+                    //if (monitor.CapabilityDic.ContainsKey("AA") && monitor.CapabilityDic["AA"] != null && monitor.CapabilityDic["AA"].Contains("00"))
+                    //{
                         writelog($"ScreenOrientation Entry");
                         rc = GetVCPCode(devMgr, monitor, "0xAA").Result;
                         get_DeviceData.ScreenOrientation = Orientations_Str[((uint)rc.value) - 1];
                         writelog($"ScreenOrientation Exit return value: {Orientations_Str[((uint)rc.value) - 1]}");
-                    }
+                    //}
 
                     if (monitor.CapabilityDic.ContainsKey("12"))
                     {
@@ -11145,24 +11160,24 @@ namespace DDPM.CLI.Plugins.Display
                     cli_Response.Command = commandLineInput.Command;
                     cli_Response.TargetFeature = commandLineInput.TargetFeature;
 
-                    if (!monitor.CapabilityDic.ContainsKey("C0"))
-                    {
-                        cli_Response.Result = "FAIL";
-                        cli_Response.Message = "Un - supported Feature";
-                    }
-                    else
-                    {
-                        rc = GetVCPCode(devMgr, monitor, "0xC0").Result;
-                        cli_Response.Value = (rc.value).ToString() + " hours";
+                    //if (!monitor.CapabilityDic.ContainsKey("C0"))
+                    //{
+                    //    cli_Response.Result = "FAIL";
+                    //    cli_Response.Message = "Un - supported Feature";
+                    //}
+                    //else
+                    //{
+                    //    rc = GetVCPCode(devMgr, monitor, "0xC0").Result;
+                    //    cli_Response.Value = (rc.value).ToString() + " hours";
 
-                        cli_Response.Result = "PASS";
-                        cli_Response.Message = "N/A";
-                    }
-                    //rc = GetVCPCode(devMgr, monitor, "0xC0").Result;
-                    //cli_Response.Value = (rc.value).ToString() + " hours";
+                    //    cli_Response.Result = "PASS";
+                    //    cli_Response.Message = "N/A";
+                    //}
+                    rc = GetVCPCode(devMgr, monitor, "0xC0").Result;
+                    cli_Response.Value = (rc.value).ToString() + " hours";
 
-                    //cli_Response.Result = "PASS";
-                    //cli_Response.Message = "N/A";
+                    cli_Response.Result = "PASS";
+                    cli_Response.Message = "N/A";
                     output += "\n" + JsonConvert.SerializeObject(cli_Response, Formatting.Indented);
                 }
             }
@@ -11176,24 +11191,24 @@ namespace DDPM.CLI.Plugins.Display
                     cli_Response.Command = commandLineInput.Command;
                     cli_Response.TargetFeature = commandLineInput.TargetFeature;
 
-                    if (!monitor.CapabilityDic.ContainsKey("C0"))
-                    {
-                        cli_Response.Result = "FAIL";
-                        cli_Response.Message = "Un - supported Feature";
-                    }
-                    else
-                    {
-                        rc = GetVCPCode(devMgr, monitor, "0xC0").Result;
-                        cli_Response.Value = (rc.value).ToString() + " hours";
+                    //if (!monitor.CapabilityDic.ContainsKey("C0"))
+                    //{
+                    //    cli_Response.Result = "FAIL";
+                    //    cli_Response.Message = "Un - supported Feature";
+                    //}
+                    //else
+                    //{
+                    //    rc = GetVCPCode(devMgr, monitor, "0xC0").Result;
+                    //    cli_Response.Value = (rc.value).ToString() + " hours";
 
-                        cli_Response.Result = "PASS";
-                        cli_Response.Message = "N/A";
-                    }
-                    //rc = GetVCPCode(devMgr, monitor, "0xC0").Result;
-                    //cli_Response.Value = (rc.value).ToString() + " hours";
+                    //    cli_Response.Result = "PASS";
+                    //    cli_Response.Message = "N/A";
+                    //}
+                    rc = GetVCPCode(devMgr, monitor, "0xC0").Result;
+                    cli_Response.Value = (rc.value).ToString() + " hours";
 
-                    //cli_Response.Result = "PASS";
-                    //cli_Response.Message = "N/A";
+                    cli_Response.Result = "PASS";
+                    cli_Response.Message = "N/A";
                     output += "\n" + JsonConvert.SerializeObject(cli_Response, Formatting.Indented);
                 }
                 foreach (string tag in commandLineInput.ServiceTag)
@@ -11206,24 +11221,24 @@ namespace DDPM.CLI.Plugins.Display
                         cli_Response.Command = commandLineInput.Command;
                         cli_Response.TargetFeature = commandLineInput.TargetFeature;
 
-                        if (!monitor.CapabilityDic.ContainsKey("C0"))
-                        {
-                            cli_Response.Result = "FAIL";
-                            cli_Response.Message = "Un - supported Feature";
-                        }
-                        else
-                        {
-                            rc = GetVCPCode(devMgr, monitor, "0xC0").Result;
-                            cli_Response.Value = (rc.value).ToString() + " hours";
+                        //if (!monitor.CapabilityDic.ContainsKey("C0"))
+                        //{
+                        //    cli_Response.Result = "FAIL";
+                        //    cli_Response.Message = "Un - supported Feature";
+                        //}
+                        //else
+                        //{
+                        //    rc = GetVCPCode(devMgr, monitor, "0xC0").Result;
+                        //    cli_Response.Value = (rc.value).ToString() + " hours";
 
-                            cli_Response.Result = "PASS";
-                            cli_Response.Message = "N/A";
-                        }
-                        //rc = GetVCPCode(devMgr, monitor, "0xC0").Result;
-                        //cli_Response.Value = (rc.value).ToString() + " hours";
+                        //    cli_Response.Result = "PASS";
+                        //    cli_Response.Message = "N/A";
+                        //}
+                        rc = GetVCPCode(devMgr, monitor, "0xC0").Result;
+                        cli_Response.Value = (rc.value).ToString() + " hours";
 
-                        //cli_Response.Result = "PASS";
-                        //cli_Response.Message = "N/A";
+                        cli_Response.Result = "PASS";
+                        cli_Response.Message = "N/A";
                         output += "\n" + JsonConvert.SerializeObject(cli_Response, Formatting.Indented);
                     }
                 }
@@ -11237,24 +11252,24 @@ namespace DDPM.CLI.Plugins.Display
                         cli_Response.Command = commandLineInput.Command;
                         cli_Response.TargetFeature = commandLineInput.TargetFeature;
 
-                        if (!monitor.CapabilityDic.ContainsKey("C0"))
-                        {
-                            cli_Response.Result = "FAIL";
-                            cli_Response.Message = "Un - supported Feature";
-                        }
-                        else
-                        {
-                            rc = GetVCPCode(devMgr, monitor, "0xC0").Result;
-                            cli_Response.Value = (rc.value).ToString() + " hours";
+                        //if (!monitor.CapabilityDic.ContainsKey("C0"))
+                        //{
+                        //    cli_Response.Result = "FAIL";
+                        //    cli_Response.Message = "Un - supported Feature";
+                        //}
+                        //else
+                        //{
+                        //    rc = GetVCPCode(devMgr, monitor, "0xC0").Result;
+                        //    cli_Response.Value = (rc.value).ToString() + " hours";
 
-                            cli_Response.Result = "PASS";
-                            cli_Response.Message = "N/A";
-                        }
-                        //rc = GetVCPCode(devMgr, monitor, "0xC0").Result;
-                        //cli_Response.Value = (rc.value).ToString() + " hours";
+                        //    cli_Response.Result = "PASS";
+                        //    cli_Response.Message = "N/A";
+                        //}
+                        rc = GetVCPCode(devMgr, monitor, "0xC0").Result;
+                        cli_Response.Value = (rc.value).ToString() + " hours";
 
-                        //cli_Response.Result = "PASS";
-                        //cli_Response.Message = "N/A";
+                        cli_Response.Result = "PASS";
+                        cli_Response.Message = "N/A";
                         output += "\n" + JsonConvert.SerializeObject(cli_Response, Formatting.Indented);
                     }
                 }
@@ -11841,18 +11856,18 @@ namespace DDPM.CLI.Plugins.Display
                                     {
                                         case "SCREENORIENTATION":
                                             writelog($"ScreenOrientation entry");
-                                            if (monitor.CapabilityDic.ContainsKey("AA") && monitor.CapabilityDic["AA"] != null && monitor.CapabilityDic["AA"].Contains("00"))
-                                            {
+                                            //if (monitor.CapabilityDic.ContainsKey("AA") && monitor.CapabilityDic["AA"] != null && monitor.CapabilityDic["AA"].Contains("00"))
+                                            //{
                                                 retcode = SetVCPCode(devMgr, monitor, "0xAA", get_ScreenOrientation_code(property.Value.ToString())).Result;
                                                 if (!retcode) ispass = false;
                                                 else ApplyConfiguration.ScreenOrientation = property.Value.ToString();
                                                 writelog($"ScreenOrientation={ApplyConfiguration.ScreenOrientation}");
-                                            }
-                                            else
-                                            {
-                                                writelog($"ScreenOrientation VCP not support");
-                                                output += $"\n  \"Result: \": \"ScreenOrientation VCP not support\"";
-                                            }
+                                            //}
+                                            //else
+                                            //{
+                                            //    writelog($"ScreenOrientation VCP not support");
+                                            //    output += $"\n  \"Result: \": \"ScreenOrientation VCP not support\"";
+                                            //}
                                             break;
 
                                         case "ACTIVEINPUTSOURCE":
@@ -11873,8 +11888,8 @@ namespace DDPM.CLI.Plugins.Display
 
                                         case "OPTIMALRESOLUTION":
                                             writelog($"OptimalResolution entry");
-                                            if (monitor.CapabilityDic.ContainsKey("AA") && monitor.CapabilityDic["AA"] != null && monitor.CapabilityDic["AA"].Contains("00"))
-                                            {
+                                            //if (monitor.CapabilityDic.ContainsKey("AA") && monitor.CapabilityDic["AA"] != null && monitor.CapabilityDic["AA"].Contains("00"))
+                                            //{
                                                 string[] ss = property.Value.ToString().Split(" ");
                                                 displayProperties = new Properties() { Resolutions_Width = int.Parse(ss[0]), Resolutions_High = int.Parse(ss[2]), Frequency = int.Parse(ss[4].Split(".00HZ")[0]) };
                                                 retcode = devMgr.SetDisplayPropertiest(monitor, displayProperties, displayPropertiesInfo.CurrentOrientation).Result;
@@ -11882,12 +11897,12 @@ namespace DDPM.CLI.Plugins.Display
                                                 else ApplyConfiguration.OptimalResolution = property.Value.ToString();
                                                 ApplyConfiguration.Resolution = ApplyConfiguration.OptimalResolution;
                                                 writelog($"OptimalResolution={ApplyConfiguration.OptimalResolution}");
-                                            }
-                                            else
-                                            {
-                                                writelog($"OptimalResolution VCP not support");
-                                                output += $"\n  \"Result: \": \"OptimalResolution VCP not support\"";
-                                            }
+                                            //}
+                                            //else
+                                            //{
+                                            //    writelog($"OptimalResolution VCP not support");
+                                            //    output += $"\n  \"Result: \": \"OptimalResolution VCP not support\"";
+                                            //}
                                             break;
 
                                         //case "AspectRatio":

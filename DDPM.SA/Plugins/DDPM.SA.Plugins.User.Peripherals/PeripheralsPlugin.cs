@@ -56,6 +56,8 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
 
         private DeviceHelper _deviceHelper;
         private UpdateHelper _updateHelper;
+        //Bruce, FWU need it
+        private int _DongleCount;
         private RFDeviceHelper _rfDeviceHelper;
         private ClientInfo _clientInfo;
         private static Logs _logs;
@@ -69,7 +71,6 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
         private IOverlayManager _iOverlayManager;
         private ICTKMessageHelper _iCTKMessageHelper;
         private bool _isClientConnected;
-
         public bool UpdateAvailable { get; set; }
 
         private UpdateItemInfo _updateItems = new();
@@ -1070,7 +1071,9 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                     //Robert_Lin, workaround to avoid _iDeviceManager==null
                     if (_iDeviceManager == null)
                         return;
-
+                    //Bruce, FWU need it
+                    _DongleCount = _iDeviceManager.Devices.ToList().FindAll(o => o.Type.Equals(DeviceType.PhysicalAudioDongle) || o.Type.Equals(DeviceType.PhysicalDongle)).Count;
+                    _logs.DebugMsg_1("[PeripheralsPlugin] _DongleCount " + _DongleCount);
                     //_deviceHelper.DPeMSDKVersion = IndiLogic.DPeM.Broker.Assembly.GetName();
                     foreach (var device in _iDeviceManager.Devices)
                     {
@@ -2674,7 +2677,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
             }
         }
 
-        private void PhysicalAudioDeviceDongle_PairingStatusChanged(IPhysicalAudioDeviceDongle arg1, AudioDonglePairingStatus arg2)
+        private void PhysicalAudioDeviceDongle_PairingStatusChanged(IPhysicalAudioDeviceDongle Arg1, int nArg2, int nArg3, string strArg4)//(IPhysicalAudioDeviceDongle arg1, AudioDonglePairingStatus arg2)
         {
             throw new NotImplementedException();
         }
@@ -2795,6 +2798,11 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
             {
                 UpdateItems = new List<UpdateItemInfo>()
             };
+        }
+        //Bruce, FWU need it
+        public int GetDongleCount()
+        {
+            return _DongleCount;
         }
 
         public void DisplayNotification(string bannerInfo, string hyperlinkText, string bannerItemType)

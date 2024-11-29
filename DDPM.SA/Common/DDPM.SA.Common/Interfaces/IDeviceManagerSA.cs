@@ -52,9 +52,8 @@ namespace DDPM.SA.Common
         #region EaM
 
         Task<Dictionary<string, InstalledAppInfo>> GetAllAppList();
-
         Task<bool> LaunchAndArrangeApps(Dictionary<String, Bind_AddFullPage_AppCollectionData> sortApps);
-
+        Task<bool> LaunchAndArrangeAppsWithEzArrange(Dictionary<String, Bind_AddFullPage_AppCollectionData> sortApps, MonitorInfo moInfo, int eAid);
         Task<bool> CheckEAIDExit(MonitorInfo moinfo, int eAID);
         Task<bool> DeleteEAID(MonitorInfo moinfo, int eAID);
 
@@ -112,8 +111,8 @@ namespace DDPM.SA.Common
         Task<bool> Notify_refresh_app_list();
 
         //Jim add 20240801
-        Task<IIC_Metadata> DownloadICCData(MonitorInfo m, string savelPath = "");
-
+        Task<IIC_Metadata> DownloadICCData(MonitorInfo m,bool blICCProfile = false ,string savelPath = "");
+       
         //Jim add 20240904
         Task<string> GetAutoColorPresetStatus(MonitorInfo m);
 

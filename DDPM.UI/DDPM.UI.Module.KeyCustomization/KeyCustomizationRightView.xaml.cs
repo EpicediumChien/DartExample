@@ -146,12 +146,14 @@ namespace DDPM.UI.Module.KeyCustomization
         private void btnRestoreClicked(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
             RestoreModalDialog restoreModalDialog = new();
-            Window parentWindow = Window.GetWindow(this);
-            if (parentWindow != null)
+            Window mainWindow = System.Windows.Application.Current.MainWindow;
+            if (mainWindow != null)
             {
-                restoreModalDialog.Owner = parentWindow;
+                restoreModalDialog.Owner = mainWindow;
+                restoreModalDialog.Left = mainWindow.Left + (mainWindow!.ActualWidth - 417) / 2;
+                restoreModalDialog.Top = mainWindow.Top + (mainWindow!.ActualHeight - 196) / 2;
             }
-
+            restoreModalDialog.WindowStartupLocation = WindowStartupLocation.Manual;
             bool? dialogResult = restoreModalDialog.ShowDialog();
             if (dialogResult == true)
             {
