@@ -1227,6 +1227,53 @@ namespace DDPM.UI.Module.Color
                 }
             }
 
+            // PIMS-288131
+            try
+            {
+                Process[] processes = Process.GetProcessesByName("ColorManagement");
+                
+                if (processes!=null && processes.Length > 0)
+                {
+                    // Is running
+                    bool blIsPass = true;
+                    foreach (Process process in processes)
+                    {
+                        string filepath = process.MainModule.FileName;
+
+                        if (!System.String.IsNullOrEmpty(filepath))
+                        {
+                            string Info = "ColorManagement File Signature Is Null Or Empty";
+                            if (!DDPMFileSecurity.VerifyExecutableFileSignature(filepath, out Info))
+                            {
+                                blIsPass = false;   
+                                string log = $"[RunWorkerCompleted_RefreshData] VerifyExecutableFileSignature : {Info}\n";
+                                DdpmCommonHelper.WriteUILog(log);
+                                break;
+                            }
+                       
+                        }
+                    }
+
+                    if (blIsPass)
+                    {
+                        MyModule.GetRightView().Dispatcher.Invoke((Action)(() =>
+                        {
+                            ((Expander)(MyModule.GetRightView().FindName("Expander_Advanced_Settings"))).IsEnabled = false;
+                            ((Expander)(MyModule.GetRightView().FindName("Expander_Advanced_Settings"))).IsExpanded = false;
+
+                            ((StackPanel)(MyModule.GetRightView().FindName("stackpanel_DCM"))).Visibility = Visibility.Visible;
+                            DCM_Visibility = Visibility.Visible;
+
+                        }));
+                    }                   
+                }  
+            }
+            catch (System.Exception ex)
+            {
+                string log = $"[RunWorkerCompleted_RefreshData] Exception thrown when Process.GetProcessesByName : {ex.Message}\nStack Trace: {ex.StackTrace}";
+                DdpmCommonHelper.WriteUILog(log);
+            }
+
             WatchForProcessStart();
             WatchForProcessEnd();
 
@@ -1269,7 +1316,7 @@ namespace DDPM.UI.Module.Color
                 {
                     //Result is failed.
                 }
-            }
+            }          
 
             WatchForProcessStart();
             WatchForProcessEnd();

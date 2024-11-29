@@ -1,5 +1,6 @@
 ﻿using DDPM.SA.Common;
 using Dell.Client.Framework.Common;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -29,8 +30,10 @@ namespace DDPM.EABroker
         #endregion
 
         #region ctor
+        
         private EAScreen(Screen scr)
         {
+           
             _screen = scr;
             _devMode = GetDevMode(_screen.DeviceName);
             _logicalScale = GetLogicScale();
@@ -102,6 +105,12 @@ namespace DDPM.EABroker
         #endregion
 
         #region GetEAScreens
+        /// <summary>
+        /// Convert monitor list to EAScreen list.
+        /// Each EAScreen is a Forms.Screen with the Monitors that attached on it.
+        /// </summary>
+        /// <param name="monitors"></param>
+        /// <returns></returns>
         public static List<EAScreen> GetEAScreens(List<MonitorInfo>? monitors)
         {
             List<EAScreen> listOut = new List<EAScreen>();
@@ -202,5 +211,73 @@ namespace DDPM.EABroker
             return returnValue;
         }
         #endregion For SpanScreen.DetectSpanScreens()
+
+        #region Debug
+        //Output format: "({x},{y}){w}x{h}"
+        private string FormatRectangle4(Rectangle rect)
+        {
+            return $"({rect.Left},{rect.Top}){rect.Width}x{rect.Height}";
+        }
+        //Output format:
+        // { "deviceName" (Primary): Bounds:(x,y)wxh, WorkingArea:(x,y)wxh, Resolution:wxh, Scale:1.25,
+        //   Monitors:[{"model","serviceTag"},{"model"},{"serviceTag"}, ...]
+        // } 
+        // Bounds[x,y,wxh]
+        //
+        //
+        public override string ToString()
+        {
+            string strOut = $"{{ \"{ScreenDeviceName}\" ";
+            if (IsPrimary)
+                strOut += "(Primary) ";
+            strOut += $"Bounds:{FormatRectangle4(Bounds)}, WorkingArea:{FormatRectangle4(WorkingArea)}, ";
+            strOut += $"Resolution:{RealWidth}x{RealHeight}, Scale:{RealScale}, ";
+
+            if (HasAttachedMonitor)
+            {
+                strOut += "Monitors:[";
+                foreach(MonitorInfo mi in AttachedMonitors)
+                {
+                    strOut += $" {{\"{mi.modelName}\",\"{mi.edid.ServiceTag}\"}},";
+                }
+                strOut = strOut.TrimEnd(',');
+                strOut += "]";
+            }
+            else
+            {
+                strOut += "Monitors:[]";
+            }
+            strOut += "}";
+            return strOut;
+        }
+
+        //Output format:
+        //  EAScreens:[ {EAScreen1}, {EAScreen2], ...]
+        public static string EAScreensToString(List<EAScreen> eaScreens)
+        {
+            string strOut = "EAScreens:[";
+            foreach(EAScreen screen in eaScreens)
+            {
+                strOut += " ";
+                strOut += screen.ToString();
+                strOut += ",";
+            }
+            strOut = strOut.TrimEnd(',');
+            strOut += " ]";
+            return strOut;
+        }
+        //Output format:
+        /*
+        EAScreen : {
+            Screen: { "DeviceName":"{deviceName}", "Bounds":"x,y,w,h", "WorkingArea":"x,y,w,h","Resolution":"w,h", "Scale":"{scale}" },
+            Monitors: [  { "Model":"model", "ServiceTag": "serviceTag"}, { }, ... ]
+        }
+        */
+        //public string ToJsonString()
+        //{
+        //    string strOut = "EAScreen:"
+        //    return $""
+        //}
+        #endregion Debug
     }
 }

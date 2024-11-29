@@ -284,7 +284,7 @@ namespace NGA.Common
         /// <summary>
         /// UniqueId for the thick client
         /// </summary>
-        public const string ThickClientUniqueGuid = "{706b7610-0f15-4ca2-8373-dadd04e25bb4}";
+        public const string ThickClientUniqueGuid = "{856AEE4D-705F-4913-A0C6-7A4FD23715DD}";//"{706b7610-0f15-4ca2-8373-dadd04e25bb4}"
 
         /// <summary>
         /// Defines the registry Path for Notification Manager
