@@ -483,7 +483,7 @@ namespace DDPM.UI.Plugin.Common
 
         private void RestoreClick(object sender, MouseButtonEventArgs e)
         {
-            PenActions.ResetRadialMenu();
+            PenActions.RestoreRadialMenu();
             //ActionList.ExportActionList(PenActions, "PEN");
             SelectedActionID = PenActions.RadialActions[SelectedMenuID].AssignedAction.ID;
             RefreshAction(true);
