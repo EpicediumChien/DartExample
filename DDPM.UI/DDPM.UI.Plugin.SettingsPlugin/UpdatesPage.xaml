@@ -9,8 +9,10 @@
              xmlns:commonModel="clr-namespace:DDPM.UI.Common.Models;assembly=DDPM.UI.Common"
              xmlns:SAAlert="clr-namespace:DDPM.SA.Common.Alert;assembly=DDPM.SA.Common"
              xmlns:lang="clr-namespace:DDPM.UI.Resources.Helper;assembly=DDPM.UI.Resources"
-             mc:Ignorable="d" Margin="5,4,60,120"
-             d:DesignHeight="450" d:DesignWidth="800"
+             mc:Ignorable="d" 
+             Margin="5,4,60,29"
+             d:DesignHeight="450"
+             d:DesignWidth="800"
              SizeChanged="UserControl_SizeChanged">
 
     <UserControl.Resources>
@@ -59,7 +61,8 @@
                                             HorizontalAlignment="Left"
                                             AutomationProperties.Name="Primary1"
                                             Content="{Binding [Updates.2], Source={x:Static lang:LangHelper.Instance}}"
-                                            Style="{StaticResource Button_WhiteFrame}" />
+                                            Style="{StaticResource Button_WhiteFrame}" >
+                                    </Button>
                                     <StackPanel Orientation="Horizontal">
                                         <Grid  Height="20"
                                                Margin="16,20,4,0"
@@ -91,7 +94,8 @@
                                     <Image Grid.Column="1" Source="Resources\double arrow.png" Height="20" Margin="16,0,4,0" />
                                     <UXControls:UXTextBlock Grid.Column="2" FontSize="14" Text="{Binding Path=LastCheckDate}" TextBlockType="Caption" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="4,8,8,8" />
                                 </Grid> -->
-                                <StackPanel Grid.Row="1" Margin="0,0,0,24" Visibility="{Binding NoUpdateAlert}" x:Name="spSAAlert"> <!-- Updates.3 for testing Derek 10/12 -->
+                                <StackPanel Grid.Row="1" Margin="0,0,0,24" Visibility="{Binding NoUpdateAlert}" x:Name="spSAAlert">
+                                    <!-- Updates.3 for testing Derek 10/12 -->
                                     <SAAlert:AlertBase Height="53" x:Name="alertBase" Margin="20,16,0,0" AlertType="Info" Message="{Binding [Updates.3], Source={x:Static lang:LangHelper.Instance}}"/>
                                 </StackPanel>
                                 <StackPanel Grid.Row="1" Margin="0,0,0,24" Visibility="{Binding NoNetwork}">
