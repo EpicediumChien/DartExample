@@ -29,6 +29,9 @@ using Newtonsoft.Json.Linq;
 using System.Text;
 using DPeMPublic.Common.Enums;
 using System.Text.Json;
+using Google.Protobuf.WellKnownTypes;
+using System.IO;
+using Type = System.Type;
 
 namespace DDPM.SA.Plugins.User.DTPProxy
 {
@@ -473,34 +476,6 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
         }
 
-        //Derek 1120
-        public async Task<JArray> GetWebcamDeviceItemsExAsync()
-        {
-            _itemID = new ItemId(WebcamItemID);
-
-            if (_webcamMethodInfo != null)
-            {
-                if (await GetCommodityInterfaceInstanceAsync(_webcamMethodInfo) is ICommodity commodity)
-                {
-                    var value = GetPropertyValue(_webcamInterfaceType, commodity, "DeviceItemsEx");
-                    return value == null ? new JArray() : (JArray)value;
-                }
-                else
-                {
-                    Debug.WriteLine($"Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {_itemID} item.");
-                    writelog($"Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {_itemID} item.");
-                    return new JArray();
-                }
-            }
-            else
-            {
-                Debug.WriteLine($"[GetDeviceItemsEx]Could not retrieve the Commodity Interface for the {_itemID} item. _webcamMethodInfo is null");
-                writelog($"[GetDeviceItemsEx]Could not retrieve the Commodity Interface for the {_itemID} item. _webcamMethodInfo is null");
-                return new JArray();
-            }
-
-        }
-
         public async Task<JArray> GetKeyboardDeviceItemsEx()
         {
             _itemID = new ItemId(KeyboardItemID);
@@ -629,11 +604,75 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 writelog($"Could not retrieve the Commodity Interface {_keyboardInterfaceType} for the {_itemID} item.");
             }
         }
+        public async Task<bool> RestoreToDefaultKB(string Guid)
+        {
+            if (!IsDTPReady)
+                return false;
+            if (!await GetItemIDAsync("Keyboard", Guid))
+                return false;
+
+            byte[] newValue = Encoding.UTF8.GetBytes($"{{\"actionId\":73,\"actionName\":\"\"}}");
+            await SetEraserSinglePressSetting(PenItemID0, newValue);
+            newValue = Encoding.UTF8.GetBytes($"{{\"actionId\":90,\"actionName\":\"\"}}");
+            await SetEraserDoublePressSetting(PenItemID0, newValue);
+            newValue = Encoding.UTF8.GetBytes($"{{\"actionId\":75,\"actionName\":\"\"}}");
+            await SetEraserLongPressSetting(PenItemID0, newValue);
+            newValue = Encoding.UTF8.GetBytes($"{{\"actionId\":27,\"actionName\":\"\"}}");
+            await SetSideTopSwitchSinglePressSetting(PenItemID0, newValue);
+            newValue = Encoding.UTF8.GetBytes($"{{\"actionId\":26,\"actionName\":\"\"}}");
+            await SetSideBottomSwitchSinglePressSetting(PenItemID0, newValue);
+            await SetTipSensitivity(PenItemID0, 3);
+            await SetTiltSensitivity(PenItemID0, 1);
+
+            await RestoreRadialMenuToDefault();
+
+            var filePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), @$"Dell\Dell Display and Peripheral Manager\Actions\pen.json");
+            if (File.Exists(filePath))
+            {
+                try
+                {
+                    File.Delete(filePath);
+                }
+                catch (Exception ex)
+                {
+                    writelog($"[DTPProxyPlugin] [RestoreToDefaultPen] Delete setting file failed: {ex}");
+                }
+            }
+            return true;
+        }
 
         #endregion
 
-
         #region Webcam
+
+        //Derek 1120
+        public async Task<JArray> GetWebcamDeviceItemsExAsync()
+        {
+            _itemID = new ItemId(WebcamItemID);
+
+            if (_webcamMethodInfo != null)
+            {
+                if (await GetCommodityInterfaceInstanceAsync(_webcamMethodInfo) is ICommodity commodity)
+                {
+                    var value = GetPropertyValue(_webcamInterfaceType, commodity, "DeviceItemsEx");
+                    return value == null ? new JArray() : (JArray)value;
+                }
+                else
+                {
+                    Debug.WriteLine($"Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {_itemID} item.");
+                    writelog($"Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {_itemID} item.");
+                    return new JArray();
+                }
+            }
+            else
+            {
+                Debug.WriteLine($"[GetDeviceItemsEx]Could not retrieve the Commodity Interface for the {_itemID} item. _webcamMethodInfo is null");
+                writelog($"[GetDeviceItemsEx]Could not retrieve the Commodity Interface for the {_itemID} item. _webcamMethodInfo is null");
+                return new JArray();
+            }
+
+        }
+
         public async Task<JArray> GetPresetProfiles(string Guid)
         {
             if (!await GetItemIDAsync("Webcam", Guid))
@@ -2354,7 +2393,13 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 if (await GetCommodityInterfaceInstanceAsync(_penMethodInfo) is ICommodity commodity)
                 {
                     var value = GetPropertyValue(_penInterfaceType, commodity, "MenuSinglePressSetting");
-                    return Encoding.UTF8.GetString((byte[])value);
+                    if (value is byte[] byteArray)
+                    {
+                        var str = Encoding.UTF8.GetString(byteArray);
+                        Debug.WriteLine(str);
+                        return str;
+                    }
+                    return string.Empty;
                 }
                 else
                 {
@@ -2574,7 +2619,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
         public async Task SetEraserSinglePressSetting(string itemID, byte[] newValue)
         {
-            _itemID = new ItemId(itemID);
+            _itemID = new ItemId(PenItemID0);
 
             if (_penMethodInfo != null)
             {
@@ -2778,8 +2823,63 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 writelog($"[SetTipSensitivity]Could not retrieve the Commodity Interface for the  {_itemID}  item. _penMethodInfo is null");
             }
         }
-        public async Task ResetToDefault_Pen()
+        public async Task<bool> RestoreToDefaultPen()
         {
+            if (!IsDTPReady)
+                return false;
+
+            byte[] newValue = Encoding.UTF8.GetBytes($"{{\"actionId\":73,\"actionName\":\"\"}}");
+            await SetEraserSinglePressSetting(PenItemID0, newValue);
+            newValue = Encoding.UTF8.GetBytes($"{{\"actionId\":90,\"actionName\":\"\"}}");
+            await SetEraserDoublePressSetting(PenItemID0, newValue);
+            newValue = Encoding.UTF8.GetBytes($"{{\"actionId\":75,\"actionName\":\"\"}}");
+            await SetEraserLongPressSetting(PenItemID0, newValue);
+            newValue = Encoding.UTF8.GetBytes($"{{\"actionId\":27,\"actionName\":\"\"}}");
+            await SetSideTopSwitchSinglePressSetting(PenItemID0, newValue);
+            newValue = Encoding.UTF8.GetBytes($"{{\"actionId\":26,\"actionName\":\"\"}}");
+            await SetSideBottomSwitchSinglePressSetting(PenItemID0, newValue);
+            await SetTipSensitivity(PenItemID0, 3);
+            await SetTiltSensitivity(PenItemID0, 1);
+
+            await RestoreRadialMenuToDefault();
+
+            var filePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), @$"Dell\Dell Display and Peripheral Manager\Actions\pen.json");
+            if (File.Exists(filePath))
+            {
+                try
+                {
+                    File.Delete(filePath);
+                }
+                catch (Exception ex)
+                {
+                    writelog($"[DTPProxyPlugin] [RestoreToDefaultPen] Delete setting file failed: {ex}");
+                }
+            }
+            return true;
+        }
+        public async Task<bool> RestoreRadialMenuToDefault()
+        {
+            if (!IsDTPReady)
+                return false;
+
+            byte[] newValue = Encoding.UTF8.GetBytes($"{{\"menuIndex\":0,\"actionId\":82,\"actionName\":\"\"}}");
+            await SetMenuSinglePressSetting(PenItemID0, newValue);
+            newValue = Encoding.UTF8.GetBytes($"{{\"menuIndex\":1,\"actionId\":79,\"actionName\":\"\"}}");
+            await SetMenuSinglePressSetting(PenItemID0, newValue);
+            newValue = Encoding.UTF8.GetBytes($"{{\"menuIndex\":2,\"actionId\":86,\"actionName\":\"\"}}");
+            await SetMenuSinglePressSetting(PenItemID0, newValue);
+            newValue = Encoding.UTF8.GetBytes($"{{\"menuIndex\":3,\"actionId\":80,\"actionName\":\"\"}}");
+            await SetMenuSinglePressSetting(PenItemID0, newValue);
+            newValue = Encoding.UTF8.GetBytes($"{{\"menuIndex\":4,\"actionId\":83,\"actionName\":\"\"}}");
+            await SetMenuSinglePressSetting(PenItemID0, newValue);
+            newValue = Encoding.UTF8.GetBytes($"{{\"menuIndex\":5,\"actionId\":85,\"actionName\":\"\"}}");
+            await SetMenuSinglePressSetting(PenItemID0, newValue);
+            newValue = Encoding.UTF8.GetBytes($"{{\"menuIndex\":6,\"actionId\":81,\"actionName\":\"\"}}");
+            await SetMenuSinglePressSetting(PenItemID0, newValue);
+            newValue = Encoding.UTF8.GetBytes($"{{\"menuIndex\":7,\"actionId\":84,\"actionName\":\"\"}}");
+            await SetMenuSinglePressSetting(PenItemID0, newValue);
+            await SetMenuCenterRightClickSetting(PenItemID0, true);
+            return true;
         }
 
         #endregion
@@ -5632,56 +5732,85 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 return null;
             }
         }
-        public async Task<string> GetFirmwareVersionAsyncForDock(string guid)
+        public Task<string> GetFirmwareVersionForDock(string guid)
         {
             try
             {
-                if (!await GetItemIDAsync("Dock", guid))
+                if (!GetItemIDAsync("Dock", guid).Result)
                 {
                     writelog(" [Dock] Failed to retrieve guid.");
-                    return null;
+                    return Task.FromResult("");
                 }
-                var commodity = await GetCommodityInterfaceInstanceAsync(_dongleMethodInfo);
+                var commodity = GetCommodityInterfaceInstanceAsync(_dockMethodInfo).Result;
                 if (commodity is ICommodity)
                 {
                     var value = GetPropertyValue(_dockInterfaceType, commodity, "FirmwareVersion");
-                    writelog($"[Dock] GetFirmwareVersionAsyncForDock succeeded for {guid}");
-                    return (string)value;
+                    writelog($"[Dock] GetFirmwareVersionForDock succeeded for {guid}");
+                    writelog($"[Dock] GetDockServiceTagForDock succeeded for {(string)value}");
+                    return Task.FromResult((string)value);
                 }
 
-                writelog($"[Dock] GetFirmwareVersionAsyncForDock failed: Could not retrieve commodity interface for {guid}");
-                return null;
+                writelog($"[Dock] GetFirmwareVersionForDock failed: Could not retrieve commodity interface for {guid}");
+                return Task.FromResult("");
             }
             catch (Exception ex)
             {
-                writelog($"[Dock] GetFirmwareVersionAsyncForDock failed for {guid} - Exception: {ex.Message}");
-                return null;
+                writelog($"[Dock] GetFirmwareVersionForDock failed for {guid} - Exception: {ex.Message}");
+                return Task.FromResult("");
             }
         }
-        public async Task<string> GetDockServiceTagAsyncForDock(string guid)
+        public Task<string> GetDockServiceTagForDock(string guid)
         {
             try
             {
-                if (!await GetItemIDAsync("Dock", guid))
+                if (!GetItemIDAsync("Dock", guid).Result)
                 {
                     writelog(" [Dock] Failed to retrieve guid.");
-                    return null;
+                    return Task.FromResult("");
                 }
-                var commodity = await GetCommodityInterfaceInstanceAsync(_dongleMethodInfo);
+                var commodity = GetCommodityInterfaceInstanceAsync(_dockMethodInfo).Result;
                 if (commodity is ICommodity)
                 {
                     var value = GetPropertyValue(_dockInterfaceType, commodity, "DockServiceTag");
-                    writelog($"[Dock] GetDockServiceTagAsyncForDock succeeded for {guid}");
-                    return (string)value;
+                    writelog($"[Dock] GetDockServiceTagForDock succeeded for {guid}");
+                    writelog($"[Dock] GetDockServiceTagForDock succeeded value is null : {(value == null ? "Yes" : "No")}");
+                    if (value != null)
+                    {
+                        byte[] dokc_bytes = (byte[])value;
+                        writelog($"[Dock] GetDockServiceTagForDock dokc_bytes.Length : {dokc_bytes.Length}");
+                        string textString = System.Text.Encoding.UTF8.GetString(dokc_bytes);
+                        writelog($"[Dock] GetDockServiceTagForDock dokc_bytes to string : " + textString);
+                        if (!string.IsNullOrEmpty(textString))
+                        {
+                            try
+                            {
+                                using (JsonDocument doc = JsonDocument.Parse(textString))
+                                {
+                                    JsonElement root = doc.RootElement;
+                                    string payloadElement = root.GetProperty("Payload").ToString();
+                                    int temp_int = 0;
+                                    if (!string.IsNullOrEmpty(payloadElement))
+                                    {
+                                        return Task.FromResult(payloadElement);
+                                    }
+                                }
+                            }
+                            catch (Exception ex)
+                            {
+                                writelog($"[Dock] GetDockServiceTagForDock Error : {ex.Message}");
+                            }
+                        }
+                    }
+                    return Task.FromResult("");
                 }
 
-                writelog($"[Dock] GetDockServiceTagAsyncForDock failed: Could not retrieve commodity interface for {guid}");
-                return null;
+                writelog($"[Dock] GetDockServiceTagForDock failed: Could not retrieve commodity interface for {guid}");
+                return Task.FromResult("");
             }
             catch (Exception ex)
             {
-                writelog($"[Dock] GetDockServiceTagAsyncForDock failed for {guid} - Exception: {ex.Message}");
-                return null;
+                writelog($"[Dock] GetDockServiceTagForDock failed for {guid} - Exception: {ex.Message}");
+                return Task.FromResult("");
             }
         }
 
@@ -5953,7 +6082,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             {
                 try
                 {
-                    _pencom.KeyCaptureDataChanged += _pencom_KeyCaptureDataChanged;
+                    //_pencom.KeyCaptureDataChanged += _pencom_KeyCaptureDataChanged;
                     writelog($"Pen Commodity event registered");
                 }
                 catch (Exception e)
@@ -6075,10 +6204,10 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
                 //if (obj!.DeviceItems.Length > 0)
                 //{
-                    //writelog($"InstanceId = {obj!.InstanceId}"); //fail
-                    //writelog($"InstanceNumber = {obj!.InstanceNumber}"); //fail
-                    //writelog($"ItemId = {obj!.ItemId}"); //fail
-                    //writelog($"DeviceName = {obj!.DeviceName}"); //fail
+                //writelog($"InstanceId = {obj!.InstanceId}"); //fail
+                //writelog($"InstanceNumber = {obj!.InstanceNumber}"); //fail
+                //writelog($"ItemId = {obj!.ItemId}"); //fail
+                //writelog($"DeviceName = {obj!.DeviceName}"); //fail
                 //}
             }
             catch (Exception e)
@@ -6141,7 +6270,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             if (null == _commSdk || null == _comdity || index < 0)
                 return false;
 
-            try 
+            try
             {
                 _comdity = await _commSdk.GetCommodityAsync<IWebcamCommodity>(new ItemId($"DellPeripheral.Webcam.{index}"), CancellationToken.None);
 
@@ -6192,7 +6321,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             {
                 writelog($"Webcam{index} RegisterEventsForWebcam Exception {e.Message}");
 
-                return false; 
+                return false;
             }
 
             return false;
@@ -6314,12 +6443,6 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
 
             return false;
-        }
-
-        private void _pencom_KeyCaptureDataChanged(object sender, KeyCaptureDataChangedArgs e)
-        {
-            Debug.WriteLine($"[Pen]KeystrokeDisplayDataChanged {e.KeyCaptureData} Changed for Device ID: {e.DeviceId}  !!!!!!!!!!!!!!!");
-            writelog($"[Headset]FirmwareVersionChanged {e.KeyCaptureData} Changed for Device ID: {e.DeviceId}  !!!!!!!!!!!!!!!");
         }
 
         private void OnDTPProxyPluginConditionChangeHandler(object sender, EventArgs e)

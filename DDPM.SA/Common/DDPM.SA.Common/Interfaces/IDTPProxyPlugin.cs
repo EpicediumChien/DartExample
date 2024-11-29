@@ -84,7 +84,8 @@ namespace DDPM.SA.Common
         Task SetTiltSensitivity(string itemID, int newValue);
 
         Task SetTipSensitivity(string itemID, int newValue);
-        Task ResetToDefault_Pen();
+        Task<bool> RestoreToDefaultPen();
+        Task<bool> RestoreRadialMenuToDefault();
 
 
         Task<string> PairingPen();
@@ -342,6 +343,8 @@ namespace DDPM.SA.Common
 
         #region Dock
         Task<DockData> GetDockData(string guid);
+        Task<string> GetFirmwareVersionForDock(string guid);
+        Task<string> GetDockServiceTagForDock(string guid);
         #endregion
     }
 }
