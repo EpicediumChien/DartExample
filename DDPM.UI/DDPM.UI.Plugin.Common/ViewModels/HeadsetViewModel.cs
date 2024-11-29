@@ -4,9 +4,11 @@ using DDPM.UI.Common.Method;
 using Dell.Client.Framework.Common;
 using Dell.Client.Framework.UX.WPF;
 using Microsoft;
+using Newtonsoft.Json.Linq;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows;
+using System.Windows.Forms;
 
 namespace DDPM.UI.Plugin.ViewModels
 {
@@ -34,6 +36,63 @@ namespace DDPM.UI.Plugin.ViewModels
                 OnPropertyChanged();
             }
         }
+
+        private bool _wearDetectionFromDTP;
+        private bool _isWearDetectionMuteMicEnabledFromDTP;
+        private bool _isWearDetectionPauseMusicEnableFromDTP;
+        private int  _wearDetectionQuickPauseAsyncFromDTP;
+        private int  _wearDetectionSensitivityFromDTP;
+
+        public bool WearDetectionFromDTP
+        {
+            get => _wearDetectionFromDTP;
+            set
+            {
+                _wearDetectionFromDTP = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public bool IsWearDetectionMuteMicEnabledFromDTP
+        {
+            get => _isWearDetectionMuteMicEnabledFromDTP;
+            set
+            {
+                _isWearDetectionMuteMicEnabledFromDTP = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public bool IsWearDetectionPauseMusicEnableFromDTP
+        {
+            get => _isWearDetectionPauseMusicEnableFromDTP;
+            set
+            {
+                _isWearDetectionPauseMusicEnableFromDTP = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public int WearDetectionQuickPauseAsyncFromDTP
+        {
+            get => _wearDetectionQuickPauseAsyncFromDTP;
+            set
+            {
+                _wearDetectionQuickPauseAsyncFromDTP = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public int WearDetectionSensitivityFromDTP
+        {
+            get => _wearDetectionSensitivityFromDTP;
+            set
+            {
+                _wearDetectionSensitivityFromDTP = value;
+                OnPropertyChanged();
+            }
+        }
+
     }
     public class HeadsetViewModel : PeripheralViewModel, INotifyPropertyChanged
     {
@@ -61,10 +120,205 @@ namespace DDPM.UI.Plugin.ViewModels
             DeviceInfoDTP = new DeviceInfoDTP();
             _current_headset = string.Empty;
             _debouncerHeadset = new Debouncer(1000, ExecuteDebouncedAction);
-
+            DdpmCommonHelper.DeviceManagerSA!.UIUpdateNotify += Headset_DTPNotify;
 
             _log!.Info($"[HeadsetViewModel] HeadsetViewModel Start...");
         }
+
+        private Dictionary<string, string> deal_param(string param)
+        {
+            Dictionary<string, string> tmp = new Dictionary<string, string>();
+
+            try
+            {
+                List<string> list = param.Split(new char[] { ';' }).ToList();
+                foreach (string s in list)
+                {
+                    List<string> item = s.Split(new char[] { ':' }).ToList();
+                    if (item.Count == 2)
+                    {
+                        tmp.Add(item[0], item[1]);
+                    }
+                }
+            }
+            catch
+            {
+
+            }
+            return tmp;
+        }
+
+        private void Headset_DTPNotify(object? sender, UpdateUINotify e)
+        {
+            Dictionary<string, string> event_param = deal_param(e.UI_Field_Name);
+            try
+            {
+                if (!event_param.TryGetValue("Device", out var device))
+                {
+                    _log.Info($"[HeadsetViewModel] HeadsetViewModel Device cannot be found in event_param");
+                    return;
+                }
+                if (device == "Headset")
+                {
+                    if (!event_param.TryGetValue("EventType", out var eventtype))
+                    {
+                        _log.Info($"[HeadsetViewModel] HeadsetViewModel EventType cannot be found in event_param");
+                        return;
+                    }
+
+                    _log.Info($"[HeadsetViewModel] HeadsetViewModel EventType = {eventtype}");
+
+                    switch (eventtype)
+                    {
+                        case "Headset_WearDetectionChanged":
+                            HandleWearDetectionEvent(eventtype, event_param[eventtype], ref _isWearDetectionStatus);
+                            DeviceInfoDTP.WearDetectionFromDTP = _isWearDetectionStatus;
+                            break;
+
+                        case "Headset_IsWearDetectionPauseMusicEnabledChanged":
+                            HandleWearDetectionEvent(eventtype, event_param[eventtype], ref _isPauseMusicStatus);
+                            DeviceInfoDTP.IsWearDetectionPauseMusicEnableFromDTP = _isPauseMusicStatus;
+                            break;
+
+                        case "Headset_IsWearDetectionMuteMicEnabledChanged":
+                            HandleWearDetectionEvent(eventtype, event_param[eventtype], ref _isMuteMicrophoneStatus);
+                            DeviceInfoDTP.IsWearDetectionMuteMicEnabledFromDTP = _isMuteMicrophoneStatus;
+                            break;
+
+                        case "Headset_WearDetectionQuickPauseChanged":
+                            HandleWearDetectionEvent(eventtype, event_param[eventtype], ref _isQuickPauseStatus);
+                            DeviceInfoDTP.WearDetectionQuickPauseAsyncFromDTP = BoolToInt(_isQuickPauseStatus);
+                            if (Model == "WL7024")
+                            {
+                                if(event_param[eventtype].ToString().ToLower() == "off")
+                                {
+                                    _isQuickPauseStatus = false;
+                                    DeviceInfoDTP.WearDetectionQuickPauseAsyncFromDTP = 0;
+                                    _isNormalChecked = true;
+                                    _isSensitiveChecked = false;
+                                }
+                                if (event_param[eventtype].ToString().ToLower() == "sensitive")
+                                {
+                                    _isQuickPauseStatus = true;
+                                    DeviceInfoDTP.WearDetectionQuickPauseAsyncFromDTP = 1;
+                                    _isNormalChecked = false;
+                                    _isSensitiveChecked = true;
+                                }
+                                if (event_param[eventtype].ToString().ToLower() == "normal")
+                                {
+                                    if (!_isQuickPauseStatus)
+                                    {
+                                        _isQuickPauseStatus = !_isQuickPauseStatus;
+                                    }
+                                    DeviceInfoDTP.WearDetectionQuickPauseAsyncFromDTP = 0;
+                                    _isNormalChecked = true;
+                                    _isSensitiveChecked = false;
+                                }
+                            }
+                            if (Model == "WL5024")
+                            {
+
+                            }
+                            break;
+
+                        case "Headset_WearDetectionSensitivityChanged":
+                            if(Model == "WL5024")
+                            {
+                                if (event_param[eventtype].ToString().ToLower() == "normal")
+                                {
+                                    _isNormal2Checked = true;
+                                    _isLowChecked = false;
+                                }
+                                if (event_param[eventtype].ToString().ToLower() == "low")
+                                {
+                                    _isNormal2Checked = false;
+                                    _isLowChecked = true;
+                                }
+                            }
+                            if (Model == "WL7024")
+                            {
+                                HandleWearDetectionEvent(eventtype, event_param[eventtype], ref _isQuickPauseStatus);
+                                DeviceInfoDTP.WearDetectionSensitivityFromDTP = BoolToInt(_isQuickPauseStatus);
+                            }
+                            break;
+
+                        default:
+                            break;
+                    }
+                    //CheckWearDetectionUI(true);
+                    OnPropertyChanged("WearDetectionStatus");
+                    OnPropertyChanged("WearDetection_String");
+
+                    OnPropertyChanged("PauseMusicStatus");
+                    OnPropertyChanged("PauseMusic_String");
+
+                    OnPropertyChanged("MuteMicrophoneStatus");
+                    OnPropertyChanged("MuteMicrophone_String");
+
+                    OnPropertyChanged("IsNormal2Checked");
+                    OnPropertyChanged("IsLowChecked");
+
+                    OnPropertyChanged("QuickPauseStatus");
+                    OnPropertyChanged("QuickPause_String");
+
+                    OnPropertyChanged("IsNormalChecked");
+                    OnPropertyChanged("IsSensitiveChecked");
+                }
+            }
+            catch (Exception ex)
+            {
+                _log.Error($"[HeadsetViewModel] HeadsetViewModel Headset_DTPNotify Exception = {ex.Message.ToString()}");
+            }
+        }
+
+        private void HandleWearDetectionEvent(string eventtype, string paramValue, ref bool statusField)
+        {
+            if (StringToBool(paramValue, out bool result))
+            {
+                statusField = result;
+            }
+        }
+
+        public static bool StringToBool(string input, out bool result)
+        {
+            if (bool.TryParse(input, out result))
+            {
+                return true; 
+            }
+
+            switch (input.ToLower())
+            {
+                case "normal":
+                case "yes":
+                case "1":
+                    result = true;
+                    return true;
+                case "off":
+                case "low":
+                case "no":
+                case "0":
+                    result = false;
+                    return true;
+                default:
+                    result = false;
+                    return false; 
+            }
+        }
+
+        public class WearDetectionChangedArgs
+        {
+            public bool IsGlobalEnabled { get; set; }
+
+            public bool IsPauseMusicEnabled { get; set; }
+
+            public bool IsMuteMicEnabled { get; set; }
+
+            public int Sensitivity { get; set; }
+
+            public int QuickPause { get; set; }
+
+        }
+
 
         private void ExecuteDebouncedAction(object param)
         {
@@ -87,41 +341,32 @@ namespace DDPM.UI.Plugin.ViewModels
                     case "SpeechBoostCheck":
                     case "TrebleBoostCheck":
                     case "CustomCheck":
-                        _log.Info($"[HeadsetViewModel] SetSelectedPresetAsync ... {mode} .... {DeviceInfoDTP.SelectedPreset.ToString()}");
+                        _log.Info($"[HeadsetViewModel] SetSelectedPresetAsync ... {mode} ... {DeviceInfoDTP.SelectedPreset.ToString()}");
                         _deviceManager.SetSelectedPresetAsync(CurrentDeviceInfo!.ID.ToString(), DeviceInfoDTP.SelectedPreset).Wait();
                         break;
                     //------------------------------------------------------------------------------------------
                     case "WearDetectionCheck":
-                        _log.Info($"[HeadsetViewModel] SetWearDetectionAsync ....... ");
-                        //_deviceManager.SetWearDetectionAsync(CurrentDeviceInfo!.ID.ToString(), 1).Wait();
+                        _log.Info($"[HeadsetViewModel] SetWearDetectionAsync ... WearDetectionCheck ... {DeviceInfoDTP.WearDetectionFromDTP.ToString()}");
+                        _deviceManager.SetWearDetectionAsync(CurrentDeviceInfo!.ID.ToString(), DeviceInfoDTP.WearDetectionFromDTP).Wait();
                         break;
                     case "PauseMusicCheck":
-                        _log.Info($"[HeadsetViewModel] SetIsWearDetectionPauseMusicEnabledAsync .......");
-                        //_deviceManager.SetIsWearDetectionPauseMusicEnabledAsync(CurrentDeviceInfo!.ID.ToString(), 2).Wait();
+                        _log.Info($"[HeadsetViewModel] SetIsWearDetectionPauseMusicEnabledAsync ... PauseMusicCheck ... {DeviceInfoDTP.IsWearDetectionPauseMusicEnableFromDTP.ToString()} ...");
+                        _deviceManager.SetIsWearDetectionPauseMusicEnabledAsync(CurrentDeviceInfo!.ID.ToString(), DeviceInfoDTP.IsWearDetectionPauseMusicEnableFromDTP).Wait();
                         break;
                     case "MuteMicrophoneCheck":
-                        _log.Info($"[HeadsetViewModel] SetIsWearDetectionMuteMicEnabledAsync ....... ");
-                        //_deviceManager.SetIsWearDetectionMuteMicEnabledAsync(CurrentDeviceInfo!.ID.ToString(), 3).Wait();
+                        _log.Info($"[HeadsetViewModel] SetIsWearDetectionMuteMicEnabledAsync ... MuteMicrophoneCheck ... {DeviceInfoDTP.IsWearDetectionMuteMicEnabledFromDTP.ToString()}");
+                        _deviceManager.SetIsWearDetectionMuteMicEnabledAsync(CurrentDeviceInfo!.ID.ToString(), DeviceInfoDTP.IsWearDetectionMuteMicEnabledFromDTP).Wait();
                         break;
                     case "QuickPauseCheck":
-                        _log.Info($"[HeadsetViewModel] SetWearDetectionQuickPauseAsync ....... ");
-                        //_deviceManager.SetWearDetectionQuickPauseAsync(CurrentDeviceInfo!.ID.ToString(), 101).Wait();
+                        _log.Info($"[HeadsetViewModel] SetWearDetectionQuickPauseAsync ... QuickPauseCheck ... {DeviceInfoDTP.WearDetectionQuickPauseAsyncFromDTP.ToString()}");
+                        _deviceManager.SetWearDetectionQuickPauseAsync(CurrentDeviceInfo!.ID.ToString(), DeviceInfoDTP.WearDetectionQuickPauseAsyncFromDTP).Wait();
                         break;
                     case "Normal2Check":
-                        _log.Info($"[HeadsetViewModel] Normal2Check ....... ");
-                        //_deviceManager.SetWearDetectionAsync(CurrentDeviceInfo!.ID.ToString(), 1).Wait();
-                        break;
                     case "LowCheck":
-                        _log.Info($"[HeadsetViewModel] LowCheck .......");
-                        //_deviceManager.SetIsWearDetectionPauseMusicEnabledAsync(CurrentDeviceInfo!.ID.ToString(), 2).Wait();
-                        break;
                     case "NormalCheck":
-                        _log.Info($"[HeadsetViewModel] NormalCheck ....... ");
-                        //_deviceManager.SetIsWearDetectionMuteMicEnabledAsync(CurrentDeviceInfo!.ID.ToString(), 3).Wait();
-                        break;
                     case "SensitiveCheck":
-                        _log.Info($"[HeadsetViewModel] SensitiveCheck ....... ");
-                        //_deviceManager.SetWearDetectionQuickPauseAsync(CurrentDeviceInfo!.ID.ToString(), 101).Wait();
+                        _log.Info($"[HeadsetViewModel] SetWearDetectionSensitivityAsync ... {mode} ... {DeviceInfoDTP.WearDetectionSensitivityFromDTP.ToString()}");
+                        _deviceManager.SetWearDetectionSensitivityAsync(CurrentDeviceInfo!.ID.ToString(), DeviceInfoDTP.WearDetectionSensitivityFromDTP).Wait();
                         break;
                     //------------------------------------------------------------------------------------------
                     case "AnswerCallsCheck":
@@ -136,7 +381,7 @@ namespace DDPM.UI.Plugin.ViewModels
                     //------------------------------------------------------------------------------------------
                     case "EssentialCheck":
                     case "AllCheck":
-                        _log.Info($"[HeadsetViewModel] SetVoiceGuidanceAsync ... {{mode}} .... {DeviceInfoDTP.BusyLight.ToString()}");
+                        _log.Info($"[HeadsetViewModel] SetVoiceGuidanceAsync ... {mode} .... {DeviceInfoDTP.BusyLight.ToString()}");
                         _deviceManager.SetVoiceGuidanceAsync(CurrentDeviceInfo!.ID.ToString(), DeviceInfoDTP.VoiceGuidance).Wait();
                         break;
                     //------------------------------------------------------------------------------------------
@@ -433,47 +678,35 @@ namespace DDPM.UI.Plugin.ViewModels
         {
             if (DeviceInfoDTP!.IsWearDetectionSupported)
             {
-                uint wearDetectionValue = (uint)DeviceInfoDTP!.WearDetection;
-                if (GetBitValue(wearDetectionValue, 0) == 1)
-                    _isWearDetectionStatus = true;
-                else
-                    _isWearDetectionStatus = false;
-
-                if (GetBitValue(wearDetectionValue, 1) == 1)
-                    _isPauseMusicStatus = true;
-                else
-                    _isPauseMusicStatus = false;
-
-                if (GetBitValue(wearDetectionValue, 2) == 1)
-                    _isMuteMicrophoneStatus = true;
-                else
-                    _isMuteMicrophoneStatus = false;
-
-                if (GetBitValue(wearDetectionValue, 3) == 1)
+                _isWearDetectionStatus = DeviceInfoDTP.WearDetectionFromDTP;
+                _isPauseMusicStatus = DeviceInfoDTP.IsWearDetectionPauseMusicEnableFromDTP;
+                _isMuteMicrophoneStatus = DeviceInfoDTP.IsWearDetectionMuteMicEnabledFromDTP;
+                _isQuickPauseStatus = IntToBool(DeviceInfoDTP.WearDetectionQuickPauseAsyncFromDTP);
+                if(IntToBool(DeviceInfoDTP.WearDetectionSensitivityFromDTP))
                 {
-                    _isNormal2Checked = true;
-                    _isLowChecked = false;
+                    if (Model == "WL7024")
+                    {
+                        _isNormalChecked = false;
+                        _isSensitiveChecked = true;
+                    }
+                    if (Model == "WL5024")
+                    {
+                        _isLowChecked = false;
+                        _isNormal2Checked = true;
+                    }
                 }
                 else
                 {
-                    _isNormal2Checked = false;
-                    _isLowChecked = true;
-                }
-
-                if (GetBitsValue(wearDetectionValue, 4) > 0)
-                    _isQuickPauseStatus = true;
-                else
-                    _isQuickPauseStatus = false;
-
-                if (GetBitsValue(wearDetectionValue, 4) == 1)
-                {
-                    _isNormalChecked = true;
-                    _isSensitiveChecked = false;
-                }
-                else if ((GetBitsValue(wearDetectionValue, 4) == 2))
-                {
-                    _isNormalChecked = false;
-                    _isSensitiveChecked = true;
+                    if (Model == "WL7024")
+                    {
+                        _isNormalChecked = true;
+                        _isSensitiveChecked = false;
+                    }
+                    if (Model == "WL5024")
+                    {
+                        _isLowChecked = true;
+                        _isNormal2Checked = false;
+                    }
                 }
 
                 if (PropertyChange)
@@ -515,16 +748,16 @@ namespace DDPM.UI.Plugin.ViewModels
 
                     case 2:
                         _isDefaultChecked = false;
-                        _isBassBoostChecked = true;
-                        _isSpeechBoostChecked = false;
+                        _isBassBoostChecked = false;
+                        _isSpeechBoostChecked = true;
                         _isTrebleBoostChecked = false;
                         _isCustomChecked = false;
                         break;
 
                     case 3:
                         _isDefaultChecked = false;
-                        _isBassBoostChecked = false;
-                        _isSpeechBoostChecked = true;
+                        _isBassBoostChecked = true;
+                        _isSpeechBoostChecked = false;
                         _isTrebleBoostChecked = false;
                         _isCustomChecked = false;
                         break;
@@ -650,7 +883,7 @@ namespace DDPM.UI.Plugin.ViewModels
                 return false;
             _log.Info($"[HeadsetViewModel] SetCurrentDevice GUID ... {CurrentDeviceID.ToString()}");
             _current_headset = CurrentDeviceID!.ToString();
-            var fv = _deviceManager.GetFirmwareVersionAsync(CurrentDeviceID.ToString()).Result; //CurrentDeviceInfo.FirmwareVersion.PadLeft(4, '0');
+            var fv = _deviceManager.GetHeadsetFirmwareVersionAsync(CurrentDeviceID.ToString()).Result; //CurrentDeviceInfo.FirmwareVersion.PadLeft(4, '0');
             //FirmwareVersion2 = $"Firmware Version {fv}";// {fv.Substring(0, 1)}.{fv.Substring(1, 1)}.{fv.Substring(2, 1)}.{fv.Substring(3, 1)}";
             FirmwareVersion2 = Strings.FirmwareVersion + $" {fv}";
             //else
@@ -720,6 +953,9 @@ namespace DDPM.UI.Plugin.ViewModels
                     break;
 
                 case "AncGainChanged":
+                    DeviceInfoDTP.AncGain = di.AncGain;
+                    _isTransparencylevelSliderValue = di.AncGain;
+                    OnPropertyChanged(nameof(TransparencylevelSliderValue));
                     break;
 
                 case "WearDetectionChanged":
@@ -811,6 +1047,8 @@ namespace DDPM.UI.Plugin.ViewModels
 
                 _log.Info($"[HeadsetViewModel] Print after property ......");
                 _log.Info($"[HeadsetViewModel] ***********************************************************************");
+
+                object varr = await _deviceManager.GetHeadsetDeviceItemsExAsync();
 
                 //Read this Headset Support function
                 if (await _deviceManager.GetIsANCSupportedAsync(CurrentDeviceID.ToString()))
@@ -926,8 +1164,24 @@ namespace DDPM.UI.Plugin.ViewModels
                 if (await _deviceManager.GetIsWearDetectionSupportedAsync(CurrentDeviceID.ToString()))
                 {
                     DeviceInfoDTP.IsWearDetectionSupported = true;
-                    //DeviceInfoDTP.WearDetection = await _deviceManager.GetWearDetectionAsync(CurrentDeviceID.ToString());
-                    _log.Info($"[HeadsetViewModel] DeviceInfoDTP.WearDetection .............= {DeviceInfoDTP.WearDetection.ToString()}");
+                    _log.Info($"[HeadsetViewModel] DeviceInfoDTP.GetIsWearDetectionSupportedAsync .............= {DeviceInfoDTP.IsWearDetectionSupported.ToString()}");
+                    if(DeviceInfoDTP.IsWearDetectionSupported)
+                    {
+                        DeviceInfoDTP.WearDetectionFromDTP = await _deviceManager.GetWearDetectionAsync(CurrentDeviceID.ToString());
+                        _log.Info($"[HeadsetViewModel] DeviceInfoDTP.WearDetectionFromDTP .............= {DeviceInfoDTP.WearDetectionFromDTP.ToString()}");
+
+                        DeviceInfoDTP.IsWearDetectionPauseMusicEnableFromDTP = await _deviceManager.GetIsWearDetectionPauseMusicEnabledAsync(CurrentDeviceID.ToString());
+                        _log.Info($"[HeadsetViewModel] DeviceInfoDTP.IsWearDetectionPauseMusicEnableFromDTP .............= {DeviceInfoDTP.IsWearDetectionPauseMusicEnableFromDTP.ToString()}");
+
+                        DeviceInfoDTP.IsWearDetectionMuteMicEnabledFromDTP = await _deviceManager.GetIsWearDetectionMuteMicEnabledAsync(CurrentDeviceID.ToString());
+                        _log.Info($"[HeadsetViewModel] DeviceInfoDTP.IsWearDetectionMuteMicEnabledFromDTP .............= {DeviceInfoDTP.IsWearDetectionPauseMusicEnableFromDTP.ToString()}");
+
+                        DeviceInfoDTP.WearDetectionQuickPauseAsyncFromDTP = await _deviceManager.GetWearDetectionQuickPauseAsync(CurrentDeviceID.ToString());
+                        _log.Info($"[HeadsetViewModel] DeviceInfoDTP.WearDetectionQuickPauseAsyncFromDTP .............= {DeviceInfoDTP.IsWearDetectionPauseMusicEnableFromDTP.ToString()}");
+
+                        DeviceInfoDTP.WearDetectionSensitivityFromDTP = await _deviceManager.GetWearDetectionSensitivityAsync(CurrentDeviceID.ToString());
+                        _log.Info($"[HeadsetViewModel] DeviceInfoDTP.WearDetectionSensitivityFromDTP .............= {DeviceInfoDTP.IsWearDetectionPauseMusicEnableFromDTP.ToString()}");
+                    }
                 }
                 else
                 {
@@ -948,7 +1202,8 @@ namespace DDPM.UI.Plugin.ViewModels
                     _log.Info($"[HeadsetViewModel] GetIsBoomMicSupportedAsync ............. NO");
                 }
                 //------------------------------------------------------------------------------------
-                DeviceInfoDTP.BatteryLevel = await _deviceManager.GetBatteryLevelAsync(CurrentDeviceID.ToString());
+
+                //DeviceInfoDTP.BatteryLevel = await _deviceManager.GetHeadsetBatteryLevelAsync(CurrentDeviceID.ToString());
                 DeviceInfoDTP.SidetoneLevel = await _deviceManager.GetSidetoneLevelAsync(CurrentDeviceID.ToString());
 
             }
@@ -1023,6 +1278,9 @@ namespace DDPM.UI.Plugin.ViewModels
         {
             get => _regKeyForQRCode + Model;
         }
+        bool IntToBool(int value) => value != 0;
+        bool IntToBoolElse(int value) => value == 0;
+        int BoolToInt(bool value) => value ? 1 : 0;
         #region Please Wait
 
         private bool _isPleaseWaitVisible;
@@ -1491,9 +1749,6 @@ namespace DDPM.UI.Plugin.ViewModels
                 _isTransparencylevelSliderValue = value;
                 _debouncerHeadset.Debounce("TransparencylevelSlider");
                 OnPropertyChanged(nameof(TransparencylevelSliderValue));
-
-
-
             }
         }
 
@@ -1827,23 +2082,25 @@ namespace DDPM.UI.Plugin.ViewModels
             {
                 if (value)
                 {
-                    int setWear = (int)SetBitValue((uint)DeviceInfoDTP!.WearDetection, 0, 1);
-                    _log.Info($"[HeadsetViewModel] SetWearDetectionAsync WearDetectionStatus On ....... {setWear.ToString()}");
+                    //int setWear = (int)SetBitValue((uint)DeviceInfoDTP!.WearDetection, 0, 1);
+                    //_log.Info($"[HeadsetViewModel] SetWearDetectionAsync WearDetectionStatus On ....... {setWear.ToString()}");
                     //_deviceManager.SetWearDetection((int)SetBitValue((uint)CurrentDeviceInfo!.WearDetection, 0, 1), CurrentDeviceInfo!.ID).Wait();
                     //_deviceManager.SetWearDetectionForCLI(1, CurrentDeviceInfo!.ID).Wait();
                     //_deviceManager.SetWearDetectionAsync(CurrentDeviceInfo!.ID.ToString(), setWear).Wait();
-                    DeviceInfoDTP.WearDetection = setWear;
+                    //DeviceInfoDTP.WearDetection = setWear;
                 }
                 else
                 {
-                    int setWear = (int)SetBitValue((uint)DeviceInfoDTP!.WearDetection, 0, 0);
-                    _log.Info($"[HeadsetViewModel] SetWearDetectionAsync WearDetectionStatus Off ....... {setWear.ToString()}");
+                    //int setWear = (int)SetBitValue((uint)DeviceInfoDTP!.WearDetection, 0, 0);
+                    //_log.Info($"[HeadsetViewModel] SetWearDetectionAsync WearDetectionStatus Off ....... {setWear.ToString()}");
                     //_deviceManager.SetWearDetection((int)SetBitValue((uint)CurrentDeviceInfo!.WearDetection, 0, 0), CurrentDeviceInfo!.ID).Wait();
                     //_deviceManager.SetWearDetectionForCLI(0, CurrentDeviceInfo!.ID).Wait();
                     //_deviceManager.SetWearDetectionAsync(CurrentDeviceInfo!.ID.ToString(), setWear).Wait();
-                    DeviceInfoDTP.WearDetection = setWear;
-                }
+                    //DeviceInfoDTP.WearDetection = setWear;
+                }               
                 _isWearDetectionStatus = value;
+                DeviceInfoDTP.WearDetectionFromDTP = value;
+                _debouncerHeadset.Debounce("WearDetectionCheck");
                 OnPropertyChanged("WearDetection_String");
             }
         }
@@ -1868,26 +2125,33 @@ namespace DDPM.UI.Plugin.ViewModels
             {
                 if (value)
                 {
-                    int setWear = (int)SetBitValue((uint)DeviceInfoDTP!.WearDetection, 1, 1);
-                    _log.Info($"[HeadsetViewModel] SetWearDetectionAsync PauseMusicStatus On ....... {setWear.ToString()}");
+                    //int setWear = (int)SetBitValue((uint)DeviceInfoDTP!.WearDetection, 1, 1);
+                    //_log.Info($"[HeadsetViewModel] SetWearDetectionAsync PauseMusicStatus On ....... {setWear.ToString()}");
                     //_deviceManager.SetWearDetection((int)SetBitValue((uint)CurrentDeviceInfo!.WearDetection, 1, 1), CurrentDeviceInfo!.ID).Wait();
                     //_deviceManager.SetWearDetectionAsync(CurrentDeviceInfo!.ID.ToString(), setWear).Wait();
-                    DeviceInfoDTP.WearDetection = setWear;
+                    //DeviceInfoDTP.WearDetection = setWear;
                 }
                 else
                 {
-                    int setWear = (int)SetBitValue((uint)DeviceInfoDTP!.WearDetection, 1, 0);
-                    _log.Info($"[HeadsetViewModel] SetWearDetectionAsync PauseMusicStatus Off ....... {setWear.ToString()}");
+                    //int setWear = (int)SetBitValue((uint)DeviceInfoDTP!.WearDetection, 1, 0);
+                    //_log.Info($"[HeadsetViewModel] SetWearDetectionAsync PauseMusicStatus Off ....... {setWear.ToString()}");
                     //_deviceManager.SetWearDetection((int)SetBitValue((uint)CurrentDeviceInfo!.WearDetection, 1, 0), CurrentDeviceInfo!.ID).Wait();
                     //_deviceManager.SetWearDetectionAsync(CurrentDeviceInfo!.ID.ToString(), setWear).Wait();
-                    DeviceInfoDTP.WearDetection = setWear;
+                    //DeviceInfoDTP.WearDetection = setWear;
                 }
-                _isPauseMusicStatus = value;
-                OnPropertyChanged("PauseMusic_String");
-                if (!_isMuteMicrophoneStatus && !_isPauseMusicStatus)
+                if (!_isMuteMicrophoneStatus && !value)
                 {
                     WearDetectionStatus = false;
+                    return;
                 }
+                _isPauseMusicStatus = value;
+                DeviceInfoDTP.IsWearDetectionPauseMusicEnableFromDTP = value;
+                _debouncerHeadset.Debounce("PauseMusicCheck");
+                OnPropertyChanged("PauseMusic_String");
+                //if (!_isMuteMicrophoneStatus && !_isPauseMusicStatus)
+                //{
+                //    WearDetectionStatus = false;
+                //}
             }
         }
 
@@ -1909,28 +2173,36 @@ namespace DDPM.UI.Plugin.ViewModels
             }
             set
             {
-                if (value)
-                {
-                    int setWear = (int)SetBitValue((uint)DeviceInfoDTP!.WearDetection, 2, 1);
-                    _log.Info($"[HeadsetViewModel] SetWearDetectionAsync MuteMicrophoneStatus On ....... {setWear.ToString()}");
-                    //_deviceManager.SetWearDetection((int)SetBitValue((uint)CurrentDeviceInfo!.WearDetection, 2, 1), CurrentDeviceInfo!.ID).Wait();
-                    //_deviceManager.SetWearDetectionAsync(CurrentDeviceInfo!.ID.ToString(), setWear).Wait();
-                    DeviceInfoDTP.WearDetection = setWear;
-                }
-                else
-                {
-                    int setWear = (int)SetBitValue((uint)DeviceInfoDTP!.WearDetection, 2, 0);
-                    _log.Info($"[HeadsetViewModel] SetWearDetectionAsync MuteMicrophoneStatus Off ....... {setWear.ToString()}");
-                    //_deviceManager.SetWearDetection((int)SetBitValue((uint)CurrentDeviceInfo!.WearDetection, 2, 0), CurrentDeviceInfo!.ID).Wait();
-                    //_deviceManager.SetWearDetectionAsync(CurrentDeviceInfo!.ID.ToString(), setWear).Wait();
-                    DeviceInfoDTP.WearDetection = setWear;
-                }
-                _isMuteMicrophoneStatus = value;
-                OnPropertyChanged("MuteMicrophone_String");
-                if (!_isMuteMicrophoneStatus && !_isPauseMusicStatus)
+                //if (value)
+                //{
+                //    int setWear = (int)SetBitValue((uint)DeviceInfoDTP!.WearDetection, 2, 1);
+                //    _log.Info($"[HeadsetViewModel] SetWearDetectionAsync MuteMicrophoneStatus On ....... {setWear.ToString()}");
+                //    //_deviceManager.SetWearDetection((int)SetBitValue((uint)CurrentDeviceInfo!.WearDetection, 2, 1), CurrentDeviceInfo!.ID).Wait();
+                //    //_deviceManager.SetWearDetectionAsync(CurrentDeviceInfo!.ID.ToString(), setWear).Wait();
+                //    DeviceInfoDTP.WearDetection = setWear;
+                //}
+                //else
+                //{
+                //    int setWear = (int)SetBitValue((uint)DeviceInfoDTP!.WearDetection, 2, 0);
+                //    _log.Info($"[HeadsetViewModel] SetWearDetectionAsync MuteMicrophoneStatus Off ....... {setWear.ToString()}");
+                //    //_deviceManager.SetWearDetection((int)SetBitValue((uint)CurrentDeviceInfo!.WearDetection, 2, 0), CurrentDeviceInfo!.ID).Wait();
+                //    //_deviceManager.SetWearDetectionAsync(CurrentDeviceInfo!.ID.ToString(), setWear).Wait();
+                //    DeviceInfoDTP.WearDetection = setWear;
+                //}
+                if(!_isPauseMusicStatus && !value)
                 {
                     WearDetectionStatus = false;
+                    return;
                 }
+                    
+                _isMuteMicrophoneStatus = value;
+                DeviceInfoDTP.IsWearDetectionMuteMicEnabledFromDTP = value;
+                _debouncerHeadset.Debounce("MuteMicrophoneCheck");
+                OnPropertyChanged("MuteMicrophone_String");
+                //if (!_isMuteMicrophoneStatus && !_isPauseMusicStatus)
+                //{
+                //    WearDetectionStatus = false;
+                //}
             }
         }
 
@@ -1952,30 +2224,32 @@ namespace DDPM.UI.Plugin.ViewModels
             }
             set
             {
-                if (value)
-                {
-                    //int setWear = (int)SetBitValue((uint)DeviceInfoDTP!.WearDetection, 4, 1);
-                    int setWear = (int)SetBitsValue((uint)DeviceInfoDTP!.WearDetection, 4, 2);
-                    _log.Info($"[HeadsetViewModel] SetWearDetectionAsync QuickPauseStatus On ....... {setWear.ToString()}");
-                    //_deviceManager.SetWearDetection((int)SetBitValue((uint)CurrentDeviceInfo!.WearDetection, 4, 1), CurrentDeviceInfo!.ID).Wait();
-                    //_deviceManager.SetWearDetectionAsync(CurrentDeviceInfo!.ID.ToString(), setWear).Wait();
-                    DeviceInfoDTP.WearDetection = setWear;
-                    _isSensitiveChecked = true;
-                    _isNormalChecked = false;
-                }
-                else
-                {
-                    //int setWear = (int)SetBitValue((uint)DeviceInfoDTP!.WearDetection, 4, 0);
-                    int setWear = (int)SetBitsValue((uint)DeviceInfoDTP!.WearDetection, 4, 0);
-                    _log.Info($"[HeadsetViewModel] SetWearDetectionAsync QuickPauseStatus Off ....... {setWear.ToString()}");
-                    //_deviceManager.SetWearDetection((int)SetBitValue((uint)CurrentDeviceInfo!.WearDetection, 4, 0), CurrentDeviceInfo!.ID).Wait();
-                    //_deviceManager.SetWearDetectionAsync(CurrentDeviceInfo!.ID.ToString(), setWear).Wait();
-                    DeviceInfoDTP.WearDetection = setWear;
-                    _isSensitiveChecked = false;
-                    _isNormalChecked = false;
-                    //IsNormalChecked = false;
-                }
+                //if (value)
+                //{
+                //    //int setWear = (int)SetBitValue((uint)DeviceInfoDTP!.WearDetection, 4, 1);
+                //    int setWear = (int)SetBitsValue((uint)DeviceInfoDTP!.WearDetection, 4, 2);
+                //    _log.Info($"[HeadsetViewModel] SetWearDetectionAsync QuickPauseStatus On ....... {setWear.ToString()}");
+                //    //_deviceManager.SetWearDetection((int)SetBitValue((uint)CurrentDeviceInfo!.WearDetection, 4, 1), CurrentDeviceInfo!.ID).Wait();
+                //    //_deviceManager.SetWearDetectionAsync(CurrentDeviceInfo!.ID.ToString(), setWear).Wait();
+                //    DeviceInfoDTP.WearDetection = setWear;
+                //    _isSensitiveChecked = true;
+                //    _isNormalChecked = false;
+                //}
+                //else
+                //{
+                //    //int setWear = (int)SetBitValue((uint)DeviceInfoDTP!.WearDetection, 4, 0);
+                //    int setWear = (int)SetBitsValue((uint)DeviceInfoDTP!.WearDetection, 4, 0);
+                //    _log.Info($"[HeadsetViewModel] SetWearDetectionAsync QuickPauseStatus Off ....... {setWear.ToString()}");
+                //    //_deviceManager.SetWearDetection((int)SetBitValue((uint)CurrentDeviceInfo!.WearDetection, 4, 0), CurrentDeviceInfo!.ID).Wait();
+                //    //_deviceManager.SetWearDetectionAsync(CurrentDeviceInfo!.ID.ToString(), setWear).Wait();
+                //    DeviceInfoDTP.WearDetection = setWear;
+                //    _isSensitiveChecked = false;
+                //    _isNormalChecked = false;
+                //    //IsNormalChecked = false;
+                //}
                 _isQuickPauseStatus = value;
+                DeviceInfoDTP.WearDetectionQuickPauseAsyncFromDTP = Convert.ToInt32(value);
+                _debouncerHeadset.Debounce("QuickPauseCheck");
                 OnPropertyChanged("QuickPause_String");
                 //OnPropertyChanged(nameof(IsNormalChecked));
                 //OnPropertyChanged(nameof(IsSensitiveChecked));
@@ -2106,12 +2380,13 @@ namespace DDPM.UI.Plugin.ViewModels
                     _isNormal2Checked = value;
                     if (value)
                     {
-                        int setWear = (int)SetBitValue((uint)DeviceInfoDTP!.WearDetection, 3, 1);
+                        //int setWear = (int)SetBitValue((uint)DeviceInfoDTP!.WearDetection, 3, 1);
                         //_log.Info($"[HeadsetViewModel] SetWearDetectionAsync IsNormal2Checked On ....... {setWear.ToString()}");
                         //_deviceManager.SetWearDetection((int)SetBitValue((uint)CurrentDeviceInfo!.WearDetection, 3, 1), CurrentDeviceInfo!.ID).Wait();
                         //_deviceManager.SetWearDetectionAsync(CurrentDeviceInfo!.ID.ToString(), setWear).Wait();
-                        DeviceInfoDTP.WearDetection = setWear;
+                        //DeviceInfoDTP.WearDetection = setWear;
                         _isLowChecked = false;
+                        DeviceInfoDTP.WearDetectionSensitivityFromDTP = Convert.ToInt32(value);
                         _debouncerHeadset.Debounce("Normal2Check");
                         OnPropertyChanged(nameof(IsNormal2Checked));
                         OnPropertyChanged(nameof(IsLowChecked));
@@ -2135,12 +2410,13 @@ namespace DDPM.UI.Plugin.ViewModels
                     _isLowChecked = value;
                     if (value)
                     {
-                        int setWear = (int)SetBitValue((uint)DeviceInfoDTP!.WearDetection, 3, 0);
+                        //int setWear = (int)SetBitValue((uint)DeviceInfoDTP!.WearDetection, 3, 0);
                         //_log.Info($"[HeadsetViewModel] SetWearDetectionAsync IsLowChecked On ....... {setWear.ToString()}");
                         //_deviceManager.SetWearDetection((int)SetBitValue((uint)CurrentDeviceInfo!.WearDetection, 3, 0), CurrentDeviceInfo!.ID).Wait();
                         //_deviceManager.SetWearDetectionAsync(CurrentDeviceInfo!.ID.ToString(), setWear).Wait();
-                        DeviceInfoDTP.WearDetection = setWear;
+                        //DeviceInfoDTP.WearDetection = setWear;
                         _isNormal2Checked = false;
+                        DeviceInfoDTP.WearDetectionSensitivityFromDTP = Convert.ToInt32(!value);
                         _debouncerHeadset.Debounce("LowCheck");
                         OnPropertyChanged(nameof(IsNormal2Checked));
                         OnPropertyChanged(nameof(IsLowChecked));
@@ -2166,13 +2442,8 @@ namespace DDPM.UI.Plugin.ViewModels
                     _isNormalChecked = value;
                     if (value)
                     {
-                        //int setWear = (int)SetBitsValue((uint)DeviceInfoDTP!.WearDetection, 5, 1);
-                        int setWear = (int)SetBitsValue((uint)DeviceInfoDTP!.WearDetection, 4, 1);
-                        //_log.Info($"[HeadsetViewModel] SetWearDetectionAsync IsNormalChecked On ....... {setWear.ToString()}");
-                        //_deviceManager.SetWearDetection((int)SetBitsValue((uint)CurrentDeviceInfo!.WearDetection, 5, 1), CurrentDeviceInfo!.ID).Wait();
-                        //_deviceManager.SetWearDetectionAsync(CurrentDeviceInfo!.ID.ToString(), setWear).Wait();
-                        DeviceInfoDTP.WearDetection = setWear;
                         _isSensitiveChecked = false;
+                        DeviceInfoDTP.WearDetectionSensitivityFromDTP = Convert.ToInt32(!value);
                         _debouncerHeadset.Debounce("NormalCheck");
                         OnPropertyChanged(nameof(IsNormalChecked));
                         OnPropertyChanged(nameof(IsSensitiveChecked));
@@ -2196,13 +2467,8 @@ namespace DDPM.UI.Plugin.ViewModels
                     _isSensitiveChecked = value;
                     if (value)
                     {
-                        //int setWear = (int)SetBitsValue((uint)DeviceInfoDTP!.WearDetection, 5, 2);
-                        int setWear = (int)SetBitsValue((uint)DeviceInfoDTP!.WearDetection, 4, 2);
-                        //_log.Info($"[HeadsetViewModel] SetWearDetectionAsync IsSensitiveChecked On ....... {setWear.ToString()}");
-                        //_deviceManager.SetWearDetection((int)SetBitsValue((uint)CurrentDeviceInfo!.WearDetection, 5, 2), CurrentDeviceInfo!.ID).Wait();
-                        //_deviceManager.SetWearDetectionAsync(CurrentDeviceInfo!.ID.ToString() , setWear).Wait();
-                        DeviceInfoDTP.WearDetection = setWear;
                         _isNormalChecked = false;
+                        DeviceInfoDTP.WearDetectionSensitivityFromDTP = Convert.ToInt32(value);
                         _debouncerHeadset.Debounce("SensitiveCheck");
                         OnPropertyChanged(nameof(IsNormalChecked));
                         OnPropertyChanged(nameof(IsSensitiveChecked));
