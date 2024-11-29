@@ -195,6 +195,7 @@ namespace DDPM.UI.Module.EzMemory
                 if (_vm._sortApps.Count < 2)
                     return; // Proceed only if there are two or more apps
 
+                _vm._sortApps = _vm.SortAppsByTextBlockNumber(_vm._sortApps);
                 // Collect App Info
                 List<EAAppInfoDDPM> _appInfos = _vm._sortApps.Values.Select(app => new EAAppInfoDDPM(
                     app.AppName, app.AppPath, bool.Parse(app.AppType), app.AppUserModelID, string.Empty)).ToList();
@@ -270,6 +271,7 @@ namespace DDPM.UI.Module.EzMemory
                 // Clear UI and close view
                 _vm.ClearTextBlockAppName();
                 _vm.IsEditProfile = false;
+
                 DdpmCommonHelper.ModuleOwner?.CloseFullView();
             }
             catch (Exception ex)
@@ -473,7 +475,7 @@ namespace DDPM.UI.Module.EzMemory
 
                     foreach (var ps in clickedeasyArrangementDDPM.Desktops[0].ProfileSettings)
                     {
-                        if (ps.AutoStartTime == autoLaunchTime)
+                        if (ps.AutoStartTime == autoLaunchTime && autoLaunchTime !=0)
                         {
                             if (_vm.currentEditprofileSetting == null || _vm.currentEditprofileSetting.ID != ps.ID)
                             {

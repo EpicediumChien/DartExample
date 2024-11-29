@@ -388,10 +388,24 @@ namespace DDPM.UI.Module.EzMemory
                         spItem = splitListView_2w.AddItemToList(newSplit.UC);
                         break;
 
+                    case 3:
+                        spItem = splitListView_3w.AddItemToList(newSplit.UC);
+                        break;
                     case 4:
                         spItem = splitListView_4w.AddItemToList(newSplit.UC);
                         break;
 
+                    case 5:
+                        spItem = splitListView_5w.AddItemToList(newSplit.UC);
+                        break;
+
+                    case 6:
+                        spItem = splitListView_6w.AddItemToList(newSplit.UC);
+                        break;
+
+                    case 7:
+                        spItem = splitListView_7w.AddItemToList(newSplit.UC);
+                        break;
                     default:
                         break;
                 }
