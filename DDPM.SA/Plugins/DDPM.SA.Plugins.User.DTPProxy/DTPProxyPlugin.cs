@@ -476,34 +476,6 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
         }
 
-        //Derek 1120
-        public async Task<JArray> GetWebcamDeviceItemsExAsync()
-        {
-            _itemID = new ItemId(WebcamItemID);
-
-            if (_webcamMethodInfo != null)
-            {
-                if (await GetCommodityInterfaceInstanceAsync(_webcamMethodInfo) is ICommodity commodity)
-                {
-                    var value = GetPropertyValue(_webcamInterfaceType, commodity, "DeviceItemsEx");
-                    return value == null ? new JArray() : (JArray)value;
-                }
-                else
-                {
-                    Debug.WriteLine($"Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {_itemID} item.");
-                    writelog($"Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {_itemID} item.");
-                    return new JArray();
-                }
-            }
-            else
-            {
-                Debug.WriteLine($"[GetDeviceItemsEx]Could not retrieve the Commodity Interface for the {_itemID} item. _webcamMethodInfo is null");
-                writelog($"[GetDeviceItemsEx]Could not retrieve the Commodity Interface for the {_itemID} item. _webcamMethodInfo is null");
-                return new JArray();
-            }
-
-        }
-
         public async Task<JArray> GetKeyboardDeviceItemsEx()
         {
             _itemID = new ItemId(KeyboardItemID);
@@ -632,11 +604,75 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 writelog($"Could not retrieve the Commodity Interface {_keyboardInterfaceType} for the {_itemID} item.");
             }
         }
+        public async Task<bool> RestoreToDefaultKB(string Guid)
+        {
+            if (!IsDTPReady)
+                return false;
+            if (!await GetItemIDAsync("Keyboard", Guid))
+                return false;
+
+            byte[] newValue = Encoding.UTF8.GetBytes($"{{\"actionId\":73,\"actionName\":\"\"}}");
+            await SetEraserSinglePressSetting(PenItemID0, newValue);
+            newValue = Encoding.UTF8.GetBytes($"{{\"actionId\":90,\"actionName\":\"\"}}");
+            await SetEraserDoublePressSetting(PenItemID0, newValue);
+            newValue = Encoding.UTF8.GetBytes($"{{\"actionId\":75,\"actionName\":\"\"}}");
+            await SetEraserLongPressSetting(PenItemID0, newValue);
+            newValue = Encoding.UTF8.GetBytes($"{{\"actionId\":27,\"actionName\":\"\"}}");
+            await SetSideTopSwitchSinglePressSetting(PenItemID0, newValue);
+            newValue = Encoding.UTF8.GetBytes($"{{\"actionId\":26,\"actionName\":\"\"}}");
+            await SetSideBottomSwitchSinglePressSetting(PenItemID0, newValue);
+            await SetTipSensitivity(PenItemID0, 3);
+            await SetTiltSensitivity(PenItemID0, 1);
+
+            await RestoreRadialMenuToDefault();
+
+            var filePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), @$"Dell\Dell Display and Peripheral Manager\Actions\pen.json");
+            if (File.Exists(filePath))
+            {
+                try
+                {
+                    File.Delete(filePath);
+                }
+                catch (Exception ex)
+                {
+                    writelog($"[DTPProxyPlugin] [RestoreToDefaultPen] Delete setting file failed: {ex}");
+                }
+            }
+            return true;
+        }
 
         #endregion
 
-
         #region Webcam
+
+        //Derek 1120
+        public async Task<JArray> GetWebcamDeviceItemsExAsync()
+        {
+            _itemID = new ItemId(WebcamItemID);
+
+            if (_webcamMethodInfo != null)
+            {
+                if (await GetCommodityInterfaceInstanceAsync(_webcamMethodInfo) is ICommodity commodity)
+                {
+                    var value = GetPropertyValue(_webcamInterfaceType, commodity, "DeviceItemsEx");
+                    return value == null ? new JArray() : (JArray)value;
+                }
+                else
+                {
+                    Debug.WriteLine($"Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {_itemID} item.");
+                    writelog($"Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {_itemID} item.");
+                    return new JArray();
+                }
+            }
+            else
+            {
+                Debug.WriteLine($"[GetDeviceItemsEx]Could not retrieve the Commodity Interface for the {_itemID} item. _webcamMethodInfo is null");
+                writelog($"[GetDeviceItemsEx]Could not retrieve the Commodity Interface for the {_itemID} item. _webcamMethodInfo is null");
+                return new JArray();
+            }
+
+        }
+
         public async Task<JArray> GetPresetProfiles(string Guid)
         {
             if (!await GetItemIDAsync("Webcam", Guid))
@@ -2357,9 +2393,13 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 if (await GetCommodityInterfaceInstanceAsync(_penMethodInfo) is ICommodity commodity)
                 {
                     var value = GetPropertyValue(_penInterfaceType, commodity, "MenuSinglePressSetting");
-                    var str = Encoding.UTF8.GetString((byte[])value);
-                    Debug.WriteLine(str);
-                    return str;
+                    if (value is byte[] byteArray)
+                    {
+                        var str = Encoding.UTF8.GetString(byteArray);
+                        Debug.WriteLine(str);
+                        return str;
+                    }
+                    return string.Empty;
                 }
                 else
                 {
@@ -6013,7 +6053,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             {
                 try
                 {
-                    _pencom.KeyCaptureDataChanged += _pencom_KeyCaptureDataChanged;
+                    //_pencom.KeyCaptureDataChanged += _pencom_KeyCaptureDataChanged;
                     writelog($"Pen Commodity event registered");
                 }
                 catch (Exception e)
@@ -6135,10 +6175,10 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
                 //if (obj!.DeviceItems.Length > 0)
                 //{
-                    //writelog($"InstanceId = {obj!.InstanceId}"); //fail
-                    //writelog($"InstanceNumber = {obj!.InstanceNumber}"); //fail
-                    //writelog($"ItemId = {obj!.ItemId}"); //fail
-                    //writelog($"DeviceName = {obj!.DeviceName}"); //fail
+                //writelog($"InstanceId = {obj!.InstanceId}"); //fail
+                //writelog($"InstanceNumber = {obj!.InstanceNumber}"); //fail
+                //writelog($"ItemId = {obj!.ItemId}"); //fail
+                //writelog($"DeviceName = {obj!.DeviceName}"); //fail
                 //}
             }
             catch (Exception e)
@@ -6201,7 +6241,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             if (null == _commSdk || null == _comdity || index < 0)
                 return false;
 
-            try 
+            try
             {
                 _comdity = await _commSdk.GetCommodityAsync<IWebcamCommodity>(new ItemId($"DellPeripheral.Webcam.{index}"), CancellationToken.None);
 
@@ -6252,7 +6292,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             {
                 writelog($"Webcam{index} RegisterEventsForWebcam Exception {e.Message}");
 
-                return false; 
+                return false;
             }
 
             return false;
@@ -6374,12 +6414,6 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
 
             return false;
-        }
-
-        private void _pencom_KeyCaptureDataChanged(object sender, KeyCaptureDataChangedArgs e)
-        {
-            Debug.WriteLine($"[Pen]KeystrokeDisplayDataChanged {e.KeyCaptureData} Changed for Device ID: {e.DeviceId}  !!!!!!!!!!!!!!!");
-            writelog($"[Headset]FirmwareVersionChanged {e.KeyCaptureData} Changed for Device ID: {e.DeviceId}  !!!!!!!!!!!!!!!");
         }
 
         private void OnDTPProxyPluginConditionChangeHandler(object sender, EventArgs e)
