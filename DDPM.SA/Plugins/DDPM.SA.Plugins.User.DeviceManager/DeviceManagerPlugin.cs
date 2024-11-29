@@ -15452,6 +15452,14 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 return null;
         }
 
+        public Task<bool> LaunchAndArrangeAppsWithEzArrange(Dictionary<String, Bind_AddFullPage_AppCollectionData> sortApps, MonitorInfo moInfo, int eAid)
+        {
+            if (_IEzMemoryPlugin != null)
+                return Task.FromResult(_IEzMemoryPlugin.LaunchAndArrangeAppsWithEzArrange(sortApps, moInfo, eAid).Result);
+            else
+                return null;
+        }
+
         public Task<bool> CheckEAIDExit(MonitorInfo moinfo, int eAID)
         {
             if (_IEzMemoryPlugin != null)

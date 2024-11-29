@@ -126,16 +126,36 @@ namespace DDPM.UI.Plugin.ViewModels
             if (!base.SetCurrentDevice(instanceID))
                 return false;
 
+            InitializeKey();
             if (CurrentDeviceInfo!.IsCollabsKeysSupported)
             {
-                IsCollaborationKeyEnable = CurrentDeviceInfo.IsCollaborationKeyEnable;
-                IsCollabShadowVisible = !IsCollaborationKeyEnable;
-                IsCollaborationCameraEnable = CurrentDeviceInfo.IsCollaborationCameraEnable;
-                IsCollaborationScreenShareEnable = CurrentDeviceInfo.IsCollaborationScreenShareEnable;
-                IsCollaborationChatEnable = CurrentDeviceInfo.IsCollaborationChatEnable;
-                IsCollaborationMicEnable = CurrentDeviceInfo.IsCollaborationMicEnable;
-                IsCollaborationBlinkEffectEnable = CurrentDeviceInfo.IsCollaborationBlinkEffectEnable;
-                IsCollaborationDoubleTapEnable = CurrentDeviceInfo.IsCollaborationDoubleTapEnable;
+                if (KeyboardAction.IsCollaborationChecked)
+                {
+                    IsCollaborationDoubleTapEnable = CurrentDeviceInfo.IsCollaborationDoubleTapEnable;
+                    IsCollaborationKeyEnable = CurrentDeviceInfo.IsCollaborationKeyEnable;
+                    IsCollabShadowVisible = !IsCollaborationKeyEnable;
+                    IsCollaborationCameraEnable = CurrentDeviceInfo.IsCollaborationCameraEnable;
+                    IsCollaborationScreenShareEnable = CurrentDeviceInfo.IsCollaborationScreenShareEnable;
+                    IsCollaborationChatEnable = CurrentDeviceInfo.IsCollaborationChatEnable;
+                    IsCollaborationMicEnable = CurrentDeviceInfo.IsCollaborationMicEnable;
+                    IsCollaborationBlinkEffectEnable = CurrentDeviceInfo.IsCollaborationBlinkEffectEnable;
+                }
+                else
+                {
+                    IsCollaborationDoubleTapEnable = true;
+                    IsCollaborationKeyEnable = true;
+                    IsCollabShadowVisible = false;
+                    IsCollaborationCameraEnable = true;
+                    IsCollaborationScreenShareEnable = true;
+                    IsCollaborationChatEnable = true;
+                    IsCollaborationMicEnable = true;
+                    IsCollaborationBlinkEffectEnable = true;
+                    IsCollaborationBlinkEffectEnable = false;
+                    IsCollaborationDoubleTapEnable = true;
+                    IsCollaborationDoubleTapEnable = false;
+                    KeyboardAction.IsCollaborationChecked = true;
+                    ActionList.ExportActionList(KeyboardAction, Model);
+                }
             }
 
             if (CurrentDeviceInfo.IsIlluminationSupported)
@@ -157,7 +177,6 @@ namespace DDPM.UI.Plugin.ViewModels
                 BackLightingLevel = CurrentDeviceInfo.BackLightingLevel;
                 SwitchTab(IlluminationSelectedTabIndex);
             }
-            InitializeKey();
             if (Model == "KB500" || Model == "KB700" || Model == "KB740")
             { CopilotInfoVisibility = Visibility.Visible; }
 
