@@ -1094,6 +1094,9 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
 
             homeDevice.IsConnectionHoverViewShow = false;
             //connHover.Visibility = Visibility.Collapsed;
+
+            //Robert_Lin, 2024-11-29 for test BatteryIndicator LightMode
+            //bi.ChangeToNextBatteryStatus();
         }
 
         #endregion Connection Hover View

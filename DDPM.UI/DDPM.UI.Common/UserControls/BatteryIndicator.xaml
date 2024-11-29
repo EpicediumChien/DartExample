@@ -21,11 +21,18 @@
         <!-- Robert_Lin, 2024-6-23 to meet reqtirements of Dell UI team, both left and right side margin should be 12. -->
         <Grid Margin="12,0">
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                <!-- Robert_lin, 2024-11-29, Use ContentControl to replace Image, set the Image to Collapsed now, can be removed in the future. -->
                 <!--<Image x:Name="ConnectionType" Margin="0" Source="{Binding ImageSource, RelativeSource={RelativeSource AncestorType=UserControl}}"
                 VerticalAlignment="Center" Stretch="UniformToFill" Width="16" Height="16" />-->
-                <Image x:Name="ConnectionTypeImage" Margin="0" Source="{DynamicResource ConnectionTypeImageKey}"
+                <Image x:Name="ConnectionTypeImage" Margin="0" Source="{DynamicResource ConnectionTypeImageKey}" Visibility="Collapsed"
                        VerticalAlignment="Center" Stretch="UniformToFill" Width="16" Height="16" />
-
+                <!-- #region  ConnectionType Robert_Lin, 2024-11-29 Use ContentControl to replace Image -->
+                <ContentControl Name="connTypeIcon" Width="16" Height="16" VerticalAlignment="Center"
+                                Foreground="{DynamicResource DefaultTheme_PathColor}"
+                                Template="{Binding ConnectionTypeIcon, RelativeSource={RelativeSource AncestorType=UserControl}}"/>
+                
+                <!-- #endregion  ConnectionType Robert_Lin, 2024-11-29 Add an ContentControl to replace Image -->
+                
                 <StackPanel Orientation="Horizontal" Name="stackPanel">
                     <!--
                     <StackPanel.Style>
@@ -40,9 +47,18 @@
                     </StackPanel.Style>
                     -->
 
+                    <!-- #region BatteryIcon Robert_Lin, 2024-11-29 Use ContentControl to replace Image -->
                     <Image x:Name="BatteryImage" Margin="8,0,0,0" Source="/DDPM.UI.Resources;component/Resources/Images/Battery12.png"
-                           VerticalAlignment="Center" Stretch="UniformToFill" Height="20" />
+                           VerticalAlignment="Center" Stretch="UniformToFill" Height="20" Visibility="Collapsed"/>
+
+                    <ContentControl Name="batteryIcon" VerticalAlignment="Center"
+                                    Foreground="{DynamicResource DefaultTheme_PathColor}"
+                                    Template="{Binding BatteryIcon, RelativeSource={RelativeSource AncestorType=UserControl}}"/>
+                                <!--Template="{StaticResource icon_Battery11}"/>-->
+                    
+                    <!-- #endregion  BatteryIcon Robert_Lin, 2024-11-29 Add an ContentControl to replace Image -->
                     <UXControls:UXTextBlock x:Name="BatteryLevelText" Text="100%" Margin="7,2.5,0,0" VerticalAlignment="Center" Foreground="{DynamicResource TextBlock_ForegroundColor}" FontFamily="Roboto" FontSize="14" />
+                    
                 </StackPanel>
                 <UXControls:UXTextBlock x:Name="txt1" Text="" Margin="8,0,2,0" VerticalAlignment="Center" Foreground="{DynamicResource TextBlock_ForegroundColor}" FontFamily="Roboto" FontSize="14" />
             </StackPanel>
