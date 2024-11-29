@@ -111,13 +111,14 @@ namespace DDPM.CLI.Plugins.Peripherals
                 {
                     if (commandLineInput.TargetType.Equals("APP"))
                     {
-                        if (commandLineInput.TargetFeature.Equals("FIRMWAREUPDATE") || commandLineInput.TargetFeature.Equals("UODFWUPDATE") || commandLineInput.TargetFeature.Equals("LOCKUIUPDATE") || commandLineInput.TargetFeature.Equals("UNLOCKUIUPDATE"))// for firmware update.
+                        //if (commandLineInput.TargetFeature.Equals("FIRMWAREUPDATE") || commandLineInput.TargetFeature.Equals("UODFWUPDATE") || commandLineInput.TargetFeature.Equals("LOCKUIUPDATE") || commandLineInput.TargetFeature.Equals("UNLOCKUIUPDATE"))// for firmware update.
+                        if (commandLineInput.TargetFeature.Equals("FIRMWAREUPDATE"))// for firmware update.
                         {
                             switch (commandLineInput.TargetFeature)
                             {
                                 case "FIRMWAREUPDATE":
-                                case "UODFWUPDATE":
-                                case "LOCKUIUPDATE":
+                                //case "UODFWUPDATE":
+                                //case "LOCKUIUPDATE":
                                 //case "UNLOCKUIUPDATE":
                                     var ret = FWUpdate(commandLineInput);
                                     result.ExitCode = ret.code;
@@ -3627,76 +3628,76 @@ namespace DDPM.CLI.Plugins.Peripherals
                             return ((int)CLI_ExitCode.fail_FWUpdate, JsonConvert.SerializeObject(rsp, Formatting.Indented));
                         }
                         break;
-                    case "UODFWUPDATE":
-                        cLI_FWU_RESPONSE = new CLI_FWU_RESPONSE(cLI_RESPONSE);
-                        if (commandLineInput.Options.Count > 2)
-                        {
-                            cLI_FWU_RESPONSE.Result = "FAIL";
-                            cLI_FWU_RESPONSE.Message = "Bring in extra strings:";
-                            for (int i = 0; i < commandLineInput.Options.Count; i++)
-                            {
-                                cLI_FWU_RESPONSE.Message += $"{commandLineInput.Options[i].Option_Name}={commandLineInput.Options[i].Option_Value}\n";
-                            }
-                            break;
-                        }
-                        for (int i = 1; i < commandLineInput.Options.Count; i++)
-                        {
-                            if (commandLineInput.Options[i].Option_Name.ToUpper().Equals("ISSHOWINFO"))
-                            {
-                                isShowInfo = commandLineInput.Options[i].Option_Value.ToUpper() == "ON" ? true : false;
-                            }
-                            else if (commandLineInput.Options[i].Option_Name.ToUpper().Equals("INSTALLPATH"))
-                            {
-                                installPath = Path.GetFullPath(commandLineInput.Options[i].Option_Value);
-                            }
-                            else
-                            {
-                                somethingError = true;
-                            }
-                        }
-                        if (somethingError)
-                        {
-                            cLI_FWU_RESPONSE.Result = "FAIL";
-                            cLI_FWU_RESPONSE.Message = "Bring in extra strings:";
-                            for (int i = 0; i < commandLineInput.Options.Count; i++)
-                            {
-                                cLI_FWU_RESPONSE.Message += $"{commandLineInput.Options[i].Option_Name}={commandLineInput.Options[i].Option_Value}\n";
-                            }
-                            break;
-                        }
-                        ret = Auto_FWUpdate(commandLineInput, cLI_FWU_RESPONSE, true, installPath, isShowInfo, true);
-                        cLI_FWU_RESPONSE.Result = ret == true ? "PASS" : "FAIL";
-                        break;
+                    //case "UODFWUPDATE":
+                    //    cLI_FWU_RESPONSE = new CLI_FWU_RESPONSE(cLI_RESPONSE);
+                    //    if (commandLineInput.Options.Count > 2)
+                    //    {
+                    //        cLI_FWU_RESPONSE.Result = "FAIL";
+                    //        cLI_FWU_RESPONSE.Message = "Bring in extra strings:";
+                    //        for (int i = 0; i < commandLineInput.Options.Count; i++)
+                    //        {
+                    //            cLI_FWU_RESPONSE.Message += $"{commandLineInput.Options[i].Option_Name}={commandLineInput.Options[i].Option_Value}\n";
+                    //        }
+                    //        break;
+                    //    }
+                    //    for (int i = 1; i < commandLineInput.Options.Count; i++)
+                    //    {
+                    //        if (commandLineInput.Options[i].Option_Name.ToUpper().Equals("ISSHOWINFO"))
+                    //        {
+                    //            isShowInfo = commandLineInput.Options[i].Option_Value.ToUpper() == "ON" ? true : false;
+                    //        }
+                    //        else if (commandLineInput.Options[i].Option_Name.ToUpper().Equals("INSTALLPATH"))
+                    //        {
+                    //            installPath = Path.GetFullPath(commandLineInput.Options[i].Option_Value);
+                    //        }
+                    //        else
+                    //        {
+                    //            somethingError = true;
+                    //        }
+                    //    }
+                    //    if (somethingError)
+                    //    {
+                    //        cLI_FWU_RESPONSE.Result = "FAIL";
+                    //        cLI_FWU_RESPONSE.Message = "Bring in extra strings:";
+                    //        for (int i = 0; i < commandLineInput.Options.Count; i++)
+                    //        {
+                    //            cLI_FWU_RESPONSE.Message += $"{commandLineInput.Options[i].Option_Name}={commandLineInput.Options[i].Option_Value}\n";
+                    //        }
+                    //        break;
+                    //    }
+                    //    ret = Auto_FWUpdate(commandLineInput, cLI_FWU_RESPONSE, true, installPath, isShowInfo, true);
+                    //    cLI_FWU_RESPONSE.Result = ret == true ? "PASS" : "FAIL";
+                    //    break;
 
-                    case "LOCKUIUPDATE":
-                        if (commandLineInput.Options.Count > 0)
-                        {
-                            cLI_FWU_RESPONSE.Result = "FAIL";
-                            cLI_FWU_RESPONSE.Message = "Bring in extra strings:";
-                            for (int i = 0; i < commandLineInput.Options.Count; i++)
-                            {
-                                cLI_FWU_RESPONSE.Message += $"{commandLineInput.Options[i].Option_Name}={commandLineInput.Options[i].Option_Value}\n";
-                            }
-                            break;
-                        }
-                        _devMgr.SetUILockStatus(true);
-                        ret = true;
-                        break;
+                    //case "LOCKUIUPDATE":
+                    //    if (commandLineInput.Options.Count > 0)
+                    //    {
+                    //        cLI_FWU_RESPONSE.Result = "FAIL";
+                    //        cLI_FWU_RESPONSE.Message = "Bring in extra strings:";
+                    //        for (int i = 0; i < commandLineInput.Options.Count; i++)
+                    //        {
+                    //            cLI_FWU_RESPONSE.Message += $"{commandLineInput.Options[i].Option_Name}={commandLineInput.Options[i].Option_Value}\n";
+                    //        }
+                    //        break;
+                    //    }
+                    //    _devMgr.SetUILockStatus(true);
+                    //    ret = true;
+                    //    break;
 
-                    case "UNLOCKUIUPDATE":
-                        if (commandLineInput.Options.Count > 0)
-                        {
-                            cLI_FWU_RESPONSE.Result = "FAIL";
-                            cLI_FWU_RESPONSE.Message = "Bring in extra strings:";
-                            for (int i = 0; i < commandLineInput.Options.Count; i++)
-                            {
-                                cLI_FWU_RESPONSE.Message += $"{commandLineInput.Options[i].Option_Name}={commandLineInput.Options[i].Option_Value}\n";
-                            }
-                            break;
-                        }
-                        _devMgr.SetUILockStatus(false);
-                        ret = true;
-                        break;
+                    //case "UNLOCKUIUPDATE":
+                    //    if (commandLineInput.Options.Count > 0)
+                    //    {
+                    //        cLI_FWU_RESPONSE.Result = "FAIL";
+                    //        cLI_FWU_RESPONSE.Message = "Bring in extra strings:";
+                    //        for (int i = 0; i < commandLineInput.Options.Count; i++)
+                    //        {
+                    //            cLI_FWU_RESPONSE.Message += $"{commandLineInput.Options[i].Option_Name}={commandLineInput.Options[i].Option_Value}\n";
+                    //        }
+                    //        break;
+                    //    }
+                    //    _devMgr.SetUILockStatus(false);
+                    //    ret = true;
+                    //    break;
 
                     default:
                         writelog("FWUpdate_Line 3246");
