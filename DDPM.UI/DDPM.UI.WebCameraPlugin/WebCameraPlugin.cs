@@ -19,6 +19,8 @@ using System.Windows.Media;
 using System.Windows.Threading;
 using Windows.Graphics.Imaging;
 using System.Windows.Forms;
+using MessageBox = System.Windows.MessageBox;
+using Clipboard = System.Windows.Clipboard;
 
 namespace DDPM.UI.Plugin.WebCameraPlugin
 {
@@ -162,7 +164,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
         private void WebCameraplugin_UIUpdateNotify(object? sender, UpdateUINotify e)
         {
             //Open this to get the message format of Webcam event
-            //System.Windows.MessageBox.Show(e.UI_Field_Name);
+            System.Windows.MessageBox.Show(e.UI_Field_Name);
 
             //cmd format sample
             //5;Device:Webcam;EventType:Webcam_IsHDROnChanged;DeviceId:28d64fee-3544-45c7-a1b0-10db20a4cf8e;NewValue:True
@@ -185,78 +187,261 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
 
                     switch (eventtype)
                     {
+                        #region for cli setting
+                        case "Webcam_ZoomMeetingTypeChanged":
+                        {
+
+                        }
+                        break;
+                        case "Webcam_SharpnessChanged":
+                        {
+
+                        }
+                        break;
+
+                        case "Webcam_Esi_WALLockCountdownChanged":
+                        {
+
+                        }
+                        break;
+                        case "Webcam_IsZoomScreenShareActiveChanged":
+                        {
+
+                        }
+                        break;
+                        case "Webcam_IsZoomMeetingActiveChanged":
+                        {
+
+                        }
+                        break;
+                        case "Webcam_SerialNumberChanged":
+                        {
+
+                        }
+                        break;
                         case "Webcam_IsHDROnChanged":
+                        {
+                            if (!event_param.TryGetValue("NewValue", out var NewValue))
                             {
-                                if (!event_param.TryGetValue("NewValue", out var NewValue))
-                                {
-                                    _log.Debug("NewValue cannot be found in event_param");
-                                    return;
-                                }
-                                System.Windows.Application.Current.Dispatcher.Invoke(() =>
-                                {
-                                    _viewModel!.IsSettingProfile = true;
-                                    if (NewValue.ToLower() == "true")
-                                        _viewModel.IsHDROn = true;
-                                    else
-                                        _viewModel.IsHDROn = false;
-                                    _viewModel!.IsSettingProfile = false;
-                                });
+                                _log.Debug("NewValue cannot be found in event_param");
+                                return;
                             }
-                            break;
-                    
-                        case "Webcam_Esi_IsCameraSensorCoveredChanged":
+                            System.Windows.Application.Current.Dispatcher.Invoke(() =>
                             {
-                                if (!event_param.TryGetValue("NewValue", out var NewValue))
-                                {
-                                    _log.Debug("NewValue cannot be found in event_param");
-                                    return;
-                                }
-
+                                _viewModel!.IsSettingProfile = true;
                                 if (NewValue.ToLower() == "true")
-                                {
-                                    var _globalSettings = DdpmCommonHelper.DeviceManagerSA!.GetGlobalSettingParam().Result;
+                                    _viewModel.IsHDROn = true;
+                                else
+                                    _viewModel.IsHDROn = false;
+                                _viewModel!.IsSettingProfile = false;
+                            });
+                        }
+                        break;
+                        case "Webcam_FieldOfViewChanged":
+                        {
 
-                                    // check if show OSD for Presence Detection Sensor Cover
-                                    if (_globalSettings.GlobalSetting_General.Webcam_WB7022_Presence_Detection_Sensor_Cover_State)
-                                        DdpmCommonHelper.DeviceManagerSA!.ShowOSD(Screen.PrimaryScreen!.DeviceName, OSDType.Fingerprint);
-                                }
+                        }
+                        break;
+                        case "Webcam_AutoFramingFrameSizeChanged":
+                        {
+
+                        }
+                        break;
+                        case "Webcam_AutoFramingSensitivityChanged":
+                        {
+
+                        }
+                        break;
+                        case "Webcam_IsAutoFramingOnChanged":
+                        {
+                            if (!event_param.TryGetValue("NewValue", out var NewValue))
+                            {
+                                _log.Debug("NewValue cannot be found in event_param");
+                                return;
                             }
-                            break;
+                            System.Windows.Application.Current.Dispatcher.Invoke(() =>
+                            {
+                                if (NewValue.ToLower() == "true")
+                                    _viewModel!.IsAutoFramingOn = true;
+                                else
+                                    _viewModel!.IsAutoFramingOn = false;
+                            });
+                        }
+                        break;
+                        case "Webcam_IsAutoFramingTransitionOnChanged":
+                        { 
+                        }
+                        break;
+                        case "Webcam_AutoWhiteBalanceChanged":
+                        {
+                            /*if (!event_param.TryGetValue("NewValue", out var NewValue))
+                            {
+                                _log.Debug("NewValue cannot be found in event_param");
+                                return;
+                            }
+                            System.Windows.Application.Current.Dispatcher.Invoke(() =>
+                            {
+                                if (NewValue.ToLower() == "true")
+                                    _viewModel!.IsAutoWhiteBalanceOn = true;
+                                else
+                                    _viewModel!.IsAutoWhiteBalanceOn = false;
+                            });*/
+                        }
+                        break;
+                        case "Webcam_IsAutoWhiteBalanceOnChanged":
+                        {
+                            if (!event_param.TryGetValue("NewValue", out var NewValue))
+                            {
+                                _log.Debug("NewValue cannot be found in event_param");
+                                return;
+                            }
+                            System.Windows.Application.Current.Dispatcher.Invoke(() =>
+                            {
+                                if (NewValue.ToLower() == "true")
+                                    _viewModel!.IsAutoWhiteBalanceOn = true;
+                                else
+                                    _viewModel!.IsAutoWhiteBalanceOn  = false;
+                            });
+                        } 
+                        break;
+                        case "Webcam_SaturationChanged":
+                        {
+                            
+                        }
+                        break;
+                        case "Webcam_AntiFlickerChanged":
+                        {
+
+                        }
+                        break;
+                        case "Webcam_ContrastChanged":
+                        {
+
+                        }
+                        break;
+                        case "Webcam_BrightnessChanged":
+                        {
+
+                        }
+                        break;
+                        case "Webcam_ZoomChanged":
+                        {
+
+                        }
+                        break;
+                        case "Webcam_TiltChanged":
+                        {
+
+                        }
+                        break;
+
+                        case "Webcam_PanChanged":
+                        {
+
+                        }
+                        break;
+
+                        case "Webcam_FocusChanged":
+                        {
+
+                        }
+                        break;
+
+                        case "Webcam_IsFocusOnChanged":
+                        {
+
+                        }
+                        break;
+
+                        case "Webcam_PriorityChanged":
+                        {
+
+                        }
+                        break;
+
+                        case "Webcam_CustomProfileRemoved":
+                        {
+
+                        }
+                        break;
+
+                        case "Webcam_CustomProfileAdded":
+                        {
+
+                        }
+                        break;
+
+                        case "Webcam_CurrentSelectedProfileChanged":
+                        {
+
+                        }
+                        break;
+
+                        case "Webcam_IsMicEnumerationOnChanged":
+                        {
+
+                        }
+                        break;
+
+                        case "Webcam_ProfileManagerAdded":
+                        {
+
+                        }
+                        break;
+                        #endregion
+                        case "Webcam_Esi_IsCameraSensorCoveredChanged":
+                        {
+                            if (!event_param.TryGetValue("NewValue", out var NewValue))
+                            {
+                                _log.Debug("NewValue cannot be found in event_param");
+                                return;
+                            }
+
+                            if (NewValue.ToLower() == "true")
+                            {
+                                var _globalSettings = DdpmCommonHelper.DeviceManagerSA!.GetGlobalSettingParam().Result;
+
+                                // check if show OSD for Presence Detection Sensor Cover
+                                if (_globalSettings.GlobalSetting_General.Webcam_WB7022_Presence_Detection_Sensor_Cover_State)
+                                    DdpmCommonHelper.DeviceManagerSA!.ShowOSD(Screen.PrimaryScreen!.DeviceName, OSDType.Fingerprint);
+                            }
+                        }
+                        break;
 
                         case "Webcam_Esi_IsWALLockCountdownStartedChanged":
+                        {
+                            if (!event_param.TryGetValue("NewValue", out var NewValue))
                             {
-                                if (!event_param.TryGetValue("NewValue", out var NewValue))
-                                {
-                                    _log.Debug("NewValue cannot be found in event_param");
-                                    return;
-                                }
-
-                                if (NewValue.ToLower() == "true")
-                                    DdpmCommonHelper.DeviceManagerSA!.ShowOSD(Screen.PrimaryScreen!.DeviceName, OSDType.WalkAwayLock);
+                                _log.Debug("NewValue cannot be found in event_param");
+                                return;
                             }
-                            break;
+
+                            if (NewValue.ToLower() == "true")
+                                DdpmCommonHelper.DeviceManagerSA!.ShowOSD(Screen.PrimaryScreen!.DeviceName, OSDType.WalkAwayLock);
+                        }
+                        break;
 
                         case "Webcam_WALSnoozeTimeLeftInSecondsChanged":
+                        {
+                            if (!event_param.TryGetValue("NewValue", out var NewValue))
                             {
-                                if (!event_param.TryGetValue("NewValue", out var NewValue))
-                                {
-                                    _log.Debug("NewValue cannot be found in event_param");
-                                    return;
-                                }
+                                _log.Debug("NewValue cannot be found in event_param");
+                                return;
+                            }
 
-                                if (!String.IsNullOrEmpty(NewValue))
+                            if (!String.IsNullOrEmpty(NewValue))
+                            {
+                                if (Int32.TryParse(NewValue, out int numValue))
                                 {
-                                    if (Int32.TryParse(NewValue, out int numValue))
-                                    {
-                                        TimeSpan ts = TimeSpan.FromSeconds(numValue);
-                                        _viewModel.WALSnoozeTimeLeft = ts.ToString(@"hh\:mm\:ss");
-                                    }
+                                    TimeSpan ts = TimeSpan.FromSeconds(numValue);
+                                    _viewModel.WALSnoozeTimeLeft = ts.ToString(@"hh\:mm\:ss");
                                 }
                             }
-                            break;                     
-                    }                                
+                        }
+                        break;
+                    }
                 }
-             }
+            }
             catch (Exception ex)
             {
                 _log.Debug(ex, "WebCameraplugin_UIUpdateNotify");
