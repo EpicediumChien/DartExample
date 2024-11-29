@@ -283,7 +283,7 @@
 
                                 <!-- BorderBrush="{StaticResource FocusDotBrush}"  -->
                                 <Border Name="bdItem" BorderBrush="{StaticResource FocusDotBrush}" Background="#02000000"
-                                        Margin="0,0,0,0" Padding="0"
+                                        Margin="0" Padding="0"
                                         Width="auto" Height="auto"
                                         HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
                                     <Border.Style>
@@ -308,7 +308,9 @@
                                         </Style>
                                     </Border.Style>
 
-                                    <Image x:Name="devImg" Source="{Binding DeviceImage}" Stretch="Uniform" Margin="0">
+                                    <Image x:Name="devImg" Source="{Binding DeviceImage}" Stretch="Uniform"
+                                           HorizontalAlignment="Center" VerticalAlignment="Center"
+                                           Margin="0">
                                         <Image.Style>
                                             <Style TargetType="Image">
                                                 <Setter Property="Width" Value="{Binding NormalWidth}" />

@@ -191,8 +191,6 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
 
             if (_ddpmHomePageViewModel?.MinWidth != null)
                 System.Windows.Application.Current.MainWindow.MinWidth = _ddpmHomePageViewModel?.MinWidth ?? 0;
-            cxView = System.Windows.Application.Current.MainWindow.Width;
-            cxView = System.Windows.Application.Current.MainWindow.Height;
 
             var primaryScreenScalingRatio = Screen.PrimaryScreen.Bounds.Width / SystemParameters.PrimaryScreenWidth;
 
