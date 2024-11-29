@@ -619,7 +619,8 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
             _console.ShowPluginById(PluginId);
 
             //Derek 1129 check if DDPM is launched by QAM, then info SA that homepage is ready
-            //if (_deviceManager!.GetIsDDPMLaunchByQAM())
+            if (_deviceManager!.GetIsDDPMLaunchByQAM())
+                _deviceManager!.SetIsDDPMHomepageReady(true);
         }
 
         /// <summary>
