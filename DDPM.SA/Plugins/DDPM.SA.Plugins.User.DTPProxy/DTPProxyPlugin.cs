@@ -5632,56 +5632,85 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 return null;
             }
         }
-        public async Task<string> GetFirmwareVersionAsyncForDock(string guid)
+        public Task<string> GetFirmwareVersionForDock(string guid)
         {
             try
             {
-                if (!await GetItemIDAsync("Dock", guid))
+                if (!GetItemIDAsync("Dock", guid).Result)
                 {
                     writelog(" [Dock] Failed to retrieve guid.");
-                    return null;
+                    return Task.FromResult("");
                 }
-                var commodity = await GetCommodityInterfaceInstanceAsync(_dongleMethodInfo);
+                var commodity = GetCommodityInterfaceInstanceAsync(_dockMethodInfo).Result;
                 if (commodity is ICommodity)
                 {
                     var value = GetPropertyValue(_dockInterfaceType, commodity, "FirmwareVersion");
-                    writelog($"[Dock] GetFirmwareVersionAsyncForDock succeeded for {guid}");
-                    return (string)value;
+                    writelog($"[Dock] GetFirmwareVersionForDock succeeded for {guid}");
+                    writelog($"[Dock] GetDockServiceTagForDock succeeded for {(string)value}");
+                    return Task.FromResult((string)value);
                 }
 
-                writelog($"[Dock] GetFirmwareVersionAsyncForDock failed: Could not retrieve commodity interface for {guid}");
-                return null;
+                writelog($"[Dock] GetFirmwareVersionForDock failed: Could not retrieve commodity interface for {guid}");
+                return Task.FromResult("");
             }
             catch (Exception ex)
             {
-                writelog($"[Dock] GetFirmwareVersionAsyncForDock failed for {guid} - Exception: {ex.Message}");
-                return null;
+                writelog($"[Dock] GetFirmwareVersionForDock failed for {guid} - Exception: {ex.Message}");
+                return Task.FromResult("");
             }
         }
-        public async Task<string> GetDockServiceTagAsyncForDock(string guid)
+        public Task<string> GetDockServiceTagForDock(string guid)
         {
             try
             {
-                if (!await GetItemIDAsync("Dock", guid))
+                if (!GetItemIDAsync("Dock", guid).Result)
                 {
                     writelog(" [Dock] Failed to retrieve guid.");
-                    return null;
+                    return Task.FromResult("");
                 }
-                var commodity = await GetCommodityInterfaceInstanceAsync(_dongleMethodInfo);
+                var commodity = GetCommodityInterfaceInstanceAsync(_dockMethodInfo).Result;
                 if (commodity is ICommodity)
                 {
                     var value = GetPropertyValue(_dockInterfaceType, commodity, "DockServiceTag");
-                    writelog($"[Dock] GetDockServiceTagAsyncForDock succeeded for {guid}");
-                    return (string)value;
+                    writelog($"[Dock] GetDockServiceTagForDock succeeded for {guid}");
+                    writelog($"[Dock] GetDockServiceTagForDock succeeded value is null : {(value == null ? "Yes" : "No")}");
+                    if (value != null)
+                    {
+                        byte[] dokc_bytes = (byte[])value;
+                        writelog($"[Dock] GetDockServiceTagForDock dokc_bytes.Length : {dokc_bytes.Length}");
+                        string textString = System.Text.Encoding.UTF8.GetString(dokc_bytes);
+                        writelog($"[Dock] GetDockServiceTagForDock dokc_bytes to string : " + textString);
+                        if (!string.IsNullOrEmpty(textString))
+                        {
+                            try
+                            {
+                                using (JsonDocument doc = JsonDocument.Parse(textString))
+                                {
+                                    JsonElement root = doc.RootElement;
+                                    string payloadElement = root.GetProperty("Payload").ToString();
+                                    int temp_int = 0;
+                                    if (!string.IsNullOrEmpty(payloadElement))
+                                    {
+                                        return Task.FromResult(payloadElement);
+                                    }
+                                }
+                            }
+                            catch (Exception ex)
+                            {
+                                writelog($"[Dock] GetDockServiceTagForDock Error : {ex.Message}");
+                            }
+                        }
+                    }
+                    return Task.FromResult("");
                 }
 
-                writelog($"[Dock] GetDockServiceTagAsyncForDock failed: Could not retrieve commodity interface for {guid}");
-                return null;
+                writelog($"[Dock] GetDockServiceTagForDock failed: Could not retrieve commodity interface for {guid}");
+                return Task.FromResult("");
             }
             catch (Exception ex)
             {
-                writelog($"[Dock] GetDockServiceTagAsyncForDock failed for {guid} - Exception: {ex.Message}");
-                return null;
+                writelog($"[Dock] GetDockServiceTagForDock failed for {guid} - Exception: {ex.Message}");
+                return Task.FromResult("");
             }
         }
 

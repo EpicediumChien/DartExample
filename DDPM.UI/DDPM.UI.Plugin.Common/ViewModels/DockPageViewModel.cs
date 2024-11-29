@@ -66,18 +66,18 @@ namespace DDPM.UI.Plugin.ViewModels
                 return false;
             //0821 Bruce Add show Dock Fw Version
             Model = Model.Replace("_", " ");
-            _deviceManager.GetDockData(instanceID).Wait();
-            FirmwareVersion2 = $"{Strings.FirmwareVersion}";
-            if (!string.IsNullOrEmpty(CurrentDeviceInfo.DockPackageFwVersion))
-            {
-                var fv = Regex.Replace(CurrentDeviceInfo.DockPackageFwVersion, @"(\d{2})(?=\d)", "$1.");
-                FirmwareVersion2 += $" {fv}";
-            }
-            FirmwareVersion2 += $"\n{Strings.ServiceTag}";
-            if (!string.IsNullOrEmpty(CurrentDeviceInfo.DockServiceTag))
-            {
-                FirmwareVersion2 += $" {CurrentDeviceInfo.DockServiceTag}";
-            }
+            //_deviceManager.GetDockData(instanceID).Wait();
+            FirmwareVersion2 = $"{Strings.FirmwareVersion} {CurrentDeviceInfo.FirmwareVersion}";
+            //if (!string.IsNullOrEmpty(CurrentDeviceInfo.DockPackageFwVersion))
+            //{
+            //    var fv = Regex.Replace(CurrentDeviceInfo.DockPackageFwVersion, @"(\d{2})(?=\d)", "$1.");
+            //    FirmwareVersion2 += $" {fv}";
+            //}
+            FirmwareVersion2 += $"\n{Strings.ServiceTag} {CurrentDeviceInfo.DockServiceTag}";
+            //if (!string.IsNullOrEmpty(CurrentDeviceInfo.DockServiceTag))
+            //{
+            //    FirmwareVersion2 += $" {CurrentDeviceInfo.DockServiceTag}";
+            //}
             FWUpdateInfoPackage fwUpdateInfoPackage = _deviceManager.GetFWUpdateInfo(false).Result;
             _isEnableUpdate = false;
             foreach (FWUpdateInfo fWUpdateInfo in fwUpdateInfoPackage.FWUpdateInfo)
