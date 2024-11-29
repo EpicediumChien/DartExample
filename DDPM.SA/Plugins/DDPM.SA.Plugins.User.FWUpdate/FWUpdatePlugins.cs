@@ -695,7 +695,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                         List<FWUpdateInfo> FWU_ListByModel = new List<FWUpdateInfo>();
                         foreach (string s in models)
                         {
-                            foreach (FWUpdateInfo fWUpdateInfo in _fWUpdateInfoPackage.FWUpdateInfo.FindAll(o => o.DeviceId.Equals(s)))
+                            foreach (FWUpdateInfo fWUpdateInfo in _fWUpdateInfoPackage.FWUpdateInfo.FindAll(o => o.Model.Equals(s)))
                             {
                                 _logs.DebugMsg_1($"{nameof(Filter)} models : {s}");
                                 FWU_ListByModel.Add(fWUpdateInfo);
