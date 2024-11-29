@@ -250,7 +250,7 @@ namespace DDPM.UI.Module.WebCameraCapture
 
         private void CloseMessageBox(object sender, MouseButtonEventArgs e)
         {
-            _vm.MessageBoxVisibilityUsbType = Visibility.Collapsed;
+            _vm.MessageBoxVisibilityUsbType_v = Visibility.Collapsed;
             _vm.OnPropertyChanged(nameof(_vm.MessageBoxVisibilityUsbType));
         }
     }

@@ -228,7 +228,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
         public void CheckUSBtype()
         {
 
-            _vm!.MessageBoxVisibilityUsbType = Visibility.Hidden;
+            _vm!.MessageBoxVisibilityUsbType_v = Visibility.Collapsed ;
 
             //需要特殊邏輯處理的型號
             List<string> SpecialCase = new List<string>()
@@ -278,7 +278,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
 
                         //連接usb 3.0提示訊息 Camera.14
                         //Connect your monitor via USB 3.0 to enable 4K UHD resolution.
-                        _vm.MessageBoxVisibilityUsbType = Visibility.Visible;
+                        _vm.MessageBoxVisibilityUsbType_v = Visibility.Visible;
                         _vm.usbtype_info_v = LangHelper.Instance["Camera.25"];
 
                         //fps與解析度,排除4k
@@ -307,7 +307,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
 
                         //連接usb 3.0提示訊息 Camera.14
                         //Connect your monitor via USB 3.0 to enable 4K UHD resolution.
-                        _vm.MessageBoxVisibilityUsbType = Visibility.Visible;
+                        _vm.MessageBoxVisibilityUsbType_v = Visibility.Visible;
                         _vm.usbtype_info_v = LangHelper.Instance["Camera.25"];
 
                         //fps與解析度,排除4k Camera.14
@@ -329,7 +329,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
 
                         //連接usb 3.0提示訊息 Camera.15
                         //Connect your monitor via USB 3.0 and select 'High Data Speed' under USB-C Prioritization to enable 4K UHD resolution.
-                        _vm.MessageBoxVisibilityUsbType = Visibility.Visible;
+                        _vm.MessageBoxVisibilityUsbType_v = Visibility.Visible;
                         _vm.usbtype_info_v = LangHelper.Instance["Camera.25"];
 
                         //fps與解析度,排除4k 
@@ -349,7 +349,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
 
                         //連接usb 3.0提示訊息 Camera.15
                         //Connect your monitor via USB 3.0 and select 'High Data Speed' under USB-C Prioritization to enable 4K UHD resolution.
-                        _vm.MessageBoxVisibilityUsbType = Visibility.Visible;
+                        _vm.MessageBoxVisibilityUsbType_v = Visibility.Visible;
                         _vm.usbtype_info_v = LangHelper.Instance["Camera.25"].Replace("4K", "2K");
 
                         //fps與解析度,排除2k 
