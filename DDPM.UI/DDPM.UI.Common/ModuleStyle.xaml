@@ -238,6 +238,11 @@
     </Style>
     <!-- #endregion -->
 
+    <!-- #region (i) InfoIcon -->
+    <!-- Robert_Lin, 2024-11-26, (i) info icon color -->
+    <SolidColorBrush x:Key="InfoIconColor" Color="#B6B6B6"/>
+    <!-- #endregion (i) InfoIcon -->
+    
     <!--  ExpanderHeader  -->
     <sys:Double x:Key="ExpanderHeader_FontSize">20</sys:Double>
     <SolidColorBrush x:Key="ExpanderHeader_TextColor" Color="White" />

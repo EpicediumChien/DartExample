@@ -49,11 +49,11 @@ namespace DDPM.UI.Module.WebCameraCapture
                     btnRes3.Visibility = Visibility.Collapsed;
                     break;
                 case 3:
-                    btnRes0.Width = 134;
+                    _vm.btnRes0_width_v = 134;
                     txtRes0.Text = Res[0];
-                    btnRes1.Width = 134;
+                    _vm.btnRes1_width_v = 134;
                     txtRes1.Text = Res[1];
-                    btnRes2.Width = 134;
+                    _vm.btnRes2_width_v = 134;
                     txtRes2.Text = Res[2];
                     btnRes2.CornerRadius = new CornerRadius(0, 5, 5, 0);
                     btnRes3.Visibility = Visibility.Collapsed;
@@ -246,6 +246,12 @@ namespace DDPM.UI.Module.WebCameraCapture
                 else
                     _vm.Redo();
             }
+        }
+
+        private void CloseMessageBox(object sender, MouseButtonEventArgs e)
+        {
+            _vm.MessageBoxVisibilityUsbType = Visibility.Collapsed;
+            _vm.OnPropertyChanged(nameof(_vm.MessageBoxVisibilityUsbType));
         }
     }
 }
