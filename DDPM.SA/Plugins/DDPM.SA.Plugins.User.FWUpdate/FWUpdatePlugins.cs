@@ -1,4 +1,4 @@
-﻿#define IL_Ready
+﻿#define IL_NotReady
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -750,6 +750,19 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                                     temp = fWUpdateInfo.DeviceVersion;
                                 }
                                 if (int.TryParse(temp, out currentVersion))
+                                {
+
+                                }
+                                string temp_NewVersion = string.Empty;
+                                if (minVersion.Contains("."))
+                                {
+                                    temp_NewVersion = minVersion.Replace(".", "");
+                                }
+                                else
+                                {
+                                    temp_NewVersion = minVersion;
+                                }
+                                if (int.TryParse(temp_NewVersion, out new_MinVersion))
                                 {
 
                                 }
