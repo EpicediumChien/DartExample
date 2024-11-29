@@ -8,7 +8,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
 {
     //Reference:
     //https://stackoverflow.com/questions/806777/wpf-how-can-i-center-all-items-in-a-wrappanel
-    internal class HomeDevicesPanel : Panel
+    internal class HomeDevicesPanel : WrapPanel
     {
         public HorizontalAlignment HorizontalContentAlignment
         {
