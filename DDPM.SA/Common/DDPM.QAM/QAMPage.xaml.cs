@@ -1,6 +1,7 @@
 ﻿using DDPM.SA.Common;
 using Dell.Client.Framework.Common;
 using Dell.Client.Framework.UX.WPF.Controls;
+using Microsoft.VisualBasic.Logging;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -50,10 +51,11 @@ namespace DDPM.QAM
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void ShowDDPM()
+        private bool ShowDDPM()
         {
             const int SW_SHOWNORMALSW_NORMAL = 1;
             string processName = "DDPM";
+            bool result = false;
 
             if (OperatingSystem.IsWindows())
             {
@@ -68,13 +70,15 @@ namespace DDPM.QAM
                         _ShowWindow(mainWindowHandle, SW_SHOWNORMALSW_NORMAL);
                         // 顯示到前景
                         _SetForegroundWindow(mainWindowHandle);
+
+                        result = true;
                     }
                     else
                     {
                         //string ddpmExePath = @"C:\Program Files\Dell\Dell Display and Peripheral Manager\DDPM.exe";
                         string debugPath = "D:\\DDPM\\DDPM.UI\\bin\\net8.0-windows10.0.19041.0\\DDPM.exe";
 
-                        DDPM.SA.Common.Settings.DDPMFileSecurity.StartProcessSafely(
+                        result = DDPM.SA.Common.Settings.DDPMFileSecurity.StartProcessSafely(
                             null,
                             new ProcessStartInfo
                             {
@@ -85,8 +89,11 @@ namespace DDPM.QAM
                 }
                 catch
                 {
+                    result = false;
                 }
             }
+
+            return result;
         }
 
         public QAMPage(IDeviceManagerSA deviceMangerPlugin)
@@ -158,11 +165,18 @@ namespace DDPM.QAM
 
         private void CallDDPM_Click(object sender, MouseButtonEventArgs e)
         {
-            ShowDDPM();
+            //ShowDDPM();
             //SendMessageToDDPM(10);
-            //Info SA that DDPM launched by QAM
-            DdpmCommonHelper.DeviceManagerSA!.SetIsDDPMLaunchByQAM(true);
-            Close_Click(this, null);
+
+            if (ShowDDPM())
+            {
+                //Info SA that DDPM launched by QAM
+                DdpmCommonHelper.DeviceManagerSA!.SetIsDDPMLaunchByQAM(true);
+
+                Close_Click(this, null);
+            }
+            else
+                DdpmCommonHelper.DeviceManagerSA!.SetIsDDPMLaunchByQAM(false);
         }
 
         private void SendMessageToDDPM(int timeout)

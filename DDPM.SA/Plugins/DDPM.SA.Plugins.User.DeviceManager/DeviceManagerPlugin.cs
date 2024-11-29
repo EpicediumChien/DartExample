@@ -10194,6 +10194,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         public void SetIsDDPMLaunchByQAM(bool newValue)
         {
             isDDPMLaunchedByQAM = newValue;
+            writelog($"IsDDPMLaunchByQAM: {newValue}");
         }
 
         public bool GetIsDDPMLaunchByQAM()
@@ -10206,12 +10207,13 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             isDDPMHomepageReady = newValue;
 
             //info homepage navigate to webcam preview page
-            if (isDDPMLaunchedByQAM)
+            if (isDDPMLaunchedByQAM && isDDPMHomepageReady)
             {
                 UpdateUINotify e = new UpdateUINotify();
                 e.UI_Field_Name = "QAMEvent_StartPreview";
 
                 OnUIUpdateNotify(e);
+                isDDPMHomepageReady = false;
             }
         }
 
