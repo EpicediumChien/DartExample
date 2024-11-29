@@ -1,4 +1,4 @@
-﻿#define IL_Ready
+﻿#define IL_NotReady
 using System;
 using System.Collections.Generic;
 using System.IO;
