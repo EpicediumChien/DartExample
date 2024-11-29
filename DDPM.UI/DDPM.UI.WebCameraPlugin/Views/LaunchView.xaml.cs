@@ -228,7 +228,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
         public void CheckUSBtype()
         {
 
-            _vm!.MessageBoxVisibilityUsbType = Visibility.Hidden;
+            _vm!.MessageBoxVisibilityUsbType = Visibility.Collapsed ;
 
             //需要特殊邏輯處理的型號
             List<string> SpecialCase = new List<string>()

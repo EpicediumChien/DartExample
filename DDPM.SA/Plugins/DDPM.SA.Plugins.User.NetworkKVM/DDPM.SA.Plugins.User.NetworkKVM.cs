@@ -1698,16 +1698,16 @@ namespace NetworkKVM.Plugins
                                             Disconnect();
                                             break;
 
-                                        case "UPDATE_SUPPORTED_MONITOR_LIST_RESPONSE":
-                                            if (!ResponseSucces(json).Result)
-                                            {
-                                                ResponseSupportedMonitor();
-                                            }
-                                            else
-                                            {
-                                                OnNKVM();
-                                            }
-                                            break;
+                                        //case "UPDATE_SUPPORTED_MONITOR_LIST_RESPONSE":
+                                        //    if (!ResponseSucces(json).Result)
+                                        //    {
+                                        //        ResponseSupportedMonitor();
+                                        //    }
+                                        //    else
+                                        //    {
+                                        //        OnNKVM();
+                                        //    }
+                                        //    break;
 
                                         case "ON_NKVM_RESPONSE":
                                             if (!ResponseSucces(json).Result)
@@ -2122,28 +2122,28 @@ namespace NetworkKVM.Plugins
             return false;
         }
 
-        private Task ResponseSupportedMonitor()
-        {
-            _logs.DebugMsg("[NetworkKVM] ResponseSupportedMonitor....");
-            if (_SupportedMonitors != null && _SupportedMonitors.Count > 0)
-            {
-                cid = cid + 1;
-                UPDATE_SUPPORTED_MONITOR_LIST SUPPORTED_MONITOR_LIST = new UPDATE_SUPPORTED_MONITOR_LIST();
-                SUPPORTED_MONITOR_LIST.cid = cid;
-                //SUPPORTED_MONITOR_LIST.type = "UPDATE_SUPPORTED_MONITOR_LIST";
-                SUPPORTED_MONITOR_LIST.Monitors = _SupportedMonitors;
-                SUPPORTED_MONITOR_LIST.UpdateChecksum();
-                if (SUPPORTED_MONITOR_LIST.ToJson() != string.Empty)
-                {
-                    WriteAsync(SUPPORTED_MONITOR_LIST.ToJson()).Wait();
-                }
-            }
-            else
-            {
-                OnNKVM().Wait();
-            }
-            return Task.CompletedTask;
-        }
+        //private Task ResponseSupportedMonitor()
+        //{
+        //    _logs.DebugMsg("[NetworkKVM] ResponseSupportedMonitor....");
+        //    if (_SupportedMonitors != null && _SupportedMonitors.Count > 0)
+        //    {
+        //        cid = cid + 1;
+        //        UPDATE_SUPPORTED_MONITOR_LIST SUPPORTED_MONITOR_LIST = new UPDATE_SUPPORTED_MONITOR_LIST();
+        //        SUPPORTED_MONITOR_LIST.cid = cid;
+        //        //SUPPORTED_MONITOR_LIST.type = "UPDATE_SUPPORTED_MONITOR_LIST";
+        //        SUPPORTED_MONITOR_LIST.Monitors = _SupportedMonitors;
+        //        SUPPORTED_MONITOR_LIST.UpdateChecksum();
+        //        if (SUPPORTED_MONITOR_LIST.ToJson() != string.Empty)
+        //        {
+        //            WriteAsync(SUPPORTED_MONITOR_LIST.ToJson()).Wait();
+        //        }
+        //    }
+        //    else
+        //    {
+        //        OnNKVM().Wait();
+        //    }
+        //    return Task.CompletedTask;
+        //}
 
         private bool IsSupportNKVM(string s)
         {
@@ -2521,7 +2521,7 @@ namespace NetworkKVM.Plugins
         private void VCPchangedEvent(object sender, VCPchangedEventArgs e)
         {
             _logs.DebugMsg("[NetworkKVM] VCPchangedEvent.....");
-            if (e.vcpcode.Equals("input select") || e.vcpcode.Equals("E8") || e.vcpcode.Equals("E9") || e.vcpcode.Equals("E5") || e.vcpcode.Equals("04"))
+            if (e.vcpcode.Equals("input select") || /*e.vcpcode.Equals("E8") || e.vcpcode.Equals("E9") || e.vcpcode.Equals("E5") ||*/ e.vcpcode.Equals("04"))
             {
                 _logs.DebugMsg("[NetworkKVM] VCPchanged " + e.vcpcode);
                 try
