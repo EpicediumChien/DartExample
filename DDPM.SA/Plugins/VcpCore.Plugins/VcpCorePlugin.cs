@@ -4711,7 +4711,11 @@ namespace VcpCore.Plugins
 
             string codestr = code.ToString("X2");
 
-            if (monitor.CapabilityDic.ContainsKey(codestr))
+            if (code == 0xC0)
+            {
+                rc = true;
+            }
+            else if (monitor.CapabilityDic.ContainsKey(codestr))
             {
                 _logs.DebugMsg("[VcpCorePlugin] [QueueTrigger] VcpCorePlugin IsVcpFunctionSupport ...Support");
                 rc = true;

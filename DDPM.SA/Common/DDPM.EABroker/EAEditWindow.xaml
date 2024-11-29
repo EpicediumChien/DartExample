@@ -8,7 +8,8 @@
         Title="EAEditWindow" 
         Height="450" Width="800"
         AllowsTransparency="True" Topmost="True"
-        WindowStyle="None" ResizeMode="NoResize" Background="Transparent" ShowInTaskbar="False"
+        WindowStyle="None" ResizeMode="NoResize" 
+        Background="#1964FAC9" ShowInTaskbar="False"
         >
     <Window.Resources>
         <ResourceDictionary>

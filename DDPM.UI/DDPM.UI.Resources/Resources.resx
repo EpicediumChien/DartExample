@@ -2814,4 +2814,7 @@
   <data name="Camera.25" xml:space="preserve">
     <value>Connect your monitor via USB 3.0 and select 'High Data Speed' under USB-C Prioritization to enable 4K UHD resolution.</value>
   </data>
+  <data name="HeadsetAutomatedActions.14" xml:space="preserve">
+    <value>Sensitivity</value>
+  </data>
 </root>

@@ -14,6 +14,9 @@
     <Compile Update="EAWorkWindow.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="EzMemLauncherWindow.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Update="InfoWindow.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -41,6 +44,9 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Update="EAWorkWindow.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="EzMemLauncherWindow.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="InfoWindow.xaml">

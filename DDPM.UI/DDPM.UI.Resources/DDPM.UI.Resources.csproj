@@ -144,6 +144,7 @@
 		<None Remove="Resources\Images\MS3220.png" />
 		<None Remove="Resources\Images\MS3220T.png" />
 		<None Remove="Resources\Images\MS3320W.png" />
+		<None Remove="Resources\Images\MS3320W_1.png" />
 		<None Remove="Resources\Images\MS355.png" />
 		<None Remove="Resources\Images\MS5120W.png" />
 		<None Remove="Resources\Images\MS5320W.png" />
@@ -446,6 +447,7 @@
 		<Resource Include="Resources\Images\KnM_light.png" />
 		<Resource Include="Resources\Images\Left_light.png" />
 		<Resource Include="Resources\Images\Monitor_light.png" />
+		<Resource Include="Resources\Images\MS3320W_1.png" />
 		<Resource Include="Resources\Images\PanD.png" />
 		<Resource Include="Resources\Images\PanL.png" />
 		<Resource Include="Resources\Images\PanR.png" />
