@@ -303,7 +303,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
 
         private void _deviceManager_UIUpdateNotify(object? sender, UpdateUINotify e)
         {
-            //System.Windows.MessageBox.Show(e.UI_Field_Name);
+            System.Windows.MessageBox.Show(e.UI_Field_Name);
             //Derek 1127
             if (e == null || e.UI_Field_Name == null || e == UpdateUINotify.Empty)
                 return;
@@ -617,6 +617,9 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
         {
             _log.Info($"{nameof(DdpmHomePage)} - shown");
             _console.ShowPluginById(PluginId);
+
+            //Derek 1129 check if DDPM is launched by QAM, then info SA that homepage is ready
+            //if (_deviceManager!.GetIsDDPMLaunchByQAM())
         }
 
         /// <summary>

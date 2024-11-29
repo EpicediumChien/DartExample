@@ -199,6 +199,9 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
             //Reference to [https://stackoverflow.com/questions/27729881/which-event-fires-after-all-items-are-loaded-and-shown-in-a-listview]
             //To get into RenderingDone() when UI is render done.
             Dispatcher.BeginInvoke(new Action(RenderingDone), System.Windows.Threading.DispatcherPriority.ContextIdle, null);
+
+            //Derek 1129 check if DDPM is launched by QAM, then info SA that homepage is ready
+            //_ddpmHomePageViewModel!.
         }
 
         //private void DeviceManagerSA_DeviceChanged(object? sender, SA.Common.DeviceChangedEventArgs e)
