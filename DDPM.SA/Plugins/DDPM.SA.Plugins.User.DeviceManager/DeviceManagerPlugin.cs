@@ -981,9 +981,9 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         public Task<bool> SyncPrimaryMonitorAndColorPresetStatus(MonitorInfo m, string ColorPreset_Name, int colorPresetRunType)
         {
-            bool blRet = true;          
+            bool blRet = true;
             writelog("[DeviceMangerPlugin] SyncPrimaryMonitorAndColorPresetStatus ... in");
-            List<ALSConfig> existAlsConfig = _DisplayManagerPlugin. GetAllExistAlsConfig().Result;
+            List<ALSConfig> existAlsConfig = _DisplayManagerPlugin.GetAllExistAlsConfig().Result;
             Trace.WriteLine($"SyncPrimaryMonitorAndColorPresetStatus = {m.edid.ModelName.ToString()} || existAlsConfig.Count = {existAlsConfig.Count.ToString()}");
             ALSConfig findconfig = existAlsConfig.Find(x => x.Edid.Equals(m.edid));
 
@@ -9514,7 +9514,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                             string folderName = GetFolderName(LogFolder);
                             string savePath = Path.Combine(saveFolderPath, folderName);
                             // 複製指定的 log 文件到選擇的資料夾
-                            if(!CopyLogFolder(LogFolder, savePath))
+                            if (!CopyLogFolder(LogFolder, savePath))
                                 fail_info += "[DDPM.GUI]";
                         }
                         LogFolder = @$"{appDataPath}\Dell\Dell Display and Peripheral Manager\Log\DDPM-Setup-DdpmSwUpdater";
@@ -9525,7 +9525,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                             string folderName = GetFolderName(LogFolder);
                             string savePath = Path.Combine(saveFolderPath, folderName);
                             // 複製指定的 log 文件到選擇的資料夾
-                            if(!CopyLogFolder(LogFolder, savePath))
+                            if (!CopyLogFolder(LogFolder, savePath))
                                 fail_info += "[DDPM.SwUpdater]";
                         }
                         LogFolder = @$"{appDataPath}\Dell\Dell Display and Peripheral Manager\Log\FWUpdataLog";
@@ -9536,7 +9536,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                             string folderName = GetFolderName(LogFolder);
                             string savePath = Path.Combine(saveFolderPath, folderName);
                             // 複製指定的 log 文件到選擇的資料夾
-                            if(!CopyLogFolder(LogFolder, savePath))
+                            if (!CopyLogFolder(LogFolder, savePath))
                                 fail_info += "[DDPM.FwUpdate]";
                         }
                     }
@@ -9550,7 +9550,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                             string folderName = GetFolderName(LogFolder);
                             string savePath = Path.Combine(saveFolderPath, folderName);
                             // 複製指定的 log 文件到選擇的資料夾
-                            if(!CopyLogFolder(LogFolder, savePath))
+                            if (!CopyLogFolder(LogFolder, savePath))
                                 fail_info += "[DDPM.Subagent]";
                         }
                         LogFolder = @$"{programdataPath}\Dell\Dell TechHub";
@@ -9561,7 +9561,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                             string folderName = GetFolderName(LogFolder);
                             string savePath = Path.Combine(saveFolderPath, folderName);
                             // 複製指定的 log 文件到選擇的資料夾
-                            if(!CopyLogFolder(LogFolder, savePath))
+                            if (!CopyLogFolder(LogFolder, savePath))
                                 fail_info += "[Dell TechHub]";
                         }
                         LogFolder = @$"{programdataPath}\Dell\DTP\Logs";
@@ -9572,7 +9572,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                             string folderName = "DTP_Log";
                             string savePath = Path.Combine(saveFolderPath, folderName);
                             // 複製指定的 log 文件到選擇的資料夾
-                            if(!CopyLogFolder(LogFolder, savePath))
+                            if (!CopyLogFolder(LogFolder, savePath))
                                 fail_info += "[DTP_log]";
                         }
                         string registryKey = @"SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\DDPMW-NKVM";
@@ -9587,7 +9587,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                 string folderName = GetFolderName(LogFolder);
                                 string savePath = Path.Combine(saveFolderPath, folderName);
                                 // 複製指定的 log 文件到選擇的資料夾
-                                if(!CopyLogFolder(LogFolder, savePath))
+                                if (!CopyLogFolder(LogFolder, savePath))
                                     fail_info += "[DDPMW-NKVM]";
                             }
                         }
@@ -9599,7 +9599,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                             string folderName = "DPMService_Log";
                             string savePath = Path.Combine(saveFolderPath, folderName);
                             // 複製指定的 log 文件到選擇的資料夾
-                            if(!CopyLogFolder(LogFolder, savePath))
+                            if (!CopyLogFolder(LogFolder, savePath))
                                 fail_info += "[DPMService_Log]";
                         }
                         LogFolder = @$"{programdataPath}\Dell\Dell Peripheral Manager\DPM\Log";
@@ -9610,7 +9610,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                             string folderName = "DPM_Log";
                             string savePath = Path.Combine(saveFolderPath, folderName);
                             // 複製指定的 log 文件到選擇的資料夾
-                            if(!CopyLogFolder(LogFolder, savePath))
+                            if (!CopyLogFolder(LogFolder, savePath))
                                 fail_info += "[DPM_Log]";
                         }
                         LogFolder = @$"{programdataPath}\Dell\Dell Peripheral Manager\DPeMSDK\Log";
@@ -9621,23 +9621,23 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                             string folderName = "DPeMSDK_Log";
                             string savePath = Path.Combine(saveFolderPath, folderName);
                             // 複製指定的 log 文件到選擇的資料夾
-                            if(!CopyLogFolder(LogFolder, savePath))
+                            if (!CopyLogFolder(LogFolder, savePath))
                                 fail_info += "[DPeMSDK_Log]";
                         }
                     }
                     string logFileName = "EventLog.evtx";
                     string logFilePath = Path.Combine(saveFolderPath, logFileName);
-                    if(!ExecuteWevtutilCommand(logFilePath))
+                    if (!ExecuteWevtutilCommand(logFilePath))
                         fail_info += "[EventLog]";
 
                     string zipFilePath = saveFolderPath + ".zip";
                     FileInfo info = new FileInfo(zipFilePath);
                     zipFilePath = Path.Combine(info.DirectoryName, "Log.zip");//force to set zip file name as Log.zip
                                                                               // 壓縮資料夾
-                    if(!CreateZipFile(saveFolderPath, zipFilePath))
+                    if (!CreateZipFile(saveFolderPath, zipFilePath))
                         fail_info += "[Compression]";
                     Directory.Delete(saveFolderPath, true);
-                                        
+
                     ret = true;
                     if (fail_info.Length > 0)
                     {
@@ -9844,7 +9844,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     }
                     else
                         result = true;
-                    writelog("Log folder copy action finish.");                    
+                    writelog("Log folder copy action finish.");
                 }
                 else
                 {
@@ -9926,8 +9926,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
 
             //Active state
-            if (_IsZoomMeetingActive && _ZoomMeetingType == ZoomMeetingType.CONF_3RD_EVENT_MEETING 
-                && deviceInfos.Count == 1 && _GlobalSettingParam.GlobalSetting_WidgetSettings.EnableQuickAccessWidget 
+            if (_IsZoomMeetingActive && _ZoomMeetingType == ZoomMeetingType.CONF_3RD_EVENT_MEETING
+                && deviceInfos.Count == 1 && _GlobalSettingParam.GlobalSetting_WidgetSettings.EnableQuickAccessWidget
                 && isWindowsScreenNotLocked)
             {
                 CallQAM_UI(this);
@@ -11354,7 +11354,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 {
                     //Check if actived monitor has its color preset section in config file                   
                     if (_InfoMonitors.edid.ModelName.Trim().IndexOf(config.ModelName.Trim()) >= 0 &&
-                        (_InfoMonitors.edid.SerialNumber.Trim() == config.SerialNumber.Trim() || _InfoMonitors.edid.ServiceTag.Trim() == config.ServiceTag.Trim()) )
+                        (_InfoMonitors.edid.SerialNumber.Trim() == config.SerialNumber.Trim() || _InfoMonitors.edid.ServiceTag.Trim() == config.ServiceTag.Trim()))
                     {
                         if (config.RunType == (int)ColorPresetRunType.Auto)
                         {
@@ -11412,7 +11412,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
                     //Check if actived monitor has its color preset section in config file
                     if (_InfoMonitors.edid.ModelName.Trim().IndexOf(config.ModelName.Trim()) >= 0 &&
-                         (_InfoMonitors.edid.SerialNumber.Trim() == config.SerialNumber.Trim() || _InfoMonitors.edid.ServiceTag.Trim() == config.ServiceTag.Trim()) )
+                         (_InfoMonitors.edid.SerialNumber.Trim() == config.SerialNumber.Trim() || _InfoMonitors.edid.ServiceTag.Trim() == config.ServiceTag.Trim()))
                     {
                         if (config.ColorManagement_Status == (int)ColorManagementStatus.Off)
                         {
@@ -11454,7 +11454,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                             break;
                         }
                     }
-                    
+
                 }
 
                 writelog("CheckAutoColorManagementEnableOnStartedCondition, exit(break) for foreach (var _InfoMonitors in _AllInfoMonitors)");
@@ -12261,6 +12261,97 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         private bool isReg = false;
 
+        private string _latestBatterylowContent = string.Empty;
+        private OSDType_Device _lastestBatterylowDevice = OSDType_Device.Unknown;
+        private void showBatteryLowCombineOSD(string deviceName, OSDType oSDType, bool state)
+        {
+            //close batterylow osd
+            OSDType_Device getOSDType_Device = getLatestBatterylowOSDAndCloseOthers();
+            try
+            {
+                System.Windows.Forms.Screen sreen = System.Windows.Forms.Screen.AllScreens.FirstOrDefault(x => x.DeviceName == Screen.PrimaryScreen.DeviceName);
+                var dpiXProperty = typeof(SystemParameters).GetProperty("DpiX", BindingFlags.NonPublic | BindingFlags.Static);
+                var varX = (int)dpiXProperty.GetValue(null, null);
+                double dpiX = (double)varX / (double)96;
+
+                switch (getOSDType_Device)
+                {
+                    case OSDType_Device.Unknown:
+                        //single osd
+                        switch (oSDType)
+                        {
+                            case OSDType.CapsLock:
+                                ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.CapsLock, state);
+                                break;
+                            case OSDType.ScrollLock:
+                                ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.ScrollLock, state);
+                                break;
+                            case OSDType.NumLock:
+                                ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.NumLock, state);
+                                break;
+                        }
+                        break;
+                    case OSDType_Device.Keyboard:
+                        _OSD_Controler.KeyAndKeybordBatteryLowWin_ShowWindow(_latestBatterylowContent, (sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX), oSDType, OSDType_Device.Keyboard, state);
+                        break;
+                    case OSDType_Device.Mouse:
+                        _OSD_Controler.KeyAndKeybordBatteryLowWin_ShowWindow(_latestBatterylowContent, (sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX), oSDType, OSDType_Device.Mouse, state);
+                        break;
+                    case OSDType_Device.Headset:
+                        _OSD_Controler.KeyAndKeybordBatteryLowWin_ShowWindow(_latestBatterylowContent, (sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX), oSDType, OSDType_Device.Headset, state);
+                        break;
+                }
+                _latestBatterylowContent = string.Empty;
+                _lastestBatterylowDevice = OSDType_Device.Unknown;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[showBatteryLowCombineOSD] ERROR - deviceName:{deviceName},OSDType:{oSDType},state:{state};Exception Message: {ex.Message}");
+            }
+        }
+
+        private OSDType_Device getLatestBatterylowOSDAndCloseOthers()
+        {
+            OSDType_Device ret = OSDType_Device.Unknown;
+            try
+            {
+                IntPtr hwnd_KeybordBatteryLow = CallUser32dll._FindWindow(null, "68C62D1D-CDA5-4EC6-AFB2-6DA8331D7DDE-KeybordBatteryLowIWin");
+                if (hwnd_KeybordBatteryLow != IntPtr.Zero)
+                {
+                    if (_lastestBatterylowDevice == OSDType_Device.Keyboard)
+                    {
+                        ret = OSDType_Device.Keyboard;
+                    }
+                    _OSD_Controler.KeybordBatteryLow_CloseWindow();
+                }
+                IntPtr hwnd_MouseBatteryLow = CallUser32dll._FindWindow(null, "AFF4035F-B0CA-4B8C-991F-AAEBEB625EEF-MouseBatteryLowIWin");
+                if (hwnd_MouseBatteryLow != IntPtr.Zero)
+                {
+                    if (_lastestBatterylowDevice == OSDType_Device.Mouse)
+                    {
+                        ret = OSDType_Device.Mouse;
+                    }
+                    _OSD_Controler.MouseBatteryLow_CloseWindow();
+                }
+                IntPtr hwnd_HeadsetBatteryLow = CallUser32dll._FindWindow(null, "5A9DDC40-D1A7-4DC4-9F59-CB95DCD13945-HeadsetBatteryLowIWin");
+                if (hwnd_HeadsetBatteryLow != IntPtr.Zero)
+                {
+                    if (_lastestBatterylowDevice == OSDType_Device.Headset)
+                    {
+                        ret = OSDType_Device.Headset;
+                    }
+                    _OSD_Controler.HeadsetBatteryLow_CloseWindow();
+                }
+
+            }
+            catch (Exception ex)
+            {
+                writelog($"[getLatestBatterylowOSDAndCloseOthers] ERROR - {ex.Message}");
+
+            }
+            return ret;
+        }
+
         private void Keyboard_KeyUpProc(object sender, KeyEventArgs e)
         {
             string strKey = e.KeyCode.ToString().ToUpper();
@@ -12282,19 +12373,28 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 Debug.WriteLine($"GlobalSettingParam.GlobalSetting_General.Keyboard_Lock_Key={result.GlobalSetting_General.Keyboard_Lock_Key}");
                 if (result.GlobalSetting_General.Keyboard_Lock_Key)
                 {
+                    //test
+                    /* if (!isReg)
+                     {
+                         ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.BatteryLow, OSDType_Device.Keyboard, "Dell Multi-Device Mouse - MS5320W");
+                         isReg = true;
+                     }*/
+                    //showBatteryLowCombineOSD(_latestBatterylowContent);
+                    //test end
+
                     if (e.KeyCode == Keys.CapsLock)
                     {
                         bool isCapsLockOn = (System.Windows.Input.Keyboard.GetKeyStates(System.Windows.Input.Key.CapsLock) & System.Windows.Input.KeyStates.Toggled) == System.Windows.Input.KeyStates.Toggled;
                         Debug.WriteLine($"Key.CapsLock={isCapsLockOn}");
                         if (isCapsLockOn)
                         {
-                            ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.CapsLock, true);
-                            //ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.BatteryLow, OSDType_Device.Headset, "Content");
-                            //ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.CollaborationNotAvailable, OSDType_Device.Keyboard, "Collaboration controls are not available during multiple conference calls");
+                            showBatteryLowCombineOSD(Screen.PrimaryScreen.DeviceName, OSDType.CapsLock, true);
+                            // ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.CapsLock, true);
                         }
                         else
                         {
-                            ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.CapsLock, false);
+                            showBatteryLowCombineOSD(Screen.PrimaryScreen.DeviceName, OSDType.CapsLock, false);
+                            //ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.CapsLock, false);
                         }
                         //_OSDKeyLock = true;
                         //e.Handled = true;
@@ -12305,11 +12405,13 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         Debug.WriteLine($"Key.Scroll={isScrollLockOn}");
                         if (isScrollLockOn)
                         {
-                            ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.ScrollLock, true);
+                            showBatteryLowCombineOSD(Screen.PrimaryScreen.DeviceName, OSDType.ScrollLock, true);
+                            //ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.ScrollLock, true);
                         }
                         else
                         {
-                            ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.ScrollLock, false);
+                            showBatteryLowCombineOSD(Screen.PrimaryScreen.DeviceName, OSDType.ScrollLock, false);
+                            //ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.ScrollLock, false);
                         }
                         //_OSDKeyLock = true;
                         //e.Handled = true;
@@ -12320,11 +12422,13 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         Debug.WriteLine($"Key.NumLock={isNumLockLockOn}");
                         if (isNumLockLockOn)
                         {
-                            ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.NumLock, true);
+                            showBatteryLowCombineOSD(Screen.PrimaryScreen.DeviceName, OSDType.NumLock, true);
+                            //ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.NumLock, true);
                         }
                         else
                         {
-                            ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.NumLock, false);
+                            showBatteryLowCombineOSD(Screen.PrimaryScreen.DeviceName, OSDType.NumLock, false);
+                            //ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.NumLock, false);
                         }
                         //ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.NumLock, true);
                         //_OSDKeyLock = true;
@@ -15084,7 +15188,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                 var dpiXProperty = typeof(SystemParameters).GetProperty("DpiX", BindingFlags.NonPublic | BindingFlags.Static);
                                 var varX = (int)dpiXProperty.GetValue(null, null);
                                 double dpiX = (double)varX / (double)96;
-
                                 switch (_types)
                                 {
                                     case OSDType.Mute:
@@ -15122,6 +15225,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                             {
                                                 try
                                                 {
+                                                    _latestBatterylowContent = Content;
+                                                    _lastestBatterylowDevice = OSDType_Device.Headset;
                                                     _OSD_Controler.HeadsetBatteryLow_CloseWindow();
                                                     _OSD_Controler.HeadsetBatteryLow_ShowWindow(Content, (sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX));
                                                 }
@@ -15134,6 +15239,9 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                             {
                                                 try
                                                 {
+                                                    //when keyboard battery low, press CapsLock/ScrollLock/NumLockLock combine with 
+                                                    _latestBatterylowContent = Content;
+                                                    _lastestBatterylowDevice = OSDType_Device.Keyboard;
                                                     _OSD_Controler.KeybordBatteryLow_CloseWindow();
                                                     _OSD_Controler.KeybordBatteryLow_ShowWindow(Content, (sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX));
                                                 }
@@ -15146,6 +15254,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                             {
                                                 try
                                                 {
+                                                    _latestBatterylowContent = Content;
+                                                    _lastestBatterylowDevice = OSDType_Device.Mouse;
                                                     _OSD_Controler.MouseBatteryLow_CloseWindow();
                                                     _OSD_Controler.MouseBatteryLow_ShowWindow(Content, (sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX));
                                                 }
