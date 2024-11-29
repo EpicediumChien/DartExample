@@ -300,7 +300,8 @@
                         <StackPanel Orientation="Vertical" Margin="18,25,0,18">
                             <UXControls:UXTextBlock Text="{Binding [WebCameraCapture.10], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource ModuleItemStyle}" />
                             <StackPanel Orientation="Horizontal" Margin="15,15,15,0">
-                                <UXControls:UXTextBox Name="txtCaptureFolder" AutomationProperties.Name="TextBoxDefault" Width="165" Height="40"  IsReadOnly="True" FontFamily="Roboto" FontSize="14" VerticalAlignment="Center" Padding="8,10,0,0" />
+                                <UXControls:UXTextBox Name="txtCaptureFolder" AutomationProperties.Name="TextBoxDefault" Width="165" Height="40"  IsReadOnly="True" FontFamily="Roboto" FontSize="14" VerticalAlignment="Center" Padding="8,10,0,0"
+                                                      TextWrapping ="NoWrap"  Background="{DynamicResource Webcam_TextBox_BkColor}" Foreground="{DynamicResource Webcam_TextBox_FgColor}"/>
                                 <common:ActionButton Name="btnOpen" Margin="8,0,8,0" Style="{StaticResource OpenButtonStyle}" MouseLeftButtonDown="Open_Click"  Width="97" Height="40" FontFamily="Roboto" Cursor="Hand" IsEnabled="{Binding IsNotRecording}">
                                     <!--<UXControls:UXButton.Style>
                     <Style TargetType="UXControls:UXButton">
