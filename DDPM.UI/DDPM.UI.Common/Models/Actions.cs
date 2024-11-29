@@ -27,7 +27,7 @@ namespace DDPM.UI.Common
         public Dictionary<int, SelectedAction> RadialActions = new();
         public bool IsUseCenter = true;
 
-        public PenActions(bool IsResetRadialMenu = false)
+        public PenActions()
         {
             Task<string> task1 = DdpmCommonHelper.DeviceManagerSA!.GetEraserDoublePressSetting();
             JsonElement jsonObject = JsonSerializer.Deserialize<JsonElement>(task1.Result)!;
@@ -77,19 +77,7 @@ namespace DDPM.UI.Common
                 BottomBarrelButtonClickAction.AssignedAction.Parameter = jsonObject.GetProperty("actionName").GetString()!;
             }
 
-            task1 = DdpmCommonHelper.DeviceManagerSA!.GetMenuSinglePressSetting();
-            var result = task1.Result;
-            var RadialMenus = JsonConvert.DeserializeObject<List<RadialMenuItem>>(task1.Result)!;
-            RadialActions.Clear();
-            RadialLabels.Clear();
-            foreach(var rm in RadialMenus)
-            {
-                if (rm.menuIndex < 8)
-                {
-                    RadialLabels.Add(rm.menuIndex, rm.actionName);
-                    RadialActions.Add(rm.menuIndex, new SelectedAction(rm.actionId, new AssignedAction(rm.actionId)));
-                }
-            }
+
             Task<bool> task2 = DdpmCommonHelper.DeviceManagerSA!.GetMenuCenterRightClickSetting();
             IsUseCenter = task2.Result;
             task2 = DdpmCommonHelper.DeviceManagerSA!.GetIsSideTopButtonHoverClick();
@@ -97,8 +85,20 @@ namespace DDPM.UI.Common
             task2 = DdpmCommonHelper.DeviceManagerSA!.GetIsSideBottomButtonHoverClick();
             IsBottomBarrelHoverClickOn = task2.Result;
 
-            //if (IsResetRadialMenu)
-            //    ResetRadialMenu();
+            ResetRadialMenu();
+            //task1 = DdpmCommonHelper.DeviceManagerSA!.GetMenuSinglePressSetting();
+            //var result = task1.Result;
+            //var RadialMenus = JsonConvert.DeserializeObject<List<RadialMenuItem>>(task1.Result)!;
+            //RadialActions.Clear();
+            //RadialLabels.Clear();
+            //foreach(var rm in RadialMenus)
+            //{
+            //    if (rm.menuIndex < 8)
+            //    {
+            //        RadialLabels.Add(rm.menuIndex, rm.actionName);
+            //        RadialActions.Add(rm.menuIndex, new SelectedAction(rm.actionId, new AssignedAction(rm.actionId)));
+            //    }
+            //}
         }
 
         public bool RestoreToDefault()
@@ -112,15 +112,21 @@ namespace DDPM.UI.Common
             TopBarrelButtonClickAction = new(27, new AssignedAction(27));
             BottomBarrelButtonClickAction = new(26, new AssignedAction(26));
 
-            //ResetRadialMenu();
+            //RestoreRadialMenu();
             return true;
         }
 
-        public bool ResetRadialMenu()
+        public bool RestoreRadialMenu()
         {
             if (DdpmCommonHelper.DeviceManagerSA == null || !DdpmCommonHelper.DeviceManagerSA.RestoreRadialMenuToDefault().Result)
                 return false;
 
+            ResetRadialMenu();
+            return true;
+        }
+
+        public void ResetRadialMenu()
+        {
             RadialLabels = new() {
                 { 0, Strings.NextTrack },
                 { 1, Strings.WebBrowser },
@@ -142,7 +148,6 @@ namespace DDPM.UI.Common
             RadialActions.Add(7, new SelectedAction(84, new AssignedAction(84)));
             IsUseCenter = true;
             ActionList.ExportActionList(this, "PEN");
-            return true;
         }
     }
 
@@ -450,7 +455,6 @@ namespace DDPM.UI.Common
                     }
                     //var pen = new PenActions(model);
                     var pen = new PenActions();
-                    ExportActionList(pen, model);
                     return pen;
 
                 default:
