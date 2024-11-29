@@ -8585,6 +8585,16 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             _DTPProxyPlugin.SetTipSensitivity(itemID, newValue);
             return Task.FromResult(true);
         }
+        public Task<bool> RestoreToDefaultPen()
+        {
+            writelog("DeviceMangerPlugin received RestoreToDefaultPen requested ...");
+            return _DTPProxyPlugin.RestoreToDefaultPen();
+        }
+        public Task<bool> RestoreRadialMenuToDefault()
+        {
+            writelog("DeviceMangerPlugin received RestoreRadialMenuToDefault requested ...");
+            return _DTPProxyPlugin.RestoreRadialMenuToDefault();
+        }
 
         #endregion
 

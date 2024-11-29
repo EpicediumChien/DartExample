@@ -1976,6 +1976,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
         private void _iCTKMessageHelper_CollabMultipleCallsDetectedChanged(bool obj)
         {
             CollabMultipleCallsDetectedChanged?.Invoke(this, obj);
+            Debug.WriteLine($"{obj}");
         }
 
         private void _iCTKMessageHelper_CollaborationMsgChanged(CollaborationMsg collaborationMsg)

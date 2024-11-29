@@ -36,7 +36,7 @@ namespace DDPM.UI.Plugin.ViewModels
 
         #endregion Variables
 
-        public PenActions PenAction = (PenActions)ActionList.ImportActionList(eDeviceCategory.Pen, "PEN");
+        public PenActions PenAction = new();
         public Dictionary<int, string> ActionNames = new();
         public List<string> LaunchableAppValues = new();
         public List<int> RadialMenuActions = new();
@@ -76,6 +76,7 @@ namespace DDPM.UI.Plugin.ViewModels
             if (!base.SetCurrentDevice(deviceID))
                 return false;
 
+            PenAction = (PenActions)ActionList.ImportActionList(eDeviceCategory.Pen, "PEN");
             TiltSensitivity = CurrentDeviceInfo!.TiltSensitivity <= 0 ? 0 : (CurrentDeviceInfo.TiltSensitivity >= 2 ? 100 : 50);
             _tipSensitivity = CurrentDeviceInfo.TipSensitivity switch
             {
@@ -627,12 +628,21 @@ namespace DDPM.UI.Plugin.ViewModels
                 SelectedButton = "";
             }
         }
-        public void RestoreToDefault()
+        public bool RestoreToDefault()
         {
-            PenAction.RestoreToDefault();
-            RefreshButtonInfo();
-            IsRestoreEnable = false;
-            OnPropertyChanged(nameof(IsRestoreEnable));
+            if (PenAction.RestoreToDefault())
+            {
+                RefreshButtonInfo();
+                CurrentDeviceInfo!.TiltSensitivity = 1;
+                TiltSensitivity = 50;
+                CurrentDeviceInfo!.TipSensitivity = 3;
+                TipSensitivity = 50;
+                IsRestoreEnable = false;
+                OnPropertyChanged(nameof(IsRestoreEnable));
+                PenAction = (PenActions)ActionList.ImportActionList(eDeviceCategory.Pen, "PEN");
+                return true;
+            }
+            return false;
         }
 
         public void RefreshButtonInfo()
@@ -754,7 +764,8 @@ namespace DDPM.UI.Plugin.ViewModels
             {
                 { "menuIndex", index },
                 { "actionId", id },
-                { "actionName", PenAction.RadialLabels[index] }
+                { "actionName", PenAction.RadialLabels[index] },
+                { "menuLabel", PenAction.RadialLabels[index] }
             };
             byte[] newValue = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(jobj));
             DdpmCommonHelper.DeviceManagerSA!.SetMenuSinglePressSetting(itemID, newValue);
