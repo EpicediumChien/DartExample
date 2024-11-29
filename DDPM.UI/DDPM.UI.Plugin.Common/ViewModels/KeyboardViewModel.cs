@@ -1112,15 +1112,18 @@ namespace DDPM.UI.Plugin.ViewModels
             OnPropertyChanged(nameof(IsRestoreEnable));
         }
 
-        public void RestoreToDefault()
+        public bool RestoreToDefault()
         {
-            DdpmCommonHelper.DeviceManagerSA!.DeleteKeyboardAllAssignedActions(CurrentDeviceID.ToString());
-            foreach (var keyAction in KeyboardAction.KeyActions.Values)
-            {
-                keyAction.AssignedAction = new AssignedAction(keyAction.DefaultActionID);
-            }
-            //ActionList.ExportActionList(KeyboardActions, Model, CurrentInstanceID);
-            ActionList.ExportActionList(KeyboardAction, Model);
+            if (DdpmCommonHelper.DeviceManagerSA == null || !DdpmCommonHelper.DeviceManagerSA.RestoreToDefaultKB(CurrentDeviceID.ToString()).Result)
+                return false;
+
+            ResetAction();
+            return true;
+        }
+
+        private void ResetAction()
+        {
+            KeyboardAction = new();
             foreach (var key in KeyboardAction.KeyActions.Keys)
             {
                 RefreshKeyImageFile(key.ToString());

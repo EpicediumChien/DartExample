@@ -59,6 +59,7 @@ namespace DDPM.SA.Common
         Task SetKbAssignedAction(string Guid, byte[] newValue);
         Task SetKbAssignDialogAction(string Guid, byte[] newValue);
         Task SetKbAssignKeystrokeAction(string Guid, byte[] newValue);
+        Task<bool> RestoreToDefaultKB(string Guid);
 
         #endregion
 

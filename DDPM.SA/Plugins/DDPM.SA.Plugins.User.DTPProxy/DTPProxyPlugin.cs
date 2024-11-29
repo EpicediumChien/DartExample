@@ -32,6 +32,7 @@ using System.Text.Json;
 using Google.Protobuf.WellKnownTypes;
 using System.IO;
 using Type = System.Type;
+using DDPM.SA.Common.UI;
 
 namespace DDPM.SA.Plugins.User.DTPProxy
 {
@@ -611,22 +612,26 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             if (!await GetItemIDAsync("Keyboard", Guid))
                 return false;
 
-            byte[] newValue = Encoding.UTF8.GetBytes($"{{\"actionId\":73,\"actionName\":\"\"}}");
-            await SetEraserSinglePressSetting(PenItemID0, newValue);
-            newValue = Encoding.UTF8.GetBytes($"{{\"actionId\":90,\"actionName\":\"\"}}");
-            await SetEraserDoublePressSetting(PenItemID0, newValue);
-            newValue = Encoding.UTF8.GetBytes($"{{\"actionId\":75,\"actionName\":\"\"}}");
-            await SetEraserLongPressSetting(PenItemID0, newValue);
-            newValue = Encoding.UTF8.GetBytes($"{{\"actionId\":27,\"actionName\":\"\"}}");
-            await SetSideTopSwitchSinglePressSetting(PenItemID0, newValue);
-            newValue = Encoding.UTF8.GetBytes($"{{\"actionId\":26,\"actionName\":\"\"}}");
-            await SetSideBottomSwitchSinglePressSetting(PenItemID0, newValue);
-            await SetTipSensitivity(PenItemID0, 3);
-            await SetTiltSensitivity(PenItemID0, 1);
+            string model;
+            if (await GetCommodityInterfaceInstanceAsync(_keyboardMethodInfo) is ICommodity commodity)
+            {
+                var value = GetPropertyValue(_keyboardInterfaceType, commodity, "ModelNumber");
+                model = value == null ? "" : (string)value;
+                if (model == "")
+                    return false;
+            }
+            else
+            {
+                Debug.WriteLine($"Could not retrieve the Commodity Interface {_keyboardInterfaceType} for the {Guid} item.");
+                writelog($"Could not retrieve the Commodity Interface {_keyboardInterfaceType} for the {Guid} item.");
+                return false;
+            }
 
-            await RestoreRadialMenuToDefault();
+            var result = await DeleteKeyboardAllAssignedActions(Guid);
+            if (!result)
+                return false;
 
-            var filePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), @$"Dell\Dell Display and Peripheral Manager\Actions\pen.json");
+            var filePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), @$"Dell\Dell Display and Peripheral Manager\Actions\{SACommonHelper.MappingModel(model)}.json");
             if (File.Exists(filePath))
             {
                 try
