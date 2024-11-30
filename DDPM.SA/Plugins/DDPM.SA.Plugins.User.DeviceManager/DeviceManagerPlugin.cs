@@ -10270,7 +10270,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
                 OnUIUpdateNotify(e);
                 isDDPMHomepageReady = false;
-                isDDPMLaunchedByQAM = false;
+                //isDDPMLaunchedByQAM = false;
             }
 
             return Task.CompletedTask;
