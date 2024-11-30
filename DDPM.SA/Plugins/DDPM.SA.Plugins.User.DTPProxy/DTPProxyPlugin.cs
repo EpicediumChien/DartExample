@@ -397,6 +397,49 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 writelog($"Could not retrieve the Commodity Interface {_mouseInterfaceType} for the {Guid} item.");
             }
         }
+        public async Task<bool> RestoreToDefaultMouse(string Guid, bool isFromCli = true)
+        {
+            if (!IsDTPReady)
+                return false;
+            if (!await GetItemIDAsync("Mouse", Guid))
+                return false;
+
+            string model;
+            if (await GetCommodityInterfaceInstanceAsync(_mouseMethodInfo) is ICommodity commodity)
+            {
+                var value = GetPropertyValue(_mouseInterfaceType, commodity, "ModelNumber");
+                model = value == null ? "" : (string)value;
+                if (model == "")
+                    return false;
+            }
+            else
+            {
+                Debug.WriteLine($"Could not retrieve the Commodity Interface {_mouseInterfaceType} for the {Guid} item.");
+                writelog($"Could not retrieve the Commodity Interface {_mouseInterfaceType} for the {Guid} item.");
+                return false;
+            }
+
+            var result = await DeleteMouseAllAssignedActions(Guid);
+            if (!result)
+                return false;
+
+            model = SACommonHelper.MappingModel(model);
+            var filePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), @$"Dell\Dell Display and Peripheral Manager\Actions\{model}.json");
+            if (File.Exists(filePath))
+            {
+                try
+                {
+                    File.Delete(filePath);
+                }
+                catch (Exception ex)
+                {
+                    writelog($"[DTPProxyPlugin] [RestoreToDefaultPen] Delete setting file failed: {ex}");
+                }
+            }
+            var message = $"Keyboard|RestoreToDefault|{Guid}|{model}";
+            SendDTPEventToUI(message);
+            return true;
+        }
 
         #endregion
 

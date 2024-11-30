@@ -8419,6 +8419,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             _DTPProxyPlugin.SetMouseAssignKeystrokeAction(Guid, newValue);
             return Task.FromResult(true);
         }
+        public Task<bool> RestoreToDefaultMouse(string Guid, bool isFromCli = true)
+        {
+            writelog("DeviceMangerPlugin received RestoreToDefaultMouse requested ...");
+            return _DTPProxyPlugin.RestoreToDefaultMouse(Guid, isFromCli);
+        }
 
         #endregion
 
