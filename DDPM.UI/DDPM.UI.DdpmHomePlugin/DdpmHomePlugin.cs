@@ -401,7 +401,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                 {
                     string model = info.modelName;//"U2724DE";
                     string serviceTag = info.edid.ServiceTag;
-                    string exportpath = path + "\\" + model + "_" + serviceTag + ".json";
+                    string exportpath = path + "\\" + model + ".json";
                     _log.Info("[CheckIfNeedImportSetting_Display] export path : " + exportpath);
                     //if(can popup messagebox && not yet to import / already click no need import)
                     if (File.Exists(exportpath))
