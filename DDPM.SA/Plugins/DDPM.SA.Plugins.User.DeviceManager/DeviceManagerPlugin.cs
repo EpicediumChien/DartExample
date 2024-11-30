@@ -599,6 +599,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 {
                     _pwr_Mon = new PowerEventControl(Log);
                     _pwr_Mon.MonitorTurnedOn += MonitorEvent_On;
+                    _pwr_Mon.SystemSuspend += OnSystemSuspend;
+                    _pwr_Mon.SystemResume += OnSystemResume;
                     _pwr_Mon.Enable_Event();
                     _pwr_Mon.HotkeyPressed += HotkeyPressed;
                     _pwr_Mon.Enable_HotkeyHook();
@@ -729,6 +731,9 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         public event EventHandler<NKVMRespone> NKVMCLIRespone;
 
         public event EventHandler GlobalSettingChangeEvent;
+
+        public event EventHandler SystemSuspend;
+        public event EventHandler SystemResume;
 
         #endregion
 
@@ -15702,5 +15707,17 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             previousOsTheme = oSTheme;
             return appModeTelementryData;
         }
+
+        #region System Suspend & Resume
+        private void OnSystemSuspend(object sender, EventArgs e)
+        {
+            SystemSuspend?.Invoke(this, e);
+        }
+
+        private void OnSystemResume(object sender, EventArgs e)
+        {
+            SystemResume?.Invoke(this, e);
+        }
+        #endregion
     }
 }
