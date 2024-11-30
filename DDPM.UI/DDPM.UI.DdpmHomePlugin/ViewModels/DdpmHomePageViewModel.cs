@@ -41,8 +41,6 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.ViewModels
         private List<string> EOLKBList = new() { "WK636", "WK717", "KM714", "KM717", "WM126", "UV514" };
         private List<string> EOLMouseList = new() { "WK717", "KM714", "KM717", "WM126", "WM116", "WM326", "WM527", "WM514", "UV514" };
 
-        private IDeviceManagerSA? _deviceManager;
-
         /// <summary>
         /// Default constructor
         /// </summary>
@@ -683,8 +681,9 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.ViewModels
         public bool IsDeviceManagerReady
         {
             get => _isDeviceManagerReady;
-            set => SetProperty(ref _isDeviceManagerReady, value);
+            set => SetProperty(ref _isDeviceManagerReady, value); 
         }
+
         #endregion Please Wait
 
         #region Dump Devices to log

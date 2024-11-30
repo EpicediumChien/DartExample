@@ -1773,9 +1773,9 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             return Task.FromResult(Task.CompletedTask);
         }
 
-        public int GetCurrentPollingRate()
+        public Task<int> GetCurrentPollingRate()
         {
-            return _millisecond;
+            return Task.FromResult(_millisecond);
         }
 
         public Task<List<MonitorInfo>> GetMonitors()
@@ -10241,20 +10241,26 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             OnUIUpdateNotify(e);
         }
 
-        public void SetIsDDPMLaunchByQAM(bool newValue)
+        public Task SetIsDDPMLaunchByQAMAsync(bool newValue)
         {
             isDDPMLaunchedByQAM = newValue;
             writelog($"IsDDPMLaunchByQAM: {newValue}");
+
+            return Task.CompletedTask;
         }
 
-        public bool GetIsDDPMLaunchByQAM()
+        public Task<bool> GetIsDDPMLaunchByQAM()
         {
-            return isDDPMLaunchedByQAM;
+            writelog($"return IsDDPMLaunchByQAM: {isDDPMLaunchedByQAM}");
+
+            return Task.FromResult(isDDPMLaunchedByQAM);
         }
 
-        public void SetIsDDPMHomepageReady(bool newValue)
+        public Task SetIsDDPMHomepageReadyAsync(bool newValue)
         {
             isDDPMHomepageReady = newValue;
+
+            writelog($"UI SetIsDDPMHomepageReadyAsync: {newValue}");
 
             //info homepage navigate to webcam preview page
             if (isDDPMLaunchedByQAM && isDDPMHomepageReady)
@@ -10265,6 +10271,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 OnUIUpdateNotify(e);
                 isDDPMHomepageReady = false;
             }
+
+            return Task.CompletedTask;
         }
 
         public void DDPMNavigateToWebcamPage()

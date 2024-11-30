@@ -171,12 +171,13 @@ namespace DDPM.QAM
             if (ShowDDPM())
             {
                 //Info SA that DDPM launched by QAM
-                DdpmCommonHelper.DeviceManagerSA!.SetIsDDPMLaunchByQAM(true);
+                DdpmCommonHelper.DeviceManagerSA!.SetIsDDPMLaunchByQAMAsync(true);
 
-                Close_Click(this, null);
+                //should closed by SA
+                //Close_Click(this, null);
             }
             else
-                DdpmCommonHelper.DeviceManagerSA!.SetIsDDPMLaunchByQAM(false);
+                DdpmCommonHelper.DeviceManagerSA!.SetIsDDPMLaunchByQAMAsync(false);
         }
 
         private void SendMessageToDDPM(int timeout)
@@ -189,7 +190,7 @@ namespace DDPM.QAM
                 ++i;
 
                 //wait for homepage is available
-                if (2000 == DdpmCommonHelper.DeviceManagerSA!.GetCurrentPollingRate())
+                if (2000 == DdpmCommonHelper.DeviceManagerSA!.GetCurrentPollingRate().Result)
                 {
                     Thread.Sleep(2000);
                     OnUpdateUINotify($"QAMEvent_StartPreview[{i}]");
@@ -221,6 +222,11 @@ namespace DDPM.QAM
             e.UI_Field_Name = msg;
 
             UpdateUINotify?.Invoke(this, e);
+        }
+
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            CloseMyself();
         }
     }
 }
