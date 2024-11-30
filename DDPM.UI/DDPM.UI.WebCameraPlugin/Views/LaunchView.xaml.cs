@@ -385,6 +385,8 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
         {
             if (!_vm!.IsDTPReady)
                 DdpmCommonHelper.MyConsole!.ShowHomePage();
+
+            DdpmCommonHelper.DeviceManagerSA!.SetIsDDPMLaunchByQAMAsync(false);
         }
 
         bool WebcamGrid_old_ststus = false;
