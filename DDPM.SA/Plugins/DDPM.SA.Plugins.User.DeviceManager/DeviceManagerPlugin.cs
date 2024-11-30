@@ -5264,6 +5264,28 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             writelog("[DeviceMangerPlugin] SetSkipCA done");
             return Task.FromResult(_IsSkipCA);
         }
+        private Task<bool> SetSkipSHA()
+        {
+            bool ret = false;
+            writelog("[DeviceMangerPlugin] SetSkipSHA start");
+            object o = ReadRegistryData(RegistryHive.LocalMachine, @"SOFTWARE\Dell\DDPM Subagent", "SkipSHA").Result;
+            writelog($"[SetSkipSHA], o={o}.");
+            if (o != null && o is string && !string.IsNullOrEmpty(o.ToString()))
+            {
+               bool _IsSkipSHA = o.ToString().Equals("1") ? true : false;
+                if (_FWUpdatePlugin != null)
+                {
+                    _FWUpdatePlugin.SetSkipSHA(_IsSkipSHA);
+                }
+                if (_SWUpdatePlugin != null)
+                {
+                    _SWUpdatePlugin.SetSkipSHA(_IsSkipSHA);
+                }
+                writelog($"[DeviceMangerPlugin] SetSkipSHA SkipSHA: {_IsSkipSHA}");
+            }
+            writelog("[DeviceMangerPlugin] SetSkipSHA done");
+            return Task.FromResult(ret);
+        }
 
         public Task<bool> SetServerURL(string url)
         {
@@ -9429,6 +9451,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             ToNKVM_initHotKeys();
             DeleteDdpmSwUpdaterFolder();
             GetSkipCA().Wait();
+            SetSkipSHA().Wait();
             SetDelayFWUpdateInfoPackage();
             CheckUODFWUInfoPackage();
             //hook keyboard
