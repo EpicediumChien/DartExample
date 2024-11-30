@@ -257,7 +257,20 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         private void _DTPProxyPlugin_DTPEventHandler(object sender, UpdateUINotify e)
         {
-            OnUIUpdateNotify(e);
+            if (e.UI_Field_Name.StartsWith("Keyboard") || e.UI_Field_Name.StartsWith("Mouse") || e.UI_Field_Name.StartsWith("Pen"))
+            {
+                var paras = e.UI_Field_Name.Split('|');
+                DeviceInfo di = new();
+                di.LogicalDeviceType = paras[0];
+                di.ModelNumber = paras[3];
+                DeviceChangedEventArgs _EventArgs = new DeviceChangedEventArgs();
+                _EventArgs.type = DeviceChangedType.Peripherals_SettingsChange;
+                _EventArgs.device_peripherals = di;
+                _EventArgs.changedProperty = paras[1];
+                DeviceChanged?.Invoke(this, _EventArgs);
+            }
+            else
+                OnUIUpdateNotify(e);
         }
 
         private string debugPreMsg = string.Empty;

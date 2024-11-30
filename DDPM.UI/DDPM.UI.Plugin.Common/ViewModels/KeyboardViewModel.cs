@@ -194,6 +194,15 @@ namespace DDPM.UI.Plugin.ViewModels
                         DeviceInfos.Remove(di.ID);
                         DeviceInfos.Add(di.ID, di);
                     }
+                    else if (di.ModelNumber == Model)
+                    {
+                        switch (property)
+                        {
+                            case "RestoreToDefault":
+                                ResetAction();
+                                break;
+                        }
+                    }
                     else
                     {
                         return;
@@ -1117,13 +1126,13 @@ namespace DDPM.UI.Plugin.ViewModels
             if (DdpmCommonHelper.DeviceManagerSA == null || !DdpmCommonHelper.DeviceManagerSA.RestoreToDefaultKB(CurrentDeviceID.ToString()).Result)
                 return false;
 
-            ResetAction();
+            //ResetAction();
             return true;
         }
 
         private void ResetAction()
         {
-            KeyboardAction = new();
+            KeyboardAction = new(Model);
             foreach (var key in KeyboardAction.KeyActions.Keys)
             {
                 RefreshKeyImageFile(key.ToString());
