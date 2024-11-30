@@ -23,7 +23,7 @@ namespace DDPM.UI.Module.Kvm
             DataContext = vm;
             vm.ConnectionType = vm.KvmModule.SelectedHomeDevice.ConnectionType;
             vm.Text1 = vm.KvmModule.SelectedHomeDevice.Text1;
-            vm.Invoke_RefreshData();
+            //vm.Invoke_RefreshData();
         }
 
         private void EditInput_Click(object sender, RoutedEventArgs e)

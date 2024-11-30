@@ -197,8 +197,9 @@
         </ItemsControl>
       </Grid>
       <!--Battery-->
-      <Grid VerticalAlignment="Bottom">
-        <StackPanel Orientation="Vertical" HorizontalAlignment="Center">
+      <Grid VerticalAlignment="Bottom" Height="200">
+        <Border Background="Transparent" MouseDown="PushBack"></Border>
+        <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Bottom">
           <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
             <Border Style="{StaticResource BorderConnection}" Margin="{Binding ConnectionPopupMargin}" Visibility="Collapsed" x:Name="DongleConnection" Height="130">
               <StackPanel Orientation="Vertical">

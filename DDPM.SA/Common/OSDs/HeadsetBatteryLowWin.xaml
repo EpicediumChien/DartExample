@@ -13,6 +13,7 @@
     Topmost="True"
     WindowStartupLocation="Manual"
     WindowStyle="None"
+    Title="5A9DDC40-D1A7-4DC4-9F59-CB95DCD13945-HeadsetBatteryLowIWin"
     mc:Ignorable="d">
 
     <Window.Resources>

@@ -56,6 +56,7 @@ namespace DDPM.SA.Plugins.SWUpdate
         private Logs _logs;
 
         static bool _IsSkipCA = false;
+        static bool _IsSkipSHA = false;
         private ISettingsManagerSA _SettingsPlugin;
         private readonly object _PluginConditionLock_Settings = new object();
 
@@ -450,6 +451,10 @@ namespace DDPM.SA.Plugins.SWUpdate
                     download = new Download(_logs);
                     string downloadInfo = "";
                     // 將儲存路徑與從 URL 中提取的檔案名稱組合
+                    if (_IsSkipSHA)
+                    {
+                        _logs.DebugMsg_1($"{nameof(DownloadAndInstall)} ServerPath : {url}");
+                    }
                     string _installationFileStoragePath = Path.Combine(savePath + Path.GetFileName(url));
                     bool downloadRet = download.DownloadFile(url, _installationFileStoragePath, out downloadInfo, _IsSkipCA);
                     _downloadTimer.Stop();
@@ -749,7 +754,17 @@ namespace DDPM.SA.Plugins.SWUpdate
 
         public void SetSkipCA(bool isSkipCA)
         {
+            _logs.DebugMsg_1("SetSkipCA start");
+            _logs.DebugMsg_1($"SetSkipCA isSkipCA : {isSkipCA}");
             _IsSkipCA = isSkipCA;
+            _logs.DebugMsg_1("SetSkipCA done");
+        }
+        public void SetSkipSHA(bool isSkipSHA)
+        {
+            _logs.DebugMsg_1("SetSkipSHA start");
+            _logs.DebugMsg_1($"SetSkipSHA isSkipSHA : {isSkipSHA}");
+            _IsSkipSHA = isSkipSHA;
+            _logs.DebugMsg_1("SetSkipSHA done");
         }
         private void OnPowerModeChanged(object sender, PowerModeChangedEventArgs e)
         {
@@ -867,8 +882,16 @@ namespace DDPM.SA.Plugins.SWUpdate
             }
             else
             {
-                _logs.DebugMsg_1($"{_SWUpdateInfo.SoftwareName} CheckSHA fail fileCAInfo : {fileCAInfo}");
-                _SWUpdateInfo.SWUErrorCode = SWUErrorCode.FileCheckFail;
+                if (!_IsSkipSHA)
+                {
+                    _logs.DebugMsg_1($"{_SWUpdateInfo.SoftwareName} CheckSHA fail fileCAInfo : {fileCAInfo}");
+                    _SWUpdateInfo.SWUErrorCode = SWUErrorCode.FileCheckFail;
+                }
+                else
+                {
+                    _logs.DebugMsg_1($"{_SWUpdateInfo.SoftwareName} CheckSHA fail fileCAInfo : {fileCAInfo} BUT SKIP");
+                    isCheckSHA = true;
+                }
             }
             return isCheckSHA;
         }
@@ -884,8 +907,17 @@ namespace DDPM.SA.Plugins.SWUpdate
             }
             else
             {
-                _logs.DebugMsg_1($"{_SWUpdateInfo.SoftwareName} File check Thumbprint fail. Ex: {FileCAInfo}");
-                _SWUpdateInfo.SWUErrorCode = SWUErrorCode.FileCheckFail;
+                if (!_IsSkipSHA)
+                {
+                    _logs.DebugMsg_1($"{_SWUpdateInfo.SoftwareName} File check Thumbprint fail. Ex: {FileCAInfo}");
+                    _SWUpdateInfo.SWUErrorCode = SWUErrorCode.FileCheckFail;
+                }
+                else
+                {
+                    _logs.DebugMsg_1($"{_SWUpdateInfo.SoftwareName} File check Thumbprint fail. Ex: {FileCAInfo} BUT SKIP");
+                    ishumbprint = true;
+                }
+
             }
             return ishumbprint;
         }

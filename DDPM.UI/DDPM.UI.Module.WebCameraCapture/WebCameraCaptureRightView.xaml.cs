@@ -46,7 +46,9 @@ namespace DDPM.UI.Module.WebCameraCapture
                     txtRes1.Text = Res[1];
                     btnRes1.CornerRadius = new CornerRadius(0, 5, 5, 0);
                     btnRes2.Visibility = Visibility.Collapsed;
+                    btnRes2_Col.Width = new GridLength(0);
                     btnRes3.Visibility = Visibility.Collapsed;
+                    btnRes3_Col.Width = new GridLength(0);
                     break;
                 case 3:
                     _vm.btnRes0_width_v = 134;
@@ -57,6 +59,7 @@ namespace DDPM.UI.Module.WebCameraCapture
                     txtRes2.Text = Res[2];
                     btnRes2.CornerRadius = new CornerRadius(0, 5, 5, 0);
                     btnRes3.Visibility = Visibility.Collapsed;
+                    btnRes3_Col.Width = new GridLength(0);
                     break;
                 case 4:
                     btnRes0.Width = 100.5;

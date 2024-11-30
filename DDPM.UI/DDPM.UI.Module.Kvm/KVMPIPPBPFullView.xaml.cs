@@ -150,6 +150,7 @@ namespace DDPM.UI.Module.Kvm
                 //    }
                 //}
                 vm.isOnUSBKVM(true);//bool b = DdpmCommonHelper.DeviceManagerSA.SetOnUSBKVM(true).Result;
+                vm.USBKVMisON = true;
                 //Return to DdpmHomePage              
                 IConsole? console = DdpmHomePlugin.PluginIoc.GetService<IConsole>();
                 console?.ShowPluginById(DDPM.UI.Common.Constants.DdpmHomePluginId);
