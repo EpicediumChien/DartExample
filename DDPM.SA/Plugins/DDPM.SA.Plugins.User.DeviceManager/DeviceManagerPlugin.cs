@@ -3226,26 +3226,26 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         //////////////////////////////////// Get//////////////////////////////////////////
 
-        public async Task<JArray> GetDeviceItemsExAsync(string guid)
+        public async Task<JArray> GetHeadsetDeviceItemsExAsync()
         {
             try
             {
-                var result = await _DTPProxyPlugin.GetDeviceItemsExAsync(guid);
+                var result = await _DTPProxyPlugin.GetHeadsetDeviceItemsExAsync();
                 writelog($"[DeviceManagerPlugin] [Headset] GetDeviceItemsExAsync Success, value is {result.ToString()}");
                 return result;
             }
             catch (Exception ex)
             {
-                writelog($"[DeviceManagerPlugin] [Headset] GetDeviceItemsExAsync failed for GUID: {guid} - Exception: {ex.Message}");
+                writelog($"[DeviceManagerPlugin] [Headset] GetDeviceItemsExAsync failed - Exception: {ex.Message}");
                 return null;
             }
         }
 
-        public async Task<DeviceInterfaceType> GetInterfaceTypeAsync(string guid)
+        public async Task<DeviceInterfaceType> GetHeadsetInterfaceTypeAsync(string guid)
         {
             try
             {
-                var result = await _DTPProxyPlugin.GetInterfaceTypeAsync(guid);
+                var result = await _DTPProxyPlugin.GetHeadsetInterfaceTypeAsync(guid);
                 writelog($"[DeviceManagerPlugin] [Headset] GetInterfaceTypeAsync succeeded, value is {result.ToString()}");
                 return result;
             }
@@ -3256,11 +3256,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
         }
 
-        public async Task<string> GetDeviceNameAsync(string guid)
+        public async Task<string> GetHeadsetDeviceNameAsync(string guid)
         {
             try
             {
-                var result = await _DTPProxyPlugin.GetDeviceNameAsync(guid);
+                var result = await _DTPProxyPlugin.GetHeadsetDeviceNameAsync(guid);
                 writelog($"[DeviceManagerPlugin] [Headset] GetDeviceNameAsync succeeded, value is {result.ToString()}");
                 return result;
             }
@@ -3271,11 +3271,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
         }
 
-        public async Task<string> GetDeviceIdAsync(string guid)
+        public async Task<string> GetHeadsetDeviceIdAsync(string guid)
         {
             try
             {
-                var result = await _DTPProxyPlugin.GetDeviceIdAsync(guid);
+                var result = await _DTPProxyPlugin.GetHeadsetDeviceIdAsync(guid);
                 writelog($"[DeviceManagerPlugin] [Headset] GetDeviceIdAsync succeeded, value is {result.ToString()}");
                 return result;
             }
@@ -3286,11 +3286,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
         }
 
-        public async Task<string> GetPluginIdAsync(string guid)
+        public async Task<string> GetHeadsetPluginIdAsync(string guid)
         {
             try
             {
-                var result = await _DTPProxyPlugin.GetPluginIdAsync(guid);
+                var result = await _DTPProxyPlugin.GetHeadsetPluginIdAsync(guid);
                 writelog($"[DeviceManagerPlugin] [Headset] GetPluginIdAsync succeeded, value is {result.ToString()}");
                 return result;
             }
@@ -3301,11 +3301,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
         }
 
-        public async Task<int> GetODMIdAsync(string guid)
+        public async Task<int> GetHeadsetODMIdAsync(string guid)
         {
             try
             {
-                var result = await _DTPProxyPlugin.GetODMIdAsync(guid);
+                var result = await _DTPProxyPlugin.GetHeadsetODMIdAsync(guid);
                 writelog($"[DeviceManagerPlugin] [Headset] GetODMIdAsync succeeded, value is {result.ToString()}");
                 return result;
             }
@@ -3316,11 +3316,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
         }
 
-        public async Task<string> GetModelNumberAsync(string guid)
+        public async Task<string> GetHeadsetModelNumberAsync(string guid)
         {
             try
             {
-                var result = await _DTPProxyPlugin.GetModelNumberAsync(guid);
+                var result = await _DTPProxyPlugin.GetHeadsetModelNumberAsync(guid);
                 writelog($"[DeviceManagerPlugin] [Headset] GetModelNumberAsync succeeded, value is {result.ToString()}");
                 return result;
             }
@@ -3331,11 +3331,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
         }
 
-        public async Task<int> GetInstanceNumberAsync(string guid)
+        public async Task<int> GetHeadsetInstanceNumberAsync(string guid)
         {
             try
             {
-                var result = await _DTPProxyPlugin.GetInstanceNumberAsync(guid);
+                var result = await _DTPProxyPlugin.GetHeadsetInstanceNumberAsync(guid);
                 writelog($"[DeviceManagerPlugin] [Headset] GetInstanceNumberAsync succeeded, value is {result.ToString()}");
                 return result;
             }
@@ -3346,11 +3346,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
         }
 
-        public async Task<int> GetInstanceIdAsync(string guid)
+        public async Task<int> GetHeadsetInstanceIdAsync(string guid)
         {
             try
             {
-                var result = await _DTPProxyPlugin.GetInstanceIdAsync(guid);
+                var result = await _DTPProxyPlugin.GetHeadsetInstanceIdAsync(guid);
                 writelog($"[DeviceManagerPlugin] [Headset] GetInstanceIdAsync succeeded, value is {result.ToString()}");
                 return result;
             }
@@ -3361,11 +3361,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
         }
 
-        public async Task<string> GetFirmwareVersionAsync(string guid)
+        public async Task<string> GetHeadsetFirmwareVersionAsync(string guid)
         {
             try
             {
-                var result = await _DTPProxyPlugin.GetFirmwareVersionAsync(guid);
+                var result = await _DTPProxyPlugin.GetHeadsetFirmwareVersionAsync(guid);
                 writelog($"[DeviceManagerPlugin] [Headset] GetFirmwareVersionAsync succeeded, value is {result.ToString()}");
                 return result;
             }
@@ -3376,11 +3376,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
         }
 
-        public async Task<string> GetDeviceTypeAsync(string guid)
+        public async Task<string> GetHeadsetDeviceTypeAsync(string guid)
         {
             try
             {
-                var result = await _DTPProxyPlugin.GetDeviceTypeAsync(guid);
+                var result = await _DTPProxyPlugin.GetHeadsetDeviceTypeAsync(guid);
                 writelog($"[DeviceManagerPlugin] [Headset] GetDeviceTypeAsync succeeded, value is {result.ToString()}");
                 return result;
             }
@@ -3391,11 +3391,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
         }
 
-        public async Task<string> GetParentDeviceTypeAsync(string guid)
+        public async Task<string> GetHeadsetParentDeviceTypeAsync(string guid)
         {
             try
             {
-                var result = await _DTPProxyPlugin.GetParentDeviceTypeAsync(guid);
+                var result = await _DTPProxyPlugin.GetHeadsetParentDeviceTypeAsync(guid);
                 writelog($"[DeviceManagerPlugin] [Headset] GetParentDeviceTypeAsync succeeded, value is {result.ToString()}");
                 return result;
             }
@@ -3406,11 +3406,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
         }
 
-        public async Task<bool> GetIsBatteryLevelSupportedAsync(string guid)
+        public async Task<bool> GetHeadsetIsBatteryLevelSupportedAsync(string guid)
         {
             try
             {
-                var result = await _DTPProxyPlugin.GetIsBatteryLevelSupportedAsync(guid);
+                var result = await _DTPProxyPlugin.GetHeadsetIsBatteryLevelSupportedAsync(guid);
                 writelog($"[DeviceManagerPlugin] [Headset] GetIsBatteryLevelSupportedAsync succeeded, value is {result.ToString()}");
                 return result;
             }
@@ -3421,11 +3421,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
         }
 
-        public async Task<int> GetBatteryLevelAsync(string guid)
+        public async Task<int> GetHeadsetBatteryLevelAsync(string guid)
         {
             try
             {
-                var result = await _DTPProxyPlugin.GetBatteryLevelAsync(guid);
+                var result = await _DTPProxyPlugin.GetHeadsetBatteryLevelAsync(guid);
                 writelog($"[DeviceManagerPlugin] [Headset] GetBatteryLevelAsync succeeded, value is {result.ToString()}");
                 return result;
             }
@@ -3436,11 +3436,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
         }
 
-        public async Task<string> GetDeviceBatteryStatusAsync(string guid)
+        public async Task<string> GetHeadsetDeviceBatteryStatusAsync(string guid)
         {
             try
             {
-                var result = await _DTPProxyPlugin.GetDeviceBatteryStatusAsync(guid);
+                var result = await _DTPProxyPlugin.GetHeadsetDeviceBatteryStatusAsync(guid);
                 writelog($"[DeviceManagerPlugin] [Headset] GetDeviceBatteryStatusAsync succeeded, value is {result.ToString()}");
                 return result;
             }
@@ -3451,11 +3451,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
         }
 
-        public async Task<string> GetPairingStatusAsync(string guid)
+        public async Task<string> GetHeadsetPairingStatusAsync(string guid)
         {
             try
             {
-                var result = await _DTPProxyPlugin.GetPairingStatusAsync(guid);
+                var result = await _DTPProxyPlugin.GetHeadsetPairingStatusAsync(guid);
                 writelog($"[DeviceManagerPlugin] [Headset] GetPairingStatusAsync succeeded, value is {result.ToString()}");
                 return result;
             }
@@ -3466,11 +3466,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
         }
 
-        public async Task<string> GetPairedHostName1Async(string guid)
+        public async Task<string> GetHeadsetPairedHostName1Async(string guid)
         {
             try
             {
-                var result = await _DTPProxyPlugin.GetPairedHostName1Async(guid);
+                var result = await _DTPProxyPlugin.GetHeadsetPairedHostName1Async(guid);
                 writelog($"[DeviceManagerPlugin] [Headset] GetPairedHostName1Async succeeded, value is {result.ToString()}");
                 return result;
             }
@@ -3481,11 +3481,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
         }
 
-        public async Task<string> GetPairedHostName2Async(string guid)
+        public async Task<string> GetHeadsetPairedHostName2Async(string guid)
         {
             try
             {
-                var result = await _DTPProxyPlugin.GetPairedHostName2Async(guid);
+                var result = await _DTPProxyPlugin.GetHeadsetPairedHostName2Async(guid);
                 writelog($"[DeviceManagerPlugin] [Headset] GetPairedHostName2Async succeeded, value is {result.ToString()}");
                 return result;
             }
@@ -3496,11 +3496,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
         }
 
-        public async Task<string> GetPairedHostName3Async(string guid)
+        public async Task<string> GetHeadsetPairedHostName3Async(string guid)
         {
             try
             {
-                var result = await _DTPProxyPlugin.GetPairedHostName3Async(guid);
+                var result = await _DTPProxyPlugin.GetHeadsetPairedHostName3Async(guid);
                 writelog($"[DeviceManagerPlugin] [Headset] GetPairedHostName3Async succeeded, value is {result.ToString()}");
                 return result;
             }
@@ -3511,11 +3511,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
         }
 
-        public async Task<int> GetMaxPairingSlotsAsync(string guid)
+        public async Task<int> GetHeadsetMaxPairingSlotsAsync(string guid)
         {
             try
             {
-                var result = await _DTPProxyPlugin.GetMaxPairingSlotsAsync(guid);
+                var result = await _DTPProxyPlugin.GetHeadsetMaxPairingSlotsAsync(guid);
                 writelog($"[DeviceManagerPlugin] [Headset] GetMaxPairingSlotsAsync succeeded, value is {result.ToString()}");
                 return result;
             }
@@ -3526,11 +3526,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
         }
 
-        public async Task<int> GetPairedDeviceCountAsync(string guid)
+        public async Task<int> GetHeadsetPairedDeviceCountAsync(string guid)
         {
             try
             {
-                var result = await _DTPProxyPlugin.GetPairedDeviceCountAsync(guid);
+                var result = await _DTPProxyPlugin.GetHeadsetPairedDeviceCountAsync(guid);
                 writelog($"[DeviceManagerPlugin] [Headset] GetPairedDeviceCountAsync succeeded, value is {result.ToString()}");
                 return result;
             }
@@ -3541,11 +3541,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
         }
 
-        public async Task<int> GetTotalNumberOfPairedHostNameAsync(string guid)
+        public async Task<int> GetHeadsetTotalNumberOfPairedHostNameAsync(string guid)
         {
             try
             {
-                var result = await _DTPProxyPlugin.GetTotalNumberOfPairedHostNameAsync(guid);
+                var result = await _DTPProxyPlugin.GetHeadsetTotalNumberOfPairedHostNameAsync(guid);
                 writelog($"[DeviceManagerPlugin] [Headset] GetTotalNumberOfPairedHostNameAsync succeeded, value is {result.ToString()}");
                 return result;
             }
@@ -3556,11 +3556,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
         }
 
-        public async Task<string> GetSerialNumberAsync(string guid)
+        public async Task<string> GetHeadsetSerialNumberAsync(string guid)
         {
             try
             {
-                var result = await _DTPProxyPlugin.GetSerialNumberAsync(guid);
+                var result = await _DTPProxyPlugin.GetHeadsetSerialNumberAsync(guid);
                 writelog($"[DeviceManagerPlugin] [Headset] GetSerialNumberAsync succeeded, value is {result.ToString()}");
                 return result;
             }
