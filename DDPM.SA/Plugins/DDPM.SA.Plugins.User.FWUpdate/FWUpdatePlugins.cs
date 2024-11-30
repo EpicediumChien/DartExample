@@ -1,4 +1,4 @@
-﻿#define IL_Ready
+﻿#define IL_NotReady
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -695,7 +695,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                         List<FWUpdateInfo> FWU_ListByModel = new List<FWUpdateInfo>();
                         foreach (string s in models)
                         {
-                            foreach (FWUpdateInfo fWUpdateInfo in _fWUpdateInfoPackage.FWUpdateInfo.FindAll(o => o.DeviceId.Equals(s)))
+                            foreach (FWUpdateInfo fWUpdateInfo in _fWUpdateInfoPackage.FWUpdateInfo.FindAll(o => o.Model.Equals(s)))
                             {
                                 _logs.DebugMsg_1($"{nameof(Filter)} models : {s}");
                                 FWU_ListByModel.Add(fWUpdateInfo);
@@ -750,6 +750,19 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                                     temp = fWUpdateInfo.DeviceVersion;
                                 }
                                 if (int.TryParse(temp, out currentVersion))
+                                {
+
+                                }
+                                string temp_NewVersion = string.Empty;
+                                if (minVersion.Contains("."))
+                                {
+                                    temp_NewVersion = minVersion.Replace(".", "");
+                                }
+                                else
+                                {
+                                    temp_NewVersion = minVersion;
+                                }
+                                if (int.TryParse(temp_NewVersion, out new_MinVersion))
                                 {
 
                                 }
