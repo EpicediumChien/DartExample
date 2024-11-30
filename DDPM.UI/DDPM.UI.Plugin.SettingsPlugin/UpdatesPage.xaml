@@ -212,7 +212,7 @@
                     <Setter Property="Visibility"
                             Value="Collapsed" />
                     <Style.Triggers>
-                        <DataTrigger Binding="{Binding IsBusy}"
+                        <DataTrigger Binding="{Binding IsBusy_UpdatePage}"
                                      Value="True">
                             <Setter Property="Visibility"
                                     Value="Visible" />
@@ -226,7 +226,7 @@
                                         HorizontalAlignment="Center"
                                         VerticalAlignment="Center"
                                         BusyIndicatorType="Secondary"
-                                        IsActive="{Binding IsBusy}" />
+                                        IsActive="{Binding IsBusy_UpdatePage}" />
         </Border>
     </Grid>
 </UserControl>

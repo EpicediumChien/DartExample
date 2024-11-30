@@ -33,7 +33,7 @@ namespace DDPM.SA.Common
         public GlobalSetting_General()
         {
             Low_Battery_Level = true;
-            Keyboard_Lock_Key = false;
+            Keyboard_Lock_Key = true;
             Webcam_WB7022_Presence_Detection_Sensor_Cover_State = true;
             Display_MuteState = true;
             Display_Color_Preset_and_Easy_Memory = true;

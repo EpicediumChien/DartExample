@@ -1,4 +1,4 @@
-﻿#define IL_NotReady
+﻿#define IL_Ready
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -76,6 +76,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
         private Logs _logs;
 
         static bool _IsSkipCA = false;
+        static bool _IsSkipSHA = false;
         private ISettingsManagerSA _SettingsPlugin;
         private readonly object _PluginConditionLock_Settings = new object();
         /// <summary>
@@ -886,6 +887,10 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                     download = new Download(_logs);
                     string downloadInfo = "";
                     // 將儲存路徑與從 URL 中提取的檔案名稱組合
+                    if (_IsSkipSHA)
+                    {
+                        _logs.DebugMsg_1($"{nameof(DownloadAndInstall)} ServerPath : {url}");
+                    }
                     string _installationFileStoragePath = Path.Combine(savePath + Path.GetFileName(url));
                     bool downloadRet = download.DownloadFile(url, _installationFileStoragePath, out downloadInfo, _IsSkipCA);
                     _downloadTimer.Stop();
@@ -1486,7 +1491,17 @@ namespace DDPM.SA.Plugins.User.FWUpdate
         }
         public void SetSkipCA(bool isSkipCA)
         {
+            _logs.DebugMsg_1("SetSkipCA start");
+            _logs.DebugMsg_1($"SetSkipCA isSkipCA : {isSkipCA}");
             _IsSkipCA = isSkipCA;
+            _logs.DebugMsg_1("SetSkipCA done");
+        }
+        public void SetSkipSHA(bool isSkipSHA)
+        {
+            _logs.DebugMsg_1("SetSkipSHA start");
+            _logs.DebugMsg_1($"SetSkipSHA isSkipSHA : {isSkipSHA}");
+            _IsSkipSHA = isSkipSHA;
+            _logs.DebugMsg_1("SetSkipSHA done");
         }
         private void OnPowerModeChanged(object sender, PowerModeChangedEventArgs e)
         {
@@ -1563,7 +1578,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                     _timerTimeOut.Elapsed += new ElapsedEventHandler(_timerTimeOut_Tick);
                     //foreach (FWUpdateInfo fwUpdateInfo in fwUpdateInfos)
                     string _namedPipeName = Guid.NewGuid().ToString("D"); // 生成唯一的管道名稱
-                    _namedPipeServer = new NamedPipeStreamServer(_namedPipeName, fwUpdateInfo.Thumbprint); // 創建命名管道伺服器
+                    _namedPipeServer = new NamedPipeStreamServer(_namedPipeName, fwUpdateInfo.Thumbprint, _IsSkipSHA); // 創建命名管道伺服器
                     _namedPipeServer.MessageReceived += _namedPipeServer_MessageReceived;
                     _namedPipeServer.ClientConnectedEvent += _namedPipeServer_ClientConnectedEvent;
                     _namedPipeServer.ClientDisconnectedEvent += _namedPipeServer_ClientDisconnectedEvent;
@@ -1710,13 +1725,16 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                 {
                     if (_namedPipeServer != null && _namedPipeServer.IsNamedPipeServerIsNoSafe)
                     {
-#if IL_Ready
-                        _notificationStr = $"Firmware update unsuccessful.";
-                        _logs.DebugMsg_1(fwUpdateInfo.DeviceName + " Named Pipe Server Is No Safe.");
-                        return FWUErrorCode.NamedPipeServerIsNoSafe;
-#else
-                        _logs.DebugMsg_1(fwUpdateInfo.DeviceName + " Named Pipe Server Is No Safe. But skip");
-#endif
+                        if (!_IsSkipSHA)
+                        {
+                            _notificationStr = $"Firmware update unsuccessful.";
+                            _logs.DebugMsg_1(fwUpdateInfo.DeviceName + " Named Pipe Server Is No Safe.");
+                            return FWUErrorCode.NamedPipeServerIsNoSafe;
+                        }
+                        else
+                        {
+                            _logs.DebugMsg_1(fwUpdateInfo.DeviceName + " Named Pipe Server Is No Safe. But skip");
+                        }
                     }
                 }
                 if (fwUpdateInfo.IsUOD)
@@ -1860,9 +1878,10 @@ namespace DDPM.SA.Plugins.User.FWUpdate
             _timeOutCount--;
             if (_namedPipeServer != null && _namedPipeServer.IsNamedPipeServerIsNoSafe)
             {
-#if IL_Ready
-                resetState();
-#endif
+                if (!_IsSkipSHA)
+                {
+                    resetState();
+                }
             }
             if (_timeOutCount == 0)
             {
@@ -2232,11 +2251,16 @@ namespace DDPM.SA.Plugins.User.FWUpdate
             }
             else
             {
-                _logs.DebugMsg_1($"{_fWUpdateInfo.DeviceName} CheckSHA fail fileCAInfo : {fileCAInfo}");
-                _fWUpdateInfo.FWUErrorCode = FWUErrorCode.FileCheckFail;
-#if IL_NotReady
-                isCheckSHA = true;//Wait IL R14 force true
-#endif
+                if (!_IsSkipSHA)
+                {
+                    _logs.DebugMsg_1($"{_fWUpdateInfo.DeviceName} CheckSHA fail fileCAInfo : {fileCAInfo}");
+                    _fWUpdateInfo.FWUErrorCode = FWUErrorCode.FileCheckFail;
+                }
+                else
+                {
+                    _logs.DebugMsg_1($"{_fWUpdateInfo.DeviceName} CheckSHA fail fileCAInfo : {fileCAInfo} BUT SKIP");
+                    isCheckSHA = true;//Wait IL R14 force true
+                }
             }
             return isCheckSHA;
         }
@@ -2252,11 +2276,16 @@ namespace DDPM.SA.Plugins.User.FWUpdate
             }
             else
             {
-                _logs.DebugMsg_1($"{_fWUpdateInfo.DeviceName} CheckFile_Thumbprint fail FileCAInfo : {FileCAInfo}");
-                _fWUpdateInfo.FWUErrorCode = FWUErrorCode.FileCheckFail;
-#if IL_NotReady
-                ishumbprint = true;//Wait IL R14 force true
-#endif
+                if (!_IsSkipSHA)
+                {
+                    _logs.DebugMsg_1($"{_fWUpdateInfo.DeviceName} CheckFile_Thumbprint fail FileCAInfo : {FileCAInfo}");
+                    _fWUpdateInfo.FWUErrorCode = FWUErrorCode.FileCheckFail;
+                }
+                else
+                {
+                    _logs.DebugMsg_1($"{_fWUpdateInfo.DeviceName} CheckFile_Thumbprint fail FileCAInfo : {FileCAInfo} BUT SKIP");
+                    ishumbprint = true;//Wait IL R14 force true
+                }
             }
             return ishumbprint;
         }

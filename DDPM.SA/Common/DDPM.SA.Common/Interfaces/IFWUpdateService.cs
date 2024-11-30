@@ -50,5 +50,6 @@ namespace DDPM.SA.Common
 
         Task<List<FWUpdateInfo>> UpdateEvent();
         void SetSkipCA(bool isSkipCA);
+        void SetSkipSHA(bool isSkipSHA);
     }
 }
