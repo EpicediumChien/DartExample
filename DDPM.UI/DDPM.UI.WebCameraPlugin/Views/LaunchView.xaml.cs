@@ -230,6 +230,18 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
 
             CheckUSBtype();
 
+            DdpmCommonHelper.BitmapImageUpdated += ImageUpdate;
+        }
+
+        ~LaunchView()
+        {
+            DdpmCommonHelper.BitmapImageUpdated -= ImageUpdate;
+        }
+
+        private void ImageUpdate(OSThemeEnum oSThemeEnum)
+        {
+            ArrowLeft.Source = null;
+            ArrowLeft.Source = (BitmapImage)System.Windows.Application.Current.Resources["Arrow_Left"];
         }
 
         private void DeviceManagerSA_DeviceChanged(object? sender, DeviceChangedEventArgs e)

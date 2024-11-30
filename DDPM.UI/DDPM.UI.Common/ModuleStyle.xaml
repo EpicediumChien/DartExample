@@ -1043,11 +1043,6 @@
 
     <!-- #endregion SplitItem of EasyArrange -->
 
-    <!-- #region LockIcon -->
-    <SolidColorBrush x:Key="LockIcon_Fill"  Color="#FFFFFFFF"/>
-    <!-- #endregion LockIcon -->
-
-
     <!-- #region For Headset -->
     <SolidColorBrush x:Key="ProgressBar_BkColor" Color="#293B4D" />
     <SolidColorBrush x:Key="Unpair_FgColor" Color="#F5F6F7" />
@@ -1468,5 +1463,34 @@
     <!-- #region Webcam -->
     <SolidColorBrush x:Key="Webcam_TextBox_BkColor" Color="#141D28"/>
     <SolidColorBrush x:Key="Webcam_TextBox_FgColor" Color="#7E7E7E"/>
+    <!-- #endregion -->
+
+    <!-- #region Icons -->
+    
+    <!-- LockIcon -->
+    <SolidColorBrush x:Key="LockIcon_Fill"  Color="#FFFFFFFF"/>
+
+    <!-- Down Arrow Icon -->
+    <Canvas x:Key="DownArrowIcon" Tag="{DynamicResource DefaultTheme_PathColor}" Width="16" Height="16">
+        <Path Data="M0.84961 3.7002L7.99961 10.9002L15.1496 3.7002L15.8496 4.4002L7.99961 12.2502L0.14961 4.4002L0.84961 3.7002Z"
+              Fill="{Binding Tag, RelativeSource={RelativeSource AncestorType=Canvas}}" />
+    </Canvas>
+
+    <!-- Up Arrow Icon -->
+    <Canvas x:Key="UpArrowIcon" Tag="{DynamicResource DefaultTheme_PathColor}" Width="16" Height="16">
+        <Path Data="M8 4.12012L0 12.1201L0.76 12.8801L8 5.64012L15.24 12.8801L16 12.1201L8 4.12012Z"
+              Fill="{Binding Tag, RelativeSource={RelativeSource AncestorType=Canvas}}" />
+    </Canvas>
+
+    <!-- Info Icon -->
+    <Canvas x:Key="InfoIcon" Tag="{DynamicResource InfoIconColor}" Width="16" Height="16">
+        <Path Data="M8 5.0498C8.55228 5.0498 9 4.60209 9 4.0498C9 3.49752 8.55228 3.0498 8 3.0498C7.44772 3.0498 7 3.49752 7 4.0498C7 4.60209 7.44772 5.0498 8 5.0498Z"
+              Fill="{Binding Tag, RelativeSource={RelativeSource AncestorType=Canvas}}" />
+        <Path Data="M8.75 6.4502H7.25V12.6502H8.75V6.4502Z"
+              Fill="{Binding Tag, RelativeSource={RelativeSource AncestorType=Canvas}}" />
+        <Path Data="M8 1C11.85 1 15 4.15 15 8C15 11.85 11.85 15 8 15C4.15 15 1 11.85 1 8C1 4.15 4.15 1 8 1ZM8 0C3.6 0 0 3.6 0 8C0 12.4 3.6 16 8 16C12.4 16 16 12.4 16 8C16 3.6 12.4 0 8 0Z"
+              Fill="{Binding Tag, RelativeSource={RelativeSource AncestorType=Canvas}}" />
+    </Canvas>
+
     <!-- #endregion -->
 </ResourceDictionary>
