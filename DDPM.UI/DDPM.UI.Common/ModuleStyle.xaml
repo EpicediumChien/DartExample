@@ -32,6 +32,7 @@
     <SolidColorBrush x:Key="DefaultTheme_SetupSelectBdColor" Color="#1B385F" />
     <SolidColorBrush x:Key="DefaultTheme_ListBoxBkColor" Color="#80141D27" />
     <SolidColorBrush x:Key="DefaultTheme_DialogBoxBkColor" Color="#132F54"/>
+    <SolidColorBrush x:Key="DefaultThemeFullPageBkColor" Color="#FF0D121A"/>
     <Style TargetType="UXControls:UXTextBlock"
            BasedOn="{StaticResource {x:Type UXControls:UXTextBlock}}">
         <Setter Property="Foreground" Value="{DynamicResource DefaultTheme_TxtColor}" />
@@ -1452,6 +1453,9 @@
     <BitmapImage x:Key="Close_img" UriSource="pack://application:,,,/DDPM.UI.Common;component/Resources/Close.png" />
     <BitmapImage x:Key="left_img" UriSource="pack://application:,,,/DDPM.UI.Resources;component/Resources/Images/Left.png" />
     <BitmapImage x:Key="MonitorImage_LineArt" UriSource="pack://application:,,,/DDPM.UI.Resources;component/Resources/Monitors/Lineart.png" />
-    <SolidColorBrush x:Key="DefaultThemeFullPageBkColor" Color="#FF0D121A"/>
 
+    <!-- #region Webcam -->
+    <SolidColorBrush x:Key="Webcam_TextBox_BkColor" Color="#141D28"/>
+    <SolidColorBrush x:Key="Webcam_TextBox_FgColor" Color="#7E7E7E"/>
+    <!-- #endregion -->
 </ResourceDictionary>
