@@ -1187,5 +1187,10 @@ namespace DDPM.SA.Common
         Task<bool> WriteSerializedContentToFile(string filePath, string content);
 
         #endregion GlobalSetting
+
+        #region System Suspend & Resume
+        event EventHandler SystemSuspend;
+        event EventHandler SystemResume;
+        #endregion
     }
 }

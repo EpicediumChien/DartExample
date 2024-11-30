@@ -471,7 +471,11 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.ViewModels
 
         public void ResetDevices()
         {
-            HomeDevices = new ObservableCollection<HomeDevice>();
+            System.Windows.Application.Current.Dispatcher.Invoke(() =>
+            {
+                // Code to update UI elements
+                HomeDevices = new ObservableCollection<HomeDevice>();
+            });
         }
 
         #region Refresh CollectionView
