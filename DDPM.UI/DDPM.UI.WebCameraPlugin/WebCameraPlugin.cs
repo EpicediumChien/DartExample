@@ -19,8 +19,7 @@ using System.Windows.Media;
 using System.Windows.Threading;
 using Windows.Graphics.Imaging;
 using System.Windows.Forms;
-using MessageBox = System.Windows.MessageBox;
-using Clipboard = System.Windows.Clipboard;
+
 
 namespace DDPM.UI.Plugin.WebCameraPlugin
 {
