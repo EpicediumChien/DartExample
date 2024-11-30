@@ -362,9 +362,10 @@ namespace DDPM.UI.Plugin.HeadsetPlugin
             }
             else if (_vm!.ConnectionType == "Bluetooth")//I can't get Headset connection HostName, FW issue?
             {
-                int pp = DdpmCommonHelper.DeviceManagerSA.GetTotalNumberOfPairedHostNameAsync(_vm.CurrentDeviceInfo.ID.ToString()).Result;
+                //_vm.PairedHostName1 = DdpmCommonHelper.DeviceManagerSA.GetHeadsetPairedHostName2Async(_vm.CurrentDeviceInfo.ID.ToString()).Result;
+                //_vm.PairedHostName2 = DdpmCommonHelper.DeviceManagerSA.GetHeadsetPairedHostName3Async(_vm.CurrentDeviceInfo.ID.ToString()).Result;
                 //_deviceManager.GetFirmwareVersionAsync(CurrentDeviceID.ToString()).Result;
-                string hostName = Dns.GetHostName();
+                //string hostName = Dns.GetHostName();
                 //var hostIndex = _vm!.VisiblePairedHostName1.ToUpper() == "VISIBLE" ? 1 : (_vm.VisiblePairedHostName2.ToUpper() == "VISIBLE" ? 2 : 3);
                 txt1.Style = ConnectionStyle1;
                 //imgBL1.Source = img2;
