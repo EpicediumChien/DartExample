@@ -2464,6 +2464,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         {
             DeviceHelper deviceHelper = await Task.Run(() => _PeripheralsPlugin.GetDevices(Rescan));
             ChangeSB725(deviceHelper);
+            ChangeDock(deviceHelper);
             return await Task.Run(() => _PeripheralsPlugin.GetDevices(Rescan));
         }
 
@@ -2479,6 +2480,32 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     deviceInfo.LogicalDeviceType = "LogicalWiredAudio";
                 }
             }
+        }
+        private void ChangeDock(DeviceHelper deviceHelper)
+        {
+            writelog("ChangeDock start");
+            List<DeviceInfo> GetDeviceInfos = deviceHelper.deviceInfo.FindAll(x => x.PhysicalDeviceType.Equals(DeviceType.LogicalDock) || x.PhysicalDeviceType.Equals(DeviceType.PhysicalWiredDock));
+            if (GetDeviceInfos != null && GetDeviceInfos.Count >= 1)
+            {
+                writelog("ChangeDock go");
+                foreach (var deviceInfo in GetDeviceInfos)
+                {
+                    string version = GetFirmwareVersionForDock(deviceInfo.ID.ToString()).Result;
+                    string serviceTag = GetDockServiceTagForDock(deviceInfo.ID.ToString()).Result;
+                    writelog($"GetFirmwareVersionForDock : {version}");
+                    writelog($"GetDockServiceTagForDock : {serviceTag}");
+                    if (!string.IsNullOrEmpty(version))
+                    {
+                        deviceInfo.DockPackageFwVersion = version;
+                        deviceInfo.FirmwareVersion = version;
+                    }
+                    if (!string.IsNullOrEmpty(serviceTag))
+                    {
+                        deviceInfo.DockServiceTag = serviceTag;
+                    }
+                }
+            }
+            writelog("ChangeDock done");
         }
 
         public async Task<DeviceHelper> GetDevices_WithoutAwait(bool Rescan = false)
@@ -9107,6 +9134,14 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         public Task<DockData> GetDockData(string guid)
         {
             return Task.FromResult(_DTPProxyPlugin.GetDockData(guid).Result);
+        }
+        public Task<string> GetFirmwareVersionForDock(string guid)
+        {
+            return Task.FromResult(_DTPProxyPlugin.GetFirmwareVersionForDock(guid).Result);
+        }
+        public Task<string> GetDockServiceTagForDock(string guid)
+        {
+            return Task.FromResult(_DTPProxyPlugin.GetDockServiceTagForDock(guid).Result);
         }
 
         #endregion

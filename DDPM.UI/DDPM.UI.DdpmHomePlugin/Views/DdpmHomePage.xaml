@@ -17,7 +17,7 @@
              x:Name="rootUserControl"
              Loaded="UserControl_Loaded" SizeChanged="rootUserControl_SizeChanged">
     <UserControl.Resources>
-        <!-- Unused -->
+        <!-- #region Unused -->
         <Style x:Key="ListBoxStyle_Devices_Unused" TargetType="ListBox">
             <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Disabled" />
             <Setter Property="Background" Value="Transparent" />
@@ -31,7 +31,6 @@
             </Setter>
         </Style>
 
-        <!-- Unused -->
         <DataTemplate x:Key="DeviceItemTemplate_Unused" DataType="model:DeviceInfo">
             <Border BorderBrush="Green" BorderThickness="3">
                 <Grid>
@@ -61,16 +60,14 @@
             </Border>
         </DataTemplate>
 
-        <!-- Unused -->
         <SolidColorBrush x:Key="ListBox.Static.Background" Color="#FFFFFFFF" />
         <SolidColorBrush x:Key="ListBox.Static.Border" Color="#FFABADB3" />
         <SolidColorBrush x:Key="ListBox.Disabled.Background" Color="#FFFFFFFF" />
         <SolidColorBrush x:Key="ListBox.Disabled.Border" Color="#FFD9D9D9" />
+        <!-- #endregion -->
 
         <Style x:Key="ListViewStyle1" TargetType="{x:Type ListView}">
             <Setter Property="Background" Value="{StaticResource ListBox.Static.Background}" />
-            <Setter Property="BorderBrush" Value="{StaticResource ListBox.Static.Border}" />
-            <Setter Property="BorderThickness" Value="1" />
             <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}" />
             <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Disabled" />
             <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Hidden" />
@@ -81,8 +78,10 @@
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="{x:Type ListView}">
-                        <Border x:Name="Bd" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Padding="1" SnapsToDevicePixels="true">
-                            <ScrollViewer Focusable="false" Padding="{TemplateBinding Padding}">
+                        <Border x:Name="Bd" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}"
+                                Padding="0" Margin="0" SnapsToDevicePixels="true">
+                            <ScrollViewer Focusable="false" Padding="{TemplateBinding Padding}" HorizontalAlignment="Stretch"
+                                          MaxWidth="{Binding ScrollViewMaxWidth}">
                                 <ItemsPresenter SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
                             </ScrollViewer>
                         </Border>
@@ -107,29 +106,6 @@
                     <Setter Property="Visibility" Value="Collapsed" />
                 </DataTrigger>
             </Style.Triggers>
-        </Style>
-
-        <!-- ListView.ItemContainerStyle : Apply custom style to remove selection hover border
-        -->
-        <Style x:Key="ListViewItemContainerStyle1" TargetType="ListViewItem">
-            <Setter Property="SnapsToDevicePixels" Value="True" />
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="ListViewItem">
-                        <Border x:Name="bd"
-                                BorderBrush="{TemplateBinding BorderBrush}"
-                                BorderThickness="{TemplateBinding BorderThickness}"
-                                Background="{TemplateBinding Background}"
-                                Padding="{TemplateBinding Padding}"
-                                SnapsToDevicePixels="True">
-
-                            <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                              SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
-                                              VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
-                        </Border>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
         </Style>
 
         <!-- Tooltip -->
@@ -225,11 +201,40 @@
             -->
             <!-- Multi rows design -->
             <!-- Robert_Lin, 2024-8-5 Add handle PreviewKeyboard to eneble slecte a device with keyboard -->
-      <ListView x:Name="HomeDevicesListView"  StylusDown="Pairing"
+            <ListView x:Name="HomeDevicesListView"  StylusDown="Pairing"
                       Style="{StaticResource ListViewStyle1}"
                       Background="Transparent" BorderBrush="Transparent"
-                      ItemContainerStyle="{StaticResource ListViewItemContainerStyle1}"
+                      Padding="0,0,40,0"
                       ItemsSource="{Binding HomeDevices}" PreviewKeyDown="HomeDevicesListView_PreviewKeyDown">
+                <ListView.ItemContainerStyle>
+                    <!-- ListView.ItemContainerStyle : Apply custom style to remove selection hover border -->
+                    <Style TargetType="ListViewItem">
+                        <Setter Property="SnapsToDevicePixels" Value="True" />
+                        <Setter Property="Margin" Value="40,0,0,0" />
+                        <Setter Property="MinWidth" Value="{Binding ItemMinWidth}" />
+                        <Setter Property="MinHeight" Value="{Binding ItemMinWidth}" />
+                        <Setter Property="MaxWidth" Value="{Binding ItemMaxWidth}" />
+                        <Setter Property="MaxHeight" Value="{Binding ItemMaxWidth}" />
+                        <Setter Property="Width" Value="{Binding ItemWidth}"/>
+                        <Setter Property="Height" Value="{Binding ItemWidth}"/>
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="ListViewItem">
+                                    <Border x:Name="bd"
+                                            BorderBrush="{TemplateBinding BorderBrush}"
+                                            BorderThickness="{TemplateBinding BorderThickness}"
+                                            Background="{TemplateBinding Background}"
+                                            Padding="{TemplateBinding Padding}"
+                                            SnapsToDevicePixels="True">
+                                        <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                              SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
+                                              VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
+                                    </Border>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                </ListView.ItemContainerStyle>
                 <ListView.ItemsPanel>
                     <ItemsPanelTemplate>
                         <!--
@@ -241,11 +246,11 @@
 
                 <ListView.ItemTemplate>
                     <DataTemplate x:Name="lvItemTemplate" DataType="{x:Type commonModel:HomeDevice}">
-                        <StackPanel>
-
+                        <DockPanel>
                             <Grid Name="devListViewItemRoot"
-                                  Width="{Binding ItemWidth}" Height="{Binding ItemWidth}"
                                   Margin="0"
+                                  HorizontalAlignment="Stretch"
+                                  VerticalAlignment="Stretch"
                                   MouseLeftButtonDown="devListViewItemRoot_MouseLeftButtonDown">
                                 <Grid.Triggers>
                                     <EventTrigger RoutedEvent="MouseEnter">
@@ -278,7 +283,9 @@
 
                                 <!-- BorderBrush="{StaticResource FocusDotBrush}"  -->
                                 <Border Name="bdItem" BorderBrush="{StaticResource FocusDotBrush}" Background="#02000000"
-                                        Margin="0" Padding="0">
+                                        Margin="0" Padding="0"
+                                        Width="auto" Height="auto"
+                                        HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
                                     <Border.Style>
                                         <Style TargetType="Border">
                                             <Setter Property="BorderThickness" Value="0" />
@@ -353,18 +360,18 @@
                                     </Image>
 
                                     <!-- Robert_Lin, 2024-7-10, move the tooltip owner from Image to Border.
-                                    So that when a device has no image can show the device info in tooltip
-                                    -->
+                                        So that when a device has no image can show the device info in tooltip
+                                        -->
                                     <!-- -->
                                     <Border.ToolTip>
                                         <ToolTip Placement="Center"  HorizontalOffset="8" VerticalOffset="-8"
-                                                 ToolTipService.HasDropShadow="True"
-                                                 ToolTipService.InitialShowDelay="1000"
-                                                 ToolTipService.BetweenShowDelay="2000">
+                                                     ToolTipService.HasDropShadow="True"
+                                                     ToolTipService.InitialShowDelay="1000"
+                                                     ToolTipService.BetweenShowDelay="2000">
 
                                             <Border Background="{DynamicResource  Tooltip_BkColor}"
-                                                    BorderBrush="{DynamicResource Tooltip_BdColor}"
-                                                    CornerRadius="4" Padding="8,12">
+                                                        BorderBrush="{DynamicResource Tooltip_BdColor}"
+                                                        CornerRadius="4" Padding="8,12">
                                                 <Border.Resources>
                                                     <Style TargetType="TextBlock">
                                                         <Setter Property="Foreground" Value="{DynamicResource Tooltip_TextColor}" />
@@ -382,7 +389,7 @@
                                                         <Setter Property="Visibility" Value="Visible" />
                                                         <Style.Triggers>
                                                             <DataTrigger Binding="{Binding IsConnectionHoverViewShow}"
-                                                                         Value="True">
+                                                                             Value="True">
                                                                 <Setter Property="Visibility" Value="Collapsed" />
                                                             </DataTrigger>
                                                         </Style.Triggers>
@@ -449,7 +456,7 @@
                             BatteryLevel="{Binding BatteryLevel}" BatteryStatus="{Binding BatteryStatus}"
                             ConnectionType="{Binding ConnectionType}" VerticalAlignment="Bottom" Text1="{Binding Text1}"
                             NoBattery="{Binding NoBattery}" /> -->
-                        </StackPanel>
+                        </DockPanel>
                         <!-- Add below code will cause all items are invisible
                         <DataTemplate.Triggers>
                         <EventTrigger RoutedEvent="MouseEnter">
@@ -469,7 +476,7 @@
             </ListView>
 
             <!-- Please Wait -->
-      <Grid Background="#CC000000" 
+            <Grid Background="#CC000000" 
                   Visibility="{Binding IsPleaseWaitVisible, Converter={StaticResource BoolToVisibilityConverter}}">
                 <Border Width="587" Height="265" Background="{DynamicResource SpinnerBkColor}"
                         BorderBrush="#293D4D" BorderThickness="1" CornerRadius="4"

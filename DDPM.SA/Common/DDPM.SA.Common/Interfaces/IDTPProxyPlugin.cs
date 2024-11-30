@@ -344,6 +344,8 @@ namespace DDPM.SA.Common
 
         #region Dock
         Task<DockData> GetDockData(string guid);
+        Task<string> GetFirmwareVersionForDock(string guid);
+        Task<string> GetDockServiceTagForDock(string guid);
         #endregion
     }
 }

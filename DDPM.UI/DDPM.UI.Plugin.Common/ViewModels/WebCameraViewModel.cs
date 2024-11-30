@@ -1716,7 +1716,6 @@ namespace DDPM.UI.Plugin.ViewModels
             }
         }
         public Visibility MessageBoxVisibility { get; set; } = Visibility.Collapsed;
-
         public Visibility MessageBoxVisibilityUsbType { get; set; } = Visibility.Collapsed;
 
         public string usbtype_info_v = LangHelper.Instance["Camera.25"];
