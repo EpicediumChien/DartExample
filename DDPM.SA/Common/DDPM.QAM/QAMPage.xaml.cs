@@ -71,6 +71,10 @@ namespace DDPM.QAM
                         // 顯示到前景
                         _SetForegroundWindow(mainWindowHandle);
 
+                        //info DDPM navigate to webcam preview directly
+                        DdpmCommonHelper.DeviceManagerSA!.SetIsDDPMLaunchByQAMAsync(true);
+                        DdpmCommonHelper.DeviceManagerSA!.SetIsDDPMHomepageReadyAsync(true);
+
                         result = true;
                     }
                     else
@@ -85,6 +89,9 @@ namespace DDPM.QAM
                                 FileName = debugPath,
                                 UseShellExecute = true
                             });
+
+                        //Info SA that new DDPM instance launched by QAM
+                        DdpmCommonHelper.DeviceManagerSA!.SetIsDDPMLaunchByQAMAsync(true);
                     }
                 }
                 catch
@@ -171,7 +178,7 @@ namespace DDPM.QAM
             if (ShowDDPM())
             {
                 //Info SA that DDPM launched by QAM
-                DdpmCommonHelper.DeviceManagerSA!.SetIsDDPMLaunchByQAMAsync(true);
+                //DdpmCommonHelper.DeviceManagerSA!.SetIsDDPMLaunchByQAMAsync(true);
 
                 //should closed by SA
                 //Close_Click(this, null);
