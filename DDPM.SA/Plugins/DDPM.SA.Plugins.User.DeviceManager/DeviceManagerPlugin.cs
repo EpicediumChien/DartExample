@@ -613,6 +613,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 {
                     _pwr_Mon = new PowerEventControl(Log);
                     _pwr_Mon.MonitorTurnedOn += MonitorEvent_On;
+                    _pwr_Mon.SystemSuspend += OnSystemSuspend;
+                    _pwr_Mon.SystemResume += OnSystemResume;
                     _pwr_Mon.Enable_Event();
                     _pwr_Mon.HotkeyPressed += HotkeyPressed;
                     _pwr_Mon.Enable_HotkeyHook();
@@ -743,6 +745,9 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         public event EventHandler<NKVMRespone> NKVMCLIRespone;
 
         public event EventHandler GlobalSettingChangeEvent;
+
+        public event EventHandler SystemSuspend;
+        public event EventHandler SystemResume;
 
         #endregion
 
@@ -12330,6 +12335,97 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         private bool isReg = false;
 
+        private string _latestBatterylowContent = string.Empty;
+        private OSDType_Device _lastestBatterylowDevice = OSDType_Device.Unknown;
+        private void showBatteryLowCombineOSD(string deviceName, OSDType oSDType, bool state)
+        {
+            //close batterylow osd
+            OSDType_Device getOSDType_Device = getLatestBatterylowOSDAndCloseOthers();
+            try
+            {
+                System.Windows.Forms.Screen sreen = System.Windows.Forms.Screen.AllScreens.FirstOrDefault(x => x.DeviceName == Screen.PrimaryScreen.DeviceName);
+                var dpiXProperty = typeof(SystemParameters).GetProperty("DpiX", BindingFlags.NonPublic | BindingFlags.Static);
+                var varX = (int)dpiXProperty.GetValue(null, null);
+                double dpiX = (double)varX / (double)96;
+
+                switch (getOSDType_Device)
+                {
+                    case OSDType_Device.Unknown:
+                        //single osd
+                        switch (oSDType)
+                        {
+                            case OSDType.CapsLock:
+                                ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.CapsLock, state);
+                                break;
+                            case OSDType.ScrollLock:
+                                ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.ScrollLock, state);
+                                break;
+                            case OSDType.NumLock:
+                                ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.NumLock, state);
+                                break;
+                        }
+                        break;
+                    case OSDType_Device.Keyboard:
+                        _OSD_Controler.KeyAndKeybordBatteryLowWin_ShowWindow(_latestBatterylowContent, (sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX), oSDType, OSDType_Device.Keyboard, state);
+                        break;
+                    case OSDType_Device.Mouse:
+                        _OSD_Controler.KeyAndKeybordBatteryLowWin_ShowWindow(_latestBatterylowContent, (sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX), oSDType, OSDType_Device.Mouse, state);
+                        break;
+                    case OSDType_Device.Headset:
+                        _OSD_Controler.KeyAndKeybordBatteryLowWin_ShowWindow(_latestBatterylowContent, (sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX), oSDType, OSDType_Device.Headset, state);
+                        break;
+                }
+                _latestBatterylowContent = string.Empty;
+                _lastestBatterylowDevice = OSDType_Device.Unknown;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[showBatteryLowCombineOSD] ERROR - deviceName:{deviceName},OSDType:{oSDType},state:{state};Exception Message: {ex.Message}");
+            }
+        }
+
+        private OSDType_Device getLatestBatterylowOSDAndCloseOthers()
+        {
+            OSDType_Device ret = OSDType_Device.Unknown;
+            try
+            {
+                IntPtr hwnd_KeybordBatteryLow = CallUser32dll._FindWindow(null, "68C62D1D-CDA5-4EC6-AFB2-6DA8331D7DDE-KeybordBatteryLowIWin");
+                if (hwnd_KeybordBatteryLow != IntPtr.Zero)
+                {
+                    if (_lastestBatterylowDevice == OSDType_Device.Keyboard)
+                    {
+                        ret = OSDType_Device.Keyboard;
+                    }
+                    _OSD_Controler.KeybordBatteryLow_CloseWindow();
+                }
+                IntPtr hwnd_MouseBatteryLow = CallUser32dll._FindWindow(null, "AFF4035F-B0CA-4B8C-991F-AAEBEB625EEF-MouseBatteryLowIWin");
+                if (hwnd_MouseBatteryLow != IntPtr.Zero)
+                {
+                    if (_lastestBatterylowDevice == OSDType_Device.Mouse)
+                    {
+                        ret = OSDType_Device.Mouse;
+                    }
+                    _OSD_Controler.MouseBatteryLow_CloseWindow();
+                }
+                IntPtr hwnd_HeadsetBatteryLow = CallUser32dll._FindWindow(null, "5A9DDC40-D1A7-4DC4-9F59-CB95DCD13945-HeadsetBatteryLowIWin");
+                if (hwnd_HeadsetBatteryLow != IntPtr.Zero)
+                {
+                    if (_lastestBatterylowDevice == OSDType_Device.Headset)
+                    {
+                        ret = OSDType_Device.Headset;
+                    }
+                    _OSD_Controler.HeadsetBatteryLow_CloseWindow();
+                }
+
+            }
+            catch (Exception ex)
+            {
+                writelog($"[getLatestBatterylowOSDAndCloseOthers] ERROR - {ex.Message}");
+
+            }
+            return ret;
+        }
+
         private void Keyboard_KeyUpProc(object sender, KeyEventArgs e)
         {
             string strKey = e.KeyCode.ToString().ToUpper();
@@ -12351,19 +12447,28 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 Debug.WriteLine($"GlobalSettingParam.GlobalSetting_General.Keyboard_Lock_Key={result.GlobalSetting_General.Keyboard_Lock_Key}");
                 if (result.GlobalSetting_General.Keyboard_Lock_Key)
                 {
+                    //test
+                    /* if (!isReg)
+                     {
+                         ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.BatteryLow, OSDType_Device.Keyboard, "Dell Multi-Device Mouse - MS5320W");
+                         isReg = true;
+                     }*/
+                    //showBatteryLowCombineOSD(_latestBatterylowContent);
+                    //test end
+
                     if (e.KeyCode == Keys.CapsLock)
                     {
                         bool isCapsLockOn = (System.Windows.Input.Keyboard.GetKeyStates(System.Windows.Input.Key.CapsLock) & System.Windows.Input.KeyStates.Toggled) == System.Windows.Input.KeyStates.Toggled;
                         Debug.WriteLine($"Key.CapsLock={isCapsLockOn}");
                         if (isCapsLockOn)
                         {
-                            ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.CapsLock, true);
-                            //ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.BatteryLow, OSDType_Device.Headset, "Content");
-                            //ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.CollaborationNotAvailable, OSDType_Device.Keyboard, "Collaboration controls are not available during multiple conference calls");
+                            showBatteryLowCombineOSD(Screen.PrimaryScreen.DeviceName, OSDType.CapsLock, true);
+                            // ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.CapsLock, true);
                         }
                         else
                         {
-                            ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.CapsLock, false);
+                            showBatteryLowCombineOSD(Screen.PrimaryScreen.DeviceName, OSDType.CapsLock, false);
+                            //ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.CapsLock, false);
                         }
                         //_OSDKeyLock = true;
                         //e.Handled = true;
@@ -12374,11 +12479,13 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         Debug.WriteLine($"Key.Scroll={isScrollLockOn}");
                         if (isScrollLockOn)
                         {
-                            ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.ScrollLock, true);
+                            showBatteryLowCombineOSD(Screen.PrimaryScreen.DeviceName, OSDType.ScrollLock, true);
+                            //ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.ScrollLock, true);
                         }
                         else
                         {
-                            ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.ScrollLock, false);
+                            showBatteryLowCombineOSD(Screen.PrimaryScreen.DeviceName, OSDType.ScrollLock, false);
+                            //ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.ScrollLock, false);
                         }
                         //_OSDKeyLock = true;
                         //e.Handled = true;
@@ -12389,11 +12496,13 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         Debug.WriteLine($"Key.NumLock={isNumLockLockOn}");
                         if (isNumLockLockOn)
                         {
-                            ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.NumLock, true);
+                            showBatteryLowCombineOSD(Screen.PrimaryScreen.DeviceName, OSDType.NumLock, true);
+                            //ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.NumLock, true);
                         }
                         else
                         {
-                            ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.NumLock, false);
+                            showBatteryLowCombineOSD(Screen.PrimaryScreen.DeviceName, OSDType.NumLock, false);
+                            //ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.NumLock, false);
                         }
                         //ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.NumLock, true);
                         //_OSDKeyLock = true;
@@ -15154,7 +15263,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                 var dpiXProperty = typeof(SystemParameters).GetProperty("DpiX", BindingFlags.NonPublic | BindingFlags.Static);
                                 var varX = (int)dpiXProperty.GetValue(null, null);
                                 double dpiX = (double)varX / (double)96;
-
                                 switch (_types)
                                 {
                                     case OSDType.Mute:
@@ -15187,57 +15295,64 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                     break;
 
                                     case OSDType.BatteryLow:
-                                    {
-                                        if (_DeviceType is OSDType_Device.Headset)
                                         {
-                                            try
+                                            if (_DeviceType is OSDType_Device.Headset)
                                             {
-                                                _OSD_Controler.HeadsetBatteryLow_CloseWindow();
-                                                _OSD_Controler.HeadsetBatteryLow_ShowWindow(Content, (sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX));
+                                                try
+                                                {
+                                                    _latestBatterylowContent = Content;
+                                                    _lastestBatterylowDevice = OSDType_Device.Headset;
+                                                    _OSD_Controler.HeadsetBatteryLow_CloseWindow();
+                                                    _OSD_Controler.HeadsetBatteryLow_ShowWindow(Content, (sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX));
+                                                }
+                                                catch (Exception ex)
+                                                {
+                                                    writelog($"[_showosd] ERROR - OSDType.BatteryLow: {ex.Message}");
+                                                }
                                             }
-                                            catch (Exception ex)
+                                            else if (_DeviceType is OSDType_Device.Keyboard)
                                             {
-                                                writelog($"[_showosd] ERROR - OSDType.BatteryLow: {ex.Message}");
+                                                try
+                                                {
+                                                    //when keyboard battery low, press CapsLock/ScrollLock/NumLockLock combine with 
+                                                    _latestBatterylowContent = Content;
+                                                    _lastestBatterylowDevice = OSDType_Device.Keyboard;
+                                                    _OSD_Controler.KeybordBatteryLow_CloseWindow();
+                                                    _OSD_Controler.KeybordBatteryLow_ShowWindow(Content, (sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX));
+                                                }
+                                                catch (Exception ex)
+                                                {
+                                                    writelog($"[_showosd] ERROR - OSDType_Device.Keyboard: {ex.Message}");
+                                                }
+                                            }
+                                            else if (_DeviceType is OSDType_Device.Mouse)
+                                            {
+                                                try
+                                                {
+                                                    _latestBatterylowContent = Content;
+                                                    _lastestBatterylowDevice = OSDType_Device.Mouse;
+                                                    _OSD_Controler.MouseBatteryLow_CloseWindow();
+                                                    _OSD_Controler.MouseBatteryLow_ShowWindow(Content, (sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX));
+                                                }
+                                                catch (Exception ex)
+                                                {
+                                                    writelog($"[_showosd] ERROR - OSDType_Device.Mouse: {ex.Message}");
+                                                }
+                                            }
+                                            else if (_DeviceType is OSDType_Device.Pen)
+                                            {
+                                                try
+                                                {
+                                                    _OSD_Controler.StylusBatteryLow_CloseWindow();
+                                                    _OSD_Controler.StylusBatteryLow_ShowWindow(Content, (sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX));
+                                                }
+                                                catch (Exception ex)
+                                                {
+                                                    writelog($"[_showosd] ERROR - OSDType_Device.Mouse: {ex.Message}");
+                                                }
                                             }
                                         }
-                                        else if (_DeviceType is OSDType_Device.Keyboard)
-                                        {
-                                            try
-                                            {
-                                                _OSD_Controler.KeybordBatteryLow_CloseWindow();
-                                                _OSD_Controler.KeybordBatteryLow_ShowWindow(Content, (sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX));
-                                            }
-                                            catch (Exception ex)
-                                            {
-                                                writelog($"[_showosd] ERROR - OSDType_Device.Keyboard: {ex.Message}");
-                                            }
-                                        }
-                                        else if (_DeviceType is OSDType_Device.Mouse)
-                                        {
-                                            try
-                                            {
-                                                _OSD_Controler.MouseBatteryLow_CloseWindow();
-                                                _OSD_Controler.MouseBatteryLow_ShowWindow(Content, (sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX));
-                                            }
-                                            catch (Exception ex)
-                                            {
-                                                writelog($"[_showosd] ERROR - OSDType_Device.Mouse: {ex.Message}");
-                                            }
-                                        }
-                                        else if (_DeviceType is OSDType_Device.Pen)
-                                        {
-                                            try
-                                            {
-                                                _OSD_Controler.StylusBatteryLow_CloseWindow();
-                                                _OSD_Controler.StylusBatteryLow_ShowWindow(Content, (sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX));
-                                            }
-                                            catch (Exception ex)
-                                            {
-                                                writelog($"[_showosd] ERROR - OSDType_Device.Mouse: {ex.Message}");
-                                            }
-                                        }
-                                    }
-                                    break;
+                                        break;
 
                                     case OSDType.StartRecording:
                                     {
@@ -15727,5 +15842,17 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             previousOsTheme = oSTheme;
             return appModeTelementryData;
         }
+
+        #region System Suspend & Resume
+        private void OnSystemSuspend(object sender, EventArgs e)
+        {
+            SystemSuspend?.Invoke(this, e);
+        }
+
+        private void OnSystemResume(object sender, EventArgs e)
+        {
+            SystemResume?.Invoke(this, e);
+        }
+        #endregion
     }
 }

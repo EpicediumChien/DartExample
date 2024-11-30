@@ -1444,9 +1444,8 @@ namespace DDPM.UI.Module.Kvm
         private void NKVMOpenUI_Dowork(object sender, DoWorkEventArgs e)
         {
             DdpmCommonHelper.DeviceManagerSA.NKVM_State(true).Wait();
-            if (!DdpmCommonHelper.DeviceManagerSA.IsNamedpipeConnected().Result)
-            {
-                DdpmCommonHelper.DeviceManagerSA.CreatNewNamedpipe().Wait();
+            if (DdpmCommonHelper.DeviceManagerSA.IsNamedpipeConnected().Result)
+            {            
 //#if DEBUG
                 DdpmCommonHelper.DeviceManagerSA.CallShowNKVM(0, 100, 100).Wait();
 //#else
@@ -1455,8 +1454,9 @@ namespace DDPM.UI.Module.Kvm
             }
             else
             {
+                DdpmCommonHelper.DeviceManagerSA.CreatNewNamedpipe().Wait();
 //#if DEBUG
-                DdpmCommonHelper.DeviceManagerSA.CallShowNKVM(0, 100, 100).Wait();
+//                DdpmCommonHelper.DeviceManagerSA.CallShowNKVM(0, 100, 100).Wait();
 //#else
 //                OpenNKVMUI(0, 100, 100);
 //#endif
