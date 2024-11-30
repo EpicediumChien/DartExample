@@ -136,12 +136,12 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
 
             //Derek 1129 check if DDPM is launched by QAM, then info SA that homepage is ready
             //DdpmCommonHelper.DDPMMesssageBox("UserControl_Loaded", "DDPMMesssageBox");
-            if (DdpmCommonHelper.DeviceManagerSA!.GetIsDDPMLaunchByQAM().Result)
-            {
-                DdpmCommonHelper.WriteUILog($"GetIsDDPMLaunchByQAM = true from UserControl_Loaded");
+            //if (DdpmCommonHelper.DeviceManagerSA!.GetIsDDPMLaunchByQAM().Result)
+            //{
+            //    DdpmCommonHelper.WriteUILog($"GetIsDDPMLaunchByQAM = true from UserControl_Loaded");
 
-                DdpmCommonHelper.DeviceManagerSA!.SetIsDDPMHomepageReadyAsync(true);
-            }
+            //    DdpmCommonHelper.DeviceManagerSA!.SetIsDDPMHomepageReadyAsync(true);
+            //}
         }
 
         #region RWD HomeDevices
