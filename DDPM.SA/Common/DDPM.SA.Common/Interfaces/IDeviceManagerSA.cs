@@ -1188,6 +1188,13 @@ namespace DDPM.SA.Common
 
         #endregion GlobalSetting
 
+        #region QAM
+        int GetCurrentPollingRate();
+        void SetIsDDPMLaunchByQAM(bool newValue);
+        bool GetIsDDPMLaunchByQAM();
+        void SetIsDDPMHomepageReady(bool newValue);
+        #endregion
+
         #region System Suspend & Resume
         event EventHandler SystemSuspend;
         event EventHandler SystemResume;
