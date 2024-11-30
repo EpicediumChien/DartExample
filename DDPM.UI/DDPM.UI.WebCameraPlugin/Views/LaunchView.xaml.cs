@@ -146,6 +146,13 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                     if (DdpmCommonHelper.DeviceManagerSA != null)
                     {
                         DdpmCommonHelper.DeviceManagerSA.ITSettingsActionEvent += DeviceManagerSA_ITSettingsActionEvent;
+                        DdpmCommonHelper.DeviceManagerSA.SystemSuspend += DeviceManagerSA_OnSystemSuspend;
+                        DdpmCommonHelper.DeviceManagerSA.SystemResume += DeviceManagerSA_OnSystemResume;
+                        DdpmCommonHelper.DeviceManagerSA.DeviceChanged += DeviceManagerSA_DeviceChanged;
+                        //Derek 1110 for Webcam PIMS-315440
+                        //During video recording, do"Restart" &"Shutdown"action in SUT,
+                        //the video which I just recorded will have no length.
+                        SystemEvents.SessionEnding += SystemEvents_SessionEnding;
 
                         DDPMSettings data = DdpmCommonHelper.DeviceManagerSA.ReloadAppConfigData().Result;
                         if (data != null)
@@ -223,6 +230,17 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
 
             CheckUSBtype();
 
+        }
+
+        private void DeviceManagerSA_DeviceChanged(object? sender, DeviceChangedEventArgs e)
+        {
+            DdpmCommonHelper.WriteUILog($"catch event DeviceManagerSA_DeviceChanged");
+
+            if (_vm!.IsRecording)
+                Dispatcher.Invoke(new Action(() =>
+                {
+                    UserStopRecord();
+                }));
         }
 
         public void CheckUSBtype()
@@ -632,6 +650,24 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             }));
         }
 
+        private void DeviceManagerSA_OnSystemSuspend(object? sender, EventArgs e)
+        {
+            //Debug.WriteLine("DeviceManagerSA_OnSystemSuspend");
+            DdpmCommonHelper.WriteUILog($"catch event DeviceManagerSA_OnSystemSuspend");
+
+            if (_vm!.IsRecording)
+                Dispatcher.Invoke(new Action(() =>
+                {
+                    UserStopRecord();
+                }));
+        }
+
+        private void DeviceManagerSA_OnSystemResume(object? sender, EventArgs e)
+        {
+            DdpmCommonHelper.WriteUILog($"catch event DeviceManagerSA_OnSystemResume");
+            //Debug.WriteLine("DeviceManagerSA_OnSystemResume");
+        }
+
         bool in_CameraPlugin = true;
         private async void LaunchView_Unloaded(object sender, RoutedEventArgs e)
         {
@@ -643,6 +679,10 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             if (DdpmCommonHelper.DeviceManagerSA != null)
             {
                 DdpmCommonHelper.DeviceManagerSA.ITSettingsActionEvent -= DeviceManagerSA_ITSettingsActionEvent;
+                DdpmCommonHelper.DeviceManagerSA.SystemSuspend -= DeviceManagerSA_OnSystemSuspend;
+                DdpmCommonHelper.DeviceManagerSA.SystemResume -= DeviceManagerSA_OnSystemResume;
+                DdpmCommonHelper.DeviceManagerSA.DeviceChanged -= DeviceManagerSA_DeviceChanged;
+                SystemEvents.SessionEnding -= SystemEvents_SessionEnding;
             }
             try
             {
@@ -1022,6 +1062,8 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
 
         private void StartRecord()
         {
+            DdpmCommonHelper.WriteUILog($"StartRecord");
+
             _vm!.IsRecording = true;
 
 
@@ -1222,11 +1264,6 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             { btnPreset_Click(this, null); }
             btnPreset.IsEnabled = false;
 
-            //Derek 1110 for Webcam PIMS-315440
-            //During video recording, do"Restart" &"Shutdown"action in SUT,
-            //the video which I just recorded will have no length.
-            SystemEvents.SessionEnding += new SessionEndingEventHandler(SystemEvents_SessionEnding);
-
             StartRecord();
         }
 
@@ -1241,7 +1278,13 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             //    UserStopRecord();
             //}
 
-            UserStopRecord();
+            DdpmCommonHelper.WriteUILog($"catch event SystemEvents_SessionEnding");
+
+            if (_vm!.IsRecording)
+                Dispatcher.Invoke(new Action(() =>
+                {
+                    UserStopRecord();
+                }));
         }
 
         private void btnStop_Click(object sender, System.Windows.Input.MouseButtonEventArgs e)
@@ -1262,6 +1305,8 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             txtTimer.Visibility = Visibility.Collapsed;
             txtTimer.Text = "00:00:00";
             btnPreset.IsEnabled = true;
+
+            DdpmCommonHelper.WriteUILog($"UserStopRecord");
         }
 
         private void ProfileSelected(object sender, System.Windows.Input.MouseButtonEventArgs e)

@@ -1341,6 +1341,7 @@ namespace NetworkKVM.Plugins
             var Cancellation = CancellationTokenSource.CreateLinkedTokenSource(token);
             var CancellationToken = Cancellation.Token;
             CreateNamedPipe();
+            CallShowNKVM(0, 100, 100);
             _logs.DebugMsg("NKVM NamedPipeServer_UI is go...");
             Trace.WriteLine("NKVM NamedPipeServer_UI is go...");
             int i = 0;
