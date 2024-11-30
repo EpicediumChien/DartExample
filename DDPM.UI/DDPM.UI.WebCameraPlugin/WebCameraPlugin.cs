@@ -191,7 +191,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                         #region for cli setting
                         case "Webcam_ZoomMeetingTypeChanged":
                         {
-                            //無對應UI
+                            //No corresponding UI
                         }
                         break;
                         case "Webcam_SharpnessChanged":
@@ -221,12 +221,12 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                         break;
                         case "Webcam_IsZoomScreenShareActiveChanged":
                         {
-                            //無對應UI
+                            //No corresponding UI
                         }
                         break;
                         case "Webcam_IsZoomMeetingActiveChanged":
                         {
-                            //無對應UI
+                            //No corresponding UI
                         }
                         break;
                         case "Webcam_SerialNumberChanged":
