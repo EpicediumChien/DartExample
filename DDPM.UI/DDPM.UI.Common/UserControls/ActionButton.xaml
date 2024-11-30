@@ -6,9 +6,8 @@
              xmlns:UXControls="clr-namespace:Dell.Client.Framework.UX.WPF.Controls;assembly=DCF.UX.WPF"
              mc:Ignorable="d"
              d:DesignHeight="60"
-             d:DesignWidth="200">
-    <UserControl.Resources>
-    </UserControl.Resources>
+             d:DesignWidth="200"
+             BorderBrush="{DynamicResource Button_UXStyleColor_ForWhiteFrame}">
     <Grid>
         <Border x:Name="Border" Cursor="Hand"
                 CornerRadius="{Binding CornerRadius, RelativeSource={RelativeSource AncestorType=UserControl}}"
@@ -20,7 +19,7 @@
             <UXControls:UXTextBlock x:Name="ButtonCaption"
                                     Text="{Binding Caption, RelativeSource={RelativeSource AncestorType=UserControl}}"
                                     FontSize="{Binding FontSize, RelativeSource={RelativeSource AncestorType=UserControl}}"
-                                    Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                    Foreground="{Binding BorderBrush, RelativeSource={RelativeSource AncestorType=Border}}"
                                     FontFamily="{Binding FontFamily, RelativeSource={RelativeSource AncestorType=UserControl}}"
                                     FontWeight="{Binding FontWeight, RelativeSource={RelativeSource AncestorType=UserControl}}"
                                     VerticalAlignment="Center" HorizontalAlignment="Center" />

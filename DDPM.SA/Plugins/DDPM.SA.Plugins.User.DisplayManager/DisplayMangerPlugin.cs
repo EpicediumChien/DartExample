@@ -2630,6 +2630,9 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                 _logs.DebugMsg($"[DisplayMangerPlugin] SetHDRStatus on/off : {(onoff ? "on" : "off")}");
                 if (onoff)
                 {
+                    _logs.DebugMsg($"[DisplayMangerPlugin] _DisplayPropertiesPlugin.SetExtendMode go");
+                    _DisplayPropertiesPlugin.SetExtendMode(monitorInfos);
+                    _logs.DebugMsg($"[DisplayMangerPlugin] _DisplayPropertiesPlugin.SetExtendMode done");
                     if (monitorInfos.CapabilityString != "" && monitorInfos.CapabilityString.Length > 10)
                     {
                         string desktop_E2 = "27";

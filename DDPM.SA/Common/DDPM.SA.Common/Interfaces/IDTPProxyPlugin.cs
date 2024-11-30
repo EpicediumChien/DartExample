@@ -59,6 +59,7 @@ namespace DDPM.SA.Common
         Task SetKbAssignedAction(string Guid, byte[] newValue);
         Task SetKbAssignDialogAction(string Guid, byte[] newValue);
         Task SetKbAssignKeystrokeAction(string Guid, byte[] newValue);
+        Task<bool> RestoreToDefaultKB(string Guid);
 
         #endregion
 
@@ -84,7 +85,8 @@ namespace DDPM.SA.Common
         Task SetTiltSensitivity(string itemID, int newValue);
 
         Task SetTipSensitivity(string itemID, int newValue);
-        Task ResetToDefault_Pen();
+        Task<bool> RestoreToDefaultPen();
+        Task<bool> RestoreRadialMenuToDefault();
 
 
         Task<string> PairingPen();
@@ -229,35 +231,35 @@ namespace DDPM.SA.Common
         Task<bool> SetBoomMicAsync(string Guid, bool newValue);
 
         //Peripheral Common Properties Get
-        Task<JArray> GetDeviceItemsExAsync(string Guid);
-        Task<DeviceInterfaceType> GetInterfaceTypeAsync(string Guid);
-        Task<string> GetDeviceNameAsync(string Guid);
-        Task<string> GetDeviceIdAsync(string Guid);
-        Task<string> GetPluginIdAsync(string Guid);
-        Task<int> GetODMIdAsync(string Guid);
-        Task<string> GetModelNumberAsync(string Guid);
-        Task<int> GetInstanceNumberAsync(string Guid);
-        Task<int> GetInstanceIdAsync(string Guid);
-        Task<string> GetFirmwareVersionAsync(string Guid);
-        Task<string> GetDeviceTypeAsync(string Guid);
+        Task<JArray> GetHeadsetDeviceItemsExAsync();
+        Task<DeviceInterfaceType> GetHeadsetInterfaceTypeAsync(string Guid);
+        Task<string> GetHeadsetDeviceNameAsync(string Guid);
+        Task<string> GetHeadsetDeviceIdAsync(string Guid);
+        Task<string> GetHeadsetPluginIdAsync(string Guid);
+        Task<int> GetHeadsetODMIdAsync(string Guid);
+        Task<string> GetHeadsetModelNumberAsync(string Guid);
+        Task<int> GetHeadsetInstanceNumberAsync(string Guid);
+        Task<int> GetHeadsetInstanceIdAsync(string Guid);
+        Task<string> GetHeadsetFirmwareVersionAsync(string Guid);
+        Task<string> GetHeadsetDeviceTypeAsync(string Guid);
 
         //////////Headset Get//////////
-        Task<string> GetParentDeviceTypeAsync(string Guid);
-        Task<bool> GetIsBatteryLevelSupportedAsync(string Guid);
-        Task<int> GetBatteryLevelAsync(string Guid);
-        Task<string> GetDeviceBatteryStatusAsync(string Guid);
-        Task<string> GetPairingStatusAsync(string Guid);
+        Task<string> GetHeadsetParentDeviceTypeAsync(string Guid);
+        Task<bool> GetHeadsetIsBatteryLevelSupportedAsync(string Guid);
+        Task<int> GetHeadsetBatteryLevelAsync(string Guid);
+        Task<string> GetHeadsetDeviceBatteryStatusAsync(string Guid);
+        Task<string> GetHeadsetPairingStatusAsync(string Guid);
 
-        Task<string> GetPairedHostName1Async(string Guid);
+        Task<string> GetHeadsetPairedHostName1Async(string Guid);
 
-        Task<string> GetPairedHostName2Async(string Guid);
+        Task<string> GetHeadsetPairedHostName2Async(string Guid);
 
-        Task<string> GetPairedHostName3Async(string Guid);
+        Task<string> GetHeadsetPairedHostName3Async(string Guid);
 
-        Task<int> GetMaxPairingSlotsAsync(string Guid);
-        Task<int> GetPairedDeviceCountAsync(string Guid);
-        Task<int> GetTotalNumberOfPairedHostNameAsync(string Guid);
-        Task<string> GetSerialNumberAsync(string Guid);
+        Task<int> GetHeadsetMaxPairingSlotsAsync(string Guid);
+        Task<int> GetHeadsetPairedDeviceCountAsync(string Guid);
+        Task<int> GetHeadsetTotalNumberOfPairedHostNameAsync(string Guid);
+        Task<string> GetHeadsetSerialNumberAsync(string Guid);
         Task<bool> GetIsReadyAsync(string Guid);
         Task<bool> GetIsDirtyAsync(string Guid);
         Task<bool> GetIsMicNoiseCancellationSupportedAsync(string Guid);
@@ -342,6 +344,8 @@ namespace DDPM.SA.Common
 
         #region Dock
         Task<DockData> GetDockData(string guid);
+        Task<string> GetFirmwareVersionForDock(string guid);
+        Task<string> GetDockServiceTagForDock(string guid);
         #endregion
     }
 }
