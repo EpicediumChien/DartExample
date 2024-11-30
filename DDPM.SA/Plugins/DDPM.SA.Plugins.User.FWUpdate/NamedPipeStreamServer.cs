@@ -1,4 +1,4 @@
-﻿#define IL_Ready
+﻿#define IL_NotReady
 namespace DDPM.SA.Plugins.User.FWUpdate
 {
     using DDPM.SA.Common.Security;

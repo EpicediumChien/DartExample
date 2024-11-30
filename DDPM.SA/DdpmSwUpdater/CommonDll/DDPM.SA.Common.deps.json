@@ -19,24 +19,24 @@
           "Microsoft-WindowsAPICodePack-Shell": "1.1.5",
           "VcpCore.Interfaces": "2.0.0.5",
           "DdmLibrary": "1.0.0.0",
-          "DDPM.Peripherals.interface": "2.0.0.15",
+          "DDPM.Peripherals.interface": "2.0.0.16",
           "DPeMClientBroker": "1.7.6.0",
           "DPeMPublic.Common": "1.7.6.0",
-          "runtimepack.Microsoft.Windows.SDK.NET.Ref": "10.0.19041.54"
+          "runtimepack.Microsoft.Windows.SDK.NET.Ref": "10.0.19041.31"
         },
         "runtime": {
           "DDPM.SA.Common.dll": {}
         }
       },
-      "runtimepack.Microsoft.Windows.SDK.NET.Ref/10.0.19041.54": {
+      "runtimepack.Microsoft.Windows.SDK.NET.Ref/10.0.19041.31": {
         "runtime": {
           "Microsoft.Windows.SDK.NET.dll": {
-            "assemblyVersion": "10.0.19041.38",
-            "fileVersion": "10.0.19041.52"
+            "assemblyVersion": "10.0.19041.24",
+            "fileVersion": "10.0.19041.31"
           },
           "WinRT.Runtime.dll": {
-            "assemblyVersion": "2.1.0.0",
-            "fileVersion": "2.1.6.47881"
+            "assemblyVersion": "2.0.0.0",
+            "fileVersion": "2.0.4.44211"
           }
         }
       },
@@ -314,7 +314,14 @@
           }
         }
       },
-      "System.Formats.Asn1/8.0.1": {},
+      "System.Formats.Asn1/8.0.1": {
+        "runtime": {
+          "lib/net8.0/System.Formats.Asn1.dll": {
+            "assemblyVersion": "8.0.0.0",
+            "fileVersion": "8.0.724.31311"
+          }
+        }
+      },
       "System.IO.FileSystem.AccessControl/5.0.0": {
         "dependencies": {
           "System.Security.AccessControl": "5.0.0",
@@ -412,26 +419,17 @@
           "DellClientFramework": "6.4.11.2"
         },
         "runtime": {
-          "DDPM.RemoteManagement.Common.dll": {
-            "assemblyVersion": "2.0.0.8",
-            "fileVersion": "2.0.0.8"
-          }
+          "DDPM.RemoteManagement.Common.dll": {}
         }
       },
       "DDPM.SA.Obfuscation/1.0.0": {
         "runtime": {
-          "DDPM.SA.Obfuscation.dll": {
-            "assemblyVersion": "1.0.0",
-            "fileVersion": "1.0.0.0"
-          }
+          "DDPM.SA.Obfuscation.dll": {}
         }
       },
       "DDPM.SA.Resources/1.0.0": {
         "runtime": {
-          "DDPM.SA.Resources.dll": {
-            "assemblyVersion": "1.0.0",
-            "fileVersion": "1.0.0.0"
-          }
+          "DDPM.SA.Resources.dll": {}
         },
         "resources": {
           "ar-SA/DDPM.SA.Resources.resources.dll": {
@@ -492,10 +490,7 @@
           "DellClientFramework": "6.4.11.2"
         },
         "runtime": {
-          "VcpCore.Common.dll": {
-            "assemblyVersion": "2.0.0.5",
-            "fileVersion": "2.0.0.5"
-          }
+          "VcpCore.Common.dll": {}
         }
       },
       "VcpCore.Interfaces/2.0.0.5": {
@@ -504,10 +499,7 @@
           "VcpCore.Common": "2.0.0.5"
         },
         "runtime": {
-          "VcpCore.Interfaces.dll": {
-            "assemblyVersion": "2.0.0.5",
-            "fileVersion": "2.0.0.5"
-          }
+          "VcpCore.Interfaces.dll": {}
         }
       },
       "DdmLibrary/1.0.0.0": {
@@ -518,11 +510,11 @@
           }
         }
       },
-      "DDPM.Peripherals.interface/2.0.0.15": {
+      "DDPM.Peripherals.interface/2.0.0.16": {
         "runtime": {
           "DDPM.Peripherals.interface.dll": {
-            "assemblyVersion": "2.0.0.15",
-            "fileVersion": "2.0.0.15"
+            "assemblyVersion": "2.0.0.16",
+            "fileVersion": "2.0.0.16"
           }
         }
       },
@@ -590,7 +582,7 @@
       "serviceable": false,
       "sha512": ""
     },
-    "runtimepack.Microsoft.Windows.SDK.NET.Ref/10.0.19041.54": {
+    "runtimepack.Microsoft.Windows.SDK.NET.Ref/10.0.19041.31": {
       "type": "runtimepack",
       "serviceable": false,
       "sha512": ""
@@ -891,7 +883,7 @@
       "serviceable": false,
       "sha512": ""
     },
-    "DDPM.Peripherals.interface/2.0.0.15": {
+    "DDPM.Peripherals.interface/2.0.0.16": {
       "type": "reference",
       "serviceable": false,
       "sha512": ""

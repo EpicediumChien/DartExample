@@ -1,4 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
+using DDPM.SA.Common;
 using DDPM.SA.Common.Display;
 using DDPM.SA.Common.Settings;
 using DDPM.UI.Common;
@@ -22,6 +23,7 @@ namespace DDPM.UI.Module.EzSettings
         private bool _isSpanAcrossEnabled = false;
 
         public HomeDevice _homeDevice;
+        private readonly IDeviceManagerSA _deviceManagerSA;
         #endregion Private members
 
         public IModuleOwner? ModuleOwner { get; set; }
@@ -30,6 +32,18 @@ namespace DDPM.UI.Module.EzSettings
         public EzSettingsViewModel(IModuleOwner moduleOwner)
         {
             _homeDevice = moduleOwner.SelectedHomeDevice;
+
+            //Robert_Lin, 2024-11-28, to get the Span across multiple monitor state changed,
+            //Add IDeviceManagerSA, and add a handler for EANotify event
+            _deviceManagerSA = HomeDevice.DeviceManagerSA;
+            if (_deviceManagerSA == null)
+                if (DdpmCommonHelper.DeviceManagerSA != null)
+                    _deviceManagerSA = DdpmCommonHelper.DeviceManagerSA;
+
+            if (_deviceManagerSA != null)
+            {
+                _deviceManagerSA.EANotify += _deviceManagerSA_EANotify;
+            }
 
         }
         #endregion
@@ -64,6 +78,10 @@ namespace DDPM.UI.Module.EzSettings
                     //Read other settings
                     DDPM.SA.Common.Settings.EzSettings ezSettings =
                     DdpmCommonHelper.DeviceManagerSA.ReadEzSettings().Result;
+
+                    //Robert_Lin, 2024-11-28, Get IsSpanEnabled as init state
+                    bool isSpanEnabled = _deviceManagerSA.GetIsSpanEnabled().Result;
+                    IsSpanAcrossEnabled = isSpanEnabled;
 
                     //Apply to ViewModel properties
                     IsWithoutGap = ezSettings.IsWidthoutGap;
@@ -226,6 +244,17 @@ namespace DDPM.UI.Module.EzSettings
             set
             {
                 SetProperty(ref _isSpanAcrossEnabled, value);
+            }
+        }
+
+        //Something changed from Subagent
+        private void _deviceManagerSA_EANotify(object? sender, EAArgs e)
+        {
+            //Command = "SetIsSpanEnabled", ask update IsSpanEnabled from Result
+            if (e.Command.Equals(EAEMConstants.EACommand_SetIsSpanEnabled))
+            {
+                bool newIsSpanEnabled = e.Result;
+                IsSpanAcrossEnabled = newIsSpanEnabled;
             }
         }
         #endregion

@@ -981,9 +981,9 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         public Task<bool> SyncPrimaryMonitorAndColorPresetStatus(MonitorInfo m, string ColorPreset_Name, int colorPresetRunType)
         {
-            bool blRet = true;          
+            bool blRet = true;
             writelog("[DeviceMangerPlugin] SyncPrimaryMonitorAndColorPresetStatus ... in");
-            List<ALSConfig> existAlsConfig = _DisplayManagerPlugin. GetAllExistAlsConfig().Result;
+            List<ALSConfig> existAlsConfig = _DisplayManagerPlugin.GetAllExistAlsConfig().Result;
             Trace.WriteLine($"SyncPrimaryMonitorAndColorPresetStatus = {m.edid.ModelName.ToString()} || existAlsConfig.Count = {existAlsConfig.Count.ToString()}");
             ALSConfig findconfig = existAlsConfig.Find(x => x.Edid.Equals(m.edid));
 
@@ -2463,6 +2463,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         {
             DeviceHelper deviceHelper = await Task.Run(() => _PeripheralsPlugin.GetDevices(Rescan));
             ChangeSB725(deviceHelper);
+            ChangeDock(deviceHelper);
             return await Task.Run(() => _PeripheralsPlugin.GetDevices(Rescan));
         }
 
@@ -2478,6 +2479,32 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     deviceInfo.LogicalDeviceType = "LogicalWiredAudio";
                 }
             }
+        }
+        private void ChangeDock(DeviceHelper deviceHelper)
+        {
+            writelog("ChangeDock start");
+            List<DeviceInfo> GetDeviceInfos = deviceHelper.deviceInfo.FindAll(x => x.PhysicalDeviceType.Equals(DeviceType.LogicalDock) || x.PhysicalDeviceType.Equals(DeviceType.PhysicalWiredDock));
+            if (GetDeviceInfos != null && GetDeviceInfos.Count >= 1)
+            {
+                writelog("ChangeDock go");
+                foreach (var deviceInfo in GetDeviceInfos)
+                {
+                    string version = GetFirmwareVersionForDock(deviceInfo.ID.ToString()).Result;
+                    string serviceTag = GetDockServiceTagForDock(deviceInfo.ID.ToString()).Result;
+                    writelog($"GetFirmwareVersionForDock : {version}");
+                    writelog($"GetDockServiceTagForDock : {serviceTag}");
+                    if (!string.IsNullOrEmpty(version))
+                    {
+                        deviceInfo.DockPackageFwVersion = version;
+                        deviceInfo.FirmwareVersion = version;
+                    }
+                    if (!string.IsNullOrEmpty(serviceTag))
+                    {
+                        deviceInfo.DockServiceTag = serviceTag;
+                    }
+                }
+            }
+            writelog("ChangeDock done");
         }
 
         public async Task<DeviceHelper> GetDevices_WithoutAwait(bool Rescan = false)
@@ -8585,6 +8612,16 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             _DTPProxyPlugin.SetTipSensitivity(itemID, newValue);
             return Task.FromResult(true);
         }
+        public Task<bool> RestoreToDefaultPen()
+        {
+            writelog("DeviceMangerPlugin received RestoreToDefaultPen requested ...");
+            return _DTPProxyPlugin.RestoreToDefaultPen();
+        }
+        public Task<bool> RestoreRadialMenuToDefault()
+        {
+            writelog("DeviceMangerPlugin received RestoreRadialMenuToDefault requested ...");
+            return _DTPProxyPlugin.RestoreRadialMenuToDefault();
+        }
 
         #endregion
 
@@ -9092,6 +9129,14 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         {
             return Task.FromResult(_DTPProxyPlugin.GetDockData(guid).Result);
         }
+        public Task<string> GetFirmwareVersionForDock(string guid)
+        {
+            return Task.FromResult(_DTPProxyPlugin.GetFirmwareVersionForDock(guid).Result);
+        }
+        public Task<string> GetDockServiceTagForDock(string guid)
+        {
+            return Task.FromResult(_DTPProxyPlugin.GetDockServiceTagForDock(guid).Result);
+        }
 
         #endregion
 
@@ -9514,7 +9559,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                             string folderName = GetFolderName(LogFolder);
                             string savePath = Path.Combine(saveFolderPath, folderName);
                             // 複製指定的 log 文件到選擇的資料夾
-                            if(!CopyLogFolder(LogFolder, savePath))
+                            if (!CopyLogFolder(LogFolder, savePath))
                                 fail_info += "[DDPM.GUI]";
                         }
                         LogFolder = @$"{appDataPath}\Dell\Dell Display and Peripheral Manager\Log\DDPM-Setup-DdpmSwUpdater";
@@ -9525,7 +9570,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                             string folderName = GetFolderName(LogFolder);
                             string savePath = Path.Combine(saveFolderPath, folderName);
                             // 複製指定的 log 文件到選擇的資料夾
-                            if(!CopyLogFolder(LogFolder, savePath))
+                            if (!CopyLogFolder(LogFolder, savePath))
                                 fail_info += "[DDPM.SwUpdater]";
                         }
                         LogFolder = @$"{appDataPath}\Dell\Dell Display and Peripheral Manager\Log\FWUpdataLog";
@@ -9536,7 +9581,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                             string folderName = GetFolderName(LogFolder);
                             string savePath = Path.Combine(saveFolderPath, folderName);
                             // 複製指定的 log 文件到選擇的資料夾
-                            if(!CopyLogFolder(LogFolder, savePath))
+                            if (!CopyLogFolder(LogFolder, savePath))
                                 fail_info += "[DDPM.FwUpdate]";
                         }
                     }
@@ -9550,7 +9595,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                             string folderName = GetFolderName(LogFolder);
                             string savePath = Path.Combine(saveFolderPath, folderName);
                             // 複製指定的 log 文件到選擇的資料夾
-                            if(!CopyLogFolder(LogFolder, savePath))
+                            if (!CopyLogFolder(LogFolder, savePath))
                                 fail_info += "[DDPM.Subagent]";
                         }
                         LogFolder = @$"{programdataPath}\Dell\Dell TechHub";
@@ -9561,7 +9606,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                             string folderName = GetFolderName(LogFolder);
                             string savePath = Path.Combine(saveFolderPath, folderName);
                             // 複製指定的 log 文件到選擇的資料夾
-                            if(!CopyLogFolder(LogFolder, savePath))
+                            if (!CopyLogFolder(LogFolder, savePath))
                                 fail_info += "[Dell TechHub]";
                         }
                         LogFolder = @$"{programdataPath}\Dell\DTP\Logs";
@@ -9572,7 +9617,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                             string folderName = "DTP_Log";
                             string savePath = Path.Combine(saveFolderPath, folderName);
                             // 複製指定的 log 文件到選擇的資料夾
-                            if(!CopyLogFolder(LogFolder, savePath))
+                            if (!CopyLogFolder(LogFolder, savePath))
                                 fail_info += "[DTP_log]";
                         }
                         string registryKey = @"SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\DDPMW-NKVM";
@@ -9587,7 +9632,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                 string folderName = GetFolderName(LogFolder);
                                 string savePath = Path.Combine(saveFolderPath, folderName);
                                 // 複製指定的 log 文件到選擇的資料夾
-                                if(!CopyLogFolder(LogFolder, savePath))
+                                if (!CopyLogFolder(LogFolder, savePath))
                                     fail_info += "[DDPMW-NKVM]";
                             }
                         }
@@ -9599,7 +9644,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                             string folderName = "DPMService_Log";
                             string savePath = Path.Combine(saveFolderPath, folderName);
                             // 複製指定的 log 文件到選擇的資料夾
-                            if(!CopyLogFolder(LogFolder, savePath))
+                            if (!CopyLogFolder(LogFolder, savePath))
                                 fail_info += "[DPMService_Log]";
                         }
                         LogFolder = @$"{programdataPath}\Dell\Dell Peripheral Manager\DPM\Log";
@@ -9610,7 +9655,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                             string folderName = "DPM_Log";
                             string savePath = Path.Combine(saveFolderPath, folderName);
                             // 複製指定的 log 文件到選擇的資料夾
-                            if(!CopyLogFolder(LogFolder, savePath))
+                            if (!CopyLogFolder(LogFolder, savePath))
                                 fail_info += "[DPM_Log]";
                         }
                         LogFolder = @$"{programdataPath}\Dell\Dell Peripheral Manager\DPeMSDK\Log";
@@ -9621,23 +9666,23 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                             string folderName = "DPeMSDK_Log";
                             string savePath = Path.Combine(saveFolderPath, folderName);
                             // 複製指定的 log 文件到選擇的資料夾
-                            if(!CopyLogFolder(LogFolder, savePath))
+                            if (!CopyLogFolder(LogFolder, savePath))
                                 fail_info += "[DPeMSDK_Log]";
                         }
                     }
                     string logFileName = "EventLog.evtx";
                     string logFilePath = Path.Combine(saveFolderPath, logFileName);
-                    if(!ExecuteWevtutilCommand(logFilePath))
+                    if (!ExecuteWevtutilCommand(logFilePath))
                         fail_info += "[EventLog]";
 
                     string zipFilePath = saveFolderPath + ".zip";
                     FileInfo info = new FileInfo(zipFilePath);
                     zipFilePath = Path.Combine(info.DirectoryName, "Log.zip");//force to set zip file name as Log.zip
                                                                               // 壓縮資料夾
-                    if(!CreateZipFile(saveFolderPath, zipFilePath))
+                    if (!CreateZipFile(saveFolderPath, zipFilePath))
                         fail_info += "[Compression]";
                     Directory.Delete(saveFolderPath, true);
-                                        
+
                     ret = true;
                     if (fail_info.Length > 0)
                     {
@@ -9844,7 +9889,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     }
                     else
                         result = true;
-                    writelog("Log folder copy action finish.");                    
+                    writelog("Log folder copy action finish.");
                 }
                 else
                 {
@@ -9926,8 +9971,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
 
             //Active state
-            if (_IsZoomMeetingActive && _ZoomMeetingType == ZoomMeetingType.CONF_3RD_EVENT_MEETING 
-                && deviceInfos.Count == 1 && _GlobalSettingParam.GlobalSetting_WidgetSettings.EnableQuickAccessWidget 
+            if (_IsZoomMeetingActive && _ZoomMeetingType == ZoomMeetingType.CONF_3RD_EVENT_MEETING
+                && deviceInfos.Count == 1 && _GlobalSettingParam.GlobalSetting_WidgetSettings.EnableQuickAccessWidget
                 && isWindowsScreenNotLocked)
             {
                 CallQAM_UI(this);
@@ -11354,7 +11399,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 {
                     //Check if actived monitor has its color preset section in config file                   
                     if (_InfoMonitors.edid.ModelName.Trim().IndexOf(config.ModelName.Trim()) >= 0 &&
-                        (_InfoMonitors.edid.SerialNumber.Trim() == config.SerialNumber.Trim() || _InfoMonitors.edid.ServiceTag.Trim() == config.ServiceTag.Trim()) )
+                        (_InfoMonitors.edid.SerialNumber.Trim() == config.SerialNumber.Trim() || _InfoMonitors.edid.ServiceTag.Trim() == config.ServiceTag.Trim()))
                     {
                         if (config.RunType == (int)ColorPresetRunType.Auto)
                         {
@@ -11412,7 +11457,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
                     //Check if actived monitor has its color preset section in config file
                     if (_InfoMonitors.edid.ModelName.Trim().IndexOf(config.ModelName.Trim()) >= 0 &&
-                         (_InfoMonitors.edid.SerialNumber.Trim() == config.SerialNumber.Trim() || _InfoMonitors.edid.ServiceTag.Trim() == config.ServiceTag.Trim()) )
+                         (_InfoMonitors.edid.SerialNumber.Trim() == config.SerialNumber.Trim() || _InfoMonitors.edid.ServiceTag.Trim() == config.ServiceTag.Trim()))
                     {
                         if (config.ColorManagement_Status == (int)ColorManagementStatus.Off)
                         {
@@ -11454,7 +11499,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                             break;
                         }
                     }
-                    
+
                 }
 
                 writelog("CheckAutoColorManagementEnableOnStartedCondition, exit(break) for foreach (var _InfoMonitors in _AllInfoMonitors)");
@@ -15448,6 +15493,14 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         {
             if (_IEzMemoryPlugin != null)
                 return Task.FromResult(_IEzMemoryPlugin.LaunchAndArrangeApps(sortApps).Result);
+            else
+                return null;
+        }
+
+        public Task<bool> LaunchAndArrangeAppsWithEzArrange(Dictionary<String, Bind_AddFullPage_AppCollectionData> sortApps, MonitorInfo moInfo, int eAid)
+        {
+            if (_IEzMemoryPlugin != null)
+                return Task.FromResult(_IEzMemoryPlugin.LaunchAndArrangeAppsWithEzArrange(sortApps, moInfo, eAid).Result);
             else
                 return null;
         }

@@ -868,6 +868,38 @@ namespace DDPM.UI.Plugin.ViewModels
         }
         public bool IsNotRecording { get => !IsRecording; }
 
+        public int btnRes0_width { get => btnRes0_width_v; }
+        public int btnRes1_width { get => btnRes1_width_v; }
+        public int btnRes2_width { get => btnRes2_width_v; }
+        public int btnRes3_width { get => btnRes3_width_v; }
+
+        public int btnRes0_width_v = 100;
+        public int btnRes1_width_v = 100;
+        public int btnRes2_width_v = 100;
+        public int btnRes3_width_v = 100;
+
+        public CornerRadius btnRes1_radius { get => btnRes1_radius_v; }
+        public CornerRadius btnRes1_radius_v = new CornerRadius(0, 0, 0, 0);
+
+        public Visibility btnRes0_show { get => btnRes0_show_v; }
+        public Visibility btnRes1_show { get => btnRes1_show_v; }
+        public Visibility btnRes2_show { get => btnRes2_show_v; }
+        public Visibility btnRes3_show { get => btnRes3_show_v; }
+
+        public Visibility btnRes0_show_v = Visibility.Visible;
+        public Visibility btnRes1_show_v = Visibility.Visible;
+        public Visibility btnRes2_show_v = Visibility.Visible;
+        public Visibility btnRes3_show_v = Visibility.Visible;
+
+        public Visibility brdHello_show { get => brdHello_show_v; }
+        public Visibility brdHello_show_v = Visibility.Visible;
+
+        public bool is_hdr_enable = true;
+        public bool hdr_enable { get => IsNotRecording && is_hdr_enable; }
+
+        public bool is_ProximitySensor_enable = true;
+        public bool ProximitySensor_enable { get => is_ProximitySensor_enable; }
+
         private bool _isChecked_Autofocus;
 
         public bool IsChecked_Autofocus
@@ -1361,9 +1393,11 @@ namespace DDPM.UI.Plugin.ViewModels
             }
         }
 
+        public bool is_AutoFramingVisibility = true;
         public Visibility AutoFramingVisibility
         {
-            get => CurrentDeviceInfo!.IsPropertyAutoFramingSensitivitySupported || CurrentDeviceInfo.IsPropertyAutoFramingSizeSupported || CurrentDeviceInfo.IsPropertyAutoFramingTransitionSupported ? Visibility.Visible : Visibility.Collapsed;
+            get => is_AutoFramingVisibility && (CurrentDeviceInfo!.IsPropertyAutoFramingSensitivitySupported || CurrentDeviceInfo.IsPropertyAutoFramingSizeSupported || CurrentDeviceInfo.IsPropertyAutoFramingTransitionSupported) ? Visibility.Visible : Visibility.Collapsed;
+
         }
         public Visibility AutoFramingSensitivityVisibility
         {
@@ -1682,6 +1716,11 @@ namespace DDPM.UI.Plugin.ViewModels
             }
         }
         public Visibility MessageBoxVisibility { get; set; } = Visibility.Collapsed;
+        public Visibility MessageBoxVisibilityUsbType { get; set; } = Visibility.Collapsed;
+
+        public string usbtype_info_v = LangHelper.Instance["Camera.25"];
+
+        public string usbtype_info { get => usbtype_info_v; }
 
         public bool running_state = true;
     }

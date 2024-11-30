@@ -55,7 +55,7 @@ namespace DDPM.UI.Common.Tests
         {
             try
             {
-                //penActions.ResetRadialMenu();
+                //penActions.RestoreRadialMenu();
                 Assert.True(true);
             }
             catch (Exception ex)

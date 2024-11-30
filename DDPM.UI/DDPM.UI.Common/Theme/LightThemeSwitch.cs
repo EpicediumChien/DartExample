@@ -246,6 +246,10 @@ namespace DDPM.UI.Common
                 UpdateFreezable("Tooltip_TextColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#000000"));
                 #endregion
 
+                #region (i) InfoIcon
+                UpdateFreezable("InfoIconColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#9D9D9D"));
+                #endregion
+
                 #region Button
                 UpdateFreezable("Border_Btn_txt", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#0672CB"));
                 UpdateFreezable("CheckBox_Brush", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#7E7E7E"));
