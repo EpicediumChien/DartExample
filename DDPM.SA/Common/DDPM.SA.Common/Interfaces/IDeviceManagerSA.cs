@@ -111,8 +111,8 @@ namespace DDPM.SA.Common
         Task<bool> Notify_refresh_app_list();
 
         //Jim add 20240801
-        Task<IIC_Metadata> DownloadICCData(MonitorInfo m,bool blICCProfile = false ,string savelPath = "");
-       
+        Task<IIC_Metadata> DownloadICCData(MonitorInfo m, bool blICCProfile = false, string savelPath = "");
+
         //Jim add 20240904
         Task<string> GetAutoColorPresetStatus(MonitorInfo m);
 
@@ -740,6 +740,7 @@ namespace DDPM.SA.Common
         Task SetKbAssignDialogAction(string Guid, byte[] newValue);
 
         Task SetKbAssignKeystrokeAction(string Guid, byte[] newValue);
+        Task<bool> RestoreToDefaultKB(string Guid);
 
         #endregion Keyboard
 
