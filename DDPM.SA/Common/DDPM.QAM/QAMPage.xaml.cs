@@ -128,10 +128,10 @@ namespace DDPM.QAM
 
         private void Close_Click(object sender, MouseButtonEventArgs e)
         {
-            CloseMyself();
+            CloseMyself(true);
         }
 
-        private void CloseMyself()
+        private void CloseMyself(bool closedByUser = false)
         {
             if (CameraSetting != null)
             {
@@ -139,11 +139,16 @@ namespace DDPM.QAM
                 CameraSetting = null;
             }
 
-            Dispatcher.Invoke(() =>
-            {
-                // Access UI elements or objects owned by a different thread
+            if (closedByUser)
                 this.Close();
-            });
+            else
+            {
+                Dispatcher.Invoke(() =>
+                {
+                    // Access UI elements or objects owned by a different thread
+                    this.Close();
+                });
+            }
         }
 
         private void CameraSetting_Click(object sender, MouseButtonEventArgs e)
@@ -180,8 +185,7 @@ namespace DDPM.QAM
                 //Info SA that DDPM launched by QAM
                 //DdpmCommonHelper.DeviceManagerSA!.SetIsDDPMLaunchByQAMAsync(true);
 
-                //should closed by SA
-                //Close_Click(this, null);
+                Close_Click(this, null);
             }
             else
                 DdpmCommonHelper.DeviceManagerSA!.SetIsDDPMLaunchByQAMAsync(false);
@@ -229,11 +233,6 @@ namespace DDPM.QAM
             e.UI_Field_Name = msg;
 
             UpdateUINotify?.Invoke(this, e);
-        }
-
-        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
-        {
-            CloseMyself();
         }
     }
 }

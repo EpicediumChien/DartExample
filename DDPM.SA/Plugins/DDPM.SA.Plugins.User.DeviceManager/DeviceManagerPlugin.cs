@@ -10169,12 +10169,21 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         {
             writelog($"QAMClose Start");
 
-            if (_QAM != null)
+            //writelog($"QAMClose _QAM.Close go");
+            try
             {
-                //writelog($"QAMClose _QAM.Close go");
-                _QAM.Close();
-                //writelog($"QAMClose _QAM.Close done");
+                _QAM?.Dispatcher.Invoke(() =>
+                {
+                    // Access UI elements or objects owned by a different thread
+                    _QAM?.Close();
+                });
+                //_QAM?.Close();
             }
+            catch (Exception e)
+            {
+                writelog($"Catch Exception[{e.Message}] when run QAMClose");
+            }
+            
 
             writelog($"QAMClose done");
         }
@@ -10271,15 +10280,13 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 OnUIUpdateNotify(e);
                 isDDPMHomepageReady = false;
                 //isDDPMLaunchedByQAM = false;
+
+                QAMClose();
             }
 
             return Task.CompletedTask;
         }
 
-        public void DDPMNavigateToWebcamPage()
-        {
-            QAMClose();
-        }
         #endregion
 
         #region Private Methods
