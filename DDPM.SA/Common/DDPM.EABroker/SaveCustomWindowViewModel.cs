@@ -39,6 +39,7 @@ namespace DDPM.EABroker
         {
             //if (deviceManager != null)
             //    _deviceManagerSA = deviceManager;
+            Debug_AddIems();
         }
         #endregion
 
@@ -124,6 +125,20 @@ namespace DDPM.EABroker
                 _isOverlapLayout = value;
                 OnPropertyChanged("IsOverlapLayout");
             }
+        }
+        #endregion
+
+        #region Develop stage testing
+        private void Debug_AddIems()
+        {
+            for (int i=0; i<5; i++)
+            {
+                CustomList.Add(new SplitJson()
+                {
+                    CustomName = $"Custom Layout (i)"
+                });
+            }
+            SelectedCustomItem = CustomList[0];
         }
         #endregion
     }

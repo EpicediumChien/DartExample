@@ -253,6 +253,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             _isSubagentActive = WTSFunction.IsYourProcessInActiveSession(Log);
             SACommonHelper.GetResourceDictionary();
             loadResourceDictionary(UXSystemParameters.Instance.OSTheme);
+
+            //Robert_Lin, 2024-12-1 added, to let TextBox highlight text color can be changed with TextBox.SelectionTextBrush
+            //Reference: https://github.com/dotnet/wpf/issues/4571
+            AppContext.SetSwitch("Switch.System.Windows.Controls.Text.UseAdornerForTextboxSelectionRendering", false);
+
         }
 
         private void _DTPProxyPlugin_DTPEventHandler(object sender, UpdateUINotify e)
