@@ -39,7 +39,7 @@ namespace DDPM.EABroker
         {
             //if (deviceManager != null)
             //    _deviceManagerSA = deviceManager;
-            Debug_AddIems();
+            //Debug_AddIems();
         }
         #endregion
 
