@@ -936,6 +936,16 @@ namespace DDPM.CLI.Plugins.Display
             return ((int)CLI_ExitCode.functional_error, JsonConvert.SerializeObject(cli_Response, Formatting.Indented));
         }
 
+        private string GetPeripheralResponse(int index, string output, DeviceInfo g)
+        {
+            output += $"\n  \"Device\": \"{g.LogicalDeviceType}\"";
+            PeripheralResponse cli_Response2 = new PeripheralResponse(index, g);
+            cli_Response2.Connectiontype = get_headsetconnection_type(g.ConnectionType);
+            output += "\n" + JsonConvert.SerializeObject(cli_Response2, Formatting.Indented);
+
+            return output;
+        }
+
         private async Task<(int code, string result)> ConnectedDevices(IDeviceManagerSA devMgr, string type, List<string> index, List<string> serviceTag, List<string> model, CommandLineInput commandLineInput, string value = "")
         {
             ConnectedDevices G_ConnectedDevices_RESPONSE = new ConnectedDevices();
@@ -967,58 +977,22 @@ namespace DDPM.CLI.Plugins.Display
             {
                 if (commandLineInput.Options.Count > 0)
                 {
-                    if (commandLineInput.Options[0].Option_Value.ToUpper() == "DISPLAY")
+                    switch (commandLineInput.Options[0].Option_Value.ToUpper())
                     {
-                        if (index.Count == 0 && serviceTag.Count == 0 && model.Count == 0)
-                        {
-                            bool IsFailhappened = false;
-                            foreach (MonitorInfo monitor in _AllInfoMonitors)
+                        case "DISPLAY":
+                            if (index.Count == 0 && serviceTag.Count == 0 && model.Count == 0)
                             {
-                                G_ConnectedDevices_RESPONSE = new ConnectedDevices();
-                                G_ConnectedDevices_RESPONSE.Model = monitor.edid.ModelName;
-                                G_ConnectedDevices_RESPONSE.SerialNumber = monitor.edid.SerialNumber;
-                                G_ConnectedDevices_RESPONSE.Index = change_0base_to_1base((monitor.Index).ToString());
-                                G_ConnectedDevices_RESPONSE.ServiceTag = monitor.edid.ServiceTag;
-                                G_ConnectedDevices_RESPONSE.FWVer = monitor.FwVersion;
-
-                                if (string.IsNullOrWhiteSpace(monitor.FwVersion))
+                                bool IsFailhappened = false;
+                                foreach (MonitorInfo monitor in _AllInfoMonitors)
                                 {
-                                    G_ConnectedDevices_RESPONSE.PID = "N/A";
-                                    G_ConnectedDevices_RESPONSE.Result = "Fail";
-                                    G_ConnectedDevices_RESPONSE.Message = "Fail_VCPCapability";
-                                    System.Console.WriteLine(JsonConvert.SerializeObject(G_ConnectedDevices_RESPONSE, Formatting.Indented));
-                                    output += "\n" + JsonConvert.SerializeObject(G_ConnectedDevices_RESPONSE, Formatting.Indented);
-                                    IsFailhappened = true;
-                                }
-                                else
-                                {
-                                    G_ConnectedDevices_RESPONSE.PID = monitor.edid.PID.ToString();
-                                    G_ConnectedDevices_RESPONSE.Result = "Pass";
-                                    index_per = int.Parse(change_0base_to_1base((monitor.Index).ToString()));
-                                    System.Console.WriteLine(JsonConvert.SerializeObject(G_ConnectedDevices_RESPONSE, Formatting.Indented));
-                                    output += "\n" + JsonConvert.SerializeObject(G_ConnectedDevices_RESPONSE, Formatting.Indented);
-                                }
-                            }
+                                    G_ConnectedDevices_RESPONSE = new ConnectedDevices();
+                                    G_ConnectedDevices_RESPONSE.Model = monitor.edid.ModelName;
+                                    G_ConnectedDevices_RESPONSE.SerialNumber = monitor.edid.SerialNumber;
+                                    G_ConnectedDevices_RESPONSE.Index = change_0base_to_1base((monitor.Index).ToString());
+                                    G_ConnectedDevices_RESPONSE.ServiceTag = monitor.edid.ServiceTag;
+                                    G_ConnectedDevices_RESPONSE.FWVer = monitor.FwVersion;
 
-                            if (IsFailhappened)
-                                return ((int)CLI_ExitCode.fail_SetVCPCapability, output);
-                        }
-                        else if (index.Count != 0)
-                        {
-                            bool IsFailhappened = false;
-                            foreach (string idx in index)
-                            {
-                                G_ConnectedDevices_RESPONSE = new ConnectedDevices();
-
-                                if (Convert.ToInt32(idx) < _AllInfoMonitors.Count)
-                                {
-                                    G_ConnectedDevices_RESPONSE.Index = change_0base_to_1base(idx);
-                                    G_ConnectedDevices_RESPONSE.ServiceTag = _AllInfoMonitors[Convert.ToInt32(idx)].edid.ServiceTag;
-                                    G_ConnectedDevices_RESPONSE.Model = _AllInfoMonitors[Convert.ToInt32(idx)].edid.ModelName;
-                                    G_ConnectedDevices_RESPONSE.SerialNumber = _AllInfoMonitors[Convert.ToInt32(idx)].edid.SerialNumber;
-                                    G_ConnectedDevices_RESPONSE.FWVer = _AllInfoMonitors[Convert.ToInt32(idx)].FwVersion;
-
-                                    if (string.IsNullOrWhiteSpace(_AllInfoMonitors[Convert.ToInt32(idx)].FwVersion))
+                                    if (string.IsNullOrWhiteSpace(monitor.FwVersion))
                                     {
                                         G_ConnectedDevices_RESPONSE.PID = "N/A";
                                         G_ConnectedDevices_RESPONSE.Result = "Fail";
@@ -1029,257 +1003,160 @@ namespace DDPM.CLI.Plugins.Display
                                     }
                                     else
                                     {
-                                        G_ConnectedDevices_RESPONSE.PID = _AllInfoMonitors[Convert.ToInt32(idx)].edid.PID;
+                                        G_ConnectedDevices_RESPONSE.PID = monitor.edid.PID.ToString();
                                         G_ConnectedDevices_RESPONSE.Result = "Pass";
-                                        index_per = int.Parse(change_0base_to_1base((_AllInfoMonitors[Convert.ToInt32(idx)].Index).ToString()));
+                                        index_per = int.Parse(change_0base_to_1base((monitor.Index).ToString()));
                                         System.Console.WriteLine(JsonConvert.SerializeObject(G_ConnectedDevices_RESPONSE, Formatting.Indented));
                                         output += "\n" + JsonConvert.SerializeObject(G_ConnectedDevices_RESPONSE, Formatting.Indented);
                                     }
                                 }
-                                else
-                                {
-                                    G_ConnectedDevices_RESPONSE.Index = change_0base_to_1base(idx);
-                                    G_ConnectedDevices_RESPONSE.ServiceTag = _AllInfoMonitors[Convert.ToInt32(idx)].edid.ServiceTag;
-                                    G_ConnectedDevices_RESPONSE.Result = "Fail";
-                                    G_ConnectedDevices_RESPONSE.Message = "Fail_VCPCapability";
-                                    System.Console.WriteLine(JsonConvert.SerializeObject(G_ConnectedDevices_RESPONSE, Formatting.Indented));
-                                    output += "\n" + JsonConvert.SerializeObject(G_ConnectedDevices_RESPONSE, Formatting.Indented);
-                                    IsFailhappened = true;
-                                }
+
+                                if (IsFailhappened)
+                                    return ((int)CLI_ExitCode.fail_SetVCPCapability, output);
                             }
-                        }
-                        else if (serviceTag.Count != 0)
-                        {
-                            bool IsFailhappened = false;
-                            foreach (string tag in serviceTag)
+                            else if (index.Count != 0)
                             {
-                                var tmp = _AllInfoMonitors.FindAll(x => x.edid.ServiceTag.ToUpper().Equals(tag.ToUpper()));
-                                foreach (MonitorInfo mo in tmp)
+                                bool IsFailhappened = false;
+                                foreach (string idx in index)
                                 {
                                     G_ConnectedDevices_RESPONSE = new ConnectedDevices();
 
-                                    G_ConnectedDevices_RESPONSE.Index = change_0base_to_1base((mo.Index).ToString());
-                                    G_ConnectedDevices_RESPONSE.ServiceTag = mo.edid.ServiceTag;
-                                    G_ConnectedDevices_RESPONSE.Model = mo.edid.ModelName;
-                                    G_ConnectedDevices_RESPONSE.SerialNumber = mo.edid.SerialNumber;
-                                    G_ConnectedDevices_RESPONSE.FWVer = mo.FwVersion;
-
-                                    if (string.IsNullOrWhiteSpace(mo.FwVersion))
+                                    if (Convert.ToInt32(idx) < _AllInfoMonitors.Count)
                                     {
-                                        G_ConnectedDevices_RESPONSE.PID = "N/A";
+                                        G_ConnectedDevices_RESPONSE.Index = change_0base_to_1base(idx);
+                                        G_ConnectedDevices_RESPONSE.ServiceTag = _AllInfoMonitors[Convert.ToInt32(idx)].edid.ServiceTag;
+                                        G_ConnectedDevices_RESPONSE.Model = _AllInfoMonitors[Convert.ToInt32(idx)].edid.ModelName;
+                                        G_ConnectedDevices_RESPONSE.SerialNumber = _AllInfoMonitors[Convert.ToInt32(idx)].edid.SerialNumber;
+                                        G_ConnectedDevices_RESPONSE.FWVer = _AllInfoMonitors[Convert.ToInt32(idx)].FwVersion;
+
+                                        if (string.IsNullOrWhiteSpace(_AllInfoMonitors[Convert.ToInt32(idx)].FwVersion))
+                                        {
+                                            G_ConnectedDevices_RESPONSE.PID = "N/A";
+                                            G_ConnectedDevices_RESPONSE.Result = "Fail";
+                                            G_ConnectedDevices_RESPONSE.Message = "Fail_VCPCapability";
+                                            System.Console.WriteLine(JsonConvert.SerializeObject(G_ConnectedDevices_RESPONSE, Formatting.Indented));
+                                            output += "\n" + JsonConvert.SerializeObject(G_ConnectedDevices_RESPONSE, Formatting.Indented);
+                                            IsFailhappened = true;
+                                        }
+                                        else
+                                        {
+                                            G_ConnectedDevices_RESPONSE.PID = _AllInfoMonitors[Convert.ToInt32(idx)].edid.PID;
+                                            G_ConnectedDevices_RESPONSE.Result = "Pass";
+                                            index_per = int.Parse(change_0base_to_1base((_AllInfoMonitors[Convert.ToInt32(idx)].Index).ToString()));
+                                            System.Console.WriteLine(JsonConvert.SerializeObject(G_ConnectedDevices_RESPONSE, Formatting.Indented));
+                                            output += "\n" + JsonConvert.SerializeObject(G_ConnectedDevices_RESPONSE, Formatting.Indented);
+                                        }
+                                    }
+                                    else
+                                    {
+                                        G_ConnectedDevices_RESPONSE.Index = change_0base_to_1base(idx);
+                                        G_ConnectedDevices_RESPONSE.ServiceTag = _AllInfoMonitors[Convert.ToInt32(idx)].edid.ServiceTag;
                                         G_ConnectedDevices_RESPONSE.Result = "Fail";
                                         G_ConnectedDevices_RESPONSE.Message = "Fail_VCPCapability";
                                         System.Console.WriteLine(JsonConvert.SerializeObject(G_ConnectedDevices_RESPONSE, Formatting.Indented));
                                         output += "\n" + JsonConvert.SerializeObject(G_ConnectedDevices_RESPONSE, Formatting.Indented);
                                         IsFailhappened = true;
                                     }
-                                    else
-                                    {
-                                        G_ConnectedDevices_RESPONSE.PID = mo.edid.PID;
-                                        G_ConnectedDevices_RESPONSE.Result = "Pass";
-                                        index_per = int.Parse(change_0base_to_1base((mo.Index).ToString()));
-                                        System.Console.WriteLine(JsonConvert.SerializeObject(G_ConnectedDevices_RESPONSE, Formatting.Indented));
-                                        output += "\n" + JsonConvert.SerializeObject(G_ConnectedDevices_RESPONSE, Formatting.Indented);
-                                    }
                                 }
                             }
-
-                            if (IsFailhappened)
-                                return ((int)CLI_ExitCode.fail_SetVCPCapability, output);
-                        }
-                        else if (model.Count != 0)
-                        {
-                            bool IsFailhappened = false;
-                            foreach (string modelName in model)
+                            else if (serviceTag.Count != 0)
                             {
-                                var tmp = _AllInfoMonitors.FindAll(x => x.edid.ModelName.ToUpper().Equals(modelName.ToUpper()));
-                                foreach (MonitorInfo mo in tmp)
+                                bool IsFailhappened = false;
+                                foreach (string tag in serviceTag)
                                 {
-                                    G_ConnectedDevices_RESPONSE = new ConnectedDevices();
-
-                                    G_ConnectedDevices_RESPONSE.Index = change_0base_to_1base((mo.Index).ToString());
-                                    G_ConnectedDevices_RESPONSE.ServiceTag = mo.edid.ServiceTag;
-                                    G_ConnectedDevices_RESPONSE.Model = mo.edid.ModelName;
-                                    G_ConnectedDevices_RESPONSE.SerialNumber = mo.edid.SerialNumber;
-                                    G_ConnectedDevices_RESPONSE.FWVer = mo.FwVersion;
-
-                                    if (string.IsNullOrWhiteSpace(mo.FwVersion))
+                                    var tmp = _AllInfoMonitors.FindAll(x => x.edid.ServiceTag.ToUpper().Equals(tag.ToUpper()));
+                                    foreach (MonitorInfo mo in tmp)
                                     {
-                                        G_ConnectedDevices_RESPONSE.PID = "N/A";
-                                        G_ConnectedDevices_RESPONSE.Result = "Fail";
-                                        G_ConnectedDevices_RESPONSE.Message = "Fail_VCPCapability";
-                                        System.Console.WriteLine(JsonConvert.SerializeObject(G_ConnectedDevices_RESPONSE, Formatting.Indented));
-                                        output += "\n" + JsonConvert.SerializeObject(G_ConnectedDevices_RESPONSE, Formatting.Indented);
-                                        IsFailhappened = true;
-                                    }
-                                    else
-                                    {
-                                        G_ConnectedDevices_RESPONSE.PID = mo.edid.PID;
-                                        G_ConnectedDevices_RESPONSE.Result = "Pass";
-                                        index_per = int.Parse(change_0base_to_1base((mo.Index).ToString()));
-                                        System.Console.WriteLine(JsonConvert.SerializeObject(G_ConnectedDevices_RESPONSE, Formatting.Indented));
-                                        output += "\n" + JsonConvert.SerializeObject(G_ConnectedDevices_RESPONSE, Formatting.Indented);
+                                        G_ConnectedDevices_RESPONSE = new ConnectedDevices();
+
+                                        G_ConnectedDevices_RESPONSE.Index = change_0base_to_1base((mo.Index).ToString());
+                                        G_ConnectedDevices_RESPONSE.ServiceTag = mo.edid.ServiceTag;
+                                        G_ConnectedDevices_RESPONSE.Model = mo.edid.ModelName;
+                                        G_ConnectedDevices_RESPONSE.SerialNumber = mo.edid.SerialNumber;
+                                        G_ConnectedDevices_RESPONSE.FWVer = mo.FwVersion;
+
+                                        if (string.IsNullOrWhiteSpace(mo.FwVersion))
+                                        {
+                                            G_ConnectedDevices_RESPONSE.PID = "N/A";
+                                            G_ConnectedDevices_RESPONSE.Result = "Fail";
+                                            G_ConnectedDevices_RESPONSE.Message = "Fail_VCPCapability";
+                                            System.Console.WriteLine(JsonConvert.SerializeObject(G_ConnectedDevices_RESPONSE, Formatting.Indented));
+                                            output += "\n" + JsonConvert.SerializeObject(G_ConnectedDevices_RESPONSE, Formatting.Indented);
+                                            IsFailhappened = true;
+                                        }
+                                        else
+                                        {
+                                            G_ConnectedDevices_RESPONSE.PID = mo.edid.PID;
+                                            G_ConnectedDevices_RESPONSE.Result = "Pass";
+                                            index_per = int.Parse(change_0base_to_1base((mo.Index).ToString()));
+                                            System.Console.WriteLine(JsonConvert.SerializeObject(G_ConnectedDevices_RESPONSE, Formatting.Indented));
+                                            output += "\n" + JsonConvert.SerializeObject(G_ConnectedDevices_RESPONSE, Formatting.Indented);
+                                        }
                                     }
                                 }
-                            }
 
-                            if (IsFailhappened)
-                                return ((int)CLI_ExitCode.fail_SetVCPCapability, output);
-                        }
-                    }
-                    else if (commandLineInput.Options[0].Option_Value.ToUpper() == "MOUSE")
-                    {
-                        foreach (var g in _deviceinfo)
-                        {
-                            if (g.LogicalDeviceType == "LogicalMouse")
+                                if (IsFailhappened)
+                                    return ((int)CLI_ExitCode.fail_SetVCPCapability, output);
+                            }
+                            else if (model.Count != 0)
                             {
-                                output += $"\n  \"Device\": \"{g.Name}\"";
-                                CLI_RESPONSE2 cli_Response2 = new CLI_RESPONSE2();
-                                index_per++;
+                                bool IsFailhappened = false;
+                                foreach (string modelName in model)
+                                {
+                                    var tmp = _AllInfoMonitors.FindAll(x => x.edid.ModelName.ToUpper().Equals(modelName.ToUpper()));
+                                    foreach (MonitorInfo mo in tmp)
+                                    {
+                                        G_ConnectedDevices_RESPONSE = new ConnectedDevices();
 
-                                cli_Response2.Index = index_per.ToString();
-                                cli_Response2.Model = g.Name;
-                                cli_Response2.FirmwareVersion = g.FirmwareVersion;
-                                cli_Response2.Connectiontype = get_headsetconnection_type(g.ConnectionType);
-                                cli_Response2.BatteryStatus = g.BatteryStatus;
+                                        G_ConnectedDevices_RESPONSE.Index = change_0base_to_1base((mo.Index).ToString());
+                                        G_ConnectedDevices_RESPONSE.ServiceTag = mo.edid.ServiceTag;
+                                        G_ConnectedDevices_RESPONSE.Model = mo.edid.ModelName;
+                                        G_ConnectedDevices_RESPONSE.SerialNumber = mo.edid.SerialNumber;
+                                        G_ConnectedDevices_RESPONSE.FWVer = mo.FwVersion;
 
-                                recode_per = true;
-                                output += "\n" + JsonConvert.SerializeObject(cli_Response2, Formatting.Indented);
+                                        if (string.IsNullOrWhiteSpace(mo.FwVersion))
+                                        {
+                                            G_ConnectedDevices_RESPONSE.PID = "N/A";
+                                            G_ConnectedDevices_RESPONSE.Result = "Fail";
+                                            G_ConnectedDevices_RESPONSE.Message = "Fail_VCPCapability";
+                                            System.Console.WriteLine(JsonConvert.SerializeObject(G_ConnectedDevices_RESPONSE, Formatting.Indented));
+                                            output += "\n" + JsonConvert.SerializeObject(G_ConnectedDevices_RESPONSE, Formatting.Indented);
+                                            IsFailhappened = true;
+                                        }
+                                        else
+                                        {
+                                            G_ConnectedDevices_RESPONSE.PID = mo.edid.PID;
+                                            G_ConnectedDevices_RESPONSE.Result = "Pass";
+                                            index_per = int.Parse(change_0base_to_1base((mo.Index).ToString()));
+                                            System.Console.WriteLine(JsonConvert.SerializeObject(G_ConnectedDevices_RESPONSE, Formatting.Indented));
+                                            output += "\n" + JsonConvert.SerializeObject(G_ConnectedDevices_RESPONSE, Formatting.Indented);
+                                        }
+                                    }
+                                }
+
+                                if (IsFailhappened)
+                                    return ((int)CLI_ExitCode.fail_SetVCPCapability, output);
                             }
-
-                        }
-                    }
-                    else if (commandLineInput.Options[0].Option_Value.ToUpper() == "KEYBOARD")
-                    {
-                        foreach (var g in _deviceinfo)
-                        {
-                            if (g.LogicalDeviceType == "LogicalKeyboard")
+                            break;
+                        case "MOUSE":
+                        case "KEYBOARD":
+                        case "WEBCAM":
+                        case "WIREDAUDIO":
+                        case "HEADSET":
+                        case "PEN":
+                        case "DOCK":
+                            foreach (var g in _deviceinfo)
                             {
-                                output += $"\n  \"Device\": \"{g.Name}\"";
-                                CLI_RESPONSE2 cli_Response2 = new CLI_RESPONSE2();
-                                index_per++;
-
-                                cli_Response2.Index = index_per.ToString();
-                                cli_Response2.Model = g.Name;
-                                cli_Response2.FirmwareVersion = g.FirmwareVersion;
-                                cli_Response2.Connectiontype = get_headsetconnection_type(g.ConnectionType);
-                                cli_Response2.BatteryStatus = g.BatteryStatus;
-
-                                recode_per = true;
-                                output += "\n" + JsonConvert.SerializeObject(cli_Response2, Formatting.Indented);
+                                if (g.LogicalDeviceType.Equals($"Logical{commandLineInput.Options[0].Option_Value}", StringComparison.OrdinalIgnoreCase))
+                                {
+                                    index_per++;
+                                    recode_per = true;
+                                    output = GetPeripheralResponse(index_per, output, g);
+                                }
                             }
-
-                        }
-                    }
-                    else if (commandLineInput.Options[0].Option_Value.ToUpper() == "WEBCAM")
-                    {
-                        foreach (var g in _deviceinfo)
-                        {
-                            if (g.LogicalDeviceType == "LogicalWebcam")
-                            {
-                                output += $"\n  \"Device\": \"{g.Name}\"";
-                                CLI_RESPONSE2 cli_Response2 = new CLI_RESPONSE2();
-                                index_per++;
-
-                                cli_Response2.Index = index_per.ToString();
-                                cli_Response2.Model = g.Name;
-                                cli_Response2.FirmwareVersion = g.FirmwareVersion;
-                                cli_Response2.Connectiontype = get_headsetconnection_type(g.ConnectionType);
-                                cli_Response2.BatteryStatus = g.BatteryStatus;
-
-                                recode_per = true;
-                                output += "\n" + JsonConvert.SerializeObject(cli_Response2, Formatting.Indented);
-                            }
-
-                        }
-                    }
-                    else if (commandLineInput.Options[0].Option_Value.ToUpper() == "WIREDAUDIO")
-                    {
-                        foreach (var g in _deviceinfo)
-                        {
-                            if (g.LogicalDeviceType == "LogicalWiredAudio")
-                            {
-                                output += $"\n  \"Device\": \"{g.Name}\"";
-                                CLI_RESPONSE2 cli_Response2 = new CLI_RESPONSE2();
-                                index_per++;
-
-                                cli_Response2.Index = index_per.ToString();
-                                cli_Response2.Model = g.Name;
-                                cli_Response2.FirmwareVersion = g.FirmwareVersion;
-                                cli_Response2.Connectiontype = get_headsetconnection_type(g.ConnectionType);
-                                cli_Response2.BatteryStatus = g.BatteryStatus;
-
-                                recode_per = true;
-                                output += "\n" + JsonConvert.SerializeObject(cli_Response2, Formatting.Indented);
-                            }
-
-                        }
-                    }
-                    else if (commandLineInput.Options[0].Option_Value.ToUpper() == "HEADSET")
-                    {
-                        foreach (var g in _deviceinfo)
-                        {
-                            if (g.LogicalDeviceType == "LogicalHeadset")
-                            {
-                                output += $"\n  \"Device\": \"{g.Name}\"";
-                                CLI_RESPONSE2 cli_Response2 = new CLI_RESPONSE2();
-                                index_per++;
-
-                                cli_Response2.Index = index_per.ToString();
-                                cli_Response2.Model = g.Name;
-                                cli_Response2.FirmwareVersion = g.FirmwareVersion;
-                                cli_Response2.Connectiontype = get_headsetconnection_type(g.ConnectionType);
-                                cli_Response2.BatteryStatus = g.BatteryStatus;
-
-                                recode_per = true;
-                                output += "\n" + JsonConvert.SerializeObject(cli_Response2, Formatting.Indented);
-                            }
-
-                        }
-                    }
-                    else if (commandLineInput.Options[0].Option_Value.ToUpper() == "PEN")
-                    {
-                        foreach (var g in _deviceinfo)
-                        {
-                            if (g.LogicalDeviceType == "LogicalPen")
-                            {
-                                output += $"\n  \"Device\": \"{g.Name}\"";
-                                CLI_RESPONSE2 cli_Response2 = new CLI_RESPONSE2();
-                                index_per++;
-
-                                cli_Response2.Index = index_per.ToString();
-                                cli_Response2.Model = g.Name;
-                                cli_Response2.FirmwareVersion = g.FirmwareVersion;
-                                cli_Response2.Connectiontype = get_headsetconnection_type(g.ConnectionType);
-                                cli_Response2.BatteryStatus = g.BatteryStatus;
-
-                                recode_per = true;
-                                output += "\n" + JsonConvert.SerializeObject(cli_Response2, Formatting.Indented);
-                            }
-
-                        }
-                    }
-                    else if (commandLineInput.Options[0].Option_Value.ToUpper() == "DOCK")
-                    {
-                        foreach (var g in _deviceinfo)
-                        {
-                            if (g.LogicalDeviceType == "LogicalDock")
-                            {
-                                output += $"\n  \"Device\": \"{g.Name}\"";
-                                CLI_RESPONSE2 cli_Response2 = new CLI_RESPONSE2();
-                                index_per++;
-
-                                cli_Response2.Index = index_per.ToString();
-                                cli_Response2.Model = g.Name;
-                                cli_Response2.FirmwareVersion = g.FirmwareVersion;
-                                cli_Response2.Connectiontype = get_headsetconnection_type(g.ConnectionType);
-                                cli_Response2.BatteryStatus = g.BatteryStatus;
-
-                                recode_per = true;
-                                output += "\n" + JsonConvert.SerializeObject(cli_Response2, Formatting.Indented);
-                            }
-
-                        }
+                            break;
+                        default:
+                            break;
                     }
                     if (_deviceinfo == null || _deviceinfo.Count == 0)
                         return ((int)CLI_ExitCode.null_device_manager, JsonConvert.SerializeObject(G_ConnectedDevices_RESPONSE, Formatting.Indented));
@@ -1406,20 +1283,9 @@ namespace DDPM.CLI.Plugins.Display
                     }
                     foreach (var g in _deviceinfo)
                     {
-                        output += $"\n  \"Device\": \"{g.Name}\"";
-                        CLI_RESPONSE2 cli_Response2 = new CLI_RESPONSE2();
                         index_per++;
-
-                        cli_Response2.Index = index_per.ToString();
-                        cli_Response2.ID = g.ID;
-                        cli_Response2.Model = g.ModelNumber;
-                        cli_Response2.FirmwareVersion = g.FirmwareVersion;
-                        cli_Response2.Connectiontype = get_headsetconnection_type(g.ConnectionType);
-                        cli_Response2.BatteryStatus = g.BatteryStatus;
-                        cli_Response2.ServiceTag = g.DockServiceTag ?? "N/A";
-
                         recode_per = true;
-                        output += "\n" + JsonConvert.SerializeObject(cli_Response2, Formatting.Indented);
+                        output = GetPeripheralResponse(index_per, output, g);
                     }
                     if ((_deviceinfo == null || _deviceinfo.Count == 0) && (_AllInfoMonitors == null || _AllInfoMonitors.Count == 0))
                         return ((int)CLI_ExitCode.null_device_manager, JsonConvert.SerializeObject(G_ConnectedDevices_RESPONSE, Formatting.Indented));
@@ -9262,10 +9128,9 @@ namespace DDPM.CLI.Plugins.Display
 
                                 //if (monitor.CapabilityDic.ContainsKey("AA") && monitor.CapabilityDic["AA"] != null && monitor.CapabilityDic["AA"].Contains("00"))
                                 //{
-                                    writelog($"ScreenOrientation Entry");
-                                    rc = GetVCPCode(devMgr, monitor, "0xAA").Result;
-                                    get_DeviceData.ScreenOrientation = Orientations_Str[((uint)rc.value) - 1];
-                                    writelog($"ScreenOrientation Exit return value: {Orientations_Str[((uint)rc.value) - 1]}");
+                                writelog($"ScreenOrientation Entry");
+                                get_DeviceData.ScreenOrientation = Orientations_Str[(int)displayPropertiesInfo.CurrentOrientation];
+                                writelog($"ScreenOrientation Exit return value: {Orientations_Str[(int)displayPropertiesInfo.CurrentOrientation]}");
                                 //}
 
                                 if (monitor.CapabilityDic.ContainsKey("12"))
@@ -9435,169 +9300,24 @@ namespace DDPM.CLI.Plugins.Display
                             }
 
                             break;
-
                         case "MOUSE":
-
-                            foreach (var g in _deviceinfo)
-                            {
-                                if (g.LogicalDeviceType == "LogicalMouse")
-                                {
-                                    output += $"\n  \"Device\": \"{g.Name}\"";
-                                    CLI_RESPONSE2 cli_Response2 = new CLI_RESPONSE2();
-                                    index_per++;
-
-                                    cli_Response2.Index = index_per.ToString();
-                                    cli_Response2.Model = g.ModelNumber;
-                                    cli_Response2.FirmwareVersion = g.FirmwareVersion;
-                                    cli_Response2.Connectiontype = get_headsetconnection_type(g.ConnectionType);
-                                    cli_Response2.BatteryStatus = g.BatteryStatus;
-
-                                    recode_per = true;
-                                    output += "\n" + JsonConvert.SerializeObject(cli_Response2, Formatting.Indented);
-                                }
-
-                            }
-
-
-                            break;
-
                         case "KEYBOARD":
-
-                            foreach (var g in _deviceinfo)
-                            {
-                                if (g.LogicalDeviceType == "LogicalKeyboard")
-                                {
-                                    output += $"\n  \"Device\": \"{g.Name}\"";
-                                    CLI_RESPONSE2 cli_Response2 = new CLI_RESPONSE2();
-                                    index_per++;
-
-                                    cli_Response2.Index = index_per.ToString();
-                                    cli_Response2.Model = g.ModelNumber;
-                                    cli_Response2.FirmwareVersion = g.FirmwareVersion;
-                                    cli_Response2.Connectiontype = get_headsetconnection_type(g.ConnectionType);
-                                    cli_Response2.BatteryStatus = g.BatteryStatus;
-
-                                    recode_per = true;
-                                    output += "\n" + JsonConvert.SerializeObject(cli_Response2, Formatting.Indented);
-                                }
-
-                            }
-
-                            break;
                         case "WEBCAM":
-
-                            foreach (var g in _deviceinfo)
-                            {
-                                if (g.LogicalDeviceType == "LogicalWebcam")
-                                {
-                                    output += $"\n  \"Device\": \"{g.Name}\"";
-                                    CLI_RESPONSE2 cli_Response2 = new CLI_RESPONSE2();
-                                    index_per++;
-
-                                    cli_Response2.Index = index_per.ToString();
-                                    cli_Response2.Model = g.ModelNumber;
-                                    cli_Response2.FirmwareVersion = g.FirmwareVersion;
-                                    cli_Response2.Connectiontype = get_headsetconnection_type(g.ConnectionType);
-                                    cli_Response2.BatteryStatus = g.BatteryStatus;
-
-                                    recode_per = true;
-                                    output += "\n" + JsonConvert.SerializeObject(cli_Response2, Formatting.Indented);
-                                }
-
-                            }
-
-                            break;
                         case "WIREDAUDIO":
-
-                            foreach (var g in _deviceinfo)
-                            {
-                                if (g.LogicalDeviceType == "LogicalWiredAudio")
-                                {
-                                    output += $"\n  \"Device\": \"{g.Name}\"";
-                                    CLI_RESPONSE2 cli_Response2 = new CLI_RESPONSE2();
-                                    index_per++;
-
-                                    cli_Response2.Index = index_per.ToString();
-                                    cli_Response2.Model = g.ModelNumber;
-                                    cli_Response2.FirmwareVersion = g.FirmwareVersion;
-                                    cli_Response2.Connectiontype = get_headsetconnection_type(g.ConnectionType);
-                                    cli_Response2.BatteryStatus = g.BatteryStatus;
-
-                                    recode_per = true;
-                                    output += "\n" + JsonConvert.SerializeObject(cli_Response2, Formatting.Indented);
-                                }
-
-                            }
-
-                            break;
                         case "HEADSET":
-
-                            foreach (var g in _deviceinfo)
-                            {
-                                if (g.LogicalDeviceType == "LogicalHeadset")
-                                {
-                                    output += $"\n  \"Device\": \"{g.Name}\"";
-                                    CLI_RESPONSE2 cli_Response2 = new CLI_RESPONSE2();
-                                    index_per++;
-
-                                    cli_Response2.Index = index_per.ToString();
-                                    cli_Response2.Model = g.ModelNumber;
-                                    cli_Response2.FirmwareVersion = g.FirmwareVersion;
-                                    cli_Response2.Connectiontype = get_headsetconnection_type(g.ConnectionType);
-                                    cli_Response2.BatteryStatus = g.BatteryStatus;
-
-                                    recode_per = true;
-                                    output += "\n" + JsonConvert.SerializeObject(cli_Response2, Formatting.Indented);
-                                }
-
-                            }
-
-                            break;
                         case "PEN":
-
-                            foreach (var g in _deviceinfo)
-                            {
-                                if (g.LogicalDeviceType == "LogicalPen")
-                                {
-                                    output += $"\n  \"Device\": \"{g.Name}\"";
-                                    CLI_RESPONSE2 cli_Response2 = new CLI_RESPONSE2();
-                                    index_per++;
-
-                                    cli_Response2.Index = index_per.ToString();
-                                    cli_Response2.Model = g.ModelNumber;
-                                    cli_Response2.FirmwareVersion = g.FirmwareVersion;
-                                    cli_Response2.Connectiontype = get_headsetconnection_type(g.ConnectionType);
-                                    cli_Response2.BatteryStatus = g.BatteryStatus;
-
-                                    recode_per = true;
-                                    output += "\n" + JsonConvert.SerializeObject(cli_Response2, Formatting.Indented);
-                                }
-
-                            }
-
-                            break;
                         case "DOCK":
-
                             foreach (var g in _deviceinfo)
                             {
-                                if (g.LogicalDeviceType == "LogicalDock")
+                                if (g.LogicalDeviceType.Equals($"Logical{commandLineInput.Options[0].Option_Value}", StringComparison.OrdinalIgnoreCase))
                                 {
-                                    output += $"\n  \"Device\": \"{g.Name}\"";
-                                    CLI_RESPONSE2 cli_Response2 = new CLI_RESPONSE2();
                                     index_per++;
-
-                                    cli_Response2.Index = index_per.ToString();
-                                    cli_Response2.Model = g.ModelNumber;
-                                    cli_Response2.FirmwareVersion = g.FirmwareVersion;
-                                    cli_Response2.Connectiontype = get_headsetconnection_type(g.ConnectionType);
-                                    cli_Response2.BatteryStatus = g.BatteryStatus;
-
                                     recode_per = true;
-                                    output += "\n" + JsonConvert.SerializeObject(cli_Response2, Formatting.Indented);
+                                    output = GetPeripheralResponse(index_per, output, g);
                                 }
-
                             }
-
+                            break;
+                        default:
                             break;
                     }
                 }
@@ -9681,10 +9401,9 @@ namespace DDPM.CLI.Plugins.Display
 
                     //if (monitor.CapabilityDic.ContainsKey("AA") && monitor.CapabilityDic["AA"] != null && monitor.CapabilityDic["AA"].Contains("00"))
                     //{
-                        writelog($"ScreenOrientation Entry");
-                        rc = GetVCPCode(devMgr, monitor, "0xAA").Result;
-                        get_DeviceData.ScreenOrientation = Orientations_Str[((uint)rc.value) - 1];
-                        writelog($"ScreenOrientation Exit return value: {Orientations_Str[((uint)rc.value) - 1]}");
+                    writelog($"ScreenOrientation Entry");
+                    get_DeviceData.ScreenOrientation = Orientations_Str[(int)displayPropertiesInfo.CurrentOrientation];
+                    writelog($"ScreenOrientation Exit return value: {Orientations_Str[(int)displayPropertiesInfo.CurrentOrientation]}");
                     //}
 
                     if (monitor.CapabilityDic.ContainsKey("12"))
@@ -9855,19 +9574,9 @@ namespace DDPM.CLI.Plugins.Display
 
                 foreach (var g in _deviceinfo)
                 {
-                    output += $"\n  \"Device\": \"{g.Name}\"";
-                    CLI_RESPONSE2 cli_Response2 = new CLI_RESPONSE2();
-
                     index++;
-                    cli_Response2.Index = index.ToString();
-                    cli_Response2.Model = g.ModelNumber;
-                    cli_Response2.ID = g.ID;
-                    cli_Response2.FirmwareVersion = g.FirmwareVersion;
-                    cli_Response2.Connectiontype = get_headsetconnection_type(g.ConnectionType);
-                    cli_Response2.BatteryStatus = g.BatteryStatus;
-
                     recode_per = true;
-                    output += "\n" + JsonConvert.SerializeObject(cli_Response2, Formatting.Indented);
+                    output = GetPeripheralResponse(index, output, g);
                 }
             }
 
@@ -11336,364 +11045,364 @@ namespace DDPM.CLI.Plugins.Display
             }
         }
 
-        private async Task<(int code, string result)> ApplyConfiguration_v1(IDeviceManagerSA devMgr, CommandLineInput commandLineInput)
-        {
-            DisplayPropertiesInfo displayPropertiesInfo = new DisplayPropertiesInfo();
-            Properties displayProperties;
-            ALSConfig param = new ALSConfig();
-            string output = string.Empty;
-            ObjGetVCP rc = new ObjGetVCP();
-
-            List<DeviceInfo> _deviceinfo = null;
-            _deviceinfo = _devMgr.GetDevices().Result.deviceInfo;
-            string[] ss_1 = commandLineInput.Options[0].Option_Value.Split(",");
-            Trace.WriteLine(ss_1[0]);
-            Trace.WriteLine(ss_1[1]);
-
-            /*StreamReader r = new StreamReader(ss_1[1]);
-            string jsonString = r.ReadToEnd();;
-            r.Close();*/
-
-            // modify start @ 20241022 stephen: modify for CMA input config as json string
-            // x:\\config.json
-
-            string jsonString = String.Empty;
-
-            if ((@$"x:\config.json").ToLower().Equals(ss_1[1].ToLower()))
-            {
-                jsonString = commandLineInput.jsonDeviceConfig.ToString();
-            }
-            else
-            {
-                StreamReader sr = default;
-
-                try
-                {
-                    sr = new StreamReader(ss_1[1]);
-                    jsonString = sr.ReadToEnd();
-                }
-                catch(Exception ex)
-                {
-                    Trace.WriteLine($"[CLIDisplayPlugins] ApplyConfiguration_v1 exception, message: {ex.Message}");
-                }
-                finally
-                {
-                    sr.Close();
-                }
-            }
-            // modiffy end @ 20241022
-
-            string[] jsonString_2 = jsonString.Split("\"Device\":");
-            int i = 0;
-            int count = jsonString.Split("Index").Length - 1;
-
-            switch (ss_1[0].ToUpper())
-            {
-                case "DISPLAY":
-                    do
-                    {
-                        if (jsonString_2[i].Contains("DISPLAY", StringComparison.OrdinalIgnoreCase))
-                        {
-
-                            if (jsonString_2[i].Contains("GET", StringComparison.OrdinalIgnoreCase) && count > 0)
-                            {
-                                jsonString_2[i] = jsonString_2[i].Replace("{\r\n  \"Command\": \"GET\",", "");
-                                jsonString_2[i] = jsonString_2[i].Replace("  \"TargetFeature\": \"DEVICEDATA\",\r\n  \"Result\": \"PASS\",", "");
-                                jsonString_2[i] = jsonString_2[i].Replace("\"Message\": \"N/A\"\r\n}", "");
-                            }
-                            break;
-                        }
-
-                        i++;
-                    } while (true);
-                    break;
-
-                case "MOUSE":
-                    do
-                    {
-                        if (jsonString_2[i].Contains("MOUSE", StringComparison.OrdinalIgnoreCase))
-                        {
-                            jsonString_2[i] = jsonString_2[i].Replace("\"Device\":", "");
-                            jsonString_2[i] = jsonString_2[i].Replace(" \"LogicalMouse\"", "");
-                            if (jsonString_2[i].Contains("GET", StringComparison.OrdinalIgnoreCase) && count > 0)
-                            {
-                                jsonString_2[i] = jsonString_2[i].Replace("{\r\n  \"Command\": \"GET\",", "");
-                                jsonString_2[i] = jsonString_2[i].Replace("  \"TargetFeature\": \"DEVICEDATA\",\r\n  \"Result\": \"PASS\",", "");
-                                jsonString_2[i] = jsonString_2[i].Replace("\"Message\": \"N/A\"\r\n}", "");
-                            }
-                            break;
-                        }
-                        i++;
-                    } while (true);
-                    break;
-
-                case "KEYBOARD":
-                    do
-                    {
-                        if (jsonString_2[i].Contains("KEYBOARD", StringComparison.OrdinalIgnoreCase))
-                        {
-                            jsonString_2[i] = jsonString_2[i].Replace("\"Device\":", "");
-                            jsonString_2[i] = jsonString_2[i].Replace(" \"LogicalKeyboard\"", "");
-                            if (jsonString_2[i].Contains("GET", StringComparison.OrdinalIgnoreCase) && count > 0)
-                            {
-                                jsonString_2[i] = jsonString_2[i].Replace("{\r\n  \"Command\": \"GET\",", "");
-                                jsonString_2[i] = jsonString_2[i].Replace("  \"TargetFeature\": \"DEVICEDATA\",\r\n  \"Result\": \"PASS\",", "");
-                                jsonString_2[i] = jsonString_2[i].Replace("\"Message\": \"N/A\"\r\n}", "");
-                            }
-                            break;
-                        }
-
-                        i++;
-                    } while (true);
-                    break;
-            }
-            if (string.IsNullOrWhiteSpace(jsonString_2[i]) || count < 1)
-            {
-                CLI_RESPONSE cli_Response = new CLI_RESPONSE();
-                cli_Response.Command = commandLineInput.Command;
-                cli_Response.TargetFeature = commandLineInput.TargetFeature;
-                cli_Response.Result = "FAIL";
-                cli_Response.Message = "file format is not valid.";
-                return ((int)CLI_ExitCode.invalide_cmdline_syntax, cli_Response.ToJson());
-            }
-            Get_DeviceData devicedata = JsonConvert.DeserializeObject<Get_DeviceData>(jsonString_2[i]);
-
-            bool ispass = true;
-            //string[] not_support_list = new string[] { "ColorPreset", "ColorManagement"};
-
-            List<int> _monitorIndeies = new List<int>();
-
-            if (_AllInfoMonitors == null)
-                _AllInfoMonitors = devMgr.GetMonitors().Result;
-            _monitorIndeies = GetMonitorIndeies(commandLineInput, _AllInfoMonitors);
-            writelog($"CLI /set -display=applyConfiguration -value={commandLineInput.Options[0].Option_Value}");
-            if (ss_1[0].ToUpper() == "DISPLAY")
-            {
-                foreach (int idx in _monitorIndeies)
-                {
-                    MonitorInfo monitor = _AllInfoMonitors[idx];
-                    Apply_Configuration ApplyConfiguration = new Apply_Configuration(monitor);
-                    ApplyConfiguration.Command = commandLineInput.Command;
-                    ApplyConfiguration.TargetFeature = commandLineInput.TargetFeature;
-                    //ApplyConfiguration.Model = monitor.modelName;
-                    //ApplyConfiguration.SerialNumber = monitor.edid.SerialNumber;
-                    //ApplyConfiguration.Index = change_0base_to_1base((monitor.Index).ToString());
-                    //ApplyConfiguration.ServiceTag = monitor.edid.ServiceTag;
-
-                    bool retcode = SetVCPCode(devMgr, monitor, "0xAA", get_ScreenOrientation_code(devicedata.ScreenOrientation)).Result;
-                    if (!retcode) ispass = false;
-                    else ApplyConfiguration.ScreenOrientation = devicedata.ScreenOrientation;
-                    writelog($"ScreenOrientation={ApplyConfiguration.ScreenOrientation}");
-
-                    retcode = SetVCPCode(devMgr, monitor, "0x60", get_InputSource_code(get_inputsource_type(devicedata.ActiveInputSource.ToUpper()).ToString())).Result;
-                    if (!retcode) ispass = false;
-                    else ApplyConfiguration.ActiveInputSource = devicedata.ActiveInputSource;
-                    writelog($"ActiveInputSource={ApplyConfiguration.ActiveInputSource}");
-
-                    displayPropertiesInfo = devMgr.GetDisplayPropertiesInfo(monitor).Result;
-                    string[] ss = devicedata.OptimalResolution.Split(" ");
-                    displayProperties = new Properties() { Resolutions_Width = int.Parse(ss[0]), Resolutions_High = int.Parse(ss[2]), Frequency = int.Parse(ss[4].Split(".00Hz")[0]) };
-                    retcode = devMgr.SetDisplayPropertiest(monitor, displayProperties, displayPropertiesInfo.CurrentOrientation).Result;
-                    if (!retcode) ispass = false;
-                    else ApplyConfiguration.OptimalResolution = devicedata.OptimalResolution;
-                    ApplyConfiguration.Resolution = ApplyConfiguration.OptimalResolution;
-                    writelog($"OptimalResolution={ApplyConfiguration.OptimalResolution}");
-
-                    //int gcd = (int)GCD((ulong)displayProperties.Resolutions_Width, (ulong)displayProperties.Resolutions_High);
-                    //ApplyConfiguration.AspectRatio = $"{displayProperties.Resolutions_Width / gcd}:{displayProperties.Resolutions_High / gcd}";
-                    //writelog($"AspectRatio={ApplyConfiguration.AspectRatio}");
-                    string gcd = "N/A";
-                    if(displayProperties.Resolutions_Width != 0 && displayProperties.Resolutions_High!= 0)
-                        gcd = Get_AR((double)displayProperties.Resolutions_Width / (double)displayProperties.Resolutions_High);
-                    ApplyConfiguration.AspectRatio = $"{gcd}";
-                    writelog($"AspectRatio= {gcd}");
-
-                    if (monitor.CapabilityDic.ContainsKey("12"))
-                    {
-                        retcode = SetVCPCode(devMgr, monitor, "0x12", devicedata.ContrastLevel.Substring(0, devicedata.ContrastLevel.Length - 1)).Result;
-                        if (!retcode) ispass = false;
-                        else ApplyConfiguration.ContrastLevel = devicedata.ContrastLevel;
-                        writelog($"ContrastLevel={ApplyConfiguration.ContrastLevel}");
-
-                        retcode = SetVCPCode(devMgr, monitor, "0x10", devicedata.BrightnessLevel.Substring(0, devicedata.BrightnessLevel.Length - 1)).Result;
-                        if (!retcode) ispass = false;
-                        else ApplyConfiguration.BrightnessLevel = devicedata.BrightnessLevel;
-                        writelog($"BrightnessLevel={ApplyConfiguration.BrightnessLevel}");
-                    }
-                    else
-                    {
-                        retcode = SetVCPCode(devMgr, monitor, "0x10", devicedata.LuminanceLevel.Substring(0, devicedata.LuminanceLevel.Length - 1)).Result;
-                        if (!retcode) ispass = false;
-                        else ApplyConfiguration.LuminanceLevel = devicedata.LuminanceLevel;
-                        writelog($"LuminanceLevel={ApplyConfiguration.LuminanceLevel}");
-                    }
-
-                    retcode = await devMgr.SetALSFeatureValue(monitor, param, ALSFeatureQueryType.AutoBrightness, devicedata.AutoBrightness.ToUpper());
-                    if (!retcode) ispass = false;
-                    else ApplyConfiguration.AutoBrightness = devicedata.AutoBrightness;
-                    writelog($"AutoBrightness={ApplyConfiguration.AutoBrightness}");
-
-                    retcode = await devMgr.SetALSFeatureValue(monitor, param, ALSFeatureQueryType.AutoBrightnessRangeLevel, get_RangeLevel(devicedata.AutoBrightnessRangeLevel.ToUpper()));
-                    if (!retcode) ispass = false;
-                    else ApplyConfiguration.AutoBrightnessRangeLevel = devicedata.AutoBrightnessRangeLevel;
-                    writelog($"AutoBrightnessRangeLevel={ApplyConfiguration.AutoBrightnessRangeLevel}");
-
-                    retcode = await devMgr.SetALSFeatureValue(monitor, param, ALSFeatureQueryType.AutoColorTemperature, devicedata.AutoColorTemp.ToUpper());
-                    if (!retcode) ispass = false;
-                    else ApplyConfiguration.AutoColorTemp = devicedata.AutoColorTemp;
-                    writelog($"AutoColorTemp={ApplyConfiguration.AutoColorTemp}");
-
-                    retcode = await devMgr.SetALSFeatureValue(monitor, param, ALSFeatureQueryType.PrimaryMonitorSync, devicedata.PrimaryMonitorForSync.ToUpper());
-                    if (!retcode) ispass = false;
-                    else ApplyConfiguration.PrimaryMonitorForSync = devicedata.PrimaryMonitorForSync;
-                    writelog($"PrimaryMonitorForSync={ApplyConfiguration.PrimaryMonitorForSync}");
-
-                    if (displayPropertiesInfo.SupportedUSBCPrioritization)
-                    {
-                        USBCPrioritizationType gettype = get_USBCPrioritization(devicedata.USB_CPrioritization);
-                        if (gettype != USBCPrioritizationType.Unknow)
-                        {
-                            retcode = devMgr.SetUSBCPrioritizationType(monitor, gettype).Result;
-                            if (!retcode) ispass = false;
-                            else ApplyConfiguration.USB_CPrioritization = devicedata.USB_CPrioritization;
-                            writelog($"USB_CPrioritization={ApplyConfiguration.USB_CPrioritization}");
-                        }
-                    }
-                    else
-                        ApplyConfiguration.USB_CPrioritization = "NOT SUPPORT";
-
-                    if (monitor.CapabilityDic.ContainsKey("62") && monitor.CapabilityDic["62"] != null && monitor.CapabilityDic["62"].Contains("FE") && monitor.CapabilityDic["62"].Contains("FF") && monitor.CapabilityDic["62"].Contains("C000") && monitor.CapabilityDic.ContainsKey("8D") && monitor.CapabilityDic["8D"] != null && monitor.CapabilityDic["8D"].Contains("01") && monitor.CapabilityDic["8D"].Contains("02") && monitor.CapabilityDic["8D"].Contains("C000"))
-                    {
-                        rc = GetVCPCode(devMgr, monitor, "0x62").Result;
-                        int getvalue = Convert.ToInt32(rc.value);
-                        retcode = SetVCPCode(devMgr, monitor, "0x62", get_SpeakerMicrophone(devicedata.SpeakerMicrophone, getvalue)).Result;
-
-                        rc = GetVCPCode(devMgr, monitor, "0x8D").Result;
-                        int getvalue2 = Convert.ToInt32(rc.value);
-                        bool retcode2 = SetVCPCode(devMgr, monitor, "0x8D", get_SpeakerMicrophone(devicedata.SpeakerMicrophone, getvalue2)).Result;
-
-                        if (!retcode && !retcode2) ispass = false;
-                        else ApplyConfiguration.SpeakerMicrophone = devicedata.SpeakerMicrophone;
-                        writelog($"SpeakerMicrophone={ApplyConfiguration.SpeakerMicrophone}");
-                    }
-
-                    if (monitor.CapabilityDic.ContainsKey("62") && monitor.CapabilityDic["62"] != null && monitor.CapabilityDic["62"].Contains("FE") && monitor.CapabilityDic["62"].Contains("FF") && monitor.CapabilityDic["62"].Contains("C000"))
-                    {
-                        rc = GetVCPCode(devMgr, monitor, "0x62").Result;
-                        int getvalue = Convert.ToInt32(rc.value);
-                        string setvalue = get_SpeakerVolume(devicedata.SpeakerVolume, getvalue);
-                        if (setvalue != "unknown_command")
-                            retcode = SetVCPCode(devMgr, monitor, "0x62", setvalue).Result;
-                        else
-                            retcode = SetVCPCode(devMgr, monitor, "0x62", devicedata.SpeakerVolume).Result;
-                        if (!retcode) ispass = false;
-                        else ApplyConfiguration.SpeakerVolume = devicedata.SpeakerVolume;
-                        writelog($"SpeakerVolume={ApplyConfiguration.SpeakerVolume}");
-                    }
-                    else
-                        ApplyConfiguration.SpeakerVolume = "N/A";
-
-                    if (monitor.CapabilityDic.ContainsKey("8D") && monitor.CapabilityDic["8D"] != null && monitor.CapabilityDic["8D"].Contains("01") && monitor.CapabilityDic["8D"].Contains("02") && monitor.CapabilityDic["8D"].Contains("C000"))
-                    {
-                        rc = GetVCPCode(devMgr, monitor, "0x8D").Result;
-                        int getvalue = Convert.ToInt32(rc.value);
-                        retcode = SetVCPCode(devMgr, monitor, "0x8D", get_MicrophoneControl(devicedata.MicrophoneControl, getvalue)).Result;
-                        if (!retcode) ispass = false;
-                        else ApplyConfiguration.MicrophoneControl = devicedata.MicrophoneControl;
-                        writelog($"MicrophoneControl={ApplyConfiguration.MicrophoneControl}");
-                    }
-                    else
-                        ApplyConfiguration.MicrophoneControl = "N/A";
-
-                    if (monitor.CapabilityDic.ContainsKey("E4"))
-                    {
-                        retcode = SetVCPCode(devMgr, monitor, "0xE4", get_Uniformity(devicedata.Uniformity)).Result;
-                        if (!retcode) ispass = false;
-                        else ApplyConfiguration.Uniformity = devicedata.Uniformity;
-                        writelog($"Uniformity={ApplyConfiguration.Uniformity}");
-                    }
-                    else
-                        ApplyConfiguration.Uniformity = "N/A";
-
-                    await SetPowerNapAsync(get_PowerNapType_code(devicedata.PowerNap), devMgr, monitor.edid.ModelName, monitor.edid.SerialNumber);
-                    //PowerNapSetting setting = new PowerNapSetting
-                    //{
-                    //    Status = false,
-                    //    ModelName = monitor.edid.ModelName,
-                    //    SerialNumber = monitor.edid.SerialNumber,
-                    //    RunType = get_PowerNapType_code(devicedata.PowerNap)
-                    //};
-                    //retcode = await devMgr.SavePowerNapSetting(setting);
-                    //UpdateUINotify off = new UpdateUINotify();
-                    //off.UI_Field_Name = "POWERNAP;" + devicedata.PowerNap;
-                    //devMgr.OnUIUpdateNotify(off);
-                    if (!retcode) ispass = false;
-                    else ApplyConfiguration.PowerNap = devicedata.PowerNap;
-                    writelog($"PowerNap={ApplyConfiguration.PowerNap}");
-
-                    retcode = SetVCPCode(devMgr, monitor, "0xCC", GetOSDLanguage_index(devicedata.OSD_language).ToString()).Result;
-                    writelog($"OSD_language={GetOSDLanguage_index(devicedata.OSD_language).ToString()}");
-                    if (!retcode) ispass = false;
-                    else ApplyConfiguration.OSD_language = devicedata.OSD_language;
-                    writelog($"OSD_language={ApplyConfiguration.OSD_language}");
-
-                    if (ispass)
-                    {
-                        ApplyConfiguration.Result = "PASS";
-                        ApplyConfiguration.Message = "N/A";
-                    }
-                    else
-                    {
-                        ApplyConfiguration.Result = "FAIL";
-                        ApplyConfiguration.Message = "Somethings fail!";
-                    }
-                    System.Console.WriteLine(JsonConvert.SerializeObject(ApplyConfiguration, Formatting.Indented));
-                    output += "\n" + JsonConvert.SerializeObject(ApplyConfiguration, Formatting.Indented);
-                }
-            }
-            else if (ss_1[0].ToUpper() == "MOUSE")
-            {
-                CLI_RESPONSE2 cli_Response2 = new CLI_RESPONSE2();
-                cli_Response2 = JsonConvert.DeserializeObject<CLI_RESPONSE2>(jsonString_2[i]);
-                ispass = true;
-
-                if (ispass)
-                {
-                    output += $"\n  \"Result: \": \"PASS\"";
-                }
-                else
-                {
-                    output += $"\n  \"Result: \": \"FAIL\"";
-                }
-                output += "\n" + JsonConvert.SerializeObject(cli_Response2, Formatting.Indented);
-            }
-            else if (ss_1[0].ToUpper() == "KEYBOARD")
-            {
-                CLI_RESPONSE2 cli_Response2 = new CLI_RESPONSE2();
-                cli_Response2 = JsonConvert.DeserializeObject<CLI_RESPONSE2>(jsonString_2[i]);
-                ispass = true;
-
-                if (ispass)
-                {
-                    output += $"\n  \"Result: \": \"PASS\"";
-                }
-                else
-                {
-                    output += $"\n  \"Result: \": \"FAIL\"";
-                }
-                output += "\n" + JsonConvert.SerializeObject(cli_Response2, Formatting.Indented);
-            }
-            else
-            {
-                CLI_RESPONSE cli_Response = new CLI_RESPONSE();
-                cli_Response.Command = commandLineInput.Command;
-                cli_Response.TargetFeature = commandLineInput.TargetFeature;
-                cli_Response.Result = "FAIL";
-                cli_Response.Message = "Invalid command line syntax or missing -value=file.json";
-                return ((int)CLI_ExitCode.invalide_cmdline_syntax, cli_Response.ToJson());
-            }
-            return (ispass ? (int)CLI_ExitCode.success : (int)CLI_ExitCode.functional_error, output);
-        }
+        //private async Task<(int code, string result)> ApplyConfiguration_v1(IDeviceManagerSA devMgr, CommandLineInput commandLineInput)
+        //{
+        //    DisplayPropertiesInfo displayPropertiesInfo = new DisplayPropertiesInfo();
+        //    Properties displayProperties;
+        //    ALSConfig param = new ALSConfig();
+        //    string output = string.Empty;
+        //    ObjGetVCP rc = new ObjGetVCP();
+        //
+        //    List<DeviceInfo> _deviceinfo = null;
+        //    _deviceinfo = _devMgr.GetDevices().Result.deviceInfo;
+        //    string[] ss_1 = commandLineInput.Options[0].Option_Value.Split(",");
+        //    Trace.WriteLine(ss_1[0]);
+        //    Trace.WriteLine(ss_1[1]);
+        //
+        //    /*StreamReader r = new StreamReader(ss_1[1]);
+        //    string jsonString = r.ReadToEnd();;
+        //    r.Close();*/
+        //
+        //    // modify start @ 20241022 stephen: modify for CMA input config as json string
+        //    // x:\\config.json
+        //
+        //    string jsonString = String.Empty;
+        //
+        //    if ((@$"x:\config.json").ToLower().Equals(ss_1[1].ToLower()))
+        //    {
+        //        jsonString = commandLineInput.jsonDeviceConfig.ToString();
+        //    }
+        //    else
+        //    {
+        //        StreamReader sr = default;
+        //
+        //        try
+        //        {
+        //            sr = new StreamReader(ss_1[1]);
+        //            jsonString = sr.ReadToEnd();
+        //        }
+        //        catch(Exception ex)
+        //        {
+        //            Trace.WriteLine($"[CLIDisplayPlugins] ApplyConfiguration_v1 exception, message: {ex.Message}");
+        //        }
+        //        finally
+        //        {
+        //            sr.Close();
+        //        }
+        //    }
+        //    // modiffy end @ 20241022
+        //
+        //    string[] jsonString_2 = jsonString.Split("\"Device\":");
+        //    int i = 0;
+        //    int count = jsonString.Split("Index").Length - 1;
+        //
+        //    switch (ss_1[0].ToUpper())
+        //    {
+        //        case "DISPLAY":
+        //            do
+        //            {
+        //                if (jsonString_2[i].Contains("DISPLAY", StringComparison.OrdinalIgnoreCase))
+        //                {
+        //
+        //                    if (jsonString_2[i].Contains("GET", StringComparison.OrdinalIgnoreCase) && count > 0)
+        //                    {
+        //                        jsonString_2[i] = jsonString_2[i].Replace("{\r\n  \"Command\": \"GET\",", "");
+        //                        jsonString_2[i] = jsonString_2[i].Replace("  \"TargetFeature\": \"DEVICEDATA\",\r\n  \"Result\": \"PASS\",", "");
+        //                        jsonString_2[i] = jsonString_2[i].Replace("\"Message\": \"N/A\"\r\n}", "");
+        //                    }
+        //                    break;
+        //                }
+        //
+        //                i++;
+        //            } while (true);
+        //            break;
+        //
+        //        case "MOUSE":
+        //            do
+        //            {
+        //                if (jsonString_2[i].Contains("MOUSE", StringComparison.OrdinalIgnoreCase))
+        //                {
+        //                    jsonString_2[i] = jsonString_2[i].Replace("\"Device\":", "");
+        //                    jsonString_2[i] = jsonString_2[i].Replace(" \"LogicalMouse\"", "");
+        //                    if (jsonString_2[i].Contains("GET", StringComparison.OrdinalIgnoreCase) && count > 0)
+        //                    {
+        //                        jsonString_2[i] = jsonString_2[i].Replace("{\r\n  \"Command\": \"GET\",", "");
+        //                        jsonString_2[i] = jsonString_2[i].Replace("  \"TargetFeature\": \"DEVICEDATA\",\r\n  \"Result\": \"PASS\",", "");
+        //                        jsonString_2[i] = jsonString_2[i].Replace("\"Message\": \"N/A\"\r\n}", "");
+        //                    }
+        //                    break;
+        //                }
+        //                i++;
+        //            } while (true);
+        //            break;
+        //
+        //        case "KEYBOARD":
+        //            do
+        //            {
+        //                if (jsonString_2[i].Contains("KEYBOARD", StringComparison.OrdinalIgnoreCase))
+        //                {
+        //                    jsonString_2[i] = jsonString_2[i].Replace("\"Device\":", "");
+        //                    jsonString_2[i] = jsonString_2[i].Replace(" \"LogicalKeyboard\"", "");
+        //                    if (jsonString_2[i].Contains("GET", StringComparison.OrdinalIgnoreCase) && count > 0)
+        //                    {
+        //                        jsonString_2[i] = jsonString_2[i].Replace("{\r\n  \"Command\": \"GET\",", "");
+        //                        jsonString_2[i] = jsonString_2[i].Replace("  \"TargetFeature\": \"DEVICEDATA\",\r\n  \"Result\": \"PASS\",", "");
+        //                        jsonString_2[i] = jsonString_2[i].Replace("\"Message\": \"N/A\"\r\n}", "");
+        //                    }
+        //                    break;
+        //                }
+        //
+        //                i++;
+        //            } while (true);
+        //            break;
+        //    }
+        //    if (string.IsNullOrWhiteSpace(jsonString_2[i]) || count < 1)
+        //    {
+        //        CLI_RESPONSE cli_Response = new CLI_RESPONSE();
+        //        cli_Response.Command = commandLineInput.Command;
+        //        cli_Response.TargetFeature = commandLineInput.TargetFeature;
+        //        cli_Response.Result = "FAIL";
+        //        cli_Response.Message = "file format is not valid.";
+        //        return ((int)CLI_ExitCode.invalide_cmdline_syntax, cli_Response.ToJson());
+        //    }
+        //    Get_DeviceData devicedata = JsonConvert.DeserializeObject<Get_DeviceData>(jsonString_2[i]);
+        //
+        //    bool ispass = true;
+        //    //string[] not_support_list = new string[] { "ColorPreset", "ColorManagement"};
+        //
+        //    List<int> _monitorIndeies = new List<int>();
+        //
+        //    if (_AllInfoMonitors == null)
+        //        _AllInfoMonitors = devMgr.GetMonitors().Result;
+        //    _monitorIndeies = GetMonitorIndeies(commandLineInput, _AllInfoMonitors);
+        //    writelog($"CLI /set -display=applyConfiguration -value={commandLineInput.Options[0].Option_Value}");
+        //    if (ss_1[0].ToUpper() == "DISPLAY")
+        //    {
+        //        foreach (int idx in _monitorIndeies)
+        //        {
+        //            MonitorInfo monitor = _AllInfoMonitors[idx];
+        //            Apply_Configuration ApplyConfiguration = new Apply_Configuration(monitor);
+        //            ApplyConfiguration.Command = commandLineInput.Command;
+        //            ApplyConfiguration.TargetFeature = commandLineInput.TargetFeature;
+        //            //ApplyConfiguration.Model = monitor.modelName;
+        //            //ApplyConfiguration.SerialNumber = monitor.edid.SerialNumber;
+        //            //ApplyConfiguration.Index = change_0base_to_1base((monitor.Index).ToString());
+        //            //ApplyConfiguration.ServiceTag = monitor.edid.ServiceTag;
+        //
+        //            bool retcode = SetVCPCode(devMgr, monitor, "0xAA", get_ScreenOrientation_code(devicedata.ScreenOrientation)).Result;
+        //            if (!retcode) ispass = false;
+        //            else ApplyConfiguration.ScreenOrientation = devicedata.ScreenOrientation;
+        //            writelog($"ScreenOrientation={ApplyConfiguration.ScreenOrientation}");
+        //
+        //            retcode = SetVCPCode(devMgr, monitor, "0x60", get_InputSource_code(get_inputsource_type(devicedata.ActiveInputSource.ToUpper()).ToString())).Result;
+        //            if (!retcode) ispass = false;
+        //            else ApplyConfiguration.ActiveInputSource = devicedata.ActiveInputSource;
+        //            writelog($"ActiveInputSource={ApplyConfiguration.ActiveInputSource}");
+        //
+        //            displayPropertiesInfo = devMgr.GetDisplayPropertiesInfo(monitor).Result;
+        //            string[] ss = devicedata.OptimalResolution.Split(" ");
+        //            displayProperties = new Properties() { Resolutions_Width = int.Parse(ss[0]), Resolutions_High = int.Parse(ss[2]), Frequency = int.Parse(ss[4].Split(".00Hz")[0]) };
+        //            retcode = devMgr.SetDisplayPropertiest(monitor, displayProperties, displayPropertiesInfo.CurrentOrientation).Result;
+        //            if (!retcode) ispass = false;
+        //            else ApplyConfiguration.OptimalResolution = devicedata.OptimalResolution;
+        //            ApplyConfiguration.Resolution = ApplyConfiguration.OptimalResolution;
+        //            writelog($"OptimalResolution={ApplyConfiguration.OptimalResolution}");
+        //
+        //            //int gcd = (int)GCD((ulong)displayProperties.Resolutions_Width, (ulong)displayProperties.Resolutions_High);
+        //            //ApplyConfiguration.AspectRatio = $"{displayProperties.Resolutions_Width / gcd}:{displayProperties.Resolutions_High / gcd}";
+        //            //writelog($"AspectRatio={ApplyConfiguration.AspectRatio}");
+        //            string gcd = "N/A";
+        //            if(displayProperties.Resolutions_Width != 0 && displayProperties.Resolutions_High!= 0)
+        //                gcd = Get_AR((double)displayProperties.Resolutions_Width / (double)displayProperties.Resolutions_High);
+        //            ApplyConfiguration.AspectRatio = $"{gcd}";
+        //            writelog($"AspectRatio= {gcd}");
+        //
+        //            if (monitor.CapabilityDic.ContainsKey("12"))
+        //            {
+        //                retcode = SetVCPCode(devMgr, monitor, "0x12", devicedata.ContrastLevel.Substring(0, devicedata.ContrastLevel.Length - 1)).Result;
+        //                if (!retcode) ispass = false;
+        //                else ApplyConfiguration.ContrastLevel = devicedata.ContrastLevel;
+        //                writelog($"ContrastLevel={ApplyConfiguration.ContrastLevel}");
+        //
+        //                retcode = SetVCPCode(devMgr, monitor, "0x10", devicedata.BrightnessLevel.Substring(0, devicedata.BrightnessLevel.Length - 1)).Result;
+        //                if (!retcode) ispass = false;
+        //                else ApplyConfiguration.BrightnessLevel = devicedata.BrightnessLevel;
+        //                writelog($"BrightnessLevel={ApplyConfiguration.BrightnessLevel}");
+        //            }
+        //            else
+        //            {
+        //                retcode = SetVCPCode(devMgr, monitor, "0x10", devicedata.LuminanceLevel.Substring(0, devicedata.LuminanceLevel.Length - 1)).Result;
+        //                if (!retcode) ispass = false;
+        //                else ApplyConfiguration.LuminanceLevel = devicedata.LuminanceLevel;
+        //                writelog($"LuminanceLevel={ApplyConfiguration.LuminanceLevel}");
+        //            }
+        //
+        //            retcode = await devMgr.SetALSFeatureValue(monitor, param, ALSFeatureQueryType.AutoBrightness, devicedata.AutoBrightness.ToUpper());
+        //            if (!retcode) ispass = false;
+        //            else ApplyConfiguration.AutoBrightness = devicedata.AutoBrightness;
+        //            writelog($"AutoBrightness={ApplyConfiguration.AutoBrightness}");
+        //
+        //            retcode = await devMgr.SetALSFeatureValue(monitor, param, ALSFeatureQueryType.AutoBrightnessRangeLevel, get_RangeLevel(devicedata.AutoBrightnessRangeLevel.ToUpper()));
+        //            if (!retcode) ispass = false;
+        //            else ApplyConfiguration.AutoBrightnessRangeLevel = devicedata.AutoBrightnessRangeLevel;
+        //            writelog($"AutoBrightnessRangeLevel={ApplyConfiguration.AutoBrightnessRangeLevel}");
+        //
+        //            retcode = await devMgr.SetALSFeatureValue(monitor, param, ALSFeatureQueryType.AutoColorTemperature, devicedata.AutoColorTemp.ToUpper());
+        //            if (!retcode) ispass = false;
+        //            else ApplyConfiguration.AutoColorTemp = devicedata.AutoColorTemp;
+        //            writelog($"AutoColorTemp={ApplyConfiguration.AutoColorTemp}");
+        //
+        //            retcode = await devMgr.SetALSFeatureValue(monitor, param, ALSFeatureQueryType.PrimaryMonitorSync, devicedata.PrimaryMonitorForSync.ToUpper());
+        //            if (!retcode) ispass = false;
+        //            else ApplyConfiguration.PrimaryMonitorForSync = devicedata.PrimaryMonitorForSync;
+        //            writelog($"PrimaryMonitorForSync={ApplyConfiguration.PrimaryMonitorForSync}");
+        //
+        //            if (displayPropertiesInfo.SupportedUSBCPrioritization)
+        //            {
+        //                USBCPrioritizationType gettype = get_USBCPrioritization(devicedata.USB_CPrioritization);
+        //                if (gettype != USBCPrioritizationType.Unknow)
+        //                {
+        //                    retcode = devMgr.SetUSBCPrioritizationType(monitor, gettype).Result;
+        //                    if (!retcode) ispass = false;
+        //                    else ApplyConfiguration.USB_CPrioritization = devicedata.USB_CPrioritization;
+        //                    writelog($"USB_CPrioritization={ApplyConfiguration.USB_CPrioritization}");
+        //                }
+        //            }
+        //            else
+        //                ApplyConfiguration.USB_CPrioritization = "NOT SUPPORT";
+        //
+        //            if (monitor.CapabilityDic.ContainsKey("62") && monitor.CapabilityDic["62"] != null && monitor.CapabilityDic["62"].Contains("FE") && monitor.CapabilityDic["62"].Contains("FF") && monitor.CapabilityDic["62"].Contains("C000") && monitor.CapabilityDic.ContainsKey("8D") && monitor.CapabilityDic["8D"] != null && monitor.CapabilityDic["8D"].Contains("01") && monitor.CapabilityDic["8D"].Contains("02") && monitor.CapabilityDic["8D"].Contains("C000"))
+        //            {
+        //                rc = GetVCPCode(devMgr, monitor, "0x62").Result;
+        //                int getvalue = Convert.ToInt32(rc.value);
+        //                retcode = SetVCPCode(devMgr, monitor, "0x62", get_SpeakerMicrophone(devicedata.SpeakerMicrophone, getvalue)).Result;
+        //
+        //                rc = GetVCPCode(devMgr, monitor, "0x8D").Result;
+        //                int getvalue2 = Convert.ToInt32(rc.value);
+        //                bool retcode2 = SetVCPCode(devMgr, monitor, "0x8D", get_SpeakerMicrophone(devicedata.SpeakerMicrophone, getvalue2)).Result;
+        //
+        //                if (!retcode && !retcode2) ispass = false;
+        //                else ApplyConfiguration.SpeakerMicrophone = devicedata.SpeakerMicrophone;
+        //                writelog($"SpeakerMicrophone={ApplyConfiguration.SpeakerMicrophone}");
+        //            }
+        //
+        //            if (monitor.CapabilityDic.ContainsKey("62") && monitor.CapabilityDic["62"] != null && monitor.CapabilityDic["62"].Contains("FE") && monitor.CapabilityDic["62"].Contains("FF") && monitor.CapabilityDic["62"].Contains("C000"))
+        //            {
+        //                rc = GetVCPCode(devMgr, monitor, "0x62").Result;
+        //                int getvalue = Convert.ToInt32(rc.value);
+        //                string setvalue = get_SpeakerVolume(devicedata.SpeakerVolume, getvalue);
+        //                if (setvalue != "unknown_command")
+        //                    retcode = SetVCPCode(devMgr, monitor, "0x62", setvalue).Result;
+        //                else
+        //                    retcode = SetVCPCode(devMgr, monitor, "0x62", devicedata.SpeakerVolume).Result;
+        //                if (!retcode) ispass = false;
+        //                else ApplyConfiguration.SpeakerVolume = devicedata.SpeakerVolume;
+        //                writelog($"SpeakerVolume={ApplyConfiguration.SpeakerVolume}");
+        //            }
+        //            else
+        //                ApplyConfiguration.SpeakerVolume = "N/A";
+        //
+        //            if (monitor.CapabilityDic.ContainsKey("8D") && monitor.CapabilityDic["8D"] != null && monitor.CapabilityDic["8D"].Contains("01") && monitor.CapabilityDic["8D"].Contains("02") && monitor.CapabilityDic["8D"].Contains("C000"))
+        //            {
+        //                rc = GetVCPCode(devMgr, monitor, "0x8D").Result;
+        //                int getvalue = Convert.ToInt32(rc.value);
+        //                retcode = SetVCPCode(devMgr, monitor, "0x8D", get_MicrophoneControl(devicedata.MicrophoneControl, getvalue)).Result;
+        //                if (!retcode) ispass = false;
+        //                else ApplyConfiguration.MicrophoneControl = devicedata.MicrophoneControl;
+        //                writelog($"MicrophoneControl={ApplyConfiguration.MicrophoneControl}");
+        //            }
+        //            else
+        //                ApplyConfiguration.MicrophoneControl = "N/A";
+        //
+        //            if (monitor.CapabilityDic.ContainsKey("E4"))
+        //            {
+        //                retcode = SetVCPCode(devMgr, monitor, "0xE4", get_Uniformity(devicedata.Uniformity)).Result;
+        //                if (!retcode) ispass = false;
+        //                else ApplyConfiguration.Uniformity = devicedata.Uniformity;
+        //                writelog($"Uniformity={ApplyConfiguration.Uniformity}");
+        //            }
+        //            else
+        //                ApplyConfiguration.Uniformity = "N/A";
+        //
+        //            await SetPowerNapAsync(get_PowerNapType_code(devicedata.PowerNap), devMgr, monitor.edid.ModelName, monitor.edid.SerialNumber);
+        //            //PowerNapSetting setting = new PowerNapSetting
+        //            //{
+        //            //    Status = false,
+        //            //    ModelName = monitor.edid.ModelName,
+        //            //    SerialNumber = monitor.edid.SerialNumber,
+        //            //    RunType = get_PowerNapType_code(devicedata.PowerNap)
+        //            //};
+        //            //retcode = await devMgr.SavePowerNapSetting(setting);
+        //            //UpdateUINotify off = new UpdateUINotify();
+        //            //off.UI_Field_Name = "POWERNAP;" + devicedata.PowerNap;
+        //            //devMgr.OnUIUpdateNotify(off);
+        //            if (!retcode) ispass = false;
+        //            else ApplyConfiguration.PowerNap = devicedata.PowerNap;
+        //            writelog($"PowerNap={ApplyConfiguration.PowerNap}");
+        //
+        //            retcode = SetVCPCode(devMgr, monitor, "0xCC", GetOSDLanguage_index(devicedata.OSD_language).ToString()).Result;
+        //            writelog($"OSD_language={GetOSDLanguage_index(devicedata.OSD_language).ToString()}");
+        //            if (!retcode) ispass = false;
+        //            else ApplyConfiguration.OSD_language = devicedata.OSD_language;
+        //            writelog($"OSD_language={ApplyConfiguration.OSD_language}");
+        //
+        //            if (ispass)
+        //            {
+        //                ApplyConfiguration.Result = "PASS";
+        //                ApplyConfiguration.Message = "N/A";
+        //            }
+        //            else
+        //            {
+        //                ApplyConfiguration.Result = "FAIL";
+        //                ApplyConfiguration.Message = "Somethings fail!";
+        //            }
+        //            System.Console.WriteLine(JsonConvert.SerializeObject(ApplyConfiguration, Formatting.Indented));
+        //            output += "\n" + JsonConvert.SerializeObject(ApplyConfiguration, Formatting.Indented);
+        //        }
+        //    }
+        //    else if (ss_1[0].ToUpper() == "MOUSE")
+        //    {
+        //        CLI_RESPONSE2 cli_Response2 = new CLI_RESPONSE2();
+        //        cli_Response2 = JsonConvert.DeserializeObject<CLI_RESPONSE2>(jsonString_2[i]);
+        //        ispass = true;
+        //
+        //        if (ispass)
+        //        {
+        //            output += $"\n  \"Result: \": \"PASS\"";
+        //        }
+        //        else
+        //        {
+        //            output += $"\n  \"Result: \": \"FAIL\"";
+        //        }
+        //        output += "\n" + JsonConvert.SerializeObject(cli_Response2, Formatting.Indented);
+        //    }
+        //    else if (ss_1[0].ToUpper() == "KEYBOARD")
+        //    {
+        //        CLI_RESPONSE2 cli_Response2 = new CLI_RESPONSE2();
+        //        cli_Response2 = JsonConvert.DeserializeObject<CLI_RESPONSE2>(jsonString_2[i]);
+        //        ispass = true;
+        //
+        //        if (ispass)
+        //        {
+        //            output += $"\n  \"Result: \": \"PASS\"";
+        //        }
+        //        else
+        //        {
+        //            output += $"\n  \"Result: \": \"FAIL\"";
+        //        }
+        //        output += "\n" + JsonConvert.SerializeObject(cli_Response2, Formatting.Indented);
+        //    }
+        //    else
+        //    {
+        //        CLI_RESPONSE cli_Response = new CLI_RESPONSE();
+        //        cli_Response.Command = commandLineInput.Command;
+        //        cli_Response.TargetFeature = commandLineInput.TargetFeature;
+        //        cli_Response.Result = "FAIL";
+        //        cli_Response.Message = "Invalid command line syntax or missing -value=file.json";
+        //        return ((int)CLI_ExitCode.invalide_cmdline_syntax, cli_Response.ToJson());
+        //    }
+        //    return (ispass ? (int)CLI_ExitCode.success : (int)CLI_ExitCode.functional_error, output);
+        //}
 
         private async Task<(int code, string result)> ApplyConfiguration(IDeviceManagerSA devMgr, CommandLineInput commandLineInput)
         {
@@ -11748,50 +11457,19 @@ namespace DDPM.CLI.Plugins.Display
                         switch (ss_1[0].ToUpper())
                         {
                             case "DISPLAY":
-                                do
-                                {
-                                    if (jsonString_2[i].Contains("DISPLAY", StringComparison.OrdinalIgnoreCase))
-                                    {
-
-                                        if (jsonString_2[i].Contains("GET", StringComparison.OrdinalIgnoreCase) && count > 0)
-                                        {
-                                            jsonString_2[i] = jsonString_2[i].Replace("{\r\n  \"COMMAND\": \"GET\",", "");
-                                            jsonString_2[i] = jsonString_2[i].Replace("  \"TARGETFEATURE\": \"DEVICEDATA\",\r\n  \"RESULT\": \"PASS\",", "");
-                                            jsonString_2[i] = jsonString_2[i].Replace("\"MESSAGE\": \"N/A\"\r\n}", "");
-                                        }
-                                        break;
-                                    }
-
-                                    i++;
-                                } while (true);
-                                break;
-
                             case "MOUSE":
-                                do
-                                {
-                                    if (jsonString_2[i].Contains("MOUSE", StringComparison.OrdinalIgnoreCase))
-                                    {
-                                        jsonString_2[i] = jsonString_2[i].Replace("\"DEVICE\":", "");
-                                        jsonString_2[i] = jsonString_2[i].Replace(" \"LOGICALMOUSE\"", "");
-                                        if (jsonString_2[i].Contains("GET", StringComparison.OrdinalIgnoreCase) && count > 0)
-                                        {
-                                            jsonString_2[i] = jsonString_2[i].Replace("{\r\n  \"COMMAND\": \"GET\",", "");
-                                            jsonString_2[i] = jsonString_2[i].Replace("  \"TARGETFEATURE\": \"DEVICEDATA\",\r\n  \"RESULT\": \"PASS\",", "");
-                                            jsonString_2[i] = jsonString_2[i].Replace("\"MESSAGE\": \"N/A\"\r\n}", "");
-                                        }
-                                        break;
-                                    }
-                                    i++;
-                                } while (true);
-                                break;
-
                             case "KEYBOARD":
+                            case "WEBCAM":
+                            case "WIREDAUDIO":
+                            case "HEADSET":
+                            case "PEN":
+                            case "DOCK":
                                 do
                                 {
-                                    if (jsonString_2[i].Contains("KEYBOARD", StringComparison.OrdinalIgnoreCase))
+                                    if (jsonString_2[i].Contains(ss_1[0].ToUpper(), StringComparison.OrdinalIgnoreCase))
                                     {
                                         jsonString_2[i] = jsonString_2[i].Replace("\"DEVICE\":", "");
-                                        jsonString_2[i] = jsonString_2[i].Replace(" \"LOGICALKEYBOARD\"", "");
+                                        jsonString_2[i] = jsonString_2[i].Replace($" \"LOGICAL{ss_1[0].ToUpper()}\"", "");
                                         if (jsonString_2[i].Contains("GET", StringComparison.OrdinalIgnoreCase) && count > 0)
                                         {
                                             jsonString_2[i] = jsonString_2[i].Replace("{\r\n  \"COMMAND\": \"GET\",", "");
@@ -11800,12 +11478,11 @@ namespace DDPM.CLI.Plugins.Display
                                         }
                                         break;
                                     }
-
                                     i++;
                                 } while (true);
                                 break;
                         }
-                        if (string.IsNullOrWhiteSpace(jsonString_2[i]) || count < 1)
+                        if (jsonString_2.Count() == 0 || i >= jsonString_2.Count() || string.IsNullOrWhiteSpace(jsonString_2[i]) || count < 1)
                         {
                             CLI_RESPONSE cli_Response_ = new CLI_RESPONSE();
                             cli_Response_.Command = commandLineInput.Command;
@@ -11814,7 +11491,7 @@ namespace DDPM.CLI.Plugins.Display
                             cli_Response_.Message = "file format is not valid.";
                             return ((int)CLI_ExitCode.invalide_cmdline_syntax, cli_Response_.ToJson());
                         }
-                        Get_DeviceData devicedata = JsonConvert.DeserializeObject<Get_DeviceData>(jsonString_2[i]);
+                        //Get_DeviceData devicedata = JsonConvert.DeserializeObject<Get_DeviceData>(jsonString_2[i]);
 
                         // malik
                         // dynamic jsonObject = JsonConvert.DeserializeObject<dynamic>(jsonString_2[i]);
@@ -11831,65 +11508,93 @@ namespace DDPM.CLI.Plugins.Display
 
                         _monitorIndeies = GetMonitorIndeies(commandLineInput, _AllInfoMonitors);
                         writelog($"CLI /set -display=applyConfiguration -value={commandLineInput.Options[0].Option_Value}");
-                        if (ss_1[0].ToUpper() == "DISPLAY")
+
+                        switch (ss_1[0].ToUpper())
                         {
-                            foreach (int idx in _monitorIndeies)
-                            {
-                                MonitorInfo monitor = _AllInfoMonitors[idx];
-                                Apply_Configuration ApplyConfiguration = new Apply_Configuration(monitor);
-                                ApplyConfiguration.Command = commandLineInput.Command;
-                                ApplyConfiguration.TargetFeature = commandLineInput.TargetFeature;
-                                //ApplyConfiguration.Model = monitor.modelName;
-                                //ApplyConfiguration.SerialNumber = monitor.edid.SerialNumber;
-                                //ApplyConfiguration.Index = change_0base_to_1base((monitor.Index).ToString());
-                                //ApplyConfiguration.ServiceTag = monitor.edid.ServiceTag;
-
-                                // malik
-                                bool retcode = false;
-                                displayPropertiesInfo = devMgr.GetDisplayPropertiesInfo(monitor).Result;
-
-                                foreach (var property in jsonObject.Properties())
+                            case "DISPLAY":
+                                foreach (int idx in _monitorIndeies)
                                 {
-                                    Console.WriteLine($"Key: {property.Name}, Value: {property.Value}");
+                                    MonitorInfo monitor = _AllInfoMonitors[idx];
+                                    Apply_Configuration ApplyConfiguration = new Apply_Configuration(monitor);
+                                    ApplyConfiguration.Command = commandLineInput.Command;
+                                    ApplyConfiguration.TargetFeature = commandLineInput.TargetFeature;
+                                    //ApplyConfiguration.Model = monitor.modelName;
+                                    //ApplyConfiguration.SerialNumber = monitor.edid.SerialNumber;
+                                    //ApplyConfiguration.Index = change_0base_to_1base((monitor.Index).ToString());
+                                    //ApplyConfiguration.ServiceTag = monitor.edid.ServiceTag;
 
-                                    switch (property.Name.ToString())
+                                    // malik
+                                    bool retcode = false;
+                                    displayPropertiesInfo = devMgr.GetDisplayPropertiesInfo(monitor).Result;
+
+                                    foreach (var property in jsonObject.Properties())
                                     {
-                                        case "SCREENORIENTATION":
-                                            writelog($"ScreenOrientation entry");
-                                            //if (monitor.CapabilityDic.ContainsKey("AA") && monitor.CapabilityDic["AA"] != null && monitor.CapabilityDic["AA"].Contains("00"))
-                                            //{
-                                                retcode = SetVCPCode(devMgr, monitor, "0xAA", get_ScreenOrientation_code(property.Value.ToString())).Result;
+                                        Console.WriteLine($"Key: {property.Name}, Value: {property.Value}");
+
+                                        switch (property.Name.ToString())
+                                        {
+                                            case "SCREENORIENTATION":
+                                                writelog($"ScreenOrientation entry");
+                                                //if (monitor.CapabilityDic.ContainsKey("AA") && monitor.CapabilityDic["AA"] != null && monitor.CapabilityDic["AA"].Contains("00"))
+                                                //{
+                                                DisplayOrientation? displayOrientation = null;
+                                                switch (property.Value.ToString())
+                                                {
+                                                    case "LANDSCAPE":
+                                                        displayOrientation = DisplayOrientation.Angle0;
+                                                        break;
+
+                                                    case "PORTRAIT":
+                                                        displayOrientation = DisplayOrientation.Angle90;
+                                                        break;
+
+                                                    case "LANDSCAPE_FLIPPED":
+                                                        displayOrientation = DisplayOrientation.Angle180;
+                                                        break;
+
+                                                    case "PORTRAIT_FLIPPED":
+                                                        displayOrientation = DisplayOrientation.Angle270;
+                                                        break;
+
+                                                    default:
+                                                        retcode = false;
+                                                        break;
+                                                }
+                                                if (displayOrientation != null)
+                                                {
+                                                    retcode = _devMgr.SetDisplayPropertiest(monitor, new Properties(), (DisplayOrientation)displayOrientation).Result;
+                                                }
                                                 if (!retcode) ispass = false;
                                                 else ApplyConfiguration.ScreenOrientation = property.Value.ToString();
                                                 writelog($"ScreenOrientation={ApplyConfiguration.ScreenOrientation}");
-                                            //}
-                                            //else
-                                            //{
-                                            //    writelog($"ScreenOrientation VCP not support");
-                                            //    output += $"\n  \"Result: \": \"ScreenOrientation VCP not support\"";
-                                            //}
-                                            break;
+                                                //}
+                                                //else
+                                                //{
+                                                //    writelog($"ScreenOrientation VCP not support");
+                                                //    output += $"\n  \"Result: \": \"ScreenOrientation VCP not support\"";
+                                                //}
+                                                break;
 
-                                        case "ACTIVEINPUTSOURCE":
-                                            writelog($"ActiveInputSource entry");
-                                            if (monitor.CapabilityDic.ContainsKey("60"))
-                                            {
-                                                retcode = SetVCPCode(devMgr, monitor, "0x60", get_InputSource_code(get_inputsource_type(property.Value.ToString().ToUpper()).ToString())).Result;
+                                            case "ACTIVEINPUTSOURCE":
+                                                writelog($"ActiveInputSource entry");
+                                                if (monitor.CapabilityDic.ContainsKey("60"))
+                                                {
+                                                    retcode = SetVCPCode(devMgr, monitor, "0x60", get_InputSource_code(get_inputsource_type(property.Value.ToString().ToUpper()).ToString())).Result;
                                                 if (!retcode) ispass = false;
-                                                else ApplyConfiguration.ActiveInputSource = property.Value.ToString();
-                                                writelog($"ActiveInputSource={ApplyConfiguration.ActiveInputSource}");
-                                            }
-                                            else
-                                            {
-                                                writelog($"ActiveInputSource VCP not support");
-                                                output += $"\n  \"Result: \": \"ActiveInputSource VCP not support\"";
-                                            }
-                                            break;
+                                                    else ApplyConfiguration.ActiveInputSource = property.Value.ToString();
+                                                    writelog($"ActiveInputSource={ApplyConfiguration.ActiveInputSource}");
+                                                }
+                                                else
+                                                {
+                                                    writelog($"ActiveInputSource VCP not support");
+                                                    output += $"\n  \"Result: \": \"ActiveInputSource VCP not support\"";
+                                                }
+                                                break;
 
-                                        case "OPTIMALRESOLUTION":
-                                            writelog($"OptimalResolution entry");
-                                            //if (monitor.CapabilityDic.ContainsKey("AA") && monitor.CapabilityDic["AA"] != null && monitor.CapabilityDic["AA"].Contains("00"))
-                                            //{
+                                            case "OPTIMALRESOLUTION":
+                                                writelog($"OptimalResolution entry");
+                                                //if (monitor.CapabilityDic.ContainsKey("AA") && monitor.CapabilityDic["AA"] != null && monitor.CapabilityDic["AA"].Contains("00"))
+                                                //{
                                                 string[] ss = property.Value.ToString().Split(" ");
                                                 displayProperties = new Properties() { Resolutions_Width = int.Parse(ss[0]), Resolutions_High = int.Parse(ss[2]), Frequency = int.Parse(ss[4].Split(".00HZ")[0]) };
                                                 retcode = devMgr.SetDisplayPropertiest(monitor, displayProperties, displayPropertiesInfo.CurrentOrientation).Result;
@@ -11897,355 +11602,343 @@ namespace DDPM.CLI.Plugins.Display
                                                 else ApplyConfiguration.OptimalResolution = property.Value.ToString();
                                                 ApplyConfiguration.Resolution = ApplyConfiguration.OptimalResolution;
                                                 writelog($"OptimalResolution={ApplyConfiguration.OptimalResolution}");
-                                            //}
-                                            //else
-                                            //{
-                                            //    writelog($"OptimalResolution VCP not support");
-                                            //    output += $"\n  \"Result: \": \"OptimalResolution VCP not support\"";
-                                            //}
-                                            break;
+                                                //}
+                                                //else
+                                                //{
+                                                //    writelog($"OptimalResolution VCP not support");
+                                                //    output += $"\n  \"Result: \": \"OptimalResolution VCP not support\"";
+                                                //}
+                                                break;
 
-                                        //case "AspectRatio":
+                                            //case "AspectRatio":
 
-                                        //    int gcd = (int)GCD((ulong)displayProperties.Resolutions_Width, (ulong)displayProperties.Resolutions_High);
-                                        //    ApplyConfiguration.AspectRatio = $"{displayProperties.Resolutions_Width / gcd}:{displayProperties.Resolutions_High / gcd}";
-                                        //    writelog($"AspectRatio={ApplyConfiguration.AspectRatio}");
-                                        //    break;
+                                            //    int gcd = (int)GCD((ulong)displayProperties.Resolutions_Width, (ulong)displayProperties.Resolutions_High);
+                                            //    ApplyConfiguration.AspectRatio = $"{displayProperties.Resolutions_Width / gcd}:{displayProperties.Resolutions_High / gcd}";
+                                            //    writelog($"AspectRatio={ApplyConfiguration.AspectRatio}");
+                                            //    break;
 
-                                        case "CONTRASTLEVEL":
-                                            writelog($"ContrastLevel entry");
-                                            if (monitor.CapabilityDic.ContainsKey("12"))
-                                            {
-                                                retcode = SetVCPCode(devMgr, monitor, "0x12", property.Value.ToString().Substring(0, property.Value.ToString().Length - 1)).Result;
-                                                if (!retcode) ispass = false;
-                                                else ApplyConfiguration.ContrastLevel = property.Value.ToString();
-                                                writelog($"ContrastLevel={ApplyConfiguration.ContrastLevel}");
-                                            }
-                                            else
-                                            {
-                                                writelog($"ContrastLevel VCP not support");
-                                                output += $"\n  \"Result: \": \"ContrastLevel VCP not support\"";
-                                            }
-                                            break;
-
-                                        case "BRIGHTNESSLEVEL":
-                                            writelog($"BrightnessLevel entry");
-                                            if (monitor.CapabilityDic.ContainsKey("12"))
-                                            {
-                                                retcode = SetVCPCode(devMgr, monitor, "0x10", property.Value.ToString().Substring(0, property.Value.ToString().Length - 1)).Result;
-                                                if (!retcode) ispass = false;
-                                                else ApplyConfiguration.BrightnessLevel = property.Value.ToString();
-                                                writelog($"BrightnessLevel={ApplyConfiguration.BrightnessLevel}");
-                                            }
-                                            else
-                                            {
-                                                writelog($"BrightnessLevel VCP not support");
-                                                output += $"\n  \"Result: \": \"BrightnessLevel VCP not support\"";
-                                            }
-                                            break;
-
-                                        case "LUMINANCELEVEL":
-                                            writelog($"LuminanceLevel entry");
-                                            if (!monitor.CapabilityDic.ContainsKey("12"))
-                                            {
-                                                retcode = SetVCPCode(devMgr, monitor, "0x10", property.Value.ToString().Substring(0, property.Value.ToString().Length - 1)).Result;
-                                                if (!retcode) ispass = false;
-                                                else ApplyConfiguration.LuminanceLevel = property.Value.ToString();
-                                                writelog($"LuminanceLevel={ApplyConfiguration.LuminanceLevel}");
-                                            }
-                                            else
-                                            {
-                                                writelog($"LuminanceLevel VCP not support");
-                                                output += $"\n  \"Result: \": \"LuminanceLevel VCP not support\"";
-                                            }
-                                            break;
-
-                                        case "AUTOBRIGHTNESS":
-                                            writelog($"AutoBrightness entry");
-                                            if (monitor.CapabilityDic.ContainsKey("66"))
-                                            {
-                                                retcode = await devMgr.SetALSFeatureValue(monitor, param, ALSFeatureQueryType.AutoBrightness, property.Value.ToString().ToUpper());
-                                                if (!retcode) ispass = false;
-                                                else ApplyConfiguration.AutoBrightness = property.Value.ToString();
-                                                writelog($"AutoBrightness={ApplyConfiguration.AutoBrightness}");
-                                            }
-                                            else
-                                            {
-                                                writelog($"AutoBrightness VCP not support");
-                                                output += $"\n  \"Result: \": \"AutoBrightness VCP not support\"";
-                                            }
-                                            break;
-
-                                        case "AUTOBRIGHTNESSRANGELEVEL":
-                                            writelog($"AutoBrightnessRangeLevel entry");
-                                            if (monitor.CapabilityDic.ContainsKey("66"))
-                                            {
-                                                retcode = await devMgr.SetALSFeatureValue(monitor, param, ALSFeatureQueryType.AutoBrightnessRangeLevel, get_RangeLevel(property.Value.ToString().ToUpper()));
-                                                if (!retcode) ispass = false;
-                                                else ApplyConfiguration.AutoBrightnessRangeLevel = property.Value.ToString();
-                                                writelog($"AutoBrightnessRangeLevel={ApplyConfiguration.AutoBrightnessRangeLevel}");
-                                            }
-                                            else
-                                            {
-                                                writelog($"AutoBrightnessRangeLevel VCP not support");
-                                                output += $"\n  \"Result: \": \"AutoBrightnessRangeLevel VCP not support\"";
-                                            }
-                                            break;
-
-                                        case "AUTOCOLORTEMP":
-                                            writelog($"AutoColorTemp entry");
-                                            if (monitor.CapabilityDic.ContainsKey("66"))
-                                            {
-                                                retcode = await devMgr.SetALSFeatureValue(monitor, param, ALSFeatureQueryType.AutoColorTemperature, property.Value.ToString().ToUpper());
-                                                if (!retcode) ispass = false;
-                                                else ApplyConfiguration.AutoColorTemp = property.Value.ToString();
-                                                writelog($"AutoColorTemp={ApplyConfiguration.AutoColorTemp}");
-                                            }
-                                            else
-                                            {
-                                                writelog($"AutoColorTemp VCP not support");
-                                                output += $"\n  \"Result: \": \"AutoColorTemp VCP not support\"";
-                                            }
-                                            break;
-
-                                        case "PRIMARYMONITORFORSYNC":
-                                            writelog($"PrimaryMonitorForSync entry");
-                                            if (monitor.CapabilityDic.ContainsKey("66"))
-                                            {
-                                                retcode = await devMgr.SetALSFeatureValue(monitor, param, ALSFeatureQueryType.PrimaryMonitorSync, property.Value.ToString().ToUpper());
-                                                if (!retcode) ispass = false;
-                                                else ApplyConfiguration.PrimaryMonitorForSync = property.Value.ToString();
-                                                writelog($"PrimaryMonitorForSync={ApplyConfiguration.PrimaryMonitorForSync}");
-                                            }
-                                            else
-                                            {
-                                                writelog($"PrimaryMonitorForSync VCP not support");
-                                                output += $"\n  \"Result: \": \"PrimaryMonitorForSync VCP not support\"";
-                                            }
-                                            break;
-
-                                        case "USB_CPRIORITIZATION":
-                                            if (displayPropertiesInfo.SupportedUSBCPrioritization)
-                                            {
-                                                USBCPrioritizationType gettype = get_USBCPrioritization(property.Value.ToString());
-                                                if (gettype != USBCPrioritizationType.Unknow)
+                                            case "CONTRASTLEVEL":
+                                                writelog($"ContrastLevel entry");
+                                                if (monitor.CapabilityDic.ContainsKey("12"))
                                                 {
-                                                    retcode = devMgr.SetUSBCPrioritizationType(monitor, gettype).Result;
-                                                    if (!retcode) ispass = false;
-                                                    else ApplyConfiguration.USB_CPrioritization = property.Value.ToString();
-                                                    writelog($"USB_CPrioritization={ApplyConfiguration.USB_CPrioritization}");
+                                                    retcode = SetVCPCode(devMgr, monitor, "0x12", property.Value.ToString().Substring(0, property.Value.ToString().Length - 1)).Result;
+                                                if (!retcode) ispass = false;
+                                                    else ApplyConfiguration.ContrastLevel = property.Value.ToString();
+                                                    writelog($"ContrastLevel={ApplyConfiguration.ContrastLevel}");
                                                 }
-                                            }
-                                            else
-                                            {
-                                                ApplyConfiguration.USB_CPrioritization = "NOT SUPPORT";
-                                                output += $"\n  \"Result: \": \"USB_CPrioritization not support\"";
-                                            }
+                                                else
+                                                {
+                                                    writelog($"ContrastLevel VCP not support");
+                                                    output += $"\n  \"Result: \": \"ContrastLevel VCP not support\"";
+                                                }
+                                                break;
 
-                                            break;
-                                        case "COLORMANAGEMENT":
-                                            ColorManagementRunType colorManagementType = get_ColorManagement(property.Value.ToString());
-                                            switch (colorManagementType)
-                                            {
-                                                case ColorManagementRunType.Off:
-                                                case ColorManagementRunType.Byhost:
-                                                case ColorManagementRunType.Bymonitor:
-                                                    writelog($"ColorManagement {colorManagementType.ToString()} entry");
-                                                    retcode = devMgr.AutoColorManagementForMonitorConfig(monitor, colorManagementType.ToString().ToUpper(), string.Empty, string.Empty).Result;
+                                            case "BRIGHTNESSLEVEL":
+                                                writelog($"BrightnessLevel entry");
+                                            if (monitor.CapabilityDic.ContainsKey("10"))
+                                                {
+                                                    retcode = SetVCPCode(devMgr, monitor, "0x10", property.Value.ToString().Substring(0, property.Value.ToString().Length - 1)).Result;
+                                                if (!retcode) ispass = false;
+                                                    else ApplyConfiguration.BrightnessLevel = property.Value.ToString();
+                                                    writelog($"BrightnessLevel={ApplyConfiguration.BrightnessLevel}");
+                                                }
+                                                else
+                                                {
+                                                    writelog($"BrightnessLevel VCP not support");
+                                                    output += $"\n  \"Result: \": \"BrightnessLevel VCP not support\"";
+                                                }
+                                                break;
+
+                                            case "LUMINANCELEVEL":
+                                                writelog($"LuminanceLevel entry");
+                                                if (!monitor.CapabilityDic.ContainsKey("10"))
+                                                {
+                                                    retcode = SetVCPCode(devMgr, monitor, "0x10", property.Value.ToString().Substring(0, property.Value.ToString().Length - 1)).Result;
+                                                if (!retcode) ispass = false;
+                                                    else ApplyConfiguration.LuminanceLevel = property.Value.ToString();
+                                                    writelog($"LuminanceLevel={ApplyConfiguration.LuminanceLevel}");
+                                                }
+                                                else
+                                                {
+                                                    writelog($"LuminanceLevel VCP not support");
+                                                    output += $"\n  \"Result: \": \"LuminanceLevel VCP not support\"";
+                                                }
+                                                break;
+
+                                            case "AUTOBRIGHTNESS":
+                                                writelog($"AutoBrightness entry");
+                                                if (monitor.CapabilityDic.ContainsKey("66"))
+                                                {
+                                                    retcode = await devMgr.SetALSFeatureValue(monitor, param, ALSFeatureQueryType.AutoBrightness, property.Value.ToString().ToUpper());
+                                                if (!retcode) ispass = false;
+                                                    else ApplyConfiguration.AutoBrightness = property.Value.ToString();
+                                                    writelog($"AutoBrightness={ApplyConfiguration.AutoBrightness}");
+                                                }
+                                                else
+                                                {
+                                                    writelog($"AutoBrightness VCP not support");
+                                                    output += $"\n  \"Result: \": \"AutoBrightness VCP not support\"";
+                                                }
+                                                break;
+
+                                            case "AUTOBRIGHTNESSRANGELEVEL":
+                                                writelog($"AutoBrightnessRangeLevel entry");
+                                                if (monitor.CapabilityDic.ContainsKey("66"))
+                                                {
+                                                    retcode = await devMgr.SetALSFeatureValue(monitor, param, ALSFeatureQueryType.AutoBrightnessRangeLevel, get_RangeLevel(property.Value.ToString().ToUpper()));
+                                                if (!retcode) ispass = false;
+                                                    else ApplyConfiguration.AutoBrightnessRangeLevel = property.Value.ToString();
+                                                    writelog($"AutoBrightnessRangeLevel={ApplyConfiguration.AutoBrightnessRangeLevel}");
+                                                }
+                                                else
+                                                {
+                                                    writelog($"AutoBrightnessRangeLevel VCP not support");
+                                                    output += $"\n  \"Result: \": \"AutoBrightnessRangeLevel VCP not support\"";
+                                                }
+                                                break;
+
+                                            case "AUTOCOLORTEMP":
+                                                writelog($"AutoColorTemp entry");
+                                                if (monitor.CapabilityDic.ContainsKey("66"))
+                                                {
+                                                    retcode = await devMgr.SetALSFeatureValue(monitor, param, ALSFeatureQueryType.AutoColorTemperature, property.Value.ToString().ToUpper());
+                                                if (!retcode) ispass = false;
+                                                    else ApplyConfiguration.AutoColorTemp = property.Value.ToString();
+                                                    writelog($"AutoColorTemp={ApplyConfiguration.AutoColorTemp}");
+                                                }
+                                                else
+                                                {
+                                                    writelog($"AutoColorTemp VCP not support");
+                                                    output += $"\n  \"Result: \": \"AutoColorTemp VCP not support\"";
+                                                }
+                                                break;
+
+                                            case "PRIMARYMONITORFORSYNC":
+                                                writelog($"PrimaryMonitorForSync entry");
+                                                if (monitor.CapabilityDic.ContainsKey("66"))
+                                                {
+                                                    retcode = await devMgr.SetALSFeatureValue(monitor, param, ALSFeatureQueryType.PrimaryMonitorSync, property.Value.ToString().ToUpper());
+                                                if (!retcode) ispass = false;
+                                                    else ApplyConfiguration.PrimaryMonitorForSync = property.Value.ToString();
+                                                    writelog($"PrimaryMonitorForSync={ApplyConfiguration.PrimaryMonitorForSync}");
+                                                }
+                                                else
+                                                {
+                                                    writelog($"PrimaryMonitorForSync VCP not support");
+                                                    output += $"\n  \"Result: \": \"PrimaryMonitorForSync VCP not support\"";
+                                                }
+                                                break;
+
+                                            case "USB_CPRIORITIZATION":
+                                                if (displayPropertiesInfo.SupportedUSBCPrioritization)
+                                                {
+                                                    USBCPrioritizationType gettype = get_USBCPrioritization(property.Value.ToString());
+                                                    if (gettype != USBCPrioritizationType.Unknow)
+                                                    {
+                                                        retcode = devMgr.SetUSBCPrioritizationType(monitor, gettype).Result;
                                                     if (!retcode) ispass = false;
-                                                    else ApplyConfiguration.ColorManagement = property.Value.ToString();
-                                                    writelog($"ColorManagement={ApplyConfiguration.ColorManagement}");
-                                                    break;
-                                                default:
-                                                    writelog($"option value not support");
-                                                    ApplyConfiguration.ColorManagement = "NOT SUPPORT";
-                                                    output += $"\n  \"Result: \": \"ColorManagement not support\"";
-                                                    break;
-                                            }
-                                            break;
-                                        case "SPEAKERMICROPHONE":
-                                            writelog($"SpeakerMicrophone entry");
-                                            if (monitor.CapabilityDic.ContainsKey("62") && monitor.CapabilityDic["62"] != null && monitor.CapabilityDic["62"].Contains("FE") && monitor.CapabilityDic["62"].Contains("FF") && monitor.CapabilityDic["62"].Contains("C000") && monitor.CapabilityDic.ContainsKey("8D") && monitor.CapabilityDic["8D"] != null && monitor.CapabilityDic["8D"].Contains("01") && monitor.CapabilityDic["8D"].Contains("02") && monitor.CapabilityDic["8D"].Contains("C000"))
-                                            {
-                                                rc = GetVCPCode(devMgr, monitor, "0x62").Result;
-                                                int getvalue = Convert.ToInt32(rc.value);
-                                                retcode = SetVCPCode(devMgr, monitor, "0x62", get_SpeakerMicrophone(property.Value.ToString(), getvalue)).Result;
+                                                        else ApplyConfiguration.USB_CPrioritization = property.Value.ToString();
+                                                        writelog($"USB_CPrioritization={ApplyConfiguration.USB_CPrioritization}");
+                                                    }
+                                                }
+                                                else
+                                                {
+                                                    ApplyConfiguration.USB_CPrioritization = "NOT SUPPORT";
+                                                    output += $"\n  \"Result: \": \"USB_CPrioritization not support\"";
+                                                }
 
-                                                rc = GetVCPCode(devMgr, monitor, "0x8D").Result;
-                                                int getvalue2 = Convert.ToInt32(rc.value);
-                                                bool retcode2 = SetVCPCode(devMgr, monitor, "0x8D", get_SpeakerMicrophone(property.Value.ToString(), getvalue2)).Result;
+                                                break;
+                                            case "COLORMANAGEMENT":
+                                                ColorManagementRunType colorManagementType = get_ColorManagement(property.Value.ToString());
+                                                switch (colorManagementType)
+                                                {
+                                                    case ColorManagementRunType.Off:
+                                                    case ColorManagementRunType.Byhost:
+                                                    case ColorManagementRunType.Bymonitor:
+                                                        writelog($"ColorManagement {colorManagementType.ToString()} entry");
+                                                        retcode = devMgr.AutoColorManagementForMonitorConfig(monitor, colorManagementType.ToString().ToUpper(), string.Empty, string.Empty).Result;
+                                                    if (!retcode) ispass = false;
+                                                        else ApplyConfiguration.ColorManagement = property.Value.ToString();
+                                                        writelog($"ColorManagement={ApplyConfiguration.ColorManagement}");
+                                                        break;
+                                                    default:
+                                                        writelog($"option value not support");
+                                                        ApplyConfiguration.ColorManagement = "NOT SUPPORT";
+                                                        output += $"\n  \"Result: \": \"ColorManagement not support\"";
+                                                        break;
+                                                }
+                                                break;
+                                            case "SPEAKERMICROPHONE":
+                                                writelog($"SpeakerMicrophone entry");
+                                                if (monitor.CapabilityDic.ContainsKey("62") && monitor.CapabilityDic["62"] != null && monitor.CapabilityDic["62"].Contains("FE") && monitor.CapabilityDic["62"].Contains("FF") && monitor.CapabilityDic["62"].Contains("C000") && monitor.CapabilityDic.ContainsKey("8D") && monitor.CapabilityDic["8D"] != null && monitor.CapabilityDic["8D"].Contains("01") && monitor.CapabilityDic["8D"].Contains("02") && monitor.CapabilityDic["8D"].Contains("C000"))
+                                                {
+                                                    rc = GetVCPCode(devMgr, monitor, "0x62").Result;
+                                                    int getvalue = Convert.ToInt32(rc.value);
+                                                    retcode = SetVCPCode(devMgr, monitor, "0x62", get_SpeakerMicrophone(property.Value.ToString(), getvalue)).Result;
+
+                                                    rc = GetVCPCode(devMgr, monitor, "0x8D").Result;
+                                                    int getvalue2 = Convert.ToInt32(rc.value);
+                                                    bool retcode2 = SetVCPCode(devMgr, monitor, "0x8D", get_SpeakerMicrophone(property.Value.ToString(), getvalue2)).Result;
 
                                                 if (!retcode && !retcode2) ispass = false;
-                                                else ApplyConfiguration.SpeakerMicrophone = property.Value.ToString();
-                                                writelog($"SpeakerMicrophone={ApplyConfiguration.SpeakerMicrophone}");
-                                            }
-                                            else
-                                            {
-                                                ApplyConfiguration.SpeakerMicrophone = "N/A";
-                                                writelog($"SpeakerMicrophone VCP not support");
-                                                output += $"\n  \"Result: \": \"SpeakerMicrophone VCP not support\"";
-                                            }
-
-                                            break;
-
-                                        case "SPEAKERVOLUME":
-                                            writelog($"SpeakerVolume entry");
-                                            if (monitor.CapabilityDic.ContainsKey("62") && monitor.CapabilityDic["62"] != null && monitor.CapabilityDic["62"].Contains("FE") && monitor.CapabilityDic["62"].Contains("FF") && monitor.CapabilityDic["62"].Contains("C000"))
-                                            {
-                                                rc = GetVCPCode(devMgr, monitor, "0x62").Result;
-                                                int getvalue = Convert.ToInt32(rc.value);
-                                                string setvalue = get_SpeakerVolume(property.Value.ToString(), getvalue);
-                                                if (setvalue != "unknown_command")
-                                                    retcode = SetVCPCode(devMgr, monitor, "0x62", setvalue).Result;
+                                                    else ApplyConfiguration.SpeakerMicrophone = property.Value.ToString();
+                                                    writelog($"SpeakerMicrophone={ApplyConfiguration.SpeakerMicrophone}");
+                                                }
                                                 else
-                                                    retcode = SetVCPCode(devMgr, monitor, "0x62", property.Value.ToString()).Result;
+                                                {
+                                                    ApplyConfiguration.SpeakerMicrophone = "N/A";
+                                                    writelog($"SpeakerMicrophone VCP not support");
+                                                    output += $"\n  \"Result: \": \"SpeakerMicrophone VCP not support\"";
+                                                }
+
+                                                break;
+
+                                            case "SPEAKERVOLUME":
+                                                writelog($"SpeakerVolume entry");
+                                                if (monitor.CapabilityDic.ContainsKey("62") && monitor.CapabilityDic["62"] != null && monitor.CapabilityDic["62"].Contains("FE") && monitor.CapabilityDic["62"].Contains("FF") && monitor.CapabilityDic["62"].Contains("C000"))
+                                                {
+                                                    rc = GetVCPCode(devMgr, monitor, "0x62").Result;
+                                                    int getvalue = Convert.ToInt32(rc.value);
+                                                    string setvalue = get_SpeakerVolume(property.Value.ToString(), getvalue);
+                                                    if (setvalue != "unknown_command")
+                                                        retcode = SetVCPCode(devMgr, monitor, "0x62", setvalue).Result;
+                                                    else
+                                                        retcode = SetVCPCode(devMgr, monitor, "0x62", property.Value.ToString()).Result;
                                                 if (!retcode) ispass = false;
-                                                else ApplyConfiguration.SpeakerVolume = property.Value.ToString();
-                                                writelog($"SpeakerVolume={ApplyConfiguration.SpeakerVolume}");
-                                            }
-                                            else
-                                            {
-                                                ApplyConfiguration.SpeakerVolume = "N/A";
-                                                writelog($"SpeakerVolume VCP not support");
-                                                output += $"\n  \"Result: \": \"SpeakerVolume VCP not support\"";
-                                            }
+                                                    else ApplyConfiguration.SpeakerVolume = property.Value.ToString();
+                                                    writelog($"SpeakerVolume={ApplyConfiguration.SpeakerVolume}");
+                                                }
+                                                else
+                                                {
+                                                    ApplyConfiguration.SpeakerVolume = "N/A";
+                                                    writelog($"SpeakerVolume VCP not support");
+                                                    output += $"\n  \"Result: \": \"SpeakerVolume VCP not support\"";
+                                                }
 
-                                            break;
+                                                break;
 
-                                        case "MICROPHONECONTROL":
-                                            writelog($"MicrophoneControl entry");
-                                            if (monitor.CapabilityDic.ContainsKey("8D") && monitor.CapabilityDic["8D"] != null && monitor.CapabilityDic["8D"].Contains("01") && monitor.CapabilityDic["8D"].Contains("02") && monitor.CapabilityDic["8D"].Contains("C000"))
-                                            {
-                                                rc = GetVCPCode(devMgr, monitor, "0x8D").Result;
-                                                int getvalue = Convert.ToInt32(rc.value);
-                                                retcode = SetVCPCode(devMgr, monitor, "0x8D", get_MicrophoneControl(property.Value.ToString(), getvalue)).Result;
+                                            case "MICROPHONECONTROL":
+                                                writelog($"MicrophoneControl entry");
+                                                if (monitor.CapabilityDic.ContainsKey("8D") && monitor.CapabilityDic["8D"] != null && monitor.CapabilityDic["8D"].Contains("01") && monitor.CapabilityDic["8D"].Contains("02") && monitor.CapabilityDic["8D"].Contains("C000"))
+                                                {
+                                                    rc = GetVCPCode(devMgr, monitor, "0x8D").Result;
+                                                    int getvalue = Convert.ToInt32(rc.value);
+                                                    retcode = SetVCPCode(devMgr, monitor, "0x8D", get_MicrophoneControl(property.Value.ToString(), getvalue)).Result;
                                                 if (!retcode) ispass = false;
-                                                else ApplyConfiguration.MicrophoneControl = property.Value.ToString();
-                                                writelog($"MicrophoneControl={ApplyConfiguration.MicrophoneControl}");
-                                            }
-                                            else
-                                            {
-                                                ApplyConfiguration.MicrophoneControl = "N/A";
-                                                writelog($"SpeakerVolume VCP not support");
-                                                output += $"\n  \"Result: \": \"SpeakerVolume VCP not support\"";
-                                            }
+                                                    else ApplyConfiguration.MicrophoneControl = property.Value.ToString();
+                                                    writelog($"MicrophoneControl={ApplyConfiguration.MicrophoneControl}");
+                                                }
+                                                else
+                                                {
+                                                    ApplyConfiguration.MicrophoneControl = "N/A";
+                                                    writelog($"SpeakerVolume VCP not support");
+                                                    output += $"\n  \"Result: \": \"SpeakerVolume VCP not support\"";
+                                                }
 
-                                            break;
+                                                break;
 
-                                        case "UNIFORMITY":
-                                            writelog($"Uniformity entry");
-                                            if (monitor.CapabilityDic.ContainsKey("E4"))
-                                            {
-                                                retcode = SetVCPCode(devMgr, monitor, "0xE4", get_Uniformity(property.Value.ToString())).Result;
+                                            case "UNIFORMITY":
+                                                writelog($"Uniformity entry");
+                                                if (monitor.CapabilityDic.ContainsKey("E4"))
+                                                {
+                                                    retcode = SetVCPCode(devMgr, monitor, "0xE4", get_Uniformity(property.Value.ToString())).Result;
                                                 if (!retcode) ispass = false;
-                                                else ApplyConfiguration.Uniformity = property.Value.ToString();
-                                                writelog($"Uniformity={ApplyConfiguration.Uniformity}");
-                                            }
-                                            else
-                                            {
-                                                ApplyConfiguration.Uniformity = "N/A";
-                                                writelog($"Uniformity VCP not support");
-                                                output += $"\n  \"Result: \": \"Uniformity VCP not support\"";
-                                            }
+                                                    else ApplyConfiguration.Uniformity = property.Value.ToString();
+                                                    writelog($"Uniformity={ApplyConfiguration.Uniformity}");
+                                                }
+                                                else
+                                                {
+                                                    ApplyConfiguration.Uniformity = "N/A";
+                                                    writelog($"Uniformity VCP not support");
+                                                    output += $"\n  \"Result: \": \"Uniformity VCP not support\"";
+                                                }
 
-                                            break;
+                                                break;
 
-                                        case "POWERNAP":
-                                            writelog($"PowerNap entry");
-                                            await SetPowerNapAsync(get_PowerNapType_code(property.Value.ToString()), devMgr, monitor.edid.ModelName, monitor.edid.SerialNumber);
-                                            //PowerNapSetting setting = new PowerNapSetting
-                                            //{
-                                            //    Status = false,
-                                            //    ModelName = monitor.edid.ModelName,
-                                            //    SerialNumber = monitor.edid.SerialNumber,
-                                            //    RunType = get_PowerNapType_code(property.Value.ToString())
-                                            //};
-                                            //retcode = await devMgr.SavePowerNapSetting(setting);
-                                            //UpdateUINotify off = new UpdateUINotify();
-                                            //off.UI_Field_Name = "POWERNAP;"+ property.Value.ToString();
-                                            //devMgr.OnUIUpdateNotify(off);
+                                            case "POWERNAP":
+                                                writelog($"PowerNap entry");
+                                                await SetPowerNapAsync(get_PowerNapType_code(property.Value.ToString()), devMgr, monitor.edid.ModelName, monitor.edid.SerialNumber);
+                                                //PowerNapSetting setting = new PowerNapSetting
+                                                //{
+                                                //    Status = false,
+                                                //    ModelName = monitor.edid.ModelName,
+                                                //    SerialNumber = monitor.edid.SerialNumber,
+                                                //    RunType = get_PowerNapType_code(property.Value.ToString())
+                                                //};
+                                                //retcode = await devMgr.SavePowerNapSetting(setting);
+                                                //UpdateUINotify off = new UpdateUINotify();
+                                                //off.UI_Field_Name = "POWERNAP;"+ property.Value.ToString();
+                                                //devMgr.OnUIUpdateNotify(off);
                                             if (!retcode) ispass = false;
-                                            else ApplyConfiguration.PowerNap = property.Value.ToString();
-                                            writelog($"PowerNap={ApplyConfiguration.PowerNap}");
-                                            break;
+                                                else ApplyConfiguration.PowerNap = property.Value.ToString();
+                                                writelog($"PowerNap={ApplyConfiguration.PowerNap}");
+                                                break;
 
-                                        case "OSD_LANGUAGE":
-                                            writelog($"OSD_language entry");
-                                            if (monitor.CapabilityDic.ContainsKey("CC"))
-                                            {
-                                                retcode = SetVCPCode(devMgr, monitor, "0xCC", GetOSDLanguage_index(property.Value.ToString()).ToString()).Result;
-                                                writelog($"OSD_language={GetOSDLanguage_index(property.Value.ToString()).ToString()}");
+                                            case "OSD_LANGUAGE":
+                                                writelog($"OSD_language entry");
+                                                if (monitor.CapabilityDic.ContainsKey("CC"))
+                                                {
+                                                    retcode = SetVCPCode(devMgr, monitor, "0xCC", GetOSDLanguage_index(property.Value.ToString()).ToString()).Result;
+                                                    writelog($"OSD_language={GetOSDLanguage_index(property.Value.ToString()).ToString()}");
                                                 if (!retcode) ispass = false;
-                                                else ApplyConfiguration.OSD_language = property.Value.ToString();
-                                                writelog($"OSD_language={ApplyConfiguration.OSD_language}");
-                                            }
-                                            else
-                                            {
-                                                writelog($"OSD_language VCP not support");
-                                                output += $"\n  \"Result: \": \"OSD_language VCP not support\"";
-                                            }
+                                                    else ApplyConfiguration.OSD_language = property.Value.ToString();
+                                                    writelog($"OSD_language={ApplyConfiguration.OSD_language}");
+                                                }
+                                                else
+                                                {
+                                                    writelog($"OSD_language VCP not support");
+                                                    output += $"\n  \"Result: \": \"OSD_language VCP not support\"";
+                                                }
 
-                                            break;
+                                                break;
 
-                                        default:
-                                            break;
+                                            default:
+                                                break;
+                                        }
                                     }
+
+                                    if (ispass)
+                                    {
+                                        ApplyConfiguration.Result = "PASS";
+                                        ApplyConfiguration.Message = "N/A";
+                                    }
+                                    else
+                                    {
+                                        ApplyConfiguration.Result = "FAIL";
+                                        ApplyConfiguration.Message = "N/A";
+                                    }
+                                    System.Console.WriteLine(JsonConvert.SerializeObject(ApplyConfiguration, Formatting.Indented));
+                                    output += "\n" + JsonConvert.SerializeObject(ApplyConfiguration, Formatting.Indented);
                                 }
+                                break;
+                            case "MOUSE":
+                            case "KEYBOARD":
+                            case "WEBCAM":
+                            case "WIREDAUDIO":
+                            case "HEADSET":
+                            case "PEN":
+                            case "DOCK":
+                                PeripheralResponse cli_Response2 = new PeripheralResponse();
+                                cli_Response2 = JsonConvert.DeserializeObject<PeripheralResponse>(jsonString_2[i]);
+                                ispass = true;
 
                                 if (ispass)
                                 {
-                                    ApplyConfiguration.Result = "PASS";
-                                    ApplyConfiguration.Message = "N/A";
+                                    output += $"\n  \"Result: \": \"{ss_1[0].ToUpper()} PASS\"";
                                 }
                                 else
                                 {
-                                    ApplyConfiguration.Result = "FAIL";
-                                    ApplyConfiguration.Message = "N/A";
+                                    output += $"\n  \"Result: \": \"{ss_1[0].ToUpper()} FAIL\"";
                                 }
-                                System.Console.WriteLine(JsonConvert.SerializeObject(ApplyConfiguration, Formatting.Indented));
-                                output += "\n" + JsonConvert.SerializeObject(ApplyConfiguration, Formatting.Indented);
-                            }
-                        }
-                        else if (ss_1[0].ToUpper() == "MOUSE")
-                        {
-                            CLI_RESPONSE2 cli_Response2 = new CLI_RESPONSE2();
-                            cli_Response2 = JsonConvert.DeserializeObject<CLI_RESPONSE2>(jsonString_2[i]);
-                            ispass = true;
-
-                            if (ispass)
-                            {
-                                output += $"\n  \"Result: \": \"MOUSE PASS\"";
-                            }
-                            else
-                            {
-                                output += $"\n  \"Result: \": \"MOUSE FAIL\"";
-                            }
-                            output += "\n" + JsonConvert.SerializeObject(cli_Response2, Formatting.Indented);
-                        }
-                        else if (ss_1[0].ToUpper() == "KEYBOARD")
-                        {
-                            CLI_RESPONSE2 cli_Response2 = new CLI_RESPONSE2();
-                            cli_Response2 = JsonConvert.DeserializeObject<CLI_RESPONSE2>(jsonString_2[i]);
-                            ispass = true;
-
-                            if (ispass)
-                            {
-                                output += $"\n  \"Result: \": \"KEYBOARD PASS\"";
-                            }
-                            else
-                            {
-                                output += $"\n  \"Result: \": \"KEYBOARD FAIL\"";
-                            }
-                            output += "\n" + JsonConvert.SerializeObject(cli_Response2, Formatting.Indented);
-                        }
-                        else
-                        {
-                            CLI_RESPONSE cli_Response__ = new CLI_RESPONSE();
-                            cli_Response__.Command = commandLineInput.Command;
-                            cli_Response__.TargetFeature = commandLineInput.TargetFeature;
-                            cli_Response__.Result = "FAIL";
-                            cli_Response__.Message = "Invalid command line syntax or missing -value=file.json";
-                            return ((int)CLI_ExitCode.invalide_cmdline_syntax, cli_Response__.ToJson());
+                                output += "\n" + JsonConvert.SerializeObject(cli_Response2, Formatting.Indented);
+                                break;
+                            default:
+                                CLI_RESPONSE cli_Response__ = new CLI_RESPONSE();
+                                cli_Response__.Command = commandLineInput.Command;
+                                cli_Response__.TargetFeature = commandLineInput.TargetFeature;
+                                cli_Response__.Result = "FAIL";
+                                cli_Response__.Message = "Invalid command line syntax or missing -value=file.json";
+                                return ((int)CLI_ExitCode.invalide_cmdline_syntax, cli_Response__.ToJson());
                         }
                         return (ispass ? (int)CLI_ExitCode.success : (int)CLI_ExitCode.functional_error, output);
                     }
