@@ -86,6 +86,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         private const string KeyboardItemID = "DellPeripheral.Keyboard";
         private const string KeyboardItemID0 = "DellPeripheral.Keyboard.0";
         private const string WebcamItemID = "DellPeripheral.Webcam";
+        private const string HeadsetItemID = "DellPeripheral.Headset";
         private bool IsDTPReady = false;
 
         public const string PluginLogId = "DTPProxy";
@@ -3590,32 +3591,34 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
         #region Headset Get
 
-        public async Task<JArray> GetDeviceItemsExAsync(string guid)
+        public async Task<JArray> GetHeadsetDeviceItemsExAsync()
         {
             try
             {
-                if (!await GetItemIDAsync("Headset", guid))
-                    return null;
+                _itemID = new ItemId(HeadsetItemID);
 
-                var commodity = await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo);
-                if (commodity is ICommodity)
+                if (_headsetMethodInfo != null)
                 {
-                    var value = GetPropertyValue(_headsetInterfaceType, commodity, "DeviceItemsEx");
-                    writelog($"[DTPProxyPlugin] [Headset] GetDeviceItemsExAsync succeeded for {guid}");
-                    return (JArray)value;
+                    var commodity = await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo);
+                    if (commodity is ICommodity)
+                    {
+                        var value = GetPropertyValue(_headsetInterfaceType, commodity, "DeviceItemsEx");
+                        writelog($"[DTPProxyPlugin] [Headset] GetDeviceItemsExAsync succeeded");
+                        return (JArray)value;
+                    }
                 }
 
-                writelog($"[DTPProxyPlugin] [Headset] GetDeviceItemsExAsync failed: Could not retrieve commodity interface for {guid}");
+                writelog($"[DTPProxyPlugin] [Headset] GetDeviceItemsExAsync failed: Could not retrieve commodity interface");
                 return null;
             }
             catch (Exception ex)
             {
-                writelog($"[DTPProxyPlugin] [Headset] GetDeviceItemsExAsync failed for {guid} - Exception: {ex.Message}");
+                writelog($"[DTPProxyPlugin] [Headset] GetDeviceItemsExAsync failed - Exception: {ex.Message}");
                 return null;
             }
         }
 
-        public async Task<DeviceInterfaceType> GetInterfaceTypeAsync(string guid)
+        public async Task<DeviceInterfaceType> GetHeadsetInterfaceTypeAsync(string guid)
         {
             try
             {
@@ -3640,7 +3643,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
         }
 
-        public async Task<string> GetDeviceNameAsync(string guid)
+        public async Task<string> GetHeadsetDeviceNameAsync(string guid)
         {
             try
             {
@@ -3665,7 +3668,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
         }
 
-        public async Task<string> GetDeviceIdAsync(string guid)
+        public async Task<string> GetHeadsetDeviceIdAsync(string guid)
         {
             try
             {
@@ -3690,7 +3693,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
         }
 
-        public async Task<string> GetPluginIdAsync(string guid)
+        public async Task<string> GetHeadsetPluginIdAsync(string guid)
         {
             try
             {
@@ -3715,7 +3718,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
         }
 
-        public async Task<int> GetODMIdAsync(string guid)
+        public async Task<int> GetHeadsetODMIdAsync(string guid)
         {
             try
             {
@@ -3740,7 +3743,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
         }
 
-        public async Task<string> GetModelNumberAsync(string guid)
+        public async Task<string> GetHeadsetModelNumberAsync(string guid)
         {
             try
             {
@@ -3765,7 +3768,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
         }
 
-        public async Task<int> GetInstanceNumberAsync(string guid)
+        public async Task<int> GetHeadsetInstanceNumberAsync(string guid)
         {
             try
             {
@@ -3790,7 +3793,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
         }
 
-        public async Task<int> GetInstanceIdAsync(string guid)
+        public async Task<int> GetHeadsetInstanceIdAsync(string guid)
         {
             try
             {
@@ -3815,7 +3818,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
         }
 
-        public async Task<string> GetFirmwareVersionAsync(string guid)
+        public async Task<string> GetHeadsetFirmwareVersionAsync(string guid)
         {
             try
             {
@@ -3840,7 +3843,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
         }
 
-        public async Task<string> GetDeviceTypeAsync(string guid)
+        public async Task<string> GetHeadsetDeviceTypeAsync(string guid)
         {
             try
             {
@@ -3865,7 +3868,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
         }
 
-        public async Task<string> GetParentDeviceTypeAsync(string guid)
+        public async Task<string> GetHeadsetParentDeviceTypeAsync(string guid)
         {
             try
             {
@@ -3890,7 +3893,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
         }
 
-        public async Task<bool> GetIsBatteryLevelSupportedAsync(string guid)
+        public async Task<bool> GetHeadsetIsBatteryLevelSupportedAsync(string guid)
         {
             try
             {
@@ -3915,7 +3918,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
         }
 
-        public async Task<int> GetBatteryLevelAsync(string guid)
+        public async Task<int> GetHeadsetBatteryLevelAsync(string guid)
         {
             try
             {
@@ -3940,7 +3943,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
         }
 
-        public async Task<string> GetDeviceBatteryStatusAsync(string guid)
+        public async Task<string> GetHeadsetDeviceBatteryStatusAsync(string guid)
         {
             try
             {
@@ -3965,7 +3968,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
         }
 
-        public async Task<string> GetPairingStatusAsync(string guid)
+        public async Task<string> GetHeadsetPairingStatusAsync(string guid)
         {
             try
             {
@@ -3990,7 +3993,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
         }
 
-        public async Task<string> GetPairedHostName1Async(string guid)
+        public async Task<string> GetHeadsetPairedHostName1Async(string guid)
         {
             try
             {
@@ -4015,7 +4018,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
         }
 
-        public async Task<string> GetPairedHostName2Async(string guid)
+        public async Task<string> GetHeadsetPairedHostName2Async(string guid)
         {
             try
             {
@@ -4040,7 +4043,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
         }
 
-        public async Task<string> GetPairedHostName3Async(string guid)
+        public async Task<string> GetHeadsetPairedHostName3Async(string guid)
         {
             try
             {
@@ -4065,7 +4068,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
         }
 
-        public async Task<int> GetMaxPairingSlotsAsync(string guid)
+        public async Task<int> GetHeadsetMaxPairingSlotsAsync(string guid)
         {
             try
             {
@@ -4090,7 +4093,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
         }
 
-        public async Task<int> GetPairedDeviceCountAsync(string guid)
+        public async Task<int> GetHeadsetPairedDeviceCountAsync(string guid)
         {
             try
             {
@@ -4116,7 +4119,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         }
         #region Headset Get (continued)
 
-        public async Task<int> GetTotalNumberOfPairedHostNameAsync(string guid)
+        public async Task<int> GetHeadsetTotalNumberOfPairedHostNameAsync(string guid)
         {
             try
             {
@@ -4141,7 +4144,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
         }
 
-        public async Task<string> GetSerialNumberAsync(string guid)
+        public async Task<string> GetHeadsetSerialNumberAsync(string guid)
         {
             try
             {
@@ -5144,6 +5147,173 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         #endregion Headset Get
 
         #endregion
+
+        #region Headset Event
+        private async Task RegisterEventsForAllHeadsetAsync()
+        {
+            var headsets = await GetHeadsetDeviceItemsExAsync();
+
+            if (headsets.Count > 0)
+            {
+                writelog($"Headset instance count: {headsets} to register");
+
+                for (int i = 0; i < headsets.Count; i++)
+                {
+                    bool result = await RegisterEventsForHeadsetAsync(i);
+
+                    if (!result)
+                    {
+                        writelog($"[Headset] Register Events For Headset{i} fail, try un-register and register again");
+
+                        result = await UnregisterEventsForHeadsetAsync(i);
+                        result = await RegisterEventsForHeadsetAsync(i);
+
+                        writelog($"[Headset] Retry register result is {result}");
+                    }
+                }
+            }
+            else
+            {
+                writelog($"[Headset] No any headset instance to register.");
+                //try to force release current --> will catch exception  1123
+                //await UnregisterEventsForWebcamAsync(0);
+            }
+        }
+
+        private async Task UnregisterEventsForAllHeadsetAsync()
+        {
+            var headsets = await GetHeadsetDeviceItemsExAsync();
+
+            if (headsets.Count > 0)
+            {
+                writelog($"[Headset] instance count: {headsets} to unregister.");
+
+                for (int i = headsets.Count - 1; i >= 0; i--)
+                {
+                    bool result = await UnregisterEventsForHeadsetAsync(i);
+                }
+            }
+            else
+                writelog($"[Headset] No any headset instance to unregister.");
+        }
+
+        private async Task<bool> RegisterEventsForHeadsetAsync(int index)
+        {
+            if (null == _commSdk || null == _comdity || index < 0)
+                return false;
+
+            try
+            {
+                _comdity = await _commSdk.GetCommodityAsync<IHeadsetCommodity>(new ItemId($"DellPeripheral.Headset.{index}"), CancellationToken.None);
+
+                if (_comdity is Dell.TechHub.Commodity.Peripheral.IHeadsetCommodity _Headsetcom)
+                {
+                    _Headsetcom.WearDetectionChanged += Headset_WearDetectionChanged;
+                    _Headsetcom.WearDetectionSensitivityChanged += Headset_WearDetectionSensitivityChanged;
+                    _Headsetcom.IsWearDetectionPauseMusicEnabledChanged += Headset_IsWearDetectionPauseMusicEnabledChanged;
+                    _Headsetcom.IsWearDetectionMuteMicEnabledChanged += Headset_IsWearDetectionMuteMicEnabledChanged;
+                    _Headsetcom.WearDetectionQuickPauseChanged += Headset_WearDetectionQuickPauseChanged; writelog($"Headset{index} Commodity events registered successfully");
+                    return true;
+                }
+            }
+            catch (Exception e)
+            {
+                writelog($"[Headset] {index} RegisterEventsForHeadset Exception {e.Message}");
+
+                return false;
+            }
+
+            return false;
+        }
+
+        private async Task<bool> UnregisterEventsForHeadsetAsync(int index)
+        {
+            if (null == _commSdk || null == _comdity || index < 0)
+                return false;
+
+            try
+            {
+                _comdity = await _commSdk.GetCommodityAsync<IHeadsetCommodity>(new ItemId($"DellPeripheral.Webcam.{index}"), CancellationToken.None);
+
+                if (_comdity is Dell.TechHub.Commodity.Peripheral.IHeadsetCommodity _Headsetcom)
+                {
+                    _Headsetcom.WearDetectionChanged -= Headset_WearDetectionChanged;
+                    _Headsetcom.WearDetectionSensitivityChanged -= Headset_WearDetectionSensitivityChanged;
+                    _Headsetcom.IsWearDetectionPauseMusicEnabledChanged -= Headset_IsWearDetectionPauseMusicEnabledChanged;
+                    _Headsetcom.IsWearDetectionMuteMicEnabledChanged -= Headset_IsWearDetectionMuteMicEnabledChanged;             
+                    _Headsetcom.WearDetectionQuickPauseChanged -= Headset_WearDetectionQuickPauseChanged;
+                    writelog($"[Headset] Headset{index} Commodity events unregistered successfully");
+                    return true;
+                }
+            }
+            catch (Exception e)
+            {
+                writelog($"[Headset] Headset{index} UnregisterEventsForHeadset Exception {e.Message}");
+
+                return false;
+            }
+
+            return false;
+        }
+
+        private void Headset_WearDetectionChanged(object sender, WearDetectionChangedArgs e)
+        {
+            SendHeadsetEventToUI(CreateHeadsetEventMsg("Headset", "Headset_WearDetectionChanged",e.DeviceId,
+                                                 $"Headset_WearDetectionChanged:{e.IsGlobalEnabled.ToString() + ";" +
+                            "Headset_IsWearDetectionPauseMusicEnabledChanged:" + e.IsPauseMusicEnabled.ToString() + ";" +
+                               "Headset_IsWearDetectionMuteMicEnabledChanged:" + e.IsMuteMicEnabled.ToString() + ";" +
+                                    "Headset_WearDetectionSensitivityChanged:" + e.Sensitivity.ToString() + ";" +
+                                     "Headset_WearDetectionQuickPauseChanged:" + e.QuickPause.ToString()}"));
+
+            writelog($"[Headset] Catch event Headset_WearDetectionChanged : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+        }
+
+        private void Headset_WearDetectionSensitivityChanged(object sender, WearDetectionSensitivityChangedArgs e)
+        {
+            SendHeadsetEventToUI(CreateHeadsetEventMsg("Headset", "Headset_WearDetectionSensitivityChanged",
+                                    e.DeviceId, $"Headset_WearDetectionSensitivityChanged:{e.WearDetectionSensitivity.ToString()}"));
+
+            writelog($"[Headset] Catch event Headset_WearDetectionSensitivityChanged : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+        }
+
+        private void Headset_IsWearDetectionPauseMusicEnabledChanged(object sender, IsWearDetectionPauseMusicEnabledChangedArgs e)
+        {
+            SendHeadsetEventToUI(CreateHeadsetEventMsg("Headset", "Headset_IsWearDetectionPauseMusicEnabledChanged",
+                                    e.DeviceId, $"Headset_IsWearDetectionPauseMusicEnabledChanged:{e.IsPauseMusicEnabled.ToString()}"));
+
+            writelog($"[Headset] Catch event Headset_IsWearDetectionPauseMusicEnabledChanged : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+        }
+
+        private void Headset_IsWearDetectionMuteMicEnabledChanged(object sender, IsWearDetectionMuteMicEnabledChangedArgs e)
+        {
+            SendHeadsetEventToUI(CreateHeadsetEventMsg("Headset", "Headset_IsWearDetectionMuteMicEnabledChanged",
+                                    e.DeviceId, $"Headset_IsWearDetectionMuteMicEnabledChanged:{e.IsWearDetectionMuteMicEnabled.ToString()}"));
+
+            writelog($"[Headset] Catch event Headset_IsWearDetectionMuteMicEnabledChanged : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+        }
+
+        private void Headset_WearDetectionQuickPauseChanged(object sender, WearDetectionQuickPauseChangedArgs e)
+        {
+            SendHeadsetEventToUI(CreateHeadsetEventMsg("Headset", "Headset_WearDetectionQuickPauseChanged",
+                                    e.DeviceId, $"Headset_WearDetectionQuickPauseChanged:{e.WearDetectionQuickPause.ToString()}"));
+
+            writelog($"[Headset] Catch event Headset_WearDetectionQuickPauseChanged : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+        }
+
+        private string CreateHeadsetEventMsg(string devType, string eventType, string devID, string eventContent = "NewValue:NoContent")
+        {
+            writelog($"[Headset] Device:{devType};EventType:{eventType};DeviceId:{devID};{eventContent}");
+            return $"HeadsetEvent_5;Device:{devType};EventType:{eventType};DeviceId:{devID};{eventContent}";
+        }
+
+        private void SendHeadsetEventToUI(string sendMsg)
+        {
+            UpdateUINotify headsetEventNotify = new UpdateUINotify();
+            headsetEventNotify.UI_Field_Name = $"{sendMsg}";
+            OnUIUpdateNotify(headsetEventNotify);
+        }
+
+        #endregion Headset Event
 
         #region WiredAudio
 
@@ -6176,9 +6346,6 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             {
                 try
                 {
-                    _headsetcom.IsReadyChanged += _headsetcomdity_IsReadyChanged;
-                    _headsetcom.FirmwareVersionChanged += _headsetcomdity_FirmwareVersionChanged;
-                    _headsetcom.AncModeChanged += _headsetcomdity_AncModeChange;
                     _headsetcom.Connected += _comdity_Connected;
                     _headsetcom.Disconnected += _comdity_Disconnected;
                     writelog($"Headset Commodity event registered");
@@ -6195,12 +6362,6 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             {
                 try
                 {
-                    //_speakercom.IsIMicNSEnabledChanged += _speakercomdity_IsIMicNSEnabledChanged;
-                    //_speakercom.VolumeAdjustmentToneChanged += _speakercomdity_VolumeAdjustmentToneChanged;
-                    //_speakercom.IsMicMuteSoundEnabledChanged += _speakercomdity_IsMicMuteSoundEnabledChanged;
-                    //_speakercom.MuteStatusChanged += _speakercomdity_IsMuteStatusChanged;
-                    //EventHandler<MuteStatusChangedArgs> MuteStatusChanged;
-                    //AddMuteStatusChangedEventAsync
                     _speakercom.Connected += _comdity_Connected;
                     _speakercom.Disconnected += _comdity_Disconnected;
                     _speakercom.MuteStatusChanged += _speakercomdity_IsMuteStatusChanged;
@@ -6265,6 +6426,8 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
 
             await RegisterEventsForAllWebcamsAsync();
+
+            await RegisterEventsForAllHeadsetAsync();
         }
 
         private async Task<int> GetWebcamDevsCountAsync()

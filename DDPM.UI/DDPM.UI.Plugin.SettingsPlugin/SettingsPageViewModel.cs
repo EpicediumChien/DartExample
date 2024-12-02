@@ -98,6 +98,16 @@ namespace DDPM.UI.Plugin.SettingsPlugin
                 SetProperty(ref _isBusy, value);
             }
         }
+        private bool _IsBusy_UpdatePage = false;
+
+        public bool IsBusy_UpdatePage
+        {
+            get => _IsBusy_UpdatePage;
+            set
+            {
+                SetProperty(ref _IsBusy_UpdatePage, value);
+            }
+        }
 
         #endregion UI Enable Flags
         public void OpenFullView(ContentControl content)
@@ -125,6 +135,19 @@ namespace DDPM.UI.Plugin.SettingsPlugin
             IsBusy = true;
             OnPropertyChanged("IsBusy");
         }
+        public void Invoke_RefreshData_1()
+        {
+            BackgroundWorker bw = new BackgroundWorker()
+            {
+                WorkerReportsProgress = false,
+                WorkerSupportsCancellation = false
+            };
+            bw.DoWork += DoWork_RefreshData_1;
+            bw.RunWorkerCompleted += Set_Page_Done_1;
+            bw.RunWorkerAsync(); //myArg is the optional argument
+            IsBusy_UpdatePage = true;
+            OnPropertyChanged("IsBusy_UpdatePage");
+        }
 
         private void DoWork_RefreshData(object sender, DoWorkEventArgs e)
         {
@@ -138,7 +161,6 @@ namespace DDPM.UI.Plugin.SettingsPlugin
                 Trace.WriteLine($"[SettingsPage] Apply FW/SW Updates(check) : {data.LockSettings.Lock_Settings_Updates}");
                 Lock_GeneralPage = data.LockSettings.Lock_Setting_ScreenNotification;
                 Trace.WriteLine($"[SettingsPage] Apply General(check) : {data.LockSettings.Lock_Setting_ScreenNotification}");
-                SetUpdateInfoUI(DdpmCommonHelper.DeviceManagerSA.GetFWUpdateInfo(false, false, false, null, false, false, false).Result, DdpmCommonHelper.DeviceManagerSA.SW_GetSWUpdateInfo(false, false, false, false).Result);
                 RefreshUI();
             }
             catch (Exception)
@@ -167,6 +189,23 @@ namespace DDPM.UI.Plugin.SettingsPlugin
                     }));
                 }
             }
+        }
+        private void DoWork_RefreshData_1(object sender, DoWorkEventArgs e)
+        {
+            try
+            {
+                SetUpdateInfoUI(DdpmCommonHelper.DeviceManagerSA.GetFWUpdateInfo(false, false, false, null, false, false, true).Result, DdpmCommonHelper.DeviceManagerSA.SW_GetSWUpdateInfo(false, false, true, false).Result);
+                RefreshUI();
+            }
+            catch (Exception)
+            {
+            }
+        }
+
+        private void Set_Page_Done_1(object sender, RunWorkerCompletedEventArgs e)
+        {
+            IsBusy_UpdatePage = false;
+            OnPropertyChanged("IsBusy_UpdatePage");
         }
         #region General
         public GlobalSettingParam GlobalSettingParam { get; set; }
@@ -290,10 +329,10 @@ namespace DDPM.UI.Plugin.SettingsPlugin
                 WorkerSupportsCancellation = false
             };
             bw.DoWork += Set_CheckUpdate_Dowork;
-            bw.RunWorkerCompleted += Set_Page_Done;
+            bw.RunWorkerCompleted += Set_Page_Done_1;
             bw.RunWorkerAsync();
-            IsBusy = true;
-            OnPropertyChanged("IsBusy");
+            IsBusy_UpdatePage = true;
+            OnPropertyChanged("IsBusy_UpdatePage");
         }
         private void Set_CheckUpdate_Dowork(object sender, DoWorkEventArgs e)
         {

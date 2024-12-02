@@ -57,10 +57,23 @@
                 <Border CornerRadius="6" Margin="0,22,0,0">
                     <StackPanel Orientation="Vertical">
                         <UXControls:UXTextBlock Margin="18,25,0,18" Text="{Binding [WebCameraCapture.4], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource ModuleItemStyle}" IsEnabled="{Binding IsNotRecording}" />
-                        <StackPanel Orientation="Horizontal" Margin="18,0,18,18">
-                            <Border x:Name="btnRes0" Visibility="{Binding btnRes0_show}" CornerRadius="5,0,0,5" Focusable="True" MouseLeftButtonDown="btnResolution_Click" Height="30" Width="100" Tag="0" IsEnabled="{Binding IsNotRecording}">
+                        <Grid Margin="18,0,18,18">
+                            <!-- Define a Grid with three equal columns -->
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition x:Name="btnRes0_Col" Width="*"  />
+                                <!-- First column -->
+                                <ColumnDefinition x:Name="btnRes1_Col" Width="*" />
+                                <!-- Second column -->
+                                <ColumnDefinition x:Name="btnRes2_Col" Width="*" />
+                                <!-- Third column -->
+                                <ColumnDefinition x:Name="btnRes3_Col" Width="*" />
+                                <!-- Third column -->
+                            </Grid.ColumnDefinitions>
+                            <Border Grid.Column="0" x:Name="btnRes0" Visibility="{Binding btnRes0_show}" CornerRadius="5,0,0,5" Focusable="True" MouseLeftButtonDown="btnResolution_Click" Height="30" Tag="0" IsEnabled="{Binding IsNotRecording}"
+                                    HorizontalAlignment="Stretch">
                                 <Border.Style>
                                     <Style TargetType="Border" BasedOn="{StaticResource BorderBase}">
+                                        <Setter Property="Background" Value="{DynamicResource RightView_Header_BkColor}" />
                                         <Style.Triggers>
                                             <DataTrigger Binding="{Binding Resolution_IsSelected[0]}"  Value="True">
                                                 <Setter Property="Background"  Value="{DynamicResource VbarItem_HiBkColor}" />
@@ -85,9 +98,11 @@
                                     </UXControls:UXTextBlock.Style>
                                 </UXControls:UXTextBlock>
                             </Border>
-                            <Border x:Name="btnRes1" Visibility="{Binding btnRes1_show}" CornerRadius="{Binding btnRes1_radius}" Focusable="True" MouseLeftButtonDown="btnResolution_Click" Height="30" Width="{Binding btnRes1_width}" Tag="1" IsEnabled="{Binding IsNotRecording}">
+                            <Border Grid.Column="1" x:Name="btnRes1" Visibility="{Binding btnRes1_show}" CornerRadius="{Binding btnRes1_radius}" Focusable="True" MouseLeftButtonDown="btnResolution_Click" Height="30" Width="{Binding btnRes1_width}" Tag="1" IsEnabled="{Binding IsNotRecording}"
+                                    HorizontalAlignment="Stretch">
                                 <Border.Style>
                                     <Style TargetType="Border" BasedOn="{StaticResource BorderBase}">
+                                        <Setter Property="Background" Value="{DynamicResource RightView_Header_BkColor}" />
                                         <Style.Triggers>
                                             <DataTrigger Binding="{Binding Resolution_IsSelected[1]}"  Value="True">
                                                 <Setter Property="Background"  Value="{DynamicResource VbarItem_HiBkColor}" />
@@ -112,9 +127,11 @@
                                     </UXControls:UXTextBlock.Style>
                                 </UXControls:UXTextBlock>
                             </Border>
-                            <Border x:Name="btnRes2" Visibility="{Binding btnRes2_show}" Focusable="True" MouseLeftButtonDown="btnResolution_Click" Height="30" Width="{Binding btnRes2_width}" Tag="2" IsEnabled="{Binding IsNotRecording}">
+                            <Border Grid.Column="2" x:Name="btnRes2" Visibility="{Binding btnRes2_show}" Focusable="True" MouseLeftButtonDown="btnResolution_Click" Height="30" Width="{Binding btnRes2_width}" Tag="2" IsEnabled="{Binding IsNotRecording}"
+                                    HorizontalAlignment="Stretch">
                                 <Border.Style>
                                     <Style TargetType="Border" BasedOn="{StaticResource BorderBase}">
+                                        <Setter Property="Background" Value="{DynamicResource RightView_Header_BkColor}" />
                                         <Style.Triggers>
                                             <DataTrigger Binding="{Binding Resolution_IsSelected[2]}"  Value="True">
                                                 <Setter Property="Background"  Value="{DynamicResource VbarItem_HiBkColor}" />
@@ -141,9 +158,11 @@
                                     </UXControls:UXTextBlock>
                                 </Grid>
                             </Border>
-                            <Border x:Name="btnRes3" Visibility="{Binding btnRes3_show}" Focusable="True" MouseLeftButtonDown="btnResolution_Click" Height="30" Width="{Binding btnRes3_width}" Tag="3" IsEnabled="{Binding IsNotRecording}">
+                            <Border Grid.Column="3" x:Name="btnRes3" Visibility="{Binding btnRes3_show}" Focusable="True" MouseLeftButtonDown="btnResolution_Click" Height="30" Width="{Binding btnRes3_width}" Tag="3" IsEnabled="{Binding IsNotRecording}"
+                                    HorizontalAlignment="Stretch">
                                 <Border.Style>
                                     <Style TargetType="Border" BasedOn="{StaticResource BorderBase}">
+                                        <Setter Property="Background" Value="{DynamicResource RightView_Header_BkColor}" />
                                         <Style.Triggers>
                                             <DataTrigger Binding="{Binding Resolution_IsSelected[2]}"  Value="True">
                                                 <Setter Property="Background"  Value="{DynamicResource VbarItem_HiBkColor}" />
@@ -170,7 +189,7 @@
                                     </UXControls:UXTextBlock>
                                 </Grid>
                             </Border>
-                        </StackPanel>
+                        </Grid>
 
                         <Border Width="400" Name="bdrAlertUsbtype" Background="#364861" CornerRadius="4" Margin="0,0,0,15" BorderThickness="7,0,0,0" BorderBrush="#0E92F2" Visibility="{Binding MessageBoxVisibilityUsbType}">
                             <StackPanel Orientation="Horizontal">
@@ -206,6 +225,7 @@
                             <Border x:Name="btnFPS0" CornerRadius="5,0,0,5" Focusable="True" MouseLeftButtonDown="btnFPS_Click" Height="30" Width="{Binding btnRes3_width}" Tag="0" IsEnabled="{Binding IsNotRecording}">
                                 <Border.Style>
                                     <Style TargetType="Border" BasedOn="{StaticResource BorderBase}">
+                                        <Setter Property="Background" Value="{DynamicResource RightView_Header_BkColor}" />
                                         <Style.Triggers>
                                             <DataTrigger Binding="{Binding FPS_IsSelected[0]}"  Value="True">
                                                 <Setter Property="Background"  Value="{DynamicResource VbarItem_HiBkColor}" />
@@ -233,6 +253,7 @@
                             <Border x:Name="btnFPS1" Focusable="True" MouseLeftButtonDown="btnFPS_Click" Height="30" Width="100" Tag="1" IsEnabled="{Binding IsNotRecording}">
                                 <Border.Style>
                                     <Style TargetType="Border" BasedOn="{StaticResource BorderBase}">
+                                        <Setter Property="Background" Value="{DynamicResource RightView_Header_BkColor}" />
                                         <Style.Triggers>
                                             <DataTrigger Binding="{Binding FPS_IsSelected[1]}"  Value="True">
                                                 <Setter Property="Background"  Value="{DynamicResource VbarItem_HiBkColor}" />
@@ -260,6 +281,7 @@
                             <Border x:Name="btnFPS2" Focusable="True" MouseLeftButtonDown="btnFPS_Click" Height="30" Width="100" Tag="2" IsEnabled="{Binding IsNotRecording}">
                                 <Border.Style>
                                     <Style TargetType="Border" BasedOn="{StaticResource BorderBase}">
+                                        <Setter Property="Background" Value="{DynamicResource RightView_Header_BkColor}" />
                                         <Style.Triggers>
                                             <DataTrigger Binding="{Binding FPS_IsSelected[2]}"  Value="True">
                                                 <Setter Property="Background"  Value="{DynamicResource VbarItem_HiBkColor}" />

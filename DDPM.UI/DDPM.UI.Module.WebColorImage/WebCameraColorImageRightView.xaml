@@ -179,7 +179,18 @@
                                                             </Style.Triggers>
                                                         </Style>
                                                     </Border.Style>
-                                                    <UXControls:UXTextBlock Text="{Binding [WebCameraColorImage.9], Source={x:Static lang:LangHelper.Instance},StringFormat={}50{0}}" FontSize="14" HorizontalAlignment="Center" VerticalAlignment="Center" FontFamily="Roboto" />
+                                                    <UXControls:UXTextBlock Text="{Binding [WebCameraColorImage.9], Source={x:Static lang:LangHelper.Instance},StringFormat={}50{0}}" FontSize="14" HorizontalAlignment="Center" VerticalAlignment="Center" FontFamily="Roboto">
+                                                        <UXControls:UXTextBlock.Style>
+                                                            <Style TargetType="UXControls:UXTextBlock">
+                                                                <Setter Property="Foreground" Value="{DynamicResource DefaultTheme_TxtColor}" />
+                                                                <Style.Triggers>
+                                                                    <DataTrigger Binding="{Binding AntiFlicker}" Value="1">
+                                                                        <Setter Property="Foreground"  Value="#FFFFFF" />
+                                                                    </DataTrigger>
+                                                                </Style.Triggers>
+                                                            </Style>
+                                                        </UXControls:UXTextBlock.Style>
+                                                    </UXControls:UXTextBlock>
                                                 </Border>
                                                 <Border x:Name="btnAntiFlicker1" CornerRadius="0,5,5,0" MouseLeftButtonDown="AntiFlicker_Click" Height="30" Width="201" Tag="2">
                                                     <Border.Style>
@@ -196,7 +207,18 @@
                                                             </Style.Triggers>
                                                         </Style>
                                                     </Border.Style>
-                                                    <UXControls:UXTextBlock Text="{Binding [WebCameraColorImage.9], Source={x:Static lang:LangHelper.Instance},StringFormat={}60{0}}" FontSize="14" HorizontalAlignment="Center" VerticalAlignment="Center" FontFamily="Roboto" />
+                                                    <UXControls:UXTextBlock Text="{Binding [WebCameraColorImage.9], Source={x:Static lang:LangHelper.Instance},StringFormat={}60{0}}" FontSize="14" HorizontalAlignment="Center" VerticalAlignment="Center" FontFamily="Roboto">
+                                                        <UXControls:UXTextBlock.Style>
+                                                            <Style TargetType="UXControls:UXTextBlock">
+                                                                <Setter Property="Foreground" Value="{DynamicResource DefaultTheme_TxtColor}" />
+                                                                <Style.Triggers>
+                                                                    <DataTrigger Binding="{Binding AntiFlicker}" Value="2">
+                                                                        <Setter Property="Foreground"  Value="#FFFFFF" />
+                                                                    </DataTrigger>
+                                                                </Style.Triggers>
+                                                            </Style>
+                                                        </UXControls:UXTextBlock.Style>
+                                                    </UXControls:UXTextBlock>
                                                 </Border>
                                             </StackPanel>
                                         </StackPanel>

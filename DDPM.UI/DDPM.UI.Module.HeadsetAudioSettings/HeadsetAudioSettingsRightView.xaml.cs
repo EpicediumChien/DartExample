@@ -106,12 +106,6 @@ namespace DDPM.UI.Module.HeadsetAudioSettings
                 }
             }
             //_vm.Invoke_PleaseWait(_vm.Model);
-            //_vm.DetectPageShow(_vm.Model);
-            //_vm.DetectPageShow("WL7024");
-            //_vm.DetectPageShow("WL5024");
-            //vm.DetectPageShow("WH5024");
-            //_vm.DetectPageShow("WL3024");
-            //_vm.DetectPageShow("WH3024");
 
             //lock/unlock init, 9/23 add
             if (DdpmCommonHelper.DeviceManagerSA != null)
