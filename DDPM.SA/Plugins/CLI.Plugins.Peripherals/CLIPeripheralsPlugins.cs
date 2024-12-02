@@ -788,7 +788,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                     x.Value = "";
                     if (x.Result == "")
                     {
-                        var result = "0"; //RunAsyncTimeout(_devMgr.(x.Guid, true)).Result;
+                        var result = RunAsyncTimeout(_devMgr.RestoreToDefaultPen()).Result;
                         if (result == "0")
                         {
                             x.Result = "PASS";

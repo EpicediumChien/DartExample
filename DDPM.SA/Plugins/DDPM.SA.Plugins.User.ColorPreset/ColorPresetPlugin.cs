@@ -494,7 +494,10 @@ namespace ColorPreset.Plugins
                 {
                     // jim add 20240605
                     if (MonitorBorkerWin != null) // jim add 20240809
+                    {
+                        MonitorBorkerWin.Set_Active_Monitor(mo); // For PIMS-326072
                         MonitorBorkerWin.Set_AUTO_ColorPresetConfig(true, SmartHDR_ON, ColorPresetSupportList);
+                    }
                 }
             }
             else if (on_off.Equals("OFF", StringComparison.OrdinalIgnoreCase))
@@ -517,7 +520,10 @@ namespace ColorPreset.Plugins
                 if (newWindowThread_AutoSetColorPresetForMonitorConfig != null)
                 {
                     if (MonitorBorkerWin != null) // jim add 20240809
+                    {
+                        MonitorBorkerWin.Set_Active_Monitor(mo); // for PIMS-326072
                         MonitorBorkerWin.Set_AUTO_ColorPresetConfig(false, SmartHDR_ON, ColorPresetSupportList);
+                    }
                 }
 
             }
