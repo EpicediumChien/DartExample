@@ -143,11 +143,11 @@
         </Grid>
       </Grid>
       <!--Name & Model-->
-      <Grid VerticalAlignment="Top" Height="125">
+      <Grid VerticalAlignment="Top" Height="130">
         <Border Background="Transparent" MouseDown="PushBack"></Border>
         <StackPanel Orientation="Vertical">
           <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" x:Name="devNameStackPanel">
-                        <Image Margin="64,21,0,0" Source="{DynamicResource mouse_setting_title_back}" Stretch="Fill"
+            <Image Margin="64,21,0,0" Source="{DynamicResource mouse_setting_title_back}" Stretch="Fill"
                                VerticalAlignment="Top" HorizontalAlignment="Left" Cursor="Hand" Width="24" Height="24">
               <Image.InputBindings>
                 <MouseBinding Gesture="LeftClick" Command="{Binding GoBackClickedCommand, Mode=OneTime}" />
@@ -246,7 +246,7 @@
             <Image Name="EOLDongle" Source="/DDPM.UI.Resources;component/Resources/Images/EOLDongle.png" Stretch="Fill" Visibility="Collapsed"
                                VerticalAlignment="Top" HorizontalAlignment="Left" Cursor="" Width="40" Height="40" />
             <Border Style="{StaticResource BorderUnpair}" MouseLeftButtonDown="Unpair_Click" Cursor="Hand" Margin="8,0,0,70" Visibility="Visible" x:Name="btnUnpair">
-                            <UXControls:UXTextBlock Name="txtUnpair" Foreground="{DynamicResource txtUnpair_TxtColor}" VerticalAlignment="Center" HorizontalAlignment="Center" FontFamily="Roboto" FontSize="14" Text="{Binding [Unpair], Source={x:Static lang:LangHelper.Instance}}"/>
+              <UXControls:UXTextBlock Name="txtUnpair" Foreground="{DynamicResource txtUnpair_TxtColor}" VerticalAlignment="Center" HorizontalAlignment="Center" FontFamily="Roboto" FontSize="14" Text="{Binding [Unpair], Source={x:Static lang:LangHelper.Instance}}"/>
             </Border>
           </StackPanel>
         </StackPanel>
