@@ -175,7 +175,7 @@ namespace VcpCore.Plugins
             do
             {
                 if (!_Isinitializing) break;
-                System.Threading.Tasks.Task.Delay(250).Wait();
+                Thread.SpinWait(250);
                 count++;
             } while ((_Isinitializing) && (count < 120));
 
@@ -708,7 +708,7 @@ namespace VcpCore.Plugins
                     else
                         _logs.DebugMsg("[VcpCorePlugin] GetQueueResult _TaskQueueResult is Empty ...");
 
-                    System.Threading.Tasks.Task.Delay(1000).Wait();
+                    Thread.SpinWait(1000);
                 }
 
                 if (!c_token.IsCancellationRequested)
@@ -1949,7 +1949,7 @@ namespace VcpCore.Plugins
                                         while (count < 15)
                                         {
                                             TokenNew.ThrowIfCancellationRequested();
-                                            System.Threading.Tasks.Task.Delay(1000).Wait();
+                                            Thread.SpinWait(1000);
                                             List<MonitorInfo_complex> mos = _GetMonitors(TokenNew).Item1;
                                             if (mos.Count > 0)
                                             {
@@ -2031,7 +2031,7 @@ namespace VcpCore.Plugins
                                             var origan = monitors.Item1.ToList();
 
                                             TokenNew.ThrowIfCancellationRequested();
-                                            System.Threading.Tasks.Task.Delay(5000).Wait();
+                                            Thread.SpinWait(5000);
                                             TokenNew.ThrowIfCancellationRequested();
 
                                             List<MonitorInfo_complex> mos = _GetMonitors(TokenNew).Item1;
@@ -2472,7 +2472,7 @@ namespace VcpCore.Plugins
 
                     count += 1;
                     _logs.DebugMsg($"[VcpCorePlugin] GetVcp2Steps retry ({count})");
-                    System.Threading.Tasks.Task.Delay(1000).Wait();
+                    Thread.SpinWait(1000);
                 } while (count < 3);
 
                 _logs.DebugMsg("[VcpCorePlugin] GetVcp2Steps return null");
@@ -2681,7 +2681,7 @@ namespace VcpCore.Plugins
 
                                 nCount++;
                                 _logs.DebugMsg("[VcpCorePlugin] _Get_Monitors collection Get EDID Retry " + nCount.ToString());
-                                System.Threading.Tasks.Task.Delay(1000 * nCount).Wait();
+                                Thread.SpinWait(1000 * nCount);
                             }
 
                             if (blGetEdidPass)
@@ -3122,7 +3122,7 @@ namespace VcpCore.Plugins
 
                     count++;
                     _logs.DebugMsg($"[VcpCorePlugin] GetInputSource retry ({count})");
-                    System.Threading.Tasks.Task.Delay(1000).Wait();
+                    Thread.SpinWait(1000);
                 } while (count < 3);
 
                 _logs.DebugMsg("[VcpCorePlugin] GetInputSource return string.Empty");
@@ -3179,7 +3179,7 @@ namespace VcpCore.Plugins
 
                 count++;
                 _logs.DebugMsg($"[VcpCorePlugin] Set_VCPCapability retry ({count})");
-                System.Threading.Tasks.Task.Delay(1000).Wait();
+                Thread.SpinWait(1000);
             } while (count < 3 && retry);
 
             _logs.DebugMsg("[VcpCorePlugin] Set_VCPCapability return false");
@@ -3203,7 +3203,7 @@ namespace VcpCore.Plugins
 
                 count++;
                 _logs.DebugMsg("[VcpCorePlugin] Get_VCPCapability " + code.ToString("X2") + ", retry(" + count.ToString() + ")");
-                System.Threading.Tasks.Task.Delay(1000).Wait();
+                Thread.SpinWait(1000);
             } while (count < 3 && retry);
 
             _logs.DebugMsg("[VcpCorePlugin] Get_VCPCapability return null");
@@ -3351,7 +3351,7 @@ namespace VcpCore.Plugins
 
                     count++;
                     _logs.DebugMsg($"[VcpCorePlugin] GetCurrentColorPreset retry ({count})");
-                    System.Threading.Tasks.Task.Delay(1000).Wait();
+                    Thread.SpinWait(1000);
                 } while (count < 3);
 
                 _logs.DebugMsg("[VcpCorePlugin] GetCurrentColorPreset return string.Empty");
@@ -3426,7 +3426,7 @@ namespace VcpCore.Plugins
                             {
                                 _logs.DebugMsg($"[VcpCorePlugin] GetCapabilitiesStringLength error ({_GetLastError()})");
                                 num--;
-                                System.Threading.Tasks.Task.Delay(250 * (4 - num)).Wait();
+                                Thread.SpinWait(250 * (4 - num));
                             }
                         } while (!capabilitiesStringLength && num > 0);
 
@@ -3440,7 +3440,7 @@ namespace VcpCore.Plugins
 
                                 _logs.DebugMsg($"[VcpCorePlugin] CapabilitiesRequestAndCapabilitiesReply error ({_GetLastError()})");
                                 num--;
-                                System.Threading.Tasks.Task.Delay(250 * (4 - num)).Wait();
+                                Thread.SpinWait(250 * (4 - num));
                             }
 
                             if (!string.IsNullOrWhiteSpace(sb.ToString()))
@@ -3449,7 +3449,7 @@ namespace VcpCore.Plugins
 
                         count++;
                         _logs.DebugMsg($"[VcpCorePlugin] GetCapabilities_String retry ({count})");
-                        System.Threading.Tasks.Task.Delay(1000).Wait();
+                        Thread.SpinWait(1000);
                     }
                     catch (TaskCanceledException)
                     {
@@ -4276,7 +4276,7 @@ namespace VcpCore.Plugins
 
                     count++;
                     _logs.DebugMsg($"[VcpCorePlugin] CheckIsSupportDisplayByBit retry ({count})");
-                    System.Threading.Tasks.Task.Delay(1000).Wait();
+                    Thread.SpinWait(1000);
                 } while (count < 3);
 
                 _logs.DebugMsg("[VcpCorePlugin] CheckIsSupportDisplayByBit return false");
@@ -4386,7 +4386,7 @@ namespace VcpCore.Plugins
 
                 count++;
                 _logs.DebugMsg($"[VcpCorePlugin] FwVersion retry ({count})");
-                System.Threading.Tasks.Task.Delay(1000).Wait();
+                Thread.SpinWait(1000);
             } while (count < 3);
 
             _logs.DebugMsg("[VcpCorePlugin] FwVersion return string.empty");
