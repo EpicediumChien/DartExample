@@ -50,11 +50,9 @@
                                                 VerticalAlignment="Center" HorizontalAlignment="Left" Margin="5,16,0,13" LineHeight="21" Padding="2,3,10,2">
                 <Run Name="txtAlert1" FontFamily="Roboto" FontWeight="Normal" AutomationProperties.Name="naAlert" Text="{Binding [Collaboration.5], Source={x:Static lang:LangHelper.Instance},Mode=OneWay}"/>
               </UXControls:UXTextBlock>
-              <Border Focusable="True" KeyboardNavigation.TabIndex="2" BorderThickness="0" KeyDown="Border1_KeyDown">
-                <Image x:Name="CloseIcon" Source="/DDPM.UI.Common;component/Resources/Close.png" Stretch="Fill" Focusable="True"
+              <Image x:Name="CloseIcon" Source="/DDPM.UI.Common;component/Resources/Close.png" Stretch="Fill" Focusable="True"
                                    VerticalAlignment="Center" HorizontalAlignment="Right" Width="15" Height="15" MouseLeftButtonDown="CloseDescription1" Cursor="Hand">
-                </Image>
-              </Border>
+              </Image>
             </StackPanel>
           </Border>
           <Border Name="bdrAlert2" Background="#364861" CornerRadius="4" Margin="16,23,16,-9" BorderThickness="7,0,0,0" BorderBrush="#0E92F2" MouseEnter="MessageBox_MouseEnter" MouseLeave="MessageBox_MouseLeave" Visibility="Collapsed">
@@ -67,19 +65,17 @@
                 <Run Name="txtAlert2" FontFamily="Roboto" FontWeight="Normal" AutomationProperties.Name="naAlert"/>
                 <Run Name="txtLearnMore2" FontFamily="Roboto" Foreground="#31A2E3" FontWeight="Bold" Cursor="Hand" TextDecorations="Underline" KeyDown="txtLearnMore1_KeyDown" MouseLeftButtonDown="LearnMore_Click" Focusable="True" KeyboardNavigation.TabIndex="1" KeyboardNavigation.IsTabStop="True" Text="{Binding [LearnMore], Source={x:Static lang:LangHelper.Instance},Mode=OneWay}"/>
               </UXControls:UXTextBlock>
-              <Border Focusable="True" KeyboardNavigation.TabIndex="2" BorderThickness="0" KeyDown="Border2_KeyDown">
-                <Image x:Name="CloseIcon2" Source="/DDPM.UI.Common;component/Resources/Close.png" Stretch="Fill" Focusable="True"
+              <Image x:Name="CloseIcon2" Source="/DDPM.UI.Common;component/Resources/Close.png" Stretch="Fill" Focusable="True"
                                    VerticalAlignment="Center" HorizontalAlignment="Right" Width="15" Height="15" MouseLeftButtonDown="CloseDescription2" Cursor="Hand">
-                </Image>
-              </Border>
+              </Image>
             </StackPanel>
           </Border>
         </StackPanel>
         <StackPanel Orientation="Horizontal">
           <Grid Margin="0,8,0,0">
             <Grid.ColumnDefinitions>
-              <ColumnDefinition Width="430" />
-              <ColumnDefinition Width="74" />
+              <ColumnDefinition Width="374" />
+              <ColumnDefinition Width="130" />
             </Grid.ColumnDefinitions>
             <Grid Grid.Column="0">
               <StackPanel Orientation="Horizontal">
@@ -109,13 +105,13 @@
             <Grid>
               <Border Style="{StaticResource BroderStyle1}" Margin="16,0,0,0">
                 <StackPanel Orientation="Horizontal">
-                  <Grid Width="100">
+                  <Grid Width="95">
                     <Image Margin="16,0,0,0" Source="/DDPM.UI.Resources;component/Resources/Images/Video.png" Stretch="Uniform" HorizontalAlignment="Left"
                                                Width="20" Height="14">
                     </Image>
                     <UXControls:UXTextBlock Name="txtVideo" Style="{StaticResource TextStyle1}" Margin="44,0,0,0" VerticalAlignment="Center" HorizontalAlignment="Left" Text="{Binding [Video], Source={x:Static lang:LangHelper.Instance}}"/>
                   </Grid>
-                  <Grid Width="120">
+                  <Grid Width="130">
                     <UXControls:UXToggleSwitch Margin="0" IsChecked="{Binding IsCollaborationCameraEnable}" HorizontalAlignment="Right" VerticalAlignment="Center"
                                                                    Foreground="White" FontFamily="Roboto" FontSize="16" FontWeight="Normal"
                                                                    Content="{Binding IsCollaborationCameraEnableText}" IsEnabled="{Binding CameraToggleEnabled}" />
@@ -127,7 +123,7 @@
             <Grid>
               <Border Name="bdrShare" Style="{StaticResource BroderStyle1}" Margin="16,0,0,0">
                 <StackPanel Orientation="Horizontal">
-                  <StackPanel Width="150" Orientation="Horizontal">
+                  <StackPanel Width="95" Orientation="Horizontal">
                     <Image Margin="16,0,0,0" Source="/DDPM.UI.Resources;component/Resources/Images/Share.png" Stretch="Uniform" VerticalAlignment="Center"
                                                Width="19" Height="20" HorizontalAlignment="Left">
                     </Image>
@@ -136,7 +132,7 @@
                                                Width="19" Height="20" HorizontalAlignment="Left" Visibility="Collapsed">
                     </Image>
                   </StackPanel>
-                  <Grid Width="70">
+                  <Grid Width="130">
                     <UXControls:UXToggleSwitch Name="tsShare" Margin="0" IsChecked="{Binding IsCollaborationScreenShareEnable}" HorizontalAlignment="Right" VerticalAlignment="Center"
                                                                    Foreground="White" FontFamily="Roboto" FontSize="16" FontWeight="Normal"
                                                                    Content="{Binding IsCollaborationScreenShareEnableText}" IsEnabled="{Binding CameraToggleEnabled}" />
@@ -150,13 +146,13 @@
             <Grid>
               <Border Style="{StaticResource BroderStyle1}" Margin="16,0,0,0">
                 <StackPanel Orientation="Horizontal">
-                  <Grid Width="100">
+                  <Grid Width="95">
                     <Image Margin="17,0,0,0" Source="/DDPM.UI.Resources;component/Resources/Images/ChatC.png" Stretch="Uniform"
                                                Width="18" Height="16" VerticalAlignment="Center" HorizontalAlignment="Left">
                     </Image>
                     <UXControls:UXTextBlock Name="txtChat" Style="{StaticResource TextStyle1}" Margin="44,0,0,0" VerticalAlignment="Center" HorizontalAlignment="Left" Text="{Binding [Chat], Source={x:Static lang:LangHelper.Instance}}"/>
                   </Grid>
-                  <Grid Width="120">
+                  <Grid Width="130">
                     <UXControls:UXToggleSwitch Margin="0" IsChecked="{Binding IsCollaborationChatEnable}" HorizontalAlignment="Right" VerticalAlignment="Center"
                                                                    Foreground="White" FontFamily="Roboto" FontSize="16" FontWeight="Normal"
                                                                    Content="{Binding IsCollaborationChatEnableText}" IsEnabled="{Binding ChatToggleEnabled}" />
@@ -168,13 +164,13 @@
             <Grid>
               <Border Style="{StaticResource BroderStyle1}" Margin="16,0,0,0">
                 <StackPanel Orientation="Horizontal">
-                  <Grid Width="100">
+                  <Grid Width="95">
                     <Image Margin="10,0,0,0" Source="/DDPM.UI.Resources;component/Resources/Images/Mic.png" Stretch="Uniform"
                                                Width="28" Height="28" VerticalAlignment="Center" HorizontalAlignment="Left">
                     </Image>
                     <UXControls:UXTextBlock Name="txtMic" Style="{StaticResource TextStyle1}" Margin="44,0,0,0" VerticalAlignment="Center" HorizontalAlignment="Left" Text="{Binding [Mic], Source={x:Static lang:LangHelper.Instance}}"/>
                   </Grid>
-                  <Grid Width="120">
+                  <Grid Width="130">
                     <UXControls:UXToggleSwitch Margin="0" IsChecked="{Binding IsCollaborationMicEnable}" HorizontalAlignment="Right" VerticalAlignment="Center"
                                                                    Foreground="White" FontFamily="Roboto" FontSize="16" FontWeight="Normal"
                                                                    Content="{Binding IsCollaborationMicEnableText}" IsEnabled="{Binding MicToggleEnabled}" />
