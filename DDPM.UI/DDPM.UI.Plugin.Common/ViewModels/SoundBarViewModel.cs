@@ -300,7 +300,7 @@ namespace DDPM.UI.Plugin.ViewModels
                         break;
                 }
             }
-            else
+            else if(model == "SB522A")
             {
                 switch (btnName)
                 {
@@ -311,16 +311,27 @@ namespace DDPM.UI.Plugin.ViewModels
                     case "Zoom":
                         ImageFilePath = "/DDPM.UI.Common;component/Resources/Speaker_SB522A_TwoLight.png";
                         break;
+                    default:
+                            ImageFilePath = "/DDPM.UI.Common;component/Resources/Speaker_SB522A.png";
+                        break;
+                }
+            }
+            else
+            {
+                switch (btnName)
+                {
+                    case "MicrosoftTeams":
+                        ImageFilePath = "/DDPM.UI.Common;component/Resources/Speaker_SB725.png";
+                        break;
+
+                    case "Zoom":
+                        ImageFilePath = "/DDPM.UI.Common;component/Resources/Speaker_SB725.png";
+                        break;
                     case "MuteStatusChanged":
                         ImageFilePath = $"/DDPM.UI.Common;component/Resources/Speaker_SB725.png";
                         break;
                     default:
-                        if (model == "SB725")
-                        {
-                            ImageFilePath = $"/DDPM.UI.Common;component/Resources/Speaker_SB725.png";
-                        }
-                        else
-                            ImageFilePath = "/DDPM.UI.Common;component/Resources/Speaker_SB522A.png";
+                        ImageFilePath = $"/DDPM.UI.Common;component/Resources/Speaker_SB725.png";
                         break;
                 }
             }

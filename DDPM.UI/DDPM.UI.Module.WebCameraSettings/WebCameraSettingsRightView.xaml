@@ -131,6 +131,7 @@
                                             <Border x:Name="btnAFS0" CornerRadius="5,0,0,5" Focusable="True" MouseLeftButtonDown="AutoFramingSensitivity_Click" Height="30" Width="192" Tag="0" IsEnabled="{Binding IsAutoFramingOn}">
                                                 <Border.Style>
                                                     <Style TargetType="Border" >
+                                                        <Setter Property="Background" Value="{DynamicResource RightView_Header_BkColor}" />
                                                         <Style.Triggers>
                                                             <DataTrigger Binding="{Binding AutoFramingSensitivity}"  Value="0">
                                                                 <Setter Property="Background"  Value="{StaticResource VbarItem_HiBkColor}" />
@@ -145,11 +146,23 @@
                                                         </Style.Triggers>
                                                     </Style>
                                                 </Border.Style>
-                                                <UXControls:UXTextBlock Text="{Binding [WebCameraSettings.7], Source={x:Static lang:LangHelper.Instance}}" FontSize="14" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="White" FontFamily="Roboto" />
+                                                <UXControls:UXTextBlock Text="{Binding [WebCameraSettings.7], Source={x:Static lang:LangHelper.Instance}}" FontSize="14" HorizontalAlignment="Center" VerticalAlignment="Center"  FontFamily="Roboto">
+                                                    <UXControls:UXTextBlock.Style>
+                                                        <Style TargetType="UXControls:UXTextBlock">
+                                                            <Setter Property="Foreground" Value="{DynamicResource DefaultTheme_TxtColor}" />
+                                                            <Style.Triggers>
+                                                                <DataTrigger Binding="{Binding AutoFramingSensitivity}"  Value="0">
+                                                                    <Setter Property="Foreground"  Value="#FFFFFF" />
+                                                                </DataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </UXControls:UXTextBlock.Style>
+                                                </UXControls:UXTextBlock>
                                             </Border>
                                             <Border x:Name="btnAFS1" CornerRadius="0,5,5,0" Focusable="True" MouseLeftButtonDown="AutoFramingSensitivity_Click" Height="30" Width="192" Tag="1" IsEnabled="{Binding IsAutoFramingOn}">
                                                 <Border.Style>
                                                     <Style TargetType="Border" >
+                                                        <Setter Property="Background" Value="{DynamicResource RightView_Header_BkColor}" />
                                                         <Style.Triggers>
                                                             <DataTrigger Binding="{Binding AutoFramingSensitivity}"  Value="1">
                                                                 <Setter Property="Background"  Value="{StaticResource VbarItem_HiBkColor}" />
@@ -164,7 +177,18 @@
                                                         </Style.Triggers>
                                                     </Style>
                                                 </Border.Style>
-                                                <UXControls:UXTextBlock Text="{Binding [WebCameraSettings.8], Source={x:Static lang:LangHelper.Instance}}" FontSize="14" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="White" FontFamily="Roboto" />
+                                                <UXControls:UXTextBlock Text="{Binding [WebCameraSettings.8], Source={x:Static lang:LangHelper.Instance}}" FontSize="14" HorizontalAlignment="Center" VerticalAlignment="Center"  FontFamily="Roboto">
+                                                    <UXControls:UXTextBlock.Style>
+                                                        <Style TargetType="UXControls:UXTextBlock">
+                                                            <Setter Property="Foreground" Value="{DynamicResource DefaultTheme_TxtColor}" />
+                                                            <Style.Triggers>
+                                                                <DataTrigger Binding="{Binding AutoFramingSensitivity}"  Value="1">
+                                                                    <Setter Property="Foreground"  Value="#FFFFFF" />
+                                                                </DataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </UXControls:UXTextBlock.Style>
+                                                </UXControls:UXTextBlock>
                                             </Border>
                                         </StackPanel>
                                     </StackPanel>
@@ -183,6 +207,7 @@
                                             <Border x:Name="btnFS0" CornerRadius="5,0,0,5" Focusable="True" MouseLeftButtonDown="AutoFramingSize_Click" Height="30" Width="192" Tag="0" IsEnabled="{Binding IsAutoFramingOn}">
                                                 <Border.Style>
                                                     <Style TargetType="Border" >
+                                                        <Setter Property="Background" Value="{DynamicResource RightView_Header_BkColor}" />
                                                         <Style.Triggers>
                                                             <DataTrigger Binding="{Binding AutoFramingFrameSize}"  Value="0">
                                                                 <Setter Property="Background"  Value="{StaticResource VbarItem_HiBkColor}" />
@@ -197,11 +222,23 @@
                                                         </Style.Triggers>
                                                     </Style>
                                                 </Border.Style>
-                                                <UXControls:UXTextBlock Text="{Binding [WebCameraSettings.10], Source={x:Static lang:LangHelper.Instance}}" FontSize="14" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="White" FontFamily="Roboto" />
+                                                <UXControls:UXTextBlock Text="{Binding [WebCameraSettings.10], Source={x:Static lang:LangHelper.Instance}}" FontSize="14" HorizontalAlignment="Center" VerticalAlignment="Center"  FontFamily="Roboto">
+                                                    <UXControls:UXTextBlock.Style>
+                                                        <Style TargetType="UXControls:UXTextBlock">
+                                                            <Setter Property="Foreground" Value="{DynamicResource DefaultTheme_TxtColor}" />
+                                                            <Style.Triggers>
+                                                                <DataTrigger Binding="{Binding AutoFramingFrameSize}"  Value="0">
+                                                                    <Setter Property="Foreground"  Value="#FFFFFF" />
+                                                                </DataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </UXControls:UXTextBlock.Style>
+                                                </UXControls:UXTextBlock>
                                             </Border>
                                             <Border x:Name="btnFS1" CornerRadius="0,5,5,0" Focusable="True" MouseLeftButtonDown="AutoFramingSize_Click" Height="30" Width="192" Tag="1" IsEnabled="{Binding IsAutoFramingOn}">
                                                 <Border.Style>
                                                     <Style TargetType="Border" >
+                                                        <Setter Property="Background" Value="{DynamicResource RightView_Header_BkColor}" />
                                                         <Style.Triggers>
                                                             <DataTrigger Binding="{Binding AutoFramingFrameSize}" Value="1">
                                                                 <Setter Property="Background"  Value="{StaticResource VbarItem_HiBkColor}" />
@@ -216,7 +253,18 @@
                                                         </Style.Triggers>
                                                     </Style>
                                                 </Border.Style>
-                                                <UXControls:UXTextBlock Text="{Binding [WebCameraSettings.11], Source={x:Static lang:LangHelper.Instance}}" FontSize="14" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="White" FontFamily="Roboto" />
+                                                <UXControls:UXTextBlock Text="{Binding [WebCameraSettings.11], Source={x:Static lang:LangHelper.Instance}}" FontSize="14" HorizontalAlignment="Center" VerticalAlignment="Center" FontFamily="Roboto">
+                                                    <UXControls:UXTextBlock.Style>
+                                                        <Style TargetType="UXControls:UXTextBlock">
+                                                            <Setter Property="Foreground" Value="{DynamicResource DefaultTheme_TxtColor}" />
+                                                            <Style.Triggers>
+                                                                <DataTrigger Binding="{Binding AutoFramingFrameSize}" Value="1">
+                                                                    <Setter Property="Foreground"  Value="#FFFFFF" />
+                                                                </DataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </UXControls:UXTextBlock.Style>
+                                                </UXControls:UXTextBlock>
                                             </Border>
                                         </StackPanel>
                                     </StackPanel>
@@ -239,6 +287,7 @@
                                             <Border x:Name="btnFOV0" CornerRadius="5,0,0,5" Focusable="True" Tag="0" MouseLeftButtonDown="FOV_Click" Height="30" IsEnabled="{Binding IsAutoFramingOn, Converter={StaticResource BooleanToInverseConverter}}">
                                                 <Border.Style>
                                                     <Style TargetType="Border" >
+							                            <Setter Property="Background" Value="{DynamicResource RightView_Header_BkColor}" />
                                                         <Style.Triggers>
                                                             <DataTrigger Binding="{Binding FOV_IsSelected[0]}" Value="true">
                                                                 <Setter Property="Background"  Value="{StaticResource VbarItem_HiBkColor}" />
@@ -254,12 +303,24 @@
                                                     </Style>
                                                 </Border.Style>
                                                 <Grid>
-                                                    <UXControls:UXTextBlock Name="txtFOV0" FontSize="14" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="White" FontFamily="Roboto" />
+                                                    <UXControls:UXTextBlock Name="txtFOV0" FontSize="14" HorizontalAlignment="Center" VerticalAlignment="Center"  FontFamily="Roboto">
+                                                        <UXControls:UXTextBlock.Style>
+                                                            <Style TargetType="UXControls:UXTextBlock">
+                                                                <Setter Property="Foreground" Value="{DynamicResource DefaultTheme_TxtColor}" />
+                                                                <Style.Triggers>
+                                                                    <DataTrigger Binding="{Binding FOV_IsSelected[0]}" Value="true">
+                                                                        <Setter Property="Foreground"  Value="#FFFFFF" />
+                                                                    </DataTrigger>
+                                                                </Style.Triggers>
+                                                            </Style>
+                                                        </UXControls:UXTextBlock.Style>
+                                                    </UXControls:UXTextBlock>
                                                 </Grid>
                                             </Border>
                                             <Border x:Name="btnFOV1"  Focusable="True" Tag="1" MouseLeftButtonDown="FOV_Click" Height="30" IsEnabled="{Binding IsAutoFramingOn, Converter={StaticResource BooleanToInverseConverter}}">
                                                 <Border.Style>
                                                     <Style TargetType="Border" >
+						                                <Setter Property="Background" Value="{DynamicResource RightView_Header_BkColor}" />
                                                         <Style.Triggers>
                                                             <DataTrigger Binding="{Binding FOV_IsSelected[1]}" Value="true">
                                                                 <Setter Property="Background"  Value="{DynamicResource VbarItem_HiBkColor}" />
@@ -275,12 +336,24 @@
                                                     </Style>
                                                 </Border.Style>
                                                 <Grid>
-                                                    <UXControls:UXTextBlock Name="txtFOV1" FontSize="14" HorizontalAlignment="Center" VerticalAlignment="Center" FontFamily="Roboto" />
+                                                    <UXControls:UXTextBlock Name="txtFOV1" FontSize="14" HorizontalAlignment="Center" VerticalAlignment="Center" FontFamily="Roboto">
+                                                        <UXControls:UXTextBlock.Style>
+                                                            <Style TargetType="UXControls:UXTextBlock">
+                                                                <Setter Property="Foreground" Value="{DynamicResource DefaultTheme_TxtColor}" />
+                                                                <Style.Triggers>
+                                                                    <DataTrigger Binding="{Binding FOV_IsSelected[1]}" Value="true">
+                                                                        <Setter Property="Foreground"  Value="#FFFFFF" />
+                                                                    </DataTrigger>
+                                                                </Style.Triggers>
+                                                            </Style>
+                                                        </UXControls:UXTextBlock.Style>
+                                                    </UXControls:UXTextBlock>
                                                 </Grid>
                                             </Border>
                                             <Border x:Name="btnFOV2" Focusable="True" Tag="2" MouseLeftButtonDown="FOV_Click" Height="30" IsEnabled="{Binding IsAutoFramingOn, Converter={StaticResource BooleanToInverseConverter}}">
                                                 <Border.Style>
                                                     <Style TargetType="Border" >
+                                                        <Setter Property="Background" Value="{DynamicResource RightView_Header_BkColor}" />
                                                         <Style.Triggers>
                                                             <DataTrigger Binding="{Binding FOV_IsSelected[2]}" Value="true">
                                                                 <Setter Property="Background"  Value="{DynamicResource VbarItem_HiBkColor}" />
@@ -296,7 +369,18 @@
                                                     </Style>
                                                 </Border.Style>
                                                 <Grid>
-                                                    <UXControls:UXTextBlock Name="txtFOV2" FontSize="14" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="White" FontFamily="Roboto" />
+                                                    <UXControls:UXTextBlock Name="txtFOV2" FontSize="14" HorizontalAlignment="Center" VerticalAlignment="Center"  FontFamily="Roboto">
+                                                        <UXControls:UXTextBlock.Style>
+                                                            <Style TargetType="UXControls:UXTextBlock">
+                                                                <Setter Property="Foreground" Value="{DynamicResource DefaultTheme_TxtColor}" />
+                                                                <Style.Triggers>
+                                                                    <DataTrigger Binding="{Binding FOV_IsSelected[2]}" Value="true">
+                                                                        <Setter Property="Foreground"  Value="#FFFFFF" />
+                                                                    </DataTrigger>
+                                                                </Style.Triggers>
+                                                            </Style>
+                                                        </UXControls:UXTextBlock.Style>
+                                                    </UXControls:UXTextBlock>
                                                 </Grid>
                                             </Border>
                                         </StackPanel>
@@ -364,7 +448,8 @@
                                     <StackPanel Orientation="Horizontal" Margin="0,18,0,8">
                                         <Border x:Name="btnPriority0" CornerRadius="5,0,0,5" Focusable="True" MouseLeftButtonDown="Priority_Click" Height="30" Width="201" Tag="0" IsEnabled="{Binding IsHDROn, Converter={StaticResource BooleanToInverseConverter}}">
                                             <Border.Style>
-                                                <Style TargetType="Border" BasedOn="{StaticResource Border_Test}">
+                                                <Style TargetType="Border" >
+                                                    <Setter Property="Background" Value="{DynamicResource RightView_Header_BkColor}" />
                                                     <Style.Triggers>
                                                         <DataTrigger Binding="{Binding Priority}"  Value="0">
                                                             <Setter Property="Background"  Value="{StaticResource VbarItem_HiBkColor}" />
@@ -379,11 +464,23 @@
                                                     </Style.Triggers>
                                                 </Style>
                                             </Border.Style>
-                                            <UXControls:UXTextBlock Text="{Binding [WebCameraSettings.20], Source={x:Static lang:LangHelper.Instance}}" FontSize="14" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="White" FontFamily="Roboto" />
+                                            <UXControls:UXTextBlock Text="{Binding [WebCameraSettings.20], Source={x:Static lang:LangHelper.Instance}}" FontSize="14" HorizontalAlignment="Center" VerticalAlignment="Center"  FontFamily="Roboto">
+                                                <UXControls:UXTextBlock.Style>
+                                                    <Style TargetType="UXControls:UXTextBlock">
+                                                        <Setter Property="Foreground" Value="{DynamicResource DefaultTheme_TxtColor}" />
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding Priority}" Value="0">
+                                                                <Setter Property="Foreground"  Value="#FFFFFF" />
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </UXControls:UXTextBlock.Style>
+                                            </UXControls:UXTextBlock> 
                                         </Border>
                                         <Border x:Name="btnPriority1" CornerRadius="0,5,5,0" Focusable="True" MouseLeftButtonDown="Priority_Click" Height="30" Width="201" Tag="1" IsEnabled="{Binding IsHDROn, Converter={StaticResource BooleanToInverseConverter}}">
                                             <Border.Style>
-                                                <Style TargetType="Border" BasedOn="{StaticResource Border_Test}">
+                                                <Style TargetType="Border" >
+                                                    <Setter Property="Background" Value="{DynamicResource RightView_Header_BkColor}" />
                                                     <Style.Triggers>
                                                         <DataTrigger Binding="{Binding Priority}"  Value="1">
                                                             <Setter Property="Background"  Value="{StaticResource VbarItem_HiBkColor}" />
@@ -398,7 +495,18 @@
                                                     </Style.Triggers>
                                                 </Style>
                                             </Border.Style>
-                                            <UXControls:UXTextBlock Text="{Binding [WebCameraSettings.21], Source={x:Static lang:LangHelper.Instance}}" FontSize="14" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="White" FontFamily="Roboto" />
+                                            <UXControls:UXTextBlock Text="{Binding [WebCameraSettings.21], Source={x:Static lang:LangHelper.Instance}}" FontSize="14" HorizontalAlignment="Center" VerticalAlignment="Center"  FontFamily="Roboto">
+                                                <UXControls:UXTextBlock.Style>
+                                                    <Style TargetType="UXControls:UXTextBlock">
+                                                        <Setter Property="Foreground" Value="{DynamicResource DefaultTheme_TxtColor}" />
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding Priority}" Value="1">
+                                                                <Setter Property="Foreground"  Value="#FFFFFF" />
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </UXControls:UXTextBlock.Style>
+                                            </UXControls:UXTextBlock>
                                         </Border>
                                     </StackPanel>
                                     <Border Name="bdrAlert2" Background="#364861" CornerRadius="4" Margin="0,12,0,8" BorderThickness="7,0,0,0" BorderBrush="#E67F01" Visibility="{Binding IsHDROn, Converter={StaticResource BoolToVisibilityConverter}}">
@@ -453,7 +561,13 @@
                                             </Image.ToolTip>
                                         </Image>
                                     </StackPanel>
-                                    <UXControls:UXLink Content="{Binding [WindowsSettings], Source={x:Static lang:LangHelper.Instance}}" Click="CallWindowsHello_Click" IconPosition="IconRight" LinkSize="Medium" LinkColorScheme="Primary" LinkType="InLine" Icon="M29.86 29.86h-27.74v-27.72h13.88v-2.14h-16v32h32v-16h-2.12zM20.86 0v2.12h7.56l-15.060 15.060 1.52 1.5 14.98-15v7.46h2.14v-11.14z" HorizontalAlignment="Right" VerticalAlignment="Center" />
+                                    <UXControls:UXLink Content="{Binding [WindowsSettings], Source={x:Static lang:LangHelper.Instance}}" Click="CallWindowsHello_Click" IconPosition="IconRight" LinkSize="Medium" LinkColorScheme="Primary" LinkType="InLine" Icon="M29.86 29.86h-27.74v-27.72h13.88v-2.14h-16v32h32v-16h-2.12zM20.86 0v2.12h7.56l-15.060 15.060 1.52 1.5 14.98-15v7.46h2.14v-11.14z" HorizontalAlignment="Right" VerticalAlignment="Center">
+                                        <UXControls:UXLink.Resources>
+                                            <Style TargetType="Border">
+                                                <Setter Property="Background" Value="Transparent" />
+                                            </Style>
+                                        </UXControls:UXLink.Resources>
+                                    </UXControls:UXLink>
                                 </Grid>
                             </Border>
                         </StackPanel>

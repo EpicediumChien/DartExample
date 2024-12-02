@@ -79,6 +79,7 @@ namespace DdpmSwUpdater
         private bool _bFirstInstance;
         private Mutex? _instanceMutex;
         private string? _applicationName;
+        bool _SkipSHA = false;
         #region Events
         public event EventHandler<UpdateProgressInfo>? ProgressUpdate_Notify;
 
@@ -98,6 +99,7 @@ namespace DdpmSwUpdater
             List<string> InfoPkey = new List<string>();
             InfoPkey.Add(DDPM.SA.Obfuscation.InfoHash.Info_Hash);
             bool isSkipCA = GetCheckCAStatus();
+            _SkipSHA = GetCheckSHAStatus();
             LogManage.LogMessage(nameof(DownloadAndInstall) + " start");
             SWUpdateHelper swUpdateHelper = SWUpdateSetting.GetSWMetadata(isSkipCA, out string getMetadataInfo, null, InfoPkey, LogManage.logs);
             LogManage.LogMessage($"GetMetadata {getMetadataInfo}");
@@ -412,6 +414,16 @@ namespace DdpmSwUpdater
             }
             return isSkipCA;
         }
+        private bool GetCheckSHAStatus()
+        {
+            bool isSkipSHA = false;
+            object o = DDPMRegistryHelper.ReadRegistryKey(RegistryHive.LocalMachine, "SOFTWARE\\Dell\\DDPM Subagent", "SkipSHA");
+            if (o != null && o is string && !string.IsNullOrEmpty(o.ToString()))
+            {
+                isSkipSHA = o.ToString().Equals("1") ? true : false;
+            }
+            return isSkipSHA;
+        }
         private bool CheckFold(string path, out string folderInfo, out string pathSymbolicLinInfo)
         {
             folderInfo = "Error";
@@ -457,8 +469,16 @@ namespace DdpmSwUpdater
             }
             else
             {
-                LogManage.LogMessage($"{_SWUpdateInfo.SoftwareName} CheckSHA fail fileCAInfo : {fileCAInfo}");
-                _SWUpdateInfo.SWUErrorCode = SWUErrorCode.FileCheckFail;
+                if (!_SkipSHA)
+                {
+                    LogManage.LogMessage($"{_SWUpdateInfo.SoftwareName} CheckSHA fail fileCAInfo : {fileCAInfo}");
+                    _SWUpdateInfo.SWUErrorCode = SWUErrorCode.FileCheckFail;
+                }
+                else
+                {
+                    LogManage.LogMessage($"{_SWUpdateInfo.SoftwareName} CheckSHA fail fileCAInfo : {fileCAInfo} BUT SKIP");
+                    isCheckSHA = true;
+                }
             }
             return isCheckSHA;
         }
@@ -474,8 +494,17 @@ namespace DdpmSwUpdater
             }
             else
             {
-                LogManage.LogMessage($"{_SWUpdateInfo.SoftwareName} File check Thumbprint fail. Ex: {FileCAInfo}");
-                _SWUpdateInfo.SWUErrorCode = SWUErrorCode.FileCheckFail;
+                if (!_SkipSHA)
+                {
+                    LogManage.LogMessage($"{_SWUpdateInfo.SoftwareName} File check Thumbprint fail. Ex: {FileCAInfo}");
+                    _SWUpdateInfo.SWUErrorCode = SWUErrorCode.FileCheckFail;
+                }
+                else
+                {
+                    LogManage.LogMessage($"{_SWUpdateInfo.SoftwareName} CheckFile_Thumbprint fail FileCAInfo : {FileCAInfo} BUT SKIP");
+                    ishumbprint = true;
+                }
+                
             }
             return ishumbprint;
         }
