@@ -14,19 +14,11 @@ namespace DDPM.UI.Module.MouseSettings
 
         public MouseSettingsRightView(MouseViewModel vm)
         {
-            try
-            {
-                InitializeComponent();
-                _vm = vm;
+            InitializeComponent();
+            _vm = vm;
 
-                txtDPIMessage.Text = Strings.DPIMessage;
-                txtPollingRateMessage.Text = Strings.PollingRateMessage;
-            } 
-            catch (Exception ex)
-            {
-                string log = $"[MouseSettingsRightView] Exception thrown when loading Mouse RightView : {ex.Message}\nStack Trace: {ex.StackTrace}";
-                DdpmCommonHelper.WriteUILog(log);
-            }
+            txtDPIMessage.Text = Strings.DPIMessage;
+            txtPollingRateMessage.Text = Strings.PollingRateMessage;
         }
 
         private void DPISlider_DragStarted(object sender, System.Windows.Controls.Primitives.DragStartedEventArgs e)
