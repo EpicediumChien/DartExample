@@ -174,16 +174,22 @@
                     <Style TargetType="Grid">
                         <Setter Property="Visibility" Value="Collapsed" />
                         <Style.Triggers>
+                            <!-- Robert_Lin, 2024-11-30, for LightMode, After remove to balck background of Please Wait 
+                            "Add your first device" will be seen in dark mode. So change the DataTrigger to MultiDataTrigger
+                            Only when HomeDeviceCount==0 AND IsPleaseWaitVisible==False will show the "Add your first device"
+                            -->
+                            <!-- OLD 
                             <DataTrigger Binding="{Binding HomeDeviceCount}" Value="0">
                                 <Setter Property="Visibility" Value="Visible" />
-                            </DataTrigger>
-                            <!--<MultiDataTrigger>
+                            </DataTrigger>-->
+                            <!-- NEW -->
+                            <MultiDataTrigger>
                                 <MultiDataTrigger.Conditions>
                                     <Condition Binding="{Binding HomeDeviceCount}" Value="0"/>
                                     <Condition Binding="{Binding IsPleaseWaitVisible}" Value="False"/>
                                 </MultiDataTrigger.Conditions>
                                 <Setter Property="Visibility" Value="Visible" />
-                            </MultiDataTrigger>-->
+                            </MultiDataTrigger>
                         </Style.Triggers>
                     </Style>
                 </Grid.Style>
@@ -482,9 +488,9 @@
                 </ListView.ItemTemplate>
             </ListView>
 
-            <!-- Please Wait  -->
-            <Grid 
-                 Visibility="{Binding IsPleaseWaitVisible, Converter={StaticResource BoolToVisibilityConverter}}">
+            <!-- Please Wait -->
+            <!-- Robert_Lin, 2024-11-30, for LightMode, remove to balck background of Please Wait -->
+            <Grid Visibility="{Binding IsPleaseWaitVisible, Converter={StaticResource BoolToVisibilityConverter}}">
                 <Border Width="587" Height="265" Background="{DynamicResource SpinnerBkColor}"
                         BorderThickness="1" CornerRadius="4" BorderBrush="#777777" 
                         HorizontalAlignment="Center" VerticalAlignment="Center">

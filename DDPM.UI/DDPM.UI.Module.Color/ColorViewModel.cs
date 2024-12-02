@@ -1461,14 +1461,16 @@ namespace DDPM.UI.Module.Color
             if (config.RunType == (int)ColorPresetRunType.Auto)
             {
                 ((Expander)(MyModule.GetRightView().FindName("Expander_Manual"))).IsExpanded = false;
+                ((Expander)(MyModule.GetRightView().FindName("Expander_Auto"))).IsExpanded = false;
                 ((Expander)(MyModule.GetRightView().FindName("Expander_Auto"))).IsExpanded = true;
                 //DdpmCommonHelper.DeviceManagerSA.AutoSetColorPresetForMonitorConfig(DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo, "ON", IsAutoColorPreset_Lock);
 
             }
             else
             {
+                ((Expander)(MyModule.GetRightView().FindName("Expander_Auto"))).IsExpanded = false;                
+                ((Expander)(MyModule.GetRightView().FindName("Expander_Manual"))).IsExpanded = false;
                 ((Expander)(MyModule.GetRightView().FindName("Expander_Manual"))).IsExpanded = true;
-                ((Expander)(MyModule.GetRightView().FindName("Expander_Auto"))).IsExpanded = false;
                 //DdpmCommonHelper.DeviceManagerSA.AutoSetColorPresetForMonitorConfig(DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo, "OFF", IsAutoColorPreset_Lock);
             }
 

@@ -1787,7 +1787,8 @@
     </ControlTemplate>
 
     <!-- #endregion LockIcon Robert_Lin, 2024-11-30 -->
-
+    
+    <!-- #region Icons template -->
     <!-- LockIcon -->
     <SolidColorBrush x:Key="LockIcon_Fill"  Color="#FFFFFFFF"/>
 
@@ -1838,6 +1839,6 @@
                   Fill="{Binding Tag, RelativeSource={RelativeSource AncestorType=Canvas}}" />
         </Canvas>
     </ControlTemplate>
-    <!-- #endregion -->
+    <!-- endregion -->
 
 </ResourceDictionary>
