@@ -3,6 +3,7 @@ using DDPM.SA.Common.Method;
 using DDPM.SA.Common.Security;
 using DDPM.SA.Common.Settings;
 using DDPM.SA.Obfuscation;
+using DDPM.SA.Resources.Helper;
 using Dell.Client.Framework.Common;
 using Dell.Client.Framework.Common.Annotations;
 using Dell.Client.Framework.Common.Extensions;
@@ -265,8 +266,8 @@ namespace DdpmSwUpdater
                             if (!Unzip(_installationFileStoragePath, extractPath, out exeFilePath))
                             {
                                 LogManage.LogMessage(_SWUpdateInfo.SoftwareName + " Unzip Faile");
-                                _notificationStr = $"Software update unsuccessful.";
-                                NotificationFWupdate("Error", _notificationStr);
+                                _notificationStr = LangHelper.Instance["Software_update_unsuccessful"];
+                                NotificationFWupdate(LangHelper.Instance["Error"], _notificationStr);
                                 continue;
                             }
                             LogManage.LogMessage($"Unzip done");
@@ -277,8 +278,8 @@ namespace DdpmSwUpdater
                                 {
                                     _SWUpdateInfo.SWUErrorCode = SWUErrorCode.FileCheckFail;
                                     LogManage.LogMessage($"{_SWUpdateInfo.SoftwareName} CheckThumbprint Faile");
-                                    _notificationStr = $"Software update unsuccessful.";
-                                    NotificationFWupdate("Error", _notificationStr);
+                                    _notificationStr = LangHelper.Instance["Software_update_unsuccessful"];
+                                    NotificationFWupdate(LangHelper.Instance["Error"], _notificationStr);
                                     continue;
                                 }
                                 swUpdateInfos[i].InstallPaths = exeFilePath;
@@ -287,11 +288,11 @@ namespace DdpmSwUpdater
                             LogManage.LogMessage($"Install done");
                             if (swUpdateInfos[i].SWUErrorCode == SWUErrorCode.NoError)
                             {
-                                NotificationFWupdate("SW info", _notificationStr);
+                                NotificationFWupdate(LangHelper.Instance["SW_info"], _notificationStr);
                             }
                             else
                             {
-                                NotificationFWupdate("Error", _notificationStr);
+                                NotificationFWupdate(LangHelper.Instance["Error"], _notificationStr);
                             }
                         }
                     }
@@ -315,8 +316,8 @@ namespace DdpmSwUpdater
                 {
                     deviceInfo.SWUErrorCode = SWUErrorCode.NetworkDisconnection;
                 }
-                _notificationStr = $"{_SWUpdateInfo.SoftwareName} Update failed due to network error. Try again.";
-                NotificationFWupdate("Error", _notificationStr);
+                _notificationStr = LangHelper.Instance["Update_failed_due_to_network_error"];
+                NotificationFWupdate(LangHelper.Instance["Error"], _notificationStr);
                 LogManage.LogMessage(nameof(DownloadAndInstall) + " Error：" + ex.Message); // 輸出錯誤訊息
                 return Task.FromResult(swUpdateInfos);
             }
@@ -334,7 +335,7 @@ namespace DdpmSwUpdater
                 {
                     DeviceName = _SWUpdateInfo.SoftwareName,
                     TheLatestVersion = _SWUpdateInfo.TheLatestVersion,
-                    ProcessName = "Downloading",
+                    ProcessName = LangHelper.Instance["Downloading_and_installing"],
                     ProcessProgress = download.GetProgress(),
                 };
                 sendMessageToEvent(fWUpdateInfo);
@@ -349,13 +350,13 @@ namespace DdpmSwUpdater
             {
                 _SWUpdateInfo = swUpdateInfo;
                 // 要運行的安裝程式路徑和命令行參數
-                string arguments = "/silent /CreateDesktopIcon";
+                string arguments = "/silent /SecLaunchOnEnd";
                 Process _clientProcess = new Process();
                 UpdateProgressInfo updateProgressInfo = new UpdateProgressInfo()
                 {
                     DeviceName = _SWUpdateInfo.SoftwareName,
                     TheLatestVersion = _SWUpdateInfo.TheLatestVersion,
-                    ProcessName = "Installing",
+                    ProcessName = LangHelper.Instance["Installing"],
                     ProcessProgress = 0.0,
                 };
                 sendMessageToEvent(updateProgressInfo);
@@ -397,7 +398,7 @@ namespace DdpmSwUpdater
             {
                 _updateErrorCode = SWUErrorCode.Unknow;
                 LogManage.LogMessage(swUpdateInfo.SoftwareName + nameof(Install) + " Error:" + ex.ToString());
-                _notificationStr = $"{_SWUpdateInfo.SoftwareName} Service not running. Try again.";
+                _notificationStr = LangHelper.Instance["Service_not_running_Try_again"];
                 return _updateErrorCode;
             }
         }
@@ -567,7 +568,7 @@ namespace DdpmSwUpdater
                     {
                         DeviceName = _SWUpdateInfo.SoftwareName,
                         TheLatestVersion = _SWUpdateInfo.TheLatestVersion,
-                        ProcessName = "Installing",
+                        ProcessName = LangHelper.Instance["Installing"],
                         ProcessProgress = nextProcess != null ? int.Parse(nextProcess) : 0.0,
                     };
                     sendMessageToEvent(updateProgressInfo);

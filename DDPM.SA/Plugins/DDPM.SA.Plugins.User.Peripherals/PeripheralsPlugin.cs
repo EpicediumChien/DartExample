@@ -56,6 +56,8 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
 
         private DeviceHelper _deviceHelper;
         private UpdateHelper _updateHelper;
+        //Bruce, FWU need it
+        private int _DongleCount;
         private RFDeviceHelper _rfDeviceHelper;
         private ClientInfo _clientInfo;
         private static Logs _logs;
@@ -69,7 +71,6 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
         private IOverlayManager _iOverlayManager;
         private ICTKMessageHelper _iCTKMessageHelper;
         private bool _isClientConnected;
-
         public bool UpdateAvailable { get; set; }
 
         private UpdateItemInfo _updateItems = new();
@@ -1070,7 +1071,9 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                     //Robert_Lin, workaround to avoid _iDeviceManager==null
                     if (_iDeviceManager == null)
                         return;
-
+                    //Bruce, FWU need it
+                    _DongleCount = _iDeviceManager.Devices.ToList().FindAll(o => o.Type.Equals(DeviceType.PhysicalAudioDongle) || o.Type.Equals(DeviceType.PhysicalDongle)).Count;
+                    _logs.DebugMsg_1("[PeripheralsPlugin] _DongleCount " + _DongleCount);
                     //_deviceHelper.DPeMSDKVersion = IndiLogic.DPeM.Broker.Assembly.GetName();
                     foreach (var device in _iDeviceManager.Devices)
                     {
@@ -1175,6 +1178,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                                         pen.PenSettingChanged += Pen_PenSettingChanged;
                                         pen.KeyCaptureStarted += Pen_KeyCaptureStarted;
                                         pen.KeyCaptureDataChanged += Pen_KeyCaptureDataChanged;
+                                        pen.KeyCaptureProgressDataChanged += Pen_KeyCaptureProgressDataChanged;
                                         LogicalDevicesPen.Add(pen.Id);
                                     }
                                 }
@@ -1390,11 +1394,12 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                                 info.DockInfo = _logicalDeviceDock.GetDockInfo();
                                 try
                                 {
-                                    IDevice iDevice = (IDevice)item;
-                                    if (iDevice != null)
-                                    {
-                                        info.FirmwareVersion = iDevice.FirmwareVersion.ToString();
-                                    }
+                                    //IDevice iDevice = (IDevice)item;
+                                    //if (iDevice != null)
+                                    //{
+                                    //    info.FirmwareVersion = iDevice.FirmwareVersion.ToString();
+                                    //}
+                                    info.DockPackageFwVersion = info.FirmwareVersion;
                                     byte[] dokc_bytes = _logicalDeviceDock.GetMonitorCount();
                                     _logs.DebugMsg_1($"[PeripheralsPlugin] GetMonitorCount byte is null = {(dokc_bytes == null ? "Yes" : "No")}");
                                     if (dokc_bytes != null)
@@ -1453,11 +1458,11 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                                                         {
                                                             info.DockServiceTag = dockData.ServiceTag;
                                                         }
-                                                        if (string.IsNullOrEmpty(info.DockPackageFwVersion) && !string.IsNullOrEmpty(dockData.PackageFirmwareVersion.ToString()))
-                                                        {
-                                                            info.FirmwareVersion = dockData.PackageFirmwareVersion.ToString();
-                                                            info.DockPackageFwVersion = dockData.PackageFirmwareVersion.ToString();
-                                                        }
+                                                        //if (string.IsNullOrEmpty(info.DockPackageFwVersion) && !string.IsNullOrEmpty(dockData.PackageFirmwareVersion.ToString()))
+                                                        //{
+                                                        //    info.FirmwareVersion = dockData.PackageFirmwareVersion.ToString();
+                                                        //    info.DockPackageFwVersion = dockData.PackageFirmwareVersion.ToString();
+                                                        //}
                                                     }
                                                 }
                                             }
@@ -1550,34 +1555,34 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                                             }
                                         }
                                     }
-                                    dokc_bytes = _logicalDeviceDock.GetDockPackageFwVersion();
-                                    _logs.DebugMsg_1($"[PeripheralsPlugin] GetDockPackageFwVersion byte is null = {(dokc_bytes == null ? "Yes" : "No")}");
-                                    if (dokc_bytes != null)
-                                    {
-                                        _logs.DebugMsg_1($"[PeripheralsPlugin] GetDockPackageFwVersion dokc_bytes.Length : {dokc_bytes.Length}");
-                                        string textString = System.Text.Encoding.UTF8.GetString(dokc_bytes);
-                                        _logs.DebugMsg_1($"[PeripheralsPlugin] GetDockPackageFwVersion dokc_bytes to string : " + textString);
-                                        if (!string.IsNullOrEmpty(textString))
-                                        {
-                                            try
-                                            {
-                                                using (JsonDocument doc = JsonDocument.Parse(textString))
-                                                {
-                                                    JsonElement root = doc.RootElement;
-                                                    string payloadElement = root.GetProperty("Payload").ToString();
-                                                    if (string.IsNullOrEmpty(info.DockPackageFwVersion) && !string.IsNullOrEmpty(payloadElement))
-                                                    {
-                                                        info.DockPackageFwVersion = payloadElement;
-                                                        info.FirmwareVersion = payloadElement;
-                                                    }
-                                                }
-                                            }
-                                            catch (Exception ex)
-                                            {
-                                                _logs.DebugMsg_1($"[PeripheralsPlugin] GetDockPackageFwVersion Error : {ex.Message}");
-                                            }
-                                        }
-                                    }
+                                    //dokc_bytes = _logicalDeviceDock.GetDockPackageFwVersion();
+                                    //_logs.DebugMsg_1($"[PeripheralsPlugin] GetDockPackageFwVersion byte is null = {(dokc_bytes == null ? "Yes" : "No")}");
+                                    //if (dokc_bytes != null)
+                                    //{
+                                    //    _logs.DebugMsg_1($"[PeripheralsPlugin] GetDockPackageFwVersion dokc_bytes.Length : {dokc_bytes.Length}");
+                                    //    string textString = System.Text.Encoding.UTF8.GetString(dokc_bytes);
+                                    //    _logs.DebugMsg_1($"[PeripheralsPlugin] GetDockPackageFwVersion dokc_bytes to string : " + textString);
+                                    //    if (!string.IsNullOrEmpty(textString))
+                                    //    {
+                                    //        try
+                                    //        {
+                                    //            using (JsonDocument doc = JsonDocument.Parse(textString))
+                                    //            {
+                                    //                JsonElement root = doc.RootElement;
+                                    //                string payloadElement = root.GetProperty("Payload").ToString();
+                                    //                if (string.IsNullOrEmpty(info.DockPackageFwVersion) && !string.IsNullOrEmpty(payloadElement))
+                                    //                {
+                                    //                    info.DockPackageFwVersion = payloadElement;
+                                    //                    info.FirmwareVersion = payloadElement;
+                                    //                }
+                                    //            }
+                                    //        }
+                                    //        catch (Exception ex)
+                                    //        {
+                                    //            _logs.DebugMsg_1($"[PeripheralsPlugin] GetDockPackageFwVersion Error : {ex.Message}");
+                                    //        }
+                                    //    }
+                                    //}
                                 }
                                 catch (Exception ex)
                                 {
@@ -1593,6 +1598,21 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                 }
                 Console.WriteLine(_deviceHelper.ToString());
                 writelog(_deviceHelper.ToString());
+            }
+        }
+
+        private void Pen_KeyCaptureProgressDataChanged(ILogicalDevicePen arg1, string arg2)
+        {
+            Debug.WriteLine($"Pen: {arg1.Id} KeyCaptureProgressDataChangedString, newValue: {arg2}");
+            writelog($"Pen: {arg1.Id} KeyCaptureProgressDataChanged, newValue: {arg2}");
+            if (_deviceHelper is { deviceInfo: not null })
+            {
+                var deviceInfo = _deviceHelper.deviceInfo.FirstOrDefault(x => x.ID.ToString() == arg1.Id.ToString());
+                DeviceChangedEventArgs _EventArgs = new();
+                _EventArgs.type = DeviceChangedType.Peripherals_SettingsChange;
+                _EventArgs.device_peripherals = deviceInfo;
+                _EventArgs.changedProperty = $"PenKeyCaptureProgressDataChanged|{arg2}";
+                OnNotify(_EventArgs);
             }
         }
 
@@ -1957,6 +1977,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
         private void _iCTKMessageHelper_CollabMultipleCallsDetectedChanged(bool obj)
         {
             CollabMultipleCallsDetectedChanged?.Invoke(this, obj);
+            Debug.WriteLine($"{obj}");
         }
 
         private void _iCTKMessageHelper_CollaborationMsgChanged(CollaborationMsg collaborationMsg)
@@ -2658,7 +2679,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
             }
         }
 
-        private void PhysicalAudioDeviceDongle_PairingStatusChanged(IPhysicalAudioDeviceDongle arg1, AudioDonglePairingStatus arg2)
+        private void PhysicalAudioDeviceDongle_PairingStatusChanged(IPhysicalAudioDeviceDongle Arg1, int nArg2, int nArg3, string strArg4)//(IPhysicalAudioDeviceDongle arg1, AudioDonglePairingStatus arg2)
         {
             throw new NotImplementedException();
         }
@@ -2779,6 +2800,11 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
             {
                 UpdateItems = new List<UpdateItemInfo>()
             };
+        }
+        //Bruce, FWU need it
+        public int GetDongleCount()
+        {
+            return _DongleCount;
         }
 
         public void DisplayNotification(string bannerInfo, string hyperlinkText, string bannerItemType)

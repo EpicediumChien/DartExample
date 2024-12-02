@@ -31,6 +31,8 @@
     <SolidColorBrush x:Key="DefaultTheme_SetupScanBdColor" Color="#FFFFFF" />
     <SolidColorBrush x:Key="DefaultTheme_SetupSelectBdColor" Color="#1B385F" />
     <SolidColorBrush x:Key="DefaultTheme_ListBoxBkColor" Color="#80141D27" />
+    <SolidColorBrush x:Key="DefaultTheme_DialogBoxBkColor" Color="#132F54"/>
+    <SolidColorBrush x:Key="DefaultThemeFullPageBkColor" Color="#FF0D121A"/>
     <Style TargetType="UXControls:UXTextBlock"
            BasedOn="{StaticResource {x:Type UXControls:UXTextBlock}}">
         <Setter Property="Foreground" Value="{DynamicResource DefaultTheme_TxtColor}" />
@@ -103,6 +105,7 @@
     <SolidColorBrush x:Key="PartBorderColor" Color="#132F54" />
     <SolidColorBrush x:Key="Border_Btn_txt" Color="#132F54" />
     <SolidColorBrush x:Key="CheckBox_Brush" Color="#7E7E7E" />
+    <SolidColorBrush x:Key="BorderBrush" Color="#E5ECF9" />
     <Style x:Key="GroupBorderStyle" TargetType="Border">
         <Setter Property="CornerRadius" Value="6" />
         <Setter Property="Padding" Value="16,16,16,0" />
@@ -110,6 +113,8 @@
     </Style>
     <Style x:Key="PartBorderStyle"
            TargetType="Border">
+        <Setter Property="BorderThickness" Value="2"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource BorderBrush}"/>
         <Setter Property="CornerRadius" Value="6" />
         <Setter Property="Padding" Value="16" />
         <Setter Property="Background" Value="{DynamicResource PartBorderColor}" />
@@ -237,6 +242,11 @@
     </Style>
     <!-- #endregion -->
 
+    <!-- #region (i) InfoIcon -->
+    <!-- Robert_Lin, 2024-11-26, (i) info icon color -->
+    <SolidColorBrush x:Key="InfoIconColor" Color="#B6B6B6"/>
+    <!-- #endregion (i) InfoIcon -->
+    
     <!--  ExpanderHeader  -->
     <sys:Double x:Key="ExpanderHeader_FontSize">20</sys:Double>
     <SolidColorBrush x:Key="ExpanderHeader_TextColor" Color="White" />
@@ -773,6 +783,7 @@
     -->
     <!-- #region VberItem1 -->
     <Color x:Key="Vbar_BdColor_Hover">#FF1B385F</Color>
+    <Color x:Key="Vbar_BkColor_Hover">#000E0E0E</Color>
     <Color x:Key="Vbar_BdColor_LockHover">#FF1B385F</Color>
     <Color x:Key="Vbar_BkColor_Default">#99132F54</Color>
     <Color x:Key="Vbar_BkColor_Disabled">#FF596067</Color>
@@ -825,7 +836,7 @@
         </Style.Triggers>
     </Style>
     <!-- #endregion -->
-
+    
     <SolidColorBrush x:Key="UXRadioButtonFgColor" Color="#F5F6F7" />
 
     <!-- #region DisplayRightView -->
@@ -1147,6 +1158,7 @@
         <Setter Property="Width" Value="105" />
         <Setter Property="Height" Value="40" />
         <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="Background" Value="#00FFFFFF" />
     </Style>
 
     <!-- light #f4f7f9  dark #0F2641-->
@@ -1324,10 +1336,11 @@
 
     <Style x:Key="Button_WhiteFrame" TargetType="Button">
         <Setter Property="Foreground" Value="{DynamicResource Button_UXStyleColor_ForWhiteFrame}" />
+        <Setter Property="Background" Value="{DynamicResource PartBorderColor}" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="Button">
-                    <Border CornerRadius="2" Background="{DynamicResource PartBorderColor}"
+                    <Border CornerRadius="2" Background="{TemplateBinding Background}"
                             BorderBrush="{DynamicResource Button_UXStyleColor_ForWhiteFrame}"
                             BorderThickness="1">
                         <!-- Set your desired corner radius here -->
@@ -1336,7 +1349,14 @@
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Background" Value="{DynamicResource Button1BorderEnColor}"/>
+                <Setter Property="Foreground" Value="White"></Setter>
+            </Trigger>
+        </Style.Triggers>
     </Style>
+    
 
     <!-- Dialog start-->
     <SolidColorBrush x:Key="BorderStyle1_BgColor" Color="#99132F54"/>
@@ -1380,38 +1400,73 @@
 
     <!--leo add end-->
 
+    <!-- #region Connection Hover UI -->
+    <SolidColorBrush x:Key="ConnHover_BkColor" Color="#99193457"/>
+
+    <SolidColorBrush x:Key="ConnHover_ActiveTextColor" Color="#FFFFFF"/>
+    <SolidColorBrush x:Key="ConnHover_DeactiveTextColor" Color="#839DB4"/>
+
     <!-- BorderConnection -->
     <Style x:Key="BorderConnection" TargetType="Border">
-        <Setter Property="Background" Value="{DynamicResource BatteryIndicator_BkColor}" />
+        <Setter Property="Background" Value="{DynamicResource ConnHover_BkColor}" />
         <Setter Property="CornerRadius" Value="2" />
         <Setter Property="Width" Value="252" />
         <Setter Property="BorderThickness" Value="2" />
         <Setter Property="BorderBrush" Value="{DynamicResource RightView_Group_BdColor}" /> 
     </Style>
+    <!--BorderConnection end-->
+    <!-- ConnectionStyle for TextBlock v1 -->
     <Style x:Key="ConnectionStyle1" TargetType="UXControls:UXTextBlock">
-        <Setter Property="Foreground" Value="{DynamicResource DefaultTheme_TxtColor}" /> 
+        <Setter Property="Foreground" Value="{DynamicResource ConnHover_ActiveTextColor}" /> 
         <Setter Property="FontFamily" Value="Roboto" />
         <Setter Property="FontSize" Value="14" />
         <Setter Property="FontWeight" Value="Bold" />
     </Style>
     <Style x:Key="ConnectionStyle2" TargetType="UXControls:UXTextBlock">
-        <Setter Property="Foreground" Value="#839DB4" />
+        <Setter Property="Foreground" Value="{DynamicResource ConnHover_DeactiveTextColor}" />
         <Setter Property="FontFamily" Value="Roboto" />
         <Setter Property="FontSize" Value="14" />
         <Setter Property="FontWeight" Value="Normal" />
     </Style>
     <Style x:Key="ConnectionStyle3" TargetType="UXControls:UXTextBlock">
-        <Setter Property="Foreground" Value="{DynamicResource DefaultTheme_TxtColor}" />
+        <Setter Property="Foreground" Value="{DynamicResource ConnHover_ActiveTextColor}" />
         <Setter Property="FontFamily" Value="Roboto" />
         <Setter Property="FontSize" Value="14" />
         <Setter Property="FontWeight" Value="Medium" />
     </Style>
-    <!--BorderConnection end-->
+    <!-- ConnectionStyle for TextBlock v2 -->
+    <!-- Robert_Lin, 2024-11-26 Base style of the ConnectionHoverUI text, using WPF TextBlock -->
+    <Style x:Key="ConnHoverTextBaseStyle" TargetType="TextBlock">
+        <Setter Property="FontFamily" Value="Roboto" />
+        <Setter Property="FontSize" Value="14" />
+    </Style>
+    <!-- ConnectionHoverUI Text Styles, 
+        1=Current/Active connection;    2=Not current/deactive connection;      3=Description text
+    -->
+    <Style x:Key="ConnHover_TextStyle1" TargetType="TextBlock" BasedOn="{StaticResource ConnHoverTextBaseStyle}">
+        <Setter Property="Foreground" Value="{DynamicResource ConnHover_ActiveTextColor}" />
+        <Setter Property="FontWeight" Value="Bold" />
+    </Style>
+    <Style x:Key="ConnHover_TextStyle2" TargetType="TextBlock" BasedOn="{StaticResource ConnHoverTextBaseStyle}">
+        <Setter Property="Foreground" Value="{DynamicResource ConnHover_DeactiveTextColor}" />
+        <Setter Property="FontWeight" Value="Normal" />
+    </Style>
+    <Style x:Key="ConnHover_TextStyle3" TargetType="TextBlock" BasedOn="{StaticResource ConnHoverTextBaseStyle}">
+        <Setter Property="Foreground" Value="{DynamicResource ConnHover_ActiveTextColor}" />
+        <Setter Property="FontWeight" Value="Medium" />
+    </Style>
+
+    <!-- #endregion Connection Hover UI -->
+    
     <BitmapImage x:Key="popup_ArrowCorner" UriSource="pack://application:,,,/DDPM.UI.Common;component/Resources/popup_ArrowCorner.png" />
     <BitmapImage x:Key="down_Expand" UriSource="pack://application:,,,/DDPM.UI.Resources;component/Resources/Images/Down.png" />
     <BitmapImage x:Key="Search_img" UriSource="pack://application:,,,/DDPM.UI.Resources;component/Resources/Images/Search.png" />
     <BitmapImage x:Key="Close_img" UriSource="pack://application:,,,/DDPM.UI.Common;component/Resources/Close.png" />
     <BitmapImage x:Key="left_img" UriSource="pack://application:,,,/DDPM.UI.Resources;component/Resources/Images/Left.png" />
-    <SolidColorBrush x:Key="DefaultThemeFullPageBkColor" Color="#FF0D121A"/>
+    <BitmapImage x:Key="MonitorImage_LineArt" UriSource="pack://application:,,,/DDPM.UI.Resources;component/Resources/Monitors/Lineart.png" />
 
+    <!-- #region Webcam -->
+    <SolidColorBrush x:Key="Webcam_TextBox_BkColor" Color="#141D28"/>
+    <SolidColorBrush x:Key="Webcam_TextBox_FgColor" Color="#7E7E7E"/>
+    <!-- #endregion -->
 </ResourceDictionary>

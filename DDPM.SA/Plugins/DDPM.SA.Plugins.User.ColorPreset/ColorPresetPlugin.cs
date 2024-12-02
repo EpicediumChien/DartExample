@@ -47,6 +47,7 @@ using static System.Windows.Forms.VisualStyles.VisualStyleElement.TextBox;
 using System.Windows.Media.Animation;
 using DDPM.SA.Common.Settings;
 using DDPM.SA.Common.Security;
+using static VcpCore.Common.User32;
 //using DDPM.SA.Common.Settings;
 
 namespace ColorPreset.Plugins
@@ -75,6 +76,7 @@ namespace ColorPreset.Plugins
 
         List<string> HDR_ColorPresetNameList = new List<string>() { "Standard HDR", "Movie HDR", "Game HDR", "Vivid HDR", "Desktop", "Reference", "Multiscreen Match", "DisplayHDR", "HDR10", "HLG" };
         private List<string> ColorPresetSupportList = new List<string>();
+        private List<string> ColorPresetSupportList_ = new List<string>();
 
         //20240802 jim add
         //public List<string> Support_ICC_DeviceName { get; set; } = new List<string> { "U4021QW", "U2723QE", "U3223QE", "U3223QZ", "U3423WE", "U3824DW", "U4924DW", "U3224KB", "U2724D", "U2724DE", "U3425WE", "U4025QW", "UP2720Q", "UP3221Q" };
@@ -1311,8 +1313,8 @@ namespace ColorPreset.Plugins
 
             if (string.IsNullOrEmpty(vcp_capbilities))
             {
-                ColorPresetSupportList.Clear();
-                return System.Threading.Tasks.Task.FromResult(ColorPresetSupportList);
+                ColorPresetSupportList_.Clear();
+                return System.Threading.Tasks.Task.FromResult(ColorPresetSupportList_);
             }
 
             //if (Log != null)
@@ -1330,8 +1332,8 @@ namespace ColorPreset.Plugins
                     {
                         if (CapsDataMap["ColorPreset"].Type == JTokenType.Null)
                         {
-                            ColorPresetSupportList.Clear();
-                            ColorPresetSupportList.Add("Standard/Native");
+                            ColorPresetSupportList_.Clear();
+                            ColorPresetSupportList_.Add("Standard/Native");
                         }
                         else
                         {
@@ -1339,10 +1341,10 @@ namespace ColorPreset.Plugins
 
                             JArray colorrreset = (JArray)CapsDataMap["ColorPreset"];
 
-                            ColorPresetSupportList.Clear();
+                            ColorPresetSupportList_.Clear();
 
                             foreach (var tmp in colorrreset)
-                                ColorPresetSupportList.Add(new string(tmp.ToString()));
+                                ColorPresetSupportList_.Add(new string(tmp.ToString()));
 
                         }
                     }
@@ -1351,82 +1353,82 @@ namespace ColorPreset.Plugins
 
             if (SmartHDR_ON)
             {
-                List<string> common_ColorPreset = ColorPresetSupportList.Intersect(HDR_ColorPresetNameList).ToList();
+                List<string> common_ColorPreset = ColorPresetSupportList_.Intersect(HDR_ColorPresetNameList).ToList();
 
-                ColorPresetSupportList.Clear();
+                ColorPresetSupportList_.Clear();
 
                 foreach (string info in common_ColorPreset)
                 {
-                    ColorPresetSupportList.Add(new string(info));
+                    ColorPresetSupportList_.Add(new string(info));
                 }
 
             }
             else
             {
-                ColorPresetSupportList.RemoveAll(r => HDR_ColorPresetNameList.Any(a => a == r));
-
+                ColorPresetSupportList_.RemoveAll(r => HDR_ColorPresetNameList.Any(a => a == r));
+                /*
                 // check Color Preset Strings Standard or Native
 
                 if (m.modelName.StartsWith("UP"))
                 {
-                    index = ColorPresetSupportList.FindIndex(x => x == "Standard/Native");
+                    index = ColorPresetSupportList_.FindIndex(x => x == "Standard/Native");
                     if (index >= 0)
-                        ColorPresetSupportList[index] = "Native";
+                        ColorPresetSupportList_[index] = "Native";
                 }
                 else
                 {
-                    index = ColorPresetSupportList.FindIndex(x => x == "Standard/Native");
+                    index = ColorPresetSupportList_.FindIndex(x => x == "Standard/Native");
                     if (index >= 0)
-                        ColorPresetSupportList[index] = "Standard";
+                        ColorPresetSupportList_[index] = "Standard";
                 }
 
                 // check Color Preset Strings Custom 1/2/3 or User 1/2/3
 
                 if (m.modelName.StartsWith("UP3221Q"))
                 {
-                    index = ColorPresetSupportList.FindIndex(x => x == "Custom 1 / User 1");
+                    index = ColorPresetSupportList_.FindIndex(x => x == "Custom 1 / User 1");
                     if (index >= 0)
-                        ColorPresetSupportList[index] = "User 1";
+                        ColorPresetSupportList_[index] = "User 1";
 
-                    index = ColorPresetSupportList.FindIndex(x => x == "Custom 2 / User 2");
+                    index = ColorPresetSupportList_.FindIndex(x => x == "Custom 2 / User 2");
                     if (index >= 0)
-                        ColorPresetSupportList[index] = "User 2";
+                        ColorPresetSupportList_[index] = "User 2";
 
-                    index = ColorPresetSupportList.FindIndex(x => x == "Custom 3 / User 3");
+                    index = ColorPresetSupportList_.FindIndex(x => x == "Custom 3 / User 3");
                     if (index >= 0)
-                        ColorPresetSupportList[index] = "User 3";
+                        ColorPresetSupportList_[index] = "User 3";
                 }
                 else
                 {
-                    index = ColorPresetSupportList.FindIndex(x => x == "Custom 1 / User 1");
+                    index = ColorPresetSupportList_.FindIndex(x => x == "Custom 1 / User 1");
                     if (index >= 0)
-                        ColorPresetSupportList[index] = "Custom 1";
+                        ColorPresetSupportList_[index] = "Custom 1";
 
-                    index = ColorPresetSupportList.FindIndex(x => x == "Custom 2 / User 2");
+                    index = ColorPresetSupportList_.FindIndex(x => x == "Custom 2 / User 2");
                     if (index >= 0)
-                        ColorPresetSupportList[index] = "Custom 2";
+                        ColorPresetSupportList_[index] = "Custom 2";
 
-                    index = ColorPresetSupportList.FindIndex(x => x == "Custom 3 / User 3");
+                    index = ColorPresetSupportList_.FindIndex(x => x == "Custom 3 / User 3");
                     if (index >= 0)
-                        ColorPresetSupportList[index] = "Custom 3";
+                        ColorPresetSupportList_[index] = "Custom 3";
                 }
 
                 // check Color Preset Strings Game or Game1
 
-                index = ColorPresetSupportList.FindIndex(x => x == "Game2");
+                index = ColorPresetSupportList_.FindIndex(x => x == "Game2");
 
                 if (index >= 0)
                 {
-                    index = ColorPresetSupportList.FindIndex(x => x == "Game/Game1");
+                    index = ColorPresetSupportList_.FindIndex(x => x == "Game/Game1");
                     if (index >= 0)
-                        ColorPresetSupportList[index] = "Game1";
+                        ColorPresetSupportList_[index] = "Game1";
                 }
                 else
                 {
 
-                    index = ColorPresetSupportList.FindIndex(x => x == "Game/Game1");
+                    index = ColorPresetSupportList_.FindIndex(x => x == "Game/Game1");
                     if (index >= 0)
-                        ColorPresetSupportList[index] = "Game";
+                        ColorPresetSupportList_[index] = "Game";
                 }
 
                 // check Color Preset Strings Rec.709 or BT.709 / Rec.709 or BT.709
@@ -1448,19 +1450,19 @@ namespace ColorPreset.Plugins
                 {
                     numFY = Int32.Parse(strFY);
 
-                    if (ColorPresetSupportList.Contains("Rec.709 / BT.709"))
+                    if (ColorPresetSupportList_.Contains("Rec.709 / BT.709"))
                     {
                         if (numFY <= 23)
                         {
-                            index = ColorPresetSupportList.FindIndex(x => x == "Rec.709 / BT.709");
+                            index = ColorPresetSupportList_.FindIndex(x => x == "Rec.709 / BT.709");
                             if (index >= 0)
-                                ColorPresetSupportList[index] = "Rec.709";
+                                ColorPresetSupportList_[index] = "Rec.709";
                         }
                         else if (numFY >= 25)
                         {
-                            index = ColorPresetSupportList.FindIndex(x => x == "Rec.709 / BT.709");
+                            index = ColorPresetSupportList_.FindIndex(x => x == "Rec.709 / BT.709");
                             if (index >= 0)
-                                ColorPresetSupportList[index] = "BT.709";
+                                ColorPresetSupportList_[index] = "BT.709";
                         }
                     }
                 }
@@ -1472,19 +1474,19 @@ namespace ColorPreset.Plugins
                 // check Color Preset Strings Rec.2020 or BT.2020 / Rec.2020 or BT.2020
                 try
                 {
-                    if (ColorPresetSupportList.Contains("Rec.2020 / BT.2020"))
+                    if (ColorPresetSupportList_.Contains("Rec.2020 / BT.2020"))
                     {
                         if (numFY <= 23)
                         {
-                            index = ColorPresetSupportList.FindIndex(x => x == "Rec.2020 / BT.2020");
+                            index = ColorPresetSupportList_.FindIndex(x => x == "Rec.2020 / BT.2020");
                             if (index >= 0)
-                                ColorPresetSupportList[index] = "Rec.2020";
+                                ColorPresetSupportList_[index] = "Rec.2020";
                         }
                         else if (numFY >= 25)
                         {
-                            index = ColorPresetSupportList.FindIndex(x => x == "Rec.2020 / BT.2020");
+                            index = ColorPresetSupportList_.FindIndex(x => x == "Rec.2020 / BT.2020");
                             if (index >= 0)
-                                ColorPresetSupportList[index] = "BT.2020";
+                                ColorPresetSupportList_[index] = "BT.2020";
                         }
                     }
                 }
@@ -1492,6 +1494,7 @@ namespace ColorPreset.Plugins
                 {
                     Log?.Error("check Color Preset Strings Rec.2020 or BT.2020 / Rec.2020 or BT.2020..." + e.Message);
                 }
+                */
             }
 
             index = 0;
@@ -1499,8 +1502,14 @@ namespace ColorPreset.Plugins
             //Console.WriteLine("[" + m.AliasDeviceName + "] Color Preset SupportList : ");
             writelog($"ColorPresetPlugin ReadColorPreset [" + m.modelName + "] Color Preset SupportList : ");
 
-            foreach (var h in ColorPresetSupportList)
+            ColorPresetSupportList.Clear();
+
+            foreach (var h in ColorPresetSupportList_)
             {
+                var temp = Sync_ColorPresetName(m, h).Result;
+
+                ColorPresetSupportList.Add(temp);
+
                 //Console.WriteLine("[" + index.ToString() + "] : " + h);
                 writelog($"ColorPresetPlugin ReadColorPreset [" + index.ToString() + "] : " + h);
                 index++;
@@ -1683,10 +1692,14 @@ namespace ColorPreset.Plugins
             //}
 
             writelog("ColorPresetPlugin Sync_ColorPresetName requested ...");
-
+            Trace.WriteLine($" ColorPreset_Name = {ColorPreset_Name}");
 
             var colorPresetsUP32 = new Dictionary<string, string>
-            {
+            {                
+                { "AdobeRGB1 (D65G2.2L250)", "Adobe RGB D65 G2.2 L160" },// add 1127
+                { "AdobeRGB2 (D50G2.2L250)", "Adobe RGB D50 G2.2 L160" },// add 1127
+                { "AdobeRGB1/Adobe RGB D65 G2.2 L160/Adobe RGB D65 G2.2 L250", "Adobe RGB D65 G2.2 L160" },// add 1127
+                { "AdobeRGB2/Adobe RGB D50 G2.2 L160/Adobe RGB D50 G2.2 L250", "Adobe RGB D50 G2.2 L160" },// add 1127
                 { "AdobeRGB1", "Adobe RGB D65 G2.2 L160" },
                 { "AdobeRGB2", "Adobe RGB D50 G2.2 L160" },
                 { "Rec.709 / BT.709", "BT.709 D65 BT1886 L100" },
@@ -1696,11 +1709,15 @@ namespace ColorPreset.Plugins
 
             var colorPresetsUP27 = new Dictionary<string, string>
             {
+                { "AdobeRGB1 (D65G2.2L250)", "Adobe RGB D65 G2.2 L250" },// add 1127
+                { "AdobeRGB2 (D50G2.2L250)", "Adobe RGB D50 G2.2 L250" },// add 1127
+                { "AdobeRGB1/Adobe RGB D65 G2.2 L160/Adobe RGB D65 G2.2 L250", "Adobe RGB D65 G2.2 L250" },// add 1127
+                { "AdobeRGB2/Adobe RGB D50 G2.2 L160/Adobe RGB D50 G2.2 L250", "Adobe RGB D50 G2.2 L250" },// add 1127
                 { "AdobeRGB1", "Adobe RGB D65 G2.2 L250" },
                 { "AdobeRGB2", "Adobe RGB D50 G2.2 L250" },
                 { "sRGB", "sRGB D65 sRGB L250" },
                 { "Rec.709 / BT.709", "BT.709 D65 BT1886 L100" },
-                { "Rec.2020 / BT.2020", "BT.2020 D65 BT1886 L100" }
+                { "Rec.2020 / BT.2020", "BT.2020 D65 BT1886 L100" }                
             };
 
 
@@ -1714,8 +1731,10 @@ namespace ColorPreset.Plugins
 
                 if (monitorInfo.modelName.StartsWith("UP"))
                 {
+                    Trace.WriteLine($" ColorPreset_Name = {ColorPreset_Name}");
+
                     if (ColorPreset_Name == "Standard/Native")
-                        strSync_ColorPreset_Name = "Native";
+                        strSync_ColorPreset_Name = "Native";                    
 
                     if (ColorPreset_Name == "DCI-P3")
                         strSync_ColorPreset_Name = "DCI P3 D65 G2.4 L100";
@@ -1751,8 +1770,8 @@ namespace ColorPreset.Plugins
 
             // check Color Preset Strings Game or Game1
 
-            if (ColorPresetSupportList.Count > 0)
-                index = ColorPresetSupportList.FindIndex(x => x == "Game2");
+            if (ColorPresetSupportList_.Count > 0)
+                index = ColorPresetSupportList_.FindIndex(x => x == "Game2");
 
             if (index >= 0)
             {
@@ -1813,7 +1832,7 @@ namespace ColorPreset.Plugins
             }
 
 
-            if (monitorInfo.modelName.StartsWith("UP32") && !monitorInfo.modelName.Contains("UP3218K"))
+            if (monitorInfo.modelName.StartsWith("UP32") && !monitorInfo.modelName.Contains("UP3218K")  )
             {
                 if (colorPresetsUP32.TryGetValue(ColorPreset_Name, out var presetValue))
                 {
@@ -2329,7 +2348,7 @@ namespace ColorPreset.Plugins
         /// </summary>
         /// <param name="m">Monitor Info</param>
         /// <returns> Run Deserialize ICC.json後的 object   </returns>
-        public Task<IIC_Metadata> DownloadICCData(MonitorInfo m, ISettingsManagerDev _SettingsPlugin, string savelPath = "")
+        public Task<IIC_Metadata> DownloadICCData(MonitorInfo m, ISettingsManagerDev _SettingsPlugin, bool blICCProfile = false ,string savelPath = "")
         {
             writelog("ColorPresetPlugin DownloadICCData requested ...");
 
@@ -2507,52 +2526,54 @@ namespace ColorPreset.Plugins
                                 writelog($"[DownloadICCData] DeviceName = {m.modelName} is not Support ICC.");
                             }
 
-                            int count = _ICC_Metadata._match_ICC_DeviceName.Count;
-
-                            // 20240725 jim add
-                            str_url_prefix = string.Empty;
-
-                            str_url_prefix = @"https://clientperipherals.dell.com/DDPM/";
-                            str_url_prefix += str_IncludeTestPath;
-                            str_url_prefix += @"/Windows/Display/ICC/";
-                            str_url_prefix += m.modelName;
-                            str_url_prefix += @"/";
-
-                            info = string.Empty;
-                            for (int i = 0; i < count; i++)
+                            if (blICCProfile)
                             {
-                                url = string.Empty;
+                                int count = _ICC_Metadata._match_ICC_DeviceName.Count;
 
-                                url = str_url_prefix + _ICC_Metadata._match_ICC_DeviceName[i].File;
+                                // 20240725 jim add
+                                str_url_prefix = string.Empty;
 
-                                strFilePath = Path.Combine(strICC_Folder, Path.GetFileName(url));
+                                str_url_prefix = @"https://clientperipherals.dell.com/DDPM/";
+                                str_url_prefix += str_IncludeTestPath;
+                                str_url_prefix += @"/Windows/Display/ICC/";
+                                str_url_prefix += m.modelName;
+                                str_url_prefix += @"/";
 
-                                if (download.DownloadFile(url, strFilePath, out downloadInfo))
+                                info = string.Empty;
+                                for (int i = 0; i < count; i++)
                                 {
-                                    //string txtSha256 = BytesToString(GetHashSha256(strFilePath));
-                                    //
-                                    //if (!string.Equals(txtSha256, _ICC_Metadata._match_ICC_DeviceName[i].SHA256, StringComparison.OrdinalIgnoreCase))
-                                    bool? rst = _certChecker?.CheckFile_SHA256(strFilePath, _ICC_Metadata._match_ICC_DeviceName[i].SHA256, out info);
-                                    if (rst == null || rst == false)
-                                    {
-                                        writelog($"[DownloadICCData] {_ICC_Metadata._match_ICC_DeviceName[i]} icc profile sha256 json = {_ICC_Metadata._match_ICC_DeviceName[i].SHA256} mismatch!");
-                                    }
+                                    url = string.Empty;
 
-                                    //string txtSha512 = BytesToString(GetHashSha512(strFilePath));
-                                    //
-                                    //if (!string.Equals(txtSha512, _ICC_Metadata._match_ICC_DeviceName[i].SHA512, StringComparison.OrdinalIgnoreCase))
-                                    rst = _certChecker?.CheckFile_SHA512(strFilePath, _ICC_Metadata._match_ICC_DeviceName[i].SHA512, out info);
-                                    if (rst == null || rst == false)
+                                    url = str_url_prefix + _ICC_Metadata._match_ICC_DeviceName[i].File;
+
+                                    strFilePath = Path.Combine(strICC_Folder, Path.GetFileName(url));
+
+                                    if (download.DownloadFile(url, strFilePath, out downloadInfo))
                                     {
-                                        writelog($"[DownloadICCData] {_ICC_Metadata._match_ICC_DeviceName[i]} icc profile sha512 json = {_ICC_Metadata._match_ICC_DeviceName[i].SHA512} mismatch!");
+                                        //string txtSha256 = BytesToString(GetHashSha256(strFilePath));
+                                        //
+                                        //if (!string.Equals(txtSha256, _ICC_Metadata._match_ICC_DeviceName[i].SHA256, StringComparison.OrdinalIgnoreCase))
+                                        bool? rst = _certChecker?.CheckFile_SHA256(strFilePath, _ICC_Metadata._match_ICC_DeviceName[i].SHA256, out info);
+                                        if (rst == null || rst == false)
+                                        {
+                                            writelog($"[DownloadICCData] {_ICC_Metadata._match_ICC_DeviceName[i]} icc profile sha256 json = {_ICC_Metadata._match_ICC_DeviceName[i].SHA256} mismatch!");
+                                        }
+
+                                        //string txtSha512 = BytesToString(GetHashSha512(strFilePath));
+                                        //
+                                        //if (!string.Equals(txtSha512, _ICC_Metadata._match_ICC_DeviceName[i].SHA512, StringComparison.OrdinalIgnoreCase))
+                                        rst = _certChecker?.CheckFile_SHA512(strFilePath, _ICC_Metadata._match_ICC_DeviceName[i].SHA512, out info);
+                                        if (rst == null || rst == false)
+                                        {
+                                            writelog($"[DownloadICCData] {_ICC_Metadata._match_ICC_DeviceName[i]} icc profile sha512 json = {_ICC_Metadata._match_ICC_DeviceName[i].SHA512} mismatch!");
+                                        }
+                                    }
+                                    else
+                                    {
+                                        writelog($"[DownloadICCData] download icc {_ICC_Metadata._match_ICC_DeviceName[i]} failed");
                                     }
                                 }
-                                else
-                                {
-                                    writelog($"[DownloadICCData] download icc {_ICC_Metadata._match_ICC_DeviceName[i]} failed");
-                                }
-                            }
-
+                            }  
                         }
                         else
                         {
@@ -2571,6 +2592,7 @@ namespace ColorPreset.Plugins
                 return System.Threading.Tasks.Task.FromResult(_ICC_Metadata);
             }
         }
+        
 
         /// <summary>
         ///  Set Monitor ICC color Profile

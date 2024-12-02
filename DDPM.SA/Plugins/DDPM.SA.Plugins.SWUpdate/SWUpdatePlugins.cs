@@ -422,8 +422,8 @@ namespace DDPM.SA.Plugins.SWUpdate
                     {
                         swUpdateInfo.SWUErrorCode = SWUErrorCode.FolderIsNotSafe;
                     }
-                    _notificationStr = $"Software update unsuccessful.";
-                    NotificationFWupdate("Error", _notificationStr);
+                    _notificationStr = LangHelper.Instance["Software_update_unsuccessful"];
+                    NotificationFWupdate(LangHelper.Instance["Error"], _notificationStr);
                     _logs.DebugMsg_1(nameof(DownloadAndInstall) + " FolderIsNotSafe:" + FolderInfo + "--or--" + PathSymbolicLinInfo);
                     return Task.FromResult(swUpdateInfos);
                 }
@@ -438,8 +438,8 @@ namespace DDPM.SA.Plugins.SWUpdate
                     if (!DDPMFileSecurity.CheckFold(savePath, out FolderInfo, out PathSymbolicLinInfo))
                     {
                         swUpdateInfos[i].SWUErrorCode = SWUErrorCode.FolderIsNotSafe;
-                        _notificationStr = $"Software update unsuccessful.";
-                        NotificationFWupdate("Error", _notificationStr);
+                        _notificationStr = LangHelper.Instance["Software_update_unsuccessful"];
+                        NotificationFWupdate(LangHelper.Instance["Error"], _notificationStr);
                         _logs.DebugMsg_1(nameof(DownloadAndInstall) + " FolderIsNotSafe:" + FolderInfo + "--or--" + PathSymbolicLinInfo);
                         continue;
                     }
@@ -457,7 +457,7 @@ namespace DDPM.SA.Plugins.SWUpdate
                     {
                         DeviceName = swUpdateInfos[i].SoftwareName,
                         TheLatestVersion = swUpdateInfos[i].TheLatestVersion,
-                        ProcessName = "Downloading",
+                        ProcessName = LangHelper.Instance["Downloading_and_installing"],
                         ProcessProgress = 100,
                     };
                     if (!downloadRet)
@@ -465,14 +465,14 @@ namespace DDPM.SA.Plugins.SWUpdate
                         if (downloadInfo.Equals("CA check fail"))
                         {
                             swUpdateInfos[i].SWUErrorCode = SWUErrorCode.CAFail;
-                            _notificationStr = $"Software update unsuccessful.";
-                            NotificationFWupdate("Error", _notificationStr);
+                            _notificationStr = LangHelper.Instance["Software_update_unsuccessful"];
+                            NotificationFWupdate(LangHelper.Instance["Error"], _notificationStr);
                         }
                         else if (downloadInfo.Equals("Network fail"))
                         {
                             swUpdateInfos[i].SWUErrorCode = SWUErrorCode.NetworkDisconnection;
-                            _notificationStr = $"Update failed due to network error. Try again.";
-                            NotificationFWupdate("Error", _notificationStr);
+                            _notificationStr = LangHelper.Instance["Update_failed_due_to_network_error"];
+                            NotificationFWupdate(LangHelper.Instance["Error"], _notificationStr);
                         }
                         _logs.DebugMsg_1(swUpdateInfos[i].SoftwareName + " Download File Fail");
                         continue;
@@ -486,8 +486,8 @@ namespace DDPM.SA.Plugins.SWUpdate
                     {
                         swUpdateInfos[i].SWUErrorCode = SWUErrorCode.FolderIsNotSafe;
                         _logs.DebugMsg_1(swUpdateInfos[i].SoftwareName + " FolderIsNotSafe:" + FolderInfo + "--or--" + PathSymbolicLinInfo);
-                        _notificationStr = $"Software update unsuccessful.";
-                        NotificationFWupdate("Error", _notificationStr);
+                        _notificationStr = LangHelper.Instance["Software_update_unsuccessful"];
+                        NotificationFWupdate(LangHelper.Instance["Error"], _notificationStr);
                         continue;
                     }
                     string exeFilePath;
@@ -497,8 +497,8 @@ namespace DDPM.SA.Plugins.SWUpdate
                         {
                             _SWUpdateInfo.SWUErrorCode = SWUErrorCode.FileCheckFail;
                             _logs.DebugMsg_1(_SWUpdateInfo.SoftwareName + " Unzip Faile");
-                            _notificationStr = $"Software update unsuccessful.";
-                            NotificationFWupdate("Error", _notificationStr);
+                            _notificationStr = LangHelper.Instance["Software_update_unsuccessful"];
+                            NotificationFWupdate(LangHelper.Instance["Error"], _notificationStr);
                             continue;
                         }
                         using (FileLock fileLock_2 = new FileLock(exeFilePath, PathCheckOption.None, lockNow: true))
@@ -507,8 +507,8 @@ namespace DDPM.SA.Plugins.SWUpdate
                             {
                                 _SWUpdateInfo.SWUErrorCode = SWUErrorCode.FileCheckFail;
                                 _logs.DebugMsg_1($"{_SWUpdateInfo.SoftwareName} CheckThumbprint Faile");
-                                _notificationStr = $"Software update unsuccessful.";
-                                NotificationFWupdate("Error", _notificationStr);
+                                _notificationStr = LangHelper.Instance["Software_update_unsuccessful"];
+                                NotificationFWupdate(LangHelper.Instance["Error"], _notificationStr);
                                 continue;
                             }
                             swUpdateInfos[i].InstallPaths = exeFilePath;
@@ -516,11 +516,11 @@ namespace DDPM.SA.Plugins.SWUpdate
                         }
                         if (swUpdateInfos[i].SWUErrorCode == SWUErrorCode.NoError)
                         {
-                            NotificationFWupdate("SW info", _notificationStr);
+                            NotificationFWupdate(LangHelper.Instance["SW_info"], _notificationStr);
                         }
                         else
                         {
-                            NotificationFWupdate("Error", _notificationStr);
+                            NotificationFWupdate(LangHelper.Instance["Error"], _notificationStr);
                         }
                     }
                 }
@@ -544,8 +544,8 @@ namespace DDPM.SA.Plugins.SWUpdate
                 {
                     deviceInfo.SWUErrorCode = SWUErrorCode.NetworkDisconnection;
                 }
-                _notificationStr = $"{_SWUpdateInfo.SoftwareName} Update failed due to network error. Try again.";
-                NotificationFWupdate("Error", _notificationStr);
+                _notificationStr = LangHelper.Instance["Update_failed_due_to_network_error"];
+                NotificationFWupdate(LangHelper.Instance["Error"], _notificationStr);
                 _logs.DebugMsg_1(nameof(DownloadAndInstall) + " Error：Update failed due to network error. Try again. ex:" + ex.Message); // 輸出錯誤訊息
                 _isDefer = false;
                 _isForce = false;
@@ -568,7 +568,7 @@ namespace DDPM.SA.Plugins.SWUpdate
                     {
                         DeviceName = _SWUpdateInfo.SoftwareName,
                         TheLatestVersion = _SWUpdateInfo.TheLatestVersion,
-                        ProcessName = "Downloading",
+                        ProcessName = LangHelper.Instance["Downloading_and_installing"],
                         ProcessProgress = download.GetProgress(),
                     };
                 }
@@ -817,7 +817,7 @@ namespace DDPM.SA.Plugins.SWUpdate
             {
                 _updateErrorCode = SWUErrorCode.Unknow;
                 _logs.DebugMsg_1(nameof(Install) + " Error:" + ex.ToString());
-                _notificationStr = $"{_SWUpdateInfo.SoftwareName} Service not running. Try again.";
+                _notificationStr = LangHelper.Instance["Service_not_running_Try_again"];
                 return Task.FromResult(_updateErrorCode);
             }
         }

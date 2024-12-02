@@ -126,16 +126,36 @@ namespace DDPM.UI.Plugin.ViewModels
             if (!base.SetCurrentDevice(instanceID))
                 return false;
 
+            InitializeKey();
             if (CurrentDeviceInfo!.IsCollabsKeysSupported)
             {
-                IsCollaborationKeyEnable = CurrentDeviceInfo.IsCollaborationKeyEnable;
-                IsCollabShadowVisible = !IsCollaborationKeyEnable;
-                IsCollaborationCameraEnable = CurrentDeviceInfo.IsCollaborationCameraEnable;
-                IsCollaborationScreenShareEnable = CurrentDeviceInfo.IsCollaborationScreenShareEnable;
-                IsCollaborationChatEnable = CurrentDeviceInfo.IsCollaborationChatEnable;
-                IsCollaborationMicEnable = CurrentDeviceInfo.IsCollaborationMicEnable;
-                IsCollaborationBlinkEffectEnable = CurrentDeviceInfo.IsCollaborationBlinkEffectEnable;
-                IsCollaborationDoubleTapEnable = CurrentDeviceInfo.IsCollaborationDoubleTapEnable;
+                if (KeyboardAction.IsCollaborationChecked)
+                {
+                    IsCollaborationDoubleTapEnable = CurrentDeviceInfo.IsCollaborationDoubleTapEnable;
+                    IsCollaborationKeyEnable = CurrentDeviceInfo.IsCollaborationKeyEnable;
+                    IsCollabShadowVisible = !IsCollaborationKeyEnable;
+                    IsCollaborationCameraEnable = CurrentDeviceInfo.IsCollaborationCameraEnable;
+                    IsCollaborationScreenShareEnable = CurrentDeviceInfo.IsCollaborationScreenShareEnable;
+                    IsCollaborationChatEnable = CurrentDeviceInfo.IsCollaborationChatEnable;
+                    IsCollaborationMicEnable = CurrentDeviceInfo.IsCollaborationMicEnable;
+                    IsCollaborationBlinkEffectEnable = CurrentDeviceInfo.IsCollaborationBlinkEffectEnable;
+                }
+                else
+                {
+                    IsCollaborationDoubleTapEnable = true;
+                    IsCollaborationKeyEnable = true;
+                    IsCollabShadowVisible = false;
+                    IsCollaborationCameraEnable = true;
+                    IsCollaborationScreenShareEnable = true;
+                    IsCollaborationChatEnable = true;
+                    IsCollaborationMicEnable = true;
+                    IsCollaborationBlinkEffectEnable = true;
+                    IsCollaborationBlinkEffectEnable = false;
+                    IsCollaborationDoubleTapEnable = true;
+                    IsCollaborationDoubleTapEnable = false;
+                    KeyboardAction.IsCollaborationChecked = true;
+                    ActionList.ExportActionList(KeyboardAction, Model);
+                }
             }
 
             if (CurrentDeviceInfo.IsIlluminationSupported)
@@ -157,7 +177,6 @@ namespace DDPM.UI.Plugin.ViewModels
                 BackLightingLevel = CurrentDeviceInfo.BackLightingLevel;
                 SwitchTab(IlluminationSelectedTabIndex);
             }
-            InitializeKey();
             if (Model == "KB500" || Model == "KB700" || Model == "KB740")
             { CopilotInfoVisibility = Visibility.Visible; }
 
@@ -174,6 +193,15 @@ namespace DDPM.UI.Plugin.ViewModels
                     {
                         DeviceInfos.Remove(di.ID);
                         DeviceInfos.Add(di.ID, di);
+                    }
+                    else if (di.ModelNumber == Model)
+                    {
+                        switch (property)
+                        {
+                            case "RestoreToDefault":
+                                ResetAction();
+                                break;
+                        }
                     }
                     else
                     {
@@ -1093,15 +1121,18 @@ namespace DDPM.UI.Plugin.ViewModels
             OnPropertyChanged(nameof(IsRestoreEnable));
         }
 
-        public void RestoreToDefault()
+        public bool RestoreToDefault()
         {
-            DdpmCommonHelper.DeviceManagerSA!.DeleteKeyboardAllAssignedActions(CurrentDeviceID.ToString());
-            foreach (var keyAction in KeyboardAction.KeyActions.Values)
-            {
-                keyAction.AssignedAction = new AssignedAction(keyAction.DefaultActionID);
-            }
-            //ActionList.ExportActionList(KeyboardActions, Model, CurrentInstanceID);
-            ActionList.ExportActionList(KeyboardAction, Model);
+            if (DdpmCommonHelper.DeviceManagerSA == null || !DdpmCommonHelper.DeviceManagerSA.RestoreToDefaultKB(CurrentDeviceID.ToString()).Result)
+                return false;
+
+            //ResetAction();
+            return true;
+        }
+
+        private void ResetAction()
+        {
+            KeyboardAction = new(Model);
             foreach (var key in KeyboardAction.KeyActions.Keys)
             {
                 RefreshKeyImageFile(key.ToString());

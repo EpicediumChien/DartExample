@@ -4,6 +4,7 @@ using DDPM.UI.Common;
 using DDPM.UI.Interfaces;
 using DDPM.UI.Plugin.ViewModels;
 using Dell.Client.Framework.UX.WPF;
+using Dell.Client.Framework.UX.WPF.Controls;
 using System.Diagnostics;
 using System.Net.Sockets;
 using System.Reflection;
@@ -11,6 +12,8 @@ using System.Security.Cryptography;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Media;
+using VcpCore.Common;
 
 namespace DDPM.UI.Plugin.SettingsPlugin
 {
@@ -36,6 +39,7 @@ namespace DDPM.UI.Plugin.SettingsPlugin
                     vm.Invoke_RefreshData();
                     DdpmCommonHelper.DeviceManagerSA.ITSettingsActionEvent += DeviceManagerSA_ITSettingsActionEvent;
                     DdpmCommonHelper.DeviceManagerSA.GlobalSettingChangeEvent += GlobalSettingChangeEvent;
+                    DdpmCommonHelper.DeviceManagerSA.Peripherals_UpdateNotify += Peripherals_UpdateEvent;
                 }
             }
         }
@@ -46,6 +50,7 @@ namespace DDPM.UI.Plugin.SettingsPlugin
             {
                 DdpmCommonHelper.DeviceManagerSA.ITSettingsActionEvent -= DeviceManagerSA_ITSettingsActionEvent;
                 DdpmCommonHelper.DeviceManagerSA.GlobalSettingChangeEvent -= GlobalSettingChangeEvent;
+                DdpmCommonHelper.DeviceManagerSA.Peripherals_UpdateNotify -= Peripherals_UpdateEvent;
             }
         }
 
@@ -104,7 +109,17 @@ namespace DDPM.UI.Plugin.SettingsPlugin
                 }
             }));
         }
-
+        private void Peripherals_UpdateEvent(object? sender, bool e)
+        {
+            Dispatcher.Invoke(new Action(() =>
+            {
+                SettingsPageViewModel vm = (SettingsPageViewModel)this.DataContext;
+                if (vm != null)
+                {
+                    vm.CheckUpdate();
+                }
+            }));
+        }
         private void leftArrow_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             IConsole? console = SettingsPlugin.PluginIoc.GetService<IConsole>();
@@ -123,19 +138,16 @@ namespace DDPM.UI.Plugin.SettingsPlugin
         {
             //Dean 0618 add analytics page
             vm.SetSelected(2);
-            
         }
 
         private void WidgetSettingsButton_Click(object sender, MouseButtonEventArgs e)
         {
             vm.SetSelected(3);
-            
         }
 
         private void AboutButton_Click(object sender, MouseButtonEventArgs e)
         {
             vm.SetSelected(4);
-            
         }
     }
 }

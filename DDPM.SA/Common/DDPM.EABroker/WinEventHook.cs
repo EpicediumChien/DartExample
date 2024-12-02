@@ -326,7 +326,7 @@ namespace nsWinEventHook
         //GetWindowThreadProcessId()
         [DllImport("user32.dll", SetLastError = true)]
         [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
-        public static extern uint GetWindowThreadProcessId(IntPtr hWnd, out uint processId);
+        private static extern uint GetWindowThreadProcessId(IntPtr hWnd, out uint processId);
 
         public static uint _GetWindowThreadProcessId(IntPtr hWnd, out uint processId)
         {
@@ -349,7 +349,7 @@ namespace nsWinEventHook
 
         [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
         [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
-        public static extern int MoveWindow(IntPtr hWnd, int x, int y, int nWidth, int nHeight, bool bRepaint);
+        private static extern int MoveWindow(IntPtr hWnd, int x, int y, int nWidth, int nHeight, bool bRepaint);
 
         public static int _MoveWindow(IntPtr hWnd, int x, int y, int nWidth, int nHeight, bool bRepaint)
         {

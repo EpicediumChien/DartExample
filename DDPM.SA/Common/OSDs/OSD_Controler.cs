@@ -1,4 +1,6 @@
-﻿namespace DDPM.OSDs
+﻿using DDPM.SA.Common;
+
+namespace DDPM.OSDs
 {
     public class OSD_Controler
     {
@@ -22,6 +24,8 @@
         private EasyMemoryWin EasyMemoryWinx;
         private ErrorWin ErrorWin;
         private QAMHotKeyWin QAMHotKeyWin;
+        private CollaborationNotAvailableWin CollaborationNotAvailableWinx;
+        private KeyAndKeybordBatteryLowWin keyAndKeybordBatteryLowWin;
 
         public OSD_Controler()
         { }
@@ -307,6 +311,43 @@
         {
             if (QAMHotKeyWin != null)
                 QAMHotKeyWin.CloseWindow();
+        }
+        public void CollaborationNotAvailableWin_ShowWindow(string Content, double Top, double Left)
+        {
+            CollaborationNotAvailableWinx = new CollaborationNotAvailableWin(Content);
+
+            CollaborationNotAvailableWinx.Top = Top;
+            CollaborationNotAvailableWinx.Left = Left;
+            CollaborationNotAvailableWinx.ShowWindow();
+        }
+        public void CollaborationNotAvailableWin_CloseWindow()
+        {
+            if (CollaborationNotAvailableWinx != null)
+                CollaborationNotAvailableWinx.CloseWindow();
+        }
+
+        public void KeyAndKeybordBatteryLowWin_ShowWindow(string Content, double Top, double Left)
+        {
+            keyAndKeybordBatteryLowWin = new KeyAndKeybordBatteryLowWin(Content);
+
+            keyAndKeybordBatteryLowWin.Top = Top;
+            keyAndKeybordBatteryLowWin.Left = Left;
+            keyAndKeybordBatteryLowWin.ShowWindow();
+        }
+
+        public void KeyAndKeybordBatteryLowWin_ShowWindow(string Content, double Top, double Left, OSDType type, OSDType_Device device, bool state)
+        {
+            keyAndKeybordBatteryLowWin = new KeyAndKeybordBatteryLowWin(Content, type, device, state);
+
+            keyAndKeybordBatteryLowWin.Top = Top;
+            keyAndKeybordBatteryLowWin.Left = Left;
+            keyAndKeybordBatteryLowWin.ShowWindow();
+        }
+
+        public void KeyAndKeybordBatteryLowWin_CloseWindow()
+        {
+            if (keyAndKeybordBatteryLowWin != null)
+                keyAndKeybordBatteryLowWin.CloseWindow();
         }
     }
 }

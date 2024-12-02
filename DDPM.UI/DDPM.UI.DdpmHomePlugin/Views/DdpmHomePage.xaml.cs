@@ -113,72 +113,6 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
             }
         }
 
-        //Unused
-        private void deviceCollectionListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            /*
-            e.Handled = true;
-            if (e.AddedItems == null)
-                return;
-            if (e.AddedItems.Count <= 0)
-            {
-                return;
-            }
-
-            ILog? log = DdpmHomePlugin.PluginIoc.GetService<ILog>();
-            log?.Info("DdpmHomePage.DeviceSelectionChanged");
-
-            if (e.AddedItems.Count <= 0)
-                return;
-
-            DeviceInfo? selDev = e.AddedItems[0] as DeviceInfo;
-            if (selDev == null)
-                return;
-
-            DeviceInfo? selDev2 = _ddpmHomePageViewModel?.SelDevice;
-
-            if (selDev == selDev2)
-                return;
-
-            //IPluginManager? pluginManager = DdpmHomePlugin.PluginIoc.GetService<IPluginManager>();
-            //DdpmHomePlugin? homePlugin = pluginManager?.FindPluginByType<DdpmHomePlugin>();
-            //homePlugin.Sel
-
-            IDeviceInfo? devInfo = DdpmHomePlugin.PluginIoc.GetService<IDeviceInfo>();
-            if (devInfo != null)
-            {
-            }
-
-            IDdpmHomePageViewModel? vm = Get_ddpmHomePageViewModel();
-
-            //(IDdpmHomePageViewModel)vm.SelDevice = (DeviceInfo)selDev;
-
-            DdpmHomePageViewModel vm2 = (DdpmHomePageViewModel)DataContext;
-            vm2.SelDevice = selDev;
-
-            if (selDev == null)
-                return;
-
-            if (selDev.DeviceCategory == eDeviceCategory.Display)
-            {
-                IConsole? console = DdpmHomePlugin.PluginIoc.GetService<IConsole>();
-                console?.ShowPluginById(DDPM.UI.Common.Constants.DisplayPluginId);
-            }
-
-            if (selDev.DeviceCategory == eDeviceCategory.KB)
-            {
-                IConsole? console = DdpmHomePlugin.PluginIoc.GetService<IConsole>();
-                console?.ShowPluginById(DDPM.UI.Common.Constants.KeyboardPluginId);
-            }
-
-            if (selDev.DeviceCategory == eDeviceCategory.Mouse)
-            {
-                IConsole? console = DdpmHomePlugin.PluginIoc.GetService<IConsole>();
-                console?.ShowPluginById(DDPM.UI.Common.Constants.MousePluginId);
-            }
-            */
-        }
-
         private void UserControl_Loaded(object sender, System.Windows.RoutedEventArgs e)
         {
             if (_ddpmHomePageViewModel != null)
@@ -201,54 +135,15 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
             Dispatcher.BeginInvoke(new Action(RenderingDone), System.Windows.Threading.DispatcherPriority.ContextIdle, null);
         }
 
-        //private void DeviceManagerSA_DeviceChanged(object? sender, SA.Common.DeviceChangedEventArgs e)
-        //{
-        //    //_ = Task.Run(RefreshHomeDeviceListAsync);
-        //}
-
-        //Robert_Lin, 2024-6-26, fix SAST issue: [Bug] Return 'Task' instead
-        //This method should be unused, rename the method, and add the suggest solution.
-        //It can be removed any time.
-        //OLD Code:
-        //  private async void RefreshHomeDeviceListAsync()
-        //NEW Code:
-        /*private async Task RefreshHomeDeviceListAsync_Unused()
-        {
-            //if (_ddpmHomePageViewModel != null)
-            //{
-            //    //Dispatcher.Invoke(() =>
-            //    //{
-            //    //    _ddpmHomePageViewModel.HomeDevices.Clear();
-            //    //});
-
-            //    if (DdpmCommonHelper.DeviceManagerSA != null)
-            //    {
-            //        List<MonitorInfo> monitorInfos = await DdpmCommonHelper.DeviceManagerSA.GetMonitors();
-
-            //        DeviceHelper deviceHelper = await DdpmCommonHelper.DeviceManagerSA.GetDevices();
-            //        List<DeviceInfo> deviceInfos = new List<DeviceInfo>();
-            //        if ((deviceHelper != null) && (deviceHelper.deviceInfo != null))
-            //        {
-            //            deviceInfos = deviceHelper.deviceInfo;
-            //        }
-
-            //        _ddpmHomePageViewModel.ResetDevices();
-            //        _ddpmHomePageViewModel.PrepareMonitorInfos(monitorInfos);
-            //        _ddpmHomePageViewModel.PrepareDeviceInfos(deviceInfos);
-            //    }
-
-            //}
-        }*/
-
         #region RWD HomeDevices
 
         //v1.03 2024-6-22 Robert_Lin, 4 items per row first
         // ItemCount = 1~3, use the same rule with v1.02
         // If ItemCount >= 4, Arrange 4 item per row first
         // Calculate methods: CalculateItemWidthV3_xxxx
-        private const double minWidth = 280;
+        private const double minWidth = 250;
 
-        private const double minGap = 32;
+        private const double minGap = 40;
 
         //v1.02 2024-5-18 Robert_lin
         // No maxWidth limitation (that means maxWidth can be removed)
@@ -265,16 +160,16 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
         //The break-points
         //bkpt2: if (cxView<bkpt2) then ItemsPerRow=1
         //bkpt3: if (xView<bkpt3) then ItemsPerRow<=2
-        private const double bkpt2 = minWidth * 2 + minGap * 3; //656
+        private const double bkpt2 = minWidth * 2 + minGap * 3; //620
 
-        private const double bkpt3 = minWidth * 3 + minGap * 4; //968
-        private const double bkpt4 = minWidth * 4 + minGap * 5; //1280
-        private const double bkpt5 = minWidth * 5 + minGap * 6;
+        private const double bkpt3 = minWidth * 3 + minGap * 4; //810
+        private const double bkpt4 = minWidth * 4 + minGap * 5; //1200
 
         private double _screenScale = 1.000; //Refresh in RefreshListViewItemWidth()
 
         private void RefreshListViewItemWidth()
         {
+            #region Wait for device ready
             double cxView = HomeDevicesListView.ActualWidth;
             double cyView = HomeDevicesListView.ActualHeight;
 
@@ -282,7 +177,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
             if ((cxView == 0) || (cyView == 0))
             {
                 //Add a retry after 300 msec
-                System.Threading.Timer timer1 = new System.Threading.Timer((obj) => 
+                System.Threading.Timer timer1 = new System.Threading.Timer((obj) =>
                 {
                     Dispatcher.BeginInvoke(new Action(() =>
                     {
@@ -292,6 +187,10 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                 }, null, 300, Timeout.Infinite);
                 return;
             }
+            #endregion
+
+            if (_ddpmHomePageViewModel?.MinWidth != null)
+                System.Windows.Application.Current.MainWindow.MinWidth = _ddpmHomePageViewModel?.MinWidth ?? 0;
 
             var primaryScreenScalingRatio = Screen.PrimaryScreen.Bounds.Width / SystemParameters.PrimaryScreenWidth;
 
@@ -310,63 +209,38 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
             if (_ddpmHomePageViewModel != null)
             {
                 double newWidth = minWidth;
-                //double newHeight = 290;
 
+                // MinWidth = 330
                 if (_ddpmHomePageViewModel.HomeDevices.Count == 1)
                 {
                     newWidth = CalculateItemWidthV3_ItemsPerRow1(cxView, cyView);
                 }
+                // MinWidth = 620
                 else if (_ddpmHomePageViewModel.HomeDevices.Count == 2)
                 {
-                    if (cxView < bkpt2) //656
-                        newWidth = CalculateItemWidthV3_ItemsPerRow1(cxView, cyView);
-                    else
-                        newWidth = CalculateItemWidthV3_ItemsPerRow2(cxView, cyView);
-
+                    newWidth = CalculateItemWidthV3_ItemsPerRow2(cxView, cyView);
                     //Robert_Lin debug, force small icon to test ConnectionHoverView
                     //newWidth = minWidth - 100;
                 }
+                // MinWidth = 910
                 else if (_ddpmHomePageViewModel.HomeDevices.Count == 3)
                 {
-                    if (cxView < bkpt2) //656
-                        newWidth = CalculateItemWidthV3_ItemsPerRow1(cxView, cyView);
-                    else if (cxView < bkpt3) //968
-                        newWidth = CalculateItemWidthV3_ItemsPerRow2(cxView, cyView);
-                    else
-                        newWidth = CalculateItemWidthV3_ItemsPerRow3(cxView, cyView);
+                    newWidth = CalculateItemWidthV3_ItemsPerRow3(cxView, cyView);
                 }
+                // MinWidth = 620*
                 else if (_ddpmHomePageViewModel.HomeDevices.Count == 4)
                 {
-                    if (cxView < bkpt2) //656
-                        newWidth = CalculateItemWidthV3_ItemsPerRow1(cxView, cyView);
-                    else if (cxView < bkpt3) //968
+                    if (cxView < bkpt4) //1200
                         newWidth = CalculateItemWidthV3_ItemsPerRow2(cxView, cyView);
-                    else if (cxView < bkpt4) //1280
-                        newWidth = CalculateItemWidthV3_ItemsPerRow3(cxView, cyView);
                     else
                         newWidth = CalculateItemWidthV3_ItemsPerRow4(cxView, cyView);
                 }
                 //2024-6-23, HomePage RWD, 4 items per row first, so never > 4 items/row
-                //else if (_ddpmHomePageViewModel.HomeDevices.Count == 5)
-                //{
-                //    if (cxView < bkpt2)
-                //        newWidth = CalculateItemWidth_ItemsPerRow1(cxView, cyView);
-                //    else if (cxView < bkpt3)
-                //        newWidth = CalculateItemWidth_ItemsPerRow2(cxView, cyView);
-                //    else if (cxView < bkpt4)
-                //        newWidth = CalculateItemWidth_ItemsPerRow3(cxView, cyView);
-                //    else if (cxView < bkpt5)
-                //        newWidth = CalculateItemWidth_ItemsPerRowN(cxView, cyView, 5);
-                //    else
-                //        newWidth = CalculateItemWidth_ItemsPerRowN(cxView, cyView, 6);
-                //}
-                else //ItemCount > 4
+                //ItemCount > 4
+                // MinWidth = 910 (3 items)
+                else
                 {
-                    if (cxView < bkpt2)
-                        newWidth = CalculateItemWidthV3_ItemsPerRow1(cxView, cyView);
-                    else if (cxView < bkpt3)
-                        newWidth = CalculateItemWidthV3_ItemsPerRow2(cxView, cyView);
-                    else if (cxView < bkpt4)
+                    if (cxView < bkpt4)
                         newWidth = CalculateItemWidthV3_ItemsPerRow3(cxView, cyView);
                     else //2024-6-23, Robert_Lin, RWD 4 item per row first
                     {
@@ -389,19 +263,31 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                     //}
                 }
 
+                if (newWidth > maxWidth)
+                {
+                    newWidth = maxWidth;
+                }
+                else if (newWidth < minWidth)
+                {
+                    newWidth = minWidth;
+                }
+                // realWidth for HomeDevice.ItemWidth will scale 1.16
+                double realWidth = newWidth / 1.16;
+
                 //If MainWindow is in Primary screen,  we need to div by scale.
                 //Otherwise (not primary screen), we don't need (by reset scale to 1)
-                if (!DdpmCommonHelper.IsMainWindowAtPrimaryScreen)
-                    scale = 1.0000;
+                //if (!DdpmCommonHelper.IsMainWindowAtPrimaryScreen)
+                //    scale = 1.0000;
 
                 Dispatcher.Invoke(new Action(() =>
                 {
                     DataContext = null;
+                    // Confirmed to remove scale from Robert
                     foreach (HomeDevice dev in _ddpmHomePageViewModel.HomeDevices)
                     {
-                        dev.NormalWidth = newWidth / scale;
+                        dev.NormalWidth = Math.Floor(realWidth * 100) / 100; // prevent border to wrap device by decimal
                     }
-                    _ddpmHomePageViewModel.cxItem = newWidth;
+                    _ddpmHomePageViewModel.cxItem = realWidth;
                     DataContext = _ddpmHomePageViewModel;
                 }));
             }
@@ -469,144 +355,10 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
         private double CalculateItemWidthV3_ItemsPerRow4(double cxView, double cyView)
         {
             //Add margin in cxItem to avoid internal margin
-            double cxItem = (cxView - (minGap * 7.000)) / 4.000;
-            double cyItem = (cyView - (minGap * 2.000));
-            double sizeItem = Math.Min(cxItem, cyItem - cyBatteryIndicator * 2);
-            return sizeItem;
-        }
-
-        //Robert_Lin, 2024-8-7 Unused code, can be removed
-        private double CalculateItemWidth_ItemsPerRow1(double cxView, double cyView)
-        {
-            //sizeView = min (cxView, cyView)
-            double sizeView = Math.Min(cxView, cyView - cyBatteryIndicator * 2);
-
-            //Calculate the sizeItem
-            double sizeItem = sizeView - (minGap * 2); //sizeView * ratioItemView;
-
-            //But the sizeItem must >= minWidth
-            if (sizeItem < minWidth)
-                return minWidth;
-
-            return sizeItem;
-        }
-
-        //Robert_Lin, 2024-8-7 Unused code, can be removed
-        private double CalculateItemWidth_ItemsPerRow2(double cxView, double cyView)
-        {
-            double cxItem = (cxView - (minGap * 3.000)) / 2.000;
-            double cyItem = (cyView - (minGap * 2.000));
-            double sizeItem = Math.Min(cxItem, cyItem - cyBatteryIndicator * 2);
-            return sizeItem;
-            /*
-            //sizeView = min (cxView, cyView)
-            double sizeView = Math.Min(cxView, cyView);
-
-            //Calculate the sizeItem
-            double sizeItem = sizeView * ratioItemView;
-
-            if (cxView > (maxWidth * 2 + minGap * 3))
-            {
-                return maxWidth;
-            }
-
-            if (cxView > bkpt2) //656
-            {
-                double cxItem = (cxView - (minGap * 3)) / 2;
-                //Consider cyView
-                if (cyView < cxItem)
-                {
-                    if (cyView > minWidth)
-                        return cyView;
-                    return minWidth;
-                }
-                return cxItem;
-            }
-
-            return minWidth;*/
-        }
-
-        //Robert_Lin, 2024-8-7 Unused code, can be removed
-        private double CalculateItemWidth_ItemsPerRow3(double cxView, double cyView)
-        {
-            double cxItem = (cxView - (minGap * 4.000)) / 3.000;
-            double cyItem = (cyView - (minGap * 2.000));
-            double sizeItem = Math.Min(cxItem, cyItem - cyBatteryIndicator * 2);
-            return sizeItem;
-
-            /*
-            if (cxView > (maxWidth * 3 + minGap * 4)) //1628
-                return maxWidth;
-
-            if (cxView > bkpt3) //968
-            {
-                double cxItem = (cxView - (minGap * 4)) / 3;
-                //Consider cyView
-                if (cyView < cxItem)
-                {
-                    if (cyView > minWidth)
-                        return cyView;
-                    return minWidth;
-                }
-                return cxItem;
-            }
-            return minWidth;*/
-        }
-
-        //Robert_Lin, 2024-8-7 Unused code, can be removed
-        private double CalculateItemWidth_ItemsPerRow4(double cxView, double cyView)
-        {
             double cxItem = (cxView - (minGap * 5.000)) / 4.000;
             double cyItem = (cyView - (minGap * 2.000));
             double sizeItem = Math.Min(cxItem, cyItem - cyBatteryIndicator * 2);
             return sizeItem;
-
-            /*
-            if (cxView > (maxWidth * 4 + minGap * 5)) //1628
-                return maxWidth;
-
-            if (cxView > bkpt4) //968
-            {
-                double cxItem = (cxView - (minGap * 5)) / 4;
-                //Consider cyView
-                if (cyView < cxItem)
-                {
-                    if (cyView > minWidth)
-                        return cyView;
-                    return minWidth;
-                }
-                return cxItem;
-            }
-            return minWidth;*/
-        }
-
-        //Robert_Lin, 2024-8-7 Unused code, can be removed
-        private double CalculateItemWidth_ItemsPerRowN(double cxView, double cyView, int n)
-        {
-            double cxItem = (cxView - (minGap * (n + 1))) / n;
-            double cyItem = (cyView - (minGap * 2.000));
-            double sizeItem = Math.Min(cxItem, cyItem - cyBatteryIndicator * 2);
-            return sizeItem;
-
-            /*
-            if (n < 1)
-                return maxWidth;
-
-            if (cxView > (maxWidth * n + minGap * (n + 1)))
-                return maxWidth;
-
-            if (cxView > (minWidth * n + minGap * (n + 1)))
-            {
-                double cxItem = (cxView - (minGap * (n + 1))) / n;
-                if (cyView < cxItem)
-                {
-                    if (cyView > minWidth)
-                        return cyView;
-                    return minWidth;
-                }
-                return cxItem;
-            }
-            return minWidth;*/
         }
 
         private void rootUserControl_SizeChanged(object sender, System.Windows.SizeChangedEventArgs e)
@@ -1037,7 +789,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
 
         #region Connection Hover View
 
-        private ConnectionHoverView? _connHoverView = null;
+        //private ConnectionHoverView? _connHoverView = null;
 
         private void batteryIndicator_MouseEnter(object sender, System.Windows.Input.MouseEventArgs e)
         {
@@ -1154,9 +906,9 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                 // Get the bounds of the ScrollViewer (occupied area)
                 var scrollViewerPosition = scrollViewer.TransformToAncestor(listView).Transform(new System.Windows.Point(0, 0));
                 var scrollViewerBounds = new Rect(scrollViewerPosition, new System.Windows.Size(scrollViewer.ActualWidth, scrollViewer.ActualHeight));
-                
+
                 // Get the position of the Stylusvar stylusPosition = e.GetPosition(listView);             // Check if the StylusDown occurred outside the ItemsPanel areaif (!scrollViewerBounds.Contains(stylusPosition)) { MessageBox.Show("StylusDown occurred outside the ItemsPanel!"); } else { MessageBox.Show("StylusDown occurred inside the ItemsPanel."); } e.Handled = true; // Mark the event as handled            }
-                                                                                                                                                                                                                                                                                                                                                                                                               //var listView = sender as System.Windows.Controls.ListView;
+                //var listView = sender as System.Windows.Controls.ListView;
                 // Get the bounds of the ScrollViewer (occupied area)
                 // var scrollViewerPosition = scrollViewer.TransformToAncestor(listView)                                                    .Transform(new Point(0, 0));             var scrollViewerBounds = new Rect(scrollViewerPosition,                                               new Size(scrollViewer.ActualWidth, scrollViewer.ActualHeight));             // Get the position of the Stylus
                 var stylusPosition = e.GetPosition(listView);
@@ -1189,7 +941,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                 {
 
                 }
-                e.Handled = true; 
+                e.Handled = true;
             }
         }
 
@@ -1210,22 +962,9 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
 
         private void AddAll()
         {
-            int id = _ddpmHomePageViewModel.HomeDevices.Count;
-
+            _ddpmHomePageViewModel?.AddFakeMonitorToListView();
+            int id = _ddpmHomePageViewModel?.HomeDevices.Count ?? 0;
             HomeDevice demo = new HomeDevice()
-            {
-                DeviceCategory = eDeviceCategory.Display,
-                DeviceName = $"Demo {id}",
-                // DeviceImage = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Monitors/aw2521hf.png"),
-                DeviceInfo = new DeviceInfo()
-                {
-                    Name = "aw2521hf",
-                    ModelNumber = "AW2521HF"
-                }
-            };
-            _ddpmHomePageViewModel.AddDemoHomeDevice(demo);
-            id++;
-            demo = new HomeDevice()
             {
                 DeviceCategory = eDeviceCategory.KB,
                 DeviceName = $"Demo {id}",
@@ -1236,7 +975,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                     ModelNumber = "KB900"
                 }
             };
-            _ddpmHomePageViewModel.AddDemoHomeDevice(demo);
+            _ddpmHomePageViewModel?.AddDemoHomeDevice(demo);
             id++;
             demo = new HomeDevice()
             {
@@ -1249,7 +988,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                     ModelNumber = "MS300"
                 }
             };
-            _ddpmHomePageViewModel.AddDemoHomeDevice(demo);
+            _ddpmHomePageViewModel?.AddDemoHomeDevice(demo);
             id++;
             demo = new HomeDevice()
             {
@@ -1262,7 +1001,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                     ModelNumber = "SB522A"
                 }
             };
-            _ddpmHomePageViewModel.AddDemoHomeDevice(demo);
+            _ddpmHomePageViewModel?.AddDemoHomeDevice(demo);
             id++;
             demo = new HomeDevice()
             {
@@ -1275,7 +1014,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                     ModelNumber = "WH3024"
                 }
             };
-            _ddpmHomePageViewModel.AddDemoHomeDevice(demo);
+            _ddpmHomePageViewModel?.AddDemoHomeDevice(demo);
             id++;
             demo = new HomeDevice()
             {
@@ -1288,7 +1027,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                     ModelNumber = "WB3023"
                 }
             };
-            _ddpmHomePageViewModel.AddDemoHomeDevice(demo);
+            _ddpmHomePageViewModel?.AddDemoHomeDevice(demo);
             id++;
             demo = new HomeDevice()
             {
@@ -1301,7 +1040,246 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                     ModelNumber = "PN5122W"
                 }
             };
-            _ddpmHomePageViewModel.AddDemoHomeDevice(demo);
+            _ddpmHomePageViewModel?.AddDemoHomeDevice(demo);
         }
+
+        #region Unused
+        private void deviceCollectionListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            /*
+            e.Handled = true;
+            if (e.AddedItems == null)
+                return;
+            if (e.AddedItems.Count <= 0)
+            {
+                return;
+            }
+
+            ILog? log = DdpmHomePlugin.PluginIoc.GetService<ILog>();
+            log?.Info("DdpmHomePage.DeviceSelectionChanged");
+
+            if (e.AddedItems.Count <= 0)
+                return;
+
+            DeviceInfo? selDev = e.AddedItems[0] as DeviceInfo;
+            if (selDev == null)
+                return;
+
+            DeviceInfo? selDev2 = _ddpmHomePageViewModel?.SelDevice;
+
+            if (selDev == selDev2)
+                return;
+
+            //IPluginManager? pluginManager = DdpmHomePlugin.PluginIoc.GetService<IPluginManager>();
+            //DdpmHomePlugin? homePlugin = pluginManager?.FindPluginByType<DdpmHomePlugin>();
+            //homePlugin.Sel
+
+            IDeviceInfo? devInfo = DdpmHomePlugin.PluginIoc.GetService<IDeviceInfo>();
+            if (devInfo != null)
+            {
+            }
+
+            IDdpmHomePageViewModel? vm = Get_ddpmHomePageViewModel();
+
+            //(IDdpmHomePageViewModel)vm.SelDevice = (DeviceInfo)selDev;
+
+            DdpmHomePageViewModel vm2 = (DdpmHomePageViewModel)DataContext;
+            vm2.SelDevice = selDev;
+
+            if (selDev == null)
+                return;
+
+            if (selDev.DeviceCategory == eDeviceCategory.Display)
+            {
+                IConsole? console = DdpmHomePlugin.PluginIoc.GetService<IConsole>();
+                console?.ShowPluginById(DDPM.UI.Common.Constants.DisplayPluginId);
+            }
+
+            if (selDev.DeviceCategory == eDeviceCategory.KB)
+            {
+                IConsole? console = DdpmHomePlugin.PluginIoc.GetService<IConsole>();
+                console?.ShowPluginById(DDPM.UI.Common.Constants.KeyboardPluginId);
+            }
+
+            if (selDev.DeviceCategory == eDeviceCategory.Mouse)
+            {
+                IConsole? console = DdpmHomePlugin.PluginIoc.GetService<IConsole>();
+                console?.ShowPluginById(DDPM.UI.Common.Constants.MousePluginId);
+            }
+            */
+        }
+        //private void DeviceManagerSA_DeviceChanged(object? sender, SA.Common.DeviceChangedEventArgs e)
+        //{
+        //    //_ = Task.Run(RefreshHomeDeviceListAsync);
+        //}
+
+        //Robert_Lin, 2024-6-26, fix SAST issue: [Bug] Return 'Task' instead
+        //This method should be unused, rename the method, and add the suggest solution.
+        //It can be removed any time.
+        //OLD Code:
+        //  private async void RefreshHomeDeviceListAsync()
+        //NEW Code:
+        /*private async Task RefreshHomeDeviceListAsync_Unused()
+        {
+            //if (_ddpmHomePageViewModel != null)
+            //{
+            //    //Dispatcher.Invoke(() =>
+            //    //{
+            //    //    _ddpmHomePageViewModel.HomeDevices.Clear();
+            //    //});
+
+            //    if (DdpmCommonHelper.DeviceManagerSA != null)
+            //    {
+            //        List<MonitorInfo> monitorInfos = await DdpmCommonHelper.DeviceManagerSA.GetMonitors();
+
+            //        DeviceHelper deviceHelper = await DdpmCommonHelper.DeviceManagerSA.GetDevices();
+            //        List<DeviceInfo> deviceInfos = new List<DeviceInfo>();
+            //        if ((deviceHelper != null) && (deviceHelper.deviceInfo != null))
+            //        {
+            //            deviceInfos = deviceHelper.deviceInfo;
+            //        }
+
+            //        _ddpmHomePageViewModel.ResetDevices();
+            //        _ddpmHomePageViewModel.PrepareMonitorInfos(monitorInfos);
+            //        _ddpmHomePageViewModel.PrepareDeviceInfos(deviceInfos);
+            //    }
+
+            //}
+        }*/
+
+        //Robert_Lin, 2024-8-7 Unused code, can be removed
+        private double CalculateItemWidth_ItemsPerRow1(double cxView, double cyView)
+        {
+            //sizeView = min (cxView, cyView)
+            double sizeView = Math.Min(cxView, cyView - cyBatteryIndicator * 2);
+
+            //Calculate the sizeItem
+            double sizeItem = sizeView - (minGap * 2); //sizeView * ratioItemView;
+
+            //But the sizeItem must >= minWidth
+            if (sizeItem < minWidth)
+                return minWidth;
+
+            return sizeItem;
+        }
+
+        //Robert_Lin, 2024-8-7 Unused code, can be removed
+        private double CalculateItemWidth_ItemsPerRow2(double cxView, double cyView)
+        {
+            double cxItem = (cxView - (minGap * 3.000)) / 2.000;
+            double cyItem = (cyView - (minGap * 2.000));
+            double sizeItem = Math.Min(cxItem, cyItem - cyBatteryIndicator * 2);
+            return sizeItem;
+            /*
+            //sizeView = min (cxView, cyView)
+            double sizeView = Math.Min(cxView, cyView);
+
+            //Calculate the sizeItem
+            double sizeItem = sizeView * ratioItemView;
+
+            if (cxView > (maxWidth * 2 + minGap * 3))
+            {
+                return maxWidth;
+            }
+
+            if (cxView > bkpt2) //656
+            {
+                double cxItem = (cxView - (minGap * 3)) / 2;
+                //Consider cyView
+                if (cyView < cxItem)
+                {
+                    if (cyView > minWidth)
+                        return cyView;
+                    return minWidth;
+                }
+                return cxItem;
+            }
+
+            return minWidth;*/
+        }
+
+        //Robert_Lin, 2024-8-7 Unused code, can be removed
+        private double CalculateItemWidth_ItemsPerRow3(double cxView, double cyView)
+        {
+            double cxItem = (cxView - (minGap * 4.000)) / 3.000;
+            double cyItem = (cyView - (minGap * 2.000));
+            double sizeItem = Math.Min(cxItem, cyItem - cyBatteryIndicator * 2);
+            return sizeItem;
+
+            /*
+            if (cxView > (maxWidth * 3 + minGap * 4)) //1628
+                return maxWidth;
+
+            if (cxView > bkpt3) //968
+            {
+                double cxItem = (cxView - (minGap * 4)) / 3;
+                //Consider cyView
+                if (cyView < cxItem)
+                {
+                    if (cyView > minWidth)
+                        return cyView;
+                    return minWidth;
+                }
+                return cxItem;
+            }
+            return minWidth;*/
+        }
+
+        //Robert_Lin, 2024-8-7 Unused code, can be removed
+        private double CalculateItemWidth_ItemsPerRow4(double cxView, double cyView)
+        {
+            double cxItem = (cxView - (minGap * 5.000)) / 4.000;
+            double cyItem = (cyView - (minGap * 2.000));
+            double sizeItem = Math.Min(cxItem, cyItem - cyBatteryIndicator * 2);
+            return sizeItem;
+
+            /*
+            if (cxView > (maxWidth * 4 + minGap * 5)) //1628
+                return maxWidth;
+
+            if (cxView > bkpt4) //968
+            {
+                double cxItem = (cxView - (minGap * 5)) / 4;
+                //Consider cyView
+                if (cyView < cxItem)
+                {
+                    if (cyView > minWidth)
+                        return cyView;
+                    return minWidth;
+                }
+                return cxItem;
+            }
+            return minWidth;*/
+        }
+
+        //Robert_Lin, 2024-8-7 Unused code, can be removed
+        private double CalculateItemWidth_ItemsPerRowN(double cxView, double cyView, int n)
+        {
+            double cxItem = (cxView - (minGap * (n + 1))) / n;
+            double cyItem = (cyView - (minGap * 2.000));
+            double sizeItem = Math.Min(cxItem, cyItem - cyBatteryIndicator * 2);
+            return sizeItem;
+
+            /*
+            if (n < 1)
+                return maxWidth;
+
+            if (cxView > (maxWidth * n + minGap * (n + 1)))
+                return maxWidth;
+
+            if (cxView > (minWidth * n + minGap * (n + 1)))
+            {
+                double cxItem = (cxView - (minGap * (n + 1))) / n;
+                if (cyView < cxItem)
+                {
+                    if (cyView > minWidth)
+                        return cyView;
+                    return minWidth;
+                }
+                return cxItem;
+            }
+            return minWidth;*/
+        }
+        #endregion
     }
 }

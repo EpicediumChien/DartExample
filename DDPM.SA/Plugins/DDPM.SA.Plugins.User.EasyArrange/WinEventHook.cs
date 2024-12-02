@@ -333,7 +333,7 @@ namespace nsWinEventHook
 
         [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
         [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
-        public static extern int MoveWindow(IntPtr hWnd, int x, int y, int nWidth, int nHeight, bool bRepaint);
+        private static extern int MoveWindow(IntPtr hWnd, int x, int y, int nWidth, int nHeight, bool bRepaint);
 
         public static int _MoveWindow(IntPtr hWnd, int x, int y, int nWidth, int nHeight, bool bRepaint)
         {

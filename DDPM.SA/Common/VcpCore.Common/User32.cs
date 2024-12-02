@@ -779,7 +779,7 @@ namespace VcpCore.Common
             return DisplayConfigGetDeviceInfo(ref deviceMode);
         }
 
-        [Flags]
+        /*[Flags]
         public enum DisplaySettingsFlags
         {
             CDS_NONE = 0,
@@ -800,7 +800,7 @@ namespace VcpCore.Common
         {
             MC_MOMENTARY,
             MC_SET_PARAMETER
-        }
+        }*/
 
         public const int EDD_GET_DEVICE_INTERFACE_NAME = 1;
     }

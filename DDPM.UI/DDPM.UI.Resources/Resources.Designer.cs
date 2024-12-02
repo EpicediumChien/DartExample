@@ -8,10 +8,11 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace DDPM.UI.Resources {
+namespace DDPM.UI.Resources
+{
     using System;
-    
-    
+
+
     /// <summary>
     ///   用於查詢當地語系化字串等的強類型資源類別。
     /// </summary>
@@ -22,8122 +23,9937 @@ namespace DDPM.UI.Resources {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class Resources {
-        
+    internal class Resources
+    {
+
         private static global::System.Resources.ResourceManager resourceMan;
-        
+
         private static global::System.Globalization.CultureInfo resourceCulture;
-        
+
         [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        internal Resources() {
+        internal Resources()
+        {
         }
-        
+
         /// <summary>
         ///   傳回這個類別使用的快取的 ResourceManager 執行個體。
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Resources.ResourceManager ResourceManager {
-            get {
-                if (object.ReferenceEquals(resourceMan, null)) {
+        internal static global::System.Resources.ResourceManager ResourceManager
+        {
+            get
+            {
+                if (object.ReferenceEquals(resourceMan, null))
+                {
                     global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("DDPM.UI.Resources.Resources", typeof(Resources).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
             }
         }
-        
+
         /// <summary>
         ///   覆寫目前執行緒的 CurrentUICulture 屬性，對象是所有
         ///   使用這個強類型資源類別的資源查閱。
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Globalization.CultureInfo Culture {
-            get {
+        internal static global::System.Globalization.CultureInfo Culture
+        {
+            get
+            {
                 return resourceCulture;
             }
-            set {
+            set
+            {
                 resourceCulture = value;
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 4th Click 的當地語系化字串。
         /// </summary>
-        internal static string _4thClick {
-            get {
+        internal static string _4thClick
+        {
+            get
+            {
                 return ResourceManager.GetString("4thClick", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 5th Click 的當地語系化字串。
         /// </summary>
-        internal static string _5thClick {
-            get {
+        internal static string _5thClick
+        {
+            get
+            {
                 return ResourceManager.GetString("5thClick", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 About 的當地語系化字串。
         /// </summary>
-        internal static string About {
-            get {
+        internal static string About
+        {
+            get
+            {
                 return ResourceManager.GetString("About", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Enter a key combination to create a shortcut 的當地語系化字串。
         /// </summary>
-        internal static string Action_1 {
-            get {
+        internal static string Action_1
+        {
+            get
+            {
                 return ResourceManager.GetString("Action.1", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Click the browse button to select a file 的當地語系化字串。
         /// </summary>
-        internal static string Action_2 {
-            get {
+        internal static string Action_2
+        {
+            get
+            {
                 return ResourceManager.GetString("Action.2", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Click the \&quot;Browse\&quot; button to select a folder 的當地語系化字串。
         /// </summary>
-        internal static string Action_3 {
-            get {
+        internal static string Action_3
+        {
+            get
+            {
                 return ResourceManager.GetString("Action.3", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Type the URL of the web page in the box below 的當地語系化字串。
         /// </summary>
-        internal static string Action_4 {
-            get {
+        internal static string Action_4
+        {
+            get
+            {
                 return ResourceManager.GetString("Action.4", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 File Name 的當地語系化字串。
         /// </summary>
-        internal static string Action_5 {
-            get {
+        internal static string Action_5
+        {
+            get
+            {
                 return ResourceManager.GetString("Action.5", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Folder Name 的當地語系化字串。
         /// </summary>
-        internal static string Action_6 {
-            get {
+        internal static string Action_6
+        {
+            get
+            {
                 return ResourceManager.GetString("Action.6", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Activate Quick Access widget during Zoom conference calls 的當地語系化字串。
         /// </summary>
-        internal static string Activate_Quick_Access_widget_during_Zoom_conference_calls {
-            get {
+        internal static string Activate_Quick_Access_widget_during_Zoom_conference_calls
+        {
+            get
+            {
                 return ResourceManager.GetString("Activate_Quick_Access_widget_during_Zoom_conference_calls", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Adaptive Light 的當地語系化字串。
         /// </summary>
-        internal static string AdaptiveLight {
-            get {
+        internal static string AdaptiveLight
+        {
+            get
+            {
                 return ResourceManager.GetString("AdaptiveLight", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Add Device 的當地語系化字串。
         /// </summary>
-        internal static string AddDevice {
-            get {
+        internal static string AddDevice
+        {
+            get
+            {
                 return ResourceManager.GetString("AddDevice", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Display 的當地語系化字串。
         /// </summary>
-        internal static string AddDevice_Display {
-            get {
+        internal static string AddDevice_Display
+        {
+            get
+            {
                 return ResourceManager.GetString("AddDevice.Display", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Connect your display via HDMI/USB-C port on your system 的當地語系化字串。
         /// </summary>
-        internal static string AddDevice_Display_1 {
-            get {
+        internal static string AddDevice_Display_1
+        {
+            get
+            {
                 return ResourceManager.GetString("AddDevice.Display.1", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Dock 的當地語系化字串。
         /// </summary>
-        internal static string AddDevice_Dock {
-            get {
+        internal static string AddDevice_Dock
+        {
+            get
+            {
                 return ResourceManager.GetString("AddDevice.Dock", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Connect your Dock via USB port on your system 的當地語系化字串。
         /// </summary>
-        internal static string AddDevice_Dock_0 {
-            get {
+        internal static string AddDevice_Dock_0
+        {
+            get
+            {
                 return ResourceManager.GetString("AddDevice.Dock.0", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Headset 的當地語系化字串。
         /// </summary>
-        internal static string AddDevice_Headset {
-            get {
+        internal static string AddDevice_Headset
+        {
+            get
+            {
                 return ResourceManager.GetString("AddDevice.Headset", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 For USB wireless receiver free and on-the-go connectivity 的當地語系化字串。
         /// </summary>
-        internal static string AddDevice_Headset_0 {
-            get {
+        internal static string AddDevice_Headset_0
+        {
+            get
+            {
                 return ResourceManager.GetString("AddDevice.Headset.0", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Power ON headset 的當地語系化字串。
         /// </summary>
-        internal static string AddDevice_Headset_1 {
-            get {
+        internal static string AddDevice_Headset_1
+        {
+            get
+            {
                 return ResourceManager.GetString("AddDevice.Headset.1", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Press and hold power button for 3 seconds to make the headset discoverable by Bluetooth 的當地語系化字串。
         /// </summary>
-        internal static string AddDevice_Headset_2 {
-            get {
+        internal static string AddDevice_Headset_2
+        {
+            get
+            {
                 return ResourceManager.GetString("AddDevice.Headset.2", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Allow the device to be paired or launch Windows settings and select the respective device once it has been discovered. 的當地語系化字串。
         /// </summary>
-        internal static string AddDevice_Headset_3 {
-            get {
+        internal static string AddDevice_Headset_3
+        {
+            get
+            {
                 return ResourceManager.GetString("AddDevice.Headset.3", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Power OFF headset. Hold mic mute button and power ON again. 的當地語系化字串。
         /// </summary>
-        internal static string AddDevice_Headset_4 {
-            get {
+        internal static string AddDevice_Headset_4
+        {
+            get
+            {
                 return ResourceManager.GetString("AddDevice.Headset.4", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Pairing will automatically begin after a few seconds 的當地語系化字串。
         /// </summary>
-        internal static string AddDevice_Headset_5 {
-            get {
+        internal static string AddDevice_Headset_5
+        {
+            get
+            {
                 return ResourceManager.GetString("AddDevice.Headset.5", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Connect your headset via USB port on your system. 的當地語系化字串。
         /// </summary>
-        internal static string AddDevice_Headset_6 {
-            get {
+        internal static string AddDevice_Headset_6
+        {
+            get
+            {
                 return ResourceManager.GetString("AddDevice.Headset.6", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Keyboard\nand Mouse 的當地語系化字串。
         /// </summary>
-        internal static string AddDevice_KnM {
-            get {
+        internal static string AddDevice_KnM
+        {
+            get
+            {
                 return ResourceManager.GetString("AddDevice.KnM", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Bluetooth Connection 的當地語系化字串。
         /// </summary>
-        internal static string AddDevice_KnM_0 {
-            get {
+        internal static string AddDevice_KnM_0
+        {
+            get
+            {
                 return ResourceManager.GetString("AddDevice.KnM.0", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Add Bluetooth device by pairing it through Windows settings 的當地語系化字串。
         /// </summary>
-        internal static string AddDevice_KnM_1 {
-            get {
+        internal static string AddDevice_KnM_1
+        {
+            get
+            {
                 return ResourceManager.GetString("AddDevice.KnM.1", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Multiple wireless receivers detected. Unplug all Dell wireless receivers for Keyboard and Mouse. Plug in the one you want to pair. 的當地語系化字串。
         /// </summary>
-        internal static string AddDevice_KnM_10 {
-            get {
+        internal static string AddDevice_KnM_10
+        {
+            get
+            {
                 return ResourceManager.GetString("AddDevice.KnM.10", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 No USB wireless receiver connected. Connect your USB wireless receiver, and pair up to six compatible devices. 的當地語系化字串。
         /// </summary>
-        internal static string AddDevice_KnM_11 {
-            get {
+        internal static string AddDevice_KnM_11
+        {
+            get
+            {
                 return ResourceManager.GetString("AddDevice.KnM.11", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 No USB wireless receiver connected. Connect a USB wireless receiver for better UC compatibility, lower latency, and more stable connection. 的當地語系化字串。
         /// </summary>
-        internal static string AddDevice_KnM_12 {
-            get {
+        internal static string AddDevice_KnM_12
+        {
+            get
+            {
                 return ResourceManager.GetString("AddDevice.KnM.12", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Connect your keyboard and mouse via USB port on your system 的當地語系化字串。
         /// </summary>
-        internal static string AddDevice_KnM_13 {
-            get {
+        internal static string AddDevice_KnM_13
+        {
+            get
+            {
                 return ResourceManager.GetString("AddDevice.KnM.13", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Wireless Receiver Connection 的當地語系化字串。
         /// </summary>
-        internal static string AddDevice_KnM_14 {
-            get {
+        internal static string AddDevice_KnM_14
+        {
+            get
+            {
                 return ResourceManager.GetString("AddDevice.KnM.14", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Slide power switch slider to ON 的當地語系化字串。
         /// </summary>
-        internal static string AddDevice_KnM_2 {
-            get {
+        internal static string AddDevice_KnM_2
+        {
+            get
+            {
                 return ResourceManager.GetString("AddDevice.KnM.2", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Select a Bluetooth channel, then press and hold for 3 seconds to make the device discoverable 的當地語系化字串。
         /// </summary>
-        internal static string AddDevice_KnM_3 {
-            get {
+        internal static string AddDevice_KnM_3
+        {
+            get
+            {
                 return ResourceManager.GetString("AddDevice.KnM.3", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Allow the device to be paired or launch Windows settings and select the respective device once it has been discovered 的當地語系化字串。
         /// </summary>
-        internal static string AddDevice_KnM_4 {
-            get {
+        internal static string AddDevice_KnM_4
+        {
+            get
+            {
                 return ResourceManager.GetString("AddDevice.KnM.4", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Connect your USB wireless receiver to your system 的當地語系化字串。
         /// </summary>
-        internal static string AddDevice_KnM_6 {
-            get {
+        internal static string AddDevice_KnM_6
+        {
+            get
+            {
                 return ResourceManager.GetString("AddDevice.KnM.6", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Slide the power switch to OFF. 的當地語系化字串。
         /// </summary>
-        internal static string AddDevice_KnM_7 {
-            get {
+        internal static string AddDevice_KnM_7
+        {
+            get
+            {
                 return ResourceManager.GetString("AddDevice.KnM.7", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Press and hold any key/button and slide power to ON 的當地語系化字串。
         /// </summary>
-        internal static string AddDevice_KnM_8 {
-            get {
+        internal static string AddDevice_KnM_8
+        {
+            get
+            {
                 return ResourceManager.GetString("AddDevice.KnM.8", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Keep this window open. Pairing will begin after a few seconds. If not, repeat steps 2 &amp; 3 to try again. 的當地語系化字串。
         /// </summary>
-        internal static string AddDevice_KnM_9 {
-            get {
+        internal static string AddDevice_KnM_9
+        {
+            get
+            {
                 return ResourceManager.GetString("AddDevice.KnM.9", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Cancel 的當地語系化字串。
         /// </summary>
-        internal static string AddDevice_Msg_CancelBtn {
-            get {
+        internal static string AddDevice_Msg_CancelBtn
+        {
+            get
+            {
                 return ResourceManager.GetString("AddDevice.Msg.CancelBtn", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Pairing may take some time. Do not disconnect your device 的當地語系化字串。
         /// </summary>
-        internal static string AddDevice_Msg_WaitingAlert {
-            get {
+        internal static string AddDevice_Msg_WaitingAlert
+        {
+            get
+            {
                 return ResourceManager.GetString("AddDevice.Msg.WaitingAlert", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Adding device, please wait... 的當地語系化字串。
         /// </summary>
-        internal static string AddDevice_Msg_WaitingCap {
-            get {
+        internal static string AddDevice_Msg_WaitingCap
+        {
+            get
+            {
                 return ResourceManager.GetString("AddDevice.Msg.WaitingCap", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Pairing 的當地語系化字串。
         /// </summary>
-        internal static string AddDevice_Msg_WaitingMsg {
-            get {
+        internal static string AddDevice_Msg_WaitingMsg
+        {
+            get
+            {
                 return ResourceManager.GetString("AddDevice.Msg.WaitingMsg", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Pen 的當地語系化字串。
         /// </summary>
-        internal static string AddDevice_Pen {
-            get {
+        internal static string AddDevice_Pen
+        {
+            get
+            {
                 return ResourceManager.GetString("AddDevice.Pen", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Connecting your Pen 的當地語系化字串。
         /// </summary>
-        internal static string AddDevice_Pen_0 {
-            get {
+        internal static string AddDevice_Pen_0
+        {
+            get
+            {
                 return ResourceManager.GetString("AddDevice.Pen.0", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Touch your pen tip to your Dell Display and Peripheral Manager screen 的當地語系化字串。
         /// </summary>
-        internal static string AddDevice_Pen_1 {
-            get {
+        internal static string AddDevice_Pen_1
+        {
+            get
+            {
                 return ResourceManager.GetString("AddDevice.Pen.1", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Press and hold the top button for 3 seconds. Wait for the device to be discovered by Windows. 的當地語系化字串。
         /// </summary>
-        internal static string AddDevice_Pen_2 {
-            get {
+        internal static string AddDevice_Pen_2
+        {
+            get
+            {
                 return ResourceManager.GetString("AddDevice.Pen.2", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Allow the device to be paired or launch Windows settings and select the respective device once it has been discovered. 的當地語系化字串。
         /// </summary>
-        internal static string AddDevice_Pen_3 {
-            get {
+        internal static string AddDevice_Pen_3
+        {
+            get
+            {
                 return ResourceManager.GetString("AddDevice.Pen.3", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Select &apos;Yes&apos; to confirm pairing on the prompt box 的當地語系化字串。
         /// </summary>
-        internal static string AddDevice_Pen_4 {
-            get {
+        internal static string AddDevice_Pen_4
+        {
+            get
+            {
                 return ResourceManager.GetString("AddDevice.Pen.4", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Speakerphone\nand Soundbar 的當地語系化字串。
         /// </summary>
-        internal static string AddDevice_Speaker {
-            get {
+        internal static string AddDevice_Speaker
+        {
+            get
+            {
                 return ResourceManager.GetString("AddDevice.Speaker", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Connect your Speaker or soundbar via USB port on your system. 的當地語系化字串。
         /// </summary>
-        internal static string AddDevice_Speaker_0 {
-            get {
+        internal static string AddDevice_Speaker_0
+        {
+            get
+            {
                 return ResourceManager.GetString("AddDevice.Speaker.0", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Bluetooth 的當地語系化字串。
         /// </summary>
-        internal static string AddDevice_Type_Bluetooth {
-            get {
+        internal static string AddDevice_Type_Bluetooth
+        {
+            get
+            {
                 return ResourceManager.GetString("AddDevice.Type.Bluetooth", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Other 的當地語系化字串。
         /// </summary>
-        internal static string AddDevice_Type_Other {
-            get {
+        internal static string AddDevice_Type_Other
+        {
+            get
+            {
                 return ResourceManager.GetString("AddDevice.Type.Other", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Wired 的當地語系化字串。
         /// </summary>
-        internal static string AddDevice_Type_Wired {
-            get {
+        internal static string AddDevice_Type_Wired
+        {
+            get
+            {
                 return ResourceManager.GetString("AddDevice.Type.Wired", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Wireless receiver 的當地語系化字串。
         /// </summary>
-        internal static string AddDevice_Type_Wireless {
-            get {
+        internal static string AddDevice_Type_Wireless
+        {
+            get
+            {
                 return ResourceManager.GetString("AddDevice.Type.Wireless", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Webcam 的當地語系化字串。
         /// </summary>
-        internal static string AddDevice_Webcam {
-            get {
+        internal static string AddDevice_Webcam
+        {
+            get
+            {
                 return ResourceManager.GetString("AddDevice.Webcam", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Connect your webcam via USB port on your system 的當地語系化字串。
         /// </summary>
-        internal static string AddDevice_Webcam_0 {
-            get {
+        internal static string AddDevice_Webcam_0
+        {
+            get
+            {
                 return ResourceManager.GetString("AddDevice.Webcam.0", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Advanced Settings 的當地語系化字串。
         /// </summary>
-        internal static string AdvancedSettings {
-            get {
+        internal static string AdvancedSettings
+        {
+            get
+            {
                 return ResourceManager.GetString("AdvancedSettings", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 All Devices 的當地語系化字串。
         /// </summary>
-        internal static string All_Devices {
-            get {
+        internal static string All_Devices
+        {
+            get
+            {
                 return ResourceManager.GetString("All_Devices", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 AM 的當地語系化字串。
         /// </summary>
-        internal static string AM {
-            get {
+        internal static string AM
+        {
+            get
+            {
                 return ResourceManager.GetString("AM", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Analytics 的當地語系化字串。
         /// </summary>
-        internal static string Analytics {
-            get {
+        internal static string Analytics
+        {
+            get
+            {
                 return ResourceManager.GetString("Analytics", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Analytics 的當地語系化字串。
         /// </summary>
-        internal static string Analytics_0 {
-            get {
+        internal static string Analytics_0
+        {
+            get
+            {
                 return ResourceManager.GetString("Analytics.0", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Help Dell improve its products and services automatically sending diagnostics and usage data. 的當地語系化字串。
         /// </summary>
-        internal static string Analytics_1 {
-            get {
+        internal static string Analytics_1
+        {
+            get
+            {
                 return ResourceManager.GetString("Analytics.1", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Dell&apos;s Privacy Policy 的當地語系化字串。
         /// </summary>
-        internal static string Analytics_2 {
-            get {
+        internal static string Analytics_2
+        {
+            get
+            {
                 return ResourceManager.GetString("Analytics.2", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Help Dell improve its products and services automatically 的當地語系化字串。
         /// </summary>
-        internal static string Analytics_3 {
-            get {
+        internal static string Analytics_3
+        {
+            get
+            {
                 return ResourceManager.GetString("Analytics.3", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Dell Display and Peripheral Manager 的當地語系化字串。
         /// </summary>
-        internal static string AppName {
-            get {
+        internal static string AppName
+        {
+            get
+            {
                 return ResourceManager.GetString("AppName", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Assign Keystroke 的當地語系化字串。
         /// </summary>
-        internal static string AssignKeystroke {
-            get {
+        internal static string AssignKeystroke
+        {
+            get
+            {
                 return ResourceManager.GetString("AssignKeystroke", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Audio Settings 的當地語系化字串。
         /// </summary>
-        internal static string AudioSettings {
-            get {
+        internal static string AudioSettings
+        {
+            get
+            {
                 return ResourceManager.GetString("AudioSettings", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Auto 的當地語系化字串。
         /// </summary>
-        internal static string Auto {
-            get {
+        internal static string Auto
+        {
+            get
+            {
                 return ResourceManager.GetString("Auto", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Low 的當地語系化字串。
         /// </summary>
-        internal static string AutoBrightnessRangeLevel_0 {
-            get {
+        internal static string AutoBrightnessRangeLevel_0
+        {
+            get
+            {
                 return ResourceManager.GetString("AutoBrightnessRangeLevel.0", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Mid 的當地語系化字串。
         /// </summary>
-        internal static string AutoBrightnessRangeLevel_1 {
-            get {
+        internal static string AutoBrightnessRangeLevel_1
+        {
+            get
+            {
                 return ResourceManager.GetString("AutoBrightnessRangeLevel.1", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 High 的當地語系化字串。
         /// </summary>
-        internal static string AutoBrightnessRangeLevel_2 {
-            get {
+        internal static string AutoBrightnessRangeLevel_2
+        {
+            get
+            {
                 return ResourceManager.GetString("AutoBrightnessRangeLevel.2", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Automated Actions 的當地語系化字串。
         /// </summary>
-        internal static string AutomatedActions {
-            get {
+        internal static string AutomatedActions
+        {
+            get
+            {
                 return ResourceManager.GetString("AutomatedActions", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Back 的當地語系化字串。
         /// </summary>
-        internal static string Back {
-            get {
+        internal static string Back
+        {
+            get
+            {
                 return ResourceManager.GetString("Back", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Barrel Button 的當地語系化字串。
         /// </summary>
-        internal static string BarrelButton {
-            get {
+        internal static string BarrelButton
+        {
+            get
+            {
                 return ResourceManager.GetString("BarrelButton", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Brightness 的當地語系化字串。
         /// </summary>
-        internal static string Brightness {
-            get {
+        internal static string Brightness
+        {
+            get
+            {
                 return ResourceManager.GetString("Brightness", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Check your settings to make sure your Preset Start Times and Transition Lengths do not overlap 的當地語系化字串。
         /// </summary>
-        internal static string Brightness_0 {
-            get {
+        internal static string Brightness_0
+        {
+            get
+            {
                 return ResourceManager.GetString("Brightness.0", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Brightness/Contrast is not available when  的當地語系化字串。
         /// </summary>
-        internal static string Brightness_1 {
-            get {
+        internal static string Brightness_1
+        {
+            get
+            {
                 return ResourceManager.GetString("Brightness.1", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Auto Color Temperature   的當地語系化字串。
         /// </summary>
-        internal static string Brightness_10 {
-            get {
+        internal static string Brightness_10
+        {
+            get
+            {
                 return ResourceManager.GetString("Brightness.10", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Adjusts the color temperature of the display automatically to match the light in the surrounding space. 的當地語系化字串。
         /// </summary>
-        internal static string Brightness_11 {
-            get {
+        internal static string Brightness_11
+        {
+            get
+            {
                 return ResourceManager.GetString("Brightness.11", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Primary Monitor for Sync   的當地語系化字串。
         /// </summary>
-        internal static string Brightness_12 {
-            get {
+        internal static string Brightness_12
+        {
+            get
+            {
                 return ResourceManager.GetString("Brightness.12", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Synchronize the brightness, contrast, color preset and color temperature based on the primary monitor to other ALS monitors 的當地語系化字串。
         /// </summary>
-        internal static string Brightness_13 {
-            get {
+        internal static string Brightness_13
+        {
+            get
+            {
                 return ResourceManager.GetString("Brightness.13", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Preset 1 Name 的當地語系化字串。
         /// </summary>
-        internal static string Brightness_14 {
-            get {
+        internal static string Brightness_14
+        {
+            get
+            {
                 return ResourceManager.GetString("Brightness.14", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Start Time 的當地語系化字串。
         /// </summary>
-        internal static string Brightness_15 {
-            get {
+        internal static string Brightness_15
+        {
+            get
+            {
                 return ResourceManager.GetString("Brightness.15", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Transison Length 的當地語系化字串。
         /// </summary>
-        internal static string Brightness_16 {
-            get {
+        internal static string Brightness_16
+        {
+            get
+            {
                 return ResourceManager.GetString("Brightness.16", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 This feature enables our eyes to adapt to a desired setting 的當地語系化字串。
         /// </summary>
-        internal static string Brightness_17 {
-            get {
+        internal static string Brightness_17
+        {
+            get
+            {
                 return ResourceManager.GetString("Brightness.17", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Preset 2 Name 的當地語系化字串。
         /// </summary>
-        internal static string Brightness_18 {
-            get {
+        internal static string Brightness_18
+        {
+            get
+            {
                 return ResourceManager.GetString("Brightness.18", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Auto Brightness is currently enabled. Do you wish to override it? 的當地語系化字串。
         /// </summary>
-        internal static string Brightness_19 {
-            get {
+        internal static string Brightness_19
+        {
+            get
+            {
                 return ResourceManager.GetString("Brightness.19", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Smart HDR  的當地語系化字串。
         /// </summary>
-        internal static string Brightness_2 {
-            get {
+        internal static string Brightness_2
+        {
+            get
+            {
                 return ResourceManager.GetString("Brightness.2", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 This is not your primary monitor. Do you want to proceed with the change and set this as primary Monitor for Sync? 的當地語系化字串。
         /// </summary>
-        internal static string Brightness_20 {
-            get {
+        internal static string Brightness_20
+        {
+            get
+            {
                 return ResourceManager.GetString("Brightness.20", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 is turned on 的當地語系化字串。
         /// </summary>
-        internal static string Brightness_3 {
-            get {
+        internal static string Brightness_3
+        {
+            get
+            {
                 return ResourceManager.GetString("Brightness.3", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Synchronize between monitors 的當地語系化字串。
         /// </summary>
-        internal static string Brightness_4 {
-            get {
+        internal static string Brightness_4
+        {
+            get
+            {
                 return ResourceManager.GetString("Brightness.4", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Apply the above brightness/luminance, contrast, and color\npreset controls to your connected monitors. 的當地語系化字串。
         /// </summary>
-        internal static string Brightness_5 {
-            get {
+        internal static string Brightness_5
+        {
+            get
+            {
                 return ResourceManager.GetString("Brightness.5", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Auto Brightness   的當地語系化字串。
         /// </summary>
-        internal static string Brightness_6 {
-            get {
+        internal static string Brightness_6
+        {
+            get
+            {
                 return ResourceManager.GetString("Brightness.6", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Adjusts the brightness of the display based on the lighting conditions in the surrounding space 的當地語系化字串。
         /// </summary>
-        internal static string Brightness_7 {
-            get {
+        internal static string Brightness_7
+        {
+            get
+            {
                 return ResourceManager.GetString("Brightness.7", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Auto Brightness Range Level   的當地語系化字串。
         /// </summary>
-        internal static string Brightness_8 {
-            get {
+        internal static string Brightness_8
+        {
+            get
+            {
                 return ResourceManager.GetString("Brightness.8", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Provides 3 levels of brightness ranges based on the lighting conditions in the surrounding space (High/ Mid/ Low) 的當地語系化字串。
         /// </summary>
-        internal static string Brightness_9 {
-            get {
+        internal static string Brightness_9
+        {
+            get
+            {
                 return ResourceManager.GetString("Brightness.9", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Brightness/Contrast 的當地語系化字串。
         /// </summary>
-        internal static string BrightnessOrContrast {
-            get {
+        internal static string BrightnessOrContrast
+        {
+            get
+            {
                 return ResourceManager.GetString("BrightnessOrContrast", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Bug Fixes 的當地語系化字串。
         /// </summary>
-        internal static string Bug_Fixes {
-            get {
+        internal static string Bug_Fixes
+        {
+            get
+            {
                 return ResourceManager.GetString("Bug_Fixes", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Scroll Wheel Click 的當地語系化字串。
         /// </summary>
-        internal static string ButtonSettings_0 {
-            get {
+        internal static string ButtonSettings_0
+        {
+            get
+            {
                 return ResourceManager.GetString("ButtonSettings.0", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Scroll Tilt Left 的當地語系化字串。
         /// </summary>
-        internal static string ButtonSettings_1 {
-            get {
+        internal static string ButtonSettings_1
+        {
+            get
+            {
                 return ResourceManager.GetString("ButtonSettings.1", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Multimedia Actions 的當地語系化字串。
         /// </summary>
-        internal static string ButtonSettings_10 {
-            get {
+        internal static string ButtonSettings_10
+        {
+            get
+            {
                 return ResourceManager.GetString("ButtonSettings.10", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Advanced Actions 的當地語系化字串。
         /// </summary>
-        internal static string ButtonSettings_11 {
-            get {
+        internal static string ButtonSettings_11
+        {
+            get
+            {
                 return ResourceManager.GetString("ButtonSettings.11", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Search Results 的當地語系化字串。
         /// </summary>
-        internal static string ButtonSettings_12 {
-            get {
+        internal static string ButtonSettings_12
+        {
+            get
+            {
                 return ResourceManager.GetString("ButtonSettings.12", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Button Customization 的當地語系化字串。
         /// </summary>
-        internal static string ButtonSettings_13 {
-            get {
+        internal static string ButtonSettings_13
+        {
+            get
+            {
                 return ResourceManager.GetString("ButtonSettings.13", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Scroll Tilt Right 的當地語系化字串。
         /// </summary>
-        internal static string ButtonSettings_2 {
-            get {
+        internal static string ButtonSettings_2
+        {
+            get
+            {
                 return ResourceManager.GetString("ButtonSettings.2", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Side Button Forward 的當地語系化字串。
         /// </summary>
-        internal static string ButtonSettings_3 {
-            get {
+        internal static string ButtonSettings_3
+        {
+            get
+            {
                 return ResourceManager.GetString("ButtonSettings.3", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Side Button Back 的當地語系化字串。
         /// </summary>
-        internal static string ButtonSettings_4 {
-            get {
+        internal static string ButtonSettings_4
+        {
+            get
+            {
                 return ResourceManager.GetString("ButtonSettings.4", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 To customize, click one of the outlined sections on the image to the left 的當地語系化字串。
         /// </summary>
-        internal static string ButtonSettings_5 {
-            get {
+        internal static string ButtonSettings_5
+        {
+            get
+            {
                 return ResourceManager.GetString("ButtonSettings.5", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Restore to All Applictions 的當地語系化字串。
         /// </summary>
-        internal static string ButtonSettings_6 {
-            get {
+        internal static string ButtonSettings_6
+        {
+            get
+            {
                 return ResourceManager.GetString("ButtonSettings.6", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Suggested Actions 的當地語系化字串。
         /// </summary>
-        internal static string ButtonSettings_7 {
-            get {
+        internal static string ButtonSettings_7
+        {
+            get
+            {
                 return ResourceManager.GetString("ButtonSettings.7", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Productivity Actions 的當地語系化字串。
         /// </summary>
-        internal static string ButtonSettings_8 {
-            get {
+        internal static string ButtonSettings_8
+        {
+            get
+            {
                 return ResourceManager.GetString("ButtonSettings.8", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Windows Actions 的當地語系化字串。
         /// </summary>
-        internal static string ButtonSettings_9 {
-            get {
+        internal static string ButtonSettings_9
+        {
+            get
+            {
                 return ResourceManager.GetString("ButtonSettings.9", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Calculator 的當地語系化字串。
         /// </summary>
-        internal static string Calculator {
-            get {
+        internal static string Calculator
+        {
+            get
+            {
                 return ResourceManager.GetString("Calculator", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Camera Control 的當地語系化字串。
         /// </summary>
-        internal static string Camera_0 {
-            get {
+        internal static string Camera_0
+        {
+            get
+            {
                 return ResourceManager.GetString("Camera.0", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Color and Image 的當地語系化字串。
         /// </summary>
-        internal static string Camera_1 {
-            get {
+        internal static string Camera_1
+        {
+            get
+            {
                 return ResourceManager.GetString("Camera.1", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Resume Recording 的當地語系化字串。
         /// </summary>
-        internal static string Camera_10 {
-            get {
+        internal static string Camera_10
+        {
+            get
+            {
                 return ResourceManager.GetString("Camera.10", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Stop Recording 的當地語系化字串。
         /// </summary>
-        internal static string Camera_11 {
-            get {
+        internal static string Camera_11
+        {
+            get
+            {
                 return ResourceManager.GetString("Camera.11", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Not available while adding a preset 的當地語系化字串。
         /// </summary>
-        internal static string Camera_12 {
-            get {
+        internal static string Camera_12
+        {
+            get
+            {
                 return ResourceManager.GetString("Camera.12", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Not all features are available while adding a preset 的當地語系化字串。
         /// </summary>
-        internal static string Camera_13 {
-            get {
+        internal static string Camera_13
+        {
+            get
+            {
                 return ResourceManager.GetString("Camera.13", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Preset 的當地語系化字串。
         /// </summary>
-        internal static string Camera_14 {
-            get {
+        internal static string Camera_14
+        {
+            get
+            {
                 return ResourceManager.GetString("Camera.14", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Edit preset 的當地語系化字串。
         /// </summary>
-        internal static string Camera_15 {
-            get {
+        internal static string Camera_15
+        {
+            get
+            {
                 return ResourceManager.GetString("Camera.15", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Name 的當地語系化字串。
         /// </summary>
-        internal static string Camera_19 {
-            get {
+        internal static string Camera_19
+        {
+            get
+            {
                 return ResourceManager.GetString("Camera.19", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Presence Detection 的當地語系化字串。
         /// </summary>
-        internal static string Camera_2 {
-            get {
+        internal static string Camera_2
+        {
+            get
+            {
                 return ResourceManager.GetString("Camera.2", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 This name is taken 的當地語系化字串。
         /// </summary>
-        internal static string Camera_20 {
-            get {
+        internal static string Camera_20
+        {
+            get
+            {
                 return ResourceManager.GetString("Camera.20", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Neutralize your camera image and restore it to original settings 的當地語系化字串。
         /// </summary>
-        internal static string Camera_21 {
-            get {
+        internal static string Camera_21
+        {
+            get
+            {
                 return ResourceManager.GetString("Camera.21", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Touch up and smooth your appearance 的當地語系化字串。
         /// </summary>
-        internal static string Camera_22 {
-            get {
+        internal static string Camera_22
+        {
+            get
+            {
                 return ResourceManager.GetString("Camera.22", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Intensify the color and vibrancy of your image 的當地語系化字串。
         /// </summary>
-        internal static string Camera_23 {
-            get {
+        internal static string Camera_23
+        {
+            get
+            {
                 return ResourceManager.GetString("Camera.23", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Boost your appearance with warmer tones 的當地語系化字串。
         /// </summary>
-        internal static string Camera_24 {
-            get {
+        internal static string Camera_24
+        {
+            get
+            {
                 return ResourceManager.GetString("Camera.24", resourceCulture);
             }
         }
-        
+
+        /// <summary>
+        ///   查詢類似 Connect your monitor via USB 3.0 and select &apos;High Data Speed&apos; under USB-C Prioritization to enable 4K UHD resolution. 的當地語系化字串。
+        /// </summary>
+        internal static string Camera_25
+        {
+            get
+            {
+                return ResourceManager.GetString("Camera.25", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   查詢類似 Capture 的當地語系化字串。
         /// </summary>
-        internal static string Camera_3 {
-            get {
+        internal static string Camera_3
+        {
+            get
+            {
                 return ResourceManager.GetString("Camera.3", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Microphone 的當地語系化字串。
         /// </summary>
-        internal static string Camera_4 {
-            get {
+        internal static string Camera_4
+        {
+            get
+            {
                 return ResourceManager.GetString("Camera.4", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Add new preset 的當地語系化字串。
         /// </summary>
-        internal static string Camera_5 {
-            get {
+        internal static string Camera_5
+        {
+            get
+            {
                 return ResourceManager.GetString("Camera.5", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Select an option 的當地語系化字串。
         /// </summary>
-        internal static string Camera_6 {
-            get {
+        internal static string Camera_6
+        {
+            get
+            {
                 return ResourceManager.GetString("Camera.6", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Open Media Folder 的當地語系化字串。
         /// </summary>
-        internal static string Camera_7 {
-            get {
+        internal static string Camera_7
+        {
+            get
+            {
                 return ResourceManager.GetString("Camera.7", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Start Recording 的當地語系化字串。
         /// </summary>
-        internal static string Camera_8 {
-            get {
+        internal static string Camera_8
+        {
+            get
+            {
                 return ResourceManager.GetString("Camera.8", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Pause Recording 的當地語系化字串。
         /// </summary>
-        internal static string Camera_9 {
-            get {
+        internal static string Camera_9
+        {
+            get
+            {
                 return ResourceManager.GetString("Camera.9", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Please wait while we’re applying the changes 的當地語系化字串。
         /// </summary>
-        internal static string Camera_Alert_1 {
-            get {
+        internal static string Camera_Alert_1
+        {
+            get
+            {
                 return ResourceManager.GetString("Camera.Alert.1", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Another application is using your camera 的當地語系化字串。
         /// </summary>
-        internal static string Camera_Alert_2 {
-            get {
+        internal static string Camera_Alert_2
+        {
+            get
+            {
                 return ResourceManager.GetString("Camera.Alert.2", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Please unplug and plug your camera and try again 的當地語系化字串。
         /// </summary>
-        internal static string Camera_Alert_3 {
-            get {
+        internal static string Camera_Alert_3
+        {
+            get
+            {
                 return ResourceManager.GetString("Camera.Alert.3", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Please wait while we remove your camera 的當地語系化字串。
         /// </summary>
-        internal static string Camera_Alert_4 {
-            get {
+        internal static string Camera_Alert_4
+        {
+            get
+            {
                 return ResourceManager.GetString("Camera.Alert.4", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Cancel 的當地語系化字串。
         /// </summary>
-        internal static string Cancel {
-            get {
+        internal static string Cancel
+        {
+            get
+            {
                 return ResourceManager.GetString("Cancel", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Chat 的當地語系化字串。
         /// </summary>
-        internal static string Chat {
-            get {
+        internal static string Chat
+        {
+            get
+            {
                 return ResourceManager.GetString("Chat", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Close 的當地語系化字串。
         /// </summary>
-        internal static string Close {
-            get {
+        internal static string Close
+        {
+            get
+            {
                 return ResourceManager.GetString("Close", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Close Window 的當地語系化字串。
         /// </summary>
-        internal static string CloseWindow {
-            get {
+        internal static string CloseWindow
+        {
+            get
+            {
                 return ResourceManager.GetString("CloseWindow", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Collaboration 的當地語系化字串。
         /// </summary>
-        internal static string Collab_1 {
-            get {
+        internal static string Collab_1
+        {
+            get
+            {
                 return ResourceManager.GetString("Collab.1", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Collaboration Keyboard cannot connect to Microsoft Teams because you blocked the request. To use Microsoft Teams with Collaboration Keyboard, click \&quot;Learn more\&quot; for instructions on how to re-connect. 的當地語系化字串。
         /// </summary>
-        internal static string Collab_10 {
-            get {
+        internal static string Collab_10
+        {
+            get
+            {
                 return ResourceManager.GetString("Collab.10", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 To use Collaboration Keyboard with Zoom, install Zoom’s latest desktop version 的當地語系化字串。
         /// </summary>
-        internal static string Collab_11 {
-            get {
+        internal static string Collab_11
+        {
+            get
+            {
                 return ResourceManager.GetString("Collab.11", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 To use Collaboration Keyboard with Microsoft Teams, ensure you are signed into Microsoft Teams, using the latest version, and have the Third-party app API enabled 的當地語系化字串。
         /// </summary>
-        internal static string Collab_12 {
-            get {
+        internal static string Collab_12
+        {
+            get
+            {
                 return ResourceManager.GetString("Collab.12", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Video 的當地語系化字串。
         /// </summary>
-        internal static string Collab_13 {
-            get {
+        internal static string Collab_13
+        {
+            get
+            {
                 return ResourceManager.GetString("Collab.13", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Share 的當地語系化字串。
         /// </summary>
-        internal static string Collab_14 {
-            get {
+        internal static string Collab_14
+        {
+            get
+            {
                 return ResourceManager.GetString("Collab.14", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Chat 的當地語系化字串。
         /// </summary>
-        internal static string Collab_15 {
-            get {
+        internal static string Collab_15
+        {
+            get
+            {
                 return ResourceManager.GetString("Collab.15", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Mic 的當地語系化字串。
         /// </summary>
-        internal static string Collab_16 {
-            get {
+        internal static string Collab_16
+        {
+            get
+            {
                 return ResourceManager.GetString("Collab.16", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 OK 的當地語系化字串。
         /// </summary>
-        internal static string Collab_17 {
-            get {
+        internal static string Collab_17
+        {
+            get
+            {
                 return ResourceManager.GetString("Collab.17", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Provides quick access to conference controls. Toggling the\nkeys on/off will show or hide them on the keyboard while in\na Microsoft Teams or Zoom call. 的當地語系化字串。
         /// </summary>
-        internal static string Collab_2 {
-            get {
+        internal static string Collab_2
+        {
+            get
+            {
                 return ResourceManager.GetString("Collab.2", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Enable blink effect when there is a new chat message in conference\ncall 的當地語系化字串。
         /// </summary>
-        internal static string Collab_3 {
-            get {
+        internal static string Collab_3
+        {
+            get
+            {
                 return ResourceManager.GetString("Collab.3", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Activate icons on the keyboard by double tapping instead of single\ntapping 的當地語系化字串。
         /// </summary>
-        internal static string Collab_4 {
-            get {
+        internal static string Collab_4
+        {
+            get
+            {
                 return ResourceManager.GetString("Collab.4", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Learn More 的當地語系化字串。
         /// </summary>
-        internal static string Collab_5 {
-            get {
+        internal static string Collab_5
+        {
+            get
+            {
                 return ResourceManager.GetString("Collab.5", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 To use Collaboration Keyboard with Microsoft Teams:\r\n1. Open Teams and go to privacy settings.\n\n2. Select Third-party app API and ensure that Dell Display and Peripheral Manager is not on the blocked list.\n\n3. Pair Microsoft Teams with Dell Display and Peripheral Manager by launching a Microsoft Teams conference call. 的當地語系化字串。
         /// </summary>
-        internal static string Collab_6 {
-            get {
+        internal static string Collab_6
+        {
+            get
+            {
                 return ResourceManager.GetString("Collab.6", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 If you are still having trouble, contact your IT department (if applicable) as they may have policies in place that are prohibiting Collaboration Keyboard from connecting to Microsoft Teams. 的當地語系化字串。
         /// </summary>
-        internal static string Collab_7 {
-            get {
+        internal static string Collab_7
+        {
+            get
+            {
                 return ResourceManager.GetString("Collab.7", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 To use Collaboration Keyboard you need the latest version of Zoom or Microsoft Teams 的當地語系化字串。
         /// </summary>
-        internal static string Collab_8 {
-            get {
+        internal static string Collab_8
+        {
+            get
+            {
                 return ResourceManager.GetString("Collab.8", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Connect Collaboration Keyboard with Microsoft Teams by starting a conference call and accepting the connection request 的當地語系化字串。
         /// </summary>
-        internal static string Collab_9 {
-            get {
+        internal static string Collab_9
+        {
+            get
+            {
                 return ResourceManager.GetString("Collab.9", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Collaboration 的當地語系化字串。
         /// </summary>
-        internal static string Collaboration {
-            get {
+        internal static string Collaboration
+        {
+            get
+            {
                 return ResourceManager.GetString("Collaboration", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Collaboration Icons 的當地語系化字串。
         /// </summary>
-        internal static string Collaboration_0 {
-            get {
+        internal static string Collaboration_0
+        {
+            get
+            {
                 return ResourceManager.GetString("Collaboration.0", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Provides quick access to conference controls. Toggling the\nkeys on/off will show or hide them on the keyboard while in\na Microsoft Teams or Zoom call. 的當地語系化字串。
         /// </summary>
-        internal static string Collaboration_1 {
-            get {
+        internal static string Collaboration_1
+        {
+            get
+            {
                 return ResourceManager.GetString("Collaboration.1", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Enable blink effect when there is a new chat message in conference\ncall 的當地語系化字串。
         /// </summary>
-        internal static string Collaboration_3 {
-            get {
+        internal static string Collaboration_3
+        {
+            get
+            {
                 return ResourceManager.GetString("Collaboration.3", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Activate icons on the keyboard by double tapping instead of single\ntapping 的當地語系化字串。
         /// </summary>
-        internal static string Collaboration_4 {
-            get {
+        internal static string Collaboration_4
+        {
+            get
+            {
                 return ResourceManager.GetString("Collaboration.4", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 To use Collaboration Keyboard with Microsoft Teams, ensure that you are signed into and using the latest version of Microsoft Teams, and that Third-party app API is enabled 的當地語系化字串。
         /// </summary>
-        internal static string Collaboration_5 {
-            get {
+        internal static string Collaboration_5
+        {
+            get
+            {
                 return ResourceManager.GetString("Collaboration.5", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Color 的當地語系化字串。
         /// </summary>
-        internal static string Color {
-            get {
+        internal static string Color
+        {
+            get
+            {
                 return ResourceManager.GetString("Color", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Add Application 的當地語系化字串。
         /// </summary>
-        internal static string Color_0 {
-            get {
+        internal static string Color_0
+        {
+            get
+            {
                 return ResourceManager.GetString("Color.0", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Sort By Name 的當地語系化字串。
         /// </summary>
-        internal static string Color_1 {
-            get {
+        internal static string Color_1
+        {
+            get
+            {
                 return ResourceManager.GetString("Color.1", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Color Management 的當地語系化字串。
         /// </summary>
-        internal static string Color_11 {
-            get {
+        internal static string Color_11
+        {
+            get
+            {
                 return ResourceManager.GetString("Color.11", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Synchronizes the ICC profile with the monitor&apos;s color preset automatically. 的當地語系化字串。
         /// </summary>
-        internal static string Color_12 {
-            get {
+        internal static string Color_12
+        {
+            get
+            {
                 return ResourceManager.GetString("Color.12", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Dell Color Management application is recommended for advanced color management. 的當地語系化字串。
         /// </summary>
-        internal static string Color_13 {
-            get {
+        internal static string Color_13
+        {
+            get
+            {
                 return ResourceManager.GetString("Color.13", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Sort By Date 的當地語系化字串。
         /// </summary>
-        internal static string Color_2 {
-            get {
+        internal static string Color_2
+        {
+            get
+            {
                 return ResourceManager.GetString("Color.2", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Auto-adjust the ICC Color profile based on color preset 的當地語系化字串。
         /// </summary>
-        internal static string Color_3 {
-            get {
+        internal static string Color_3
+        {
+            get
+            {
                 return ResourceManager.GetString("Color.3", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Auto-adjust the color preset based on 的當地語系化字串。
         /// </summary>
-        internal static string Color_4 {
-            get {
+        internal static string Color_4
+        {
+            get
+            {
                 return ResourceManager.GetString("Color.4", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 ICC profile 的當地語系化字串。
         /// </summary>
-        internal static string Color_5 {
-            get {
+        internal static string Color_5
+        {
+            get
+            {
                 return ResourceManager.GetString("Color.5", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Color Profile 的當地語系化字串。
         /// </summary>
-        internal static string Color_6 {
-            get {
+        internal static string Color_6
+        {
+            get
+            {
                 return ResourceManager.GetString("Color.6", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Application Specific Color Preset 的當地語系化字串。
         /// </summary>
-        internal static string Color_7 {
-            get {
+        internal static string Color_7
+        {
+            get
+            {
                 return ResourceManager.GetString("Color.7", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Night light  的當地語系化字串。
         /// </summary>
-        internal static string Color_8 {
-            get {
+        internal static string Color_8
+        {
+            get
+            {
                 return ResourceManager.GetString("Color.8", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Shows warmer colors to help you sleep at night 的當地語系化字串。
         /// </summary>
-        internal static string Color_9 {
-            get {
+        internal static string Color_9
+        {
+            get
+            {
                 return ResourceManager.GetString("Color.9", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Browse 的當地語系化字串。
         /// </summary>
-        internal static string Common_0 {
-            get {
+        internal static string Common_0
+        {
+            get
+            {
                 return ResourceManager.GetString("Common.0", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Clear 的當地語系化字串。
         /// </summary>
-        internal static string Common_1 {
-            get {
+        internal static string Common_1
+        {
+            get
+            {
                 return ResourceManager.GetString("Common.1", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Cancel 的當地語系化字串。
         /// </summary>
-        internal static string Common_2 {
-            get {
+        internal static string Common_2
+        {
+            get
+            {
                 return ResourceManager.GetString("Common.2", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Choose the app from a list of apps 的當地語系化字串。
         /// </summary>
-        internal static string Common_3 {
-            get {
+        internal static string Common_3
+        {
+            get
+            {
                 return ResourceManager.GetString("Common.3", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Select a file 的當地語系化字串。
         /// </summary>
-        internal static string Common_4 {
-            get {
+        internal static string Common_4
+        {
+            get
+            {
                 return ResourceManager.GetString("Common.4", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Selected file 的當地語系化字串。
         /// </summary>
-        internal static string Common_5 {
-            get {
+        internal static string Common_5
+        {
+            get
+            {
                 return ResourceManager.GetString("Common.5", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Confirm 的當地語系化字串。
         /// </summary>
-        internal static string Confirm {
-            get {
+        internal static string Confirm
+        {
+            get
+            {
                 return ResourceManager.GetString("Confirm", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Help us improve 的當地語系化字串。
         /// </summary>
-        internal static string Consent_1 {
-            get {
+        internal static string Consent_1
+        {
+            get
+            {
                 return ResourceManager.GetString("Consent.1", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Help Dell improve its products and services by automatically sending diagnostics and usage data. Learn more about  的當地語系化字串。
         /// </summary>
-        internal static string Consent_2 {
-            get {
+        internal static string Consent_2
+        {
+            get
+            {
                 return ResourceManager.GetString("Consent.2", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 No, I don&apos;t consent 的當地語系化字串。
         /// </summary>
-        internal static string ConsentNo {
-            get {
+        internal static string ConsentNo
+        {
+            get
+            {
                 return ResourceManager.GetString("ConsentNo", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Yes, I consent 的當地語系化字串。
         /// </summary>
-        internal static string ConsentYes {
-            get {
+        internal static string ConsentYes
+        {
+            get
+            {
                 return ResourceManager.GetString("ConsentYes", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Continue 的當地語系化字串。
         /// </summary>
-        internal static string Continue {
-            get {
+        internal static string Continue
+        {
+            get
+            {
                 return ResourceManager.GetString("Continue", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Contrast 的當地語系化字串。
         /// </summary>
-        internal static string Contrast {
-            get {
+        internal static string Contrast
+        {
+            get
+            {
                 return ResourceManager.GetString("Contrast", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Copilot 的當地語系化字串。
         /// </summary>
-        internal static string Copilot {
-            get {
+        internal static string Copilot
+        {
+            get
+            {
                 return ResourceManager.GetString("Copilot", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Copy 的當地語系化字串。
         /// </summary>
-        internal static string Copy {
-            get {
+        internal static string Copy
+        {
+            get
+            {
                 return ResourceManager.GetString("Copy", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Critical 的當地語系化字串。
         /// </summary>
-        internal static string Critical {
-            get {
+        internal static string Critical
+        {
+            get
+            {
                 return ResourceManager.GetString("Critical", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Custom 的當地語系化字串。
         /// </summary>
-        internal static string Custom {
-            get {
+        internal static string Custom
+        {
+            get
+            {
                 return ResourceManager.GetString("Custom", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Customize 的當地語系化字串。
         /// </summary>
-        internal static string Customize {
-            get {
+        internal static string Customize
+        {
+            get
+            {
                 return ResourceManager.GetString("Customize", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Cut 的當地語系化字串。
         /// </summary>
-        internal static string Cut {
-            get {
+        internal static string Cut
+        {
+            get
+            {
                 return ResourceManager.GetString("Cut", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Dark Stabilizer 的當地語系化字串。
         /// </summary>
-        internal static string Dark_Stabilizer {
-            get {
+        internal static string Dark_Stabilizer
+        {
+            get
+            {
                 return ResourceManager.GetString("Dark_Stabilizer", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Dark Stabilizer Toggle 的當地語系化字串。
         /// </summary>
-        internal static string Dark_Stabilizer_Toggle {
-            get {
+        internal static string Dark_Stabilizer_Toggle
+        {
+            get
+            {
                 return ResourceManager.GetString("Dark_Stabilizer_Toggle", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Default 的當地語系化字串。
         /// </summary>
-        internal static string Default {
-            get {
+        internal static string Default
+        {
+            get
+            {
                 return ResourceManager.GetString("Default", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Define by system 的當地語系化字串。
         /// </summary>
-        internal static string DefineBySystem {
-            get {
+        internal static string DefineBySystem
+        {
+            get
+            {
                 return ResourceManager.GetString("DefineBySystem", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Device-specific 的當地語系化字串。
         /// </summary>
-        internal static string Device_specific {
-            get {
+        internal static string Device_specific
+        {
+            get
+            {
                 return ResourceManager.GetString("Device_specific", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Devices 的當地語系化字串。
         /// </summary>
-        internal static string Devices {
-            get {
+        internal static string Devices
+        {
+            get
+            {
                 return ResourceManager.GetString("Devices", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Device Settings 的當地語系化字串。
         /// </summary>
-        internal static string DeviceSettings {
-            get {
+        internal static string DeviceSettings
+        {
+            get
+            {
                 return ResourceManager.GetString("DeviceSettings", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Disconnect all USB storage devices from monitor. 的當地語系化字串。
         /// </summary>
-        internal static string Disconnect_all_USB_storage_devices_from_monitor {
-            get {
+        internal static string Disconnect_all_USB_storage_devices_from_monitor
+        {
+            get
+            {
                 return ResourceManager.GetString("Disconnect_all_USB_storage_devices_from_monitor", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Display 的當地語系化字串。
         /// </summary>
-        internal static string Display {
-            get {
+        internal static string Display
+        {
+            get
+            {
                 return ResourceManager.GetString("Display", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Display Color Preset and Easy Memory 的當地語系化字串。
         /// </summary>
-        internal static string Display_Color_Preset_and_Easy_Memory {
-            get {
+        internal static string Display_Color_Preset_and_Easy_Memory
+        {
+            get
+            {
                 return ResourceManager.GetString("Display_Color_Preset_and_Easy_Memory", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Are you sure you want to restore all default settings on your device? 的當地語系化字串。
         /// </summary>
-        internal static string DisplayDefault_0 {
-            get {
+        internal static string DisplayDefault_0
+        {
+            get
+            {
                 return ResourceManager.GetString("DisplayDefault.0", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Are you sure you want to restore all default settings on your device? 的當地語系化字串。
         /// </summary>
-        internal static string DisplayDefault_1 {
-            get {
+        internal static string DisplayDefault_1
+        {
+            get
+            {
                 return ResourceManager.GetString("DisplayDefault.1", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Input Source 的當地語系化字串。
         /// </summary>
-        internal static string DisplayHotkeys_0 {
-            get {
+        internal static string DisplayHotkeys_0
+        {
+            get
+            {
                 return ResourceManager.GetString("DisplayHotkeys.0", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Toggle to next input source 的當地語系化字串。
         /// </summary>
-        internal static string DisplayHotkeys_1 {
-            get {
+        internal static string DisplayHotkeys_1
+        {
+            get
+            {
                 return ResourceManager.GetString("DisplayHotkeys.1", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Favorite input 的當地語系化字串。
         /// </summary>
-        internal static string DisplayHotkeys_2 {
-            get {
+        internal static string DisplayHotkeys_2
+        {
+            get
+            {
                 return ResourceManager.GetString("DisplayHotkeys.2", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Switch between 2 input sources 的當地語系化字串。
         /// </summary>
-        internal static string DisplayHotkeys_3 {
-            get {
+        internal static string DisplayHotkeys_3
+        {
+            get
+            {
                 return ResourceManager.GetString("DisplayHotkeys.3", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Swapping 2 inputs of PIP/PBP windows 的當地語系化字串。
         /// </summary>
-        internal static string DisplayHotkeys_4 {
-            get {
+        internal static string DisplayHotkeys_4
+        {
+            get
+            {
                 return ResourceManager.GetString("DisplayHotkeys.4", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Change PIP position 的當地語系化字串。
         /// </summary>
-        internal static string DisplayHotkeys_5 {
-            get {
+        internal static string DisplayHotkeys_5
+        {
+            get
+            {
                 return ResourceManager.GetString("DisplayHotkeys.5", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Reduce brightness 的當地語系化字串。
         /// </summary>
-        internal static string DisplayOthers_0 {
-            get {
+        internal static string DisplayOthers_0
+        {
+            get
+            {
                 return ResourceManager.GetString("DisplayOthers.0", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Put the display to sleep 的當地語系化字串。
         /// </summary>
-        internal static string DisplayOthers_1 {
-            get {
+        internal static string DisplayOthers_1
+        {
+            get
+            {
                 return ResourceManager.GetString("DisplayOthers.1", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Automatically apply the settings when the same model is detected 的當地語系化字串。
         /// </summary>
-        internal static string DisplayOthers_2 {
-            get {
+        internal static string DisplayOthers_2
+        {
+            get
+            {
                 return ResourceManager.GetString("DisplayOthers.2", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 PowerNap helps you conserve power when your screensaver activates 的當地語系化字串。
         /// </summary>
-        internal static string DisplayOthers_3 {
-            get {
+        internal static string DisplayOthers_3
+        {
+            get
+            {
                 return ResourceManager.GetString("DisplayOthers.3", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 When screensaver activates (choose one): 的當地語系化字串。
         /// </summary>
-        internal static string DisplayOthers_4 {
-            get {
+        internal static string DisplayOthers_4
+        {
+            get
+            {
                 return ResourceManager.GetString("DisplayOthers.4", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Configure Screensaver Settings  的當地語系化字串。
         /// </summary>
-        internal static string DisplayOthers_5 {
-            get {
+        internal static string DisplayOthers_5
+        {
+            get
+            {
                 return ResourceManager.GetString("DisplayOthers.5", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Application Settings 的當地語系化字串。
         /// </summary>
-        internal static string DisplayOthers_6 {
-            get {
+        internal static string DisplayOthers_6
+        {
+            get
+            {
                 return ResourceManager.GetString("DisplayOthers.6", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Export a configuration and important to another monitor of the same model 的當地語系化字串。
         /// </summary>
-        internal static string DisplayOthers_7 {
-            get {
+        internal static string DisplayOthers_7
+        {
+            get
+            {
                 return ResourceManager.GetString("DisplayOthers.7", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 You can export your favorite configuration from here and import into another monitor of the same model without hassle. 的當地語系化字串。
         /// </summary>
-        internal static string DisplayOthers_8 {
-            get {
+        internal static string DisplayOthers_8
+        {
+            get
+            {
                 return ResourceManager.GetString("DisplayOthers.8", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Properties 的當地語系化字串。
         /// </summary>
-        internal static string DisplayProperties {
-            get {
+        internal static string DisplayProperties
+        {
+            get
+            {
                 return ResourceManager.GetString("DisplayProperties", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 High Data Speed 的當地語系化字串。
         /// </summary>
-        internal static string DisplayProperties_0 {
-            get {
+        internal static string DisplayProperties_0
+        {
+            get
+            {
                 return ResourceManager.GetString("DisplayProperties.0", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 High Resolution 的當地語系化字串。
         /// </summary>
-        internal static string DisplayProperties_1 {
-            get {
+        internal static string DisplayProperties_1
+        {
+            get
+            {
                 return ResourceManager.GetString("DisplayProperties.1", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Resolution and Refresh Rate 的當地語系化字串。
         /// </summary>
-        internal static string DisplayProperties_2 {
-            get {
+        internal static string DisplayProperties_2
+        {
+            get
+            {
                 return ResourceManager.GetString("DisplayProperties.2", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Change the size of text, apps, and other items 的當地語系化字串。
         /// </summary>
-        internal static string DisplayProperties_3 {
-            get {
+        internal static string DisplayProperties_3
+        {
+            get
+            {
                 return ResourceManager.GetString("DisplayProperties.3", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 USB-C Prioritization  的當地語系化字串。
         /// </summary>
-        internal static string DisplayProperties_4 {
-            get {
+        internal static string DisplayProperties_4
+        {
+            get
+            {
                 return ResourceManager.GetString("DisplayProperties.4", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Priority on data and network speeds over screen performance. 的當地語系化字串。
         /// </summary>
-        internal static string DisplayProperties_5 {
-            get {
+        internal static string DisplayProperties_5
+        {
+            get
+            {
                 return ResourceManager.GetString("DisplayProperties.5", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Priority on screen performance over data and network speed. 的當地語系化字串。
         /// </summary>
-        internal static string DisplayProperties_6 {
-            get {
+        internal static string DisplayProperties_6
+        {
+            get
+            {
                 return ResourceManager.GetString("DisplayProperties.6", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Display Settings 的當地語系化字串。
         /// </summary>
-        internal static string DisplaySettings {
-            get {
+        internal static string DisplaySettings
+        {
+            get
+            {
                 return ResourceManager.GetString("DisplaySettings", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 {0} of {1} slots available 的當地語系化字串。
         /// </summary>
-        internal static string Dock_0 {
-            get {
+        internal static string Dock_0
+        {
+            get
+            {
                 return ResourceManager.GetString("Dock.0", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Dongle {0} 的當地語系化字串。
         /// </summary>
-        internal static string Dock_1 {
-            get {
+        internal static string Dock_1
+        {
+            get
+            {
                 return ResourceManager.GetString("Dock.1", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 USB-C (DP 1.4) 的當地語系化字串。
         /// </summary>
-        internal static string Dock_2 {
-            get {
+        internal static string Dock_2
+        {
+            get
+            {
                 return ResourceManager.GetString("Dock.2", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Dual USB-C (DP 1.4) 的當地語系化字串。
         /// </summary>
-        internal static string Dock_3 {
-            get {
+        internal static string Dock_3
+        {
+            get
+            {
                 return ResourceManager.GetString("Dock.3", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 USB-C (TB 4) 的當地語系化字串。
         /// </summary>
-        internal static string Dock_4 {
-            get {
+        internal static string Dock_4
+        {
+            get
+            {
                 return ResourceManager.GetString("Dock.4", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 USB-C (TB 5) 的當地語系化字串。
         /// </summary>
-        internal static string Dock_5 {
-            get {
+        internal static string Dock_5
+        {
+            get
+            {
                 return ResourceManager.GetString("Dock.5", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Documents 的當地語系化字串。
         /// </summary>
-        internal static string Documents {
-            get {
+        internal static string Documents
+        {
+            get
+            {
                 return ResourceManager.GetString("Documents", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Driver version 的當地語系化字串。
         /// </summary>
-        internal static string Driver_version {
-            get {
+        internal static string Driver_version
+        {
+            get
+            {
                 return ResourceManager.GetString("Driver_version", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Dual Resolution 的當地語系化字串。
         /// </summary>
-        internal static string Dual_Resolution {
-            get {
+        internal static string Dual_Resolution
+        {
+            get
+            {
                 return ResourceManager.GetString("Dual_Resolution", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Dual Resolution Toggle 的當地語系化字串。
         /// </summary>
-        internal static string Dual_Resolution_Toggle {
-            get {
+        internal static string Dual_Resolution_Toggle
+        {
+            get
+            {
                 return ResourceManager.GetString("Dual_Resolution_Toggle", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Easy Arrange 的當地語系化字串。
         /// </summary>
-        internal static string EasyArrange {
-            get {
+        internal static string EasyArrange
+        {
+            get
+            {
                 return ResourceManager.GetString("EasyArrange", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Easy Memory 的當地語系化字串。
         /// </summary>
-        internal static string EasyMemory {
-            get {
+        internal static string EasyMemory
+        {
+            get
+            {
                 return ResourceManager.GetString("EasyMemory", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Automatic Startup: 的當地語系化字串。
         /// </summary>
-        internal static string EazyMemory_0 {
-            get {
+        internal static string EazyMemory_0
+        {
+            get
+            {
                 return ResourceManager.GetString("EazyMemory.0", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Launch by Time: 的當地語系化字串。
         /// </summary>
-        internal static string EazyMemory_1 {
-            get {
+        internal static string EazyMemory_1
+        {
+            get
+            {
                 return ResourceManager.GetString("EazyMemory.1", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 You can arrange the windows on your screen and click + icon.\r\nAlternatively, select an existing layout below and click the pencil icon to edit the layout. 的當地語系化字串。
         /// </summary>
-        internal static string EazyMemory_10 {
-            get {
+        internal static string EazyMemory_10
+        {
+            get
+            {
                 return ResourceManager.GetString("EazyMemory.10", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Another profile is set to launch during PC startup. Do you want to replace it with this profile? 的當地語系化字串。
         /// </summary>
-        internal static string EazyMemory_11 {
-            get {
+        internal static string EazyMemory_11
+        {
+            get
+            {
                 return ResourceManager.GetString("EazyMemory.11", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Select a launch option 的當地語系化字串。
         /// </summary>
-        internal static string EazyMemory_12 {
-            get {
+        internal static string EazyMemory_12
+        {
+            get
+            {
                 return ResourceManager.GetString("EazyMemory.12", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Launch during PC startup 的當地語系化字串。
         /// </summary>
-        internal static string EazyMemory_13 {
-            get {
+        internal static string EazyMemory_13
+        {
+            get
+            {
                 return ResourceManager.GetString("EazyMemory.13", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Manually select the profiles created 的當地語系化字串。
         /// </summary>
-        internal static string EazyMemory_14 {
-            get {
+        internal static string EazyMemory_14
+        {
+            get
+            {
                 return ResourceManager.GetString("EazyMemory.14", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Automatically launch by time 的當地語系化字串。
         /// </summary>
-        internal static string EazyMemory_15 {
-            get {
+        internal static string EazyMemory_15
+        {
+            get
+            {
                 return ResourceManager.GetString("EazyMemory.15", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Finish 的當地語系化字串。
         /// </summary>
-        internal static string EazyMemory_16 {
-            get {
+        internal static string EazyMemory_16
+        {
+            get
+            {
                 return ResourceManager.GetString("EazyMemory.16", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Cancel 的當地語系化字串。
         /// </summary>
-        internal static string EazyMemory_17 {
-            get {
+        internal static string EazyMemory_17
+        {
+            get
+            {
                 return ResourceManager.GetString("EazyMemory.17", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Name the profile 的當地語系化字串。
         /// </summary>
-        internal static string EazyMemory_18 {
-            get {
+        internal static string EazyMemory_18
+        {
+            get
+            {
                 return ResourceManager.GetString("EazyMemory.18", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Select a layout 的當地語系化字串。
         /// </summary>
-        internal static string EazyMemory_19 {
-            get {
+        internal static string EazyMemory_19
+        {
+            get
+            {
                 return ResourceManager.GetString("EazyMemory.19", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 App/Document: 的當地語系化字串。
         /// </summary>
-        internal static string EazyMemory_2 {
-            get {
+        internal static string EazyMemory_2
+        {
+            get
+            {
                 return ResourceManager.GetString("EazyMemory.2", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Window 0 的當地語系化字串。
         /// </summary>
-        internal static string EazyMemory_20 {
-            get {
+        internal static string EazyMemory_20
+        {
+            get
+            {
                 return ResourceManager.GetString("EazyMemory.20", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Window 1 的當地語系化字串。
         /// </summary>
-        internal static string EazyMemory_21 {
-            get {
+        internal static string EazyMemory_21
+        {
+            get
+            {
                 return ResourceManager.GetString("EazyMemory.21", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Window 2 的當地語系化字串。
         /// </summary>
-        internal static string EazyMemory_22 {
-            get {
+        internal static string EazyMemory_22
+        {
+            get
+            {
                 return ResourceManager.GetString("EazyMemory.22", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Window 3 的當地語系化字串。
         /// </summary>
-        internal static string EazyMemory_23 {
-            get {
+        internal static string EazyMemory_23
+        {
+            get
+            {
                 return ResourceManager.GetString("EazyMemory.23", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Window 4 的當地語系化字串。
         /// </summary>
-        internal static string EazyMemory_24 {
-            get {
+        internal static string EazyMemory_24
+        {
+            get
+            {
                 return ResourceManager.GetString("EazyMemory.24", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Window 5 的當地語系化字串。
         /// </summary>
-        internal static string EazyMemory_25 {
-            get {
+        internal static string EazyMemory_25
+        {
+            get
+            {
                 return ResourceManager.GetString("EazyMemory.25", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Window 6 的當地語系化字串。
         /// </summary>
-        internal static string EazyMemory_26 {
-            get {
+        internal static string EazyMemory_26
+        {
+            get
+            {
                 return ResourceManager.GetString("EazyMemory.26", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Window 7 的當地語系化字串。
         /// </summary>
-        internal static string EazyMemory_27 {
-            get {
+        internal static string EazyMemory_27
+        {
+            get
+            {
                 return ResourceManager.GetString("EazyMemory.27", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Window 8 的當地語系化字串。
         /// </summary>
-        internal static string EazyMemory_28 {
-            get {
+        internal static string EazyMemory_28
+        {
+            get
+            {
                 return ResourceManager.GetString("EazyMemory.28", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Window 9 的當地語系化字串。
         /// </summary>
-        internal static string EazyMemory_29 {
-            get {
+        internal static string EazyMemory_29
+        {
+            get
+            {
                 return ResourceManager.GetString("EazyMemory.29", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Apply 的當地語系化字串。
         /// </summary>
-        internal static string EazyMemory_3 {
-            get {
+        internal static string EazyMemory_3
+        {
+            get
+            {
                 return ResourceManager.GetString("EazyMemory.3", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Window 10 的當地語系化字串。
         /// </summary>
-        internal static string EazyMemory_30 {
-            get {
+        internal static string EazyMemory_30
+        {
+            get
+            {
                 return ResourceManager.GetString("EazyMemory.30", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Window 11 的當地語系化字串。
         /// </summary>
-        internal static string EazyMemory_31 {
-            get {
+        internal static string EazyMemory_31
+        {
+            get
+            {
                 return ResourceManager.GetString("EazyMemory.31", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Window 12 的當地語系化字串。
         /// </summary>
-        internal static string EazyMemory_32 {
-            get {
+        internal static string EazyMemory_32
+        {
+            get
+            {
                 return ResourceManager.GetString("EazyMemory.32", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Select from folder 的當地語系化字串。
         /// </summary>
-        internal static string EazyMemory_33 {
-            get {
+        internal static string EazyMemory_33
+        {
+            get
+            {
                 return ResourceManager.GetString("EazyMemory.33", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Assign programs 的當地語系化字串。
         /// </summary>
-        internal static string EazyMemory_34 {
-            get {
+        internal static string EazyMemory_34
+        {
+            get
+            {
                 return ResourceManager.GetString("EazyMemory.34", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Launch options 的當地語系化字串。
         /// </summary>
-        internal static string EazyMemory_35 {
-            get {
+        internal static string EazyMemory_35
+        {
+            get
+            {
                 return ResourceManager.GetString("EazyMemory.35", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Save different profiles and restore them manually, by scheduled time or at system start-up.\r\n\r\nBegin by assigning a name to your Easy Memory Profile and selecting a layout. 的當地語系化字串。
         /// </summary>
-        internal static string EazyMemory_36 {
-            get {
+        internal static string EazyMemory_36
+        {
+            get
+            {
                 return ResourceManager.GetString("EazyMemory.36", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Assign applications/documents to windows or drag the application icon to the respective partition.\r\n\r\nNote: Easy Arrange Memory usability may vary according to application type and launch behavior. 的當地語系化字串。
         /// </summary>
-        internal static string EazyMemory_37 {
-            get {
+        internal static string EazyMemory_37
+        {
+            get
+            {
                 return ResourceManager.GetString("EazyMemory.37", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Select a launch type 的當地語系化字串。
         /// </summary>
-        internal static string EazyMemory_38 {
-            get {
+        internal static string EazyMemory_38
+        {
+            get
+            {
                 return ResourceManager.GetString("EazyMemory.38", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 EASY MEMORY SETUP 的當地語系化字串。
         /// </summary>
-        internal static string EazyMemory_39 {
-            get {
+        internal static string EazyMemory_39
+        {
+            get
+            {
                 return ResourceManager.GetString("EazyMemory.39", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 N/A 的當地語系化字串。
         /// </summary>
-        internal static string EazyMemory_4 {
-            get {
+        internal static string EazyMemory_4
+        {
+            get
+            {
                 return ResourceManager.GetString("EazyMemory.4", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Please enter profile name. 的當地語系化字串。
         /// </summary>
-        internal static string EazyMemory_40 {
-            get {
+        internal static string EazyMemory_40
+        {
+            get
+            {
                 return ResourceManager.GetString("EazyMemory.40", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Another profile has been configured to use the same time. Please use another time. 的當地語系化字串。
         /// </summary>
-        internal static string EazyMemory_41 {
-            get {
+        internal static string EazyMemory_41
+        {
+            get
+            {
                 return ResourceManager.GetString("EazyMemory.41", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Error 的當地語系化字串。
         /// </summary>
-        internal static string EazyMemory_5 {
-            get {
+        internal static string EazyMemory_5
+        {
+            get
+            {
                 return ResourceManager.GetString("EazyMemory.5", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Profile 的當地語系化字串。
         /// </summary>
-        internal static string EazyMemory_6 {
-            get {
+        internal static string EazyMemory_6
+        {
+            get
+            {
                 return ResourceManager.GetString("EazyMemory.6", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Warning 的當地語系化字串。
         /// </summary>
-        internal static string EazyMemory_7 {
-            get {
+        internal static string EazyMemory_7
+        {
+            get
+            {
                 return ResourceManager.GetString("EazyMemory.7", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 You can only save up to 9 profiles. Delete an existing profile or edit it in the main menu. 的當地語系化字串。
         /// </summary>
-        internal static string EazyMemory_8 {
-            get {
+        internal static string EazyMemory_8
+        {
+            get
+            {
                 return ResourceManager.GetString("EazyMemory.8", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Duplicate entries. Enter different documentation or applications for Easy Memory profile. 的當地語系化字串。
         /// </summary>
-        internal static string EazyMemory_9 {
-            get {
+        internal static string EazyMemory_9
+        {
+            get
+            {
                 return ResourceManager.GetString("EazyMemory.9", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Hotkey: Recent 的當地語系化字串。
         /// </summary>
-        internal static string EazyMemorySettings_0 {
-            get {
+        internal static string EazyMemorySettings_0
+        {
+            get
+            {
                 return ResourceManager.GetString("EazyMemorySettings.0", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Example: &quot;Alt + P&quot;, &quot;Shift + F&quot;, &quot;Ctrl + Shift + F&quot;. 的當地語系化字串。
         /// </summary>
-        internal static string EazyMemorySettings_1 {
-            get {
+        internal static string EazyMemorySettings_1
+        {
+            get
+            {
                 return ResourceManager.GetString("EazyMemorySettings.1", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Snap any application into a split screen layout easily by dragging into a partition 的當地語系化字串。
         /// </summary>
-        internal static string EazyMemorySettings_2 {
-            get {
+        internal static string EazyMemorySettings_2
+        {
+            get
+            {
                 return ResourceManager.GetString("EazyMemorySettings.2", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Allow app to split side by side without gap 的當地語系化字串。
         /// </summary>
-        internal static string EazyMemorySettings_3 {
-            get {
+        internal static string EazyMemorySettings_3
+        {
+            get
+            {
                 return ResourceManager.GetString("EazyMemorySettings.3", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Only allow zone positioning when SHIFT is pressed 的當地語系化字串。
         /// </summary>
-        internal static string EazyMemorySettings_4 {
-            get {
+        internal static string EazyMemorySettings_4
+        {
+            get
+            {
                 return ResourceManager.GetString("EazyMemorySettings.4", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Snap across multiple monitors 的當地語系化字串。
         /// </summary>
-        internal static string EazyMemorySettings_5 {
-            get {
+        internal static string EazyMemorySettings_5
+        {
+            get
+            {
                 return ResourceManager.GetString("EazyMemorySettings.5", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Application Window Snap 的當地語系化字串。
         /// </summary>
-        internal static string EazyMemorySettings_6 {
-            get {
+        internal static string EazyMemorySettings_6
+        {
+            get
+            {
                 return ResourceManager.GetString("EazyMemorySettings.6", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Edit 的當地語系化字串。
         /// </summary>
-        internal static string Edit {
-            get {
+        internal static string Edit
+        {
+            get
+            {
                 return ResourceManager.GetString("Edit", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 E-mail 的當地語系化字串。
         /// </summary>
-        internal static string EMail {
-            get {
+        internal static string EMail
+        {
+            get
+            {
                 return ResourceManager.GetString("EMail", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Enable shortcut reminder for Quick Accesswidget 的當地語系化字串。
         /// </summary>
-        internal static string Enable_shortcut_reminder_for_Quick_Accesswidget {
-            get {
+        internal static string Enable_shortcut_reminder_for_Quick_Accesswidget
+        {
+            get
+            {
                 return ResourceManager.GetString("Enable_shortcut_reminder_for_Quick_Accesswidget", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 There are no advanced features on this device 的當地語系化字串。
         /// </summary>
-        internal static string EOL_0 {
-            get {
+        internal static string EOL_0
+        {
+            get
+            {
                 return ResourceManager.GetString("EOL.0", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Erase 的當地語系化字串。
         /// </summary>
-        internal static string Erase {
-            get {
+        internal static string Erase
+        {
+            get
+            {
                 return ResourceManager.GetString("Erase", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Error 的當地語系化字串。
         /// </summary>
-        internal static string Error {
-            get {
+        internal static string Error
+        {
+            get
+            {
                 return ResourceManager.GetString("Error", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Align Center 的當地語系化字串。
         /// </summary>
-        internal static string Excel_1 {
-            get {
+        internal static string Excel_1
+        {
+            get
+            {
                 return ResourceManager.GetString("Excel.1", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Paste Format Only 的當地語系化字串。
         /// </summary>
-        internal static string Excel_10 {
-            get {
+        internal static string Excel_10
+        {
+            get
+            {
                 return ResourceManager.GetString("Excel.10", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Paste Formulas 的當地語系化字串。
         /// </summary>
-        internal static string Excel_11 {
-            get {
+        internal static string Excel_11
+        {
+            get
+            {
                 return ResourceManager.GetString("Excel.11", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Paste Value Only 的當地語系化字串。
         /// </summary>
-        internal static string Excel_12 {
-            get {
+        internal static string Excel_12
+        {
+            get
+            {
                 return ResourceManager.GetString("Excel.12", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Previous Sheet 的當地語系化字串。
         /// </summary>
-        internal static string Excel_13 {
-            get {
+        internal static string Excel_13
+        {
+            get
+            {
                 return ResourceManager.GetString("Excel.13", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Sort A to Z 的當地語系化字串。
         /// </summary>
-        internal static string Excel_14 {
-            get {
+        internal static string Excel_14
+        {
+            get
+            {
                 return ResourceManager.GetString("Excel.14", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Align Left 的當地語系化字串。
         /// </summary>
-        internal static string Excel_2 {
-            get {
+        internal static string Excel_2
+        {
+            get
+            {
                 return ResourceManager.GetString("Excel.2", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Align Right 的當地語系化字串。
         /// </summary>
-        internal static string Excel_3 {
-            get {
+        internal static string Excel_3
+        {
+            get
+            {
                 return ResourceManager.GetString("Excel.3", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Decrease Indent 的當地語系化字串。
         /// </summary>
-        internal static string Excel_4 {
-            get {
+        internal static string Excel_4
+        {
+            get
+            {
                 return ResourceManager.GetString("Excel.4", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Go to Bottom of Data Region 的當地語系化字串。
         /// </summary>
-        internal static string Excel_5 {
-            get {
+        internal static string Excel_5
+        {
+            get
+            {
                 return ResourceManager.GetString("Excel.5", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Go to Top of Data Region 的當地語系化字串。
         /// </summary>
-        internal static string Excel_6 {
-            get {
+        internal static string Excel_6
+        {
+            get
+            {
                 return ResourceManager.GetString("Excel.6", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Insert Chart 的當地語系化字串。
         /// </summary>
-        internal static string Excel_7 {
-            get {
+        internal static string Excel_7
+        {
+            get
+            {
                 return ResourceManager.GetString("Excel.7", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Insert Row Above 的當地語系化字串。
         /// </summary>
-        internal static string Excel_8 {
-            get {
+        internal static string Excel_8
+        {
+            get
+            {
                 return ResourceManager.GetString("Excel.8", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Pan (Hold and Move Mouse) 的當地語系化字串。
         /// </summary>
-        internal static string Excel_9 {
-            get {
+        internal static string Excel_9
+        {
+            get
+            {
                 return ResourceManager.GetString("Excel.9", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Export 的當地語系化字串。
         /// </summary>
-        internal static string Export {
-            get {
+        internal static string Export
+        {
+            get
+            {
                 return ResourceManager.GetString("Export", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Windows or more 的當地語系化字串。
         /// </summary>
-        internal static string EzArrange_1 {
-            get {
+        internal static string EzArrange_1
+        {
+            get
+            {
                 return ResourceManager.GetString("EzArrange.1", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Finish 的當地語系化字串。
         /// </summary>
-        internal static string Finish {
-            get {
+        internal static string Finish
+        {
+            get
+            {
                 return ResourceManager.GetString("Finish", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Firmware Version 的當地語系化字串。
         /// </summary>
-        internal static string FirmwareVersion {
-            get {
+        internal static string FirmwareVersion
+        {
+            get
+            {
                 return ResourceManager.GetString("FirmwareVersion", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Forward 的當地語系化字串。
         /// </summary>
-        internal static string Forward {
-            get {
+        internal static string Forward
+        {
+            get
+            {
                 return ResourceManager.GetString("Forward", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Fullscreen 的當地語系化字串。
         /// </summary>
-        internal static string Fullscreen {
-            get {
+        internal static string Fullscreen
+        {
+            get
+            {
                 return ResourceManager.GetString("Fullscreen", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Game Enhance Mode 的當地語系化字串。
         /// </summary>
-        internal static string Game_Enhance_Mode {
-            get {
+        internal static string Game_Enhance_Mode
+        {
+            get
+            {
                 return ResourceManager.GetString("Game_Enhance_Mode", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Gaming 的當地語系化字串。
         /// </summary>
-        internal static string Gaming {
-            get {
+        internal static string Gaming
+        {
+            get
+            {
                 return ResourceManager.GetString("Gaming", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 General 的當地語系化字串。
         /// </summary>
-        internal static string General {
-            get {
+        internal static string General
+        {
+            get
+            {
                 return ResourceManager.GetString("General", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Headset, speakerphone and soundbar mute/unmute 的當地語系化字串。
         /// </summary>
-        internal static string Headset_speakerphone_and_soundbar_mute_unmute {
-            get {
+        internal static string Headset_speakerphone_and_soundbar_mute_unmute
+        {
+            get
+            {
                 return ResourceManager.GetString("Headset_speakerphone_and_soundbar_mute_unmute", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Control the noise I hear 的當地語系化字串。
         /// </summary>
-        internal static string HeadsetAudioSettings_0 {
-            get {
+        internal static string HeadsetAudioSettings_0
+        {
+            get
+            {
                 return ResourceManager.GetString("HeadsetAudioSettings.0", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Active Noise Cancelling 的當地語系化字串。
         /// </summary>
-        internal static string HeadsetAudioSettings_1 {
-            get {
+        internal static string HeadsetAudioSettings_1
+        {
+            get
+            {
                 return ResourceManager.GetString("HeadsetAudioSettings.1", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Audio Equalizer 的當地語系化字串。
         /// </summary>
-        internal static string HeadsetAudioSettings_10 {
-            get {
+        internal static string HeadsetAudioSettings_10
+        {
+            get
+            {
                 return ResourceManager.GetString("HeadsetAudioSettings.10", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Adjust the audio ranges of the sound you hear 的當地語系化字串。
         /// </summary>
-        internal static string HeadsetAudioSettings_11 {
-            get {
+        internal static string HeadsetAudioSettings_11
+        {
+            get
+            {
                 return ResourceManager.GetString("HeadsetAudioSettings.11", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 db 的當地語系化字串。
         /// </summary>
-        internal static string HeadsetAudioSettings_12 {
-            get {
+        internal static string HeadsetAudioSettings_12
+        {
+            get
+            {
                 return ResourceManager.GetString("HeadsetAudioSettings.12", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Bass 的當地語系化字串。
         /// </summary>
-        internal static string HeadsetAudioSettings_13 {
-            get {
+        internal static string HeadsetAudioSettings_13
+        {
+            get
+            {
                 return ResourceManager.GetString("HeadsetAudioSettings.13", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Mid-range 的當地語系化字串。
         /// </summary>
-        internal static string HeadsetAudioSettings_14 {
-            get {
+        internal static string HeadsetAudioSettings_14
+        {
+            get
+            {
                 return ResourceManager.GetString("HeadsetAudioSettings.14", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Treble 的當地語系化字串。
         /// </summary>
-        internal static string HeadsetAudioSettings_15 {
-            get {
+        internal static string HeadsetAudioSettings_15
+        {
+            get
+            {
                 return ResourceManager.GetString("HeadsetAudioSettings.15", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Mic Noise Cancellation 的當地語系化字串。
         /// </summary>
-        internal static string HeadsetAudioSettings_16 {
-            get {
+        internal static string HeadsetAudioSettings_16
+        {
+            get
+            {
                 return ResourceManager.GetString("HeadsetAudioSettings.16", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Outgoing Audio 的當地語系化字串。
         /// </summary>
-        internal static string HeadsetAudioSettings_17 {
-            get {
+        internal static string HeadsetAudioSettings_17
+        {
+            get
+            {
                 return ResourceManager.GetString("HeadsetAudioSettings.17", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Incoming Audio 的當地語系化字串。
         /// </summary>
-        internal static string HeadsetAudioSettings_18 {
-            get {
+        internal static string HeadsetAudioSettings_18
+        {
+            get
+            {
                 return ResourceManager.GetString("HeadsetAudioSettings.18", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Sidetone 的當地語系化字串。
         /// </summary>
-        internal static string HeadsetAudioSettings_19 {
-            get {
+        internal static string HeadsetAudioSettings_19
+        {
+            get
+            {
                 return ResourceManager.GetString("HeadsetAudioSettings.19", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Transparency 的當地語系化字串。
         /// </summary>
-        internal static string HeadsetAudioSettings_2 {
-            get {
+        internal static string HeadsetAudioSettings_2
+        {
+            get
+            {
                 return ResourceManager.GetString("HeadsetAudioSettings.2", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Controls the amount of external sound you hear 的當地語系化字串。
         /// </summary>
-        internal static string HeadsetAudioSettings_20 {
-            get {
+        internal static string HeadsetAudioSettings_20
+        {
+            get
+            {
                 return ResourceManager.GetString("HeadsetAudioSettings.20", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Eliminates surrounding noise 的當地語系化字串。
         /// </summary>
-        internal static string HeadsetAudioSettings_21 {
-            get {
+        internal static string HeadsetAudioSettings_21
+        {
+            get
+            {
                 return ResourceManager.GetString("HeadsetAudioSettings.21", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Allows ambient sound to be heard. Adjusts the volume level of ambient sound heard. 的當地語系化字串。
         /// </summary>
-        internal static string HeadsetAudioSettings_22 {
-            get {
+        internal static string HeadsetAudioSettings_22
+        {
+            get
+            {
                 return ResourceManager.GetString("HeadsetAudioSettings.22", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Turns off Noise Cancellation features 的當地語系化字串。
         /// </summary>
-        internal static string HeadsetAudioSettings_23 {
-            get {
+        internal static string HeadsetAudioSettings_23
+        {
+            get
+            {
                 return ResourceManager.GetString("HeadsetAudioSettings.23", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Limits your near-end mic noise to create a better audio experience for others 的當地語系化字串。
         /// </summary>
-        internal static string HeadsetAudioSettings_24 {
-            get {
+        internal static string HeadsetAudioSettings_24
+        {
+            get
+            {
                 return ResourceManager.GetString("HeadsetAudioSettings.24", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Limits far-end mic noise to create a better audio experience for you 的當地語系化字串。
         /// </summary>
-        internal static string HeadsetAudioSettings_25 {
-            get {
+        internal static string HeadsetAudioSettings_25
+        {
+            get
+            {
                 return ResourceManager.GetString("HeadsetAudioSettings.25", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Equalizer adjusts based on chosen preset 的當地語系化字串。
         /// </summary>
-        internal static string HeadsetAudioSettings_26 {
-            get {
+        internal static string HeadsetAudioSettings_26
+        {
+            get
+            {
                 return ResourceManager.GetString("HeadsetAudioSettings.26", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Adjusts how much you can hear your own voice while speaking on a call. (Not available in Transparency mode) 的當地語系化字串。
         /// </summary>
-        internal static string HeadsetAudioSettings_27 {
-            get {
+        internal static string HeadsetAudioSettings_27
+        {
+            get
+            {
                 return ResourceManager.GetString("HeadsetAudioSettings.27", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Removes background noise to allow your voice to be heard clearly 的當地語系化字串。
         /// </summary>
-        internal static string HeadsetAudioSettings_28 {
-            get {
+        internal static string HeadsetAudioSettings_28
+        {
+            get
+            {
                 return ResourceManager.GetString("HeadsetAudioSettings.28", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Applies when you&apos;re on a conference call 的當地語系化字串。
         /// </summary>
-        internal static string HeadsetAudioSettings_29 {
-            get {
+        internal static string HeadsetAudioSettings_29
+        {
+            get
+            {
                 return ResourceManager.GetString("HeadsetAudioSettings.29", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Off 的當地語系化字串。
         /// </summary>
-        internal static string HeadsetAudioSettings_3 {
-            get {
+        internal static string HeadsetAudioSettings_3
+        {
+            get
+            {
                 return ResourceManager.GetString("HeadsetAudioSettings.3", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Applies when you&apos;re listening to multimedia, such as music or podcasts 的當地語系化字串。
         /// </summary>
-        internal static string HeadsetAudioSettings_30 {
-            get {
+        internal static string HeadsetAudioSettings_30
+        {
+            get
+            {
                 return ResourceManager.GetString("HeadsetAudioSettings.30", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Transparency level 的當地語系化字串。
         /// </summary>
-        internal static string HeadsetAudioSettings_4 {
-            get {
+        internal static string HeadsetAudioSettings_4
+        {
+            get
+            {
                 return ResourceManager.GetString("HeadsetAudioSettings.4", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Configure my audio modes 的當地語系化字串。
         /// </summary>
-        internal static string HeadsetAudioSettings_5 {
-            get {
+        internal static string HeadsetAudioSettings_5
+        {
+            get
+            {
                 return ResourceManager.GetString("HeadsetAudioSettings.5", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Audio Output Presets 的當地語系化字串。
         /// </summary>
-        internal static string HeadsetAudioSettings_6 {
-            get {
+        internal static string HeadsetAudioSettings_6
+        {
+            get
+            {
                 return ResourceManager.GetString("HeadsetAudioSettings.6", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Bass Boost 的當地語系化字串。
         /// </summary>
-        internal static string HeadsetAudioSettings_7 {
-            get {
+        internal static string HeadsetAudioSettings_7
+        {
+            get
+            {
                 return ResourceManager.GetString("HeadsetAudioSettings.7", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Speech Boost 的當地語系化字串。
         /// </summary>
-        internal static string HeadsetAudioSettings_8 {
-            get {
+        internal static string HeadsetAudioSettings_8
+        {
+            get
+            {
                 return ResourceManager.GetString("HeadsetAudioSettings.8", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Treble Boost 的當地語系化字串。
         /// </summary>
-        internal static string HeadsetAudioSettings_9 {
-            get {
+        internal static string HeadsetAudioSettings_9
+        {
+            get
+            {
                 return ResourceManager.GetString("HeadsetAudioSettings.9", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Wear Detection 的當地語系化字串。
         /// </summary>
-        internal static string HeadsetAutomatedActions_0 {
-            get {
+        internal static string HeadsetAutomatedActions_0
+        {
+            get
+            {
                 return ResourceManager.GetString("HeadsetAutomatedActions.0", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Sensitive 的當地語系化字串。
         /// </summary>
-        internal static string HeadsetAutomatedActions_1 {
-            get {
+        internal static string HeadsetAutomatedActions_1
+        {
+            get
+            {
                 return ResourceManager.GetString("HeadsetAutomatedActions.1", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Pauses music automatically when headset is removed. Music will resume automatically when headset is put on. 的當地語系化字串。
         /// </summary>
-        internal static string HeadsetAutomatedActions_10 {
-            get {
+        internal static string HeadsetAutomatedActions_10
+        {
+            get
+            {
                 return ResourceManager.GetString("HeadsetAutomatedActions.10", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Mutes microphone automatically when headset is removed 的當地語系化字串。
         /// </summary>
-        internal static string HeadsetAutomatedActions_11 {
-            get {
+        internal static string HeadsetAutomatedActions_11
+        {
+            get
+            {
                 return ResourceManager.GetString("HeadsetAutomatedActions.11", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Pull down boom mic to answer calls 的當地語系化字串。
         /// </summary>
-        internal static string HeadsetAutomatedActions_12 {
-            get {
+        internal static string HeadsetAutomatedActions_12
+        {
+            get
+            {
                 return ResourceManager.GetString("HeadsetAutomatedActions.12", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Automatic actions when you move an ear cup off your ear 的當地語系化字串。
         /// </summary>
-        internal static string HeadsetAutomatedActions_13 {
-            get {
+        internal static string HeadsetAutomatedActions_13
+        {
+            get
+            {
                 return ResourceManager.GetString("HeadsetAutomatedActions.13", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Low 的當地語系化字串。
         /// </summary>
-        internal static string HeadsetAutomatedActions_2 {
-            get {
+        internal static string HeadsetAutomatedActions_2
+        {
+            get
+            {
                 return ResourceManager.GetString("HeadsetAutomatedActions.2", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Normal 的當地語系化字串。
         /// </summary>
-        internal static string HeadsetAutomatedActions_3 {
-            get {
+        internal static string HeadsetAutomatedActions_3
+        {
+            get
+            {
                 return ResourceManager.GetString("HeadsetAutomatedActions.3", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 When headset is removed: 的當地語系化字串。
         /// </summary>
-        internal static string HeadsetAutomatedActions_4 {
-            get {
+        internal static string HeadsetAutomatedActions_4
+        {
+            get
+            {
                 return ResourceManager.GetString("HeadsetAutomatedActions.4", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Pause Music 的當地語系化字串。
         /// </summary>
-        internal static string HeadsetAutomatedActions_5 {
-            get {
+        internal static string HeadsetAutomatedActions_5
+        {
+            get
+            {
                 return ResourceManager.GetString("HeadsetAutomatedActions.5", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Mute Microphone 的當地語系化字串。
         /// </summary>
-        internal static string HeadsetAutomatedActions_6 {
-            get {
+        internal static string HeadsetAutomatedActions_6
+        {
+            get
+            {
                 return ResourceManager.GetString("HeadsetAutomatedActions.6", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Quick Pause 的當地語系化字串。
         /// </summary>
-        internal static string HeadsetAutomatedActions_7 {
-            get {
+        internal static string HeadsetAutomatedActions_7
+        {
+            get
+            {
                 return ResourceManager.GetString("HeadsetAutomatedActions.7", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Answer Calls 的當地語系化字串。
         /// </summary>
-        internal static string HeadsetAutomatedActions_8 {
-            get {
+        internal static string HeadsetAutomatedActions_8
+        {
+            get
+            {
                 return ResourceManager.GetString("HeadsetAutomatedActions.8", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Automatic actions when you remove your headset 的當地語系化字串。
         /// </summary>
-        internal static string HeadsetAutomatedActions_9 {
-            get {
+        internal static string HeadsetAutomatedActions_9
+        {
+            get
+            {
                 return ResourceManager.GetString("HeadsetAutomatedActions.9", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Busy Light 的當地語系化字串。
         /// </summary>
-        internal static string HeadsetDeviceSettings_0 {
-            get {
+        internal static string HeadsetDeviceSettings_0
+        {
+            get
+            {
                 return ResourceManager.GetString("HeadsetDeviceSettings.0", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Voice Guidance 的當地語系化字串。
         /// </summary>
-        internal static string HeadsetDeviceSettings_1 {
-            get {
+        internal static string HeadsetDeviceSettings_1
+        {
+            get
+            {
                 return ResourceManager.GetString("HeadsetDeviceSettings.1", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Essential 的當地語系化字串。
         /// </summary>
-        internal static string HeadsetDeviceSettings_2 {
-            get {
+        internal static string HeadsetDeviceSettings_2
+        {
+            get
+            {
                 return ResourceManager.GetString("HeadsetDeviceSettings.2", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 All 的當地語系化字串。
         /// </summary>
-        internal static string HeadsetDeviceSettings_3 {
-            get {
+        internal static string HeadsetDeviceSettings_3
+        {
+            get
+            {
                 return ResourceManager.GetString("HeadsetDeviceSettings.3", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Download Dell Audio 的當地語系化字串。
         /// </summary>
-        internal static string HeadsetDeviceSettings_4 {
-            get {
+        internal static string HeadsetDeviceSettings_4
+        {
+            get
+            {
                 return ResourceManager.GetString("HeadsetDeviceSettings.4", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Download Dell Audio now to optimize and personalize your headset settings from the convenience of your iPhone or Android device. 的當地語系化字串。
         /// </summary>
-        internal static string HeadsetDeviceSettings_5 {
-            get {
+        internal static string HeadsetDeviceSettings_5
+        {
+            get
+            {
                 return ResourceManager.GetString("HeadsetDeviceSettings.5", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Learnmore 的當地語系化字串。
         /// </summary>
-        internal static string HeadsetDeviceSettings_6 {
-            get {
+        internal static string HeadsetDeviceSettings_6
+        {
+            get
+            {
                 return ResourceManager.GetString("HeadsetDeviceSettings.6", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Indicator light when on a call 的當地語系化字串。
         /// </summary>
-        internal static string HeadsetDeviceSettings_7 {
-            get {
+        internal static string HeadsetDeviceSettings_7
+        {
+            get
+            {
                 return ResourceManager.GetString("HeadsetDeviceSettings.7", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Audio prompts and announcements for device features 的當地語系化字串。
         /// </summary>
-        internal static string HeadsetDeviceSettings_8 {
-            get {
+        internal static string HeadsetDeviceSettings_8
+        {
+            get
+            {
                 return ResourceManager.GetString("HeadsetDeviceSettings.8", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Help 的當地語系化字串。
         /// </summary>
-        internal static string Help {
-            get {
+        internal static string Help
+        {
+            get
+            {
                 return ResourceManager.GetString("Help", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 High 的當地語系化字串。
         /// </summary>
-        internal static string High {
-            get {
+        internal static string High
+        {
+            get
+            {
                 return ResourceManager.GetString("High", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Please wait... 的當地語系化字串。
         /// </summary>
-        internal static string HomePage_0 {
-            get {
+        internal static string HomePage_0
+        {
+            get
+            {
                 return ResourceManager.GetString("HomePage.0", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Brightness - 的當地語系化字串。
         /// </summary>
-        internal static string Hotkey_0 {
-            get {
+        internal static string Hotkey_0
+        {
+            get
+            {
                 return ResourceManager.GetString("Hotkey.0", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Brightness + 的當地語系化字串。
         /// </summary>
-        internal static string Hotkey_1 {
-            get {
+        internal static string Hotkey_1
+        {
+            get
+            {
                 return ResourceManager.GetString("Hotkey.1", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Contrast - 的當地語系化字串。
         /// </summary>
-        internal static string Hotkey_2 {
-            get {
+        internal static string Hotkey_2
+        {
+            get
+            {
                 return ResourceManager.GetString("Hotkey.2", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Contrast + 的當地語系化字串。
         /// </summary>
-        internal static string Hotkey_3 {
-            get {
+        internal static string Hotkey_3
+        {
+            get
+            {
                 return ResourceManager.GetString("Hotkey.3", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Luminance - 的當地語系化字串。
         /// </summary>
-        internal static string Hotkey_4 {
-            get {
+        internal static string Hotkey_4
+        {
+            get
+            {
                 return ResourceManager.GetString("Hotkey.4", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Luminance + 的當地語系化字串。
         /// </summary>
-        internal static string Hotkey_5 {
-            get {
+        internal static string Hotkey_5
+        {
+            get
+            {
                 return ResourceManager.GetString("Hotkey.5", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Example: &quot;Alt + P&quot;, &quot;Shift + F&quot;, &quot;Ctrl + Shift + F&quot;.\nNote that for multiple monitors,the mouse cursor should be on the targeted monitor screen to trigger the hotkey function. 的當地語系化字串。
         /// </summary>
-        internal static string Hotkey_6 {
-            get {
+        internal static string Hotkey_6
+        {
+            get
+            {
                 return ResourceManager.GetString("Hotkey.6", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Hotkey Warning 的當地語系化字串。
         /// </summary>
-        internal static string hotkey_7 {
-            get {
+        internal static string hotkey_7
+        {
+            get
+            {
                 return ResourceManager.GetString("hotkey.7", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 The hotkey you configured is a single key.It may interfere with how you intend that key to work in other applications.Are you sure you want to proceed? 的當地語系化字串。
         /// </summary>
-        internal static string hotkey_8 {
-            get {
+        internal static string hotkey_8
+        {
+            get
+            {
                 return ResourceManager.GetString("hotkey.8", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 This hotkey is used by another Dell Display and Peripheral Manager function. Do you want to replace it? 的當地語系化字串。
         /// </summary>
-        internal static string hotkey_9 {
-            get {
+        internal static string hotkey_9
+        {
+            get
+            {
                 return ResourceManager.GetString("hotkey.9", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Hotkeys 的當地語系化字串。
         /// </summary>
-        internal static string Hotkeys {
-            get {
+        internal static string Hotkeys
+        {
+            get
+            {
                 return ResourceManager.GetString("Hotkeys", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Illumination Control 的當地語系化字串。
         /// </summary>
-        internal static string Illumination_0 {
-            get {
+        internal static string Illumination_0
+        {
+            get
+            {
                 return ResourceManager.GetString("Illumination.0", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Illumination 的當地語系化字串。
         /// </summary>
-        internal static string Illumination_1 {
-            get {
+        internal static string Illumination_1
+        {
+            get
+            {
                 return ResourceManager.GetString("Illumination.1", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 To change the brightness level, press the F8 key 的當地語系化字串。
         /// </summary>
-        internal static string Illumination_2 {
-            get {
+        internal static string Illumination_2
+        {
+            get
+            {
                 return ResourceManager.GetString("Illumination.2", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Adjusts the brightness levels of keyboard based on amount of light in environment 的當地語系化字串。
         /// </summary>
-        internal static string Illumination_3 {
-            get {
+        internal static string Illumination_3
+        {
+            get
+            {
                 return ResourceManager.GetString("Illumination.3", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Adjust your keyboard’s brightness manually 的當地語系化字串。
         /// </summary>
-        internal static string Illumination_4 {
-            get {
+        internal static string Illumination_4
+        {
+            get
+            {
                 return ResourceManager.GetString("Illumination.4", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Do not prompt again for the same model 的當地語系化字串。
         /// </summary>
-        internal static string ImpExp_CheckBox_0 {
-            get {
+        internal static string ImpExp_CheckBox_0
+        {
+            get
+            {
                 return ResourceManager.GetString("ImpExp_CheckBox.0", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Automatically apply the settings when the same model is detected 的當地語系化字串。
         /// </summary>
-        internal static string ImpExp_Message_0 {
-            get {
+        internal static string ImpExp_Message_0
+        {
+            get
+            {
                 return ResourceManager.GetString("ImpExp_Message.0", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Do you want to import the application settings for ease of use? 的當地語系化字串。
         /// </summary>
-        internal static string ImpExp_Message_1 {
-            get {
+        internal static string ImpExp_Message_1
+        {
+            get
+            {
                 return ResourceManager.GetString("ImpExp_Message.1", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Settings changed. Dell Display and Peripheral Manager will restart. 的當地語系化字串。
         /// </summary>
-        internal static string ImpExp_RestartMsg_0 {
-            get {
+        internal static string ImpExp_RestartMsg_0
+        {
+            get
+            {
                 return ResourceManager.GetString("ImpExp_RestartMsg.0", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Application settings exported successfully 的當地語系化字串。
         /// </summary>
-        internal static string ImpExp_SuccessMsg_0 {
-            get {
+        internal static string ImpExp_SuccessMsg_0
+        {
+            get
+            {
                 return ResourceManager.GetString("ImpExp_SuccessMsg.0", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Application settings applied to %1 successfully. Enjoy using your monitor. 的當地語系化字串。
         /// </summary>
-        internal static string ImpExp_SuccessMsg_1 {
-            get {
+        internal static string ImpExp_SuccessMsg_1
+        {
+            get
+            {
                 return ResourceManager.GetString("ImpExp_SuccessMsg.1", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 An new monitor %1 is detected. 的當地語系化字串。
         /// </summary>
-        internal static string ImpExp_Title_0 {
-            get {
+        internal static string ImpExp_Title_0
+        {
+            get
+            {
                 return ResourceManager.GetString("ImpExp_Title.0", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 This not your primary monitor. Do you want to continue and set this as your Primary Monitor for Sync? 的當地語系化字串。
         /// </summary>
-        internal static string ImpExp_WarningMsg_0 {
-            get {
+        internal static string ImpExp_WarningMsg_0
+        {
+            get
+            {
                 return ResourceManager.GetString("ImpExp_WarningMsg.0", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 e associated with the current layout. Do you want to overwrite it? 的當地語系化字串。
         /// </summary>
-        internal static string ImpExp_WarningMsg_1 {
-            get {
+        internal static string ImpExp_WarningMsg_1
+        {
+            get
+            {
                 return ResourceManager.GetString("ImpExp_WarningMsg.1", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Import 的當地語系化字串。
         /// </summary>
-        internal static string Import {
-            get {
+        internal static string Import
+        {
+            get
+            {
                 return ResourceManager.GetString("Import", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Input Source 的當地語系化字串。
         /// </summary>
-        internal static string InputSource {
-            get {
+        internal static string InputSource
+        {
+            get
+            {
                 return ResourceManager.GetString("InputSource", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Current Input Source 的當地語系化字串。
         /// </summary>
-        internal static string InputSource_0 {
-            get {
+        internal static string InputSource_0
+        {
+            get
+            {
                 return ResourceManager.GetString("InputSource.0", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Rename Input Source and Assign USB Connectivity 的當地語系化字串。
         /// </summary>
-        internal static string InputSource_1 {
-            get {
+        internal static string InputSource_1
+        {
+            get
+            {
                 return ResourceManager.GetString("InputSource.1", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Input 的當地語系化字串。
         /// </summary>
-        internal static string InputSource_2 {
-            get {
+        internal static string InputSource_2
+        {
+            get
+            {
                 return ResourceManager.GetString("InputSource.2", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Input Name 的當地語系化字串。
         /// </summary>
-        internal static string InputSource_3 {
-            get {
+        internal static string InputSource_3
+        {
+            get
+            {
                 return ResourceManager.GetString("InputSource.3", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 USB Upstream 的當地語系化字串。
         /// </summary>
-        internal static string InputSource_4 {
-            get {
+        internal static string InputSource_4
+        {
+            get
+            {
                 return ResourceManager.GetString("InputSource.4", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Rename Input Source 的當地語系化字串。
         /// </summary>
-        internal static string InputSource_5 {
-            get {
+        internal static string InputSource_5
+        {
+            get
+            {
                 return ResourceManager.GetString("InputSource.5", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Invalid URL 的當地語系化字串。
         /// </summary>
-        internal static string InvalidURL {
-            get {
+        internal static string InvalidURL
+        {
+            get
+            {
                 return ResourceManager.GetString("InvalidURL", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 This setting is locked by your IT admin. 的當地語系化字串。
         /// </summary>
-        internal static string ITLockToolTip_0 {
-            get {
+        internal static string ITLockToolTip_0
+        {
+            get
+            {
                 return ResourceManager.GetString("ITLockToolTip.0", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Key Customization 的當地語系化字串。
         /// </summary>
-        internal static string Keyboard_2 {
-            get {
+        internal static string Keyboard_2
+        {
+            get
+            {
                 return ResourceManager.GetString("Keyboard.2", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Collaboration 的當地語系化字串。
         /// </summary>
-        internal static string Keyboard_3 {
-            get {
+        internal static string Keyboard_3
+        {
+            get
+            {
                 return ResourceManager.GetString("Keyboard.3", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Illumination 的當地語系化字串。
         /// </summary>
-        internal static string Keyboard_4 {
-            get {
+        internal static string Keyboard_4
+        {
+            get
+            {
                 return ResourceManager.GetString("Keyboard.4", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Keyboard lock key 的當地語系化字串。
         /// </summary>
-        internal static string Keyboard_lock_key {
-            get {
+        internal static string Keyboard_lock_key
+        {
+            get
+            {
                 return ResourceManager.GetString("Keyboard_lock_key", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 To customize a key, click one of the outlined keys on the image to the left 的當地語系化字串。
         /// </summary>
-        internal static string KeyCustomization_0 {
-            get {
+        internal static string KeyCustomization_0
+        {
+            get
+            {
                 return ResourceManager.GetString("KeyCustomization.0", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Restore all actions to default 的當地語系化字串。
         /// </summary>
-        internal static string KeyCustomization_1 {
-            get {
+        internal static string KeyCustomization_1
+        {
+            get
+            {
                 return ResourceManager.GetString("KeyCustomization.1", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Key Customization 的當地語系化字串。
         /// </summary>
-        internal static string KeyCustomization_2 {
-            get {
+        internal static string KeyCustomization_2
+        {
+            get
+            {
                 return ResourceManager.GetString("KeyCustomization.2", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 KVM 的當地語系化字串。
         /// </summary>
-        internal static string KVM {
-            get {
+        internal static string KVM
+        {
+            get
+            {
                 return ResourceManager.GetString("KVM", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 PC 的當地語系化字串。
         /// </summary>
-        internal static string Kvm_0 {
-            get {
+        internal static string Kvm_0
+        {
+            get
+            {
                 return ResourceManager.GetString("Kvm.0", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Next 的當地語系化字串。
         /// </summary>
-        internal static string Kvm_1 {
-            get {
+        internal static string Kvm_1
+        {
+            get
+            {
                 return ResourceManager.GetString("Kvm.1", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Change PIP position 的當地語系化字串。
         /// </summary>
-        internal static string Kvm_10 {
-            get {
+        internal static string Kvm_10
+        {
+            get
+            {
                 return ResourceManager.GetString("Kvm.10", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Auto switch USB upstream port in PBP side-by-side mode 的當地語系化字串。
         /// </summary>
-        internal static string Kvm_11 {
-            get {
+        internal static string Kvm_11
+        {
+            get
+            {
                 return ResourceManager.GetString("Kvm.11", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Input Source Hotkeys 的當地語系化字串。
         /// </summary>
-        internal static string Kvm_12 {
-            get {
+        internal static string Kvm_12
+        {
+            get
+            {
                 return ResourceManager.GetString("Kvm.12", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Edit Input Source 的當地語系化字串。
         /// </summary>
-        internal static string Kvm_13 {
-            get {
+        internal static string Kvm_13
+        {
+            get
+            {
                 return ResourceManager.GetString("Kvm.13", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Edit PIP/PBP 的當地語系化字串。
         /// </summary>
-        internal static string Kvm_14 {
-            get {
+        internal static string Kvm_14
+        {
+            get
+            {
                 return ResourceManager.GetString("Kvm.14", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Toggle between positions 的當地語系化字串。
         /// </summary>
-        internal static string Kvm_15 {
-            get {
+        internal static string Kvm_15
+        {
+            get
+            {
                 return ResourceManager.GetString("Kvm.15", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 PIP/PBP SETUP 的當地語系化字串。
         /// </summary>
-        internal static string Kvm_16 {
-            get {
+        internal static string Kvm_16
+        {
+            get
+            {
                 return ResourceManager.GetString("Kvm.16", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Setup PIP/PBP\nfor your monitor 的當地語系化字串。
         /// </summary>
-        internal static string Kvm_17 {
-            get {
+        internal static string Kvm_17
+        {
+            get
+            {
                 return ResourceManager.GetString("Kvm.17", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Your monitor can display one PC or source at a time (fullscreen),\nor be partitioned between sources (picture-in/by-picture). 的當地語系化字串。
         /// </summary>
-        internal static string Kvm_18 {
-            get {
+        internal static string Kvm_18
+        {
+            get
+            {
                 return ResourceManager.GetString("Kvm.18", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 No KVM 的當地語系化字串。
         /// </summary>
-        internal static string Kvm_19 {
-            get {
+        internal static string Kvm_19
+        {
+            get
+            {
                 return ResourceManager.GetString("Kvm.19", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 USB KVM SETUP 的當地語系化字串。
         /// </summary>
-        internal static string Kvm_2 {
-            get {
+        internal static string Kvm_2
+        {
+            get
+            {
                 return ResourceManager.GetString("Kvm.2", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 USB KVM 的當地語系化字串。
         /// </summary>
-        internal static string Kvm_20 {
-            get {
+        internal static string Kvm_20
+        {
+            get
+            {
                 return ResourceManager.GetString("Kvm.20", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Setup USB KVM 的當地語系化字串。
         /// </summary>
-        internal static string Kvm_21 {
-            get {
+        internal static string Kvm_21
+        {
+            get
+            {
                 return ResourceManager.GetString("Kvm.21", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Start new USB KVM 的當地語系化字串。
         /// </summary>
-        internal static string Kvm_22 {
-            get {
+        internal static string Kvm_22
+        {
+            get
+            {
                 return ResourceManager.GetString("Kvm.22", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Network KVM 的當地語系化字串。
         /// </summary>
-        internal static string Kvm_23 {
-            get {
+        internal static string Kvm_23
+        {
+            get
+            {
                 return ResourceManager.GetString("Kvm.23", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Select KVM Setup Type 的當地語系化字串。
         /// </summary>
-        internal static string Kvm_24 {
-            get {
+        internal static string Kvm_24
+        {
+            get
+            {
                 return ResourceManager.GetString("Kvm.24", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Suitable for single monitor setup 的當地語系化字串。
         /// </summary>
-        internal static string Kvm_25 {
-            get {
+        internal static string Kvm_25
+        {
+            get
+            {
                 return ResourceManager.GetString("Kvm.25", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Setup through monitor USB port 的當地語系化字串。
         /// </summary>
-        internal static string Kvm_26 {
-            get {
+        internal static string Kvm_26
+        {
+            get
+            {
                 return ResourceManager.GetString("Kvm.26", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Hotkeys - Switch between PCs: None 的當地語系化字串。
         /// </summary>
-        internal static string Kvm_27 {
-            get {
+        internal static string Kvm_27
+        {
+            get
+            {
                 return ResourceManager.GetString("Kvm.27", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Suitable for multiple monitors setup 的當地語系化字串。
         /// </summary>
-        internal static string Kvm_28 {
-            get {
+        internal static string Kvm_28
+        {
+            get
+            {
                 return ResourceManager.GetString("Kvm.28", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Setup through network 的當地語系化字串。
         /// </summary>
-        internal static string Kvm_29 {
-            get {
+        internal static string Kvm_29
+        {
+            get
+            {
                 return ResourceManager.GetString("Kvm.29", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Connect Mouse\n and Keyboard 的當地語系化字串。
         /// </summary>
-        internal static string Kvm_3 {
-            get {
+        internal static string Kvm_3
+        {
+            get
+            {
                 return ResourceManager.GetString("Kvm.3", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Easy file-sharing between PCs (Mac &amp; Windows) Securely 的當地語系化字串。
         /// </summary>
-        internal static string Kvm_30 {
-            get {
+        internal static string Kvm_30
+        {
+            get
+            {
                 return ResourceManager.GetString("Kvm.30", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Open Network KVM 的當地語系化字串。
         /// </summary>
-        internal static string Kvm_31 {
-            get {
+        internal static string Kvm_31
+        {
+            get
+            {
                 return ResourceManager.GetString("Kvm.31", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Opens another window to step up or edit Network KVM 的當地語系化字串。
         /// </summary>
-        internal static string Kvm_32 {
-            get {
+        internal static string Kvm_32
+        {
+            get
+            {
                 return ResourceManager.GetString("Kvm.32", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 For Mouse and Keyboard, connect to rear of monitor (USB-A).\n Note: You can also connect other USB Peripherals such as\n Webcam. 的當地語系化字串。
         /// </summary>
-        internal static string Kvm_4 {
-            get {
+        internal static string Kvm_4
+        {
+            get
+            {
                 return ResourceManager.GetString("Kvm.4", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 USB-A 的當地語系化字串。
         /// </summary>
-        internal static string Kvm_5 {
-            get {
+        internal static string Kvm_5
+        {
+            get
+            {
                 return ResourceManager.GetString("Kvm.5", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Connecting to\n your devices 的當地語系化字串。
         /// </summary>
-        internal static string Kvm_6 {
-            get {
+        internal static string Kvm_6
+        {
+            get
+            {
                 return ResourceManager.GetString("Kvm.6", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Please connect a video cable and USB cable between each PC to\n the monitor. You can connect up to 4 PCs (computers, gaming\n consoles, etc). \r\n\r\nPlease select the cable type and assign a name to each source. 的當地語系化字串。
         /// </summary>
-        internal static string Kvm_7 {
-            get {
+        internal static string Kvm_7
+        {
+            get
+            {
                 return ResourceManager.GetString("Kvm.7", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Switch between PCs 的當地語系化字串。
         /// </summary>
-        internal static string Kvm_8 {
-            get {
+        internal static string Kvm_8
+        {
+            get
+            {
                 return ResourceManager.GetString("Kvm.8", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Switch Keyboard and Mouse 的當地語系化字串。
         /// </summary>
-        internal static string Kvm_9 {
-            get {
+        internal static string Kvm_9
+        {
+            get
+            {
                 return ResourceManager.GetString("Kvm.9", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Layout 的當地語系化字串。
         /// </summary>
-        internal static string Layout {
-            get {
+        internal static string Layout
+        {
+            get
+            {
                 return ResourceManager.GetString("Layout", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Learn more 的當地語系化字串。
         /// </summary>
-        internal static string Learn_more {
-            get {
+        internal static string Learn_more
+        {
+            get
+            {
                 return ResourceManager.GetString("Learn_more", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Learn more 的當地語系化字串。
         /// </summary>
-        internal static string LearnMore {
-            get {
+        internal static string LearnMore
+        {
+            get
+            {
                 return ResourceManager.GetString("LearnMore", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Left 的當地語系化字串。
         /// </summary>
-        internal static string Left {
-            get {
+        internal static string Left
+        {
+            get
+            {
                 return ResourceManager.GetString("Left", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Left Click 的當地語系化字串。
         /// </summary>
-        internal static string LeftClick {
-            get {
+        internal static string LeftClick
+        {
+            get
+            {
                 return ResourceManager.GetString("LeftClick", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Lock 的當地語系化字串。
         /// </summary>
-        internal static string Lock {
-            get {
+        internal static string Lock
+        {
+            get
+            {
                 return ResourceManager.GetString("Lock", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Low battery level 的當地語系化字串。
         /// </summary>
-        internal static string Low_battery_level {
-            get {
+        internal static string Low_battery_level
+        {
+            get
+            {
                 return ResourceManager.GetString("Low_battery_level", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Luminance 的當地語系化字串。
         /// </summary>
-        internal static string Luminance {
-            get {
+        internal static string Luminance
+        {
+            get
+            {
                 return ResourceManager.GetString("Luminance", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Manual 的當地語系化字串。
         /// </summary>
-        internal static string Manual {
-            get {
+        internal static string Manual
+        {
+            get
+            {
                 return ResourceManager.GetString("Manual", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Manufactured 的當地語系化字串。
         /// </summary>
-        internal static string ManufactureMonth {
-            get {
+        internal static string ManufactureMonth
+        {
+            get
+            {
                 return ResourceManager.GetString("ManufactureMonth", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Maximize Window 的當地語系化字串。
         /// </summary>
-        internal static string MaximizeWindow {
-            get {
+        internal static string MaximizeWindow
+        {
+            get
+            {
                 return ResourceManager.GetString("MaximizeWindow", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Medium 的當地語系化字串。
         /// </summary>
-        internal static string Medium {
-            get {
+        internal static string Medium
+        {
+            get
+            {
                 return ResourceManager.GetString("Medium", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Mic 的當地語系化字串。
         /// </summary>
-        internal static string Mic {
-            get {
+        internal static string Mic
+        {
+            get
+            {
                 return ResourceManager.GetString("Mic", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Middle Click 的當地語系化字串。
         /// </summary>
-        internal static string MiddleClick {
-            get {
+        internal static string MiddleClick
+        {
+            get
+            {
                 return ResourceManager.GetString("MiddleClick", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 min 的當地語系化字串。
         /// </summary>
-        internal static string Min {
-            get {
+        internal static string Min
+        {
+            get
+            {
                 return ResourceManager.GetString("Min", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Minimize Window 的當地語系化字串。
         /// </summary>
-        internal static string MinimizeWindow {
-            get {
+        internal static string MinimizeWindow
+        {
+            get
+            {
                 return ResourceManager.GetString("MinimizeWindow", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Assign actions for 的當地語系化字串。
         /// </summary>
-        internal static string Mouse_0 {
-            get {
+        internal static string Mouse_0
+        {
+            get
+            {
                 return ResourceManager.GetString("Mouse.0", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 All Applications 的當地語系化字串。
         /// </summary>
-        internal static string Mouse_1 {
-            get {
+        internal static string Mouse_1
+        {
+            get
+            {
                 return ResourceManager.GetString("Mouse.1", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Primary Mouse Button 的當地語系化字串。
         /// </summary>
-        internal static string Mouse_10 {
-            get {
+        internal static string Mouse_10
+        {
+            get
+            {
                 return ResourceManager.GetString("Mouse.10", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 DPI Setting 的當地語系化字串。
         /// </summary>
-        internal static string Mouse_11 {
-            get {
+        internal static string Mouse_11
+        {
+            get
+            {
                 return ResourceManager.GetString("Mouse.11", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Polling Rate 的當地語系化字串。
         /// </summary>
-        internal static string Mouse_12 {
-            get {
+        internal static string Mouse_12
+        {
+            get
+            {
                 return ResourceManager.GetString("Mouse.12", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Number of times per second your mouse’s position is reported to system 的當地語系化字串。
         /// </summary>
-        internal static string Mouse_13 {
-            get {
+        internal static string Mouse_13
+        {
+            get
+            {
                 return ResourceManager.GetString("Mouse.13", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Click to Assign an action 的當地語系化字串。
         /// </summary>
-        internal static string Mouse_14 {
-            get {
+        internal static string Mouse_14
+        {
+            get
+            {
                 return ResourceManager.GetString("Mouse.14", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Select an action from\nthe list on the right 的當地語系化字串。
         /// </summary>
-        internal static string Mouse_15 {
-            get {
+        internal static string Mouse_15
+        {
+            get
+            {
                 return ResourceManager.GetString("Mouse.15", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Microsoft Word 的當地語系化字串。
         /// </summary>
-        internal static string Mouse_2 {
-            get {
+        internal static string Mouse_2
+        {
+            get
+            {
                 return ResourceManager.GetString("Mouse.2", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Microsoft Excel 的當地語系化字串。
         /// </summary>
-        internal static string Mouse_3 {
-            get {
+        internal static string Mouse_3
+        {
+            get
+            {
                 return ResourceManager.GetString("Mouse.3", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Microsoft PowerPoint 的當地語系化字串。
         /// </summary>
-        internal static string Mouse_4 {
-            get {
+        internal static string Mouse_4
+        {
+            get
+            {
                 return ResourceManager.GetString("Mouse.4", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Microsoft Outlook 的當地語系化字串。
         /// </summary>
-        internal static string Mouse_5 {
-            get {
+        internal static string Mouse_5
+        {
+            get
+            {
                 return ResourceManager.GetString("Mouse.5", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Mouse Settings 的當地語系化字串。
         /// </summary>
-        internal static string Mouse_6 {
-            get {
+        internal static string Mouse_6
+        {
+            get
+            {
                 return ResourceManager.GetString("Mouse.6", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Button\nCustomization 的當地語系化字串。
         /// </summary>
-        internal static string Mouse_7 {
-            get {
+        internal static string Mouse_7
+        {
+            get
+            {
                 return ResourceManager.GetString("Mouse.7", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Touch Scroll Sensitivity 的當地語系化字串。
         /// </summary>
-        internal static string Mouse_8 {
-            get {
+        internal static string Mouse_8
+        {
+            get
+            {
                 return ResourceManager.GetString("Mouse.8", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Adjust the Scroll Speed 的當地語系化字串。
         /// </summary>
-        internal static string Mouse_9 {
-            get {
+        internal static string Mouse_9
+        {
+            get
+            {
                 return ResourceManager.GetString("Mouse.9", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Move your mouse to complete the change to the DPI value 的當地語系化字串。
         /// </summary>
-        internal static string MouseSettings_0 {
-            get {
+        internal static string MouseSettings_0
+        {
+            get
+            {
                 return ResourceManager.GetString("MouseSettings.0", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Increasing polling rate may affect mouse’s battery life. 的當地語系化字串。
         /// </summary>
-        internal static string MouseSettings_1 {
-            get {
+        internal static string MouseSettings_1
+        {
+            get
+            {
                 return ResourceManager.GetString("MouseSettings.1", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Multimedia 的當地語系化字串。
         /// </summary>
-        internal static string Multimedia {
-            get {
+        internal static string Multimedia
+        {
+            get
+            {
                 return ResourceManager.GetString("Multimedia", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Media Next Track 的當地語系化字串。
         /// </summary>
-        internal static string Multimedia_1 {
-            get {
+        internal static string Multimedia_1
+        {
+            get
+            {
                 return ResourceManager.GetString("Multimedia.1", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Media Play/Pause 的當地語系化字串。
         /// </summary>
-        internal static string Multimedia_2 {
-            get {
+        internal static string Multimedia_2
+        {
+            get
+            {
                 return ResourceManager.GetString("Multimedia.2", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Media Previous Track 的當地語系化字串。
         /// </summary>
-        internal static string Multimedia_3 {
-            get {
+        internal static string Multimedia_3
+        {
+            get
+            {
                 return ResourceManager.GetString("Multimedia.3", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Music 的當地語系化字串。
         /// </summary>
-        internal static string Multimedia_4 {
-            get {
+        internal static string Multimedia_4
+        {
+            get
+            {
                 return ResourceManager.GetString("Multimedia.4", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Pictures 的當地語系化字串。
         /// </summary>
-        internal static string Multimedia_5 {
-            get {
+        internal static string Multimedia_5
+        {
+            get
+            {
                 return ResourceManager.GetString("Multimedia.5", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Volume Down 的當地語系化字串。
         /// </summary>
-        internal static string Multimedia_6 {
-            get {
+        internal static string Multimedia_6
+        {
+            get
+            {
                 return ResourceManager.GetString("Multimedia.6", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Volume Mute 的當地語系化字串。
         /// </summary>
-        internal static string Multimedia_7 {
-            get {
+        internal static string Multimedia_7
+        {
+            get
+            {
                 return ResourceManager.GetString("Multimedia.7", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Volume Up 的當地語系化字串。
         /// </summary>
-        internal static string Multimedia_8 {
-            get {
+        internal static string Multimedia_8
+        {
+            get
+            {
                 return ResourceManager.GetString("Multimedia.8", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 My Home 的當地語系化字串。
         /// </summary>
-        internal static string MyHome {
-            get {
+        internal static string MyHome
+        {
+            get
+            {
                 return ResourceManager.GetString("MyHome", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Need help? For more information on this software, click the button below. 的當地語系化字串。
         /// </summary>
-        internal static string Need_help {
-            get {
+        internal static string Need_help
+        {
+            get
+            {
                 return ResourceManager.GetString("Need_help", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 New Features 的當地語系化字串。
         /// </summary>
-        internal static string New_Features {
-            get {
+        internal static string New_Features
+        {
+            get
+            {
                 return ResourceManager.GetString("New_Features", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 New Supported Devices 的當地語系化字串。
         /// </summary>
-        internal static string New_Supported_Devices {
-            get {
+        internal static string New_Supported_Devices
+        {
+            get
+            {
                 return ResourceManager.GetString("New_Supported_Devices", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 No 的當地語系化字串。
         /// </summary>
-        internal static string No {
-            get {
+        internal static string No
+        {
+            get
+            {
                 return ResourceManager.GetString("No", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 None 的當地語系化字串。
         /// </summary>
-        internal static string None {
-            get {
+        internal static string None
+        {
+            get
+            {
                 return ResourceManager.GetString("None", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Notification Center 的當地語系化字串。
         /// </summary>
-        internal static string NotificationCenter {
-            get {
+        internal static string NotificationCenter
+        {
+            get
+            {
                 return ResourceManager.GetString("NotificationCenter", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 OFF 的當地語系化字串。
         /// </summary>
-        internal static string Off {
-            get {
+        internal static string Off
+        {
+            get
+            {
                 return ResourceManager.GetString("Off", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Off 的當地語系化字串。
         /// </summary>
-        internal static string Off2 {
-            get {
+        internal static string Off2
+        {
+            get
+            {
                 return ResourceManager.GetString("Off2", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 OK 的當地語系化字串。
         /// </summary>
-        internal static string OK {
-            get {
+        internal static string OK
+        {
+            get
+            {
                 return ResourceManager.GetString("OK", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 ON 的當地語系化字串。
         /// </summary>
-        internal static string On {
-            get {
+        internal static string On
+        {
+            get
+            {
                 return ResourceManager.GetString("On", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 On screen notifications 的當地語系化字串。
         /// </summary>
-        internal static string On_screen_notifications {
-            get {
+        internal static string On_screen_notifications
+        {
+            get
+            {
                 return ResourceManager.GetString("On_screen_notifications", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 One Note 的當地語系化字串。
         /// </summary>
-        internal static string OneNote {
-            get {
+        internal static string OneNote
+        {
+            get
+            {
                 return ResourceManager.GetString("OneNote", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Open File 的當地語系化字串。
         /// </summary>
-        internal static string OpenFile {
-            get {
+        internal static string OpenFile
+        {
+            get
+            {
                 return ResourceManager.GetString("OpenFile", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Open Folder 的當地語系化字串。
         /// </summary>
-        internal static string OpenFolder {
-            get {
+        internal static string OpenFolder
+        {
+            get
+            {
                 return ResourceManager.GetString("OpenFolder", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Open New Browser Tab 的當地語系化字串。
         /// </summary>
-        internal static string OpenNewBrowserTab {
-            get {
+        internal static string OpenNewBrowserTab
+        {
+            get
+            {
                 return ResourceManager.GetString("OpenNewBrowserTab", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Open/Run 的當地語系化字串。
         /// </summary>
-        internal static string OpenRun {
-            get {
+        internal static string OpenRun
+        {
+            get
+            {
                 return ResourceManager.GetString("OpenRun", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Open Run 的當地語系化字串。
         /// </summary>
-        internal static string OpenRun2 {
-            get {
+        internal static string OpenRun2
+        {
+            get
+            {
                 return ResourceManager.GetString("OpenRun2", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Open Web Page 的當地語系化字串。
         /// </summary>
-        internal static string OpenWebPage {
-            get {
+        internal static string OpenWebPage
+        {
+            get
+            {
                 return ResourceManager.GetString("OpenWebPage", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Optional 的當地語系化字串。
         /// </summary>
-        internal static string Optional {
-            get {
+        internal static string Optional
+        {
+            get
+            {
                 return ResourceManager.GetString("Optional", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Orientation 的當地語系化字串。
         /// </summary>
-        internal static string Orientation {
-            get {
+        internal static string Orientation
+        {
+            get
+            {
                 return ResourceManager.GetString("Orientation", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Attach File 的當地語系化字串。
         /// </summary>
-        internal static string Outlook_1 {
-            get {
+        internal static string Outlook_1
+        {
+            get
+            {
                 return ResourceManager.GetString("Outlook.1", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Forward Email 的當地語系化字串。
         /// </summary>
-        internal static string Outlook_2 {
-            get {
+        internal static string Outlook_2
+        {
+            get
+            {
                 return ResourceManager.GetString("Outlook.2", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 New Email 的當地語系化字串。
         /// </summary>
-        internal static string Outlook_3 {
-            get {
+        internal static string Outlook_3
+        {
+            get
+            {
                 return ResourceManager.GetString("Outlook.3", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 New Meeting 的當地語系化字串。
         /// </summary>
-        internal static string Outlook_4 {
-            get {
+        internal static string Outlook_4
+        {
+            get
+            {
                 return ResourceManager.GetString("Outlook.4", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Reply 的當地語系化字串。
         /// </summary>
-        internal static string Outlook_5 {
-            get {
+        internal static string Outlook_5
+        {
+            get
+            {
                 return ResourceManager.GetString("Outlook.5", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Reply to All 的當地語系化字串。
         /// </summary>
-        internal static string Outlook_6 {
-            get {
+        internal static string Outlook_6
+        {
+            get
+            {
                 return ResourceManager.GetString("Outlook.6", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 This device can be paired with {0} hosts simultaneously 的當地語系化字串。
         /// </summary>
-        internal static string PairedInfo_0 {
-            get {
+        internal static string PairedInfo_0
+        {
+            get
+            {
                 return ResourceManager.GetString("PairedInfo.0", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Are you sure? 的當地語系化字串。
         /// </summary>
-        internal static string PairedInfo_1 {
-            get {
+        internal static string PairedInfo_1
+        {
+            get
+            {
                 return ResourceManager.GetString("PairedInfo.1", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Would you like to pair your pen with your system? 的當地語系化字串。
         /// </summary>
-        internal static string PairedInfo_10 {
-            get {
+        internal static string PairedInfo_10
+        {
+            get
+            {
                 return ResourceManager.GetString("PairedInfo.10", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Unpairing your mouse can limit your ability to use this computer. Make sure you have an alternative mouse setup before unpairing. 的當地語系化字串。
         /// </summary>
-        internal static string PairedInfo_2 {
-            get {
+        internal static string PairedInfo_2
+        {
+            get
+            {
                 return ResourceManager.GetString("PairedInfo.2", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Unpairing your keyboard can limit your ability to use this computer. Make sure you have an alternative keyboard setup before unpairing. 的當地語系化字串。
         /// </summary>
-        internal static string PairedInfo_3 {
-            get {
+        internal static string PairedInfo_3
+        {
+            get
+            {
                 return ResourceManager.GetString("PairedInfo.3", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Unpairing your pen can limit your ability to use this computer. Make sure you have an alternative pen setup before unpairing. 的當地語系化字串。
         /// </summary>
-        internal static string PairedInfo_4 {
-            get {
+        internal static string PairedInfo_4
+        {
+            get
+            {
                 return ResourceManager.GetString("PairedInfo.4", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 This will unpair your headset from its USB wireless receiver. You can still pair and use the headset on this system via Bluetooth. If required, you may pair the headset back to the wireless receiver from + icon on top right of the home screen of DDPM. 的當地語系化字串。
         /// </summary>
-        internal static string PairedInfo_5 {
-            get {
+        internal static string PairedInfo_5
+        {
+            get
+            {
                 return ResourceManager.GetString("PairedInfo.5", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Continue 的當地語系化字串。
         /// </summary>
-        internal static string PairedInfo_6 {
-            get {
+        internal static string PairedInfo_6
+        {
+            get
+            {
                 return ResourceManager.GetString("PairedInfo.6", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 This device is not compatible with 的當地語系化字串。
         /// </summary>
-        internal static string PairedInfo_7 {
-            get {
+        internal static string PairedInfo_7
+        {
+            get
+            {
                 return ResourceManager.GetString("PairedInfo.7", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 This device is already paired. Unpair the device first if you would like to pair again. 的當地語系化字串。
         /// </summary>
-        internal static string PairedInfo_8 {
-            get {
+        internal static string PairedInfo_8
+        {
+            get
+            {
                 return ResourceManager.GetString("PairedInfo.8", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Pair your pen 的當地語系化字串。
         /// </summary>
-        internal static string PairedInfo_9 {
-            get {
+        internal static string PairedInfo_9
+        {
+            get
+            {
                 return ResourceManager.GetString("PairedInfo.9", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Paste 的當地語系化字串。
         /// </summary>
-        internal static string Paste {
-            get {
+        internal static string Paste
+        {
+            get
+            {
                 return ResourceManager.GetString("Paste", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Pen Settings 的當地語系化字串。
         /// </summary>
-        internal static string Pen_0 {
-            get {
+        internal static string Pen_0
+        {
+            get
+            {
                 return ResourceManager.GetString("Pen.0", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Top Button 的當地語系化字串。
         /// </summary>
-        internal static string PenButtonSettings_0 {
-            get {
+        internal static string PenButtonSettings_0
+        {
+            get
+            {
                 return ResourceManager.GetString("PenButtonSettings.0", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Top Barrel Button 的當地語系化字串。
         /// </summary>
-        internal static string PenButtonSettings_1 {
-            get {
+        internal static string PenButtonSettings_1
+        {
+            get
+            {
                 return ResourceManager.GetString("PenButtonSettings.1", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Bottom Barrel Button 的當地語系化字串。
         /// </summary>
-        internal static string PenButtonSettings_2 {
-            get {
+        internal static string PenButtonSettings_2
+        {
+            get
+            {
                 return ResourceManager.GetString("PenButtonSettings.2", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Click Once 的當地語系化字串。
         /// </summary>
-        internal static string PenButtonSettings_3 {
-            get {
+        internal static string PenButtonSettings_3
+        {
+            get
+            {
                 return ResourceManager.GetString("PenButtonSettings.3", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Double Click 的當地語系化字串。
         /// </summary>
-        internal static string PenButtonSettings_4 {
-            get {
+        internal static string PenButtonSettings_4
+        {
+            get
+            {
                 return ResourceManager.GetString("PenButtonSettings.4", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Press and Hold 的當地語系化字串。
         /// </summary>
-        internal static string PenButtonSettings_5 {
-            get {
+        internal static string PenButtonSettings_5
+        {
+            get
+            {
                 return ResourceManager.GetString("PenButtonSettings.5", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Hover Click 的當地語系化字串。
         /// </summary>
-        internal static string PenButtonSettings_6 {
-            get {
+        internal static string PenButtonSettings_6
+        {
+            get
+            {
                 return ResourceManager.GetString("PenButtonSettings.6", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 To customize a button, click an outlined button on the image to the left 的當地語系化字串。
         /// </summary>
-        internal static string PenButtonSettings_7 {
-            get {
+        internal static string PenButtonSettings_7
+        {
+            get
+            {
                 return ResourceManager.GetString("PenButtonSettings.7", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Restore to default actions 的當地語系化字串。
         /// </summary>
-        internal static string PenButtonSettings_8 {
-            get {
+        internal static string PenButtonSettings_8
+        {
+            get
+            {
                 return ResourceManager.GetString("PenButtonSettings.8", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Pen Menu 的當地語系化字串。
         /// </summary>
-        internal static string PenMenu {
-            get {
+        internal static string PenMenu
+        {
+            get
+            {
                 return ResourceManager.GetString("PenMenu", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Page Down 的當地語系化字串。
         /// </summary>
-        internal static string PenPageDown {
-            get {
+        internal static string PenPageDown
+        {
+            get
+            {
                 return ResourceManager.GetString("PenPageDown", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Page Up 的當地語系化字串。
         /// </summary>
-        internal static string PenPageUp {
-            get {
+        internal static string PenPageUp
+        {
+            get
+            {
                 return ResourceManager.GetString("PenPageUp", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Pen Settings 的當地語系化字串。
         /// </summary>
-        internal static string PenSettings_0 {
-            get {
+        internal static string PenSettings_0
+        {
+            get
+            {
                 return ResourceManager.GetString("PenSettings.0", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Tip Sensitivity 的當地語系化字串。
         /// </summary>
-        internal static string PenSettings_1 {
-            get {
+        internal static string PenSettings_1
+        {
+            get
+            {
                 return ResourceManager.GetString("PenSettings.1", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Press and hold the two side buttons on the pen for 3 seconds to pair it to Tile. 的當地語系化字串。
         /// </summary>
-        internal static string PenSettings_10 {
-            get {
+        internal static string PenSettings_10
+        {
+            get
+            {
                 return ResourceManager.GetString("PenSettings.10", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Download tile 的當地語系化字串。
         /// </summary>
-        internal static string PenSettings_11 {
-            get {
+        internal static string PenSettings_11
+        {
+            get
+            {
                 return ResourceManager.GetString("PenSettings.11", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Moving the slider to the right will gradually\ndecrease the sensitivity to pressure and you\nneed to apply firmer pen pressure 的當地語系化字串。
         /// </summary>
-        internal static string PenSettings_2 {
-            get {
+        internal static string PenSettings_2
+        {
+            get
+            {
                 return ResourceManager.GetString("PenSettings.2", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Tilt Sensitivity 的當地語系化字串。
         /// </summary>
-        internal static string PenSettings_3 {
-            get {
+        internal static string PenSettings_3
+        {
+            get
+            {
                 return ResourceManager.GetString("PenSettings.3", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Moving the slider to the right will gradually\nincrease the tilting effect, and you need to\napply less tilting angle 的當地語系化字串。
         /// </summary>
-        internal static string PenSettings_4 {
-            get {
+        internal static string PenSettings_4
+        {
+            get
+            {
                 return ResourceManager.GetString("PenSettings.4", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Pair with Tile 的當地語系化字串。
         /// </summary>
-        internal static string PenSettings_5 {
-            get {
+        internal static string PenSettings_5
+        {
+            get
+            {
                 return ResourceManager.GetString("PenSettings.5", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Pair your pen to your mobile device using\nthe Tile app 的當地語系化字串。
         /// </summary>
-        internal static string PenSettings_6 {
-            get {
+        internal static string PenSettings_6
+        {
+            get
+            {
                 return ResourceManager.GetString("PenSettings.6", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Get started 的當地語系化字串。
         /// </summary>
-        internal static string PenSettings_7 {
-            get {
+        internal static string PenSettings_7
+        {
+            get
+            {
                 return ResourceManager.GetString("PenSettings.7", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Enable Bluetooth on your device. 的當地語系化字串。
         /// </summary>
-        internal static string PenSettings_8 {
-            get {
+        internal static string PenSettings_8
+        {
+            get
+            {
                 return ResourceManager.GetString("PenSettings.8", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Scan the QR Code to download Tile on to your mobile device. 的當地語系化字串。
         /// </summary>
-        internal static string PenSettings_9 {
-            get {
+        internal static string PenSettings_9
+        {
+            get
+            {
                 return ResourceManager.GetString("PenSettings.9", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 PIP/PBP 的當地語系化字串。
         /// </summary>
-        internal static string PIPorPBP {
-            get {
+        internal static string PIPorPBP
+        {
+            get
+            {
                 return ResourceManager.GetString("PIPorPBP", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 PIP 的當地語系化字串。
         /// </summary>
-        internal static string PipPbp_0 {
-            get {
+        internal static string PipPbp_0
+        {
+            get
+            {
                 return ResourceManager.GetString("PipPbp.0", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 PBP 的當地語系化字串。
         /// </summary>
-        internal static string PipPbp_1 {
-            get {
+        internal static string PipPbp_1
+        {
+            get
+            {
                 return ResourceManager.GetString("PipPbp.1", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Input 1 (Main) 的當地語系化字串。
         /// </summary>
-        internal static string PipPbp_2 {
-            get {
+        internal static string PipPbp_2
+        {
+            get
+            {
                 return ResourceManager.GetString("PipPbp.2", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Input 2 (Sub) 的當地語系化字串。
         /// </summary>
-        internal static string PipPbp_3 {
-            get {
+        internal static string PipPbp_3
+        {
+            get
+            {
                 return ResourceManager.GetString("PipPbp.3", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Input 3 (Sub) 的當地語系化字串。
         /// </summary>
-        internal static string PipPbp_4 {
-            get {
+        internal static string PipPbp_4
+        {
+            get
+            {
                 return ResourceManager.GetString("PipPbp.4", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Input 4 (Sub) 的當地語系化字串。
         /// </summary>
-        internal static string PipPbp_5 {
-            get {
+        internal static string PipPbp_5
+        {
+            get
+            {
                 return ResourceManager.GetString("PipPbp.5", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 USB Switch 的當地語系化字串。
         /// </summary>
-        internal static string PipPbp_6 {
-            get {
+        internal static string PipPbp_6
+        {
+            get
+            {
                 return ResourceManager.GetString("PipPbp.6", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Toggle between positions 的當地語系化字串。
         /// </summary>
-        internal static string PipPbp_7 {
-            get {
+        internal static string PipPbp_7
+        {
+            get
+            {
                 return ResourceManager.GetString("PipPbp.7", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 PM 的當地語系化字串。
         /// </summary>
-        internal static string PM {
-            get {
+        internal static string PM
+        {
+            get
+            {
                 return ResourceManager.GetString("PM", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 PowerNap 的當地語系化字串。
         /// </summary>
-        internal static string PowerNap {
-            get {
+        internal static string PowerNap
+        {
+            get
+            {
                 return ResourceManager.GetString("PowerNap", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Arrange Align Center 的當地語系化字串。
         /// </summary>
-        internal static string PowerPoint_1 {
-            get {
+        internal static string PowerPoint_1
+        {
+            get
+            {
                 return ResourceManager.GetString("PowerPoint.1", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Send to Back 的當地語系化字串。
         /// </summary>
-        internal static string PowerPoint_10 {
-            get {
+        internal static string PowerPoint_10
+        {
+            get
+            {
                 return ResourceManager.GetString("PowerPoint.10", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Arrange Align Left 的當地語系化字串。
         /// </summary>
-        internal static string PowerPoint_2 {
-            get {
+        internal static string PowerPoint_2
+        {
+            get
+            {
                 return ResourceManager.GetString("PowerPoint.2", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Arrange Align Right 的當地語系化字串。
         /// </summary>
-        internal static string PowerPoint_3 {
-            get {
+        internal static string PowerPoint_3
+        {
+            get
+            {
                 return ResourceManager.GetString("PowerPoint.3", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Bring to Front 的當地語系化字串。
         /// </summary>
-        internal static string PowerPoint_4 {
-            get {
+        internal static string PowerPoint_4
+        {
+            get
+            {
                 return ResourceManager.GetString("PowerPoint.4", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Decrease List Level 的當地語系化字串。
         /// </summary>
-        internal static string PowerPoint_5 {
-            get {
+        internal static string PowerPoint_5
+        {
+            get
+            {
                 return ResourceManager.GetString("PowerPoint.5", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Duplicate Selected Slides 的當地語系化字串。
         /// </summary>
-        internal static string PowerPoint_6 {
-            get {
+        internal static string PowerPoint_6
+        {
+            get
+            {
                 return ResourceManager.GetString("PowerPoint.6", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Increase List Level 的當地語系化字串。
         /// </summary>
-        internal static string PowerPoint_7 {
-            get {
+        internal static string PowerPoint_7
+        {
+            get
+            {
                 return ResourceManager.GetString("PowerPoint.7", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Play from Current Slide 的當地語系化字串。
         /// </summary>
-        internal static string PowerPoint_8 {
-            get {
+        internal static string PowerPoint_8
+        {
+            get
+            {
                 return ResourceManager.GetString("PowerPoint.8", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Previous Slide 的當地語系化字串。
         /// </summary>
-        internal static string PowerPoint_9 {
-            get {
+        internal static string PowerPoint_9
+        {
+            get
+            {
                 return ResourceManager.GetString("PowerPoint.9", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Preview Changes 的當地語系化字串。
         /// </summary>
-        internal static string Preview_Changes {
-            get {
+        internal static string Preview_Changes
+        {
+            get
+            {
                 return ResourceManager.GetString("Preview_Changes", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Quick Note 的當地語系化字串。
         /// </summary>
-        internal static string QuickNote {
-            get {
+        internal static string QuickNote
+        {
+            get
+            {
                 return ResourceManager.GetString("QuickNote", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Quick Settings 的當地語系化字串。
         /// </summary>
-        internal static string QuickSettings {
-            get {
+        internal static string QuickSettings
+        {
+            get
+            {
                 return ResourceManager.GetString("QuickSettings", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Radial Menu 的當地語系化字串。
         /// </summary>
-        internal static string RadialMenu {
-            get {
+        internal static string RadialMenu
+        {
+            get
+            {
                 return ResourceManager.GetString("RadialMenu", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Disabled 的當地語系化字串。
         /// </summary>
-        internal static string RadialMenu_1 {
-            get {
+        internal static string RadialMenu_1
+        {
+            get
+            {
                 return ResourceManager.GetString("RadialMenu.1", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Go Back 的當地語系化字串。
         /// </summary>
-        internal static string RadialMenu_2 {
-            get {
+        internal static string RadialMenu_2
+        {
+            get
+            {
                 return ResourceManager.GetString("RadialMenu.2", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Go Forward 的當地語系化字串。
         /// </summary>
-        internal static string RadialMenu_3 {
-            get {
+        internal static string RadialMenu_3
+        {
+            get
+            {
                 return ResourceManager.GetString("RadialMenu.3", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Play/Pause 的當地語系化字串。
         /// </summary>
-        internal static string RadialMenu_4 {
-            get {
+        internal static string RadialMenu_4
+        {
+            get
+            {
                 return ResourceManager.GetString("RadialMenu.4", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Previous Track 的當地語系化字串。
         /// </summary>
-        internal static string RadialMenu_5 {
-            get {
+        internal static string RadialMenu_5
+        {
+            get
+            {
                 return ResourceManager.GetString("RadialMenu.5", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Mute 的當地語系化字串。
         /// </summary>
-        internal static string RadialMenu_6 {
-            get {
+        internal static string RadialMenu_6
+        {
+            get
+            {
                 return ResourceManager.GetString("RadialMenu.6", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Function for selected radial 的當地語系化字串。
         /// </summary>
-        internal static string RadialMenu_7 {
-            get {
+        internal static string RadialMenu_7
+        {
+            get
+            {
                 return ResourceManager.GetString("RadialMenu.7", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Label for selected radial 的當地語系化字串。
         /// </summary>
-        internal static string RadialMenu_8 {
-            get {
+        internal static string RadialMenu_8
+        {
+            get
+            {
                 return ResourceManager.GetString("RadialMenu.8", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Use center for emulating right click 的當地語系化字串。
         /// </summary>
-        internal static string RadialMenu_9 {
-            get {
+        internal static string RadialMenu_9
+        {
+            get
+            {
                 return ResourceManager.GetString("RadialMenu.9", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Ready to be paired 的當地語系化字串。
         /// </summary>
-        internal static string ReadyToBePaired {
-            get {
+        internal static string ReadyToBePaired
+        {
+            get
+            {
                 return ResourceManager.GetString("ReadyToBePaired", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Receiver Firmware Version 的當地語系化字串。
         /// </summary>
-        internal static string ReceiverFirmwareVersion {
-            get {
+        internal static string ReceiverFirmwareVersion
+        {
+            get
+            {
                 return ResourceManager.GetString("ReceiverFirmwareVersion", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Recent 的當地語系化字串。
         /// </summary>
-        internal static string Recent {
-            get {
+        internal static string Recent
+        {
+            get
+            {
                 return ResourceManager.GetString("Recent", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Recommended 的當地語系化字串。
         /// </summary>
-        internal static string Recommended {
-            get {
+        internal static string Recommended
+        {
+            get
+            {
                 return ResourceManager.GetString("Recommended", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Redo 的當地語系化字串。
         /// </summary>
-        internal static string Redo {
-            get {
+        internal static string Redo
+        {
+            get
+            {
                 return ResourceManager.GetString("Redo", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Remove 的當地語系化字串。
         /// </summary>
-        internal static string Remove {
-            get {
+        internal static string Remove
+        {
+            get
+            {
                 return ResourceManager.GetString("Remove", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Reports 的當地語系化字串。
         /// </summary>
-        internal static string Reports {
-            get {
+        internal static string Reports
+        {
+            get
+            {
                 return ResourceManager.GetString("Reports", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Reset 的當地語系化字串。
         /// </summary>
-        internal static string Reset {
-            get {
+        internal static string Reset
+        {
+            get
+            {
                 return ResourceManager.GetString("Reset", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Resolution and Refresh Rate 的當地語系化字串。
         /// </summary>
-        internal static string Resolution_and_Refresh_Rate {
-            get {
+        internal static string Resolution_and_Refresh_Rate
+        {
+            get
+            {
                 return ResourceManager.GetString("Resolution_and_Refresh_Rate", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Response Time 的當地語系化字串。
         /// </summary>
-        internal static string Response_Time {
-            get {
+        internal static string Response_Time
+        {
+            get
+            {
                 return ResourceManager.GetString("Response_Time", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Restart needed 的當地語系化字串。
         /// </summary>
-        internal static string RestartNeeded {
-            get {
+        internal static string RestartNeeded
+        {
+            get
+            {
                 return ResourceManager.GetString("RestartNeeded", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Restore to default 的當地語系化字串。
         /// </summary>
-        internal static string RestoreToDefault {
-            get {
+        internal static string RestoreToDefault
+        {
+            get
+            {
                 return ResourceManager.GetString("RestoreToDefault", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Restore to default actions 的當地語系化字串。
         /// </summary>
-        internal static string RestoreToDefaultActions {
-            get {
+        internal static string RestoreToDefaultActions
+        {
+            get
+            {
                 return ResourceManager.GetString("RestoreToDefaultActions", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Right 的當地語系化字串。
         /// </summary>
-        internal static string Right {
-            get {
+        internal static string Right
+        {
+            get
+            {
                 return ResourceManager.GetString("Right", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Right Click 的當地語系化字串。
         /// </summary>
-        internal static string RightClick {
-            get {
+        internal static string RightClick
+        {
+            get
+            {
                 return ResourceManager.GetString("RightClick", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Save 的當地語系化字串。
         /// </summary>
-        internal static string Save {
-            get {
+        internal static string Save
+        {
+            get
+            {
                 return ResourceManager.GetString("Save", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Save diagnostic report 的當地語系化字串。
         /// </summary>
-        internal static string Save_diagnostic_report {
-            get {
+        internal static string Save_diagnostic_report
+        {
+            get
+            {
                 return ResourceManager.GetString("Save_diagnostic_report", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Save monitor asset report 的當地語系化字串。
         /// </summary>
-        internal static string Save_monitor_asset_report {
-            get {
+        internal static string Save_monitor_asset_report
+        {
+            get
+            {
                 return ResourceManager.GetString("Save_monitor_asset_report", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Scheduled 的當地語系化字串。
         /// </summary>
-        internal static string Scheduled {
-            get {
+        internal static string Scheduled
+        {
+            get
+            {
                 return ResourceManager.GetString("Scheduled", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Screen Snip 的當地語系化字串。
         /// </summary>
-        internal static string ScreenSnip {
-            get {
+        internal static string ScreenSnip
+        {
+            get
+            {
                 return ResourceManager.GetString("ScreenSnip", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Screen Snipping 的當地語系化字串。
         /// </summary>
-        internal static string ScreenSnipping {
-            get {
+        internal static string ScreenSnipping
+        {
+            get
+            {
                 return ResourceManager.GetString("ScreenSnipping", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Search 的當地語系化字串。
         /// </summary>
-        internal static string Search {
-            get {
+        internal static string Search
+        {
+            get
+            {
                 return ResourceManager.GetString("Search", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Service Tag 的當地語系化字串。
         /// </summary>
-        internal static string ServiceTag {
-            get {
+        internal static string ServiceTag
+        {
+            get
+            {
                 return ResourceManager.GetString("ServiceTag", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Settings 的當地語系化字串。
         /// </summary>
-        internal static string Settings {
-            get {
+        internal static string Settings
+        {
+            get
+            {
                 return ResourceManager.GetString("Settings", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Share 的當地語系化字串。
         /// </summary>
-        internal static string Share {
-            get {
+        internal static string Share
+        {
+            get
+            {
                 return ResourceManager.GetString("Share", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Show/Hide Desktop 的當地語系化字串。
         /// </summary>
-        internal static string ShowHideDesktop {
-            get {
+        internal static string ShowHideDesktop
+        {
+            get
+            {
                 return ResourceManager.GetString("ShowHideDesktop", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Shutdown 的當地語系化字串。
         /// </summary>
-        internal static string Shutdown {
-            get {
+        internal static string Shutdown
+        {
+            get
+            {
                 return ResourceManager.GetString("Shutdown", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Sign Out 的當地語系化字串。
         /// </summary>
-        internal static string SignOut {
-            get {
+        internal static string SignOut
+        {
+            get
+            {
                 return ResourceManager.GetString("SignOut", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Sleep 的當地語系化字串。
         /// </summary>
-        internal static string Sleep {
-            get {
+        internal static string Sleep
+        {
+            get
+            {
                 return ResourceManager.GetString("Sleep", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Slow 的當地語系化字串。
         /// </summary>
-        internal static string Slow {
-            get {
+        internal static string Slow
+        {
+            get
+            {
                 return ResourceManager.GetString("Slow", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Smart HDR 的當地語系化字串。
         /// </summary>
-        internal static string SmartHDR {
-            get {
+        internal static string SmartHDR
+        {
+            get
+            {
                 return ResourceManager.GetString("SmartHDR", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Smooth 的當地語系化字串。
         /// </summary>
-        internal static string Smooth {
-            get {
+        internal static string Smooth
+        {
+            get
+            {
                 return ResourceManager.GetString("Smooth", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Software version 的當地語系化字串。
         /// </summary>
-        internal static string Software_version {
-            get {
+        internal static string Software_version
+        {
+            get
+            {
                 return ResourceManager.GetString("Software_version", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Audio Preset 的當地語系化字串。
         /// </summary>
-        internal static string Soundbar_0 {
-            get {
+        internal static string Soundbar_0
+        {
+            get
+            {
                 return ResourceManager.GetString("Soundbar.0", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Interactions 的當地語系化字串。
         /// </summary>
-        internal static string Soundbar_1 {
-            get {
+        internal static string Soundbar_1
+        {
+            get
+            {
                 return ResourceManager.GetString("Soundbar.1", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Audio Preset 的當地語系化字串。
         /// </summary>
-        internal static string SpeakerAudioPreset_0 {
-            get {
+        internal static string SpeakerAudioPreset_0
+        {
+            get
+            {
                 return ResourceManager.GetString("SpeakerAudioPreset.0", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 These settings apply to multimedia only 的當地語系化字串。
         /// </summary>
-        internal static string SpeakerAudioPreset_1 {
-            get {
+        internal static string SpeakerAudioPreset_1
+        {
+            get
+            {
                 return ResourceManager.GetString("SpeakerAudioPreset.1", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Speech 的當地語系化字串。
         /// </summary>
-        internal static string SpeakerAudioPreset_2 {
-            get {
+        internal static string SpeakerAudioPreset_2
+        {
+            get
+            {
                 return ResourceManager.GetString("SpeakerAudioPreset.2", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Adjust audio ranges to your preference. These settings apply to multimedia audio only. 的當地語系化字串。
         /// </summary>
-        internal static string SpeakerAudioPreset_3 {
-            get {
+        internal static string SpeakerAudioPreset_3
+        {
+            get
+            {
                 return ResourceManager.GetString("SpeakerAudioPreset.3", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Intelligent Mic Noise Cancellation 的當地語系化字串。
         /// </summary>
-        internal static string SpeakerAudioSettings_0 {
-            get {
+        internal static string SpeakerAudioSettings_0
+        {
+            get
+            {
                 return ResourceManager.GetString("SpeakerAudioSettings.0", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Mute Sound Notification 的當地語系化字串。
         /// </summary>
-        internal static string SpeakerAudioSettings_1 {
-            get {
+        internal static string SpeakerAudioSettings_1
+        {
+            get
+            {
                 return ResourceManager.GetString("SpeakerAudioSettings.1", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Volume Adjustment Tone 的當地語系化字串。
         /// </summary>
-        internal static string SpeakerAudioSettings_2 {
-            get {
+        internal static string SpeakerAudioSettings_2
+        {
+            get
+            {
                 return ResourceManager.GetString("SpeakerAudioSettings.2", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Every Level 的當地語系化字串。
         /// </summary>
-        internal static string SpeakerAudioSettings_3 {
-            get {
+        internal static string SpeakerAudioSettings_3
+        {
+            get
+            {
                 return ResourceManager.GetString("SpeakerAudioSettings.3", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Min &amp; Max Only 的當地語系化字串。
         /// </summary>
-        internal static string SpeakerAudioSettings_4 {
-            get {
+        internal static string SpeakerAudioSettings_4
+        {
+            get
+            {
                 return ResourceManager.GetString("SpeakerAudioSettings.4", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Interactions 的當地語系化字串。
         /// </summary>
-        internal static string SpeakerInteractions_0 {
-            get {
+        internal static string SpeakerInteractions_0
+        {
+            get
+            {
                 return ResourceManager.GetString("SpeakerInteractions.0", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Hover on the application names below to view available speakerphone buttons (indicated by green) 的當地語系化字串。
         /// </summary>
-        internal static string SpeakerInteractions_1 {
-            get {
+        internal static string SpeakerInteractions_1
+        {
+            get
+            {
                 return ResourceManager.GetString("SpeakerInteractions.1", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Microsoft Teams 的當地語系化字串。
         /// </summary>
-        internal static string SpeakerInteractions_2 {
-            get {
+        internal static string SpeakerInteractions_2
+        {
+            get
+            {
                 return ResourceManager.GetString("SpeakerInteractions.2", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Zoom 的當地語系化字串。
         /// </summary>
-        internal static string SpeakerInteractions_3 {
-            get {
+        internal static string SpeakerInteractions_3
+        {
+            get
+            {
                 return ResourceManager.GetString("SpeakerInteractions.3", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Google Meet 的當地語系化字串。
         /// </summary>
-        internal static string SpeakerInteractions_4 {
-            get {
+        internal static string SpeakerInteractions_4
+        {
+            get
+            {
                 return ResourceManager.GetString("SpeakerInteractions.4", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Skype for Business 的當地語系化字串。
         /// </summary>
-        internal static string SpeakerInteractions_5 {
-            get {
+        internal static string SpeakerInteractions_5
+        {
+            get
+            {
                 return ResourceManager.GetString("SpeakerInteractions.5", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Removes background noise to allow your voice to be heard clearly 的當地語系化字串。
         /// </summary>
-        internal static string SpeakerToolTip_0 {
-            get {
+        internal static string SpeakerToolTip_0
+        {
+            get
+            {
                 return ResourceManager.GetString("SpeakerToolTip.0", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Plays a sound when the device goes on mute 的當地語系化字串。
         /// </summary>
-        internal static string SpeakerToolTip_1 {
-            get {
+        internal static string SpeakerToolTip_1
+        {
+            get
+            {
                 return ResourceManager.GetString("SpeakerToolTip.1", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Plays a sound when the volume level is adjusted 的當地語系化字串。
         /// </summary>
-        internal static string SpeakerToolTip_2 {
-            get {
+        internal static string SpeakerToolTip_2
+        {
+            get
+            {
                 return ResourceManager.GetString("SpeakerToolTip.2", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Sticky Notes 的當地語系化字串。
         /// </summary>
-        internal static string StickyNotes {
-            get {
+        internal static string StickyNotes
+        {
+            get
+            {
                 return ResourceManager.GetString("StickyNotes", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Stop Preview 的當地語系化字串。
         /// </summary>
-        internal static string Stop_Preview {
-            get {
+        internal static string Stop_Preview
+        {
+            get
+            {
                 return ResourceManager.GetString("Stop_Preview", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Success 的當地語系化字串。
         /// </summary>
-        internal static string Success {
-            get {
+        internal static string Success
+        {
+            get
+            {
                 return ResourceManager.GetString("Success", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Switch Application 的當地語系化字串。
         /// </summary>
-        internal static string SwitchApplication {
-            get {
+        internal static string SwitchApplication
+        {
+            get
+            {
                 return ResourceManager.GetString("SwitchApplication", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Switch Applications 的當地語系化字串。
         /// </summary>
-        internal static string SwitchApplications {
-            get {
+        internal static string SwitchApplications
+        {
+            get
+            {
                 return ResourceManager.GetString("SwitchApplications", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Task View 的當地語系化字串。
         /// </summary>
-        internal static string TaskView {
-            get {
+        internal static string TaskView
+        {
+            get
+            {
                 return ResourceManager.GetString("TaskView", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Third Party Licenses 的當地語系化字串。
         /// </summary>
-        internal static string Third_Party_Licenses {
-            get {
+        internal static string Third_Party_Licenses
+        {
+            get
+            {
                 return ResourceManager.GetString("Third_Party_Licenses", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Third Party License 的當地語系化字串。
         /// </summary>
-        internal static string ThirdPartyLicense_Title {
-            get {
+        internal static string ThirdPartyLicense_Title
+        {
+            get
+            {
                 return ResourceManager.GetString("ThirdPartyLicense.Title", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Toggle Vision Engine 的當地語系化字串。
         /// </summary>
-        internal static string Toggle_Vision_Engine {
-            get {
+        internal static string Toggle_Vision_Engine
+        {
+            get
+            {
                 return ResourceManager.GetString("Toggle_Vision_Engine", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 You have connected multiple devices of the same model. Actions will be duplicated on each instance of the device 的當地語系化字串。
         /// </summary>
-        internal static string Tooltip_0 {
-            get {
+        internal static string Tooltip_0
+        {
+            get
+            {
                 return ResourceManager.GetString("Tooltip.0", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 No device found. Make sure your wireless device is charged and turned ON. 的當地語系化字串。
         /// </summary>
-        internal static string Tooltip_1 {
-            get {
+        internal static string Tooltip_1
+        {
+            get
+            {
                 return ResourceManager.GetString("Tooltip.1", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 This device is already paired. Unpair the device first if you would like to pair again. 的當地語系化字串。
         /// </summary>
-        internal static string Tooltip_2 {
-            get {
+        internal static string Tooltip_2
+        {
+            get
+            {
                 return ResourceManager.GetString("Tooltip.2", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 This device you are pairing is not supported with the connected USB wireless receiver. Use the receiver that came with the device. 的當地語系化字串。
         /// </summary>
-        internal static string Tooltip_3 {
-            get {
+        internal static string Tooltip_3
+        {
+            get
+            {
                 return ResourceManager.GetString("Tooltip.3", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 The available slots on this USB wireless receiver are full. To use, unpair a device from it by clicking on the \&quot;Unpair\&quot; button in the device settings page. 的當地語系化字串。
         /// </summary>
-        internal static string Tooltip_4 {
-            get {
+        internal static string Tooltip_4
+        {
+            get
+            {
                 return ResourceManager.GetString("Tooltip.4", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Keyboard layouts featuring the Copilot key may become available at different times, depending on language and region. 的當地語系化字串。
         /// </summary>
-        internal static string Tooltip_5 {
-            get {
+        internal static string Tooltip_5
+        {
+            get
+            {
                 return ResourceManager.GetString("Tooltip.5", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 This feature enables our eyes to adapt to a desired setting. 的當地語系化字串。
         /// </summary>
-        internal static string Tooltips_Schedule {
-            get {
+        internal static string Tooltips_Schedule
+        {
+            get
+            {
                 return ResourceManager.GetString("Tooltips_Schedule", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Landscape 的當地語系化字串。
         /// </summary>
-        internal static string UI_Orientation_0 {
-            get {
+        internal static string UI_Orientation_0
+        {
+            get
+            {
                 return ResourceManager.GetString("UI_Orientation.0", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Portrait 的當地語系化字串。
         /// </summary>
-        internal static string UI_Orientation_1 {
-            get {
+        internal static string UI_Orientation_1
+        {
+            get
+            {
                 return ResourceManager.GetString("UI_Orientation.1", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Landscape(flipped) 的當地語系化字串。
         /// </summary>
-        internal static string UI_Orientation_2 {
-            get {
+        internal static string UI_Orientation_2
+        {
+            get
+            {
                 return ResourceManager.GetString("UI_Orientation.2", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Portrait(flipped) 的當地語系化字串。
         /// </summary>
-        internal static string UI_Orientation_3 {
-            get {
+        internal static string UI_Orientation_3
+        {
+            get
+            {
                 return ResourceManager.GetString("UI_Orientation.3", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Undo 的當地語系化字串。
         /// </summary>
-        internal static string Undo {
-            get {
+        internal static string Undo
+        {
+            get
+            {
                 return ResourceManager.GetString("Undo", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Unpair 的當地語系化字串。
         /// </summary>
-        internal static string Unpair {
-            get {
+        internal static string Unpair
+        {
+            get
+            {
                 return ResourceManager.GetString("Unpair", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Update 的當地語系化字串。
         /// </summary>
-        internal static string Update {
-            get {
+        internal static string Update
+        {
+            get
+            {
                 return ResourceManager.GetString("Update", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Update Available Version 的當地語系化字串。
         /// </summary>
-        internal static string Update_Available_Version {
-            get {
+        internal static string Update_Available_Version
+        {
+            get
+            {
                 return ResourceManager.GetString("Update_Available_Version", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Update Firmware 的當地語系化字串。
         /// </summary>
-        internal static string UpdateFirmware {
-            get {
+        internal static string UpdateFirmware
+        {
+            get
+            {
                 return ResourceManager.GetString("UpdateFirmware", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Updates 的當地語系化字串。
         /// </summary>
-        internal static string Updates {
-            get {
+        internal static string Updates
+        {
+            get
+            {
                 return ResourceManager.GetString("Updates", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Update available 的當地語系化字串。
         /// </summary>
-        internal static string Updates_0 {
-            get {
+        internal static string Updates_0
+        {
+            get
+            {
                 return ResourceManager.GetString("Updates.0", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Dell Display and Peripheral Manager will close and reopen once updates are completed. Once updates have started, they cannot be cancelled. 的當地語系化字串。
         /// </summary>
-        internal static string Updates_1 {
-            get {
+        internal static string Updates_1
+        {
+            get
+            {
                 return ResourceManager.GetString("Updates.1", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Check for updates 的當地語系化字串。
         /// </summary>
-        internal static string Updates_2 {
-            get {
+        internal static string Updates_2
+        {
+            get
+            {
                 return ResourceManager.GetString("Updates.2", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 There are no available updates at this time. 的當地語系化字串。
         /// </summary>
-        internal static string Updates_3 {
-            get {
+        internal static string Updates_3
+        {
+            get
+            {
                 return ResourceManager.GetString("Updates.3", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Network error. Please try again. 的當地語系化字串。
         /// </summary>
-        internal static string Updates_4 {
-            get {
+        internal static string Updates_4
+        {
+            get
+            {
                 return ResourceManager.GetString("Updates.4", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Download and install 的當地語系化字串。
         /// </summary>
-        internal static string Updates_5 {
-            get {
+        internal static string Updates_5
+        {
+            get
+            {
                 return ResourceManager.GetString("Updates.5", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Preparing for updates. Please wait... 的當地語系化字串。
         /// </summary>
-        internal static string Updates_6 {
-            get {
+        internal static string Updates_6
+        {
+            get
+            {
                 return ResourceManager.GetString("Updates.6", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 URL 的當地語系化字串。
         /// </summary>
-        internal static string URL {
-            get {
+        internal static string URL
+        {
+            get
+            {
                 return ResourceManager.GetString("URL", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 USB 的當地語系化字串。
         /// </summary>
-        internal static string USB {
-            get {
+        internal static string USB
+        {
+            get
+            {
                 return ResourceManager.GetString("USB", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 USB Wireless Receiver 的當地語系化字串。
         /// </summary>
-        internal static string USBWirelessReceiver {
-            get {
+        internal static string USBWirelessReceiver
+        {
+            get
+            {
                 return ResourceManager.GetString("USBWirelessReceiver", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Others 的當地語系化字串。
         /// </summary>
-        internal static string VbarText_DisplayOthers {
-            get {
+        internal static string VbarText_DisplayOthers
+        {
+            get
+            {
                 return ResourceManager.GetString("VbarText_DisplayOthers", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Vibrant 的當地語系化字串。
         /// </summary>
-        internal static string Vibrant {
-            get {
+        internal static string Vibrant
+        {
+            get
+            {
                 return ResourceManager.GetString("Vibrant", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Video 的當地語系化字串。
         /// </summary>
-        internal static string Video {
-            get {
+        internal static string Video
+        {
+            get
+            {
                 return ResourceManager.GetString("Video", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Video Swap 的當地語系化字串。
         /// </summary>
-        internal static string VideoSwap {
-            get {
+        internal static string VideoSwap
+        {
+            get
+            {
                 return ResourceManager.GetString("VideoSwap", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Vision Engine 的當地語系化字串。
         /// </summary>
-        internal static string VisionEngine {
-            get {
+        internal static string VisionEngine
+        {
+            get
+            {
                 return ResourceManager.GetString("VisionEngine", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Bino 的當地語系化字串。
         /// </summary>
-        internal static string VisionEngine_Bino {
-            get {
+        internal static string VisionEngine_Bino
+        {
+            get
+            {
                 return ResourceManager.GetString("VisionEngine_Bino", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Chroma 的當地語系化字串。
         /// </summary>
-        internal static string VisionEngine_Chroma {
-            get {
+        internal static string VisionEngine_Chroma
+        {
+            get
+            {
                 return ResourceManager.GetString("VisionEngine_Chroma", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Clear 的當地語系化字串。
         /// </summary>
-        internal static string VisionEngine_Clear {
-            get {
+        internal static string VisionEngine_Clear
+        {
+            get
+            {
                 return ResourceManager.GetString("VisionEngine_Clear", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Crosshair 的當地語系化字串。
         /// </summary>
-        internal static string VisionEngine_Crosshair {
-            get {
+        internal static string VisionEngine_Crosshair
+        {
+            get
+            {
                 return ResourceManager.GetString("VisionEngine_Crosshair", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Night 的當地語系化字串。
         /// </summary>
-        internal static string VisionEngine_Night {
-            get {
+        internal static string VisionEngine_Night
+        {
+            get
+            {
                 return ResourceManager.GetString("VisionEngine_Night", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 DDPM.Subagent.DeviceManager is not ready 的當地語系化字串。
         /// </summary>
-        internal static string Wait_DevMgr {
-            get {
+        internal static string Wait_DevMgr
+        {
+            get
+            {
                 return ResourceManager.GetString("Wait_DevMgr", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 DellTechHub service is not running 的當地語系化字串。
         /// </summary>
-        internal static string Wait_DTH {
-            get {
+        internal static string Wait_DTH
+        {
+            get
+            {
                 return ResourceManager.GetString("Wait_DTH", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 No device detected 的當地語系化字串。
         /// </summary>
-        internal static string Wait_NoDevice {
-            get {
+        internal static string Wait_NoDevice
+        {
+            get
+            {
                 return ResourceManager.GetString("Wait_NoDevice", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 FEATURE HIGHLIGHT 的當地語系化字串。
         /// </summary>
-        internal static string WalkThrough_0 {
-            get {
+        internal static string WalkThrough_0
+        {
+            get
+            {
                 return ResourceManager.GetString("WalkThrough.0", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Skip 的當地語系化字串。
         /// </summary>
-        internal static string WalkThrough_1 {
-            get {
+        internal static string WalkThrough_1
+        {
+            get
+            {
                 return ResourceManager.GetString("WalkThrough.1", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Go to App 的當地語系化字串。
         /// </summary>
-        internal static string WalkThrough_2 {
-            get {
+        internal static string WalkThrough_2
+        {
+            get
+            {
                 return ResourceManager.GetString("WalkThrough.2", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Welcome to\r\nDell Display and Peripheral Manager 的當地語系化字串。
         /// </summary>
-        internal static string WalkThroughDDPM_Main_0 {
-            get {
+        internal static string WalkThroughDDPM_Main_0
+        {
+            get
+            {
                 return ResourceManager.GetString("WalkThroughDDPM_Main.0", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Add a Device 的當地語系化字串。
         /// </summary>
-        internal static string WalkThroughDDPM_Main_1 {
-            get {
+        internal static string WalkThroughDDPM_Main_1
+        {
+            get
+            {
                 return ResourceManager.GetString("WalkThroughDDPM_Main.1", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 View your Device 的當地語系化字串。
         /// </summary>
-        internal static string WalkThroughDDPM_Main_2 {
-            get {
+        internal static string WalkThroughDDPM_Main_2
+        {
+            get
+            {
                 return ResourceManager.GetString("WalkThroughDDPM_Main.2", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Connection Tile 的當地語系化字串。
         /// </summary>
-        internal static string WalkThroughDDPM_Main_3 {
-            get {
+        internal static string WalkThroughDDPM_Main_3
+        {
+            get
+            {
                 return ResourceManager.GetString("WalkThroughDDPM_Main.3", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Device Settings 的當地語系化字串。
         /// </summary>
-        internal static string WalkThroughDDPM_Main_4 {
-            get {
+        internal static string WalkThroughDDPM_Main_4
+        {
+            get
+            {
                 return ResourceManager.GetString("WalkThroughDDPM_Main.4", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 App Settings 的當地語系化字串。
         /// </summary>
-        internal static string WalkThroughDDPM_Main_5 {
-            get {
+        internal static string WalkThroughDDPM_Main_5
+        {
+            get
+            {
                 return ResourceManager.GetString("WalkThroughDDPM_Main.5", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 See all your supported Dell Displays and Peripherals in one place, personalize your settings, and keep your firmware updated 的當地語系化字串。
         /// </summary>
-        internal static string WalkThroughDDPM_Sub_0 {
-            get {
+        internal static string WalkThroughDDPM_Sub_0
+        {
+            get
+            {
                 return ResourceManager.GetString("WalkThroughDDPM_Sub.0", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Click the + icon to find instructions on how to connect a supported Dell device 的當地語系化字串。
         /// </summary>
-        internal static string WalkThroughDDPM_Sub_1 {
-            get {
+        internal static string WalkThroughDDPM_Sub_1
+        {
+            get
+            {
                 return ResourceManager.GetString("WalkThroughDDPM_Sub.1", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 See your device, how it’s connected, and its battery level (if wireless) 的當地語系化字串。
         /// </summary>
-        internal static string WalkThroughDDPM_Sub_2 {
-            get {
+        internal static string WalkThroughDDPM_Sub_2
+        {
+            get
+            {
                 return ResourceManager.GetString("WalkThroughDDPM_Sub.2", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Hover on the connection tile of a wireless device to learn more details 的當地語系化字串。
         /// </summary>
-        internal static string WalkThroughDDPM_Sub_3 {
-            get {
+        internal static string WalkThroughDDPM_Sub_3
+        {
+            get
+            {
                 return ResourceManager.GetString("WalkThroughDDPM_Sub.3", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Click on your device to adjust its settings 的當地語系化字串。
         /// </summary>
-        internal static string WalkThroughDDPM_Sub_4 {
-            get {
+        internal static string WalkThroughDDPM_Sub_4
+        {
+            get
+            {
                 return ResourceManager.GetString("WalkThroughDDPM_Sub.4", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Click the gear icon to access app settings and software and firmware updates 的當地語系化字串。
         /// </summary>
-        internal static string WalkThroughDDPM_Sub_5 {
-            get {
+        internal static string WalkThroughDDPM_Sub_5
+        {
+            get
+            {
                 return ResourceManager.GetString("WalkThroughDDPM_Sub.5", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Customize your View 的當地語系化字串。
         /// </summary>
-        internal static string WalkThroughDisplay_Main_0 {
-            get {
+        internal static string WalkThroughDisplay_Main_0
+        {
+            get
+            {
                 return ResourceManager.GetString("WalkThroughDisplay_Main.0", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Easy Arrange 的當地語系化字串。
         /// </summary>
-        internal static string WalkThroughDisplay_Main_1 {
-            get {
+        internal static string WalkThroughDisplay_Main_1
+        {
+            get
+            {
                 return ResourceManager.GetString("WalkThroughDisplay_Main.1", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Manage your Inputs 的當地語系化字串。
         /// </summary>
-        internal static string WalkThroughDisplay_Main_2 {
-            get {
+        internal static string WalkThroughDisplay_Main_2
+        {
+            get
+            {
                 return ResourceManager.GetString("WalkThroughDisplay_Main.2", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Personalize your viewing experience by adjusting your brightness/contrast levels, color profiles, and more 的當地語系化字串。
         /// </summary>
-        internal static string WalkThroughDisplay_Sub_0 {
-            get {
+        internal static string WalkThroughDisplay_Sub_0
+        {
+            get
+            {
                 return ResourceManager.GetString("WalkThroughDisplay_Sub.0", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Spend less time resizing your multiple windows. Choose an Easy Arrange layout then click and drag your windows into place. If you would like to reuse this specific arrangement of windows, save it with Easy Memory 的當地語系化字串。
         /// </summary>
-        internal static string WalkThroughDisplay_Sub_1 {
-            get {
+        internal static string WalkThroughDisplay_Sub_1
+        {
+            get
+            {
                 return ResourceManager.GetString("WalkThroughDisplay_Sub.1", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Easily use your monitor with multiple PCs through Input Source or USB/Network KVM settings. Additionally, connect your mouse, keyboard, and accessories to your monitor via USB to use them with your multiple PCs 的當地語系化字串。
         /// </summary>
-        internal static string WalkThroughDisplay_Sub_2 {
-            get {
+        internal static string WalkThroughDisplay_Sub_2
+        {
+            get
+            {
                 return ResourceManager.GetString("WalkThroughDisplay_Sub.2", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Convenient buttons 的當地語系化字串。
         /// </summary>
-        internal static string WalkThroughHeadsetWH3024_Main_0 {
-            get {
+        internal static string WalkThroughHeadsetWH3024_Main_0
+        {
+            get
+            {
                 return ResourceManager.GetString("WalkThroughHeadsetWH3024_Main.0", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Mute/unmute using boom mic 的當地語系化字串。
         /// </summary>
-        internal static string WalkThroughHeadsetWH3024_Main_1 {
-            get {
+        internal static string WalkThroughHeadsetWH3024_Main_1
+        {
+            get
+            {
                 return ResourceManager.GetString("WalkThroughHeadsetWH3024_Main.1", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Manage your calls, mute status, and audio volume with the convenient buttons on your headset’s inline control 的當地語系化字串。
         /// </summary>
-        internal static string WalkThroughHeadsetWH3024_Sub_0 {
-            get {
+        internal static string WalkThroughHeadsetWH3024_Sub_0
+        {
+            get
+            {
                 return ResourceManager.GetString("WalkThroughHeadsetWH3024_Sub.0", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Fold the mic up to mute and unfold it to unmute.\r\n\r\nIf desired, turn on a feature in the app to answer incoming calls when unfolding the boom mic. 的當地語系化字串。
         /// </summary>
-        internal static string WalkThroughHeadsetWH3024_Sub_1 {
-            get {
+        internal static string WalkThroughHeadsetWH3024_Sub_1
+        {
+            get
+            {
                 return ResourceManager.GetString("WalkThroughHeadsetWH3024_Sub.1", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Convenient buttons 的當地語系化字串。
         /// </summary>
-        internal static string WalkThroughHeadsetWH5024_Main_0 {
-            get {
+        internal static string WalkThroughHeadsetWH5024_Main_0
+        {
+            get
+            {
                 return ResourceManager.GetString("WalkThroughHeadsetWH5024_Main.0", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Mute/unmute using boom mic 的當地語系化字串。
         /// </summary>
-        internal static string WalkThroughHeadsetWH5024_Main_1 {
-            get {
+        internal static string WalkThroughHeadsetWH5024_Main_1
+        {
+            get
+            {
                 return ResourceManager.GetString("WalkThroughHeadsetWH5024_Main.1", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Active Noise Cancellation 的當地語系化字串。
         /// </summary>
-        internal static string WalkThroughHeadsetWH5024_Main_2 {
-            get {
+        internal static string WalkThroughHeadsetWH5024_Main_2
+        {
+            get
+            {
                 return ResourceManager.GetString("WalkThroughHeadsetWH5024_Main.2", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Manage your calls, mute status, and audio volume with the convenient buttons on your headset’s inline control. Adjust how much outside noise you hear with the ANC button on the side.  的當地語系化字串。
         /// </summary>
-        internal static string WalkThroughHeadsetWH5024_Sub_0 {
-            get {
+        internal static string WalkThroughHeadsetWH5024_Sub_0
+        {
+            get
+            {
                 return ResourceManager.GetString("WalkThroughHeadsetWH5024_Sub.0", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Fold the mic up to mute and unfold it to unmute.\r\n\r\nIf desired, turn on a feature in the app to answer incoming calls when unfolding the boom mic. 的當地語系化字串。
         /// </summary>
-        internal static string WalkThroughHeadsetWH5024_Sub_1 {
-            get {
+        internal static string WalkThroughHeadsetWH5024_Sub_1
+        {
+            get
+            {
                 return ResourceManager.GetString("WalkThroughHeadsetWH5024_Sub.1", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Press the ANC button on your headset or choose from the options in the app to manage how much outside noise you hear.\r\n\r\nIf you select Transparency, use the slider in the app to customize the level of noise. 的當地語系化字串。
         /// </summary>
-        internal static string WalkThroughHeadsetWH5024_Sub_2 {
-            get {
+        internal static string WalkThroughHeadsetWH5024_Sub_2
+        {
+            get
+            {
                 return ResourceManager.GetString("WalkThroughHeadsetWH5024_Sub.2", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Mute/unmute using boom mic 的當地語系化字串。
         /// </summary>
-        internal static string WalkThroughHeadsetWL3024_Main_0 {
-            get {
+        internal static string WalkThroughHeadsetWL3024_Main_0
+        {
+            get
+            {
                 return ResourceManager.GetString("WalkThroughHeadsetWL3024_Main.0", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Convenient buttons 的當地語系化字串。
         /// </summary>
-        internal static string WalkThroughHeadsetWL3024_Main_1 {
-            get {
+        internal static string WalkThroughHeadsetWL3024_Main_1
+        {
+            get
+            {
                 return ResourceManager.GetString("WalkThroughHeadsetWL3024_Main.1", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Fold the mic up to mute and unfold it to unmute.\r\n\r\nIf desired, turn on a feature in the app to answer incoming calls when unfolding the boom mic. 的當地語系化字串。
         /// </summary>
-        internal static string WalkThroughHeadsetWL3024_Sub_0 {
-            get {
+        internal static string WalkThroughHeadsetWL3024_Sub_0
+        {
+            get
+            {
                 return ResourceManager.GetString("WalkThroughHeadsetWL3024_Sub.0", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Manage Microsoft Teams and your mute status with a single press of a button for each. Adjust your audio volume and more features with other convenient buttons. 的當地語系化字串。
         /// </summary>
-        internal static string WalkThroughHeadsetWL3024_Sub_1 {
-            get {
+        internal static string WalkThroughHeadsetWL3024_Sub_1
+        {
+            get
+            {
                 return ResourceManager.GetString("WalkThroughHeadsetWL3024_Sub.1", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Mute/unmute using boom mic 的當地語系化字串。
         /// </summary>
-        internal static string WalkThroughHeadsetWL5024_Main_0 {
-            get {
+        internal static string WalkThroughHeadsetWL5024_Main_0
+        {
+            get
+            {
                 return ResourceManager.GetString("WalkThroughHeadsetWL5024_Main.0", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Convenient buttons 的當地語系化字串。
         /// </summary>
-        internal static string WalkThroughHeadsetWL5024_Main_1 {
-            get {
+        internal static string WalkThroughHeadsetWL5024_Main_1
+        {
+            get
+            {
                 return ResourceManager.GetString("WalkThroughHeadsetWL5024_Main.1", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Active Noise Cancellation 的當地語系化字串。
         /// </summary>
-        internal static string WalkThroughHeadsetWL5024_Main_2 {
-            get {
+        internal static string WalkThroughHeadsetWL5024_Main_2
+        {
+            get
+            {
                 return ResourceManager.GetString("WalkThroughHeadsetWL5024_Main.2", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Fold the mic up to mute and unfold it to unmute.\r\n\r\nIf desired, turn on a feature in the app to answer incoming calls when unfolding the boom mic. 的當地語系化字串。
         /// </summary>
-        internal static string WalkThroughHeadsetWL5024_Sub_0 {
-            get {
+        internal static string WalkThroughHeadsetWL5024_Sub_0
+        {
+            get
+            {
                 return ResourceManager.GetString("WalkThroughHeadsetWL5024_Sub.0", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Manage Microsoft Teams and your mute status with a single press of a button for each. Adjust your audio volume and more features with other convenient buttons. 的當地語系化字串。
         /// </summary>
-        internal static string WalkThroughHeadsetWL5024_Sub_1 {
-            get {
+        internal static string WalkThroughHeadsetWL5024_Sub_1
+        {
+            get
+            {
                 return ResourceManager.GetString("WalkThroughHeadsetWL5024_Sub.1", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Press the ANC button on your headset or choose from the options in the app to manage how much outside noise you hear.\r\n\r\nIf you select Transparency, use the slider in the app to customize the level of noise. 的當地語系化字串。
         /// </summary>
-        internal static string WalkThroughHeadsetWL5024_Sub_2 {
-            get {
+        internal static string WalkThroughHeadsetWL5024_Sub_2
+        {
+            get
+            {
                 return ResourceManager.GetString("WalkThroughHeadsetWL5024_Sub.2", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Swipe and tap to control features 的當地語系化字串。
         /// </summary>
-        internal static string WalkThroughHeadsetWL7024_Main_0 {
-            get {
+        internal static string WalkThroughHeadsetWL7024_Main_0
+        {
+            get
+            {
                 return ResourceManager.GetString("WalkThroughHeadsetWL7024_Main.0", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Convenient buttons 的當地語系化字串。
         /// </summary>
-        internal static string WalkThroughHeadsetWL7024_Main_1 {
-            get {
+        internal static string WalkThroughHeadsetWL7024_Main_1
+        {
+            get
+            {
                 return ResourceManager.GetString("WalkThroughHeadsetWL7024_Main.1", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Active Noise Cancellation 的當地語系化字串。
         /// </summary>
-        internal static string WalkThroughHeadsetWL7024_Main_2 {
-            get {
+        internal static string WalkThroughHeadsetWL7024_Main_2
+        {
+            get
+            {
                 return ResourceManager.GetString("WalkThroughHeadsetWL7024_Main.2", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Simple charging 的當地語系化字串。
         /// </summary>
-        internal static string WalkThroughHeadsetWL7024_Main_3 {
-            get {
+        internal static string WalkThroughHeadsetWL7024_Main_3
+        {
+            get
+            {
                 return ResourceManager.GetString("WalkThroughHeadsetWL7024_Main.3", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Swipe up and down to manage your volume; double tap to answer and end calls; and more. 的當地語系化字串。
         /// </summary>
-        internal static string WalkThroughHeadsetWL7024_Sub_0 {
-            get {
+        internal static string WalkThroughHeadsetWL7024_Sub_0
+        {
+            get
+            {
                 return ResourceManager.GetString("WalkThroughHeadsetWL7024_Sub.0", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Manage your mute status, active noise cancellation (ANC), and Microsoft Teams with the convenient buttons on your headset 的當地語系化字串。
         /// </summary>
-        internal static string WalkThroughHeadsetWL7024_Sub_1 {
-            get {
+        internal static string WalkThroughHeadsetWL7024_Sub_1
+        {
+            get
+            {
                 return ResourceManager.GetString("WalkThroughHeadsetWL7024_Sub.1", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Press the ANC button on your headset or choose from the options in the app to manage how much outside noise you hear.\r\n\r\nIf you select Transparency, use the slider in the app to customize the level of noise. 的當地語系化字串。
         /// </summary>
-        internal static string WalkThroughHeadsetWL7024_Sub_2 {
-            get {
+        internal static string WalkThroughHeadsetWL7024_Sub_2
+        {
+            get
+            {
                 return ResourceManager.GetString("WalkThroughHeadsetWL7024_Sub.2", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Charge your headset by placing it on the charging dock or connecting it to your PC using the provided USB cable 的當地語系化字串。
         /// </summary>
-        internal static string WalkThroughHeadsetWL7024_Sub_3 {
-            get {
+        internal static string WalkThroughHeadsetWL7024_Sub_3
+        {
+            get
+            {
                 return ResourceManager.GetString("WalkThroughHeadsetWL7024_Sub.3", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Customizable Keys 的當地語系化字串。
         /// </summary>
-        internal static string WalkThroughKB_Main_0 {
-            get {
+        internal static string WalkThroughKB_Main_0
+        {
+            get
+            {
                 return ResourceManager.GetString("WalkThroughKB_Main.0", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Convenient Meeting Controls 的當地語系化字串。
         /// </summary>
-        internal static string WalkThroughKB_Main_1 {
-            get {
+        internal static string WalkThroughKB_Main_1
+        {
+            get
+            {
                 return ResourceManager.GetString("WalkThroughKB_Main.1", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Illumination Settings 的當地語系化字串。
         /// </summary>
-        internal static string WalkThroughKB_Main_2 {
-            get {
+        internal static string WalkThroughKB_Main_2
+        {
+            get
+            {
                 return ResourceManager.GetString("WalkThroughKB_Main.2", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 You can customize the keys on your keyboard by assigning actions. 的當地語系化字串。
         /// </summary>
-        internal static string WalkThroughKB_Sub_0 {
-            get {
+        internal static string WalkThroughKB_Sub_0
+        {
+            get
+            {
                 return ResourceManager.GetString("WalkThroughKB_Sub.0", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Streamline your meetings with shortcuts in Zoom and Teams. 的當地語系化字串。
         /// </summary>
-        internal static string WalkThroughKB_Sub_1 {
-            get {
+        internal static string WalkThroughKB_Sub_1
+        {
+            get
+            {
                 return ResourceManager.GetString("WalkThroughKB_Sub.1", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Set your keyboard’s illumination level by adjusting it manually or setting it to adapt based on surrounding light. 的當地語系化字串。
         /// </summary>
-        internal static string WalkThroughKB_Sub_2 {
-            get {
+        internal static string WalkThroughKB_Sub_2
+        {
+            get
+            {
                 return ResourceManager.GetString("WalkThroughKB_Sub.2", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Convenient Meeting Controls 的當地語系化字串。
         /// </summary>
-        internal static string WalkThroughKB525C_Main_0 {
-            get {
+        internal static string WalkThroughKB525C_Main_0
+        {
+            get
+            {
                 return ResourceManager.GetString("WalkThroughKB525C_Main.0", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Customizable Keys 的當地語系化字串。
         /// </summary>
-        internal static string WalkThroughKB525C_Main_1 {
-            get {
+        internal static string WalkThroughKB525C_Main_1
+        {
+            get
+            {
                 return ResourceManager.GetString("WalkThroughKB525C_Main.1", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Streamline your meetings with shortcuts in Zoom and Teams. 的當地語系化字串。
         /// </summary>
-        internal static string WalkThroughKB525C_Sub_0 {
-            get {
+        internal static string WalkThroughKB525C_Sub_0
+        {
+            get
+            {
                 return ResourceManager.GetString("WalkThroughKB525C_Sub.0", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 You can customize the keys on your keyboard by assigning actions. 的當地語系化字串。
         /// </summary>
-        internal static string WalkThroughKB525C_Sub_1 {
-            get {
+        internal static string WalkThroughKB525C_Sub_1
+        {
+            get
+            {
                 return ResourceManager.GetString("WalkThroughKB525C_Sub.1", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Touch Scroll Speed 的當地語系化字串。
         /// </summary>
-        internal static string WalkThroughMouse_Main_0 {
-            get {
+        internal static string WalkThroughMouse_Main_0
+        {
+            get
+            {
                 return ResourceManager.GetString("WalkThroughMouse_Main.0", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Primary button 的當地語系化字串。
         /// </summary>
-        internal static string WalkThroughMouse_Main_1 {
-            get {
+        internal static string WalkThroughMouse_Main_1
+        {
+            get
+            {
                 return ResourceManager.GetString("WalkThroughMouse_Main.1", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Change the touch scroll speed of the highlighted areas  in the app 的當地語系化字串。
         /// </summary>
-        internal static string WalkThroughMouse_Sub_0 {
-            get {
+        internal static string WalkThroughMouse_Sub_0
+        {
+            get
+            {
                 return ResourceManager.GetString("WalkThroughMouse_Sub.0", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Choose whether you would like your primary button to be the left or right button in the app 的當地語系化字串。
         /// </summary>
-        internal static string WalkThroughMouse_Sub_1 {
-            get {
+        internal static string WalkThroughMouse_Sub_1
+        {
+            get
+            {
                 return ResourceManager.GetString("WalkThroughMouse_Sub.1", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Polling Rate 的當地語系化字串。
         /// </summary>
-        internal static string WalkThroughMouseMS355_Main_0 {
-            get {
+        internal static string WalkThroughMouseMS355_Main_0
+        {
+            get
+            {
                 return ResourceManager.GetString("WalkThroughMouseMS355_Main.0", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Customize Scroll Wheel Click 的當地語系化字串。
         /// </summary>
-        internal static string WalkThroughMouseMS355_Main_1 {
-            get {
+        internal static string WalkThroughMouseMS355_Main_1
+        {
+            get
+            {
                 return ResourceManager.GetString("WalkThroughMouseMS355_Main.1", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 App-specific actions 的當地語系化字串。
         /// </summary>
-        internal static string WalkThroughMouseMS355_Main_2 {
-            get {
+        internal static string WalkThroughMouseMS355_Main_2
+        {
+            get
+            {
                 return ResourceManager.GetString("WalkThroughMouseMS355_Main.2", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Enhance the speed and precision of your mouse by increasing its polling rate in the app 的當地語系化字串。
         /// </summary>
-        internal static string WalkThroughMouseMS355_Sub_0 {
-            get {
+        internal static string WalkThroughMouseMS355_Sub_0
+        {
+            get
+            {
                 return ResourceManager.GetString("WalkThroughMouseMS355_Sub.0", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Assign your favorite actions for when you click the scroll button 的當地語系化字串。
         /// </summary>
-        internal static string WalkThroughMouseMS355_Sub_1 {
-            get {
+        internal static string WalkThroughMouseMS355_Sub_1
+        {
+            get
+            {
                 return ResourceManager.GetString("WalkThroughMouseMS355_Sub.1", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Assign custom actions for Scroll Wheel Click when using certain applications 的當地語系化字串。
         /// </summary>
-        internal static string WalkThroughMouseMS355_Sub_2 {
-            get {
+        internal static string WalkThroughMouseMS355_Sub_2
+        {
+            get
+            {
                 return ResourceManager.GetString("WalkThroughMouseMS355_Sub.2", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Customize Buttons 的當地語系化字串。
         /// </summary>
-        internal static string WalkThroughMouseMS900_Main_0 {
-            get {
+        internal static string WalkThroughMouseMS900_Main_0
+        {
+            get
+            {
                 return ResourceManager.GetString("WalkThroughMouseMS900_Main.0", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 App-specific actions 的當地語系化字串。
         /// </summary>
-        internal static string WalkThroughMouseMS900_Main_2 {
-            get {
+        internal static string WalkThroughMouseMS900_Main_2
+        {
+            get
+            {
                 return ResourceManager.GetString("WalkThroughMouseMS900_Main.2", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Assign your favorite actions to the outlined buttons in the app 的當地語系化字串。
         /// </summary>
-        internal static string WalkThroughMouseMS900_Sub_0 {
-            get {
+        internal static string WalkThroughMouseMS900_Sub_0
+        {
+            get
+            {
                 return ResourceManager.GetString("WalkThroughMouseMS900_Sub.0", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Assign custom actions for your mouse buttons when using certain applications 的當地語系化字串。
         /// </summary>
-        internal static string WalkThroughMouseMS900_Sub_1 {
-            get {
+        internal static string WalkThroughMouseMS900_Sub_1
+        {
+            get
+            {
                 return ResourceManager.GetString("WalkThroughMouseMS900_Sub.1", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Find your pen with Tile 的當地語系化字串。
         /// </summary>
-        internal static string WalkThroughPen_Main_0 {
-            get {
+        internal static string WalkThroughPen_Main_0
+        {
+            get
+            {
                 return ResourceManager.GetString("WalkThroughPen_Main.0", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Charging your pen&apos;s battery 的當地語系化字串。
         /// </summary>
-        internal static string WalkThroughPen_Main_1 {
-            get {
+        internal static string WalkThroughPen_Main_1
+        {
+            get
+            {
                 return ResourceManager.GetString("WalkThroughPen_Main.1", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Customize your pen&apos;s behavior 的當地語系化字串。
         /// </summary>
-        internal static string WalkThroughPen_Main_2 {
-            get {
+        internal static string WalkThroughPen_Main_2
+        {
+            get
+            {
                 return ResourceManager.GetString("WalkThroughPen_Main.2", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 To pair your pen with Tile:\n1. Enable Bluetooth on your mobile device.\n2. Scan the QR Code to download Tile on to your mobile device.\n3. Press and hold the two side buttons on the pen for 3 seconds to pair it to Tile. 的當地語系化字串。
         /// </summary>
-        internal static string WalkThroughPen_Sub_0 {
-            get {
+        internal static string WalkThroughPen_Sub_0
+        {
+            get
+            {
                 return ResourceManager.GetString("WalkThroughPen_Sub.0", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Your pen is charged X%.\n\nTo charge your pen fully, make sure it is attached to your tablet screen. You will be notified once the pen is done charging.\n\nLow battery notifications will appear once the battery charge is below 10%. 的當地語系化字串。
         /// </summary>
-        internal static string WalkThroughPen_Sub_1 {
-            get {
+        internal static string WalkThroughPen_Sub_1
+        {
+            get
+            {
                 return ResourceManager.GetString("WalkThroughPen_Sub.1", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 In the app, you can customize the actions of  your pen’s buttons and set the tip and tilt sensitivity\r\n 的當地語系化字串。
         /// </summary>
-        internal static string WalkThroughPen_Sub_2 {
-            get {
+        internal static string WalkThroughPen_Sub_2
+        {
+            get
+            {
                 return ResourceManager.GetString("WalkThroughPen_Sub.2", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Quick Settings in Zoom 的當地語系化字串。
         /// </summary>
-        internal static string WalkThroughWebCam_Main_0 {
-            get {
+        internal static string WalkThroughWebCam_Main_0
+        {
+            get
+            {
                 return ResourceManager.GetString("WalkThroughWebCam_Main.0", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Easy Presets 的當地語系化字串。
         /// </summary>
-        internal static string WalkThroughWebCam_Main_1 {
-            get {
+        internal static string WalkThroughWebCam_Main_1
+        {
+            get
+            {
                 return ResourceManager.GetString("WalkThroughWebCam_Main.1", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 AI Auto-Framing 的當地語系化字串。
         /// </summary>
-        internal static string WalkThroughWebCam_Main_2 {
-            get {
+        internal static string WalkThroughWebCam_Main_2
+        {
+            get
+            {
                 return ResourceManager.GetString("WalkThroughWebCam_Main.2", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 High Dynamic Range 的當地語系化字串。
         /// </summary>
-        internal static string WalkThroughWebCam_Main_3 {
-            get {
+        internal static string WalkThroughWebCam_Main_3
+        {
+            get
+            {
                 return ResourceManager.GetString("WalkThroughWebCam_Main.3", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Security Features 的當地語系化字串。
         /// </summary>
-        internal static string WalkThroughWebCam_Main_4 {
-            get {
+        internal static string WalkThroughWebCam_Main_4
+        {
+            get
+            {
                 return ResourceManager.GetString("WalkThroughWebCam_Main.4", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 With our new Quick Settings widget, easily manage your camera’s key settings during a Zoom call 的當地語系化字串。
         /// </summary>
-        internal static string WalkThroughWebCam_Sub_0 {
-            get {
+        internal static string WalkThroughWebCam_Sub_0
+        {
+            get
+            {
                 return ResourceManager.GetString("WalkThroughWebCam_Sub.0", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Select a preset that reflects how you want to appear on camera or  create your own 的當地語系化字串。
         /// </summary>
-        internal static string WalkThroughWebCam_Sub_1 {
-            get {
+        internal static string WalkThroughWebCam_Sub_1
+        {
+            get
+            {
                 return ResourceManager.GetString("WalkThroughWebCam_Sub.1", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Enable AI Auto-Framing to keep your face in the center of the frame as you move 的當地語系化字串。
         /// </summary>
-        internal static string WalkThroughWebCam_Sub_2 {
-            get {
+        internal static string WalkThroughWebCam_Sub_2
+        {
+            get
+            {
                 return ResourceManager.GetString("WalkThroughWebCam_Sub.2", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Enable High Dynamic Range to enhance image quality, particularly in extreme lighting conditions 的當地語系化字串。
         /// </summary>
-        internal static string WalkThroughWebCam_Sub_3 {
-            get {
+        internal static string WalkThroughWebCam_Sub_3
+        {
+            get
+            {
                 return ResourceManager.GetString("WalkThroughWebCam_Sub.3", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Turn on Presence Sensing to have your camera wake up the screen as you approach and lock it when you walk away 的當地語系化字串。
         /// </summary>
-        internal static string WalkThroughWebCam_Sub_4 {
-            get {
+        internal static string WalkThroughWebCam_Sub_4
+        {
+            get
+            {
                 return ResourceManager.GetString("WalkThroughWebCam_Sub.4", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Quick Settings in Zoom 的當地語系化字串。
         /// </summary>
-        internal static string WalkThroughWebCamWB3023_Main_0 {
-            get {
+        internal static string WalkThroughWebCamWB3023_Main_0
+        {
+            get
+            {
                 return ResourceManager.GetString("WalkThroughWebCamWB3023_Main.0", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Easy Presets 的當地語系化字串。
         /// </summary>
-        internal static string WalkThroughWebCamWB3023_Main_1 {
-            get {
+        internal static string WalkThroughWebCamWB3023_Main_1
+        {
+            get
+            {
                 return ResourceManager.GetString("WalkThroughWebCamWB3023_Main.1", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 High Dynamic Range 的當地語系化字串。
         /// </summary>
-        internal static string WalkThroughWebCamWB3023_Main_2 {
-            get {
+        internal static string WalkThroughWebCamWB3023_Main_2
+        {
+            get
+            {
                 return ResourceManager.GetString("WalkThroughWebCamWB3023_Main.2", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 With our new Quick Settings widget, easily manage your camera’s key settings during a Zoom call 的當地語系化字串。
         /// </summary>
-        internal static string WalkThroughWebCamWB3023_Sub_0 {
-            get {
+        internal static string WalkThroughWebCamWB3023_Sub_0
+        {
+            get
+            {
                 return ResourceManager.GetString("WalkThroughWebCamWB3023_Sub.0", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Select a preset that reflects how you want to appear on camera or  create your own 的當地語系化字串。
         /// </summary>
-        internal static string WalkThroughWebCamWB3023_Sub_1 {
-            get {
+        internal static string WalkThroughWebCamWB3023_Sub_1
+        {
+            get
+            {
                 return ResourceManager.GetString("WalkThroughWebCamWB3023_Sub.1", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Enable High Dynamic Range to enhance image quality, particularly in extreme lighting conditions 的當地語系化字串。
         /// </summary>
-        internal static string WalkThroughWebCamWB3023_Sub_2 {
-            get {
+        internal static string WalkThroughWebCamWB3023_Sub_2
+        {
+            get
+            {
                 return ResourceManager.GetString("WalkThroughWebCamWB3023_Sub.2", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Warm 的當地語系化字串。
         /// </summary>
-        internal static string Warm {
-            get {
+        internal static string Warm
+        {
+            get
+            {
                 return ResourceManager.GetString("Warm", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Warning 的當地語系化字串。
         /// </summary>
-        internal static string Warning {
-            get {
+        internal static string Warning
+        {
+            get
+            {
                 return ResourceManager.GetString("Warning", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Webcam WB7022 Presence Detection sensor cover state 的當地語系化字串。
         /// </summary>
-        internal static string Webcam_WB7022_Presence_Detection_sensor_cover_state {
-            get {
+        internal static string Webcam_WB7022_Presence_Detection_sensor_cover_state
+        {
+            get
+            {
                 return ResourceManager.GetString("Webcam_WB7022_Presence_Detection_sensor_cover_state", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 3-2-1 Countdown 的當地語系化字串。
         /// </summary>
-        internal static string WebCameraCapture_0 {
-            get {
+        internal static string WebCameraCapture_0
+        {
+            get
+            {
                 return ResourceManager.GetString("WebCameraCapture.0", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Framing Grid 的當地語系化字串。
         /// </summary>
-        internal static string WebCameraCapture_1 {
-            get {
+        internal static string WebCameraCapture_1
+        {
+            get
+            {
                 return ResourceManager.GetString("WebCameraCapture.1", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Media Files Location 的當地語系化字串。
         /// </summary>
-        internal static string WebCameraCapture_10 {
-            get {
+        internal static string WebCameraCapture_10
+        {
+            get
+            {
                 return ResourceManager.GetString("WebCameraCapture.10", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Open 的當地語系化字串。
         /// </summary>
-        internal static string WebCameraCapture_2 {
-            get {
+        internal static string WebCameraCapture_2
+        {
+            get
+            {
                 return ResourceManager.GetString("WebCameraCapture.2", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Change 的當地語系化字串。
         /// </summary>
-        internal static string WebCameraCapture_3 {
-            get {
+        internal static string WebCameraCapture_3
+        {
+            get
+            {
                 return ResourceManager.GetString("WebCameraCapture.3", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Resolution 的當地語系化字串。
         /// </summary>
-        internal static string WebCameraCapture_4 {
-            get {
+        internal static string WebCameraCapture_4
+        {
+            get
+            {
                 return ResourceManager.GetString("WebCameraCapture.4", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 4K UHD 的當地語系化字串。
         /// </summary>
-        internal static string WebCameraCapture_5 {
-            get {
+        internal static string WebCameraCapture_5
+        {
+            get
+            {
                 return ResourceManager.GetString("WebCameraCapture.5", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Full HD 的當地語系化字串。
         /// </summary>
-        internal static string WebCameraCapture_6 {
-            get {
+        internal static string WebCameraCapture_6
+        {
+            get
+            {
                 return ResourceManager.GetString("WebCameraCapture.6", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 HD 的當地語系化字串。
         /// </summary>
-        internal static string WebCameraCapture_7 {
-            get {
+        internal static string WebCameraCapture_7
+        {
+            get
+            {
                 return ResourceManager.GetString("WebCameraCapture.7", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 FPS 的當地語系化字串。
         /// </summary>
-        internal static string WebCameraCapture_8 {
-            get {
+        internal static string WebCameraCapture_8
+        {
+            get
+            {
                 return ResourceManager.GetString("WebCameraCapture.8", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Controls video clarity and style by adjusting the number of images captured per second. 的當地語系化字串。
         /// </summary>
-        internal static string WebCameraCapture_9 {
-            get {
+        internal static string WebCameraCapture_9
+        {
+            get
+            {
                 return ResourceManager.GetString("WebCameraCapture.9", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 HDR 的當地語系化字串。
         /// </summary>
-        internal static string WebCameraColorImage_0 {
-            get {
+        internal static string WebCameraColorImage_0
+        {
+            get
+            {
                 return ResourceManager.GetString("WebCameraColorImage.0", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 High Dynamic Range automatically corrects for optimal image quality at various lighting conditions 的當地語系化字串。
         /// </summary>
-        internal static string WebCameraColorImage_1 {
-            get {
+        internal static string WebCameraColorImage_1
+        {
+            get
+            {
                 return ResourceManager.GetString("WebCameraColorImage.1", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Auto White Balance 的當地語系化字串。
         /// </summary>
-        internal static string WebCameraColorImage_2 {
-            get {
+        internal static string WebCameraColorImage_2
+        {
+            get
+            {
                 return ResourceManager.GetString("WebCameraColorImage.2", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Brightness 的當地語系化字串。
         /// </summary>
-        internal static string WebCameraColorImage_3 {
-            get {
+        internal static string WebCameraColorImage_3
+        {
+            get
+            {
                 return ResourceManager.GetString("WebCameraColorImage.3", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Sharpness 的當地語系化字串。
         /// </summary>
-        internal static string WebCameraColorImage_4 {
-            get {
+        internal static string WebCameraColorImage_4
+        {
+            get
+            {
                 return ResourceManager.GetString("WebCameraColorImage.4", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Contrast 的當地語系化字串。
         /// </summary>
-        internal static string WebCameraColorImage_5 {
-            get {
+        internal static string WebCameraColorImage_5
+        {
+            get
+            {
                 return ResourceManager.GetString("WebCameraColorImage.5", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Saturation 的當地語系化字串。
         /// </summary>
-        internal static string WebCameraColorImage_6 {
-            get {
+        internal static string WebCameraColorImage_6
+        {
+            get
+            {
                 return ResourceManager.GetString("WebCameraColorImage.6", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Anti-Flicker 的當地語系化字串。
         /// </summary>
-        internal static string WebCameraColorImage_7 {
-            get {
+        internal static string WebCameraColorImage_7
+        {
+            get
+            {
                 return ResourceManager.GetString("WebCameraColorImage.7", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Flicker reduction when recording under artificial lighting 的當地語系化字串。
         /// </summary>
-        internal static string WebCameraColorImage_8 {
-            get {
+        internal static string WebCameraColorImage_8
+        {
+            get
+            {
                 return ResourceManager.GetString("WebCameraColorImage.8", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Hz 的當地語系化字串。
         /// </summary>
-        internal static string WebCameraColorImage_9 {
-            get {
+        internal static string WebCameraColorImage_9
+        {
+            get
+            {
                 return ResourceManager.GetString("WebCameraColorImage.9", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Microphone 的當地語系化字串。
         /// </summary>
-        internal static string WebCameraMicrophone_0 {
-            get {
+        internal static string WebCameraMicrophone_0
+        {
+            get
+            {
                 return ResourceManager.GetString("WebCameraMicrophone.0", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Camera Microphone 的當地語系化字串。
         /// </summary>
-        internal static string WebCameraMicrophone_1 {
-            get {
+        internal static string WebCameraMicrophone_1
+        {
+            get
+            {
                 return ResourceManager.GetString("WebCameraMicrophone.1", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Note: This mic is not Microsoft Teams certified. For an optimal Microsoft Teams call experience, use Dell’s Microsoft Teams certified audio devices. 的當地語系化字串。
         /// </summary>
-        internal static string WebCameraMicrophone_2 {
-            get {
+        internal static string WebCameraMicrophone_2
+        {
+            get
+            {
                 return ResourceManager.GetString("WebCameraMicrophone.2", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Enables your camera&apos;s microphone. Camera will restart quickly when turning ON/OFF this feature. 的當地語系化字串。
         /// </summary>
-        internal static string WebCameraMicrophone_3 {
-            get {
+        internal static string WebCameraMicrophone_3
+        {
+            get
+            {
                 return ResourceManager.GetString("WebCameraMicrophone.3", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Presence Detection 的當地語系化字串。
         /// </summary>
-        internal static string WebCameraPresenceDetection_0 {
-            get {
+        internal static string WebCameraPresenceDetection_0
+        {
+            get
+            {
                 return ResourceManager.GetString("WebCameraPresenceDetection.0", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Proximity Sensor 的當地語系化字串。
         /// </summary>
-        internal static string WebCameraPresenceDetection_1 {
-            get {
+        internal static string WebCameraPresenceDetection_1
+        {
+            get
+            {
                 return ResourceManager.GetString("WebCameraPresenceDetection.1", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Windows Hello 的當地語系化字串。
         /// </summary>
-        internal static string WebCameraPresenceDetection_10 {
-            get {
+        internal static string WebCameraPresenceDetection_10
+        {
+            get
+            {
                 return ResourceManager.GetString("WebCameraPresenceDetection.10", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Signs you in with facial recognition. This link will direct you to Windows Settings. 的當地語系化字串。
         /// </summary>
-        internal static string WebCameraPresenceDetection_11 {
-            get {
+        internal static string WebCameraPresenceDetection_11
+        {
+            get
+            {
                 return ResourceManager.GetString("WebCameraPresenceDetection.11", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Detects your presence when you are in the field of view 的當地語系化字串。
         /// </summary>
-        internal static string WebCameraPresenceDetection_2 {
-            get {
+        internal static string WebCameraPresenceDetection_2
+        {
+            get
+            {
                 return ResourceManager.GetString("WebCameraPresenceDetection.2", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Wake on Approach 的當地語系化字串。
         /// </summary>
-        internal static string WebCameraPresenceDetection_3 {
-            get {
+        internal static string WebCameraPresenceDetection_3
+        {
+            get
+            {
                 return ResourceManager.GetString("WebCameraPresenceDetection.3", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Wakes up the PC as you approach 的當地語系化字串。
         /// </summary>
-        internal static string WebCameraPresenceDetection_4 {
-            get {
+        internal static string WebCameraPresenceDetection_4
+        {
+            get
+            {
                 return ResourceManager.GetString("WebCameraPresenceDetection.4", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Walk Away Lock 的當地語系化字串。
         /// </summary>
-        internal static string WebCameraPresenceDetection_5 {
-            get {
+        internal static string WebCameraPresenceDetection_5
+        {
+            get
+            {
                 return ResourceManager.GetString("WebCameraPresenceDetection.5", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Locks the PC and turns off the display when you walk away 的當地語系化字串。
         /// </summary>
-        internal static string WebCameraPresenceDetection_6 {
-            get {
+        internal static string WebCameraPresenceDetection_6
+        {
+            get
+            {
                 return ResourceManager.GetString("WebCameraPresenceDetection.6", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Delay 的當地語系化字串。
         /// </summary>
-        internal static string WebCameraPresenceDetection_7 {
-            get {
+        internal static string WebCameraPresenceDetection_7
+        {
+            get
+            {
                 return ResourceManager.GetString("WebCameraPresenceDetection.7", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Snooze 的當地語系化字串。
         /// </summary>
-        internal static string WebCameraPresenceDetection_8 {
-            get {
+        internal static string WebCameraPresenceDetection_8
+        {
+            get
+            {
                 return ResourceManager.GetString("WebCameraPresenceDetection.8", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Snooze Length 的當地語系化字串。
         /// </summary>
-        internal static string WebCameraPresenceDetection_9 {
-            get {
+        internal static string WebCameraPresenceDetection_9
+        {
+            get
+            {
                 return ResourceManager.GetString("WebCameraPresenceDetection.9", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Camera Control 的當地語系化字串。
         /// </summary>
-        internal static string WebCameraSettings_0 {
-            get {
+        internal static string WebCameraSettings_0
+        {
+            get
+            {
                 return ResourceManager.GetString("WebCameraSettings.0", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 AI Auto-Framing 的當地語系化字串。
         /// </summary>
-        internal static string WebCameraSettings_1 {
-            get {
+        internal static string WebCameraSettings_1
+        {
+            get
+            {
                 return ResourceManager.GetString("WebCameraSettings.1", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Narrow 的當地語系化字串。
         /// </summary>
-        internal static string WebCameraSettings_10 {
-            get {
+        internal static string WebCameraSettings_10
+        {
+            get
+            {
                 return ResourceManager.GetString("WebCameraSettings.10", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Standard 的當地語系化字串。
         /// </summary>
-        internal static string WebCameraSettings_11 {
-            get {
+        internal static string WebCameraSettings_11
+        {
+            get
+            {
                 return ResourceManager.GetString("WebCameraSettings.11", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Field of View 的當地語系化字串。
         /// </summary>
-        internal static string WebCameraSettings_12 {
-            get {
+        internal static string WebCameraSettings_12
+        {
+            get
+            {
                 return ResourceManager.GetString("WebCameraSettings.12", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Narrows or widens angle of the camera’s field of view 的當地語系化字串。
         /// </summary>
-        internal static string WebCameraSettings_13 {
-            get {
+        internal static string WebCameraSettings_13
+        {
+            get
+            {
                 return ResourceManager.GetString("WebCameraSettings.13", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 ° 的當地語系化字串。
         /// </summary>
-        internal static string WebCameraSettings_14 {
-            get {
+        internal static string WebCameraSettings_14
+        {
+            get
+            {
                 return ResourceManager.GetString("WebCameraSettings.14", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Zoom 的當地語系化字串。
         /// </summary>
-        internal static string WebCameraSettings_15 {
-            get {
+        internal static string WebCameraSettings_15
+        {
+            get
+            {
                 return ResourceManager.GetString("WebCameraSettings.15", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Autofocus 的當地語系化字串。
         /// </summary>
-        internal static string WebCameraSettings_16 {
-            get {
+        internal static string WebCameraSettings_16
+        {
+            get
+            {
                 return ResourceManager.GetString("WebCameraSettings.16", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Intelligently adjusts the camera lens to obtain focus and sharpness 的當地語系化字串。
         /// </summary>
-        internal static string WebCameraSettings_17 {
-            get {
+        internal static string WebCameraSettings_17
+        {
+            get
+            {
                 return ResourceManager.GetString("WebCameraSettings.17", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Priority 的當地語系化字串。
         /// </summary>
-        internal static string WebCameraSettings_18 {
-            get {
+        internal static string WebCameraSettings_18
+        {
+            get
+            {
                 return ResourceManager.GetString("WebCameraSettings.18", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Prioritizes FPS video smoothness or exposure to maintain the ideal level of light 的當地語系化字串。
         /// </summary>
-        internal static string WebCameraSettings_19 {
-            get {
+        internal static string WebCameraSettings_19
+        {
+            get
+            {
                 return ResourceManager.GetString("WebCameraSettings.19", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Utilizes intelligent scene analysis and facial tracking to zoom and pan the view when you move 的當地語系化字串。
         /// </summary>
-        internal static string WebCameraSettings_2 {
-            get {
+        internal static string WebCameraSettings_2
+        {
+            get
+            {
                 return ResourceManager.GetString("WebCameraSettings.2", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Exposure 的當地語系化字串。
         /// </summary>
-        internal static string WebCameraSettings_20 {
-            get {
+        internal static string WebCameraSettings_20
+        {
+            get
+            {
                 return ResourceManager.GetString("WebCameraSettings.20", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Frame Rate 的當地語系化字串。
         /// </summary>
-        internal static string WebCameraSettings_21 {
-            get {
+        internal static string WebCameraSettings_21
+        {
+            get
+            {
                 return ResourceManager.GetString("WebCameraSettings.21", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Frame Rate/Exposure will not work when HDR is on.\rClick  的當地語系化字串。
         /// </summary>
-        internal static string WebCameraSettings_22 {
-            get {
+        internal static string WebCameraSettings_22
+        {
+            get
+            {
                 return ResourceManager.GetString("WebCameraSettings.22", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 here  的當地語系化字串。
         /// </summary>
-        internal static string WebCameraSettings_23 {
-            get {
+        internal static string WebCameraSettings_23
+        {
+            get
+            {
                 return ResourceManager.GetString("WebCameraSettings.23", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 to change your HDR settings. 的當地語系化字串。
         /// </summary>
-        internal static string WebCameraSettings_24 {
-            get {
+        internal static string WebCameraSettings_24
+        {
+            get
+            {
                 return ResourceManager.GetString("WebCameraSettings.24", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Prioritize External Webcam 的當地語系化字串。
         /// </summary>
-        internal static string WebCameraSettings_25 {
-            get {
+        internal static string WebCameraSettings_25
+        {
+            get
+            {
                 return ResourceManager.GetString("WebCameraSettings.25", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Automatically switches between Dell UltraSharp Webcam and other webcams (integrated and external). Windows Hello will use the active webcam for facial recognition.\n\nNote: Only one camera can be enabled and accessible at a time. 的當地語系化字串。
         /// </summary>
-        internal static string WebCameraSettings_26 {
-            get {
+        internal static string WebCameraSettings_26
+        {
+            get
+            {
                 return ResourceManager.GetString("WebCameraSettings.26", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Adjusts the frame size 的當地語系化字串。
         /// </summary>
-        internal static string WebCameraSettings_27 {
-            get {
+        internal static string WebCameraSettings_27
+        {
+            get
+            {
                 return ResourceManager.GetString("WebCameraSettings.27", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Camera Transition 的當地語系化字串。
         /// </summary>
-        internal static string WebCameraSettings_3 {
-            get {
+        internal static string WebCameraSettings_3
+        {
+            get
+            {
                 return ResourceManager.GetString("WebCameraSettings.3", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Smoothly transitions by panning and zooming when the camera readjusts your position in the frame 的當地語系化字串。
         /// </summary>
-        internal static string WebCameraSettings_4 {
-            get {
+        internal static string WebCameraSettings_4
+        {
+            get
+            {
                 return ResourceManager.GetString("WebCameraSettings.4", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Tracking Sensitivity 的當地語系化字串。
         /// </summary>
-        internal static string WebCameraSettings_5 {
-            get {
+        internal static string WebCameraSettings_5
+        {
+            get
+            {
                 return ResourceManager.GetString("WebCameraSettings.5", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Adjusts how quickly the camera responds to your movement and readjusts your position in the frame 的當地語系化字串。
         /// </summary>
-        internal static string WebCameraSettings_6 {
-            get {
+        internal static string WebCameraSettings_6
+        {
+            get
+            {
                 return ResourceManager.GetString("WebCameraSettings.6", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Normal 的當地語系化字串。
         /// </summary>
-        internal static string WebCameraSettings_7 {
-            get {
+        internal static string WebCameraSettings_7
+        {
+            get
+            {
                 return ResourceManager.GetString("WebCameraSettings.7", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Fast 的當地語系化字串。
         /// </summary>
-        internal static string WebCameraSettings_8 {
-            get {
+        internal static string WebCameraSettings_8
+        {
+            get
+            {
                 return ResourceManager.GetString("WebCameraSettings.8", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Frame Size 的當地語系化字串。
         /// </summary>
-        internal static string WebCameraSettings_9 {
-            get {
+        internal static string WebCameraSettings_9
+        {
+            get
+            {
                 return ResourceManager.GetString("WebCameraSettings.9", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Widget Settings 的當地語系化字串。
         /// </summary>
-        internal static string Widget_Settings {
-            get {
+        internal static string Widget_Settings
+        {
+            get
+            {
                 return ResourceManager.GetString("Widget_Settings", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Widget will automatically appear when meeting begins to customize settings for supported webcams 的當地語系化字串。
         /// </summary>
-        internal static string Widget_will_automatically_appear_when_meeting_begins {
-            get {
+        internal static string Widget_will_automatically_appear_when_meeting_begins
+        {
+            get
+            {
                 return ResourceManager.GetString("Widget_will_automatically_appear_when_meeting_begins", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Widgets 的當地語系化字串。
         /// </summary>
-        internal static string Widgets {
-            get {
+        internal static string Widgets
+        {
+            get
+            {
                 return ResourceManager.GetString("Widgets", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Windows 的當地語系化字串。
         /// </summary>
-        internal static string Windows {
-            get {
+        internal static string Windows
+        {
+            get
+            {
                 return ResourceManager.GetString("Windows", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Windows Search 的當地語系化字串。
         /// </summary>
-        internal static string WindowsSearch {
-            get {
+        internal static string WindowsSearch
+        {
+            get
+            {
                 return ResourceManager.GetString("WindowsSearch", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Windows Settings 的當地語系化字串。
         /// </summary>
-        internal static string WindowsSettings {
-            get {
+        internal static string WindowsSettings
+        {
+            get
+            {
                 return ResourceManager.GetString("WindowsSettings", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Wired 的當地語系化字串。
         /// </summary>
-        internal static string Wired {
-            get {
+        internal static string Wired
+        {
+            get
+            {
                 return ResourceManager.GetString("Wired", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Wired Connection 的當地語系化字串。
         /// </summary>
-        internal static string WiredConnection {
-            get {
+        internal static string WiredConnection
+        {
+            get
+            {
                 return ResourceManager.GetString("WiredConnection", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Autoscroll 的當地語系化字串。
         /// </summary>
-        internal static string Word_1 {
-            get {
+        internal static string Word_1
+        {
+            get
+            {
                 return ResourceManager.GetString("Word.1", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Paste and Match Formatting 的當地語系化字串。
         /// </summary>
-        internal static string Word_10 {
-            get {
+        internal static string Word_10
+        {
+            get
+            {
                 return ResourceManager.GetString("Word.10", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Previous Change 的當地語系化字串。
         /// </summary>
-        internal static string Word_11 {
-            get {
+        internal static string Word_11
+        {
+            get
+            {
                 return ResourceManager.GetString("Word.11", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Previous Comment 的當地語系化字串。
         /// </summary>
-        internal static string Word_12 {
-            get {
+        internal static string Word_12
+        {
+            get
+            {
                 return ResourceManager.GetString("Word.12", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Print 的當地語系化字串。
         /// </summary>
-        internal static string Word_13 {
-            get {
+        internal static string Word_13
+        {
+            get
+            {
                 return ResourceManager.GetString("Word.13", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Save 的當地語系化字串。
         /// </summary>
-        internal static string Word_14 {
-            get {
+        internal static string Word_14
+        {
+            get
+            {
                 return ResourceManager.GetString("Word.14", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Strikethrough 的當地語系化字串。
         /// </summary>
-        internal static string Word_15 {
-            get {
+        internal static string Word_15
+        {
+            get
+            {
                 return ResourceManager.GetString("Word.15", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Text Size - 的當地語系化字串。
         /// </summary>
-        internal static string Word_16 {
-            get {
+        internal static string Word_16
+        {
+            get
+            {
                 return ResourceManager.GetString("Word.16", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Text Size + 的當地語系化字串。
         /// </summary>
-        internal static string Word_17 {
-            get {
+        internal static string Word_17
+        {
+            get
+            {
                 return ResourceManager.GetString("Word.17", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Translate Selected Text 的當地語系化字串。
         /// </summary>
-        internal static string Word_18 {
-            get {
+        internal static string Word_18
+        {
+            get
+            {
                 return ResourceManager.GetString("Word.18", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 View One Page 的當地語系化字串。
         /// </summary>
-        internal static string Word_19 {
-            get {
+        internal static string Word_19
+        {
+            get
+            {
                 return ResourceManager.GetString("Word.19", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Find 的當地語系化字串。
         /// </summary>
-        internal static string Word_2 {
-            get {
+        internal static string Word_2
+        {
+            get
+            {
                 return ResourceManager.GetString("Word.2", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 View Page Width 的當地語系化字串。
         /// </summary>
-        internal static string Word_20 {
-            get {
+        internal static string Word_20
+        {
+            get
+            {
                 return ResourceManager.GetString("Word.20", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Increase Indent 的當地語系化字串。
         /// </summary>
-        internal static string Word_3 {
-            get {
+        internal static string Word_3
+        {
+            get
+            {
                 return ResourceManager.GetString("Word.3", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 New Comment 的當地語系化字串。
         /// </summary>
-        internal static string Word_4 {
-            get {
+        internal static string Word_4
+        {
+            get
+            {
                 return ResourceManager.GetString("Word.4", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Next Change 的當地語系化字串。
         /// </summary>
-        internal static string Word_5 {
-            get {
+        internal static string Word_5
+        {
+            get
+            {
                 return ResourceManager.GetString("Word.5", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Next Comment 的當地語系化字串。
         /// </summary>
-        internal static string Word_6 {
-            get {
+        internal static string Word_6
+        {
+            get
+            {
                 return ResourceManager.GetString("Word.6", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Paste and Keep Source Formatting 的當地語系化字串。
         /// </summary>
-        internal static string Word_7 {
-            get {
+        internal static string Word_7
+        {
+            get
+            {
                 return ResourceManager.GetString("Word.7", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Paste and Keep Text Only 的當地語系化字串。
         /// </summary>
-        internal static string Word_8 {
-            get {
+        internal static string Word_8
+        {
+            get
+            {
                 return ResourceManager.GetString("Word.8", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Paste and Merge Formatting 的當地語系化字串。
         /// </summary>
-        internal static string Word_9 {
-            get {
+        internal static string Word_9
+        {
+            get
+            {
                 return ResourceManager.GetString("Word.9", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Yes 的當地語系化字串。
         /// </summary>
-        internal static string Yes {
-            get {
+        internal static string Yes
+        {
+            get
+            {
                 return ResourceManager.GetString("Yes", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Zoom In 的當地語系化字串。
         /// </summary>
-        internal static string ZoomIn {
-            get {
+        internal static string ZoomIn
+        {
+            get
+            {
                 return ResourceManager.GetString("ZoomIn", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Zoom Out 的當地語系化字串。
         /// </summary>
-        internal static string ZoomOut {
-            get {
+        internal static string ZoomOut
+        {
+            get
+            {
                 return ResourceManager.GetString("ZoomOut", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   查詢類似 Zoom Reset 的當地語系化字串。
         /// </summary>
-        internal static string ZoomReset {
-            get {
+        internal static string ZoomReset
+        {
+            get
+            {
                 return ResourceManager.GetString("ZoomReset", resourceCulture);
             }
         }

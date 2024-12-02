@@ -40,7 +40,7 @@ namespace DDPM.SA.Common
         Task DeleteMouseAssignedAction(string Guid, int newValue);
         Task SetMouseAssignDialogAction(string Guid, byte[] newValue);
         Task SetMouseAssignKeystrokeAction(string Guid, byte[] newValue);
-
+        Task<bool> RestoreToDefaultMouse(string Guid, bool isFromCli = true);
 
         #endregion
 
@@ -59,6 +59,7 @@ namespace DDPM.SA.Common
         Task SetKbAssignedAction(string Guid, byte[] newValue);
         Task SetKbAssignDialogAction(string Guid, byte[] newValue);
         Task SetKbAssignKeystrokeAction(string Guid, byte[] newValue);
+        Task<bool> RestoreToDefaultKB(string Guid);
 
         #endregion
 
@@ -84,7 +85,8 @@ namespace DDPM.SA.Common
         Task SetTiltSensitivity(string itemID, int newValue);
 
         Task SetTipSensitivity(string itemID, int newValue);
-        Task ResetToDefault_Pen();
+        Task<bool> RestoreToDefaultPen();
+        Task<bool> RestoreRadialMenuToDefault();
 
 
         Task<string> PairingPen();
@@ -120,7 +122,7 @@ namespace DDPM.SA.Common
         //event EventHandler<int>? WALSnoozeTimeLeftInSeconds_ChangeEvent;
         //event EventHandler<bool>? Esi_IsWALLockCountdownStartedChanged_ChangeEvent;
         //event EventHandler<int>? Esi_WALLockCountdownChanged_ChangeEvent;
-        event EventHandler<UpdateUINotify>? WebcamEventHandler;
+        event EventHandler<UpdateUINotify>? DTPEventHandler;
 
         Task<JArray> GetPresetProfiles(string Guid);
         Task<JArray> GetCustomProfiles(string Guid);
@@ -342,6 +344,8 @@ namespace DDPM.SA.Common
 
         #region Dock
         Task<DockData> GetDockData(string guid);
+        Task<string> GetFirmwareVersionForDock(string guid);
+        Task<string> GetDockServiceTagForDock(string guid);
         #endregion
     }
 }

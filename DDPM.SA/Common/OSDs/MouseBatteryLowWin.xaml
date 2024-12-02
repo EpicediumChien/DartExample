@@ -13,6 +13,7 @@
     Topmost="True"
     WindowStartupLocation="Manual"
     WindowStyle="None"
+    Title="AFF4035F-B0CA-4B8C-991F-AAEBEB625EEF-MouseBatteryLowIWin"
     mc:Ignorable="d">
 
     <Window.Resources>

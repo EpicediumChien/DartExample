@@ -29,6 +29,10 @@ using Newtonsoft.Json.Linq;
 using System.Text;
 using DPeMPublic.Common.Enums;
 using System.Text.Json;
+using Google.Protobuf.WellKnownTypes;
+using System.IO;
+using Type = System.Type;
+using DDPM.SA.Common.UI;
 
 namespace DDPM.SA.Plugins.User.DTPProxy
 {
@@ -118,18 +122,17 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
         public event EventHandler<bool> UpdateNotify;
 
-        public event EventHandler<ZoomChangedArgs> ZoomChanged_Notify;
-
-        public event EventHandler<ZoomMeetingTypeChangedArgs> ZoomMeetingTypeChanged_Notify;
-        public event EventHandler<IsZoomMeetingActiveChangedArgs> IsZoomMeetingActive_Notify;
-
-        public event EventHandler<IsZoomScreenShareActiveChangedArgs> IsZoomScreenShareActive_Notify;
+        //Marked by Derek 1125 because they had covered by WebcamEventHandler
+        //public event EventHandler<ZoomChangedArgs> ZoomChanged_Notify;
+        //public event EventHandler<ZoomMeetingTypeChangedArgs> ZoomMeetingTypeChanged_Notify;
+        //public event EventHandler<IsZoomMeetingActiveChangedArgs> IsZoomMeetingActive_Notify;
+        //public event EventHandler<IsZoomScreenShareActiveChangedArgs> IsZoomScreenShareActive_Notify;
 
         //Derek 1120
-        public event EventHandler<UpdateUINotify> WebcamEventHandler;
+        public event EventHandler<UpdateUINotify> DTPEventHandler;
         public void OnUIUpdateNotify(UpdateUINotify e)
         {
-            WebcamEventHandler?.Invoke(this, e);
+            DTPEventHandler?.Invoke(this, e);
         }
 
         public void NotifyNow()
@@ -394,6 +397,75 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 writelog($"Could not retrieve the Commodity Interface {_mouseInterfaceType} for the {Guid} item.");
             }
         }
+        public async Task<bool> RestoreToDefaultMouse(string Guid, bool isFromCli = true)
+        {
+            if (!IsDTPReady)
+                return false;
+            if (!await GetItemIDAsync("Mouse", Guid))
+                return false;
+
+            if (isFromCli)
+            {
+                string model;
+                string profileID;
+                if (await GetCommodityInterfaceInstanceAsync(_mouseMethodInfo) is ICommodity commodity)
+                {
+                    var value = GetPropertyValue(_mouseInterfaceType, commodity, "ModelNumber");
+                    model = value == null ? "" : (string)value;
+                    if (model == "")
+                        return false;
+
+                    value = GetPropertyValue(_mouseInterfaceType, commodity, "CurrentSelectedAppSpecificProfile");
+                    profileID = value == null ? "" : (string)value;
+                    if (profileID == "")
+                        return false;
+
+                    var result = await DeleteMouseAllAssignedActions(Guid);
+                    if (!result)
+                        return false;
+
+                    await SetCurrentSelectedAppSpecificProfile(Guid, "{76824745-CE06-4358-835D-7BB991CB71A0}"); //AllApp
+                    await DeleteMouseAllAssignedActions(Guid);
+                    await SetCurrentSelectedAppSpecificProfile(Guid, "{E0C9145B-BE8B-4423-B520-8CA71BE88E11}"); // Word
+                    await DeleteMouseAllAssignedActions(Guid);
+                    await SetCurrentSelectedAppSpecificProfile(Guid, "{37743697-4B39-45CD-B7F8-30027D1521ED}"); //Excel
+                    await DeleteMouseAllAssignedActions(Guid);
+                    await SetCurrentSelectedAppSpecificProfile(Guid, "{7BBECD91-F12A-4CC4-B005-526BA66BA657}"); //PowerPoint
+                    await DeleteMouseAllAssignedActions(Guid);
+                    await SetCurrentSelectedAppSpecificProfile(Guid, "{CCCE4E6F-C690-4EF5-BA19-F270C26C21B6}"); //Outlook
+                    await DeleteMouseAllAssignedActions(Guid);
+                    await SetCurrentSelectedAppSpecificProfile(Guid, profileID); 
+
+                    model = SACommonHelper.MappingModel(model);
+                    var filePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), @$"Dell\Dell Display and Peripheral Manager\Actions\{model}.json");
+                    if (File.Exists(filePath))
+                    {
+                        try
+                        {
+                            File.Delete(filePath);
+                        }
+                        catch (Exception ex)
+                        {
+                            writelog($"[DTPProxyPlugin] [RestoreToDefaultPen] Delete setting file failed: {ex}");
+                        }
+                    }
+                    var message = $"Mouse|RestoreToDefault|{Guid}|{model}";
+                    SendDTPEventToUI(message);
+                    return true;
+                }
+                else
+                {
+                    Debug.WriteLine($"Could not retrieve the Commodity Interface {_mouseInterfaceType} for the {Guid} item.");
+                    writelog($"Could not retrieve the Commodity Interface {_mouseInterfaceType} for the {Guid} item.");
+                    return false;
+                }
+            }
+            else
+            {
+                var result = await DeleteMouseAllAssignedActions(Guid);
+                return result;
+            }
+        }
 
         #endregion
 
@@ -472,34 +544,6 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 writelog($"Could not retrieve the Commodity Interface {_mouseInterfaceType} for the {_itemID} item.");
                 return new JArray();
             }
-        }
-
-        //Derek 1120
-        public async Task<JArray> GetWebcamDeviceItemsExAsync()
-        {
-            _itemID = new ItemId(WebcamItemID);
-
-            if (_webcamMethodInfo != null)
-            {
-                if (await GetCommodityInterfaceInstanceAsync(_webcamMethodInfo) is ICommodity commodity)
-                {
-                    var value = GetPropertyValue(_webcamInterfaceType, commodity, "DeviceItemsEx");
-                    return value == null ? new JArray() : (JArray)value;
-                }
-                else
-                {
-                    Debug.WriteLine($"Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {_itemID} item.");
-                    writelog($"Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {_itemID} item.");
-                    return new JArray();
-                }
-            }
-            else
-            {
-                Debug.WriteLine($"[GetDeviceItemsEx]Could not retrieve the Commodity Interface for the {_itemID} item. _webcamMethodInfo is null");
-                writelog($"[GetDeviceItemsEx]Could not retrieve the Commodity Interface for the {_itemID} item. _webcamMethodInfo is null");
-                return new JArray();
-            }
-
         }
 
         public async Task<JArray> GetKeyboardDeviceItemsEx()
@@ -630,11 +674,82 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 writelog($"Could not retrieve the Commodity Interface {_keyboardInterfaceType} for the {_itemID} item.");
             }
         }
+        public async Task<bool> RestoreToDefaultKB(string Guid)
+        {
+            if (!IsDTPReady)
+                return false;
+            if (!await GetItemIDAsync("Keyboard", Guid))
+                return false;
+
+            string model;
+            if (await GetCommodityInterfaceInstanceAsync(_keyboardMethodInfo) is ICommodity commodity)
+            {
+                var value = GetPropertyValue(_keyboardInterfaceType, commodity, "ModelNumber");
+                model = value == null ? "" : (string)value;
+                if (model == "")
+                    return false;
+            }
+            else
+            {
+                Debug.WriteLine($"Could not retrieve the Commodity Interface {_keyboardInterfaceType} for the {Guid} item.");
+                writelog($"Could not retrieve the Commodity Interface {_keyboardInterfaceType} for the {Guid} item.");
+                return false;
+            }
+
+            var result = await DeleteKeyboardAllAssignedActions(Guid);
+            if (!result)
+                return false;
+
+            model = SACommonHelper.MappingModel(model);
+            var filePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), @$"Dell\Dell Display and Peripheral Manager\Actions\{model}.json");
+            if (File.Exists(filePath))
+            {
+                try
+                {
+                    File.Delete(filePath);
+                }
+                catch (Exception ex)
+                {
+                    writelog($"[DTPProxyPlugin] [RestoreToDefaultPen] Delete setting file failed: {ex}");
+                }
+            }
+            var message= $"Keyboard|RestoreToDefault|{Guid}|{model}";
+            SendDTPEventToUI(message);
+            return true;
+        }
 
         #endregion
 
-
         #region Webcam
+
+        //Derek 1120
+        public async Task<JArray> GetWebcamDeviceItemsExAsync()
+        {
+            _itemID = new ItemId(WebcamItemID);
+
+            if (_webcamMethodInfo != null)
+            {
+                if (await GetCommodityInterfaceInstanceAsync(_webcamMethodInfo) is ICommodity commodity)
+                {
+                    var value = GetPropertyValue(_webcamInterfaceType, commodity, "DeviceItemsEx");
+                    return value == null ? new JArray() : (JArray)value;
+                }
+                else
+                {
+                    Debug.WriteLine($"Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {_itemID} item.");
+                    writelog($"Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {_itemID} item.");
+                    return new JArray();
+                }
+            }
+            else
+            {
+                Debug.WriteLine($"[GetDeviceItemsEx]Could not retrieve the Commodity Interface for the {_itemID} item. _webcamMethodInfo is null");
+                writelog($"[GetDeviceItemsEx]Could not retrieve the Commodity Interface for the {_itemID} item. _webcamMethodInfo is null");
+                return new JArray();
+            }
+
+        }
+
         public async Task<JArray> GetPresetProfiles(string Guid)
         {
             if (!await GetItemIDAsync("Webcam", Guid))
@@ -2355,7 +2470,13 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 if (await GetCommodityInterfaceInstanceAsync(_penMethodInfo) is ICommodity commodity)
                 {
                     var value = GetPropertyValue(_penInterfaceType, commodity, "MenuSinglePressSetting");
-                    return Encoding.UTF8.GetString((byte[])value);
+                    if (value is byte[] byteArray)
+                    {
+                        var str = Encoding.UTF8.GetString(byteArray);
+                        Debug.WriteLine(str);
+                        return str;
+                    }
+                    return string.Empty;
                 }
                 else
                 {
@@ -2575,7 +2696,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
         public async Task SetEraserSinglePressSetting(string itemID, byte[] newValue)
         {
-            _itemID = new ItemId(itemID);
+            _itemID = new ItemId(PenItemID0);
 
             if (_penMethodInfo != null)
             {
@@ -2779,8 +2900,65 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 writelog($"[SetTipSensitivity]Could not retrieve the Commodity Interface for the  {_itemID}  item. _penMethodInfo is null");
             }
         }
-        public async Task ResetToDefault_Pen()
+        public async Task<bool> RestoreToDefaultPen()
         {
+            if (!IsDTPReady)
+                return false;
+
+            byte[] newValue = Encoding.UTF8.GetBytes($"{{\"actionId\":73,\"actionName\":\"\"}}");
+            await SetEraserSinglePressSetting(PenItemID0, newValue);
+            newValue = Encoding.UTF8.GetBytes($"{{\"actionId\":90,\"actionName\":\"\"}}");
+            await SetEraserDoublePressSetting(PenItemID0, newValue);
+            newValue = Encoding.UTF8.GetBytes($"{{\"actionId\":75,\"actionName\":\"\"}}");
+            await SetEraserLongPressSetting(PenItemID0, newValue);
+            newValue = Encoding.UTF8.GetBytes($"{{\"actionId\":27,\"actionName\":\"\"}}");
+            await SetSideTopSwitchSinglePressSetting(PenItemID0, newValue);
+            newValue = Encoding.UTF8.GetBytes($"{{\"actionId\":26,\"actionName\":\"\"}}");
+            await SetSideBottomSwitchSinglePressSetting(PenItemID0, newValue);
+            await SetTipSensitivity(PenItemID0, 3);
+            await SetTiltSensitivity(PenItemID0, 1);
+
+            await RestoreRadialMenuToDefault();
+
+            var filePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), @$"Dell\Dell Display and Peripheral Manager\Actions\pen.json");
+            if (File.Exists(filePath))
+            {
+                try
+                {
+                    File.Delete(filePath);
+                }
+                catch (Exception ex)
+                {
+                    writelog($"[DTPProxyPlugin] [RestoreToDefaultPen] Delete setting file failed: {ex}");
+                }
+            }
+            var message = $"Pen|RestoreToDefault||";
+            SendDTPEventToUI(message);
+            return true;
+        }
+        public async Task<bool> RestoreRadialMenuToDefault()
+        {
+            if (!IsDTPReady)
+                return false;
+
+            byte[] newValue = Encoding.UTF8.GetBytes($"{{\"menuIndex\":0,\"actionId\":82,\"actionName\":\"\"}}");
+            await SetMenuSinglePressSetting(PenItemID0, newValue);
+            newValue = Encoding.UTF8.GetBytes($"{{\"menuIndex\":1,\"actionId\":79,\"actionName\":\"\"}}");
+            await SetMenuSinglePressSetting(PenItemID0, newValue);
+            newValue = Encoding.UTF8.GetBytes($"{{\"menuIndex\":2,\"actionId\":86,\"actionName\":\"\"}}");
+            await SetMenuSinglePressSetting(PenItemID0, newValue);
+            newValue = Encoding.UTF8.GetBytes($"{{\"menuIndex\":3,\"actionId\":80,\"actionName\":\"\"}}");
+            await SetMenuSinglePressSetting(PenItemID0, newValue);
+            newValue = Encoding.UTF8.GetBytes($"{{\"menuIndex\":4,\"actionId\":83,\"actionName\":\"\"}}");
+            await SetMenuSinglePressSetting(PenItemID0, newValue);
+            newValue = Encoding.UTF8.GetBytes($"{{\"menuIndex\":5,\"actionId\":85,\"actionName\":\"\"}}");
+            await SetMenuSinglePressSetting(PenItemID0, newValue);
+            newValue = Encoding.UTF8.GetBytes($"{{\"menuIndex\":6,\"actionId\":81,\"actionName\":\"\"}}");
+            await SetMenuSinglePressSetting(PenItemID0, newValue);
+            newValue = Encoding.UTF8.GetBytes($"{{\"menuIndex\":7,\"actionId\":84,\"actionName\":\"\"}}");
+            await SetMenuSinglePressSetting(PenItemID0, newValue);
+            await SetMenuCenterRightClickSetting(PenItemID0, true);
+            return true;
         }
 
         #endregion
@@ -5633,56 +5811,85 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 return null;
             }
         }
-        public async Task<string> GetFirmwareVersionAsyncForDock(string guid)
+        public Task<string> GetFirmwareVersionForDock(string guid)
         {
             try
             {
-                if (!await GetItemIDAsync("Dock", guid))
+                if (!GetItemIDAsync("Dock", guid).Result)
                 {
                     writelog(" [Dock] Failed to retrieve guid.");
-                    return null;
+                    return Task.FromResult("");
                 }
-                var commodity = await GetCommodityInterfaceInstanceAsync(_dongleMethodInfo);
+                var commodity = GetCommodityInterfaceInstanceAsync(_dockMethodInfo).Result;
                 if (commodity is ICommodity)
                 {
                     var value = GetPropertyValue(_dockInterfaceType, commodity, "FirmwareVersion");
-                    writelog($"[Dock] GetFirmwareVersionAsyncForDock succeeded for {guid}");
-                    return (string)value;
+                    writelog($"[Dock] GetFirmwareVersionForDock succeeded for {guid}");
+                    writelog($"[Dock] GetDockServiceTagForDock succeeded for {(string)value}");
+                    return Task.FromResult((string)value);
                 }
 
-                writelog($"[Dock] GetFirmwareVersionAsyncForDock failed: Could not retrieve commodity interface for {guid}");
-                return null;
+                writelog($"[Dock] GetFirmwareVersionForDock failed: Could not retrieve commodity interface for {guid}");
+                return Task.FromResult("");
             }
             catch (Exception ex)
             {
-                writelog($"[Dock] GetFirmwareVersionAsyncForDock failed for {guid} - Exception: {ex.Message}");
-                return null;
+                writelog($"[Dock] GetFirmwareVersionForDock failed for {guid} - Exception: {ex.Message}");
+                return Task.FromResult("");
             }
         }
-        public async Task<string> GetDockServiceTagAsyncForDock(string guid)
+        public Task<string> GetDockServiceTagForDock(string guid)
         {
             try
             {
-                if (!await GetItemIDAsync("Dock", guid))
+                if (!GetItemIDAsync("Dock", guid).Result)
                 {
                     writelog(" [Dock] Failed to retrieve guid.");
-                    return null;
+                    return Task.FromResult("");
                 }
-                var commodity = await GetCommodityInterfaceInstanceAsync(_dongleMethodInfo);
+                var commodity = GetCommodityInterfaceInstanceAsync(_dockMethodInfo).Result;
                 if (commodity is ICommodity)
                 {
                     var value = GetPropertyValue(_dockInterfaceType, commodity, "DockServiceTag");
-                    writelog($"[Dock] GetDockServiceTagAsyncForDock succeeded for {guid}");
-                    return (string)value;
+                    writelog($"[Dock] GetDockServiceTagForDock succeeded for {guid}");
+                    writelog($"[Dock] GetDockServiceTagForDock succeeded value is null : {(value == null ? "Yes" : "No")}");
+                    if (value != null)
+                    {
+                        byte[] dokc_bytes = (byte[])value;
+                        writelog($"[Dock] GetDockServiceTagForDock dokc_bytes.Length : {dokc_bytes.Length}");
+                        string textString = System.Text.Encoding.UTF8.GetString(dokc_bytes);
+                        writelog($"[Dock] GetDockServiceTagForDock dokc_bytes to string : " + textString);
+                        if (!string.IsNullOrEmpty(textString))
+                        {
+                            try
+                            {
+                                using (JsonDocument doc = JsonDocument.Parse(textString))
+                                {
+                                    JsonElement root = doc.RootElement;
+                                    string payloadElement = root.GetProperty("Payload").ToString();
+                                    int temp_int = 0;
+                                    if (!string.IsNullOrEmpty(payloadElement))
+                                    {
+                                        return Task.FromResult(payloadElement);
+                                    }
+                                }
+                            }
+                            catch (Exception ex)
+                            {
+                                writelog($"[Dock] GetDockServiceTagForDock Error : {ex.Message}");
+                            }
+                        }
+                    }
+                    return Task.FromResult("");
                 }
 
-                writelog($"[Dock] GetDockServiceTagAsyncForDock failed: Could not retrieve commodity interface for {guid}");
-                return null;
+                writelog($"[Dock] GetDockServiceTagForDock failed: Could not retrieve commodity interface for {guid}");
+                return Task.FromResult("");
             }
             catch (Exception ex)
             {
-                writelog($"[Dock] GetDockServiceTagAsyncForDock failed for {guid} - Exception: {ex.Message}");
-                return null;
+                writelog($"[Dock] GetDockServiceTagForDock failed for {guid} - Exception: {ex.Message}");
+                return Task.FromResult("");
             }
         }
 
@@ -5954,7 +6161,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             {
                 try
                 {
-                    _pencom.KeyCaptureDataChanged += _pencom_KeyCaptureDataChanged;
+                    //_pencom.KeyCaptureDataChanged += _pencom_KeyCaptureDataChanged;
                     writelog($"Pen Commodity event registered");
                 }
                 catch (Exception e)
@@ -6076,10 +6283,10 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
                 //if (obj!.DeviceItems.Length > 0)
                 //{
-                    //writelog($"InstanceId = {obj!.InstanceId}"); //fail
-                    //writelog($"InstanceNumber = {obj!.InstanceNumber}"); //fail
-                    //writelog($"ItemId = {obj!.ItemId}"); //fail
-                    //writelog($"DeviceName = {obj!.DeviceName}"); //fail
+                //writelog($"InstanceId = {obj!.InstanceId}"); //fail
+                //writelog($"InstanceNumber = {obj!.InstanceNumber}"); //fail
+                //writelog($"ItemId = {obj!.ItemId}"); //fail
+                //writelog($"DeviceName = {obj!.DeviceName}"); //fail
                 //}
             }
             catch (Exception e)
@@ -6114,7 +6321,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
             else
             {
-                writelog($"No any webcam instance to unregister.");
+                writelog($"No any webcam instance to register.");
                 //try to force release current --> will catch exception  1123
                 //await UnregisterEventsForWebcamAsync(0);
             }
@@ -6142,7 +6349,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             if (null == _commSdk || null == _comdity || index < 0)
                 return false;
 
-            try 
+            try
             {
                 _comdity = await _commSdk.GetCommodityAsync<IWebcamCommodity>(new ItemId($"DellPeripheral.Webcam.{index}"), CancellationToken.None);
 
@@ -6161,7 +6368,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                     _Webcamcom.FocusChanged += Webcam_FocusChanged;
                     _Webcamcom.PanChanged += Webcam_PanChanged;
                     _Webcamcom.TiltChanged += Webcam_TiltChanged;
-                    _Webcamcom.ZoomChanged += Webcam_ZoomChanged;
+                    _Webcamcom.ZoomChanged += Webcam_ZoomChanged; //QAM also use this event
                     _Webcamcom.BrightnessChanged += Webcam_BrightnessChanged;
                     _Webcamcom.ContrastChanged += Webcam_ContrastChanged;
                     _Webcamcom.AntiFlickerChanged += Webcam_AntiFlickerChanged;
@@ -6176,8 +6383,9 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                     _Webcamcom.FieldOfViewChanged += Webcam_FieldOfViewChanged;
                     _Webcamcom.IsHDROnChanged += Webcam_IsHDROnChanged;
                     _Webcamcom.SerialNumberChanged += Webcam_SerialNumberChanged;
-                    _Webcamcom.IsZoomMeetingActiveChanged += Webcam_IsZoomMeetingActiveChanged;
-                    _Webcamcom.IsZoomScreenShareActiveChanged += Webcam_IsZoomScreenShareActiveChanged;
+                    _Webcamcom.IsZoomMeetingActiveChanged += Webcam_IsZoomMeetingActiveChanged; //for QAM
+                    _Webcamcom.IsZoomScreenShareActiveChanged += Webcam_IsZoomScreenShareActiveChanged; //for QAM
+                    _Webcamcom.ZoomMeetingTypeChanged += Webcam_ZoomMeetingTypeChanged; //for QAM
 
                     _Webcamcom.WALSnoozeTimeLeftInSecondsChanged += Webcam_WALSnoozeTimeLeftInSecondsChanged;
                     _Webcamcom.Esi_IsWALLockCountdownStartedChanged += Webcam_Esi_IsWALLockCountdownStartedChanged;
@@ -6192,7 +6400,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             {
                 writelog($"Webcam{index} RegisterEventsForWebcam Exception {e.Message}");
 
-                return false; 
+                return false;
             }
 
             return false;
@@ -6257,10 +6465,63 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             return false;
         }
 
-        private void _pencom_KeyCaptureDataChanged(object sender, KeyCaptureDataChangedArgs e)
+        private async Task<bool> UnregisterEventsForWebcamAsync()
         {
-            Debug.WriteLine($"[Pen]KeystrokeDisplayDataChanged {e.KeyCaptureData} Changed for Device ID: {e.DeviceId}  !!!!!!!!!!!!!!!");
-            writelog($"[Headset]FirmwareVersionChanged {e.KeyCaptureData} Changed for Device ID: {e.DeviceId}  !!!!!!!!!!!!!!!");
+            if (null == _commSdk || null == _comdity)
+                return false;
+
+            try
+            {
+                _comdity = await _commSdk.GetCommodityAsync<IWebcamCommodity>(new ItemId($"DellPeripheral.Webcam"), CancellationToken.None);
+
+                if (_comdity is Dell.TechHub.Commodity.Peripheral.IWebcamCommodity _Webcamcom)
+                {
+                    _Webcamcom.ProfileManagerAdded -= Webcam_ProfileManagerAdded;
+                    _Webcamcom.IsMicEnumerationOnChanged -= Webcam_IsMicEnumerationOnChanged;
+                    _Webcamcom.CurrentSelectedProfileChanged -= Webcam_CurrentSelectedProfileChanged;
+                    _Webcamcom.CustomProfileAdded -= Webcam_CustomProfileAdded;
+                    _Webcamcom.CustomProfileRemoved -= Webcam_CustomProfileRemoved;
+
+                    _Webcamcom.PriorityChanged -= Webcam_PriorityChanged;
+                    _Webcamcom.IsFocusOnChanged -= Webcam_IsFocusOnChanged;
+                    _Webcamcom.FocusChanged -= Webcam_FocusChanged;
+                    _Webcamcom.PanChanged -= Webcam_PanChanged;
+                    _Webcamcom.TiltChanged -= Webcam_TiltChanged;
+                    _Webcamcom.ZoomChanged -= Webcam_ZoomChanged;
+                    _Webcamcom.BrightnessChanged -= Webcam_BrightnessChanged;
+                    _Webcamcom.ContrastChanged -= Webcam_ContrastChanged;
+                    _Webcamcom.AntiFlickerChanged -= Webcam_AntiFlickerChanged;
+                    _Webcamcom.SaturationChanged -= Webcam_SaturationChanged;
+                    _Webcamcom.SharpnessChanged -= Webcam_SharpnessChanged;
+                    _Webcamcom.IsAutoWhiteBalanceOnChanged -= Webcam_IsAutoWhiteBalanceOnChanged;
+                    _Webcamcom.AutoWhiteBalanceChanged -= Webcam_AutoWhiteBalanceChanged;
+                    _Webcamcom.IsAutoFramingTransitionOnChanged -= Webcam_IsAutoFramingTransitionOnChanged;
+                    _Webcamcom.IsAutoFramingOnChanged -= Webcam_IsAutoFramingOnChanged;
+                    _Webcamcom.AutoFramingSensitivityChanged -= Webcam_AutoFramingSensitivityChanged;
+                    _Webcamcom.AutoFramingFrameSizeChanged -= Webcam_AutoFramingFrameSizeChanged;
+                    _Webcamcom.FieldOfViewChanged -= Webcam_FieldOfViewChanged;
+                    _Webcamcom.IsHDROnChanged -= Webcam_IsHDROnChanged;
+                    _Webcamcom.SerialNumberChanged -= Webcam_SerialNumberChanged;
+                    _Webcamcom.IsZoomMeetingActiveChanged -= Webcam_IsZoomMeetingActiveChanged;
+                    _Webcamcom.IsZoomScreenShareActiveChanged -= Webcam_IsZoomScreenShareActiveChanged;
+
+                    _Webcamcom.WALSnoozeTimeLeftInSecondsChanged -= Webcam_WALSnoozeTimeLeftInSecondsChanged;
+                    _Webcamcom.Esi_IsWALLockCountdownStartedChanged -= Webcam_Esi_IsWALLockCountdownStartedChanged;
+                    _Webcamcom.Esi_IsCameraSensorCoveredChanged -= Webcam_Esi_IsCameraSensorCoveredChanged;
+                    _Webcamcom.Esi_WALLockCountdownChanged -= Webcam_Esi_WALLockCountdownChanged;
+
+                    writelog($"Webcam Commodity events unregistered successfully");
+                    return true;
+                }
+            }
+            catch (Exception e)
+            {
+                writelog($"Webcam UnregisterEventsForWebcam Exception {e.Message}");
+
+                return false;
+            }
+
+            return false;
         }
 
         private void OnDTPProxyPluginConditionChangeHandler(object sender, EventArgs e)
@@ -6358,26 +6619,26 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         {
             writelog($"[DTPProxy] Connected Device ID: {e.DeviceId} !!!!!!!!!!!!!!!");
         }
-        private void ZoomChanged(object sender, ZoomChangedArgs e)
-        {
-            writelog($"[DTPProxy] ZoomChanged e : {e}");
-            ZoomChanged_Notify?.Invoke(this, e);
-        }
-        private void ZoomMeetingTypeChanged(object sender, ZoomMeetingTypeChangedArgs e)
-        {
-            writelog($"[DTPProxy] ZoomMeetingTypeChanged e : {e}");
-            ZoomMeetingTypeChanged_Notify?.Invoke(this, e);
-        }
-        private void IsZoomMeetingActiveChanged(object sender, IsZoomMeetingActiveChangedArgs e)
-        {
-            writelog($"[DTPProxy] IsZoomMeetingActiveChanged e : {e}");
-            IsZoomMeetingActive_Notify?.Invoke(this, e);
-        }
-        private void IsZoomScreenShareActiveChanged(object sender, IsZoomScreenShareActiveChangedArgs e)
-        {
-            writelog($"[DTPProxy] ZoomMeetingTypeChanged e : {e}");
-            IsZoomScreenShareActive_Notify?.Invoke(this, e);
-        }
+        //private void ZoomChanged(object sender, ZoomChangedArgs e)
+        //{
+        //    writelog($"[DTPProxy] ZoomChanged e : {e}");
+        //    ZoomChanged_Notify?.Invoke(this, e);
+        //}
+        //private void ZoomMeetingTypeChanged(object sender, ZoomMeetingTypeChangedArgs e)
+        //{
+        //    writelog($"[DTPProxy] ZoomMeetingTypeChanged e : {e}");
+        //    ZoomMeetingTypeChanged_Notify?.Invoke(this, e);
+        //}
+        //private void IsZoomMeetingActiveChanged(object sender, IsZoomMeetingActiveChangedArgs e)
+        //{
+        //    writelog($"[DTPProxy] IsZoomMeetingActiveChanged e : {e}");
+        //    IsZoomMeetingActive_Notify?.Invoke(this, e);
+        //}
+        //private void IsZoomScreenShareActiveChanged(object sender, IsZoomScreenShareActiveChangedArgs e)
+        //{
+        //    writelog($"[DTPProxy] ZoomMeetingTypeChanged e : {e}");
+        //    IsZoomScreenShareActive_Notify?.Invoke(this, e);
+        //}
         private void _comdity_Dock_Disconnected(object sender, DisconnectedArgs e)
         {
             writelog($"Dock Disconnected Device ID: {e.DeviceId} !!!!!!!!!!!!!!!");
@@ -6440,17 +6701,26 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         //1. some devices has connected before DTPPlugin init
         //   A. register events for them, and remove events when disconnected
         //2. new devices connected --> register
+
+        private void Webcam_ZoomMeetingTypeChanged(object sender, ZoomMeetingTypeChangedArgs e)
+        {
+            SendDTPEventToUI(CreateEventMsg("Webcam", "Webcam_ZoomMeetingTypeChanged",
+                                    e.DeviceId, $"NewValue:{e.ZoomMeetingType}"));
+
+            writelog($"Catch event Webcam_ZoomMeetingTypeChanged : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+        }
+
         private void Webcam_SharpnessChanged(object sender, SharpnessChangedArgs e)
         {
-            SendWebcamEventToUI(CreateEventMsg("Webcam", "Webcam_SharpnessChanged",
+            SendDTPEventToUI(CreateEventMsg("Webcam", "Webcam_SharpnessChanged",
                                     e.DeviceId, $"NewValue:{e.Sharpness}"));
 
-            throw new NotImplementedException();
+            writelog($"Catch event Webcam_SharpnessChanged : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
         }
 
         private void Webcam_Esi_WALLockCountdownChanged(object sender, Esi_WALLockCountdownChangedArgs e)
         {
-            SendWebcamEventToUI(CreateEventMsg("Webcam", "Webcam_Esi_WALLockCountdownChanged",
+            SendDTPEventToUI(CreateEventMsg("Webcam", "Webcam_Esi_WALLockCountdownChanged",
                                     e.DeviceId, $"NewValue:{e.WALLockCountdown}"));
 
             writelog($"Catch event _Webcamcom_Esi_WALLockCountdownChanged : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
@@ -6458,7 +6728,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
         private void Webcam_Esi_IsWALLockCountdownStartedChanged(object sender, Esi_IsWALLockCountdownStartedChangedArgs e)
         {
-            SendWebcamEventToUI(CreateEventMsg("Webcam", "Webcam_Esi_IsWALLockCountdownStartedChanged",
+            SendDTPEventToUI(CreateEventMsg("Webcam", "Webcam_Esi_IsWALLockCountdownStartedChanged",
                                     e.DeviceId, $"NewValue:{e.IsWALLockCountdownStarted}"));
 
             writelog($"Catch event _Webcamcom_Esi_IsWALLockCountdownStartedChanged : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
@@ -6466,15 +6736,16 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
         private void Webcam_WALSnoozeTimeLeftInSecondsChanged(object sender, WALSnoozeTimeLeftInSecondsChangedArgs e)
         {
-            SendWebcamEventToUI(CreateEventMsg("Webcam", "Webcam_WALSnoozeTimeLeftInSecondsChanged",
+            SendDTPEventToUI(CreateEventMsg("Webcam", "Webcam_WALSnoozeTimeLeftInSecondsChanged",
                                     e.DeviceId, $"NewValue:{e.WALSnoozeTimeLeftInSeconds}"));
 
+            writelog($"Catch event _Webcamcom_WALSnoozeTimeLeftInSecondsChanged NewValue:{e.WALSnoozeTimeLeftInSeconds}");
             writelog($"Catch event _Webcamcom_WALSnoozeTimeLeftInSecondsChanged : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
         }
 
         private void Webcam_IsZoomScreenShareActiveChanged(object sender, IsZoomScreenShareActiveChangedArgs e)
         {
-            SendWebcamEventToUI(CreateEventMsg("Webcam", "Webcam_IsZoomScreenShareActiveChanged",
+            SendDTPEventToUI(CreateEventMsg("Webcam", "Webcam_IsZoomScreenShareActiveChanged",
                                     e.DeviceId, $"NewValue:{e.IsZoomScreenShareActive}"));
 
             writelog($"Catch event _Webcamcom_IsZoomScreenShareActiveChanged : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
@@ -6482,7 +6753,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
         private void Webcam_IsZoomMeetingActiveChanged(object sender, IsZoomMeetingActiveChangedArgs e)
         {
-            SendWebcamEventToUI(CreateEventMsg("Webcam", "Webcam_IsZoomMeetingActiveChanged",
+            SendDTPEventToUI(CreateEventMsg("Webcam", "Webcam_IsZoomMeetingActiveChanged",
                                     e.DeviceId, $"NewValue:{e.IsZoomMeetingActive}"));
 
             writelog($"Catch event _Webcamcom_IsZoomMeetingActiveChanged : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
@@ -6490,7 +6761,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
         private void Webcam_SerialNumberChanged(object sender, SerialNumberChangedArgs e)
         {
-            SendWebcamEventToUI(CreateEventMsg("Webcam", "Webcam_SerialNumberChanged",
+            SendDTPEventToUI(CreateEventMsg("Webcam", "Webcam_SerialNumberChanged",
                                     e.DeviceId, $"NewValue:{e.SerialNumber}"));
 
             writelog($"Catch event _Webcamcom_SerialNumberChanged : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
@@ -6498,7 +6769,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
         private void Webcam_IsHDROnChanged(object sender, IsHDROnChangedArgs e)
         {
-            SendWebcamEventToUI(CreateEventMsg("Webcam", "Webcam_IsHDROnChanged",
+            SendDTPEventToUI(CreateEventMsg("Webcam", "Webcam_IsHDROnChanged",
                                     e.DeviceId, $"NewValue:{e.IsHDROn}"));
 
             writelog($"Catch event _Webcamcom_IsHDROnChanged : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
@@ -6506,7 +6777,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
         private void Webcam_FieldOfViewChanged(object sender, FieldOfViewChangedArgs e)
         {
-            SendWebcamEventToUI(CreateEventMsg("Webcam", "Webcam_FieldOfViewChanged",
+            SendDTPEventToUI(CreateEventMsg("Webcam", "Webcam_FieldOfViewChanged",
                                     e.DeviceId, $"NewValue:{e.FieldOfView}"));
 
             writelog($"Catch event _Webcamcom_FieldOfViewChanged : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
@@ -6514,7 +6785,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
         private void Webcam_AutoFramingFrameSizeChanged(object sender, AutoFramingFrameSizeChangedArgs e)
         {
-            SendWebcamEventToUI(CreateEventMsg("Webcam", "Webcam_AutoFramingFrameSizeChanged",
+            SendDTPEventToUI(CreateEventMsg("Webcam", "Webcam_AutoFramingFrameSizeChanged",
                                     e.DeviceId, $"NewValue:{e.AutoFramingFrameSize}"));
 
             writelog($"Catch event _Webcamcom_AutoFramingFrameSizeChanged : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
@@ -6522,7 +6793,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
         private void Webcam_AutoFramingSensitivityChanged(object sender, AutoFramingSensitivityChangedArgs e)
         {
-            SendWebcamEventToUI(CreateEventMsg("Webcam", "Webcam_AutoFramingSensitivityChanged",
+            SendDTPEventToUI(CreateEventMsg("Webcam", "Webcam_AutoFramingSensitivityChanged",
                                     e.DeviceId, $"NewValue:{e.AutoFramingSensitivity}"));
 
             writelog($"Catch event _Webcamcom_AutoFramingSensitivityChanged : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
@@ -6530,7 +6801,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
         private void Webcam_IsAutoFramingOnChanged(object sender, IsAutoFramingOnChangedArgs e)
         {
-            SendWebcamEventToUI(CreateEventMsg("Webcam", "Webcam_IsAutoFramingOnChanged",
+            SendDTPEventToUI(CreateEventMsg("Webcam", "Webcam_IsAutoFramingOnChanged",
                                     e.DeviceId, $"NewValue:{e.IsAutoFramingOn}"));
 
             writelog($"Catch event _Webcamcom_IsAutoFramingOnChanged : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
@@ -6538,7 +6809,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
         private void Webcam_IsAutoFramingTransitionOnChanged(object sender, IsAutoFramingTransitionOnChangedArgs e)
         {
-            SendWebcamEventToUI(CreateEventMsg("Webcam", "Webcam_IsAutoFramingTransitionOnChanged",
+            SendDTPEventToUI(CreateEventMsg("Webcam", "Webcam_IsAutoFramingTransitionOnChanged",
                                     e.DeviceId, $"NewValue:{e.IsAutoFramingTransitionOn}"));
 
             writelog($"Catch event _Webcamcom_IsAutoFramingTransitionOnChanged : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
@@ -6546,7 +6817,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
         private void Webcam_AutoWhiteBalanceChanged(object sender, AutoWhiteBalanceChangedArgs e)
         {
-            SendWebcamEventToUI(CreateEventMsg("Webcam", "Webcam_AutoWhiteBalanceChanged",
+            SendDTPEventToUI(CreateEventMsg("Webcam", "Webcam_AutoWhiteBalanceChanged",
                                     e.DeviceId, $"NewValue:{e.AutoWhiteBalance}"));
 
             writelog($"Catch event _Webcamcom_AutoWhiteBalanceChanged : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
@@ -6554,7 +6825,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
         private void Webcam_IsAutoWhiteBalanceOnChanged(object sender, IsAutoWhiteBalanceOnChangedArgs e)
         {
-            SendWebcamEventToUI(CreateEventMsg("Webcam", "Webcam_IsAutoWhiteBalanceOnChanged",
+            SendDTPEventToUI(CreateEventMsg("Webcam", "Webcam_IsAutoWhiteBalanceOnChanged",
                                     e.DeviceId, $"NewValue:{e.IsAutoWhiteBalanceOn}"));
 
             writelog($"Catch event _Webcamcom_IsAutoWhiteBalanceOnChanged : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
@@ -6562,7 +6833,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
         private void Webcam_SaturationChanged(object sender, SaturationChangedArgs e)
         {
-            SendWebcamEventToUI(CreateEventMsg("Webcam", "Webcam_SaturationChanged",
+            SendDTPEventToUI(CreateEventMsg("Webcam", "Webcam_SaturationChanged",
                                     e.DeviceId, $"NewValue:{e.Saturation}"));
 
             writelog($"Catch event _Webcamcom_SaturationChanged : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
@@ -6570,7 +6841,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
         private void Webcam_AntiFlickerChanged(object sender, AntiFlickerChangedArgs e)
         {
-            SendWebcamEventToUI(CreateEventMsg("Webcam", "Webcam_AntiFlickerChanged",
+            SendDTPEventToUI(CreateEventMsg("Webcam", "Webcam_AntiFlickerChanged",
                                     e.DeviceId, $"NewValue:{e.AntiFlicker}"));
 
             writelog($"Catch event _Webcamcom_AntiFlickerChanged : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
@@ -6578,7 +6849,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
         private void Webcam_ContrastChanged(object sender, ContrastChangedArgs e)
         {
-            SendWebcamEventToUI(CreateEventMsg("Webcam", "Webcam_ContrastChanged",
+            SendDTPEventToUI(CreateEventMsg("Webcam", "Webcam_ContrastChanged",
                                     e.DeviceId, $"NewValue:{e.Contrast}"));
 
             writelog($"Catch event _Webcamcom_ContrastChanged : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
@@ -6586,7 +6857,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
         private void Webcam_BrightnessChanged(object sender, BrightnessChangedArgs e)
         {
-            SendWebcamEventToUI(CreateEventMsg("Webcam", "Webcam_BrightnessChanged",
+            SendDTPEventToUI(CreateEventMsg("Webcam", "Webcam_BrightnessChanged",
                                     e.DeviceId, $"NewValue:{e.Brightness}"));
 
             writelog($"Catch event _Webcamcom_BrightnessChanged : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
@@ -6594,7 +6865,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
         private void Webcam_ZoomChanged(object sender, ZoomChangedArgs e)
         {
-            SendWebcamEventToUI(CreateEventMsg("Webcam", "Webcam_ZoomChanged",
+            SendDTPEventToUI(CreateEventMsg("Webcam", "Webcam_ZoomChanged",
                                     e.DeviceId, $"NewValue:{e.Zoom}"));
 
             writelog($"Catch event _Webcamcom_ZoomChanged : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
@@ -6602,7 +6873,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
         private void Webcam_TiltChanged(object sender, TiltChangedArgs e)
         {
-            SendWebcamEventToUI(CreateEventMsg("Webcam", "Webcam_TiltChanged",
+            SendDTPEventToUI(CreateEventMsg("Webcam", "Webcam_TiltChanged",
                                     e.DeviceId, $"NewValue:{e.Tilt}"));
 
             writelog($"Catch event _Webcamcom_TiltChanged : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
@@ -6610,7 +6881,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
         private void Webcam_PanChanged(object sender, PanChangedArgs e)
         {
-            SendWebcamEventToUI(CreateEventMsg("Webcam", "Webcam_PanChanged",
+            SendDTPEventToUI(CreateEventMsg("Webcam", "Webcam_PanChanged",
                                     e.DeviceId, $"NewValue:{e.Pan}"));
 
             writelog($"Catch event _Webcamcom_PanChanged : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
@@ -6618,7 +6889,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
         private void Webcam_FocusChanged(object sender, FocusChangedArgs e)
         {
-            SendWebcamEventToUI(CreateEventMsg("Webcam", "Webcam_FocusChanged",
+            SendDTPEventToUI(CreateEventMsg("Webcam", "Webcam_FocusChanged",
                                     e.DeviceId, $"NewValue:{e.Focus}"));
 
             writelog($"Catch event _Webcamcom_FocusChanged : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
@@ -6626,7 +6897,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
         private void Webcam_IsFocusOnChanged(object sender, IsFocusOnChangedArgs e)
         {
-            SendWebcamEventToUI(CreateEventMsg("Webcam", "Webcam_IsFocusOnChanged",
+            SendDTPEventToUI(CreateEventMsg("Webcam", "Webcam_IsFocusOnChanged",
                                     e.DeviceId, $"NewValue:{e.IsFocusOn}"));
 
             writelog($"Catch event _Webcamcom_IsFocusOnChanged : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
@@ -6634,23 +6905,23 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
         private void Webcam_PriorityChanged(object sender, PriorityChangedArgs e)
         {
-            SendWebcamEventToUI(CreateEventMsg("Webcam", "Webcam_PriorityChanged",
-                                    e.DeviceId, $"NewPriority:{e.Priority}"));
+            SendDTPEventToUI(CreateEventMsg("Webcam", "Webcam_PriorityChanged",
+                                    e.DeviceId, $"NewValue:{e.Priority}"));
 
             writelog($"Catch event _Webcamcom_PriorityChanged : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
         }
 
         private void Webcam_CustomProfileRemoved(object sender, CustomProfileRemovedArgs e)
         {
-            SendWebcamEventToUI(CreateEventMsg("Webcam", "Webcam_CustomProfileRemoved",
-                                    e.DeviceId, $"RemovedCustomProfile:{e.ProfileId}"));
+            SendDTPEventToUI(CreateEventMsg("Webcam", "Webcam_CustomProfileRemoved",
+                                    e.DeviceId, $"NewValue:{e.ProfileId}"));
 
             writelog($"Catch event _Webcamcom_CustomProfileRemoved : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
         }
 
         private void Webcam_CustomProfileAdded(object sender, CustomProfileAddedArgs e)
         {
-            SendWebcamEventToUI(CreateEventMsg("Webcam", "Webcam_CustomProfileAdded",
+            SendDTPEventToUI(CreateEventMsg("Webcam", "Webcam_CustomProfileAdded",
                                     e.DeviceId, $"NewValue:{e.ProfileId}"));
 
             writelog($"Catch event _Webcamcom_CustomProfileAdded : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
@@ -6658,7 +6929,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
         private void Webcam_CurrentSelectedProfileChanged(object sender, CurrentSelectedProfileChangedArgs e)
         {
-            SendWebcamEventToUI(CreateEventMsg("Webcam", "Webcam_CurrentSelectedProfileChanged",
+            SendDTPEventToUI(CreateEventMsg("Webcam", "Webcam_CurrentSelectedProfileChanged",
                                     e.DeviceId, $"NewValue:{e.ProfileId}"));
 
             writelog($"Catch event _Webcamcom_CurrentSelectedProfileChanged : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
@@ -6666,7 +6937,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
         private void Webcam_IsMicEnumerationOnChanged(object sender, IsMicEnumerationOnChangedArgs e)
         {
-            SendWebcamEventToUI(CreateEventMsg("Webcam", "Webcam_IsMicEnumerationOnChanged",
+            SendDTPEventToUI(CreateEventMsg("Webcam", "Webcam_IsMicEnumerationOnChanged",
                                     e.DeviceId, $"NewValue:{e.IsMicEnumerationOn}"));
 
             writelog($"Catch event _Webcamcom_IsMicEnumerationOnChanged : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
@@ -6674,7 +6945,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
         private void Webcam_ProfileManagerAdded(object sender, ProfileManagerAddedArgs e)
         {
-            SendWebcamEventToUI(CreateEventMsg("Webcam", "Webcam_ProfileManagerAdded",
+            SendDTPEventToUI(CreateEventMsg("Webcam", "Webcam_ProfileManagerAdded",
                                     e.DeviceId, $"NewValue:{e.ProfileMangerId}"));
 
             writelog($"Catch event _Webcamcom_ProfileManagerAdded : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
@@ -6682,7 +6953,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
         private void Webcam_Esi_IsCameraSensorCoveredChanged(object sender, Esi_IsCameraSensorCoveredChangedArgs e)
         {
-            SendWebcamEventToUI(CreateEventMsg("Webcam", "Webcam_Esi_IsCameraSensorCoveredChanged",
+            SendDTPEventToUI(CreateEventMsg("Webcam", "Webcam_Esi_IsCameraSensorCoveredChanged",
                                     e.DeviceId, $"NewValue:{e.IsCameraSensorCovered}"));
 
             writelog($"Catch event _Webcamcom_Esi_IsCameraSensorCoveredChanged : new IsCameraSensorCovered is {e.IsCameraSensorCovered} {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
@@ -6691,10 +6962,11 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         private void Webcam_Disconnected(object sender, DisconnectedArgs e)
         {
             _ = UnregisterEventsForAllWebcamsAsync();
+            //_ = UnregisterEventsForWebcamAsync();
             _ = RegisterEventsForAllWebcamsAsync();
 
-            //SendWebcamEventToUI($"3;Device:Webcam;Event:Disconnected;DeviceId:{e.DeviceId}");
-            SendWebcamEventToUI(CreateEventMsg("Webcam", "Webcam_Disconnected", e.DeviceId));
+            //SendDTPEventToUI($"3;Device:Webcam;Event:Disconnected;DeviceId:{e.DeviceId}");
+            SendDTPEventToUI(CreateEventMsg("Webcam", "Webcam_Disconnected", e.DeviceId));
 
             writelog($"Catch event _Webcam_Disconnected, current devCount is {GetWebcamDevsCountAsync().Result} : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
         }
@@ -6704,17 +6976,17 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             Task<int> webcams = GetWebcamDevsCountAsync();
             bool result = RegisterEventsForWebcamAsync(webcams.Result - 1).Result;
 
-            SendWebcamEventToUI(CreateEventMsg("Webcam", "Webcam_Connected", e.DeviceId));
+            SendDTPEventToUI(CreateEventMsg("Webcam", "Webcam_Connected", e.DeviceId));
 
             writelog($"Catch event _Webcam_Connected, register evnet result is {result} : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
         }
 
-        private string CreateEventMsg(string devType, string eventType, string devID, string eventContent = "NoContent")
+        private string CreateEventMsg(string devType, string eventType, string devID, string eventContent = "NewValue:NoContent")
         {
             return $"WebcamEvent_5;Device:{devType};EventType:{eventType};DeviceId:{devID};{eventContent}";
         }
 
-        private void SendWebcamEventToUI(string sendMsg)
+        private void SendDTPEventToUI(string sendMsg)
         {
             UpdateUINotify webcamEventNotify = new UpdateUINotify();
             webcamEventNotify.UI_Field_Name = $"{sendMsg}";

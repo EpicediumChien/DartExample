@@ -14,6 +14,7 @@
 
   <ItemGroup>
     <None Remove="UpdateProgressPage\ProgressBackground.png" />
+    <None Remove="UpdateProgressPage\ProgressBackground_Light.png" />
   </ItemGroup>
 
   <ItemGroup>
@@ -29,6 +30,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\DDPM.RemoteManagement.Common\DDPM.RemoteManagement.Common.csproj" />
     <ProjectReference Include="..\DDPM.SA.Obfuscation\DDPM.SA.Obfuscation.csproj" />
+    <ProjectReference Include="..\DDPM.SA.Resources\DDPM.SA.Resources.csproj" />
     <ProjectReference Include="..\VcpCore.Interfaces\VcpCore.Interfaces.csproj" />
   </ItemGroup>
 
@@ -49,6 +51,9 @@
 
   <ItemGroup>
     <Resource Include="UpdateProgressPage\ProgressBackground.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="UpdateProgressPage\ProgressBackground_Light.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
   </ItemGroup>

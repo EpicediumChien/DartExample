@@ -29,7 +29,10 @@ namespace DDPM.SA.Common.Security
             {
                 try
                 {
-                    ret = DDPMFileSecurity.GetFileSHA_512(CertificateFilePath, out Info).ToLower().Equals(Stande_SHA512.ToLower());
+                    string fileSHA512 = DDPMFileSecurity.GetFileSHA_512(CertificateFilePath, out Info);
+                    ret = fileSHA512.ToLower().Equals(Stande_SHA512.ToLower());
+                    _logs?.DebugMsg_1("[CheckFile_Thumbprint] Stande_SHA512 : " + Stande_SHA512.ToLower());
+                    _logs?.DebugMsg_1("[CheckFile_Thumbprint] fileSHA512 : " + fileSHA512.ToLower());
                     if (Info.Equals("Complete"))
                     {
                         Info = ret ? "Check ok" : "Check fail";
@@ -50,7 +53,10 @@ namespace DDPM.SA.Common.Security
             {
                 try
                 {
-                    ret = DDPMFileSecurity.GetFileSHA_256(CertificateFilePath, out Info).ToLower().Equals(Stande_SHA256.ToLower());
+                    string fileSHA256 = DDPMFileSecurity.GetFileSHA_256(CertificateFilePath, out Info);
+                    ret = fileSHA256.ToLower().Equals(Stande_SHA256.ToLower());
+                    _logs?.DebugMsg_1("[CheckFile_Thumbprint] Stande_SHA256 : " + Stande_SHA256.ToLower());
+                    _logs?.DebugMsg_1("[CheckFile_Thumbprint] fileSHA256 : " + fileSHA256.ToLower());
                     if (Info.Equals("Complete"))
                     {
                         Info = ret ? "Check ok" : "Check fail";
@@ -79,9 +85,12 @@ namespace DDPM.SA.Common.Security
                         return false;
                     }
                     // 讀取憑證檔案並創建 X509Certificate2 物件
-                    X509Certificate2 certificate = DDPMFileSecurity.LoadFileCertificate(CertificateFilePath);//new X509Certificate2(CertificateFilePath);
-                    ret = certificate.Thumbprint.ToLower().Equals(Stande_Thumbprint.ToLower());
-                    if(!ret)
+                    //X509Certificate2 certificate = DDPMFileSecurity.LoadFileCertificate(CertificateFilePath);//new X509Certificate2(CertificateFilePath);
+                    //ret = certificate.Thumbprint.ToLower().Equals(Stande_Thumbprint.ToLower());
+                    ret = DDPMFileSecurity.VerifyFileCertWithThumbprint(CertificateFilePath, Stande_Thumbprint, out Info);
+                    _logs?.DebugMsg_1("[CheckFile_Thumbprint] Stande_Thumbprint : " + Stande_Thumbprint.ToLower());
+                    _logs?.DebugMsg_1($"[CheckFile_Thumbprint] Using WinTrustVerify result is [{ret}]" + (ret ? "." : $" Fail with {Info}"));
+                    if (!ret)
                         Info = "Load file cert to check thumbprint and the result is not matched";
                 }
                 catch (Exception ex)
@@ -107,11 +116,12 @@ namespace DDPM.SA.Common.Security
                         return false;
                     }
                     // 讀取憑證檔案並創建 X509Certificate2 物件
-                    X509Certificate2 certificate = DDPMFileSecurity.LoadFileCertificate(CertificateFilePath); //new X509Certificate2(CertificateFilePath);
+                    //X509Certificate2 certificate = DDPMFileSecurity.LoadFileCertificate(CertificateFilePath); //new X509Certificate2(CertificateFilePath);
 
                     for (int i = 0; i < Stande_Thumbprint.Count; i++)
                     {
-                        ret = certificate.Thumbprint.ToLower().Equals(Stande_Thumbprint[i].ToLower());
+                        //ret = certificate.Thumbprint.ToLower().Equals(Stande_Thumbprint[i].ToLower());
+                        ret = DDPMFileSecurity.SignedFileThumbprintVerifier(null, CertificateFilePath, Stande_Thumbprint[i], out Info);
                         if (ret)
                         {
                             break;
