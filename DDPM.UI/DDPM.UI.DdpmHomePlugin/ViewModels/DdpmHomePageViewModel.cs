@@ -38,8 +38,8 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.ViewModels
         private ObservableCollection<HomeDevice> _homeDevices = new ObservableCollection<HomeDevice>();
         private HomeDevice? _selectedHomeDevice;
 
-        private List<string> EOLKBList = new() { "WK636", "WK717", "KM714", "KM717", "WM126", "UV514" };
-        private List<string> EOLMouseList = new() { "WK717", "KM714", "KM717", "WM126", "WM116", "WM326", "WM527", "WM514", "UV514" };
+        private List<string> EOLKBList = new() { "WK636", "KM713", "WK717", "KM714", "KM717" };
+        private List<string> EOLMouseList = new() { "WM116", "WM514", "UV514", "WM126", "WM326", "WM527" };
 
         /// <summary>
         /// Default constructor
@@ -370,7 +370,8 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.ViewModels
                         else
                         {
                             // Elie, we set a WD25.png as Dock default picture.
-                            dev.DeviceImage = DdpmCommonHelper.GetImageSourceFromCommonResource($"Resources/WD25.png"); ;
+                            dev.DeviceImage = DdpmCommonHelper.GetImageSourceFromCommonResource($"Resources/WD25.png");
+                            ;
                         }
 
                         dev.SortOrder = (int)dev.DeviceCategory + idxDock;
