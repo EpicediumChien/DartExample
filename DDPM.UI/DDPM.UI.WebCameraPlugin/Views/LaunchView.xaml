@@ -229,16 +229,19 @@
                                 </ToolTip>
                             </Image.ToolTip>
                         </Image>-->
-                        <ContentControl Template="{StaticResource Icon_Info}" Margin="9,22.5,0,0" VerticalAlignment="Top" Cursor="" Width="16" Height="16">
-                            <ContentControl.InputBindings>
+                        <Border Background="Transparent">
+                            <ContentControl Template="{StaticResource icon_Info}" Margin="9,22.5,0,0" VerticalAlignment="Top" Cursor="" Width="16" Height="16" />
+                            <Border.InputBindings>
                                 <MouseBinding Gesture="RightDoubleClick" Command="{Binding ShowInfoClickedCommand}" />
-                            </ContentControl.InputBindings>
-                            <ContentControl.ToolTip>
-                                <ToolTip Style="{StaticResource InfoToolTipStyle}" Placement="Top" VerticalOffset="6" HorizontalOffset="8">
-                                    <TextBlock Style="{StaticResource InfoToolTipTextStyle}" Text="{Binding FirmwareVersion2}" />
+                            </Border.InputBindings>
+                            <Border.ToolTip>
+                                <ToolTip Placement="Top" VerticalOffset="6" HorizontalOffset="8">
+                                    <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
+                                        <TextBlock Style="{StaticResource Tooltip_TextBlockStyle}" Text="{Binding FirmwareVersion2}" />
+                                    </Border>
                                 </ToolTip>
-                            </ContentControl.ToolTip>
-                        </ContentControl>
+                            </Border.ToolTip>
+                        </Border>
                     </StackPanel>
                 </StackPanel>
             </Grid>
@@ -251,16 +254,20 @@
                                 Border.CornerRadius="2" Width="40" BorderThickness="0" BorderBrush="{DynamicResource DefaultTheme_SetupSelectBdColor}">
                             <Border.ToolTip>
                                 <ToolTip Style="{StaticResource btnToolTipStyle}">
-                                    <TextBlock Style="{StaticResource KeyToolTipTextStyle}" Text="{Binding [Camera.7], Source={x:Static lang:LangHelper.Instance}}" />
+                                    <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
+                                        <TextBlock Style="{StaticResource Tooltip_TextBlockStyle}" Text="{Binding [Camera.7], Source={x:Static lang:LangHelper.Instance}}" />
+                                    </Border>
                                 </ToolTip>
                             </Border.ToolTip>
                             <!--<Image Margin="0" Source="/DDPM.UI.Resources;component/Resources/Images/Folder.png" Stretch="Fill" Width="17" Height="16" />-->
-                            <ContentControl Margin="0" Width="17" Height="16" Content="{StaticResource Icon_Folder}" />
+                            <ContentControl Margin="0" Width="17" Height="16" Template="{StaticResource icon_Folder}" />
                         </Border>
                         <Border Style="{StaticResource Border1}" Cursor="Hand" Margin="8,0,0,70" Visibility="Collapsed" x:Name="btnPause" Height="40" VerticalAlignment="Bottom" MouseLeftButtonDown="btnPause_Click">
                             <Border.ToolTip>
                                 <ToolTip Style="{StaticResource btnToolTipStyle}">
-                                    <TextBlock Style="{StaticResource KeyToolTipTextStyle}" Text="{Binding [Camera.9], Source={x:Static lang:LangHelper.Instance}}" />
+                                    <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
+                                        <TextBlock Style="{StaticResource Tooltip_TextBlockStyle}" Text="{Binding [Camera.9], Source={x:Static lang:LangHelper.Instance}}" />
+                                    </Border>
                                 </ToolTip>
                             </Border.ToolTip>
                             <Image Margin="0" Source="/DDPM.UI.Resources;component/Resources/Images/Pause.png" Stretch="Fill" Width="17" Height="16" />
@@ -268,7 +275,9 @@
                         <Border Style="{StaticResource Border1}" Cursor="Hand" Margin="8,0,0,70" Visibility="Collapsed" x:Name="btnPlay" Height="40" VerticalAlignment="Bottom" MouseLeftButtonDown="btnPlay_Click">
                             <Border.ToolTip>
                                 <ToolTip Style="{StaticResource btnToolTipStyle}">
-                                    <TextBlock Style="{StaticResource KeyToolTipTextStyle}" Text="{Binding [Camera.10], Source={x:Static lang:LangHelper.Instance}}" />
+                                    <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
+                                        <TextBlock Style="{StaticResource Tooltip_TextBlockStyle}" Text="{Binding [Camera.10], Source={x:Static lang:LangHelper.Instance}}" />
+                                    </Border>
                                 </ToolTip>
                             </Border.ToolTip>
                             <Image Margin="0" Source="/DDPM.UI.Resources;component/Resources/Images/Play.png" Stretch="Fill" Width="13" Height="14" />
@@ -277,7 +286,9 @@
                                 Border.CornerRadius="2" BorderThickness="0" BorderBrush="#1B385F">
                             <Border.ToolTip>
                                 <ToolTip Style="{StaticResource btnToolTipStyle}">
-                                    <TextBlock Style="{StaticResource KeyToolTipTextStyle}" Text="{Binding [Camera.8], Source={x:Static lang:LangHelper.Instance}}" />
+                                    <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
+                                        <TextBlock Style="{StaticResource Tooltip_TextBlockStyle}" Text="{Binding [Camera.8], Source={x:Static lang:LangHelper.Instance}}" />
+                                    </Border>
                                 </ToolTip>
                             </Border.ToolTip>
                             <Image Margin="0" Source="/DDPM.UI.Resources;component/Resources/Images/RedCircle.png" Stretch="Fill" Width="17" Height="16" />
@@ -285,7 +296,9 @@
                         <Border Style="{StaticResource Border1}" Cursor="Hand" Margin="8,0,0,70" Visibility="Collapsed" x:Name="btnStop" MouseLeftButtonDown="btnStop_Click" Height="40" VerticalAlignment="Bottom">
                             <Border.ToolTip>
                                 <ToolTip Style="{StaticResource btnToolTipStyle}">
-                                    <TextBlock Style="{StaticResource KeyToolTipTextStyle}" Text="{Binding [Camera.11], Source={x:Static lang:LangHelper.Instance}}" />
+                                    <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
+                                        <TextBlock Style="{StaticResource Tooltip_TextBlockStyle}" Text="{Binding [Camera.11], Source={x:Static lang:LangHelper.Instance}}" />
+                                    </Border>
                                 </ToolTip>
                             </Border.ToolTip>
                             <Image Margin="0" Source="/DDPM.UI.Resources;component/Resources/Images/RedSquare.png" Stretch="Fill" Width="17" Height="16" />
@@ -308,14 +321,17 @@
                                                                         </ToolTip>
                                                                     </Image.ToolTip>
                                                                 </Image>-->
-                                                                <ContentControl Template="{StaticResource Icon_Info}" Margin="8,0,0,0" Width="16" Height="16"  Visibility="{Binding TooltipVisibility}"
-                                                                                 HorizontalAlignment="Right" MouseLeftButtonDown="DeletePreset" Tag="{Binding ID}">
-                                                                    <ContentControl.ToolTip>
-                                                                        <ToolTip Style="{StaticResource InfoToolTipStyle}" Placement="Top" VerticalOffset="6" HorizontalOffset="8">
-                                                                            <TextBlock Style="{StaticResource TabInfoToolTipTextStyle}" Text="{Binding Tooltip}"/>
+                                                                <Border Background="Transparent">
+                                                                    <ContentControl Template="{StaticResource icon_Info}" Margin="8,0,0,0" Width="16" Height="16"  Visibility="{Binding TooltipVisibility}"
+                                                                                 HorizontalAlignment="Right" MouseLeftButtonDown="DeletePreset" Tag="{Binding ID}"/>
+                                                                    <Border.ToolTip>
+                                                                        <ToolTip Placement="Top" VerticalOffset="6" HorizontalOffset="8">
+                                                                            <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
+                                                                                <TextBlock Style="{StaticResource Tooltip_TextBlockStyle}" Text="{Binding Tooltip}"/>
+                                                                            </Border>
                                                                         </ToolTip>
-                                                                    </ContentControl.ToolTip>
-                                                                </ContentControl>
+                                                                    </Border.ToolTip>
+                                                                </Border>
                                                             </StackPanel>
                                                             <StackPanel Margin="0,0,0,0" Orientation="Horizontal" Visibility="{Binding ButtonVisibility}" HorizontalAlignment="Right">
                                                                 <Image Margin="0" Source="/DDPM.UI.Resources;component/Resources/Images/Pen.png" Cursor="Hand" Stretch="Fill" Width="16" Height="16" HorizontalAlignment="Right" MouseLeftButtonDown="EditPreset" Tag="{Binding ID}"/>
@@ -341,12 +357,12 @@
                                     BorderBrush="#31A2E3">
                                 <Grid>
                                     <!--<Image Margin="10,12,0,12" Source="/DDPM.UI.Resources;component/Resources/Images/CameraPreset.png" Stretch="Fill" Width="17" Height="16" HorizontalAlignment="Left" />-->
-                                    <ContentControl Margin="10,12,0,12" Width="17" Height="16" HorizontalAlignment="Left" Content="{StaticResource Icon_CameraPreset}" />
+                                    <ContentControl Margin="10,12,0,12" Width="17" Height="16" HorizontalAlignment="Left" Template="{StaticResource icon_CameraPreset}" />
                                     <UXControls:UXTextBlock Name="txtPreset" Margin="35,0,0,0" FontFamily="Roboto" FontSize="14" FontWeight="Normal" HorizontalAlignment="Left" VerticalAlignment="Center" />
                                     <!--<Image Name="imgDown" Source="/DDPM.UI.Resources;component/Resources/Images/Down.png" Stretch="Uniform" Margin="0,0,10,0"
                          Style="{StaticResource ActionArrowStyle}" HorizontalAlignment="Right" VerticalAlignment="Center" Cursor="Hand" Width="12" Height="12"/>-->
                                     <ContentControl Name="imgDown" Margin="0,0,10,0" HorizontalAlignment="Right" VerticalAlignment="Center" Cursor="Hand" Width="12" Height="12" 
-                                                    RenderTransformOrigin="0.5,0.5"  Content="{StaticResource Icon_DownArrow}" />
+                                                    RenderTransformOrigin="0.5,0.5"  Template="{StaticResource icon_DownArrow}" />
                                 </Grid>
                             </Border>
                         </StackPanel>
@@ -360,7 +376,7 @@
                         <!--<Image x:Name="InfoIcon" Margin="10,0,0,0" Source="/DDPM.UI.Resources;component/Resources/Images/info18.png" Stretch="Fill"
                                VerticalAlignment="Center" HorizontalAlignment="Left" Width="18" Height="18">
                         </Image>-->
-                        <ContentControl Template="{StaticResource Icon_Info}" Margin="10,0,0,0" Width="18" Height="18" VerticalAlignment="Center" HorizontalAlignment="Left"/>
+                        <ContentControl Template="{StaticResource icon_Info}" Margin="10,0,0,0" Width="18" Height="18" VerticalAlignment="Center" HorizontalAlignment="Left"/>
                         <UXControls:UXTextBlock Name="txtAlert" AutomationProperties.Name="Description" FontSize="13" Background="Transparent" Foreground="{DynamicResource DefaultTheme_TxtColor}" TextWrapping="Wrap" Width="260" Text="{Binding AlertText}"
                                     VerticalAlignment="Top" HorizontalAlignment="Left" Margin="8,0,0,0" LineHeight="19.5" Padding="0,18,0,16" FontFamily="Roboto" FontWeight="Normal" />
                     </StackPanel>

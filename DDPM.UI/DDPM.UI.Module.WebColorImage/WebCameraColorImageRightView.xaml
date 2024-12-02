@@ -61,13 +61,14 @@
                                         <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="0,25">
                                             <UXControls:UXTextBlock Text="{Binding [WebCameraColorImage.0], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource ModuleItemStyle}" />
                                             <Border Background="Transparent" Cursor="Hand">
-                                                <ContentControl Template="{StaticResource Icon_Info}" Margin="9,0,0,0" Width="16" Height="16">
-                                                    <ContentControl.ToolTip>
-                                                        <ToolTip Style="{StaticResource InfoToolTipStyle}" Placement="Top" VerticalOffset="8" HorizontalOffset="6">
-                                                            <TextBlock Text="{Binding [WebCameraColorImage.1], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource TabInfoToolTipTextStyle}" MaxWidth="350" TextWrapping="Wrap" />
-                                                        </ToolTip>
-                                                    </ContentControl.ToolTip>
-                                                </ContentControl>
+                                                <ContentControl Template="{StaticResource icon_Info}" Margin="9,0,0,0" Width="16" Height="16"/>
+                                                <Border.ToolTip>
+                                                    <ToolTip Placement="Top" VerticalOffset="8" HorizontalOffset="6">
+                                                        <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
+                                                            <TextBlock Text="{Binding [WebCameraColorImage.1], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource Tooltip_TextBlockStyle}" MaxWidth="350" TextWrapping="Wrap" />
+                                                        </Border>
+                                                    </ToolTip>
+                                                </Border.ToolTip>
                                             </Border>
                                             <Image Visibility="{Binding LockMaskVisible}" 
                              Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Lock.png"
@@ -138,13 +139,14 @@
                                             <StackPanel Orientation="Horizontal">
                                                 <UXControls:UXTextBlock Text="{Binding [WebCameraColorImage.7], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource ModuleItemStyle}" />
                                                 <Border Background="Transparent" Cursor="Hand">
-                                                    <ContentControl Template="{StaticResource Icon_Info}" Margin="9,0,0,0" Width="16" Height="16">
-                                                        <ContentControl.ToolTip>
-                                                            <ToolTip Style="{StaticResource InfoToolTipStyle}" Placement="Top" VerticalOffset="8" HorizontalOffset="6">
-                                                                <TextBlock Text="{Binding [WebCameraColorImage.8], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource TabInfoToolTipTextStyle}" MaxWidth="350" TextWrapping="Wrap"/>
-                                                            </ToolTip>
-                                                        </ContentControl.ToolTip>
-                                                    </ContentControl>
+                                                    <ContentControl Template="{StaticResource icon_Info}" Margin="9,0,0,0" Width="16" Height="16"/>
+                                                    <Border.ToolTip>
+                                                        <ToolTip Placement="Top" VerticalOffset="8" HorizontalOffset="6">
+                                                            <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
+                                                                <TextBlock Text="{Binding [WebCameraColorImage.8], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource Tooltip_TextBlockStyle}" MaxWidth="350" TextWrapping="Wrap"/>
+                                                            </Border>
+                                                        </ToolTip>
+                                                    </Border.ToolTip>
                                                 </Border>
                                                 <Image Visibility="{Binding LockMaskVisible}" 
                                                 Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Lock.png"

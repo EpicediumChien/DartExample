@@ -1063,11 +1063,11 @@
             </Grid.ColumnDefinitions>
             <ContentPresenter Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="3,3,23,3" />
             <ContentControl x:Name="DBIcon" Grid.Column="1" Width="12" Height="12" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,0,11,2"
-                            Content="{StaticResource Icon_DownArrow}" />
+                            Template="{StaticResource icon_DownArrow}" />
         </Grid>
         <ControlTemplate.Triggers>
             <Trigger Property="IsChecked" Value="True">
-                <Setter TargetName="DBIcon" Property="Content" Value="{StaticResource Icon_UpArrow}" />
+                <Setter TargetName="DBIcon" Property="Template" Value="{StaticResource icon_UpArrow}" />
             </Trigger>
             <Trigger Property="IsMouseOver" Value="True">
                 <Setter TargetName="toggleBtnRoot" Property="Background" Value="#4CB1B0B0" />
@@ -1792,19 +1792,23 @@
     <SolidColorBrush x:Key="LockIcon_Fill"  Color="#FFFFFFFF"/>
 
     <!-- Icon Down Arrow -->
-    <Canvas x:Key="Icon_DownArrow" Tag="{DynamicResource DefaultTheme_PathColor}" Width="16" Height="16">
-        <Path Data="M0.84961 3.7002L7.99961 10.9002L15.1496 3.7002L15.8496 4.4002L7.99961 12.2502L0.14961 4.4002L0.84961 3.7002Z"
-              Fill="{Binding Tag, RelativeSource={RelativeSource AncestorType=Canvas}}" />
-    </Canvas>
+    <ControlTemplate x:Key="icon_DownArrow" TargetType="ContentControl">
+        <Canvas Tag="{DynamicResource DefaultTheme_PathColor}" Width="16" Height="16">
+            <Path Data="M0.84961 3.7002L7.99961 10.9002L15.1496 3.7002L15.8496 4.4002L7.99961 12.2502L0.14961 4.4002L0.84961 3.7002Z"
+                  Fill="{Binding Tag, RelativeSource={RelativeSource AncestorType=Canvas}}" />
+        </Canvas>
+    </ControlTemplate>
 
     <!-- Icon Up Arrow -->
-    <Canvas x:Key="Icon_UpArrow" Tag="{DynamicResource DefaultTheme_PathColor}" Width="16" Height="16">
-        <Path Data="M8 4.12012L0 12.1201L0.76 12.8801L8 5.64012L15.24 12.8801L16 12.1201L8 4.12012Z"
-              Fill="{Binding Tag, RelativeSource={RelativeSource AncestorType=Canvas}}" />
-    </Canvas>
+    <ControlTemplate x:Key="icon_UpArrow" TargetType="ContentControl">
+        <Canvas Tag="{DynamicResource DefaultTheme_PathColor}" Width="16" Height="16">
+            <Path Data="M8 4.12012L0 12.1201L0.76 12.8801L8 5.64012L15.24 12.8801L16 12.1201L8 4.12012Z"
+                  Fill="{Binding Tag, RelativeSource={RelativeSource AncestorType=Canvas}}" />
+        </Canvas>
+    </ControlTemplate>
 
     <!-- Icon Info -->
-    <ControlTemplate x:Key="Icon_Info" TargetType="ContentControl">
+    <ControlTemplate x:Key="icon_Info" TargetType="ContentControl">
         <Canvas Tag="{DynamicResource InfoIconColor}" Width="16" Height="16">
             <Path Data="M8 5.0498C8.55228 5.0498 9 4.60209 9 4.0498C9 3.49752 8.55228 3.0498 8 3.0498C7.44772 3.0498 7 3.49752 7 4.0498C7 4.60209 7.44772 5.0498 8 5.0498Z"
                   Fill="{Binding Tag, RelativeSource={RelativeSource AncestorType=Canvas}}" />
@@ -1816,20 +1820,24 @@
     </ControlTemplate>
 
     <!-- Icon Folder -->
-    <Canvas x:Key="Icon_Folder" Tag="{DynamicResource DefaultTheme_PathColor}" Width="16" Height="16">
-        <Path Data="M7.98 3.06969L6.5 0.929688H0.5V15.0697H16.5V3.06969H7.98ZM15.43 13.9997H1.57V4.12969V1.99969H5.95L7.42 4.12969H15.42L15.43 13.9997Z"
-              Fill="{Binding Tag, RelativeSource={RelativeSource AncestorType=Canvas}}" />
-    </Canvas>
+    <ControlTemplate x:Key="icon_Folder" TargetType="ContentControl">
+        <Canvas Tag="{DynamicResource DefaultTheme_PathColor}" Width="16" Height="16">
+            <Path Data="M7.98 3.06969L6.5 0.929688H0.5V15.0697H16.5V3.06969H7.98ZM15.43 13.9997H1.57V4.12969V1.99969H5.95L7.42 4.12969H15.42L15.43 13.9997Z"
+                  Fill="{Binding Tag, RelativeSource={RelativeSource AncestorType=Canvas}}" />
+        </Canvas>
+    </ControlTemplate>
 
     <!-- Icon Camera Preset -->
-    <Canvas x:Key="Icon_CameraPreset" Tag="{DynamicResource DefaultTheme_PathColor}" Width="16" Height="16">
-        <Path Data="M15.08 14.7705H1.5V1.23047H10.5V0.230469H0.5V15.8105H16.12V6.00049H15.12L15.08 14.7705Z"
-              Fill="{Binding Tag, RelativeSource={RelativeSource AncestorType=Canvas}}" />
-        <Path Data="M10 3L10.9453 5.55468L13.5 6.5L10.9453 7.44532L10 10L9.05468 7.44532L6.5 6.5L9.05468 5.55468L10 3Z"
-              Fill="{Binding Tag, RelativeSource={RelativeSource AncestorType=Canvas}}" />
-        <Path Data="M14.5 0L15.0402 1.45982L16.5 2L15.0402 2.54018L14.5 4L13.9598 2.54018L12.5 2L13.9598 1.45982L14.5 0Z"
-              Fill="{Binding Tag, RelativeSource={RelativeSource AncestorType=Canvas}}" />
-    </Canvas>
+    <ControlTemplate x:Key="icon_CameraPreset" TargetType="ContentControl">
+        <Canvas Tag="{DynamicResource DefaultTheme_PathColor}" Width="16" Height="16">
+            <Path Data="M15.08 14.7705H1.5V1.23047H10.5V0.230469H0.5V15.8105H16.12V6.00049H15.12L15.08 14.7705Z"
+                  Fill="{Binding Tag, RelativeSource={RelativeSource AncestorType=Canvas}}" />
+            <Path Data="M10 3L10.9453 5.55468L13.5 6.5L10.9453 7.44532L10 10L9.05468 7.44532L6.5 6.5L9.05468 5.55468L10 3Z"
+                  Fill="{Binding Tag, RelativeSource={RelativeSource AncestorType=Canvas}}" />
+            <Path Data="M14.5 0L15.0402 1.45982L16.5 2L15.0402 2.54018L14.5 4L13.9598 2.54018L12.5 2L13.9598 1.45982L14.5 0Z"
+                  Fill="{Binding Tag, RelativeSource={RelativeSource AncestorType=Canvas}}" />
+        </Canvas>
+    </ControlTemplate>
     <!-- #endregion -->
 
 </ResourceDictionary>
