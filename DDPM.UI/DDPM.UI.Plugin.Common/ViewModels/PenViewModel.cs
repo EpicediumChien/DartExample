@@ -637,7 +637,11 @@ namespace DDPM.UI.Plugin.ViewModels
                 TiltSensitivity = 50;
                 CurrentDeviceInfo!.TipSensitivity = 3;
                 TipSensitivity = 50;
+                PenAction.IsTopBarrelHoverClickOn = false;
+                PenAction.IsBottomBarrelHoverClickOn = false;
                 IsRestoreEnable = false;
+                OnPropertyChanged(nameof(IsHoverClickOn));
+                OnPropertyChanged(nameof(IsHoverClickToggleText));
                 OnPropertyChanged(nameof(IsRestoreEnable));
                 PenAction = (PenActions)ActionList.ImportActionList(eDeviceCategory.Pen, "PEN");
                 return true;
