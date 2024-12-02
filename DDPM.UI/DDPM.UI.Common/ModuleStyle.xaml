@@ -39,7 +39,7 @@
         <Setter Property="Background" Value="{DynamicResource FakeTransparent}" />
     </Style>
     <!--<Style TargetType="TextBlock">
-    <Setter Property="Foreground" Value="{DynamicResource DefaultTheme_TxtColor}" />
+    <Setter Property="Foreground" Value="{DynamicResource DefaultTheme_TxtColor}" />Icon_Info
     </Style>-->
     <Style TargetType="Border">
         <Setter Property="Background" Value="{DynamicResource DefaultTheme_BdBkColor}" />
@@ -1791,35 +1791,43 @@
     <!-- LockIcon -->
     <SolidColorBrush x:Key="LockIcon_Fill"  Color="#FFFFFFFF"/>
 
-    <!-- Down Arrow Icon -->
+    <!-- Icon Down Arrow -->
     <Canvas x:Key="Icon_DownArrow" Tag="{DynamicResource DefaultTheme_PathColor}" Width="16" Height="16">
         <Path Data="M0.84961 3.7002L7.99961 10.9002L15.1496 3.7002L15.8496 4.4002L7.99961 12.2502L0.14961 4.4002L0.84961 3.7002Z"
               Fill="{Binding Tag, RelativeSource={RelativeSource AncestorType=Canvas}}" />
     </Canvas>
 
-    <!-- Up Arrow Icon -->
+    <!-- Icon Up Arrow -->
     <Canvas x:Key="Icon_UpArrow" Tag="{DynamicResource DefaultTheme_PathColor}" Width="16" Height="16">
         <Path Data="M8 4.12012L0 12.1201L0.76 12.8801L8 5.64012L15.24 12.8801L16 12.1201L8 4.12012Z"
               Fill="{Binding Tag, RelativeSource={RelativeSource AncestorType=Canvas}}" />
     </Canvas>
 
-    <!-- Info Icon -->
-    <Canvas x:Key="Icon_Info" Tag="{DynamicResource DefaultTheme_PathColor}" Width="16" Height="16">
-        <Path Data="M8 5.0498C8.55228 5.0498 9 4.60209 9 4.0498C9 3.49752 8.55228 3.0498 8 3.0498C7.44772 3.0498 7 3.49752 7 4.0498C7 4.60209 7.44772 5.0498 8 5.0498Z"
-              Fill="{Binding Tag, RelativeSource={RelativeSource AncestorType=Canvas}}" />
-        <Path Data="M8.75 6.4502H7.25V12.6502H8.75V6.4502Z"
-              Fill="{Binding Tag, RelativeSource={RelativeSource AncestorType=Canvas}}" />
-        <Path Data="M8 1C11.85 1 15 4.15 15 8C15 11.85 11.85 15 8 15C4.15 15 1 11.85 1 8C1 4.15 4.15 1 8 1ZM8 0C3.6 0 0 3.6 0 8C0 12.4 3.6 16 8 16C12.4 16 16 12.4 16 8C16 3.6 12.4 0 8 0Z"
+    <!-- Icon Info -->
+    <ControlTemplate x:Key="Icon_Info" TargetType="ContentControl">
+        <Canvas Tag="{DynamicResource InfoIconColor}" Width="16" Height="16">
+            <Path Data="M8 5.0498C8.55228 5.0498 9 4.60209 9 4.0498C9 3.49752 8.55228 3.0498 8 3.0498C7.44772 3.0498 7 3.49752 7 4.0498C7 4.60209 7.44772 5.0498 8 5.0498Z"
+                  Fill="{Binding Tag, RelativeSource={RelativeSource AncestorType=Canvas}}" />
+            <Path Data="M8.75 6.4502H7.25V12.6502H8.75V6.4502Z"
+                  Fill="{Binding Tag, RelativeSource={RelativeSource AncestorType=Canvas}}" />
+            <Path Data="M8 1C11.85 1 15 4.15 15 8C15 11.85 11.85 15 8 15C4.15 15 1 11.85 1 8C1 4.15 4.15 1 8 1ZM8 0C3.6 0 0 3.6 0 8C0 12.4 3.6 16 8 16C12.4 16 16 12.4 16 8C16 3.6 12.4 0 8 0Z"
+                  Fill="{Binding Tag, RelativeSource={RelativeSource AncestorType=Canvas}}" />
+        </Canvas>
+    </ControlTemplate>
+
+    <!-- Icon Folder -->
+    <Canvas x:Key="Icon_Folder" Tag="{DynamicResource DefaultTheme_PathColor}" Width="16" Height="16">
+        <Path Data="M7.98 3.06969L6.5 0.929688H0.5V15.0697H16.5V3.06969H7.98ZM15.43 13.9997H1.57V4.12969V1.99969H5.95L7.42 4.12969H15.42L15.43 13.9997Z"
               Fill="{Binding Tag, RelativeSource={RelativeSource AncestorType=Canvas}}" />
     </Canvas>
 
-    <!-- Info Icon -->
-    <Canvas x:Key="Icon_Info" Tag="{DynamicResource DefaultTheme_PathColor}" Width="16" Height="16">
-        <Path Data="M8 5.0498C8.55228 5.0498 9 4.60209 9 4.0498C9 3.49752 8.55228 3.0498 8 3.0498C7.44772 3.0498 7 3.49752 7 4.0498C7 4.60209 7.44772 5.0498 8 5.0498Z"
+    <!-- Icon Camera Preset -->
+    <Canvas x:Key="Icon_CameraPreset" Tag="{DynamicResource DefaultTheme_PathColor}" Width="16" Height="16">
+        <Path Data="M15.08 14.7705H1.5V1.23047H10.5V0.230469H0.5V15.8105H16.12V6.00049H15.12L15.08 14.7705Z"
               Fill="{Binding Tag, RelativeSource={RelativeSource AncestorType=Canvas}}" />
-        <Path Data="M8.75 6.4502H7.25V12.6502H8.75V6.4502Z"
+        <Path Data="M10 3L10.9453 5.55468L13.5 6.5L10.9453 7.44532L10 10L9.05468 7.44532L6.5 6.5L9.05468 5.55468L10 3Z"
               Fill="{Binding Tag, RelativeSource={RelativeSource AncestorType=Canvas}}" />
-        <Path Data="M8 1C11.85 1 15 4.15 15 8C15 11.85 11.85 15 8 15C4.15 15 1 11.85 1 8C1 4.15 4.15 1 8 1ZM8 0C3.6 0 0 3.6 0 8C0 12.4 3.6 16 8 16C12.4 16 16 12.4 16 8C16 3.6 12.4 0 8 0Z"
+        <Path Data="M14.5 0L15.0402 1.45982L16.5 2L15.0402 2.54018L14.5 4L13.9598 2.54018L12.5 2L13.9598 1.45982L14.5 0Z"
               Fill="{Binding Tag, RelativeSource={RelativeSource AncestorType=Canvas}}" />
     </Canvas>
     <!-- #endregion -->

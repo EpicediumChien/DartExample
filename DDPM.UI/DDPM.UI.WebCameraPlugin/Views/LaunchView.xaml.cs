@@ -1338,7 +1338,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
 
         private void btnPreset_Click(object sender, System.Windows.Input.MouseButtonEventArgs? e)
         {
-            var img = (Image)FindName($"imgDown");
+            var img = (UIElement)FindName($"imgDown");
             DoubleAnimation rotateAnimation;
             var AnimatedPanel = (StackPanel)FindName("spPresets");
             if (IsPresetOpen)
