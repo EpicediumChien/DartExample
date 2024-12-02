@@ -193,9 +193,10 @@
 
                         <Border Width="400" Name="bdrAlertUsbtype" Background="#364861" CornerRadius="4" Margin="0,0,0,15" BorderThickness="7,0,0,0" BorderBrush="#0E92F2" Visibility="{Binding MessageBoxVisibilityUsbType}">
                             <StackPanel Orientation="Horizontal">
-                                <Image x:Name="InfoIcon" Margin="10,0,0,0" Source="/DDPM.UI.Resources;component/Resources/Images/info.png" Stretch="Fill"
+                                <!--<Image x:Name="InfoIcon" Margin="10,0,0,0" Source="/DDPM.UI.Resources;component/Resources/Images/info.png" Stretch="Fill"
                                VerticalAlignment="Center" HorizontalAlignment="Left" Width="18" Height="18">
-                                </Image>
+                                </Image>-->
+                                <ContentControl Template="{StaticResource icon_Info}" Margin="10,0,0,0" Width="18" Height="18" VerticalAlignment="Center" HorizontalAlignment="Left"/>
                                 <UXControls:UXTextBlock Name="txtMessage" FontSize="13" Background="#364861" Foreground="#F5F6F7" TextWrapping="Wrap" Width="362" 
                                           Text="{Binding usbtype_info}"
                                           VerticalAlignment="Center" HorizontalAlignment="Left" Margin="5,15,0,13" LineHeight="21" Padding="2,3,10,2">
@@ -213,13 +214,16 @@
                     <StackPanel Orientation="Vertical">
                         <StackPanel Orientation="Horizontal" Margin="18,25,0,18">
                             <UXControls:UXTextBlock Text="{Binding [WebCameraCapture.8], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource ModuleItemStyle}" IsEnabled="{Binding IsNotRecording}" />
-                            <Image Margin="9,0,0,0" Source="/DDPM.UI.Common;component/Resources/info.png" Stretch="Uniform" Cursor="Hand" Width="16" Height="16">
-                                <Image.ToolTip>
-                                    <ToolTip Style="{StaticResource InfoToolTipStyle}" Placement="Top" VerticalOffset="8" HorizontalOffset="6">
-                                        <TextBlock Width="350" Height="56" Text="{Binding [WebCameraCapture.9], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource TabInfoToolTipTextStyle}" TextWrapping="Wrap" />
+                            <Border Background="Transparent" Cursor="Hand">
+                                <ContentControl Template="{StaticResource icon_Info}" Margin="9,0,0,0" Width="16" Height="16"/>
+                                <Border.ToolTip>
+                                    <ToolTip Placement="Top" VerticalOffset="8" HorizontalOffset="6">
+                                        <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
+                                            <TextBlock Width="350" Height="56" Text="{Binding [WebCameraCapture.9], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource Tooltip_TextBlockStyle}" TextWrapping="Wrap" />
+                                        </Border>
                                     </ToolTip>
-                                </Image.ToolTip>
-                            </Image>
+                                </Border.ToolTip>
+                            </Border>
                         </StackPanel>
                         <StackPanel Orientation="Horizontal" Margin="18,0,18,18">
                             <Border x:Name="btnFPS0" CornerRadius="5,0,0,5" Focusable="True" MouseLeftButtonDown="btnFPS_Click" Height="30" Width="{Binding btnRes3_width}" Tag="0" IsEnabled="{Binding IsNotRecording}">

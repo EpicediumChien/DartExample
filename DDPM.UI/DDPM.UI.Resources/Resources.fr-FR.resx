@@ -127,7 +127,7 @@
     <value>Affichage</value>
   </data>
   <data name="DisplaySettings" xml:space="preserve">
-    <value>Paramètres d&apos;affichage</value>
+    <value>Paramètres d'affichage</value>
   </data>
   <data name="EasyArrange" xml:space="preserve">
     <value>Easy Arrange</value>
@@ -706,7 +706,7 @@
     <value>Importer</value>
   </data>
   <data name="Export" xml:space="preserve">
-    <value>Régulations d&apos;exportation</value>
+    <value>Régulations d'exportation</value>
   </data>
   <data name="DisplayOthers.2" xml:space="preserve">
     <value>Appliquer automatiquement les paramètres lorsque le même modèle est détecté</value>
@@ -724,7 +724,7 @@
     <value>Configurer les paramètres de l’économiseur d’écran </value>
   </data>
   <data name="DisplayOthers.6" xml:space="preserve">
-    <value>Paramètres de l&apos;application</value>
+    <value>Paramètres de l'application</value>
   </data>
   <data name="DisplayOthers.7" xml:space="preserve">
     <value>Exporter une configuration et un élément important vers un autre écran du même modèle</value>
@@ -1399,7 +1399,7 @@
     <value>L’appareil que vous êtes en train de coupler n’est pas compatible avec le récepteur sans fil USB qui est connecté. Utilisez le récepteur fourni avec l’appareil.</value>
   </data>
   <data name="Tooltip.4" xml:space="preserve">
-    <value>Les logements disponibles sur le récepteur sans fil USB sont tous occupés. Pour l’utiliser, dissociez un appareil du système en cliquant sur le bouton \&quot;Dissocier\&quot; dans les paramètres de l’appareil.</value>
+    <value>Les logements disponibles sur le récepteur sans fil USB sont tous occupés. Pour l’utiliser, dissociez un appareil du système en cliquant sur le bouton \"Dissocier\" dans les paramètres de l’appareil.</value>
   </data>
   <data name="Mouse.14" xml:space="preserve">
     <value>Cliquer pour attribuer une action</value>
@@ -1798,7 +1798,7 @@
     <value>Fonctionnalités de sécurité</value>
   </data>
   <data name="WalkThroughDDPM_Main.0" xml:space="preserve">
-    <value>Bienvenue dans\R\nDell Display and Peripheral Manager</value>
+    <value>Bienvenue dans\r\nDell Display and Peripheral Manager</value>
   </data>
   <data name="WalkThroughDDPM_Sub.2" xml:space="preserve">
     <value>Voir votre appareil, comment il est connecté et son niveau de batterie (si sans-fil)</value>
