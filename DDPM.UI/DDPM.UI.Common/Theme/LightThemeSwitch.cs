@@ -194,6 +194,7 @@ namespace DDPM.UI.Common
                 UpdateFreezable("DdpmCB_FgColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#0E0E0E"));
                 UpdateFreezable("DdpmCB_HoverItemBkColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#FFEEEEEE"));
                 UpdateFreezable("DdpmCB_SelTextColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#FF49A3E5"));
+                UpdateFreezable("MouseCB_HIBkColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#E1E1E1"));
                 #endregion
 
                 #region BarItem Colors
@@ -257,6 +258,8 @@ namespace DDPM.UI.Common
                 UpdateFreezable("Button_UXStyleColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#0672CB"));
                 UpdateFreezable("Button_UXStyleTxtColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#F5F6F7"));
                 UpdateFreezable("Button_UXStyleColor_ForWhiteFrame", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#0672CB"));
+                UpdateFreezable("Button1BorderDisColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#80B6B6B6"));
+                UpdateFreezable("Button1TextDisColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#B6B6B6"));
                 #endregion
 
                 #region SecondaryButton
@@ -335,6 +338,8 @@ namespace DDPM.UI.Common
 
                 UpdateFreezable("DefaultThemeFullPageBkColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#E5ECF9"));
 
+                UpdateFreezable("Webcam_TextBox_BkColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#FFFFFF"));
+                UpdateFreezable("Webcam_TextBox_FgColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#0D121A"));
 
                 BitmapImageUpdated?.Invoke(OSThemeEnum.Light);
             }

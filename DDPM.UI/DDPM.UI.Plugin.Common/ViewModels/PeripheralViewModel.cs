@@ -57,9 +57,8 @@ namespace DDPM.UI.Plugin.ViewModels
         public ICommand GoBackClickedCommand { get; private set; }
         public ICommand ShowInfoClickedCommand { get; private set; }
         public volatile Dictionary<Guid, DeviceInfo> DeviceInfos = new();
-        //public List<string> EOLList = new() { "WK636", "WK717", "KM714", "KM717", "WM126", "WM116", "WM326", "WM527", "WM514", "UV514" };
-        public List<string> EOLKBList = new() { "WK636", "WK717", "KM714", "KM717", "WM126", "UV514" };
-        public List<string> EOLMouseList = new() { "WK717", "KM714", "KM717", "WM126", "WM116", "WM326", "WM527", "WM514", "UV514" };
+        public List<string> EOLKBList = new() { "WK636", "KM713", "WK717", "KM714", "KM717" };
+        public List<string> EOLMouseList = new() { "WM116", "WM514", "UV514", "WM126", "WM326", "WM527" };
         //public DDPMSettings? DDPMSettings;
         //public WebcamSettings WebcamSettings = new();
         public bool IsCopilotEnabled = true;

@@ -19,14 +19,16 @@ namespace DDPM.SA.Plugins.User.FWUpdate
 
         public bool IsNamedPipeServerIsNoSafe = false;
         private string thumbPrint;
+        private bool skipSHA;
 
-        public NamedPipeStreamServer(string pipeName, string thumbPrint) : base(pipeName)
+        public NamedPipeStreamServer(string pipeName, string thumbPrint, bool skipSHA) : base(pipeName)
         {
             PipeSecurity pipeSecurity = NPipeSecurity.CreatePipeSecurity(PipeAccessRights.FullControl);
             this._Connections = new List<NamedPipeStreamConnection>();
             NamedPipeServerStream state = NamedPipeServerStreamAcl.Create(base.PipeName, PipeDirection.InOut, NamedPipeServerStream.MaxAllowedServerInstances, PipeTransmissionMode.Message, PipeOptions.Asynchronous, 0, 0, pipeSecurity);
             state.BeginWaitForConnection(new AsyncCallback(this.ClientConnected), state);
             this.thumbPrint = thumbPrint;
+            this.skipSHA = skipSHA;
         }
 
         private void ClientConnected(IAsyncResult result)
@@ -41,12 +43,14 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                     string info;
                     if (!NPipeSecurity.NamedPipeClientSecurity(asyncState, out info, thumbPrint))
                     {
+                        
                         Trace.WriteLine($"[NamedPipeStreamServer] NamedPipeClientSecurity failed ({info})");
                         IsNamedPipeServerIsNoSafe = true;
-#if IL_Ready
-                        asyncState.Disconnect();
-                        return;
-#endif
+                        if (!skipSHA)
+                        {
+                            asyncState.Disconnect();
+                            return;
+                        }
                     }
 
                     NamedPipeStreamConnection item = default;

@@ -53,6 +53,7 @@ using System.Windows.Threading;
 using System.Windows.Forms.VisualStyles;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.Window;
 using Dell.Client.Framework.UX.WPF;
+using Windows.ApplicationModel.Background;
 
 namespace DDPM.UI.Plugin.WebCameraPlugin
 {
@@ -146,6 +147,13 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                     if (DdpmCommonHelper.DeviceManagerSA != null)
                     {
                         DdpmCommonHelper.DeviceManagerSA.ITSettingsActionEvent += DeviceManagerSA_ITSettingsActionEvent;
+                        DdpmCommonHelper.DeviceManagerSA.SystemSuspend += DeviceManagerSA_OnSystemSuspend;
+                        DdpmCommonHelper.DeviceManagerSA.SystemResume += DeviceManagerSA_OnSystemResume;
+                        DdpmCommonHelper.DeviceManagerSA.DeviceChanged += DeviceManagerSA_DeviceChanged;
+                        //Derek 1110 for Webcam PIMS-315440
+                        //During video recording, do"Restart" &"Shutdown"action in SUT,
+                        //the video which I just recorded will have no length.
+                        SystemEvents.SessionEnding += SystemEvents_SessionEnding;
 
                         DDPMSettings data = DdpmCommonHelper.DeviceManagerSA.ReloadAppConfigData().Result;
                         if (data != null)
@@ -223,12 +231,178 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
 
             CheckUSBtype();
 
+            check_PresenceFunction();
+
+            DdpmCommonHelper.BitmapImageUpdated += ImageUpdate;
+        }
+
+        ~LaunchView()
+        {
+            DdpmCommonHelper.BitmapImageUpdated -= ImageUpdate;
+        }
+
+        private void ImageUpdate(OSThemeEnum oSThemeEnum)
+        {
+            ArrowLeft.Source = null;
+            ArrowLeft.Source = (BitmapImage)System.Windows.Application.Current.Resources["Arrow_Left"];
+        }
+
+        private void DeviceManagerSA_DeviceChanged(object? sender, DeviceChangedEventArgs e)
+        {
+            DdpmCommonHelper.WriteUILog($"catch event DeviceManagerSA_DeviceChanged");
+
+            if (_vm!.IsRecording)
+                Dispatcher.Invoke(new Action(() =>
+                {
+                    UserStopRecord();
+                }));
+        }
+
+        public void check_PresenceFunction()
+        {
+            //需要特殊邏輯處理的型號
+            List<string> SpecialCase = new List<string>()
+            {
+                "U3223QZ","U3224KB","U3224KBA","P2424HEB","P2724DEB","P3424WEB","WB7022"
+            };
+
+            string model = _vm.CurrentDeviceInfo!.ModelNumber;
+
+            if (model == null)
+            {
+                string log = $"[DDPM.UI.WebCameraPlugin\\Views\\LaunchView.xaml.cs] check_PresenceFunction() model is null";
+                DdpmCommonHelper.WriteUILog(log);
+                return;
+            }
+
+            if (!SpecialCase.Contains(model)) return;
+
+            //api回傳camera是否支援ESI
+            bool is_EsiSupport = DdpmCommonHelper.DeviceManagerSA!.GetIsESISupported(_vm.CurrentDeviceInfo!.ID.ToString()).Result;
+
+            //api回傳camera硬體是否支援windows hello
+            bool is_WindwosHelloSupport = DdpmCommonHelper.DeviceManagerSA!.GetIsWindowsHelloCapabilityVerified(_vm.CurrentDeviceInfo!.ID.ToString()).Result;
+
+            //檢查是否為內部camera
+            bool is_camera_internal = check_camera_internal();
+
+            //檢查windows是否符合windows hello標準
+            bool is_WindowsVer_OK = check_windowsVer_OK();
+
+            //檢查是否為dell電腦
+            bool is_DellPc = check_DellPc();
+
+            if( !is_camera_internal)
+            {
+                //7系列
+                if( is_EsiSupport )
+                {
+                    //UPD：SHOW PRESENCE DETECTION SECTION
+
+                    if( is_WindwosHelloSupport && is_WindowsVer_OK )
+                    {
+                        //顯示 windows hello setting
+                    }
+                    else
+                    {
+                        //隱藏 windiows hello setting
+                    }
+
+                }
+                else
+                {
+                    //MPS :　NOT SHOW PRESENCE DETECTION SECTION
+                    if( is_WindwosHelloSupport)
+                    {
+                        if (is_WindowsVer_OK)
+                        {
+                            //顯示 windows hello setting
+                        }
+                    }
+                    else
+                    {
+                        //提示要升級FW
+                    }
+
+                }
+
+            }
+            else
+            {
+                //P.U系列
+
+            }
+
+            if( !is_DellPc )
+            {
+                //不是DELL PC 一律隱藏 PRESENCE DETECTION SECTION
+            }
+
+
+        }
+
+        public bool check_DellPc()
+        {
+            if (WinVersion.GetComputerManufacturer().Contains("Dell", StringComparison.OrdinalIgnoreCase))
+                return true;
+            return false;
+        }
+
+        public bool check_windowsVer_OK()
+        {
+            //作業系統必須是Windows10 20H2 以上
+            //或是Windows11 22H2以上
+            if (WinVersion.GetVersion(out var info))
+            {
+                //win11以上
+                if (info.BuildNum >= (uint)(BuildNumber.Windows_11_22H2))
+                    return true;
+
+                //win10以上
+                if (info.BuildNum < (uint)(BuildNumber.Windows_11_21H2) && info.BuildNum >= (uint)(BuildNumber.Windows_10_20H2))
+                    return true;
+
+            }
+            return false;
+        }
+
+        public bool check_camera_internal()
+        {
+            //hard code 指定特定型號是否為internal
+
+            string model = _vm.CurrentDeviceInfo!.ModelNumber;
+
+            if (model == null)
+            {
+                string log = $"[DDPM.UI.WebCameraPlugin\\Views\\LaunchView.xaml.cs] check_camera_internal() model is null";
+                DdpmCommonHelper.WriteUILog(log);
+                return false;
+            }
+
+            switch (model)
+            {
+                //螢幕嵌入camera都為internal
+                case "U3223QZ":
+                case "U3224KB":
+                case "U3224KBA":
+                case "P2424HEB":
+                case "P2724DEB":
+                case "P3424WEB":
+                    return true;
+
+                //usb 外接
+                case "WB7022":
+                    return false;
+
+                default:
+                    return false;
+            }
         }
 
         public void CheckUSBtype()
         {
 
-            _vm!.MessageBoxVisibilityUsbType = Visibility.Hidden;
+            _vm!.MessageBoxVisibilityUsbType = Visibility.Collapsed;
 
             //需要特殊邏輯處理的型號
             List<string> SpecialCase = new List<string>()
@@ -238,7 +412,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
 
             string model = _vm.CurrentDeviceInfo!.ModelNumber;
 
-            if( model == null)
+            if (model == null)
             {
                 string log = $"[DDPM.UI.WebCameraPlugin\\Views\\LaunchView.xaml.cs] CheckUSBtype() model is null";
                 DdpmCommonHelper.WriteUILog(log);
@@ -632,6 +806,24 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             }));
         }
 
+        private void DeviceManagerSA_OnSystemSuspend(object? sender, EventArgs e)
+        {
+            //Debug.WriteLine("DeviceManagerSA_OnSystemSuspend");
+            DdpmCommonHelper.WriteUILog($"catch event DeviceManagerSA_OnSystemSuspend");
+
+            if (_vm!.IsRecording)
+                Dispatcher.Invoke(new Action(() =>
+                {
+                    UserStopRecord();
+                }));
+        }
+
+        private void DeviceManagerSA_OnSystemResume(object? sender, EventArgs e)
+        {
+            DdpmCommonHelper.WriteUILog($"catch event DeviceManagerSA_OnSystemResume");
+            //Debug.WriteLine("DeviceManagerSA_OnSystemResume");
+        }
+
         bool in_CameraPlugin = true;
         private async void LaunchView_Unloaded(object sender, RoutedEventArgs e)
         {
@@ -643,6 +835,10 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             if (DdpmCommonHelper.DeviceManagerSA != null)
             {
                 DdpmCommonHelper.DeviceManagerSA.ITSettingsActionEvent -= DeviceManagerSA_ITSettingsActionEvent;
+                DdpmCommonHelper.DeviceManagerSA.SystemSuspend -= DeviceManagerSA_OnSystemSuspend;
+                DdpmCommonHelper.DeviceManagerSA.SystemResume -= DeviceManagerSA_OnSystemResume;
+                DdpmCommonHelper.DeviceManagerSA.DeviceChanged -= DeviceManagerSA_DeviceChanged;
+                SystemEvents.SessionEnding -= SystemEvents_SessionEnding;
             }
             try
             {
@@ -1022,6 +1218,8 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
 
         private void StartRecord()
         {
+            DdpmCommonHelper.WriteUILog($"StartRecord");
+
             _vm!.IsRecording = true;
 
 
@@ -1222,11 +1420,6 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             { btnPreset_Click(this, null); }
             btnPreset.IsEnabled = false;
 
-            //Derek 1110 for Webcam PIMS-315440
-            //During video recording, do"Restart" &"Shutdown"action in SUT,
-            //the video which I just recorded will have no length.
-            SystemEvents.SessionEnding += new SessionEndingEventHandler(SystemEvents_SessionEnding);
-
             StartRecord();
         }
 
@@ -1241,7 +1434,13 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             //    UserStopRecord();
             //}
 
-            UserStopRecord();
+            DdpmCommonHelper.WriteUILog($"catch event SystemEvents_SessionEnding");
+
+            if (_vm!.IsRecording)
+                Dispatcher.Invoke(new Action(() =>
+                {
+                    UserStopRecord();
+                }));
         }
 
         private void btnStop_Click(object sender, System.Windows.Input.MouseButtonEventArgs e)
@@ -1262,6 +1461,8 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             txtTimer.Visibility = Visibility.Collapsed;
             txtTimer.Text = "00:00:00";
             btnPreset.IsEnabled = true;
+
+            DdpmCommonHelper.WriteUILog($"UserStopRecord");
         }
 
         private void ProfileSelected(object sender, System.Windows.Input.MouseButtonEventArgs e)
@@ -1281,7 +1482,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
 
         private void btnPreset_Click(object sender, System.Windows.Input.MouseButtonEventArgs? e)
         {
-            var img = (Image)FindName($"imgDown");
+            var img = (UIElement)FindName($"imgDown");
             DoubleAnimation rotateAnimation;
             var AnimatedPanel = (StackPanel)FindName("spPresets");
             if (IsPresetOpen)

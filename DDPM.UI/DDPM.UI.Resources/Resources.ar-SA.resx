@@ -322,7 +322,7 @@
     <value>اسمح بإقران الجهاز أو قم بتشغيل إعدادات Windows وحدد الجهاز المعني بمجرد اكتشافه.</value>
   </data>
   <data name="AddDevice.Pen.4" xml:space="preserve">
-    <value>حدد &quot;نعم&quot; لتأكيد الإقران في مربع المطالبة</value>
+    <value>حدد "نعم" لتأكيد الإقران في مربع المطالبة</value>
   </data>
   <data name="AddDevice.Headset.0" xml:space="preserve">
     <value>للاتصال المجاني وفي أثناء التنقل لجهاز الاستقبال اللاسلكي USB</value>
@@ -535,7 +535,7 @@
     <value>الإضاءة +</value>
   </data>
   <data name="Hotkey.6" xml:space="preserve">
-    <value>مثال: &quot;Alt + P&quot; و&quot;Shift + F&quot; و&quot;Ctrl + Shift + F&quot;.‏\nلاحظ أنه بالنسبة إلى الشاشات المتعددة، يجب أن يكون مؤشر الماوس على الشاشة المستهدفة لتشغيل وظيفة مفتاح التشغيل السريع.</value>
+    <value>مثال: "Alt + P" و"Shift + F" و"Ctrl + Shift + F".‏\nلاحظ أنه بالنسبة إلى الشاشات المتعددة، يجب أن يكون مؤشر الماوس على الشاشة المستهدفة لتشغيل وظيفة مفتاح التشغيل السريع.</value>
   </data>
   <data name="ButtonSettings.0" xml:space="preserve">
     <value>النقر فوق عجلة التمرير</value>
@@ -1093,7 +1093,7 @@
     <value>حساسية الإمالة</value>
   </data>
   <data name="PenSettings.4" xml:space="preserve">
-    <value>سيؤدي تحريك شريط التمرير إلى اليمين إلى\nزيادة تأثير الإمالة تدريجيًا وتحتاج إلى\تطبيق زاوية إمالة أقل</value>
+    <value>سيؤدي تحريك شريط التمرير إلى اليمين إلى\nزيادة تأثير الإمالة تدريجيًا وتحتاج إلى\nتطبيق زاوية إمالة أقل</value>
   </data>
   <data name="PenSettings.5" xml:space="preserve">
     <value>إقران مع Tile</value>
@@ -1399,7 +1399,7 @@
     <value>هذا الجهاز الذي تقوم بإقرانه غير مدعوم بجهاز استقبال USB لاسلكي متصل. استخدم جهاز الاستقبال المرفق مع الجهاز.</value>
   </data>
   <data name="Tooltip.4" xml:space="preserve">
-    <value>الفتحات المتوفرة على جهاز الاستقبال اللاسلكي USB هذا ممتلئة. لاستخدامها، قم بإلغاء إقران جهاز منها بالنقر فوق الزر \&quot;إلغاء الإقران\&quot; في صفحة إعدادات الجهاز.</value>
+    <value>الفتحات المتوفرة على جهاز الاستقبال اللاسلكي USB هذا ممتلئة. لاستخدامها، قم بإلغاء إقران جهاز منها بالنقر فوق الزر \"إلغاء الإقران\" في صفحة إعدادات الجهاز.</value>
   </data>
   <data name="Mouse.14" xml:space="preserve">
     <value>انقر لتعيين إجراء</value>
@@ -2077,7 +2077,7 @@
     <value>لضبط الموازن بناءً على الإعداد المسبق المختار</value>
   </data>
   <data name="HeadsetAudioSettings.27" xml:space="preserve">
-    <value>لضبط مستوى صوتك الذي يمكنك أن تسمعه في أثناء التحدث في المكالمة. (غير متوفرة في وضع &quot;الشفافية&quot;)</value>
+    <value>لضبط مستوى صوتك الذي يمكنك أن تسمعه في أثناء التحدث في المكالمة. (غير متوفرة في وضع "الشفافية")</value>
   </data>
   <data name="HeadsetAudioSettings.28" xml:space="preserve">
     <value>لإزالة ضوضاء الخلفية للسماح بسماع صوتك بوضوح</value>

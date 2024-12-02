@@ -1170,7 +1170,64 @@ namespace DDPM.SA.Common
                 new Dictionary<string, object> {{ "TargetType", "AUDIO" },      { "TargetFeature", "RestoreFactoryDefaults" },      { "Value", "N/A" }, { "Type", 2 }},
 
             };
+            private static readonly List<Dictionary<string, object>> FeatureListByVCP = new List<Dictionary<string, object>>
+{
+    new Dictionary<string, object> {{ "TargetType", "DISPLAY" }, { "TargetFeature", "Orientation" },                { "VCP", "ALL" } },//{ "VCP", "AA" } },
+    new Dictionary<string, object> {{ "TargetType", "DISPLAY" }, { "TargetFeature", "ActiveInputSource" },          { "VCP", "60" } },
+    new Dictionary<string, object> {{ "TargetType", "DISPLAY" }, { "TargetFeature", "ContrastLevel" },              { "VCP", "12" } },
+    new Dictionary<string, object> {{ "TargetType", "DISPLAY" }, { "TargetFeature", "BrightnessLevel" },            { "VCP", "10" } },
+    new Dictionary<string, object> {{ "TargetType", "DISPLAY" }, { "TargetFeature", "AutoBrightness" },             { "VCP", "66" } },
+    new Dictionary<string, object> {{ "TargetType", "DISPLAY" }, { "TargetFeature", "AutoBrightnessRangeLevel" },   { "VCP", "66" } },
+    new Dictionary<string, object> {{ "TargetType", "DISPLAY" }, { "TargetFeature", "AutoColorTemp" },              { "VCP", "66" } },
+    new Dictionary<string, object> {{ "TargetType", "DISPLAY" }, { "TargetFeature", "PrimaryMonitorSync" },         { "VCP", "66" } },
+    new Dictionary<string, object> { { "TargetType", "DISPLAY" }, { "TargetFeature", "ActiveHours" },               { "VCP", "ALL" } },//{ "VCP", "C0" }
+    new Dictionary<string, object> { { "TargetType", "DISPLAY" }, { "TargetFeature", "AutoColorPreset" },           { "VCP", "23,24,25,26,27,3A,3B,3C" } },
+    new Dictionary<string, object> { { "TargetType", "DISPLAY" }, { "TargetFeature", "SubInput" },                  { "VCP", "E9" } },//{ "VCP", "E8" }
+    new Dictionary<string, object> { { "TargetType", "DISPLAY" }, { "TargetFeature", "SwapVideo" },                 { "VCP", "E9" } },//{ "VCP", "E5" }
+    new Dictionary<string, object> { { "TargetType", "DISPLAY" }, { "TargetFeature", "PxP" },                       { "VCP", "E9" } },
+    //new Dictionary<string, object> { { "TargetType", "DISPLAY" }, { "TargetFeature", "SwapUSB" },                   { "VCP", "E7" } },
+    new Dictionary<string, object> { { "TargetType", "DISPLAY" }, { "TargetFeature", "PxPZoom" },                   { "VCP", "E9" } },//{ "VCP", "E5" }
+    new Dictionary<string, object> { { "TargetType", "DISPLAY" }, { "TargetFeature", "RestoreFactoryDefaults" },    { "VCP", "04" } },
+    new Dictionary<string, object> { { "TargetType", "DISPLAY" }, { "TargetFeature", "RestoreLevelDefaults" },      { "VCP", "05" } },
+    new Dictionary<string, object> { { "TargetType", "DISPLAY" }, { "TargetFeature", "RestoreColorDefaults" },      { "VCP", "08" } },
+    new Dictionary<string, object> { { "TargetType", "DISPLAY" }, { "TargetFeature", "PowerSetting" },              { "VCP", "D6" } },
+    new Dictionary<string, object> { { "TargetType", "DISPLAY" }, { "TargetFeature", "OSDLanguage" },               { "VCP", "CC" } },
+    new Dictionary<string, object> { { "TargetType", "DISPLAY" }, { "TargetFeature", "OSDAccess" },                 { "VCP", "CA" } },
+    new Dictionary<string, object> { { "TargetType", "DISPLAY" }, { "TargetFeature", "Resolution" },                { "VCP", "ALL" } },
+    new Dictionary<string, object> { { "TargetType", "DISPLAY" }, { "TargetFeature", "RefreshRate" },               { "VCP", "ALL" } },
+    new Dictionary<string, object> { { "TargetType", "DISPLAY" }, { "TargetFeature", "ResolutionRefreshRate" },     { "VCP", "ALL" } },
+    new Dictionary<string, object> { { "TargetType", "DISPLAY" }, { "TargetFeature", "SpeakerMicrophone" },         { "VCP", "62,8D" } },
+    new Dictionary<string, object> { { "TargetType", "DISPLAY" }, { "TargetFeature", "SpeakerVolume" },             { "VCP", "62" } },
+    new Dictionary<string, object> { { "TargetType", "DISPLAY" }, { "TargetFeature", "Microphone" },                { "VCP", "8D" } },
+    new Dictionary<string, object> { { "TargetType", "DISPLAY" }, { "TargetFeature", "ColorPreset" },               { "VCP", "14" } },
+    new Dictionary<string, object> { { "TargetType", "DISPLAY" }, { "TargetFeature", "FWVersion" },                 { "VCP", "ALL" } },
+    new Dictionary<string, object> { { "TargetType", "DISPLAY" }, { "TargetFeature", "PowerNap" },                  { "VCP", "E0" } },
+    new Dictionary<string, object> { { "TargetType", "DISPLAY" }, { "TargetFeature", "USBCPrioritization" },        { "VCP", "EA" } },
+    new Dictionary<string, object> { { "TargetType", "DISPLAY" }, { "TargetFeature", "ExportSettings" },            { "VCP", "ALL" } },
+    new Dictionary<string, object> { { "TargetType", "DISPLAY" }, { "TargetFeature", "ImportSettings" },            { "VCP", "ALL" } },
+    new Dictionary<string, object> { { "TargetType", "DISPLAY" }, { "TargetFeature", "EasyArrangeLayout" },         { "VCP", "ALL" } },
+    new Dictionary<string, object> { { "TargetType", "DISPLAY" }, { "TargetFeature", "ColorManagement" },           { "VCP", "TRUE" } },
+};
 
+            public static string PrintFormattedJsonTargetFeature(string targetType, Dictionary<string, List<string>> vcpList, bool isColorMangerment)
+            {
+                var targetFeatures = FeatureListByVCP
+                .Where(f => (f["TargetType"].ToString().Equals(targetType, StringComparison.OrdinalIgnoreCase))
+                && (f["VCP"].ToString().Split(",").ToList().Find(x => vcpList.ContainsKey(x)) != null) || f["VCP"].ToString().Equals("ALL", StringComparison.OrdinalIgnoreCase)
+                || f["VCP"].ToString().Equals(isColorMangerment.ToString().ToUpper(), StringComparison.OrdinalIgnoreCase))
+                .Select(f => f["TargetFeature"].ToString())
+                .Distinct()
+                .ToList();
+                if (targetFeatures.Count == 0)
+                    return "Un-supported";
+                var result = new Dictionary<string, List<string>>
+                {
+                    { targetType, targetFeatures }
+                };
+                string json = JsonConvert.SerializeObject(result, Formatting.Indented);
+                Console.WriteLine(json);
+                return json;
+            }
             // [HELP]: Print all the data in the command set
             public static void PrintFormattedJson()
             {
@@ -1215,7 +1272,10 @@ namespace DDPM.SA.Common
                     f["TargetType"].ToString().Equals(commandLineInput.TargetType, StringComparison.OrdinalIgnoreCase));
             }
         }
-
+        public static string Response_HelpCommand_ByDisplay(string targetType, Dictionary<string, List<string>> vcpList, bool isAutoColorMangerment)
+        {
+             return CLIHelpCommandStructure.PrintFormattedJsonTargetFeature(targetType, vcpList, isAutoColorMangerment);
+        }
         public static int Response_HelpCommand(CommandLineInput commandLineInput)
         {
             if (null == commandLineInput.TargetType)
@@ -1227,11 +1287,11 @@ namespace DDPM.SA.Common
             {
                 switch (commandLineInput.TargetFeature)
                 {
+                    //case "DISPLAY":
                     case "ADVANCED":
                     case "APP":
                     case "AUDIO":
                     case "DOCK":
-                    case "DISPLAY":
                     case "MOUSE":
                     case "KEYBOARD":
                     case "PEN":

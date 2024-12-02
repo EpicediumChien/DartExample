@@ -385,5 +385,13 @@ namespace DDPM.UI.Plugin.PenPlugin
                 OnVbarItemClicked(_vm.VbarItems[1]);
             }
         }
+
+        private void PushBack(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            if (sender is Border)
+            {
+                Mainframe_MouseLeftButtonDown(this, e);
+            }
+        }
     }
 }

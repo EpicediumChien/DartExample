@@ -15,6 +15,8 @@ namespace DDPM.PowerMon
         private static PowerMonitor _pwr_Mon = null;
         private static ILog _log = null;
         public event EventHandler MonitorTurnedOn = null;
+        public event EventHandler SystemSuspend = null;
+        public event EventHandler SystemResume = null;
 
         public event EventHandler<KeyPressedEventArgs> HotkeyPressed = null;
 
@@ -28,6 +30,22 @@ namespace DDPM.PowerMon
             writelog("GOT MONITOR ON EVENT");
             Task.Run(() =>
                 MonitorTurnedOn?.Invoke(this, EventArgs.Empty)
+            );
+        }
+
+        private void OnSystemSuspend(object sender, EventArgs e)
+        {
+            writelog("GOT System Suspend EVENT");
+            Task.Run(() =>
+                SystemSuspend?.Invoke(this, EventArgs.Empty)
+            );
+        }
+
+        private void OnSystemResume(object sender, EventArgs e)
+        {
+            writelog("GOT System Resume EVENT");
+            Task.Run(() =>
+                SystemResume?.Invoke(this, EventArgs.Empty)
             );
         }
 
@@ -88,7 +106,9 @@ namespace DDPM.PowerMon
             {
                 _pwr_Mon = new PowerMonitor(_log);
             }
-            _pwr_Mon.MonitorTurnedOn += MonitorEvent_On;            
+            _pwr_Mon.MonitorTurnedOn += MonitorEvent_On;
+            _pwr_Mon.SystemSuspend += OnSystemSuspend;
+            _pwr_Mon.SystemResume += OnSystemResume;
             _pwr_Mon.ShowDialog();            
         }
 
@@ -98,6 +118,8 @@ namespace DDPM.PowerMon
             if (_pwr_Mon != null)
             {
                 _pwr_Mon.MonitorTurnedOn -= MonitorEvent_On;
+                _pwr_Mon.SystemSuspend -= OnSystemSuspend;
+                _pwr_Mon.SystemResume -= OnSystemResume;
                 _pwr_Mon.HotkeyPressed -= HotkeyEvent_Pressed;
                 _pwr_Mon.CloseByCaller();
                 _pwr_Mon = null;

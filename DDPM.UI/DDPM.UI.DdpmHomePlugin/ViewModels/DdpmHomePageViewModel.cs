@@ -31,12 +31,15 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.ViewModels
         private object _LockPeripheralList = new object();
         private readonly IConsole _console;
         private readonly ILog _log;
+        private readonly double _pictureMinWidth = 250;
+        private readonly double _pictureMaxWidth = 500;
+        private readonly double _gapMinWidth = 40;
 
         private ObservableCollection<HomeDevice> _homeDevices = new ObservableCollection<HomeDevice>();
         private HomeDevice? _selectedHomeDevice;
 
-        private List<string> EOLKBList = new() { "WK636", "WK717", "KM714", "KM717", "WM126", "UV514" };
-        private List<string> EOLMouseList = new() { "WK717", "KM714", "KM717", "WM126", "WM116", "WM326", "WM527", "WM514", "UV514" };
+        private List<string> EOLKBList = new() { "WK636", "KM713", "WK717", "KM714", "KM717" };
+        private List<string> EOLMouseList = new() { "WM116", "WM514", "UV514", "WM126", "WM326", "WM527" };
 
         /// <summary>
         /// Default constructor
@@ -78,6 +81,34 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.ViewModels
         public int HomeDeviceCount
         {
             get => HomeDevices.Count;
+        }
+
+        public double ScrollViewMaxWidth
+        {
+            get
+            {
+                return _pictureMaxWidth * 4 + _gapMinWidth * 5;
+            }
+        }
+
+
+        public double MinWidth
+        {
+            get
+            {
+                switch (HomeDevices.Count)
+                {
+                    case 1:
+                        return _pictureMinWidth + _gapMinWidth * 2;
+                    case 2:
+                    case 4:
+                        return _pictureMinWidth * 2 + _gapMinWidth * 3;
+                    case 3:
+                    default:
+                        return _pictureMinWidth * 3 + _gapMinWidth * 4;
+                }
+
+            }
         }
 
         /// <summary>
@@ -339,7 +370,8 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.ViewModels
                         else
                         {
                             // Elie, we set a WD25.png as Dock default picture.
-                            dev.DeviceImage = DdpmCommonHelper.GetImageSourceFromCommonResource($"Resources/WD25.png"); ;
+                            dev.DeviceImage = DdpmCommonHelper.GetImageSourceFromCommonResource($"Resources/WD25.png");
+                            ;
                         }
 
                         dev.SortOrder = (int)dev.DeviceCategory + idxDock;
@@ -440,7 +472,11 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.ViewModels
 
         public void ResetDevices()
         {
-            HomeDevices = new ObservableCollection<HomeDevice>();
+            System.Windows.Application.Current.Dispatcher.Invoke(() =>
+            {
+                // Code to update UI elements
+                HomeDevices = new ObservableCollection<HomeDevice>();
+            });
         }
 
         #region Refresh CollectionView
@@ -535,12 +571,14 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.ViewModels
             MonitorInfo info = new MonitorInfo();
             info.AliasDeviceName = "Fake Monitor";
             info.inputSource = "Internal";
+            info.inputCable = "FakeConn";
             info.CapabilityString = "";
             info.FwVersion = "1.0";
             info.DDCisON = false;
             info.DisplayName = displayName;
             info.Index = 1;
             info.IsDellMonitor = false;
+            info.modelName = "Fake2024";
             info.edid = new VcpCore.Common.EDID();
             info.edid.Month = 6;
             info.edid.Year = 2024;
