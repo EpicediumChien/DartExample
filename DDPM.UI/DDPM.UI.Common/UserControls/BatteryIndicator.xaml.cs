@@ -1,6 +1,8 @@
-﻿using Dell.Client.Framework.UX.WPF.Controls;
+﻿using DDPM.UI.Common.UserControls;
+using Dell.Client.Framework.UX.WPF.Controls;
 using System.Diagnostics;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Media.Imaging;
 using UserControl = System.Windows.Controls.UserControl;
 
@@ -118,6 +120,10 @@ namespace DDPM.UI.Common
             BatteryLevelText.Text = level == "0" ? "" : BatteryLevel.ToString("##0") + "%";
             Debug.WriteLine($"Battery{charging}{level}");
             BatteryImage.Source = bitmapImage;
+
+            //Robert_Lin, 2024-11-29, LightMode, use a ContentControl to replace Image
+            BatteryIcon = (ControlTemplate)this.TryFindResource($"icon_Battery{charging}{level}");
+
         }
 
         private static void OnConnectionTypeChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
@@ -139,6 +145,9 @@ namespace DDPM.UI.Common
                 {
                     ConnectionTypeImage.Source = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/LightMode/Port.png");
                 }
+                //Robert_Lin, 2024-11-29, LightMode, use a ContentControl to replace Image
+                ConnectionTypeIcon = (ControlTemplate)this.TryFindResource("icon_Port");
+
                 stackPanel.Visibility = Visibility.Collapsed;
                 if (ConnectionType == "Wired" || ConnectionType == "WiredAudio")
                 {
@@ -165,8 +174,21 @@ namespace DDPM.UI.Common
                 }
                 return;
             }
-            BitmapImage bitmapImage = new BitmapImage(new Uri($"/DDPM.UI.Resources;component/Resources/Images/{ConnectionType}.png", UriKind.Relative));
-            ConnectionTypeImage.Source = bitmapImage;
+            else if (ConnectionType == "Bluetooth")
+            {
+                //Robert_Lin, 2024-11-29, LightMode, use a ContentControl to replace Image
+                ConnectionTypeIcon = (ControlTemplate)this.TryFindResource("icon_Bluetooth");
+            }
+            else if (ConnectionType == "Dongle")
+            {
+                //Robert_Lin, 2024-11-29, LightMode, use a ContentControl to replace Image
+                ConnectionTypeIcon = (ControlTemplate)this.TryFindResource("icon_Dongle");
+            }
+            else
+            {
+                BitmapImage bitmapImage = new BitmapImage(new Uri($"/DDPM.UI.Resources;component/Resources/Images/{ConnectionType}.png", UriKind.Relative));
+                ConnectionTypeImage.Source = bitmapImage;
+            }
             UpdateBatteryLevelIndicator();
         }
 
@@ -216,5 +238,69 @@ namespace DDPM.UI.Common
             else
                 stackPanel.Visibility = Visibility.Visible;
         }
+
+        #region ConnectionTypeIcon and BatteryIcon
+        //Robert_Lin, 2024-11-29 add and plan to replace Image for the ConnectionType
+        public ControlTemplate ConnectionTypeIcon
+        {
+            get { return (ControlTemplate)GetValue(ConnectionTypeIconProperty); }
+            set { SetValue(ConnectionTypeIconProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for IconTemplate.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty ConnectionTypeIconProperty =
+            DependencyProperty.Register("ConnectionTypeIcon", typeof(ControlTemplate), typeof(BatteryIndicator));
+
+        public ControlTemplate BatteryIcon
+        {
+            get { return (ControlTemplate)GetValue(BatteryIconProperty); }
+            set { SetValue(BatteryIconProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for IconTemplate.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty BatteryIconProperty =
+            DependencyProperty.Register("BatteryIcon", typeof(ControlTemplate), typeof(BatteryIndicator));
+
+
+        //Debug function to change battery level for demo
+        public void ChangeToNextBatteryStatus()
+        {
+            //BatteryLevel(Charging):
+            // 90(N) -> 60(N) -> 20(N) -> 5(N) -> 
+            // 90(Y) -> 60(Y) -> 20(Y) -> 5(Y) -> -1(N) ->
+            if (BatteryStatus == "Charging")
+            {
+                if (BatteryLevel >= 90)
+                    BatteryLevel = 60;
+                else if (BatteryLevel >= 60)
+                    BatteryLevel = 20;
+                else if (BatteryLevel >= 20)
+                    BatteryLevel = 5;
+                else if (BatteryLevel >= 5)
+                {
+                    BatteryLevel = 90;
+                    BatteryStatus = "";
+                }
+            }
+            else
+            {
+                if (BatteryLevel >= 90)
+                    BatteryLevel = 60;
+                else if (BatteryLevel >= 60)
+                    BatteryLevel = 20;
+                else if (BatteryLevel >= 20)
+                    BatteryLevel = 5;
+                else if (BatteryLevel >= 5)
+                {
+                    BatteryLevel = -1;
+                }
+                else if (BatteryLevel < 0)
+                {
+                    BatteryLevel = 90;
+                    BatteryStatus = "Charging";
+                }
+            }
+        }
+        #endregion
     }
 }

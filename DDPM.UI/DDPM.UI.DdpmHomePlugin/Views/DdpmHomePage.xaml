@@ -108,10 +108,10 @@
             </Style.Triggers>
         </Style>
 
-        <!-- Tooltip -->
-        <SolidColorBrush x:Key="ToolipBkColor" Color="#FF1D2C3B" />
+        <!-- Tooltip - Robert_Lin, 2024-11-30 comment-out unused resurces -->
+        <!--<SolidColorBrush x:Key="ToolipBkColor" Color="#FF1D2C3B" />
         <SolidColorBrush x:Key="ToolipBdColor" Color="#FF293B4D" />
-        <SolidColorBrush x:Key="ToolipTextColor" Color="#FFF5F6F7" />
+        <SolidColorBrush x:Key="ToolipTextColor" Color="#FFF5F6F7" />-->
 
         <PluginCommon:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
 
@@ -489,10 +489,10 @@
             </ListView>
 
             <!-- Please Wait -->
-            <!-- Robert_Lin, 2024-11-30, for LightMode, remove to balck background of Please Wait -->
-            <Grid Visibility="{Binding IsPleaseWaitVisible, Converter={StaticResource BoolToVisibilityConverter}}">
+            <Grid Background="#CC000000" 
+                  Visibility="{Binding IsPleaseWaitVisible, Converter={StaticResource BoolToVisibilityConverter}}">
                 <Border Width="587" Height="265" Background="{DynamicResource SpinnerBkColor}"
-                        BorderBrush="#293D4D" BorderThickness="1" CornerRadius="4"
+                        BorderThickness="1" CornerRadius="4" BorderBrush="#777777" 
                         HorizontalAlignment="Center" VerticalAlignment="Center">
                     <StackPanel>
                         <Grid Height="40" HorizontalAlignment="Center" VerticalAlignment="Top"

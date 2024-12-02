@@ -5,7 +5,7 @@ using Point = System.Windows.Point;
 
 namespace nDragElement
 {
-    public class DragElementHandler
+    public class DragElementHandler_Unused
     {
         private FrameworkElement DragElement;
         private FrameworkElement ContainerElement;

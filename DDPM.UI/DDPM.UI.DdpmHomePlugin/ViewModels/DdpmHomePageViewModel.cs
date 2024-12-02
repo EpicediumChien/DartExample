@@ -570,12 +570,14 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.ViewModels
             MonitorInfo info = new MonitorInfo();
             info.AliasDeviceName = "Fake Monitor";
             info.inputSource = "Internal";
+            info.inputCable = "FakeConn";
             info.CapabilityString = "";
             info.FwVersion = "1.0";
             info.DDCisON = false;
             info.DisplayName = displayName;
             info.Index = 1;
             info.IsDellMonitor = false;
+            info.modelName = "Fake2024";
             info.edid = new VcpCore.Common.EDID();
             info.edid.Month = 6;
             info.edid.Year = 2024;
