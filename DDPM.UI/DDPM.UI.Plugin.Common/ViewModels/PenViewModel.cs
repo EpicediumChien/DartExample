@@ -267,6 +267,22 @@ namespace DDPM.UI.Plugin.ViewModels
             {
                 IsRestoreEnable = true;
             }
+            else if (PenAction.IsTopBarrelHoverClickOn)
+            {
+                IsRestoreEnable = true;
+            }
+            else if (PenAction.IsBottomBarrelHoverClickOn)
+            {
+                IsRestoreEnable = true;
+            }
+            else if (TiltSensitivity != 50)
+            {
+                IsRestoreEnable = true;
+            }
+            else if (TipSensitivity != 50)
+            {
+                IsRestoreEnable = true;
+            }
             OnPropertyChanged(nameof(IsRestoreEnable));
         }
 
@@ -343,6 +359,7 @@ namespace DDPM.UI.Plugin.ViewModels
                     _ => 6
                 };
                 DdpmCommonHelper.DeviceManagerSA!.SetTipSensitivity(itemID, value);
+                CheckRestoreStatus();
             }
         }
 
@@ -365,7 +382,10 @@ namespace DDPM.UI.Plugin.ViewModels
         public void SetTiltSensitivity()
         {
             if (_tiltSensitivity != CurrentDeviceInfo!.TiltSensitivity)
+            {
                 DdpmCommonHelper.DeviceManagerSA!.SetTiltSensitivity(itemID, _tiltSensitivity / 50);
+                CheckRestoreStatus();
+            }
         }
 
         public string SelectedButton
@@ -637,7 +657,11 @@ namespace DDPM.UI.Plugin.ViewModels
                 TiltSensitivity = 50;
                 CurrentDeviceInfo!.TipSensitivity = 3;
                 TipSensitivity = 50;
+                PenAction.IsTopBarrelHoverClickOn = false;
+                PenAction.IsBottomBarrelHoverClickOn = false;
                 IsRestoreEnable = false;
+                OnPropertyChanged(nameof(IsHoverClickOn));
+                OnPropertyChanged(nameof(IsHoverClickToggleText));
                 OnPropertyChanged(nameof(IsRestoreEnable));
                 PenAction = (PenActions)ActionList.ImportActionList(eDeviceCategory.Pen, "PEN");
                 return true;
@@ -745,6 +769,7 @@ namespace DDPM.UI.Plugin.ViewModels
                     PenAction.IsBottomBarrelHoverClickOn = value;
                     ActionList.ExportActionList(PenAction, "PEN");
                 }
+                CheckRestoreStatus();
                 OnPropertyChanged();
                 //IsMicEnumerationOnText = value ? Strings.On : Strings.Off;
                 OnPropertyChanged(nameof(IsHoverClickToggleText));
