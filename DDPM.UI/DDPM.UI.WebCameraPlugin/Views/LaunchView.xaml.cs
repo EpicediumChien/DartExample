@@ -294,7 +294,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
 
             if( !is_camera_internal)
             {
-                //7系列
+                //7系列 外接式
                 if( is_EsiSupport )
                 {
                     //UPD：SHOW PRESENCE DETECTION SECTION
@@ -329,11 +329,27 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             }
             else
             {
-                //P.U系列
+                //P.U系列為internal型式
+                //Dell monitor integrated webcams would not have MPS FW by DDPM 2.0 launch RTW Feb CY25
+                //U3223QZ, U3224KB / KBA
+                //P2424HEB, P2724DEB, P3424WEB
+                //不需要做 is_EsiSupport判斷,一律為 UPD
+
+                if (is_WindowsVer_OK)
+                {
+                    //SHOW PRESENCE DETECTION SECTION
+                }
+                else
+                {
+                    //NOT SHOW PRESENCE DETECTION SECTION
+                }
+
+
+                //都不需要顯示韌體升級提示
 
             }
 
-            if( !is_DellPc )
+            if ( !is_DellPc )
             {
                 //不是DELL PC 一律隱藏 PRESENCE DETECTION SECTION
             }
