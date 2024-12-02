@@ -124,7 +124,7 @@ namespace DDPM.SA.Common
             }
             else
             {
-                return fwUpdateInfo.DevicePath == DevicePath;
+                return fwUpdateInfo.DevicePath == DevicePath && fwUpdateInfo.Model == Model;
             }
         }
     }
