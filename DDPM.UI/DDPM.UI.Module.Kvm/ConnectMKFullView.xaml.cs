@@ -69,6 +69,7 @@ namespace DDPM.UI.Module.Kvm
             {
                 vm.FinishtoSetPCs();
                 vm.isOnUSBKVM(true);
+                vm.USBKVMisON = true;
                 //Return to DdpmHomePage              
                 IConsole? console = DdpmHomePlugin.PluginIoc.GetService<IConsole>();
                 console?.ShowPluginById(DDPM.UI.Common.Constants.DdpmHomePluginId);

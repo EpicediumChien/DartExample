@@ -30,5 +30,6 @@ namespace DDPM.SA.Common
 
         void UpdateEvent();
         void SetSkipCA(bool isSkipCA);
+        void SetSkipSHA(bool isSkipSHA);
     }
 }
