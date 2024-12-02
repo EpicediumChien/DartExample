@@ -39,7 +39,7 @@
         <Setter Property="Background" Value="{DynamicResource FakeTransparent}" />
     </Style>
     <!--<Style TargetType="TextBlock">
-    <Setter Property="Foreground" Value="{DynamicResource DefaultTheme_TxtColor}" />Icon_Info
+    <Setter Property="Foreground" Value="{DynamicResource DefaultTheme_TxtColor}" />
     </Style>-->
     <Style TargetType="Border">
         <Setter Property="Background" Value="{DynamicResource DefaultTheme_BdBkColor}" />
