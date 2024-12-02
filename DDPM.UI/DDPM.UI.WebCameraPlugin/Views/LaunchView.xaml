@@ -237,7 +237,7 @@
                                 </ToolTip>
                             </Image.ToolTip>
                         </Image>-->
-                        <ContentControl Content="{StaticResource InfoIcon}" Margin="9,22.5,0,0" VerticalAlignment="Top" Cursor="">
+                        <ContentControl Content="{StaticResource Icon_Info}" Margin="9,22.5,0,0" VerticalAlignment="Top" Cursor="">
                             <ContentControl.InputBindings>
                                 <MouseBinding Gesture="RightDoubleClick" Command="{Binding ShowInfoClickedCommand}" />
                             </ContentControl.InputBindings>
