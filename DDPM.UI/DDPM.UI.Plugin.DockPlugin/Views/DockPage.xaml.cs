@@ -5,11 +5,13 @@ using DDPM.UI.Plugin.Common;
 using DDPM.UI.Plugin.ViewModels;
 using Dell.Client.Framework.Common;
 using Dell.Client.Framework.UX.WPF;
+using Dell.Client.Framework.UX.WPF.Controls;
 using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media.Animation;
+using System.Windows.Media.Imaging;
 
 namespace DDPM.UI.Plugin.DockPlugin.Views
 {
@@ -53,7 +55,20 @@ namespace DDPM.UI.Plugin.DockPlugin.Views
             txtSystemName2.Text = _vm.VisiblePairedHostName1;
             txtSystemName3.Text = _vm.VisiblePairedHostName1;
             txtFirmware.Text = string.Format(Strings.DockDongle1,_vm.PhysicalDeviceFWVersion);
-            txtSlot.Text = string.Format(Strings.DockDongle0, _vm.CurrentDeviceInfo!.MaxPairingSlots - _vm.CurrentDeviceInfo.PairedDeviceCount, _vm.CurrentDeviceInfo.MaxPairingSlots);            
+            txtSlot.Text = string.Format(Strings.DockDongle0, _vm.CurrentDeviceInfo!.MaxPairingSlots - _vm.CurrentDeviceInfo.PairedDeviceCount, _vm.CurrentDeviceInfo.MaxPairingSlots);
+
+            DdpmCommonHelper.BitmapImageUpdated += ImageUpdate;
+        }
+
+        ~DockPage()
+        {
+            DdpmCommonHelper.BitmapImageUpdated -= ImageUpdate;
+        }
+
+        private void ImageUpdate(OSThemeEnum oSThemeEnum)
+        {
+            ArrowLeft.Source = null;
+            ArrowLeft.Source = (BitmapImage)System.Windows.Application.Current.Resources["Arrow_Left"];
         }
 
         #region RightViewHeader

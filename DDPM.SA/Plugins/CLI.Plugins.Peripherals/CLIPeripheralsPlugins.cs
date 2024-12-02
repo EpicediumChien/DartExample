@@ -904,7 +904,8 @@ namespace DDPM.CLI.Plugins.Peripherals
                     break;
                 }
             }
-            if (_commandLineInput.TargetFeature != "UNPAIR" && _commandLineInput.Options[0].Option_Value == "")
+
+            if (_commandLineInput.TargetFeature != "UNPAIR" && _commandLineInput.Options.Count != 0 && _commandLineInput.Options[0].Option_Value == "")
             {
                 SetResults.ForEach(x =>
                         {

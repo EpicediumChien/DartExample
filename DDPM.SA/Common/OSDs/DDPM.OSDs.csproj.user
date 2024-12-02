@@ -5,6 +5,9 @@
     <Compile Update="CollaborationNotAvailableWin.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="KeyAndKeybordBatteryLowWin.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Update="QAMHotKeyWin.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -14,6 +17,9 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Update="ErrorWin.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="KeyAndKeybordBatteryLowWin.xaml">
       <SubType>Designer</SubType>
     </Page>
   </ItemGroup>
