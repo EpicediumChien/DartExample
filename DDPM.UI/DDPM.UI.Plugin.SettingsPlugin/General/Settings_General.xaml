@@ -6,7 +6,7 @@
              xmlns:UXControls="clr-namespace:Dell.Client.Framework.UX.WPF.Controls;assembly=DCF.UX.WPF"
              xmlns:local="clr-namespace:DDPM.UI.Plugin.SettingsPlugin"
              mc:Ignorable="d"
-             Margin="5,4,60,120"
+             Margin="5,4,60,29"
              d:DesignHeight="450"
              d:DesignWidth="800"
              SizeChanged="UserControl_SizeChanged">

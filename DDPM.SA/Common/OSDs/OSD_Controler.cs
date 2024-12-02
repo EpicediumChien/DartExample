@@ -1,4 +1,6 @@
-﻿namespace DDPM.OSDs
+﻿using DDPM.SA.Common;
+
+namespace DDPM.OSDs
 {
     public class OSD_Controler
     {
@@ -23,6 +25,7 @@
         private ErrorWin ErrorWin;
         private QAMHotKeyWin QAMHotKeyWin;
         private CollaborationNotAvailableWin CollaborationNotAvailableWinx;
+        private KeyAndKeybordBatteryLowWin keyAndKeybordBatteryLowWin;
 
         public OSD_Controler()
         { }
@@ -321,6 +324,30 @@
         {
             if (CollaborationNotAvailableWinx != null)
                 CollaborationNotAvailableWinx.CloseWindow();
+        }
+
+        public void KeyAndKeybordBatteryLowWin_ShowWindow(string Content, double Top, double Left)
+        {
+            keyAndKeybordBatteryLowWin = new KeyAndKeybordBatteryLowWin(Content);
+
+            keyAndKeybordBatteryLowWin.Top = Top;
+            keyAndKeybordBatteryLowWin.Left = Left;
+            keyAndKeybordBatteryLowWin.ShowWindow();
+        }
+
+        public void KeyAndKeybordBatteryLowWin_ShowWindow(string Content, double Top, double Left, OSDType type, OSDType_Device device, bool state)
+        {
+            keyAndKeybordBatteryLowWin = new KeyAndKeybordBatteryLowWin(Content, type, device, state);
+
+            keyAndKeybordBatteryLowWin.Top = Top;
+            keyAndKeybordBatteryLowWin.Left = Left;
+            keyAndKeybordBatteryLowWin.ShowWindow();
+        }
+
+        public void KeyAndKeybordBatteryLowWin_CloseWindow()
+        {
+            if (keyAndKeybordBatteryLowWin != null)
+                keyAndKeybordBatteryLowWin.CloseWindow();
         }
     }
 }

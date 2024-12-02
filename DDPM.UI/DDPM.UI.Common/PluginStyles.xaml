@@ -437,9 +437,9 @@
 
   <!--  Resources of DdpmComboBox  -->
   <!--  DdomCB_BdColor=(64,88,109,1) : the BorderBrush of the ComboBox ToggleButton part.  -->
-  <SolidColorBrush x:Key="DdpmCB_BdColor" Color="#FF40586D" />
+  <!-- <SolidColorBrush x:Key="DdpmCB_BdColor" Color="#FF40586D" /> -->
   <!--  DdpmCD_BkColor=(41,59,77,1): The background color of the DdpmComboBox  -->
-  <SolidColorBrush x:Key="DdpmCB_BkColor" Color="#FF2F3B4D" />
+  <!-- <SolidColorBrush x:Key="DdpmCB_BkColor" Color="#FF2F3B4D" /> -->
   <!--  DdpmCB_TextColor=(255,255,255,1): The normal item text color of Text in Dropdown list  -->
   <SolidColorBrush x:Key="DdpmCB_TextColor" Color="White" />
   <!--  DdpmCB_HiTextColor=(49,162,227,1): The highlight item color of Text in Dropdown list  -->
@@ -469,7 +469,7 @@
           <Path
                         Name="Arrow"
                         Data="M1,0 L0,1 L10,11 L20,1 L19,0 L10,9 z"
-                        Fill="White" />
+                        Fill="{DynamicResource DefaultTheme_PathColor}" />
         </Grid>
       </Viewbox>
     </Grid>
@@ -502,7 +502,7 @@
     -->
   <Style x:Key="DdpmComboBoxItemContainerStyle" TargetType="{x:Type ComboBoxItem}">
     <Setter Property="SnapsToDevicePixels" Value="true" />
-    <Setter Property="Foreground" Value="White" />
+    <Setter Property="Foreground" Value="{DynamicResource DefaultTheme_TxtColor}" />
     <Setter Property="OverridesDefaultStyle" Value="true" />
     <Setter Property="Template">
       <Setter.Value>
@@ -602,8 +602,8 @@
 
       <!--  [4]  -->
       <Border
-                Background="{StaticResource DdpmCB_BkColor}"
-                BorderBrush="{StaticResource DdpmCB_BdColor}"
+                Background="{DynamicResource DdpmCB_BkColor}"
+                BorderBrush="{DynamicResource DdpmCB_BdColor}"
                 BorderThickness="1"
                 CornerRadius="4">
         <Grid>
