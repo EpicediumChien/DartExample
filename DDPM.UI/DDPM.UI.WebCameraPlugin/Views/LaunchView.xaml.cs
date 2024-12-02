@@ -230,6 +230,8 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
 
             CheckUSBtype();
 
+            check_WB7022();
+
             DdpmCommonHelper.BitmapImageUpdated += ImageUpdate;
         }
 
@@ -255,6 +257,51 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                 }));
         }
 
+        public void check_WB7022()
+        {
+
+            string model = _vm.CurrentDeviceInfo!.ModelNumber;
+
+            if (model == null)
+            {
+                string log = $"[DDPM.UI.WebCameraPlugin\\Views\\LaunchView.xaml.cs] CheckUSBtype() model is null";
+                DdpmCommonHelper.WriteUILog(log);
+                return;
+            }
+            if (model != "wb7022") return;
+
+            //api回傳camera是否支援ESI
+            bool is_EsiSupport = DdpmCommonHelper.DeviceManagerSA!.GetIsESISupported(_vm.CurrentDeviceInfo!.ID.ToString()).Result;
+            
+            //api回傳camera硬體是否支援windows hello
+            bool is_WindwosHelloSupport = DdpmCommonHelper.DeviceManagerSA!.GetIsWindowsHelloCapabilityVerified(_vm.CurrentDeviceInfo!.ID.ToString()).Result;
+            
+            //檢查windows是否符合windows hello標準
+            bool is_Windows_OK = true;
+
+            //檢查韌體版本是否為偶數
+            bool is_fw_even = true;
+
+            //檢查是否為dell電腦
+            bool is_DellPc = true;
+
+
+            int ui_case = 0 ;
+
+            switch (ui_case)
+            {
+                case 0:
+                    //預設完整功能畫面
+                    break;
+                case 1:
+                    //只有windows hello設定畫面提示
+                    break; 
+                case 2:
+                    //提示更新韌體
+                    break;
+            }
+            
+        }
         public void CheckUSBtype()
         {
 
