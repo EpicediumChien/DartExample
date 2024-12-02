@@ -1052,15 +1052,168 @@
 
   <!-- #endregion SplitItem of EasyArrange -->
 
-  <!-- #region For Headset -->
-  <SolidColorBrush x:Key="ProgressBar_BkColor" Color="#293B4D" />
-  <SolidColorBrush x:Key="Unpair_FgColor" Color="#F5F6F7" />
-  <SolidColorBrush x:Key="WalkThroughBox_BkColor" Color="#0B172D" />
-  <SolidColorBrush x:Key="EQLine_Color" Color="#1B385F" />
-  <Style x:Key="RightGroupBorderStyleForAudio" TargetType="Border">
-    <Setter Property="CornerRadius" Value="6" />
-    <Setter Property="Background" Value="{DynamicResource RightGroupBkColor}" />
-  </Style>
+    <!-- #region For Mouse -->
+    <SolidColorBrush x:Key="MouseCB_BkColor" Color="#293B4D" />
+    <SolidColorBrush x:Key="MouseCB_HIBkColor" Color="#0672CB" />
+    <ControlTemplate x:Key="MouseComboBoxToggleButtonTemplate" TargetType="ToggleButton">
+        <Grid x:Name="toggleBtnRoot">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <ContentPresenter Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="3,3,23,3" />
+            <ContentControl x:Name="DBIcon" Grid.Column="1" Width="12" Height="12" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,0,11,2"
+                            Template="{StaticResource icon_DownArrow}" />
+        </Grid>
+        <ControlTemplate.Triggers>
+            <Trigger Property="IsChecked" Value="True">
+                <Setter TargetName="DBIcon" Property="Template" Value="{StaticResource icon_UpArrow}" />
+            </Trigger>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter TargetName="toggleBtnRoot" Property="Background" Value="#4CB1B0B0" />
+            </Trigger>
+        </ControlTemplate.Triggers>
+    </ControlTemplate>
+    <ControlTemplate x:Key="MouseComboBoxControlTemplate" TargetType="ComboBox">
+        <Grid x:Name="templateRoot">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+                <RowDefinition Height="7" />
+            </Grid.RowDefinitions>
+            <Popup Name="PART_Popup"
+                   Grid.Row="1"
+                   MinWidth="{Binding ActualWidth, ElementName=templateRoot}"
+                   Margin="0,30,0,0"
+                   AllowsTransparency="True"
+                   Focusable="False"
+                   IsOpen="{Binding IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource Mode=TemplatedParent}}"
+                   Placement="Bottom"
+                   PopupAnimation="Slide">
+                <Border     Name="dropDownBorder"
+                        Margin="0,0,0,0" Padding="0"
+                        Background="{DynamicResource DdpmCB_BkColor}"
+                        BorderBrush="{DynamicResource DdpmCB_BdColor}"
+                        BorderThickness="1"
+                        CornerRadius="4">
+                    <ScrollViewer
+                        x:Name="DropDownScrollViewer"
+                        Margin="2,7"
+                        SnapsToDevicePixels="True"
+                        VerticalScrollBarVisibility="Hidden">
+
+                        <Grid x:Name="grid" RenderOptions.ClearTypeHint="Enabled">
+                            <Canvas
+                                x:Name="canvas"
+                                Width="0"
+                                Height="0"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Top">
+                                <Rectangle
+                                    x:Name="opaqueRect"
+                                    Width="{Binding ActualWidth, ElementName=dropDownBorder}"
+                                    Height="{Binding ActualHeight, ElementName=dropDownBorder}"
+                                    Fill="{Binding Background, ElementName=dropDownBorder}" />
+                            </Canvas>
+
+                            <ItemsPresenter
+                                x:Name="ItemsPresenter"
+                                KeyboardNavigation.DirectionalNavigation="Contained"
+                                SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
+                        </Grid>
+                    </ScrollViewer>
+                </Border>
+            </Popup>
+            <Border
+                Background="{DynamicResource DdpmCB_BkColor}"
+                BorderBrush="{DynamicResource DdpmCB_BdColor}"
+                BorderThickness="1"
+                CornerRadius="4">
+                <Grid>
+                    <!--  Reserved Column 1 space for the up/down arrow  -->
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="32" />
+                    </Grid.ColumnDefinitions>
+                    <ToggleButton
+                        Name="toggleButton"
+                        Grid.ColumnSpan="2"
+                        HorizontalAlignment="Stretch"
+                        ClickMode="Press"
+                        Focusable="True"
+                        IsChecked="{Binding Path=IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"
+                        Template="{StaticResource MouseComboBoxToggleButtonTemplate}" />
+
+                    <ContentPresenter
+                        x:Name="contentPresenter"
+                        Grid.Column="0"
+                        Margin="10,0,0,0"
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Center"
+                        Content="{TemplateBinding SelectionBoxItem}"
+                        ContentStringFormat="{TemplateBinding SelectionBoxItemStringFormat}"
+                        ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}"
+                        ContentTemplateSelector="{TemplateBinding ItemTemplateSelector}"
+                        IsHitTestVisible="False" />
+                </Grid>
+            </Border>
+        </Grid>
+    </ControlTemplate>
+    <Style x:Key="MouseComboBoxItemContainerStyle" TargetType="{x:Type ComboBoxItem}">
+        <Setter Property="SnapsToDevicePixels" Value="true" />
+        <Setter Property="Foreground" Value="{DynamicResource DefaultTheme_TxtColor}" />
+        <Setter Property="OverridesDefaultStyle" Value="true" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type ComboBoxItem}">
+                    <Border Name="Border" Margin="0" Padding="0" SnapsToDevicePixels="true">
+                        <ContentPresenter
+                            Name="contentPresenter"
+                            Margin="13,10,40,10"
+                            VerticalAlignment="Center" />
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsHighlighted" Value="true">
+                            <Setter TargetName="Border" Property="Background" Value="{DynamicResource MouseCB_HIBkColor}" />
+                            <Setter Property="Foreground" Value="{DynamicResource DefaultTheme_TxtColor}" />
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="false">
+                            <Setter Property="Foreground" Value="#888888" />
+                        </Trigger>
+                        <!--<Trigger Property="IsSelected" Value="True">
+                        <Setter Property="Foreground" Value="{StaticResource DdpmCB_SelTextColor}" />
+                        </Trigger>-->
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    <Style x:Key="MouseComboBoxStyle" TargetType="ComboBox">
+        <Setter Property="SnapsToDevicePixels" Value="True" />
+        <Setter Property="OverridesDefaultStyle" Value="True" />
+        <Setter Property="ScrollViewer.CanContentScroll" Value="False" />
+        <Setter Property="MinWidth" Value="100" />
+        <Setter Property="MinHeight" Value="20" />
+        <Setter Property="Height" Value="46" />
+        <Setter Property="FontFamily" Value="Roboto" />
+        <Setter Property="FontSize" Value="14" />
+        <Setter Property="FontWeight" Value="Normal" />
+        <Setter Property="Foreground" Value="{DynamicResource DefaultTheme_TxtColor}" />
+        <Setter Property="Background" Value="{DynamicResource MouseCB_BkColor}" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+        <Setter Property="Template" Value="{StaticResource MouseComboBoxControlTemplate}" />
+        <Setter Property="ItemContainerStyle" Value="{StaticResource MouseComboBoxItemContainerStyle}" />
+    </Style>
+    <!-- #endregion -->
+
+    <!-- #region For Headset -->
+    <SolidColorBrush x:Key="ProgressBar_BkColor" Color="#293B4D" />
+    <SolidColorBrush x:Key="Unpair_FgColor" Color="#F5F6F7" />
+    <SolidColorBrush x:Key="WalkThroughBox_BkColor" Color="#0B172D" />
+    <SolidColorBrush x:Key="EQLine_Color" Color="#1B385F" />
+    <Style x:Key="RightGroupBorderStyleForAudio" TargetType="Border">
+        <Setter Property="CornerRadius" Value="6" />
+        <Setter Property="Background" Value="{DynamicResource RightGroupBkColor}" />
+    </Style>
 
   <Style x:Key="ModuleCaptionStyle" TargetType="UXControls:UXTextBlock">
     <Setter Property="Foreground" Value="{DynamicResource DefaultTheme_TxtColor}"/>
@@ -1085,37 +1238,38 @@
                         Foreground="#F5F6F7"
                         Background="#193475F2"
                         Padding="8,12,8,12" />-->
-            <ContentPresenter />
-          </Border>
-        </ControlTemplate>
-      </Setter.Value>
-    </Setter>
-  </Style>
-  <Style x:Key="TabInfoToolTipTextStyle" TargetType="TextBlock">
-    <Setter Property="ToolTipService.InitialShowDelay" Value="1" />
-    <Setter Property="Background" Value="#1D2C3B" />
-    <Setter Property="FontFamily" Value="Roboto" />
-    <Setter Property="FontSize" Value="12" />
-    <Setter Property="Foreground" Value="#F5F6F7" />
-    <Setter Property="Padding" Value="8" />
-    <Setter Property="LineHeight" Value="20" />
-    <Setter Property="TextWrapping" Value="Wrap" />
-  </Style>
-  <Style x:Key="ModuleItemStyle" TargetType="UXControls:UXTextBlock">
-    <Setter Property="Foreground" Value="{DynamicResource DefaultTheme_TxtColor}" />
-    <Setter Property="FontFamily" Value="Roboto" />
-    <Setter Property="FontSize" Value="16" />
-    <Setter Property="FontWeight" Value="Medium" />
-    <Style.Triggers>
-      <Trigger Property="IsEnabled" Value="False">
-        <Setter Property="Foreground" Value="#8995A5" />
-      </Trigger>
-    </Style.Triggers>
-  </Style>
-  <SolidColorBrush x:Key="ToggleSwitch_NormalBackground" Color="#0B1E38" />
-  <SolidColorBrush x:Key="ToggleSwitch_PressedBackground" Color="#0672CB" />
-  <SolidColorBrush x:Key="ToggleSwitch_PressedBorderBrush" Color="#55B4FD" />
-  <SolidColorBrush x:Key="ToggleSwitch_BorderBrush" Color="#1E3F6C" />
+                        <ContentPresenter />
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    <Style x:Key="TabInfoToolTipTextStyle" TargetType="TextBlock">
+        <Setter Property="ToolTipService.InitialShowDelay" Value="1" />
+        <Setter Property="Background" Value="#1D2C3B" />
+        <Setter Property="FontFamily" Value="Roboto" />
+        <Setter Property="FontSize" Value="12" />
+        <Setter Property="Foreground" Value="#F5F6F7" />
+        <Setter Property="Padding" Value="8" />
+        <Setter Property="LineHeight" Value="20" />
+        <Setter Property="TextWrapping" Value="Wrap" />
+    </Style>
+    <Style x:Key="ModuleItemStyle" TargetType="UXControls:UXTextBlock">
+        <Setter Property="Foreground" Value="{DynamicResource DefaultTheme_TxtColor}" />
+        <Setter Property="FontFamily" Value="Roboto" />
+        <Setter Property="FontSize" Value="16" />
+        <Setter Property="FontWeight" Value="Medium" />
+        <Style.Triggers>
+            <Trigger Property="IsEnabled" Value="False">
+                <Setter Property="Foreground" Value="#8995A5" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+    <SolidColorBrush x:Key="ToggleSwitch_NormalBackground" Color="#0B1E38" />
+    <SolidColorBrush x:Key="ToggleSwitch_PressedBackground" Color="#0672CB" />
+    <SolidColorBrush x:Key="ToggleSwitch_PressedBorderBrush" Color="#55B4FD" />
+    <SolidColorBrush x:Key="ToggleSwitch_BorderBrush" Color="#1E3F6C" />
+    <!-- #endregion -->
 
   <Style TargetType="UXControls:UXTextBlock" x:Key="ProductNameTextStyle">
     <Setter Property="Foreground" Value="{DynamicResource HomePageKeyFeature_TxtColor}" />
@@ -1312,32 +1466,34 @@
   <SolidColorBrush x:Key="Border1BorderBrush" Color="#132F54"/>
 
 
-  <SolidColorBrush x:Key="Button1BorderEnColor" Color="#0672CB"/>
-  <Style x:Key="Button1BorderStyle" TargetType="Border">
-    <Setter Property="Background" Value="{DynamicResource Button1BorderEnColor}" />
-    <Setter Property="CornerRadius" Value="2" />
-    <Setter Property="BorderThickness" Value="0" />
-    <Style.Triggers>
-      <Trigger Property="IsEnabled" Value="False">
-        <Setter Property="Background" Value="#344354" />
-      </Trigger>
-    </Style.Triggers>
-  </Style>
+    <SolidColorBrush x:Key="Button1BorderEnColor" Color="#0672CB"/>
+    <SolidColorBrush x:Key="Button1BorderDisColor" Color="#344354"/>
+    <SolidColorBrush x:Key="Button1TextDisColor" Color="#828E9C"/>
+    <Style x:Key="Button1BorderStyle" TargetType="Border">
+        <Setter Property="Background" Value="{DynamicResource Button1BorderEnColor}" />
+        <Setter Property="CornerRadius" Value="2" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Style.Triggers>
+            <Trigger Property="IsEnabled" Value="False">
+                <Setter Property="Background" Value="{DynamicResource Button1BorderDisColor}" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
 
-  <SolidColorBrush x:Key="Button1TextEnColor" Color="#F5F6F7"/>
-  <Style x:Key="Button1TextStyle" TargetType="UXControls:UXTextBlock">
-    <Setter Property="Foreground" Value="{DynamicResource Button1TextEnColor}" />
-    <Setter Property="FontFamily" Value="Roboto" />
-    <Setter Property="FontSize" Value="14" />
-    <Setter Property="FontWeight" Value="Medium" />
-    <Setter Property="VerticalAlignment" Value="Center" />
-    <Setter Property="HorizontalAlignment" Value="Center" />
-    <Style.Triggers>
-      <Trigger Property="IsEnabled" Value="False">
-        <Setter Property="Foreground" Value="#828E9C" />
-      </Trigger>
-    </Style.Triggers>
-  </Style>
+    <SolidColorBrush x:Key="Button1TextEnColor" Color="#F5F6F7"/>
+    <Style x:Key="Button1TextStyle" TargetType="UXControls:UXTextBlock">
+        <Setter Property="Foreground" Value="{DynamicResource Button1TextEnColor}" />
+        <Setter Property="FontFamily" Value="Roboto" />
+        <Setter Property="FontSize" Value="14" />
+        <Setter Property="FontWeight" Value="Medium" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="HorizontalAlignment" Value="Center" />
+        <Style.Triggers>
+            <Trigger Property="IsEnabled" Value="False">
+                <Setter Property="Foreground" Value="{DynamicResource Button1TextDisColor}" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
 
   <Style x:Key="Button_WhiteFrame" TargetType="Button">
     <Setter Property="Foreground" Value="{DynamicResource Button_UXStyleColor_ForWhiteFrame}" />
@@ -1461,10 +1617,28 @@
     <Setter Property="FontWeight" Value="Medium" />
   </Style>
 
-  <!-- #endregion Connection Hover UI -->
+    <!-- #endregion Connection Hover UI -->
 
-  <!-- #region Connection Type Icons (16x16) -->
-  <!-- Robert_Lin, 2024-11-29, Usage exmaple:
+    <!-- #region BitmapImage -->
+    <BitmapImage x:Key="popup_ArrowCorner" UriSource="pack://application:,,,/DDPM.UI.Common;component/Resources/popup_ArrowCorner.png" />
+    <BitmapImage x:Key="down_Expand" UriSource="pack://application:,,,/DDPM.UI.Resources;component/Resources/Images/Down.png" />
+    <BitmapImage x:Key="Search_img" UriSource="pack://application:,,,/DDPM.UI.Resources;component/Resources/Images/Search.png" />
+    <BitmapImage x:Key="Close_img" UriSource="pack://application:,,,/DDPM.UI.Common;component/Resources/Close.png" />
+    <BitmapImage x:Key="left_img" UriSource="pack://application:,,,/DDPM.UI.Resources;component/Resources/Images/Left.png" />
+    <BitmapImage x:Key="MonitorImage_LineArt" UriSource="pack://application:,,,/DDPM.UI.Resources;component/Resources/Monitors/Lineart.png" />
+
+    <!-- #region Webcam -->
+    <SolidColorBrush x:Key="Webcam_TextBox_BkColor" Color="#141D28"/>
+    <SolidColorBrush x:Key="Webcam_TextBox_FgColor" Color="#7E7E7E"/>
+    <!-- #endregion -->
+
+
+
+    <!-- #region Icons -->
+
+
+    <!-- #region Connection Type Icons (16x16) -->
+    <!-- Robert_Lin, 2024-11-29, Usage exmaple:
     In your XAML
     <ContentControl Name="myIcon" Width="16" Height="16" Foreground="{Dynamic iconColor}"
                     Template="{StaticResource icon_Port}"/>
@@ -1498,10 +1672,10 @@
     </Grid>
   </ControlTemplate>
 
-  <!-- #endregion Connection Type Icons (16x16) -->
+    <!-- #endregion Connection Type Icons (16x16) -->
 
-  <!-- #region Battery Status Icons 20x20 or 29x22 -->
-  <!-- Resource Key = "icon_Battery{charging}{level}" 
+    <!-- #region Battery Status Icons 20x20 or 29x22 -->
+    <!-- Resource Key = "icon_Battery{charging}{level}" 
          {charging}: "0" is IsCharging is false; "1" otherwise
          {leve}: "4" BatteryLevel=[70%~100%],  "3" BatteryLevel=[40%~69%], "2" BatteryLevel=[10%~39%], "1" BatteryLevel=[0%~9%], "0" Others (BatteryLevel<0)
     -->
@@ -1593,11 +1767,11 @@
                       Data="M2.5 7.62793L15.5 7.62793L15.5 13.6279L2.5 13.6279L2.5 7.62793Z"/>
       <Path Fill="#7E7E7E"
                   Data="M18.125 15.5499L18.125 13.1024L19.375 13.1024C19.75 13.1024 20 12.8378 20 12.4409L20 8.47191C20 8.07501 19.75 7.81041 19.375 7.81041L18.125 7.81041L18.125 5.36287C18.125 4.89983 17.75 4.50293 17.3125 4.50293L0.8125 4.50293C0.375 4.50293 -1.7349e-08 4.89983 -3.75894e-08 5.36287L-4.82879e-07 15.5499C-5.0312e-07 16.013 0.374999 16.4099 0.812499 16.4099L17.3125 16.4099C17.75 16.4099 18.125 16.013 18.125 15.5499ZM1.25 15.0869L1.25 5.82592L16.875 5.82592L16.875 15.0869L1.25 15.0869Z"/>
-    </Grid>
-  </ControlTemplate>
-  <!-- #endregion Battery Status Icons 20x20 or 29x22 -->
+        </Grid>
+    </ControlTemplate>
+    <!-- #endregion Battery Status Icons 20x20 or 29x22 -->
 
-  <!-- #region LockIcon Robert_Lin, 2024-11-30 -->
+    <!-- #region LockIcon Robert_Lin, 2024-11-30 -->
 
   <!-- LockIcon as Template of ContentControl -->
   <!-- Usage:
@@ -1612,23 +1786,59 @@
     </Grid>
   </ControlTemplate>
 
-  <!-- #endregion LockIcon Robert_Lin, 2024-11-30 -->
+    <!-- #endregion LockIcon Robert_Lin, 2024-11-30 -->
+    
+    <!-- #region Icons template -->
+    <!-- LockIcon -->
+    <SolidColorBrush x:Key="LockIcon_Fill"  Color="#FFFFFFFF"/>
 
-  <!-- #region BitmapImage -->
-  <BitmapImage x:Key="popup_ArrowCorner" UriSource="pack://application:,,,/DDPM.UI.Common;component/Resources/popup_ArrowCorner.png" />
-  <BitmapImage x:Key="down_Expand" UriSource="pack://application:,,,/DDPM.UI.Resources;component/Resources/Images/Down.png" />
-  <BitmapImage x:Key="Search_img" UriSource="pack://application:,,,/DDPM.UI.Resources;component/Resources/Images/Search.png" />
-  <BitmapImage x:Key="Close_img" UriSource="pack://application:,,,/DDPM.UI.Common;component/Resources/Close.png" />
-  <BitmapImage x:Key="left_img" UriSource="pack://application:,,,/DDPM.UI.Resources;component/Resources/Images/Left.png" />
-  <BitmapImage x:Key="MonitorImage_LineArt" UriSource="pack://application:,,,/DDPM.UI.Resources;component/Resources/Monitors/Lineart.png" />
-  <!-- Info Icon -->
-  <Canvas x:Key="InfoIcon" Tag="{DynamicResource DefaultTheme_PathColor}" Width="16" Height="16">
-    <Path Data="M8 5.0498C8.55228 5.0498 9 4.60209 9 4.0498C9 3.49752 8.55228 3.0498 8 3.0498C7.44772 3.0498 7 3.49752 7 4.0498C7 4.60209 7.44772 5.0498 8 5.0498Z"
-              Fill="{Binding Tag, RelativeSource={RelativeSource AncestorType=Canvas}}" />
-    <Path Data="M8.75 6.4502H7.25V12.6502H8.75V6.4502Z"
-              Fill="{Binding Tag, RelativeSource={RelativeSource AncestorType=Canvas}}" />
-    <Path Data="M8 1C11.85 1 15 4.15 15 8C15 11.85 11.85 15 8 15C4.15 15 1 11.85 1 8C1 4.15 4.15 1 8 1ZM8 0C3.6 0 0 3.6 0 8C0 12.4 3.6 16 8 16C12.4 16 16 12.4 16 8C16 3.6 12.4 0 8 0Z"
-              Fill="{Binding Tag, RelativeSource={RelativeSource AncestorType=Canvas}}" />
-  </Canvas>
-  <!-- #endregion -->
+    <!-- Icon Down Arrow -->
+    <ControlTemplate x:Key="icon_DownArrow" TargetType="ContentControl">
+        <Canvas Tag="{DynamicResource DefaultTheme_PathColor}" Width="16" Height="16">
+            <Path Data="M0.84961 3.7002L7.99961 10.9002L15.1496 3.7002L15.8496 4.4002L7.99961 12.2502L0.14961 4.4002L0.84961 3.7002Z"
+                  Fill="{Binding Tag, RelativeSource={RelativeSource AncestorType=Canvas}}" />
+        </Canvas>
+    </ControlTemplate>
+
+    <!-- Icon Up Arrow -->
+    <ControlTemplate x:Key="icon_UpArrow" TargetType="ContentControl">
+        <Canvas Tag="{DynamicResource DefaultTheme_PathColor}" Width="16" Height="16">
+            <Path Data="M8 4.12012L0 12.1201L0.76 12.8801L8 5.64012L15.24 12.8801L16 12.1201L8 4.12012Z"
+                  Fill="{Binding Tag, RelativeSource={RelativeSource AncestorType=Canvas}}" />
+        </Canvas>
+    </ControlTemplate>
+
+    <!-- Icon Info -->
+    <ControlTemplate x:Key="icon_Info" TargetType="ContentControl">
+        <Canvas Tag="{DynamicResource InfoIconColor}" Width="16" Height="16">
+            <Path Data="M8 5.0498C8.55228 5.0498 9 4.60209 9 4.0498C9 3.49752 8.55228 3.0498 8 3.0498C7.44772 3.0498 7 3.49752 7 4.0498C7 4.60209 7.44772 5.0498 8 5.0498Z"
+                  Fill="{Binding Tag, RelativeSource={RelativeSource AncestorType=Canvas}}" />
+            <Path Data="M8.75 6.4502H7.25V12.6502H8.75V6.4502Z"
+                  Fill="{Binding Tag, RelativeSource={RelativeSource AncestorType=Canvas}}" />
+            <Path Data="M8 1C11.85 1 15 4.15 15 8C15 11.85 11.85 15 8 15C4.15 15 1 11.85 1 8C1 4.15 4.15 1 8 1ZM8 0C3.6 0 0 3.6 0 8C0 12.4 3.6 16 8 16C12.4 16 16 12.4 16 8C16 3.6 12.4 0 8 0Z"
+                  Fill="{Binding Tag, RelativeSource={RelativeSource AncestorType=Canvas}}" />
+        </Canvas>
+    </ControlTemplate>
+
+    <!-- Icon Folder -->
+    <ControlTemplate x:Key="icon_Folder" TargetType="ContentControl">
+        <Canvas Tag="{DynamicResource DefaultTheme_PathColor}" Width="16" Height="16">
+            <Path Data="M7.98 3.06969L6.5 0.929688H0.5V15.0697H16.5V3.06969H7.98ZM15.43 13.9997H1.57V4.12969V1.99969H5.95L7.42 4.12969H15.42L15.43 13.9997Z"
+                  Fill="{Binding Tag, RelativeSource={RelativeSource AncestorType=Canvas}}" />
+        </Canvas>
+    </ControlTemplate>
+
+    <!-- Icon Camera Preset -->
+    <ControlTemplate x:Key="icon_CameraPreset" TargetType="ContentControl">
+        <Canvas Tag="{DynamicResource DefaultTheme_PathColor}" Width="16" Height="16">
+            <Path Data="M15.08 14.7705H1.5V1.23047H10.5V0.230469H0.5V15.8105H16.12V6.00049H15.12L15.08 14.7705Z"
+                  Fill="{Binding Tag, RelativeSource={RelativeSource AncestorType=Canvas}}" />
+            <Path Data="M10 3L10.9453 5.55468L13.5 6.5L10.9453 7.44532L10 10L9.05468 7.44532L6.5 6.5L9.05468 5.55468L10 3Z"
+                  Fill="{Binding Tag, RelativeSource={RelativeSource AncestorType=Canvas}}" />
+            <Path Data="M14.5 0L15.0402 1.45982L16.5 2L15.0402 2.54018L14.5 4L13.9598 2.54018L12.5 2L13.9598 1.45982L14.5 0Z"
+                  Fill="{Binding Tag, RelativeSource={RelativeSource AncestorType=Canvas}}" />
+        </Canvas>
+    </ControlTemplate>
+    <!-- endregion -->
+
 </ResourceDictionary>
