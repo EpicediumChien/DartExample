@@ -1614,6 +1614,18 @@
 
     <!-- #endregion LockIcon Robert_Lin, 2024-11-30 -->
 
+    <!-- #region DDPM.SA.Common.Popup.PopupBase Robert_Lin 2024-12-2 -->
+    <SolidColorBrush x:Key="popupBase_Window_BkColor" Color="#F20D121A"/>
+    <SolidColorBrush x:Key="popupBase_Window_BdColor" Color="#293B4D"/>
+    <SolidColorBrush x:Key="popupBase_CloseX_FgColor" Color="#CCCCCC"/>
+    <SolidColorBrush x:Key="popupBase_Header_TextColor" Color="#FFFFFF"/>
+    <SolidColorBrush x:Key="popupBase_Body_TextColor" Color="#F5F6F7"/>
+
+    <SolidColorBrush x:Key="Dlg_CloseX_HoverBkColor" Color="#33444E" />
+
+    <!-- #endregion DDPM.SA.Common.Popup.PopupBase-->
+
+
     <!-- #region BitmapImage -->
     <BitmapImage x:Key="popup_ArrowCorner" UriSource="pack://application:,,,/DDPM.UI.Common;component/Resources/popup_ArrowCorner.png" />
     <BitmapImage x:Key="down_Expand" UriSource="pack://application:,,,/DDPM.UI.Resources;component/Resources/Images/Down.png" />
@@ -1621,7 +1633,7 @@
     <BitmapImage x:Key="Close_img" UriSource="pack://application:,,,/DDPM.UI.Common;component/Resources/Close.png" />
     <BitmapImage x:Key="left_img" UriSource="pack://application:,,,/DDPM.UI.Resources;component/Resources/Images/Left.png" />
     <BitmapImage x:Key="MonitorImage_LineArt" UriSource="pack://application:,,,/DDPM.UI.Resources;component/Resources/Monitors/Lineart.png" />
-    <SolidColorBrush x:Key="DefaultThemeFullPageBkColor" Color="#FF0D121A"/>
+    <!--<SolidColorBrush x:Key="DefaultThemeFullPageBkColor" Color="#FF0D121A"/>-->
 
     <!-- #endregion -->
 </ResourceDictionary>
