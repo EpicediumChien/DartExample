@@ -79,5 +79,12 @@ namespace DDPM.MonitorBorker
             if (ColorPresetWin != null) // 20240809 jim add
                 ColorPresetWin.Notify_refresh_app_list();
         }
+
+        // For PIMS-326072
+        public void Set_Active_Monitor(MonitorInfo m)
+        {
+            if (ColorPresetWin != null) 
+                ColorPresetWin.Set_Active_Monitor(m);
+        }
     }
 }
