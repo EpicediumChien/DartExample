@@ -32,6 +32,7 @@
     <SolidColorBrush x:Key="DefaultTheme_SetupSelectBdColor" Color="#1B385F" />
     <SolidColorBrush x:Key="DefaultTheme_ListBoxBkColor" Color="#80141D27" />
     <SolidColorBrush x:Key="DefaultTheme_DialogBoxBkColor" Color="#132F54"/>
+    <SolidColorBrush x:Key="DefaultThemeFullPageBkColor" Color="#FF0D121A"/>
     <Style TargetType="UXControls:UXTextBlock"
            BasedOn="{StaticResource {x:Type UXControls:UXTextBlock}}">
         <Setter Property="Foreground" Value="{DynamicResource DefaultTheme_TxtColor}" />
@@ -104,6 +105,7 @@
     <SolidColorBrush x:Key="PartBorderColor" Color="#132F54" />
     <SolidColorBrush x:Key="Border_Btn_txt" Color="#132F54" />
     <SolidColorBrush x:Key="CheckBox_Brush" Color="#7E7E7E" />
+    <SolidColorBrush x:Key="BorderBrush" Color="#E5ECF9" />
     <Style x:Key="GroupBorderStyle" TargetType="Border">
         <Setter Property="CornerRadius" Value="6" />
         <Setter Property="Padding" Value="16,16,16,0" />
@@ -111,6 +113,8 @@
     </Style>
     <Style x:Key="PartBorderStyle"
            TargetType="Border">
+        <Setter Property="BorderThickness" Value="2"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource BorderBrush}"/>
         <Setter Property="CornerRadius" Value="6" />
         <Setter Property="Padding" Value="16" />
         <Setter Property="Background" Value="{DynamicResource PartBorderColor}" />
@@ -1483,10 +1487,11 @@
 
     <Style x:Key="Button_WhiteFrame" TargetType="Button">
         <Setter Property="Foreground" Value="{DynamicResource Button_UXStyleColor_ForWhiteFrame}" />
+        <Setter Property="Background" Value="{DynamicResource PartBorderColor}" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="Button">
-                    <Border CornerRadius="2" Background="{DynamicResource PartBorderColor}"
+                    <Border CornerRadius="2" Background="{TemplateBinding Background}"
                             BorderBrush="{DynamicResource Button_UXStyleColor_ForWhiteFrame}"
                             BorderThickness="1">
                         <!-- Set your desired corner radius here -->
@@ -1495,7 +1500,14 @@
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Background" Value="{DynamicResource Button1BorderEnColor}"/>
+                <Setter Property="Foreground" Value="White"></Setter>
+            </Trigger>
+        </Style.Triggers>
     </Style>
+    
 
     <!-- Dialog start-->
     <SolidColorBrush x:Key="BorderStyle1_BgColor" Color="#99132F54"/>
@@ -1603,7 +1615,12 @@
     <BitmapImage x:Key="Close_img" UriSource="pack://application:,,,/DDPM.UI.Common;component/Resources/Close.png" />
     <BitmapImage x:Key="left_img" UriSource="pack://application:,,,/DDPM.UI.Resources;component/Resources/Images/Left.png" />
     <BitmapImage x:Key="MonitorImage_LineArt" UriSource="pack://application:,,,/DDPM.UI.Resources;component/Resources/Monitors/Lineart.png" />
-    <SolidColorBrush x:Key="DefaultThemeFullPageBkColor" Color="#FF0D121A"/>
+
+    <!-- #region Webcam -->
+    <SolidColorBrush x:Key="Webcam_TextBox_BkColor" Color="#141D28"/>
+    <SolidColorBrush x:Key="Webcam_TextBox_FgColor" Color="#7E7E7E"/>
+    <!-- #endregion -->
+
 
 
     <!-- #region Icons -->
