@@ -207,7 +207,7 @@ namespace DDPM.SA.Plugins.User.SchedulerManager
                 do
                 {
                     countx++;
-                    SpinWait.SpinUntil(() => false, 250);
+                    System.Threading.Tasks.Task.Delay(250).Wait();
                 } while (_WaitTag && countx < 40);
 
                 _logs.DebugMsg_1("_WaitTag result " + _WaitTag.ToString());
