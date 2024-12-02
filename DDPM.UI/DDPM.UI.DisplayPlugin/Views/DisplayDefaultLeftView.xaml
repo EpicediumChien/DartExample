@@ -13,11 +13,11 @@
              d:DesignHeight="650" d:DesignWidth="900"
              SizeChanged="UserControl_SizeChanged">
     <UserControl.Resources>
-
         <ResourceDictionary>
-            <SolidColorBrush x:Key="ToolipBkColor" Color="#FF1D2C3B" />
+            <!-- Robert_Lin, 2024-11-30 Remark unused resource keys -->
+            <!--<SolidColorBrush x:Key="ToolipBkColor" Color="#FF1D2C3B" />
             <SolidColorBrush x:Key="ToolipBdColor" Color="#FF293B4D" />
-            <SolidColorBrush x:Key="ToolipTextColor" Color="#FFF5F6F7" />
+            <SolidColorBrush x:Key="ToolipTextColor" Color="#FFF5F6F7" />-->
 
             <!-- 20240617  jim add -->
             <ResourceDictionary.MergedDictionaries>

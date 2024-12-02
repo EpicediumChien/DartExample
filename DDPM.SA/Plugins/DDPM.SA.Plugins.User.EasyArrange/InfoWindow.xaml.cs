@@ -11,17 +11,17 @@ namespace DDPM.SA.Plugins.User.EasyArrange
     /// <summary>
     /// Interaction logic for InfoWindow.xaml
     /// </summary>
-    public partial class InfoWindow : Window
+    public partial class InfoWindow_Unused : Window
     {
         private WinEventHook _winEventHook = new WinEventHook();
 
         #region Init
 
-        public InfoWindow()
+        public InfoWindow_Unused()
         {
             InitializeComponent();
         }
-        public InfoWindow(ArrangeVM vm)
+        public InfoWindow_Unused(ArrangeVM vm)
         {
             InitializeComponent();
             DataContext = vm;
