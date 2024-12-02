@@ -265,6 +265,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             if (e.UI_Field_Name.StartsWith("Keyboard") || e.UI_Field_Name.StartsWith("Mouse") || e.UI_Field_Name.StartsWith("Pen"))
             {
                 var paras = e.UI_Field_Name.Split('|');
+                if (paras.Length < 4)
+                {
+                    writelog("_DTPProxyPlugin_DTPEventHandler UpdateUINotify e.UI_Field_Na incorrect!");
+                    return;
+                }
                 DeviceInfo di = new();
                 di.LogicalDeviceType = paras[0];
                 di.ModelNumber = paras[3];
@@ -8450,6 +8455,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             writelog($"Target Value is {newValue}");
             _DTPProxyPlugin.SetMouseAssignKeystrokeAction(Guid, newValue);
             return Task.FromResult(true);
+        }
+        public Task<bool> RestoreToDefaultMouse(string Guid, bool isFromCli = true)
+        {
+            writelog("DeviceMangerPlugin received RestoreToDefaultMouse requested ...");
+            return _DTPProxyPlugin.RestoreToDefaultMouse(Guid, isFromCli);
         }
 
         #endregion
