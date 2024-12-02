@@ -85,7 +85,7 @@ namespace DDPM.CLI.Plugins.Display
         {
             //check if no monitor connected, direct response no monitor
             _AllInfoMonitors = devMgr.GetMonitors().Result;
-            if ((_AllInfoMonitors == null || _AllInfoMonitors.Count == 0) && commandLineInput.TargetType != "APP" && !commandLineInput.TargetFeature.Contains("NETWORKKVM"))
+            if ((_AllInfoMonitors == null || _AllInfoMonitors.Count == 0) && commandLineInput.TargetType != "APP") // && !commandLineInput.TargetFeature.Contains("NETWORKKVM"))
             {
                 CLI_RESPONSE rsp = new CLI_RESPONSE()
                 {
@@ -770,20 +770,6 @@ namespace DDPM.CLI.Plugins.Display
                 case "INAPPUSBKVM":
                     {
                         var ret = InAppUSBkvmx(devMgr, commandLineInput);
-                        result.ExitCode = ret.code;
-                        result.serialize_Json_response = ret.result;
-                    }
-                    break;
-                case "NETWORKKVMVERSION":
-                case "NETWORKKVM":
-                case "NETWORKKVMAUTOCONNECT":
-                case "NETWORKKVMCONTENTTRANSFER":
-                case "NETWORKKVMINCOMINGPORT":
-                case "NETWORKKVMOUTGOINGPORT":
-                case "NETWORKKVMCONTENTTRANSFERPORT":
-                case "NETWORKKVMACCESSRESET":
-                    {
-                        var ret = CLINetworkKVM.Execute(commandLineInput);
                         result.ExitCode = ret.code;
                         result.serialize_Json_response = ret.result;
                     }
