@@ -217,7 +217,7 @@
             <ListView x:Name="HomeDevicesListView"  StylusDown="Pairing"
                       Style="{StaticResource ListViewStyle1}"
                       Background="Transparent" BorderBrush="Transparent"
-                      Padding="0,0,40,0" 
+                      Padding="0,0,40,0"
                       ItemsSource="{Binding HomeDevices}" PreviewKeyDown="HomeDevicesListView_PreviewKeyDown">
                 <ListView.ItemContainerStyle>
                     <!-- ListView.ItemContainerStyle : Apply custom style to remove selection hover border -->
