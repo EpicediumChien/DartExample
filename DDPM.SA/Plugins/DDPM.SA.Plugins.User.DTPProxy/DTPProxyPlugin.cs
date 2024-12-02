@@ -398,6 +398,75 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 writelog($"Could not retrieve the Commodity Interface {_mouseInterfaceType} for the {Guid} item.");
             }
         }
+        public async Task<bool> RestoreToDefaultMouse(string Guid, bool isFromCli = true)
+        {
+            if (!IsDTPReady)
+                return false;
+            if (!await GetItemIDAsync("Mouse", Guid))
+                return false;
+
+            if (isFromCli)
+            {
+                string model;
+                string profileID;
+                if (await GetCommodityInterfaceInstanceAsync(_mouseMethodInfo) is ICommodity commodity)
+                {
+                    var value = GetPropertyValue(_mouseInterfaceType, commodity, "ModelNumber");
+                    model = value == null ? "" : (string)value;
+                    if (model == "")
+                        return false;
+
+                    value = GetPropertyValue(_mouseInterfaceType, commodity, "CurrentSelectedAppSpecificProfile");
+                    profileID = value == null ? "" : (string)value;
+                    if (profileID == "")
+                        return false;
+
+                    var result = await DeleteMouseAllAssignedActions(Guid);
+                    if (!result)
+                        return false;
+
+                    await SetCurrentSelectedAppSpecificProfile(Guid, "{76824745-CE06-4358-835D-7BB991CB71A0}"); //AllApp
+                    await DeleteMouseAllAssignedActions(Guid);
+                    await SetCurrentSelectedAppSpecificProfile(Guid, "{E0C9145B-BE8B-4423-B520-8CA71BE88E11}"); // Word
+                    await DeleteMouseAllAssignedActions(Guid);
+                    await SetCurrentSelectedAppSpecificProfile(Guid, "{37743697-4B39-45CD-B7F8-30027D1521ED}"); //Excel
+                    await DeleteMouseAllAssignedActions(Guid);
+                    await SetCurrentSelectedAppSpecificProfile(Guid, "{7BBECD91-F12A-4CC4-B005-526BA66BA657}"); //PowerPoint
+                    await DeleteMouseAllAssignedActions(Guid);
+                    await SetCurrentSelectedAppSpecificProfile(Guid, "{CCCE4E6F-C690-4EF5-BA19-F270C26C21B6}"); //Outlook
+                    await DeleteMouseAllAssignedActions(Guid);
+                    await SetCurrentSelectedAppSpecificProfile(Guid, profileID); 
+
+                    model = SACommonHelper.MappingModel(model);
+                    var filePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), @$"Dell\Dell Display and Peripheral Manager\Actions\{model}.json");
+                    if (File.Exists(filePath))
+                    {
+                        try
+                        {
+                            File.Delete(filePath);
+                        }
+                        catch (Exception ex)
+                        {
+                            writelog($"[DTPProxyPlugin] [RestoreToDefaultPen] Delete setting file failed: {ex}");
+                        }
+                    }
+                    var message = $"Mouse|RestoreToDefault|{Guid}|{model}";
+                    SendDTPEventToUI(message);
+                    return true;
+                }
+                else
+                {
+                    Debug.WriteLine($"Could not retrieve the Commodity Interface {_mouseInterfaceType} for the {Guid} item.");
+                    writelog($"Could not retrieve the Commodity Interface {_mouseInterfaceType} for the {Guid} item.");
+                    return false;
+                }
+            }
+            else
+            {
+                var result = await DeleteMouseAllAssignedActions(Guid);
+                return result;
+            }
+        }
 
         #endregion
 
@@ -2864,6 +2933,8 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                     writelog($"[DTPProxyPlugin] [RestoreToDefaultPen] Delete setting file failed: {ex}");
                 }
             }
+            var message = $"Pen|RestoreToDefault||";
+            SendDTPEventToUI(message);
             return true;
         }
         public async Task<bool> RestoreRadialMenuToDefault()

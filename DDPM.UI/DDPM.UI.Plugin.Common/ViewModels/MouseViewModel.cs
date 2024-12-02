@@ -34,7 +34,6 @@ namespace DDPM.UI.Plugin.ViewModels
 
         private Dictionary<string, string> AppGuids = new() {
             {"AllApp","{76824745-CE06-4358-835D-7BB991CB71A0}" },
-            //{"AllApp",string.Empty },
             {"Word","{E0C9145B-BE8B-4423-B520-8CA71BE88E11}" },
             {"Excel","{37743697-4B39-45CD-B7F8-30027D1521ED}" },
             {"PowerPoint","{7BBECD91-F12A-4CC4-B005-526BA66BA657}" },
@@ -434,6 +433,15 @@ namespace DDPM.UI.Plugin.ViewModels
                         DeviceInfos.Remove(di.ID);
                         DeviceInfos.Add(di.ID, di);
                     }
+                    else if (di.ModelNumber == Model)
+                    {
+                        switch (property)
+                        {
+                            case "RestoreToDefault":
+                                ResetAction();
+                                break;
+                        }
+                    }
                     else
                     {
                         return;
@@ -626,9 +634,10 @@ namespace DDPM.UI.Plugin.ViewModels
         {
             get => BatteryLevel == -1 ? Visibility.Visible : Visibility.Hidden;
         }
-        public void RestoreToDefault()
+        public bool RestoreToDefault()
         {
-            //MouseAction = new MouseActions(Model);
+            if (DdpmCommonHelper.DeviceManagerSA == null || !DdpmCommonHelper.DeviceManagerSA.RestoreToDefaultMouse(CurrentDeviceID.ToString(), false).Result)
+                return false;
             DdpmCommonHelper.DeviceManagerSA!.DeleteMouseAllAssignedActions(CurrentDeviceID.ToString());
             foreach (var btn in MouseAction.ButtonActions)
             {
@@ -644,6 +653,14 @@ namespace DDPM.UI.Plugin.ViewModels
                 }
             }
             ActionList.ExportActionList(MouseAction, Model);
+            RefreshButtonInfo();
+            IsRestoreEnable = false;
+            OnPropertyChanged(nameof(IsRestoreEnable));
+            return true;
+        }
+        private void ResetAction()
+        {
+            MouseAction = new(Model);
             RefreshButtonInfo();
             IsRestoreEnable = false;
             OnPropertyChanged(nameof(IsRestoreEnable));

@@ -16,7 +16,7 @@
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="ComboBoxStyle.xaml" />
-                <ResourceDictionary Source="ButtonStyle.xaml" />
+                <!--<ResourceDictionary Source="ButtonStyle.xaml" />-->
             </ResourceDictionary.MergedDictionaries>
 
             <Color x:Key="Color_FakeTransparent">#02000000</Color>
