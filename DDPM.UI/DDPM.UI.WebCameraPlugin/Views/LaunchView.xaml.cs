@@ -230,7 +230,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
 
             CheckUSBtype();
 
-            check_WB7022();
+            check_PresenceFunction();
 
             DdpmCommonHelper.BitmapImageUpdated += ImageUpdate;
         }
@@ -257,8 +257,13 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                 }));
         }
 
-        public void check_WB7022()
+        public void check_PresenceFunction()
         {
+            //需要特殊邏輯處理的型號
+            List<string> SpecialCase = new List<string>()
+            {
+                "U3223QZ","U3224KB","U3224KBA","P2424HEB","P2724DEB","P3424WEB","WB7022"
+            };
 
             string model = _vm.CurrentDeviceInfo!.ModelNumber;
 
@@ -268,7 +273,8 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                 DdpmCommonHelper.WriteUILog(log);
                 return;
             }
-            if (model != "wb7022") return;
+
+            if (!SpecialCase.Contains(model)) return;
 
             //api回傳camera是否支援ESI
             bool is_EsiSupport = DdpmCommonHelper.DeviceManagerSA!.GetIsESISupported(_vm.CurrentDeviceInfo!.ID.ToString()).Result;
@@ -279,11 +285,9 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             //檢查windows是否符合windows hello標準
             bool is_Windows_OK = true;
 
-            //檢查韌體版本是否為偶數
-            bool is_fw_even = true;
-
             //檢查是否為dell電腦
             bool is_DellPc = true;
+            
 
 
             int ui_case = 0 ;
@@ -292,11 +296,16 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             {
                 case 0:
                     //預設完整功能畫面
+                    //按照usb2.0/3.0處理完畢後預設畫面
+                    //donothing
                     break;
                 case 1:
-                    //只有windows hello設定畫面提示
+                    //ProximitySensor相關設定區域關閉
+                    //只顯示windows hello設定畫面提示
                     break; 
                 case 2:
+                    //ProximitySensor相關設定區域關閉
+                    //windows hello設定畫面提示隱藏
                     //提示更新韌體
                     break;
             }
