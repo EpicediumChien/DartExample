@@ -533,6 +533,45 @@ namespace DDPM.SA.Common
         }
     }
 
+    public class PeripheralResponse
+    {
+        public PeripheralResponse()
+        {
+
+        }
+
+        public PeripheralResponse(int index, DeviceInfo deviceInfo)
+        {
+            ID = deviceInfo.ID.ToString();
+            Index = index.ToString();
+            Model = deviceInfo.ModelNumber;
+            //Manufacturer = deviceInfo.Manufacturer;
+            //PID = deviceInfo.PID;
+            ServiceTag = deviceInfo.DockServiceTag ?? "N/A";
+            //PPID = deviceInfo.PPID;
+            //SerialNumber = deviceInfo.SerialNumber;
+            //ManufacturingYear = deviceInfo.ManufacturingYear;
+            //ManufacturingWeek = deviceInfo.ManufacturingWeek;
+            FirmwareVersion = deviceInfo.FirmwareVersion;
+            //Connectiontype = deviceInfo.ConnectionType;
+            BatteryStatus = deviceInfo.BatteryStatus;
+        }
+
+        public string ID { get; set; } = "N/A";
+        public string Index { get; set; } = "N/A";
+        public string Model { get; set; } = "N/A";
+        public string Manufacturer { get; set; } = "N/A";
+        public string PID { get; set; } = "N/A";
+        public string ServiceTag { get; set; } = "N/A";
+        public string PPID { get; set; } = "N/A";
+        public string SerialNumber { get; set; } = "N/A";
+        public string ManufacturingYear { get; set; } = "N/A";
+        public string ManufacturingWeek { get; set; } = "N/A";
+        public string FirmwareVersion { get; set; } = "N/A";
+        public string Connectiontype { get; set; } = "N/A";
+        public string BatteryStatus { get; set; } = "N/A";
+    }
+
     public class CLI_RESPONSE2
     {
         public string Index { get; set; }
