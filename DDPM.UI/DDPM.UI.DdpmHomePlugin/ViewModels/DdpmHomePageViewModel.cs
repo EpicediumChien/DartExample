@@ -683,9 +683,8 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.ViewModels
         public bool IsDeviceManagerReady
         {
             get => _isDeviceManagerReady;
-            set => SetProperty(ref _isDeviceManagerReady, value); 
+            set => SetProperty(ref _isDeviceManagerReady, value);
         }
-
         #endregion Please Wait
 
         #region Dump Devices to log

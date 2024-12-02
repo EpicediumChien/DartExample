@@ -7,7 +7,7 @@
              xmlns:UXControls="clr-namespace:Dell.Client.Framework.UX.WPF.Controls;assembly=DCF.UX.WPF"
               xmlns:commonModel="clr-namespace:DDPM.UI.Common.Models;assembly=DDPM.UI.Common"
             xmlns:lang="clr-namespace:DDPM.UI.Resources.Helper;assembly=DDPM.UI.Resources"
-             mc:Ignorable="d" Loaded="UserControl_Loaded"
+             mc:Ignorable="d"
              d:DesignHeight="450" d:DesignWidth="800" d:Background="Black"
              d:DataContext="{DynamicResource vmDesign}"
              >

@@ -28,16 +28,6 @@ namespace DDPM.QAM
         public bool[] Settings_IsSelected { get; set; } = { false, false, false, false };
         public Visibility[] Settings_IsVisibility { get; set; } = { Visibility.Visible, Visibility.Visible, Visibility.Visible, Visibility.Visible };
 
-        private bool isCameraSettingSelected  = false;
-        public bool IsCameraSettingSelected 
-        {
-            get => isCameraSettingSelected;
-
-            set { isCameraSettingSelected = value;
-                OnPropertyChanged(nameof(isCameraSettingSelected));
-            }
-        }
-
         public new event PropertyChangedEventHandler? PropertyChanged;
         public void OnPropertyChanged(string propertyName)
         {
