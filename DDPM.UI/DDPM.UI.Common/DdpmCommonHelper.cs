@@ -44,7 +44,7 @@ namespace DDPM.UI.Common
             }
             return null;
         }
-        
+
         //reload inputsourece name if renamed
         public static bool bInputSourceRenamed { get; set; }
 
@@ -336,7 +336,8 @@ namespace DDPM.UI.Common
         public static void updateMergedDictionaries(ResourceManager resourceManager)
         {
             OSThemeEnum oSTheme = UXSystemParameters.Instance.OSTheme;
-            if (previousOsTheme == oSTheme) return;
+            if (previousOsTheme == oSTheme)
+                return;
             string darkModeStyle = @"pack://application:,,,/DDPM.UI.Common;component/ModuleStyle.xaml";
             ResourceDictionary? darkResourceDictionary = Application.Current.Resources.MergedDictionaries.SingleOrDefault(x => x.Source.OriginalString.Equals(darkModeStyle));
             Application.Current.Resources.MergedDictionaries.Remove(darkResourceDictionary);
@@ -459,10 +460,10 @@ namespace DDPM.UI.Common
             //dc.DrawRectangle(brBackground, null, rectImg);
             //dc.Close();
 
-             RenderTargetBitmap rtb = new RenderTargetBitmap((int)pxWidth, (int)pxHeight,
-                96d, 96d, System.Windows.Media.PixelFormats.Default);
+            RenderTargetBitmap rtb = new RenderTargetBitmap((int)pxWidth, (int)pxHeight,
+               96d, 96d, System.Windows.Media.PixelFormats.Default);
 
-            
+
             rtb.Render(ele);
             return rtb;
         }
@@ -534,6 +535,26 @@ namespace DDPM.UI.Common
             }
             return $"{model}{colorCode}";
         }
+
+        public static string MappingEOLName(string model)
+        {
+            switch (model)
+            {
+                case "WK636":
+                    return $"Dell {model} Wireless Keyboard";
+                case "WK717":
+                    return $"Dell Premier Wireless Keyboard";
+                case "WM116":
+                case "WM514":
+                case "UV514":
+                case "WM126":
+                case "WM326":
+                case "WM527":
+                    return $"Dell {model} Wireless Mouse";
+                default:
+                    return model;
+            }
+        }
         #endregion
 
         public static Canvas CanvasIconCreator(VbarIcon vbarIcon, Geometry? clip = null)
@@ -554,7 +575,8 @@ namespace DDPM.UI.Common
                 RelativeSource = new RelativeSource(RelativeSourceMode.FindAncestor, typeof(ContentControl), 1),
                 Path = new PropertyPath("Foreground")
             });
-            foreach (UIElement element in uIElements) {
+            foreach (UIElement element in uIElements)
+            {
                 canvas.Children.Add(element);
             }
 
@@ -562,9 +584,10 @@ namespace DDPM.UI.Common
         }
 
         private static List<UIElement> iconPathCreator(VbarIcon vbarIcon)
-        { 
+        {
             List<UIElement> uIElements = new List<UIElement>();
-            switch (vbarIcon) {
+            switch (vbarIcon)
+            {
                 case VbarIcon.DisplaySettings:
                     Path displaySettings = new Path()
                     {
