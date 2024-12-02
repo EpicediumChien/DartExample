@@ -1910,7 +1910,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange
                     _saveCustomWindow.CancelButtonClick += saveCustomWidow_CancelButtonClick;
                     _saveCustomWindow.SaveButtonClick += saveCustomWidow_SaveButtonClick;
                     //SaveCustomWindow is not transparent, it will be shown in EditCommand process
-                    _saveCustomWindow.Show();
+                    //_saveCustomWindow.Show();
                     added++;
 
                     System.Windows.Threading.Dispatcher.Run();
