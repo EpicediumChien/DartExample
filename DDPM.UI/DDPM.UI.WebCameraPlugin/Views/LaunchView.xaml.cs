@@ -53,6 +53,7 @@ using System.Windows.Threading;
 using System.Windows.Forms.VisualStyles;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.Window;
 using Dell.Client.Framework.UX.WPF;
+using Windows.ApplicationModel.Background;
 
 namespace DDPM.UI.Plugin.WebCameraPlugin
 {
@@ -269,7 +270,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
 
             if (model == null)
             {
-                string log = $"[DDPM.UI.WebCameraPlugin\\Views\\LaunchView.xaml.cs] CheckUSBtype() model is null";
+                string log = $"[DDPM.UI.WebCameraPlugin\\Views\\LaunchView.xaml.cs] check_PresenceFunction() model is null";
                 DdpmCommonHelper.WriteUILog(log);
                 return;
             }
@@ -278,43 +279,130 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
 
             //api回傳camera是否支援ESI
             bool is_EsiSupport = DdpmCommonHelper.DeviceManagerSA!.GetIsESISupported(_vm.CurrentDeviceInfo!.ID.ToString()).Result;
-            
+
             //api回傳camera硬體是否支援windows hello
             bool is_WindwosHelloSupport = DdpmCommonHelper.DeviceManagerSA!.GetIsWindowsHelloCapabilityVerified(_vm.CurrentDeviceInfo!.ID.ToString()).Result;
-            
+
+            //檢查是否為內部camera
+            bool is_camera_internal = check_camera_internal();
+
             //檢查windows是否符合windows hello標準
-            bool is_Windows_OK = true;
+            bool is_WindowsVer_OK = check_windowsVer_OK();
 
             //檢查是否為dell電腦
-            bool is_DellPc = true;
-            
+            bool is_DellPc = check_DellPc();
 
-
-            int ui_case = 0 ;
-
-            switch (ui_case)
+            if( !is_camera_internal)
             {
-                case 0:
-                    //預設完整功能畫面
-                    //按照usb2.0/3.0處理完畢後預設畫面
-                    //donothing
-                    break;
-                case 1:
-                    //ProximitySensor相關設定區域關閉
-                    //只顯示windows hello設定畫面提示
-                    break; 
-                case 2:
-                    //ProximitySensor相關設定區域關閉
-                    //windows hello設定畫面提示隱藏
-                    //提示更新韌體
-                    break;
+                //7系列
+                if( is_EsiSupport )
+                {
+                    //UPD：SHOW PRESENCE DETECTION SECTION
+
+                    if( is_WindwosHelloSupport && is_WindowsVer_OK )
+                    {
+                        //顯示 windows hello setting
+                    }
+                    else
+                    {
+                        //隱藏 windiows hello setting
+                    }
+
+                }
+                else
+                {
+                    //MPS :　NOT SHOW PRESENCE DETECTION SECTION
+                    if( is_WindwosHelloSupport)
+                    {
+                        if (is_WindowsVer_OK)
+                        {
+                            //顯示 windows hello setting
+                        }
+                    }
+                    else
+                    {
+                        //提示要升級FW
+                    }
+
+                }
+
             }
-            
+            else
+            {
+                //P.U系列
+
+            }
+
+            if( !is_DellPc )
+            {
+                //不是DELL PC 一律隱藏 PRESENCE DETECTION SECTION
+            }
+
+
         }
+
+        public bool check_DellPc()
+        {
+            if (WinVersion.GetComputerManufacturer().Contains("Dell", StringComparison.OrdinalIgnoreCase))
+                return true;
+            return false;
+        }
+
+        public bool check_windowsVer_OK()
+        {
+            //作業系統必須是Windows10 20H2 以上
+            //或是Windows11 22H2以上
+            if (WinVersion.GetVersion(out var info))
+            {
+                //win11以上
+                if (info.BuildNum >= (uint)(BuildNumber.Windows_11_22H2))
+                    return true;
+
+                //win10以上
+                if (info.BuildNum < (uint)(BuildNumber.Windows_11_21H2) && info.BuildNum >= (uint)(BuildNumber.Windows_10_20H2))
+                    return true;
+
+            }
+            return false;
+        }
+
+        public bool check_camera_internal()
+        {
+            //hard code 指定特定型號是否為internal
+
+            string model = _vm.CurrentDeviceInfo!.ModelNumber;
+
+            if (model == null)
+            {
+                string log = $"[DDPM.UI.WebCameraPlugin\\Views\\LaunchView.xaml.cs] check_camera_internal() model is null";
+                DdpmCommonHelper.WriteUILog(log);
+                return false;
+            }
+
+            switch (model)
+            {
+                //螢幕嵌入camera都為internal
+                case "U3223QZ":
+                case "U3224KB":
+                case "U3224KBA":
+                case "P2424HEB":
+                case "P2724DEB":
+                case "P3424WEB":
+                    return true;
+
+                //usb 外接
+                case "WB7022":
+                    return false;
+
+                default:
+                    return false;
+            }
+        }
+
         public void CheckUSBtype()
         {
 
-            _vm!.MessageBoxVisibilityUsbType = Visibility.Collapsed ;
+            _vm!.MessageBoxVisibilityUsbType = Visibility.Collapsed;
 
             //需要特殊邏輯處理的型號
             List<string> SpecialCase = new List<string>()
@@ -324,7 +412,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
 
             string model = _vm.CurrentDeviceInfo!.ModelNumber;
 
-            if( model == null)
+            if (model == null)
             {
                 string log = $"[DDPM.UI.WebCameraPlugin\\Views\\LaunchView.xaml.cs] CheckUSBtype() model is null";
                 DdpmCommonHelper.WriteUILog(log);
