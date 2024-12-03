@@ -31,6 +31,9 @@ namespace DDPM.SA.Common
         Task WriteResult(RemoteManagementResult result);
         event EventHandler<CMAEventArgs> CMARequestEvent;
         Task Update_DeviceChanged(CMADeviceChanges data);
+
+        // add @ 20241129 stephen for receive fw update result
+        Task UpdateFwStatus(List<FWUpdateInfo> datas);
     }
 
     public interface ICMAProxy : IFrameworkPlugin
