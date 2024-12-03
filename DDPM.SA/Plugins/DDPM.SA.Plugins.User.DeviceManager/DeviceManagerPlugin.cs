@@ -219,8 +219,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         private QAMPage _QAM;
         private Point QAM_Position;
-        private bool isDDPMLaunchedByQAM = false;
-        private bool isDDPMHomepageReady = false;
 
         private static CancellationTokenSource _ReGetcancellationTokenSource;
 
@@ -1795,11 +1793,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             _millisecond = millisecond;
 
             return Task.FromResult(Task.CompletedTask);
-        }
-
-        public Task<int> GetCurrentPollingRate()
-        {
-            return Task.FromResult(_millisecond);
         }
 
         public Task<List<MonitorInfo>> GetMonitors()
@@ -10232,21 +10225,12 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         {
             writelog($"QAMClose Start");
 
-            //writelog($"QAMClose _QAM.Close go");
-            try
+            if (_QAM != null)
             {
-                _QAM?.Dispatcher.Invoke(() =>
-                {
-                    // Access UI elements or objects owned by a different thread
-                    _QAM?.Close();
-                });
-                //_QAM?.Close();
+                //writelog($"QAMClose _QAM.Close go");
+                _QAM.Close();
+                //writelog($"QAMClose _QAM.Close done");
             }
-            catch (Exception e)
-            {
-                writelog($"Catch Exception[{e.Message}] when run QAMClose");
-            }
-            
 
             writelog($"QAMClose done");
         }
@@ -10266,8 +10250,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
                     Thread thread1 = new Thread(() =>
                     {
-                        _QAM = new QAMPage(deviceMangerPlugin, Log);
-                        //_QAM.UpdateUINotify += _QAM_UpdateUINotify;
+                        _QAM = new QAMPage(deviceMangerPlugin);
                         _QAM.Closed += QAMCloseEvent;
 
                         //if (QAM_Position != null && (QAM_Position.X != 0 && QAM_Position.Y != 0))
@@ -10306,48 +10289,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 _QAM.Show();
 
             writelog($"CallQAM_UI: done");
-        }
-
-        private void _QAM_UpdateUINotify(object sender, UpdateUINotify e)
-        {
-            OnUIUpdateNotify(e);
-        }
-
-        public Task SetIsDDPMLaunchByQAMAsync(bool newValue)
-        {
-            isDDPMLaunchedByQAM = newValue;
-            writelog($"IsDDPMLaunchByQAM: {newValue}");
-
-            return Task.CompletedTask;
-        }
-
-        public Task<bool> GetIsDDPMLaunchByQAM()
-        {
-            writelog($"return IsDDPMLaunchByQAM: {isDDPMLaunchedByQAM}");
-
-            return Task.FromResult(isDDPMLaunchedByQAM);
-        }
-
-        public Task SetIsDDPMHomepageReadyAsync(bool newValue)
-        {
-            isDDPMHomepageReady = newValue;
-
-            writelog($"UI SetIsDDPMHomepageReadyAsync: {newValue}");
-
-            //info homepage navigate to webcam preview page
-            if (isDDPMLaunchedByQAM && isDDPMHomepageReady)
-            {
-                UpdateUINotify e = new UpdateUINotify();
-                e.UI_Field_Name = "QAMEvent_StartPreview";
-
-                OnUIUpdateNotify(e);
-                isDDPMHomepageReady = false;
-                //isDDPMLaunchedByQAM = false;
-
-                QAMClose();
-            }
-
-            return Task.CompletedTask;
         }
 
         #endregion
