@@ -21,12 +21,6 @@
             <local:BooleanToBrushConverter x:Key="BooleanToBrushConverter" FalseBrush="White" TrueBrush="Gray" />
             <local:CustomBooleanToBrushConverter x:Key="CustomBooleanToBrushConverter" FalseBrushLightTheme="Black" FalseBrushDarkTheme="White" TrueBrush="Gray" />
 
-            <local:CustomBooleanToBrushConverter
-                x:Key="CustomBooleanToBrushConverter"
-                FalseBrushDarkTheme="White"
-                FalseBrushLightTheme="Black"
-                TrueBrush="Gray" />
-
             <local:InverseBooleanConverter x:Key="InverseBooleanConverter" />
 
             <local:BoolReverseToVisibilityConverter x:Key="boolReverseToVisibilityConverter" />
