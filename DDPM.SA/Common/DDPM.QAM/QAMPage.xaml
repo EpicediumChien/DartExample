@@ -107,6 +107,7 @@
                         </Border>
                     </Grid>
                 </Grid>
+                <!--
                 <Grid Grid.Row="1"
                       Background="{DynamicResource Default_SA_QAM_BackGround_1}"
                       MouseDown="CameraSetting_Click">

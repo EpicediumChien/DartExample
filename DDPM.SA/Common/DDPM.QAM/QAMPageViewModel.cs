@@ -284,6 +284,18 @@ namespace DDPM.QAM
         }
         #endregion
 
+        private bool isCameraSettingSelected = false;
+        public bool IsCameraSettingSelected
+        {
+            get => isCameraSettingSelected;
+
+            set
+            {
+                isCameraSettingSelected = value;
+                OnPropertyChanged(nameof(isCameraSettingSelected));
+            }
+        }
+
         #region Dragging
         private bool _isDragging = false;
         public bool IsDragging

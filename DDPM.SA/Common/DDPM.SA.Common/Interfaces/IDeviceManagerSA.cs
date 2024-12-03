@@ -1191,6 +1191,13 @@ namespace DDPM.SA.Common
 
         #endregion GlobalSetting
 
+        #region QAM
+        Task SetIsDDPMLaunchByQAMAsync(bool newValue);
+        Task<bool> GetIsDDPMLaunchByQAM();
+        Task SetIsDDPMHomepageReadyAsync(bool newValue);
+        Task<int> GetCurrentPollingRate();
+        #endregion
+
         #region System Suspend & Resume
         event EventHandler SystemSuspend;
         event EventHandler SystemResume;
