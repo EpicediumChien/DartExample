@@ -56,7 +56,7 @@ namespace DDPM.UI.Module.EzMemory
             //Screen? currentScreen = GetAttachedScreen(_homeDevice.MonitorInfo.DisplayName);
             //_vm.IsVertical = (currentScreen != null) ? (currentScreen.Bounds.Width < currentScreen.Bounds.Height) : false;
 
-            InitializePage();
+            //InitializePage();
 
             // 這裡排編號
             //_vm.ispCtrlForEm = ISplitCtrl.Create(_vm.SelectedSplitItem.CellCount, _vm.SelectedSplitItem.SplitKey);
@@ -65,7 +65,7 @@ namespace DDPM.UI.Module.EzMemory
             //You can use Clone() to clone a ISplitCtrl from SplitIte.ISplitCtrl
             _vm.ispCtrlForEm = _vm.SelectedSplitItem.ISplitCtrl.Clone();
             //_vm.ispCtrlForEm = ISplitCtrl.Create(_vm.SelectedSplitItem.);
-            _vm.ispCtrlForEm!.IsEditable = true; //If you do need the 'pencil' icon, please set it to false
+            _vm.ispCtrlForEm!.IsEditable = false; //If you do need the 'pencil' icon, please set it to false
             _vm.ispCtrlForEm.SplitMode = eSplitModes.Em;
             EMsplitCtrl.Content = _vm.ispCtrlForEm.UC;
 
@@ -79,7 +79,20 @@ namespace DDPM.UI.Module.EzMemory
                 _vm?.RegisterCellBorder(cellBorder.CellBd, _no);
                 _no++;
             }
+
+            InitializePage();
+
+            //Record UXTextBox
+            if (_vm.ispCtrlForEm.CellList.Count <= 2)
+            {
+                _vm.currentUXTextBoxInfo = Window1_1TextBlock;
+            }
+            else
+            {
+                _vm.currentUXTextBoxInfo = Window1TextBlock;
+            }
         }
+
 
         /// <summary>
         /// Initialize Page, get Split window count, set string
@@ -87,7 +100,7 @@ namespace DDPM.UI.Module.EzMemory
         public void InitializePage()
         {
             //這裡加入分割視窗的個數
-            if (_vm.SelectedSplitItem.CellCount == 2)
+            if (_vm.SelectedSplitItem.ISplitCtrl.CellList.Count == 2)//(_vm.SelectedSplitItem.CellCount == 2)
             {
                 _vm.IsRightGridPage2Visible = true;
                 _vm.SelectedValue = 2;
@@ -95,7 +108,7 @@ namespace DDPM.UI.Module.EzMemory
             else
             {
                 _vm.IsRightGridPage2Visible = false;
-                _vm.SelectedValue = _vm.SelectedSplitItem.CellCount;
+                _vm.SelectedValue = _vm.SelectedSplitItem.ISplitCtrl.CellList.Count;// _vm.SelectedSplitItem.CellCount;
             }
             _vm.ezPages = _vm.GetEzPages();
 
@@ -398,6 +411,37 @@ namespace DDPM.UI.Module.EzMemory
             {
                 _log.Error($"@{nameof(EzMemoryAssignProgram)} UserControl_Loaded: Error occurred - {ex.Message}");
             }
+        }
+
+        private void Window_TextBlock_MouseMove(object sender, System.Windows.Input.MouseEventArgs e)
+        {
+            if (sender is TextBox textBox)
+            {
+                string controlName = _vm.UXTextBoxNameToUXButtonName(textBox.Name);
+                if (_vm._sortApps.ContainsKey(controlName))
+                {
+                    string apppath = _vm._sortApps[controlName].AppPath;
+
+                    var toolTipContent = new TextBlock
+                    {
+                        Text = apppath,                          
+                    };
+
+                    toolTipContent.Style = (Style)FindResource("ToolTipTextBlockStyle");
+
+                    var toolTip = new ToolTip
+                    {
+                        Content = toolTipContent,
+                    };
+
+                    textBox.ToolTip = toolTip;
+                }
+                else
+                {
+                    textBox.ToolTip = string.Empty;
+                }
+            }
+            return;
         }
     }
 

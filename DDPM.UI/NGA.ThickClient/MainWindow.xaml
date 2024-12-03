@@ -13,7 +13,7 @@
     MinHeight="645"
     StateChanged="Window_StateChanged"
     Loaded="MainWindow_Loaded"
-    Activated="ConsoleWindow_Activated" Deactivated="ConsoleWindow_DeActivated">
+    Activated="ConsoleWindow_Activated" Deactivated="ConsoleWindow_DeActivated" StateChanged="MainWIndow_StateChanged">
     <!--<wpf:ConsoleWindow.TopBackground>
         <ImageBrush ImageSource="/Resources/Images/Background.png" Stretch="UniformToFill" />
     </wpf:ConsoleWindow.TopBackground>-->

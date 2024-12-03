@@ -424,17 +424,91 @@ namespace NGA.ThickClient
             if (_Console != null)
                 _Console.RaiseEvent(ConsoleEventNames.MainWindow_DeActivate, this, new EventManagerArgs());
         }
-        private void Window_StateChanged(object sender, EventArgs e)
+
+        //PIMS-291471 Maximize DDPM app will cover windows taskbar
+        //Below solution was provided from Dell DUCA team, Sharap Viswanathan, Karthik 2024-10-30
+        //private bool _firstTimeMaximim = true;
+        private void MainWIndow_StateChanged(object sender, EventArgs e)
         {
-            if (this.WindowState == WindowState.Maximized)
+            if (WindowState == WindowState.Maximized)
             {
-                AdjustWindowSizeBasedOnMonitor();
-                // Debug.WriteLine("Fullscreen button clicked!");
-            }
-            else if (this.WindowState == WindowState.Minimized)
-            {
-                // Debug.WriteLine("Window minimized.");
+                Screen screen = Screen.FromHandle(new System.Windows.Interop.WindowInteropHelper(this).Handle);
+                // PrimaryScreen Scaling info required because screen workarea when app launched in Secondary montior
+                // gives resolution of Secondary monitor by multiplying the PrimaryScreenScaling ratio
+                if (Screen.PrimaryScreen == null) return;
+
+                // this logic is required for secondary monitor scaling ratio calculation
+                var primaryScreenScalingRatio = Screen.PrimaryScreen.Bounds.Width / SystemParameters.PrimaryScreenWidth;
+                double screenHeight;
+                double screenWidth;
+                if (screen.Primary)
+                {
+                    screenHeight = SystemParameters.WorkArea.Height;
+                    screenWidth = SystemParameters.WorkArea.Width;
+                }
+                else
+                {
+                    screenHeight = screen.WorkingArea.Height / primaryScreenScalingRatio;
+                    screenWidth = screen.WorkingArea.Width / primaryScreenScalingRatio;
+                }
+
+                this.MaxWidth = screenWidth;
+                this.MaxHeight = screenHeight;
+
+
+                //RefreshWindowTaskbar();
+
+                //Robert_Lin, 2024-12-2 workaround, I found the firstime maximized will also has a
+                //glass-effect on taskbar. so force it restore to normal then maximized again.
+                //if (_firstTimeMaximim)
+                //{
+                //    _firstTimeMaximim = false;
+                //    WindowState = WindowState.Normal;
+                //    WindowState = WindowState.Maximized;
+                //}
+
+                //int x = screen.WorkingArea.Left + (int)screenWidth / 2;
+                //int y = screen.WorkingArea.Top + (int)screenHeight / 2;
+                //SetCursorPos(x, y);
+                //DoMouseClick();
             }
         }
+
+        #region Workaround solution - Robert_Lin 2024-12-03, can be removed
+        private void RefreshWindowTaskbar()
+        {
+            const int HWND_BROADCAST = 0xffff;
+            const uint WM_SETTINGCHANGE = 0x001A;
+            bool result = PostMessage((IntPtr)HWND_BROADCAST, WM_SETTINGCHANGE, IntPtr.Zero, IntPtr.Zero);
+        }
+        [DllImport("user32.dll")]
+        private static extern int SendMessage(IntPtr hWnd, int wMsg, IntPtr wParam, IntPtr lParam);
+
+        [DllImport("user32.dll")]
+        static extern bool PostMessage(IntPtr hWnd, uint Msg, IntPtr wParam, IntPtr lParam);
+
+
+        [DllImport("user32.dll", CharSet = CharSet.Auto, CallingConvention = CallingConvention.StdCall)]
+        private static extern void mouse_event(long dwFlags, long dx, long dy, long cButtons, long dwExtraInfo);
+
+        private const int MOUSEEVENTF_LEFTDOWN = 0x02;
+        private const int MOUSEEVENTF_LEFTUP = 0x04;
+        private const int MOUSEEVENTF_RIGHTDOWN = 0x08;
+        private const int MOUSEEVENTF_RIGHTUP = 0x10;
+
+        private static void DoMouseClick()
+        {
+            mouse_event(MOUSEEVENTF_LEFTDOWN | MOUSEEVENTF_LEFTUP, 0, 0, 0, 0);
+        }
+
+        [DllImport("user32.dll")]
+        static extern bool SetCursorPos(int X, int Y);
+
+        private static void MoveCursorToPoint(int x, int y)
+        {
+            SetCursorPos(x, y);
+        }
+        #endregion
+
     }
 }
