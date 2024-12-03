@@ -57,7 +57,8 @@ namespace DDPM.SA.Common.Popup
                 double bottomOffset = row * (NotificationHeight + NotificationSpacing);
                 popupBase.Left = screenWidth - NotificationWidth - NotificationSpacing;
                 popupBase.Top = screenHeight - NotificationHeight - NotificationSpacing - bottomOffset;
-                popupBase.Show();
+                // popupBase.Show();
+                popupBase.ShowDialog();
                 _notificationWindows.Add(popupBase);
 
                 // Remove closed notification window

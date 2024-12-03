@@ -39,8 +39,8 @@
                                         Margin="15,0,0,0">
                                 <Grid Margin="0,8">
                                     <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="*" />
-                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="2*" />
+                                        <ColumnDefinition Width="auto" />
                                     </Grid.ColumnDefinitions>
                                     
                                     <UXControls:UXTextBlock Grid.Column="0" x:Name="activateTextBlock"
@@ -70,7 +70,7 @@
                                       Margin="0,9">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="*" />
-                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="auto" />
                                     </Grid.ColumnDefinitions>
                                     <UXControls:UXTextBlock Grid.Column="0"
                                                             x:Name="enableShortcutTextBlock"

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Input;
 
 namespace DDPM.SA.Common.Popup
 {
@@ -46,20 +47,28 @@ namespace DDPM.SA.Common.Popup
         public PopupBase(string HeaderText, string SubHeaderText, string LeftButtonContent, string RightButtonContent, object ob, bool IsStayOnly, int autoCloseTimeInSeconds)
         {
             InitializeComponent();
-            Header.Text = HeaderText;
-            SubHeader.Text = SubHeaderText;
+            //Header.Text = HeaderText;
+            //SubHeader.Text = SubHeaderText;
+            Header1.Text = HeaderText;
+            SubHeader1.Text = SubHeaderText;
+
             _object = ob;
-            LeftButton.Visibility = Visibility.Collapsed;
-            RightButton.Visibility = Visibility.Collapsed;
+            //LeftButton.Visibility = Visibility.Collapsed;
+            //RightButton.Visibility = Visibility.Collapsed;
             if (!string.IsNullOrEmpty(LeftButtonContent))
             {
-                LeftButton.Visibility = Visibility.Visible;
-                LeftButton.Content = LeftButtonContent;
+                //LeftButton.Visibility = Visibility.Visible;
+                //LeftButton.Content = LeftButtonContent;
+
+                LeftButton1.Visibility = Visibility.Visible;
+                LeftButton1.Content = LeftButtonContent;
             }
             if (!string.IsNullOrEmpty(RightButtonContent))
             {
-                RightButton.Visibility = Visibility.Visible;
-                RightButton.Content = RightButtonContent;
+                //RightButton.Visibility = Visibility.Visible;
+                //RightButton.Content = RightButtonContent;
+                RightButton1.Visibility = Visibility.Visible;
+                RightButton1.Content = RightButtonContent;
             }
             if (!IsStayOnly && autoCloseTimeInSeconds > 0)
             {
@@ -102,6 +111,31 @@ namespace DDPM.SA.Common.Popup
         {
             Default_Event?.Invoke(this, _object);
             Default_Event = null;
+        }
+
+        private void closeX_MouseLeftButtonUp(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            //DialogResult = _dialogResult_Close;
+            //LeftButtonClick = null;
+            //RightButtonClick = null;
+            //this.Close();
+        }
+
+        private void rootBorder_MouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            //Support move window
+            if ((e.ChangedButton == MouseButton.Left) && (e.ClickCount == 1))
+            {
+                this.DragMove();
+            }
+        }
+
+        private void closeX_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            DialogResult = _dialogResult_Close;
+            LeftButtonClick = null;
+            RightButtonClick = null;
+            this.Close();
         }
     }
 }
