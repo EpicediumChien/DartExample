@@ -800,8 +800,8 @@ namespace DDPM.UI.Plugin.ViewModels
         public override bool SetCurrentDevice(string deviceID)
         {
             _log.Info($"[HeadsetViewModel] SetCurrentDevice ...");
-            if (!IsDTPReady)
-                return false;
+            //if (!IsDTPReady)
+            //    return false;
             //deviceID ??= DeviceInfos.Values.ToList().FirstOrDefault()!.ID.ToString();
             if (!base.SetCurrentDevice(deviceID))
                 return false;
