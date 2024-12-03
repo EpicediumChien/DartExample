@@ -65,13 +65,16 @@
                             <Grid Margin="18,22,18,0">
                                 <StackPanel Orientation="Horizontal">
                                     <UXControls:UXTextBlock Text="{Binding [WebCameraPresenceDetection.1], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource ModuleItemStyle}" />
-                                    <Image Margin="9,0,0,0" Source="/DDPM.UI.Common;component/Resources/info.png" Stretch="Uniform" Cursor="Hand" Width="16" Height="16">
-                                        <Image.ToolTip>
-                                            <ToolTip Style="{StaticResource InfoToolTipStyle}" Placement="Top" VerticalOffset="8" HorizontalOffset="6">
-                                                <TextBlock Text="{Binding [WebCameraPresenceDetection.2], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource TabInfoToolTipTextStyle}" />
+                                    <Border Background="Transparent" Cursor="Hand">
+                                        <ContentControl Template="{StaticResource icon_Info}" Margin="9,0,0,0" Width="16" Height="16"/>
+                                        <Border.ToolTip>
+                                            <ToolTip Placement="Top" VerticalOffset="8" HorizontalOffset="6">
+                                                <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
+                                                    <TextBlock Text="{Binding [WebCameraPresenceDetection.2], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource Tooltip_TextBlockStyle}" />
+                                                </Border>
                                             </ToolTip>
-                                        </Image.ToolTip>
-                                    </Image>
+                                        </Border.ToolTip>
+                                    </Border>
                                 </StackPanel>
                                 <UXControls:UXToggleSwitch IsEnabled="{Binding ProximitySensor_enable}" IsChecked="{Binding Path= IsChecked_ProximitySensor}" ContentTextVisibility="True" Content="{Binding Path=ProximitySensorStatus_String}" HorizontalAlignment="Right" VerticalAlignment="Center" Foreground="White" IsTabStop="{Binding isTabStoppable}"/>
                             </Grid>
@@ -80,13 +83,16 @@
                                     <Grid Margin="18,20,18,0">
                                         <StackPanel Orientation="Horizontal">
                                             <UXControls:UXTextBlock Text="{Binding [WebCameraPresenceDetection.3], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource ModuleItemStyle}" />
-                                            <Image Margin="9,0,0,0" Source="/DDPM.UI.Common;component/Resources/info.png" Stretch="Uniform" Cursor="Hand" Width="16" Height="16">
-                                                <Image.ToolTip>
-                                                    <ToolTip Style="{StaticResource InfoToolTipStyle}" Placement="Top" VerticalOffset="8" HorizontalOffset="6">
-                                                        <TextBlock Text="{Binding [WebCameraPresenceDetection.4], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource TabInfoToolTipTextStyle}" />
+                                            <Border Background="Transparent" Cursor="Hand">
+                                                <ContentControl Template="{StaticResource icon_Info}" Margin="9,0,0,0" Width="16" Height="16"/>
+                                                <Border.ToolTip>
+                                                    <ToolTip Placement="Top" VerticalOffset="8" HorizontalOffset="6">
+                                                        <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
+                                                            <TextBlock Text="{Binding [WebCameraPresenceDetection.4], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource Tooltip_TextBlockStyle}" />
+                                                        </Border>
                                                     </ToolTip>
-                                                </Image.ToolTip>
-                                            </Image>
+                                                </Border.ToolTip>
+                                            </Border>
                                         </StackPanel>
                                         <UXControls:UXToggleSwitch IsChecked="{Binding Path= IsChecked_WakeOnApproach}" IsEnabled="{Binding Path= IsChecked_ProximitySensor}" ContentTextVisibility="True" Content="{Binding Path=WakeOnApproachStatus_String}" HorizontalAlignment="Right" VerticalAlignment="Center"  Foreground="White" IsTabStop="{Binding isTabStoppable}" />
                                     </Grid>
@@ -94,13 +100,16 @@
                                         <Grid>
                                             <StackPanel Orientation="Horizontal">
                                                 <UXControls:UXTextBlock Text="{Binding [WebCameraPresenceDetection.5], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource ModuleItemStyle}" />
-                                                <Image Margin="9,0,0,0" Source="/DDPM.UI.Common;component/Resources/info.png" Stretch="Uniform" Cursor="Hand" Width="16" Height="16">
-                                                    <Image.ToolTip>
-                                                        <ToolTip Style="{StaticResource InfoToolTipStyle}" Placement="Top" VerticalOffset="8" HorizontalOffset="6">
-                                                            <TextBlock Text="{Binding [WebCameraPresenceDetection.6], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource TabInfoToolTipTextStyle}" />
+                                                <Border Background="Transparent" Cursor="Hand">
+                                                    <ContentControl Template="{StaticResource icon_Info}" Margin="9,0,0,0" Width="16" Height="16"/>
+                                                    <Border.ToolTip>
+                                                        <ToolTip Placement="Top" VerticalOffset="8" HorizontalOffset="6">
+                                                            <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
+                                                                <TextBlock Text="{Binding [WebCameraPresenceDetection.6], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource Tooltip_TextBlockStyle}" />
+                                                            </Border>
                                                         </ToolTip>
-                                                    </Image.ToolTip>
-                                                </Image>
+                                                    </Border.ToolTip>
+                                                </Border>
                                             </StackPanel>
                                             <UXControls:UXToggleSwitch IsChecked="{Binding Path= IsChecked_WalkAwayLock}" IsEnabled="{Binding Path= IsChecked_ProximitySensor}" ContentTextVisibility="True" Content="{Binding Path=WalkAwayLockStatus_String}" HorizontalAlignment="Right" VerticalAlignment="Center"  Foreground="White" IsTabStop="{Binding isTabStoppable}"/>
                                         </Grid>
@@ -141,15 +150,24 @@
                         <Grid Margin="18,22,18,18">
                             <StackPanel Orientation="Horizontal">
                                 <UXControls:UXTextBlock Text="{Binding [WebCameraPresenceDetection.10], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource ModuleItemStyle}" HorizontalAlignment="Center" VerticalAlignment="Center" />
-                                <Image Margin="9,0,9,0" Source="/DDPM.UI.Common;component/Resources/info.png" Stretch="Uniform" Cursor="Hand" Width="16" Height="16">
-                                    <Image.ToolTip>
-                                        <ToolTip Style="{StaticResource InfoToolTipStyle}" Placement="Top" VerticalOffset="8" HorizontalOffset="6">
-                                            <TextBlock Text="{Binding [WebCameraPresenceDetection.11], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource TabInfoToolTipTextStyle}" />
+                                <Border Background="Transparent" Cursor="Hand">
+                                    <ContentControl Template="{StaticResource icon_Info}" Margin="9,0,0,0" Width="16" Height="16"/>
+                                    <Border.ToolTip>
+                                        <ToolTip Placement="Top" VerticalOffset="8" HorizontalOffset="6">
+                                            <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
+                                                <TextBlock Text="{Binding [WebCameraPresenceDetection.11], Source={x:Static lang:LangHelper.Instance}}"  Style="{StaticResource Tooltip_TextBlockStyle}" />
+                                            </Border>
                                         </ToolTip>
-                                    </Image.ToolTip>
-                                </Image>
+                                    </Border.ToolTip>
+                                </Border>
                             </StackPanel>
-                            <UXControls:UXLink Content="{Binding [WindowsSettings], Source={x:Static lang:LangHelper.Instance}}" Click="CallWindowsHello_Click" IconPosition="IconRight" LinkSize="Medium" LinkColorScheme="Primary" LinkType="InLine" Icon="M29.86 29.86h-27.74v-27.72h13.88v-2.14h-16v32h32v-16h-2.12zM20.86 0v2.12h7.56l-15.060 15.060 1.52 1.5 14.98-15v7.46h2.14v-11.14z" HorizontalAlignment="Right" VerticalAlignment="Center" />
+                            <UXControls:UXLink Content="{Binding [WindowsSettings], Source={x:Static lang:LangHelper.Instance}}" Click="CallWindowsHello_Click" IconPosition="IconRight" LinkSize="Medium" LinkColorScheme="Primary" LinkType="InLine" Icon="M29.86 29.86h-27.74v-27.72h13.88v-2.14h-16v32h32v-16h-2.12zM20.86 0v2.12h7.56l-15.060 15.060 1.52 1.5 14.98-15v7.46h2.14v-11.14z" HorizontalAlignment="Right" VerticalAlignment="Center">
+                                <UXControls:UXLink.Resources>
+                                    <Style TargetType="Border">
+                                        <Setter Property="Background"  Value="Transparent" />
+                                    </Style>
+                                </UXControls:UXLink.Resources>
+                            </UXControls:UXLink>
                         </Grid>
                     </Border>
                 </Grid>

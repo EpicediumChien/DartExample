@@ -111,8 +111,8 @@ namespace DDPM.SA.Common
         Task<bool> Notify_refresh_app_list();
 
         //Jim add 20240801
-        Task<IIC_Metadata> DownloadICCData(MonitorInfo m,bool blICCProfile = false ,string savelPath = "");
-       
+        Task<IIC_Metadata> DownloadICCData(MonitorInfo m, bool blICCProfile = false, string savelPath = "");
+
         //Jim add 20240904
         Task<string> GetAutoColorPresetStatus(MonitorInfo m);
 
@@ -716,10 +716,9 @@ namespace DDPM.SA.Common
         Task SetMouseAction(string Guid, byte[] newValue);
         Task SetCurrentSelectedAppSpecificProfile(string Guid, string newValue);
         Task DeleteMouseAssignedAction(string Guid, int newValue);
-
         Task SetMouseAssignDialogAction(string Guid, byte[] newValue);
-
         Task SetMouseAssignKeystrokeAction(string Guid, byte[] newValue);
+        Task<bool> RestoreToDefaultMouse(string Guid, bool isFromCli = true);
 
         #endregion Mouse
 
@@ -740,6 +739,7 @@ namespace DDPM.SA.Common
         Task SetKbAssignDialogAction(string Guid, byte[] newValue);
 
         Task SetKbAssignKeystrokeAction(string Guid, byte[] newValue);
+        Task<bool> RestoreToDefaultKB(string Guid);
 
         #endregion Keyboard
 
@@ -948,52 +948,52 @@ namespace DDPM.SA.Common
         #region Headset Get
 
         //Peripheral Common Properties Get
-        Task<JArray> GetDeviceItemsExAsync(string Guid);
+        Task<JArray> GetHeadsetDeviceItemsExAsync();
 
-        Task<DeviceInterfaceType> GetInterfaceTypeAsync(string Guid);
+        Task<DeviceInterfaceType> GetHeadsetInterfaceTypeAsync(string Guid);
 
-        Task<string> GetDeviceNameAsync(string Guid);
+        Task<string> GetHeadsetDeviceNameAsync(string Guid);
 
-        Task<string> GetDeviceIdAsync(string Guid);
+        Task<string> GetHeadsetDeviceIdAsync(string Guid);
 
-        Task<string> GetPluginIdAsync(string Guid);
+        Task<string> GetHeadsetPluginIdAsync(string Guid);
 
-        Task<int> GetODMIdAsync(string Guid);
+        Task<int> GetHeadsetODMIdAsync(string Guid);
 
-        Task<string> GetModelNumberAsync(string Guid);
+        Task<string> GetHeadsetModelNumberAsync(string Guid);
 
-        Task<int> GetInstanceNumberAsync(string Guid);
+        Task<int> GetHeadsetInstanceNumberAsync(string Guid);
 
-        Task<int> GetInstanceIdAsync(string Guid);
+        Task<int> GetHeadsetInstanceIdAsync(string Guid);
 
-        Task<string> GetFirmwareVersionAsync(string Guid);
+        Task<string> GetHeadsetFirmwareVersionAsync(string Guid);
 
-        Task<string> GetDeviceTypeAsync(string Guid);
+        Task<string> GetHeadsetDeviceTypeAsync(string Guid);
 
         //Headset Get
-        Task<string> GetParentDeviceTypeAsync(string Guid);
+        Task<string> GetHeadsetParentDeviceTypeAsync(string Guid);
 
-        Task<bool> GetIsBatteryLevelSupportedAsync(string Guid);
+        Task<bool> GetHeadsetIsBatteryLevelSupportedAsync(string Guid);
 
-        Task<int> GetBatteryLevelAsync(string Guid);
+        Task<int> GetHeadsetBatteryLevelAsync(string Guid);
 
-        Task<string> GetDeviceBatteryStatusAsync(string Guid);
+        Task<string> GetHeadsetDeviceBatteryStatusAsync(string Guid);
 
-        Task<string> GetPairingStatusAsync(string Guid);
+        Task<string> GetHeadsetPairingStatusAsync(string Guid);
 
-        Task<string> GetPairedHostName1Async(string Guid);
+        Task<string> GetHeadsetPairedHostName1Async(string Guid);
 
-        Task<string> GetPairedHostName2Async(string Guid);
+        Task<string> GetHeadsetPairedHostName2Async(string Guid);
 
-        Task<string> GetPairedHostName3Async(string Guid);
+        Task<string> GetHeadsetPairedHostName3Async(string Guid);
 
-        Task<int> GetMaxPairingSlotsAsync(string Guid);
+        Task<int> GetHeadsetMaxPairingSlotsAsync(string Guid);
 
-        Task<int> GetPairedDeviceCountAsync(string Guid);
+        Task<int> GetHeadsetPairedDeviceCountAsync(string Guid);
 
-        Task<int> GetTotalNumberOfPairedHostNameAsync(string Guid);
+        Task<int> GetHeadsetTotalNumberOfPairedHostNameAsync(string Guid);
 
-        Task<string> GetSerialNumberAsync(string Guid);
+        Task<string> GetHeadsetSerialNumberAsync(string Guid);
 
         Task<bool> GetIsReadyAsync(string Guid);
 
@@ -1186,7 +1186,17 @@ namespace DDPM.SA.Common
 
         Task<bool> WriteSerializedContentToFile(string filePath, string content);
 
+        // add @ 20241202 stephen
+        void updateFWUpdateInfoPackage(FWUpdateInfoPackage pkg);
+
         #endregion GlobalSetting
+
+        #region QAM
+        Task SetIsDDPMLaunchByQAMAsync(bool newValue);
+        Task SetIsDDPMHomepageReadyAsync(bool newValue);
+        Task<int> GetCurrentPollingRate();
+        Task<bool> GetIsDDPMLaunchByQAM();
+        #endregion
 
         #region System Suspend & Resume
         event EventHandler SystemSuspend;

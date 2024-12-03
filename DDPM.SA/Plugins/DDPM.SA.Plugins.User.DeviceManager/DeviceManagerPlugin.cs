@@ -63,7 +63,7 @@ using static DDPM.SA.Plugins.User.DeviceManager.DisplayDeviceHelper;
 using static VcpCore.Common.User32;
 using IDs = DDPM.SA.Common.IDs;
 
-//using MonitorProfile = DDPM.SA.Common.MonitorProfile;
+//using MonitorProfile = DDPM.SA.Utility.MonitorProfile;
 using Point = System.Windows.Point;
 
 namespace DDPM.SA.Plugins.User.DeviceManager
@@ -124,7 +124,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         private DisplayChange displayChange;
 
-        //private static Dell.Client.Framework.Common.Log _log;
+        //private static Dell.Client.Framework.Utility.Log _log;
         // ColorPreset objects
         private Dictionary<string, InstalledAppInfo> _AllAppData_tmp = new Dictionary<string, InstalledAppInfo>();
 
@@ -219,6 +219,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         private QAMPage _QAM;
         private Point QAM_Position;
+        private bool isDDPMLaunchedByQAM = false;
+        private bool isDDPMHomepageReady = false;
 
         private static CancellationTokenSource _ReGetcancellationTokenSource;
 
@@ -253,11 +255,34 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             _isSubagentActive = WTSFunction.IsYourProcessInActiveSession(Log);
             SACommonHelper.GetResourceDictionary();
             loadResourceDictionary(UXSystemParameters.Instance.OSTheme);
+
+            //Robert_Lin, 2024-12-1 added, to let TextBox highlight text color can be changed with TextBox.SelectionTextBrush
+            //Reference: https://github.com/dotnet/wpf/issues/4571
+            AppContext.SetSwitch("Switch.System.Windows.Controls.Text.UseAdornerForTextboxSelectionRendering", false);
+
         }
 
         private void _DTPProxyPlugin_DTPEventHandler(object sender, UpdateUINotify e)
         {
-            OnUIUpdateNotify(e);
+            if (e.UI_Field_Name.StartsWith("Keyboard") || e.UI_Field_Name.StartsWith("Mouse") || e.UI_Field_Name.StartsWith("Pen"))
+            {
+                var paras = e.UI_Field_Name.Split('|');
+                if (paras.Length < 4)
+                {
+                    writelog("_DTPProxyPlugin_DTPEventHandler UpdateUINotify e.UI_Field_Na incorrect!");
+                    return;
+                }
+                DeviceInfo di = new();
+                di.LogicalDeviceType = paras[0];
+                di.ModelNumber = paras[3];
+                DeviceChangedEventArgs _EventArgs = new DeviceChangedEventArgs();
+                _EventArgs.type = DeviceChangedType.Peripherals_SettingsChange;
+                _EventArgs.device_peripherals = di;
+                _EventArgs.changedProperty = paras[1];
+                DeviceChanged?.Invoke(this, _EventArgs);
+            }
+            else
+                OnUIUpdateNotify(e);
         }
 
         private string debugPreMsg = string.Empty;
@@ -457,7 +482,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
             if ("E9".Equals(vcpcode, StringComparison.OrdinalIgnoreCase) || vcpcode.Equals("2"))
             {
-                if (!monitorInfo.CapabilityDic.ContainsKey("E9")) return;
+                if (!monitorInfo.CapabilityDic.ContainsKey("E9"))
+                    return;
                 ObjGetVCP ret = GetPxpMode(monitorInfo).Result;
                 UsbKvmPBP usbKvmPBP = new UsbKvmPBP { MonitorInfo = monitorInfo, isPBPmode = false };
                 UInt16 _curPxpMode = 0;
@@ -1769,6 +1795,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             _millisecond = millisecond;
 
             return Task.FromResult(Task.CompletedTask);
+        }
+
+        public Task<int> GetCurrentPollingRate()
+        {
+            return Task.FromResult(_millisecond);
         }
 
         public Task<List<MonitorInfo>> GetMonitors()
@@ -3231,26 +3262,26 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         //////////////////////////////////// Get//////////////////////////////////////////
 
-        public async Task<JArray> GetDeviceItemsExAsync(string guid)
+        public async Task<JArray> GetHeadsetDeviceItemsExAsync()
         {
             try
             {
-                var result = await _DTPProxyPlugin.GetDeviceItemsExAsync(guid);
+                var result = await _DTPProxyPlugin.GetHeadsetDeviceItemsExAsync();
                 writelog($"[DeviceManagerPlugin] [Headset] GetDeviceItemsExAsync Success, value is {result.ToString()}");
                 return result;
             }
             catch (Exception ex)
             {
-                writelog($"[DeviceManagerPlugin] [Headset] GetDeviceItemsExAsync failed for GUID: {guid} - Exception: {ex.Message}");
+                writelog($"[DeviceManagerPlugin] [Headset] GetDeviceItemsExAsync failed - Exception: {ex.Message}");
                 return null;
             }
         }
 
-        public async Task<DeviceInterfaceType> GetInterfaceTypeAsync(string guid)
+        public async Task<DeviceInterfaceType> GetHeadsetInterfaceTypeAsync(string guid)
         {
             try
             {
-                var result = await _DTPProxyPlugin.GetInterfaceTypeAsync(guid);
+                var result = await _DTPProxyPlugin.GetHeadsetInterfaceTypeAsync(guid);
                 writelog($"[DeviceManagerPlugin] [Headset] GetInterfaceTypeAsync succeeded, value is {result.ToString()}");
                 return result;
             }
@@ -3261,11 +3292,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
         }
 
-        public async Task<string> GetDeviceNameAsync(string guid)
+        public async Task<string> GetHeadsetDeviceNameAsync(string guid)
         {
             try
             {
-                var result = await _DTPProxyPlugin.GetDeviceNameAsync(guid);
+                var result = await _DTPProxyPlugin.GetHeadsetDeviceNameAsync(guid);
                 writelog($"[DeviceManagerPlugin] [Headset] GetDeviceNameAsync succeeded, value is {result.ToString()}");
                 return result;
             }
@@ -3276,11 +3307,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
         }
 
-        public async Task<string> GetDeviceIdAsync(string guid)
+        public async Task<string> GetHeadsetDeviceIdAsync(string guid)
         {
             try
             {
-                var result = await _DTPProxyPlugin.GetDeviceIdAsync(guid);
+                var result = await _DTPProxyPlugin.GetHeadsetDeviceIdAsync(guid);
                 writelog($"[DeviceManagerPlugin] [Headset] GetDeviceIdAsync succeeded, value is {result.ToString()}");
                 return result;
             }
@@ -3291,11 +3322,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
         }
 
-        public async Task<string> GetPluginIdAsync(string guid)
+        public async Task<string> GetHeadsetPluginIdAsync(string guid)
         {
             try
             {
-                var result = await _DTPProxyPlugin.GetPluginIdAsync(guid);
+                var result = await _DTPProxyPlugin.GetHeadsetPluginIdAsync(guid);
                 writelog($"[DeviceManagerPlugin] [Headset] GetPluginIdAsync succeeded, value is {result.ToString()}");
                 return result;
             }
@@ -3306,11 +3337,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
         }
 
-        public async Task<int> GetODMIdAsync(string guid)
+        public async Task<int> GetHeadsetODMIdAsync(string guid)
         {
             try
             {
-                var result = await _DTPProxyPlugin.GetODMIdAsync(guid);
+                var result = await _DTPProxyPlugin.GetHeadsetODMIdAsync(guid);
                 writelog($"[DeviceManagerPlugin] [Headset] GetODMIdAsync succeeded, value is {result.ToString()}");
                 return result;
             }
@@ -3321,11 +3352,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
         }
 
-        public async Task<string> GetModelNumberAsync(string guid)
+        public async Task<string> GetHeadsetModelNumberAsync(string guid)
         {
             try
             {
-                var result = await _DTPProxyPlugin.GetModelNumberAsync(guid);
+                var result = await _DTPProxyPlugin.GetHeadsetModelNumberAsync(guid);
                 writelog($"[DeviceManagerPlugin] [Headset] GetModelNumberAsync succeeded, value is {result.ToString()}");
                 return result;
             }
@@ -3336,11 +3367,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
         }
 
-        public async Task<int> GetInstanceNumberAsync(string guid)
+        public async Task<int> GetHeadsetInstanceNumberAsync(string guid)
         {
             try
             {
-                var result = await _DTPProxyPlugin.GetInstanceNumberAsync(guid);
+                var result = await _DTPProxyPlugin.GetHeadsetInstanceNumberAsync(guid);
                 writelog($"[DeviceManagerPlugin] [Headset] GetInstanceNumberAsync succeeded, value is {result.ToString()}");
                 return result;
             }
@@ -3351,11 +3382,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
         }
 
-        public async Task<int> GetInstanceIdAsync(string guid)
+        public async Task<int> GetHeadsetInstanceIdAsync(string guid)
         {
             try
             {
-                var result = await _DTPProxyPlugin.GetInstanceIdAsync(guid);
+                var result = await _DTPProxyPlugin.GetHeadsetInstanceIdAsync(guid);
                 writelog($"[DeviceManagerPlugin] [Headset] GetInstanceIdAsync succeeded, value is {result.ToString()}");
                 return result;
             }
@@ -3366,11 +3397,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
         }
 
-        public async Task<string> GetFirmwareVersionAsync(string guid)
+        public async Task<string> GetHeadsetFirmwareVersionAsync(string guid)
         {
             try
             {
-                var result = await _DTPProxyPlugin.GetFirmwareVersionAsync(guid);
+                var result = await _DTPProxyPlugin.GetHeadsetFirmwareVersionAsync(guid);
                 writelog($"[DeviceManagerPlugin] [Headset] GetFirmwareVersionAsync succeeded, value is {result.ToString()}");
                 return result;
             }
@@ -3381,11 +3412,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
         }
 
-        public async Task<string> GetDeviceTypeAsync(string guid)
+        public async Task<string> GetHeadsetDeviceTypeAsync(string guid)
         {
             try
             {
-                var result = await _DTPProxyPlugin.GetDeviceTypeAsync(guid);
+                var result = await _DTPProxyPlugin.GetHeadsetDeviceTypeAsync(guid);
                 writelog($"[DeviceManagerPlugin] [Headset] GetDeviceTypeAsync succeeded, value is {result.ToString()}");
                 return result;
             }
@@ -3396,11 +3427,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
         }
 
-        public async Task<string> GetParentDeviceTypeAsync(string guid)
+        public async Task<string> GetHeadsetParentDeviceTypeAsync(string guid)
         {
             try
             {
-                var result = await _DTPProxyPlugin.GetParentDeviceTypeAsync(guid);
+                var result = await _DTPProxyPlugin.GetHeadsetParentDeviceTypeAsync(guid);
                 writelog($"[DeviceManagerPlugin] [Headset] GetParentDeviceTypeAsync succeeded, value is {result.ToString()}");
                 return result;
             }
@@ -3411,11 +3442,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
         }
 
-        public async Task<bool> GetIsBatteryLevelSupportedAsync(string guid)
+        public async Task<bool> GetHeadsetIsBatteryLevelSupportedAsync(string guid)
         {
             try
             {
-                var result = await _DTPProxyPlugin.GetIsBatteryLevelSupportedAsync(guid);
+                var result = await _DTPProxyPlugin.GetHeadsetIsBatteryLevelSupportedAsync(guid);
                 writelog($"[DeviceManagerPlugin] [Headset] GetIsBatteryLevelSupportedAsync succeeded, value is {result.ToString()}");
                 return result;
             }
@@ -3426,11 +3457,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
         }
 
-        public async Task<int> GetBatteryLevelAsync(string guid)
+        public async Task<int> GetHeadsetBatteryLevelAsync(string guid)
         {
             try
             {
-                var result = await _DTPProxyPlugin.GetBatteryLevelAsync(guid);
+                var result = await _DTPProxyPlugin.GetHeadsetBatteryLevelAsync(guid);
                 writelog($"[DeviceManagerPlugin] [Headset] GetBatteryLevelAsync succeeded, value is {result.ToString()}");
                 return result;
             }
@@ -3441,11 +3472,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
         }
 
-        public async Task<string> GetDeviceBatteryStatusAsync(string guid)
+        public async Task<string> GetHeadsetDeviceBatteryStatusAsync(string guid)
         {
             try
             {
-                var result = await _DTPProxyPlugin.GetDeviceBatteryStatusAsync(guid);
+                var result = await _DTPProxyPlugin.GetHeadsetDeviceBatteryStatusAsync(guid);
                 writelog($"[DeviceManagerPlugin] [Headset] GetDeviceBatteryStatusAsync succeeded, value is {result.ToString()}");
                 return result;
             }
@@ -3456,11 +3487,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
         }
 
-        public async Task<string> GetPairingStatusAsync(string guid)
+        public async Task<string> GetHeadsetPairingStatusAsync(string guid)
         {
             try
             {
-                var result = await _DTPProxyPlugin.GetPairingStatusAsync(guid);
+                var result = await _DTPProxyPlugin.GetHeadsetPairingStatusAsync(guid);
                 writelog($"[DeviceManagerPlugin] [Headset] GetPairingStatusAsync succeeded, value is {result.ToString()}");
                 return result;
             }
@@ -3471,11 +3502,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
         }
 
-        public async Task<string> GetPairedHostName1Async(string guid)
+        public async Task<string> GetHeadsetPairedHostName1Async(string guid)
         {
             try
             {
-                var result = await _DTPProxyPlugin.GetPairedHostName1Async(guid);
+                var result = await _DTPProxyPlugin.GetHeadsetPairedHostName1Async(guid);
                 writelog($"[DeviceManagerPlugin] [Headset] GetPairedHostName1Async succeeded, value is {result.ToString()}");
                 return result;
             }
@@ -3486,11 +3517,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
         }
 
-        public async Task<string> GetPairedHostName2Async(string guid)
+        public async Task<string> GetHeadsetPairedHostName2Async(string guid)
         {
             try
             {
-                var result = await _DTPProxyPlugin.GetPairedHostName2Async(guid);
+                var result = await _DTPProxyPlugin.GetHeadsetPairedHostName2Async(guid);
                 writelog($"[DeviceManagerPlugin] [Headset] GetPairedHostName2Async succeeded, value is {result.ToString()}");
                 return result;
             }
@@ -3501,11 +3532,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
         }
 
-        public async Task<string> GetPairedHostName3Async(string guid)
+        public async Task<string> GetHeadsetPairedHostName3Async(string guid)
         {
             try
             {
-                var result = await _DTPProxyPlugin.GetPairedHostName3Async(guid);
+                var result = await _DTPProxyPlugin.GetHeadsetPairedHostName3Async(guid);
                 writelog($"[DeviceManagerPlugin] [Headset] GetPairedHostName3Async succeeded, value is {result.ToString()}");
                 return result;
             }
@@ -3516,11 +3547,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
         }
 
-        public async Task<int> GetMaxPairingSlotsAsync(string guid)
+        public async Task<int> GetHeadsetMaxPairingSlotsAsync(string guid)
         {
             try
             {
-                var result = await _DTPProxyPlugin.GetMaxPairingSlotsAsync(guid);
+                var result = await _DTPProxyPlugin.GetHeadsetMaxPairingSlotsAsync(guid);
                 writelog($"[DeviceManagerPlugin] [Headset] GetMaxPairingSlotsAsync succeeded, value is {result.ToString()}");
                 return result;
             }
@@ -3531,11 +3562,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
         }
 
-        public async Task<int> GetPairedDeviceCountAsync(string guid)
+        public async Task<int> GetHeadsetPairedDeviceCountAsync(string guid)
         {
             try
             {
-                var result = await _DTPProxyPlugin.GetPairedDeviceCountAsync(guid);
+                var result = await _DTPProxyPlugin.GetHeadsetPairedDeviceCountAsync(guid);
                 writelog($"[DeviceManagerPlugin] [Headset] GetPairedDeviceCountAsync succeeded, value is {result.ToString()}");
                 return result;
             }
@@ -3546,11 +3577,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
         }
 
-        public async Task<int> GetTotalNumberOfPairedHostNameAsync(string guid)
+        public async Task<int> GetHeadsetTotalNumberOfPairedHostNameAsync(string guid)
         {
             try
             {
-                var result = await _DTPProxyPlugin.GetTotalNumberOfPairedHostNameAsync(guid);
+                var result = await _DTPProxyPlugin.GetHeadsetTotalNumberOfPairedHostNameAsync(guid);
                 writelog($"[DeviceManagerPlugin] [Headset] GetTotalNumberOfPairedHostNameAsync succeeded, value is {result.ToString()}");
                 return result;
             }
@@ -3561,11 +3592,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
         }
 
-        public async Task<string> GetSerialNumberAsync(string guid)
+        public async Task<string> GetHeadsetSerialNumberAsync(string guid)
         {
             try
             {
-                var result = await _DTPProxyPlugin.GetSerialNumberAsync(guid);
+                var result = await _DTPProxyPlugin.GetHeadsetSerialNumberAsync(guid);
                 writelog($"[DeviceManagerPlugin] [Headset] GetSerialNumberAsync succeeded, value is {result.ToString()}");
                 return result;
             }
@@ -5059,6 +5090,12 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         #region FW Update implementation
 
+        // add @ 20241202 stephen
+        public void updateFWUpdateInfoPackage(FWUpdateInfoPackage pkg)
+        {
+            _FWUpdatePlugin.setFWUpdateInfoPackage(pkg);
+        }
+
         public Task<FWUpdateInfoPackage> GetFWUpdateInfo(bool isShowNotify = true, bool isForce = false, bool isDefer = false, List<DeviceType> deviceTypeList = null, bool UODMode = false, bool isOnlyDisplay = false, bool reScan = true, bool isUITrigger = false, List<string> giuds = null, List<string> serviceTags = null, List<string> models = null, string minVersion = "")
         {
             writelog("[DeviceMangerPlugin] GetFWUpdateInfo start");
@@ -5249,6 +5286,28 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             writelog($"[DeviceMangerPlugin] SetSkipCA isSkipCA: {_IsSkipCA}");
             writelog("[DeviceMangerPlugin] SetSkipCA done");
             return Task.FromResult(_IsSkipCA);
+        }
+        private Task<bool> SetSkipSHA()
+        {
+            bool ret = false;
+            writelog("[DeviceMangerPlugin] SetSkipSHA start");
+            object o = ReadRegistryData(RegistryHive.LocalMachine, @"SOFTWARE\Dell\DDPM Subagent", "SkipSHA").Result;
+            writelog($"[SetSkipSHA], o={o}.");
+            if (o != null && o is string && !string.IsNullOrEmpty(o.ToString()))
+            {
+                bool _IsSkipSHA = o.ToString().Equals("1") ? true : false;
+                if (_FWUpdatePlugin != null)
+                {
+                    _FWUpdatePlugin.SetSkipSHA(_IsSkipSHA);
+                }
+                if (_SWUpdatePlugin != null)
+                {
+                    _SWUpdatePlugin.SetSkipSHA(_IsSkipSHA);
+                }
+                writelog($"[DeviceMangerPlugin] SetSkipSHA SkipSHA: {_IsSkipSHA}");
+            }
+            writelog("[DeviceMangerPlugin] SetSkipSHA done");
+            return Task.FromResult(ret);
         }
 
         public Task<bool> SetServerURL(string url)
@@ -8410,6 +8469,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             _DTPProxyPlugin.SetMouseAssignKeystrokeAction(Guid, newValue);
             return Task.FromResult(true);
         }
+        public Task<bool> RestoreToDefaultMouse(string Guid, bool isFromCli = true)
+        {
+            writelog("DeviceMangerPlugin received RestoreToDefaultMouse requested ...");
+            return _DTPProxyPlugin.RestoreToDefaultMouse(Guid, isFromCli);
+        }
 
         #endregion
 
@@ -8693,6 +8757,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             writelog("DeviceMangerPlugin received SetKbAssignedAction requested ...");
             _DTPProxyPlugin.SetKbAssignedAction(Guid, newValue);
             return Task.FromResult(true);
+        }
+        public Task<bool> RestoreToDefaultKB(string Guid)
+        {
+            writelog("DeviceMangerPlugin received RestoreToDefaultKB requested ...");
+            return _DTPProxyPlugin.RestoreToDefaultKB(Guid);
         }
 
         #endregion
@@ -9410,6 +9479,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             ToNKVM_initHotKeys();
             DeleteDdpmSwUpdaterFolder();
             GetSkipCA().Wait();
+            SetSkipSHA().Wait();
             SetDelayFWUpdateInfoPackage();
             CheckUODFWUInfoPackage();
             //hook keyboard
@@ -10162,12 +10232,21 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         {
             writelog($"QAMClose Start");
 
-            if (_QAM != null)
+            //writelog($"QAMClose _QAM.Close go");
+            try
             {
-                //writelog($"QAMClose _QAM.Close go");
-                _QAM.Close();
-                //writelog($"QAMClose _QAM.Close done");
+                _QAM?.Dispatcher.Invoke(() =>
+                {
+                    // Access UI elements or objects owned by a different thread
+                    _QAM?.Close();
+                });
+                //_QAM?.Close();
             }
+            catch (Exception e)
+            {
+                writelog($"Catch Exception[{e.Message}] when run QAMClose");
+            }
+            
 
             writelog($"QAMClose done");
         }
@@ -10187,7 +10266,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
                     Thread thread1 = new Thread(() =>
                     {
-                        _QAM = new QAMPage(deviceMangerPlugin);
+                        _QAM = new QAMPage(deviceMangerPlugin, Log);
+                        //_QAM.UpdateUINotify += _QAM_UpdateUINotify;
                         _QAM.Closed += QAMCloseEvent;
 
                         //if (QAM_Position != null && (QAM_Position.X != 0 && QAM_Position.Y != 0))
@@ -10226,6 +10306,48 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 _QAM.Show();
 
             writelog($"CallQAM_UI: done");
+        }
+
+        private void _QAM_UpdateUINotify(object sender, UpdateUINotify e)
+        {
+            OnUIUpdateNotify(e);
+        }
+
+        public Task SetIsDDPMLaunchByQAMAsync(bool newValue)
+        {
+            isDDPMLaunchedByQAM = newValue;
+            writelog($"IsDDPMLaunchByQAM: {newValue}");
+
+            return Task.CompletedTask;
+        }
+
+        public Task<bool> GetIsDDPMLaunchByQAM()
+        {
+            writelog($"return IsDDPMLaunchByQAM: {isDDPMLaunchedByQAM}");
+
+            return Task.FromResult(isDDPMLaunchedByQAM);
+        }
+
+        public Task SetIsDDPMHomepageReadyAsync(bool newValue)
+        {
+            isDDPMHomepageReady = newValue;
+
+            writelog($"UI SetIsDDPMHomepageReadyAsync: {newValue}");
+
+            //info homepage navigate to webcam preview page
+            if (isDDPMLaunchedByQAM && isDDPMHomepageReady)
+            {
+                UpdateUINotify e = new UpdateUINotify();
+                e.UI_Field_Name = "QAMEvent_StartPreview";
+
+                OnUIUpdateNotify(e);
+                isDDPMHomepageReady = false;
+                //isDDPMLaunchedByQAM = false;
+
+                QAMClose();
+            }
+
+            return Task.CompletedTask;
         }
 
         #endregion
@@ -12311,6 +12433,97 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         private bool isReg = false;
 
+        private string _latestBatterylowContent = string.Empty;
+        private OSDType_Device _lastestBatterylowDevice = OSDType_Device.Unknown;
+        private void showBatteryLowCombineOSD(string deviceName, OSDType oSDType, bool state)
+        {
+            //close batterylow osd
+            OSDType_Device getOSDType_Device = getLatestBatterylowOSDAndCloseOthers();
+            try
+            {
+                System.Windows.Forms.Screen sreen = System.Windows.Forms.Screen.AllScreens.FirstOrDefault(x => x.DeviceName == Screen.PrimaryScreen.DeviceName);
+                var dpiXProperty = typeof(SystemParameters).GetProperty("DpiX", BindingFlags.NonPublic | BindingFlags.Static);
+                var varX = (int)dpiXProperty.GetValue(null, null);
+                double dpiX = (double)varX / (double)96;
+
+                switch (getOSDType_Device)
+                {
+                    case OSDType_Device.Unknown:
+                        //single osd
+                        switch (oSDType)
+                        {
+                            case OSDType.CapsLock:
+                                ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.CapsLock, state);
+                                break;
+                            case OSDType.ScrollLock:
+                                ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.ScrollLock, state);
+                                break;
+                            case OSDType.NumLock:
+                                ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.NumLock, state);
+                                break;
+                        }
+                        break;
+                    case OSDType_Device.Keyboard:
+                        _OSD_Controler.KeyAndKeybordBatteryLowWin_ShowWindow(_latestBatterylowContent, (sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX), oSDType, OSDType_Device.Keyboard, state);
+                        break;
+                    case OSDType_Device.Mouse:
+                        _OSD_Controler.KeyAndKeybordBatteryLowWin_ShowWindow(_latestBatterylowContent, (sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX), oSDType, OSDType_Device.Mouse, state);
+                        break;
+                    case OSDType_Device.Headset:
+                        _OSD_Controler.KeyAndKeybordBatteryLowWin_ShowWindow(_latestBatterylowContent, (sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX), oSDType, OSDType_Device.Headset, state);
+                        break;
+                }
+                _latestBatterylowContent = string.Empty;
+                _lastestBatterylowDevice = OSDType_Device.Unknown;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[showBatteryLowCombineOSD] ERROR - deviceName:{deviceName},OSDType:{oSDType},state:{state};Exception Message: {ex.Message}");
+            }
+        }
+
+        private OSDType_Device getLatestBatterylowOSDAndCloseOthers()
+        {
+            OSDType_Device ret = OSDType_Device.Unknown;
+            try
+            {
+                IntPtr hwnd_KeybordBatteryLow = CallUser32dll._FindWindow(null, "68C62D1D-CDA5-4EC6-AFB2-6DA8331D7DDE-KeybordBatteryLowIWin");
+                if (hwnd_KeybordBatteryLow != IntPtr.Zero)
+                {
+                    if (_lastestBatterylowDevice == OSDType_Device.Keyboard)
+                    {
+                        ret = OSDType_Device.Keyboard;
+                    }
+                    _OSD_Controler.KeybordBatteryLow_CloseWindow();
+                }
+                IntPtr hwnd_MouseBatteryLow = CallUser32dll._FindWindow(null, "AFF4035F-B0CA-4B8C-991F-AAEBEB625EEF-MouseBatteryLowIWin");
+                if (hwnd_MouseBatteryLow != IntPtr.Zero)
+                {
+                    if (_lastestBatterylowDevice == OSDType_Device.Mouse)
+                    {
+                        ret = OSDType_Device.Mouse;
+                    }
+                    _OSD_Controler.MouseBatteryLow_CloseWindow();
+                }
+                IntPtr hwnd_HeadsetBatteryLow = CallUser32dll._FindWindow(null, "5A9DDC40-D1A7-4DC4-9F59-CB95DCD13945-HeadsetBatteryLowIWin");
+                if (hwnd_HeadsetBatteryLow != IntPtr.Zero)
+                {
+                    if (_lastestBatterylowDevice == OSDType_Device.Headset)
+                    {
+                        ret = OSDType_Device.Headset;
+                    }
+                    _OSD_Controler.HeadsetBatteryLow_CloseWindow();
+                }
+
+            }
+            catch (Exception ex)
+            {
+                writelog($"[getLatestBatterylowOSDAndCloseOthers] ERROR - {ex.Message}");
+
+            }
+            return ret;
+        }
+
         private void Keyboard_KeyUpProc(object sender, KeyEventArgs e)
         {
             string strKey = e.KeyCode.ToString().ToUpper();
@@ -12332,19 +12545,28 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 Debug.WriteLine($"GlobalSettingParam.GlobalSetting_General.Keyboard_Lock_Key={result.GlobalSetting_General.Keyboard_Lock_Key}");
                 if (result.GlobalSetting_General.Keyboard_Lock_Key)
                 {
+                    //test
+                    /* if (!isReg)
+                     {
+                         ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.BatteryLow, OSDType_Device.Keyboard, "Dell Multi-Device Mouse - MS5320W");
+                         isReg = true;
+                     }*/
+                    //showBatteryLowCombineOSD(_latestBatterylowContent);
+                    //test end
+
                     if (e.KeyCode == Keys.CapsLock)
                     {
                         bool isCapsLockOn = (System.Windows.Input.Keyboard.GetKeyStates(System.Windows.Input.Key.CapsLock) & System.Windows.Input.KeyStates.Toggled) == System.Windows.Input.KeyStates.Toggled;
                         Debug.WriteLine($"Key.CapsLock={isCapsLockOn}");
                         if (isCapsLockOn)
                         {
-                            ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.CapsLock, true);
-                            //ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.BatteryLow, OSDType_Device.Headset, "Content");
-                            //ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.CollaborationNotAvailable, OSDType_Device.Keyboard, "Collaboration controls are not available during multiple conference calls");
+                            showBatteryLowCombineOSD(Screen.PrimaryScreen.DeviceName, OSDType.CapsLock, true);
+                            // ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.CapsLock, true);
                         }
                         else
                         {
-                            ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.CapsLock, false);
+                            showBatteryLowCombineOSD(Screen.PrimaryScreen.DeviceName, OSDType.CapsLock, false);
+                            //ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.CapsLock, false);
                         }
                         //_OSDKeyLock = true;
                         //e.Handled = true;
@@ -12355,11 +12577,13 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         Debug.WriteLine($"Key.Scroll={isScrollLockOn}");
                         if (isScrollLockOn)
                         {
-                            ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.ScrollLock, true);
+                            showBatteryLowCombineOSD(Screen.PrimaryScreen.DeviceName, OSDType.ScrollLock, true);
+                            //ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.ScrollLock, true);
                         }
                         else
                         {
-                            ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.ScrollLock, false);
+                            showBatteryLowCombineOSD(Screen.PrimaryScreen.DeviceName, OSDType.ScrollLock, false);
+                            //ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.ScrollLock, false);
                         }
                         //_OSDKeyLock = true;
                         //e.Handled = true;
@@ -12370,11 +12594,13 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         Debug.WriteLine($"Key.NumLock={isNumLockLockOn}");
                         if (isNumLockLockOn)
                         {
-                            ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.NumLock, true);
+                            showBatteryLowCombineOSD(Screen.PrimaryScreen.DeviceName, OSDType.NumLock, true);
+                            //ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.NumLock, true);
                         }
                         else
                         {
-                            ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.NumLock, false);
+                            showBatteryLowCombineOSD(Screen.PrimaryScreen.DeviceName, OSDType.NumLock, false);
+                            //ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.NumLock, false);
                         }
                         //ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.NumLock, true);
                         //_OSDKeyLock = true;
@@ -12947,20 +13173,36 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 writelog($"Kvm_SwitchInputSource:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] USB KVM is off, do nothing");
                 return;
             }
-            HotkeyInfo hotkey = (HotkeyInfo)param[0];
-            //mock data
-            /* Dictionary<string, InputInfo> inputList = GetInputSourcelist(monitorInfo).Result;
-             foreach (var inputInfo in inputList)
-             {
-                 hotkey.InputSource.Add(new InputSourceObj(inputInfo.Value.InputName));
-             }*/
-            List<InputSourceObj> list = (List<InputSourceObj>)param[1];// GetInputSourceHotKeyData(monitorInfo);
+            Debug.WriteLine($"Kvm_SwitchInputSource:current inputsource= {monitorInfo.inputSource}");
+            writelog($"Kvm_SwitchInputSource:current inputsource= {monitorInfo.inputSource}");
+            HotkeyInfo hotkey = (HotkeyInfo)param.ElementAtOrDefault(0);
+            List<InputSourceObj> list = (List<InputSourceObj>)param.ElementAtOrDefault(1);// GetInputSourceHotKeyData(monitorInfo);
+            string crtInput = monitorInfo.inputSource;
             if (list == null | list.Count == 0)//hotkey.InputSource.Count == 0)
             {
                 //hotkey.InputSource Count must not 0
-                return;
+                //update inputsources to current inputsoure and subinput
+                List<InputSourceObj> subInputs = GetSubInputs(monitorInfo).Result;
+                foreach (var item in subInputs)
+                {
+                    Debug.WriteLine($"Kvm_SwitchInputSource >subInputs: {item.Name}+{item.Code}");
+                }
+                List<InputSourceObj> defaultList = new List<InputSourceObj>();
+                defaultList.Add(new InputSourceObj(crtInput));
+                defaultList.AddRange(subInputs);
+                if (subInputs == null || subInputs.Count == 0)
+                {
+                    writelog($"Kvm_SwitchInputSource:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}], USBKVM_switch_PCs inputsource is null and subInputs is empty, do nothing");
+                    return;
+                }
+                else
+                {
+                    list.AddRange(defaultList);
+                    writelog($"Kvm_SwitchInputSource:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}], USBKVM_switch_PCs inputsource is null, use [default] current inputsoure and subinputs");
+                }
+                if (hotkey != null)
+                    GetInputSourceHotKeyDataAndSaveNewBack(monitorInfo, hotkey.Job, defaultList);
             }
-            string crtInput = monitorInfo.inputSource;
             // InputSourceObj switchTo = hotkey.InputSource.FirstOrDefault(x => !x.Name.Equals(crtInput));
             string nextInput = string.Empty;
             //List<string> inputsList = hotkey.InputSource.OrderBy(x => x.Name).Select(input => input.Name).ToList();
@@ -12983,6 +13225,10 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             {
                 bool setNextInput = SetVCPCapability(monitorInfo, "Input Select", nextInput).Result;
                 writelog($"Kvm_SwitchInputSource:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] from [{crtInput}] to [{nextInput}]" + (setNextInput ? "success" : "fail"));
+            }
+            else
+            {
+                writelog($"Kvm_SwitchInputSource:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}], USBKVM_switch_PCs fail,cause [nextInput] is IsNullOrEmpty [do nothing]");
             }
         }
 
@@ -13028,7 +13274,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         private bool IsPIPMode(MonitorInfo mo)
         {
-            if (!mo.CapabilityDic.ContainsKey("E9")) return false;
+            if (!mo.CapabilityDic.ContainsKey("E9"))
+                return false;
             ObjGetVCP pxpMode = GetPxpMode(mo).Result;
             Debug.WriteLine($"GetPxpMode result={pxpMode?.result}, value={(UInt32)pxpMode.value}");
             if (pxpMode != null && pxpMode.result == true)
@@ -15134,7 +15381,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                 var dpiXProperty = typeof(SystemParameters).GetProperty("DpiX", BindingFlags.NonPublic | BindingFlags.Static);
                                 var varX = (int)dpiXProperty.GetValue(null, null);
                                 double dpiX = (double)varX / (double)96;
-
                                 switch (_types)
                                 {
                                     case OSDType.Mute:
@@ -15172,6 +15418,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                             {
                                                 try
                                                 {
+                                                    _latestBatterylowContent = Content;
+                                                    _lastestBatterylowDevice = OSDType_Device.Headset;
                                                     _OSD_Controler.HeadsetBatteryLow_CloseWindow();
                                                     _OSD_Controler.HeadsetBatteryLow_ShowWindow(Content, (sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX));
                                                 }
@@ -15184,6 +15432,9 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                             {
                                                 try
                                                 {
+                                                    //when keyboard battery low, press CapsLock/ScrollLock/NumLockLock combine with 
+                                                    _latestBatterylowContent = Content;
+                                                    _lastestBatterylowDevice = OSDType_Device.Keyboard;
                                                     _OSD_Controler.KeybordBatteryLow_CloseWindow();
                                                     _OSD_Controler.KeybordBatteryLow_ShowWindow(Content, (sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX));
                                                 }
@@ -15196,6 +15447,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                             {
                                                 try
                                                 {
+                                                    _latestBatterylowContent = Content;
+                                                    _lastestBatterylowDevice = OSDType_Device.Mouse;
                                                     _OSD_Controler.MouseBatteryLow_CloseWindow();
                                                     _OSD_Controler.MouseBatteryLow_ShowWindow(Content, (sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX));
                                                 }

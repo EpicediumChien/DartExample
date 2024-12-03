@@ -3355,7 +3355,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Sensitivity.
+        ///   查詢類似 Sensitivity 的當地語系化字串。
         /// </summary>
         internal static string HeadsetAutomatedActions_14 {
             get {
@@ -3364,7 +3364,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Low.
+        ///   查詢類似 Low 的當地語系化字串。
         /// </summary>
         internal static string HeadsetAutomatedActions_2 {
             get {

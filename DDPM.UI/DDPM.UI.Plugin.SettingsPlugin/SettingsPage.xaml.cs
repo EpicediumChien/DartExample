@@ -37,6 +37,7 @@ namespace DDPM.UI.Plugin.SettingsPlugin
                 if (DdpmCommonHelper.DeviceManagerSA != null)
                 {
                     vm.Invoke_RefreshData();
+                    vm.Invoke_RefreshData_1();
                     DdpmCommonHelper.DeviceManagerSA.ITSettingsActionEvent += DeviceManagerSA_ITSettingsActionEvent;
                     DdpmCommonHelper.DeviceManagerSA.GlobalSettingChangeEvent += GlobalSettingChangeEvent;
                     DdpmCommonHelper.DeviceManagerSA.Peripherals_UpdateNotify += Peripherals_UpdateEvent;

@@ -3,9 +3,11 @@ using NGA.UnitTest.PrivateObject;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Controls;
 
 namespace DDPM.Easy.Common.Tests
@@ -20,9 +22,11 @@ namespace DDPM.Easy.Common.Tests
         [SetUp]
         public void Setup()
         {
-            vm = new SplitCtrlVM();
+            var settings = new ObservableCollection<GridLength>() { new GridLength(), new GridLength(), new GridLength(), new GridLength(), new GridLength(), new GridLength(), new GridLength(), new GridLength() };
+            vm = new SplitCtrlVM() { Settings = settings };
             splitCtrl0B = new SplitCtrl0B();
-            privateObject = new PrivateObject(splitCtrl0B);
+            privateObject = new PrivateObject(splitCtrl0B);         
+            privateObject.SetFieldOrProperty("vm", vm);
         }
 
         [Test]
@@ -30,7 +34,6 @@ namespace DDPM.Easy.Common.Tests
         {
             // Assert
             Assert.That(splitCtrl0B, Is.Not.Null);
-            Assert.That(splitCtrl0B.DataContext, Is.EqualTo(privateObject.GetFieldOrProperty("vm")));
         }
 
         [Test]
@@ -49,6 +52,13 @@ namespace DDPM.Easy.Common.Tests
             // Act
             var CellList = new List<CellObj>();
             splitCtrl0B.CellList=CellList;
+            // Assert
+            Assert.That(splitCtrl0B.CellList, Is.Not.Null);
+
+            // Act
+            vm.IsVertical = true;
+            CellList = new List<CellObj>();
+            splitCtrl0B.CellList = CellList;
             // Assert
             Assert.That(splitCtrl0B.CellList, Is.Not.Null);
         }
@@ -81,6 +91,111 @@ namespace DDPM.Easy.Common.Tests
             }
         }
 
+        [Test]
+        public void TestApplySettingsToCellList()
+        {
+            var rcView=new Rect(1,1,2,2);
+            var reuslt=splitCtrl0B.ApplySettingsToCellList(rcView);
+            Assert.True(reuslt);
+
+            var settings = new ObservableCollection<GridLength>() { };
+            vm = new SplitCtrlVM() { Settings = settings };
+            privateObject.SetFieldOrProperty("vm", vm);
+            reuslt = splitCtrl0B.ApplySettingsToCellList(rcView);
+            Assert.False(reuslt);
+        }
+
+        [Test]
+        public void TestConvertSettingsToRatioRects()
+        {
+            var rcView = new Rect(1, 1, 2, 2);
+            var reuslt = splitCtrl0B.ConvertSettingsToRatioRects(rcView);
+            Assert.NotNull(reuslt);
+
+            var settings = new ObservableCollection<GridLength>() { };
+            vm = new SplitCtrlVM() { Settings = settings };
+            privateObject.SetFieldOrProperty("vm", vm);
+            reuslt = splitCtrl0B.ConvertSettingsToRatioRects(rcView);
+            Assert.Null(reuslt);
+        }
+
+        [Test]
+        public void TestUpdateToCellListFromSettings()
+        {
+            try
+            {
+                splitCtrl0B.UpdateToCellListFromSettings();
+                Assert.True(true);
+            }
+            catch (Exception ex)
+            {
+                Assert.Fail("not invoked");
+            }
+        }
+
+        [Test]
+        public void TestCellBorders()
+        {
+            var cellBorders = new List<CellBorder>();
+            splitCtrl0B.CellBorders = cellBorders;
+            Assert.That(splitCtrl0B.CellBorders,Is.Not.Null);
+
+            vm.IsVertical = true;
+            splitCtrl0B.CellBorders = cellBorders;
+            Assert.That(splitCtrl0B.CellBorders, Is.Not.Null);
+        }
+
+        [Test]
+        public void TestVSplitterList()
+        {
+            var vSplitterList = new List<GridSplitter>();
+            splitCtrl0B.VSplitterList = vSplitterList;
+            Assert.That(splitCtrl0B.VSplitterList, Is.EqualTo(vSplitterList));
+        }
+
+        [Test]
+        public void TestHSplitterList()
+        {
+            var hSplitterList = new List<GridSplitter>();
+            splitCtrl0B.HSplitterList = hSplitterList;
+            Assert.That(splitCtrl0B.HSplitterList, Is.EqualTo(hSplitterList));
+        }
+
+        [Test]
+        public void TestInitSplitterList()
+        {
+            try
+            {
+                splitCtrl0B.InitSplitterList();
+                Assert.True(true);
+                Assert.That(splitCtrl0B.VSplitterList.Count, Is.EqualTo(0));
+                Assert.That(splitCtrl0B.HSplitterList.Count, Is.EqualTo(0));
+            }
+            catch (Exception ex)
+            {
+                Assert.Fail("not invoked");
+            }
+        }
+
+        [Test]
+        public void TestDefaultSettings()
+        {
+            Assert.That(splitCtrl0B.DefaultSettings.Count, Is.EqualTo(2));
+        }
+
+        [Test]
+        public void TestFriendlyName()
+        {
+            splitCtrl0B.FriendlyName = "FriendlyName";
+            Assert.That(splitCtrl0B.FriendlyName, Is.EqualTo("FriendlyName"));
+        }
+
+        [Test]
+        public void TestHoveringCell()
+        {
+            splitCtrl0B.HoveringCell = "HoveringCell";
+            Assert.That(splitCtrl0B.HoveringCell, Is.EqualTo("HoveringCell"));
+        }
 
 
     }

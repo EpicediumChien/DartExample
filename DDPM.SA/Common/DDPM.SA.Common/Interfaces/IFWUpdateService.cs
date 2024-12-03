@@ -50,5 +50,9 @@ namespace DDPM.SA.Common
 
         Task<List<FWUpdateInfo>> UpdateEvent();
         void SetSkipCA(bool isSkipCA);
+        void SetSkipSHA(bool isSkipSHA);
+
+        // add @ 20241202 stephen
+        void setFWUpdateInfoPackage(FWUpdateInfoPackage pkg);
     }
 }

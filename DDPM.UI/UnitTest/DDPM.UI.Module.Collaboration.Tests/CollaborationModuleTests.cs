@@ -1,4 +1,5 @@
 ﻿using DDPM.SA.Common;
+using DDPM.UI.Common;
 using DDPM.UI.Common.Interfaces;
 using DDPM.UI.Common.Models;
 using DDPM.UI.Plugin.ViewModels;
@@ -27,9 +28,8 @@ namespace DDPM.UI.Module.Collaboration.Test
             consoleMock = new Mock<IConsole>();
             logMock = new Mock<ILog>();
             deviceManagerMock = new Mock<IDeviceManagerSA>();
-
+            DdpmCommonHelper.DeviceManagerSA = deviceManagerMock.Object;
             keyboardViewModel = new KeyboardViewModel(consoleMock.Object, logMock.Object);
-
             collaborationModule = new CollaborationModule(keyboardViewModel);
             privateObject = new PrivateObject(collaborationModule);
         }
