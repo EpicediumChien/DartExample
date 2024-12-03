@@ -1,9 +1,12 @@
-﻿using NGA.UnitTest.PrivateObject;
+﻿using DDPM.UI.Common.EAEM;
+using NGA.UnitTest.PrivateObject;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Controls;
 
 namespace DDPM.Easy.Common.Tests
@@ -18,6 +21,8 @@ namespace DDPM.Easy.Common.Tests
         [SetUp]
         public void Setup()
         {
+            var settings = new ObservableCollection<GridLength>() { new GridLength(), new GridLength(), new GridLength(), new GridLength(), new GridLength(), new GridLength(), new GridLength(), new GridLength() };
+            vm = new SplitCtrlVM() { Settings = settings };
             splitCtrl2A = new SplitCtrl2A();
             privateObject = new PrivateObject(splitCtrl2A);
         }
@@ -47,6 +52,11 @@ namespace DDPM.Easy.Common.Tests
             splitCtrl2A.CellList = CellList;
             // Assert
             Assert.That(splitCtrl2A.CellList, Is.Not.Null);
+
+            vm.IsVertical = true;
+            splitCtrl2A.CellList = CellList;
+            // Assert
+            Assert.That(splitCtrl2A.CellList, Is.Not.Null);
         }
 
         [Test]
@@ -61,6 +71,90 @@ namespace DDPM.Easy.Common.Tests
             {
                 Assert.Fail("not invoked");
             }
+        }
+
+        [Test]
+        public void TestUpdateRatioRectsFromSettings()
+        {
+            var settings = new ObservableCollection<GridLength>() {};
+            vm = new SplitCtrlVM() { Settings = settings };
+            privateObject = new PrivateObject(splitCtrl2A);
+            privateObject.SetFieldOrProperty("vm", vm);
+            try
+            {
+                splitCtrl2A.UpdateRatioRectsFromSettings();
+                Assert.True(true);
+            }
+            catch (Exception ex)
+            {
+                Assert.Fail("not invoked");
+            }
+
+            settings = new ObservableCollection<GridLength>() { new GridLength(), new GridLength(), new GridLength() };
+            vm = new SplitCtrlVM() { Settings = settings };
+            vm.IsVertical = true;
+            privateObject.SetFieldOrProperty("vm", vm);
+            try
+            {
+                splitCtrl2A.UpdateRatioRectsFromSettings();
+                Assert.True(true);
+            }
+            catch (Exception ex)
+            {
+                Assert.Fail("not invoked");
+            }
+
+            vm.IsVertical = false;
+            privateObject.SetFieldOrProperty("vm", vm);
+            try
+            {
+                splitCtrl2A.UpdateRatioRectsFromSettings();
+                Assert.True(true);
+            }
+            catch (Exception ex)
+            {
+                Assert.Fail("not invoked");
+            }
+        }
+
+        [Test]
+        public void TestUpdateSettingsToCells()
+        {
+            try
+            {
+                splitCtrl2A.UpdateSettingsToCells();
+                Assert.True(true);
+            }
+            catch (Exception ex)
+            {
+                Assert.Fail("not invoked");
+            }
+
+            var settings = new ObservableCollection<GridLength>() {};
+            vm = new SplitCtrlVM() { Settings = settings };
+            privateObject = new PrivateObject(splitCtrl2A);
+            privateObject.SetFieldOrProperty("vm", vm);
+            try
+            {
+                splitCtrl2A.UpdateSettingsToCells();
+                Assert.True(true);
+            }
+            catch (Exception ex)
+            {
+                Assert.Fail("not invoked");
+            }
+        }
+
+        [Test]
+        public void TestCellBorders()
+        {
+            var cellBorders = new List<CellBorder>();
+            splitCtrl2A.CellBorders = cellBorders;
+            Assert.That(splitCtrl2A.CellBorders, Is.Not.Null);
+
+            vm.IsVertical = true;
+            splitCtrl2A.CellBorders = cellBorders;
+            Assert.That(splitCtrl2A.CellBorders, Is.Not.Null);
         }
 
         [Test]

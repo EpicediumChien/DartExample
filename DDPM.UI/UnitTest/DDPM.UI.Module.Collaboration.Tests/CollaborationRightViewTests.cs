@@ -27,7 +27,7 @@ namespace DDPM.UI.Module.Collaboration.Test
             consoleMock = new Mock<IConsole>();
             logMock = new Mock<ILog>();
             deviceManagerMock = new Mock<IDeviceManagerSA>();
-
+            DdpmCommonHelper.DeviceManagerSA = deviceManagerMock.Object;
             vm = new KeyboardViewModel(consoleMock.Object, logMock.Object);
 
             collaborationRightView = new CollaborationRightView(vm);
