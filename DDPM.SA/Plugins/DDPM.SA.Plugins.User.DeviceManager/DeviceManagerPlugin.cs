@@ -12885,6 +12885,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             idxRecent = eaSettings.RecentList.Length - 1;
 
             //Force await to avoid reenter this method (it will update to MonitorSettings file)
+            Dispatcher.CurrentDispatcher.Invoke(() =>
+            {
             bool isOKSetSelected = SetEASelectedLayout(monitorInfo, eaSettings.RecentList[idxRecent]).Result;
 
             //TO DO: invoke an event to UI to reload settings
