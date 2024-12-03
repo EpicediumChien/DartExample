@@ -12699,6 +12699,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 case HotkeyType.BrightnessReduce:
                     if (IsALSautobrightness(monitorInfo))
                     {
+                        writelog($"ExecHotkeyJob[{job}:{hotkeyStr} ,IsALSautobrightness=true,will Popup msg] => getTargetMonitor: {getTargetMo}, Monitor [ModelName={monitorInfo.edid.ModelName},ServiceTag={monitorInfo.edid.ServiceTag}, SerialNumber={monitorInfo.edid.SerialNumber}]");
                         HotkeyPopWrap hotkeyPopWrap = new HotkeyPopWrap() { monitorInfo = monitorInfo, hotkeyType = job };
                         HotkeyPopup(hotkeyPopWrap);
                     }
@@ -13439,7 +13440,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         private bool IsALSautobrightness(MonitorInfo monitorInfo)
         {
             List<ALSConfig> aLSConfigs = GetAllExistAlsConfig().Result;
-            ALSConfig find = aLSConfigs.Find(x => x.serialNumber.Equals(monitorInfo.edid.SerialNumber) && x.isAutoBrightness);
+            ALSConfig find = aLSConfigs.Find(x => x.Edid.ServiceTag.Equals(monitorInfo.edid.ServiceTag) && x.isAutoBrightness);
             return find != null;
         }
 
