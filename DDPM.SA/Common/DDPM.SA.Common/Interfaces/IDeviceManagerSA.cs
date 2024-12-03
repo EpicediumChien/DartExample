@@ -1191,6 +1191,11 @@ namespace DDPM.SA.Common
 
         #endregion GlobalSetting
 
+        #region QAM
+        Task SetIsDDPMLaunchByQAMAsync(bool newValue);
+        Task SetIsDDPMHomepageReadyAsync(bool newValue);
+        #endregion
+
         #region System Suspend & Resume
         event EventHandler SystemSuspend;
         event EventHandler SystemResume;
