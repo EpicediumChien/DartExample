@@ -232,7 +232,6 @@ namespace DDPM.UI.Module.ButtonSettings
             {
                 _vm!.RestoreToDefault();
             }
-            _vm!.RestoreToDefault();
         }
 
         private void UnfocusSearchBox(object sender, System.Windows.Input.MouseButtonEventArgs e)

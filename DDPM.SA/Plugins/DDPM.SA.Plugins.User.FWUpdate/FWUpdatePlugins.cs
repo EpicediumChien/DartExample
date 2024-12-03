@@ -2432,5 +2432,11 @@ namespace DDPM.SA.Plugins.User.FWUpdate
             _logs.DebugMsg_1($"GetConnected done");
             return ConnectionType;
         }
+
+        // add @ 20241202 stephen
+        public void setFWUpdateInfoPackage(FWUpdateInfoPackage pkg)
+        {
+            _fWUpdateInfoPackage = pkg;
+        }
     }
 }

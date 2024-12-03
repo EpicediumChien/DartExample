@@ -476,6 +476,7 @@ namespace VcpCore.Common
             {"xvMode", 8},
             {"DICOM", 9},
             {"CAL1", 10},
+            {"sRGB D65 sRGB L120", 11}, // PIMS-327394
             {"sRGB", 11},
             {"5000K", 12},
             {"5700K", 13},
@@ -498,6 +499,7 @@ namespace VcpCore.Common
             {"CAL2", 21},
             {"Metro", 24},
             {"Paper", 25},
+            {"BT.709 D65 BT1886 L100", 26}, // PIMS-327394
             {"Rec.709 / BT.709", 26}, // 20241004 jim add
             {"Rec. 709 / BT.709", 26}, // 20240731 jim add
             {"Rec. 709/BT.709", 26}, // 20240731 jim add
@@ -507,7 +509,9 @@ namespace VcpCore.Common
             {"Rec. 709", 26},
             {"BT.709", 26},
             {"DCI-P3", 27},
+            {"DCI P3 D65 G2.4 L100", 27}, // PIMS-327394
             {"Display P3", 61},
+            {"BT.2020 D65 BT1886 L100", 28}, // PIMS-327394
             {"Rec.2020 / BT.2020", 28}, // add 10/14
             {"Rec2020", 28},
             {"BT.2020", 28},
