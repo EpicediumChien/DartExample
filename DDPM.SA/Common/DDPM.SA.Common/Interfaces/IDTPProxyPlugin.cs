@@ -40,7 +40,7 @@ namespace DDPM.SA.Common
         Task DeleteMouseAssignedAction(string Guid, int newValue);
         Task SetMouseAssignDialogAction(string Guid, byte[] newValue);
         Task SetMouseAssignKeystrokeAction(string Guid, byte[] newValue);
-
+        Task<bool> RestoreToDefaultMouse(string Guid, bool isFromCli = true);
 
         #endregion
 

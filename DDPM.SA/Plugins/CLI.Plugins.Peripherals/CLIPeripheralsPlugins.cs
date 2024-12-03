@@ -788,7 +788,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                     x.Value = "";
                     if (x.Result == "")
                     {
-                        var result = "0"; //RunAsyncTimeout(_devMgr.(x.Guid, true)).Result;
+                        var result = RunAsyncTimeout(_devMgr.RestoreToDefaultPen()).Result;
                         if (result == "0")
                         {
                             x.Result = "PASS";
@@ -4696,6 +4696,16 @@ namespace DDPM.CLI.Plugins.Peripherals
                         cli_FWU_RESPONSE.Result = "PASS";
                         return ((int)CLI_ExitCode.NoUpdate, JsonConvert.SerializeObject(cli_FWU_RESPONSE, Formatting.Indented));
                     }
+
+                    // add start @ 20241202 stephen
+                    foreach (FWUpdateInfo info in fwUpdateInfoPackage.FWUpdateInfo)
+                    {
+                        info.Guid = commandLineInput.remote_mgr_guid;
+                    }
+
+                    _devMgr.updateFWUpdateInfoPackage(fwUpdateInfoPackage);
+                    // add end @ 20241202
+
                     if (deviceType != DeviceType.Unknown)
                     {
                         cli_FWU_RESPONSE.Model = string.Join(",", fwUpdateInfoPackage.FWUpdateInfo.Select(_ => _.Model));

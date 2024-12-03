@@ -67,6 +67,9 @@ namespace DDPM.SA.Common
     /// </summary>
     public class FWUpdateInfo
     {
+        // add @ 20241201 stephen: for CMA feedback
+        public string Guid { get; set; } = string.Empty;
+
         /// <summary>
         /// 韌體更新的錯誤碼，安裝時使用
         /// </summary>
@@ -124,7 +127,7 @@ namespace DDPM.SA.Common
             }
             else
             {
-                return fwUpdateInfo.DevicePath == DevicePath;
+                return fwUpdateInfo.DevicePath == DevicePath && fwUpdateInfo.Model == Model;
             }
         }
     }
