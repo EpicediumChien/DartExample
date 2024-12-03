@@ -89,6 +89,13 @@ namespace DDPM.SA.Common.UI
 
             #endregion
 
+            #region DDPM.SA.Common.Popup.PopupBase Robert_Lin, 2024-12-2
+            UpdateFreezable("popupBase_Window_BkColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#F20D121A"));
+            UpdateFreezable("popupBase_Window_BdColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#293B4D"));
+            UpdateFreezable("popupBase_CloseX_FgColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#CCCCCC"));
+            UpdateFreezable("popupBase_Header_TextColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#FFFFFF"));
+            UpdateFreezable("popupBase_Body_TextColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#F5F6F7"));
+            #endregion DDPM.SA.Common.Popup.PopupBase
         }
     }
 }
