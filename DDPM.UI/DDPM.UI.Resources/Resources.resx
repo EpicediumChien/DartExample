@@ -2817,4 +2817,7 @@
   <data name="HeadsetAutomatedActions.14" xml:space="preserve">
     <value>Sensitivity</value>
   </data>
+  <data name="Color.10" xml:space="preserve">
+    <value>Auto Color Temperature is currently enabled. Do you wish to disable it to continue?</value>
+  </data>
 </root>
