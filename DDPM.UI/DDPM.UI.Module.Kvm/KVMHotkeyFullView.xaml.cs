@@ -282,6 +282,7 @@ namespace DDPM.UI.Module.Kvm
             //todo
             if (DdpmCommonHelper.ModuleOwner != null)
             {
+                DdpmCommonHelper.ModuleOwner.CloseFullView();
                 DdpmCommonHelper.ModuleOwner.ShowSpecificModule(Constants.GroupName_InputSource, Constants.ModuleName_DisplayHotkeys);
             }
         }

@@ -17,6 +17,8 @@ using Newtonsoft.Json;
 using System.IO;
 using System.Windows.Shapes;
 using System.Collections.ObjectModel;
+using DDPM.SA.Resources.Helper;
+using System.Windows.Input;
 
 namespace DDPM.QAM
 {
@@ -139,7 +141,9 @@ namespace DDPM.QAM
                     {
                         UI_ProfileList.Add(new UI_Profile
                         {
-                            Profile_Name = profile.Key
+                            //Profile_Name = profile.Key,
+                            Profile_Name = LangHelper.Instance[profile.Key],
+                            Profile_Name_Key = profile.Key,
                         });
                     }
                 }
@@ -152,9 +156,9 @@ namespace DDPM.QAM
 
         public void SetProfile(UI_Profile CurrentProfileName)
         {
-            if (Profiles.ContainsKey(CurrentProfileName.Profile_Name))
+            if (Profiles.ContainsKey(CurrentProfileName.Profile_Name_Key))
             {
-                CurrentProfile = Profiles[CurrentProfileName.Profile_Name];
+                CurrentProfile = Profiles[CurrentProfileName.Profile_Name_Key];
                 if (CurrentDeviceInfo!.IsPropertyAutoFramingSensitivitySupported || CurrentDeviceInfo.IsPropertyAutoFramingSizeSupported || CurrentDeviceInfo.IsPropertyAutoFramingTransitionSupported)
                 {
                     DdpmCommonHelper.DeviceManagerSA!.SetIsAutoFramingOn(CurrentDeviceInfo!.ID.ToString(), CurrentProfile.IsAutoFramingOn);
@@ -315,5 +319,6 @@ namespace DDPM.QAM
     {
         public string Profile_Name { get; set; }
         public bool IsSelected { get; set; }
+        public string Profile_Name_Key { get; set; } //Derek added for QAM PIMS-325190
     }
 }

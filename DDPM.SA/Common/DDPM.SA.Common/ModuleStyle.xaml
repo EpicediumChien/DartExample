@@ -310,5 +310,13 @@
     </Style>
     <!-- #endregion SecondaryButon Style -->
     <!-- #endregion SecondaryButton -->
-    
+
+    <!-- #region DDPM.SA.Common.Popup.PopupBase Robert_Lin 2024-12-2 -->
+    <SolidColorBrush x:Key="popupBase_Window_BkColor" Color="#F20D121A"/>
+    <SolidColorBrush x:Key="popupBase_Window_BdColor" Color="#293B4D"/>
+    <SolidColorBrush x:Key="popupBase_CloseX_FgColor" Color="#CCCCCC"/>
+    <SolidColorBrush x:Key="popupBase_Header_TextColor" Color="#FFFFFF"/>
+    <SolidColorBrush x:Key="popupBase_Body_TextColor" Color="#F5F6F7"/>
+    <!-- #endregion DDPM.SA.Common.Popup.PopupBase-->
+
 </ResourceDictionary>
