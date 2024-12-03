@@ -4,6 +4,8 @@ using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Input;
+using System.Windows.Forms;
+using System.Windows.Media.Imaging;
 
 namespace DDPM.QAM
 {
@@ -186,7 +188,7 @@ namespace DDPM.QAM
             }
             else
             {
-                CameraSetting = new CameraSetting();
+                CameraSetting = new CameraSetting(this);
 
                 CameraSetting.Left = this.Left + this.Width;
                 CameraSetting.Top = this.Top;
