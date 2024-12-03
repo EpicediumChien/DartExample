@@ -5,6 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:UXControls="clr-namespace:Dell.Client.Framework.UX.WPF.Controls;assembly=DCF.UX.WPF"
              xmlns:local="clr-namespace:DDPM.UI.Plugin.SettingsPlugin"
+             xmlns:lang="clr-namespace:DDPM.UI.Resources.Helper;assembly=DDPM.UI.Resources"
              mc:Ignorable="d"
              Margin="5,4,60,29"
              d:DesignHeight="450"
@@ -25,7 +26,7 @@
                     CornerRadius="13">
                 <StackPanel>
                     <Grid Margin="20,20,8,8">
-                        <UXControls:UXTextBlock Text="Widget Settings"
+                        <UXControls:UXTextBlock Text="{Binding [Widget_Settings], Source={x:Static lang:LangHelper.Instance}}"
                                                 FontSize="20"
                                                 TextBlockType="Header1"
                                                 TextWrapping="WrapWithOverflow"
@@ -43,7 +44,7 @@
                                     </Grid.ColumnDefinitions>
                                     
                                     <UXControls:UXTextBlock Grid.Column="0" x:Name="activateTextBlock"
-                                                            Text="Activate Quick Access widget during Zoom conference calls"
+                                                            Text="{Binding [Activate_Quick_Access_widget_during_Zoom_conference_calls], Source={x:Static lang:LangHelper.Instance}}"
                                                             FontSize="16"
                                                             FontFamily="Roboto"
                                                             TextBlockType="Caption"
@@ -60,7 +61,7 @@
                                                                Foreground="{DynamicResource TextBlock_ForegroundColor}"
                                                                Click="EnableQuickAccessWidget_Click" />
                                 </Grid>
-                                <UXControls:UXTextBlock Text="Widget will automatically appear when meeting begins to customize settings for supported webcams"
+                                <UXControls:UXTextBlock Text="{Binding [Widget_will_automatically_appear_when_meeting_begins], Source={x:Static lang:LangHelper.Instance}}"
                                                         FontSize="14"
                                                         TextBlockType="Caption"
                                                         TextWrapping="WrapWithOverflow"
@@ -73,7 +74,7 @@
                                     </Grid.ColumnDefinitions>
                                     <UXControls:UXTextBlock Grid.Column="0"
                                                             x:Name="enableShortcutTextBlock"
-                                                            Text="Enable shortcut reminder for Quick Accesswidget"
+                                                            Text="{Binding [Enable_shortcut_reminder_for_Quick_Accesswidget], Source={x:Static lang:LangHelper.Instance}}"
                                                             FontSize="16"
                                                             TextBlockType="Caption"
                                                             TextWrapping="WrapWithOverflow"

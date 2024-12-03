@@ -5,6 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:UXControls="clr-namespace:Dell.Client.Framework.UX.WPF.Controls;assembly=DCF.UX.WPF"
              xmlns:local="clr-namespace:DDPM.UI.Plugin.SettingsPlugin" d:DataContext="{d:DesignInstance Type=local:SettingsPageViewModel}"
+             xmlns:lang="clr-namespace:DDPM.UI.Resources.Helper;assembly=DDPM.UI.Resources"
              mc:Ignorable="d"
              Margin="5,4,60,29"
              d:DesignHeight="450"
@@ -24,7 +25,7 @@
                     CornerRadius="13">
                 <StackPanel>
                     <Grid Margin="20,20,8,8">
-                        <UXControls:UXTextBlock Text="About"
+                        <UXControls:UXTextBlock Text="{Binding [About], Source={x:Static lang:LangHelper.Instance}}"
                                                 FontSize="20"
                                                 TextBlockType="Header1"
                                                 Foreground="{DynamicResource DefaultTheme_TxtColor}"/>
@@ -55,13 +56,13 @@
                                                                     HorizontalAlignment="Center"
                                                                     FontFamily="Roboto"
                                                                     FontSize="14"
-                                            Content="Third Party Licenses" />
+                                            Content="{Binding [Third_Party_Licenses], Source={x:Static lang:LangHelper.Instance}}" />
                                 </StackPanel>
                             </StackPanel>
                         </Border>
                     </Grid>
                     <Grid Margin="20,20,8,8">
-                        <UXControls:UXTextBlock Text="Help"
+                        <UXControls:UXTextBlock Text="{Binding [Help], Source={x:Static lang:LangHelper.Instance}}"
                                                 FontSize="20"
                                                 Foreground="{DynamicResource DefaultTheme_TxtColor}"/>
                     </Grid>
@@ -72,7 +73,7 @@
                                         Margin="15,0,0,0">
                                 <UXControls:UXTextBlock Margin="0,20,0,0"
                                                         FontSize="16"
-                                                        Text="Need help? For more information on this software, click the button below."
+                                                        Text="{Binding [Need_help], Source={x:Static lang:LangHelper.Instance}}"
                                                         Foreground="{DynamicResource DefaultTheme_TxtColor}"
                                                         TextWrapping="WrapWithOverflow"/>
                                 <StackPanel Orientation="Horizontal"
@@ -84,7 +85,7 @@
                                             Cursor="Hand"
                                             Margin="0,20,5,20"
                                             Visibility="Visible"
-                                            Content="Learn more"
+                                            Content="{Binding [Learn_more], Source={x:Static lang:LangHelper.Instance}}"
                                                                     VerticalAlignment="Center"
                                                                     HorizontalAlignment="Center"
                                                                     FontFamily="Roboto"
