@@ -114,30 +114,4 @@ namespace DDPM.UI.Module.Brightness
             throw new NotImplementedException();
         }
     }
-
-    public class CustomBooleanToBrushConverter : IValueConverter
-    {
-        public Brush FalseBrushLightTheme { get; set; }
-        public Brush FalseBrushDarkTheme { get; set; }
-        public Brush TrueBrush { get; set; }
-
-        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
-        {
-            bool isTrue = (bool)value;
-
-            if (DdpmCommonHelper.previousOsTheme == OSThemeEnum.Dark)
-            {
-                return isTrue ? TrueBrush : FalseBrushDarkTheme;
-            }
-            else
-            {
-                return isTrue ? TrueBrush : FalseBrushLightTheme;
-            }
-        }
-
-        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
-        {
-            throw new NotImplementedException();
-        }
-    }
 }
