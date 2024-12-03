@@ -4089,7 +4089,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                 _logs.DebugMsg($"[DisplayMangerPlugin] {nameof(GetCurrentGaming_DualResolutionType)} GetVCPCapability ObjGetVCP.result : {ObjGetVCP.result}");
                 if (ObjGetVCP.result == true)
                 {
-                    _logs.DebugMsg($"[DisplayMangerPlugin] {nameof(GetCurrentGaming_DualResolutionType)} GetVCPCapability ObjGetVCP.result : {(uint)ObjGetVCP.value}");
+                    _logs.DebugMsg($"[DisplayMangerPlugin] {nameof(GetCurrentGaming_DualResolutionType)} GetVCPCapability ObjGetVCP.result : {ObjGetVCP.value}");
                     DualResolutionType = ObjGetVCP.value.ToString() == "4K" ? Gaming_DualResolutionType._4K : Gaming_DualResolutionType._FHD; ;
                 }
             }
