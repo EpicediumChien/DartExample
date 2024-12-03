@@ -44,7 +44,8 @@
     -->
     <Border Width="419" BorderThickness="1" CornerRadius="4"
             Background="{DynamicResource popupBase_Window_BkColor}" 
-            BorderBrush="{DynamicResource popupBase_Window_BdColor}" MouseLeftButtonDown="rootBorder_MouseLeftButtonDown">
+            BorderBrush="{DynamicResource popupBase_Window_BdColor}" 
+            MouseLeftButtonDown="rootBorder_MouseLeftButtonDown">
         <Border.Effect>
             <DropShadowEffect BlurRadius="8" Color="#2D000000" Opacity="0.4"
                               Direction="315" ShadowDepth="3" />

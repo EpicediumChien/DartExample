@@ -427,7 +427,7 @@ namespace NGA.ThickClient
 
         //PIMS-291471 Maximize DDPM app will cover windows taskbar
         //Below solution was provided from Dell DUCA team, Sharap Viswanathan, Karthik 2024-10-30
-        private bool _firstTimeMaximim = true;
+        //private bool _firstTimeMaximim = true;
         private void MainWIndow_StateChanged(object sender, EventArgs e)
         {
             if (WindowState == WindowState.Maximized)
@@ -467,14 +467,14 @@ namespace NGA.ThickClient
                 //    WindowState = WindowState.Maximized;
                 //}
 
-                int x = screen.WorkingArea.Left + (int)screenWidth / 2;
-                int y = screen.WorkingArea.Top + (int)screenHeight / 2;
-                SetCursorPos(x, y);
-                DoMouseClick();
+                //int x = screen.WorkingArea.Left + (int)screenWidth / 2;
+                //int y = screen.WorkingArea.Top + (int)screenHeight / 2;
+                //SetCursorPos(x, y);
+                //DoMouseClick();
             }
         }
 
-
+        #region Workaround solution - Robert_Lin 2024-12-03, can be removed
         private void RefreshWindowTaskbar()
         {
             const int HWND_BROADCAST = 0xffff;
@@ -489,14 +489,14 @@ namespace NGA.ThickClient
 
 
         [DllImport("user32.dll", CharSet = CharSet.Auto, CallingConvention = CallingConvention.StdCall)]
-        public static extern void mouse_event(long dwFlags, long dx, long dy, long cButtons, long dwExtraInfo);
+        private static extern void mouse_event(long dwFlags, long dx, long dy, long cButtons, long dwExtraInfo);
 
         private const int MOUSEEVENTF_LEFTDOWN = 0x02;
         private const int MOUSEEVENTF_LEFTUP = 0x04;
         private const int MOUSEEVENTF_RIGHTDOWN = 0x08;
         private const int MOUSEEVENTF_RIGHTUP = 0x10;
 
-        public static void DoMouseClick()
+        private static void DoMouseClick()
         {
             mouse_event(MOUSEEVENTF_LEFTDOWN | MOUSEEVENTF_LEFTUP, 0, 0, 0, 0);
         }
@@ -504,9 +504,11 @@ namespace NGA.ThickClient
         [DllImport("user32.dll")]
         static extern bool SetCursorPos(int X, int Y);
 
-        public static void MoveCursorToPoint(int x, int y)
+        private static void MoveCursorToPoint(int x, int y)
         {
             SetCursorPos(x, y);
         }
+        #endregion
+
     }
 }
