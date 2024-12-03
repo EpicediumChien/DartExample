@@ -63,7 +63,22 @@ namespace VcpCore.Common
         //If override Equals, need to implement GetHashCode also
         public override int GetHashCode()
         {
-            return ModelName.GetHashCode();
+            return new
+            {
+                ManufactureID,
+                PID,
+                VendorID,
+                Year,
+                Month,
+                Week,
+                ModelName,
+                EdidVersion,
+                VideoInputType,
+                Size,
+                ServiceTag,
+                SerialNumber,
+                Edid,
+            }.GetHashCode();
         }
     }
 }

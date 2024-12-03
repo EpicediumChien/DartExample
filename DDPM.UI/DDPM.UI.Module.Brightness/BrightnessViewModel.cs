@@ -97,6 +97,8 @@ namespace DDPM.UI.Module.Brightness
         private double PR1Luminance_Value = -1;
         private double PR2Luminance_Value = -1;
 
+        private bool isLuminance = false;
+
         private int dUration_1 = -1;
         private int mIns_1 = -1;
         private int hOurs_1 = -1;
@@ -589,9 +591,11 @@ namespace DDPM.UI.Module.Brightness
                 isLuminanceSupport = Visibility.Collapsed;
 
                 List<string> strings = new List<string>();
+                isLuminance = false;
                 if (!SelectedHomeDevice.MonitorInfo.CapabilityDic.ContainsKey("12"))
                 {
                     isLuminanceSupport = Visibility.Visible;
+                    isLuminance = true;
                     //string Capabilities_STR = DdpmCommonHelper.DeviceManagerSA.GetVCPCapabilities(SelectedHomeDevice.MonitorInfo).Result;
                     //Trace.WriteLine($"4. {DateTime.Now.ToString("MM/dd/yyyy hh:mm ss fff")}");
                     //if (!string.IsNullOrEmpty(Capabilities_STR))
@@ -655,11 +659,84 @@ namespace DDPM.UI.Module.Brightness
                 Update_ALSLockStatus(data.LockSettings.Lock_Display_AutoBriTemp);
                 Update_BriContLockStatus(data.LockSettings.Lock_Display_BriCont);
                 Update_SyncLockStatus((data.LockSettings.Lock_Display_BriCont || data.LockSettings.Lock_Display_ColorPreset || data.LockSettings.Lock_Display_AutoBriTemp));
+
+                SetDefaultExpanded(Start_ALSConfig, isLuminance);
                 //ex: vm.LockMaskVisible = data.LockSettings.Lock_Display_BriCont ? Visibility.Visible : Visibility.Collapsed;
                 //Read user default lock value, these values are synced from IT lock event
                 Trace.WriteLine($"[SettingsPage] Apply Brightness/Contrast(Lock) : {data.LockSettings.Lock_Display_BriCont}");
                 Trace.WriteLine($"[SettingsPage] Apply Auto Brightness(Lock) : {data.LockSettings.Lock_Display_AutoBriTemp}");
                 Trace.WriteLine($"[SettingsPage] Apply Synchroniz Button(Lock) : {(data.LockSettings.Lock_Display_BriCont || data.LockSettings.Lock_Display_ColorPreset || data.LockSettings.Lock_Display_AutoBriTemp)}");
+            }
+        }
+
+        private void SetDefaultExpanded(ALSConfig data,bool isLuminance)
+        {
+            bool isRunAlsNG = false;
+            bool isRunScheduledNG = false;
+            if (isAlsSupported == Visibility.Visible)
+            {
+                if ((data?.isSupportALS > 0) && (data?.isAutoBrightness == true
+                    || data?.isAutoColorTemp == true || data?.isPrimaryMonitorSync == true
+                    || (data?.AutoBrightnessRangeLevel.Count > 1 && data?.AutoBrightnessRangeLevel[0].level_value != 1)
+                    || (data?.isAutoColorTemp == true && data?.isAutoColorTemp == true)
+                    ))
+                {
+                    if ((MyModule.GetRightView() is BrightnessRightView))
+                    {
+                        MyModule.GetRightView().Dispatcher.Invoke((Action)(() =>
+                        {
+                            ((BrightnessRightView)MyModule.GetRightView()).Expander_Auto.IsExpanded = true;
+                        }));
+                        isRunAlsNG = true;
+                    }
+                }
+            }
+            else if (IsScheduledShow == Visibility.Visible)
+            {
+                if (PR1Luminance_Value < 0 || PR2Luminance_Value < 0 || PR1Brightness_Value < 0 || PR2Brightness_Value < 0 || PR1Contrast_Value < 0 || PR2Contrast_Value < 0 || hOurs_1 < 0 || hOurs_2 < 0 || mIns_1 < 0 || mIns_2 < 0 || dUration_1 < 0 || dUration_2 < 0)
+                {
+                    GetScheduleInfo();
+                    if (ScheduleMap.IsEnable == true)
+                    {
+                        if ((MyModule.GetRightView() is BrightnessRightView))
+                        {
+                            MyModule.GetRightView().Dispatcher.Invoke((Action)(() =>
+                            {
+                                if (isLuminance)
+                                {
+                                    ((BrightnessRightView)MyModule.GetRightView()).Expander_Schedule_Luminance.IsExpanded = true;
+                                }
+                                else
+                                {
+                                    ((BrightnessRightView)MyModule.GetRightView()).Expander_Schedule.IsExpanded = true;
+                                }
+                            }));
+                            isRunScheduledNG = true;
+                        }
+                    }
+                }
+            }
+            if(!isRunAlsNG&& !isRunScheduledNG)
+            {
+                RunManual(isLuminance);
+            }
+        }
+
+        private void RunManual(bool isLuminance)
+        {
+            if ((MyModule.GetRightView() is BrightnessRightView))
+            {
+                MyModule.GetRightView().Dispatcher.Invoke((Action)(() =>
+                {
+                    if (isLuminance)
+                    {
+                        ((BrightnessRightView)MyModule.GetRightView()).Expander_Manual_Luminance.IsExpanded = true;
+                    }
+                    else
+                    {
+                        ((BrightnessRightView)MyModule.GetRightView()).Expander_Manual.IsExpanded = true;
+                    }
+                }));
             }
         }
 
@@ -1200,6 +1277,7 @@ namespace DDPM.UI.Module.Brightness
                     Update_AutoBrightnessRangeLevelStatus(Start_ALSConfig.AutoBrightnessRangeLevel);
                     Update_SupportedPrimaryMonitorSync(Start_ALSConfig.isAutoBrightness, Start_ALSConfig.isAutoColorTemp);
                 }
+                NotifyPropertyChanged("isAlsSupported");
             }
         }
 
