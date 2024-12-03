@@ -130,8 +130,8 @@ namespace DDPM.UI.Module.EzMemory
                             launchApp.Add(app.AppName, app);
                         }
                         _vm.SortAppsByTextBlockNumber(launchApp);
-                        _deviceManagerSA.LaunchAndArrangeApps(launchApp);
-                        //_deviceManagerSA.LaunchAndArrangeAppsWithEzArrange(launchApp, _homeDeviceSelect.MonitorInfo, profileTostart.Layout);
+                        //_deviceManagerSA.LaunchAndArrangeApps(launchApp);
+                        _deviceManagerSA.LaunchAndArrangeAppsWithEzArrange(launchApp, _homeDeviceSelect.MonitorInfo, profileTostart.Layout);
                         _log.Info($"@[EzMemoryRightView] EzMemoryStart_Click, Profile with ID {_vm.CurrentSelectspItem.LayoutID} removed from UserSettings.");
                     }
                     else

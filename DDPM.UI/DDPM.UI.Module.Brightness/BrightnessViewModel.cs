@@ -6,6 +6,7 @@ using DDPM.UI.Common;
 using DDPM.UI.Common.Interfaces;
 using DDPM.UI.Common.Models;
 using Dell.Client.Framework.Common;
+using Dell.Client.Framework.UX.WPF.Controls;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
@@ -494,7 +495,10 @@ namespace DDPM.UI.Module.Brightness
         ~BrightnessViewModel()
         {
             if (DdpmCommonHelper.DeviceManagerSA != null)
+            {
                 DdpmCommonHelper.DeviceManagerSA.VCPchanged -= OnVCPChangedEvent;
+                DdpmCommonHelper.BitmapImageUpdated -= ALSFontColorUpdate;
+            }
         }
 
         public BrightnessViewModel()
@@ -524,6 +528,20 @@ namespace DDPM.UI.Module.Brightness
             PR2Luminance_Debouncer = new Debouncer(2000, Set_Luminance_Value);
 
             DdpmCommonHelper.MyConsole.RegisterForEvent("DisplayHDRStatusChanged", OnHDRChangedEvent);
+            DdpmCommonHelper.BitmapImageUpdated += ALSFontColorUpdate;
+        }
+
+        private void ALSFontColorUpdate(OSThemeEnum oSThemeEnum)
+        {
+
+            if (DdpmCommonHelper.previousOsTheme == OSThemeEnum.Dark)
+            {
+                IsDarkTheme = true;
+            }
+            else
+            {
+                IsDarkTheme = false;
+            }
         }
 
         private void RefreshUI()
@@ -3263,6 +3281,20 @@ namespace DDPM.UI.Module.Brightness
                 else
                 {
                     return true;
+                }
+            }
+        }
+
+        private bool _isDarkTheme;
+        public bool IsDarkTheme
+        {
+            get => _isDarkTheme;
+            set
+            {
+                if (_isDarkTheme != value)
+                {
+                    _isDarkTheme = value;
+                    OnPropertyChanged(nameof(IsDarkTheme));
                 }
             }
         }
