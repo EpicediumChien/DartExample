@@ -7899,7 +7899,7 @@ namespace DDPM.CLI.Plugins.Display
                         int idx = read_list.FindIndex(x => x.SerialNumber.Equals(monitor.edid.SerialNumber));
                         if (read_list.Count == 0 || idx < 0)  //if no PowerNap setting exist, create a new setting
                         {
-                            await SetPowerNapAsync(PowerNapType.Off, devMgr, monitor.edid.ModelName, monitor.edid.SerialNumber);
+                            await SetPowerNapAsync(PowerNapType.Off, devMgr, monitor.edid.ModelName, monitor.edid.SerialNumber, monitor.edid.ServiceTag);
                             //PowerNapSetting setting = new PowerNapSetting
                             //{
                             //    Status = false,
@@ -7931,7 +7931,7 @@ namespace DDPM.CLI.Plugins.Display
                                         break;
                                     case "OFF":
                                         {
-                                            await SetPowerNapAsync(PowerNapType.Off, devMgr, temp.ModelName, temp.SerialNumber);
+                                            await SetPowerNapAsync(PowerNapType.Off, devMgr, temp.ModelName, temp.SerialNumber, temp.ServiceTag);
                                             //PowerNapSetting setting = new PowerNapSetting
                                             //{
                                             //    Status = false,//temp.Status,
@@ -7947,7 +7947,7 @@ namespace DDPM.CLI.Plugins.Display
                                         }
                                     case "SLEEP":
                                         {
-                                            await SetPowerNapAsync(PowerNapType.SleepIfRunning, devMgr, temp.ModelName, temp.SerialNumber);
+                                            await SetPowerNapAsync(PowerNapType.SleepIfRunning, devMgr, temp.ModelName, temp.SerialNumber, temp.ServiceTag);
                                             //PowerNapSetting setting = new PowerNapSetting
                                             //{
                                             //    Status = true,//temp.Status,
@@ -7963,7 +7963,7 @@ namespace DDPM.CLI.Plugins.Display
                                         }
                                     case "REDUCEBRIGHTNESS":
                                         {
-                                            await SetPowerNapAsync(PowerNapType.ReduceBrightness, devMgr, temp.ModelName, temp.SerialNumber);
+                                            await SetPowerNapAsync(PowerNapType.ReduceBrightness, devMgr, temp.ModelName, temp.SerialNumber, temp.ServiceTag);
                                             //PowerNapSetting setting = new PowerNapSetting
                                             //{
                                             //    Status = true,//temp.Status,
@@ -8016,7 +8016,7 @@ namespace DDPM.CLI.Plugins.Display
                         int idx = read_list.FindIndex(x => x.SerialNumber.Equals(monitor.edid.SerialNumber));
                         if (read_list.Count == 0 || idx < 0)  //if no PowerNap setting exist, create a new setting
                         {
-                            await SetPowerNapAsync(PowerNapType.Off, devMgr, monitor.edid.ModelName, monitor.edid.SerialNumber);
+                            await SetPowerNapAsync(PowerNapType.Off, devMgr, monitor.edid.ModelName, monitor.edid.SerialNumber, monitor.edid.ServiceTag);
                             //PowerNapSetting setting = new PowerNapSetting
                             //{
                             //    Status = false,
@@ -8048,7 +8048,7 @@ namespace DDPM.CLI.Plugins.Display
                                         break;
                                     case "OFF":
                                         {
-                                            await SetPowerNapAsync(PowerNapType.Off, devMgr, temp.ModelName, temp.SerialNumber);
+                                            await SetPowerNapAsync(PowerNapType.Off, devMgr, temp.ModelName, temp.SerialNumber, temp.ServiceTag);
                                             //PowerNapSetting setting = new PowerNapSetting
                                             //{
                                             //    Status = false,//temp.Status,
@@ -8064,7 +8064,7 @@ namespace DDPM.CLI.Plugins.Display
                                         }
                                     case "SLEEP":
                                         {
-                                            await SetPowerNapAsync(PowerNapType.SleepIfRunning, devMgr, temp.ModelName, temp.SerialNumber);
+                                            await SetPowerNapAsync(PowerNapType.SleepIfRunning, devMgr, temp.ModelName, temp.SerialNumber, temp.ServiceTag);
                                             //PowerNapSetting setting = new PowerNapSetting
                                             //{
                                             //    Status = true,
@@ -8080,7 +8080,7 @@ namespace DDPM.CLI.Plugins.Display
                                         }
                                     case "REDUCEBRIGHTNESS":
                                         {
-                                            await SetPowerNapAsync(PowerNapType.ReduceBrightness, devMgr, temp.ModelName, temp.SerialNumber);
+                                            await SetPowerNapAsync(PowerNapType.ReduceBrightness, devMgr, temp.ModelName, temp.SerialNumber, temp.ServiceTag);
                                             //PowerNapSetting setting = new PowerNapSetting
                                             //{
                                             //    Status = true,//temp.Status,
@@ -8135,7 +8135,7 @@ namespace DDPM.CLI.Plugins.Display
                             int idx = read_list.FindIndex(x => x.SerialNumber.Equals(monitor.edid.SerialNumber));
                             if (read_list.Count == 0 || idx < 0)  //if no PowerNap setting exist, create a new setting
                             {
-                                await SetPowerNapAsync(PowerNapType.Off, devMgr, monitor.edid.ModelName, monitor.edid.SerialNumber);
+                                await SetPowerNapAsync(PowerNapType.Off, devMgr, monitor.edid.ModelName, monitor.edid.SerialNumber, monitor.edid.ServiceTag);
                                 //PowerNapSetting setting = new PowerNapSetting
                                 //{
                                 //    Status = false,
@@ -8167,7 +8167,7 @@ namespace DDPM.CLI.Plugins.Display
                                             break;
                                         case "OFF":
                                             {
-                                                await SetPowerNapAsync(PowerNapType.Off, devMgr, temp.ModelName, temp.SerialNumber);
+                                                await SetPowerNapAsync(PowerNapType.Off, devMgr, temp.ModelName, temp.SerialNumber, temp.ServiceTag);
                                                 //PowerNapSetting setting = new PowerNapSetting
                                                 //{
                                                 //    Status = false,
@@ -8183,7 +8183,7 @@ namespace DDPM.CLI.Plugins.Display
                                             }
                                         case "SLEEP":
                                             {
-                                                await SetPowerNapAsync(PowerNapType.SleepIfRunning, devMgr, temp.ModelName, temp.SerialNumber);
+                                                await SetPowerNapAsync(PowerNapType.SleepIfRunning, devMgr, temp.ModelName, temp.SerialNumber, temp.ServiceTag);
                                                 //PowerNapSetting setting = new PowerNapSetting
                                                 //{
                                                 //    Status = true,
@@ -8199,7 +8199,7 @@ namespace DDPM.CLI.Plugins.Display
                                             }
                                         case "REDUCEBRIGHTNESS":
                                             {
-                                                await SetPowerNapAsync(PowerNapType.ReduceBrightness, devMgr, temp.ModelName, temp.SerialNumber);
+                                                await SetPowerNapAsync(PowerNapType.ReduceBrightness, devMgr, temp.ModelName, temp.SerialNumber, temp.ServiceTag);
                                                 //PowerNapSetting setting = new PowerNapSetting
                                                 //{
                                                 //    Status = true,
@@ -8255,7 +8255,7 @@ namespace DDPM.CLI.Plugins.Display
                             int idx = read_list.FindIndex(x => x.SerialNumber.Equals(monitor.edid.SerialNumber));
                             if (read_list.Count == 0 || idx < 0)  //if no PowerNap setting exist, create a new setting
                             {
-                                await SetPowerNapAsync(PowerNapType.Off, devMgr, monitor.edid.ModelName, monitor.edid.SerialNumber);
+                                await SetPowerNapAsync(PowerNapType.Off, devMgr, monitor.edid.ModelName, monitor.edid.SerialNumber, monitor.edid.ServiceTag);
                                 //PowerNapSetting setting = new PowerNapSetting
                                 //{
                                 //    Status = false,
@@ -8287,7 +8287,7 @@ namespace DDPM.CLI.Plugins.Display
                                             break;
                                         case "OFF":
                                             {
-                                                await SetPowerNapAsync(PowerNapType.Off, devMgr, temp.ModelName, temp.SerialNumber);
+                                                await SetPowerNapAsync(PowerNapType.Off, devMgr, temp.ModelName, temp.SerialNumber, temp.ServiceTag);
                                                 //PowerNapSetting setting = new PowerNapSetting
                                                 //{
                                                 //    Status = false,
@@ -8303,7 +8303,7 @@ namespace DDPM.CLI.Plugins.Display
                                             }
                                         case "SLEEP":
                                             {
-                                                await SetPowerNapAsync(PowerNapType.SleepIfRunning, devMgr, temp.ModelName, temp.SerialNumber);
+                                                await SetPowerNapAsync(PowerNapType.SleepIfRunning, devMgr, temp.ModelName, temp.SerialNumber, temp.ServiceTag);
                                                 //PowerNapSetting setting = new PowerNapSetting
                                                 //{
                                                 //    Status = true,
@@ -8319,7 +8319,7 @@ namespace DDPM.CLI.Plugins.Display
                                             }
                                         case "REDUCEBRIGHTNESS":
                                             {
-                                                await SetPowerNapAsync(PowerNapType.ReduceBrightness, devMgr, temp.ModelName, temp.SerialNumber);
+                                                await SetPowerNapAsync(PowerNapType.ReduceBrightness, devMgr, temp.ModelName, temp.SerialNumber, temp.ServiceTag);
                                                 //PowerNapSetting setting = new PowerNapSetting
                                                 //{
                                                 //    Status = true,
@@ -8378,7 +8378,7 @@ namespace DDPM.CLI.Plugins.Display
                         int idx = read_list.FindIndex(x => x.SerialNumber.Equals(monitor.edid.SerialNumber));
                         if (read_list.Count == 0 || idx < 0)  //if no PowerNap setting exist, create a new setting
                         {
-                            await SetPowerNapAsync(PowerNapType.Off, devMgr, monitor.edid.ModelName, monitor.edid.SerialNumber);
+                            await SetPowerNapAsync(PowerNapType.Off, devMgr, monitor.edid.ModelName, monitor.edid.SerialNumber, monitor.edid.ServiceTag);
                             //PowerNapSetting setting = new PowerNapSetting
                             //{
                             //    Status = false,
@@ -8421,7 +8421,7 @@ namespace DDPM.CLI.Plugins.Display
                         int idx = read_list.FindIndex(x => x.SerialNumber.Equals(monitor.edid.SerialNumber));
                         if (read_list.Count == 0 || idx < 0)  //if no PowerNap setting exist, create a new setting
                         {
-                            await SetPowerNapAsync(PowerNapType.Off, devMgr, monitor.edid.ModelName, monitor.edid.SerialNumber);
+                            await SetPowerNapAsync(PowerNapType.Off, devMgr, monitor.edid.ModelName, monitor.edid.SerialNumber, monitor.edid.ServiceTag);
                             //PowerNapSetting setting = new PowerNapSetting
                             //{
                             //    Status = false,
@@ -8466,7 +8466,7 @@ namespace DDPM.CLI.Plugins.Display
                             int idx = read_list.FindIndex(x => x.SerialNumber.Equals(monitor.edid.SerialNumber));
                             if (read_list.Count == 0 || idx < 0)  //if no PowerNap setting exist, create a new setting
                             {
-                                await SetPowerNapAsync(PowerNapType.Off, devMgr, monitor.edid.ModelName, monitor.edid.SerialNumber);
+                                await SetPowerNapAsync(PowerNapType.Off, devMgr, monitor.edid.ModelName, monitor.edid.SerialNumber, monitor.edid.ServiceTag);
                                 //PowerNapSetting setting = new PowerNapSetting
                                 //{
                                 //    Status = false,
@@ -9259,7 +9259,7 @@ namespace DDPM.CLI.Plugins.Display
                                 int powernap_idx = read_list.FindIndex(x => x.SerialNumber.Equals(monitor.edid.SerialNumber));
                                 if (read_list.Count == 0 || powernap_idx < 0)  //if no PowerNap setting exist, create a new setting
                                 {
-                                    await SetPowerNapAsync(PowerNapType.Off, devMgr, monitor.edid.ModelName, monitor.edid.SerialNumber);
+                                    await SetPowerNapAsync(PowerNapType.Off, devMgr, monitor.edid.ModelName, monitor.edid.SerialNumber, monitor.edid.ServiceTag);
                                     //PowerNapSetting setting = new PowerNapSetting
                                     //{
                                     //    Status = false,
@@ -9532,7 +9532,7 @@ namespace DDPM.CLI.Plugins.Display
                     int powernap_idx = read_list.FindIndex(x => x.SerialNumber.Equals(monitor.edid.SerialNumber));
                     if (read_list.Count == 0 || powernap_idx < 0)  //if no PowerNap setting exist, create a new setting
                     {
-                        await SetPowerNapAsync(PowerNapType.Off, devMgr, monitor.edid.ModelName, monitor.edid.SerialNumber);
+                        await SetPowerNapAsync(PowerNapType.Off, devMgr, monitor.edid.ModelName, monitor.edid.SerialNumber, monitor.edid.ServiceTag);
                         //PowerNapSetting setting = new PowerNapSetting
                         //{
                         //    Status = false,
@@ -10491,11 +10491,11 @@ namespace DDPM.CLI.Plugins.Display
                             var support_languages = (JArray)item2["On Screen Display Language"];
                             support_languages.ToObject<List<string>>().ToArray();
                             // portuguese change to brazilianportuguese
-                            if (commandLineInput.Options[0].Option_Value.ToLower() == "portuguese")
+                            if (commandLineInput.Options[0].Option_Value.ToLower() == "portuguese" || commandLineInput.Options[0].Option_Value.ToLower() == "brazilianportuguese")
                             {
                                 var portugueseTemp = support_languages.ToObject<List<string>>().Find(_ => _.ToLower() == "portuguese");
-                                if (portugueseTemp is null)
-                                    commandLineInput.Options[0].Option_Value = "BRAZILIANPORTUGUESE";
+
+                                commandLineInput.Options[0].Option_Value = portugueseTemp is null? "BRAZILIANPORTUGUESE" : "PORTUGUESE";
                             }
                             foreach (var support_language in support_languages)
                             {
@@ -11857,7 +11857,7 @@ namespace DDPM.CLI.Plugins.Display
 
                                             case "POWERNAP":
                                                 writelog($"PowerNap entry");
-                                                await SetPowerNapAsync(get_PowerNapType_code(property.Value.ToString()), devMgr, monitor.edid.ModelName, monitor.edid.SerialNumber);
+                                                await SetPowerNapAsync(get_PowerNapType_code(property.Value.ToString()), devMgr, monitor.edid.ModelName, monitor.edid.SerialNumber, monitor.edid.ServiceTag);
                                                 //PowerNapSetting setting = new PowerNapSetting
                                                 //{
                                                 //    Status = false,
@@ -15317,7 +15317,7 @@ namespace DDPM.CLI.Plugins.Display
 
         }
 
-        private static async Task<int> SetPowerNapAsync(PowerNapType type, IDeviceManagerSA devMgr, string modelName, string serialNumber)
+        private static async Task<int> SetPowerNapAsync(PowerNapType type, IDeviceManagerSA devMgr, string modelName, string serialNumber, string serviceTag)
         {
             if (devMgr == null)
                 return 0;
@@ -15326,7 +15326,8 @@ namespace DDPM.CLI.Plugins.Display
                 Status = type == PowerNapType.Off ? false : true,//temp.Status,
                 ModelName = modelName,
                 SerialNumber = serialNumber,
-                RunType = type
+                RunType = type,
+                ServiceTag = serviceTag
             };
             await devMgr.SavePowerNapSetting(setting);
             UpdateUINotify powerNapNotify = new UpdateUINotify();
