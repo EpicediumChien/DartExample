@@ -435,7 +435,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                     await DeleteMouseAllAssignedActions(Guid);
                     await SetCurrentSelectedAppSpecificProfile(Guid, "{CCCE4E6F-C690-4EF5-BA19-F270C26C21B6}"); //Outlook
                     await DeleteMouseAllAssignedActions(Guid);
-                    await SetCurrentSelectedAppSpecificProfile(Guid, profileID); 
+                    await SetCurrentSelectedAppSpecificProfile(Guid, profileID);
 
                     model = SACommonHelper.MappingModel(model);
                     var filePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), @$"Dell\Dell Display and Peripheral Manager\Actions\{model}.json");
@@ -714,7 +714,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                     writelog($"[DTPProxyPlugin] [RestoreToDefaultPen] Delete setting file failed: {ex}");
                 }
             }
-            var message= $"Keyboard|RestoreToDefault|{Guid}|{model}";
+            var message = $"Keyboard|RestoreToDefault|{Guid}|{model}";
             SendDTPEventToUI(message);
             return true;
         }
@@ -2918,6 +2918,8 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             await SetSideBottomSwitchSinglePressSetting(PenItemID0, newValue);
             await SetTipSensitivity(PenItemID0, 3);
             await SetTiltSensitivity(PenItemID0, 1);
+            await SetIsSideTopButtonHoverClick(PenItemID0, false);
+            await SetIsSideBottomButtonHoverClick(PenItemID0, false);
 
             await RestoreRadialMenuToDefault();
 
@@ -5212,7 +5214,8 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                     _Headsetcom.WearDetectionSensitivityChanged += Headset_WearDetectionSensitivityChanged;
                     _Headsetcom.IsWearDetectionPauseMusicEnabledChanged += Headset_IsWearDetectionPauseMusicEnabledChanged;
                     _Headsetcom.IsWearDetectionMuteMicEnabledChanged += Headset_IsWearDetectionMuteMicEnabledChanged;
-                    _Headsetcom.WearDetectionQuickPauseChanged += Headset_WearDetectionQuickPauseChanged; writelog($"Headset{index} Commodity events registered successfully");
+                    _Headsetcom.WearDetectionQuickPauseChanged += Headset_WearDetectionQuickPauseChanged;
+                    writelog($"Headset{index} Commodity events registered successfully");
                     return true;
                 }
             }
@@ -5240,7 +5243,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                     _Headsetcom.WearDetectionChanged -= Headset_WearDetectionChanged;
                     _Headsetcom.WearDetectionSensitivityChanged -= Headset_WearDetectionSensitivityChanged;
                     _Headsetcom.IsWearDetectionPauseMusicEnabledChanged -= Headset_IsWearDetectionPauseMusicEnabledChanged;
-                    _Headsetcom.IsWearDetectionMuteMicEnabledChanged -= Headset_IsWearDetectionMuteMicEnabledChanged;             
+                    _Headsetcom.IsWearDetectionMuteMicEnabledChanged -= Headset_IsWearDetectionMuteMicEnabledChanged;
                     _Headsetcom.WearDetectionQuickPauseChanged -= Headset_WearDetectionQuickPauseChanged;
                     writelog($"[Headset] Headset{index} Commodity events unregistered successfully");
                     return true;
@@ -5258,7 +5261,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
         private void Headset_WearDetectionChanged(object sender, WearDetectionChangedArgs e)
         {
-            SendHeadsetEventToUI(CreateHeadsetEventMsg("Headset", "Headset_WearDetectionChanged",e.DeviceId,
+            SendHeadsetEventToUI(CreateHeadsetEventMsg("Headset", "Headset_WearDetectionChanged", e.DeviceId,
                                                  $"Headset_WearDetectionChanged:{e.IsGlobalEnabled.ToString() + ";" +
                             "Headset_IsWearDetectionPauseMusicEnabledChanged:" + e.IsPauseMusicEnabled.ToString() + ";" +
                                "Headset_IsWearDetectionMuteMicEnabledChanged:" + e.IsMuteMicEnabled.ToString() + ";" +
