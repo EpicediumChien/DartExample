@@ -36,6 +36,7 @@ using Dell.TechHub.Commodity.Peripheral;
 using DPeMPublic.Common.Enums;
 using Microsoft;
 using Microsoft.Toolkit.Uwp.Notifications;
+using MS.WindowsAPICodePack.Internal;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
@@ -12697,6 +12698,9 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             switch (job)
             {
                 case HotkeyType.BrightnessReduce:
+                    /* HotkeyPopWrap hotkeyPopWrap1 = new HotkeyPopWrap() { monitorInfo = monitorInfo, hotkeyType = job };
+                     HotkeyPopup(hotkeyPopWrap1);
+                     break;*/
                     if (IsALSautobrightness(monitorInfo))
                     {
                         writelog($"ExecHotkeyJob[{job}:{hotkeyStr} ,IsALSautobrightness=true,will Popup msg] => getTargetMonitor: {getTargetMo}, Monitor [ModelName={monitorInfo.edid.ModelName},ServiceTag={monitorInfo.edid.ServiceTag}, SerialNumber={monitorInfo.edid.SerialNumber}]");
@@ -12885,8 +12889,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             idxRecent = eaSettings.RecentList.Length - 1;
 
             //Force await to avoid reenter this method (it will update to MonitorSettings file)
-            Dispatcher.CurrentDispatcher.Invoke(() =>
-            {
             bool isOKSetSelected = SetEASelectedLayout(monitorInfo, eaSettings.RecentList[idxRecent]).Result;
 
             //TO DO: invoke an event to UI to reload settings
@@ -13442,8 +13444,12 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         private bool IsALSautobrightness(MonitorInfo monitorInfo)
         {
             List<ALSConfig> aLSConfigs = GetAllExistAlsConfig().Result;
-            ALSConfig find = aLSConfigs.Find(x => x.Edid.ServiceTag.Equals(monitorInfo.edid.ServiceTag) && x.isAutoBrightness);
-            return find != null;
+            if (aLSConfigs != null)
+            {
+                ALSConfig find = aLSConfigs.FirstOrDefault(x => x.Edid.ServiceTag.Equals(monitorInfo.edid.ServiceTag) && x.isAutoBrightness);
+                return find != null;
+            }
+            return false;
         }
 
         private void HotkeyPopup(object o)
@@ -13464,9 +13470,21 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             //Auto Brightness OFF & Auto OFF & Manual ON?
             HotkeyPopWrap hotkeyPopWrap = (HotkeyPopWrap)ob;
             List<ALSConfig> aLSConfigs = GetAllExistAlsConfig().Result;
-            ALSConfig find = aLSConfigs.Find(x => x.serialNumber.Equals(hotkeyPopWrap.monitorInfo.edid.SerialNumber));
-            //diable autobrightness
-            SetALSFeatureValue(hotkeyPopWrap.monitorInfo, find, ALSFeatureQueryType.AutoBrightness, "");
+            if (aLSConfigs != null)
+            {
+                ALSConfig find = aLSConfigs.FirstOrDefault(x => x.Edid.ServiceTag.Equals(hotkeyPopWrap.monitorInfo.edid.ServiceTag) && x.isAutoBrightness);
+                //diable autobrightness
+                if (find != null)
+                {
+                    bool result = SetALSFeatureValue(hotkeyPopWrap.monitorInfo, find, ALSFeatureQueryType.AutoBrightness, "").Result;
+                    writelog($"IsALSautobrightness Yes_event[{hotkeyPopWrap.hotkeyType}:Monitor [ModelName={hotkeyPopWrap.monitorInfo.edid.ModelName},ServiceTag={hotkeyPopWrap.monitorInfo.edid.ServiceTag}],set ALS.AutoBrightness to off:" + (result ? "success" : "fail"));
+                }
+                else
+                {
+                    writelog($"IsALSautobrightness Yes_event[{hotkeyPopWrap.hotkeyType}:Monitor [ModelName={hotkeyPopWrap.monitorInfo.edid.ModelName},ServiceTag={hotkeyPopWrap.monitorInfo.edid.ServiceTag}],ALS config not found");
+                }
+            }
+
             switch (hotkeyPopWrap.hotkeyType)
             {
                 case HotkeyType.BrightnessReduce:
