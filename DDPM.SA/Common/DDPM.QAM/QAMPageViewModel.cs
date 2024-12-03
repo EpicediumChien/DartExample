@@ -39,6 +39,19 @@ namespace DDPM.QAM
             get => _fullView;
             set => _fullView = value;
         }
+
+        private bool isCameraSettingSelected = false;
+        public bool IsCameraSettingSelected
+        {
+            get => isCameraSettingSelected;
+
+            set
+            {
+                isCameraSettingSelected = value;
+                OnPropertyChanged(nameof(isCameraSettingSelected));
+            }
+        }
+
         public QAMPageViewModel()
         {
             List<DeviceInfo> deviceInfos = DdpmCommonHelper.DeviceManagerSA!.GetDevices().Result.deviceInfo;
