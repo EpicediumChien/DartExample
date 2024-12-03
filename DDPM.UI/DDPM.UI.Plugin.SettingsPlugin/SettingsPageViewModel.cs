@@ -5,6 +5,8 @@ using DDPM.SA.Common.Settings;
 using DDPM.UI.Common;
 using DDPM.UI.Common.Interfaces;
 using DDPM.UI.Common.Models;
+using DDPM.UI.Plugin.DdpmHomePlugin.Interfaces;
+using DDPM.UI.Resources.Helper;
 using Dell.Client.Framework.Common;
 using DPeMPublic.Common.Enums;
 using Microsoft.Win32;
@@ -215,12 +217,12 @@ namespace DDPM.UI.Plugin.SettingsPlugin
             {
                 //avoid null
                 if (GlobalSettingParam == null || GlobalSettingParam.GlobalSetting_WidgetSettings == null)
-                    return "OFF";
+                    return LangHelper.Instance["Off"];
                 if (GlobalSettingParam.GlobalSetting_WidgetSettings.EnableQuickAccessWidget)
                 {
-                    return "ON";
+                    return LangHelper.Instance["On"];
                 }
-                return "OFF";
+                return LangHelper.Instance["Off"];
             }
         }
         public string EnableQuickAccessWidget_Reminder_String
@@ -229,26 +231,26 @@ namespace DDPM.UI.Plugin.SettingsPlugin
             {
                 //avoid null
                 if (GlobalSettingParam == null || GlobalSettingParam.GlobalSetting_WidgetSettings == null)
-                    return "OFF";
+                    return LangHelper.Instance["Off"];
                 if (GlobalSettingParam.GlobalSetting_WidgetSettings.EnableQuickAccessWidget_Reminder)
                 {
-                    return "ON";
+                    return LangHelper.Instance["On"];
                 }
-                return "OFF";
+                return LangHelper.Instance["Off"];
             }
         }
         public string SWVersion
         {
             get
             {
-                return $"Software version: {GlobalSettingParam.GlobalSetting_About.SWVersion}";
+                return $"{LangHelper.Instance["Software_version"]}: {GlobalSettingParam.GlobalSetting_About.SWVersion}";
             }
         }
         public string DriverVersion
         {
             get
             {
-                return $"Driver version: {GlobalSettingParam.GlobalSetting_About.DriverVersion}";
+                return $"{LangHelper.Instance["Driver_version"]}: {GlobalSettingParam.GlobalSetting_About.DriverVersion}";
             }
         }
         public void SaveMonitorAssetReport(string filePath)
@@ -354,9 +356,10 @@ namespace DDPM.UI.Plugin.SettingsPlugin
             else
             {
                 NoNetwork = Visibility.Collapsed;
+                List<DeviceInfo> deviceInfos = DdpmCommonHelper.DeviceManagerSA.GetDevices().Result.deviceInfo;
                 foreach (FWUpdateInfo fwUpdateInfo in fwUpdateInfoPackage.FWUpdateInfo)
                 {
-                    UIUpdateInfo uiUpdateInfo = new UIUpdateInfo(fwUpdateInfo);
+                    UIUpdateInfo uiUpdateInfo = new UIUpdateInfo(fwUpdateInfo, deviceInfos);
                     if ((!uiUpdateInfo.IsEnableCheckBox) && uiUpdateInfo.IsCheckUpdate)//如果不能選擇是否更新為強制更新
                     {
                         Critical_UpdateList_UI.Add(uiUpdateInfo);
@@ -588,7 +591,7 @@ namespace DDPM.UI.Plugin.SettingsPlugin
         public Visibility UXAlertItemVisibility_2 { get; set; }
         public string UXAlertItemMessage_2 { get; set; }
 
-        public UIUpdateInfo(FWUpdateInfo fwUpdateInfo)
+        public UIUpdateInfo(FWUpdateInfo fwUpdateInfo, List<DeviceInfo> deviceInfos)
         {
             //0614 Bruce 將原本DeviceType型態是字串改成跟IL一樣這樣可以直接使用IL提供的矩陣做判斷
             DeviceType[] CriticalUpdates = new DeviceType[] { DeviceType.PhysicalAudioDongle, DeviceType.PhysicalDongle },
@@ -603,44 +606,79 @@ namespace DDPM.UI.Plugin.SettingsPlugin
             this.IsEnableCheckBox = true;
             bool? b = null;
             UXAlertItemVisibility = Visibility.Collapsed;
+            UXAlertItemMessage = "";
             UXAlertItemVisibility_2 = Visibility.Collapsed;
+            UXAlertItemMessage_2 = "";
+            bool deviceBatteryLow = false;
+            if (deviceInfos != null)
+            {
+                DeviceInfo? deviceInfo = deviceInfos.Find(o => o.ID.ToString().Equals(fwUpdateInfo.DeviceId.Replace("{", "").Replace("}", "")));
+                Debug.WriteLine($"deviceInfo is null : {(deviceInfo == null ? "Yes" : "No")}");
+                if (deviceInfo != null)
+                {
+                    Debug.WriteLine($"deviceInfos.IsBatteryLevelSupported : {deviceInfo.IsBatteryLevelSupported}");
+                    if (deviceInfo.IsBatteryLevelSupported)
+                    {
+                        Debug.WriteLine($"deviceInfos.BatteryStatus : {deviceInfo.BatteryStatus}");
+                        Debug.WriteLine($"deviceInfos.BatteryLevel : {deviceInfo.BatteryLevel}");
+                        if (deviceInfo.BatteryLevel <= 20)
+                        {
+                            deviceBatteryLow = true;
+                        }
+                    }
+                }
+            }
             switch (fwUpdateInfo.DeviceType)
             {
                 case DeviceType.LogicalMouse:
                     UXAlertItemVisibility = Visibility.Visible;
-                    UXAlertItemMessage = "Press a button or a key on the device to enable this update";
+                    if (deviceBatteryLow)
+                    {
+                        UXAlertItemMessage = LangHelper.Instance["Update_BatteryLow_Alert"];
+                    }
+                    else
+                    {
+                        UXAlertItemMessage = LangHelper.Instance["Update_Mouse_Alert"];
+                    }
                     break;
 
                 case DeviceType.LogicalKeyboard:
-                    UXAlertItemVisibility = Visibility.Collapsed;
+                    if (deviceBatteryLow)
+                    {
+                        UXAlertItemVisibility = Visibility.Visible;
+                        UXAlertItemMessage = LangHelper.Instance["Update_BatteryLow_Alert"];
+                    }
                     break;
 
                 case DeviceType.LogicalDock:
                 case DeviceType.PhysicalWiredDock:
                     UXAlertItemVisibility = Visibility.Visible;
-                    UXAlertItemMessage = "Ensure only one dock is connected to your system. Devices connected to dock may not be available during update.";
+                    UXAlertItemMessage = LangHelper.Instance["Update_Dock_Alert"];
                     using (BatteryInfo batteryInfo = new BatteryInfo())
                     {
                         batteryInfo.GetBatteryInfo(out var battery);
                         if (battery.BatteryLifePercent <= 10)
                         {
                             UXAlertItemVisibility_2 = Visibility.Visible;
-                            UXAlertItemMessage_2 = "Connect PC to power source and ensure PC battery charge is above 10% to continue with update";
+                            UXAlertItemMessage_2 = LangHelper.Instance["Update_PCBatteryLow_Alert"];
                         }
                     }
                     break;
 
                 case DeviceType.PhysicalPen:
                 case DeviceType.LogicalPen:
-                    UXAlertItemVisibility = Visibility.Visible;
-                    UXAlertItemMessage = "Battery level on the device is low. Replace/recharge battery to enable this update.";
+                    if (deviceBatteryLow)
+                    {
+                        UXAlertItemVisibility = Visibility.Visible;
+                        UXAlertItemMessage = LangHelper.Instance["Update_BatteryLow_Alert"];
+                    }
                     break;
                 case DeviceType.LogicalWebcam:
                 case DeviceType.PhysicalWebcam:
                     if (fwUpdateInfo.Model.Contains("7022"))
                     {
                         UXAlertItemVisibility = Visibility.Visible;
-                        UXAlertItemMessage = "This update will enable presence sensing controls through Windows Settings in systems: Win 11 22H2 or higher, and with OS build\r\n22621 or higher";
+                        UXAlertItemMessage = LangHelper.Instance["Update_Webcam_Alert"];
                     }
                     break;
                 default:
@@ -677,7 +715,7 @@ namespace DDPM.UI.Plugin.SettingsPlugin
             {
                 this.IsCheckUpdate = false;
             }
-            UpdateInfo = $"Firmware update {fwUpdateInfo.TheLatestVersion} - {fwUpdateInfo.DeviceName}";
+            UpdateInfo = $"{LangHelper.Instance["Firmware_update"]} {fwUpdateInfo.TheLatestVersion} - {fwUpdateInfo.DeviceName}";
         }
 
         public UIUpdateInfo(SWUpdateInfo swUpdateInfo)
@@ -687,7 +725,7 @@ namespace DDPM.UI.Plugin.SettingsPlugin
             this.IsEnableCheckBox = false;
             UXAlertItemVisibility = Visibility.Collapsed;
             UXAlertItemVisibility_2 = Visibility.Collapsed;
-            UpdateInfo = $"Software update {swUpdateInfo.TheLatestVersion} - {swUpdateInfo.SoftwareName}";
+            UpdateInfo = $"{LangHelper.Instance["Software_update"]} {swUpdateInfo.TheLatestVersion} - {swUpdateInfo.SoftwareName}";
         }
     }
 }

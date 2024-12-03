@@ -3,7 +3,8 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
              xmlns:UXControls="clr-namespace:Dell.Client.Framework.UX.WPF.Controls;assembly=DCF.UX.WPF" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:DDPM.UI.Module.Gaming" 
+             xmlns:local="clr-namespace:DDPM.UI.Module.Gaming"
+             xmlns:lang="clr-namespace:DDPM.UI.Resources.Helper;assembly=DDPM.UI.Resources"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              d:DesignHeight="800" d:DesignWidth="800" mc:Ignorable="d">
     
@@ -25,7 +26,7 @@
                                                         VerticalAlignment="Center"
                                                         FontSize="16"
                                                         Foreground="{DynamicResource TextBlock_ForegroundColor}"
-                                                        Text="Game Enhance Mode" TextBlockSemanticColorType="Light" TextBlockType="Caption" />
+                                                        Text="{Binding [Game_Enhance_Mode], Source={x:Static lang:LangHelper.Instance}}" TextBlockSemanticColorType="Light" TextBlockType="Caption" />
                                 <ComboBox Width="200" HorizontalAlignment="Right" VerticalAlignment="Center" DisplayMemberPath="DisplayText" ItemsSource="{Binding GameEnhanceMode_ItemsCollection}" SelectedItem="{Binding SelectedGameEnhancementMode, Mode=TwoWay}" Style="{StaticResource DdpmComboBoxStyle}" TabIndex="1" />
                             </Grid>
                             <Grid Height="40" Margin="0,8" Visibility="{Binding IsSupported_ResponseTime}" IsEnabled="{Binding ResponseTime_IsEnable}" Opacity="{Binding ResponseTime_Opacity}">
@@ -33,7 +34,7 @@
                                                         VerticalAlignment="Center"
                                                         FontSize="16"
                                                         Foreground="{DynamicResource TextBlock_ForegroundColor}"
-                                                        Text="Response Time" TextBlockSemanticColorType="Light" TextBlockType="Caption" />
+                                                        Text="{Binding [Response_Time], Source={x:Static lang:LangHelper.Instance}}" TextBlockSemanticColorType="Light" TextBlockType="Caption" />
                                 <ComboBox Width="200" HorizontalAlignment="Right" VerticalAlignment="Center" DisplayMemberPath="DisplayText" ItemsSource="{Binding ResponseTime_ItemsCollection}" SelectedItem="{Binding SelectedResponseTime, Mode=TwoWay}" Style="{StaticResource DdpmComboBoxStyle}" TabIndex="1" />
                             </Grid>
                             <Grid Height="40" Margin="0,8">
@@ -42,7 +43,7 @@
                                                             VerticalAlignment="Center"
                                                             FontSize="16"
                                                             Foreground="{DynamicResource TextBlock_ForegroundColor}"
-                                                            Text="Resolution and Refresh Rate"
+                                                            Text="{Binding [DisplayProperties.2], Source={x:Static lang:LangHelper.Instance}}"
                                                             TextBlockSemanticColorType="Light"
                                                             TextBlockType="Caption" />
                                     <Grid VerticalAlignment="Center"
@@ -69,7 +70,7 @@
                                                         VerticalAlignment="Center"
                                                         FontSize="16"
                                                         Foreground="{DynamicResource TextBlock_ForegroundColor}"
-                                                        Text="Smart HDR" TextBlockSemanticColorType="Light" TextBlockType="Caption" />
+                                                        Text="{Binding [SmartHDR], Source={x:Static lang:LangHelper.Instance}}" TextBlockSemanticColorType="Light" TextBlockType="Caption" />
                                 <ComboBox Width="200" HorizontalAlignment="Right" VerticalAlignment="Center" DisplayMemberPath="DisplayText" ItemsSource="{Binding HDRType_ItemsCollection}" SelectedItem="{Binding SelectedHDRType, Mode=TwoWay}" Style="{StaticResource DdpmComboBoxStyle}" TabIndex="1" />
                             </Grid>
                             <Grid Height="40" Margin="0,8" Visibility="{Binding IsSupported_DarkStabilizer}" IsEnabled="{Binding DarkStabilizer_IsEnable}" Opacity="{Binding DarkStabilizer_Opacity}">
@@ -77,7 +78,7 @@
                                                         VerticalAlignment="Center"
                                                         FontSize="16"
                                                         Foreground="{DynamicResource TextBlock_ForegroundColor}"
-                                                        Text="Dark Stabilizer" TextBlockSemanticColorType="Light" TextBlockType="Caption" />
+                                                        Text="{Binding [Dark_Stabilizer], Source={x:Static lang:LangHelper.Instance}}" TextBlockSemanticColorType="Light" TextBlockType="Caption" />
                                 <ComboBox Width="200" HorizontalAlignment="Right" VerticalAlignment="Center" DisplayMemberPath="DisplayText" ItemsSource="{Binding DarkStabilizer_ItemsCollection}" SelectedItem="{Binding SelectedDarkStabilizer, Mode=TwoWay}" Style="{StaticResource DdpmComboBoxStyle}" TabIndex="1" />
                             </Grid>
                             <Grid Height="40" Margin="0,8" Visibility="{Binding IsSupported_DarkStabilizer}" IsEnabled="{Binding DarkStabilizer_IsEnable}" Opacity="{Binding DarkStabilizer_Opacity}">
@@ -85,7 +86,7 @@
                                                         VerticalAlignment="Center"
                                                         FontSize="16"
                                                         Foreground="{DynamicResource TextBlock_ForegroundColor}"
-                                                        Text="Dark Stabilizer Toggle" TextBlockSemanticColorType="Light" TextBlockType="Caption" />
+                                                        Text="{Binding [Dark_Stabilizer_Toggle], Source={x:Static lang:LangHelper.Instance}}" TextBlockSemanticColorType="Light" TextBlockType="Caption" />
                                 <UXControls:UXTextBox Width="200"
                                                       Height="40"
                                                       HorizontalAlignment="Right"
@@ -109,7 +110,7 @@
                                                         VerticalAlignment="Center"
                                                         FontSize="16"
                                                         Foreground="{DynamicResource TextBlock_ForegroundColor}"
-                                                        Text="Dual Resolution" TextBlockSemanticColorType="Light" TextBlockType="Caption" />
+                                                        Text="{Binding [Dual_Resolution], Source={x:Static lang:LangHelper.Instance}}" TextBlockSemanticColorType="Light" TextBlockType="Caption" />
                                 <ComboBox Width="200" HorizontalAlignment="Right" VerticalAlignment="Center" DisplayMemberPath="DisplayText" ItemsSource="{Binding DualResolution_ItemsCollection}" SelectedItem="{Binding SelectedDualResolution, Mode=TwoWay}" Style="{StaticResource DdpmComboBoxStyle}" TabIndex="1" />
                             </Grid>
                             <Grid Height="40" Margin="0,8" Visibility="{Binding IsSupported_DualResolution}">
@@ -117,7 +118,7 @@
                                                         VerticalAlignment="Center"
                                                         FontSize="16"
                                                         Foreground="{DynamicResource TextBlock_ForegroundColor}"
-                                                        Text="Dual Resolution Toggle" TextBlockSemanticColorType="Light" TextBlockType="Caption" />
+                                                        Text="{Binding [Dual_Resolution_Toggle], Source={x:Static lang:LangHelper.Instance}}" TextBlockSemanticColorType="Light" TextBlockType="Caption" />
                                 <UXControls:UXTextBox Width="260"
                                                       Height="40"
                                                       HorizontalAlignment="Right"
@@ -141,7 +142,7 @@
                                                         VerticalAlignment="Center"
                                                         FontSize="16"
                                                         Foreground="{DynamicResource TextBlock_ForegroundColor}"
-                                                        Text="Smart HDR" TextBlockSemanticColorType="Light" TextBlockType="Caption" />
+                                                        Text="{Binding [SmartHDR], Source={x:Static lang:LangHelper.Instance}}" TextBlockSemanticColorType="Light" TextBlockType="Caption" />
                                 <ComboBox Width="200" HorizontalAlignment="Right" VerticalAlignment="Center" DisplayMemberPath="DisplayText" ItemsSource="{Binding HDRType_ItemsCollection}" SelectedItem="{Binding SelectedHDRType, Mode=TwoWay}" Style="{StaticResource DdpmComboBoxStyle}" TabIndex="1" />
                             </Grid>
                         </StackPanel>
