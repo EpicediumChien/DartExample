@@ -1,23 +1,9 @@
 ﻿using DDPM.SA.Common;
 using Dell.Client.Framework.Common;
-using Dell.Client.Framework.UX.WPF.Controls;
-using Microsoft.VisualBasic.Logging;
-using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using System.Runtime.InteropServices;
-using System.Security.Policy;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 
 namespace DDPM.QAM
 {
@@ -41,6 +27,14 @@ namespace DDPM.QAM
         [DllImport("user32.dll", SetLastError = true)]
         [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
         private static extern bool SetForegroundWindow(IntPtr hWnd);
+
+        public enum log_type
+        {
+            info = 0,
+            error
+        }
+
+        private ILog Log { get; set; }
 
         private static bool _SetForegroundWindow(IntPtr hWnd)
         {
@@ -79,14 +73,14 @@ namespace DDPM.QAM
                     }
                     else
                     {
-                        //string ddpmExePath = @"C:\Program Files\Dell\Dell Display and Peripheral Manager\DDPM.exe";
-                        string debugPath = "D:\\DDPM\\DDPM.UI\\bin\\net8.0-windows10.0.19041.0\\DDPM.exe";
+                        string ddpmExePath = @"C:\Program Files\Dell\Dell Display and Peripheral Manager\DDPM.exe";
+                        //string debugPath = "D:\\DDPM\\DDPM.UI\\bin\\net8.0-windows10.0.19041.0\\DDPM.exe";
 
                         result = DDPM.SA.Common.Settings.DDPMFileSecurity.StartProcessSafely(
                             null,
                             new ProcessStartInfo
                             {
-                                FileName = debugPath,
+                                FileName = ddpmExePath,
                                 UseShellExecute = true
                             });
 
@@ -94,8 +88,9 @@ namespace DDPM.QAM
                         DdpmCommonHelper.DeviceManagerSA!.SetIsDDPMLaunchByQAMAsync(true);
                     }
                 }
-                catch
+                catch (Exception ex)
                 {
+                    WriteLog($"Catch exception[{ex.Message}]");
                     result = false;
                 }
             }
@@ -103,7 +98,7 @@ namespace DDPM.QAM
             return result;
         }
 
-        public QAMPage(IDeviceManagerSA deviceMangerPlugin)
+        public QAMPage(IDeviceManagerSA deviceMangerPlugin, ILog log)
         {
             InitializeComponent();
             DdpmCommonHelper.DeviceManagerSA = deviceMangerPlugin;
@@ -111,6 +106,7 @@ namespace DDPM.QAM
             DataContext = DdpmCommonHelper.QAMPageViewModel;
 
             Microsoft.Win32.SystemEvents.SessionSwitch += SystemEvents_SessionSwitch;
+            Log = log;
         }
 
         private void SystemEvents_SessionSwitch(object sender, Microsoft.Win32.SessionSwitchEventArgs e)
@@ -133,21 +129,51 @@ namespace DDPM.QAM
 
         private void CloseMyself(bool closedByUser = false)
         {
-            if (CameraSetting != null)
+            try
             {
-                CameraSetting.Close();
-                CameraSetting = null;
+                if (CameraSetting != null)
+                {
+                    CameraSetting.Close();
+                    CameraSetting = null;
+                }
+
+                if (closedByUser)
+                    this.Close();
+                else
+                {
+                    Dispatcher.Invoke(() =>
+                    {
+                        // Access UI elements or objects owned by a different thread
+                        this.Close();
+                    });
+                }
+            }
+            catch (Exception e)
+            {
+                WriteLog($"Catch exception[{e.Message}]");
             }
 
-            if (closedByUser)
-                this.Close();
-            else
+            
+        }
+
+        private void WriteLog(string text,
+            [System.Runtime.CompilerServices.CallerMemberName] string memberName = "",
+            [System.Runtime.CompilerServices.CallerFilePath] string sourceFilePath = "",
+            [System.Runtime.CompilerServices.CallerLineNumber] int sourceLineNumber = 0,
+            log_type log_type = log_type.info)
+        {
+            if (string.IsNullOrEmpty(text))
+                text = "";
+
+            text = $"[QAMPage] {text}, Caller Name:{memberName}, Source Line {sourceLineNumber}";
+            Console.WriteLine(DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss.fff") + " " + text);
+
+            if (Log != null)
             {
-                Dispatcher.Invoke(() =>
-                {
-                    // Access UI elements or objects owned by a different thread
-                    this.Close();
-                });
+                if (log_type == log_type.info)
+                    Log.Info(text);
+                else
+                    Log.Error(text);
             }
         }
 
@@ -186,6 +212,7 @@ namespace DDPM.QAM
                 //DdpmCommonHelper.DeviceManagerSA!.SetIsDDPMLaunchByQAMAsync(true);
 
                 Close_Click(this, null);
+                WriteLog($"Lanuch DDPM successfully!");
             }
             else
                 DdpmCommonHelper.DeviceManagerSA!.SetIsDDPMLaunchByQAMAsync(false);

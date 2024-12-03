@@ -10203,7 +10203,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
                     Thread thread1 = new Thread(() =>
                     {
-                        _QAM = new QAMPage(deviceMangerPlugin);
+                        _QAM = new QAMPage(deviceMangerPlugin, Log);
                         //_QAM.UpdateUINotify += _QAM_UpdateUINotify;
                         _QAM.Closed += QAMCloseEvent;
 

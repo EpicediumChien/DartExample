@@ -323,8 +323,9 @@ namespace DDPM.UI.Module.WebCameraPresenceDetection
                     UseShellExecute = true
                 });
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                DdpmCommonHelper.WriteUILog($"Catch exception[{ex.Message}] when open {url}");
             }
             
         }
