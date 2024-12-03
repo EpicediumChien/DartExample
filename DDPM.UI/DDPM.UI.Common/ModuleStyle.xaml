@@ -1619,6 +1619,10 @@
 
     <!-- #endregion Connection Hover UI -->
 
+    <!-- #region Consent Page -->
+    <SolidColorBrush x:Key="ConsentPage_Background" Color="#13172A" />
+    <!-- #endregion -->
+
     <!-- #region BitmapImage -->
     <BitmapImage x:Key="popup_ArrowCorner" UriSource="pack://application:,,,/DDPM.UI.Common;component/Resources/popup_ArrowCorner.png" />
     <BitmapImage x:Key="down_Expand" UriSource="pack://application:,,,/DDPM.UI.Resources;component/Resources/Images/Down.png" />
@@ -1635,7 +1639,6 @@
 
 
     <!-- #region Icons -->
-
 
     <!-- #region Connection Type Icons (16x16) -->
     <!-- Robert_Lin, 2024-11-29, Usage exmaple:
@@ -1839,6 +1842,8 @@
                   Fill="{Binding Tag, RelativeSource={RelativeSource AncestorType=Canvas}}" />
         </Canvas>
     </ControlTemplate>
+    <!-- endregion -->
+    
     <!-- endregion -->
 
 </ResourceDictionary>
