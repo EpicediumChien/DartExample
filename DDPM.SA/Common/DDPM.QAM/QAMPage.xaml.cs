@@ -200,7 +200,7 @@ namespace DDPM.QAM
             QAMPageViewModel vm = DataContext as QAMPageViewModel;
 
             if (vm != null && vm.CurrentDeviceInfo != null)
-                vm.IsCameraSettingSelected = true;
+                vm.IsCameraSettingSelected = !vm.IsCameraSettingSelected;
         }
 
         private void CallDDPM_Click(object sender, MouseButtonEventArgs e)
@@ -247,11 +247,30 @@ namespace DDPM.QAM
         {
             if (e.LeftButton == MouseButtonState.Pressed)
             {
+                QAMPageViewModel vm = DataContext as QAMPageViewModel;
+                if (vm != null && vm.CurrentDeviceInfo != null)
+                {
+                    vm.IsDragging = true;
+                }
+
                 this.DragMove();
                 if (CameraSetting != null)
                 {
+                    //Make sure CameraSetting & QAMPage in same screen
+                    System.Drawing.Point cursorPosition = System.Windows.Forms.Cursor.Position;
+                    Screen screen = Screen.FromPoint(cursorPosition);
+                    if (this.Left + this.Width + CameraSetting.Width > screen.Bounds.Right)
+                    {
+                        this.Left = screen.Bounds.Right - this.Width - CameraSetting.Width;
+                    }
+
                     CameraSetting.Left = this.Left + this.Width;
                     CameraSetting.Top = this.Top;
+                }
+
+                if (vm != null && vm.CurrentDeviceInfo != null)
+                {
+                    vm.IsDragging = false;
                 }
             }
         }

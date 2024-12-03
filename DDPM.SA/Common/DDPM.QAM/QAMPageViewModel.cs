@@ -296,6 +296,21 @@ namespace DDPM.QAM
             DdpmCommonHelper.DeviceManagerSA!.SetZoom(CurrentDeviceInfo!.ID.ToString(), _ZoomValue);
         }
         #endregion
+
+        #region Dragging
+        private bool _isDragging = false;
+        public bool IsDragging
+        {
+            get { return _isDragging; }
+            set
+            {
+                _isDragging = value;
+                OnPropertyChanged("IsDragging");
+            }
+        }
+        #endregion
+
+
         public void RefreshUI()
         {
             if (_AutoFramingStatus)
