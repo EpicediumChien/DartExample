@@ -13125,8 +13125,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 List<InputSourceObj> defaultList = new List<InputSourceObj>();
                 defaultList.Add(new InputSourceObj(crtInput));
                 defaultList.AddRange(subInputs);
-                if (hotkey != null)
-                    GetInputSourceHotKeyDataAndSaveNewBack(monitorInfo, hotkey.Job, defaultList);
                 if (subInputs == null || subInputs.Count == 0)
                 {
                     writelog($"Kvm_SwitchInputSource:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}], USBKVM_switch_PCs inputsource is null and subInputs is empty, do nothing");
@@ -13137,6 +13135,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     list.AddRange(defaultList);
                     writelog($"Kvm_SwitchInputSource:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}], USBKVM_switch_PCs inputsource is null, use [default] current inputsoure and subinputs");
                 }
+                if (hotkey != null)
+                    GetInputSourceHotKeyDataAndSaveNewBack(monitorInfo, hotkey.Job, defaultList);
             }
             // InputSourceObj switchTo = hotkey.InputSource.FirstOrDefault(x => !x.Name.Equals(crtInput));
             string nextInput = string.Empty;
