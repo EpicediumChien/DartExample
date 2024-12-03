@@ -12,6 +12,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Dell.Client.Framework.UX.WPF.ResourceManager;
 using System.Windows;
+using DDPM.UI.Common;
 
 namespace DDPM.UI.Module.WebCameraSettings.Tests
 {
@@ -45,6 +46,7 @@ namespace DDPM.UI.Module.WebCameraSettings.Tests
             log = logMock.Object;
             deviceManagerMock = new Mock<IDeviceManagerSA>();
             deviceManager = deviceManagerMock.Object;
+            DdpmCommonHelper.DeviceManagerSA = deviceManagerMock.Object;
             vm = new WebCameraViewModel(console, log) { CurrentDeviceInfo = new DeviceInfo() };
             webCameraSettingsRightView = new WebCameraSettingsRightView(vm);
             privateObject = new PrivateObject(webCameraSettingsRightView);

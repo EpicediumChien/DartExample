@@ -1,9 +1,11 @@
 ﻿using NGA.UnitTest.PrivateObject;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Controls;
 
 namespace DDPM.Easy.Common.Tests
@@ -18,6 +20,8 @@ namespace DDPM.Easy.Common.Tests
         [SetUp]
         public void Setup()
         {
+            var settings = new ObservableCollection<GridLength>() { new GridLength(), new GridLength(), new GridLength(), new GridLength(), new GridLength(), new GridLength(), new GridLength(), new GridLength() };
+            vm = new SplitCtrlVM() { Settings = settings };
             splitCtrl4D = new SplitCtrl4D();
             privateObject = new PrivateObject(splitCtrl4D);
         }
@@ -47,6 +51,11 @@ namespace DDPM.Easy.Common.Tests
             splitCtrl4D.CellList = CellList;
             // Assert
             Assert.That(splitCtrl4D.CellList, Is.Not.Null);
+
+            vm.IsVertical = true;
+            splitCtrl4D.CellList = CellList;
+            // Assert
+            Assert.That(splitCtrl4D.CellList, Is.Not.Null);
         }
 
         [Test]
@@ -55,6 +64,50 @@ namespace DDPM.Easy.Common.Tests
             try
             {
                 splitCtrl4D.InitCellList();
+                Assert.True(true);
+            }
+            catch (Exception ex)
+            {
+                Assert.Fail("not invoked");
+            }
+        }
+
+        [Test]
+        public void TestUpdateRatioRectsFromSettings()
+        {
+            var settings = new ObservableCollection<GridLength>() { };
+            vm = new SplitCtrlVM() { Settings = settings };
+            privateObject = new PrivateObject(splitCtrl4D);
+            privateObject.SetFieldOrProperty("vm", vm);
+            try
+            {
+                splitCtrl4D.UpdateRatioRectsFromSettings();
+                Assert.True(true);
+            }
+            catch (Exception ex)
+            {
+                Assert.Fail("not invoked");
+            }
+
+            settings = new ObservableCollection<GridLength>() { new GridLength(), new GridLength(), new GridLength(), new GridLength(), new GridLength() };
+            vm = new SplitCtrlVM() { Settings = settings };
+            vm.IsVertical = true;
+            privateObject.SetFieldOrProperty("vm", vm);
+            try
+            {
+                splitCtrl4D.UpdateRatioRectsFromSettings();
+                Assert.True(true);
+            }
+            catch (Exception ex)
+            {
+                Assert.Fail("not invoked");
+            }
+
+            vm.IsVertical = false;
+            privateObject.SetFieldOrProperty("vm", vm);
+            try
+            {
+                splitCtrl4D.UpdateRatioRectsFromSettings();
                 Assert.True(true);
             }
             catch (Exception ex)
