@@ -644,7 +644,8 @@
                                             AutomationProperties.Name="ToggleSwitchLeft"
                                             Content="{Binding Path=AutoBrightness_String}"
                                             ContentPlacement="Left"
-                                            ContentTextVisibility="True"                                        
+                                            ContentTextVisibility="True"
+                                            Foreground="{DynamicResource TextBlock_ForegroundColor}"
                                             IsChecked="{Binding Path=AutoBrightnessStatus}"
                                             IsEnabled="{Binding Path=SupportedAutoBrightness}"
                                             IsTabStop="False" />
@@ -826,6 +827,7 @@
                                             Content="{Binding Path=AutoColorTemp_String}"
                                             ContentPlacement="Left"
                                             ContentTextVisibility="True"
+                                            Foreground="{DynamicResource TextBlock_ForegroundColor}"
                                             IsChecked="{Binding Path=AutoColorTempStatus}" />
                                         <!--  IsEnabled="{Binding Path=SupportedColorTemp}"  -->
                                         <Border
@@ -928,6 +930,7 @@
                                             Content="{Binding Path=PrimaryMonitorSync_String}"
                                             ContentPlacement="Left"
                                             ContentTextVisibility="True"
+                                            Foreground="{DynamicResource TextBlock_ForegroundColor}"
                                             IsChecked="{Binding Path=PrimaryMonitorSyncStatus}"
                                             IsEnabled="{Binding Path=SupportedPrimaryMonitorSync}" />
                                         <Border
@@ -1966,7 +1969,7 @@
                                                         HorizontalAlignment="Left"
                                                         VerticalAlignment="Center"
                                                         FontSize="16"
-                                                        Foreground="White"
+                                                        Foreground="{DynamicResource TextBlock_ForegroundColor}"
                                                         Text="{Binding [Luminance], Source={x:Static lang:LangHelper.Instance}}"
                                                         TextBlockSemanticColorType="Light"
                                                         TextBlockType="Display1" />
@@ -2073,7 +2076,7 @@
                                                             HorizontalAlignment="Left"
                                                             VerticalAlignment="Center"
                                                             FontSize="16"
-                                                            Foreground="White"
+                                                            Foreground="{DynamicResource TextBlock_ForegroundColor}"
                                                             Text="{Binding [Brightness.18], Source={x:Static lang:LangHelper.Instance}}"
                                                             TextBlockSemanticColorType="Light"
                                                             TextBlockType="Display1" />
@@ -2086,7 +2089,7 @@
                                                             BorderBrush="#7E7E7E"
                                                             BorderThickness="1"
                                                             FontSize="14"
-                                                            Foreground="White"
+                                                            Foreground="{DynamicResource TextBlock_ForegroundColor}"
                                                             IsEnabled="{Binding IsPR_Luminance_Preview, Converter={StaticResource boolReverseConverter}}"
                                                             MaxLength="30"
                                                             PreviewTextInput="InputName_PreviewTextInput"

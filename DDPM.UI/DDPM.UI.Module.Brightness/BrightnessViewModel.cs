@@ -1296,6 +1296,7 @@ namespace DDPM.UI.Module.Brightness
                     Update_SupportedPrimaryMonitorSync(Start_ALSConfig.isAutoBrightness, Start_ALSConfig.isAutoColorTemp);
                 }
                 NotifyPropertyChanged("isAlsSupported");
+                NotifyPropertyChanged("IsScheduledShow");
             }
         }
 
