@@ -1186,6 +1186,9 @@ namespace DDPM.SA.Common
 
         Task<bool> WriteSerializedContentToFile(string filePath, string content);
 
+        // add @ 20241202 stephen
+        void updateFWUpdateInfoPackage(FWUpdateInfoPackage pkg);
+
         #endregion GlobalSetting
 
         #region System Suspend & Resume

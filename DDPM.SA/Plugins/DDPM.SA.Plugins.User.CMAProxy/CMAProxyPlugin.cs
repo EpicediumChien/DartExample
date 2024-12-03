@@ -233,6 +233,9 @@ namespace DDPM.SA.Plugins.User.CMAProxy
             }
             _CMAManagerPlugin.CMARequestEvent += _CMAManagerPlugin_CMARequestEvent;
             _DevManagerPlugin.DeviceChanged += _deviceManager_DeviceChanged;
+
+            _DevManagerPlugin.DownloadAndInstall_Result_Notify += _FwUpdateStatus;  // add @ 20241129 stephen
+
             relay_registered = true;
         }
 
@@ -266,6 +269,12 @@ namespace DDPM.SA.Plugins.User.CMAProxy
 
                 //Do calculation here
             });
+        }
+
+        // add @ 20241129 stephen
+        private async void _FwUpdateStatus(object? sender, List<FWUpdateInfo> e)
+        {
+            _CMAManagerPlugin.UpdateFwStatus(e);
         }
 
         private async void _deviceManager_DeviceChanged(object? sender, DeviceChangedEventArgs e)

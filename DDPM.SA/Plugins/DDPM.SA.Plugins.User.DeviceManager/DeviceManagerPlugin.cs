@@ -5083,6 +5083,12 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         #region FW Update implementation
 
+        // add @ 20241202 stephen
+        public void updateFWUpdateInfoPackage(FWUpdateInfoPackage pkg)
+        {
+            _FWUpdatePlugin.setFWUpdateInfoPackage(pkg);
+        }
+
         public Task<FWUpdateInfoPackage> GetFWUpdateInfo(bool isShowNotify = true, bool isForce = false, bool isDefer = false, List<DeviceType> deviceTypeList = null, bool UODMode = false, bool isOnlyDisplay = false, bool reScan = true, bool isUITrigger = false, List<string> giuds = null, List<string> serviceTags = null, List<string> models = null, string minVersion = "")
         {
             writelog("[DeviceMangerPlugin] GetFWUpdateInfo start");
