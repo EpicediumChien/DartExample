@@ -1,4 +1,6 @@
-﻿using System.Globalization;
+﻿using DDPM.UI.Common;
+using Dell.Client.Framework.UX.WPF.Controls;
+using System.Globalization;
 using System.Windows;
 using System.Windows.Data;
 using System.Windows.Media;
@@ -79,6 +81,32 @@ namespace DDPM.UI.Module.Brightness
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    public class CustomBooleanToBrushConverter : IValueConverter
+    {
+        public Brush FalseBrushLightTheme { get; set; }
+        public Brush FalseBrushDarkTheme { get; set; }
+        public Brush TrueBrush { get; set; }
+
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            bool isTrue = (bool)value;
+
+            if (DdpmCommonHelper.previousOsTheme == OSThemeEnum.Dark)
+            {
+                return isTrue ? TrueBrush : FalseBrushDarkTheme;
+            }
+            else
+            {
+                return isTrue ? TrueBrush : FalseBrushLightTheme;
+            }
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
             throw new NotImplementedException();
         }

@@ -652,15 +652,6 @@ namespace DDPM.UI.Module.Kvm
                     //usbsList = new List<string>();
                     isUSBKVMButton = true;
                     USBKVMButtonOpacity = 1;
-                    //_isUSBKVM = KvmModule.isUSBKVM;
-                    ////if (USBKVMisON)
-                    ////{
-                    ////    _isUSBKVM = true;
-                    ////}
-                    ///*else*/ if (NKVMisON)
-                    //{
-                    //    _isNKVM = true;
-                    //}
 
                     if (mi.CapabilityDic.ContainsKey("E8"))
                     {
@@ -713,6 +704,19 @@ namespace DDPM.UI.Module.Kvm
                 {
                     _log?.Debug("[KvmViewModel]isScreenPartition.");
                     return;
+                }
+
+                if (!NKVMisON && !USBKVMisON)
+                {
+                    _isNoKVM = true;
+                }
+                else if (USBKVMisON)
+                {
+                    _isUSBKVM = true;
+                }
+                else if (NKVMisON)
+                {
+                    _isNKVM = true;
                 }
 
                 if (mi.CapabilityDic.ContainsKey("EE"))
@@ -970,24 +974,6 @@ namespace DDPM.UI.Module.Kvm
 
         private void RunWorkerCompleted_RefreshData(object sender, RunWorkerCompletedEventArgs e)
         {
-            USBKVMisON = KvmModule.isUSBKVM;
-            //if (USBKVMisON)
-            //{
-            //    _isUSBKVM = true;
-            //}
-            /*else*/
-            if (!NKVMisON && !USBKVMisON)
-            {
-                _isNoKVM = true;
-            }
-            else if (USBKVMisON)
-            {
-                _isUSBKVM = true;
-            }
-            else if (NKVMisON)
-            {
-                _isNKVM = true;
-            }
             IsBusy = false;
             //Handling the result and final process
         }

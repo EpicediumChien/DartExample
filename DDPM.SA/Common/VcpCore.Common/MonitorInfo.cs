@@ -70,8 +70,6 @@ namespace VcpCore.Common
             //    return b0;
 
             return (other is not null) &&
-                   //(CapabilityDic.Count == other.CapabilityDic.Count) &&
-                   //(!CapabilityDic.Except(other.CapabilityDic).Any()) &&
                    (AliasDeviceName == other.AliasDeviceName) &&
                    (IsDellMonitor == other.IsDellMonitor) &&
                    (Index == other.Index) &&
@@ -93,7 +91,25 @@ namespace VcpCore.Common
         //If override Equals, need to implement GetHashCode also
         public override int GetHashCode()
         {
-            return CapabilityString.GetHashCode();
+            return new
+            {
+                AliasDeviceName,
+                IsDellMonitor,
+                Index,
+                CapabilityString,
+                DisplayName,
+                DDCisON,
+                FwVersion,
+                inputSource,
+                inputCable,
+                modelName,
+                series,
+                MarketingName,
+                ImageFileName,
+                SupplierID,
+                D_Ctrl,
+                edid,
+            }.GetHashCode();
         }
     }
 }
