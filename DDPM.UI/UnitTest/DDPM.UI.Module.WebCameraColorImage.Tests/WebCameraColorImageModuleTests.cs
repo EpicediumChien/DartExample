@@ -12,6 +12,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using Dell.Client.Framework.UX.WPF.ResourceManager;
+using DDPM.UI.Common;
 
 namespace DDPM.UI.Module.WebCameraColorImage.Tests
 {
@@ -45,6 +46,7 @@ namespace DDPM.UI.Module.WebCameraColorImage.Tests
             log = logMock.Object;
             deviceManagerMock = new Mock<IDeviceManagerSA>();
             deviceManager = deviceManagerMock.Object;
+            DdpmCommonHelper.DeviceManagerSA = deviceManager;
             vm = new WebCameraViewModel(console, log) { CurrentDeviceInfo = new DeviceInfo() };
             webCameraColorImageModule = new WebCameraColorImageModule(vm);
             privateObject = new PrivateObject(webCameraColorImageModule);
