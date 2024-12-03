@@ -424,5 +424,17 @@ namespace NGA.ThickClient
             if (_Console != null)
                 _Console.RaiseEvent(ConsoleEventNames.MainWindow_DeActivate, this, new EventManagerArgs());
         }
+        private void Window_StateChanged(object sender, EventArgs e)
+        {
+            if (this.WindowState == WindowState.Maximized)
+            {
+                AdjustWindowSizeBasedOnMonitor();
+                // Debug.WriteLine("Fullscreen button clicked!");
+            }
+            else if (this.WindowState == WindowState.Minimized)
+            {
+                // Debug.WriteLine("Window minimized.");
+            }
+        }
     }
 }
