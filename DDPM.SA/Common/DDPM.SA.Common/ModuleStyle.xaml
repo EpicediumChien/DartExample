@@ -59,6 +59,11 @@
         <Setter Property="Background"
                 Value="{DynamicResource Default_SA_QAM_Select_BackGround}" />
     </Style>
+
+    <SolidColorBrush x:Key="Default_SA_QAM_Close_Hover"
+                     Color="#BB2A23" />
+    <SolidColorBrush x:Key="Default_SA_QAM_Dragging_Hover"
+                     Color="#839DB4" />
     <Style x:Key="BorderUnpair"
            TargetType="Border">
         <Setter Property="Background"
