@@ -212,6 +212,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                             _HasRegisted = true;
                             _deviceManager.DeviceChanged += _deviceManager_DeviceChanged;
                             _deviceManager.VCPchanged += _deviceManager_VCPchanged;
+                            _deviceManager.UIUpdateNotify += _deviceManager_UIUpdateNotify;
 
                             //Move to call from OnActivated( ) => Failed, it's called too late
                             //So uncommented below code
@@ -298,6 +299,19 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                 _lock.Release();
                 _log.Trace($"{nameof(GetCurrentDeviceManagerPluginPluginCondition)} unlock");
             }
+        }
+
+        private void _deviceManager_UIUpdateNotify(object? sender, UpdateUINotify e)
+        {
+            //Derek 1127
+            if (e == null || e.UI_Field_Name == null || e == UpdateUINotify.Empty)
+                return;
+
+            _log.Info($"_deviceManager_UIUpdateNotify executed msg is {e.UI_Field_Name}");
+            //System.Windows.MessageBox.Show(e.UI_Field_Name);
+
+            if (e.UI_Field_Name.StartsWith("QAMEvent_StartPreview"))
+                _showPluginManager?.ShowPluginById(DDPM.UI.Common.Constants.WebCameraPluginId);
         }
 
         private async void _deviceManager_DeviceChanged(object? sender, DeviceChangedEventArgs e)

@@ -158,6 +158,8 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             DdpmCommonHelper.DeviceManagerSA!.DeviceChanged += DeviceManager_DeviceChanged;
             DdpmCommonHelper.DeviceManagerSA!.UIUpdateNotify += WebCameraplugin_UIUpdateNotify;
             Mouse.OverrideCursor = null;
+
+            DdpmCommonHelper.DeviceManagerSA!.SetIsDDPMLaunchByQAMAsync(false);
         }
 
         private void WebCameraplugin_UIUpdateNotify(object? sender, UpdateUINotify e)
