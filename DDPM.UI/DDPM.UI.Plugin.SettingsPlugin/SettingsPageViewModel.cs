@@ -174,23 +174,6 @@ namespace DDPM.UI.Plugin.SettingsPlugin
         {
             IsBusy = false;
             OnPropertyChanged("IsBusy");
-            if (SWUpdateInfoPackage.SWUpdateInfo.Count >= 1)
-            {
-                InterruptScreenRoot myDeserializedClass = DdpmCommonHelper.DeviceManagerSA.InterruptScreen_Metadata().Result;
-                if (myDeserializedClass != null)
-                {
-                    bool? b = false;
-                    Dispatcher.CurrentDispatcher.BeginInvoke(new Action(() =>
-                    {
-                        InterruptScreen interruptScreen = new InterruptScreen(SWUpdateInfoPackage.SWUpdateInfo[0].TheLatestVersion, myDeserializedClass);
-                        b = interruptScreen.ShowDialog();
-                        if (b == true)
-                        {
-                            SetSelected(1);
-                        }
-                    }));
-                }
-            }
         }
         private void DoWork_RefreshData_1(object sender, DoWorkEventArgs e)
         {
@@ -208,6 +191,23 @@ namespace DDPM.UI.Plugin.SettingsPlugin
         {
             IsBusy_UpdatePage = false;
             OnPropertyChanged("IsBusy_UpdatePage");
+            if (SWUpdateInfoPackage != null && SWUpdateInfoPackage.SWUpdateInfo != null && SWUpdateInfoPackage.SWUpdateInfo.Count >= 1)
+            {
+                InterruptScreenRoot myDeserializedClass = DdpmCommonHelper.DeviceManagerSA.InterruptScreen_Metadata().Result;
+                if (myDeserializedClass != null)
+                {
+                    bool? b = false;
+                    Dispatcher.CurrentDispatcher.BeginInvoke(new Action(() =>
+                    {
+                        InterruptScreen interruptScreen = new InterruptScreen(SWUpdateInfoPackage.SWUpdateInfo[0].TheLatestVersion, myDeserializedClass);
+                        b = interruptScreen.ShowDialog();
+                        if (b == true)
+                        {
+                            SetSelected(1);
+                        }
+                    }));
+                }
+            }
         }
         #region General
         public GlobalSettingParam GlobalSettingParam { get; set; }
