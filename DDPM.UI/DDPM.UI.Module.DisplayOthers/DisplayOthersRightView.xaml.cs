@@ -280,7 +280,13 @@ namespace DDPM.UI.Module.DisplayOthers
                             _dlg_loading.CloseByCaller();
                             _dlg_loading = null;
                         }
-                    })); 
+                    }));
+                    break;
+                case "result_fail":
+                    Dispatcher.Invoke(new Action(() =>
+                    {
+                        DisplayMsgBox("Fail", "Unable to import different model");
+                    }));
                     break;
                 case "result_success":
                     Dispatcher.Invoke(new Action(() =>
