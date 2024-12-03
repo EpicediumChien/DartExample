@@ -800,6 +800,8 @@ namespace DDPM.UI.Plugin.ViewModels
         public override bool SetCurrentDevice(string deviceID)
         {
             _log.Info($"[HeadsetViewModel] SetCurrentDevice ...");
+            if (!IsDTPReady)
+                return false;
             //deviceID ??= DeviceInfos.Values.ToList().FirstOrDefault()!.ID.ToString();
             if (!base.SetCurrentDevice(deviceID))
                 return false;
@@ -961,6 +963,7 @@ namespace DDPM.UI.Plugin.ViewModels
             try
             {
                 _log.Info($"[HeadsetViewModel] Print before property ...UpdateDTPValue ... in");
+
                 if (DeviceInfoDTP == null)
                 {
                     DeviceInfoDTP = new DeviceInfoDTP();
@@ -970,7 +973,7 @@ namespace DDPM.UI.Plugin.ViewModels
                 _log.Info($"[HeadsetViewModel] Print after property ......");
                 _log.Info($"[HeadsetViewModel] ***********************************************************************");
 
-                object varr = await _deviceManager.GetHeadsetDeviceItemsExAsync();
+                //object varr = await _deviceManager.GetHeadsetDeviceItemsExAsync();
 
                 //Read this Headset Support function
                 if (await _deviceManager.GetIsANCSupportedAsync(CurrentDeviceID.ToString()))
