@@ -13095,8 +13095,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
             Debug.WriteLine($"Kvm_SwitchInputSource:current inputsource= {monitorInfo.inputSource}");
             writelog($"Kvm_SwitchInputSource:current inputsource= {monitorInfo.inputSource}");
-            HotkeyInfo hotkey = (HotkeyInfo)param[0];
-            List<InputSourceObj> list = (List<InputSourceObj>)param[1];// GetInputSourceHotKeyData(monitorInfo);
+            HotkeyInfo hotkey = (HotkeyInfo)param.ElementAtOrDefault(0);
+            List<InputSourceObj> list = (List<InputSourceObj>)param.ElementAtOrDefault(1);// GetInputSourceHotKeyData(monitorInfo);
             string crtInput = monitorInfo.inputSource;
             if (list == null | list.Count == 0)//hotkey.InputSource.Count == 0)
             {
@@ -13110,17 +13110,17 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 List<InputSourceObj> defaultList = new List<InputSourceObj>();
                 defaultList.Add(new InputSourceObj(crtInput));
                 defaultList.AddRange(subInputs);
-                GetInputSourceHotKeyDataAndSaveNewBack(monitorInfo, hotkey.Job, defaultList);
+                if (hotkey != null)
+                    GetInputSourceHotKeyDataAndSaveNewBack(monitorInfo, hotkey.Job, defaultList);
                 if (subInputs == null || subInputs.Count == 0)
                 {
-
                     writelog($"Kvm_SwitchInputSource:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}], USBKVM_switch_PCs inputsource is null and subInputs is empty, do nothing");
                     return;
                 }
                 else
                 {
                     list.AddRange(defaultList);
-                    writelog($"Kvm_SwitchInputSource:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}], USBKVM_switch_PCs inputsource is null, update to [default] current inputsoure and subinputs");
+                    writelog($"Kvm_SwitchInputSource:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}], USBKVM_switch_PCs inputsource is null, use [default] current inputsoure and subinputs");
                 }
             }
             // InputSourceObj switchTo = hotkey.InputSource.FirstOrDefault(x => !x.Name.Equals(crtInput));
