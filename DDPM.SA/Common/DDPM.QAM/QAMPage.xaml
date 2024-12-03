@@ -24,8 +24,23 @@
     <Border BorderThickness="2"
             BorderBrush="{StaticResource VbarItem_HiBdColor}" 
             CornerRadius="10">
+        <!-- 
         <Border Background="{DynamicResource Default_SA_QAM_BackGround}"
-                CornerRadius="10">
+                CornerRadius="10"> -->
+        <Border CornerRadius="10">
+            <Border.Style>
+                <Style TargetType="Border">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding IsDragging}" Value="True">
+                            <Setter Property="Background" Value="{DynamicResource Default_SA_QAM_Dragging_Hover}"/>
+                        </DataTrigger>
+
+                        <DataTrigger Binding="{Binding IsDragging}" Value="False">
+                            <Setter Property="Background" Value="{DynamicResource Default_SA_QAM_BackGround}"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Border.Style>
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="32" />
