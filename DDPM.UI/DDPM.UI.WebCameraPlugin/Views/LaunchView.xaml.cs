@@ -255,8 +255,8 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
         public void check_PresenceFunction()
         {
 
-            //確認規格前暫時不生效處理
-            //return;
+            //確認規格前暫時不生效處理,尚須跟Alex驗證
+            return;
 
             print_debug("check_PresenceFunction() start");
 
