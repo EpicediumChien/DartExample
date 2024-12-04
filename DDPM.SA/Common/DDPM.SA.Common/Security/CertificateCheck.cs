@@ -16,7 +16,14 @@ namespace DDPM.SA.Common.Security
     {
         private Logs? _logs;
         //private string[] Issuer = new string[] { "Entrust Certification Authority - L1F" };
-        private string[] Subject = new string[] { "content-cdn.dell.com", "www.dell.com" };//change from *.dell.com to www.dell.com
+        private string[] Subject = new string[] 
+        { 
+            "content-cdn.dell.com", 
+            "www.dell.com",
+            "downloads.dell.com",
+            "ftp.dell.com",
+            "clientperipherals.dell.com"
+        };//change from *.dell.com to www.dell.com
         public CertificateCheck(Logs logs)
         {
             _logs = logs;
