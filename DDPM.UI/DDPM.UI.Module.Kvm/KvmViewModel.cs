@@ -1078,10 +1078,10 @@ namespace DDPM.UI.Module.Kvm
             OnPropertyChanged("HasCap_PipSmall");
             OnPropertyChanged("HasCap_PipLarge");
             OnPropertyChanged("HasCap_PipTogglePosition");
-            OnPropertyChanged(PC1_Input);
-            OnPropertyChanged(PC2_Input);
-            OnPropertyChanged(PC3_Input);
-            OnPropertyChanged(PC4_Input);
+            OnPropertyChanged("PC1_Input");
+            OnPropertyChanged("PC2_Input");
+            OnPropertyChanged("PC3_Input");
+            OnPropertyChanged("PC4_Input");
         }
 
         public bool HasPxpCap(UInt16 cap)
@@ -1257,10 +1257,10 @@ namespace DDPM.UI.Module.Kvm
                     }
                 }
             }
-            OnPropertyChanged(PC1_Input);
-            OnPropertyChanged(PC2_Input);
-            OnPropertyChanged(PC3_Input);
-            OnPropertyChanged(PC4_Input);
+            OnPropertyChanged("PC1_Input");
+            OnPropertyChanged("PC2_Input");
+            OnPropertyChanged("PC3_Input");
+            OnPropertyChanged("PC4_Input");
         }
 
         #endregion VideoSwap control and content
@@ -1299,10 +1299,10 @@ namespace DDPM.UI.Module.Kvm
             Border2Visibility = Visibility.Collapsed;
             Border3Visibility = Visibility.Collapsed;
             Border4Visibility = Visibility.Collapsed;
-            OnPropertyChanged(PC1_Input);
-            OnPropertyChanged(PC2_Input);
-            OnPropertyChanged(PC3_Input);
-            OnPropertyChanged(PC4_Input);
+            OnPropertyChanged("PC1_Input");
+            OnPropertyChanged("PC2_Input");
+            OnPropertyChanged("PC3_Input");
+            OnPropertyChanged("PC4_Input");
         }
 
         public void PC2Click()
@@ -1311,10 +1311,10 @@ namespace DDPM.UI.Module.Kvm
             Border2Visibility = Visibility.Visible;
             Border3Visibility = Visibility.Collapsed;
             Border4Visibility = Visibility.Collapsed;
-            OnPropertyChanged(PC1_Input);
-            OnPropertyChanged(PC2_Input);
-            OnPropertyChanged(PC3_Input);
-            OnPropertyChanged(PC4_Input);
+            OnPropertyChanged("PC1_Input");
+            OnPropertyChanged("PC2_Input");
+            OnPropertyChanged("PC3_Input");
+            OnPropertyChanged("PC4_Input");
         }
 
         public void PC3Click()
@@ -1323,10 +1323,10 @@ namespace DDPM.UI.Module.Kvm
             Border2Visibility = Visibility.Collapsed;
             Border3Visibility = Visibility.Visible;
             Border4Visibility = Visibility.Collapsed;
-            OnPropertyChanged(PC1_Input);
-            OnPropertyChanged(PC2_Input);
-            OnPropertyChanged(PC3_Input);
-            OnPropertyChanged(PC4_Input);
+            OnPropertyChanged("PC1_Input");
+            OnPropertyChanged("PC2_Input");
+            OnPropertyChanged("PC3_Input");
+            OnPropertyChanged("PC4_Input");
         }
 
         public void PC4Click()
@@ -1335,10 +1335,10 @@ namespace DDPM.UI.Module.Kvm
             Border2Visibility = Visibility.Collapsed;
             Border3Visibility = Visibility.Collapsed;
             Border4Visibility = Visibility.Visible;
-            OnPropertyChanged(PC1_Input);
-            OnPropertyChanged(PC2_Input);
-            OnPropertyChanged(PC3_Input);
-            OnPropertyChanged(PC4_Input);
+            OnPropertyChanged("PC1_Input");
+            OnPropertyChanged("PC2_Input");
+            OnPropertyChanged("PC3_Input");
+            OnPropertyChanged("PC4_Input");
         }
 
         public void OpenNKVMUI(int index, int x, int y)
