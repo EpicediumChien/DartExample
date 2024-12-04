@@ -233,7 +233,6 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             in_CameraPlugin = true;
 
             CheckUSBtype();
-
             check_PresenceFunction();
 
             DdpmCommonHelper.BitmapImageUpdated += ImageUpdate;
@@ -304,7 +303,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             //現在規格已經不需要判斷韌體奇偶數直接從 is_EsiSupport 判斷就好
 
             //硬體與條件狀態模擬測試 rd測試用
-            if( File.Exists(@"C:\ui_cond\ddpm_cond.txt"))
+            if (File.Exists(@"C:\ui_cond\ddpm_cond.txt"))
             {
                 ui_cond cond = JsonConvert.DeserializeObject<ui_cond>(File.ReadAllText(@"C:\ui_cond\ddpm_cond.txt"));
 
@@ -316,7 +315,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                 AllSupportedResolutions = cond.AllSupportedResolutions;
             }
 
-            print_debug("is_EsiSupport:"+ is_EsiSupport);
+            print_debug("is_EsiSupport:" + is_EsiSupport);
             print_debug("is_WindwosHelloSupport:" + is_WindwosHelloSupport);
             print_debug("is_camera_internal:" + is_camera_internal);
             print_debug("is_WindowsVer_OK:" + is_WindowsVer_OK);
@@ -414,7 +413,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                 {
                     print_debug("s13");
                     //PRESENCE DETECTION SECTION
-                    _vm.UPD_Visibility = Visibility.Collapsed ;
+                    _vm.UPD_Visibility = Visibility.Collapsed;
 
                     //隱藏 windiows hello setting
                     _vm.brdHello_show_control = Visibility.Collapsed;//隱藏攝影機控制區windows helllo設定
@@ -440,7 +439,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
         {
             Console.WriteLine(str);
             if (Directory.Exists(@"C:\ui_cond"))
-                File.AppendAllText( @"C:\ui_cond\ui_cond.log", DateTime.Now.ToString("yyyy-MM-dd h:mm:tt") + "#"+str+"\r\n");
+                File.AppendAllText(@"C:\ui_cond\ui_cond.log", DateTime.Now.ToString("yyyy-MM-dd h:mm:tt") + "#" + str + "\r\n");
         }
 
 
@@ -549,7 +548,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                 AllSupportedResolutions = cond.AllSupportedResolutions;
             }
 
-            print_debug("s3 - " + AllSupportedResolutions );
+            print_debug("s3 - " + AllSupportedResolutions);
 
             switch (model)
             {
