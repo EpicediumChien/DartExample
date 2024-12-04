@@ -1879,6 +1879,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Customize.
         ///   Looks up a localized string similar to Custom Color HDR.
         /// </summary>
         internal static string Custom_Color_HDR {
@@ -1942,6 +1943,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Device-specific.
         ///   Looks up a localized string similar to Desktop.
         /// </summary>
         internal static string Desktop {
@@ -1978,6 +1980,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Disconnect all USB storage devices from monitor..
         ///   Looks up a localized string similar to Disable.
         /// </summary>
         internal static string Disable {
@@ -2005,6 +2008,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Display Color Preset and Easy Memory.
         ///   Looks up a localized string similar to Display Alignment.
         /// </summary>
         internal static string Display_Alignment {
@@ -2023,6 +2027,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Are you sure you want to restore all default settings on your device?.
         ///   Looks up a localized string similar to Display HDR.
         /// </summary>
         internal static string Display_HDR {
@@ -3004,6 +3009,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Windows or more.
         ///   Looks up a localized string similar to Extreme.
         /// </summary>
         internal static string Extreme {
@@ -3022,7 +3028,26 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to File corrupted.
         ///   Looks up a localized string similar to Fast.
+        /// </summary>
+        internal static string File_corrupted {
+            get {
+                return ResourceManager.GetString("File_corrupted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to File is corrupted.Please select another file.
+        /// </summary>
+        internal static string File_corruptedMsg {
+            get {
+                return ResourceManager.GetString("File_corruptedMsg", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Finish.
         /// </summary>
         internal static string Fast {
             get {
@@ -3058,6 +3083,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Fullscreen.
         ///   Looks up a localized string similar to Frame Rate.
         /// </summary>
         internal static string Frame_Rate {
@@ -3085,6 +3111,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Gaming.
         ///   Looks up a localized string similar to Game HDR.
         /// </summary>
         internal static string Game_HDR {
@@ -3112,6 +3139,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Headset, speakerphone and soundbar mute/unmute.
         ///   Looks up a localized string similar to HDRPeak1000.
         /// </summary>
         internal static string HDRPeak1000 {
@@ -3886,6 +3914,25 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Fail.
+        ///   Looks up a localized string similar to Input Source.
+        /// </summary>
+        internal static string ImportFail {
+            get {
+                return ResourceManager.GetString("ImportFail", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unable to import different model.
+        /// </summary>
+        internal static string ImportFailMsg {
+            get {
+                return ResourceManager.GetString("ImportFailMsg", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Input Source.
         /// </summary>
         internal static string InputSource {
@@ -4336,6 +4383,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Layout.
         ///   Looks up a localized string similar to Landscape.
         /// </summary>
         internal static string Landscape {
@@ -4399,6 +4447,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Lock.
         ///   Looks up a localized string similar to Level 0.
         /// </summary>
         internal static string Level_0 {
@@ -4696,6 +4745,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Multimedia.
         ///   Looks up a localized string similar to Movie HDR.
         /// </summary>
         internal static string Movie_HDR {
@@ -4840,6 +4890,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Notification Center.
         ///   Looks up a localized string similar to Normal.
         /// </summary>
         internal static string Normal {
@@ -5461,6 +5512,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to PowerNap.
         ///   Looks up a localized string similar to Portrait.
         /// </summary>
         internal static string Portrait {
@@ -6172,6 +6224,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Sticky Notes.
         ///   Looks up a localized string similar to Steady Vision.
         /// </summary>
         internal static string Steady_Vision {
@@ -6208,6 +6261,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Switch Application.
         ///   Looks up a localized string similar to Super Fast.
         /// </summary>
         internal static string Super_Fast {
@@ -6262,6 +6316,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Toggle Vision Engine.
         ///   Looks up a localized string similar to Timer/30min.
         /// </summary>
         internal static string Timer__30min {
@@ -6451,6 +6506,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Update Firmware.
         ///   Looks up a localized string similar to Battery level on the device is low. Replace/recharge battery to enable this update..
         /// </summary>
         internal static string Update_BatteryLow_Alert {
