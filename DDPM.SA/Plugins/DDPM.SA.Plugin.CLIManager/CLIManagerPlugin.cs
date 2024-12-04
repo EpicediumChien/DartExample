@@ -206,6 +206,25 @@ namespace DDPM.SA.Plugin.CLIManager
                     command_guid_string = arg.command_guid_string,
                     serialize_Json_response = _.result
                 };
+
+                if (commandLineInput.Command == "SET" && commandLineInput.TargetFeature == "NETWORKKVM" && _.code == 0)
+                {
+                    DDPMITConfig data;
+                    var tmp = RetrieveITSettings(out data);
+                    if (tmp.code != (int)CLI_ExitCode.success)
+                    {
+                        APP_RESPONSE response = new APP_RESPONSE();//for fail return using
+                        response.TargetFeature = commandLineInput.TargetFeature;
+                        response.Command = commandLineInput.Command;
+                        response.Message = tmp.msg;
+                        response.Result = "FAIL";
+
+                        rst.serialize_Json_response += $"\n {JsonConvert.SerializeObject(response, Formatting.Indented)}";
+                    }
+                    data.Enable_Display_NetworkKVM = commandLineInput.Options[0].Option_Value.Equals("ON", StringComparison.OrdinalIgnoreCase) || commandLineInput.Options[0].Option_Value.Equals("ENABLE", StringComparison.OrdinalIgnoreCase);
+                    _SettingsPluginIT?.WriteITConfigData(data, new List<string>() { "Enable_Display_NetworkKVM" });
+                }
+
                 return Task.FromResult(rst);
             }
 
