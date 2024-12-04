@@ -809,6 +809,9 @@ namespace DDPM.SA.Common
         Task<bool> GetIsAutoFramingOn(string Guid);
         Task<string> GetSupportedResolutions(string Guid);
         Task<string> GetSelectedResolution(string Guid);
+        Task<int> GetZoom(string Guid);
+        Task<int> GetFocus(string Guid);
+        Task<bool> GetIsFocusOn(string Guid);
 
         Task SetIsMicEnumerationOn(string Guid, bool newValue);
 
