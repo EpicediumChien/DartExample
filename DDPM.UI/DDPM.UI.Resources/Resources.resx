@@ -2817,6 +2817,18 @@
   <data name="HeadsetAutomatedActions.14" xml:space="preserve">
     <value>Sensitivity</value>
   </data>
+  <data name="File_corrupted" xml:space="preserve">
+    <value>File corrupted</value>
+  </data>
+  <data name="File_corruptedMsg" xml:space="preserve">
+    <value>File is corrupted.Please select another file</value>
+  </data>
+  <data name="ImportFail" xml:space="preserve">
+    <value>Fail</value>
+  </data>
+  <data name="ImportFailMsg" xml:space="preserve">
+    <value>Unable to import different model</value>
+  </data>
   <data name="Update_Webcam_Alert" xml:space="preserve">
     <value>This update will enable presence sensing controls through Windows Settings in systems: Win 11 22H2 or higher, and with OS build\r\n22621 or higher</value>
   </data>
@@ -2927,5 +2939,8 @@
   </data>
   <data name="Firmware_update" xml:space="preserve">
     <value>Firmware update</value>
+  </data>
+  <data name="Color.10" xml:space="preserve">
+    <value>Auto Color Temperature is currently enabled. Do you wish to disable it to continue?</value>
   </data>
 </root>
