@@ -49,14 +49,6 @@ using Image = System.Windows.Controls.Image;
 using LangHelper = DDPM.UI.Resources.Helper.LangHelper;
 using MessageBox = System.Windows.MessageBox;
 using WebcamProfile = DDPM.UI.Common.WebcamProfile;
-using System.Windows.Threading;
-using System.Windows.Forms.VisualStyles;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.Window;
-using Dell.Client.Framework.UX.WPF;
-using Windows.ApplicationModel.Background;
-using System.IO;
-using System.Security.Cryptography.X509Certificates;
-
 
 namespace DDPM.UI.Plugin.WebCameraPlugin
 {
