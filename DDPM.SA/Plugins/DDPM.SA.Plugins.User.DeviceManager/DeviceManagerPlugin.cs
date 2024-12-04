@@ -12642,6 +12642,16 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     {
                         settings.UserSettings.lastUISelectedMonitor = new DDPMSimpleMonitorRecord() { ModelName = mo.modelName, ServiceTag = mo.edid.ServiceTag };
                         _SettingsPlugin.SetAppConfigData(settings);
+
+                        //Robert_Lin, 2024-12,4, Notify to EAPlugin
+                        if (_DisplayManagerPlugin != null)
+                        {
+                            EAArgs eaArgs = new EAArgs()
+                            {
+                                Command = EAEMConstants.EACommand_LastSelectedMonitorChanged
+                            };
+                            _DisplayManagerPlugin.NotifyEAMessage(eaArgs);
+                        }
                     }
                 }
             });

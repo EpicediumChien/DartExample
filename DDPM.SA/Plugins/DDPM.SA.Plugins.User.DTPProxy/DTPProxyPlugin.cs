@@ -5155,7 +5155,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         {
             var headsets = await GetHeadsetDeviceItemsExAsync();
 
-            if (headsets.Count > 0)
+            if (headsets!=null && headsets.Count > 0)
             {
                 writelog($"Headset instance count: {headsets} to register");
 

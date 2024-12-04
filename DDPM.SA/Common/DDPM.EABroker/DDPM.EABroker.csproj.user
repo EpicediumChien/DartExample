@@ -20,6 +20,9 @@
     <Compile Update="InfoWindow.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="OverlapWindow.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Update="SaveCustomWindow.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -50,6 +53,9 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Update="InfoWindow.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="OverlapWindow.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="SaveCustomWindow.xaml">
