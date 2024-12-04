@@ -4696,6 +4696,16 @@ namespace DDPM.CLI.Plugins.Peripherals
                         cli_FWU_RESPONSE.Result = "PASS";
                         return ((int)CLI_ExitCode.NoUpdate, JsonConvert.SerializeObject(cli_FWU_RESPONSE, Formatting.Indented));
                     }
+
+                    // add start @ 20241202 stephen
+                    foreach (FWUpdateInfo info in fwUpdateInfoPackage.FWUpdateInfo)
+                    {
+                        info.Guid = commandLineInput.remote_mgr_guid;
+                    }
+
+                    _devMgr.updateFWUpdateInfoPackage(fwUpdateInfoPackage);
+                    // add end @ 20241202
+
                     if (deviceType != DeviceType.Unknown)
                     {
                         cli_FWU_RESPONSE.Model = string.Join(",", fwUpdateInfoPackage.FWUpdateInfo.Select(_ => _.Model));

@@ -153,10 +153,11 @@
                         <DDPMUserControls:BatteryIndicator  Margin="0,0,0,70" HorizontalAlignment="Center" MouseEnter="BatteryIndicator_MouseEnter"
                                                            BatteryLevel="{Binding BatteryLevel}" BatteryStatus="{Binding BatteryStatus}" MouseLeave="BatteryIndicator_MouseLeave"
                                                            ConnectionType="{Binding ConnectionType}" VerticalAlignment="Bottom" />
-                        <Border Style="{StaticResource BorderUnpair}" Width="176" MouseLeftButtonDown="Restore_Click" Cursor="Hand" Margin="8,0,0,70" Visibility="Visible" x:Name="btnRestore">
+                        <Border Style="{StaticResource BorderUnpair}" Width="176" MouseLeftButtonDown="Restore_Click" Cursor="Hand" Margin="8,0,0,70" Visibility="Visible" x:Name="btnRestore"
+                                BorderBrush="{DynamicResource SecondaryButton_DefaultBdColor}">
                             <Grid>
-                                <Border BorderBrush="{DynamicResource Unpair_FgColor}" Background="Transparent" BorderThickness="1"  >
-                                    <UXControls:UXTextBlock Name="txtRestore"  VerticalAlignment="Center" Foreground="{DynamicResource Unpair_FgColor}"
+                                <Border BorderBrush="{DynamicResource Button_UXStyleColor_ForWhiteFrame}" Background="Transparent" BorderThickness="1"  >
+                                    <UXControls:UXTextBlock Name="txtRestore"  VerticalAlignment="Center" Foreground="{Binding BorderBrush, RelativeSource={RelativeSource AncestorType=Border}}"
                                                         HorizontalAlignment="Center" FontFamily="Roboto" FontSize="14" Text="{Binding [RestoreToDefault], Source={x:Static lang:LangHelper.Instance}}"/>
                                 </Border>
                             </Grid>

@@ -411,7 +411,7 @@ namespace DDPM.UI.Module.EzMemory
                 }
                 if (spItem != null)
                 {
-                    spItem.IsEditEnabled = true;
+                    spItem.IsEditEnabled = false;//Do not need pencil icon
                     spItem.SplitOwner = Common.EAEM.eSplitOwner.EaWin;
                 }
             } //foreach(ISplitCtrl spCtrl in ISplitCtrl.Splits_EA)

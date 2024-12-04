@@ -53,6 +53,7 @@ namespace DDPM.UI.Module.WebCameraCapture.Tests
             showPluginManager = showPluginManagerMock.Object;
             deviceManagerMock = new Mock<IDeviceManagerSA>();
             deviceManager = deviceManagerMock.Object;
+            DdpmCommonHelper.DeviceManagerSA = deviceManager;
             logMock = new Mock<ILog>();
             log = logMock.Object;
             vm = new WebCameraViewModel(console, log);

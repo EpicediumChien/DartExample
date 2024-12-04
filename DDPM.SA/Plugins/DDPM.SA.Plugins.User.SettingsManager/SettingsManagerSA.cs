@@ -1252,8 +1252,12 @@ namespace DDPM.SA.Plugins.User.SettingsManager
                             {
                                 foreach (DDPMMonitorSettings settings in monitorSettingsList)
                                 {
-                                    if ((settings.ServiceTag == monitorSettings.ServiceTag && isSameModel == false) || 
-                                        (settings.ServiceTag == serviceTag && isSameModel == true))
+                                    if (settings.Model!=monitorSettings.Model) ////Elsa add to fix PIMS-313843
+                                    { return Task.FromResult<bool>(false); }
+
+                                    //if ((settings.ServiceTag == monitorSettings.ServiceTag && isSameModel == false) || 
+                                        //(settings.ServiceTag == serviceTag && isSameModel == true))
+                                    if (( isSameModel == false) ||(isSameModel == true))//Elsa add to fix PIMS-313793
                                     {
                                         settings.Input = monitorSettings.Input;
                                         settings.KVM = monitorSettings.KVM;
