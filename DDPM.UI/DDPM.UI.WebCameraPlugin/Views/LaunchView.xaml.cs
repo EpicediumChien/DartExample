@@ -592,9 +592,6 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                         //hdr.ProximitySensor.autoframe功能保留
                         //身分偵測整個功能區域隱藏保留
 
-                        //關閉身份偵測內的windows hello設定
-                        _vm.UPD_Visibility = Visibility.Collapsed;
-
 
                         //攝影機控制區域內windows hello隱藏
                         _vm.brdHello_show = Visibility.Collapsed;
