@@ -23,7 +23,7 @@ namespace DDPM.QAM
     /// </summary>
     public partial class QAMPage : Window
     {
-        CameraSetting CameraSetting;
+        CameraSetting? CameraSetting;
 
         public event EventHandler<UpdateUINotify> UpdateUINotify;
 
@@ -149,12 +149,13 @@ namespace DDPM.QAM
                 }
 
                 if (closedByUser)
+                {
                     this.Close();
+                }
                 else
                 {
                     Dispatcher.Invoke(() =>
                     {
-                        // Access UI elements or objects owned by a different thread
                         this.Close();
                     });
                 }

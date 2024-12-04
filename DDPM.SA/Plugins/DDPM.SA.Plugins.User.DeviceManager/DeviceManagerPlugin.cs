@@ -218,7 +218,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         private bool isInitMonitorSettings = false;
         private static bool _IsSkipCA = false;
 
-        private QAMPage _QAM;
+        private QAMPage _QAM = null;
         private Point QAM_Position;
         private bool isDDPMHomepageReady = false;
         private bool isDDPMLaunchedByQAM = false;
@@ -10198,19 +10198,27 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 }
             }
         }
-        private void QAMHide()
+        private Task QAMHide()
         {
             writelog($"QAMHide Start");
 
-            if (_QAM != null)
+            try
             {
-                //writelog($"QAMHide QAMHide go");
-                _QAM.Hide();
-                //writelog($"QAMHide QAMHide done");
+                //關得比較慢？？？
+                writelog($"Try to run QAMHide");
+                _QAM?.Dispatcher.Invoke(() => _QAM?.Hide());
+                Dispatcher.Run();
+            }
+            catch (Exception e)
+            {
+                writelog($"Catch Exception[{e.Message}] when run QAMClose");
             }
 
             writelog($"QAMHide done");
+
+            return Task.CompletedTask;
         }
+
         //private void QAMShow()
         //{
         //    writelog($"QAMShow Start");
@@ -10224,21 +10232,23 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         //    writelog($"QAMShow done");
         //}
-        private void QAMClose()
+        private Task QAMClose()
         {
             writelog($"QAMClose Start");
 
             try
             {
                 //關得比較慢？？？
-                _QAM.Dispatcher.Invoke(() =>
-                {
-                    writelog($"Try to run QAMClose");
-                    _QAM?.Close();
-                });
+                writelog($"Try to run QAMClose");
+                _QAM?.Dispatcher.BeginInvoke(DispatcherPriority.Normal, () => _QAM?.Close());
+                Dispatcher.Run();
 
-                //writelog($"Try to run QAMClose");
-                //_QAM?.Close();
+                //關得比較慢？？？
+                //new Thread(() => {
+                //    _QAM.Dispatcher.Invoke(new Action(() => {
+                //        _QAM?.Close();
+                //    }));
+                //}).Start();
             }
             catch (Exception e)
             {
@@ -10246,9 +10256,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
 
             writelog($"QAMClose done");
+
+            return Task.CompletedTask;
         }
 
-        private void CallQAM_UI(DeviceMangerPlugin deviceMangerPlugin)
+        private Task CallQAM_UI(DeviceMangerPlugin deviceMangerPlugin)
         {
             writelog($"CallQAM_UI: Start");
 
@@ -10261,7 +10273,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 {
                     writelog($"CallQAM_UI: have Webcam show QAM");
 
-                    Thread thread1 = new Thread(() =>
+                    Thread threadQAM = new Thread(() =>
                     {
                         _QAM = new QAMPage(deviceMangerPlugin, Log);
                         _QAM.Closed += QAMCloseEvent;
@@ -10294,20 +10306,41 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         Dispatcher.Run();
                     });
 
-                    thread1.SetApartmentState(ApartmentState.STA);
-                    thread1.Start();
+                    threadQAM.SetApartmentState(ApartmentState.STA);
+                    threadQAM.Start();
                 }
             }
             else
-                _QAM.Show();
+            {
+                //_QAM.Show();
+                _QAM?.Dispatcher.Invoke(() => _QAM?.Show());
+                Dispatcher.Run();
+            }
+
+            //close DDPM UI
+            CloseDDPM();
 
             writelog($"CallQAM_UI: done");
+
+            return Task.CompletedTask;
         }
 
-        private void _QAM_UpdateUINotify(object sender, UpdateUINotify e)
+        private Task CloseDDPM()
         {
+            UpdateUINotify e = new()
+            {
+                UI_Field_Name = "QAMEvent_QAMIsLaunched"
+            };
+
             OnUIUpdateNotify(e);
+
+            return Task.CompletedTask;
         }
+
+        //private void _QAM_UpdateUINotify(object sender, UpdateUINotify e)
+        //{
+        //    OnUIUpdateNotify(e);
+        //}
 
         public Task<int> GetCurrentPollingRate()
         {
@@ -10336,17 +10369,19 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             writelog($"UI SetIsDDPMHomepageReadyAsync: {newValue}");
 
             //info homepage navigate to webcam preview page
-            if (isDDPMLaunchedByQAM && isDDPMHomepageReady)
-            {
-                UpdateUINotify e = new UpdateUINotify();
-                e.UI_Field_Name = "QAMEvent_StartPreview";
+            //if (isDDPMLaunchedByQAM && isDDPMHomepageReady)
+            //{
+            //    UpdateUINotify e = new UpdateUINotify();
+            //    e.UI_Field_Name = "QAMEvent_StartPreview";
 
-                OnUIUpdateNotify(e);
-                isDDPMHomepageReady = false;
-                //isDDPMLaunchedByQAM = false;
+            //    OnUIUpdateNotify(e);
+            //    isDDPMHomepageReady = false;
+            //    //isDDPMLaunchedByQAM = false;
 
-                QAMClose();
-            }
+            //    QAMClose();
+            //}
+
+            QAMClose();
 
             return Task.CompletedTask;
         }
