@@ -1560,8 +1560,17 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                 _logs.DebugMsg_1(fwUpdateInfo.DeviceName + " create log path start");
                 if (!string.IsNullOrEmpty(AppDataPath))
                 {
-                    string path = @$"{AppDataPath}\Dell\Dell Display and Peripheral Manager\Log\FWUpdataLog\{fwUpdateInfo.DeviceName}_{fwUpdateInfo.ServiceTag}_{DateTime.Now.ToString("yy-MM-dd_HH_mm_ss")}";
-
+                    string path;
+                    if (!string.IsNullOrEmpty(fwUpdateInfo.ServiceTag))
+                    {
+                        _logs.DebugMsg_1($"fwUpdateInfo.ServiceTag is NO null : {fwUpdateInfo.ServiceTag}");
+                        path = @$"{AppDataPath}\Dell\Dell Display and Peripheral Manager\Log\FWUpdataLog\{fwUpdateInfo.DeviceName}_{fwUpdateInfo.ServiceTag}_{DateTime.Now.ToString("yy-MM-dd_HH_mm_ss")}";
+                    }
+                    else
+                    {
+                        _logs.DebugMsg_1($"fwUpdateInfo.ServiceTag is null : {fwUpdateInfo.ServiceTag}");
+                        path = @$"{AppDataPath}\Dell\Dell Display and Peripheral Manager\Log\FWUpdataLog\{fwUpdateInfo.DeviceName}__{DateTime.Now.ToString("yy-MM-dd_HH_mm_ss")}";
+                    }
                     if (!Directory.Exists(path))
                     {
                         Directory.CreateDirectory(path);
