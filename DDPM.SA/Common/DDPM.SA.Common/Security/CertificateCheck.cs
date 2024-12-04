@@ -429,7 +429,7 @@ namespace DDPM.SA.Common.Security
             }
             return false;
         }
-        private bool ValidateProxyCertificate(StoreName storeName, StoreLocation storeLocation, X509Certificate2 certificate, X509Chain chain)
+        /*private bool ValidateProxyCertificate(StoreName storeName, StoreLocation storeLocation, X509Certificate2 certificate, X509Chain chain)
         {
             // Implement custom validation logic for proxy certificates
             // For example, check specific attributes or extensions
@@ -467,7 +467,7 @@ namespace DDPM.SA.Common.Security
             // Close the store
             store.Close();
             return trustedRootMatched; //proxy certitifacate is invalid
-        }
+        }*/
         private string ExtractCN(string subject)
         {
             if (string.IsNullOrEmpty(subject))
