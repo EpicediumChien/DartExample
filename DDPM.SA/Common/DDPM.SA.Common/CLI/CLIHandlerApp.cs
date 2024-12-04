@@ -167,7 +167,8 @@ namespace DDPM.SA.Common.CLI
             }
 
             CommandType_Option op = commandLineInput.Options[0];
-            if (!op.Option_Name.ToUpper().Equals("VALUE"))
+            if (string.IsNullOrEmpty(op.Option_Name) || 
+                !op.Option_Name.ToUpper().Equals("VALUE"))
             {
                 WriteLog(Log, $"FW/SW update: option name [{op.Option_Name}] not support");
                 return CLI_Response_OptionNameNotSupport(commandLineInput, result, op);
@@ -366,7 +367,8 @@ namespace DDPM.SA.Common.CLI
             }
 
             CommandType_Option op = commandLineInput.Options[0];
-            if (!op.Option_Name.ToUpper().Equals("VALUE"))
+            if (string.IsNullOrEmpty(op.Option_Name) || 
+                !op.Option_Name.ToUpper().Equals("VALUE"))
             {
                 WriteLog(Log, $"{commandLineInput.TargetFeature}: option name [{op.Option_Name}] not support");
                 return CLI_Response_OptionNameNotSupport(commandLineInput, result, op);
@@ -799,11 +801,13 @@ namespace DDPM.SA.Common.CLI
             {
                 CommandType_Option op = commandLineInput.Options[0];
 
-                if (!op.Option_Name.ToUpper().Equals("VALUE"))
+                if ( string.IsNullOrEmpty(op.Option_Name) ||
+                     !op.Option_Name.ToUpper().Equals("VALUE"))
                 {
                     WriteLog(Log, $"{commandLineInput.TargetFeature}: option name [{op.Option_Name}] not support");
                     return CLI_Response_OptionNameNotSupport(commandLineInput, result, op);
                 }
+ 
 
                 //op.Option_Value.Replace(".", ",");
                 List<string> values = op.Option_Value.Replace(".", ",").Split(",").ToList();
@@ -1177,7 +1181,8 @@ namespace DDPM.SA.Common.CLI
             }
 
             CommandType_Option op = commandLineInput.Options[0];
-            if (!op.Option_Name.ToUpper().Equals("VALUE"))
+            if (string.IsNullOrEmpty(op.Option_Name) || 
+                !op.Option_Name.ToUpper().Equals("VALUE"))
             {
                 WriteLog(Log, $"Disable CA: option name [{op.Option_Name}] not support");
                 return CLI_Response_OptionNameNotSupport(commandLineInput, result, op);
