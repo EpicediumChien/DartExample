@@ -67,7 +67,8 @@
         <!-- #endregion -->
 
         <Style x:Key="ListViewStyle1" TargetType="{x:Type ListView}">
-            <Setter Property="Background" Value="{StaticResource ListBox.Static.Background}" />
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="BorderBrush" Value="Transparent" />
             <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}" />
             <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Disabled" />
             <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Hidden" />
@@ -75,6 +76,8 @@
             <Setter Property="ScrollViewer.PanningMode" Value="VerticalOnly" />
             <Setter Property="Stylus.IsFlicksEnabled" Value="False" />
             <Setter Property="VerticalContentAlignment" Value="Center" />
+            <Setter Property="HorizontalAlignment" Value="Stretch" />
+            <Setter Property="Padding" Value="0,0,40,0" />
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="{x:Type ListView}">
@@ -108,10 +111,10 @@
             </Style.Triggers>
         </Style>
 
-        <!-- Tooltip -->
-        <SolidColorBrush x:Key="ToolipBkColor" Color="#FF1D2C3B" />
+        <!-- Tooltip - Robert_Lin, 2024-11-30 comment-out unused resurces -->
+        <!--<SolidColorBrush x:Key="ToolipBkColor" Color="#FF1D2C3B" />
         <SolidColorBrush x:Key="ToolipBdColor" Color="#FF293B4D" />
-        <SolidColorBrush x:Key="ToolipTextColor" Color="#FFF5F6F7" />
+        <SolidColorBrush x:Key="ToolipTextColor" Color="#FFF5F6F7" />-->
 
         <PluginCommon:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
 
@@ -174,9 +177,22 @@
                     <Style TargetType="Grid">
                         <Setter Property="Visibility" Value="Collapsed" />
                         <Style.Triggers>
+                            <!-- Robert_Lin, 2024-11-30, for LightMode, After remove to balck background of Please Wait 
+                            "Add your first device" will be seen in dark mode. So change the DataTrigger to MultiDataTrigger
+                            Only when HomeDeviceCount==0 AND IsPleaseWaitVisible==False will show the "Add your first device"
+                            -->
+                            <!-- OLD 
                             <DataTrigger Binding="{Binding HomeDeviceCount}" Value="0">
                                 <Setter Property="Visibility" Value="Visible" />
-                            </DataTrigger>
+                            </DataTrigger>-->
+                            <!-- NEW -->
+                            <MultiDataTrigger>
+                                <MultiDataTrigger.Conditions>
+                                    <Condition Binding="{Binding HomeDeviceCount}" Value="0"/>
+                                    <Condition Binding="{Binding IsPleaseWaitVisible}" Value="False"/>
+                                </MultiDataTrigger.Conditions>
+                                <Setter Property="Visibility" Value="Visible" />
+                            </MultiDataTrigger>
                         </Style.Triggers>
                     </Style>
                 </Grid.Style>
@@ -203,8 +219,6 @@
             <!-- Robert_Lin, 2024-8-5 Add handle PreviewKeyboard to eneble slecte a device with keyboard -->
             <ListView x:Name="HomeDevicesListView"  StylusDown="Pairing"
                       Style="{StaticResource ListViewStyle1}"
-                      Background="Transparent" BorderBrush="Transparent"
-                      Padding="0,0,40,0"
                       ItemsSource="{Binding HomeDevices}" PreviewKeyDown="HomeDevicesListView_PreviewKeyDown">
                 <ListView.ItemContainerStyle>
                     <!-- ListView.ItemContainerStyle : Apply custom style to remove selection hover border -->
@@ -228,7 +242,7 @@
                                             SnapsToDevicePixels="True">
                                         <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
                                               SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
-                                              VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
+                                              VerticalAlignment="Stretch" />
                                     </Border>
                                 </ControlTemplate>
                             </Setter.Value>
@@ -476,10 +490,10 @@
             </ListView>
 
             <!-- Please Wait -->
-            <Grid Background="#CC000000" 
-                  Visibility="{Binding IsPleaseWaitVisible, Converter={StaticResource BoolToVisibilityConverter}}">
+            <!-- Robert_Lin, 2024-11-30, for LightMode, remove to balck background of Please Wait -->
+            <Grid Visibility="{Binding IsPleaseWaitVisible, Converter={StaticResource BoolToVisibilityConverter}}">
                 <Border Width="587" Height="265" Background="{DynamicResource SpinnerBkColor}"
-                        BorderBrush="#293D4D" BorderThickness="1" CornerRadius="4"
+                        BorderThickness="1" CornerRadius="4" BorderBrush="#777777" 
                         HorizontalAlignment="Center" VerticalAlignment="Center">
                     <StackPanel>
                         <Grid Height="40" HorizontalAlignment="Center" VerticalAlignment="Top"

@@ -7,6 +7,7 @@ using Moq;
 using System.Windows;
 using System.Windows.Controls;
 using Dell.Client.Framework.UX.WPF.ResourceManager;
+using DDPM.UI.Plugin.DdpmHomePlugin.Interfaces;
 
 namespace DDPM.UI.Plugin.SettingsPlugin.Tests
 {
@@ -241,7 +242,7 @@ namespace DDPM.UI.Plugin.SettingsPlugin.Tests
             var result = settingsPageViewModel.Critical_UpdateList;
             Assert.That(result, Is.EqualTo(Visibility.Collapsed));
 
-            List<UIUpdateInfo> Critical_UpdateList_UI = new List<UIUpdateInfo>() { new UIUpdateInfo(new FWUpdateInfo()) { IsCheckUpdate = true }, new UIUpdateInfo(new FWUpdateInfo()) { } };
+            List<UIUpdateInfo> Critical_UpdateList_UI = new List<UIUpdateInfo>() { new UIUpdateInfo(new FWUpdateInfo(), new List<DeviceInfo>()) { IsCheckUpdate = true }, new UIUpdateInfo(new FWUpdateInfo(), new List<DeviceInfo>()) { } };
             settingsPageViewModel.Critical_UpdateList_UI = Critical_UpdateList_UI;
             result = settingsPageViewModel.Critical_UpdateList;
             Assert.That(result, Is.EqualTo(Visibility.Visible));
@@ -274,7 +275,7 @@ namespace DDPM.UI.Plugin.SettingsPlugin.Tests
             Assert.That(settingsPageViewModel.Recommended_UpdateList_UI, Is.Not.EqualTo(Recommended_UpdateList_UIBef));
             Assert.That(settingsPageViewModel.Optional_UpdateList_UI, Is.Not.EqualTo(Optional_UpdateList_UIBef));
             Assert.That(settingsPageViewModel.LastCheckDate, Is.Not.EqualTo(LastCheckDateBef));
-           // Assert.That(result, Is.EqualTo(false));
+            // Assert.That(result, Is.EqualTo(false));
             //Assert.That(result, Is.Not.EqualTo(UpdatesPageUI_EnableBef));
         }
 
@@ -325,7 +326,7 @@ namespace DDPM.UI.Plugin.SettingsPlugin.Tests
             var result = settingsPageViewModel.Recommended_UpdateList;
             Assert.That(result, Is.EqualTo(Visibility.Collapsed));
 
-            List<UIUpdateInfo> Recommended_UpdateList_UI = new List<UIUpdateInfo>() { new UIUpdateInfo(new FWUpdateInfo()) { IsCheckUpdate = true }, new UIUpdateInfo(new FWUpdateInfo()) { } };
+            List<UIUpdateInfo> Recommended_UpdateList_UI = new List<UIUpdateInfo>() { new UIUpdateInfo(new FWUpdateInfo(), new List<DeviceInfo>()) { IsCheckUpdate = true }, new UIUpdateInfo(new FWUpdateInfo(), new List<DeviceInfo>()) { } };
             settingsPageViewModel.Recommended_UpdateList_UI = Recommended_UpdateList_UI;
             result = settingsPageViewModel.Recommended_UpdateList;
             Assert.That(result, Is.EqualTo(Visibility.Visible));
@@ -337,7 +338,7 @@ namespace DDPM.UI.Plugin.SettingsPlugin.Tests
             var result = settingsPageViewModel.Optional_UpdateList;
             Assert.That(result, Is.EqualTo(Visibility.Collapsed));
 
-            List<UIUpdateInfo> Optional_UpdateList_UI = new List<UIUpdateInfo>() { new UIUpdateInfo(new FWUpdateInfo()) { IsCheckUpdate = true }, new UIUpdateInfo(new FWUpdateInfo()) { } };
+            List<UIUpdateInfo> Optional_UpdateList_UI = new List<UIUpdateInfo>() { new UIUpdateInfo(new FWUpdateInfo(), new List<DeviceInfo>()) { IsCheckUpdate = true }, new UIUpdateInfo(new FWUpdateInfo(), new List<DeviceInfo>()) { } };
             settingsPageViewModel.Optional_UpdateList_UI = Optional_UpdateList_UI;
             result = settingsPageViewModel.Optional_UpdateList;
             Assert.That(result, Is.EqualTo(Visibility.Visible));
@@ -349,7 +350,7 @@ namespace DDPM.UI.Plugin.SettingsPlugin.Tests
             var result = settingsPageViewModel.IsAnyUpdate;
             Assert.That(result, Is.EqualTo(Visibility.Collapsed));
 
-            List<UIUpdateInfo> Optional_UpdateList_UI = new List<UIUpdateInfo>() { new UIUpdateInfo(new FWUpdateInfo()) { IsCheckUpdate = true }, new UIUpdateInfo(new FWUpdateInfo()) { } };
+            List<UIUpdateInfo> Optional_UpdateList_UI = new List<UIUpdateInfo>() { new UIUpdateInfo(new FWUpdateInfo(), new List<DeviceInfo>()) { IsCheckUpdate = true }, new UIUpdateInfo(new FWUpdateInfo(), new List<DeviceInfo>()) { } };
             settingsPageViewModel.Optional_UpdateList_UI = Optional_UpdateList_UI;
             result = settingsPageViewModel.IsAnyUpdate;
             Assert.That(result, Is.EqualTo(Visibility.Visible));
@@ -361,7 +362,7 @@ namespace DDPM.UI.Plugin.SettingsPlugin.Tests
             bool result = settingsPageViewModel.IsCanUpdate();
             Assert.That(result, Is.EqualTo(false));
 
-            List<UIUpdateInfo> Critical_UpdateList_UI = new List<UIUpdateInfo>() { new UIUpdateInfo(new FWUpdateInfo()) { IsCheckUpdate = true } };
+            List<UIUpdateInfo> Critical_UpdateList_UI = new List<UIUpdateInfo>() { new UIUpdateInfo(new FWUpdateInfo(), new List<DeviceInfo>()) { IsCheckUpdate = true } };
             settingsPageViewModel.Critical_UpdateList_UI = Critical_UpdateList_UI;
             result = settingsPageViewModel.IsCanUpdate();
             Assert.That(result, Is.EqualTo(true));
@@ -371,13 +372,14 @@ namespace DDPM.UI.Plugin.SettingsPlugin.Tests
         public void TestSetVMUpdate()
         {
             FWUpdateInfo fwUpdateInfo = new FWUpdateInfo();
-            UIUpdateInfo uIFWUpdateInfo = new UIUpdateInfo(fwUpdateInfo);
-            List<UIUpdateInfo> Critical_UpdateList_UI = new List<UIUpdateInfo>() { new UIUpdateInfo(new FWUpdateInfo()) { IsCheckUpdate = true, SWUpdateInfo = new SWUpdateInfo() } };
+            List<DeviceInfo> deviceInfos = new List<DeviceInfo>();
+            UIUpdateInfo uIFWUpdateInfo = new UIUpdateInfo(fwUpdateInfo, deviceInfos);
+            List<UIUpdateInfo> Critical_UpdateList_UI = new List<UIUpdateInfo>() { new UIUpdateInfo(new FWUpdateInfo(), new List<DeviceInfo>()) { IsCheckUpdate = true, SWUpdateInfo = new SWUpdateInfo() } };
             settingsPageViewModel.Critical_UpdateList_UI = Critical_UpdateList_UI;
 
-            List<UIUpdateInfo> Recommended_UpdateList_UI = new List<UIUpdateInfo>() { new UIUpdateInfo(new FWUpdateInfo()) { IsCheckUpdate = true, SWUpdateInfo = new SWUpdateInfo() } };
+            List<UIUpdateInfo> Recommended_UpdateList_UI = new List<UIUpdateInfo>() { new UIUpdateInfo(new FWUpdateInfo(), new List<DeviceInfo>()) { IsCheckUpdate = true, SWUpdateInfo = new SWUpdateInfo() } };
             settingsPageViewModel.Recommended_UpdateList_UI = Recommended_UpdateList_UI;
-            List<UIUpdateInfo> Optional_UpdateList_UI = new List<UIUpdateInfo>() { new UIUpdateInfo(new FWUpdateInfo()) { IsCheckUpdate = true, SWUpdateInfo = new SWUpdateInfo() } };
+            List<UIUpdateInfo> Optional_UpdateList_UI = new List<UIUpdateInfo>() { new UIUpdateInfo(new FWUpdateInfo(), new List<DeviceInfo>()) { IsCheckUpdate = true, SWUpdateInfo = new SWUpdateInfo() } };
             settingsPageViewModel.Optional_UpdateList_UI = Optional_UpdateList_UI;
             FWUpdateInfoPackage FWUpdateInfoPackage = new FWUpdateInfoPackage();
             settingsPageViewModel.FWUpdateInfoPackage = FWUpdateInfoPackage;
@@ -399,7 +401,8 @@ namespace DDPM.UI.Plugin.SettingsPlugin.Tests
         public void TestIsCheckUpdate()
         {
             FWUpdateInfo fwUpdateInfo = new FWUpdateInfo();
-            UIUpdateInfo uIFWUpdateInfo = new UIUpdateInfo(fwUpdateInfo);
+            List<DeviceInfo> deviceInfos = new List<DeviceInfo>();
+            UIUpdateInfo uIFWUpdateInfo = new UIUpdateInfo(fwUpdateInfo, deviceInfos);
             uIFWUpdateInfo.IsCheckUpdate = true;
             var result = uIFWUpdateInfo.IsCheckUpdate;
             Assert.That(result, Is.EqualTo(true));
@@ -409,7 +412,8 @@ namespace DDPM.UI.Plugin.SettingsPlugin.Tests
         public void TestIsEnableCheckBox()
         {
             FWUpdateInfo fwUpdateInfo = new FWUpdateInfo();
-            UIUpdateInfo uIFWUpdateInfo = new UIUpdateInfo(fwUpdateInfo);
+            List<DeviceInfo> deviceInfos = new List<DeviceInfo>();
+            UIUpdateInfo uIFWUpdateInfo = new UIUpdateInfo(fwUpdateInfo, deviceInfos);
             uIFWUpdateInfo.IsEnableCheckBox = true;
             var result = uIFWUpdateInfo.IsEnableCheckBox;
             Assert.That(result, Is.EqualTo(true));
@@ -419,7 +423,8 @@ namespace DDPM.UI.Plugin.SettingsPlugin.Tests
         public void TestUpdateInfo()
         {
             FWUpdateInfo fwUpdateInfo = new FWUpdateInfo();
-            UIUpdateInfo uIFWUpdateInfo = new UIUpdateInfo(fwUpdateInfo);
+            List<DeviceInfo> deviceInfos = new List<DeviceInfo>();
+            UIUpdateInfo uIFWUpdateInfo = new UIUpdateInfo(fwUpdateInfo, deviceInfos);
             uIFWUpdateInfo.UpdateInfo = "AA";
             var result = uIFWUpdateInfo.UpdateInfo;
             Assert.That(result, Is.EqualTo("AA"));
@@ -429,7 +434,8 @@ namespace DDPM.UI.Plugin.SettingsPlugin.Tests
         public void TestFWUpdateInfo()
         {
             FWUpdateInfo fwUpdateInfo = new FWUpdateInfo();
-            UIUpdateInfo uIFWUpdateInfo = new UIUpdateInfo(fwUpdateInfo);
+            List<DeviceInfo> deviceInfos = new List<DeviceInfo>();
+            UIUpdateInfo uIFWUpdateInfo = new UIUpdateInfo(fwUpdateInfo, deviceInfos);
             uIFWUpdateInfo.FWUpdateInfo = fwUpdateInfo;
             var result = uIFWUpdateInfo.FWUpdateInfo;
             Assert.That(result, Is.EqualTo(fwUpdateInfo));
@@ -439,7 +445,8 @@ namespace DDPM.UI.Plugin.SettingsPlugin.Tests
         public void TestUXAlertItemVisibility()
         {
             FWUpdateInfo fwUpdateInfo = new FWUpdateInfo();
-            UIUpdateInfo uIFWUpdateInfo = new UIUpdateInfo(fwUpdateInfo);
+            List<DeviceInfo> deviceInfos = new List<DeviceInfo>();
+            UIUpdateInfo uIFWUpdateInfo = new UIUpdateInfo(fwUpdateInfo, deviceInfos);
             var uXAlertItemVisibility = Visibility.Visible;
             uIFWUpdateInfo.UXAlertItemVisibility = uXAlertItemVisibility;
             var result = uIFWUpdateInfo.UXAlertItemVisibility;
@@ -450,7 +457,8 @@ namespace DDPM.UI.Plugin.SettingsPlugin.Tests
         public void TestUXAlertItemMessage()
         {
             FWUpdateInfo fwUpdateInfo = new FWUpdateInfo();
-            UIUpdateInfo uIFWUpdateInfo = new UIUpdateInfo(fwUpdateInfo);
+            List<DeviceInfo> deviceInfos = new List<DeviceInfo>();
+            UIUpdateInfo uIFWUpdateInfo = new UIUpdateInfo(fwUpdateInfo, deviceInfos);
             uIFWUpdateInfo.UXAlertItemMessage = "AA";
             var result = uIFWUpdateInfo.UXAlertItemMessage;
             Assert.That(result, Is.EqualTo("AA"));
@@ -464,7 +472,8 @@ namespace DDPM.UI.Plugin.SettingsPlugin.Tests
             fwUpdateInfo.TheLatestVersion = "1A";
             fwUpdateInfo.DeviceName = "ST";
             fwUpdateInfo.DeviceType = deviceType;
-            UIUpdateInfo uIUpdateInfo = new UIUpdateInfo(fwUpdateInfo);
+            List<DeviceInfo> deviceInfos = new List<DeviceInfo>();
+            UIUpdateInfo uIUpdateInfo = new UIUpdateInfo(fwUpdateInfo, deviceInfos);
             Assert.That(uIUpdateInfo, Is.Not.Null);
             Assert.That(uIUpdateInfo.UXAlertItemVisibility, Is.EqualTo(Visibility.Visible));
             Assert.That(uIUpdateInfo.UXAlertItemMessage, Is.EqualTo("Press a button or a key on the device to enable this update"));

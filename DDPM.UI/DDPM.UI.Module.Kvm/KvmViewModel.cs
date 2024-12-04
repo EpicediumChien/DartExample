@@ -290,7 +290,7 @@ namespace DDPM.UI.Module.Kvm
                 if (value)
                 {
                     isOnUSBKVM(false);
-                    USBKVMisON= false;
+                    USBKVMisON = false;
                     _isNoKVM = false;
                     _isNKVM = true;
                 }
@@ -407,8 +407,8 @@ namespace DDPM.UI.Module.Kvm
         public bool isUSBKVMEanble { get; set; } = true;
         public double USBKVM_Opacity { get; set; } = 1;
         public Visibility LockUSBKVM_Visibility { get; set; } = Visibility.Collapsed;
-        public Visibility isPxP {  get; set; } = Visibility.Collapsed;
-        public Visibility NoPxP {  get; set; } = Visibility.Collapsed;
+        public Visibility isPxP { get; set; } = Visibility.Collapsed;
+        public Visibility NoPxP { get; set; } = Visibility.Collapsed;
 
         #region Hotkey
 
@@ -618,7 +618,7 @@ namespace DDPM.UI.Module.Kvm
         #endregion UI Enable Flags
 
         //public ObjGetVCP ret_PxP = new ObjGetVCP();
-        
+
 
         public void Invoke_RefreshData()
         {
@@ -633,7 +633,7 @@ namespace DDPM.UI.Module.Kvm
 
             directory = $"C:\\Program Files\\Dell\\Dell Display and Peripheral Manager";
             string strFullPath = string.Format("{0}\\Plugins\\NKVM\\DDM.exe", directory);
-            
+
             if (DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo != null)
             {
                 MonitorInfo mi = DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo;
@@ -683,7 +683,7 @@ namespace DDPM.UI.Module.Kvm
         private void DoWork_RefreshData(object sender, DoWorkEventArgs e)
         {
             try // 2024-06-19 Fix exception when close Main UI or device remove.
-            { 
+            {
                 //sender is the ‘bw’ object
                 BackgroundWorker bwk = (BackgroundWorker)sender;
 
@@ -1043,11 +1043,11 @@ namespace DDPM.UI.Module.Kvm
             {
                 //if (pcsList["PC1"].InputType != KvmModule.SelectedHomeDevice.MonitorInfo.inputSource)
                 //{
-                    bool b = DdpmCommonHelper.DeviceManagerSA.SetVCPCapability(KvmModule.SelectedHomeDevice.MonitorInfo, "Input Select", pcsList["PC1"].InputType).Result;
-                    if (b)
-                    {
-                        KvmModule.SelectedHomeDevice.MonitorInfo.inputSource = pcsList["PC1"].InputType;
-                    }
+                bool b = DdpmCommonHelper.DeviceManagerSA.SetVCPCapability(KvmModule.SelectedHomeDevice.MonitorInfo, "Input Select", pcsList["PC1"].InputType).Result;
+                if (b)
+                {
+                    KvmModule.SelectedHomeDevice.MonitorInfo.inputSource = pcsList["PC1"].InputType;
+                }
                 //}
             }
             else
@@ -1458,9 +1458,9 @@ namespace DDPM.UI.Module.Kvm
                 isOnNKVM(true);
                 _log.Debug("NKVMOpenUI...");
                 DdpmCommonHelper.DeviceManagerSA.CallShowNKVM(0, 100, 100).Wait();
-//#else
-//                OpenNKVMUI(0, 100, 100);
-//#endif
+                //#else
+                //                OpenNKVMUI(0, 100, 100);
+                //#endif
             }
             else
             {
@@ -1495,7 +1495,7 @@ namespace DDPM.UI.Module.Kvm
             OnPropertyChanged("IsBusy");
         }
 
-#endregion
+        #endregion
 
         public void OnPropertyChanged_Lock()
         {

@@ -136,6 +136,11 @@ namespace DDPM.SA.Plugins.User.DisplayManager
         /// </summary>
         public event EventHandler<GamingDisplayPropertiesInfo> GamingChangeEvent;
 
+        /// <summary>
+        /// Control 67/68 event
+        /// </summary>
+        private readonly Dictionary<string, DateTime> LastProcessedTimestamps = new();
+
         #endregion
 
         #region Constructor
@@ -2167,92 +2172,28 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                 }
             }
 
+            //Wayn  1130
+            //For [PIMS-314608] U2725QEt Wistron-P3:DDPM(Windows) - Shine a torch or cover the sensor of DUT1, DUT2 screen has not changed
+            //Keep first
             if (e.vcpcode.Equals("67") || e.vcpcode.Equals("68"))
             {
-                _logs.DebugMsg("[DisplayMangerPlugin] show_VCPchangedEventArgs vcpcode = 67 68 ... in");
-                ObjGetVCP valemp;
-                if (uint.TryParse(e.value, NumberStyles.Integer, CultureInfo.CurrentCulture, out uint result)) // Get ALS value
-                {
-                    if (GetBitsValue(result, 5) == 1) // Check monitor is Primary
-                    {
-                        var allInfoMonitorsSnapshot = _AllInfoMonitors.ToList();
+                //DateTime now = DateTime.Now;
 
-                        _logs.DebugMsg($"[DisplayMangerPlugin] show_VCPchangedEventArgs Total Monitors: {allInfoMonitorsSnapshot.Count}");
-
-                        ALSConfig aconfig = AllALSConfig.Find(x => x.Edid.Equals(e.monitor.edid));
-                        if (aconfig != null)
-                        {
-                            if (e.vcpcode.Equals("67"))// Check AutoBrightness is On
-                            {
-                                if (aconfig.isAutoBrightness)
-                                {
-                                    valemp = _VcpCorePlugin.GetVCPCapability(e.monitor, 0x67).Result;
-                                    if(!valemp.result)
-                                    {
-                                        _logs.DebugMsg($"[DisplayMangerPlugin] show_VCPchangedEventArgs GetVCPCapability 0x67 : {valemp.result.ToString()}");
-                                        return;
-                                    }
-                                }
-                                else
-                                {
-                                    _logs.DebugMsg($"[DisplayMangerPlugin] show_VCPchangedEventArgs aconfig.isAutoBrightness: {aconfig.isAutoBrightness.ToString()}");
-                                    return;
-                                }
-                            }
-                            else
-                            {
-                                if (aconfig.isAutoColorTemp)// Check AutoColorTemp is On
-                                {
-                                    valemp = _VcpCorePlugin.GetVCPCapability(e.monitor, 0x68).Result;
-                                    if (!valemp.result)
-                                    {
-                                        _logs.DebugMsg($"[DisplayMangerPlugin] show_VCPchangedEventArgs GetVCPCapability 0x68 : {valemp.result.ToString()}");
-                                        return;
-                                    }
-                                }
-                                else
-                                {
-                                    _logs.DebugMsg($"[DisplayMangerPlugin] show_VCPchangedEventArgs aconfig.isAutoBrightness: {aconfig.isAutoColorTemp.ToString()}");
-                                    return;
-                                }
-                            }
-                        }
-                        else
-                        {
-                            _logs.DebugMsg($"[DisplayMangerPlugin] show_VCPchangedEventArgs aconfig = null: Into ModelName = {e.monitor.edid.ModelName.ToString()} || Into SerialNumber =  {e.monitor.edid.SerialNumber.ToString()}");
-                            return;
-                        }
-                        foreach (var targetMonitor in allInfoMonitorsSnapshot)
-                        {
-                            if (!e.monitor.edid.Equals(targetMonitor.edid)) // Get other monitor
-                            {
-                                //ALSConfig aconfig = AllALSConfig.Find(x => x.Edid.Equals(targetMonitor.edid));
-                                if (aconfig != null)
-                                {
-                                    _logs.DebugMsg($"[DisplayMangerPlugin] show_VCPchangedEventArgs Syncing Monitor: {aconfig.Edid.SerialNumber}");
-
-                                    Task.Run(() =>
-                                    {
-                                        try
-                                        {
-                                            //待定義，先KEEP
-                                            //SyncPrimaryMonitorBrightnessAndColorTemp(e.monitor, targetMonitor, e.vcpcode, valemp);
-                                        }
-                                        catch (Exception ex)
-                                        {
-                                            _logs.DebugMsg($"[DisplayMangerPlugin] show_VCPchangedEventArgs Sync Task Exception: {ex.Message}");
-                                        }
-                                    });
-                                }
-                            }
-                        }
-                    }
-                    else
-                    {
-                        _logs.DebugMsg("[DisplayMangerPlugin] show_VCPchangedEventArgs Non Primary Monitor ...");
-                    }
-                }
-                _logs.DebugMsg("[DisplayMangerPlugin] show_VCPchangedEventArgs vcpcode = 67 68 ... out");
+                //if (LastProcessedTimestamps.TryGetValue(e.vcpcode, out DateTime lastProcessedTime))
+                //{
+                //    if ((now - lastProcessedTime).TotalSeconds < 2)
+                //    {
+                //        _logs.DebugMsg($"[DisplayManagerPlugin] Skipping VCP code {e.vcpcode} event ... last {(now - lastProcessedTime).TotalSeconds.ToString()}");
+                //        return;
+                //    }
+                //}
+                //else
+                //{
+                //    LastProcessedTimestamps[e.vcpcode] = now;
+                //    _logs.DebugMsg("[DisplayManagerPlugin] Processing VCP code 67/68...");
+                //PeocessALSTriggerEvent(e);
+                //    _logs.DebugMsg("[DisplayManagerPlugin] Completed processing VCP code 67/68.");
+                //}
             }
 
 
@@ -2319,6 +2260,94 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             }
             //Bruce 0820
             GamingChangeEventHandle(_VCPchangedEventArgs);
+        }
+
+        private void PeocessALSTriggerEvent(VCPchangedEventArgs e)
+        {
+            _logs.DebugMsg("[DisplayMangerPlugin] PeocessALSTriggerEvent ...... in");
+            ObjGetVCP valemp;
+            if (uint.TryParse(e.value, NumberStyles.Integer, CultureInfo.CurrentCulture, out uint result)) // Get ALS value
+            {
+                if (GetBitsValue(result, 5) == 1) // Check monitor is Primary
+                {
+                    var allInfoMonitorsSnapshot = _AllInfoMonitors.ToList();
+
+                    _logs.DebugMsg($"[DisplayMangerPlugin] show_VCPchangedEventArgs Total Monitors: {allInfoMonitorsSnapshot.Count}");
+
+                    ALSConfig aconfig = AllALSConfig.Find(x => x.Edid.Equals(e.monitor.edid));
+                    if (aconfig != null)
+                    {
+                        if (e.vcpcode.Equals("67"))// Check AutoBrightness is On
+                        {
+                            if (aconfig.isAutoBrightness)
+                            {
+                                valemp = _VcpCorePlugin.GetVCPCapability(e.monitor, 0x67).Result;
+                                if (!valemp.result)
+                                {
+                                    _logs.DebugMsg($"[DisplayMangerPlugin] show_VCPchangedEventArgs GetVCPCapability 0x67 : {valemp.result.ToString()}");
+                                    return;
+                                }
+                            }
+                            else
+                            {
+                                _logs.DebugMsg($"[DisplayMangerPlugin] show_VCPchangedEventArgs aconfig.isAutoBrightness: {aconfig.isAutoBrightness.ToString()}");
+                                return;
+                            }
+                        }
+                        else
+                        {
+                            if (aconfig.isAutoColorTemp)// Check AutoColorTemp is On
+                            {
+                                valemp = _VcpCorePlugin.GetVCPCapability(e.monitor, 0x68).Result;
+                                if (!valemp.result)
+                                {
+                                    _logs.DebugMsg($"[DisplayMangerPlugin] show_VCPchangedEventArgs GetVCPCapability 0x68 : {valemp.result.ToString()}");
+                                    return;
+                                }
+                            }
+                            else
+                            {
+                                _logs.DebugMsg($"[DisplayMangerPlugin] show_VCPchangedEventArgs aconfig.isAutoBrightness: {aconfig.isAutoColorTemp.ToString()}");
+                                return;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        _logs.DebugMsg($"[DisplayMangerPlugin] show_VCPchangedEventArgs aconfig = null: Into ModelName = {e.monitor.edid.ModelName.ToString()} || Into SerialNumber =  {e.monitor.edid.SerialNumber.ToString()}");
+                        return;
+                    }
+                    foreach (var targetMonitor in allInfoMonitorsSnapshot)
+                    {
+                        if (!e.monitor.edid.Equals(targetMonitor.edid)) // Get other monitor
+                        {
+                            //ALSConfig aconfig = AllALSConfig.Find(x => x.Edid.Equals(targetMonitor.edid));
+                            if (aconfig != null)
+                            {
+                                _logs.DebugMsg($"[DisplayMangerPlugin] show_VCPchangedEventArgs Syncing Monitor: {aconfig.Edid.SerialNumber}");
+
+                                Task.Run(() =>
+                                {
+                                    try
+                                    {
+                                        //待定義，先KEEP
+                                        //SyncPrimaryMonitorBrightnessAndColorTemp(e.monitor, targetMonitor, e.vcpcode, valemp);
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        _logs.DebugMsg($"[DisplayMangerPlugin] show_VCPchangedEventArgs Sync Task Exception: {ex.Message}");
+                                    }
+                                });
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    _logs.DebugMsg("[DisplayMangerPlugin] show_VCPchangedEventArgs Non Primary Monitor ...");
+                }
+            }
+            _logs.DebugMsg("[DisplayMangerPlugin] show_VCPchangedEventArgs vcpcode = 67 68 ... out");
         }
 
         private void show_DDCCIchangedEventArgs(object sender, DDCCIchangedEventArgs e)
@@ -4060,7 +4089,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                 _logs.DebugMsg($"[DisplayMangerPlugin] {nameof(GetCurrentGaming_DualResolutionType)} GetVCPCapability ObjGetVCP.result : {ObjGetVCP.result}");
                 if (ObjGetVCP.result == true)
                 {
-                    _logs.DebugMsg($"[DisplayMangerPlugin] {nameof(GetCurrentGaming_DualResolutionType)} GetVCPCapability ObjGetVCP.result : {(uint)ObjGetVCP.value}");
+                    _logs.DebugMsg($"[DisplayMangerPlugin] {nameof(GetCurrentGaming_DualResolutionType)} GetVCPCapability ObjGetVCP.result : {ObjGetVCP.value}");
                     DualResolutionType = ObjGetVCP.value.ToString() == "4K" ? Gaming_DualResolutionType._4K : Gaming_DualResolutionType._FHD; ;
                 }
             }

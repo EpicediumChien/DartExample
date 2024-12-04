@@ -664,6 +664,7 @@ namespace DDPM.SA.Plugins.CMAManager
 
                     commandLineInput.isCliRunAdmin = true;
                     commandLineInput.jsonDeviceConfig = taskInfo.jsonconfig;
+                    commandLineInput.remote_mgr_guid = gid;
 
                     cliResult = await _CliManagerPlugin.PerformCommandLineRelay(commandLineInput);
 
@@ -991,6 +992,36 @@ namespace DDPM.SA.Plugins.CMAManager
         }
 
         public event EventHandler<CMAEventArgs> CMARequestEvent;
+
+        // add @ 20241129 stephen
+        public Task UpdateFwStatus(List<FWUpdateInfo> datas)
+        {
+            WriteLog("@@@stephen UpdateFwStatus() executed");
+
+            foreach (FWUpdateInfo data in datas)
+            {
+                WriteLog("@@@stephen UpdateFwStatus() data.Guid = " + data.Guid);
+                WriteLog("@@@stephen UpdateFwStatus() data.Update_date = " + data.Update_date);
+                WriteLog("@@@stephen UpdateFwStatus() data.DeviceName = " + data.DeviceName);
+                WriteLog("@@@stephen UpdateFwStatus() data.DeviceId = " + data.DeviceId);
+                WriteLog("@@@stephen UpdateFwStatus() data.FWUErrorCode = " + data.FWUErrorCode);
+                WriteLog("@@@stephen UpdateFwStatus() data.Model = " + data.Model);
+                WriteLog("@@@stephen UpdateFwStatus() data.IsUOD = " + data.IsUOD);
+                WriteLog("@@@stephen UpdateFwStatus() data.TheLatestVersion = " + data.TheLatestVersion);
+
+                NotifyArgs args = new NotifyArgs();
+                args.eventType = Params.EventType.FW.ToString();
+                args.notification = "{\"sid\": \"" + "sid" + "\",\"gid\": \"" + data.Guid + "\",\"response\": [" + data.FWUErrorCode + "(" + data.DeviceName + ", " + data.Model + ")" + "]}";
+                OnEventNotify(args);
+
+            }
+
+            /*            NotifyArgs args = new NotifyArgs();
+                        args.eventType = Params.EventType.UNKNOWN_ERROR.ToString();
+                        args.notification = "UpdateFwStatus()";
+                        OnEventNotify(args);*/
+            return Task.CompletedTask;
+        }
 
         public Task Update_DeviceChanged(CMADeviceChanges data)
         {

@@ -38,8 +38,8 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.ViewModels
         private ObservableCollection<HomeDevice> _homeDevices = new ObservableCollection<HomeDevice>();
         private HomeDevice? _selectedHomeDevice;
 
-        private List<string> EOLKBList = new() { "WK636", "WK717", "KM714", "KM717", "WM126", "UV514" };
-        private List<string> EOLMouseList = new() { "WK717", "KM714", "KM717", "WM126", "WM116", "WM326", "WM527", "WM514", "UV514" };
+        private List<string> EOLKBList = new() { "WK636", "KM713", "WK717", "KM714", "KM717" };
+        private List<string> EOLMouseList = new() { "WM116", "WM514", "UV514", "WM126", "WM326", "WM527" };
 
         /// <summary>
         /// Default constructor
@@ -191,7 +191,10 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.ViewModels
                 }
 
                 //OnPropertyChanged("HomeDevices");
-                HomeDevices = new ObservableCollection<HomeDevice>(tempList);
+                System.Windows.Application.Current.Dispatcher.Invoke(() =>
+                {
+                    HomeDevices = new ObservableCollection<HomeDevice>(tempList);
+                });
                 //Robert_Lin, 2024-8-7, The list has been sorted in PrepareXXX(), so should not call to RefreshCollectionView()
                 //Robert_Lin, 2024-6-22, to fix the issue the WebCam not been sorted (expect arranged after monitors)
                 //RefreshCollectionView();
@@ -370,7 +373,8 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.ViewModels
                         else
                         {
                             // Elie, we set a WD25.png as Dock default picture.
-                            dev.DeviceImage = DdpmCommonHelper.GetImageSourceFromCommonResource($"Resources/WD25.png"); ;
+                            dev.DeviceImage = DdpmCommonHelper.GetImageSourceFromCommonResource($"Resources/WD25.png");
+                            ;
                         }
 
                         dev.SortOrder = (int)dev.DeviceCategory + idxDock;
@@ -460,8 +464,10 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.ViewModels
 
                 //Sort the list with SortOrder
                 tempList.Sort((x, y) => x.SortOrder.CompareTo(y.SortOrder));
-
-                HomeDevices = new ObservableCollection<HomeDevice>(tempList);
+                System.Windows.Application.Current.Dispatcher.Invoke(() =>
+                {
+                    HomeDevices = new ObservableCollection<HomeDevice>(tempList);
+                });
 
                 //Robert_Lin, 2024-7-10, we don't need the CollectionView, we sort in List<HomeDevice> directly.
                 //Robert_Lin, 2024-6-22, to fix the issue the WebCam not been sorted (expect arranged after monitors)
@@ -505,7 +511,10 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.ViewModels
             //listSorted would be sorted by SortOredr
             //
 
-            HomeDevices = new ObservableCollection<HomeDevice>(listSorted);
+            System.Windows.Application.Current.Dispatcher.Invoke(() =>
+            {
+                HomeDevices = new ObservableCollection<HomeDevice>(listSorted);
+            });
         }
 
         #endregion Refresh CollectionView
@@ -570,12 +579,14 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.ViewModels
             MonitorInfo info = new MonitorInfo();
             info.AliasDeviceName = "Fake Monitor";
             info.inputSource = "Internal";
+            info.inputCable = "FakeConn";
             info.CapabilityString = "";
             info.FwVersion = "1.0";
             info.DDCisON = false;
             info.DisplayName = displayName;
             info.Index = 1;
             info.IsDellMonitor = false;
+            info.modelName = "Fake2024";
             info.edid = new VcpCore.Common.EDID();
             info.edid.Month = 6;
             info.edid.Year = 2024;

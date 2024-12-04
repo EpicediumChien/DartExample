@@ -369,7 +369,7 @@ namespace DDPM.UI.Module.Color
                 {
                     //Dean 0614 modify to meet figma
                     //if(MessageBox.Show("Auto Color Temperature is currently enabled. Do you wish to disable it to continue?", "Warning", MessageBoxButton.OKCancel) == MessageBoxResult.OK)
-                    if (DdpmCommonHelper.DDPMMesssageBox("Warning", "Auto Color Temperature is currently enabled. Do you wish to disable it to continue?"))
+                    if (DdpmCommonHelper.DDPMMesssageBox(Strings.ImpExp_Warning, Strings.Auto_Color_Temperature_MSG))
                     {
                         //disable Auto color temp and return true to change color preset
                         cfg.isAutoColorTemp = false;
@@ -1461,14 +1461,16 @@ namespace DDPM.UI.Module.Color
             if (config.RunType == (int)ColorPresetRunType.Auto)
             {
                 ((Expander)(MyModule.GetRightView().FindName("Expander_Manual"))).IsExpanded = false;
+                ((Expander)(MyModule.GetRightView().FindName("Expander_Auto"))).IsExpanded = false;
                 ((Expander)(MyModule.GetRightView().FindName("Expander_Auto"))).IsExpanded = true;
                 //DdpmCommonHelper.DeviceManagerSA.AutoSetColorPresetForMonitorConfig(DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo, "ON", IsAutoColorPreset_Lock);
 
             }
             else
             {
+                ((Expander)(MyModule.GetRightView().FindName("Expander_Auto"))).IsExpanded = false;                
+                ((Expander)(MyModule.GetRightView().FindName("Expander_Manual"))).IsExpanded = false;
                 ((Expander)(MyModule.GetRightView().FindName("Expander_Manual"))).IsExpanded = true;
-                ((Expander)(MyModule.GetRightView().FindName("Expander_Auto"))).IsExpanded = false;
                 //DdpmCommonHelper.DeviceManagerSA.AutoSetColorPresetForMonitorConfig(DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo, "OFF", IsAutoColorPreset_Lock);
             }
 

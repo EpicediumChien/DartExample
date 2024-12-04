@@ -39,7 +39,7 @@ namespace DDPM.UI.Common
 
         private void rootGrid_MouseEnter(object sender, System.Windows.Input.MouseEventArgs e)
         {
-            if (IsSelected)
+            if (bdRoot.Background == FocusFillBrush)
             { return; }
             bdRoot.Background = (SolidColorBrush)FindResource("Vbar_BkBrush_Hover");
             bdRoot.BorderBrush = (SolidColorBrush)FindResource("Vbar_BkBrush_Hover");
@@ -73,6 +73,14 @@ namespace DDPM.UI.Common
             set
             {
                 vm.IsSelected = value;
+                if (IsSelected)
+                {
+                    SelectBarItem();
+                }
+                else
+                {
+                    RenewBarItem();
+                }
             }
         }
 
