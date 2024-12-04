@@ -10,6 +10,7 @@ using DDPM.UI.Common.Models;
 using DDPM.UI.Common.UserControls;
 using Dell.Client.Framework.Common;
 using Dell.Client.Framework.UX.WPF;
+using Dell.Client.Framework.UX.WPF.Controls;
 using Microsoft.VisualBasic.Logging;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -44,7 +45,7 @@ namespace DDPM.UI.Common.ViewModels
         public EAProfileDDPM currentEditprofile;
         public EzProfileSettingDDPM currentEditprofileSetting;
         public ISplitCtrl? ispCtrlForEm;
-
+        public UXTextBox currentUXTextBoxInfo;
         #endregion
 
         public EzArrangeViewModel(HomeDevice homeDev)
@@ -545,6 +546,45 @@ namespace DDPM.UI.Common.ViewModels
 
             return sortedApps;
         }
+
+        public string UXTextBoxNameToUXButtonName(string btnName)
+        {
+            switch (btnName)
+            {
+                case "Window1_1TextBlock":
+                    return "AddButton2_1";
+                case "Window1_2TextBlock":
+                    return "AddButton2_2";
+                case "Window1TextBlock":
+                    return "AddButton1";
+                case "Window2TextBlock":
+                    return "AddButton2";
+                case "Window3TextBlock":
+                    return "AddButton3";
+                case "Window4TextBlock":
+                    return "AddButton4";
+                case "Window5TextBlock":
+                    return "AddButton5";
+                case "Window6TextBlock":
+                    return "AddButton6";
+                case "Window7TextBlock":
+                    return "AddButton7";
+                case "Window8TextBlock":
+                    return "AddButton8";
+                case "Window9TextBlock":
+                    return "AddButton9";
+                case "Window10TextBlock":
+                    return "AddButton10";
+                case "Window11TextBlock":
+                    return "AddButton11";
+                case "Window12TextBlock":
+                    return "AddButton12";
+                default:
+                    return "AddButton1";
+            }
+
+        }
+
         public int GetTextBlockNumber(string btnName)
         {
             switch (btnName)
@@ -583,8 +623,112 @@ namespace DDPM.UI.Common.ViewModels
 
         }
 
-        public void UpdateTextBlockAppName(string btnName, string appName)
+        public double GetAvailableWidth(UXTextBox textBox)
         {
+            if (textBox == null)
+                return 0;
+
+
+            if (textBox.ActualWidth == 0)
+            {
+                textBox.Measure(new System.Windows.Size(double.PositiveInfinity, double.PositiveInfinity));
+            }
+
+            double availableWidth = Math.Abs(textBox.ActualWidth - textBox.Padding.Left - textBox.Padding.Right);
+            return availableWidth > 0 ? availableWidth : 0;
+        }
+
+        /// <summary>
+        /// Calculate String Width
+        /// </summary>
+        /// <param name="text">String</param>
+        /// <param name="textBox"> UXTextBox class</param>
+        /// <returns>WidthIncludingTrailingWhitespace</returns>
+        public static double MeasureStringWidth(string text, UXTextBox textBox)
+        {
+            if (string.IsNullOrEmpty(text) || textBox == null)
+                return 0;
+
+ 
+            Typeface typeface = new Typeface(
+                textBox.FontFamily,
+                textBox.FontStyle,
+                textBox.FontWeight,
+                textBox.FontStretch);
+
+ 
+            FormattedText formattedText = new FormattedText(
+                text,
+                System.Globalization.CultureInfo.CurrentCulture,
+                textBox.FlowDirection,
+                typeface,
+                textBox.FontSize,
+                textBox.Foreground,
+                VisualTreeHelper.GetDpi(textBox).PixelsPerDip);
+
+            return formattedText.WidthIncludingTrailingWhitespace;
+        }
+
+        /// <summary>
+        /// Truncate String With Ellipsis
+        /// </summary>
+        /// <param name="text">String</param>
+        /// <param name="textBox">UXTextBox class</param>
+        /// <returns>return final String</returns>
+        public static string TruncateStringWithEllipsis(string text, UXTextBox textBox)
+        {
+            if (string.IsNullOrEmpty(text) || textBox == null)
+                return string.Empty;
+       
+            const string ellipsis = "...";
+            double ellipsisWidth = MeasureStringWidth(ellipsis, textBox);
+            double textWidth = MeasureStringWidth(text, textBox);
+            double availableWidth = textBox.Width - ellipsisWidth;
+
+            if (textWidth <= availableWidth)
+            {
+                return text;
+            }
+            else
+            {
+                double targetWidth = availableWidth - ellipsisWidth;
+                if (targetWidth <= 0)
+                {
+                    return ellipsis;
+                }
+                int start = 0;
+                int end = text.Length;
+                string result = "";
+                while (start < end)
+                {
+                    int mid = (start + end) / 2;  
+                    string substring = text.Substring(0, mid);
+                    double substringWidth = MeasureStringWidth(substring, textBox);
+                    if (substringWidth + ellipsisWidth <= availableWidth)
+                    {
+                        start = mid + 1;
+                        result = substring;
+                    }
+                    else
+                    {
+                        end = mid;
+                    }
+                }
+                if (result.Length >= 3)
+                {
+                    result = result.Substring(0, result.Length - 3) + ellipsis;
+                }
+                else
+                {
+                    result = ellipsis;
+                }
+                return result;
+            }
+        }
+
+        public void UpdateTextBlockAppName(string btnName, string textAppName)
+        {
+            string appName = TruncateStringWithEllipsis(textAppName, currentUXTextBoxInfo);
             switch (btnName)
             {
                 case "AddButton2_1":
@@ -593,7 +737,7 @@ namespace DDPM.UI.Common.ViewModels
                 case "AddButton2_2":
                     Window2_2AppName = appName;
                     break;
-                case "AddButton1":                   
+                case "AddButton1":
                     Window1AppName = appName;
                     break;
                 case "AddButton2":
@@ -635,8 +779,9 @@ namespace DDPM.UI.Common.ViewModels
 
         }
 
-        private void UpdateWindowAppName(int index, string appName)
+        private void UpdateWindowAppName(int index, string textAppName)
         {
+            string appName = TruncateStringWithEllipsis(textAppName, currentUXTextBoxInfo);
             switch (index)
             {
                 case 1:

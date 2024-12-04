@@ -41,8 +41,15 @@ namespace DDPM.UI.Module.EzArrange
         private readonly DisplayViewModel _vmDisplay;
         private readonly IConsole _console;
         private readonly ILog _log;
-        private const string CustomListTooltipText = "You can arrange the windows on your screen and click + icon.\r\nAlternatively, select an existing layout below and click the pencil icon to edit the layout.";
         #endregion Private Members
+
+        #region Strings
+        private const string CustomListTooltipText = "You can arrange the windows on your screen and click + icon.\r\nAlternatively, select an existing layout below and click the pencil icon to edit the layout.";
+        private const string msgBox_Warning = "Warning";
+        private const string msgBox_EAProfileWillBeDeleted = "The corresponding Easy Memory profile will be deleted too. Do you want to continue?";
+        private const string msgBox_Yes = "Yes";
+        private const string msgBox_No = "No";
+        #endregion
 
         #region ctor
         public EzArrangeRightVierw(DisplayViewModel vmDisplay)
@@ -1028,10 +1035,10 @@ namespace DDPM.UI.Module.EzArrange
                 //Try to get hWnd of MainWindow
                 Window mainWindow = System.Windows.Application.Current.MainWindow;
                //Show a message box to get comfirm from user
-                string headerText = string.Empty;
-                string subHeaderText = "The corresponding Easy Memory profile will be deleted too. Do you want to continue";
-                string leftButtonContent = "No";
-                string rightButtonContent = "Yes";
+                string headerText = msgBox_Warning;
+                string subHeaderText = msgBox_EAProfileWillBeDeleted;
+                string leftButtonContent = msgBox_No;
+                string rightButtonContent = msgBox_Yes;
                 object ob = null;
                 bool isStayOny = false;
                 int autoCloseTimeSec = 0;
