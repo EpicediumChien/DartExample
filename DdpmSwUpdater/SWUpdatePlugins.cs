@@ -382,6 +382,15 @@ namespace DdpmSwUpdater
                 //        }
                 //    });
                 //}
+                if (!DDPMFileSecurity.CheckFold(Path.GetDirectoryName(_clientProcess.StartInfo.FileName), out string FolderInfo, out string PathSymbolicLinInfo))
+                {
+                    LogManage.LogMessage($"{nameof(DownloadAndInstall)} {_SWUpdateInfo.SoftwareName} Path.GetDirectoryName FolderIsNotSafe - FolderInfo : {FolderInfo}");
+                    LogManage.LogMessage($"{nameof(DownloadAndInstall)} {_SWUpdateInfo.SoftwareName} Path.GetDirectoryName FolderIsNotSafe - PathSymbolicLinInfo : {PathSymbolicLinInfo}");
+                    _notificationStr = LangHelper.Instance["Firmware_update_unsuccessful"];
+                    NotificationFWupdate(LangHelper.Instance["Error"], _notificationStr);
+                    _updateErrorCode = SWUErrorCode.FolderIsNotSafe;
+                    return _updateErrorCode;
+                }
                 using (Process clientProcess = new Process())
                 {
                     _clientProcess = new Process();

@@ -345,6 +345,9 @@ namespace DDPM.UI.Common
                 UpdateFreezable<SolidColorBrush>("Dlg_CloseX_HoverBkColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#FFFFFF"));
                 #endregion DDPM.SA.Common.Popup.PopupBase
 
+                #region Headset
+                UpdateFreezable("ToggleSwitch_NormalBackground", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#FBFCFE"));
+                #endregion
 
                 #region Consent page
                 UpdateFreezable("ConsentPage_Background", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#D8E5F5"));

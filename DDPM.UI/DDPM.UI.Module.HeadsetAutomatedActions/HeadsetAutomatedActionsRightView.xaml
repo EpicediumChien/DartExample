@@ -160,7 +160,7 @@
                                             <UXControls:UXToggleSwitch x:Name="LowButton" BorderBrush="#FF1E3F6C" BorderThickness="1.5" Width="208" Height="52" Margin="0,0,4,8" IsEnabled="{Binding ElementName=WearDetectionToggleSwitch, Path=IsChecked}" IsChecked="{Binding IsLowChecked, Mode=TwoWay}" IsTabStop="{Binding isWearTabStopped}">
                                                 <UXControls:UXToggleSwitch.Template>
                                                     <ControlTemplate TargetType="UXControls:UXToggleSwitch">
-                                                        <Border x:Name="LowButtonBorder" Background="{StaticResource NormalBackground}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="4,4,4,4">
+                                                        <Border x:Name="LowButtonBorder" Background="{DynamicResource ToggleSwitch_NormalBackground}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="4,4,4,4">
                                                             <Grid>
                                                                 <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
                                                                     <UXControls:UXTextBlock x:Name="LowButtonTextBlock" Text="{Binding [HeadsetAutomatedActions.2], Source={x:Static lang:LangHelper.Instance}}" FontSize="14" Foreground="{DynamicResource TextBlock_ForegroundColor}" TextAlignment="Center" />

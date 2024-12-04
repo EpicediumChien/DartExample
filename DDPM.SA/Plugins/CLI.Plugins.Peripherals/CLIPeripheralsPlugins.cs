@@ -3844,30 +3844,30 @@ namespace DDPM.CLI.Plugins.Peripherals
                 //    }
                 //}
 
+                #region Parse Dock SilentFwUpdate command to unified format
+                if (commandLineInput.TargetType == "DOCK")
+                {
+                    var dockNoCommaOptions = commandLineInput.Options.Where(_ => !_.Option_Value.Contains(',')).ToList();
+
+                    foreach (var dockNoCommaOption in dockNoCommaOptions)
+                    {
+                        if (dockNoCommaOption.Option_Value.Equals("UOD", StringComparison.OrdinalIgnoreCase))
+                        {
+                            dockNoCommaOption.Option_Value = "TRUE,UOD";
+                        }
+                        else if (dockNoCommaOption.Option_Value.Contains(':'))
+                        {
+                            dockNoCommaOption.Option_Value = dockNoCommaOption.Option_Value + ",FILEPATH";
+                        }
+                    }
+
+                    commandLineInput.Options.Insert(0, new CommandType_Option("VALUE", "DOCK,FORCEWITHNONOTICE"));
+                }
+                #endregion
+
                 if (commandLineInput.Options.Count > 0)
                 {
                     cLI_FWU_RESPONSE.Value = commandLineInput.Options[0].Option_Value;
-
-                    #region Parse Dock SilentFwUpdate command to unified format
-                    if (commandLineInput.TargetType == "DOCK")
-                    {
-                        var dockNoCommaOptions = commandLineInput.Options.Where(_ => !_.Option_Value.Contains(',')).ToList();
-
-                        foreach (var dockNoCommaOption in dockNoCommaOptions)
-                        {
-                            if (dockNoCommaOption.Option_Value.Equals("UOD", StringComparison.OrdinalIgnoreCase))
-                            {
-                                dockNoCommaOption.Option_Value = "TRUE,UOD";
-                            }
-                            else if (dockNoCommaOption.Option_Value.Contains(':'))
-                            {
-                                dockNoCommaOption.Option_Value = dockNoCommaOption.Option_Value + ",FILEPATH";
-                            }
-                        }
-
-                        commandLineInput.Options.Insert(0, new CommandType_Option("VALUE", "DOCK,FORCEWITHNONOTICE"));
-                    }
-                    #endregion
 
                     if (!commandLineInput.Options[0].Option_Value.Contains(','))
                     {

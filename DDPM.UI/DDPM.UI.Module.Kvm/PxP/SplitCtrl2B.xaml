@@ -30,15 +30,13 @@
                         BorderBrush="#E6AC28" BorderThickness="3"
                         CornerRadius="{StaticResource SplitItem_CornerRadius}" Visibility="{Binding Border1Visibility}" />
                 <Path Fill="#E6AC28" Data="M270 131.8801 L278 124.12012 L262 124.12012 L270 131.8801Z" Visibility="{Binding Border1Visibility}" MouseLeftButtonDown="PBP_SwapClick" />
-                <Grid Margin="240,50">
+                <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="*" />
                         <RowDefinition Height="*" />
                     </Grid.RowDefinitions>
-                    <Grid Grid.Row="0" Background="#A4B8CD">
-                        <TextBlock Text="{Binding PC1_Input}" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center" />
-                    </Grid>
-                    <TextBlock Grid.Row="1" Text="{Binding [Kvm.0], Source={x:Static lang:LangHelper.Instance},StringFormat={}{0}1}" Foreground="White" FontSize="12" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                    <TextBlock Grid.Row="0" Background="#A4B8CD" Padding="4" Text="{Binding PC1_Input}" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                    <TextBlock Grid.Row="1" Text="{Binding [Kvm.0], Source={x:Static lang:LangHelper.Instance},StringFormat={}{0}1}" Foreground="{DynamicResource TextBlock_ForegroundColor}" FontSize="12" HorizontalAlignment="Center" VerticalAlignment="Center" />
                 </Grid>
             </Grid>
             <Grid Grid.Row="2" Background="#00000000" MouseLeftButtonDown="PBP_MouseLeftDown2">
@@ -47,15 +45,13 @@
                         BorderBrush="#E6AC28" BorderThickness="3"
                         CornerRadius="{StaticResource SplitItem_CornerRadius}" Visibility="{Binding Border2Visibility}" />
                 <Path Fill="#E6AC28" Data="M8 11.8801 L16 4.12012 L0 4.12012 L8 11.8801Z" Visibility="{Binding Border2Visibility}" MouseLeftButtonDown="PBP_SwapClick" />
-                <Grid Margin="240,50">
+                <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="*" />
                         <RowDefinition Height="*" />
                     </Grid.RowDefinitions>
-                    <Grid Grid.Row="0" Background="#A4B8CD">
-                        <TextBlock Text="{Binding PC2_Input}" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center" />
-                    </Grid>
-                    <TextBlock Grid.Row="1" Text="{Binding [Kvm.0], Source={x:Static lang:LangHelper.Instance},StringFormat={}{0}2}" Foreground="White" FontSize="12" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                    <TextBlock Grid.Row="0" Background="#A4B8CD" Padding="4" Text="{Binding PC2_Input}" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                    <TextBlock Grid.Row="1" Text="{Binding [Kvm.0], Source={x:Static lang:LangHelper.Instance},StringFormat={}{0}2}" Foreground="{DynamicResource TextBlock_ForegroundColor}" FontSize="12" HorizontalAlignment="Center" VerticalAlignment="Center" />
                 </Grid>
             </Grid>
 
