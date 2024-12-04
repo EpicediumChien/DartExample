@@ -103,6 +103,7 @@ namespace DDPM.UI.Plugin.HeadsetPlugin
             if (DdpmCommonHelper.DeviceManagerSA != null)
             {
                 DdpmCommonHelper.DeviceManagerSA.ITSettingsActionEvent -= DeviceManagerSA_ITSettingsActionEvent;
+                DdpmCommonHelper.BitmapImageUpdated -= ImageUpdate;
             }
         }
 

@@ -82,7 +82,7 @@
                             Before:
                             <UXControls:UXTextBox Grid.Column="2" Name="tbRecentHotkey" Margin="0"
                                              Text="{Binding RecentHotkey,Mode=TwoWay}"
-                                             Background="#141D28" Foreground="White" Width="230"
+                                             Background="#141D28" Foreground="{DynamicResource TextBlock_ForegroundColor}" Width="230"
                                              BorderBrush="#7E7E7E" BorderThickness="1" FontSize="14"
                                              HorizontalAlignment="Center" VerticalContentAlignment="Center"
                                              AcceptsReturn="True" ContextMenu="{x:Null}" PreviewKeyDown="tbRecentHotkey_PreviewKeyDown" 
@@ -114,7 +114,7 @@
                             <!-- ToogleSwitch -->
                             <UXControls:UXToggleSwitch Grid.Column="2" IsChecked="{Binding IsWithoutGap}" ContentTextVisibility="True" 
                                                    Content="{Binding Path=IsWithoutGap_String}" HorizontalAlignment="Right" VerticalAlignment="Center"  
-                                                   Foreground="White" />
+                                                   Foreground="{DynamicResource TextBlock_ForegroundColor}" />
                         </Grid>
                         <!-- #endregion Row 1: Allow app to split side by side without gap -->
 

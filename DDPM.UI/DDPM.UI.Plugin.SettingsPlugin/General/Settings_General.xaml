@@ -5,6 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:UXControls="clr-namespace:Dell.Client.Framework.UX.WPF.Controls;assembly=DCF.UX.WPF"
              xmlns:local="clr-namespace:DDPM.UI.Plugin.SettingsPlugin"
+             xmlns:lang="clr-namespace:DDPM.UI.Resources.Helper;assembly=DDPM.UI.Resources"
              mc:Ignorable="d"
              Margin="5,4,60,29"
              d:DesignHeight="450"
@@ -26,7 +27,7 @@
                 <StackPanel>
                     <StackPanel Margin="20,20,8,8"
                                 Orientation="Horizontal">
-                        <UXControls:UXTextBlock Text="On screen notifications"
+                        <UXControls:UXTextBlock Text="{Binding [On_screen_notifications], Source={x:Static lang:LangHelper.Instance}}"
                                                 FontSize="20"
                                                 TextBlockType="Header1"
                                                 Foreground="{DynamicResource DefaultTheme_TxtColor}" />
@@ -44,13 +45,13 @@
                             <StackPanel Orientation="Vertical"
                                         Margin="15,0,0,0">
                                 <UXControls:UXTextBlock Margin="0,20,0,0"
-                                                        Text="All Devices"
+                                                        Text="{Binding [All_Devices], Source={x:Static lang:LangHelper.Instance}}"
                                                         FontSize="16"
                                                         Foreground="{DynamicResource DefaultTheme_TxtColor}" />
                                 <UXControls:UXCheckBox Margin="0,20,0,15"
                                                        HorizontalAlignment="Left"
                                                        VerticalAlignment="Center"
-                                                       Content="Low battery level"
+                                                       Content="{Binding [Low_battery_level], Source={x:Static lang:LangHelper.Instance}}"
                                                        Foreground="{DynamicResource DefaultTheme_TxtColor}"
                                                        FontSize="16"
                                                        Background="{DynamicResource DefaultTheme_RbBkColor}"
@@ -71,12 +72,12 @@
                             <StackPanel Orientation="Vertical"
                                         Margin="15,0,0,0">
                                 <UXControls:UXTextBlock Margin="0,20,0,0"
-                                                        Text="Device-specific"
+                                                        Text="{Binding [Device_specific], Source={x:Static lang:LangHelper.Instance}}"
                                                         FontSize="16"
                                                         Foreground="{DynamicResource DefaultTheme_TxtColor}" />
                                 <UXControls:UXCheckBox Margin="0,20,0,15"
                                                        Height="{Binding checkBoxHeight}"
-                                                       Content="Keyboard lock key"
+                                                       Content="{Binding [Keyboard_lock_key], Source={x:Static lang:LangHelper.Instance}}"
                                                        Foreground="{DynamicResource DefaultTheme_TxtColor}"
                                                        FontSize="16"
                                                        Background="{DynamicResource DefaultTheme_RbBkColor}"
@@ -86,7 +87,7 @@
                                 <UXControls:UXCheckBox Margin="0,0,0,15"
                                                        Height="{Binding checkBoxHeight}"
                                                        HorizontalAlignment="Left"
-                                                       Content="Webcam WB7022 Presence Detection sensor cover state"
+                                                       Content="{Binding [Webcam_WB7022_Presence_Detection_sensor_cover_state], Source={x:Static lang:LangHelper.Instance}}"
                                                        Foreground="{DynamicResource DefaultTheme_TxtColor}"
                                                        FontSize="16"
                                                        Background="{DynamicResource DefaultTheme_RbBkColor}"
@@ -96,7 +97,7 @@
                                 <UXControls:UXCheckBox Margin="0,0,0,15"
                                                        Height="{Binding checkBoxHeight}"
                                                        HorizontalAlignment="Left"
-                                                       Content="Headset, speakerphone and soundbar mute/unmute"
+                                                       Content="{Binding [Headset_speakerphone_and_soundbar_mute_unmute], Source={x:Static lang:LangHelper.Instance}}"
                                                        Foreground="{DynamicResource DefaultTheme_TxtColor}"
                                                        FontSize="16"
                                                        Background="{DynamicResource DefaultTheme_RbBkColor}"
@@ -106,7 +107,7 @@
                                 <UXControls:UXCheckBox Margin="0,0,0,15"
                                                        Height="{Binding checkBoxHeight}"
                                                        HorizontalAlignment="Left"
-                                                       Content="Display Color Preset and Easy Memory"
+                                                       Content="{Binding [Display_Color_Preset_and_Easy_Memory], Source={x:Static lang:LangHelper.Instance}}"
                                                        Foreground="{DynamicResource DefaultTheme_TxtColor}"
                                                        FontSize="16"
                                                        Background="{DynamicResource DefaultTheme_RbBkColor}"
@@ -121,7 +122,7 @@
                                 Visibility="{Binding GeneralUI_LockTooltip}" />
                     </Grid>
                     <Grid Margin="20,20,8,8">
-                        <UXControls:UXTextBlock Text="Reports"
+                        <UXControls:UXTextBlock Text="{Binding [Reports], Source={x:Static lang:LangHelper.Instance}}"
                                                 FontSize="20"
                                                 TextBlockType="Header1"
                                                 Foreground="{DynamicResource DefaultTheme_TxtColor}" />
@@ -142,7 +143,7 @@
                                         HorizontalAlignment="Center"
                                         FontFamily="Roboto"
                                         FontSize="14"
-                                        Content="Save diagnostic report" />
+                                        Content="{Binding [Save_diagnostic_report], Source={x:Static lang:LangHelper.Instance}}" />
                                 <Button Style="{StaticResource Button_WhiteFrame}"
                                         Width="176"
                                         Height="40"
@@ -154,7 +155,7 @@
                                         HorizontalAlignment="Center"
                                         FontFamily="Roboto"
                                         FontSize="14"
-                                        Content="Save monitor asset report" />
+                                        Content="{Binding [Save_monitor_asset_report], Source={x:Static lang:LangHelper.Instance}}" />
                             </StackPanel>
                         </Border>
                     </Grid>
