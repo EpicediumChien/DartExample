@@ -4953,23 +4953,17 @@ namespace DDPM.CLI.Plugins.Display
                 // jim modify 20240608
                 bool r = false;
                 bool ever_fail = false;
-                switch (value)
+                Dictionary<string, string> colorPresetList = new Dictionary<string, string>()
                 {
-                    case "CUSTOM":
-                        value = "CUSTOM COLOR";
-                        break;
-                    case "FPSGAME":
-                        value = "FPS GAME";
-                        break;
-                    case "RTSGAME":
-                        value = "RTS GAME";
-                        break;
-                    case "RPGGAME":
-                        value = "RPG GAME";
-                        break;
-                    default:
-                        break;
-                }
+                    {"CUSTOM", "CUSTOM COLOR"},
+                    {"FPSGAME", "FPS GAME"},
+                    {"RTSGAME", "RTS GAME"},
+                    {"RPGGAME", "RPG GAME"},
+                    {"MOVIEHDR", "MOVIE HDR"},
+                    {"GAMEHDR", "GAME HDR"},
+                    {"DISPLAYHDR", "DISPLAY HDR"},
+                };
+                value = colorPresetList.ContainsKey(value.ToUpper()) ? colorPresetList[value.ToUpper()] : value;
                 if (index.Count == 0 && serviceTag.Count == 0 && model.Count == 0)
                 {
                     foreach (var monitor in _AllInfoMonitors)
