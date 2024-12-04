@@ -149,7 +149,10 @@ namespace DDPM.UI.Common
                 #region Main Window Background
                 SplashPath = "Resources/Images/splash{0}-round_Dark.png";
                 UpdateFreezable("mainWindowBkColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#F20D121A"));
-                UpdateFreezable("bkImage", (ref ImageBrush brush) => brush.ImageSource = GetImageSourceFromCommonResource("Resources/Images/Background.png", "DDPM"));
+                UpdateFreezable("bkImage", (ref ImageBrush brush) => {
+                    brush.Stretch = Stretch.Fill;
+                    brush.ImageSource = GetImageSourceFromCommonResource("Resources/Images/Background.png", "DDPM");
+                    });
                 UpdateFreezable("SpinnerWaitTxtColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#F5F6F7"));
                 UpdateFreezable("SpinnerBkColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#F20D121A"));
                 #endregion
@@ -332,6 +335,10 @@ namespace DDPM.UI.Common
                 UpdateFreezable<SolidColorBrush>("Dlg_CloseX_HoverBkColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#33444E"));
                 #endregion DDPM.SA.Common.Popup.PopupBase
 
+
+                #region Consent page
+                UpdateFreezable("ConsentPage_Background", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#13172A"));
+                #endregion
 
                 //#region HomeDevice LineArt image [Robert_Lin, 2024-11-26]
                 UpdateBitmapImage("MonitorImage_LineArt", new Uri($"pack://application:,,,/DDPM.UI.Resources;component/Resources/Monitors/Lineart.png", UriKind.RelativeOrAbsolute));
