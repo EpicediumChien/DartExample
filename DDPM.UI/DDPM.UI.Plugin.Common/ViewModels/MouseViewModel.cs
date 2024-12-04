@@ -10,6 +10,7 @@ using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Linq;
 using System.Reflection.Metadata;
 using System.Runtime.CompilerServices;
 using System.Text;
@@ -185,7 +186,7 @@ namespace DDPM.UI.Plugin.ViewModels
             DeviceInfos.Clear();
             foreach (DeviceInfo deviceInfo in deviceInfos)
             {
-                if (deviceInfo.LogicalDeviceType.Contains("Mouse") && !DeviceInfos.ContainsKey(deviceInfo.ID))
+                if ((deviceInfo.LogicalDeviceType.Contains("Mouse") || EOLMouseList.Contains(deviceInfo.ModelNumber)) && !DeviceInfos.ContainsKey(deviceInfo.ID))
                 {
                     DeviceInfos.Add(deviceInfo.ID, deviceInfo);
                 }

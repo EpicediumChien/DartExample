@@ -23,31 +23,31 @@
                 <RowDefinition Height="1*" />
                 <RowDefinition Height="2*" />
             </Grid.RowDefinitions>
-            <Grid Grid.Row="0" Margin="250, 20, 250, 50">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="*" />
-                    <RowDefinition Height="*" />
-                </Grid.RowDefinitions>
-                <TextBlock Grid.Row="0" Text="{Binding PC1_Input}" Background="#A4B8CD" Foreground="White" />
-                <TextBlock Grid.Row="1" Text="{Binding [Kvm.0], Source={x:Static lang:LangHelper.Instance},StringFormat={}{0}1}" Foreground="White" FontSize="12" HorizontalAlignment="Center" />
+            <Grid Grid.Row="0" HorizontalAlignment="Center" VerticalAlignment="Center">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto" />
+                        <RowDefinition Height="3*" />
+                    </Grid.RowDefinitions>
+                    <TextBlock Grid.Row="0" Padding="4" VerticalAlignment="Center" HorizontalAlignment="Center" Width="auto" Text="{Binding PC1_Input}" Background="#A4B8CD" Foreground="White" />
+                    <TextBlock Grid.Row="1" Text="{Binding [Kvm.0], Source={x:Static lang:LangHelper.Instance},StringFormat={}{0}1}" Padding="4" Foreground="{DynamicResource TextBlock_ForegroundColor}" FontSize="12" HorizontalAlignment="Center" />
+                </Grid>
             </Grid>
             <Grid Grid.Row="1">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="1*" />
-                    <ColumnDefinition Width="2*" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="3*" />
                 </Grid.ColumnDefinitions>
-                <Border Name="bdPip" Grid.Row="1" Grid.Column="1"
+                <Border Name="bdPip" Grid.Column="1"
                         Background="#204A82" BorderBrush="#E6AC28" BorderThickness="3"
                         CornerRadius="{StaticResource SplitItem_CornerRadius}" />
-                <Path Fill="#E6AC28" Grid.Row="1" Grid.Column="1" Data="M8.56814 8.56986L8.39844 19.7139L19.7121 8.40016L8.56814 8.56986Z" MouseLeftButtonDown="PIP_PCSWAP" />
-                <Grid Grid.Row="1" Grid.Column="1" Margin="160,80">
+                <Path Fill="#E6AC28" Grid.Column="1" Data="M8.56814 8.56986L8.39844 19.7139L19.7121 8.40016L8.56814 8.56986Z" MouseLeftButtonDown="PIP_PCSWAP" />
+                <Grid Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" >
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="*" />
-                        <RowDefinition Height="*" />
+                        <RowDefinition Height="auto" />
+                        <RowDefinition Height="3*" />
                     </Grid.RowDefinitions>
-                    <Grid Grid.Row="0" Background="#A4B8CD">
-                        <TextBlock Text="{Binding PC2_Input}" Foreground="White" HorizontalAlignment="Center" />
-                    </Grid>
+                    <TextBlock Grid.Row="0" VerticalAlignment="Center"  Background="#A4B8CD" Text="{Binding PC2_Input}" Padding="4" Width="auto" Foreground="White" HorizontalAlignment="Center" />
                     <TextBlock Grid.Row="1" Text="{Binding [Kvm.0], Source={x:Static lang:LangHelper.Instance},StringFormat={}{0}2}" Foreground="White" FontSize="12" HorizontalAlignment="Center" />
                 </Grid>
             </Grid>

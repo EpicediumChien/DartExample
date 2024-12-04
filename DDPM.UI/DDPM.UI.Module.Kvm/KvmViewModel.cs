@@ -290,7 +290,7 @@ namespace DDPM.UI.Module.Kvm
                 if (value)
                 {
                     isOnUSBKVM(false);
-                    USBKVMisON= false;
+                    USBKVMisON = false;
                     _isNoKVM = false;
                     _isNKVM = true;
                 }
@@ -407,8 +407,8 @@ namespace DDPM.UI.Module.Kvm
         public bool isUSBKVMEanble { get; set; } = true;
         public double USBKVM_Opacity { get; set; } = 1;
         public Visibility LockUSBKVM_Visibility { get; set; } = Visibility.Collapsed;
-        public Visibility isPxP {  get; set; } = Visibility.Collapsed;
-        public Visibility NoPxP {  get; set; } = Visibility.Collapsed;
+        public Visibility isPxP { get; set; } = Visibility.Collapsed;
+        public Visibility NoPxP { get; set; } = Visibility.Collapsed;
 
         #region Hotkey
 
@@ -618,7 +618,7 @@ namespace DDPM.UI.Module.Kvm
         #endregion UI Enable Flags
 
         //public ObjGetVCP ret_PxP = new ObjGetVCP();
-        
+
 
         public void Invoke_RefreshData()
         {
@@ -633,7 +633,7 @@ namespace DDPM.UI.Module.Kvm
 
             directory = $"C:\\Program Files\\Dell\\Dell Display and Peripheral Manager";
             string strFullPath = string.Format("{0}\\Plugins\\NKVM\\DDM.exe", directory);
-            
+
             if (DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo != null)
             {
                 MonitorInfo mi = DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo;
@@ -683,7 +683,7 @@ namespace DDPM.UI.Module.Kvm
         private void DoWork_RefreshData(object sender, DoWorkEventArgs e)
         {
             try // 2024-06-19 Fix exception when close Main UI or device remove.
-            { 
+            {
                 //sender is the ‘bw’ object
                 BackgroundWorker bwk = (BackgroundWorker)sender;
 
@@ -1043,11 +1043,11 @@ namespace DDPM.UI.Module.Kvm
             {
                 //if (pcsList["PC1"].InputType != KvmModule.SelectedHomeDevice.MonitorInfo.inputSource)
                 //{
-                    bool b = DdpmCommonHelper.DeviceManagerSA.SetVCPCapability(KvmModule.SelectedHomeDevice.MonitorInfo, "Input Select", pcsList["PC1"].InputType).Result;
-                    if (b)
-                    {
-                        KvmModule.SelectedHomeDevice.MonitorInfo.inputSource = pcsList["PC1"].InputType;
-                    }
+                bool b = DdpmCommonHelper.DeviceManagerSA.SetVCPCapability(KvmModule.SelectedHomeDevice.MonitorInfo, "Input Select", pcsList["PC1"].InputType).Result;
+                if (b)
+                {
+                    KvmModule.SelectedHomeDevice.MonitorInfo.inputSource = pcsList["PC1"].InputType;
+                }
                 //}
             }
             else
@@ -1078,10 +1078,10 @@ namespace DDPM.UI.Module.Kvm
             OnPropertyChanged("HasCap_PipSmall");
             OnPropertyChanged("HasCap_PipLarge");
             OnPropertyChanged("HasCap_PipTogglePosition");
-            OnPropertyChanged(PC1_Input);
-            OnPropertyChanged(PC2_Input);
-            OnPropertyChanged(PC3_Input);
-            OnPropertyChanged(PC4_Input);
+            OnPropertyChanged("PC1_Input");
+            OnPropertyChanged("PC2_Input");
+            OnPropertyChanged("PC3_Input");
+            OnPropertyChanged("PC4_Input");
         }
 
         public bool HasPxpCap(UInt16 cap)
@@ -1257,10 +1257,10 @@ namespace DDPM.UI.Module.Kvm
                     }
                 }
             }
-            OnPropertyChanged(PC1_Input);
-            OnPropertyChanged(PC2_Input);
-            OnPropertyChanged(PC3_Input);
-            OnPropertyChanged(PC4_Input);
+            OnPropertyChanged("PC1_Input");
+            OnPropertyChanged("PC2_Input");
+            OnPropertyChanged("PC3_Input");
+            OnPropertyChanged("PC4_Input");
         }
 
         #endregion VideoSwap control and content
@@ -1299,10 +1299,10 @@ namespace DDPM.UI.Module.Kvm
             Border2Visibility = Visibility.Collapsed;
             Border3Visibility = Visibility.Collapsed;
             Border4Visibility = Visibility.Collapsed;
-            OnPropertyChanged(PC1_Input);
-            OnPropertyChanged(PC2_Input);
-            OnPropertyChanged(PC3_Input);
-            OnPropertyChanged(PC4_Input);
+            OnPropertyChanged("PC1_Input");
+            OnPropertyChanged("PC2_Input");
+            OnPropertyChanged("PC3_Input");
+            OnPropertyChanged("PC4_Input");
         }
 
         public void PC2Click()
@@ -1311,10 +1311,10 @@ namespace DDPM.UI.Module.Kvm
             Border2Visibility = Visibility.Visible;
             Border3Visibility = Visibility.Collapsed;
             Border4Visibility = Visibility.Collapsed;
-            OnPropertyChanged(PC1_Input);
-            OnPropertyChanged(PC2_Input);
-            OnPropertyChanged(PC3_Input);
-            OnPropertyChanged(PC4_Input);
+            OnPropertyChanged("PC1_Input");
+            OnPropertyChanged("PC2_Input");
+            OnPropertyChanged("PC3_Input");
+            OnPropertyChanged("PC4_Input");
         }
 
         public void PC3Click()
@@ -1323,10 +1323,10 @@ namespace DDPM.UI.Module.Kvm
             Border2Visibility = Visibility.Collapsed;
             Border3Visibility = Visibility.Visible;
             Border4Visibility = Visibility.Collapsed;
-            OnPropertyChanged(PC1_Input);
-            OnPropertyChanged(PC2_Input);
-            OnPropertyChanged(PC3_Input);
-            OnPropertyChanged(PC4_Input);
+            OnPropertyChanged("PC1_Input");
+            OnPropertyChanged("PC2_Input");
+            OnPropertyChanged("PC3_Input");
+            OnPropertyChanged("PC4_Input");
         }
 
         public void PC4Click()
@@ -1335,10 +1335,10 @@ namespace DDPM.UI.Module.Kvm
             Border2Visibility = Visibility.Collapsed;
             Border3Visibility = Visibility.Collapsed;
             Border4Visibility = Visibility.Visible;
-            OnPropertyChanged(PC1_Input);
-            OnPropertyChanged(PC2_Input);
-            OnPropertyChanged(PC3_Input);
-            OnPropertyChanged(PC4_Input);
+            OnPropertyChanged("PC1_Input");
+            OnPropertyChanged("PC2_Input");
+            OnPropertyChanged("PC3_Input");
+            OnPropertyChanged("PC4_Input");
         }
 
         public void OpenNKVMUI(int index, int x, int y)
@@ -1453,12 +1453,14 @@ namespace DDPM.UI.Module.Kvm
         {
             DdpmCommonHelper.DeviceManagerSA.NKVM_State(true).Wait();
             if (DdpmCommonHelper.DeviceManagerSA.IsNamedpipeConnected().Result)
-            {            
+            {
 //#if DEBUG
+                isOnNKVM(true);
+                _log.Debug("NKVMOpenUI...");
                 DdpmCommonHelper.DeviceManagerSA.CallShowNKVM(0, 100, 100).Wait();
-//#else
-//                OpenNKVMUI(0, 100, 100);
-//#endif
+                //#else
+                //                OpenNKVMUI(0, 100, 100);
+                //#endif
             }
             else
             {
@@ -1468,17 +1470,32 @@ namespace DDPM.UI.Module.Kvm
 //#else
 //                OpenNKVMUI(0, 100, 100);
 //#endif
+                int i = 0;
+                while (!DdpmCommonHelper.DeviceManagerSA.IsNamedpipeConnected().Result && i < 20)
+                {
+                    i++;
+                    Thread.Sleep(500);
+                }
+                if (DdpmCommonHelper.DeviceManagerSA.IsNamedpipeConnected().Result)
+                {
+                    isOnNKVM(true);
+                    _log.Debug("NKVMOpenUI...");
+                    DdpmCommonHelper.DeviceManagerSA.CallShowNKVM(0, 100, 100).Wait();
+                }
+                else
+                {
+                    _log.Debug("Named pipe is not Connected or time out");
+                }
             }
-
-            isOnNKVM(true);
         }
         private void NKVMOpenUI_Done(object sender, RunWorkerCompletedEventArgs e)
         {
+            Thread.Sleep(3000);
             IsBusy = false;
             OnPropertyChanged("IsBusy");
         }
 
-#endregion
+        #endregion
 
         public void OnPropertyChanged_Lock()
         {

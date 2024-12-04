@@ -2817,4 +2817,130 @@
   <data name="HeadsetAutomatedActions.14" xml:space="preserve">
     <value>Sensitivity</value>
   </data>
+  <data name="File_corrupted" xml:space="preserve">
+    <value>File corrupted</value>
+  </data>
+  <data name="File_corruptedMsg" xml:space="preserve">
+    <value>File is corrupted.Please select another file</value>
+  </data>
+  <data name="ImportFail" xml:space="preserve">
+    <value>Fail</value>
+  </data>
+  <data name="ImportFailMsg" xml:space="preserve">
+    <value>Unable to import different model</value>
+  </data>
+  <data name="Update_Webcam_Alert" xml:space="preserve">
+    <value>This update will enable presence sensing controls through Windows Settings in systems: Win 11 22H2 or higher, and with OS build\r\n22621 or higher</value>
+  </data>
+  <data name="Update_BatteryLow_Alert" xml:space="preserve">
+    <value>Battery level on the device is low. Replace/recharge battery to enable this update.</value>
+  </data>
+  <data name="Update_Dock_Alert" xml:space="preserve">
+    <value>Ensure only one dock is connected to your system. Devices connected to dock may not be available during update.</value>
+  </data>
+  <data name="Update_PCBatteryLow_Alert" xml:space="preserve">
+    <value>Connect PC to power source and ensure PC battery charge is above 10% to continue with update</value>
+  </data>
+  <data name="Update_Mouse_Alert" xml:space="preserve">
+    <value>Press a button or a key on the device to enable this update</value>
+  </data>
+  <data name="Landscape" xml:space="preserve">
+    <value>Landscape</value>
+  </data>
+  <data name="Portrait" xml:space="preserve">
+    <value>Portrait</value>
+  </data>
+  <data name="Landscape_flipped" xml:space="preserve">
+    <value>Landscape(flipped)</value>
+  </data>
+  <data name="Portrait_flipped" xml:space="preserve">
+    <value>Portrait(flipped)</value>
+  </data>
+  <data name="Frame_Rate" xml:space="preserve">
+    <value>Frame Rate</value>
+  </data>
+  <data name="Display_Alignment" xml:space="preserve">
+    <value>Display Alignment</value>
+  </data>
+  <data name="Timer__30min" xml:space="preserve">
+    <value>Timer/30min</value>
+  </data>
+  <data name="Timer__40min" xml:space="preserve">
+    <value>Timer/40min</value>
+  </data>
+  <data name="Timer__50min" xml:space="preserve">
+    <value>Timer/50min</value>
+  </data>
+  <data name="Timer__60min" xml:space="preserve">
+    <value>Timer/60min</value>
+  </data>
+  <data name="Timer__90min" xml:space="preserve">
+    <value>Timer/90min</value>
+  </data>
+  <data name="Disable" xml:space="preserve">
+    <value>Disable</value>
+  </data>
+  <data name="Extreme" xml:space="preserve">
+    <value>Extreme</value>
+  </data>
+  <data name="Super_Fast" xml:space="preserve">
+    <value>Super Fast</value>
+  </data>
+  <data name="Fast" xml:space="preserve">
+    <value>Fast</value>
+  </data>
+  <data name="Normal" xml:space="preserve">
+    <value>Normal</value>
+  </data>
+  <data name="Level_0" xml:space="preserve">
+    <value>Level 0</value>
+  </data>
+  <data name="Level_1" xml:space="preserve">
+    <value>Level 1</value>
+  </data>
+  <data name="Level_2" xml:space="preserve">
+    <value>Level 2</value>
+  </data>
+  <data name="Level_3" xml:space="preserve">
+    <value>Level 3</value>
+  </data>
+  <data name="Desktop" xml:space="preserve">
+    <value>Desktop</value>
+  </data>
+  <data name="Movie_HDR" xml:space="preserve">
+    <value>Movie HDR</value>
+  </data>
+  <data name="Game_HDR" xml:space="preserve">
+    <value>Game HDR</value>
+  </data>
+  <data name="Display_HDR" xml:space="preserve">
+    <value>Display HDR</value>
+  </data>
+  <data name="Custom_Color_HDR" xml:space="preserve">
+    <value>Custom Color HDR</value>
+  </data>
+  <data name="HDRPeak1000" xml:space="preserve">
+    <value>HDRPeak1000</value>
+  </data>
+  <data name="_4K" xml:space="preserve">
+    <value>4K</value>
+  </data>
+  <data name="_FHD" xml:space="preserve">
+    <value>FHD</value>
+  </data>
+  <data name="Steady_Vision" xml:space="preserve">
+    <value>Steady Vision</value>
+  </data>
+  <data name="VisionEngine_Steady" xml:space="preserve">
+    <value>Steady Vision</value>
+  </data>
+  <data name="Software_update" xml:space="preserve">
+    <value>Software update</value>
+  </data>
+  <data name="Firmware_update" xml:space="preserve">
+    <value>Firmware update</value>
+  </data>
+  <data name="Color.10" xml:space="preserve">
+    <value>Auto Color Temperature is currently enabled. Do you wish to disable it to continue?</value>
+  </data>
 </root>

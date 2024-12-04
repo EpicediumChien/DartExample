@@ -16,7 +16,14 @@ namespace DDPM.SA.Common.Security
     {
         private Logs? _logs;
         //private string[] Issuer = new string[] { "Entrust Certification Authority - L1F" };
-        private string[] Subject = new string[] { "content-cdn.dell.com", "*.dell.com" };
+        private string[] Subject = new string[] 
+        { 
+            "content-cdn.dell.com", 
+            "www.dell.com",
+            "downloads.dell.com",
+            "ftp.dell.com",
+            "clientperipherals.dell.com"
+        };//change from *.dell.com to www.dell.com
         public CertificateCheck(Logs logs)
         {
             _logs = logs;
@@ -327,9 +334,10 @@ namespace DDPM.SA.Common.Security
                     if (ExtractCN(certificate.Subject).Equals(sub))
                     {
                         isSubjectCNMatch = true;
+                        _logs?.DebugMsg_1($"[CheckIssuerAndSubject] certificate.Subject:{certificate.Subject} matched");
                     }
                 }
-                //[Dean 1119 remove Isuer check by Wendy's commit]
+                //[Dean 1119 remove Issuer check by Wendy's commit]
                 //foreach (string iss in Issuer)
                 //{
                 //    if (ExtractCN(certificate.Issuer).Equals(iss))
@@ -346,31 +354,37 @@ namespace DDPM.SA.Common.Security
                     bool containsAny = ContainsAny(san, Subject);
                     if (containsAny)
                     {
-                        //_logs?.DebugMsg_1("[CheckIssuerAndSubject] Subject is included in the SAN.");
+                        _logs?.DebugMsg_1("[CheckIssuerAndSubject] Subject is included in the SAN.");
                         isSANCNMatch = true;
                     }
                     else
                     {
-                        //_logs?.DebugMsg_1("[CheckIssuerAndSubject] Subject is NOT included in the SAN.");
+                        _logs?.DebugMsg_1("[CheckIssuerAndSubject] Subject is NOT included in the SAN.");
                     }
                 }
-                //_logs?.DebugMsg_1("---SAN END---");
+                _logs?.DebugMsg_1("---SAN END---");
                 isCNMatch = isSubjectCNMatch && /*isIssuerCNMatch &&*/ isSANCNMatch;
                 if (isCNMatch)
                 {
-                    //_logs?.DebugMsg_1("[CheckIssuerAndSubject] Is match.");
+                    _logs?.DebugMsg_1("[CheckIssuerAndSubject] cert info matched.");
                 }
                 else
                 {
                     if (!isSubjectCNMatch)
                     {
-                        //_logs?.DebugMsg_1("[CheckIssuerAndSubject] Subject is NOT match.");
+                        _logs?.DebugMsg_1("[CheckIssuerAndSubject] Subject is NOT match.");
+                    }
+                    if (!isSANCNMatch)
+                    {
+                        _logs?.DebugMsg_1("[CheckIssuerAndSubject] SAN/CN is NOT match.");
                     }
                     //if (!isIssuerCNMatch)
                     //{
-                        //_logs?.DebugMsg_1("[CheckIssuerAndSubject] Issuer is NOT match.");
+                    //_logs?.DebugMsg_1("[CheckIssuerAndSubject] Issuer is NOT match.");
                     //}
+
                     // Additional logic to handle proxy certificates if the above checks failed
+                    /*                     
                     var storeNames = new[] { StoreName.Root, StoreName.TrustedPublisher };
                     var storeLocations = new[] { StoreLocation.LocalMachine, StoreLocation.CurrentUser };
                     // Implement custom validation logic for proxy certificates
@@ -398,7 +412,20 @@ namespace DDPM.SA.Common.Security
                     else
                     {
                         //_logs?.DebugMsg_1("[CheckIssuerAndSubject] Not match.");
+                    }*/
+                    //[Dean] Use certificate verify to replace the usage like cert store
+                    bool temp = true;
+                    if(!IsValidCertificate(certificate, chain))
+                    {
+                        _logs?.DebugMsg_1("[CheckIssuerAndSubject][IsValidCertificate] cert/chain invalid.");
+                        temp = false;
                     }
+                    if(!certificate.Verify())
+                    {
+                        _logs?.DebugMsg_1("[CheckIssuerAndSubject] cert verify return fail.");
+                        temp = false;
+                    }
+                    isCNMatch = temp;
                 }
                 //_logs?.DebugMsg_1("--------------CheckIssuerAndSubject------------------");
                 return isCNMatch;
@@ -409,7 +436,7 @@ namespace DDPM.SA.Common.Security
             }
             return false;
         }
-        private bool ValidateProxyCertificate(StoreName storeName, StoreLocation storeLocation, X509Certificate2 certificate, X509Chain chain)
+        /*private bool ValidateProxyCertificate(StoreName storeName, StoreLocation storeLocation, X509Certificate2 certificate, X509Chain chain)
         {
             // Implement custom validation logic for proxy certificates
             // For example, check specific attributes or extensions
@@ -447,7 +474,7 @@ namespace DDPM.SA.Common.Security
             // Close the store
             store.Close();
             return trustedRootMatched; //proxy certitifacate is invalid
-        }
+        }*/
         private string ExtractCN(string subject)
         {
             if (string.IsNullOrEmpty(subject))

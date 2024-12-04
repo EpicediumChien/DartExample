@@ -33,4 +33,10 @@ namespace DDPM.SA.Common
         public bool isPBPmode { get; set; } = false;
         public MonitorInfo MonitorInfo { get; set; }
     }
+
+    public class NKVMVCPValue
+    {
+        public MonitorInfo monitorInfo { get; set; }
+        public int value { get; set; } = 0;// now only 0xE9
+    }
 }

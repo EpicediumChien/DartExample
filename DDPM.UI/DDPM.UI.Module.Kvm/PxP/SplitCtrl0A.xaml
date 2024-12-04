@@ -25,10 +25,8 @@
                         <RowDefinition Height="*" />
                         <RowDefinition Height="*" />
                     </Grid.RowDefinitions>
-                    <Grid Grid.Row="0" Background="#A4B8CD">
-                        <TextBlock Text="{Binding PC1_Input}" Foreground="White" HorizontalAlignment="Center" />
-                    </Grid>
-                    <TextBlock Grid.Row="1" Text="{Binding [Kvm.0], Source={x:Static lang:LangHelper.Instance},StringFormat={}{0}1}" FontSize="14" Foreground="White" HorizontalAlignment="Center" />
+                    <TextBlock Background="#A4B8CD" Padding="4" Text="{Binding PC1_Input}" Foreground="White" HorizontalAlignment="Center" />
+                    <TextBlock Grid.Row="1" Text="{Binding [Kvm.0], Source={x:Static lang:LangHelper.Instance},StringFormat={}{0}1}" FontSize="14" Foreground="{DynamicResource TextBlock_ForegroundColor}" HorizontalAlignment="Center" />
                     <!--<Grid Width="8" Height="8">
                     <Polyline Points="0.5,0.5 7.5,7.5"
                     StrokeStartLineCap="Flat"
