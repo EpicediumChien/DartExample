@@ -436,9 +436,8 @@ namespace DDPM.UI.Common
         //Two steps to save an FrameworkElement derived object to a .PNG image file
         //Requirements:
         //1 The UI element must be rendered already. You can check it by its ActualWidth and ActualHeight.
-        //2 Step 1 CreateBitmapSource() must be called at UI thread, for example, in 
-
-
+        //2 Step 1 CreateBitmapSource() must be called at UI thread, for example, in EzArrangeRightVierw.xaml.cs
+        //  SaveLayoutIconsToPngFiles()
         public static BitmapSource? CreateBitmapSource(FrameworkElement ele)
         {
             double pxWidth = ele.ActualWidth + 1;

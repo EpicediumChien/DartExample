@@ -145,8 +145,8 @@
                     <Border Background="#132F5499" Opacity="0.6"  Visibility="{Binding LockMaskVisible}"/>
 
                 </Grid>
-                <Grid VerticalAlignment="top" Margin="16,0,16,10" Visibility="{Binding UPD_Visibility}">
-                    <Border CornerRadius="6" Margin="0,0,0,4000" Visibility="{Binding brdHello_show}" >
+                <Grid VerticalAlignment="top" Margin="16,0,16,10" Visibility="{Binding brdHello_show}">
+                    <Border CornerRadius="6" Margin="0,0,0,4000">
                         <Grid Margin="18,22,18,18">
                             <StackPanel Orientation="Horizontal">
                                 <UXControls:UXTextBlock Text="{Binding [WebCameraPresenceDetection.10], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource ModuleItemStyle}" HorizontalAlignment="Center" VerticalAlignment="Center" />

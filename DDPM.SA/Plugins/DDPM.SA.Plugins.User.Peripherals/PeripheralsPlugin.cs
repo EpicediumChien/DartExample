@@ -728,25 +728,28 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
             //}
         }
         public void SetWearDetectionForCLI(int newValue, Guid deviceId)
-        {
+        {           
             foreach (var device in _iDeviceManager.Devices)
             {
                 var logicalDevice = device.Devices.FirstOrDefault(x => x.Id == deviceId);
-                if (logicalDevice is ILogicalDeviceHeadset _logicalDeviceHeadset)
-                {
-                    if (newValue == 0)
-                        newValue |= 0b00000000;
-                    else
-                        newValue |= 0b00000111;
-                    //Elie. R17.1 drop this function. 1123
-                    //_logicalDeviceHeadset.SetWearDetection(newValue);
-                    //DeviceInfo _deviceInfo = _deviceHelper.deviceInfo.Where(x => x.ID == deviceId).FirstOrDefault();
-                    //if (_deviceInfo != null)
-                    //{
-                    //    _deviceInfo.WearDetection = newValue;
-                    //    break;
-                    //}
-                }
+                //Wayn R17.2 Change to DTP 12/2
+                bool setvalue = (newValue == 1 ? true : false);
+                _DeviceManagerPlugin.SetWearDetectionAsync(logicalDevice.ToString(), setvalue);
+                //if (logicalDevice is ILogicalDeviceHeadset _logicalDeviceHeadset)
+                //{
+                //    if (newValue == 0)
+                //        newValue |= 0b00000000;
+                //    else
+                //        newValue |= 0b00000111;
+                //Elie. R17.1 drop this function. 1123
+                //_logicalDeviceHeadset.SetWearDetection(newValue);
+                //DeviceInfo _deviceInfo = _deviceHelper.deviceInfo.Where(x => x.ID == deviceId).FirstOrDefault();
+                //if (_deviceInfo != null)
+                //{
+                //    _deviceInfo.WearDetection = newValue;
+                //    break;
+                //}
+                //}
             }
         }
         public void SetBusyLight(bool newValue, Guid deviceId)
