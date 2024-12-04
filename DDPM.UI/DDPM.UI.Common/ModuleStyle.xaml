@@ -1861,6 +1861,22 @@
 
     <!-- #endregion DDPM.SA.Common.Popup.PopupBase-->
 
+    <!-- #region MsgBoxLinearGradientBrush -->
+    <!-- This brush is used as a layer upper Base(Maybe Window or a Border).Background.
+         Both Light and Dark mode are the same color for this brush.
+         Usage example: DDPM.SA.Common/Popup/PupupBase.xaml
+    -->
+    <LinearGradientBrush x:Key="msgBoxGadientBrush" StartPoint="793,0" EndPoint="-69.2682,516.32"
+                         MappingMode="Absolute">
+        <GradientStop Color="#7F306CC7" Offset="0.0537435"/>
+        <GradientStop Color="#7F0063B8" Offset="0.237111"/>
+        <GradientStop Color="#1E003ACE" Offset="0.504036"/>
+        <GradientStop Color="#7C674AB8" Offset="0.792288"/>
+        <GradientStop Color="#7F0063B8" Offset="0.972444"/>
+    </LinearGradientBrush>
+    <!-- #region MsgBoxLinearGradientBrush-->
+
+
 
     <!-- #region BitmapImage -->
     <!--<BitmapImage x:Key="popup_ArrowCorner" UriSource="pack://application:,,,/DDPM.UI.Common;component/Resources/popup_ArrowCorner.png" />
