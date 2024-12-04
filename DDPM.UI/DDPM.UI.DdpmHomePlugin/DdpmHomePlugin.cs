@@ -40,6 +40,7 @@ using IDdpmHomePageViewModel = DDPM.UI.Plugin.DdpmHomePlugin.Interfaces.IDdpmHom
 using static DDPM.UI.Common.User32;
 using System.Windows.Threading;
 using DDPM.SA.Common.UpdateProgressPage;
+using Windows.ApplicationModel.VoiceCommands;
 
 namespace DDPM.UI.Plugin.DdpmHomePlugin
 {
@@ -285,6 +286,9 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                         }
 
                         CheckIfNeedImportSetting_Display();
+
+                        CheckIfNeedNavigateToWebcamPage();
+                        
                     }
                 }
             }
@@ -299,6 +303,19 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                 _lock.Release();
                 _log.Trace($"{nameof(GetCurrentDeviceManagerPluginPluginCondition)} unlock");
             }
+        }
+
+        private async void CheckIfNeedNavigateToWebcamPage()
+        {
+            if (DdpmCommonHelper.DeviceManagerSA!.GetIsDDPMLaunchByQAM().Result == true)
+            {
+                DdpmCommonHelper.WriteUILog($"GetIsDDPMLaunchByQAM = true");
+
+                await DdpmCommonHelper.DeviceManagerSA!.SetIsDDPMHomepageReadyAsync(true);
+                await DdpmCommonHelper.DeviceManagerSA!.SetIsDDPMLaunchByQAMAsync(false);
+            }
+            else
+                DdpmCommonHelper.WriteUILog($"GetIsDDPMLaunchByQAM = false");
         }
 
         private async void _deviceManager_DeviceChanged(object? sender, DeviceChangedEventArgs e)
@@ -443,7 +460,10 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
             //System.Windows.MessageBox.Show(e.UI_Field_Name);
 
             if (e.UI_Field_Name.StartsWith("QAMEvent_StartPreview"))
+            {
+                _log.Info($"_deviceManager_UIUpdateNotify start to show webcam preview");
                 _showPluginManager?.ShowPluginById(DDPM.UI.Common.Constants.WebCameraPluginId);
+            }
         }
 
         private void _deviceManager_VCPchanged(object? sender, VCPchangedEventArgs e)

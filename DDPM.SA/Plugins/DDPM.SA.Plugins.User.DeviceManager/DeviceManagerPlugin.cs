@@ -10230,11 +10230,14 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
             try
             {
-                _QAM?.Dispatcher.Invoke(() =>
+                //關得比較慢？？？
+                _QAM.Dispatcher.Invoke(() =>
                 {
-                    // Access UI elements or objects owned by a different thread
+                    writelog($"Try to run QAMClose");
                     _QAM?.Close();
                 });
+
+                //writelog($"Try to run QAMClose");
                 //_QAM?.Close();
             }
             catch (Exception e)
