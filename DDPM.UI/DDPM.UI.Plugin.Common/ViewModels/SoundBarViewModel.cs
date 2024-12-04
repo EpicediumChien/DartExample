@@ -394,6 +394,13 @@ namespace DDPM.UI.Plugin.ViewModels
 
             if (!base.SetCurrentDevice(deviceID))
                 return false;
+
+            string fv = _deviceManager.GetProfileAsync(CurrentDeviceID.ToString()).Result;
+            if (fv == null || fv == string.Empty)
+                IsDTPReady = false;
+            else
+                IsDTPReady = true;
+
             return true;
         }
 
