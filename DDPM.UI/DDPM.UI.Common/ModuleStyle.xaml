@@ -1348,7 +1348,13 @@
                         ClickMode="Press"
                         Focusable="True"
                         IsChecked="{Binding Path=IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"
-                        Template="{StaticResource MouseComboBoxToggleButtonTemplate}" />
+                        Template="{StaticResource MouseComboBoxToggleButtonTemplate}">
+                        <ToggleButton.Resources>
+                            <Style TargetType="Border">
+                                <Setter Property="Background" Value="Transparent" />
+                            </Style>
+                        </ToggleButton.Resources>
+                    </ToggleButton>
 
                     <ContentPresenter
                         x:Name="contentPresenter"
@@ -1360,7 +1366,7 @@
                         ContentStringFormat="{TemplateBinding SelectionBoxItemStringFormat}"
                         ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}"
                         ContentTemplateSelector="{TemplateBinding ItemTemplateSelector}"
-                        IsHitTestVisible="False" />
+                        IsHitTestVisible="False"/>
                 </Grid>
             </Border>
         </Grid>
@@ -1372,7 +1378,8 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type ComboBoxItem}">
-                    <Border Name="Border" Margin="0" Padding="0" SnapsToDevicePixels="true">
+                    <Border Name="Border" Margin="0" Padding="0" SnapsToDevicePixels="true"
+                            Background="Transparent">
                         <ContentPresenter
                             Name="contentPresenter"
                             Margin="13,10,40,10"
