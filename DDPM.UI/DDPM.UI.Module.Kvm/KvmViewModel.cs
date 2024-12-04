@@ -1453,8 +1453,10 @@ namespace DDPM.UI.Module.Kvm
         {
             DdpmCommonHelper.DeviceManagerSA.NKVM_State(true).Wait();
             if (DdpmCommonHelper.DeviceManagerSA.IsNamedpipeConnected().Result)
-            {            
+            {
 //#if DEBUG
+                isOnNKVM(true);
+                _log.Debug("NKVMOpenUI...");
                 DdpmCommonHelper.DeviceManagerSA.CallShowNKVM(0, 100, 100).Wait();
 //#else
 //                OpenNKVMUI(0, 100, 100);
@@ -1468,12 +1470,27 @@ namespace DDPM.UI.Module.Kvm
 //#else
 //                OpenNKVMUI(0, 100, 100);
 //#endif
+                int i = 0;
+                while (!DdpmCommonHelper.DeviceManagerSA.IsNamedpipeConnected().Result && i < 20)
+                {
+                    i++;
+                    Thread.Sleep(500);
+                }
+                if (DdpmCommonHelper.DeviceManagerSA.IsNamedpipeConnected().Result)
+                {
+                    isOnNKVM(true);
+                    _log.Debug("NKVMOpenUI...");
+                    DdpmCommonHelper.DeviceManagerSA.CallShowNKVM(0, 100, 100).Wait();
+                }
+                else
+                {
+                    _log.Debug("Named pipe is not Connected or time out");
+                }
             }
-
-            isOnNKVM(true);
         }
         private void NKVMOpenUI_Done(object sender, RunWorkerCompletedEventArgs e)
         {
+            Thread.Sleep(3000);
             IsBusy = false;
             OnPropertyChanged("IsBusy");
         }
