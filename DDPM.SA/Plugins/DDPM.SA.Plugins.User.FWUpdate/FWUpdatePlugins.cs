@@ -1563,19 +1563,23 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                 if (!string.IsNullOrEmpty(AppDataPath))
                 {
                     string path;
-                    if (!string.IsNullOrEmpty(fwUpdateInfo.ServiceTag))
+                    try
                     {
-                        _logs.DebugMsg_1($"fwUpdateInfo.ServiceTag is NO null : {fwUpdateInfo.ServiceTag}");
+                        _logs.DebugMsg_1($"fwUpdateInfo.ServiceTag is : {fwUpdateInfo.ServiceTag}");
                         path = @$"{AppDataPath}\Dell\Dell Display and Peripheral Manager\Log\FWUpdataLog\{fwUpdateInfo.DeviceName}_{fwUpdateInfo.ServiceTag}_{DateTime.Now.ToString("yy-MM-dd_HH_mm_ss")}";
+                        if (!Directory.Exists(path))
+                        {
+                            Directory.CreateDirectory(path);
+                        }
                     }
-                    else
+                    catch (Exception ex)
                     {
-                        _logs.DebugMsg_1($"fwUpdateInfo.ServiceTag is null : {fwUpdateInfo.ServiceTag}");
-                        path = @$"{AppDataPath}\Dell\Dell Display and Peripheral Manager\Log\FWUpdataLog\{fwUpdateInfo.DeviceName}__{DateTime.Now.ToString("yy-MM-dd_HH_mm_ss")}";
-                    }
-                    if (!Directory.Exists(path))
-                    {
-                        Directory.CreateDirectory(path);
+                        _logs.DebugMsg_1($"{fwUpdateInfo.DeviceName} create log Error : {ex.Message}");
+                        path = @$"{AppDataPath}\Dell\Dell Display and Peripheral Manager\Log\FWUpdataLog\ex_{DateTime.Now.ToString("yy-MM-dd_HH_mm_ss")}";
+                        if (!Directory.Exists(path))
+                        {
+                            Directory.CreateDirectory(path);
+                        }
                     }
                     logPath = path;
                     _ProgressLogPath = $"{logPath}\\PrgoressResult";
