@@ -425,7 +425,7 @@ namespace DDPM.SA.Plugins.SWUpdate
                     }
                     _notificationStr = LangHelper.Instance["Software_update_unsuccessful"];
                     NotificationFWupdate(LangHelper.Instance["Error"], _notificationStr);
-                    _logs.DebugMsg_1(nameof(DownloadAndInstall) + " FolderIsNotSafe:" + FolderInfo + "--or--" + PathSymbolicLinInfo);
+                    _logs.DebugMsg_1(nameof(DownloadAndInstall) + " savePath FolderIsNotSafe:" + FolderInfo + "--or--" + PathSymbolicLinInfo);
                     return Task.FromResult(swUpdateInfos);
                 }
                 for (int i = 0; i < swUpdateInfos.Count; i++)
@@ -441,7 +441,7 @@ namespace DDPM.SA.Plugins.SWUpdate
                         swUpdateInfos[i].SWUErrorCode = SWUErrorCode.FolderIsNotSafe;
                         _notificationStr = LangHelper.Instance["Software_update_unsuccessful"];
                         NotificationFWupdate(LangHelper.Instance["Error"], _notificationStr);
-                        _logs.DebugMsg_1(nameof(DownloadAndInstall) + " FolderIsNotSafe:" + FolderInfo + "--or--" + PathSymbolicLinInfo);
+                        _logs.DebugMsg_1(nameof(DownloadAndInstall) + " savePath FolderIsNotSafe:" + FolderInfo + "--or--" + PathSymbolicLinInfo);
                         continue;
                     }
                     _downloadTimer = new Timer();
@@ -490,7 +490,7 @@ namespace DDPM.SA.Plugins.SWUpdate
                     if (!DDPMFileSecurity.CheckFold(extractPath, out FolderInfo, out PathSymbolicLinInfo))
                     {
                         swUpdateInfos[i].SWUErrorCode = SWUErrorCode.FolderIsNotSafe;
-                        _logs.DebugMsg_1(swUpdateInfos[i].SoftwareName + " FolderIsNotSafe:" + FolderInfo + "--or--" + PathSymbolicLinInfo);
+                        _logs.DebugMsg_1(swUpdateInfos[i].SoftwareName + " extractPath FolderIsNotSafe:" + FolderInfo + "--or--" + PathSymbolicLinInfo);
                         _notificationStr = LangHelper.Instance["Software_update_unsuccessful"];
                         NotificationFWupdate(LangHelper.Instance["Error"], _notificationStr);
                         continue;

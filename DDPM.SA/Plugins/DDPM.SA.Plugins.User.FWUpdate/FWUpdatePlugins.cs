@@ -847,7 +847,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                         }
                         _notificationStr = LangHelper.Instance["Firmware_update_unsuccessful"];
                         NotificationFWupdate(LangHelper.Instance["Error"], _notificationStr);
-                        _logs.DebugMsg_1(nameof(DownloadAndInstall) + " FolderIsNotSafe:" + FolderInfo + "--or--" + PathSymbolicLinInfo);
+                        _logs.DebugMsg_1(nameof(DownloadAndInstall) + " savePath FolderIsNotSafe:" + FolderInfo + "--or--" + PathSymbolicLinInfo);
                         return Task.FromResult(fwUpdateInfos);
                     }
                     _notificationStr = "";
@@ -877,7 +877,8 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                         fwUpdateInfos[i].FWUErrorCode = FWUErrorCode.FolderIsNotSafe;
                         _notificationStr = LangHelper.Instance["Firmware_update_unsuccessful"];
                         NotificationFWupdate(LangHelper.Instance["Error"], _notificationStr);
-                        _logs.DebugMsg_1(nameof(DownloadAndInstall) + " FolderIsNotSafe:" + FolderInfo);
+                        _logs.DebugMsg_1($"{nameof(DownloadAndInstall)} savePath FolderIsNotSafe - FolderInfo : {FolderInfo}");
+                        _logs.DebugMsg_1($"{nameof(DownloadAndInstall)} savePath FolderIsNotSafe - PathSymbolicLinInfo : {PathSymbolicLinInfo}");
                         continue;
                     }
                     _downloadTimer = new Timer();
@@ -927,10 +928,11 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                     }
                     //0926 Bruce Add Security
                     //if (!CheckFold(extractPath, out FolderInfo, out PathSymbolicLinInfo))
-                    if (!DDPMFileSecurity.CheckFold(savePath, out FolderInfo, out PathSymbolicLinInfo))
+                    if (!DDPMFileSecurity.CheckFold(extractPath, out FolderInfo, out PathSymbolicLinInfo))
                     {
                         fwUpdateInfos[i].FWUErrorCode = FWUErrorCode.FolderIsNotSafe;
-                        _logs.DebugMsg_1(fwUpdateInfos[i].DeviceName + " FolderIsNotSafe:" + FolderInfo);
+                        _logs.DebugMsg_1($"{fwUpdateInfos[i].DeviceName} extractPath FolderIsNotSafe - FolderInfo : {FolderInfo}");
+                        _logs.DebugMsg_1($"{fwUpdateInfos[i].DeviceName} extractPath FolderIsNotSafe - PathSymbolicLinInfo : {PathSymbolicLinInfo}");
                         _notificationStr = LangHelper.Instance["Firmware_update_unsuccessful"];
                         NotificationFWupdate(LangHelper.Instance["Error"], _notificationStr);
                         continue;
