@@ -6757,7 +6757,7 @@ namespace DDPM.CLI.Plugins.Display
                 Trace.WriteLine(serviceTagList.Count);
                 List<string> swapIsDone = new List<string>();
                 int count = 0;
-                while (flag && count < 10)
+                while (flag && count < 1000)
                 {
                     for (int i = 0; i < serviceTagList.Count; i++)
                     {
