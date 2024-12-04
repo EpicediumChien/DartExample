@@ -27,6 +27,7 @@ using System.Timers;
 using VcpCore.Common;
 using IDs = DDPM.SA.Common.IDs;
 using JsonSerializer = System.Text.Json.JsonSerializer;
+using RegistryHive = DDPM.SA.Common.Settings.RegistryHive;
 using Timer = System.Timers.Timer;
 
 namespace DDPM.SA.Plugins.SWUpdate
@@ -740,6 +741,11 @@ namespace DDPM.SA.Plugins.SWUpdate
                         if (sWUpdateInfo != null && sWUpdateInfo.Count > 0)
                         {
                             _logs.DebugMsg_1($"{nameof(UpdateEvent)} sWUpdateInfo.Count : {sWUpdateInfo.Count}");
+                            _logs.DebugMsg_1("[UpdateEvent], WriteRegistryData go.");
+                            string registryKey = @"SOFTWARE\Dell Display and Peripheral Manager";
+                            string SW_Available_date = sWUpdateInfo[0].Available_date;
+                            bool b = WriteRegistryData(RegistryHive.LocalMachine, registryKey, nameof(SW_Available_date), SW_Available_date);
+                            _logs.DebugMsg_1($"[UpdateEvent], WriteRegistryData ret : {b}");
                             DownloadAndInstall_Result_Notify?.AsyncFireAndForget(this, DownloadAndInstall(sWUpdateInfo, false, "").Result, System.Threading.CancellationToken.None);
                         }
                     }
@@ -1022,6 +1028,18 @@ namespace DDPM.SA.Plugins.SWUpdate
                 }
             }
             _logs.DebugMsg_1($"UpdateLockSettingChange done");
+        }
+        public bool WriteRegistryData(RegistryHive hive, string keyPath, string keyName, object value)
+        {
+            _logs.DebugMsg_1($"WriteRegistryData start");
+            bool settings = false;
+            if (_SettingsPlugin != null)
+            {
+                _logs.DebugMsg_1($"WriteRegistryData _SettingsPlugin.WriteRegistryData go");
+                settings = _SettingsPlugin.WriteRegistryData(hive, keyPath, keyName, value).Result;
+            }
+            _logs.DebugMsg_1($"WriteRegistryData done ret : {settings}");
+            return settings;
         }
     }
 }
