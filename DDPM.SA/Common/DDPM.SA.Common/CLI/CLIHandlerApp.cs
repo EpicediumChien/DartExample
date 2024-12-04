@@ -338,7 +338,7 @@ namespace DDPM.SA.Common.CLI
                             response.Value = data_IT.Lock_Display_AutoBriTemp ? "Lock" : "Unlock";
                             break;
                         case "INAPPNETWORKKVM":
-                            response.Value = data_IT.Lock_Display_NetworkKVM ? "Lock" : "Unlock";
+                            response.Value = data_IT.Lock_Display_NetworkKVM ? "Enable" : "Disable";
                             break;
                         case "INAPPCOLORPRESET":
                             response.Value = data_IT.Lock_Display_ColorPreset ? "Lock" : "Unlock";
