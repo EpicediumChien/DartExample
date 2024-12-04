@@ -182,14 +182,15 @@
                         <DDPMUserControls:BatteryIndicator Name="Battery" Margin="0,0,0,70" HorizontalAlignment="Center" MouseEnter="BatteryIndicator_MouseEnter"
                                                            BatteryLevel="{Binding BatteryLevel}" BatteryStatus="{Binding BatteryStatus}" MouseLeave="BatteryIndicator_MouseLeave"
                                                            ConnectionType="{Binding ConnectionType}" VerticalAlignment="Bottom" />
-                        <Border Style="{StaticResource BorderUnpair}" Width="176" MouseLeftButtonDown="Restore_Click" Cursor="Hand" Margin="8,0,0,70" Visibility="Visible" x:Name="btnRestore">
+                        <Border Style="{StaticResource BorderUnpair}" Width="176" MouseLeftButtonDown="Restore_Click" Cursor="Hand" Margin="8,0,0,70" Visibility="Visible" x:Name="btnRestore"
+                                BorderBrush="{DynamicResource SecondaryButton_DefaultBdColor}">
                             <Grid>
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="*"/>
                                     <ColumnDefinition Width="auto"/>
                                 </Grid.ColumnDefinitions>
-                                <Border BorderBrush="{DynamicResource Unpair_FgColor}" Background="Transparent" BorderThickness="1"  >
-                                    <UXControls:UXTextBlock Name="txtRestore" VerticalAlignment="Center" Grid.Column="0" Foreground="{DynamicResource Unpair_FgColor}"
+                                <Border BorderBrush="{DynamicResource Button_UXStyleColor_ForWhiteFrame}" Background="Transparent" BorderThickness="1"  >
+                                    <UXControls:UXTextBlock Name="txtRestore" VerticalAlignment="Center" Grid.Column="0" Foreground="{Binding BorderBrush, RelativeSource={RelativeSource AncestorType=Border}}"
                                                         HorizontalAlignment="Center" FontFamily="Roboto" FontSize="14" Text="{Binding [RestoreToDefault], Source={x:Static lang:LangHelper.Instance}}"/>
                                 </Border>
                                     <Image Grid.Column="1" Name="RestoreLockIcon" Visibility="Collapsed" Margin="0,0,6,0"
