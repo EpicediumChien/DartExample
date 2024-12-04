@@ -2,6 +2,7 @@
 using DDPM.SA.Common.Settings;
 using DDPM.UI.Common;
 using DDPM.UI.Plugin.Common;
+using DDPM.UI.Resources.Helper;
 using System.Diagnostics;
 using System.IO;
 using System.Security.Policy;
@@ -282,10 +283,16 @@ namespace DDPM.UI.Module.DisplayOthers
                         }
                     }));
                     break;
+                case "file_corrupted":
+                    Dispatcher.Invoke(new Action(() =>
+                    {
+                        DisplayMsgBox(LangHelper.Instance["File_corrupted"], LangHelper.Instance["File_corruptedMsg"]);
+                    }));
+                    break;
                 case "result_fail":
                     Dispatcher.Invoke(new Action(() =>
                     {
-                        DisplayMsgBox("Fail", "Unable to import different model");
+                        DisplayMsgBox(LangHelper.Instance["ImportFail"], LangHelper.Instance["ImportFailMsg"]);
                     }));
                     break;
                 case "result_success":

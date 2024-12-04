@@ -2817,4 +2817,16 @@
   <data name="HeadsetAutomatedActions.14" xml:space="preserve">
     <value>Sensitivity</value>
   </data>
+  <data name="File_corrupted" xml:space="preserve">
+    <value>File corrupted</value>
+  </data>
+  <data name="File_corruptedMsg" xml:space="preserve">
+    <value>File is corrupted.Please select another file</value>
+  </data>
+  <data name="ImportFail" xml:space="preserve">
+    <value>Fail</value>
+  </data>
+  <data name="ImportFailMsg" xml:space="preserve">
+    <value>Unable to import different model</value>
+  </data>
 </root>

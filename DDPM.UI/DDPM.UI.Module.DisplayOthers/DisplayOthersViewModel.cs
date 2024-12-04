@@ -253,8 +253,11 @@ namespace DDPM.UI.Module.DisplayOthers
                     }
                     else
                     {
-                        //Elsa add to fix PIMS-313843
+                        //Elsa add to fix PIMS-313843&PIMS-313845
                         string model = "";
+                        string strReadJson = string.Empty;
+                        string info;
+                        strReadJson = DDPMFileSecurity.GetSerializedJsonString(impPath, out info);
                         using (StreamReader jsonf = new StreamReader(impPath))
                         {
                             string json = jsonf.ReadToEnd();
@@ -265,6 +268,11 @@ namespace DDPM.UI.Module.DisplayOthers
                         {
                             OnMessageDlgInvoke("close_loading");
                             OnMessageDlgInvoke("result_fail");
+                        }
+                        else if (strReadJson == string.Empty || strReadJson.Length == 0)
+                        {
+                            OnMessageDlgInvoke("close_loading");
+                            OnMessageDlgInvoke("file_corrupted");
                         }
                         else 
                         {   OnMessageDlgInvoke("close_loading"); }
