@@ -3,6 +3,7 @@ using DDPM.UI.Common;
 using DDPM.UI.Common.Method;
 using Dell.Client.Framework.Common;
 using Dell.Client.Framework.UX.WPF;
+using Dell.Client.Framework.UX.WPF.Controls;
 using Microsoft;
 using Newtonsoft.Json.Linq;
 using System.ComponentModel;
@@ -39,8 +40,30 @@ namespace DDPM.UI.Plugin.ViewModels
             _current_headset = string.Empty;
             _debouncerHeadset = new Debouncer(1000, ExecuteDebouncedAction);
             DdpmCommonHelper.DeviceManagerSA!.UIUpdateNotify += Headset_DTPNotify;
-
+            DdpmCommonHelper.BitmapImageUpdated += ImageUpdate;
             _log!.Info($"[HeadsetViewModel] HeadsetViewModel Start...");
+        }
+        ~HeadsetViewModel()
+        {
+            if (DdpmCommonHelper.DeviceManagerSA != null)
+            {
+                DdpmCommonHelper.DeviceManagerSA!.UIUpdateNotify -= Headset_DTPNotify;
+                DdpmCommonHelper.BitmapImageUpdated -= ImageUpdate;
+            }
+        }
+        private void ImageUpdate(OSThemeEnum oSThemeEnum)
+        {
+            if (oSThemeEnum == OSThemeEnum.Dark)
+            {
+                _isDarkTheme = true;
+            }
+            else
+            {
+                _isDarkTheme = false;
+            }
+            OnPropertyChanged(nameof(IsDarkTheme));
+            //ArrowLeft.Source = null;
+            //ArrowLeft.Source = (BitmapImage)Application.Current.Resources["Arrow_Left"];
         }
 
         private Dictionary<string, string> deal_param(string param)
@@ -137,10 +160,6 @@ namespace DDPM.UI.Plugin.ViewModels
                                     _isNormalChecked = true;
                                     _isSensitiveChecked = false;
                                 }
-                            }
-                            if (Model == "WL5024")
-                            {
-
                             }
                             break;
 
@@ -808,6 +827,10 @@ namespace DDPM.UI.Plugin.ViewModels
             _log.Info($"[HeadsetViewModel] SetCurrentDevice GUID ... {CurrentDeviceID.ToString()}");
             _current_headset = CurrentDeviceID!.ToString();
             var fv = _deviceManager.GetHeadsetFirmwareVersionAsync(CurrentDeviceID.ToString()).Result; //CurrentDeviceInfo.FirmwareVersion.PadLeft(4, '0');
+            if(fv == null || fv == string.Empty)
+                IsDTPReady = false;
+            else
+                IsDTPReady = true;
             //FirmwareVersion2 = $"Firmware Version {fv}";// {fv.Substring(0, 1)}.{fv.Substring(1, 1)}.{fv.Substring(2, 1)}.{fv.Substring(3, 1)}";
             FirmwareVersion2 = Strings.FirmwareVersion + $" {fv}";
             //else
@@ -1796,7 +1819,7 @@ namespace DDPM.UI.Plugin.ViewModels
                         _isSpeechBoostChecked = false;
                         _isTrebleBoostChecked = false;
                         _isCustomChecked = false;
-                        DeviceInfoDTP.SelectedPreset = 2;
+                        DeviceInfoDTP.SelectedPreset = 3;
                         _debouncerHeadset.Debounce("BassBoostCheck");
                         OnPropertyChanged(nameof(IsDefaultChecked));
                         OnPropertyChanged(nameof(IsSpeechBoostChecked));
@@ -1826,7 +1849,7 @@ namespace DDPM.UI.Plugin.ViewModels
                         _isBassBoostChecked = false;
                         _isTrebleBoostChecked = false;
                         _isCustomChecked = false;
-                        DeviceInfoDTP.SelectedPreset = 3;
+                        DeviceInfoDTP.SelectedPreset = 2;
                         _debouncerHeadset.Debounce("SpeechBoostCheck");
                         OnPropertyChanged(nameof(IsDefaultChecked));
                         OnPropertyChanged(nameof(IsBassBoostChecked));
