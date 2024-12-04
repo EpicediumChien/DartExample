@@ -164,6 +164,9 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                 }
 
                 // Manager Peripheralslugin Condition
+                _log.Info($"register event _deviceManager_UIUpdateNotify");
+                _deviceManager.UIUpdateNotify += _deviceManager_UIUpdateNotify;
+                //_log.Info($"register event _deviceManager_UIUpdateNotify finished");
                 _IDeviceManagerPluginCondition = _deviceManager as IFrameworkPluginConditionNotification;
 
                 if (_IDeviceManagerPluginCondition == null)
@@ -174,6 +177,8 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
 
                 // Get current condition
                 _ = Task.Run(GetCurrentDeviceManagerPluginPluginCondition, CancellationToken);
+
+                //CheckIfNeedNavigateToWebcamPageV2();
             }
             catch (Exception ex)
             {
@@ -213,7 +218,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                             _HasRegisted = true;
                             _deviceManager.DeviceChanged += _deviceManager_DeviceChanged;
                             _deviceManager.VCPchanged += _deviceManager_VCPchanged;
-                            _deviceManager.UIUpdateNotify += _deviceManager_UIUpdateNotify;
+                            //_deviceManager.UIUpdateNotify += _deviceManager_UIUpdateNotify;
 
                             //Move to call from OnActivated( ) => Failed, it's called too late
                             //So uncommented below code
@@ -287,8 +292,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
 
                         CheckIfNeedImportSetting_Display();
 
-                        CheckIfNeedNavigateToWebcamPage();
-                        
+                        CheckIfNeedNavigateToWebcamPageV2();
                     }
                 }
             }
@@ -305,17 +309,30 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
             }
         }
 
-        private async void CheckIfNeedNavigateToWebcamPage()
+        private void CheckIfNeedNavigateToWebcamPage()
         {
             if (DdpmCommonHelper.DeviceManagerSA!.GetIsDDPMLaunchByQAM().Result == true)
             {
                 DdpmCommonHelper.WriteUILog($"GetIsDDPMLaunchByQAM = true");
 
-                await DdpmCommonHelper.DeviceManagerSA!.SetIsDDPMHomepageReadyAsync(true);
-                await DdpmCommonHelper.DeviceManagerSA!.SetIsDDPMLaunchByQAMAsync(false);
+                DdpmCommonHelper.DeviceManagerSA!.SetIsDDPMHomepageReadyAsync(true);
+                DdpmCommonHelper.DeviceManagerSA!.SetIsDDPMLaunchByQAMAsync(false);
             }
             else
                 DdpmCommonHelper.WriteUILog($"GetIsDDPMLaunchByQAM = false");
+        }
+
+        private void CheckIfNeedNavigateToWebcamPageV2()
+        {
+            if (_deviceManager!.GetIsDDPMLaunchByQAM().Result == true)
+            {
+                _log.Info($"GetIsDDPMLaunchByQAM = true");
+
+                _deviceManager!.SetIsDDPMHomepageReadyAsync(true);
+                _deviceManager!.SetIsDDPMLaunchByQAMAsync(false);
+            }
+            else
+                _log.Info($"GetIsDDPMLaunchByQAM = false");
         }
 
         private async void _deviceManager_DeviceChanged(object? sender, DeviceChangedEventArgs e)
@@ -462,7 +479,9 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
             if (e.UI_Field_Name.StartsWith("QAMEvent_StartPreview"))
             {
                 _log.Info($"_deviceManager_UIUpdateNotify start to show webcam preview");
-                _showPluginManager?.ShowPluginById(DDPM.UI.Common.Constants.WebCameraPluginId);
+                _console.ShowPluginById(DDPM.UI.Common.Constants.WebCameraPluginId);
+                //_showPluginManager?.ShowPluginById(DDPM.UI.Common.Constants.SettingsPluginId);
+                //_console.ShowPluginById(DDPM.UI.Common.Constants.SettingsPluginId);
             }
         }
 
