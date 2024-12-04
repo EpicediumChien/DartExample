@@ -62,8 +62,6 @@ namespace DDPM.UI.Plugin.ViewModels
                 _isDarkTheme = false;
             }
             OnPropertyChanged(nameof(IsDarkTheme));
-            //ArrowLeft.Source = null;
-            //ArrowLeft.Source = (BitmapImage)Application.Current.Resources["Arrow_Left"];
         }
 
         private Dictionary<string, string> deal_param(string param)
