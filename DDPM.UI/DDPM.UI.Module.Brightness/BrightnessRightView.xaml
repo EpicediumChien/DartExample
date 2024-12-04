@@ -18,16 +18,8 @@
 
             <!--<local:RadioBoolToIntConverter x:Key="radioBoolToIntConverter" />-->
 
-            <local:BooleanToBrushConverter
-                x:Key="BooleanToBrushConverter"
-                FalseBrush="White"
-                TrueBrush="Gray" />
-
-            <local:CustomBooleanToBrushConverter
-                x:Key="CustomBooleanToBrushConverter"
-                FalseBrushDarkTheme="White"
-                FalseBrushLightTheme="Black"
-                TrueBrush="Gray" />
+            <local:BooleanToBrushConverter x:Key="BooleanToBrushConverter" FalseBrush="White" TrueBrush="Gray" />
+            <local:CustomBooleanToBrushConverter x:Key="CustomBooleanToBrushConverter" FalseBrushLightTheme="Black" FalseBrushDarkTheme="White" TrueBrush="Gray" />
 
             <local:InverseBooleanConverter x:Key="InverseBooleanConverter" />
 
@@ -531,7 +523,7 @@
                         Margin="0,16,0,0"
                         IsEnabled="{Binding BrightnessEnable}"
                         Opacity="{Binding BrightnessOpacity}"
-                        Style="{StaticResource RightGroupBorderStyle}"
+                        Style="{DynamicResource RightGroupBorderStyle}"
                         Visibility="{Binding isAlsSupported}">
                         <Expander
                             Name="Expander_Auto"
@@ -601,7 +593,7 @@
                                             HorizontalAlignment="Left"
                                             VerticalAlignment="Center"
                                             FontSize="16"
-                                            Foreground="{DynamicResource TextBlock_ForegroundColor}"
+                                            Foreground="{Binding IsAutoBrightnessTextGrayedOut, Converter={StaticResource CustomBooleanToBrushConverter}}"
                                             Text="{Binding [Brightness.6], Source={x:Static lang:LangHelper.Instance}}"
                                             TextBlockSemanticColorType="Light"
                                             TextBlockType="Display1" />
@@ -687,7 +679,7 @@
                                             HorizontalAlignment="Left"
                                             VerticalAlignment="Center"
                                             FontSize="16"
-                                            Foreground="{DynamicResource TextBlock_ForegroundColor}"
+                                            Foreground="{Binding IsAutoBrightnessRangeLevelTextGrayedOut, Converter={StaticResource CustomBooleanToBrushConverter}}"
                                             Text="{Binding [Brightness.8], Source={x:Static lang:LangHelper.Instance}}"
                                             TextBlockSemanticColorType="Light"
                                             TextBlockType="Display1"
@@ -783,7 +775,7 @@
                                             HorizontalAlignment="Left"
                                             VerticalAlignment="Center"
                                             FontSize="16"
-                                            Foreground="{DynamicResource TextBlock_ForegroundColor}"
+                                            Foreground="{Binding IsAutoColorTempTextGrayedOut, Converter={StaticResource CustomBooleanToBrushConverter}}"
                                             Text="{Binding [Brightness.10], Source={x:Static lang:LangHelper.Instance}}"
                                             TextBlockSemanticColorType="Light"
                                             TextBlockType="Display1" />
@@ -873,7 +865,7 @@
                                             HorizontalAlignment="Left"
                                             VerticalAlignment="Center"
                                             FontSize="16"
-                                            Foreground="{Binding IsAutoPrimaryMonitorForSyncTextGrayedOut, Converter={StaticResource BooleanToBrushConverter}}"
+                                            Foreground="{Binding IsAutoPrimaryMonitorForSyncTextGrayedOut, Converter={StaticResource CustomBooleanToBrushConverter}}"
                                             Text="{Binding [Brightness.12], Source={x:Static lang:LangHelper.Instance}}"
                                             TextBlockSemanticColorType="Light"
                                             TextBlockType="Display1"
@@ -953,7 +945,7 @@
                                             HorizontalAlignment="Center"
                                             VerticalAlignment="Center"
                                             FontSize="14"
-                                            Foreground="{Binding IsAutoBrightnessRangeLevelStringGrayedOut, Converter={StaticResource BooleanToBrushConverter}}"
+                                            Foreground="{Binding IsAutoBrightnessRangeLevelStringGrayedOut, Converter={StaticResource CustomBooleanToBrushConverter}}"
                                             Text="{Binding AutoBrightnessRangeLevel_String}" />
                                     </Border>
                                     <Border
