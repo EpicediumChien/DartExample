@@ -524,7 +524,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                 return;
             }
 
-            print_debug("s1");
+            print_debug("s1-"+model);
 
             if (!SpecialCase.Contains(model)) return;
 
