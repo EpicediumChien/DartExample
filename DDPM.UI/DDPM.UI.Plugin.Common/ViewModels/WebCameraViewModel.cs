@@ -409,7 +409,7 @@ namespace DDPM.UI.Plugin.ViewModels
             get => _WALSnoozeTimeLeft;
             set
             {
-                SetProperty(ref _WALSnoozeTimeLeft, value); 
+                SetProperty(ref _WALSnoozeTimeLeft, value);
                 OnPropertyChanged("WALSnoozeTimeLeft");
             }
         }
@@ -868,31 +868,25 @@ namespace DDPM.UI.Plugin.ViewModels
         }
         public bool IsNotRecording { get => !IsRecording; }
 
-        public int btnRes0_width { get => btnRes0_width_v; }
-        public int btnRes1_width { get => btnRes1_width_v; }
-        public int btnRes2_width { get => btnRes2_width_v; }
-        public int btnRes3_width { get => btnRes3_width_v; }
+        public int btnRes0_width { get; set; } 
+        public int btnRes1_width { get; set; }
+        public int btnRes2_width { get; set; }
+        public int btnRes3_width { get; set; }
 
-        public int btnRes0_width_v = 100;
-        public int btnRes1_width_v = 100;
-        public int btnRes2_width_v = 100;
-        public int btnRes3_width_v = 100;
 
         public CornerRadius btnRes1_radius { get => btnRes1_radius_v; }
         public CornerRadius btnRes1_radius_v = new CornerRadius(0, 0, 0, 0);
 
-        public Visibility btnRes0_show { get => btnRes0_show_v; }
-        public Visibility btnRes1_show { get => btnRes1_show_v; }
-        public Visibility btnRes2_show { get => btnRes2_show_v; }
-        public Visibility btnRes3_show { get => btnRes3_show_v; }
+        public Visibility btnRes0_show { get; set; } = Visibility.Visible;
+        public Visibility btnRes1_show { get; set; } = Visibility.Visible;
+        public Visibility btnRes2_show { get; set; } = Visibility.Visible;
+        public Visibility btnRes3_show { get; set; } = Visibility.Visible;
 
-        public Visibility btnRes0_show_v = Visibility.Visible;
-        public Visibility btnRes1_show_v = Visibility.Visible;
-        public Visibility btnRes2_show_v = Visibility.Visible;
-        public Visibility btnRes3_show_v = Visibility.Visible;
 
-        public Visibility brdHello_show { get => brdHello_show_v; }
-        public Visibility brdHello_show_v = Visibility.Visible;
+
+        public Visibility brdHello_show { get; set; } = Visibility.Visible;
+        public Visibility brdHello_show_control { get; set; } = Visibility.Visible;
+
 
         public bool is_hdr_enable = true;
         public bool hdr_enable { get => IsNotRecording && is_hdr_enable; }

@@ -3,6 +3,7 @@ using DDPM.SA.Common;
 using DDPM.SA.Common.Settings;
 using DDPM.UI.Common;
 using DDPM.UI.Common.Interfaces;
+using DDPM.UI.Resources.Helper;
 using Dell.Client.Framework.Common;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -88,7 +89,7 @@ namespace DDPM.UI.Module.DisplayProperties
         {
             get
             {
-                return HDRStatus ? "ON" : "OFF";
+                return HDRStatus ? LangHelper.Instance["On"] : LangHelper.Instance["Off"];
             }
         }
 
@@ -413,21 +414,21 @@ namespace DDPM.UI.Module.DisplayProperties
         {
             get
             {
-                return $"{Properties.Resolutions_Width}x{Properties.Resolutions_High}, {Properties.Frequency}Hz {(Properties.isRecommended ? "(Recommended)" : "")}";
+                return $"{Properties.Resolutions_Width}x{Properties.Resolutions_High}, {Properties.Frequency}Hz {(Properties.isRecommended ? $"({LangHelper.Instance["Recommended"]})" : "")}";
             }
         }
     }
 
     internal class UI_Orientation
     {
-        private string[] Orientations_Str = new string[] { "Landscape", "Portrait", "Landscape(flipped)", "Portrait(flipped)" };
+        private string[] Orientations_Str = new string[] { "Landscape", "Portrait", "Landscape_flipped", "Portrait_flipped" };
         public DisplayOrientation Orientation { get; set; }
 
         public string DisplayText
         {
             get
             {
-                return $"{Orientations_Str[(int)Orientation]}";
+                return LangHelper.Instance[Orientations_Str[(int)Orientation]];//$"{Orientations_Str[(int)Orientation]}";
             }
         }
     }

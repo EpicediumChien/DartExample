@@ -574,7 +574,7 @@
                                     <UXControls:UXToggleSwitch IsChecked="{Binding Path= IsPrioritizeExternalWebcam}" ContentTextVisibility="True" Content="{Binding Path=PrioritizeExternalWebcamStatus_String}" HorizontalAlignment="Right" VerticalAlignment="Center"  Foreground="White" />
                                 </Grid>
                             </Border>
-                            <Border x:Name="brdHello" Visibility="{Binding brdHello_show }" CornerRadius="6" VerticalAlignment="Top" Margin="0,10,0,0" ToolTipService.ShowOnDisabled="True" IsEnabled="{Binding IsNotAddingProfile}">
+                            <Border x:Name="brdHello" Visibility="{Binding brdHello_show_control }" CornerRadius="6" VerticalAlignment="Top" Margin="0,10,0,0" ToolTipService.ShowOnDisabled="True" IsEnabled="{Binding IsNotAddingProfile}">
                                 <Border.ToolTip>
                                     <ToolTip Visibility="{Binding TooltipVisibility}">
                                         <Border Style="{StaticResource Tooltip_OutterBorderStyle}">

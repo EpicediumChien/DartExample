@@ -189,13 +189,14 @@
           <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
             <DDPMUserControls:BatteryIndicator  Margin="0,0,0,70" HorizontalAlignment="Center"
                                                            BatteryLevel="{Binding BatteryLevel}" BatteryStatus="{Binding BatteryStatus}" ConnectionType="{Binding ConnectionType}" VerticalAlignment="Bottom" />
-            <Border Style="{StaticResource BorderUnpair}" Width="176" MouseLeftButtonDown="Restore_Click" Cursor="Hand" Margin="8,0,0,70" Visibility="Visible" x:Name="btnRestore">
-              <Grid>
-                <Grid.ColumnDefinitions>
-                  <ColumnDefinition Width="*"/>
-                  <ColumnDefinition Width="auto"/>
-                </Grid.ColumnDefinitions>
-                <UXControls:UXTextBlock Name="txtRestore" Foreground="{DynamicResource txtUnpair_TxtColor}" VerticalAlignment="Center" Grid.Column="0"
+                        <Border Style="{StaticResource BorderUnpair}" Width="176" MouseLeftButtonDown="Restore_Click" Cursor="Hand" Margin="8,0,0,70" Visibility="Visible" x:Name="btnRestore"
+                                BorderBrush="{DynamicResource SecondaryButton_DefaultBdColor}">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="auto"/>
+                                </Grid.ColumnDefinitions>
+                                <UXControls:UXTextBlock Name="txtRestore" Foreground="{DynamicResource txtUnpair_TxtColor}" VerticalAlignment="Center" Grid.Column="0"
                                                         HorizontalAlignment="Center" FontFamily="Roboto" FontSize="14" Text="{Binding [RestoreToDefault], Source={x:Static lang:LangHelper.Instance}}"/>
                 <Image Grid.Column="1" Name="RestoreLockIcon" Visibility="Collapsed" Margin="0,0,6,0"
                                        Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Lock.png"
@@ -217,9 +218,10 @@
                 </Image>
               </Grid>
             </Border>
-            <Border Style="{StaticResource BorderUnpair}" MouseLeftButtonDown="Unpair_Click" Cursor="Hand" Margin="8,0,0,70" Visibility="Visible" x:Name="btnUnpair">
+            <Border Style="{StaticResource BorderUnpair}" MouseLeftButtonDown="Unpair_Click" Cursor="Hand" Margin="8,0,0,70" Visibility="Visible" x:Name="btnUnpair"
+                    BorderBrush="{DynamicResource Button_UXStyleColor_ForWhiteFrame}">
               <Grid>
-                <UXControls:UXTextBlock Name="txtUnpair" Foreground="#F5F6F7" VerticalAlignment="Center"
+                                <UXControls:UXTextBlock Name="txtUnpair" Foreground="{Binding BorderBrush, RelativeSource={RelativeSource AncestorType=Border}}" VerticalAlignment="Center"
                                                         HorizontalAlignment="Center" FontFamily="Roboto" FontSize="14" Text="{Binding [Unpair], Source={x:Static lang:LangHelper.Instance}}"/>
               </Grid>
             </Border>

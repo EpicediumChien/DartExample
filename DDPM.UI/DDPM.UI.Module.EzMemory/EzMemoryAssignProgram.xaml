@@ -80,6 +80,18 @@
                     </Trigger>
                 </Style.Triggers>
             </Style>-->
+
+            <Style TargetType="ToolTip">
+                <Setter Property="Background" Value="Transparent" />
+                <Setter Property="BorderBrush" Value="Transparent" />
+                <Setter Property="BorderThickness" Value="1.5" />
+            </Style>
+            <Style TargetType="TextBlock" x:Key="ToolTipTextBlockStyle">
+                <Setter Property="FontSize" Value="14" />
+                <Setter Property="Foreground" Value="{DynamicResource Vbar_FgBrush_Default}" />
+                <Setter Property="TextWrapping" Value="Wrap" />
+                <Setter Property="MaxWidth" Value="300" />
+            </Style>
             
             <local:WindowGridVisibilityConverter x:Key="WindowGridVisibilityConverter"/>
         </ResourceDictionary>
@@ -235,7 +247,7 @@
 
                                 <UXControls:UXTextBlock Text="{Binding [EazyMemory.21], Source={x:Static lang:LangHelper.Instance}, Mode=OneWay}" VerticalAlignment="Center" FontSize="14" Grid.Column="0" />
                                 <Border BorderThickness="1.5" CornerRadius="3" Margin="80,0,0,0">
-                                    <UXControls:UXTextBox x:Name="Window1_1TextBlock" Grid.Column="1" Width="250" Height="40" FontSize="14" VerticalAlignment="Center" HorizontalAlignment="Center" TextWrapping="NoWrap" Text="{Binding Window2_1AppName, Mode=TwoWay}" Tag="{Binding ElementName=Window2_1TextBlock}"/>
+                                    <UXControls:UXTextBox x:Name="Window1_1TextBlock" Grid.Column="1" Width="250" Height="40" FontSize="14" VerticalAlignment="Center" HorizontalAlignment="Center" TextWrapping="NoWrap" Text="{Binding Window2_1AppName, Mode=TwoWay}" Tag="{Binding ElementName=Window2_1TextBlock}" MouseMove="Window_TextBlock_MouseMove"/>
                                 </Border>
                                 <UXControls:UXButton Grid.Column="2" x:Name="AddButton2_1" Margin="16,0,0,0" Style="{StaticResource DynamicButtonStyle}" Tag="{Binding Text, ElementName=Window1_1TextBlock}" Click="AddButton1_Click"/>
                             </Grid>
@@ -250,7 +262,7 @@
 
                                 <UXControls:UXTextBlock Text="{Binding [EazyMemory.22], Source={x:Static lang:LangHelper.Instance}, Mode=OneWay}" VerticalAlignment="Center" FontSize="14" Grid.Column="0" />
                                 <Border BorderThickness="1.5" CornerRadius="3" Margin="80,0,0,0">
-                                    <UXControls:UXTextBox x:Name="Window1_2TextBlock" Grid.Column="1" Width="250" Height="40" FontSize="14" VerticalAlignment="Center" HorizontalAlignment="Center" TextAlignment="Left" TextWrapping="NoWrap" Text="{Binding Window2_2AppName, Mode=TwoWay}" Tag="{Binding ElementName=Window2_2TextBlock}"/>
+                                    <UXControls:UXTextBox x:Name="Window1_2TextBlock" Grid.Column="1" Width="250" Height="40" FontSize="14" VerticalAlignment="Center" HorizontalAlignment="Center" TextAlignment="Left" TextWrapping="NoWrap" Text="{Binding Window2_2AppName, Mode=TwoWay}" Tag="{Binding ElementName=Window2_2TextBlock}" MouseMove="Window_TextBlock_MouseMove"/>
                                 </Border>
                                 <UXControls:UXButton Grid.Column="2" x:Name="AddButton2_2" Margin="16,0,0,0" Style="{StaticResource DynamicButtonStyle}" Tag="{Binding Text, ElementName=Window1_2TextBlock}" Click="AddButton1_Click"/>
                             </Grid>
@@ -291,7 +303,7 @@
                                 <DockPanel x:Name="DockPanel1">
                                     <UXControls:UXTextBlock x:Name="Window1Label" Text="{Binding [EazyMemory.21], Source={x:Static lang:LangHelper.Instance}, Mode=OneWay}" Width="76" Height="24" Margin="0,0,8,0" VerticalAlignment="Center" FontSize="14"/>
                                         <Border BorderThickness="1.5" CornerRadius="3" >
-                                            <UXControls:UXTextBox x:Name="Window1TextBlock" Width="150" Height="40" Margin="0,0,0,0" FontSize="14" VerticalAlignment="Center" HorizontalAlignment="Center" TextWrapping="NoWrap" Text="{Binding Window1AppName, Mode=TwoWay}" Tag="{Binding ElementName=Window1TextBlock}"/>
+                                            <UXControls:UXTextBox x:Name="Window1TextBlock" Width="150" Height="40" Margin="0,0,0,0" FontSize="14" VerticalAlignment="Center" HorizontalAlignment="Center" TextWrapping="NoWrap" Text="{Binding Window1AppName, Mode=TwoWay}" Tag="{Binding ElementName=Window1TextBlock}" MouseMove="Window_TextBlock_MouseMove"/>
                                     </Border>
                                         <UXControls:UXButton x:Name="AddButton1" Style="{StaticResource DynamicButtonStyle}" Tag="{Binding Text, ElementName=Window1TextBlock}" Margin="16,0,16,0" Click="AddButton1_Click" />
                                 </DockPanel>
@@ -304,7 +316,7 @@
                                 <DockPanel Visibility="Visible">
                                     <UXControls:UXTextBlock Grid.Column="1" x:Name="Window2Label" Text="{Binding [EazyMemory.22], Source={x:Static lang:LangHelper.Instance}, Mode=OneWay}" Width="76" Height="24" Margin="16,0,8,0" VerticalAlignment="Center" FontSize="14" />
                                         <Border BorderThickness="1.5" CornerRadius="3" >
-                                            <UXControls:UXTextBox x:Name="Window2TextBlock" Width="150" Height="40" Margin="0,0,0,0" FontSize="14" VerticalAlignment="Center" HorizontalAlignment="Center" TextWrapping="NoWrap" Text="{Binding Window2AppName, Mode=TwoWay}" Tag="{Binding ElementName=Window2TextBlock}"/>
+                                            <UXControls:UXTextBox x:Name="Window2TextBlock" Width="150" Height="40" Margin="0,0,0,0" FontSize="14" VerticalAlignment="Center" HorizontalAlignment="Center" TextWrapping="NoWrap" Text="{Binding Window2AppName, Mode=TwoWay}" Tag="{Binding ElementName=Window2TextBlock}" MouseMove="Window_TextBlock_MouseMove"/>
                                     </Border>
                                         <UXControls:UXButton Grid.Column="1" x:Name="AddButton2" Style="{StaticResource DynamicButtonStyle}" Tag="{Binding Text, ElementName=Window2TextBlock}" Margin="16,0,0,0" Click="AddButton1_Click"/>
                                 </DockPanel>
@@ -317,7 +329,7 @@
                                 <DockPanel Visibility="Visible">
                                     <UXControls:UXTextBlock x:Name="Window3Label" Text="{Binding [EazyMemory.23], Source={x:Static lang:LangHelper.Instance}, Mode=OneWay}" Width="76" Height="24" Margin="0,16,8,0" VerticalAlignment="Center" FontSize="14" />
                                         <Border BorderThickness="1.5" CornerRadius="3" Margin="0,16,8,0">
-                                            <UXControls:UXTextBox x:Name="Window3TextBlock" Width="150" Height="40" FontSize="14" VerticalAlignment="Center" HorizontalAlignment="Center" TextWrapping="NoWrap" Text="{Binding Window3AppName, Mode=TwoWay}" Tag="{Binding ElementName=Window3TextBlock}"/>
+                                            <UXControls:UXTextBox x:Name="Window3TextBlock" Width="150" Height="40" FontSize="14" VerticalAlignment="Center" HorizontalAlignment="Center" TextWrapping="NoWrap" Text="{Binding Window3AppName, Mode=TwoWay}" Tag="{Binding ElementName=Window3TextBlock}" MouseMove="Window_TextBlock_MouseMove"/>
                                     </Border>
                                         <UXControls:UXButton  x:Name="AddButton3" Style="{StaticResource DynamicButtonStyle}" Tag="{Binding Text, ElementName=Window3TextBlock}" Margin="8,16,16,0" Click="AddButton1_Click"/>
                                 </DockPanel>
@@ -330,7 +342,7 @@
                                 <DockPanel>
                                     <UXControls:UXTextBlock x:Name="Window4Label" Text="{Binding [EazyMemory.24], Source={x:Static lang:LangHelper.Instance}, Mode=OneWay}" Width="76" Height="24" Margin="16,16,0,0" VerticalAlignment="Center" FontSize="14" />
                                         <Border BorderThickness="1.5" CornerRadius="3" Margin="8,16,0,0">
-                                            <UXControls:UXTextBox x:Name="Window4TextBlock" Width="150" Height="40" FontSize="14" VerticalAlignment="Center" HorizontalAlignment="Center" TextWrapping="NoWrap" Text="{Binding Window4AppName, Mode=TwoWay}" Tag="{Binding ElementName=Window4TextBlock}"/>
+                                            <UXControls:UXTextBox x:Name="Window4TextBlock" Width="150" Height="40" FontSize="14" VerticalAlignment="Center" HorizontalAlignment="Center" TextWrapping="NoWrap" Text="{Binding Window4AppName, Mode=TwoWay}" Tag="{Binding ElementName=Window4TextBlock}" MouseMove="Window_TextBlock_MouseMove"/>
                                     </Border>
                                         <UXControls:UXButton x:Name="AddButton4" Style="{StaticResource DynamicButtonStyle}" Tag="{Binding Text, ElementName=Window4TextBlock}" Margin="16,16,0,0"  Click="AddButton1_Click"/>
                                 </DockPanel>
@@ -343,7 +355,7 @@
                                 <DockPanel >
                                     <UXControls:UXTextBlock x:Name="Window5Label" Text="{Binding [EazyMemory.25], Source={x:Static lang:LangHelper.Instance}, Mode=OneWay}" Width="76" Height="24" Margin="0,16,8,0" VerticalAlignment="Center" FontSize="14" />
                                         <Border BorderThickness="1.5" CornerRadius="3" Margin="0,16,0,0">
-                                            <UXControls:UXTextBox x:Name="Window5TextBlock" Width="150" Height="40" FontSize="14" VerticalAlignment="Center" HorizontalAlignment="Center" TextWrapping="NoWrap" Text="{Binding Window5AppName, Mode=TwoWay}" Tag="{Binding ElementName=Window5TextBlock}"/>
+                                            <UXControls:UXTextBox x:Name="Window5TextBlock" Width="150" Height="40" FontSize="14" VerticalAlignment="Center" HorizontalAlignment="Center" TextWrapping="NoWrap" Text="{Binding Window5AppName, Mode=TwoWay}" Tag="{Binding ElementName=Window5TextBlock}" MouseMove="Window_TextBlock_MouseMove"/>
                                     </Border>
                                         <UXControls:UXButton x:Name="AddButton5" Style="{StaticResource DynamicButtonStyle}" Tag="{Binding Text, ElementName=Window5TextBlock}" Margin="16,16,16,0" Click="AddButton1_Click"/>
                                 </DockPanel>
@@ -356,7 +368,7 @@
                                 <DockPanel >
                                     <UXControls:UXTextBlock x:Name="Window6Label" Text="{Binding [EazyMemory.26], Source={x:Static lang:LangHelper.Instance}, Mode=OneWay}" Width="76" Height="24" Margin="16,16,0,0" VerticalAlignment="Center" FontSize="14" />
                                         <Border BorderThickness="1.5" CornerRadius="3" Margin="8,16,8,0">
-                                            <UXControls:UXTextBox x:Name="Window6TextBlock" Width="150" Height="40" FontSize="14" VerticalAlignment="Center" HorizontalAlignment="Center" TextWrapping="NoWrap" Text="{Binding Window6AppName, Mode=TwoWay}" Tag="{Binding ElementName=Window6TextBlock}"/>
+                                            <UXControls:UXTextBox x:Name="Window6TextBlock" Width="150" Height="40" FontSize="14" VerticalAlignment="Center" HorizontalAlignment="Center" TextWrapping="NoWrap" Text="{Binding Window6AppName, Mode=TwoWay}" Tag="{Binding ElementName=Window6TextBlock}" MouseMove="Window_TextBlock_MouseMove"/>
                                     </Border>
                                         <UXControls:UXButton  x:Name="AddButton6" Style="{StaticResource DynamicButtonStyle}" Tag="{Binding Text, ElementName=Window6TextBlock}" Margin="8,16,0,0" Click="AddButton1_Click"/>
                                 </DockPanel>
@@ -369,7 +381,7 @@
                                 <DockPanel>
                                     <UXControls:UXTextBlock x:Name="Window7Label" Text="{Binding [EazyMemory.27], Source={x:Static lang:LangHelper.Instance}, Mode=OneWay}" Width="76" Height="24" Margin="0,16,8,0" VerticalAlignment="Center" FontSize="14" />
                                         <Border BorderThickness="1.5" CornerRadius="3" Margin="0,16,0,0">
-                                            <UXControls:UXTextBox x:Name="Window7TextBlock" Width="150" Height="40" FontSize="14" VerticalAlignment="Center" HorizontalAlignment="Center" TextWrapping="NoWrap" Text="{Binding Window7AppName, Mode=TwoWay}" Tag="{Binding ElementName=Window7TextBlock}"/>
+                                            <UXControls:UXTextBox x:Name="Window7TextBlock" Width="150" Height="40" FontSize="14" VerticalAlignment="Center" HorizontalAlignment="Center" TextWrapping="NoWrap" Text="{Binding Window7AppName, Mode=TwoWay}" Tag="{Binding ElementName=Window7TextBlock}" MouseMove="Window_TextBlock_MouseMove"/>
                                     </Border>
                                         <UXControls:UXButton  x:Name="AddButton7" Style="{StaticResource DynamicButtonStyle}" Tag="{Binding Text, ElementName=Window7TextBlock}" Margin="16,16,16,0" Click="AddButton1_Click"/>
                                 </DockPanel>
@@ -382,7 +394,7 @@
                                 <DockPanel>
                                     <UXControls:UXTextBlock x:Name="Window8Label" Text="{Binding [EazyMemory.28], Source={x:Static lang:LangHelper.Instance}, Mode=OneWay}" Width="76" Height="24" Margin="16,16,0,0" VerticalAlignment="Center" FontSize="14" />
                                         <Border BorderThickness="1.5" CornerRadius="3" Margin="8,16,8,0">
-                                            <UXControls:UXTextBox x:Name="Window8TextBlock" Width="150" Height="40" FontSize="14" VerticalAlignment="Center" HorizontalAlignment="Center" TextWrapping="NoWrap" Text="{Binding Window8AppName, Mode=TwoWay}" Tag="{Binding ElementName=Window8TextBlock}"/>
+                                            <UXControls:UXTextBox x:Name="Window8TextBlock" Width="150" Height="40" FontSize="14" VerticalAlignment="Center" HorizontalAlignment="Center" TextWrapping="NoWrap" Text="{Binding Window8AppName, Mode=TwoWay}" Tag="{Binding ElementName=Window8TextBlock}" MouseMove="Window_TextBlock_MouseMove"/>
                                     </Border>
                                         <UXControls:UXButton x:Name="AddButton8" Style="{StaticResource DynamicButtonStyle}" Tag="{Binding Text, ElementName=Window8TextBlock}" Margin="8,16,0,0" Click="AddButton1_Click"/>
                                 </DockPanel>
@@ -395,7 +407,7 @@
                                 <DockPanel>
                                     <UXControls:UXTextBlock x:Name="Window9Label" Text="{Binding [EazyMemory.29], Source={x:Static lang:LangHelper.Instance}, Mode=OneWay}" Width="76" Height="24" Margin="0,16,8,0" VerticalAlignment="Center" FontSize="14" />
                                         <Border BorderThickness="1.5" CornerRadius="3" Margin="0,16,0,0">
-                                            <UXControls:UXTextBox x:Name="Window9TextBlock" Width="150" Height="40" FontSize="14" VerticalAlignment="Center" HorizontalAlignment="Center" TextWrapping="NoWrap" Text="{Binding Window9AppName, Mode=TwoWay}" Tag="{Binding ElementName=Window9TextBlock}"/>
+                                            <UXControls:UXTextBox x:Name="Window9TextBlock" Width="150" Height="40" FontSize="14" VerticalAlignment="Center" HorizontalAlignment="Center" TextWrapping="NoWrap" Text="{Binding Window9AppName, Mode=TwoWay}" Tag="{Binding ElementName=Window9TextBlock}" MouseMove="Window_TextBlock_MouseMove"/>
                                     </Border>
                                         <UXControls:UXButton  x:Name="AddButton9" Style="{StaticResource DynamicButtonStyle}" Tag="{Binding Text, ElementName=Window9TextBlock}" Margin="16,16,16,0" Click="AddButton1_Click"/>
                                 </DockPanel>
@@ -408,7 +420,7 @@
                                 <DockPanel>
                                     <UXControls:UXTextBlock x:Name="Window10Label" Text="{Binding [EazyMemory.30], Source={x:Static lang:LangHelper.Instance}, Mode=OneWay}" Width="76" Height="24" Margin="16,16,0,0" VerticalAlignment="Center" FontSize="14" />
                                         <Border BorderThickness="1.5" CornerRadius="3" Margin="8,16,8,0" >
-                                            <UXControls:UXTextBox x:Name="Window10TextBlock" Width="150" Height="40" FontSize="14" VerticalAlignment="Center" HorizontalAlignment="Center" TextWrapping="NoWrap" Text="{Binding Window10AppName, Mode=TwoWay}" Tag="{Binding ElementName=Window10TextBlock}"/>
+                                            <UXControls:UXTextBox x:Name="Window10TextBlock" Width="150" Height="40" FontSize="14" VerticalAlignment="Center" HorizontalAlignment="Center" TextWrapping="NoWrap" Text="{Binding Window10AppName, Mode=TwoWay}" Tag="{Binding ElementName=Window10TextBlock}" MouseMove="Window_TextBlock_MouseMove"/>
                                     </Border>
                                         <UXControls:UXButton x:Name="AddButton10" Style="{StaticResource DynamicButtonStyle}" Tag="{Binding Text, ElementName=Window10TextBlock}" Margin="8,16,0,0" Click="AddButton1_Click"/>
                                 </DockPanel>
@@ -421,7 +433,7 @@
                                 <DockPanel>
                                     <UXControls:UXTextBlock x:Name="Window11Label" Text="{Binding [EazyMemory.31], Source={x:Static lang:LangHelper.Instance}, Mode=OneWay}" Width="76" Height="24" Margin="0,16,8,0" VerticalAlignment="Center" FontSize="14" />
                                         <Border BorderThickness="1.5" CornerRadius="3"  Margin="0,16,0,0">
-                                            <UXControls:UXTextBox x:Name="Window11TextBlock" Width="150" Height="40" FontSize="14" VerticalAlignment="Center" HorizontalAlignment="Center" TextWrapping="NoWrap" Text="{Binding Window11AppName, Mode=TwoWay}" Tag="{Binding ElementName=Window11TextBlock}"/>
+                                            <UXControls:UXTextBox x:Name="Window11TextBlock" Width="150" Height="40" FontSize="14" VerticalAlignment="Center" HorizontalAlignment="Center" TextWrapping="NoWrap" Text="{Binding Window11AppName, Mode=TwoWay}" Tag="{Binding ElementName=Window11TextBlock}" MouseMove="Window_TextBlock_MouseMove"/>
                                     </Border>
                                         <UXControls:UXButton x:Name="AddButton11" Style="{StaticResource DynamicButtonStyle}" Tag="{Binding Text, ElementName=Window11TextBlock}" Margin="16,16,16,0" Click="AddButton1_Click"/>
                                 </DockPanel>
@@ -433,7 +445,7 @@
                                 <DockPanel >
                                     <UXControls:UXTextBlock x:Name="Window12Label" Text="{Binding [EazyMemory.32], Source={x:Static lang:LangHelper.Instance}, Mode=OneWay}" Width="76" Height="24" Margin="16,16,0,0" VerticalAlignment="Center" FontSize="14" />
                                         <Border BorderThickness="1.5" CornerRadius="3" Margin="8,16,8,0" >
-                                            <UXControls:UXTextBox x:Name="Window12TextBlock" Width="150" Height="40" FontSize="14" VerticalAlignment="Center" HorizontalAlignment="Center" TextWrapping="NoWrap" Text="{Binding Window12AppName, Mode=TwoWay}" Tag="{Binding ElementName=Window12TextBlock}"/>
+                                            <UXControls:UXTextBox x:Name="Window12TextBlock" Width="150" Height="40" FontSize="14" VerticalAlignment="Center" HorizontalAlignment="Center" TextWrapping="NoWrap" Text="{Binding Window12AppName, Mode=TwoWay}" Tag="{Binding ElementName=Window12TextBlock}" MouseMove="Window_TextBlock_MouseMove"/>
                                     </Border>
                                         <UXControls:UXButton x:Name="AddButton12" Style="{StaticResource DynamicButtonStyle}" Tag="{Binding Text, ElementName=Window12TextBlock}" Margin="8,16,0,0" Click="AddButton1_Click"/>
                                 </DockPanel>

@@ -15,6 +15,7 @@ using System.IO;
 using VcpCore.Common;
 using IDdpmHomePageViewModel = DDPM.UI.Plugin.DdpmHomePlugin.Interfaces.IDdpmHomePageViewModel;
 using DDPM.SA.Common.Settings;
+using System.Diagnostics;
 
 namespace DDPM.UI.Plugin.DdpmHomePlugin
 {
@@ -166,26 +167,33 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
         private const double bkpt4 = minWidth * 4 + minGap * 5; //1200
 
         private double _screenScale = 1.000; //Refresh in RefreshListViewItemWidth()
+        private int refreshCounter = 1;
 
         private void RefreshListViewItemWidth()
         {
             #region Wait for device ready
             double cxView = HomeDevicesListView.ActualWidth;
             double cyView = HomeDevicesListView.ActualHeight;
-
+#if DEBUG
+            Debug.WriteLine($"Actual Width: {cxView}, Actual Height: {cyView}");
+            Debug.WriteLine($"{_ddpmHomePageViewModel.HomeDevices.Count} HomeDevices need to show.");
+#endif
             //Robert_Lin, 2024-8-7, skip refresh if Homepage is not displayed (cxView==0)
-            if ((cxView == 0) || (cyView == 0))
+            System.Windows.Threading.DispatcherTimer dispTimer = new System.Windows.Threading.DispatcherTimer();
+            //Add a retry after 300 msec
+            dispTimer.Tick += delegate
             {
-                //Add a retry after 300 msec
-                System.Threading.Timer timer1 = new System.Threading.Timer((obj) =>
-                {
-                    Dispatcher.BeginInvoke(new Action(() =>
-                    {
-                        RefreshListViewItemWidth();
-                    }));
-
-                }, null, 300, Timeout.Infinite);
-                return;
+#if DEBUG
+                Debug.WriteLine($"Refreshing count: {refreshCounter}");
+#endif
+                refreshCounter++;
+                RefreshListViewItemWidth();
+            };
+            dispTimer.Interval = new TimeSpan(300);
+            if (this.GetType().Name == "DdpmHomePage"
+                && dispTimer.IsEnabled == false)
+            {
+                dispTimer.Start();
             }
             #endregion
 
@@ -291,6 +299,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                     DataContext = _ddpmHomePageViewModel;
                 }));
             }
+            dispTimer.Stop();
         }
 
         private double CalculateItemWidthV3_ItemsPerRow1(double cxView, double cyView)
@@ -855,16 +864,16 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
 
         private void RenderingDone()
         {
-            RefreshListViewItemWidth();
+            //RefreshListViewItemWidth();
 
-            System.Windows.Threading.DispatcherTimer dispTimer = new System.Windows.Threading.DispatcherTimer();
-            dispTimer.Tick += delegate
-            {
-                dispTimer.Stop();
-                RefreshListViewItemWidth();
-            };
-            dispTimer.Interval = new TimeSpan(200);
-            dispTimer.Start();
+            //System.Windows.Threading.DispatcherTimer dispTimer = new System.Windows.Threading.DispatcherTimer();
+            //dispTimer.Tick += delegate
+            //{
+            //    dispTimer.Stop();
+            //    RefreshListViewItemWidth();
+            //};
+            //dispTimer.Interval = new TimeSpan(200);
+            //dispTimer.Start();
         }
 
         private void _ddpmHomePageViewModel_ShowConsent(object? sender, EventArgs e)
