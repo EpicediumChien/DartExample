@@ -253,6 +253,7 @@ namespace DDPM.UI.Plugin.ViewModels
                         _deviceManager.SetAncGainAsync(CurrentDeviceInfo!.ID.ToString(), DeviceInfoDTP.AncGain).Wait();
                         break;
                     //------------------------------------------------------------------------------------------
+                    case "DefaultCheck":
                     case "BassBoostCheck":
                     case "SpeechBoostCheck":
                     case "TrebleBoostCheck":
@@ -1909,6 +1910,7 @@ namespace DDPM.UI.Plugin.ViewModels
                         _isTrebleBoostChecked = false;
                         _audioEqualizerGridPageShow = true;
                         DeviceInfoDTP.SelectedPreset = 101;
+                        _debouncerHeadset.Debounce("CustomCheck");
                         OnPropertyChanged(nameof(IsDefaultChecked));
                         OnPropertyChanged(nameof(IsBassBoostChecked));
                         OnPropertyChanged(nameof(IsSpeechBoostChecked));
