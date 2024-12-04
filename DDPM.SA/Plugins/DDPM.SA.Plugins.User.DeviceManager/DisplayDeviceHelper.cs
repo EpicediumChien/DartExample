@@ -293,8 +293,17 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
             ObjGetVCP obVCPValue = devManagerSA.GetVCPCapability(currentMoInfo, code, 0).Result;
             uint targetValue = (uint)obVCPValue.value;
-            if (job == HotkeyType.BrightnessIncrease || job == HotkeyType.LuminanceIncrease || job == HotkeyType.ContrastIncrease)
+            uint maxLuminace = 100;
+            if (job == HotkeyType.LuminanceIncrease || job == HotkeyType.LuminanceReduce)
+            {
+                ObjGetVCP obMaxValue = devManagerSA.GetVCPCapability(currentMoInfo, code, 1).Result;
+                if (obMaxValue.result)
+                    maxLuminace = (uint)obMaxValue.value;
+            }
+            if (job == HotkeyType.BrightnessIncrease || job == HotkeyType.ContrastIncrease)
                 targetValue = ((uint)obVCPValue.value) >= 95 ? 100 : ((uint)obVCPValue.value + 5);
+            else if (job == HotkeyType.LuminanceIncrease)
+                targetValue = ((uint)obVCPValue.value) >= (maxLuminace - 5) ? maxLuminace : ((uint)obVCPValue.value + 5);
             else if (job == HotkeyType.BrightnessReduce || job == HotkeyType.LuminanceReduce || job == HotkeyType.ContrastReduce)
                 targetValue = ((uint)obVCPValue.value) <= 5 ? 0 : ((uint)obVCPValue.value - 5);
             else
@@ -306,7 +315,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             if ("UP3221Q".Equals(currentMoInfo.modelName, StringComparison.OrdinalIgnoreCase))
             {
                 if (job == HotkeyType.LuminanceIncrease)
-                    targetValue = ((uint)obVCPValue.value) >= 85 ? 100 : ((uint)obVCPValue.value + 15);
+                    targetValue = ((uint)obVCPValue.value) >= (maxLuminace - 15) ? maxLuminace : ((uint)obVCPValue.value + 15);
                 else if (job == HotkeyType.LuminanceReduce)
                     targetValue = ((uint)obVCPValue.value) <= 15 ? 0 : ((uint)obVCPValue.value - 15);
                 else
@@ -319,7 +328,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             if ("UP2720Q".Equals(currentMoInfo.modelName, StringComparison.OrdinalIgnoreCase))
             {
                 if (job == HotkeyType.LuminanceIncrease)
-                    targetValue = ((uint)obVCPValue.value) >= 90 ? 100 : ((uint)obVCPValue.value + 10);
+                    targetValue = ((uint)obVCPValue.value) >= (maxLuminace - 10) ? maxLuminace : ((uint)obVCPValue.value + 10);
                 else if (job == HotkeyType.LuminanceReduce)
                     targetValue = ((uint)obVCPValue.value) <= 10 ? 0 : ((uint)obVCPValue.value - 10);
                 else

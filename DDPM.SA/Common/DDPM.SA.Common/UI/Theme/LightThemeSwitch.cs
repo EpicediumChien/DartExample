@@ -71,6 +71,14 @@ namespace DDPM.SA.Common.UI
             UpdateFreezable("SecondaryButton_TextColor_Pressed", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#0063B8"));
             UpdateFreezable("SecondaryButton_TextColor_Disabled", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#40586D"));
             #endregion
+
+            #region DDPM.SA.Common.Popup.PopupBase Robert_Lin, 2024-12-2
+            UpdateFreezable("popupBase_Window_BkColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#FFFFFF"));
+            UpdateFreezable("popupBase_Window_BdColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#D8E1EB"));
+            UpdateFreezable("popupBase_CloseX_FgColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#0E0E0E"));
+            UpdateFreezable("popupBase_Header_TextColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#0E0E0E"));
+            UpdateFreezable("popupBase_Body_TextColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#0E0E0E"));
+            #endregion DDPM.SA.Common.Popup.PopupBase
         }
     }
 }

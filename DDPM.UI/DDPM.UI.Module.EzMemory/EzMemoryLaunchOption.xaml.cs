@@ -184,7 +184,14 @@ namespace DDPM.UI.Module.EzMemory
             {
                 _log.Info($"@{nameof(EzMemoryLaunchOption)} FinishBtn_Click: ... in");
 
-                CheckedAutoLunchTime();
+                if (_vm.IsAutoLaunch)
+                {
+                    if (!CheckedAutoLunchTime())
+                    {
+                        DdpmCommonHelper.DDPMPureMesssageBox(Strings.ezMemoryStartupErrorTitleStringForLaunchOptionPage, Strings.ezMemoryAutoLaunchErrorStringForLaunchOptionPage, true, System.Windows.Window.GetWindow(this));
+                        return;
+                    }
+                }
 
                 // Determine if adding a new profile or editing an existing one
                 bool isEditMode = _vm.IsEditProfile;
@@ -439,11 +446,13 @@ namespace DDPM.UI.Module.EzMemory
                             {
                                 if (DdpmCommonHelper.DDPMMesssageBox(Strings.ezMemoryStartupErrorTitleStringForLaunchOptionPage, Strings.ezMemoryStartupErrorStringForLaunchOptionPage))
                                 {
+                                    _log.Info("[EzMemoryLaunchOption] StartupCB_Checked ... choice Yes");
                                     _vm.IsLaunchAtStartup = true;
                                     //break;
                                 }
                                 else
                                 {
+                                    _log.Info("[EzMemoryLaunchOption] StartupCB_Checked ... choice No");
                                     _vm.IsLaunchAtStartup = false;
                                 }
                             }
@@ -461,11 +470,11 @@ namespace DDPM.UI.Module.EzMemory
             }
         }
 
-        private void CheckedAutoLunchTime()
+        private bool CheckedAutoLunchTime()
         {
             try
             {
-                _log.Info("[EzMemoryLaunchOption] AutoRB_Checked ... in");
+                _log.Info("[EzMemoryLaunchOption] CheckedAutoLunchTime ... in");
 
                 EasyArrangementDDPM clickedeasyArrangementDDPM = DdpmCommonHelper.DeviceManagerSA.ReadMonitorEasyArrangement(_selecthomeDevice.MonitorInfo).Result;
 
@@ -479,15 +488,9 @@ namespace DDPM.UI.Module.EzMemory
                         {
                             if (_vm.currentEditprofileSetting == null || _vm.currentEditprofileSetting.ID != ps.ID)
                             {
-                                if (DdpmCommonHelper.DDPMMesssageBox(Strings.ezMemoryStartupErrorTitleStringForLaunchOptionPage, Strings.ezMemoryAutoLaunchErrorStringForLaunchOptionPage))
-                                {
-                                    _vm.IsLaunchAtStartup = true;
-                                    //break;
-                                }
-                                else
-                                {
-                                    _vm.IsLaunchAtStartup = false;
-                                }
+                                return false;
+                                //    _vm.IsLaunchAtStartup = true;
+                                //    _vm.IsLaunchAtStartup = false;
                             }
                         }
                     }
@@ -496,10 +499,12 @@ namespace DDPM.UI.Module.EzMemory
                 {
                     _log.Info("[EzMemoryLaunchOption] AutoRB_Checked  can not found Auto Launch By Time = True file");
                 }
+                return true;
             }
             catch (Exception ex)
             {
                 _log.Error($"[EzMemoryLaunchOption] AutoRB_Checked Exception occurred: {ex.Message}");
+                return false;
             }
         }
     }
