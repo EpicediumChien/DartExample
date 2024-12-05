@@ -297,7 +297,7 @@
                             </ItemsControl>
                         </Grid>
                     </Grid>
-                <UXControls:UXScrollViewer x:Name="topViewScrollViewer">
+                <!--<UXControls:UXScrollViewer x:Name="topViewScrollViewer">-->
                     <!-- vBar + RightFrame -->
                     <StackPanel x:Name="stVbarRightFrame">
                         <!-- vBar -->
@@ -347,7 +347,7 @@
                             </Border>
                         </Grid>
                     </StackPanel>
-                </UXControls:UXScrollViewer>
+                <!--</UXControls:UXScrollViewer>-->
             </StackPanel>
             
         </Grid>
