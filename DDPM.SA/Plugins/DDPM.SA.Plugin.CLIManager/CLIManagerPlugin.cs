@@ -207,24 +207,6 @@ namespace DDPM.SA.Plugin.CLIManager
                     serialize_Json_response = _.result
                 };
 
-                if (commandLineInput.Command == "SET" && commandLineInput.TargetFeature == "NETWORKKVM" && _.code == 0)
-                {
-                    DDPMITConfig data;
-                    var tmp = RetrieveITSettings(out data);
-                    if (tmp.code != (int)CLI_ExitCode.success)
-                    {
-                        APP_RESPONSE response = new APP_RESPONSE();//for fail return using
-                        response.TargetFeature = commandLineInput.TargetFeature;
-                        response.Command = commandLineInput.Command;
-                        response.Message = tmp.msg;
-                        response.Result = "FAIL";
-
-                        rst.serialize_Json_response += $"\n {JsonConvert.SerializeObject(response, Formatting.Indented)}";
-                    }
-                    data.Enable_Display_NetworkKVM = commandLineInput.Options[0].Option_Value.Equals("ON", StringComparison.OrdinalIgnoreCase) || commandLineInput.Options[0].Option_Value.Equals("ENABLE", StringComparison.OrdinalIgnoreCase);
-                    _SettingsPluginIT?.WriteITConfigData(data, new List<string>() { "Enable_Display_NetworkKVM" });
-                }
-
                 return Task.FromResult(rst);
             }
 
@@ -470,6 +452,39 @@ namespace DDPM.SA.Plugin.CLIManager
                         rst = CLIHandlerPeripheral.CLI_Peripheral_LockUlockWithUserAction(Log, data, _SettingsPluginIT, commandLineInput, command_guid);
                     else
                         rst = CLIHandlerPeripheral.CLI_Response_TypeNotSupport(commandLineInput, rst);
+                    break;
+                case "NETWORKKVM":
+                    if (commandLineInput.PluginsType.Equals("DISPLAY"))
+                    {
+                        var vaildOptions = new List<string>() { "ON", "OFF", "ENABLE", "DISABLE" };
+
+                        if (vaildOptions.Contains(commandLineInput.Options[0].Option_Value.ToUpper()))
+                        {
+                            data.Enable_Display_NetworkKVM = commandLineInput.Options[0].Option_Value.Equals("ON", StringComparison.OrdinalIgnoreCase) || commandLineInput.Options[0].Option_Value.Equals("ENABLE", StringComparison.OrdinalIgnoreCase);
+
+                            if (_SettingsPluginIT?.WriteITConfigData(data, new List<string>() { "Enable_Display_NetworkKVM" }).Result == true)
+                            {
+                                rst = CLIHandlerDisplay.CLI_Response_CompleteWithSuccess(commandLineInput, rst);
+                            }
+                            else
+                            {
+                                response.Message = "Failed to update config";
+                                response.Result = "FAIL";
+                                response.Value = commandLineInput.Options[0].Option_Value;
+                                rst.serialize_Json_response = JsonConvert.SerializeObject(response, Formatting.Indented);
+                                rst.ExitCode = (int)CLI_ExitCode.fail_SetSettings_ITSettingsValue;
+                                return rst;
+                            }
+                        }
+                        else
+                        {
+                            rst = CLIHandlerDisplay.CLI_Response_OptionValueNotSupport(commandLineInput, rst, commandLineInput.Options[0]);
+                        }
+                    }
+                    else
+                    {
+                        rst = CLIHandlerDisplay.CLI_Response_TypeNotSupport(commandLineInput, rst);
+                    }
                     break;
                 default:
                     response.Message = $"Feature {commandLineInput.TargetFeature} doesn't in global setting support list";

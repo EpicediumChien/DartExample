@@ -67,7 +67,8 @@ namespace DDPM.SA.Common
             "PRESENCEDETECTION",        //PresenceDetection         DDPMW-1747
             "ANCMODE",                  //ancMode                   DDPMW-1853
             "MICNOISECANCELLATION",     //micNoiseCancellation      DDPMW-1855
-            "WEARDETECTION"             //wearDetection             DDPMW-2093
+            "WEARDETECTION",            //wearDetection             DDPMW-2093
+            "NETWORKKVM"
         };
 
         //IT value table of IT feature
@@ -730,6 +731,11 @@ namespace DDPM.SA.Common
                                         commandInput.isNormalCommands = true;
                                         //break;
                                     }
+                                }
+                                else if (commandInput.TargetFeature == "NETWORKKVM" && (value.Trim().ToUpper().Equals("ON") || value.Trim().ToUpper().Equals("OFF")))
+                                {
+                                    commandInput.isITCommands = true;
+                                    commandInput.isNormalCommands = true;
                                 }
                                 else
                                 {
