@@ -718,7 +718,7 @@ namespace DDPM.EABroker
             //Check if the EasyMemory Profile may be conflict
             //1 If the SelectedCustomItem is associated with EasyMemory profile
             //  Only the Custom layout need to be checked
-            if ((_deviceManagerSA != null) && (_inputSplit.EAID > EAEMConstants.EAID_FirstCustom))
+            if ((_deviceManagerSA != null) && (_inputSplit.EAID >= EAEMConstants.EAID_FirstCustom))
             {
                 bool isEaIdUsedByEmProfile = _deviceManagerSA.CheckEAIDExit(new VcpCore.Common.MonitorInfo(), _inputSplit.EAID).Result;
                 if (isEaIdUsedByEmProfile)
@@ -728,7 +728,8 @@ namespace DDPM.EABroker
                     msgBox.Owner = this;
                     if (msgBox.ShowDialog() != true)
                     {
-                        DialogResult = false;
+                        if (System.Windows.Interop.ComponentDispatcher.IsThreadModal)
+                            DialogResult = false;
 
                         if (CancelButtonClick != null)
                         {
