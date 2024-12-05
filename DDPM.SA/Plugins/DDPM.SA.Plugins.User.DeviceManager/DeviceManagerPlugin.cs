@@ -7890,7 +7890,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             if (_SettingsPlugin != null)
             {
                 List<VCPCode> vcps = new List<VCPCode>();
-                if (_SettingsPlugin.DisplayImportSettings(path, isSameModel, monitorInfo.modelName, monitorInfo.edid.ServiceTag, out DDPMImpExpSettings ImpExpSettings).Result)
+                if (_SettingsPlugin.DisplayImportSettings(path, isSameModel, monitorInfo.edid.ServiceTag, out DDPMImpExpSettings ImpExpSettings).Result)
                 {
                     if (ImpExpSettings != null)
                     {

@@ -102,7 +102,7 @@ namespace DDPM.SA.Common
         //ImpExpSettings
         Task<bool> DisplayExportSettings(string modelname, string seriveTag, List<DDPMMonitorSettings> monitorSettings, string path);
 
-        Task<bool> DisplayImportSettings(string path, bool isSameModel, string name, string serviceTag, out DDPMImpExpSettings ImpExpSettings);
+        Task<bool> DisplayImportSettings(string path, bool isSameModel, string serviceTag, out DDPMImpExpSettings ImpExpSettings);
 
         Task<DDPMImpExpSettings> ReadImportSettingsFile(string path);
 
