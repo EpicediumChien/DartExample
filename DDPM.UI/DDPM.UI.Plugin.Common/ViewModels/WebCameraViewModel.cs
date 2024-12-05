@@ -958,12 +958,14 @@ namespace DDPM.UI.Plugin.ViewModels
         {
             get => CurrentDeviceInfo!.IsMicEnumerationOn ? Strings.On : Strings.Off;
         }
+        public bool isIsMicEnumerationOnChanged_event = false;
         public bool IsMicEnumerationOn
         {
             get => CurrentDeviceInfo!.IsMicEnumerationOn;
             set
             {
-                DdpmCommonHelper.DeviceManagerSA!.SetIsMicEnumerationOn(value, CurrentDeviceInfo!.ID);
+                if(!isIsMicEnumerationOnChanged_event)
+                    DdpmCommonHelper.DeviceManagerSA!.SetIsMicEnumerationOn(value, CurrentDeviceInfo!.ID);
                 OnPropertyChanged();
                 OnPropertyChanged(nameof(IsMicEnumerationOnText));
             }
@@ -1153,6 +1155,7 @@ namespace DDPM.UI.Plugin.ViewModels
         {
             get => CurrentDeviceInfo!.IsPropertyHDRSupported ? Visibility.Visible : Visibility.Collapsed;
         }
+        public bool hdr_change = false;
         public bool IsHDROn
         {
             get => CurrentProfile.IsHDROn;
@@ -1160,13 +1163,14 @@ namespace DDPM.UI.Plugin.ViewModels
             {
                 AlertType = WebcamAlert.Alert1;
                 AlertVisibility = Visibility.Visible;
+                hdr_change = true;
                 DdpmCommonHelper.DeviceManagerSA!.SetIsHDROn(CurrentDeviceInfo!.ID.ToString(), value);
                 SetProfileProperty(nameof(IsHDROn), value, OperationModule.ColorAndImage);
                 OnPropertyChanged();
                 OnPropertyChanged(nameof(IsHDROnText));
                 new Thread(() =>
                 {
-                    Thread.Sleep(300);
+                    Thread.Sleep(3000);
                     AlertVisibility = Visibility.Collapsed;
                 }).Start();
             }
