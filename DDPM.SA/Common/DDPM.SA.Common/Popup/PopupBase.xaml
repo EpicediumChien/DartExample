@@ -22,14 +22,15 @@
          pop.Show();    or pop.ShowDialog();
     -->
     <Window.Resources>
-        <LinearGradientBrush x:Key="msgBoxGadientBrush" StartPoint="793,0" EndPoint="-69.2682,516.32"
+        <!-- Robert_Lin, 2024-12-3 Move to ModuleStyle.xaml to share with other plugins -->
+        <!--<LinearGradientBrush x:Key="msgBoxGadientBrush" StartPoint="793,0" EndPoint="-69.2682,516.32"
                              MappingMode="Absolute">
             <GradientStop Color="#7F306CC7" Offset="0.0537435"/>
             <GradientStop Color="#7F0063B8" Offset="0.237111"/>
             <GradientStop Color="#1E003ACE" Offset="0.504036"/>
             <GradientStop Color="#7C674AB8" Offset="0.792288"/>
             <GradientStop Color="#7F0063B8" Offset="0.972444"/>
-        </LinearGradientBrush>
+        </LinearGradientBrush>-->
     </Window.Resources>
 
     <!-- Robert_Lin, 2024-12-2, fix Width=419, but Height may changed by Body Text -->
@@ -72,6 +73,7 @@
                            Foreground="{DynamicResource popupBase_Header_TextColor}"/>
                 -->
                 <TextBlock x:Name="Header1" FontFamily="Roboto" FontSize="20" FontWeight="Normal"
+                           VerticalAlignment="Center" HorizontalAlignment="Left"
                            Foreground="{DynamicResource popupBase_Header_TextColor}"/>
                 <!-- #endregion Header -->
                 

@@ -15,6 +15,9 @@ using System.Windows.Shapes;
 using nsWinEventHook;
 using DDPM.Easy.Common;
 using DDPM.Win32Lib;
+using DDPM.SA.Common.Display;
+using DDPM.SA.Common;
+using VcpCore.Common;
 
 
 namespace DDPM.EABroker
@@ -339,6 +342,29 @@ namespace DDPM.EABroker
         private void IsSpanMultipleMonitorsCheckbox_Click(object sender, RoutedEventArgs e)
         {
 
+        }
+
+        private void editOverlapButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (_vm == null)
+                return;
+
+            MonitorInfo? mi = _vm.GetSelectedMonitorInfo();
+            if (mi == null)
+                return;
+
+            EAArgs eaArgs = new EAArgs()
+            {
+                Command = "EditCommand",
+                SplitJson = new SplitJson()
+                {
+                    CellCount = 0,
+                    SplitKey = 'B',
+                    Settings = new List<double>(),
+                    EAID = 0
+                }
+            };
+            _vm.Invoke_EditCommand(mi, eaArgs);
         }
     }
 }

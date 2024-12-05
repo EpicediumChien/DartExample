@@ -1078,10 +1078,10 @@ namespace DDPM.UI.Module.Kvm
             OnPropertyChanged("HasCap_PipSmall");
             OnPropertyChanged("HasCap_PipLarge");
             OnPropertyChanged("HasCap_PipTogglePosition");
-            OnPropertyChanged(PC1_Input);
-            OnPropertyChanged(PC2_Input);
-            OnPropertyChanged(PC3_Input);
-            OnPropertyChanged(PC4_Input);
+            OnPropertyChanged("PC1_Input");
+            OnPropertyChanged("PC2_Input");
+            OnPropertyChanged("PC3_Input");
+            OnPropertyChanged("PC4_Input");
         }
 
         public bool HasPxpCap(UInt16 cap)
@@ -1257,10 +1257,10 @@ namespace DDPM.UI.Module.Kvm
                     }
                 }
             }
-            OnPropertyChanged(PC1_Input);
-            OnPropertyChanged(PC2_Input);
-            OnPropertyChanged(PC3_Input);
-            OnPropertyChanged(PC4_Input);
+            OnPropertyChanged("PC1_Input");
+            OnPropertyChanged("PC2_Input");
+            OnPropertyChanged("PC3_Input");
+            OnPropertyChanged("PC4_Input");
         }
 
         #endregion VideoSwap control and content
@@ -1299,10 +1299,10 @@ namespace DDPM.UI.Module.Kvm
             Border2Visibility = Visibility.Collapsed;
             Border3Visibility = Visibility.Collapsed;
             Border4Visibility = Visibility.Collapsed;
-            OnPropertyChanged(PC1_Input);
-            OnPropertyChanged(PC2_Input);
-            OnPropertyChanged(PC3_Input);
-            OnPropertyChanged(PC4_Input);
+            OnPropertyChanged("PC1_Input");
+            OnPropertyChanged("PC2_Input");
+            OnPropertyChanged("PC3_Input");
+            OnPropertyChanged("PC4_Input");
         }
 
         public void PC2Click()
@@ -1311,10 +1311,10 @@ namespace DDPM.UI.Module.Kvm
             Border2Visibility = Visibility.Visible;
             Border3Visibility = Visibility.Collapsed;
             Border4Visibility = Visibility.Collapsed;
-            OnPropertyChanged(PC1_Input);
-            OnPropertyChanged(PC2_Input);
-            OnPropertyChanged(PC3_Input);
-            OnPropertyChanged(PC4_Input);
+            OnPropertyChanged("PC1_Input");
+            OnPropertyChanged("PC2_Input");
+            OnPropertyChanged("PC3_Input");
+            OnPropertyChanged("PC4_Input");
         }
 
         public void PC3Click()
@@ -1323,10 +1323,10 @@ namespace DDPM.UI.Module.Kvm
             Border2Visibility = Visibility.Collapsed;
             Border3Visibility = Visibility.Visible;
             Border4Visibility = Visibility.Collapsed;
-            OnPropertyChanged(PC1_Input);
-            OnPropertyChanged(PC2_Input);
-            OnPropertyChanged(PC3_Input);
-            OnPropertyChanged(PC4_Input);
+            OnPropertyChanged("PC1_Input");
+            OnPropertyChanged("PC2_Input");
+            OnPropertyChanged("PC3_Input");
+            OnPropertyChanged("PC4_Input");
         }
 
         public void PC4Click()
@@ -1335,10 +1335,10 @@ namespace DDPM.UI.Module.Kvm
             Border2Visibility = Visibility.Collapsed;
             Border3Visibility = Visibility.Collapsed;
             Border4Visibility = Visibility.Visible;
-            OnPropertyChanged(PC1_Input);
-            OnPropertyChanged(PC2_Input);
-            OnPropertyChanged(PC3_Input);
-            OnPropertyChanged(PC4_Input);
+            OnPropertyChanged("PC1_Input");
+            OnPropertyChanged("PC2_Input");
+            OnPropertyChanged("PC3_Input");
+            OnPropertyChanged("PC4_Input");
         }
 
         public void OpenNKVMUI(int index, int x, int y)
@@ -1454,7 +1454,9 @@ namespace DDPM.UI.Module.Kvm
             DdpmCommonHelper.DeviceManagerSA.NKVM_State(true).Wait();
             if (DdpmCommonHelper.DeviceManagerSA.IsNamedpipeConnected().Result)
             {
-                //#if DEBUG
+//#if DEBUG
+                isOnNKVM(true);
+                _log.Debug("NKVMOpenUI...");
                 DdpmCommonHelper.DeviceManagerSA.CallShowNKVM(0, 100, 100).Wait();
                 //#else
                 //                OpenNKVMUI(0, 100, 100);
@@ -1463,17 +1465,32 @@ namespace DDPM.UI.Module.Kvm
             else
             {
                 DdpmCommonHelper.DeviceManagerSA.CreatNewNamedpipe().Wait();
-                //#if DEBUG
-                //                DdpmCommonHelper.DeviceManagerSA.CallShowNKVM(0, 100, 100).Wait();
-                //#else
-                //                OpenNKVMUI(0, 100, 100);
-                //#endif
+//#if DEBUG
+//                DdpmCommonHelper.DeviceManagerSA.CallShowNKVM(0, 100, 100).Wait();
+//#else
+//                OpenNKVMUI(0, 100, 100);
+//#endif
+                int i = 0;
+                while (!DdpmCommonHelper.DeviceManagerSA.IsNamedpipeConnected().Result && i < 20)
+                {
+                    i++;
+                    Thread.Sleep(500);
+                }
+                if (DdpmCommonHelper.DeviceManagerSA.IsNamedpipeConnected().Result)
+                {
+                    isOnNKVM(true);
+                    _log.Debug("NKVMOpenUI...");
+                    DdpmCommonHelper.DeviceManagerSA.CallShowNKVM(0, 100, 100).Wait();
+                }
+                else
+                {
+                    _log.Debug("Named pipe is not Connected or time out");
+                }
             }
-
-            isOnNKVM(true);
         }
         private void NKVMOpenUI_Done(object sender, RunWorkerCompletedEventArgs e)
         {
+            Thread.Sleep(3000);
             IsBusy = false;
             OnPropertyChanged("IsBusy");
         }

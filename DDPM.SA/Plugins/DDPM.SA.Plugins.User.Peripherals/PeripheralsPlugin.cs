@@ -135,8 +135,8 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
 
         public async Task<DeviceHelper> GetDevices(bool Rescan = false)
         {
-            //if (Rescan)
-            //    ScanDevices();
+            if (Rescan)
+                ScanDevices();
 
             if (_isClientConnected && _deviceHelper != null)
             {
@@ -728,7 +728,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
             //}
         }
         public void SetWearDetectionForCLI(int newValue, Guid deviceId)
-        {           
+        {
             foreach (var device in _iDeviceManager.Devices)
             {
                 var logicalDevice = device.Devices.FirstOrDefault(x => x.Id == deviceId);
