@@ -10125,27 +10125,33 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             if (null == eventMsg)
                 return;
 
+            bool isQAMHandleEvent = false;
+
             switch (eventMsg.EventType)
             {
                 case "Webcam_ZoomChanged":
+                    isQAMHandleEvent = true;
                     if (!int.TryParse(eventMsg.NewValue, out currentZoomValue))
                         currentZoomValue = -1;
 
                     break;
 
                 case "Webcam_IsZoomMeetingActiveChanged":
+                    isQAMHandleEvent = true;
                     if (!bool.TryParse(eventMsg.NewValue, out _IsZoomMeetingActive))
                         _IsZoomMeetingActive = false;
 
                     break;
 
                 case "Webcam_IsZoomScreenShareActiveChanged":
+                    isQAMHandleEvent = true;
                     if (!bool.TryParse(eventMsg.NewValue, out _IsZoomScreenShareActive))
                         _IsZoomScreenShareActive = false;
 
                     break;
 
                 case "Webcam_ZoomMeetingTypeChanged":
+                    isQAMHandleEvent = true;
                     int type = (int)ZoomMeetingType.ZOOM_MEETING_TYPE_UNKNOW;
 
                     if (int.TryParse(eventMsg.NewValue, out type))
@@ -10159,7 +10165,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     break;
             }
 
-            HandleQAM();
+            if (isQAMHandleEvent)
+                HandleQAM();
         }
 
         //Marked by Derek 1125 because they had covered by WebcamEventHandler
@@ -10249,6 +10256,9 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         //}
         private Task QAMClose()
         {
+            if (null == _QAM)
+                return Task.CompletedTask;
+
             writelog($"QAMClose Start");
 
             try
@@ -10264,6 +10274,26 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             writelog($"QAMClose done");
 
             return Task.CompletedTask;
+        }
+
+        private int GetWebcamDeviceCount()
+        {
+            int result = 0;
+
+            try
+            {
+                List<DeviceInfo> deviceInfos = GetDevices_WithoutAwait().Result.deviceInfo.FindAll(x => x.PhysicalDeviceType.Equals(DeviceType.LogicalWebcam) || 
+                x.PhysicalDeviceType.Equals(DeviceType.PhysicalWebcam));
+
+                if (deviceInfos != null)
+                    result = deviceInfos.Count;
+            }
+            catch (Exception e)
+            {
+                writelog($"Catch exception[{e.Message}] when GetWebcamDeviceCount");
+            }
+
+            return result;
         }
 
         private Task CallQAM_UI(DeviceMangerPlugin deviceMangerPlugin)
@@ -12615,7 +12645,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             //will register as ALT+Z ?
             if (_altPressed && strKey.Equals("Z"))
             {
-                CallQAM_UI(this);
+                if (1 == GetWebcamDeviceCount())
+                    CallQAM_UI(this);
                 return;
             }
 
