@@ -67,18 +67,6 @@ namespace DDPM.UI.Module.AddPen_Other
         {
             MessageModalDialog messageModalDialog;
             Window mainWindow = System.Windows.Application.Current.MainWindow;
-            if (_vm.IsPandoraPaired)
-            {
-                messageModalDialog = new(Strings.Error, Strings.PenAlreadyPaired, Strings.Cancel);
-                if (mainWindow != null)
-                {
-                    messageModalDialog.Owner = mainWindow;
-                    messageModalDialog.Left = mainWindow.Left + (mainWindow!.ActualWidth - 417) / 2;
-                    messageModalDialog.Top = mainWindow.Top + 300;
-                }
-                messageModalDialog.ShowDialog();
-                return;
-            }
             messageModalDialog = new(Strings.PairYourPen, Strings.PairYourPenMessage, Strings.No, Strings.Yes);
             if (mainWindow != null)
             {

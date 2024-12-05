@@ -11,6 +11,7 @@ using Dell.Client.Framework.UX.WPF;
 using DPeMPublic.Common.Enums;
 using Microsoft;
 using Microsoft.Win32;
+using System;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
@@ -182,6 +183,7 @@ namespace DDPM.UI.Plugin.ViewModels
 
         public virtual bool SetCurrentDevice(string deviceID)
         {
+            _console.RaiseEvent(ConsoleEventNames.Masthead_ShowAddDeviceIcon, this, new EventManagerArgs() { Tag = true });
             IsIDInvalid = false;
             if (deviceID.Substring(deviceID.Length - 2, 1) == "-")
             {
