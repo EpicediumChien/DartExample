@@ -196,7 +196,7 @@ namespace DDPM.SA.Plugin.CLIManager
                     return Task.FromResult(rst);
             }
 
-            if (commandLineInput.PluginsType == "DISPLAY" && commandLineInput.TargetFeature.Contains("NETWORKKVM"))
+            if (commandLineInput.PluginsType == "DISPLAY" && commandLineInput.TargetFeature.Contains("NETWORKKVM") && commandLineInput.TargetFeature != "INAPPNETWORKKVM")
             {
                 var _ = CLINetworkKVM.Execute(commandLineInput);
                 var rst = new CLIEventResult

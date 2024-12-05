@@ -1348,7 +1348,13 @@
                         ClickMode="Press"
                         Focusable="True"
                         IsChecked="{Binding Path=IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"
-                        Template="{StaticResource MouseComboBoxToggleButtonTemplate}" />
+                        Template="{StaticResource MouseComboBoxToggleButtonTemplate}">
+                        <ToggleButton.Resources>
+                            <Style TargetType="Border">
+                                <Setter Property="Background" Value="Transparent" />
+                            </Style>
+                        </ToggleButton.Resources>
+                    </ToggleButton>
 
                     <ContentPresenter
                         x:Name="contentPresenter"
@@ -1360,7 +1366,7 @@
                         ContentStringFormat="{TemplateBinding SelectionBoxItemStringFormat}"
                         ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}"
                         ContentTemplateSelector="{TemplateBinding ItemTemplateSelector}"
-                        IsHitTestVisible="False" />
+                        IsHitTestVisible="False"/>
                 </Grid>
             </Border>
         </Grid>
@@ -1372,7 +1378,8 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type ComboBoxItem}">
-                    <Border Name="Border" Margin="0" Padding="0" SnapsToDevicePixels="true">
+                    <Border Name="Border" Margin="0" Padding="0" SnapsToDevicePixels="true"
+                            Background="Transparent">
                         <ContentPresenter
                             Name="contentPresenter"
                             Margin="13,10,40,10"
@@ -1853,6 +1860,22 @@
     <SolidColorBrush x:Key="Dlg_CloseX_HoverBkColor" Color="#33444E" />
 
     <!-- #endregion DDPM.SA.Common.Popup.PopupBase-->
+
+    <!-- #region MsgBoxLinearGradientBrush -->
+    <!-- This brush is used as a layer upper Base(Maybe Window or a Border).Background.
+         Both Light and Dark mode are the same color for this brush.
+         Usage example: DDPM.SA.Common/Popup/PupupBase.xaml
+    -->
+    <LinearGradientBrush x:Key="msgBoxGadientBrush" StartPoint="793,0" EndPoint="-69.2682,516.32"
+                         MappingMode="Absolute">
+        <GradientStop Color="#7F306CC7" Offset="0.0537435"/>
+        <GradientStop Color="#7F0063B8" Offset="0.237111"/>
+        <GradientStop Color="#1E003ACE" Offset="0.504036"/>
+        <GradientStop Color="#7C674AB8" Offset="0.792288"/>
+        <GradientStop Color="#7F0063B8" Offset="0.972444"/>
+    </LinearGradientBrush>
+    <!-- #region MsgBoxLinearGradientBrush-->
+
 
 
     <!-- #region BitmapImage -->

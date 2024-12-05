@@ -39,7 +39,7 @@ namespace DDPM.UI.Common
 
         private void rootGrid_MouseEnter(object sender, System.Windows.Input.MouseEventArgs e)
         {
-            if (IsSelected)
+            if (bdRoot.Background == FocusFillBrush)
             { return; }
             bdRoot.Background = (SolidColorBrush)FindResource("Vbar_BkBrush_Hover");
             bdRoot.BorderBrush = (SolidColorBrush)FindResource("Vbar_BkBrush_Hover");
@@ -47,7 +47,7 @@ namespace DDPM.UI.Common
 
         private void rootGrid_MouseLeave(object sender, System.Windows.Input.MouseEventArgs e)
         {
-            if(IsSelected)
+            if (IsSelected)
             { return; }
             bdRoot.Background = (SolidColorBrush)FindResource("Vbar_BkBrush_Default");
             bdRoot.BorderBrush = (SolidColorBrush)FindResource("Vbar_BdBrush_Default");
@@ -57,7 +57,7 @@ namespace DDPM.UI.Common
 
         private void rootGrid_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            if(IsSelected)
+            if (IsSelected)
             { return; }
             bdRoot.BorderBrush = new SolidColorBrush((Color)FindResource("Vbar_BdColor_Hover"));
 
@@ -73,12 +73,21 @@ namespace DDPM.UI.Common
             set
             {
                 vm.IsSelected = value;
+                if (IsSelected)
+                {
+                    SelectBarItem();
+                }
+                else
+                {
+                    RenewBarItem();
+                }
             }
         }
 
         private string resolveIconName(int Id)
         {
-            switch (Id) {
+            switch (Id)
+            {
                 case 0:
                     return "Display_0";
                 case 1:

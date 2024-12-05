@@ -3,6 +3,7 @@ using DDPM.UI.Common;
 using DDPM.UI.Common.Method;
 using Dell.Client.Framework.Common;
 using Dell.Client.Framework.UX.WPF;
+using Dell.Client.Framework.UX.WPF.Controls;
 using Microsoft;
 using Newtonsoft.Json.Linq;
 using System.ComponentModel;
@@ -39,8 +40,28 @@ namespace DDPM.UI.Plugin.ViewModels
             _current_headset = string.Empty;
             _debouncerHeadset = new Debouncer(1000, ExecuteDebouncedAction);
             DdpmCommonHelper.DeviceManagerSA!.UIUpdateNotify += Headset_DTPNotify;
-
+            DdpmCommonHelper.BitmapImageUpdated += ImageUpdate;
             _log!.Info($"[HeadsetViewModel] HeadsetViewModel Start...");
+        }
+        ~HeadsetViewModel()
+        {
+            if (DdpmCommonHelper.DeviceManagerSA != null)
+            {
+                DdpmCommonHelper.DeviceManagerSA!.UIUpdateNotify -= Headset_DTPNotify;
+                DdpmCommonHelper.BitmapImageUpdated -= ImageUpdate;
+            }
+        }
+        private void ImageUpdate(OSThemeEnum oSThemeEnum)
+        {
+            if (oSThemeEnum == OSThemeEnum.Dark)
+            {
+                _isDarkTheme = true;
+            }
+            else
+            {
+                _isDarkTheme = false;
+            }
+            OnPropertyChanged(nameof(IsDarkTheme));
         }
 
         private Dictionary<string, string> deal_param(string param)
@@ -138,10 +159,6 @@ namespace DDPM.UI.Plugin.ViewModels
                                     _isSensitiveChecked = false;
                                 }
                             }
-                            if (Model == "WL5024")
-                            {
-
-                            }
                             break;
 
                         case "Headset_WearDetectionSensitivityChanged":
@@ -236,6 +253,7 @@ namespace DDPM.UI.Plugin.ViewModels
                         _deviceManager.SetAncGainAsync(CurrentDeviceInfo!.ID.ToString(), DeviceInfoDTP.AncGain).Wait();
                         break;
                     //------------------------------------------------------------------------------------------
+                    case "DefaultCheck":
                     case "BassBoostCheck":
                     case "SpeechBoostCheck":
                     case "TrebleBoostCheck":
@@ -808,6 +826,10 @@ namespace DDPM.UI.Plugin.ViewModels
             _log.Info($"[HeadsetViewModel] SetCurrentDevice GUID ... {CurrentDeviceID.ToString()}");
             _current_headset = CurrentDeviceID!.ToString();
             var fv = _deviceManager.GetHeadsetFirmwareVersionAsync(CurrentDeviceID.ToString()).Result; //CurrentDeviceInfo.FirmwareVersion.PadLeft(4, '0');
+            if(fv == null || fv == string.Empty)
+                IsDTPReady = false;
+            else
+                IsDTPReady = true;
             //FirmwareVersion2 = $"Firmware Version {fv}";// {fv.Substring(0, 1)}.{fv.Substring(1, 1)}.{fv.Substring(2, 1)}.{fv.Substring(3, 1)}";
             FirmwareVersion2 = Strings.FirmwareVersion + $" {fv}";
             //else
@@ -1796,7 +1818,7 @@ namespace DDPM.UI.Plugin.ViewModels
                         _isSpeechBoostChecked = false;
                         _isTrebleBoostChecked = false;
                         _isCustomChecked = false;
-                        DeviceInfoDTP.SelectedPreset = 2;
+                        DeviceInfoDTP.SelectedPreset = 3;
                         _debouncerHeadset.Debounce("BassBoostCheck");
                         OnPropertyChanged(nameof(IsDefaultChecked));
                         OnPropertyChanged(nameof(IsSpeechBoostChecked));
@@ -1826,7 +1848,7 @@ namespace DDPM.UI.Plugin.ViewModels
                         _isBassBoostChecked = false;
                         _isTrebleBoostChecked = false;
                         _isCustomChecked = false;
-                        DeviceInfoDTP.SelectedPreset = 3;
+                        DeviceInfoDTP.SelectedPreset = 2;
                         _debouncerHeadset.Debounce("SpeechBoostCheck");
                         OnPropertyChanged(nameof(IsDefaultChecked));
                         OnPropertyChanged(nameof(IsBassBoostChecked));
@@ -1888,6 +1910,7 @@ namespace DDPM.UI.Plugin.ViewModels
                         _isTrebleBoostChecked = false;
                         _audioEqualizerGridPageShow = true;
                         DeviceInfoDTP.SelectedPreset = 101;
+                        _debouncerHeadset.Debounce("CustomCheck");
                         OnPropertyChanged(nameof(IsDefaultChecked));
                         OnPropertyChanged(nameof(IsBassBoostChecked));
                         OnPropertyChanged(nameof(IsSpeechBoostChecked));

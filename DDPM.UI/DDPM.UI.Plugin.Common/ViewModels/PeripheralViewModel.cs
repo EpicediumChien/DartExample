@@ -226,6 +226,9 @@ namespace DDPM.UI.Plugin.ViewModels
             CheckCopilot();
             Model = MappingModel(CurrentDeviceInfo.ModelNumber);
             Name = CurrentDeviceInfo.Name;
+            if (EOLKBList.Contains(Model) || EOLMouseList.Contains(Model))
+                Name = DdpmCommonHelper.MappingEOLName(Model);
+
             if (CurrentDeviceInfo.Type == DeviceType.PhysicalWiredDock || CurrentDeviceInfo.Type == DeviceType.LogicalDock)
             {
                 string[] s = CurrentDeviceInfo.Name.Split(" ");

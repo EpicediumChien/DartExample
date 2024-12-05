@@ -126,9 +126,12 @@ namespace DDPM.UI.Plugin.ViewModels
             _log.Info($"[SoundBarViewModel] DoWork_PleaseWait .......");
             // Simulate time-consuming operation
             Thread.Sleep(500);
-            await UpdateDTPValue();
-            // Call DetectPageShow
-            await DetectPageShow(model);
+            if (!model.Contains("SB725"))
+            {
+                await UpdateDTPValue();
+                // Call DetectPageShow
+                await DetectPageShow(model);
+            }
         }
 
         public async Task Invoke_PleaseWaitAsync(string model, SoundBarViewModel vm)
@@ -394,6 +397,21 @@ namespace DDPM.UI.Plugin.ViewModels
 
             if (!base.SetCurrentDevice(deviceID))
                 return false;
+
+            CurrentDeviceID = new Guid(deviceID);
+
+            if (DeviceInfos[CurrentDeviceID].ModelNumber.Contains("SB725"))
+            {
+                IsDTPReady = true;
+            }
+            else
+            {
+                string fv = _deviceManager.GetProfileAsync(CurrentDeviceID.ToString()).Result;
+                if (fv == null || fv == string.Empty)
+                    IsDTPReady = false;
+                else
+                    IsDTPReady = true;
+            }
             return true;
         }
 

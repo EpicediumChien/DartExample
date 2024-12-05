@@ -21,6 +21,7 @@ namespace DDPM.EABroker
         private readonly IDeviceManagerSA _deviceManagerSA;
         private readonly IEasyArrangeService _easyArrangeService;
         private readonly ArrangeVM _vm = new ArrangeVM();
+        private readonly ISettingsManagerDev _settingsManager;
         #endregion  Private members
 
         #region Public Properties
@@ -28,15 +29,16 @@ namespace DDPM.EABroker
         #endregion  Public Properties
 
         #region ctor
-        public EABroker(IAgent agent, IDeviceManagerSA deviceManager, IDisplayService displayService, IEasyArrangeService easyArrangeService)
+        public EABroker(IAgent agent, IDeviceManagerSA deviceManager, IDisplayService displayService, IEasyArrangeService easyArrangeService, ISettingsManagerDev settingsManager)
         {
             _agent = agent;
             _log = agent.CreateLogger("EABroker", typeof(EABroker));
             _deviceManagerSA = deviceManager;
             _easyArrangeService = easyArrangeService;
 
-            _vm.InitInterfaces(agent, _log, deviceManager, displayService, easyArrangeService);
+            _vm.InitInterfaces(agent, _log, deviceManager, displayService, easyArrangeService, settingsManager);
             WriteLog("EABroker is constructed.");
+            _settingsManager = settingsManager;
         }
         #endregion ctor
 
@@ -174,12 +176,7 @@ namespace DDPM.EABroker
 
         public bool NotifyEASelectedLayoutChanged(MonitorInfo monitorInfo, SplitJson spJson)
         {
-            EAWorkWindow? workWindow = _vm.FindWorkWindowByMonitor(monitorInfo);
-            if (workWindow != null)
-            {
-                return workWindow.SetWorkingSplit(spJson, true);
-            }
-            return false;
+            return _vm.NotifyEASelectedLayoutChanged(monitorInfo, spJson);
         }
 
         /// <summary>
@@ -228,6 +225,11 @@ namespace DDPM.EABroker
 
                 _vm.RefreshWorkWindows(isInit);
             }
+        }
+
+        public void NotifySelectedMonitorChanged()
+        {
+            _vm.NotifySelectedMonitorChanged();
         }
     }
 
