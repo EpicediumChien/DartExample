@@ -344,7 +344,7 @@ namespace DDPM.UI.Module.WebCameraSettings
 
         private void Image_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            if (sender is Image elm)
+            if (sender is Border elm)
             {
                 var val = elm.Tag.ToString();
                 if (val == "0")

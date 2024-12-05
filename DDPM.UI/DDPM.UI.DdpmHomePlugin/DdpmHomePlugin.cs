@@ -1171,16 +1171,19 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                     }
                 }
 
+                // read reg
+                regValue = await _deviceManager.ReadRegistryData(DDPM.SA.Common.Settings.RegistryHive.LocalMachine, regPath, regKey);
+
+                // register model for walk through done
+                await _deviceManager.WriteRegistryData(DDPM.SA.Common.Settings.RegistryHive.LocalMachine, regPath, regKey, true);
+
                 // If the device is not supported, directly update the registry to true and return
-                if (!devicePages.ContainsKey(modelNumber))
+                bool walkThroughNotSupport = !devicePages.ContainsKey(modelNumber);
+                if (walkThroughNotSupport)
                 {
-                    await _deviceManager.WriteRegistryData(DDPM.SA.Common.Settings.RegistryHive.LocalMachine, regPath, regKey, true);
                     _log.Info($"[Walkthrough] Device {modelNumber} not found in devicePages, skipping.");
                     return;
                 }
-
-                // read reg
-                regValue = await _deviceManager.ReadRegistryData(DDPM.SA.Common.Settings.RegistryHive.LocalMachine, regPath, regKey);
 
                 // mean null or "" or is false, add to the queue and set it to true
                 if (regValue == null || (regValue is string strValue && string.IsNullOrEmpty(strValue)) || !Convert.ToBoolean(regValue))
