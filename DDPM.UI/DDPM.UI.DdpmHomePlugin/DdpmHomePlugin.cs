@@ -228,7 +228,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                             _deviceManager.ReceiveTelemetryInfo("AppSession", "AppStarted", Telementry_Frequency.RealTime);
 
                             await GetDdpmDevicesAsync(_deviceManager);
-                            await _deviceManager!.SetIsDDPMHomepageReadyAsync(true);
+                            CloseQAMIfExist();
 
                             //1030 get global settings for telemetry consent page using
                             _globalSettings = _deviceManager.GetGlobalSettingParam().Result;
@@ -308,20 +308,25 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
             }
         }
 
-        private void CheckIfNeedNavigateToWebcamPage()
+        private void CloseQAMIfExist()
         {
-            if (DdpmCommonHelper.DeviceManagerSA!.GetIsDDPMLaunchByQAM().Result == true)
-            {
-                DdpmCommonHelper.WriteUILog($"GetIsDDPMLaunchByQAM = true");
-
-                DdpmCommonHelper.DeviceManagerSA!.SetIsDDPMHomepageReadyAsync(true);
-                DdpmCommonHelper.DeviceManagerSA!.SetIsDDPMLaunchByQAMAsync(false);
-            }
-            else
-                DdpmCommonHelper.WriteUILog($"GetIsDDPMLaunchByQAM = false");
+            _deviceManager!.SetIsDDPMHomepageReadyAsync(true);
         }
 
-        private async Task CheckIfNeedNavigateToWebcamPageV2()
+        //private void CheckIfNeedNavigateToWebcamPage()
+        //{
+        //    if (DdpmCommonHelper.DeviceManagerSA!.GetIsDDPMLaunchByQAM().Result == true)
+        //    {
+        //        DdpmCommonHelper.WriteUILog($"GetIsDDPMLaunchByQAM = true");
+
+        //        DdpmCommonHelper.DeviceManagerSA!.SetIsDDPMHomepageReadyAsync(true);
+        //        DdpmCommonHelper.DeviceManagerSA!.SetIsDDPMLaunchByQAMAsync(false);
+        //    }
+        //    else
+        //        DdpmCommonHelper.WriteUILog($"GetIsDDPMLaunchByQAM = false");
+        //}
+
+        private async Task CheckIfNeedNavigateToWebcamPage()
         {
             if (_deviceManager!.GetIsDDPMLaunchByQAM().Result == true)
             {
@@ -501,17 +506,21 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
             {
                 CloseMyself();
             }
+            else if (e.UI_Field_Name.StartsWith("QAMEvent_NavigateToWidgetSettingPage"))
+            {
+                _console.ShowPluginById(DDPM.UI.Common.Constants.SettingsPluginId);
+            }
         }
 
         [DllImport("user32.dll")]
         private static extern int SendMessage(IntPtr hWnd, int wMsg, IntPtr wParam, IntPtr lParam);
-        private const int WM_EXITBYSELF = 0xFF30;
+        private const int WM_EXITBYMYSELF = 0xFF30;
         private void CloseMyself()
         {
             try
             {
                 IntPtr hWnd = Process.GetCurrentProcess().MainWindowHandle;
-                int result = SendMessage(hWnd, WM_EXITBYSELF, IntPtr.Zero, IntPtr.Zero);
+                int result = SendMessage(hWnd, WM_EXITBYMYSELF, IntPtr.Zero, IntPtr.Zero);
 
                 _log.Info($"SendMessage result = {result}");
             }

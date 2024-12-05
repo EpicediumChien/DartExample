@@ -222,6 +222,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         private Point QAM_Position;
         private bool isDDPMHomepageReady = false;
         private bool isDDPMLaunchedByQAM = false;
+        private bool isWidgetSettingPageLoadedByQAM = false;
 
         private static CancellationTokenSource _ReGetcancellationTokenSource;
 
@@ -10238,19 +10239,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
             try
             {
-                //關得比較慢？？？
                 writelog($"Try to run QAMClose");
                 _QAM?.Dispatcher.BeginInvoke(DispatcherPriority.Normal, () => _QAM?.Close());
-                //Dispatcher.Run();
-
-                //關得比較慢？？？
-                //new Thread(() => {
-                //    _QAM.Dispatcher.Invoke(new Action(() => {
-                //        _QAM?.Close();
-                //    }));
-                //}).Start();
-
-                //_QAM?.Dispatcher.BeginInvoke(DispatcherPriority.Normal, () => _QAM?.CloseMyself());
             }
             catch (Exception e)
             {
@@ -10339,6 +10329,18 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             return Task.CompletedTask;
         }
 
+        private Task NavigateDDPMToWidgetSettingPage()
+        {
+            UpdateUINotify e = new()
+            {
+                UI_Field_Name = "QAMEvent_NavigateToWidgetSettingPage"
+            };
+
+            OnUIUpdateNotify(e);
+
+            return Task.CompletedTask;
+        }
+
         //private void _QAM_UpdateUINotify(object sender, UpdateUINotify e)
         //{
         //    OnUIUpdateNotify(e);
@@ -10347,6 +10349,24 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         public Task<int> GetCurrentPollingRate()
         {
             return Task.FromResult(_millisecond);
+        }
+
+        public Task<bool> GetIsWidgetSettingPageLoadedByQAMAsync()
+        {
+            return Task.FromResult(isWidgetSettingPageLoadedByQAM);
+        }
+
+        public Task SetIsWidgetSettingPageLoadedByQAMAsync(bool newValue)
+        {
+            isWidgetSettingPageLoadedByQAM = newValue;
+            writelog($"isWidgetSettingPageLoadedByQAM: {newValue}");
+
+            if (isWidgetSettingPageLoadedByQAM)
+            {
+                NavigateDDPMToWidgetSettingPage();
+            }
+
+            return Task.CompletedTask;
         }
 
         public Task SetIsDDPMLaunchByQAMAsync(bool newValue)
@@ -10382,6 +10402,15 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
             //    QAMClose();
             //}
+
+            QAMClose();
+
+            return Task.CompletedTask;
+        }
+
+        public Task CloseQAMByDDPM()
+        {
+            writelog($"UI send command CloseQAMByDDPM");
 
             QAMClose();
 
