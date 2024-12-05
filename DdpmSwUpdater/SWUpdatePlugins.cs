@@ -363,31 +363,37 @@ namespace DdpmSwUpdater
                 };
                 sendMessageToEvent(updateProgressInfo);
                 RegEvent();
-                //var sessionId = Kernel32.WTSGetActiveConsoleSessionId();
-                //if (sessionId is Advapi32.InvalidSessionId) throw new InvalidOperationException($"Cannot get session id");
-                //IntPtr token = UserImpersonator.GetTokenFromSession(sessionId, systemUser: false);
-                //using (FileLock fileLock = new FileLock(swUpdateInfo.InstallPaths, PathCheckOption.None, lockNow: true))
+
+                //string? workingDirectory = string.Empty;
+                string? fileFullPath = swUpdateInfo.InstallPaths;
+                //if (fileFullPath != null && !string.IsNullOrEmpty(fileFullPath))
                 //{
-                //    UserImpersonator.RunAsUser(token, () =>
-                //    {
-                //        using (Process clientProcess = new Process())
-                //        {
-                //            _clientProcess = new Process();
-                //            _clientProcess.StartInfo.UseShellExecute = false;
-                //            _clientProcess.StartInfo.FileName = swUpdateInfo.InstallPaths;
-                //            _clientProcess.StartInfo.WorkingDirectory = Path.GetDirectoryName(_clientProcess.StartInfo.FileName);
-                //            _clientProcess.StartInfo.Arguments = arguments;
-                //            _clientProcess.Start();
-                //            _clientProcess.WaitForExit();
-                //        }
-                //    });
+                //    workingDirectory = Path.GetDirectoryName(swUpdateInfo.InstallPaths);
                 //}
                 using (Process clientProcess = new Process())
                 {
+                    //if (!DDPMFileSecurity.CheckFold(workingDirectory, out string FolderInfo, out string PathSymbolicLinInfo))
+                    //{
+                    //    LogManage.LogMessage($"{nameof(DownloadAndInstall)} {_SWUpdateInfo.SoftwareName} FolderIsNotSafe - FolderInfo : {FolderInfo}");
+                    //    LogManage.LogMessage($"{nameof(DownloadAndInstall)} {_SWUpdateInfo.SoftwareName} FolderIsNotSafe - PathSymbolicLinInfo : {PathSymbolicLinInfo}");
+                    //    _notificationStr = LangHelper.Instance["Firmware_update_unsuccessful"];
+                    //    NotificationFWupdate(LangHelper.Instance["Error"], _notificationStr);
+                    //    _updateErrorCode = SWUErrorCode.FolderIsNotSafe;
+                    //    return _updateErrorCode;
+                    //}
+                    if(!DDPMFileSecurity.IsFilePathValid(fileFullPath, out string fileCheckInfo))
+                    {
+                        LogManage.LogMessage($"{nameof(DownloadAndInstall)} {_SWUpdateInfo.SoftwareName} FileIsNoSafe - FileCheckInfo : {fileCheckInfo}");
+                        _notificationStr = LangHelper.Instance["Firmware_update_unsuccessful"];
+                        NotificationFWupdate(LangHelper.Instance["Error"], _notificationStr);
+                        _updateErrorCode = SWUErrorCode.FileIsNoSafe;
+                        return _updateErrorCode;
+                    }
+
                     _clientProcess = new Process();
                     _clientProcess.StartInfo.UseShellExecute = false;
-                    _clientProcess.StartInfo.FileName = swUpdateInfo.InstallPaths;
-                    _clientProcess.StartInfo.WorkingDirectory = Path.GetDirectoryName(_clientProcess.StartInfo.FileName);
+                    _clientProcess.StartInfo.FileName = fileFullPath;
+                    //_clientProcess.StartInfo.WorkingDirectory = workingDirectory; //SDL - checkmarx
                     _clientProcess.StartInfo.Arguments = arguments;
                     _clientProcess.Start();
                     _clientProcess.WaitForExit();

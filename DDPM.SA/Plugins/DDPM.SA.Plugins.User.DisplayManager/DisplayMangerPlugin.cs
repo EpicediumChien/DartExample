@@ -467,7 +467,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                         //}
                         //else
                         //{
-                            inputInfo.USBUpstream = string.Empty;
+                        inputInfo.USBUpstream = string.Empty;
                         //}
                         inputSourcelist.Add(tmp.Name, inputInfo);
                         input_num = input_num + 1;
@@ -1067,7 +1067,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                     return Task.FromResult(false);
             }
 
-            if(AllALSConfig != null)
+            if (AllALSConfig != null)
             {
                 _logs.DebugMsg($"[DisplayMangerPlugin] SetALSFeatureValue AllALSConfig.Count = {AllALSConfig.Count.ToString()} || Into monitorInfos = {monitorInfos.edid.ModelName.ToString()} ,{monitorInfos.edid.SerialNumber.ToString()} ");
                 for (int i = 0; i < AllALSConfig.Count; i++)
@@ -1112,7 +1112,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                     List<ALSConfig> temp = new List<ALSConfig>();
 
                     _logs.DebugMsg($"[DisplayMangerPlugin] CheckisPrimaryMonitorSyncOnOff ... Monitors.Count = " + monitorALS.Count().ToString() + " || AllALSConfig.Count = " + AllALSConfig.Count().ToString());
-                    
+
                     foreach (MonitorInfo mon in monitorALS)//copy to als_connected first
                     {
                         ALSConfig als_nowtemp = new ALSConfig();
@@ -1138,7 +1138,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
 
                     //als_connected = new List<ALSConfig>();//clear
 
-                    if(SyncPrimaryMonitorValueToOtherMonitor(monitorInfoMain, monitorALS, ref als_connected2, value, vcpcode).Result)
+                    if (SyncPrimaryMonitorValueToOtherMonitor(monitorInfoMain, monitorALS, ref als_connected2, value, vcpcode).Result)
                         _logs.DebugMsg($"[DisplayMangerPlugin] SyncPrimaryMonitorValueToOtherMonitor ... True");
                     else
                         _logs.DebugMsg($"[DisplayMangerPlugin] SyncPrimaryMonitorValueToOtherMonitor ... Fail");
@@ -1287,14 +1287,14 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                 {
                     uint temp = (uint)val.value;
                     //uint temp2 = (temp & 0xFF);
-                    if(_VcpCorePlugin.SetVCPCapability(monitorvalue, 0x67, temp).Result)                   
+                    if (_VcpCorePlugin.SetVCPCapability(monitorvalue, 0x67, temp).Result)
                         _logs.DebugMsg($"[DisplayMangerPlugin] SyncPrimaryMonitorBrightnessAndColorTemp Success Set 0x67  = {temp.ToString()}, e.monitor = {monitorInfoMain.edid.SerialNumber}, _AllInfoMonitors[i] = {monitorvalue.edid.SerialNumber}");
                     else
                         _logs.DebugMsg($"[DisplayMangerPlugin] SyncPrimaryMonitorBrightnessAndColorTemp Fail Set 0x67  = {temp.ToString()}, e.monitor = {monitorInfoMain.edid.SerialNumber}, _AllInfoMonitors[i] = {monitorvalue.edid.SerialNumber}");
                 }
             }
             _logs.DebugMsg("[DisplayMangerPlugin] SyncPrimaryMonitorBrightnessAndColorTemp vcpcode = 67 68 ... out ");
-        
+
             return Task.FromResult(true);
         }
         /// <summary>
@@ -1305,7 +1305,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
         {
             List<ALSConfig> als_connecte = new List<ALSConfig>();
             List<MonitorInfo> monitorALS = GetMonitors().Result;
-            for(int i = 0; i < monitorALS.Count; i++)
+            for (int i = 0; i < monitorALS.Count; i++)
             {
                 ALSConfig tempALSConfig = new ALSConfig();
                 ParseMonitorInfo(monitorALS[i], ref tempALSConfig);
@@ -1327,10 +1327,10 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                 var distinctALSConfigList = new List<ALSConfig>();
 
 
-                distinctALSConfigList = AllALSConfig.Where(config => config != null && config.Edid != null 
-                                                                                   && !string.IsNullOrWhiteSpace(config.ModelName) 
-                                                                                   && !string.IsNullOrWhiteSpace(config.serialNumber) 
-                                                                                   && !string.IsNullOrWhiteSpace(config.Edid.SerialNumber) 
+                distinctALSConfigList = AllALSConfig.Where(config => config != null && config.Edid != null
+                                                                                   && !string.IsNullOrWhiteSpace(config.ModelName)
+                                                                                   && !string.IsNullOrWhiteSpace(config.serialNumber)
+                                                                                   && !string.IsNullOrWhiteSpace(config.Edid.SerialNumber)
                                                                                    && !string.IsNullOrWhiteSpace(config.Edid.ServiceTag)).GroupBy(p => new { p.Edid }).Select(g => g.First()).ToList();
 
                 _logs.DebugMsg($"[DisplayMangerPlugin] GetAllExistAlsConfig ... out " + distinctALSConfigList.Count.ToString());
@@ -1450,7 +1450,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
 
                 _logs.DebugMsg($"[DisplayMangerPlugin] UpdateALSFeatureByValue idx = {idx.ToString()}, AllALSConfig.Count = {AllALSConfig.Count.ToString()}");
 
-                ParseBitDefineToAlsObject(value,  ref alsTemp);
+                ParseBitDefineToAlsObject(value, ref alsTemp);
                 ParseMonitorInfo(monitorInfos, ref alsTemp);
 
                 _logs.DebugMsg($"[DisplayMangerPlugin] UpdateALSFeatureByValue idx = {idx.ToString()}, AllALSConfig.Count = {AllALSConfig.Count.ToString()}");
@@ -2187,7 +2187,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             _VCPchangedEventArgs.value = e.value;
             _VCPchangedEventArgs.monitor = e.monitor;
             OnVCPchanged(_VCPchangedEventArgs);
-            
+
             ////0607 Bruce 自動旋轉畫面顧新增下面兩行程式碼
             //SetDisplayOrientation(_VCPchangedEventArgs);
 
@@ -2250,7 +2250,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                 //}
 
                 if (findconfig != null && findconfig.isPrimaryMonitorSync)//
-                {                  
+                {
                     //2.do value sync
                     for (int i = 0; i < _AllInfoMonitors.Count; i++)
                     {
@@ -2263,26 +2263,26 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                             {
                                 if (uint.TryParse(e.value, NumberStyles.Integer, CultureInfo.CurrentCulture, out uint result))
                                 {
-                                //No need sync, PIMS - 285803
-                                //if (e.vcpcode.Equals("10"))
-                                //    SetVCPCapability(mo, 0x10, Convert.ToUInt32(e.value));
-                                //else if (e.vcpcode.Equals("12"))
-                                //    SetVCPCapability(mo, 0x12, Convert.ToUInt32(e.value));
-                                //else
-                                //if (e.vcpcode.Equals("14") || e.vcpcode.Equals("F0") || e.vcpcode.Equals("DC"))
-                                //{
-                                //    r = int.TryParse(e.vcpcode, System.Globalization.NumberStyles.HexNumber, CultureInfo.CurrentCulture, out int number);
-                                //    if (r) SetVCPCapability(mo, Convert.ToByte(number), Convert.ToUInt32(e.value));
-                                //}
+                                    //No need sync, PIMS - 285803
+                                    //if (e.vcpcode.Equals("10"))
+                                    //    SetVCPCapability(mo, 0x10, Convert.ToUInt32(e.value));
+                                    //else if (e.vcpcode.Equals("12"))
+                                    //    SetVCPCapability(mo, 0x12, Convert.ToUInt32(e.value));
+                                    //else
+                                    //if (e.vcpcode.Equals("14") || e.vcpcode.Equals("F0") || e.vcpcode.Equals("DC"))
+                                    //{
+                                    //    r = int.TryParse(e.vcpcode, System.Globalization.NumberStyles.HexNumber, CultureInfo.CurrentCulture, out int number);
+                                    //    if (r) SetVCPCapability(mo, Convert.ToByte(number), Convert.ToUInt32(e.value));
+                                    //}
                                 }
                                 else
                                 {
-                                if (e.vcpcode.Equals("E2"))
-                                {
-                                    SetVCPCapability(mo, "colorpreset", e.value);
-                                }
-                                else
-                                    break;
+                                    if (e.vcpcode.Equals("E2"))
+                                    {
+                                        SetVCPCapability(mo, "colorpreset", e.value);
+                                    }
+                                    else
+                                        break;
                                 }
                             }
                         }
@@ -3683,6 +3683,24 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             else
             {
                 _logs.DebugMsg($"[DisplayMangerPlugin] @ DisplayManager.GetIsSpanEnabled(): _eaService is in null");
+            }
+            return Task.FromResult(false);
+        }
+
+        /// <summary>
+        /// General notification  to EAPlugin from other Plugins inside DDPM.SA.User
+        /// </summary>
+        /// <param name="eaArgs"></param>
+        /// <returns></returns>
+        public Task<bool> NotifyEAMessage(EAArgs eaArgs)
+        {
+            if (_eaService != null)
+            {
+                return _eaService.NotifyEAMessage(eaArgs);
+            }
+            else
+            {
+                _logs.DebugMsg($"[DisplayMangerPlugin] @ DisplayManager.NotifyEAMessage(): _eaService is in null");
             }
             return Task.FromResult(false);
         }
