@@ -105,6 +105,14 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             ["1101"] = "Thunderbolt2"
         };
 
+        private Dictionary<string, string> USBUplink_E7 = new Dictionary<string, string>()
+        {
+            ["00"] = "USB-B1",
+            ["01"] = "USB-B2",
+            ["10"] = "USB-C1",
+            ["11"] = "USB-C2"
+        };
+
         private Dictionary<string, string> USBUpstream = new Dictionary<string, string>(); // Port name, Upstream Port num
 
         private string[] OrientationString = new string[] { "", "Landscape", "Portrait", "Landscape_flipped", "Portrait_flipped" };//OSD orientation
@@ -600,19 +608,42 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                 }
                 else
                 {
-                    objGetVCPEE = GetVCPCapability(monitorInfo, 0xE7).Result;
-                    if (objGetVCPEE.result)
+                    string capabilityString = monitorInfo.CapabilityString;
+                    try
                     {
-                        string strUSB = Convert.ToString((uint)objGetVCPEE.value, 2);
-                        string _strUSB = strUSB;
-                        if (_strUSB.Length < 16)
+                        if (capabilityString != "" && capabilityString.Length > 10)
                         {
-                            for (int i = 0; i < (16 - _strUSB.Length); i++)
+                            string[] ss = capabilityString.Split("E7(");
+                            ss = ss[1].Split(")");
+                            ss = ss[0].Split(" ");
+                            if (ss.Length > 0)
                             {
-                                strUSB = "0" + strUSB;
+                                for (int i = 0; i < ss.Length; i++)
+                                {
+                                    if (ss[i].Equals("03"))
+                                    {
+                                        usbUpstreamList.Add(USBUplink_E7["11"]);
+                                    }
+                                    else if (ss[i].Equals("02"))
+                                    {
+                                        usbUpstreamList.Add(USBUplink_E7["10"]);
+                                    }
+                                    else if (ss[i].Equals("01"))
+                                    {
+                                        usbUpstreamList.Add(USBUplink_E7["01"]);
+                                    }
+                                    else if (ss[i].Equals("00"))
+                                    {
+                                        usbUpstreamList.Add(USBUplink_E7["00"]);
+                                    }
+                                }
+                                usbUpstreamList = inputTypeString.SubInputType(usbUpstreamList);
                             }
                         }
-                        //USBUplink[strUSB.Substring(0, 4)];
+                    }
+                    catch
+                    {
+                        usbUpstreamList = _usbUpstreamList;
                     }
                 }
             }

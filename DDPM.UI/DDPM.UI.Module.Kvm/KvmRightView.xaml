@@ -109,7 +109,7 @@
                                                          Background="#0672CB" Opacity="{Binding USBKVMButtonOpacity}"
                                                          Foreground="{DynamicResource TextBlock_ForegroundColor}"
                                                          Click="OpenUSBKVM"
-                                                         Visibility="Collapsed"
+                                                         Visibility="{Binding DisenableUSBKVM}"
                                                          IsEnabled="{Binding isUSBKVMButton}"/>
                                     <UXControls:UXButton ButtonType="Primary"
                                                          AutomationProperties.Name="Primary1"
@@ -122,7 +122,7 @@
                                                          Background="#0672CB" Opacity="{Binding USBKVMButtonOpacity}"
                                                          Foreground="{DynamicResource TextBlock_ForegroundColor}"
                                                          Click="OpenUSBKVM"
-                                                         Visibility="Collapsed"
+                                                         Visibility="{Binding EnableUSBKVM}"
                                                          IsEnabled="{Binding isUSBKVMButton}"/>
                                     <UXControls:UXButton ButtonType="Secondary"
                                                          x:Name="USBKVMHotkeys"
@@ -130,7 +130,7 @@
                                                          HorizontalAlignment="Center"
                                                          VerticalAlignment="Center"
                                                          Margin="16" Padding="32,0"
-                                                         Visibility="Collapsed" Click="USBKVMHotkeys_Click">
+                                                         Visibility="{Binding EnableUSBKVM}" Click="USBKVMHotkeys_Click">
                                         <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
                                             <UXControls:UXTextBlock Margin="8" Text="{Binding [Hotkeys], Source={x:Static lang:LangHelper.Instance}}" Foreground="{DynamicResource TextBlock_ForegroundColor}" />
                                             <Grid HorizontalAlignment="Center" VerticalAlignment="Center" Background="#00000000">

@@ -198,6 +198,8 @@ namespace DDPM.UI.Module.Kvm
         public Visibility SetPXP { get; set; } = Visibility.Visible;
         public Visibility EditInput { get; set; } = Visibility.Collapsed;
         public Visibility EditPXP { get; set; } = Visibility.Collapsed;
+        public Visibility DisenableUSBKVM { get; set; } = Visibility.Visible;
+        public Visibility EnableUSBKVM { get; set; } = Visibility.Collapsed;
         public string PC1_Input { get; set; }
         public string PC2_Input { get; set; }
         public string PC3_Input { get; set; }
@@ -261,6 +263,7 @@ namespace DDPM.UI.Module.Kvm
                 {
                     isOnUSBKVM(false);
                     USBKVMisON = false;
+                    _isUSBKVM = false;
                     _isNKVM = false;
                     DdpmCommonHelper.DeviceManagerSA.SentKVMtoTelementry(DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo, "KVMMode", "NoKVM");
                 }
@@ -291,6 +294,7 @@ namespace DDPM.UI.Module.Kvm
                 {
                     isOnUSBKVM(false);
                     USBKVMisON = false;
+                    _isUSBKVM = false;
                     _isNoKVM = false;
                     _isNKVM = true;
                 }
@@ -642,7 +646,7 @@ namespace DDPM.UI.Module.Kvm
                     SupportNKVM = Visibility.Visible;
                 }
 
-                USBKVMisON = KvmModule.isUSBKVM; /*DdpmCommonHelper.DeviceManagerSA.GetOnNKVM(mi).Result;*/
+                USBKVMisON = /*KvmModule.isUSBKVM;*/ DdpmCommonHelper.DeviceManagerSA.GetOnUSBKVM(mi).Result;
                 NKVMisON = DdpmCommonHelper.DeviceManagerSA.GetOnNKVM(mi).Result;
                 if (mi.CapabilityDic.ContainsKey("EE"))
                 {
@@ -709,14 +713,20 @@ namespace DDPM.UI.Module.Kvm
                 if (!NKVMisON && !USBKVMisON)
                 {
                     _isNoKVM = true;
+                    EnableUSBKVM = Visibility.Collapsed;
+                    DisenableUSBKVM = Visibility.Visible;
                 }
                 else if (USBKVMisON)
                 {
                     _isUSBKVM = true;
+                    EnableUSBKVM = Visibility.Visible;
+                    DisenableUSBKVM = Visibility.Collapsed;
                 }
                 else if (NKVMisON)
                 {
                     _isNKVM = true;
+                    EnableUSBKVM = Visibility.Collapsed;
+                    DisenableUSBKVM = Visibility.Visible;
                 }
 
                 if (mi.CapabilityDic.ContainsKey("EE"))
