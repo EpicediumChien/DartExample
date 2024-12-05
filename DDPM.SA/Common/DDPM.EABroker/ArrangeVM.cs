@@ -507,7 +507,7 @@ namespace DDPM.EABroker
                         {
                             IsScreenIdWindowsVisible = false;
                         }
-                        WriteLog($" * HoveringCell=AWS{hoveringCell.Name}");
+                        //WriteLog($" * HoveringCell=AWS{hoveringCell.Name}");
 
                         if (_awsBuddyWindow != null)
                         {
@@ -536,7 +536,7 @@ namespace DDPM.EABroker
                         //HoveringScreen = workWin.ScreenDeviceName;
                         HoveringCellObj = hoveringCell;
                         HoveringWindow = $"w{idxWorkWin}";
-                        WriteLog($" * HoveringCell=Work{hoveringCell.Name}");
+                        //WriteLog($" * HoveringCell=Work{hoveringCell.Name}");
                         return hoveringCell;
                     }
                 }

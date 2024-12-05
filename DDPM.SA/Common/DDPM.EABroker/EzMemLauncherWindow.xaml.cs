@@ -1,9 +1,13 @@
 ﻿using DDPM.Easy.Common;
+using DDPM.SA.Common;
+using Dell.Client.Framework.Common;
 using nsWinEventHook;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -15,6 +19,9 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using VcpCore.Common;
+using Windows.ApplicationModel.Contacts;
+using static DDPM.Win32Lib.Win32;
+using Rectangle = System.Drawing.Rectangle;
 
 namespace DDPM.EABroker
 {
@@ -24,75 +31,84 @@ namespace DDPM.EABroker
     public partial class EzMemLauncherWindow : Window
     {
         #region Private members
-        private ISplitCtrl inputSplitCtrl = new SplitCtrl0A();
+        private const string myName = "EzMemLauncherWin";
+        private double _screenScale = 1.000;
+        private ISplitCtrl _inputSplitCtrl = new SplitCtrl0A();
+        private Rectangle _workingArea = Rectangle.Empty;
+        private readonly ILog _log;
+        private int _cellBorderCount = 0; //Cell count in the Layout (_inputSplitCtrl)
+        private int _toBeArrangedCount = 0; //The count of app wait for arrange
+        private int _alreadyArrangedCount = 0; //The count of app window has already been arraged
         #endregion
-        public EzMemLauncherWindow()
+
+        #region Events
+        //When (Phase I) the EA Layout (inputSplitCtrl) is created, show on window, and get the Rects.
+        //Caller can start to Phase II, launch app and arrange their window into layout
+        public EventHandler LayoutReady;
+
+        //When (Phase II) all (_arrangeCount) of app windows are launched and arranged.
+        public EventHandler ArrangeDone;
+        #endregion Events
+
+        #region Phase I - Assign Layout and Show Window
+        //To do for Phase I
+        // EzMemLauncherWindow emWin = new EzMemLauncherWindow(ispLayout, workingArea, _log);
+        // emWin.
+        // emWin.Show();
+        //
+
+        public EzMemLauncherWindow(ISplitCtrl inputSplitCtrl, Rectangle workingArea, int arrangeCount, ILog log)
         {
             InitializeComponent();
+            _inputSplitCtrl = inputSplitCtrl;
+            _workingArea = workingArea;
+            _toBeArrangedCount = arrangeCount;
+            _log = log;
+
+            RefreshScreenScale();
+
+            Left = workingArea.Left / _screenScale;
+            Top = workingArea.Top / _screenScale;
+            Width = workingArea.Width / _screenScale;
+            Height = workingArea.Height / _screenScale;
+
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             System.Windows.Interop.WindowInteropHelper wndHelper = new System.Windows.Interop.WindowInteropHelper(this);
             Win32Lib.Win32.HideWinFromAltTab(wndHelper.Handle);
+
+            _inputSplitCtrl.SplitMode = eSplitModes.Work;
+            splitCtrl.Content = _inputSplitCtrl.UC;
         }
 
-        #region EzMemLaunch
-        public void ShowForEzMemLauncher(MonitorInfo mi, ISplitCtrl isp)
+        private void Window_ContentRendered(object sender, EventArgs e)
         {
-            Screen? screen = Screen.AllScreens.FirstOrDefault(x => x.DeviceName.Equals(mi.DisplayName, StringComparison.OrdinalIgnoreCase));
-            if (screen == null)
-                return;
-
-            splitCtrl.Visibility = Visibility.Visible;
-
-            inputSplitCtrl = isp.Clone();
-            double screenScale = GetScreenScale();
-
-            Rect rcScreen = new Rect();
-            rcScreen.X = screen.WorkingArea.Left / screenScale;
-            rcScreen.Y = screen.WorkingArea.Top / screenScale;
-            rcScreen.Width = screen.WorkingArea.Width / screenScale;
-            rcScreen.Height = screen.WorkingArea.Height / screenScale;
-
-            Left = rcScreen.X;
-            Top = rcScreen.Y;
-            Width = rcScreen.Width;
-            Height = rcScreen.Height;
-
-            if (isp.IsOverlapCustomLayout)
-            {
-                SplitCtrl0B sp0B = (SplitCtrl0B)inputSplitCtrl;
-                sp0B.ApplySettingsToCellList(rcScreen);
-            }
-            inputSplitCtrl.SplitMode = eSplitModes.Work;
-            inputSplitCtrl.IsVertical = (rcScreen.Width < rcScreen.Height);
-            splitCtrl.Content = inputSplitCtrl.UC;
-
-            ContentRendered += EAEditWindow_ContenRendered;
-            Topmost = true;
-            Show();
+            RefreshCellRects();
+            if (LayoutReady != null)
+                LayoutReady(this, EventArgs.Empty);
         }
 
         private void EAEditWindow_ContenRendered(object? sender, EventArgs e)
         {
-            RefreshCellRects();
         }
 
-        private double GetScreenScale()
+        private double RefreshScreenScale()
         {
-            double screenScale = 1.000;
+            double dpiX = 1.000;
             var dpiXProperty = typeof(SystemParameters).GetProperty("DpiX", BindingFlags.NonPublic | BindingFlags.Static);
             if (dpiXProperty != null)
             {
                 var varX = (int)dpiXProperty.GetValue(null, null);
-                double dpiX = (double)varX / (double)96;
-                if (dpiX >= 1.0000)
-                    screenScale = dpiX;
+                dpiX = (double)varX / (double)96;
             }
-            return screenScale;
+            _screenScale = dpiX;
+            return dpiX;
         }
-        public Rect GetFrameworkElementRect(FrameworkElement ele)
+
+
+        private Rect GetFrameworkElementRect(FrameworkElement ele)
         {
             if (ele == null)
                 return Rect.Empty;
@@ -123,34 +139,21 @@ namespace DDPM.EABroker
 
         public void RefreshCellRects()
         {
-            if (inputSplitCtrl == null)
+            if (_inputSplitCtrl == null)
             {
                 return;
             }
 
             bool _areCellRectsRefreshed = true;
-            if (inputSplitCtrl.IsAddedCustomLayout)
+            foreach (CellObj objCell in _inputSplitCtrl.CellList)
             {
-                SplitCtrl0B sp0B = (SplitCtrl0B)inputSplitCtrl;
-                foreach (CellObj objCell in sp0B.CellList)
-                {
-                    objCell.rc = GetFrameworkElementRect(objCell.CellBd);
-                    if (objCell.rc.IsEmpty)
-                        _areCellRectsRefreshed = false;
-                }
-            }
-            else
-            {
-                foreach (CellObj objCell in inputSplitCtrl.CellList)
-                {
-                    if (objCell.CellBd == null)
-                        continue;
+                if (objCell.CellBd == null)
+                    continue;
 
-                    objCell.rc = GetFrameworkElementRect(objCell.CellBd);
+                objCell.rc = GetFrameworkElementRect(objCell.CellBd);
 
-                    if (objCell.rc.IsEmpty)
-                        _areCellRectsRefreshed = false;
-                }
+                if (objCell.rc.IsEmpty)
+                    _areCellRectsRefreshed = false;
             }
 
             if (!_areCellRectsRefreshed)
@@ -164,19 +167,268 @@ namespace DDPM.EABroker
 
         }
 
+        #endregion Phase I - Assign Layout and Show Window
+
+        #region Phase II - Launch App and Arrange to Layout's CellBorder
+        public int ToBeArrangedCount => _toBeArrangedCount;
+        public int AlreadyArrangedCount => _alreadyArrangedCount;
+        public bool AreAllAppsArranged => (AlreadyArrangedCount >= ToBeArrangedCount);
+
+        public void LaunchAndArrange(Bind_AddFullPage_AppCollectionData app, int cellIndex)
+        {
+            _log?.Info($"[{myName}] @ LaunchAndArrange({app.AppName}, idx={cellIndex})");
+
+            //Phase I. Launch App (if it's not running), and get its window handle
+            //
+            IntPtr handle = IntPtr.Zero;
+            Process[] processes = GetProcessesByName(app, _log);
+            //If the App is running now
+            if (processes.Length > 0)
+            {
+                //Get the hWnd of the MainWindow
+                handle = processes[0].MainWindowHandle;
+                _log.Info($"[{myName}] App {app.AppName} is already running, handle: {handle}");
+                //Bring the window to foreground
+                Win32Lib.Win32._SetForegroundWindow(handle);
+            }
+            else
+            {
+                _log.Info($"[{myName}] App {app.AppName} is not running, will launch it.");
+
+                //App is not runing, will launch it
+                Process process = LaunchApp(app, _log);
+                if (process == null)
+                {
+                    _log.Error($"[{myName}] Fail to launchApp {app.AppName}");
+                    return;
+                }
+
+                // Wait app window initialize
+                for (int attempt = 0; attempt < 10; attempt++)
+                {
+                    handle = app.AppType == "True" ? process.MainWindowHandle : GetWindowHandle(app);
+                    if (handle != IntPtr.Zero)
+                        break;
+
+                    Task.Delay(500);
+                }
+
+                if (handle == IntPtr.Zero)
+                {
+                    _log?.Error($"[{myName}] LaunchAndArrangeApps, App {app.AppName} failed to get window handle after launch.");
+                    return;
+                }
+            }
+
+            _log?.Info($"[{myName}] App {app.AppName} hWnd={handle}=0x{handle:X}");
+            //Phase II. Arrange its window to layout's cell
+            ArrangeWindow(handle, cellIndex);
+        }
+
+
+        private static Process[] GetProcessesByName(Bind_AddFullPage_AppCollectionData appData, ILog? log = null)
+        {
+            Process[] processes = Array.Empty<Process>();
+            try
+            {
+                if (appData.AppType == "False")
+                {
+                    // UWP 
+                    processes = Process.GetProcessesByName(appData.AppUserModelID);
+                    log?.Info($"[{myName}] GetProcessesByName, UWP app {appData.AppName} process count: {processes.Length}");
+                }
+                else
+                {
+                    // Desktop
+                    processes = Process.GetProcessesByName(System.IO.Path.GetFileNameWithoutExtension(appData.AppPath));
+                    log?.Info($"[{myName}] GetProcessesByName, Desktop app {appData.AppName} process count: {processes.Length}");
+                }
+            }
+            catch (Exception ex)
+            {
+                log?.Error(ex,
+                    $"[{myName}] GetProcessesByName({appData.AppName}), UWP app exceptoin.");
+            }
+
+            return processes;
+        }
+
+        private static Process LaunchApp(Bind_AddFullPage_AppCollectionData appData, ILog? log = null)
+        {
+            Process process = null;
+            try
+            {
+                if (appData.AppType == "False")
+                {
+                    // UWP 應用程式
+                    ProcessStartInfo startInfo = new ProcessStartInfo
+                    {
+                        FileName = "explorer.exe",
+                        Arguments = $"shell:AppsFolder\\{appData.AppUserModelID}",
+                        UseShellExecute = true
+                    };
+                    log?.Info($"[{myName}] LaunchApp, Launching UWP app: {appData.AppName}");
+                    process = Process.Start(startInfo);
+                }
+                else
+                {
+                    // Desktop exe或檔案
+                    ProcessStartInfo startInfo = new ProcessStartInfo
+                    {
+                        FileName = appData.AppPath,
+                        UseShellExecute = true,  // 系統自動選擇應用程式來開啟
+                        Verb = "open"            // 指定開啟檔案的動作
+                    };
+                    log?.Info($"[{myName}] LaunchApp, Launching desktop app or file: {appData.AppName}");
+                    process = Process.Start(startInfo);
+                }
+
+                if (process != null)
+                {
+                    if (!appData.AppPath.EndsWith(".png") && !appData.AppPath.EndsWith(".jpg") && !appData.AppPath.EndsWith(".txt"))
+                    {
+                        process.WaitForInputIdle();
+                        log?.Info($"[{myName}] LaunchApp, App {appData.AppName} is now idle.");
+                    }
+                }
+                else
+                {
+                    log?.Error($"[{myName}] LaunchApp, Failed to launch app or file: {appData.AppName}");
+                }
+            }
+            catch (Exception ex)
+            {
+                log?.Error(ex,
+                    $"[{myName}] LaunchApp, Exception while launching app or file: {appData.AppName}, Error: {ex}");
+            }
+
+            return process;
+        }
+
+        private static IntPtr GetWindowHandle(Bind_AddFullPage_AppCollectionData appData, ILog? log = null)
+        {
+            IntPtr windowHandle = IntPtr.Zero;
+
+            try
+            {
+                EzMemoryEnumWindows((hWnd, lParam) =>
+                {
+                    int length = Win32Lib.Win32._GetWindowTextLength(hWnd);
+                    if (length == 0) return true;
+
+                    //StringBuilder windowName = new StringBuilder(length);
+                    //EzMemoryGetWindowText(hWnd, windowName, length + 1);
+                    string windowText = Win32Lib.Win32._GetWindowText(hWnd);
+
+
+                    if (appData.AppType == "False")
+                    {
+                        //string className = GetWindowClassName(hWnd);
+                        string className = Win32Lib.Win32._GetClassName(hWnd);
+                        if (className.Contains("ApplicationFrameWindow"))
+                        {
+                            windowHandle = hWnd;
+                            log?.Info($"[{myName}] GetWindowHandle, Exception while retrieving window handle for r {appData.AppName}, handle: {windowHandle}");
+                            return false;
+                        }
+                    }
+
+                    return true;
+                }, IntPtr.Zero);
+
+                if (windowHandle == IntPtr.Zero)
+                {
+                    log?.Error($"[{myName}] GetWindowHandle, Failed to get window handle for {appData.AppName}");
+                }
+            }
+            catch (Exception ex)
+            {
+                log?.Error(ex,
+                    $"[{myName}] GetWindowHandle, Exception while retrieving window handle for {appData.AppName}, Error: {ex}");
+            }
+
+            return windowHandle;
+        }
+
+
+        //For UWP
+        [DllImport("user32.dll", SetLastError = true)]
+        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        private static extern bool EnumWindows(EnumWindowsProc lpEnumFunc, IntPtr lParam);
+        private static bool EzMemoryEnumWindows(EnumWindowsProc lpEnumFunc, IntPtr lParam)
+        {
+            return EnumWindows(lpEnumFunc, lParam);
+        }
+        #endregion Phase II - Launch App and Arrange to Layout's CellBorder
+
+
+        #region EzMemLaunch
+        public void ShowForEzMemLauncher(MonitorInfo mi, ISplitCtrl isp)
+        {
+            Screen? screen = Screen.AllScreens.FirstOrDefault(x => x.DeviceName.Equals(mi.DisplayName, StringComparison.OrdinalIgnoreCase));
+            if (screen == null)
+                return;
+
+            splitCtrl.Visibility = Visibility.Visible;
+
+            _inputSplitCtrl = isp.Clone();
+            double screenScale = GetScreenScale();
+
+            Rect rcScreen = new Rect();
+            rcScreen.X = screen.WorkingArea.Left / screenScale;
+            rcScreen.Y = screen.WorkingArea.Top / screenScale;
+            rcScreen.Width = screen.WorkingArea.Width / screenScale;
+            rcScreen.Height = screen.WorkingArea.Height / screenScale;
+
+            Left = rcScreen.X;
+            Top = rcScreen.Y;
+            Width = rcScreen.Width;
+            Height = rcScreen.Height;
+
+            if (isp.IsOverlapCustomLayout)
+            {
+                SplitCtrl0B sp0B = (SplitCtrl0B)_inputSplitCtrl;
+                sp0B.ApplySettingsToCellList(rcScreen);
+            }
+            _inputSplitCtrl.SplitMode = eSplitModes.Work;
+            _inputSplitCtrl.IsVertical = (rcScreen.Width < rcScreen.Height);
+            splitCtrl.Content = _inputSplitCtrl.UC;
+
+            ContentRendered += Window_ContentRendered;
+            Topmost = true;
+            Show();
+        }
+
+
+        private double GetScreenScale()
+        {
+            double screenScale = 1.000;
+            var dpiXProperty = typeof(SystemParameters).GetProperty("DpiX", BindingFlags.NonPublic | BindingFlags.Static);
+            if (dpiXProperty != null)
+            {
+                var varX = (int)dpiXProperty.GetValue(null, null);
+                double dpiX = (double)varX / (double)96;
+                if (dpiX >= 1.0000)
+                    screenScale = dpiX;
+            }
+            return screenScale;
+        }
+
+
         public void ArrangeWindow(IntPtr hWnd, int idxCell)
         {
-            Dispatcher.BeginInvoke(new Action(() =>
-            {
-                if (inputSplitCtrl == null)
+            //Dispatcher.BeginInvoke(new Action(() =>
+            //{
+                if (_inputSplitCtrl == null)
                     return;
 
-                int cellBoderCount = inputSplitCtrl.CellList.Count;
+                int cellBoderCount = _inputSplitCtrl.CellList.Count;
                 if ((idxCell < 0) || (idxCell >= cellBoderCount))
                 {
                     return;
                 }
-                CellObj celObj = inputSplitCtrl.CellList[idxCell];
+                CellObj celObj = _inputSplitCtrl.CellList[idxCell];
                 Rect rcArrange = celObj.rc;
                 if (rcArrange.IsEmpty || (rcArrange.Width <= 0))
                 {
@@ -186,9 +438,20 @@ namespace DDPM.EABroker
                         return;
                     }
                 }
+                _log?.Info($"[{myName}] hWnd={hWnd}, Cell[{idxCell}], Rect(({rcArrange.Left},{rcArrange.Top}){rcArrange.Width}x{rcArrange.Height})");
 
                 WinEventHook.SetWindowPosition(hWnd, rcArrange);
-            }));
+
+                _alreadyArrangedCount++;
+                if (AreAllAppsArranged)
+                {
+                    if (ArrangeDone != null)
+                    {
+                        _log?.Info($"[{myName}] hWnd={hWnd}, Cell[{idxCell}], Send ArrangeDone event.");
+                        ArrangeDone(this, EventArgs.Empty);
+                    }
+                }
+            //}));
 
         }
         public void Dispatcher_Close()
@@ -200,5 +463,6 @@ namespace DDPM.EABroker
         }
         #endregion
 
+ 
     }
 }

@@ -27,6 +27,7 @@ using VcpCore.Common;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 using IDs = DDPM.SA.Common.IDs;
 using DDPM.SA.Common.Telemetry;
+using static VcpCore.Common.User32;
 
 namespace DDPM.SA.Plugins.User.EasyArrange
 {
@@ -1288,6 +1289,69 @@ namespace DDPM.SA.Plugins.User.EasyArrange
                 }
             }
             return Task.FromResult(false);
+        }
+
+        /// <summary>
+        /// Launch Apps in the specified EasyMemory Profile, and arrange their window to the EasyArrange layout.
+        /// This method is moved from EzMemoryPlugin. Can be called from UI (EzMemory module) and SA (EzMemoryPlugin).
+        /// </summary>
+        /// <param name="sortApps">List of AppInfos which are load from EM profile.</param>
+        /// <param name="moInfo">MonitorInfo to specify the target monitor to be arranged.</param>
+        /// <param name="eAid">EAID of a EasyArrange layout. [1~49] are preset layout, [1000~1004] are saved custom layout.</param>
+        /// <returns></returns>
+        public Task<bool> LaunchAndArrangeAppsWithEzArrange(Dictionary<String, Bind_AddFullPage_AppCollectionData> sortApps, MonitorInfo moInfo, int eAid)
+        {
+            if (sortApps == null || sortApps.Count == 0)
+            {
+                WriteLog($"@ LaunchAndArrangeAppsWithEzArrange(): sortApps is empty.");
+                return Task.FromResult(false);
+            }
+            if (moInfo == null)
+            {
+                WriteLog($"@ LaunchAndArrangeAppsWithEzArrange(): monitorInfo is null.");
+                return Task.FromResult(false);
+            }
+
+            string moInfoText = "";
+            if (!string.IsNullOrEmpty(moInfo.modelName))
+                moInfoText = moInfo.modelName;
+            if (moInfo.edid != null)
+            {
+                if (!string.IsNullOrEmpty(moInfo.edid.ServiceTag))
+                    moInfoText += $", {moInfo.edid.ServiceTag}";
+                else
+                    moInfoText += $", ";
+            }
+            else
+            {
+                moInfoText += $", (null)";
+            }
+
+            if (_eaBroker == null)
+            {
+                WriteLog($"@ LaunchAndArrangeAppsWithEzArrange(appCount={sortApps.Count}), Monitor={moInfoText}, EAID={eAid}) => EABroker is null.");
+                return Task.FromResult(false);
+            }
+
+            if (!_isEaBrokerStarted)
+            {
+                WriteLog($"@ LaunchAndArrangeAppsWithEzArrange(appCount={sortApps.Count}), Monitor={moInfoText}, EAID={eAid}) => EABroker is not started.");
+                return Task.FromResult(false);
+            }
+            WriteLog($"@ LaunchAndArrangeAppsWithEzArrange(appCount={sortApps.Count}), Monitor={moInfoText}, EAID={eAid}");
+
+            //Run in a STA Thread
+            Thread thread = new Thread(() =>
+            {
+                _eaBroker.STA_LaunchAndArrangeAppsWithEzArrange(sortApps, moInfo, eAid);
+                System.Windows.Threading.Dispatcher.Run();
+            });
+
+            thread.SetApartmentState(ApartmentState.STA);
+            thread.Start();
+
+            return Task.FromResult(true);
+
         }
         #endregion Methods
 

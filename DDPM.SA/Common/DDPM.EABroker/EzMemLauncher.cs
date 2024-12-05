@@ -138,7 +138,7 @@ namespace DDPM.EABroker
             _stage = 2;
 
             //Create Window and move the the screen
-            _emLauncherWindow = new EzMemLauncherWindow();
+            //_emLauncherWindow = new EzMemLauncherWindow();
 
             //The eaId is belong to a custom layout
             if (eaId >= EAEMConstants.EAID_FirstCustom)

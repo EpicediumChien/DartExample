@@ -15770,10 +15770,24 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         public Task<bool> LaunchAndArrangeAppsWithEzArrange(Dictionary<String, Bind_AddFullPage_AppCollectionData> sortApps, MonitorInfo moInfo, int eAid)
         {
-            if (_IEzMemoryPlugin != null)
-                return Task.FromResult(_IEzMemoryPlugin.LaunchAndArrangeAppsWithEzArrange(sortApps, moInfo, eAid).Result);
+            //Robert_Lin, 2024-12-5, Change the implementation to EAPlugin
+            //
+            //OLD by Wayn_Chen
+            //if (_IEzMemoryPlugin != null)
+            //    return Task.FromResult(_IEzMemoryPlugin.LaunchAndArrangeAppsWithEzArrange(sortApps, moInfo, eAid).Result);
+            //else
+            //    return null;
+            //
+            //NEW by Robert_Lin
+            if (_DisplayManagerPlugin != null)
+            {
+                return _DisplayManagerPlugin.LaunchAndArrangeAppsWithEzArrange(sortApps, moInfo, eAid);
+                //return Task.FromResult(_DisplayManagerPlugin.LaunchAndArrangeAppsWithEzArrange(sortApps, moInfo, eAid));
+            }
             else
-                return null;
+            {
+                return Task.FromResult(false);
+            }
         }
 
         public Task<bool> CheckEAIDExit(MonitorInfo moinfo, int eAID)
