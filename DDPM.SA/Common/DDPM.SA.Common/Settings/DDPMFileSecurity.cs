@@ -1004,7 +1004,7 @@ namespace DDPM.SA.Common.Settings
             try
             {
                 // Create an RSACryptoServiceProvider from the public key
-                using (var rsa = new RSACryptoServiceProvider())
+                using (var rsa = new RSACryptoServiceProvider(2048))
                 {
                     rsa.ImportRSAPublicKey(publicKeyBytes, out _);
 
@@ -1044,7 +1044,7 @@ namespace DDPM.SA.Common.Settings
             try
             {
                 // Create an RSACryptoServiceProvider from the public key
-                using (var rsa = new RSACryptoServiceProvider())
+                using (var rsa = new RSACryptoServiceProvider(2048))
                 {
                     rsa.ImportSubjectPublicKeyInfo(publicKeyBytes, out _);
 
