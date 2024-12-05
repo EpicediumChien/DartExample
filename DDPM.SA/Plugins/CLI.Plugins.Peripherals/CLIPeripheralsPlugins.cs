@@ -4055,6 +4055,20 @@ namespace DDPM.CLI.Plugins.Peripherals
                                     {
                                         _recode_dongle = true;
                                     }
+                                    else if (ss_1[0].ToUpper().Equals("AUDIO"))
+                                    {
+                                        switch (g.LogicalDeviceType)
+                                        {
+                                            case "LogicalHeadset":
+                                                _recode_headset = true;
+                                                break;
+                                            case "LogicalWiredAudio":
+                                                _recode_speaker = true;
+                                                break;
+                                            default:
+                                                break;
+                                        }
+                                    }
                                     Trace.WriteLine($"g.PhyscialDeviceID  =  {g.LogicalDeviceType}");
                                 }
 
@@ -4325,6 +4339,18 @@ namespace DDPM.CLI.Plugins.Peripherals
                                                         TargetFeature = commandLineInput.TargetFeature,
                                                         Result = "FAIL",
                                                         Message = "No DONGLE connected",
+                                                    };
+                                                    Console.WriteLine(JsonConvert.SerializeObject(rsp, Formatting.Indented));
+                                                    return ((int)CLI_ExitCode.fail_FWUpdate, JsonConvert.SerializeObject(rsp, Formatting.Indented));
+                                                }
+                                                else if (ss_2[0].ToUpper().Equals("AUDIO") && !_recode_headset && !_recode_speaker)
+                                                {
+                                                    CLI_RESPONSE rsp = new CLI_RESPONSE()
+                                                    {
+                                                        Command = commandLineInput.Command,
+                                                        TargetFeature = commandLineInput.TargetFeature,
+                                                        Result = "FAIL",
+                                                        Message = "No AUDIO connected",
                                                     };
                                                     Console.WriteLine(JsonConvert.SerializeObject(rsp, Formatting.Indented));
                                                     return ((int)CLI_ExitCode.fail_FWUpdate, JsonConvert.SerializeObject(rsp, Formatting.Indented));
@@ -4655,10 +4681,9 @@ namespace DDPM.CLI.Plugins.Peripherals
             try
             {
                 List<DeviceType> deviceTypes = new List<DeviceType>();
-                DeviceType deviceType = DeviceType.Unknown;
                 if (commandLineInput.Options.Count > 0)
                 {
-                    (deviceType, deviceTypes) = SetDevice(commandLineInput);
+                    deviceTypes = SetDevice(commandLineInput).deviceTypes;
                 }
 
                 _devMgr.ProgressUpdate_Notify -= _FWUpdatePlugin_ProgressUpdate;
@@ -4706,7 +4731,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                     _devMgr.updateFWUpdateInfoPackage(fwUpdateInfoPackage);
                     // add end @ 20241202
 
-                    if (deviceType != DeviceType.Unknown)
+                    if (deviceTypes.Count != 0)
                     {
                         cli_FWU_RESPONSE.Model = string.Join(",", fwUpdateInfoPackage.FWUpdateInfo.Select(_ => _.Model));
                         cli_FWU_RESPONSE.ServiceTag = string.Join(",", fwUpdateInfoPackage.FWUpdateInfo.Select(_ => _.ServiceTag ?? "N/A"));
@@ -4836,7 +4861,7 @@ namespace DDPM.CLI.Plugins.Peripherals
             }
         }
 
-        private (DeviceType, List<DeviceType>) SetDevice(CommandLineInput commandLineInput)
+        private (DeviceType deviceType, List<DeviceType> deviceTypes) SetDevice(CommandLineInput commandLineInput)
         {
             List<DeviceType> deviceTypes = new List<DeviceType>();
             DeviceType deviceType = DeviceType.Unknown;
@@ -4864,8 +4889,16 @@ namespace DDPM.CLI.Plugins.Peripherals
                     deviceTypes.Add(DeviceType.LogicalHeadset);
                     deviceType = DeviceType.LogicalHeadset;
                     break;
+                case "SPEAKER":
+                    deviceTypes.Add(DeviceType.LogicalWiredAudio);
+                    deviceTypes.Add(DeviceType.PhysicalWiredAudio);
+                    deviceTypes.Add(DeviceType.PhysicalAudioDongle);
+                    deviceTypes.Add(DeviceType.PhysicalBluetoothAudio);
+                    deviceType = DeviceType.LogicalWiredAudio;
+                    break;
                 case "AUDIO":
                     deviceTypes.Add(DeviceType.LogicalWiredAudio);
+                    deviceTypes.Add(DeviceType.LogicalHeadset);
                     deviceTypes.Add(DeviceType.PhysicalWiredAudio);
                     deviceTypes.Add(DeviceType.PhysicalAudioDongle);
                     deviceTypes.Add(DeviceType.PhysicalBluetoothAudio);
