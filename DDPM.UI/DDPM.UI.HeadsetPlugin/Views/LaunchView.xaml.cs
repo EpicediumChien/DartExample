@@ -13,6 +13,7 @@ using System.Diagnostics;
 using System.Net;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
@@ -39,64 +40,82 @@ namespace DDPM.UI.Plugin.HeadsetPlugin
 
         public LaunchView()
         {
-            InitializeComponent();
+
             _vm = (HeadsetViewModel?)HeadsetPlugin.PluginIoc?.GetService<IPeripheralViewModel>()!;
 
             if (_vm != null)
             {
-                _vm.Reset();
-                DataContext = _vm;
-                _vm.VbarItemClickCommand = new RelayCommand<VbarItem>(OnVbarItemClicked!);
-                BuildModuleGroups();
-            }
-
-            if (_vm!.ConnectionType == "WiredAudio")
-            {
-                btnUnpair.Visibility = Visibility.Collapsed;
-            }
-
-            //txtUnpair.Text = Unpair;
-            //txtRestore.Text = Restore;
-
-            ConnectionStyle1 = (Style)FindResource("ConnectionStyle1");
-            ConnectionStyle2 = (Style)FindResource("ConnectionStyle2");
-            //txtSystemName1.Text = Dns.GetHostName(); ;// _vm!.VisiblePairedHostName1;
-            //txtSystemName2.Text = _vm.VisiblePairedHostName1;
-            txtSystemName3.Text = _vm.VisiblePairedHostName1;
-            txtFirmware.Text = "Dongle " + _vm.PhysicalDeviceFWVersion;
-            txtSlot.Text = $"{_vm.CurrentDeviceInfo!.MaxPairingSlots - _vm.CurrentDeviceInfo.PairedDeviceCount} of {_vm.CurrentDeviceInfo.MaxPairingSlots} slots available";
-            txtAudioBLText.Text = string.Format(Strings.Paired_Info, _vm.CurrentDeviceInfo.TotalNumberOfPairedHostName);
-            if (DdpmCommonHelper.DeviceManagerSA != null)
-            {
-                DdpmCommonHelper.DeviceManagerSA.ITSettingsActionEvent += DeviceManagerSA_ITSettingsActionEvent;
-
-                DDPMSettings data = DdpmCommonHelper.DeviceManagerSA.ReloadAppConfigData().Result;
-                if (data != null)
+                if (!_vm.IsDTPReady)
                 {
-                    if (data.LockSettings.Lock_Setting_RestoreDefaults)
+                    MessageModalDialog messageModalDialog = new(Strings.Error, Strings.DTPUnavailable, "");
+                    Window mainWindow = System.Windows.Application.Current.MainWindow;
+                    if (mainWindow != null)
                     {
-                        RestoreLockIcon.Visibility = Visibility.Visible;
-                        txtRestore.IsEnabled = false;
+                        messageModalDialog.Owner = mainWindow;
+                        messageModalDialog.Left = mainWindow.Left + (mainWindow!.ActualWidth - 417) / 2;
+                        messageModalDialog.Top = mainWindow.Top + 300;
                     }
-                    else
+                    Mouse.OverrideCursor = null;
+                    messageModalDialog.WindowStartupLocation = WindowStartupLocation.Manual;
+                    messageModalDialog.ShowDialog();
+                    this.Loaded += LaunchView_Loaded;
+                }
+                else
+                {
+                    InitializeComponent();
+                    _vm.Reset();
+                    DataContext = _vm;
+                    _vm.VbarItemClickCommand = new RelayCommand<VbarItem>(OnVbarItemClicked!);
+                    BuildModuleGroups();
+                    if (_vm!.ConnectionType == "WiredAudio")
                     {
-                        txtRestore.IsEnabled = !data.LockSettings.Lock_Audio_RestoreFactoryDefaults;
-                        RestoreLockIcon.Visibility = data.LockSettings.Lock_Audio_RestoreFactoryDefaults ? Visibility.Visible : Visibility.Collapsed;
+                        btnUnpair.Visibility = Visibility.Collapsed;
+                    }
 
-                        //Lock Functionality 9/7
-                        //When a 1 or more settings are locked, automatically lock 'Restore to default'/'factory reset' control [Audio]
-                        if (data.LockSettings != null)
+                    //txtUnpair.Text = Unpair;
+                    //txtRestore.Text = Restore;
+
+                    ConnectionStyle1 = (Style)FindResource("ConnectionStyle1");
+                    ConnectionStyle2 = (Style)FindResource("ConnectionStyle2");
+                    //txtSystemName1.Text = Dns.GetHostName(); ;// _vm!.VisiblePairedHostName1;
+                    //txtSystemName2.Text = _vm.VisiblePairedHostName1;
+                    txtSystemName3.Text = _vm.VisiblePairedHostName1;
+                    txtFirmware.Text = "Dongle " + _vm.PhysicalDeviceFWVersion;
+                    txtSlot.Text = $"{_vm.CurrentDeviceInfo!.MaxPairingSlots - _vm.CurrentDeviceInfo.PairedDeviceCount} of {_vm.CurrentDeviceInfo.MaxPairingSlots} slots available";
+                    txtAudioBLText.Text = string.Format(Strings.Paired_Info, _vm.CurrentDeviceInfo.TotalNumberOfPairedHostName);
+                    if (DdpmCommonHelper.DeviceManagerSA != null)
+                    {
+                        DdpmCommonHelper.DeviceManagerSA.ITSettingsActionEvent += DeviceManagerSA_ITSettingsActionEvent;
+
+                        DDPMSettings data = DdpmCommonHelper.DeviceManagerSA.ReloadAppConfigData().Result;
+                        if (data != null)
                         {
-                            if (DdpmCommonHelper.GetUINotifyPropertyValue_isAnyLocked(data, "Lock_Audio"))
+                            if (data.LockSettings.Lock_Setting_RestoreDefaults)
                             {
                                 RestoreLockIcon.Visibility = Visibility.Visible;
                                 txtRestore.IsEnabled = false;
                             }
+                            else
+                            {
+                                txtRestore.IsEnabled = !data.LockSettings.Lock_Audio_RestoreFactoryDefaults;
+                                RestoreLockIcon.Visibility = data.LockSettings.Lock_Audio_RestoreFactoryDefaults ? Visibility.Visible : Visibility.Collapsed;
+
+                                //Lock Functionality 9/7
+                                //When a 1 or more settings are locked, automatically lock 'Restore to default'/'factory reset' control [Audio]
+                                if (data.LockSettings != null)
+                                {
+                                    if (DdpmCommonHelper.GetUINotifyPropertyValue_isAnyLocked(data, "Lock_Audio"))
+                                    {
+                                        RestoreLockIcon.Visibility = Visibility.Visible;
+                                        txtRestore.IsEnabled = false;
+                                    }
+                                }
+                            }
                         }
                     }
+                    DdpmCommonHelper.BitmapImageUpdated += ImageUpdate;
                 }
             }
-            DdpmCommonHelper.BitmapImageUpdated += ImageUpdate;
         }
         ~LaunchView()
         {
@@ -111,6 +130,12 @@ namespace DDPM.UI.Plugin.HeadsetPlugin
         {
             ArrowLeft.Source = null;
             ArrowLeft.Source = (BitmapImage)Application.Current.Resources["Arrow_Left"];
+        }
+
+        private void LaunchView_Loaded(object sender, RoutedEventArgs e)
+        {
+            if (!_vm!.IsDTPReady)
+                DdpmCommonHelper.MyConsole!.ShowHomePage();
         }
 
         private void DeviceManagerSA_ITSettingsActionEvent(object? sender, SA.Common.ITSettingEventArgs e)
@@ -389,6 +414,13 @@ namespace DDPM.UI.Plugin.HeadsetPlugin
 
         private void LargeImage_MouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
+        }
+        private void PushBack(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            if (sender is Border)
+            {
+                Mainframe_MouseLeftButtonDown(this, e);
+            }
         }
     }
 }

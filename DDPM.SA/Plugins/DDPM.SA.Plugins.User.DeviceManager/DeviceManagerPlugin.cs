@@ -233,6 +233,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         private OSThemeEnum previousOsTheme = OSThemeEnum.Dark;
 
+        private List<NKVMVCPValue> _nKVMVCPValues = new List<NKVMVCPValue>();
+
         #endregion
 
         #region Constructor
@@ -2103,6 +2105,18 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         else
                             writelog("[DeviceMangerPlugin] [Telementry] Send Telementry for Contrast Fail ...");
                     }).ConfigureAwait(false);
+                    break;
+
+                case 0xE9:
+                    {
+                        NKVMVCPValue nKVMVCPValue = new NKVMVCPValue();
+                        nKVMVCPValue.monitorInfo = monitorInfo;
+                        nKVMVCPValue.value = (int)val;
+                        if (_NKVMPlugin != null)
+                        {
+                            _NKVMPlugin.SaveVCPcode(nKVMVCPValue);
+                        }
+                    }
                     break;
 
                 default:
@@ -12655,6 +12669,16 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     {
                         settings.UserSettings.lastUISelectedMonitor = new DDPMSimpleMonitorRecord() { ModelName = mo.modelName, ServiceTag = mo.edid.ServiceTag };
                         _SettingsPlugin.SetAppConfigData(settings);
+
+                        //Robert_Lin, 2024-12,4, Notify to EAPlugin
+                        if (_DisplayManagerPlugin != null)
+                        {
+                            EAArgs eaArgs = new EAArgs()
+                            {
+                                Command = EAEMConstants.EACommand_LastSelectedMonitorChanged
+                            };
+                            _DisplayManagerPlugin.NotifyEAMessage(eaArgs);
+                        }
                     }
                 }
             });
@@ -12888,31 +12912,58 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             //Read the EAMonitorSettings
             EAMonitorSettings eaSettings = ReadEAMonitorSettings(monitorInfo).Result;
             //Change selected layout to the latest item of RecentList
-            int idxRecent = 0;
-            if (eaSettings.RecentList == null)
+            if (eaSettings != null)
             {
-                writelog("@ Toggle_EzRecentSetting(), EA RecentList is null");
-                return;
+                SplitJson[] recentList = eaSettings.RecentList;
+
+                if (recentList == null)
+                {
+                    writelog("@ Toggle_EzRecentSetting(), EA RecentList is null");
+                    return;
+                }
+                if (recentList.Length == 0)
+                {
+                    writelog("@ Toggle_EzRecentSetting(), EA RecentList is empty");
+                    return;
+                }
+                else
+                {
+                    List<SplitJson> splitJsonsList = recentList.ToList();
+                    List<SplitJson> splitJsonsTmp = new List<SplitJson>();
+                    splitJsonsTmp.AddRange(splitJsonsList);
+                    SplitJson LastSplitJson = splitJsonsTmp.ElementAt(splitJsonsList.Count - 1);
+                    splitJsonsTmp.RemoveAt(splitJsonsList.Count - 1);
+                    splitJsonsTmp.Insert(0, LastSplitJson);
+                    splitJsonsList.Clear();
+                    splitJsonsList.AddRange(splitJsonsTmp);
+                    //save recentlist
+                    eaSettings.RecentList = splitJsonsList.ToArray();
+                    eaSettings.SelectedSplit = splitJsonsList.ElementAt(0);
+                    bool result = WriteEAMonitorSettings(monitorInfo, eaSettings).Result;
+                    if (result)
+                    {
+                        //Change selected layout to the latest item of RecentList
+                        bool changed = NotifyEASelectedLayoutChanged(monitorInfo, splitJsonsList.ElementAt(0)).Result;
+                        //notice UI
+                        EAArgs eAArgs = new EAArgs();
+                        eAArgs.Message = @"updateRecentSelected";
+                        EASettingsChanged(this, eAArgs);
+                        writelog($"Toggle_EzRecentSetting(),monitor:{monitorInfo.AliasDeviceName}={monitorInfo.edid.ServiceTag}, EA RecentList.Count={eaSettings.RecentList.Length}, toggle to [{splitJsonsList.ElementAt(0).CellCount},{splitJsonsList.ElementAt(0).SplitKey}],save eaSettings.RecentList success");
+                    }
+                    else
+                    {
+                        writelog($"Toggle_EzRecentSetting(),monitor:{monitorInfo.AliasDeviceName}={monitorInfo.edid.ServiceTag}, EA RecentList.Count={eaSettings.RecentList.Length}, toggle to [{splitJsonsList.ElementAt(0).CellCount},{splitJsonsList.ElementAt(0).SplitKey}],save eaSettings.RecentList fail, do nothing");
+                    }
+                }
             }
-            if (eaSettings.RecentList.Length == 0)
-            {
-                writelog("@ Toggle_EzRecentSetting(), EA RecentList is empty");
-                return;
-            }
-            else
-            {
-                //Should be always EAEMConstants.MaxRecentItems(=5)-1 = 4
-                writelog($"@ Toggle_EzRecentSetting(), EA RecentList.Count={eaSettings.RecentList.Length}");
-            }
-            idxRecent = eaSettings.RecentList.Length - 1;
 
             //Force await to avoid reenter this method (it will update to MonitorSettings file)
-            bool isOKSetSelected = SetEASelectedLayout(monitorInfo, eaSettings.RecentList[idxRecent]).Result;
+            //bool isOKSetSelected = SetEASelectedLayout(monitorInfo, eaSettings.RecentList[idxRecent]).Result;
 
             //TO DO: invoke an event to UI to reload settings
             // TO be implement in EASettingsChanged event
 
-            writelog($"@ Toggle_EzRecentSetting(), result is {isOKSetSelected}");
+            //writelog($"@ Toggle_EzRecentSetting(), result is {isOKSetSelected}");
         }
 
         private bool IsHotkeyFuncLock(HotkeyType type)

@@ -72,7 +72,11 @@
         <!-- TabControl -->
         <TabControl Grid.Row="1">
             <TabItem Header="General">
-                
+                <StackPanel Margin="8">
+                    <WrapPanel>
+                        <Button Content="Edit Overlap" Click="editOverlapButton_Click"/>
+                    </WrapPanel>
+                </StackPanel>
             </TabItem>
             <TabItem Header="Work">
                 <ScrollViewer>
@@ -205,6 +209,10 @@
                             <TextBlock Text="{Binding IsHorzSpan}"/>
                             <CheckBox IsChecked="{Binding IsSpanMultiMonitors, Mode=TwoWay}" Content="IsSpanMultiMonitors"
                                       Margin="8,0,0,0" Click="IsSpanMultipleMonitorsCheckbox_Click"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="WorkingArea="/>
+                            <TextBlock Text="{Binding SpanWorkingAreaText}"/>
                         </StackPanel>
                     </StackPanel>
                 </ScrollViewer>

@@ -1013,9 +1013,9 @@ namespace DDPM.UI.Module.EzArrange
             //Check if this custom layout is used by EasyMemory?
             //Debug, assume YES
             bool isLayoutUsedByEM = false;
+            int eaId = 0;
             try
             {
-                int eaId = 0;
                 if (spItem.ISplitCtrl != null)
                 {
                     eaId = spItem.ISplitCtrl.EAID;
@@ -1051,6 +1051,8 @@ namespace DDPM.UI.Module.EzArrange
                 if (popResult != true)
                     return;
 
+                //Delete the EM Profile
+                bool isDelOK = _deviceManagerSA.DeleteEAID(_homeDevice.MonitorInfo, eaId).Result;
             }
 
             //Find its Buddy in RecentList

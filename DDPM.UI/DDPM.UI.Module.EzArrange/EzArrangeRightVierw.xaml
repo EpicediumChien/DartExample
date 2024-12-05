@@ -18,7 +18,7 @@
 
             <Style x:Key="UXTextBlock_Caption" TargetType="UXControls:UXTextBlock">
                 <Setter Property="FontSize" Value="16" />
-                <!--<Setter Property="Foreground" Value="White" />-->
+                <Setter Property="Foreground" Value="{DynamicResource DefaultTheme_TxtColor}" />
                 <Setter Property="VerticalAlignment" Value="Center" />
                 <Setter Property="HorizontalAlignment" Value="Left" />
                 <Setter Property="Margin" Value="0,0,8,0" />
@@ -61,11 +61,11 @@
                                             </ToolTip>
                                         </Grid.ToolTip>
                                         <Path Data="M8 5.0498C8.55228 5.0498 9 4.60209 9 4.0498C9 3.49752 8.55228 3.0498 8 3.0498C7.44772 3.0498 7 3.49752 7 4.0498C7 4.60209 7.44772 5.0498 8 5.0498Z"
-                                              Fill="#FFB6B6B6" />
+                                              Fill="{DynamicResource InfoIconColor}" />
                                         <Path Data="M8.75 6.4502H7.25V12.6502H8.75V6.4502Z"
-                                              Fill="#FFB6B6B6" />
+                                              Fill="{DynamicResource InfoIconColor}" />
                                         <Path Data="M8 1C11.85 1 15 4.15 15 8C15 11.85 11.85 15 8 15C4.15 15 1 11.85 1 8C1 4.15 4.15 1 8 1ZM8 0C3.6 0 0 3.6 0 8C0 12.4 3.6 16 8 16C12.4 16 16 12.4 16 8C16 3.6 12.4 0 8 0Z"
-                                              Fill="#FFB6B6B6" />
+                                              Fill="{DynamicResource InfoIconColor}" />
                                     </Grid>
                                 </Viewbox>
                             </StackPanel>

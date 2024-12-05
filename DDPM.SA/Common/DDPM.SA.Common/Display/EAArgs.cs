@@ -43,7 +43,9 @@ namespace DDPM.SA.Common
             this.SplitKey = other.SplitKey;
             this.CustomId = other.CustomId;
             this.CustomName = other.CustomName;
-            this.Settings = new List<double>(other.Settings);
+            //Robert_Lin, 2024-12-4 fix. Copy seetings only if other has settings
+            if (other.Settings != null) 
+                this.Settings = new List<double>(other.Settings);
         }
 
         #endregion ctor
