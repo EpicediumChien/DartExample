@@ -20,6 +20,7 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Threading;
 using Windows.Media.Capture;
@@ -584,11 +585,17 @@ namespace DDPM.UI.Plugin.ViewModels
                 var focus = DdpmCommonHelper.DeviceManagerSA!.GetFocus(CurrentDeviceInfo!.ID.ToString()).Result;
                 IsFocusOn = isFocusOn;
                 Focus = focus == -1 ? CurrentDeviceInfo.FocusMin : focus;
-                //OnPropertyChanged(nameof(IsFocusOn));
-                //OnPropertyChanged(nameof(IsFocusOnText));
             }
-
-
+            if (CurrentDeviceInfo.IsPropertyPrioritySupported)
+            {
+                var priority = DdpmCommonHelper.DeviceManagerSA!.GetPriority(CurrentDeviceInfo!.ID.ToString()).Result;
+                Priority = priority == -1 ? 0 : priority;
+            }
+            if (CurrentDeviceInfo.IsPropertyAntiFlickerSupported)
+            {
+                var antiFlicker = DdpmCommonHelper.DeviceManagerSA!.GetAntiFlicker(CurrentDeviceInfo!.ID.ToString()).Result;
+                AntiFlicker = antiFlicker == -1 ? 1 : antiFlicker;
+            }
 
             for (int k = 0; k < CurrentDeviceInfo!.FOVValues.Length; k++)
             {
@@ -612,7 +619,9 @@ namespace DDPM.UI.Plugin.ViewModels
                 var result = task.Result;
                 if (result == null)
                 {
-                    IsDTPReady = false;
+                    //IsDTPReady = false;
+                    _isPrioritizeExternalWebcam = false;
+                    IsDTPReady = true;
                 }
                 else
                 {
@@ -633,8 +642,10 @@ namespace DDPM.UI.Plugin.ViewModels
             CurrentProfile.Zoom = _zoom;
             CurrentProfile.IsFocusOn = _isFocusOn;
             CurrentProfile.Focus = _focus;
+            CurrentProfile.Priority = _priority;
+            CurrentProfile.AntiFlicker = _antiFlicker;
 
-            var IsNormalProfile = CurrentProfileName != "Smooth" && CurrentProfileName != "Vibrant" && CurrentProfileName != "Warm";
+            //var IsNormalProfile = CurrentProfileName != "Smooth" && CurrentProfileName != "Vibrant" && CurrentProfileName != "Warm";
             Task<bool> task;
             if (CurrentDeviceInfo!.IsPropertyAutoFramingSensitivitySupported || CurrentDeviceInfo.IsPropertyAutoFramingSizeSupported || CurrentDeviceInfo.IsPropertyAutoFramingTransitionSupported)
             {
@@ -698,13 +709,6 @@ namespace DDPM.UI.Plugin.ViewModels
                 }
             }
 
-
-            if (CurrentDeviceInfo.IsPropertyPrioritySupported && IsNormalProfile)
-            {
-                DdpmCommonHelper.DeviceManagerSA!.SetPriority(CurrentDeviceInfo!.ID.ToString(), CurrentProfile.Priority);
-                OnPropertyChanged(nameof(Priority));
-            }
-
             if (CurrentDeviceInfo.IsPropertyHDRSupported)
             {
                 DdpmCommonHelper.DeviceManagerSA!.SetIsHDROn(CurrentDeviceInfo!.ID.ToString(), CurrentProfile.IsHDROn);
@@ -718,42 +722,32 @@ namespace DDPM.UI.Plugin.ViewModels
                 AutoWhiteBalance = CurrentProfile.AutoWhiteBalance;
                 OnPropertyChanged(nameof(IsAutoWhiteBalanceOn));
                 OnPropertyChanged(nameof(IsAutoWhiteBalanceOnText));
-                //OnPropertyChanged(nameof(AutoWhiteBalance));
             }
 
             if (CurrentDeviceInfo.IsPropertyBrightnessSupported)
             {
                 DdpmCommonHelper.DeviceManagerSA!.SetBrightness(CurrentDeviceInfo!.ID.ToString(), CurrentProfile.Brightness);
                 Brightness = CurrentProfile.Brightness;
-                //OnPropertyChanged(nameof(Brightness));
             }
 
             if (CurrentDeviceInfo.IsPropertySharpnessSupported)
             {
                 DdpmCommonHelper.DeviceManagerSA!.SetSharpness(CurrentDeviceInfo!.ID.ToString(), CurrentProfile.Sharpness);
                 Sharpness = CurrentProfile.Sharpness;
-                //OnPropertyChanged(nameof(Sharpness));
             }
 
             if (CurrentDeviceInfo.IsPropertyContrastSupported)
             {
                 DdpmCommonHelper.DeviceManagerSA!.SetContrast(CurrentDeviceInfo!.ID.ToString(), CurrentProfile.Contrast);
                 Contrast = CurrentProfile.Contrast;
-                //OnPropertyChanged(nameof(Contrast));
             }
 
             if (CurrentDeviceInfo.IsPropertySaturationSupported)
             {
                 DdpmCommonHelper.DeviceManagerSA!.SetSaturation(CurrentDeviceInfo!.ID.ToString(), CurrentProfile.Saturation);
                 Saturation = CurrentProfile.Saturation;
-                //OnPropertyChanged(nameof(Saturation));
             }
 
-            if (CurrentDeviceInfo.IsPropertyAntiFlickerSupported && IsNormalProfile)
-            {
-                DdpmCommonHelper.DeviceManagerSA!.SetAntiFlicker(CurrentDeviceInfo!.ID.ToString(), CurrentProfile.AntiFlicker);
-                OnPropertyChanged(nameof(AntiFlicker));
-            }
             ClearUndo();
         }
 
@@ -801,8 +795,6 @@ namespace DDPM.UI.Plugin.ViewModels
 
         public MediaCapture? MediaCapture;
         public MediaFrameReader? MediaFrameReader;
-
-
 
         private bool _isPrioritizeExternalWebcam = false;
         public bool IsPrioritizeExternalWebcam
@@ -1115,14 +1107,20 @@ namespace DDPM.UI.Plugin.ViewModels
         {
             get => CurrentDeviceInfo!.IsPropertyPrioritySupported ? Visibility.Visible : Visibility.Collapsed;
         }
+
+        private int _priority = 0;
         public int Priority
         {
-            get => CurrentProfile.Priority;
+            get => _priority;
             set
             {
-                DdpmCommonHelper.DeviceManagerSA!.SetPriority(CurrentDeviceInfo!.ID.ToString(), value);
-                SetProfileProperty(nameof(Priority), value, OperationModule.CameraControl);
-                OnPropertyChanged();
+                if (value != _priority)
+                {
+                    _priority = value;
+                    DdpmCommonHelper.DeviceManagerSA!.SetPriority(CurrentDeviceInfo!.ID.ToString(), value);
+                    SetProfileProperty(nameof(Priority), value, OperationModule.CameraControl);
+                    OnPropertyChanged();
+                }
             }
         }
         public Visibility HDRVisibility
@@ -1288,24 +1286,22 @@ namespace DDPM.UI.Plugin.ViewModels
             SetProfileProperty(nameof(Saturation), _saturation, OperationModule.ColorAndImage);
         }
 
+        private int _antiFlicker = 0;
         public int AntiFlicker
         {
-            get => CurrentProfile.AntiFlicker;
+            get => _antiFlicker;
             set
             {
-                if (value != CurrentProfile.AntiFlicker)
+                if (value != _antiFlicker)
                 {
-                    CurrentProfile.AntiFlicker = value;
-                    SetAntiFlicker();
+                    _antiFlicker = value;
+                    DdpmCommonHelper.DeviceManagerSA!.SetAntiFlicker(CurrentDeviceInfo!.ID.ToString(), AntiFlicker);
+                    SetProfileProperty(nameof(AntiFlicker), AntiFlicker, OperationModule.ColorAndImage);
+                    OnPropertyChanged();
                 }
-                OnPropertyChanged();
             }
         }
-        public void SetAntiFlicker()
-        {
-            DdpmCommonHelper.DeviceManagerSA!.SetAntiFlicker(CurrentDeviceInfo!.ID.ToString(), AntiFlicker);
-            SetProfileProperty(nameof(AntiFlicker), AntiFlicker, OperationModule.ColorAndImage);
-        }
+
         public void SetTilt(int value)
         {
             DdpmCommonHelper.DeviceManagerSA!.SetTilt(CurrentDeviceInfo!.ID.ToString(), value);
@@ -1601,14 +1597,19 @@ namespace DDPM.UI.Plugin.ViewModels
             {
                 case "IsFocusOn":
                     DdpmCommonHelper.DeviceManagerSA!.SetIsFocusOn(CurrentDeviceInfo!.ID.ToString(), (bool)value);
+                    _isFocusOn = (bool)value;
+                    OnPropertyChanged(nameof(IsFocusOn));
                     OnPropertyChanged(nameof(IsFocusOnText));
                     break;
                 case "Focus":
                     DdpmCommonHelper.DeviceManagerSA!.SetFocus(CurrentDeviceInfo!.ID.ToString(), (int)value);
-                    Focus = (int)value;
+                    _focus = (int)value;
+                    OnPropertyChanged(nameof(Focus));
                     break;
                 case "Priority":
                     DdpmCommonHelper.DeviceManagerSA!.SetPriority(CurrentDeviceInfo!.ID.ToString(), (int)value);
+                    _priority = (int)value;
+                    OnPropertyChanged(nameof(Priority));
                     break;
                 case "Zoom":
                     DdpmCommonHelper.DeviceManagerSA!.SetZoom(CurrentDeviceInfo!.ID.ToString(), (int)value);
@@ -1618,22 +1619,28 @@ namespace DDPM.UI.Plugin.ViewModels
                     break;
                 case "Brightness":
                     DdpmCommonHelper.DeviceManagerSA!.SetBrightness(CurrentDeviceInfo!.ID.ToString(), (int)value);
-                    Brightness = (int)value;
+                    _brightness = (int)value;
+                    OnPropertyChanged(nameof(Brightness));
                     break;
                 case "Contrast":
                     DdpmCommonHelper.DeviceManagerSA!.SetContrast(CurrentDeviceInfo!.ID.ToString(), (int)value);
-                    Contrast = (int)value;
+                    _contrast = (int)value;
+                    OnPropertyChanged(nameof(Contrast));
                     break;
                 case "AntiFlicker":
                     DdpmCommonHelper.DeviceManagerSA!.SetAntiFlicker(CurrentDeviceInfo!.ID.ToString(), (int)value);
+                    _antiFlicker = (int)value;
+                    OnPropertyChanged(nameof(AntiFlicker));
                     break;
                 case "Saturation":
                     DdpmCommonHelper.DeviceManagerSA!.SetSaturation(CurrentDeviceInfo!.ID.ToString(), (int)value);
-                    Saturation = (int)value;
+                    _saturation = (int)value;
+                    OnPropertyChanged(nameof(Saturation));
                     break;
                 case "Sharpness":
                     DdpmCommonHelper.DeviceManagerSA!.SetSharpness(CurrentDeviceInfo!.ID.ToString(), (int)value);
-                    Sharpness = (int)value;
+                    _sharpness = (int)value;
+                    OnPropertyChanged(nameof(Sharpness));
                     break;
                 case "IsAutoWhiteBalanceOn":
                     DdpmCommonHelper.DeviceManagerSA!.SetIsAutoWhiteBalanceOn(CurrentDeviceInfo!.ID.ToString(), (bool)value);
@@ -1641,7 +1648,8 @@ namespace DDPM.UI.Plugin.ViewModels
                     break;
                 case "AutoWhiteBalance":
                     DdpmCommonHelper.DeviceManagerSA!.SetAutoWhiteBalance(CurrentDeviceInfo!.ID.ToString(), (int)value);
-                    AutoWhiteBalance = (int)value;
+                    _autoWhiteBalance = (int)value;
+                    OnPropertyChanged(nameof(AutoWhiteBalance));
                     break;
                 case "IsAutoFramingOn":
                     DdpmCommonHelper.DeviceManagerSA!.SetIsAutoFramingOn(CurrentDeviceInfo!.ID.ToString(), (bool)value);

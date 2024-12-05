@@ -136,7 +136,7 @@ namespace DDPM.SA.Common
         Task<int> GetFieldOfView(string Guid);
         Task<bool> GetIsPropertyHDRSupported(string Guid);
         Task<bool> GetIsHDROn(string Guid);
-        Task<bool> CheckIsPropertyAntiFlickerSupported(string Guid);
+        Task<bool> GeIsPropertyAntiFlickerSupported(string Guid);
         Task<int> GetAntiFlicker(string Guid);
         Task<bool> GetIsPropertyAutoFramingSupported(string Guid);
         Task<bool> GetIsAutoFramingOn(string Guid);
@@ -145,6 +145,7 @@ namespace DDPM.SA.Common
         Task<int> GetZoom(string Guid);
         Task<int> GetFocus(string Guid);
         Task<bool> GetIsFocusOn(string Guid);
+        Task<int> GetPriority(string Guid);
 
         Task SetIsMicEnumerationOn(string Guid, bool newValue);
         Task SetProfile(string Guid, string newValue);

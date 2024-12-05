@@ -104,7 +104,7 @@ namespace DDPM.SA.Common
                     //Guid = "DellPeripheral.Webcam.0";
                     if (_devMgr.GetIsPropertyAntiFlickerSupported(Guid).Result)
                     {
-                        retvalue = _devMgr.GetAntiFlickerValueByDTP(Guid).Result;
+                        retvalue = _devMgr.GetAntiFlicker(Guid).Result;
                         Value = retvalue.ToString();
                         Value += "," + (data.LockSettings.Lock_Webcam_AntiFlicker ? "LOCK" : "UNLOCK");
                         Result = "PASS";
