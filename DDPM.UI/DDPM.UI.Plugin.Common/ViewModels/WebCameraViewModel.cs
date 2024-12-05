@@ -884,7 +884,7 @@ namespace DDPM.UI.Plugin.ViewModels
         public Visibility btnRes3_show { get; set; } = Visibility.Visible;
 
 
-
+        public Visibility bdrPrioritize_show { get; set; } = Visibility.Visible;
         public Visibility brdHello_show { get; set; } = Visibility.Visible;
         public Visibility brdHello_show_control { get; set; } = Visibility.Visible;
 
