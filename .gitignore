@@ -480,3 +480,4 @@ testcoverage/
 /DdpmSwUpdater/CommonDll/tr/DDPM.SA.Resources.resources.dll
 /DdpmSwUpdater/CommonDll/uk/DDPM.SA.Resources.resources.dll
 /DdpmSwUpdater/CommonDll/DDPM.SA.Resources.dll
+/DDPM.CLI.AutoTest/config.json
