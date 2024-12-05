@@ -1,5 +1,6 @@
 using CommunityToolkit.Mvvm.DependencyInjection;
 using DDPM.SA.Common;
+using DDPM.UI.Common;
 using DDPM.UI.Interfaces;
 using DDPM.UI.Plugin.ViewModels;
 using Dell.Client.Framework.Common;
@@ -46,7 +47,7 @@ namespace DDPM.UI.Plugin.HeadsetPlugin
         private readonly SemaphoreSlim _lock = new(1, 1);
         private DeviceHelper _deviceHelper = new();
         private List<DeviceInfo> _deviceInfos = new();
-
+        private bool IsEventRegistered = false;
         /// <summary>
         /// Default constructor
         /// </summary>
@@ -218,14 +219,22 @@ namespace DDPM.UI.Plugin.HeadsetPlugin
         /// <inheritdoc/>
         public void OnActivated()
         {
-            _deviceManagerPlugin.DeviceChanged += DeviceManager_DeviceChanged;
+            if (!IsEventRegistered)
+            {
+                DdpmCommonHelper.DeviceManagerSA!.DeviceChanged += DeviceManager_DeviceChanged;
+                IsEventRegistered = true;
+            }
             Mouse.OverrideCursor = null;
         }
 
         /// <inheritdoc/>
         public void OnDeactivated()
         {
-            _deviceManagerPlugin.DeviceChanged -= DeviceManager_DeviceChanged;
+            if (IsEventRegistered)
+            {
+                DdpmCommonHelper.DeviceManagerSA!.DeviceChanged -= DeviceManager_DeviceChanged;
+                IsEventRegistered = false;
+            }
             Mouse.OverrideCursor = Cursors.Wait;
         }
 
@@ -233,6 +242,11 @@ namespace DDPM.UI.Plugin.HeadsetPlugin
         public void OnShown(string parameter)
         {
             _log.Info($"[HeadsetPlugin] OnShown ... in");
+            if (!IsEventRegistered)
+            {
+                DdpmCommonHelper.DeviceManagerSA!.DeviceChanged += DeviceManager_DeviceChanged;
+                IsEventRegistered = true;
+            }
             ConfigureServices();
             GetPeripheralsAsync();
             if (_viewModel != null && !_viewModel.SetCurrentDevice(parameter)) { }

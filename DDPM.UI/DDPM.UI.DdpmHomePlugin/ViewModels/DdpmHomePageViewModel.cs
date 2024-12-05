@@ -191,7 +191,10 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.ViewModels
                 }
 
                 //OnPropertyChanged("HomeDevices");
-                HomeDevices = new ObservableCollection<HomeDevice>(tempList);
+                System.Windows.Application.Current.Dispatcher.Invoke(() =>
+                {
+                    HomeDevices = new ObservableCollection<HomeDevice>(tempList);
+                });
                 //Robert_Lin, 2024-8-7, The list has been sorted in PrepareXXX(), so should not call to RefreshCollectionView()
                 //Robert_Lin, 2024-6-22, to fix the issue the WebCam not been sorted (expect arranged after monitors)
                 //RefreshCollectionView();
@@ -461,8 +464,10 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.ViewModels
 
                 //Sort the list with SortOrder
                 tempList.Sort((x, y) => x.SortOrder.CompareTo(y.SortOrder));
-
-                HomeDevices = new ObservableCollection<HomeDevice>(tempList);
+                System.Windows.Application.Current.Dispatcher.Invoke(() =>
+                {
+                    HomeDevices = new ObservableCollection<HomeDevice>(tempList);
+                });
 
                 //Robert_Lin, 2024-7-10, we don't need the CollectionView, we sort in List<HomeDevice> directly.
                 //Robert_Lin, 2024-6-22, to fix the issue the WebCam not been sorted (expect arranged after monitors)
@@ -506,7 +511,10 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.ViewModels
             //listSorted would be sorted by SortOredr
             //
 
-            HomeDevices = new ObservableCollection<HomeDevice>(listSorted);
+            System.Windows.Application.Current.Dispatcher.Invoke(() =>
+            {
+                HomeDevices = new ObservableCollection<HomeDevice>(listSorted);
+            });
         }
 
         #endregion Refresh CollectionView

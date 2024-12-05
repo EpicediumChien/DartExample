@@ -13,6 +13,7 @@ using System.Diagnostics;
 using System.Net;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 
@@ -42,35 +43,55 @@ namespace DDPM.UI.Plugin.SoundBarPlugin
 
         public LaunchView()
         {
-            InitializeComponent();
             _vm = (SoundBarViewModel?)SoundBarPlugin.PluginIoc?.GetService<IPeripheralViewModel>()!;
-
             if (_vm != null)
             {
-                _vm.Reset();
-                DataContext = _vm;
-                _vm.VbarItemClickCommand = new RelayCommand<VbarItem>(OnVbarItemClicked!);
-                BuildModuleGroups();
+                if (!_vm.IsDTPReady)
+                {
+                    MessageModalDialog messageModalDialog = new(Strings.Error, Strings.DTPUnavailable, "");
+                    Window mainWindow = System.Windows.Application.Current.MainWindow;
+                    if (mainWindow != null)
+                    {
+                        messageModalDialog.Owner = mainWindow;
+                        messageModalDialog.Left = mainWindow.Left + (mainWindow!.ActualWidth - 417) / 2;
+                        messageModalDialog.Top = mainWindow.Top + 300;
+                    }
+                    Mouse.OverrideCursor = null;
+                    messageModalDialog.WindowStartupLocation = WindowStartupLocation.Manual;
+                    messageModalDialog.ShowDialog();
+                    this.Loaded += LaunchView_Loaded;
+                }
+                else
+                {
+                    InitializeComponent();
+                    _vm.Reset();
+                    DataContext = _vm;
+                    _vm.VbarItemClickCommand = new RelayCommand<VbarItem>(OnVbarItemClicked!);
+                    BuildModuleGroups();
+                    //txtUnpair.Text = Unpair;
+                    //txtRestore.Text = Restore;
+                    ConnectionStyle1 = (Style)FindResource("ConnectionStyle1");
+                    ConnectionStyle2 = (Style)FindResource("ConnectionStyle2");
+                    txtSystemName1.Text = _vm!.VisiblePairedHostName1;
+                    txtSystemName2.Text = _vm.VisiblePairedHostName1;
+                    txtSystemName3.Text = _vm.VisiblePairedHostName1;
+                    txtFirmware.Text = string.Format(Strings.DockDongle1, _vm.PhysicalDeviceFWVersion);
+                    txtSlot.Text = string.Format(Strings.DockDongle0, _vm.CurrentDeviceInfo!.MaxPairingSlots - _vm.CurrentDeviceInfo.PairedDeviceCount, _vm.CurrentDeviceInfo.MaxPairingSlots);
+                    DdpmCommonHelper.BitmapImageUpdated += ImageUpdate;
+                }
             }
-
-            //txtUnpair.Text = Unpair;
-            //txtRestore.Text = Restore;
-
-            ConnectionStyle1 = (Style)FindResource("ConnectionStyle1");
-            ConnectionStyle2 = (Style)FindResource("ConnectionStyle2");
-            txtSystemName1.Text = _vm!.VisiblePairedHostName1;
-            txtSystemName2.Text = _vm.VisiblePairedHostName1;
-            txtSystemName3.Text = _vm.VisiblePairedHostName1;
-            txtFirmware.Text = string.Format(Strings.DockDongle1, _vm.PhysicalDeviceFWVersion);
-            txtSlot.Text = string.Format(Strings.DockDongle0, _vm.CurrentDeviceInfo!.MaxPairingSlots - _vm.CurrentDeviceInfo.PairedDeviceCount, _vm.CurrentDeviceInfo.MaxPairingSlots);
-
-            DdpmCommonHelper.BitmapImageUpdated += ImageUpdate;
         }
 
         private void ImageUpdate(OSThemeEnum oSThemeEnum)
         {
             ArrowLeft.Source = null;
             ArrowLeft.Source = (BitmapImage)Application.Current.Resources["Arrow_Left"];
+        }
+
+        private void LaunchView_Loaded(object sender, RoutedEventArgs e)
+        {
+            if (!_vm!.IsDTPReady)
+                DdpmCommonHelper.MyConsole!.ShowHomePage();
         }
 
         #region Init for Modules
@@ -344,5 +365,14 @@ namespace DDPM.UI.Plugin.SoundBarPlugin
         private void LargeImage_MouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
         }
+
+        private void PushBack(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            if (sender is Border)
+            {
+                Mainframe_MouseLeftButtonDown(this, e);
+            }
+        }
+
     }
 }

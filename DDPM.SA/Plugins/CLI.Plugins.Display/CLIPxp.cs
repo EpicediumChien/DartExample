@@ -510,7 +510,7 @@ namespace CLI.Plugins.Display
             {
                 swapIsDone = new List<string>();
                 flag = true;              
-                while (flag && count < 10)
+                while (flag && count < 1000)
                 {
                     for (int i = 0; i < serviceTagList.Count; i++)
                     {
@@ -553,7 +553,7 @@ namespace CLI.Plugins.Display
             flag = true;
             bool isPass = false;
             count = 0;
-            while (flag && count < 10)
+            while (flag && count < 1000)
             {
                 for (int i = 0; i < serviceTagList.Count; i++)
                 {
@@ -617,7 +617,7 @@ namespace CLI.Plugins.Display
                 swapIsDone = new List<string>();
                 flag = true;
                 count = 0;
-                while (flag && count < 10)
+                while (flag && count < 1000)
                 {
                     for (int i = 0; i < serviceTagList.Count; i++)
                     {

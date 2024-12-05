@@ -15,6 +15,10 @@ using DDPM.SA.Common.Settings;
 using DDPM.UI.Plugin.Common;
 using System.IO;
 using Dell.Client.Framework.Common;
+using System.Windows.Shapes;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using System;
 
 namespace DDPM.UI.Module.DisplayOthers
 {
@@ -232,6 +236,7 @@ namespace DDPM.UI.Module.DisplayOthers
             //IsBusy = true;
             //OnPropertyChanged("IsBusy");
         }
+
         private void ImpExpSettings_Dowork(object sender, DoWorkEventArgs e)
         {
             string ImpExppath = e.Argument.ToString();
@@ -248,7 +253,29 @@ namespace DDPM.UI.Module.DisplayOthers
                     }
                     else
                     {
-                        OnMessageDlgInvoke("close_loading");
+                        //Elsa add to fix PIMS-313843&PIMS-313845
+                        string model = "";
+                        string strReadJson = string.Empty;
+                        string info;
+                        strReadJson = DDPMFileSecurity.GetSerializedJsonString(impPath, out info);
+                        using (StreamReader jsonf = new StreamReader(impPath))
+                        {
+                            string json = jsonf.ReadToEnd();
+                            JArray jArray = JArray.Parse(json);
+                            model = jArray[0].Value<string>("Model");
+                        }
+                        if (DisplayOthersModule.SelectedHomeDevice.MonitorInfo.modelName != model)
+                        {
+                            OnMessageDlgInvoke("close_loading");
+                            OnMessageDlgInvoke("result_fail");
+                        }
+                        else if (strReadJson == string.Empty || strReadJson.Length == 0)
+                        {
+                            OnMessageDlgInvoke("close_loading");
+                            OnMessageDlgInvoke("file_corrupted");
+                        }
+                        else 
+                        {   OnMessageDlgInvoke("close_loading"); }
                     }
                 }
                 else if (ImpExppath.Substring(0, 3) == "Exp")

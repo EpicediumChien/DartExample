@@ -154,8 +154,11 @@ namespace DDPM.UI.Common
 
                 #region Main Window Background
                 SplashPath = "Resources/Images/splash{0}-round_Light.png";
-                UpdateFreezable("mainWindowBkColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#FFECF3F9"));
-                UpdateFreezable("bkImage", (ref ImageBrush brush) => brush.ImageSource = GetImageSourceFromCommonResource("Resources/Images/Background_Light.png", "DDPM"));
+                UpdateFreezable("mainWindowBkColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#FFECF3F9")); 
+                UpdateFreezable("bkImage", (ref ImageBrush brush) => {
+                    brush.Stretch = Stretch.Fill;
+                    brush.ImageSource = GetImageSourceFromCommonResource("Resources/Images/Background_Light.png", "DDPM");
+                });
                 UpdateFreezable("SpinnerWaitTxtColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#0E0E0E"));
                 UpdateFreezable("SpinnerBkColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#FFFFFF"));
                 #endregion
@@ -342,6 +345,13 @@ namespace DDPM.UI.Common
                 UpdateFreezable<SolidColorBrush>("Dlg_CloseX_HoverBkColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#FFFFFF"));
                 #endregion DDPM.SA.Common.Popup.PopupBase
 
+                #region Headset
+                UpdateFreezable("ToggleSwitch_NormalBackground", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#FBFCFE"));
+                #endregion
+
+                #region Consent page
+                UpdateFreezable("ConsentPage_Background", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#D8E5F5"));
+                #endregion
 
                 //#region HomeDevice LineArt image [Robert_Lin, 2024-11-26]
                 UpdateBitmapImage("MonitorImage_LineArt", new Uri($"pack://application:,,,/DDPM.UI.Resources;component/Resources/Monitors/Lineart-w.png", UriKind.RelativeOrAbsolute));
