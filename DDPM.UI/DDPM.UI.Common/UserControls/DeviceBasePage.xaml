@@ -59,8 +59,8 @@
 
         <!-- Layers: buttom to top, 1,2,3, ... -->
         <!-- Layer 1 -->
-        <Grid>
-            <UXControls:UXScrollViewer x:Name="topViewScrollViewer">
+        <Grid >
+            
                 <StackPanel Orientation="Horizontal" x:Name="topStackPanel">
                     <!-- LeftFrame -->
                     <Grid x:Name="LeftGrid">
@@ -297,7 +297,7 @@
                             </ItemsControl>
                         </Grid>
                     </Grid>
-
+                <!--<UXControls:UXScrollViewer x:Name="topViewScrollViewer">-->
                     <!-- vBar + RightFrame -->
                     <StackPanel x:Name="stVbarRightFrame">
                         <!-- vBar -->
@@ -347,8 +347,9 @@
                             </Border>
                         </Grid>
                     </StackPanel>
-                </StackPanel>
-            </UXControls:UXScrollViewer>
+                <!--</UXControls:UXScrollViewer>-->
+            </StackPanel>
+            
         </Grid>
 
         <!-- Layer : FullView -->
