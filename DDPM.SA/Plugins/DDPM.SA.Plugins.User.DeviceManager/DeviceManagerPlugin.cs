@@ -15162,7 +15162,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         {
                             if (Device is OSDType_Device.Headset)
                             {
-                                if (!string.IsNullOrWhiteSpace(Content))
+                                if (!string.IsNullOrWhiteSpace(Content) && _GlobalSettingParam.GlobalSetting_General.Low_Battery_Level)
                                     _showosd(monitorInfo, OSDType.BatteryLow, OSDType_Device.Headset, Content);
                                 else
                                     writelog("[_showosd*******] Content error can't be NullOrWhiteSpace");
@@ -15170,7 +15170,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                             }
                             else if (Device is OSDType_Device.Keyboard)
                             {
-                                if (!string.IsNullOrWhiteSpace(Content))
+                                if (!string.IsNullOrWhiteSpace(Content) && _GlobalSettingParam.GlobalSetting_General.Low_Battery_Level)
                                     _showosd(monitorInfo, OSDType.BatteryLow, OSDType_Device.Keyboard, Content);
                                 else
                                     writelog("[_showosd*******] Content error can't be NullOrWhiteSpace");
@@ -15178,7 +15178,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                             }
                             else if (Device is OSDType_Device.Mouse)
                             {
-                                if (!string.IsNullOrWhiteSpace(Content))
+                                if (!string.IsNullOrWhiteSpace(Content) && _GlobalSettingParam.GlobalSetting_General.Low_Battery_Level)
                                     _showosd(monitorInfo, OSDType.BatteryLow, OSDType_Device.Mouse, Content);
                                 else
                                     writelog("[_showosd*******] Content error can't be NullOrWhiteSpace");
