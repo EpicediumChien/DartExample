@@ -152,7 +152,18 @@ namespace DDPM.CLI.Plugins.Display
                 bool is_match = false;
                 foreach (string tag in commandLineInput.ServiceTag)
                 {
-                    int idx = _AllInfoMonitors.FindIndex(x => x.edid.ServiceTag.ToUpper().Equals(tag.ToUpper()));
+                    int idx = default;
+
+                    try
+                    {
+                        idx = _AllInfoMonitors.FindIndex(x => x.edid.ServiceTag.ToUpper().Equals(tag.ToUpper()));
+                    }
+                    catch (Exception ex)
+                    {
+                        Trace.WriteLine($"[input_param_validation] FindIndex failed, message: {ex.Message} ");
+                        idx = -1;
+                    }
+
                     if (idx < 0)
                     {
                         CLI_RESPONSE rsp = new CLI_RESPONSE()
@@ -179,7 +190,18 @@ namespace DDPM.CLI.Plugins.Display
                 bool is_match = false;
                 foreach (string model in commandLineInput.Model)
                 {
-                    int idx = _AllInfoMonitors.FindIndex(x => x.modelName.ToUpper().Equals(model.ToUpper()));
+                    int idx = default;
+
+                    try
+                    {
+                        idx = _AllInfoMonitors.FindIndex(x => x.modelName.ToUpper().Equals(model.ToUpper()));
+                    }
+                    catch (Exception ex)
+                    {
+                        Trace.WriteLine($"[input_param_validation] FindIndex failed, message: {ex.Message} ");
+                        idx = -1;
+                    }
+
                     if (idx < 0)
                     {
                         CLI_RESPONSE rsp = new CLI_RESPONSE()
