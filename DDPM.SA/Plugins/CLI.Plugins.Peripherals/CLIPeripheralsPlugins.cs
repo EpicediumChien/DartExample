@@ -815,8 +815,8 @@ namespace DDPM.CLI.Plugins.Peripherals
             {
                 if (op.Option_Name.ToUpper() == "VALUE")
                 {
-                    op.Option_Value.Replace(".", ",");
-                    List<string> op_value = op.Option_Value.Split(",").ToList();
+                    //op.Option_Value.Replace(".", ",");
+                    List<string> op_value = op.Option_Value.Replace(".", ",").Split(",").ToList();
                     //value = op_value[0];
                     foreach (var value in op_value)
                     {

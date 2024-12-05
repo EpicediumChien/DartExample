@@ -725,8 +725,8 @@ namespace DDPM.SA.Common
                                 commandInput.isNormalCommands = true;//recognized as normal command -> CLIProxy
                                 return;
                             }
-                            option.Option_Value.Trim().Replace(".", ",");//maybe user type wrong sep symbol from , to be .
-                            List<string> parse = option.Option_Value.Split(",").ToList();
+                            //option.Option_Value.Trim().Replace(".", ",");//maybe user type wrong sep symbol from , to be .
+                            List<string> parse = option.Option_Value.Replace(".", ",").Split(",").ToList();
                             foreach (string value in parse)
                             {
                                 //currently only "LOCK" and "UNLOCK" be recognized as IT global settings
