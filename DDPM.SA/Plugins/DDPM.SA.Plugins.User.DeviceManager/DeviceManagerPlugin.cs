@@ -233,6 +233,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         private OSThemeEnum previousOsTheme = OSThemeEnum.Dark;
 
+        private List<NKVMVCPValue> _nKVMVCPValues = new List<NKVMVCPValue>();
+
         #endregion
 
         #region Constructor
@@ -2103,6 +2105,18 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         else
                             writelog("[DeviceMangerPlugin] [Telementry] Send Telementry for Contrast Fail ...");
                     }).ConfigureAwait(false);
+                    break;
+
+                case 0xE9:
+                    {
+                        NKVMVCPValue nKVMVCPValue = new NKVMVCPValue();
+                        nKVMVCPValue.monitorInfo = monitorInfo;
+                        nKVMVCPValue.value = (int)val;
+                        if (_NKVMPlugin != null)
+                        {
+                            _NKVMPlugin.SaveVCPcode(nKVMVCPValue);
+                        }
+                    }
                     break;
 
                 default:
@@ -12643,6 +12657,16 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     {
                         settings.UserSettings.lastUISelectedMonitor = new DDPMSimpleMonitorRecord() { ModelName = mo.modelName, ServiceTag = mo.edid.ServiceTag };
                         _SettingsPlugin.SetAppConfigData(settings);
+
+                        //Robert_Lin, 2024-12,4, Notify to EAPlugin
+                        if (_DisplayManagerPlugin != null)
+                        {
+                            EAArgs eaArgs = new EAArgs()
+                            {
+                                Command = EAEMConstants.EACommand_LastSelectedMonitorChanged
+                            };
+                            _DisplayManagerPlugin.NotifyEAMessage(eaArgs);
+                        }
                     }
                 }
             });

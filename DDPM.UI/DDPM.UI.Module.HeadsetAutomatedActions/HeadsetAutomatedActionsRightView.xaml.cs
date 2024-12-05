@@ -42,28 +42,12 @@ namespace DDPM.UI.Module.HeadsetAutomatedActions
                     }
                 }
             }
-            System.Windows.SystemParameters.StaticPropertyChanged += SystemParameters_StaticPropertyChanged;
         }
 
         ~HeadsetAutomatedActionsRightView()
         {
             if (DdpmCommonHelper.DeviceManagerSA != null)
-            {
                 DdpmCommonHelper.DeviceManagerSA.ITSettingsActionEvent -= DeviceManagerSA_ITSettingsActionEvent;
-                System.Windows.SystemParameters.StaticPropertyChanged -= SystemParameters_StaticPropertyChanged;
-            }
-        }
-
-        private void SystemParameters_StaticPropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            if (DdpmCommonHelper.previousOsTheme == OSThemeEnum.Dark)
-            {
-                _vm.IsDarkTheme = true;
-            }
-            else
-            {
-                _vm.IsDarkTheme = false;
-            }
         }
 
         private void DeviceManagerSA_ITSettingsActionEvent(object? sender, SA.Common.ITSettingEventArgs e)
@@ -104,4 +88,25 @@ namespace DDPM.UI.Module.HeadsetAutomatedActions
         }
     }
 
+    public class BooleanToForegroundConverter2 : IMultiValueConverter
+    {
+        public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (values[0] is bool isDarkTheme && values[1] is bool isChecked && values[2] is bool IsChecked2)
+            {
+                if(!IsChecked2)
+                    return Brushes.Gray;
+                if (isDarkTheme)
+                    return isChecked ? Brushes.White : Brushes.White;
+                else
+                    return isChecked ? Brushes.White : Brushes.Black;
+            }
+            return Brushes.Gray;
+        }
+
+        public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
 }

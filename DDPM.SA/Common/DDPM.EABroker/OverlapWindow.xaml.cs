@@ -1,0 +1,552 @@
+﻿using DDPM.Easy.Common;
+using DDPM.SA.Common.Display;
+using DDPM.Win32Lib;
+using Dell.Client.Framework.Common;
+using nsWinEventHook;
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
+using System.Reflection;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Documents;
+using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Windows.Shapes;
+using Rectangle = System.Drawing.Rectangle;
+
+namespace DDPM.EABroker
+{
+    /// <summary>
+    /// Interaction logic for OverlapWindow.xaml
+    /// </summary>
+    public partial class OverlapWindow : Window
+    {
+        #region Private members
+        private double _screenScale = 1.000;
+        private readonly ILog? _log;
+        private int _autoCloseTimerMsec = 3000;
+        private ISplitCtrl _splitCtrl;
+        #endregion
+
+        #region Events
+        public EventHandler CaptureDone;
+
+        #endregion
+
+        #region Output
+        public ISplitCtrl SplitCtrl => _splitCtrl;
+        #endregion
+
+        #region ctor
+        public OverlapWindow(ILog log)
+        {
+            _log = log;
+            InitializeComponent();
+        }
+        #endregion
+
+        #region Init
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            RefreshScreenScale();
+
+        }
+        private double RefreshScreenScale()
+        {
+            double dpiX = 1.000;
+            var dpiXProperty = typeof(SystemParameters).GetProperty("DpiX", BindingFlags.NonPublic | BindingFlags.Static);
+            if (dpiXProperty != null)
+            {
+                var varX = (int)dpiXProperty.GetValue(null, null);
+                dpiX = (double)varX / (double)96;
+            }
+            _screenScale = dpiX;
+            return dpiX;
+        }
+        #endregion
+
+        #region Log
+        private void WriteLog(string msg, Exception? e = null)
+        {
+            if (_log != null)
+            {
+                if (e == null)
+                {
+                    _log.Info(msg);
+                }
+                else
+                {
+                    _log.Error(e, msg);
+                }
+            }
+        }
+        #endregion Log
+
+        #region Capture Overlap Layout
+        /// <summary>
+        /// Capture the overlap layouts on the target screen
+        /// </summary>
+        /// <param name="scr"></param>
+        /// <returns>The count of window frame (CellBorder) are captured.</returns>
+        public int CaptureOverlapLayout(Screen scr)
+        {
+            Left = scr.Bounds.Left / _screenScale;
+            Top = scr.Bounds.Top / _screenScale;
+            Width = scr.Bounds.Width / _screenScale;
+            Height = scr.Bounds.Height / _screenScale;
+
+            int addCount = CaptureCustomLayout_v1(scr);
+
+            Task.Delay(_autoCloseTimerMsec).ContinueWith(t => this.Dispatcher.Invoke(OnCaptureDone));
+            return addCount;
+        }
+
+        public int CaptureOverlapLayoutByWorkingArea(Rectangle workingArea)
+        {
+            Left = workingArea.Left / _screenScale;
+            Top = workingArea.Top / _screenScale;
+            Width = workingArea.Width / _screenScale;
+            Height = workingArea.Height / _screenScale;
+
+            int addCount = CaptureCustomLayout_v2(workingArea);
+
+            Task.Delay(_autoCloseTimerMsec).ContinueWith(t => this.Dispatcher.Invoke(OnCaptureDone));
+            return addCount;
+
+        }
+
+        /// <summary>
+        /// Enumerate all Windows as [Alt]+[Tab], filt out ExcludeList, not in target screen,...
+        /// Create CellBorders and add to SplitCtrl, and show it on the target screen
+        /// </summary>
+        /// <param name="screen"></param>
+        /// <returns>The count of CellBorders</returns>
+        private int CaptureCustomLayout_v1(Screen screen)
+        {
+            double scale = 1.000;
+            var dpiXProperty = typeof(SystemParameters).GetProperty("DpiX", BindingFlags.NonPublic | BindingFlags.Static);
+            if (dpiXProperty != null)
+            {
+                var varX = (int)dpiXProperty.GetValue(null, null);
+                scale = (double)varX / (double)96;
+            }
+
+            //Clear CustomLayouts
+            //canvas.Children.Clear();
+
+            //Prepare for Settings
+            //Format:
+            // First 4 elements [0]~[3]: BorderCount | ScreenScale | ScreenBoundsWidth | ScreenBoundsHeight
+            // Later: BorderRect (left, top, width, height), (left, top, width, height), ...
+            List<double> settings = new List<double>();
+            settings.Add(0); //BorderCount will be updated later
+            settings.Add(scale);
+            settings.Add(screen.WorkingArea.Width);
+            settings.Add(screen.WorkingArea.Height);
+
+            double xRatio = 1.0000 / (double)screen.WorkingArea.Width;
+            double yRatio = 1.0000 / (float)screen.WorkingArea.Height;
+
+            //Enumerate all Window handle which will be fitered by IsTargetWindow()
+            List<IntPtr> hWnds = Win32.GetWindowHandles(IsTargetWindow);
+            WriteLog($"@ EAEditWindow.CaptureCustomLayout(), Enum candidate Window and add Borders");
+            //_cellJsons.Clear();
+            int idx = -1;
+            int addCount = 0;
+            //Second phase to filter out from the hWnd
+            foreach (IntPtr hWnd in hWnds)
+            {
+                idx++;
+                //Get the basic info of hWnd
+                //
+                string windowText = Win32._GetWindowText(hWnd);
+
+                IntPtr hWndParent = Win32._GetParent(hWnd);
+
+                Win32.RECT rcWnd = new Win32.RECT();
+                Win32._GetWindowRect(hWnd, out rcWnd);
+
+                WriteLog($"[{idx}] hWnd=0x{hWnd:X08}, hWndParent=0x{hWndParent:X08}, Text=[{windowText}], rcWnd=({rcWnd.Left},{rcWnd.Top}){rcWnd.Width}x{rcWnd.Height}");
+
+                //Check if the Window is in current screen
+                Screen screenOfhWnd = Screen.FromHandle(hWnd);
+                if (screenOfhWnd == null)
+                {
+                    WriteLog($"    [{idx}] Abandon: GetScreen return null.");
+                    continue;
+                }
+                if (!screenOfhWnd.Equals(screen))
+                {
+                    WriteLog($"    [{idx}] Abandon: Not in target screen.");
+                    continue;
+                }
+
+                //Check if the window is totally inside screen
+                if (!screen.Bounds.Contains(rcWnd))
+                {
+                    WriteLog($"    [{idx}] Abandon: Not inside target screen (no acroess).");
+                    continue;
+                }
+
+                //Get the Process from hWnd
+                Process process;
+                string msg = "";
+                if (!WinEventHook.GetProcessFromWindowHandle(hWnd, out process, out msg))
+                {
+                    //Fail to get the process
+                    WriteLog($"    [{idx}] Abandon: GetProcessFromWindowHandle() err, {msg}");
+                    continue;
+                }
+
+                //Try to get the PathName of the process
+                string pathName = "";
+                try
+                {
+                    if (process.MainModule != null)
+                    {
+                        if (!String.IsNullOrEmpty(process.MainModule.FileName))
+                        {
+                            pathName = process.MainModule.FileName;
+                            WriteLog($"    [{idx}] PathName=[{pathName}]");
+                        }
+                    }
+                }
+                catch (Exception e1)
+                {
+                    msg = e1.Message;
+                    WriteLog($"    [{idx}] Abandon: Get PathName from Procss causes exception, {msg}");
+                }
+
+                //Filter out DDPM processes
+                if (ArrangeVM.IsEAExcludedPathName(pathName))
+                {
+                    WriteLog($"    [{idx}] Abandon: PathName is in Excluded List");
+                    continue;
+                }
+
+                double width = rcWnd.Width / scale;
+                double height = rcWnd.Height / scale;
+
+                //Add Border to canvas
+                //Border border = new Border();
+                ////#E6AC28 = (230, 172, 40)
+                //border.BorderBrush = new System.Windows.Media.SolidColorBrush(
+                //    System.Windows.Media.Color.FromRgb(230, 172, 40));
+                //border.BorderThickness = new Thickness(6);
+                //border.CornerRadius = new CornerRadius(4);
+                //border.Width = rcWnd.Width / scale;
+                //border.Height = rcWnd.Height / scale;
+
+                //Convert and store in CellList, rcRatio
+                //CellObj cellObj = new CellObj();
+                //cellObj.Name = pathName;
+
+                //canvas.Children.Add(border);
+                addCount++;
+                //Convert screen coordinate to EditWindow
+                System.Windows.Point ptWindow = PointFromScreen(new System.Windows.Point(rcWnd.Left, rcWnd.Top));
+
+                double left = ptWindow.X;
+                double top = ptWindow.Y;
+                //Canvas.SetLeft(border, left);
+                //Canvas.SetTop(border, top);
+
+                settings.Add(left);
+                settings.Add(top);
+                settings.Add(width);
+                settings.Add(height);
+                WriteLog($"    [{idx}] Accept: Add a Border to EAEditWindow");
+
+                //CellJson cellJson = new CellJson();
+                //cellJson.Name = $"0b{addCount}";
+                //cellJson.x = (double)left * xRatio;
+                //cellJson.y = (double)top * yRatio;
+                //cellJson.w = (double)border.Width * xRatio;
+                //cellJson.h = (double)border.Height * yRatio;
+                //_cellJsons.Add(cellJson);
+
+            } //foreach (IntPtr hWnd in hWnds)
+            WriteLog($"  * Detected window count = [{addCount}]");
+            settings[0] = addCount;
+            //inputSplitCtrl.Settings = settings;
+            //inputSplitCtrl.CellList.Clear();
+
+
+            SplitCtrl0B spCtrl0B = new SplitCtrl0B();
+            _splitCtrl = spCtrl0B;
+            _splitCtrl.Settings = settings;
+            Rect rcView = new Rect(screen.WorkingArea.Left, screen.WorkingArea.Top, screen.WorkingArea.Width, screen.WorkingArea.Height);
+            spCtrl0B.ApplySettingsToCellList(rcView);
+
+            content.Content = spCtrl0B.UC;
+
+            //foreach (CellJson cellJson in _cellJsons)
+            //{
+            //    CellBorder cellBorder = new CellBorder();
+            //    cellBorder.CellName = cellJson.Name;
+            //    cellBorder.rcRatio = new Rect(cellJson.x, cellJson.y, cellJson.w, cellJson.h);
+            //    inputSplitCtrl.CellBorders.Add(cellBorder);
+
+            //    CellObj cellObj = new CellObj(cellJson.Name);
+            //    cellObj.rcRatio = new Rect(cellJson.x, cellJson.y, cellJson.w, cellJson.h);
+            //    inputSplitCtrl.CellList.Add(cellObj);
+
+            //    ///spCtrl0B.RatioRects.Add(new Rect(cellJson.x, cellJson.y, cellJson.w, cellJson.h));
+            //}
+
+            ////Set a timeer to finished edit process
+            //System.Threading.Timer timer1 = new System.Threading.Timer((obj) =>
+            //{
+            //    if (EditReturn != null)
+            //        EditReturn(this, _inputArgs);
+            //    //Hide();
+            //}, null, 3000, Timeout.Infinite);
+
+            return addCount;
+        }
+
+        private int CaptureCustomLayout_v2(Rectangle workingArea)
+        {
+            double scale = 1.000;
+            var dpiXProperty = typeof(SystemParameters).GetProperty("DpiX", BindingFlags.NonPublic | BindingFlags.Static);
+            if (dpiXProperty != null)
+            {
+                var varX = (int)dpiXProperty.GetValue(null, null);
+                scale = (double)varX / (double)96;
+            }
+
+            //Prepare for Settings
+            //Format:
+            // First 4 elements [0]~[3]: BorderCount | ScreenScale | ScreenBoundsWidth | ScreenBoundsHeight
+            // Later: BorderRect (left, top, width, height), (left, top, width, height), ...
+            List<double> settings = new List<double>();
+            settings.Add(0); //BorderCount will be updated later
+            settings.Add(scale);
+            settings.Add(workingArea.Width);
+            settings.Add(workingArea.Height);
+
+            double xRatio = 1.0000 / (double)workingArea.Width;
+            double yRatio = 1.0000 / (float)workingArea.Height;
+
+            //Enumerate all Window handle which will be fitered by IsTargetWindow()
+            List<IntPtr> hWnds = Win32.GetWindowHandles(IsTargetWindow);
+            WriteLog($"@ EAEditWindow.CaptureCustomLayout(), Enum candidate Window and add Borders");
+            //_cellJsons.Clear();
+            int idx = -1;
+            int addCount = 0;
+            //Second phase to filter out from the hWnd
+            foreach (IntPtr hWnd in hWnds)
+            {
+                idx++;
+                //Get the basic info of hWnd
+                //
+                string windowText = Win32._GetWindowText(hWnd);
+
+                IntPtr hWndParent = Win32._GetParent(hWnd);
+
+                Win32.RECT rcWnd = new Win32.RECT();
+                Win32._GetWindowRect(hWnd, out rcWnd);
+
+                WriteLog($"[{idx}] hWnd=0x{hWnd:X08}, hWndParent=0x{hWndParent:X08}, Text=[{windowText}], rcWnd=({rcWnd.Left},{rcWnd.Top}){rcWnd.Width}x{rcWnd.Height}");
+
+                //Check if the Window is in current screen
+                //Screen screenOfhWnd = Screen.FromHandle(hWnd);
+                //if (screenOfhWnd == null)
+                //{
+                //    WriteLog($"    [{idx}] Abandon: GetScreen return null.");
+                //    continue;
+                //}
+                //if (!screenOfhWnd.Equals(screen))
+                //{
+                //    WriteLog($"    [{idx}] Abandon: Not in target screen.");
+                //    continue;
+                //}
+
+                ////Check if the window is totally inside screen
+                //if (!screen.Bounds.Contains(rcWnd))
+                //{
+                //    WriteLog($"    [{idx}] Abandon: Not inside target screen (no acroess).");
+                //    continue;
+                //}
+
+                //Get the Process from hWnd
+                Process process;
+                string msg = "";
+                if (!WinEventHook.GetProcessFromWindowHandle(hWnd, out process, out msg))
+                {
+                    //Fail to get the process
+                    WriteLog($"    [{idx}] Abandon: GetProcessFromWindowHandle() err, {msg}");
+                    continue;
+                }
+
+                //Try to get the PathName of the process
+                string pathName = "";
+                try
+                {
+                    if (process.MainModule != null)
+                    {
+                        if (!String.IsNullOrEmpty(process.MainModule.FileName))
+                        {
+                            pathName = process.MainModule.FileName;
+                            WriteLog($"    [{idx}] PathName=[{pathName}]");
+                        }
+                    }
+                }
+                catch (Exception e1)
+                {
+                    msg = e1.Message;
+                    WriteLog($"    [{idx}] Abandon: Get PathName from Procss causes exception, {msg}");
+                }
+
+                //Filter out DDPM processes
+                if (ArrangeVM.IsEAExcludedPathName(pathName))
+                {
+                    WriteLog($"    [{idx}] Abandon: PathName is in Excluded List");
+                    continue;
+                }
+
+                //Check if the window is totally inside screen
+                Rectangle rectWnd = new Rectangle(rcWnd.Left, rcWnd.Top, rcWnd.Width, rcWnd.Height);
+                if (workingArea.Contains(rectWnd))
+                {
+                    WriteLog($"    [{idx}] Abandon: rcWnd is not inside workingArea.");
+                    continue;
+                }
+
+                double width = rcWnd.Width / scale;
+                double height = rcWnd.Height / scale;
+
+                //Add Border to canvas
+                //Border border = new Border();
+                ////#E6AC28 = (230, 172, 40)
+                //border.BorderBrush = new System.Windows.Media.SolidColorBrush(
+                //    System.Windows.Media.Color.FromRgb(230, 172, 40));
+                //border.BorderThickness = new Thickness(6);
+                //border.CornerRadius = new CornerRadius(4);
+                //border.Width = rcWnd.Width / scale;
+                //border.Height = rcWnd.Height / scale;
+
+                //Convert and store in CellList, rcRatio
+                //CellObj cellObj = new CellObj();
+                //cellObj.Name = pathName;
+
+                //canvas.Children.Add(border);
+                addCount++;
+                //Convert screen coordinate to EditWindow
+                System.Windows.Point ptWindow = PointFromScreen(new System.Windows.Point(rcWnd.Left, rcWnd.Top));
+
+                double left = ptWindow.X;
+                double top = ptWindow.Y;
+                //Canvas.SetLeft(border, left);
+                //Canvas.SetTop(border, top);
+
+                settings.Add(left);
+                settings.Add(top);
+                settings.Add(width);
+                settings.Add(height);
+                WriteLog($"    [{idx}] Accept: Add a Border to EAEditWindow");
+
+                //CellJson cellJson = new CellJson();
+                //cellJson.Name = $"0b{addCount}";
+                //cellJson.x = (double)left * xRatio;
+                //cellJson.y = (double)top * yRatio;
+                //cellJson.w = (double)border.Width * xRatio;
+                //cellJson.h = (double)border.Height * yRatio;
+                //_cellJsons.Add(cellJson);
+
+            } //foreach (IntPtr hWnd in hWnds)
+            WriteLog($"  * Detected window count = [{addCount}]");
+            settings[0] = addCount;
+            //inputSplitCtrl.Settings = settings;
+            //inputSplitCtrl.CellList.Clear();
+
+
+            SplitCtrl0B spCtrl0B = new SplitCtrl0B();
+            _splitCtrl = spCtrl0B;
+            _splitCtrl.Settings = settings;
+            Rect rcView = new Rect(workingArea.Left, workingArea.Top, workingArea.Width, workingArea.Height);
+            spCtrl0B.ApplySettingsToCellList(rcView);
+
+            content.Content = spCtrl0B.UC;
+
+            //foreach (CellJson cellJson in _cellJsons)
+            //{
+            //    CellBorder cellBorder = new CellBorder();
+            //    cellBorder.CellName = cellJson.Name;
+            //    cellBorder.rcRatio = new Rect(cellJson.x, cellJson.y, cellJson.w, cellJson.h);
+            //    inputSplitCtrl.CellBorders.Add(cellBorder);
+
+            //    CellObj cellObj = new CellObj(cellJson.Name);
+            //    cellObj.rcRatio = new Rect(cellJson.x, cellJson.y, cellJson.w, cellJson.h);
+            //    inputSplitCtrl.CellList.Add(cellObj);
+
+            //    ///spCtrl0B.RatioRects.Add(new Rect(cellJson.x, cellJson.y, cellJson.w, cellJson.h));
+            //}
+
+            ////Set a timeer to finished edit process
+            //System.Threading.Timer timer1 = new System.Threading.Timer((obj) =>
+            //{
+            //    if (EditReturn != null)
+            //        EditReturn(this, _inputArgs);
+            //    //Hide();
+            //}, null, 3000, Timeout.Infinite);
+
+            return addCount;
+        }
+
+        //Reference: https://stackoverflow.com/questions/210504/enumerate-windows-like-alt-tab-does
+        //Try to get the Windows like [Alt]+[Tab] key
+        private bool IsTargetWindow(IntPtr hWnd, IntPtr lParam)
+        {
+            //1 The window must be visible
+            if (!Win32._IsWindowVisible(hWnd))
+                return false;
+
+            //2 The window must not be a toolwindow
+            uint winStyle = (uint)Win32._GetWindowLong(hWnd, (int)Win32.WindowLongFlags.GWL_EXSTYLE);
+            if ((winStyle & (uint)Win32.WindowStylesEx.WS_EX_TOOLWINDOW) != 0)
+            {
+                return false;
+            }
+
+            if (Win32._GetAncestor(hWnd, Win32.eGaFlags.GA_ROOTOWNER) != hWnd)
+            {
+                return false;
+            }
+
+            uint cloaked;
+            Win32._DwmGetWindowAttribute(hWnd, Win32.eDwmWindowAttribute.Cloaked, out cloaked, sizeof(uint));
+            if (cloaked == Win32.DWM_CLOAKED_SHELL)
+            {
+                return false;
+            }
+
+            //Check if the window is minimized
+            uint uiStyles = (uint)Win32._GetWindowLong(hWnd, (int)Win32.WindowLongFlags.GWL_STYLE);
+            uint uiMinimizeStyle = (uint)Win32.WindowStyles.WS_MINIMIZE;
+            bool isMinimized = ((uiStyles & uiMinimizeStyle) == uiMinimizeStyle);
+            if (isMinimized)
+                return false;
+
+            //Check if the window across screen boundary
+            //It need Screen rect, will be check after returned
+
+            return true;
+        }
+        #endregion
+
+        #region Capture Done
+        private void OnCaptureDone()
+        {
+            CaptureDone?.Invoke(this, new EventArgs());
+            Close();
+        }
+        #endregion
+    }
+}

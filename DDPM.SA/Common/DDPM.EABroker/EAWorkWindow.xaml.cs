@@ -627,7 +627,7 @@ namespace DDPM.EABroker
             }
         }
 
-        #region Span
+        #region SpanScreen
         public bool IsWorkForSpanScreen => _isWorkForSpanScreen;
         #endregion Span
 

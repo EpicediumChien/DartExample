@@ -1,28 +1,18 @@
-﻿<Window x:Class="DDPM.EABroker.EAEditWindow"
+﻿<Window x:Class="DDPM.EABroker.OverlapWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:DDPM.EABroker"
         mc:Ignorable="d"
-        Title="EAEditWindow" 
+        Title="OverlapWindow" 
         Height="450" Width="800"
         AllowsTransparency="True" Topmost="True"
         WindowStyle="None" ResizeMode="NoResize" 
-        Background="Transparent" ShowInTaskbar="False"
-        Loaded="Window_Loaded"
+        BorderThickness="1" BorderBrush="Green"
+        Background="#33E67272" ShowInTaskbar="False" Loaded="Window_Loaded"        
         >
-    <Window.Resources>
-        <ResourceDictionary>
-            <ResourceDictionary.MergedDictionaries>
-                <!--<ResourceDictionary Source="EAStyles.xaml"/>-->
-            </ResourceDictionary.MergedDictionaries>
-
-        </ResourceDictionary>
-
-    </Window.Resources>
     <Grid>
-        <ContentControl Name="splitCtrl" />
-        <Canvas Name="canvas"/>
+        <ContentControl x:Name="content"/>
     </Grid>
 </Window>

@@ -533,7 +533,7 @@ namespace DDPM.UI.Module.HeadsetAudioSettings
             Canvas.SetTop(node, newY);
             UpdateNodeValuePosition(node);
             UpdateCurve();
-            UpdateShadowVisibility();
+            //UpdateShadowVisibility();
         }
     }
 
