@@ -200,6 +200,7 @@ namespace DDPM.EABroker
                 _cellBorderCount = _splitCtrl.CellList.Count;
             }
 
+            // [sonarqube] this subsequent code is never executed.
             //if (_splitCtrl == null)
             //{
             //    _lastError = "Fail to create SplitCtrl";
