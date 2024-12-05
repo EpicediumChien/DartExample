@@ -22,5 +22,8 @@ namespace DDPM.SA.Common.Display
         //SetIsSpanEnabled: When IsSpaneEnabled flag changed, provide new value in EAArgs.Result
         public const string EACommand_SetIsSpanEnabled = "SetIsSpanEnabled";
 
+        //Notify to EAPlugin from DeviceManagerPlugin when lastSelectedMonitor_UI is changed
+        public const string EACommand_LastSelectedMonitorChanged = "LastSelectedMonitorChanged";
+
     }
 }

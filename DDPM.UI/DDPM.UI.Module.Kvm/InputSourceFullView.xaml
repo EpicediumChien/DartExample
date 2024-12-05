@@ -155,7 +155,7 @@
                             </Grid.RowDefinitions>
                             <Grid Grid.Row="0" Margin="16, 16, 16, 0">
                                 <UXControls:UXTextBlock Text="{Binding [Kvm.0], Source={x:Static lang:LangHelper.Instance},StringFormat={}{0}1}"
-                                                        Foreground="{DynamicResource DefaultTheme_USBKVMPCColor}"
+                                                        Foreground="{DynamicResource TextBlock_ForegroundColor}"
                                                         FontSize="16" LineHeight="24"
                                                         HorizontalAlignment="Center" />
                             </Grid>
@@ -236,7 +236,7 @@
                             <Grid Grid.Row="3" Margin="16, 2, 16, 8">
                                 <ComboBox AutomationProperties.Name="SelectedCheck" Style="{StaticResource DdpmUSBKVMComboBoxStyle}"
                                           HorizontalAlignment="Center" VerticalAlignment="Top"
-                                          ItemsSource="{Binding PCInputsList}" Width="103"
+                                          ItemsSource="{Binding PCInputsList}" 
                                           SelectedItem="{Binding PC2Inputs_Selected, Mode=TwoWay}"
                                           DisplayMemberPath="inputDisplayText"
                                           Background="{DynamicResource DefaultTheme_USBKVMComboBkColor}"
@@ -251,7 +251,7 @@
                             <Grid Grid.Row="5" Margin="16, 2, 16, 16">
                                 <ComboBox AutomationProperties.Name="SelectedCheck" Style="{StaticResource DdpmUSBKVMComboBoxStyle}"
                                           HorizontalAlignment="Center" VerticalAlignment="Center"
-                                          ItemsSource="{Binding USBsList}" Width="103"
+                                          ItemsSource="{Binding USBsList}" 
                                           SelectedItem="{Binding PC2USB_Selected, Mode=TwoWay}"
                                           DisplayMemberPath="inputDisplayText"
                                           Background="{DynamicResource DefaultTheme_USBKVMComboBkColor}"

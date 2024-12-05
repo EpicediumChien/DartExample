@@ -189,7 +189,7 @@ namespace DDPM.UI.Module.Brightness
         {
             get
             {
-                return IsSynchronize ? "ON" : "OFF";
+                return IsSynchronize ? Strings.On : Strings.Off;
             }
         }
 
@@ -561,6 +561,7 @@ namespace DDPM.UI.Module.Brightness
                 NotifyPropertyChanged("BrightnessValue");
                 NotifyPropertyChanged("ContrastValue");
                 NotifyPropertyChanged("IsSynchronize");
+                NotifyPropertyChanged("IsSynchronize_String");
                 NotifyPropertyChanged("AutoBrightnessRangeLevel_String");
             }
 
@@ -709,7 +710,7 @@ namespace DDPM.UI.Module.Brightness
                     }
                 }
             }
-            else if (IsScheduledShow == Visibility.Visible)
+            else if (IsScheduledShow == Visibility.Visible|| IsScheduledLuminanceShow == Visibility.Visible)
             {
                 if (PR1Luminance_Value < 0 || PR2Luminance_Value < 0 || PR1Brightness_Value < 0 || PR2Brightness_Value < 0 || PR1Contrast_Value < 0 || PR2Contrast_Value < 0 || hOurs_1 < 0 || hOurs_2 < 0 || mIns_1 < 0 || mIns_2 < 0 || dUration_1 < 0 || dUration_2 < 0)
                 {
@@ -734,7 +735,7 @@ namespace DDPM.UI.Module.Brightness
                     }
                 }
             }
-            if(!isRunAlsNG&& !isRunScheduledNG)
+            if (!isRunAlsNG&& !isRunScheduledNG)
             {
                 RunManual(isLuminance);
             }
@@ -2235,6 +2236,7 @@ namespace DDPM.UI.Module.Brightness
             {
                 IsSynchronizeMonitor = value;
                 NotifyPropertyChanged("IsSynchronize");
+                NotifyPropertyChanged("IsSynchronize_String");
             }
         }
 

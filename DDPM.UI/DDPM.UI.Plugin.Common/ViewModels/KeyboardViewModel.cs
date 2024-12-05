@@ -110,14 +110,8 @@ namespace DDPM.UI.Plugin.ViewModels
             DeviceInfos.Clear();
             foreach (DeviceInfo deviceInfo in deviceInfos)
             {
-                if (deviceInfo.LogicalDeviceType.Contains("Keyboard"))
+                if ((deviceInfo.LogicalDeviceType.Contains("Keyboard") || EOLKBList.Contains(deviceInfo.ModelNumber)) && !DeviceInfos.ContainsKey(deviceInfo.ID))
                     DeviceInfos.Add(deviceInfo.ID, deviceInfo);
-
-                if (EOLKBList.Contains(deviceInfo.Name))
-                {
-                    deviceInfo.ModelNumber = deviceInfo.Name;
-                    DeviceInfos.Add(deviceInfo.ID, deviceInfo);
-                }
             }
         }
 

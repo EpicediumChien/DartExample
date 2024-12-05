@@ -75,5 +75,7 @@ namespace DDPM.SA.Common
 
         //Task ChangeNKVMState(bool state);
         Task CallShowNKVM(int num, int x, int y);
+
+        Task SaveVCPcode(NKVMVCPValue value);
     }
 }
