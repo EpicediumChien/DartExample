@@ -3,8 +3,10 @@ using Dell.Client.Framework.UX.WPF.Controls;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Numerics;
 namespace DDPM.SA.Common
 {
     /*public class IT_Command_Global
@@ -1196,9 +1198,9 @@ namespace DDPM.SA.Common
     new Dictionary<string, object> { { "TargetType", "DISPLAY" }, { "TargetFeature", "Resolution" },                { "VCP", "ALL" } },
     new Dictionary<string, object> { { "TargetType", "DISPLAY" }, { "TargetFeature", "RefreshRate" },               { "VCP", "ALL" } },
     new Dictionary<string, object> { { "TargetType", "DISPLAY" }, { "TargetFeature", "ResolutionRefreshRate" },     { "VCP", "ALL" } },
-    new Dictionary<string, object> { { "TargetType", "DISPLAY" }, { "TargetFeature", "SpeakerMicrophone" },         { "VCP", "62,8D" } },
-    new Dictionary<string, object> { { "TargetType", "DISPLAY" }, { "TargetFeature", "SpeakerVolume" },             { "VCP", "62" } },
-    new Dictionary<string, object> { { "TargetType", "DISPLAY" }, { "TargetFeature", "Microphone" },                { "VCP", "8D" } },
+    new Dictionary<string, object> { { "TargetType", "DISPLAY" }, { "TargetFeature", "SpeakerMicrophone" },         { "VCP", "62,8D,FE,C0000,01,02" } },
+    new Dictionary<string, object> { { "TargetType", "DISPLAY" }, { "TargetFeature", "SpeakerVolume" },             { "VCP", "62,FE,C0000" } },
+    new Dictionary<string, object> { { "TargetType", "DISPLAY" }, { "TargetFeature", "Microphone" },                { "VCP", "8D,01,02,C000" } },
     new Dictionary<string, object> { { "TargetType", "DISPLAY" }, { "TargetFeature", "ColorPreset" },               { "VCP", "14" } },
     new Dictionary<string, object> { { "TargetType", "DISPLAY" }, { "TargetFeature", "FWVersion" },                 { "VCP", "ALL" } },
     new Dictionary<string, object> { { "TargetType", "DISPLAY" }, { "TargetFeature", "PowerNap" },                  { "VCP", "E0" } },
@@ -1211,9 +1213,13 @@ namespace DDPM.SA.Common
 
             public static string PrintFormattedJsonTargetFeature(string targetType, Dictionary<string, List<string>> vcpList, bool isColorMangerment)
             {
+                var vcpKeyList = vcpList.Keys.ToList();
+                var vcpValueList = vcpList.Where(_=>_.Value!=null).SelectMany(_ => _.Value);
+                var finalVCPList = vcpKeyList.Concat(vcpValueList);
+
                 var targetFeatures = FeatureListByVCP
                 .Where(f => (f["TargetType"].ToString().Equals(targetType, StringComparison.OrdinalIgnoreCase))
-                && (f["VCP"].ToString().Split(",").ToList().Find(x => vcpList.ContainsKey(x)) != null) || f["VCP"].ToString().Equals("ALL", StringComparison.OrdinalIgnoreCase)
+                && (f["VCP"].ToString().Split(",").ToList().Except(finalVCPList).Count() == 0) || f["VCP"].ToString().Equals("ALL", StringComparison.OrdinalIgnoreCase)
                 || f["VCP"].ToString().Equals(isColorMangerment.ToString().ToUpper(), StringComparison.OrdinalIgnoreCase))
                 .Select(f => f["TargetFeature"].ToString())
                 .Distinct()
