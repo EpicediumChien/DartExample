@@ -228,6 +228,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                             _deviceManager.ReceiveTelemetryInfo("AppSession", "AppStarted", Telementry_Frequency.RealTime);
 
                             await GetDdpmDevicesAsync(_deviceManager);
+                            await _deviceManager!.SetIsDDPMHomepageReadyAsync(true);
 
                             //1030 get global settings for telemetry consent page using
                             _globalSettings = _deviceManager.GetGlobalSettingParam().Result;
@@ -290,7 +291,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
 
                         CheckIfNeedImportSetting_Display();
 
-                        await DDPMInfoSAHomepageIsReady();
+                        //await DDPMInfoSAHomepageIsReady();
                     }
                 }
             }
@@ -337,7 +338,9 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
         {
             try
             {
+                _log.Info("DDPMInfoSAHomepageIsReady start");
                 await _deviceManager!.SetIsDDPMHomepageReadyAsync(true);
+                _log.Info("DDPMInfoSAHomepageIsReady end");
             }
             catch (Exception e)
             {
@@ -484,12 +487,12 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
             if (e == null || e.UI_Field_Name == null || e == UpdateUINotify.Empty)
                 return;
 
-            _log.Info($"_deviceManager_UIUpdateNotify executed msg is {e.UI_Field_Name}");
+            _log.Info($"_deviceManager_UIUpdateNotify received msg is {e.UI_Field_Name}");
             //System.Windows.MessageBox.Show(e.UI_Field_Name);
 
             if (e.UI_Field_Name.StartsWith("QAMEvent_StartPreview"))
             {
-                _log.Info($"_deviceManager_UIUpdateNotify start to show webcam preview");
+                //_log.Info($"_deviceManager_UIUpdateNotify start to show webcam preview");
                 _console.ShowPluginById(DDPM.UI.Common.Constants.WebCameraPluginId);
                 //_showPluginManager?.ShowPluginById(DDPM.UI.Common.Constants.SettingsPluginId);
                 //_console.ShowPluginById(DDPM.UI.Common.Constants.SettingsPluginId);
@@ -500,21 +503,24 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
             }
         }
 
+        [DllImport("user32.dll")]
+        private static extern int SendMessage(IntPtr hWnd, int wMsg, IntPtr wParam, IntPtr lParam);
+        private const int WM_EXITBYSELF = 0xFF30;
         private void CloseMyself()
         {
             try
             {
-                Dispatcher.CurrentDispatcher.Invoke(new Action(() =>
-                {
-                    System.Windows.Application.Current.Shutdown();
-                    Dispatcher.Run();
-                }));
+                IntPtr hWnd = Process.GetCurrentProcess().MainWindowHandle;
+                int result = SendMessage(hWnd, WM_EXITBYSELF, IntPtr.Zero, IntPtr.Zero);
+
+                _log.Info($"SendMessage result = {result}");
             }
             catch (Exception e)
             {
-                _log.Info($"Catch excepton: {e.Message} when CloseMyself");
+                _log.Info($"Catch exception: {e.Message} when CloseMyself");
             }
-            
+
+            _log.Info($"Run CloseMyself successfully.");
         }
 
         private void _deviceManager_VCPchanged(object? sender, VCPchangedEventArgs e)

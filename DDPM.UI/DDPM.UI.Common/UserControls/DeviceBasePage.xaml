@@ -60,7 +60,8 @@
         <!-- Layers: buttom to top, 1,2,3, ... -->
         <!-- Layer 1 -->
         <Grid>
-            <UXControls:UXScrollViewer x:Name="topViewScrollViewer">
+            <!-- 
+            <UXControls:UXScrollViewer x:Name="topViewScrollViewer"> -->
                 <StackPanel Orientation="Horizontal" x:Name="topStackPanel">
                     <!-- LeftFrame -->
                     <Grid x:Name="LeftGrid">
@@ -348,7 +349,7 @@
                         </Grid>
                     </StackPanel>
                 </StackPanel>
-            </UXControls:UXScrollViewer>
+            <!-- </UXControls:UXScrollViewer> -->
         </Grid>
 
         <!-- Layer : FullView -->

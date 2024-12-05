@@ -25,7 +25,7 @@ namespace DDPM.QAM
     {
         CameraSetting? CameraSetting;
 
-        public event EventHandler<UpdateUINotify> UpdateUINotify;
+        //public event EventHandler<UpdateUINotify> QAMUpdateUIHandler;
 
         [DllImport("user32.dll", SetLastError = true)]
         [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
@@ -140,6 +140,8 @@ namespace DDPM.QAM
 
         private void CloseMyself(bool closedByUser = false)
         {
+            WriteLog($"CloseMyself start");
+
             try
             {
                 if (CameraSetting != null)
@@ -165,7 +167,7 @@ namespace DDPM.QAM
                 WriteLog($"Catch exception[{e.Message}]");
             }
 
-            
+            WriteLog($"CloseMyself end");
         }
 
         private void WriteLog(string text,
@@ -230,28 +232,28 @@ namespace DDPM.QAM
                 DdpmCommonHelper.DeviceManagerSA!.SetIsDDPMLaunchByQAMAsync(false);
         }
 
-        private void SendMessageToDDPM(int timeout)
-        {
-            int i = 0;
+        //private void SendMessageToDDPM(int timeout)
+        //{
+        //    int i = 0;
 
-            while (true)
-            {
-                Thread.Sleep(1000);
-                ++i;
+        //    while (true)
+        //    {
+        //        Thread.Sleep(1000);
+        //        ++i;
 
-                //wait for homepage is available
-                if (2000 == DdpmCommonHelper.DeviceManagerSA!.GetCurrentPollingRate().Result)
-                {
-                    Thread.Sleep(2000);
-                    OnUpdateUINotify($"QAMEvent_StartPreview[{i}]");
+        //        //wait for homepage is available
+        //        if (2000 == DdpmCommonHelper.DeviceManagerSA!.GetCurrentPollingRate().Result)
+        //        {
+        //            Thread.Sleep(2000);
+        //            OnUpdateUINotify($"QAMEvent_StartPreview[{i}]");
 
-                    break;
-                }
+        //            break;
+        //        }
 
-                if (i >= 10)
-                    break;
-            }
-        }
+        //        if (i >= 10)
+        //            break;
+        //    }
+        //}
 
         private void Grid_MouseDown(object sender, MouseButtonEventArgs e)
         {
@@ -285,12 +287,12 @@ namespace DDPM.QAM
             }
         }
 
-        public void OnUpdateUINotify(string msg)
-        {
-            UpdateUINotify e = new UpdateUINotify();
-            e.UI_Field_Name = msg;
+        //public void OnUpdateUINotify(string msg)
+        //{
+        //    UpdateUINotify e = new UpdateUINotify();
+        //    e.UI_Field_Name = msg;
 
-            UpdateUINotify?.Invoke(this, e);
-        }
+        //    QAMUpdateUIHandler?.Invoke(this, e);
+        //}
     }
 }

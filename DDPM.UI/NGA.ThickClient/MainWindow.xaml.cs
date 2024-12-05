@@ -23,6 +23,7 @@ using System.Windows.Input;
 using System.Windows.Interop;
 using Screen = System.Windows.Forms.Screen;
 using ResourceManager = Dell.Client.Framework.UX.WPF.ResourceManager.ResourceManager;
+using System.Reflection.Metadata;
 
 namespace NGA.ThickClient
 {
@@ -63,6 +64,8 @@ namespace NGA.ThickClient
         private const int WM_EXITSIZEMOVE = 0x0232;
         private const int WM_QUERYENDSESSION = 0x11;
         private readonly ResourceManager resourceManager;
+
+        private const int WM_EXITBYSELF = 0xFF30;
 
         /// <summary>
         /// Constructor
@@ -320,6 +323,10 @@ namespace NGA.ThickClient
                     break;
 
                 case WM_QUERYENDSESSION: // Temporary fix: base class sets handled to true
+                    break;
+
+                case WM_EXITBYSELF:
+                    this.Close();
                     break;
 
                 default:

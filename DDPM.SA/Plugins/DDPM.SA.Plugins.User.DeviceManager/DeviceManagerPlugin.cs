@@ -10241,7 +10241,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 //關得比較慢？？？
                 writelog($"Try to run QAMClose");
                 _QAM?.Dispatcher.BeginInvoke(DispatcherPriority.Normal, () => _QAM?.Close());
-                Dispatcher.Run();
+                //Dispatcher.Run();
 
                 //關得比較慢？？？
                 //new Thread(() => {
@@ -10249,6 +10249,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 //        _QAM?.Close();
                 //    }));
                 //}).Start();
+
+                //_QAM?.Dispatcher.BeginInvoke(DispatcherPriority.Normal, () => _QAM?.CloseMyself());
             }
             catch (Exception e)
             {
