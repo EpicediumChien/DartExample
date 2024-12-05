@@ -261,8 +261,8 @@ namespace DDPM.UI.Module.DisplayOthers
                         using (StreamReader jsonf = new StreamReader(impPath))
                         {
                             string json = jsonf.ReadToEnd();
-                            JArray jArray = JArray.Parse(json);
-                            model = jArray[0].Value<string>("Model");
+                            dynamic data=JsonConvert.DeserializeObject(json);
+                            model= data.MonitorSettings.Model;
                         }
                         if (DisplayOthersModule.SelectedHomeDevice.MonitorInfo.modelName != model)
                         {

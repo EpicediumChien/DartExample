@@ -1199,7 +1199,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager
             return Task.FromResult<bool>(false);
         }
 
-        public Task<bool> DisplayImportSettings(string path, bool isSameModel, string serviceTag, out DDPMImpExpSettings ImpExpSettings)
+        public Task<bool> DisplayImportSettings(string path, bool isSameModel,string modelName, string serviceTag, out DDPMImpExpSettings ImpExpSettings)
         {
             WriteLog("[DisplayImportSettings] path :" + path);
             List<DDPMMonitorSettings> monitorSettingsList = new List<DDPMMonitorSettings>();
@@ -1238,6 +1238,11 @@ namespace DDPM.SA.Plugins.User.SettingsManager
                 }
                 if (ImpExpSettings.MonitorSettings != null)
                 {
+                    if (modelName != "Skip")//Elsa add to fix PIMS-313843
+                    {
+                        if (modelName != ImpExpSettings.MonitorSettings.Model)
+                        { return Task.FromResult<bool>(false); }
+                    }
                     DDPMMonitorSettings monitorSettings = new DDPMMonitorSettings();
                     monitorSettings = ImpExpSettings.MonitorSettings;
                     WriteLog("[DisplayImportSettings] monitorSettings.Model :" + monitorSettings.Model);
@@ -1252,9 +1257,6 @@ namespace DDPM.SA.Plugins.User.SettingsManager
                             {
                                 foreach (DDPMMonitorSettings settings in monitorSettingsList)
                                 {
-                                    if (settings.Model!=monitorSettings.Model) ////Elsa add to fix PIMS-313843
-                                    { return Task.FromResult<bool>(false); }
-
                                     //if ((settings.ServiceTag == monitorSettings.ServiceTag && isSameModel == false) || 
                                         //(settings.ServiceTag == serviceTag && isSameModel == true))
                                     if (( isSameModel == false) ||(isSameModel == true))//Elsa add to fix PIMS-313793

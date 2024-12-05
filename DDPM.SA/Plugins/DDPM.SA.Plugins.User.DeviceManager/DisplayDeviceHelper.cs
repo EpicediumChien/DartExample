@@ -132,7 +132,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                     if (dDPMImpExpSettings.MonitorSettings.ImpExpSettings.SameModel)
                                     {
                                         DDPMImpExpSettings ImpExpSettings = new DDPMImpExpSettings();
-                                        if (settingsManagerDev.DisplayImportSettings(exportpath, true, serviceTag, out ImpExpSettings).Result)
+                                        if (settingsManagerDev.DisplayImportSettings(exportpath, true, "Skip", serviceTag, out ImpExpSettings).Result)
                                         {
                                             WriteLog("[CheckAndTriggerToastWhileMonitorPlugged] Import is success");
                                         }
@@ -194,7 +194,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         if (File.Exists(impPath))
                         {
                             DDPMImpExpSettings ImpExpSettings = new DDPMImpExpSettings();
-                            if (settingsManagerDev.DisplayImportSettings(impPath, true, ret[2], out ImpExpSettings).Result)
+                            if (settingsManagerDev.DisplayImportSettings(impPath, true, "Skip", ret[2], out ImpExpSettings).Result)
                             {
                                 WriteLog("[CheckAndTriggerToastWhileMonitorPlugged] Import is success");
                             }
