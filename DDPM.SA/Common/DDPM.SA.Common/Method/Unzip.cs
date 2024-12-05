@@ -82,7 +82,12 @@ namespace DDPM.SA.Common.Method
 
             try
             {
-                exeFiles = Directory.GetFiles(directory, "*.exe");
+                if (Directory.Exists(directory))
+                {
+                    string absolutePath = Path.GetFullPath(directory);
+                    if(!string.IsNullOrEmpty(absolutePath))
+                        exeFiles = Directory.GetFiles(absolutePath, "*.exe");
+                }
             }
             catch  (Exception ex)
             { 
