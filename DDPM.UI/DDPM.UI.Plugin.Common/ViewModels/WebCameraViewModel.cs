@@ -414,7 +414,7 @@ namespace DDPM.UI.Plugin.ViewModels
             }
         }
 
-        private Visibility _UPD_Visibility = Visibility.Hidden;
+        private Visibility _UPD_Visibility = Visibility.Collapsed;
 
         public Visibility UPD_Visibility
         {

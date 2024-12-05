@@ -1036,7 +1036,9 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                 //bool blRet = true;
 
                 //blRet = CheckPresenceDetection_UI();
-                GetPresenceDetectionView();
+
+                //replace with leo check_PresenceFunction() 2024/12/05
+                //GetPresenceDetectionView();
 
                 moduleGroup = new ModuleGroup()
                 {
@@ -1924,8 +1926,6 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
         //Derek 1115 for Webcam PIMS 319099 and 319086
         private PresenceDetectionView GetPresenceDetectionView()
         {
-            //leo : 統一由新code接管UI預設show hide屬性
-            return 0;
 
             if (_vm!.CurrentDeviceInfo!.IsESISupported)
             {
