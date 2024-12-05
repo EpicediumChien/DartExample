@@ -196,20 +196,6 @@ namespace DDPM.SA.Plugin.CLIManager
                     return Task.FromResult(rst);
             }
 
-            if (commandLineInput.PluginsType == "DISPLAY" && commandLineInput.TargetFeature.Contains("NETWORKKVM") && commandLineInput.TargetFeature != "INAPPNETWORKKVM")
-            {
-                var _ = CLINetworkKVM.Execute(commandLineInput);
-                var rst = new CLIEventResult
-                {
-                    ticket = DateTime.Now,
-                    ExitCode = _.code,
-                    command_guid_string = arg.command_guid_string,
-                    serialize_Json_response = _.result
-                };
-
-                return Task.FromResult(rst);
-            }
-
             //Include IT command, invoke to user plugin for command processing
             if (commandLineInput.isNormalCommands)
                 OnCLIActionEventNotify(arg);
@@ -281,6 +267,54 @@ namespace DDPM.SA.Plugin.CLIManager
                     "PEN",
                     "WEBCAM",
                 };
+
+            // for NetworkKVM commands other than InAppNetworkKVM
+            if (commandLineInput.TargetFeature.Contains("NETWORKKVM") && commandLineInput.TargetFeature != "INAPPNETWORKKVM")
+            {
+                if (commandLineInput.TargetType == "DISPLAY")
+                {
+                    var _ = CLINetworkKVM.Execute(commandLineInput);
+                    rst.ExitCode = _.code;
+                    rst.serialize_Json_response = _.result;
+
+                    if (_.code == (int)CLI_ExitCode.success && commandLineInput.TargetFeature == "NETWORKKVM")
+                    {
+                        if (commandLineInput.Command == "GET")
+                        {
+                            rst.serialize_Json_response = JsonConvert.SerializeObject(new NKVM_RESPONSE
+                            {
+                                Command = commandLineInput.Command,
+                                TargetFeature = commandLineInput.TargetFeature,
+                                Result = "PASS",
+                                Value = data.Enable_Display_NetworkKVM ? "ON" : "OFF"
+                            }, Formatting.Indented);
+                        }
+                        else if (commandLineInput.Command == "SET")
+                        {
+                            data.Enable_Display_NetworkKVM = commandLineInput.Options[0].Option_Value == "ON";
+
+                            if (!_SettingsPluginIT?.WriteITConfigData(data, new List<string>() { "Enable_Display_NetworkKVM" }).Result == true)
+                            {
+                                rst.serialize_Json_response = JsonConvert.SerializeObject(new NKVM_RESPONSE
+                                {
+                                    Command = commandLineInput.Command,
+                                    TargetFeature = commandLineInput.TargetFeature,
+                                    Result = "FAIL",
+                                    Value = commandLineInput.Options[0].Option_Value,
+                                    Message = "Failed to update config"
+                                }, Formatting.Indented);
+                                rst.ExitCode = (int)CLI_ExitCode.fail_SetSettings_ITSettingsValue;
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    rst = CLIHandlerDisplay.CLI_Response_TypeNotSupport(commandLineInput, rst);
+                }
+
+                return rst;
+            }
 
             // !!!
             // Implement this switch-case, should match the Support_Lock_Feature in ICLICommandTable.cs
@@ -453,39 +487,6 @@ namespace DDPM.SA.Plugin.CLIManager
                     else
                         rst = CLIHandlerPeripheral.CLI_Response_TypeNotSupport(commandLineInput, rst);
                     break;
-                case "NETWORKKVM":
-                    if (commandLineInput.PluginsType.Equals("DISPLAY"))
-                    {
-                        var vaildOptions = new List<string>() { "ON", "OFF", "ENABLE", "DISABLE" };
-
-                        if (vaildOptions.Contains(commandLineInput.Options[0].Option_Value.ToUpper()))
-                        {
-                            data.Enable_Display_NetworkKVM = commandLineInput.Options[0].Option_Value.Equals("ON", StringComparison.OrdinalIgnoreCase) || commandLineInput.Options[0].Option_Value.Equals("ENABLE", StringComparison.OrdinalIgnoreCase);
-
-                            if (_SettingsPluginIT?.WriteITConfigData(data, new List<string>() { "Enable_Display_NetworkKVM" }).Result == true)
-                            {
-                                rst = CLIHandlerDisplay.CLI_Response_CompleteWithSuccess(commandLineInput, rst);
-                            }
-                            else
-                            {
-                                response.Message = "Failed to update config";
-                                response.Result = "FAIL";
-                                response.Value = commandLineInput.Options[0].Option_Value;
-                                rst.serialize_Json_response = JsonConvert.SerializeObject(response, Formatting.Indented);
-                                rst.ExitCode = (int)CLI_ExitCode.fail_SetSettings_ITSettingsValue;
-                                return rst;
-                            }
-                        }
-                        else
-                        {
-                            rst = CLIHandlerDisplay.CLI_Response_OptionValueNotSupport(commandLineInput, rst, commandLineInput.Options[0]);
-                        }
-                    }
-                    else
-                    {
-                        rst = CLIHandlerDisplay.CLI_Response_TypeNotSupport(commandLineInput, rst);
-                    }
-                    break;
                 default:
                     response.Message = $"Feature {commandLineInput.TargetFeature} doesn't in global setting support list";
                     response.Result = "FAIL";
@@ -632,19 +633,15 @@ namespace DDPM.SA.Plugin.CLIManager
             public static (int code, string result) Execute(CommandLineInput commandLineInput)
             {
                 _commandLineInput = commandLineInput;
-                var validOptions = new List<string>();
 
                 switch (_commandLineInput.TargetFeature)
                 {
                     case "NETWORKKVMVERSION":
                         return NetworkKVMVersion();
                     case "NETWORKKVM":
-                        validOptions = ["ON", "OFF", "ENABLE", "DISABLE"];
-                        return EntryNetworkKVM(_commandLineInput.TargetFeature, validOptions);
                     case "NETWORKKVMAUTOCONNECT":
                     case "NETWORKKVMCONTENTTRANSFER":
-                        validOptions = ["ON", "OFF", "DISABLE"];
-                        return EntryNetworkKVM(_commandLineInput.TargetFeature, validOptions);
+                        return EntryNetworkKVM(_commandLineInput.TargetFeature);
                     case "NETWORKKVMINCOMINGPORT":
                     case "NETWORKKVMOUTGOINGPORT":
                     case "NETWORKKVMCONTENTTRANSFERPORT":
@@ -740,8 +737,9 @@ namespace DDPM.SA.Plugin.CLIManager
                 return (retcode ? (int)CLI_ExitCode.success : (int)CLI_ExitCode.functional_error, output);
             }
 
-            private static (int code, string result) EntryNetworkKVM(string command, List<string> validOptions)
+            private static (int code, string result) EntryNetworkKVM(string command)
             {
+                var validOptions = new List<string> { "ON", "OFF" };
                 string output = string.Empty;
                 bool retcode = false;
 
@@ -797,12 +795,6 @@ namespace DDPM.SA.Plugin.CLIManager
                             retcode = true;
                             response.Result = "PASS";
                             response.Value = "ON";
-                            break;
-
-                        case 2:
-                            retcode = true;
-                            response.Result = "PASS";
-                            response.Value = "DISABLE";
                             break;
 
                         default:

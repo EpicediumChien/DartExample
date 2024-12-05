@@ -68,7 +68,14 @@ namespace DDPM.SA.Common
             "ANCMODE",                  //ancMode                   DDPMW-1853
             "MICNOISECANCELLATION",     //micNoiseCancellation      DDPMW-1855
             "WEARDETECTION",            //wearDetection             DDPMW-2093
-            "NETWORKKVM"
+            "NETWORKKVMVERSION",
+            "NETWORKKVM",
+            "NETWORKKVMAUTOCONNECT",
+            "NETWORKKVMCONTENTTRANSFER",
+            "NETWORKKVMINCOMINGPORT",
+            "NETWORKKVMOUTGOINGPORT",
+            "NETWORKKVMCONTENTTRANSFERPORT",
+            "NETWORKKVMACCESSRESET"
         };
 
         //IT value table of IT feature
@@ -694,6 +701,11 @@ namespace DDPM.SA.Common
             int feature_idx = Supported_IT_Feature.FindIndex(x => x.ToUpper().Trim().Equals(commandInput_temp.TargetFeature.ToUpper().Trim()));
             if (feature_idx >= 0) //has IT feature
             {
+                if (commandInput.TargetFeature.Contains("NETWORKKVM"))
+                {
+                    commandInput.isITCommands = true;
+                    return;
+                }
                 if (commandInput.Options.Count == 0)//recognized only normal command -> CLIProxy
                 {
                     commandInput.isNormalCommands = true;
@@ -731,11 +743,6 @@ namespace DDPM.SA.Common
                                         commandInput.isNormalCommands = true;
                                         //break;
                                     }
-                                }
-                                else if (commandInput.TargetFeature == "NETWORKKVM" && (value.Trim().ToUpper().Equals("ON") || value.Trim().ToUpper().Equals("OFF")))
-                                {
-                                    commandInput.isITCommands = true;
-                                    commandInput.isNormalCommands = true;
                                 }
                                 else
                                 {
