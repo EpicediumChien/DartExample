@@ -305,7 +305,8 @@
                         </Border>
                         <StackPanel Orientation="Vertical">
                             <StackPanel Name="spPresets" Orientation="Vertical" Visibility="Collapsed">
-                                <Border Margin="8,0,0,6" Border.CornerRadius="4" Width="184" BorderThickness="1" BorderBrush="#324255">
+                                <Border Margin="8,0,0,6" Border.CornerRadius="4" Width="184" BorderThickness="1" BorderBrush="#324255"
+                                        Background="{DynamicResource DdpmCB_BkColor}">
                                     <DockPanel Name="SearchPanel" Margin="15,2,2,8" MaxHeight="160">
                                         <UXControls:UXScrollViewer x:Name="svAction" VerticalScrollBarVisibility="Auto">
                                             <ItemsControl Name="ProfileItems">
@@ -345,7 +346,7 @@
                                     </DockPanel>
                                 </Border>
                                 <Border Margin="8,0,0,12" Border.CornerRadius="4" Cursor="Hand" Width="184"  Height="36"
-                                        BorderThickness="1" BorderBrush="#324255">
+                                        BorderThickness="1" BorderBrush="#324255" Background="{DynamicResource DdpmCB_BkColor}">
                                     <UXControls:UXTextBlock Name="txtAddPreset" FontFamily="Roboto" FontSize="14" FontWeight="Normal" VerticalAlignment="Center" HorizontalAlignment="Center" MouseLeftButtonDown="AddPreset" />
                                 </Border>
                             </StackPanel>

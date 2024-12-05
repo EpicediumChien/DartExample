@@ -33,7 +33,7 @@ namespace DDPM.UI.Module.WebCameraPresenceDetection
             // webcam event hander
             //_vm._log.Info($" subscribe event  {nameof(DdpmCommonHelper.DeviceManagerSA.Esi_IsCameraSensorCover_ChangeEvent)} , Handler Name: {nameof(OnEsi_IsCameraSensorCoverChangeHandler)} ");
             //DdpmCommonHelper.DeviceManagerSA.Esi_IsCameraSensorCover_ChangeEvent += OnEsi_IsCameraSensorCoverChangeHandler;
-            
+
             //_vm._log.Info($" subscribe event  {nameof(DdpmCommonHelper.DeviceManagerSA.WALSnoozeTimeLeftInSeconds_ChangeEvent)} , Handler Name: {nameof(OnWALSnoozeTimeLeftInSecondsChangeHandler)} ");
             //DdpmCommonHelper.DeviceManagerSA.WALSnoozeTimeLeftInSeconds_ChangeEvent += OnWALSnoozeTimeLeftInSecondsChangeHandler;
 
@@ -49,7 +49,7 @@ namespace DDPM.UI.Module.WebCameraPresenceDetection
             //_vm.MPS_UpdateFW_Visibility = Visibility.Collapsed;
 
             _vm.Delay_ItemsCollection = new List<UI_Delay_WalkAwayLock>();
-            
+
             _vm.Delay_ItemsCollection.Add(new UI_Delay_WalkAwayLock
             {
                 Delay = 30
@@ -89,7 +89,7 @@ namespace DDPM.UI.Module.WebCameraPresenceDetection
                 SnoozeLength_sec = 7200
             });
 
-           
+
             bool blRes = false;
 
             blRes = DdpmCommonHelper.DeviceManagerSA!.GetIsProximitySensorEnable(_vm.CurrentDeviceInfo!.ID.ToString()).Result;
@@ -102,7 +102,7 @@ namespace DDPM.UI.Module.WebCameraPresenceDetection
             _vm.IsChecked_WalkAwayLock = blRes;
 
             int nRes = -1;
-          
+
             nRes = DdpmCommonHelper.DeviceManagerSA!.GetWALTime(_vm.CurrentDeviceInfo!.ID.ToString()).Result;
 
             if (nRes != 30 && nRes != 60 && nRes != 120)
@@ -110,7 +110,7 @@ namespace DDPM.UI.Module.WebCameraPresenceDetection
 
             _vm.SelectedDelay = _vm.Delay_ItemsCollection.Find(x => (x.Delay == nRes));
 
-            
+
             nRes = DdpmCommonHelper.DeviceManagerSA!.GetSnooze(_vm.CurrentDeviceInfo!.ID.ToString()).Result;
             //nRes = DdpmCommonHelper.DeviceManagerSA!.GetSnooze(_vm.CurrentDeviceInfo!.ID).Result;
 
@@ -194,7 +194,7 @@ namespace DDPM.UI.Module.WebCameraPresenceDetection
 
         private void SetUPDToDefaultStatus()
         {
-            _vm.IsChecked_ProximitySensor = false;
+            //_vm.IsChecked_ProximitySensor = false;
             _vm.IsChecked_WakeOnApproach = false;
             _vm.IsChecked_WalkAwayLock = false;
         }
@@ -361,15 +361,15 @@ namespace DDPM.UI.Module.WebCameraPresenceDetection
 
 
         private void onSoozeLegthcbxSelectionChanged(object sender, SelectionChangedEventArgs e)
-        {            
+        {
             if (_vm.IsChecked_Snooze)
             {
                 //_countdown = DdpmCommonHelper.DeviceManagerSA!.GetSnoozeLength(_vm.CurrentDeviceInfo!.ID.ToString()).Result;             
-            }         
+            }
         }
 
         private void Timer_Tick(object sender, EventArgs e)
-        {          
+        {
             _countdown--;
             TimeSpan ts = TimeSpan.FromSeconds(_countdown);
 

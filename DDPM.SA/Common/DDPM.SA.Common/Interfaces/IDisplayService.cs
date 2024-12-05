@@ -172,6 +172,14 @@ namespace DDPM.SA.Common
         /// </summary>
         /// <returns>True=Enabled; False=Disabled</returns>
         public Task<bool> GetIsSpanEnabled();
+
+        /// <summary>
+        /// General notification  to EAPlugin from other Plugins inside DDPM.SA.User
+        /// </summary>
+        /// <param name="eaArgs"></param>
+        /// <returns></returns>
+        public Task<bool> NotifyEAMessage(EAArgs eaArgs);
+
         #endregion EasyArange
 
         #region Gaming
