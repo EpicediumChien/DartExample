@@ -112,7 +112,7 @@ namespace DDPM.UI.Module.Brightness
             if ((bool)SynchronizeSwitch.IsChecked)
             {
                 _vm.IsSynchronize = true;
-                SynchronizeSwitch.Content = Strings.On;
+                //SynchronizeSwitch.Content = Strings.On;
 
                 // Brightness and contrast
                 _vm.BR_Con_Sync();
@@ -123,7 +123,7 @@ namespace DDPM.UI.Module.Brightness
             else
             {
                 _vm.IsSynchronize = false;
-                SynchronizeSwitch.Content = Strings.Off;
+                //SynchronizeSwitch.Content = Strings.Off;
             }
 
             setting.UserSettings.IsSynchronizemonitor = _vm.IsSynchronize;
