@@ -553,6 +553,7 @@ namespace DDPM.UI.Plugin.ViewModels
 
             WebcamSettingChanged?.Invoke(this, EventArgs.Empty);
 
+            _isChecked_ProximitySensor = CurrentDeviceInfo!.IsProximitySensorEnable;
             IsMicEnumerationOnEnabled = true;
             AlertVisibility = Visibility.Collapsed;
             return true;
@@ -868,7 +869,7 @@ namespace DDPM.UI.Plugin.ViewModels
         }
         public bool IsNotRecording { get => !IsRecording; }
 
-        public int btnRes0_width { get; set; } 
+        public int btnRes0_width { get; set; }
         public int btnRes1_width { get; set; }
         public int btnRes2_width { get; set; }
         public int btnRes3_width { get; set; }
@@ -892,7 +893,12 @@ namespace DDPM.UI.Plugin.ViewModels
         public bool hdr_enable { get => IsNotRecording && is_hdr_enable; }
 
         public bool is_ProximitySensor_enable = true;
-        public bool ProximitySensor_enable { get => is_ProximitySensor_enable; }
+        public bool IsProximitySensorEnable
+        {
+            get => IsProximitySensorEnable;
+
+            set { }
+        }
 
         private bool _isChecked_Autofocus;
 

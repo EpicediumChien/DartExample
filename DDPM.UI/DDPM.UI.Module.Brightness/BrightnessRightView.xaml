@@ -19,7 +19,7 @@
             <!--<local:RadioBoolToIntConverter x:Key="radioBoolToIntConverter" />-->
 
             <local:BooleanToBrushConverter x:Key="BooleanToBrushConverter" FalseBrush="White" TrueBrush="Gray" />
-            <local:CustomBooleanToBrushConverter x:Key="CustomBooleanToBrushConverter" FalseBrushLightTheme="Black" FalseBrushDarkTheme="White" TrueBrush="Gray" />
+            <local:CustomBooleanToBrushConverter x:Key="CustomBooleanToBrushConverter" FalseBrushLightTheme="{StaticResource TextBlock_ForegroundColor}" FalseBrushDarkTheme="{StaticResource TextBlock_ForegroundColor}" TrueBrush="Gray" />
 
             <local:InverseBooleanConverter x:Key="InverseBooleanConverter" />
 
@@ -269,7 +269,7 @@
                                             HorizontalAlignment="Left"
                                             VerticalAlignment="Center"
                                             FontSize="16"
-                                            Foreground="{Binding IsSynchronizeDisabled, Converter={StaticResource CustomBooleanToBrushConverter}}"
+                                            Foreground="{DynamicResource TextBlock_ForegroundColor}"
                                             Text="{Binding [Brightness.4], Source={x:Static lang:LangHelper.Instance}}"
                                             TextBlockSemanticColorType="Light"
                                             TextBlockType="Display1" />
@@ -319,7 +319,7 @@
                                             Content="{Binding Path=IsSynchronize_String}"
                                             ContentPlacement="Left"
                                             ContentTextVisibility="True"
-                                            Foreground="{Binding IsSynchronizeDisabled, Converter={StaticResource CustomBooleanToBrushConverter}}"
+                                            Foreground="{DynamicResource TextBlock_ForegroundColor}"
                                             IsChecked="{Binding Path=IsSynchronize}"
                                             IsEnabled="{Binding IsSynchronizeDisabled, Converter={StaticResource InverseBooleanConverter}}" />
                                     </Grid>
@@ -459,7 +459,7 @@
                                             HorizontalAlignment="Left"
                                             VerticalAlignment="Center"
                                             FontSize="16"
-                                            Foreground="{Binding IsSynchronizeDisabled, Converter={StaticResource CustomBooleanToBrushConverter}}"
+                                            Foreground="{DynamicResource TextBlock_ForegroundColor}"
                                             Text="{Binding [Brightness.4], Source={x:Static lang:LangHelper.Instance}}"
                                             TextBlockSemanticColorType="Light"
                                             TextBlockType="Display1" />
@@ -509,7 +509,7 @@
                                             Content="{Binding Path=IsSynchronize_String}"
                                             ContentPlacement="Left"
                                             ContentTextVisibility="True"
-                                            Foreground="{Binding IsSynchronizeDisabled, Converter={StaticResource CustomBooleanToBrushConverter}}"
+                                            Foreground="{DynamicResource TextBlock_ForegroundColor}"
                                             IsChecked="{Binding Path=IsSynchronize}"
                                             IsEnabled="{Binding IsSynchronizeDisabled, Converter={StaticResource InverseBooleanConverter}}" />
                                     </Grid>
@@ -593,7 +593,7 @@
                                             HorizontalAlignment="Left"
                                             VerticalAlignment="Center"
                                             FontSize="16"
-                                            Foreground="{Binding IsAutoBrightnessTextGrayedOut, Converter={StaticResource CustomBooleanToBrushConverter}}"
+                                            Foreground="{DynamicResource TextBlock_ForegroundColor}"
                                             Text="{Binding [Brightness.6], Source={x:Static lang:LangHelper.Instance}}"
                                             TextBlockSemanticColorType="Light"
                                             TextBlockType="Display1" />
@@ -679,7 +679,7 @@
                                             HorizontalAlignment="Left"
                                             VerticalAlignment="Center"
                                             FontSize="16"
-                                            Foreground="{Binding IsAutoBrightnessRangeLevelTextGrayedOut, Converter={StaticResource CustomBooleanToBrushConverter}}"
+                                            Foreground="{DynamicResource TextBlock_ForegroundColor}"
                                             Text="{Binding [Brightness.8], Source={x:Static lang:LangHelper.Instance}}"
                                             TextBlockSemanticColorType="Light"
                                             TextBlockType="Display1"
@@ -775,7 +775,7 @@
                                             HorizontalAlignment="Left"
                                             VerticalAlignment="Center"
                                             FontSize="16"
-                                            Foreground="{Binding IsAutoColorTempTextGrayedOut, Converter={StaticResource CustomBooleanToBrushConverter}}"
+                                            Foreground="{DynamicResource TextBlock_ForegroundColor}"
                                             Text="{Binding [Brightness.10], Source={x:Static lang:LangHelper.Instance}}"
                                             TextBlockSemanticColorType="Light"
                                             TextBlockType="Display1" />
@@ -865,7 +865,7 @@
                                             HorizontalAlignment="Left"
                                             VerticalAlignment="Center"
                                             FontSize="16"
-                                            Foreground="{Binding IsAutoPrimaryMonitorForSyncTextGrayedOut, Converter={StaticResource CustomBooleanToBrushConverter}}"
+                                            Foreground="{DynamicResource TextBlock_ForegroundColor}"
                                             Text="{Binding [Brightness.12], Source={x:Static lang:LangHelper.Instance}}"
                                             TextBlockSemanticColorType="Light"
                                             TextBlockType="Display1"
@@ -945,7 +945,7 @@
                                             HorizontalAlignment="Center"
                                             VerticalAlignment="Center"
                                             FontSize="14"
-                                            Foreground="{Binding IsAutoBrightnessRangeLevelStringGrayedOut, Converter={StaticResource CustomBooleanToBrushConverter}}"
+                                            Foreground="{DynamicResource TextBlock_ForegroundColor}"
                                             Text="{Binding AutoBrightnessRangeLevel_String}" />
                                     </Border>
                                     <Border
@@ -1038,11 +1038,9 @@
                                                             Name="PR1_Name_UXTextBox"
                                                             Grid.Row="1"
                                                             VerticalContentAlignment="Center"
-                                                            Background="{DynamicResource DdpmCB_BkColor}"
                                                             BorderBrush="#7E7E7E"
                                                             BorderThickness="1"
                                                             FontSize="14"
-                                                            Foreground="{DynamicResource TextBlock_ForegroundColor}"
                                                             IsEnabled="{Binding IsPRPreview, Converter={StaticResource boolReverseConverter}}"
                                                             MaxLength="30"
                                                             PreviewTextInput="InputName_PreviewTextInput"
@@ -1082,6 +1080,7 @@
                                                             Name="PR1_Hour_UXComboBox"
                                                             Grid.Row="1"
                                                             Grid.Column="0"
+                                                            Height="40"
                                                             MinWidth="70"
                                                             IsEnabled="{Binding IsPRPreview, Converter={StaticResource boolReverseConverter}}"
                                                             ItemsSource="{Binding hOurs}"
@@ -1095,6 +1094,7 @@
                                                             Name="PR1_Min_UXComboBox"
                                                             Grid.Row="1"
                                                             Grid.Column="2"
+                                                            Height="40"
                                                             MinWidth="70"
                                                             IsEnabled="{Binding IsPRPreview, Converter={StaticResource boolReverseConverter}}"
                                                             ItemsSource="{Binding mIns}"
@@ -1172,6 +1172,7 @@
                                                             Name="PR1_Duration_UXComboBox"
                                                             Grid.Row="1"
                                                             Grid.Column="0"
+                                                            Height="40"
                                                             MinWidth="70"
                                                             IsEnabled="{Binding IsPRPreview, Converter={StaticResource boolReverseConverter}}"
                                                             ItemsSource="{Binding dUration}"
@@ -1367,11 +1368,9 @@
                                                             Name="PR2_Name_UXTextBox"
                                                             Grid.Row="1"
                                                             VerticalContentAlignment="Center"
-                                                            Background="{DynamicResource DdpmCB_BkColor}"
                                                             BorderBrush="#7E7E7E"
                                                             BorderThickness="1"
                                                             FontSize="14"
-                                                            Foreground="{DynamicResource TextBlock_ForegroundColor}"
                                                             IsEnabled="{Binding IsPRPreview, Converter={StaticResource boolReverseConverter}}"
                                                             MaxLength="30"
                                                             PreviewTextInput="InputName_PreviewTextInput"
@@ -1411,6 +1410,7 @@
                                                             Name="PR2_Hour_UXComboBox"
                                                             Grid.Row="1"
                                                             Grid.Column="0"
+                                                            Height="40"
                                                             MinWidth="70"
                                                             IsEnabled="{Binding IsPRPreview, Converter={StaticResource boolReverseConverter}}"
                                                             ItemsSource="{Binding hOurs}"
@@ -1424,6 +1424,7 @@
                                                             Name="PR2_Min_UXComboBox"
                                                             Grid.Row="1"
                                                             Grid.Column="2"
+                                                            Height="40"
                                                             MinWidth="70"
                                                             IsEnabled="{Binding IsPRPreview, Converter={StaticResource boolReverseConverter}}"
                                                             ItemsSource="{Binding mIns}"
@@ -1501,6 +1502,7 @@
                                                             Name="PR2_Duration_UXComboBox"
                                                             Grid.Row="1"
                                                             Grid.Column="0"
+                                                            Height="40"
                                                             MinWidth="70"
                                                             IsEnabled="{Binding IsPRPreview, Converter={StaticResource boolReverseConverter}}"
                                                             ItemsSource="{Binding dUration}"
@@ -1663,7 +1665,7 @@
                                             HorizontalAlignment="Left"
                                             VerticalAlignment="Center"
                                             FontSize="16"
-                                            Foreground="{Binding IsSynchronizeDisabled, Converter={StaticResource CustomBooleanToBrushConverter}}"
+                                            Foreground="{DynamicResource TextBlock_ForegroundColor}"
                                             Text="{Binding [Brightness.4], Source={x:Static lang:LangHelper.Instance}}"
                                             TextBlockSemanticColorType="Light"
                                             TextBlockType="Display1" />
@@ -1712,7 +1714,7 @@
                                             Click="SynchronizeSwitch_Click"
                                             ContentPlacement="Left"
                                             ContentTextVisibility="True"
-                                            Foreground="{Binding IsSynchronizeDisabled, Converter={StaticResource CustomBooleanToBrushConverter}}"
+                                            Foreground="{DynamicResource TextBlock_ForegroundColor}"
                                             IsEnabled="{Binding IsSynchronizeDisabled, Converter={StaticResource InverseBooleanConverter}}" />
                                         <!--  IsChecked="{Binding Path=IsSynchronize}"  -->
                                         <!--  Content="{Binding Path=IsSynchronize_String}"  -->
@@ -1802,11 +1804,9 @@
                                                             Name="PR1_Luminance_Name_UXTextBox"
                                                             Grid.Row="1"
                                                             VerticalContentAlignment="Center"
-                                                            Background="{StaticResource DdpmCB_BkColor}"
                                                             BorderBrush="#7E7E7E"
                                                             BorderThickness="1"
                                                             FontSize="14"
-                                                            Foreground="{DynamicResource TextBlock_ForegroundColor}"
                                                             IsEnabled="{Binding IsPR_Luminance_Preview, Converter={StaticResource boolReverseConverter}}"
                                                             MaxLength="30"
                                                             PreviewTextInput="InputName_PreviewTextInput"
@@ -1846,6 +1846,7 @@
                                                             Name="PR1_Luminance_Hour_UXComboBox"
                                                             Grid.Row="1"
                                                             Grid.Column="0"
+                                                            Height="40"
                                                             MinWidth="70"
                                                             IsEnabled="{Binding IsPR_Luminance_Preview, Converter={StaticResource boolReverseConverter}}"
                                                             ItemsSource="{Binding hOurs}"
@@ -1860,6 +1861,7 @@
                                                             Grid.Row="1"
                                                             Grid.Column="2"
                                                             MinWidth="70"
+                                                            Height="40"
                                                             IsEnabled="{Binding IsPR_Luminance_Preview, Converter={StaticResource boolReverseConverter}}"
                                                             ItemsSource="{Binding mIns}"
                                                             SelectedItem="{Binding mIns1, Mode=TwoWay}"
@@ -1937,6 +1939,7 @@
                                                             Grid.Row="1"
                                                             Grid.Column="0"
                                                             MinWidth="70"
+                                                            Height="40"
                                                             IsEnabled="{Binding IsPR_Luminance_Preview, Converter={StaticResource boolReverseConverter}}"
                                                             ItemsSource="{Binding dUration}"
                                                             SelectedItem="{Binding dUration1, Mode=TwoWay}"
@@ -2079,11 +2082,9 @@
                                                             Name="PR2_Luminance_Name_UXTextBox"
                                                             Grid.Row="1"
                                                             VerticalContentAlignment="Center"
-                                                            Background="{StaticResource DdpmCB_BkColor}"
                                                             BorderBrush="#7E7E7E"
                                                             BorderThickness="1"
                                                             FontSize="14"
-                                                            Foreground="{DynamicResource TextBlock_ForegroundColor}"
                                                             IsEnabled="{Binding IsPR_Luminance_Preview, Converter={StaticResource boolReverseConverter}}"
                                                             MaxLength="30"
                                                             PreviewTextInput="InputName_PreviewTextInput"
@@ -2123,6 +2124,7 @@
                                                             Name="PR2_Luminance_Hour_UXComboBox"
                                                             Grid.Row="1"
                                                             Grid.Column="0"
+                                                            Height="40"
                                                             MinWidth="70"
                                                             IsEnabled="{Binding IsPR_Luminance_Preview, Converter={StaticResource boolReverseConverter}}"
                                                             ItemsSource="{Binding hOurs}"
@@ -2136,6 +2138,7 @@
                                                             Name="PR2_Luminance_Min_UXComboBox"
                                                             Grid.Row="1"
                                                             Grid.Column="2"
+                                                            Height="40"
                                                             MinWidth="70"
                                                             IsEnabled="{Binding IsPR_Luminance_Preview, Converter={StaticResource boolReverseConverter}}"
                                                             ItemsSource="{Binding mIns}"
@@ -2213,6 +2216,7 @@
                                                             Name="PR2_Luminance_Duration_UXComboBox"
                                                             Grid.Row="1"
                                                             Grid.Column="0"
+                                                            Height="40"
                                                             MinWidth="70"
                                                             IsEnabled="{Binding IsPR_Luminance_Preview, Converter={StaticResource boolReverseConverter}}"
                                                             ItemsSource="{Binding dUration}"
@@ -2322,7 +2326,7 @@
                                             HorizontalAlignment="Left"
                                             VerticalAlignment="Center"
                                             FontSize="16"
-                                            Foreground="{Binding IsSynchronizeDisabled, Converter={StaticResource CustomBooleanToBrushConverter}}"
+                                            Foreground="{DynamicResource TextBlock_ForegroundColor}"
                                             Text="{Binding [Brightness.4], Source={x:Static lang:LangHelper.Instance}}"
                                             TextBlockSemanticColorType="Light"
                                             TextBlockType="Display1" />
@@ -2371,7 +2375,7 @@
                                             Click="SynchronizeSwitch_Click"
                                             ContentPlacement="Left"
                                             ContentTextVisibility="True"
-                                            Foreground="{Binding IsSynchronizeDisabled, Converter={StaticResource CustomBooleanToBrushConverter}}"
+                                            Foreground="{DynamicResource TextBlock_ForegroundColor}"
                                             IsEnabled="{Binding IsSynchronizeDisabled, Converter={StaticResource InverseBooleanConverter}}" />
                                         <!--  IsChecked="{Binding Path=IsSynchronize}"  -->
                                         <!--  Content="{Binding Path=IsSynchronize_String}"  -->

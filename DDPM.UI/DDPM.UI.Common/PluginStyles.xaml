@@ -475,7 +475,7 @@
                         IsChecked="{Binding Path=IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"
                         Template="{StaticResource DdpmComboBoxToggleButtonTemplate}" />
 
-          <ContentPresenter
+                    <ContentPresenter
                         x:Name="contentPresenter"
                         Grid.Column="0"
                         Margin="8,0,0,0"
@@ -485,8 +485,8 @@
                         ContentStringFormat="{TemplateBinding SelectionBoxItemStringFormat}"
                         ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}"
                         ContentTemplateSelector="{TemplateBinding ItemTemplateSelector}"
-                        IsHitTestVisible="False" />
-        </Grid>
+                        IsHitTestVisible="False"/>
+                </Grid>
       </Border>
     </Grid>
 

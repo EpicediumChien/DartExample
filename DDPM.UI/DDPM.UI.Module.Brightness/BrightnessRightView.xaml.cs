@@ -181,6 +181,7 @@ namespace DDPM.UI.Module.Brightness
             if (vm != null)
             {
                 vm.UpdateLuminance();
+                Task.Run(() => vm.CloseSchedule());
             }
         }
 
