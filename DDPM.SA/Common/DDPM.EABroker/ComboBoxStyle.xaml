@@ -236,7 +236,7 @@
         -->
     <SolidColorBrush x:Key="ComboBox.Pressed.Background" Color="#FF569DE5"/>
 
-    <!--<SolidColorBrush x:Key="ComboBox.Pressed.Border" Color="{StaticResource DdpmCB_BdColor}"/>-->
+    <SolidColorBrush x:Key="ComboBox.Pressed.Border" Color="#FF569DE5"/>
     <SolidColorBrush x:Key="ComboBox.Pressed.Glyph" Color="Transparent"/>
     <SolidColorBrush x:Key="ComboBox.Pressed.Editable.Background" Color="Transparent"/>
     <!--<SolidColorBrush x:Key="ComboBox.Pressed.Editable.Border" Color="{StaticResource DdpmCB_BdColor}"/>-->
@@ -316,8 +316,8 @@
 
                     -->
                     <Border x:Name="templateRoot" 
-                                Background="Cyan" 
-                                BorderBrush="{DynamicResource DdpmCB_BColor}" 
+                                Background="{StaticResource ComboBox.Static.Background}" 
+                                BorderBrush="{DynamicResource DdpmCB_BdColor}" 
                                 BorderThickness="{TemplateBinding BorderThickness}" 
                                 SnapsToDevicePixels="true" CornerRadius="4">
                         <!-- Original

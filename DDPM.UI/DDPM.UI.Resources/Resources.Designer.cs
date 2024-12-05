@@ -1618,6 +1618,15 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Auto Color Temperature is currently enabled. Do you wish to disable it to continue?.
+        /// </summary>
+        internal static string Color_10 {
+            get {
+                return ResourceManager.GetString("Color.10", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Color Management.
         /// </summary>
         internal static string Color_11 {

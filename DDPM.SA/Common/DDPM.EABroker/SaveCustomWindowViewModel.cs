@@ -17,7 +17,8 @@ namespace DDPM.EABroker
         private readonly IDeviceManagerSA? _deviceManagerSA;
         private ObservableCollection<SplitJson> _customList = new ObservableCollection<SplitJson>();
         private SplitJson _selectedCustomItem;
-        private string _windowTitle = "";
+        private string _headerText = "";
+        private string _subText = "";
         private bool _isAdjustTextVisible = false;
         private bool _isOverlapLayout = false;
         #endregion Private Members
@@ -104,17 +105,29 @@ namespace DDPM.EABroker
         }
         #endregion
 
-        #region Window Tittle
-        public string WindowTitle
+        #region Header Text
+        public string HeaderText
         {
-            get => _windowTitle;
+            get => _headerText;
             set
             {
-                _windowTitle = value;
-                OnPropertyChanged("WindowTitle");
+                _headerText = value;
+                OnPropertyChanged("HeaderText");
             }
         }
         #endregion
+
+        #region Sub Text
+        public string SubText
+        {
+            get => _subText;
+            set
+            {
+                _subText = value;
+                OnPropertyChanged("SubText");
+            }
+        }
+        #endregion Sub Text
 
         #region IsOverlapLayout
         public bool IsOverlapLayout

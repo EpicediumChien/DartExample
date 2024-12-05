@@ -2940,4 +2940,7 @@
   <data name="Firmware_update" xml:space="preserve">
     <value>Firmware update</value>
   </data>
+  <data name="Color.10" xml:space="preserve">
+    <value>Auto Color Temperature is currently enabled. Do you wish to disable it to continue?</value>
+  </data>
 </root>
