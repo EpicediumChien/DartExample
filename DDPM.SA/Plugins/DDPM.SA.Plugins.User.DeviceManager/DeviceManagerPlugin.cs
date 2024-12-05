@@ -2108,16 +2108,16 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     break;
 
                 case 0xE9:
+                {
+                    NKVMVCPValue nKVMVCPValue = new NKVMVCPValue();
+                    nKVMVCPValue.monitorInfo = monitorInfo;
+                    nKVMVCPValue.value = (int)val;
+                    if (_NKVMPlugin != null)
                     {
-                        NKVMVCPValue nKVMVCPValue = new NKVMVCPValue();
-                        nKVMVCPValue.monitorInfo = monitorInfo;
-                        nKVMVCPValue.value = (int)val;
-                        if (_NKVMPlugin != null)
-                        {
-                            _NKVMPlugin.SaveVCPcode(nKVMVCPValue);
-                        }
+                        _NKVMPlugin.SaveVCPcode(nKVMVCPValue);
                     }
-                    break;
+                }
+                break;
 
                 default:
                     break;
@@ -8838,10 +8838,10 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         public async Task<bool> GetIsPropertyAntiFlickerSupported(string Guid)
         {
-            return await Task.Run(() => _DTPProxyPlugin.CheckIsPropertyAntiFlickerSupported(Guid));
+            return await Task.Run(() => _DTPProxyPlugin.GeIsPropertyAntiFlickerSupported(Guid));
         }
 
-        public async Task<int> GetAntiFlickerValueByDTP(string Guid)
+        public async Task<int> GetAntiFlicker(string Guid)
         {
             return await Task.Run(() => _DTPProxyPlugin.GetAntiFlicker(Guid));
         }
@@ -8881,6 +8881,10 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         public async Task<bool> GetIsFocusOn(string Guid)
         {
             return await Task.Run(() => _DTPProxyPlugin.GetIsFocusOn(Guid));
+        }
+        public async Task<int> GetPriority(string Guid)
+        {
+            return await Task.Run(() => _DTPProxyPlugin.GetPriority(Guid));
         }
 
         public Task SetIsMicEnumerationOn(string guid, bool newValue)

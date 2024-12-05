@@ -804,7 +804,7 @@ namespace DDPM.SA.Common
         Task<bool> GetIsPropertyHDRSupported(string Guid);
         Task<bool> GetIsHDROn(string Guid);
         Task<bool> GetIsPropertyAntiFlickerSupported(string Guid);
-        Task<int> GetAntiFlickerValueByDTP(string Guid);
+        Task<int> GetAntiFlicker(string Guid);
         Task<bool> GetIsPropertyAutoFramingSupported(string Guid);
         Task<bool> GetIsAutoFramingOn(string Guid);
         Task<string> GetSupportedResolutions(string Guid);
@@ -812,6 +812,7 @@ namespace DDPM.SA.Common
         Task<int> GetZoom(string Guid);
         Task<int> GetFocus(string Guid);
         Task<bool> GetIsFocusOn(string Guid);
+        Task<int> GetPriority(string Guid);
 
         Task SetIsMicEnumerationOn(string Guid, bool newValue);
 

@@ -194,9 +194,8 @@ namespace DDPM.UI.Plugin.ViewModels
             }
             CurrentDeviceID = new Guid(deviceID);
 
-            if (DeviceInfos.ContainsKey(CurrentDeviceID))
+            if (DeviceInfos.TryGetValue(CurrentDeviceID, out DeviceInfo? di))
             {
-                var di = DeviceInfos[CurrentDeviceID];
                 _log.Info($"[PeripheralViewModel] SetCurrentDevice ... InstanceId = {di.InstanceId.ToString()}");
                 if (di.DeviceName == "Headset Settings" || di.DeviceName == "Wired Audio Settings")
                 {
@@ -214,7 +213,7 @@ namespace DDPM.UI.Plugin.ViewModels
                             CurrentDeviceID = info.ID;
                     }
                 }
-                CurrentDeviceInfo = DeviceInfos[CurrentDeviceID];
+                CurrentDeviceInfo = di;
             }
             else
             {

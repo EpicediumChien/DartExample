@@ -1018,7 +1018,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 return false;
             }
         }
-        public async Task<bool> CheckIsPropertyAntiFlickerSupported(string Guid)
+        public async Task<bool> GeIsPropertyAntiFlickerSupported(string Guid)
         {
             if (!await GetItemIDAsync("Webcam", Guid))
             { return false; }
@@ -1049,27 +1049,17 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             if (!await GetItemIDAsync("Webcam", Guid))
             { return -1; }
 
-            if (_webcamMethodInfo != null)
+            if (await GetCommodityInterfaceInstanceAsync(_webcamMethodInfo) is ICommodity commodity)
             {
-                if (await GetCommodityInterfaceInstanceAsync(_webcamMethodInfo) is ICommodity commodity)
-                {
-                    var value = GetPropertyValue(_webcamInterfaceType, commodity, "AntiFlicker");
-                    return (int)value;
-                }
-                else
-                {
-                    Debug.WriteLine($"[GetAntiFlickerValue]Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {_itemID} item.");
-                    writelog($"[GetAntiFlickerValue]Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {_itemID} item.");
-                    return -1;
-                }
+                var value = GetPropertyValue(_webcamInterfaceType, commodity, "AntiFlicker");
+                return (int)value;
             }
             else
             {
-                Debug.WriteLine($"[GetAntiFlickerValue]Could not retrieve the Commodity Interface for the {_itemID} item. _webcamMethodInfo is null");
-                writelog($"[GetAntiFlickerValue]Could not retrieve the Commodity Interface for the {_itemID} item. _webcamMethodInfo is null");
+                Debug.WriteLine($"[GetAntiFlicker]Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {Guid} item.");
+                writelog($"[GetAntiFlicker]Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {Guid} item.");
                 return -1;
             }
-
         }
         public async Task<bool> GetIsPropertyAutoFramingSupported(string Guid)
         {
@@ -1255,6 +1245,23 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 Debug.WriteLine($"[GetIsFocusOn]Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {Guid} item.");
                 writelog($"[GetIsFocusOn]Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {Guid} item.");
                 return false;
+            }
+        }
+        public async Task<int> GetPriority(string Guid)
+        {
+            if (!await GetItemIDAsync("Webcam", Guid))
+            { return -1; }
+
+            if (await GetCommodityInterfaceInstanceAsync(_webcamMethodInfo) is ICommodity commodity)
+            {
+                var value = GetPropertyValue(_webcamInterfaceType, commodity, "Priority");
+                return value == null ? -1 : (int)value;
+            }
+            else
+            {
+                Debug.WriteLine($"[GetPriority]Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {Guid} item.");
+                writelog($"[GetPriority]Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {Guid} item.");
+                return -1;
             }
         }
 
