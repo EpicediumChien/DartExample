@@ -744,13 +744,15 @@ namespace DDPM.SA.Plugins.User.EasyArrange
             Trace.WriteLine($"  * Monitor.Model=[{monitorInfo.modelName}], ServiceTag=[{monitorInfo.edid.ServiceTag}]");
             Trace.WriteLine($"  * EAArgs.Split=[{args.CellCount}{args.SplitKey}], CustomName=[{args.CustomName}]");
 
-            double dpiX = 1.000;
-            var dpiXProperty = typeof(SystemParameters).GetProperty("DpiX", BindingFlags.NonPublic | BindingFlags.Static);
-            if (dpiXProperty != null)
-            {
-                var varX = (int)dpiXProperty.GetValue(null, null);
-                dpiX = (double)varX / (double)96;
-            }
+            //Robert_Lin, 2024-12-6, use the method in CommonFunctions
+            double dpiX = CommonFunctions.GetDpiX();
+            //double dpiX = 1.000;
+            //var dpiXProperty = typeof(SystemParameters).GetProperty("DpiX", BindingFlags.NonPublic | BindingFlags.Static);
+            //if (dpiXProperty != null)
+            //{
+            //    var varX = (int)dpiXProperty.GetValue(null, null);
+            //    dpiX = (double)varX / (double)96;
+            //}
 
             //Get the DisplayName from MonitorInfo
             string displayName = monitorInfo.DisplayName;

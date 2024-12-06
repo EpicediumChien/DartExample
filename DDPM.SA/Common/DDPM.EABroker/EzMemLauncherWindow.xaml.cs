@@ -96,15 +96,18 @@ namespace DDPM.EABroker
 
         private double RefreshScreenScale()
         {
-            double dpiX = 1.000;
-            var dpiXProperty = typeof(SystemParameters).GetProperty("DpiX", BindingFlags.NonPublic | BindingFlags.Static);
-            if (dpiXProperty != null)
-            {
-                var varX = (int)dpiXProperty.GetValue(null, null);
-                dpiX = (double)varX / (double)96;
-            }
-            _screenScale = dpiX;
-            return dpiX;
+            //Robert_Lin, 2024-12-6, use the method in CommonFunctions
+            _screenScale = CommonFunctions.GetDpiX();
+            return _screenScale;
+            //double dpiX = 1.000;
+            //var dpiXProperty = typeof(SystemParameters).GetProperty("DpiX", BindingFlags.NonPublic | BindingFlags.Static);
+            //if (dpiXProperty != null)
+            //{
+            //    var varX = (int)dpiXProperty.GetValue(null, null);
+            //    dpiX = (double)varX / (double)96;
+            //}
+            //_screenScale = dpiX;
+            //return dpiX;
         }
 
 
@@ -120,15 +123,17 @@ namespace DDPM.EABroker
             if (preSrc == null)
                 return Rect.Empty;
 
-            double screenScale = 1.000;
-            var dpiXProperty = typeof(SystemParameters).GetProperty("DpiX", BindingFlags.NonPublic | BindingFlags.Static);
-            if (dpiXProperty != null)
-            {
-                var varX = (int)dpiXProperty.GetValue(null, null);
-                double dpiX = (double)varX / (double)96;
-                if (dpiX >= 1.0000)
-                    screenScale = dpiX;
-            }
+            //Robert_Lin, 2024-12-6, use the method in CommonFunctions
+            double screenScale = CommonFunctions.GetDpiX();
+            //double screenScale = 1.000;
+            //var dpiXProperty = typeof(SystemParameters).GetProperty("DpiX", BindingFlags.NonPublic | BindingFlags.Static);
+            //if (dpiXProperty != null)
+            //{
+            //    var varX = (int)dpiXProperty.GetValue(null, null);
+            //    double dpiX = (double)varX / (double)96;
+            //    if (dpiX >= 1.0000)
+            //        screenScale = dpiX;
+            //}
 
             System.Windows.Point ptTopLeft = ele.PointToScreen(new System.Windows.Point(0, 0));
             double w = ele.ActualWidth * screenScale;
@@ -403,16 +408,18 @@ namespace DDPM.EABroker
 
         private double GetScreenScale()
         {
-            double screenScale = 1.000;
-            var dpiXProperty = typeof(SystemParameters).GetProperty("DpiX", BindingFlags.NonPublic | BindingFlags.Static);
-            if (dpiXProperty != null)
-            {
-                var varX = (int)dpiXProperty.GetValue(null, null);
-                double dpiX = (double)varX / (double)96;
-                if (dpiX >= 1.0000)
-                    screenScale = dpiX;
-            }
-            return screenScale;
+            //Robert_Lin, 2024-12-6, use the method in CommonFunctions
+            return CommonFunctions.GetDpiX();
+            //double screenScale = 1.000;
+            //var dpiXProperty = typeof(SystemParameters).GetProperty("DpiX", BindingFlags.NonPublic | BindingFlags.Static);
+            //if (dpiXProperty != null)
+            //{
+            //    var varX = (int)dpiXProperty.GetValue(null, null);
+            //    double dpiX = (double)varX / (double)96;
+            //    if (dpiX >= 1.0000)
+            //        screenScale = dpiX;
+            //}
+            //return screenScale;
         }
 
 

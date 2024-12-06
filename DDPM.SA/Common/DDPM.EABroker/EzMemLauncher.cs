@@ -17,6 +17,7 @@ using System.Windows.Media.Media3D;
 
 namespace DDPM.EABroker
 {
+    //Robert_Lin, 2024-12-6, Unused. The usage from EzMemoryPlugin, will be removed.
     public class EzMemLauncher
     {
         #region Private Members
@@ -119,15 +120,17 @@ namespace DDPM.EABroker
 
 
             //Stage 2 - Determine the Rect of the Window (Sceen)
-            double screenScale = 1.000;
-            var dpiXProperty = typeof(SystemParameters).GetProperty("DpiX", BindingFlags.NonPublic | BindingFlags.Static);
-            if (dpiXProperty != null)
-            {
-                var varX = (int)dpiXProperty.GetValue(null, null);
-                double dpiX = (double)varX / (double)96;
-                if (dpiX >= 1.0000)
-                    screenScale = dpiX;
-            }
+            //Robert_Lin, 2024-12-6, use the method in CommonFunctions
+            double screenScale = CommonFunctions.GetDpiX();
+            //double screenScale = 1.000;
+            //var dpiXProperty = typeof(SystemParameters).GetProperty("DpiX", BindingFlags.NonPublic | BindingFlags.Static);
+            //if (dpiXProperty != null)
+            //{
+            //    var varX = (int)dpiXProperty.GetValue(null, null);
+            //    double dpiX = (double)varX / (double)96;
+            //    if (dpiX >= 1.0000)
+            //        screenScale = dpiX;
+            //}
 
             Rect rcScreen = new Rect();
             rcScreen.X = _screen.WorkingArea.Left / screenScale;

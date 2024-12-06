@@ -1,4 +1,5 @@
 ﻿using DDPM.Easy.Common;
+using DDPM.SA.Common;
 using DDPM.SA.Common.Display;
 using DDPM.Win32Lib;
 using Dell.Client.Framework.Common;
@@ -59,15 +60,18 @@ namespace DDPM.EABroker
         }
         private double RefreshScreenScale()
         {
-            double dpiX = 1.000;
-            var dpiXProperty = typeof(SystemParameters).GetProperty("DpiX", BindingFlags.NonPublic | BindingFlags.Static);
-            if (dpiXProperty != null)
-            {
-                var varX = (int)dpiXProperty.GetValue(null, null);
-                dpiX = (double)varX / (double)96;
-            }
-            _screenScale = dpiX;
-            return dpiX;
+            //Robert_Lin, 2024-12-6, use the method in CommonFunctions
+            _screenScale = CommonFunctions.GetDpiX();
+            return _screenScale;
+            //double dpiX = 1.000;
+            //var dpiXProperty = typeof(SystemParameters).GetProperty("DpiX", BindingFlags.NonPublic | BindingFlags.Static);
+            //if (dpiXProperty != null)
+            //{
+            //    var varX = (int)dpiXProperty.GetValue(null, null);
+            //    dpiX = (double)varX / (double)96;
+            //}
+            //_screenScale = dpiX;
+            //return dpiX;
         }
         #endregion
 
@@ -129,13 +133,15 @@ namespace DDPM.EABroker
         /// <returns>The count of CellBorders</returns>
         private int CaptureCustomLayout_v1(Screen screen)
         {
-            double scale = 1.000;
-            var dpiXProperty = typeof(SystemParameters).GetProperty("DpiX", BindingFlags.NonPublic | BindingFlags.Static);
-            if (dpiXProperty != null)
-            {
-                var varX = (int)dpiXProperty.GetValue(null, null);
-                scale = (double)varX / (double)96;
-            }
+            //Robert_Lin, 2024-12-6, use the method in CommonFunctions
+            double scale = CommonFunctions.GetDpiX();
+            //double scale = 1.000;
+            //var dpiXProperty = typeof(SystemParameters).GetProperty("DpiX", BindingFlags.NonPublic | BindingFlags.Static);
+            //if (dpiXProperty != null)
+            //{
+            //    var varX = (int)dpiXProperty.GetValue(null, null);
+            //    scale = (double)varX / (double)96;
+            //}
 
             //Clear CustomLayouts
             //canvas.Children.Clear();
@@ -313,13 +319,15 @@ namespace DDPM.EABroker
 
         private int CaptureCustomLayout_v2(Rectangle workingArea)
         {
-            double scale = 1.000;
-            var dpiXProperty = typeof(SystemParameters).GetProperty("DpiX", BindingFlags.NonPublic | BindingFlags.Static);
-            if (dpiXProperty != null)
-            {
-                var varX = (int)dpiXProperty.GetValue(null, null);
-                scale = (double)varX / (double)96;
-            }
+            //Robert_Lin, 2024-12-6, use the method in CommonFunctions
+            double scale = CommonFunctions.GetDpiX();
+            //double scale = 1.000;
+            //var dpiXProperty = typeof(SystemParameters).GetProperty("DpiX", BindingFlags.NonPublic | BindingFlags.Static);
+            //if (dpiXProperty != null)
+            //{
+            //    var varX = (int)dpiXProperty.GetValue(null, null);
+            //    scale = (double)varX / (double)96;
+            //}
 
             //Prepare for Settings
             //Format:

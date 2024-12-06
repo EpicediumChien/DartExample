@@ -32,7 +32,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
-        {
+        {/*
             //Add CustomNames to the ComboBox.Items
             if (CustomNames != null)
             {
@@ -45,13 +45,13 @@ namespace DDPM.SA.Plugins.User.EasyArrange
             }
             //Hide window from Alt+tab
             System.Windows.Interop.WindowInteropHelper wndHelper = new System.Windows.Interop.WindowInteropHelper(this);
-            Win32Lib.Win32.HideWinFromAltTab(wndHelper.Handle);
+            Win32Lib.Win32.HideWinFromAltTab(wndHelper.Handle);*/
         }
 
         #endregion Init
 
         public void SetInputArg(EAArgs arg, Screen scr)
-        {
+        {/*
             this.Dispatcher.Invoke(() =>
             {
                 Trace.WriteLine($"  * EAArgs.CustomName=[{arg.CustomName}]");
@@ -98,27 +98,27 @@ namespace DDPM.SA.Plugins.User.EasyArrange
 
                 Show();
                 Topmost = true;
-            });
+            });*/
         }
 
         private void rootGrid_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
-        {
+        {/*
             if ((e.ChangedButton == MouseButton.Left) && (e.ClickCount == 1))
             {
                 this.DragMove();
-            }
+            }*/
         }
 
         private void cancelButton_Click(object sender, RoutedEventArgs e)
-        {
+        {/*
             if (CancelButtonClick != null)
             {
                 CancelButtonClick(this, "");
-            }
+            }*/
         }
 
         private void saveButton_Click(object sender, RoutedEventArgs e)
-        {
+        {/*
             //If it's empty
             if (String.IsNullOrWhiteSpace(cbNames.Text))
                 return;
@@ -130,11 +130,11 @@ namespace DDPM.SA.Plugins.User.EasyArrange
             if (SaveButtonClick != null)
             {
                 SaveButtonClick(this, CustomName);
-            }
+            }*/
         }
 
         private void cbNames_Loaded(object sender, RoutedEventArgs e)
-        {
+        {/*
             //Reference: https://stackoverflow.com/questions/1572887/how-to-set-maxlength-for-combobox-in-wpf
             System.Windows.Controls.ComboBox cb = (System.Windows.Controls.ComboBox)sender;
             if (cb != null)
@@ -144,19 +144,19 @@ namespace DDPM.SA.Plugins.User.EasyArrange
                 {
                     partEditableTextBox.MaxLength = EAEMConstants.MaxCustomNameLenth;
                 }
-            }
+            }*/
         }
 
         private void closeGrid_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
-        {
+        {/*
             if (CancelButtonClick != null)
             {
                 CancelButtonClick(this, "");
-            }
+            }*/
         }
 
         private void cbNames_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
-        {
+        {/*
             string custName = cbNames.Text;
             if (String.IsNullOrWhiteSpace(custName))
             {
@@ -165,7 +165,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange
             else
             {
                 saveBtn.IsEnabled = true;
-            }
+            }*/
         }
     }
 }
