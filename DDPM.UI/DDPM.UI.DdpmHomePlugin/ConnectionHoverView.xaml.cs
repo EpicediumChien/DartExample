@@ -12,5 +12,18 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
         {
             InitializeComponent();
         }
+
+        private void UserControl_Loaded(object sender, System.Windows.RoutedEventArgs e)
+        {
+            //Derek 1129 check if DDPM is launched by QAM, then info SA that homepage is ready
+            //DdpmCommonHelper.DDPMMesssageBox("UserControl_Loaded", "DDPMMesssageBox");
+            //if (DdpmCommonHelper.DeviceManagerSA!.GetIsDDPMLaunchByQAM().Result == true)
+            //{
+            //    DdpmCommonHelper.WriteUILog($"GetIsDDPMLaunchByQAM = true from ConnectionHoverView::UserControl_Loaded");
+
+            //    DdpmCommonHelper.DeviceManagerSA!.SetIsDDPMHomepageReadyAsync(true);
+            //    DdpmCommonHelper.DeviceManagerSA!.SetIsDDPMLaunchByQAMAsync(false);
+            //}
+        }
     }
 }

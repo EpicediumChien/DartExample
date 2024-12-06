@@ -67,7 +67,15 @@ namespace DDPM.SA.Common
             "PRESENCEDETECTION",        //PresenceDetection         DDPMW-1747
             "ANCMODE",                  //ancMode                   DDPMW-1853
             "MICNOISECANCELLATION",     //micNoiseCancellation      DDPMW-1855
-            "WEARDETECTION"             //wearDetection             DDPMW-2093
+            "WEARDETECTION",            //wearDetection             DDPMW-2093
+            "NETWORKKVMVERSION",
+            "NETWORKKVM",
+            "NETWORKKVMAUTOCONNECT",
+            "NETWORKKVMCONTENTTRANSFER",
+            "NETWORKKVMINCOMINGPORT",
+            "NETWORKKVMOUTGOINGPORT",
+            "NETWORKKVMCONTENTTRANSFERPORT",
+            "NETWORKKVMACCESSRESET"
         };
 
         //IT value table of IT feature
@@ -693,6 +701,11 @@ namespace DDPM.SA.Common
             int feature_idx = Supported_IT_Feature.FindIndex(x => x.ToUpper().Trim().Equals(commandInput_temp.TargetFeature.ToUpper().Trim()));
             if (feature_idx >= 0) //has IT feature
             {
+                if (commandInput.TargetFeature.Contains("NETWORKKVM"))
+                {
+                    commandInput.isITCommands = true;
+                    return;
+                }
                 if (commandInput.Options.Count == 0)//recognized only normal command -> CLIProxy
                 {
                     commandInput.isNormalCommands = true;
@@ -712,8 +725,8 @@ namespace DDPM.SA.Common
                                 commandInput.isNormalCommands = true;//recognized as normal command -> CLIProxy
                                 return;
                             }
-                            option.Option_Value.Trim().Replace(".", ",");//maybe user type wrong sep symbol from , to be .
-                            List<string> parse = option.Option_Value.Split(",").ToList();
+                            //option.Option_Value.Trim().Replace(".", ",");//maybe user type wrong sep symbol from , to be .
+                            List<string> parse = option.Option_Value.Replace(".", ",").Split(",").ToList();
                             foreach (string value in parse)
                             {
                                 //currently only "LOCK" and "UNLOCK" be recognized as IT global settings
@@ -1196,9 +1209,9 @@ namespace DDPM.SA.Common
     new Dictionary<string, object> { { "TargetType", "DISPLAY" }, { "TargetFeature", "Resolution" },                { "VCP", "ALL" } },
     new Dictionary<string, object> { { "TargetType", "DISPLAY" }, { "TargetFeature", "RefreshRate" },               { "VCP", "ALL" } },
     new Dictionary<string, object> { { "TargetType", "DISPLAY" }, { "TargetFeature", "ResolutionRefreshRate" },     { "VCP", "ALL" } },
-    new Dictionary<string, object> { { "TargetType", "DISPLAY" }, { "TargetFeature", "SpeakerMicrophone" },         { "VCP", "62,8D" } },
-    new Dictionary<string, object> { { "TargetType", "DISPLAY" }, { "TargetFeature", "SpeakerVolume" },             { "VCP", "62" } },
-    new Dictionary<string, object> { { "TargetType", "DISPLAY" }, { "TargetFeature", "Microphone" },                { "VCP", "8D" } },
+    new Dictionary<string, object> { { "TargetType", "DISPLAY" }, { "TargetFeature", "SpeakerMicrophone" },         { "VCP", "62,8D,FE,C0000,01,02" } },
+    new Dictionary<string, object> { { "TargetType", "DISPLAY" }, { "TargetFeature", "SpeakerVolume" },             { "VCP", "62,FE,C0000" } },
+    new Dictionary<string, object> { { "TargetType", "DISPLAY" }, { "TargetFeature", "Microphone" },                { "VCP", "8D,01,02,C000" } },
     new Dictionary<string, object> { { "TargetType", "DISPLAY" }, { "TargetFeature", "ColorPreset" },               { "VCP", "14" } },
     new Dictionary<string, object> { { "TargetType", "DISPLAY" }, { "TargetFeature", "FWVersion" },                 { "VCP", "ALL" } },
     new Dictionary<string, object> { { "TargetType", "DISPLAY" }, { "TargetFeature", "PowerNap" },                  { "VCP", "E0" } },
@@ -1211,9 +1224,13 @@ namespace DDPM.SA.Common
 
             public static string PrintFormattedJsonTargetFeature(string targetType, Dictionary<string, List<string>> vcpList, bool isColorMangerment)
             {
+                var vcpKeyList = vcpList.Keys.ToList();
+                var vcpValueList = vcpList.Where(_=>_.Value!=null).SelectMany(_ => _.Value);
+                var finalVCPList = vcpKeyList.Concat(vcpValueList);
+
                 var targetFeatures = FeatureListByVCP
                 .Where(f => (f["TargetType"].ToString().Equals(targetType, StringComparison.OrdinalIgnoreCase))
-                && (f["VCP"].ToString().Split(",").ToList().Find(x => vcpList.ContainsKey(x)) != null) || f["VCP"].ToString().Equals("ALL", StringComparison.OrdinalIgnoreCase)
+                && (f["VCP"].ToString().Split(",").ToList().Except(finalVCPList).Count() == 0) || f["VCP"].ToString().Equals("ALL", StringComparison.OrdinalIgnoreCase)
                 || f["VCP"].ToString().Equals(isColorMangerment.ToString().ToUpper(), StringComparison.OrdinalIgnoreCase))
                 .Select(f => f["TargetFeature"].ToString())
                 .Distinct()
