@@ -33,6 +33,8 @@ using Google.Protobuf.WellKnownTypes;
 using System.IO;
 using Type = System.Type;
 using DDPM.SA.Common.UI;
+using static DDPM.RemoteManagement.Common.Interfaces.Params;
+using Windows.Gaming.Input;
 
 namespace DDPM.SA.Plugins.User.DTPProxy
 {
@@ -5151,17 +5153,17 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         #endregion
 
         #region Headset Event
-        private async Task RegisterEventsForAllHeadsetAsync()
+        private async Task<bool> RegisterEventsForAllHeadsetAsync()
         {
-            var headsets = await GetHeadsetDeviceItemsExAsync();
-
-            if (headsets != null && headsets.Count > 0)
+            bool result = false;
+            var headsets = await GetHeadsetDevsCountAsync();
+            if (headsets > 0)
             {
                 writelog($"Headset instance count: {headsets} to register");
 
-                for (int i = 0; i < headsets.Count; i++)
+                for (int i = 0; i < headsets; i++)
                 {
-                    bool result = await RegisterEventsForHeadsetAsync(i);
+                    result = await RegisterEventsForHeadsetAsync(i);
 
                     if (!result)
                     {
@@ -5169,7 +5171,6 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
                         result = await UnregisterEventsForHeadsetAsync(i);
                         result = await RegisterEventsForHeadsetAsync(i);
-
                         writelog($"[Headset] Retry register result is {result}");
                     }
                 }
@@ -5177,22 +5178,24 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             else
             {
                 writelog($"[Headset] No any headset instance to register.");
+                return false;
                 //try to force release current --> will catch exception  1123
                 //await UnregisterEventsForWebcamAsync(0);
             }
+            return false;
         }
 
         private async Task UnregisterEventsForAllHeadsetAsync()
         {
-            var headsets = await GetHeadsetDeviceItemsExAsync();
-
-            if (headsets.Count > 0)
+            bool result = false;
+            var headsets = await GetHeadsetDevsCountAsync();
+            if (headsets > 0)
             {
                 writelog($"[Headset] instance count: {headsets} to unregister.");
 
-                for (int i = headsets.Count - 1; i >= 0; i--)
+                for (int i = headsets - 1; i >= 0; i--)
                 {
-                    bool result = await UnregisterEventsForHeadsetAsync(i);
+                    result = await UnregisterEventsForHeadsetAsync(i);
                 }
             }
             else
@@ -5257,6 +5260,26 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
 
             return false;
+        }
+
+        private void Headset_Disconnected(object sender, DisconnectedArgs e)
+        {
+            _ = UnregisterEventsForAllHeadsetAsync();
+            _ = RegisterEventsForAllHeadsetAsync();
+
+            //SendHeadsetEventToUI(CreateEventMsg("Headset", "Headset_Disconnected", e.DeviceId));
+
+            writelog($"[Headset] Catch event _Headset_Disconnected, current devCount is {GetHeadsetDevsCountAsync().Result} : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+        }
+
+        private void Headset_Connected(object sender, ConnectedArgs e)
+        {
+            Task<int> headsets = GetHeadsetDevsCountAsync();
+            bool result = RegisterEventsForHeadsetAsync(headsets.Result - 1).Result;
+
+            //SendHeadsetEventToUI(CreateEventMsg("Headset", "Headset_Connected", e.DeviceId));
+
+            writelog($"[Headset] Catch event _Headset_Connected, register evnet result is {result} : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
         }
 
         private void Headset_WearDetectionChanged(object sender, WearDetectionChangedArgs e)
@@ -6349,8 +6372,8 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             {
                 try
                 {
-                    _headsetcom.Connected += _comdity_Connected;
-                    _headsetcom.Disconnected += _comdity_Disconnected;
+                    _headsetcom.Connected += Headset_Connected;
+                    _headsetcom.Disconnected += Headset_Disconnected;
                     writelog($"Headset Commodity event registered");
                 }
                 catch (Exception e)
@@ -6433,6 +6456,18 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             await RegisterEventsForAllHeadsetAsync();
         }
 
+        private async Task<int> GetHeadsetDevsCountAsync()
+        {
+            var headsets = await GetHeadsetDeviceItemsExAsync();
+            if (headsets != null)
+            {
+                Trace.WriteLine("RegisterEventsForAllHeadsetAsync ********** " + headsets.ToString() + " ********** ");
+                return headsets.Count;
+            }
+            else
+                return 0;
+        }
+        
         private async Task<int> GetWebcamDevsCountAsync()
         {
             var webcams = await GetWebcamDeviceItemsExAsync();
