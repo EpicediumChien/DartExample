@@ -817,6 +817,18 @@ namespace DDPM.SA.Plugins.User.SettingsManager
                     try
                     {
                         _hotkeySettings = RunHotkeyDeserializeObject(strReadJson);
+                        //clean all null object
+                        if (_hotkeySettings != null && _hotkeySettings.Count > 0)
+                        {
+                            int count = _hotkeySettings.Count;
+                            for (int i = (count - 1); i >= 0; i--)
+                            {
+                                if (_hotkeySettings[i].ModelName == null || 
+                                    _hotkeySettings[i].SerialNumber == null || 
+                                    _hotkeySettings[i].ServiceTag == null)
+                                    _hotkeySettings.RemoveAt(i);
+                            }
+                        }
                     }
                     catch (Exception)// ex)
                     {
