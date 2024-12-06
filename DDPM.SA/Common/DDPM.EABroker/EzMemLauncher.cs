@@ -200,11 +200,12 @@ namespace DDPM.EABroker
                 _cellBorderCount = _splitCtrl.CellList.Count;
             }
 
-            if (_splitCtrl == null)
-            {
-                _lastError = "Fail to create SplitCtrl";
-                return ;
-            }
+            // [sonarqube] this subsequent code is never executed.
+            //if (_splitCtrl == null)
+            //{
+            //    _lastError = "Fail to create SplitCtrl";
+            //    return ;
+            //}
 
             _emLauncherWindow.ShowForEzMemLauncher(mi, _splitCtrl);
             _isReadyToArrange = true;
