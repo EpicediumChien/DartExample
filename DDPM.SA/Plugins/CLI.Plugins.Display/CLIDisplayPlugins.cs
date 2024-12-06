@@ -6375,37 +6375,43 @@ namespace DDPM.CLI.Plugins.Display
                 if (index.Count == 0 && serviceTag.Count == 0 && model.Count == 0)
                 {
                     foreach (var monitor in _AllInfoMonitors)
-                    {
+                    {                        
                         CLI_RESPONSE _Set_CLI_RESPONSE_RESPONSE = new CLI_RESPONSE(monitor);
-                        switch (value.ToUpper())
-                        {
-                            case "OSDLOCK":
-                                r = devMgr.SetVCPCapability(monitor, 0xCA, 0x01).Result;
-                                break;
-
-                            case "OSDUNLOCK":
-                                r = devMgr.SetVCPCapability(monitor, 0xCA, 0x02).Result;
-                                break;
-                        }
-
                         _Set_CLI_RESPONSE_RESPONSE.Command = "SET";
                         _Set_CLI_RESPONSE_RESPONSE.TargetFeature = "OSDACCESS";
                         _Set_CLI_RESPONSE_RESPONSE.Value = value;
 
+                        if (monitor.CapabilityDic.ContainsKey("CA"))
+                        {
+                            switch (value.ToUpper())
+                            {
+                                case "OSDLOCK":
+                                    r = devMgr.SetVCPCapability(monitor, 0xCA, 0x01).Result;
+                                    break;
+
+                                case "OSDUNLOCK":
+                                    r = devMgr.SetVCPCapability(monitor, 0xCA, 0x02).Result;
+                                    break;
+                            }
+                        }
+                        else
+                        {
+                            _Set_CLI_RESPONSE_RESPONSE.Value = "Not supported";
+                        }
+
                         if (!r)
                         {
                             _Set_CLI_RESPONSE_RESPONSE.Result = "FAIL";
-                            System.Console.WriteLine(JsonConvert.SerializeObject(_Set_CLI_RESPONSE_RESPONSE, Formatting.Indented));
-                            output += "\n" + JsonConvert.SerializeObject(_Set_CLI_RESPONSE_RESPONSE, Formatting.Indented);
                             if (exit == 0)
                                 exit = (int)CLI_ExitCode.functional_error;
                         }
                         else
                         {
                             _Set_CLI_RESPONSE_RESPONSE.Result = "PASS";
-                            System.Console.WriteLine(JsonConvert.SerializeObject(_Set_CLI_RESPONSE_RESPONSE, Formatting.Indented));
-                            output += "\n" + JsonConvert.SerializeObject(_Set_CLI_RESPONSE_RESPONSE, Formatting.Indented);
                         }
+
+                        System.Console.WriteLine(JsonConvert.SerializeObject(_Set_CLI_RESPONSE_RESPONSE, Formatting.Indented));
+                        output += "\n" + JsonConvert.SerializeObject(_Set_CLI_RESPONSE_RESPONSE, Formatting.Indented);
                     }
                 }
                 if (index.Count != 0)
@@ -6413,35 +6419,42 @@ namespace DDPM.CLI.Plugins.Display
                     foreach (string idx in index)
                     {
                         CLI_RESPONSE _Set_CLI_RESPONSE_RESPONSE = new CLI_RESPONSE(_AllInfoMonitors[Convert.ToInt32(idx)]);
-                        switch (value.ToUpper())
-                        {
-                            case "OSDLOCK":
-                                r = devMgr.SetVCPCapability(_AllInfoMonitors[System.Convert.ToInt32(idx)], 0xCA, 0x01).Result;
-                                break;
-
-                            case "OSDUNLOCK":
-                                r = devMgr.SetVCPCapability(_AllInfoMonitors[System.Convert.ToInt32(idx)], 0xCA, 0x02).Result;
-                                break;
-                        }
-
                         _Set_CLI_RESPONSE_RESPONSE.Command = "SET";
                         _Set_CLI_RESPONSE_RESPONSE.TargetFeature = "OSDACCESS";
                         _Set_CLI_RESPONSE_RESPONSE.Value = value;
 
+                        if (_AllInfoMonitors[Convert.ToInt32(idx)].CapabilityDic.ContainsKey("CA"))
+                        {
+                            switch (value.ToUpper())
+                            {
+                                case "OSDLOCK":
+                                    r = devMgr.SetVCPCapability(_AllInfoMonitors[System.Convert.ToInt32(idx)], 0xCA, 0x01).Result;
+                                    break;
+
+                                case "OSDUNLOCK":
+                                    r = devMgr.SetVCPCapability(_AllInfoMonitors[System.Convert.ToInt32(idx)], 0xCA, 0x02).Result;
+                                    break;
+                            }
+                        }
+                        else
+                        {
+                            _Set_CLI_RESPONSE_RESPONSE.Value = "Not supported";
+                        }
+
+
                         if (!r)
                         {
                             _Set_CLI_RESPONSE_RESPONSE.Result = "FAIL";
-                            System.Console.WriteLine(JsonConvert.SerializeObject(_Set_CLI_RESPONSE_RESPONSE, Formatting.Indented));
-                            output += "\n" + JsonConvert.SerializeObject(_Set_CLI_RESPONSE_RESPONSE, Formatting.Indented);
                             if (exit == 0)
                                 exit = (int)CLI_ExitCode.functional_error;
                         }
                         else
                         {
                             _Set_CLI_RESPONSE_RESPONSE.Result = "PASS";
-                            System.Console.WriteLine(JsonConvert.SerializeObject(_Set_CLI_RESPONSE_RESPONSE, Formatting.Indented));
-                            output += "\n" + JsonConvert.SerializeObject(_Set_CLI_RESPONSE_RESPONSE, Formatting.Indented);
                         }
+
+                        System.Console.WriteLine(JsonConvert.SerializeObject(_Set_CLI_RESPONSE_RESPONSE, Formatting.Indented));
+                        output += "\n" + JsonConvert.SerializeObject(_Set_CLI_RESPONSE_RESPONSE, Formatting.Indented);
                     }
                 }
                 if (serviceTag.Count != 0)
@@ -6453,35 +6466,41 @@ namespace DDPM.CLI.Plugins.Display
                         foreach (MonitorInfo mo in tmp)
                         {
                             CLI_RESPONSE _Set_CLI_RESPONSE_RESPONSE = new CLI_RESPONSE(mo);
-                            switch (value.ToUpper())
-                            {
-                                case "OSDLOCK":
-                                    r = devMgr.SetVCPCapability(mo, 0xCA, 0x01).Result;
-                                    break;
-
-                                case "OSDUNLOCK":
-                                    r = devMgr.SetVCPCapability(mo, 0xCA, 0x02).Result;
-                                    break;
-                            }
-
                             _Set_CLI_RESPONSE_RESPONSE.Command = "SET";
                             _Set_CLI_RESPONSE_RESPONSE.TargetFeature = "OSDACCESS";
                             _Set_CLI_RESPONSE_RESPONSE.Value = value;
 
+                            if (mo.CapabilityDic.ContainsKey("CA"))
+                            {
+                                switch (value.ToUpper())
+                                {
+                                    case "OSDLOCK":
+                                        r = devMgr.SetVCPCapability(mo, 0xCA, 0x01).Result;
+                                        break;
+
+                                    case "OSDUNLOCK":
+                                        r = devMgr.SetVCPCapability(mo, 0xCA, 0x02).Result;
+                                        break;
+                                }
+                            }
+                            else
+                            {
+                                _Set_CLI_RESPONSE_RESPONSE.Value = "Not supported";
+                            }
+
                             if (!r)
                             {
                                 _Set_CLI_RESPONSE_RESPONSE.Result = "FAIL";
-                                System.Console.WriteLine(JsonConvert.SerializeObject(_Set_CLI_RESPONSE_RESPONSE, Formatting.Indented));
-                                output += "\n" + JsonConvert.SerializeObject(_Set_CLI_RESPONSE_RESPONSE, Formatting.Indented);
                                 if (exit == 0)
                                     exit = (int)CLI_ExitCode.functional_error;
                             }
                             else
                             {
                                 _Set_CLI_RESPONSE_RESPONSE.Result = "PASS";
-                                System.Console.WriteLine(JsonConvert.SerializeObject(_Set_CLI_RESPONSE_RESPONSE, Formatting.Indented));
-                                output += "\n" + JsonConvert.SerializeObject(_Set_CLI_RESPONSE_RESPONSE, Formatting.Indented);
                             }
+
+                            System.Console.WriteLine(JsonConvert.SerializeObject(_Set_CLI_RESPONSE_RESPONSE, Formatting.Indented));
+                            output += "\n" + JsonConvert.SerializeObject(_Set_CLI_RESPONSE_RESPONSE, Formatting.Indented);
                         }
                     }
                 }
@@ -6495,35 +6514,41 @@ namespace DDPM.CLI.Plugins.Display
                         foreach (MonitorInfo mo in tmp)
                         {
                             CLI_RESPONSE _Set_CLI_RESPONSE_RESPONSE = new CLI_RESPONSE(mo);
-                            switch (value.ToUpper())
-                            {
-                                case "OSDLOCK":
-                                    r = devMgr.SetVCPCapability(mo, 0xCA, 0x01).Result;
-                                    break;
-
-                                case "OSDUNLOCK":
-                                    r = devMgr.SetVCPCapability(mo, 0xCA, 0x02).Result;
-                                    break;
-                            }
-
                             _Set_CLI_RESPONSE_RESPONSE.Command = "SET";
                             _Set_CLI_RESPONSE_RESPONSE.TargetFeature = "OSDACCESS";
                             _Set_CLI_RESPONSE_RESPONSE.Value = value;
 
+                            if (mo.CapabilityDic.ContainsKey("CA"))
+                            {
+                                switch (value.ToUpper())
+                                {
+                                    case "OSDLOCK":
+                                        r = devMgr.SetVCPCapability(mo, 0xCA, 0x01).Result;
+                                        break;
+
+                                    case "OSDUNLOCK":
+                                        r = devMgr.SetVCPCapability(mo, 0xCA, 0x02).Result;
+                                        break;
+                                }
+                            }
+                            else
+                            {
+                                _Set_CLI_RESPONSE_RESPONSE.Value = "Not supported";
+                            }
+
                             if (!r)
                             {
                                 _Set_CLI_RESPONSE_RESPONSE.Result = "FAIL";
-                                System.Console.WriteLine(JsonConvert.SerializeObject(_Set_CLI_RESPONSE_RESPONSE, Formatting.Indented));
-                                output += "\n" + JsonConvert.SerializeObject(_Set_CLI_RESPONSE_RESPONSE, Formatting.Indented);
                                 if (exit == 0)
                                     exit = (int)CLI_ExitCode.functional_error;
                             }
                             else
                             {
                                 _Set_CLI_RESPONSE_RESPONSE.Result = "PASS";
-                                System.Console.WriteLine(JsonConvert.SerializeObject(_Set_CLI_RESPONSE_RESPONSE, Formatting.Indented));
-                                output += "\n" + JsonConvert.SerializeObject(_Set_CLI_RESPONSE_RESPONSE, Formatting.Indented);
                             }
+
+                            System.Console.WriteLine(JsonConvert.SerializeObject(_Set_CLI_RESPONSE_RESPONSE, Formatting.Indented));
+                            output += "\n" + JsonConvert.SerializeObject(_Set_CLI_RESPONSE_RESPONSE, Formatting.Indented);
                         }
                     }
                 }
@@ -6534,7 +6559,6 @@ namespace DDPM.CLI.Plugins.Display
                 // jim add 20240608
 
                 ObjGetVCP rc = new ObjGetVCP();
-                bool retcode = true;
                 int exit = 0;
 
                 if (index.Count == 0 && serviceTag.Count == 0)
@@ -6542,28 +6566,24 @@ namespace DDPM.CLI.Plugins.Display
                     foreach (var monitor in _AllInfoMonitors)
                     {
                         CLI_RESPONSE _Get_CLI_RESPONSE_RESPONSE = new CLI_RESPONSE(monitor);
-                        rc = GetVCPCode(devMgr, monitor, "0xCA").Result;
-
-                        // jim modify 20240608
                         _Get_CLI_RESPONSE_RESPONSE.Command = "GET";
                         _Get_CLI_RESPONSE_RESPONSE.TargetFeature = "OSDACCESS";
-                        _Get_CLI_RESPONSE_RESPONSE.Value = get_osd(rc.value.ToString());
-                        retcode = true;
 
-                        if (retcode)
+                        if (monitor.CapabilityDic.ContainsKey("CA"))
                         {
+                            rc = GetVCPCode(devMgr, monitor, "0xCA").Result;
+                            _Get_CLI_RESPONSE_RESPONSE.Value = get_osd(rc.value.ToString());
                             _Get_CLI_RESPONSE_RESPONSE.Result = "PASS";
-                            System.Console.WriteLine(JsonConvert.SerializeObject(_Get_CLI_RESPONSE_RESPONSE, Formatting.Indented));
-                            output += "\n" + JsonConvert.SerializeObject(_Get_CLI_RESPONSE_RESPONSE, Formatting.Indented);
                         }
                         else
                         {
+                            _Get_CLI_RESPONSE_RESPONSE.Value = "Not supported";
                             _Get_CLI_RESPONSE_RESPONSE.Result = "FAIL";
-                            System.Console.WriteLine(JsonConvert.SerializeObject(_Get_CLI_RESPONSE_RESPONSE, Formatting.Indented));
-                            output += "\n" + JsonConvert.SerializeObject(_Get_CLI_RESPONSE_RESPONSE, Formatting.Indented);
-                            if (exit == 0)
-                                exit = (int)CLI_ExitCode.functional_error;
+                            exit = (int)CLI_ExitCode.functional_error;
                         }
+
+                        System.Console.WriteLine(JsonConvert.SerializeObject(_Get_CLI_RESPONSE_RESPONSE, Formatting.Indented));
+                        output += "\n" + JsonConvert.SerializeObject(_Get_CLI_RESPONSE_RESPONSE, Formatting.Indented);
                     }
                 }
                 // 20240614 jim modify
@@ -6572,28 +6592,24 @@ namespace DDPM.CLI.Plugins.Display
                     foreach (string idx in index)
                     {
                         CLI_RESPONSE _Get_CLI_RESPONSE_RESPONSE = new CLI_RESPONSE(_AllInfoMonitors[Convert.ToInt32(idx)]);
-                        rc = devMgr.GetVCPCapability(_AllInfoMonitors[System.Convert.ToInt32(idx)], 0xCA).Result;
-
-                        // jim modify 20240608
                         _Get_CLI_RESPONSE_RESPONSE.Command = "GET";
                         _Get_CLI_RESPONSE_RESPONSE.TargetFeature = "OSDACCESS";
-                        _Get_CLI_RESPONSE_RESPONSE.Value = get_osd(rc.value.ToString());
-                        retcode = true;
 
-                        if (retcode)
+                        if (_AllInfoMonitors[Convert.ToInt32(idx)].CapabilityDic.ContainsKey("CA"))
                         {
+                            rc = GetVCPCode(devMgr, _AllInfoMonitors[Convert.ToInt32(idx)], "0xCA").Result;
+                            _Get_CLI_RESPONSE_RESPONSE.Value = get_osd(rc.value.ToString());
                             _Get_CLI_RESPONSE_RESPONSE.Result = "PASS";
-                            System.Console.WriteLine(JsonConvert.SerializeObject(_Get_CLI_RESPONSE_RESPONSE, Formatting.Indented));
-                            output += "\n" + JsonConvert.SerializeObject(_Get_CLI_RESPONSE_RESPONSE, Formatting.Indented);
                         }
                         else
                         {
+                            _Get_CLI_RESPONSE_RESPONSE.Value = "Not supported";
                             _Get_CLI_RESPONSE_RESPONSE.Result = "FAIL";
-                            System.Console.WriteLine(JsonConvert.SerializeObject(_Get_CLI_RESPONSE_RESPONSE, Formatting.Indented));
-                            output += "\n" + JsonConvert.SerializeObject(_Get_CLI_RESPONSE_RESPONSE, Formatting.Indented);
-                            if (exit == 0)
-                                exit = (int)CLI_ExitCode.functional_error;
+                            exit = (int)CLI_ExitCode.functional_error;
                         }
+
+                        System.Console.WriteLine(JsonConvert.SerializeObject(_Get_CLI_RESPONSE_RESPONSE, Formatting.Indented));
+                        output += "\n" + JsonConvert.SerializeObject(_Get_CLI_RESPONSE_RESPONSE, Formatting.Indented);
                     }
                 }
                 // 20240614 jim modify
@@ -6605,28 +6621,24 @@ namespace DDPM.CLI.Plugins.Display
                         foreach (MonitorInfo mo in tmp)
                         {
                             CLI_RESPONSE _Get_CLI_RESPONSE_RESPONSE = new CLI_RESPONSE(mo);
-                            rc = GetVCPCode(devMgr, mo, "0xCA").Result;
-
-                            // jim modify 20240608
                             _Get_CLI_RESPONSE_RESPONSE.Command = "GET";
                             _Get_CLI_RESPONSE_RESPONSE.TargetFeature = "OSDACCESS";
-                            _Get_CLI_RESPONSE_RESPONSE.Value = get_osd(rc.value.ToString());
-                            retcode = true;
 
-                            if (retcode)
+                            if (mo.CapabilityDic.ContainsKey("CA"))
                             {
+                                rc = GetVCPCode(devMgr, mo, "0xCA").Result;
+                                _Get_CLI_RESPONSE_RESPONSE.Value = get_osd(rc.value.ToString());
                                 _Get_CLI_RESPONSE_RESPONSE.Result = "PASS";
-                                System.Console.WriteLine(JsonConvert.SerializeObject(_Get_CLI_RESPONSE_RESPONSE, Formatting.Indented));
-                                output += "\n" + JsonConvert.SerializeObject(_Get_CLI_RESPONSE_RESPONSE, Formatting.Indented);
                             }
                             else
                             {
+                                _Get_CLI_RESPONSE_RESPONSE.Value = "Not supported";
                                 _Get_CLI_RESPONSE_RESPONSE.Result = "FAIL";
-                                System.Console.WriteLine(JsonConvert.SerializeObject(_Get_CLI_RESPONSE_RESPONSE, Formatting.Indented));
-                                output += "\n" + JsonConvert.SerializeObject(_Get_CLI_RESPONSE_RESPONSE, Formatting.Indented);
-                                if (exit == 0)
-                                    exit = (int)CLI_ExitCode.functional_error;
+                                exit = (int)CLI_ExitCode.functional_error;
                             }
+
+                            System.Console.WriteLine(JsonConvert.SerializeObject(_Get_CLI_RESPONSE_RESPONSE, Formatting.Indented));
+                            output += "\n" + JsonConvert.SerializeObject(_Get_CLI_RESPONSE_RESPONSE, Formatting.Indented);
                         }
                     }
                 }
