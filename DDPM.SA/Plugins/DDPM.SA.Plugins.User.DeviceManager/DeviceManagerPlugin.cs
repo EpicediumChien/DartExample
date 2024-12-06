@@ -4766,12 +4766,12 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         //Target to notify UI update
         public void OnUIUpdateNotify(UpdateUINotify e)
         {
+            //Derek 1125
+            if (e != null && e != EventArgs.Empty && e.UI_Field_Name.StartsWith("WebcamEvent"))
+                HandleQAMEvent(e.UI_Field_Name);
+
             if (UIUpdateNotify == null || e == null || e == EventArgs.Empty)
                 return;
-
-            //Derek 1125
-            if (e.UI_Field_Name.StartsWith("WebcamEvent"))
-                HandleQAMEvent(e.UI_Field_Name);
 
             EventHandler<UpdateUINotify> Handler = UIUpdateNotify;
             if (Handler != null)
@@ -10076,12 +10076,15 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 return;
             }
 
+            writelog($"_IsZoomMeetingActive = {_IsZoomMeetingActive}, _ZoomMeetingType = {_ZoomMeetingType}, _IsZoomScreenShareActive = {_IsZoomScreenShareActive}");
+
             //Active state
-            if (_IsZoomMeetingActive && _ZoomMeetingType == ZoomMeetingType.CONF_3RD_EVENT_MEETING
+            if (_IsZoomMeetingActive && _ZoomMeetingType == ZoomMeetingType.ZOOM_MEETING_TYPE_UNKNOW
                 && deviceInfos.Count == 1 && _GlobalSettingParam.GlobalSetting_WidgetSettings.EnableQuickAccessWidget
                 && isWindowsScreenNotLocked)
             {
                 writelog($"HandleQAM receive CallQAM_UI event");
+                _IsZoomMeetingActive = false;
                 CallQAM_UI(this);
             }
             //Hidden state
