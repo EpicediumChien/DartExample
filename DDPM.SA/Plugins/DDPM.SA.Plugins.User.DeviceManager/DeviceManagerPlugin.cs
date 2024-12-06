@@ -8493,6 +8493,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             writelog("DeviceMangerPlugin received RestoreToDefaultMouse requested ...");
             return _DTPProxyPlugin.RestoreToDefaultMouse(Guid, isFromCli);
         }
+        public Task<bool> SetReportRate(string Guid, int newValue)
+        {
+            writelog("DeviceMangerPlugin received SetReportRate requested ...");
+            return _DTPProxyPlugin.SetReportRate(Guid, newValue);
+        }
 
         #endregion
 

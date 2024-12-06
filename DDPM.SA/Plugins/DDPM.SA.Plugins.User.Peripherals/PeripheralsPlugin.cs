@@ -1279,6 +1279,18 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                                 }
                             }
 
+                            // << 241206 by Hess fix no event issue
+                            if (item is ILogicalDevice _logicalDevice)
+                            {
+                                if (!LogicalDevices4.Contains(_logicalDevice.Id))
+                                {
+                                    _logicalDevice.BatteryStatusChanged += ILogicalDevice_BatteryStatusChanged;
+                                    _logicalDevice.BatteryLevelChanged += ILogicalDevice_BatteryLevelChanged;
+                                    LogicalDevices4.Add(_logicalDevice.Id);
+                                }
+                            }
+                            // >>
+
                             if (item is ILogicalWiredAudio _logicalWiredAudio)
                             {
                                 info.MuteStatus = _logicalWiredAudio.MuteStatus;
@@ -2080,13 +2092,6 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
             {
                 if (_isClientConnected)
                 {
-                    if (!LogicalDevices4.Contains(iLogicalDevice.Id))
-                    {
-                        iLogicalDevice.BatteryStatusChanged += ILogicalDevice_BatteryStatusChanged;
-                        iLogicalDevice.BatteryLevelChanged += ILogicalDevice_BatteryLevelChanged;
-                        LogicalDevices4.Add(iLogicalDevice.Id);
-                    }
-
                     ScanDevices();
 
                     DeviceChangedEventArgs _EventArgs = new();
