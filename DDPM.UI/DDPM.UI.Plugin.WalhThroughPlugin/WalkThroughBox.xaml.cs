@@ -113,6 +113,7 @@ namespace DDPM.UI.Plugin.WalkThroughPlugin
             ViewModel.Img3Source = DdpmCommonHelper.GetImageSourceFromCommonResource(devicePages["DDPM"][_currentPage].MainImageSource, "DDPM.UI.WalkThroughData");
             //_currentPage++;
             //UpdatePage(devicePages["DDPM"][1].MainImageSource);
+            base.Owner = owner;
         }
         private void NextBtn_Click(object sender, RoutedEventArgs e)
         {
@@ -204,14 +205,6 @@ namespace DDPM.UI.Plugin.WalkThroughPlugin
         private void SkipBtn_Click(object sender, RoutedEventArgs e)
         {
             EndProgress();
-        }
-        private void Window_MouseDown(object sender, MouseButtonEventArgs e)
-        {
-            // 當滑鼠左鍵按下時允許拖曳視窗
-            if (e.LeftButton == MouseButtonState.Pressed)
-            {
-                this.DragMove();
-            }
         }
     }
 }

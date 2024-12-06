@@ -8,7 +8,7 @@
     <!-- #region Control Element Default Styles-->
     <!-- Common -->
     <!-- #region FakeTransparent: When you need a transparent color and need can response mouse click -->
-    <Color x:Key="Color_FakeTransparent">#02000000</Color>
+    <Color x:Key="Color_FakeTransparent">#01FFFFFF</Color>
     <SolidColorBrush x:Key="FakeTransparent" Color="{StaticResource Color_FakeTransparent}" />
     <SolidColorBrush x:Key="Transparent" Color="{StaticResource Color_FakeTransparent}" />
     <!-- #endregion FakeTransparent: When you need a transparent color and need can response mouse click -->
