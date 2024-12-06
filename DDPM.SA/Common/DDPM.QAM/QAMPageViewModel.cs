@@ -30,7 +30,7 @@ namespace DDPM.QAM
         public bool[] Settings_IsSelected { get; set; } = { false, false, false, false };
         public Visibility[] Settings_IsVisibility { get; set; } = { Visibility.Visible, Visibility.Visible, Visibility.Visible, Visibility.Visible };
 
-        public new event PropertyChangedEventHandler? PropertyChanged;
+        public event PropertyChangedEventHandler? PropertyChanged;
         public void OnPropertyChanged(string propertyName)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
@@ -283,6 +283,33 @@ namespace DDPM.QAM
             DdpmCommonHelper.DeviceManagerSA!.SetZoom(CurrentDeviceInfo!.ID.ToString(), _ZoomValue);
         }
         #endregion
+
+        private bool isCameraSettingSelected = false;
+        public bool IsCameraSettingSelected
+        {
+            get => isCameraSettingSelected;
+
+            set
+            {
+                isCameraSettingSelected = value;
+                OnPropertyChanged(nameof(isCameraSettingSelected));
+            }
+        }
+
+        #region Dragging
+        private bool _isDragging = false;
+        public bool IsDragging
+        {
+            get { return _isDragging; }
+            set
+            {
+                _isDragging = value;
+                OnPropertyChanged("IsDragging");
+            }
+        }
+        #endregion
+
+
         public void RefreshUI()
         {
             if (_AutoFramingStatus)
