@@ -691,6 +691,25 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
             }
         }
 
+        public void SetMicNoiseCancellationForMito(bool newValue, Guid deviceId)
+        {
+            foreach (var device in _iDeviceManager.Devices)
+            {
+                var logicalDevice = device.Devices.FirstOrDefault(x => x.Id == deviceId);
+                if (logicalDevice is ILogicalDeviceHeadset _logicalDeviceHeadset)
+                {
+                    _DeviceManagerPlugin.SetMicNoiseCancellationAsync(logicalDevice.ToString(), newValue);
+                    _DeviceManagerPlugin.SetMicNCIncomingAsync(logicalDevice.ToString(), newValue);
+                    DeviceInfo _deviceInfo = _deviceHelper.deviceInfo.Where(x => x.ID == deviceId).FirstOrDefault();
+                    if (_deviceInfo != null)
+                    {
+                        _deviceInfo.MicNoiseCancellation = newValue;
+                        break;
+                    }
+                }
+            }
+        }
+
         public void SetSidetone(bool newValue, Guid deviceId)
         {
             foreach (var device in _iDeviceManager.Devices)
@@ -733,8 +752,17 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
             {
                 var logicalDevice = device.Devices.FirstOrDefault(x => x.Id == deviceId);
                 //Wayn R17.2 Change to DTP 12/2
-                bool setvalue = (newValue == 1 ? true : false);
-                _DeviceManagerPlugin.SetWearDetectionAsync(logicalDevice.ToString(), setvalue);
+                if (logicalDevice is ILogicalDeviceHeadset _logicalDeviceHeadset)
+                {
+                    bool setvalue = (newValue == 1 ? true : false);
+                    _DeviceManagerPlugin.SetWearDetectionAsync(logicalDevice.ToString(), setvalue);
+                    DeviceInfo _deviceInfo = _deviceHelper.deviceInfo.Where(x => x.ID == deviceId).FirstOrDefault();
+                    if (_deviceInfo != null)
+                    {
+                        _deviceInfo.WearDetection = newValue;
+                        break;
+                    }
+                }
                 //if (logicalDevice is ILogicalDeviceHeadset _logicalDeviceHeadset)
                 //{
                 //    if (newValue == 0)
