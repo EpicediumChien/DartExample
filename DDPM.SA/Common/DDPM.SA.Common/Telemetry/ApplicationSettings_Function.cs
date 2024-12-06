@@ -41,8 +41,9 @@ namespace DDPM.SA.Common
             var rt = false;
             if (string.IsNullOrEmpty(val))
                 return rt;
-            if (monitorInfos != null && monitorInfos.Count == 0)
-                return rt;
+            if ( (monitorInfos != null && monitorInfos.Count == 0)||
+                 monitorInfos == null )
+                return rt;            
             List<string> models = new List<string>();
             List<string> D_Ctrls = new List<string>();
             List<string> DisplayServiceTags = new List<string>();
@@ -118,7 +119,8 @@ namespace DDPM.SA.Common
             var rt = false;
             if (string.IsNullOrEmpty(val))
                 return rt;
-            if (monitorInfos != null && monitorInfos.Count == 0)
+            if ((monitorInfos != null && monitorInfos.Count == 0)||
+                 monitorInfos == null )
                 return rt;
             List<string> models = new List<string>();
             List<string> D_Ctrls = new List<string>();
@@ -147,7 +149,8 @@ namespace DDPM.SA.Common
             var rt = false;
             if (string.IsNullOrEmpty(val))
                 return rt;
-            if (monitorInfos != null && monitorInfos.Count == 0)
+            if ((monitorInfos != null && monitorInfos.Count == 0) ||
+                monitorInfos == null)
                 return rt;
             List<string> models = new List<string>();
             List<string> D_Ctrls = new List<string>();

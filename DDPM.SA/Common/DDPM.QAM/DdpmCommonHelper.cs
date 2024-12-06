@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 using System.Windows.Media;
 using System.Windows;
 using Dell.Client.Framework.Common;
+using static DDPM.QAM.QAMPage;
 
 namespace DDPM.QAM
 {

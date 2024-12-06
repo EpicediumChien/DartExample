@@ -1238,6 +1238,11 @@ namespace DDPM.SA.Plugins.User.SettingsManager
                 }
                 if (ImpExpSettings.MonitorSettings != null)
                 {
+                    //if (modelName != "Skip")//Elsa add to fix PIMS-313843
+                    //{
+                    //    if (modelName != ImpExpSettings.MonitorSettings.Model)
+                    //    { return Task.FromResult<bool>(false); }
+                    //}
                     DDPMMonitorSettings monitorSettings = new DDPMMonitorSettings();
                     monitorSettings = ImpExpSettings.MonitorSettings;
                     WriteLog("[DisplayImportSettings] monitorSettings.Model :" + monitorSettings.Model);
@@ -1252,9 +1257,6 @@ namespace DDPM.SA.Plugins.User.SettingsManager
                             {
                                 foreach (DDPMMonitorSettings settings in monitorSettingsList)
                                 {
-                                    if (settings.Model!=monitorSettings.Model) ////Elsa add to fix PIMS-313843
-                                    { return Task.FromResult<bool>(false); }
-
                                     //if ((settings.ServiceTag == monitorSettings.ServiceTag && isSameModel == false) || 
                                         //(settings.ServiceTag == serviceTag && isSameModel == true))
                                     if (( isSameModel == false) ||(isSameModel == true))//Elsa add to fix PIMS-313793
@@ -2270,12 +2272,29 @@ namespace DDPM.SA.Plugins.User.SettingsManager
         private object InitDDPMUserSettings_Common(string ConfigPath, string config_type)
         {
             string info;
-            FileInfo fileInfo = new FileInfo(ConfigPath);
-            if (fileInfo == null)
+
+            if(!File.Exists(ConfigPath))
             {
                 WriteLog($"[InitDDPMUserSettings_Common]: File:{ConfigPath}, empty file info");
                 return null;
             }
+
+            FileInfo fileInfo = default;
+            try
+            {
+                fileInfo = new FileInfo(ConfigPath);
+            }
+            catch (Exception ex)
+            {
+                WriteLog($"[InitDDPMUserSettings_Common]: File:{ConfigPath}, get file info failed, message: {ex.Message}");
+                return null;
+            }
+
+            //if (fileInfo == null)
+            //{
+            //    WriteLog($"[InitDDPMUserSettings_Common]: File:{ConfigPath}, empty file info");
+            //    return null;
+            //}
             if (string.IsNullOrEmpty(fileInfo.DirectoryName))
             {
                 WriteLog($"[InitDDPMUserSettings_Common]: empty DirectoryName of fileInfo");
