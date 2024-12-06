@@ -610,7 +610,7 @@ namespace DDPM.UI.Plugin.SettingsPlugin
             UXAlertItemVisibility_2 = Visibility.Collapsed;
             UXAlertItemMessage_2 = "";
             bool deviceBatteryLow = false;
-            if (deviceInfos != null)
+            if (deviceInfos != null && !fwUpdateInfo.IsDisplay)
             {
                 DeviceInfo? deviceInfo = deviceInfos.Find(o => o.ID.ToString().Equals(fwUpdateInfo.DeviceId.Replace("{", "").Replace("}", "")));
                 Debug.WriteLine($"deviceInfo is null : {(deviceInfo == null ? "Yes" : "No")}");
@@ -715,7 +715,15 @@ namespace DDPM.UI.Plugin.SettingsPlugin
             {
                 this.IsCheckUpdate = false;
             }
-            UpdateInfo = $"{LangHelper.Instance["Firmware_update"]} {fwUpdateInfo.TheLatestVersion} - {fwUpdateInfo.DeviceName}";
+            //PIMS-316061 display add service tag to recognize.
+            if (fwUpdateInfo.IsDisplay)
+            {
+                UpdateInfo = $"{LangHelper.Instance["Firmware_update"]} {fwUpdateInfo.TheLatestVersion} - {fwUpdateInfo.DeviceName}({fwUpdateInfo.ServiceTag})";
+            }
+            else
+            {
+                UpdateInfo = $"{LangHelper.Instance["Firmware_update"]} {fwUpdateInfo.TheLatestVersion} - {fwUpdateInfo.DeviceName}";
+            }
         }
 
         public UIUpdateInfo(SWUpdateInfo swUpdateInfo)
