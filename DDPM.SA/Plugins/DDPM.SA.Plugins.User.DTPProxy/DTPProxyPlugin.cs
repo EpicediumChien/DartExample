@@ -304,24 +304,15 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             if (!await GetItemIDAsync("Mouse", Guid))
             { return; }
 
-            if (_mouseMethodInfo != null)
+            if (await GetCommodityInterfaceInstanceAsync(_mouseMethodInfo) is ICommodity commodity)
             {
-                if (await GetCommodityInterfaceInstanceAsync(_mouseMethodInfo) is ICommodity commodity)
-                {
-                    SetPropertyValue(_mouseInterfaceType, commodity, "DpiValue", newValue);
-                }
-                else
-                {
-                    Debug.WriteLine($"Could not retrieve the Commodity Interface {_mouseInterfaceType} for the {_itemID} item.");
-                    writelog($"Could not retrieve the Commodity Interface {_mouseInterfaceType} for the {_itemID} item.");
-                }
+                SetPropertyValue(_mouseInterfaceType, commodity, "DpiValue", newValue);
             }
             else
             {
-                Debug.WriteLine($"[SetDPIValue]Could not retrieve the Commodity Interface for the  {_itemID}  item. _mouseMethodInfo is null");
-                writelog($"[SetDPIValue]Could not retrieve the Commodity Interface for the  {_itemID}  item. _mouseMethodInfo is null");
+                Debug.WriteLine($"Could not retrieve the Commodity Interface {_mouseInterfaceType} for the {_itemID} item.");
+                writelog($"Could not retrieve the Commodity Interface {_mouseInterfaceType} for the {_itemID} item.");
             }
-
         }
         public async Task SetMouseAction(string Guid, byte[] newValue)
         {
@@ -465,6 +456,22 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             {
                 var result = await DeleteMouseAllAssignedActions(Guid);
                 return result;
+            }
+        }
+        public async Task<bool> SetReportRate(string Guid, int newValue)
+        {
+            if (!await GetItemIDAsync("Mouse", Guid))
+            { return false; }
+
+            if (await GetCommodityInterfaceInstanceAsync(_mouseMethodInfo) is ICommodity commodity)
+            {
+                return SetPropertyValue(_mouseInterfaceType, commodity, "ReportRate", newValue);
+            }
+            else
+            {
+                Debug.WriteLine($"Could not retrieve the Commodity Interface {_mouseInterfaceType} for the {Guid} item.");
+                writelog($"Could not retrieve the Commodity Interface {_mouseInterfaceType} for the {Guid} item.");
+                return false;
             }
         }
 

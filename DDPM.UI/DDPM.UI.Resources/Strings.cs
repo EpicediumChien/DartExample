@@ -37,7 +37,7 @@ namespace DDPM.UI.Common
         public static readonly string RestoreToDefaultActions = GetString("RestoreToDefaultActions");
         public static readonly string Unpair = GetString("Unpair");
         public static readonly string PollingRateInfoTip1 = GetString("Mouse.13");
-        public static readonly string PollingRateInfoTip2 = GetString("Mouse.14");
+        public static readonly string PollingRateInfoTip2 = GetString("Mouse.16");
 
         public static readonly string ButtonCustomizeCaption = GetString("ButtonSettings.13");
         public static readonly string ScrollWheelCaption = GetString("ButtonSettings.0");
