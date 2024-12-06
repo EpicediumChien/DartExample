@@ -265,6 +265,7 @@ namespace DDPM.UI.Module.Kvm
                     USBKVMisON = false;
                     _isUSBKVM = false;
                     _isNKVM = false;
+                    _isNoKVM = true;
                     DdpmCommonHelper.DeviceManagerSA.SentKVMtoTelementry(DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo, "KVMMode", "NoKVM");
                 }
             }
@@ -641,13 +642,19 @@ namespace DDPM.UI.Module.Kvm
             if (DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo != null)
             {
                 MonitorInfo mi = DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo;
+
+                USBKVMisON = /*KvmModule.isUSBKVM;*/ DdpmCommonHelper.DeviceManagerSA.GetOnUSBKVM(mi).Result;
+                NKVMisON = DdpmCommonHelper.DeviceManagerSA.GetOnNKVM(mi).Result;
+
                 if (DdpmCommonHelper.DeviceManagerSA.isNKVMSupportMonitor(mi).Result && File.Exists(strFullPath))
                 {
                     SupportNKVM = Visibility.Visible;
                 }
+                else
+                {
+                    NKVMisON = false;
+                }
 
-                USBKVMisON = /*KvmModule.isUSBKVM;*/ DdpmCommonHelper.DeviceManagerSA.GetOnUSBKVM(mi).Result;
-                NKVMisON = DdpmCommonHelper.DeviceManagerSA.GetOnNKVM(mi).Result;
                 if (mi.CapabilityDic.ContainsKey("EE"))
                 {
                     SupportUSBKVM = Visibility.Visible;
@@ -672,6 +679,29 @@ namespace DDPM.UI.Module.Kvm
                         isPxP = Visibility.Collapsed;
                         NoPxP = Visibility.Visible;
                     }
+                }
+                else
+                {
+                    USBKVMisON = false;
+                }
+
+                if (USBKVMisON)
+                {
+                    _isUSBKVM = true;
+                    //EnableUSBKVM = Visibility.Visible;
+                    //DisenableUSBKVM = Visibility.Collapsed;
+                }
+                else if (NKVMisON)
+                {
+                    _isNKVM = true;
+                    //EnableUSBKVM = Visibility.Collapsed;
+                    //DisenableUSBKVM = Visibility.Visible;
+                }
+                else
+                {
+                    _isNoKVM = true;
+                    //EnableUSBKVM = Visibility.Collapsed;
+                    //DisenableUSBKVM = Visibility.Visible;
                 }
                 bw.DoWork += DoWork_RefreshData;
                 bw.RunWorkerCompleted += RunWorkerCompleted_RefreshData;
@@ -708,25 +738,6 @@ namespace DDPM.UI.Module.Kvm
                 {
                     _log?.Debug("[KvmViewModel]isScreenPartition.");
                     return;
-                }
-
-                if (!NKVMisON && !USBKVMisON)
-                {
-                    _isNoKVM = true;
-                    EnableUSBKVM = Visibility.Collapsed;
-                    DisenableUSBKVM = Visibility.Visible;
-                }
-                else if (USBKVMisON)
-                {
-                    _isUSBKVM = true;
-                    EnableUSBKVM = Visibility.Visible;
-                    DisenableUSBKVM = Visibility.Collapsed;
-                }
-                else if (NKVMisON)
-                {
-                    _isNKVM = true;
-                    EnableUSBKVM = Visibility.Collapsed;
-                    DisenableUSBKVM = Visibility.Visible;
                 }
 
                 if (mi.CapabilityDic.ContainsKey("EE"))
