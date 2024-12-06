@@ -40,6 +40,8 @@ using IDdpmHomePageViewModel = DDPM.UI.Plugin.DdpmHomePlugin.Interfaces.IDdpmHom
 using static DDPM.UI.Common.User32;
 using System.Windows.Threading;
 using DDPM.SA.Common.UpdateProgressPage;
+using Windows.ApplicationModel.VoiceCommands;
+using Microsoft.Toolkit.Uwp.Notifications;
 
 namespace DDPM.UI.Plugin.DdpmHomePlugin
 {
@@ -173,6 +175,8 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
 
                 // Get current condition
                 _ = Task.Run(GetCurrentDeviceManagerPluginPluginCondition, CancellationToken);
+
+                //CheckIfNeedNavigateToWebcamPageV2();
             }
             catch (Exception ex)
             {
@@ -212,6 +216,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                             _HasRegisted = true;
                             _deviceManager.DeviceChanged += _deviceManager_DeviceChanged;
                             _deviceManager.VCPchanged += _deviceManager_VCPchanged;
+                            _deviceManager.UIUpdateNotify += _deviceManager_UIUpdateNotify;
 
                             //Move to call from OnActivated( ) => Failed, it's called too late
                             //So uncommented below code
@@ -223,6 +228,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                             _deviceManager.ReceiveTelemetryInfo("AppSession", "AppStarted", Telementry_Frequency.RealTime);
 
                             await GetDdpmDevicesAsync(_deviceManager);
+                            CloseQAMIfExist();
 
                             //1030 get global settings for telemetry consent page using
                             _globalSettings = _deviceManager.GetGlobalSettingParam().Result;
@@ -284,6 +290,8 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                         }
 
                         CheckIfNeedImportSetting_Display();
+
+                        //await DDPMInfoSAHomepageIsReady();
                     }
                 }
             }
@@ -297,6 +305,52 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
             {
                 _lock.Release();
                 _log.Trace($"{nameof(GetCurrentDeviceManagerPluginPluginCondition)} unlock");
+            }
+        }
+
+        private void CloseQAMIfExist()
+        {
+            _deviceManager!.SetIsDDPMHomepageReadyAsync(true);
+        }
+
+        //private void CheckIfNeedNavigateToWebcamPage()
+        //{
+        //    if (DdpmCommonHelper.DeviceManagerSA!.GetIsDDPMLaunchByQAM().Result == true)
+        //    {
+        //        DdpmCommonHelper.WriteUILog($"GetIsDDPMLaunchByQAM = true");
+
+        //        DdpmCommonHelper.DeviceManagerSA!.SetIsDDPMHomepageReadyAsync(true);
+        //        DdpmCommonHelper.DeviceManagerSA!.SetIsDDPMLaunchByQAMAsync(false);
+        //    }
+        //    else
+        //        DdpmCommonHelper.WriteUILog($"GetIsDDPMLaunchByQAM = false");
+        //}
+
+        private async Task CheckIfNeedNavigateToWebcamPage()
+        {
+            if (_deviceManager!.GetIsDDPMLaunchByQAM().Result == true)
+            {
+                _log.Info($"GetIsDDPMLaunchByQAM = true");
+
+                await _deviceManager!.SetIsDDPMHomepageReadyAsync(true);
+                await _deviceManager!.SetIsDDPMLaunchByQAMAsync(false);
+            }
+            else
+                _log.Info($"GetIsDDPMLaunchByQAM = false");
+        }
+
+        private async Task DDPMInfoSAHomepageIsReady()
+        {
+            try
+            {
+                _log.Info("DDPMInfoSAHomepageIsReady start");
+                await _deviceManager!.SetIsDDPMHomepageReadyAsync(true);
+                _log.Info("DDPMInfoSAHomepageIsReady end");
+            }
+            catch (Exception e)
+            {
+                _log.Info($"Catch excepton: {e.Message} when Clsoe QAM");
+                throw;
             }
         }
 
@@ -431,6 +485,51 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
         {
             _log.Info("DdpmHomePlugin._deviceManager_notifyDeviceConnected() executed");
             //throw new NotImplementedException();
+        }
+        private void _deviceManager_UIUpdateNotify(object? sender, UpdateUINotify e)
+        {
+            //Derek 1127
+            if (e == null || e.UI_Field_Name == null || e == UpdateUINotify.Empty)
+                return;
+
+            _log.Info($"_deviceManager_UIUpdateNotify received msg is {e.UI_Field_Name}");
+            //System.Windows.MessageBox.Show(e.UI_Field_Name);
+
+            if (e.UI_Field_Name.StartsWith("QAMEvent_StartPreview"))
+            {
+                //_log.Info($"_deviceManager_UIUpdateNotify start to show webcam preview");
+                _console.ShowPluginById(DDPM.UI.Common.Constants.WebCameraPluginId);
+                //_showPluginManager?.ShowPluginById(DDPM.UI.Common.Constants.SettingsPluginId);
+                //_console.ShowPluginById(DDPM.UI.Common.Constants.SettingsPluginId);
+            }
+            else if (e.UI_Field_Name.StartsWith("QAMEvent_QAMIsLaunched"))
+            {
+                CloseMyself();
+            }
+            else if (e.UI_Field_Name.StartsWith("QAMEvent_NavigateToWidgetSettingPage"))
+            {
+                _console.ShowPluginById(DDPM.UI.Common.Constants.SettingsPluginId);
+            }
+        }
+
+        [DllImport("user32.dll")]
+        private static extern int SendMessage(IntPtr hWnd, int wMsg, IntPtr wParam, IntPtr lParam);
+        private const int WM_EXITBYMYSELF = 0xFF30;
+        private void CloseMyself()
+        {
+            try
+            {
+                IntPtr hWnd = Process.GetCurrentProcess().MainWindowHandle;
+                int result = SendMessage(hWnd, WM_EXITBYMYSELF, IntPtr.Zero, IntPtr.Zero);
+
+                _log.Info($"SendMessage result = {result}");
+            }
+            catch (Exception e)
+            {
+                _log.Info($"Catch exception: {e.Message} when CloseMyself");
+            }
+
+            _log.Info($"Run CloseMyself successfully.");
         }
 
         private void _deviceManager_VCPchanged(object? sender, VCPchangedEventArgs e)
