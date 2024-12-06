@@ -29,7 +29,6 @@ using Windows.Storage;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 using JsonSerializer = System.Text.Json.JsonSerializer;
 using WebcamProfile = DDPM.UI.Common.WebcamProfile;
-using Windows.Devices.Sensors;
 
 namespace DDPM.UI.Plugin.ViewModels
 {
