@@ -10308,7 +10308,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             writelog($"QAMHide Start");
 
             if (null == _QAM)
-                return;
+                return Task.CompletedTask;
 
             try
             {
