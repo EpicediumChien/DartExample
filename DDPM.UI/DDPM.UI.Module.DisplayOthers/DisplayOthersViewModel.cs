@@ -318,18 +318,18 @@ namespace DDPM.UI.Module.DisplayOthers
         }
         private void ImpExpSettings_Done(object sender, RunWorkerCompletedEventArgs e)
         {
-            IsBusy = false;
+            //IsBusy = false;
             //OnMessageDlgInvoke("close_loading");
             //OnMessageDlgInvoke("result_success");
-            OnPropertyChanged("IsBusy");
+            //OnPropertyChanged("IsBusy");
         }
 
         #endregion
 
         public bool ExportSettings()
         {
-            IsBusy = true;
-            OnPropertyChanged("IsBusy");
+            //IsBusy = true;
+            //OnPropertyChanged("IsBusy");
             SaveFileDialog saveFileDialog = new SaveFileDialog();
 
             saveFileDialog.Filter = "json files (*.json)|*.json";
@@ -339,9 +339,9 @@ namespace DDPM.UI.Module.DisplayOthers
                 string info = string.Empty;
                 if (!DDPM.SA.Common.Security.InputHelper.InputValidation_FilePathFileName(filename, false, out info))
                 {
-                    IsBusy = false;
+                    //IsBusy = false;
                     OnMessageDlgInvoke("close_loading");
-                    OnPropertyChanged("IsBusy");
+                    //OnPropertyChanged("IsBusy");
                 }
                 else
                 {
@@ -351,17 +351,17 @@ namespace DDPM.UI.Module.DisplayOthers
             }
             else
             {
-                IsBusy = false;
+                //IsBusy = false;
                 OnMessageDlgInvoke("close_loading");
-                OnPropertyChanged("IsBusy");
+                //OnPropertyChanged("IsBusy");
             }
 
             return false;
         }
         public bool ImportSettings()
         {
-            IsBusy = true;
-            OnPropertyChanged("IsBusy");
+            //IsBusy = true;
+            //OnPropertyChanged("IsBusy");
             OpenFileDialog openFileDialog = new OpenFileDialog();
 
             openFileDialog.Filter = "jason files (*.json)|*.json";
@@ -371,9 +371,9 @@ namespace DDPM.UI.Module.DisplayOthers
                 string info = string.Empty;
                 if (!DDPM.SA.Common.Security.InputHelper.InputValidation_FilePathFileName(filename, true, out info))
                 {
-                    IsBusy = false;
+                    //IsBusy = false;
                     OnMessageDlgInvoke("close_loading");
-                    OnPropertyChanged("IsBusy");
+                    //OnPropertyChanged("IsBusy");
                 }
                 else
                 {
@@ -383,9 +383,9 @@ namespace DDPM.UI.Module.DisplayOthers
             }
             else
             {
-                IsBusy = false;
+                //IsBusy = false;
                 OnMessageDlgInvoke("close_loading");
-                OnPropertyChanged("IsBusy");
+                //OnPropertyChanged("IsBusy");
             }
 
             return false;
