@@ -10093,7 +10093,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
 
             //Hidden state
-            if (_IsZoomScreenShareActive)
+            if (_IsZoomScreenShareActive && _IsZoomMeetingActive)
             {
                 writelog($"HandleQAM receive QAMHide event");
 
