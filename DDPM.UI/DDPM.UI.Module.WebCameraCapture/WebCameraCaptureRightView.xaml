@@ -214,7 +214,7 @@
                     <StackPanel Orientation="Vertical">
                         <StackPanel Orientation="Horizontal" Margin="18,25,0,18">
                             <UXControls:UXTextBlock Text="{Binding [WebCameraCapture.8], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource ModuleItemStyle}" IsEnabled="{Binding IsNotRecording}" />
-                            <Border Background="Transparent" Cursor="Hand">
+                            <Border Background="{StaticResource FakeTransparent}" Cursor="Hand">
                                 <ContentControl Template="{StaticResource icon_Info}" Margin="9,0,0,0" Width="16" Height="16"/>
                                 <Border.ToolTip>
                                     <ToolTip Placement="Top" VerticalOffset="8" HorizontalOffset="6">

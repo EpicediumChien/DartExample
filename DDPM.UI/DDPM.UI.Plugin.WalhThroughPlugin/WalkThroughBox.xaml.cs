@@ -205,13 +205,5 @@ namespace DDPM.UI.Plugin.WalkThroughPlugin
         {
             EndProgress();
         }
-        private void Window_MouseDown(object sender, MouseButtonEventArgs e)
-        {
-            // 當滑鼠左鍵按下時允許拖曳視窗
-            if (e.LeftButton == MouseButtonState.Pressed)
-            {
-                this.DragMove();
-            }
-        }
     }
 }
