@@ -150,5 +150,26 @@ namespace DDPM.UI.Plugin.SettingsPlugin
         {
             vm.SetSelected(4);
         }
+
+        private void UserControl_Loaded(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                if (DdpmCommonHelper.DeviceManagerSA!.GetIsWidgetSettingPageLoadedByQAMAsync().Result == true)
+                {
+                    DdpmCommonHelper.WriteUILog($"GetIsWidgetSettingPageLoadedByQAMAsync = true");
+
+                    DdpmCommonHelper.DeviceManagerSA!.SetIsWidgetSettingPageLoadedByQAMAsync(false);
+
+                    WidgetSettingsButton_Click(this, null);
+                }
+                else
+                    DdpmCommonHelper.WriteUILog($"GetIsWidgetSettingPageLoadedByQAMAsync = false");
+            }
+            catch (Exception)
+            {
+                DdpmCommonHelper.WriteUILog($"Catch exception when navigate to Widget Setting");
+            }
+        }
     }
 }

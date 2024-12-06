@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DDPM.QAM;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -32,6 +33,8 @@ namespace DDPM.OSDs
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
+            //System.Windows.MessageBox.Show("Window_Loaded");
+
             System.Windows.Interop.WindowInteropHelper wndHelper = new System.Windows.Interop.WindowInteropHelper(this);
             Win32Lib.Win32.HideWinFromAltTab(wndHelper.Handle);
 
@@ -40,7 +43,7 @@ namespace DDPM.OSDs
                 this.WindowState = WindowState.Maximized;
                 this.Topmost = true;
 
-                time = TimeSpan.FromMilliseconds(3000);
+                time = TimeSpan.FromMilliseconds(5000);
                 animationTimer = new DispatcherTimer();
                 animationTimer.Interval = TimeSpan.FromMilliseconds(1000);
                 animationTimer.Tick += RunTimerTick;
@@ -81,6 +84,7 @@ namespace DDPM.OSDs
                 Dispatcher.Invoke(ShowWindow);
                 return;
             }
+
             Show();
         }
 
@@ -92,6 +96,18 @@ namespace DDPM.OSDs
                 return;
             }
             Close();
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            //System.Windows.MessageBox.Show("Button_MouseLeftButtonDown");
+            try
+            {
+                DdpmCommonHelper.DeviceManagerSA!.SetIsWidgetSettingPageLoadedByQAMAsync(true);
+            }
+            catch (Exception)
+            {
+            }
         }
     }
 }

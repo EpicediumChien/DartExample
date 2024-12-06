@@ -349,9 +349,11 @@ namespace DDPM.UI.Common
 
                 UpdateFreezable("DefaultThemeFullPageBkColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#FF0D121A"));
 
-
+                #region Webcam
                 UpdateFreezable("Webcam_TextBox_BkColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#141D28"));
                 UpdateFreezable("Webcam_TextBox_FgColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#7E7E7E"));
+                UpdateFreezable("Webcam_UndoRedo_BkColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#99193457"));
+                #endregion
 
                 BitmapImageUpdated?.Invoke(OSThemeEnum.Dark);
             }
