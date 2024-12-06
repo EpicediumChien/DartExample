@@ -2091,6 +2091,8 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
             //NarratorModeSupport.RecurseUitems( start) ;
+
+            DdpmCommonHelper.WriteUILog($"Webcam landing page UserControl_Loaded");
         }
     }
 }

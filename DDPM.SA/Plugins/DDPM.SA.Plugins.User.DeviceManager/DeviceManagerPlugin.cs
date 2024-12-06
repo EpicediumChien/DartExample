@@ -218,8 +218,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         private bool isInitMonitorSettings = false;
         private static bool _IsSkipCA = false;
 
-        private QAMPage _QAM;
+        private QAMPage _QAM = null;
         private Point QAM_Position;
+        private bool isDDPMHomepageReady = false;
+        private bool isDDPMLaunchedByQAM = false;
+        private bool isWidgetSettingPageLoadedByQAM = false;
 
         private static CancellationTokenSource _ReGetcancellationTokenSource;
 
@@ -10078,11 +10081,14 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 && deviceInfos.Count == 1 && _GlobalSettingParam.GlobalSetting_WidgetSettings.EnableQuickAccessWidget
                 && isWindowsScreenNotLocked)
             {
+                writelog($"HandleQAM receive CallQAM_UI event");
                 CallQAM_UI(this);
             }
             //Hidden state
             else if (_IsZoomScreenShareActive)
             {
+                writelog($"HandleQAM receive QAMHide event");
+
                 QAMHide();
             }
             //OSD
@@ -10091,7 +10097,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             //    ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.QAM);
             //}
             else
+            {
+                writelog($"HandleQAM receive QAMClose event");
+
                 QAMClose();
+            }
 
             //if (_ZoomMeetingType == ZoomMeetingType.CONF_3RD_EVENT_MEETING)
             //{
@@ -10142,27 +10152,33 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             if (null == eventMsg)
                 return;
 
+            bool isQAMHandleEvent = false;
+
             switch (eventMsg.EventType)
             {
                 case "Webcam_ZoomChanged":
+                    //isQAMHandleEvent = true;
                     if (!int.TryParse(eventMsg.NewValue, out currentZoomValue))
                         currentZoomValue = -1;
 
                     break;
 
                 case "Webcam_IsZoomMeetingActiveChanged":
+                    isQAMHandleEvent = true;
                     if (!bool.TryParse(eventMsg.NewValue, out _IsZoomMeetingActive))
                         _IsZoomMeetingActive = false;
 
                     break;
 
                 case "Webcam_IsZoomScreenShareActiveChanged":
+                    isQAMHandleEvent = true;
                     if (!bool.TryParse(eventMsg.NewValue, out _IsZoomScreenShareActive))
                         _IsZoomScreenShareActive = false;
 
                     break;
 
                 case "Webcam_ZoomMeetingTypeChanged":
+                    isQAMHandleEvent = true;
                     int type = (int)ZoomMeetingType.ZOOM_MEETING_TYPE_UNKNOW;
 
                     if (int.TryParse(eventMsg.NewValue, out type))
@@ -10176,7 +10192,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     break;
             }
 
-            HandleQAM();
+            if (isQAMHandleEvent)
+                HandleQAM();
         }
 
         //Marked by Derek 1125 because they had covered by WebcamEventHandler
@@ -10230,19 +10247,27 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 }
             }
         }
-        private void QAMHide()
+        private Task QAMHide()
         {
             writelog($"QAMHide Start");
 
-            if (_QAM != null)
+            try
             {
-                //writelog($"QAMHide QAMHide go");
-                _QAM.Hide();
-                //writelog($"QAMHide QAMHide done");
+                //關得比較慢？？？
+                writelog($"Try to run QAMHide");
+                _QAM?.Dispatcher.Invoke(() => _QAM?.Hide());
+                Dispatcher.Run();
+            }
+            catch (Exception e)
+            {
+                writelog($"Catch Exception[{e.Message}] when run QAMClose");
             }
 
             writelog($"QAMHide done");
+
+            return Task.CompletedTask;
         }
+
         //private void QAMShow()
         //{
         //    writelog($"QAMShow Start");
@@ -10256,21 +10281,49 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         //    writelog($"QAMShow done");
         //}
-        private void QAMClose()
+        private Task QAMClose()
         {
+            if (null == _QAM)
+                return Task.CompletedTask;
+
             writelog($"QAMClose Start");
 
-            if (_QAM != null)
+            try
             {
-                //writelog($"QAMClose _QAM.Close go");
-                _QAM.Close();
-                //writelog($"QAMClose _QAM.Close done");
+                writelog($"Try to run QAMClose");
+                _QAM?.Dispatcher.BeginInvoke(DispatcherPriority.Normal, () => _QAM?.Close());
+            }
+            catch (Exception e)
+            {
+                writelog($"Catch Exception[{e.Message}] when run QAMClose");
             }
 
             writelog($"QAMClose done");
+
+            return Task.CompletedTask;
         }
 
-        private void CallQAM_UI(DeviceMangerPlugin deviceMangerPlugin)
+        private int GetWebcamDeviceCount()
+        {
+            int result = 0;
+
+            try
+            {
+                List<DeviceInfo> deviceInfos = GetDevices_WithoutAwait().Result.deviceInfo.FindAll(x => x.PhysicalDeviceType.Equals(DeviceType.LogicalWebcam) || 
+                x.PhysicalDeviceType.Equals(DeviceType.PhysicalWebcam));
+
+                if (deviceInfos != null)
+                    result = deviceInfos.Count;
+            }
+            catch (Exception e)
+            {
+                writelog($"Catch exception[{e.Message}] when GetWebcamDeviceCount");
+            }
+
+            return result;
+        }
+
+        private Task CallQAM_UI(DeviceMangerPlugin deviceMangerPlugin)
         {
             writelog($"CallQAM_UI: Start");
 
@@ -10283,9 +10336,9 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 {
                     writelog($"CallQAM_UI: have Webcam show QAM");
 
-                    Thread thread1 = new Thread(() =>
+                    Thread threadQAM = new Thread(() =>
                     {
-                        _QAM = new QAMPage(deviceMangerPlugin);
+                        _QAM = new QAMPage(deviceMangerPlugin, Log);
                         _QAM.Closed += QAMCloseEvent;
 
                         //if (QAM_Position != null && (QAM_Position.X != 0 && QAM_Position.Y != 0))
@@ -10316,14 +10369,123 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         Dispatcher.Run();
                     });
 
-                    thread1.SetApartmentState(ApartmentState.STA);
-                    thread1.Start();
+                    threadQAM.SetApartmentState(ApartmentState.STA);
+                    threadQAM.Start();
                 }
             }
             else
-                _QAM.Show();
+            {
+                //_QAM.Show();
+                _QAM?.Dispatcher.Invoke(() => _QAM?.Show());
+                Dispatcher.Run();
+            }
+
+            //close DDPM UI
+            CloseDDPM();
 
             writelog($"CallQAM_UI: done");
+
+            return Task.CompletedTask;
+        }
+
+        private Task CloseDDPM()
+        {
+            UpdateUINotify e = new()
+            {
+                UI_Field_Name = "QAMEvent_QAMIsLaunched"
+            };
+
+            OnUIUpdateNotify(e);
+
+            return Task.CompletedTask;
+        }
+
+        private Task NavigateDDPMToWidgetSettingPage()
+        {
+            UpdateUINotify e = new()
+            {
+                UI_Field_Name = "QAMEvent_NavigateToWidgetSettingPage"
+            };
+
+            OnUIUpdateNotify(e);
+
+            return Task.CompletedTask;
+        }
+
+        //private void _QAM_UpdateUINotify(object sender, UpdateUINotify e)
+        //{
+        //    OnUIUpdateNotify(e);
+        //}
+
+        public Task<int> GetCurrentPollingRate()
+        {
+            return Task.FromResult(_millisecond);
+        }
+
+        public Task<bool> GetIsWidgetSettingPageLoadedByQAMAsync()
+        {
+            return Task.FromResult(isWidgetSettingPageLoadedByQAM);
+        }
+
+        public Task SetIsWidgetSettingPageLoadedByQAMAsync(bool newValue)
+        {
+            isWidgetSettingPageLoadedByQAM = newValue;
+            writelog($"isWidgetSettingPageLoadedByQAM: {newValue}");
+
+            if (isWidgetSettingPageLoadedByQAM)
+            {
+                NavigateDDPMToWidgetSettingPage();
+            }
+
+            return Task.CompletedTask;
+        }
+
+        public Task SetIsDDPMLaunchByQAMAsync(bool newValue)
+        {
+            isDDPMLaunchedByQAM = newValue;
+            writelog($"IsDDPMLaunchByQAM: {newValue}");
+
+            return Task.CompletedTask;
+        }
+
+        public Task<bool> GetIsDDPMLaunchByQAM()
+        {
+            writelog($"return IsDDPMLaunchByQAM: {isDDPMLaunchedByQAM}");
+
+            return Task.FromResult(isDDPMLaunchedByQAM);
+        }
+
+        public Task SetIsDDPMHomepageReadyAsync(bool newValue)
+        {
+            isDDPMHomepageReady = newValue;
+
+            writelog($"UI SetIsDDPMHomepageReadyAsync: {newValue}");
+
+            //info homepage navigate to webcam preview page
+            //if (isDDPMLaunchedByQAM && isDDPMHomepageReady)
+            //{
+            //    UpdateUINotify e = new UpdateUINotify();
+            //    e.UI_Field_Name = "QAMEvent_StartPreview";
+
+            //    OnUIUpdateNotify(e);
+            //    isDDPMHomepageReady = false;
+            //    //isDDPMLaunchedByQAM = false;
+
+            //    QAMClose();
+            //}
+
+            QAMClose();
+
+            return Task.CompletedTask;
+        }
+
+        public Task CloseQAMByDDPM()
+        {
+            writelog($"UI send command CloseQAMByDDPM");
+
+            QAMClose();
+
+            return Task.CompletedTask;
         }
 
         #endregion
@@ -12500,6 +12662,24 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             return ret;
         }
 
+        //Derek 1205 for Debug
+        //private void CreateWebcamEventForDebug_ShowUI()
+        //{
+        //    _IsZoomMeetingActive = true;
+        //    _ZoomMeetingType = ZoomMeetingType.CONF_3RD_EVENT_MEETING;
+
+        //    HandleQAM();
+        //    _IsZoomMeetingActive = false;
+        //    _ZoomMeetingType = ZoomMeetingType.ZOOM_MEETING_TYPE_UNKNOW;
+        //}
+
+        //private void CreateWebcamEventForDebug_HideUI()
+        //{
+        //    _IsZoomScreenShareActive = true;
+
+        //    HandleQAM();
+        //}
+
         private void Keyboard_KeyUpProc(object sender, KeyEventArgs e)
         {
             string strKey = e.KeyCode.ToString().ToUpper();
@@ -12510,9 +12690,23 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             //will register as ALT+Z ?
             if (_altPressed && strKey.Equals("Z"))
             {
-                CallQAM_UI(this);
+                if (1 == GetWebcamDeviceCount())
+                    CallQAM_UI(this);
                 return;
             }
+            //Derek 1205 for Debug
+            //else if (_altPressed && strKey.Equals("A"))
+            //{
+            //    CreateWebcamEventForDebug_ShowUI();
+
+            //    return;
+            //}
+            //else if (_altPressed && strKey.Equals("H"))
+            //{
+            //    CreateWebcamEventForDebug_HideUI();
+
+            //    return;
+            //}
 
             //osd
             GlobalSettingParam result = GetGlobalSettingParam().Result;
@@ -15179,34 +15373,34 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 switch (type)
                 {
                     case OSDType.BatteryLow:
-                    {
-                        if (Device is OSDType_Device.Headset)
                         {
-                            if (!string.IsNullOrWhiteSpace(Content))
-                                _showosd(monitorInfo, OSDType.BatteryLow, OSDType_Device.Headset, Content);
+                            if (Device is OSDType_Device.Headset)
+                            {
+                                if (!string.IsNullOrWhiteSpace(Content) && _GlobalSettingParam.GlobalSetting_General.Low_Battery_Level)
+                                    _showosd(monitorInfo, OSDType.BatteryLow, OSDType_Device.Headset, Content);
+                                else
+                                    writelog("[_showosd*******] Content error can't be NullOrWhiteSpace");
+                                return Task.CompletedTask;
+                            }
+                            else if (Device is OSDType_Device.Keyboard)
+                            {
+                                if (!string.IsNullOrWhiteSpace(Content) && _GlobalSettingParam.GlobalSetting_General.Low_Battery_Level)
+                                    _showosd(monitorInfo, OSDType.BatteryLow, OSDType_Device.Keyboard, Content);
+                                else
+                                    writelog("[_showosd*******] Content error can't be NullOrWhiteSpace");
+                                return Task.CompletedTask;
+                            }
+                            else if (Device is OSDType_Device.Mouse)
+                            {
+                                if (!string.IsNullOrWhiteSpace(Content) && _GlobalSettingParam.GlobalSetting_General.Low_Battery_Level)
+                                    _showosd(monitorInfo, OSDType.BatteryLow, OSDType_Device.Mouse, Content);
+                                else
+                                    writelog("[_showosd*******] Content error can't be NullOrWhiteSpace");
+                                return Task.CompletedTask;
+                            }
                             else
-                                writelog("[_showosd*******] Content error can't be NullOrWhiteSpace");
-                            return Task.CompletedTask;
+                                return Task.CompletedTask;
                         }
-                        else if (Device is OSDType_Device.Keyboard)
-                        {
-                            if (!string.IsNullOrWhiteSpace(Content))
-                                _showosd(monitorInfo, OSDType.BatteryLow, OSDType_Device.Keyboard, Content);
-                            else
-                                writelog("[_showosd*******] Content error can't be NullOrWhiteSpace");
-                            return Task.CompletedTask;
-                        }
-                        else if (Device is OSDType_Device.Mouse)
-                        {
-                            if (!string.IsNullOrWhiteSpace(Content))
-                                _showosd(monitorInfo, OSDType.BatteryLow, OSDType_Device.Mouse, Content);
-                            else
-                                writelog("[_showosd*******] Content error can't be NullOrWhiteSpace");
-                            return Task.CompletedTask;
-                        }
-                        else
-                            return Task.CompletedTask;
-                    }
                     case OSDType.CollaborationNotAvailable:
                     {
                         if (Device is OSDType_Device.Headset)
