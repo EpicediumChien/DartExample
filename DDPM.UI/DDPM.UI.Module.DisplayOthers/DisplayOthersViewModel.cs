@@ -245,6 +245,48 @@ namespace DDPM.UI.Module.DisplayOthers
                 if (ImpExppath.Substring(0, 3) == "Imp")
                 {
                     string impPath = ImpExppath.Substring(3);
+
+                    //Elsa add to fix PIMS-313843&PIMS-313845
+                    string model = "", serviceTag = "";
+                    string strReadJson = string.Empty;
+                    string info;
+                    strReadJson = DDPMFileSecurity.GetSerializedJsonString(impPath, out info);
+                    if (!string.IsNullOrEmpty(strReadJson))
+                    {
+                        try
+                        {
+                            using (StreamReader jsonf = new StreamReader(impPath))
+                            {
+                                string json = jsonf.ReadToEnd();
+                                dynamic data = JsonConvert.DeserializeObject(json);
+                                model = data.MonitorSettings.Model;
+                                serviceTag = data.MonitorSettings.ServiceTag;
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            OnMessageDlgInvoke("close_loading");
+                            OnMessageDlgInvoke("file_corrupted");
+                            return;
+                        }
+                    }
+                    if (strReadJson == string.Empty || strReadJson.Length == 0)
+                    {
+                        OnMessageDlgInvoke("close_loading");
+                        OnMessageDlgInvoke("file_corrupted");
+                        return;
+                    }
+                    else if (DisplayOthersModule.SelectedHomeDevice.MonitorInfo.modelName != model)
+                    {
+                        OnMessageDlgInvoke("close_loading");
+                        OnMessageDlgInvoke("result_fail");
+                        return;
+                    }
+                    //else if (DisplayOthersModule.SelectedHomeDevice.MonitorInfo.edid.ServiceTag == serviceTag)
+                    //{
+                        //OnMessageDlgInvoke("import_confirm");
+                    //}
+
                     if (DdpmCommonHelper.DeviceManagerSA.DisplayImportSettings(DisplayOthersModule.SelectedHomeDevice.MonitorInfo, AutoApply_Checked, impPath).Result)
                     {
                         //string fileName = Path.GetFileNameWithoutExtension(impPath);
@@ -253,29 +295,7 @@ namespace DDPM.UI.Module.DisplayOthers
                     }
                     else
                     {
-                        //Elsa add to fix PIMS-313843&PIMS-313845
-                        string model = "";
-                        string strReadJson = string.Empty;
-                        string info;
-                        strReadJson = DDPMFileSecurity.GetSerializedJsonString(impPath, out info);
-                        using (StreamReader jsonf = new StreamReader(impPath))
-                        {
-                            string json = jsonf.ReadToEnd();
-                            JArray jArray = JArray.Parse(json);
-                            model = jArray[0].Value<string>("Model");
-                        }
-                        if (DisplayOthersModule.SelectedHomeDevice.MonitorInfo.modelName != model)
-                        {
-                            OnMessageDlgInvoke("close_loading");
-                            OnMessageDlgInvoke("result_fail");
-                        }
-                        else if (strReadJson == string.Empty || strReadJson.Length == 0)
-                        {
-                            OnMessageDlgInvoke("close_loading");
-                            OnMessageDlgInvoke("file_corrupted");
-                        }
-                        else 
-                        {   OnMessageDlgInvoke("close_loading"); }
+                        OnMessageDlgInvoke("close_loading");
                     }
                 }
                 else if (ImpExppath.Substring(0, 3) == "Exp")

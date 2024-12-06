@@ -416,7 +416,7 @@ namespace DDPM.UI.Plugin.ViewModels
             }
         }
 
-        private Visibility _UPD_Visibility = Visibility.Hidden;
+        private Visibility _UPD_Visibility = Visibility.Collapsed;
 
         public Visibility UPD_Visibility
         {
@@ -844,7 +844,7 @@ namespace DDPM.UI.Plugin.ViewModels
         public Visibility btnRes3_show { get; set; } = Visibility.Visible;
 
 
-
+        public Visibility bdrPrioritize_show { get; set; } = Visibility.Visible;
         public Visibility brdHello_show { get; set; } = Visibility.Visible;
         public Visibility brdHello_show_control { get; set; } = Visibility.Visible;
 
@@ -924,12 +924,14 @@ namespace DDPM.UI.Plugin.ViewModels
         {
             get => CurrentDeviceInfo!.IsMicEnumerationOn ? Strings.On : Strings.Off;
         }
+        public bool isIsMicEnumerationOnChanged_event = false;
         public bool IsMicEnumerationOn
         {
             get => CurrentDeviceInfo!.IsMicEnumerationOn;
             set
             {
-                DdpmCommonHelper.DeviceManagerSA!.SetIsMicEnumerationOn(value, CurrentDeviceInfo!.ID);
+                if(!isIsMicEnumerationOnChanged_event)
+                    DdpmCommonHelper.DeviceManagerSA!.SetIsMicEnumerationOn(value, CurrentDeviceInfo!.ID);
                 OnPropertyChanged();
                 OnPropertyChanged(nameof(IsMicEnumerationOnText));
             }
@@ -1127,6 +1129,7 @@ namespace DDPM.UI.Plugin.ViewModels
         {
             get => CurrentDeviceInfo!.IsPropertyHDRSupported ? Visibility.Visible : Visibility.Collapsed;
         }
+        public bool hdr_change = false;
         public bool IsHDROn
         {
             get => CurrentProfile.IsHDROn;
@@ -1134,13 +1137,14 @@ namespace DDPM.UI.Plugin.ViewModels
             {
                 AlertType = WebcamAlert.Alert1;
                 AlertVisibility = Visibility.Visible;
+                hdr_change = true;
                 DdpmCommonHelper.DeviceManagerSA!.SetIsHDROn(CurrentDeviceInfo!.ID.ToString(), value);
                 SetProfileProperty(nameof(IsHDROn), value, OperationModule.ColorAndImage);
                 OnPropertyChanged();
                 OnPropertyChanged(nameof(IsHDROnText));
                 new Thread(() =>
                 {
-                    Thread.Sleep(300);
+                    Thread.Sleep(3000);
                     AlertVisibility = Visibility.Collapsed;
                 }).Start();
             }

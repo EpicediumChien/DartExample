@@ -67,7 +67,15 @@ namespace DDPM.SA.Common
             "PRESENCEDETECTION",        //PresenceDetection         DDPMW-1747
             "ANCMODE",                  //ancMode                   DDPMW-1853
             "MICNOISECANCELLATION",     //micNoiseCancellation      DDPMW-1855
-            "WEARDETECTION"             //wearDetection             DDPMW-2093
+            "WEARDETECTION",            //wearDetection             DDPMW-2093
+            "NETWORKKVMVERSION",
+            "NETWORKKVM",
+            "NETWORKKVMAUTOCONNECT",
+            "NETWORKKVMCONTENTTRANSFER",
+            "NETWORKKVMINCOMINGPORT",
+            "NETWORKKVMOUTGOINGPORT",
+            "NETWORKKVMCONTENTTRANSFERPORT",
+            "NETWORKKVMACCESSRESET"
         };
 
         //IT value table of IT feature
@@ -693,6 +701,11 @@ namespace DDPM.SA.Common
             int feature_idx = Supported_IT_Feature.FindIndex(x => x.ToUpper().Trim().Equals(commandInput_temp.TargetFeature.ToUpper().Trim()));
             if (feature_idx >= 0) //has IT feature
             {
+                if (commandInput.TargetFeature.Contains("NETWORKKVM"))
+                {
+                    commandInput.isITCommands = true;
+                    return;
+                }
                 if (commandInput.Options.Count == 0)//recognized only normal command -> CLIProxy
                 {
                     commandInput.isNormalCommands = true;
@@ -712,8 +725,8 @@ namespace DDPM.SA.Common
                                 commandInput.isNormalCommands = true;//recognized as normal command -> CLIProxy
                                 return;
                             }
-                            option.Option_Value.Trim().Replace(".", ",");//maybe user type wrong sep symbol from , to be .
-                            List<string> parse = option.Option_Value.Split(",").ToList();
+                            //option.Option_Value.Trim().Replace(".", ",");//maybe user type wrong sep symbol from , to be .
+                            List<string> parse = option.Option_Value.Replace(".", ",").Split(",").ToList();
                             foreach (string value in parse)
                             {
                                 //currently only "LOCK" and "UNLOCK" be recognized as IT global settings
