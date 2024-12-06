@@ -111,6 +111,7 @@ namespace DDPM.UI.Common
         WebcamControl,
         WebcamColorImg,
         WebcamDetection,
-        WebcamCapture
+        WebcamCapture,
+        WebcamMicrophone
     }
 }

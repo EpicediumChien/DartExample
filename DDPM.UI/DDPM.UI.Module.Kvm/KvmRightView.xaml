@@ -107,7 +107,7 @@
                                                          VerticalAlignment="Center"
                                                          Margin="16" Padding="40,8"
                                                          Background="#0672CB" Opacity="{Binding USBKVMButtonOpacity}"
-                                                         Foreground="{DynamicResource TextBlock_ForegroundColor}"
+                                                         Foreground="#FFFFFF"
                                                          Click="OpenUSBKVM"
                                                          Visibility="Collapsed"
                                                          IsEnabled="{Binding isUSBKVMButton}"/>
