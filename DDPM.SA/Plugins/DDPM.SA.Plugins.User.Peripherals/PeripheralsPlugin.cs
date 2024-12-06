@@ -1277,6 +1277,8 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                                     LogicalDevices2.Add(_logicalDevice3.Id);
                                 }
                             }
+
+                            // << 241206 by Hess fix no event issue
                             if (item is ILogicalDevice _logicalDevice)
                             {
                                 if (!LogicalDevices4.Contains(_logicalDevice.Id))
@@ -1285,8 +1287,8 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                                     _logicalDevice.BatteryLevelChanged += ILogicalDevice_BatteryLevelChanged;
                                     LogicalDevices4.Add(_logicalDevice.Id);
                                 }
-
                             }
+                            // >>
 
                             if (item is ILogicalWiredAudio _logicalWiredAudio)
                             {
