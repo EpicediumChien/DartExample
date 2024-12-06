@@ -481,7 +481,7 @@ namespace DDPM.SA.Common
         public string Resolution { get; set; } = "N/A";
         public string ActiveInputSource { get; set; } = "N/A";
         public string ColorPreset { get; set; } = "N/A";
-        public string ScreenOrientation { get; set; } = "N/A";
+        public string Orientation { get; set; } = "N/A";
         public string BrightnessLevel { get; set; } = "N/A";
         public string ContrastLevel { get; set; } = "N/A";
         public string LuminanceLevel { get; set; } = "N/A";

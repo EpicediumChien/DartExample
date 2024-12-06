@@ -63,7 +63,9 @@ namespace DDPM.UI.Module.WebCameraSettings
 
             if (!_vm.CurrentDeviceInfo.IsWindowsHelloSupported)
             {
-                bdrPrioritize.Visibility = Visibility.Collapsed;
+                
+                //bdrPrioritize.Visibility = Visibility.Collapsed;
+                _vm.bdrPrioritize_show = Visibility.Collapsed;
                 brdHello.Visibility = Visibility.Collapsed;
             }
         }
