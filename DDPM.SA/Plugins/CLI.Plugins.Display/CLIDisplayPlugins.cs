@@ -4101,8 +4101,8 @@ namespace DDPM.CLI.Plugins.Display
                             _Input_RESPONSE.Command = commandLineInput.Command;
                             _Input_RESPONSE.TargetFeature = commandLineInput.TargetFeature;
 
-                            commandLineInput.Options[0].Option_Value.Replace(".", ",");
-                            string[] op_values = commandLineInput.Options[0].Option_Value.Split(",");
+                            //commandLineInput.Options[0].Option_Value.Replace(".", ",");
+                            string[] op_values = commandLineInput.Options[0].Option_Value.Replace(".", ",").Split(",");
 
                             foreach (string v in op_values)
                             {
@@ -4184,8 +4184,8 @@ namespace DDPM.CLI.Plugins.Display
                             _Input_RESPONSE.Command = commandLineInput.Command;
                             _Input_RESPONSE.TargetFeature = commandLineInput.TargetFeature;
 
-                            commandLineInput.Options[0].Option_Value.Replace(".", ",");
-                            string[] op_values = commandLineInput.Options[0].Option_Value.Split(",");
+                            //commandLineInput.Options[0].Option_Value.Replace(".", ",");
+                            string[] op_values = commandLineInput.Options[0].Option_Value.Replace(".", ",").Split(",");
 
                             foreach (string v in op_values)
                             {
@@ -7037,8 +7037,8 @@ namespace DDPM.CLI.Plugins.Display
                                 return ((int)CLI_ExitCode.fail_option_value, output);
                             }
 
-                            commandLineInput.Options[0].Option_Value.Replace(".", ",");
-                            string[] op_values = commandLineInput.Options[0].Option_Value.Split(",");
+                            //commandLineInput.Options[0].Option_Value.Replace(".", ",");
+                            string[] op_values = commandLineInput.Options[0].Option_Value.Replace(".", ",").Split(",");
 
                             foreach (string v in op_values)
                             {
@@ -7918,8 +7918,8 @@ namespace DDPM.CLI.Plugins.Display
                         }
                         else
                         {
-                            value.Replace(".", ",");
-                            List<string> values = value.Split(",").ToList();
+                            //value.Replace(".", ",");
+                            List<string> values = value.Replace(".", ",").Split(",").ToList();
                             PowerNapSetting temp = read_list[idx];
                             foreach (string v in values)
                             {
@@ -8036,8 +8036,8 @@ namespace DDPM.CLI.Plugins.Display
                         else
                         {
                             PowerNapSetting temp = read_list[idx];
-                            value.Replace(".", ",");
-                            List<string> values = value.Split(",").ToList();
+                            //value.Replace(".", ",");
+                            List<string> values = value.Replace(".", ",").Split(",").ToList();
                             foreach (string v in values)
                             {
                                 switch (v.ToUpper())
@@ -8155,8 +8155,8 @@ namespace DDPM.CLI.Plugins.Display
                             else
                             {
                                 PowerNapSetting temp = read_list[idx];
-                                value.Replace(".", ",");
-                                List<string> values = value.Split(",").ToList();
+                                //value.Replace(".", ",");
+                                List<string> values = value.Replace(".", ",").Split(",").ToList();
                                 foreach (string v in values)
                                 {
                                     switch (v.ToUpper())
@@ -8275,8 +8275,8 @@ namespace DDPM.CLI.Plugins.Display
                             else
                             {
                                 PowerNapSetting temp = read_list[idx];
-                                value.Replace(".", ",");
-                                List<string> values = value.Split(",").ToList();
+                                //value.Replace(".", ",");
+                                List<string> values = value.Replace(".", ",").Split(",").ToList();
                                 foreach (string v in values)
                                 {
                                     switch (v.ToUpper())
