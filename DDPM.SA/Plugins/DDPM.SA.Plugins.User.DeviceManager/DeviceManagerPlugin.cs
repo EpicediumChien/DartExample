@@ -10312,7 +10312,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
             try
             {
-                //關得比較慢？？？
                 writelog($"Try to run QAMHide");
                 _QAM?.Dispatcher.Invoke(() => _QAM?.Hide());
                 Dispatcher.Run();
