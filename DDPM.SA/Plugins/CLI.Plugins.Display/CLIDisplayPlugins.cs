@@ -1394,7 +1394,7 @@ namespace DDPM.CLI.Plugins.Display
                             break;
                     }
                 }
-                value += "," + (ddpmSettings.LockSettings.Lock_Setting_ScreenNotification ? "LOCK" : "UNLOCK");
+                //value += "," + (ddpmSettings.LockSettings.Lock_Setting_ScreenNotification ? "LOCK" : "UNLOCK");
 
                 List<int> _monitorIndeies = new List<int>();
 
@@ -1439,7 +1439,7 @@ namespace DDPM.CLI.Plugins.Display
 
                 var result = "PASS";
                 var value = (param.GlobalSetting_General.Low_Battery_Level.ToString().ToLower() == "true") ? "ON" : "OFF";
-                value += "," + (ddpmSettings.LockSettings.Lock_Setting_ScreenNotification ? "LOCK" : "UNLOCK");
+                //value += "," + (ddpmSettings.LockSettings.Lock_Setting_ScreenNotification ? "LOCK" : "UNLOCK");
 
                 List<int> _monitorIndeies = new List<int>();
                 if (_AllInfoMonitors == null)
@@ -4311,7 +4311,7 @@ namespace DDPM.CLI.Plugins.Display
                         }
                         _Input_RESPONSE.Value = src;
                         _Input_RESPONSE.Result = "PASS";
-                        _Input_RESPONSE.Value += "," + (data.LockSettings.Lock_Display_ActiveInputSource ? "LOCK" : "UNLOCK");
+                        //_Input_RESPONSE.Value += "," + (data.LockSettings.Lock_Display_ActiveInputSource ? "LOCK" : "UNLOCK");
                         System.Console.WriteLine(_Input_RESPONSE.ToJson());
                         output += "\n" + _Input_RESPONSE.ToJson();
                     }
@@ -4357,7 +4357,7 @@ namespace DDPM.CLI.Plugins.Display
                         }
                         _Input_RESPONSE.Value = src;
                         _Input_RESPONSE.Result = "PASS";
-                        _Input_RESPONSE.Value += "," + (data.LockSettings.Lock_Display_ActiveInputSource ? "LOCK" : "UNLOCK");
+                        //_Input_RESPONSE.Value += "," + (data.LockSettings.Lock_Display_ActiveInputSource ? "LOCK" : "UNLOCK");
                         System.Console.WriteLine(_Input_RESPONSE.ToJson());
                         output += "\n" + _Input_RESPONSE.ToJson();
                     }
@@ -4405,7 +4405,7 @@ namespace DDPM.CLI.Plugins.Display
                             }
                             _Input_RESPONSE.Value = src;
                             _Input_RESPONSE.Result = "PASS";
-                            _Input_RESPONSE.Value += "," + (data.LockSettings.Lock_Display_ActiveInputSource ? "LOCK" : "UNLOCK");
+                            //_Input_RESPONSE.Value += "," + (data.LockSettings.Lock_Display_ActiveInputSource ? "LOCK" : "UNLOCK");
                             System.Console.WriteLine(_Input_RESPONSE.ToJson());
                             output += "\n" + _Input_RESPONSE.ToJson();
                         }
@@ -4454,7 +4454,7 @@ namespace DDPM.CLI.Plugins.Display
                             }
                             _Input_RESPONSE.Value = src;
                             _Input_RESPONSE.Result = "PASS";
-                            _Input_RESPONSE.Value += "," + (data.LockSettings.Lock_Display_ActiveInputSource ? "LOCK" : "UNLOCK");
+                            //_Input_RESPONSE.Value += "," + (data.LockSettings.Lock_Display_ActiveInputSource ? "LOCK" : "UNLOCK");
                             System.Console.WriteLine(_Input_RESPONSE.ToJson());
                             output += "\n" + _Input_RESPONSE.ToJson();
                         }
@@ -13189,7 +13189,7 @@ namespace DDPM.CLI.Plugins.Display
                         cli_Response.Result = "FAIL";
                         cli_Response.Message = "Invalid command line syntax.";
                     }
-                    cli_Response.Value += "," + (ddpmSettings.LockSettings.Lock_Display_EasyArrangeLayout ? "LOCK" : "UNLOCK");
+                    //cli_Response.Value += "," + (ddpmSettings.LockSettings.Lock_Display_EasyArrangeLayout ? "LOCK" : "UNLOCK");
                     System.Console.WriteLine(JsonConvert.SerializeObject(cli_Response, Formatting.Indented));
                     output += "\n" + JsonConvert.SerializeObject(cli_Response, Formatting.Indented);
                 }
@@ -13251,7 +13251,7 @@ namespace DDPM.CLI.Plugins.Display
                         cli_Response.Result = "FAIL";
                         cli_Response.Message = "Invalid command line syntax.";
                     }
-                    cli_Response.Value += "," + (ddpmSettings.LockSettings.Lock_Display_EasyArrangeLayout ? "LOCK" : "UNLOCK");
+                    //cli_Response.Value += "," + (ddpmSettings.LockSettings.Lock_Display_EasyArrangeLayout ? "LOCK" : "UNLOCK");
                     System.Console.WriteLine(JsonConvert.SerializeObject(cli_Response, Formatting.Indented));
                     output += "\n" + JsonConvert.SerializeObject(cli_Response, Formatting.Indented);
                 }
@@ -13896,7 +13896,7 @@ namespace DDPM.CLI.Plugins.Display
                             cli_Response.Message = "Invalid command line syntax, missing -value=... or more than one -value=...";
                             break;
                     }
-                    cli_Response.Value += "," + (ddpmSettings.LockSettings.Lock_Display_USBKVM ? "LOCK" : "UNLOCK");
+                    //cli_Response.Value += "," + (ddpmSettings.LockSettings.Lock_Display_USBKVM ? "LOCK" : "UNLOCK");
                     System.Console.WriteLine(JsonConvert.SerializeObject(cli_Response, Formatting.Indented));
                     output += "\n" + JsonConvert.SerializeObject(cli_Response, Formatting.Indented);
                 }
@@ -13925,7 +13925,7 @@ namespace DDPM.CLI.Plugins.Display
                     else
                         cli_Response.Value = "DISABLE";
 
-                    cli_Response.Value += "," + (ddpmSettings.LockSettings.Lock_Display_USBKVM ? "LOCK" : "UNLOCK");
+                    //cli_Response.Value += "," + (ddpmSettings.LockSettings.Lock_Display_USBKVM ? "LOCK" : "UNLOCK");
                     System.Console.WriteLine(JsonConvert.SerializeObject(cli_Response, Formatting.Indented));
                     output += "\n" + JsonConvert.SerializeObject(cli_Response, Formatting.Indented);
                 }
