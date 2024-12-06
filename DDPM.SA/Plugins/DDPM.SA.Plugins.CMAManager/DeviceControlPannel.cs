@@ -156,10 +156,10 @@ namespace DDPM.SA.Plugins.CMAManager
 
                 if (Index != null)
                 {
-                    if (hasData)
-                    {
-                        result = result + ",";
-                    }
+                    //if (hasData)
+                    //{
+                    //    result = result + ",";
+                    //}
 
                     result = result + $"\"Index\":{Index}";
                     hasData = true;

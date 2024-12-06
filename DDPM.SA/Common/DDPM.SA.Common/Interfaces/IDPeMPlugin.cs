@@ -104,6 +104,8 @@ namespace DDPM.SA.Common
 
         void SetMicNoiseCancellation(bool newValue, Guid deviceId);
 
+        void SetMicNoiseCancellationForMito(bool newValue, Guid deviceId);
+
         void SetSidetone(bool newValue, Guid deviceId);
 
         void SetSidetoneLevel(int newValue, Guid deviceId);

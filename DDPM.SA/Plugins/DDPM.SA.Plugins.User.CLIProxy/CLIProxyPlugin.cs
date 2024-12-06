@@ -385,6 +385,28 @@ namespace DDPM.SA.Plugin.User.CLIManager
             relay_registered = true;
         }
 
+        private async Task<string> RunAsyncTimeout(Task task)
+        {
+            try
+            {
+                Task completedTask = await Task.WhenAny(task, Task.Delay(TimeSpan.FromSeconds(5)));
+
+                if (completedTask == task)
+                {
+                    await task;
+                    return "0";
+                }
+                else
+                {
+                    return "1";
+                }
+            }
+            catch (Exception ex)
+            {
+                return ex.Message;
+            }
+        }
+
         private void _CliManagerPlugin_CLIActionEvent(object? sender, CLIEventArgs e)
         {
             _ = Task.Run(() =>
@@ -425,6 +447,92 @@ namespace DDPM.SA.Plugin.User.CLIManager
                 //Do command line action
                 CLIEventResult? cliEventResult;
                 CommandLineInput commandLineInput = e.commandLineInput;
+                
+                if (commandLineInput.PluginsType.Equals("APP") && commandLineInput.TargetFeature.Equals("RESTOREFACTORYDEFAULTS"))
+                {
+                    IDeviceManagerSA _devMgr = _DevManagerPlugin;
+                    var _AllInfoMonitors = _devMgr.GetMonitors().Result;
+                    List<DeviceInfo> _deviceinfo = _devMgr.GetDevices().Result.deviceInfo;
+                    List<CLIEventResult> cliEventResults = new List<CLIEventResult>();
+                    List<CLI_PeripheralRESPONSE> cliPeripheralEventResults = new List<CLI_PeripheralRESPONSE>();
+                    var total_result = "";
+                    if(_AllInfoMonitors.Count > 0)
+                    {
+                        total_result += "Display :";
+                        List<string> stringList = new List<string>
+                        {
+                            "RESTOREFACTORYDEFAULTS",
+                            "RESTORELEVELDEFAULTS",
+                            "RESTORECOLORDEFAULTS"
+                        };
+                        foreach (string str in stringList)
+                        {
+                            e.commandLineInput.TargetFeature = str;
+                            cliEventResult = _CLIDisplay.SetCommandArgs(e, _DevManagerPlugin);
+                            total_result += $"\n{cliEventResult.serialize_Json_response}";
+                            Thread.Sleep(5000);
+                        }
+                    }
+                    _deviceinfo.ForEach(x =>
+                    {    
+                        var result = "";
+                        var msg = new CLI_PeripheralRESPONSE($"{x.ID}", commandLineInput.Command, commandLineInput.TargetFeature, "", "", x.Name, x.ModelNumber, x.DockServiceTag);
+                        switch (x.LogicalDeviceType.ToUpper())
+                        {
+                            case "LOGICALHEADSET":
+                                result = RunAsyncTimeout(_devMgr.SetFactoryResetAsyncValueForHeadset(x.ID.ToString(), true)).Result;
+                                break;
+                            case "LOGICALWIREDAUDIO":
+                                result = RunAsyncTimeout(_devMgr.SetResetToDefaultAsyncForSoundbar(x.ID.ToString(), true)).Result;
+                                break;
+                            case "LOGICALWEBCAM":
+                                result = RunAsyncTimeout(_devMgr.ResetToDefault_webcam(x.ID.ToString(), true)).Result;
+                                break;
+                            case "LOGICALKEYBOARD":
+                                result = RunAsyncTimeout(_devMgr.RestoreToDefaultKB(x.ID.ToString())).Result;
+                                break;
+                            case "LOGICALMOUSE":
+                                result = RunAsyncTimeout(_devMgr.RestoreToDefaultMouse(x.ID.ToString())).Result;
+                                break;
+                            case "LOGICALPEN":
+                                result = RunAsyncTimeout(_devMgr.RestoreToDefaultPen()).Result;
+                                break;
+                            default:
+                                break;
+                        }
+                        if (result == "0")
+                        {
+                            msg.Result = "PASS";
+                            //retcode_ = _devMgr.GetIsAutoFramingOn(ItemId).Result;
+                            msg.Value = "SUCCESS";
+                            //x.Value += "," + (data.LockSettings.Lock_Audio_RestoreFactoryDefaults ? "LOCK" : "UNLOCK");
+                            msg.Message = "N/A";
+                        }
+                        else if (result == "1")
+                        {
+                            msg.Result = "FAIL";
+                            msg.Message = "Timeout";
+                        }
+                        else
+                        {
+                            msg.Result = "FAIL";
+                            msg.Message = result;
+                        }
+                        cliPeripheralEventResults.Add(msg);
+                        Thread.Sleep(5000);
+                    });
+                    total_result += $"\n{JsonConvert.SerializeObject(cliPeripheralEventResults, Formatting.Indented)}";
+                    var result = new CLIEventResult()
+                    {
+                        command_guid_string = e.command_guid_string,
+                        serialize_Json_response = total_result,
+                        ExitCode = (int)CLI_ExitCode.success,
+                        ticket = DateTime.Now
+                    };
+                    _CliManagerPlugin.WriteCommandResult(result);
+                    return;
+                }
+
                 if (commandLineInput.PluginsType.Equals("DISPLAY"))
                 {
                     if (_CLIDisplay != null)

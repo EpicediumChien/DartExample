@@ -597,19 +597,51 @@ namespace DDPM.UI.Module.EzMemory
 
                             if (profileSetting != null)
                             {
-                                // 找到才繼續處理
-                                //(int cellCount, char splitKey) = _vm.ParseFromLayout(profile.Layout);
-                                //ISplitCtrl? spCtrl = ISplitCtrl.Create(cellCount, splitKey);
-                                ISplitCtrl? spCtrl = ISplitCtrl.Create(profile.Layout);
-                                if (spCtrl != null)
+                                if (profile.Layout >= 1000)
                                 {
-                                    SplitItem item = splitListView_RecentForEzM.AddItemToList(spCtrl.UC);
-                                    item.SplitOwner = Common.EAEM.eSplitOwner.EaRecent;
-                                    item.ProfileID = profile.ID;
-                                    item.IsHoverable = true;
-                                    item.IsDeleteEnabled = true;
-                                    item.IsEditEnabled = true;
-                                    item.LayoutID = profile.Layout;
+                                    SplitJson[] customList = _deviceManagerSA.ReadEACustomList().Result;
+                                    foreach (SplitJson spj in customList)
+                                    {
+                                        if (profile.Layout == spj.EAID)
+                                        {
+                                            //Validate settings
+                                            //1 CustomId must > 0
+                                            if (spj.CustomId == 0)
+                                                continue;
+                                            //2 CustomName cannot be empty
+                                            if (String.IsNullOrWhiteSpace(spj.CustomName))
+                                                continue;
+                                            //3 CustomName length
+                                            if (spj.CustomName.Length > EAEMConstants.MaxCustomNameLenth)
+                                                continue;
+
+                                            ISplitCtrl? spCtrl = ISplitCtrl.Create(spj.CellCount, spj.SplitKey);
+                                            if (spCtrl == null)
+                                                continue;
+                                            spCtrl.Settings = new List<double>(spj.Settings);
+                                            spCtrl.SplitMode = eSplitModes.Icon;
+                                            spCtrl.FriendlyName = spj.CustomName;
+                                            spCtrl.EAID = spj.EAID;
+                                            splitListView_RecentForEzM.AddItemToList(spCtrl.UC);
+                                        }
+                                    }
+                                }
+                                else
+                                {
+                                    // 找到才繼續處理
+                                    //(int cellCount, char splitKey) = _vm.ParseFromLayout(profile.Layout);
+                                    //ISplitCtrl? spCtrl = ISplitCtrl.Create(cellCount, splitKey);
+                                    ISplitCtrl? spCtrl = ISplitCtrl.Create(profile.Layout);
+                                    if (spCtrl != null)
+                                    {
+                                        SplitItem item = splitListView_RecentForEzM.AddItemToList(spCtrl.UC);
+                                        //item.SplitOwner = Common.EAEM.eSplitOwner.EaRecent;
+                                        item.ProfileID = profile.ID;
+                                        item.IsHoverable = true;
+                                        item.IsDeleteEnabled = true;
+                                        item.IsEditEnabled = true;
+                                        item.LayoutID = profile.Layout;
+                                    }
                                 }
                             }
                             else
@@ -634,6 +666,7 @@ namespace DDPM.UI.Module.EzMemory
             }
 
         }
+
         #endregion
 
         private void InitSplitListViews_Unused()

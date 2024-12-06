@@ -425,7 +425,7 @@ namespace DDPM.SA.Plugins.User.PipPbpManger
                     }
                     if (sub3 != null)
                     {
-                        Trace.WriteLine(sub2.Code.ToString());
+                        Trace.WriteLine(sub3.Code.ToString());
                         UInt16 sub3Code = (UInt16)(sub3.Code & 0x001F);
                         sub3Code = (UInt16)(sub3Code << 10);
                         wSetValue |= sub3Code;

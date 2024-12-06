@@ -28,14 +28,30 @@
                 <RowDefinition Height="72" />
                 <RowDefinition Height="1*" />
             </Grid.RowDefinitions>
-            <UXControls:UXTextBlock FontSize="16"
+            <Border CornerRadius="10,10,0,0" MouseDown="Header_MouseDown">
+                <Border.Style>
+                    <Style TargetType="Border">
+                        <Style.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Cursor" Value="/DDPM.QAM;component/Imgs/Cursor/HandCursor.cur"/>
+                            </Trigger>
+                            <DataTrigger Binding="{Binding IsDragging}" Value="True">
+                                <Setter Property="Cursor" Value="/DDPM.QAM;component/Imgs/Cursor/FistCursor.cur"/>
+                                <Setter Property="Background" Value="{DynamicResource Default_SA_QAM_Dragging_Hover}"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Border.Style>
+                <UXControls:UXTextBlock FontSize="16"
                                     TextBlockType="Header1"
                                     FontFamily="Roboto"
                                     HorizontalAlignment="Center"
                                     VerticalAlignment="Center"
                                     FontWeight="Bold"
                                     Text="{Binding DeviceModel}"
+                                    TextWrapping="WrapWithOverflow"
                                     Foreground="{DynamicResource Default_SA_QAM_Path_BkColor}" />
+            </Border>
             <StackPanel Grid.Row="1"
                         Orientation="Horizontal">
                 <Border x:Name="btnRes0"
@@ -178,20 +194,20 @@
                               HorizontalAlignment="Center"
                               VerticalAlignment="Center">
                             <Path.Style>
-                            <Style TargetType="Path">
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding Settings_IsSelected[2]}"
+                                <Style TargetType="Path">
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding Settings_IsSelected[2]}"
                                                  Value="True">
-                                        <Setter Property="Fill"
+                                            <Setter Property="Fill"
                                                     Value="{DynamicResource Default_SA_QAM_Path_IsTrigger_Color}" />
-                                    </DataTrigger>
+                                        </DataTrigger>
                                         <DataTrigger Binding="{Binding Settings_IsSelected[2]}"
                                                      Value="False">
                                             <Setter Property="Fill"
                                                     Value="{DynamicResource Default_SA_QAM_Path_BkColor}" />
                                         </DataTrigger>
                                     </Style.Triggers>
-                            </Style>
+                                </Style>
                             </Path.Style>
                         </Path>
                         <Rectangle Width="19"
