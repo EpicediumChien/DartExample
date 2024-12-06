@@ -425,7 +425,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                 return (int)CLI_ExitCode.null_device_manager;
             }
             _deviceinfo = _devMgr.GetDevices().Result.deviceInfo;
-            if (_commandLineInput.GuidString.Count == 0 && _commandLineInput.Model.Count == 0 && _commandLineInput.ServiceTag.Count == 0 && _commandLineInput.PPID.Count == 0 && _commandLineInput.SerialNumber.Count == 0)
+                        if (_commandLineInput.GuidString.Count == 0 && _commandLineInput.Model.Count == 0 && _commandLineInput.ServiceTag.Count == 0 && _commandLineInput.PPID.Count == 0 && _commandLineInput.SerialNumber.Count == 0)
             {
                 int go = 0;
                 if (_deviceinfo == null || _deviceinfo.Count == 0)
@@ -728,7 +728,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                     x.Value = "";
                     if (x.Result == "")
                     {
-                        var result = "0"; //RunAsyncTimeout(_devMgr.(x.Guid, true)).Result;
+                        var result = RunAsyncTimeout(_devMgr.RestoreToDefaultKB(x.Guid)).Result;
                         if (result == "0")
                         {
                             x.Result = "PASS";
@@ -758,7 +758,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                     x.Value = "";
                     if (x.Result == "")
                     {
-                        var result = "0"; //RunAsyncTimeout(_devMgr.(x.Guid, true)).Result;
+                        var result = RunAsyncTimeout(_devMgr.RestoreToDefaultMouse(x.Guid)).Result;
                         if (result == "0")
                         {
                             x.Result = "PASS";
@@ -815,8 +815,8 @@ namespace DDPM.CLI.Plugins.Peripherals
             {
                 if (op.Option_Name.ToUpper() == "VALUE")
                 {
-                    op.Option_Value.Replace(".", ",");
-                    List<string> op_value = op.Option_Value.Split(",").ToList();
+                    //op.Option_Value.Replace(".", ",");
+                    List<string> op_value = op.Option_Value.Replace(".", ",").Split(",").ToList();
                     //value = op_value[0];
                     foreach (var value in op_value)
                     {

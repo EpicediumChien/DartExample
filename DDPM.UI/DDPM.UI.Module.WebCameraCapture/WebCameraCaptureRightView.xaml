@@ -339,7 +339,7 @@
                     </Style>
                   </UXControls:UXButton.Style>-->
                                 </common:ActionButton>
-                                <UXControls:UXButton ButtonType="Primary" Click="Change_Click" Content="{Binding [WebCameraCapture.3], Source={x:Static lang:LangHelper.Instance}}" Width="112" Height="40" FontFamily="Roboto" Cursor="Hand" />
+                                <UXControls:UXButton ButtonType="Primary" Click="Change_Click" Content="{Binding [WebCameraCapture.3], Source={x:Static lang:LangHelper.Instance}}" Width="112" Height="40" FontFamily="Roboto" Cursor="Hand" IsEnabled="{Binding IsNotRecording}"/>
                             </StackPanel>
                         </StackPanel>
                     </StackPanel>
