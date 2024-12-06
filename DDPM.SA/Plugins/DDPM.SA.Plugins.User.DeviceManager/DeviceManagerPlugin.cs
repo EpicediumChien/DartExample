@@ -10061,11 +10061,14 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 && deviceInfos.Count == 1 && _GlobalSettingParam.GlobalSetting_WidgetSettings.EnableQuickAccessWidget
                 && isWindowsScreenNotLocked)
             {
+                writelog($"HandleQAM receive CallQAM_UI event");
                 CallQAM_UI(this);
             }
             //Hidden state
             else if (_IsZoomScreenShareActive)
             {
+                writelog($"HandleQAM receive QAMHide event");
+
                 QAMHide();
             }
             //OSD
@@ -10074,7 +10077,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             //    ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.QAM);
             //}
             else
+            {
+                writelog($"HandleQAM receive QAMClose event");
+
                 QAMClose();
+            }
 
             //if (_ZoomMeetingType == ZoomMeetingType.CONF_3RD_EVENT_MEETING)
             //{
@@ -10130,7 +10137,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             switch (eventMsg.EventType)
             {
                 case "Webcam_ZoomChanged":
-                    isQAMHandleEvent = true;
+                    //isQAMHandleEvent = true;
                     if (!int.TryParse(eventMsg.NewValue, out currentZoomValue))
                         currentZoomValue = -1;
 
@@ -12635,6 +12642,24 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             return ret;
         }
 
+        //Derek 1205 for Debug
+        //private void CreateWebcamEventForDebug_ShowUI()
+        //{
+        //    _IsZoomMeetingActive = true;
+        //    _ZoomMeetingType = ZoomMeetingType.CONF_3RD_EVENT_MEETING;
+
+        //    HandleQAM();
+        //    _IsZoomMeetingActive = false;
+        //    _ZoomMeetingType = ZoomMeetingType.ZOOM_MEETING_TYPE_UNKNOW;
+        //}
+
+        //private void CreateWebcamEventForDebug_HideUI()
+        //{
+        //    _IsZoomScreenShareActive = true;
+
+        //    HandleQAM();
+        //}
+
         private void Keyboard_KeyUpProc(object sender, KeyEventArgs e)
         {
             string strKey = e.KeyCode.ToString().ToUpper();
@@ -12649,6 +12674,19 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     CallQAM_UI(this);
                 return;
             }
+            //Derek 1205 for Debug
+            //else if (_altPressed && strKey.Equals("A"))
+            //{
+            //    CreateWebcamEventForDebug_ShowUI();
+
+            //    return;
+            //}
+            //else if (_altPressed && strKey.Equals("H"))
+            //{
+            //    CreateWebcamEventForDebug_HideUI();
+
+            //    return;
+            //}
 
             //osd
             GlobalSettingParam result = GetGlobalSettingParam().Result;
