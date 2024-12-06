@@ -117,7 +117,18 @@ namespace DDPM.UI.Module.EzMemory
             {
                 SyncEditStatusForFirstPage();
             }
-            
+
+            //Check Custom split List View count
+            if (splitListView_Custom.ItemCount == 0)
+            {
+                splitListView_Custom.Visibility = Visibility.Collapsed;
+                splitListView_Recent_StackPanel.Visibility = Visibility.Collapsed;
+            }
+
+            //Always Visible Recent split List View
+            splitListView_Recent_Grid.Visibility = Visibility.Collapsed;
+            splitListView_Recent.Visibility = Visibility.Collapsed;
+
         }
 
         /// <summary>
