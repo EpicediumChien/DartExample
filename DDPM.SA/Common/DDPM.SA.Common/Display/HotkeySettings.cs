@@ -12,17 +12,17 @@ namespace DDPM.SA.Common.Display
     public class HotkeySettings
     {
         //public EDID DeviceInfo { get; set; }
-        public string ModelName { get; set; }
-        public string SerialNumber { get; set; }
-        public string ServiceTag { get; set; }
+        public string ModelName { get; set; } = string.Empty;
+        public string SerialNumber { get; set; } = string.Empty ;
+        public string ServiceTag { get; set; } = string.Empty;
         public List<HotkeyOption> HotkeyOptions { get; set; } = new List<HotkeyOption>();
 
-        public List<HotkeyInfo> HotkeyInfo { get; set; }
+        public List<HotkeyInfo> HotkeyInfo { get; set; } = new List<HotkeyInfo>();
 
-        public HotkeySettings()
-        {
-            HotkeyInfo = new List<HotkeyInfo>();
-        }
+        //public HotkeySettings()
+        //{
+        //    HotkeyInfo = new List<HotkeyInfo>();
+        //}
     }
 
     public class HotkeyPopWrap
@@ -33,7 +33,7 @@ namespace DDPM.SA.Common.Display
 
     public class HotkeyInfo
     {
-        public string Description { get; set; }
+        public string Description { get; set; } = string.Empty;
 
         public List<VirtualKey> Hotkey { get; set; }
 
@@ -81,7 +81,7 @@ namespace DDPM.SA.Common.Display
     public class KeyPressedEventArgs : EventArgs
     {
         public HotkeyInfo HotkeyInfo { get; set; } = new HotkeyInfo();
-        public string KeyString { get; set; }
+        public string KeyString { get; set; } = string.Empty;
     }
     public enum HotkeyOption
     {
