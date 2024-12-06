@@ -33,8 +33,6 @@ using Google.Protobuf.WellKnownTypes;
 using System.IO;
 using Type = System.Type;
 using DDPM.SA.Common.UI;
-using static DDPM.RemoteManagement.Common.Interfaces.Params;
-using Windows.Gaming.Input;
 
 namespace DDPM.SA.Plugins.User.DTPProxy
 {
