@@ -332,7 +332,7 @@ namespace DDPM.UI.Module.WebCameraPresenceDetection
 
         private void Image_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            if (sender is System.Windows.Controls.Image elm)
+            if (sender is Border elm)
             {
                 var val = elm.Tag!.ToString();
                 if (val == "0")
