@@ -2943,4 +2943,7 @@
   <data name="Color.10" xml:space="preserve">
     <value>Auto Color Temperature is currently enabled. Do you wish to disable it to continue?</value>
   </data>
+  <data name="ImpExp_WarningMsg.2" xml:space="preserve">
+    <value>The same monitor is detected, do you want to import settings for</value>
+  </data>
 </root>
