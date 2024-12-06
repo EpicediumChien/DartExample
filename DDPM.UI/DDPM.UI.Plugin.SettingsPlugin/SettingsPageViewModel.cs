@@ -718,7 +718,7 @@ namespace DDPM.UI.Plugin.SettingsPlugin
             //PIMS-316061 display add service tag to recognize.
             if (fwUpdateInfo.IsDisplay)
             {
-                UpdateInfo = $"{LangHelper.Instance["Firmware_update"]} {fwUpdateInfo.TheLatestVersion} - {fwUpdateInfo.DeviceName}({fwUpdateInfo.ServiceTag})";
+                UpdateInfo = $"{LangHelper.Instance["Firmware_update"]} {fwUpdateInfo.TheLatestVersion} - {fwUpdateInfo.DeviceName} ({fwUpdateInfo.ServiceTag})";
             }
             else
             {
