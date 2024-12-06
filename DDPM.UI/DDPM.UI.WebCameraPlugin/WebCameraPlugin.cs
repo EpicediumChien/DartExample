@@ -167,7 +167,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
         {
             //Open this to get the message format of Webcam event
             //System.Windows.MessageBox.Show(e.UI_Field_Name);
-
+            Console.WriteLine("Get event : " + e.UI_Field_Name + "#" + DateTime.Now.ToString("yyyy-MM-dd h:mm:tt") +"\r\n");
 
             //cmd format sample
             //5;Device:Webcam;EventType:Webcam_IsHDROnChanged;DeviceId:28d64fee-3544-45c7-a1b0-10db20a4cf8e;NewValue:True
@@ -252,6 +252,11 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                                     _viewModel.IsHDROn = false;
                                 _viewModel!.IsSettingProfile = false;
                             });
+                            //HDR SIWTCH時候,需要重置CAMERA,中間需要一段初始化時間約1秒
+                            _viewModel!.mre.Set();
+                            Thread.Sleep(1000);
+                            _viewModel!.mre.Set();
+                            _viewModel!.hdr_change = false;
                         }
                         break;
                         case "Webcam_FieldOfViewChanged":
@@ -565,7 +570,20 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
 
                         case "Webcam_IsMicEnumerationOnChanged":
                         {
-                            //收不到EVENT
+                            if (!event_param.TryGetValue("NewValue", out var NewValue))
+                            {
+                                _log.Debug("NewValue cannot be found in event_param");
+                                return;
+                            }
+                            _viewModel!.isIsMicEnumerationOnChanged_event = true;
+                            System.Windows.Application.Current.Dispatcher.Invoke(() =>
+                            {
+                                if (NewValue.ToLower() == "true")
+                                    _viewModel!.IsMicEnumerationOn = true;
+                                else
+                                    _viewModel!.IsMicEnumerationOn = false;
+                            });
+                            _viewModel!.isIsMicEnumerationOnChanged_event = false;
                         }
                         break;
 

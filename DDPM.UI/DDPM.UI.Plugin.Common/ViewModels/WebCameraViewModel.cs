@@ -17,6 +17,7 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text.Json;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media.Animation;
@@ -415,7 +416,7 @@ namespace DDPM.UI.Plugin.ViewModels
             }
         }
 
-        private Visibility _UPD_Visibility = Visibility.Hidden;
+        private Visibility _UPD_Visibility = Visibility.Collapsed;
 
         public Visibility UPD_Visibility
         {
@@ -571,15 +572,24 @@ namespace DDPM.UI.Plugin.ViewModels
             else
             { IsDTPReady = true; }
 
-            //var id = CurrentDeviceID.ToString();
-            //Task<JArray> task2 = DdpmCommonHelper.DeviceManagerSA!.GetPresetProfiles(id);
-            //var jArray = JArray.FromObject(task2.Result);
-            //List<WebcamProfile> Profiles = jArray.ToObject<List<WebcamProfile>>()!;
-            //foreach (var profile in Profiles.OrderBy(x => x.Name))
-            //{
-            //    WebcamSettings.PresetProfiles.Add(profile.Name, profile);
-            //    ProfileIDs.Add(profile.Name, profile.Id);
-            //}
+            if (CurrentDeviceInfo!.IsPropertyZoomSupported)
+            {
+                var zoom = DdpmCommonHelper.DeviceManagerSA!.GetZoom(CurrentDeviceInfo!.ID.ToString()).Result;
+                Zoom = zoom == -1 ? CurrentDeviceInfo.ZoomMin : zoom;
+                OnPropertyChanged(nameof(PanArrowVisibility));
+
+            }
+            if (CurrentDeviceInfo.IsPropertyFocusSupported)
+            {
+                var isFocusOn = DdpmCommonHelper.DeviceManagerSA!.GetIsFocusOn(CurrentDeviceInfo!.ID.ToString()).Result;
+                var focus = DdpmCommonHelper.DeviceManagerSA!.GetFocus(CurrentDeviceInfo!.ID.ToString()).Result;
+                IsFocusOn = isFocusOn;
+                Focus = focus == -1 ? CurrentDeviceInfo.FocusMin : focus;
+                //OnPropertyChanged(nameof(IsFocusOn));
+                //OnPropertyChanged(nameof(IsFocusOnText));
+            }
+
+
 
             for (int k = 0; k < CurrentDeviceInfo!.FOVValues.Length; k++)
             {
@@ -613,27 +623,6 @@ namespace DDPM.UI.Plugin.ViewModels
             }
         }
 
-        //public void RefreshProfiles()
-        //{
-        //    var id = CurrentDeviceID.ToString();
-        //    Task<string> task1 = DdpmCommonHelper.DeviceManagerSA!.GetProfile(id);
-        //    WebcamSettings.SelectedProfile = task1.Result;
-        //    task1 = DdpmCommonHelper.DeviceManagerSA!.GetProfileName(id);
-        //    WebcamSettings.SelectedProfileName = task1.Result;
-
-
-        //    Task<JArray> task2 = DdpmCommonHelper.DeviceManagerSA.GetCustomProfiles(id);
-        //    List<WebcamProfile> Profiles = JArray.FromObject(task2.Result).ToObject<List<WebcamProfile>>()!;
-        //    for (var l = Profiles.Count - 1; l >= 0; l--)
-        //    {
-        //        if (!ProfileIDs.ContainsKey(Profiles[l].Name))
-        //            ProfileIDs.Add(Profiles[l].Name, Profiles[l].Id);
-
-        //        WebcamSettings.CustomProfiles.Add(Profiles[l].Name, Profiles[l]);
-        //    }
-        //    WebcamSettings.ExportWebcamSettings(WebcamSettings, Model);
-        //}
-
         public bool IsSettingProfile = false;
         public void SetProfile()
         {
@@ -641,6 +630,10 @@ namespace DDPM.UI.Plugin.ViewModels
                 CurrentProfile = JsonConvert.DeserializeObject<WebcamProfile>(JsonConvert.SerializeObject(value))!;
             else
                 CurrentProfile = JsonConvert.DeserializeObject<WebcamProfile>(JsonConvert.SerializeObject(WebcamSettings.PresetProfiles[CurrentProfileName]))!;
+
+            CurrentProfile.Zoom = _zoom;
+            CurrentProfile.IsFocusOn = _isFocusOn;
+            CurrentProfile.Focus = _focus;
 
             var IsNormalProfile = CurrentProfileName != "Smooth" && CurrentProfileName != "Vibrant" && CurrentProfileName != "Warm";
             Task<bool> task;
@@ -706,31 +699,6 @@ namespace DDPM.UI.Plugin.ViewModels
                 }
             }
 
-            if (CurrentDeviceInfo.IsPropertyZoomSupported && IsNormalProfile)
-            {
-                task = DdpmCommonHelper.DeviceManagerSA!.SetZoom(CurrentDeviceInfo!.ID.ToString(), CurrentProfile.Zoom);
-                if (task.Result)
-                {
-                    IsDTPReady = true;
-                }
-                else
-                {
-                    IsDTPReady = false;
-                    return;
-                }
-                Zoom = CurrentProfile.Zoom;
-                //OnPropertyChanged(nameof(Zoom));
-            }
-
-            if (CurrentDeviceInfo.IsPropertyFocusSupported && IsNormalProfile)
-            {
-                DdpmCommonHelper.DeviceManagerSA!.SetIsFocusOn(CurrentDeviceInfo!.ID.ToString(), CurrentProfile.IsFocusOn);
-                DdpmCommonHelper.DeviceManagerSA!.SetFocus(CurrentDeviceInfo!.ID.ToString(), CurrentProfile.Focus);
-                Focus = CurrentProfile.Focus;
-                OnPropertyChanged(nameof(IsFocusOn));
-                OnPropertyChanged(nameof(IsFocusOnText));
-                //OnPropertyChanged(nameof(Focus));
-            }
 
             if (CurrentDeviceInfo.IsPropertyPrioritySupported && IsNormalProfile)
             {
@@ -885,7 +853,7 @@ namespace DDPM.UI.Plugin.ViewModels
         public Visibility btnRes3_show { get; set; } = Visibility.Visible;
 
 
-
+        public Visibility bdrPrioritize_show { get; set; } = Visibility.Visible;
         public Visibility brdHello_show { get; set; } = Visibility.Visible;
         public Visibility brdHello_show_control { get; set; } = Visibility.Visible;
 
@@ -965,12 +933,14 @@ namespace DDPM.UI.Plugin.ViewModels
         {
             get => CurrentDeviceInfo!.IsMicEnumerationOn ? Strings.On : Strings.Off;
         }
+        public bool isIsMicEnumerationOnChanged_event = false;
         public bool IsMicEnumerationOn
         {
             get => CurrentDeviceInfo!.IsMicEnumerationOn;
             set
             {
-                DdpmCommonHelper.DeviceManagerSA!.SetIsMicEnumerationOn(value, CurrentDeviceInfo!.ID);
+                if(!isIsMicEnumerationOnChanged_event)
+                    DdpmCommonHelper.DeviceManagerSA!.SetIsMicEnumerationOn(value, CurrentDeviceInfo!.ID);
                 OnPropertyChanged();
                 OnPropertyChanged(nameof(IsMicEnumerationOnText));
             }
@@ -1069,7 +1039,7 @@ namespace DDPM.UI.Plugin.ViewModels
             get => CurrentDeviceInfo!.IsPropertyZoomSupported ? Visibility.Visible : Visibility.Collapsed;
         }
 
-        private int _zoom = 0;
+        private int _zoom = -1;
         public int Zoom
         {
             get => _zoom;
@@ -1084,7 +1054,6 @@ namespace DDPM.UI.Plugin.ViewModels
                     }
                 }
                 OnPropertyChanged();
-                OnPropertyChanged(nameof(PanArrowVisibility));
             }
         }
         public void SetZoom()
@@ -1098,13 +1067,16 @@ namespace DDPM.UI.Plugin.ViewModels
         {
             get => CurrentDeviceInfo!.IsPropertyFocusSupported ? Visibility.Visible : Visibility.Collapsed;
         }
+
+        private bool _isFocusOn = false;
         public bool IsFocusOn
         {
-            get => CurrentProfile.IsFocusOn;
+            get => _isFocusOn;
             set
             {
-                if (value != IsFocusOn) //Derek 1108 for Webcam PIMS-317629 
+                if (value != _isFocusOn) //Derek 1108 for Webcam PIMS-317629 
                 {
+                    _isFocusOn = value;
                     DdpmCommonHelper.DeviceManagerSA!.SetIsFocusOn(CurrentDeviceInfo!.ID.ToString(), value);
                     SetProfileProperty(nameof(IsFocusOn), value, OperationModule.CameraControl);
                     OnPropertyChanged();
@@ -1116,7 +1088,7 @@ namespace DDPM.UI.Plugin.ViewModels
         }
         public string IsFocusOnText
         {
-            get => CurrentProfile.IsFocusOn ? Strings.On : Strings.Off;
+            get => IsFocusOn ? Strings.On : Strings.Off;
         }
 
         private int _focus = 0;
@@ -1160,6 +1132,7 @@ namespace DDPM.UI.Plugin.ViewModels
         {
             get => CurrentDeviceInfo!.IsPropertyHDRSupported ? Visibility.Visible : Visibility.Collapsed;
         }
+        public bool hdr_change = false;
         public bool IsHDROn
         {
             get => CurrentProfile.IsHDROn;
@@ -1167,13 +1140,14 @@ namespace DDPM.UI.Plugin.ViewModels
             {
                 AlertType = WebcamAlert.Alert1;
                 AlertVisibility = Visibility.Visible;
+                hdr_change = true;
                 DdpmCommonHelper.DeviceManagerSA!.SetIsHDROn(CurrentDeviceInfo!.ID.ToString(), value);
                 SetProfileProperty(nameof(IsHDROn), value, OperationModule.ColorAndImage);
                 OnPropertyChanged();
                 OnPropertyChanged(nameof(IsHDROnText));
                 new Thread(() =>
                 {
-                    Thread.Sleep(300);
+                    Thread.Sleep(3000);
                     AlertVisibility = Visibility.Collapsed;
                 }).Start();
             }
@@ -1361,7 +1335,7 @@ namespace DDPM.UI.Plugin.ViewModels
 
         public Visibility PanArrowVisibility
         {
-            get => CurrentProfile.Zoom != (CurrentDeviceInfo?.ZoomMin ?? 100) && !CurrentProfile.IsAutoFramingOn ? Visibility.Visible : Visibility.Collapsed;
+            get => Zoom != (CurrentDeviceInfo?.ZoomMin ?? 100) && !CurrentProfile.IsAutoFramingOn ? Visibility.Visible : Visibility.Collapsed;
         }
 
         public Visibility UndoVisibility
@@ -1643,7 +1617,9 @@ namespace DDPM.UI.Plugin.ViewModels
                     break;
                 case "Zoom":
                     DdpmCommonHelper.DeviceManagerSA!.SetZoom(CurrentDeviceInfo!.ID.ToString(), (int)value);
-                    Zoom = (int)value;
+                    _zoom = (int)value;
+                    OnPropertyChanged(nameof(Zoom));
+                    OnPropertyChanged(nameof(PanArrowVisibility));
                     break;
                 case "Brightness":
                     DdpmCommonHelper.DeviceManagerSA!.SetBrightness(CurrentDeviceInfo!.ID.ToString(), (int)value);
