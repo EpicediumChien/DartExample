@@ -495,7 +495,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             Dictionary<string, string> _USBs = new Dictionary<string, string>();
             if (monitorInfo != null)
             {
-                if (string.IsNullOrEmpty(monitorInfo.CapabilityString))
+                if (!string.IsNullOrEmpty(monitorInfo.CapabilityString))
                 {
                     string capabilityString = monitorInfo.CapabilityString;
                     if (monitorInfo.CapabilityDic.ContainsKey("E7"))
