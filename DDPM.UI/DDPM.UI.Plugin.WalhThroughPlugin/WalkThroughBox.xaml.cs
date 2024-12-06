@@ -197,7 +197,7 @@ namespace DDPM.UI.Plugin.WalkThroughPlugin
                 DdpmHomePlugin.DdpmHomePlugin._showPluginById = false;
             string regPath = $@"SOFTWARE\Dell\Dell Display And Peripheral Manager\UserSettings\Local\{DdpmHomePlugin.DdpmHomePlugin._userId}";
             string regKey = $"IsFirstTimeWalkThroughDone_com.dell.DPM.Plugin.LogicalDevice.DDPM";
-            DdpmCommonHelper.DeviceManagerSA!.WriteRegistryData(DDPM.SA.Common.Settings.RegistryHive.LocalMachine, regPath, regKey, true);
+
             this.Close();
         }
 
