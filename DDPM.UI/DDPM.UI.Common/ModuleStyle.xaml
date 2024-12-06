@@ -471,7 +471,7 @@
     <!-- Robert_Lin, 2024-11-26, (i) info icon color -->
     <SolidColorBrush x:Key="InfoIconColor" Color="#B6B6B6"/>
     <!-- #endregion (i) InfoIcon -->
-    
+
     <!-- #region ExpanderHeader  -->
     <sys:Double x:Key="ExpanderHeader_FontSize">20</sys:Double>
     <SolidColorBrush x:Key="ExpanderHeader_TextColor" Color="White" />
@@ -899,7 +899,7 @@
         <Setter Property="ScrollViewer.CanContentScroll" Value="False" />
         <Setter Property="MinWidth" Value="120" />
         <Setter Property="MinHeight" Value="80" />
-        <Setter Property="Foreground" Value="White" />
+        <Setter Property="Foreground" Value="{DynamicResource DefaultTheme_TxtColor}" />
         <Setter Property="Background" Value="{DynamicResource DdpmCB_BkColor}" />
         <Setter Property="VerticalContentAlignment" Value="Center" />
         <Setter Property="Template" Value="{StaticResource DdpmComboBoxControlTemplate}" />
@@ -1070,7 +1070,7 @@
         </Style.Triggers>
     </Style>
     <!-- #endregion VberItem1 -->
-    
+
 
     <!-- #region DisplayRightView -->
     <SolidColorBrush x:Key="btn_BkColor" Color="#FF0E1C2F" />
@@ -1748,7 +1748,7 @@
             </Trigger>
         </Style.Triggers>
     </Style>
-    
+
 
     <!-- Dialog start-->
     <SolidColorBrush x:Key="BorderStyle1_BgColor" Color="#99132F54"/>
@@ -1804,12 +1804,12 @@
         <Setter Property="CornerRadius" Value="2" />
         <Setter Property="Width" Value="252" />
         <Setter Property="BorderThickness" Value="2" />
-        <Setter Property="BorderBrush" Value="{DynamicResource RightView_Group_BdColor}" /> 
+        <Setter Property="BorderBrush" Value="{DynamicResource RightView_Group_BdColor}" />
     </Style>
     <!--BorderConnection end-->
     <!-- ConnectionStyle for TextBlock v1 -->
     <Style x:Key="ConnectionStyle1" TargetType="UXControls:UXTextBlock">
-        <Setter Property="Foreground" Value="{DynamicResource ConnHover_ActiveTextColor}" /> 
+        <Setter Property="Foreground" Value="{DynamicResource ConnHover_ActiveTextColor}" />
         <Setter Property="FontFamily" Value="Roboto" />
         <Setter Property="FontSize" Value="14" />
         <Setter Property="FontWeight" Value="Bold" />
@@ -1896,8 +1896,34 @@
     </LinearGradientBrush>
     <!-- #region MsgBoxLinearGradientBrush-->
 
+    <Style x:Key="RemoveActionButtonStyle" TargetType="local:ActionButton">
+        <Setter Property="Foreground" Value="#F5F6F7" />
+        <Setter Property="Background" Value="#D0353F" />
+        <Setter Property="CornerRadius" Value="2" />
+        <Setter Property="Width" Value="115" />
+        <Setter Property="Height" Value="40" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="FontFamily" Value="Roboto" />
+        <Setter Property="FontSize" Value="14" />
+        <Setter Property="FontWeight" Value="Medium" />
+        <Setter Property="VerticalAlignment" Value="Top" />
+        <Setter Property="HorizontalAlignment" Value="Left" />
+    </Style>
 
-
+    <Style x:Key="EditActionButtonStyle" TargetType="local:ActionButton">
+        <Setter Property="Foreground" Value="#F5F6F7" />
+        <Setter Property="Background" Value="#00000000" />
+        <Setter Property="CornerRadius" Value="2" />
+        <Setter Property="Width" Value="102.5" />
+        <Setter Property="Height" Value="40" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="BorderBrush" Value="#F5F6F7" />
+        <Setter Property="FontFamily" Value="Roboto" />
+        <Setter Property="FontSize" Value="14" />
+        <Setter Property="FontWeight" Value="Medium" />
+        <Setter Property="VerticalAlignment" Value="Top" />
+        <Setter Property="HorizontalAlignment" Value="Left" />
+    </Style>
     <!-- #region BitmapImage -->
     <!--<BitmapImage x:Key="popup_ArrowCorner" UriSource="pack://application:,,,/DDPM.UI.Common;component/Resources/popup_ArrowCorner.png" />
     <BitmapImage x:Key="down_Expand" UriSource="pack://application:,,,/DDPM.UI.Resources;component/Resources/Images/Down.png" />
