@@ -1277,6 +1277,16 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                                     LogicalDevices2.Add(_logicalDevice3.Id);
                                 }
                             }
+                            if (item is ILogicalDevice _logicalDevice)
+                            {
+                                if (!LogicalDevices4.Contains(_logicalDevice.Id))
+                                {
+                                    _logicalDevice.BatteryStatusChanged += ILogicalDevice_BatteryStatusChanged;
+                                    _logicalDevice.BatteryLevelChanged += ILogicalDevice_BatteryLevelChanged;
+                                    LogicalDevices4.Add(_logicalDevice.Id);
+                                }
+
+                            }
 
                             if (item is ILogicalWiredAudio _logicalWiredAudio)
                             {
@@ -2079,13 +2089,6 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
             {
                 if (_isClientConnected)
                 {
-                    if (!LogicalDevices4.Contains(iLogicalDevice.Id))
-                    {
-                        iLogicalDevice.BatteryStatusChanged += ILogicalDevice_BatteryStatusChanged;
-                        iLogicalDevice.BatteryLevelChanged += ILogicalDevice_BatteryLevelChanged;
-                        LogicalDevices4.Add(iLogicalDevice.Id);
-                    }
-
                     ScanDevices();
 
                     DeviceChangedEventArgs _EventArgs = new();
