@@ -18,7 +18,7 @@ namespace DDPM.SA.Common.CLI
     {
         public static CLIEventResult CLI_Response_CompleteWithSuccess(CommandLineInput commandLineInput, CLIEventResult rst)
         {
-            CLI_RESPONSE response = new CLI_RESPONSE();
+            APP_RESPONSE response = new APP_RESPONSE();
             response.TargetFeature = commandLineInput.TargetFeature;
             response.Command = commandLineInput.Command;
             response.Message = "Operation Completed";
@@ -769,7 +769,7 @@ namespace DDPM.SA.Common.CLI
                         break;
                     case "USBCPRIORITIZATION": //assume only IT command enter here
                         Console.WriteLine($"{commandLineInput.TargetFeature}: is Locked? => = {data_IT.Lock_Display_USBCPrioritization}");
-                        response.Value = (data_IT.Lock_Display_USBCPrioritization ? "Lock" : "Unlock");
+                        response.Value = (data_IT.Lock_Display_USBCPrioritization ? "Lock" : "Unlock"); 
                         break;
                     case "ACTIVEINPUTSOURCE": //assume only IT command enter here
                         Console.WriteLine($"{commandLineInput.TargetFeature}: is Locked? => = {data_IT.Lock_Display_ActiveInputSource}");
