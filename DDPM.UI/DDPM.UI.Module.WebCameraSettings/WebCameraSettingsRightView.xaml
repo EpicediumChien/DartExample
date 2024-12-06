@@ -548,7 +548,7 @@
                                     </Border>
                                 </StackPanel>
                             </Border>
-                            <Border Name="bdrPrioritize" CornerRadius="6" VerticalAlignment="Top" Margin="0,10,0,0" ToolTipService.ShowOnDisabled="True" IsEnabled="{Binding IsNotAddingProfile}">
+                            <Border Name="bdrPrioritize" Visibility="{Binding bdrPrioritize_show}" CornerRadius="6" VerticalAlignment="Top" Margin="0,10,0,0" ToolTipService.ShowOnDisabled="True" IsEnabled="{Binding IsNotAddingProfile}">
                                 <Border.ToolTip>
                                     <ToolTip Visibility="{Binding TooltipVisibility}">
                                         <Border Style="{StaticResource Tooltip_OutterBorderStyle}">

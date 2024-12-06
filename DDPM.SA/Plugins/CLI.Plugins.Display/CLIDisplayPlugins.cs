@@ -9109,7 +9109,7 @@ namespace DDPM.CLI.Plugins.Display
                                 //if (monitor.CapabilityDic.ContainsKey("AA") && monitor.CapabilityDic["AA"] != null && monitor.CapabilityDic["AA"].Contains("00"))
                                 //{
                                 writelog($"ScreenOrientation Entry");
-                                get_DeviceData.ScreenOrientation = Orientations_Str[(int)displayPropertiesInfo.CurrentOrientation];
+                                get_DeviceData.Orientation = Orientations_Str[(int)displayPropertiesInfo.CurrentOrientation];
                                 writelog($"ScreenOrientation Exit return value: {Orientations_Str[(int)displayPropertiesInfo.CurrentOrientation]}");
                                 //}
 
@@ -9382,7 +9382,7 @@ namespace DDPM.CLI.Plugins.Display
                     //if (monitor.CapabilityDic.ContainsKey("AA") && monitor.CapabilityDic["AA"] != null && monitor.CapabilityDic["AA"].Contains("00"))
                     //{
                     writelog($"ScreenOrientation Entry");
-                    get_DeviceData.ScreenOrientation = Orientations_Str[(int)displayPropertiesInfo.CurrentOrientation];
+                    get_DeviceData.Orientation = Orientations_Str[(int)displayPropertiesInfo.CurrentOrientation];
                     writelog($"ScreenOrientation Exit return value: {Orientations_Str[(int)displayPropertiesInfo.CurrentOrientation]}");
                     //}
 

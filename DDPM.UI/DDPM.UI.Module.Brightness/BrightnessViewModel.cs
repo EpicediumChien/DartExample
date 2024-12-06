@@ -189,7 +189,7 @@ namespace DDPM.UI.Module.Brightness
         {
             get
             {
-                return IsSynchronize ? "ON" : "OFF";
+                return IsSynchronize ? Strings.On : Strings.Off;
             }
         }
 
@@ -561,6 +561,7 @@ namespace DDPM.UI.Module.Brightness
                 NotifyPropertyChanged("BrightnessValue");
                 NotifyPropertyChanged("ContrastValue");
                 NotifyPropertyChanged("IsSynchronize");
+                NotifyPropertyChanged("IsSynchronize_String");
                 NotifyPropertyChanged("AutoBrightnessRangeLevel_String");
             }
 
@@ -2235,6 +2236,7 @@ namespace DDPM.UI.Module.Brightness
             {
                 IsSynchronizeMonitor = value;
                 NotifyPropertyChanged("IsSynchronize");
+                NotifyPropertyChanged("IsSynchronize_String");
             }
         }
 

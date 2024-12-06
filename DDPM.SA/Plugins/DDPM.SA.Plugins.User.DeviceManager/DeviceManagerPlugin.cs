@@ -2779,6 +2779,14 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             return Task.FromResult(true);
         }
 
+        public Task SetMicNoiseCancellationForMito(bool newValue, Guid deviceId)
+        {
+            writelog("DeviceMangerPlugin received SetMicNoiseCancellationForMito requested ...");
+            writelog($"Target DeviceID is {deviceId}");
+            _PeripheralsPlugin.SetMicNoiseCancellationForMito(newValue, deviceId);
+            return Task.FromResult(true);
+        }
+
         public Task SetSidetone(bool newValue, Guid deviceId)
         {
             writelog("DeviceMangerPlugin received SetSidetone requested ...");

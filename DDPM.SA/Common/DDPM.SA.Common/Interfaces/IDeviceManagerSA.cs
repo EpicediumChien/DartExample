@@ -400,6 +400,8 @@ namespace DDPM.SA.Common
 
         Task SetMicNoiseCancellation(bool newValue, Guid deviceId);
 
+        Task SetMicNoiseCancellationForMito(bool newValue, Guid deviceId);
+
         Task SetSidetone(bool newValue, Guid deviceId);
 
         Task SetSidetoneLevel(int newValue, Guid deviceId);
