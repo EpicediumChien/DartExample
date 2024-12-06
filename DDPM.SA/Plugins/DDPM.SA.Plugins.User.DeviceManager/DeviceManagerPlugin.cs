@@ -10062,6 +10062,51 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         //private bool isHiddenConditionsMet = false;
         private int currentZoomValue = -1;
         private EventMsg eventMsg = new EventMsg();
+
+        //Derek 1206
+        private void HandleQAMV2()
+        {
+            writelog($"HandleQAM start");
+
+            int devCnt = GetWebcamDeviceCount();
+
+            if (1 != devCnt || _GlobalSettingParam == null || !isWindowsScreenNotLocked ||
+                _GlobalSettingParam.GlobalSetting_WidgetSettings == null ||
+                !_GlobalSettingParam.GlobalSetting_WidgetSettings.EnableQuickAccessWidget ||
+                //_ZoomMeetingType != ZoomMeetingType.CONF_3RD_EVENT_MEETING
+                //Derek 1206 test condition due to we can't receive zoom meeting type changed event
+                _ZoomMeetingType != ZoomMeetingType.ZOOM_MEETING_TYPE_UNKNOW
+                )
+            {
+                QAMClose();
+
+                writelog($"Abnormal condition occur, close QAM if it's opened.");
+            }
+
+            //Hidden state
+            if (_IsZoomScreenShareActive)
+            {
+                writelog($"HandleQAM receive QAMHide event");
+
+                QAMHide();
+            }
+            //Active state
+            else if (_IsZoomMeetingActive) 
+            {
+                writelog($"HandleQAM receive CallQAM_UI event");
+                //_IsZoomMeetingActive = false;
+                CallQAM_UI(this);
+            }
+            else
+            {
+                writelog($"HandleQAM receive QAMClose event");
+
+                QAMClose();
+            }
+
+
+            writelog($"HandleQAM done");
+        }
         private void HandleQAM()
         {
             writelog($"HandleQAM start");
@@ -10081,7 +10126,10 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             //Active state
             if (_IsZoomMeetingActive && _ZoomMeetingType == ZoomMeetingType.ZOOM_MEETING_TYPE_UNKNOW
                 && deviceInfos.Count == 1 && _GlobalSettingParam.GlobalSetting_WidgetSettings.EnableQuickAccessWidget
-                && isWindowsScreenNotLocked)
+                && isWindowsScreenNotLocked) //Derek 1206 test condition due to we can't receive zoom meeting type changed event
+            //if (_IsZoomMeetingActive && _ZoomMeetingType == ZoomMeetingType.CONF_3RD_EVENT_MEETING
+            //   && deviceInfos.Count == 1 && _GlobalSettingParam.GlobalSetting_WidgetSettings.EnableQuickAccessWidget
+            //   && isWindowsScreenNotLocked)
             {
                 writelog($"HandleQAM receive CallQAM_UI event");
                 _IsZoomMeetingActive = false;
@@ -10191,12 +10239,17 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
                     break;
 
+                case "Webcam_Disconnected":
+                case "Webcam_Connected":
+                    isQAMHandleEvent = true;
+                    break;
+
                 default:
                     break;
             }
 
             if (isQAMHandleEvent)
-                HandleQAM();
+                HandleQAMV2();
         }
 
         //Marked by Derek 1125 because they had covered by WebcamEventHandler
@@ -10253,6 +10306,9 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         private Task QAMHide()
         {
             writelog($"QAMHide Start");
+
+            if (null == _QAM)
+                return;
 
             try
             {
