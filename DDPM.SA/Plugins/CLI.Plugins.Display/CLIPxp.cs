@@ -1205,8 +1205,10 @@ namespace CLI.Plugins.Display
                 {
                     rc = _devMgr.GetVCPCapability(_AllInfoMonitors[idx], 0xE5, 0x02).Result;
                     if (rc != null)
+                    {
                         isPass = true;
-                    response.Value = (rc.value).ToString();
+                        response.Value = (rc.value).ToString();
+                    }                        
                     //response.Model = _AllInfoMonitors[idx].modelName;
                     //response.SerialNumber = _AllInfoMonitors[idx].edid.SerialNumber;
                     //response.Index = change_0base_to_1base(idx.ToString());
