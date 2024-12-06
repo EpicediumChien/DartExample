@@ -93,7 +93,7 @@ namespace DDPM.UI.Plugin.WalkThroughPlugin
         private void MainNextBtn_Click(object sender, RoutedEventArgs e)
         {
             WalkThroughBox msgBox = new WalkThroughBox(ViewModel, Window.GetWindow(this));
-            msgBox.Owner = Window.GetWindow(this);
+
             msgBox.ShowDialog();
 
             if (DdpmHomePlugin.DdpmHomePlugin.WalkThroughQueue.Count == 0)

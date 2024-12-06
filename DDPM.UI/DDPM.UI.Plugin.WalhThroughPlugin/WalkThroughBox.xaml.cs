@@ -113,6 +113,7 @@ namespace DDPM.UI.Plugin.WalkThroughPlugin
             ViewModel.Img3Source = DdpmCommonHelper.GetImageSourceFromCommonResource(devicePages["DDPM"][_currentPage].MainImageSource, "DDPM.UI.WalkThroughData");
             //_currentPage++;
             //UpdatePage(devicePages["DDPM"][1].MainImageSource);
+            base.Owner = owner;
         }
         private void NextBtn_Click(object sender, RoutedEventArgs e)
         {
