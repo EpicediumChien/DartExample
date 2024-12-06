@@ -882,7 +882,7 @@
         <Setter Property="ScrollViewer.CanContentScroll" Value="False" />
         <Setter Property="MinWidth" Value="120" />
         <Setter Property="MinHeight" Value="80" />
-        <Setter Property="Foreground" Value="White" />
+        <Setter Property="Foreground" Value="{DynamicResource DefaultTheme_TxtColor}" />
         <Setter Property="Background" Value="{DynamicResource DdpmCB_BkColor}" />
         <Setter Property="VerticalContentAlignment" Value="Center" />
         <Setter Property="Template" Value="{StaticResource DdpmComboBoxControlTemplate}" />
