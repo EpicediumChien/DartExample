@@ -32,6 +32,7 @@ namespace DDPM.UI.Plugin.SettingsPlugin
     public partial class ThirdPartyLicenses : Window, INotifyPropertyChanged
     {
         private ResourceManager resManager = ThirdPartyLicense.ResourceManager;
+        private ResourceManager resManager_NKVM = ThirdPartyLicense_NKVM.ResourceManager;
         public ObservableCollection<UI_ThirdPartyLicenses> ThirdPartyLicensesList { get; set; }
         public event PropertyChangedEventHandler PropertyChanged;
         protected void OnPropertyChanged(string propertyName)
@@ -48,6 +49,7 @@ namespace DDPM.UI.Plugin.SettingsPlugin
         {
             ThirdPartyLicensesList = new ObservableCollection<UI_ThirdPartyLicenses>();
             ResourceSet resourceSet = resManager.GetResourceSet(CultureInfo.CurrentCulture, true, true);
+            ResourceSet resource_NKVMSet = resManager_NKVM.GetResourceSet(CultureInfo.CurrentCulture, true, true);
             int resourceCount = 0;
             if (resourceSet != null)
             {
@@ -61,6 +63,26 @@ namespace DDPM.UI.Plugin.SettingsPlugin
                     {
                         Title = resManager.GetString($"Title{i + 1}"),
                         Content = resManager.GetString($"Content{i + 1}")
+                    });
+
+                    //PIMS-313975
+                    TextToCopy += Title;
+                    TextToCopy += (System.Environment.NewLine + System.Environment.NewLine + Content + System.Environment.NewLine);
+                }
+            }
+            resourceCount = 0;
+            if (resource_NKVMSet != null)
+            {
+                foreach (DictionaryEntry entry in resource_NKVMSet)
+                {
+                    resourceCount++;
+                }
+                for (int i = 0; i < resourceCount / 2; i++)
+                {
+                    ThirdPartyLicensesList.Add(new UI_ThirdPartyLicenses()
+                    {
+                        Title = resManager_NKVM.GetString($"Title{i + 1}"),
+                        Content = resManager_NKVM.GetString($"Content{i + 1}")
                     });
 
                     //PIMS-313975
