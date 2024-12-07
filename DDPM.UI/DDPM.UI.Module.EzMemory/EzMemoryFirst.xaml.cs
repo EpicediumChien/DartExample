@@ -157,6 +157,7 @@ namespace DDPM.UI.Module.EzMemory
         {
             //Need to auto select
             _vm.InputText = _vm.currentEditprofile.Name;
+            
             SplitItem profilwSplitItem = splitListView_Recent.FindSplitItem(_vm.CurrentSelectspItem.CellCount, _vm.CurrentSelectspItem.SplitKey);
             profilwSplitItem.IsSelected = true;
             OnListViewItemClicked(profilwSplitItem);

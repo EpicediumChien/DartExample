@@ -94,13 +94,15 @@ namespace DDPM.EABroker
 
             _inputSplit = eaArgs.SplitJson;
 
-            double dpiX = 1.000;
-            var dpiXProperty = typeof(SystemParameters).GetProperty("DpiX", BindingFlags.NonPublic | BindingFlags.Static);
-            if (dpiXProperty != null)
-            {
-                var varX = (int)dpiXProperty.GetValue(null, null);
-                dpiX = (double)varX / (double)96;
-            }
+            //Robert_Lin, 2024-12-6, use the method in CommonFunctions
+            double dpiX = CommonFunctions.GetDpiX();
+            //double dpiX = 1.000;
+            //var dpiXProperty = typeof(SystemParameters).GetProperty("DpiX", BindingFlags.NonPublic | BindingFlags.Static);
+            //if (dpiXProperty != null)
+            //{
+            //    var varX = (int)dpiXProperty.GetValue(null, null);
+            //    dpiX = (double)varX / (double)96;
+            //}
             Left = x / dpiX;
             Top = y / dpiX;
         }
@@ -467,13 +469,15 @@ namespace DDPM.EABroker
                 //cbNames.SelectedValue = selectedName;
 
                 //Calculate the position/size of EditWindow
-                double dpiX = 1.000;
-                var dpiXProperty = typeof(SystemParameters).GetProperty("DpiX", BindingFlags.NonPublic | BindingFlags.Static);
-                if (dpiXProperty != null)
-                {
-                    var varX = (int)dpiXProperty.GetValue(null, null);
-                    dpiX = (double)varX / (double)96;
-                }
+                //Robert_Lin, 2024-12-6, use the method in CommonFunctions
+                double dpiX = CommonFunctions.GetDpiX();
+                //double dpiX = 1.000;
+                //var dpiXProperty = typeof(SystemParameters).GetProperty("DpiX", BindingFlags.NonPublic | BindingFlags.Static);
+                //if (dpiXProperty != null)
+                //{
+                //    var varX = (int)dpiXProperty.GetValue(null, null);
+                //    dpiX = (double)varX / (double)96;
+                //}
 
 
                 if (_viewModel.IsOverlapLayout)
@@ -665,13 +669,15 @@ namespace DDPM.EABroker
                 //cbNames.SelectedValue = selectedName;
 
                 //Calculate the position/size of EditWindow
-                double dpiX = 1.000;
-                var dpiXProperty = typeof(SystemParameters).GetProperty("DpiX", BindingFlags.NonPublic | BindingFlags.Static);
-                if (dpiXProperty != null)
-                {
-                    var varX = (int)dpiXProperty.GetValue(null, null);
-                    dpiX = (double)varX / (double)96;
-                }
+                //Robert_Lin, 2024-12-6, use the method in CommonFunctions
+                double dpiX = CommonFunctions.GetDpiX();
+                //double dpiX = 1.000;
+                //var dpiXProperty = typeof(SystemParameters).GetProperty("DpiX", BindingFlags.NonPublic | BindingFlags.Static);
+                //if (dpiXProperty != null)
+                //{
+                //    var varX = (int)dpiXProperty.GetValue(null, null);
+                //    dpiX = (double)varX / (double)96;
+                //}
 
 
                 if (_viewModel.IsOverlapLayout)

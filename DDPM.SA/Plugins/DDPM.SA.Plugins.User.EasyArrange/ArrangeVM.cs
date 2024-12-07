@@ -176,11 +176,13 @@ namespace DDPM.SA.Plugins.User.EasyArrange
 
         public double RefreshScreenScale()
         {
-            var dpiXProperty = typeof(SystemParameters).GetProperty("DpiX", BindingFlags.NonPublic | BindingFlags.Static);
-            var varX = (int)dpiXProperty.GetValue(null, null);
-            double dpiX = (double)varX / (double)96;
-            if (dpiX >= 1.0000)
-                ScreenScale = dpiX;
+            //Robert_Lin, 2024-12-6, use the method in CommonFunctions
+            ScreenScale = CommonFunctions.GetDpiX();
+            //var dpiXProperty = typeof(SystemParameters).GetProperty("DpiX", BindingFlags.NonPublic | BindingFlags.Static);
+            //var varX = (int)dpiXProperty.GetValue(null, null);
+            //double dpiX = (double)varX / (double)96;
+            //if (dpiX >= 1.0000)
+            //    ScreenScale = dpiX;
             return ScreenScale;
         }
         #endregion Screen Scale

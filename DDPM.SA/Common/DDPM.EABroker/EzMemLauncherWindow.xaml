@@ -5,13 +5,14 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:DDPM.EABroker"
         mc:Ignorable="d"
-    xmlns:lang="clr-namespace:DDPM.SA.Resources.Helper;assembly=DDPM.SA.Resources"
-    WindowStartupLocation="Manual"
+        xmlns:lang="clr-namespace:DDPM.SA.Resources.Helper;assembly=DDPM.SA.Resources"
+        WindowStartupLocation="Manual"
         AllowsTransparency="True" Topmost="True"
         WindowStyle="None" ResizeMode="NoResize" 
         Background="Transparent" ShowInTaskbar="False"
-
-        Title="EzMemLauncherWindow" Height="450" Width="800" Loaded="Window_Loaded">
+        Title="EzMemLauncherWindow" 
+        Height="450" Width="800" 
+        Loaded="Window_Loaded" ContentRendered="Window_ContentRendered">
     <Window.Resources>
         <!--<SolidColorBrush x:Key="Default_SA_OSD_Border_BkColor" Color="#141D28" />
         <SolidColorBrush x:Key="Default_SA_OSD_PathColor" Color="#FFFFFF" />-->
