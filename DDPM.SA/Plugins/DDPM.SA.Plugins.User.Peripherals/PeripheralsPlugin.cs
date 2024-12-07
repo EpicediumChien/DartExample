@@ -86,6 +86,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
 
         private IDeviceManagerSA _DeviceManagerPlugin;
         private readonly object _PluginConditionLock_DeviceManager = new object();
+        private readonly object _lock = new();
 
         #endregion
 
@@ -142,7 +143,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
             {
                 return await Task.Run(() =>
                 {
-                    lock (this)
+                    lock (_lock)
                     {
                         if (_isClientConnected && _deviceHelper != null)
                         {
@@ -1082,7 +1083,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
 
         private void ScanDevices()
         {
-            lock (this)
+            lock (_lock)
             {
                 if (_isClientConnected && _iClient != null && _iDeviceManager != null)
                 {
@@ -1277,6 +1278,8 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                                     LogicalDevices2.Add(_logicalDevice3.Id);
                                 }
                             }
+
+                            // << 241206 by Hess fix no event issue
                             if (item is ILogicalDevice _logicalDevice)
                             {
                                 if (!LogicalDevices4.Contains(_logicalDevice.Id))
@@ -1285,8 +1288,8 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                                     _logicalDevice.BatteryLevelChanged += ILogicalDevice_BatteryLevelChanged;
                                     LogicalDevices4.Add(_logicalDevice.Id);
                                 }
-
                             }
+                            // >>
 
                             if (item is ILogicalWiredAudio _logicalWiredAudio)
                             {
@@ -1912,7 +1915,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
         {
             if (status == ClientStatus.Connected)
             {
-                lock (this)
+                lock (_lock)
                 {
                     _isClientConnected = true;
 
@@ -1950,7 +1953,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
             }
             else
             {
-                lock (this)
+                lock (_lock)
                 {
                     if (_isClientConnected)
                     {
@@ -2038,7 +2041,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
 
             System.Diagnostics.Debug.WriteLine("ParentPhysicalDevice Added, Id : " + iPhysicalDevice.Id + ", Name : " + iPhysicalDevice.Name);
 
-            lock (this)
+            lock (_lock)
             {
                 if (_isClientConnected)
                 {
@@ -2085,7 +2088,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
         private void IPhysicalDevice_DeviceAddedEvent(ILogicalDevice iLogicalDevice)
         {
             System.Diagnostics.Debug.WriteLine("LogicalDevice Added, Id : " + iLogicalDevice.Id + ", Name : " + iLogicalDevice.Name);
-            lock (this)
+            lock (_lock)
             {
                 if (_isClientConnected)
                 {
@@ -2102,7 +2105,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
 
         private void IPhysicalDevice_DeviceRemovedEvent(ILogicalDevice iLogicalDevice)
         {
-            lock (this)
+            lock (_lock)
             {
 
                 if (_isClientConnected)
@@ -2618,7 +2621,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
 
         private void IUpdateManager_IsAnyUpdateAvailableChanged(bool isAnyUpdateAvailable)
         {
-            lock (this)
+            lock (_lock)
             {
                 if (_isClientConnected && _iUpdateManager != null)
                 {
@@ -2811,7 +2814,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                 _logs.DebugMsg_1($"[PeripheralsPlugin] GetFWUpdateInfo done and _updateHelper is no null");
                 return await Task.Run(() =>
                 {
-                    lock (this)
+                    lock (_lock)
                     {
                         if (_isClientConnected && _updateHelper != null)
                         {

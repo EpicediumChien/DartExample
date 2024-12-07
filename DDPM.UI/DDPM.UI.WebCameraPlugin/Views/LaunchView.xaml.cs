@@ -1081,7 +1081,8 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                 moduleGroup = new ModuleGroup()
                 {
                     GroupName = Microphone,
-                    GroupIcon = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Images/Microphone.png", "DDPM.UI.Resources")
+                    GroupIcon = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Images/Microphone.png", "DDPM.UI.Resources"),
+                    GroupIconCanvas = DdpmCommonHelper.CanvasIconCreator(VbarIcon.WebcamMicrophone)
                 };
                 moduleGroup.AddHeader(Microphone, new WebCameraMicrophoneModule(_vm!));
                 groups.Add(moduleGroup);
@@ -2091,6 +2092,8 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
             //NarratorModeSupport.RecurseUitems( start) ;
+
+            DdpmCommonHelper.WriteUILog($"Webcam landing page UserControl_Loaded");
         }
     }
 }

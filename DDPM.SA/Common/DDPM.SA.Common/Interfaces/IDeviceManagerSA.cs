@@ -721,6 +721,7 @@ namespace DDPM.SA.Common
         Task SetMouseAssignDialogAction(string Guid, byte[] newValue);
         Task SetMouseAssignKeystrokeAction(string Guid, byte[] newValue);
         Task<bool> RestoreToDefaultMouse(string Guid, bool isFromCli = true);
+        Task<bool> SetReportRate(string Guid, int newValue);
 
         #endregion Mouse
 
@@ -1196,6 +1197,16 @@ namespace DDPM.SA.Common
         void updateFWUpdateInfoPackage(FWUpdateInfoPackage pkg);
 
         #endregion GlobalSetting
+
+        #region QAM
+        Task SetIsDDPMLaunchByQAMAsync(bool newValue);
+        Task<bool> GetIsDDPMLaunchByQAM();
+        Task SetIsDDPMHomepageReadyAsync(bool newValue);
+        Task<int> GetCurrentPollingRate();
+        Task CloseQAMByDDPM();
+        Task<bool> GetIsWidgetSettingPageLoadedByQAMAsync();
+        Task SetIsWidgetSettingPageLoadedByQAMAsync(bool newValue);
+        #endregion
 
         #region System Suspend & Resume
         event EventHandler SystemSuspend;
