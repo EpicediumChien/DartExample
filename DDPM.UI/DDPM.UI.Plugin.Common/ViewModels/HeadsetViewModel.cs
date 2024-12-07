@@ -294,8 +294,8 @@ namespace DDPM.UI.Plugin.ViewModels
                         break;
                     //------------------------------------------------------------------------------------------
                     case "BusyLightCheck":
-                        _log.Info($"[HeadsetViewModel] SetBusyLightAsync ....... {DeviceInfoDTP.BusyLight.ToString()}");
-                        _deviceManager.SetBusyLightAsync(CurrentDeviceInfo!.ID.ToString(), DeviceInfoDTP.BusyLight).Wait();
+                        //_log.Info($"[HeadsetViewModel] SetBusyLightAsync ....... {DeviceInfoDTP.BusyLight.ToString()}");
+                        //_deviceManager.SetBusyLightAsync(CurrentDeviceInfo!.ID.ToString(), DeviceInfoDTP.BusyLight).Wait();
                         break;
                     //------------------------------------------------------------------------------------------
                     case "EssentialCheck":
@@ -2400,6 +2400,21 @@ namespace DDPM.UI.Plugin.ViewModels
             get => _isBusyLightStatus ? "ON" : "OFF";
         }
 
+        private bool _supportedBusyLight = true;
+
+        public bool SupportedBusyLight
+        {
+            get
+            {
+                return _supportedBusyLight;
+            }
+            set
+            {
+                _supportedBusyLight = value;
+                OnPropertyChanged("SupportedBusyLight");
+            }
+        }
+
         private bool _isBusyLightStatus = false;
 
         public bool BusyLightStatus
@@ -2413,8 +2428,12 @@ namespace DDPM.UI.Plugin.ViewModels
             {
                 _isBusyLightStatus = value;
                 DeviceInfoDTP.BusyLight = value;
-                _debouncerHeadset.Debounce("BusyLightCheck");
+                _supportedBusyLight = false;
+                _deviceManager.SetBusyLightAsync(CurrentDeviceInfo!.ID.ToString(), DeviceInfoDTP.BusyLight).Wait();
+                _supportedBusyLight = true;
+                //_debouncerHeadset.Debounce("BusyLightCheck");
                 OnPropertyChanged("BusyLight_String");
+                _log.Info($"[HeadsetViewModel] SetBusyLightAsync ....... {DeviceInfoDTP.BusyLight.ToString()}");
             }
         }
 
