@@ -661,6 +661,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                         print_debug("CheckUSBtype() s4");
                         //hdr on按鈕diable & 功能關閉
                         _vm.hdr_enable = false;
+                        _vm.usb_hdr_enable = false; 
                         _vm.IsHDROn = false;
 
                         // ProximitySensor按鈕diable & 功能關閉
