@@ -7,18 +7,14 @@
         xmlns:local="clr-namespace:DDPM.UI.Plugin.SettingsPlugin"
         xmlns:lang="clr-namespace:DDPM.UI.Resources.Helper;assembly=DDPM.UI.Resources"
         mc:Ignorable="d"
-        Title="ThirdPartyLicenses"
         Height="428"
         Width="600"
-        MaxHeight="428"
-        MaxWidth="600"
-        MinHeight="428"
-        MinWidth="600"
         WindowStyle="None"
         AllowsTransparency="True"
         WindowStartupLocation="CenterScreen"
-        Background="{DynamicResource GroupBorderColor}"
+        Background="Transparent"
         Topmost="True"
+        ResizeMode="NoResize"
         Loaded="UXWindow_Loaded">
     <Window.Resources>
         <ResourceDictionary>
@@ -28,36 +24,39 @@
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Window.Resources>
-    <Grid>
-        <Grid Grid.Column="1"
-              Margin="10"
+    <Border  BorderThickness="1" CornerRadius="10" BorderBrush="{DynamicResource PartBorderColor}" Background="{DynamicResource PartBorderColor}">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"></RowDefinition>
+                <RowDefinition Height="*"></RowDefinition>
+            </Grid.RowDefinitions>
+            <Grid Width="25" Height="25" Margin="5" Grid.Row="0"
               HorizontalAlignment="Right"
               VerticalAlignment="Top"
               MouseDown="Grid_MouseDown"
-              Background="Transparent">
-            <Path VerticalAlignment="Center"
+              >
+                <Path VerticalAlignment="Center" HorizontalAlignment="Center"
                   Data="M14 0.7175L13.2825 0L7 6.3L0.7175 0.04375L0 0.76125L6.25625 7L0.04375 13.2388L0.76125 14L7 7.74375L13.2388 14L13.9563 13.2825L7.7 7L14 0.7175Z"
                    />
-        </Grid>
-        <Grid Margin="20">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="*" />
-            </Grid.RowDefinitions>
-            <UXControls:UXTextBlock  Grid.Column="0"
+            </Grid>
+            <Grid Grid.Row="1">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+                <UXControls:UXTextBlock  Grid.Column="0"
                                      FontSize="20"
                                      Text="{Binding [ThirdPartyLicense.Title], Source={x:Static lang:LangHelper.Instance}, Mode=OneWay}"/>
-            <UXControls:UXScrollViewer Grid.Row="1"
+                <UXControls:UXScrollViewer Grid.Row="1"
                                        Margin="0,10,0,0">
-                <StackPanel>
-                    <ItemsControl ItemsSource="{Binding ThirdPartyLicensesList}"
+                    <StackPanel>
+                        <ItemsControl ItemsSource="{Binding ThirdPartyLicensesList}"
                                   Name="listTopics"
-                                  Background="Transparent"
                                   BorderThickness="0">
-                        <ItemsControl.ItemTemplate>
-                            <DataTemplate>
-                                <StackPanel>
-                                    <UXControls:UXTextBlock  Grid.Column="0"
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <StackPanel>
+                                        <UXControls:UXTextBlock  Grid.Column="0"
                                                              Width="524"
                                                              FontSize="20"
                                                              FontWeight="Bold"
@@ -65,19 +64,21 @@
                                                              local:SelectableTextBlockBehavior.IsSelectable="True"
                                                              local:SelectableTextBlockBehavior.CopyText="{Binding TextToCopy}"
                                                              Text="{Binding Title}" />
-                                    <UXControls:UXTextBlock  Grid.Column="0"
+                                        <UXControls:UXTextBlock  Grid.Column="0"
                                                              Width="524"
                                                              FontSize="15"
                                                              TextWrapping="WrapWithOverflow"
                                                              local:SelectableTextBlockBehavior.IsSelectable="True"
                                                              local:SelectableTextBlockBehavior.CopyText="{Binding TextToCopy}"
                                                              Text="{Binding Content}" />
-                                </StackPanel>
-                            </DataTemplate>
-                        </ItemsControl.ItemTemplate>
-                    </ItemsControl>
-                </StackPanel>
-            </UXControls:UXScrollViewer>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </StackPanel>
+                </UXControls:UXScrollViewer>
+            </Grid>
         </Grid>
-    </Grid>
+
+    </Border>
 </Window>
