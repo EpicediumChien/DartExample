@@ -270,11 +270,18 @@ namespace DDPM.UI.Common.ViewModels
             _log = console.CreateLog(logName);
         }
 
-        public void LogInfo(string message)
+        public void LogInfo(string message, Exception ex=null)
         {
             if (_log != null)
             {
-                _log.Info(message);
+                if (ex != null)
+                {
+                    _log.Error(ex, message);
+                }
+                else
+                {
+                    _log.Info(message);
+                }
             }
         }
 
