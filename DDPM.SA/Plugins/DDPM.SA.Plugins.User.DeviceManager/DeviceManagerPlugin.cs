@@ -4829,6 +4829,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             bool ret = false;
             if (_DisplayManagerPlugin != null)
             {
+                displayInOut = false;
                 ret = _DisplayManagerPlugin.SetOrientation(monitorInfo, orientation).Result;
             }
             return Task.FromResult(ret);
