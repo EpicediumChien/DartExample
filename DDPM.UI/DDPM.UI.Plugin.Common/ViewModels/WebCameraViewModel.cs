@@ -849,16 +849,17 @@ namespace DDPM.UI.Plugin.ViewModels
         public Visibility brdHello_show { get; set; } = Visibility.Visible;
         public Visibility brdHello_show_control { get; set; } = Visibility.Visible;
 
-
         public bool is_hdr_enable = true;
+
         public bool hdr_enable 
         { 
-            get => IsNotRecording && is_hdr_enable; 
+            get => IsNotRecording && is_hdr_enable;
             set
             {
                 is_hdr_enable = value;
+                OnPropertyChanged();
                 OnPropertyChanged(nameof(IsNotRecording));
-                OnPropertyChanged(nameof(is_hdr_enable));
+                //OnPropertyChanged(nameof(is_hdr_enable));
                 OnPropertyChanged(nameof(hdr_enable));
             }
         }
@@ -1141,6 +1142,7 @@ namespace DDPM.UI.Plugin.ViewModels
             get => CurrentDeviceInfo!.IsPropertyHDRSupported ? Visibility.Visible : Visibility.Collapsed;
         }
         public bool hdr_change = false;
+
         public bool IsHDROn
         {
             get => CurrentProfile.IsHDROn;
@@ -1149,6 +1151,7 @@ namespace DDPM.UI.Plugin.ViewModels
                 AlertType = WebcamAlert.Alert1;
                 AlertVisibility = Visibility.Visible;
                 hdr_change = true;
+                bool old_hdr_enable = is_hdr_enable;
                 is_hdr_enable = false;
                 OnPropertyChanged(nameof(hdr_enable));
                 DdpmCommonHelper.DeviceManagerSA!.SetIsHDROn(CurrentDeviceInfo!.ID.ToString(), value);
@@ -1161,7 +1164,8 @@ namespace DDPM.UI.Plugin.ViewModels
                     Thread.Sleep(3000);
                     AlertVisibility = Visibility.Collapsed;
 
-                    is_hdr_enable = true;
+                    //is_hdr_enable = true;
+                    is_hdr_enable = old_hdr_enable;
                     OnPropertyChanged(nameof(hdr_enable));
 
                 }).Start();
