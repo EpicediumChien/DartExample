@@ -152,7 +152,18 @@ namespace DDPM.CLI.Plugins.Display
                 bool is_match = false;
                 foreach (string tag in commandLineInput.ServiceTag)
                 {
-                    int idx = _AllInfoMonitors.FindIndex(x => x.edid.ServiceTag.ToUpper().Equals(tag.ToUpper()));
+                    int idx = default;
+
+                    try
+                    {
+                        idx = _AllInfoMonitors.FindIndex(x => x.edid.ServiceTag.ToUpper().Equals(tag.ToUpper()));
+                    }
+                    catch (Exception ex)
+                    {
+                        Trace.WriteLine($"[input_param_validation] FindIndex failed, message: {ex.Message} ");
+                        idx = -1;
+                    }
+
                     if (idx < 0)
                     {
                         CLI_RESPONSE rsp = new CLI_RESPONSE()
@@ -179,7 +190,18 @@ namespace DDPM.CLI.Plugins.Display
                 bool is_match = false;
                 foreach (string model in commandLineInput.Model)
                 {
-                    int idx = _AllInfoMonitors.FindIndex(x => x.modelName.ToUpper().Equals(model.ToUpper()));
+                    int idx = default;
+
+                    try
+                    {
+                        idx = _AllInfoMonitors.FindIndex(x => x.modelName.ToUpper().Equals(model.ToUpper()));
+                    }
+                    catch (Exception ex)
+                    {
+                        Trace.WriteLine($"[input_param_validation] FindIndex failed, message: {ex.Message} ");
+                        idx = -1;
+                    }
+
                     if (idx < 0)
                     {
                         CLI_RESPONSE rsp = new CLI_RESPONSE()
@@ -4079,8 +4101,8 @@ namespace DDPM.CLI.Plugins.Display
                             _Input_RESPONSE.Command = commandLineInput.Command;
                             _Input_RESPONSE.TargetFeature = commandLineInput.TargetFeature;
 
-                            commandLineInput.Options[0].Option_Value.Replace(".", ",");
-                            string[] op_values = commandLineInput.Options[0].Option_Value.Split(",");
+                            //commandLineInput.Options[0].Option_Value.Replace(".", ",");
+                            string[] op_values = commandLineInput.Options[0].Option_Value.Replace(".", ",").Split(",");
 
                             foreach (string v in op_values)
                             {
@@ -4162,8 +4184,8 @@ namespace DDPM.CLI.Plugins.Display
                             _Input_RESPONSE.Command = commandLineInput.Command;
                             _Input_RESPONSE.TargetFeature = commandLineInput.TargetFeature;
 
-                            commandLineInput.Options[0].Option_Value.Replace(".", ",");
-                            string[] op_values = commandLineInput.Options[0].Option_Value.Split(",");
+                            //commandLineInput.Options[0].Option_Value.Replace(".", ",");
+                            string[] op_values = commandLineInput.Options[0].Option_Value.Replace(".", ",").Split(",");
 
                             foreach (string v in op_values)
                             {
@@ -7015,8 +7037,8 @@ namespace DDPM.CLI.Plugins.Display
                                 return ((int)CLI_ExitCode.fail_option_value, output);
                             }
 
-                            commandLineInput.Options[0].Option_Value.Replace(".", ",");
-                            string[] op_values = commandLineInput.Options[0].Option_Value.Split(",");
+                            //commandLineInput.Options[0].Option_Value.Replace(".", ",");
+                            string[] op_values = commandLineInput.Options[0].Option_Value.Replace(".", ",").Split(",");
 
                             foreach (string v in op_values)
                             {
@@ -7896,8 +7918,8 @@ namespace DDPM.CLI.Plugins.Display
                         }
                         else
                         {
-                            value.Replace(".", ",");
-                            List<string> values = value.Split(",").ToList();
+                            //value.Replace(".", ",");
+                            List<string> values = value.Replace(".", ",").Split(",").ToList();
                             PowerNapSetting temp = read_list[idx];
                             foreach (string v in values)
                             {
@@ -8014,8 +8036,8 @@ namespace DDPM.CLI.Plugins.Display
                         else
                         {
                             PowerNapSetting temp = read_list[idx];
-                            value.Replace(".", ",");
-                            List<string> values = value.Split(",").ToList();
+                            //value.Replace(".", ",");
+                            List<string> values = value.Replace(".", ",").Split(",").ToList();
                             foreach (string v in values)
                             {
                                 switch (v.ToUpper())
@@ -8133,8 +8155,8 @@ namespace DDPM.CLI.Plugins.Display
                             else
                             {
                                 PowerNapSetting temp = read_list[idx];
-                                value.Replace(".", ",");
-                                List<string> values = value.Split(",").ToList();
+                                //value.Replace(".", ",");
+                                List<string> values = value.Replace(".", ",").Split(",").ToList();
                                 foreach (string v in values)
                                 {
                                     switch (v.ToUpper())
@@ -8253,8 +8275,8 @@ namespace DDPM.CLI.Plugins.Display
                             else
                             {
                                 PowerNapSetting temp = read_list[idx];
-                                value.Replace(".", ",");
-                                List<string> values = value.Split(",").ToList();
+                                //value.Replace(".", ",");
+                                List<string> values = value.Replace(".", ",").Split(",").ToList();
                                 foreach (string v in values)
                                 {
                                     switch (v.ToUpper())
@@ -9109,7 +9131,7 @@ namespace DDPM.CLI.Plugins.Display
                                 //if (monitor.CapabilityDic.ContainsKey("AA") && monitor.CapabilityDic["AA"] != null && monitor.CapabilityDic["AA"].Contains("00"))
                                 //{
                                 writelog($"ScreenOrientation Entry");
-                                get_DeviceData.ScreenOrientation = Orientations_Str[(int)displayPropertiesInfo.CurrentOrientation];
+                                get_DeviceData.Orientation = Orientations_Str[(int)displayPropertiesInfo.CurrentOrientation];
                                 writelog($"ScreenOrientation Exit return value: {Orientations_Str[(int)displayPropertiesInfo.CurrentOrientation]}");
                                 //}
 
@@ -9382,7 +9404,7 @@ namespace DDPM.CLI.Plugins.Display
                     //if (monitor.CapabilityDic.ContainsKey("AA") && monitor.CapabilityDic["AA"] != null && monitor.CapabilityDic["AA"].Contains("00"))
                     //{
                     writelog($"ScreenOrientation Entry");
-                    get_DeviceData.ScreenOrientation = Orientations_Str[(int)displayPropertiesInfo.CurrentOrientation];
+                    get_DeviceData.Orientation = Orientations_Str[(int)displayPropertiesInfo.CurrentOrientation];
                     writelog($"ScreenOrientation Exit return value: {Orientations_Str[(int)displayPropertiesInfo.CurrentOrientation]}");
                     //}
 

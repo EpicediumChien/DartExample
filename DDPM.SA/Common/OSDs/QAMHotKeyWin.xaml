@@ -86,8 +86,8 @@
                                 Height="40"
                                 FontSize="14"
                                 FontWeight="Medium"
-                                Foreground="#FFFFFF"
-                                Background="#0672CB"
+                                Foreground="#FFFFFF" IsEnabled="True"
+                                Background="#0672CB" Click="Button_Click"
                                 Content="{Binding [Go_to_Widget_Settings], Source={x:Static lang:LangHelper.Instance}, Mode=OneWay}" />
                     </Grid>
                 </Grid>

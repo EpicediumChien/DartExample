@@ -348,12 +348,13 @@ namespace DdpmSwUpdater
         /// </summary>
         public SWUErrorCode Install(SWUpdateInfo swUpdateInfo)
         {
+            //[Dean 1206] modify for checkmarx test
             try
             {
                 _SWUpdateInfo = swUpdateInfo;
                 // 要運行的安裝程式路徑和命令行參數
                 string arguments = "/silent /SecLaunchOnEnd";
-                Process _clientProcess = new Process();
+                //Process _clientProcess = new Process();
                 UpdateProgressInfo updateProgressInfo = new UpdateProgressInfo()
                 {
                     DeviceName = _SWUpdateInfo.SoftwareName,
@@ -364,39 +365,39 @@ namespace DdpmSwUpdater
                 sendMessageToEvent(updateProgressInfo);
                 RegEvent();
 
-                string? workingDirectory = string.Empty;
                 string? fileFullPath = swUpdateInfo.InstallPaths;
-                if (fileFullPath != null && !string.IsNullOrEmpty(fileFullPath))
-                {
-                    workingDirectory = Path.GetDirectoryName(swUpdateInfo.InstallPaths);
-                }
-                using (Process clientProcess = new Process())
-                {
-                    if (!DDPMFileSecurity.CheckFold(workingDirectory, out string FolderInfo, out string PathSymbolicLinInfo))
-                    {
-                        LogManage.LogMessage($"{nameof(DownloadAndInstall)} {_SWUpdateInfo.SoftwareName} FolderIsNotSafe - FolderInfo : {FolderInfo}");
-                        LogManage.LogMessage($"{nameof(DownloadAndInstall)} {_SWUpdateInfo.SoftwareName} FolderIsNotSafe - PathSymbolicLinInfo : {PathSymbolicLinInfo}");
-                        _notificationStr = LangHelper.Instance["Firmware_update_unsuccessful"];
-                        NotificationFWupdate(LangHelper.Instance["Error"], _notificationStr);
-                        _updateErrorCode = SWUErrorCode.FolderIsNotSafe;
-                        return _updateErrorCode;
-                    }
-                    if(!DDPMFileSecurity.IsFilePathValid(fileFullPath, out string fileCheckInfo))
-                    {
-                        LogManage.LogMessage($"{nameof(DownloadAndInstall)} {_SWUpdateInfo.SoftwareName} FileIsNoSafe - FileCheckInfo : {fileCheckInfo}");
-                        _notificationStr = LangHelper.Instance["Firmware_update_unsuccessful"];
-                        NotificationFWupdate(LangHelper.Instance["Error"], _notificationStr);
-                        _updateErrorCode = SWUErrorCode.FileIsNoSafe;
-                        return _updateErrorCode;
-                    }
 
-                    _clientProcess = new Process();
-                    _clientProcess.StartInfo.UseShellExecute = false;
-                    _clientProcess.StartInfo.FileName = fileFullPath;
-                    _clientProcess.StartInfo.WorkingDirectory = workingDirectory;
-                    _clientProcess.StartInfo.Arguments = arguments;
-                    _clientProcess.Start();
-                    _clientProcess.WaitForExit();
+                using (Process _clientProcess = new Process())
+                {                    
+                    if (File.Exists(fileFullPath))
+                    {
+                        if (!DDPMFileSecurity.IsFilePathValid(fileFullPath, out string fileCheckInfo))
+                        {
+                            LogManage.LogMessage($"{nameof(DownloadAndInstall)} {_SWUpdateInfo.SoftwareName} FileIsNoSafe - FileCheckInfo : {fileCheckInfo}");
+                            _notificationStr = LangHelper.Instance["Firmware_update_unsuccessful"];
+                            NotificationFWupdate(LangHelper.Instance["Error"], _notificationStr);
+                            _updateErrorCode = SWUErrorCode.FileIsNoSafe;
+                            return _updateErrorCode;
+                        }
+                        ProcessStartInfo startInfo = new ProcessStartInfo()
+                        {
+                            UseShellExecute = false,
+                            FileName = fileFullPath,
+                            Arguments = arguments
+                        };
+                        //_clientProcess = new Process();                        
+                        _clientProcess.StartInfo = startInfo;
+                        _clientProcess.Start();
+                        _clientProcess.WaitForExit();
+                    }
+                    else
+                    {
+                        LogManage.LogMessage($"{nameof(DownloadAndInstall)} {_SWUpdateInfo.SoftwareName} File.Exists return false");
+                        _notificationStr = LangHelper.Instance["Firmware_update_unsuccessful"];
+                        NotificationFWupdate(LangHelper.Instance["Error"], _notificationStr);
+                        _updateErrorCode = SWUErrorCode.FileCheckFail;
+                        return _updateErrorCode;
+                    }
                 }
                 _updateErrorCode = SWUErrorCode.NoError;
                 CancelRegEvent();

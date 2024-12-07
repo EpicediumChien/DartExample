@@ -7,6 +7,7 @@ using DDPM.UI.Common.Interfaces;
 using DDPM.UI.Common.Models;
 using Dell.Client.Framework.Common;
 using Dell.Client.Framework.UX.WPF.Controls;
+using Newtonsoft.Json.Linq;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
@@ -189,7 +190,7 @@ namespace DDPM.UI.Module.Brightness
         {
             get
             {
-                return IsSynchronize ? "ON" : "OFF";
+                return IsSynchronize ? Strings.On : Strings.Off;
             }
         }
 
@@ -561,6 +562,7 @@ namespace DDPM.UI.Module.Brightness
                 NotifyPropertyChanged("BrightnessValue");
                 NotifyPropertyChanged("ContrastValue");
                 NotifyPropertyChanged("IsSynchronize");
+                NotifyPropertyChanged("IsSynchronize_String");
                 NotifyPropertyChanged("AutoBrightnessRangeLevel_String");
             }
 
@@ -2235,6 +2237,7 @@ namespace DDPM.UI.Module.Brightness
             {
                 IsSynchronizeMonitor = value;
                 NotifyPropertyChanged("IsSynchronize");
+                NotifyPropertyChanged("IsSynchronize_String");
             }
         }
 
@@ -2276,23 +2279,46 @@ namespace DDPM.UI.Module.Brightness
         /// Detect the status of the PrimaryMonitorSync and obtain the current number of monitors that support the ALS function.
         /// </summary>
         /// <param name="onoff">UI PrimaryMonitorSync status</param>
-        private void ALSSettingsChangesOnNonPrimary(bool onoff)
+        private void ALSSettingsChangesOnNonPrimary(bool onoff, string property = "AUTOBRI")
         {
             if (!Start_ALSConfig.isPrimaryMonitorSync && CheckMonitorALSStatus())// user change non-Primary
             {
-                string pop_string = Strings.BrightnessPageNotice0;//"This is not your primary monitor. Do you want to proceed with the change and set this as primary Monitor for Sync?";
+                //PIMS-328260
+                string pop_string = Strings.BrightnessPageNotice1;//"This is not your primary monitor. Do you want to proceed with the change and set this as primary Monitor for Sync?";
                 if (DdpmCommonHelper.DDPMMesssageBox(Strings.BrightnessPageWarning, pop_string))
                 {
-                    Start_ALSConfig.isPrimaryMonitorSync = onoff;
+                    _primaryMonitorSyncStatus = true;
+                    Start_ALSConfig.isPrimaryMonitorSync = true;// onoff; //PIMS-328260
                     SetALSAll(Start_ALSConfig, ALSFeatureQueryType.All, 0);
                     NotifyPropertyChanged("PrimaryMonitorSyncStatus");
                     NotifyPropertyChanged("PrimaryMonitorSync_String");
                 }
                 else
-                    SetALSAll(Start_ALSConfig, ALSFeatureQueryType.All, 0);
+                {
+                    //SetALSAll(Start_ALSConfig, ALSFeatureQueryType.All, 0);
+                    onoff = !onoff;
+                    //Update_AutoBrightnessStatus(onoff);
+                    if (property.Equals("AUTOBRI"))
+                    {
+                        _autoBrightnessStatus = onoff;
+                        Start_ALSConfig.isAutoBrightness = onoff;
+                    }
+                    if (property.Equals("AUTOCOLOR"))
+                    {
+                        _autoColorTempStatus = onoff;
+                        Start_ALSConfig.isAutoColorTemp = onoff;
+                    }
+                }
             }
             else
+            {
+                if(property.Equals("PRISYNC"))
+                {
+                    _primaryMonitorSyncStatus = onoff;
+                    Start_ALSConfig.isPrimaryMonitorSync = onoff;
+                }
                 SetALSAll(Start_ALSConfig, ALSFeatureQueryType.All, 0);
+            }
         }
 
         public double ContrastValue
@@ -3026,7 +3052,7 @@ namespace DDPM.UI.Module.Brightness
             {
                 _autoColorTempStatus = value;
                 Start_ALSConfig.isAutoColorTemp = value;
-                ALSSettingsChangesOnNonPrimary(value);
+                ALSSettingsChangesOnNonPrimary(value, "AUTOCOLOR");
                 NotifyPropertyChanged("AutoColorTempStatus");
                 NotifyPropertyChanged("AutoColorTemp_String");
                 //Update_SupportedPrimaryMonitorSync(_autoBrightnessStatus, value);
@@ -3084,9 +3110,10 @@ namespace DDPM.UI.Module.Brightness
             }
             set
             {
-                _primaryMonitorSyncStatus = value;
-                Start_ALSConfig.isPrimaryMonitorSync = value;
-                ALSSettingsChangesOnNonPrimary(value);
+                //PIMS-328260
+                //_primaryMonitorSyncStatus = value;
+                //Start_ALSConfig.isPrimaryMonitorSync = value;
+                ALSSettingsChangesOnNonPrimary(value, "PRISYNC");
                 NotifyPropertyChanged("PrimaryMonitorSyncStatus");
                 NotifyPropertyChanged("PrimaryMonitorSync_String");
             }

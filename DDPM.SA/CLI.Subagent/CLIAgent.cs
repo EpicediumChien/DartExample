@@ -187,8 +187,6 @@ namespace CLI.Subagent
                     //_exitcode = result.ExitCode;
                     returnCode.Add(result.ExitCode);
                     System.Console.WriteLine(result.serialize_Json_response);
-                    continue;
-
                 }
                 int n = returnCode.FindIndex(x => (x != (int)CLI_ExitCode.success));
                 if (n >= 0)

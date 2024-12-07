@@ -817,6 +817,18 @@ namespace DDPM.SA.Plugins.User.SettingsManager
                     try
                     {
                         _hotkeySettings = RunHotkeyDeserializeObject(strReadJson);
+                        //clean all null object
+                        if (_hotkeySettings != null && _hotkeySettings.Count > 0)
+                        {
+                            int count = _hotkeySettings.Count;
+                            for (int i = (count - 1); i >= 0; i--)
+                            {
+                                if (_hotkeySettings[i].ModelName == null || 
+                                    _hotkeySettings[i].SerialNumber == null || 
+                                    _hotkeySettings[i].ServiceTag == null)
+                                    _hotkeySettings.RemoveAt(i);
+                            }
+                        }
                     }
                     catch (Exception)// ex)
                     {
@@ -1238,6 +1250,11 @@ namespace DDPM.SA.Plugins.User.SettingsManager
                 }
                 if (ImpExpSettings.MonitorSettings != null)
                 {
+                    //if (modelName != "Skip")//Elsa add to fix PIMS-313843
+                    //{
+                    //    if (modelName != ImpExpSettings.MonitorSettings.Model)
+                    //    { return Task.FromResult<bool>(false); }
+                    //}
                     DDPMMonitorSettings monitorSettings = new DDPMMonitorSettings();
                     monitorSettings = ImpExpSettings.MonitorSettings;
                     WriteLog("[DisplayImportSettings] monitorSettings.Model :" + monitorSettings.Model);
@@ -1252,9 +1269,6 @@ namespace DDPM.SA.Plugins.User.SettingsManager
                             {
                                 foreach (DDPMMonitorSettings settings in monitorSettingsList)
                                 {
-                                    if (settings.Model!=monitorSettings.Model) ////Elsa add to fix PIMS-313843
-                                    { return Task.FromResult<bool>(false); }
-
                                     //if ((settings.ServiceTag == monitorSettings.ServiceTag && isSameModel == false) || 
                                         //(settings.ServiceTag == serviceTag && isSameModel == true))
                                     if (( isSameModel == false) ||(isSameModel == true))//Elsa add to fix PIMS-313793
@@ -2270,12 +2284,30 @@ namespace DDPM.SA.Plugins.User.SettingsManager
         private object InitDDPMUserSettings_Common(string ConfigPath, string config_type)
         {
             string info;
-            FileInfo fileInfo = new FileInfo(ConfigPath);
-            if (fileInfo == null)
+
+            //[Dean 1206] Here return null would cause the no data init, remove it
+            //if(!File.Exists(ConfigPath))
+            //{
+            //    WriteLog($"[InitDDPMUserSettings_Common]: File:{ConfigPath}, empty file info");
+            //    return null;
+            //}
+
+            FileInfo fileInfo = default;
+            try
             {
-                WriteLog($"[InitDDPMUserSettings_Common]: File:{ConfigPath}, empty file info");
+                fileInfo = new FileInfo(ConfigPath);
+            }
+            catch (Exception ex)
+            {
+                WriteLog($"[InitDDPMUserSettings_Common]: File:{ConfigPath}, get file info failed, message: {ex.Message}");
                 return null;
             }
+
+            //if (fileInfo == null)
+            //{
+            //    WriteLog($"[InitDDPMUserSettings_Common]: File:{ConfigPath}, empty file info");
+            //    return null;
+            //}
             if (string.IsNullOrEmpty(fileInfo.DirectoryName))
             {
                 WriteLog($"[InitDDPMUserSettings_Common]: empty DirectoryName of fileInfo");
@@ -2426,6 +2458,10 @@ namespace DDPM.SA.Plugins.User.SettingsManager
             string file_path = Path.Combine(folder, folder_product, folder_localappdata_Applist, filename_colorpreset_peruser);
             _colorsettings_path = file_path;
             _colorPresetSettings = (List<ColorPresetSettings>)InitDDPMUserSettings_Common(_colorsettings_path, "color");
+            if(_colorPresetSettings == null)
+            {
+                WriteLog($"InitColorPresetConfigFile: *** no object created, null return ***");
+            }
 
             //create app icon folder if not exist
             string folder_appicon_path = Path.Combine(folder, folder_product, folder_localappdata_Applist, folder_localappdata_Appicon);
@@ -2534,6 +2570,10 @@ namespace DDPM.SA.Plugins.User.SettingsManager
             string file_path = Path.Combine(folder, folder_product, filename_hotkey_peruser);
             _hotkeysettings_path = file_path;
             _hotkeySettings = (List<HotkeySettings>)InitDDPMUserSettings_Common(_hotkeysettings_path, "hotkey");
+            if (_hotkeySettings == null)
+            {
+                WriteLog($"InitHotkeyConfigFile: *** no object created, null return ***");
+            }
 
             return _hotkeySettings;
 
@@ -2601,10 +2641,14 @@ namespace DDPM.SA.Plugins.User.SettingsManager
         private List<PowerNapSetting> InitPowerNapConfigFile()
         {
             string folder = GetActiveUserLocalAppDataPath();
-            WriteLog($"InitHotkeyConfigFile: appdata path: {folder}");
+            WriteLog($"InitPowerNapConfigFile: appdata path: {folder}");
             string file_path = Path.Combine(folder, folder_product, filename_powernap_peruser);
             _powerNapsettings_path = file_path;
             _powerNapSettings = (List<PowerNapSetting>)InitDDPMUserSettings_Common(_powerNapsettings_path, "powernap");
+            if (_powerNapSettings == null)
+            {
+                WriteLog($"InitPowerNapConfigFile: *** no object created, null return ***");
+            }
 
             return _powerNapSettings;
             /*string folder = GetActiveUserLocalAppDataPath();
@@ -2675,17 +2719,24 @@ namespace DDPM.SA.Plugins.User.SettingsManager
             string file_path = Path.Combine(folder, folder_product, filename_GlobalSetting_peruser);
             _GlobalSetting_path = file_path;
             _GlobalSettingParam = (GlobalSettingParam)InitDDPMUserSettings_Common(_GlobalSetting_path, "global");
+            if (_GlobalSettingParam == null)
+            {
+                WriteLog($"InitGlobalSettingConfigFile: *** no object created, null return ***");
+            }
 
             return _GlobalSettingParam;
         }
         private InterruptScreenRoot InitInterruptScreenFile()
         {
             string folder = GetActiveUserLocalAppDataPath();
-            WriteLog($"InitGlobalSettingConfigFile: appdata path: {folder}");
+            WriteLog($"InitInterruptScreenFile: appdata path: {folder}");
             string file_path = Path.Combine(folder, folder_product, filename_InterruptScreen_peruser);
             _InterruptScreen_path = file_path;
             _InterruptScreenParam = (InterruptScreenRoot)InitDDPMUserSettings_Common(_InterruptScreen_path, "interrupt");
-
+            if (_InterruptScreenParam == null)
+            {
+                WriteLog($"InitInterruptScreenFile: *** no object created, null return ***");
+            }
             return _InterruptScreenParam;
         }
 

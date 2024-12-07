@@ -400,6 +400,8 @@ namespace DDPM.SA.Common
 
         Task SetMicNoiseCancellation(bool newValue, Guid deviceId);
 
+        Task SetMicNoiseCancellationForMito(bool newValue, Guid deviceId);
+
         Task SetSidetone(bool newValue, Guid deviceId);
 
         Task SetSidetoneLevel(int newValue, Guid deviceId);
@@ -719,6 +721,7 @@ namespace DDPM.SA.Common
         Task SetMouseAssignDialogAction(string Guid, byte[] newValue);
         Task SetMouseAssignKeystrokeAction(string Guid, byte[] newValue);
         Task<bool> RestoreToDefaultMouse(string Guid, bool isFromCli = true);
+        Task<bool> SetReportRate(string Guid, int newValue);
 
         #endregion Mouse
 
@@ -804,11 +807,15 @@ namespace DDPM.SA.Common
         Task<bool> GetIsPropertyHDRSupported(string Guid);
         Task<bool> GetIsHDROn(string Guid);
         Task<bool> GetIsPropertyAntiFlickerSupported(string Guid);
-        Task<int> GetAntiFlickerValueByDTP(string Guid);
+        Task<int> GetAntiFlicker(string Guid);
         Task<bool> GetIsPropertyAutoFramingSupported(string Guid);
         Task<bool> GetIsAutoFramingOn(string Guid);
         Task<string> GetSupportedResolutions(string Guid);
         Task<string> GetSelectedResolution(string Guid);
+        Task<int> GetZoom(string Guid);
+        Task<int> GetFocus(string Guid);
+        Task<bool> GetIsFocusOn(string Guid);
+        Task<int> GetPriority(string Guid);
 
         Task SetIsMicEnumerationOn(string Guid, bool newValue);
 
@@ -1190,6 +1197,16 @@ namespace DDPM.SA.Common
         void updateFWUpdateInfoPackage(FWUpdateInfoPackage pkg);
 
         #endregion GlobalSetting
+
+        #region QAM
+        Task SetIsDDPMLaunchByQAMAsync(bool newValue);
+        Task<bool> GetIsDDPMLaunchByQAM();
+        Task SetIsDDPMHomepageReadyAsync(bool newValue);
+        Task<int> GetCurrentPollingRate();
+        Task CloseQAMByDDPM();
+        Task<bool> GetIsWidgetSettingPageLoadedByQAMAsync();
+        Task SetIsWidgetSettingPageLoadedByQAMAsync(bool newValue);
+        #endregion
 
         #region System Suspend & Resume
         event EventHandler SystemSuspend;

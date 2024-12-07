@@ -33,7 +33,7 @@ namespace DDPM.UI.Module.Kvm
             {
                 _leftView = null;
             }
-            vm.Invoke_RefreshData();
+            //vm.Invoke_RefreshData();
         }
 
         public string ModuleName { get => Constants.ModuleName_KVM; } //"KvmModule"

@@ -72,7 +72,7 @@ namespace DDPM.EABroker
                     break;
                 }
             }
-            if (spanEaScreens.Count < 2)
+            if (spanEaScreens == null || spanEaScreens.Count < 2)
             {
                 _eaScreens = new List<EAScreen>();
                 return false;
