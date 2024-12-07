@@ -414,7 +414,7 @@ namespace DDPM.UI.Plugin.ViewModels
             }
         }
 
-        private Visibility _UPD_Visibility = Visibility.Collapsed;
+        private Visibility _UPD_Visibility = Visibility.Visible;
 
         public Visibility UPD_Visibility
         {
@@ -429,7 +429,7 @@ namespace DDPM.UI.Plugin.ViewModels
             }
         }
 
-        private Visibility _MPS_Setting_Visibility = Visibility.Hidden;
+        private Visibility _MPS_Setting_Visibility = Visibility.Collapsed;
 
         public Visibility MPS_Setting_Visibility
         {
@@ -444,7 +444,7 @@ namespace DDPM.UI.Plugin.ViewModels
             }
         }
 
-        private Visibility _MPS_UpdateFW_Visibility = Visibility.Hidden;
+        private Visibility _MPS_UpdateFW_Visibility = Visibility.Collapsed;
 
         public Visibility MPS_UpdateFW_Visibility
         {
@@ -865,6 +865,7 @@ namespace DDPM.UI.Plugin.ViewModels
             {
                 _isRecording = value;
                 OnPropertyChanged(nameof(IsNotRecording));
+                OnPropertyChanged(nameof(hdr_enable));
             }
         }
         public bool IsNotRecording { get => !IsRecording; }
@@ -890,7 +891,17 @@ namespace DDPM.UI.Plugin.ViewModels
 
 
         public bool is_hdr_enable = true;
-        public bool hdr_enable { get => IsNotRecording && is_hdr_enable; }
+        public bool hdr_enable 
+        { 
+            get => IsNotRecording && is_hdr_enable; 
+            set
+            {
+                is_hdr_enable = value;
+                OnPropertyChanged(nameof(IsNotRecording));
+                OnPropertyChanged(nameof(is_hdr_enable));
+                OnPropertyChanged(nameof(hdr_enable));
+            }
+        }
 
         public bool is_ProximitySensor_enable = true;
         public bool IsProximitySensorEnable
@@ -1170,14 +1181,21 @@ namespace DDPM.UI.Plugin.ViewModels
                 AlertType = WebcamAlert.Alert1;
                 AlertVisibility = Visibility.Visible;
                 hdr_change = true;
+                is_hdr_enable = false;
+                OnPropertyChanged(nameof(hdr_enable));
                 DdpmCommonHelper.DeviceManagerSA!.SetIsHDROn(CurrentDeviceInfo!.ID.ToString(), value);
                 SetProfileProperty(nameof(IsHDROn), value, OperationModule.ColorAndImage);
                 OnPropertyChanged();
                 OnPropertyChanged(nameof(IsHDROnText));
+
                 new Thread(() =>
                 {
                     Thread.Sleep(3000);
                     AlertVisibility = Visibility.Collapsed;
+
+                    is_hdr_enable = true;
+                    OnPropertyChanged(nameof(hdr_enable));
+
                 }).Start();
             }
         }

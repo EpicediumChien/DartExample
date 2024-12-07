@@ -15,7 +15,7 @@ namespace DDPM.UI.Module.WebCameraColorImage
     /// </summary>
     public partial class WebCameraColorImageRightView : UserControl
     {
-        private readonly WebCameraViewModel _vm;
+        private  WebCameraViewModel _vm;
 
         public WebCameraColorImageRightView(WebCameraViewModel vm)
         {

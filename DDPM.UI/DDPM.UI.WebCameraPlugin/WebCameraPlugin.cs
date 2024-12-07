@@ -253,7 +253,6 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                             _viewModel!.mre.Set();
                             Thread.Sleep(1000);
                             _viewModel!.mre.Set();
-                            _viewModel!.hdr_change = false;
                         }
                         break;
                         case "Webcam_FieldOfViewChanged":
