@@ -220,9 +220,17 @@ namespace DDPM.SA.Common.Settings
         public static string GetSerializedJsonString(string filePath, out string info)
         {
             info = "Success";
-            if (!IsFilePathValid(filePath, out info))
+            //if (!IsFilePathValid(filePath, out info)) //for checkmarx issue, change to use ValidateFilePath. Dean 1207
+            //{
+            //    info = $"[GetSerializedJsonString] {info}";
+            //    return string.Empty;
+            //}
+
+            if (!ValidateFilePath(filePath, out info))
             {
-                info = $"[GetSerializedJsonString] {info}";
+#if DEBUG
+                Console.WriteLine($"[GetSerializedJsonString] ValidateFilePath failed: {info}");
+#endif
                 return string.Empty;
             }
 
@@ -1974,7 +1982,7 @@ namespace DDPM.SA.Common.Settings
             }
         }
 
-        private static string SanitizePath(string path, out string info)
+        public static string SanitizePath(string path, out string info)
         {
             info = "success";
             if (path.Contains("..\\") || path.Contains("../") || path.Contains("..;\\") || path.Contains("..\\/") || path.Contains("..././") || path.Contains("....\\") || path.Contains(@"\\\") || path.Contains(@"\\\\"))
