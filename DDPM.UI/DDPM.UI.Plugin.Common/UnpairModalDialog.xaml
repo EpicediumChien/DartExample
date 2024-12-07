@@ -5,17 +5,18 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:DDPM.UI.Plugin.Common"
         mc:Ignorable="d"
-        xmlns:UXControls="clr-namespace:Dell.Client.Framework.UX.WPF.Controls;assembly=DCF.UX.WPF" Background="Transparent" AllowsTransparency="True"
+        xmlns:UXControls="clr-namespace:Dell.Client.Framework.UX.WPF.Controls;assembly=DCF.UX.WPF" AllowsTransparency="True"
         Title="UnpairModalDialog" MinHeight="312" Width="587" ResizeMode="NoResize" ShowInTaskbar="False"
-        WindowStartupLocation="CenterOwner" WindowStyle="None" SizeToContent="Height">
+        WindowStartupLocation="CenterOwner" WindowStyle="None" SizeToContent="Height"
+        Background="{DynamicResource DefaultTheme_DialogBoxBkColor}">
     <Window.Resources>
         <Style x:Key="BorderContinue" TargetType="Border">
-            <Setter Property="Background" Value="#0E1C2F" />
+            <Setter Property="Background" Value="{DynamicResource BorderContinueBackground}" />
             <Setter Property="CornerRadius" Value="2" />
             <Setter Property="Width" Value="120" />
             <Setter Property="Height" Value="40" />
             <Setter Property="BorderThickness" Value="1" />
-            <Setter Property="BorderBrush" Value="#F5F6F7" />
+            <Setter Property="BorderBrush" Value="{DynamicResource BorderContinueBorderBrush}" />
         </Style>
         <Style x:Key="BorderCancel" TargetType="Border">
             <Setter Property="Background" Value="#0672CB" />
@@ -27,20 +28,20 @@
         </Style>
     </Window.Resources>
     <Grid>
-        <Border Name="Border1" Background="#E00C1827" CornerRadius="14" Height="312" Width="587" BorderThickness="1" BorderBrush="#293B4D">
+        <Border Name="Border1" Background="{DynamicResource UnpairModalDialogBorder1}" CornerRadius="14" Height="312" Width="587" BorderThickness="1" BorderBrush="#293B4D">
             <StackPanel Orientation="Vertical" Margin="0,68,0,0">
-                <UXControls:UXTextBlock Name="txtCaption" Foreground="#FFFFFF" VerticalAlignment="Center" FontWeight="Light"
+                <UXControls:UXTextBlock Name="txtCaption" Foreground="{DynamicResource txtCaption_TxtColor}" VerticalAlignment="Center" FontWeight="Light"
                                         HorizontalAlignment="Center" FontFamily="Roboto" FontSize="40" Margin="0,0,0,5" />
-                <UXControls:UXTextBlock Name="txtMessage" Foreground="#FFFFFF" VerticalAlignment="Center" FontWeight="Normal" TextWrapping="Wrap" TextAlignment="Center"
+                <UXControls:UXTextBlock Name="txtMessage" Foreground="{DynamicResource txtMessage_TxtColor}" VerticalAlignment="Center" FontWeight="Normal" TextWrapping="Wrap" TextAlignment="Center"
                                         Margin="0,5,0,0"      HorizontalAlignment="Center" FontFamily="Roboto" FontSize="16" LineHeight="24" Width="454" />
 
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,12,0,30">
                     <Border Style="{StaticResource BorderContinue}" Cursor="Hand" MouseLeftButtonDown="Continue_MouseLeftButtonDown">
-                        <UXControls:UXTextBlock Name="txtContinue" Foreground="#F5F6F7" VerticalAlignment="Center" FontWeight="Medium"
+                        <UXControls:UXTextBlock Name="txtContinue" Foreground="{DynamicResource UnpairModalDialogTxtColor}" VerticalAlignment="Center" FontWeight="Medium"
                                                 HorizontalAlignment="Center" FontFamily="Roboto" FontSize="14" />
                     </Border>
                     <Border Style="{StaticResource BorderCancel}" Cursor="" Margin="6,0,0,0" MouseLeftButtonDown="Cancel_MouseLeftButtonDown">
-                        <UXControls:UXTextBlock Name="txtCancel" Foreground="#F5F6F7" VerticalAlignment="Center" FontWeight="Medium"
+                        <UXControls:UXTextBlock Name="txtCancel" Foreground="{DynamicResource UnpairModalDialogTxtColor}" VerticalAlignment="Center" FontWeight="Medium"
                                                 HorizontalAlignment="Center" FontFamily="Roboto" FontSize="14" Margin="5,0,0,0" />
                     </Border>
                 </StackPanel>

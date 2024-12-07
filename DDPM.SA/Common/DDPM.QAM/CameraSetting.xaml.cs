@@ -7,6 +7,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Documents;
+using System.Windows.Forms;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
@@ -19,7 +20,9 @@ namespace DDPM.QAM
     /// </summary>
     public partial class CameraSetting : Window
     {
-        public CameraSetting()
+        QAMPage QAMPage;
+
+        public CameraSetting(QAMPage qam)
         {
             InitializeComponent();
             if (DdpmCommonHelper.QAMPageViewModel != null)
@@ -27,6 +30,8 @@ namespace DDPM.QAM
                 DataContext = DdpmCommonHelper.QAMPageViewModel;
             }
             InitializeSettings();
+
+            QAMPage = qam;
         }
         private void InitializeSettings()
         {
@@ -57,7 +62,7 @@ namespace DDPM.QAM
             {
                 PresetsPage presetsPage = new PresetsPage();
                 presetsPage.DataContext = vm;
-                double newHeight = 128 + presetsPage.Height;
+                double newHeight = 145 + presetsPage.Height; //origin value is 128 
                 this.Height = newHeight;
                 vm.FullView_Height = presetsPage.Height.ToString();
                 vm.Settings_Selected(0);
@@ -111,6 +116,47 @@ namespace DDPM.QAM
                 vm.Settings_Selected(3);
                 vm.RefreshUI();
                 vm.OpenFullView(zoomPage);
+            }
+        }
+
+        private void Header_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            if (e.LeftButton == MouseButtonState.Pressed)
+            {
+                QAMPageViewModel vm = DataContext as QAMPageViewModel;
+                if (vm != null && vm.CurrentDeviceInfo != null)
+                {
+                    vm.IsDragging = true;
+                }
+
+                this.DragMove();
+                if (QAMPage != null)
+                {
+                            //Make sure CameraSetting & QAMPage in same screen
+        System.Drawing.Point cursorPosition = System.Windows.Forms.Cursor.Position;
+        Screen screen = Screen.FromPoint(cursorPosition);
+        
+                            if (this.Left + this.Width > screen.Bounds.Right)
+                                {
+            this.Left = screen.Bounds.Right - this.Width;
+                                }
+        
+                            if (this.Left - screen.Bounds.Left < QAMPage.Width)
+                                {
+            this.Left = screen.Bounds.Left + QAMPage.Width;
+            QAMPage.Left = screen.Bounds.Left;
+                                }
+                            else
+                                {
+            QAMPage.Left = this.Left - QAMPage.Width;
+                                }
+        QAMPage.Top = this.Top;
+                        }
+
+                if (vm != null && vm.CurrentDeviceInfo != null)
+                {
+        vm.IsDragging = false;
+                        }
             }
         }
     }

@@ -88,21 +88,20 @@ namespace DDPM.ColorApp
                 AppStatusQuery.GetInstance(Log).ClearLastAppRecord("SET_MANUAL");
             }
 
-            if (b_SmartHDR_ON)
-            {
-                writelog("Set_AUTO_ColorPresetConfig SmartHDR_ON = " + b_SmartHDR_ON);               
-            }
-            else
-            {
-                writelog("Set_AUTO_ColorPresetConfig SmartHDR_ON = " + b_SmartHDR_ON);
-            
-            }
+            writelog("Set_AUTO_ColorPresetConfig SmartHDR_ON = " + b_SmartHDR_ON);                           
         }
 
         // jim add 20240620
         public void Notify_refresh_app_list()
         {
             reload_color_settings_to_config();
+        }
+
+        // For PIMS-326072
+        public void Set_Active_Monitor(MonitorInfo m)
+        {
+            if (Mi != null && m != null)
+                Mi = m;
         }
 
         public void reload_color_settings_to_config()
@@ -246,6 +245,33 @@ namespace DDPM.ColorApp
                     screen = Screen.FromHandle(data.ActiveWindowHandle);
 
                     System.Windows.Forms.Screen? s = System.Windows.Forms.Screen.AllScreens.FirstOrDefault(x => x.DeviceName == Mi.DisplayName);
+
+                    Trace.WriteLine("Mi.DisplayName = " + Mi.DisplayName);
+                    Trace.WriteLine("Mi.modelName = " + Mi.modelName);
+
+
+                    Trace.WriteLine("screen.WorkingArea.Height = " + screen.WorkingArea.Height);
+                    Trace.WriteLine("s.WorkingArea.Height = " + s.WorkingArea.Height);
+
+                    Trace.WriteLine("screen.WorkingArea.Width = " + screen.WorkingArea.Width);
+                    Trace.WriteLine("s.WorkingArea.Width = " + s.WorkingArea.Width);
+
+                    Trace.WriteLine("screen.WorkingArea.Left = " + screen.WorkingArea.Left);
+                    Trace.WriteLine("s.WorkingArea.Left = " + s.WorkingArea.Left);
+
+                    writelog("Mi.DisplayName = " + Mi.DisplayName);
+                    writelog("Mi.modelName = " + Mi.modelName);
+
+
+                    writelog("screen.WorkingArea.Height = " + screen.WorkingArea.Height);
+                    writelog("s.WorkingArea.Height = " + s.WorkingArea.Height);
+
+                    writelog("screen.WorkingArea.Width = " + screen.WorkingArea.Width);
+                    writelog("s.WorkingArea.Width = " + s.WorkingArea.Width);
+
+                    writelog("screen.WorkingArea.Left = " + screen.WorkingArea.Left);
+                    writelog("s.WorkingArea.Left = " + s.WorkingArea.Left);
+
 
                     if (s == null)//Dean 0626 fix SAST issue
                         return;
@@ -513,7 +539,8 @@ namespace DDPM.ColorApp
 
             if (!b_SmartHDR_ON)
             {
-                strSync_CurrentColorPreset = Sync_CurrentColorPreset(strColorPresetName);
+                strSync_CurrentColorPreset = ddmLib.Sync_ColorPresetName(actived_mi, strColorPresetName).Result;
+                //strSync_CurrentColorPreset = Sync_CurrentColorPreset(strColorPresetName);
             }
             else
                 strSync_CurrentColorPreset = strColorPresetName;    
@@ -523,6 +550,7 @@ namespace DDPM.ColorApp
             return true;
         }
 
+        /*
         public string Sync_CurrentColorPreset(string curcolorPreset)
         {
             string strSync_CurrentColorPreset = string.Empty;
@@ -566,23 +594,19 @@ namespace DDPM.ColorApp
             // check Color Preset Strings Game or Game1
 
             if (_supported_preset!= null)
-            {
-                if (_supported_preset.Count >= 0)
+            {                
+                index = _supported_preset.FindIndex(x => x == "Game2");
+
+                if (index >= 0)
                 {
-                    index = _supported_preset.FindIndex(x => x == "Game2");
-
-                    if (index >= 0)
-                    {
-                        if (curcolorPreset == "Game/Game1")
-                            strSync_CurrentColorPreset = "Game1";
-                    }
-                    else
-                    {
-                        if (curcolorPreset == "Game/Game1")
-                            strSync_CurrentColorPreset = "Game";
-                    }
-
-                }              
+                    if (curcolorPreset == "Game/Game1")
+                        strSync_CurrentColorPreset = "Game1";
+                }
+                else
+                {
+                    if (curcolorPreset == "Game/Game1")
+                        strSync_CurrentColorPreset = "Game";
+                }                            
             }          
 
             // check Color Preset Strings Rec.709 or BT.709 / Rec.709 or BT.709
@@ -634,5 +658,6 @@ namespace DDPM.ColorApp
 
             return strSync_CurrentColorPreset;
         }
+        */
     }
 }

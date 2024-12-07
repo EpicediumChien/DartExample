@@ -1,4 +1,5 @@
 ﻿using System.Windows;
+using Dell.Client.Framework.UX.WPF.ResourceManager;
 
 namespace DDPM.UI.Module.Kvm.Tests
 {
@@ -14,6 +15,7 @@ namespace DDPM.UI.Module.Kvm.Tests
             {
                 new System.Windows.Application();
             }
+            ResourceManager res = new ResourceManager();
             var resourceDictionary = new ResourceDictionary();
             resourceDictionary.Source = new Uri("pack://application:,,,/DDPM.UI.Common;component/ModuleStyle.xaml");
             System.Windows.Application.Current.Resources.MergedDictionaries.Add(resourceDictionary);

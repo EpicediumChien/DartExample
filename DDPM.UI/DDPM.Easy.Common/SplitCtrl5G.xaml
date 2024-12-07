@@ -14,7 +14,7 @@
                 <ResourceDictionary Source="EAStyles.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
-            <local:SplitCtrlVM x:Key="vmDesign" IsVertical="True" SplitMode="Work" 
+            <local:SplitCtrlVM x:Key="vmDesign" IsVertical="True" SplitMode="AWS" 
                                IsEditable="True" HoveringCell="5G1" />
         </ResourceDictionary>
     </UserControl.Resources>
@@ -274,9 +274,9 @@
 
                 <Grid Name="G2" Grid.Row="0">
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="{Binding Settings[4], Mode=TwoWay}"/>
-                        <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition Width="{Binding Settings[5], Mode=TwoWay}"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="{Binding Settings[6], Mode=TwoWay}"/>
                     </Grid.ColumnDefinitions>
 
                     <local:CellBorder x:Name="cell_5G4" Grid.Column="0">

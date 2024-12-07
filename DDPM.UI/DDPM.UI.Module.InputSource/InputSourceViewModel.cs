@@ -200,6 +200,7 @@ namespace DDPM.UI.Module.InputSource
                     {
                         string strtUpstream = String.Empty;
                         InputSourceImage = InputTypeCommon.GetInputImage(input.Key);
+                        input.Value.USBUpstream = DdpmCommonHelper.DeviceManagerSA.GetUSBUpstream(InputSourceModule.SelectedHomeDevice.MonitorInfo, input.Key).Result;
                         //if (input.Key.StartsWith("VGA"))
                         //{
                         //    InputSourceImage = "M3 0C1.34315 0 0 1.34315 0 3V17C0 18.6569 1.34314 20 3 20H46.3333C47.9902 20 49.3333 18.6569 49.3333 17V3C49.3333 1.34315 47.9902 0 46.3333 0H3ZM7.97651 2.66667C6.65025 2.66667 5.69131 3.934 6.05181 5.21032L9.06472 15.877C9.30806 16.7385 10.0942 17.3333 10.9894 17.3333H38.3437C39.2389 17.3333 40.0251 16.7385 40.2684 15.877L43.2815 5.21034C43.642 3.93402 42.6831 2.66667 41.3568 2.66667H7.97651ZM48 10C48 11.1046 47.1046 12 46 12C44.8954 12 44 11.1046 44 10C44 8.89543 44.8954 8 46 8C47.1046 8 48 8.89543 48 10ZM3.33333 12C4.4379 12 5.33333 11.1046 5.33333 10C5.33333 8.89543 4.4379 8 3.33333 8C2.22876 8 1.33333 8.89543 1.33333 10C1.33333 11.1046 2.22876 12 3.33333 12Z";
@@ -225,19 +226,40 @@ namespace DDPM.UI.Module.InputSource
                         //}
                         if (isUSB)
                         {
-                            items.Add(new Item()
+                            if (j == 0)
                             {
-                                Index = j,
-                                InputImage = InputSourceImage,
-                                InputType = input.Key,
-                                InputName = input.Value.InputName,
-                                USBUpstream = USBUpstream_ItemsCollection,
-                                UpstreamIndex = 0,
-                                IsUSBCB = Visibility.Visible,
-                                NameWidth = "1*",
-                                USBWidth = "1*",
-                                NameColumn = "0"
-                            });
+                                items.Add(new Item()
+                                {
+                                    Index = j,
+                                    InputImage = InputSourceImage,
+                                    InputType = input.Key,
+                                    InputName = input.Value.InputName,
+                                    USBUpstream = USBUpstream_ItemsCollection,
+                                    UpstreamIndex = 0,
+                                    IsUSBCB = Visibility.Visible,
+                                    NameWidth = "1*",
+                                    USBWidth = "1*",
+                                    NameColumn = "0",
+                                    NoGrey = false
+                                });
+                            }
+                            else
+                            {
+                                items.Add(new Item()
+                                {
+                                    Index = j,
+                                    InputImage = InputSourceImage,
+                                    InputType = input.Key,
+                                    InputName = input.Value.InputName,
+                                    USBUpstream = USBUpstream_ItemsCollection,
+                                    UpstreamIndex = 0,
+                                    IsUSBCB = Visibility.Visible,
+                                    NameWidth = "1*",
+                                    USBWidth = "1*",
+                                    NameColumn = "0",
+                                    NoGrey = true
+                                });
+                            }
                         }
                         else
                         {
@@ -252,7 +274,8 @@ namespace DDPM.UI.Module.InputSource
                                 IsUSBCB = Visibility.Collapsed,
                                 NameWidth = "0.5*",
                                 USBWidth = "1.5*",
-                                NameColumn = "1"
+                                NameColumn = "1",
+                                NoGrey = true
                             });
                         }
                         if (!String.IsNullOrEmpty(input.Value.USBUpstream))
@@ -392,7 +415,9 @@ namespace DDPM.UI.Module.InputSource
                     {
                         string strtUpstream = String.Empty;
                         InputSourceImage = InputTypeCommon.GetInputImage(input.Key);
-                        items.Add(new Item()
+                        if (j == 0)
+                        {
+                            items.Add(new Item()
                             {
                                 Index = j,
                                 InputImage = InputSourceImage,
@@ -403,8 +428,27 @@ namespace DDPM.UI.Module.InputSource
                                 IsUSBCB = Visibility.Visible,
                                 NameWidth = "1*",
                                 USBWidth = "1*",
-                                NameColumn = "0"
+                                NameColumn = "0",
+                                NoGrey = false
                             });
+                        }
+                        else
+                        {
+                            items.Add(new Item()
+                            {
+                                Index = j,
+                                InputImage = InputSourceImage,
+                                InputType = input.Key,
+                                InputName = input.Value.InputName,
+                                USBUpstream = USBUpstream_ItemsCollection,
+                                UpstreamIndex = 0,
+                                IsUSBCB = Visibility.Visible,
+                                NameWidth = "1*",
+                                USBWidth = "1*",
+                                NameColumn = "0",
+                                NoGrey = true
+                            });
+                        }
                         
                         if (!String.IsNullOrEmpty(input.Value.USBUpstream))
                         {

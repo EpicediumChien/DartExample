@@ -7,6 +7,11 @@
 	  <UseWPF>true</UseWPF>
 	  <BaseOutputPath>..\..\bin\CommonDll</BaseOutputPath>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="imgs\cursor\FistCursor.cur" />
+    <None Remove="imgs\cursor\HandCursor.cur" />
+  </ItemGroup>
 	<ItemGroup>
 		<PackageReference Include="DCF.UX.WPF" Version="2.2.4.1" />
 	</ItemGroup>
@@ -15,8 +20,15 @@
 	  <ProjectReference Include="..\DDPM.SA.Resources\DDPM.SA.Resources.csproj" />
 	</ItemGroup>
 	<ItemGroup>
+	  <Reference Include="DdmLibrary">
+	    <HintPath>..\..\dll\DdmLibrary.dll</HintPath>
+	  </Reference>
 	  <Reference Include="DPeMPublic.Common">
 	    <HintPath>..\..\dll\DPeMPublic.Common.dll</HintPath>
 	  </Reference>
+	</ItemGroup>
+	<ItemGroup>
+	  <Resource Include="imgs\cursor\FistCursor.cur" />
+	  <Resource Include="imgs\cursor\HandCursor.cur" />
 	</ItemGroup>
 </Project>

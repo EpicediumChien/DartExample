@@ -87,4 +87,31 @@ namespace DDPM.UI.Common
         OpenFolder,
         OpenWebPage
     }
+
+    public enum VbarIcon
+    {
+        DisplaySettings,
+        DisplayInputSource,
+        DisplayEA,
+        DisplayGaming,
+        DisplayKVM,
+        DisplayOthers,
+        KeyboardKeyCustom,
+        KeyboardCollaboration,
+        KeyboardIllumination,
+        MouseSettings,
+        MouseButton,
+        PenSettings,
+        PenButton,
+        SpeakerPhonePreset,
+        AudioSettings,
+        SpeakerPhoneInteractions,
+        HeadsetAutoActions,
+        HeadsetSettings,
+        WebcamControl,
+        WebcamColorImg,
+        WebcamDetection,
+        WebcamCapture,
+        WebcamMicrophone
+    }
 }

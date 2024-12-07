@@ -36,6 +36,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\DDPM.QAM\DDPM.QAM.csproj" />
+    <ProjectReference Include="..\DDPM.SA.Common\DDPM.SA.Common.csproj" />
     <ProjectReference Include="..\DDPM.SA.Resources\DDPM.SA.Resources.csproj" />
     <ProjectReference Include="..\Win32Lib\DDPM.Win32Lib.csproj" />
   </ItemGroup>

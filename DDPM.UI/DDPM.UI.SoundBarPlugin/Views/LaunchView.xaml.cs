@@ -7,11 +7,13 @@ using DDPM.UI.Module.SpeakerAudioSettings;
 using DDPM.UI.Module.SpeakerInteractions;
 using DDPM.UI.Plugin.Common;
 using DDPM.UI.Plugin.ViewModels;
+using Dell.Client.Framework.UX.WPF.Controls;
 using Newtonsoft.Json.Linq;
 using System.Diagnostics;
 using System.Net;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 
@@ -41,27 +43,55 @@ namespace DDPM.UI.Plugin.SoundBarPlugin
 
         public LaunchView()
         {
-            InitializeComponent();
             _vm = (SoundBarViewModel?)SoundBarPlugin.PluginIoc?.GetService<IPeripheralViewModel>()!;
-
             if (_vm != null)
             {
-                _vm.Reset();
-                DataContext = _vm;
-                _vm.VbarItemClickCommand = new RelayCommand<VbarItem>(OnVbarItemClicked!);
-                BuildModuleGroups();
+                if (!_vm.IsDTPReady)
+                {
+                    MessageModalDialog messageModalDialog = new(Strings.Error, Strings.DTPUnavailable, "");
+                    Window mainWindow = System.Windows.Application.Current.MainWindow;
+                    if (mainWindow != null)
+                    {
+                        messageModalDialog.Owner = mainWindow;
+                        messageModalDialog.Left = mainWindow.Left + (mainWindow!.ActualWidth - 417) / 2;
+                        messageModalDialog.Top = mainWindow.Top + 300;
+                    }
+                    Mouse.OverrideCursor = null;
+                    messageModalDialog.WindowStartupLocation = WindowStartupLocation.Manual;
+                    messageModalDialog.ShowDialog();
+                    this.Loaded += LaunchView_Loaded;
+                }
+                else
+                {
+                    InitializeComponent();
+                    _vm.Reset();
+                    DataContext = _vm;
+                    _vm.VbarItemClickCommand = new RelayCommand<VbarItem>(OnVbarItemClicked!);
+                    BuildModuleGroups();
+                    //txtUnpair.Text = Unpair;
+                    //txtRestore.Text = Restore;
+                    ConnectionStyle1 = (Style)FindResource("ConnectionStyle1");
+                    ConnectionStyle2 = (Style)FindResource("ConnectionStyle2");
+                    txtSystemName1.Text = _vm!.VisiblePairedHostName1;
+                    txtSystemName2.Text = _vm.VisiblePairedHostName1;
+                    txtSystemName3.Text = _vm.VisiblePairedHostName1;
+                    txtFirmware.Text = string.Format(Strings.DockDongle1, _vm.PhysicalDeviceFWVersion);
+                    txtSlot.Text = string.Format(Strings.DockDongle0, _vm.CurrentDeviceInfo!.MaxPairingSlots - _vm.CurrentDeviceInfo.PairedDeviceCount, _vm.CurrentDeviceInfo.MaxPairingSlots);
+                    DdpmCommonHelper.BitmapImageUpdated += ImageUpdate;
+                }
             }
+        }
 
-            //txtUnpair.Text = Unpair;
-            //txtRestore.Text = Restore;
+        private void ImageUpdate(OSThemeEnum oSThemeEnum)
+        {
+            ArrowLeft.Source = null;
+            ArrowLeft.Source = (BitmapImage)Application.Current.Resources["Arrow_Left"];
+        }
 
-            ConnectionStyle1 = (Style)FindResource("ConnectionStyle1");
-            ConnectionStyle2 = (Style)FindResource("ConnectionStyle2");
-            txtSystemName1.Text = _vm!.VisiblePairedHostName1;
-            txtSystemName2.Text = _vm.VisiblePairedHostName1;
-            txtSystemName3.Text = _vm.VisiblePairedHostName1;
-            txtFirmware.Text = string.Format(Strings.DockDongle1, _vm.PhysicalDeviceFWVersion);
-            txtSlot.Text = string.Format(Strings.DockDongle0, _vm.CurrentDeviceInfo!.MaxPairingSlots - _vm.CurrentDeviceInfo.PairedDeviceCount, _vm.CurrentDeviceInfo.MaxPairingSlots);
+        private void LaunchView_Loaded(object sender, RoutedEventArgs e)
+        {
+            if (!_vm!.IsDTPReady)
+                DdpmCommonHelper.MyConsole!.ShowHomePage();
         }
 
         #region Init for Modules
@@ -77,7 +107,8 @@ namespace DDPM.UI.Plugin.SoundBarPlugin
             moduleGroup = new ModuleGroup()
             {
                 GroupName = AudioPreset,
-                GroupIcon = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Speaker_AudioPreset.png")
+                GroupIcon = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Speaker_AudioPreset.png"),
+                GroupIconCanvas = DdpmCommonHelper.CanvasIconCreator(VbarIcon.SpeakerPhonePreset)
             };
             moduleGroup.AddHeader(AudioPreset, new SpeakerAudioPresetModule(_vm!));
             groups.Add(moduleGroup);
@@ -85,22 +116,35 @@ namespace DDPM.UI.Plugin.SoundBarPlugin
             moduleGroup = new ModuleGroup()
             {
                 GroupName = AudioSettings,
-                GroupIcon = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Speaker_AudioSettings.png")
+                GroupIcon = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Speaker_AudioSettings.png"),
+                GroupIconCanvas = DdpmCommonHelper.CanvasIconCreator(VbarIcon.AudioSettings)
             };
             moduleGroup.AddHeader(AudioSettings, new SpeakerAudioSettingsModule(_vm!));
             groups.Add(moduleGroup);
-
+            
             moduleGroup = new ModuleGroup()
             {
                 GroupName = Interactions,
-                GroupIcon = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Speaker_Interactions.png")
+                GroupIcon = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Speaker_Interactions.png"),
+                GroupIconCanvas = DdpmCommonHelper.CanvasIconCreator(VbarIcon.SpeakerPhoneInteractions)
             };
             moduleGroup.AddHeader(Interactions, new SpeakerInteractionsModule(_vm!));
             groups.Add(moduleGroup);
-
+            if (_vm?.CurrentDeviceInfo?.ModelNumber == "SB725") 
+            {
+                groups.RemoveAt(groups.Count - 1);
+            }
             _vm!.ModuleGroups = groups;
         }
 
+        private void ArrowLeftImageUpdate(string resourceKey)
+        {
+            if (resourceKey == "Arrow_Left")
+            {
+                ArrowLeft.Source = null;
+                ArrowLeft.Source = (BitmapImage)Application.Current.Resources[resourceKey];
+            }
+        }
         #endregion Init for Modules
 
         #region Vbar
@@ -321,5 +365,14 @@ namespace DDPM.UI.Plugin.SoundBarPlugin
         private void LargeImage_MouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
         }
+
+        private void PushBack(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            if (sender is Border)
+            {
+                Mainframe_MouseLeftButtonDown(this, e);
+            }
+        }
+
     }
 }

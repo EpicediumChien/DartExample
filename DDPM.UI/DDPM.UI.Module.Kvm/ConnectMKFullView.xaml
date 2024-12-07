@@ -6,7 +6,7 @@
              xmlns:UXControls="clr-namespace:Dell.Client.Framework.UX.WPF.Controls;assembly=DCF.UX.WPF"
              xmlns:local="clr-namespace:DDPM.UI.Module.Kvm"
              xmlns:lang="clr-namespace:DDPM.UI.Resources.Helper;assembly=DDPM.UI.Resources"
-             mc:Ignorable="d" Background="#FF0D121A"
+             mc:Ignorable="d" Background="{DynamicResource mainWindowBkColor}"
              d:DesignHeight="671" d:DesignWidth="1378"
              SizeChanged="UserControl_SizeChanged">
     
@@ -67,17 +67,15 @@
                     </Grid>
                     <Grid Grid.Row="1" Margin="0, 50, 0, 0" Width="400" Height="30" HorizontalAlignment="Left">
                         <UXControls:UXTextBlock Text="{Binding [Kvm.2], Source={x:Static lang:LangHelper.Instance}}"
-                                                Foreground="#DAF5FD"
+                                                Foreground="{DynamicResource DefaultTheme_PbHeaderColor}"
                                                 FontSize="20" LineHeight="28" />
                     </Grid>
                     <Grid Grid.Row="2" Margin="0, 8, 0 ,0" Width="476" Height="150" HorizontalAlignment="Left">
                         <UXControls:UXTextBlock Text="{Binding [Kvm.3], Source={x:Static lang:LangHelper.Instance}}"
-                                                Foreground="#F5F6F7"
                                                 FontSize="48" LineHeight="76" />
                     </Grid>
                     <Grid Grid.Row="3" Margin="0, 16, 0, 0" Width="476" Height="120" HorizontalAlignment="Left">
                         <UXControls:UXTextBlock Text="{Binding [Kvm.4], Source={x:Static lang:LangHelper.Instance}}"
-                                                Foreground="#F5F6F7"
                                                 FontSize="16" LineHeight="24" />
                     </Grid>
                     <Grid Grid.Row="4" Margin="0, 93, 0 ,0">
@@ -91,9 +89,9 @@
                                                  ButtonSize="Medium"
                                                  IconAnimation="Move"
                                                  Click="BackInputFullView"
-                                                 Margin="0" Padding="16,8" Foreground="#F5F6F7"
-                                                 FontSize="14" BorderBrush="#F5F6F7">
-                                <Path Data="M0.620372 7.67441L0.341461 7.9998L0.620372 8.3252L6.62037 15.3252L7.37963 14.6744L2.08711 8.4998L18 8.4998L18 7.4998L2.08711 7.4998L7.37963 1.3252L6.62037 0.674405L0.620372 7.67441Z" Fill="#F5F6F7"/>
+                                                 Margin="0" Padding="16,8"
+                                                 FontSize="14">
+                                <Path Data="M0.620372 7.67441L0.341461 7.9998L0.620372 8.3252L6.62037 15.3252L7.37963 14.6744L2.08711 8.4998L18 8.4998L18 7.4998L2.08711 7.4998L7.37963 1.3252L6.62037 0.674405L0.620372 7.67441Z" Fill="{DynamicResource TextBlock_ForegroundColor}"/>
                             </UXControls:UXButton>
                         </Grid>
                         <Grid Grid.Column="1">
@@ -152,24 +150,30 @@
                     </Grid.RowDefinitions>
                     <!--<Image Grid.Row="0" Source="pack://application:,,,/DDPM.UI.Common;component/Resources/USBKVM_MK_1.png" />-->
                     <Grid Grid.Row="0" HorizontalAlignment="Center">
-                        <Path Data="M151.966 1H1.8672C1.38826 1 1 1.39184 1 1.87521V87.5003C1 87.9837 1.38826 88.3755 1.8672 88.3755H151.966C152.445 88.3755 152.833 87.9837 152.833 87.5003V1.87521C152.833 1.39184 152.445 1 151.966 1Z" Stroke="white" StrokeMiterLimit="10"/>
-                        <Path Data="M150.621 86.4979V3.21094L3.21054 3.21094V86.4979L150.621 86.4979Z" Stroke="white" StrokeThickness="0.4" StrokeMiterLimit="10"/>
-                        <Path Data="M80.8797 110.623V88.8047H72.2539V110.623C72.2543 110.917 72.3716 111.2 72.58 111.408C72.7884 111.616 73.0709 111.733 73.3654 111.733H79.7696C80.064 111.733 80.3464 111.616 80.5546 111.408C80.7628 111.2 80.8797 110.917 80.8797 110.623Z" Stroke="white" StrokeThickness="0.5" StrokeMiterLimit="10"/>
-                        <Path Data="M72.2545 110.354H46.0877C45.9319 110.355 45.779 110.396 45.6442 110.474C45.5095 110.552 45.3978 110.664 45.3203 110.8C45.2429 110.935 45.2024 111.088 45.2031 111.244C45.2038 111.399 45.2456 111.552 45.3242 111.687L48.4425 117.014C48.5204 117.147 48.6318 117.258 48.7658 117.335C48.8997 117.412 49.0515 117.452 49.206 117.452H104.066C104.216 117.452 104.364 117.414 104.495 117.342C104.626 117.269 104.736 117.164 104.815 117.037L108.153 111.71C108.237 111.576 108.283 111.422 108.288 111.264C108.292 111.106 108.254 110.95 108.177 110.811C108.101 110.673 107.989 110.558 107.853 110.478C107.717 110.397 107.562 110.355 107.404 110.354H80.8803" Stroke="white" StrokeThickness="0.4" StrokeMiterLimit="10"/>
-                        <Path Data="M73.8281 88.8047V93.9154C73.8281 94.166 73.8775 94.4141 73.9734 94.6456C74.0692 94.8771 74.2098 95.0874 74.3869 95.2646C74.5641 95.4417 74.7744 95.5823 75.0059 95.6781C75.2374 95.774 75.4855 95.8234 75.7361 95.8234H77.2988C77.5493 95.8234 77.7974 95.774 78.0289 95.6781C78.2604 95.5823 78.4707 95.4417 78.6479 95.2646C78.8251 95.0874 78.9656 94.8771 79.0615 94.6456C79.1574 94.4141 79.2067 94.166 79.2067 93.9154V88.8047" Stroke="white" StrokeThickness="0.4" StrokeMiterLimit="10"/>
-                        <Path Data="M79.2067 92.0107H73.8281" Stroke="white" StrokeThickness="0.4" StrokeMiterLimit="10"/>
-                        <Path Data="M45.6484 112.243L48.1551 117.829C48.2552 118.052 48.4174 118.241 48.6221 118.374C48.8269 118.506 49.0656 118.577 49.3096 118.577H103.861C104.095 118.577 104.325 118.512 104.524 118.388C104.724 118.265 104.885 118.089 104.991 117.88L107.824 112.25" Stroke="white" StrokeThickness="0.4" StrokeMiterLimit="10"/>
-                        <Path Data="M55.8597 118.57H50.7031V119H55.8597V118.57Z" Stroke="white" StrokeThickness="0.4" StrokeMiterLimit="10"/>
-                        <Path Data="M79.3519 118.57H74.1953V119H79.3519V118.57Z" Stroke="white" StrokeThickness="0.4" StrokeMiterLimit="10"/>
-                        <Path Data="M102.844 118.57H97.6875V119H102.844V118.57Z" Stroke="white" StrokeThickness="0.4" StrokeMiterLimit="10"/>
+                        <Grid.Resources>
+                            <Style TargetType="Path">
+                                <Setter Property="Stroke" Value="{DynamicResource DefaultTheme_PathColor}" />
+                                <Setter Property="Fill" Value="Transparent" />
+                            </Style>
+                        </Grid.Resources>
+                        <Path Data="M151.966 1H1.8672C1.38826 1 1 1.39184 1 1.87521V87.5003C1 87.9837 1.38826 88.3755 1.8672 88.3755H151.966C152.445 88.3755 152.833 87.9837 152.833 87.5003V1.87521C152.833 1.39184 152.445 1 151.966 1Z" StrokeMiterLimit="10"/>
+                        <Path Data="M150.621 86.4979V3.21094L3.21054 3.21094V86.4979L150.621 86.4979Z" StrokeThickness="0.4" StrokeMiterLimit="10" />
+                        <Path Data="M80.8797 110.623V88.8047H72.2539V110.623C72.2543 110.917 72.3716 111.2 72.58 111.408C72.7884 111.616 73.0709 111.733 73.3654 111.733H79.7696C80.064 111.733 80.3464 111.616 80.5546 111.408C80.7628 111.2 80.8797 110.917 80.8797 110.623Z" StrokeThickness="0.5" StrokeMiterLimit="10"/>
+                        <Path Data="M72.2545 110.354H46.0877C45.9319 110.355 45.779 110.396 45.6442 110.474C45.5095 110.552 45.3978 110.664 45.3203 110.8C45.2429 110.935 45.2024 111.088 45.2031 111.244C45.2038 111.399 45.2456 111.552 45.3242 111.687L48.4425 117.014C48.5204 117.147 48.6318 117.258 48.7658 117.335C48.8997 117.412 49.0515 117.452 49.206 117.452H104.066C104.216 117.452 104.364 117.414 104.495 117.342C104.626 117.269 104.736 117.164 104.815 117.037L108.153 111.71C108.237 111.576 108.283 111.422 108.288 111.264C108.292 111.106 108.254 110.95 108.177 110.811C108.101 110.673 107.989 110.558 107.853 110.478C107.717 110.397 107.562 110.355 107.404 110.354H80.8803" StrokeThickness="0.4" StrokeMiterLimit="10"/>
+                        <Path Data="M73.8281 88.8047V93.9154C73.8281 94.166 73.8775 94.4141 73.9734 94.6456C74.0692 94.8771 74.2098 95.0874 74.3869 95.2646C74.5641 95.4417 74.7744 95.5823 75.0059 95.6781C75.2374 95.774 75.4855 95.8234 75.7361 95.8234H77.2988C77.5493 95.8234 77.7974 95.774 78.0289 95.6781C78.2604 95.5823 78.4707 95.4417 78.6479 95.2646C78.8251 95.0874 78.9656 94.8771 79.0615 94.6456C79.1574 94.4141 79.2067 94.166 79.2067 93.9154V88.8047" StrokeThickness="0.4" StrokeMiterLimit="10"/>
+                        <Path Data="M79.2067 92.0107H73.8281" StrokeThickness="0.4" StrokeMiterLimit="10"/>
+                        <Path Data="M45.6484 112.243L48.1551 117.829C48.2552 118.052 48.4174 118.241 48.6221 118.374C48.8269 118.506 49.0656 118.577 49.3096 118.577H103.861C104.095 118.577 104.325 118.512 104.524 118.388C104.724 118.265 104.885 118.089 104.991 117.88L107.824 112.25" StrokeThickness="0.4" StrokeMiterLimit="10"/>
+                        <Path Data="M55.8597 118.57H50.7031V119H55.8597V118.57Z" StrokeThickness="0.4" StrokeMiterLimit="10"/>
+                        <Path Data="M79.3519 118.57H74.1953V119H79.3519V118.57Z" StrokeThickness="0.4" StrokeMiterLimit="10"/>
+                        <Path Data="M102.844 118.57H97.6875V119H102.844V118.57Z" StrokeThickness="0.4" StrokeMiterLimit="10"/>
                     </Grid>
                     <Path Grid.Row="1" HorizontalAlignment="Center" Data="M0.999999 24L1 0" Stroke="#1B385F" StrokeThickness="2"/>
                     <Grid Grid.Row="2">
-                        <UXControls:UXTextBlock Text="{Binding [Kvm.5], Source={x:Static lang:LangHelper.Instance},StringFormat={}     {0}}" FontSize="14" LineHeight="18" Foreground="White" Width="87" Height="28.39" Padding="4" />
+                        <UXControls:UXTextBlock Text="{Binding [Kvm.5], Source={x:Static lang:LangHelper.Instance},StringFormat={}     {0}}" FontSize="14" LineHeight="18" Width="87" Height="28.39" Padding="4" />
                     </Grid>
                     <!--<Image Grid.Row="2" Source="pack://application:,,,/DDPM.UI.Common;component/Resources/USB-A.png" />-->
                     <Path Grid.Row="3" HorizontalAlignment="Center"
-                          Data="M2 0.985352C0.895431 0.985352 0 1.88078 0 2.98535V11.4854V13.9854C0 15.0899 0.895432 15.9854 2 15.9854H50C51.1046 15.9854 52 15.0899 52 13.9854V8.48535V2.98535C52 1.88078 51.1046 0.985352 50 0.985352H2ZM8.5 7.98535C8.22386 7.98535 8 8.20921 8 8.48535C8 8.76149 8.22386 8.98535 8.5 8.98535H43.5C43.7761 8.98535 44 8.76149 44 8.48535C44 8.20921 43.7761 7.98535 43.5 7.98535H8.5Z" Fill="white"/>
+                          Data="M2 0.985352C0.895431 0.985352 0 1.88078 0 2.98535V11.4854V13.9854C0 15.0899 0.895432 15.9854 2 15.9854H50C51.1046 15.9854 52 15.0899 52 13.9854V8.48535V2.98535C52 1.88078 51.1046 0.985352 50 0.985352H2ZM8.5 7.98535C8.22386 7.98535 8 8.20921 8 8.48535C8 8.76149 8.22386 8.98535 8.5 8.98535H43.5C43.7761 8.98535 44 8.76149 44 8.48535C44 8.20921 43.7761 7.98535 43.5 7.98535H8.5Z"/>
                     <Image Grid.Row="4" Source="pack://application:,,,/DDPM.UI.Common;component/Resources/USBKVM_MK_2.png" />
                     <!--<Image Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Connect_M_K.png"
                     HorizontalAlignment="Center" />-->

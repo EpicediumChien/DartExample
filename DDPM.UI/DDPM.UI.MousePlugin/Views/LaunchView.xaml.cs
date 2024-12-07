@@ -7,6 +7,7 @@ using DDPM.UI.Module.MouseSettings;
 using DDPM.UI.Plugin.Common;
 using DDPM.UI.Plugin.ViewModels;
 using Dell.Client.Framework.UX.WPF.Controls;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Net;
 using System.Windows;
@@ -14,6 +15,7 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
+using System.Windows.Threading;
 using Windows.Devices.Power;
 
 namespace DDPM.UI.Plugin.MousePlugin
@@ -30,12 +32,21 @@ namespace DDPM.UI.Plugin.MousePlugin
         private readonly BitmapImage img1 = new(new Uri($"/DDPM.UI.Resources;component/Resources/Images/Bluetooth.png", UriKind.Relative));
         private readonly BitmapImage img2 = new(new Uri($"/DDPM.UI.Resources;component/Resources/Images/Bluetooth2.png", UriKind.Relative));
 
-        private readonly SolidColorBrush buttonColorFocusedT = new(System.Windows.Media.Color.FromArgb(0xFF, 0xFF, 0xFF, 0xFF));
-        private readonly SolidColorBrush buttonColorFocusedF = new(System.Windows.Media.Color.FromArgb(0x80, 0xFF, 0xFF, 0xFF));
+        private SolidColorBrush buttonColorFocusedT = new(System.Windows.Media.Color.FromArgb(0xFF, 0xFF, 0xFF, 0xFF));
+        private SolidColorBrush buttonColorFocusedF = new(System.Windows.Media.Color.FromArgb(0x80, 0xFF, 0xFF, 0xFF));
 
         public LaunchView()
         {
             InitializeComponent();
+
+            // for Light mode check by leo
+            if (UXSystemParameters.Instance.OSTheme == OSThemeEnum.Light)
+            {
+                buttonColorFocusedT = new(System.Windows.Media.Color.FromArgb(0xFF, 0x0, 0x0, 0x0));
+                buttonColorFocusedF = new(System.Windows.Media.Color.FromArgb(0x80, 0x0, 0x0, 0x0));
+            }
+            UXSystemParameters.Instance.ParameterChangedEvent += MSUXSystemParametersChanged;
+
             _vm = (MouseViewModel?)Mouseplugin.PluginIoc?.GetService<IPeripheralViewModel>()!;
 
             if (_vm != null)
@@ -116,6 +127,28 @@ namespace DDPM.UI.Plugin.MousePlugin
             }
         }
 
+        private void MSUXSystemParametersChanged(object? sender, PropertyChangedEventArgs e)
+        {
+
+            this.Dispatcher.Invoke(
+                          DispatcherPriority.Normal,
+                          (System.Windows.Forms.MethodInvoker)delegate ()
+                          {
+                              if (UXSystemParameters.Instance.OSTheme == OSThemeEnum.Light)
+                              {
+                                  buttonColorFocusedT = new(System.Windows.Media.Color.FromArgb(0xFF, 0x0, 0x0, 0x0));
+                                  buttonColorFocusedF = new(System.Windows.Media.Color.FromArgb(0x80, 0x0, 0x0, 0x0));
+                              }
+                              else
+                              {
+                                  buttonColorFocusedT = new(System.Windows.Media.Color.FromArgb(0xFF, 0xFF, 0xFF, 0xFF));
+                                  buttonColorFocusedF = new(System.Windows.Media.Color.FromArgb(0x80, 0xFF, 0xFF, 0xFF));
+                              }
+                              SetAppFocus();
+                              // Your code here 
+                          });
+        }
+
         ~LaunchView()
         {
             if (DdpmCommonHelper.DeviceManagerSA != null)
@@ -160,7 +193,8 @@ namespace DDPM.UI.Plugin.MousePlugin
             moduleGroup = new ModuleGroup()
             {
                 GroupName = Strings.MouseSettingsCaption,
-                GroupIcon = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Vbar.Mouse.Cursor.png")
+                GroupIcon = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Vbar.Mouse.Cursor.png"),
+                GroupIconCanvas = DdpmCommonHelper.CanvasIconCreator(VbarIcon.MouseSettings)
             };
             moduleGroup.AddHeader(Strings.MouseSettingsCaption, new MouseSettingsModule(_vm!));
             groups.Add(moduleGroup);
@@ -170,7 +204,8 @@ namespace DDPM.UI.Plugin.MousePlugin
                 moduleGroup = new ModuleGroup()
                 {
                     GroupName = Strings.ButtonCustomizationCaption,
-                    GroupIcon = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Vbar.Mouse.Mouse.png")
+                    GroupIcon = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Vbar.Mouse.Mouse.png"),
+                    GroupIconCanvas = DdpmCommonHelper.CanvasIconCreator(VbarIcon.MouseButton)
                 };
                 moduleGroup.AddHeader(Strings.ButtonCustomizationCaption, new ButtonSettingsModule(_vm!));
                 groups.Add(moduleGroup);
@@ -629,12 +664,12 @@ namespace DDPM.UI.Plugin.MousePlugin
 
         private void ChangeDevNameWidth()
         {
-            devName.Width = this.ActualWidth - RightGrid.ActualWidth - VbarGrid.ActualWidth - 100;
+            //devName.Width = this.ActualWidth - RightGrid.ActualWidth - VbarGrid.ActualWidth - 100;
         }
 
         private void RightFrame_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            ChangeDevNameWidth();
+            //ChangeDevNameWidth();
         }
 
         private void PushBack(object sender, System.Windows.Input.MouseButtonEventArgs e)

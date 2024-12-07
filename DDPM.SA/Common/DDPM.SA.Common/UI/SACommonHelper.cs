@@ -37,7 +37,8 @@ namespace DDPM.SA.Common.UI
                 string assemblyName = assembly.GetName().Name;
                 Uri uri = new Uri($"pack://application:,,,/{assemblyName};component/ModuleStyle.xaml", UriKind.Absolute);
                 Application.Current.Resources.MergedDictionaries.Add(
-                    new ResourceDictionary {
+                    new ResourceDictionary
+                    {
                         Source = uri
                     });
             }
@@ -65,7 +66,33 @@ namespace DDPM.SA.Common.UI
                 // Replace the old object with the updated one in the resources
                 Application.Current.Resources[resourceKey] = newFreezable;
 
-                Application.Current.Resources[resourceKey] = Application.Current.Resources[resourceKey];// Force Refresh
+                // [20241122] SonarQube: Remove or correct this useless self-assignment.
+                //Application.Current.Resources[resourceKey] = Application.Current.Resources[resourceKey];// Force Refresh
+            }
+        }
+
+        public static string MappingModel(string modelNumber)
+        {
+            switch (modelNumber)
+            {
+                case "KB740":
+                case "KB7120W":
+                    return "KB740";
+
+                case "KB500":
+                case "KB3121W":
+                    return "KB500";
+
+                case "KB700":
+                case "KB7221W":
+                    return "KB700";
+
+                case "MS300":
+                case "MS3121W":
+                    return "MS300";
+
+                default:
+                    return modelNumber;
             }
         }
     }

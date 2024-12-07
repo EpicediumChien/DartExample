@@ -1,6 +1,7 @@
 ﻿using DDPM.SA.Common;
 using DDPM.SA.Common.Settings;
 using DDPM.UI.Common;
+using DDPM.UI.Common.Method;
 using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
@@ -31,6 +32,7 @@ namespace DDPM.UI.Module.Brightness
             {
                 DdpmCommonHelper.DeviceManagerSA.ITSettingsActionEvent += DeviceManagerSA_ITSettingsActionEvent;
             }
+            DdpmCommonHelper.WriteUILog("BrightnessRightView, init");
         }
 
         ~BrightnessRightView()
@@ -39,6 +41,7 @@ namespace DDPM.UI.Module.Brightness
             {
                 DdpmCommonHelper.DeviceManagerSA.ITSettingsActionEvent -= DeviceManagerSA_ITSettingsActionEvent;
             }
+            DdpmCommonHelper.WriteUILog("~BrightnessRightView, exit");
         }
 
         private void DeviceManagerSA_ITSettingsActionEvent(object? sender, SA.Common.ITSettingEventArgs e)
@@ -46,7 +49,7 @@ namespace DDPM.UI.Module.Brightness
             DDPMSettings data = null;
             if (DdpmCommonHelper.DeviceManagerSA != null)
                 data = DdpmCommonHelper.ReadDDPMSettings(true);// DeviceManagerSA.ReloadAppConfigData().Result;
-
+            string log = string.Empty;
             bool? isLocked_BriCont = DdpmCommonHelper.GetUINotifyPropertyValue_Boolean("Lock_Display_BriCont", e);
             if (isLocked_BriCont != null)
             {
@@ -56,7 +59,8 @@ namespace DDPM.UI.Module.Brightness
                     if (vm != null)
                     {
                         vm.Update_BriContLockStatus(isLocked_BriCont ?? false);
-                        Trace.WriteLine($"[SettingsPage] Apply Brightness/Contrast(Lock) : {isLocked_BriCont}");
+                        log = $"[SettingsPage] Apply Brightness/Contrast(Lock) : {isLocked_BriCont}";
+                        DdpmCommonHelper.WriteUILog(log);
                     }
                 }));
             }
@@ -70,7 +74,8 @@ namespace DDPM.UI.Module.Brightness
                     {
                         //vm.LockMaskVisible = (bool)isLocked ? Visibility.Visible : Visibility.Collapsed;
                         vm.Update_ALSLockStatus(isLocked_ALS ?? false);
-                        Trace.WriteLine($"[SettingsPage] Apply Auto Brightness(Lock) : {isLocked_ALS}");
+                        log = $"[SettingsPage] Apply Auto Brightness(Lock) : {isLocked_ALS}";
+                        DdpmCommonHelper.WriteUILog(log);
                     }
                 }));
             }
@@ -83,7 +88,8 @@ namespace DDPM.UI.Module.Brightness
                     if (vm != null)
                     {
                         vm.Update_SyncLockStatus(isSyncLocked);
-                        Trace.WriteLine($"[SettingsPage] Apply Synchroniz Button(Lock) : {isSyncLocked}");
+                        log = $"[SettingsPage] Apply Synchronize Button(Lock) : {isSyncLocked}";
+                        DdpmCommonHelper.WriteUILog(log);
                     }
                 }));
 
@@ -106,7 +112,7 @@ namespace DDPM.UI.Module.Brightness
             if ((bool)SynchronizeSwitch.IsChecked)
             {
                 _vm.IsSynchronize = true;
-                SynchronizeSwitch.Content = Strings.On;
+                //SynchronizeSwitch.Content = Strings.On;
 
                 // Brightness and contrast
                 _vm.BR_Con_Sync();
@@ -117,7 +123,7 @@ namespace DDPM.UI.Module.Brightness
             else
             {
                 _vm.IsSynchronize = false;
-                SynchronizeSwitch.Content = Strings.Off;
+                //SynchronizeSwitch.Content = Strings.Off;
             }
 
             setting.UserSettings.IsSynchronizemonitor = _vm.IsSynchronize;
@@ -175,6 +181,7 @@ namespace DDPM.UI.Module.Brightness
             if (vm != null)
             {
                 vm.UpdateLuminance();
+                Task.Run(() => vm.CloseSchedule());
             }
         }
 
@@ -843,49 +850,28 @@ namespace DDPM.UI.Module.Brightness
             }
         }
 
-        private void KeyDown_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+        private void InputName_PreviewTextInput(object sender, TextCompositionEventArgs e)
         {
-            if (((e.KeyStates == Keyboard.GetKeyStates(Key.D1)) || (e.KeyStates == Keyboard.GetKeyStates(Key.D3))) && (Keyboard.Modifiers == ModifierKeys.Shift))
-            {
-                e.Handled = true;
-            }
-            else if ((e.KeyStates == Keyboard.GetKeyStates(Key.D2)) && (Keyboard.Modifiers == ModifierKeys.Shift))
-            {
-                // Handle "@"
-            }
-            else if ((Keyboard.Modifiers == ModifierKeys.Shift))
-            {
-                e.Handled = true;
-            }
-            else if (Keyboard.IsKeyDown(Key.D0) || Keyboard.IsKeyDown(Key.D1) || Keyboard.IsKeyDown(Key.D2) || Keyboard.IsKeyDown(Key.D3) || Keyboard.IsKeyDown(Key.D4) ||
-                Keyboard.IsKeyDown(Key.D5) || Keyboard.IsKeyDown(Key.D6) || Keyboard.IsKeyDown(Key.D7) || Keyboard.IsKeyDown(Key.D8) || Keyboard.IsKeyDown(Key.D9) ||
-                Keyboard.IsKeyDown(Key.A) || Keyboard.IsKeyDown(Key.B) || Keyboard.IsKeyDown(Key.C) || Keyboard.IsKeyDown(Key.D) || Keyboard.IsKeyDown(Key.E) ||
-                Keyboard.IsKeyDown(Key.F) || Keyboard.IsKeyDown(Key.G) || Keyboard.IsKeyDown(Key.H) || Keyboard.IsKeyDown(Key.I) || Keyboard.IsKeyDown(Key.J) ||
-                Keyboard.IsKeyDown(Key.K) || Keyboard.IsKeyDown(Key.L) || Keyboard.IsKeyDown(Key.M) || Keyboard.IsKeyDown(Key.N) || Keyboard.IsKeyDown(Key.O) ||
-                Keyboard.IsKeyDown(Key.P) || Keyboard.IsKeyDown(Key.Q) || Keyboard.IsKeyDown(Key.R) || Keyboard.IsKeyDown(Key.S) || Keyboard.IsKeyDown(Key.T) ||
-                Keyboard.IsKeyDown(Key.U) || Keyboard.IsKeyDown(Key.V) || Keyboard.IsKeyDown(Key.W) || Keyboard.IsKeyDown(Key.X) || Keyboard.IsKeyDown(Key.Y) ||
-                Keyboard.IsKeyDown(Key.Z) || Keyboard.IsKeyDown(Key.OemMinus) || Keyboard.IsKeyDown(Key.Space))
-            {
-                // Handle 0-9, a-z, A-Z, " ", "-"
-            }
-            else
-            {
-                e.Handled = true;
-            }
+            TextString textString = new TextString();
+            e.Handled = !textString.CheckChar(e.Text);
         }
 
         private void PR1Name_TextChanged(object sender, TextChangedEventArgs e)
         {
-            TextBox tb = sender as TextBox;
             BrightnessViewModel vm = (BrightnessViewModel)DataContext;
-            vm.PR1Name = tb.Text;
+            TextString textString = new TextString();
+            TextBox tb = sender as TextBox;
+            if (textString.CheckChar(tb.Text))
+                vm.PR1Name = tb.Text;
         }
 
         private void PR2Name_TextChanged(object sender, TextChangedEventArgs e)
         {
-            TextBox tb = sender as TextBox;
             BrightnessViewModel vm = (BrightnessViewModel)DataContext;
-            vm.PR2Name = tb.Text;
+            TextString textString = new TextString();
+            TextBox tb = sender as TextBox;
+            if (textString.CheckChar(tb.Text))
+                vm.PR2Name = tb.Text;
         }
 
         private void Hyperlink_Click(object sender, RoutedEventArgs e)

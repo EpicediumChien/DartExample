@@ -29,6 +29,10 @@ using Newtonsoft.Json.Linq;
 using System.Text;
 using DPeMPublic.Common.Enums;
 using System.Text.Json;
+using Google.Protobuf.WellKnownTypes;
+using System.IO;
+using Type = System.Type;
+using DDPM.SA.Common.UI;
 
 namespace DDPM.SA.Plugins.User.DTPProxy
 {
@@ -81,6 +85,9 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         private const string PenItemID0 = "DellPeripheral.Pen.0";
         private const string KeyboardItemID = "DellPeripheral.Keyboard";
         private const string KeyboardItemID0 = "DellPeripheral.Keyboard.0";
+        private const string WebcamItemID = "DellPeripheral.Webcam";
+        private const string HeadsetItemID = "DellPeripheral.Headset";
+        private bool IsDTPReady = false;
 
         public const string PluginLogId = "DTPProxy";
 
@@ -88,10 +95,10 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         /// <summary>
         /// Webcam change event
         /// </summary>
-        public event EventHandler<bool>? Esi_IsCameraSensorCover_ChangeEvent;
-        public event EventHandler<int>? WALSnoozeTimeLeftInSeconds_ChangeEvent;
-        public event EventHandler<bool>? Esi_IsWALLockCountdownStartedChanged_ChangeEvent;
-        public event EventHandler<int>? Esi_WALLockCountdownChanged_ChangeEvent;
+        //public event EventHandler<bool>? Esi_IsCameraSensorCover_ChangeEvent;
+        //public event EventHandler<int>? WALSnoozeTimeLeftInSeconds_ChangeEvent;
+        //public event EventHandler<bool>? Esi_IsWALLockCountdownStartedChanged_ChangeEvent;
+        //public event EventHandler<int>? Esi_WALLockCountdownChanged_ChangeEvent;
 
 
         #endregion
@@ -116,12 +123,18 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
         public event EventHandler<bool> UpdateNotify;
 
-        public event EventHandler<ZoomChangedArgs> ZoomChanged_Notify;
+        //Marked by Derek 1125 because they had covered by WebcamEventHandler
+        //public event EventHandler<ZoomChangedArgs> ZoomChanged_Notify;
+        //public event EventHandler<ZoomMeetingTypeChangedArgs> ZoomMeetingTypeChanged_Notify;
+        //public event EventHandler<IsZoomMeetingActiveChangedArgs> IsZoomMeetingActive_Notify;
+        //public event EventHandler<IsZoomScreenShareActiveChangedArgs> IsZoomScreenShareActive_Notify;
 
-        public event EventHandler<ZoomMeetingTypeChangedArgs> ZoomMeetingTypeChanged_Notify;
-        public event EventHandler<IsZoomMeetingActiveChangedArgs> IsZoomMeetingActive_Notify;
-
-        public event EventHandler<IsZoomScreenShareActiveChangedArgs> IsZoomScreenShareActive_Notify;
+        //Derek 1120
+        public event EventHandler<UpdateUINotify> DTPEventHandler;
+        public void OnUIUpdateNotify(UpdateUINotify e)
+        {
+            DTPEventHandler?.Invoke(this, e);
+        }
 
         public void NotifyNow()
         {
@@ -291,24 +304,15 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             if (!await GetItemIDAsync("Mouse", Guid))
             { return; }
 
-            if (_mouseMethodInfo != null)
+            if (await GetCommodityInterfaceInstanceAsync(_mouseMethodInfo) is ICommodity commodity)
             {
-                if (await GetCommodityInterfaceInstanceAsync(_mouseMethodInfo) is ICommodity commodity)
-                {
-                    SetPropertyValue(_mouseInterfaceType, commodity, "DpiValue", newValue);
-                }
-                else
-                {
-                    Debug.WriteLine($"Could not retrieve the Commodity Interface {_mouseInterfaceType} for the {_itemID} item.");
-                    writelog($"Could not retrieve the Commodity Interface {_mouseInterfaceType} for the {_itemID} item.");
-                }
+                SetPropertyValue(_mouseInterfaceType, commodity, "DpiValue", newValue);
             }
             else
             {
-                Debug.WriteLine($"[SetDPIValue]Could not retrieve the Commodity Interface for the  {_itemID}  item. _mouseMethodInfo is null");
-                writelog($"[SetDPIValue]Could not retrieve the Commodity Interface for the  {_itemID}  item. _mouseMethodInfo is null");
+                Debug.WriteLine($"Could not retrieve the Commodity Interface {_mouseInterfaceType} for the {_itemID} item.");
+                writelog($"Could not retrieve the Commodity Interface {_mouseInterfaceType} for the {_itemID} item.");
             }
-
         }
         public async Task SetMouseAction(string Guid, byte[] newValue)
         {
@@ -383,6 +387,91 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             {
                 Debug.WriteLine($"Could not retrieve the Commodity Interface {_mouseInterfaceType} for the {Guid} item.");
                 writelog($"Could not retrieve the Commodity Interface {_mouseInterfaceType} for the {Guid} item.");
+            }
+        }
+        public async Task<bool> RestoreToDefaultMouse(string Guid, bool isFromCli = true)
+        {
+            if (!IsDTPReady)
+                return false;
+            if (!await GetItemIDAsync("Mouse", Guid))
+                return false;
+
+            if (isFromCli)
+            {
+                string model;
+                string profileID;
+                if (await GetCommodityInterfaceInstanceAsync(_mouseMethodInfo) is ICommodity commodity)
+                {
+                    var value = GetPropertyValue(_mouseInterfaceType, commodity, "ModelNumber");
+                    model = value == null ? "" : (string)value;
+                    if (model == "")
+                        return false;
+
+                    value = GetPropertyValue(_mouseInterfaceType, commodity, "CurrentSelectedAppSpecificProfile");
+                    profileID = value == null ? "" : (string)value;
+                    if (profileID == "")
+                        return false;
+
+                    var result = await DeleteMouseAllAssignedActions(Guid);
+                    if (!result)
+                        return false;
+
+                    await SetCurrentSelectedAppSpecificProfile(Guid, "{76824745-CE06-4358-835D-7BB991CB71A0}"); //AllApp
+                    await DeleteMouseAllAssignedActions(Guid);
+                    await SetCurrentSelectedAppSpecificProfile(Guid, "{E0C9145B-BE8B-4423-B520-8CA71BE88E11}"); // Word
+                    await DeleteMouseAllAssignedActions(Guid);
+                    await SetCurrentSelectedAppSpecificProfile(Guid, "{37743697-4B39-45CD-B7F8-30027D1521ED}"); //Excel
+                    await DeleteMouseAllAssignedActions(Guid);
+                    await SetCurrentSelectedAppSpecificProfile(Guid, "{7BBECD91-F12A-4CC4-B005-526BA66BA657}"); //PowerPoint
+                    await DeleteMouseAllAssignedActions(Guid);
+                    await SetCurrentSelectedAppSpecificProfile(Guid, "{CCCE4E6F-C690-4EF5-BA19-F270C26C21B6}"); //Outlook
+                    await DeleteMouseAllAssignedActions(Guid);
+                    await SetCurrentSelectedAppSpecificProfile(Guid, profileID);
+
+                    model = SACommonHelper.MappingModel(model);
+                    var filePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), @$"Dell\Dell Display and Peripheral Manager\Actions\{model}.json");
+                    if (File.Exists(filePath))
+                    {
+                        try
+                        {
+                            File.Delete(filePath);
+                        }
+                        catch (Exception ex)
+                        {
+                            writelog($"[DTPProxyPlugin] [RestoreToDefaultPen] Delete setting file failed: {ex}");
+                        }
+                    }
+                    var message = $"Mouse|RestoreToDefault|{Guid}|{model}";
+                    SendDTPEventToUI(message);
+                    return true;
+                }
+                else
+                {
+                    Debug.WriteLine($"Could not retrieve the Commodity Interface {_mouseInterfaceType} for the {Guid} item.");
+                    writelog($"Could not retrieve the Commodity Interface {_mouseInterfaceType} for the {Guid} item.");
+                    return false;
+                }
+            }
+            else
+            {
+                var result = await DeleteMouseAllAssignedActions(Guid);
+                return result;
+            }
+        }
+        public async Task<bool> SetReportRate(string Guid, int newValue)
+        {
+            if (!await GetItemIDAsync("Mouse", Guid))
+            { return false; }
+
+            if (await GetCommodityInterfaceInstanceAsync(_mouseMethodInfo) is ICommodity commodity)
+            {
+                return SetPropertyValue(_mouseInterfaceType, commodity, "ReportRate", newValue);
+            }
+            else
+            {
+                Debug.WriteLine($"Could not retrieve the Commodity Interface {_mouseInterfaceType} for the {Guid} item.");
+                writelog($"Could not retrieve the Commodity Interface {_mouseInterfaceType} for the {Guid} item.");
+                return false;
             }
         }
 
@@ -464,6 +553,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 return new JArray();
             }
         }
+
         public async Task<JArray> GetKeyboardDeviceItemsEx()
         {
             _itemID = new ItemId(KeyboardItemID);
@@ -592,11 +682,80 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 writelog($"Could not retrieve the Commodity Interface {_keyboardInterfaceType} for the {_itemID} item.");
             }
         }
+        public async Task<bool> RestoreToDefaultKB(string Guid)
+        {
+            if (!IsDTPReady)
+                return false;
+            if (!await GetItemIDAsync("Keyboard", Guid))
+                return false;
+
+            string model;
+            if (await GetCommodityInterfaceInstanceAsync(_keyboardMethodInfo) is ICommodity commodity)
+            {
+                var value = GetPropertyValue(_keyboardInterfaceType, commodity, "ModelNumber");
+                model = value == null ? "" : (string)value;
+                if (model == "")
+                    return false;
+            }
+            else
+            {
+                Debug.WriteLine($"Could not retrieve the Commodity Interface {_keyboardInterfaceType} for the {Guid} item.");
+                writelog($"Could not retrieve the Commodity Interface {_keyboardInterfaceType} for the {Guid} item.");
+                return false;
+            }
+
+            var result = await DeleteKeyboardAllAssignedActions(Guid);
+            if (!result)
+                return false;
+
+            model = SACommonHelper.MappingModel(model);
+            var filePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), @$"Dell\Dell Display and Peripheral Manager\Actions\{model}.json");
+            if (File.Exists(filePath))
+            {
+                try
+                {
+                    File.Delete(filePath);
+                }
+                catch (Exception ex)
+                {
+                    writelog($"[DTPProxyPlugin] [RestoreToDefaultPen] Delete setting file failed: {ex}");
+                }
+            }
+            var message = $"Keyboard|RestoreToDefault|{Guid}|{model}";
+            SendDTPEventToUI(message);
+            return true;
+        }
 
         #endregion
 
-
         #region Webcam
+
+        //Derek 1120
+        public async Task<JArray> GetWebcamDeviceItemsExAsync()
+        {
+            _itemID = new ItemId(WebcamItemID);
+
+            if (_webcamMethodInfo != null)
+            {
+                if (await GetCommodityInterfaceInstanceAsync(_webcamMethodInfo) is ICommodity commodity)
+                {
+                    var value = GetPropertyValue(_webcamInterfaceType, commodity, "DeviceItemsEx");
+                    return value == null ? new JArray() : (JArray)value;
+                }
+                else
+                {
+                    Debug.WriteLine($"Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {_itemID} item.");
+                    writelog($"Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {_itemID} item.");
+                    return new JArray();
+                }
+            }
+            else
+            {
+                Debug.WriteLine($"[GetDeviceItemsEx]Could not retrieve the Commodity Interface for the {_itemID} item. _webcamMethodInfo is null");
+                writelog($"[GetDeviceItemsEx]Could not retrieve the Commodity Interface for the {_itemID} item. _webcamMethodInfo is null");
+                return new JArray();
+            }
+        }
         public async Task<JArray> GetPresetProfiles(string Guid)
         {
             if (!await GetItemIDAsync("Webcam", Guid))
@@ -633,7 +792,6 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 return new JArray();
             }
         }
-
         public async Task<string> GetProfileName(string Guid)
         {
             if (!await GetItemIDAsync("Webcam", Guid))
@@ -668,7 +826,6 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 return "";
             }
         }
-
         public async Task<int> GetBrightness(string Guid)
         {
             if (!await GetItemIDAsync("Webcam", Guid))
@@ -686,7 +843,6 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 return -1;
             }
         }
-
         public async Task<string> GetCameraFirmwareVersion(string Guid)
         {
             if (!await GetItemIDAsync("Webcam", Guid))
@@ -712,9 +868,59 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 writelog($"[GetCameraFirmwareVersion]Could not retrieve the Commodity Interface for the {_itemID} item. _webcamMethodInfo is null");
                 return string.Empty;
             }
-
         }
+        public async Task<bool> GetIsWindowsHelloCapabilityVerified(string Guid)
+        {
+            if (!await GetItemIDAsync("Webcam", Guid))
+            { return false; }
 
+            if (_webcamMethodInfo != null)
+            {
+                if (await GetCommodityInterfaceInstanceAsync(_webcamMethodInfo) is ICommodity commodity)
+                {
+                    var value = GetPropertyValue(_webcamInterfaceType, commodity, "IsWindowsHelloCapabilityVerified");
+                    return (bool)value;
+                }
+                else
+                {
+                    Debug.WriteLine($"[IsWindowsHelloCapabilityVerified]Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {_itemID} item.");
+                    writelog($"[IsWindowsHelloCapabilityVerified]Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {_itemID} item.");
+                    return false;
+                }
+            }
+            else
+            {
+                Debug.WriteLine($"[IsWindowsHelloCapabilityVerified]Could not retrieve the Commodity Interface for the {_itemID} item. _webcamMethodInfo is null");
+                writelog($"[IsWindowsHelloCapabilityVerified]Could not retrieve the Commodity Interface for the {_itemID} item. _webcamMethodInfo is null");
+                return false;
+            }
+        }
+        public async Task<bool> GetIsAllSupportedResolutionsFound(string Guid)
+        {
+            if (!await GetItemIDAsync("Webcam", Guid))
+            { return false; }
+
+            if (_webcamMethodInfo != null)
+            {
+                if (await GetCommodityInterfaceInstanceAsync(_webcamMethodInfo) is ICommodity commodity)
+                {
+                    var value = GetPropertyValue(_webcamInterfaceType, commodity, "IsAllSupportedResolutionsFound");
+                    return (bool)value;
+                }
+                else
+                {
+                    Debug.WriteLine($"[IsAllSupportedResolutionsFound]Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {_itemID} item.");
+                    writelog($"[IsAllSupportedResolutionsFound]Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {_itemID} item.");
+                    return false;
+                }
+            }
+            else
+            {
+                Debug.WriteLine($"[IsAllSupportedResolutionsFound]Could not retrieve the Commodity Interface for the {_itemID} item. _webcamMethodInfo is null");
+                writelog($"[IsAllSupportedResolutionsFound]Could not retrieve the Commodity Interface for the {_itemID} item. _webcamMethodInfo is null");
+                return false;
+            }
+        }
         public async Task<bool> GetIsPropertyFOVSupported(string Guid)
         {
             if (!await GetItemIDAsync("Webcam", Guid))
@@ -740,9 +946,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 writelog($"[CheckIsPropertyFOVSupported]Could not retrieve the Commodity Interface for the {_itemID} item. _webcamMethodInfo is null");
                 return false;
             }
-
         }
-
         public async Task<int> GetFieldOfView(string Guid)
         {
             if (!await GetItemIDAsync("Webcam", Guid))
@@ -768,9 +972,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 writelog($"[GetFieldOfViewValue]Could not retrieve the Commodity Interface for the {_itemID} item. _webcamMethodInfo is null");
                 return -1;
             }
-
         }
-
         public async Task<bool> GetIsPropertyHDRSupported(string Guid)
         {
             if (!await GetItemIDAsync("Webcam", Guid))
@@ -796,9 +998,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 writelog($"[CheckIsPropertyHDRSupported]Could not retrieve the Commodity Interface for the {_itemID} item. _webcamMethodInfo is null");
                 return false;
             }
-
         }
-
         public async Task<bool> GetIsHDROn(string Guid)
         {
             if (!await GetItemIDAsync("Webcam", Guid))
@@ -824,10 +1024,8 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 writelog($"[GetIsHDROnValue]Could not retrieve the Commodity Interface for the {_itemID} item. _webcamMethodInfo is null");
                 return false;
             }
-
         }
-
-        public async Task<bool> CheckIsPropertyAntiFlickerSupported(string Guid)
+        public async Task<bool> GeIsPropertyAntiFlickerSupported(string Guid)
         {
             if (!await GetItemIDAsync("Webcam", Guid))
             { return false; }
@@ -852,37 +1050,24 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 writelog($"[CheckIsPropertyHDRSupported]Could not retrieve the Commodity Interface for the {_itemID} item. _webcamMethodInfo is null");
                 return false;
             }
-
         }
-
         public async Task<int> GetAntiFlicker(string Guid)
         {
             if (!await GetItemIDAsync("Webcam", Guid))
             { return -1; }
 
-            if (_webcamMethodInfo != null)
+            if (await GetCommodityInterfaceInstanceAsync(_webcamMethodInfo) is ICommodity commodity)
             {
-                if (await GetCommodityInterfaceInstanceAsync(_webcamMethodInfo) is ICommodity commodity)
-                {
-                    var value = GetPropertyValue(_webcamInterfaceType, commodity, "AntiFlicker");
-                    return (int)value;
-                }
-                else
-                {
-                    Debug.WriteLine($"[GetAntiFlickerValue]Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {_itemID} item.");
-                    writelog($"[GetAntiFlickerValue]Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {_itemID} item.");
-                    return -1;
-                }
+                var value = GetPropertyValue(_webcamInterfaceType, commodity, "AntiFlicker");
+                return (int)value;
             }
             else
             {
-                Debug.WriteLine($"[GetAntiFlickerValue]Could not retrieve the Commodity Interface for the {_itemID} item. _webcamMethodInfo is null");
-                writelog($"[GetAntiFlickerValue]Could not retrieve the Commodity Interface for the {_itemID} item. _webcamMethodInfo is null");
+                Debug.WriteLine($"[GetAntiFlicker]Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {Guid} item.");
+                writelog($"[GetAntiFlicker]Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {Guid} item.");
                 return -1;
             }
-
         }
-
         public async Task<bool> GetIsPropertyAutoFramingSupported(string Guid)
         {
             if (!await GetItemIDAsync("Webcam", Guid))
@@ -910,7 +1095,6 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
 
         }
-
         public async Task<bool> GetIsESISupported(string Guid)
         {
             if (!await GetItemIDAsync("Webcam", Guid))
@@ -938,7 +1122,6 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
 
         }
-
         public async Task<bool> GetIsAutoFramingOn(string Guid)
         {
             if (!await GetItemIDAsync("Webcam", Guid))
@@ -1020,6 +1203,74 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
 
         }
+        public async Task<int> GetZoom(string Guid)
+        {
+            if (!await GetItemIDAsync("Webcam", Guid))
+            { return -1; }
+
+            if (await GetCommodityInterfaceInstanceAsync(_webcamMethodInfo) is ICommodity commodity)
+            {
+                var value = GetPropertyValue(_webcamInterfaceType, commodity, "Zoom");
+                return value == null ? -1 : (int)value;
+            }
+            else
+            {
+                Debug.WriteLine($"[GetZoom]Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {Guid} item.");
+                writelog($"[GetZoom]Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {Guid} item.");
+                return -1;
+            }
+        }
+        public async Task<int> GetFocus(string Guid)
+        {
+            if (!await GetItemIDAsync("Webcam", Guid))
+            { return -1; }
+
+            if (await GetCommodityInterfaceInstanceAsync(_webcamMethodInfo) is ICommodity commodity)
+            {
+                var value = GetPropertyValue(_webcamInterfaceType, commodity, "Focus");
+                return value == null ? -1 : (int)value;
+            }
+            else
+            {
+                Debug.WriteLine($"[GetFocus]Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {Guid} item.");
+                writelog($"[GetFocus]Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {Guid} item.");
+                return -1;
+            }
+        }
+        public async Task<bool> GetIsFocusOn(string Guid)
+        {
+            if (!await GetItemIDAsync("Webcam", Guid))
+            { return false; }
+
+            if (await GetCommodityInterfaceInstanceAsync(_webcamMethodInfo) is ICommodity commodity)
+            {
+                var value = GetPropertyValue(_webcamInterfaceType, commodity, "IsFocusOn");
+                return value == null ? false : (bool)value;
+            }
+            else
+            {
+                Debug.WriteLine($"[GetIsFocusOn]Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {Guid} item.");
+                writelog($"[GetIsFocusOn]Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {Guid} item.");
+                return false;
+            }
+        }
+        public async Task<int> GetPriority(string Guid)
+        {
+            if (!await GetItemIDAsync("Webcam", Guid))
+            { return -1; }
+
+            if (await GetCommodityInterfaceInstanceAsync(_webcamMethodInfo) is ICommodity commodity)
+            {
+                var value = GetPropertyValue(_webcamInterfaceType, commodity, "Priority");
+                return value == null ? -1 : (int)value;
+            }
+            else
+            {
+                Debug.WriteLine($"[GetPriority]Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {Guid} item.");
+                writelog($"[GetPriority]Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {Guid} item.");
+                return -1;
+            }
+        }
 
         public async Task SetProfile(string Guid, string newValue)
         {
@@ -1081,19 +1332,20 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 writelog($"Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {_itemID} item.");
             }
         }
-        public async Task SetZoom(string Guid, int newValue)
+        public async Task<bool> SetZoom(string Guid, int newValue)
         {
             if (!await GetItemIDAsync("Webcam", Guid))
-            { return; }
+            { return false; }
 
             if (await GetCommodityInterfaceInstanceAsync(_webcamMethodInfo) is ICommodity commodity)
             {
-                SetPropertyValue(_webcamInterfaceType, commodity, "Zoom", newValue);
+                return SetPropertyValue(_webcamInterfaceType, commodity, "Zoom", newValue);
             }
             else
             {
                 Debug.WriteLine($"Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {_itemID} item.");
                 writelog($"Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {_itemID} item.");
+                return false;
             }
         }
         public async Task SetAutoFramingSensitivity(string Guid, int newValue)
@@ -1126,19 +1378,20 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 writelog($"Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {_itemID} item.");
             }
         }
-        public async Task SetIsAutoFramingOn(string Guid, bool newValue)
+        public async Task<bool> SetIsAutoFramingOn(string Guid, bool newValue)
         {
             if (!await GetItemIDAsync("Webcam", Guid))
-            { return; }
+            { return false; }
 
             if (await GetCommodityInterfaceInstanceAsync(_webcamMethodInfo) is ICommodity commodity)
             {
-                SetPropertyValue(_webcamInterfaceType, commodity, "IsAutoFramingOn", newValue);
+                return SetPropertyValue(_webcamInterfaceType, commodity, "IsAutoFramingOn", newValue);
             }
             else
             {
                 Debug.WriteLine($"Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {_itemID} item.");
                 writelog($"Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {_itemID} item.");
+                return false;
             }
         }
         public async Task SetIsAutoFramingTransitionOn(string Guid, bool newValue)
@@ -1156,19 +1409,20 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 writelog($"Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {_itemID} item.");
             }
         }
-        public async Task SetFieldOfView(string Guid, int newValue)
+        public async Task<bool> SetFieldOfView(string Guid, int newValue)
         {
             if (!await GetItemIDAsync("Webcam", Guid))
-            { return; }
+            { return false; }
 
             if (await GetCommodityInterfaceInstanceAsync(_webcamMethodInfo) is ICommodity commodity)
             {
-                SetPropertyValue(_webcamInterfaceType, commodity, "FieldOfView", newValue);
+                return SetPropertyValue(_webcamInterfaceType, commodity, "FieldOfView", newValue);
             }
             else
             {
                 Debug.WriteLine($"Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {_itemID} item.");
                 writelog($"Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {_itemID} item.");
+                return false;
             }
         }
         public async Task SetIsFocusOn(string Guid, bool newValue)
@@ -1718,30 +1972,30 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
         }
 
-        public async Task<bool> GetIsPrioritizeExternalWebcam(string Guid)
+        public async Task<bool?> GetIsPrioritizeExternalWebcam(string Guid)
         {
             if (!await GetItemIDAsync("Webcam", Guid))
-            { return false; }
+            { return null; }
 
             if (_webcamMethodInfo != null)
             {
                 if (await GetCommodityInterfaceInstanceAsync(_webcamMethodInfo) is ICommodity commodity)
                 {
                     var value = GetPropertyValue(_webcamInterfaceType, commodity, "IsPrioritizeExternalWebcam");
-                    return (bool)value;
+                    return (bool?)value;
                 }
                 else
                 {
                     Debug.WriteLine($"[GetIsPrioritizeExternalWebcam]Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {_itemID} item.");
                     writelog($"[GetIsPrioritizeExternalWebcam]Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {_itemID} item.");
-                    return false;
+                    return null;
                 }
             }
             else
             {
                 Debug.WriteLine($"[GetIsPrioritizeExternalWebcam]Could not retrieve the Commodity Interface for the {_itemID} item. _webcamMethodInfo is null");
                 writelog($"[GetIsPrioritizeExternalWebcam]Could not retrieve the Commodity Interface for the {_itemID} item. _webcamMethodInfo is null");
-                return false;
+                return null;
             }
 
         }
@@ -1874,26 +2128,27 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
 
             int i = 0;
-            string item = "DellPeripheral";
-            while (i < 10)
+            while (true)
             {
-                _itemID = new ItemId($"{item}.{type}.{i}");
+                _itemID = new ItemId($"DellPeripheral.{type}.{i}");
                 Debug.WriteLine($"{_itemID}");
                 Trace.WriteLine($"{_itemID}");
                 if (await GetCommodityInterfaceInstanceAsync(methodInfo) is ICommodity commodity)
                 {
                     Debug.WriteLine($"{commodity.GetType}");
                     var value = GetPropertyValue(interfaceType, commodity, "DeviceId");
+                    if (value == null)
+                    {
+                        Debug.WriteLine($"Not found {type} GUID: {guid}");
+                        writelog($"Not found {type} GUID: {guid}");
+                        return false;
+                    }
                     Debug.WriteLine((string)value);
                     if ((string)value == guid)
                     { return true; }
                 }
                 i++;
             }
-            Debug.WriteLine($"Not found {type} GUID: {guid}");
-            writelog($"Not found {type} GUID: {guid}");
-            Trace.WriteLine($"Not found {type} GUID: {guid}");
-            return false;
         }
         #endregion
 
@@ -2260,7 +2515,13 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 if (await GetCommodityInterfaceInstanceAsync(_penMethodInfo) is ICommodity commodity)
                 {
                     var value = GetPropertyValue(_penInterfaceType, commodity, "MenuSinglePressSetting");
-                    return Encoding.UTF8.GetString((byte[])value);
+                    if (value is byte[] byteArray)
+                    {
+                        var str = Encoding.UTF8.GetString(byteArray);
+                        Debug.WriteLine(str);
+                        return str;
+                    }
+                    return string.Empty;
                 }
                 else
                 {
@@ -2480,7 +2741,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
         public async Task SetEraserSinglePressSetting(string itemID, byte[] newValue)
         {
-            _itemID = new ItemId(itemID);
+            _itemID = new ItemId(PenItemID0);
 
             if (_penMethodInfo != null)
             {
@@ -2684,14 +2945,74 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 writelog($"[SetTipSensitivity]Could not retrieve the Commodity Interface for the  {_itemID}  item. _penMethodInfo is null");
             }
         }
-        public async Task ResetToDefault_Pen()
+        public async Task<bool> RestoreToDefaultPen()
         {
+            if (!IsDTPReady)
+                return false;
+
+            byte[] newValue = Encoding.UTF8.GetBytes($"{{\"actionId\":73,\"actionName\":\"\"}}");
+            await SetEraserSinglePressSetting(PenItemID0, newValue);
+            newValue = Encoding.UTF8.GetBytes($"{{\"actionId\":90,\"actionName\":\"\"}}");
+            await SetEraserDoublePressSetting(PenItemID0, newValue);
+            newValue = Encoding.UTF8.GetBytes($"{{\"actionId\":75,\"actionName\":\"\"}}");
+            await SetEraserLongPressSetting(PenItemID0, newValue);
+            newValue = Encoding.UTF8.GetBytes($"{{\"actionId\":27,\"actionName\":\"\"}}");
+            await SetSideTopSwitchSinglePressSetting(PenItemID0, newValue);
+            newValue = Encoding.UTF8.GetBytes($"{{\"actionId\":26,\"actionName\":\"\"}}");
+            await SetSideBottomSwitchSinglePressSetting(PenItemID0, newValue);
+            await SetTipSensitivity(PenItemID0, 3);
+            await SetTiltSensitivity(PenItemID0, 1);
+            await SetIsSideTopButtonHoverClick(PenItemID0, false);
+            await SetIsSideBottomButtonHoverClick(PenItemID0, false);
+
+            await RestoreRadialMenuToDefault();
+
+            var filePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), @$"Dell\Dell Display and Peripheral Manager\Actions\pen.json");
+            if (File.Exists(filePath))
+            {
+                try
+                {
+                    File.Delete(filePath);
+                }
+                catch (Exception ex)
+                {
+                    writelog($"[DTPProxyPlugin] [RestoreToDefaultPen] Delete setting file failed: {ex}");
+                }
+            }
+            var message = $"Pen|RestoreToDefault||";
+            SendDTPEventToUI(message);
+            return true;
+        }
+        public async Task<bool> RestoreRadialMenuToDefault()
+        {
+            if (!IsDTPReady)
+                return false;
+
+            byte[] newValue = Encoding.UTF8.GetBytes($"{{\"menuIndex\":0,\"actionId\":82,\"actionName\":\"\"}}");
+            await SetMenuSinglePressSetting(PenItemID0, newValue);
+            newValue = Encoding.UTF8.GetBytes($"{{\"menuIndex\":1,\"actionId\":79,\"actionName\":\"\"}}");
+            await SetMenuSinglePressSetting(PenItemID0, newValue);
+            newValue = Encoding.UTF8.GetBytes($"{{\"menuIndex\":2,\"actionId\":86,\"actionName\":\"\"}}");
+            await SetMenuSinglePressSetting(PenItemID0, newValue);
+            newValue = Encoding.UTF8.GetBytes($"{{\"menuIndex\":3,\"actionId\":80,\"actionName\":\"\"}}");
+            await SetMenuSinglePressSetting(PenItemID0, newValue);
+            newValue = Encoding.UTF8.GetBytes($"{{\"menuIndex\":4,\"actionId\":83,\"actionName\":\"\"}}");
+            await SetMenuSinglePressSetting(PenItemID0, newValue);
+            newValue = Encoding.UTF8.GetBytes($"{{\"menuIndex\":5,\"actionId\":85,\"actionName\":\"\"}}");
+            await SetMenuSinglePressSetting(PenItemID0, newValue);
+            newValue = Encoding.UTF8.GetBytes($"{{\"menuIndex\":6,\"actionId\":81,\"actionName\":\"\"}}");
+            await SetMenuSinglePressSetting(PenItemID0, newValue);
+            newValue = Encoding.UTF8.GetBytes($"{{\"menuIndex\":7,\"actionId\":84,\"actionName\":\"\"}}");
+            await SetMenuSinglePressSetting(PenItemID0, newValue);
+            await SetMenuCenterRightClickSetting(PenItemID0, true);
+            return true;
         }
 
         #endregion
 
         #region Headset set
 
+        // 1125 Add log
         public async Task<bool> SetMicNoiseCancellationAsync(string guidString, bool newValue)
         {
             try
@@ -2702,19 +3023,19 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 if (await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo) is ICommodity commodity)
                 {
                     SetPropertyValue(_headsetInterfaceType, commodity, "MicNoiseCancellation", newValue);
-                    writelog(" [Headset] SetMicNoiseCancellationAsync Success !");
+                    writelog("[DTPProxyPlugin] [Headset] SetMicNoiseCancellationAsync Success !");
                     return true;
                 }
                 else
                 {
-                    Debug.WriteLine($"Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
-                    writelog($"Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
+                    Debug.WriteLine($"[DTPProxyPlugin] [Headset] Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
+                    writelog($"[DTPProxyPlugin] [Headset] Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
                     return false;
                 }
             }
             catch (Exception ex)
             {
-                writelog($" [Headset] SetMicNoiseCancellationAsync failed: {ex.Message}");
+                writelog($"[DTPProxyPlugin] [Headset] SetMicNoiseCancellationAsync failed: {ex.Message}");
                 return false;
             }
         }
@@ -2729,19 +3050,19 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 if (await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo) is ICommodity commodity)
                 {
                     SetPropertyValue(_headsetInterfaceType, commodity, "Sidetone", newValue);
-                    writelog(" [Headset] SetSidetoneAsync Success !");
+                    writelog("[DTPProxyPlugin] [Headset] SetSidetoneAsync Success !");
                     return true;
                 }
                 else
                 {
-                    Debug.WriteLine($"Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
-                    writelog($"Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
+                    Debug.WriteLine($"[DTPProxyPlugin] [Headset] Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
+                    writelog($"[DTPProxyPlugin] [Headset] Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
                     return false;
                 }
             }
             catch (Exception ex)
             {
-                writelog($" [Headset] SetSidetoneAsync failed: {ex.Message}");
+                writelog($"[DTPProxyPlugin] [Headset] SetSidetoneAsync failed: {ex.Message}");
                 return false;
             }
         }
@@ -2756,19 +3077,19 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 if (await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo) is ICommodity commodity)
                 {
                     SetPropertyValue(_headsetInterfaceType, commodity, "BusyLight", newValue);
-                    writelog(" [Headset] SetBusyLightAsync Success !");
+                    writelog("[DTPProxyPlugin] [Headset] SetBusyLightAsync Success !");
                     return true;
                 }
                 else
                 {
-                    Debug.WriteLine($"Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
-                    writelog($"Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
+                    Debug.WriteLine($"[DTPProxyPlugin] [Headset] Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
+                    writelog($"[DTPProxyPlugin] [Headset] Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
                     return false;
                 }
             }
             catch (Exception ex)
             {
-                writelog($" [Headset] SetBusyLightAsync failed: {ex.Message}");
+                writelog($"[DTPProxyPlugin] [Headset] SetBusyLightAsync failed: {ex.Message}");
                 return false;
             }
         }
@@ -2783,19 +3104,19 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 if (await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo) is ICommodity commodity)
                 {
                     SetPropertyValue(_headsetInterfaceType, commodity, "VoiceGuidance", newValue);
-                    writelog(" [Headset] SetVoiceGuidanceAsync Success !");
+                    writelog("[DTPProxyPlugin] [Headset] SetVoiceGuidanceAsync Success !");
                     return true;
                 }
                 else
                 {
-                    Debug.WriteLine($"Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
-                    writelog($"Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
+                    Debug.WriteLine($"[DTPProxyPlugin] [Headset] Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
+                    writelog($"[DTPProxyPlugin] [Headset] Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
                     return false;
                 }
             }
             catch (Exception ex)
             {
-                writelog($" [Headset] SetVoiceGuidanceAsync failed: {ex.Message}");
+                writelog($"[DTPProxyPlugin] [Headset] SetVoiceGuidanceAsync failed: {ex.Message}");
                 return false;
             }
         }
@@ -2810,19 +3131,19 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 if (await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo) is ICommodity commodity)
                 {
                     SetPropertyValue(_headsetInterfaceType, commodity, "SelectedPreset", newValue);
-                    writelog(" [Headset] SetSelectedPresetAsync Success !");
+                    writelog("[DTPProxyPlugin] [Headset] SetSelectedPresetAsync Success !");
                     return true;
                 }
                 else
                 {
-                    Debug.WriteLine($"Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
-                    writelog($"Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
+                    Debug.WriteLine($"[DTPProxyPlugin] [Headset] Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
+                    writelog($"[DTPProxyPlugin] [Headset] Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
                     return false;
                 }
             }
             catch (Exception ex)
             {
-                writelog($" [Headset] SetSelectedPresetAsync failed: {ex.Message}");
+                writelog($"[DTPProxyPlugin] [Headset] SetSelectedPresetAsync failed: {ex.Message}");
                 return false;
             }
         }
@@ -2837,19 +3158,19 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 if (await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo) is ICommodity commodity)
                 {
                     SetPropertyValue(_headsetInterfaceType, commodity, "SidetoneLevel", newValue);
-                    writelog(" [Headset] SetSidetoneLevelAsync Success !");
+                    writelog("[DTPProxyPlugin] [Headset] SetSidetoneLevelAsync Success !");
                     return true;
                 }
                 else
                 {
-                    Debug.WriteLine($"Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
-                    writelog($"Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
+                    Debug.WriteLine($"[DTPProxyPlugin] [Headset] Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
+                    writelog($"[DTPProxyPlugin] [Headset] Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
                     return false;
                 }
             }
             catch (Exception ex)
             {
-                writelog($" [Headset] SetSidetoneLevelAsync failed: {ex.Message}");
+                writelog($"[DTPProxyPlugin] [Headset] SetSidetoneLevelAsync failed: {ex.Message}");
                 return false;
             }
         }
@@ -2864,19 +3185,19 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 if (await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo) is ICommodity commodity)
                 {
                     SetPropertyValue(_headsetInterfaceType, commodity, "BandsGain", newValue);
-                    writelog(" [Headset] SetBandsGainAsync Success !");
+                    writelog("[DTPProxyPlugin] [Headset] SetBandsGainAsync Success !");
                     return true;
                 }
                 else
                 {
-                    Debug.WriteLine($"Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
-                    writelog($"Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
+                    Debug.WriteLine($"[DTPProxyPlugin] [Headset] Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
+                    writelog($"[DTPProxyPlugin] [Headset] Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
                     return false;
                 }
             }
             catch (Exception ex)
             {
-                writelog($" [Headset] SetBandsGainAsync failed: {ex.Message}");
+                writelog($"[DTPProxyPlugin] [Headset] SetBandsGainAsync failed: {ex.Message}");
                 return false;
             }
         }
@@ -2891,19 +3212,19 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 if (await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo) is ICommodity commodity)
                 {
                     SetPropertyValue(_headsetInterfaceType, commodity, "Band1Gain", newValue);
-                    writelog(" [Headset] SetBand1GainAsync Success !");
+                    writelog("[DTPProxyPlugin] [Headset] SetBand1GainAsync Success !");
                     return true;
                 }
                 else
                 {
-                    Debug.WriteLine($"Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
-                    writelog($"Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
+                    Debug.WriteLine($"[DTPProxyPlugin] [Headset] Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
+                    writelog($"[DTPProxyPlugin] [Headset] Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
                     return false;
                 }
             }
             catch (Exception ex)
             {
-                writelog($" [Headset] SetBand1GainAsync failed: {ex.Message}");
+                writelog($"[DTPProxyPlugin] [Headset] SetBand1GainAsync failed: {ex.Message}");
                 return false;
             }
         }
@@ -2918,19 +3239,19 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 if (await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo) is ICommodity commodity)
                 {
                     SetPropertyValue(_headsetInterfaceType, commodity, "Band2Gain", newValue);
-                    writelog(" [Headset] SetBand2GainAsync Success !");
+                    writelog("[DTPProxyPlugin] [Headset] SetBand2GainAsync Success !");
                     return true;
                 }
                 else
                 {
-                    Debug.WriteLine($"Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
-                    writelog($"Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
+                    Debug.WriteLine($"[DTPProxyPlugin] [Headset] Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
+                    writelog($"[DTPProxyPlugin] [Headset] Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
                     return false;
                 }
             }
             catch (Exception ex)
             {
-                writelog($" [Headset] SetBand2GainAsync failed: {ex.Message}");
+                writelog($"[DTPProxyPlugin] [Headset] SetBand2GainAsync failed: {ex.Message}");
                 return false;
             }
         }
@@ -2945,19 +3266,19 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 if (await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo) is ICommodity commodity)
                 {
                     SetPropertyValue(_headsetInterfaceType, commodity, "Band3Gain", newValue);
-                    writelog(" [Headset] SetBand3GainAsync Success !");
+                    writelog("[DTPProxyPlugin] [Headset] SetBand3GainAsync Success !");
                     return true;
                 }
                 else
                 {
-                    Debug.WriteLine($"Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
-                    writelog($"Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
+                    Debug.WriteLine($"[DTPProxyPlugin] [Headset] Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
+                    writelog($"[DTPProxyPlugin] [Headset] Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
                     return false;
                 }
             }
             catch (Exception ex)
             {
-                writelog($" [Headset] SetBand3GainAsync failed: {ex.Message}");
+                writelog($"[DTPProxyPlugin] [Headset] SetBand3GainAsync failed: {ex.Message}");
                 return false;
             }
         }
@@ -2972,19 +3293,19 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 if (await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo) is ICommodity commodity)
                 {
                     SetPropertyValue(_headsetInterfaceType, commodity, "Band4Gain", newValue);
-                    writelog(" [Headset] SetBand4GainAsync Success !");
+                    writelog("[DTPProxyPlugin] [Headset] SetBand4GainAsync Success !");
                     return true;
                 }
                 else
                 {
-                    Debug.WriteLine($"Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
-                    writelog($"Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
+                    Debug.WriteLine($"[DTPProxyPlugin] [Headset] Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
+                    writelog($"[DTPProxyPlugin] [Headset] Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
                     return false;
                 }
             }
             catch (Exception ex)
             {
-                writelog($" [Headset] SetBand4GainAsync failed: {ex.Message}");
+                writelog($"[DTPProxyPlugin] [Headset] SetBand4GainAsync failed: {ex.Message}");
                 return false;
             }
         }
@@ -2999,19 +3320,19 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 if (await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo) is ICommodity commodity)
                 {
                     SetPropertyValue(_headsetInterfaceType, commodity, "Band5Gain", newValue);
-                    writelog(" [Headset] SetBand5GainAsync Success !");
+                    writelog("[DTPProxyPlugin] [Headset] SetBand5GainAsync Success !");
                     return true;
                 }
                 else
                 {
-                    Debug.WriteLine($"Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
-                    writelog($"Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
+                    Debug.WriteLine($"[DTPProxyPlugin] [Headset] Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
+                    writelog($"[DTPProxyPlugin] [Headset] Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
                     return false;
                 }
             }
             catch (Exception ex)
             {
-                writelog($" [Headset] SetBand5GainAsync failed: {ex.Message}");
+                writelog($"[DTPProxyPlugin] [Headset] SetBand5GainAsync failed: {ex.Message}");
                 return false;
             }
         }
@@ -3025,19 +3346,19 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 if (await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo) is ICommodity commodity)
                 {
                     SetPropertyValue(_headsetInterfaceType, commodity, "AncMode", newValue);
-                    writelog(" [Headset] SetAncModeAsync Success !");
+                    writelog("[DTPProxyPlugin] [Headset] SetAncModeAsync Success !");
                     return true;
                 }
                 else
                 {
-                    Debug.WriteLine($"Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
-                    writelog($"Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
+                    Debug.WriteLine($"[DTPProxyPlugin] [Headset] Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
+                    writelog($"[DTPProxyPlugin] [Headset] Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
                     return false;
                 }
             }
             catch (Exception ex)
             {
-                writelog($" [Headset] SetAncModeAsync failed: {ex.Message}");
+                writelog($"[DTPProxyPlugin] [Headset] SetAncModeAsync failed: {ex.Message}");
                 return false;
             }
         }
@@ -3052,24 +3373,24 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 if (await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo) is ICommodity commodity)
                 {
                     SetPropertyValue(_headsetInterfaceType, commodity, "AncGain", newValue);
-                    writelog(" [Headset] SetAncGainAsync Success !");
+                    writelog("[DTPProxyPlugin] [Headset] SetAncGainAsync Success !");
                     return true;
                 }
                 else
                 {
-                    Debug.WriteLine($"Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
-                    writelog($"Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
+                    Debug.WriteLine($"[DTPProxyPlugin] [Headset] Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
+                    writelog($"[DTPProxyPlugin] [Headset] Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
                     return false;
                 }
             }
             catch (Exception ex)
             {
-                writelog($" [Headset] SetAncGainAsync failed: {ex.Message}");
+                writelog($"[DTPProxyPlugin] [Headset] SetAncGainAsync failed: {ex.Message}");
                 return false;
             }
         }
 
-        public async Task<bool> SetWearDetectionAsync(string guidString, int newValue)
+        public async Task<bool> SetWearDetectionAsync(string guidString, bool newValue)
         {
             try
             {
@@ -3079,19 +3400,127 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 if (await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo) is ICommodity commodity)
                 {
                     SetPropertyValue(_headsetInterfaceType, commodity, "WearDetection", newValue);
-                    writelog(" [Headset] SetWearDetectionAsync Success !");
+                    writelog("[DTPProxyPlugin] [Headset] SetWearDetectionAsync Success !");
                     return true;
                 }
                 else
                 {
-                    Debug.WriteLine($"Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
-                    writelog($"Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
+                    Debug.WriteLine($"[DTPProxyPlugin] [Headset] Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
+                    writelog($"[DTPProxyPlugin] [Headset] Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
                     return false;
                 }
             }
             catch (Exception ex)
             {
-                writelog($" [Headset] SetWearDetectionAsync failed: {ex.Message}");
+                writelog($"[DTPProxyPlugin] [Headset] SetWearDetectionAsync failed: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> SetIsWearDetectionMuteMicEnabledAsync(string guidString, bool newValue)
+        {
+            try
+            {
+                if (!await GetItemIDAsync("Headset", guidString))
+                    return false;
+
+                if (await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo) is ICommodity commodity)
+                {
+                    SetPropertyValue(_headsetInterfaceType, commodity, "IsWearDetectionMuteMicEnabled", newValue);
+                    writelog("[DTPProxyPlugin] [Headset] SetIsWearDetectionMuteMicEnabledAsync Success !");
+                    return true;
+                }
+                else
+                {
+                    Debug.WriteLine($"[DTPProxyPlugin] [Headset] Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
+                    writelog($"[DTPProxyPlugin] [Headset] Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DTPProxyPlugin] [Headset] SetIsWearDetectionMuteMicEnabledAsync failed: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> SetIsWearDetectionPauseMusicEnabledAsync(string guidString, bool newValue)
+        {
+            try
+            {
+                if (!await GetItemIDAsync("Headset", guidString))
+                    return false;
+
+                if (await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo) is ICommodity commodity)
+                {
+                    SetPropertyValue(_headsetInterfaceType, commodity, "IsWearDetectionPauseMusicEnabled", newValue);
+                    writelog("[DTPProxyPlugin] [Headset] SetIsWearDetectionPauseMusicEnabledAsync Success !");
+                    return true;
+                }
+                else
+                {
+                    Debug.WriteLine($"[DTPProxyPlugin] [Headset] Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
+                    writelog($"[DTPProxyPlugin] [Headset] Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DTPProxyPlugin] [Headset] SetWearDetectionAsync failed: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> SetWearDetectionQuickPauseAsync(string guidString, int newValue)
+        {
+            try
+            {
+                if (!await GetItemIDAsync("Headset", guidString))
+                    return false;
+
+                if (await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo) is ICommodity commodity)
+                {
+                    SetPropertyValue(_headsetInterfaceType, commodity, "WearDetectionQuickPause", newValue);
+                    writelog("[DTPProxyPlugin] [Headset] SetWearDetectionQuickPauseAsync Success !");
+                    return true;
+                }
+                else
+                {
+                    Debug.WriteLine($"[DTPProxyPlugin] [Headset] Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
+                    writelog($"[DTPProxyPlugin] [Headset] Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DTPProxyPlugin] [Headset] SetAncGainAsync failed: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> SetWearDetectionSensitivityAsync(string guidString, int newValue)
+        {
+            try
+            {
+                if (!await GetItemIDAsync("Headset", guidString))
+                    return false;
+
+                if (await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo) is ICommodity commodity)
+                {
+                    SetPropertyValue(_headsetInterfaceType, commodity, "WearDetectionSensitivity", newValue);
+                    writelog("[DTPProxyPlugin] [Headset] SetWearDetectionSensitivityAsync Success !");
+                    return true;
+                }
+                else
+                {
+                    Debug.WriteLine($"[DTPProxyPlugin] [Headset] Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
+                    writelog($"[DTPProxyPlugin] [Headset] Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DTPProxyPlugin] [Headset] SetAncGainAsync failed: {ex.Message}");
                 return false;
             }
         }
@@ -3106,19 +3535,19 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 if (await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo) is ICommodity commodity)
                 {
                     SetPropertyValue(_headsetInterfaceType, commodity, "MicNCIncoming", newValue);
-                    writelog(" [Headset] SetMicNCIncomingAsync Success !");
+                    writelog("[DTPProxyPlugin] [Headset] SetMicNCIncomingAsync Success !");
                     return true;
                 }
                 else
                 {
-                    Debug.WriteLine($"Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
-                    writelog($"Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
+                    Debug.WriteLine($"[DTPProxyPlugin] [Headset] Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
+                    writelog($"[DTPProxyPlugin] [Headset] Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
                     return false;
                 }
             }
             catch (Exception ex)
             {
-                writelog($" [Headset] SetMicNCIncomingAsync failed: {ex.Message}");
+                writelog($"[DTPProxyPlugin] [Headset] SetMicNCIncomingAsync failed: {ex.Message}");
                 return false;
             }
         }
@@ -3133,19 +3562,19 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 if (await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo) is ICommodity commodity)
                 {
                     SetPropertyValue(_headsetInterfaceType, commodity, "UnPair", newValue);
-                    writelog(" [Headset] SetUnPairAsync Success !");
+                    writelog("[DTPProxyPlugin] [Headset] SetUnPairAsync Success !");
                     return true;
                 }
                 else
                 {
-                    Debug.WriteLine($"Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
-                    writelog($"Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
+                    Debug.WriteLine($"[DTPProxyPlugin] [Headset] Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
+                    writelog($"[DTPProxyPlugin] [Headset] Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
                     return false;
                 }
             }
             catch (Exception ex)
             {
-                writelog($" [Headset] SetUnPairAsync failed: {ex.Message}");
+                writelog($"[DTPProxyPlugin] [Headset] SetUnPairAsync failed: {ex.Message}");
                 return false;
             }
         }
@@ -3160,19 +3589,46 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 if (await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo) is ICommodity commodity)
                 {
                     SetPropertyValue(_headsetInterfaceType, commodity, "FactoryReset", newValue);
-                    writelog(" [Headset] SetFactoryResetAsyncValueForHeadset Success !");
+                    writelog("[DTPProxyPlugin] [Headset] SetFactoryResetAsyncValueForHeadset Success !");
                     return true;
                 }
                 else
                 {
-                    Debug.WriteLine($"Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
-                    writelog($"Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
+                    Debug.WriteLine($"[DTPProxyPlugin] [Headset] Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
+                    writelog($"[DTPProxyPlugin] [Headset] Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
                     return false;
                 }
             }
             catch (Exception ex)
             {
-                writelog($" [Headset] SetFactoryResetAsyncValueForHeadset failed: {ex.Message}");
+                writelog($"[DTPProxyPlugin] [Headset] SetFactoryResetAsyncValueForHeadset failed: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> SetBoomMicAsync(string guidString, bool newValue)
+        {
+            try
+            {
+                if (!await GetItemIDAsync("Headset", guidString))
+                    return false;
+
+                if (await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo) is ICommodity commodity)
+                {
+                    SetPropertyValue(_headsetInterfaceType, commodity, "BoomMic", newValue);
+                    writelog("[DTPProxyPlugin] [Headset] SetBoomMicAsync Success !");
+                    return true;
+                }
+                else
+                {
+                    Debug.WriteLine($"[DTPProxyPlugin] [Headset] Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
+                    writelog($"[DTPProxyPlugin] [Headset] Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DTPProxyPlugin] [Headset] SetBoomMicAsync failed: {ex.Message}");
                 return false;
             }
         }
@@ -3181,32 +3637,34 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
         #region Headset Get
 
-        public async Task<JArray> GetDeviceItemsExAsync(string guid)
+        public async Task<JArray> GetHeadsetDeviceItemsExAsync()
         {
             try
             {
-                if (!await GetItemIDAsync("Headset", guid))
-                    return null;
+                _itemID = new ItemId(HeadsetItemID);
 
-                var commodity = await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo);
-                if (commodity is ICommodity)
+                if (_headsetMethodInfo != null)
                 {
-                    var value = GetPropertyValue(_headsetInterfaceType, commodity, "DeviceItemsEx");
-                    writelog($"[Headset] GetDeviceItemsExAsync succeeded for {guid}");
-                    return (JArray)value;
+                    var commodity = await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo);
+                    if (commodity is ICommodity)
+                    {
+                        var value = GetPropertyValue(_headsetInterfaceType, commodity, "DeviceItemsEx");
+                        writelog($"[DTPProxyPlugin] [Headset] GetDeviceItemsExAsync succeeded");
+                        return (JArray)value;
+                    }
                 }
 
-                writelog($"[Headset] GetDeviceItemsExAsync failed: Could not retrieve commodity interface for {guid}");
+                writelog($"[DTPProxyPlugin] [Headset] GetDeviceItemsExAsync failed: Could not retrieve commodity interface");
                 return null;
             }
             catch (Exception ex)
             {
-                writelog($"[Headset] GetDeviceItemsExAsync failed for {guid} - Exception: {ex.Message}");
+                writelog($"[DTPProxyPlugin] [Headset] GetDeviceItemsExAsync failed - Exception: {ex.Message}");
                 return null;
             }
         }
 
-        public async Task<DeviceInterfaceType> GetInterfaceTypeAsync(string guid)
+        public async Task<DeviceInterfaceType> GetHeadsetInterfaceTypeAsync(string guid)
         {
             try
             {
@@ -3217,21 +3675,21 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 if (commodity is ICommodity)
                 {
                     var value = GetPropertyValue(_headsetInterfaceType, commodity, "InterfaceType");
-                    writelog($"[Headset] GetInterfaceTypeAsync succeeded for {guid}");
+                    writelog($"[DTPProxyPlugin] [Headset] GetInterfaceTypeAsync succeeded for {guid}");
                     return (DeviceInterfaceType)value;
                 }
 
-                writelog($"[Headset] GetInterfaceTypeAsync failed: Could not retrieve commodity interface for {guid}");
+                writelog($"[DTPProxyPlugin] [Headset] GetInterfaceTypeAsync failed: Could not retrieve commodity interface for {guid}");
                 return default;
             }
             catch (Exception ex)
             {
-                writelog($"[Headset] GetInterfaceTypeAsync failed for {guid} - Exception: {ex.Message}");
+                writelog($"[DTPProxyPlugin] [Headset] GetInterfaceTypeAsync failed for {guid} - Exception: {ex.Message}");
                 return default;
             }
         }
 
-        public async Task<string> GetDeviceNameAsync(string guid)
+        public async Task<string> GetHeadsetDeviceNameAsync(string guid)
         {
             try
             {
@@ -3242,21 +3700,21 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 if (commodity is ICommodity)
                 {
                     var value = GetPropertyValue(_headsetInterfaceType, commodity, "DeviceName");
-                    writelog($"[Headset] GetDeviceNameAsync succeeded for {guid}");
+                    writelog($"[DTPProxyPlugin] [Headset] GetDeviceNameAsync succeeded for {guid}");
                     return (string)value;
                 }
 
-                writelog($"[Headset] GetDeviceNameAsync failed: Could not retrieve commodity interface for {guid}");
+                writelog($"[DTPProxyPlugin] [Headset] GetDeviceNameAsync failed: Could not retrieve commodity interface for {guid}");
                 return null;
             }
             catch (Exception ex)
             {
-                writelog($"[Headset] GetDeviceNameAsync failed for {guid} - Exception: {ex.Message}");
+                writelog($"[DTPProxyPlugin] [Headset] GetDeviceNameAsync failed for {guid} - Exception: {ex.Message}");
                 return null;
             }
         }
 
-        public async Task<string> GetDeviceIdAsync(string guid)
+        public async Task<string> GetHeadsetDeviceIdAsync(string guid)
         {
             try
             {
@@ -3267,21 +3725,21 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 if (commodity is ICommodity)
                 {
                     var value = GetPropertyValue(_headsetInterfaceType, commodity, "DeviceId");
-                    writelog($"[Headset] GetDeviceIdAsync succeeded for {guid}");
+                    writelog($"[DTPProxyPlugin] [Headset] GetDeviceIdAsync succeeded for {guid}");
                     return (string)value;
                 }
 
-                writelog($"[Headset] GetDeviceIdAsync failed: Could not retrieve commodity interface for {guid}");
+                writelog($"[DTPProxyPlugin] [Headset] GetDeviceIdAsync failed: Could not retrieve commodity interface for {guid}");
                 return null;
             }
             catch (Exception ex)
             {
-                writelog($"[Headset] GetDeviceIdAsync failed for {guid} - Exception: {ex.Message}");
+                writelog($"[DTPProxyPlugin] [Headset] GetDeviceIdAsync failed for {guid} - Exception: {ex.Message}");
                 return null;
             }
         }
 
-        public async Task<string> GetPluginIdAsync(string guid)
+        public async Task<string> GetHeadsetPluginIdAsync(string guid)
         {
             try
             {
@@ -3292,21 +3750,21 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 if (commodity is ICommodity)
                 {
                     var value = GetPropertyValue(_headsetInterfaceType, commodity, "PluginId");
-                    writelog($"[Headset] GetPluginIdAsync succeeded for {guid}");
+                    writelog($"[DTPProxyPlugin] [Headset] GetPluginIdAsync succeeded for {guid}");
                     return (string)value;
                 }
 
-                writelog($"[Headset] GetPluginIdAsync failed: Could not retrieve commodity interface for {guid}");
+                writelog($"[DTPProxyPlugin] [Headset] GetPluginIdAsync failed: Could not retrieve commodity interface for {guid}");
                 return null;
             }
             catch (Exception ex)
             {
-                writelog($"[Headset] GetPluginIdAsync failed for {guid} - Exception: {ex.Message}");
+                writelog($"[DTPProxyPlugin] [Headset] GetPluginIdAsync failed for {guid} - Exception: {ex.Message}");
                 return null;
             }
         }
 
-        public async Task<int> GetODMIdAsync(string guid)
+        public async Task<int> GetHeadsetODMIdAsync(string guid)
         {
             try
             {
@@ -3317,21 +3775,21 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 if (commodity is ICommodity)
                 {
                     var value = GetPropertyValue(_headsetInterfaceType, commodity, "ODMId");
-                    writelog($"[Headset] GetODMIdAsync succeeded for {guid}");
+                    writelog($"[DTPProxyPlugin] [Headset] GetODMIdAsync succeeded for {guid}");
                     return (int)value;
                 }
 
-                writelog($"[Headset] GetODMIdAsync failed: Could not retrieve commodity interface for {guid}");
+                writelog($"[DTPProxyPlugin] [Headset] GetODMIdAsync failed: Could not retrieve commodity interface for {guid}");
                 return -1;
             }
             catch (Exception ex)
             {
-                writelog($"[Headset] GetODMIdAsync failed for {guid} - Exception: {ex.Message}");
+                writelog($"[DTPProxyPlugin] [Headset] GetODMIdAsync failed for {guid} - Exception: {ex.Message}");
                 return -1;
             }
         }
 
-        public async Task<string> GetModelNumberAsync(string guid)
+        public async Task<string> GetHeadsetModelNumberAsync(string guid)
         {
             try
             {
@@ -3342,21 +3800,21 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 if (commodity is ICommodity)
                 {
                     var value = GetPropertyValue(_headsetInterfaceType, commodity, "ModelNumber");
-                    writelog($"[Headset] GetModelNumberAsync succeeded for {guid}");
+                    writelog($"[DTPProxyPlugin] [Headset] GetModelNumberAsync succeeded for {guid}");
                     return (string)value;
                 }
 
-                writelog($"[Headset] GetModelNumberAsync failed: Could not retrieve commodity interface for {guid}");
+                writelog($"[DTPProxyPlugin] [Headset] GetModelNumberAsync failed: Could not retrieve commodity interface for {guid}");
                 return null;
             }
             catch (Exception ex)
             {
-                writelog($"[Headset] GetModelNumberAsync failed for {guid} - Exception: {ex.Message}");
+                writelog($"[DTPProxyPlugin] [Headset] GetModelNumberAsync failed for {guid} - Exception: {ex.Message}");
                 return null;
             }
         }
 
-        public async Task<int> GetInstanceNumberAsync(string guid)
+        public async Task<int> GetHeadsetInstanceNumberAsync(string guid)
         {
             try
             {
@@ -3367,21 +3825,21 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 if (commodity is ICommodity)
                 {
                     var value = GetPropertyValue(_headsetInterfaceType, commodity, "InstanceNumber");
-                    writelog($"[Headset] GetInstanceNumberAsync succeeded for {guid}");
+                    writelog($"[DTPProxyPlugin] [Headset] GetInstanceNumberAsync succeeded for {guid}");
                     return (int)value;
                 }
 
-                writelog($"[Headset] GetInstanceNumberAsync failed: Could not retrieve commodity interface for {guid}");
+                writelog($"[DTPProxyPlugin] [Headset] GetInstanceNumberAsync failed: Could not retrieve commodity interface for {guid}");
                 return -1;
             }
             catch (Exception ex)
             {
-                writelog($"[Headset] GetInstanceNumberAsync failed for {guid} - Exception: {ex.Message}");
+                writelog($"[DTPProxyPlugin] [Headset] GetInstanceNumberAsync failed for {guid} - Exception: {ex.Message}");
                 return -1;
             }
         }
 
-        public async Task<int> GetInstanceIdAsync(string guid)
+        public async Task<int> GetHeadsetInstanceIdAsync(string guid)
         {
             try
             {
@@ -3392,21 +3850,21 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 if (commodity is ICommodity)
                 {
                     var value = GetPropertyValue(_headsetInterfaceType, commodity, "InstanceId");
-                    writelog($"[Headset] GetInstanceIdAsync succeeded for {guid}");
+                    writelog($"[DTPProxyPlugin] [Headset] GetInstanceIdAsync succeeded for {guid}");
                     return (int)value;
                 }
 
-                writelog($"[Headset] GetInstanceIdAsync failed: Could not retrieve commodity interface for {guid}");
+                writelog($"[DTPProxyPlugin] [Headset] GetInstanceIdAsync failed: Could not retrieve commodity interface for {guid}");
                 return -1;
             }
             catch (Exception ex)
             {
-                writelog($"[Headset] GetInstanceIdAsync failed for {guid} - Exception: {ex.Message}");
+                writelog($"[DTPProxyPlugin] [Headset] GetInstanceIdAsync failed for {guid} - Exception: {ex.Message}");
                 return -1;
             }
         }
 
-        public async Task<string> GetFirmwareVersionAsync(string guid)
+        public async Task<string> GetHeadsetFirmwareVersionAsync(string guid)
         {
             try
             {
@@ -3417,21 +3875,21 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 if (commodity is ICommodity)
                 {
                     var value = GetPropertyValue(_headsetInterfaceType, commodity, "FirmwareVersion");
-                    writelog($"[Headset] GetFirmwareVersionAsync succeeded for {guid}");
+                    writelog($"[DTPProxyPlugin] [Headset] GetFirmwareVersionAsync succeeded for {guid}");
                     return (string)value;
                 }
 
-                writelog($"[Headset] GetFirmwareVersionAsync failed: Could not retrieve commodity interface for {guid}");
+                writelog($"[DTPProxyPlugin] [Headset] GetFirmwareVersionAsync failed: Could not retrieve commodity interface for {guid}");
                 return null;
             }
             catch (Exception ex)
             {
-                writelog($"[Headset] GetFirmwareVersionAsync failed for {guid} - Exception: {ex.Message}");
+                writelog($"[DTPProxyPlugin] [Headset] GetFirmwareVersionAsync failed for {guid} - Exception: {ex.Message}");
                 return null;
             }
         }
 
-        public async Task<string> GetDeviceTypeAsync(string guid)
+        public async Task<string> GetHeadsetDeviceTypeAsync(string guid)
         {
             try
             {
@@ -3442,21 +3900,21 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 if (commodity is ICommodity)
                 {
                     var value = GetPropertyValue(_headsetInterfaceType, commodity, "DeviceType");
-                    writelog($"[Headset] GetDeviceTypeAsync succeeded for {guid}");
+                    writelog($"[DTPProxyPlugin] [Headset] GetDeviceTypeAsync succeeded for {guid}");
                     return (string)value;
                 }
 
-                writelog($"[Headset] GetDeviceTypeAsync failed: Could not retrieve commodity interface for {guid}");
+                writelog($"[DTPProxyPlugin] [Headset] GetDeviceTypeAsync failed: Could not retrieve commodity interface for {guid}");
                 return null;
             }
             catch (Exception ex)
             {
-                writelog($"[Headset] GetDeviceTypeAsync failed for {guid} - Exception: {ex.Message}");
+                writelog($"[DTPProxyPlugin] [Headset] GetDeviceTypeAsync failed for {guid} - Exception: {ex.Message}");
                 return null;
             }
         }
 
-        public async Task<string> GetParentDeviceTypeAsync(string guid)
+        public async Task<string> GetHeadsetParentDeviceTypeAsync(string guid)
         {
             try
             {
@@ -3467,21 +3925,21 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 if (commodity is ICommodity)
                 {
                     var value = GetPropertyValue(_headsetInterfaceType, commodity, "ParentDeviceType");
-                    writelog($"[Headset] GetParentDeviceTypeAsync succeeded for {guid}");
+                    writelog($"[DTPProxyPlugin] [Headset] GetParentDeviceTypeAsync succeeded for {guid}");
                     return (string)value;
                 }
 
-                writelog($"[Headset] GetParentDeviceTypeAsync failed: Could not retrieve commodity interface for {guid}");
+                writelog($"[DTPProxyPlugin] [Headset] GetParentDeviceTypeAsync failed: Could not retrieve commodity interface for {guid}");
                 return null;
             }
             catch (Exception ex)
             {
-                writelog($"[Headset] GetParentDeviceTypeAsync failed for {guid} - Exception: {ex.Message}");
+                writelog($"[DTPProxyPlugin] [Headset] GetParentDeviceTypeAsync failed for {guid} - Exception: {ex.Message}");
                 return null;
             }
         }
 
-        public async Task<bool> GetIsBatteryLevelSupportedAsync(string guid)
+        public async Task<bool> GetHeadsetIsBatteryLevelSupportedAsync(string guid)
         {
             try
             {
@@ -3492,21 +3950,21 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 if (commodity is ICommodity)
                 {
                     var value = GetPropertyValue(_headsetInterfaceType, commodity, "IsBatteryLevelSupported");
-                    writelog($"[Headset] GetIsBatteryLevelSupportedAsync succeeded for {guid}");
+                    writelog($"[DTPProxyPlugin] [Headset] GetIsBatteryLevelSupportedAsync succeeded for {guid}");
                     return (bool)value;
                 }
 
-                writelog($"[Headset] GetIsBatteryLevelSupportedAsync failed: Could not retrieve commodity interface for {guid}");
+                writelog($"[DTPProxyPlugin] [Headset] GetIsBatteryLevelSupportedAsync failed: Could not retrieve commodity interface for {guid}");
                 return false;
             }
             catch (Exception ex)
             {
-                writelog($"[Headset] GetIsBatteryLevelSupportedAsync failed for {guid} - Exception: {ex.Message}");
+                writelog($"[DTPProxyPlugin] [Headset] GetIsBatteryLevelSupportedAsync failed for {guid} - Exception: {ex.Message}");
                 return false;
             }
         }
 
-        public async Task<int> GetBatteryLevelAsync(string guid)
+        public async Task<int> GetHeadsetBatteryLevelAsync(string guid)
         {
             try
             {
@@ -3517,21 +3975,21 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 if (commodity is ICommodity)
                 {
                     var value = GetPropertyValue(_headsetInterfaceType, commodity, "BatteryLevel");
-                    writelog($"[Headset] GetBatteryLevelAsync succeeded for {guid}");
+                    writelog($"[DTPProxyPlugin] [Headset] GetBatteryLevelAsync succeeded for {guid}");
                     return (int)value;
                 }
 
-                writelog($"[Headset] GetBatteryLevelAsync failed: Could not retrieve commodity interface for {guid}");
+                writelog($"[DTPProxyPlugin] [Headset] GetBatteryLevelAsync failed: Could not retrieve commodity interface for {guid}");
                 return -1;
             }
             catch (Exception ex)
             {
-                writelog($"[Headset] GetBatteryLevelAsync failed for {guid} - Exception: {ex.Message}");
+                writelog($"[DTPProxyPlugin] [Headset] GetBatteryLevelAsync failed for {guid} - Exception: {ex.Message}");
                 return -1;
             }
         }
 
-        public async Task<string> GetDeviceBatteryStatusAsync(string guid)
+        public async Task<string> GetHeadsetDeviceBatteryStatusAsync(string guid)
         {
             try
             {
@@ -3542,21 +4000,21 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 if (commodity is ICommodity)
                 {
                     var value = GetPropertyValue(_headsetInterfaceType, commodity, "DeviceBatteryStatus");
-                    writelog($"[Headset] GetDeviceBatteryStatusAsync succeeded for {guid}");
+                    writelog($"[DTPProxyPlugin] [Headset] GetDeviceBatteryStatusAsync succeeded for {guid}");
                     return (string)value;
                 }
 
-                writelog($"[Headset] GetDeviceBatteryStatusAsync failed: Could not retrieve commodity interface for {guid}");
+                writelog($"[DTPProxyPlugin] [Headset] GetDeviceBatteryStatusAsync failed: Could not retrieve commodity interface for {guid}");
                 return null;
             }
             catch (Exception ex)
             {
-                writelog($"[Headset] GetDeviceBatteryStatusAsync failed for {guid} - Exception: {ex.Message}");
+                writelog($"[DTPProxyPlugin] [Headset] GetDeviceBatteryStatusAsync failed for {guid} - Exception: {ex.Message}");
                 return null;
             }
         }
 
-        public async Task<string> GetPairingStatusAsync(string guid)
+        public async Task<string> GetHeadsetPairingStatusAsync(string guid)
         {
             try
             {
@@ -3567,21 +4025,96 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 if (commodity is ICommodity)
                 {
                     var value = GetPropertyValue(_headsetInterfaceType, commodity, "PairingStatus");
-                    writelog($"[Headset] GetPairingStatusAsync succeeded for {guid}");
+                    writelog($"[DTPProxyPlugin] [Headset] GetPairingStatusAsync succeeded for {guid}");
                     return (string)value;
                 }
 
-                writelog($"[Headset] GetPairingStatusAsync failed: Could not retrieve commodity interface for {guid}");
+                writelog($"[DTPProxyPlugin] [Headset] GetPairingStatusAsync failed: Could not retrieve commodity interface for {guid}");
                 return null;
             }
             catch (Exception ex)
             {
-                writelog($"[Headset] GetPairingStatusAsync failed for {guid} - Exception: {ex.Message}");
+                writelog($"[DTPProxyPlugin] [Headset] GetPairingStatusAsync failed for {guid} - Exception: {ex.Message}");
                 return null;
             }
         }
 
-        public async Task<int> GetMaxPairingSlotsAsync(string guid)
+        public async Task<string> GetHeadsetPairedHostName1Async(string guid)
+        {
+            try
+            {
+                if (!await GetItemIDAsync("Headset", guid))
+                    return null;
+
+                var commodity = await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo);
+                if (commodity is ICommodity)
+                {
+                    var value = GetPropertyValue(_headsetInterfaceType, commodity, "PairedHostName1");
+                    writelog($"[DTPProxyPlugin] [Headset] GetPairedHostName1Async succeeded for {guid}");
+                    return (string)value;
+                }
+
+                writelog($"[DTPProxyPlugin] [Headset] GetPairedHostName1Async failed: Could not retrieve commodity interface for {guid}");
+                return null;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DTPProxyPlugin] [Headset] GetPairedHostName1Async failed for {guid} - Exception: {ex.Message}");
+                return null;
+            }
+        }
+
+        public async Task<string> GetHeadsetPairedHostName2Async(string guid)
+        {
+            try
+            {
+                if (!await GetItemIDAsync("Headset", guid))
+                    return null;
+
+                var commodity = await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo);
+                if (commodity is ICommodity)
+                {
+                    var value = GetPropertyValue(_headsetInterfaceType, commodity, "PairedHostName2");
+                    writelog($"[DTPProxyPlugin] [Headset] GetPairedHostName2Async succeeded for {guid}");
+                    return (string)value;
+                }
+
+                writelog($"[DTPProxyPlugin] [Headset] GetPairedHostName2Async failed: Could not retrieve commodity interface for {guid}");
+                return null;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DTPProxyPlugin] [Headset] GetPairedHostName2Async failed for {guid} - Exception: {ex.Message}");
+                return null;
+            }
+        }
+
+        public async Task<string> GetHeadsetPairedHostName3Async(string guid)
+        {
+            try
+            {
+                if (!await GetItemIDAsync("Headset", guid))
+                    return null;
+
+                var commodity = await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo);
+                if (commodity is ICommodity)
+                {
+                    var value = GetPropertyValue(_headsetInterfaceType, commodity, "PairedHostName3");
+                    writelog($"[DTPProxyPlugin] [Headset] GetPairedHostName3Async succeeded for {guid}");
+                    return (string)value;
+                }
+
+                writelog($"[DTPProxyPlugin] [Headset] GetPairedHostName3Async failed: Could not retrieve commodity interface for {guid}");
+                return null;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DTPProxyPlugin] [Headset] GetPairedHostName3Async failed for {guid} - Exception: {ex.Message}");
+                return null;
+            }
+        }
+
+        public async Task<int> GetHeadsetMaxPairingSlotsAsync(string guid)
         {
             try
             {
@@ -3592,21 +4125,21 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 if (commodity is ICommodity)
                 {
                     var value = GetPropertyValue(_headsetInterfaceType, commodity, "MaxPairingSlots");
-                    writelog($"[Headset] GetMaxPairingSlotsAsync succeeded for {guid}");
+                    writelog($"[DTPProxyPlugin] [Headset] GetMaxPairingSlotsAsync succeeded for {guid}");
                     return (int)value;
                 }
 
-                writelog($"[Headset] GetMaxPairingSlotsAsync failed: Could not retrieve commodity interface for {guid}");
+                writelog($"[DTPProxyPlugin] [Headset] GetMaxPairingSlotsAsync failed: Could not retrieve commodity interface for {guid}");
                 return -1;
             }
             catch (Exception ex)
             {
-                writelog($"[Headset] GetMaxPairingSlotsAsync failed for {guid} - Exception: {ex.Message}");
+                writelog($"[DTPProxyPlugin] [Headset] GetMaxPairingSlotsAsync failed for {guid} - Exception: {ex.Message}");
                 return -1;
             }
         }
 
-        public async Task<int> GetPairedDeviceCountAsync(string guid)
+        public async Task<int> GetHeadsetPairedDeviceCountAsync(string guid)
         {
             try
             {
@@ -3617,22 +4150,22 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 if (commodity is ICommodity)
                 {
                     var value = GetPropertyValue(_headsetInterfaceType, commodity, "PairedDeviceCount");
-                    writelog($"[Headset] GetPairedDeviceCountAsync succeeded for {guid}");
+                    writelog($"[DTPProxyPlugin] [Headset] GetPairedDeviceCountAsync succeeded for {guid}");
                     return (int)value;
                 }
 
-                writelog($"[Headset] GetPairedDeviceCountAsync failed: Could not retrieve commodity interface for {guid}");
+                writelog($"[DTPProxyPlugin] [Headset] GetPairedDeviceCountAsync failed: Could not retrieve commodity interface for {guid}");
                 return -1;
             }
             catch (Exception ex)
             {
-                writelog($"[Headset] GetPairedDeviceCountAsync failed for {guid} - Exception: {ex.Message}");
+                writelog($"[DTPProxyPlugin] [Headset] GetPairedDeviceCountAsync failed for {guid} - Exception: {ex.Message}");
                 return -1;
             }
         }
         #region Headset Get (continued)
 
-        public async Task<int> GetTotalNumberOfPairedHostNameAsync(string guid)
+        public async Task<int> GetHeadsetTotalNumberOfPairedHostNameAsync(string guid)
         {
             try
             {
@@ -3643,21 +4176,21 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 if (commodity is ICommodity)
                 {
                     var value = GetPropertyValue(_headsetInterfaceType, commodity, "TotalNumberOfPairedHostName");
-                    writelog($"[Headset] GetTotalNumberOfPairedHostNameAsync succeeded for {guid}");
+                    writelog($"[DTPProxyPlugin] [Headset] GetTotalNumberOfPairedHostNameAsync succeeded for {guid}");
                     return (int)value;
                 }
 
-                writelog($"[Headset] GetTotalNumberOfPairedHostNameAsync failed: Could not retrieve commodity interface for {guid}");
+                writelog($"[DTPProxyPlugin] [Headset] GetTotalNumberOfPairedHostNameAsync failed: Could not retrieve commodity interface for {guid}");
                 return -1;
             }
             catch (Exception ex)
             {
-                writelog($"[Headset] GetTotalNumberOfPairedHostNameAsync failed for {guid} - Exception: {ex.Message}");
+                writelog($"[DTPProxyPlugin] [Headset] GetTotalNumberOfPairedHostNameAsync failed for {guid} - Exception: {ex.Message}");
                 return -1;
             }
         }
 
-        public async Task<string> GetSerialNumberAsync(string guid)
+        public async Task<string> GetHeadsetSerialNumberAsync(string guid)
         {
             try
             {
@@ -3668,16 +4201,16 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 if (commodity is ICommodity)
                 {
                     var value = GetPropertyValue(_headsetInterfaceType, commodity, "SerialNumber");
-                    writelog($"[Headset] GetSerialNumberAsync succeeded for {guid}");
+                    writelog($"[DTPProxyPlugin] [Headset] GetSerialNumberAsync succeeded for {guid}");
                     return (string)value;
                 }
 
-                writelog($"[Headset] GetSerialNumberAsync failed: Could not retrieve commodity interface for {guid}");
+                writelog($"[DTPProxyPlugin] [Headset] GetSerialNumberAsync failed: Could not retrieve commodity interface for {guid}");
                 return null;
             }
             catch (Exception ex)
             {
-                writelog($"[Headset] GetSerialNumberAsync failed for {guid} - Exception: {ex.Message}");
+                writelog($"[DTPProxyPlugin] [Headset] GetSerialNumberAsync failed for {guid} - Exception: {ex.Message}");
                 return null;
             }
         }
@@ -3693,16 +4226,16 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 if (commodity is ICommodity)
                 {
                     var value = GetPropertyValue(_headsetInterfaceType, commodity, "IsReady");
-                    writelog($"[Headset] GetIsReadyAsync succeeded for {guid}");
+                    writelog($"[DTPProxyPlugin] [Headset] GetIsReadyAsync succeeded for {guid}");
                     return (bool)value;
                 }
 
-                writelog($"[Headset] GetIsReadyAsync failed: Could not retrieve commodity interface for {guid}");
+                writelog($"[DTPProxyPlugin] [Headset] GetIsReadyAsync failed: Could not retrieve commodity interface for {guid}");
                 return false;
             }
             catch (Exception ex)
             {
-                writelog($"[Headset] GetIsReadyAsync failed for {guid} - Exception: {ex.Message}");
+                writelog($"[DTPProxyPlugin] [Headset] GetIsReadyAsync failed for {guid} - Exception: {ex.Message}");
                 return false;
             }
         }
@@ -3718,16 +4251,16 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 if (commodity is ICommodity)
                 {
                     var value = GetPropertyValue(_headsetInterfaceType, commodity, "IsDirty");
-                    writelog($"[Headset] GetIsDirtyAsync succeeded for {guid}");
+                    writelog($"[DTPProxyPlugin] [Headset] GetIsDirtyAsync succeeded for {guid}");
                     return (bool)value;
                 }
 
-                writelog($"[Headset] GetIsDirtyAsync failed: Could not retrieve commodity interface for {guid}");
+                writelog($"[DTPProxyPlugin] [Headset] GetIsDirtyAsync failed: Could not retrieve commodity interface for {guid}");
                 return false;
             }
             catch (Exception ex)
             {
-                writelog($"[Headset] GetIsDirtyAsync failed for {guid} - Exception: {ex.Message}");
+                writelog($"[DTPProxyPlugin] [Headset] GetIsDirtyAsync failed for {guid} - Exception: {ex.Message}");
                 return false;
             }
         }
@@ -3743,16 +4276,16 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 if (commodity is ICommodity)
                 {
                     var value = GetPropertyValue(_headsetInterfaceType, commodity, "IsMicNoiseCancellationSupported");
-                    writelog($"[Headset] GetIsMicNoiseCancellationSupportedAsync succeeded for {guid}");
+                    writelog($"[DTPProxyPlugin] [Headset] GetIsMicNoiseCancellationSupportedAsync succeeded for {guid}");
                     return (bool)value;
                 }
 
-                writelog($"[Headset] GetIsMicNoiseCancellationSupportedAsync failed: Could not retrieve commodity interface for {guid}");
+                writelog($"[DTPProxyPlugin] [Headset] GetIsMicNoiseCancellationSupportedAsync failed: Could not retrieve commodity interface for {guid}");
                 return false;
             }
             catch (Exception ex)
             {
-                writelog($"[Headset] GetIsMicNoiseCancellationSupportedAsync failed for {guid} - Exception: {ex.Message}");
+                writelog($"[DTPProxyPlugin] [Headset] GetIsMicNoiseCancellationSupportedAsync failed for {guid} - Exception: {ex.Message}");
                 return false;
             }
         }
@@ -3768,16 +4301,16 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 if (commodity is ICommodity)
                 {
                     var value = GetPropertyValue(_headsetInterfaceType, commodity, "IsSidetoneSupported");
-                    writelog($"[Headset] GetIsSidetoneSupportedAsync succeeded for {guid}");
+                    writelog($"[DTPProxyPlugin] [Headset] GetIsSidetoneSupportedAsync succeeded for {guid}");
                     return (bool)value;
                 }
 
-                writelog($"[Headset] GetIsSidetoneSupportedAsync failed: Could not retrieve commodity interface for {guid}");
+                writelog($"[DTPProxyPlugin] [Headset] GetIsSidetoneSupportedAsync failed: Could not retrieve commodity interface for {guid}");
                 return false;
             }
             catch (Exception ex)
             {
-                writelog($"[Headset] GetIsSidetoneSupportedAsync failed for {guid} - Exception: {ex.Message}");
+                writelog($"[DTPProxyPlugin] [Headset] GetIsSidetoneSupportedAsync failed for {guid} - Exception: {ex.Message}");
                 return false;
             }
         }
@@ -3793,16 +4326,16 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 if (commodity is ICommodity)
                 {
                     var value = GetPropertyValue(_headsetInterfaceType, commodity, "IsBusyLightSupported");
-                    writelog($"[Headset] GetIsBusyLightSupportedAsync succeeded for {guid}");
+                    writelog($"[DTPProxyPlugin] [Headset] GetIsBusyLightSupportedAsync succeeded for {guid}");
                     return (bool)value;
                 }
 
-                writelog($"[Headset] GetIsBusyLightSupportedAsync failed: Could not retrieve commodity interface for {guid}");
+                writelog($"[DTPProxyPlugin] [Headset] GetIsBusyLightSupportedAsync failed: Could not retrieve commodity interface for {guid}");
                 return false;
             }
             catch (Exception ex)
             {
-                writelog($"[Headset] GetIsBusyLightSupportedAsync failed for {guid} - Exception: {ex.Message}");
+                writelog($"[DTPProxyPlugin] [Headset] GetIsBusyLightSupportedAsync failed for {guid} - Exception: {ex.Message}");
                 return false;
             }
         }
@@ -3818,16 +4351,16 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 if (commodity is ICommodity)
                 {
                     var value = GetPropertyValue(_headsetInterfaceType, commodity, "IsVoiceGuidanceSupported");
-                    writelog($"[Headset] GetIsVoiceGuidanceSupportedAsync succeeded for {guid}");
+                    writelog($"[DTPProxyPlugin] [Headset] GetIsVoiceGuidanceSupportedAsync succeeded for {guid}");
                     return (bool)value;
                 }
 
-                writelog($"[Headset] GetIsVoiceGuidanceSupportedAsync failed: Could not retrieve commodity interface for {guid}");
+                writelog($"[DTPProxyPlugin] [Headset] GetIsVoiceGuidanceSupportedAsync failed: Could not retrieve commodity interface for {guid}");
                 return false;
             }
             catch (Exception ex)
             {
-                writelog($"[Headset] GetIsVoiceGuidanceSupportedAsync failed for {guid} - Exception: {ex.Message}");
+                writelog($"[DTPProxyPlugin] [Headset] GetIsVoiceGuidanceSupportedAsync failed for {guid} - Exception: {ex.Message}");
                 return false;
             }
         }
@@ -3843,16 +4376,16 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 if (commodity is ICommodity)
                 {
                     var value = GetPropertyValue(_headsetInterfaceType, commodity, "IsPresetsSupported");
-                    writelog($"[Headset] GetIsPresetsSupportedAsync succeeded for {guid}");
+                    writelog($"[DTPProxyPlugin] [Headset] GetIsPresetsSupportedAsync succeeded for {guid}");
                     return (bool)value;
                 }
 
-                writelog($"[Headset] GetIsPresetsSupportedAsync failed: Could not retrieve commodity interface for {guid}");
+                writelog($"[DTPProxyPlugin] [Headset] GetIsPresetsSupportedAsync failed: Could not retrieve commodity interface for {guid}");
                 return false;
             }
             catch (Exception ex)
             {
-                writelog($"[Headset] GetIsPresetsSupportedAsync failed for {guid} - Exception: {ex.Message}");
+                writelog($"[DTPProxyPlugin] [Headset] GetIsPresetsSupportedAsync failed for {guid} - Exception: {ex.Message}");
                 return false;
             }
         }
@@ -3868,16 +4401,16 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 if (commodity is ICommodity)
                 {
                     var value = GetPropertyValue(_headsetInterfaceType, commodity, "IsEqualizerSupported");
-                    writelog($"[Headset] GetIsEqualizerSupportedAsync succeeded for {guid}");
+                    writelog($"[DTPProxyPlugin] [Headset] GetIsEqualizerSupportedAsync succeeded for {guid}");
                     return (bool)value;
                 }
 
-                writelog($"[Headset] GetIsEqualizerSupportedAsync failed: Could not retrieve commodity interface for {guid}");
+                writelog($"[DTPProxyPlugin] [Headset] GetIsEqualizerSupportedAsync failed: Could not retrieve commodity interface for {guid}");
                 return false;
             }
             catch (Exception ex)
             {
-                writelog($"[Headset] GetIsEqualizerSupportedAsync failed for {guid} - Exception: {ex.Message}");
+                writelog($"[DTPProxyPlugin] [Headset] GetIsEqualizerSupportedAsync failed for {guid} - Exception: {ex.Message}");
                 return false;
             }
         }
@@ -3893,16 +4426,16 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 if (commodity is ICommodity)
                 {
                     var value = GetPropertyValue(_headsetInterfaceType, commodity, "ConnectionType");
-                    writelog($"[Headset] GetConnectionTypeAsync succeeded for {guid}");
+                    writelog($"[DTPProxyPlugin] [Headset] GetConnectionTypeAsync succeeded for {guid}");
                     return (HeadsetConnectionType)value;
                 }
 
-                writelog($"[Headset] GetConnectionTypeAsync failed: Could not retrieve commodity interface for {guid}");
+                writelog($"[DTPProxyPlugin] [Headset] GetConnectionTypeAsync failed: Could not retrieve commodity interface for {guid}");
                 return HeadsetConnectionType.HeadsetConnectionTypeUnknown;
             }
             catch (Exception ex)
             {
-                writelog($"[Headset] GetConnectionTypeAsync failed for {guid} - Exception: {ex.Message}");
+                writelog($"[DTPProxyPlugin] [Headset] GetConnectionTypeAsync failed for {guid} - Exception: {ex.Message}");
                 return HeadsetConnectionType.HeadsetConnectionTypeUnknown;
             }
         }
@@ -3918,16 +4451,16 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 if (commodity is ICommodity)
                 {
                     var value = GetPropertyValue(_headsetInterfaceType, commodity, "IsANCSupported");
-                    writelog($"[Headset] GetIsANCSupportedAsync succeeded for {guid}");
+                    writelog($"[DTPProxyPlugin] [Headset] GetIsANCSupportedAsync succeeded for {guid}");
                     return (bool)value;
                 }
 
-                writelog($"[Headset] GetIsANCSupportedAsync failed: Could not retrieve commodity interface for {guid}");
+                writelog($"[DTPProxyPlugin] [Headset] GetIsANCSupportedAsync failed: Could not retrieve commodity interface for {guid}");
                 return false;
             }
             catch (Exception ex)
             {
-                writelog($"[Headset] GetIsANCSupportedAsync failed for {guid} - Exception: {ex.Message}");
+                writelog($"[DTPProxyPlugin] [Headset] GetIsANCSupportedAsync failed for {guid} - Exception: {ex.Message}");
                 return false;
             }
         }
@@ -3943,16 +4476,16 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 if (commodity is ICommodity)
                 {
                     var value = GetPropertyValue(_headsetInterfaceType, commodity, "IsWearDetectionSupported");
-                    writelog($"[Headset] GetIsWearDetectionSupportedAsync succeeded for {guid}");
+                    writelog($"[DTPProxyPlugin] [Headset] GetIsWearDetectionSupportedAsync succeeded for {guid}");
                     return (bool)value;
                 }
 
-                writelog($"[Headset] GetIsWearDetectionSupportedAsync failed: Could not retrieve commodity interface for {guid}");
+                writelog($"[DTPProxyPlugin] [Headset] GetIsWearDetectionSupportedAsync failed: Could not retrieve commodity interface for {guid}");
                 return false;
             }
             catch (Exception ex)
             {
-                writelog($"[Headset] GetIsWearDetectionSupportedAsync failed for {guid} - Exception: {ex.Message}");
+                writelog($"[DTPProxyPlugin] [Headset] GetIsWearDetectionSupportedAsync failed for {guid} - Exception: {ex.Message}");
                 return false;
             }
         }
@@ -3968,16 +4501,16 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 if (commodity is ICommodity)
                 {
                     var value = GetPropertyValue(_headsetInterfaceType, commodity, "IsWearDetectionSensitivitySupported");
-                    writelog($"[Headset] GetIsWearDetectionSensitivitySupportedAsync succeeded for {guid}");
+                    writelog($"[DTPProxyPlugin] [Headset] GetIsWearDetectionSensitivitySupportedAsync succeeded for {guid}");
                     return (bool)value;
                 }
 
-                writelog($"[Headset] GetIsWearDetectionSensitivitySupportedAsync failed: Could not retrieve commodity interface for {guid}");
+                writelog($"[DTPProxyPlugin] [Headset] GetIsWearDetectionSensitivitySupportedAsync failed: Could not retrieve commodity interface for {guid}");
                 return false;
             }
             catch (Exception ex)
             {
-                writelog($"[Headset] GetIsWearDetectionSensitivitySupportedAsync failed for {guid} - Exception: {ex.Message}");
+                writelog($"[DTPProxyPlugin] [Headset] GetIsWearDetectionSensitivitySupportedAsync failed for {guid} - Exception: {ex.Message}");
                 return false;
             }
         }
@@ -3993,16 +4526,16 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 if (commodity is ICommodity)
                 {
                     var value = GetPropertyValue(_headsetInterfaceType, commodity, "IsWearDetectionPauseMusicSupported");
-                    writelog($"[Headset] GetIsWearDetectionPauseMusicSupportedAsync succeeded for {guid}");
+                    writelog($"[DTPProxyPlugin] [Headset] GetIsWearDetectionPauseMusicSupportedAsync succeeded for {guid}");
                     return (bool)value;
                 }
 
-                writelog($"[Headset] GetIsWearDetectionPauseMusicSupportedAsync failed: Could not retrieve commodity interface for {guid}");
+                writelog($"[DTPProxyPlugin] [Headset] GetIsWearDetectionPauseMusicSupportedAsync failed: Could not retrieve commodity interface for {guid}");
                 return false;
             }
             catch (Exception ex)
             {
-                writelog($"[Headset] GetIsWearDetectionPauseMusicSupportedAsync failed for {guid} - Exception: {ex.Message}");
+                writelog($"[DTPProxyPlugin] [Headset] GetIsWearDetectionPauseMusicSupportedAsync failed for {guid} - Exception: {ex.Message}");
                 return false;
             }
         }
@@ -4018,16 +4551,16 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 if (commodity is ICommodity)
                 {
                     var value = GetPropertyValue(_headsetInterfaceType, commodity, "IsWearDetectionMuteMicSupported");
-                    writelog($"[Headset] GetIsWearDetectionMuteMicSupportedAsync succeeded for {guid}");
+                    writelog($"[DTPProxyPlugin] [Headset] GetIsWearDetectionMuteMicSupportedAsync succeeded for {guid}");
                     return (bool)value;
                 }
 
-                writelog($"[Headset] GetIsWearDetectionMuteMicSupportedAsync failed: Could not retrieve commodity interface for {guid}");
+                writelog($"[DTPProxyPlugin] [Headset] GetIsWearDetectionMuteMicSupportedAsync failed: Could not retrieve commodity interface for {guid}");
                 return false;
             }
             catch (Exception ex)
             {
-                writelog($"[Headset] GetIsWearDetectionMuteMicSupportedAsync failed for {guid} - Exception: {ex.Message}");
+                writelog($"[DTPProxyPlugin] [Headset] GetIsWearDetectionMuteMicSupportedAsync failed for {guid} - Exception: {ex.Message}");
                 return false;
             }
         }
@@ -4043,16 +4576,16 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 if (commodity is ICommodity)
                 {
                     var value = GetPropertyValue(_headsetInterfaceType, commodity, "IsWearDetectionQuickPauseSupported");
-                    writelog($"[Headset] GetIsWearDetectionQuickPauseSupportedAsync succeeded for {guid}");
+                    writelog($"[DTPProxyPlugin] [Headset] GetIsWearDetectionQuickPauseSupportedAsync succeeded for {guid}");
                     return (bool)value;
                 }
 
-                writelog($"[Headset] GetIsWearDetectionQuickPauseSupportedAsync failed: Could not retrieve commodity interface for {guid}");
+                writelog($"[DTPProxyPlugin] [Headset] GetIsWearDetectionQuickPauseSupportedAsync failed: Could not retrieve commodity interface for {guid}");
                 return false;
             }
             catch (Exception ex)
             {
-                writelog($"[Headset] GetIsWearDetectionQuickPauseSupportedAsync failed for {guid} - Exception: {ex.Message}");
+                writelog($"[DTPProxyPlugin] [Headset] GetIsWearDetectionQuickPauseSupportedAsync failed for {guid} - Exception: {ex.Message}");
                 return false;
             }
         }
@@ -4068,16 +4601,16 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 if (commodity is ICommodity)
                 {
                     var value = GetPropertyValue(_headsetInterfaceType, commodity, "MicNoiseCancellation");
-                    writelog($"[Headset] GetMicNoiseCancellationAsync succeeded for {guid}");
+                    writelog($"[DTPProxyPlugin] [Headset] GetMicNoiseCancellationAsync succeeded for {guid}");
                     return (bool)value;
                 }
 
-                writelog($"[Headset] GetMicNoiseCancellationAsync failed: Could not retrieve commodity interface for {guid}");
+                writelog($"[DTPProxyPlugin] [Headset] GetMicNoiseCancellationAsync failed: Could not retrieve commodity interface for {guid}");
                 return false;
             }
             catch (Exception ex)
             {
-                writelog($"[Headset] GetMicNoiseCancellationAsync failed for {guid} - Exception: {ex.Message}");
+                writelog($"[DTPProxyPlugin] [Headset] GetMicNoiseCancellationAsync failed for {guid} - Exception: {ex.Message}");
                 return false;
             }
         }
@@ -4093,16 +4626,16 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 if (commodity is ICommodity)
                 {
                     var value = GetPropertyValue(_headsetInterfaceType, commodity, "MicNCIncoming");
-                    writelog($"[Headset] GetMicNCIncomingAsync succeeded for {guid}");
+                    writelog($"[DTPProxyPlugin] [Headset] GetMicNCIncomingAsync succeeded for {guid}");
                     return (bool)value;
                 }
 
-                writelog($"[Headset] GetMicNCIncomingAsync failed: Could not retrieve commodity interface for {guid}");
+                writelog($"[DTPProxyPlugin] [Headset] GetMicNCIncomingAsync failed: Could not retrieve commodity interface for {guid}");
                 return false;
             }
             catch (Exception ex)
             {
-                writelog($"[Headset] GetMicNCIncomingAsync failed for {guid} - Exception: {ex.Message}");
+                writelog($"[DTPProxyPlugin] [Headset] GetMicNCIncomingAsync failed for {guid} - Exception: {ex.Message}");
                 return false;
             }
         }
@@ -4118,16 +4651,16 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 if (commodity is ICommodity)
                 {
                     var value = GetPropertyValue(_headsetInterfaceType, commodity, "Sidetone");
-                    writelog($"[Headset] GetSidetoneAsync succeeded for {guid}");
+                    writelog($"[DTPProxyPlugin] [Headset] GetSidetoneAsync succeeded for {guid}");
                     return (bool)value;
                 }
 
-                writelog($"[Headset] GetSidetoneAsync failed: Could not retrieve commodity interface for {guid}");
+                writelog($"[DTPProxyPlugin] [Headset] GetSidetoneAsync failed: Could not retrieve commodity interface for {guid}");
                 return false;
             }
             catch (Exception ex)
             {
-                writelog($"[Headset] GetSidetoneAsync failed for {guid} - Exception: {ex.Message}");
+                writelog($"[DTPProxyPlugin] [Headset] GetSidetoneAsync failed for {guid} - Exception: {ex.Message}");
                 return false;
             }
         }
@@ -4143,16 +4676,16 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 if (commodity is ICommodity)
                 {
                     var value = GetPropertyValue(_headsetInterfaceType, commodity, "BusyLight");
-                    writelog($"[Headset] GetBusyLightAsync succeeded for {guid}");
+                    writelog($"[DTPProxyPlugin] [Headset] GetBusyLightAsync succeeded for {guid}");
                     return (bool)value;
                 }
 
-                writelog($"[Headset] GetBusyLightAsync failed: Could not retrieve commodity interface for {guid}");
+                writelog($"[DTPProxyPlugin] [Headset] GetBusyLightAsync failed: Could not retrieve commodity interface for {guid}");
                 return false;
             }
             catch (Exception ex)
             {
-                writelog($"[Headset] GetBusyLightAsync failed for {guid} - Exception: {ex.Message}");
+                writelog($"[DTPProxyPlugin] [Headset] GetBusyLightAsync failed for {guid} - Exception: {ex.Message}");
                 return false;
             }
         }
@@ -4168,16 +4701,16 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 if (commodity is ICommodity)
                 {
                     var value = GetPropertyValue(_headsetInterfaceType, commodity, "VoiceGuidance");
-                    writelog($"[Headset] GetVoiceGuidanceAsync succeeded for {guid}");
+                    writelog($"[DTPProxyPlugin] [Headset] GetVoiceGuidanceAsync succeeded for {guid}");
                     return (bool)value;
                 }
 
-                writelog($"[Headset] GetVoiceGuidanceAsync failed: Could not retrieve commodity interface for {guid}");
+                writelog($"[DTPProxyPlugin] [Headset] GetVoiceGuidanceAsync failed: Could not retrieve commodity interface for {guid}");
                 return false;
             }
             catch (Exception ex)
             {
-                writelog($"[Headset] GetVoiceGuidanceAsync failed for {guid} - Exception: {ex.Message}");
+                writelog($"[DTPProxyPlugin] [Headset] GetVoiceGuidanceAsync failed for {guid} - Exception: {ex.Message}");
                 return false;
             }
         }
@@ -4193,16 +4726,16 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 if (commodity is ICommodity)
                 {
                     var value = GetPropertyValue(_headsetInterfaceType, commodity, "SelectedPreset");
-                    writelog($"[Headset] GetSelectedPresetAsync succeeded for {guid}");
+                    writelog($"[DTPProxyPlugin] [Headset] GetSelectedPresetAsync succeeded for {guid}");
                     return (int)value;
                 }
 
-                writelog($"[Headset] GetSelectedPresetAsync failed: Could not retrieve commodity interface for {guid}");
+                writelog($"[DTPProxyPlugin] [Headset] GetSelectedPresetAsync failed: Could not retrieve commodity interface for {guid}");
                 return -1;
             }
             catch (Exception ex)
             {
-                writelog($"[Headset] GetSelectedPresetAsync failed for {guid} - Exception: {ex.Message}");
+                writelog($"[DTPProxyPlugin] [Headset] GetSelectedPresetAsync failed for {guid} - Exception: {ex.Message}");
                 return -1;
             }
         }
@@ -4218,16 +4751,16 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 if (commodity is ICommodity)
                 {
                     var value = GetPropertyValue(_headsetInterfaceType, commodity, "SidetoneLevel");
-                    writelog($"[Headset] GetSidetoneLevelAsync succeeded for {guid}");
+                    writelog($"[DTPProxyPlugin] [Headset] GetSidetoneLevelAsync succeeded for {guid}");
                     return (int)value;
                 }
 
-                writelog($"[Headset] GetSidetoneLevelAsync failed: Could not retrieve commodity interface for {guid}");
+                writelog($"[DTPProxyPlugin] [Headset] GetSidetoneLevelAsync failed: Could not retrieve commodity interface for {guid}");
                 return -1;
             }
             catch (Exception ex)
             {
-                writelog($"[Headset] GetSidetoneLevelAsync failed for {guid} - Exception: {ex.Message}");
+                writelog($"[DTPProxyPlugin] [Headset] GetSidetoneLevelAsync failed for {guid} - Exception: {ex.Message}");
                 return -1;
             }
         }
@@ -4243,16 +4776,16 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 if (commodity is ICommodity)
                 {
                     var value = GetPropertyValue(_headsetInterfaceType, commodity, "MuteStatus");
-                    writelog($"[Headset] GetMuteStatusAsync succeeded for {guid}");
+                    writelog($"[DTPProxyPlugin] [Headset] GetMuteStatusAsync succeeded for {guid}");
                     return (bool)value;
                 }
 
-                writelog($"[Headset] GetMuteStatusAsync failed: Could not retrieve commodity interface for {guid}");
+                writelog($"[DTPProxyPlugin] [Headset] GetMuteStatusAsync failed: Could not retrieve commodity interface for {guid}");
                 return false;
             }
             catch (Exception ex)
             {
-                writelog($"[Headset] GetMuteStatusAsync failed for {guid} - Exception: {ex.Message}");
+                writelog($"[DTPProxyPlugin] [Headset] GetMuteStatusAsync failed for {guid} - Exception: {ex.Message}");
                 return false;
             }
         }
@@ -4268,16 +4801,16 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 if (commodity is ICommodity)
                 {
                     var value = GetPropertyValue(_headsetInterfaceType, commodity, "BandsGain");
-                    writelog($"[Headset] GetBandsGainAsync succeeded for {guid}");
+                    writelog($"[DTPProxyPlugin] [Headset] GetBandsGainAsync succeeded for {guid}");
                     return (byte[])value;
                 }
 
-                writelog($"[Headset] GetBandsGainAsync failed: Could not retrieve commodity interface for {guid}");
+                writelog($"[DTPProxyPlugin] [Headset] GetBandsGainAsync failed: Could not retrieve commodity interface for {guid}");
                 return null;
             }
             catch (Exception ex)
             {
-                writelog($"[Headset] GetBandsGainAsync failed for {guid} - Exception: {ex.Message}");
+                writelog($"[DTPProxyPlugin] [Headset] GetBandsGainAsync failed for {guid} - Exception: {ex.Message}");
                 return null;
             }
         }
@@ -4293,16 +4826,16 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 if (commodity is ICommodity)
                 {
                     var value = GetPropertyValue(_headsetInterfaceType, commodity, "Band1Gain");
-                    writelog($"[Headset] GetBand1GainAsync succeeded for {guid}");
+                    writelog($"[DTPProxyPlugin] [Headset] GetBand1GainAsync succeeded for {guid}");
                     return (int)value;
                 }
 
-                writelog($"[Headset] GetBand1GainAsync failed: Could not retrieve commodity interface for {guid}");
+                writelog($"[DTPProxyPlugin] [Headset] GetBand1GainAsync failed: Could not retrieve commodity interface for {guid}");
                 return -1;
             }
             catch (Exception ex)
             {
-                writelog($"[Headset] GetBand1GainAsync failed for {guid} - Exception: {ex.Message}");
+                writelog($"[DTPProxyPlugin] [Headset] GetBand1GainAsync failed for {guid} - Exception: {ex.Message}");
                 return -1;
             }
         }
@@ -4318,16 +4851,16 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 if (commodity is ICommodity)
                 {
                     var value = GetPropertyValue(_headsetInterfaceType, commodity, "Band2Gain");
-                    writelog($"[Headset] GetBand2GainAsync succeeded for {guid}");
+                    writelog($"[DTPProxyPlugin] [Headset] GetBand2GainAsync succeeded for {guid}");
                     return (int)value;
                 }
 
-                writelog($"[Headset] GetBand2GainAsync failed: Could not retrieve commodity interface for {guid}");
+                writelog($"[DTPProxyPlugin] [Headset] GetBand2GainAsync failed: Could not retrieve commodity interface for {guid}");
                 return -1;
             }
             catch (Exception ex)
             {
-                writelog($"[Headset] GetBand2GainAsync failed for {guid} - Exception: {ex.Message}");
+                writelog($"[DTPProxyPlugin] [Headset] GetBand2GainAsync failed for {guid} - Exception: {ex.Message}");
                 return -1;
             }
         }
@@ -4343,16 +4876,16 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 if (commodity is ICommodity)
                 {
                     var value = GetPropertyValue(_headsetInterfaceType, commodity, "Band3Gain");
-                    writelog($"[Headset] GetBand3GainAsync succeeded for {guid}");
+                    writelog($"[DTPProxyPlugin] [Headset] GetBand3GainAsync succeeded for {guid}");
                     return (int)value;
                 }
 
-                writelog($"[Headset] GetBand3GainAsync failed: Could not retrieve commodity interface for {guid}");
+                writelog($"[DTPProxyPlugin] [Headset] GetBand3GainAsync failed: Could not retrieve commodity interface for {guid}");
                 return -1;
             }
             catch (Exception ex)
             {
-                writelog($"[Headset] GetBand3GainAsync failed for {guid} - Exception: {ex.Message}");
+                writelog($"[DTPProxyPlugin] [Headset] GetBand3GainAsync failed for {guid} - Exception: {ex.Message}");
                 return -1;
             }
         }
@@ -4368,16 +4901,16 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 if (commodity is ICommodity)
                 {
                     var value = GetPropertyValue(_headsetInterfaceType, commodity, "Band4Gain");
-                    writelog($"[Headset] GetBand4GainAsync succeeded for {guid}");
+                    writelog($"[DTPProxyPlugin] [Headset] GetBand4GainAsync succeeded for {guid}");
                     return (int)value;
                 }
 
-                writelog($"[Headset] GetBand4GainAsync failed: Could not retrieve commodity interface for {guid}");
+                writelog($"[DTPProxyPlugin] [Headset] GetBand4GainAsync failed: Could not retrieve commodity interface for {guid}");
                 return -1;
             }
             catch (Exception ex)
             {
-                writelog($"[Headset] GetBand4GainAsync failed for {guid} - Exception: {ex.Message}");
+                writelog($"[DTPProxyPlugin] [Headset] GetBand4GainAsync failed for {guid} - Exception: {ex.Message}");
                 return -1;
             }
         }
@@ -4393,16 +4926,16 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 if (commodity is ICommodity)
                 {
                     var value = GetPropertyValue(_headsetInterfaceType, commodity, "Band5Gain");
-                    writelog($"[Headset] GetBand5GainAsync succeeded for {guid}");
+                    writelog($"[DTPProxyPlugin] [Headset] GetBand5GainAsync succeeded for {guid}");
                     return (int)value;
                 }
 
-                writelog($"[Headset] GetBand5GainAsync failed: Could not retrieve commodity interface for {guid}");
+                writelog($"[DTPProxyPlugin] [Headset] GetBand5GainAsync failed: Could not retrieve commodity interface for {guid}");
                 return -1;
             }
             catch (Exception ex)
             {
-                writelog($"[Headset] GetBand5GainAsync failed for {guid} - Exception: {ex.Message}");
+                writelog($"[DTPProxyPlugin] [Headset] GetBand5GainAsync failed for {guid} - Exception: {ex.Message}");
                 return -1;
             }
         }
@@ -4418,16 +4951,16 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 if (commodity is ICommodity)
                 {
                     var value = GetPropertyValue(_headsetInterfaceType, commodity, "AncMode");
-                    writelog($"[Headset] GetAncModeAsync succeeded for {guid}");
+                    writelog($"[DTPProxyPlugin] [Headset] GetAncModeAsync succeeded for {guid}");
                     return (int)value;
                 }
 
-                writelog($"[Headset] GetAncModeAsync failed: Could not retrieve commodity interface for {guid}");
+                writelog($"[DTPProxyPlugin] [Headset] GetAncModeAsync failed: Could not retrieve commodity interface for {guid}");
                 return -1;
             }
             catch (Exception ex)
             {
-                writelog($"[Headset] GetAncModeAsync failed for {guid} - Exception: {ex.Message}");
+                writelog($"[DTPProxyPlugin] [Headset] GetAncModeAsync failed for {guid} - Exception: {ex.Message}");
                 return -1;
             }
         }
@@ -4443,21 +4976,96 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 if (commodity is ICommodity)
                 {
                     var value = GetPropertyValue(_headsetInterfaceType, commodity, "AncGain");
-                    writelog($"[Headset] GetAncGainAsync succeeded for {guid}");
+                    writelog($"[DTPProxyPlugin] [Headset] GetAncGainAsync succeeded for {guid}");
                     return (int)value;
                 }
 
-                writelog($"[Headset] GetAncGainAsync failed: Could not retrieve commodity interface for {guid}");
+                writelog($"[DTPProxyPlugin] [Headset] GetAncGainAsync failed: Could not retrieve commodity interface for {guid}");
                 return -1;
             }
             catch (Exception ex)
             {
-                writelog($"[Headset] GetAncGainAsync failed for {guid} - Exception: {ex.Message}");
+                writelog($"[DTPProxyPlugin] [Headset] GetAncGainAsync failed for {guid} - Exception: {ex.Message}");
                 return -1;
             }
         }
 
-        public async Task<int> GetWearDetectionAsync(string guid)
+        public async Task<bool> GetWearDetectionAsync(string guid)
+        {
+            try
+            {
+                if (!await GetItemIDAsync("Headset", guid))
+                    return false;
+
+                var commodity = await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo);
+                if (commodity is ICommodity)
+                {
+                    var value = GetPropertyValue(_headsetInterfaceType, commodity, "WearDetection");
+                    writelog($"[DTPProxyPlugin] [Headset] GetWearDetectionAsync succeeded for {guid}");
+                    return (bool)value;
+                }
+
+                writelog($"[DTPProxyPlugin] [Headset] GetWearDetectionAsync failed: Could not retrieve commodity interface for {guid}");
+                return false;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DTPProxyPlugin] [Headset] GetWearDetectionAsync failed for {guid} - Exception: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> GetIsWearDetectionPauseMusicEnabledAsync(string guid)
+        {
+            try
+            {
+                if (!await GetItemIDAsync("Headset", guid))
+                    return false;
+
+                var commodity = await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo);
+                if (commodity is ICommodity)
+                {
+                    var value = GetPropertyValue(_headsetInterfaceType, commodity, "IsWearDetectionPauseMusicEnabled");
+                    writelog($"[DTPProxyPlugin] [Headset] GetIsWearDetectionPauseMusicEnabledAsync succeeded for {guid}");
+                    return (bool)value;
+                }
+
+                writelog($"[DTPProxyPlugin] [Headset] GetIsWearDetectionPauseMusicEnabledAsync failed: Could not retrieve commodity interface for {guid}");
+                return false;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DTPProxyPlugin] [Headset] GetIsWearDetectionPauseMusicEnabledAsync failed for {guid} - Exception: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> GetIsWearDetectionMuteMicEnabledAsync(string guid)
+        {
+            try
+            {
+                if (!await GetItemIDAsync("Headset", guid))
+                    return false;
+
+                var commodity = await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo);
+                if (commodity is ICommodity)
+                {
+                    var value = GetPropertyValue(_headsetInterfaceType, commodity, "IsWearDetectionMuteMicEnabled");
+                    writelog($"[DTPProxyPlugin] [Headset] GetIsWearDetectionMuteMicEnabledAsync succeeded for {guid}");
+                    return (bool)value;
+                }
+
+                writelog($"[DTPProxyPlugin] [Headset] GetIsWearDetectionMuteMicEnabledAsync failed: Could not retrieve commodity interface for {guid}");
+                return false;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DTPProxyPlugin] [Headset] GetIsWearDetectionMuteMicEnabledAsync failed for {guid} - Exception: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<int> GetWearDetectionSensitivityAsync(string guid)
         {
             try
             {
@@ -4467,17 +5075,42 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 var commodity = await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo);
                 if (commodity is ICommodity)
                 {
-                    var value = GetPropertyValue(_headsetInterfaceType, commodity, "WearDetection");
-                    writelog($"[Headset] GetWearDetectionAsync succeeded for {guid}");
+                    var value = GetPropertyValue(_headsetInterfaceType, commodity, "WearDetectionSensitivity");
+                    writelog($"[DTPProxyPlugin] [Headset] GetWearDetectionSensitivityAsync succeeded for {guid}");
                     return (int)value;
                 }
 
-                writelog($"[Headset] GetWearDetectionAsync failed: Could not retrieve commodity interface for {guid}");
+                writelog($"[DTPProxyPlugin] [Headset] GetWearDetectionSensitivityAsync failed: Could not retrieve commodity interface for {guid}");
                 return -1;
             }
             catch (Exception ex)
             {
-                writelog($"[Headset] GetWearDetectionAsync failed for {guid} - Exception: {ex.Message}");
+                writelog($"[DTPProxyPlugin] [Headset] GetWearDetectionSensitivityAsync failed for {guid} - Exception: {ex.Message}");
+                return -1;
+            }
+        }
+
+        public async Task<int> GetWearDetectionQuickPauseAsync(string guid)
+        {
+            try
+            {
+                if (!await GetItemIDAsync("Headset", guid))
+                    return -1;
+
+                var commodity = await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo);
+                if (commodity is ICommodity)
+                {
+                    var value = GetPropertyValue(_headsetInterfaceType, commodity, "WearDetectionQuickPause");
+                    writelog($"[DTPProxyPlugin] [Headset] GetWearDetectionQuickPauseAsync succeeded for {guid}");
+                    return (int)value;
+                }
+
+                writelog($"[DTPProxyPlugin] [Headset] GetWearDetectionQuickPauseAsync failed: Could not retrieve commodity interface for {guid}");
+                return -1;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DTPProxyPlugin] [Headset] GetWearDetectionQuickPauseAsync failed for {guid} - Exception: {ex.Message}");
                 return -1;
             }
         }
@@ -4493,16 +5126,66 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 if (commodity is ICommodity)
                 {
                     var value = GetPropertyValue(_headsetInterfaceType, commodity, "IsMicNCIncomingSupported");
-                    writelog($"[Headset] GetIsMicNCIncomingSupportedAsync succeeded for {guid}");
+                    writelog($"[DTPProxyPlugin] [Headset] GetIsMicNCIncomingSupportedAsync succeeded for {guid}");
                     return (bool)value;
                 }
 
-                writelog($"[Headset] GetIsMicNCIncomingSupportedAsync failed: Could not retrieve commodity interface for {guid}");
+                writelog($"[DTPProxyPlugin] [Headset] GetIsMicNCIncomingSupportedAsync failed: Could not retrieve commodity interface for {guid}");
                 return false;
             }
             catch (Exception ex)
             {
-                writelog($"[Headset] GetIsMicNCIncomingSupportedAsync failed for {guid} - Exception: {ex.Message}");
+                writelog($"[DTPProxyPlugin] [Headset] GetIsMicNCIncomingSupportedAsync failed for {guid} - Exception: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> GetIsBoomMicSupportedAsync(string guid)
+        {
+            try
+            {
+                if (!await GetItemIDAsync("Headset", guid))
+                    return false;
+
+                var commodity = await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo);
+                if (commodity is ICommodity)
+                {
+                    var value = GetPropertyValue(_headsetInterfaceType, commodity, "IsBoomMicSupported");
+                    writelog($"[DTPProxyPlugin] [Headset] GetIsBoomMicSupportedAsync succeeded for {guid}");
+                    return (bool)value;
+                }
+
+                writelog($"[DTPProxyPlugin] [Headset] GetIsBoomMicSupportedAsync failed: Could not retrieve commodity interface for {guid}");
+                return false;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DTPProxyPlugin] [Headset] GetIsBoomMicSupportedAsync failed for {guid} - Exception: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> GetBoomMicAsync(string guid)
+        {
+            try
+            {
+                if (!await GetItemIDAsync("Headset", guid))
+                    return false;
+
+                var commodity = await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo);
+                if (commodity is ICommodity)
+                {
+                    var value = GetPropertyValue(_headsetInterfaceType, commodity, "BoomMic");
+                    writelog($"[DTPProxyPlugin] [Headset] GetBoomMicAsync succeeded for {guid}");
+                    return (bool)value;
+                }
+
+                writelog($"[DTPProxyPlugin] [Headset] GetBoomMicAsync failed: Could not retrieve commodity interface for {guid}");
+                return false;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DTPProxyPlugin] [Headset] GetBoomMicAsync failed for {guid} - Exception: {ex.Message}");
                 return false;
             }
         }
@@ -4510,6 +5193,195 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         #endregion Headset Get
 
         #endregion
+
+        #region Headset Event
+        private async Task<bool> RegisterEventsForAllHeadsetAsync()
+        {
+            bool result = false;
+            var headsets = await GetHeadsetDevsCountAsync();
+            if (headsets > 0)
+            {
+                writelog($"Headset instance count: {headsets} to register");
+
+                for (int i = 0; i < headsets; i++)
+                {
+                    result = await RegisterEventsForHeadsetAsync(i);
+
+                    if (!result)
+                    {
+                        writelog($"[Headset] Register Events For Headset{i} fail, try un-register and register again");
+
+                        result = await UnregisterEventsForHeadsetAsync(i);
+                        result = await RegisterEventsForHeadsetAsync(i);
+                        writelog($"[Headset] Retry register result is {result}");
+                    }
+                }
+            }
+            else
+            {
+                writelog($"[Headset] No any headset instance to register.");
+                return false;
+                //try to force release current --> will catch exception  1123
+                //await UnregisterEventsForWebcamAsync(0);
+            }
+            return false;
+        }
+
+        private async Task UnregisterEventsForAllHeadsetAsync()
+        {
+            bool result = false;
+            var headsets = await GetHeadsetDevsCountAsync();
+            if (headsets > 0)
+            {
+                writelog($"[Headset] instance count: {headsets} to unregister.");
+
+                for (int i = headsets - 1; i >= 0; i--)
+                {
+                    result = await UnregisterEventsForHeadsetAsync(i);
+                }
+            }
+            else
+                writelog($"[Headset] No any headset instance to unregister.");
+        }
+
+        private async Task<bool> RegisterEventsForHeadsetAsync(int index)
+        {
+            if (null == _commSdk || null == _comdity || index < 0)
+                return false;
+
+            try
+            {
+                _comdity = await _commSdk.GetCommodityAsync<IHeadsetCommodity>(new ItemId($"DellPeripheral.Headset.{index}"), CancellationToken.None);
+
+                if (_comdity is Dell.TechHub.Commodity.Peripheral.IHeadsetCommodity _Headsetcom)
+                {
+                    _Headsetcom.WearDetectionChanged += Headset_WearDetectionChanged;
+                    _Headsetcom.WearDetectionSensitivityChanged += Headset_WearDetectionSensitivityChanged;
+                    _Headsetcom.IsWearDetectionPauseMusicEnabledChanged += Headset_IsWearDetectionPauseMusicEnabledChanged;
+                    _Headsetcom.IsWearDetectionMuteMicEnabledChanged += Headset_IsWearDetectionMuteMicEnabledChanged;
+                    _Headsetcom.WearDetectionQuickPauseChanged += Headset_WearDetectionQuickPauseChanged;
+                    writelog($"Headset{index} Commodity events registered successfully");
+                    return true;
+                }
+            }
+            catch (Exception e)
+            {
+                writelog($"[Headset] {index} RegisterEventsForHeadset Exception {e.Message}");
+
+                return false;
+            }
+
+            return false;
+        }
+
+        private async Task<bool> UnregisterEventsForHeadsetAsync(int index)
+        {
+            if (null == _commSdk || null == _comdity || index < 0)
+                return false;
+
+            try
+            {
+                _comdity = await _commSdk.GetCommodityAsync<IHeadsetCommodity>(new ItemId($"DellPeripheral.Webcam.{index}"), CancellationToken.None);
+
+                if (_comdity is Dell.TechHub.Commodity.Peripheral.IHeadsetCommodity _Headsetcom)
+                {
+                    _Headsetcom.WearDetectionChanged -= Headset_WearDetectionChanged;
+                    _Headsetcom.WearDetectionSensitivityChanged -= Headset_WearDetectionSensitivityChanged;
+                    _Headsetcom.IsWearDetectionPauseMusicEnabledChanged -= Headset_IsWearDetectionPauseMusicEnabledChanged;
+                    _Headsetcom.IsWearDetectionMuteMicEnabledChanged -= Headset_IsWearDetectionMuteMicEnabledChanged;
+                    _Headsetcom.WearDetectionQuickPauseChanged -= Headset_WearDetectionQuickPauseChanged;
+                    writelog($"[Headset] Headset{index} Commodity events unregistered successfully");
+                    return true;
+                }
+            }
+            catch (Exception e)
+            {
+                writelog($"[Headset] Headset{index} UnregisterEventsForHeadset Exception {e.Message}");
+
+                return false;
+            }
+
+            return false;
+        }
+
+        private void Headset_Disconnected(object sender, DisconnectedArgs e)
+        {
+            _ = UnregisterEventsForAllHeadsetAsync();
+            _ = RegisterEventsForAllHeadsetAsync();
+
+            //SendHeadsetEventToUI(CreateEventMsg("Headset", "Headset_Disconnected", e.DeviceId));
+
+            writelog($"[Headset] Catch event _Headset_Disconnected, current devCount is {GetHeadsetDevsCountAsync().Result} : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+        }
+
+        private void Headset_Connected(object sender, ConnectedArgs e)
+        {
+            Task<int> headsets = GetHeadsetDevsCountAsync();
+            bool result = RegisterEventsForHeadsetAsync(headsets.Result - 1).Result;
+
+            //SendHeadsetEventToUI(CreateEventMsg("Headset", "Headset_Connected", e.DeviceId));
+
+            writelog($"[Headset] Catch event _Headset_Connected, register evnet result is {result} : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+        }
+
+        private void Headset_WearDetectionChanged(object sender, WearDetectionChangedArgs e)
+        {
+            SendHeadsetEventToUI(CreateHeadsetEventMsg("Headset", "Headset_WearDetectionChanged", e.DeviceId,
+                                                 $"Headset_WearDetectionChanged:{e.IsGlobalEnabled.ToString() + ";" +
+                            "Headset_IsWearDetectionPauseMusicEnabledChanged:" + e.IsPauseMusicEnabled.ToString() + ";" +
+                               "Headset_IsWearDetectionMuteMicEnabledChanged:" + e.IsMuteMicEnabled.ToString() + ";" +
+                                    "Headset_WearDetectionSensitivityChanged:" + e.Sensitivity.ToString() + ";" +
+                                     "Headset_WearDetectionQuickPauseChanged:" + e.QuickPause.ToString()}"));
+
+            writelog($"[Headset] Catch event Headset_WearDetectionChanged : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+        }
+
+        private void Headset_WearDetectionSensitivityChanged(object sender, WearDetectionSensitivityChangedArgs e)
+        {
+            SendHeadsetEventToUI(CreateHeadsetEventMsg("Headset", "Headset_WearDetectionSensitivityChanged",
+                                    e.DeviceId, $"Headset_WearDetectionSensitivityChanged:{e.WearDetectionSensitivity.ToString()}"));
+
+            writelog($"[Headset] Catch event Headset_WearDetectionSensitivityChanged : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+        }
+
+        private void Headset_IsWearDetectionPauseMusicEnabledChanged(object sender, IsWearDetectionPauseMusicEnabledChangedArgs e)
+        {
+            SendHeadsetEventToUI(CreateHeadsetEventMsg("Headset", "Headset_IsWearDetectionPauseMusicEnabledChanged",
+                                    e.DeviceId, $"Headset_IsWearDetectionPauseMusicEnabledChanged:{e.IsPauseMusicEnabled.ToString()}"));
+
+            writelog($"[Headset] Catch event Headset_IsWearDetectionPauseMusicEnabledChanged : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+        }
+
+        private void Headset_IsWearDetectionMuteMicEnabledChanged(object sender, IsWearDetectionMuteMicEnabledChangedArgs e)
+        {
+            SendHeadsetEventToUI(CreateHeadsetEventMsg("Headset", "Headset_IsWearDetectionMuteMicEnabledChanged",
+                                    e.DeviceId, $"Headset_IsWearDetectionMuteMicEnabledChanged:{e.IsWearDetectionMuteMicEnabled.ToString()}"));
+
+            writelog($"[Headset] Catch event Headset_IsWearDetectionMuteMicEnabledChanged : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+        }
+
+        private void Headset_WearDetectionQuickPauseChanged(object sender, WearDetectionQuickPauseChangedArgs e)
+        {
+            SendHeadsetEventToUI(CreateHeadsetEventMsg("Headset", "Headset_WearDetectionQuickPauseChanged",
+                                    e.DeviceId, $"Headset_WearDetectionQuickPauseChanged:{e.WearDetectionQuickPause.ToString()}"));
+
+            writelog($"[Headset] Catch event Headset_WearDetectionQuickPauseChanged : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+        }
+
+        private string CreateHeadsetEventMsg(string devType, string eventType, string devID, string eventContent = "NewValue:NoContent")
+        {
+            writelog($"[Headset] Device:{devType};EventType:{eventType};DeviceId:{devID};{eventContent}");
+            return $"HeadsetEvent_5;Device:{devType};EventType:{eventType};DeviceId:{devID};{eventContent}";
+        }
+
+        private void SendHeadsetEventToUI(string sendMsg)
+        {
+            UpdateUINotify headsetEventNotify = new UpdateUINotify();
+            headsetEventNotify.UI_Field_Name = $"{sendMsg}";
+            OnUIUpdateNotify(headsetEventNotify);
+        }
+
+        #endregion Headset Event
 
         #region WiredAudio
 
@@ -4954,7 +5826,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
             catch (Exception ex)
             {
-                writelog($"[Headset] GetMuteStatusAsyncForSpeaker failed for {guid} - Exception: {ex.Message}");
+                writelog($"[Speaker] GetMuteStatusAsyncForSpeaker failed for {guid} - Exception: {ex.Message}");
                 return false;
             }
         }
@@ -5177,56 +6049,85 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 return null;
             }
         }
-        public async Task<string> GetFirmwareVersionAsyncForDock(string guid)
+        public Task<string> GetFirmwareVersionForDock(string guid)
         {
             try
             {
-                if (!await GetItemIDAsync("Dock", guid))
+                if (!GetItemIDAsync("Dock", guid).Result)
                 {
                     writelog(" [Dock] Failed to retrieve guid.");
-                    return null;
+                    return Task.FromResult("");
                 }
-                var commodity = await GetCommodityInterfaceInstanceAsync(_dongleMethodInfo);
+                var commodity = GetCommodityInterfaceInstanceAsync(_dockMethodInfo).Result;
                 if (commodity is ICommodity)
                 {
                     var value = GetPropertyValue(_dockInterfaceType, commodity, "FirmwareVersion");
-                    writelog($"[Dock] GetFirmwareVersionAsyncForDock succeeded for {guid}");
-                    return (string)value;
+                    writelog($"[Dock] GetFirmwareVersionForDock succeeded for {guid}");
+                    writelog($"[Dock] GetDockServiceTagForDock succeeded for {(string)value}");
+                    return Task.FromResult((string)value);
                 }
 
-                writelog($"[Dock] GetFirmwareVersionAsyncForDock failed: Could not retrieve commodity interface for {guid}");
-                return null;
+                writelog($"[Dock] GetFirmwareVersionForDock failed: Could not retrieve commodity interface for {guid}");
+                return Task.FromResult("");
             }
             catch (Exception ex)
             {
-                writelog($"[Dock] GetFirmwareVersionAsyncForDock failed for {guid} - Exception: {ex.Message}");
-                return null;
+                writelog($"[Dock] GetFirmwareVersionForDock failed for {guid} - Exception: {ex.Message}");
+                return Task.FromResult("");
             }
         }
-        public async Task<string> GetDockServiceTagAsyncForDock(string guid)
+        public Task<string> GetDockServiceTagForDock(string guid)
         {
             try
             {
-                if (!await GetItemIDAsync("Dock", guid))
+                if (!GetItemIDAsync("Dock", guid).Result)
                 {
                     writelog(" [Dock] Failed to retrieve guid.");
-                    return null;
+                    return Task.FromResult("");
                 }
-                var commodity = await GetCommodityInterfaceInstanceAsync(_dongleMethodInfo);
+                var commodity = GetCommodityInterfaceInstanceAsync(_dockMethodInfo).Result;
                 if (commodity is ICommodity)
                 {
                     var value = GetPropertyValue(_dockInterfaceType, commodity, "DockServiceTag");
-                    writelog($"[Dock] GetDockServiceTagAsyncForDock succeeded for {guid}");
-                    return (string)value;
+                    writelog($"[Dock] GetDockServiceTagForDock succeeded for {guid}");
+                    writelog($"[Dock] GetDockServiceTagForDock succeeded value is null : {(value == null ? "Yes" : "No")}");
+                    if (value != null)
+                    {
+                        byte[] dokc_bytes = (byte[])value;
+                        writelog($"[Dock] GetDockServiceTagForDock dokc_bytes.Length : {dokc_bytes.Length}");
+                        string textString = System.Text.Encoding.UTF8.GetString(dokc_bytes);
+                        writelog($"[Dock] GetDockServiceTagForDock dokc_bytes to string : " + textString);
+                        if (!string.IsNullOrEmpty(textString))
+                        {
+                            try
+                            {
+                                using (JsonDocument doc = JsonDocument.Parse(textString))
+                                {
+                                    JsonElement root = doc.RootElement;
+                                    string payloadElement = root.GetProperty("Payload").ToString();
+                                    int temp_int = 0;
+                                    if (!string.IsNullOrEmpty(payloadElement))
+                                    {
+                                        return Task.FromResult(payloadElement);
+                                    }
+                                }
+                            }
+                            catch (Exception ex)
+                            {
+                                writelog($"[Dock] GetDockServiceTagForDock Error : {ex.Message}");
+                            }
+                        }
+                    }
+                    return Task.FromResult("");
                 }
 
-                writelog($"[Dock] GetDockServiceTagAsyncForDock failed: Could not retrieve commodity interface for {guid}");
-                return null;
+                writelog($"[Dock] GetDockServiceTagForDock failed: Could not retrieve commodity interface for {guid}");
+                return Task.FromResult("");
             }
             catch (Exception ex)
             {
-                writelog($"[Dock] GetDockServiceTagAsyncForDock failed for {guid} - Exception: {ex.Message}");
-                return null;
+                writelog($"[Dock] GetDockServiceTagForDock failed for {guid} - Exception: {ex.Message}");
+                return Task.FromResult("");
             }
         }
 
@@ -5341,129 +6242,137 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
             _commSdk = (ICommodityClientSdk)_agent.PluginManager.FindPluginByType(typeof(ICommodityClientSdk));
 
-            if (_commSdk != null)
+            try
             {
-                _ = Task.Run(async () =>
+                if (_commSdk != null)
                 {
-                    await _commSdk.InitializeAsync(appId, new CancellationTokenSource().Token);
+                    _ = Task.Run(async () =>
+                    {
+                        await _commSdk.InitializeAsync(appId, new CancellationTokenSource().Token);
 
-                    writelog($"Find IMouseCommodity Init time : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
-                    _mouseInterfaceType = FindCommodityInterfaceType("IMouseCommodity");
-                    if (_mouseInterfaceType != null)
-                    {
-                        _mouseMethodInfo = typeof(ICommodityClientSdk).GetMethod("GetCommodityAsync", new[] { typeof(ItemId), typeof(CancellationToken) })
-                                                      .MakeGenericMethod(_mouseInterfaceType);
+                        IsDTPReady = true;
+                        writelog($"Find IMouseCommodity Init time : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+                        _mouseInterfaceType = FindCommodityInterfaceType("IMouseCommodity");
+                        if (_mouseInterfaceType != null)
+                        {
+                            _mouseMethodInfo = typeof(ICommodityClientSdk).GetMethod("GetCommodityAsync", new[] { typeof(ItemId), typeof(CancellationToken) })
+                                                          .MakeGenericMethod(_mouseInterfaceType);
 
-                        writelog($"Find IMouseCommodity found time : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
-                    }
-                    else
-                    {
-                        writelog($"Find IMouseCommodity not find  time: {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
-                    }
+                            writelog($"Find IMouseCommodity found time : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+                        }
+                        else
+                        {
+                            writelog($"Find IMouseCommodity not find  time: {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+                        }
 
-                    writelog($"Find IKeyboardCommodity Init time : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
-                    _keyboardInterfaceType = FindCommodityInterfaceType("IKeyboardCommodity");
-                    if (_keyboardInterfaceType != null)
-                    {
-                        _keyboardMethodInfo = typeof(ICommodityClientSdk).GetMethod("GetCommodityAsync", new[] { typeof(ItemId), typeof(CancellationToken) })
-                                                        .MakeGenericMethod(_keyboardInterfaceType);
-                        writelog($"Find IKeyboardCommodity found time : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
-                    }
-                    else
-                    {
-                        writelog($"Find IKeyboardCommodity not find  time: {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
-                    }
+                        writelog($"Find IKeyboardCommodity Init time : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+                        _keyboardInterfaceType = FindCommodityInterfaceType("IKeyboardCommodity");
+                        if (_keyboardInterfaceType != null)
+                        {
+                            _keyboardMethodInfo = typeof(ICommodityClientSdk).GetMethod("GetCommodityAsync", new[] { typeof(ItemId), typeof(CancellationToken) })
+                                                            .MakeGenericMethod(_keyboardInterfaceType);
+                            writelog($"Find IKeyboardCommodity found time : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+                        }
+                        else
+                        {
+                            writelog($"Find IKeyboardCommodity not find  time: {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+                        }
 
-                    writelog($"Find IWebcamCommodity Init time : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
-                    _webcamInterfaceType = FindCommodityInterfaceType("IWebcamCommodity");
+                        writelog($"Find IWebcamCommodity Init time : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+                        _webcamInterfaceType = FindCommodityInterfaceType("IWebcamCommodity");
 
-                    if (_webcamInterfaceType != null)
-                    {
-                        _webcamMethodInfo = typeof(ICommodityClientSdk).GetMethod("GetCommodityAsync", new[] { typeof(ItemId), typeof(CancellationToken) })
-                                                        .MakeGenericMethod(_webcamInterfaceType);
-                        writelog($"Find IWebcamCommodity found time : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
-                    }
-                    else
-                    {
-                        writelog($"Find IWebcamCommodity not find  time: {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
-                    }
+                        if (_webcamInterfaceType != null)
+                        {
+                            _webcamMethodInfo = typeof(ICommodityClientSdk).GetMethod("GetCommodityAsync", new[] { typeof(ItemId), typeof(CancellationToken) })
+                                                            .MakeGenericMethod(_webcamInterfaceType);
+                            writelog($"Find IWebcamCommodity found time : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+                        }
+                        else
+                        {
+                            writelog($"Find IWebcamCommodity not find  time: {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+                        }
 
-                    writelog($"Find IPenCommodity Init time : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
-                    _penInterfaceType = FindCommodityInterfaceType("IPenCommodity");
-                    if (_penInterfaceType != null)
-                    {
-                        _penMethodInfo = typeof(ICommodityClientSdk).GetMethod("GetCommodityAsync", new[] { typeof(ItemId), typeof(CancellationToken) })
-                                                                    .MakeGenericMethod(_penInterfaceType);
-                        writelog($"Find IPenCommodity found time : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
-                    }
-                    else
-                    {
-                        writelog($"Find IPenCommodity not find  time: {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
-                    }
+                        writelog($"Find IPenCommodity Init time : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+                        _penInterfaceType = FindCommodityInterfaceType("IPenCommodity");
+                        if (_penInterfaceType != null)
+                        {
+                            _penMethodInfo = typeof(ICommodityClientSdk).GetMethod("GetCommodityAsync", new[] { typeof(ItemId), typeof(CancellationToken) })
+                                                                        .MakeGenericMethod(_penInterfaceType);
+                            writelog($"Find IPenCommodity found time : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+                        }
+                        else
+                        {
+                            writelog($"Find IPenCommodity not find  time: {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+                        }
 
-                    writelog($"Find IHeadsetCommodity Init time : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
-                    _headsetInterfaceType = FindCommodityInterfaceType("IHeadsetCommodity");
-                    if (_headsetInterfaceType != null)
-                    {
-                        _headsetMethodInfo = typeof(ICommodityClientSdk).GetMethod("GetCommodityAsync", new[] { typeof(ItemId), typeof(CancellationToken) })
-                                                                    .MakeGenericMethod(_headsetInterfaceType);
+                        writelog($"Find IHeadsetCommodity Init time : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+                        _headsetInterfaceType = FindCommodityInterfaceType("IHeadsetCommodity");
+                        if (_headsetInterfaceType != null)
+                        {
+                            _headsetMethodInfo = typeof(ICommodityClientSdk).GetMethod("GetCommodityAsync", new[] { typeof(ItemId), typeof(CancellationToken) })
+                                                                        .MakeGenericMethod(_headsetInterfaceType);
 
-                        writelog($"Find IHeadsetCommodity found time : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
-                    }
-                    else
-                    {
-                        writelog($"Find IHeadsetCommodity not find  time: {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
-                    }
+                            writelog($"Find IHeadsetCommodity found time : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+                        }
+                        else
+                        {
+                            writelog($"Find IHeadsetCommodity not find  time: {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+                        }
 
-                    writelog($"Find ISpeakerCommodity Init time : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
-                    _speakerInterfaceType = FindCommodityInterfaceType("ISpeakerCommodity");
-                    if (_speakerInterfaceType != null)
-                    {
-                        _speakerMethodInfo = typeof(ICommodityClientSdk).GetMethod("GetCommodityAsync", new[] { typeof(ItemId), typeof(CancellationToken) })
-                                                                    .MakeGenericMethod(_speakerInterfaceType);
-                        writelog($"Find ISpeakerCommodity found time : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
-                    }
-                    else
-                    {
-                        writelog($"Find ISpeakerCommodity not find  time: {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
-                    }
+                        writelog($"Find ISpeakerCommodity Init time : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+                        _speakerInterfaceType = FindCommodityInterfaceType("ISpeakerCommodity");
+                        if (_speakerInterfaceType != null)
+                        {
+                            _speakerMethodInfo = typeof(ICommodityClientSdk).GetMethod("GetCommodityAsync", new[] { typeof(ItemId), typeof(CancellationToken) })
+                                                                        .MakeGenericMethod(_speakerInterfaceType);
+                            writelog($"Find ISpeakerCommodity found time : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+                        }
+                        else
+                        {
+                            writelog($"Find ISpeakerCommodity not find  time: {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+                        }
 
-                    writelog($"Find IDongleCommodity Init time : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
-                    _dongleInterfaceType = FindCommodityInterfaceType("IDongleCommodity");
-                    if (_dongleInterfaceType != null)
-                    {
-                        _dongleMethodInfo = typeof(ICommodityClientSdk).GetMethod("GetCommodityAsync", new[] { typeof(ItemId), typeof(CancellationToken) })
-                                                                    .MakeGenericMethod(_dongleInterfaceType);
-                        writelog($"Find IDongleCommodity found time : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
-                    }
-                    else
-                    {
-                        writelog($"Find IDongleCommodity not find  time: {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
-                    }
+                        writelog($"Find IDongleCommodity Init time : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+                        _dongleInterfaceType = FindCommodityInterfaceType("IDongleCommodity");
+                        if (_dongleInterfaceType != null)
+                        {
+                            _dongleMethodInfo = typeof(ICommodityClientSdk).GetMethod("GetCommodityAsync", new[] { typeof(ItemId), typeof(CancellationToken) })
+                                                                        .MakeGenericMethod(_dongleInterfaceType);
+                            writelog($"Find IDongleCommodity found time : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+                        }
+                        else
+                        {
+                            writelog($"Find IDongleCommodity not find  time: {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+                        }
 
-                    writelog($"Find IDockCommodity Init time : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
-                    _dockInterfaceType = FindCommodityInterfaceType("IDockCommodity");
-                    if (_dockInterfaceType != null)
-                    {
-                        _dockMethodInfo = typeof(ICommodityClientSdk).GetMethod("GetCommodityAsync", new[] { typeof(ItemId), typeof(CancellationToken) })
-                                                                    .MakeGenericMethod(_dockInterfaceType);
-                        writelog($"Find IDockCommodity found time : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
-                    }
-                    else
-                    {
-                        writelog($"Find IDockCommodity not find  time: {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
-                    }
+                        writelog($"Find IDockCommodity Init time : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+                        _dockInterfaceType = FindCommodityInterfaceType("IDockCommodity");
+                        if (_dockInterfaceType != null)
+                        {
+                            _dockMethodInfo = typeof(ICommodityClientSdk).GetMethod("GetCommodityAsync", new[] { typeof(ItemId), typeof(CancellationToken) })
+                                                                        .MakeGenericMethod(_dockInterfaceType);
+                            writelog($"Find IDockCommodity found time : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+                        }
+                        else
+                        {
+                            writelog($"Find IDockCommodity not find  time: {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+                        }
 
-                    _ = RegisterEventAsync();
-                });
-            }
-            else
-            {
-                if (_commSdk is IFrameworkPluginConditionNotification pluginCondition)
-                {
-                    pluginCondition.PluginConditionChangeHandler += OnDTPProxyPluginConditionChangeHandler;
-                    GetCurrentDTPProxyPluginCondition();
+                        _ = RegisterEventAsync();
+                    });
                 }
+                else
+                {
+                    if (_commSdk is IFrameworkPluginConditionNotification pluginCondition)
+                    {
+                        pluginCondition.PluginConditionChangeHandler += OnDTPProxyPluginConditionChangeHandler;
+                        GetCurrentDTPProxyPluginCondition();
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                writelog($"Catch exception[{e.Message}] in InitializeDTPProxy function");
             }
         }
 
@@ -5490,7 +6399,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             {
                 try
                 {
-                    _pencom.KeyCaptureDataChanged += _pencom_KeyCaptureDataChanged;
+                    //_pencom.KeyCaptureDataChanged += _pencom_KeyCaptureDataChanged;
                     writelog($"Pen Commodity event registered");
                 }
                 catch (Exception e)
@@ -5505,11 +6414,8 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             {
                 try
                 {
-                    _headsetcom.IsReadyChanged += _headsetcomdity_IsReadyChanged;
-                    _headsetcom.FirmwareVersionChanged += _headsetcomdity_FirmwareVersionChanged;
-                    _headsetcom.AncModeChanged += _headsetcomdity_AncModeChange;
-                    _headsetcom.Connected += _comdity_Connected;
-                    _headsetcom.Disconnected += _comdity_Disconnected;
+                    _headsetcom.Connected += Headset_Connected;
+                    _headsetcom.Disconnected += Headset_Disconnected;
                     writelog($"Headset Commodity event registered");
                 }
                 catch (Exception e)
@@ -5524,12 +6430,6 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             {
                 try
                 {
-                    //_speakercom.IsIMicNSEnabledChanged += _speakercomdity_IsIMicNSEnabledChanged;
-                    //_speakercom.VolumeAdjustmentToneChanged += _speakercomdity_VolumeAdjustmentToneChanged;
-                    //_speakercom.IsMicMuteSoundEnabledChanged += _speakercomdity_IsMicMuteSoundEnabledChanged;
-                    //_speakercom.MuteStatusChanged += _speakercomdity_IsMuteStatusChanged;
-                    //EventHandler<MuteStatusChangedArgs> MuteStatusChanged;
-                    //AddMuteStatusChangedEventAsync
                     _speakercom.Connected += _comdity_Connected;
                     _speakercom.Disconnected += _comdity_Disconnected;
                     _speakercom.MuteStatusChanged += _speakercomdity_IsMuteStatusChanged;
@@ -5573,21 +6473,19 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 }
             }
 
+            //Derek 1119 for Webcam event
             writelog($"Register Webcam Commodity event...");
             _comdity = await _commSdk.GetCommodityAsync<IWebcamCommodity>(new ItemId("DellPeripheral.Webcam"), CancellationToken.None);
-            if (_comdity is Dell.TechHub.Commodity.Peripheral.IWebcamCommodity _webcamcom)
+            if (_comdity is Dell.TechHub.Commodity.Peripheral.IWebcamCommodity _WebcamComConnectEvent)
             {
                 try
                 {
-                    _webcamcom.Connected += _comdity_Connected;
-                    _webcamcom.Disconnected += _comdity_Disconnected;
+                    //PrintWebcamObjectInfo(_WebcamComConnectEvent);
 
-                    _webcamcom.Esi_IsCameraSensorCoveredChanged += _webcamcom_Esi_IsCameraSensorCoveredChanged;
-                    _webcamcom.WALSnoozeTimeLeftInSecondsChanged += _webcamcom_WALSnoozeTimeLeftInSecondsChanged;
-                    _webcamcom.Esi_IsWALLockCountdownStartedChanged += _webcamcom_Esi_IsWALLockCountdownStartedChanged;
-                    _webcamcom.Esi_WALLockCountdownChanged += _webcamcom_Esi_WALLockCountdownChanged;
+                    _WebcamComConnectEvent.Connected += Webcam_Connected;
+                    _WebcamComConnectEvent.Disconnected += Webcam_Disconnected;
 
-                    writelog($"Webcam Commodity event registered");
+                    writelog($"Webcam Commodity event(connected/disconnected) registered");
                 }
                 catch (Exception e)
                 {
@@ -5595,31 +6493,278 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 }
             }
 
-            writelog($"Register Commodity event...");
-            _comdity = await _commSdk.GetCommodityAsync<IWebcamCommodity>(new ItemId("DellPeripheral.Webcam"), CancellationToken.None);
-            if (_comdity is Dell.TechHub.Commodity.Peripheral.IWebcamCommodity _Webcamlecom)
+            await RegisterEventsForAllWebcamsAsync();
+
+            await RegisterEventsForAllHeadsetAsync();
+        }
+
+        private async Task<int> GetHeadsetDevsCountAsync()
+        {
+            var headsets = await GetHeadsetDeviceItemsExAsync();
+            if (headsets != null)
             {
-                try
-                {
-                    _Webcamlecom.Connected += _comdity_Connected;
-                    _Webcamlecom.Disconnected += _comdity_Disconnected;
-                    _Webcamlecom.ZoomChanged += ZoomChanged;
-                    _Webcamlecom.ZoomMeetingTypeChanged += ZoomMeetingTypeChanged;
-                    _Webcamlecom.IsZoomMeetingActiveChanged += IsZoomMeetingActiveChanged;
-                    _Webcamlecom.IsZoomScreenShareActiveChanged += IsZoomScreenShareActiveChanged;
-                    writelog($"Webcam Commodity event registered");
-                }
-                catch (Exception e)
-                {
-                    writelog($"Find IWebcamCommodity not find  time: {DateTime.Now.ToString("hh.mm.ss.ffffff") + " Message: " + e.Message}");
-                }
+                Trace.WriteLine("RegisterEventsForAllHeadsetAsync ********** " + headsets.ToString() + " ********** ");
+                return headsets.Count;
+            }
+            else
+                return 0;
+        }
+        
+        private async Task<int> GetWebcamDevsCountAsync()
+        {
+            var webcams = await GetWebcamDeviceItemsExAsync();
+
+            return webcams.Count;
+        }
+
+        private void PrintWebcamObjectInfo(IWebcamCommodity obj)
+        {
+            try
+            {
+                writelog($"DeviceItems = {obj!.DeviceItems.Length}");
+                writelog($"DeviceItemsEx = {obj!.DeviceItemsEx.Count}");
+
+                //if (obj!.DeviceItems.Length > 0)
+                //{
+                //writelog($"InstanceId = {obj!.InstanceId}"); //fail
+                //writelog($"InstanceNumber = {obj!.InstanceNumber}"); //fail
+                //writelog($"ItemId = {obj!.ItemId}"); //fail
+                //writelog($"DeviceName = {obj!.DeviceName}"); //fail
+                //}
+            }
+            catch (Exception e)
+            {
+
+                writelog($"PrintWebcamObjectInfo catch exception: {e.Message}");
             }
         }
 
-        private void _pencom_KeyCaptureDataChanged(object sender, KeyCaptureDataChangedArgs e)
+        private async Task RegisterEventsForAllWebcamsAsync()
         {
-            Debug.WriteLine($"[Pen]KeystrokeDisplayDataChanged {e.KeyCaptureData} Changed for Device ID: {e.DeviceId}  !!!!!!!!!!!!!!!");
-            writelog($"[Headset]FirmwareVersionChanged {e.KeyCaptureData} Changed for Device ID: {e.DeviceId}  !!!!!!!!!!!!!!!");
+            var webcams = await GetWebcamDevsCountAsync();
+
+            if (webcams > 0)
+            {
+                writelog($"Webcam instance count: {webcams} to register");
+
+                for (int i = 0; i < webcams; i++)
+                {
+                    bool result = await RegisterEventsForWebcamAsync(i);
+
+                    if (!result)
+                    {
+                        writelog($"Register Events For Webcam{i} fail, try un-register and register again");
+
+                        result = await UnregisterEventsForWebcamAsync(i);
+                        result = await RegisterEventsForWebcamAsync(i);
+
+                        writelog($"Retry register result is {result}");
+                    }
+                }
+            }
+            else
+            {
+                writelog($"No any webcam instance to register.");
+                //try to force release current --> will catch exception  1123
+                //await UnregisterEventsForWebcamAsync(0);
+            }
+        }
+
+        private async Task UnregisterEventsForAllWebcamsAsync()
+        {
+            var webcams = await GetWebcamDevsCountAsync();
+
+            if (webcams > 0)
+            {
+                writelog($"Webcam instance count: {webcams} to unregister.");
+
+                for (int i = webcams - 1; i >= 0; i--)
+                {
+                    bool result = await UnregisterEventsForWebcamAsync(i);
+                }
+            }
+            else
+                writelog($"No any webcam instance to unregister.");
+        }
+
+        private async Task<bool> RegisterEventsForWebcamAsync(int index)
+        {
+            if (null == _commSdk || null == _comdity || index < 0)
+                return false;
+
+            try
+            {
+                _comdity = await _commSdk.GetCommodityAsync<IWebcamCommodity>(new ItemId($"DellPeripheral.Webcam.{index}"), CancellationToken.None);
+
+                if (_comdity is Dell.TechHub.Commodity.Peripheral.IWebcamCommodity _Webcamcom)
+                {
+                    //PrintWebcamObjectInfo(_Webcamcom);
+
+                    _Webcamcom.ProfileManagerAdded += Webcam_ProfileManagerAdded;
+                    _Webcamcom.IsMicEnumerationOnChanged += Webcam_IsMicEnumerationOnChanged;
+                    _Webcamcom.CurrentSelectedProfileChanged += Webcam_CurrentSelectedProfileChanged;
+                    _Webcamcom.CustomProfileAdded += Webcam_CustomProfileAdded;
+                    _Webcamcom.CustomProfileRemoved += Webcam_CustomProfileRemoved;
+
+                    _Webcamcom.PriorityChanged += Webcam_PriorityChanged;
+                    _Webcamcom.IsFocusOnChanged += Webcam_IsFocusOnChanged;
+                    _Webcamcom.FocusChanged += Webcam_FocusChanged;
+                    _Webcamcom.PanChanged += Webcam_PanChanged;
+                    _Webcamcom.TiltChanged += Webcam_TiltChanged;
+                    _Webcamcom.ZoomChanged += Webcam_ZoomChanged; //QAM also use this event
+                    _Webcamcom.BrightnessChanged += Webcam_BrightnessChanged;
+                    _Webcamcom.ContrastChanged += Webcam_ContrastChanged;
+                    _Webcamcom.AntiFlickerChanged += Webcam_AntiFlickerChanged;
+                    _Webcamcom.SaturationChanged += Webcam_SaturationChanged;
+                    _Webcamcom.SharpnessChanged += Webcam_SharpnessChanged;
+                    _Webcamcom.IsAutoWhiteBalanceOnChanged += Webcam_IsAutoWhiteBalanceOnChanged;
+                    _Webcamcom.AutoWhiteBalanceChanged += Webcam_AutoWhiteBalanceChanged;
+                    _Webcamcom.IsAutoFramingTransitionOnChanged += Webcam_IsAutoFramingTransitionOnChanged;
+                    _Webcamcom.IsAutoFramingOnChanged += Webcam_IsAutoFramingOnChanged;
+                    _Webcamcom.AutoFramingSensitivityChanged += Webcam_AutoFramingSensitivityChanged;
+                    _Webcamcom.AutoFramingFrameSizeChanged += Webcam_AutoFramingFrameSizeChanged;
+                    _Webcamcom.FieldOfViewChanged += Webcam_FieldOfViewChanged;
+                    _Webcamcom.IsHDROnChanged += Webcam_IsHDROnChanged;
+                    _Webcamcom.SerialNumberChanged += Webcam_SerialNumberChanged;
+                    _Webcamcom.IsZoomMeetingActiveChanged += Webcam_IsZoomMeetingActiveChanged; //for QAM
+                    _Webcamcom.IsZoomScreenShareActiveChanged += Webcam_IsZoomScreenShareActiveChanged; //for QAM
+                    _Webcamcom.ZoomMeetingTypeChanged += Webcam_ZoomMeetingTypeChanged; //for QAM
+
+                    _Webcamcom.WALSnoozeTimeLeftInSecondsChanged += Webcam_WALSnoozeTimeLeftInSecondsChanged;
+                    _Webcamcom.Esi_IsWALLockCountdownStartedChanged += Webcam_Esi_IsWALLockCountdownStartedChanged;
+                    _Webcamcom.Esi_IsCameraSensorCoveredChanged += Webcam_Esi_IsCameraSensorCoveredChanged;
+                    _Webcamcom.Esi_WALLockCountdownChanged += Webcam_Esi_WALLockCountdownChanged;
+
+                    writelog($"Webcam{index} Commodity events registered successfully");
+                    return true;
+                }
+            }
+            catch (Exception e)
+            {
+                writelog($"Webcam{index} RegisterEventsForWebcam Exception {e.Message}");
+
+                return false;
+            }
+
+            return false;
+        }
+
+        private async Task<bool> UnregisterEventsForWebcamAsync(int index)
+        {
+            if (null == _commSdk || null == _comdity || index < 0)
+                return false;
+
+            try
+            {
+                _comdity = await _commSdk.GetCommodityAsync<IWebcamCommodity>(new ItemId($"DellPeripheral.Webcam.{index}"), CancellationToken.None);
+
+                if (_comdity is Dell.TechHub.Commodity.Peripheral.IWebcamCommodity _Webcamcom)
+                {
+                    _Webcamcom.ProfileManagerAdded -= Webcam_ProfileManagerAdded;
+                    _Webcamcom.IsMicEnumerationOnChanged -= Webcam_IsMicEnumerationOnChanged;
+                    _Webcamcom.CurrentSelectedProfileChanged -= Webcam_CurrentSelectedProfileChanged;
+                    _Webcamcom.CustomProfileAdded -= Webcam_CustomProfileAdded;
+                    _Webcamcom.CustomProfileRemoved -= Webcam_CustomProfileRemoved;
+
+                    _Webcamcom.PriorityChanged -= Webcam_PriorityChanged;
+                    _Webcamcom.IsFocusOnChanged -= Webcam_IsFocusOnChanged;
+                    _Webcamcom.FocusChanged -= Webcam_FocusChanged;
+                    _Webcamcom.PanChanged -= Webcam_PanChanged;
+                    _Webcamcom.TiltChanged -= Webcam_TiltChanged;
+                    _Webcamcom.ZoomChanged -= Webcam_ZoomChanged;
+                    _Webcamcom.BrightnessChanged -= Webcam_BrightnessChanged;
+                    _Webcamcom.ContrastChanged -= Webcam_ContrastChanged;
+                    _Webcamcom.AntiFlickerChanged -= Webcam_AntiFlickerChanged;
+                    _Webcamcom.SaturationChanged -= Webcam_SaturationChanged;
+                    _Webcamcom.SharpnessChanged -= Webcam_SharpnessChanged;
+                    _Webcamcom.IsAutoWhiteBalanceOnChanged -= Webcam_IsAutoWhiteBalanceOnChanged;
+                    _Webcamcom.AutoWhiteBalanceChanged -= Webcam_AutoWhiteBalanceChanged;
+                    _Webcamcom.IsAutoFramingTransitionOnChanged -= Webcam_IsAutoFramingTransitionOnChanged;
+                    _Webcamcom.IsAutoFramingOnChanged -= Webcam_IsAutoFramingOnChanged;
+                    _Webcamcom.AutoFramingSensitivityChanged -= Webcam_AutoFramingSensitivityChanged;
+                    _Webcamcom.AutoFramingFrameSizeChanged -= Webcam_AutoFramingFrameSizeChanged;
+                    _Webcamcom.FieldOfViewChanged -= Webcam_FieldOfViewChanged;
+                    _Webcamcom.IsHDROnChanged -= Webcam_IsHDROnChanged;
+                    _Webcamcom.SerialNumberChanged -= Webcam_SerialNumberChanged;
+                    _Webcamcom.IsZoomMeetingActiveChanged -= Webcam_IsZoomMeetingActiveChanged;
+                    _Webcamcom.IsZoomScreenShareActiveChanged -= Webcam_IsZoomScreenShareActiveChanged;
+
+                    _Webcamcom.WALSnoozeTimeLeftInSecondsChanged -= Webcam_WALSnoozeTimeLeftInSecondsChanged;
+                    _Webcamcom.Esi_IsWALLockCountdownStartedChanged -= Webcam_Esi_IsWALLockCountdownStartedChanged;
+                    _Webcamcom.Esi_IsCameraSensorCoveredChanged -= Webcam_Esi_IsCameraSensorCoveredChanged;
+                    _Webcamcom.Esi_WALLockCountdownChanged -= Webcam_Esi_WALLockCountdownChanged;
+
+                    writelog($"Webcam{index} Commodity events unregistered successfully");
+                    return true;
+                }
+            }
+            catch (Exception e)
+            {
+                writelog($"Webcam{index} UnregisterEventsForWebcam Exception {e.Message}");
+
+                return false;
+            }
+
+            return false;
+        }
+
+        private async Task<bool> UnregisterEventsForWebcamAsync()
+        {
+            if (null == _commSdk || null == _comdity)
+                return false;
+
+            try
+            {
+                _comdity = await _commSdk.GetCommodityAsync<IWebcamCommodity>(new ItemId($"DellPeripheral.Webcam"), CancellationToken.None);
+
+                if (_comdity is Dell.TechHub.Commodity.Peripheral.IWebcamCommodity _Webcamcom)
+                {
+                    _Webcamcom.ProfileManagerAdded -= Webcam_ProfileManagerAdded;
+                    _Webcamcom.IsMicEnumerationOnChanged -= Webcam_IsMicEnumerationOnChanged;
+                    _Webcamcom.CurrentSelectedProfileChanged -= Webcam_CurrentSelectedProfileChanged;
+                    _Webcamcom.CustomProfileAdded -= Webcam_CustomProfileAdded;
+                    _Webcamcom.CustomProfileRemoved -= Webcam_CustomProfileRemoved;
+
+                    _Webcamcom.PriorityChanged -= Webcam_PriorityChanged;
+                    _Webcamcom.IsFocusOnChanged -= Webcam_IsFocusOnChanged;
+                    _Webcamcom.FocusChanged -= Webcam_FocusChanged;
+                    _Webcamcom.PanChanged -= Webcam_PanChanged;
+                    _Webcamcom.TiltChanged -= Webcam_TiltChanged;
+                    _Webcamcom.ZoomChanged -= Webcam_ZoomChanged;
+                    _Webcamcom.BrightnessChanged -= Webcam_BrightnessChanged;
+                    _Webcamcom.ContrastChanged -= Webcam_ContrastChanged;
+                    _Webcamcom.AntiFlickerChanged -= Webcam_AntiFlickerChanged;
+                    _Webcamcom.SaturationChanged -= Webcam_SaturationChanged;
+                    _Webcamcom.SharpnessChanged -= Webcam_SharpnessChanged;
+                    _Webcamcom.IsAutoWhiteBalanceOnChanged -= Webcam_IsAutoWhiteBalanceOnChanged;
+                    _Webcamcom.AutoWhiteBalanceChanged -= Webcam_AutoWhiteBalanceChanged;
+                    _Webcamcom.IsAutoFramingTransitionOnChanged -= Webcam_IsAutoFramingTransitionOnChanged;
+                    _Webcamcom.IsAutoFramingOnChanged -= Webcam_IsAutoFramingOnChanged;
+                    _Webcamcom.AutoFramingSensitivityChanged -= Webcam_AutoFramingSensitivityChanged;
+                    _Webcamcom.AutoFramingFrameSizeChanged -= Webcam_AutoFramingFrameSizeChanged;
+                    _Webcamcom.FieldOfViewChanged -= Webcam_FieldOfViewChanged;
+                    _Webcamcom.IsHDROnChanged -= Webcam_IsHDROnChanged;
+                    _Webcamcom.SerialNumberChanged -= Webcam_SerialNumberChanged;
+                    _Webcamcom.IsZoomMeetingActiveChanged -= Webcam_IsZoomMeetingActiveChanged;
+                    _Webcamcom.IsZoomScreenShareActiveChanged -= Webcam_IsZoomScreenShareActiveChanged;
+
+                    _Webcamcom.WALSnoozeTimeLeftInSecondsChanged -= Webcam_WALSnoozeTimeLeftInSecondsChanged;
+                    _Webcamcom.Esi_IsWALLockCountdownStartedChanged -= Webcam_Esi_IsWALLockCountdownStartedChanged;
+                    _Webcamcom.Esi_IsCameraSensorCoveredChanged -= Webcam_Esi_IsCameraSensorCoveredChanged;
+                    _Webcamcom.Esi_WALLockCountdownChanged -= Webcam_Esi_WALLockCountdownChanged;
+
+                    writelog($"Webcam Commodity events unregistered successfully");
+                    return true;
+                }
+            }
+            catch (Exception e)
+            {
+                writelog($"Webcam UnregisterEventsForWebcam Exception {e.Message}");
+
+                return false;
+            }
+
+            return false;
         }
 
         private void OnDTPProxyPluginConditionChangeHandler(object sender, EventArgs e)
@@ -5654,6 +6799,9 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
         private object GetPropertyValue(Type interfaceType, ICommodity commodity, string property)
         {
+            if (!IsDTPReady)
+                return null;
+
             try
             {
                 writelog($"commodity: {commodity.GetType().Name} Property: {property}");
@@ -5670,29 +6818,39 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
         }
 
-        private void SetPropertyValue(Type interfaceType, ICommodity commodity, string property, object value)
+        private bool SetPropertyValue(Type interfaceType, ICommodity commodity, string property, object value)
         {
             Debug.WriteLine($"ItemID: {_itemID}; Type: {interfaceType.Name}; property: {property}; value: {value ?? ""}");
+            if (!IsDTPReady)
+                return false;
+
             try
             {
                 interfaceType.GetProperty(property).GetSetMethod().Invoke(commodity, new[] { value });
+                return true;
             }
             catch (Exception ex)
             {
                 writelog($"Error while setting {interfaceType}.{property} on item \"{_itemID}\".\n{ex}");
+                return false;
             }
         }
 
-        private void SetPropertyValue(Type interfaceType, ICommodity commodity, string property, byte[] value)
+        private bool SetPropertyValue(Type interfaceType, ICommodity commodity, string property, byte[] value)
         {
             Debug.WriteLine($"ItemID: {_itemID}; Type: {interfaceType.Name}; property: {property}; value: {Encoding.UTF8.GetString(value)}");
+            if (!IsDTPReady)
+                return false;
+
             try
             {
                 interfaceType.GetProperty(property).GetSetMethod().Invoke(commodity, new[] { value });
+                return true;
             }
             catch (Exception ex)
             {
                 writelog($"Error while setting {interfaceType}.{property} on item \"{_itemID}\".\n{ex}");
+                return false;
             }
         }
         private void _comdity_Disconnected(object sender, DisconnectedArgs e)
@@ -5704,26 +6862,26 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         {
             writelog($"[DTPProxy] Connected Device ID: {e.DeviceId} !!!!!!!!!!!!!!!");
         }
-        private void ZoomChanged(object sender, ZoomChangedArgs e)
-        {
-            writelog($"[DTPProxy] ZoomChanged e : {e}");
-            ZoomChanged_Notify?.Invoke(this, e);
-        }
-        private void ZoomMeetingTypeChanged(object sender, ZoomMeetingTypeChangedArgs e)
-        {
-            writelog($"[DTPProxy] ZoomMeetingTypeChanged e : {e}");
-            ZoomMeetingTypeChanged_Notify?.Invoke(this, e);
-        }
-        private void IsZoomMeetingActiveChanged(object sender, IsZoomMeetingActiveChangedArgs e)
-        {
-            writelog($"[DTPProxy] IsZoomMeetingActiveChanged e : {e}");
-            IsZoomMeetingActive_Notify?.Invoke(this, e);
-        }
-        private void IsZoomScreenShareActiveChanged(object sender, IsZoomScreenShareActiveChangedArgs e)
-        {
-            writelog($"[DTPProxy] ZoomMeetingTypeChanged e : {e}");
-            IsZoomScreenShareActive_Notify?.Invoke(this, e);
-        }
+        //private void ZoomChanged(object sender, ZoomChangedArgs e)
+        //{
+        //    writelog($"[DTPProxy] ZoomChanged e : {e}");
+        //    ZoomChanged_Notify?.Invoke(this, e);
+        //}
+        //private void ZoomMeetingTypeChanged(object sender, ZoomMeetingTypeChangedArgs e)
+        //{
+        //    writelog($"[DTPProxy] ZoomMeetingTypeChanged e : {e}");
+        //    ZoomMeetingTypeChanged_Notify?.Invoke(this, e);
+        //}
+        //private void IsZoomMeetingActiveChanged(object sender, IsZoomMeetingActiveChangedArgs e)
+        //{
+        //    writelog($"[DTPProxy] IsZoomMeetingActiveChanged e : {e}");
+        //    IsZoomMeetingActive_Notify?.Invoke(this, e);
+        //}
+        //private void IsZoomScreenShareActiveChanged(object sender, IsZoomScreenShareActiveChangedArgs e)
+        //{
+        //    writelog($"[DTPProxy] ZoomMeetingTypeChanged e : {e}");
+        //    IsZoomScreenShareActive_Notify?.Invoke(this, e);
+        //}
         private void _comdity_Dock_Disconnected(object sender, DisconnectedArgs e)
         {
             writelog($"Dock Disconnected Device ID: {e.DeviceId} !!!!!!!!!!!!!!!");
@@ -5738,8 +6896,8 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
         private void _headsetcomdity_IsReadyChanged(object sender, IsReadyChangedArgs e)
         {
-            Debug.WriteLine($"[Headset] IsReadyChanged {e.IsReady} Changed for Device ID: {e.DeviceId}  !!!!!!!!!!!!!!!");
-            writelog($"[Headset] IsReadyChanged {e.IsReady} Changed for Device ID: {e.DeviceId}  !!!!!!!!!!!!!!!");
+            Debug.WriteLine($"[DTPProxyPlugin] [Headset] IsReadyChanged {e.IsReady} Changed for Device ID: {e.DeviceId}  !!!!!!!!!!!!!!!");
+            writelog($"[DTPProxyPlugin] [Headset] IsReadyChanged {e.IsReady} Changed for Device ID: {e.DeviceId}  !!!!!!!!!!!!!!!");
         }
         private void _headsetcomdity_FirmwareVersionChanged(object sender, FirmwareVersionChangedArgs e)
         {
@@ -5781,40 +6939,303 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         #endregion
 
 
-        #region Webcam
+        #region Webcam event
+        //webcam register condition
+        //1. some devices has connected before DTPPlugin init
+        //   A. register events for them, and remove events when disconnected
+        //2. new devices connected --> register
 
-        private void _webcamcom_Esi_IsCameraSensorCoveredChanged(object sender, Esi_IsCameraSensorCoveredChangedArgs e)
+        private void Webcam_ZoomMeetingTypeChanged(object sender, ZoomMeetingTypeChangedArgs e)
         {
-            Esi_IsCameraSensorCover_ChangeEvent?.AsyncFireAndForget(this, e.IsCameraSensorCovered, System.Threading.CancellationToken.None);
+            SendDTPEventToUI(CreateEventMsg("Webcam", "Webcam_ZoomMeetingTypeChanged",
+                                    e.DeviceId, $"NewValue:{e.ZoomMeetingType}"));
 
-            Debug.WriteLine($"[Speaker] IsMuteStatusChanged {e.IsCameraSensorCovered} Changed for Device ID: {e.DeviceId}  !!!!!!!!!!!!!!!");
-            writelog($"[Speaker] IsMuteStatusChanged {e.IsCameraSensorCovered} Changed for Device ID: {e.DeviceId}  !!!!!!!!!!!!!!!");
+            writelog($"Catch event Webcam_ZoomMeetingTypeChanged, NewValue:{e.ZoomMeetingType} : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
         }
 
-        private void _webcamcom_WALSnoozeTimeLeftInSecondsChanged(object sender, WALSnoozeTimeLeftInSecondsChangedArgs e)
+        private void Webcam_SharpnessChanged(object sender, SharpnessChangedArgs e)
         {
-            WALSnoozeTimeLeftInSeconds_ChangeEvent?.AsyncFireAndForget(this, e.WALSnoozeTimeLeftInSeconds, System.Threading.CancellationToken.None);
+            SendDTPEventToUI(CreateEventMsg("Webcam", "Webcam_SharpnessChanged",
+                                    e.DeviceId, $"NewValue:{e.Sharpness}"));
 
-            Debug.WriteLine($"[Speaker] IsMuteStatusChanged {e.WALSnoozeTimeLeftInSeconds} Changed for Device ID: {e.DeviceId}  !!!!!!!!!!!!!!!");
-            writelog($"[Speaker] IsMuteStatusChanged {e.WALSnoozeTimeLeftInSeconds} Changed for Device ID: {e.DeviceId}  !!!!!!!!!!!!!!!");
+            writelog($"Catch event Webcam_SharpnessChanged, NewValue:{e.Sharpness} : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
         }
 
-        private void _webcamcom_Esi_IsWALLockCountdownStartedChanged(object sender, Esi_IsWALLockCountdownStartedChangedArgs e)
+        private void Webcam_Esi_WALLockCountdownChanged(object sender, Esi_WALLockCountdownChangedArgs e)
         {
-            Esi_IsWALLockCountdownStartedChanged_ChangeEvent?.AsyncFireAndForget(this, e.IsWALLockCountdownStarted, System.Threading.CancellationToken.None);
+            SendDTPEventToUI(CreateEventMsg("Webcam", "Webcam_Esi_WALLockCountdownChanged",
+                                    e.DeviceId, $"NewValue:{e.WALLockCountdown}"));
 
-            Debug.WriteLine($"[Speaker] IsMuteStatusChanged {e.IsWALLockCountdownStarted} Changed for Device ID: {e.DeviceId}  !!!!!!!!!!!!!!!");
-            writelog($"[Speaker] IsMuteStatusChanged {e.IsWALLockCountdownStarted} Changed for Device ID: {e.DeviceId}  !!!!!!!!!!!!!!!");
+            writelog($"Catch event _Webcamcom_Esi_WALLockCountdownChanged, NewValue:{e.WALLockCountdown}: {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
         }
 
-        private void _webcamcom_Esi_WALLockCountdownChanged(object sender, Esi_WALLockCountdownChangedArgs e)
+        private void Webcam_Esi_IsWALLockCountdownStartedChanged(object sender, Esi_IsWALLockCountdownStartedChangedArgs e)
         {
-            Esi_WALLockCountdownChanged_ChangeEvent?.AsyncFireAndForget(this, e.WALLockCountdown, System.Threading.CancellationToken.None);
+            SendDTPEventToUI(CreateEventMsg("Webcam", "Webcam_Esi_IsWALLockCountdownStartedChanged",
+                                    e.DeviceId, $"NewValue:{e.IsWALLockCountdownStarted}"));
 
-            Debug.WriteLine($"[Speaker] IsMuteStatusChanged {e.WALLockCountdown} Changed for Device ID: {e.DeviceId}  !!!!!!!!!!!!!!!");
-            writelog($"[Speaker] IsMuteStatusChanged {e.WALLockCountdown} Changed for Device ID: {e.DeviceId}  !!!!!!!!!!!!!!!");
+            writelog($"Catch event _Webcamcom_Esi_IsWALLockCountdownStartedChanged, NewValue:{e.IsWALLockCountdownStarted}: {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
         }
 
+        private void Webcam_WALSnoozeTimeLeftInSecondsChanged(object sender, WALSnoozeTimeLeftInSecondsChangedArgs e)
+        {
+            SendDTPEventToUI(CreateEventMsg("Webcam", "Webcam_WALSnoozeTimeLeftInSecondsChanged",
+                                    e.DeviceId, $"NewValue:{e.WALSnoozeTimeLeftInSeconds}"));
+
+            //writelog($"Catch event _Webcamcom_WALSnoozeTimeLeftInSecondsChanged NewValue:{e.WALSnoozeTimeLeftInSeconds}");
+            writelog($"Catch event _Webcamcom_WALSnoozeTimeLeftInSecondsChanged, NewValue:{e.WALSnoozeTimeLeftInSeconds}: {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+        }
+
+        private void Webcam_IsZoomScreenShareActiveChanged(object sender, IsZoomScreenShareActiveChangedArgs e)
+        {
+            SendDTPEventToUI(CreateEventMsg("Webcam", "Webcam_IsZoomScreenShareActiveChanged",
+                                    e.DeviceId, $"NewValue:{e.IsZoomScreenShareActive}"));
+
+            writelog($"Catch event _Webcamcom_IsZoomScreenShareActiveChanged, new value {e.IsZoomScreenShareActive}: {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+        }
+
+        private void Webcam_IsZoomMeetingActiveChanged(object sender, IsZoomMeetingActiveChangedArgs e)
+        {
+            SendDTPEventToUI(CreateEventMsg("Webcam", "Webcam_IsZoomMeetingActiveChanged",
+                                    e.DeviceId, $"NewValue:{e.IsZoomMeetingActive}"));
+
+            writelog($"Catch event _Webcamcom_IsZoomMeetingActiveChanged, NewValue:{e.IsZoomMeetingActive}: {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+        }
+
+        private void Webcam_SerialNumberChanged(object sender, SerialNumberChangedArgs e)
+        {
+            SendDTPEventToUI(CreateEventMsg("Webcam", "Webcam_SerialNumberChanged",
+                                    e.DeviceId, $"NewValue:{e.SerialNumber}"));
+
+            writelog($"Catch event _Webcamcom_SerialNumberChanged, NewValue:{e.SerialNumber}: {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+        }
+
+        private void Webcam_IsHDROnChanged(object sender, IsHDROnChangedArgs e)
+        {
+            SendDTPEventToUI(CreateEventMsg("Webcam", "Webcam_IsHDROnChanged",
+                                    e.DeviceId, $"NewValue:{e.IsHDROn}"));
+
+            writelog($"Catch event _Webcamcom_IsHDROnChanged, NewValue:{e.IsHDROn}: {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+        }
+
+        private void Webcam_FieldOfViewChanged(object sender, FieldOfViewChangedArgs e)
+        {
+            SendDTPEventToUI(CreateEventMsg("Webcam", "Webcam_FieldOfViewChanged",
+                                    e.DeviceId, $"NewValue:{e.FieldOfView}"));
+
+            writelog($"Catch event _Webcamcom_FieldOfViewChanged, NewValue:{e.FieldOfView}: {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+        }
+
+        private void Webcam_AutoFramingFrameSizeChanged(object sender, AutoFramingFrameSizeChangedArgs e)
+        {
+            SendDTPEventToUI(CreateEventMsg("Webcam", "Webcam_AutoFramingFrameSizeChanged",
+                                    e.DeviceId, $"NewValue:{e.AutoFramingFrameSize}"));
+
+            writelog($"Catch event _Webcamcom_AutoFramingFrameSizeChanged, NewValue:{e.AutoFramingFrameSize}: {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+        }
+
+        private void Webcam_AutoFramingSensitivityChanged(object sender, AutoFramingSensitivityChangedArgs e)
+        {
+            SendDTPEventToUI(CreateEventMsg("Webcam", "Webcam_AutoFramingSensitivityChanged",
+                                    e.DeviceId, $"NewValue:{e.AutoFramingSensitivity}"));
+
+            writelog($"Catch event _Webcamcom_AutoFramingSensitivityChanged, NewValue:{e.AutoFramingSensitivity}: {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+        }
+
+        private void Webcam_IsAutoFramingOnChanged(object sender, IsAutoFramingOnChangedArgs e)
+        {
+            SendDTPEventToUI(CreateEventMsg("Webcam", "Webcam_IsAutoFramingOnChanged",
+                                    e.DeviceId, $"NewValue:{e.IsAutoFramingOn}"));
+
+            writelog($"Catch event _Webcamcom_IsAutoFramingOnChanged, NewValue:{e.IsAutoFramingOn}: {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+        }
+
+        private void Webcam_IsAutoFramingTransitionOnChanged(object sender, IsAutoFramingTransitionOnChangedArgs e)
+        {
+            SendDTPEventToUI(CreateEventMsg("Webcam", "Webcam_IsAutoFramingTransitionOnChanged",
+                                    e.DeviceId, $"NewValue:{e.IsAutoFramingTransitionOn}"));
+
+            writelog($"Catch event _Webcamcom_IsAutoFramingTransitionOnChanged, NewValue:{e.IsAutoFramingTransitionOn}: {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+        }
+
+        private void Webcam_AutoWhiteBalanceChanged(object sender, AutoWhiteBalanceChangedArgs e)
+        {
+            SendDTPEventToUI(CreateEventMsg("Webcam", "Webcam_AutoWhiteBalanceChanged",
+                                    e.DeviceId, $"NewValue:{e.AutoWhiteBalance}"));
+
+            writelog($"Catch event _Webcamcom_AutoWhiteBalanceChanged, NewValue:{e.AutoWhiteBalance}: {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+        }
+
+        private void Webcam_IsAutoWhiteBalanceOnChanged(object sender, IsAutoWhiteBalanceOnChangedArgs e)
+        {
+            SendDTPEventToUI(CreateEventMsg("Webcam", "Webcam_IsAutoWhiteBalanceOnChanged",
+                                    e.DeviceId, $"NewValue:{e.IsAutoWhiteBalanceOn}"));
+
+            writelog($"Catch event _Webcamcom_IsAutoWhiteBalanceOnChanged, NewValue:{e.IsAutoWhiteBalanceOn}: {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+        }
+
+        private void Webcam_SaturationChanged(object sender, SaturationChangedArgs e)
+        {
+            SendDTPEventToUI(CreateEventMsg("Webcam", "Webcam_SaturationChanged",
+                                    e.DeviceId, $"NewValue:{e.Saturation}"));
+
+            writelog($"Catch event _Webcamcom_SaturationChanged, NewValue:{e.Saturation}: {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+        }
+
+        private void Webcam_AntiFlickerChanged(object sender, AntiFlickerChangedArgs e)
+        {
+            SendDTPEventToUI(CreateEventMsg("Webcam", "Webcam_AntiFlickerChanged",
+                                    e.DeviceId, $"NewValue:{e.AntiFlicker}"));
+
+            writelog($"Catch event _Webcamcom_AntiFlickerChanged, NewValue:{e.AntiFlicker}: {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+        }
+
+        private void Webcam_ContrastChanged(object sender, ContrastChangedArgs e)
+        {
+            SendDTPEventToUI(CreateEventMsg("Webcam", "Webcam_ContrastChanged",
+                                    e.DeviceId, $"NewValue:{e.Contrast}"));
+
+            writelog($"Catch event _Webcamcom_ContrastChanged, NewValue:{e.Contrast}: {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+        }
+
+        private void Webcam_BrightnessChanged(object sender, BrightnessChangedArgs e)
+        {
+            SendDTPEventToUI(CreateEventMsg("Webcam", "Webcam_BrightnessChanged",
+                                    e.DeviceId, $"NewValue:{e.Brightness}"));
+
+            writelog($"Catch event _Webcamcom_BrightnessChanged, NewValue:{e.Brightness}: {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+        }
+
+        private void Webcam_ZoomChanged(object sender, ZoomChangedArgs e)
+        {
+            SendDTPEventToUI(CreateEventMsg("Webcam", "Webcam_ZoomChanged",
+                                    e.DeviceId, $"NewValue:{e.Zoom}"));
+
+            writelog($"Catch event _Webcamcom_ZoomChanged, NewValue:{e.Zoom}: {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+        }
+
+        private void Webcam_TiltChanged(object sender, TiltChangedArgs e)
+        {
+            SendDTPEventToUI(CreateEventMsg("Webcam", "Webcam_TiltChanged",
+                                    e.DeviceId, $"NewValue:{e.Tilt}"));
+
+            writelog($"Catch event _Webcamcom_TiltChanged, NewValue:{e.Tilt}: {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+        }
+
+        private void Webcam_PanChanged(object sender, PanChangedArgs e)
+        {
+            SendDTPEventToUI(CreateEventMsg("Webcam", "Webcam_PanChanged",
+                                    e.DeviceId, $"NewValue:{e.Pan}"));
+
+            writelog($"Catch event _Webcamcom_PanChanged, NewValue:{e.Pan}: {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+        }
+
+        private void Webcam_FocusChanged(object sender, FocusChangedArgs e)
+        {
+            SendDTPEventToUI(CreateEventMsg("Webcam", "Webcam_FocusChanged",
+                                    e.DeviceId, $"NewValue:{e.Focus}"));
+
+            writelog($"Catch event _Webcamcom_FocusChanged, NewValue:{e.Focus}: {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+        }
+
+        private void Webcam_IsFocusOnChanged(object sender, IsFocusOnChangedArgs e)
+        {
+            SendDTPEventToUI(CreateEventMsg("Webcam", "Webcam_IsFocusOnChanged",
+                                    e.DeviceId, $"NewValue:{e.IsFocusOn}"));
+
+            writelog($"Catch event _Webcamcom_IsFocusOnChanged, NewValue:{e.IsFocusOn}: {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+        }
+
+        private void Webcam_PriorityChanged(object sender, PriorityChangedArgs e)
+        {
+            SendDTPEventToUI(CreateEventMsg("Webcam", "Webcam_PriorityChanged",
+                                    e.DeviceId, $"NewValue:{e.Priority}"));
+
+            writelog($"Catch event _Webcamcom_PriorityChanged, NewValue:{e.Priority}: {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+        }
+
+        private void Webcam_CustomProfileRemoved(object sender, CustomProfileRemovedArgs e)
+        {
+            SendDTPEventToUI(CreateEventMsg("Webcam", "Webcam_CustomProfileRemoved",
+                                    e.DeviceId, $"NewValue:{e.ProfileId}"));
+
+            writelog($"Catch event _Webcamcom_CustomProfileRemoved, NewValue:{e.ProfileId}: {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+        }
+
+        private void Webcam_CustomProfileAdded(object sender, CustomProfileAddedArgs e)
+        {
+            SendDTPEventToUI(CreateEventMsg("Webcam", "Webcam_CustomProfileAdded",
+                                    e.DeviceId, $"NewValue:{e.ProfileId}"));
+
+            writelog($"Catch event _Webcamcom_CustomProfileAdded, NewValue:{e.ProfileId}: {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+        }
+
+        private void Webcam_CurrentSelectedProfileChanged(object sender, CurrentSelectedProfileChangedArgs e)
+        {
+            SendDTPEventToUI(CreateEventMsg("Webcam", "Webcam_CurrentSelectedProfileChanged",
+                                    e.DeviceId, $"NewValue:{e.ProfileId}"));
+
+            writelog($"Catch event _Webcamcom_CurrentSelectedProfileChanged, NewValue:{e.ProfileId}: {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+        }
+
+        private void Webcam_IsMicEnumerationOnChanged(object sender, IsMicEnumerationOnChangedArgs e)
+        {
+            SendDTPEventToUI(CreateEventMsg("Webcam", "Webcam_IsMicEnumerationOnChanged",
+                                    e.DeviceId, $"NewValue:{e.IsMicEnumerationOn}"));
+
+            writelog($"Catch event _Webcamcom_IsMicEnumerationOnChanged, NewValue:{e.IsMicEnumerationOn}: {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+        }
+
+        private void Webcam_ProfileManagerAdded(object sender, ProfileManagerAddedArgs e)
+        {
+            SendDTPEventToUI(CreateEventMsg("Webcam", "Webcam_ProfileManagerAdded",
+                                    e.DeviceId, $"NewValue:{e.ProfileMangerId}"));
+
+            writelog($"Catch event _Webcamcom_ProfileManagerAdded, NewValue:{e.ProfileMangerId}: {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+        }
+
+        private void Webcam_Esi_IsCameraSensorCoveredChanged(object sender, Esi_IsCameraSensorCoveredChangedArgs e)
+        {
+            SendDTPEventToUI(CreateEventMsg("Webcam", "Webcam_Esi_IsCameraSensorCoveredChanged",
+                                    e.DeviceId, $"NewValue:{e.IsCameraSensorCovered}"));
+
+            writelog($"Catch event _Webcamcom_Esi_IsCameraSensorCoveredChanged, NewValue:{e.IsCameraSensorCovered}: new IsCameraSensorCovered is {e.IsCameraSensorCovered} {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+        }
+
+        private void Webcam_Disconnected(object sender, DisconnectedArgs e)
+        {
+            _ = UnregisterEventsForAllWebcamsAsync();
+            //_ = UnregisterEventsForWebcamAsync();
+            _ = RegisterEventsForAllWebcamsAsync();
+
+            //SendDTPEventToUI($"3;Device:Webcam;Event:Disconnected;DeviceId:{e.DeviceId}");
+            SendDTPEventToUI(CreateEventMsg("Webcam", "Webcam_Disconnected", e.DeviceId));
+
+            writelog($"Catch event _Webcam_Disconnected, current devCount is {GetWebcamDevsCountAsync().Result} : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+        }
+
+        private void Webcam_Connected(object sender, ConnectedArgs e)
+        {
+            Task<int> webcams = GetWebcamDevsCountAsync();
+            bool result = RegisterEventsForWebcamAsync(webcams.Result - 1).Result;
+
+            SendDTPEventToUI(CreateEventMsg("Webcam", "Webcam_Connected", e.DeviceId));
+
+            writelog($"Catch event _Webcam_Connected, register evnet result is {result} : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+        }
+
+        private string CreateEventMsg(string devType, string eventType, string devID, string eventContent = "NewValue:NoContent")
+        {
+            return $"WebcamEvent_5;Device:{devType};EventType:{eventType};DeviceId:{devID};{eventContent}";
+        }
+
+        private void SendDTPEventToUI(string sendMsg)
+        {
+            UpdateUINotify webcamEventNotify = new UpdateUINotify();
+            webcamEventNotify.UI_Field_Name = $"{sendMsg}";
+
+            OnUIUpdateNotify(webcamEventNotify);
+        }
         #endregion
     }
 }

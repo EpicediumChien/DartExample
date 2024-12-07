@@ -324,6 +324,8 @@ namespace DDPM.SA.Plugins.User.PipPbpManger
                 {
                     List<UInt16> listOut = new List<UInt16>();
                     UInt16 wValue = Convert.ToUInt16(ret.value);
+                    Trace.WriteLine(monitorInfo.modelName);
+                    Trace.WriteLine(wValue.ToString());
                     //
                     // bit 15 14~10  9~5   4~0
                     //      x sub3   sub2  sub1
@@ -390,6 +392,7 @@ namespace DDPM.SA.Plugins.User.PipPbpManger
 
         public Task<bool> SetSubInputs(MonitorInfo monitorInfo, InputSourceObj? sub1, InputSourceObj? sub2, InputSourceObj? sub3)
         {
+            bool res = false;
             if (_DisplayManagerPlugin != null)
             {
                 //Get original WORD
@@ -408,6 +411,7 @@ namespace DDPM.SA.Plugins.User.PipPbpManger
                     UInt16 wSetValue = 0;
                     if (sub1 != null)
                     {
+                        Trace.WriteLine(sub1.Code.ToString());
                         UInt16 sub1Code = sub1.Code;
                         sub1Code &= 0x001F;
                         wSetValue |= sub1Code;
@@ -421,13 +425,15 @@ namespace DDPM.SA.Plugins.User.PipPbpManger
                     }
                     if (sub3 != null)
                     {
-                        Trace.WriteLine(sub2.Code.ToString());
+                        Trace.WriteLine(sub3.Code.ToString());
                         UInt16 sub3Code = (UInt16)(sub3.Code & 0x001F);
                         sub3Code = (UInt16)(sub3Code << 10);
                         wSetValue |= sub3Code;
                     }
-
-                    bool res = _DisplayManagerPlugin.SetVCPCapability(monitorInfo, 0xE8, wSetValue).Result;
+                    if (wSetValue > 0)
+                    {
+                        res = _DisplayManagerPlugin.SetVCPCapability(monitorInfo, 0xE8, wSetValue).Result;
+                    }
                     return Task.FromResult<bool>(res);
                 }
             }

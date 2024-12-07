@@ -3,9 +3,11 @@ using NGA.UnitTest.PrivateObject;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Controls;
 
 namespace DDPM.Easy.Common.Tests
@@ -20,6 +22,8 @@ namespace DDPM.Easy.Common.Tests
         [SetUp]
         public void Setup()
         {
+            var settings = new ObservableCollection<GridLength>() { new GridLength(), new GridLength(), new GridLength(), new GridLength(), new GridLength(), new GridLength(), new GridLength(), new GridLength() };
+            vm = new SplitCtrlVM() { Settings = settings };
             splitCtrl0A = new SplitCtrl0A();
             privateObject = new PrivateObject(splitCtrl0A);
         }
@@ -49,6 +53,11 @@ namespace DDPM.Easy.Common.Tests
             splitCtrl0A.CellList=CellList;
             // Assert
             Assert.That(splitCtrl0A.CellList, Is.Not.Null);
+
+            vm.IsVertical = true;
+            splitCtrl0A.CellList = CellList;
+            // Assert
+            Assert.That(splitCtrl0A.CellList, Is.Not.Null);
         }
 
         [Test]
@@ -57,6 +66,20 @@ namespace DDPM.Easy.Common.Tests
             try
             {
                 splitCtrl0A.InitCellList();
+                Assert.True(true);
+            }
+            catch (Exception ex)
+            {
+                Assert.Fail("not invoked");
+            }
+        }
+
+        [Test]
+        public void TestUpdateRatioRectsFromSettings()
+        {
+            try
+            {
+                splitCtrl0A.UpdateRatioRectsFromSettings();
                 Assert.True(true);
             }
             catch (Exception ex)

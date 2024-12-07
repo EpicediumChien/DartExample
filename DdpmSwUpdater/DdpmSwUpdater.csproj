@@ -6,12 +6,13 @@
 	  <UseWPF>true</UseWPF>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <Version>1.0.0.5</Version>
+    <Version>1.0.0.7</Version>
   </PropertyGroup>
 	
 	<ItemGroup>
 		<PackageReference Include="DCF.UX.WPF" Version="2.2.4.1" />
 		<PackageReference Include="Dell.TechHub.Sdk.Common_NET" Version="3.0.0.606-2e2db9-beta" />
+		<PackageReference Include="DellClientFramework" Version="6.4.11.2" />
 	</ItemGroup>
 
   <ItemGroup>
@@ -20,6 +21,9 @@
     </Reference>
     <Reference Include="DDPM.SA.Obfuscation">
       <HintPath>CommonDll\DDPM.SA.Obfuscation.dll</HintPath>
+    </Reference>
+    <Reference Include="DDPM.SA.Resources">
+      <HintPath>CommonDll\DDPM.SA.Resources.dll</HintPath>
     </Reference>
     <Reference Include="VcpCore.Common">
       <HintPath>CommonDll\VcpCore.Common.dll</HintPath>

@@ -202,10 +202,12 @@ namespace DDPM.UI.Module.Collaboration
         private void ShowLearnMore()
         {
             MessageModalDialog messageModalDialog = new(Strings.LearnMoreCaption, LearnMoreText, "", "", "", 600);
-            Window parentWindow = Window.GetWindow(this);
-            if (parentWindow != null)
+            Window mainWindow = System.Windows.Application.Current.MainWindow;
+            if (mainWindow != null)
             {
-                messageModalDialog.Owner = parentWindow;
+                messageModalDialog.Owner = mainWindow;
+                messageModalDialog.Left = mainWindow.Left + (mainWindow!.ActualWidth - 600) / 2;
+                messageModalDialog.Top = mainWindow.Top + 300;
             }
             messageModalDialog.ShowDialog();
         }

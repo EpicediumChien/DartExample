@@ -27,6 +27,7 @@ using VcpCore.Common;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 using IDs = DDPM.SA.Common.IDs;
 using DDPM.SA.Common.Telemetry;
+using static VcpCore.Common.User32;
 
 namespace DDPM.SA.Plugins.User.EasyArrange
 {
@@ -695,16 +696,16 @@ namespace DDPM.SA.Plugins.User.EasyArrange
             }
 
             //If InitEditWindow() not been called or failed.
-            if (_editWindow == null)
-            {
-                LogInfo("@EAPlugin.EditCommand(), _editWindow is null.");
-                return Task.FromResult(false);
-            }
-            if (_saveCustomWindow == null)
-            {
-                LogInfo("@EAPlugin.EditCommand(), _saveCustomWindow is null.");
-                return Task.FromResult(false);
-            }
+            //if (_editWindow == null)
+            //{
+            //    LogInfo("@EAPlugin.EditCommand(), _editWindow is null.");
+            //    return Task.FromResult(false);
+            //}
+            //if (_saveCustomWindow == null)
+            //{
+            //    LogInfo("@EAPlugin.EditCommand(), _saveCustomWindow is null.");
+            //    return Task.FromResult(false);
+            //}
 
             //Launch the major function in UI Thread
             Thread thread = new Thread(() =>
@@ -719,6 +720,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange
             return Task.FromResult(true);
         }
 
+        private OverlapWindow _overlapWindow;
         /// <summary>
         /// EditCommand() function which is running under STA thread.
         /// In this method, it must return a EditStarted event to UI, to tell UI
@@ -733,14 +735,24 @@ namespace DDPM.SA.Plugins.User.EasyArrange
             //Should be never, these flags are checked alaredy in EditCommand()
             if (_eaBroker == null) 
                 return false;
-            if (_editWindow == null)
-                return false;
-            if (_saveCustomWindow == null)
-                return false;
+            //if (_editWindow == null)
+            //    return false;
+            //if (_saveCustomWindow == null)
+            //    return false;
 
             Trace.WriteLine("@ UI_EditCommand()");
             Trace.WriteLine($"  * Monitor.Model=[{monitorInfo.modelName}], ServiceTag=[{monitorInfo.edid.ServiceTag}]");
             Trace.WriteLine($"  * EAArgs.Split=[{args.CellCount}{args.SplitKey}], CustomName=[{args.CustomName}]");
+
+            //Robert_Lin, 2024-12-6, use the method in CommonFunctions
+            double dpiX = CommonFunctions.GetDpiX();
+            //double dpiX = 1.000;
+            //var dpiXProperty = typeof(SystemParameters).GetProperty("DpiX", BindingFlags.NonPublic | BindingFlags.Static);
+            //if (dpiXProperty != null)
+            //{
+            //    var varX = (int)dpiXProperty.GetValue(null, null);
+            //    dpiX = (double)varX / (double)96;
+            //}
 
             //Get the DisplayName from MonitorInfo
             string displayName = monitorInfo.DisplayName;
@@ -785,14 +797,119 @@ namespace DDPM.SA.Plugins.User.EasyArrange
                     _eaBroker.VM.IsWorkUIEnabled = false;
 
                     //3 Show SaveCustomWindow, until user click Save or Cancel
-                    _saveCustomWindow.ShowAndEdit(args, workingArea);
+                    //_saveCustomWindow = new EABroker.SaveCustomWindow(_deviceManagerPlugin);
+                    //_saveCustomWindow.CancelButtonClick += saveCustomWidow_CancelButtonClick;
+                    //_saveCustomWindow.SaveButtonClick += saveCustomWidow_SaveButtonClick;
+                    ////_saveCustomWindow.ShowAndEdit(args, workingArea);
+                    //_saveCustomWindow.ShowAndEdit_v1(args, scr);
+
+                    int x = workingArea.X + (int)(32 /dpiX);
+                    int y = workingArea.Y + (int)(32 /dpiX);
+                    _saveCustomWindow = new EABroker.SaveCustomWindow(_deviceManagerPlugin, args, x, y);
+                    bool? dlgResult = _saveCustomWindow.ShowDialog();
+                    if (dlgResult != true)
+                    {
+                        //if ((EditReturn != null) && (_eaArgs != null))
+                        //{
+                        //    EAArgs retArgs = new EAArgs(_eaArgs);
+                        //    retArgs.Result = false;
+                        //    retArgs.Command = "EditReturn";
+                        //    retArgs.Message = "User cancel the editing.";
+                        //    EditReturn(this, retArgs);
+                        //}
+                        SendEditReturn_Cancel("User cancel the editing.");
+                        if (_eaBroker != null)
+                            _eaBroker.VM.IsWorkUIEnabled = true;
+                        return true;
+                    }
+
+                    _overlapWindow = new OverlapWindow(_log);
+                    //Handler of CaptureDone
+                    //After CaptureOverlapLayout() finished it job and returned.
+                    //The output (OverlapWindow.SplitCtrl) has ready to get.
+                    //But we would like to wait for the delay of OverlapWindow (3 sec)
+                    //Until its delay finished, then we report UI 'Done' with the result.
+                    _overlapWindow.CaptureDone += delegate
+                    {
+                        EAArgs retArgs = new EAArgs(_eaArgs);
+                        retArgs.Command = "EditReturn";
+                        retArgs.Result = true;
+                        retArgs.SplitJson = new SplitJson()
+                        {
+                            CellCount = 0,
+                            SplitKey = 'B',
+                            Settings = new List<double>()
+                        };
+                        //Update from OverlapWindow.SplitCtrl
+                        if (_overlapWindow.SplitCtrl != null)
+                        {
+                            retArgs.SplitJson = new SplitJson()
+                            {
+                                CellCount = _overlapWindow.SplitCtrl.CellCount, 
+                                SplitKey = _overlapWindow.SplitCtrl.SplitKey, 
+                                Settings = new List<double>(_overlapWindow.SplitCtrl.Settings)
+                            };
+                        }
+                        //Update from SaveCustomWindow
+                        if (_saveCustomWindow.SelectedCustomItem != null)
+                        {
+                            //CustomName will copy from SaveCustomWindow
+                            retArgs.SplitJson.CustomName = _saveCustomWindow.SelectedCustomItem.CustomName;
+
+                            //If user has selected an existed custom layout
+                            if (_saveCustomWindow.SelectedCustomItem.EAID >= EAEMConstants.EAID_FirstCustom)
+                            {
+                                retArgs.SplitJson.EAID = _saveCustomWindow.SelectedCustomItem.EAID;
+                            }
+
+                        }
+                        //Send the EditReturn event to UI
+                        if (EditReturn != null)
+                            EditReturn(this, retArgs);
+
+                        if (_eaBroker != null)
+                            _eaBroker.VM.IsWorkUIEnabled = true;
+                    }; //_overlapWindow.CaptureDone += delegate
+
+                   // _overlapWindow.Show();
+
+                    int addCount = 0;
+                    if (_eaBroker.VM.IsSpanScreenWorking)
+                    {
+                        _overlapWindow.Left = workingArea.Left / dpiX;
+                        _overlapWindow.Top = workingArea.Top / dpiX;
+                        _overlapWindow.Width = workingArea.Width / dpiX;
+                        _overlapWindow.Height = workingArea.Height / dpiX;
+
+                        Trace.WriteLine($"WorkingArea: {workingArea.Width}x{workingArea.Height}");
+                        _overlapWindow.Show();
+                        addCount = _overlapWindow.CaptureOverlapLayoutByWorkingArea(workingArea);
+
+                    }
+                    else
+                    {
+                        _overlapWindow.Show();
+                        addCount = _overlapWindow.CaptureOverlapLayout(scr);
+
+                    }
+                    if (addCount <= 0)
+                    {
+                        //Robert_Lin, 2024-12-4
+                        //There no any window on the target screen.
+                        //Reference to DDM v2, it will return (no cell) to UI.
+                        //DDPM v2.0 will follow it
+                    }
                 }
                 else //_editOverlapCutsomWay=1
                 {
+                    //DO NOT set _editOverlapCutsomWay=1, issues not been fixed
+
                     //1 Show EditWindow
-                    if (!_editWindow.ShowAndEdit(args, workingArea))
-                    {
-                        if (EditStarted != null)
+                    _editWindow = new EABroker.EAEditWindow(_log);
+                    //if (!_editWindow.ShowAndEdit_v1(args, workingArea))
+                        if (!_editWindow.ShowAndEdit_v1(args, scr))
+                        {
+                            if (EditStarted != null)
                         {
                             EditStarted(this, "Error");
                         }
@@ -800,7 +917,12 @@ namespace DDPM.SA.Plugins.User.EasyArrange
                     }
 
                     //2 Show SaveCustomWindow at the same time
-                    _saveCustomWindow.ShowAndEdit(args, workingArea);
+                    _saveCustomWindow = new EABroker.SaveCustomWindow(_deviceManagerPlugin);
+                    _saveCustomWindow.Owner = _editWindow;
+                    _saveCustomWindow.CancelButtonClick += saveCustomWidow_CancelButtonClick;
+                    _saveCustomWindow.SaveButtonClick += saveCustomWidow_SaveButtonClick;
+                    //_saveCustomWindow.ShowAndEdit(args, workingArea);
+                    _saveCustomWindow.ShowAndEdit_v1(args, scr);
 
                     //3 Signal EditStart event to UI, UI will Minimized to taskbar
                     if (EditStarted != null)
@@ -811,10 +933,12 @@ namespace DDPM.SA.Plugins.User.EasyArrange
 
                 }
             }
-            else
+            else //Non-Overlap layout
             {
                 //Non-Overlap edit steps
                 //1 Show the layout for editing
+                _editWindow = new EABroker.EAEditWindow(_log);
+                _saveCustomWindow = new EABroker.SaveCustomWindow(_deviceManagerPlugin);
                 if (!_editWindow.ShowAndEdit(args, workingArea))
                 {
                     if (EditStarted != null)
@@ -825,7 +949,68 @@ namespace DDPM.SA.Plugins.User.EasyArrange
                 }
 
                 //2 Show the SaveCustomWindow in the same time
-                _saveCustomWindow.ShowAndEdit(args, workingArea);
+                int x = workingArea.X + (int)(32 / dpiX);
+                int y = workingArea.Y + (int)(32 / dpiX);
+
+                _saveCustomWindow = new EABroker.SaveCustomWindow(_deviceManagerPlugin, args, x, y);
+                _saveCustomWindow.Owner = _editWindow;
+                _saveCustomWindow.CancelButtonClick += delegate
+                {
+                    SendEditReturn_Cancel("User cancel the editing.");
+                    if (_editWindow != null)
+                    {
+                        _editWindow.Close();
+                        _editWindow = null;
+                    }
+                    if (_saveCustomWindow != null)
+                    {
+                        _saveCustomWindow.Close();
+                        _saveCustomWindow = null;
+                    }
+                };
+                _saveCustomWindow.SaveButtonClick += delegate
+                {
+                    EAArgs retArgs = new EAArgs(_eaArgs);
+                    retArgs.Command = "EditReturn";
+                    retArgs.Result = true;
+                    //Update new settings from EditWindow
+                    if (_editWindow != null)
+                    {
+                        retArgs.SplitJson.Settings = _editWindow.GetSettings();
+                    }
+                    //Update from SaveCustomWindow
+                    if (_saveCustomWindow.SelectedCustomItem != null)
+                    {
+                        //CustomName will copy from SaveCustomWindow
+                        retArgs.SplitJson.CustomName = _saveCustomWindow.SelectedCustomItem.CustomName;
+
+                        //If user has selected an existed custom layout
+                        if (_saveCustomWindow.SelectedCustomItem.EAID >= EAEMConstants.EAID_FirstCustom)
+                        {
+                            retArgs.SplitJson.EAID = _saveCustomWindow.SelectedCustomItem.EAID;
+                        }
+                    }
+                    //Send the EditReturn event to UI
+                    if (EditReturn != null)
+                        EditReturn(this, retArgs);
+
+                    if (_eaBroker != null)
+                        _eaBroker.VM.IsWorkUIEnabled = true;
+
+                    if (_editWindow != null)
+                    {
+                        _editWindow.Close();
+                        _editWindow = null;
+                    }
+                    if (_saveCustomWindow != null)
+                    {
+                        _saveCustomWindow.Close();
+                        _saveCustomWindow = null;
+                    }
+                };
+
+                //_saveCustomWindow.ShowAndEdit(args, workingArea);
+                _saveCustomWindow.Show();
 
                 //3 Signal EditStart event to UI, UI will Minimized to taskbar
                 if (EditStarted != null)
@@ -1089,6 +1274,87 @@ namespace DDPM.SA.Plugins.User.EasyArrange
             }
             return Task.FromResult(false);
         }
+
+        /// <summary>
+        /// General notification  to EAPlugin from other Plugins inside DDPM.SA.User
+        /// </summary>
+        /// <param name="eaArgs"></param>
+        /// <returns></returns>
+        public Task<bool> NotifyEAMessage(EAArgs eaArgs)
+        {
+            if (eaArgs.Command.Equals(EAEMConstants.EACommand_LastSelectedMonitorChanged))
+            {
+                if ((_eaBroker != null && _isEaBrokerStarted))
+                {
+                    _eaBroker.NotifySelectedMonitorChanged();
+                    return Task.FromResult(true);
+                }
+            }
+            return Task.FromResult(false);
+        }
+
+        /// <summary>
+        /// Launch Apps in the specified EasyMemory Profile, and arrange their window to the EasyArrange layout.
+        /// This method is moved from EzMemoryPlugin. Can be called from UI (EzMemory module) and SA (EzMemoryPlugin).
+        /// </summary>
+        /// <param name="sortApps">List of AppInfos which are load from EM profile.</param>
+        /// <param name="moInfo">MonitorInfo to specify the target monitor to be arranged.</param>
+        /// <param name="eAid">EAID of a EasyArrange layout. [1~49] are preset layout, [1000~1004] are saved custom layout.</param>
+        /// <returns></returns>
+        public Task<bool> LaunchAndArrangeAppsWithEzArrange(Dictionary<String, Bind_AddFullPage_AppCollectionData> sortApps, MonitorInfo moInfo, int eAid)
+        {
+            if (sortApps == null || sortApps.Count == 0)
+            {
+                WriteLog($"@ LaunchAndArrangeAppsWithEzArrange(): sortApps is empty.");
+                return Task.FromResult(false);
+            }
+            if (moInfo == null)
+            {
+                WriteLog($"@ LaunchAndArrangeAppsWithEzArrange(): monitorInfo is null.");
+                return Task.FromResult(false);
+            }
+
+            string moInfoText = "";
+            if (!string.IsNullOrEmpty(moInfo.modelName))
+                moInfoText = moInfo.modelName;
+            if (moInfo.edid != null)
+            {
+                if (!string.IsNullOrEmpty(moInfo.edid.ServiceTag))
+                    moInfoText += $", {moInfo.edid.ServiceTag}";
+                else
+                    moInfoText += $", ";
+            }
+            else
+            {
+                moInfoText += $", (null)";
+            }
+
+            if (_eaBroker == null)
+            {
+                WriteLog($"@ LaunchAndArrangeAppsWithEzArrange(appCount={sortApps.Count}), Monitor={moInfoText}, EAID={eAid}) => EABroker is null.");
+                return Task.FromResult(false);
+            }
+
+            if (!_isEaBrokerStarted)
+            {
+                WriteLog($"@ LaunchAndArrangeAppsWithEzArrange(appCount={sortApps.Count}), Monitor={moInfoText}, EAID={eAid}) => EABroker is not started.");
+                return Task.FromResult(false);
+            }
+            WriteLog($"@ LaunchAndArrangeAppsWithEzArrange(appCount={sortApps.Count}), Monitor={moInfoText}, EAID={eAid}");
+
+            //Run in a STA Thread
+            Thread thread = new Thread(() =>
+            {
+                _eaBroker.STA_LaunchAndArrangeAppsWithEzArrange(sortApps, moInfo, eAid);
+                System.Windows.Threading.Dispatcher.Run();
+            });
+
+            thread.SetApartmentState(ApartmentState.STA);
+            thread.Start();
+
+            return Task.FromResult(true);
+
+        }
         #endregion Methods
 
         #endregion IEasyArrangeService Implementation
@@ -1122,7 +1388,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange
 
             Stopwatch sw = new Stopwatch();
             sw.Start();
-            _eaBroker = new DDPM.EABroker.EABroker(_agent, _deviceManagerPlugin, _displayManagerPlugin, this);
+            _eaBroker = new DDPM.EABroker.EABroker(_agent, _deviceManagerPlugin, _displayManagerPlugin, this, _settingsManagerPlugin);
             //InfoWindow, WorkWindows, AwsWindow, AwsBuddyWindow,... will be inited inside _eaBroker.Start()
             _eaBroker.Start();
             //Init EAEditWindow and SaveCustomWindow below
@@ -1146,6 +1412,8 @@ namespace DDPM.SA.Plugins.User.EasyArrange
             //    };
             //}
 
+            EzMemLauncher.DeviceManagerSA = _deviceManagerPlugin;
+            EzMemLauncher.Log = _log;
 
             //Microsoft.Win32.SystemEvents.DisplaySettingsChanged += SystemEvents_DisplaySettingsChanged;
             _agent.RegisterForEvent(AgentEventNames.DisplaySettingsChanged, DisplaySettingsChangedHandler);
@@ -1888,6 +2156,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange
         /// </summary>
         private void InitEditWindow()
         {
+            return;
             //If _editWindow is already created
             if (_editWindow != null)
                 return;
@@ -1908,6 +2177,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange
                     _saveCustomWindow.CancelButtonClick += saveCustomWidow_CancelButtonClick;
                     _saveCustomWindow.SaveButtonClick += saveCustomWidow_SaveButtonClick;
                     //SaveCustomWindow is not transparent, it will be shown in EditCommand process
+                    //_saveCustomWindow.Show();
                     added++;
 
                     System.Windows.Threading.Dispatcher.Run();
@@ -1934,8 +2204,11 @@ namespace DDPM.SA.Plugins.User.EasyArrange
                 retArgs.Message = "User cancel the editing.";
                 EditReturn(this, retArgs);
             }
-            if (_editWindow != null) 
+            if (_editWindow != null)
+            {
                 _editWindow.Dispatcher_Hide();
+                _editWindow = null;
+            }
             if (_eaBroker != null)
                 _eaBroker.VM.IsWorkUIEnabled = true;
         }
@@ -1985,7 +2258,11 @@ namespace DDPM.SA.Plugins.User.EasyArrange
                 EditReturn(this, retArgs);
             }
             if (_editWindow != null)
+            {
                 _editWindow.Dispatcher_Hide();
+                _editWindow = null;
+            }
+
             if (_eaBroker != null)
                 _eaBroker.VM.IsWorkUIEnabled = true;
         }
@@ -1994,11 +2271,14 @@ namespace DDPM.SA.Plugins.User.EasyArrange
         {
             Screen workScreen = _saveCustomWindow.WorkScreen;
             Rectangle workingArea = _saveCustomWindow.WorkingArea;
+            Screen scr = _saveCustomWindow.WorkScreen;
+
 
             //4 When user click "Save" from SaveCustomWindow
             //5 Show the EditWindow to capture Windows and frame them
-            _editWindow.ShowAndEdit(_eaArgs, workingArea);
+            _editWindow = new EABroker.EAEditWindow(_log);
             _editWindow.EditReturn += _editWindow_EditReturn;
+            _editWindow.ShowAndEdit(_eaArgs, workingArea);
             //6 Delay for 3 sec
         }
 
@@ -2021,6 +2301,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange
 
             //9 EditWindow can be closed (Hide) now
             _editWindow.Dispatcher_Hide();
+            _editWindow = null;
 
             //10 Get the returned CustomName and Selected CustomItem from SaveCustomWindow
             if (_saveCustomWindow != null)
@@ -2055,6 +2336,23 @@ namespace DDPM.SA.Plugins.User.EasyArrange
             //12 WorkWindow can be resumed 
             if (_eaBroker != null)
                 _eaBroker.VM.IsWorkUIEnabled = true;
+        }
+
+        private void SendEditReturn_Cancel(string message)
+        {
+            //UI will look at the Result and log Message only, so we don't need to copy from
+            // input EAArgs (from EditCommand)
+            EAArgs retArgs = new EAArgs()
+            {
+                Command = "EditReturn",
+                Result = false,
+                Message = message
+            };
+
+            if (EditReturn != null)
+            {
+                EditReturn(this, retArgs);
+            }
         }
         #endregion EditWindow and SaveCustomWindow
 

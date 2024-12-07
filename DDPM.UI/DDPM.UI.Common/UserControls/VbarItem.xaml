@@ -13,28 +13,13 @@
              Height="73">
   <UserControl.Resources>
     <ResourceDictionary>
-    <ResourceDictionary.MergedDictionaries>
-      <ResourceDictionary Source="/DDPM.UI.Common;component/PluginStyles.xaml" />
-    </ResourceDictionary.MergedDictionaries>
-      
-    <local:VbarItemViewModel x:Key="vmDesign"
-                                 Text="Robert" />
-    <SolidColorBrush x:Key="VbarItem_BkColor" Color="#99193457" />
-    <SolidColorBrush x:Key="VbarItem_BkDisableColor" Color="#596067" />
-    <SolidColorBrush x:Key="VbarItem_TextColor" Color="White" />
-
-    <LinearGradientBrush x:Key="VbarItem_HiBkColor" StartPoint="0,0" EndPoint="1,1">
-      <GradientStop Offset="0" Color="#FF0672CB" />
-      <GradientStop Offset="0.5" Color="#FF0078D2" />
-      <GradientStop Offset="1" Color="#FF6E69CF" />
-    </LinearGradientBrush>
-
-    <LinearGradientBrush x:Key="VbarItem_HiBdColor" StartPoint="0,0" EndPoint="1,1">
-      <GradientStop Offset="0" Color="#FF55B4FD" />
-      <GradientStop Offset="1" Color="#FF6E69CF" />
-    </LinearGradientBrush>
-    </ResourceDictionary>
-  </UserControl.Resources>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/DDPM.UI.Common;component/PluginStyles.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+            <local:VbarItemViewModel x:Key="vmDesign" Text="Robert" />
+            <local:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
+        </ResourceDictionary>
+    </UserControl.Resources>
 
   <Grid Height="64"  VerticalAlignment="Top" Margin="0,0,12,0" HorizontalAlignment="Right"
           MouseEnter="rootGrid_MouseEnter" MouseLeave="rootGrid_MouseLeave"
@@ -62,20 +47,20 @@
     </VisualStateManager.VisualStateGroups>
 
     <Border Name="bdRoot" Width="212" BorderThickness="2" CornerRadius="13" ToolTipService.ShowOnDisabled="True"
-                Focusable="True" BorderBrush="{StaticResource VbarItem_BkColor}"
+                Focusable="True" BorderBrush="{DynamicResource Vbar_BdBrush_Default}"
                 GotFocus="bdRoot_GotFocus">
       <Border.Style>
         <Style TargetType="Border">
-          <Setter Property="Background" Value="{StaticResource VbarItem_BkColor}" />
-          <Setter Property="BorderBrush" Value="{StaticResource VbarItem_BkColor}" />
+                    <Setter Property="Background" Value="{DynamicResource Vbar_BkBrush_Default}" />
+                    <Setter Property="BorderBrush" Value="{DynamicResource Vbar_BdBrush_Default}" />
           <Style.Triggers>
             <DataTrigger Binding="{Binding IsSelected}"  Value="True">
-              <Setter Property="Background"  Value="{StaticResource VbarItem_HiBkColor}" />
-              <Setter Property="BorderBrush" Value="{StaticResource VbarItem_HiBdColor}" />
+                            <Setter Property="Background"  Value="{DynamicResource Brush_GradientButtonCyan}" />
+                            <Setter Property="BorderBrush" Value="{DynamicResource  Brush_GradientBorderCyan}" />
             </DataTrigger>
             <Trigger Property="IsEnabled"  Value="False">
-              <Setter Property="Background"  Value="{StaticResource VbarItem_BkDisableColor}" />
-              <Setter Property="BorderBrush" Value="{StaticResource VbarItem_BkDisableColor}" />
+                            <Setter Property="Background"  Value="{DynamicResource Vbar_BkBrush_Disabled}" />
+                            <Setter Property="BorderBrush" Value="{DynamicResource Vbar_BdBrush_Disabled}" />
             </Trigger>
           </Style.Triggers>
         </Style>
@@ -92,13 +77,36 @@
         </Grid.ColumnDefinitions>
 
         <Image Grid.Column="0" Width="24" Height="24" VerticalAlignment="Center" HorizontalAlignment="Center"
+               Visibility="{Binding NoCanvasIcon, RelativeSource={RelativeSource AncestorType=UserControl}, Converter={StaticResource BoolToVisibilityConverter}}"
                        Source="{Binding Icon}" >
         </Image>
-        <UXControls:UXTextBlock Grid.Column="1" Text="{Binding Text}" FontSize="14"
+                <ContentControl x:Name="IconCanvasContent" Grid.Column="0">
+                    <ContentControl.Style>
+                        <Style TargetType="ContentControl">
+                            <Setter Property="Foreground" Value="{DynamicResource DefaultTheme_PathColor}" />
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsSelected}"  Value="True">
+                                    <Setter Property="Foreground"  Value="#FFFFFF" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </ContentControl.Style>
+                </ContentControl>
+                <UXControls:UXTextBlock Grid.Column="1" Text="{Binding Text}" FontSize="14"
                                         VerticalAlignment="Center" HorizontalAlignment="Left"
-                                        TextBlockType="Subtitle2" TextBlockSemanticColorType="Light"
-                                        Foreground="{StaticResource VbarItem_TextColor}" />
-      </Grid>
+                                        TextBlockType="Subtitle2" TextBlockSemanticColorType="Light">
+                    <UXControls:UXTextBlock.Style>
+                        <Style TargetType="UXControls:UXTextBlock">
+                            <Setter Property="Foreground" Value="{DynamicResource Vbar_FgBrush_Default}" />
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsSelected}"  Value="True">
+                                    <Setter Property="Foreground"  Value="#FFFFFF" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </UXControls:UXTextBlock.Style>
+                </UXControls:UXTextBlock>
+            </Grid>
     </Border>
   </Grid>
 </UserControl>

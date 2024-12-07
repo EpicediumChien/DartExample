@@ -13,6 +13,7 @@ using Moq;
 using NGA.UnitTest.PrivateObject;
 using System;
 using System.Collections.Generic;
+using System.Drawing.Imaging;
 using System.Globalization;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -21,6 +22,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Interop;
+using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 using VcpCore.Common;
 using static DDPM.UI.Common.Views.DDPMMsgBox;
@@ -54,6 +56,30 @@ namespace DDPM.UI.Common.Tests
         }
 
         [Test]
+        public void TestbInputSourceRenamed()
+        {
+            DdpmCommonHelper.bInputSourceRenamed = true;
+            // Assert
+            Assert.That(DdpmCommonHelper.bInputSourceRenamed, Is.EqualTo(true));
+        }
+
+        [Test]
+        public void TestisHotkeyBypass()
+        {
+            DdpmCommonHelper.isHotkeyBypass = true;
+            // Assert
+            Assert.That(DdpmCommonHelper.isHotkeyBypass, Is.EqualTo(true));
+        }
+
+        [Test]
+        public void TestSplashPath()
+        {
+            DdpmCommonHelper.SplashPath = "SplashPath";
+            // Assert
+            Assert.That(DdpmCommonHelper.SplashPath, Is.EqualTo("SplashPath"));
+        }
+
+        [Test]
         public void TestMyShowPluginManager()
         {
             var MyShowPluginManagerMock = new Mock<IShowPluginManager>();
@@ -71,58 +97,92 @@ namespace DDPM.UI.Common.Tests
             Assert.That(DdpmCommonHelper.Settings_Cache, Is.EqualTo(settings_Cache));
         }
 
-        [DllImport("user32.dll", EntryPoint = "SendMessageA")]
-        public static extern int SendMessage(IntPtr hwnd, int wMsg, int wParam, int lParam);
+        [Test]
+        public void TestThemeSwitchFlag()
+        {
+            DdpmCommonHelper.ThemeSwitchFlag = true;
+            // Assert
+            Assert.That(DdpmCommonHelper.ThemeSwitchFlag, Is.EqualTo(true));
+        }
+
+        [Test]
+        public void TestUIDebugModeFlag()
+        {
+            DdpmCommonHelper.UIDebugModeFlag = true;
+            // Assert
+            Assert.That(DdpmCommonHelper.UIDebugModeFlag, Is.EqualTo(true));
+        }
+
+        //[DllImport("user32.dll", EntryPoint = "SendMessageA")]
+        //public static extern int SendMessage(IntPtr hwnd, int wMsg, int wParam, int lParam);
 
         [DllImport("User32.dll", EntryPoint = "FindWindow")]
-        public static extern IntPtr FindWindow(string className, string windowName);
+        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
+        private static extern IntPtr FindWindow(string className, string windowName);
+        private static IntPtr _FindWindow(string className, string windowName)
+        {
+            return FindWindow(className, windowName);
+        }
         public const int WM_CLOSE = 0x10;
-        //[Test]
-        //public void TestDDPMMesssageBox()
-        //{
-        //    IntPtr hwnd_win;
-        //    hwnd_win = FindWindow(null, "title");
-        //    Thread t = new Thread(() => DdpmCommonHelper.DDPMMesssageBox("title", "text", null));
-        //    t.Start();
-        //    while (hwnd_win == 0)
-        //    {
-        //        Thread.Sleep(1000);
-        //        hwnd_win = FindWindow(null, "DDPMMsgBox");
-        //    }
+        [Test]
+        public void TestDDPMMesssageBox()
+        {
+            IntPtr hwnd_win;
+            hwnd_win = _FindWindow(null, "title");
+            Thread t = new Thread(() => DdpmCommonHelper.DDPMMesssageBox("title", "text", null));
+            t.ApartmentState = ApartmentState.STA;
+            t.Start();
+            while (hwnd_win == 0)
+            {
+                Thread.Sleep(1000);
+                hwnd_win = _FindWindow(null, "DDPMMsgBox");
+            }
+        }
 
-        //    //var task1= Task.Run(() => DdpmCommonHelper.DDPMMesssageBox("title", "text", null));                   
-        //    //task1.Wait();
-        //    //while (hwnd_win == 0)
-        //    //{
-        //    //    Thread.Sleep(1000);
-        //    //    hwnd_win = FindWindow(null, "DDPMMsgBox");
-        //    //}
-        //    //Thread.Sleep(10000);
+        [Test]
+        public void TestDDPMMesssageBoxa()
+        {
+            IntPtr hwnd_win;
+            hwnd_win = _FindWindow(null, "title");
+            Thread t = new Thread(() => DdpmCommonHelper.DDPMMesssageBox("title", "text", new DependencyObject()));
+            t.ApartmentState = ApartmentState.STA;
+            t.Start();
+            while (hwnd_win == 0)
+            {
+                Thread.Sleep(1000);
+                hwnd_win = _FindWindow(null, "DDPMMsgBox");
+            }
+        }
 
+        [Test]
+        public void TestDDPMPureMesssageBox()
+        {
+            IntPtr hwnd_win;
+            hwnd_win = _FindWindow(null, "title");
+            Thread t = new Thread(() => DdpmCommonHelper.DDPMPureMesssageBox("title", "text", true, null));
+            t.ApartmentState = ApartmentState.STA;
+            t.Start();
+            while (hwnd_win == 0)
+            {
+                Thread.Sleep(1000);
+                hwnd_win = _FindWindow(null, "DDPMMsgBox");
+            }
+        }
 
-        //    //Dispatcher.BeginInvoke(new Action(delegate
-        //    //{
-        //    //    task1.Wait();
-        //    //}));   
-
-        //    //var t1 = new Task(() => DdpmCommonHelper.DDPMMesssageBox("title", "text", null));
-        //    //t1.Start();
-        //    //IntPtr hwnd_win;
-        //    //hwnd_win = FindWindow(null, "title");
-
-
-        //    //var result = DdpmCommonHelper.DDPMMesssageBox("title", "text", null);
-        //    //IntPtr hwnd_win;
-        //    //hwnd_win = FindWindow(null, "DDPMMsgBox");
-        //    //SendMessage(hwnd_win, WM_CLOSE, 0, 0);
-        //    //// Assert
-        //    //Assert.That(result, Is.EqualTo(false));
-
-        //    //result = DdpmCommonHelper.DDPMMesssageBox("title", "text", new DependencyObject());
-        //    //// Assert
-        //    //Assert.That(result, Is.EqualTo(false));
-        //}
-
+        [Test]
+        public void TestDDPMEzMesssageBox()
+        {
+            IntPtr hwnd_win;
+            hwnd_win = _FindWindow(null, "title");
+            Thread t = new Thread(() => DdpmCommonHelper.DDPMEzMesssageBox("title", "text", true, null, 10, 10, new Thickness(), new Thickness()));
+            t.ApartmentState = ApartmentState.STA;
+            t.Start();
+            while (hwnd_win == 0)
+            {
+                Thread.Sleep(1000);
+                hwnd_win = _FindWindow(null, "DDPMMsgBox");
+            }
+        }
 
         [Test]
         public void TestParsingHexStringToWords()
@@ -147,11 +207,11 @@ namespace DDPM.UI.Common.Tests
             // Assert
             Assert.That(result, Is.EqualTo(null));
 
-            result = DdpmCommonHelper.GetUINotifyPropertyValue_Boolean("Lock_Display_ColorPreset", new ITSettingEventArgs() { IT_Feature_TriggerList = new List<string>() , target_object = new DDPMITConfig() { Lock_Settings_Updates = true } });
+            result = DdpmCommonHelper.GetUINotifyPropertyValue_Boolean("Lock_Display_ColorPreset", new ITSettingEventArgs() { IT_Feature_TriggerList = new List<string>(), target_object = new DDPMITConfig() { Lock_Settings_Updates = true } });
             // Assert
             Assert.That(result, Is.EqualTo(null));
 
-            result = DdpmCommonHelper.GetUINotifyPropertyValue_Boolean("Lock_Display_ColorPreset",new ITSettingEventArgs() { IT_Feature_TriggerList=new List<string>() { "", "Lock_Display_ColorPreset" }, target_object = new DDPMITConfig() { Lock_Settings_Updates=true } });
+            result = DdpmCommonHelper.GetUINotifyPropertyValue_Boolean("Lock_Display_ColorPreset", new ITSettingEventArgs() { IT_Feature_TriggerList = new List<string>() { "", "Lock_Display_ColorPreset" }, target_object = new DDPMITConfig() { Lock_Settings_Updates = true } });
             // Assert
             Assert.That(result, Is.EqualTo(false));
         }
@@ -163,11 +223,11 @@ namespace DDPM.UI.Common.Tests
             // Assert
             Assert.That(result, Is.EqualTo(false));
 
-            result = DdpmCommonHelper.GetUINotify_IsSynchronizeBetweenMonitors_Locked(new DDPMSettings(new DDPMAppSettings(), new DDPMUserSettings(), new DDPMITConfig ()));
+            result = DdpmCommonHelper.GetUINotify_IsSynchronizeBetweenMonitors_Locked(new DDPMSettings(new DDPMAppSettings(), new DDPMUserSettings(), new DDPMITConfig()));
             // Assert
             Assert.That(result, Is.EqualTo(false));
 
-            result = DdpmCommonHelper.GetUINotify_IsSynchronizeBetweenMonitors_Locked(new DDPMSettings(new DDPMAppSettings(), new DDPMUserSettings(), new DDPMITConfig()) { LockSettings=new DDPMITConfig() {Lock_Display_BriCont=true,Lock_Display_ColorPreset=false,Lock_Display_AutoBriTemp=true} });
+            result = DdpmCommonHelper.GetUINotify_IsSynchronizeBetweenMonitors_Locked(new DDPMSettings(new DDPMAppSettings(), new DDPMUserSettings(), new DDPMITConfig()) { LockSettings = new DDPMITConfig() { Lock_Display_BriCont = true, Lock_Display_ColorPreset = false, Lock_Display_AutoBriTemp = true } });
             // Assert
             Assert.That(result, Is.EqualTo(true));
         }
@@ -179,7 +239,7 @@ namespace DDPM.UI.Common.Tests
             // Assert
             Assert.That(result, Is.EqualTo(false));
 
-            result = DdpmCommonHelper.GetUINotifyPropertyValue_isAnyLocked(new DDPMSettings(new DDPMAppSettings(), new DDPMUserSettings(), new DDPMITConfig()),null);
+            result = DdpmCommonHelper.GetUINotifyPropertyValue_isAnyLocked(new DDPMSettings(new DDPMAppSettings(), new DDPMUserSettings(), new DDPMITConfig()), null);
             // Assert
             Assert.That(result, Is.EqualTo(false));
 
@@ -253,8 +313,8 @@ namespace DDPM.UI.Common.Tests
             // Assert
             Assert.That(result, Is.EqualTo(false));
 
-            var deviceManagerSAMock=new Mock<IDeviceManagerSA>();
-            DdpmCommonHelper.DeviceManagerSA=deviceManagerSAMock.Object;
+            var deviceManagerSAMock = new Mock<IDeviceManagerSA>();
+            DdpmCommonHelper.DeviceManagerSA = deviceManagerSAMock.Object;
             deviceManagerSAMock.Setup(x => x.SetAppConfigData(It.IsAny<DDPMSettings>())).Returns(Task.FromResult(true));
             result = DdpmCommonHelper.WriteDDPMSettings(new DDPMSettings(new DDPMAppSettings(), new DDPMUserSettings(), new DDPMITConfig()));
             // Assert
@@ -264,15 +324,22 @@ namespace DDPM.UI.Common.Tests
         [Test]
         public void TestReadDDPMSettings()
         {
+            var result = DdpmCommonHelper.ReadDDPMSettings(false);
+            //Assert
+            Assert.That(result, Is.Not.Null);
+
+            DdpmCommonHelper.DeviceManagerSA=null;
+            result = DdpmCommonHelper.ReadDDPMSettings(true);
+            // Assert
+            Assert.That(result, Is.EqualTo(null));
+
             var deviceManagerSAMock = new Mock<IDeviceManagerSA>();
             DdpmCommonHelper.DeviceManagerSA = deviceManagerSAMock.Object;
             deviceManagerSAMock.Setup(x => x.ReloadAppConfigData(It.IsAny<bool>())).Returns(Task.FromResult(new DDPMSettings(new DDPMAppSettings(), new DDPMUserSettings(), new DDPMITConfig())));
-            var result = DdpmCommonHelper.ReadDDPMSettings(true);
+            result = DdpmCommonHelper.ReadDDPMSettings(true);
             // Assert
             Assert.That(result, Is.Not.Null);
         }
-
-
 
         [Test]
         public void TestupdateMergedDictionarie()
@@ -280,26 +347,16 @@ namespace DDPM.UI.Common.Tests
             UXSystemParameters.Instance.OSTheme = OSThemeEnum.Dark;
             try
             {
+                //new Dell.Client.Framework.UX.WPF.ResourceManager.ResourceManager()
+                //Dell.Client.Framework.UX.WPF.ResourceManager
                 //Fix build
-                DdpmCommonHelper.updateMergedDictionaries(new Dell.Client.Framework.UX.WPF.ResourceManager.ResourceManager());
+                DdpmCommonHelper.updateMergedDictionaries(null);
                 Assert.True(true);
             }
             catch (Exception ex)
             {
                 Assert.Fail("not invoked");
             }
-
-
-            //UXSystemParameters.Instance.OSTheme = OSThemeEnum.Light;
-            //try
-            //{
-            //    DdpmCommonHelper.updateMergedDictionarie();
-            //    Assert.True(true);
-            //}
-            //catch (Exception ex)
-            //{
-            //    Assert.Fail("not invoked");
-            //}
         }
 
         [Test]
@@ -310,10 +367,57 @@ namespace DDPM.UI.Common.Tests
             // Assert
             Assert.That(result, Is.EqualTo(false));
 
-            UXSystemParameters.Instance.OSTheme=OSThemeEnum.Dark;
+            UXSystemParameters.Instance.OSTheme = OSThemeEnum.Dark;
             result = DdpmCommonHelper.isDarkMode();
             // Assert
             Assert.That(result, Is.EqualTo(true));
         }
+
+        [Test]
+        public void TestGetBreakPoints()
+        {
+            var result = DdpmCommonHelper.GetBreakPoints();
+            Assert.That(result, Is.EqualTo(1050));
+        }
+
+        [Test]
+        public void TestCreateBitmapSource()
+        {
+            var result = DdpmCommonHelper.CreateBitmapSource(new FrameworkElement() { });
+            Assert.That(result, Is.Not.Null);
+        }
+
+        [Test]
+        public void TestSaveBitmapSourceAsPngFile()
+        {
+            var bmpSrc = DdpmCommonHelper.CreateBitmapSource(new FrameworkElement() { });
+            var result = DdpmCommonHelper.SaveBitmapSourceAsPngFile(bmpSrc, "PathName");
+            Assert.That(result, Is.EqualTo(true));
+        }
+
+        [Test]
+        public void TestDeterminePeripheralProductImageFileName()
+        {
+            var result = DdpmCommonHelper.DeterminePeripheralProductImageFileName(new DeviceInfo() { ModelNumber= "KB740", ColorCode = 1});
+            Assert.That(result, Is.EqualTo("KB740_1"));
+            result = DdpmCommonHelper.DeterminePeripheralProductImageFileName(new DeviceInfo() { ModelNumber = "KB7120W" , ColorCode = 1 });
+            Assert.That(result, Is.EqualTo("KB740_1"));
+            result = DdpmCommonHelper.DeterminePeripheralProductImageFileName(new DeviceInfo() { ModelNumber = "KB500", ColorCode = 1 });
+            Assert.That(result, Is.EqualTo("KB500_1"));
+            result = DdpmCommonHelper.DeterminePeripheralProductImageFileName(new DeviceInfo() { ModelNumber = "KB3121W", ColorCode = 1 });
+            Assert.That(result, Is.EqualTo("KB500_1"));
+            result = DdpmCommonHelper.DeterminePeripheralProductImageFileName(new DeviceInfo() { ModelNumber = "KB700", ColorCode = 1 });
+            Assert.That(result, Is.EqualTo("KB700_1"));
+            result = DdpmCommonHelper.DeterminePeripheralProductImageFileName(new DeviceInfo() { ModelNumber = "KB7221W", ColorCode = 1 });
+            Assert.That(result, Is.EqualTo("KB700_1"));
+            result = DdpmCommonHelper.DeterminePeripheralProductImageFileName(new DeviceInfo() { ModelNumber = "MS300", ColorCode = 1 });
+            Assert.That(result, Is.EqualTo("MS300_1"));
+            result = DdpmCommonHelper.DeterminePeripheralProductImageFileName(new DeviceInfo() { ModelNumber = "MS3121W", ColorCode = 1 });
+            Assert.That(result, Is.EqualTo("MS300_1"));
+            //Default
+            result = DdpmCommonHelper.DeterminePeripheralProductImageFileName(new DeviceInfo() { ModelNumber = "MS3121", ColorCode = 1 });
+            Assert.That(result, Is.EqualTo("MS3121_1"));
+        }
+
     }
 }

@@ -52,6 +52,8 @@ namespace DDPM.SA.Common
         Task<UpdateItemInfo> GetDPeMAssemblyUpdateInfo();
 
         Task<UpdateHelper> GetFWUpdateInfo();
+        //Bruce, FWU need it
+        int GetDongleCount();
 
         void SetDPIValue(int newDPIValue, Guid deviceId);
 
@@ -83,7 +85,6 @@ namespace DDPM.SA.Common
 
         void StartPairing(Guid physicalDeviceId);
         void StopPairing(Guid physicalDeviceId);
-        void StopPairingPen();
 
         void UnPair(Guid logicalDeviceId);
 
@@ -102,6 +103,8 @@ namespace DDPM.SA.Common
         void SetBandsGain(int newValue, Guid deviceId, string bandGainNumber);
 
         void SetMicNoiseCancellation(bool newValue, Guid deviceId);
+
+        void SetMicNoiseCancellationForMito(bool newValue, Guid deviceId);
 
         void SetSidetone(bool newValue, Guid deviceId);
 

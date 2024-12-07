@@ -142,7 +142,8 @@ namespace DDPM.UI.Plugin.PenPlugin
             moduleGroup = new ModuleGroup()
             {
                 GroupName = Strings.PenSettingsCaption,
-                GroupIcon = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Images/PencilMark.png", "DDPM.UI.Resources")
+                GroupIcon = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Images/PencilMark.png", "DDPM.UI.Resources"),
+                GroupIconCanvas = DdpmCommonHelper.CanvasIconCreator(VbarIcon.PenSettings)
             };
             moduleGroup.AddHeader(Strings.PenSettingsCaption, new PenSettingsModule(_vm!));
             groups.Add(moduleGroup);
@@ -150,7 +151,8 @@ namespace DDPM.UI.Plugin.PenPlugin
             moduleGroup = new ModuleGroup()
             {
                 GroupName = Strings.ButtonCustomizationCaption,
-                GroupIcon = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Images/PenButton.png", "DDPM.UI.Resources")
+                GroupIcon = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Images/PenButton.png", "DDPM.UI.Resources"),
+                GroupIconCanvas = DdpmCommonHelper.CanvasIconCreator(VbarIcon.PenButton)
             };
             moduleGroup.AddHeader(Strings.ButtonCustomizationCaption, new PenButtonSettingsModule(_vm!));
             groups.Add(moduleGroup);
@@ -381,6 +383,14 @@ namespace DDPM.UI.Plugin.PenPlugin
             else
             {
                 OnVbarItemClicked(_vm.VbarItems[1]);
+            }
+        }
+
+        private void PushBack(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            if (sender is Border)
+            {
+                Mainframe_MouseLeftButtonDown(this, e);
             }
         }
     }

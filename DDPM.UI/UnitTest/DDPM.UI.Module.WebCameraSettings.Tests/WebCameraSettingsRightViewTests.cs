@@ -10,6 +10,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Dell.Client.Framework.UX.WPF.ResourceManager;
+using System.Windows;
+using DDPM.UI.Common;
 
 namespace DDPM.UI.Module.WebCameraSettings.Tests
 {
@@ -29,12 +32,21 @@ namespace DDPM.UI.Module.WebCameraSettings.Tests
         [SetUp]
         public void Setup()
         {
+            if (System.Windows.Application.Current == null)
+            {
+                new System.Windows.Application();
+            }
+            ResourceManager res = new ResourceManager();
+            var resourceDictionary = new ResourceDictionary();
+            resourceDictionary.Source = new Uri("pack://application:,,,/DDPM.UI.Common;component/ModuleStyle.xaml");
+            System.Windows.Application.Current.Resources.MergedDictionaries.Add(resourceDictionary);
             consoleMock = new Mock<IConsole>();
             console = consoleMock.Object;
             logMock = new Mock<ILog>();
             log = logMock.Object;
             deviceManagerMock = new Mock<IDeviceManagerSA>();
             deviceManager = deviceManagerMock.Object;
+            DdpmCommonHelper.DeviceManagerSA = deviceManagerMock.Object;
             vm = new WebCameraViewModel(console, log) { CurrentDeviceInfo = new DeviceInfo() };
             webCameraSettingsRightView = new WebCameraSettingsRightView(vm);
             privateObject = new PrivateObject(webCameraSettingsRightView);

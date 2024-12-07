@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using VcpCore.Common;
 
 namespace DDPM.SA.Common
 {
@@ -28,6 +29,9 @@ namespace DDPM.SA.Common
     /// </summary>
     public class ALSConfig
     {
+        public MonitorInfo MoInfo { get; set; } = new MonitorInfo();
+        public EDID Edid { get; set; } = new EDID();
+        public Dictionary<string, List<string>> CapDict { get; set; } = new Dictionary<string, List<string>>();
         public string ModelName { get; set; } = string.Empty;
         public string DisplayName { get; set; } = string.Empty;
         public string serialNumber { get; set; } = string.Empty;
@@ -57,6 +61,9 @@ namespace DDPM.SA.Common
                     target.isMMSEnable = source.isMMSEnable; break;
                 case ALSFeatureQueryType.All:
                     {
+                        target.MoInfo = source.MoInfo;
+                        target.Edid = source.Edid;
+                        target.CapDict = source.CapDict;
                         target.isSupportALS = source.isSupportALS;
                         target.isAutoBrightness = source.isAutoBrightness;
                         target.isAutoColorTemp = source.isAutoColorTemp;
@@ -70,6 +77,9 @@ namespace DDPM.SA.Common
                     }
                 case ALSFeatureQueryType.no_SerialNumber:
                     {
+                        target.MoInfo = source.MoInfo;
+                        target.Edid = source.Edid;
+                        target.CapDict = source.CapDict;
                         target.isSupportALS = source.isSupportALS;
                         target.isAutoBrightness = source.isAutoBrightness;
                         target.isAutoColorTemp = source.isAutoColorTemp;

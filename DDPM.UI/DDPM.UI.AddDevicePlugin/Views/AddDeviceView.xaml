@@ -19,21 +19,26 @@
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
+    <UserControl.Style>
+        <Style TargetType="UserControl">
+            <Setter Property="Foreground" Value="{DynamicResource Vbar_FgBrush_Default}" />
+        </Style>
+    </UserControl.Style>
     <Grid>
-    <Border Background="Transparent" StylusDown="Pairing"></Border>
-    <Grid>
-      <Grid.ColumnDefinitions>
-        <ColumnDefinition Width="312" />
-        <ColumnDefinition Width="*" />
-      </Grid.ColumnDefinitions>
-      <!-- Right side: Header + RightView -->
-      <Border CornerRadius="13" Background="#99132F54" Grid.Column="1" Margin="8,80,8,10" >
-        <Grid Grid.Column="1" Name="RightFrame">
-          <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="*" />
-          </Grid.RowDefinitions>
-          <!--<Border Name="bdrAlert" Background="#364861" CornerRadius="4" Margin="16,23,16,-5" BorderThickness="7,0,0,0" BorderBrush="#E67F01" Visibility="{Binding AlertVisibility}">
+        <Border Background="Transparent" StylusDown="Pairing"></Border>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="312" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <!-- Right side: Header + RightView -->
+            <Border CornerRadius="13" Background="{DynamicResource Vbar_BkBrush_Default}" Grid.Column="1" Margin="8,80,8,10" >
+                <Grid Grid.Column="1" Name="RightFrame">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+                    <!--<Border Name="bdrAlert" Background="#364861" CornerRadius="4" Margin="16,23,16,-5" BorderThickness="7,0,0,0" BorderBrush="#E67F01" Visibility="{Binding AlertVisibility}">
                         <StackPanel Orientation="Horizontal">
                         <Grid VerticalAlignment="top">
                         <Image x:Name="InfoIcon" Margin="12,0,0,0" Source="/DDPM.UI.Common;component/Resources/alert.png" Stretch="Fill"
@@ -64,27 +69,26 @@
           <ItemsControl Name="vbarList" Margin="0,80,0,0"
                                   HorizontalAlignment="Right" VerticalAlignment="Top"
                                   ItemsSource="{Binding DeviceBarItems}">
-            <ItemsControl.ItemTemplate>
-              <DataTemplate>
-                <Grid>
-                  <ContentPresenter />
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Grid>
+                                    <ContentPresenter />
+                                </Grid>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
                 </Grid>
-              </DataTemplate>
-            </ItemsControl.ItemTemplate>
-          </ItemsControl>
+            </Grid>
         </Grid>
-      </Grid>
-    </Grid>
-    <Grid VerticalAlignment="Top" HorizontalAlignment="Left">
-      <StackPanel Orientation="Vertical">
-        <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
-          <Image Margin="64,19,0,0" Source="/DDPM.UI.Resources;component/Resources/Images/arrow-left.png" Stretch="Fill"
-                           VerticalAlignment="Top" HorizontalAlignment="Left" Cursor="Hand" Width="24" Height="24" MouseLeftButtonDown="GoBackHomepage">
-          </Image>
-          <UXControls:UXTextBlock Name="txtCaption" Margin="12,16,0,0" HorizontalAlignment="Left" Style="{StaticResource ProductNameTextStyle}" VerticalAlignment="Top" />
-        </StackPanel>
-        <UXControls:UXTextBox Name="txtPairingStatus" Text="{Binding PairingStatus}" TextChanged="PairingStatusChanged" Visibility="Hidden" />
-      </StackPanel>
-    </Grid>
+        <Grid VerticalAlignment="Top" HorizontalAlignment="Left">
+            <StackPanel Orientation="Vertical">
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
+                    <Image x:Name="ArrowLeft" Margin="64,19,0,0" Source="{DynamicResource Arrow_Left}" Stretch="Fill"
+                           VerticalAlignment="Top" HorizontalAlignment="Left" Cursor="Hand" Width="24" Height="24" MouseLeftButtonDown="GoBackHomepage"/>
+                    <UXControls:UXTextBlock Name="txtCaption" Margin="12,16,0,0" HorizontalAlignment="Left" Style="{StaticResource ProductNameTextStyle}" VerticalAlignment="Top" />
+                </StackPanel>
+                <UXControls:UXTextBox Name="txtPairingStatus" Text="{Binding PairingStatus}" TextChanged="PairingStatusChanged" Visibility="Hidden" />
+            </StackPanel>
+        </Grid>
   </Grid>
 </UserControl>

@@ -21,6 +21,8 @@ using System.Collections.ObjectModel;
 using System.Windows.Threading;
 using System.Windows.Documents;
 using System.Windows.Media.Media3D;
+using static VcpCore.Common.User32;
+using Rect = System.Windows.Rect;
 
 namespace DDPM.EABroker
 {
@@ -35,6 +37,7 @@ namespace DDPM.EABroker
         private IDeviceManagerSA? _deviceManagerSA = null;
         private IDisplayService? _displayService = null;
         private IEasyArrangeService? _easyArrangeService = null;
+        private ISettingsManagerDev? _settingsManager = null;
 
         //Window Moving
         private IntPtr _hWndForeground = IntPtr.Zero;
@@ -87,8 +90,7 @@ namespace DDPM.EABroker
         //WorkWindows
         private List<EAWorkWindow> _workWindows = new List<EAWorkWindow>();
         private int _workWindowUsedCount = 0;
-        private bool _isWorkUIEnabled = true;
-        private bool _isWorkWindowVisible = false;
+        private bool _isWorkUIEnabled = true;        
         private ObservableCollection<string> _workWinCellInfos = new ObservableCollection<string>();
 
         //ScreenIdWindows
@@ -122,13 +124,14 @@ namespace DDPM.EABroker
         #endregion
 
         #region Init
-        public void InitInterfaces(IAgent agent, ILog log, IDeviceManagerSA devMgr, IDisplayService dispMgr, IEasyArrangeService eaService)
+        public void InitInterfaces(IAgent agent, ILog log, IDeviceManagerSA devMgr, IDisplayService dispMgr, IEasyArrangeService eaService, ISettingsManagerDev settingsManager)
         {
             _agent = agent;
             _log = log;
             _deviceManagerSA = devMgr;
             _displayService = dispMgr;
             _easyArrangeService = eaService;
+            _settingsManager = settingsManager;
 
             ReloadEzSettingsFromUserSettingsFile();
         }
@@ -152,6 +155,10 @@ namespace DDPM.EABroker
         #endregion
 
         #region DDPM.SA Functions
+        /// <summary>
+        /// Call to DeviceManagerSA.GetMonitors() to get a list of MonitorInfo that current supported monitor.
+        /// </summary>
+        /// <returns></returns>
         public List<MonitorInfo>? GetMonitors()
         {
             if (_deviceManagerSA == null)
@@ -197,6 +204,72 @@ namespace DDPM.EABroker
 
         }
 
+        public void Invoke_EditCommand(MonitorInfo mi, EAArgs eaArgs)
+        {
+            if (_easyArrangeService == null)
+                return;
+            Task.Factory.StartNew(() =>
+            {
+                _easyArrangeService.EditCommand(mi, eaArgs);
+            });
+        }
+
+        /// <summary>
+        /// Return the DeviceManagerSA.lastUISelectedMonitor_UI from UserSettings.
+        /// The returned DDPMSimpleMonitorRecord has twoproperties:
+        ///  string ModelName, string ServiceTag
+        ///  Can be used to find a present MonitorInfo
+        /// </summary>
+        /// <returns></returns>
+        public DDPMSimpleMonitorRecord? ReadLastSelectedMonitorRecord()
+        {
+            if (_settingsManager == null)
+            {
+                return null;
+            }
+            //Read AppSettings
+            DDPMSettings appSettings = _settingsManager.ReloadAppConfigData().Result;
+            //Return the UserSettings.lastUISelectedMonitor
+            if (appSettings != null && appSettings.UserSettings != null)
+            {
+                return appSettings.UserSettings.lastUISelectedMonitor;
+            }
+            return null;
+        }
+
+        /// <summary>
+        /// Return a MonitorInfo with below logic:
+        /// If (monitor of lastUISelectedMonitor_UI is found in _AllMonitors) then
+        ///    return the monitor of lastUISelectedMonitor_UI;
+        /// Else If (IsSpanScreenWorking) then
+        ///    return SpanScreen.GetPrimaryMonitor();
+        /// Else If (_AllMonitor is not empty) then
+        ///    return _AllMonitors[0];
+        /// else
+        ///    return null;
+        /// </summary>
+        /// <returns></returns>
+        public MonitorInfo? GetSelectedMonitorInfo()
+        {
+            List<MonitorInfo>? _AllMonitors = GetMonitors();
+            if ((_AllMonitors == null) || (_AllMonitors.Count <= 0))
+                return null;
+
+            DDPMSimpleMonitorRecord? lastMonitorRecord = ReadLastSelectedMonitorRecord();
+            if (lastMonitorRecord != null)
+            {
+                MonitorInfo? mi = _AllMonitors.Find(x => x.modelName.Equals(lastMonitorRecord.ModelName) && x.edid.ServiceTag.Equals(lastMonitorRecord.ServiceTag));
+                if (mi != null)
+                    return mi; 
+            }
+            if (IsSpanScreenWorking)
+            {
+                MonitorInfo? spanMo = _spanScreen.GetPrimaryMonitor();
+                if (spanMo != null) 
+                    return spanMo;
+            }
+            return _AllMonitors[0];
+        }
         #endregion
 
         #region System Event Handlers
@@ -281,15 +354,18 @@ namespace DDPM.EABroker
         /// <returns></returns>
         public double RefreshScreenScale()
         {
-            var dpiXProperty = typeof(SystemParameters).GetProperty("DpiX", BindingFlags.NonPublic | BindingFlags.Static);
-            if (dpiXProperty != null)
-            {
-                var varX = (int)dpiXProperty.GetValue(null, null);
-                double dpiX = (double)varX / (double)96;
-                if (dpiX >= 1.0000)
-                    _screenScale = dpiX;
-                OnPropertyChanged("ScreenScale");
-            }
+            //Robert_Lin, 2024-12-6, use the CommonFunctions
+            _screenScale = CommonFunctions.GetDpiX();
+            OnPropertyChanged("ScreenScale");
+            //var dpiXProperty = typeof(SystemParameters).GetProperty("DpiX", BindingFlags.NonPublic | BindingFlags.Static);
+            //if (dpiXProperty != null)
+            //{
+            //    var varX = (int)dpiXProperty.GetValue(null, null);
+            //    double dpiX = (double)varX / (double)96;
+            //    if (dpiX >= 1.0000)
+            //        _screenScale = dpiX;
+            //    OnPropertyChanged("ScreenScale");
+            //}
 
             return ScreenScale;
         }
@@ -434,7 +510,7 @@ namespace DDPM.EABroker
                         {
                             IsScreenIdWindowsVisible = false;
                         }
-                        WriteLog($" * HoveringCell=AWS{hoveringCell.Name}");
+                        //WriteLog($" * HoveringCell=AWS{hoveringCell.Name}");
 
                         if (_awsBuddyWindow != null)
                         {
@@ -463,7 +539,7 @@ namespace DDPM.EABroker
                         //HoveringScreen = workWin.ScreenDeviceName;
                         HoveringCellObj = hoveringCell;
                         HoveringWindow = $"w{idxWorkWin}";
-                        WriteLog($" * HoveringCell=Work{hoveringCell.Name}");
+                        //WriteLog($" * HoveringCell=Work{hoveringCell.Name}");
                         return hoveringCell;
                     }
                 }
@@ -548,6 +624,9 @@ namespace DDPM.EABroker
                 OnPropertyChanged("IsWithoutGap");
             }
         }
+        /// <summary>
+        /// The option in DDPM UI, Easy Arrange / Settings page is set to ON.
+        /// </summary>
         public bool IsSpanMultiMonitors
         {
             get => _isSpanMultiMonitors;
@@ -789,9 +868,10 @@ namespace DDPM.EABroker
         //(v2)Robert_Lin, 2024-11-18, new version consider when SpanScreen is ON
         public void RefreshWorkWindows(bool isInit=false)
         {
-            WriteLog("@ArrangeVM.RefreshWorkWindows()");
+            WriteLog("@ ArrangeVM.RefreshWorkWindows()");
             bool isSupportNonDellMonitors = false;
 
+            ReloadEzSettingsFromUserSettingsFile();
             RefreshScreenScale();
 
             //Clear InUsed flag for all WorkWindows
@@ -807,8 +887,11 @@ namespace DDPM.EABroker
 
             List<MonitorInfo> monitors = GetMonitors();
             List<EAScreen> eaScreens = EAScreen.GetEAScreens(monitors);
+            WriteLog($"Count={eaScreens.Count}, {EAScreen.EAScreensToString(eaScreens)}");
+            WriteLog($"EzSettings.IsSpanMultiMonitors={IsSpanMultiMonitors}, IsSpanScreenWorking={IsSpanScreenWorking}");
 
             //Allocate WorkWindow for SpanScreen at first
+            WriteLog($"Beofre allocate for SpanScreen, WorkerWindow, UsedCount={WorkWindowUsedCount}");
             if (_spanScreen != null)
             {
                 //SpanScreen is enabled and ON
@@ -819,6 +902,7 @@ namespace DDPM.EABroker
                     if (workWindow == null)
                     {
                         //No more available workWindow
+                        WriteLog("GetUnusedWorkWindow() return null, No more available workWindow");
                         return;
                     }
 
@@ -867,6 +951,7 @@ namespace DDPM.EABroker
                 }
             }
 
+            WriteLog($"After allocate for SpanScreen, WorkerWindow, UsedCount={WorkWindowUsedCount}");
 
             foreach (EAScreen eaScr in eaScreens)
             {
@@ -1005,6 +1090,30 @@ namespace DDPM.EABroker
             OnPropertyChanged("WorkWinCellInfos");
         }
 
+        public bool NotifyEASelectedLayoutChanged(MonitorInfo monitorInfo, SplitJson spJson)
+        {
+            //Check if SpanScreen is working
+            if (IsSpanScreenWorking)
+            {
+                //Check if the monitorInfo is included in the SpanScreen
+                if (SpanScreen.IsExistScreen(monitorInfo.DisplayName))
+                {
+                    //Yes
+                    //Find the workwindow of the SpanScreen
+                    EAWorkWindow? workForSpan = _workWindows.FirstOrDefault(x => x.IsWorkForSpanScreen);
+                    if (workForSpan != null)
+                    {
+                        return workForSpan.SetWorkingSplit(spJson, true);
+                    }
+                }
+            }
+            EAWorkWindow? workWindow = FindWorkWindowByMonitor(monitorInfo);
+            if (workWindow != null)
+            {
+                return workWindow.SetWorkingSplit(spJson, true);
+            }
+            return false;
+        }
         #endregion WorkWindows
 
         #region AWS Window
@@ -1647,17 +1756,24 @@ namespace DDPM.EABroker
         {
             if (_spanScreen != null)
             {
+                Stopwatch sw = Stopwatch.StartNew();
                 List<MonitorInfo>? monitors = GetMonitors();
                 bool res = _spanScreen.DetectSpanScreens(_log, monitors);
+                sw.Stop();
+                WriteLog($"DetectSpanCondition, IsSpanEnabled={res}, Elapsed {sw.ElapsedMilliseconds} msec");
                 OnPropertyChanged("IsSpanEnabled");
                 OnPropertyChanged("IsHorzSpan");
                 OnPropertyChanged("SpanWorkingArea");
+                OnPropertyChanged("SpanWorkingAreaText");
                 OnPropertyChanged("IsSpanScreenWorking");
                 return res;
             }
             return false;
         }
 
+        /// <summary>
+        /// True if current Montor Configure is meet the requirement of Span screen.
+        /// </summary>
         public bool IsSpanEnabled
         {
             get 
@@ -1694,7 +1810,20 @@ namespace DDPM.EABroker
                 return Rectangle.Empty;
             }
         }
+        public string SpanWorkingAreaText
+        {
+            get
+            {
+                if (SpanWorkingArea.IsEmpty)
+                    return "(Empty)";
+                else
+                    return FormatRect(RectFromRectangle(SpanWorkingArea));
+            }
+        }
 
+        /// <summary>
+        /// True when "Span condition is meet"(IsSpanEnabled) and "Span option is ON"(IsSpanMultiMonitors)
+        /// </summary>
         public bool IsSpanScreenWorking
         {
             get
@@ -1703,15 +1832,57 @@ namespace DDPM.EABroker
             }
         }
 
-        public Rect GetSpanWorkingArea(Screen scr)
+        public System.Windows.Rect GetSpanWorkingArea(Screen scr)
         {
             Rectangle rcWorkingArea = (IsSpanScreenWorking ? scr.WorkingArea : SpanScreen.WorkingArea);
-            return new Rect(
+            return new System.Windows.Rect(
                 (double)rcWorkingArea.Left / ScreenScale,
                 (double)rcWorkingArea.Top / ScreenScale,
                 (double)rcWorkingArea.Width / ScreenScale,
                 (double)rcWorkingArea.Height / ScreenScale
                 );
+        }
+
+        public void NotifySelectedMonitorChanged()
+        {
+            //Only when SpanScreen is working
+            if (IsSpanScreenWorking)
+            {
+                //Get the last selected monitor record from UserSettings
+                List<MonitorInfo>? _AllMonitors = GetMonitors();
+                //If no any monitor are connected
+                if ((_AllMonitors == null) || (_AllMonitors.Count <= 0))
+                    return;
+
+                DDPMSimpleMonitorRecord? lastMonitorRecord = ReadLastSelectedMonitorRecord();
+                if (lastMonitorRecord != null)
+                {
+                    MonitorInfo? mi = _AllMonitors.Find(x => x.modelName.Equals(lastMonitorRecord.ModelName) && x.edid.ServiceTag.Equals(lastMonitorRecord.ServiceTag));
+                    if (mi != null)
+                    {
+                        //Read the selected layout of this monitor
+                        EAMonitorSettings? monitorSettings = ReadEAMonitorSettings(mi);
+                        if (monitorSettings != null)
+                        {
+                            //If the Monitor is attached in SpanScreen
+                            if (SpanScreen.IsExistScreen(mi.DisplayName))
+                            {
+                                //Find the workwindow of the SpanScreen
+                                EAWorkWindow? workForSpan = _workWindows.FirstOrDefault(x => x.IsWorkForSpanScreen);
+                                if (workForSpan != null)
+                                {
+                                    workForSpan.SetWorkingSplit(monitorSettings.SelectedSplit, true);
+                                }
+                            }
+                        }
+                    }
+                    else
+                    {
+                        //The last selected monitor is not present now
+                    }
+                }
+
+            }
         }
         #endregion
     }

@@ -218,19 +218,20 @@ namespace DDPM.UI.Module.ButtonSettings
 
         private void btnRestoreClicked(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
-            //RestoreModalDialog restoreModalDialog = new();
-            //Window parentWindow = Window.GetWindow(this);
-            //if (parentWindow != null)
-            //{
-            //    restoreModalDialog.Owner = parentWindow;
-            //}
-
-            //bool? dialogResult = restoreModalDialog.ShowDialog();
-            //if (dialogResult == true)
-            //{
-            //    _vm!.RestoreToDefault();
-            //}
-            _vm!.RestoreToDefault();
+            RestoreModalDialog restoreModalDialog = new();
+            Window mainWindow = System.Windows.Application.Current.MainWindow;
+            if (mainWindow != null)
+            {
+                restoreModalDialog.Owner = mainWindow;
+                restoreModalDialog.Left = mainWindow.Left + (mainWindow!.ActualWidth - 417) / 2;
+                restoreModalDialog.Top = mainWindow.Top + (mainWindow!.ActualHeight - 196) / 2;
+            }
+            restoreModalDialog.WindowStartupLocation = WindowStartupLocation.Manual;
+            bool? dialogResult = restoreModalDialog.ShowDialog();
+            if (dialogResult == true)
+            {
+                _vm!.RestoreToDefault();
+            }
         }
 
         private void UnfocusSearchBox(object sender, System.Windows.Input.MouseButtonEventArgs e)
@@ -457,6 +458,7 @@ namespace DDPM.UI.Module.ButtonSettings
                 rb.Content = id > 100 ? Actions.OfficeActions[id].Caption : Actions.KnMActions[id].Caption;
                 if (rb.Tag.ToString() != "search")
                     rb.IsChecked = id == SelectedActionID;
+                rb.Visibility = ((_vm.IsCopilotEnabled && _vm.CurrentVersion >= 11) || id != 1) ? Visibility.Visible : Visibility.Collapsed;
             }
             else if (sender is ActionButton btn)
             {
@@ -487,6 +489,8 @@ namespace DDPM.UI.Module.ButtonSettings
             {
                 id = (int)((StackPanel)sender).DataContext;
                 sp.Visibility = id == SelectedActionID && id != _vm.SelectedMouseAction!.DefaultActionID ? Visibility.Visible : Visibility.Collapsed;
+                if ((!_vm.IsCopilotEnabled || _vm.CurrentVersion < 11) && id == 1)
+                    sp.Visibility = Visibility.Collapsed;
             }
         }
 

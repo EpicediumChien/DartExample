@@ -1,6 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using DDPM.SA.Common;
+using DDPM.SA.Common.Settings;
 using DDPM.UI.Common;
 using DDPM.UI.Common.Models;
 using DDPM.UI.Plugin.Common;
@@ -17,7 +18,9 @@ using System.ServiceProcess;
 using System.Windows;
 using System.Windows.Data;
 using System.Windows.Input;
+using System.Windows.Media;
 using VcpCore.Common;
+using Windows.UI.ViewManagement;
 using static DDPM.UI.Common.User32;
 
 namespace DDPM.UI.Plugin.DdpmHomePlugin.ViewModels
@@ -28,12 +31,15 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.ViewModels
         private object _LockPeripheralList = new object();
         private readonly IConsole _console;
         private readonly ILog _log;
+        private readonly double _pictureMinWidth = 250;
+        private readonly double _pictureMaxWidth = 500;
+        private readonly double _gapMinWidth = 40;
 
         private ObservableCollection<HomeDevice> _homeDevices = new ObservableCollection<HomeDevice>();
         private HomeDevice? _selectedHomeDevice;
 
-        private List<string> EOLKBList = new() { "WK636", "WK717", "KM714", "KM717", "WM126", "UV514" };
-        private List<string> EOLMouseList = new() { "WK717", "KM714", "KM717", "WM126", "WM116", "WM326", "WM527", "WM514", "UV514" };
+        private List<string> EOLKBList = new() { "WK636", "KM713", "WK717", "KM714", "KM717" };
+        private List<string> EOLMouseList = new() { "WM116", "WM514", "UV514", "WM126", "WM326", "WM527" };
 
         /// <summary>
         /// Default constructor
@@ -77,6 +83,34 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.ViewModels
             get => HomeDevices.Count;
         }
 
+        public double ScrollViewMaxWidth
+        {
+            get
+            {
+                return _pictureMaxWidth * 4 + _gapMinWidth * 5;
+            }
+        }
+
+
+        public double MinWidth
+        {
+            get
+            {
+                switch (HomeDevices.Count)
+                {
+                    case 1:
+                        return _pictureMinWidth + _gapMinWidth * 2;
+                    case 2:
+                    case 4:
+                        return _pictureMinWidth * 2 + _gapMinWidth * 3;
+                    case 3:
+                    default:
+                        return _pictureMinWidth * 3 + _gapMinWidth * 4;
+                }
+
+            }
+        }
+
         /// <summary>
         /// Input list of MonitorInfo, convert to HomeDevice and add to HomeDevices
         /// </summary>
@@ -111,6 +145,16 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.ViewModels
                         //Robert_Lin, 2024-9-30, Comment-out after phase in Monitor Product images
                         //DeviceImage = mi.modelName.ToUpper().StartsWith("G") ? DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/G.png") : mi.modelName.ToUpper().StartsWith("AW") ? DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/AW.png") : DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Product_Display.png")
                     };
+
+                    //Robert_Lin, 2024-11-20 PIMS-302436, Show the user input name to replace InputCable
+                    Dictionary<string, InputInfo> inputList = DdpmCommonHelper.DeviceManagerSA.GetInputSourcelist(mi).Result;
+                    InputInfo mainInput;
+                    if (inputList.TryGetValue(mi.inputCable, out mainInput))
+                    {
+                        dev.InputName = mainInput.InputName;
+                    }
+                    //
+                    ///////////////////////////////////////////////////////////////////////////////
 
                     //2024-6-20 Robert_Lin, check if any some model already in list
                     List<HomeDevice> sameModel = tempList.FindAll(x => x.IsSameModel(dev));
@@ -147,7 +191,10 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.ViewModels
                 }
 
                 //OnPropertyChanged("HomeDevices");
-                HomeDevices = new ObservableCollection<HomeDevice>(tempList);
+                System.Windows.Application.Current.Dispatcher.Invoke(() =>
+                {
+                    HomeDevices = new ObservableCollection<HomeDevice>(tempList);
+                });
                 //Robert_Lin, 2024-8-7, The list has been sorted in PrepareXXX(), so should not call to RefreshCollectionView()
                 //Robert_Lin, 2024-6-22, to fix the issue the WebCam not been sorted (expect arranged after monitors)
                 //RefreshCollectionView();
@@ -319,7 +366,17 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.ViewModels
                         (devType.ToString().ToUpper().Contains("23")))
                     {
                         dev.DeviceCategory = eDeviceCategory.Dock;
-                        dev.DeviceImage = DdpmCommonHelper.GetImageSourceFromCommonResource($"Resources/{di.ModelNumber}.png");
+                        ImageSource dockImg = DdpmCommonHelper.GetImageSourceFromCommonResource($"Resources/{di.ModelNumber}.png");
+
+                        if (dockImg != null)
+                            dev.DeviceImage = dockImg;
+                        else
+                        {
+                            // Elie, we set a WD25.png as Dock default picture.
+                            dev.DeviceImage = DdpmCommonHelper.GetImageSourceFromCommonResource($"Resources/WD25.png");
+                            ;
+                        }
+
                         dev.SortOrder = (int)dev.DeviceCategory + idxDock;
                         idxDock++;
                     }
@@ -372,7 +429,9 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.ViewModels
                             case "SB522A":
                                 imagepath = "Resources/Speaker_SB522A.png";
                                 break;
-
+                            case "SB725":
+                                imagepath = "Resources/Speaker_SB725.png";
+                                break;
                             default:
                                 imagepath = "Resources/Speaker_SP3022.png";
                                 break;
@@ -405,8 +464,10 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.ViewModels
 
                 //Sort the list with SortOrder
                 tempList.Sort((x, y) => x.SortOrder.CompareTo(y.SortOrder));
-
-                HomeDevices = new ObservableCollection<HomeDevice>(tempList);
+                System.Windows.Application.Current.Dispatcher.Invoke(() =>
+                {
+                    HomeDevices = new ObservableCollection<HomeDevice>(tempList);
+                });
 
                 //Robert_Lin, 2024-7-10, we don't need the CollectionView, we sort in List<HomeDevice> directly.
                 //Robert_Lin, 2024-6-22, to fix the issue the WebCam not been sorted (expect arranged after monitors)
@@ -416,7 +477,11 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.ViewModels
 
         public void ResetDevices()
         {
-            HomeDevices = new ObservableCollection<HomeDevice>();
+            System.Windows.Application.Current.Dispatcher.Invoke(() =>
+            {
+                // Code to update UI elements
+                HomeDevices = new ObservableCollection<HomeDevice>();
+            });
         }
 
         #region Refresh CollectionView
@@ -446,7 +511,10 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.ViewModels
             //listSorted would be sorted by SortOredr
             //
 
-            HomeDevices = new ObservableCollection<HomeDevice>(listSorted);
+            System.Windows.Application.Current.Dispatcher.Invoke(() =>
+            {
+                HomeDevices = new ObservableCollection<HomeDevice>(listSorted);
+            });
         }
 
         #endregion Refresh CollectionView
@@ -511,12 +579,14 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.ViewModels
             MonitorInfo info = new MonitorInfo();
             info.AliasDeviceName = "Fake Monitor";
             info.inputSource = "Internal";
+            info.inputCable = "FakeConn";
             info.CapabilityString = "";
             info.FwVersion = "1.0";
             info.DDCisON = false;
             info.DisplayName = displayName;
             info.Index = 1;
             info.IsDellMonitor = false;
+            info.modelName = "Fake2024";
             info.edid = new VcpCore.Common.EDID();
             info.edid.Month = 6;
             info.edid.Year = 2024;

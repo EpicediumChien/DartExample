@@ -1,4 +1,7 @@
-﻿using System.Windows;
+﻿using DDPM.UI.Common.UserControls;
+using Newtonsoft.Json.Linq;
+using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 
@@ -11,12 +14,14 @@ namespace DDPM.UI.Common
     {
         private VbarItemViewModel vm = new VbarItemViewModel();
 
-        public VbarItem(int id, ImageSource icon, string text)
+        public VbarItem(int id, ImageSource icon, string text, Canvas? iconCanvas = null)
         {
             InitializeComponent();
             vm.Id = id;
             vm.Icon = icon;
             vm.Text = text;
+            if (iconCanvas != null)
+                IconCanvasContent.Content = iconCanvas;
             //vm.Command = command;
             this.DataContext = vm;
         }
@@ -97,5 +102,7 @@ namespace DDPM.UI.Common
             get => vm.TooltipVisibility;
             set => vm.TooltipVisibility = value;
         }
+
+        public bool NoCanvasIcon => IconCanvasContent.Content == null;
     }
 }

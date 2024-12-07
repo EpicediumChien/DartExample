@@ -10,7 +10,10 @@ using Dell.Client.Framework.Common;
 using Dell.Client.Framework.UX.WPF;
 using DPeMPublic.Common.Enums;
 using Microsoft;
+using Microsoft.Win32;
+using System;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -18,6 +21,7 @@ using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Threading;
+using Windows.Devices.Geolocation;
 using static System.Net.Mime.MediaTypeNames;
 using MessageBox = System.Windows.MessageBox;
 using UserControl = System.Windows.Controls.UserControl;
@@ -54,11 +58,13 @@ namespace DDPM.UI.Plugin.ViewModels
         public ICommand GoBackClickedCommand { get; private set; }
         public ICommand ShowInfoClickedCommand { get; private set; }
         public volatile Dictionary<Guid, DeviceInfo> DeviceInfos = new();
-        //public List<string> EOLList = new() { "WK636", "WK717", "KM714", "KM717", "WM126", "WM116", "WM326", "WM527", "WM514", "UV514" };
-        public List<string> EOLKBList = new() { "WK636", "WK717", "KM714", "KM717", "WM126", "UV514" };
-        public List<string> EOLMouseList = new() { "WK717", "KM714", "KM717", "WM126", "WM116", "WM326", "WM527", "WM514", "UV514" };
+        public List<string> EOLKBList = new() { "WK636", "KM713", "WK717", "KM714", "KM717" };
+        public List<string> EOLMouseList = new() { "WM116", "WM514", "UV514", "WM126", "WM326", "WM527" };
         //public DDPMSettings? DDPMSettings;
         //public WebcamSettings WebcamSettings = new();
+        public bool IsCopilotEnabled = true;
+        public bool IsDTPReady = false;
+        public int CurrentVersion = 0;
 
         public PeripheralViewModel(IConsole console, ILog log, IDeviceManagerSA deviceManager)
         {
@@ -77,6 +83,21 @@ namespace DDPM.UI.Plugin.ViewModels
                 Interval = TimeSpan.FromSeconds(0.5)
             };
             timer.Tick += Timer_Tick;
+
+            if (CurrentVersion == 0)
+            {
+                string regPath = $@"SOFTWARE\Microsoft\Windows NT\CurrentVersion";
+                string regKey = $"CurrentBuild";
+                var regValue = DdpmCommonHelper.DeviceManagerSA!.ReadRegistryData(SA.Common.Settings.RegistryHive.LocalMachine, regPath, regKey).Result;
+                if (int.TryParse((string)regValue, out int build))
+                {
+                    CurrentVersion = build >= 22000 ? 11 : 10;
+                }
+                else
+                {
+                    CurrentVersion = 10;
+                }
+            }
         }
 
         public void Unpair()
@@ -118,10 +139,51 @@ namespace DDPM.UI.Plugin.ViewModels
             OnPropertyChanged(nameof(MultiDevicesInfoVisibility));
         }
 
+        public void CheckCopilot()
+        {
+            //string regPath2 = $@"SOFTWARE\Dell\Dell Display And Peripheral Manager\UserSettings\Local";
+            //string regKey2 = $"IsFirstTimeWalkThroughDone_com.dell.DPM.Plugin.LogicalDevice.DDPM";
+            //var regValue2 = DdpmCommonHelper.DeviceManagerSA!.ReadRegistryData(RegistryHive.LocalMachine, regPath2, regKey2).Result;
+            string regPath = $@"SOFTWARE\Policies\Microsoft\Windows\WindowsCopilot";
+            string regKey = $"TurnOffWindowsCopilot";
+            //var regValue = DdpmCommonHelper.DeviceManagerSA!.ReadRegistryData(RegistryHive.CurrentUser, regPath, regKey).Result;
+            try
+            {
+                // Open the registry key under the current user
+                using (RegistryKey? key = Registry.CurrentUser.OpenSubKey(regPath))
+                {
+                    if (key != null)
+                    {
+                        // Read the value
+                        object value = key.GetValue(regKey);
+
+                        if (value != null && Convert.ToInt32(value) == 1)
+                        {
+                            IsCopilotEnabled = false;
+                        }
+                        else
+                        {
+                            IsCopilotEnabled = true;
+                        }
+                    }
+                    else
+                    {
+                        IsCopilotEnabled = true;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                IsCopilotEnabled = true;
+            }
+            //Actions.IsCopilotEnabled = regValue == null || Convert.ToInt32(regValue) != 1;
+        }
+
         public bool IsIDInvalid = false;
 
         public virtual bool SetCurrentDevice(string deviceID)
         {
+            _console.RaiseEvent(ConsoleEventNames.Masthead_ShowAddDeviceIcon, this, new EventManagerArgs() { Tag = true });
             IsIDInvalid = false;
             if (deviceID.Substring(deviceID.Length - 2, 1) == "-")
             {
@@ -134,9 +196,8 @@ namespace DDPM.UI.Plugin.ViewModels
             }
             CurrentDeviceID = new Guid(deviceID);
 
-            if (DeviceInfos.ContainsKey(CurrentDeviceID))
+            if (DeviceInfos.TryGetValue(CurrentDeviceID, out DeviceInfo? di))
             {
-                var di = DeviceInfos[CurrentDeviceID];
                 _log.Info($"[PeripheralViewModel] SetCurrentDevice ... InstanceId = {di.InstanceId.ToString()}");
                 if (di.DeviceName == "Headset Settings" || di.DeviceName == "Wired Audio Settings")
                 {
@@ -154,7 +215,7 @@ namespace DDPM.UI.Plugin.ViewModels
                             CurrentDeviceID = info.ID;
                     }
                 }
-                CurrentDeviceInfo = DeviceInfos[CurrentDeviceID];
+                CurrentDeviceInfo = di;
             }
             else
             {
@@ -162,8 +223,13 @@ namespace DDPM.UI.Plugin.ViewModels
                 IsIDInvalid = true;
                 return false;
             }
+
+            CheckCopilot();
             Model = MappingModel(CurrentDeviceInfo.ModelNumber);
             Name = CurrentDeviceInfo.Name;
+            if (EOLKBList.Contains(Model) || EOLMouseList.Contains(Model))
+                Name = DdpmCommonHelper.MappingEOLName(Model);
+
             if (CurrentDeviceInfo.Type == DeviceType.PhysicalWiredDock || CurrentDeviceInfo.Type == DeviceType.LogicalDock)
             {
                 string[] s = CurrentDeviceInfo.Name.Split(" ");
@@ -196,6 +262,7 @@ namespace DDPM.UI.Plugin.ViewModels
             {
                 case DeviceType.PhysicalWebcam:
                     ConnectionType = "Wired";
+                    Name = Name.Replace(Model, "").Trim();
                     break;
                 case DeviceType.PhysicalAudioDongle:
                 case DeviceType.PhysicalBluetoothAudio:
@@ -261,6 +328,11 @@ namespace DDPM.UI.Plugin.ViewModels
 
         private string MappingModel(string modelNumber)
         {
+            //[#PeripheralModelMap] This mapping table has a duplicate code in
+            //1 DdpmCommonHelpers.cs    DeterminePeripheralProductImageFileName()
+            //2 HomeDevices             TooltipModelName property
+            //3 PeripheralViewModel.cs  MappingModel()
+            //If you need to modify, please also modify them.
             switch (modelNumber)
             {
                 case "KB740":
@@ -898,7 +970,7 @@ namespace DDPM.UI.Plugin.ViewModels
             {
                 if (mg.GroupIcon != null)
                 {
-                    VbarItem vbarItem = new(idx, mg.GroupIcon, mg.GroupName)
+                    VbarItem vbarItem = new(idx, mg.GroupIcon, mg.GroupName, mg.GroupIconCanvas)
                     {
                         ClickCommand = VbarItemClickCommand
                     };

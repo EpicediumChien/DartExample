@@ -13,9 +13,9 @@
              d:DesignHeight="671" d:DesignWidth="1374">
     <UserControl.Resources>
         <ResourceDictionary>
-            <ResourceDictionary.MergedDictionaries>
+            <!--<ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="/DDPM.UI.Common;component/PluginStyles.xaml" />
-            </ResourceDictionary.MergedDictionaries>
+            </ResourceDictionary.MergedDictionaries>-->
             <Storyboard x:Key="StoryGotoTwoView">
                 <DoubleAnimation Storyboard.TargetName="RightGrid" Storyboard.TargetProperty="Width"
                                  Duration="0:0:0.4" From="{Binding RightFrameWidthFrom}" To="{Binding RightFrameWidthTo}" FillBehavior="HoldEnd" />
@@ -72,8 +72,9 @@
                         <!--</Grid>-->
                     </Viewbox>
                 </Grid>
-                <!--Vbar-->
-                <Grid HorizontalAlignment="Right" VerticalAlignment="Top" Name="VbarGrid">
+            </Grid>
+            <!--Vbar-->
+                <!--<Grid HorizontalAlignment="Right" VerticalAlignment="Top" Name="VbarGrid">
                     <ItemsControl Name="vbarList" Margin="0,10,0,0"
                                   HorizontalAlignment="Right" VerticalAlignment="Top"
                                   ItemsSource="{Binding VbarItems}">
@@ -86,18 +87,19 @@
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
                 </Grid>
-            </Grid>
+            </Grid>-->
             <!--Name & Model-->
-            <Grid VerticalAlignment="Top" HorizontalAlignment="Left">
+            <Grid VerticalAlignment="Top" Height="125">
+                <Border Background="Transparent" MouseDown="PushBack"></Border>
                 <StackPanel Orientation="Vertical">
-                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
-                        <Image Margin="64,21,0,0" Source="/DDPM.UI.Resources;component/Resources/Images/arrow-left.png" Stretch="Fill"
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" x:Name="devNameStackPanel">
+                        <Image x:Name="ArrowLeft" Margin="64,21,0,0" Source="{DynamicResource Arrow_Left}" Stretch="Fill"
                                VerticalAlignment="Top" HorizontalAlignment="Left" Cursor="" Width="24" Height="24">
                             <Image.InputBindings>
                                 <MouseBinding Gesture="LeftClick" Command="{Binding GoBackClickedCommand, Mode=OneTime}" />
                             </Image.InputBindings>
                         </Image>
-                        <UXControls:UXTextBlock Text="{Binding Name}" Margin="12,19,0,0" HorizontalAlignment="Left"
+                        <UXControls:UXTextBlock Text="{Binding Name}" Margin="12,19,0,0" HorizontalAlignment="Left" TextWrapping="WrapWithOverflow"
                                                 Style="{StaticResource ProductNameTextStyle}" Cursor="" VerticalAlignment="Top" />
                     </StackPanel>
                     <StackPanel Orientation="Horizontal">
@@ -106,16 +108,30 @@
                         <Image Margin="9,22.5,0,0" Source="/DDPM.UI.Resources;component/Resources/Images/info.png" Stretch="Fill"
                                VerticalAlignment="Top" Cursor="" Width="16" Height="16">
                             <Image.InputBindings>
-                                <!--<MouseBinding Gesture="LeftClick" Command="{Binding ShowInfoClickedCommand}" />-->
+                                <MouseBinding Gesture="RightDoubleClick" Command="{Binding ShowInfoClickedCommand}" />
                             </Image.InputBindings>
                             <Image.ToolTip>
                                 <ToolTip Style="{StaticResource InfoToolTipStyle}" Placement="Top" VerticalOffset="6" HorizontalOffset="8">
-                                    <TextBlock Style="{StaticResource InfoToolTipTextStyle}" Text="{Binding FirmwareVersion2}" />
+                                    <TextBlock Style="{StaticResource TabInfoToolTipTextStyle}" Text="{Binding FirmwareVersion2}" />
                                 </ToolTip>
                             </Image.ToolTip>
                         </Image>
                     </StackPanel>
                 </StackPanel>
+            </Grid>
+            <!-- Vbar -->
+            <Grid HorizontalAlignment="Right" VerticalAlignment="Top" Name="VbarGrid">
+                <ItemsControl Name="vbarList" Margin="0,10,0,0"
+                                  HorizontalAlignment="Right" VerticalAlignment="Top"
+                                  ItemsSource="{Binding VbarItems}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Grid>
+                                <ContentPresenter />
+                            </Grid>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
             </Grid>
             <!--Battery-->
             <Grid VerticalAlignment="Bottom">
@@ -134,18 +150,26 @@
                                 <UXControls:UXTextBlock Name="txtSlot" Style="{StaticResource ConnectionStyle3}" Margin="20,15,0,0" />
                             </StackPanel>
                         </Border>
-                        <Border Style="{StaticResource BorderConnection}" Margin="{Binding ConnectionPopupMargin}" Visibility="Collapsed" x:Name="BLConnection" VerticalAlignment="Bottom">
+                        <Border Style="{StaticResource BorderConnection}" Margin="{Binding ConnectionPopupMargin}" Visibility="Collapsed" x:Name="BLConnection" VerticalAlignment="Bottom" Width="252">
                             <StackPanel Orientation="Vertical">
                                 <StackPanel Name="Host1" Orientation="Horizontal" Margin="20,18,0,0">
-                                    <UXControls:UXTextBlock Name="txt1" Text="1" />
-                                    <Image x:Name="imgBL1" Margin="4,0,0,0" Width="16" Height="16" />
+                                    <UXControls:UXTextBlock Name="txt1" Text="" FontSize="14"/>
+                                    <Path x:Name="imgBL1" Data="M3.5 15.9508V9.40078L0.7 12.0008L0 11.3008L3.5 8.05078V7.95078L0 4.70078L0.7 4.00078L3.5 6.60078V0.0507812L8.35 4.90078L5 8.00078L8.35 11.1008L3.5 15.9508ZM4.5 8.90078V13.5508L6.9 11.1508L4.5 8.90078ZM4.5 2.45078V7.10078L6.9 4.85078L4.5 2.45078Z" Fill="{DynamicResource DefaultTheme_PathColor}" Margin="4,0,0,0" Width="16" Height="16" />
+                                    <!--<Image x:Name="imgBL1" Margin="4,0,0,0" Width="16" Height="16" />-->
                                     <UXControls:UXTextBlock Name="txtBLHost1" Margin="4,0,0,0" />
                                 </StackPanel>
-                                <StackPanel Name="Host2" Orientation="Horizontal" Margin="20,18,0,18">
-                                    <UXControls:UXTextBlock Name="txt2" Text="2" />
-                                    <Image x:Name="imgBL2" Margin="4,0,0,0" Width="16" Height="16" />
+                                <StackPanel Name="Host2" Orientation="Horizontal" Margin="20,18,0,8">
+                                    <UXControls:UXTextBlock Name="txt2" Text="" FontSize="14"/>
+                                    <Path x:Name="imgBL2" Data="M3.5 15.9508V9.40078L0.7 12.0008L0 11.3008L3.5 8.05078V7.95078L0 4.70078L0.7 4.00078L3.5 6.60078V0.0507812L8.35 4.90078L5 8.00078L8.35 11.1008L3.5 15.9508ZM4.5 8.90078V13.5508L6.9 11.1508L4.5 8.90078ZM4.5 2.45078V7.10078L6.9 4.85078L4.5 2.45078Z" Fill="{DynamicResource DefaultTheme_PathColor}" Margin="4,0,0,0" Width="16" Height="16" />
+                                    <!--<Image x:Name="imgBL2" Margin="4,0,0,0" Width="16" Height="16" />-->
                                     <UXControls:UXTextBlock Name="txtBLHost2" Margin="4,0,0,0" />
                                 </StackPanel>
+                                <!-- Horz Line -->
+                                <Line X1="15" Y1="10" X2="235" Y2="10" Stroke="#1B385F" StrokeThickness="2" />
+
+                                <!-- This device can be paired with 2 hosts simulaneously -->
+                                <UXControls:UXTextBlock Name="txtAudioBLText" Margin="20,16,20,16" Text="" FontSize="14"
+                                            Foreground="White" TextWrapping="Wrap" />
                             </StackPanel>
                             <!--<StackPanel Orientation="Vertical">
                             <StackPanel Orientation="Horizontal" Margin="20,18,0,0">
@@ -174,15 +198,18 @@
                         <DDPMUserControls:BatteryIndicator Name="Battery" Margin="0,0,0,70" HorizontalAlignment="Center" MouseEnter="BatteryIndicator_MouseEnter"
                                                            BatteryLevel="{Binding BatteryLevel}" BatteryStatus="{Binding BatteryStatus}" MouseLeave="BatteryIndicator_MouseLeave"
                                                            ConnectionType="{Binding ConnectionType}" VerticalAlignment="Bottom" />
-                        <Border Style="{StaticResource BorderUnpair}" Width="176" MouseLeftButtonDown="Restore_Click" Cursor="Hand" Margin="8,0,0,70" Visibility="Visible" x:Name="btnRestore">
+                        <Border Style="{StaticResource BorderUnpair}" Width="176" MouseLeftButtonDown="Restore_Click" Cursor="Hand" Margin="8,0,0,70" Visibility="Visible" x:Name="btnRestore"
+                                BorderBrush="{DynamicResource SecondaryButton_DefaultBdColor}">
                             <Grid>
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="*"/>
                                     <ColumnDefinition Width="auto"/>
                                 </Grid.ColumnDefinitions>
-                                <UXControls:UXTextBlock Name="txtRestore" Foreground="#F5F6F7" VerticalAlignment="Center" Grid.Column="0"
+                                <Border BorderBrush="{DynamicResource Button_UXStyleColor_ForWhiteFrame}" Background="Transparent" BorderThickness="1"  >
+                                    <UXControls:UXTextBlock Name="txtRestore" VerticalAlignment="Center" Grid.Column="0" Foreground="{Binding BorderBrush, RelativeSource={RelativeSource AncestorType=Border}}"
                                                         HorizontalAlignment="Center" FontFamily="Roboto" FontSize="14" Text="{Binding [RestoreToDefault], Source={x:Static lang:LangHelper.Instance}}"/>
-                                <Image Grid.Column="1" Name="RestoreLockIcon" Visibility="Collapsed" Margin="0,0,6,0"
+                                </Border>
+                                    <Image Grid.Column="1" Name="RestoreLockIcon" Visibility="Collapsed" Margin="0,0,6,0"
                                        Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Lock.png"
                                        VerticalAlignment="Center" HorizontalAlignment="Center" Width="12" Height="12">
                                     <Image.ToolTip>
@@ -204,8 +231,10 @@
                         </Border>
                         <Border Style="{StaticResource BorderUnpair}" MouseLeftButtonDown="Unpair_Click" Cursor="Hand" Margin="8,0,0,70" Visibility="Visible" x:Name="btnUnpair">
                             <Grid>
-                                <UXControls:UXTextBlock Name="txtUnpair" Foreground="#F5F6F7" VerticalAlignment="Center"
+                                <Border BorderBrush="{DynamicResource Unpair_FgColor}" Background="Transparent" BorderThickness="1"  >
+                                <UXControls:UXTextBlock Name="txtUnpair" Foreground="{DynamicResource Unpair_FgColor}" VerticalAlignment="Center"
                                                         HorizontalAlignment="Center" FontFamily="Roboto" FontSize="14" Text="{Binding [Unpair], Source={x:Static lang:LangHelper.Instance}}"/>
+                                </Border>
                             </Grid>
                         </Border>
                     </StackPanel>
@@ -214,15 +243,15 @@
         </Grid>
 
         <!-- Please Wait -->
-        <Grid x:Name="PleaseWaitGrid" Background="#CC000000" Visibility="{Binding IsPleaseWaitVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
-            <Border Width="587" Height="265" Background="#F20D121A"
-                    BorderBrush="#293D4D" BorderThickness="1" CornerRadius="4"
+        <Grid x:Name="PleaseWaitGrid" Visibility="{Binding IsPleaseWaitVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
+            <Border Width="587" Height="265"
+                     BorderThickness="1" CornerRadius="4"
                     HorizontalAlignment="Center" VerticalAlignment="Center">
                 <StackPanel>
                     <Grid Height="40" HorizontalAlignment="Center" VerticalAlignment="Top"
                           Margin="0,64,0,32">
                         <UXControls:UXTextBlock Text="{Binding [HomePage.0], Source={x:Static lang:LangHelper.Instance}}"
-                                                Foreground="#F5F6F7" FontSize="32" />
+                                                 FontSize="32" />
                     </Grid>
                     <Grid Height="64">
                         <UXControls:UXBusyIndicator Width="64" Height="64"

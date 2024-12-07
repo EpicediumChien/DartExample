@@ -1,6 +1,7 @@
 ﻿using DDPM.SA.Common;
 using DDPM.SA.Common.Display;
 using Dell.Client.Framework.Common;
+using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -52,6 +53,7 @@ namespace DDPM.PowerMon
             }
         }
 
+        #region native APIs
         [StructLayout(LayoutKind.Sequential)]
         private struct POWERBROADCAST_SETTING
         {
@@ -65,6 +67,7 @@ namespace DDPM.PowerMon
         private IntPtr m_hPowerNotify = IntPtr.Zero;
 
         [DllImport("user32.dll", SetLastError = true)]
+        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
         private static extern IntPtr RegisterPowerSettingNotification(IntPtr hRecipient, ref Guid PowerSettingGuid, uint Flags);
         private static IntPtr _RegisterPowerSettingNotification(IntPtr hRecipient, ref Guid PowerSettingGuid, uint Flags)
         {
@@ -72,23 +75,62 @@ namespace DDPM.PowerMon
         }
 
         [DllImport("user32.dll", SetLastError = true)]
+        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
         private static extern bool UnregisterPowerSettingNotification(IntPtr Handle);
         private static bool _UnregisterPowerSettingNotification(IntPtr Handle)
         {
             return UnregisterPowerSettingNotification(Handle);
         }
 
+        #region For System Suspend/Resume Notify
+        //https://learn.microsoft.com/en-us/windows/win32/w8cookbook/desktop-activity-moderator
+        private const int DEVICE_NOTIFY_WINDOW_HANDLE = 0;
+        private const int DEVICE_NOTIFY_CALLBACK = 2;
+
+        [DllImport("user32.dll", SetLastError = true)]
+        private static extern IntPtr RegisterSuspendResumeNotification(IntPtr hRecipient, uint Flags);
+        private static IntPtr _RegisterSuspendResumeNotification(IntPtr hRecipient, uint Flags)
+        {
+            return RegisterSuspendResumeNotification(hRecipient, Flags);
+        }
+
+        [DllImport("user32.dll", SetLastError = true)]
+        private static extern bool UnregisterSuspendResumeNotification(IntPtr Handle);
+        private static bool _UnregisterSuspendResumeNotification(IntPtr Handle)
+        {
+            return UnregisterSuspendResumeNotification(Handle);
+        }
+
+        IntPtr m_hSuspendResumeNotify = IntPtr.Zero;
+        #endregion
+
         //for hotkey
 
         [DllImport("user32.dll", SetLastError = true)]
-        public static extern bool RegisterHotKey(IntPtr hWnd, int id, ModifierKeys fsModifiers, int vk);
+        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
+        private static extern bool RegisterHotKey(IntPtr hWnd, int id, ModifierKeys fsModifiers, int vk);
+        private static bool _RegisterHotKey(IntPtr hWnd, int id, ModifierKeys fsModifiers, int vk)
+        {
+            return RegisterHotKey(hWnd, id, fsModifiers, vk);
+        }
 
         [DllImport("user32.dll", SetLastError = true)]
-        public static extern bool UnregisterHotKey(IntPtr hWnd, int id);
+        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
+        private static extern bool UnregisterHotKey(IntPtr hWnd, int id);
+        private static bool _UnregisterHotKey(IntPtr hWnd, int id)
+        {
+            return UnregisterHotKey(hWnd, id);
+        }
 
 
         [DllImport("kernel32.dll")]
-        public static extern ushort GlobalAddAtom(string lpString);
+        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
+        private static extern ushort GlobalAddAtom(string lpString);
+        private static ushort _GlobalAddAtom(string lpString)
+        {
+            return GlobalAddAtom(lpString);
+        }
+        #endregion
 
         private List<ushort> _hotkeyIds = new List<ushort>();
         public event EventHandler<KeyPressedEventArgs> HotkeyPressed;
@@ -107,11 +149,11 @@ namespace DDPM.PowerMon
                         continue;
                     }
                     string uniqueID = Guid.NewGuid().ToString("N");
-                    _currentId = GlobalAddAtom(uniqueID);
+                    _currentId = _GlobalAddAtom(uniqueID);
                     int lastError = -1;
                     Dispatcher.Invoke((() =>
                     {
-                        isKeyRegistered = RegisterHotKey(_handle, _currentId, hotkeyInfo.ModifiersEnum, (int)hotkeyInfo.KeyCode);
+                        isKeyRegistered = _RegisterHotKey(_handle, _currentId, hotkeyInfo.ModifiersEnum, (int)hotkeyInfo.KeyCode);
                         lastError = Marshal.GetLastWin32Error();
                     }));
                     if (!isKeyRegistered)
@@ -147,7 +189,7 @@ namespace DDPM.PowerMon
             int lastError = -1;
             Dispatcher.Invoke((() =>
             {
-                v = UnregisterHotKey(_handle, id);
+                v = _UnregisterHotKey(_handle, id);
                 lastError = Marshal.GetLastWin32Error();
             }));
             if (!v)
@@ -180,7 +222,7 @@ namespace DDPM.PowerMon
             {
                 Dispatcher.Invoke((() =>
                 {
-                    v = UnregisterHotKey(_handle, id);
+                    v = _UnregisterHotKey(_handle, id);
                     lastError = Marshal.GetLastWin32Error();
                 }));
                 if (!v)
@@ -208,6 +250,8 @@ namespace DDPM.PowerMon
         //for hotkey end
 
         public event EventHandler MonitorTurnedOn;
+        public event EventHandler SystemSuspend;
+        public event EventHandler SystemResume;
         //public event EventHandler MonitorTurnedOff;
         //public event EventHandler PowerSettingChanged;
         private static ILog log = null;
@@ -227,6 +271,8 @@ namespace DDPM.PowerMon
 
             m_hPowerNotify = _RegisterPowerSettingNotification(helper.Handle, ref GUID_MONITOR_POWER_ON, 0);
 
+            m_hSuspendResumeNotify = _RegisterSuspendResumeNotification(helper.Handle, DEVICE_NOTIFY_WINDOW_HANDLE);
+
             isWindowLoaded = true;
         }
 
@@ -237,6 +283,13 @@ namespace DDPM.PowerMon
                 _UnregisterPowerSettingNotification(m_hPowerNotify);
                 m_hPowerNotify = IntPtr.Zero;
             }
+
+            if (m_hSuspendResumeNotify != IntPtr.Zero)
+            {
+                _UnregisterSuspendResumeNotification(m_hSuspendResumeNotify);
+                m_hSuspendResumeNotify= IntPtr.Zero;
+            }
+
             if (isHotkeyHooked)
                 UnRegisterAllHotKey();
 
@@ -261,9 +314,11 @@ namespace DDPM.PowerMon
         private IntPtr WndProc(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled)
         {
             const int WM_POWERBROADCAST = 0x0218;
-            //const int PBT_APMRESUMEAUTOMATIC = 0x12; // Resume Automatic
-            //const int PBT_APMSUSPEND = 0x04; // Suspend
             const int PBT_POWERSETTINGCHANGE = 0x8013;
+            const int PBT_APMPOWERSTATUSCHANGE = 10;
+            const int PBT_APMRESUMEAUTOMATIC = 18;
+            const int PBT_APMRESUMESUSPEND = 7;
+            const int PBT_APMSUSPEND = 4;
 
             const int WM_HOTKEY = 0x0312;
 
@@ -271,28 +326,80 @@ namespace DDPM.PowerMon
             switch (msg)
             {
                 case WM_POWERBROADCAST:
-                    if (wParam.ToInt32() == PBT_POWERSETTINGCHANGE)
+                    //if (wParam.ToInt32() == PBT_POWERSETTINGCHANGE)
+                    //{
+                    //    POWERBROADCAST_SETTING pPwrSetting = (POWERBROADCAST_SETTING)Marshal.PtrToStructure(lParam, typeof(POWERBROADCAST_SETTING));
+                    //    if (pPwrSetting.PowerSetting == GUID_MONITOR_POWER_ON && pPwrSetting.DataLength == sizeof(uint))
+                    //    {
+                    //        WriteLog($"Power event {msg.ToString()} PBT_POWERSETTINGCHANGE handled");
+                    //        WriteLog($"Power event PBT_POWERSETTINGCHANGE data: {pPwrSetting.Data}");
+                    //        if (pPwrSetting.Data == 0)
+                    //        {
+                    //            //MonitorTurnedOff?.Invoke(this, EventArgs.Empty);
+                    //        }
+                    //        else if (pPwrSetting.Data == 1)
+                    //        {
+                    //            Task.Run(() =>
+                    //                MonitorTurnedOn?.Invoke(this, EventArgs.Empty)
+                    //            );
+                    //        }
+                    //    }
+                    //    //PowerSettingChanged?.Invoke(this, EventArgs.Empty);
+                    //    handled = true;
+                    //}
+
+                    int eventId = wParam.ToInt32();
+                    switch (eventId)
                     {
-                        POWERBROADCAST_SETTING pPwrSetting = (POWERBROADCAST_SETTING)Marshal.PtrToStructure(lParam, typeof(POWERBROADCAST_SETTING));
-                        if (pPwrSetting.PowerSetting == GUID_MONITOR_POWER_ON && pPwrSetting.DataLength == sizeof(uint))
-                        {
-                            WriteLog($"Power event {msg.ToString()} PBT_POWERSETTINGCHANGE handled");
-                            WriteLog($"Power event PBT_POWERSETTINGCHANGE data: {pPwrSetting.Data}");
-                            if (pPwrSetting.Data == 0)
+                        case PBT_POWERSETTINGCHANGE:
+                            POWERBROADCAST_SETTING pPwrSetting = (POWERBROADCAST_SETTING)Marshal.PtrToStructure(lParam, typeof(POWERBROADCAST_SETTING));
+                            if (pPwrSetting.PowerSetting == GUID_MONITOR_POWER_ON && pPwrSetting.DataLength == sizeof(uint))
                             {
-                                //MonitorTurnedOff?.Invoke(this, EventArgs.Empty);
+                                WriteLog($"Power event {msg.ToString()} PBT_POWERSETTINGCHANGE handled");
+                                WriteLog($"Power event PBT_POWERSETTINGCHANGE data: {pPwrSetting.Data}");
+                                if (pPwrSetting.Data == 0)
+                                {
+                                    //MonitorTurnedOff?.Invoke(this, EventArgs.Empty);
+                                }
+                                else if (pPwrSetting.Data == 1)
+                                {
+                                    Task.Run(() =>
+                                        MonitorTurnedOn?.Invoke(this, EventArgs.Empty)
+                                    );
+                                }
                             }
-                            else if (pPwrSetting.Data == 1)
-                            {
-                                Task.Run(() =>
-                                    MonitorTurnedOn?.Invoke(this, EventArgs.Empty)
-                                );
-                            }
-                        }
-                        //PowerSettingChanged?.Invoke(this, EventArgs.Empty);
-                        handled = true;
+                            //PowerSettingChanged?.Invoke(this, EventArgs.Empty);
+                            handled = true;
+                            break;
+                        case PBT_APMPOWERSTATUSCHANGE:
+                            WriteLog($"Power event {msg.ToString()} PBT_APMPOWERSTATUSCHANGE handled");
+                            handled = true;
+                            break;
+                        case PBT_APMRESUMEAUTOMATIC:
+                            WriteLog($"Power event {msg.ToString()} PBT_APMRESUMEAUTOMATIC handled");
+                            Task.Run(() =>
+                                SystemResume?.Invoke(this, EventArgs.Empty)
+                            );
+                            handled = true;
+                            break;
+                        case PBT_APMRESUMESUSPEND:
+                            WriteLog($"Power event {msg.ToString()} PBT_APMRESUMESUSPEND handled");
+                            handled = true;
+                            break;
+                        case PBT_APMSUSPEND:
+                            WriteLog($"Power event {msg.ToString()} PBT_APMSUSPEND handled");
+                            Task.Run(() =>
+                                SystemSuspend?.Invoke(this, EventArgs.Empty)
+                            );
+                            handled = true;
+                            break;
+                        default:
+                            WriteLog($"Power event {msg.ToString()} Unknown {wParam} handled");
+                            handled = true;
+                            break;
                     }
                     break;
+
                 case WM_HOTKEY:
                     KeyPressedEventArgs keyPressedEventArgs = new KeyPressedEventArgs();
                     VirtualKey key = (VirtualKey)(((int)lParam >> 16) & 0xFFFF);

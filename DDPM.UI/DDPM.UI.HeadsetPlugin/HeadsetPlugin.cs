@@ -1,5 +1,6 @@
 using CommunityToolkit.Mvvm.DependencyInjection;
 using DDPM.SA.Common;
+using DDPM.UI.Common;
 using DDPM.UI.Interfaces;
 using DDPM.UI.Plugin.ViewModels;
 using Dell.Client.Framework.Common;
@@ -34,6 +35,7 @@ namespace DDPM.UI.Plugin.HeadsetPlugin
         private readonly ILog _log;
         private readonly IConsole _console;
         private readonly IPluginManager _pluginManager;
+        private readonly IShowPluginManager _showPluginManager;
         private readonly string? _applicationName;
         private HeadsetViewModel? _viewModel;
 
@@ -45,12 +47,13 @@ namespace DDPM.UI.Plugin.HeadsetPlugin
         private readonly SemaphoreSlim _lock = new(1, 1);
         private DeviceHelper _deviceHelper = new();
         private List<DeviceInfo> _deviceInfos = new();
-
+        private bool IsEventRegistered = false;
         /// <summary>
         /// Default constructor
         /// </summary>
-        public HeadsetPlugin(IPluginManager pluginManager, IConsole console)
+        public HeadsetPlugin(IShowPluginManager showPluginManager, IPluginManager pluginManager, IConsole console)
         {
+            _showPluginManager = showPluginManager;
             _pluginManager = pluginManager;
             _console = console;
             _log = console.CreateLog("Headset");
@@ -196,6 +199,7 @@ namespace DDPM.UI.Plugin.HeadsetPlugin
             // Marked all the instances as singleton
             // Pass the existing _console and _log instance so that Ioc doesn't new'up them
             PluginIoc.ConfigureServices(new ServiceCollection()
+                .AddSingleton(_showPluginManager)
                 .AddSingleton(_console)
                 .AddSingleton(_log)
                 .AddSingleton(_deviceManagerPlugin)
@@ -215,14 +219,22 @@ namespace DDPM.UI.Plugin.HeadsetPlugin
         /// <inheritdoc/>
         public void OnActivated()
         {
-            _deviceManagerPlugin.DeviceChanged += DeviceManager_DeviceChanged;
+            if (!IsEventRegistered)
+            {
+                DdpmCommonHelper.DeviceManagerSA!.DeviceChanged += DeviceManager_DeviceChanged;
+                IsEventRegistered = true;
+            }
             Mouse.OverrideCursor = null;
         }
 
         /// <inheritdoc/>
         public void OnDeactivated()
         {
-            _deviceManagerPlugin.DeviceChanged -= DeviceManager_DeviceChanged;
+            if (IsEventRegistered)
+            {
+                DdpmCommonHelper.DeviceManagerSA!.DeviceChanged -= DeviceManager_DeviceChanged;
+                IsEventRegistered = false;
+            }
             Mouse.OverrideCursor = Cursors.Wait;
         }
 
@@ -230,6 +242,11 @@ namespace DDPM.UI.Plugin.HeadsetPlugin
         public void OnShown(string parameter)
         {
             _log.Info($"[HeadsetPlugin] OnShown ... in");
+            if (!IsEventRegistered)
+            {
+                DdpmCommonHelper.DeviceManagerSA!.DeviceChanged += DeviceManager_DeviceChanged;
+                IsEventRegistered = true;
+            }
             ConfigureServices();
             GetPeripheralsAsync();
             if (_viewModel != null && !_viewModel.SetCurrentDevice(parameter)) { }

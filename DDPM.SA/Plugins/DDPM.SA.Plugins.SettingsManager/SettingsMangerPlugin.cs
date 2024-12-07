@@ -457,11 +457,19 @@ namespace DDPM.SA.Plugins.SettingsManager
         public Task AddInfo(string info)
         {
             int idx = -1;
+
+            if (_infos == null)
+            {
+                WriteLog($"[AddInfo] update data failed: _infos is null");
+                return Task.CompletedTask;
+            }
+
             if (_infos != null && _infos.Infos != null && _infos.Infos.Count > 0)
             {
                 WriteLog($"[AddInfo] info count is ({_infos.Infos.Count})");
                 idx = _infos.Infos.FindIndex(x => x.Trim().Equals(info));
             }
+
             if (idx < 0)//means new
             {
                 _infos.Infos.Add(info);
@@ -498,25 +506,31 @@ namespace DDPM.SA.Plugins.SettingsManager
 
             if (Directory.Exists(folder))
             {
-                DirectoryInfo directoryInfo = new DirectoryInfo(folder);
-                if (directoryInfo == null)
+                DirectoryInfo directoryInfo = null;
+
+                try
+                {
+                    directoryInfo = new DirectoryInfo(folder);
+                }
+                catch (Exception ex) 
                 {
                     WriteLog($"[{type}]System config: retrieve Directory got null return");
                     Directory.Delete(folder, true);
                     directoryInfo = System.IO.Directory.CreateDirectory(folder);
                     WriteLog($"[{type}]re-create system settings folder success");
                 }
-                //AclChecker aclChecker = new AclChecker();
-                //if (aclChecker.ContainsUnprivilegedWriteAccess(directoryInfo)) // apply acl at the bottom of function
+                                                 
                 string info2 = string.Empty;
-                if (DDPMFileSecurity.IsPathSymbolicLinked(folder, out info2))
+                //if (DDPMFileSecurity.IsPathSymbolicLinked(folder, out info2))
+                if (!DDPMFileSecurity.IsFolderPathValid(folder, out info2))
                 {
                     //WriteLog($"[{type}]Directory ACLs for system setting contained unprivileged write access for one or more identity");
-                    WriteLog($"[{type}]Directory symbolic check got symlink ({info2})");
-                    Directory.Delete(folder, true);
+                    WriteLog($"[{type}] *** Directory path and symbolic check GOT ISSUE *** ({info2})");
+                    /*Directory.Delete(folder, true);
                     WriteLog($"[{type}]Exist folder deleted.");
                     directoryInfo = System.IO.Directory.CreateDirectory(folder);
-                    WriteLog($"[{type}]re-create system settings folder success");
+                    WriteLog($"[{type}]re-create system settings folder success");*/
+                    return null;
                 }
             }
             string info = string.Empty;
@@ -546,15 +560,20 @@ namespace DDPM.SA.Plugins.SettingsManager
             //if yes, delete file and then apply right ACL
             if (File.Exists(filePath))
             {
-                FileInfo fileInfo = new FileInfo(filePath);
-                if (fileInfo == null)
+                FileInfo fileInfo = null;
+                try
+                {
+                    fileInfo = new FileInfo(filePath);
+                }
+                catch (Exception ex)
                 {
                     WriteLog($"[{type}]System config: retrieve FileInfo got null return");
                     File.Delete(filePath);
                     WriteLog($"[{type}]Exist file deleted.");
                 }
-                else
-                {
+
+                if (fileInfo != null)
+                {                
                     AclChecker aclChecker = new AclChecker();
                     if (aclChecker.ContainsUnprivilegedWriteAccess(fileInfo))
                     {
@@ -627,9 +646,10 @@ namespace DDPM.SA.Plugins.SettingsManager
 
         public Task<object> ReadRegistryData(Common.Settings.RegistryHive hive, string keyPath, string keyName)
         {
+            object obj = null;
+
             try
             {
-                object obj = null;
                 if (hive == Common.Settings.RegistryHive.CurrentUser)
                 {
                     obj = WTSFunction.ImpersonateUser_ReadRegistry(Log, keyPath, keyName);
@@ -651,7 +671,7 @@ namespace DDPM.SA.Plugins.SettingsManager
             catch (Exception e)
             {
                 WriteLog($"[System settings plugin] ReadRegistryData exception ({e.Message})");
-                return null;
+                return Task.FromResult(obj);
             }
         }
 

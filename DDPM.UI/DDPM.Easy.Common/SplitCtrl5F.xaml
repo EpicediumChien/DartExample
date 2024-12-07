@@ -14,8 +14,8 @@
                 <ResourceDictionary Source="EAStyles.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
-            <local:SplitCtrlVM x:Key="vmDesign" IsVertical="True" SplitMode="Work"
-                               IsEditable="True" HoveringCell="5F2" />
+            <local:SplitCtrlVM x:Key="vmDesign" IsVertical="True" SplitMode="AWS"
+                               IsEditable="True" HoveringCell="5F1" />
         </ResourceDictionary>
     </UserControl.Resources>
 
@@ -175,17 +175,17 @@
             <!-- VertBase -->
             <Grid Name="G0" Style="{StaticResource SplitBaseStyle_Vert}">
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="{Binding Settings[2], Mode=TwoWay}"/>
-                    <RowDefinition Height="Auto"/>
                     <RowDefinition Height="{Binding Settings[3], Mode=TwoWay}"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="{Binding Settings[2], Mode=TwoWay}"/>
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="{Binding Settings[1], Mode=TwoWay}"/>
-                    <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="{Binding Settings[0], Mode=TwoWay}"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="{Binding Settings[1], Mode=TwoWay}"/>
                 </Grid.ColumnDefinitions>
 
-                <local:CellBorder x:Name="cell_5F1" Grid.Column="2" Grid.Row="0">
+                <local:CellBorder x:Name="cell_5F1" Grid.Column="0" Grid.Row="2">
                     <local:CellBorder.Style>
                         <Style TargetType="local:CellBorder" BasedOn="{StaticResource CellBorderStyle2}">
                             <Setter Property="BorderBrush" Value="{StaticResource SplitCtrl_CellBorder_BdColor_Work_Normal}"/>
@@ -209,7 +209,7 @@
                     </local:CellBorder.Style>
                 </local:CellBorder>
 
-                <local:CellBorder x:Name="cell_5F2" Grid.Column="2" Grid.Row="2">
+                <local:CellBorder x:Name="cell_5F2" Grid.Column="0" Grid.Row="0">
                     <local:CellBorder.Style>
                         <Style TargetType="local:CellBorder" BasedOn="{StaticResource CellBorderStyle2}">
                             <Setter Property="BorderBrush" Value="{StaticResource SplitCtrl_CellBorder_BdColor_Work_Normal}"/>
@@ -233,7 +233,7 @@
                     </local:CellBorder.Style>
                 </local:CellBorder>
 
-                <local:CellBorder x:Name="cell_5F3" Grid.Column="0" Grid.Row="2">
+                <local:CellBorder x:Name="cell_5F3" Grid.Column="2" Grid.Row="0">
                     <local:CellBorder.Style>
                         <Style TargetType="local:CellBorder" BasedOn="{StaticResource CellBorderStyle2}">
                             <Setter Property="BorderBrush" Value="{StaticResource SplitCtrl_CellBorder_BdColor_Work_Normal}"/>
@@ -257,14 +257,14 @@
                     </local:CellBorder.Style>
                 </local:CellBorder>
                 
-                <Grid Name="G1" Grid.Row="0" Grid.Column="0">
+                <Grid Name="G1" Grid.Row="2" Grid.Column="2">
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="{Binding Settings[5], Mode=TwoWay}"/>
-                        <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition Width="{Binding Settings[4], Mode=TwoWay}"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="{Binding Settings[5], Mode=TwoWay}"/>
                     </Grid.ColumnDefinitions>
 
-                    <local:CellBorder x:Name="cell_5F4" Grid.Column="2">
+                    <local:CellBorder x:Name="cell_5F4" Grid.Column="0">
                         <local:CellBorder.Style>
                             <Style TargetType="local:CellBorder" BasedOn="{StaticResource CellBorderStyle2}">
                                 <Setter Property="BorderBrush" Value="{StaticResource SplitCtrl_CellBorder_BdColor_Work_Normal}"/>
@@ -288,7 +288,7 @@
                         </local:CellBorder.Style>
                     </local:CellBorder>
 
-                    <local:CellBorder x:Name="cell_5F5" Grid.Column="0">
+                    <local:CellBorder x:Name="cell_5F5" Grid.Column="2">
                         <local:CellBorder.Style>
                             <Style TargetType="local:CellBorder" BasedOn="{StaticResource CellBorderStyle2}">
                                 <Setter Property="BorderBrush" Value="{StaticResource SplitCtrl_CellBorder_BdColor_Work_Normal}"/>
@@ -315,7 +315,7 @@
                     <GridSplitter Name="V2" Grid.Column="1" Style="{StaticResource SplitterStyle_Vert}" />
                 </Grid>
 
-                <GridSplitter Name="H1" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" Style="{StaticResource SplitterStyle_Vert}" />
+                <GridSplitter Name="H1" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" Style="{StaticResource SplitterStyle_Horz}" />
                 <GridSplitter Name="V1" Grid.Row="0" Grid.Column="1" Grid.RowSpan="3" Style="{StaticResource SplitterStyle_Vert}" />
             </Grid>
         </Grid>

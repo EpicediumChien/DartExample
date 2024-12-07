@@ -15,6 +15,9 @@ using System.Windows.Shapes;
 using nsWinEventHook;
 using DDPM.Easy.Common;
 using DDPM.Win32Lib;
+using DDPM.SA.Common.Display;
+using DDPM.SA.Common;
+using VcpCore.Common;
 
 
 namespace DDPM.EABroker
@@ -52,7 +55,7 @@ namespace DDPM.EABroker
             System.Windows.Interop.WindowInteropHelper wndHelper = new System.Windows.Interop.WindowInteropHelper(this);
             Win32Lib.Win32.HideWinFromAltTab(wndHelper.Handle);
 
-            InitLayoutList();
+          //  InitLayoutList();
             //InitPresetLayoutsComboBox();
         }
         #endregion Init
@@ -182,12 +185,21 @@ namespace DDPM.EABroker
 
         private void OnWindowEndMovingProc(IntPtr hWnd, bool isCanceled = false)
         {
-            _vm.IsShiftPressed = WinEventHook.IsShiftPressed();
+            //_vm.IsShiftPressed = WinEventHook.IsShiftPressed();
             if (!_vm.IsMoving)
             {
                 return;
             }
 
+            bool isActiveWindowVisible = false;
+            if (_vm.IsAwsEnabled)
+            {
+                isActiveWindowVisible = _vm.IsAwsWindowVisible;
+            }
+            else
+            {
+                isActiveWindowVisible = _vm.IsWorkWindowVisible;
+            }
             _vm.IsMoving = false;
             _vm.StartMovingMsg = "";
 
@@ -196,6 +208,9 @@ namespace DDPM.EABroker
             {
                 return;
             }
+            if (!isActiveWindowVisible)
+                return;
+
 
             Win32.RECT rcWnd = new Win32.RECT();
             Win32._GetWindowRect(hWnd, out rcWnd);
@@ -327,6 +342,29 @@ namespace DDPM.EABroker
         private void IsSpanMultipleMonitorsCheckbox_Click(object sender, RoutedEventArgs e)
         {
 
+        }
+
+        private void editOverlapButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (_vm == null)
+                return;
+
+            MonitorInfo? mi = _vm.GetSelectedMonitorInfo();
+            if (mi == null)
+                return;
+
+            EAArgs eaArgs = new EAArgs()
+            {
+                Command = "EditCommand",
+                SplitJson = new SplitJson()
+                {
+                    CellCount = 0,
+                    SplitKey = 'B',
+                    Settings = new List<double>(),
+                    EAID = 0
+                }
+            };
+            _vm.Invoke_EditCommand(mi, eaArgs);
         }
     }
 }

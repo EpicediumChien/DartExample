@@ -146,12 +146,14 @@ namespace DDPM.UI.Module.KeyCustomization
         private void btnRestoreClicked(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
             RestoreModalDialog restoreModalDialog = new();
-            Window parentWindow = Window.GetWindow(this);
-            if (parentWindow != null)
+            Window mainWindow = System.Windows.Application.Current.MainWindow;
+            if (mainWindow != null)
             {
-                restoreModalDialog.Owner = parentWindow;
+                restoreModalDialog.Owner = mainWindow;
+                restoreModalDialog.Left = mainWindow.Left + (mainWindow!.ActualWidth - 417) / 2;
+                restoreModalDialog.Top = mainWindow.Top + (mainWindow!.ActualHeight - 196) / 2;
             }
-
+            restoreModalDialog.WindowStartupLocation = WindowStartupLocation.Manual;
             bool? dialogResult = restoreModalDialog.ShowDialog();
             if (dialogResult == true)
             {
@@ -386,6 +388,7 @@ namespace DDPM.UI.Module.KeyCustomization
                 rb.Content = Actions.KnMActions[id].Caption;
                 if (rb.Tag.ToString() != "search")
                     rb.IsChecked = id == SelectedActionID;
+                rb.Visibility = ((_vm.IsCopilotEnabled && _vm.CurrentVersion >= 11) || id != 1) ? Visibility.Visible : Visibility.Collapsed;
             }
             else if (sender is ActionButton btn)
             {
@@ -416,6 +419,8 @@ namespace DDPM.UI.Module.KeyCustomization
             {
                 id = (int)((StackPanel)sender).DataContext;
                 sp.Visibility = id == SelectedActionID && id != _vm.SelectedAction!.DefaultActionID ? Visibility.Visible : Visibility.Collapsed;
+                if ((!_vm.IsCopilotEnabled || _vm.CurrentVersion < 11) && id == 1)
+                    sp.Visibility = Visibility.Collapsed;
             }
         }
 

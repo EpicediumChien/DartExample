@@ -8,12 +8,11 @@
     xmlns:wpf="clr-namespace:Dell.Client.Framework.UX.WPF.Console;assembly=DCF.UX.WPF"
     Background="{DynamicResource mainWindowBkColor}"
     mc:Ignorable="d"
-    TopBackground="{DynamicResource bkImage}"
     ResizeMode="CanResize"
     MinWidth="1050"
     MinHeight="645"
     Loaded="MainWindow_Loaded"
-    Activated="ConsoleWindow_Activated" Deactivated="ConsoleWindow_DeActivated">
+    Activated="ConsoleWindow_Activated" Deactivated="ConsoleWindow_DeActivated" StateChanged="MainWIndow_StateChanged">
     <!--<wpf:ConsoleWindow.TopBackground>
         <ImageBrush ImageSource="/Resources/Images/Background.png" Stretch="UniformToFill" />
     </wpf:ConsoleWindow.TopBackground>-->

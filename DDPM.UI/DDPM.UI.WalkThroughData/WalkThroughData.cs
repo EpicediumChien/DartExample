@@ -66,22 +66,22 @@ namespace DDPM.UI.WalkThroughData
                 },
 
                 // U2724DE For Test
-                { "U2724DE", new List<WalkThroughPageData>
-                    {
-                        new WalkThroughPageData { MainText = Strings.WalkThroughDisplay_Main0, SubText = Strings.WalkThroughDisplay_Sub0, MainImageSource = "WalkThrough/Display/U2725QE/U2725QE_1.png" },
-                        new WalkThroughPageData { MainText = Strings.WalkThroughDisplay_Main1, SubText = Strings.WalkThroughDisplay_Sub1, MainImageSource = "WalkThrough/Display/U2725QE/U2725QE_2.png" },
-                        new WalkThroughPageData { MainText = Strings.WalkThroughDisplay_Main2, SubText = Strings.WalkThroughDisplay_Sub2, MainImageSource = "WalkThrough/Display/U2725QE/U2725QE_3.png" }
-                    }
-                },
+                //{ "U2724DE", new List<WalkThroughPageData>
+                //    {
+                //        new WalkThroughPageData { MainText = Strings.WalkThroughDisplay_Main0, SubText = Strings.WalkThroughDisplay_Sub0, MainImageSource = "WalkThrough/Display/U2725QE/U2725QE_1.png" },
+                //        new WalkThroughPageData { MainText = Strings.WalkThroughDisplay_Main1, SubText = Strings.WalkThroughDisplay_Sub1, MainImageSource = "WalkThrough/Display/U2725QE/U2725QE_2.png" },
+                //        new WalkThroughPageData { MainText = Strings.WalkThroughDisplay_Main2, SubText = Strings.WalkThroughDisplay_Sub2, MainImageSource = "WalkThrough/Display/U2725QE/U2725QE_3.png" }
+                //    }
+                //},
 
                 // U2723DE For Test
-                { "U2723DE", new List<WalkThroughPageData>
-                    {
-                        new WalkThroughPageData { MainText = Strings.WalkThroughDisplay_Main0, SubText = Strings.WalkThroughDisplay_Sub0, MainImageSource = "WalkThrough/Display/U2725QE/U2725QE_1.png" },
-                        new WalkThroughPageData { MainText = Strings.WalkThroughDisplay_Main1, SubText = Strings.WalkThroughDisplay_Sub1, MainImageSource = "WalkThrough/Display/U2725QE/U2725QE_2.png" },
-                        new WalkThroughPageData { MainText = Strings.WalkThroughDisplay_Main2, SubText = Strings.WalkThroughDisplay_Sub2, MainImageSource = "WalkThrough/Display/U2725QE/U2725QE_3.png" }
-                    }
-                },
+                //{ "U2723DE", new List<WalkThroughPageData>
+                //    {
+                //        new WalkThroughPageData { MainText = Strings.WalkThroughDisplay_Main0, SubText = Strings.WalkThroughDisplay_Sub0, MainImageSource = "WalkThrough/Display/U2725QE/U2725QE_1.png" },
+                //        new WalkThroughPageData { MainText = Strings.WalkThroughDisplay_Main1, SubText = Strings.WalkThroughDisplay_Sub1, MainImageSource = "WalkThrough/Display/U2725QE/U2725QE_2.png" },
+                //        new WalkThroughPageData { MainText = Strings.WalkThroughDisplay_Main2, SubText = Strings.WalkThroughDisplay_Sub2, MainImageSource = "WalkThrough/Display/U2725QE/U2725QE_3.png" }
+                //    }
+                //},
 
                 // E2422H For Test
                 //{ "E2422H", new List<WalkThroughPageData>
@@ -144,8 +144,8 @@ namespace DDPM.UI.WalkThroughData
                     }
                 },
                 
-                // Misty Blue (MS700)
-                { "MS700MistyBlue", new List<WalkThroughPageData>
+                // Misty Blue (MS700/7)
+                { "MS700/7", new List<WalkThroughPageData>
                     {
                         new WalkThroughPageData { MainText = Strings.WalkThroughMouse_Main0, SubText = Strings.WalkThroughMouse_Sub0, MainImageSource = "WalkThrough/Mouse/BMS700/BMS700_1.png" },
                         new WalkThroughPageData { MainText = Strings.WalkThroughMouse_Main1, SubText = Strings.WalkThroughMouse_Sub1, MainImageSource = "WalkThrough/Mouse/BMS700/BMS700_2.png" }
@@ -264,7 +264,7 @@ namespace DDPM.UI.WalkThroughData
                 },
                 
                 // Dell Conferencing Monitor (U3224KB/A)
-                { "U3224KB/A", new List<WalkThroughPageData>
+                { "U3224KBA", new List<WalkThroughPageData>
                     {
                         new WalkThroughPageData { MainText = Strings.WalkThroughWebCamWB3023_Main0, SubText = Strings.WalkThroughWebCamWB3023_Sub0, MainImageSource = "WalkThrough/Webcam/U3224KBA/U3224KBA_1.png" },
                         new WalkThroughPageData { MainText = Strings.WalkThroughWebCamWB3023_Main1, SubText = Strings.WalkThroughWebCamWB3023_Sub1, MainImageSource = "WalkThrough/Webcam/U3224KBA/U3224KBA_2.png" },

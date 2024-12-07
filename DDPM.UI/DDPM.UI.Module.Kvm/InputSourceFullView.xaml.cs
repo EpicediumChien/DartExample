@@ -1,5 +1,9 @@
 ﻿using DDPM.SA.Common.Display;
 using DDPM.UI.Common;
+using DDPM.UI.Common.Method;
+using DDPM.UI.Common.Models;
+using DDPM.UI.Plugin.DdpmHomePlugin;
+using Dell.Client.Framework.UX.WPF;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -46,147 +50,147 @@ namespace DDPM.UI.Module.Kvm
 
         private void SaveInput(object sender, RoutedEventArgs e)
         {
-            if (vm.pcsList != null)
+            if (vm != null)
             {
-                if (vm.pcsList != vm.original_pcsList)
-                {
-                    if (vm.pcsList.TryGetValue("PC1", out var pc1) && vm.pcsList.TryGetValue("PC2", out var pc2))
-                    {
-                        InputSourceObj pc1input = new InputSourceObj(vm.pcsList["PC1"].InputType);
-                        InputSourceObj pc2input = new InputSourceObj(vm.pcsList["PC2"].InputType);
-                        if (vm.pcsList.Count >= 3)
-                        {
-                            if (vm.pcsList.TryGetValue("PC3", out var pc3))
-                            {
-                                InputSourceObj pc3input = new InputSourceObj(vm.pcsList["PC3"].InputType);
-                                if (vm.pcsList.Count == 4)
-                                {
-                                    if (vm.pcsList.TryGetValue("PC4", out var pc4))
-                                    {
-                                        InputSourceObj pc4input = new InputSourceObj(vm.pcsList["PC4"].InputType);
-                                        bool res = DdpmCommonHelper.DeviceManagerSA.SetSubInputs(
-                                            DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo,
-                                            pc2input, pc3input, pc4input).Result;
-                                        if (res)
-                                        {
-                                            Thread.Sleep(500);
-                                        }
-                                    }
-                                    else
-                                    {
-                                        vm._log.Debug("PC4 not found in pcsList.");
-                                    }
-                                }
-                                else
-                                {
-                                    bool res = DdpmCommonHelper.DeviceManagerSA.SetSubInputs(
-                                        DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo,
-                                        pc2input, pc3input, null).Result;
-                                    if (res)
-                                    {
-                                        Thread.Sleep(500);
-                                    }
-                                }
-                            }
-                            else
-                            {
-                                vm._log.Debug("PC3 not found in pcsList.");
-                            }
-                        }
-                        else
-                        {
-                            bool res = DdpmCommonHelper.DeviceManagerSA.SetSubInputs(
-                                    DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo,
-                                    pc2input, null, null).Result;
-                            if (res)
-                            {
-                                Thread.Sleep(500);
-                            }
-                        }
+                vm.FinishtoSetPCs();
+                //Return to DdpmHomePage
+                IConsole? console = DdpmHomePlugin.PluginIoc.GetService<IConsole>();
+                console?.ShowPluginById(DDPM.UI.Common.Constants.DdpmHomePluginId);
+            }
+        }
 
-                        foreach (var pcs in vm.pcsList)
-                        {
-                            if (pcs.Key == "PC1" && pcs.Value.InputType != vm.original_pcsList["PC1"].InputType)
-                            {
-                                vm.CurrentInputChange();
-                            }
-                            //if (pcs.Value.InputName != vm.original_pcsList[pcs.Key].InputName)
-                            //{
-                            //    bool binputname = DdpmCommonHelper.DeviceManagerSA.SetInputName(pcs.Value.InputType, pcs.Value.InputName).Result;
-                            //}
-                            if (pcs.Value.USBUpstream != vm.original_pcsList[pcs.Key].USBUpstream)
-                            {
-                                bool bUSBuptream = DdpmCommonHelper.DeviceManagerSA.SetUSBUpstream(vm.KvmModule.SelectedHomeDevice.MonitorInfo, pcs.Value.InputType, pcs.Value.USBUpstream).Result;
-                                if (bUSBuptream)
-                                {
-                                    Thread.Sleep(500);
-                                }
-                            }
-                        }
-                        bool bpcs = DdpmCommonHelper.DeviceManagerSA.SetUSBKVMPCsList(vm.KvmModule.SelectedHomeDevice.MonitorInfo, vm.pcsList).Result;
-                    }
-                    else
-                    {
-                        vm._log.Debug("PC1 or PC2 not found in pcsList.");
-                    }
+        private void UXTextBox_TextChanged1(object sender, TextChangedEventArgs e)
+        {
+            TextString textString = new TextString();
+            TextBox tb = sender as TextBox;
+            string inputText = tb.Text;
+            //1 Check if the input is blank or empty
+            if (String.IsNullOrWhiteSpace(inputText))
+            {
+                //TextBox.Text will fill in the InputSOurceKey
+                if (vm != null)
+                {
+                    tb.Text = vm.pcsList["PC1"].InputType;
+                    tb.SelectAll();
                 }
             }
-            else
+            //Not blank, will check char
+            else if (!textString.CheckChar(tb.Text))
             {
-                vm._log.Debug("pcsList is null");
+                //Ignore char input if check failed
+                return;
+            }
+            if (vm != null)
+            {
+                //Robert_Lin, 2024-11-21, If user cleanup content of TextBox, will auto fill in InputSourceKey
+                //1 If the TextBox.Text is empty or blank, then will fill with inputsource key
+                //2 Not empty, will call CheckChar,
+                //2.1 If CheckChar pass, will accet the InputName, and save to settings file
+                //vm.items[(int)tb.Tag].InputName = tb.Text;
+                vm.pcsList["PC1"].InputName = tb.Text;
             }
         }
 
-        private void KeyDown_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+        private void UXTextBox_TextChanged2(object sender, TextChangedEventArgs e)
         {
-            if ( ((e.KeyStates == Keyboard.GetKeyStates(Key.D1)) || (e.KeyStates == Keyboard.GetKeyStates(Key.D3))) && (Keyboard.Modifiers == ModifierKeys.Shift) )
+            TextString textString = new TextString();
+            TextBox tb = sender as TextBox;
+            string inputText = tb.Text;
+            //1 Check if the input is blank or empty
+            if (String.IsNullOrWhiteSpace(inputText))
             {
-                e.Handled = true;
+                //TextBox.Text will fill in the InputSOurceKey
+                if (vm != null)
+                {
+                    tb.Text = vm.pcsList["PC2"].InputType;
+                    tb.SelectAll();
+                }
             }
-            else if ((e.KeyStates == Keyboard.GetKeyStates(Key.D2)) && (Keyboard.Modifiers == ModifierKeys.Shift))
+            //Not blank, will check char
+            else if (!textString.CheckChar(tb.Text))
             {
-                // Handle "@"
+                //Ignore char input if check failed
+                return;
             }
-            else if ((Keyboard.Modifiers == ModifierKeys.Shift))
+            if (vm != null)
             {
-                e.Handled = true;
+                //Robert_Lin, 2024-11-21, If user cleanup content of TextBox, will auto fill in InputSourceKey
+                //1 If the TextBox.Text is empty or blank, then will fill with inputsource key
+                //2 Not empty, will call CheckChar,
+                //2.1 If CheckChar pass, will accet the InputName, and save to settings file
+                //vm.items[(int)tb.Tag].InputName = tb.Text;
+                vm.pcsList["PC2"].InputName = tb.Text;
             }
-            else if (Keyboard.IsKeyDown(Key.D0) || Keyboard.IsKeyDown(Key.D1) || Keyboard.IsKeyDown(Key.D2) || Keyboard.IsKeyDown(Key.D3) || Keyboard.IsKeyDown(Key.D4) ||
-                Keyboard.IsKeyDown(Key.D5) || Keyboard.IsKeyDown(Key.D6) || Keyboard.IsKeyDown(Key.D7) || Keyboard.IsKeyDown(Key.D8) || Keyboard.IsKeyDown(Key.D9) ||
-                Keyboard.IsKeyDown(Key.A) || Keyboard.IsKeyDown(Key.B) || Keyboard.IsKeyDown(Key.C) || Keyboard.IsKeyDown(Key.D) || Keyboard.IsKeyDown(Key.E) ||
-                Keyboard.IsKeyDown(Key.F) || Keyboard.IsKeyDown(Key.G) || Keyboard.IsKeyDown(Key.H) || Keyboard.IsKeyDown(Key.I) || Keyboard.IsKeyDown(Key.J) ||
-                Keyboard.IsKeyDown(Key.K) || Keyboard.IsKeyDown(Key.L) || Keyboard.IsKeyDown(Key.M) || Keyboard.IsKeyDown(Key.N) || Keyboard.IsKeyDown(Key.O) ||
-                Keyboard.IsKeyDown(Key.P) || Keyboard.IsKeyDown(Key.Q) || Keyboard.IsKeyDown(Key.R) || Keyboard.IsKeyDown(Key.S) || Keyboard.IsKeyDown(Key.T) ||
-                Keyboard.IsKeyDown(Key.U) || Keyboard.IsKeyDown(Key.V) || Keyboard.IsKeyDown(Key.W) || Keyboard.IsKeyDown(Key.X) || Keyboard.IsKeyDown(Key.Y) ||
-                Keyboard.IsKeyDown(Key.Z) || Keyboard.IsKeyDown(Key.OemMinus) || Keyboard.IsKeyDown(Key.Space))
-            {
-                // Handle 0-9, a-z, A-Z, " ", "-" 
-            }
-            else
-            {
-                e.Handled = true;
-            }
-
         }
 
-        private void KeyDown_KeyDown1(object sender, KeyEventArgs e)
+        private void UXTextBox_TextChanged3(object sender, TextChangedEventArgs e)
         {
-            KeyDown_KeyDown(sender, e);
+            TextString textString = new TextString();
+            TextBox tb = sender as TextBox;
+            string inputText = tb.Text;
+            //1 Check if the input is blank or empty
+            if (String.IsNullOrWhiteSpace(inputText))
+            {
+                //TextBox.Text will fill in the InputSOurceKey
+                if (vm != null)
+                {
+                    tb.Text = vm.pcsList["PC3"].InputType;
+                    tb.SelectAll();
+                }
+            }
+            //Not blank, will check char
+            else if (!textString.CheckChar(tb.Text))
+            {
+                //Ignore char input if check failed
+                return;
+            }
+            if (vm != null)
+            {
+                //Robert_Lin, 2024-11-21, If user cleanup content of TextBox, will auto fill in InputSourceKey
+                //1 If the TextBox.Text is empty or blank, then will fill with inputsource key
+                //2 Not empty, will call CheckChar,
+                //2.1 If CheckChar pass, will accet the InputName, and save to settings file
+                //vm.items[(int)tb.Tag].InputName = tb.Text;
+                vm.pcsList["PC3"].InputName = tb.Text;
+            }
         }
 
-        private void KeyDown_KeyDown2(object sender, KeyEventArgs e)
+        private void UXTextBox_TextChanged4(object sender, TextChangedEventArgs e)
         {
-            KeyDown_KeyDown(sender, e);
+            TextString textString = new TextString();
+            TextBox tb = sender as TextBox;
+            string inputText = tb.Text;
+            //1 Check if the input is blank or empty
+            if (String.IsNullOrWhiteSpace(inputText))
+            {
+                //TextBox.Text will fill in the InputSOurceKey
+                if (vm != null)
+                {
+                    tb.Text = vm.pcsList["PC4"].InputType;
+                    tb.SelectAll();
+                }
+            }
+            //Not blank, will check char
+            else if (!textString.CheckChar(tb.Text))
+            {
+                //Ignore char input if check failed
+                return;
+            }
+            if (vm != null)
+            {
+                //Robert_Lin, 2024-11-21, If user cleanup content of TextBox, will auto fill in InputSourceKey
+                //1 If the TextBox.Text is empty or blank, then will fill with inputsource key
+                //2 Not empty, will call CheckChar,
+                //2.1 If CheckChar pass, will accet the InputName, and save to settings file
+                //vm.items[(int)tb.Tag].InputName = tb.Text;
+                vm.pcsList["PC4"].InputName = tb.Text;
+            }
         }
 
-        private void KeyDown_KeyDown3(object sender, KeyEventArgs e)
+        private void UXTextBox_PreviewTextInput(object sender, TextCompositionEventArgs e)
         {
-            KeyDown_KeyDown(sender, e);
-        }
-
-        private void KeyDown_KeyDown4(object sender, KeyEventArgs e)
-        {
-            KeyDown_KeyDown(sender, e);
+            TextString textString = new TextString();
+            e.Handled = !textString.CheckChar(e.Text);
         }
     }
 }

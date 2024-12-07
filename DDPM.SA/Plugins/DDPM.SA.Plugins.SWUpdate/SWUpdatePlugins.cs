@@ -27,6 +27,7 @@ using System.Timers;
 using VcpCore.Common;
 using IDs = DDPM.SA.Common.IDs;
 using JsonSerializer = System.Text.Json.JsonSerializer;
+using RegistryHive = DDPM.SA.Common.Settings.RegistryHive;
 using Timer = System.Timers.Timer;
 
 namespace DDPM.SA.Plugins.SWUpdate
@@ -56,6 +57,7 @@ namespace DDPM.SA.Plugins.SWUpdate
         private Logs _logs;
 
         static bool _IsSkipCA = false;
+        static bool _IsSkipSHA = false;
         private ISettingsManagerSA _SettingsPlugin;
         private readonly object _PluginConditionLock_Settings = new object();
 
@@ -416,15 +418,15 @@ namespace DDPM.SA.Plugins.SWUpdate
                     Directory.CreateDirectory(savePath);
                 }
                 //0926 Bruce Add Security
-                if (!CheckFold(savePath, out string FolderInfo, out string PathSymbolicLinInfo))
+                if (!DDPMFileSecurity.CheckFold(savePath, out string FolderInfo, out string PathSymbolicLinInfo))
                 {
                     foreach (SWUpdateInfo swUpdateInfo in swUpdateInfos)
                     {
                         swUpdateInfo.SWUErrorCode = SWUErrorCode.FolderIsNotSafe;
                     }
-                    _notificationStr = $"Software update unsuccessful.";
-                    NotificationFWupdate("Error", _notificationStr);
-                    _logs.DebugMsg_1(nameof(DownloadAndInstall) + " FolderIsNotSafe:" + FolderInfo + "--or--" + PathSymbolicLinInfo);
+                    _notificationStr = LangHelper.Instance["Software_update_unsuccessful"];
+                    NotificationFWupdate(LangHelper.Instance["Error"], _notificationStr);
+                    _logs.DebugMsg_1(nameof(DownloadAndInstall) + " savePath FolderIsNotSafe:" + FolderInfo + "--or--" + PathSymbolicLinInfo);
                     return Task.FromResult(swUpdateInfos);
                 }
                 for (int i = 0; i < swUpdateInfos.Count; i++)
@@ -435,12 +437,12 @@ namespace DDPM.SA.Plugins.SWUpdate
                     _notificationStr = "";
                     _logs.DebugMsg_1(_SWUpdateInfo.SoftwareName + nameof(DownloadAndInstall) + " start");
                     string url = swUpdateInfos[i].ServerPath;
-                    if (!CheckFold(savePath, out FolderInfo, out PathSymbolicLinInfo))
+                    if (!DDPMFileSecurity.CheckFold(savePath, out FolderInfo, out PathSymbolicLinInfo))
                     {
                         swUpdateInfos[i].SWUErrorCode = SWUErrorCode.FolderIsNotSafe;
-                        _notificationStr = $"Software update unsuccessful.";
-                        NotificationFWupdate("Error", _notificationStr);
-                        _logs.DebugMsg_1(nameof(DownloadAndInstall) + " FolderIsNotSafe:" + FolderInfo + "--or--" + PathSymbolicLinInfo);
+                        _notificationStr = LangHelper.Instance["Software_update_unsuccessful"];
+                        NotificationFWupdate(LangHelper.Instance["Error"], _notificationStr);
+                        _logs.DebugMsg_1(nameof(DownloadAndInstall) + " savePath FolderIsNotSafe:" + FolderInfo + "--or--" + PathSymbolicLinInfo);
                         continue;
                     }
                     _downloadTimer = new Timer();
@@ -450,6 +452,10 @@ namespace DDPM.SA.Plugins.SWUpdate
                     download = new Download(_logs);
                     string downloadInfo = "";
                     // 將儲存路徑與從 URL 中提取的檔案名稱組合
+                    if (_IsSkipSHA)
+                    {
+                        _logs.DebugMsg_1($"{nameof(DownloadAndInstall)} ServerPath : {url}");
+                    }
                     string _installationFileStoragePath = Path.Combine(savePath + Path.GetFileName(url));
                     bool downloadRet = download.DownloadFile(url, _installationFileStoragePath, out downloadInfo, _IsSkipCA);
                     _downloadTimer.Stop();
@@ -457,7 +463,7 @@ namespace DDPM.SA.Plugins.SWUpdate
                     {
                         DeviceName = swUpdateInfos[i].SoftwareName,
                         TheLatestVersion = swUpdateInfos[i].TheLatestVersion,
-                        ProcessName = "Downloading",
+                        ProcessName = LangHelper.Instance["Downloading_and_installing"],
                         ProcessProgress = 100,
                     };
                     if (!downloadRet)
@@ -465,14 +471,14 @@ namespace DDPM.SA.Plugins.SWUpdate
                         if (downloadInfo.Equals("CA check fail"))
                         {
                             swUpdateInfos[i].SWUErrorCode = SWUErrorCode.CAFail;
-                            _notificationStr = $"Software update unsuccessful.";
-                            NotificationFWupdate("Error", _notificationStr);
+                            _notificationStr = LangHelper.Instance["Software_update_unsuccessful"];
+                            NotificationFWupdate(LangHelper.Instance["Error"], _notificationStr);
                         }
                         else if (downloadInfo.Equals("Network fail"))
                         {
                             swUpdateInfos[i].SWUErrorCode = SWUErrorCode.NetworkDisconnection;
-                            _notificationStr = $"Update failed due to network error. Try again.";
-                            NotificationFWupdate("Error", _notificationStr);
+                            _notificationStr = LangHelper.Instance["Update_failed_due_to_network_error"];
+                            NotificationFWupdate(LangHelper.Instance["Error"], _notificationStr);
                         }
                         _logs.DebugMsg_1(swUpdateInfos[i].SoftwareName + " Download File Fail");
                         continue;
@@ -482,12 +488,12 @@ namespace DDPM.SA.Plugins.SWUpdate
                     {
                         Directory.CreateDirectory(extractPath);
                     }
-                    if (!CheckFold(extractPath, out FolderInfo, out PathSymbolicLinInfo))
+                    if (!DDPMFileSecurity.CheckFold(extractPath, out FolderInfo, out PathSymbolicLinInfo))
                     {
                         swUpdateInfos[i].SWUErrorCode = SWUErrorCode.FolderIsNotSafe;
-                        _logs.DebugMsg_1(swUpdateInfos[i].SoftwareName + " FolderIsNotSafe:" + FolderInfo + "--or--" + PathSymbolicLinInfo);
-                        _notificationStr = $"Software update unsuccessful.";
-                        NotificationFWupdate("Error", _notificationStr);
+                        _logs.DebugMsg_1(swUpdateInfos[i].SoftwareName + " extractPath FolderIsNotSafe:" + FolderInfo + "--or--" + PathSymbolicLinInfo);
+                        _notificationStr = LangHelper.Instance["Software_update_unsuccessful"];
+                        NotificationFWupdate(LangHelper.Instance["Error"], _notificationStr);
                         continue;
                     }
                     string exeFilePath;
@@ -497,8 +503,8 @@ namespace DDPM.SA.Plugins.SWUpdate
                         {
                             _SWUpdateInfo.SWUErrorCode = SWUErrorCode.FileCheckFail;
                             _logs.DebugMsg_1(_SWUpdateInfo.SoftwareName + " Unzip Faile");
-                            _notificationStr = $"Software update unsuccessful.";
-                            NotificationFWupdate("Error", _notificationStr);
+                            _notificationStr = LangHelper.Instance["Software_update_unsuccessful"];
+                            NotificationFWupdate(LangHelper.Instance["Error"], _notificationStr);
                             continue;
                         }
                         using (FileLock fileLock_2 = new FileLock(exeFilePath, PathCheckOption.None, lockNow: true))
@@ -507,8 +513,8 @@ namespace DDPM.SA.Plugins.SWUpdate
                             {
                                 _SWUpdateInfo.SWUErrorCode = SWUErrorCode.FileCheckFail;
                                 _logs.DebugMsg_1($"{_SWUpdateInfo.SoftwareName} CheckThumbprint Faile");
-                                _notificationStr = $"Software update unsuccessful.";
-                                NotificationFWupdate("Error", _notificationStr);
+                                _notificationStr = LangHelper.Instance["Software_update_unsuccessful"];
+                                NotificationFWupdate(LangHelper.Instance["Error"], _notificationStr);
                                 continue;
                             }
                             swUpdateInfos[i].InstallPaths = exeFilePath;
@@ -516,11 +522,11 @@ namespace DDPM.SA.Plugins.SWUpdate
                         }
                         if (swUpdateInfos[i].SWUErrorCode == SWUErrorCode.NoError)
                         {
-                            NotificationFWupdate("SW info", _notificationStr);
+                            NotificationFWupdate(LangHelper.Instance["SW_info"], _notificationStr);
                         }
                         else
                         {
-                            NotificationFWupdate("Error", _notificationStr);
+                            NotificationFWupdate(LangHelper.Instance["Error"], _notificationStr);
                         }
                     }
                 }
@@ -544,8 +550,8 @@ namespace DDPM.SA.Plugins.SWUpdate
                 {
                     deviceInfo.SWUErrorCode = SWUErrorCode.NetworkDisconnection;
                 }
-                _notificationStr = $"{_SWUpdateInfo.SoftwareName} Update failed due to network error. Try again.";
-                NotificationFWupdate("Error", _notificationStr);
+                _notificationStr = LangHelper.Instance["Update_failed_due_to_network_error"];
+                NotificationFWupdate(LangHelper.Instance["Error"], _notificationStr);
                 _logs.DebugMsg_1(nameof(DownloadAndInstall) + " Error：Update failed due to network error. Try again. ex:" + ex.Message); // 輸出錯誤訊息
                 _isDefer = false;
                 _isForce = false;
@@ -568,7 +574,7 @@ namespace DDPM.SA.Plugins.SWUpdate
                     {
                         DeviceName = _SWUpdateInfo.SoftwareName,
                         TheLatestVersion = _SWUpdateInfo.TheLatestVersion,
-                        ProcessName = "Downloading",
+                        ProcessName = LangHelper.Instance["Downloading_and_installing"],
                         ProcessProgress = download.GetProgress(),
                     };
                 }
@@ -735,6 +741,11 @@ namespace DDPM.SA.Plugins.SWUpdate
                         if (sWUpdateInfo != null && sWUpdateInfo.Count > 0)
                         {
                             _logs.DebugMsg_1($"{nameof(UpdateEvent)} sWUpdateInfo.Count : {sWUpdateInfo.Count}");
+                            _logs.DebugMsg_1("[UpdateEvent], WriteRegistryData go.");
+                            string registryKey = @"SOFTWARE\Dell Display and Peripheral Manager";
+                            string SW_Available_date = sWUpdateInfo[0].Available_date;
+                            bool b = WriteRegistryData(RegistryHive.LocalMachine, registryKey, nameof(SW_Available_date), SW_Available_date);
+                            _logs.DebugMsg_1($"[UpdateEvent], WriteRegistryData ret : {b}");
                             DownloadAndInstall_Result_Notify?.AsyncFireAndForget(this, DownloadAndInstall(sWUpdateInfo, false, "").Result, System.Threading.CancellationToken.None);
                         }
                     }
@@ -749,7 +760,17 @@ namespace DDPM.SA.Plugins.SWUpdate
 
         public void SetSkipCA(bool isSkipCA)
         {
+            _logs.DebugMsg_1("SetSkipCA start");
+            _logs.DebugMsg_1($"SetSkipCA isSkipCA : {isSkipCA}");
             _IsSkipCA = isSkipCA;
+            _logs.DebugMsg_1("SetSkipCA done");
+        }
+        public void SetSkipSHA(bool isSkipSHA)
+        {
+            _logs.DebugMsg_1("SetSkipSHA start");
+            _logs.DebugMsg_1($"SetSkipSHA isSkipSHA : {isSkipSHA}");
+            _IsSkipSHA = isSkipSHA;
+            _logs.DebugMsg_1("SetSkipSHA done");
         }
         private void OnPowerModeChanged(object sender, PowerModeChangedEventArgs e)
         {
@@ -817,11 +838,11 @@ namespace DDPM.SA.Plugins.SWUpdate
             {
                 _updateErrorCode = SWUErrorCode.Unknow;
                 _logs.DebugMsg_1(nameof(Install) + " Error:" + ex.ToString());
-                _notificationStr = $"{_SWUpdateInfo.SoftwareName} Service not running. Try again.";
+                _notificationStr = LangHelper.Instance["Service_not_running_Try_again"];
                 return Task.FromResult(_updateErrorCode);
             }
         }
-        private bool CheckFold(string path, out string folderInfo, out string pathSymbolicLinInfo)
+        /*private bool CheckFold(string path, out string folderInfo, out string pathSymbolicLinInfo)
         {
             folderInfo = "Error";
             pathSymbolicLinInfo = "Error";
@@ -832,12 +853,13 @@ namespace DDPM.SA.Plugins.SWUpdate
                 folderInfo = string.Empty;
                 pathSymbolicLinInfo = string.Empty;
                 folderValid = false;
-                folderValid = DDPMFileSecurity.SRemoveSymbolicFolder(path, out pathSymbolicLinInfo);//0924 Bruce Add Security
-                if (!folderValid)
-                {
-                    _logs.DebugMsg_1(nameof(DownloadAndInstall) + " FolderIsNotSafe:" + pathSymbolicLinInfo + " Retry:" + (count++));
-                }
-                folderValid = DDPMFileSecurity.IsFolderPathValid(path, out folderInfo) && folderValid;
+                //[Dean 1122] remove this action
+                //folderValid = DDPMFileSecurity.SRemoveSymbolicFolder(path, out pathSymbolicLinInfo);//0924 Bruce Add Security
+                //if (!folderValid)
+                //{
+                //    _logs.DebugMsg_1(nameof(DownloadAndInstall) + " FolderIsNotSafe:" + pathSymbolicLinInfo + " Retry:" + (count++));
+                //}
+                folderValid = DDPMFileSecurity.IsFolderPathValid(path, out folderInfo);// && folderValid;
                 if (!folderValid)
                 {
                     _logs.DebugMsg_1(nameof(DownloadAndInstall) + " FolderIsNotSafe:" + folderInfo + " Retry:" + (count++));
@@ -846,7 +868,7 @@ namespace DDPM.SA.Plugins.SWUpdate
                 }
             } while (!folderValid && count < 2);
             return folderValid;
-        }
+        }*/
         private bool CheckSHA(string filePath, out string fileCAInfo)
         {
             CertificateCheck certificateCheck = new CertificateCheck(_logs);
@@ -866,8 +888,16 @@ namespace DDPM.SA.Plugins.SWUpdate
             }
             else
             {
-                _logs.DebugMsg_1($"{_SWUpdateInfo.SoftwareName} CheckSHA fail fileCAInfo : {fileCAInfo}");
-                _SWUpdateInfo.SWUErrorCode = SWUErrorCode.FileCheckFail;
+                if (!_IsSkipSHA)
+                {
+                    _logs.DebugMsg_1($"{_SWUpdateInfo.SoftwareName} CheckSHA fail fileCAInfo : {fileCAInfo}");
+                    _SWUpdateInfo.SWUErrorCode = SWUErrorCode.FileCheckFail;
+                }
+                else
+                {
+                    _logs.DebugMsg_1($"{_SWUpdateInfo.SoftwareName} CheckSHA fail fileCAInfo : {fileCAInfo} BUT SKIP");
+                    isCheckSHA = true;
+                }
             }
             return isCheckSHA;
         }
@@ -883,8 +913,17 @@ namespace DDPM.SA.Plugins.SWUpdate
             }
             else
             {
-                _logs.DebugMsg_1($"{_SWUpdateInfo.SoftwareName} File check Thumbprint fail. Ex: {FileCAInfo}");
-                _SWUpdateInfo.SWUErrorCode = SWUErrorCode.FileCheckFail;
+                if (!_IsSkipSHA)
+                {
+                    _logs.DebugMsg_1($"{_SWUpdateInfo.SoftwareName} File check Thumbprint fail. Ex: {FileCAInfo}");
+                    _SWUpdateInfo.SWUErrorCode = SWUErrorCode.FileCheckFail;
+                }
+                else
+                {
+                    _logs.DebugMsg_1($"{_SWUpdateInfo.SoftwareName} File check Thumbprint fail. Ex: {FileCAInfo} BUT SKIP");
+                    ishumbprint = true;
+                }
+
             }
             return ishumbprint;
         }
@@ -989,6 +1028,18 @@ namespace DDPM.SA.Plugins.SWUpdate
                 }
             }
             _logs.DebugMsg_1($"UpdateLockSettingChange done");
+        }
+        public bool WriteRegistryData(RegistryHive hive, string keyPath, string keyName, object value)
+        {
+            _logs.DebugMsg_1($"WriteRegistryData start");
+            bool settings = false;
+            if (_SettingsPlugin != null)
+            {
+                _logs.DebugMsg_1($"WriteRegistryData _SettingsPlugin.WriteRegistryData go");
+                settings = _SettingsPlugin.WriteRegistryData(hive, keyPath, keyName, value).Result;
+            }
+            _logs.DebugMsg_1($"WriteRegistryData done ret : {settings}");
+            return settings;
         }
     }
 }

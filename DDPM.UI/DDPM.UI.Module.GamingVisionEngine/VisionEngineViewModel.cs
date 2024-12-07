@@ -13,6 +13,7 @@ using System.Diagnostics;
 using Windows.System;
 using Newtonsoft.Json.Linq;
 using System.Collections.ObjectModel;
+using DDPM.UI.Resources.Helper;
 
 [assembly: InternalsVisibleTo("DDPM.UI.Module.Gaming.Tests")]
 [assembly: InternalsVisibleTo("DDPM.UI.Module.GamingVisionEngine.Tests")]
@@ -191,7 +192,23 @@ namespace DDPM.UI.Module.GamingVisionEngine
         {
             get
             {
-                return $"{VisionEngineType.ToString().Replace("__", "/").Replace("_", " ")}";
+                switch (VisionEngineType)
+                {
+                    case Gaming_VisionEngineType.Night_Vision:
+                        return LangHelper.Instance["VisionEngine_Night"];
+                    case Gaming_VisionEngineType.Clear_Vision:
+                        return LangHelper.Instance["VisionEngine_Clear"];
+                    case Gaming_VisionEngineType.Bino_Vision:
+                        return LangHelper.Instance["VisionEngine_Bino"];
+                    case Gaming_VisionEngineType.Chroma_Vision:
+                        return LangHelper.Instance["VisionEngine_Chroma"];
+                    case Gaming_VisionEngineType.Steady_Vision:
+                        return LangHelper.Instance["VisionEngine_Steady"];
+                    case Gaming_VisionEngineType.Crosshair:
+                        return LangHelper.Instance["VisionEngine_Crosshair"];
+                    default:
+                        return LangHelper.Instance["Off"];
+                }
             }
         }
         public UI_VisionEngine(bool isEnable, Gaming_VisionEngineType type)

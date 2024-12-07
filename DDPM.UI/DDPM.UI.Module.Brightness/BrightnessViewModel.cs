@@ -6,6 +6,8 @@ using DDPM.UI.Common;
 using DDPM.UI.Common.Interfaces;
 using DDPM.UI.Common.Models;
 using Dell.Client.Framework.Common;
+using Dell.Client.Framework.UX.WPF.Controls;
+using Newtonsoft.Json.Linq;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
@@ -97,6 +99,8 @@ namespace DDPM.UI.Module.Brightness
         private double PR1Luminance_Value = -1;
         private double PR2Luminance_Value = -1;
 
+        private bool isLuminance = false;
+
         private int dUration_1 = -1;
         private int mIns_1 = -1;
         private int hOurs_1 = -1;
@@ -186,7 +190,7 @@ namespace DDPM.UI.Module.Brightness
         {
             get
             {
-                return IsSynchronize ? "ON" : "OFF";
+                return IsSynchronize ? Strings.On : Strings.Off;
             }
         }
 
@@ -441,7 +445,7 @@ namespace DDPM.UI.Module.Brightness
                 if (tmp == null || tmp.Count == 0)
                     return;
 
-                int idx = tmp.FindIndex(x => x.DisplayName.Equals(mo.DisplayName));
+                int idx = tmp.FindIndex(x => x.Edid.Equals(mo.edid));
                 if (idx < 0)
                     return;
 
@@ -492,7 +496,10 @@ namespace DDPM.UI.Module.Brightness
         ~BrightnessViewModel()
         {
             if (DdpmCommonHelper.DeviceManagerSA != null)
+            {
                 DdpmCommonHelper.DeviceManagerSA.VCPchanged -= OnVCPChangedEvent;
+                DdpmCommonHelper.BitmapImageUpdated -= ALSFontColorUpdate;
+            }
         }
 
         public BrightnessViewModel()
@@ -509,19 +516,33 @@ namespace DDPM.UI.Module.Brightness
             LuminanceImage = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Luminance.png");
 
             SelectedHomeDevice = DdpmCommonHelper.ModuleOwner.SelectedHomeDevice;
-            Contrast_Debouncer = new Debouncer(1000, Set_Contrast_Value);
-            Brightness_Debouncer = new Debouncer(1000, Set_Brightness_Value);
-            Luminance_Debouncer = new Debouncer(1000, Set_Luminance_Value);
+            Contrast_Debouncer = new Debouncer(2000, Set_Contrast_Value);
+            Brightness_Debouncer = new Debouncer(2000, Set_Brightness_Value);
+            Luminance_Debouncer = new Debouncer(2000, Set_Luminance_Value);
 
-            PR1Contrast_Debouncer = new Debouncer(1000, Set_Contrast_Value);
-            PR1Brightness_Debouncer = new Debouncer(1000, Set_Brightness_Value);
-            PR2Contrast_Debouncer = new Debouncer(1000, Set_Contrast_Value);
-            PR2Brightness_Debouncer = new Debouncer(1000, Set_Brightness_Value);
+            PR1Contrast_Debouncer = new Debouncer(2000, Set_Contrast_Value);
+            PR1Brightness_Debouncer = new Debouncer(2000, Set_Brightness_Value);
+            PR2Contrast_Debouncer = new Debouncer(2000, Set_Contrast_Value);
+            PR2Brightness_Debouncer = new Debouncer(2000, Set_Brightness_Value);
 
-            PR1Luminance_Debouncer = new Debouncer(1000, Set_Luminance_Value);
-            PR2Luminance_Debouncer = new Debouncer(1000, Set_Luminance_Value);
+            PR1Luminance_Debouncer = new Debouncer(2000, Set_Luminance_Value);
+            PR2Luminance_Debouncer = new Debouncer(2000, Set_Luminance_Value);
 
             DdpmCommonHelper.MyConsole.RegisterForEvent("DisplayHDRStatusChanged", OnHDRChangedEvent);
+            DdpmCommonHelper.BitmapImageUpdated += ALSFontColorUpdate;
+        }
+
+        private void ALSFontColorUpdate(OSThemeEnum oSThemeEnum)
+        {
+
+            if (DdpmCommonHelper.previousOsTheme == OSThemeEnum.Dark)
+            {
+                IsDarkTheme = true;
+            }
+            else
+            {
+                IsDarkTheme = false;
+            }
         }
 
         private void RefreshUI()
@@ -541,6 +562,7 @@ namespace DDPM.UI.Module.Brightness
                 NotifyPropertyChanged("BrightnessValue");
                 NotifyPropertyChanged("ContrastValue");
                 NotifyPropertyChanged("IsSynchronize");
+                NotifyPropertyChanged("IsSynchronize_String");
                 NotifyPropertyChanged("AutoBrightnessRangeLevel_String");
             }
 
@@ -589,9 +611,11 @@ namespace DDPM.UI.Module.Brightness
                 isLuminanceSupport = Visibility.Collapsed;
 
                 List<string> strings = new List<string>();
+                isLuminance = false;
                 if (!SelectedHomeDevice.MonitorInfo.CapabilityDic.ContainsKey("12"))
                 {
                     isLuminanceSupport = Visibility.Visible;
+                    isLuminance = true;
                     //string Capabilities_STR = DdpmCommonHelper.DeviceManagerSA.GetVCPCapabilities(SelectedHomeDevice.MonitorInfo).Result;
                     //Trace.WriteLine($"4. {DateTime.Now.ToString("MM/dd/yyyy hh:mm ss fff")}");
                     //if (!string.IsNullOrEmpty(Capabilities_STR))
@@ -655,11 +679,84 @@ namespace DDPM.UI.Module.Brightness
                 Update_ALSLockStatus(data.LockSettings.Lock_Display_AutoBriTemp);
                 Update_BriContLockStatus(data.LockSettings.Lock_Display_BriCont);
                 Update_SyncLockStatus((data.LockSettings.Lock_Display_BriCont || data.LockSettings.Lock_Display_ColorPreset || data.LockSettings.Lock_Display_AutoBriTemp));
+
+                SetDefaultExpanded(Start_ALSConfig, isLuminance);
                 //ex: vm.LockMaskVisible = data.LockSettings.Lock_Display_BriCont ? Visibility.Visible : Visibility.Collapsed;
                 //Read user default lock value, these values are synced from IT lock event
                 Trace.WriteLine($"[SettingsPage] Apply Brightness/Contrast(Lock) : {data.LockSettings.Lock_Display_BriCont}");
                 Trace.WriteLine($"[SettingsPage] Apply Auto Brightness(Lock) : {data.LockSettings.Lock_Display_AutoBriTemp}");
                 Trace.WriteLine($"[SettingsPage] Apply Synchroniz Button(Lock) : {(data.LockSettings.Lock_Display_BriCont || data.LockSettings.Lock_Display_ColorPreset || data.LockSettings.Lock_Display_AutoBriTemp)}");
+            }
+        }
+
+        private void SetDefaultExpanded(ALSConfig data,bool isLuminance)
+        {
+            bool isRunAlsNG = false;
+            bool isRunScheduledNG = false;
+            if (isAlsSupported == Visibility.Visible)
+            {
+                if ((data?.isSupportALS > 0) && (data?.isAutoBrightness == true
+                    || data?.isAutoColorTemp == true || data?.isPrimaryMonitorSync == true
+                    || (data?.AutoBrightnessRangeLevel.Count > 1 && data?.AutoBrightnessRangeLevel[0].level_value != 1)
+                    || (data?.isAutoColorTemp == true && data?.isAutoColorTemp == true)
+                    ))
+                {
+                    if ((MyModule.GetRightView() is BrightnessRightView))
+                    {
+                        MyModule.GetRightView().Dispatcher.Invoke((Action)(() =>
+                        {
+                            ((BrightnessRightView)MyModule.GetRightView()).Expander_Auto.IsExpanded = true;
+                        }));
+                        isRunAlsNG = true;
+                    }
+                }
+            }
+            else if (IsScheduledShow == Visibility.Visible|| IsScheduledLuminanceShow == Visibility.Visible)
+            {
+                if (PR1Luminance_Value < 0 || PR2Luminance_Value < 0 || PR1Brightness_Value < 0 || PR2Brightness_Value < 0 || PR1Contrast_Value < 0 || PR2Contrast_Value < 0 || hOurs_1 < 0 || hOurs_2 < 0 || mIns_1 < 0 || mIns_2 < 0 || dUration_1 < 0 || dUration_2 < 0)
+                {
+                    GetScheduleInfo();
+                    if (ScheduleMap.IsEnable == true)
+                    {
+                        if ((MyModule.GetRightView() is BrightnessRightView))
+                        {
+                            MyModule.GetRightView().Dispatcher.Invoke((Action)(() =>
+                            {
+                                if (isLuminance)
+                                {
+                                    ((BrightnessRightView)MyModule.GetRightView()).Expander_Schedule_Luminance.IsExpanded = true;
+                                }
+                                else
+                                {
+                                    ((BrightnessRightView)MyModule.GetRightView()).Expander_Schedule.IsExpanded = true;
+                                }
+                            }));
+                            isRunScheduledNG = true;
+                        }
+                    }
+                }
+            }
+            if (!isRunAlsNG&& !isRunScheduledNG)
+            {
+                RunManual(isLuminance);
+            }
+        }
+
+        private void RunManual(bool isLuminance)
+        {
+            if ((MyModule.GetRightView() is BrightnessRightView))
+            {
+                MyModule.GetRightView().Dispatcher.Invoke((Action)(() =>
+                {
+                    if (isLuminance)
+                    {
+                        ((BrightnessRightView)MyModule.GetRightView()).Expander_Manual_Luminance.IsExpanded = true;
+                    }
+                    else
+                    {
+                        ((BrightnessRightView)MyModule.GetRightView()).Expander_Manual.IsExpanded = true;
+                    }
+                }));
             }
         }
 
@@ -1200,6 +1297,8 @@ namespace DDPM.UI.Module.Brightness
                     Update_AutoBrightnessRangeLevelStatus(Start_ALSConfig.AutoBrightnessRangeLevel);
                     Update_SupportedPrimaryMonitorSync(Start_ALSConfig.isAutoBrightness, Start_ALSConfig.isAutoColorTemp);
                 }
+                NotifyPropertyChanged("isAlsSupported");
+                NotifyPropertyChanged("IsScheduledShow");
             }
         }
 
@@ -2138,6 +2237,7 @@ namespace DDPM.UI.Module.Brightness
             {
                 IsSynchronizeMonitor = value;
                 NotifyPropertyChanged("IsSynchronize");
+                NotifyPropertyChanged("IsSynchronize_String");
             }
         }
 
@@ -2179,23 +2279,46 @@ namespace DDPM.UI.Module.Brightness
         /// Detect the status of the PrimaryMonitorSync and obtain the current number of monitors that support the ALS function.
         /// </summary>
         /// <param name="onoff">UI PrimaryMonitorSync status</param>
-        private void ALSSettingsChangesOnNonPrimary(bool onoff)
+        private void ALSSettingsChangesOnNonPrimary(bool onoff, string property = "AUTOBRI")
         {
             if (!Start_ALSConfig.isPrimaryMonitorSync && CheckMonitorALSStatus())// user change non-Primary
             {
-                string pop_string = Strings.BrightnessPageNotice0;//"This is not your primary monitor. Do you want to proceed with the change and set this as primary Monitor for Sync?";
+                //PIMS-328260
+                string pop_string = Strings.BrightnessPageNotice1;//"This is not your primary monitor. Do you want to proceed with the change and set this as primary Monitor for Sync?";
                 if (DdpmCommonHelper.DDPMMesssageBox(Strings.BrightnessPageWarning, pop_string))
                 {
-                    Start_ALSConfig.isPrimaryMonitorSync = onoff;
+                    _primaryMonitorSyncStatus = true;
+                    Start_ALSConfig.isPrimaryMonitorSync = true;// onoff; //PIMS-328260
                     SetALSAll(Start_ALSConfig, ALSFeatureQueryType.All, 0);
                     NotifyPropertyChanged("PrimaryMonitorSyncStatus");
                     NotifyPropertyChanged("PrimaryMonitorSync_String");
                 }
                 else
-                    SetALSAll(Start_ALSConfig, ALSFeatureQueryType.All, 0);
+                {
+                    //SetALSAll(Start_ALSConfig, ALSFeatureQueryType.All, 0);
+                    onoff = !onoff;
+                    //Update_AutoBrightnessStatus(onoff);
+                    if (property.Equals("AUTOBRI"))
+                    {
+                        _autoBrightnessStatus = onoff;
+                        Start_ALSConfig.isAutoBrightness = onoff;
+                    }
+                    if (property.Equals("AUTOCOLOR"))
+                    {
+                        _autoColorTempStatus = onoff;
+                        Start_ALSConfig.isAutoColorTemp = onoff;
+                    }
+                }
             }
             else
+            {
+                if(property.Equals("PRISYNC"))
+                {
+                    _primaryMonitorSyncStatus = onoff;
+                    Start_ALSConfig.isPrimaryMonitorSync = onoff;
+                }
                 SetALSAll(Start_ALSConfig, ALSFeatureQueryType.All, 0);
+            }
         }
 
         public double ContrastValue
@@ -2379,7 +2502,7 @@ namespace DDPM.UI.Module.Brightness
             var value = Convert.ToDouble(value_);
             uint nNewValue = Convert.ToUInt32(value);
 
-            DdpmCommonHelper.DeviceManagerSA.SetVCPCapability(ModuleOwner.SelectedHomeDevice.MonitorInfo, 0x10, nNewValue);
+            _ = DdpmCommonHelper.DeviceManagerSA.SetVCPCapability(ModuleOwner.SelectedHomeDevice.MonitorInfo, 0x10, nNewValue).Result;
 
             //NotifyPropertyChanged("LuminanceValue");
         }
@@ -2398,11 +2521,15 @@ namespace DDPM.UI.Module.Brightness
                     foreach (HomeDevice hd in ModuleOwner.HomeDevices)
                     {
                         if (hd.MonitorInfo.IsDellMonitor)
-                            DdpmCommonHelper.DeviceManagerSA.SetVCPCapability(hd.MonitorInfo, 0x10, nNewValue);
+                        {
+                            _ = DdpmCommonHelper.DeviceManagerSA.SetVCPCapability(hd.MonitorInfo, 0x10, nNewValue).Result;
+                        }
                     }
                 }
                 else
-                    DdpmCommonHelper.DeviceManagerSA.SetVCPCapability(ModuleOwner.SelectedHomeDevice.MonitorInfo, 0x10, nNewValue);
+                {
+                    _ = DdpmCommonHelper.DeviceManagerSA.SetVCPCapability(ModuleOwner.SelectedHomeDevice.MonitorInfo, 0x10, nNewValue).Result;
+                }
 
                 //NotifyPropertyChanged("BrightnessValue");
             }
@@ -2469,11 +2596,11 @@ namespace DDPM.UI.Module.Brightness
                 foreach (HomeDevice hd in ModuleOwner.HomeDevices)
                 {
                     if (hd.MonitorInfo.IsDellMonitor)
-                        DdpmCommonHelper.DeviceManagerSA.SetVCPCapability(hd.MonitorInfo, 0x12, nNewValue);
+                        _ = DdpmCommonHelper.DeviceManagerSA.SetVCPCapability(hd.MonitorInfo, 0x12, nNewValue).Result;
                 }
             }
             else
-                DdpmCommonHelper.DeviceManagerSA.SetVCPCapability(ModuleOwner.SelectedHomeDevice.MonitorInfo, 0x12, nNewValue);
+                _ = DdpmCommonHelper.DeviceManagerSA.SetVCPCapability(ModuleOwner.SelectedHomeDevice.MonitorInfo, 0x12, nNewValue).Result;
 
             //NotifyPropertyChanged("ContrastValue");
         }
@@ -2925,7 +3052,7 @@ namespace DDPM.UI.Module.Brightness
             {
                 _autoColorTempStatus = value;
                 Start_ALSConfig.isAutoColorTemp = value;
-                ALSSettingsChangesOnNonPrimary(value);
+                ALSSettingsChangesOnNonPrimary(value, "AUTOCOLOR");
                 NotifyPropertyChanged("AutoColorTempStatus");
                 NotifyPropertyChanged("AutoColorTemp_String");
                 //Update_SupportedPrimaryMonitorSync(_autoBrightnessStatus, value);
@@ -2983,9 +3110,10 @@ namespace DDPM.UI.Module.Brightness
             }
             set
             {
-                _primaryMonitorSyncStatus = value;
-                Start_ALSConfig.isPrimaryMonitorSync = value;
-                ALSSettingsChangesOnNonPrimary(value);
+                //PIMS-328260
+                //_primaryMonitorSyncStatus = value;
+                //Start_ALSConfig.isPrimaryMonitorSync = value;
+                ALSSettingsChangesOnNonPrimary(value, "PRISYNC");
                 NotifyPropertyChanged("PrimaryMonitorSyncStatus");
                 NotifyPropertyChanged("PrimaryMonitorSync_String");
             }
@@ -3180,6 +3308,20 @@ namespace DDPM.UI.Module.Brightness
                 else
                 {
                     return true;
+                }
+            }
+        }
+
+        private bool _isDarkTheme;
+        public bool IsDarkTheme
+        {
+            get => _isDarkTheme;
+            set
+            {
+                if (_isDarkTheme != value)
+                {
+                    _isDarkTheme = value;
+                    OnPropertyChanged(nameof(IsDarkTheme));
                 }
             }
         }

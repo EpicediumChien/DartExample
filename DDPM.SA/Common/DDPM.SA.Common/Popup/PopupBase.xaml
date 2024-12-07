@@ -6,13 +6,14 @@
         xmlns:local="clr-namespace:DDPM.SA.Common.Popup"
         xmlns:UXcontrols="clr-namespace:Dell.Client.Framework.UX.WPF.Controls;assembly=DCF.UX.WPF"
         mc:Ignorable="d"
-        Width="417" Height="252"
         WindowStyle="None"
         AllowsTransparency="True"
         WindowStartupLocation="CenterOwner"
         Topmost="True"
+        SizeToContent="Height"
         Closed="Window_Closed"
         Background="Transparent">
+    
     <!-- Robert_Lin, 2024-11-8, add WindowStartupLocation="CenterOwner"
     If you would like to let the PopBase show in center of DDPM, then you should:
          PopBase pop = new PopBase( . . . );
@@ -20,26 +21,131 @@
          pop.Owner = mainWindow;
          pop.Show();    or pop.ShowDialog();
     -->
-    <Border Background="#0D121A" BorderThickness="0" CornerRadius="5">
+    <Window.Resources>
+        <!-- Robert_Lin, 2024-12-3 Move to ModuleStyle.xaml to share with other plugins -->
+        <!--<LinearGradientBrush x:Key="msgBoxGadientBrush" StartPoint="793,0" EndPoint="-69.2682,516.32"
+                             MappingMode="Absolute">
+            <GradientStop Color="#7F306CC7" Offset="0.0537435"/>
+            <GradientStop Color="#7F0063B8" Offset="0.237111"/>
+            <GradientStop Color="#1E003ACE" Offset="0.504036"/>
+            <GradientStop Color="#7C674AB8" Offset="0.792288"/>
+            <GradientStop Color="#7F0063B8" Offset="0.972444"/>
+        </LinearGradientBrush>-->
+    </Window.Resources>
+
+    <!-- Robert_Lin, 2024-12-2, fix Width=419, but Height may changed by Body Text -->
+    <!-- Design time debug to use static data to show result in DesignView 
+        Dark:
+            Background="#F20D121A" BorderBrush="#293B4D">
+        Light
+            Background="FFFFFF" BorderBrush="#D8E1EB">
+        Release:
+            Background="{DynamicResource popupBase_Window_BkColor}" 
+            BorderBrush="{DynamicResource popupBase_Window_BdColor}">
+    -->
+    <Border Width="419" BorderThickness="1" CornerRadius="4"
+            Background="{DynamicResource popupBase_Window_BkColor}" 
+            BorderBrush="{DynamicResource popupBase_Window_BdColor}" 
+            MouseLeftButtonDown="rootBorder_MouseLeftButtonDown">
+        <Border.Effect>
+            <DropShadowEffect BlurRadius="8" Color="#2D000000" Opacity="0.4"
+                              Direction="315" ShadowDepth="3" />
+        </Border.Effect>
+        <!-- Robert_Lin, 2024-12-2, use two layers in a Grid 
+             Layer 1 (Bottom): Rectangle with linear gradient brush 
+             Layer 2: Dialog body
+             Layer 3 (Top): CloseX button
+        -->
         <Grid>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="*" />
-                <RowDefinition Height="Auto" />
-            </Grid.RowDefinitions>
-            <Grid>
+            <!-- #region Layer 1 - Linear Gradient brush -->
+            <Grid Background="{StaticResource msgBoxGadientBrush}" Opacity="0.15"/>
+            <!-- #endregion Layer 1 - Linear Gradient brush -->
+
+            <!-- #region Layer 2 - Dialog body-->
+            
+            <!-- Robert_Ln 2024-12-2 Change Grid to StackPanel -->
+            <StackPanel Margin="32">
+                <!-- #region Header -->
+                <!-- Design Time:
+                Dark:
+                           Foreground="#FFFFFF" Text="Pupup Title"/>
+                Release:
+                           Foreground="{DynamicResource popupBase_Header_TextColor}"/>
+                -->
+                <TextBlock x:Name="Header1" FontFamily="Roboto" FontSize="20" FontWeight="Normal"
+                           VerticalAlignment="Center" HorizontalAlignment="Left"
+                           Foreground="{DynamicResource popupBase_Header_TextColor}"/>
+                <!-- #endregion Header -->
+                
+                <!-- #region Body -->
+                <!-- Design Time:
+                Dark:
+                           Foreground="#F5F6F7" Text="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. "/>
+                Release:
+                           Foreground="{DynamicResource popupBase_Body_TextColor}"/>
+               
+                -->
+                <TextBlock x:Name="SubHeader1" FontFamily="Roboto" FontSize="16" FontWeight="Normal" Margin="0,8,0,16" TextWrapping="Wrap"
+                           Foreground="{DynamicResource popupBase_Body_TextColor}"/>
+                <!-- #endregion Body -->
+                
+                <!-- #region Buttons -->
+                <StackPanel x:Name="ButtonPanel1" Orientation="Horizontal" Visibility="{Binding ShowButton}">
+                    <Button x:Name="LeftButton1" Style="{StaticResource SecondaryButtonStyle}" 
+                            Height="40" Padding="31,8" Click="LeftButton_Click" />
+                    <Button x:Name="RightButton1" Style="{StaticResource PrimaryButtonStyle}" 
+                            Height="40" Padding="31,8" Margin="7,0,0,0" Click="RightButton_Click" />
+                </StackPanel>
+                <!-- #endregion Buttons -->
+            </StackPanel>
+            <!-- Original Bruce's code -->
+            <!--<Grid Visibility="Collapsed">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition />
                     <ColumnDefinition Width="0.2*" />
                 </Grid.ColumnDefinitions>
-                <TextBlock Grid.Column="0" x:Name="Header" FontFamily="Roboto" FontSize="20" Margin="10" Grid.Row="0" Foreground="White" />
-                <Button Grid.Column="1" x:Name="CloseButton" Content="X" Margin="5" Click="CloseButton_Click" Background="Transparent"  BorderThickness="0" Foreground="White" />
+                    <TextBlock Grid.Column="0" x:Name="Header" FontFamily="Roboto" FontSize="20" Margin="10" Grid.Row="0" Foreground="White" />
+                    <Button Grid.Column="1" x:Name="CloseButton" Content="X" Margin="5" Click="CloseButton_Click" Background="Transparent"  BorderThickness="0" Foreground="White" />
+
+                <TextBlock x:Name="SubHeader" MaxWidth="372" Grid.Row="1" FontFamily="Roboto" FontSize="15" Margin="6" TextWrapping="WrapWithOverflow" VerticalAlignment="Center" Foreground="White" />
+                <StackPanel x:Name="ButtonPanel" Orientation="Horizontal" Grid.Row="2" Margin="0,20,0,10" Visibility="{Binding ShowButton}">
+                    <Button x:Name="LeftButton" MaxHeight="40" MaxWidth="182" Width="81" Height="40" Background="Transparent" BorderThickness="1" BorderBrush="White" Foreground="White" HorizontalAlignment="Left" Margin="24,0,8,0" Click="LeftButton_Click" />
+                    <Button x:Name="RightButton" MaxHeight="40" MaxWidth="182" Width="81" Height="40" Background="#0672CB" BorderThickness="0" BorderBrush="White" Foreground="White" HorizontalAlignment="Right" Margin="24,0,8,0" Click="RightButton_Click" />
+                </StackPanel>
+            </Grid>-->
+            <!-- #endregion Layer 2 - Dialog body-->
+
+            <!-- #region Layer 3 - CloseX button -->
+            <Grid Width="14" Height="14" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,20,17,0"
+                  Background="#02000000" MouseLeftButtonUp="closeX_MouseLeftButtonUp" MouseLeftButtonDown="closeX_MouseLeftButtonDown">
+                <Grid.Style>
+                    <Style TargetType="Grid">
+                        <Setter Property="Background" Value="#02000000" />
+                        <Style.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="{DynamicResource Dlg_CloseX_HoverBkColor}" />
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                </Grid.Style>
+
+                <!-- DesignTime
+                Dark:
+                <Path Fill="#CCCCCC"
+               
+                Release:
+                 <Path Fill="{DynamicResource popupBase_CloseX_FgColor}"
+               -->
+               <Path Fill="{DynamicResource popupBase_CloseX_FgColor}"
+                     Data="M14 0.7175L13.2825 0L7 6.3L0.7175 0.04375L0 0.76125L6.25625 7L0.04375 13.2388L0.76125 14L7 7.74375L13.2388 14L13.9563 13.2825L7.7 7L14 0.7175Z"
+                      />
             </Grid>
-            <TextBlock x:Name="SubHeader" MaxWidth="372" Grid.Row="1" FontFamily="Roboto" FontSize="15" Margin="6" TextWrapping="WrapWithOverflow" VerticalAlignment="Center" Foreground="White" />
-            <StackPanel x:Name="ButtonPanel" Orientation="Horizontal" Grid.Row="2" Margin="0,20,0,10" Visibility="{Binding ShowButton}">
-                <Button x:Name="LeftButton" MaxHeight="40" MaxWidth="182" Width="81" Height="40" Background="Transparent" BorderThickness="1" BorderBrush="White" Foreground="White" HorizontalAlignment="Left" Margin="24,0,8,0" Click="LeftButton_Click" />
-                <Button x:Name="RightButton" MaxHeight="40" MaxWidth="182" Width="81" Height="40" Background="#0672CB" BorderThickness="0" BorderBrush="White" Foreground="White" HorizontalAlignment="Right" Margin="24,0,8,0" Click="RightButton_Click" />
-            </StackPanel>
+            <!-- #endregion Layer 3 - CloseX button -->
         </Grid>
     </Border>
 </Window>

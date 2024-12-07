@@ -5,6 +5,8 @@ using System.Windows.Data;
 using System.Windows.Media;
 using UserControl = System.Windows.Controls.UserControl;
 using DDPM.SA.Common.Settings;
+using Dell.Client.Framework.UX.WPF.Controls;
+using System.ComponentModel;
 
 namespace DDPM.UI.Module.HeadsetAutomatedActions
 {
@@ -45,9 +47,7 @@ namespace DDPM.UI.Module.HeadsetAutomatedActions
         ~HeadsetAutomatedActionsRightView()
         {
             if (DdpmCommonHelper.DeviceManagerSA != null)
-            {
                 DdpmCommonHelper.DeviceManagerSA.ITSettingsActionEvent -= DeviceManagerSA_ITSettingsActionEvent;
-            }
         }
 
         private void DeviceManagerSA_ITSettingsActionEvent(object? sender, SA.Common.ITSettingEventArgs e)
@@ -68,18 +68,43 @@ namespace DDPM.UI.Module.HeadsetAutomatedActions
         }
     }
 
-    public class BooleanToForegroundConverter : IValueConverter
+    public class BooleanToForegroundConverter : IMultiValueConverter
     {
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
         {
-            if (value is bool boolValue)
+            if (values[0] is bool isChecked && values[1] is bool isDarkTheme)
             {
-                return boolValue ? Brushes.White : Brushes.Gray;
+                if (isDarkTheme)
+                    return isChecked ? Brushes.White : Brushes.Gray;
+                else
+                    return isChecked ? Brushes.Black : Brushes.Gray;
             }
             return Brushes.Gray;
         }
 
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    public class BooleanToForegroundConverter2 : IMultiValueConverter
+    {
+        public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (values[0] is bool isDarkTheme && values[1] is bool isChecked && values[2] is bool IsChecked2)
+            {
+                if(!IsChecked2)
+                    return Brushes.Gray;
+                if (isDarkTheme)
+                    return isChecked ? Brushes.White : Brushes.White;
+                else
+                    return isChecked ? Brushes.White : Brushes.Black;
+            }
+            return Brushes.Gray;
+        }
+
+        public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
         {
             throw new NotImplementedException();
         }

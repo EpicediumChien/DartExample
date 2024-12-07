@@ -6,7 +6,7 @@
 		<OutputType>Exe</OutputType>
 		<BaseOutputPath>..\bin\$(MSBuildProjectName)\</BaseOutputPath>
 		<Platforms>AnyCPU;x64</Platforms>
-		<Version>2.0.0.51</Version>
+		<Version>2.0.0.55</Version>
 		<Configurations>Debug;Release;Debug_NKVM</Configurations>
 	</PropertyGroup>
 

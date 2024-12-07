@@ -7,7 +7,7 @@ namespace VcpCore.Common
     [Serializable]
     public class MonitorInfo : BaseClone<MonitorInfo>, IEquatable<MonitorInfo>
     {
-        public string AliasDeviceName = string.Empty;
+        public string AliasDeviceName { get; set; } = string.Empty;
         public bool IsDellMonitor { get; set; } = false;
         public int Index { get; set; } = 0x0;
         public string CapabilityString { get; set; } = string.Empty;
@@ -17,7 +17,7 @@ namespace VcpCore.Common
         public string FwVersion { get; set; } = string.Empty;
         public string inputSource { get; set; } = string.Empty;
         public string inputCable { get; set; } = string.Empty;
-        public Dictionary<string, List<string>> CapabilityDic = new Dictionary<string, List<string>>();
+        public Dictionary<string, List<string>> CapabilityDic { get; set; } = new Dictionary<string, List<string>>();
         public string modelName { get; set; } = string.Empty;
         public string series { get; set; } = string.Empty;
         public string MarketingName { get; set; } = string.Empty;
@@ -53,16 +53,23 @@ namespace VcpCore.Common
             //    bool b4 = (CapabilityString == other.CapabilityString);
             //    bool b5 = (DisplayName == other.DisplayName);
             //    bool b6 = (DDCisON == other.DDCisON);
-            //    bool b7 = (EqualityComparer<EDID>.Default.Equals(edid, other.edid));
+            //    bool b7 = (FwVersion == other.FwVersion);
+            //    bool b8 = (inputSource == other.inputSource);
+            //    bool b9 = (inputCable == other.inputCable);
+            //    bool b10 = (modelName == other.modelName);
+            //    bool b11 = (series == other.series);
+            //    bool b12 = (MarketingName == other.MarketingName);
+            //    bool b13 = (ImageFileName == other.ImageFileName);
+            //    bool b14 = (SupplierID == other.SupplierID);
+            //    bool b15 = (D_Ctrl == other.D_Ctrl);
+            //    bool b16 = (EqualityComparer<EDID>.Default.Equals(edid, other.edid));
 
-            //    return (b0 && b1 && b2 && b3 && b4 && b5 && b6 && b7);
+            //    return (b0 && b1 && b2 && b3 && b4 && b5 && b6 && b7 && b8 && b9 && b10 && b11 && b12 && b13 && b14 && b15 && b16);
             //}
             //else
             //    return b0;
 
             return (other is not null) &&
-                   //(CapabilityDic.Count == other.CapabilityDic.Count) &&
-                   //(!CapabilityDic.Except(other.CapabilityDic).Any()) &&
                    (AliasDeviceName == other.AliasDeviceName) &&
                    (IsDellMonitor == other.IsDellMonitor) &&
                    (Index == other.Index) &&
@@ -84,7 +91,25 @@ namespace VcpCore.Common
         //If override Equals, need to implement GetHashCode also
         public override int GetHashCode()
         {
-            return CapabilityString.GetHashCode();
+            return new
+            {
+                AliasDeviceName,
+                IsDellMonitor,
+                Index,
+                CapabilityString,
+                DisplayName,
+                DDCisON,
+                FwVersion,
+                inputSource,
+                inputCable,
+                modelName,
+                series,
+                MarketingName,
+                ImageFileName,
+                SupplierID,
+                D_Ctrl,
+                edid,
+            }.GetHashCode();
         }
     }
 }

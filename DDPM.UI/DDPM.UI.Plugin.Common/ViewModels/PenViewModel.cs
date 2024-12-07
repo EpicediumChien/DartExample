@@ -22,7 +22,7 @@ namespace DDPM.UI.Plugin.ViewModels
 
         private readonly ILog _log;
 
-        private int _tipSensitivity = 0;
+        private double _tipSensitivity = 0;
         private int _tiltSensitivity = 0;
         private string itemID = "DellPeripheral.Pen.0";
 
@@ -36,7 +36,7 @@ namespace DDPM.UI.Plugin.ViewModels
 
         #endregion Variables
 
-        public PenActions PenAction = (PenActions)ActionList.ImportActionList(eDeviceCategory.Pen, "PEN");
+        public PenActions PenAction = new();
         public Dictionary<int, string> ActionNames = new();
         public List<string> LaunchableAppValues = new();
         public List<int> RadialMenuActions = new();
@@ -76,8 +76,18 @@ namespace DDPM.UI.Plugin.ViewModels
             if (!base.SetCurrentDevice(deviceID))
                 return false;
 
-            TiltSensitivity = CurrentDeviceInfo!.TiltSensitivity <= 0 ? 0 : (CurrentDeviceInfo.TiltSensitivity >= 2 ? 2 : 1);
-            TipSensitivity = CurrentDeviceInfo.TipSensitivity;
+            PenAction = (PenActions)ActionList.ImportActionList(eDeviceCategory.Pen, "PEN");
+            TiltSensitivity = CurrentDeviceInfo!.TiltSensitivity <= 0 ? 0 : (CurrentDeviceInfo.TiltSensitivity >= 2 ? 100 : 50);
+            _tipSensitivity = CurrentDeviceInfo.TipSensitivity switch
+            {
+                0 => 0,
+                1 => 12.5,
+                2 => 25,
+                3 => 50,
+                4 => 62.5,
+                5 => 75,
+                _ => 100
+            };
 
             if (!IsActionItemsReady)
                 PrepareActionItems();
@@ -257,6 +267,22 @@ namespace DDPM.UI.Plugin.ViewModels
             {
                 IsRestoreEnable = true;
             }
+            else if (PenAction.IsTopBarrelHoverClickOn)
+            {
+                IsRestoreEnable = true;
+            }
+            else if (PenAction.IsBottomBarrelHoverClickOn)
+            {
+                IsRestoreEnable = true;
+            }
+            else if (TiltSensitivity != 50)
+            {
+                IsRestoreEnable = true;
+            }
+            else if (TipSensitivity != 50)
+            {
+                IsRestoreEnable = true;
+            }
             OnPropertyChanged(nameof(IsRestoreEnable));
         }
 
@@ -302,7 +328,7 @@ namespace DDPM.UI.Plugin.ViewModels
             }
         }
 
-        public int TipSensitivity
+        public double TipSensitivity
         {
             get => _tipSensitivity;
             set
@@ -321,7 +347,20 @@ namespace DDPM.UI.Plugin.ViewModels
         public void SetTipSensitivity()
         {
             if (_tipSensitivity != CurrentDeviceInfo!.TipSensitivity)
-                DdpmCommonHelper.DeviceManagerSA!.SetTipSensitivity(itemID, _tipSensitivity);
+            {
+                var value = _tipSensitivity switch
+                {
+                    0 => 0,
+                    12.5 => 1,
+                    25 => 2,
+                    50 => 3,
+                    62.5 => 4,
+                    75 => 5,
+                    _ => 6
+                };
+                DdpmCommonHelper.DeviceManagerSA!.SetTipSensitivity(itemID, value);
+                CheckRestoreStatus();
+            }
         }
 
         public int TiltSensitivity
@@ -343,7 +382,10 @@ namespace DDPM.UI.Plugin.ViewModels
         public void SetTiltSensitivity()
         {
             if (_tiltSensitivity != CurrentDeviceInfo!.TiltSensitivity)
-                DdpmCommonHelper.DeviceManagerSA!.SetTiltSensitivity(itemID, _tiltSensitivity);
+            {
+                DdpmCommonHelper.DeviceManagerSA!.SetTiltSensitivity(itemID, _tiltSensitivity / 50);
+                CheckRestoreStatus();
+            }
         }
 
         public string SelectedButton
@@ -606,12 +648,25 @@ namespace DDPM.UI.Plugin.ViewModels
                 SelectedButton = "";
             }
         }
-        public void RestoreToDefault()
+        public bool RestoreToDefault()
         {
-            PenAction.RestoreToDefault();
-            RefreshButtonInfo();
-            IsRestoreEnable = false;
-            OnPropertyChanged(nameof(IsRestoreEnable));
+            if (PenAction.RestoreToDefault())
+            {
+                RefreshButtonInfo();
+                CurrentDeviceInfo!.TiltSensitivity = 1;
+                TiltSensitivity = 50;
+                CurrentDeviceInfo!.TipSensitivity = 3;
+                TipSensitivity = 50;
+                PenAction.IsTopBarrelHoverClickOn = false;
+                PenAction.IsBottomBarrelHoverClickOn = false;
+                IsRestoreEnable = false;
+                OnPropertyChanged(nameof(IsHoverClickOn));
+                OnPropertyChanged(nameof(IsHoverClickToggleText));
+                OnPropertyChanged(nameof(IsRestoreEnable));
+                PenAction = (PenActions)ActionList.ImportActionList(eDeviceCategory.Pen, "PEN");
+                return true;
+            }
+            return false;
         }
 
         public void RefreshButtonInfo()
@@ -714,6 +769,7 @@ namespace DDPM.UI.Plugin.ViewModels
                     PenAction.IsBottomBarrelHoverClickOn = value;
                     ActionList.ExportActionList(PenAction, "PEN");
                 }
+                CheckRestoreStatus();
                 OnPropertyChanged();
                 //IsMicEnumerationOnText = value ? Strings.On : Strings.Off;
                 OnPropertyChanged(nameof(IsHoverClickToggleText));
@@ -733,7 +789,8 @@ namespace DDPM.UI.Plugin.ViewModels
             {
                 { "menuIndex", index },
                 { "actionId", id },
-                { "actionName", PenAction.RadialLabels[index] }
+                { "actionName", PenAction.RadialLabels[index] },
+                { "menuLabel", PenAction.RadialLabels[index] }
             };
             byte[] newValue = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(jobj));
             DdpmCommonHelper.DeviceManagerSA!.SetMenuSinglePressSetting(itemID, newValue);

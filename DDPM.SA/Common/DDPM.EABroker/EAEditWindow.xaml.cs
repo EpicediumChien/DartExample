@@ -21,6 +21,10 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 //using static DDPM.Win32Lib.Win32;
 using Rectangle = System.Drawing.Rectangle;
+using System.Windows.Threading;
+using VcpCore.Common;
+using System.Windows.Forms;
+using Windows.Web.AtomPub;
 
 namespace DDPM.EABroker
 {
@@ -33,7 +37,9 @@ namespace DDPM.EABroker
         private readonly ILog? _log;
         private string _orgFriendlyName = string.Empty;
         private List<CellJson> _cellJsons = new List<CellJson>();
+        private double _screenScale = 1.00;
 
+        private ISplitCtrl _ezMemLauncherSplit;
         #endregion Private members
 
         #region ctor & Init
@@ -48,6 +54,17 @@ namespace DDPM.EABroker
             //Hide window from Alt+tab
             System.Windows.Interop.WindowInteropHelper wndHelper = new System.Windows.Interop.WindowInteropHelper(this);
             Win32Lib.Win32.HideWinFromAltTab(wndHelper.Handle);
+
+            if (_inputArgs != null)
+            {
+                if (_inputArgs.SplitJson.IsOverlapLayout)
+                {
+                    DispatcherTimer timer = new DispatcherTimer();
+                    timer.Tick += Timer_Tick;
+                    timer.Interval = TimeSpan.FromSeconds(5);
+                    timer.Start();
+                }
+            }
         }
         #endregion ctor & Init
 
@@ -58,13 +75,15 @@ namespace DDPM.EABroker
             {
                 //Robert_Lin, clear the previous editing SplitCtrl before Hode
                 splitCtrl.Content = null;
-                Hide();
+                //Hide();
+                Close();
             });
         }
         #endregion Close
 
         #region Events
         public event EventHandler<EAArgs> EditReturn;
+        public event EventHandler<EventArgs> ContenRendered;
         #endregion
 
         #region Log
@@ -124,13 +143,15 @@ namespace DDPM.EABroker
                 _orgFriendlyName = args.CustomName;
 
                 //Calculate the position/size of EditWindow
-                double dpiX = 1.000;
-                var dpiXProperty = typeof(SystemParameters).GetProperty("DpiX", BindingFlags.NonPublic | BindingFlags.Static);
-                if (dpiXProperty != null)
-                {
-                    var varX = (int)dpiXProperty.GetValue(null, null);
-                    dpiX = (double)varX / (double)96;
-                }
+                //Robert_Lin, 2024-12-6, use the method in CommonFunctions
+                double dpiX = CommonFunctions.GetDpiX();
+                //double dpiX = 1.000;
+                //var dpiXProperty = typeof(SystemParameters).GetProperty("DpiX", BindingFlags.NonPublic | BindingFlags.Static);
+                //if (dpiXProperty != null)
+                //{
+                //    var varX = (int)dpiXProperty.GetValue(null, null);
+                //    dpiX = (double)varX / (double)96;
+                //}
 
                 splitCtrl.Content = inputSplitCtrl.UC;
                 //SplitContent = inputSplitCtrl.UC;
@@ -166,21 +187,21 @@ namespace DDPM.EABroker
         //v1, Robert_Lin, 2024-11-19, unused, dont use and test
         public bool ShowAndEdit_v1(EAArgs args, Screen scr)
         {
-            throw new NotImplementedException();
-            //_inputArgs = args;
-            //if ((args.SplitJson.IsOverlapLayout))
-            //{
-            //    this.Dispatcher.Invoke(() => { UI_ShowAndEdit_OverlapCustom(args, scr); });
-            //}
-            //else if (ISplitCtrl.IsExisted(args.SplitJson.CellCount, args.SplitJson.SplitKey))
-            //{
-            //    this.Dispatcher.Invoke(() => { UI_ShowAndEdit_NonOverlapCustom(args, scr); });
-            //}
-            //else
-            //{
-            //    return false;
-            //}
-            //return true;
+            _inputArgs = args;
+            //WorkScreen = scr;
+            if ((args.SplitJson.IsOverlapLayout))
+            {
+                this.Dispatcher.Invoke(() => { UI_ShowAndEdit_OverlapCustom_v1(args, scr); });
+            }
+            else if (ISplitCtrl.IsExisted(args.SplitJson.CellCount, args.SplitJson.SplitKey))
+            {
+                this.Dispatcher.Invoke(() => { UI_ShowAndEdit_NonOverlapCustom_v1(args, scr); });
+            }
+            else
+            {
+                return false;
+            }
+            return true;
         }
         //v2 Robert_Lin, 2024-11-19 for Span monitors
         public bool ShowAndEdit(EAArgs args, Rectangle workingArea)
@@ -204,60 +225,63 @@ namespace DDPM.EABroker
         //v1, Robert_Lin, 2024-11-19, unused, dont use and test
         private void UI_ShowAndEdit_NonOverlapCustom_v1(EAArgs args, Screen scr)
         {
-            throw new NotSupportedException();
-           // canvas.Children.Clear();
-           // splitCtrl.Visibility = Visibility.Visible;
+            canvas.Children.Clear();
+            splitCtrl.Visibility = Visibility.Visible;
 
-           // //Try to create a ISplitCtrl to verify (cellCount,SplitKey) is valid
-           // ISplitCtrl? ispCtrl = ISplitCtrl.Create(args.SplitJson.CellCount, args.SplitJson.SplitKey);
-           // if (ispCtrl == null)
-           // {
-           //     //Invalid CellCount+SplitKey, make the error message
-           //     WriteLog($"EAEditWindow.SetInputArg(), Invalid argument: {args.CellCount}{args.SplitKey}, [{SplitCtrlVM.Double_To_String(args.Settings)}]");
-           //     return;// false;
-           // }
-           // inputSplitCtrl = ispCtrl;
-           // inputSplitCtrl.IsEditable = true;
-           // inputSplitCtrl.SplitMode = eSplitModes.Edit;
-           // inputSplitCtrl.IsVertical = (scr.Bounds.Width < scr.Bounds.Height);
+            //Try to create a ISplitCtrl to verify (cellCount,SplitKey) is valid
+            ISplitCtrl? ispCtrl = ISplitCtrl.Create(args.SplitJson.CellCount, args.SplitJson.SplitKey);
+            if (ispCtrl == null)
+            {
+                //Invalid CellCount+SplitKey, make the error message
+                WriteLog($"EAEditWindow.SetInputArg(), Invalid argument: {args.CellCount}{args.SplitKey}, [{SplitCtrlVM.Double_To_String(args.Settings)}]");
+                return;// false;
+            }
+            inputSplitCtrl = ispCtrl;
+            inputSplitCtrl.IsEditable = true;
+            inputSplitCtrl.SplitMode = eSplitModes.Edit;
+            inputSplitCtrl.IsVertical = (scr.Bounds.Width < scr.Bounds.Height);
 
-           // if (args.SplitJson.Settings != null)
-           // {
-           //     inputSplitCtrl.Settings = args.SplitJson.Settings;
-           // }
+            if (args.SplitJson.Settings != null)
+            {
+                inputSplitCtrl.Settings = args.SplitJson.Settings;
+            }
 
-           // _orgFriendlyName = args.SplitJson.CustomName;
+            _orgFriendlyName = args.SplitJson.CustomName;
 
-           // //Calculate the position/size of EditWindow
-           // double dpiX = 1.00;
-           // var dpiXProperty = typeof(SystemParameters).GetProperty("DpiX", BindingFlags.NonPublic | BindingFlags.Static);
-           // if (dpiXProperty != null)
-           // {
-           //     var varX = (int)dpiXProperty.GetValue(null, null);
-           //     dpiX = (double)varX / (double)96;
-           // }
+            //Calculate the position/size of EditWindow
+            //Robert_Lin, 2024-12-6, use the method in CommonFunctions
+            double dpiX = CommonFunctions.GetDpiX();
+            //double dpiX = 1.00;
+            //var dpiXProperty = typeof(SystemParameters).GetProperty("DpiX", BindingFlags.NonPublic | BindingFlags.Static);
+            //if (dpiXProperty != null)
+            //{
+            //    var varX = (int)dpiXProperty.GetValue(null, null);
+            //    dpiX = (double)varX / (double)96;
+            //}
 
-           // splitCtrl.Content = inputSplitCtrl.UC;
-           // //SplitContent = inputSplitCtrl.UC;
+            splitCtrl.Content = inputSplitCtrl.UC;
+            //SplitContent = inputSplitCtrl.UC;
 
-           //// Rect rect = 
-           // Left = scr.WorkingArea.Left / (double)dpiX;
-           // Top = scr.WorkingArea.Top / (double)dpiX;
-           // Width = scr.WorkingArea.Width / (double)dpiX;
-           // Height = scr.WorkingArea.Height / (double)dpiX;
+            // Rect rect = 
+            Left = scr.WorkingArea.Left / (double)dpiX;
+            Top = scr.WorkingArea.Top / (double)dpiX;
+            Width = scr.WorkingArea.Width / (double)dpiX;
+            Height = scr.WorkingArea.Height / (double)dpiX;
 
-           // Show();
+            Show();
         }
         //v1, Robert_Lin, 2024-11-19, unused, dont use and test
         private void UI_ShowAndEdit_OverlapCustom_v1(EAArgs args, Screen scr)
         {
-            throw new NotSupportedException();
-            //splitCtrl.Visibility = Visibility.Collapsed;
-            //_orgFriendlyName = args.CustomName;
 
-            //inputSplitCtrl = new SplitCtrl0B();
+            splitCtrl.Visibility = Visibility.Collapsed;
+            _orgFriendlyName = args.CustomName;
 
-            ////Calculate the position/size of EditWindow
+            inputSplitCtrl = new SplitCtrl0B();
+
+            //Calculate the position/size of EditWindow
+            //Robert_Lin, 2024-12-6, use the method in CommonFunctions
+            double dpiX = CommonFunctions.GetDpiX();
             //double dpiX = 1.000;
             //var dpiXProperty = typeof(SystemParameters).GetProperty("DpiX", BindingFlags.NonPublic | BindingFlags.Static);
             //if (dpiXProperty != null)
@@ -265,13 +289,13 @@ namespace DDPM.EABroker
             //    var varX = (int)dpiXProperty.GetValue(null, null);
             //    dpiX = (double)varX / (double)96;
             //}
-            //Left = scr.Bounds.Left / (double)dpiX;
-            //Top = scr.Bounds.Top / (double)dpiX;
-            //Width = scr.Bounds.Width / (double)dpiX;
-            //Height = scr.Bounds.Height / (double)dpiX;
-            //Show();
+            Left = scr.Bounds.Left / (double)dpiX;
+            Top = scr.Bounds.Top / (double)dpiX;
+            Width = scr.Bounds.Width / (double)dpiX;
+            Height = scr.Bounds.Height / (double)dpiX;
+            Show();
 
-            //CaptureCustomLayout(scr);
+            CaptureCustomLayout_v1(scr);
         }
 
         //v2 Robert_Lin, 2024-11-19 for Span monitors
@@ -301,13 +325,15 @@ namespace DDPM.EABroker
             _orgFriendlyName = args.SplitJson.CustomName;
 
             //Calculate the position/size of EditWindow
-            double dpiX = 1.00;
-            var dpiXProperty = typeof(SystemParameters).GetProperty("DpiX", BindingFlags.NonPublic | BindingFlags.Static);
-            if (dpiXProperty != null)
-            {
-                var varX = (int)dpiXProperty.GetValue(null, null);
-                dpiX = (double)varX / (double)96;
-            }
+            //Robert_Lin, 2024-12-6, use the method in CommonFunctions
+            double dpiX = CommonFunctions.GetDpiX();
+            //double dpiX = 1.00;
+            //var dpiXProperty = typeof(SystemParameters).GetProperty("DpiX", BindingFlags.NonPublic | BindingFlags.Static);
+            //if (dpiXProperty != null)
+            //{
+            //    var varX = (int)dpiXProperty.GetValue(null, null);
+            //    dpiX = (double)varX / (double)96;
+            //}
 
             splitCtrl.Content = inputSplitCtrl.UC;
             //SplitContent = inputSplitCtrl.UC;
@@ -320,6 +346,7 @@ namespace DDPM.EABroker
 
             Show();
         }
+
         //v2 Robert_Lin, 2024-11-19 for Span monitors
         private void UI_ShowAndEdit_OverlapCustom(EAArgs args, Rectangle workingArea)
         {
@@ -329,13 +356,15 @@ namespace DDPM.EABroker
             inputSplitCtrl = new SplitCtrl0B();
 
             //Calculate the position/size of EditWindow
-            double dpiX = 1.000;
-            var dpiXProperty = typeof(SystemParameters).GetProperty("DpiX", BindingFlags.NonPublic | BindingFlags.Static);
-            if (dpiXProperty != null)
-            {
-                var varX = (int)dpiXProperty.GetValue(null, null);
-                dpiX = (double)varX / (double)96;
-            }
+            //Robert_Lin, 2024-12-6, use the method in CommonFunctions
+            double dpiX = CommonFunctions.GetDpiX();
+            //double dpiX = 1.000;
+            //var dpiXProperty = typeof(SystemParameters).GetProperty("DpiX", BindingFlags.NonPublic | BindingFlags.Static);
+            //if (dpiXProperty != null)
+            //{
+            //    var varX = (int)dpiXProperty.GetValue(null, null);
+            //    dpiX = (double)varX / (double)96;
+            //}
             Left = workingArea.Left / (double)dpiX;
             Top = workingArea.Top / (double)dpiX;
             Width = workingArea.Width / (double)dpiX;
@@ -343,6 +372,31 @@ namespace DDPM.EABroker
             Show();
 
             CaptureCustomLayout(workingArea);
+
+            //Set a timeer to finished edit process
+            //System.Threading.Timer timer1 = new System.Threading.Timer((obj) =>
+            //{
+            //    if (EditReturn != null)
+            //        EditReturn(this, _inputArgs);
+            //    //Hide();
+            //}, null, 3000, Timeout.Infinite);
+
+            //DispatcherTimer timer  = new DispatcherTimer();
+            //timer.Tick += Timer_Tick;
+            //timer.Interval = TimeSpan.FromSeconds(5);
+            //timer.Start();
+        }
+
+        private void Timer_Tick(object? sender, EventArgs e)
+        {
+            if(sender != null)
+            {
+                DispatcherTimer timer = sender as DispatcherTimer;
+                if (timer != null) 
+                    timer.Stop();
+            }
+            if (EditReturn != null)
+                EditReturn(this, _inputArgs);
         }
         #endregion
 
@@ -350,7 +404,8 @@ namespace DDPM.EABroker
         //v1, Robert_Lin, 2024-11-19, unused, dont use and test
         private void CaptureCustomLayout_v1(Screen screen)
         {
-            throw new NotImplementedException();
+            //Robert_Lin, 2024-12-6, use the method in CommonFunctions
+            double scale = CommonFunctions.GetDpiX();
             //double scale = 1.000;
             //var dpiXProperty = typeof(SystemParameters).GetProperty("DpiX", BindingFlags.NonPublic | BindingFlags.Static);
             //if (dpiXProperty != null)
@@ -359,178 +414,180 @@ namespace DDPM.EABroker
             //    scale = (double)varX / (double)96;
             //}
 
-            ////Clear CustomLayouts
-            //canvas.Children.Clear();
+            //Clear CustomLayouts
+            canvas.Children.Clear();
 
-            ////Prepare for Settings
-            ////Format:
-            //// First 4 elements [0]~[3]: BorderCount | ScreenScale | ScreenBoundsWidth | ScreenBoundsHeight
-            //// Later: BorderRect (left, top, width, height), (left, top, width, height), ...
-            //List<double> settings = new List<double>();
-            //settings.Add(0); //BorderCount will be updated later
-            //settings.Add(scale);
-            //settings.Add(screen.WorkingArea.Width);
-            //settings.Add(screen.WorkingArea.Height);
+            //Prepare for Settings
+            //Format:
+            // First 4 elements [0]~[3]: BorderCount | ScreenScale | ScreenBoundsWidth | ScreenBoundsHeight
+            // Later: BorderRect (left, top, width, height), (left, top, width, height), ...
+            List<double> settings = new List<double>();
+            settings.Add(0); //BorderCount will be updated later
+            settings.Add(scale);
+            settings.Add(screen.WorkingArea.Width);
+            settings.Add(screen.WorkingArea.Height);
 
-            //double xRatio = 1.0000 / (double)screen.WorkingArea.Width;
-            //double yRatio = 1.0000 / (float)screen.WorkingArea.Height;
+            double xRatio = 1.0000 / (double)screen.WorkingArea.Width;
+            double yRatio = 1.0000 / (float)screen.WorkingArea.Height;
 
-            ////Enumerate all Window handle which will be fitered by IsTargetWindow()
-            //List<IntPtr> hWnds = Win32.GetWindowHandles(IsTargetWindow);
-            //WriteLog($"@ EAEditWindow.CaptureCustomLayout(), Enum candidate Window and add Borders");
-            //_cellJsons.Clear();
-            //int idx = -1;
-            //int addCount = 0;
-            ////Second phase to filter out from the hWnd
-            //foreach (IntPtr hWnd in hWnds)
-            //{
-            //    idx++;
-            //    //Get the basic info of hWnd
-            //    //
-            //    string windowText = Win32._GetWindowText(hWnd);
+            //Enumerate all Window handle which will be fitered by IsTargetWindow()
+            List<IntPtr> hWnds = Win32.GetWindowHandles(IsTargetWindow);
+            WriteLog($"@ EAEditWindow.CaptureCustomLayout(), Enum candidate Window and add Borders");
+            _cellJsons.Clear();
+            int idx = -1;
+            int addCount = 0;
+            //Second phase to filter out from the hWnd
+            foreach (IntPtr hWnd in hWnds)
+            {
+                idx++;
+                //Get the basic info of hWnd
+                //
+                string windowText = Win32._GetWindowText(hWnd);
 
-            //    IntPtr hWndParent = Win32._GetParent(hWnd);
+                IntPtr hWndParent = Win32._GetParent(hWnd);
 
-            //    Win32.RECT rcWnd = new Win32.RECT();
-            //    Win32._GetWindowRect(hWnd, out rcWnd);
+                Win32.RECT rcWnd = new Win32.RECT();
+                Win32._GetWindowRect(hWnd, out rcWnd);
 
-            //    WriteLog($"[{idx}] hWnd=0x{hWnd:X08}, hWndParent=0x{hWndParent:X08}, Text=[{windowText}], rcWnd=({rcWnd.Left},{rcWnd.Top}){rcWnd.Width}x{rcWnd.Height}");
+                WriteLog($"[{idx}] hWnd=0x{hWnd:X08}, hWndParent=0x{hWndParent:X08}, Text=[{windowText}], rcWnd=({rcWnd.Left},{rcWnd.Top}){rcWnd.Width}x{rcWnd.Height}");
 
-            //    //Check if the Window is in current screen
-            //    Screen screenOfhWnd = Screen.FromHandle(hWnd);
-            //    if (screenOfhWnd == null)
-            //    {
-            //        WriteLog($"    [{idx}] Abandon: GetScreen return null.");
-            //        continue;
-            //    }
-            //    if (!screenOfhWnd.Equals(screen))
-            //    {
-            //        WriteLog($"    [{idx}] Abandon: Not in target screen.");
-            //        continue;
-            //    }
+                //Check if the Window is in current screen
+                Screen screenOfhWnd = Screen.FromHandle(hWnd);
+                if (screenOfhWnd == null)
+                {
+                    WriteLog($"    [{idx}] Abandon: GetScreen return null.");
+                    continue;
+                }
+                if (!screenOfhWnd.Equals(screen))
+                {
+                    WriteLog($"    [{idx}] Abandon: Not in target screen.");
+                    continue;
+                }
 
-            //    //Check if the window is totally inside screen
-            //    if (!screen.Bounds.Contains(rcWnd))
-            //    {
-            //        WriteLog($"    [{idx}] Abandon: Not inside target screen (no acroess).");
-            //        continue;
-            //    }
+                //Check if the window is totally inside screen
+                if (!screen.Bounds.Contains(rcWnd))
+                {
+                    WriteLog($"    [{idx}] Abandon: Not inside target screen (no acroess).");
+                    continue;
+                }
 
-            //    //Get the Process from hWnd
-            //    Process process;
-            //    string msg = "";
-            //    if (!WinEventHook.GetProcessFromWindowHandle(hWnd, out process, out msg))
-            //    {
-            //        //Fail to get the process
-            //        WriteLog($"    [{idx}] Abandon: GetProcessFromWindowHandle() err, {msg}");
-            //        continue;
-            //    }
+                //Get the Process from hWnd
+                Process process;
+                string msg = "";
+                if (!WinEventHook.GetProcessFromWindowHandle(hWnd, out process, out msg))
+                {
+                    //Fail to get the process
+                    WriteLog($"    [{idx}] Abandon: GetProcessFromWindowHandle() err, {msg}");
+                    continue;
+                }
 
-            //    //Try to get the PathName of the process
-            //    string pathName = "";
-            //    try
-            //    {
-            //        if (process.MainModule != null)
-            //        {
-            //            if (!String.IsNullOrEmpty(process.MainModule.FileName))
-            //            {
-            //                pathName = process.MainModule.FileName;
-            //                WriteLog($"    [{idx}] PathName=[{pathName}]");
-            //            }
-            //        }
-            //    }
-            //    catch (Exception e1)
-            //    {
-            //        msg = e1.Message;
-            //        WriteLog($"    [{idx}] Abandon: Get PathName from Procss causes exception, {msg}");
-            //    }
+                //Try to get the PathName of the process
+                string pathName = "";
+                try
+                {
+                    if (process.MainModule != null)
+                    {
+                        if (!String.IsNullOrEmpty(process.MainModule.FileName))
+                        {
+                            pathName = process.MainModule.FileName;
+                            WriteLog($"    [{idx}] PathName=[{pathName}]");
+                        }
+                    }
+                }
+                catch (Exception e1)
+                {
+                    msg = e1.Message;
+                    WriteLog($"    [{idx}] Abandon: Get PathName from Procss causes exception, {msg}");
+                }
 
-            //    //Filter out DDPM processes
-            //    if (ArrangeVM.IsEAExcludedPathName(pathName))
-            //    {
-            //        WriteLog($"    [{idx}] Abandon: PathName is in Excluded List");
-            //        continue;
-            //    }
+                //Filter out DDPM processes
+                if (ArrangeVM.IsEAExcludedPathName(pathName))
+                {
+                    WriteLog($"    [{idx}] Abandon: PathName is in Excluded List");
+                    continue;
+                }
 
-            //    //Add Border to canvas
-            //    Border border = new Border();
-            //    //#E6AC28 = (230, 172, 40)
-            //    border.BorderBrush = new System.Windows.Media.SolidColorBrush(
-            //        System.Windows.Media.Color.FromRgb(230, 172, 40));
-            //    border.BorderThickness = new Thickness(6);
-            //    border.CornerRadius = new CornerRadius(4);
-            //    border.Width = rcWnd.Width / scale;
-            //    border.Height = rcWnd.Height / scale;
+                //Add Border to canvas
+                Border border = new Border();
+                //#E6AC28 = (230, 172, 40)
+                border.BorderBrush = new System.Windows.Media.SolidColorBrush(
+                    System.Windows.Media.Color.FromRgb(230, 172, 40));
+                border.BorderThickness = new Thickness(6);
+                border.CornerRadius = new CornerRadius(4);
+                border.Width = rcWnd.Width / scale;
+                border.Height = rcWnd.Height / scale;
 
-            //    //Convert and store in CellList, rcRatio
-            //    //CellObj cellObj = new CellObj();
-            //    //cellObj.Name = pathName;
+                //Convert and store in CellList, rcRatio
+                //CellObj cellObj = new CellObj();
+                //cellObj.Name = pathName;
 
-            //    canvas.Children.Add(border);
-            //    addCount++;
-            //    //Convert screen coordinate to EditWindow
-            //    System.Windows.Point ptWindow = PointFromScreen(new System.Windows.Point(rcWnd.Left, rcWnd.Top));
+                canvas.Children.Add(border);
+                addCount++;
+                //Convert screen coordinate to EditWindow
+                System.Windows.Point ptWindow = PointFromScreen(new System.Windows.Point(rcWnd.Left, rcWnd.Top));
 
-            //    double left = ptWindow.X;
-            //    double top = ptWindow.Y;
-            //    Canvas.SetLeft(border, left);
-            //    Canvas.SetTop(border, top);
+                double left = ptWindow.X;
+                double top = ptWindow.Y;
+                Canvas.SetLeft(border, left);
+                Canvas.SetTop(border, top);
 
-            //    settings.Add(left);
-            //    settings.Add(top);
-            //    settings.Add(border.Width);
-            //    settings.Add(border.Height);
-            //    WriteLog($"    [{idx}] Accept: Add a Border to EAEditWindow");
+                settings.Add(left);
+                settings.Add(top);
+                settings.Add(border.Width);
+                settings.Add(border.Height);
+                WriteLog($"    [{idx}] Accept: Add a Border to EAEditWindow");
 
-            //    CellJson cellJson = new CellJson();
-            //    cellJson.Name = $"0b{addCount}";
-            //    cellJson.x = (double)left * xRatio;
-            //    cellJson.y = (double)top * yRatio;
-            //    cellJson.w = (double)border.Width * xRatio;
-            //    cellJson.h = (double)border.Height * yRatio;
-            //    _cellJsons.Add(cellJson);
-            //}
-            //WriteLog($"  * Detected window count = [{addCount}]");
-            //settings[0] = addCount;
-            //inputSplitCtrl.Settings = settings;
-            //inputSplitCtrl.CellList.Clear();
+                CellJson cellJson = new CellJson();
+                cellJson.Name = $"0b{addCount}";
+                cellJson.x = (double)left * xRatio;
+                cellJson.y = (double)top * yRatio;
+                cellJson.w = (double)border.Width * xRatio;
+                cellJson.h = (double)border.Height * yRatio;
+                _cellJsons.Add(cellJson);
+            }
+            WriteLog($"  * Detected window count = [{addCount}]");
+            settings[0] = addCount;
+            inputSplitCtrl.Settings = settings;
+            inputSplitCtrl.CellList.Clear();
 
 
-            //SplitCtrl0B spCtrl0B = (SplitCtrl0B)inputSplitCtrl;
-            /////spCtrl0B.RatioRects.Clear();
-            //foreach (CellJson cellJson in _cellJsons)
-            //{
-            //    CellBorder cellBorder = new CellBorder();
-            //    cellBorder.CellName = cellJson.Name;
-            //    cellBorder.rcRatio = new Rect(cellJson.x, cellJson.y, cellJson.w, cellJson.h);
-            //    inputSplitCtrl.CellBorders.Add(cellBorder);
+            SplitCtrl0B spCtrl0B = (SplitCtrl0B)inputSplitCtrl;
+            ///spCtrl0B.RatioRects.Clear();
+            foreach (CellJson cellJson in _cellJsons)
+            {
+                CellBorder cellBorder = new CellBorder();
+                cellBorder.CellName = cellJson.Name;
+                cellBorder.rcRatio = new Rect(cellJson.x, cellJson.y, cellJson.w, cellJson.h);
+                inputSplitCtrl.CellBorders.Add(cellBorder);
 
-            //    CellObj cellObj = new CellObj(cellJson.Name);
-            //    cellObj.rcRatio = new Rect(cellJson.x, cellJson.y, cellJson.w, cellJson.h);
-            //    inputSplitCtrl.CellList.Add(cellObj);
+                CellObj cellObj = new CellObj(cellJson.Name);
+                cellObj.rcRatio = new Rect(cellJson.x, cellJson.y, cellJson.w, cellJson.h);
+                inputSplitCtrl.CellList.Add(cellObj);
 
-            //    ///spCtrl0B.RatioRects.Add(new Rect(cellJson.x, cellJson.y, cellJson.w, cellJson.h));
-            //}
+                ///spCtrl0B.RatioRects.Add(new Rect(cellJson.x, cellJson.y, cellJson.w, cellJson.h));
+            }
 
-            ////Set a timeer to finished edit process
-            //System.Threading.Timer timer1 = new System.Threading.Timer((obj) =>
-            //{
-            //    if (EditReturn != null)
-            //        EditReturn(this, _inputArgs);
-            //    //Hide();
-            //}, null, 3000, Timeout.Infinite);
+            //Set a timeer to finished edit process
+            System.Threading.Timer timer1 = new System.Threading.Timer((obj) =>
+            {
+                if (EditReturn != null)
+                    EditReturn(this, _inputArgs);
+                //Hide();
+            }, null, 3000, Timeout.Infinite);
         }
 
         //v2 Robert_Lin, 2024-11-19 for Span monitors
         private void CaptureCustomLayout(Rectangle workingArea)
         {
-            double scale = 1.000;
-            var dpiXProperty = typeof(SystemParameters).GetProperty("DpiX", BindingFlags.NonPublic | BindingFlags.Static);
-            if (dpiXProperty != null)
-            {
-                var varX = (int)dpiXProperty.GetValue(null, null);
-                scale = (double)varX / (double)96;
-            }
+            //Robert_Lin, 2024-12-6, use the method in CommonFunctions
+            double scale = CommonFunctions.GetDpiX();
+            //double scale = 1.000;
+            //var dpiXProperty = typeof(SystemParameters).GetProperty("DpiX", BindingFlags.NonPublic | BindingFlags.Static);
+            //if (dpiXProperty != null)
+            //{
+            //    var varX = (int)dpiXProperty.GetValue(null, null);
+            //    scale = (double)varX / (double)96;
+            //}
 
             //Clear CustomLayouts
             canvas.Children.Clear();
@@ -687,14 +744,7 @@ namespace DDPM.EABroker
                 ///spCtrl0B.RatioRects.Add(new Rect(cellJson.x, cellJson.y, cellJson.w, cellJson.h));
             }
 
-            //Set a timeer to finished edit process
-            System.Threading.Timer timer1 = new System.Threading.Timer((obj) =>
-            {
-                if (EditReturn != null)
-                    EditReturn(this, _inputArgs);
-                //Hide();
-            }, null, 3000, Timeout.Infinite);
-        }
+         }
 
 
         //Reference: https://stackoverflow.com/questions/210504/enumerate-windows-like-alt-tab-does
@@ -736,6 +786,170 @@ namespace DDPM.EABroker
 
             return true;
         }
+        #endregion
+
+
+        #region EzMemLaunch
+        public void ShowForEzMemLauncher(MonitorInfo mi, ISplitCtrl isp)
+        {
+            Screen? screen = Screen.AllScreens.FirstOrDefault(x => x.DeviceName.Equals(mi.DisplayName, StringComparison.OrdinalIgnoreCase));
+            if (screen == null)
+                return;
+
+            canvas.Children.Clear();
+            splitCtrl.Visibility = Visibility.Visible;
+
+            inputSplitCtrl = isp.Clone();
+            double screenScale = GetScreenScale();
+
+            Rect rcScreen = new Rect();
+            rcScreen.X = screen.WorkingArea.Left / screenScale;
+            rcScreen.Y = screen.WorkingArea.Top / screenScale;
+            rcScreen.Width = screen.WorkingArea.Width / screenScale;
+            rcScreen.Height = screen.WorkingArea.Height / screenScale;
+
+            Left = rcScreen.X;
+            Top = rcScreen.Y;
+            Width = rcScreen.Width;
+            Height = rcScreen.Height;
+
+            if (isp.IsOverlapCustomLayout)
+            {
+                SplitCtrl0B sp0B = (SplitCtrl0B)inputSplitCtrl;
+                sp0B.ApplySettingsToCellList(rcScreen);
+            }
+            inputSplitCtrl.SplitMode = eSplitModes.Work;
+            inputSplitCtrl.IsVertical = (rcScreen.Width < rcScreen.Height);
+            splitCtrl.Content = inputSplitCtrl.UC;
+
+            ContenRendered += EAEditWindow_ContenRendered;
+            Topmost = true;
+            Show();
+        }
+
+        private void EAEditWindow_ContenRendered(object? sender, EventArgs e)
+        {
+            RefreshCellRects();
+        }
+
+        private double GetScreenScale()
+        {
+            //Robert_Lin, 2024-12-6, use the method in CommonFunctions
+            return CommonFunctions.GetDpiX();
+            //double screenScale = 1.000;
+            //var dpiXProperty = typeof(SystemParameters).GetProperty("DpiX", BindingFlags.NonPublic | BindingFlags.Static);
+            //if (dpiXProperty != null)
+            //{
+            //    var varX = (int)dpiXProperty.GetValue(null, null);
+            //    double dpiX = (double)varX / (double)96;
+            //    if (dpiX >= 1.0000)
+            //        screenScale = dpiX;
+            //}
+            //return screenScale;
+        }
+        public Rect GetFrameworkElementRect(FrameworkElement ele)
+        {
+            if (ele == null)
+                return Rect.Empty;
+
+            if ((ele.ActualWidth == 0) && (ele.ActualHeight == 0))
+                return Rect.Empty;
+
+            PresentationSource preSrc = PresentationSource.FromVisual(ele);
+            if (preSrc == null)
+                return Rect.Empty;
+
+            //Robert_Lin, 2024-12-6, use the method in CommonFunctions
+            double screenScale = CommonFunctions.GetDpiX();
+            //double screenScale = 1.000;
+            //var dpiXProperty = typeof(SystemParameters).GetProperty("DpiX", BindingFlags.NonPublic | BindingFlags.Static);
+            //if (dpiXProperty != null)
+            //{
+            //    var varX = (int)dpiXProperty.GetValue(null, null);
+            //    double dpiX = (double)varX / (double)96;
+            //    if (dpiX >= 1.0000)
+            //        screenScale = dpiX;
+            //}
+
+            System.Windows.Point ptTopLeft = ele.PointToScreen(new System.Windows.Point(0, 0));
+            double w = ele.ActualWidth * screenScale;
+            double h = ele.ActualHeight * screenScale;
+            //Trace.WriteLine($"ctrlActual={ele.ActualWidth}x{ele.ActualHeight}; Scale={_vm.ScreenScale} => {w}x{h}");
+            return new Rect(ptTopLeft.X, ptTopLeft.Y, w, h);
+        }
+
+        public void RefreshCellRects()
+        {
+            ISplitCtrl? isplitCtrl = (ISplitCtrl)splitCtrl;
+            if (isplitCtrl == null)
+            {
+                return;
+            }
+
+            bool _areCellRectsRefreshed = true;
+            if (isplitCtrl.IsAddedCustomLayout)
+            {
+                SplitCtrl0B sp0B = (SplitCtrl0B)isplitCtrl;
+                foreach (CellObj objCell in isplitCtrl.CellList)
+                {
+                    objCell.rc = GetFrameworkElementRect(objCell.CellBd);
+                    if (objCell.rc.IsEmpty)
+                        _areCellRectsRefreshed = false;
+                }
+            }
+            else
+            {
+                foreach (CellObj objCell in isplitCtrl.CellList)
+                {
+                    if (objCell.CellBd == null)
+                        continue;
+
+                    objCell.rc = GetFrameworkElementRect(objCell.CellBd);
+
+                    if (objCell.rc.IsEmpty)
+                        _areCellRectsRefreshed = false;
+                }
+            }
+
+            if (!_areCellRectsRefreshed)
+            {
+                //System.Threading.Timer timer1 = new System.Threading.Timer((obj) => { RefreshCellRects(); }, null, 100, Timeout.Infinite);
+            }
+            else
+            {
+                string d = "";
+            }
+
+        }
+
+        public void ArrangeWindow(IntPtr hWnd, int idxCell)
+        {
+            Dispatcher.BeginInvoke(new Action(() =>
+            {
+                if (inputSplitCtrl == null)
+                    return;
+
+                int cellBoderCount = inputSplitCtrl.CellList.Count;
+                if ((idxCell < 0) || (idxCell >= cellBoderCount))
+                {
+                    return;
+                }
+                CellObj celObj = inputSplitCtrl.CellList[idxCell];
+                Rect rcArrange = celObj.rc;
+                if (rcArrange.IsEmpty || (rcArrange.Width <= 0))
+                {
+                    rcArrange = GetFrameworkElementRect(celObj.CellBd);
+                    if (rcArrange.IsEmpty) 
+                    {
+                        return;
+                    }
+                }
+
+                WinEventHook.SetWindowPosition(hWnd, rcArrange);
+            }));
+
+        }
+
         #endregion
 
     }

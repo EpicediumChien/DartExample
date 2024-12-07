@@ -52,7 +52,7 @@ namespace DDPM.SA.Plugins.User.EzMemory
 
         [DllImport("user32.dll", SetLastError = true)]
         [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
-        static extern int GetWindowTextLength(IntPtr hWnd);
+        private static extern int GetWindowTextLength(IntPtr hWnd);
         private int EzMemoryGetWindowTextLength(IntPtr hWnd)
         {
             return GetWindowTextLength(hWnd);
@@ -60,7 +60,7 @@ namespace DDPM.SA.Plugins.User.EzMemory
 
         [DllImport("user32.dll", SetLastError = true)]
         [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
-        static extern int GetWindowText(IntPtr hWnd, StringBuilder lpString, int nMaxCount);
+        private static extern int GetWindowText(IntPtr hWnd, StringBuilder lpString, int nMaxCount);
         private int EzMemoryGetWindowText(IntPtr hWnd, StringBuilder lpString, int nMaxCount)
         {
             return GetWindowText(hWnd, lpString, nMaxCount);
@@ -69,7 +69,7 @@ namespace DDPM.SA.Plugins.User.EzMemory
         [DllImport("user32.dll", SetLastError = true)]
         [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
         [return: MarshalAs(UnmanagedType.Bool)]
-        static extern bool SetWindowPos(IntPtr hWnd, IntPtr hWndInsertAfter, int X, int Y, int cx, int cy, uint uFlags);
+        private static extern bool SetWindowPos(IntPtr hWnd, IntPtr hWndInsertAfter, int X, int Y, int cx, int cy, uint uFlags);
         private bool EzMemorySetWindowPos(IntPtr hWnd, IntPtr hWndInsertAfter, int X, int Y, int cx, int cy, uint uFlags)
         {
             return SetWindowPos(hWnd, hWndInsertAfter, X, Y, cx, cy, uFlags);
@@ -77,7 +77,7 @@ namespace DDPM.SA.Plugins.User.EzMemory
 
         [DllImport("user32.dll", SetLastError = true)]
         [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
-        static extern int GetClassName(IntPtr hWnd, StringBuilder lpClassName, int nMaxCount);
+        private static extern int GetClassName(IntPtr hWnd, StringBuilder lpClassName, int nMaxCount);
         private int EzMemoryGetClassName(IntPtr hWnd, StringBuilder lpClassName, int nMaxCount)
         {
             return GetClassName(hWnd, lpClassName, nMaxCount);
@@ -85,8 +85,7 @@ namespace DDPM.SA.Plugins.User.EzMemory
         [DllImport("user32.dll", SetLastError = true)]
         [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
         [return: MarshalAs(UnmanagedType.Bool)]
-        static extern bool GetWindowRect(IntPtr hWnd, out RECT lpRect);
-
+        private static extern bool GetWindowRect(IntPtr hWnd, out RECT lpRect);
         private bool EzMemoryGetWindowRect(IntPtr hWnd, out RECT lpRect)
         {
             return GetWindowRect(hWnd, out lpRect);
@@ -171,6 +170,7 @@ namespace DDPM.SA.Plugins.User.EzMemory
         private static List<MonitorInfo> _AllInfoMonitors;
         private static DDPMSettings _DDPMSettings;
         private Timer _EzMemoryTimer;
+        private bool startup_Launch_flag = false;
         //DDPM.EABroker.EABroker _eaBroker = null;
         #endregion
 
@@ -457,8 +457,7 @@ namespace DDPM.SA.Plugins.User.EzMemory
             {
                 if (_DisplayManagerPlugin != null)
                 {
-                    _logs.DebugMsg_1("[EzMemoryManagerPlugin] CheckMonitorsAndLaunchApps ...");
-                    Trace.WriteLine("[EzMemoryManagerPlugin] CheckMonitorsAndLaunchApps ");
+                    _logs.Info("[EzMemoryManagerPlugin] CheckMonitorsAndLaunchApps ... in");
 
                     if (_AllInfoMonitors != null) _AllInfoMonitors.Clear();
                     else _AllInfoMonitors = new List<MonitorInfo>();
@@ -470,12 +469,12 @@ namespace DDPM.SA.Plugins.User.EzMemory
                         // 對每一個螢幕進行檢查
                         foreach (var monitor in _AllInfoMonitors)
                         {
-                            Trace.WriteLine("[EzMemoryManagerPlugin] CheckAndLaunchForMonitor " + monitor.modelName);
+                            _logs.Info($"[EzMemoryManagerPlugin] CheckMonitorsAndLaunchApps ... Check {monitor.modelName}");
                             CheckAndLaunchForMonitor(monitor);
                         }
                     }
 
-                    _logs.DebugMsg_1("[EzMemoryManagerPlugin] _AllInfoMonitors count : " + _AllInfoMonitors.Count);
+                    _logs.Info("[EzMemoryManagerPlugin] _AllInfoMonitors count : " + _AllInfoMonitors.Count);
                 }
             }
             catch (Exception ex)
@@ -488,6 +487,8 @@ namespace DDPM.SA.Plugins.User.EzMemory
         {
             try
             {
+                _logs.Info($"[EzMemoryManagerPlugin] CheckAndLaunchForMonitor ... {monitorInfo.modelName} ... in");
+
                 List<DDPMMonitorSettings> monitorSettingsList = _SettingsPlugin.ReloadMonitorSettings(monitorInfo.modelName).Result;
 
                 if (monitorSettingsList != null)
@@ -503,6 +504,7 @@ namespace DDPM.SA.Plugins.User.EzMemory
                             {
                                 if (ps.Auto)
                                 {
+                                    _logs.Info($"[EzMemoryManagerPlugin] CheckAndLaunchForMonitor find ps.Auto = {ps.Auto}");
                                     TimeSpan autoStartTime = TimeSpan.FromSeconds(ps.AutoStartTime.Value);
                                     //    Trace.WriteLine("ID = " + ps.ID);
                                     //    Trace.WriteLine("Auto = " + ps.Auto);
@@ -510,32 +512,57 @@ namespace DDPM.SA.Plugins.User.EzMemory
                                     //    Trace.WriteLine("StartUpLaunch = " + ps.StartUpLaunch);
                                     if (IsTimeToLaunch(autoStartTime))
                                     {
-                                        _logs.DebugMsg_1($"[EzMemoryManagerPlugin] CheckAndLaunchForMonitor ps.Auto match, MonitorInfo {monitorInfo.modelName} Auto = " + ps.Auto.ToString() + ", StartUpLaunch = " + ps.StartUpLaunch.ToString());
+                                        _logs.Info($"[EzMemoryManagerPlugin] CheckAndLaunchForMonitor ps.Auto match, MonitorInfo {monitorInfo.modelName} Auto = " + ps.Auto.ToString() + ", StartUpLaunch = " + ps.StartUpLaunch.ToString());
                                         LaunchAndArrangeApps(ps.ID, monitorInfo);
-                                        _logs.DebugMsg_1($"[EzMemoryManagerPlugin] CheckAndLaunchForMonitor IsTimeToLaunch, LaunchAndArrangeApps {ps.ID}");
+                                        _logs.Info($"[EzMemoryManagerPlugin] CheckAndLaunchForMonitor IsTimeToLaunch, LaunchAndArrangeApps End");
+                                    }
+                                    else
+                                    {
+                                        _logs.Info($"[EzMemoryManagerPlugin] CheckAndLaunchForMonitor autoStartTime = {autoStartTime.ToString()}");
                                     }
                                 }
+                                else
+                                {
+                                    _logs.Info($"[EzMemoryManagerPlugin] CheckAndLaunchForMonitor find ps.Auto = {ps.Auto}");
+                                }
+
                                 if (ps.StartUpLaunch)
                                 {
                                     long startupTime = Environment.TickCount64;
                                     if (IsStartupRecently(startupTime))
                                     {
-                                        _logs.DebugMsg_1($"[EzMemoryManagerPlugin] CheckAndLaunchForMonitor ps.StartUpLaunch match, MonitorInfo {monitorInfo.modelName} " + ", StartupTime : " + startupTime.ToString() + ", StartUpLaunch = " + ps.StartUpLaunch.ToString());
-                                        LaunchAndArrangeApps(ps.ID, monitorInfo);
-                                        _logs.DebugMsg_1($"[EzMemoryManagerPlugin] CheckAndLaunchForMonitor IsStartupRecently, LaunchAndArrangeApps {ps.ID}");
+                                        if (startup_Launch_flag == false)
+                                        {
+                                            _logs.Info($"[EzMemoryManagerPlugin] CheckAndLaunchForMonitor ps.StartUpLaunch match, MonitorInfo {monitorInfo.modelName} " + ", StartupTime : " + startupTime.ToString() + ", StartUpLaunch = " + ps.StartUpLaunch.ToString());
+                                            LaunchAndArrangeApps(ps.ID, monitorInfo);
+                                            _logs.Info($"[EzMemoryManagerPlugin] CheckAndLaunchForMonitor IsStartupRecently, LaunchAndArrangeApps End");
+                                            startup_Launch_flag = true;
+                                        }
+                                        else
+                                        {
+                                            _logs.Info($"[EzMemoryManagerPlugin] CheckAndLaunchForMonitor startup_Launch_flag = {startup_Launch_flag.ToString()}");
+                                        }
                                     }
+                                    else
+                                    {
+                                        _logs.Info($"[EzMemoryManagerPlugin] CheckAndLaunchForMonitor ps.StartUpLaunch No match, MonitorInfo {monitorInfo.modelName} " + ", StartupTime : " + startupTime.ToString() + ", StartUpLaunch = " + ps.StartUpLaunch.ToString());
+                                    }
+                                }
+                                else
+                                {
+                                    _logs.Info($"[EzMemoryManagerPlugin] CheckAndLaunchForMonitor find ps.StartUpLaunch = {ps.StartUpLaunch.ToString()}");
                                 }
                             }
                         }
                     }
                     else
                     {
-                        _logs.DebugMsg_1("[EzMemoryManagerPlugin] CheckAndLaunchForMonitor, monitorSettings == null && monitorSettings.easyArrangementDDPM == null ");
+                        _logs.Info("[EzMemoryManagerPlugin] CheckAndLaunchForMonitor, monitorSettings == null && monitorSettings.easyArrangementDDPM == null ");
                     }
                 }
                 else
                 {
-                    _logs.DebugMsg_1("[EzMemoryManagerPlugin] CheckAndLaunchForMonitor, _AllInfoMonitors count : " + _AllInfoMonitors.Count);
+                    _logs.Info("[EzMemoryManagerPlugin] CheckAndLaunchForMonitor, _AllInfoMonitors count : " + _AllInfoMonitors.Count);
                 }
             }
             catch (Exception ex)
@@ -547,8 +574,7 @@ namespace DDPM.SA.Plugins.User.EzMemory
         private bool IsTimeToLaunch(TimeSpan autoStartTime)
         {
             var currentTime = DateTime.Now.TimeOfDay;
-            Trace.WriteLine("CurrentTime = " + currentTime.Hours + " : " + currentTime.Minutes);
-            Trace.WriteLine("StartUpLaunch = " + autoStartTime.Hours + " : " + autoStartTime.Minutes);
+            _logs.Info("CurrentTime = " + currentTime.Hours + " : " + currentTime.Minutes + " || " + "StartUpLaunch = " + autoStartTime.Hours + " : " + autoStartTime.Minutes);
             return currentTime.Hours == autoStartTime.Hours && currentTime.Minutes == autoStartTime.Minutes;
         }
 
@@ -557,7 +583,7 @@ namespace DDPM.SA.Plugins.User.EzMemory
             try
             {
                 DDPMSettings ddpmSettings = _SettingsPlugin.ReloadAppConfigData().Result;
-                _logs.DebugMsg_1($"[EzMemoryManagerPlugin] LaunchAndArrangeApps Profile ID: {profileId}");
+                _logs.Info($"[EzMemoryManagerPlugin] LaunchAndArrangeApps Profile ID: {profileId}");
 
                 if (ddpmSettings != null && ddpmSettings.UserSettings.EAProfile != null)
                 {
@@ -565,7 +591,7 @@ namespace DDPM.SA.Plugins.User.EzMemory
 
                     if (profile != null)
                     {
-                        _logs.DebugMsg_1($"[EzMemoryManagerPlugin] LaunchAndArrangeApps Found profile: {profile.Name} (ID: {profile.ID})");
+                        _logs.Info($"[EzMemoryManagerPlugin] LaunchAndArrangeApps Found profile: {profile.Name} (ID: {profile.ID})");
 
                         Dictionary<string, Bind_AddFullPage_AppCollectionData> launchApp = new Dictionary<string, Bind_AddFullPage_AppCollectionData>();
 
@@ -580,14 +606,14 @@ namespace DDPM.SA.Plugins.User.EzMemory
                             };
 
                             launchApp.Add(appData.AppName, appData);
-                            _logs.DebugMsg_1($"[EzMemoryManagerPlugin] LaunchAndArrangeApps App to launch: {appData.AppName}, Path: {appData.AppPath}, Is UWP: {appData.AppType}");
+                            _logs.Info($"[EzMemoryManagerPlugin] LaunchAndArrangeApps App to launch: {appData.AppName}, Path: {appData.AppPath}, Is UWP: {appData.AppType}");
                         }
 
-                        bool result = LaunchAndArrangeApps(launchApp).Result;
-                        //bool result = LaunchAndArrangeAppsWithEzArrange(launchApp, monitorInfo, profile.Layout).Result;
+                        //bool result = LaunchAndArrangeApps(launchApp).Result;
+                        bool result = LaunchAndArrangeAppsWithEzArrange(launchApp, monitorInfo, profile.Layout).Result;
                         if (result)
                         {
-                            _logs.DebugMsg_1($"[EzMemoryManagerPlugin] LaunchAndArrangeApps Apps launched and arranged successfully for profile: {profile.Name}");
+                            _logs.Info($"[EzMemoryManagerPlugin] LaunchAndArrangeApps Apps launched and arranged successfully for profile: {profile.Name}");
                         }
                         else
                         {
@@ -611,8 +637,8 @@ namespace DDPM.SA.Plugins.User.EzMemory
         }
         private bool IsStartupRecently(long startupTime)
         {
-            // 1分鐘內定義為"剛啟動"狀態
-            long oneMinuteInMilliseconds = 60000;
+            // 5分鐘內定義為"剛啟動"狀態
+            long oneMinuteInMilliseconds = 300000;
             return startupTime < oneMinuteInMilliseconds;
         }
 
@@ -629,9 +655,15 @@ namespace DDPM.SA.Plugins.User.EzMemory
 
             Dictionary<string, InstalledAppInfo> installedApp = new Dictionary<string, InstalledAppInfo>();
             string fileinfo = string.Empty, info = string.Empty;
-            DDPMFileSecurity.CheckFold(IconFolder, out fileinfo, out info);
+            
             if (!System.IO.Directory.Exists(IconFolder))
                 System.IO.Directory.CreateDirectory(IconFolder);
+
+            if(!DDPMFileSecurity.CheckFold(IconFolder, out fileinfo, out info))
+            {
+                _logs.Info($"[EzMemoryManagerPlugin][CheckFold] folder path invalid: {info}");
+                return Task.FromResult(installedApp);
+            }
 
             Dictionary<string, List<AppItemInfo>> dictionary = new Dictionary<string, List<AppItemInfo>>();
             IKnownFolder ikf = null;
@@ -891,7 +923,7 @@ namespace DDPM.SA.Plugins.User.EzMemory
             return true;
         }
 
-        public async Task<bool> LaunchAndArrangeAppsWithEzArrange(Dictionary<string, Bind_AddFullPage_AppCollectionData> sortApps, MonitorInfo moInfo, int eAid)
+        public async Task<bool> LaunchAndArrangeAppsWithEzArrange(Dictionary<String, Bind_AddFullPage_AppCollectionData> sortApps, MonitorInfo moInfo, int eAid)
         {
             try
             {
@@ -985,6 +1017,7 @@ namespace DDPM.SA.Plugins.User.EzMemory
                     return Task.FromResult(false);
                 }
 
+
                 List<Bind_AddFullPage_AppCollectionData> seletcApps = new List<Bind_AddFullPage_AppCollectionData>();
                 double screenWidth = SystemParameters.PrimaryScreenWidth;
                 double screenHeight = SystemParameters.PrimaryScreenHeight;
@@ -993,15 +1026,24 @@ namespace DDPM.SA.Plugins.User.EzMemory
                 var sortedByKey = sortApps.OrderBy(x => x.Key).ToList();
                 seletcApps = sortedByKey.Select(x => x.Value).ToList();
 
-                Task.Run(async () =>
-                {
+                //Task.Run(async () =>
+                //{
+                    EzMemLauncher ezMemLauncher = new EzMemLauncher();
+                    MonitorInfo mi = _AllInfoMonitors[0];
+                    int eaId = 9;
+                    ezMemLauncher.LaunchStart(mi, eaId);
+
                     List<IntPtr> windowHandles = new List<IntPtr>();
+
+                    //Robert_Lin, add to make sure all opened windows has been arranged
+                    int arrangeCount = 0;
+                    int addCount = 0;
 
                     for (int i = 0; i < appCount; i++)
                     {
                         var app = seletcApps[i];
                         IntPtr handle = IntPtr.Zero;
-
+                        
                         try
                         {
                             // 檢查應用程式是否已經存在
@@ -1032,7 +1074,7 @@ namespace DDPM.SA.Plugins.User.EzMemory
                                     if (handle != IntPtr.Zero && !windowHandles.Contains(handle))
                                         break;
 
-                                    await Task.Delay(500);
+                                    Task.Delay(500);
                                 }
 
                                 if (handle == IntPtr.Zero)
@@ -1042,42 +1084,57 @@ namespace DDPM.SA.Plugins.User.EzMemory
                                 }
                             }
 
-                            // 取得視窗的 DPI 設定
+                             // 取得視窗的 DPI 設定
                             float dpiScale = GetDpiScaleForWindow(handle);
 
-                            // 調整視窗位置與大小，考慮 DPI 比例
+                            /*
+                           // 調整視窗位置與大小，考慮 DPI 比例
                             EzMemorySetWindowPos(handle, IntPtr.Zero,
                                 (int)((i * widthPerApp) * dpiScale),
                                 0,
                                 (int)(widthPerApp * dpiScale),
                                 (int)(screenHeight * dpiScale),
                                 SWP_SHOWWINDOW);
+                            */
+
+                            ezMemLauncher.ArrangeWindow(handle, i);
+                            arrangeCount++;
+
 
                             // 確認視窗是否已移動到預期的位置
-                            for (int checkAttempt = 0; checkAttempt < 10; checkAttempt++)
-                            {
-                                if (EzMemoryGetWindowRect(handle, out RECT rect))
-                                {
-                                    if (rect.Left == (int)((i * widthPerApp) * dpiScale) && rect.Top == 0 &&
-                                        rect.Right == (int)(((i + 1) * widthPerApp) * dpiScale) && rect.Bottom == (int)(screenHeight * dpiScale))
-                                    {
-                                        _logs.Info($"[EzMemoryManagerPlugin] LaunchAndArrangeApps, App {app.AppName} positioned correctly.");
-                                        break;
-                                    }
-                                }
+                            //for (int checkAttempt = 0; checkAttempt < 10; checkAttempt++)
+                            //{
+                            //    if (EzMemoryGetWindowRect(handle, out RECT rect))
+                            //    {
+                            //        if (rect.Left == (int)((i * widthPerApp) * dpiScale) && rect.Top == 0 &&
+                            //            rect.Right == (int)(((i + 1) * widthPerApp) * dpiScale) && rect.Bottom == (int)(screenHeight * dpiScale))
+                            //        {
+                            //            _logs.Info($"[EzMemoryManagerPlugin] LaunchAndArrangeApps, App {app.AppName} positioned correctly.");
+                            //            break;
+                            //        }
+                            //    }
 
-                                await Task.Delay(500);
-                            }
+                                //Task.Delay(500);
+                            //}
 
-                            await Task.Delay(500);
+                            Task.Delay(1000);
+                            
                         }
                         catch (Exception ex)
                         {
                             _logs.Error($"[EzMemoryManagerPlugin] LaunchAndArrangeApps, Error arranging app {app.AppName}: {ex}");
                         }
-                    }
+                        
 
-                });
+                    } //for
+
+                    //Robert_Lin, 2024-11-27, Wait until all opened windows are arranged
+                    while (arrangeCount < appCount)
+                    {
+                        Task.Delay(100);
+                    }
+                    ezMemLauncher.LaunchEnd();
+                //});
 
                 return Task.FromResult(true);
             }

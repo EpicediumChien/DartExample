@@ -3,6 +3,7 @@ using DDPM.SA.Common.Method;
 using DDPM.SA.Common.Security;
 using DDPM.SA.Common.Settings;
 using DDPM.SA.Obfuscation;
+using DDPM.SA.Resources.Helper;
 using Dell.Client.Framework.Common;
 using Dell.Client.Framework.Common.Annotations;
 using Dell.Client.Framework.Common.Extensions;
@@ -78,6 +79,7 @@ namespace DdpmSwUpdater
         private bool _bFirstInstance;
         private Mutex? _instanceMutex;
         private string? _applicationName;
+        bool _SkipSHA = false;
         #region Events
         public event EventHandler<UpdateProgressInfo>? ProgressUpdate_Notify;
 
@@ -97,6 +99,7 @@ namespace DdpmSwUpdater
             List<string> InfoPkey = new List<string>();
             InfoPkey.Add(DDPM.SA.Obfuscation.InfoHash.Info_Hash);
             bool isSkipCA = GetCheckCAStatus();
+            _SkipSHA = GetCheckSHAStatus();
             LogManage.LogMessage(nameof(DownloadAndInstall) + " start");
             SWUpdateHelper swUpdateHelper = SWUpdateSetting.GetSWMetadata(isSkipCA, out string getMetadataInfo, null, InfoPkey, LogManage.logs);
             LogManage.LogMessage($"GetMetadata {getMetadataInfo}");
@@ -265,8 +268,8 @@ namespace DdpmSwUpdater
                             if (!Unzip(_installationFileStoragePath, extractPath, out exeFilePath))
                             {
                                 LogManage.LogMessage(_SWUpdateInfo.SoftwareName + " Unzip Faile");
-                                _notificationStr = $"Software update unsuccessful.";
-                                NotificationFWupdate("Error", _notificationStr);
+                                _notificationStr = LangHelper.Instance["Software_update_unsuccessful"];
+                                NotificationFWupdate(LangHelper.Instance["Error"], _notificationStr);
                                 continue;
                             }
                             LogManage.LogMessage($"Unzip done");
@@ -277,8 +280,8 @@ namespace DdpmSwUpdater
                                 {
                                     _SWUpdateInfo.SWUErrorCode = SWUErrorCode.FileCheckFail;
                                     LogManage.LogMessage($"{_SWUpdateInfo.SoftwareName} CheckThumbprint Faile");
-                                    _notificationStr = $"Software update unsuccessful.";
-                                    NotificationFWupdate("Error", _notificationStr);
+                                    _notificationStr = LangHelper.Instance["Software_update_unsuccessful"];
+                                    NotificationFWupdate(LangHelper.Instance["Error"], _notificationStr);
                                     continue;
                                 }
                                 swUpdateInfos[i].InstallPaths = exeFilePath;
@@ -287,11 +290,11 @@ namespace DdpmSwUpdater
                             LogManage.LogMessage($"Install done");
                             if (swUpdateInfos[i].SWUErrorCode == SWUErrorCode.NoError)
                             {
-                                NotificationFWupdate("SW info", _notificationStr);
+                                NotificationFWupdate(LangHelper.Instance["SW_info"], _notificationStr);
                             }
                             else
                             {
-                                NotificationFWupdate("Error", _notificationStr);
+                                NotificationFWupdate(LangHelper.Instance["Error"], _notificationStr);
                             }
                         }
                     }
@@ -315,8 +318,8 @@ namespace DdpmSwUpdater
                 {
                     deviceInfo.SWUErrorCode = SWUErrorCode.NetworkDisconnection;
                 }
-                _notificationStr = $"{_SWUpdateInfo.SoftwareName} Update failed due to network error. Try again.";
-                NotificationFWupdate("Error", _notificationStr);
+                _notificationStr = LangHelper.Instance["Update_failed_due_to_network_error"];
+                NotificationFWupdate(LangHelper.Instance["Error"], _notificationStr);
                 LogManage.LogMessage(nameof(DownloadAndInstall) + " Error：" + ex.Message); // 輸出錯誤訊息
                 return Task.FromResult(swUpdateInfos);
             }
@@ -334,7 +337,7 @@ namespace DdpmSwUpdater
                 {
                     DeviceName = _SWUpdateInfo.SoftwareName,
                     TheLatestVersion = _SWUpdateInfo.TheLatestVersion,
-                    ProcessName = "Downloading",
+                    ProcessName = LangHelper.Instance["Downloading_and_installing"],
                     ProcessProgress = download.GetProgress(),
                 };
                 sendMessageToEvent(fWUpdateInfo);
@@ -345,49 +348,56 @@ namespace DdpmSwUpdater
         /// </summary>
         public SWUErrorCode Install(SWUpdateInfo swUpdateInfo)
         {
+            //[Dean 1206] modify for checkmarx test
             try
             {
                 _SWUpdateInfo = swUpdateInfo;
                 // 要運行的安裝程式路徑和命令行參數
-                string arguments = "/silent /CreateDesktopIcon";
-                Process _clientProcess = new Process();
+                string arguments = "/silent /SecLaunchOnEnd";
+                //Process _clientProcess = new Process();
                 UpdateProgressInfo updateProgressInfo = new UpdateProgressInfo()
                 {
                     DeviceName = _SWUpdateInfo.SoftwareName,
                     TheLatestVersion = _SWUpdateInfo.TheLatestVersion,
-                    ProcessName = "Installing",
+                    ProcessName = LangHelper.Instance["Installing"],
                     ProcessProgress = 0.0,
                 };
                 sendMessageToEvent(updateProgressInfo);
                 RegEvent();
-                //var sessionId = Kernel32.WTSGetActiveConsoleSessionId();
-                //if (sessionId is Advapi32.InvalidSessionId) throw new InvalidOperationException($"Cannot get session id");
-                //IntPtr token = UserImpersonator.GetTokenFromSession(sessionId, systemUser: false);
-                //using (FileLock fileLock = new FileLock(swUpdateInfo.InstallPaths, PathCheckOption.None, lockNow: true))
-                //{
-                //    UserImpersonator.RunAsUser(token, () =>
-                //    {
-                //        using (Process clientProcess = new Process())
-                //        {
-                //            _clientProcess = new Process();
-                //            _clientProcess.StartInfo.UseShellExecute = false;
-                //            _clientProcess.StartInfo.FileName = swUpdateInfo.InstallPaths;
-                //            _clientProcess.StartInfo.WorkingDirectory = Path.GetDirectoryName(_clientProcess.StartInfo.FileName);
-                //            _clientProcess.StartInfo.Arguments = arguments;
-                //            _clientProcess.Start();
-                //            _clientProcess.WaitForExit();
-                //        }
-                //    });
-                //}
-                using (Process clientProcess = new Process())
-                {
-                    _clientProcess = new Process();
-                    _clientProcess.StartInfo.UseShellExecute = false;
-                    _clientProcess.StartInfo.FileName = swUpdateInfo.InstallPaths;
-                    _clientProcess.StartInfo.WorkingDirectory = Path.GetDirectoryName(_clientProcess.StartInfo.FileName);
-                    _clientProcess.StartInfo.Arguments = arguments;
-                    _clientProcess.Start();
-                    _clientProcess.WaitForExit();
+
+                string? fileFullPath = swUpdateInfo.InstallPaths;
+
+                using (Process _clientProcess = new Process())
+                {                    
+                    if (File.Exists(fileFullPath))
+                    {
+                        if (!DDPMFileSecurity.IsFilePathValid(fileFullPath, out string fileCheckInfo))
+                        {
+                            LogManage.LogMessage($"{nameof(DownloadAndInstall)} {_SWUpdateInfo.SoftwareName} FileIsNoSafe - FileCheckInfo : {fileCheckInfo}");
+                            _notificationStr = LangHelper.Instance["Firmware_update_unsuccessful"];
+                            NotificationFWupdate(LangHelper.Instance["Error"], _notificationStr);
+                            _updateErrorCode = SWUErrorCode.FileIsNoSafe;
+                            return _updateErrorCode;
+                        }
+                        ProcessStartInfo startInfo = new ProcessStartInfo()
+                        {
+                            UseShellExecute = false,
+                            FileName = fileFullPath,
+                            Arguments = arguments
+                        };
+                        //_clientProcess = new Process();                        
+                        _clientProcess.StartInfo = startInfo;
+                        _clientProcess.Start();
+                        _clientProcess.WaitForExit();
+                    }
+                    else
+                    {
+                        LogManage.LogMessage($"{nameof(DownloadAndInstall)} {_SWUpdateInfo.SoftwareName} File.Exists return false");
+                        _notificationStr = LangHelper.Instance["Firmware_update_unsuccessful"];
+                        NotificationFWupdate(LangHelper.Instance["Error"], _notificationStr);
+                        _updateErrorCode = SWUErrorCode.FileCheckFail;
+                        return _updateErrorCode;
+                    }
                 }
                 _updateErrorCode = SWUErrorCode.NoError;
                 CancelRegEvent();
@@ -397,7 +407,7 @@ namespace DdpmSwUpdater
             {
                 _updateErrorCode = SWUErrorCode.Unknow;
                 LogManage.LogMessage(swUpdateInfo.SoftwareName + nameof(Install) + " Error:" + ex.ToString());
-                _notificationStr = $"{_SWUpdateInfo.SoftwareName} Service not running. Try again.";
+                _notificationStr = LangHelper.Instance["Service_not_running_Try_again"];
                 return _updateErrorCode;
             }
         }
@@ -410,6 +420,16 @@ namespace DdpmSwUpdater
                 isSkipCA = o.ToString().Equals("1") ? true : false;
             }
             return isSkipCA;
+        }
+        private bool GetCheckSHAStatus()
+        {
+            bool isSkipSHA = false;
+            object o = DDPMRegistryHelper.ReadRegistryKey(RegistryHive.LocalMachine, "SOFTWARE\\Dell\\DDPM Subagent", "SkipSHA");
+            if (o != null && o is string && !string.IsNullOrEmpty(o.ToString()))
+            {
+                isSkipSHA = o.ToString().Equals("1") ? true : false;
+            }
+            return isSkipSHA;
         }
         private bool CheckFold(string path, out string folderInfo, out string pathSymbolicLinInfo)
         {
@@ -456,8 +476,16 @@ namespace DdpmSwUpdater
             }
             else
             {
-                LogManage.LogMessage($"{_SWUpdateInfo.SoftwareName} CheckSHA fail fileCAInfo : {fileCAInfo}");
-                _SWUpdateInfo.SWUErrorCode = SWUErrorCode.FileCheckFail;
+                if (!_SkipSHA)
+                {
+                    LogManage.LogMessage($"{_SWUpdateInfo.SoftwareName} CheckSHA fail fileCAInfo : {fileCAInfo}");
+                    _SWUpdateInfo.SWUErrorCode = SWUErrorCode.FileCheckFail;
+                }
+                else
+                {
+                    LogManage.LogMessage($"{_SWUpdateInfo.SoftwareName} CheckSHA fail fileCAInfo : {fileCAInfo} BUT SKIP");
+                    isCheckSHA = true;
+                }
             }
             return isCheckSHA;
         }
@@ -473,8 +501,17 @@ namespace DdpmSwUpdater
             }
             else
             {
-                LogManage.LogMessage($"{_SWUpdateInfo.SoftwareName} File check Thumbprint fail. Ex: {FileCAInfo}");
-                _SWUpdateInfo.SWUErrorCode = SWUErrorCode.FileCheckFail;
+                if (!_SkipSHA)
+                {
+                    LogManage.LogMessage($"{_SWUpdateInfo.SoftwareName} File check Thumbprint fail. Ex: {FileCAInfo}");
+                    _SWUpdateInfo.SWUErrorCode = SWUErrorCode.FileCheckFail;
+                }
+                else
+                {
+                    LogManage.LogMessage($"{_SWUpdateInfo.SoftwareName} CheckFile_Thumbprint fail FileCAInfo : {FileCAInfo} BUT SKIP");
+                    ishumbprint = true;
+                }
+                
             }
             return ishumbprint;
         }
@@ -567,7 +604,7 @@ namespace DdpmSwUpdater
                     {
                         DeviceName = _SWUpdateInfo.SoftwareName,
                         TheLatestVersion = _SWUpdateInfo.TheLatestVersion,
-                        ProcessName = "Installing",
+                        ProcessName = LangHelper.Instance["Installing"],
                         ProcessProgress = nextProcess != null ? int.Parse(nextProcess) : 0.0,
                     };
                     sendMessageToEvent(updateProgressInfo);

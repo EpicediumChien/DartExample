@@ -7,8 +7,6 @@
              mc:Ignorable="d"
              d:DesignHeight="60"
              d:DesignWidth="200">
-    <UserControl.Resources>
-    </UserControl.Resources>
     <Grid>
         <Border x:Name="Border" Cursor="Hand"
                 CornerRadius="{Binding CornerRadius, RelativeSource={RelativeSource AncestorType=UserControl}}"

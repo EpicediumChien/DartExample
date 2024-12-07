@@ -67,8 +67,8 @@ namespace DDPM.UI.Module.Color
         //public RegistryMonitor_ICC registryMonitor_ICC = null;     
 
         // jim mofidy 20240606
-        public ManagementEventWatcher startWatcher;
-        public ManagementEventWatcher endProcWatcher;
+        public ManagementEventWatcher startWatcher = null;
+        public ManagementEventWatcher endProcWatcher = null;
 
         public DDPM.SA.Common.IIC_Metadata _ICC_Metadata = new DDPM.SA.Common.IIC_Metadata();
 
@@ -369,7 +369,7 @@ namespace DDPM.UI.Module.Color
                 {
                     //Dean 0614 modify to meet figma
                     //if(MessageBox.Show("Auto Color Temperature is currently enabled. Do you wish to disable it to continue?", "Warning", MessageBoxButton.OKCancel) == MessageBoxResult.OK)
-                    if (DdpmCommonHelper.DDPMMesssageBox("Warning", "Auto Color Temperature is currently enabled. Do you wish to disable it to continue?"))
+                    if (DdpmCommonHelper.DDPMMesssageBox(Strings.ImpExp_Warning, Strings.Auto_Color_Temperature_MSG))
                     {
                         //disable Auto color temp and return true to change color preset
                         cfg.isAutoColorTemp = false;
@@ -548,17 +548,20 @@ namespace DDPM.UI.Module.Color
             string queryString =
                 "SELECT TargetInstance" +
                 "  FROM __InstanceCreationEvent " +
-                "WITHIN  .025 " +
+                "WITHIN 1 " +
                 " WHERE TargetInstance ISA 'Win32_Process' "
-                + "   AND TargetInstance.Name like '%'";
+                + "   AND TargetInstance.Name like 'ColorManagement.exe'";
 
             // The dot in the scope means use the current machine
             string scope = @"\\.\root\CIMV2";
 
-            // Create a watcher and listen for events
-            startWatcher = new ManagementEventWatcher(scope, queryString);
-            startWatcher.EventArrived += startWatcher_EventArrived;
-            startWatcher.Start();
+            if (startWatcher == null)
+            {
+                // Create a watcher and listen for events
+                startWatcher = new ManagementEventWatcher(scope, queryString);
+                startWatcher.EventArrived += startWatcher_EventArrived;
+                startWatcher.Start();
+            }           
         }
 
         // add jim 20240606
@@ -567,9 +570,9 @@ namespace DDPM.UI.Module.Color
             string queryString =
                 "SELECT TargetInstance" +
                 "  FROM __InstanceCreationEvent " +
-                "WITHIN  .025 " +
+                "WITHIN 1 " +
                 " WHERE TargetInstance ISA 'Win32_Process' "
-                + "   AND TargetInstance.Name like '%'";
+                + "   AND TargetInstance.Name like 'ColorManagement.exe'";
 
             // The dot in the scope means use the current machine
             string scope = @"\\.\root\CIMV2";
@@ -582,6 +585,8 @@ namespace DDPM.UI.Module.Color
             {
                 startWatcher.EventArrived -= startWatcher_EventArrived;
                 startWatcher.Stop();
+                startWatcher.Dispose();
+                startWatcher = null;
             }
         }
 
@@ -619,16 +624,20 @@ namespace DDPM.UI.Module.Color
             string queryString =
                 "SELECT TargetInstance" +
                 "  FROM __InstanceDeletionEvent " +
-                "WITHIN  .025 " +
+                "WITHIN 1 " +
                 " WHERE TargetInstance ISA 'Win32_Process' "
-                + "   AND TargetInstance.Name like '%'";
+                + "   AND TargetInstance.Name like 'ColorManagement.exe'";
 
             string scope = @"\\.\root\CIMV2";
 
-            // Create a watcher and listen for events
-            endProcWatcher = new ManagementEventWatcher(scope, queryString);
-            endProcWatcher.EventArrived += ProcessEnded;
-            endProcWatcher.Start();
+            if (endProcWatcher == null)
+            {
+                // Create a watcher and listen for events
+                endProcWatcher = new ManagementEventWatcher(scope, queryString);
+                endProcWatcher.EventArrived += ProcessEnded;
+                endProcWatcher.Start();
+            }
+          
         }
 
         // jim modify 20240606
@@ -637,9 +646,9 @@ namespace DDPM.UI.Module.Color
             string queryString =
                 "SELECT TargetInstance" +
                 "  FROM __InstanceDeletionEvent " +
-                "WITHIN  .025 " +
+                "WITHIN 1 " +
                 " WHERE TargetInstance ISA 'Win32_Process' "
-                + "   AND TargetInstance.Name like '%'";
+                + "   AND TargetInstance.Name like 'ColorManagement.exe'";
 
             string scope = @"\\.\root\CIMV2";
 
@@ -650,6 +659,8 @@ namespace DDPM.UI.Module.Color
             {
                 endProcWatcher.EventArrived -= ProcessEnded;
                 endProcWatcher.Stop();
+                endProcWatcher.Dispose();
+                endProcWatcher = null;
             }
         }
 
@@ -720,6 +731,10 @@ namespace DDPM.UI.Module.Color
         {
             try //2024-06-19 Elie, add try catch to get exception.
             {
+                WatchForProcessStart_Stop();
+                WatchForProcessEnd_Stop();
+
+
                 DDPMSettings data = DdpmCommonHelper.ReadDDPMSettings();//DeviceManagerSA.ReloadAppConfigData().Result;
 
                 // if data = null, represents read setting file (ColorSetting.json) has something went wrong 
@@ -924,7 +939,7 @@ namespace DDPM.UI.Module.Color
 
                     AppsList = Test_AddAppCollectionData.GetInstance().AppsList;
 
-                    _ICC_Metadata = DdpmCommonHelper.DeviceManagerSA?.DownloadICCData(DdpmCommonHelper.ModuleOwner?.SelectedHomeDevice?.MonitorInfo).Result;
+                    _ICC_Metadata = DdpmCommonHelper.DeviceManagerSA?.DownloadICCData(DdpmCommonHelper.ModuleOwner?.SelectedHomeDevice?.MonitorInfo,true).Result;
 
                     MyModule.GetRightView().Dispatcher.Invoke((Action)(() =>
                     {                        
@@ -948,6 +963,9 @@ namespace DDPM.UI.Module.Color
                 MyModule.GetRightView().Dispatcher.Invoke((Action)(() =>
                 {
                     DdpmCommonHelper.DeviceManagerSA.SyncNightlightStatus();
+
+                    if (System.String.IsNullOrEmpty(NightlightStatus))
+                        NightlightStatus = Strings.Off;
                     //update_ui_over_runtype(config);
                     RefreshUI();
                 }));
@@ -1034,7 +1052,7 @@ namespace DDPM.UI.Module.Color
             {  
                 ColorPresetSettings config = get_cur_monitor_preset_config(MyModule.SelectedHomeDevice.MonitorInfo, DdpmCommonHelper.DeviceManagerSA.ReadColorPresetSettings().Result);
 
-                _ICC_Metadata = DdpmCommonHelper.DeviceManagerSA?.DownloadICCData(DdpmCommonHelper.ModuleOwner?.SelectedHomeDevice?.MonitorInfo).Result;
+                _ICC_Metadata = DdpmCommonHelper.DeviceManagerSA?.DownloadICCData(DdpmCommonHelper.ModuleOwner?.SelectedHomeDevice?.MonitorInfo,true).Result;
 
                 MyModule.GetRightView().Dispatcher.Invoke((Action)(() =>
                 {
@@ -1082,6 +1100,9 @@ namespace DDPM.UI.Module.Color
 
         ~ColorViewModel()
         {
+            WatchForProcessStart_Stop();
+            WatchForProcessEnd_Stop();
+
             if (DdpmCommonHelper.DeviceManagerSA != null)
             {
                 DdpmCommonHelper.DeviceManagerSA.VCPchanged -= OnVCPChangedEvent;
@@ -1157,8 +1178,13 @@ namespace DDPM.UI.Module.Color
         {
             NightlightStatus = e;
 
+            if (NightlightStatus.Equals("On", StringComparison.OrdinalIgnoreCase))
+                NightlightStatus = Strings.On;
+            else
+                NightlightStatus = Strings.Off;
+
             MyModule.GetRightView().Dispatcher.Invoke((Action)(() =>
-            { 
+            {
                 RefreshUI();
             }));
         }
@@ -1199,6 +1225,53 @@ namespace DDPM.UI.Module.Color
                 {
                     //Result is failed.
                 }
+            }
+
+            // PIMS-288131
+            try
+            {
+                Process[] processes = Process.GetProcessesByName("ColorManagement");
+                
+                if (processes!=null && processes.Length > 0)
+                {
+                    // Is running
+                    bool blIsPass = true;
+                    foreach (Process process in processes)
+                    {
+                        string filepath = process.MainModule.FileName;
+
+                        if (!System.String.IsNullOrEmpty(filepath))
+                        {
+                            string Info = "ColorManagement File Signature Is Null Or Empty";
+                            if (!DDPMFileSecurity.VerifyExecutableFileSignature(filepath, out Info))
+                            {
+                                blIsPass = false;   
+                                string log = $"[RunWorkerCompleted_RefreshData] VerifyExecutableFileSignature : {Info}\n";
+                                DdpmCommonHelper.WriteUILog(log);
+                                break;
+                            }
+                       
+                        }
+                    }
+
+                    if (blIsPass)
+                    {
+                        MyModule.GetRightView().Dispatcher.Invoke((Action)(() =>
+                        {
+                            ((Expander)(MyModule.GetRightView().FindName("Expander_Advanced_Settings"))).IsEnabled = false;
+                            ((Expander)(MyModule.GetRightView().FindName("Expander_Advanced_Settings"))).IsExpanded = false;
+
+                            ((StackPanel)(MyModule.GetRightView().FindName("stackpanel_DCM"))).Visibility = Visibility.Visible;
+                            DCM_Visibility = Visibility.Visible;
+
+                        }));
+                    }                   
+                }  
+            }
+            catch (System.Exception ex)
+            {
+                string log = $"[RunWorkerCompleted_RefreshData] Exception thrown when Process.GetProcessesByName : {ex.Message}\nStack Trace: {ex.StackTrace}";
+                DdpmCommonHelper.WriteUILog(log);
             }
 
             WatchForProcessStart();
@@ -1243,7 +1316,7 @@ namespace DDPM.UI.Module.Color
                 {
                     //Result is failed.
                 }
-            }
+            }          
 
             WatchForProcessStart();
             WatchForProcessEnd();
@@ -1388,14 +1461,16 @@ namespace DDPM.UI.Module.Color
             if (config.RunType == (int)ColorPresetRunType.Auto)
             {
                 ((Expander)(MyModule.GetRightView().FindName("Expander_Manual"))).IsExpanded = false;
+                ((Expander)(MyModule.GetRightView().FindName("Expander_Auto"))).IsExpanded = false;
                 ((Expander)(MyModule.GetRightView().FindName("Expander_Auto"))).IsExpanded = true;
                 //DdpmCommonHelper.DeviceManagerSA.AutoSetColorPresetForMonitorConfig(DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo, "ON", IsAutoColorPreset_Lock);
 
             }
             else
             {
+                ((Expander)(MyModule.GetRightView().FindName("Expander_Auto"))).IsExpanded = false;                
+                ((Expander)(MyModule.GetRightView().FindName("Expander_Manual"))).IsExpanded = false;
                 ((Expander)(MyModule.GetRightView().FindName("Expander_Manual"))).IsExpanded = true;
-                ((Expander)(MyModule.GetRightView().FindName("Expander_Auto"))).IsExpanded = false;
                 //DdpmCommonHelper.DeviceManagerSA.AutoSetColorPresetForMonitorConfig(DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo, "OFF", IsAutoColorPreset_Lock);
             }
 

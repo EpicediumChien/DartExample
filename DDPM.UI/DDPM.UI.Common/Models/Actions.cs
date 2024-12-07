@@ -6,6 +6,7 @@ using System.Text;
 using System.Text.Json;
 using JsonSerializer = System.Text.Json.JsonSerializer;
 using Newtonsoft.Json.Linq;
+using static DDPM.UI.Common.PenActions;
 
 namespace DDPM.UI.Common
 {
@@ -26,7 +27,7 @@ namespace DDPM.UI.Common
         public Dictionary<int, SelectedAction> RadialActions = new();
         public bool IsUseCenter = true;
 
-        public PenActions(bool IsResetRadialMenu = false)
+        public PenActions()
         {
             Task<string> task1 = DdpmCommonHelper.DeviceManagerSA!.GetEraserDoublePressSetting();
             JsonElement jsonObject = JsonSerializer.Deserialize<JsonElement>(task1.Result)!;
@@ -76,13 +77,6 @@ namespace DDPM.UI.Common
                 BottomBarrelButtonClickAction.AssignedAction.Parameter = jsonObject.GetProperty("actionName").GetString()!;
             }
 
-            task1 = DdpmCommonHelper.DeviceManagerSA!.GetMenuSinglePressSetting();
-            jsonObject = JsonSerializer.Deserialize<JsonElement>(task1.Result)!;
-            //BottomBarrelButtonClickAction.AssignedAction.ID = jsonObject.GetProperty("actionId").GetInt32();
-            //foreach (var jo in jsonObject.EnumerateArray())
-            //{
-            //    //_EraserActions.Add(jo.GetProperty("actionId").GetInt32(), jo.GetProperty("actionName").GetString()!);
-            //}
 
             Task<bool> task2 = DdpmCommonHelper.DeviceManagerSA!.GetMenuCenterRightClickSetting();
             IsUseCenter = task2.Result;
@@ -91,30 +85,44 @@ namespace DDPM.UI.Common
             task2 = DdpmCommonHelper.DeviceManagerSA!.GetIsSideBottomButtonHoverClick();
             IsBottomBarrelHoverClickOn = task2.Result;
 
-            if (IsResetRadialMenu)
-                ResetRadialMenu();
+            ResetRadialMenu();
+            //task1 = DdpmCommonHelper.DeviceManagerSA!.GetMenuSinglePressSetting();
+            //var result = task1.Result;
+            //var RadialMenus = JsonConvert.DeserializeObject<List<RadialMenuItem>>(task1.Result)!;
+            //RadialActions.Clear();
+            //RadialLabels.Clear();
+            //foreach(var rm in RadialMenus)
+            //{
+            //    if (rm.menuIndex < 8)
+            //    {
+            //        RadialLabels.Add(rm.menuIndex, rm.actionName);
+            //        RadialActions.Add(rm.menuIndex, new SelectedAction(rm.actionId, new AssignedAction(rm.actionId)));
+            //    }
+            //}
         }
 
-        public void RestoreToDefault()
+        public bool RestoreToDefault()
         {
+            if (DdpmCommonHelper.DeviceManagerSA == null || !DdpmCommonHelper.DeviceManagerSA.RestoreToDefaultPen().Result)
+                return false;
+
             TopButtonClickAction = new(73, new AssignedAction(73));
             TopButtonDoubleClickAction = new(90, new AssignedAction(90));
             TopButtonPressHoldAction = new(75, new AssignedAction(75));
             TopBarrelButtonClickAction = new(27, new AssignedAction(27));
             BottomBarrelButtonClickAction = new(26, new AssignedAction(26));
 
-            byte[] newValue = Encoding.UTF8.GetBytes($"{{\"actionId\":73,\"actionName\":\"\"}}");
-            DdpmCommonHelper.DeviceManagerSA!.SetEraserSinglePressSetting(ItemID, newValue);
-            newValue = Encoding.UTF8.GetBytes($"{{\"actionId\":90,\"actionName\":\"\"}}");
-            DdpmCommonHelper.DeviceManagerSA!.SetEraserDoublePressSetting(ItemID, newValue);
-            newValue = Encoding.UTF8.GetBytes($"{{\"actionId\":75,\"actionName\":\"\"}}");
-            DdpmCommonHelper.DeviceManagerSA!.SetEraserLongPressSetting(ItemID, newValue);
-            newValue = Encoding.UTF8.GetBytes($"{{\"actionId\":27,\"actionName\":\"\"}}");
-            DdpmCommonHelper.DeviceManagerSA!.SetSideTopSwitchSinglePressSetting(ItemID, newValue);
-            newValue = Encoding.UTF8.GetBytes($"{{\"actionId\":26,\"actionName\":\"\"}}");
-            DdpmCommonHelper.DeviceManagerSA!.SetSideBottomSwitchSinglePressSetting(ItemID, newValue);
+            //RestoreRadialMenu();
+            return true;
+        }
+
+        public bool RestoreRadialMenu()
+        {
+            if (DdpmCommonHelper.DeviceManagerSA == null || !DdpmCommonHelper.DeviceManagerSA.RestoreRadialMenuToDefault().Result)
+                return false;
 
             ResetRadialMenu();
+            return true;
         }
 
         public void ResetRadialMenu()
@@ -139,24 +147,14 @@ namespace DDPM.UI.Common
             RadialActions.Add(6, new SelectedAction(81, new AssignedAction(81)));
             RadialActions.Add(7, new SelectedAction(84, new AssignedAction(84)));
             IsUseCenter = true;
-            foreach (var action in RadialActions)
-            {
-                byte[] newValue = Encoding.UTF8.GetBytes($"{{\"menuIndex\":{action.Key},\"actionId\":{action.Value.DefaultActionID},\"actionName\":\"{RadialLabels[action.Key]}\"}}");
-                DdpmCommonHelper.DeviceManagerSA!.SetMenuSinglePressSetting("DellPeripheral.Pen.0", newValue);
-            }
             ActionList.ExportActionList(this, "PEN");
-        }
-
-        public class RadialLabel
-        {
-            public string Default = "";
-            public string Customized = "";
         }
     }
 
     public class KeyboardActions
     {
         public Dictionary<KeyName, SelectedAction> KeyActions = new();
+        public bool IsCollaborationChecked = false;
 
         public KeyboardActions()
         { }
@@ -456,8 +454,7 @@ namespace DDPM.UI.Common
                             return JsonConvert.DeserializeObject<PenActions>(jsonString)!; //File.ReadAllText(filePath))!;
                     }
                     //var pen = new PenActions(model);
-                    var pen = new PenActions(true);
-                    ExportActionList(pen, model);
+                    var pen = new PenActions();
                     return pen;
 
                 default:
@@ -483,5 +480,12 @@ namespace DDPM.UI.Common
         public string Category = "";
         public List<int> ProgrammableKeys = new();
 
+    }
+
+    public class RadialMenuItem
+    {
+        public int actionId;
+        public string actionName = "";
+        public int menuIndex;
     }
 }

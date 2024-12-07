@@ -33,11 +33,12 @@ namespace DDPM.OSDs
                 this.ShowStringText.Text = showString;
                 this.Topmost = true;
 
-                time = TimeSpan.FromMilliseconds(3000);
+                //PIMS-322110
+                /*time = TimeSpan.FromMilliseconds(3000);
                 animationTimer = new DispatcherTimer();
                 animationTimer.Interval = TimeSpan.FromMilliseconds(1000);
                 animationTimer.Tick += RunTimerTick;
-                animationTimer.Start();
+                animationTimer.Start();*/
             }
             else
             {

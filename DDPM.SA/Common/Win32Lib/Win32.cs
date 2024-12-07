@@ -375,24 +375,24 @@ namespace DDPM.Win32Lib
         #region Actions (Wayn)
 
         // Import keybd_event function
-        [DllImport("user32.dll", SetLastError = true)]
+        /*[DllImport("user32.dll", SetLastError = true)]
         [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
         private static extern void keybd_event(byte bVk, byte bScan, uint dwFlags, UIntPtr dwExtraInfo);
 
         public static void _keybd_event(byte bVk, byte bScan, uint dwFlags, UIntPtr dwExtraInfo)
         {
             keybd_event(bVk, bScan, dwFlags, dwExtraInfo);
-        }
+        }*/
 
         // Import mouse_event function
-        [DllImport("user32.dll", SetLastError = true)]
+        /*[DllImport("user32.dll", SetLastError = true)]
         [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
         private static extern void mouse_event(uint dwFlags, uint dx, uint dy, uint dwData, UIntPtr dwExtraInfo);
 
         public static void _mouse_event(uint dwFlags, uint dx, uint dy, uint dwData, UIntPtr dwExtraInfo)
         {
             mouse_event(dwFlags, dx, dy, dwData, dwExtraInfo);
-        }
+        }*/
 
         // Constants for keybd events
         public const uint KEYEVENTF_KEYDOWN = 0x0000;
@@ -539,6 +539,7 @@ namespace DDPM.Win32Lib
         public const uint DWM_CLOAKED_INHERITED = 0x00000004; //封閉值繼承自其擁有者視窗。
 
         [DllImport("dwmapi.dll")]
+        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
         private static extern int DwmGetWindowAttribute(IntPtr hwnd, eDwmWindowAttribute dwAttribute, out uint pvAttribute, int cbAttribute);
         public static int _DwmGetWindowAttribute(IntPtr hwnd, eDwmWindowAttribute dwAttribute, out uint pvAttribute, int cbAttribute)
         {
@@ -711,11 +712,40 @@ namespace DDPM.Win32Lib
         [DllImport("user32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
         [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
         private static extern int GetWindowTextLength(IntPtr hWnd);
-        private static int _GetWindowTextLength(IntPtr hWnd)
+        public static int _GetWindowTextLength(IntPtr hWnd)
         {
             return GetWindowTextLength(hWnd);
         }
 
+        #endregion
+
+        #region Window Position, Placement
+        //Robert_Lin, 2024-12-5 added from EasyMemory
+        [DllImport("user32.dll", SetLastError = true)]
+        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        private static extern bool SetForegroundWindow(IntPtr hWnd);
+        public static bool _SetForegroundWindow(IntPtr hWnd)
+        {
+            return SetForegroundWindow(hWnd); 
+        }
+
+        #endregion
+
+        #region Window ClassName
+        [DllImport("user32.dll", SetLastError = true)]
+        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
+        private static extern int GetClassName(IntPtr hWnd, StringBuilder lpClassName, int nMaxCount);
+        public static string _GetClassName(IntPtr hWnd)
+        {
+            StringBuilder className = new StringBuilder(256);
+            int retChars = GetClassName(hWnd, className, className.Capacity);
+            if (retChars <= 0)
+            {
+                return "";
+            }
+            return className.ToString();
+        }
         #endregion
     }
 }

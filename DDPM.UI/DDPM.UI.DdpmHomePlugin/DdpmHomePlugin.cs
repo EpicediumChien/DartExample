@@ -40,6 +40,8 @@ using IDdpmHomePageViewModel = DDPM.UI.Plugin.DdpmHomePlugin.Interfaces.IDdpmHom
 using static DDPM.UI.Common.User32;
 using System.Windows.Threading;
 using DDPM.SA.Common.UpdateProgressPage;
+using Windows.ApplicationModel.VoiceCommands;
+using Microsoft.Toolkit.Uwp.Notifications;
 
 namespace DDPM.UI.Plugin.DdpmHomePlugin
 {
@@ -73,7 +75,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
         /// <summary>
         /// This property is required by the IConsolePagePlugin. It specifies the text to display when the page is shown.
         /// </summary>
-        public string HeaderText => "DDPM Homepage";
+        public string HeaderText => "Homepage";
 
         /// <summary>
         /// Page Type
@@ -173,6 +175,8 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
 
                 // Get current condition
                 _ = Task.Run(GetCurrentDeviceManagerPluginPluginCondition, CancellationToken);
+
+                //CheckIfNeedNavigateToWebcamPageV2();
             }
             catch (Exception ex)
             {
@@ -212,6 +216,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                             _HasRegisted = true;
                             _deviceManager.DeviceChanged += _deviceManager_DeviceChanged;
                             _deviceManager.VCPchanged += _deviceManager_VCPchanged;
+                            _deviceManager.UIUpdateNotify += _deviceManager_UIUpdateNotify;
 
                             //Move to call from OnActivated( ) => Failed, it's called too late
                             //So uncommented below code
@@ -223,6 +228,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                             _deviceManager.ReceiveTelemetryInfo("AppSession", "AppStarted", Telementry_Frequency.RealTime);
 
                             await GetDdpmDevicesAsync(_deviceManager);
+                            CloseQAMIfExist();
 
                             //1030 get global settings for telemetry consent page using
                             _globalSettings = _deviceManager.GetGlobalSettingParam().Result;
@@ -284,6 +290,8 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                         }
 
                         CheckIfNeedImportSetting_Display();
+
+                        //await DDPMInfoSAHomepageIsReady();
                     }
                 }
             }
@@ -297,6 +305,52 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
             {
                 _lock.Release();
                 _log.Trace($"{nameof(GetCurrentDeviceManagerPluginPluginCondition)} unlock");
+            }
+        }
+
+        private void CloseQAMIfExist()
+        {
+            _deviceManager!.SetIsDDPMHomepageReadyAsync(true);
+        }
+
+        //private void CheckIfNeedNavigateToWebcamPage()
+        //{
+        //    if (DdpmCommonHelper.DeviceManagerSA!.GetIsDDPMLaunchByQAM().Result == true)
+        //    {
+        //        DdpmCommonHelper.WriteUILog($"GetIsDDPMLaunchByQAM = true");
+
+        //        DdpmCommonHelper.DeviceManagerSA!.SetIsDDPMHomepageReadyAsync(true);
+        //        DdpmCommonHelper.DeviceManagerSA!.SetIsDDPMLaunchByQAMAsync(false);
+        //    }
+        //    else
+        //        DdpmCommonHelper.WriteUILog($"GetIsDDPMLaunchByQAM = false");
+        //}
+
+        private async Task CheckIfNeedNavigateToWebcamPage()
+        {
+            if (_deviceManager!.GetIsDDPMLaunchByQAM().Result == true)
+            {
+                _log.Info($"GetIsDDPMLaunchByQAM = true");
+
+                await _deviceManager!.SetIsDDPMHomepageReadyAsync(true);
+                await _deviceManager!.SetIsDDPMLaunchByQAMAsync(false);
+            }
+            else
+                _log.Info($"GetIsDDPMLaunchByQAM = false");
+        }
+
+        private async Task DDPMInfoSAHomepageIsReady()
+        {
+            try
+            {
+                _log.Info("DDPMInfoSAHomepageIsReady start");
+                await _deviceManager!.SetIsDDPMHomepageReadyAsync(true);
+                _log.Info("DDPMInfoSAHomepageIsReady end");
+            }
+            catch (Exception e)
+            {
+                _log.Info($"Catch excepton: {e.Message} when Clsoe QAM");
+                throw;
             }
         }
 
@@ -320,7 +374,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                 {
                     _log.Info($"[Walkthrough] {nameof(_deviceManager_DeviceChanged)} Start");
                     await CollectAndCompareDevicesAsync();
-                    //// Check Queue，first use device need to show WalkThroughPage
+                    //// Check Queue癒Afirst use device need to show WalkThroughPage
                     if (WalkThroughQueue.Count > 0 && _showPluginById == false)
                     {
                         _log.Info($"[Walkthrough] {nameof(_deviceManager_DeviceChanged)} WalkThroughQueue has items, ShowPluginById.");
@@ -401,7 +455,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                 {
                     string model = info.modelName;//"U2724DE";
                     string serviceTag = info.edid.ServiceTag;
-                    string exportpath = path + "\\" + model + "_" + serviceTag + ".json";
+                    string exportpath = path + "\\" + model + ".json";
                     _log.Info("[CheckIfNeedImportSetting_Display] export path : " + exportpath);
                     //if(can popup messagebox && not yet to import / already click no need import)
                     if (File.Exists(exportpath))
@@ -431,6 +485,51 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
         {
             _log.Info("DdpmHomePlugin._deviceManager_notifyDeviceConnected() executed");
             //throw new NotImplementedException();
+        }
+        private void _deviceManager_UIUpdateNotify(object? sender, UpdateUINotify e)
+        {
+            //Derek 1127
+            if (e == null || e.UI_Field_Name == null || e == UpdateUINotify.Empty)
+                return;
+
+            _log.Info($"_deviceManager_UIUpdateNotify received msg is {e.UI_Field_Name}");
+            //System.Windows.MessageBox.Show(e.UI_Field_Name);
+
+            if (e.UI_Field_Name.StartsWith("QAMEvent_StartPreview"))
+            {
+                //_log.Info($"_deviceManager_UIUpdateNotify start to show webcam preview");
+                _console.ShowPluginById(DDPM.UI.Common.Constants.WebCameraPluginId);
+                //_showPluginManager?.ShowPluginById(DDPM.UI.Common.Constants.SettingsPluginId);
+                //_console.ShowPluginById(DDPM.UI.Common.Constants.SettingsPluginId);
+            }
+            else if (e.UI_Field_Name.StartsWith("QAMEvent_QAMIsLaunched"))
+            {
+                CloseMyself();
+            }
+            else if (e.UI_Field_Name.StartsWith("QAMEvent_NavigateToWidgetSettingPage"))
+            {
+                _console.ShowPluginById(DDPM.UI.Common.Constants.SettingsPluginId);
+            }
+        }
+
+        [DllImport("user32.dll")]
+        private static extern int SendMessage(IntPtr hWnd, int wMsg, IntPtr wParam, IntPtr lParam);
+        private const int WM_EXITBYMYSELF = 0xFF30;
+        private void CloseMyself()
+        {
+            try
+            {
+                IntPtr hWnd = Process.GetCurrentProcess().MainWindowHandle;
+                int result = SendMessage(hWnd, WM_EXITBYMYSELF, IntPtr.Zero, IntPtr.Zero);
+
+                _log.Info($"SendMessage result = {result}");
+            }
+            catch (Exception e)
+            {
+                _log.Info($"Catch exception: {e.Message} when CloseMyself");
+            }
+
+            _log.Info($"Run CloseMyself successfully.");
         }
 
         private void _deviceManager_VCPchanged(object? sender, VCPchangedEventArgs e)
@@ -509,6 +608,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
             if (deviceManager != null)
             {
                 DdpmCommonHelper.DeviceManagerSA = deviceManager;
+                DdpmCommonHelper.Log = this._log;//assign this log for global using
                 DdpmCommonHelper.Settings_Cache = deviceManager.ReloadAppConfigData().Result;
                 //List<MonitorInfo> monitorInfos = deviceManager.GetMonitors().Result;
                 if (condition.Equals("all") || condition.Equals("displaychanged"))
@@ -981,7 +1081,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
             if (fwUpdateInfoPackage.FWUpdateInfo.Count > 0 || sWUpdateInfoPackage.SWUpdateInfo.Count > 0)
                 ret = true;
             _IsAnyUpdate = ret;
-            if (sWUpdateInfoPackage.SWUpdateInfo.Count >= 1)
+            if (sWUpdateInfoPackage != null && sWUpdateInfoPackage.SWUpdateInfo != null && sWUpdateInfoPackage.SWUpdateInfo.Count >= 1)
             {
                 InterruptScreenRoot myDeserializedClass = DdpmCommonHelper.DeviceManagerSA.InterruptScreen_Metadata().Result;
                 if (myDeserializedClass != null)
@@ -1170,20 +1270,22 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                     }
                 }
 
-                // If the device is not supported, directly update the registry to true and return
-                if (!devicePages.ContainsKey(modelNumber))
-                {
-                    await _deviceManager.WriteRegistryData(DDPM.SA.Common.Settings.RegistryHive.LocalMachine, regPath, regKey, true);
-                    _log.Info($"[Walkthrough] Device {modelNumber} not found in devicePages, skipping.");
-                    return;
-                }
-
                 // read reg
                 regValue = await _deviceManager.ReadRegistryData(DDPM.SA.Common.Settings.RegistryHive.LocalMachine, regPath, regKey);
 
                 // mean null or "" or is false, add to the queue and set it to true
                 if (regValue == null || (regValue is string strValue && string.IsNullOrEmpty(strValue)) || !Convert.ToBoolean(regValue))
                 {
+                    // register model for walk through done
+                    await _deviceManager.WriteRegistryData(DDPM.SA.Common.Settings.RegistryHive.LocalMachine, regPath, regKey, true);
+
+                    // If the device is not supported, directly update the registry to true and return
+                    if (!devicePages.ContainsKey(modelNumber))
+                    {
+                        _log.Info($"[Walkthrough] Device {modelNumber} not found in devicePages, skipping.");
+                        return;
+                    }
+
                     // Add the device to the queue and update the registry
                     if (!WalkThroughQueue.Exists(info => info.ModelName == modelNumber))
                     {
@@ -1217,7 +1319,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                 List<MonitorInfo> monitorInfos = _deviceManager.GetMonitors().Result;
                 var deviceHelper = _deviceManager.GetDevices().Result;
 
-                // 轉成 WalkThroughInfo 並加入
+                // WalkThroughInfo
                 foreach (var monitor in monitorInfos)
                 {
                     _log.Info($"[Walkthrough] CheckAndQueueDevice Start Add (Monitor)");
@@ -1226,8 +1328,18 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
 
                 foreach (var device in deviceHelper.deviceInfo)
                 {
+                    // Check color code
+                    string _modelNumber = device.ModelNumber;
+                    if (device.ModelNumber == "MS700")
+                    {
+                        if (device.ColorCode != 0)
+                        {
+                            _modelNumber = _modelNumber + "/" + device.ColorCode.ToString();
+                            _log.Info($"[Walkthrough] CheckAndQueueDevice Check color code = {device.ColorCode.ToString()}");
+                        }
+                    }
                     _log.Info($"[Walkthrough] CheckAndQueueDevice Start Add (Device)");
-                    await CheckAndQueueDevice(device.ModelNumber, device.LogicalDeviceType.ToString(), device.ID);
+                    await CheckAndQueueDevice(_modelNumber, device.LogicalDeviceType.ToString(), device.ID);
                 }
 
                 if (WalkThroughQueue.Count != 0 && _showPluginById == false)

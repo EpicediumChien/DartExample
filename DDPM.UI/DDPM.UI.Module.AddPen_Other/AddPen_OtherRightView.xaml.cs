@@ -66,21 +66,13 @@ namespace DDPM.UI.Module.AddPen_Other
         private void Pairing(object sender, System.Windows.Input.StylusDownEventArgs e)
         {
             MessageModalDialog messageModalDialog;
-            Window parentWindow = Window.GetWindow(this);
-            if (_vm.IsPandoraPaired)
-            {
-                messageModalDialog = new(Strings.Error, Strings.PenAlreadyPaired, Strings.Cancel);
-                if (parentWindow != null)
-                {
-                    messageModalDialog.Owner = parentWindow;
-                }
-                messageModalDialog.ShowDialog();
-                return;
-            }
+            Window mainWindow = System.Windows.Application.Current.MainWindow;
             messageModalDialog = new(Strings.PairYourPen, Strings.PairYourPenMessage, Strings.No, Strings.Yes);
-            if (parentWindow != null)
+            if (mainWindow != null)
             {
-                messageModalDialog.Owner = parentWindow;
+                messageModalDialog.Owner = mainWindow;
+                messageModalDialog.Left = mainWindow.Left + (mainWindow!.ActualWidth - 417) / 2;
+                messageModalDialog.Top = mainWindow.Top + 300;
             }
             if (messageModalDialog.ShowDialog()!.Value)
             {

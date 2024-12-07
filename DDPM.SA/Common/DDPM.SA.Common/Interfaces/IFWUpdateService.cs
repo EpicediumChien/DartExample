@@ -40,7 +40,7 @@ namespace DDPM.SA.Common
         Task<FWUErrorCode> Install(string installPath, bool isOnlyDisplay, DeviceType deviceType);
         Task<bool> RestartService();
 
-        void SetDeviceinfo(List<DeviceInfo> DeviceInfos);
+        void SetDeviceinfo(List<DeviceInfo> DeviceInfos, int DongleCount);
 
         void CheckUODFWUInfo(DokcUODUpdateInfoPackage UODFWUInfo, List<DeviceInfo> DeviceInfos);
 
@@ -50,5 +50,9 @@ namespace DDPM.SA.Common
 
         Task<List<FWUpdateInfo>> UpdateEvent();
         void SetSkipCA(bool isSkipCA);
+        void SetSkipSHA(bool isSkipSHA);
+
+        // add @ 20241202 stephen
+        void setFWUpdateInfoPackage(FWUpdateInfoPackage pkg);
     }
 }

@@ -111,13 +111,14 @@ namespace DDPM.CLI.Plugins.Peripherals
                 {
                     if (commandLineInput.TargetType.Equals("APP"))
                     {
-                        if (commandLineInput.TargetFeature.Equals("FIRMWAREUPDATE") || commandLineInput.TargetFeature.Equals("UODFWUPDATE") || commandLineInput.TargetFeature.Equals("LOCKUIUPDATE") || commandLineInput.TargetFeature.Equals("UNLOCKUIUPDATE"))// for firmware update.
+                        //if (commandLineInput.TargetFeature.Equals("FIRMWAREUPDATE") || commandLineInput.TargetFeature.Equals("UODFWUPDATE") || commandLineInput.TargetFeature.Equals("LOCKUIUPDATE") || commandLineInput.TargetFeature.Equals("UNLOCKUIUPDATE"))// for firmware update.
+                        if (commandLineInput.TargetFeature.Equals("FIRMWAREUPDATE"))// for firmware update.
                         {
                             switch (commandLineInput.TargetFeature)
                             {
                                 case "FIRMWAREUPDATE":
-                                case "UODFWUPDATE":
-                                case "LOCKUIUPDATE":
+                                //case "UODFWUPDATE":
+                                //case "LOCKUIUPDATE":
                                 //case "UNLOCKUIUPDATE":
                                     var ret = FWUpdate(commandLineInput);
                                     result.ExitCode = ret.code;
@@ -128,27 +129,27 @@ namespace DDPM.CLI.Plugins.Peripherals
                     }
 
                 }
-                //if (commandLineInput.Command.Equals("SET"))
-                //{
-                //    if (commandLineInput.TargetType.Equals("DOCK"))
-                //    {
-                //        if (commandLineInput.TargetFeature.Equals("SILENTFWUPDATE"))// for dock firmware update.
-                //        {
-                //            //switch (commandLineInput.TargetFeature)
-                //            //{
-                //            //    case "FIRMWAREUPDATE":
-                //            //    case "UODFWUPDATE":
-                //            //    case "LOCKUIUPDATE":
-                //            //    case "UNLOCKUIUPDATE":
-                //            var ret = FWUpdate(commandLineInput);
-                //            result.ExitCode = ret.code;
-                //            result.serialize_Json_response = ret.json;
-                //            return result;
-                //            //}
-                //        }
-                //    }
+                if (commandLineInput.Command.Equals("SET"))
+                {
+                    if (commandLineInput.TargetType.Equals("DOCK"))
+                    {
+                        if (commandLineInput.TargetFeature.Equals("SILENTFWUPDATE"))// for dock firmware update.
+                        {
+                            //switch (commandLineInput.TargetFeature)
+                            //{
+                            //    case "FIRMWAREUPDATE":
+                            //    case "UODFWUPDATE":
+                            //    case "LOCKUIUPDATE":
+                            //    case "UNLOCKUIUPDATE":
+                            var ret = FWUpdate(commandLineInput);
+                            result.ExitCode = ret.code;
+                            result.serialize_Json_response = ret.json;
+                            return result;
+                            //}
+                        }
+                    }
 
-                //}
+                }
 
                 if (commandLineInput.Command.Equals("SET"))
                 {
@@ -424,7 +425,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                 return (int)CLI_ExitCode.null_device_manager;
             }
             _deviceinfo = _devMgr.GetDevices().Result.deviceInfo;
-            if (_commandLineInput.GuidString.Count == 0 && _commandLineInput.Model.Count == 0 && _commandLineInput.ServiceTag.Count == 0 && _commandLineInput.PPID.Count == 0 && _commandLineInput.SerialNumber.Count == 0)
+                        if (_commandLineInput.GuidString.Count == 0 && _commandLineInput.Model.Count == 0 && _commandLineInput.ServiceTag.Count == 0 && _commandLineInput.PPID.Count == 0 && _commandLineInput.SerialNumber.Count == 0)
             {
                 int go = 0;
                 if (_deviceinfo == null || _deviceinfo.Count == 0)
@@ -727,7 +728,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                     x.Value = "";
                     if (x.Result == "")
                     {
-                        var result = "0"; //RunAsyncTimeout(_devMgr.(x.Guid, true)).Result;
+                        var result = RunAsyncTimeout(_devMgr.RestoreToDefaultKB(x.Guid)).Result;
                         if (result == "0")
                         {
                             x.Result = "PASS";
@@ -757,7 +758,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                     x.Value = "";
                     if (x.Result == "")
                     {
-                        var result = "0"; //RunAsyncTimeout(_devMgr.(x.Guid, true)).Result;
+                        var result = RunAsyncTimeout(_devMgr.RestoreToDefaultMouse(x.Guid)).Result;
                         if (result == "0")
                         {
                             x.Result = "PASS";
@@ -787,7 +788,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                     x.Value = "";
                     if (x.Result == "")
                     {
-                        var result = "0"; //RunAsyncTimeout(_devMgr.(x.Guid, true)).Result;
+                        var result = RunAsyncTimeout(_devMgr.RestoreToDefaultPen()).Result;
                         if (result == "0")
                         {
                             x.Result = "PASS";
@@ -814,8 +815,8 @@ namespace DDPM.CLI.Plugins.Peripherals
             {
                 if (op.Option_Name.ToUpper() == "VALUE")
                 {
-                    op.Option_Value.Replace(".", ",");
-                    List<string> op_value = op.Option_Value.Split(",").ToList();
+                    //op.Option_Value.Replace(".", ",");
+                    List<string> op_value = op.Option_Value.Replace(".", ",").Split(",").ToList();
                     //value = op_value[0];
                     foreach (var value in op_value)
                     {
@@ -903,7 +904,8 @@ namespace DDPM.CLI.Plugins.Peripherals
                     break;
                 }
             }
-            if (_commandLineInput.TargetFeature != "UNPAIR" && _commandLineInput.Options[0].Option_Value == "")
+
+            if (_commandLineInput.TargetFeature != "UNPAIR" && _commandLineInput.Options.Count != 0 && _commandLineInput.Options[0].Option_Value == "")
             {
                 SetResults.ForEach(x =>
                         {
@@ -1081,7 +1083,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                             }
                             else
                             {
-                                x.Value = "N/A";
+                                x.Value = "Not supported";
                                 x.Result = "FAIL";
                                 x.Message = "HeadSet not support ANC";
                                 retcode = false;
@@ -1131,7 +1133,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                             }
                             else
                             {
-                                x.Value = "N/A";
+                                x.Value = "Not supported";
                                 x.Result = "FAIL";
                                 x.Message = "HeadSet not support MICNOISECANCELLATION";
                                 retcode = false;
@@ -1169,7 +1171,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                             }
                             else
                             {
-                                x.Value = "N/A";
+                                x.Value = "Not supported";
                                 x.Result = "FAIL";
                                 x.Message = "HeadSet not support WearDetection";
                                 retcode = false;
@@ -1241,7 +1243,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                             }
                             else
                             {
-                                x.Value = "N/A";
+                                x.Value = "Not supported";
                                 x.Result = "FAIL";
                                 x.Message = "Webcam not support MicSwitch";
                                 retcode = false;
@@ -1284,7 +1286,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                             }
                             else
                             {
-                                x.Value = "N/A";
+                                x.Value = "Not supported";
                                 x.Result = "FAIL";
                                 x.Message = "Webcam not support HDR";
                                 retcode = false;
@@ -1341,34 +1343,44 @@ namespace DDPM.CLI.Plugins.Peripherals
                         x.Value = "";
                         if (x.Result == "")
                         {
-                            if (_devMgr.GetIsPropertyAntiFlickerSupported(x.Guid).Result)
+                            if(val == 50 || val == 60)
                             {
-                                var result = RunAsyncTimeout(_devMgr.SetAntiFlicker(x.Guid, val)).Result;
-                                if (result == "0")
+                                if (_devMgr.GetIsPropertyAntiFlickerSupported(x.Guid).Result)
                                 {
-                                    x.Result = "PASS";
-                                    retvalue = _devMgr.GetAntiFlickerValueByDTP(x.Guid).Result;
-                                    x.Value = retvalue.ToString();
-                                    x.Value += "," + (data.LockSettings.Lock_Webcam_AntiFlicker ? "LOCK" : "UNLOCK");
-                                    x.Message = "N/A";
-                                }
-                                else if (result == "1")
-                                {
-                                    x.Result = "FAIL";
-                                    x.Message = "Timeout";
+                                    var result = RunAsyncTimeout(_devMgr.SetAntiFlicker(x.Guid, val)).Result;
+                                    if (result == "0")
+                                    {
+                                        x.Result = "PASS";
+                                        retvalue = _devMgr.GetAntiFlicker(x.Guid).Result;
+                                        x.Value = retvalue.ToString();
+                                        x.Value += "," + (data.LockSettings.Lock_Webcam_AntiFlicker ? "LOCK" : "UNLOCK");
+                                        x.Message = "N/A";
+                                    }
+                                    else if (result == "1")
+                                    {
+                                        x.Result = "FAIL";
+                                        x.Message = "Timeout";
+                                    }
+                                    else
+                                    {
+                                        x.Result = "FAIL";
+                                        x.Message = result;
+                                    }
+                                    retcode = (result == "0") ? true : false;
                                 }
                                 else
                                 {
+                                    x.Value = "Not supported";
                                     x.Result = "FAIL";
-                                    x.Message = result;
+                                    x.Message = "Webcam not support AntiFlicker";
+                                    retcode = false;
                                 }
-                                retcode = (result == "0") ? true : false;
                             }
                             else
                             {
-                                x.Value = "N/A";
                                 x.Result = "FAIL";
-                                x.Message = "Webcam not support AntiFlicker";
+                                x.Message = "Wrong option value: ";
+                                x.Message += $"{val}";
                                 retcode = false;
                             }
                         }
@@ -1386,7 +1398,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                     //            if (result == "0")
                     //            {
                     //                x.Result = "PASS";
-                    //                retvalue = _devMgr.GetAntiFlickerValueByDTP(GUID).Result;
+                    //                retvalue = _devMgr.GetAntiFlicker(GUID).Result;
                     //                x.Value = retvalue.ToString();
                     //                x.Value += "," + (data.LockSettings.Lock_Webcam_AntiFlicker ? "LOCK" : "UNLOCK");
                     //                x.Message = "N/A";
@@ -1448,7 +1460,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                             }
                             else
                             {
-                                x.Value = "N/A";
+                                x.Value = "Not supported";
                                 x.Result = "FAIL";
                                 x.Message = "Webcam not support AI AutoFraming";
                                 retcode = false;
@@ -1531,7 +1543,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                             }
                             else
                             {
-                                x.Value = "N/A";
+                                x.Value = "Not supported";
                                 x.Result = "FAIL";
                                 x.Message = "Webcam not support PresenceDetection";
                                 retcode = false;
@@ -3617,76 +3629,76 @@ namespace DDPM.CLI.Plugins.Peripherals
                             return ((int)CLI_ExitCode.fail_FWUpdate, JsonConvert.SerializeObject(rsp, Formatting.Indented));
                         }
                         break;
-                    case "UODFWUPDATE":
-                        cLI_FWU_RESPONSE = new CLI_FWU_RESPONSE(cLI_RESPONSE);
-                        if (commandLineInput.Options.Count > 2)
-                        {
-                            cLI_FWU_RESPONSE.Result = "FAIL";
-                            cLI_FWU_RESPONSE.Message = "Bring in extra strings:";
-                            for (int i = 0; i < commandLineInput.Options.Count; i++)
-                            {
-                                cLI_FWU_RESPONSE.Message += $"{commandLineInput.Options[i].Option_Name}={commandLineInput.Options[i].Option_Value}\n";
-                            }
-                            break;
-                        }
-                        for (int i = 1; i < commandLineInput.Options.Count; i++)
-                        {
-                            if (commandLineInput.Options[i].Option_Name.ToUpper().Equals("ISSHOWINFO"))
-                            {
-                                isShowInfo = commandLineInput.Options[i].Option_Value.ToUpper() == "ON" ? true : false;
-                            }
-                            else if (commandLineInput.Options[i].Option_Name.ToUpper().Equals("INSTALLPATH"))
-                            {
-                                installPath = Path.GetFullPath(commandLineInput.Options[i].Option_Value);
-                            }
-                            else
-                            {
-                                somethingError = true;
-                            }
-                        }
-                        if (somethingError)
-                        {
-                            cLI_FWU_RESPONSE.Result = "FAIL";
-                            cLI_FWU_RESPONSE.Message = "Bring in extra strings:";
-                            for (int i = 0; i < commandLineInput.Options.Count; i++)
-                            {
-                                cLI_FWU_RESPONSE.Message += $"{commandLineInput.Options[i].Option_Name}={commandLineInput.Options[i].Option_Value}\n";
-                            }
-                            break;
-                        }
-                        ret = Auto_FWUpdate(commandLineInput, cLI_FWU_RESPONSE, true, installPath, isShowInfo, true);
-                        cLI_FWU_RESPONSE.Result = ret == true ? "PASS" : "FAIL";
-                        break;
+                    //case "UODFWUPDATE":
+                    //    cLI_FWU_RESPONSE = new CLI_FWU_RESPONSE(cLI_RESPONSE);
+                    //    if (commandLineInput.Options.Count > 2)
+                    //    {
+                    //        cLI_FWU_RESPONSE.Result = "FAIL";
+                    //        cLI_FWU_RESPONSE.Message = "Bring in extra strings:";
+                    //        for (int i = 0; i < commandLineInput.Options.Count; i++)
+                    //        {
+                    //            cLI_FWU_RESPONSE.Message += $"{commandLineInput.Options[i].Option_Name}={commandLineInput.Options[i].Option_Value}\n";
+                    //        }
+                    //        break;
+                    //    }
+                    //    for (int i = 1; i < commandLineInput.Options.Count; i++)
+                    //    {
+                    //        if (commandLineInput.Options[i].Option_Name.ToUpper().Equals("ISSHOWINFO"))
+                    //        {
+                    //            isShowInfo = commandLineInput.Options[i].Option_Value.ToUpper() == "ON" ? true : false;
+                    //        }
+                    //        else if (commandLineInput.Options[i].Option_Name.ToUpper().Equals("INSTALLPATH"))
+                    //        {
+                    //            installPath = Path.GetFullPath(commandLineInput.Options[i].Option_Value);
+                    //        }
+                    //        else
+                    //        {
+                    //            somethingError = true;
+                    //        }
+                    //    }
+                    //    if (somethingError)
+                    //    {
+                    //        cLI_FWU_RESPONSE.Result = "FAIL";
+                    //        cLI_FWU_RESPONSE.Message = "Bring in extra strings:";
+                    //        for (int i = 0; i < commandLineInput.Options.Count; i++)
+                    //        {
+                    //            cLI_FWU_RESPONSE.Message += $"{commandLineInput.Options[i].Option_Name}={commandLineInput.Options[i].Option_Value}\n";
+                    //        }
+                    //        break;
+                    //    }
+                    //    ret = Auto_FWUpdate(commandLineInput, cLI_FWU_RESPONSE, true, installPath, isShowInfo, true);
+                    //    cLI_FWU_RESPONSE.Result = ret == true ? "PASS" : "FAIL";
+                    //    break;
 
-                    case "LOCKUIUPDATE":
-                        if (commandLineInput.Options.Count > 0)
-                        {
-                            cLI_FWU_RESPONSE.Result = "FAIL";
-                            cLI_FWU_RESPONSE.Message = "Bring in extra strings:";
-                            for (int i = 0; i < commandLineInput.Options.Count; i++)
-                            {
-                                cLI_FWU_RESPONSE.Message += $"{commandLineInput.Options[i].Option_Name}={commandLineInput.Options[i].Option_Value}\n";
-                            }
-                            break;
-                        }
-                        _devMgr.SetUILockStatus(true);
-                        ret = true;
-                        break;
+                    //case "LOCKUIUPDATE":
+                    //    if (commandLineInput.Options.Count > 0)
+                    //    {
+                    //        cLI_FWU_RESPONSE.Result = "FAIL";
+                    //        cLI_FWU_RESPONSE.Message = "Bring in extra strings:";
+                    //        for (int i = 0; i < commandLineInput.Options.Count; i++)
+                    //        {
+                    //            cLI_FWU_RESPONSE.Message += $"{commandLineInput.Options[i].Option_Name}={commandLineInput.Options[i].Option_Value}\n";
+                    //        }
+                    //        break;
+                    //    }
+                    //    _devMgr.SetUILockStatus(true);
+                    //    ret = true;
+                    //    break;
 
-                    case "UNLOCKUIUPDATE":
-                        if (commandLineInput.Options.Count > 0)
-                        {
-                            cLI_FWU_RESPONSE.Result = "FAIL";
-                            cLI_FWU_RESPONSE.Message = "Bring in extra strings:";
-                            for (int i = 0; i < commandLineInput.Options.Count; i++)
-                            {
-                                cLI_FWU_RESPONSE.Message += $"{commandLineInput.Options[i].Option_Name}={commandLineInput.Options[i].Option_Value}\n";
-                            }
-                            break;
-                        }
-                        _devMgr.SetUILockStatus(false);
-                        ret = true;
-                        break;
+                    //case "UNLOCKUIUPDATE":
+                    //    if (commandLineInput.Options.Count > 0)
+                    //    {
+                    //        cLI_FWU_RESPONSE.Result = "FAIL";
+                    //        cLI_FWU_RESPONSE.Message = "Bring in extra strings:";
+                    //        for (int i = 0; i < commandLineInput.Options.Count; i++)
+                    //        {
+                    //            cLI_FWU_RESPONSE.Message += $"{commandLineInput.Options[i].Option_Name}={commandLineInput.Options[i].Option_Value}\n";
+                    //        }
+                    //        break;
+                    //    }
+                    //    _devMgr.SetUILockStatus(false);
+                    //    ret = true;
+                    //    break;
 
                     default:
                         writelog("FWUpdate_Line 3246");
@@ -3832,9 +3844,35 @@ namespace DDPM.CLI.Plugins.Peripherals
                 //    }
                 //}
 
+                #region Parse Dock SilentFwUpdate command to unified format
+                if (commandLineInput.TargetType == "DOCK")
+                {
+                    var dockNoCommaOptions = commandLineInput.Options.Where(_ => !_.Option_Value.Contains(',')).ToList();
+
+                    foreach (var dockNoCommaOption in dockNoCommaOptions)
+                    {
+                        if (dockNoCommaOption.Option_Value.Equals("UOD", StringComparison.OrdinalIgnoreCase))
+                        {
+                            dockNoCommaOption.Option_Value = "TRUE,UOD";
+                        }
+                        else if (dockNoCommaOption.Option_Value.Contains(':'))
+                        {
+                            dockNoCommaOption.Option_Value = dockNoCommaOption.Option_Value + ",FILEPATH";
+                        }
+                    }
+
+                    commandLineInput.Options.Insert(0, new CommandType_Option("VALUE", "DOCK,FORCEWITHNONOTICE"));
+                }
+                #endregion
+
                 if (commandLineInput.Options.Count > 0)
                 {
                     cLI_FWU_RESPONSE.Value = commandLineInput.Options[0].Option_Value;
+
+                    if (!commandLineInput.Options[0].Option_Value.Contains(','))
+                    {
+                        commandLineInput.Options[0].Option_Value += ",FORCEWITHNONOTICE";
+                    }
                     string[] ss_1 = commandLineInput.Options[0].Option_Value.Split(",");
 
                     if (ss_1.Length == 2)
@@ -4017,6 +4055,20 @@ namespace DDPM.CLI.Plugins.Peripherals
                                     {
                                         _recode_dongle = true;
                                     }
+                                    else if (ss_1[0].ToUpper().Equals("AUDIO"))
+                                    {
+                                        switch (g.LogicalDeviceType)
+                                        {
+                                            case "LogicalHeadset":
+                                                _recode_headset = true;
+                                                break;
+                                            case "LogicalWiredAudio":
+                                                _recode_speaker = true;
+                                                break;
+                                            default:
+                                                break;
+                                        }
+                                    }
                                     Trace.WriteLine($"g.PhyscialDeviceID  =  {g.LogicalDeviceType}");
                                 }
 
@@ -4033,7 +4085,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                                             {
                                                 if (!string.IsNullOrEmpty(ss_guid[0]) && !string.IsNullOrEmpty(ss_guid[1]))
                                                 {
-                                                    if (ss_1[0].ToUpper() == "DOCK")
+                                                    if (ss_1[0].ToUpper() == "DOCK" && commandLineInput.TargetType == "APP") // Checking for TargetType=APP
                                                     {
                                                         CLI_RESPONSE rsp = new CLI_RESPONSE()
                                                         {
@@ -4291,10 +4343,23 @@ namespace DDPM.CLI.Plugins.Peripherals
                                                     Console.WriteLine(JsonConvert.SerializeObject(rsp, Formatting.Indented));
                                                     return ((int)CLI_ExitCode.fail_FWUpdate, JsonConvert.SerializeObject(rsp, Formatting.Indented));
                                                 }
+                                                else if (ss_2[0].ToUpper().Equals("AUDIO") && !_recode_headset && !_recode_speaker)
+                                                {
+                                                    CLI_RESPONSE rsp = new CLI_RESPONSE()
+                                                    {
+                                                        Command = commandLineInput.Command,
+                                                        TargetFeature = commandLineInput.TargetFeature,
+                                                        Result = "FAIL",
+                                                        Message = "No AUDIO connected",
+                                                    };
+                                                    Console.WriteLine(JsonConvert.SerializeObject(rsp, Formatting.Indented));
+                                                    return ((int)CLI_ExitCode.fail_FWUpdate, JsonConvert.SerializeObject(rsp, Formatting.Indented));
+                                                }
 
                                                 switch (commandLineInput.TargetFeature)
                                                 {
                                                     case "FIRMWAREUPDATE":
+                                                    case "SILENTFWUPDATE":
                                                         switch (ss_2[1].ToUpper())
                                                         {
                                                             case "FORCEWITHNOTICE":
@@ -4616,10 +4681,9 @@ namespace DDPM.CLI.Plugins.Peripherals
             try
             {
                 List<DeviceType> deviceTypes = new List<DeviceType>();
-                DeviceType deviceType = DeviceType.Unknown;
                 if (commandLineInput.Options.Count > 0)
                 {
-                    (deviceType, deviceTypes) = SetDevice(commandLineInput);
+                    deviceTypes = SetDevice(commandLineInput).deviceTypes;
                 }
 
                 _devMgr.ProgressUpdate_Notify -= _FWUpdatePlugin_ProgressUpdate;
@@ -4657,7 +4721,17 @@ namespace DDPM.CLI.Plugins.Peripherals
                         cli_FWU_RESPONSE.Result = "PASS";
                         return ((int)CLI_ExitCode.NoUpdate, JsonConvert.SerializeObject(cli_FWU_RESPONSE, Formatting.Indented));
                     }
-                    if (deviceType != DeviceType.Unknown)
+
+                    // add start @ 20241202 stephen
+                    foreach (FWUpdateInfo info in fwUpdateInfoPackage.FWUpdateInfo)
+                    {
+                        info.Guid = commandLineInput.remote_mgr_guid;
+                    }
+
+                    _devMgr.updateFWUpdateInfoPackage(fwUpdateInfoPackage);
+                    // add end @ 20241202
+
+                    if (deviceTypes.Count != 0)
                     {
                         cli_FWU_RESPONSE.Model = string.Join(",", fwUpdateInfoPackage.FWUpdateInfo.Select(_ => _.Model));
                         cli_FWU_RESPONSE.ServiceTag = string.Join(",", fwUpdateInfoPackage.FWUpdateInfo.Select(_ => _.ServiceTag ?? "N/A"));
@@ -4787,7 +4861,7 @@ namespace DDPM.CLI.Plugins.Peripherals
             }
         }
 
-        private (DeviceType, List<DeviceType>) SetDevice(CommandLineInput commandLineInput)
+        private (DeviceType deviceType, List<DeviceType> deviceTypes) SetDevice(CommandLineInput commandLineInput)
         {
             List<DeviceType> deviceTypes = new List<DeviceType>();
             DeviceType deviceType = DeviceType.Unknown;
@@ -4815,8 +4889,16 @@ namespace DDPM.CLI.Plugins.Peripherals
                     deviceTypes.Add(DeviceType.LogicalHeadset);
                     deviceType = DeviceType.LogicalHeadset;
                     break;
+                case "SPEAKER":
+                    deviceTypes.Add(DeviceType.LogicalWiredAudio);
+                    deviceTypes.Add(DeviceType.PhysicalWiredAudio);
+                    deviceTypes.Add(DeviceType.PhysicalAudioDongle);
+                    deviceTypes.Add(DeviceType.PhysicalBluetoothAudio);
+                    deviceType = DeviceType.LogicalWiredAudio;
+                    break;
                 case "AUDIO":
                     deviceTypes.Add(DeviceType.LogicalWiredAudio);
+                    deviceTypes.Add(DeviceType.LogicalHeadset);
                     deviceTypes.Add(DeviceType.PhysicalWiredAudio);
                     deviceTypes.Add(DeviceType.PhysicalAudioDongle);
                     deviceTypes.Add(DeviceType.PhysicalBluetoothAudio);

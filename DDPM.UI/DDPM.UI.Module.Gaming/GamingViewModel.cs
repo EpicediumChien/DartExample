@@ -4,6 +4,7 @@ using DDPM.SA.Common.Display;
 using DDPM.SA.Common.Settings;
 using DDPM.UI.Common;
 using DDPM.UI.Common.Interfaces;
+using DDPM.UI.Resources.Helper;
 using Dell.Client.Framework.Common;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -179,6 +180,22 @@ namespace DDPM.UI.Module.Gaming
                 OnPropertyChanged("DualResolutionToggleKey");
                 //NotifyPropertyChanged("DualResolutionToggleKey");
             }
+        }
+        public void SaveHotkeySettings(MonitorInfo monitorInfo, HotkeyInfo hotkeyInfo)
+        {
+            if (DdpmCommonHelper.DeviceManagerSA != null)
+            {
+                IsBusy = true;
+                OnPropertyChanged("IsBusy");
+                bool saveSettings = DdpmCommonHelper.DeviceManagerSA.SaveHotkeySetting(monitorInfo, hotkeyInfo).Result;
+                if (saveSettings)
+                {
+                    DdpmCommonHelper.isHotkeyBypass = DdpmCommonHelper.DeviceManagerSA.ByPassHotkey(false).Result;
+                    IsBusy = false;
+                    OnPropertyChanged("IsBusy");
+                }
+            }
+            Invoke_RefreshHotkeySettings();
         }
 
         public void Invoke_RefreshHotkeySettings()
@@ -497,7 +514,7 @@ namespace DDPM.UI.Module.Gaming
         {
             get
             {
-                return $"{Properties.Resolutions_Width}x{Properties.Resolutions_High}, {Properties.Frequency}Hz {(Properties.isRecommended ? "(Recommended)" : "")}";
+                return $"{Properties.Resolutions_Width}x{Properties.Resolutions_High}, {Properties.Frequency}Hz {(Properties.isRecommended ? $"({LangHelper.Instance["Recommended"]})" : "")}";
             }
         }
     }
@@ -509,7 +526,7 @@ namespace DDPM.UI.Module.Gaming
         {
             get
             {
-                return $"{GameEnhancementMode.ToString().Replace("__", "/").Replace("_", " ")}";
+                return LangHelper.Instance[GameEnhancementMode.ToString()]; //$"{GameEnhancementMode.ToString().Replace("__", "/").Replace("_", " ")}";
             }
         }
     }
@@ -521,7 +538,7 @@ namespace DDPM.UI.Module.Gaming
         {
             get
             {
-                return $"{ResponseTime.ToString().Replace("__", "/").Replace("_", " ")}";
+                return LangHelper.Instance[ResponseTime.ToString()]; //$"{ResponseTime.ToString().Replace("__", "/").Replace("_", " ")}";
             }
         }
     }
@@ -533,7 +550,7 @@ namespace DDPM.UI.Module.Gaming
         {
             get
             {
-                return $"{DarkStabilizer.ToString().Replace("__", "/").Replace("_", " ")}";
+                return LangHelper.Instance[DarkStabilizer.ToString()]; //$"{DarkStabilizer.ToString().Replace("__", "/").Replace("_", " ")}";
             }
         }
     }
@@ -545,7 +562,7 @@ namespace DDPM.UI.Module.Gaming
         {
             get
             {
-                return $"{HDRType.ToString().Replace("__", "/").Replace("_", " ")}";
+                return LangHelper.Instance[HDRType.ToString()]; //$"{HDRType.ToString().Replace("__", "/").Replace("_", " ")}";
             }
         }
         internal class UI_DualResolution
@@ -556,7 +573,7 @@ namespace DDPM.UI.Module.Gaming
             {
                 get
                 {
-                    return $"{DualResolutionType.ToString().Replace("__", "/").Replace("_", "")}";
+                    return LangHelper.Instance[DualResolutionType.ToString()];// $"{DualResolutionType.ToString().Replace("__", "/").Replace("_", "")}";
                 }
             }
         }

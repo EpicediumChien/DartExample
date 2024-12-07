@@ -19,6 +19,7 @@ using System.Diagnostics;
 using System.Reflection;
 using DDPM.SA.Obfuscation;
 using System.IO;
+using System.Windows;
 
 namespace DDPM.Subagent.User
 {
@@ -31,14 +32,6 @@ namespace DDPM.Subagent.User
     /// </summary>
     internal class Program
     {
-        //[DllImport("kernel32.dll")]
-        //static extern IntPtr GetConsoleWindow();
-        //
-        //[DllImport("user32.dll")]
-        //static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
-        //
-        //const int SW_HIDE = 0;
-
         /// <summary>
         ///     A name for your product.
         /// </summary>
@@ -164,6 +157,7 @@ namespace DDPM.Subagent.User
             };
 
             Console.WriteLine("DDPM.Subagent.User starting...");
+
 
             using (var agent = new Agent(agentConfig))
             {

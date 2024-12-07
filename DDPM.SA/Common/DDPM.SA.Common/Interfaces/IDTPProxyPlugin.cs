@@ -40,7 +40,8 @@ namespace DDPM.SA.Common
         Task DeleteMouseAssignedAction(string Guid, int newValue);
         Task SetMouseAssignDialogAction(string Guid, byte[] newValue);
         Task SetMouseAssignKeystrokeAction(string Guid, byte[] newValue);
-
+        Task<bool> RestoreToDefaultMouse(string Guid, bool isFromCli = true);
+        Task<bool> SetReportRate(string Guid, int newValue);
 
         #endregion
 
@@ -59,6 +60,7 @@ namespace DDPM.SA.Common
         Task SetKbAssignedAction(string Guid, byte[] newValue);
         Task SetKbAssignDialogAction(string Guid, byte[] newValue);
         Task SetKbAssignKeystrokeAction(string Guid, byte[] newValue);
+        Task<bool> RestoreToDefaultKB(string Guid);
 
         #endregion
 
@@ -84,7 +86,8 @@ namespace DDPM.SA.Common
         Task SetTiltSensitivity(string itemID, int newValue);
 
         Task SetTipSensitivity(string itemID, int newValue);
-        Task ResetToDefault_Pen();
+        Task<bool> RestoreToDefaultPen();
+        Task<bool> RestoreRadialMenuToDefault();
 
 
         Task<string> PairingPen();
@@ -116,10 +119,11 @@ namespace DDPM.SA.Common
         /// <summary>
         /// Webcam change event
         /// </summary>
-        event EventHandler<bool>? Esi_IsCameraSensorCover_ChangeEvent;
-        event EventHandler<int>? WALSnoozeTimeLeftInSeconds_ChangeEvent;
-        event EventHandler<bool>? Esi_IsWALLockCountdownStartedChanged_ChangeEvent;
-        event EventHandler<int>? Esi_WALLockCountdownChanged_ChangeEvent;
+        //event EventHandler<bool>? Esi_IsCameraSensorCover_ChangeEvent;
+        //event EventHandler<int>? WALSnoozeTimeLeftInSeconds_ChangeEvent;
+        //event EventHandler<bool>? Esi_IsWALLockCountdownStartedChanged_ChangeEvent;
+        //event EventHandler<int>? Esi_WALLockCountdownChanged_ChangeEvent;
+        event EventHandler<UpdateUINotify>? DTPEventHandler;
 
         Task<JArray> GetPresetProfiles(string Guid);
         Task<JArray> GetCustomProfiles(string Guid);
@@ -127,28 +131,34 @@ namespace DDPM.SA.Common
         Task<string> GetProfileName(string Guid);
         Task<int> GetBrightness(string Guid);
         Task<string> GetCameraFirmwareVersion(string Guid);
+        Task<bool> GetIsWindowsHelloCapabilityVerified(string Guid);
+        Task<bool> GetIsAllSupportedResolutionsFound(string Guid);
         Task<bool> GetIsPropertyFOVSupported(string Guid);
         Task<int> GetFieldOfView(string Guid);
         Task<bool> GetIsPropertyHDRSupported(string Guid);
         Task<bool> GetIsHDROn(string Guid);
-        Task<bool> CheckIsPropertyAntiFlickerSupported(string Guid);
+        Task<bool> GeIsPropertyAntiFlickerSupported(string Guid);
         Task<int> GetAntiFlicker(string Guid);
         Task<bool> GetIsPropertyAutoFramingSupported(string Guid);
         Task<bool> GetIsAutoFramingOn(string Guid);
         Task<string> GetSupportedResolutions(string Guid);
         Task<string> GetSelectedResolution(string Guid);
+        Task<int> GetZoom(string Guid);
+        Task<int> GetFocus(string Guid);
+        Task<bool> GetIsFocusOn(string Guid);
+        Task<int> GetPriority(string Guid);
 
         Task SetIsMicEnumerationOn(string Guid, bool newValue);
         Task SetProfile(string Guid, string newValue);
         Task SetProfileName(string Guid, string newValue);
         Task CreateCustomProfile(string Guid, string newValue);
         Task DeleteProfile(string Guid, string newValue);
-        Task SetZoom(string Guid, int newValue);
-        Task SetIsAutoFramingOn(string Guid, bool newValue);
+        Task<bool> SetZoom(string Guid, int newValue);
+        Task<bool> SetIsAutoFramingOn(string Guid, bool newValue);
         Task SetIsAutoFramingTransitionOn(string Guid, bool newValue);
         Task SetAutoFramingSensitivity(string Guid, int newValue);
         Task SetAutoFramingFrameSize(string Guid, int newValue);
-        Task SetFieldOfView(string Guid, int newValue);
+        Task<bool> SetFieldOfView(string Guid, int newValue);
         Task SetIsFocusOn(string Guid, bool newValue);
         Task SetFocus(string Guid, int newValue);
         Task SetPriority(string Guid, int newValue);
@@ -179,15 +189,16 @@ namespace DDPM.SA.Common
         Task<bool> GetIsProximitySensorEnable(string Guid);
         Task<bool> GetIsWakeonApproachEnable(string Guid);
         Task<bool> GetIsWalkAwayLockEnable(string Guid);
-        Task<bool> GetIsPrioritizeExternalWebcam(string Guid);
+        Task<bool?> GetIsPrioritizeExternalWebcam(string Guid);
         Task<bool> GetIsZoomMeetingActive(string Guid);
         Task<bool> GetZoomMeetingType(string Guid);
         Task<bool> GetIsZoomScreenShareActive(string Guid);
 
-        event EventHandler<ZoomChangedArgs> ZoomChanged_Notify;
-        event EventHandler<ZoomMeetingTypeChangedArgs> ZoomMeetingTypeChanged_Notify;
-        event EventHandler<IsZoomMeetingActiveChangedArgs> IsZoomMeetingActive_Notify;
-        event EventHandler<IsZoomScreenShareActiveChangedArgs> IsZoomScreenShareActive_Notify;
+        //Marked by Derek 1121
+        //event EventHandler<ZoomChangedArgs> ZoomChanged_Notify;
+        //event EventHandler<ZoomMeetingTypeChangedArgs> ZoomMeetingTypeChanged_Notify;
+        //event EventHandler<IsZoomMeetingActiveChangedArgs> IsZoomMeetingActive_Notify;
+        //event EventHandler<IsZoomScreenShareActiveChangedArgs> IsZoomScreenShareActive_Notify;
 
         Task<bool> GetIsESISupported(string Guid);
 
@@ -209,34 +220,51 @@ namespace DDPM.SA.Common
         Task<bool> SetBand5GainAsync(string Guid, int newValue);
         Task<bool> SetAncModeAsync(string Guid, int newValue);
         Task<bool> SetAncGainAsync(string Guid, int newValue);
-        Task<bool> SetWearDetectionAsync(string Guid, int newValue);
+        Task<bool> SetWearDetectionAsync(string Guid, bool newValue);
+
+        Task<bool> SetIsWearDetectionMuteMicEnabledAsync(string Guid, bool newValue);
+
+        Task<bool> SetIsWearDetectionPauseMusicEnabledAsync(string Guid, bool newValue);
+
+        Task<bool> SetWearDetectionQuickPauseAsync(string Guid, int newValue);
+
+        Task<bool> SetWearDetectionSensitivityAsync(string Guid, int newValue);
+
         Task<bool> SetMicNCIncomingAsync(string Guid, bool newValue);
         Task<bool> SetUnPairAsync(string Guid, bool newValue);
         Task<bool> SetFactoryResetAsyncValueForHeadset(string Guid, bool newValue);
+        Task<bool> SetBoomMicAsync(string Guid, bool newValue);
 
         //Peripheral Common Properties Get
-        Task<JArray> GetDeviceItemsExAsync(string Guid);
-        Task<DeviceInterfaceType> GetInterfaceTypeAsync(string Guid);
-        Task<string> GetDeviceNameAsync(string Guid);
-        Task<string> GetDeviceIdAsync(string Guid);
-        Task<string> GetPluginIdAsync(string Guid);
-        Task<int> GetODMIdAsync(string Guid);
-        Task<string> GetModelNumberAsync(string Guid);
-        Task<int> GetInstanceNumberAsync(string Guid);
-        Task<int> GetInstanceIdAsync(string Guid);
-        Task<string> GetFirmwareVersionAsync(string Guid);
-        Task<string> GetDeviceTypeAsync(string Guid);
+        Task<JArray> GetHeadsetDeviceItemsExAsync();
+        Task<DeviceInterfaceType> GetHeadsetInterfaceTypeAsync(string Guid);
+        Task<string> GetHeadsetDeviceNameAsync(string Guid);
+        Task<string> GetHeadsetDeviceIdAsync(string Guid);
+        Task<string> GetHeadsetPluginIdAsync(string Guid);
+        Task<int> GetHeadsetODMIdAsync(string Guid);
+        Task<string> GetHeadsetModelNumberAsync(string Guid);
+        Task<int> GetHeadsetInstanceNumberAsync(string Guid);
+        Task<int> GetHeadsetInstanceIdAsync(string Guid);
+        Task<string> GetHeadsetFirmwareVersionAsync(string Guid);
+        Task<string> GetHeadsetDeviceTypeAsync(string Guid);
 
         //////////Headset Get//////////
-        Task<string> GetParentDeviceTypeAsync(string Guid);
-        Task<bool> GetIsBatteryLevelSupportedAsync(string Guid);
-        Task<int> GetBatteryLevelAsync(string Guid);
-        Task<string> GetDeviceBatteryStatusAsync(string Guid);
-        Task<string> GetPairingStatusAsync(string Guid);
-        Task<int> GetMaxPairingSlotsAsync(string Guid);
-        Task<int> GetPairedDeviceCountAsync(string Guid);
-        Task<int> GetTotalNumberOfPairedHostNameAsync(string Guid);
-        Task<string> GetSerialNumberAsync(string Guid);
+        Task<string> GetHeadsetParentDeviceTypeAsync(string Guid);
+        Task<bool> GetHeadsetIsBatteryLevelSupportedAsync(string Guid);
+        Task<int> GetHeadsetBatteryLevelAsync(string Guid);
+        Task<string> GetHeadsetDeviceBatteryStatusAsync(string Guid);
+        Task<string> GetHeadsetPairingStatusAsync(string Guid);
+
+        Task<string> GetHeadsetPairedHostName1Async(string Guid);
+
+        Task<string> GetHeadsetPairedHostName2Async(string Guid);
+
+        Task<string> GetHeadsetPairedHostName3Async(string Guid);
+
+        Task<int> GetHeadsetMaxPairingSlotsAsync(string Guid);
+        Task<int> GetHeadsetPairedDeviceCountAsync(string Guid);
+        Task<int> GetHeadsetTotalNumberOfPairedHostNameAsync(string Guid);
+        Task<string> GetHeadsetSerialNumberAsync(string Guid);
         Task<bool> GetIsReadyAsync(string Guid);
         Task<bool> GetIsDirtyAsync(string Guid);
         Task<bool> GetIsMicNoiseCancellationSupportedAsync(string Guid);
@@ -268,8 +296,20 @@ namespace DDPM.SA.Common
         Task<int> GetBand5GainAsync(string Guid);
         Task<int> GetAncModeAsync(string Guid);
         Task<int> GetAncGainAsync(string Guid);
-        Task<int> GetWearDetectionAsync(string Guid);
+        Task<bool> GetWearDetectionAsync(string Guid);
+        Task<bool> GetIsWearDetectionPauseMusicEnabledAsync(string Guid);
+
+        Task<bool> GetIsWearDetectionMuteMicEnabledAsync(string Guid);
+
+        Task<int> GetWearDetectionSensitivityAsync(string Guid);
+
+        Task<int> GetWearDetectionQuickPauseAsync(string Guid);
+
         Task<bool> GetIsMicNCIncomingSupportedAsync(string Guid);
+
+        Task<bool> GetIsBoomMicSupportedAsync(string Guid);
+
+        Task<bool> GetBoomMicAsync(string Guid);
 
         #endregion
 
@@ -309,6 +349,8 @@ namespace DDPM.SA.Common
 
         #region Dock
         Task<DockData> GetDockData(string guid);
+        Task<string> GetFirmwareVersionForDock(string guid);
+        Task<string> GetDockServiceTagForDock(string guid);
         #endregion
     }
 }

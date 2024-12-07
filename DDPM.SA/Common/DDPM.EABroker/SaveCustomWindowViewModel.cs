@@ -17,8 +17,8 @@ namespace DDPM.EABroker
         private readonly IDeviceManagerSA? _deviceManagerSA;
         private ObservableCollection<SplitJson> _customList = new ObservableCollection<SplitJson>();
         private SplitJson _selectedCustomItem;
-        private bool _isSaveButtonEnabled = true;
-        private string _windowTitle = "";
+        private string _headerText = "";
+        private string _subText = "";
         private bool _isAdjustTextVisible = false;
         private bool _isOverlapLayout = false;
         #endregion Private Members
@@ -40,6 +40,7 @@ namespace DDPM.EABroker
         {
             //if (deviceManager != null)
             //    _deviceManagerSA = deviceManager;
+            //Debug_AddIems();
         }
         #endregion
 
@@ -104,17 +105,29 @@ namespace DDPM.EABroker
         }
         #endregion
 
-        #region Window Tittle
-        public string WindowTitle
+        #region Header Text
+        public string HeaderText
         {
-            get => _windowTitle;
+            get => _headerText;
             set
             {
-                _windowTitle = value;
-                OnPropertyChanged("WindowTitle");
+                _headerText = value;
+                OnPropertyChanged("HeaderText");
             }
         }
         #endregion
+
+        #region Sub Text
+        public string SubText
+        {
+            get => _subText;
+            set
+            {
+                _subText = value;
+                OnPropertyChanged("SubText");
+            }
+        }
+        #endregion Sub Text
 
         #region IsOverlapLayout
         public bool IsOverlapLayout
@@ -125,6 +138,20 @@ namespace DDPM.EABroker
                 _isOverlapLayout = value;
                 OnPropertyChanged("IsOverlapLayout");
             }
+        }
+        #endregion
+
+        #region Develop stage testing
+        private void Debug_AddIems()
+        {
+            for (int i=0; i<5; i++)
+            {
+                CustomList.Add(new SplitJson()
+                {
+                    CustomName = $"Custom Layout (i)"
+                });
+            }
+            SelectedCustomItem = CustomList[0];
         }
         #endregion
     }

@@ -105,6 +105,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange
 
         public bool SetSplitCtrl(int cellCount, char splitKey, List<double> settings, bool isVertical = false)
         {
+            /*
             ISplitCtrl? isplitCtrl = ISplitCtrl.Create(cellCount, splitKey);
             if (isplitCtrl == null)
             {
@@ -123,6 +124,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange
             }
             splitCtrl.Visibility = Visibility.Visible;
             splitCtrl.Content = inputSplitCtrl.UC;
+            */
             return true;
         }
 
@@ -138,6 +140,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange
         /// </returns>
         public bool SetInputArg(EAArgs args, Screen scr)
         {
+            /*
             _inputArgs = args;
 
             this.Dispatcher.Invoke(() =>
@@ -185,7 +188,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange
                 //OpenSaveCustomWindow();
 
                 Show();
-            });
+            }); */
             return true;
         }
 
@@ -205,7 +208,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange
         {
             //if (EditCompleted != null)
             //    EditCompleted(this, "");
-
+            /*
             if (EditReturn != null)
             {
                 EAArgs retArgs = new EAArgs(_inputArgs);
@@ -213,7 +216,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange
                 retArgs.Command = "EditReturn";
                 retArgs.Message = "User cancel the editing.";
                 EditReturn(this, retArgs);
-            }
+            }*/
         }
 
         //[InfoWin solution]
@@ -221,7 +224,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange
         {
             //if (EditCompleted != null)
             //    EditCompleted(this, "");
-
+            /*
             if (EditReturn != null)
             {
                 EAArgs retArgs = new EAArgs(_inputArgs);
@@ -230,14 +233,14 @@ namespace DDPM.SA.Plugins.User.EasyArrange
                 //retArgs.CustomName = saveCustomWindow.CustomName;
                 retArgs.Command = "EditReturn";
                 EditReturn(this, retArgs);
-            }
+            }*/
         }
 
         #endregion SaveDlg Button Clicks
 
         #region Show and Edit
         public bool ShowAndEdit(EAArgs args, Screen scr)
-        {
+        {/*
             _inputArgs = args;
             if ((args.CellCount == 0) && (args.SplitKey == 'B'))
             {
@@ -250,12 +253,12 @@ namespace DDPM.SA.Plugins.User.EasyArrange
             else
             {
                 return false;
-            }
+            }*/
             return true;
         }
 
         private void UI_ShowAndEdit_PredefinedCustom(EAArgs args, Screen scr)
-        {
+        {/*
             //Try to create a ISplitCtrl to verify (cellCount,SplitKey) is valid
             ISplitCtrl? ispCtrl = ISplitCtrl.Create(args.CellCount, args.SplitKey);
             if (ispCtrl == null)
@@ -298,10 +301,10 @@ namespace DDPM.SA.Plugins.User.EasyArrange
             //[InfoWin solution] need add
             //OpenSaveCustomWindow();
 
-            Show();
+            Show();*/
         }
         private void UI_ShowAndEdit_AddedCustom(EAArgs args, Screen scr)
-        {
+        {/*
             splitCtrl.Visibility = Visibility.Collapsed;
             _orgFriendlyName = args.CustomName;
 
@@ -321,13 +324,13 @@ namespace DDPM.SA.Plugins.User.EasyArrange
             Height = scr.Bounds.Height / (double)dpiX;
             Show();
 
-            CaptureCustomLayout(scr);
+            CaptureCustomLayout(scr);*/
         }
         #endregion
 
         #region Capture Added Custom Layout
         private void CaptureCustomLayout(Screen screen)
-        {
+        {/*
             double scale = 1.000;
             var dpiXProperty = typeof(SystemParameters).GetProperty("DpiX", BindingFlags.NonPublic | BindingFlags.Static);
             if (dpiXProperty != null)
@@ -446,13 +449,13 @@ namespace DDPM.SA.Plugins.User.EasyArrange
             }
             LogInfo($"  * Detected window count = [{addCount}]");
             settings[0] = addCount;
-            inputSplitCtrl.Settings = settings;
+            inputSplitCtrl.Settings = settings;*/
         }
 
         //Reference: https://stackoverflow.com/questions/210504/enumerate-windows-like-alt-tab-does
         //Try to get the Windows like [Alt]+[Tab] key
         private bool IsTargetWindow(IntPtr hWnd, IntPtr lParam)
-        {
+        {/*
             //1 The window must be visible
             if (!Win32._IsWindowVisible(hWnd))
                 return false;
@@ -474,7 +477,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange
             if (cloaked == Win32.DWM_CLOAKED_SHELL)
             {
                 return false;
-            }
+            }*/
             return true;
         }
         #endregion

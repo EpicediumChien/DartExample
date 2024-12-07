@@ -19,6 +19,7 @@ using Microsoft;
 using String = System.String;
 using static DDPM.UI.Common.User32;
 using DDPM.UI.Common.ViewModels;
+using DDPM.UI.Common.Method;
 
 namespace DDPM.UI.Module.EzMemory
 {
@@ -35,6 +36,7 @@ namespace DDPM.UI.Module.EzMemory
         private readonly IConsole _console;
         private readonly ILog _log;
         private HomeDevice _homeDeviceSelect;//紀錄RightView切換CB的螢幕
+        private Debouncer _debouncerEmRightView;
         #endregion Private Members
 
         public EzMemoryRightView(DisplayViewModel vmDisplay)
@@ -61,6 +63,31 @@ namespace DDPM.UI.Module.EzMemory
             _vm.IsVertical = (currentScreen != null) ? (currentScreen.Bounds.Width < currentScreen.Bounds.Height) : false;
 
             InitListViewItems();
+
+            _debouncerEmRightView = new Debouncer(2000, ExecuteDebouncedAction);
+        }
+
+        private void ExecuteDebouncedAction(object param)
+        {
+            if (param is string mode)
+            {
+                switch (mode)
+                {
+                    case "EzMemoryStart_Click":
+                        EzMemoryStartClick();
+                        break;
+                    //------------------------------------------------------------------------------------------
+                    default:
+                        break;
+                }
+            }
+        }
+
+        private void EzMemoryStart_Click(object sender, RoutedEventArgs e)
+        {
+            _log.Info($"[EzMemoryRightView] EzMemoryStart_Click ... debouncer ... in");
+            _debouncerEmRightView.Debounce("EzMemoryStart_Click");
+            _log.Info($"[EzMemoryRightView] EzMemoryStart_Click ... debouncer ... out");
         }
 
         /// <summary>
@@ -68,46 +95,56 @@ namespace DDPM.UI.Module.EzMemory
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void EzMemoryStart_Click(object sender, RoutedEventArgs e)
+        private void EzMemoryStartClick()
         {
-            List<EAProfileDDPM> startEAProfileDDPM = DdpmCommonHelper.DeviceManagerSA.ReadUserEAProfileDDPM().Result;
-            List<object> rc = new List<object>();
-
-            if (_vm.CurrentSelectspItem != null)
+            try
             {
-                foreach (var relist in _vm.CurrentSelectspItem.ISplitCtrl.CellList)
+                _log.Info($"[EzMemoryRightView] EzMemoryStartClick ... in");
+
+                List<EAProfileDDPM> startEAProfileDDPM = DdpmCommonHelper.DeviceManagerSA.ReadUserEAProfileDDPM().Result;
+                List<object> rc = new List<object>();
+
+                if (_vm.CurrentSelectspItem != null)
                 {
-                    rc.Add(relist);
+                    foreach (var relist in _vm.CurrentSelectspItem.ISplitCtrl.CellList)
+                    {
+                        rc.Add(relist);
+                    }
+                }
+
+                if (startEAProfileDDPM != null)
+                {
+                    // 找相同 ID 的 Profile ID
+                    EAProfileDDPM profileTostart = startEAProfileDDPM.FirstOrDefault(p => p.ID == _vm.CurrentSelectspItem.ProfileID);
+
+                    if (profileTostart != null)
+                    {
+                        Dictionary<string, Bind_AddFullPage_AppCollectionData> launchApp = new Dictionary<string, Bind_AddFullPage_AppCollectionData>();
+                        foreach (var item in profileTostart.AppInfos)
+                        {
+                            Bind_AddFullPage_AppCollectionData app = new Bind_AddFullPage_AppCollectionData();
+                            app.AppPath = item.Path;
+                            app.AppName = item.Name;
+                            app.AppUserModelID = item.AppUserModelID;
+                            app.AppType = item.IsUWP == false ? "False" : "True";
+                            launchApp.Add(app.AppName, app);
+                        }
+                        _vm.SortAppsByTextBlockNumber(launchApp);
+                        //_deviceManagerSA.LaunchAndArrangeApps(launchApp);
+                        _deviceManagerSA.LaunchAndArrangeAppsWithEzArrange(launchApp, _homeDeviceSelect.MonitorInfo, profileTostart.Layout);
+                        _log.Info($"@[EzMemoryRightView] EzMemoryStart_Click, Profile with ID {_vm.CurrentSelectspItem.LayoutID} removed from UserSettings.");
+                    }
+                    else
+                    {
+                        _log.Info($"@[EzMemoryRightView] EzMemoryStart_Click, Profile with ID {_vm.CurrentSelectspItem.LayoutID} not found in UserSettings.");
+                    }
+                    DdpmCommonHelper.DeviceManagerSA!.ShowOSD(_homeDeviceSelect.MonitorInfo, OSDType.EasyMemory);
                 }
             }
-
-            if (startEAProfileDDPM != null)
+            catch (Exception ex)
             {
-                // 找相同 ID 的 Profile ID
-                EAProfileDDPM profileTostart = startEAProfileDDPM.FirstOrDefault(p => p.ID == _vm.CurrentSelectspItem.ProfileID);
-
-                if (profileTostart != null)
-                {
-                    Dictionary<string, Bind_AddFullPage_AppCollectionData> launchApp = new Dictionary<string, Bind_AddFullPage_AppCollectionData>();      
-                    foreach (var item in profileTostart.AppInfos)
-                    {
-                        Bind_AddFullPage_AppCollectionData app = new Bind_AddFullPage_AppCollectionData();
-                        app.AppPath = item.Path;
-                        app.AppName = item.Name;
-                        app.AppUserModelID = item.AppUserModelID;
-                        app.AppType = item.IsUWP == false ? "False" : "True";
-                        launchApp.Add(app.AppName, app);
-                    }
-
-                    _deviceManagerSA.LaunchAndArrangeApps(launchApp);
-                    _log.Info($"@[EzMemoryRightView] EzMemoryStart_Click, Profile with ID {_vm.CurrentSelectspItem.LayoutID} removed from UserSettings.");
-                }
-                else
-                {
-                    _log.Info($"@[EzMemoryRightView] EzMemoryStart_Click, Profile with ID {_vm.CurrentSelectspItem.LayoutID} not found in UserSettings.");
-                }
-                DdpmCommonHelper.DeviceManagerSA!.ShowOSD(_homeDeviceSelect.MonitorInfo, OSDType.EasyMemory);
-            }          
+                _log.Error($"[EzMemoryRightView] EzMemoryStart_Click Exception occurred: {ex.Message}");
+            }
         }
 
         #region SplitItem Delete
@@ -200,6 +237,7 @@ namespace DDPM.UI.Module.EzMemory
         {
             try
             {
+                _log.Info($"@[EzMemoryRightView] OnListViewItemEdited ... in");
                 // User Setting Delete
                 List<EAProfileDDPM> clickedEAProfileDDPM = DdpmCommonHelper.DeviceManagerSA.ReadUserEAProfileDDPM().Result;
 
@@ -276,6 +314,8 @@ namespace DDPM.UI.Module.EzMemory
         {
             try
             {
+                _log.Info($"@[EzMemoryRightView] OnListViewItemClicked ... in");
+
                 _vm.CurrentSelectspItem = spItem;
 
                 // User Setting
@@ -366,7 +406,9 @@ namespace DDPM.UI.Module.EzMemory
 
             //Set as current Selected item
             _vm.SelectedSplitItem = spItem;
-            _vm.SetWorkSplit(spCtrl.CellCount, spCtrl.SplitKey, spCtrl.Settings);
+            //Robert_Lin, 2024-11-27, comment out, Don't call this method, it will change the selection of Easy Arrange to SA
+            //But UI do not get the notification.
+            //_vm.SetWorkSplit(spCtrl.CellCount, spCtrl.SplitKey, spCtrl.Settings);
 
             //Need to set it's buddy as IsSelected
 
@@ -527,6 +569,7 @@ namespace DDPM.UI.Module.EzMemory
         {
             try
             {
+                _log.Info($"@[EzMemoryRightView] InitListViewItems ... in");
                 _vm.splitListRightView = splitListView_RecentForEzM;
                 splitListView_RecentForEzM.SplitOwner = Common.EAEM.eSplitOwner.EaRecent;
                 splitListView_RecentForEzM.ItemClickCommand = new RelayCommand<SplitItem>(OnListViewItemClicked);
@@ -554,19 +597,51 @@ namespace DDPM.UI.Module.EzMemory
 
                             if (profileSetting != null)
                             {
-                                // 找到才繼續處理
-                                //(int cellCount, char splitKey) = _vm.ParseFromLayout(profile.Layout);
-                                //ISplitCtrl? spCtrl = ISplitCtrl.Create(cellCount, splitKey);
-                                ISplitCtrl? spCtrl = ISplitCtrl.Create(profile.Layout);
-                                if (spCtrl != null)
+                                if (profile.Layout >= 1000)
                                 {
-                                    SplitItem item = splitListView_RecentForEzM.AddItemToList(spCtrl.UC);
-                                    item.SplitOwner = Common.EAEM.eSplitOwner.EaRecent;
-                                    item.ProfileID = profile.ID;
-                                    item.IsHoverable = true;
-                                    item.IsDeleteEnabled = true;
-                                    item.IsEditEnabled = true;
-                                    item.LayoutID = profile.Layout;
+                                    SplitJson[] customList = _deviceManagerSA.ReadEACustomList().Result;
+                                    foreach (SplitJson spj in customList)
+                                    {
+                                        if (profile.Layout == spj.EAID)
+                                        {
+                                            //Validate settings
+                                            //1 CustomId must > 0
+                                            if (spj.CustomId == 0)
+                                                continue;
+                                            //2 CustomName cannot be empty
+                                            if (String.IsNullOrWhiteSpace(spj.CustomName))
+                                                continue;
+                                            //3 CustomName length
+                                            if (spj.CustomName.Length > EAEMConstants.MaxCustomNameLenth)
+                                                continue;
+
+                                            ISplitCtrl? spCtrl = ISplitCtrl.Create(spj.CellCount, spj.SplitKey);
+                                            if (spCtrl == null)
+                                                continue;
+                                            spCtrl.Settings = new List<double>(spj.Settings);
+                                            spCtrl.SplitMode = eSplitModes.Icon;
+                                            spCtrl.FriendlyName = spj.CustomName;
+                                            spCtrl.EAID = spj.EAID;
+                                            splitListView_RecentForEzM.AddItemToList(spCtrl.UC);
+                                        }
+                                    }
+                                }
+                                else
+                                {
+                                    // 找到才繼續處理
+                                    //(int cellCount, char splitKey) = _vm.ParseFromLayout(profile.Layout);
+                                    //ISplitCtrl? spCtrl = ISplitCtrl.Create(cellCount, splitKey);
+                                    ISplitCtrl? spCtrl = ISplitCtrl.Create(profile.Layout);
+                                    if (spCtrl != null)
+                                    {
+                                        SplitItem item = splitListView_RecentForEzM.AddItemToList(spCtrl.UC);
+                                        //item.SplitOwner = Common.EAEM.eSplitOwner.EaRecent;
+                                        item.ProfileID = profile.ID;
+                                        item.IsHoverable = true;
+                                        item.IsDeleteEnabled = true;
+                                        item.IsEditEnabled = true;
+                                        item.LayoutID = profile.Layout;
+                                    }
                                 }
                             }
                             else
@@ -591,6 +666,7 @@ namespace DDPM.UI.Module.EzMemory
             }
 
         }
+
         #endregion
 
         private void InitSplitListViews_Unused()

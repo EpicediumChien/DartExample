@@ -1,9 +1,11 @@
 
+using DDPM.Easy.Common;
 using DDPM.SA.Common;
 using DDPM.SA.Common.Display;
 using DDPM.SA.Common.Interfaces;
 using Dell.Client.Framework.Common;
 using Dell.Client.Framework.Interfaces;
+using System.ComponentModel;
 using VcpCore.Common;
 
 namespace DDPM.EABroker
@@ -21,6 +23,7 @@ namespace DDPM.EABroker
         private readonly IDeviceManagerSA _deviceManagerSA;
         private readonly IEasyArrangeService _easyArrangeService;
         private readonly ArrangeVM _vm = new ArrangeVM();
+        private readonly ISettingsManagerDev _settingsManager;
         #endregion  Private members
 
         #region Public Properties
@@ -28,15 +31,16 @@ namespace DDPM.EABroker
         #endregion  Public Properties
 
         #region ctor
-        public EABroker(IAgent agent, IDeviceManagerSA deviceManager, IDisplayService displayService, IEasyArrangeService easyArrangeService)
+        public EABroker(IAgent agent, IDeviceManagerSA deviceManager, IDisplayService displayService, IEasyArrangeService easyArrangeService, ISettingsManagerDev settingsManager)
         {
             _agent = agent;
             _log = agent.CreateLogger("EABroker", typeof(EABroker));
             _deviceManagerSA = deviceManager;
             _easyArrangeService = easyArrangeService;
 
-            _vm.InitInterfaces(agent, _log, deviceManager, displayService, easyArrangeService);
+            _vm.InitInterfaces(agent, _log, deviceManager, displayService, easyArrangeService, settingsManager);
             WriteLog("EABroker is constructed.");
+            _settingsManager = settingsManager;
         }
         #endregion ctor
 
@@ -174,12 +178,7 @@ namespace DDPM.EABroker
 
         public bool NotifyEASelectedLayoutChanged(MonitorInfo monitorInfo, SplitJson spJson)
         {
-            EAWorkWindow? workWindow = _vm.FindWorkWindowByMonitor(monitorInfo);
-            if (workWindow != null)
-            {
-                return workWindow.SetWorkingSplit(spJson, true);
-            }
-            return false;
+            return _vm.NotifyEASelectedLayoutChanged(monitorInfo, spJson);
         }
 
         /// <summary>
@@ -229,6 +228,131 @@ namespace DDPM.EABroker
                 _vm.RefreshWorkWindows(isInit);
             }
         }
+
+        public void NotifySelectedMonitorChanged()
+        {
+            _vm.NotifySelectedMonitorChanged();
+        }
+
+        public bool STA_LaunchAndArrangeAppsWithEzArrange(Dictionary<String, Bind_AddFullPage_AppCollectionData> sortApps, MonitorInfo moInfo, int eaId)
+        {
+            if (_deviceManagerSA == null)
+            {
+                WriteLog("@STA_LaunchAndArrangeAppsWithEzArrange(), _deviceManagerSA is null.");
+                return false;
+            }
+
+            //Phase A. Determine the WorkingArea of the arrange
+            Rectangle workingArea = Rectangle.Empty;
+            // 1 If it's under SpanScreen working mode
+            if (_vm.IsSpanScreenWorking)
+            {
+                //Check if the moInfo is included in the SpanScreen
+                if (_vm.SpanScreen.IsExistScreen(moInfo.DisplayName))
+                {
+                    //The WorkingArea is the SpanScren rect
+                    workingArea = _vm.SpanScreen.WorkingArea;
+                }
+            }
+            //2 (not) in SpanScreen workng mode, then use the workingArea of moInfo
+            if (workingArea.IsEmpty)
+            {
+                //Get the screen from moInfo
+                Screen? scr = Screen.AllScreens.FirstOrDefault(x => x.DeviceName == moInfo.DisplayName);
+                if (scr == null)
+                {
+                    WriteLog("LaunchAndArrangeAppsWithEzArrange ERROR: the Monitor is not a present screen.");
+                    return false;
+                }
+                workingArea = scr.WorkingArea;
+            }
+
+            //Phase B. Create EA Layout and determine the cellBorderCount
+            ISplitCtrl? ispLayout = null;
+            int cellBorderCount = 0;
+
+            //B1 Check if it's a custom layout (EAID=[1000~1004])
+            if (eaId >= EAEMConstants.EAID_FirstCustom)
+            {
+                //B2 Load EA CustomList from User settings
+                SplitJson[] customList = _deviceManagerSA.ReadEACustomList().Result;
+                //B3 if CustomList is empty, then return error
+                if (customList == null || customList.Length == 0)
+                {
+                    WriteLog("LaunchAndArrangeAppsWithEzArrange ERROR: saved custom list is empty.");
+                    return false;
+                }
+                //B4 Find the Custom layout by EAID
+                int idxCustom = Array.FindIndex(customList, x => x.EAID == eaId);
+                if (idxCustom < 0)
+                {
+                    WriteLog($"LaunchAndArrangeAppsWithEzArrange ERROR: EAID({eaId}) not found in saved custom list.");
+                    return false;
+                }
+
+                //B5 We do not support Overlap layout
+                if (customList[idxCustom].IsOverlapLayout)
+                {
+                    WriteLog($"LaunchAndArrangeAppsWithEzArrange ERROR: Layout (EAID={eaId}) is overlap which is not supported.");
+                    return false;
+                }
+
+                //B5 Create the ISplitCtrl, and determine the cellBorderCount
+                int cellCount = customList[idxCustom].CellCount;
+                char splitKey = customList[idxCustom].SplitKey;
+                ispLayout = ISplitCtrl.Create(cellCount, splitKey);
+                if (ispLayout == null)
+                {
+                    WriteLog($"LaunchAndArrangeAppsWithEzArrange ERROR: Invalid ISplit parameters ({cellCount}{splitKey}) in custom list.");
+                    return false;
+                }
+                if (customList[idxCustom].Settings == null)
+                {
+                    WriteLog($"LaunchAndArrangeAppsWithEzArrange ERROR: ISplit({cellCount}{splitKey}) Settings is null in saved custom list.");
+                    return false;
+                }
+                //Copy Settings
+                ispLayout.Settings = new List<double>(customList[idxCustom].Settings);
+            }
+            else //Preset layout EAID=[1~49]
+            {
+                ispLayout = ISplitCtrl.Create(eaId);
+                if (ispLayout == null)
+                {
+                    WriteLog($"LaunchAndArrangeAppsWithEzArrange ERROR: Invalid EAID ({eaId}) for preset layout.");
+                    return false;
+                }
+            }
+            cellBorderCount = ispLayout.CellList.Count;
+            int appCount = sortApps.Count;
+            int arrangeCount = Math.Min(cellBorderCount, appCount);
+            WriteLog($"LaunchAndArrangeAppsWithEzArrange: Layout={ispLayout.CtrlClass} CellBorderCount={cellBorderCount}, AppCount={appCount} => ArrangeCount={arrangeCount}");
+
+            //Phase C. Show EzMemLauncherWindow
+            EzMemLauncherWindow emWin = new EzMemLauncherWindow(ispLayout, workingArea, arrangeCount, _log);
+            emWin.LayoutReady += delegate
+            {
+                //Phase D. 
+                var sortedApps = sortApps.OrderBy(x => x.Key).Select(x => x.Value).ToList();
+                int idxCell = 0;
+                for (int i=0; i< arrangeCount; i++)
+                {
+                    var app = sortedApps[i];
+                    emWin.LaunchAndArrange(app, i);
+                }
+            };
+
+            emWin.ArrangeDone += delegate
+            {
+                emWin.Close();
+                VM.IsWorkUIEnabled = true;
+            };
+            emWin.Show();
+
+            VM.IsWorkUIEnabled = false;
+            return true;
+        }
+
     }
 
 }

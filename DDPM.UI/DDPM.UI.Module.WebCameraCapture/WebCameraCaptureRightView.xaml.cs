@@ -46,17 +46,20 @@ namespace DDPM.UI.Module.WebCameraCapture
                     txtRes1.Text = Res[1];
                     btnRes1.CornerRadius = new CornerRadius(0, 5, 5, 0);
                     btnRes2.Visibility = Visibility.Collapsed;
+                    btnRes2_Col.Width = new GridLength(0);
                     btnRes3.Visibility = Visibility.Collapsed;
+                    btnRes3_Col.Width = new GridLength(0);
                     break;
                 case 3:
-                    btnRes0.Width = 134;
+                    _vm.btnRes0_width = 134;
                     txtRes0.Text = Res[0];
-                    btnRes1.Width = 134;
+                    _vm.btnRes1_width = 134;
                     txtRes1.Text = Res[1];
-                    btnRes2.Width = 134;
+                    _vm.btnRes2_width = 134;
                     txtRes2.Text = Res[2];
                     btnRes2.CornerRadius = new CornerRadius(0, 5, 5, 0);
                     btnRes3.Visibility = Visibility.Collapsed;
+                    btnRes3_Col.Width = new GridLength(0);
                     break;
                 case 4:
                     btnRes0.Width = 100.5;
@@ -238,7 +241,7 @@ namespace DDPM.UI.Module.WebCameraCapture
 
         private void Image_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            if (sender is Image elm)
+            if (sender is Border elm)
             {
                 var val = elm.Tag.ToString();
                 if (val == "0")
@@ -246,6 +249,12 @@ namespace DDPM.UI.Module.WebCameraCapture
                 else
                     _vm.Redo();
             }
+        }
+
+        private void CloseMessageBox(object sender, MouseButtonEventArgs e)
+        {
+            _vm.MessageBoxVisibilityUsbType = Visibility.Collapsed;
+            _vm.OnPropertyChanged(nameof(_vm.MessageBoxVisibilityUsbType));
         }
     }
 }
