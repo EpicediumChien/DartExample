@@ -16,6 +16,9 @@ using VcpCore.Common;
 using IDdpmHomePageViewModel = DDPM.UI.Plugin.DdpmHomePlugin.Interfaces.IDdpmHomePageViewModel;
 using DDPM.SA.Common.Settings;
 using System.Diagnostics;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using System.Windows.Shell;
 
 namespace DDPM.UI.Plugin.DdpmHomePlugin
 {
@@ -69,12 +72,31 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
 
                     DDPMImpExpSettings ImpExpSettings = new DDPMImpExpSettings();
                     ImpExpSettings = DdpmCommonHelper.DeviceManagerSA.ReadImportSettingsFile(exportpath).Result;
+                    string ImpExpServiceTag = ImpExpSettings.MonitorSettings.ServiceTag;
 
-                    if (ImpExpSettings != null)
+                    string setpath = localAppDataPath + "\\Dell Display and Peripheral Manager\\Display";
+                    string settingPath = setpath + "\\" + model + ".json";
+
+                    List<DDPMMonitorSettings> monitorSettings = DdpmCommonHelper.DeviceManagerSA.ReloadMonitorSettings(model).Result;
+                    DDPMMonitorSettings monitorSetting=null;
+                    if (monitorSettings != null)
                     {
-                        if (ImpExpSettings.MonitorSettings != null)
+                        if (monitorSettings.Count != 0)
                         {
-                            if (ImpExpSettings.MonitorSettings.ImpExpSettings.SameModel)
+                            foreach (DDPMMonitorSettings settings in monitorSettings)
+                            {
+                                if(settings.ServiceTag == ImpExpServiceTag)
+                                {
+                                    monitorSetting = settings;
+                                }
+                            }
+                        }
+                    }
+                    if (monitorSetting != null)
+                    {
+                        if (monitorSetting.ImpExpSettings != null)
+                        {
+                            if (monitorSetting.ImpExpSettings.SameModel)
                             {
                                 DdpmCommonHelper.DeviceManagerSA.DisplayImportSettings(mo, true, exportpath).Wait();
                             }
