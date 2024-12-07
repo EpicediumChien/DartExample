@@ -63,7 +63,9 @@ namespace DDPM.UI.Module.WebCameraSettings
 
             if (!_vm.CurrentDeviceInfo.IsWindowsHelloSupported)
             {
-                bdrPrioritize.Visibility = Visibility.Collapsed;
+                
+                //bdrPrioritize.Visibility = Visibility.Collapsed;
+                _vm.bdrPrioritize_show = Visibility.Collapsed;
                 brdHello.Visibility = Visibility.Collapsed;
             }
         }
@@ -344,7 +346,7 @@ namespace DDPM.UI.Module.WebCameraSettings
 
         private void Image_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            if (sender is Image elm)
+            if (sender is Border elm)
             {
                 var val = elm.Tag.ToString();
                 if (val == "0")

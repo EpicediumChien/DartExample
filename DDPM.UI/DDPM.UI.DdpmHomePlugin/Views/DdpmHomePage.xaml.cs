@@ -172,8 +172,8 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
         private void RefreshListViewItemWidth()
         {
             #region Wait for device ready
-            double cxView = HomeDevicesListView.ActualWidth;
-            double cyView = HomeDevicesListView.ActualHeight;
+            double cxView = this.ActualWidth;
+            double cyView = this.ActualHeight;
 #if DEBUG
             Debug.WriteLine($"Actual Width: {cxView}, Actual Height: {cyView}");
             Debug.WriteLine($"{_ddpmHomePageViewModel.HomeDevices.Count} HomeDevices need to show.");

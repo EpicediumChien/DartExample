@@ -457,11 +457,19 @@ namespace DDPM.SA.Plugins.SettingsManager
         public Task AddInfo(string info)
         {
             int idx = -1;
+
+            if (_infos == null)
+            {
+                WriteLog($"[AddInfo] update data failed: _infos is null");
+                return Task.CompletedTask;
+            }
+
             if (_infos != null && _infos.Infos != null && _infos.Infos.Count > 0)
             {
                 WriteLog($"[AddInfo] info count is ({_infos.Infos.Count})");
                 idx = _infos.Infos.FindIndex(x => x.Trim().Equals(info));
             }
+
             if (idx < 0)//means new
             {
                 _infos.Infos.Add(info);

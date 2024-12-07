@@ -229,7 +229,7 @@
                                 </ToolTip>
                             </Image.ToolTip>
                         </Image>-->
-                        <Border Background="Transparent">
+                        <Border Background="{StaticResource FakeTransparent}">
                             <ContentControl Template="{StaticResource icon_Info}" Margin="9,22.5,0,0" VerticalAlignment="Top" Cursor="" Width="16" Height="16" />
                             <Border.InputBindings>
                                 <MouseBinding Gesture="RightDoubleClick" Command="{Binding ShowInfoClickedCommand}" />
@@ -251,7 +251,7 @@
                     <DDPMUserControls:BatteryIndicator  Margin="0,0,0,70" HorizontalAlignment="Center" ConnectionType="{Binding ConnectionType}" VerticalAlignment="Bottom" />
                     <StackPanel Orientation="Horizontal" Visibility="{Binding FunctionsVisibility}">
                         <Border Cursor="Hand" Margin="8,0,0,70" Visibility="Visible" x:Name="btnFolder" Height="40" VerticalAlignment="Bottom" MouseLeftButtonDown="btnFolder_Click"
-                                Border.CornerRadius="2" Width="40" BorderThickness="0" BorderBrush="{DynamicResource DefaultTheme_SetupSelectBdColor}">
+                                Border.CornerRadius="2" Width="40" BorderThickness="0" BorderBrush="{DynamicResource DefaultTheme_SetupSelectBdColor}" IsEnabled="{Binding IsNotRecording}">
                             <Border.ToolTip>
                                 <ToolTip Style="{StaticResource btnToolTipStyle}">
                                     <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
@@ -322,7 +322,7 @@
                                                                         </ToolTip>
                                                                     </Image.ToolTip>
                                                                 </Image>-->
-                                                                <Border Background="Transparent">
+                                                                <Border Background="{StaticResource FakeTransparent}">
                                                                     <ContentControl Template="{StaticResource icon_Info}" Margin="8,0,0,0" Width="16" Height="16"  Visibility="{Binding TooltipVisibility}"
                                                                                  HorizontalAlignment="Right" MouseLeftButtonDown="DeletePreset" Tag="{Binding ID}"/>
                                                                     <Border.ToolTip>

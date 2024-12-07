@@ -245,6 +245,48 @@ namespace DDPM.UI.Module.DisplayOthers
                 if (ImpExppath.Substring(0, 3) == "Imp")
                 {
                     string impPath = ImpExppath.Substring(3);
+
+                    //Elsa add to fix PIMS-313843&PIMS-313845
+                    string model = "", serviceTag = "";
+                    string strReadJson = string.Empty;
+                    string info;
+                    strReadJson = DDPMFileSecurity.GetSerializedJsonString(impPath, out info);
+                    if (!string.IsNullOrEmpty(strReadJson))
+                    {
+                        try
+                        {
+                            using (StreamReader jsonf = new StreamReader(impPath))
+                            {
+                                string json = jsonf.ReadToEnd();
+                                dynamic data = JsonConvert.DeserializeObject(json);
+                                model = data.MonitorSettings.Model;
+                                serviceTag = data.MonitorSettings.ServiceTag;
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            OnMessageDlgInvoke("close_loading");
+                            OnMessageDlgInvoke("file_corrupted");
+                            return;
+                        }
+                    }
+                    if (strReadJson == string.Empty || strReadJson.Length == 0)
+                    {
+                        OnMessageDlgInvoke("close_loading");
+                        OnMessageDlgInvoke("file_corrupted");
+                        return;
+                    }
+                    else if (DisplayOthersModule.SelectedHomeDevice.MonitorInfo.modelName != model)
+                    {
+                        OnMessageDlgInvoke("close_loading");
+                        OnMessageDlgInvoke("result_fail");
+                        return;
+                    }
+                    //else if (DisplayOthersModule.SelectedHomeDevice.MonitorInfo.edid.ServiceTag == serviceTag)
+                    //{
+                        //OnMessageDlgInvoke("import_confirm");
+                    //}
+
                     if (DdpmCommonHelper.DeviceManagerSA.DisplayImportSettings(DisplayOthersModule.SelectedHomeDevice.MonitorInfo, AutoApply_Checked, impPath).Result)
                     {
                         //string fileName = Path.GetFileNameWithoutExtension(impPath);
@@ -253,29 +295,7 @@ namespace DDPM.UI.Module.DisplayOthers
                     }
                     else
                     {
-                        //Elsa add to fix PIMS-313843&PIMS-313845
-                        string model = "";
-                        string strReadJson = string.Empty;
-                        string info;
-                        strReadJson = DDPMFileSecurity.GetSerializedJsonString(impPath, out info);
-                        using (StreamReader jsonf = new StreamReader(impPath))
-                        {
-                            string json = jsonf.ReadToEnd();
-                            JArray jArray = JArray.Parse(json);
-                            model = jArray[0].Value<string>("Model");
-                        }
-                        if (DisplayOthersModule.SelectedHomeDevice.MonitorInfo.modelName != model)
-                        {
-                            OnMessageDlgInvoke("close_loading");
-                            OnMessageDlgInvoke("result_fail");
-                        }
-                        else if (strReadJson == string.Empty || strReadJson.Length == 0)
-                        {
-                            OnMessageDlgInvoke("close_loading");
-                            OnMessageDlgInvoke("file_corrupted");
-                        }
-                        else 
-                        {   OnMessageDlgInvoke("close_loading"); }
+                        OnMessageDlgInvoke("close_loading");
                     }
                 }
                 else if (ImpExppath.Substring(0, 3) == "Exp")
@@ -298,18 +318,18 @@ namespace DDPM.UI.Module.DisplayOthers
         }
         private void ImpExpSettings_Done(object sender, RunWorkerCompletedEventArgs e)
         {
-            IsBusy = false;
+            //IsBusy = false;
             //OnMessageDlgInvoke("close_loading");
             //OnMessageDlgInvoke("result_success");
-            OnPropertyChanged("IsBusy");
+            //OnPropertyChanged("IsBusy");
         }
 
         #endregion
 
         public bool ExportSettings()
         {
-            IsBusy = true;
-            OnPropertyChanged("IsBusy");
+            //IsBusy = true;
+            //OnPropertyChanged("IsBusy");
             SaveFileDialog saveFileDialog = new SaveFileDialog();
 
             saveFileDialog.Filter = "json files (*.json)|*.json";
@@ -319,9 +339,9 @@ namespace DDPM.UI.Module.DisplayOthers
                 string info = string.Empty;
                 if (!DDPM.SA.Common.Security.InputHelper.InputValidation_FilePathFileName(filename, false, out info))
                 {
-                    IsBusy = false;
+                    //IsBusy = false;
                     OnMessageDlgInvoke("close_loading");
-                    OnPropertyChanged("IsBusy");
+                    //OnPropertyChanged("IsBusy");
                 }
                 else
                 {
@@ -331,17 +351,17 @@ namespace DDPM.UI.Module.DisplayOthers
             }
             else
             {
-                IsBusy = false;
+                //IsBusy = false;
                 OnMessageDlgInvoke("close_loading");
-                OnPropertyChanged("IsBusy");
+                //OnPropertyChanged("IsBusy");
             }
 
             return false;
         }
         public bool ImportSettings()
         {
-            IsBusy = true;
-            OnPropertyChanged("IsBusy");
+            //IsBusy = true;
+            //OnPropertyChanged("IsBusy");
             OpenFileDialog openFileDialog = new OpenFileDialog();
 
             openFileDialog.Filter = "jason files (*.json)|*.json";
@@ -351,9 +371,9 @@ namespace DDPM.UI.Module.DisplayOthers
                 string info = string.Empty;
                 if (!DDPM.SA.Common.Security.InputHelper.InputValidation_FilePathFileName(filename, true, out info))
                 {
-                    IsBusy = false;
+                    //IsBusy = false;
                     OnMessageDlgInvoke("close_loading");
-                    OnPropertyChanged("IsBusy");
+                    //OnPropertyChanged("IsBusy");
                 }
                 else
                 {
@@ -363,9 +383,9 @@ namespace DDPM.UI.Module.DisplayOthers
             }
             else
             {
-                IsBusy = false;
+                //IsBusy = false;
                 OnMessageDlgInvoke("close_loading");
-                OnPropertyChanged("IsBusy");
+                //OnPropertyChanged("IsBusy");
             }
 
             return false;

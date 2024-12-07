@@ -1455,6 +1455,24 @@ namespace DDPM.UI.Common
                     });
                     uIElements.Add(webcamCapture);
                     break;
+                case VbarIcon.WebcamMicrophone:
+                    Path WebcamMicrophone = new System.Windows.Shapes.Path();
+                    WebcamMicrophone.Data = Geometry.Parse("M16.5 10.005V12.63C16.5587 13.2553 16.4858 13.8859 16.286 14.4813C16.0863 15.0767 15.7641 15.6237 15.3402 16.0871C14.9164 16.5505 14.4002 16.9201 13.825 17.172C13.2497 17.424 12.6281 17.5527 12 17.55C11.372 17.5527 10.7504 17.424 10.1751 17.172C9.59986 16.9201 9.0837 16.5505 8.65984 16.0871C8.23599 15.6237 7.91383 15.0767 7.71408 14.4813C7.51433 13.8859 7.44142 13.2553 7.50004 12.63V10.005H6.00004V12.63C5.88984 14.1768 6.3828 15.7062 7.37555 16.8975C8.3683 18.0888 9.78373 18.8494 11.325 19.02V22.02H7.68004V23.52H16.32V22.02H12.765V19.02C14.3064 18.8494 15.7218 18.0888 16.7145 16.8975C17.7073 15.7062 18.2002 14.1768 18.09 12.63V10.005H16.5Z");
+                    WebcamMicrophone.SetBinding(Path.FillProperty, new System.Windows.Data.Binding
+                    {
+                        RelativeSource = new RelativeSource(RelativeSourceMode.FindAncestor, typeof(Canvas), 1),
+                        Path = new PropertyPath("Tag")
+                    });
+                    uIElements.Add(WebcamMicrophone);
+                    WebcamMicrophone = new System.Windows.Shapes.Path();
+                    WebcamMicrophone.Data = Geometry.Parse("M12 16.305C12.4717 16.3228 12.9416 16.2369 13.3764 16.0533C13.8112 15.8697 14.2005 15.5929 14.5166 15.2424C14.8328 14.8919 15.0681 14.4763 15.2061 14.0249C15.344 13.5735 15.3812 13.0973 15.315 12.63V3.92998C15.3583 3.4756 15.3037 3.01723 15.1549 2.58572C15.0062 2.15422 14.7666 1.7596 14.4525 1.42843C14.1384 1.09727 13.757 0.837251 13.334 0.665886C12.9109 0.49452 12.4561 0.415786 12 0.434984C11.5434 0.413274 11.0874 0.490296 10.6631 0.660799C10.2389 0.831302 9.85645 1.09128 9.54182 1.423C9.22718 1.75472 8.98777 2.15038 8.83992 2.58302C8.69207 3.01565 8.63924 3.47508 8.68504 3.92998V12.63C8.61885 13.0973 8.65604 13.5735 8.794 14.0249C8.93196 14.4763 9.16732 14.8919 9.48348 15.2424C9.79963 15.5929 10.1889 15.8697 10.6237 16.0533C11.0585 16.2369 11.5284 16.3228 12 16.305ZM10.23 3.92998C10.23 2.63998 10.845 1.97998 12 1.97998C13.5 1.97998 13.77 3.04498 13.77 3.92998V12.63C13.77 14.76 12.48 14.76 12 14.76C11.52 14.76 10.23 14.76 10.23 12.63V3.92998Z");
+                    WebcamMicrophone.SetBinding(Path.FillProperty, new System.Windows.Data.Binding
+                    {
+                        RelativeSource = new RelativeSource(RelativeSourceMode.FindAncestor, typeof(Canvas), 1),
+                        Path = new PropertyPath("Tag")
+                    });
+                    uIElements.Add(WebcamMicrophone);
+                    break;
             }
 
             return uIElements;

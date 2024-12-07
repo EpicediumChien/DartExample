@@ -2,6 +2,8 @@
 using DDPM.UI.Common;
 using DDPM.UI.Common.Method;
 using DDPM.UI.Common.Models;
+using DDPM.UI.Plugin.DdpmHomePlugin;
+using Dell.Client.Framework.UX.WPF;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -51,6 +53,9 @@ namespace DDPM.UI.Module.Kvm
             if (vm != null)
             {
                 vm.FinishtoSetPCs();
+                //Return to DdpmHomePage
+                IConsole? console = DdpmHomePlugin.PluginIoc.GetService<IConsole>();
+                console?.ShowPluginById(DDPM.UI.Common.Constants.DdpmHomePluginId);
             }
         }
 

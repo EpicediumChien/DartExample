@@ -16,15 +16,14 @@
         </LinearGradientBrush>
 
         <Style x:Key="TextBlock_HeaderTextStyle" TargetType="TextBlock">
-            <Setter Property="Foreground" Value="White" />
+            <Setter Property="Foreground" Value="{DynamicResource DefaultTheme_TxtColor}" />
             <Setter Property="HorizontalAlignment" Value="Center" />
             <Setter Property="VerticalAlignment" Value="Center" />
             <Setter Property="FontSize" Value="14" />
         </Style>
     </UserControl.Resources>
 
-    <Border Grid.Row="0" CornerRadius="4" Background="{StaticResource TabHeaders_BkColor}"
-            Height="30" Margin="0,0,0,0">
+    <Border Grid.Row="0" CornerRadius="4" Height="30" Margin="0,0,0,0">
         <Grid>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
@@ -34,8 +33,17 @@
 
             <!-- Header[0] -->
             <Border Grid.Column="0" CornerRadius="4,0,0,4" MouseLeftButtonDown="header0_MouselLeftButtonDown">
-                <TextBlock Text="{Binding Text1, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=TwoWay}"
-                           Style="{StaticResource TextBlock_HeaderTextStyle}" />
+                <TextBlock Text="{Binding Text1, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=TwoWay}">
+                    <TextBlock.Style>
+                        <Style TargetType="TextBlock" BasedOn="{StaticResource TextBlock_HeaderTextStyle}">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding HightlightHeaderIndex,RelativeSource={RelativeSource AncestorType=UserControl}}" Value="0">
+                                    <Setter Property="Foreground" Value="#FFFFFF" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </TextBlock.Style>
+                </TextBlock>
                 <Border.Style>
                     <Style TargetType="Border">
                         <Setter Property="Background" Value="{StaticResource FakeTransparent}" />
@@ -51,8 +59,17 @@
 
             <!-- Header[1] -->
             <Border Grid.Column="1" CornerRadius="0,0,0,0" MouseLeftButtonDown="header1_MouseLeftButtonDown">
-                <TextBlock Text="{Binding Text2, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=TwoWay}"
-                           Style="{StaticResource TextBlock_HeaderTextStyle}" />
+                <TextBlock Text="{Binding Text2, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=TwoWay}">
+                    <TextBlock.Style>
+                        <Style TargetType="TextBlock" BasedOn="{StaticResource TextBlock_HeaderTextStyle}">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding HightlightHeaderIndex,RelativeSource={RelativeSource AncestorType=UserControl}}" Value="1">
+                                    <Setter Property="Foreground" Value="#FFFFFF" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </TextBlock.Style>
+                </TextBlock>
                 <Border.Style>
                     <Style TargetType="Border">
                         <Setter Property="Background" Value="{StaticResource FakeTransparent}" />
@@ -68,8 +85,17 @@
 
             <!-- Header[2] -->
             <Border Grid.Column="2" CornerRadius="0,4,4,0" MouseLeftButtonDown="header2_MouseLeftButtonDown">
-                <TextBlock Text="{Binding Text3, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=TwoWay}"
-                           Style="{StaticResource TextBlock_HeaderTextStyle}" />
+                <TextBlock Text="{Binding Text3, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=TwoWay}">
+                    <TextBlock.Style>
+                        <Style TargetType="TextBlock" BasedOn="{StaticResource TextBlock_HeaderTextStyle}">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding HightlightHeaderIndex,RelativeSource={RelativeSource AncestorType=UserControl}}" Value="2">
+                                    <Setter Property="Foreground" Value="#FFFFFF" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </TextBlock.Style>
+                </TextBlock>
                 <Border.Style>
                     <Style TargetType="Border">
                         <Setter Property="Background" Value="{StaticResource FakeTransparent}" />
