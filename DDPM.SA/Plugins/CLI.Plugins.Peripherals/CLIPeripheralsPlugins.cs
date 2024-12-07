@@ -1351,7 +1351,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                                     if (result == "0")
                                     {
                                         x.Result = "PASS";
-                                        retvalue = _devMgr.GetAntiFlickerValueByDTP(x.Guid).Result;
+                                        retvalue = _devMgr.GetAntiFlicker(x.Guid).Result;
                                         x.Value = retvalue.ToString();
                                         x.Value += "," + (data.LockSettings.Lock_Webcam_AntiFlicker ? "LOCK" : "UNLOCK");
                                         x.Message = "N/A";
@@ -1398,7 +1398,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                     //            if (result == "0")
                     //            {
                     //                x.Result = "PASS";
-                    //                retvalue = _devMgr.GetAntiFlickerValueByDTP(GUID).Result;
+                    //                retvalue = _devMgr.GetAntiFlicker(GUID).Result;
                     //                x.Value = retvalue.ToString();
                     //                x.Value += "," + (data.LockSettings.Lock_Webcam_AntiFlicker ? "LOCK" : "UNLOCK");
                     //                x.Message = "N/A";

@@ -304,24 +304,15 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             if (!await GetItemIDAsync("Mouse", Guid))
             { return; }
 
-            if (_mouseMethodInfo != null)
+            if (await GetCommodityInterfaceInstanceAsync(_mouseMethodInfo) is ICommodity commodity)
             {
-                if (await GetCommodityInterfaceInstanceAsync(_mouseMethodInfo) is ICommodity commodity)
-                {
-                    SetPropertyValue(_mouseInterfaceType, commodity, "DpiValue", newValue);
-                }
-                else
-                {
-                    Debug.WriteLine($"Could not retrieve the Commodity Interface {_mouseInterfaceType} for the {_itemID} item.");
-                    writelog($"Could not retrieve the Commodity Interface {_mouseInterfaceType} for the {_itemID} item.");
-                }
+                SetPropertyValue(_mouseInterfaceType, commodity, "DpiValue", newValue);
             }
             else
             {
-                Debug.WriteLine($"[SetDPIValue]Could not retrieve the Commodity Interface for the  {_itemID}  item. _mouseMethodInfo is null");
-                writelog($"[SetDPIValue]Could not retrieve the Commodity Interface for the  {_itemID}  item. _mouseMethodInfo is null");
+                Debug.WriteLine($"Could not retrieve the Commodity Interface {_mouseInterfaceType} for the {_itemID} item.");
+                writelog($"Could not retrieve the Commodity Interface {_mouseInterfaceType} for the {_itemID} item.");
             }
-
         }
         public async Task SetMouseAction(string Guid, byte[] newValue)
         {
@@ -465,6 +456,22 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             {
                 var result = await DeleteMouseAllAssignedActions(Guid);
                 return result;
+            }
+        }
+        public async Task<bool> SetReportRate(string Guid, int newValue)
+        {
+            if (!await GetItemIDAsync("Mouse", Guid))
+            { return false; }
+
+            if (await GetCommodityInterfaceInstanceAsync(_mouseMethodInfo) is ICommodity commodity)
+            {
+                return SetPropertyValue(_mouseInterfaceType, commodity, "ReportRate", newValue);
+            }
+            else
+            {
+                Debug.WriteLine($"Could not retrieve the Commodity Interface {_mouseInterfaceType} for the {Guid} item.");
+                writelog($"Could not retrieve the Commodity Interface {_mouseInterfaceType} for the {Guid} item.");
+                return false;
             }
         }
 
@@ -1018,7 +1025,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 return false;
             }
         }
-        public async Task<bool> CheckIsPropertyAntiFlickerSupported(string Guid)
+        public async Task<bool> GeIsPropertyAntiFlickerSupported(string Guid)
         {
             if (!await GetItemIDAsync("Webcam", Guid))
             { return false; }
@@ -1049,27 +1056,17 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             if (!await GetItemIDAsync("Webcam", Guid))
             { return -1; }
 
-            if (_webcamMethodInfo != null)
+            if (await GetCommodityInterfaceInstanceAsync(_webcamMethodInfo) is ICommodity commodity)
             {
-                if (await GetCommodityInterfaceInstanceAsync(_webcamMethodInfo) is ICommodity commodity)
-                {
-                    var value = GetPropertyValue(_webcamInterfaceType, commodity, "AntiFlicker");
-                    return (int)value;
-                }
-                else
-                {
-                    Debug.WriteLine($"[GetAntiFlickerValue]Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {_itemID} item.");
-                    writelog($"[GetAntiFlickerValue]Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {_itemID} item.");
-                    return -1;
-                }
+                var value = GetPropertyValue(_webcamInterfaceType, commodity, "AntiFlicker");
+                return (int)value;
             }
             else
             {
-                Debug.WriteLine($"[GetAntiFlickerValue]Could not retrieve the Commodity Interface for the {_itemID} item. _webcamMethodInfo is null");
-                writelog($"[GetAntiFlickerValue]Could not retrieve the Commodity Interface for the {_itemID} item. _webcamMethodInfo is null");
+                Debug.WriteLine($"[GetAntiFlicker]Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {Guid} item.");
+                writelog($"[GetAntiFlicker]Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {Guid} item.");
                 return -1;
             }
-
         }
         public async Task<bool> GetIsPropertyAutoFramingSupported(string Guid)
         {
@@ -1255,6 +1252,23 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 Debug.WriteLine($"[GetIsFocusOn]Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {Guid} item.");
                 writelog($"[GetIsFocusOn]Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {Guid} item.");
                 return false;
+            }
+        }
+        public async Task<int> GetPriority(string Guid)
+        {
+            if (!await GetItemIDAsync("Webcam", Guid))
+            { return -1; }
+
+            if (await GetCommodityInterfaceInstanceAsync(_webcamMethodInfo) is ICommodity commodity)
+            {
+                var value = GetPropertyValue(_webcamInterfaceType, commodity, "Priority");
+                return value == null ? -1 : (int)value;
+            }
+            else
+            {
+                Debug.WriteLine($"[GetPriority]Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {Guid} item.");
+                writelog($"[GetPriority]Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {Guid} item.");
+                return -1;
             }
         }
 
@@ -5181,17 +5195,17 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         #endregion
 
         #region Headset Event
-        private async Task RegisterEventsForAllHeadsetAsync()
+        private async Task<bool> RegisterEventsForAllHeadsetAsync()
         {
-            var headsets = await GetHeadsetDeviceItemsExAsync();
-
-            if (headsets != null && headsets.Count > 0)
+            bool result = false;
+            var headsets = await GetHeadsetDevsCountAsync();
+            if (headsets > 0)
             {
                 writelog($"Headset instance count: {headsets} to register");
 
-                for (int i = 0; i < headsets.Count; i++)
+                for (int i = 0; i < headsets; i++)
                 {
-                    bool result = await RegisterEventsForHeadsetAsync(i);
+                    result = await RegisterEventsForHeadsetAsync(i);
 
                     if (!result)
                     {
@@ -5199,7 +5213,6 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
                         result = await UnregisterEventsForHeadsetAsync(i);
                         result = await RegisterEventsForHeadsetAsync(i);
-
                         writelog($"[Headset] Retry register result is {result}");
                     }
                 }
@@ -5207,22 +5220,24 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             else
             {
                 writelog($"[Headset] No any headset instance to register.");
+                return false;
                 //try to force release current --> will catch exception  1123
                 //await UnregisterEventsForWebcamAsync(0);
             }
+            return false;
         }
 
         private async Task UnregisterEventsForAllHeadsetAsync()
         {
-            var headsets = await GetHeadsetDeviceItemsExAsync();
-
-            if (headsets.Count > 0)
+            bool result = false;
+            var headsets = await GetHeadsetDevsCountAsync();
+            if (headsets > 0)
             {
                 writelog($"[Headset] instance count: {headsets} to unregister.");
 
-                for (int i = headsets.Count - 1; i >= 0; i--)
+                for (int i = headsets - 1; i >= 0; i--)
                 {
-                    bool result = await UnregisterEventsForHeadsetAsync(i);
+                    result = await UnregisterEventsForHeadsetAsync(i);
                 }
             }
             else
@@ -5287,6 +5302,26 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
 
             return false;
+        }
+
+        private void Headset_Disconnected(object sender, DisconnectedArgs e)
+        {
+            _ = UnregisterEventsForAllHeadsetAsync();
+            _ = RegisterEventsForAllHeadsetAsync();
+
+            //SendHeadsetEventToUI(CreateEventMsg("Headset", "Headset_Disconnected", e.DeviceId));
+
+            writelog($"[Headset] Catch event _Headset_Disconnected, current devCount is {GetHeadsetDevsCountAsync().Result} : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+        }
+
+        private void Headset_Connected(object sender, ConnectedArgs e)
+        {
+            Task<int> headsets = GetHeadsetDevsCountAsync();
+            bool result = RegisterEventsForHeadsetAsync(headsets.Result - 1).Result;
+
+            //SendHeadsetEventToUI(CreateEventMsg("Headset", "Headset_Connected", e.DeviceId));
+
+            writelog($"[Headset] Catch event _Headset_Connected, register evnet result is {result} : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
         }
 
         private void Headset_WearDetectionChanged(object sender, WearDetectionChangedArgs e)
@@ -6379,8 +6414,8 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             {
                 try
                 {
-                    _headsetcom.Connected += _comdity_Connected;
-                    _headsetcom.Disconnected += _comdity_Disconnected;
+                    _headsetcom.Connected += Headset_Connected;
+                    _headsetcom.Disconnected += Headset_Disconnected;
                     writelog($"Headset Commodity event registered");
                 }
                 catch (Exception e)
@@ -6463,6 +6498,18 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             await RegisterEventsForAllHeadsetAsync();
         }
 
+        private async Task<int> GetHeadsetDevsCountAsync()
+        {
+            var headsets = await GetHeadsetDeviceItemsExAsync();
+            if (headsets != null)
+            {
+                Trace.WriteLine("RegisterEventsForAllHeadsetAsync ********** " + headsets.ToString() + " ********** ");
+                return headsets.Count;
+            }
+            else
+                return 0;
+        }
+        
         private async Task<int> GetWebcamDevsCountAsync()
         {
             var webcams = await GetWebcamDeviceItemsExAsync();
@@ -6903,7 +6950,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             SendDTPEventToUI(CreateEventMsg("Webcam", "Webcam_ZoomMeetingTypeChanged",
                                     e.DeviceId, $"NewValue:{e.ZoomMeetingType}"));
 
-            writelog($"Catch event Webcam_ZoomMeetingTypeChanged : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+            writelog($"Catch event Webcam_ZoomMeetingTypeChanged, NewValue:{e.ZoomMeetingType} : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
         }
 
         private void Webcam_SharpnessChanged(object sender, SharpnessChangedArgs e)
@@ -6911,7 +6958,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             SendDTPEventToUI(CreateEventMsg("Webcam", "Webcam_SharpnessChanged",
                                     e.DeviceId, $"NewValue:{e.Sharpness}"));
 
-            writelog($"Catch event Webcam_SharpnessChanged : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+            writelog($"Catch event Webcam_SharpnessChanged, NewValue:{e.Sharpness} : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
         }
 
         private void Webcam_Esi_WALLockCountdownChanged(object sender, Esi_WALLockCountdownChangedArgs e)
@@ -6919,7 +6966,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             SendDTPEventToUI(CreateEventMsg("Webcam", "Webcam_Esi_WALLockCountdownChanged",
                                     e.DeviceId, $"NewValue:{e.WALLockCountdown}"));
 
-            writelog($"Catch event _Webcamcom_Esi_WALLockCountdownChanged : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+            writelog($"Catch event _Webcamcom_Esi_WALLockCountdownChanged, NewValue:{e.WALLockCountdown}: {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
         }
 
         private void Webcam_Esi_IsWALLockCountdownStartedChanged(object sender, Esi_IsWALLockCountdownStartedChangedArgs e)
@@ -6927,7 +6974,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             SendDTPEventToUI(CreateEventMsg("Webcam", "Webcam_Esi_IsWALLockCountdownStartedChanged",
                                     e.DeviceId, $"NewValue:{e.IsWALLockCountdownStarted}"));
 
-            writelog($"Catch event _Webcamcom_Esi_IsWALLockCountdownStartedChanged : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+            writelog($"Catch event _Webcamcom_Esi_IsWALLockCountdownStartedChanged, NewValue:{e.IsWALLockCountdownStarted}: {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
         }
 
         private void Webcam_WALSnoozeTimeLeftInSecondsChanged(object sender, WALSnoozeTimeLeftInSecondsChangedArgs e)
@@ -6935,8 +6982,8 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             SendDTPEventToUI(CreateEventMsg("Webcam", "Webcam_WALSnoozeTimeLeftInSecondsChanged",
                                     e.DeviceId, $"NewValue:{e.WALSnoozeTimeLeftInSeconds}"));
 
-            writelog($"Catch event _Webcamcom_WALSnoozeTimeLeftInSecondsChanged NewValue:{e.WALSnoozeTimeLeftInSeconds}");
-            writelog($"Catch event _Webcamcom_WALSnoozeTimeLeftInSecondsChanged : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+            //writelog($"Catch event _Webcamcom_WALSnoozeTimeLeftInSecondsChanged NewValue:{e.WALSnoozeTimeLeftInSeconds}");
+            writelog($"Catch event _Webcamcom_WALSnoozeTimeLeftInSecondsChanged, NewValue:{e.WALSnoozeTimeLeftInSeconds}: {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
         }
 
         private void Webcam_IsZoomScreenShareActiveChanged(object sender, IsZoomScreenShareActiveChangedArgs e)
@@ -6944,7 +6991,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             SendDTPEventToUI(CreateEventMsg("Webcam", "Webcam_IsZoomScreenShareActiveChanged",
                                     e.DeviceId, $"NewValue:{e.IsZoomScreenShareActive}"));
 
-            writelog($"Catch event _Webcamcom_IsZoomScreenShareActiveChanged : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+            writelog($"Catch event _Webcamcom_IsZoomScreenShareActiveChanged, new value {e.IsZoomScreenShareActive}: {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
         }
 
         private void Webcam_IsZoomMeetingActiveChanged(object sender, IsZoomMeetingActiveChangedArgs e)
@@ -6952,7 +6999,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             SendDTPEventToUI(CreateEventMsg("Webcam", "Webcam_IsZoomMeetingActiveChanged",
                                     e.DeviceId, $"NewValue:{e.IsZoomMeetingActive}"));
 
-            writelog($"Catch event _Webcamcom_IsZoomMeetingActiveChanged : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+            writelog($"Catch event _Webcamcom_IsZoomMeetingActiveChanged, NewValue:{e.IsZoomMeetingActive}: {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
         }
 
         private void Webcam_SerialNumberChanged(object sender, SerialNumberChangedArgs e)
@@ -6960,7 +7007,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             SendDTPEventToUI(CreateEventMsg("Webcam", "Webcam_SerialNumberChanged",
                                     e.DeviceId, $"NewValue:{e.SerialNumber}"));
 
-            writelog($"Catch event _Webcamcom_SerialNumberChanged : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+            writelog($"Catch event _Webcamcom_SerialNumberChanged, NewValue:{e.SerialNumber}: {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
         }
 
         private void Webcam_IsHDROnChanged(object sender, IsHDROnChangedArgs e)
@@ -6968,7 +7015,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             SendDTPEventToUI(CreateEventMsg("Webcam", "Webcam_IsHDROnChanged",
                                     e.DeviceId, $"NewValue:{e.IsHDROn}"));
 
-            writelog($"Catch event _Webcamcom_IsHDROnChanged : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+            writelog($"Catch event _Webcamcom_IsHDROnChanged, NewValue:{e.IsHDROn}: {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
         }
 
         private void Webcam_FieldOfViewChanged(object sender, FieldOfViewChangedArgs e)
@@ -6976,7 +7023,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             SendDTPEventToUI(CreateEventMsg("Webcam", "Webcam_FieldOfViewChanged",
                                     e.DeviceId, $"NewValue:{e.FieldOfView}"));
 
-            writelog($"Catch event _Webcamcom_FieldOfViewChanged : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+            writelog($"Catch event _Webcamcom_FieldOfViewChanged, NewValue:{e.FieldOfView}: {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
         }
 
         private void Webcam_AutoFramingFrameSizeChanged(object sender, AutoFramingFrameSizeChangedArgs e)
@@ -6984,7 +7031,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             SendDTPEventToUI(CreateEventMsg("Webcam", "Webcam_AutoFramingFrameSizeChanged",
                                     e.DeviceId, $"NewValue:{e.AutoFramingFrameSize}"));
 
-            writelog($"Catch event _Webcamcom_AutoFramingFrameSizeChanged : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+            writelog($"Catch event _Webcamcom_AutoFramingFrameSizeChanged, NewValue:{e.AutoFramingFrameSize}: {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
         }
 
         private void Webcam_AutoFramingSensitivityChanged(object sender, AutoFramingSensitivityChangedArgs e)
@@ -6992,7 +7039,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             SendDTPEventToUI(CreateEventMsg("Webcam", "Webcam_AutoFramingSensitivityChanged",
                                     e.DeviceId, $"NewValue:{e.AutoFramingSensitivity}"));
 
-            writelog($"Catch event _Webcamcom_AutoFramingSensitivityChanged : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+            writelog($"Catch event _Webcamcom_AutoFramingSensitivityChanged, NewValue:{e.AutoFramingSensitivity}: {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
         }
 
         private void Webcam_IsAutoFramingOnChanged(object sender, IsAutoFramingOnChangedArgs e)
@@ -7000,7 +7047,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             SendDTPEventToUI(CreateEventMsg("Webcam", "Webcam_IsAutoFramingOnChanged",
                                     e.DeviceId, $"NewValue:{e.IsAutoFramingOn}"));
 
-            writelog($"Catch event _Webcamcom_IsAutoFramingOnChanged : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+            writelog($"Catch event _Webcamcom_IsAutoFramingOnChanged, NewValue:{e.IsAutoFramingOn}: {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
         }
 
         private void Webcam_IsAutoFramingTransitionOnChanged(object sender, IsAutoFramingTransitionOnChangedArgs e)
@@ -7008,7 +7055,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             SendDTPEventToUI(CreateEventMsg("Webcam", "Webcam_IsAutoFramingTransitionOnChanged",
                                     e.DeviceId, $"NewValue:{e.IsAutoFramingTransitionOn}"));
 
-            writelog($"Catch event _Webcamcom_IsAutoFramingTransitionOnChanged : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+            writelog($"Catch event _Webcamcom_IsAutoFramingTransitionOnChanged, NewValue:{e.IsAutoFramingTransitionOn}: {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
         }
 
         private void Webcam_AutoWhiteBalanceChanged(object sender, AutoWhiteBalanceChangedArgs e)
@@ -7016,7 +7063,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             SendDTPEventToUI(CreateEventMsg("Webcam", "Webcam_AutoWhiteBalanceChanged",
                                     e.DeviceId, $"NewValue:{e.AutoWhiteBalance}"));
 
-            writelog($"Catch event _Webcamcom_AutoWhiteBalanceChanged : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+            writelog($"Catch event _Webcamcom_AutoWhiteBalanceChanged, NewValue:{e.AutoWhiteBalance}: {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
         }
 
         private void Webcam_IsAutoWhiteBalanceOnChanged(object sender, IsAutoWhiteBalanceOnChangedArgs e)
@@ -7024,7 +7071,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             SendDTPEventToUI(CreateEventMsg("Webcam", "Webcam_IsAutoWhiteBalanceOnChanged",
                                     e.DeviceId, $"NewValue:{e.IsAutoWhiteBalanceOn}"));
 
-            writelog($"Catch event _Webcamcom_IsAutoWhiteBalanceOnChanged : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+            writelog($"Catch event _Webcamcom_IsAutoWhiteBalanceOnChanged, NewValue:{e.IsAutoWhiteBalanceOn}: {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
         }
 
         private void Webcam_SaturationChanged(object sender, SaturationChangedArgs e)
@@ -7032,7 +7079,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             SendDTPEventToUI(CreateEventMsg("Webcam", "Webcam_SaturationChanged",
                                     e.DeviceId, $"NewValue:{e.Saturation}"));
 
-            writelog($"Catch event _Webcamcom_SaturationChanged : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+            writelog($"Catch event _Webcamcom_SaturationChanged, NewValue:{e.Saturation}: {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
         }
 
         private void Webcam_AntiFlickerChanged(object sender, AntiFlickerChangedArgs e)
@@ -7040,7 +7087,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             SendDTPEventToUI(CreateEventMsg("Webcam", "Webcam_AntiFlickerChanged",
                                     e.DeviceId, $"NewValue:{e.AntiFlicker}"));
 
-            writelog($"Catch event _Webcamcom_AntiFlickerChanged : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+            writelog($"Catch event _Webcamcom_AntiFlickerChanged, NewValue:{e.AntiFlicker}: {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
         }
 
         private void Webcam_ContrastChanged(object sender, ContrastChangedArgs e)
@@ -7048,7 +7095,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             SendDTPEventToUI(CreateEventMsg("Webcam", "Webcam_ContrastChanged",
                                     e.DeviceId, $"NewValue:{e.Contrast}"));
 
-            writelog($"Catch event _Webcamcom_ContrastChanged : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+            writelog($"Catch event _Webcamcom_ContrastChanged, NewValue:{e.Contrast}: {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
         }
 
         private void Webcam_BrightnessChanged(object sender, BrightnessChangedArgs e)
@@ -7056,7 +7103,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             SendDTPEventToUI(CreateEventMsg("Webcam", "Webcam_BrightnessChanged",
                                     e.DeviceId, $"NewValue:{e.Brightness}"));
 
-            writelog($"Catch event _Webcamcom_BrightnessChanged : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+            writelog($"Catch event _Webcamcom_BrightnessChanged, NewValue:{e.Brightness}: {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
         }
 
         private void Webcam_ZoomChanged(object sender, ZoomChangedArgs e)
@@ -7064,7 +7111,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             SendDTPEventToUI(CreateEventMsg("Webcam", "Webcam_ZoomChanged",
                                     e.DeviceId, $"NewValue:{e.Zoom}"));
 
-            writelog($"Catch event _Webcamcom_ZoomChanged : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+            writelog($"Catch event _Webcamcom_ZoomChanged, NewValue:{e.Zoom}: {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
         }
 
         private void Webcam_TiltChanged(object sender, TiltChangedArgs e)
@@ -7072,7 +7119,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             SendDTPEventToUI(CreateEventMsg("Webcam", "Webcam_TiltChanged",
                                     e.DeviceId, $"NewValue:{e.Tilt}"));
 
-            writelog($"Catch event _Webcamcom_TiltChanged : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+            writelog($"Catch event _Webcamcom_TiltChanged, NewValue:{e.Tilt}: {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
         }
 
         private void Webcam_PanChanged(object sender, PanChangedArgs e)
@@ -7080,7 +7127,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             SendDTPEventToUI(CreateEventMsg("Webcam", "Webcam_PanChanged",
                                     e.DeviceId, $"NewValue:{e.Pan}"));
 
-            writelog($"Catch event _Webcamcom_PanChanged : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+            writelog($"Catch event _Webcamcom_PanChanged, NewValue:{e.Pan}: {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
         }
 
         private void Webcam_FocusChanged(object sender, FocusChangedArgs e)
@@ -7088,7 +7135,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             SendDTPEventToUI(CreateEventMsg("Webcam", "Webcam_FocusChanged",
                                     e.DeviceId, $"NewValue:{e.Focus}"));
 
-            writelog($"Catch event _Webcamcom_FocusChanged : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+            writelog($"Catch event _Webcamcom_FocusChanged, NewValue:{e.Focus}: {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
         }
 
         private void Webcam_IsFocusOnChanged(object sender, IsFocusOnChangedArgs e)
@@ -7096,7 +7143,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             SendDTPEventToUI(CreateEventMsg("Webcam", "Webcam_IsFocusOnChanged",
                                     e.DeviceId, $"NewValue:{e.IsFocusOn}"));
 
-            writelog($"Catch event _Webcamcom_IsFocusOnChanged : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+            writelog($"Catch event _Webcamcom_IsFocusOnChanged, NewValue:{e.IsFocusOn}: {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
         }
 
         private void Webcam_PriorityChanged(object sender, PriorityChangedArgs e)
@@ -7104,7 +7151,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             SendDTPEventToUI(CreateEventMsg("Webcam", "Webcam_PriorityChanged",
                                     e.DeviceId, $"NewValue:{e.Priority}"));
 
-            writelog($"Catch event _Webcamcom_PriorityChanged : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+            writelog($"Catch event _Webcamcom_PriorityChanged, NewValue:{e.Priority}: {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
         }
 
         private void Webcam_CustomProfileRemoved(object sender, CustomProfileRemovedArgs e)
@@ -7112,7 +7159,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             SendDTPEventToUI(CreateEventMsg("Webcam", "Webcam_CustomProfileRemoved",
                                     e.DeviceId, $"NewValue:{e.ProfileId}"));
 
-            writelog($"Catch event _Webcamcom_CustomProfileRemoved : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+            writelog($"Catch event _Webcamcom_CustomProfileRemoved, NewValue:{e.ProfileId}: {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
         }
 
         private void Webcam_CustomProfileAdded(object sender, CustomProfileAddedArgs e)
@@ -7120,7 +7167,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             SendDTPEventToUI(CreateEventMsg("Webcam", "Webcam_CustomProfileAdded",
                                     e.DeviceId, $"NewValue:{e.ProfileId}"));
 
-            writelog($"Catch event _Webcamcom_CustomProfileAdded : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+            writelog($"Catch event _Webcamcom_CustomProfileAdded, NewValue:{e.ProfileId}: {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
         }
 
         private void Webcam_CurrentSelectedProfileChanged(object sender, CurrentSelectedProfileChangedArgs e)
@@ -7128,7 +7175,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             SendDTPEventToUI(CreateEventMsg("Webcam", "Webcam_CurrentSelectedProfileChanged",
                                     e.DeviceId, $"NewValue:{e.ProfileId}"));
 
-            writelog($"Catch event _Webcamcom_CurrentSelectedProfileChanged : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+            writelog($"Catch event _Webcamcom_CurrentSelectedProfileChanged, NewValue:{e.ProfileId}: {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
         }
 
         private void Webcam_IsMicEnumerationOnChanged(object sender, IsMicEnumerationOnChangedArgs e)
@@ -7136,7 +7183,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             SendDTPEventToUI(CreateEventMsg("Webcam", "Webcam_IsMicEnumerationOnChanged",
                                     e.DeviceId, $"NewValue:{e.IsMicEnumerationOn}"));
 
-            writelog($"Catch event _Webcamcom_IsMicEnumerationOnChanged : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+            writelog($"Catch event _Webcamcom_IsMicEnumerationOnChanged, NewValue:{e.IsMicEnumerationOn}: {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
         }
 
         private void Webcam_ProfileManagerAdded(object sender, ProfileManagerAddedArgs e)
@@ -7144,7 +7191,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             SendDTPEventToUI(CreateEventMsg("Webcam", "Webcam_ProfileManagerAdded",
                                     e.DeviceId, $"NewValue:{e.ProfileMangerId}"));
 
-            writelog($"Catch event _Webcamcom_ProfileManagerAdded : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+            writelog($"Catch event _Webcamcom_ProfileManagerAdded, NewValue:{e.ProfileMangerId}: {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
         }
 
         private void Webcam_Esi_IsCameraSensorCoveredChanged(object sender, Esi_IsCameraSensorCoveredChangedArgs e)
@@ -7152,7 +7199,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             SendDTPEventToUI(CreateEventMsg("Webcam", "Webcam_Esi_IsCameraSensorCoveredChanged",
                                     e.DeviceId, $"NewValue:{e.IsCameraSensorCovered}"));
 
-            writelog($"Catch event _Webcamcom_Esi_IsCameraSensorCoveredChanged : new IsCameraSensorCovered is {e.IsCameraSensorCovered} {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+            writelog($"Catch event _Webcamcom_Esi_IsCameraSensorCoveredChanged, NewValue:{e.IsCameraSensorCovered}: new IsCameraSensorCovered is {e.IsCameraSensorCovered} {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
         }
 
         private void Webcam_Disconnected(object sender, DisconnectedArgs e)

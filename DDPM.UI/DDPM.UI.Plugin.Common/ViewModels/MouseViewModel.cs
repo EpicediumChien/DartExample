@@ -173,7 +173,7 @@ namespace DDPM.UI.Plugin.ViewModels
             }
             if (NeedSetting)
             {
-                //_deviceManager.SetBackLightingControls(hz, CurrentDeviceInfo.ID);
+                DdpmCommonHelper.DeviceManagerSA!.SetReportRate(CurrentDeviceInfo!.ID.ToString(), hz);
             }
         }
 
@@ -249,7 +249,7 @@ namespace DDPM.UI.Plugin.ViewModels
                 }
                 if (ConnectionType == "Bluetooth")
                 {
-                    _pollingRateSelectedIndex = 3;
+                    //_pollingRateSelectedIndex = 3;
                     PollingRateInfoTip = Strings.PollingRateInfoTip2;
                     IsDongleRateVisible = false;
                     IsBluetoothRateVisible = true;

@@ -1387,7 +1387,7 @@
     <value>Polling Rate</value>
   </data>
   <data name="Mouse.13" xml:space="preserve">
-    <value>Number of times per second your mouse’s position is reported to system</value>
+    <value>Number of times per second your mouse’s position is reported to your system</value>
   </data>
   <data name="Wired" xml:space="preserve">
     <value>Wired</value>
@@ -2942,5 +2942,8 @@
   </data>
   <data name="Color.10" xml:space="preserve">
     <value>Auto Color Temperature is currently enabled. Do you wish to disable it to continue?</value>
+  </data>
+  <data name="Mouse.16" xml:space="preserve">
+    <value>Number of times per second mouse’s position reports to system. Connect via USB for higher polling rates.</value>
   </data>
 </root>
