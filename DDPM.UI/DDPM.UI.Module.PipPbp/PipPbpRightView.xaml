@@ -19,7 +19,7 @@
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <!-- <ResourceDictionary Source="/DDPM.UI.Common;component/ModuleStyle.xaml" /> -->
-                <ResourceDictionary Source="/DDPM.UI.Common;component/ButtonStyle.xaml" />
+                <!--<ResourceDictionary Source="/DDPM.UI.Common;component/ButtonStyle.xaml" />-->
             </ResourceDictionary.MergedDictionaries>
 
             <!-- #region Unused_1 Robert_Lin, 2024-11-30, Unused, will reference to ModuleStyle.xaml -->
@@ -247,7 +247,7 @@
                     </Border>
                     <!-- #endregion Video Swap ComboBoxes -->
 
-                    <!-- Buttons
+                    <!-- #region Buttons
                     IsEnabled="{Binding IsUsbSwitchButtonEnabled}"
                     -->
                     <StackPanel Margin="0,16,0,24" Orientation="Horizontal" HorizontalAlignment="Center">
@@ -266,10 +266,12 @@
                         <!-- Using custom WPF style, defined in ButtonStyle.xaml 
                                 Content="{Binding [VideoSwap], Source={x:Static lang:LangHelper.Instance}}"
                                 Content="VideoSwap"
+                        Robert_Lin, 2024-12-6 remove Height setter to avoid text been cut off
+                        Width="132" 
                         -->
                         <Button Style="{StaticResource SecondaryButtonStyle}"
                                 Content="{Binding [VideoSwap], Source={x:Static lang:LangHelper.Instance}}"
-                                Width="132" Margin="0,0,4,0"
+                                Margin="0,0,4,0"
                                 IsEnabled="{Binding IsVideoSwapButtonEnabled, Mode=OneWay}"
                                 Visibility="{Binding IsVideoSwapButtonVisible, Converter={StaticResource BoolToVisibilityConverter}}" 
                                 MouseLeftButtonDown="videoSwapButton_MouseLeftButtonDown"
@@ -285,15 +287,18 @@
                             <UXControls:UXTextBlock Style="{StaticResource BlackButtonText}"
                                                     Name="UsbSwitchButtonText" Text="{Binding [PipPbp.6], Source={x:Static lang:LangHelper.Instance}}" />
                         </Border>
+                        Robert_Lin, 2024-12-6 remove Height setter to avoid text been cut off
+                        Width="132" 
                         -->
                         <!-- Using Custom WPF button, defined in ButtonStyle.xaml -->
                         <Button Style="{StaticResource SecondaryButtonStyle}"
                                 Content="{Binding [PipPbp.6], Source={x:Static lang:LangHelper.Instance}}"
-                                Width="132" Margin="4,0,0,0"
+                                Margin="4,0,0,0"
                                 IsEnabled="{Binding IsUsbSwitchButtonEnabled, Mode=OneWay}"
                                 Visibility="{Binding IsUsbSwitchButtonVisible, Converter={StaticResource BoolToVisibilityConverter}}"
                                 MouseLeftButtonDown="usbSwitchButton_MouseLeftButtonDown" Click="usbSwitchButton_Click"/>
                     </StackPanel>
+                    <!-- #endregion Buttons -->
                 </StackPanel>
                 <!-- #endregion Main Content -->
 
