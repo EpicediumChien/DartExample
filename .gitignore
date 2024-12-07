@@ -338,3 +338,7 @@ testcoverage/
 /DDPM.UI/CommonDll/zh-TW/DDPM.SA.Resources.resources.dll
 /DDPM.UI/CommonDll/DDPM.PowerMon.deps.json
 /DDPM.UI/CommonDll/.Obfuscated
+/DDPM.SA/DDPM.UI/CommonDll
+/DDPM.SA/DdpmSwUpdater/CommonDll
+/DDPM.UI/CommonDll
+/.gitignore
