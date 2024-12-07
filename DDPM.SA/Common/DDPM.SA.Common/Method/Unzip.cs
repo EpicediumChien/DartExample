@@ -84,9 +84,26 @@ namespace DDPM.SA.Common.Method
             {
                 if (Directory.Exists(directory))
                 {
-                    string absolutePath = Path.GetFullPath(directory);
-                    if(!string.IsNullOrEmpty(absolutePath))
-                        exeFiles = Directory.GetFiles(absolutePath, "*.exe");
+                    //[Original]
+                    //string absolutePath = Path.GetFullPath(directory);
+                    //if (!string.IsNullOrEmpty(absolutePath))
+                    //    exeFiles = Directory.GetFiles(absolutePath, "*.exe");
+
+                    //for checkmarx test, [code part1]
+                    var options = new EnumerationOptions { RecurseSubdirectories = false, IgnoreInaccessible = true };
+                    exeFiles = Directory.GetFiles(directory, "*.exe", options);
+                    if(exeFiles.Length > 0)
+                        _logs?.DebugMsg_1(nameof(Unzip) + " [part1] Get exe files in folder success");
+
+                    //for checkmarx test, [code part2]
+                    foreach (var file in Directory.EnumerateFiles(directory, "*.exe"))
+                    {
+                        if (Path.GetExtension(file).Equals(".exe", StringComparison.OrdinalIgnoreCase))
+                        {
+                            _logs?.DebugMsg_1(nameof(Unzip) + " [part2] Get exe files in folder success");
+                            return file;
+                        }
+                    }
                 }
             }
             catch  (Exception ex)

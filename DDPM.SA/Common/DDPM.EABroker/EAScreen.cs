@@ -61,14 +61,16 @@ namespace DDPM.EABroker
         /// <returns></returns>
         private static double GetLogicScale()
         {
-            var dpiXProperty = typeof(SystemParameters).GetProperty("DpiX", BindingFlags.NonPublic | BindingFlags.Static);
-            if (dpiXProperty != null)
-            {
-                var varX = (int)dpiXProperty.GetValue(null, null);
-                double dpiX = (double)varX / (double)96;
-                return dpiX;
-            }
-            return 1.000;
+            //Robert_Lin, 2024-12-6, use the method in CommonFunctions
+            return CommonFunctions.GetDpiX();
+            //var dpiXProperty = typeof(SystemParameters).GetProperty("DpiX", BindingFlags.NonPublic | BindingFlags.Static);
+            //if (dpiXProperty != null)
+            //{
+            //    var varX = (int)dpiXProperty.GetValue(null, null);
+            //    double dpiX = (double)varX / (double)96;
+            //    return dpiX;
+            //}
+            //return 1.000;
         }
 
         /// <summary>

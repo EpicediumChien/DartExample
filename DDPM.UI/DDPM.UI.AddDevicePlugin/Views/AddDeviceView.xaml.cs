@@ -155,8 +155,10 @@ namespace DDPM.UI.Plugin.AddDevicePlugin
         private void OnDeviceBarItemClicked(DeviceBarItem newItem)
         {
             //if(newItem.Id == _vm!.DeviceBarSelectedIndex) { return; }
+            if (_vm == null)
+                return;
 
-            if (_vm!.DeviceBarSelectedIndex >= 0 && _vm!.DeviceBarItems.Find(x => x.Id == _vm!.DeviceBarSelectedIndex) != null)
+            if (_vm.DeviceBarSelectedIndex >= 0 && _vm.DeviceBarItems.Find(x => x.Id == _vm.DeviceBarSelectedIndex) != null)
             {
                 _vm.DeviceBarItems[_vm.DeviceBarSelectedIndex].IsSelected = false;
                 _vm.DeviceBarItems[_vm.DeviceBarSelectedIndex].RenewBarItem();
@@ -180,30 +182,32 @@ namespace DDPM.UI.Plugin.AddDevicePlugin
         {
             //if(sender == null)
             //  return;
+            if (_vm == null)
+                return;
 
             int newSelId = rightViewHeaderCtrl.SelectedIndex;
             if (newSelId != selectedTab)
             {
-                if (_vm != null)
-                {
-                    _vm.RightViewHeaderSelectedIndex = newSelId;
-                }
+                _vm.RightViewHeaderSelectedIndex = newSelId;
                 selectedTab = newSelId;
             }
 
-            if (newSelId == 1 && (_vm!.DeviceBarSelectedIndex == 2 || _vm!.DeviceBarSelectedIndex == 3 || _vm!.DeviceBarSelectedIndex == 4))
+            if (newSelId == 1 && (_vm.DeviceBarSelectedIndex == 2 || _vm.DeviceBarSelectedIndex == 3 || _vm.DeviceBarSelectedIndex == 4))
             {
                 StartPairing();
             }
             else
             {
-                _vm!.StopPairing();
+                _vm.StopPairing();
             }
         }
 
         private void StartPairing()
         {
-            if (_vm!.DeviceBarSelectedIndex == 2 && _vm.DongleInfos.Count == 1)
+            if (_vm == null)
+                return;
+
+            if (_vm.DeviceBarSelectedIndex == 2 && _vm.DongleInfos.Count == 1)
             {
                 if (_vm.DongleInfos.Values.First().PairedDeviceCount == _vm.DongleInfos.Values.First().MaxPairingSlots)
                 {
@@ -213,10 +217,10 @@ namespace DDPM.UI.Plugin.AddDevicePlugin
                 else
                 {
                     _vm.CurrentDongle = _vm.DongleInfos.Values.First();
-                    _vm!.StartPairing(_vm!.DongleInfos.Keys.First());
+                    _vm.StartPairing(_vm.DongleInfos.Keys.First());
                 }
             }
-            if (_vm!.DeviceBarSelectedIndex == 4 && _vm.AudioDongleInfos.Count == 1)
+            if (_vm.DeviceBarSelectedIndex == 4 && _vm.AudioDongleInfos.Count == 1)
             {
                 if (_vm.AudioDongleInfos.Values.First().PairedDeviceCount == _vm.AudioDongleInfos.Values.First().MaxPairingSlots)
                 {
@@ -226,11 +230,9 @@ namespace DDPM.UI.Plugin.AddDevicePlugin
                 else
                 {
                     _vm.CurrentDongle = _vm.AudioDongleInfos.Values.First();
-                    _vm!.StartPairing(_vm!.AudioDongleInfos.Keys.First());
+                    _vm.StartPairing(_vm.AudioDongleInfos.Keys.First());
                 }
             }
-            //if(_vm!.DeviceBarSelectedIndex == 3)
-            //    _vm!.StartPairingPen();
         }
 
         private void ShowMessage(string caption, string text, string button1Caption, string button2Caption = "")
@@ -248,10 +250,13 @@ namespace DDPM.UI.Plugin.AddDevicePlugin
 
         private void PairingStatusChanged(object sender, TextChangedEventArgs e)
         {
+            if (_vm == null)
+                return;
+
             switch (txtPairingStatus.Text)
             {
                 case "Request":
-                    if (_vm!.IsPairing)
+                    if (_vm.IsPairing)
                     {
                         WaitingModalDialog waitingModalDialog = new(WaitingCaption, $"{WaitingMessage} {_vm.RequestDeviceName}", WaitingAlert);
                         Window mainWindow = System.Windows.Application.Current.MainWindow;
@@ -269,14 +274,14 @@ namespace DDPM.UI.Plugin.AddDevicePlugin
 
                 case "Already Paired":
                     ShowMessage(Strings.Error, Strings.AlreadyPaired, "");
-                    _vm!.StopPairing();
+                    _vm.StopPairing();
                     rightViewHeaderCtrl.SelectedIndex = -1;
                     rightViewHeaderCtrl.SelectedIndex = 1;
                     break;
 
                 case "Old Device":
                     ShowMessage(Strings.Error, Strings.NotSupportedDevice, CancelButtonCaption);
-                    _vm!.StopPairing();
+                    _vm.StopPairing();
                     rightViewHeaderCtrl.SelectedIndex = -1;
                     rightViewHeaderCtrl.SelectedIndex = 1;
                     break;
@@ -288,7 +293,7 @@ namespace DDPM.UI.Plugin.AddDevicePlugin
                     if (_vm.IsPairing)
                     {
                         ShowMessage(Strings.Error, Strings.NoDeviceFound, "");
-                        _vm!.StopPairing();
+                        _vm.StopPairing();
                     }
                     rightViewHeaderCtrl.SelectedIndex = -1;
                     rightViewHeaderCtrl.SelectedIndex = 1;
@@ -301,30 +306,26 @@ namespace DDPM.UI.Plugin.AddDevicePlugin
 
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
-            OnDeviceBarItemClicked(_vm!.DeviceBarItems[_vm.DeviceBarSelectedIndex]);
+            if (_vm == null)
+                return;
+
+            OnDeviceBarItemClicked(_vm.DeviceBarItems[_vm.DeviceBarSelectedIndex]);
             _vm.DeviceBarItems[_vm.DeviceBarSelectedIndex].IsSelected = true;
         }
 
         private void Pairing(object sender, StylusDownEventArgs e)
         {
-            if (_vm!.DeviceBarSelectedIndex != 3 || rightViewHeaderCtrl.SelectedIndex != 1)
+            if (_vm == null || _vm.DeviceBarSelectedIndex != 3 || rightViewHeaderCtrl.SelectedIndex != 1)
                 return;
+
             MessageModalDialog messageModalDialog;
-            Window parentWindow = Window.GetWindow(this);
-            if (_vm!.IsPandoraPaired)
-            {
-                messageModalDialog = new(Strings.Error, Strings.PenAlreadyPaired, Strings.Cancel);
-                if (parentWindow != null)
-                {
-                    messageModalDialog.Owner = parentWindow;
-                }
-                messageModalDialog.ShowDialog();
-                return;
-            }
+            Window mainWindow = System.Windows.Application.Current.MainWindow;
             messageModalDialog = new(Strings.PairYourPen, Strings.PairYourPenMessage, Strings.No, Strings.Yes);
-            if (parentWindow != null)
+            if (mainWindow != null)
             {
-                messageModalDialog.Owner = parentWindow;
+                messageModalDialog.Owner = mainWindow;
+                messageModalDialog.Left = mainWindow.Left + (mainWindow!.ActualWidth - 417) / 2;
+                messageModalDialog.Top = mainWindow.Top + 300;
             }
             if (messageModalDialog.ShowDialog()!.Value)
             {

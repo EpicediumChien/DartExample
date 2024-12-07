@@ -4,19 +4,18 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:DDPM.UI.Plugin.WalkThroughPlugin" 
+        mc:Ignorable="d"
         xmlns:controls="clr-namespace:Dell.Client.Framework.UX.WPF.Controls;assembly=DCF.UX.WPF"
         xmlns:lang="clr-namespace:DDPM.UI.Resources.Helper;assembly=DDPM.UI.Resources"
-        Title="WalkThroughBox"     
-        Width="419"
-        Height="226"
-        AllowsTransparency="True"
-        Background="Transparent"
-        ResizeMode="NoResize"
+        Title="WalkThroughBox"   
+        ResizeMode="NoResize"  
+        ShowInTaskbar="False"
         WindowStartupLocation="CenterOwner"
         WindowStyle="None"
-        mc:Ignorable="d"
-        ShowInTaskbar="False"
-        MouseDown="Window_MouseDown">
+        AllowsTransparency="True"
+        Background="Transparent"
+        Width="419"
+        Height="226">
     <Border BorderThickness="0" Background="{DynamicResource WalkThroughBox_BkColor}" CornerRadius="10">
         <Grid>
             <Grid.RowDefinitions>
