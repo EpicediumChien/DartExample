@@ -1,6 +1,7 @@
 ﻿using DDPM.SA.Common;
 using DDPM.UI.Resources;
 using DDPM.UI.Resources.Helper;
+using Dell.Client.Framework.Common;
 using Dell.Client.Framework.UX.WPF.Controls;
 using System;
 using System.Collections;
@@ -33,6 +34,7 @@ namespace DDPM.UI.Plugin.SettingsPlugin
     {
         private ResourceManager resManager = ThirdPartyLicense.ResourceManager;
         private ResourceManager resManager_NKVM = ThirdPartyLicense_NKVM.ResourceManager;
+        private ILog? _log;
         public ObservableCollection<UI_ThirdPartyLicenses> ThirdPartyLicensesList { get; set; }
         public event PropertyChangedEventHandler PropertyChanged;
         protected void OnPropertyChanged(string propertyName)
@@ -41,12 +43,16 @@ namespace DDPM.UI.Plugin.SettingsPlugin
         }
         public ThirdPartyLicenses()
         {
+            _log = SettingsPlugin.PluginIoc?.GetService<ILog>();
+            _log?.Info("ThirdPartyLicenses initialize start");
             InitializeComponent();
             DataContext = this;
+            _log?.Info("ThirdPartyLicenses initialize done");
 
         }
         private void UXWindow_Loaded(object sender, RoutedEventArgs e)
         {
+            _log?.Info("ThirdPartyLicenses UXWindow_Loaded start");
             ThirdPartyLicensesList = new ObservableCollection<UI_ThirdPartyLicenses>();
             ResourceSet resourceSet = resManager.GetResourceSet(CultureInfo.CurrentCulture, true, true);
             ResourceSet resource_NKVMSet = resManager_NKVM.GetResourceSet(CultureInfo.CurrentCulture, true, true);
@@ -57,6 +63,7 @@ namespace DDPM.UI.Plugin.SettingsPlugin
                 {
                     resourceCount++;
                 }
+                _log?.Info($"ThirdPartyLicenses resourceCount : {resourceCount}");
                 for (int i = 0; i < resourceCount / 2; i++)
                 {
                     ThirdPartyLicensesList.Add(new UI_ThirdPartyLicenses()
@@ -77,6 +84,7 @@ namespace DDPM.UI.Plugin.SettingsPlugin
                 {
                     resourceCount++;
                 }
+                _log?.Info($"ThirdPartyLicenses resourceCount : {resourceCount}");
                 for (int i = 0; i < resourceCount / 2; i++)
                 {
                     ThirdPartyLicensesList.Add(new UI_ThirdPartyLicenses()
@@ -90,8 +98,10 @@ namespace DDPM.UI.Plugin.SettingsPlugin
                     TextToCopy += (System.Environment.NewLine + System.Environment.NewLine + Content + System.Environment.NewLine);
                 }
             }
+            _log?.Info($"ThirdPartyLicenses ThirdPartyLicensesList.Count : {ThirdPartyLicensesList.Count}");
             OnPropertyChanged("TextToCopy");
             OnPropertyChanged("ThirdPartyLicensesList");
+            _log?.Info("ThirdPartyLicenses UXWindow_Loaded done");
         }
         private void Grid_MouseDown(object sender, MouseButtonEventArgs e)
         {
