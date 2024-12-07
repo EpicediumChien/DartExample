@@ -1,10 +1,12 @@
 using DDPM.SA.Common.Method;
 using DDPM.SA.Obfuscation;
 using Dell.Client.Framework.Common;
+using Dell.Client.Framework.Common.Exceptions;
 using Dell.Client.Framework.Security;
 using Dell.Client.Framework.Security.Interfaces;
 using Dell.TechHub.Sdk.Common;
 using DPeMPublic.Common;
+using Microsoft.VisualBasic.Logging;
 using Microsoft.Win32;
 using MS.WindowsAPICodePack.Internal;
 using Newtonsoft.Json;
@@ -23,6 +25,7 @@ using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 using System.Security.Principal;
 using System.Text;
+using Windows.ApplicationModel.Background;
 using static System.Net.Mime.MediaTypeNames;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 using HashType = Dell.Client.Framework.Security.Interfaces.HashType;
@@ -1968,6 +1971,138 @@ namespace DDPM.SA.Common.Settings
                     info = $"File has invalid signature, last error: {filePath} {result}";
                     return false;
                 }
+            }
+        }
+
+        private static string SanitizePath(string path, out string info)
+        {
+            info = "success";
+            if (path.Contains("..\\") || path.Contains("../") || path.Contains("..;\\") || path.Contains("..\\/") || path.Contains("..././") || path.Contains("....\\") || path.Contains(@"\\\") || path.Contains(@"\\\\"))
+            {
+                info = ("The path contains invalid characters. Program will not continue {path}");
+                return string.Empty;
+            }
+
+            //This IF condition is to prevent Command Injection
+            if (path.Contains(";") || path.Contains("&&") || path.Contains("|") || path.Contains("...") || path.Contains("&") || path.Contains("||"))
+            {
+                info = ("The argument contains invalid characters. Program will not continue");
+                return string.Empty;
+            }
+
+            string path_org = path;
+            path = path.Replace("...", string.Empty);
+            path = path.Replace("..", string.Empty);
+            path = path.Replace("..\\", string.Empty);
+            path = path.Replace("../", string.Empty);
+            path = path.Replace(";", string.Empty);
+            path = path.Replace("&&", string.Empty);
+            path = path.Replace("||", string.Empty);
+            path = path.Replace("&", string.Empty);
+            path = path.Replace("|", string.Empty);
+            path = path.Replace("``", string.Empty);
+            path = path.Replace("$$", string.Empty);
+            path = path.Replace("`", string.Empty);
+            path = path.Replace("$", string.Empty);
+            path = path.Replace("!", string.Empty);
+            path = path.Replace("..\\", string.Empty);
+            path = path.Replace("../", string.Empty);
+            path = path.Replace("<", string.Empty);
+            path = path.Replace(">", string.Empty);
+            path = path.Replace(">>", string.Empty);
+            path = path.Replace("${", string.Empty);
+            path = path.Replace("$(", string.Empty);
+            if (path_org != path)
+            {
+                info = ("The path contains invalid characters. Program will not continue");
+                return string.Empty;
+            }
+
+            path_org = null;
+            return path;
+        }
+
+        //Support to both absolute full file path and full folder path
+        public static bool ValidateFilePath(string filePath, out string info, bool bCreate = false, bool bDelSymlink = false)
+        {
+            // This class is not responsible for creating directories!
+            try
+            {
+                filePath = SanitizePath(filePath, out info);
+                //Check for path before delete
+                var redirectionReturnCode = PathHelper.CheckPathRedirection(filePath);
+
+                if ((File.Exists(filePath) || Directory.Exists(filePath)))
+
+                {
+
+                    if (!bDelSymlink && redirectionReturnCode != PathRedirectionReturn.PathIsNormal && redirectionReturnCode != PathRedirectionReturn.PathDoesNotExist)
+
+                    {
+
+                        throw new RedirectionDetectionException(
+                              $"Redirection detected along the path {filePath}. " +
+                              $"Received the following return code: {redirectionReturnCode}. Redirection is a potential security" +
+                              $" risk. You will not be able to log anything until the redirection is mitigated and you restart your process.");
+
+                    }
+
+                    else if (bDelSymlink && redirectionReturnCode != PathRedirectionReturn.PathIsNormal && redirectionReturnCode != PathRedirectionReturn.PathDoesNotExist)
+                    {
+
+                        if (Path.HasExtension(filePath))
+                        {
+                            File.Delete(filePath);
+                        }
+                        else
+                        {
+                            Directory.Delete(filePath, recursive: true);
+                        }
+                    }
+                }
+
+                //Check symlink before creating 
+                if (!File.Exists(filePath) && !Directory.Exists(filePath))
+                {
+                    if (bCreate)
+                    {
+                        if (!bDelSymlink && redirectionReturnCode != PathRedirectionReturn.PathIsNormal && redirectionReturnCode != PathRedirectionReturn.PathDoesNotExist)
+                        {
+                            throw new RedirectionDetectionException(
+                                $"Redirection detected along the path {filePath}. " +
+                                $"Received the following return code: {redirectionReturnCode}. Redirection is a potential security" +
+                                $" risk. You will not be able to log anything until the redirection is mitigated and you restart your process.");
+                        }
+
+                        // Determine if the path should be a file or directory
+                        if (Path.HasExtension(filePath))
+                        {
+                            string directoryPath = Path.GetDirectoryName(filePath);
+
+                            if (!Directory.Exists(directoryPath))
+                            {
+                                Directory.CreateDirectory(directoryPath);
+                                File.Create(filePath).Dispose(); // Ensure the file handle is properly closed
+                            }
+                        }
+                        else
+                        {
+                            Directory.CreateDirectory(filePath);
+                        }
+                    }
+                    else
+                    {
+                        throw new FileNotFoundException($"File or directory \"{filePath}\" does not exist!");
+                    }
+                }
+
+                return true;
+
+            }
+            catch (Exception ex)
+            {
+                info = ($"{nameof(ValidateFilePath)} ,{ex.Message}");
+                return false;
             }
         }
     }
