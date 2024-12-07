@@ -7,7 +7,6 @@ using DDPM.UI.Common.Interfaces;
 using DDPM.UI.Common.Models;
 using Dell.Client.Framework.Common;
 using Dell.Client.Framework.UX.WPF.Controls;
-using Newtonsoft.Json.Linq;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
@@ -534,7 +533,6 @@ namespace DDPM.UI.Module.Brightness
 
         private void ALSFontColorUpdate(OSThemeEnum oSThemeEnum)
         {
-
             if (DdpmCommonHelper.previousOsTheme == OSThemeEnum.Dark)
             {
                 IsDarkTheme = true;
@@ -689,7 +687,7 @@ namespace DDPM.UI.Module.Brightness
             }
         }
 
-        private void SetDefaultExpanded(ALSConfig data,bool isLuminance)
+        private void SetDefaultExpanded(ALSConfig data, bool isLuminance)
         {
             bool isRunAlsNG = false;
             bool isRunScheduledNG = false;
@@ -711,7 +709,7 @@ namespace DDPM.UI.Module.Brightness
                     }
                 }
             }
-            else if (IsScheduledShow == Visibility.Visible|| IsScheduledLuminanceShow == Visibility.Visible)
+            else if (IsScheduledShow == Visibility.Visible || IsScheduledLuminanceShow == Visibility.Visible)
             {
                 if (PR1Luminance_Value < 0 || PR2Luminance_Value < 0 || PR1Brightness_Value < 0 || PR2Brightness_Value < 0 || PR1Contrast_Value < 0 || PR2Contrast_Value < 0 || hOurs_1 < 0 || hOurs_2 < 0 || mIns_1 < 0 || mIns_2 < 0 || dUration_1 < 0 || dUration_2 < 0)
                 {
@@ -736,7 +734,7 @@ namespace DDPM.UI.Module.Brightness
                     }
                 }
             }
-            if (!isRunAlsNG&& !isRunScheduledNG)
+            if (!isRunAlsNG && !isRunScheduledNG)
             {
                 RunManual(isLuminance);
             }
@@ -2312,7 +2310,7 @@ namespace DDPM.UI.Module.Brightness
             }
             else
             {
-                if(property.Equals("PRISYNC"))
+                if (property.Equals("PRISYNC"))
                 {
                     _primaryMonitorSyncStatus = onoff;
                     Start_ALSConfig.isPrimaryMonitorSync = onoff;
@@ -2502,7 +2500,23 @@ namespace DDPM.UI.Module.Brightness
             var value = Convert.ToDouble(value_);
             uint nNewValue = Convert.ToUInt32(value);
 
-            _ = DdpmCommonHelper.DeviceManagerSA.SetVCPCapability(ModuleOwner.SelectedHomeDevice.MonitorInfo, 0x10, nNewValue).Result;
+            if (IsSynchronize)
+            {
+                foreach (HomeDevice hd in ModuleOwner.HomeDevices)
+                {
+                    if (hd.MonitorInfo.IsDellMonitor)
+                    {
+                        if (!hd.MonitorInfo.CapabilityDic.ContainsKey("12"))
+                        {
+                            _ = DdpmCommonHelper.DeviceManagerSA.SetVCPCapability(hd.MonitorInfo, 0x10, nNewValue).Result;
+                        }
+                    }
+                }
+            }
+            else
+            {
+                _ = DdpmCommonHelper.DeviceManagerSA.SetVCPCapability(ModuleOwner.SelectedHomeDevice.MonitorInfo, 0x10, nNewValue).Result;
+            }
 
             //NotifyPropertyChanged("LuminanceValue");
         }
@@ -2522,7 +2536,10 @@ namespace DDPM.UI.Module.Brightness
                     {
                         if (hd.MonitorInfo.IsDellMonitor)
                         {
-                            _ = DdpmCommonHelper.DeviceManagerSA.SetVCPCapability(hd.MonitorInfo, 0x10, nNewValue).Result;
+                            if (hd.MonitorInfo.CapabilityDic.ContainsKey("12"))
+                            {
+                                _ = DdpmCommonHelper.DeviceManagerSA.SetVCPCapability(hd.MonitorInfo, 0x10, nNewValue).Result;
+                            }
                         }
                     }
                 }
@@ -3313,6 +3330,7 @@ namespace DDPM.UI.Module.Brightness
         }
 
         private bool _isDarkTheme;
+
         public bool IsDarkTheme
         {
             get => _isDarkTheme;
