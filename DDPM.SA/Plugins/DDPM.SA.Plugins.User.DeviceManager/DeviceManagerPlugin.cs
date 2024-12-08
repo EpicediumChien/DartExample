@@ -8895,13 +8895,25 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         {
             return await Task.Run(() => _DTPProxyPlugin.GetFocus(Guid));
         }
-        public async Task<bool> GetIsFocusOn(string Guid)
+        public async Task<bool?> GetIsFocusOn(string Guid)
         {
             return await Task.Run(() => _DTPProxyPlugin.GetIsFocusOn(Guid));
         }
         public async Task<int> GetPriority(string Guid)
         {
             return await Task.Run(() => _DTPProxyPlugin.GetPriority(Guid));
+        }
+        public async Task<bool?> GetIsAutoFramingTransitionOn(string Guid)
+        {
+            return await Task.Run(() => _DTPProxyPlugin.GetIsAutoFramingTransitionOn(Guid));
+        }
+        public async Task<int> GetAutoFramingFrameSize(string Guid)
+        {
+            return await Task.Run(() => _DTPProxyPlugin.GetAutoFramingFrameSize(Guid));
+        }
+        public async Task<int> GetAutoFramingSensitivity(string Guid)
+        {
+            return await Task.Run(() => _DTPProxyPlugin.GetAutoFramingSensitivity(Guid));
         }
 
         public Task SetIsMicEnumerationOn(string guid, bool newValue)
@@ -8959,22 +8971,20 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             return _DTPProxyPlugin.SetZoom(guid, newValue);
         }
 
-        public Task SetAutoFramingSensitivity(string guid, int newValue)
+        public Task<bool> SetAutoFramingSensitivity(string guid, int newValue)
         {
             writelog("DeviceMangerPlugin received SetAutoFramingSensitivity requested ...");
             writelog($"Target Guid is {guid}");
             writelog($"Target Value is {newValue}");
-            _DTPProxyPlugin.SetAutoFramingSensitivity(guid, newValue);
-            return Task.FromResult(true);
+            return _DTPProxyPlugin.SetAutoFramingSensitivity(guid, newValue);
         }
 
-        public Task SetAutoFramingFrameSize(string guid, int newValue)
+        public Task<bool> SetAutoFramingFrameSize(string guid, int newValue)
         {
             writelog("DeviceMangerPlugin received SetAutoFramingFrameSize requested ...");
             writelog($"Target Guid is {guid}");
             writelog($"Target Value is {newValue}");
-            _DTPProxyPlugin.SetAutoFramingFrameSize(guid, newValue);
-            return Task.FromResult(true);
+            return _DTPProxyPlugin.SetAutoFramingFrameSize(guid, newValue);
         }
 
         public Task<bool> SetIsAutoFramingOn(string guid, bool newValue)
@@ -8982,17 +8992,15 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             writelog("DeviceMangerPlugin received SetIsAutoFramingOn requested ...");
             writelog($"Target Guid is {guid}");
             writelog($"Target Value is {newValue}");
-            //_DTPProxyPlugin.SetIsAutoFramingOn(guid, newValue);
             return _DTPProxyPlugin.SetIsAutoFramingOn(guid, newValue);
         }
 
-        public Task SetIsAutoFramingTransitionOn(string guid, bool newValue)
+        public Task<bool> SetIsAutoFramingTransitionOn(string guid, bool newValue)
         {
             writelog("DeviceMangerPlugin received SetIsAutoFramingTransitionOn requested ...");
             writelog($"Target Guid is {guid}");
             writelog($"Target Value is {newValue}");
-            _DTPProxyPlugin.SetIsAutoFramingTransitionOn(guid, newValue);
-            return Task.FromResult(true);
+            return _DTPProxyPlugin.SetIsAutoFramingTransitionOn(guid, newValue);
         }
 
         public Task<bool> SetFieldOfView(string guid, int newValue)
@@ -9000,8 +9008,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             writelog("DeviceMangerPlugin received SetFieldOfView requested ...");
             writelog($"Target Guid is {guid}");
             writelog($"Target Value is {newValue}");
-            _DTPProxyPlugin.SetFieldOfView(guid, newValue);
-            return Task.FromResult(true);
+            return _DTPProxyPlugin.SetFieldOfView(guid, newValue);
         }
 
         public Task SetIsFocusOn(string guid, bool newValue)
@@ -9031,13 +9038,12 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             return Task.FromResult(true);
         }
 
-        public Task SetIsHDROn(string guid, bool newValue)
+        public Task<bool> SetIsHDROn(string guid, bool newValue)
         {
             writelog("DeviceMangerPlugin received SetIsHDROn requested ...");
             writelog($"Target Guid is {guid}");
             writelog($"Target Value is {newValue}");
-            _DTPProxyPlugin.SetIsHDROn(guid, newValue);
-            return Task.FromResult(true);
+            return _DTPProxyPlugin.SetIsHDROn(guid, newValue);
         }
 
         public Task SetIsAutoWhiteBalanceOn(string guid, bool newValue)

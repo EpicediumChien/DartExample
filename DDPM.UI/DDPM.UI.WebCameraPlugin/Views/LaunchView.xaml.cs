@@ -91,135 +91,116 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
 
         public LaunchView()
         {
-
             _vm = (WebCameraViewModel?)WebCameraplugin.PluginIoc?.GetService<IPeripheralViewModel>()!;
 
-            if (_vm != null)
-            {
-                if (!_vm.IsDTPReady)
-                {
-                    MessageModalDialog messageModalDialog = new(Strings.Error, Strings.DTPUnavailable, "");
-                    Window mainWindow = System.Windows.Application.Current.MainWindow;
-                    if (mainWindow != null)
-                    {
-                        messageModalDialog.Owner = mainWindow;
-                        messageModalDialog.Left = mainWindow.Left + (mainWindow!.ActualWidth - 417) / 2;
-                        messageModalDialog.Top = mainWindow.Top + 300;
-                    }
-                    Mouse.OverrideCursor = null;
-                    messageModalDialog.WindowStartupLocation = WindowStartupLocation.Manual;
-                    messageModalDialog.ShowDialog();
-                    this.Loaded += LaunchView_Loaded;
-                }
-                else
-                {
-                    InitializeComponent();
-                    _vm.Reset();
-                    DataContext = _vm;
-                    _vm.VbarItemClickCommand = new RelayCommand<VbarItem>(OnVbarItemClicked!);
-                    BuildModuleGroups();
+            if (_vm == null)
+                return;
 
-                    var pName = _vm.ProfileCaptions[_vm.CurrentProfileName];
-                    if (PresetNames.Contains(pName))
+            InitializeComponent();
+            _vm.Reset();
+            DataContext = _vm;
+            _vm.VbarItemClickCommand = new RelayCommand<VbarItem>(OnVbarItemClicked!);
+            BuildModuleGroups();
+
+            var pName = _vm.ProfileCaptions[_vm.CurrentProfileName];
+            if (PresetNames.Contains(pName))
+            {
+                txtPreset.Text = $"{Strings.Preset}: {pName}";
+            }
+            else
+            {
+                txtPreset.Text = Utility.CheckTextLength($"{_vm!.CurrentProfileName}", 140, 14);
+            }
+            txtAddPreset.Text = LangHelper.Instance["Camera.5"];
+
+            //ProfileItems.ItemsSource = _vm.ProfileNames;
+            ProfileItems.ItemsSource = _vm.ProfileItems;
+            Mouse.OverrideCursor = null;
+            txtName.Text = Strings.Name;
+            txtMsg.Text = Strings.NameIsTaken;
+            btnCancel.Caption = Strings.Cancel;
+            btnSave.Caption = Strings.Save;
+
+            //lock/unlock, no ui element currently
+            if (DdpmCommonHelper.DeviceManagerSA != null)
+            {
+                DdpmCommonHelper.DeviceManagerSA.ITSettingsActionEvent += DeviceManagerSA_ITSettingsActionEvent;
+                DdpmCommonHelper.DeviceManagerSA.SystemSuspend += DeviceManagerSA_OnSystemSuspend;
+                DdpmCommonHelper.DeviceManagerSA.SystemResume += DeviceManagerSA_OnSystemResume;
+                DdpmCommonHelper.DeviceManagerSA.DeviceChanged += DeviceManagerSA_DeviceChanged;
+                //Derek 1110 for Webcam PIMS-315440
+                //During video recording, do"Restart" &"Shutdown"action in SUT,
+                //the video which I just recorded will have no length.
+                SystemEvents.SessionEnding += SystemEvents_SessionEnding;
+
+                DDPMSettings data = DdpmCommonHelper.DeviceManagerSA.ReloadAppConfigData().Result;
+                if (data != null)
+                {
+                    if (data.LockSettings.Lock_Setting_RestoreDefaults)
                     {
-                        txtPreset.Text = $"{Strings.Preset}: {pName}";
+                        //RestoreLockIcon.Visibility = Visibility.Visible;
+                        //txtRestore.IsEnabled = false;
                     }
                     else
                     {
-                        txtPreset.Text = Utility.CheckTextLength($"{_vm!.CurrentProfileName}", 140, 14);
-                    }
-                    txtAddPreset.Text = LangHelper.Instance["Camera.5"];
+                        //txtRestore.IsEnabled = !data.LockSettings.Lock_Webcam_RestoreFactoryDefaults;
+                        //RestoreLockIcon.Visibility = data.LockSettings.Lock_Webcam_RestoreFactoryDefaults ? Visibility.Visible : Visibility.Collapsed;
 
-                    //ProfileItems.ItemsSource = _vm.ProfileNames;
-                    ProfileItems.ItemsSource = _vm.ProfileItems;
-                    Mouse.OverrideCursor = null;
-                    txtName.Text = Strings.Name;
-                    txtMsg.Text = Strings.NameIsTaken;
-                    btnCancel.Caption = Strings.Cancel;
-                    btnSave.Caption = Strings.Save;
-
-                    //lock/unlock, no ui element currently
-                    if (DdpmCommonHelper.DeviceManagerSA != null)
-                    {
-                        DdpmCommonHelper.DeviceManagerSA.ITSettingsActionEvent += DeviceManagerSA_ITSettingsActionEvent;
-                        DdpmCommonHelper.DeviceManagerSA.SystemSuspend += DeviceManagerSA_OnSystemSuspend;
-                        DdpmCommonHelper.DeviceManagerSA.SystemResume += DeviceManagerSA_OnSystemResume;
-                        DdpmCommonHelper.DeviceManagerSA.DeviceChanged += DeviceManagerSA_DeviceChanged;
-                        //Derek 1110 for Webcam PIMS-315440
-                        //During video recording, do"Restart" &"Shutdown"action in SUT,
-                        //the video which I just recorded will have no length.
-                        SystemEvents.SessionEnding += SystemEvents_SessionEnding;
-
-                        DDPMSettings data = DdpmCommonHelper.DeviceManagerSA.ReloadAppConfigData().Result;
-                        if (data != null)
+                        //Lock Functionality 9/7
+                        //When a 1 or more settings are locked, automatically lock 'Restore to default'/'factory reset' control [Webcam]                        
+                        if (data.LockSettings != null)
                         {
-                            if (data.LockSettings.Lock_Setting_RestoreDefaults)
+                            if (DdpmCommonHelper.GetUINotifyPropertyValue_isAnyLocked(data, "Lock_Webcam"))
                             {
                                 //RestoreLockIcon.Visibility = Visibility.Visible;
                                 //txtRestore.IsEnabled = false;
                             }
-                            else
-                            {
-                                //txtRestore.IsEnabled = !data.LockSettings.Lock_Webcam_RestoreFactoryDefaults;
-                                //RestoreLockIcon.Visibility = data.LockSettings.Lock_Webcam_RestoreFactoryDefaults ? Visibility.Visible : Visibility.Collapsed;
-
-                                //Lock Functionality 9/7
-                                //When a 1 or more settings are locked, automatically lock 'Restore to default'/'factory reset' control [Webcam]                        
-                                if (data.LockSettings != null)
-                                {
-                                    if (DdpmCommonHelper.GetUINotifyPropertyValue_isAnyLocked(data, "Lock_Webcam"))
-                                    {
-                                        //RestoreLockIcon.Visibility = Visibility.Visible;
-                                        //txtRestore.IsEnabled = false;
-                                    }
-                                }
-                            }
                         }
                     }
-
-                    RecordingTimer = new DispatcherTimer();
-                    RecordingTimer.Interval = TimeSpan.FromSeconds(1);
-                    RecordingTimer.Tick += RecordingTimer_Tick;
-
-                    _vm!.WebcamSettingChanged += WebcamSettingChanged;
-                    _vm!.ProfilePropertyChanged += ProfilePropertyChanged;
-
-                    imgDevice.Visibility = Visibility.Hidden;
-                    Preview();
-                    EnableMonitorOnEvent();
-
-
-                    _timer = new DispatcherTimer();
-                    _timer.Interval = TimeSpan.FromSeconds(3);
-                    _timer.Tick += Timer_Tick;
-
-                    exit_status_thread = false;
-                    if (status_thread == null)
-                    {
-                        status_thread = new Thread(() =>
-                        {
-                            DateTime dt = DateTime.Now;
-                            while (_vm.mre.WaitOne())
-                            {
-
-                                if (exit_status_thread)
-                                    return;
-
-                                if (!_vm.IsRecording)
-                                {
-                                    Dispatcher.Invoke(new Action(() =>
-                                    {
-                                        status_change();
-                                    }));
-                                }
-
-                                _vm.mre.Reset();
-                            }
-                        });
-                        _vm.mre.Reset();
-                        status_thread.Start();
-                    }
                 }
+            }
+
+            RecordingTimer = new DispatcherTimer();
+            RecordingTimer.Interval = TimeSpan.FromSeconds(1);
+            RecordingTimer.Tick += RecordingTimer_Tick;
+
+            _vm!.WebcamSettingChanged += WebcamSettingChanged;
+            _vm!.ProfilePropertyChanged += ProfilePropertyChanged;
+
+            imgDevice.Visibility = Visibility.Hidden;
+            Preview();
+            EnableMonitorOnEvent();
+
+
+            _timer = new DispatcherTimer();
+            _timer.Interval = TimeSpan.FromSeconds(3);
+            _timer.Tick += Timer_Tick;
+
+            exit_status_thread = false;
+            if (status_thread == null)
+            {
+                status_thread = new Thread(() =>
+                {
+                    DateTime dt = DateTime.Now;
+                    while (_vm.mre.WaitOne())
+                    {
+
+                        if (exit_status_thread)
+                            return;
+
+                        if (!_vm.IsRecording)
+                        {
+                            Dispatcher.Invoke(new Action(() =>
+                            {
+                                status_change();
+                            }));
+                        }
+
+                        _vm.mre.Reset();
+                    }
+                });
+                _vm.mre.Reset();
+                status_thread.Start();
             }
 
             in_CameraPlugin = true;
@@ -667,8 +648,8 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
 
         private void LaunchView_Loaded(object sender, RoutedEventArgs e)
         {
-            if (!_vm!.IsDTPReady)
-                DdpmCommonHelper.MyConsole!.ShowHomePage();
+            //if (!_vm!.IsDTPReady)
+            //    DdpmCommonHelper.MyConsole!.ShowHomePage();
         }
 
         bool WebcamGrid_old_ststus = false;

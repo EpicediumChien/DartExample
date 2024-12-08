@@ -1135,6 +1135,7 @@ namespace DDPM.SA.Common
         public bool IsWakeonApproachEnable { get; set; }
         public bool IsWalkAwayLockEnable { get; set; }
         public int WALTime { get; set; }
+        public bool IsPrioritizeExternalWebcam { get; set; }
 
 
         public string DeviceSymbolicLink
@@ -1196,6 +1197,7 @@ namespace DDPM.SA.Common
                 OnPropertyChanged();
             }
         }
+        public string SelectedResolution { get; set; }
 
         public int SupportedFeatures
         {
