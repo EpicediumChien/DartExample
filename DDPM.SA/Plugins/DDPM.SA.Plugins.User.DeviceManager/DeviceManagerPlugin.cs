@@ -54,6 +54,7 @@ using System.Threading.Tasks;
 using System.Timers;
 using System.Windows;
 using System.Windows.Forms;
+using System.Windows.Interop;
 using System.Windows.Media.Media3D;
 using System.Windows.Threading;
 using VcpCore.Common;
@@ -4829,6 +4830,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             bool ret = false;
             if (_DisplayManagerPlugin != null)
             {
+                displayInOut = false;
                 ret = _DisplayManagerPlugin.SetOrientation(monitorInfo, orientation).Result;
             }
             return Task.FromResult(ret);
@@ -8894,13 +8896,25 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         {
             return await Task.Run(() => _DTPProxyPlugin.GetFocus(Guid));
         }
-        public async Task<bool> GetIsFocusOn(string Guid)
+        public async Task<bool?> GetIsFocusOn(string Guid)
         {
             return await Task.Run(() => _DTPProxyPlugin.GetIsFocusOn(Guid));
         }
         public async Task<int> GetPriority(string Guid)
         {
             return await Task.Run(() => _DTPProxyPlugin.GetPriority(Guid));
+        }
+        public async Task<bool?> GetIsAutoFramingTransitionOn(string Guid)
+        {
+            return await Task.Run(() => _DTPProxyPlugin.GetIsAutoFramingTransitionOn(Guid));
+        }
+        public async Task<int> GetAutoFramingFrameSize(string Guid)
+        {
+            return await Task.Run(() => _DTPProxyPlugin.GetAutoFramingFrameSize(Guid));
+        }
+        public async Task<int> GetAutoFramingSensitivity(string Guid)
+        {
+            return await Task.Run(() => _DTPProxyPlugin.GetAutoFramingSensitivity(Guid));
         }
 
         public Task SetIsMicEnumerationOn(string guid, bool newValue)
@@ -8958,22 +8972,20 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             return _DTPProxyPlugin.SetZoom(guid, newValue);
         }
 
-        public Task SetAutoFramingSensitivity(string guid, int newValue)
+        public Task<bool> SetAutoFramingSensitivity(string guid, int newValue)
         {
             writelog("DeviceMangerPlugin received SetAutoFramingSensitivity requested ...");
             writelog($"Target Guid is {guid}");
             writelog($"Target Value is {newValue}");
-            _DTPProxyPlugin.SetAutoFramingSensitivity(guid, newValue);
-            return Task.FromResult(true);
+            return _DTPProxyPlugin.SetAutoFramingSensitivity(guid, newValue);
         }
 
-        public Task SetAutoFramingFrameSize(string guid, int newValue)
+        public Task<bool> SetAutoFramingFrameSize(string guid, int newValue)
         {
             writelog("DeviceMangerPlugin received SetAutoFramingFrameSize requested ...");
             writelog($"Target Guid is {guid}");
             writelog($"Target Value is {newValue}");
-            _DTPProxyPlugin.SetAutoFramingFrameSize(guid, newValue);
-            return Task.FromResult(true);
+            return _DTPProxyPlugin.SetAutoFramingFrameSize(guid, newValue);
         }
 
         public Task<bool> SetIsAutoFramingOn(string guid, bool newValue)
@@ -8981,17 +8993,15 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             writelog("DeviceMangerPlugin received SetIsAutoFramingOn requested ...");
             writelog($"Target Guid is {guid}");
             writelog($"Target Value is {newValue}");
-            //_DTPProxyPlugin.SetIsAutoFramingOn(guid, newValue);
             return _DTPProxyPlugin.SetIsAutoFramingOn(guid, newValue);
         }
 
-        public Task SetIsAutoFramingTransitionOn(string guid, bool newValue)
+        public Task<bool> SetIsAutoFramingTransitionOn(string guid, bool newValue)
         {
             writelog("DeviceMangerPlugin received SetIsAutoFramingTransitionOn requested ...");
             writelog($"Target Guid is {guid}");
             writelog($"Target Value is {newValue}");
-            _DTPProxyPlugin.SetIsAutoFramingTransitionOn(guid, newValue);
-            return Task.FromResult(true);
+            return _DTPProxyPlugin.SetIsAutoFramingTransitionOn(guid, newValue);
         }
 
         public Task<bool> SetFieldOfView(string guid, int newValue)
@@ -8999,8 +9009,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             writelog("DeviceMangerPlugin received SetFieldOfView requested ...");
             writelog($"Target Guid is {guid}");
             writelog($"Target Value is {newValue}");
-            _DTPProxyPlugin.SetFieldOfView(guid, newValue);
-            return Task.FromResult(true);
+            return _DTPProxyPlugin.SetFieldOfView(guid, newValue);
         }
 
         public Task SetIsFocusOn(string guid, bool newValue)
@@ -9030,13 +9039,12 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             return Task.FromResult(true);
         }
 
-        public Task SetIsHDROn(string guid, bool newValue)
+        public Task<bool> SetIsHDROn(string guid, bool newValue)
         {
             writelog("DeviceMangerPlugin received SetIsHDROn requested ...");
             writelog($"Target Guid is {guid}");
             writelog($"Target Value is {newValue}");
-            _DTPProxyPlugin.SetIsHDROn(guid, newValue);
-            return Task.FromResult(true);
+            return _DTPProxyPlugin.SetIsHDROn(guid, newValue);
         }
 
         public Task SetIsAutoWhiteBalanceOn(string guid, bool newValue)
@@ -10093,7 +10101,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
 
             //Hidden state
-            if (_IsZoomScreenShareActive)
+            if (_IsZoomScreenShareActive && _IsZoomMeetingActive)
             {
                 writelog($"HandleQAM receive QAMHide event");
 
@@ -10116,6 +10124,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
             writelog($"HandleQAM done");
         }
+
         private void HandleQAM()
         {
             writelog($"HandleQAM start");
@@ -10323,11 +10332,13 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             {
                 writelog($"Try to run QAMHide");
                 _QAM?.Dispatcher.Invoke(() => _QAM?.Hide());
-                Dispatcher.Run();
+                //Dispatcher.Run();
+
+                //_QAM?.Dispatcher.Invoke(() => _QAM?.SetToBottomWindow());
             }
             catch (Exception e)
             {
-                writelog($"Catch Exception[{e.Message}] when run QAMClose");
+                writelog($"Catch Exception[{e.Message}] when run QAMHide");
             }
 
             writelog($"QAMHide done");
@@ -16051,10 +16062,24 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         public Task<bool> LaunchAndArrangeAppsWithEzArrange(Dictionary<String, Bind_AddFullPage_AppCollectionData> sortApps, MonitorInfo moInfo, int eAid)
         {
-            if (_IEzMemoryPlugin != null)
-                return Task.FromResult(_IEzMemoryPlugin.LaunchAndArrangeAppsWithEzArrange(sortApps, moInfo, eAid).Result);
+            //Robert_Lin, 2024-12-5, Change the implementation to EAPlugin
+            //
+            //OLD by Wayn_Chen
+            //if (_IEzMemoryPlugin != null)
+            //    return Task.FromResult(_IEzMemoryPlugin.LaunchAndArrangeAppsWithEzArrange(sortApps, moInfo, eAid).Result);
+            //else
+            //    return null;
+            //
+            //NEW by Robert_Lin
+            if (_DisplayManagerPlugin != null)
+            {
+                return _DisplayManagerPlugin.LaunchAndArrangeAppsWithEzArrange(sortApps, moInfo, eAid);
+                //return Task.FromResult(_DisplayManagerPlugin.LaunchAndArrangeAppsWithEzArrange(sortApps, moInfo, eAid));
+            }
             else
-                return null;
+            {
+                return Task.FromResult(false);
+            }
         }
 
         public Task<bool> CheckEAIDExit(MonitorInfo moinfo, int eAID)

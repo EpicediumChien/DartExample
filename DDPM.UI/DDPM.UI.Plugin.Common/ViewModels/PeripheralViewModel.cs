@@ -61,7 +61,6 @@ namespace DDPM.UI.Plugin.ViewModels
         public List<string> EOLKBList = new() { "WK636", "KM713", "WK717", "KM714", "KM717" };
         public List<string> EOLMouseList = new() { "WM116", "WM514", "UV514", "WM126", "WM326", "WM527" };
         //public DDPMSettings? DDPMSettings;
-        //public WebcamSettings WebcamSettings = new();
         public bool IsCopilotEnabled = true;
         public bool IsDTPReady = false;
         public int CurrentVersion = 0;

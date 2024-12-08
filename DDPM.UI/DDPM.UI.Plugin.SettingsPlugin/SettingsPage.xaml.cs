@@ -3,6 +3,7 @@ using DDPM.SA.Common.Settings;
 using DDPM.UI.Common;
 using DDPM.UI.Interfaces;
 using DDPM.UI.Plugin.ViewModels;
+using Dell.Client.Framework.Common;
 using Dell.Client.Framework.UX.WPF;
 using Dell.Client.Framework.UX.WPF.Controls;
 using System.Diagnostics;
@@ -22,12 +23,15 @@ namespace DDPM.UI.Plugin.SettingsPlugin
     /// </summary>
     public partial class SettingsPage : UserControl
     {
+        private ILog? _log;
         private SettingsPageViewModel vm
         {
             get { return (SettingsPageViewModel)DataContext; }
         }
         public SettingsPage()
         {
+            _log = SettingsPlugin.PluginIoc?.GetService<ILog>();
+            _log?.Info("SettingsPage initialize start");
             InitializeComponent();
             SettingsPageViewModel _vm = (SettingsPageViewModel?)SettingsPlugin.PluginIoc?.GetService<ISettingsPageViewModel>();
 
@@ -43,6 +47,7 @@ namespace DDPM.UI.Plugin.SettingsPlugin
                     DdpmCommonHelper.DeviceManagerSA.Peripherals_UpdateNotify += Peripherals_UpdateEvent;
                 }
             }
+            _log?.Info("SettingsPage initialize done");
         }
 
         ~SettingsPage()
@@ -66,7 +71,7 @@ namespace DDPM.UI.Plugin.SettingsPlugin
                     if (vm != null)
                     {
                         vm.Lock_AnalyticsPage = (bool)isLocked;
-                        Trace.WriteLine($"[SettingsPage] Apply TelemetryConsent(Lock) : {isLocked}");
+                        _log?.Info($"[SettingsPage] Apply TelemetryConsent(Lock) : {isLocked}");
                     }
                 }));
             }
@@ -80,7 +85,7 @@ namespace DDPM.UI.Plugin.SettingsPlugin
                     if (vm != null)
                     {
                         vm.Lock_UpdatesPage = (bool)isLocked;
-                        Trace.WriteLine($"[SettingsPage] Apply FW/SW Updates(Lock) : {isLocked}");
+                        _log?.Info($"[SettingsPage] Apply FW/SW Updates(Lock) : {isLocked}");
                     }
                 }));
             }
@@ -93,7 +98,7 @@ namespace DDPM.UI.Plugin.SettingsPlugin
                     if (vm != null)
                     {
                         vm.Lock_GeneralPage = (bool)isLocked;
-                        Trace.WriteLine($"[SettingsPage] Apply General(check) : {isLocked}");
+                        _log?.Info($"[SettingsPage] Apply General(check) : {isLocked}");
                     }
                 }));
             }

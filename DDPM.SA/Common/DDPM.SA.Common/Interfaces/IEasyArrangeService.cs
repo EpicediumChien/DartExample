@@ -47,6 +47,15 @@ namespace DDPM.SA.Common.Interfaces
         /// <returns></returns>
         public Task<bool> NotifyEAMessage(EAArgs eaArgs);
 
+        /// <summary>
+        /// Launch Apps in the specified EasyMemory Profile, and arrange their window to the EasyArrange layout.
+        /// This method is moved from EzMemoryPlugin. Can be called from UI (EzMemory module) and SA (EzMemoryPlugin).
+        /// </summary>
+        /// <param name="sortApps">List of AppInfos which are load from EM profile.</param>
+        /// <param name="moInfo">MonitorInfo to specify the target monitor to be arranged.</param>
+        /// <param name="eAid">EAID of a EasyArrange layout. [1~49] are preset layout, [1000~1004] are saved custom layout.</param>
+        /// <returns></returns>
+        public Task<bool> LaunchAndArrangeAppsWithEzArrange(Dictionary<String, Bind_AddFullPage_AppCollectionData> sortApps, MonitorInfo moInfo, int eAid);
         #endregion
 
         #region Telemetry - Used by EABroker only

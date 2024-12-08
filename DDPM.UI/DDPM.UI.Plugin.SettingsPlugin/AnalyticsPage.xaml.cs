@@ -2,6 +2,7 @@
 using DDPM.SA.Common;
 using DDPM.SA.Common.Settings;
 using DDPM.UI.Common;
+using Dell.Client.Framework.Common;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Reflection;
@@ -39,8 +40,8 @@ namespace DDPM.UI.Plugin.SettingsPlugin
         public bool ShowLockMask
         {
             get { return showLockMask; }
-            set 
-            { 
+            set
+            {
                 showLockMask = value;
                 LockMaskVisible = showLockMask ? Visibility.Visible : Visibility.Collapsed;
                 NotifyPropertyChanged("ShowLockMask");
@@ -81,7 +82,7 @@ namespace DDPM.UI.Plugin.SettingsPlugin
                 _isConsentChecked = value;
                 NotifyPropertyChanged("isConsentChecked");
 
-                if(DdpmCommonHelper.DeviceManagerSA != null)
+                if (DdpmCommonHelper.DeviceManagerSA != null)
                 {
                     _ = DdpmCommonHelper.DeviceManagerSA.Set_GlobalSetting_EnableTelemetryConsent(_isConsentChecked).Result;
                 }
@@ -108,9 +109,11 @@ namespace DDPM.UI.Plugin.SettingsPlugin
     {
         // 10/15 Derek add for RWD
         //private readonly Int16 breakPoints = 910;
-
+        private ILog? _log;
         public AnalyticsPage()
         {
+            _log = SettingsPlugin.PluginIoc?.GetService<ILog>();
+            _log?.Info("AnalyticsPage initialize start");
             InitializeComponent();
 
             //if (System.Windows.Application.Current?.TryFindResource("breakPoint") is Int16 width)
@@ -118,7 +121,7 @@ namespace DDPM.UI.Plugin.SettingsPlugin
 
             var vm = new AnalyticsViewModel();
             this.DataContext = vm;
-
+            _log?.Info($"AnalyticsPage initialize DdpmCommonHelper.DeviceManagerSA is null : {(DdpmCommonHelper.DeviceManagerSA == null ? "YES" : "NO")}");
             if (DdpmCommonHelper.DeviceManagerSA == null)
                 return;
             try
@@ -130,20 +133,21 @@ namespace DDPM.UI.Plugin.SettingsPlugin
                 if (data.UserSettings == null)
                     return;
 
-                vm.ShowLockMask = data.LockSettings.Lock_Settings_TelemetryConsent;                
+                vm.ShowLockMask = data.LockSettings.Lock_Settings_TelemetryConsent;
                 vm.isTabStoppable = !data.LockSettings.Lock_Settings_TelemetryConsent;
                 vm.isConsentChecked = param.isTelemetryConsentOn;
 
                 DdpmCommonHelper.DeviceManagerSA.ITSettingsActionEvent += DeviceManagerSA_ITSettingsActionEvent;
                 DdpmCommonHelper.DeviceManagerSA.UIUpdateNotify += DeviceManagerSA_UIUpdateNotifyEvent;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-
+                _log?.Error($"AnalyticsPage initialize Error : {ex}");
             }
+            _log?.Info("AnalyticsPage initialize done");
         }
 
-        ~AnalyticsPage() 
+        ~AnalyticsPage()
         {
             if (DdpmCommonHelper.DeviceManagerSA != null)
             {
@@ -160,7 +164,7 @@ namespace DDPM.UI.Plugin.SettingsPlugin
                 return;
             }
             //Catch event if belong to telemetry consent
-            if(e.UI_Field_Name.ToUpper().Trim().Equals("TELEMETRYCONSENT"))
+            if (e.UI_Field_Name.ToUpper().Trim().Equals("TELEMETRYCONSENT"))
             {
                 //DDPMSettings data = DdpmCommonHelper.ReadDDPMSettings(true);//DeviceManagerSA.ReloadAppConfigData().Result;
                 GlobalSettingParam param = DdpmCommonHelper.DeviceManagerSA.GetGlobalSettingParam().Result;
@@ -169,7 +173,7 @@ namespace DDPM.UI.Plugin.SettingsPlugin
                     AnalyticsViewModel vm = (AnalyticsViewModel)this.DataContext;
                     if (vm != null)
                     {
-                        vm.isConsentChecked = param.isTelemetryConsentOn;                        
+                        vm.isConsentChecked = param.isTelemetryConsentOn;
                         Trace.WriteLine($"Apply TelemetryConsent(check) : {param.isTelemetryConsentOn}");
                     }
                 }));
@@ -213,7 +217,7 @@ namespace DDPM.UI.Plugin.SettingsPlugin
                 {
                     FileName = url,
                     UseShellExecute = true
-            });
+                });
         }
 
         private void UserControl_SizeChanged(object sender, SizeChangedEventArgs e)

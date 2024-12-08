@@ -1078,7 +1078,7 @@
     <!-- #endregion  DisplayRightView -->
 
     <!-- #region PrimaryButton - Copy from ButtonStyle.xaml -->
-
+    <!-- Robert_Lin, Copy (newer) from DDPM.SA.Common, to have same resource keys in both sides. -->
     <!-- PrimaryButton -->
     <Color x:Key="Button.TextColor">#FFF5F6F7</Color>
     <Color x:Key="PrimaryButton.DefaultBkColor">#FF0672CB</Color>
@@ -1154,7 +1154,78 @@
     <!-- #endregion PrimaryButton -->
 
     <!-- #region SecondaryButton - Copy from ButtonStyle.xaml -->
-    <SolidColorBrush x:Key="SecondaryButton_DefaultBkColor" Color="#01FFFFFF"/>
+    <!-- Robert_Lin, Copy (newer) from DDPM.SA.Common, to have same resource keys in both sides. -->
+    <SolidColorBrush x:Key="SecondaryButton_BkColor_Default" Color="#01FFFFFF"/>
+    <SolidColorBrush x:Key="SecondaryButton_BkColor_Hover" Color="#FF1D2C3B"/>
+    <SolidColorBrush x:Key="SecondaryButton_BkColor_Pressed" Color="#FF293B4D"/>
+    <SolidColorBrush x:Key="SecondaryButton_BkColor_Disabled" Color="#01FFFFFF"/>
+
+    <SolidColorBrush x:Key="SecondaryButton_BdColor_Default" Color="#F5F6F7"/>
+    <SolidColorBrush x:Key="SecondaryButton_BdColor_Hover" Color="#F5F6F7"/>
+    <SolidColorBrush x:Key="SecondaryButton_BdColor_Pressed" Color="#F5F6F7"/>
+    <SolidColorBrush x:Key="SecondaryButton_BdColor_Disabled" Color="#A3A3A3"/>
+
+    <SolidColorBrush x:Key="SecondaryButton_TextColor_Default" Color="#F5F6F7"/>
+    <SolidColorBrush x:Key="SecondaryButton_TextColor_Hover" Color="#F5F6F7"/>
+    <SolidColorBrush x:Key="SecondaryButton_TextColor_Pressed" Color="#F5F6F7"/>
+    <SolidColorBrush x:Key="SecondaryButton_TextColor_Disabled" Color="#40586D"/>
+
+    <!-- #region SecondaryButon Style -->
+    <Style x:Key="SecondaryButtonStyle" TargetType="{x:Type Button}">
+        <Setter Property="FocusVisualStyle" Value="{StaticResource FocusVisual}"/>
+        <Setter Property="Background" Value="{DynamicResource SecondaryButton_BkColor_Default}"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource SecondaryButton_BdColor_Default}"/>
+        <Setter Property="Foreground" Value="{DynamicResource SecondaryButton_TextColor_Default}"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="HorizontalContentAlignment" Value="Center"/>
+        <Setter Property="VerticalContentAlignment" Value="Center"/>
+        <Setter Property="Padding" Value="31,8"/>
+        <Setter Property="FontFamily" Value="Roboto"/>
+        <Setter Property="FontSize" Value="14"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <Border x:Name="border" 
+                               Background="{TemplateBinding Background}" 
+                               BorderBrush="{TemplateBinding BorderBrush}" 
+                               BorderThickness="{TemplateBinding BorderThickness}" 
+                               SnapsToDevicePixels="true"
+                               CornerRadius="2">
+                        <ContentPresenter x:Name="contentPresenter" 
+                                             Focusable="False" 
+                                             HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" 
+                                             Margin="{TemplateBinding Padding}" RecognizesAccessKey="True" 
+                                             SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" 
+                                             VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsDefaulted" Value="true">
+                            <Setter Property="BorderBrush" TargetName="border" Value="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}"/>
+                        </Trigger>
+                        <Trigger Property="IsMouseOver" Value="true">
+                            <Setter Property="Background" TargetName="border" Value="{DynamicResource SecondaryButton_BkColor_Hover}"/>
+                            <Setter Property="BorderBrush" TargetName="border" Value="{DynamicResource SecondaryButton_BdColor_Hover}"/>
+                            <Setter Property="TextElement.Foreground" TargetName="contentPresenter" Value="{DynamicResource SecondaryButton_TextColor_Hover}"/>
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="true">
+                            <Setter Property="Background" TargetName="border" Value="{DynamicResource SecondaryButton_BkColor_Pressed}"/>
+                            <Setter Property="BorderBrush" TargetName="border" Value="{DynamicResource SecondaryButton_BdColor_Pressed}"/>
+                            <Setter Property="TextElement.Foreground" TargetName="contentPresenter" Value="{DynamicResource SecondaryButton_TextColor_Pressed}"/>
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="false">
+                            <Setter Property="Background" TargetName="border" Value="{DynamicResource SecondaryButton_BkColor_Disabled}"/>
+                            <Setter Property="BorderBrush" TargetName="border" Value="{DynamicResource SecondaryButton_BdColor_Disabled}"/>
+                            <Setter Property="TextElement.Foreground" TargetName="contentPresenter" Value="{DynamicResource SecondaryButton_TextColor_Disabled}"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    <!-- #endregion SecondaryButon Style -->
+
+
+    <!--<SolidColorBrush x:Key="SecondaryButton_DefaultBkColor" Color="#01FFFFFF"/>
     <SolidColorBrush x:Key="SecondaryButton_DefaultBdColor" Color="#F5F6F7"/>
     <SolidColorBrush x:Key="SecondaryButton_DefaultTextColor" Color="#F5F6F7"/>
     <SolidColorBrush x:Key="SecondaryButton_HoverBkColor" Color="#FF1D2C3B"/>
@@ -1165,10 +1236,10 @@
     <SolidColorBrush x:Key="SecondaryButton_PressedTextColor" Color="#F5F6F7"/>
     <SolidColorBrush x:Key="SecondaryButton_DisabledBkColor" Color="#01FFFFFF"/>
     <SolidColorBrush x:Key="SecondaryButton_DisabledBdColor" Color="#A3A3A3"/>
-    <SolidColorBrush x:Key="SecondaryButton_DisabledTextColor" Color="#40586D"/>
+    <SolidColorBrush x:Key="SecondaryButton_DisabledTextColor" Color="#40586D"/>-->
 
     <!-- Dark theme -->
-    <Color x:Key="SecondaryButton.DefaultBkColor">#00FFFFFF</Color>
+    <!--<Color x:Key="SecondaryButton.DefaultBkColor">#00FFFFFF</Color>
     <Color x:Key="SecondaryButton.HoverBkColor">#FF1D2C3B</Color>
     <Color x:Key="SecondaryButton.PressedBkColor">#FF293B4D</Color>
     <Color x:Key="SecondaryButton.DisabledBkColor">#00000000</Color>
@@ -1187,9 +1258,9 @@
 
     <SolidColorBrush x:Key="SecondaryButton.Disabled.Background" Color="{StaticResource SecondaryButton.DisabledBkColor}"/>
     <SolidColorBrush x:Key="SecondaryButton.Disabled.Border" Color="{StaticResource SecondaryButton.DisabledBdColor}"/>
-    <SolidColorBrush x:Key="SecondaryButton.Disabled.Foreground" Color="#FF40586D"/>
+    <SolidColorBrush x:Key="SecondaryButton.Disabled.Foreground" Color="#FF40586D"/>-->
 
-    <Style x:Key="SecondaryButtonStyle" TargetType="{x:Type Button}">
+    <!--<Style x:Key="SecondaryButtonStyle" TargetType="{x:Type Button}">
         <Setter Property="FocusVisualStyle" Value="{StaticResource FocusVisual}"/>
         <Setter Property="Background" Value="{DynamicResource SecondaryButton_DefaultBkColor}"/>
         <Setter Property="BorderBrush" Value="{DynamicResource SecondaryButton_DefaultBdColor}"/>
@@ -1242,7 +1313,7 @@
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
-    </Style>
+    </Style>-->
     <!-- #endregion SecondaryButton -->
 
     <!-- #region SplitListVew -->
