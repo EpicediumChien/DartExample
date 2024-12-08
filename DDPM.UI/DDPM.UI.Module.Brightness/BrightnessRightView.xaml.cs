@@ -162,7 +162,7 @@ namespace DDPM.UI.Module.Brightness
 
             DDPMSettings setting = DdpmCommonHelper.ReadDDPMSettings();// DeviceManagerSA.ReloadAppConfigData().Result;
 
-            if ((bool)SynchronizeSwitch.IsChecked)
+            if ((bool)ScheduledSynchronizeSwitch.IsChecked)
             {
                 _vm.IsSynchronize_Scheduled = true;
                 //SynchronizeSwitch.Content = Strings.On;
@@ -173,7 +173,7 @@ namespace DDPM.UI.Module.Brightness
                 //SynchronizeSwitch.Content = Strings.Off;
             }
 
-            setting.UserSettings.IsSynchronizemonitor_Scheduled = _vm.IsSynchronize;
+            setting.UserSettings.IsSynchronizemonitor_Scheduled = _vm.IsSynchronize_Scheduled;
             DdpmCommonHelper.WriteDDPMSettings(setting);// DeviceManagerSA.SetAppConfigData(setting);
         }
 
@@ -183,7 +183,7 @@ namespace DDPM.UI.Module.Brightness
 
             DDPMSettings setting = DdpmCommonHelper.ReadDDPMSettings();// DeviceManagerSA.ReloadAppConfigData().Result;
 
-            if ((bool)SynchronizeSwitch.IsChecked)
+            if ((bool)ScheduledLuminanceSynchronizeSwitch.IsChecked)
             {
                 _vm.IsSynchronize_Scheduled = true;
                 //SynchronizeSwitch.Content = Strings.On;
@@ -194,7 +194,7 @@ namespace DDPM.UI.Module.Brightness
                 //SynchronizeSwitch.Content = Strings.Off;
             }
 
-            setting.UserSettings.IsSynchronizemonitor_Scheduled = _vm.IsSynchronize;
+            setting.UserSettings.IsSynchronizemonitor_Scheduled = _vm.IsSynchronize_Scheduled;
             DdpmCommonHelper.WriteDDPMSettings(setting);// DeviceManagerSA.SetAppConfigData(setting);
         }
 
