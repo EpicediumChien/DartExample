@@ -143,13 +143,15 @@ namespace DDPM.EABroker
                 _orgFriendlyName = args.CustomName;
 
                 //Calculate the position/size of EditWindow
-                double dpiX = 1.000;
-                var dpiXProperty = typeof(SystemParameters).GetProperty("DpiX", BindingFlags.NonPublic | BindingFlags.Static);
-                if (dpiXProperty != null)
-                {
-                    var varX = (int)dpiXProperty.GetValue(null, null);
-                    dpiX = (double)varX / (double)96;
-                }
+                //Robert_Lin, 2024-12-6, use the method in CommonFunctions
+                double dpiX = CommonFunctions.GetDpiX();
+                //double dpiX = 1.000;
+                //var dpiXProperty = typeof(SystemParameters).GetProperty("DpiX", BindingFlags.NonPublic | BindingFlags.Static);
+                //if (dpiXProperty != null)
+                //{
+                //    var varX = (int)dpiXProperty.GetValue(null, null);
+                //    dpiX = (double)varX / (double)96;
+                //}
 
                 splitCtrl.Content = inputSplitCtrl.UC;
                 //SplitContent = inputSplitCtrl.UC;
@@ -247,13 +249,15 @@ namespace DDPM.EABroker
             _orgFriendlyName = args.SplitJson.CustomName;
 
             //Calculate the position/size of EditWindow
-            double dpiX = 1.00;
-            var dpiXProperty = typeof(SystemParameters).GetProperty("DpiX", BindingFlags.NonPublic | BindingFlags.Static);
-            if (dpiXProperty != null)
-            {
-                var varX = (int)dpiXProperty.GetValue(null, null);
-                dpiX = (double)varX / (double)96;
-            }
+            //Robert_Lin, 2024-12-6, use the method in CommonFunctions
+            double dpiX = CommonFunctions.GetDpiX();
+            //double dpiX = 1.00;
+            //var dpiXProperty = typeof(SystemParameters).GetProperty("DpiX", BindingFlags.NonPublic | BindingFlags.Static);
+            //if (dpiXProperty != null)
+            //{
+            //    var varX = (int)dpiXProperty.GetValue(null, null);
+            //    dpiX = (double)varX / (double)96;
+            //}
 
             splitCtrl.Content = inputSplitCtrl.UC;
             //SplitContent = inputSplitCtrl.UC;
@@ -276,13 +280,15 @@ namespace DDPM.EABroker
             inputSplitCtrl = new SplitCtrl0B();
 
             //Calculate the position/size of EditWindow
-            double dpiX = 1.000;
-            var dpiXProperty = typeof(SystemParameters).GetProperty("DpiX", BindingFlags.NonPublic | BindingFlags.Static);
-            if (dpiXProperty != null)
-            {
-                var varX = (int)dpiXProperty.GetValue(null, null);
-                dpiX = (double)varX / (double)96;
-            }
+            //Robert_Lin, 2024-12-6, use the method in CommonFunctions
+            double dpiX = CommonFunctions.GetDpiX();
+            //double dpiX = 1.000;
+            //var dpiXProperty = typeof(SystemParameters).GetProperty("DpiX", BindingFlags.NonPublic | BindingFlags.Static);
+            //if (dpiXProperty != null)
+            //{
+            //    var varX = (int)dpiXProperty.GetValue(null, null);
+            //    dpiX = (double)varX / (double)96;
+            //}
             Left = scr.Bounds.Left / (double)dpiX;
             Top = scr.Bounds.Top / (double)dpiX;
             Width = scr.Bounds.Width / (double)dpiX;
@@ -319,13 +325,15 @@ namespace DDPM.EABroker
             _orgFriendlyName = args.SplitJson.CustomName;
 
             //Calculate the position/size of EditWindow
-            double dpiX = 1.00;
-            var dpiXProperty = typeof(SystemParameters).GetProperty("DpiX", BindingFlags.NonPublic | BindingFlags.Static);
-            if (dpiXProperty != null)
-            {
-                var varX = (int)dpiXProperty.GetValue(null, null);
-                dpiX = (double)varX / (double)96;
-            }
+            //Robert_Lin, 2024-12-6, use the method in CommonFunctions
+            double dpiX = CommonFunctions.GetDpiX();
+            //double dpiX = 1.00;
+            //var dpiXProperty = typeof(SystemParameters).GetProperty("DpiX", BindingFlags.NonPublic | BindingFlags.Static);
+            //if (dpiXProperty != null)
+            //{
+            //    var varX = (int)dpiXProperty.GetValue(null, null);
+            //    dpiX = (double)varX / (double)96;
+            //}
 
             splitCtrl.Content = inputSplitCtrl.UC;
             //SplitContent = inputSplitCtrl.UC;
@@ -348,13 +356,15 @@ namespace DDPM.EABroker
             inputSplitCtrl = new SplitCtrl0B();
 
             //Calculate the position/size of EditWindow
-            double dpiX = 1.000;
-            var dpiXProperty = typeof(SystemParameters).GetProperty("DpiX", BindingFlags.NonPublic | BindingFlags.Static);
-            if (dpiXProperty != null)
-            {
-                var varX = (int)dpiXProperty.GetValue(null, null);
-                dpiX = (double)varX / (double)96;
-            }
+            //Robert_Lin, 2024-12-6, use the method in CommonFunctions
+            double dpiX = CommonFunctions.GetDpiX();
+            //double dpiX = 1.000;
+            //var dpiXProperty = typeof(SystemParameters).GetProperty("DpiX", BindingFlags.NonPublic | BindingFlags.Static);
+            //if (dpiXProperty != null)
+            //{
+            //    var varX = (int)dpiXProperty.GetValue(null, null);
+            //    dpiX = (double)varX / (double)96;
+            //}
             Left = workingArea.Left / (double)dpiX;
             Top = workingArea.Top / (double)dpiX;
             Width = workingArea.Width / (double)dpiX;
@@ -394,14 +404,15 @@ namespace DDPM.EABroker
         //v1, Robert_Lin, 2024-11-19, unused, dont use and test
         private void CaptureCustomLayout_v1(Screen screen)
         {
-
-            double scale = 1.000;
-            var dpiXProperty = typeof(SystemParameters).GetProperty("DpiX", BindingFlags.NonPublic | BindingFlags.Static);
-            if (dpiXProperty != null)
-            {
-                var varX = (int)dpiXProperty.GetValue(null, null);
-                scale = (double)varX / (double)96;
-            }
+            //Robert_Lin, 2024-12-6, use the method in CommonFunctions
+            double scale = CommonFunctions.GetDpiX();
+            //double scale = 1.000;
+            //var dpiXProperty = typeof(SystemParameters).GetProperty("DpiX", BindingFlags.NonPublic | BindingFlags.Static);
+            //if (dpiXProperty != null)
+            //{
+            //    var varX = (int)dpiXProperty.GetValue(null, null);
+            //    scale = (double)varX / (double)96;
+            //}
 
             //Clear CustomLayouts
             canvas.Children.Clear();
@@ -568,13 +579,15 @@ namespace DDPM.EABroker
         //v2 Robert_Lin, 2024-11-19 for Span monitors
         private void CaptureCustomLayout(Rectangle workingArea)
         {
-            double scale = 1.000;
-            var dpiXProperty = typeof(SystemParameters).GetProperty("DpiX", BindingFlags.NonPublic | BindingFlags.Static);
-            if (dpiXProperty != null)
-            {
-                var varX = (int)dpiXProperty.GetValue(null, null);
-                scale = (double)varX / (double)96;
-            }
+            //Robert_Lin, 2024-12-6, use the method in CommonFunctions
+            double scale = CommonFunctions.GetDpiX();
+            //double scale = 1.000;
+            //var dpiXProperty = typeof(SystemParameters).GetProperty("DpiX", BindingFlags.NonPublic | BindingFlags.Static);
+            //if (dpiXProperty != null)
+            //{
+            //    var varX = (int)dpiXProperty.GetValue(null, null);
+            //    scale = (double)varX / (double)96;
+            //}
 
             //Clear CustomLayouts
             canvas.Children.Clear();
@@ -821,16 +834,18 @@ namespace DDPM.EABroker
 
         private double GetScreenScale()
         {
-            double screenScale = 1.000;
-            var dpiXProperty = typeof(SystemParameters).GetProperty("DpiX", BindingFlags.NonPublic | BindingFlags.Static);
-            if (dpiXProperty != null)
-            {
-                var varX = (int)dpiXProperty.GetValue(null, null);
-                double dpiX = (double)varX / (double)96;
-                if (dpiX >= 1.0000)
-                    screenScale = dpiX;
-            }
-            return screenScale;
+            //Robert_Lin, 2024-12-6, use the method in CommonFunctions
+            return CommonFunctions.GetDpiX();
+            //double screenScale = 1.000;
+            //var dpiXProperty = typeof(SystemParameters).GetProperty("DpiX", BindingFlags.NonPublic | BindingFlags.Static);
+            //if (dpiXProperty != null)
+            //{
+            //    var varX = (int)dpiXProperty.GetValue(null, null);
+            //    double dpiX = (double)varX / (double)96;
+            //    if (dpiX >= 1.0000)
+            //        screenScale = dpiX;
+            //}
+            //return screenScale;
         }
         public Rect GetFrameworkElementRect(FrameworkElement ele)
         {
@@ -844,15 +859,17 @@ namespace DDPM.EABroker
             if (preSrc == null)
                 return Rect.Empty;
 
-            double screenScale = 1.000;
-            var dpiXProperty = typeof(SystemParameters).GetProperty("DpiX", BindingFlags.NonPublic | BindingFlags.Static);
-            if (dpiXProperty != null)
-            {
-                var varX = (int)dpiXProperty.GetValue(null, null);
-                double dpiX = (double)varX / (double)96;
-                if (dpiX >= 1.0000)
-                    screenScale = dpiX;
-            }
+            //Robert_Lin, 2024-12-6, use the method in CommonFunctions
+            double screenScale = CommonFunctions.GetDpiX();
+            //double screenScale = 1.000;
+            //var dpiXProperty = typeof(SystemParameters).GetProperty("DpiX", BindingFlags.NonPublic | BindingFlags.Static);
+            //if (dpiXProperty != null)
+            //{
+            //    var varX = (int)dpiXProperty.GetValue(null, null);
+            //    double dpiX = (double)varX / (double)96;
+            //    if (dpiX >= 1.0000)
+            //        screenScale = dpiX;
+            //}
 
             System.Windows.Point ptTopLeft = ele.PointToScreen(new System.Windows.Point(0, 0));
             double w = ele.ActualWidth * screenScale;

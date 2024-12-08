@@ -9,8 +9,7 @@
         Height="450" Width="800"
         AllowsTransparency="True" Topmost="True"
         WindowStyle="None" ResizeMode="NoResize" 
-        BorderThickness="1" BorderBrush="Green"
-        Background="#33E67272" ShowInTaskbar="False" Loaded="Window_Loaded"        
+        Background="Transparent" ShowInTaskbar="False" Loaded="Window_Loaded"        
         >
     <Grid>
         <ContentControl x:Name="content"/>

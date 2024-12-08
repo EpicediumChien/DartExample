@@ -354,15 +354,18 @@ namespace DDPM.EABroker
         /// <returns></returns>
         public double RefreshScreenScale()
         {
-            var dpiXProperty = typeof(SystemParameters).GetProperty("DpiX", BindingFlags.NonPublic | BindingFlags.Static);
-            if (dpiXProperty != null)
-            {
-                var varX = (int)dpiXProperty.GetValue(null, null);
-                double dpiX = (double)varX / (double)96;
-                if (dpiX >= 1.0000)
-                    _screenScale = dpiX;
-                OnPropertyChanged("ScreenScale");
-            }
+            //Robert_Lin, 2024-12-6, use the CommonFunctions
+            _screenScale = CommonFunctions.GetDpiX();
+            OnPropertyChanged("ScreenScale");
+            //var dpiXProperty = typeof(SystemParameters).GetProperty("DpiX", BindingFlags.NonPublic | BindingFlags.Static);
+            //if (dpiXProperty != null)
+            //{
+            //    var varX = (int)dpiXProperty.GetValue(null, null);
+            //    double dpiX = (double)varX / (double)96;
+            //    if (dpiX >= 1.0000)
+            //        _screenScale = dpiX;
+            //    OnPropertyChanged("ScreenScale");
+            //}
 
             return ScreenScale;
         }
@@ -507,7 +510,7 @@ namespace DDPM.EABroker
                         {
                             IsScreenIdWindowsVisible = false;
                         }
-                        WriteLog($" * HoveringCell=AWS{hoveringCell.Name}");
+                        //WriteLog($" * HoveringCell=AWS{hoveringCell.Name}");
 
                         if (_awsBuddyWindow != null)
                         {
@@ -536,7 +539,7 @@ namespace DDPM.EABroker
                         //HoveringScreen = workWin.ScreenDeviceName;
                         HoveringCellObj = hoveringCell;
                         HoveringWindow = $"w{idxWorkWin}";
-                        WriteLog($" * HoveringCell=Work{hoveringCell.Name}");
+                        //WriteLog($" * HoveringCell=Work{hoveringCell.Name}");
                         return hoveringCell;
                     }
                 }
