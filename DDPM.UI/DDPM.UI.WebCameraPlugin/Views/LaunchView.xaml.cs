@@ -102,7 +102,9 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             _vm.Reset();
             DataContext = _vm;
             _vm.VbarItemClickCommand = new RelayCommand<VbarItem>(OnVbarItemClicked!);
-            BuildModuleGroups();
+            
+            //leo 2024/12/09 因為多加條件判斷,改變呼叫位置
+            //BuildModuleGroups();
 
             var pName = _vm.ProfileCaptions[_vm.CurrentProfileName];
             if (PresetNames.Contains(pName))
