@@ -2,7 +2,6 @@
 using DDPM.SA.Common.Settings;
 using DDPM.UI.Common;
 using DDPM.UI.Common.Method;
-using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -127,6 +126,75 @@ namespace DDPM.UI.Module.Brightness
             }
 
             setting.UserSettings.IsSynchronizemonitor = _vm.IsSynchronize;
+            DdpmCommonHelper.WriteDDPMSettings(setting);// DeviceManagerSA.SetAppConfigData(setting);
+        }
+
+        private void Synchronize_LuminanceSwitch_Click(object sender, RoutedEventArgs e)
+        {
+            BrightnessViewModel _vm = (BrightnessViewModel)DataContext;
+
+            DDPMSettings setting = DdpmCommonHelper.ReadDDPMSettings();// DeviceManagerSA.ReloadAppConfigData().Result;
+
+            if ((bool)SynchronizeSwitch_Luminance.IsChecked)
+            {
+                _vm.IsSynchronize = true;
+                //SynchronizeSwitch.Content = Strings.On;
+
+                // Luminance
+                _vm.Luminance_Sync();
+
+                // Color
+                _vm.Invoke_ColorPreset_Sync();
+            }
+            else
+            {
+                _vm.IsSynchronize = false;
+                //SynchronizeSwitch.Content = Strings.Off;
+            }
+
+            setting.UserSettings.IsSynchronizemonitor = _vm.IsSynchronize;
+            DdpmCommonHelper.WriteDDPMSettings(setting);// DeviceManagerSA.SetAppConfigData(setting);
+        }
+
+        private void Synchronize_ScheduledSwitch_Click(object sender, RoutedEventArgs e)
+        {
+            BrightnessViewModel _vm = (BrightnessViewModel)DataContext;
+
+            DDPMSettings setting = DdpmCommonHelper.ReadDDPMSettings();// DeviceManagerSA.ReloadAppConfigData().Result;
+
+            if ((bool)SynchronizeSwitch.IsChecked)
+            {
+                _vm.IsSynchronize_Scheduled = true;
+                //SynchronizeSwitch.Content = Strings.On;
+            }
+            else
+            {
+                _vm.IsSynchronize_Scheduled = false;
+                //SynchronizeSwitch.Content = Strings.Off;
+            }
+
+            setting.UserSettings.IsSynchronizemonitor_Scheduled = _vm.IsSynchronize;
+            DdpmCommonHelper.WriteDDPMSettings(setting);// DeviceManagerSA.SetAppConfigData(setting);
+        }
+
+        private void Synchronize_LuminanceScheduledSwitch_Click(object sender, RoutedEventArgs e)
+        {
+            BrightnessViewModel _vm = (BrightnessViewModel)DataContext;
+
+            DDPMSettings setting = DdpmCommonHelper.ReadDDPMSettings();// DeviceManagerSA.ReloadAppConfigData().Result;
+
+            if ((bool)SynchronizeSwitch.IsChecked)
+            {
+                _vm.IsSynchronize_Scheduled = true;
+                //SynchronizeSwitch.Content = Strings.On;
+            }
+            else
+            {
+                _vm.IsSynchronize_Scheduled = false;
+                //SynchronizeSwitch.Content = Strings.Off;
+            }
+
+            setting.UserSettings.IsSynchronizemonitor_Scheduled = _vm.IsSynchronize;
             DdpmCommonHelper.WriteDDPMSettings(setting);// DeviceManagerSA.SetAppConfigData(setting);
         }
 
