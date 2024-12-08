@@ -52,8 +52,6 @@ using System.Threading.Tasks;
 using System.Timers;
 using System.Windows;
 using System.Windows.Forms;
-using System.Windows.Interop;
-using System.Windows.Media.Media3D;
 using System.Windows.Threading;
 using VcpCore.Common;
 using Windows.System;
@@ -8904,6 +8902,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         {
             return await Task.Run(() => _DTPProxyPlugin.GetFocus(Guid));
         }
+
         public async Task<bool?> GetIsFocusOn(string Guid)
         {
             return await Task.Run(() => _DTPProxyPlugin.GetIsFocusOn(Guid));
@@ -8913,14 +8912,17 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         {
             return await Task.Run(() => _DTPProxyPlugin.GetPriority(Guid));
         }
+
         public async Task<bool?> GetIsAutoFramingTransitionOn(string Guid)
         {
             return await Task.Run(() => _DTPProxyPlugin.GetIsAutoFramingTransitionOn(Guid));
         }
+
         public async Task<int> GetAutoFramingFrameSize(string Guid)
         {
             return await Task.Run(() => _DTPProxyPlugin.GetAutoFramingFrameSize(Guid));
         }
+
         public async Task<int> GetAutoFramingSensitivity(string Guid)
         {
             return await Task.Run(() => _DTPProxyPlugin.GetAutoFramingSensitivity(Guid));
