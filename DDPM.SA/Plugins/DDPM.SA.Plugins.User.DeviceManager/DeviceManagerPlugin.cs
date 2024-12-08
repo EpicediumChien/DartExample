@@ -54,6 +54,7 @@ using System.Threading.Tasks;
 using System.Timers;
 using System.Windows;
 using System.Windows.Forms;
+using System.Windows.Interop;
 using System.Windows.Media.Media3D;
 using System.Windows.Threading;
 using VcpCore.Common;
@@ -10100,7 +10101,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
 
             //Hidden state
-            if (_IsZoomScreenShareActive)
+            if (_IsZoomScreenShareActive && _IsZoomMeetingActive)
             {
                 writelog($"HandleQAM receive QAMHide event");
 
@@ -10123,6 +10124,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
             writelog($"HandleQAM done");
         }
+
         private void HandleQAM()
         {
             writelog($"HandleQAM start");
@@ -10330,11 +10332,13 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             {
                 writelog($"Try to run QAMHide");
                 _QAM?.Dispatcher.Invoke(() => _QAM?.Hide());
-                Dispatcher.Run();
+                //Dispatcher.Run();
+
+                //_QAM?.Dispatcher.Invoke(() => _QAM?.SetToBottomWindow());
             }
             catch (Exception e)
             {
-                writelog($"Catch Exception[{e.Message}] when run QAMClose");
+                writelog($"Catch Exception[{e.Message}] when run QAMHide");
             }
 
             writelog($"QAMHide done");
