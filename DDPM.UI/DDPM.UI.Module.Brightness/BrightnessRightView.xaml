@@ -18,8 +18,15 @@
 
             <!--<local:RadioBoolToIntConverter x:Key="radioBoolToIntConverter" />-->
 
-            <local:BooleanToBrushConverter x:Key="BooleanToBrushConverter" FalseBrush="White" TrueBrush="Gray" />
-            <local:CustomBooleanToBrushConverter x:Key="CustomBooleanToBrushConverter" FalseBrushLightTheme="{StaticResource TextBlock_ForegroundColor}" FalseBrushDarkTheme="{StaticResource TextBlock_ForegroundColor}" TrueBrush="Gray" />
+            <local:BooleanToBrushConverter
+                x:Key="BooleanToBrushConverter"
+                FalseBrush="White"
+                TrueBrush="Gray" />
+            <local:CustomBooleanToBrushConverter
+                x:Key="CustomBooleanToBrushConverter"
+                FalseBrushDarkTheme="{StaticResource TextBlock_ForegroundColor}"
+                FalseBrushLightTheme="{StaticResource TextBlock_ForegroundColor}"
+                TrueBrush="Gray" />
 
             <local:InverseBooleanConverter x:Key="InverseBooleanConverter" />
 
@@ -505,7 +512,7 @@
                                             VerticalAlignment="Center"
                                             VerticalContentAlignment="Center"
                                             AutomationProperties.Name="ToggleSwitchLeft"
-                                            Click="SynchronizeSwitch_Click"
+                                            Click="Synchronize_LuminanceSwitch_Click"
                                             Content="{Binding Path=IsSynchronize_String}"
                                             ContentPlacement="Left"
                                             ContentTextVisibility="True"
@@ -1711,13 +1718,13 @@
                                             VerticalAlignment="Center"
                                             VerticalContentAlignment="Center"
                                             AutomationProperties.Name="ToggleSwitchLeft"
-                                            Click="SynchronizeSwitch_Click"
+                                            Click="Synchronize_ScheduledSwitch_Click"
+                                            Content="{Binding Path=IsSynchronize_Scheduled_String}"
                                             ContentPlacement="Left"
                                             ContentTextVisibility="True"
                                             Foreground="{DynamicResource TextBlock_ForegroundColor}"
-                                            IsEnabled="{Binding IsSynchronizeDisabled, Converter={StaticResource InverseBooleanConverter}}" />
-                                        <!--  IsChecked="{Binding Path=IsSynchronize}"  -->
-                                        <!--  Content="{Binding Path=IsSynchronize_String}"  -->
+                                            IsChecked="{Binding Path=IsSynchronize_Scheduled}" />
+                                        <!--  IsEnabled="{Binding IsSynchronizeDisabled, Converter={StaticResource InverseBooleanConverter}}"  -->
                                     </Grid>
                                 </StackPanel>
                             </Expander.Content>
@@ -1860,8 +1867,8 @@
                                                             Name="PR1_Luminance_Min_UXComboBox"
                                                             Grid.Row="1"
                                                             Grid.Column="2"
-                                                            MinWidth="70"
                                                             Height="40"
+                                                            MinWidth="70"
                                                             IsEnabled="{Binding IsPR_Luminance_Preview, Converter={StaticResource boolReverseConverter}}"
                                                             ItemsSource="{Binding mIns}"
                                                             SelectedItem="{Binding mIns1, Mode=TwoWay}"
@@ -1938,8 +1945,8 @@
                                                             Name="PR1_Luminance_Duration_UXComboBox"
                                                             Grid.Row="1"
                                                             Grid.Column="0"
-                                                            MinWidth="70"
                                                             Height="40"
+                                                            MinWidth="70"
                                                             IsEnabled="{Binding IsPR_Luminance_Preview, Converter={StaticResource boolReverseConverter}}"
                                                             ItemsSource="{Binding dUration}"
                                                             SelectedItem="{Binding dUration1, Mode=TwoWay}"
@@ -2366,19 +2373,19 @@
                                             Visibility="{Binding synchronizeLock}" />
 
                                         <UXControls:UXToggleSwitch
-                                            Name="Scheduled_Luminance_SynchronizeSwitch"
+                                            Name="ScheduledLuminanceSynchronizeSwitch"
                                             Grid.Column="2"
                                             HorizontalAlignment="Right"
                                             VerticalAlignment="Center"
                                             VerticalContentAlignment="Center"
                                             AutomationProperties.Name="ToggleSwitchLeft"
-                                            Click="SynchronizeSwitch_Click"
+                                            Click="Synchronize_LuminanceScheduledSwitch_Click"
+                                            Content="{Binding Path=IsSynchronize_Scheduled_String}"
                                             ContentPlacement="Left"
                                             ContentTextVisibility="True"
                                             Foreground="{DynamicResource TextBlock_ForegroundColor}"
-                                            IsEnabled="{Binding IsSynchronizeDisabled, Converter={StaticResource InverseBooleanConverter}}" />
-                                        <!--  IsChecked="{Binding Path=IsSynchronize}"  -->
-                                        <!--  Content="{Binding Path=IsSynchronize_String}"  -->
+                                            IsChecked="{Binding Path=IsSynchronize_Scheduled}" />
+                                        <!--  IsEnabled="{Binding IsSynchronizeDisabled, Converter={StaticResource InverseBooleanConverter}}"  -->
                                     </Grid>
                                 </StackPanel>
                             </Expander.Content>
