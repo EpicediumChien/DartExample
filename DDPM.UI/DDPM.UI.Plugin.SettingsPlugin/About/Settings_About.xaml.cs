@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Dell.Client.Framework.Common;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -21,9 +22,13 @@ namespace DDPM.UI.Plugin.SettingsPlugin
     /// </summary>
     public partial class Settings_About : UserControl
     {
+        private ILog? _log;
         public Settings_About()
         {
+            _log = SettingsPlugin.PluginIoc?.GetService<ILog>();
+            _log?.Info("Settings_About initialize start");
             InitializeComponent();
+            _log?.Info("Settings_About initialize done");
         }
 
         private void ThirdPartyLicenses_Click(object sender, RoutedEventArgs e)
