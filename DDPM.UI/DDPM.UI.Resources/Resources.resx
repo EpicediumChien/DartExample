@@ -2946,4 +2946,7 @@
   <data name="Mouse.16" xml:space="preserve">
     <value>Number of times per second mouse’s position reports to system. Connect via USB for higher polling rates.</value>
   </data>
+  <data name="ImpExp_WarningMsg.2" xml:space="preserve">
+    <value>The same monitor is detected, do you want to import settings for</value>
+  </data>
 </root>
