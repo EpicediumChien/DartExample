@@ -10,21 +10,251 @@
              d:DataContext="{d:DesignInstance Type=viewmodels:EzArrangeViewModel}"
              mc:Ignorable="d" Background="{DynamicResource mainWindowBkColor}"
              d:DesignHeight="735" d:DesignWidth="1378" Loaded="UserControl_Loaded">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <Color x:Key="ColorWhite">#FFFFFF</Color>
+            <Color x:Key="ColorGray100">#F5F6F7</Color>
+            <Color x:Key="ColorGray200">#F0F0F0</Color>
+            <Color x:Key="ColorGray300">#E1E1E1</Color>
+            <Color x:Key="ColorGray400">#D2D2D2</Color>
+            <Color x:Key="ColorGray500">#B6B6B6</Color>
+            <Color x:Key="ColorGray600">#7E7E7E</Color>
+            <Color x:Key="ColorGray700">#6E6E6E</Color>
+            <Color x:Key="ColorGray750">#666666</Color>
+            <Color x:Key="ColorGray800">#636363</Color>
+            <Color x:Key="ColorGray900">#0E0E0E</Color>
+            <Color x:Key="ColorGray950">#444444</Color>
+            <Color x:Key="ColorBlue100">#D9F5FD</Color>
+            <Color x:Key="ColorBlue150">#D0E4EB</Color>
+            <Color x:Key="ColorBlue200">#94DCF7</Color>
+            <Color x:Key="ColorBlue300">#5CC1EE</Color>
+            <Color x:Key="ColorBlue400">#31A2E3</Color>
+            <Color x:Key="ColorBlue500">#1282D6</Color>
+            <!-- "ColorBlue600" is considered the "Blue" / "Dell Blue" color (aka, the "Brand" color). -->
+            <Color x:Key="ColorBlue600">#0672CB</Color>
+            <Color x:Key="ColorBlue700">#0063B8</Color>
+            <!-- "ColorBlue800" is considered the "Midnight" color. -->
+            <Color x:Key="ColorBlue800">#00468B</Color>
+            <Color x:Key="ColorBlue900">#002A58</Color>
+            <SolidColorBrush x:Key="BrushScrollView_Background" Color="{DynamicResource ColorWhite}" />
+            <SolidColorBrush x:Key="BrushScrollView_Forground" Color="{DynamicResource ColorGray500}" />
+            <SolidColorBrush x:Key="BrushScrollBar_Background" Color="{DynamicResource ColorGray100}" />
+            <SolidColorBrush x:Key="BrushScrollBarJogButton_Foreground" Color="#999999" />
+            <SolidColorBrush x:Key="BrushScrollBarJogButton_Background" Color="{DynamicResource ColorGray100}" />
+            <SolidColorBrush x:Key="BrushScrollBarThumb_Border" Color="#999999" />
+
+            <SolidColorBrush x:Key="BrushScrollBarThumb_BackgroundNormal" Color="#999999" />
+            <SolidColorBrush x:Key="BrushScrollBarThumb_BackgroundHover" Color="{DynamicResource ColorBlue600}" />
+            <SolidColorBrush x:Key="BrushScrollBarThumb_BackgroundPress" Color="{DynamicResource ColorBlue700}" />
+            <CubicEase x:Key="CubicEaseOut" EasingMode="EaseOut" />
+            <CubicEase x:Key="CubicEaseInOut" EasingMode="EaseInOut" />
+            <Style x:Key="VerticalScrollBarThumb" TargetType="{x:Type Thumb}">
+                <Setter Property="OverridesDefaultStyle" Value="true"/>
+                <Setter Property="Background" Value="{DynamicResource BrushScrollView_Forground}" />
+                <Setter Property="BorderThickness" Value="0" />
+                <Setter Property="HorizontalAlignment" Value="Right" />
+                <Setter Property="IsTabStop" Value="false"/>
+                <Setter Property="SnapsToDevicePixels" Value="True" />
+                <Setter Property="UseLayoutRounding" Value="True" />
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="{x:Type Thumb}">
+                            <Grid SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" UseLayoutRounding="{TemplateBinding UseLayoutRounding}" >
+                                <VisualStateManager.VisualStateGroups>
+                                    <VisualStateGroup x:Name="CommonStates">
+                                        <VisualState x:Name="Normal">
+                                            <Storyboard>
+                                                <ObjectAnimationUsingKeyFrames Storyboard.TargetName="hover" Storyboard.TargetProperty="(UIElement.Visibility)">
+                                                    <DiscreteObjectKeyFrame KeyTime="0" Value="{x:Static Visibility.Collapsed}"/>
+                                                </ObjectAnimationUsingKeyFrames>
+                                                <DoubleAnimation Storyboard.TargetName="hover" Storyboard.TargetProperty="Opacity" To="0" />
+                                            </Storyboard>
+                                        </VisualState>
+                                        <VisualState x:Name="MouseOver">
+                                            <Storyboard>
+                                                <ObjectAnimationUsingKeyFrames Storyboard.TargetName="hover" Storyboard.TargetProperty="(UIElement.Visibility)">
+                                                    <DiscreteObjectKeyFrame KeyTime="0" Value="{x:Static Visibility.Visible}"/>
+                                                </ObjectAnimationUsingKeyFrames>
+                                                <DoubleAnimation Storyboard.TargetName="hover" Storyboard.TargetProperty="Opacity" To="1" />
+                                            </Storyboard>
+                                        </VisualState>
+                                        <VisualState x:Name="Pressed">
+                                            <Storyboard>
+                                                <ObjectAnimationUsingKeyFrames Storyboard.TargetName="hover" Storyboard.TargetProperty="(UIElement.Visibility)">
+                                                    <DiscreteObjectKeyFrame KeyTime="0" Value="{x:Static Visibility.Visible}"/>
+                                                </ObjectAnimationUsingKeyFrames>
+                                                <DoubleAnimation Storyboard.TargetName="hover" Storyboard.TargetProperty="Opacity" To="1" />
+                                            </Storyboard>
+                                        </VisualState>
+                                        <VisualStateGroup.Transitions>
+                                            <VisualTransition From="Normal" To="MouseOver">
+                                                <Storyboard>
+                                                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="hover" Storyboard.TargetProperty="(UIElement.Visibility)">
+                                                        <DiscreteObjectKeyFrame KeyTime="0" Value="{x:Static Visibility.Visible}"/>
+                                                    </ObjectAnimationUsingKeyFrames>
+                                                    <DoubleAnimation  Storyboard.TargetName="hover" Storyboard.TargetProperty="Opacity" To="1" Duration="0:0:0.25" EasingFunction="{StaticResource CubicEaseInOut}" />
+                                                </Storyboard>
+                                            </VisualTransition>
+                                            <VisualTransition From="MouseOver" To="Normal">
+                                                <Storyboard>
+                                                    <DoubleAnimation  Storyboard.TargetName="hover" Storyboard.TargetProperty="Opacity" To="0" Duration="0:0:0.25" EasingFunction="{StaticResource CubicEaseInOut}" />
+                                                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="hover" Storyboard.TargetProperty="(UIElement.Visibility)">
+                                                        <DiscreteObjectKeyFrame KeyTime="0:0:0.26" Value="{x:Static Visibility.Collapsed}"/>
+                                                    </ObjectAnimationUsingKeyFrames>
+                                                </Storyboard>
+                                            </VisualTransition>
+                                        </VisualStateGroup.Transitions>
+                                    </VisualStateGroup>
+                                </VisualStateManager.VisualStateGroups>
+
+                                <Rectangle Fill="Black" Width="18" HorizontalAlignment="Right" Opacity=".00125" Margin="-4,-2" />
+                                <Rectangle x:Name="normal" Fill="{TemplateBinding Background}" Width="3" RadiusX="1.5" RadiusY="1.5" HorizontalAlignment="Right" Margin="1,2" />
+                                <Rectangle x:Name="hover" Fill="{TemplateBinding Background}" Width="12" RadiusX="6" RadiusY="6" Visibility="Collapsed" Opacity="0" />
+                            </Grid>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
+
+            <Style x:Key="HorizontalScrollBarThumb" TargetType="{x:Type Thumb}">
+                <Setter Property="OverridesDefaultStyle" Value="true"/>
+                <Setter Property="Background" Value="{DynamicResource BrushScrollView_Forground}" />
+                <Setter Property="BorderThickness" Value="0" />
+                <Setter Property="IsTabStop" Value="false"/>
+                <Setter Property="SnapsToDevicePixels" Value="True" />
+                <Setter Property="UseLayoutRounding" Value="True" />
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="{x:Type Thumb}">
+                            <Grid x:Name="Grid">
+                                <VisualStateManager.VisualStateGroups>
+                                    <VisualStateGroup x:Name="CommonStates">
+                                        <VisualState x:Name="Normal">
+                                            <Storyboard>
+                                                <ObjectAnimationUsingKeyFrames Storyboard.TargetName="hover" Storyboard.TargetProperty="(UIElement.Visibility)">
+                                                    <DiscreteObjectKeyFrame KeyTime="0" Value="{x:Static Visibility.Collapsed}"/>
+                                                </ObjectAnimationUsingKeyFrames>
+                                                <DoubleAnimation Storyboard.TargetName="hover" Storyboard.TargetProperty="Opacity" To="0" />
+                                            </Storyboard>
+                                        </VisualState>
+                                        <VisualState x:Name="MouseOver">
+                                            <Storyboard>
+                                                <ObjectAnimationUsingKeyFrames Storyboard.TargetName="hover" Storyboard.TargetProperty="(UIElement.Visibility)">
+                                                    <DiscreteObjectKeyFrame KeyTime="0" Value="{x:Static Visibility.Visible}"/>
+                                                </ObjectAnimationUsingKeyFrames>
+                                                <DoubleAnimation Storyboard.TargetName="hover" Storyboard.TargetProperty="Opacity" To="1" />
+                                            </Storyboard>
+                                        </VisualState>
+                                        <VisualState x:Name="Pressed">
+                                            <Storyboard>
+                                                <ObjectAnimationUsingKeyFrames Storyboard.TargetName="hover" Storyboard.TargetProperty="(UIElement.Visibility)">
+                                                    <DiscreteObjectKeyFrame KeyTime="0" Value="{x:Static Visibility.Visible}"/>
+                                                </ObjectAnimationUsingKeyFrames>
+                                                <DoubleAnimation Storyboard.TargetName="hover" Storyboard.TargetProperty="Opacity" To="1" />
+                                            </Storyboard>
+                                        </VisualState>
+                                        <VisualStateGroup.Transitions>
+                                            <VisualTransition From="Normal" To="MouseOver">
+                                                <Storyboard>
+                                                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="hover" Storyboard.TargetProperty="(UIElement.Visibility)">
+                                                        <DiscreteObjectKeyFrame KeyTime="0" Value="{x:Static Visibility.Visible}"/>
+                                                    </ObjectAnimationUsingKeyFrames>
+                                                    <DoubleAnimation  Storyboard.TargetName="hover" Storyboard.TargetProperty="Opacity" To="1" Duration="0:0:0.25" EasingFunction="{StaticResource CubicEaseInOut}" />
+                                                </Storyboard>
+                                            </VisualTransition>
+                                            <VisualTransition From="MouseOver" To="Normal">
+                                                <Storyboard>
+                                                    <DoubleAnimation  Storyboard.TargetName="hover" Storyboard.TargetProperty="Opacity" To="0" Duration="0:0:0.25" EasingFunction="{StaticResource CubicEaseInOut}" />
+                                                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="hover" Storyboard.TargetProperty="(UIElement.Visibility)">
+                                                        <DiscreteObjectKeyFrame KeyTime="0:0:0.26" Value="{x:Static Visibility.Collapsed}"/>
+                                                    </ObjectAnimationUsingKeyFrames>
+                                                </Storyboard>
+                                            </VisualTransition>
+                                        </VisualStateGroup.Transitions>
+                                    </VisualStateGroup>
+                                </VisualStateManager.VisualStateGroups>
+                                <Rectangle HorizontalAlignment="Stretch"
+                        VerticalAlignment="Stretch"  Height="3"
+                        Width="Auto" RadiusX="1.5" RadiusY="1.5"   Opacity=".00125"                            
+                         Fill="Black" />
+                                <Rectangle x:Name="normal" HorizontalAlignment="Stretch"
+                        VerticalAlignment="Stretch"  Height="3"
+                        Width="Auto" RadiusX="1.5" RadiusY="1.5"                               
+                         Fill="{TemplateBinding Background}" />
+                                <Rectangle x:Name="hover" HorizontalAlignment="Stretch"
+                        VerticalAlignment="Stretch"  Height="12"
+                        Width="Auto"  RadiusX="6" RadiusY="6" Visibility="Collapsed"                               
+                       Fill="{TemplateBinding Background}" />
+                            </Grid>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
+            <ControlTemplate x:Key="VerticalScrollBar" TargetType="{x:Type ScrollBar}">
+                <ControlTemplate.Resources>
+                    <Style TargetType="{x:Type ScrollBar}">
+                        <Setter Property="Background" Value="Transparent" />
+                        <Setter Property="Stylus.IsPressAndHoldEnabled" Value="false"/>
+                        <Setter Property="Stylus.IsFlicksEnabled" Value="false"/>
+                    </Style>
+                </ControlTemplate.Resources>
+                <Grid x:Name="Bg" Background="{TemplateBinding Background}" SnapsToDevicePixels="True" UseLayoutRounding="True">
+                    <Track x:Name="PART_Track" IsDirectionReversed="true" IsEnabled="{TemplateBinding IsMouseOver}" SnapsToDevicePixels="True" UseLayoutRounding="True" Margin="2">
+                        <Track.Thumb>
+                            <Thumb Style="{DynamicResource VerticalScrollBarThumb}" />
+                        </Track.Thumb>
+                    </Track>
+                </Grid>
+            </ControlTemplate>
+
+            <ControlTemplate TargetType="{x:Type ScrollBar}" x:Key="HorizontalScrollBar">
+                <ControlTemplate.Resources>
+                    <Style TargetType="{x:Type ScrollBar}">
+                        <Setter Property="Background" Value="Transparent" />
+                        <Setter Property="Stylus.IsPressAndHoldEnabled" Value="false"/>
+                        <Setter Property="Stylus.IsFlicksEnabled" Value="false"/>
+                        <Setter Property="Width" Value="Auto" />
+                    </Style>
+                </ControlTemplate.Resources>
+                <Grid x:Name="Bg" Background="{TemplateBinding Background}" SnapsToDevicePixels="True" UseLayoutRounding="True">
+                    <Track x:Name="PART_Track" IsDirectionReversed="false" IsEnabled="{TemplateBinding IsMouseOver}" SnapsToDevicePixels="True" UseLayoutRounding="True" Margin="2">
+                        <Track.Thumb>
+                            <Thumb Style="{DynamicResource HorizontalScrollBarThumb}"/>
+                        </Track.Thumb>
+                    </Track>
+                </Grid>
+            </ControlTemplate>
+
+            <Style  TargetType="{x:Type ScrollBar}">
+                <Setter Property="SnapsToDevicePixels" Value="True"/>
+                <Setter Property="OverridesDefaultStyle" Value="True"/>
+                <Style.Triggers>
+                    <Trigger Property="Orientation" Value="Horizontal">
+                        <Setter Property="Width" Value="Auto"/>
+                        <Setter Property="Height" Value="18" />
+                        <Setter Property="Template" Value="{StaticResource HorizontalScrollBar}" />
+                    </Trigger>
+                    <Trigger Property="Orientation" Value="Vertical">
+                        <Setter Property="Width" Value="18"/>
+                        <Setter Property="Height" Value="Auto" />
+                        <Setter Property="Template" Value="{StaticResource VerticalScrollBar}" />
+                    </Trigger>
+                </Style.Triggers>
+            </Style>
+        </ResourceDictionary>
+    </UserControl.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="Auto" />
-            <ColumnDefinition Width="Auto" />
-            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="3*" />
+            <ColumnDefinition Width="4*" />
+            <ColumnDefinition Width="3*" />
         </Grid.ColumnDefinitions>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
-        </Grid.RowDefinitions>
+       
 
         <!-- 上方的返回按鈕與標題 -->
-        <Grid Grid.Column="0" Margin="50,0,0,0">
+        <StackPanel Grid.Column="0" Margin="20,0,0,0">
             <StackPanel Grid.Column="0" Margin="0,0,0,0" Orientation="Horizontal" HorizontalAlignment="left">
                 <Border Grid.Column="0" Name="prevBtn" IsEnabled="{Binding IsPrevButtonEnabled}" MouseLeftButtonDown="btnCancel_Click" Background="Transparent">
                     <Viewbox Width="16" Height="16">
@@ -36,63 +266,110 @@
                 <!--<Button Margin="0,0,0,0"   FontFamily="Segoe MDL2 Assets" FontSize="16" Content="&#xE72B;" Height="30" Width="40"  Click="btnCancel_Click" Foreground="White" Background="Transparent" BorderThickness="0" VerticalAlignment="Top" />-->
                 <UXControls:UXTextBlock Margin="10,0,0,0" FontSize="24" Text="{Binding [Color.0], Source={x:Static lang:LangHelper.Instance}}"  />
             </StackPanel>
-        </Grid>
-
-        <!-- 搜尋框 -->
-        <Grid Grid.Row="1" Grid.Column="1" Margin="110,100,5,0">
+        </StackPanel>
+        <Grid Grid.Column="1" Margin="5,0,5,0">
             <Grid.RowDefinitions>
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
+                <RowDefinition Height="20" />
+                <!--Title-->
+                <RowDefinition Height="*" />
+                <!--Decription with little font size-->
+                <RowDefinition Height="0.8*" />
+                <!--Search - editable textblock-->
+                <RowDefinition Height="*" />
+                <!--Two sorting buttons-->
+                <RowDefinition Height="1.5*" />
+                <!--application available list-->
+                <RowDefinition Height="7*" />
+                <!--OK Cancel buttons-->
+                <RowDefinition Height="1.5*" />
+                <RowDefinition Height="30" />
             </Grid.RowDefinitions>
+            <!-- 搜尋框 -->
 
-            <Grid Grid.Row="0" Margin="50,0,0,0">
+            <Grid Grid.Row="3" >
                 <UXControls:UXTextBox x:Name="edFilter" FontSize="14" Width="487" Height="40" TextChanged="edFilter_TextChanged" HorizontalContentAlignment="Left" VerticalAlignment="Center"/>
             </Grid>
 
             <!-- 排序按鈕 -->
-            <Grid Grid.Row="1" Margin="50,0,0,0">
-                <StackPanel Orientation="horizontal" Grid.Row="1" >
-                    <UXControls:UXButton x:Name="btnSortbyName_Ascending" Content="{Binding [Color.1], Source={x:Static lang:LangHelper.Instance}}"  Width="237.5" Height="40" Margin="24,8,16,0"  Background="#293B4D" HorizontalContentAlignment="Left" VerticalAlignment="Center"  Click="btnSortbyName_Ascending_Click"/>
-                    <UXControls:UXButton x:Name="btnSortbyDate_Ascending" Content="{Binding [Color.2], Source={x:Static lang:LangHelper.Instance}}" Width="237.5" Height="40" Margin="0,8,24,0" Background="#293B4D" HorizontalContentAlignment="Left" VerticalAlignment="Center" Click="btnSortbyDate_Ascending_Click"/>
-                </StackPanel>
+            <Grid Grid.Row="4">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"></ColumnDefinition>
+                    <ColumnDefinition Width="*"></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+
+                <UXControls:UXButton Grid.Column="0" Margin="10,0" x:Name="btnSortbyName_Ascending" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch"  Height="40"  Foreground="{DynamicResource DdpmCB_FgColor}"  Background="{DynamicResource DdpmCB_BkColor}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"  Click="btnSortbyName_Ascending_Click">
+                    <StackPanel Orientation="Horizontal"  HorizontalAlignment="Center" VerticalAlignment="Center">
+                        <TextBlock  HorizontalAlignment="Center" Text="{Binding [Color.1], Source={x:Static lang:LangHelper.Instance}}"  />
+                        <Path Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Right"  Data="M 0 0 L 5 5 L 10 0"  />
+                    </StackPanel>
+                </UXControls:UXButton>
+                <UXControls:UXButton Grid.Column="1"  Margin="10,0" x:Name="btnSortbyDate_Ascending" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" Height="40" Foreground="{DynamicResource DdpmCB_FgColor}" Background="{DynamicResource DdpmCB_BkColor}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Click="btnSortbyDate_Ascending_Click">
+                    <StackPanel Orientation="Horizontal"  HorizontalAlignment="Center" VerticalAlignment="Center">
+                        <TextBlock Grid.Column="0" HorizontalAlignment="Left" Text="{Binding [Color.2], Source={x:Static lang:LangHelper.Instance}}"  />
+                        <Path Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Right"  Data="M 0 0 L 5 5 L 10 0"  />
+                    </StackPanel>
+                </UXControls:UXButton>
             </Grid>
 
             <!-- 安裝的應用程式列表 -->
-            <UXControls:UXScrollViewer Grid.Row="2">
-                <Grid Grid.Row="2" Margin="50,10,0,0">
-                    <ListView x:Name="lb_Installed_App" Margin="20,10,0,0" Width="487" Height="275" Background="{DynamicResource DefaultTheme_BdBdColor}" SelectionMode="Multiple" SelectedIndex="{Binding Selected}">
-                        <ListView.ItemTemplate>
-                            <DataTemplate>
-                                <Grid>
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="auto" />
-                                        <ColumnDefinition Width="auto" />
-                                        <ColumnDefinition Width="auto" />
-                                    </Grid.ColumnDefinitions>
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition Height="auto" />
-                                        <RowDefinition Height="auto" />
-                                        <RowDefinition Height="auto" />
-                                    </Grid.RowDefinitions>
-                                    <UXControls:UXRadioButton  Grid.Column="0" Grid.Row="1" GroupName="Group" IsChecked="{Binding RelativeSource={RelativeSource AncestorType={x:Type ListViewItem}}, Path=IsSelected}" />
-                                    <Image Grid.Column="1" Grid.Row="1" x:Name="appIcon" Source="{Binding AppIcon}" Width="40" Margin="20,0,10,0" VerticalAlignment="Center" />
-                                    <UXControls:UXTextBlock Grid.Column="2" Grid.Row="1" x:Name="appName" Text="{Binding AppName}"  VerticalAlignment="Center" />
-                                </Grid>
-                            </DataTemplate>
-                        </ListView.ItemTemplate>
-                    </ListView>
-                </Grid>
-            </UXControls:UXScrollViewer>
+            <ListView  Grid.Row="5" x:Name="lb_Installed_App"   Background="{DynamicResource DefaultTheme_BdBdColor}" SelectionMode="Single" SelectedIndex="{Binding Selected}">
+                <ListView.Template>
+                    <ControlTemplate TargetType="{x:Type ListView}">
+                        <Border CornerRadius="5">
+                            <ScrollViewer>
+                                <ItemsPresenter SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
+                            </ScrollViewer>
+                        </Border>
+                    </ControlTemplate>
+                </ListView.Template>
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="auto" />
+                                <ColumnDefinition Width="auto" />
+                                <ColumnDefinition Width="auto" />
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="auto" />
+                                <RowDefinition Height="auto" />
+                                <RowDefinition Height="auto" />
+                            </Grid.RowDefinitions>
+                            <UXControls:UXRadioButton  Grid.Column="0" Grid.Row="1" GroupName="Group" IsChecked="{Binding RelativeSource={RelativeSource AncestorType={x:Type ListViewItem}}, Path=IsSelected}" >
+                                <UXControls:UXRadioButton.Resources>
+                                    <Style TargetType="{x:Type UXControls:UXRadioButton}">
+                                        <Setter Property="Template">
+                                            <Setter.Value>
+                                                <ControlTemplate TargetType="{x:Type RadioButton}">
+                                                    <UXControls:UXCheckBox  VerticalAlignment="Center" Background="{DynamicResource DefaultTheme_BdBdColor}"
+                                                                    IsChecked="{Binding RelativeSource={RelativeSource TemplatedParent}, 
+                                                                    Path=IsChecked, Mode=TwoWay}"
+                                                                    IsHitTestVisible="False" Content="{TemplateBinding Content}" />
+                                                </ControlTemplate>
+                                            </Setter.Value>
+                                        </Setter>
+                                    </Style>
+
+                                </UXControls:UXRadioButton.Resources>
+                            </UXControls:UXRadioButton>
+                            <Image Grid.Column="1" Grid.Row="1" x:Name="appIcon" Source="{Binding AppIcon}" Width="40" Margin="20,0,10,0" VerticalAlignment="Center" />
+                            <UXControls:UXTextBlock Grid.Column="2" Grid.Row="1" x:Name="appName" Text="{Binding AppName}"  VerticalAlignment="Center" />
+                        </Grid>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
             <!-- 底部按鈕 -->
-            <Grid Grid.Row="3" Margin="0,0,0,0">
-                <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
-                    <UXControls:UXButton x:Name="btnSelect" Content="{Binding [EazyMemory.33], Source={x:Static lang:LangHelper.Instance}, Mode=OneWay}" Width="177" Height="40" Margin="150,20,0,0" CornerRadius="2" Foreground="{DynamicResource DefaultTheme_TxtColor}" Background="#0672CB" Click="btnSelect_Click" />
+            <Grid Grid.Row="6" Margin="0,0,0,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"></ColumnDefinition>
+                    <ColumnDefinition Width="*"></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+                <StackPanel Grid.Column="0" Orientation="Horizontal" HorizontalAlignment="Center">
+                    <UXControls:UXButton x:Name="btnSelect" Content="{Binding [EazyMemory.33], Source={x:Static lang:LangHelper.Instance}, Mode=OneWay}" Width="177" Height="40"  CornerRadius="2"   Click="btnSelect_Click" />
                 </StackPanel>
 
-                <StackPanel  Orientation="Horizontal" HorizontalAlignment="Center">
-                    <UXControls:UXButton x:Name="btnAdd" Content="{Binding [Confirm], Source={x:Static lang:LangHelper.Instance}}" Width="114" Height="40" Margin="220,20,0,0" CornerRadius="2" Foreground="{DynamicResource DefaultTheme_TxtColor}" Background="#0672CB" Click="btnAdd_Click" />
+                <StackPanel Grid.Column="1"  Orientation="Horizontal" HorizontalAlignment="Center">
+                    <UXControls:UXButton x:Name="btnAdd" Content="{Binding [Confirm], Source={x:Static lang:LangHelper.Instance}}" Width="114" Height="40"  CornerRadius="2"   Click="btnAdd_Click" />
                 </StackPanel>
             </Grid>
         </Grid>
