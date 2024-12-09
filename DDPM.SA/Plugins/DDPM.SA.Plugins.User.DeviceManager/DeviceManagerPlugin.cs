@@ -754,7 +754,9 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         public event EventHandler<NKVMRespone> NKVMCLIRespone;
 
-        public event EventHandler GlobalSettingChangeEvent;
+        //Derek 1209
+        //public event EventHandler GlobalSettingChangeEvent;
+        public event EventHandler<UpdateUINotify> GlobalSettingChangeEvent;
 
         public event EventHandler SystemSuspend;
 
@@ -9251,9 +9253,9 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             return await Task.Run(() => _DTPProxyPlugin.GetIsZoomMeetingActive(guid));
         }
 
-        public async Task<bool> GetZoomMeetingType(string guid)
+        public async Task<int> GetZoomMeetingType(string guid)
         {
-            return await Task.Run(() => _DTPProxyPlugin.GetZoomMeetingType(guid));
+            return await Task.Run(() => _DTPProxyPlugin.GetZoomMeetingTypeAsync(guid));
         }
 
         public async Task<bool> GetIsZoomScreenShareActive(string guid)
@@ -9433,6 +9435,10 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     writelog("[DeviceMangerPlugin] Send Telementry for EnableQuickAccessWidget Fail ...");
             }
             GlobalSettingChangeEvent?.Invoke(this, null);
+
+            //Derek 1209 to handle QAM event
+            HandleQAMV2();
+
             return Task.FromResult(ret);
         }
 
@@ -9454,6 +9460,10 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     writelog("[DeviceMangerPlugin] Send Telementry for EnableQuickAccessWidget_Reminder Fail ...");
             }
             GlobalSettingChangeEvent?.Invoke(this, null);
+
+            //Derek 1209 to handle QAM event
+            HandleQAMV2();
+
             return Task.FromResult(ret);
         }
 
@@ -10091,52 +10101,103 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         private bool _IsZoomScreenShareActive = false;
         private bool _IsZoomMeetingActive = false;
         private ZoomMeetingType _ZoomMeetingType = ZoomMeetingType.ZOOM_MEETING_TYPE_UNKNOW;
-        private bool isWindowsScreenNotLocked = true; //
+        private bool isWindowsScreenNotLocked = true;
+        private string QAMWebcamDeviceGuid = string.Empty;
 
         //private bool isHiddenConditionsMet = false;
         private int currentZoomValue = -1;
 
         private EventMsg eventMsg = new EventMsg();
 
+        private void ResetQAMCondition()
+        {
+            _IsZoomScreenShareActive = false;
+            _IsZoomMeetingActive = false;
+            _ZoomMeetingType = ZoomMeetingType.ZOOM_MEETING_TYPE_UNKNOW;
+            isWindowsScreenNotLocked = true;
+            QAMWebcamDeviceGuid = string.Empty;
+        }
+
         //Derek 1206
         private void HandleQAMV2()
         {
             writelog($"HandleQAM start");
 
-            int devCnt = GetWebcamDeviceCount();
-
-            if (1 != devCnt || _GlobalSettingParam == null || !isWindowsScreenNotLocked ||
-                _GlobalSettingParam.GlobalSetting_WidgetSettings == null ||
-                !_GlobalSettingParam.GlobalSetting_WidgetSettings.EnableQuickAccessWidget ||
-                //_ZoomMeetingType != ZoomMeetingType.CONF_3RD_EVENT_MEETING
-                //Derek 1206 test condition due to we can't receive zoom meeting type changed event
-                _ZoomMeetingType != ZoomMeetingType.ZOOM_MEETING_TYPE_UNKNOW
-                )
+            try
             {
-                QAMClose();
+                int devCnt = GetWebcamDeviceCount();
+                writelog($"GetWebcamDeviceCount = {devCnt}, current webcam device ID = {QAMWebcamDeviceGuid}");
 
-                writelog($"Abnormal condition occur, close QAM if it's opened.");
+                if (1 != devCnt || _GlobalSettingParam == null || !isWindowsScreenNotLocked ||
+                    _GlobalSettingParam.GlobalSetting_WidgetSettings == null ||
+                    QAMWebcamDeviceGuid == string.Empty ||
+                    //_ZoomMeetingType != ZoomMeetingType.CONF_3RD_EVENT_MEETING
+                    //Derek 1206 test condition due to we can't receive zoom meeting type changed event
+                    _ZoomMeetingType != ZoomMeetingType.ZOOM_MEETING_TYPE_UNKNOW
+                    )
+                {
+                    ResetQAMCondition();
+                    QAMClose();
+                    _OSD_Controler.QAMHotKeyWin_CloseWindow();
+
+                    writelog($"Abnormal condition occur, close QAM/OSD if it's opened.");
+
+                    return;
+                }
+
+                _IsZoomScreenShareActive = _DTPProxyPlugin.GetIsZoomScreenShareActive(QAMWebcamDeviceGuid).Result;
+                _IsZoomMeetingActive = _DTPProxyPlugin.GetIsZoomMeetingActive(QAMWebcamDeviceGuid).Result;
+                _ZoomMeetingType = (ZoomMeetingType)_DTPProxyPlugin.GetZoomMeetingTypeAsync(QAMWebcamDeviceGuid).Result;
+                writelog($"Zoom meeting condition, _IsZoomScreenShareActive = {_IsZoomScreenShareActive}, _IsZoomMeetingActive = {_IsZoomMeetingActive}, _ZoomMeetingType = {_ZoomMeetingType}");
+
+                //QAM condition
+                if (_GlobalSettingParam.GlobalSetting_WidgetSettings.EnableQuickAccessWidget)
+                {
+                    //Active
+                    if (!_IsZoomScreenShareActive && _IsZoomMeetingActive)
+                    {
+                        writelog($"HandleQAM receive CallQAM_UI event");
+
+                        CallQAM_UI(this);
+                    }
+                    //Hide
+                    else if (_IsZoomScreenShareActive && _IsZoomMeetingActive)
+                    {
+                        writelog($"HandleQAM receive QAMHide event");
+
+                        QAMHide();
+                    }
+                    else
+                    {
+                        writelog($"HandleQAM receive QAMClose event");
+
+                        QAMClose();
+                    }
+                }
+                else
+                {
+                    QAMClose();
+
+                    writelog($"Close QAM due to global setting change to {_GlobalSettingParam.GlobalSetting_WidgetSettings.EnableQuickAccessWidget}");
+                }
+
+                //OSD condition
+                if (!_GlobalSettingParam.GlobalSetting_WidgetSettings.EnableQuickAccessWidget_Reminder)
+                {
+                    _OSD_Controler.QAMHotKeyWin_CloseWindow();
+
+                    writelog($"Close OSD due to global setting change to {_GlobalSettingParam.GlobalSetting_WidgetSettings.EnableQuickAccessWidget_Reminder}");
+                }
+                else if (null == _QAM && _GlobalSettingParam.GlobalSetting_WidgetSettings.EnableQuickAccessWidget_Reminder)
+                {
+                    ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.QAM);
+
+                    writelog($"Open OSD due to QAM is inactive and global setting change to {_GlobalSettingParam.GlobalSetting_WidgetSettings.EnableQuickAccessWidget_Reminder}");
+                }
             }
-
-            //Hidden state
-            if (_IsZoomScreenShareActive && _IsZoomMeetingActive)
+            catch (Exception e)
             {
-                writelog($"HandleQAM receive QAMHide event");
-
-                QAMHide();
-            }
-            //Active state
-            else if (_IsZoomMeetingActive)
-            {
-                writelog($"HandleQAM receive CallQAM_UI event");
-                //_IsZoomMeetingActive = false;
-                CallQAM_UI(this);
-            }
-            else
-            {
-                writelog($"HandleQAM receive QAMClose event");
-
-                QAMClose();
+                writelog($"Catch exception[{e.Message}] when Handle QAM process!");
             }
 
             writelog($"HandleQAM done");
@@ -10234,6 +10295,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         private void HandleQAMEvent(string msg)
         {
             eventMsg = EventMsg.CreateEventObjectFromEventMsg(msg);
+            int WebcamDevCnt = GetWebcamDeviceCount();
 
             if (null == eventMsg)
                 return;
@@ -10251,32 +10313,50 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
                 case "Webcam_IsZoomMeetingActiveChanged":
                     isQAMHandleEvent = true;
-                    if (!bool.TryParse(eventMsg.NewValue, out _IsZoomMeetingActive))
-                        _IsZoomMeetingActive = false;
+
+                    if (1 == WebcamDevCnt)
+                        QAMWebcamDeviceGuid = eventMsg.DeviceId;
+
+                    //if (!bool.TryParse(eventMsg.NewValue, out _IsZoomMeetingActive))
+                    //    _IsZoomMeetingActive = false;
 
                     break;
 
                 case "Webcam_IsZoomScreenShareActiveChanged":
                     isQAMHandleEvent = true;
-                    if (!bool.TryParse(eventMsg.NewValue, out _IsZoomScreenShareActive))
-                        _IsZoomScreenShareActive = false;
+
+                    if (1 == WebcamDevCnt)
+                        QAMWebcamDeviceGuid = eventMsg.DeviceId;
+
+                    //if (!bool.TryParse(eventMsg.NewValue, out _IsZoomScreenShareActive))
+                    //    _IsZoomScreenShareActive = false;
 
                     break;
 
                 case "Webcam_ZoomMeetingTypeChanged":
                     isQAMHandleEvent = true;
-                    int type = (int)ZoomMeetingType.ZOOM_MEETING_TYPE_UNKNOW;
 
-                    if (int.TryParse(eventMsg.NewValue, out type))
-                        _ZoomMeetingType = (ZoomMeetingType)type;
-                    else
-                        _ZoomMeetingType = ZoomMeetingType.ZOOM_MEETING_TYPE_UNKNOW;
+                    if (1 == WebcamDevCnt)
+                        QAMWebcamDeviceGuid = eventMsg.DeviceId;
+
+                    //int type = (int)ZoomMeetingType.ZOOM_MEETING_TYPE_UNKNOW;
+
+                    //if (int.TryParse(eventMsg.NewValue, out type))
+                    //    _ZoomMeetingType = (ZoomMeetingType)type;
+                    //else
+                    //    _ZoomMeetingType = ZoomMeetingType.ZOOM_MEETING_TYPE_UNKNOW;
 
                     break;
 
                 case "Webcam_Disconnected":
+                    isQAMHandleEvent = true;
+                    break;
+
                 case "Webcam_Connected":
                     isQAMHandleEvent = true;
+
+                    if (1 == WebcamDevCnt)
+                        QAMWebcamDeviceGuid = eventMsg.DeviceId;
                     break;
 
                 default:
