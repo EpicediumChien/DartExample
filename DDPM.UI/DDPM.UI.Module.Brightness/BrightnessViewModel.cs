@@ -3440,14 +3440,14 @@ namespace DDPM.UI.Module.Brightness
 
         private void SyncUI_Value(object sender, DoWorkEventArgs e)
         {
-            //Brightness update
+            //Brightness update//
             var r = DdpmCommonHelper.DeviceManagerSA.GetVCPCapability(ModuleOwner.SelectedHomeDevice.MonitorInfo, 0x10).Result;
             if (r.result)
                 syncUIvalue_bw.ReportProgress(50, Convert.ToDouble(r.value));
 
             if (ModuleOwner.SelectedHomeDevice.MonitorInfo.CapabilityDic.ContainsKey("12"))
             {
-                //Contrst update
+                //Contrst update//
                 var t = DdpmCommonHelper.DeviceManagerSA.GetVCPCapability(ModuleOwner.SelectedHomeDevice.MonitorInfo, 0x12).Result;
                 if (t.result)
                     syncUIvalue_bw.ReportProgress(100, Convert.ToDouble(t.value));
