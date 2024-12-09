@@ -9814,7 +9814,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
                     string zipFilePath = saveFolderPath + ".zip";
                     FileInfo info = new FileInfo(zipFilePath);
-                    zipFilePath = Path.Combine(info.DirectoryName, "Log.zip");//force to set zip file name as Log.zip
+                    zipFilePath = Path.Combine(info.DirectoryName, $"Log_{DateTime.Now.ToString("yyyy_MM_dd_HH.mm.ss.ff")}.zip");//force to set zip file name as Log.zip
                                                                               // 壓縮資料夾
                     if (!CreateZipFile(saveFolderPath, zipFilePath))
                         fail_info += "[Compression]";
