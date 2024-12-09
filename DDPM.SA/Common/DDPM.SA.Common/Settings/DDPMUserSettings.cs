@@ -54,6 +54,7 @@ namespace DDPM.SA.Common.Settings
         public double Version { get; set; } = 1.0; //consider how to control the setting's version in the feature
         public int Language { get; set; }
         public bool IsSynchronizemonitor { get; set; } = false;
+        public bool IsSynchronizemonitor_Scheduled { get; set; } = false;
         public string Schedule { get; set; } = string.Empty;
         public FrequencyDateTime TelementryFrequency { get; set; } = new FrequencyDateTime() { Month1stDay = DateTime.Now, PerDay = DateTime.Now, Weekly = DateTime.Now, };
 

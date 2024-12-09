@@ -15,6 +15,7 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Forms;
 using System.Windows.Media.Imaging;
+using System.Windows.Interop;
 
 namespace DDPM.QAM
 {
@@ -294,5 +295,23 @@ namespace DDPM.QAM
 
         //    QAMUpdateUIHandler?.Invoke(this, e);
         //}
+
+        [DllImport("user32.dll", SetLastError = true)]
+        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
+        private static extern bool SetWindowPos(IntPtr hWnd, IntPtr hWndInsertAfter, int X, int Y, int cx, int cy, uint uFlags);
+        public static bool _SetWindowPos(IntPtr hWnd, IntPtr hWndInsertAfter, int X, int Y, int cx, int cy, uint uFlags)
+        {
+            return SetWindowPos(hWnd, hWndInsertAfter, X, Y, cx, cy, uFlags);
+        }
+        private static readonly IntPtr HWND_BOTTOM = new IntPtr(1);
+        private const UInt32 SWP_NOSIZE = 0x0001;
+        private const UInt32 SWP_NOMOVE = 0x0002;
+        private const UInt32 SWP_NOACTIVATE = 0x0010;
+        public void SetToBottomWindow()
+        {
+            IntPtr hWnd = new WindowInteropHelper(this).Handle;
+
+            _SetWindowPos(hWnd, HWND_BOTTOM, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE);
+        }
     }
 }

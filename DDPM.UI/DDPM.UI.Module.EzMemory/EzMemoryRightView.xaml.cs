@@ -111,6 +111,8 @@ namespace DDPM.UI.Module.EzMemory
                         rc.Add(relist);
                     }
                 }
+                else
+                    return;
 
                 if (startEAProfileDDPM != null)
                 {
