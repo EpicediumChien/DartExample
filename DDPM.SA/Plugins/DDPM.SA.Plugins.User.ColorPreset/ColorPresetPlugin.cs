@@ -405,7 +405,8 @@ namespace ColorPreset.Plugins
         /// 啟動 MonitorBorker 執行抓前景active app name
         /// </summary>
         /// <param name="m"></param>
-        public void Launch_MonitorBorker(MonitorInfo m, IDeviceManagerSA _DeviceManagerPlugin, bool SmartHDR_ON = false, List<string> ColorPresetSupportList = null)
+        // jim 20241207 modify for The DDPM color profile can not be applied by DDPM on Smart HDR mode.(Gaming monitor ex: AW2724DM)
+        public void Launch_MonitorBorker(MonitorInfo m, IDeviceManagerSA _DeviceManagerPlugin, bool Is_Game_DeviceName = false, bool SmartHDR_ON = false, List<string> ColorPresetSupportList = null)
         {
             //if (Log != null)
             //{
@@ -430,7 +431,8 @@ namespace ColorPreset.Plugins
                         MonitorBorkerWin = new MainWindow(_DeviceManagerPlugin, m);
 
                         MonitorBorkerWin.Show();
-                        MonitorBorkerWin.Set_AUTO_ColorPresetConfig(true, SmartHDR_ON, ColorPresetSupportList);
+                        //jim 20241207 modify for The DDPM color profile can not be applied by DDPM on Smart HDR mode.(Gaming monitor ex: AW2724DM)
+                        MonitorBorkerWin.Set_AUTO_ColorPresetConfig(true, Is_Game_DeviceName, SmartHDR_ON, ColorPresetSupportList);
                     }
                     else
                     {
@@ -442,7 +444,8 @@ namespace ColorPreset.Plugins
             return;
         }
 
-        public Task<bool> AutoSetColorPresetForMonitorConfig(MonitorInfo mo, string on_off, ISettingsManagerDev _SettingsPlugin, IDeviceManagerSA _DeviceManagerPlugin, bool SmartHDR_ON = false, List<string> ColorPresetSupportList = null)
+        // jim 20241207 modify for The DDPM color profile can not be applied by DDPM on Smart HDR mode.(Gaming monitor ex: AW2724DM)
+        public Task<bool> AutoSetColorPresetForMonitorConfig(MonitorInfo mo, string on_off, ISettingsManagerDev _SettingsPlugin, IDeviceManagerSA _DeviceManagerPlugin, bool Is_Game_DeviceName = false, bool SmartHDR_ON = false, List<string> ColorPresetSupportList = null)
         {
             writelog("ColorPresetPlugin AutoSetColorPresetForMonitorConfig requested ...");
 
@@ -472,7 +475,8 @@ namespace ColorPreset.Plugins
                     newWindowThread_AutoSetColorPresetForMonitorConfig = new Thread(new ThreadStart(() =>
                     {
                         // create and show the window
-                        Launch_MonitorBorker(mo, _DeviceManagerPlugin, SmartHDR_ON, ColorPresetSupportList);
+                        // jim 20241207 modify for The DDPM color profile can not be applied by DDPM on Smart HDR mode.(Gaming monitor ex: AW2724DM)
+                        Launch_MonitorBorker(mo, _DeviceManagerPlugin, Is_Game_DeviceName, SmartHDR_ON, ColorPresetSupportList);
 
                         // start the Dispatcher processing
                         // 啟動消息循環
@@ -496,7 +500,8 @@ namespace ColorPreset.Plugins
                     if (MonitorBorkerWin != null) // jim add 20240809
                     {
                         MonitorBorkerWin.Set_Active_Monitor(mo); // For PIMS-326072
-                        MonitorBorkerWin.Set_AUTO_ColorPresetConfig(true, SmartHDR_ON, ColorPresetSupportList);
+                        // jim 20241207 modify for The DDPM color profile can not be applied by DDPM on Smart HDR mode.(Gaming monitor ex: AW2724DM)
+                        MonitorBorkerWin.Set_AUTO_ColorPresetConfig(true, Is_Game_DeviceName, SmartHDR_ON, ColorPresetSupportList);
                     }
                 }
             }
@@ -522,7 +527,8 @@ namespace ColorPreset.Plugins
                     if (MonitorBorkerWin != null) // jim add 20240809
                     {
                         MonitorBorkerWin.Set_Active_Monitor(mo); // for PIMS-326072
-                        MonitorBorkerWin.Set_AUTO_ColorPresetConfig(false, SmartHDR_ON, ColorPresetSupportList);
+                        // jim 20241207 modify for The DDPM color profile can not be applied by DDPM on Smart HDR mode.(Gaming monitor ex: AW2724DM)
+                        MonitorBorkerWin.Set_AUTO_ColorPresetConfig(false, Is_Game_DeviceName, SmartHDR_ON, ColorPresetSupportList);
                     }
                 }
 
