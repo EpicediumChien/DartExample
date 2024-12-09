@@ -173,51 +173,54 @@ namespace DDPM.EABroker
             if (attachedMonitors != null)
             {
                 isSupportedMonitor = attachedMonitors.Count > 0;
-                _vm.WriteLog($"  * GetAttachedMonitors from screen of cursor, attachedMonitor count={attachedMonitors.Count}");
-            }
-
-            //Load RecentList to IconList
-            //Dispatcher.BeginInvoke(new Action(() =>
-            //{
-                bool isRecentListLoaded = false;
                 if (isSupportedMonitor)
                 {
-                    Stopwatch sw1 = Stopwatch.StartNew();
-                    EAMonitorSettings eaSettings = _vm.ReadEAMonitorSettings(attachedMonitors[0]);
-                    sw1.Stop();
-                    _vm.WriteLog($"  * ReadEAMonitorSettings() elapsed {sw1.ElapsedMilliseconds} msec.");
+                    _vm.WriteLog($"  * GetAttachedMonitors from screen of cursor, attachedMonitor count={attachedMonitors.Count}, will read from the first monitor: [{attachedMonitors[0].modelName}, {attachedMonitors[0].edid.ServiceTag}]");
+                }
+                else
+                {
+                    _vm.WriteLog($"  * GetAttachedMonitors from screen of cursor, attachedMonitor count={attachedMonitors.Count}, not supported monitor.");
+                }
+            }
 
-                    if (eaSettings != null)
+            bool isRecentListLoaded = false;
+            if (isSupportedMonitor)
+            {
+                Stopwatch sw1 = Stopwatch.StartNew();
+                EAMonitorSettings eaSettings = _vm.ReadEAMonitorSettings(attachedMonitors[0]);
+                sw1.Stop();
+                _vm.WriteLog($"  * ReadEAMonitorSettings() elapsed {sw1.ElapsedMilliseconds} msec.");
+
+                if (eaSettings != null)
+                {
+                    if (eaSettings.RecentList != null)
                     {
-                        if (eaSettings.RecentList != null)
-                        {
-                            Stopwatch sw2 = Stopwatch.StartNew();
-                            isRecentListLoaded = _vm.RefreshAwsIconsFromRecentList(eaSettings.RecentList);
-                            sw2.Stop();
-                            _vm.WriteLog($"  * RefreshAwsIconsFromRecentList() elapsed {sw2.ElapsedMilliseconds} msec.");
-
-                        }
-                        else
-                        {
-                            _vm.WriteLog($"  * ReadSettings of Monitor(Model:{attachedMonitors[0].modelName}, ServiceTag:{attachedMonitors[0].edid.ServiceTag}) RecentList is null");
-                        }
+                        Stopwatch sw2 = Stopwatch.StartNew();
+                        isRecentListLoaded = _vm.RefreshAwsIconsFromRecentList(eaSettings.RecentList);
+                        sw2.Stop();
+                        _vm.WriteLog($"  * RefreshAwsIconsFromRecentList() elapsed {sw2.ElapsedMilliseconds} msec.");
+                        _vm.WriteLog($"  * AwsIcons: {_vm.GetAwsIconNames()}");
                     }
                     else
                     {
-                        _vm.WriteLog($"  * ReadSettings of Monitor(Model:{attachedMonitors[0].modelName}, ServiceTag:{attachedMonitors[0].edid.ServiceTag}) return null");
+                        _vm.WriteLog($"  * ReadSettings of Monitor(Model:{attachedMonitors[0].modelName}, ServiceTag:{attachedMonitors[0].edid.ServiceTag}) RecentList is null");
                     }
                 }
-                if (!isRecentListLoaded)
+                else
                 {
-                    _vm.WriteLog("  * Cannot load RecentList from monitor, assume it\'s Non-Dell monitor, will apply defaul RecentList.");
-                    //Load Win11 default Snap layout
-                    isRecentListLoaded = _vm.RefreshAwsIconsFromRecentList(SplitJson.DefaultRecentList.ToArray());
+                    _vm.WriteLog($"  * ReadSettings of Monitor(Model:{attachedMonitors[0].modelName}, ServiceTag:{attachedMonitors[0].edid.ServiceTag}) return null");
                 }
-                sw0.Stop();
-                _vm.WriteLog($"  * AwsWindow.ReloadRecentList() elapsed {sw0.ElapsedMilliseconds} msec.");
+            }
+            if (!isRecentListLoaded)
+            {
+                _vm.WriteLog("  * Cannot load RecentList from monitor, assume it\'s Non-Dell monitor, will apply defaul RecentList.");
+                //Load Win11 default Snap layout
+                isRecentListLoaded = _vm.RefreshAwsIconsFromRecentList(SplitJson.DefaultRecentList.ToArray());
+            }
+            sw0.Stop();
+            _vm.WriteLog($"  * AwsWindow.ReloadRecentList() elapsed {sw0.ElapsedMilliseconds} msec.");
 
-                Dispatcher_RefreshCellRects();
-            //}));
+            Dispatcher_RefreshCellRects();
         }
 
         private void RefreshAwsIconRects()
@@ -357,12 +360,6 @@ namespace DDPM.EABroker
             DpiScale dpiScale = VisualTreeHelper.GetDpi(this);
             double scale = dpiScale.PixelsPerDip;
             CellObj? hoverCell = null;
-
-            //_vm.AwsIcon0.HoveringCell = "";
-            //_vm.AwsIcon1.HoveringCell = "";
-            //_vm.AwsIcon2.HoveringCell = "";
-            //_vm.AwsIcon3.HoveringCell = "";
-            //_vm.AwsIcon4.HoveringCell = "";
 
             //
             //  AWSIcon0
@@ -1008,6 +1005,7 @@ namespace DDPM.EABroker
 
             if (!_areCellRectsRefreshed)
             {
+                _vm.WriteLog("@ AwsWindow.RefreshCellRects() - Nor all cells are refreshed.");
                 if (flag == 0)
                 {
                     System.Threading.Timer timer1 = new System.Threading.Timer((obj) => { RefreshCellRects(0); }, null, 100, Timeout.Infinite);
@@ -1087,7 +1085,7 @@ namespace DDPM.EABroker
                 Screen showScreen = _vm.GetScreenFromCursor();
 
                 //Check if the showScreen is WorkScreen of AwsWindow
-                _vm.WriteLog($"@ AwsWindow.HandleAwsWindowVisibilityChanged(), Cursor=({_vm.xCursor},{_vm.yCursor})");
+                _vm.WriteLog($"@ AwsWindow.HandleAwsWindowVisibilityChanged(), Cursor=({_vm.xCursor},{_vm.yCursor}), showScreen={showScreen.DeviceName}");
                 System.Windows.Point ptAws = CalculateAwsPosition();
                 _vm.xAwsWindow = ptAws.X;
                 _vm.yAwsWindow = ptAws.Y;
@@ -1098,10 +1096,10 @@ namespace DDPM.EABroker
                 Topmost = true;
 
                 //Get current working screen
-                Screen? scr = _vm.GetScreenFromCursor();
-                if (scr != null)
+                //Screen? scr = _vm.GetScreenFromCursor();
+                if (showScreen != null)
                 {
-                    ReloadRecentList(scr.DeviceName);
+                    ReloadRecentList(showScreen.DeviceName);
                 }
 
                 RefreshAwsIconRects();
