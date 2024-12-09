@@ -7,6 +7,7 @@ using DDPM.UI.Common.Interfaces;
 using DDPM.UI.Common.Models;
 using Dell.Client.Framework.Common;
 using Dell.Client.Framework.UX.WPF.Controls;
+using Microsoft.VisualBasic.Logging;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
@@ -477,7 +478,7 @@ namespace DDPM.UI.Module.Brightness
 
                 Luminance_Value = Convert.ToDouble(e.value);
                 Brightness_Value = Convert.ToDouble(e.value);
-
+                DdpmCommonHelper.WriteUILog($"[BrightnessVM]OnVCPChangedEvent,update Luminance_Value = {Luminance_Value}, Brightness_Value={Brightness_Value}");
                 NotifyPropertyChanged("LuminanceValue");
                 NotifyPropertyChanged("BrightnessValue");
                 NotifyPropertyChanged("AutoBrightnessRangeLevel_String");
