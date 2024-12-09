@@ -504,4 +504,7 @@
   <data name="EABroker_updateToEmProfilePrompt" xml:space="preserve">
     <value>There are Easy Memory profiles associated to this custom layout.\nSaving this custom layout will update the layout for all the associated profiles.\nDo you want to save the layout?</value>
   </data>
+  <data name="CollabMultipleCalls" xml:space="preserve">
+    <value>Collaboration controls are not available during multiple conference calls</value>
+  </data>
 </root>
