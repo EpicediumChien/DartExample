@@ -47,11 +47,11 @@ namespace DDPM.SA.Common.Settings
 
     public class Gaming()
     {
-        public Gaming_GameEnhancementMode Current_GameEnhancementMode { get; set; } = new Gaming_GameEnhancementMode();
-        public Gaming_ResponseTime Current_ResponseTime { get; set; } = new Gaming_ResponseTime();
-        public Gaming_DarkStabilizer Current_DarkStabilizer { get; set; } = new Gaming_DarkStabilizer();
-        public Gaming_HDRType Current_HDRType { get; set; } = new Gaming_HDRType();
-        public Gaming_DualResolutionType Current_DualResolutionType { get; set; } = new Gaming_DualResolutionType();
+        public Gaming_GameEnhancementMode Current_GameEnhancementMode { get; set; } = Gaming_GameEnhancementMode.Off;
+        public Gaming_ResponseTime Current_ResponseTime { get; set; } = Gaming_ResponseTime.Disable;
+        public Gaming_DarkStabilizer Current_DarkStabilizer { get; set; } = Gaming_DarkStabilizer.Disable;
+        public Gaming_HDRType Current_HDRType { get; set; } = Gaming_HDRType.Off;
+        public Gaming_DualResolutionType Current_DualResolutionType { get; set; } = Gaming_DualResolutionType.Unknow;
         public bool[] IsEnable_VisionEngineType { get; set; } = new bool[0];
     }
 
