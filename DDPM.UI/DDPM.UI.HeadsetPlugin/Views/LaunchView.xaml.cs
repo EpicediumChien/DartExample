@@ -45,7 +45,7 @@ namespace DDPM.UI.Plugin.HeadsetPlugin
 
             if (_vm != null)
             {
-                if (!_vm.IsDTPReady)
+                if (false)//!_vm.IsDTPReady)
                 {
                     MessageModalDialog messageModalDialog = new(Strings.Error, Strings.DTPUnavailable, "");
                     Window mainWindow = System.Windows.Application.Current.MainWindow;

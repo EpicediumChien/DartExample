@@ -646,6 +646,76 @@ namespace DDPM.UI.Plugin.ViewModels
             OnPropertyChanged(nameof(IsSensitiveChecked));
         }
 
+        private void CheckWearDetectionUIForDTH(bool PropertyChange)
+        {
+            if (CurrentDeviceInfo!.IsWearDetectionSupported)
+            {
+                uint wearDetectionValue = (uint)CurrentDeviceInfo!.WearDetection;
+                if (GetBitValue(wearDetectionValue, 0) == 1)
+                    _isWearDetectionStatus = true;
+                else
+                    _isWearDetectionStatus = false;
+
+                if (GetBitValue(wearDetectionValue, 1) == 1)
+                    _isPauseMusicStatus = true;
+                else
+                    _isPauseMusicStatus = false;
+
+                if (GetBitValue(wearDetectionValue, 2) == 1)
+                    _isMuteMicrophoneStatus = true;
+                else
+                    _isMuteMicrophoneStatus = false;
+
+                if (GetBitValue(wearDetectionValue, 3) == 1)
+                {
+                    _isNormal2Checked = true;
+                    _isLowChecked = false;
+                }
+                else
+                {
+                    _isNormal2Checked = false;
+                    _isLowChecked = true;
+                }
+
+                if (GetBitValue(wearDetectionValue, 4) == 1)
+                    _isQuickPauseStatus = true;
+                else
+                    _isQuickPauseStatus = false;
+
+                if (GetBitsValue(wearDetectionValue, 5) == 1)
+                {
+                    _isNormalChecked = true;
+                    _isSensitiveChecked = false;
+                }
+                else
+                {
+                    _isNormalChecked = false;
+                    _isSensitiveChecked = true;
+                }
+
+                if (PropertyChange)
+                {
+                    OnPropertyChanged("WearDetectionStatus");
+                    OnPropertyChanged("WearDetection_String");
+
+                    OnPropertyChanged("PauseMusicStatus");
+                    OnPropertyChanged("PauseMusic_String");
+
+                    OnPropertyChanged("MuteMicrophoneStatus");
+                    OnPropertyChanged("MuteMicrophone_String");
+
+                    OnPropertyChanged("IsNormal2Checked");
+                    OnPropertyChanged("IsLowChecked");
+
+                    OnPropertyChanged("QuickPauseStatus");
+                    OnPropertyChanged("QuickPause_String");
+
+                    OnPropertyChanged("IsNormalChecked");
+                    OnPropertyChanged("IsSensitiveChecked");
+                }
+            }
+        }
+
         private void CheckWearDetectionUI(bool PropertyChange)
         {
             if (DeviceInfoDTP!.IsWearDetectionSupported)
@@ -654,13 +724,34 @@ namespace DDPM.UI.Plugin.ViewModels
                 _isPauseMusicStatus = DeviceInfoDTP.IsWearDetectionPauseMusicEnableFromDTP;
                 _isMuteMicrophoneStatus = DeviceInfoDTP.IsWearDetectionMuteMicEnabledFromDTP;
                 _isQuickPauseStatus = IntToBool(DeviceInfoDTP.WearDetectionQuickPauseAsyncFromDTP);
-                if(IntToBool(DeviceInfoDTP.WearDetectionSensitivityFromDTP))
+
+                if (Model == "WL7024")
                 {
-                    if (Model == "WL7024")
+                    if (DeviceInfoDTP.WearDetectionQuickPauseAsyncFromDTP == 0)
                     {
+                        _isQuickPauseStatus = false;
+                        _isNormalChecked = true;
+                        _isSensitiveChecked = false;
+                    }
+                    if (DeviceInfoDTP.WearDetectionQuickPauseAsyncFromDTP == 2)
+                    {
+                        _isQuickPauseStatus = true;
                         _isNormalChecked = false;
                         _isSensitiveChecked = true;
                     }
+                    if (DeviceInfoDTP.WearDetectionQuickPauseAsyncFromDTP == 1)
+                    {
+                        if (!_isQuickPauseStatus)
+                        {
+                            _isQuickPauseStatus = !_isQuickPauseStatus;
+                        }
+                        _isNormalChecked = true;
+                        _isSensitiveChecked = false;
+                    }
+                }
+
+                if (IntToBool(DeviceInfoDTP.WearDetectionSensitivityFromDTP))
+                {
                     if (Model == "WL5024")
                     {
                         _isLowChecked = false;
@@ -669,11 +760,6 @@ namespace DDPM.UI.Plugin.ViewModels
                 }
                 else
                 {
-                    if (Model == "WL7024")
-                    {
-                        _isNormalChecked = true;
-                        _isSensitiveChecked = false;
-                    }
                     if (Model == "WL5024")
                     {
                         _isLowChecked = true;
@@ -854,15 +940,19 @@ namespace DDPM.UI.Plugin.ViewModels
                 return false;
             _log.Info($"[HeadsetViewModel] SetCurrentDevice GUID ... {CurrentDeviceID.ToString()}");
             _current_headset = CurrentDeviceID!.ToString();
-            var fv = _deviceManager.GetHeadsetFirmwareVersionAsync(CurrentDeviceID.ToString()).Result; //CurrentDeviceInfo.FirmwareVersion.PadLeft(4, '0');
-            if(fv == null || fv == string.Empty)
+            var fv = _deviceManager.GetHeadsetFirmwareVersionAsync(CurrentDeviceID.ToString()).Result;
+            if (fv == null || fv == string.Empty)
+            {
+                _log.Info($"[HeadsetViewModel] SetCurrentDevice ... GetHeadsetFirmwareVersionAsync ... nill or empty ... DTP fail ...");
                 IsDTPReady = false;
+                fv = CurrentDeviceInfo.FirmwareVersion.PadLeft(4, '0');
+                FirmwareVersion2 = $"Firmware Version {fv}";
+            }
             else
+            {
                 IsDTPReady = true;
-            //FirmwareVersion2 = $"Firmware Version {fv}";// {fv.Substring(0, 1)}.{fv.Substring(1, 1)}.{fv.Substring(2, 1)}.{fv.Substring(3, 1)}";
-            FirmwareVersion2 = Strings.FirmwareVersion + $" {fv}";
-            //else
-            //    _current_headset = deviceID;
+                FirmwareVersion2 = Strings.FirmwareVersion + $" {fv}";
+            }
             return true;
         }
 
@@ -973,35 +1063,172 @@ namespace DDPM.UI.Plugin.ViewModels
         {
             try
             {
-                _log.Info($"[HeadsetViewModel] Print before property ...RestoreToDefault ... in");
-                _log.Info($"[HeadsetViewModel] DeviceInfoDTP.Band1Gain ...........= {DeviceInfoDTP.Band1Gain.ToString()}");
-                _log.Info($"[HeadsetViewModel] DeviceInfoDTP.Band2Gain ...........= {DeviceInfoDTP.Band2Gain.ToString()}");
-                _log.Info($"[HeadsetViewModel] DeviceInfoDTP.Band3Gain ...........= {DeviceInfoDTP.Band3Gain.ToString()}");
-                _log.Info($"[HeadsetViewModel] DeviceInfoDTP.Band4Gain ...........= {DeviceInfoDTP.Band4Gain.ToString()}");
-                _log.Info($"[HeadsetViewModel] DeviceInfoDTP.Band5Gain ...........= {DeviceInfoDTP.Band5Gain.ToString()}");
-                _log.Info($"[HeadsetViewModel] DeviceInfoDTP.AncGain .............= {DeviceInfoDTP.AncGain.ToString()}");
-                _log.Info($"[HeadsetViewModel] DeviceInfoDTP.AncMode .............= {DeviceInfoDTP.AncMode.ToString()}");
-                _log.Info($"[HeadsetViewModel] DeviceInfoDTP.BatteryLevel ........= {DeviceInfoDTP.BatteryLevel.ToString()}");
-                _log.Info($"[HeadsetViewModel] DeviceInfoDTP.BusyLight ...........= {DeviceInfoDTP.BusyLight.ToString()}");
-                _log.Info($"[HeadsetViewModel] DeviceInfoDTP.MicNoiseCancellation = {DeviceInfoDTP.MicNoiseCancellation.ToString()}");
-                _log.Info($"[HeadsetViewModel] DeviceInfoDTP.MicNCIncoming .......= {DeviceInfoDTP.MicNCIncoming.ToString()}");
-                _log.Info($"[HeadsetViewModel] DeviceInfoDTP.Sidetone ............= {DeviceInfoDTP.Sidetone.ToString()}");
-                _log.Info($"[HeadsetViewModel] DeviceInfoDTP.SidetoneLevel .......= {DeviceInfoDTP.SidetoneLevel.ToString()}");
-                _log.Info($"[HeadsetViewModel] DeviceInfoDTP.SelectedPreset ......= {DeviceInfoDTP.SelectedPreset.ToString()}");
-                _log.Info($"[HeadsetViewModel] DeviceInfoDTP.VoiceGuidance .......= {DeviceInfoDTP.VoiceGuidance.ToString()}");
-                _log.Info($"[HeadsetViewModel] DeviceInfoDTP.WearDetection .......= {DeviceInfoDTP.WearDetection.ToString()}");
-                _log.Info($"[HeadsetViewModel] DeviceInfoDTP.WearDetection .......= {DeviceInfoDTP.AnswerCall.ToString()}");
-                _deviceManager.SetFactoryResetAsyncValueForHeadset(CurrentDeviceInfo!.ID.ToString(), true).Wait();
-                await UpdateDTPValue();
-                CheckHeadsetFunc();
-
-                //_showPluginManager = HeadsetPlugin.PluginIoc.GetService<IShowPluginManager>();
-                //_showPluginManager?.ShowPluginById(DDPM.UI.Common.Constants.HeadsetPluginId, CurrentDeviceInfo!.ID.ToString());
-                _showPluginManager?.ShowHomePage();
+                if (IsDTPReady)
+                {
+                    _log.Info($"[HeadsetViewModel] Print before property ...RestoreToDefault ... in");
+                    _log.Info($"[HeadsetViewModel] DeviceInfoDTP.Band1Gain ...........= {DeviceInfoDTP.Band1Gain.ToString()}");
+                    _log.Info($"[HeadsetViewModel] DeviceInfoDTP.Band2Gain ...........= {DeviceInfoDTP.Band2Gain.ToString()}");
+                    _log.Info($"[HeadsetViewModel] DeviceInfoDTP.Band3Gain ...........= {DeviceInfoDTP.Band3Gain.ToString()}");
+                    _log.Info($"[HeadsetViewModel] DeviceInfoDTP.Band4Gain ...........= {DeviceInfoDTP.Band4Gain.ToString()}");
+                    _log.Info($"[HeadsetViewModel] DeviceInfoDTP.Band5Gain ...........= {DeviceInfoDTP.Band5Gain.ToString()}");
+                    _log.Info($"[HeadsetViewModel] DeviceInfoDTP.AncGain .............= {DeviceInfoDTP.AncGain.ToString()}");
+                    _log.Info($"[HeadsetViewModel] DeviceInfoDTP.AncMode .............= {DeviceInfoDTP.AncMode.ToString()}");
+                    _log.Info($"[HeadsetViewModel] DeviceInfoDTP.BatteryLevel ........= {DeviceInfoDTP.BatteryLevel.ToString()}");
+                    _log.Info($"[HeadsetViewModel] DeviceInfoDTP.BusyLight ...........= {DeviceInfoDTP.BusyLight.ToString()}");
+                    _log.Info($"[HeadsetViewModel] DeviceInfoDTP.MicNoiseCancellation = {DeviceInfoDTP.MicNoiseCancellation.ToString()}");
+                    _log.Info($"[HeadsetViewModel] DeviceInfoDTP.MicNCIncoming .......= {DeviceInfoDTP.MicNCIncoming.ToString()}");
+                    _log.Info($"[HeadsetViewModel] DeviceInfoDTP.Sidetone ............= {DeviceInfoDTP.Sidetone.ToString()}");
+                    _log.Info($"[HeadsetViewModel] DeviceInfoDTP.SidetoneLevel .......= {DeviceInfoDTP.SidetoneLevel.ToString()}");
+                    _log.Info($"[HeadsetViewModel] DeviceInfoDTP.SelectedPreset ......= {DeviceInfoDTP.SelectedPreset.ToString()}");
+                    _log.Info($"[HeadsetViewModel] DeviceInfoDTP.VoiceGuidance .......= {DeviceInfoDTP.VoiceGuidance.ToString()}");
+                    _log.Info($"[HeadsetViewModel] DeviceInfoDTP.WearDetection .......= {DeviceInfoDTP.WearDetection.ToString()}");
+                    _log.Info($"[HeadsetViewModel] DeviceInfoDTP.WearDetection .......= {DeviceInfoDTP.AnswerCall.ToString()}");
+                    _deviceManager.SetFactoryResetAsyncValueForHeadset(CurrentDeviceInfo!.ID.ToString(), true).Wait();
+                    await UpdateDTPValue();
+                    CheckHeadsetFunc();
+                    //_showPluginManager = HeadsetPlugin.PluginIoc.GetService<IShowPluginManager>();
+                    //_showPluginManager?.ShowPluginById(DDPM.UI.Common.Constants.HeadsetPluginId, CurrentDeviceInfo!.ID.ToString());
+                    _showPluginManager?.ShowHomePage();
+                }
+                else
+                {
+                    _log.Info($"[HeadsetViewModel] DTH Print before property ...RestoreToDefault ... in");
+                    SetFactoryResetForDTH();
+                    await UpdateDTHValue();                   
+                    CheckHeadsetFunc();
+                    _showPluginManager?.ShowHomePage();
+                }
             }
             catch (Exception ex)
             {
                 _log!.Error($"[HeadsetViewModel] RestoreToDefault ...... {ex.ToString()}");
+            }
+        }
+
+        private void SetFactoryResetForDTH()
+        {
+            try
+            {
+                _log.Info($"[HeadsetViewModel] DTH SetFactoryResetForDTH ......");
+                _log.Info($"[HeadsetViewModel] DTH ***********************************************************************");
+
+                //object varr = await _deviceManager.GetHeadsetDeviceItemsExAsync();
+
+                //Read this Headset Support function
+                if (CurrentDeviceInfo!.IsANCSupported)
+                {
+                    DeviceInfoDTP.IsANCSupported = true;
+                    DeviceInfoDTP.AncMode = 1;
+                    DeviceInfoDTP.AncGain = 1;
+                    _log.Info($"[HeadsetViewModel] DTH DeviceInfoDTP.AncMode .....................= {DeviceInfoDTP.AncMode.ToString()}");
+                    _log.Info($"[HeadsetViewModel] DTH DeviceInfoDTP.AncGain .....................= {DeviceInfoDTP.AncGain.ToString()}");
+                }
+                else
+                {
+                    DeviceInfoDTP.IsANCSupported = false;
+                    _log.Info($"[HeadsetViewModel] DTH GetIsANCSupportedAsync .............................. NO");
+                }
+                //------------------------------------------------------------------------------------
+                if (CurrentDeviceInfo!.IsBusyLightSupported)
+                {
+                    DeviceInfoDTP.IsBusyLightSupported = true;
+                    DeviceInfoDTP.BusyLight = true;
+                    _log.Info($"[HeadsetViewModel] DTH DeviceInfoDTP.BusyLight ...................= {DeviceInfoDTP.BusyLight.ToString()}");
+                }
+                else
+                {
+                    DeviceInfoDTP.IsBusyLightSupported = false;
+                    _log.Info($"[HeadsetViewModel] DTH GetIsBusyLightSupportedAsync ........................ NO");
+                }
+                //------------------------------------------------------------------------------------
+
+                if (CurrentDeviceInfo!.IsMicNoiseCancellationSupported)
+                {
+                    DeviceInfoDTP.IsMicNoiseCancellationSupported = true;
+                    DeviceInfoDTP.MicNoiseCancellation = true;
+                    _log.Info($"[HeadsetViewModel] DTH DeviceInfoDTP.MicNoiseCancellation .............= {DeviceInfoDTP.MicNoiseCancellation.ToString()}");
+                }
+                else
+                {
+                    DeviceInfoDTP.IsMicNoiseCancellationSupported = false;
+                    _log.Info($"[HeadsetViewModel] DTH GetIsMicNoiseCancellationSupportedAsync ............. NO");
+                }
+                //------------------------------------------------------------------------------------
+
+                if (CurrentDeviceInfo!.IsSidetoneSupported)
+                {
+                    DeviceInfoDTP.IsSidetoneSupported = true;
+                    DeviceInfoDTP.Sidetone = true;
+                    _log.Info($"[HeadsetViewModel] DTH DeviceInfoDTP.Sidetone ...................= {DeviceInfoDTP.Sidetone.ToString()}");
+                }
+                else
+                {
+                    DeviceInfoDTP.IsSidetoneSupported = false;
+                    _log.Info($"[HeadsetViewModel] DTH GetIsSidetoneSupportedAsync ......................... NO");
+                }
+                //------------------------------------------------------------------------------------
+
+                if (CurrentDeviceInfo!.IsVoiceGuidanceSupported)
+                {
+                    DeviceInfoDTP.IsVoiceGuidanceSupported = true;
+                    DeviceInfoDTP.VoiceGuidance = true;
+                    _log.Info($"[HeadsetViewModel] DTH DeviceInfoDTP.VoiceGuidance ..............= {DeviceInfoDTP.VoiceGuidance.ToString()}");
+                }
+                else
+                {
+                    DeviceInfoDTP.IsVoiceGuidanceSupported = false;
+                    _log.Info($"[HeadsetViewModel] DTH GetIsVoiceGuidanceSupportedAsync .................... NO");
+                }
+                //------------------------------------------------------------------------------------
+
+                if (CurrentDeviceInfo!.IsPresetsSupported)
+                {
+                    DeviceInfoDTP.IsPresetsSupported = true;
+                    DeviceInfoDTP.SelectedPreset = CurrentDeviceInfo!.SelectedPreset;
+                    _log.Info($"[HeadsetViewModel] DTH DeviceInfoDTP.SelectedPreset .............= {DeviceInfoDTP.SelectedPreset.ToString()}");
+                    if (CurrentDeviceInfo!.IsEqualizerSupported)
+                    {
+                        DeviceInfoDTP.IsEqualizerSupported = true;
+                        DeviceInfoDTP.Band1Gain = 0;
+                        DeviceInfoDTP.Band2Gain = 0;
+                        DeviceInfoDTP.Band3Gain = 0;
+                        DeviceInfoDTP.Band4Gain = 0;
+                        DeviceInfoDTP.Band5Gain = 0;
+                        _log.Info($"[HeadsetViewModel] DTH DeviceInfoDTP.Band1Gain ..................= {DeviceInfoDTP.Band1Gain.ToString()}");
+                        _log.Info($"[HeadsetViewModel] DTH DeviceInfoDTP.Band2Gain ..................= {DeviceInfoDTP.Band2Gain.ToString()}");
+                        _log.Info($"[HeadsetViewModel] DTH DeviceInfoDTP.Band3Gain ..................= {DeviceInfoDTP.Band3Gain.ToString()}");
+                        _log.Info($"[HeadsetViewModel] DTH DeviceInfoDTP.Band4Gain ..................= {DeviceInfoDTP.Band4Gain.ToString()}");
+                        _log.Info($"[HeadsetViewModel] DTH DeviceInfoDTP.Band5Gain ..................= {DeviceInfoDTP.Band5Gain.ToString()}");
+                    }
+                    else
+                    {
+                        DeviceInfoDTP.IsEqualizerSupported = false;
+                        _log.Info($"[HeadsetViewModel] DTH GetIsEqualizerSupportedAsync .................... NO");
+                    }
+                }
+                else
+                {
+                    DeviceInfoDTP.IsPresetsSupported = false;
+                    _log.Info($"[HeadsetViewModel] DTH GetIsPresetsSupportedAsync ................... NO");
+                }
+                //------------------------------------------------------------------------------------
+
+                if (CurrentDeviceInfo!.IsMicNCIncomingSupported)
+                {
+                    DeviceInfoDTP.IsMicNCIncomingSupported = true;
+                    DeviceInfoDTP.MicNCIncoming = true;
+                    _log.Info($"[HeadsetViewModel] DTH DeviceInfoDTP.MicNCIncoming .............= {DeviceInfoDTP.MicNCIncoming.ToString()}");
+                }
+                else
+                {
+                    _log.Info($"[HeadsetViewModel] DTH GetIsMicNCIncomingSupportedAsync ............. NO");
+                }
+                //------------------------------------------------------------------------------------
+                DeviceInfoDTP.SidetoneLevel = CurrentDeviceInfo!.SidetoneLevel;
+            }
+            catch (Exception ex)
+            {
+                _log!.Error($"[HeadsetViewModel] DTH SetFactoryResetForDTH ...... {ex.ToString()}");
             }
         }
 
@@ -1190,6 +1417,230 @@ namespace DDPM.UI.Plugin.ViewModels
                 _log!.Error($"[HeadsetViewModel] UpdateDTPValue ...... {ex.ToString()}");
             }
         }
+
+        /// <summary>
+        /// Update DTP Headset property Value
+        /// </summary>
+        /// <returns></returns>
+        private async Task UpdateDTHValue()
+        {
+            try
+            {
+                _log.Info($"[HeadsetViewModel] DTH Print before property ...UpdateDTHValue ... in");
+
+                if (DeviceInfoDTP == null)
+                {
+                    DeviceInfoDTP = new DeviceInfoDTP();
+                    _log.Info($"[HeadsetViewModel] DTH Print before property ...UpdateDTPValue new DeviceInfo...");
+                }
+
+                _log.Info($"[HeadsetViewModel] DTH Print after property ......");
+                _log.Info($"[HeadsetViewModel] DTH ***********************************************************************");
+
+                //object varr = await _deviceManager.GetHeadsetDeviceItemsExAsync();
+
+                //Read this Headset Support function
+                if (CurrentDeviceInfo!.IsANCSupported)
+                {
+                    DeviceInfoDTP.IsANCSupported = true;
+                    DeviceInfoDTP.AncMode = CurrentDeviceInfo!.AncMode;
+                    DeviceInfoDTP.AncGain = CurrentDeviceInfo!.AncGain;
+                    _log.Info($"[HeadsetViewModel] DTH DeviceInfoDTP.AncMode .....................= {DeviceInfoDTP.AncMode.ToString()}");
+                    _log.Info($"[HeadsetViewModel] DTH DeviceInfoDTP.AncGain .....................= {DeviceInfoDTP.AncGain.ToString()}");
+                }
+                else
+                {
+                    DeviceInfoDTP.IsANCSupported = false;
+                    _log.Info($"[HeadsetViewModel] DTH GetIsANCSupportedAsync .............................. NO");
+                }
+                //------------------------------------------------------------------------------------
+                if (CurrentDeviceInfo!.IsBusyLightSupported)
+                {
+                    DeviceInfoDTP.IsBusyLightSupported = true;
+                    DeviceInfoDTP.BusyLight = CurrentDeviceInfo!.BusyLight;
+                    _log.Info($"[HeadsetViewModel] DTH DeviceInfoDTP.BusyLight ...................= {DeviceInfoDTP.BusyLight.ToString()}");
+                }
+                else
+                {
+                    DeviceInfoDTP.IsBusyLightSupported = false;
+                    _log.Info($"[HeadsetViewModel] DTH GetIsBusyLightSupportedAsync ........................ NO");
+                }
+                //------------------------------------------------------------------------------------
+
+                if (CurrentDeviceInfo!.IsMicNoiseCancellationSupported)
+                {
+                    DeviceInfoDTP.IsMicNoiseCancellationSupported = true;
+                    DeviceInfoDTP.MicNoiseCancellation = CurrentDeviceInfo!.MicNoiseCancellation;
+                    _log.Info($"[HeadsetViewModel] DTH DeviceInfoDTP.MicNoiseCancellation .............= {DeviceInfoDTP.MicNoiseCancellation.ToString()}");
+                }
+                else
+                {
+                    DeviceInfoDTP.IsMicNoiseCancellationSupported = false;
+                    _log.Info($"[HeadsetViewModel] DTH GetIsMicNoiseCancellationSupportedAsync ............. NO");
+                }
+                //------------------------------------------------------------------------------------
+
+                if (CurrentDeviceInfo!.IsSidetoneSupported)
+                {
+                    DeviceInfoDTP.IsSidetoneSupported = true;
+                    DeviceInfoDTP.Sidetone = CurrentDeviceInfo!.Sidetone;
+                    _log.Info($"[HeadsetViewModel] DTH DeviceInfoDTP.Sidetone ...................= {DeviceInfoDTP.Sidetone.ToString()}");
+                }
+                else
+                {
+                    DeviceInfoDTP.IsSidetoneSupported = false;
+                    _log.Info($"[HeadsetViewModel] DTH GetIsSidetoneSupportedAsync ......................... NO");
+                }
+                //------------------------------------------------------------------------------------
+
+                if (CurrentDeviceInfo!.IsVoiceGuidanceSupported)
+                {
+                    DeviceInfoDTP.IsVoiceGuidanceSupported = true;
+                    DeviceInfoDTP.VoiceGuidance = CurrentDeviceInfo!.VoiceGuidance;
+                    _log.Info($"[HeadsetViewModel] DTH DeviceInfoDTP.VoiceGuidance ..............= {DeviceInfoDTP.VoiceGuidance.ToString()}");
+                }
+                else
+                {
+                    DeviceInfoDTP.IsVoiceGuidanceSupported = false;
+                    _log.Info($"[HeadsetViewModel] DTH GetIsVoiceGuidanceSupportedAsync .................... NO");
+                }
+                //------------------------------------------------------------------------------------
+
+                if (CurrentDeviceInfo!.IsPresetsSupported)
+                {
+                    DeviceInfoDTP.IsPresetsSupported = true;
+                    DeviceInfoDTP.SelectedPreset = CurrentDeviceInfo!.SelectedPreset;
+                    _log.Info($"[HeadsetViewModel] DTH DeviceInfoDTP.SelectedPreset .............= {DeviceInfoDTP.SelectedPreset.ToString()}");
+                    if (CurrentDeviceInfo!.IsEqualizerSupported)
+                    {
+                        DeviceInfoDTP.IsEqualizerSupported = true;
+                        DeviceInfoDTP.Band1Gain = CurrentDeviceInfo!.Band1Gain;
+                        DeviceInfoDTP.Band2Gain = CurrentDeviceInfo!.Band2Gain;
+                        DeviceInfoDTP.Band3Gain = CurrentDeviceInfo!.Band3Gain;
+                        DeviceInfoDTP.Band4Gain = CurrentDeviceInfo!.Band4Gain;
+                        DeviceInfoDTP.Band5Gain = CurrentDeviceInfo!.Band5Gain;
+                        _log.Info($"[HeadsetViewModel] DTH DeviceInfoDTP.Band1Gain ..................= {DeviceInfoDTP.Band1Gain.ToString()}");
+                        _log.Info($"[HeadsetViewModel] DTH DeviceInfoDTP.Band2Gain ..................= {DeviceInfoDTP.Band2Gain.ToString()}");
+                        _log.Info($"[HeadsetViewModel] DTH DeviceInfoDTP.Band3Gain ..................= {DeviceInfoDTP.Band3Gain.ToString()}");
+                        _log.Info($"[HeadsetViewModel] DTH DeviceInfoDTP.Band4Gain ..................= {DeviceInfoDTP.Band4Gain.ToString()}");
+                        _log.Info($"[HeadsetViewModel] DTH DeviceInfoDTP.Band5Gain ..................= {DeviceInfoDTP.Band5Gain.ToString()}");
+                    }
+                    else
+                    {
+                        DeviceInfoDTP.IsEqualizerSupported = false;
+                        _log.Info($"[HeadsetViewModel] DTH GetIsEqualizerSupportedAsync .................... NO");
+                    }
+                }
+                else
+                {
+                    DeviceInfoDTP.IsPresetsSupported = false;
+                    _log.Info($"[HeadsetViewModel] DTH GetIsPresetsSupportedAsync ................... NO");
+                }
+                //------------------------------------------------------------------------------------
+
+                if (CurrentDeviceInfo!.IsMicNCIncomingSupported)
+                {
+                    DeviceInfoDTP.IsMicNCIncomingSupported = true;
+                    DeviceInfoDTP.MicNCIncoming = CurrentDeviceInfo!.MicNCIncoming;
+                    _log.Info($"[HeadsetViewModel] DTH DeviceInfoDTP.MicNCIncoming .............= {DeviceInfoDTP.MicNCIncoming.ToString()}");
+                }
+                else
+                {
+                    _log.Info($"[HeadsetViewModel] DTH GetIsMicNCIncomingSupportedAsync ............. NO");
+                }
+                //------------------------------------------------------------------------------------
+
+                if (CurrentDeviceInfo!.IsWearDetectionSupported)
+                {
+                    DeviceInfoDTP.IsWearDetectionSupported = true;
+                    _log.Info($"[HeadsetViewModel] DTH DeviceInfoDTP.GetIsWearDetectionSupportedAsync .............= {DeviceInfoDTP.IsWearDetectionSupported.ToString()}");
+                    if (DeviceInfoDTP.IsWearDetectionSupported)
+                    {
+                        uint wearDetectionValue = (uint)CurrentDeviceInfo!.WearDetection;
+                        if (GetBitValue(wearDetectionValue, 0) == 1)
+                            DeviceInfoDTP.WearDetectionFromDTP  = true;
+                        else
+                            DeviceInfoDTP.WearDetectionFromDTP  = false;
+
+                        if (GetBitValue(wearDetectionValue, 1) == 1)
+                            DeviceInfoDTP.IsWearDetectionPauseMusicEnableFromDTP = true;
+                        else
+                            DeviceInfoDTP.IsWearDetectionPauseMusicEnableFromDTP = false;
+
+                        if (GetBitValue(wearDetectionValue, 2) == 1)
+                            DeviceInfoDTP.IsWearDetectionMuteMicEnabledFromDTP = true;
+                        else
+                            DeviceInfoDTP.IsWearDetectionMuteMicEnabledFromDTP = false;
+
+                        if (GetBitValue(wearDetectionValue, 4) == 1)
+                            DeviceInfoDTP.WearDetectionQuickPauseAsyncFromDTP = 1;
+                        else
+                            DeviceInfoDTP.WearDetectionQuickPauseAsyncFromDTP = 0;
+
+                        //7024
+                        if (CurrentDeviceInfo!.ModelNumber.Contains("7024"))
+                        {
+                            if (GetBitsValue(wearDetectionValue, 5) == 1)
+                            {
+                                DeviceInfoDTP.WearDetectionSensitivityFromDTP = 1;
+                                DeviceInfoDTP.WearDetectionSensitivityFromDTP = 0;
+                            }
+                            else
+                            {
+                                DeviceInfoDTP.WearDetectionSensitivityFromDTP = 0;
+                                DeviceInfoDTP.WearDetectionSensitivityFromDTP = 1;
+                            }
+                        }
+
+                        //5024
+                        if (CurrentDeviceInfo!.ModelNumber.Contains("5024"))
+                        {
+                            if (GetBitValue(wearDetectionValue, 3) == 1)
+                            {
+                                DeviceInfoDTP.WearDetectionSensitivityFromDTP = 1;
+                                DeviceInfoDTP.WearDetectionSensitivityFromDTP = 0;
+                            }
+                            else
+                            {
+                                DeviceInfoDTP.WearDetectionSensitivityFromDTP = 0;
+                                DeviceInfoDTP.WearDetectionSensitivityFromDTP = 1;
+                            }
+                        }
+                        _log.Info($"[HeadsetViewModel] DTH DeviceInfoDTP.WearDetectionFromDTP .............= {DeviceInfoDTP.WearDetectionFromDTP.ToString()}");
+                        _log.Info($"[HeadsetViewModel] DTH DeviceInfoDTP.IsWearDetectionPauseMusicEnableFromDTP .............= {DeviceInfoDTP.IsWearDetectionPauseMusicEnableFromDTP.ToString()}");
+                        _log.Info($"[HeadsetViewModel] DTH DeviceInfoDTP.IsWearDetectionMuteMicEnabledFromDTP .............= {DeviceInfoDTP.IsWearDetectionPauseMusicEnableFromDTP.ToString()}");
+                        _log.Info($"[HeadsetViewModel] DTH DeviceInfoDTP.WearDetectionQuickPauseAsyncFromDTP .............= {DeviceInfoDTP.IsWearDetectionPauseMusicEnableFromDTP.ToString()}");
+                        _log.Info($"[HeadsetViewModel] DTH DeviceInfoDTP.WearDetectionSensitivityFromDTP .............= {DeviceInfoDTP.IsWearDetectionPauseMusicEnableFromDTP.ToString()}");
+                    }
+                }
+                else
+                {
+                    DeviceInfoDTP.IsWearDetectionSupported = false;
+                    _log.Info($"[HeadsetViewModel] DTH GetIsWearDetectionSupportedAsync ............. NO");
+                }
+                //------------------------------------------------------------------------------------
+                //DTH No this func
+                //if (await _deviceManager.GetIsBoomMicSupportedAsync(CurrentDeviceID.ToString()))
+                //{
+                //    DeviceInfoDTP.IsAnswerCallSupported = true;
+                //    DeviceInfoDTP.AnswerCall = await _deviceManager.GetBoomMicAsync(CurrentDeviceID.ToString());
+                //    _log.Info($"[HeadsetViewModel] DTH DeviceInfoDTP.AnswerCall .............= {DeviceInfoDTP.AnswerCall.ToString()}");
+                //}
+                //else
+                //{
+                //    DeviceInfoDTP.IsAnswerCallSupported = false;
+                //    _log.Info($"[HeadsetViewModel] DTH GetIsBoomMicSupportedAsync ............. NO");
+                //}
+                //------------------------------------------------------------------------------------
+
+                DeviceInfoDTP.SidetoneLevel = CurrentDeviceInfo!.SidetoneLevel;
+            }
+            catch (Exception ex)
+            {
+                _log!.Error($"[HeadsetViewModel] DTH UpdateDTPValue ...... {ex.ToString()}");
+            }
+        }
+
         /// <summary>
         /// Set Bit Value
         /// </summary>
@@ -1306,7 +1757,10 @@ namespace DDPM.UI.Plugin.ViewModels
             _log.Info($"[HeadsetViewModel] DoWork_PleaseWait .......");
             // Simulate time-consuming operation
             Thread.Sleep(500);
-            await UpdateDTPValue();
+            if (IsDTPReady)
+                await UpdateDTPValue();
+            else
+                await UpdateDTHValue();
             // Call DetectPageShow
             await DetectPageShow(model);
         }
@@ -1447,7 +1901,10 @@ namespace DDPM.UI.Plugin.ViewModels
                 DeviceInfoDTP!.MicNCIncoming = value;
                 _isIncomingAudioStatus = value;
                 _supportedIncomingAudio = false;
-                _deviceManager.SetMicNCIncomingAsync(CurrentDeviceInfo!.ID.ToString(), DeviceInfoDTP.MicNCIncoming).Wait();
+                if (IsDTPReady)
+                    _deviceManager.SetMicNCIncomingAsync(CurrentDeviceInfo!.ID.ToString(), DeviceInfoDTP.MicNCIncoming).Wait();
+                else
+                    _deviceManager.SetMicNCIncoming(value, CurrentDeviceInfo!.ID).Wait();
                 //_debouncerHeadset.Debounce("IncomingAudioCheck");
                 _supportedIncomingAudio = true; 
                 OnPropertyChanged(nameof(IncomingAudio_String));
@@ -1492,7 +1949,10 @@ namespace DDPM.UI.Plugin.ViewModels
                 DeviceInfoDTP!.MicNoiseCancellation = value;
                 _isMicNoiseCancellationStatus = value;
                 _supportedMicNoiseCancellation = false;
-                _deviceManager.SetMicNoiseCancellationAsync(CurrentDeviceInfo!.ID.ToString(), DeviceInfoDTP.MicNoiseCancellation).Wait();
+                if (IsDTPReady)
+                    _deviceManager.SetMicNoiseCancellationAsync(CurrentDeviceInfo!.ID.ToString(), DeviceInfoDTP.MicNoiseCancellation).Wait();
+                else
+                    _deviceManager.SetMicNoiseCancellation(value, CurrentDeviceInfo!.ID).Wait();
                 //_debouncerHeadset.Debounce("MicNoiseCancellationCheck");
                 _supportedMicNoiseCancellation = true;
                 OnPropertyChanged(nameof(MicNoiseCancellation_String));
@@ -1521,7 +1981,10 @@ namespace DDPM.UI.Plugin.ViewModels
             {
                 DeviceInfoDTP!.Sidetone = value;
                 _isSidetoneStatus = value;
-                _debouncerHeadset.Debounce("SidetoneCheck");
+                if (IsDTPReady)
+                    _debouncerHeadset.Debounce("SidetoneCheck");
+                else
+                    _deviceManager.SetSidetone(value, CurrentDeviceInfo!.ID).Wait();
                 OnPropertyChanged(nameof(Sidetone_String));
                 OnPropertyChanged(nameof(SidetoneSliderStatus));
             }
@@ -1541,7 +2004,10 @@ namespace DDPM.UI.Plugin.ViewModels
             {
                 DeviceInfoDTP!.SidetoneLevel = value;
                 _isidetoneSliderValue = value;
-                _debouncerHeadset.Debounce("SidetoneSlider");
+                if (IsDTPReady)
+                    _debouncerHeadset.Debounce("SidetoneSlider");
+                else
+                    _deviceManager.SetSidetoneLevel(value, CurrentDeviceInfo!.ID).Wait();
                 OnPropertyChanged(nameof(SidetoneSliderValue));
             }
         }
@@ -1706,7 +2172,10 @@ namespace DDPM.UI.Plugin.ViewModels
                         DeviceInfoDTP.AncMode = 1;
                         _isTransparencyChecked = false;
                         _isNoiseOffChecked = false;
-                        _debouncerHeadset.Debounce("ANC");
+                        if (IsDTPReady)
+                            _debouncerHeadset.Debounce("ANC");
+                        else
+                            _deviceManager.SetAncMode(1, CurrentDeviceInfo!.ID).Wait();
                         OnPropertyChanged(nameof(IsTransparencyChecked));
                         OnPropertyChanged(nameof(IsNoiseOffChecked));
                     }
@@ -1732,7 +2201,10 @@ namespace DDPM.UI.Plugin.ViewModels
                         DeviceInfoDTP.AncMode = 2;
                         _isActiveNoiseCancellingChecked = false;
                         _isNoiseOffChecked = false;
-                        _debouncerHeadset.Debounce("Transparency");
+                        if (IsDTPReady)
+                            _debouncerHeadset.Debounce("Transparency");
+                        else
+                            _deviceManager.SetAncMode(2, CurrentDeviceInfo!.ID).Wait();
                         OnPropertyChanged(nameof(IsActiveNoiseCancellingChecked));
                         OnPropertyChanged(nameof(IsNoiseOffChecked));
                         OnPropertyChanged("IsTransparencyChecked");
@@ -1760,7 +2232,10 @@ namespace DDPM.UI.Plugin.ViewModels
                         DeviceInfoDTP.AncMode = 0;
                         _isActiveNoiseCancellingChecked = false;
                         _isTransparencyChecked = false;
-                        _debouncerHeadset.Debounce("NoiseOff");
+                        if (IsDTPReady)
+                            _debouncerHeadset.Debounce("NoiseOff");
+                        else
+                            _deviceManager.SetAncMode(0, CurrentDeviceInfo!.ID).Wait();
                         OnPropertyChanged(nameof(IsActiveNoiseCancellingChecked));
                         OnPropertyChanged(nameof(IsTransparencyChecked));
                     }
@@ -1782,7 +2257,10 @@ namespace DDPM.UI.Plugin.ViewModels
             {
                 DeviceInfoDTP.AncGain = value;
                 _isTransparencylevelSliderValue = value;
-                _debouncerHeadset.Debounce("TransparencylevelSlider");
+                if (IsDTPReady)
+                    _debouncerHeadset.Debounce("TransparencylevelSlider");
+                else
+                    _deviceManager.SetAncGain(value, CurrentDeviceInfo!.ID).Wait();
                 OnPropertyChanged(nameof(TransparencylevelSliderValue));
             }
         }
@@ -1874,7 +2352,10 @@ namespace DDPM.UI.Plugin.ViewModels
                         _isSpeechBoostChecked = false;
                         _isTrebleBoostChecked = false;
                         _isCustomChecked = false;
-                        DeviceInfoDTP.SelectedPreset = 1;
+                        if (IsDTPReady)
+                            DeviceInfoDTP.SelectedPreset = 1;
+                        else
+                            _deviceManager.SetSelectedPreset(1, CurrentDeviceInfo!.ID).Wait();
                         _debouncerHeadset.Debounce("DefaultCheck");
                         OnPropertyChanged(nameof(IsBassBoostChecked));
                         OnPropertyChanged(nameof(IsSpeechBoostChecked));
@@ -1905,7 +2386,10 @@ namespace DDPM.UI.Plugin.ViewModels
                         _isTrebleBoostChecked = false;
                         _isCustomChecked = false;
                         DeviceInfoDTP.SelectedPreset = 3;
-                        _debouncerHeadset.Debounce("BassBoostCheck");
+                        if (IsDTPReady)
+                            _debouncerHeadset.Debounce("BassBoostCheck");
+                        else
+                            _deviceManager.SetSelectedPreset(3, CurrentDeviceInfo!.ID).Wait();
                         OnPropertyChanged(nameof(IsDefaultChecked));
                         OnPropertyChanged(nameof(IsSpeechBoostChecked));
                         OnPropertyChanged(nameof(IsTrebleBoostChecked));
@@ -1935,7 +2419,10 @@ namespace DDPM.UI.Plugin.ViewModels
                         _isTrebleBoostChecked = false;
                         _isCustomChecked = false;
                         DeviceInfoDTP.SelectedPreset = 2;
-                        _debouncerHeadset.Debounce("SpeechBoostCheck");
+                        if (IsDTPReady)
+                            _debouncerHeadset.Debounce("SpeechBoostCheck");
+                        else
+                            _deviceManager.SetSelectedPreset(2, CurrentDeviceInfo!.ID).Wait();
                         OnPropertyChanged(nameof(IsDefaultChecked));
                         OnPropertyChanged(nameof(IsBassBoostChecked));
                         OnPropertyChanged(nameof(IsTrebleBoostChecked));
@@ -1965,7 +2452,10 @@ namespace DDPM.UI.Plugin.ViewModels
                         _isSpeechBoostChecked = false;
                         _isCustomChecked = false;
                         DeviceInfoDTP.SelectedPreset = 4;
-                        _debouncerHeadset.Debounce("TrebleBoostCheck");
+                        if (IsDTPReady)
+                            _debouncerHeadset.Debounce("TrebleBoostCheck");
+                        else
+                            _deviceManager.SetSelectedPreset(4, CurrentDeviceInfo!.ID).Wait();
                         OnPropertyChanged(nameof(IsDefaultChecked));
                         OnPropertyChanged(nameof(IsBassBoostChecked));
                         OnPropertyChanged(nameof(IsSpeechBoostChecked));
@@ -1996,7 +2486,10 @@ namespace DDPM.UI.Plugin.ViewModels
                         _isTrebleBoostChecked = false;
                         _audioEqualizerGridPageShow = true;
                         DeviceInfoDTP.SelectedPreset = 101;
-                        _debouncerHeadset.Debounce("CustomCheck");
+                        if (IsDTPReady)
+                            _debouncerHeadset.Debounce("CustomCheck");
+                        else
+                            _deviceManager.SetSelectedPreset(101, CurrentDeviceInfo!.ID).Wait();
                         OnPropertyChanged(nameof(IsDefaultChecked));
                         OnPropertyChanged(nameof(IsBassBoostChecked));
                         OnPropertyChanged(nameof(IsSpeechBoostChecked));
@@ -2554,7 +3047,10 @@ namespace DDPM.UI.Plugin.ViewModels
                 _isBusyLightStatus = value;
                 DeviceInfoDTP.BusyLight = value;
                 _supportedBusyLight = false;
-                _deviceManager.SetBusyLightAsync(CurrentDeviceInfo!.ID.ToString(), DeviceInfoDTP.BusyLight).Wait();
+                if (IsDTPReady)
+                    _deviceManager.SetBusyLightAsync(CurrentDeviceInfo!.ID.ToString(), DeviceInfoDTP.BusyLight).Wait();
+                else
+                    _deviceManager.SetBusyLight(value, CurrentDeviceInfo!.ID).Wait();
                 _supportedBusyLight = true;
                 //_debouncerHeadset.Debounce("BusyLightCheck");
                 OnPropertyChanged("BusyLight_String");
@@ -2617,7 +3113,10 @@ namespace DDPM.UI.Plugin.ViewModels
                     {
                         _isAllChecked = false;
                         DeviceInfoDTP.VoiceGuidance = false;
-                        _debouncerHeadset.Debounce("EssentialCheck");
+                        if (IsDTPReady)
+                            _debouncerHeadset.Debounce("EssentialCheck");
+                        else
+                            _deviceManager.SetVoiceGuidance(false, CurrentDeviceInfo!.ID).Wait();
                         OnPropertyChanged(nameof(IsAllChecked));
                     }
                 }
@@ -2644,7 +3143,10 @@ namespace DDPM.UI.Plugin.ViewModels
                     {
                         _isEssentialChecked = false;
                         DeviceInfoDTP.VoiceGuidance = true;
-                        _debouncerHeadset.Debounce("AllCheck");
+                        if (IsDTPReady)
+                            _debouncerHeadset.Debounce("AllCheck");
+                        else
+                            _deviceManager.SetVoiceGuidance(true, CurrentDeviceInfo!.ID).Wait();
                         OnPropertyChanged(nameof(IsEssentialChecked));
                     }
                 }
