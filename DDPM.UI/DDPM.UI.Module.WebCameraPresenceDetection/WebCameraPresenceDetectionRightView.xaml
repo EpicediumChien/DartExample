@@ -133,7 +133,7 @@
                                             <UXControls:UXTextBlock Text="{Binding [WebCameraPresenceDetection.7], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource ModuleItemStyle}" VerticalAlignment="Center" />
                                             <ComboBox Style="{StaticResource DdpmComboBoxStyle}" HorizontalAlignment="Right" VerticalAlignment="Center"  ItemsSource="{Binding Delay_ItemsCollection}"
                                         SelectedItem="{Binding SelectedDelay, Mode=TwoWay}"
-                                        IsEnabled="{Binding Path= IsChecked_WalkAwayLock}"
+                                        IsEnabled="{Binding Path= IsEnable_WalkAwayLock}"
                                         TabIndex="1" DisplayMemberPath="DisplayText" Width="184" Height="40" IsTabStop="{Binding isTabStoppable}"/>
                                         </Grid>
                                         <Grid Margin="0,20,0,0">
@@ -147,7 +147,7 @@
                                             <UXControls:UXTextBlock Text="{Binding [WebCameraPresenceDetection.9], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource ModuleItemStyle}" VerticalAlignment="Center" />
                                             <ComboBox Style="{StaticResource DdpmComboBoxStyle}" HorizontalAlignment="Right" VerticalAlignment="Center"  ItemsSource="{Binding SnoozeLength_ItemsCollection}"
                                   SelectedItem="{Binding SelectedSnoozeLength, Mode=TwoWay}"
-                                  IsEnabled="{Binding Path= IsSnoozeEnable}"
+                                  IsEnabled="{Binding Path= IsEnable_SnoozeLength}"
                                   TabIndex="1" DisplayMemberPath="DisplayText" Width="184" Height="40" IsTabStop="{Binding isTabStoppable}" SelectionChanged="onSoozeLegthcbxSelectionChanged" />
                                         </Grid>
                                     </StackPanel>
