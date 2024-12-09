@@ -4161,18 +4161,21 @@ namespace DDPM.CLI.Plugins.Display
                     }
                     else if (commandLineInput.DeviceIndex.Count != 0)
                     {
+                        writelog($"ActiveInputSource set index entry");
                         serviceTagList = _AllInfoMonitors.DistinctBy(_=>_.edid.ServiceTag).ToDictionary(_ => _.edid.ServiceTag, _ => _.Index.ToString());
                         targetList = commandLineInput.DeviceIndex;
                         outCount = commandLineInput.DeviceIndex.Count;
                     }
                     else if (commandLineInput.ServiceTag.Count != 0)
                     {
+                        writelog($"ActiveInputSource set ServiceTag entry");
                         serviceTagList = _AllInfoMonitors.DistinctBy(_ => _.edid.ServiceTag).ToDictionary(_ => _.edid.ServiceTag, _ => _.edid.ServiceTag);
                         targetList = commandLineInput.ServiceTag;
                         outCount = commandLineInput.ServiceTag.Count;
                     }
                     else if (commandLineInput.Model.Count != 0)
                     {
+                        writelog($"ActiveInputSource set Model entry");
                         serviceTagList = _AllInfoMonitors.DistinctBy(_ => _.edid.ServiceTag).ToDictionary(_ => _.edid.ServiceTag, _ => _.modelName);
                         targetList = commandLineInput.Model;
                         outCount = commandLineInput.Model.Count;
@@ -4183,6 +4186,7 @@ namespace DDPM.CLI.Plugins.Display
                     {
                         foreach (string target in targetList)
                         {
+                            writelog($"ActiveInputSource set in progress");
                             var targetTemp = serviceTagList.FirstOrDefault(_=> _.Value == target.ToUpper());
                             if (targetTemp.Value == null)
                             {
@@ -4258,6 +4262,7 @@ namespace DDPM.CLI.Plugins.Display
                                     }
                                     System.Console.WriteLine(_Input_RESPONSE.ToJson());
                                     output += "\n" + _Input_RESPONSE.ToJson();
+                                    writelog($"ActiveInputSource set fail {output}");
                                     return ((int)CLI_ExitCode.fail_Value, output);
                                 }
                             }
@@ -4268,7 +4273,7 @@ namespace DDPM.CLI.Plugins.Display
                                 _Input_RESPONSE.Message += $"{commandLineInput.Options[0].Option_Value}";
                                 System.Console.WriteLine(_Input_RESPONSE.ToJson());
                                 output += "\n" + _Input_RESPONSE.ToJson();
-                                writelog($"ActiveInputSource set idx fail {output}");
+                                writelog($"ActiveInputSource set fail {output}");
                                 return ((int)CLI_ExitCode.fail_Value, output);
                             }
                         }
