@@ -999,9 +999,10 @@ namespace DDPM.CLI.Plugins.Display
                                     G_ConnectedDevices_RESPONSE.Index = change_0base_to_1base((monitor.Index).ToString());
                                     G_ConnectedDevices_RESPONSE.ServiceTag = monitor.edid.ServiceTag;
                                     G_ConnectedDevices_RESPONSE.FWVer = monitor.FwVersion;
-
+                                    
                                     if (string.IsNullOrWhiteSpace(monitor.FwVersion))
                                     {
+                                        writelog("FWVersion: IsNullOrWhiteSpace");
                                         G_ConnectedDevices_RESPONSE.PID = "N/A";
                                         G_ConnectedDevices_RESPONSE.Result = "Fail";
                                         G_ConnectedDevices_RESPONSE.Message = "Fail_VCPCapability";
@@ -1039,6 +1040,7 @@ namespace DDPM.CLI.Plugins.Display
 
                                         if (string.IsNullOrWhiteSpace(_AllInfoMonitors[Convert.ToInt32(idx)].FwVersion))
                                         {
+                                            writelog("FWVersion: IsNullOrWhiteSpace Fail_VCPCapability");
                                             G_ConnectedDevices_RESPONSE.PID = "N/A";
                                             G_ConnectedDevices_RESPONSE.Result = "Fail";
                                             G_ConnectedDevices_RESPONSE.Message = "Fail_VCPCapability";
@@ -1057,6 +1059,7 @@ namespace DDPM.CLI.Plugins.Display
                                     }
                                     else
                                     {
+                                        writelog("Convert.ToInt32(idx) >= _AllInfoMonitors.Count Fail_VCPCapability");
                                         G_ConnectedDevices_RESPONSE.Index = change_0base_to_1base(idx);
                                         G_ConnectedDevices_RESPONSE.ServiceTag = _AllInfoMonitors[Convert.ToInt32(idx)].edid.ServiceTag;
                                         G_ConnectedDevices_RESPONSE.Result = "Fail";
@@ -1085,6 +1088,7 @@ namespace DDPM.CLI.Plugins.Display
 
                                         if (string.IsNullOrWhiteSpace(mo.FwVersion))
                                         {
+                                            writelog("FWVersion: IsNullOrWhiteSpace Fail_VCPCapability");
                                             G_ConnectedDevices_RESPONSE.PID = "N/A";
                                             G_ConnectedDevices_RESPONSE.Result = "Fail";
                                             G_ConnectedDevices_RESPONSE.Message = "Fail_VCPCapability";
@@ -1124,6 +1128,7 @@ namespace DDPM.CLI.Plugins.Display
 
                                         if (string.IsNullOrWhiteSpace(mo.FwVersion))
                                         {
+                                            writelog("FWVersion: IsNullOrWhiteSpace Fail_VCPCapability");
                                             G_ConnectedDevices_RESPONSE.PID = "N/A";
                                             G_ConnectedDevices_RESPONSE.Result = "Fail";
                                             G_ConnectedDevices_RESPONSE.Message = "Fail_VCPCapability";
