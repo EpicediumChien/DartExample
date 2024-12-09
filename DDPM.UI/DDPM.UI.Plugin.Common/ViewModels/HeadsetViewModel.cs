@@ -1812,11 +1812,11 @@ namespace DDPM.UI.Plugin.ViewModels
         #region HeadsetAudioSettings ToggleSwitch Binding
 
         //Outgoing Audio ToggleSwitch
-        private string _isOutgoingAudio_String = "ON";
+        private string _isOutgoingAudio_String = Strings.On ;
 
         public string OutgoingAudio_String
         {
-            get => _isOutgoingAudioStatus ? "ON" : "OFF";
+            get => _isOutgoingAudioStatus ? Strings.On : Strings.Off;
         }
 
         private bool _supportedOutgoingAudio = true;
@@ -1857,11 +1857,11 @@ namespace DDPM.UI.Plugin.ViewModels
         }
 
         //Incoming Audio ToggleSwitch
-        private string _isIncomingAudio_String = "ON";
+        private string _isIncomingAudio_String = Strings.On ;
 
         public string IncomingAudio_String
         {
-            get => _isIncomingAudioStatus ? "ON" : "OFF";
+            get => _isIncomingAudioStatus ? Strings.On : Strings.Off;
         }
 
         private bool _supportedIncomingAudio = true;
@@ -1905,11 +1905,11 @@ namespace DDPM.UI.Plugin.ViewModels
         }
 
         //MicNoiseCancellation ToggleSwitch
-        private string _isMicNoiseCancellation_String = "ON";
+        private string _isMicNoiseCancellation_String = Strings.On ;
 
         public string MicNoiseCancellation_String
         {
-            get => _isMicNoiseCancellationStatus ? "ON" : "OFF";
+            get => _isMicNoiseCancellationStatus ? Strings.On : Strings.Off;
         }
 
         private bool _supportedMicNoiseCancellation = true;
@@ -1957,7 +1957,7 @@ namespace DDPM.UI.Plugin.ViewModels
 
         public string Sidetone_String
         {
-            get => _isSidetoneStatus ? "ON" : "OFF";
+            get => _isSidetoneStatus ? Strings.On : Strings.Off;
         }
 
         private bool _isSidetoneStatus;// = false;
@@ -2584,11 +2584,11 @@ namespace DDPM.UI.Plugin.ViewModels
         #region HeadsetAutomatedActions ToggleSwitch Binding
 
         //Wear Detection ToggleSwitch
-        private string _isWearDetection_String = "ON";
+        private string _isWearDetection_String = Strings.On ;
 
         public string WearDetection_String
         {
-            get => _isWearDetectionStatus ? "ON" : "OFF";
+            get => _isWearDetectionStatus ? Strings.On : Strings.Off;
         }
 
         private bool _supportedWearDetection = true;
@@ -2628,11 +2628,11 @@ namespace DDPM.UI.Plugin.ViewModels
         }
 
         //PauseMusic ToggleSwitch
-        private string _isPauseMusic_String = "ON";
+        private string _isPauseMusic_String = Strings.On ;
 
         public string PauseMusic_String
         {
-            get => _isPauseMusicStatus ? "ON" : "OFF";
+            get => _isPauseMusicStatus ? Strings.On : Strings.Off;
         }
 
         private bool _isPauseMusicStatus = false;
@@ -2661,11 +2661,11 @@ namespace DDPM.UI.Plugin.ViewModels
         }
 
         //Mute Microphone ToggleSwitch
-        private string _isMuteMicrophone_String = "ON";
+        private string _isMuteMicrophone_String = Strings.On ;
 
         public string MuteMicrophone_String
         {
-            get => _isMuteMicrophoneStatus ? "ON" : "OFF";
+            get => _isMuteMicrophoneStatus ? Strings.On : Strings.Off;
         }
 
         private bool _isMuteMicrophoneStatus = false;
@@ -2694,11 +2694,11 @@ namespace DDPM.UI.Plugin.ViewModels
         }
 
         //Quick Pause ToggleSwitch
-        private string _isQuickPause_String = "ON";
+        private string _isQuickPause_String = Strings.On ;
 
         public string QuickPause_String
         {
-            get => _isQuickPauseStatus ? "ON" : "OFF";
+            get => _isQuickPauseStatus ? Strings.On : Strings.Off;
         }
 
         private bool _isQuickPauseStatus = false;
@@ -2724,11 +2724,11 @@ namespace DDPM.UI.Plugin.ViewModels
         }
 
         //AnswerCalls ToggleSwitch
-        private string _isAnswerCalls_String = "ON";
+        private string _isAnswerCalls_String = Strings.On ;
 
         public string AnswerCalls_String
         {
-            get => _isAnswerCallsStatus ? "ON" : "OFF";
+            get => _isAnswerCallsStatus ? Strings.On : Strings.Off;
         }
 
         private bool _supportedAnswerCalls = true;
@@ -3003,11 +3003,11 @@ namespace DDPM.UI.Plugin.ViewModels
         #region HeadsetDeviceSettings ToggleSwitch Binding
 
         //BusyLight ToggleSwitch
-        private string _isBusyLight_String = "ON";
+        private string _isBusyLight_String = Strings.On ;
 
         public string BusyLight_String
         {
-            get => _isBusyLightStatus ? "ON" : "OFF";
+            get => _isBusyLightStatus ? Strings.On : Strings.Off;
         }
 
         private bool _supportedBusyLight = true;
