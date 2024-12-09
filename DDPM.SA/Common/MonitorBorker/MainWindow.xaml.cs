@@ -23,6 +23,7 @@ namespace DDPM.MonitorBorker
         private bool b_AUTO_ColorPresetConfig = true;// Dean 0626 SAST issue. change to private without static
 
         private bool b_SmartHDR_ON= false;
+        private bool b_Is_Game_DeviceName = false; // jim add 20241207
 
         private List<string> _supported_preset = new List<string>();
 
@@ -63,14 +64,15 @@ namespace DDPM.MonitorBorker
         }
 
         // jim add 20240605
-        public void Set_AUTO_ColorPresetConfig(bool blAUTO, bool blSmartHDR_ON, List<string> ColorPresetSupportList)
+        public void Set_AUTO_ColorPresetConfig(bool blAUTO, bool Is_Game_DeviceName, bool blSmartHDR_ON, List<string> ColorPresetSupportList)
         {
             b_AUTO_ColorPresetConfig = blAUTO;
             b_SmartHDR_ON = blSmartHDR_ON;
+            b_Is_Game_DeviceName = Is_Game_DeviceName; // jim add 20241207
             _supported_preset = ColorPresetSupportList;
 
-            if (ColorPresetWin != null) // 20240809 jim add
-                ColorPresetWin.Set_AUTO_ColorPresetConfig(b_AUTO_ColorPresetConfig, b_SmartHDR_ON, _supported_preset);
+            if (ColorPresetWin != null) // 20240809 jim add , 20241207 modify for The DDPM color profile can not be applied by DDPM on Smart HDR mode.(Gaming monitor ex: AW2724DM)
+                ColorPresetWin.Set_AUTO_ColorPresetConfig(b_AUTO_ColorPresetConfig, b_Is_Game_DeviceName ,b_SmartHDR_ON, _supported_preset);
         }
 
         // jim add 20240620

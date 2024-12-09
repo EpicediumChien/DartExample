@@ -380,7 +380,7 @@
                 </ItemsControl>
             </Grid>
             <!--Battery-->
-            <Grid VerticalAlignment="Bottom" Height="200">
+            <Grid VerticalAlignment="Bottom" MinHeight="200">
                 <Border Background="Transparent" MouseDown="PushBack"></Border>
                 <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Bottom">
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">

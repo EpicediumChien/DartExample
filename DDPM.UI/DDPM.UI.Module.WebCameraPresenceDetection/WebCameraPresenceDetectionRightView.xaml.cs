@@ -195,8 +195,10 @@ namespace DDPM.UI.Module.WebCameraPresenceDetection
         private void SetUPDToDefaultStatus()
         {
             //_vm.IsChecked_ProximitySensor = false;
-            _vm.IsChecked_WakeOnApproach = false;
-            _vm.IsChecked_WalkAwayLock = false;
+
+            // jim add for PIMS-328192
+            //_vm.IsChecked_WakeOnApproach = false;
+            //_vm.IsChecked_WalkAwayLock = false;
         }
 
         ~WebCameraPresenceDetectionRightView()

@@ -382,7 +382,7 @@ namespace DDPM.UI.Module.Color
                 {
                     //ColorViewModel vm = (ColorViewModel)DataContext;
                     if (DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo != null)
-                        DdpmCommonHelper.DeviceManagerSA.AutoSetColorPresetForMonitorConfig(DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo, "OFF", vm.IsAutoColorPreset_Lock);
+                        DdpmCommonHelper.DeviceManagerSA.AutoSetColorPresetForMonitorConfig(DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo, "OFF", vm.Is_Game_DeviceName, vm.IsAutoColorPreset_Lock); // jim 20241207 modify for The DDPM color profile can not be applied by DDPM on Smart HDR mode.(Gaming monitor ex: AW2724DM)
                     //DdpmCommonHelper.DeviceManagerSA.AutoSetColorPresetForMonitorConfig((vm.MyModule.SelectedHomeDevice.MonitorInfo.Index).ToString(), "off");
                     //int i = 0;
 
@@ -426,7 +426,7 @@ namespace DDPM.UI.Module.Color
                 this.Dispatcher.Invoke((Action)(() =>
                 {
                     if (DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo != null)
-                        DdpmCommonHelper.DeviceManagerSA.AutoSetColorPresetForMonitorConfig(DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo, "ON", vm.IsAutoColorPreset_Lock);
+                        DdpmCommonHelper.DeviceManagerSA.AutoSetColorPresetForMonitorConfig(DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo, "ON", vm.Is_Game_DeviceName , vm.IsAutoColorPreset_Lock); // jim 20241207 modify for The DDPM color profile can not be applied by DDPM on Smart HDR mode.(Gaming monitor ex: AW2724DM)
                     //DdpmCommonHelper.DeviceManagerSA.AutoSetColorPresetForMonitorConfig((vm.MyModule.SelectedHomeDevice.MonitorInfo.Index).ToString(), "on");
                     //int j = 0;
                 })); 
