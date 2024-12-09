@@ -1,4 +1,5 @@
 ﻿using DDPM.SA.Common.Settings;
+using Dell.Client.Framework.Common.Exceptions;
 using Dell.Client.Framework.Security;
 using Dell.Client.Framework.Security.Interfaces;
 using System;
@@ -73,7 +74,7 @@ namespace DDPM.SA.Common.Method
                 exeFilePath = "";
                 return false;
             }
-        }
+        }        
 
         private string GetExeFilePath(string directory)
         {
@@ -90,19 +91,31 @@ namespace DDPM.SA.Common.Method
                     //    exeFiles = Directory.GetFiles(absolutePath, "*.exe");
 
                     //for checkmarx test, [code part1]
-                    var options = new EnumerationOptions { RecurseSubdirectories = false, IgnoreInaccessible = true };
-                    exeFiles = Directory.GetFiles(directory, "*.exe", options);
-                    if(exeFiles.Length > 0)
-                        _logs?.DebugMsg_1(nameof(Unzip) + " [part1] Get exe files in folder success");
+                    //var options = new EnumerationOptions { RecurseSubdirectories = false, IgnoreInaccessible = true };
+                    //exeFiles = Directory.GetFiles(directory, "*.exe", options);
+                    //if(exeFiles.Length > 0)
+                    //    _logs?.DebugMsg_1(nameof(Unzip) + " [part1] Get exe files in folder success");
 
                     //for checkmarx test, [code part2]
-                    foreach (var file in Directory.EnumerateFiles(directory, "*.exe"))
+                    //foreach (var file in Directory.EnumerateFiles(directory, "*.exe"))
+                    //{
+                    //    if (Path.GetExtension(file).Equals(".exe", StringComparison.OrdinalIgnoreCase))
+                    //    {
+                    //        _logs?.DebugMsg_1(nameof(Unzip) + " [part2] Get exe files in folder success");
+                    //        return file;
+                    //    }
+                    //}
+
+                    //for checkmarx test, [code part3]
+                    string info = string.Empty;
+                    if (DDPMFileSecurity.ValidateFilePath(directory, out info))
                     {
-                        if (Path.GetExtension(file).Equals(".exe", StringComparison.OrdinalIgnoreCase))
-                        {
-                            _logs?.DebugMsg_1(nameof(Unzip) + " [part2] Get exe files in folder success");
-                            return file;
-                        }
+                        exeFiles = Directory.GetFiles(directory, "*.exe");
+                    }
+                    else
+                    {
+                        _logs?.DebugMsg_1(nameof(Unzip) + "Get exe files in folder failed due to [ValidateFilePath] return false");
+                        _logs?.DebugMsg_1(nameof(Unzip) + $"Detail: {info}");
                     }
                 }
             }
