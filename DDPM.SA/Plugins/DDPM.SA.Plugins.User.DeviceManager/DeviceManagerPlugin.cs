@@ -12845,22 +12845,24 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         }
 
         //Derek 1205 for Debug
-        //private void CreateWebcamEventForDebug_ShowUI()
-        //{
-        //    _IsZoomMeetingActive = true;
-        //    _ZoomMeetingType = ZoomMeetingType.CONF_3RD_EVENT_MEETING;
+        private void CreateWebcamEventForDebug_ShowUI()
+        {
+            _IsZoomMeetingActive = true;
+            _IsZoomScreenShareActive = false;
+            _ZoomMeetingType = ZoomMeetingType.CONF_3RD_EVENT_MEETING;
 
-        //    HandleQAM();
-        //    _IsZoomMeetingActive = false;
-        //    _ZoomMeetingType = ZoomMeetingType.ZOOM_MEETING_TYPE_UNKNOW;
-        //}
+            HandleQAM();
+            //_IsZoomMeetingActive = false;
+            //_ZoomMeetingType = ZoomMeetingType.ZOOM_MEETING_TYPE_UNKNOW;
+        }
 
-        //private void CreateWebcamEventForDebug_HideUI()
-        //{
-        //    _IsZoomScreenShareActive = true;
+        private void CreateWebcamEventForDebug_HideUI()
+        {
+            _IsZoomScreenShareActive = true;
+            _IsZoomMeetingActive = true;
 
-        //    HandleQAM();
-        //}
+            HandleQAM();
+        }
 
         private void Keyboard_KeyUpProc(object sender, KeyEventArgs e)
         {
@@ -12869,26 +12871,38 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             bool _altPressed = _HotkeyPlugin.IsKeyPushedDown(System.Windows.Forms.Keys.Menu);
             bool _ctrlPressed = _HotkeyPlugin.IsKeyPushedDown(System.Windows.Forms.Keys.ControlKey);
             bool _shiftPressed = _HotkeyPlugin.IsKeyPushedDown(System.Windows.Forms.Keys.ShiftKey);
+
             //will register as ALT+Z ?
             if (_altPressed && strKey.Equals("Z"))
             {
-                if (1 == GetWebcamDeviceCount())
+                int devCnt = GetWebcamDeviceCount();
+
+                writelog($"ALT+Z conditons: devcnt = {devCnt}, " +
+                    $"global setting is {_GlobalSettingParam.GlobalSetting_WidgetSettings.EnableQuickAccessWidget}");
+
+                //Derek PIMS PIMS-329759 Problem 1
+                if (1 == devCnt && _GlobalSettingParam != null &&
+                    _GlobalSettingParam.GlobalSetting_WidgetSettings != null &&
+                    _GlobalSettingParam.GlobalSetting_WidgetSettings.EnableQuickAccessWidget)
+                {
                     CallQAM_UI(this);
+                }
+
                 return;
             }
             //Derek 1205 for Debug
-            //else if (_altPressed && strKey.Equals("A"))
-            //{
-            //    CreateWebcamEventForDebug_ShowUI();
+            else if (_altPressed && strKey.Equals("A"))
+            {
+                CreateWebcamEventForDebug_ShowUI();
 
-            //    return;
-            //}
-            //else if (_altPressed && strKey.Equals("H"))
-            //{
-            //    CreateWebcamEventForDebug_HideUI();
+                return;
+            }
+            else if (_altPressed && strKey.Equals("H"))
+            {
+                CreateWebcamEventForDebug_HideUI();
 
-            //    return;
-            //}
+                return;
+            }
 
             //osd
             GlobalSettingParam result = GetGlobalSettingParam().Result;
