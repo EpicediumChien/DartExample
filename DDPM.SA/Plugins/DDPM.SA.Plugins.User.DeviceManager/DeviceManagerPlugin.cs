@@ -10560,7 +10560,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
 
             //close DDPM UI
-            CloseDDPM();
+            //CloseDDPM();  //Derek 1209
 
             writelog($"CallQAM_UI: done");
 
@@ -10653,7 +10653,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             //    QAMClose();
             //}
 
-            QAMClose();
+            //Derek 1209
+            //QAMClose();
 
             return Task.CompletedTask;
         }
