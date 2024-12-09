@@ -225,9 +225,11 @@ namespace DDPM.UI.Plugin.ViewModels
 
             CheckCopilot();
             Model = MappingModel(CurrentDeviceInfo.ModelNumber);
-            Name = CurrentDeviceInfo.Name;
+            //Name = CurrentDeviceInfo.Name;
             if (EOLKBList.Contains(Model) || EOLMouseList.Contains(Model))
                 Name = DdpmCommonHelper.MappingEOLName(Model);
+            else
+                Name = CurrentDeviceInfo.Name.Replace(Model, "").Trim();
 
             if (CurrentDeviceInfo.Type == DeviceType.PhysicalWiredDock || CurrentDeviceInfo.Type == DeviceType.LogicalDock)
             {
@@ -261,7 +263,7 @@ namespace DDPM.UI.Plugin.ViewModels
             {
                 case DeviceType.PhysicalWebcam:
                     ConnectionType = "Wired";
-                    Name = Name.Replace(Model, "").Trim();
+                    //Name = Name.Replace(Model, "").Trim();
                     break;
                 case DeviceType.PhysicalAudioDongle:
                 case DeviceType.PhysicalBluetoothAudio:

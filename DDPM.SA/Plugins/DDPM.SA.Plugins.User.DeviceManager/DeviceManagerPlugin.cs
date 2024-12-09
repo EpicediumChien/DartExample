@@ -40,6 +40,7 @@ using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Data;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
@@ -907,7 +908,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         }
 
         // 20240619 jim modify
-        public async Task<bool> WriteColorPreset(MonitorInfo m, string ColorPreset_Name, int colorPresetRunType = 0, string reqAppName = null, bool showOSD = true)
+        public async Task<bool> WriteColorPreset(MonitorInfo m, string ColorPreset_Name, int colorPresetRunType = 0, bool blIs_Game_DeviceName = false, bool blSmartHDR_ON = false, string reqAppName = null, bool showOSD = true)
         {
             writelog("DeviceManagerPlugin received WriteColorPreset requested ...");
 
@@ -965,7 +966,44 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             //{
             //write VCP over display manager
             //r = SetVCPCapability(m, "colorpreset", ColorPreset_Name).Result;
-            r = await Task.Run(() => SetVCPCapability(m, "colorpreset", ColorPreset_Name).Result).ConfigureAwait(false);
+
+            // jim add  for The DDPM color profile can not be applied by DDPM on Smart HDR mode.(Gaming monitor ex: AW2724DM)
+            if (blIs_Game_DeviceName && blSmartHDR_ON)
+            {                
+                try
+                {
+                    uint title = (uint)Gaming_Supported.HDRType;
+                    uint param = 0;
+
+                    if (string.Equals(ColorPreset_Name, "Off", StringComparison.OrdinalIgnoreCase))
+                        param = 0x00;
+                    else if (string.Equals(ColorPreset_Name, "Desktop", StringComparison.OrdinalIgnoreCase))
+                        param = 0x01;
+                    else if (string.Equals(ColorPreset_Name, "Movie HDR", StringComparison.OrdinalIgnoreCase))
+                        param = 0x02;
+                    else if (string.Equals(ColorPreset_Name, "Game HDR", StringComparison.OrdinalIgnoreCase))
+                        param = 0x03;
+                    else if (string.Equals(ColorPreset_Name, "DisplayHDR", StringComparison.OrdinalIgnoreCase))
+                        param = 0x04;
+                    else if (string.Equals(ColorPreset_Name, "Custom Color HDR", StringComparison.OrdinalIgnoreCase))
+                        param = 0x05;
+                    else if (string.Equals(ColorPreset_Name, "HDR Peak 1000", StringComparison.OrdinalIgnoreCase))
+                        param = 0x06;
+                    else if (string.Equals(ColorPreset_Name, "Disable", StringComparison.OrdinalIgnoreCase))
+                        param = 0x0E;
+
+                    writelog($"[DeviceMangerPlugin] {nameof(SetGaming_HDRType)} title : {title}, param : {param}");
+                    r= SetVCPCapability(m, VcpCodeList.VCPctr["Gaming"], title + param).Result;
+                }
+                catch (Exception ex)
+                {
+                    writelog($"[DeviceMangerPlugin] {nameof(SetGaming_HDRType)} Error : {ex.ToString()}");
+                }
+            }
+            else
+            {
+                r = await Task.Run(() => SetVCPCapability(m, "colorpreset", ColorPreset_Name).Result).ConfigureAwait(false);
+            }            
 
             // 11/23 Wayn Add
             bool result = false;
@@ -1321,42 +1359,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             Thread.Sleep(100);
 
             return;
-        }
-
-        /// <summary>
-        /// 啟動 MonitorBorker 執行抓前景active app name
-        /// </summary>
-        /// <param name="m"></param>
-        public void Launch_MonitorBorker(MonitorInfo m, bool SmartHDR_ON = false)
-        {
-            Log.Info($"Launch_MonitorBorker requested ...");
-            writelog("DeviceManagerPlugin Launch_MonitorBorker requested ...");
-
-            if (m != null)
-            {
-                var v = (MonitorInfo)m;
-
-                System.Windows.Forms.Screen s = System.Windows.Forms.Screen.AllScreens.FirstOrDefault(x => x.DeviceName == v.DisplayName);
-
-                if (s != null)
-                {
-                    // jim modify 20240605
-                    if (MonitorBorkerWin == null)
-                    {
-                        MonitorBorkerWin = new MainWindow(this, m);
-
-                        MonitorBorkerWin.Show();
-                        MonitorBorkerWin.Set_AUTO_ColorPresetConfig(true, SmartHDR_ON, _SupportedColorPreset);
-                    }
-                    else
-                    {
-                        //MonitorBorkerWin.Close();
-                    }
-                }
-            }
-
-            return;
-        }
+        }        
 
         /// <summary>
         /// 回傳目前螢幕在 ColorSetting setting config的 index number
@@ -1526,7 +1529,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         /// </summary>
         /// <param name="mo"></param> 螢幕資訊
         /// <param name="on_off"></param> 啟用/關閉 自動根據App name 去設定 color preset
-        public Task<bool> AutoSetColorPresetForMonitorConfig(MonitorInfo mo, string on_off, bool Islock = false)
+        public Task<bool> AutoSetColorPresetForMonitorConfig(MonitorInfo mo, string on_off, bool Is_Game_DeviceName = false, bool Islock = false)
         {
             writelog("DeviceManagerPlugin received AutoSetColorPresetForMonitorConfig requested ...");
 
@@ -1538,7 +1541,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
             bool SmartHDR_ON = GetHDRStatus(mo).Result;
 
-            var temp = _ColorPresetPlugin.AutoSetColorPresetForMonitorConfig(mo, on_off, _SettingsPlugin, this, SmartHDR_ON).Result;
+            var temp = _ColorPresetPlugin.AutoSetColorPresetForMonitorConfig(mo, on_off, _SettingsPlugin, this, Is_Game_DeviceName, SmartHDR_ON).Result;
 
             return Task.FromResult(temp);
         }

@@ -11,6 +11,7 @@
 #endregion
 
 using DDPM.SA.Common;
+using DDPM.SA.Resources.Helper;
 using Dell.Client.Framework.Common;
 using Dell.Client.Framework.Common.Annotations;
 using Dell.Client.Framework.Common.PluginConditions;
@@ -2018,12 +2019,18 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
         private void _iCTKMessageHelper_IsZoomMultipleCallsDetectedChanged(bool obj)
         {
             IsZoomMultipleCallsDetectedChanged?.Invoke(this, obj);
+
+            if (obj)
+                _ = _DeviceManagerPlugin.ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.CollaborationNotAvailable, OSDType_Device.Keyboard, LangHelper.Instance["CollabMultipleCalls"]);
         }
 
         private void _iCTKMessageHelper_CollabMultipleCallsDetectedChanged(bool obj)
         {
             CollabMultipleCallsDetectedChanged?.Invoke(this, obj);
             Debug.WriteLine($"{obj}");
+
+            if (obj)
+                _ = _DeviceManagerPlugin.ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.CollaborationNotAvailable, OSDType_Device.Keyboard, LangHelper.Instance["CollabMultipleCalls"]);
         }
 
         private void _iCTKMessageHelper_CollaborationMsgChanged(CollaborationMsg collaborationMsg)
