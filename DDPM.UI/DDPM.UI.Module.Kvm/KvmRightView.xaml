@@ -234,7 +234,7 @@
                                                         Margin="16,4,16,16" Opacity="{Binding NKVM_Opacity}"/>
                             </Grid>
                             <Grid Grid.Row="4">
-                                <UXControls:UXButton ButtonType="Tertiary"
+                                <UXControls:UXButton ButtonType="Primary"
                                                      Name="NetworkKVM"
                                                      ButtonSize="Medium"
                                                      HorizontalAlignment="Center"
