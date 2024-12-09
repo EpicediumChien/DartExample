@@ -154,16 +154,16 @@ namespace DDPM.SA.Plugins.CMAManager
                 string result = string.Empty;
                 bool hasData = false;
 
-                if (Index != null)
-                {
-                    //if (hasData)
-                    //{
-                    //    result = result + ",";
-                    //}
+                //if (Index != null)
+                //{
+                //    if (hasData)
+                //    {
+                //        result = result + ",";
+                //    }
 
-                    result = result + $"\"Index\":{Index}";
-                    hasData = true;
-                }
+                //    result = result + $"\"Index\":{Index}";
+                //    hasData = true;
+                //}
 
                 if (!String.IsNullOrEmpty(devicetype))
                 {
