@@ -6375,7 +6375,8 @@ namespace DDPM.CLI.Plugins.Display
                 if (index.Count == 0 && serviceTag.Count == 0 && model.Count == 0)
                 {
                     foreach (var monitor in _AllInfoMonitors)
-                    {                        
+                    {
+                        writelog($"OSDAccess entry");
                         CLI_RESPONSE _Set_CLI_RESPONSE_RESPONSE = new CLI_RESPONSE(monitor);
                         _Set_CLI_RESPONSE_RESPONSE.Command = "SET";
                         _Set_CLI_RESPONSE_RESPONSE.TargetFeature = "OSDACCESS";
@@ -6397,6 +6398,7 @@ namespace DDPM.CLI.Plugins.Display
                         else
                         {
                             _Set_CLI_RESPONSE_RESPONSE.Value = "Not supported";
+                            writelog($"OSDAccess not supported");
                         }
 
                         if (!r)
@@ -6404,10 +6406,12 @@ namespace DDPM.CLI.Plugins.Display
                             _Set_CLI_RESPONSE_RESPONSE.Result = "FAIL";
                             if (exit == 0)
                                 exit = (int)CLI_ExitCode.functional_error;
+                            writelog($"OSDAccess Fail");
                         }
                         else
                         {
                             _Set_CLI_RESPONSE_RESPONSE.Result = "PASS";
+                            writelog($"OSDAccess Pass");
                         }
 
                         System.Console.WriteLine(JsonConvert.SerializeObject(_Set_CLI_RESPONSE_RESPONSE, Formatting.Indented));
@@ -6418,6 +6422,7 @@ namespace DDPM.CLI.Plugins.Display
                 {
                     foreach (string idx in index)
                     {
+                        writelog($"OSDAccess entry");
                         CLI_RESPONSE _Set_CLI_RESPONSE_RESPONSE = new CLI_RESPONSE(_AllInfoMonitors[Convert.ToInt32(idx)]);
                         _Set_CLI_RESPONSE_RESPONSE.Command = "SET";
                         _Set_CLI_RESPONSE_RESPONSE.TargetFeature = "OSDACCESS";
@@ -6439,6 +6444,7 @@ namespace DDPM.CLI.Plugins.Display
                         else
                         {
                             _Set_CLI_RESPONSE_RESPONSE.Value = "Not supported";
+                            writelog($"OSDAccess not supported");
                         }
 
 
@@ -6447,10 +6453,12 @@ namespace DDPM.CLI.Plugins.Display
                             _Set_CLI_RESPONSE_RESPONSE.Result = "FAIL";
                             if (exit == 0)
                                 exit = (int)CLI_ExitCode.functional_error;
+                            writelog($"OSDAccess Fail");
                         }
                         else
                         {
                             _Set_CLI_RESPONSE_RESPONSE.Result = "PASS";
+                            writelog($"OSDAccess Pass");
                         }
 
                         System.Console.WriteLine(JsonConvert.SerializeObject(_Set_CLI_RESPONSE_RESPONSE, Formatting.Indented));
@@ -6465,6 +6473,7 @@ namespace DDPM.CLI.Plugins.Display
 
                         foreach (MonitorInfo mo in tmp)
                         {
+                            writelog($"OSDAccess entry");
                             CLI_RESPONSE _Set_CLI_RESPONSE_RESPONSE = new CLI_RESPONSE(mo);
                             _Set_CLI_RESPONSE_RESPONSE.Command = "SET";
                             _Set_CLI_RESPONSE_RESPONSE.TargetFeature = "OSDACCESS";
@@ -6486,6 +6495,7 @@ namespace DDPM.CLI.Plugins.Display
                             else
                             {
                                 _Set_CLI_RESPONSE_RESPONSE.Value = "Not supported";
+                                writelog($"OSDAccess not supported");
                             }
 
                             if (!r)
@@ -6493,10 +6503,12 @@ namespace DDPM.CLI.Plugins.Display
                                 _Set_CLI_RESPONSE_RESPONSE.Result = "FAIL";
                                 if (exit == 0)
                                     exit = (int)CLI_ExitCode.functional_error;
+                                writelog($"OSDAccess Fail");
                             }
                             else
                             {
                                 _Set_CLI_RESPONSE_RESPONSE.Result = "PASS";
+                                writelog($"OSDAccess Pass");
                             }
 
                             System.Console.WriteLine(JsonConvert.SerializeObject(_Set_CLI_RESPONSE_RESPONSE, Formatting.Indented));
@@ -6513,6 +6525,7 @@ namespace DDPM.CLI.Plugins.Display
 
                         foreach (MonitorInfo mo in tmp)
                         {
+                            writelog($"OSDAccess entry");
                             CLI_RESPONSE _Set_CLI_RESPONSE_RESPONSE = new CLI_RESPONSE(mo);
                             _Set_CLI_RESPONSE_RESPONSE.Command = "SET";
                             _Set_CLI_RESPONSE_RESPONSE.TargetFeature = "OSDACCESS";
@@ -6534,6 +6547,7 @@ namespace DDPM.CLI.Plugins.Display
                             else
                             {
                                 _Set_CLI_RESPONSE_RESPONSE.Value = "Not supported";
+                                writelog($"OSDAccess not supported");
                             }
 
                             if (!r)
@@ -6541,10 +6555,12 @@ namespace DDPM.CLI.Plugins.Display
                                 _Set_CLI_RESPONSE_RESPONSE.Result = "FAIL";
                                 if (exit == 0)
                                     exit = (int)CLI_ExitCode.functional_error;
+                                writelog($"OSDAccess Fail");
                             }
                             else
                             {
                                 _Set_CLI_RESPONSE_RESPONSE.Result = "PASS";
+                                writelog($"OSDAccess Pass");
                             }
 
                             System.Console.WriteLine(JsonConvert.SerializeObject(_Set_CLI_RESPONSE_RESPONSE, Formatting.Indented));
@@ -6565,6 +6581,7 @@ namespace DDPM.CLI.Plugins.Display
                 {
                     foreach (var monitor in _AllInfoMonitors)
                     {
+                        writelog($"OSDAccess entry");
                         CLI_RESPONSE _Get_CLI_RESPONSE_RESPONSE = new CLI_RESPONSE(monitor);
                         _Get_CLI_RESPONSE_RESPONSE.Command = "GET";
                         _Get_CLI_RESPONSE_RESPONSE.TargetFeature = "OSDACCESS";
@@ -6574,12 +6591,14 @@ namespace DDPM.CLI.Plugins.Display
                             rc = GetVCPCode(devMgr, monitor, "0xCA").Result;
                             _Get_CLI_RESPONSE_RESPONSE.Value = get_osd(rc.value.ToString());
                             _Get_CLI_RESPONSE_RESPONSE.Result = "PASS";
+                            writelog($"OSDAccess Pass");
                         }
                         else
                         {
                             _Get_CLI_RESPONSE_RESPONSE.Value = "Not supported";
                             _Get_CLI_RESPONSE_RESPONSE.Result = "FAIL";
                             exit = (int)CLI_ExitCode.functional_error;
+                            writelog($"OSDAccess not supported");
                         }
 
                         System.Console.WriteLine(JsonConvert.SerializeObject(_Get_CLI_RESPONSE_RESPONSE, Formatting.Indented));
@@ -6591,6 +6610,7 @@ namespace DDPM.CLI.Plugins.Display
                 {
                     foreach (string idx in index)
                     {
+                        writelog($"OSDAccess entry");
                         CLI_RESPONSE _Get_CLI_RESPONSE_RESPONSE = new CLI_RESPONSE(_AllInfoMonitors[Convert.ToInt32(idx)]);
                         _Get_CLI_RESPONSE_RESPONSE.Command = "GET";
                         _Get_CLI_RESPONSE_RESPONSE.TargetFeature = "OSDACCESS";
@@ -6600,12 +6620,14 @@ namespace DDPM.CLI.Plugins.Display
                             rc = GetVCPCode(devMgr, _AllInfoMonitors[Convert.ToInt32(idx)], "0xCA").Result;
                             _Get_CLI_RESPONSE_RESPONSE.Value = get_osd(rc.value.ToString());
                             _Get_CLI_RESPONSE_RESPONSE.Result = "PASS";
+                            writelog($"OSDAccess Pass");
                         }
                         else
                         {
                             _Get_CLI_RESPONSE_RESPONSE.Value = "Not supported";
                             _Get_CLI_RESPONSE_RESPONSE.Result = "FAIL";
                             exit = (int)CLI_ExitCode.functional_error;
+                            writelog($"OSDAccess not supported");
                         }
 
                         System.Console.WriteLine(JsonConvert.SerializeObject(_Get_CLI_RESPONSE_RESPONSE, Formatting.Indented));
@@ -6620,6 +6642,7 @@ namespace DDPM.CLI.Plugins.Display
                         var tmp = _AllInfoMonitors.FindAll(x => x.edid.ServiceTag.ToUpper().Equals(tag.ToUpper()));
                         foreach (MonitorInfo mo in tmp)
                         {
+                            writelog($"OSDAccess entry");
                             CLI_RESPONSE _Get_CLI_RESPONSE_RESPONSE = new CLI_RESPONSE(mo);
                             _Get_CLI_RESPONSE_RESPONSE.Command = "GET";
                             _Get_CLI_RESPONSE_RESPONSE.TargetFeature = "OSDACCESS";
@@ -6629,12 +6652,14 @@ namespace DDPM.CLI.Plugins.Display
                                 rc = GetVCPCode(devMgr, mo, "0xCA").Result;
                                 _Get_CLI_RESPONSE_RESPONSE.Value = get_osd(rc.value.ToString());
                                 _Get_CLI_RESPONSE_RESPONSE.Result = "PASS";
+                                writelog($"OSDAccess Pass");
                             }
                             else
                             {
                                 _Get_CLI_RESPONSE_RESPONSE.Value = "Not supported";
                                 _Get_CLI_RESPONSE_RESPONSE.Result = "FAIL";
                                 exit = (int)CLI_ExitCode.functional_error;
+                                writelog($"OSDAccess not supported");
                             }
 
                             System.Console.WriteLine(JsonConvert.SerializeObject(_Get_CLI_RESPONSE_RESPONSE, Formatting.Indented));
