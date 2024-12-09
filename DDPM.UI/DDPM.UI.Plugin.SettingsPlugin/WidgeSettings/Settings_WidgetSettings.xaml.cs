@@ -1,4 +1,5 @@
 ﻿using DDPM.UI.Common;
+using Dell.Client.Framework.Common;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,9 +22,13 @@ namespace DDPM.UI.Plugin.SettingsPlugin
     /// </summary>
     public partial class Settings_WidgetSettings : UserControl
     {
+        private ILog? _log;
         public Settings_WidgetSettings()
         {
+            _log = SettingsPlugin.PluginIoc?.GetService<ILog>();
+            _log?.Info("Settings_WidgetSettings initialize start");
             InitializeComponent();
+            _log?.Info("Settings_WidgetSettings initialize done");
         }
 
         private void EnableQuickAccessWidget_Click(object sender, RoutedEventArgs e)
