@@ -41,13 +41,21 @@ namespace DDPM.EABroker
         #endregion Private Members
 
         #region Multiligual Strings
+        //[ResourceKey] [Custom_layout]
         private string _customLayout = "Custom layout";
+        //[Save_0]
         private string _saveButton = "Save";
+        //[Cancel_0]
         private string _cancelButton = "Cancel";
+        //[EABroker_updateToEmProfilePrompt]
         private string _updateToEmProfilePrompt = "There are Easy Memory profiles associated to this custom layout.\nSaving this custom layout will update the layout for all the associated profiles.\nDo you want to save the layout?";
+        //[Yes]
         private string _yesButton = "Yes";
+        //[No]
         private string _noButton = "No";
+        //[Arrange_Windows]
         private string _arrangeWindows = "Arrange Windows";
+        //[EA_MSG_0]
         private string _adjust = "Adjust your current window arrangement, edit the name (if desired), and click &#34;Save&#34; to store the arrangement.";
         #endregion
 

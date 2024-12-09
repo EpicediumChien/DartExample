@@ -1,6 +1,8 @@
-﻿using System.Diagnostics;
+﻿using DDPM.Win32Lib;
+using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Windows;
+using static DDPM.Win32Lib.Win32;
 
 //Forms: Cursors
 
@@ -200,6 +202,60 @@ namespace nsWinEventHook
             return true;
         }
 
+        public static void FixWindowPosition(IntPtr hWnd, Rect rect)
+        {
+            Win32.RECT wrect;
+            bool isOK = Win32._GetWindowRect(hWnd, out wrect);
+
+            Win32.RECT xrect;
+            int hRes = DwmGetWindowAttribute(hWnd, DWMWINDOWATTRIBUTE.ExtendedFrameBounds, out xrect, Marshal.SizeOf(typeof(Win32.RECT)));
+
+            Win32.POINT wtl = new Win32.POINT((int)wrect.Left, (int)wrect.Top);
+            Win32.POINT wbr = new Win32.POINT((int)wrect.Right, (int)wrect.Bottom);
+
+            Win32.POINT xtl = new Win32.POINT((int)xrect.Left, (int)xrect.Top);
+            Win32.POINT xbr = new Win32.POINT((int)xrect.Right, (int)xrect.Bottom);
+
+            PhysicalToLogicalPointForPerMonitorDPI(hWnd, ref xtl);
+            PhysicalToLogicalPointForPerMonitorDPI(hWnd, ref xbr);
+
+            RECT rcNew = new RECT((int)rect.Left, (int)rect.Top, (int)rect.Width, (int)rect.Height);
+
+            int dLeft = xtl.X - wtl.X;
+            int dTop = xtl.Y - wtl.Y;
+            int dRight = xbr.X - wbr.X;
+            int dBottom = xbr.Y - wbr.Y;
+
+            int newLeft = (int)rect.Left - dLeft;
+            int newTop = (int)rect.Top - dTop;
+            int newRight = (int)rect.Right - dRight;
+            int newBottom = (int)rect.Bottom - dBottom;
+
+            rcNew.Left -= dLeft;
+            rcNew.Right -= dRight;
+            rcNew.Bottom -= dBottom;
+
+            _MoveWindow(hWnd, (int)rcNew.Left, (int)rcNew.Top,
+                (int)rcNew.Width, (int)rcNew.Height, true);
+
+
+            Win32.RECT adjusted_rect = new Win32.RECT(
+               (int)rect.Left - (xtl.X - wtl.X),
+               (int)rect.Top - (xtl.Y - wtl.Y),
+               (int)rect.Width + (xtl.X - wtl.X) + (wbr.X - xbr.X),
+               (int)rect.Height + (xtl.Y - wtl.Y) + (wbr.Y - xbr.Y));
+
+
+            //_SetWindowPos(hWnd, 0, (int)adjusted_rect.Left, (int)adjusted_rect.Top,
+            //    (int)adjusted_rect.Width, (int)adjusted_rect.Height, SWP_NOZORDER | SWP_SHOWWINDOW | SWP_FRAMECHANGED);
+
+            //_SetWindowPos(hWnd, HWND_TOP, (int)adjusted_rect.Left, (int)adjusted_rect.Top,
+            //    (int)adjusted_rect.Width, (int)adjusted_rect.Height, SWP_SHOWWINDOW);
+
+            _MoveWindow(hWnd, (int)adjusted_rect.Left, (int)adjusted_rect.Top,
+                (int)adjusted_rect.Width, (int)adjusted_rect.Height, true);
+        }
+
         public static void SetWindowPosition(IntPtr hWnd, Rect rect)
         {
             //const int HWND_NOTOPMOST = -2;
@@ -222,6 +278,44 @@ namespace nsWinEventHook
             }
             else
             {
+                /*
+                Win32.RECT wrect;
+                Win32._GetWindowRect(hWnd, out wrect);
+
+                Win32.RECT xrect = new Win32.RECT();
+               DwmGetWindowAttribute(hWnd, DWMWINDOWATTRIBUTE.ExtendedFrameBounds, out xrect, Marshal.SizeOf(typeof(Win32.RECT)));
+
+                Win32.POINT wtl = new Win32.POINT((int)wrect.Left, (int)wrect.Top);
+                Win32.POINT wbr = new Win32.POINT((int)wrect.Right, (int)wrect.Bottom);
+
+                Win32.POINT xtl = new Win32.POINT((int)xrect.Left, (int)xrect.Top);
+                Win32.POINT xbr = new Win32.POINT((int)xrect.Right, (int)xrect.Bottom);
+
+                PhysicalToLogicalPointForPerMonitorDPI(hWnd, ref xtl);
+                PhysicalToLogicalPointForPerMonitorDPI(hWnd, ref xbr);
+
+                Win32.RECT adjusted_rect = new Win32.RECT(
+                   (int)rect.Left - (xtl.X - wtl.X),
+                   (int)rect.Top - (xtl.Y - wtl.Y),
+                   (int)rect.Width + (xtl.X - wtl.X) + (wbr.X - xbr.X),
+                   (int)rect.Height + (xtl.Y - wtl.Y) + (wbr.Y - xbr.Y));
+
+
+                _SetWindowPos(hWnd, 0, (int)adjusted_rect.Left, (int)adjusted_rect.Top,
+                    (int)adjusted_rect.Width, (int)adjusted_rect.Height, SWP_NOZORDER | SWP_SHOWWINDOW | SWP_FRAMECHANGED);
+
+                _SetWindowPos(hWnd, HWND_TOP, (int)adjusted_rect.Left, (int)adjusted_rect.Top,
+                    (int)adjusted_rect.Width, (int)adjusted_rect.Height, SWP_SHOWWINDOW);
+
+                _MoveWindow(hWnd, (int)adjusted_rect.Left, (int)adjusted_rect.Top,
+                    (int)adjusted_rect.Width, (int)adjusted_rect.Height, true);
+                */
+
+                Win32.WINDOWPLACEMENT wpl= new Win32.WINDOWPLACEMENT();
+                wpl.Length = Marshal.SizeOf(wpl);
+
+                Win32._GetWindowPlacement(hWnd, ref wpl);
+
                 _SetWindowPos(hWnd, 0, (int)rect.Left, (int)rect.Top,
                     (int)rect.Width, (int)rect.Height, SWP_NOZORDER | SWP_SHOWWINDOW | SWP_FRAMECHANGED);
 
@@ -230,6 +324,35 @@ namespace nsWinEventHook
 
                 _MoveWindow(hWnd, (int)rect.Left, (int)rect.Top,
                     (int)rect.Width, (int)rect.Height, true);
+
+                _SetWindowPos(hWnd, HWND_TOP, (int)rect.Left, (int)rect.Top,
+                    (int)rect.Width, (int)rect.Height, SWP_SHOWWINDOW|SWP_NOMOVE);
+
+                //Win32._GetWindowPlacement(hWnd, ref wpl);
+
+                //wpl.NormalPosition.Left = (int)rect.Left;
+                //wpl.NormalPosition.Top = (int)rect.Top;
+                //wpl.NormalPosition.Width = (int)rect.Width;
+                //wpl.NormalPosition.Height = (int)rect.Height;
+
+                //wpl.ShowCmd = ShowWindowCommands.Restore;
+                //wpl.Flags |= 4;
+                //Win32._SetWindowPlacement(hWnd, ref wpl);
+
+
+                //Win32._GetWindowPlacement(hWnd, ref wpl);
+
+                //Thread.Sleep(50);
+                //wpl.NormalPosition.Left = (int)rect.Left;
+                //wpl.NormalPosition.Top = (int)rect.Top;
+                //wpl.NormalPosition.Width = (int)rect.Width;
+                //wpl.NormalPosition.Height = (int)rect.Height;
+
+                //wpl.ShowCmd = ShowWindowCommands.Restore;
+                //wpl.Flags |= 4;
+
+                //Win32._SetWindowPlacement(hWnd, ref wpl);
+                //  FixWindowPosition(hWnd, rect);
             }
 
             /*
@@ -256,7 +379,31 @@ namespace nsWinEventHook
             MoveWindow(hWnd, rcAdiust.X, rcAdiust.Y, rcAdiust.Width, rcAdiust.Height, true);
             */
         }
+        [DllImport("user32")]
+        static extern bool PhysicalToLogicalPointForPerMonitorDPI(IntPtr hwnd, ref Win32.POINT lpRect);
 
+        [DllImport("dwmapi.dll")]
+        static extern int DwmGetWindowAttribute(IntPtr hwnd, DWMWINDOWATTRIBUTE dwAttribute, out RECT pvAttribute, int cbAttribute);
+
+        enum DWMWINDOWATTRIBUTE : uint
+        {
+            NCRenderingEnabled = 1,
+            NCRenderingPolicy,
+            TransitionsForceDisabled,
+            AllowNCPaint,
+            CaptionButtonBounds,
+            NonClientRtlLayout,
+            ForceIconicRepresentation,
+            Flip3DPolicy,
+            ExtendedFrameBounds,
+            HasIconicBitmap,
+            DisallowPeek,
+            ExcludedFromPeek,
+            Cloak,
+            Cloaked,
+            FreezeRepresentation
+        }
+        
         #endregion GetProcessFromWindowHandle
 
         #region Win32 Constants
