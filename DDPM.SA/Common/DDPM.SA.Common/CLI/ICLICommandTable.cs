@@ -694,6 +694,8 @@ namespace DDPM.SA.Common
 
         private void CheckCommandRoutePath(ref CommandLineInput commandInput)
         {
+            ICLICommandTable iCLICommandTable = new ICLICommandTable(_Log);
+
             commandInput.isNormalCommands = false;
             commandInput.isITCommands = false;
             CommandLineInput commandInput_temp = commandInput;
