@@ -229,7 +229,7 @@
                                 </ToolTip>
                             </Image.ToolTip>
                         </Image>-->
-                        <Border Background="Transparent">
+                        <Border Background="{StaticResource FakeTransparent}">
                             <ContentControl Template="{StaticResource icon_Info}" Margin="9,22.5,0,0" VerticalAlignment="Top" Cursor="" Width="16" Height="16" />
                             <Border.InputBindings>
                                 <MouseBinding Gesture="RightDoubleClick" Command="{Binding ShowInfoClickedCommand}" />
@@ -322,7 +322,7 @@
                                                                         </ToolTip>
                                                                     </Image.ToolTip>
                                                                 </Image>-->
-                                                                <Border Background="Transparent">
+                                                                <Border Background="{StaticResource FakeTransparent}">
                                                                     <ContentControl Template="{StaticResource icon_Info}" Margin="8,0,0,0" Width="16" Height="16"  Visibility="{Binding TooltipVisibility}"
                                                                                  HorizontalAlignment="Right" MouseLeftButtonDown="DeletePreset" Tag="{Binding ID}"/>
                                                                     <Border.ToolTip>

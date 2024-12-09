@@ -11,6 +11,7 @@ using Dell.Client.Framework.UX.WPF;
 using DPeMPublic.Common.Enums;
 using Microsoft;
 using Microsoft.Win32;
+using System;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
@@ -60,7 +61,6 @@ namespace DDPM.UI.Plugin.ViewModels
         public List<string> EOLKBList = new() { "WK636", "KM713", "WK717", "KM714", "KM717" };
         public List<string> EOLMouseList = new() { "WM116", "WM514", "UV514", "WM126", "WM326", "WM527" };
         //public DDPMSettings? DDPMSettings;
-        //public WebcamSettings WebcamSettings = new();
         public bool IsCopilotEnabled = true;
         public bool IsDTPReady = false;
         public int CurrentVersion = 0;
@@ -182,6 +182,7 @@ namespace DDPM.UI.Plugin.ViewModels
 
         public virtual bool SetCurrentDevice(string deviceID)
         {
+            _console.RaiseEvent(ConsoleEventNames.Masthead_ShowAddDeviceIcon, this, new EventManagerArgs() { Tag = true });
             IsIDInvalid = false;
             if (deviceID.Substring(deviceID.Length - 2, 1) == "-")
             {
@@ -194,9 +195,8 @@ namespace DDPM.UI.Plugin.ViewModels
             }
             CurrentDeviceID = new Guid(deviceID);
 
-            if (DeviceInfos.ContainsKey(CurrentDeviceID))
+            if (DeviceInfos.TryGetValue(CurrentDeviceID, out DeviceInfo? di))
             {
-                var di = DeviceInfos[CurrentDeviceID];
                 _log.Info($"[PeripheralViewModel] SetCurrentDevice ... InstanceId = {di.InstanceId.ToString()}");
                 if (di.DeviceName == "Headset Settings" || di.DeviceName == "Wired Audio Settings")
                 {
@@ -214,7 +214,7 @@ namespace DDPM.UI.Plugin.ViewModels
                             CurrentDeviceID = info.ID;
                     }
                 }
-                CurrentDeviceInfo = DeviceInfos[CurrentDeviceID];
+                CurrentDeviceInfo = di;
             }
             else
             {

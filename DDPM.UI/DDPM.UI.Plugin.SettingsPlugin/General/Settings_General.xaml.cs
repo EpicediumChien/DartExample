@@ -1,6 +1,7 @@
 ﻿using DDPM.SA.Common;
 using DDPM.SA.Common.Settings;
 using DDPM.UI.Common;
+using Dell.Client.Framework.Common;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -31,13 +32,17 @@ namespace DDPM.UI.Plugin.SettingsPlugin
         // 10/12/2024 Derek add checkBoxHeight for RWD
         private const int checkBoxHeight = 30;
         private readonly Int16 breakPoints = 910;
+        private ILog? _log;
 
         public Settings_General()
         {
+            _log = SettingsPlugin.PluginIoc?.GetService<ILog>();
+            _log?.Info("Settings_General initialize start");
             InitializeComponent();
 
             if (System.Windows.Application.Current?.TryFindResource("breakPoint") is Int16 width)
                 breakPoints = width;
+            _log?.Info("Settings_General initialize done");
         }
         ~Settings_General()
         {

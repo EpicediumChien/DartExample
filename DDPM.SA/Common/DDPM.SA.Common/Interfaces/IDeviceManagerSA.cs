@@ -721,6 +721,7 @@ namespace DDPM.SA.Common
         Task SetMouseAssignDialogAction(string Guid, byte[] newValue);
         Task SetMouseAssignKeystrokeAction(string Guid, byte[] newValue);
         Task<bool> RestoreToDefaultMouse(string Guid, bool isFromCli = true);
+        Task<bool> SetReportRate(string Guid, int newValue);
 
         #endregion Mouse
 
@@ -806,94 +807,60 @@ namespace DDPM.SA.Common
         Task<bool> GetIsPropertyHDRSupported(string Guid);
         Task<bool> GetIsHDROn(string Guid);
         Task<bool> GetIsPropertyAntiFlickerSupported(string Guid);
-        Task<int> GetAntiFlickerValueByDTP(string Guid);
+        Task<int> GetAntiFlicker(string Guid);
         Task<bool> GetIsPropertyAutoFramingSupported(string Guid);
         Task<bool> GetIsAutoFramingOn(string Guid);
         Task<string> GetSupportedResolutions(string Guid);
         Task<string> GetSelectedResolution(string Guid);
         Task<int> GetZoom(string Guid);
         Task<int> GetFocus(string Guid);
-        Task<bool> GetIsFocusOn(string Guid);
+        Task<bool?> GetIsFocusOn(string Guid);
+        Task<int> GetPriority(string Guid);
+        Task<bool?> GetIsAutoFramingTransitionOn(string Guid);
+        Task<int> GetAutoFramingFrameSize(string Guid);
+        Task<int> GetAutoFramingSensitivity(string Guid);
 
         Task SetIsMicEnumerationOn(string Guid, bool newValue);
-
         Task SetProfile(string Guid, string newValue);
-
         Task SetProfileName(string Guid, string newValue);
-
         Task CreateCustomProfile(string Guid, string newValue);
-
         Task DeleteProfile(string Guid, string newValue);
-
         Task<bool> SetZoom(string Guid, int newValue);
-
         Task<bool> SetIsAutoFramingOn(string Guid, bool newValue);
-
-        Task SetIsAutoFramingTransitionOn(string Guid, bool newValue);
-
-        Task SetAutoFramingSensitivity(string Guid, int newValue);
-
-        Task SetAutoFramingFrameSize(string Guid, int newValue);
-
+        Task<bool> SetIsAutoFramingTransitionOn(string Guid, bool newValue);
+        Task<bool> SetAutoFramingSensitivity(string Guid, int newValue);
+        Task<bool> SetAutoFramingFrameSize(string Guid, int newValue);
         Task<bool> SetFieldOfView(string Guid, int newValue);
-
         Task SetIsFocusOn(string Guid, bool newValue);
-
         Task SetFocus(string Guid, int newValue);
-
         Task SetPriority(string Guid, int newValue);
-
-        Task SetIsHDROn(string Guid, bool newValue);
-
+        Task<bool> SetIsHDROn(string Guid, bool newValue);
         Task SetIsAutoWhiteBalanceOn(string Guid, bool newValue);
-
         Task SetAutoWhiteBalance(string Guid, int newValue);
-
         Task SetBrightness(string Guid, int newValue);
-
         Task SetSharpness(string Guid, int newValue);
-
         Task SetContrast(string Guid, int newValue);
-
         Task SetSaturation(string Guid, int newValue);
-
         Task SetAntiFlicker(string Guid, int newValue);
-
         Task SetTilt(string Guid, int newValue);
-
         Task SetPan(string Guid, int newValue);
 
         // webcam presence detection
         Task SetWALTime(string Guid, int newValue);
-
         Task SetSnooze(string Guid, int newValue);
-
         Task SetSnoozeLength(string Guid, int newValue);
-
         Task SetIsProximitySensorEnable(string Guid, bool newValue);
-
         Task SetIsWakeonApproachEnable(string Guid, bool newValue);
-
         Task SetIsWalkAwayLockEnable(string Guid, bool newValue);
-
         Task SetIsPrioritizeExternalWebcam(string Guid, bool newValue);
-
         Task ResetToDefault_webcam(string Guid, bool newValue);
-
         Task<int> GetWALTime(string Guid);
-
         Task<int> GetSnooze(string Guid);
-
         Task<int> GetSnoozeLength(string Guid);
-
         Task<bool> GetIsProximitySensorEnable(string Guid);
-
         Task<bool> GetIsWakeonApproachEnable(string Guid);
-
         Task<bool> GetIsWalkAwayLockEnable(string Guid);
-
         Task<bool?> GetIsPrioritizeExternalWebcam(string Guid);
-
         Task<bool> GetIsESISupported(string Guid);
 
         #endregion Webcam

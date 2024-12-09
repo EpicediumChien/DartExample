@@ -86,6 +86,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
 
         private IDeviceManagerSA _DeviceManagerPlugin;
         private readonly object _PluginConditionLock_DeviceManager = new object();
+        private readonly object _lock = new();
 
         #endregion
 
@@ -142,7 +143,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
             {
                 return await Task.Run(() =>
                 {
-                    lock (this)
+                    lock (_lock)
                     {
                         if (_isClientConnected && _deviceHelper != null)
                         {
@@ -1082,7 +1083,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
 
         private void ScanDevices()
         {
-            lock (this)
+            lock (_lock)
             {
                 if (_isClientConnected && _iClient != null && _iDeviceManager != null)
                 {
@@ -1278,6 +1279,18 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                                 }
                             }
 
+                            // << 241206 by Hess fix no event issue
+                            if (item is ILogicalDevice _logicalDevice)
+                            {
+                                if (!LogicalDevices4.Contains(_logicalDevice.Id))
+                                {
+                                    _logicalDevice.BatteryStatusChanged += ILogicalDevice_BatteryStatusChanged;
+                                    _logicalDevice.BatteryLevelChanged += ILogicalDevice_BatteryLevelChanged;
+                                    LogicalDevices4.Add(_logicalDevice.Id);
+                                }
+                            }
+                            // >>
+
                             if (item is ILogicalWiredAudio _logicalWiredAudio)
                             {
                                 info.MuteStatus = _logicalWiredAudio.MuteStatus;
@@ -1342,6 +1355,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                                 info.SupportedFeatures = _iLogicalDeviceWebcam.SupportedFeatures;
                                 info.SupportedProperties = _iLogicalDeviceWebcam.SupportedProperties;
                                 info.SupportedResolutions = Encoding.UTF8.GetString(_iLogicalDeviceWebcam.SupportedResolutions);
+                                info.SelectedResolution = Encoding.UTF8.GetString(_iLogicalDeviceWebcam.GetSelectedResolution());
                                 info.TiltMax = _iLogicalDeviceWebcam.TiltMax;
                                 info.TiltMin = _iLogicalDeviceWebcam.TiltMin;
                                 info.TiltSteppingDelta = _iLogicalDeviceWebcam.TiltSteppingDelta;
@@ -1351,6 +1365,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                                 info.ZoomMax = _iLogicalDeviceWebcam.ZoomMax;
                                 info.ZoomMin = _iLogicalDeviceWebcam.ZoomMin;
                                 info.ZoomSteppingDelta = _iLogicalDeviceWebcam.ZoomSteppingDelta;
+                                info.IsPrioritizeExternalWebcam = _iLogicalDeviceWebcam.IsPrioritizeExternalWebcam;
                                 _iLogicalDeviceWebcam.IsMicEnumerationOnChanged += _iLogicalDeviceWebcam_IsMicEnumerationOnChanged;
 
                                 // webcam presence detection
@@ -1902,7 +1917,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
         {
             if (status == ClientStatus.Connected)
             {
-                lock (this)
+                lock (_lock)
                 {
                     _isClientConnected = true;
 
@@ -1940,7 +1955,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
             }
             else
             {
-                lock (this)
+                lock (_lock)
                 {
                     if (_isClientConnected)
                     {
@@ -2028,7 +2043,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
 
             System.Diagnostics.Debug.WriteLine("ParentPhysicalDevice Added, Id : " + iPhysicalDevice.Id + ", Name : " + iPhysicalDevice.Name);
 
-            lock (this)
+            lock (_lock)
             {
                 if (_isClientConnected)
                 {
@@ -2075,17 +2090,10 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
         private void IPhysicalDevice_DeviceAddedEvent(ILogicalDevice iLogicalDevice)
         {
             System.Diagnostics.Debug.WriteLine("LogicalDevice Added, Id : " + iLogicalDevice.Id + ", Name : " + iLogicalDevice.Name);
-            lock (this)
+            lock (_lock)
             {
                 if (_isClientConnected)
                 {
-                    if (!LogicalDevices4.Contains(iLogicalDevice.Id))
-                    {
-                        iLogicalDevice.BatteryStatusChanged += ILogicalDevice_BatteryStatusChanged;
-                        iLogicalDevice.BatteryLevelChanged += ILogicalDevice_BatteryLevelChanged;
-                        LogicalDevices4.Add(iLogicalDevice.Id);
-                    }
-
                     ScanDevices();
 
                     DeviceChangedEventArgs _EventArgs = new();
@@ -2099,7 +2107,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
 
         private void IPhysicalDevice_DeviceRemovedEvent(ILogicalDevice iLogicalDevice)
         {
-            lock (this)
+            lock (_lock)
             {
 
                 if (_isClientConnected)
@@ -2615,7 +2623,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
 
         private void IUpdateManager_IsAnyUpdateAvailableChanged(bool isAnyUpdateAvailable)
         {
-            lock (this)
+            lock (_lock)
             {
                 if (_isClientConnected && _iUpdateManager != null)
                 {
@@ -2808,7 +2816,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                 _logs.DebugMsg_1($"[PeripheralsPlugin] GetFWUpdateInfo done and _updateHelper is no null");
                 return await Task.Run(() =>
                 {
-                    lock (this)
+                    lock (_lock)
                     {
                         if (_isClientConnected && _updateHelper != null)
                         {

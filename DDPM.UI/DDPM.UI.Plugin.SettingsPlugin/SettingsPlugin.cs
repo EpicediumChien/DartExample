@@ -112,6 +112,10 @@ namespace DDPM.UI.Plugin.SettingsPlugin
                 .BuildServiceProvider());
 
             _viewModel = (SettingsPageViewModel?)PluginIoc.GetService<ISettingsPageViewModel>();
+            if (_viewModel != null)
+            {
+                _viewModel.Log = PluginIoc.GetService<ILog>();
+            }
             _isConfigured = true;
         }
         /// <summary>

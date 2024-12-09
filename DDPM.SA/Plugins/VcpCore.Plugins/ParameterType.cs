@@ -36,6 +36,16 @@ namespace VcpCore.Plugins
         }
     }
 
+    public class Type_Watcher0x02forStatusCheck
+    {
+        public Guid guid { get; }
+
+        public Type_Watcher0x02forStatusCheck(Guid _guid)
+        {
+            guid = _guid;
+        }
+    }
+
     public class Type_GetCapabilitiesString
     {
         public Guid guid { get; }
@@ -147,6 +157,7 @@ namespace VcpCore.Plugins
         SetVCPCapability_I,
         SetVCPCapability_II,
         Initialize0x52toEmpty,
-        Watcher0x52
+        Watcher0x52,
+        Watcher0x02forStatusCheck,
     }
 }
