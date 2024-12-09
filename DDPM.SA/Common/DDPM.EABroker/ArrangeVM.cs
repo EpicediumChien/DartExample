@@ -1447,15 +1447,6 @@ namespace DDPM.EABroker
             }
         }
 
-        public string GetAwsIconNames()
-        {
-            return $"{GetAwsIconName(AwsIcon1)}|{GetAwsIconName(AwsIcon2)}|{GetAwsIconName(AwsIcon3)}|{GetAwsIconName(AwsIcon4)}";
-        }
-        public static string GetAwsIconName(ISplitCtrl awsIcon)
-        {
-            if (awsIcon == null) return "(null)";
-            return $"[{awsIcon.EAID}]{awsIcon.CellCount}{awsIcon.SplitKey}";
-        }
         private string CellListText(List<CellObj> cellList)
         {
             string outString = "[";

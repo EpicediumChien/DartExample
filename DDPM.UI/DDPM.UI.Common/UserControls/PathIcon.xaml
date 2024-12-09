@@ -33,33 +33,12 @@
             indication.Visibility = Visibility.Collapsed;
             _storyboard.Stop();
             -->
-            <!-- Robert_Lin, 2024-12-9, PIMS-299696
-                 Gear icon indication blinking not only twice to show availability of FW update.
-            Expected Blinking story: When a trigget event comming:
-            Time (sec) 0  0.5  1.0 1.5 2.0       
-            Opacity    1-> 0 -> 1-> 0 ->1 -> 1 ....
-            -->
-            <Storyboard x:Key="glowAnimation" >
-                <DoubleAnimation Storyboard.TargetProperty="(Border.Opacity)" 
-                                                       From="1" To="0" Duration="0:0:0.5"/>
-                <DoubleAnimation Storyboard.TargetProperty="(Border.Opacity)" 
-                                                       BeginTime="0:0:0.5"
-                                                       From="0" To="1" Duration="0:0:0.5"/>
-                <DoubleAnimation Storyboard.TargetProperty="(Border.Opacity)" 
-                                                        BeginTime="0:0:1"
-                                                      From="1" To="0" Duration="0:0:0.5"/>
-                <DoubleAnimation Storyboard.TargetProperty="(Border.Opacity)" 
-                                                       BeginTime="0:0:1.5"
-                                                       From="0" To="1" Duration="0:0:0.5"/>
-            </Storyboard>
-            <!-- OLD: 
             <Storyboard x:Key="glowAnimation" RepeatBehavior="Forever">
                 <DoubleAnimation Storyboard.TargetProperty="(Border.Opacity)"
                                  From="1" To="0" Duration="0:0:2" />
                 <DoubleAnimation Storyboard.TargetProperty="(Border.Opacity)"
                                  BeginTime="0:0:2" From="0" To="1" Duration="0:0:2" />
             </Storyboard>
-            -->
         </ResourceDictionary>
     </UserControl.Resources>
 
