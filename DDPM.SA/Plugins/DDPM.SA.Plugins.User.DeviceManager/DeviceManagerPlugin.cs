@@ -5717,12 +5717,12 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         toastContentBuilder.AddText(info);
                         if (!isOnlyUpdate)
                         {
-                            toastContentBuilder.AddButton("Update now", ToastActivationType.Background, "Update " + popupContentPackage.PopupType.ToString());
-                            toastContentBuilder.AddButton("Defer", ToastActivationType.Background, "Delay");
+                            toastContentBuilder.AddButton(LangHelper.Instance["UpdateNow"], ToastActivationType.Background, "Update " + popupContentPackage.PopupType.ToString());
+                            toastContentBuilder.AddButton(LangHelper.Instance["Defer"], ToastActivationType.Background, "Delay");
                         }
                         else
                         {
-                            toastContentBuilder.AddButton("Ok", ToastActivationType.Background, "Update");
+                            toastContentBuilder.AddButton(LangHelper.Instance["Ok"], ToastActivationType.Background, "Update");
                         }
                     }
                     else
