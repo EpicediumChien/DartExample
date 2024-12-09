@@ -192,10 +192,10 @@
                                     <eaem:SplitCtrl1B />
                                 </commonCtrls:SplitItem>
 
-                                <UXControls:UXButton Content="{Binding [Kvm.15], Source={x:Static lang:LangHelper.Instance}}" Height="40" CornerRadius="2" Padding="12,8"
+                                <!--<UXControls:UXButton Content="{Binding [Kvm.15], Source={x:Static lang:LangHelper.Instance}}" Height="40" CornerRadius="2" Padding="12,8"
                                                      Margin="4,0" IsEnabled="{Binding PipPbp.IsTogglePositionEnabled}"
                                                      ButtonType="Secondary" ButtonSemanticColorType="Neutral" Foreground="Gray"
-                                                     Command="{Binding PipTogglePositionClickCommand}" />
+                                                     Command="{Binding PipTogglePositionClickCommand}" />-->
                             </StackPanel>
                         </Grid>
 
