@@ -11,6 +11,7 @@ using Newtonsoft.Json.Linq;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
+using System.Security.Policy;
 using System.Windows;
 using System.Windows.Media;
 using VcpCore.Common;
@@ -3383,12 +3384,12 @@ namespace DDPM.UI.Module.Brightness
 
                 // jim 20241207 add  for The DDPM color profile can not be applied by DDPM on Smart HDR mode.(Gaming monitor ex: AW2724DM)
                 bool Is_Game_DeviceName = false;
-
                 bool HDRStatus = DdpmCommonHelper.DeviceManagerSA.GetHDRStatus(MyModule.SelectedHomeDevice.MonitorInfo).Result;
-                             
 
-                if (MyModule.SelectedHomeDevice.MonitorInfo.modelName.StartsWith("AW") || MyModule.SelectedHomeDevice.MonitorInfo.modelName.StartsWith("G"))
+                if (MyModule.SelectedHomeDevice.MonitorInfo.CapabilityDic.ContainsKey("F4"))
                     Is_Game_DeviceName = true;
+
+                DdpmCommonHelper.WriteUILog($"[DoWork_ColorPreset_Sync] Has Gaming Capability={Is_Game_DeviceName}, HDR Status = {HDRStatus}");
 
                 Task.Run(() =>
                 {
@@ -3405,8 +3406,9 @@ namespace DDPM.UI.Module.Brightness
                 }));
                 */
             }
-            catch (System.Exception)
+            catch (System.Exception ex)
             {
+                DdpmCommonHelper.WriteUILog($"[DoWork_ColorPreset_Sync] Catch exception[{ex.Message}]");
             }
         }
 
