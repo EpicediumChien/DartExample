@@ -86,7 +86,8 @@ namespace DDPM.SA.Common
         Task<List<string>> ReadColorPreset(MonitorInfo m);
 
         //Task<bool> WriteColorPreset(MonitorInfo m, string ColorPreset_Name);
-        Task<bool> WriteColorPreset(MonitorInfo m, string ColorPreset_Name, int colorPresetRunType = 0, string reqAppName = null, bool showOSD = true);
+        // jim 20241207 modify for The DDPM color profile can not be applied by DDPM on Smart HDR mode.(Gaming monitor ex: AW2724DM)       
+        Task<bool> WriteColorPreset(MonitorInfo m, string ColorPreset_Name, int colorPresetRunType = 0, bool blIs_Game_DeviceName = false, bool blSmartHDR_ON = false, string reqAppName = null, bool showOSD = true);
 
         Task<bool> WriteColorPreset_AUTO(MonitorInfo m, string ColorPreset_Name);
 
@@ -96,7 +97,8 @@ namespace DDPM.SA.Common
 
         void DeleteColorPresetForMonitorConfig(string index_monitor, string AppName);
 
-        Task<bool> AutoSetColorPresetForMonitorConfig(MonitorInfo mo, string on_off, bool Islock = false);
+        // jim 20241207 modify for The DDPM color profile can not be applied by DDPM on Smart HDR mode.(Gaming monitor ex: AW2724DM)
+        Task<bool> AutoSetColorPresetForMonitorConfig(MonitorInfo mo, string on_off, bool Is_Game_DeviceName = false, bool Islock = false);
 
         Task<string> GetMonitorProfile(MonitorInfo m);
 
