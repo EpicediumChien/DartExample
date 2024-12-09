@@ -371,7 +371,8 @@ namespace DdpmSwUpdater
                 {                    
                     if (File.Exists(fileFullPath))
                     {
-                        if (!DDPMFileSecurity.IsFilePathValid(fileFullPath, out string fileCheckInfo))
+                        //For checkmarx test, [code part1]
+                        /*if (!DDPMFileSecurity.IsFilePathValid(fileFullPath, out string fileCheckInfo))
                         {
                             LogManage.LogMessage($"{nameof(DownloadAndInstall)} {_SWUpdateInfo.SoftwareName} FileIsNoSafe - FileCheckInfo : {fileCheckInfo}");
                             _notificationStr = LangHelper.Instance["Firmware_update_unsuccessful"];
@@ -388,7 +389,30 @@ namespace DdpmSwUpdater
                         //_clientProcess = new Process();                        
                         _clientProcess.StartInfo = startInfo;
                         _clientProcess.Start();
-                        _clientProcess.WaitForExit();
+                        _clientProcess.WaitForExit();*/
+
+                        //For checkmarx test, [code part2]
+                        if(DDPMFileSecurity.ValidateFilePath(fileFullPath, out string info))
+                        {
+                            ProcessStartInfo startInfo = new ProcessStartInfo()
+                            {
+                                UseShellExecute = false,
+                                FileName = fileFullPath,
+                                Arguments = arguments
+                            };
+                            //_clientProcess = new Process();                        
+                            _clientProcess.StartInfo = startInfo;
+                            _clientProcess.Start();
+                            _clientProcess.WaitForExit();
+                        }
+                        else
+                        {
+                            LogManage.LogMessage($"{nameof(DownloadAndInstall)} {_SWUpdateInfo.SoftwareName} FileIsNoSafe - FileCheckInfo : {info}");
+                            _notificationStr = LangHelper.Instance["Firmware_update_unsuccessful"];
+                            NotificationFWupdate(LangHelper.Instance["Error"], _notificationStr);
+                            _updateErrorCode = SWUErrorCode.FileIsNoSafe;
+                            return _updateErrorCode;
+                        }
                     }
                     else
                     {

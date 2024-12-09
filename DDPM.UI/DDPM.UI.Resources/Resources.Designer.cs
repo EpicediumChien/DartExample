@@ -1978,6 +1978,16 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Diagnostic report save fail.
+        ///   Looks up a localized string similar to Disable.
+        /// </summary>
+        internal static string DiagnosticReport_SaveFail {
+            get {
+                return ResourceManager.GetString("DiagnosticReport_SaveFail", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Disable.
         /// </summary>
         internal static string Disable {
@@ -3599,6 +3609,7 @@ namespace DDPM.UI.Resources {
         
         /// <summary>
         ///   Looks up a localized string similar to The corresponding Easy Memory profile will be deleted too. Do you want to continue?.
+        ///   Looks up a localized string similar to Error.
         /// </summary>
         internal static string EazyMemory_42 {
             get {
@@ -5475,6 +5486,15 @@ namespace DDPM.UI.Resources {
         internal static string MinimizeWindow {
             get {
                 return ResourceManager.GetString("MinimizeWindow", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Monitor asset report save fail.
+        /// </summary>
+        internal static string MonitorAssetReport_SaveFail {
+            get {
+                return ResourceManager.GetString("MonitorAssetReport_SaveFail", resourceCulture);
             }
         }
         

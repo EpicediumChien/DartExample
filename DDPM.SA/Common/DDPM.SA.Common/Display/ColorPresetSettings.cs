@@ -28,7 +28,7 @@ namespace DDPM.SA.Common
             //ColorPresetName = "";
             Color = 0;
             HDRColor = -1;
-            IconName = "";
+            IconName = string.Empty; // Jim 20241209 add settings default
         }
 
         public ColorPresetSettings_AppInfo(int nColor,int nHDRColor, string iconName)
@@ -51,26 +51,26 @@ namespace DDPM.SA.Common
     public class ColorPresetSettings
     {
         //public EDID DeviceInfo { get; set; }
-        public string ModelName { get; set; }
-        public string SerialNumber { get; set; }
-        public string ServiceTag { get; set; }
+        public string ModelName { get; set; } = string.Empty;  // Jim 20241209 add settings default
+        public string SerialNumber { get; set; } = string.Empty;  // Jim 20241209 add settings default
+        public string ServiceTag { get; set; } = string.Empty;  // Jim 20241209 add settings default
 
         // 0 is Manual
         // 1 is by AppInfo Settings.
-        public int RunType { get; set; }
+        public int RunType { get; set; } = 0;  // Jim 20241209 add settings default
 
-        public Dictionary<string, ColorPresetSettings_AppInfo> AppInfo { get; set; }
+        public Dictionary<string, ColorPresetSettings_AppInfo> AppInfo { get; set; } = new Dictionary<string, ColorPresetSettings_AppInfo>();  // Jim 20241209 add settings default
 
         //public string PresetForManual { get; set; }
         public int ColorForManual { get; set; } = 0;
 
         // 0 is Off
         // 1 is on
-        public int ColorManagement_Status { get; set; }
+        public int ColorManagement_Status { get; set; } = 0;  // Jim 20241209 add settings default
 
         // 1 is ByMonitor - automatically adjust the ICC color profile based on monitor color preset
         // 2 is ByHost - Automatically adjust the monitor color preset based on ICC color profile 
-        public int ColorManagement_RunType { get; set; }
+        public int ColorManagement_RunType { get; set; } = 0;  // Jim 20241209 add settings default
 
 
     }
