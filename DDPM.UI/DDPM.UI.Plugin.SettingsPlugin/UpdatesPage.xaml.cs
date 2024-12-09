@@ -2,6 +2,7 @@
 using DDPM.SA.Common.Alert;
 using DDPM.SA.Common.Settings;
 using DDPM.UI.Common;
+using Dell.Client.Framework.Common;
 using System.Diagnostics;
 using System.IO;
 using System.Reflection;
@@ -18,13 +19,16 @@ namespace DDPM.UI.Plugin.SettingsPlugin
     {
         // 10/15 Derek for RWD
         private readonly Int16 breakPoints = 910;
+        private ILog? _log;
 
         public UpdatesPage()
         {
+            _log = SettingsPlugin.PluginIoc?.GetService<ILog>();
+            _log?.Info("UpdatesPage initialize go");
             InitializeComponent();
-
             if (System.Windows.Application.Current?.TryFindResource("breakPoint") is Int16 width)
                 breakPoints = width;
+            _log?.Info("UpdatesPage initialize done");
         }
 
         ~UpdatesPage()

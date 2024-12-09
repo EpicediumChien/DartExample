@@ -32,11 +32,9 @@ using Dell.Client.Framework.Common.Extensions;
 using Dell.Client.Framework.Common.PluginConditions;
 using Dell.Client.Framework.Interfaces;
 using Dell.Client.Framework.UX.WPF.Controls;
-using Dell.TechHub.Commodity.Peripheral;
 using DPeMPublic.Common.Enums;
 using Microsoft;
 using Microsoft.Toolkit.Uwp.Notifications;
-using MS.WindowsAPICodePack.Internal;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
@@ -54,14 +52,11 @@ using System.Threading.Tasks;
 using System.Timers;
 using System.Windows;
 using System.Windows.Forms;
-using System.Windows.Media.Media3D;
 using System.Windows.Threading;
 using VcpCore.Common;
-using Windows.Gaming.Preview.GamesEnumeration;
 using Windows.System;
 using static DDPM.SA.Common.Telementry_GeneralFunction;
 using static DDPM.SA.Plugins.User.DeviceManager.DisplayDeviceHelper;
-using static VcpCore.Common.User32;
 using IDs = DDPM.SA.Common.IDs;
 
 //using MonitorProfile = DDPM.SA.Utility.MonitorProfile;
@@ -160,7 +155,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         //public event EventHandler<int>? WALSnoozeTimeLeftInSeconds_ChangeEvent;
         //public event EventHandler<bool>? Esi_IsWALLockCountdownStartedChanged_ChangeEvent;
         //public event EventHandler<int>? Esi_WALLockCountdownChanged_ChangeEvent;
-
 
         //Monitor objects
         private List<MonitorInfo> _AllInfoMonitors = new List<MonitorInfo>();
@@ -264,7 +258,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             //Robert_Lin, 2024-12-1 added, to let TextBox highlight text color can be changed with TextBox.SelectionTextBrush
             //Reference: https://github.com/dotnet/wpf/issues/4571
             AppContext.SetSwitch("Switch.System.Windows.Controls.Text.UseAdornerForTextboxSelectionRendering", false);
-
         }
 
         private void _DTPProxyPlugin_DTPEventHandler(object sender, UpdateUINotify e)
@@ -746,6 +739,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         /// A general event to UI from EABroker. Subagents can trigger this event with SentEANotify()
         /// </summary>
         public event EventHandler<EAArgs> EANotify;
+
         //End of EasyArrange
         ///////////////////////
 
@@ -764,6 +758,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         public event EventHandler GlobalSettingChangeEvent;
 
         public event EventHandler SystemSuspend;
+
         public event EventHandler SystemResume;
 
         #endregion
@@ -2528,6 +2523,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 }
             }
         }
+
         private void ChangeDock(DeviceHelper deviceHelper)
         {
             writelog("ChangeDock start");
@@ -3053,7 +3049,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 return false;
             }
         }
-
 
         public async Task<bool> SetBand2GainAsync(string guid, int newValue)
         {
@@ -5308,6 +5303,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             writelog("[DeviceMangerPlugin] SetSkipCA done");
             return Task.FromResult(_IsSkipCA);
         }
+
         private Task<bool> SetSkipSHA()
         {
             bool ret = false;
@@ -6943,7 +6939,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         //Robert_Lin, 2024-11-18, a general method for Subagent to send event to UI
         /// <summary>
-        /// A general method for EABroker, to send a notification to UI. 
+        /// A general method for EABroker, to send a notification to UI.
         /// It will trigger EANotify event.
         /// </summary>
         /// <param name="args"></param>
@@ -6971,6 +6967,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             writelog("@ DeviceManaerPlugin.GetIsSpanEnabled(), _DisplayManagerPlugin is null.");
             return Task.FromResult(false);
         }
+
         #endregion EasyArrage
 
         #region EasyMemory
@@ -7459,13 +7456,13 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
             return Task.FromResult(_SWUpdatePlugin.DownloadAndInstall(swUpdateInfos, isUITrigger, installPath).Result);
         }
+
         public Task<InterruptScreenRoot> InterruptScreen_Metadata()
         {
             writelog("[InterruptScreen_Metadata], start.");
             InterruptScreenRoot result = null;
             if (_SettingsPlugin != null)
             {
-
                 try
                 {
                     writelog("[InterruptScreen_Metadata], creat logs.");
@@ -8495,11 +8492,13 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             _DTPProxyPlugin.SetMouseAssignKeystrokeAction(Guid, newValue);
             return Task.FromResult(true);
         }
+
         public Task<bool> RestoreToDefaultMouse(string Guid, bool isFromCli = true)
         {
             writelog("DeviceMangerPlugin received RestoreToDefaultMouse requested ...");
             return _DTPProxyPlugin.RestoreToDefaultMouse(Guid, isFromCli);
         }
+
         public Task<bool> SetReportRate(string Guid, int newValue)
         {
             writelog("DeviceMangerPlugin received SetReportRate requested ...");
@@ -8514,14 +8513,17 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         {
             return await Task.Run(() => _DTPProxyPlugin.GetPenDeviceItemsEx());
         }
+
         public Task<bool> StartKeyCapturePen()
         {
             return _DTPProxyPlugin.StartKeyCapturePen();
         }
+
         public Task<bool> FinishKeyCapturePen()
         {
             return _DTPProxyPlugin.FinishKeyCapturePen();
         }
+
         public Task<string> KeyCaptureData()
         {
             return _DTPProxyPlugin.KeyCaptureData();
@@ -8712,11 +8714,13 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             _DTPProxyPlugin.SetTipSensitivity(itemID, newValue);
             return Task.FromResult(true);
         }
+
         public Task<bool> RestoreToDefaultPen()
         {
             writelog("DeviceMangerPlugin received RestoreToDefaultPen requested ...");
             return _DTPProxyPlugin.RestoreToDefaultPen();
         }
+
         public Task<bool> RestoreRadialMenuToDefault()
         {
             writelog("DeviceMangerPlugin received RestoreRadialMenuToDefault requested ...");
@@ -8789,6 +8793,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             _DTPProxyPlugin.SetKbAssignedAction(Guid, newValue);
             return Task.FromResult(true);
         }
+
         public Task<bool> RestoreToDefaultKB(string Guid)
         {
             writelog("DeviceMangerPlugin received RestoreToDefaultKB requested ...");
@@ -8893,21 +8898,40 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         {
             return await Task.Run(() => _DTPProxyPlugin.GetSelectedResolution(Guid));
         }
+
         public async Task<int> GetZoom(string Guid)
         {
             return await Task.Run(() => _DTPProxyPlugin.GetZoom(Guid));
         }
+
         public async Task<int> GetFocus(string Guid)
         {
             return await Task.Run(() => _DTPProxyPlugin.GetFocus(Guid));
         }
-        public async Task<bool> GetIsFocusOn(string Guid)
+
+        public async Task<bool?> GetIsFocusOn(string Guid)
         {
             return await Task.Run(() => _DTPProxyPlugin.GetIsFocusOn(Guid));
         }
+
         public async Task<int> GetPriority(string Guid)
         {
             return await Task.Run(() => _DTPProxyPlugin.GetPriority(Guid));
+        }
+
+        public async Task<bool?> GetIsAutoFramingTransitionOn(string Guid)
+        {
+            return await Task.Run(() => _DTPProxyPlugin.GetIsAutoFramingTransitionOn(Guid));
+        }
+
+        public async Task<int> GetAutoFramingFrameSize(string Guid)
+        {
+            return await Task.Run(() => _DTPProxyPlugin.GetAutoFramingFrameSize(Guid));
+        }
+
+        public async Task<int> GetAutoFramingSensitivity(string Guid)
+        {
+            return await Task.Run(() => _DTPProxyPlugin.GetAutoFramingSensitivity(Guid));
         }
 
         public Task SetIsMicEnumerationOn(string guid, bool newValue)
@@ -8965,22 +8989,20 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             return _DTPProxyPlugin.SetZoom(guid, newValue);
         }
 
-        public Task SetAutoFramingSensitivity(string guid, int newValue)
+        public Task<bool> SetAutoFramingSensitivity(string guid, int newValue)
         {
             writelog("DeviceMangerPlugin received SetAutoFramingSensitivity requested ...");
             writelog($"Target Guid is {guid}");
             writelog($"Target Value is {newValue}");
-            _DTPProxyPlugin.SetAutoFramingSensitivity(guid, newValue);
-            return Task.FromResult(true);
+            return _DTPProxyPlugin.SetAutoFramingSensitivity(guid, newValue);
         }
 
-        public Task SetAutoFramingFrameSize(string guid, int newValue)
+        public Task<bool> SetAutoFramingFrameSize(string guid, int newValue)
         {
             writelog("DeviceMangerPlugin received SetAutoFramingFrameSize requested ...");
             writelog($"Target Guid is {guid}");
             writelog($"Target Value is {newValue}");
-            _DTPProxyPlugin.SetAutoFramingFrameSize(guid, newValue);
-            return Task.FromResult(true);
+            return _DTPProxyPlugin.SetAutoFramingFrameSize(guid, newValue);
         }
 
         public Task<bool> SetIsAutoFramingOn(string guid, bool newValue)
@@ -8988,17 +9010,15 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             writelog("DeviceMangerPlugin received SetIsAutoFramingOn requested ...");
             writelog($"Target Guid is {guid}");
             writelog($"Target Value is {newValue}");
-            //_DTPProxyPlugin.SetIsAutoFramingOn(guid, newValue);
             return _DTPProxyPlugin.SetIsAutoFramingOn(guid, newValue);
         }
 
-        public Task SetIsAutoFramingTransitionOn(string guid, bool newValue)
+        public Task<bool> SetIsAutoFramingTransitionOn(string guid, bool newValue)
         {
             writelog("DeviceMangerPlugin received SetIsAutoFramingTransitionOn requested ...");
             writelog($"Target Guid is {guid}");
             writelog($"Target Value is {newValue}");
-            _DTPProxyPlugin.SetIsAutoFramingTransitionOn(guid, newValue);
-            return Task.FromResult(true);
+            return _DTPProxyPlugin.SetIsAutoFramingTransitionOn(guid, newValue);
         }
 
         public Task<bool> SetFieldOfView(string guid, int newValue)
@@ -9006,8 +9026,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             writelog("DeviceMangerPlugin received SetFieldOfView requested ...");
             writelog($"Target Guid is {guid}");
             writelog($"Target Value is {newValue}");
-            _DTPProxyPlugin.SetFieldOfView(guid, newValue);
-            return Task.FromResult(true);
+            return _DTPProxyPlugin.SetFieldOfView(guid, newValue);
         }
 
         public Task SetIsFocusOn(string guid, bool newValue)
@@ -9037,13 +9056,12 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             return Task.FromResult(true);
         }
 
-        public Task SetIsHDROn(string guid, bool newValue)
+        public Task<bool> SetIsHDROn(string guid, bool newValue)
         {
             writelog("DeviceMangerPlugin received SetIsHDROn requested ...");
             writelog($"Target Guid is {guid}");
             writelog($"Target Value is {newValue}");
-            _DTPProxyPlugin.SetIsHDROn(guid, newValue);
-            return Task.FromResult(true);
+            return _DTPProxyPlugin.SetIsHDROn(guid, newValue);
         }
 
         public Task SetIsAutoWhiteBalanceOn(string guid, bool newValue)
@@ -9233,14 +9251,17 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         {
             return await Task.Run(() => _DTPProxyPlugin.GetIsPrioritizeExternalWebcam(guid));
         }
+
         public async Task<bool> GetIsZoomMeetingActive(string guid)
         {
             return await Task.Run(() => _DTPProxyPlugin.GetIsZoomMeetingActive(guid));
         }
+
         public async Task<bool> GetZoomMeetingType(string guid)
         {
             return await Task.Run(() => _DTPProxyPlugin.GetZoomMeetingType(guid));
         }
+
         public async Task<bool> GetIsZoomScreenShareActive(string guid)
         {
             return await Task.Run(() => _DTPProxyPlugin.GetIsZoomScreenShareActive(guid));
@@ -9250,10 +9271,12 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         {
             return Task.FromResult(_DTPProxyPlugin.GetDockData(guid).Result);
         }
+
         public Task<string> GetFirmwareVersionForDock(string guid)
         {
             return Task.FromResult(_DTPProxyPlugin.GetFirmwareVersionForDock(guid).Result);
         }
+
         public Task<string> GetDockServiceTagForDock(string guid)
         {
             return Task.FromResult(_DTPProxyPlugin.GetDockServiceTagForDock(guid).Result);
@@ -9579,7 +9602,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 }
             }
             //regist osd key as hotkey
-
         }
 
         #region OutReport
@@ -9639,7 +9661,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         //Do remove Symbolic Link than delete folder
                         //Directory.Delete(saveFolderPath, true);
                         //Directory.CreateDirectory(saveFolderPath);
-                        
                     }*/
                     // The function call IsPathSymbolicLinked is merged to "IsFolderPathValid"
                     folderValid = DDPMFileSecurity.IsFolderPathValid(saveFolderPath, out FolderInfo);// && folderValid;
@@ -10063,6 +10084,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         #endregion
 
         #region WebCamera
+
         public enum ZoomMeetingType
         {
             CONF_3RD_EVENT_MEETING = 0,
@@ -10071,12 +10093,15 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             CONF_3RD_EVENT_WEBINAR_VIEWONLY = 3,
             ZOOM_MEETING_TYPE_UNKNOW
         }
+
         private bool _IsZoomScreenShareActive = false;
         private bool _IsZoomMeetingActive = false;
         private ZoomMeetingType _ZoomMeetingType = ZoomMeetingType.ZOOM_MEETING_TYPE_UNKNOW;
         private bool isWindowsScreenNotLocked = true; //
+
         //private bool isHiddenConditionsMet = false;
         private int currentZoomValue = -1;
+
         private EventMsg eventMsg = new EventMsg();
 
         //Derek 1206
@@ -10100,7 +10125,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
 
             //Hidden state
-            if (_IsZoomScreenShareActive)
+            if (_IsZoomScreenShareActive && _IsZoomMeetingActive)
             {
                 writelog($"HandleQAM receive QAMHide event");
 
@@ -10120,9 +10145,9 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 QAMClose();
             }
 
-
             writelog($"HandleQAM done");
         }
+
         private void HandleQAM()
         {
             writelog($"HandleQAM start");
@@ -10319,6 +10344,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 }
             }
         }
+
         private Task QAMHide()
         {
             writelog($"QAMHide Start");
@@ -10330,11 +10356,13 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             {
                 writelog($"Try to run QAMHide");
                 _QAM?.Dispatcher.Invoke(() => _QAM?.Hide());
-                Dispatcher.Run();
+                //Dispatcher.Run();
+
+                //_QAM?.Dispatcher.Invoke(() => _QAM?.SetToBottomWindow());
             }
             catch (Exception e)
             {
-                writelog($"Catch Exception[{e.Message}] when run QAMClose");
+                writelog($"Catch Exception[{e.Message}] when run QAMHide");
             }
 
             writelog($"QAMHide done");
@@ -11747,7 +11775,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
                 foreach (var _InfoMonitors in _AllInfoMonitors)
                 {
-                    //Check if actived monitor has its color preset section in config file                   
+                    //Check if actived monitor has its color preset section in config file
                     if (_InfoMonitors.edid.ModelName.Trim().IndexOf(config.ModelName.Trim()) >= 0 &&
                         (_InfoMonitors.edid.SerialNumber.Trim() == config.SerialNumber.Trim() || _InfoMonitors.edid.ServiceTag.Trim() == config.ServiceTag.Trim()))
                     {
@@ -11788,7 +11816,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
 
             writelog("CheckAutoColorManagementEnableOnStartedCondition, Enter");
-
 
             List<ColorPresetSettings> appconfigs = ReadColorPresetSettings().Result;
 
@@ -11849,7 +11876,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                             break;
                         }
                     }
-
                 }
 
                 writelog("CheckAutoColorManagementEnableOnStartedCondition, exit(break) for foreach (var _InfoMonitors in _AllInfoMonitors)");
@@ -12112,6 +12138,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 }
             });
         }
+
         private void GetCurrentDTPProxyPluginCondition()
         {
             _ = Task.Run(async () =>
@@ -12658,6 +12685,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         private string _latestBatterylowContent = string.Empty;
         private OSDType_Device _lastestBatterylowDevice = OSDType_Device.Unknown;
+
         private void showBatteryLowCombineOSD(string deviceName, OSDType oSDType, bool state)
         {
             //close batterylow osd
@@ -12678,20 +12706,25 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                             case OSDType.CapsLock:
                                 ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.CapsLock, state);
                                 break;
+
                             case OSDType.ScrollLock:
                                 ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.ScrollLock, state);
                                 break;
+
                             case OSDType.NumLock:
                                 ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.NumLock, state);
                                 break;
                         }
                         break;
+
                     case OSDType_Device.Keyboard:
                         _OSD_Controler.KeyAndKeybordBatteryLowWin_ShowWindow(_latestBatterylowContent, (sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX), oSDType, OSDType_Device.Keyboard, state);
                         break;
+
                     case OSDType_Device.Mouse:
                         _OSD_Controler.KeyAndKeybordBatteryLowWin_ShowWindow(_latestBatterylowContent, (sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX), oSDType, OSDType_Device.Mouse, state);
                         break;
+
                     case OSDType_Device.Headset:
                         _OSD_Controler.KeyAndKeybordBatteryLowWin_ShowWindow(_latestBatterylowContent, (sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX), oSDType, OSDType_Device.Headset, state);
                         break;
@@ -12737,12 +12770,10 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     }
                     _OSD_Controler.HeadsetBatteryLow_CloseWindow();
                 }
-
             }
             catch (Exception ex)
             {
                 writelog($"[getLatestBatterylowOSDAndCloseOthers] ERROR - {ex.Message}");
-
             }
             return ret;
         }
@@ -13796,7 +13827,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
         }
 
-
         private bool IsALSautobrightness(MonitorInfo monitorInfo)
         {
             List<ALSConfig> aLSConfigs = GetAllExistAlsConfig().Result;
@@ -14672,12 +14702,40 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                             settings.easyArrangementDDPM = new EasyArrangementDDPM();
                             settings.ImpExpSettings = new ImpExpSettings();
                             settings.hotkeyData = new List<HotkeyData>();
-                            settings.scheduleInfo = new scheduleInfo()
-                            {
-                                model = m.modelName,
-                                serviceTag = m.edid.ServiceTag
-                            };
                             settings.ALSConfig = 0;
+
+                            // scheduleInfo PIMS-302114
+                            {
+                                if (m.modelName.Equals("UP2720Q", StringComparison.OrdinalIgnoreCase))
+                                {
+                                    settings.scheduleInfo = new scheduleInfo()
+                                    {
+                                        model = m.modelName,
+                                        serviceTag = m.edid.ServiceTag,
+                                        Brightness1 = 150,
+                                        Brightness2 = 150,
+                                    };
+                                }
+                                else if (m.modelName.Equals("UP3221Q", StringComparison.OrdinalIgnoreCase))
+                                {
+                                    settings.scheduleInfo = new scheduleInfo()
+                                    {
+                                        model = m.modelName,
+                                        serviceTag = m.edid.ServiceTag,
+                                        Brightness1 = 230,
+                                        Brightness2 = 230,
+                                    };
+                                }
+                                else
+                                {
+                                    settings.scheduleInfo = new scheduleInfo()
+                                    {
+                                        model = m.modelName,
+                                        serviceTag = m.edid.ServiceTag
+                                    };
+                                }
+                            }
+
                             monitorSettingsList.Add(settings);
                             bool b = _SettingsPlugin.WriteMonitorSettings(m.modelName, monitorSettingsList).Result;
                         }
@@ -15744,7 +15802,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                             {
                                                 try
                                                 {
-                                                    //when keyboard battery low, press CapsLock/ScrollLock/NumLockLock combine with 
+                                                    //when keyboard battery low, press CapsLock/ScrollLock/NumLockLock combine with
                                                     _latestBatterylowContent = Content;
                                                     _lastestBatterylowDevice = OSDType_Device.Keyboard;
                                                     _OSD_Controler.KeybordBatteryLow_CloseWindow();
@@ -15998,6 +16056,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                             //}
                                         }
                                         break;
+
                                     case OSDType.CollaborationNotAvailable:
                                         {
                                             if (_DeviceType is OSDType_Device.Keyboard)
@@ -16014,6 +16073,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                             }
                                         }
                                         break;
+
                                     default:
                                         break;
                                 }
@@ -16288,6 +16348,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         }
 
         #region System Suspend & Resume
+
         private void OnSystemSuspend(object sender, EventArgs e)
         {
             SystemSuspend?.Invoke(this, e);
@@ -16297,6 +16358,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         {
             SystemResume?.Invoke(this, e);
         }
+
         #endregion
     }
 }

@@ -1355,6 +1355,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                                 info.SupportedFeatures = _iLogicalDeviceWebcam.SupportedFeatures;
                                 info.SupportedProperties = _iLogicalDeviceWebcam.SupportedProperties;
                                 info.SupportedResolutions = Encoding.UTF8.GetString(_iLogicalDeviceWebcam.SupportedResolutions);
+                                info.SelectedResolution = Encoding.UTF8.GetString(_iLogicalDeviceWebcam.GetSelectedResolution());
                                 info.TiltMax = _iLogicalDeviceWebcam.TiltMax;
                                 info.TiltMin = _iLogicalDeviceWebcam.TiltMin;
                                 info.TiltSteppingDelta = _iLogicalDeviceWebcam.TiltSteppingDelta;
@@ -1364,6 +1365,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                                 info.ZoomMax = _iLogicalDeviceWebcam.ZoomMax;
                                 info.ZoomMin = _iLogicalDeviceWebcam.ZoomMin;
                                 info.ZoomSteppingDelta = _iLogicalDeviceWebcam.ZoomSteppingDelta;
+                                info.IsPrioritizeExternalWebcam = _iLogicalDeviceWebcam.IsPrioritizeExternalWebcam;
                                 _iLogicalDeviceWebcam.IsMicEnumerationOnChanged += _iLogicalDeviceWebcam_IsMicEnumerationOnChanged;
 
                                 // webcam presence detection
