@@ -226,7 +226,7 @@ namespace DDPM.QAM
                 //Info SA that DDPM launched by QAM
                 //DdpmCommonHelper.DeviceManagerSA!.SetIsDDPMLaunchByQAMAsync(true);
 
-                Close_Click(this, null); //workable
+                //Close_Click(this, null); //Derek 1209
                 WriteLog($"Lanuch DDPM successfully!");
             }
             else

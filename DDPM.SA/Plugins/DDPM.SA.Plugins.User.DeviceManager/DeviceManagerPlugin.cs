@@ -10141,7 +10141,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 {
                     ResetQAMCondition();
                     QAMClose();
-                    _OSD_Controler.QAMHotKeyWin_CloseWindow();
+                    CloseQAMOSD();
 
                     writelog($"Abnormal condition occur, close QAM/OSD if it's opened.");
 
@@ -10187,14 +10187,14 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 //OSD condition
                 if (!_GlobalSettingParam.GlobalSetting_WidgetSettings.EnableQuickAccessWidget_Reminder)
                 {
-                    _OSD_Controler.QAMHotKeyWin_CloseWindow();
+                    CloseQAMOSD();
 
                     writelog($"Close OSD due to global setting change to {_GlobalSettingParam.GlobalSetting_WidgetSettings.EnableQuickAccessWidget_Reminder}");
                 }
                 else if (null == _QAM && _GlobalSettingParam.GlobalSetting_WidgetSettings.EnableQuickAccessWidget_Reminder)
                 {
                     ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.QAM);
-
+  
                     writelog($"Open OSD due to QAM is inactive and global setting change to {_GlobalSettingParam.GlobalSetting_WidgetSettings.EnableQuickAccessWidget_Reminder}");
                 }
             }
@@ -10204,6 +10204,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
 
             writelog($"HandleQAM done");
+        }
+
+        private void CloseQAMOSD()
+        {
+            _OSD_Controler.QAMHotKeyWin_CloseWindow();
         }
 
         private void HandleQAM()
@@ -10561,6 +10566,9 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
             //close DDPM UI
             //CloseDDPM();  //Derek 1209
+
+            //close OSD
+            CloseQAMOSD();
 
             writelog($"CallQAM_UI: done");
 
