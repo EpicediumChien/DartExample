@@ -6,6 +6,7 @@ using DDPM.SA.Common.Settings;
 using DDPM.SA.Plugins.CMAManager;
 using Dell.Client.Framework.Common;
 using Dell.Client.Framework.Common.Annotations;
+using Dell.Client.Framework.Common.Extensions;
 using Dell.Client.Framework.Interfaces;
 using DPeMPublic.Common.Enums;
 using Microsoft;
@@ -1415,7 +1416,7 @@ namespace DDPM.CLI.Plugins.Display
                             break;
                     }
                 }
-                value += "," + (ddpmSettings.LockSettings.Lock_Setting_ScreenNotification ? "LOCK" : "UNLOCK");
+                //value += "," + (ddpmSettings.LockSettings.Lock_Setting_ScreenNotification ? "LOCK" : "UNLOCK");
 
                 List<int> _monitorIndeies = new List<int>();
 
@@ -1460,7 +1461,7 @@ namespace DDPM.CLI.Plugins.Display
 
                 var result = "PASS";
                 var value = (param.GlobalSetting_General.Low_Battery_Level.ToString().ToLower() == "true") ? "ON" : "OFF";
-                value += "," + (ddpmSettings.LockSettings.Lock_Setting_ScreenNotification ? "LOCK" : "UNLOCK");
+                //value += "," + (ddpmSettings.LockSettings.Lock_Setting_ScreenNotification ? "LOCK" : "UNLOCK");
 
                 List<int> _monitorIndeies = new List<int>();
                 if (_AllInfoMonitors == null)
@@ -4088,6 +4089,12 @@ namespace DDPM.CLI.Plugins.Display
             {
                 if (commandLineInput.Options[0].Option_Name.ToUpper().Equals("VALUE")) //ex: /set -name=Display.Brightness -index=[0] -value=60
                 {
+                    Dictionary<string, string> serviceTagList = new Dictionary<string, string>();
+                    List<string> targetList = new List<string>();
+                    bool flag = true;
+                    int count = 0;
+                    int outCount = 0;
+                    List<string> swapIsDone = new List<string>();
                     if (commandLineInput.DeviceIndex.Count == 0 && commandLineInput.ServiceTag.Count == 0 && commandLineInput.Model.Count == 0)
                     {
                         //CLI_Set_Input_RESPONSE _Set_Input_RESPONSE = new CLI_Set_Input_RESPONSE();
@@ -4139,7 +4146,7 @@ namespace DDPM.CLI.Plugins.Display
                                     else
                                     {
                                         _Input_RESPONSE.Result = "PASS";
-                                        _Input_RESPONSE.Value += "," + (data.LockSettings.Lock_Display_ActiveInputSource ? "LOCK" : "UNLOCK");
+                                        //_Input_RESPONSE.Value += "," + (data.LockSettings.Lock_Display_ActiveInputSource ? "LOCK" : "UNLOCK");
                                         System.Console.WriteLine(_Input_RESPONSE.ToJson());
                                         output += "\n" + _Input_RESPONSE.ToJson();
                                     }
@@ -4176,11 +4183,52 @@ namespace DDPM.CLI.Plugins.Display
                     }
                     else if (commandLineInput.DeviceIndex.Count != 0)
                     {
-                        foreach (string idx in commandLineInput.DeviceIndex)
+                        writelog($"ActiveInputSource set index entry");
+                        serviceTagList = _AllInfoMonitors.DistinctBy(_=>_.edid.ServiceTag).ToDictionary(_ => _.edid.ServiceTag, _ => _.Index.ToString());
+                        targetList = commandLineInput.DeviceIndex;
+                        outCount = commandLineInput.DeviceIndex.Count;
+                    }
+                    else if (commandLineInput.ServiceTag.Count != 0)
+                    {
+                        writelog($"ActiveInputSource set ServiceTag entry");
+                        serviceTagList = _AllInfoMonitors.DistinctBy(_ => _.edid.ServiceTag).ToDictionary(_ => _.edid.ServiceTag, _ => _.edid.ServiceTag);
+                        targetList = commandLineInput.ServiceTag;
+                        outCount = commandLineInput.ServiceTag.Count;
+                    }
+                    else if (commandLineInput.Model.Count != 0)
+                    {
+                        writelog($"ActiveInputSource set Model entry");
+                        serviceTagList = _AllInfoMonitors.DistinctBy(_ => _.edid.ServiceTag).ToDictionary(_ => _.edid.ServiceTag, _ => _.modelName);
+                        targetList = commandLineInput.Model;
+                        outCount = commandLineInput.Model.Count;
+                    }
+                    swapIsDone = new List<string>();
+                    flag = true;
+                    while (flag && count < 1000)
+                    {
+                        foreach (string target in targetList)
                         {
-                            writelog($"ActiveInputSource set idx entry");
-                            MonitorInfo monitor = _AllInfoMonitors[int.Parse(idx)];
-                            CLI_RESPONSE _Input_RESPONSE = new CLI_RESPONSE(monitor);
+                            writelog($"ActiveInputSource set in progress");
+                            var targetTemp = serviceTagList.FirstOrDefault(_=> _.Value == target.ToUpper());
+                            if (targetTemp.Value == null)
+                            {
+                                count++;
+                                continue;
+                            }
+                            string stIsDone = swapIsDone.FirstOrDefault(_ => _ == targetTemp.Key);
+                            if (!String.IsNullOrWhiteSpace(stIsDone))
+                            {
+                                count++;
+                                continue;
+                            }
+                            MonitorInfo mo = _AllInfoMonitors.FirstOrDefault(_ => _.edid.ServiceTag == targetTemp.Key);
+                            if (mo == null)
+                            {
+                                _AllInfoMonitors = _devMgr.GetMonitors().Result;
+                                count++;
+                                break;
+                            }
+                            CLI_RESPONSE _Input_RESPONSE = new CLI_RESPONSE(mo);
                             _Input_RESPONSE.Command = commandLineInput.Command;
                             _Input_RESPONSE.TargetFeature = commandLineInput.TargetFeature;
 
@@ -4200,16 +4248,12 @@ namespace DDPM.CLI.Plugins.Display
                                 }
                             }
                             string get_inputvpccode = get_inputsource_type(op_values[0]);
-                            //int getvcp = get_inputsource_vcp(get_inputvpccode);
-
                             if (get_inputvpccode != "Unknown")
                             {
                                 if (commandLineInput.Options.Count == 1)
                                 {
-                                    //bool retcode = SetVCPCode(devMgr, monitor, "0x60", "0x" + get_inputsource_vcp(get_inputvpccode).ToString("X2")).Result;
-                                    bool retcode = SetVCPCode(devMgr, monitor, "Input Select", get_inputvpccode).Result;
+                                    bool retcode = SetVCPCode(devMgr, mo, "Input Select", get_inputvpccode).Result;
                                     if (!retcode) ispass = false;
-                                    //_Input_RESPONSE.ActiveInputSource = commandLineInput.Options[0].Option_Value;
                                     _Input_RESPONSE.Value = op_values[0];
                                     if (!ispass)
                                     {
@@ -4221,14 +4265,14 @@ namespace DDPM.CLI.Plugins.Display
                                     else
                                     {
                                         _Input_RESPONSE.Result = "PASS";
-                                        _Input_RESPONSE.Value += "," + (data.LockSettings.Lock_Display_ActiveInputSource ? "LOCK" : "UNLOCK");
+                                        //_Input_RESPONSE.Value += "," + (data.LockSettings.Lock_Display_ActiveInputSource ? "LOCK" : "UNLOCK");
                                         System.Console.WriteLine(_Input_RESPONSE.ToJson());
                                         output += "\n" + _Input_RESPONSE.ToJson();
+                                        swapIsDone.Add(targetTemp.Key);
                                     }
                                 }
                                 else
                                 {
-                                    //_Input_RESPONSE.ActiveInputSource = String.Empty;
                                     _Input_RESPONSE.Result = "FAIL";
                                     if (commandLineInput.Options.Count > 1)
                                     {
@@ -4240,191 +4284,24 @@ namespace DDPM.CLI.Plugins.Display
                                     }
                                     System.Console.WriteLine(_Input_RESPONSE.ToJson());
                                     output += "\n" + _Input_RESPONSE.ToJson();
+                                    writelog($"ActiveInputSource set fail {output}");
                                     return ((int)CLI_ExitCode.fail_Value, output);
                                 }
                             }
                             else
                             {
-                                //_Input_RESPONSE.ActiveInputSource = String.Empty;
                                 _Input_RESPONSE.Result = "FAIL";
                                 _Input_RESPONSE.Message = "Wrong option value: ";
                                 _Input_RESPONSE.Message += $"{commandLineInput.Options[0].Option_Value}";
                                 System.Console.WriteLine(_Input_RESPONSE.ToJson());
                                 output += "\n" + _Input_RESPONSE.ToJson();
-                                writelog($"ActiveInputSource set idx fail {output}");
+                                writelog($"ActiveInputSource set fail {output}");
                                 return ((int)CLI_ExitCode.fail_Value, output);
                             }
                         }
-                    }
-                    else if (commandLineInput.ServiceTag.Count != 0)
-                    {
-                        foreach (string tag in commandLineInput.ServiceTag)
-                        {
-                            var tmp = _AllInfoMonitors.FindAll(x => x.edid.ServiceTag.ToUpper().Equals(tag.ToUpper()));
-                            foreach (MonitorInfo mo in tmp)
-                            {
-                                writelog($"ActiveInputSource set tag entry");
-                                CLI_RESPONSE _Input_RESPONSE = new CLI_RESPONSE(mo);
-                                _Input_RESPONSE.Command = commandLineInput.Command;
-                                _Input_RESPONSE.TargetFeature = commandLineInput.TargetFeature;
-
-                                //commandLineInput.Options[0].Option_Value.Replace(".", ",");
-                                string[] op_values = commandLineInput.Options[0].Option_Value.Replace(".", ",").Split(",");
-
-                                foreach (string v in op_values)
-                                {
-                                    switch (v.ToUpper())
-                                    {
-                                        case "LOCK":
-                                        case "UNLOCK":
-                                            if (v.ToUpper().Equals("LOCK")) data.LockSettings.Lock_Display_ActiveInputSource = true;
-                                            if (v.ToUpper().Equals("UNLOCK")) data.LockSettings.Lock_Display_ActiveInputSource = false;
-                                            await devMgr.SetAppConfigData(data);
-                                            break;
-                                    }
-                                }
-                                string get_inputvpccode = get_inputsource_type(op_values[0]);
-                                // int getvcp = get_inputsource_vcp(get_inputvpccode);
-
-                                if (get_inputvpccode != "Unknown")
-                                {
-                                    if (commandLineInput.Options.Count == 1)
-                                    {
-                                        //_Input_RESPONSE.ActiveInputSource = commandLineInput.Options[0].Option_Value;
-                                        _Input_RESPONSE.Value = op_values[0];
-                                        //bool retcode = SetVCPCode(devMgr, mo.Index, "0x60", "0x" + get_inputsource_vcp(get_inputvpccode).ToString("X2")).Result;
-                                        bool retcode = SetVCPCode(devMgr, mo, "Input Select", get_inputvpccode).Result;
-                                        if (!retcode) ispass = false;
-                                        if (!ispass)
-                                        {
-                                            _Input_RESPONSE.Result = "Fail";
-                                            _Input_RESPONSE.Message = "FAIL_SetVCP";
-                                            System.Console.WriteLine(_Input_RESPONSE.ToJson());
-                                            output += "\n" + _Input_RESPONSE.ToJson();
-                                        }
-                                        else
-                                        {
-                                            _Input_RESPONSE.Result = "Pass";
-                                            _Input_RESPONSE.Value += "," + (data.LockSettings.Lock_Display_ActiveInputSource ? "LOCK" : "UNLOCK");
-                                            System.Console.WriteLine(_Input_RESPONSE.ToJson());
-                                            output += "\n" + _Input_RESPONSE.ToJson();
-                                        }
-                                    }
-                                    else
-                                    {
-                                        //_Input_RESPONSE.ActiveInputSource = String.Empty;
-                                        _Input_RESPONSE.Result = "FAIL";
-                                        if (commandLineInput.Options.Count > 1)
-                                        {
-                                            _Input_RESPONSE.Message = "Too Many Value";
-                                        }
-                                        else
-                                        {
-                                            _Input_RESPONSE.Message = "No Value";
-                                        }
-                                        System.Console.WriteLine(_Input_RESPONSE.ToJson());
-                                        output += "\n" + _Input_RESPONSE.ToJson();
-                                        writelog($"ActiveInputSource set tag fail {output}");
-                                        return ((int)CLI_ExitCode.fail_Value, output);
-                                    }
-                                }
-                                else
-                                {
-                                    _Input_RESPONSE.Result = "FAIL";
-                                    _Input_RESPONSE.Message = "Wrong option value: ";
-                                    _Input_RESPONSE.Message += $"{commandLineInput.Options[0].Option_Value}";//add error message if option value not exist in input source list
-                                    System.Console.WriteLine(_Input_RESPONSE.ToJson());
-                                    output += "\n" + _Input_RESPONSE.ToJson();
-                                    writelog($"ActiveInputSource option value fail {output}");
-                                    return ((int)CLI_ExitCode.fail_Value, output);
-                                }
-                            }
-                        }
-                    }
-                    else if (commandLineInput.Model.Count != 0)
-                    {
-                        foreach (string modelName in commandLineInput.Model)
-                        {
-                            var tmp = _AllInfoMonitors.FindAll(x => x.edid.ModelName.ToUpper().Equals(modelName.ToUpper()));
-                            foreach (MonitorInfo mo in tmp)
-                            {
-                                writelog($"ActiveInputSource set tag entry");
-                                CLI_RESPONSE _Input_RESPONSE = new CLI_RESPONSE(mo);
-                                _Input_RESPONSE.Command = commandLineInput.Command;
-                                _Input_RESPONSE.TargetFeature = commandLineInput.TargetFeature;
-
-                                //commandLineInput.Options[0].Option_Value.Replace(".", ",");
-                                string[] op_values = commandLineInput.Options[0].Option_Value.Replace(".", ",").Split(",");
-
-                                foreach (string v in op_values)
-                                {
-                                    switch (v.ToUpper())
-                                    {
-                                        case "LOCK":
-                                        case "UNLOCK":
-                                            if (v.ToUpper().Equals("LOCK")) data.LockSettings.Lock_Display_ActiveInputSource = true;
-                                            if (v.ToUpper().Equals("UNLOCK")) data.LockSettings.Lock_Display_ActiveInputSource = false;
-                                            await devMgr.SetAppConfigData(data);
-                                            break;
-                                    }
-                                }
-                                string get_inputvpccode = get_inputsource_type(op_values[0]);
-                                //int getvcp = get_inputsource_vcp(get_inputvpccode);
-
-                                if (get_inputvpccode != "Unknown")
-                                {
-                                    if (commandLineInput.Options.Count == 1)
-                                    {
-                                        //_Input_RESPONSE.ActiveInputSource = commandLineInput.Options[0].Option_Value;
-                                        _Input_RESPONSE.Value = op_values[0];
-                                        //bool retcode = SetVCPCode(devMgr, mo.Index, "0x60", "0x" + get_inputsource_vcp(get_inputvpccode).ToString("X2")).Result;
-                                        bool retcode = SetVCPCode(devMgr, mo, "Input Select", get_inputvpccode).Result;
-                                        if (!retcode) ispass = false;
-                                        if (!ispass)
-                                        {
-                                            _Input_RESPONSE.Result = "Fail";
-                                            _Input_RESPONSE.Message = "FAIL_SetVCP";
-                                            System.Console.WriteLine(_Input_RESPONSE.ToJson());
-                                            output += "\n" + _Input_RESPONSE.ToJson();
-                                        }
-                                        else
-                                        {
-                                            _Input_RESPONSE.Result = "Pass";
-                                            _Input_RESPONSE.Value += "," + (data.LockSettings.Lock_Display_ActiveInputSource ? "LOCK" : "UNLOCK");
-                                            System.Console.WriteLine(_Input_RESPONSE.ToJson());
-                                            output += "\n" + _Input_RESPONSE.ToJson();
-                                        }
-                                    }
-                                    else
-                                    {
-                                        //_Input_RESPONSE.ActiveInputSource = String.Empty;
-                                        _Input_RESPONSE.Result = "FAIL";
-                                        if (commandLineInput.Options.Count > 1)
-                                        {
-                                            _Input_RESPONSE.Message = "Too Many Value";
-                                        }
-                                        else
-                                        {
-                                            _Input_RESPONSE.Message = "No Value";
-                                        }
-                                        System.Console.WriteLine(_Input_RESPONSE.ToJson());
-                                        output += "\n" + _Input_RESPONSE.ToJson();
-                                        writelog($"ActiveInputSource set tag fail {output}");
-                                        return ((int)CLI_ExitCode.fail_Value, output);
-                                    }
-                                }
-                                else
-                                {
-                                    _Input_RESPONSE.Result = "FAIL";
-                                    _Input_RESPONSE.Message = "Wrong option value: ";
-                                    _Input_RESPONSE.Message += $"{commandLineInput.Options[0].Option_Value}";//add error message if option value not exist in input source list
-                                    System.Console.WriteLine(_Input_RESPONSE.ToJson());
-                                    output += "\n" + _Input_RESPONSE.ToJson();
-                                    writelog($"ActiveInputSource option value fail {output}");
-                                    return ((int)CLI_ExitCode.fail_Value, output);
-                                }
-                            }
-                        }
+                        if (outCount == swapIsDone.Count)
+                            flag = false;
+                        count++;
                     }
                 }
                 writelog($"ActiveInputSource set exit return value {output}");
@@ -4461,7 +4338,7 @@ namespace DDPM.CLI.Plugins.Display
                         }
                         _Input_RESPONSE.Value = src;
                         _Input_RESPONSE.Result = "PASS";
-                        _Input_RESPONSE.Value += "," + (data.LockSettings.Lock_Display_ActiveInputSource ? "LOCK" : "UNLOCK");
+                        //_Input_RESPONSE.Value += "," + (data.LockSettings.Lock_Display_ActiveInputSource ? "LOCK" : "UNLOCK");
                         System.Console.WriteLine(_Input_RESPONSE.ToJson());
                         output += "\n" + _Input_RESPONSE.ToJson();
                     }
@@ -4507,7 +4384,7 @@ namespace DDPM.CLI.Plugins.Display
                         }
                         _Input_RESPONSE.Value = src;
                         _Input_RESPONSE.Result = "PASS";
-                        _Input_RESPONSE.Value += "," + (data.LockSettings.Lock_Display_ActiveInputSource ? "LOCK" : "UNLOCK");
+                        //_Input_RESPONSE.Value += "," + (data.LockSettings.Lock_Display_ActiveInputSource ? "LOCK" : "UNLOCK");
                         System.Console.WriteLine(_Input_RESPONSE.ToJson());
                         output += "\n" + _Input_RESPONSE.ToJson();
                     }
@@ -4555,7 +4432,7 @@ namespace DDPM.CLI.Plugins.Display
                             }
                             _Input_RESPONSE.Value = src;
                             _Input_RESPONSE.Result = "PASS";
-                            _Input_RESPONSE.Value += "," + (data.LockSettings.Lock_Display_ActiveInputSource ? "LOCK" : "UNLOCK");
+                            //_Input_RESPONSE.Value += "," + (data.LockSettings.Lock_Display_ActiveInputSource ? "LOCK" : "UNLOCK");
                             System.Console.WriteLine(_Input_RESPONSE.ToJson());
                             output += "\n" + _Input_RESPONSE.ToJson();
                         }
@@ -4604,7 +4481,7 @@ namespace DDPM.CLI.Plugins.Display
                             }
                             _Input_RESPONSE.Value = src;
                             _Input_RESPONSE.Result = "PASS";
-                            _Input_RESPONSE.Value += "," + (data.LockSettings.Lock_Display_ActiveInputSource ? "LOCK" : "UNLOCK");
+                            //_Input_RESPONSE.Value += "," + (data.LockSettings.Lock_Display_ActiveInputSource ? "LOCK" : "UNLOCK");
                             System.Console.WriteLine(_Input_RESPONSE.ToJson());
                             output += "\n" + _Input_RESPONSE.ToJson();
                         }
@@ -6729,7 +6606,7 @@ namespace DDPM.CLI.Plugins.Display
             else if (cli_USBCPrioritization_RESPONSE != null)
             {
                 cli_USBCPrioritization_RESPONSE.Value = displayPropertiesInfo.USBCPrioritizationType == USBCPrioritizationType.HighDataSpeed ? "High Data Speed" : "High Resolution";
-                cli_USBCPrioritization_RESPONSE.Value += "," + (ddpmSettings.LockSettings.Lock_Display_USBCPrioritization ? "LOCK" : "UNLOCK");
+                //cli_USBCPrioritization_RESPONSE.Value += "," + (ddpmSettings.LockSettings.Lock_Display_USBCPrioritization ? "LOCK" : "UNLOCK");
             }
             else if (cli_Orientation_RESPONSE != null)
             {
@@ -7064,7 +6941,7 @@ namespace DDPM.CLI.Plugins.Display
                                     USBCPrioritization_RESPONSE.Value = op_values[0];
                                 }
 
-                                USBCPrioritization_RESPONSE.Value += "," + (data.LockSettings.Lock_Display_USBCPrioritization ? "LOCK" : "UNLOCK");
+                                //USBCPrioritization_RESPONSE.Value += "," + (data.LockSettings.Lock_Display_USBCPrioritization ? "LOCK" : "UNLOCK");
 
                                 if (op_values[0].ToUpper() != "HIGHDATASPEED" && op_values[0].ToUpper() != "HIGHRESOLUTION")
                                 {
@@ -7998,7 +7875,7 @@ namespace DDPM.CLI.Plugins.Display
                         else
                             S_PowerNap_RESPONSE.Value = tmp.RunType.ToString();
 
-                        S_PowerNap_RESPONSE.Value += "," + (ddpmSettings.LockSettings.Lock_Display_PowerNap ? "LOCK" : "UNLOCK");
+                        //S_PowerNap_RESPONSE.Value += "," + (ddpmSettings.LockSettings.Lock_Display_PowerNap ? "LOCK" : "UNLOCK");
 
                         output += "\n" + JsonConvert.SerializeObject(S_PowerNap_RESPONSE, Formatting.Indented);
                     }
@@ -8115,7 +7992,7 @@ namespace DDPM.CLI.Plugins.Display
                         else
                             S_PowerNap_RESPONSE.Value = tmp.RunType.ToString();
 
-                        S_PowerNap_RESPONSE.Value += "," + (ddpmSettings.LockSettings.Lock_Display_PowerNap ? "LOCK" : "UNLOCK");
+                        //S_PowerNap_RESPONSE.Value += "," + (ddpmSettings.LockSettings.Lock_Display_PowerNap ? "LOCK" : "UNLOCK");
 
                         output += "\n" + JsonConvert.SerializeObject(S_PowerNap_RESPONSE, Formatting.Indented);
                     }
@@ -8234,7 +8111,7 @@ namespace DDPM.CLI.Plugins.Display
                             else
                                 S_PowerNap_RESPONSE.Value = tmp_rst.RunType.ToString();
 
-                            S_PowerNap_RESPONSE.Value += "," + (ddpmSettings.LockSettings.Lock_Display_PowerNap ? "LOCK" : "UNLOCK");
+                            //S_PowerNap_RESPONSE.Value += "," + (ddpmSettings.LockSettings.Lock_Display_PowerNap ? "LOCK" : "UNLOCK");
 
                             output += "\n" + JsonConvert.SerializeObject(S_PowerNap_RESPONSE, Formatting.Indented);
                         }
@@ -8354,7 +8231,7 @@ namespace DDPM.CLI.Plugins.Display
                             else
                                 S_PowerNap_RESPONSE.Value = tmp_rst.RunType.ToString();
 
-                            S_PowerNap_RESPONSE.Value += "," + (ddpmSettings.LockSettings.Lock_Display_PowerNap ? "LOCK" : "UNLOCK");
+                            //S_PowerNap_RESPONSE.Value += "," + (ddpmSettings.LockSettings.Lock_Display_PowerNap ? "LOCK" : "UNLOCK");
 
                             output += "\n" + JsonConvert.SerializeObject(S_PowerNap_RESPONSE, Formatting.Indented);
                         }
@@ -8404,7 +8281,7 @@ namespace DDPM.CLI.Plugins.Display
                             else
                                 S_PowerNap_RESPONSE.Value = temp.RunType.ToString();
                         }
-                        S_PowerNap_RESPONSE.Value += "," + (ddpmSettings.LockSettings.Lock_Display_PowerNap ? "LOCK" : "UNLOCK");
+                        //S_PowerNap_RESPONSE.Value += "," + (ddpmSettings.LockSettings.Lock_Display_PowerNap ? "LOCK" : "UNLOCK");
                         output += "\n" + JsonConvert.SerializeObject(S_PowerNap_RESPONSE, Formatting.Indented);
                     }
                 }
@@ -8447,7 +8324,7 @@ namespace DDPM.CLI.Plugins.Display
                             else
                                 S_PowerNap_RESPONSE.Value = temp.RunType.ToString();
                         }
-                        S_PowerNap_RESPONSE.Value += "," + (ddpmSettings.LockSettings.Lock_Display_PowerNap ? "LOCK" : "UNLOCK");
+                       //S_PowerNap_RESPONSE.Value += "," + (ddpmSettings.LockSettings.Lock_Display_PowerNap ? "LOCK" : "UNLOCK");
                         output += "\n" + JsonConvert.SerializeObject(S_PowerNap_RESPONSE, Formatting.Indented);
                     }
                 }
@@ -8492,7 +8369,7 @@ namespace DDPM.CLI.Plugins.Display
                                 else
                                     S_PowerNap_RESPONSE.Value = temp.RunType.ToString();
                             }
-                            S_PowerNap_RESPONSE.Value += "," + (ddpmSettings.LockSettings.Lock_Display_PowerNap ? "LOCK" : "UNLOCK");
+                            //S_PowerNap_RESPONSE.Value += "," + (ddpmSettings.LockSettings.Lock_Display_PowerNap ? "LOCK" : "UNLOCK");
                             output += "\n" + JsonConvert.SerializeObject(S_PowerNap_RESPONSE, Formatting.Indented);
                         }
                     }
@@ -13339,7 +13216,7 @@ namespace DDPM.CLI.Plugins.Display
                         cli_Response.Result = "FAIL";
                         cli_Response.Message = "Invalid command line syntax.";
                     }
-                    cli_Response.Value += "," + (ddpmSettings.LockSettings.Lock_Display_EasyArrangeLayout ? "LOCK" : "UNLOCK");
+                    //cli_Response.Value += "," + (ddpmSettings.LockSettings.Lock_Display_EasyArrangeLayout ? "LOCK" : "UNLOCK");
                     System.Console.WriteLine(JsonConvert.SerializeObject(cli_Response, Formatting.Indented));
                     output += "\n" + JsonConvert.SerializeObject(cli_Response, Formatting.Indented);
                 }
@@ -13401,7 +13278,7 @@ namespace DDPM.CLI.Plugins.Display
                         cli_Response.Result = "FAIL";
                         cli_Response.Message = "Invalid command line syntax.";
                     }
-                    cli_Response.Value += "," + (ddpmSettings.LockSettings.Lock_Display_EasyArrangeLayout ? "LOCK" : "UNLOCK");
+                    //cli_Response.Value += "," + (ddpmSettings.LockSettings.Lock_Display_EasyArrangeLayout ? "LOCK" : "UNLOCK");
                     System.Console.WriteLine(JsonConvert.SerializeObject(cli_Response, Formatting.Indented));
                     output += "\n" + JsonConvert.SerializeObject(cli_Response, Formatting.Indented);
                 }
@@ -14046,7 +13923,7 @@ namespace DDPM.CLI.Plugins.Display
                             cli_Response.Message = "Invalid command line syntax, missing -value=... or more than one -value=...";
                             break;
                     }
-                    cli_Response.Value += "," + (ddpmSettings.LockSettings.Lock_Display_USBKVM ? "LOCK" : "UNLOCK");
+                    //cli_Response.Value += "," + (ddpmSettings.LockSettings.Lock_Display_USBKVM ? "LOCK" : "UNLOCK");
                     System.Console.WriteLine(JsonConvert.SerializeObject(cli_Response, Formatting.Indented));
                     output += "\n" + JsonConvert.SerializeObject(cli_Response, Formatting.Indented);
                 }
@@ -14075,7 +13952,7 @@ namespace DDPM.CLI.Plugins.Display
                     else
                         cli_Response.Value = "DISABLE";
 
-                    cli_Response.Value += "," + (ddpmSettings.LockSettings.Lock_Display_USBKVM ? "LOCK" : "UNLOCK");
+                    //cli_Response.Value += "," + (ddpmSettings.LockSettings.Lock_Display_USBKVM ? "LOCK" : "UNLOCK");
                     System.Console.WriteLine(JsonConvert.SerializeObject(cli_Response, Formatting.Indented));
                     output += "\n" + JsonConvert.SerializeObject(cli_Response, Formatting.Indented);
                 }
