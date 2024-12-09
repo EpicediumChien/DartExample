@@ -17,27 +17,27 @@ namespace VcpCore.Common
 {
     public class VCPchangedEventArgs : EventArgs
     {
-        public string vcpcode { get; set; }
-        public string value { get; set; }
-        public MonitorInfo monitor { get; set; }
+        public string vcpcode { get; set; } = string.Empty;
+        public string value { get; set; } = string.Empty;
+        public MonitorInfo monitor { get; set; } = new MonitorInfo();
     }
 
     public class DisplaychangedEventArgs : EventArgs
     {
-        public int count { get; set; }
-        public List<MonitorInfo> monitors { get; set; }
+        public int count { get; set; } = 0x0;
+        public List<MonitorInfo> monitors { get; set; } = new List<MonitorInfo>();
     }
 
     public class DDCCIchangedEventArgs : EventArgs
     {
-        public bool DDCisON { get; set; }
-        public MonitorInfo monitors { get; set; }
+        public bool DDCisON { get; set; } = false;
+        public MonitorInfo monitors { get; set; } = new MonitorInfo();
     }
 
     public class ReadWriteRequest : EventArgs
     {
-        public ReadWriteRequest_Type service { get; set; }
-        public MonitorInfo monitor { get; set; }
+        public ReadWriteRequest_Type service { get; set; } = new ReadWriteRequest_Type();
+        public MonitorInfo monitor { get; set; } = new MonitorInfo();
     }
 
     public enum ReadWriteRequest_Type
