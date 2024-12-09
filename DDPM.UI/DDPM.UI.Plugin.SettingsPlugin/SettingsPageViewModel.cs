@@ -304,7 +304,7 @@ namespace DDPM.UI.Plugin.SettingsPlugin
             {
                 if (!monitorAssetReports)
                 {
-                    MessageModalDialog msgBox = new MessageModalDialog(LangHelper.Instance["Error"], LangHelper.Instance["MonitorAssetReport_SaveFail"], LangHelper.Instance["Yes"]);
+                    MessageModalDialog msgBox = new MessageModalDialog(LangHelper.Instance["Error"], LangHelper.Instance["MonitorAssetReport_SaveFail"], LangHelper.Instance["OK"]);
                     Window mainWindow = System.Windows.Application.Current.MainWindow;
                     if (mainWindow != null)
                     {
@@ -326,7 +326,7 @@ namespace DDPM.UI.Plugin.SettingsPlugin
             {
                 if (!monitorAssetReports)
                 {
-                    MessageModalDialog msgBox = new MessageModalDialog(LangHelper.Instance["Error"], LangHelper.Instance["DiagnosticReport_SaveFail"], LangHelper.Instance["Yes"]);
+                    MessageModalDialog msgBox = new MessageModalDialog(LangHelper.Instance["Error"], LangHelper.Instance["DiagnosticReport_SaveFail"], LangHelper.Instance["OK"]);
                     Window mainWindow = System.Windows.Application.Current.MainWindow;
                     if (mainWindow != null)
                     {
