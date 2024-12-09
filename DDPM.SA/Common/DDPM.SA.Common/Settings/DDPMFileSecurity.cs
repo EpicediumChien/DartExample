@@ -226,26 +226,28 @@ namespace DDPM.SA.Common.Settings
             //    return string.Empty;
             //}
 
-            if (!ValidateFilePath(filePath, out info))
-            {
-#if DEBUG
-                Console.WriteLine($"[GetSerializedJsonString] ValidateFilePath failed: {info}");
-#endif
-                return string.Empty;
-            }
-
             string json_content = string.Empty;
             try
             {
-                using (FileLock fileLock = new FileLock(filePath, PathCheckOption.None, lockNow: true))
+                if (ValidateFilePath(filePath, out info))
                 {
-                    //1. Read json content
-                    json_content = File.ReadAllText(filePath);
+                    using (FileLock fileLock = new FileLock(filePath, PathCheckOption.None, lockNow: true))
+                    {
+                        //1. Read json content
+                        json_content = File.ReadAllText(filePath);
+                    }
+                }
+                else
+                {
+#if DEBUG
+                    Console.WriteLine($"[GetSerializedJsonString] ValidateFilePath failed: {info}");
+#endif
+                    throw new Exception(info);
                 }
             }
             catch (Exception ex)
             {
-                info = "FileLock/ReadFile fail: " + ex.Message;
+                info = "ReadFile fail: " + ex.Message;
                 return string.Empty;
             }
 
