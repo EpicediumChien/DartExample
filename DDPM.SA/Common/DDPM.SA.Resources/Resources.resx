@@ -133,7 +133,7 @@
     <value>Network fail</value>
   </data>
   <data name="Update_failed_due_to_network_error" xml:space="preserve">
-    <value>Update failed due to network error. Try again.</value>
+    <value>Update failed due to network error. Please try again.</value>
   </data>
   <data name="Dock_FW_is_loaded" xml:space="preserve">
     <value>Dock FW is loaded. Disconnect dock for completing FW application and reconnect dock after 1 min.</value>

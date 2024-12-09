@@ -2946,4 +2946,10 @@
   <data name="Mouse.16" xml:space="preserve">
     <value>Number of times per second mouse’s position reports to system. Connect via USB for higher polling rates.</value>
   </data>
+  <data name="DiagnosticReport_SaveFail" xml:space="preserve">
+    <value>Diagnostic report save fail</value>
+  </data>
+  <data name="MonitorAssetReport_SaveFail" xml:space="preserve">
+    <value>Monitor asset report save fail</value>
+  </data>
 </root>

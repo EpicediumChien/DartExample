@@ -1,10 +1,12 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using DDPM.SA.Common;
 using DDPM.SA.Common.Method;
+using DDPM.SA.Common.Popup;
 using DDPM.SA.Common.Settings;
 using DDPM.UI.Common;
 using DDPM.UI.Common.Interfaces;
 using DDPM.UI.Common.Models;
+using DDPM.UI.Plugin.Common;
 using DDPM.UI.Plugin.DdpmHomePlugin.Interfaces;
 using DDPM.UI.Resources.Helper;
 using Dell.Client.Framework.Common;
@@ -19,6 +21,8 @@ using System.Windows.Controls;
 using System.Windows.Forms;
 using System.Windows.Threading;
 using VcpCore.Common;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.Window;
+using Application = System.Windows.Application;
 
 namespace DDPM.UI.Plugin.SettingsPlugin
 {
@@ -296,6 +300,21 @@ namespace DDPM.UI.Plugin.SettingsPlugin
             string filePath = e.Argument.ToString();
             List<MonitorInfo> monitorInfos = DdpmCommonHelper.DeviceManagerSA.GetMonitors().Result;
             bool monitorAssetReports = DdpmCommonHelper.DeviceManagerSA.ExportMonitorAssetReport(monitorInfos, filePath).Result;
+            Application.Current.Dispatcher.Invoke(new Action(() =>
+            {
+                if (!monitorAssetReports)
+                {
+                    MessageModalDialog msgBox = new MessageModalDialog(LangHelper.Instance["Error"], LangHelper.Instance["MonitorAssetReport_SaveFail"], LangHelper.Instance["OK"]);
+                    Window mainWindow = System.Windows.Application.Current.MainWindow;
+                    if (mainWindow != null)
+                    {
+                        msgBox.Owner = mainWindow;
+                        msgBox.Left = mainWindow.Left + (mainWindow!.ActualWidth - 417) / 2;
+                        msgBox.Top = mainWindow.Top + 300;
+                        msgBox.ShowDialog();
+                    }
+                }
+            }));
             Log?.Info($"SaveMonitorAssetReport_Dowork done");
         }
         private void Set_SaveDiagnosticReport_Dowork(object sender, DoWorkEventArgs e)
@@ -303,6 +322,21 @@ namespace DDPM.UI.Plugin.SettingsPlugin
             Log?.Info($"SaveDiagnosticReport_Dowork start");
             string filePath = e.Argument.ToString();
             bool monitorAssetReports = DdpmCommonHelper.DeviceManagerSA.SaveLogFile(filePath).Result;
+            Application.Current.Dispatcher.Invoke(new Action(() =>
+            {
+                if (!monitorAssetReports)
+                {
+                    MessageModalDialog msgBox = new MessageModalDialog(LangHelper.Instance["Error"], LangHelper.Instance["DiagnosticReport_SaveFail"], LangHelper.Instance["OK"]);
+                    Window mainWindow = System.Windows.Application.Current.MainWindow;
+                    if (mainWindow != null)
+                    {
+                        msgBox.Owner = mainWindow;
+                        msgBox.Left = mainWindow.Left + (mainWindow.ActualWidth - 417) / 2;
+                        msgBox.Top = mainWindow.Top + 300;
+                        msgBox.ShowDialog();
+                    }
+                }
+            }));
             Log?.Info($"SaveDiagnosticReport_Dowork done");
         }
 
@@ -376,6 +410,7 @@ namespace DDPM.UI.Plugin.SettingsPlugin
             {
                 NoNetwork = Visibility.Collapsed;
                 List<DeviceInfo> deviceInfos = DdpmCommonHelper.DeviceManagerSA.GetDevices().Result.deviceInfo;
+                Log?.Info($"fwUpdateInfoPackage.FWUpdateInfo.Count : {fwUpdateInfoPackage.FWUpdateInfo.Count}");
                 foreach (FWUpdateInfo fwUpdateInfo in fwUpdateInfoPackage.FWUpdateInfo)
                 {
                     UIUpdateInfo uiUpdateInfo = new UIUpdateInfo(fwUpdateInfo, deviceInfos);
@@ -395,6 +430,7 @@ namespace DDPM.UI.Plugin.SettingsPlugin
                         Optional_UpdateList_UI.Add(uiUpdateInfo);
                     }
                 }
+                Log?.Info($"swUpdateInfoPackage.SWUpdateInfo.Count : {swUpdateInfoPackage.SWUpdateInfo.Count}");
                 foreach (SWUpdateInfo swUpdateInfo in swUpdateInfoPackage.SWUpdateInfo)
                 {
                     UIUpdateInfo uiUpdateInfo = new UIUpdateInfo(swUpdateInfo);
