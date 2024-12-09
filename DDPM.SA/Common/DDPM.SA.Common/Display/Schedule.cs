@@ -1,8 +1,4 @@
-﻿using System.Windows.Forms;
-using VcpCore.Common;
-using static VcpCore.Common.User32;
-
-namespace DDPM.SA.Common
+﻿namespace DDPM.SA.Common
 {
     public class scheduleInfo
     {
@@ -33,7 +29,7 @@ namespace DDPM.SA.Common
     //    /// </summary>
     //    public string Time { get; set; }
     //    /// <summary>
-    //    /// unit is minute 
+    //    /// unit is minute
     //    /// </summary>
     //    public byte Duration { get; set; }
     //    public ushort Brightness { get; set; }
@@ -46,7 +42,7 @@ namespace DDPM.SA.Common
     //    public bool IsEnabled { get; set; }
     //    public bool IsSync { get; set; }
     //    public BriConProfile Profile1 { get; set; }
-    //    public BriConProfile Profile2 { get; set; }        
+    //    public BriConProfile Profile2 { get; set; }
     //}
     //#endregion
 }

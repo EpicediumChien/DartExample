@@ -7,7 +7,6 @@ using DDPM.UI.Common.Interfaces;
 using DDPM.UI.Common.Models;
 using Dell.Client.Framework.Common;
 using Dell.Client.Framework.UX.WPF.Controls;
-using Newtonsoft.Json.Linq;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
@@ -155,6 +154,7 @@ namespace DDPM.UI.Module.Brightness
         //-----------------------------------------//
 
         private bool IsSynchronizeMonitor = false;
+        private bool IsSynchronizeMonitor_Scheduled = false;
         private bool IsGetSynchronizeMonitor = false;
         private bool IsBrightnessEnable = false;
 
@@ -192,6 +192,14 @@ namespace DDPM.UI.Module.Brightness
             get
             {
                 return IsSynchronize ? Strings.On : Strings.Off;
+            }
+        }
+
+        public string IsSynchronize_Scheduled_String
+        {
+            get
+            {
+                return IsSynchronize_Scheduled ? Strings.On : Strings.Off;
             }
         }
 
@@ -535,7 +543,6 @@ namespace DDPM.UI.Module.Brightness
 
         private void ALSFontColorUpdate(OSThemeEnum oSThemeEnum)
         {
-
             if (DdpmCommonHelper.previousOsTheme == OSThemeEnum.Dark)
             {
                 IsDarkTheme = true;
@@ -564,6 +571,8 @@ namespace DDPM.UI.Module.Brightness
                 NotifyPropertyChanged("ContrastValue");
                 NotifyPropertyChanged("IsSynchronize");
                 NotifyPropertyChanged("IsSynchronize_String");
+                NotifyPropertyChanged("IsSynchronize_Scheduled");
+                NotifyPropertyChanged("IsSynchronize_Scheduled_String");
                 NotifyPropertyChanged("AutoBrightnessRangeLevel_String");
             }
 
@@ -633,10 +642,10 @@ namespace DDPM.UI.Module.Brightness
 
                 Trace.WriteLine($"5. {DateTime.Now.ToString("MM/dd/yyyy hh:mm ss fff")}");
                 //Check synchronize setting
-                if (isLuminanceSupport != Visibility.Visible)
-                {
-                    Get_Synchronize();
-                }
+                //if (isLuminanceSupport != Visibility.Visible)
+                //{
+                Get_Synchronize();
+                //}
                 Trace.WriteLine($"6. {DateTime.Now.ToString("MM/dd/yyyy hh:mm ss fff")}");
                 //Check if support ALS
                 if (SelectedHomeDevice.MonitorInfo.CapabilityDic.ContainsKey("66"))
@@ -690,7 +699,7 @@ namespace DDPM.UI.Module.Brightness
             }
         }
 
-        private void SetDefaultExpanded(ALSConfig data,bool isLuminance)
+        private void SetDefaultExpanded(ALSConfig data, bool isLuminance)
         {
             bool isRunAlsNG = false;
             bool isRunScheduledNG = false;
@@ -712,7 +721,7 @@ namespace DDPM.UI.Module.Brightness
                     }
                 }
             }
-            else if (IsScheduledShow == Visibility.Visible|| IsScheduledLuminanceShow == Visibility.Visible)
+            else if (IsScheduledShow == Visibility.Visible || IsScheduledLuminanceShow == Visibility.Visible)
             {
                 if (PR1Luminance_Value < 0 || PR2Luminance_Value < 0 || PR1Brightness_Value < 0 || PR2Brightness_Value < 0 || PR1Contrast_Value < 0 || PR2Contrast_Value < 0 || hOurs_1 < 0 || hOurs_2 < 0 || mIns_1 < 0 || mIns_2 < 0 || dUration_1 < 0 || dUration_2 < 0)
                 {
@@ -737,7 +746,7 @@ namespace DDPM.UI.Module.Brightness
                     }
                 }
             }
-            if (!isRunAlsNG&& !isRunScheduledNG)
+            if (!isRunAlsNG && !isRunScheduledNG)
             {
                 RunManual(isLuminance);
             }
@@ -2242,6 +2251,20 @@ namespace DDPM.UI.Module.Brightness
             }
         }
 
+        public bool IsSynchronize_Scheduled
+        {
+            get
+            {
+                return IsSynchronizeMonitor_Scheduled;
+            }
+            set
+            {
+                IsSynchronizeMonitor_Scheduled = value;
+                NotifyPropertyChanged("IsSynchronize_Scheduled");
+                NotifyPropertyChanged("IsSynchronize_Scheduled_String");
+            }
+        }
+
         public double BrightnessValue
         {
             get
@@ -2313,7 +2336,7 @@ namespace DDPM.UI.Module.Brightness
             }
             else
             {
-                if(property.Equals("PRISYNC"))
+                if (property.Equals("PRISYNC"))
                 {
                     _primaryMonitorSyncStatus = onoff;
                     Start_ALSConfig.isPrimaryMonitorSync = onoff;
@@ -2411,9 +2434,13 @@ namespace DDPM.UI.Module.Brightness
             if (DdpmCommonHelper.Settings_Cache != null)
             {
                 IsSynchronizeMonitor = DdpmCommonHelper.Settings_Cache.UserSettings.IsSynchronizemonitor;
+                IsSynchronizeMonitor_Scheduled = DdpmCommonHelper.Settings_Cache.UserSettings.IsSynchronizemonitor_Scheduled;
+
                 IsGetSynchronizeMonitor = true;
             }
-            return IsSynchronizeMonitor;
+
+            //return IsSynchronizeMonitor;
+            return IsGetSynchronizeMonitor;
         }
 
         private double Get_Brightness_Value()
@@ -2503,7 +2530,23 @@ namespace DDPM.UI.Module.Brightness
             var value = Convert.ToDouble(value_);
             uint nNewValue = Convert.ToUInt32(value);
 
-            _ = DdpmCommonHelper.DeviceManagerSA.SetVCPCapability(ModuleOwner.SelectedHomeDevice.MonitorInfo, 0x10, nNewValue).Result;
+            if (IsSynchronize)
+            {
+                foreach (HomeDevice hd in ModuleOwner.HomeDevices)
+                {
+                    if (hd.MonitorInfo.IsDellMonitor)
+                    {
+                        if (!hd.MonitorInfo.CapabilityDic.ContainsKey("12"))
+                        {
+                            _ = DdpmCommonHelper.DeviceManagerSA.SetVCPCapability(hd.MonitorInfo, 0x10, nNewValue).Result;
+                        }
+                    }
+                }
+            }
+            else
+            {
+                _ = DdpmCommonHelper.DeviceManagerSA.SetVCPCapability(ModuleOwner.SelectedHomeDevice.MonitorInfo, 0x10, nNewValue).Result;
+            }
 
             //NotifyPropertyChanged("LuminanceValue");
         }
@@ -2523,7 +2566,10 @@ namespace DDPM.UI.Module.Brightness
                     {
                         if (hd.MonitorInfo.IsDellMonitor)
                         {
-                            _ = DdpmCommonHelper.DeviceManagerSA.SetVCPCapability(hd.MonitorInfo, 0x10, nNewValue).Result;
+                            if (hd.MonitorInfo.CapabilityDic.ContainsKey("12"))
+                            {
+                                _ = DdpmCommonHelper.DeviceManagerSA.SetVCPCapability(hd.MonitorInfo, 0x10, nNewValue).Result;
+                            }
                         }
                     }
                 }
@@ -3314,6 +3360,7 @@ namespace DDPM.UI.Module.Brightness
         }
 
         private bool _isDarkTheme;
+
         public bool IsDarkTheme
         {
             get => _isDarkTheme;
@@ -3328,6 +3375,35 @@ namespace DDPM.UI.Module.Brightness
         }
 
         #endregion ALS functions
+
+        public void Luminance_Sync()
+        {
+            BackgroundWorker bw = new BackgroundWorker()
+            {
+                WorkerReportsProgress = false,
+                WorkerSupportsCancellation = false
+            };
+            bw.DoWork += LuminanceSync;
+            bw.RunWorkerCompleted += LuminanceSync_finish;
+            bw.RunWorkerAsync();
+            IsBusy = true;
+            NotifyPropertyChanged("IsBusy");
+        }
+
+        private void LuminanceSync(object sender, DoWorkEventArgs e)
+        {
+            Set_Luminance_Value(LuminanceValue);
+        }
+
+        private void LuminanceSync_finish(object sender, RunWorkerCompletedEventArgs e)
+        {
+            IsBusy = false;
+            NotifyPropertyChanged("BrightnessValue");
+            NotifyPropertyChanged("LuminanceValue");
+            NotifyPropertyChanged("ContrastValue");
+            NotifyPropertyChanged("IsBusy");
+            NotifyPropertyChanged("AutoBrightnessRangeLevel_String");
+        }
 
         public void BR_Con_Sync()
         {

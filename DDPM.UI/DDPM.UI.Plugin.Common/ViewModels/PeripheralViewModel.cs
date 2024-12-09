@@ -61,7 +61,6 @@ namespace DDPM.UI.Plugin.ViewModels
         public List<string> EOLKBList = new() { "WK636", "KM713", "WK717", "KM714", "KM717" };
         public List<string> EOLMouseList = new() { "WM116", "WM514", "UV514", "WM126", "WM326", "WM527" };
         //public DDPMSettings? DDPMSettings;
-        //public WebcamSettings WebcamSettings = new();
         public bool IsCopilotEnabled = true;
         public bool IsDTPReady = false;
         public int CurrentVersion = 0;
@@ -226,9 +225,11 @@ namespace DDPM.UI.Plugin.ViewModels
 
             CheckCopilot();
             Model = MappingModel(CurrentDeviceInfo.ModelNumber);
-            Name = CurrentDeviceInfo.Name;
+            //Name = CurrentDeviceInfo.Name;
             if (EOLKBList.Contains(Model) || EOLMouseList.Contains(Model))
                 Name = DdpmCommonHelper.MappingEOLName(Model);
+            else
+                Name = CurrentDeviceInfo.Name.Replace(Model, "").Trim();
 
             if (CurrentDeviceInfo.Type == DeviceType.PhysicalWiredDock || CurrentDeviceInfo.Type == DeviceType.LogicalDock)
             {
@@ -262,7 +263,7 @@ namespace DDPM.UI.Plugin.ViewModels
             {
                 case DeviceType.PhysicalWebcam:
                     ConnectionType = "Wired";
-                    Name = Name.Replace(Model, "").Trim();
+                    //Name = Name.Replace(Model, "").Trim();
                     break;
                 case DeviceType.PhysicalAudioDongle:
                 case DeviceType.PhysicalBluetoothAudio:
