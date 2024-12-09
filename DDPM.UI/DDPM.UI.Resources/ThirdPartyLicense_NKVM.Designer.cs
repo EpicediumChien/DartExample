@@ -22,21 +22,21 @@ namespace DDPM.UI.Resources {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    public class ThirdPartyLicense_NKVM {
+    internal class ThirdPartyLicense_NKVM {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
         private static global::System.Globalization.CultureInfo resourceCulture;
         
         [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        public ThirdPartyLicense_NKVM() {
+        internal ThirdPartyLicense_NKVM() {
         }
         
         /// <summary>
         ///   Returns the cached ResourceManager instance used by this class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        public static global::System.Resources.ResourceManager ResourceManager {
+        internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
                     global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("DDPM.UI.Resources.ThirdPartyLicense_NKVM", typeof(ThirdPartyLicense_NKVM).Assembly);
@@ -51,7 +51,7 @@ namespace DDPM.UI.Resources {
         ///   resource lookups using this strongly typed resource class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        public static global::System.Globalization.CultureInfo Culture {
+        internal static global::System.Globalization.CultureInfo Culture {
             get {
                 return resourceCulture;
             }
@@ -64,7 +64,7 @@ namespace DDPM.UI.Resources {
         ///   Looks up a localized string similar to Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the “Software”), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
         ///The above copyright notice and this permission notice shall be included in all [rest of string was truncated]&quot;;.
         /// </summary>
-        public static string Content1 {
+        internal static string Content1 {
             get {
                 return ResourceManager.GetString("Content1", resourceCulture);
             }
@@ -80,7 +80,7 @@ namespace DDPM.UI.Resources {
         ///
         ///The above copyright notice and this permission notice shall be included [rest of string was truncated]&quot;;.
         /// </summary>
-        public static string Content10 {
+        internal static string Content10 {
             get {
                 return ResourceManager.GetString("Content10", resourceCulture);
             }
@@ -96,7 +96,7 @@ namespace DDPM.UI.Resources {
         ///
         ///The above copyright notice and this permission notice shall be included [rest of string was truncated]&quot;;.
         /// </summary>
-        public static string Content11 {
+        internal static string Content11 {
             get {
                 return ResourceManager.GetString("Content11", resourceCulture);
             }
@@ -112,7 +112,7 @@ namespace DDPM.UI.Resources {
         ///for this software, unless other terms accompany those items. If so, those terms apply.
         ///______ [rest of string was truncated]&quot;;.
         /// </summary>
-        public static string Content12 {
+        internal static string Content12 {
             get {
                 return ResourceManager.GetString("Content12", resourceCulture);
             }
@@ -128,7 +128,7 @@ namespace DDPM.UI.Resources {
         ///
         ///The above copyright notice and this permission notice shall be included [rest of string was truncated]&quot;;.
         /// </summary>
-        public static string Content13 {
+        internal static string Content13 {
             get {
                 return ResourceManager.GetString("Content13", resourceCulture);
             }
@@ -144,7 +144,7 @@ namespace DDPM.UI.Resources {
         ///
         ///The above copyright notice and this permission notice shall be included [rest of string was truncated]&quot;;.
         /// </summary>
-        public static string Content14 {
+        internal static string Content14 {
             get {
                 return ResourceManager.GetString("Content14", resourceCulture);
             }
@@ -160,7 +160,7 @@ namespace DDPM.UI.Resources {
         ///
         ///The above copyright notice and this permission notice shall be included [rest of string was truncated]&quot;;.
         /// </summary>
-        public static string Content15 {
+        internal static string Content15 {
             get {
                 return ResourceManager.GetString("Content15", resourceCulture);
             }
@@ -171,7 +171,7 @@ namespace DDPM.UI.Resources {
         ///
         ///  The above copyright notice and this permission notice shall be included in [rest of string was truncated]&quot;;.
         /// </summary>
-        public static string Content16 {
+        internal static string Content16 {
             get {
                 return ResourceManager.GetString("Content16", resourceCulture);
             }
@@ -187,7 +187,7 @@ namespace DDPM.UI.Resources {
         ///
         ///      The above copyright notice and this [rest of string was truncated]&quot;;.
         /// </summary>
-        public static string Content17 {
+        internal static string Content17 {
             get {
                 return ResourceManager.GetString("Content17", resourceCulture);
             }
@@ -205,7 +205,7 @@ namespace DDPM.UI.Resources {
         ///          in the documentation and/or other materials provided with the
         ///  distribut [rest of string was truncated]&quot;;.
         /// </summary>
-        public static string Content18 {
+        internal static string Content18 {
             get {
                 return ResourceManager.GetString("Content18", resourceCulture);
             }
@@ -221,7 +221,7 @@ namespace DDPM.UI.Resources {
         ///
         ///  The above copyright notice and this permission noti [rest of string was truncated]&quot;;.
         /// </summary>
-        public static string Content19 {
+        internal static string Content19 {
             get {
                 return ResourceManager.GetString("Content19", resourceCulture);
             }
@@ -237,7 +237,7 @@ namespace DDPM.UI.Resources {
         ///
         ///The above copyright notice and this permission notice shall be included [rest of string was truncated]&quot;;.
         /// </summary>
-        public static string Content2 {
+        internal static string Content2 {
             get {
                 return ResourceManager.GetString("Content2", resourceCulture);
             }
@@ -252,7 +252,7 @@ namespace DDPM.UI.Resources {
         ///
         ///          z [rest of string was truncated]&quot;;.
         /// </summary>
-        public static string Content20 {
+        internal static string Content20 {
             get {
                 return ResourceManager.GetString("Content20", resourceCulture);
             }
@@ -272,7 +272,7 @@ namespace DDPM.UI.Resources {
         ///  &quot;Legal Entity&quot; shall mean the union of the acting entity and all other entities
         ///  that control, are controlled by, or are under common control with that  [rest of string was truncated]&quot;;.
         /// </summary>
-        public static string Content21 {
+        internal static string Content21 {
             get {
                 return ResourceManager.GetString("Content21", resourceCulture);
             }
@@ -292,7 +292,7 @@ namespace DDPM.UI.Resources {
         ///  &quot;Legal Entity&quot; shall mean the union of the acting entity and all other entities
         ///  that control, are controlled by, or are under common control with that  [rest of string was truncated]&quot;;.
         /// </summary>
-        public static string Content22 {
+        internal static string Content22 {
             get {
                 return ResourceManager.GetString("Content22", resourceCulture);
             }
@@ -312,7 +312,7 @@ namespace DDPM.UI.Resources {
         ///  &quot;Legal Entity&quot; shall mean the union of the acting entity and all other entities
         ///  that control, are controlled by, or are under common control with that  [rest of string was truncated]&quot;;.
         /// </summary>
-        public static string Content23 {
+        internal static string Content23 {
             get {
                 return ResourceManager.GetString("Content23", resourceCulture);
             }
@@ -328,7 +328,7 @@ namespace DDPM.UI.Resources {
         ///
         ///  The above copyright notice and this permission noti [rest of string was truncated]&quot;;.
         /// </summary>
-        public static string Content24 {
+        internal static string Content24 {
             get {
                 return ResourceManager.GetString("Content24", resourceCulture);
             }
@@ -342,7 +342,7 @@ namespace DDPM.UI.Resources {
         ///
         ///  The above copyright notice and this permission notice (including the  [rest of string was truncated]&quot;;.
         /// </summary>
-        public static string Content25 {
+        internal static string Content25 {
             get {
                 return ResourceManager.GetString("Content25", resourceCulture);
             }
@@ -357,7 +357,7 @@ namespace DDPM.UI.Resources {
         ///  for this software, unless other terms accompany those items. If so, those terms apply.
         ///  _______________________________________________ [rest of string was truncated]&quot;;.
         /// </summary>
-        public static string Content26 {
+        internal static string Content26 {
             get {
                 return ResourceManager.GetString("Content26", resourceCulture);
             }
@@ -372,7 +372,7 @@ namespace DDPM.UI.Resources {
         ///  for this software, unless other terms accompany those items. If so, those terms apply.
         ///  _______________________________________________ [rest of string was truncated]&quot;;.
         /// </summary>
-        public static string Content27 {
+        internal static string Content27 {
             get {
                 return ResourceManager.GetString("Content27", resourceCulture);
             }
@@ -388,7 +388,7 @@ namespace DDPM.UI.Resources {
         ///
         ///The above copyright notice and this permission notice shall be included [rest of string was truncated]&quot;;.
         /// </summary>
-        public static string Content3 {
+        internal static string Content3 {
             get {
                 return ResourceManager.GetString("Content3", resourceCulture);
             }
@@ -404,7 +404,7 @@ namespace DDPM.UI.Resources {
         ///
         ///The above copyright notice and this permission notice shall be included [rest of string was truncated]&quot;;.
         /// </summary>
-        public static string Content4 {
+        internal static string Content4 {
             get {
                 return ResourceManager.GetString("Content4", resourceCulture);
             }
@@ -420,7 +420,7 @@ namespace DDPM.UI.Resources {
         ///
         ///The above copyright notice and this permission notice shall be included [rest of string was truncated]&quot;;.
         /// </summary>
-        public static string Content5 {
+        internal static string Content5 {
             get {
                 return ResourceManager.GetString("Content5", resourceCulture);
             }
@@ -430,7 +430,7 @@ namespace DDPM.UI.Resources {
         ///   Looks up a localized string similar to Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the “Software”), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
         ///The above copyright notice and this permission notice shall be included in all [rest of string was truncated]&quot;;.
         /// </summary>
-        public static string Content6 {
+        internal static string Content6 {
             get {
                 return ResourceManager.GetString("Content6", resourceCulture);
             }
@@ -446,7 +446,7 @@ namespace DDPM.UI.Resources {
         ///for this software, unless other terms accompany those items. If so, those terms apply.
         ///______ [rest of string was truncated]&quot;;.
         /// </summary>
-        public static string Content7 {
+        internal static string Content7 {
             get {
                 return ResourceManager.GetString("Content7", resourceCulture);
             }
@@ -456,7 +456,7 @@ namespace DDPM.UI.Resources {
         ///   Looks up a localized string similar to Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the &quot;Software&quot;), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
         ///The above copyright notice and this permission notice shall be included in all [rest of string was truncated]&quot;;.
         /// </summary>
-        public static string Content8 {
+        internal static string Content8 {
             get {
                 return ResourceManager.GetString("Content8", resourceCulture);
             }
@@ -472,7 +472,7 @@ namespace DDPM.UI.Resources {
         ///
         ///The above copyright notice and this permission notice shall be included [rest of string was truncated]&quot;;.
         /// </summary>
-        public static string Content9 {
+        internal static string Content9 {
             get {
                 return ResourceManager.GetString("Content9", resourceCulture);
             }
@@ -486,7 +486,7 @@ namespace DDPM.UI.Resources {
         ///MIT License (MIT)
         ///.
         /// </summary>
-        public static string Title1 {
+        internal static string Title1 {
             get {
                 return ResourceManager.GetString("Title1", resourceCulture);
             }
@@ -501,7 +501,7 @@ namespace DDPM.UI.Resources {
         ///All rights reserved.
         ///.
         /// </summary>
-        public static string Title10 {
+        internal static string Title10 {
             get {
                 return ResourceManager.GetString("Title10", resourceCulture);
             }
@@ -516,7 +516,7 @@ namespace DDPM.UI.Resources {
         ///All rights reserved.
         ///.
         /// </summary>
-        public static string Title11 {
+        internal static string Title11 {
             get {
                 return ResourceManager.GetString("Title11", resourceCulture);
             }
@@ -530,7 +530,7 @@ namespace DDPM.UI.Resources {
         ///MICROSOFT WINDOWS API CODE PACK FOR MICROSOFT .NET FRAMEWORK/.NET CORE
         ///.
         /// </summary>
-        public static string Title12 {
+        internal static string Title12 {
             get {
                 return ResourceManager.GetString("Title12", resourceCulture);
             }
@@ -543,7 +543,7 @@ namespace DDPM.UI.Resources {
         ///Copyright (c) 2015 Microsoft
         ///.
         /// </summary>
-        public static string Title13 {
+        internal static string Title13 {
             get {
                 return ResourceManager.GetString("Title13", resourceCulture);
             }
@@ -558,7 +558,7 @@ namespace DDPM.UI.Resources {
         ///All rights reserved.
         ///.
         /// </summary>
-        public static string Title14 {
+        internal static string Title14 {
             get {
                 return ResourceManager.GetString("Title14", resourceCulture);
             }
@@ -573,7 +573,7 @@ namespace DDPM.UI.Resources {
         ///All rights reserved.
         ///.
         /// </summary>
-        public static string Title15 {
+        internal static string Title15 {
             get {
                 return ResourceManager.GetString("Title15", resourceCulture);
             }
@@ -587,7 +587,7 @@ namespace DDPM.UI.Resources {
         ///
         ///.
         /// </summary>
-        public static string Title16 {
+        internal static string Title16 {
             get {
                 return ResourceManager.GetString("Title16", resourceCulture);
             }
@@ -601,7 +601,7 @@ namespace DDPM.UI.Resources {
         ///
         ///.
         /// </summary>
-        public static string Title17 {
+        internal static string Title17 {
             get {
                 return ResourceManager.GetString("Title17", resourceCulture);
             }
@@ -614,7 +614,7 @@ namespace DDPM.UI.Resources {
         ///
         ///.
         /// </summary>
-        public static string Title18 {
+        internal static string Title18 {
             get {
                 return ResourceManager.GetString("Title18", resourceCulture);
             }
@@ -629,7 +629,7 @@ namespace DDPM.UI.Resources {
         ///
         ///.
         /// </summary>
-        public static string Title19 {
+        internal static string Title19 {
             get {
                 return ResourceManager.GetString("Title19", resourceCulture);
             }
@@ -642,7 +642,7 @@ namespace DDPM.UI.Resources {
         ///Copyright (c) havendv and Andrew C. Dvorak &lt;andy@andydvorak.net&gt;
         ///.
         /// </summary>
-        public static string Title2 {
+        internal static string Title2 {
             get {
                 return ResourceManager.GetString("Title2", resourceCulture);
             }
@@ -658,7 +658,7 @@ namespace DDPM.UI.Resources {
         ///
         ///.
         /// </summary>
-        public static string Title20 {
+        internal static string Title20 {
             get {
                 return ResourceManager.GetString("Title20", resourceCulture);
             }
@@ -673,7 +673,7 @@ namespace DDPM.UI.Resources {
         ///
         ///.
         /// </summary>
-        public static string Title21 {
+        internal static string Title21 {
             get {
                 return ResourceManager.GetString("Title21", resourceCulture);
             }
@@ -688,7 +688,7 @@ namespace DDPM.UI.Resources {
         ///
         ///.
         /// </summary>
-        public static string Title22 {
+        internal static string Title22 {
             get {
                 return ResourceManager.GetString("Title22", resourceCulture);
             }
@@ -703,7 +703,7 @@ namespace DDPM.UI.Resources {
         ///
         ///.
         /// </summary>
-        public static string Title23 {
+        internal static string Title23 {
             get {
                 return ResourceManager.GetString("Title23", resourceCulture);
             }
@@ -718,7 +718,7 @@ namespace DDPM.UI.Resources {
         ///
         ///.
         /// </summary>
-        public static string Title24 {
+        internal static string Title24 {
             get {
                 return ResourceManager.GetString("Title24", resourceCulture);
             }
@@ -732,7 +732,7 @@ namespace DDPM.UI.Resources {
         ///
         ///.
         /// </summary>
-        public static string Title25 {
+        internal static string Title25 {
             get {
                 return ResourceManager.GetString("Title25", resourceCulture);
             }
@@ -748,7 +748,7 @@ namespace DDPM.UI.Resources {
         ///
         ///.
         /// </summary>
-        public static string Title26 {
+        internal static string Title26 {
             get {
                 return ResourceManager.GetString("Title26", resourceCulture);
             }
@@ -764,7 +764,7 @@ namespace DDPM.UI.Resources {
         ///
         ///.
         /// </summary>
-        public static string Title27 {
+        internal static string Title27 {
             get {
                 return ResourceManager.GetString("Title27", resourceCulture);
             }
@@ -778,7 +778,7 @@ namespace DDPM.UI.Resources {
         ///Copyright (c) havendv and Andrew C. Dvorak &lt;andy@andydvorak.net&gt;
         ///.
         /// </summary>
-        public static string Title3 {
+        internal static string Title3 {
             get {
                 return ResourceManager.GetString("Title3", resourceCulture);
             }
@@ -791,7 +791,7 @@ namespace DDPM.UI.Resources {
         ///Copyright (c) havendv and Andrew C. Dvorak &lt;andy@andydvorak.net&gt;
         ///.
         /// </summary>
-        public static string Title4 {
+        internal static string Title4 {
             get {
                 return ResourceManager.GetString("Title4", resourceCulture);
             }
@@ -803,7 +803,7 @@ namespace DDPM.UI.Resources {
         ///Copyright (c) havendv and Andrew C. Dvorak &lt;andy@andydvorak.net&gt;
         ///.
         /// </summary>
-        public static string Title5 {
+        internal static string Title5 {
             get {
                 return ResourceManager.GetString("Title5", resourceCulture);
             }
@@ -816,7 +816,7 @@ namespace DDPM.UI.Resources {
         ///MIT License (MIT)
         ///.
         /// </summary>
-        public static string Title6 {
+        internal static string Title6 {
             get {
                 return ResourceManager.GetString("Title6", resourceCulture);
             }
@@ -829,7 +829,7 @@ namespace DDPM.UI.Resources {
         ///MICROSOFT WINDOWS API CODE PACK FOR MICROSOFT .NET FRAMEWORK
         ///.
         /// </summary>
-        public static string Title7 {
+        internal static string Title7 {
             get {
                 return ResourceManager.GetString("Title7", resourceCulture);
             }
@@ -841,7 +841,7 @@ namespace DDPM.UI.Resources {
         ///Copyright (c) 2007 James Newton-King
         ///.
         /// </summary>
-        public static string Title8 {
+        internal static string Title8 {
             get {
                 return ResourceManager.GetString("Title8", resourceCulture);
             }
@@ -856,7 +856,7 @@ namespace DDPM.UI.Resources {
         ///All rights reserved.
         ///.
         /// </summary>
-        public static string Title9 {
+        internal static string Title9 {
             get {
                 return ResourceManager.GetString("Title9", resourceCulture);
             }

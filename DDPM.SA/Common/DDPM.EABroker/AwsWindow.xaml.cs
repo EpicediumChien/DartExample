@@ -361,12 +361,6 @@ namespace DDPM.EABroker
             double scale = dpiScale.PixelsPerDip;
             CellObj? hoverCell = null;
 
-            //_vm.AwsIcon0.HoveringCell = "";
-            //_vm.AwsIcon1.HoveringCell = "";
-            //_vm.AwsIcon2.HoveringCell = "";
-            //_vm.AwsIcon3.HoveringCell = "";
-            //_vm.AwsIcon4.HoveringCell = "";
-
             //
             //  AWSIcon0
             //
@@ -1011,6 +1005,7 @@ namespace DDPM.EABroker
 
             if (!_areCellRectsRefreshed)
             {
+                _vm.WriteLog("@ AwsWindow.RefreshCellRects() - Nor all cells are refreshed.");
                 if (flag == 0)
                 {
                     System.Threading.Timer timer1 = new System.Threading.Timer((obj) => { RefreshCellRects(0); }, null, 100, Timeout.Infinite);
