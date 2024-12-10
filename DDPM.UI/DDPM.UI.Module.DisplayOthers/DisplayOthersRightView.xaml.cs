@@ -263,6 +263,8 @@ namespace DDPM.UI.Module.DisplayOthers
 
         private bool ImportExportNotify(string e)
         {
+
+            DdpmCommonHelper.WriteUILog("Enter ImportExportNotify");
             if (string.IsNullOrEmpty(e))
                 return false;
             string result_success = "result_success_";
@@ -296,12 +298,14 @@ namespace DDPM.UI.Module.DisplayOthers
                 case "file_corrupted":
                     Dispatcher.Invoke(new Action(() =>
                     {
+                        DdpmCommonHelper.WriteUILog("Import Failed, Import File Corrupted");
                         DisplayMsgBox(LangHelper.Instance["File_corrupted"], LangHelper.Instance["File_corruptedMsg"]);
                     }));
                     break;
                 case "result_fail":
                     Dispatcher.Invoke(new Action(() =>
                     {
+                        DdpmCommonHelper.WriteUILog($"Import Failed, ${LangHelper.Instance["ImportFailMsg"]}");
                         DisplayMsgBox(LangHelper.Instance["ImportFail"], LangHelper.Instance["ImportFailMsg"]);
                     }));
                     break;
@@ -314,6 +318,7 @@ namespace DDPM.UI.Module.DisplayOthers
                 case "result_success_model":
                     Dispatcher.Invoke(new Action(() =>
                     {
+                        DdpmCommonHelper.WriteUILog($"Import Success for Model ${model}");
                         string temp = Strings.ImpExp_SuccessMsg1;
                         temp = temp.Replace("%1", model);
                         DisplayMsgBox(Strings.ImpExp_Success, temp);
@@ -343,7 +348,13 @@ namespace DDPM.UI.Module.DisplayOthers
                 case "import_confirm":
                     return Dispatcher.Invoke(new Func<bool>(() =>
                     {
+                        DdpmCommonHelper.WriteUILog($"Import Confirm for Same Model but Different Service Tag");
                         bool? rst2 = DisplayMsgBox(Strings.ImpExp_Warning, Strings.ImpExp_WarningMsg2 + $" [{model}]", Strings.No, Strings.Yes);
+                        if(rst2 != null && rst2.Value)
+                            DdpmCommonHelper.WriteUILog($"User Confirm");
+                        else
+                            DdpmCommonHelper.WriteUILog($"User Cancelled");
+
                         return rst2 != null && rst2.Value;
                     }));
                     break;
