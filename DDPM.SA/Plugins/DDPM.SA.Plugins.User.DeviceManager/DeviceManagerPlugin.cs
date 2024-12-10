@@ -10357,12 +10357,12 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
             switch (eventMsg.EventType)
             {
-                case "Webcam_ZoomChanged":
-                    //isQAMHandleEvent = true;
-                    if (!int.TryParse(eventMsg.NewValue, out currentZoomValue))
-                        currentZoomValue = -1;
+                //case "Webcam_ZoomChanged":
+                //    //isQAMHandleEvent = true;
+                //    if (!int.TryParse(eventMsg.NewValue, out currentZoomValue))
+                //        currentZoomValue = -1;
 
-                    break;
+                //    break;
 
                 case "Webcam_IsZoomMeetingActiveChanged":
                     isQAMHandleEvent = true;
@@ -11450,6 +11450,14 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         private void show_swSaveUpdateInfoPackage(object sender, SWUpdateInfoPackage e)
         {
             OnSWSaveEvent(e);
+        }
+
+        //Derek 1210
+        public Task WriteLog(string logMsg)
+        {
+            writelog(logMsg);
+
+            return Task.CompletedTask;
         }
 
         /// <summary>

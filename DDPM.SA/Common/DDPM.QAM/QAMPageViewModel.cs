@@ -19,6 +19,8 @@ using System.Windows.Shapes;
 using System.Collections.ObjectModel;
 using DDPM.SA.Resources.Helper;
 using System.Windows.Input;
+using System.Diagnostics;
+using System.Windows.Interop;
 
 namespace DDPM.QAM
 {
@@ -63,7 +65,37 @@ namespace DDPM.QAM
                     }
                 }
             }
+
+            DdpmCommonHelper.DeviceManagerSA!.UIUpdateNotify += QAMPageViewModel_UIUpdateNotify;
         }
+
+        private void QAMPageViewModel_UIUpdateNotify(object? sender, UpdateUINotify e)
+        {
+            try
+            {
+                if (e == null || e == EventArgs.Empty || e.UI_Field_Name == string.Empty)
+                    return;
+
+                DdpmCommonHelper.DeviceManagerSA!.WriteLog($"QAMPageViewModel_UIUpdateNotify receive msg is {e.UI_Field_Name}");
+
+                if (e.UI_Field_Name.StartsWith("WebcamEvent"))
+                {
+                    EventMsg? eventMsg = EventMsg.CreateEventObjectFromEventMsg(e.UI_Field_Name);
+
+                    switch (eventMsg.EventType)
+                    {
+                        case "Webcam_ZoomChanged":
+                            break;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                DdpmCommonHelper.DeviceManagerSA!.WriteLog($"Catch excepton in QAMPageViewModel_UIUpdateNotify: {ex.Message}");
+            }
+            
+        }
+
         public void OpenFullView(ContentControl content)
         {
             FullView = content;
