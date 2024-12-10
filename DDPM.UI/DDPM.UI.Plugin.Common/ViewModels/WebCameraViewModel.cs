@@ -156,8 +156,16 @@ namespace DDPM.UI.Plugin.ViewModels
                     _isChecked_ProximitySensor = value;
                     DdpmCommonHelper.DeviceManagerSA!.SetIsProximitySensorEnable(CurrentDeviceInfo!.ID.ToString(), _isChecked_ProximitySensor);
                     //DdpmCommonHelper.DeviceManagerSA!.SetIsProximitySensorEnable(value, CurrentDeviceInfo!.ID);
+
+                    // jim add for PIMS-328195
+                    _isEnable_WalkAwayLock = _isChecked_WalkAwayLock && _isChecked_ProximitySensor;
+
+                    _isEnable_SnoozeLength = _isChecked_Snooze && _isChecked_ProximitySensor;
+
                     OnPropertyChanged("IsChecked_ProximitySensor");
                     OnPropertyChanged("ProximitySensorStatus_String");
+                    OnPropertyChanged("IsEnable_WalkAwayLock");
+                    OnPropertyChanged("IsEnable_SnoozeLength");
 
                     //Derek 11/12
                     //PIMS - 319099
@@ -259,8 +267,34 @@ namespace DDPM.UI.Plugin.ViewModels
 
                 IsWALTimerEnable = value;
                 IsSnoozeEnable = value;
+                // jim add for PIMS-328195
+                _isEnable_WalkAwayLock = _isChecked_WalkAwayLock && _isChecked_ProximitySensor;
+                OnPropertyChanged("IsEnable_WalkAwayLock");
             }
         }
+
+        private bool _isEnable_WalkAwayLock = false;
+        public bool IsEnable_WalkAwayLock
+        {
+            get { return _isEnable_WalkAwayLock; }
+            set
+            {
+                _isEnable_WalkAwayLock = value;
+                OnPropertyChanged("IsEnable_WalkAwayLock"); 
+            }
+        }
+
+        // jim add for PIMS-328195
+        private bool _isEnable_SnoozeLength = false;
+        public bool IsEnable_SnoozeLength
+        {
+            get { return _isEnable_SnoozeLength; }
+            set
+            {
+                _isEnable_SnoozeLength = value;
+                OnPropertyChanged("IsEnable_SnoozeLength");
+            }
+        }       
 
         public string WalkAwayLockStatus_String
         {
@@ -277,6 +311,10 @@ namespace DDPM.UI.Plugin.ViewModels
             set
             {
                 _isChecked_Snooze = value;
+
+                // jim add for PIMS-328195
+                _isEnable_SnoozeLength = _isChecked_Snooze && _isChecked_ProximitySensor;
+
                 if (_isChecked_Snooze)
                 {
                     if (_SelectedSnoozeLength != null)
@@ -332,6 +370,7 @@ namespace DDPM.UI.Plugin.ViewModels
 
                 OnPropertyChanged("IsChecked_Snooze");
                 OnPropertyChanged("SnoozeStatus_String");
+                OnPropertyChanged("IsEnable_SnoozeLength"); // jim add for PIMS-328195
             }
         }
 
@@ -351,9 +390,9 @@ namespace DDPM.UI.Plugin.ViewModels
             {
                 SetProperty(ref _SelectedDelay, value);
                 DdpmCommonHelper.DeviceManagerSA!.SetWALTime(CurrentDeviceInfo!.ID.ToString(), _SelectedDelay.Delay);
-                DdpmCommonHelper.DeviceManagerSA!.SetIsWalkAwayLockEnable(CurrentDeviceInfo!.ID.ToString(), _isChecked_WalkAwayLock);
-                DdpmCommonHelper.DeviceManagerSA!.SetIsWakeonApproachEnable(CurrentDeviceInfo!.ID.ToString(), _isChecked_WakeOnApproach);
-                DdpmCommonHelper.DeviceManagerSA!.SetIsProximitySensorEnable(CurrentDeviceInfo!.ID.ToString(), _isChecked_ProximitySensor);
+                //DdpmCommonHelper.DeviceManagerSA!.SetIsWalkAwayLockEnable(CurrentDeviceInfo!.ID.ToString(), _isChecked_WalkAwayLock);
+                //DdpmCommonHelper.DeviceManagerSA!.SetIsWakeonApproachEnable(CurrentDeviceInfo!.ID.ToString(), _isChecked_WakeOnApproach);
+                //DdpmCommonHelper.DeviceManagerSA!.SetIsProximitySensorEnable(CurrentDeviceInfo!.ID.ToString(), _isChecked_ProximitySensor);
                 //DdpmCommonHelper.DeviceManagerSA!.SetWALTime(30, CurrentDeviceInfo!.ID);
                 OnPropertyChanged("SelectedDelay");
             }

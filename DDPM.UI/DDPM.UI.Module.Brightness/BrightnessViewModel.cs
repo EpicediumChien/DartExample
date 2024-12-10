@@ -7,9 +7,11 @@ using DDPM.UI.Common.Interfaces;
 using DDPM.UI.Common.Models;
 using Dell.Client.Framework.Common;
 using Dell.Client.Framework.UX.WPF.Controls;
+using Microsoft.VisualBasic.Logging;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
+using System.Security.Policy;
 using System.Windows;
 using System.Windows.Media;
 using VcpCore.Common;
@@ -317,7 +319,7 @@ namespace DDPM.UI.Module.Brightness
         }
 
         #endregion hotkey property
-
+       
         public void SaveHotkeySettings(MonitorInfo monitorInfo, HotkeyInfo hotkeyInfo)
         {
             if (DdpmCommonHelper.DeviceManagerSA != null)
@@ -477,7 +479,7 @@ namespace DDPM.UI.Module.Brightness
 
                 Luminance_Value = Convert.ToDouble(e.value);
                 Brightness_Value = Convert.ToDouble(e.value);
-
+                DdpmCommonHelper.WriteUILog($"[BrightnessVM]OnVCPChangedEvent,update Luminance_Value = {Luminance_Value}, Brightness_Value={Brightness_Value}");
                 NotifyPropertyChanged("LuminanceValue");
                 NotifyPropertyChanged("BrightnessValue");
                 NotifyPropertyChanged("AutoBrightnessRangeLevel_String");
@@ -3457,12 +3459,21 @@ namespace DDPM.UI.Module.Brightness
                 string strSync_CurrentColorPreset = string.Empty;
                 strSync_CurrentColorPreset = DdpmCommonHelper.DeviceManagerSA?.Sync_ColorPresetName(DdpmCommonHelper.ModuleOwner?.SelectedHomeDevice?.MonitorInfo, curPreset).Result;
 
+                // jim 20241207 add  for The DDPM color profile can not be applied by DDPM on Smart HDR mode.(Gaming monitor ex: AW2724DM)
+                bool Is_Game_DeviceName = false;
+                bool HDRStatus = DdpmCommonHelper.DeviceManagerSA.GetHDRStatus(MyModule.SelectedHomeDevice.MonitorInfo).Result;
+
+                if (MyModule.SelectedHomeDevice.MonitorInfo.CapabilityDic.ContainsKey("F4"))
+                    Is_Game_DeviceName = true;
+
+                DdpmCommonHelper.WriteUILog($"[DoWork_ColorPreset_Sync] Has Gaming Capability={Is_Game_DeviceName}, HDR Status = {HDRStatus}");
+
                 Task.Run(() =>
                 {
                     foreach (HomeDevice hd in DdpmCommonHelper.ModuleOwner.HomeDevices)
                     {
                         if (hd.MonitorInfo.IsDellMonitor)
-                            DdpmCommonHelper.DeviceManagerSA?.WriteColorPreset(hd.MonitorInfo, strSync_CurrentColorPreset, 0, null, false);
+                            DdpmCommonHelper.DeviceManagerSA?.WriteColorPreset(hd.MonitorInfo, strSync_CurrentColorPreset, 0, Is_Game_DeviceName, HDRStatus, null, false); // jim 20241207  modify for The DDPM color profile can not be applied by DDPM on Smart HDR mode.(Gaming monitor ex: AW2724DM)
                     }
                 });
 
@@ -3472,8 +3483,9 @@ namespace DDPM.UI.Module.Brightness
                 }));
                 */
             }
-            catch (System.Exception)
+            catch (System.Exception ex)
             {
+                DdpmCommonHelper.WriteUILog($"[DoWork_ColorPreset_Sync] Catch exception[{ex.Message}]");
             }
         }
 

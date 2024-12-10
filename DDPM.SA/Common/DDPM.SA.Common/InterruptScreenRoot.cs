@@ -12,6 +12,11 @@ namespace DDPM.SA.Common
     {
         public int version { get; set; }
         public List<FeaturesList> featuresList { get; set; }
+        public InterruptScreenRoot()
+        {
+            version = 0;
+            featuresList = new List<FeaturesList>();
+        }
         public bool Equals(InterruptScreenRoot other)
         {
             bool same = false;
@@ -51,6 +56,11 @@ namespace DDPM.SA.Common
     {
         public int categoryId { get; set; }
         public Content content { get; set; }
+        public FeaturesList()
+        {
+            categoryId = 0;
+            content = new Content();
+        }
         public bool Equals(FeaturesList other)
         {
             return this.categoryId == other.categoryId &&
@@ -76,6 +86,15 @@ namespace DDPM.SA.Common
         public ProductLabel productLabel { get; set; }
         public List<DetailsList> detailsList { get; set; }
         public BugDescription bugDescription { get; set; }
+        public Content()
+        {
+            id = string.Empty;
+            imageUrl = string.Empty;
+            image = new byte[0];
+            productLabel = new ProductLabel();
+            detailsList = new List<DetailsList>();
+            bugDescription = new BugDescription();
+        }
         public bool Equals(Content other)
         {
             bool same = false;
@@ -121,6 +140,11 @@ namespace DDPM.SA.Common
     {
         public string source { get; set; }
         public Translations translations { get; set; }
+        public ProductLabel()
+        {
+            source = string.Empty;
+            translations = new Translations();
+        }
         public bool Equals(ProductLabel other)
         {
             return this.source == other.source;
@@ -130,6 +154,11 @@ namespace DDPM.SA.Common
     {
         public string source { get; set; }
         public Translations translations { get; set; }
+        public DetailsList()
+        {
+            source = string.Empty;
+            translations = new Translations();
+        }
         public bool Equals(DetailsList other)
         {
             return this.source == other.source;
@@ -139,6 +168,11 @@ namespace DDPM.SA.Common
     {
         public string source { get; set; }
         public Translations translations { get; set; }
+        public BugDescription()
+        {
+            source = string.Empty;
+            translations = new Translations();
+        }
         public bool Equals(BugDescription other)
         {
             return this.source == other.source;
@@ -146,20 +180,20 @@ namespace DDPM.SA.Common
     }
     public class Translations
     {
-        public string ar { get; set; }
-        public string de { get; set; }
-        public string es { get; set; }
-        public string fr { get; set; }
-        public string fr_CA { get; set; }
-        public string it { get; set; }
-        public string ja { get; set; }
-        public string ko { get; set; }
-        public string pl { get; set; }
-        public string pt_BR { get; set; }
-        public string ru { get; set; }
-        public string tr { get; set; }
-        public string uk { get; set; }
-        public string zh { get; set; }
-        public string zh_TW { get; set; }
+        public string ar { get; set; } = string.Empty;
+        public string de { get; set; } = string.Empty;
+        public string es { get; set; } = string.Empty;
+        public string fr { get; set; } = string.Empty;
+        public string fr_CA { get; set; } = string.Empty;
+        public string it { get; set; } = string.Empty;
+        public string ja { get; set; } = string.Empty;
+        public string ko { get; set; } = string.Empty;
+        public string pl { get; set; } = string.Empty;
+        public string pt_BR { get; set; } = string.Empty;
+        public string ru { get; set; } = string.Empty;
+        public string tr { get; set; } = string.Empty;
+        public string uk { get; set; } = string.Empty;
+        public string zh { get; set; } = string.Empty;
+        public string zh_TW { get; set; } = string.Empty;
     }
 }

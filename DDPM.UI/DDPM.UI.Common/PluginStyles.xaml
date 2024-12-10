@@ -30,7 +30,7 @@
                         <!--<TextBlock Text="{TemplateBinding Content}"
                         FontFamily="Arial" ToolTipService.InitialShowDelay="1"
                         FontSize="12"
-                        FontWeight="Normal"
+                        FontWeight="Normal"BorderConnection
                         Foreground="#F5F6F7"
                         Background="#193475F2"
                         Padding="8,12,8,12" />-->
@@ -96,14 +96,6 @@
         <Setter Property="HorizontalAlignment" Value="Left" />
         <Setter Property="Cursor" Value="Hand" />
     </Style>
-    <Style x:Key="BorderConnection" TargetType="Border">
-        <Setter Property="Background" Value="#99193457" />
-        <Setter Property="CornerRadius" Value="2" />
-        <Setter Property="Width" Value="252" />
-        <!--<Setter Property="Height" Value="40" />-->
-        <Setter Property="BorderThickness" Value="2" />
-        <Setter Property="BorderBrush" Value="#1B385F" />
-    </Style>
     <Style x:Key="ConnectionStyle1" TargetType="UXControls:UXTextBlock">
         <Setter Property="Foreground" Value="#FFFFFF" />
         <Setter Property="FontFamily" Value="Roboto" />
@@ -115,12 +107,6 @@
         <Setter Property="FontFamily" Value="Roboto" />
         <Setter Property="FontSize" Value="14" />
         <Setter Property="FontWeight" Value="Normal" />
-    </Style>
-    <Style x:Key="ConnectionStyle3" TargetType="UXControls:UXTextBlock">
-        <Setter Property="Foreground" Value="#FFFFFF " />
-        <Setter Property="FontFamily" Value="Roboto" />
-        <Setter Property="FontSize" Value="14" />
-        <Setter Property="FontWeight" Value="Medium" />
     </Style>
     <!--<Style x:Key="ModuleCaptionStyle" TargetType="UXControls:UXTextBlock">
     <Setter Property="Foreground" Value="#FFFFFF" />

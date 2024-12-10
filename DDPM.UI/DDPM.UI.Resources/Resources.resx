@@ -2949,4 +2949,10 @@
   <data name="ImpExp_WarningMsg.2" xml:space="preserve">
     <value>The same monitor is detected, do you want to import settings for</value>
   </data>
+  <data name="DiagnosticReport_SaveFail" xml:space="preserve">
+    <value>Diagnostic report save fail</value>
+  </data>
+  <data name="MonitorAssetReport_SaveFail" xml:space="preserve">
+    <value>Monitor asset report save fail</value>
+  </data>
 </root>
