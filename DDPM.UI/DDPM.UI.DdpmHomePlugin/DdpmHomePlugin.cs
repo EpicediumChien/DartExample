@@ -1102,6 +1102,80 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
             return ret;
         }
 
+        //Robert_Lin, 2024-12-9 added for PIMS-299696 Gear icon indication blinking not only twice to show availability.
+        /// <summary>
+        /// Invoked when any changed of FW/SW update package information.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void _deviceManager_Peripherals_UpdateNotify(object? sender, bool e)
+        {
+            if (_deviceManager != null)
+            {
+                //Get FW/SW update count
+                FWUpdateInfoPackage fwUpdateInfoPackage = _deviceManager.GetFWUpdateInfo(false, false, false, null, false, false, true).Result;
+                SWUpdateInfoPackage sWUpdateInfoPackage = _deviceManager.SW_GetSWUpdateInfo(false, false, false, true).Result;
+
+                int newSwCount = 0;
+                if ((sWUpdateInfoPackage != null) && (sWUpdateInfoPackage.SWUpdateInfo != null))
+                    newSwCount = sWUpdateInfoPackage.SWUpdateInfo.Count;
+                int newFwCount = 0;
+                if ((fwUpdateInfoPackage != null) && (fwUpdateInfoPackage.FWUpdateInfo != null))
+                    newFwCount = fwUpdateInfoPackage.FWUpdateInfo.Count;
+
+                _log.Info($"@ Peripherals_UpdateNotify, SW: {_updateAvailableCount_SW} -> {newSwCount}, FW: {_updateAvailableCount_FW} -> {newFwCount}");
+
+                //Case_1, no any sw/fw count => turn the indicator to OFF
+                if ((newSwCount <= 0) && (newFwCount <= 0))
+                {
+                    //Update to variables
+                    _updateAvailableCount_SW = 0;
+                    _updateAvailableCount_FW = 0;
+
+                    //Set to Off anyway
+                    if (_iconGear != null)
+                    {
+                        _log.Info($"@ Peripherals_UpdateNotify, Turn off GearIcon indicator");
+                        _iconGear.SetOrangeDotVisible(false);
+                    }
+                    else
+                    {
+                        _log.Info($"@ Peripherals_UpdateNotify, GearIcon is null.");
+                    }
+                    return;
+                }
+
+                //Case_2, Either SW or FW are increased
+                bool isSwCountIncreased = (newSwCount - _updateAvailableCount_SW > 0);
+                bool isFwCountIncreased = (newFwCount - _updateAvailableCount_FW > 0);
+                if (isSwCountIncreased || isFwCountIncreased)
+                {
+                    //Trigger a Blinking effect
+                    if (_iconGear != null)
+                    {
+                        _log.Info($"@ Peripherals_UpdateNotify, Trigger a glow effect.");
+                        _iconGear.GlowEffect_Trigger();
+                    }
+                    else
+                    {
+                        _log.Info($"@ Peripherals_UpdateNotify, Trigger a glow effect error, GearIcon is null.");
+                    }
+                }
+                else
+                {
+                    //Case_3, no changed : nothing to do
+                    _log.Info($"@ Peripherals_UpdateNotify, update count is not changed.");
+                }
+
+                //Update to variables
+                _updateAvailableCount_SW = newSwCount;
+                _updateAvailableCount_FW = newFwCount;
+            }
+            else
+            {
+                _log.Info("@ Peripherals_UpdateNotify, DeviceManager is null.");
+            }
+        }
         #endregion SW/FW Update
 
         #region WalkThrough
