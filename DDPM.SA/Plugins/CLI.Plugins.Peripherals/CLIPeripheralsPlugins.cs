@@ -834,12 +834,12 @@ namespace DDPM.CLI.Plugins.Peripherals
                         {
                             switch (value)
                             {
-                                case "ENABLE": //spec is only defined enable/disable, on/off
+                                //case "ENABLE": //spec is only defined enable/disable, on/off
                                 case "ON":
                                     val = 1;
                                     bl = true;
                                     break;
-                                case "DISABLE":
+                                //case "DISABLE":
                                 case "OFF":
                                     val = 0;
                                     bl = false;
@@ -1226,7 +1226,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                                     x.Result = "PASS";
                                     retcode = di.IsMicEnumerationOn;
                                     x.Value = (retcode) ? "ON" : "OFF";
-                                    x.Value += "," + (data.LockSettings.Lock_Webcam_MicSwitch ? "LOCK" : "UNLOCK");
+                                    //x.Value += "," + (data.LockSettings.Lock_Webcam_MicSwitch ? "LOCK" : "UNLOCK");
                                     x.Message = "N/A";
                                 }
                                 else if (result == "1")
@@ -1269,7 +1269,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                                     x.Result = "PASS";
                                     retcode_ = _devMgr.GetIsHDROn(x.Guid).Result;
                                     x.Value = (retcode_) ? "ON" : "OFF";
-                                    x.Value += "," + (data.LockSettings.Lock_Webcam_hdr ? "LOCK" : "UNLOCK");
+                                    //x.Value += "," + (data.LockSettings.Lock_Webcam_hdr ? "LOCK" : "UNLOCK");
                                     x.Message = "N/A";
                                 }
                                 else if (result == "1")
@@ -1353,7 +1353,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                                         x.Result = "PASS";
                                         retvalue = _devMgr.GetAntiFlicker(x.Guid).Result;
                                         x.Value = retvalue.ToString();
-                                        x.Value += "," + (data.LockSettings.Lock_Webcam_AntiFlicker ? "LOCK" : "UNLOCK");
+                                        //x.Value += "," + (data.LockSettings.Lock_Webcam_AntiFlicker ? "LOCK" : "UNLOCK");
                                         x.Message = "N/A";
                                     }
                                     else if (result == "1")
@@ -1443,7 +1443,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                                     x.Result = "PASS";
                                     retcode_ = _devMgr.GetIsAutoFramingOn(x.Guid).Result;
                                     x.Value = (retcode_) ? "ON" : "OFF";
-                                    x.Value += "," + (data.LockSettings.Lock_Webcam_AIAutoFraming ? "LOCK" : "UNLOCK");
+                                    //x.Value += "," + (data.LockSettings.Lock_Webcam_AIAutoFraming ? "LOCK" : "UNLOCK");
                                     x.Message = "N/A";
                                 }
                                 else if (result == "1")
@@ -1526,7 +1526,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                                     x.Result = "PASS";
                                     retcode_ = _devMgr.GetIsProximitySensorEnable(x.Guid).Result;
                                     x.Value = (retcode_) ? "ON" : "OFF";
-                                    x.Value += "," + (data.LockSettings.Lock_Webcam_PresenceDetection ? "LOCK" : "UNLOCK");
+                                    //x.Value += "," + (data.LockSettings.Lock_Webcam_PresenceDetection ? "LOCK" : "UNLOCK");
                                     x.Message = "N/A";
                                 }
                                 else if (result == "1")
@@ -1615,10 +1615,10 @@ namespace DDPM.CLI.Plugins.Peripherals
                 }
                 else
                 {
-                    if (_commandLineInput.TargetFeature.ToUpper().Equals("ANCMODE"))
-                        x.Value += "," + (data.LockSettings.Lock_Audio_ancMode ? "LOCK" : "UNLOCK");
-                    if (_commandLineInput.TargetFeature.ToUpper().Equals("WEARDETECTION"))
-                        x.Value += "," + (data.LockSettings.Lock_Audio_wearDetection ? "LOCK" : "UNLOCK");
+                    //if (_commandLineInput.TargetFeature.ToUpper().Equals("ANCMODE"))
+                    //    x.Value += "," + (data.LockSettings.Lock_Audio_ancMode ? "LOCK" : "UNLOCK");
+                    //if (_commandLineInput.TargetFeature.ToUpper().Equals("WEARDETECTION"))
+                    //    x.Value += "," + (data.LockSettings.Lock_Audio_wearDetection ? "LOCK" : "UNLOCK");
                     if (x.Result == "")
                     {
                         var result = RunAsyncTimeout(taskA(val, Guid.Parse(x.Guid))).Result;
