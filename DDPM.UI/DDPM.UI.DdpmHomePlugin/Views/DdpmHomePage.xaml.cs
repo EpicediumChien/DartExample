@@ -39,10 +39,10 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                 _ddpmHomePageViewModel.HomeDevicesChanged += _ddpmHomePageViewModel_HomeDevicesChanged;
 
                 ////Robert_Lin, 2024-7-16 for engineer debug,
-                //if (IniReadInt("DDPMDebug", "HomePage.ShowDeviceListViewToolbar", 0, @"C:\temp\DDPMDebug.txt") == 1)
-                //{
-                //    debugRwdParams.Visibility = Visibility.Visible;
-                //}
+                if (DDPM.UI.Common.User32.IniReadInt("DDPMDebug", "HomePage.ShowDeviceListViewToolbar", 0, @"C:\temp\DDPMDebug.txt") == 1)
+                {
+                    UIDebugPanel.Visibility = Visibility.Visible;
+                }
                 _ddpmHomePageViewModel.ShowConsentRequested += _ddpmHomePageViewModel_ShowConsent;
                 _ddpmHomePageViewModel.ImportNotify += ImportNotifyEventHandler;
             }
@@ -69,42 +69,76 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
 
                     DDPMImpExpSettings ImpExpSettings = new DDPMImpExpSettings();
                     ImpExpSettings = DdpmCommonHelper.DeviceManagerSA.ReadImportSettingsFile(exportpath).Result;
-
-                    if (ImpExpSettings != null)
+                    string ImpExpServiceTag = ImpExpSettings.MonitorSettings.ServiceTag;
+                    //Elsa add to fix [PIMS-314182]
+                    string setpath = localAppDataPath + "\\Dell Display and Peripheral Manager\\Display";
+                    string settingPath = setpath + "\\" + model + ".json";
+                    List<DDPMMonitorSettings> monitorSettings = DdpmCommonHelper.DeviceManagerSA.ReloadMonitorSettings(model).Result;
+                    DDPMMonitorSettings monitorSetting = null;
+                    if (monitorSettings != null)
                     {
-                        if (ImpExpSettings.MonitorSettings != null)
+                        if (monitorSettings.Count != 0)
                         {
-                            if (ImpExpSettings.MonitorSettings.ImpExpSettings.SameModel)
+                            foreach (DDPMMonitorSettings settings in monitorSettings)
+                            {
+                                if (settings.ServiceTag == ImpExpServiceTag)
+                                {
+                                    monitorSetting = settings;
+                                }
+                            }
+                        }
+                    }
+                    if (ImpExpSettings != null && monitorSetting != null)
+                    {
+                        if (monitorSetting.ImpExpSettings != null)
+                        {
+                            if (monitorSetting.ImpExpSettings.SameModel)//Elsa modify check ImpExpSettings.ImpExpSettings.SameModel to monitorSetting.ImpExpSettings.SameModel to fix [PIMS-314182]
                             {
                                 DdpmCommonHelper.DeviceManagerSA.DisplayImportSettings(mo, true, exportpath).Wait();
                             }
                             else
                             {
-                                Window parentWindow = Window.GetWindow(this);
-                                double windowLeft = 0;
-                                double windowTop = 0;
-                                ImportModalDialog modalDialog = new(mo.modelName, parentWindow.ActualWidth, parentWindow.ActualHeight - 40);
-                                if (parentWindow != null)
+                                //Elsa add to fix same model same service tag pop up modalDialog issue
+                                if (ImpExpSettings.MonitorSettings.Model == mo.modelName&& ImpExpSettings.MonitorSettings.ServiceTag == mo.edid.ServiceTag)
                                 {
-                                    modalDialog.Owner = parentWindow;
-                                    windowLeft = parentWindow.Left;
-                                    windowTop = parentWindow.Top + 40;
+                                    DdpmCommonHelper.DeviceManagerSA.DisplayImportSettings(mo, true, exportpath).Wait(); 
                                 }
-                                modalDialog.WindowStartupLocation = WindowStartupLocation.Manual;
-                                modalDialog.Left = windowLeft;
-                                modalDialog.Top = windowTop;
-                                modalDialog.ShowDialog();
-
-                                if (modalDialog.DialogResult != null && modalDialog.DialogResult == true)
+                                else
                                 {
-                                    //For jason to do import
-                                    if (DdpmCommonHelper.DeviceManagerSA.DisplayImportSettings(mo, true, exportpath).Result)
+                                    try
                                     {
-                                        //ignore next check for this model
-                                        if (modalDialog.isChecked)
+                                        Window parentWindow = Window.GetWindow(this);
+                                        double windowLeft = 0;
+                                        double windowTop = 0;
+                                        ImportModalDialog modalDialog = new(mo.modelName, parentWindow.ActualWidth, parentWindow.ActualHeight - 40);
+                                        if (parentWindow != null)
                                         {
-                                            DdpmCommonHelper.DeviceManagerSA.SetSameModel(mo, true);
+                                            modalDialog.Owner = parentWindow;
+                                            windowLeft = parentWindow.Left;
+                                            windowTop = parentWindow.Top + 40;
                                         }
+                                        modalDialog.WindowStartupLocation = WindowStartupLocation.Manual;
+                                        modalDialog.Left = windowLeft;
+                                        modalDialog.Top = windowTop;
+                                        modalDialog.ShowDialog();
+
+                                        if (modalDialog.DialogResult != null && modalDialog.DialogResult == true)
+                                        {
+                                            //For jason to do import
+                                            if (DdpmCommonHelper.DeviceManagerSA.DisplayImportSettings(mo, true, exportpath).Result)
+                                            {
+                                                //ignore next check for this model
+                                                if (modalDialog.isChecked)
+                                                {
+                                                    DdpmCommonHelper.DeviceManagerSA.SetSameModel(mo, true);
+                                                }
+                                            }
+                                        }
+
+                                    }
+                                    catch (Exception e)
+                                    {
+                                        DdpmCommonHelper.WriteUILog($"catac excpetion[{e.Message}] when run ImportNotifyEventHandler");
                                     }
                                 }
                             }
@@ -671,10 +705,11 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
         {
             if (_ddpmHomePageViewModel != null)
             {
-                int idx = _ddpmHomePageViewModel.HomeDevices.Count;
-                MonitorInfo mi = GetFakeMonitorInfo();
-                mi.Index = idx;
-                _ddpmHomePageViewModel.PrepareMonitorInfos(new List<MonitorInfo> { mi });
+                _ddpmHomePageViewModel.AddFakeMonitorToListView();
+                //int idx = _ddpmHomePageViewModel.HomeDevices.Count;
+                //MonitorInfo mi = GetFakeMonitorInfo();
+                //mi.Index = idx;
+                //_ddpmHomePageViewModel.PrepareMonitorInfos(new List<MonitorInfo> { mi });
             }
             //int id = _ddpmHomePageViewModel.HomeDevices.Count;
             //HomeDevice demo = new HomeDevice()
@@ -766,7 +801,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
         }
 
         #region Read/Write INI file - Move to DDPM.UI.Common/User32.cs, can be removed
-
+        /*
         //Robert_Lin 2024-7-5 copy from VCPCorePlugin.cs, shared with other projects
         public static int IniReadInt(string sec, string key, int def, string pathName)
         {
@@ -794,6 +829,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
         {
             return GetPrivateProfileString(section, key, def, retVal, size, filePath);
         }
+        */
         #endregion Read/Write INI file
 
         #region Connection Hover View

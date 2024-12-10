@@ -967,7 +967,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
             // jim add  for The DDPM color profile can not be applied by DDPM on Smart HDR mode.(Gaming monitor ex: AW2724DM)
             if (blIs_Game_DeviceName && blSmartHDR_ON)
-            {                
+            {
                 try
                 {
                     uint title = (uint)Gaming_Supported.HDRType;
@@ -991,7 +991,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         param = 0x0E;
 
                     writelog($"[DeviceMangerPlugin] {nameof(SetGaming_HDRType)} title : {title}, param : {param}");
-                    r= SetVCPCapability(m, VcpCodeList.VCPctr["Gaming"], title + param).Result;
+                    r = SetVCPCapability(m, VcpCodeList.VCPctr["Gaming"], title + param).Result;
                 }
                 catch (Exception ex)
                 {
@@ -1001,7 +1001,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             else
             {
                 r = await Task.Run(() => SetVCPCapability(m, "colorpreset", ColorPreset_Name).Result).ConfigureAwait(false);
-            }            
+            }
 
             // 11/23 Wayn Add
             bool result = false;
@@ -1357,7 +1357,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             Thread.Sleep(100);
 
             return;
-        }        
+        }
 
         /// <summary>
         /// 回傳目前螢幕在 ColorSetting setting config的 index number
@@ -5717,12 +5717,12 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         toastContentBuilder.AddText(info);
                         if (!isOnlyUpdate)
                         {
-                            toastContentBuilder.AddButton("Update now", ToastActivationType.Background, "Update " + popupContentPackage.PopupType.ToString());
-                            toastContentBuilder.AddButton("Defer", ToastActivationType.Background, "Delay");
+                            toastContentBuilder.AddButton(LangHelper.Instance["UpdateNow"], ToastActivationType.Background, "Update " + popupContentPackage.PopupType.ToString());
+                            toastContentBuilder.AddButton(LangHelper.Instance["Defer"], ToastActivationType.Background, "Delay");
                         }
                         else
                         {
-                            toastContentBuilder.AddButton("Ok", ToastActivationType.Background, "Update");
+                            toastContentBuilder.AddButton(LangHelper.Instance["Ok"], ToastActivationType.Background, "Update");
                         }
                     }
                     else
@@ -9817,8 +9817,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
                     string zipFilePath = saveFolderPath + ".zip";
                     FileInfo info = new FileInfo(zipFilePath);
-                    zipFilePath = Path.Combine(info.DirectoryName, "Log.zip");//force to set zip file name as Log.zip
-                                                                              // 壓縮資料夾
+                    zipFilePath = Path.Combine(info.DirectoryName, $"Log_{DateTime.Now.ToString("yyyy_MM_dd_HH.mm.ss.ff")}.zip");//force to set zip file name as Log.zip
+                                                                                                                                 // 壓縮資料夾
                     if (!CreateZipFile(saveFolderPath, zipFilePath))
                         fail_info += "[Compression]";
                     Directory.Delete(saveFolderPath, true);
@@ -13047,6 +13047,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     /* HotkeyPopWrap hotkeyPopWrap1 = new HotkeyPopWrap() { monitorInfo = monitorInfo, hotkeyType = job };
                      HotkeyPopup(hotkeyPopWrap1);
                      break;*/
+                    //ALS stand for Ambient Light Sensor, include 3 fearture [Auto brightness][Auto color Temperature][Primary monitor for Sync]
+                    //DDPMW-764
                     if (IsALSautobrightness(monitorInfo))
                     {
                         writelog($"ExecHotkeyJob[{job}:{hotkeyStr} ,IsALSautobrightness=true,will Popup msg] => getTargetMonitor: {getTargetMo}, Monitor [ModelName={monitorInfo.edid.ModelName},ServiceTag={monitorInfo.edid.ServiceTag}, SerialNumber={monitorInfo.edid.SerialNumber}]");
@@ -13055,14 +13057,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     }
                     else
                     {
-                        if (!isAutoBrightnessOn(monitorInfo))
-                        {
-                            _hotkeyJobQueue.Enqueue(new JobInfo(1000, monitorInfo, null, Reduce_Brightness_Value));
-                        }
-                        else
-                        {
-                            writelog($"ExecHotkeyJob[ Skip {job}:{hotkeyStr} ,cause AutoBrightness is On] => getTargetMonitor: {getTargetMo}, Monitor [ModelName={monitorInfo.edid.ModelName},ServiceTag={monitorInfo.edid.ServiceTag}, SerialNumber={monitorInfo.edid.SerialNumber}]");
-                        }
+                        _hotkeyJobQueue.Enqueue(new JobInfo(1000, monitorInfo, null, Reduce_Brightness_Value));
                     }
                     break;
 
@@ -13074,14 +13069,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     }
                     else
                     {
-                        if (!isAutoBrightnessOn(monitorInfo))
-                        {
-                            _hotkeyJobQueue.Enqueue(new JobInfo(1000, monitorInfo, null, Increase_Brightness_Value));
-                        }
-                        else
-                        {
-                            writelog($"ExecHotkeyJob[ Skip {job}:{hotkeyStr} ,cause AutoBrightness is On] => getTargetMonitor: {getTargetMo}, Monitor [ModelName={monitorInfo.edid.ModelName},ServiceTag={monitorInfo.edid.ServiceTag}, SerialNumber={monitorInfo.edid.SerialNumber}]");
-                        }
+                        _hotkeyJobQueue.Enqueue(new JobInfo(1000, monitorInfo, null, Increase_Brightness_Value));
                     }
                     break;
 
@@ -13093,14 +13081,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     }
                     else
                     {
-                        if (!isAutoBrightnessOn(monitorInfo))
-                        {
-                            _hotkeyJobQueue.Enqueue(new JobInfo(1000, monitorInfo, null, Reduce_Contrast_Value));
-                        }
-                        else
-                        {
-                            writelog($"ExecHotkeyJob[ Skip {job}:{hotkeyStr} ,cause AutoBrightness is On] => getTargetMonitor: {getTargetMo}, Monitor [ModelName={monitorInfo.edid.ModelName},ServiceTag={monitorInfo.edid.ServiceTag}, SerialNumber={monitorInfo.edid.SerialNumber}]");
-                        }
+                        _hotkeyJobQueue.Enqueue(new JobInfo(1000, monitorInfo, null, Reduce_Contrast_Value));
                     }
                     break;
 
@@ -13112,14 +13093,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     }
                     else
                     {
-                        if (!isAutoBrightnessOn(monitorInfo))
-                        {
-                            _hotkeyJobQueue.Enqueue(new JobInfo(1000, monitorInfo, null, Increase_Contrast_Value));
-                        }
-                        else
-                        {
-                            writelog($"ExecHotkeyJob[ Skip {job}:{hotkeyStr} ,cause AutoBrightness is On] => getTargetMonitor: {getTargetMo}, Monitor [ModelName={monitorInfo.edid.ModelName},ServiceTag={monitorInfo.edid.ServiceTag}, SerialNumber={monitorInfo.edid.SerialNumber}]");
-                        }
+                        _hotkeyJobQueue.Enqueue(new JobInfo(1000, monitorInfo, null, Increase_Contrast_Value));
                     }
                     break;
 
@@ -13203,11 +13177,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             return Task.FromResult(true);
         }
 
-        private bool isAutoBrightnessOn(MonitorInfo mo)
-        {
-            scheduleInfo result = ReadScheduleMonitorSettings(mo).Result;
-            return result.IsEnable;
-        }
 
         private void Toggle_EzRecentSetting(MonitorInfo monitorInfo, Object[] param)
         {
@@ -13837,44 +13806,54 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             });
         }
 
-        private void YesEvent(object o, object ob)
+        private async void YesEvent(object o, object ob)
         {
             //Auto Brightness OFF & Auto OFF & Manual ON?
             HotkeyPopWrap hotkeyPopWrap = (HotkeyPopWrap)ob;
             List<ALSConfig> aLSConfigs = GetAllExistAlsConfig().Result;
+            bool setALSFeature = false;
             if (aLSConfigs != null)
             {
                 ALSConfig find = aLSConfigs.FirstOrDefault(x => x.Edid.ServiceTag.Equals(hotkeyPopWrap.monitorInfo.edid.ServiceTag) && x.isAutoBrightness);
                 //diable autobrightness
                 if (find != null)
                 {
-                    bool result = SetALSFeatureValue(hotkeyPopWrap.monitorInfo, find, ALSFeatureQueryType.AutoBrightness, "").Result;
-                    writelog($"IsALSautobrightness Yes_event[{hotkeyPopWrap.hotkeyType}:Monitor [ModelName={hotkeyPopWrap.monitorInfo.edid.ModelName},ServiceTag={hotkeyPopWrap.monitorInfo.edid.ServiceTag}],set ALS.AutoBrightness to off:" + (result ? "success" : "fail"));
+                    //setALSFeature = SetALSFeatureValue(hotkeyPopWrap.monitorInfo, find, ALSFeatureQueryType.AutoBrightness, "OFF").Result;
+                    find.isAutoBrightness = false;
+                    setALSFeature = SetALSFeatureValue(hotkeyPopWrap.monitorInfo, find, ALSFeatureQueryType.All, "").Result;
+                    writelog($"IsALSautobrightness Yes_event[{hotkeyPopWrap.hotkeyType}:Monitor [ModelName={hotkeyPopWrap.monitorInfo.edid.ModelName},ServiceTag={hotkeyPopWrap.monitorInfo.edid.ServiceTag}],set ALS.AutoBrightness to off:" + (setALSFeature ? "success" : "fail"));
                 }
                 else
                 {
                     writelog($"IsALSautobrightness Yes_event[{hotkeyPopWrap.hotkeyType}:Monitor [ModelName={hotkeyPopWrap.monitorInfo.edid.ModelName},ServiceTag={hotkeyPopWrap.monitorInfo.edid.ServiceTag}],ALS config not found");
                 }
             }
-
-            switch (hotkeyPopWrap.hotkeyType)
+            if (setALSFeature)
             {
-                case HotkeyType.BrightnessReduce:
-                    _hotkeyJobQueue.Enqueue(new JobInfo(1000, hotkeyPopWrap.monitorInfo, null, Reduce_Brightness_Value));
-                    break;
+                switch (hotkeyPopWrap.hotkeyType)
+                {
+                    case HotkeyType.BrightnessReduce:
+                        _hotkeyJobQueue.Enqueue(new JobInfo(1000, hotkeyPopWrap.monitorInfo, null, Reduce_Brightness_Value));
+                        break;
 
-                case HotkeyType.BrightnessIncrease:
-                    _hotkeyJobQueue.Enqueue(new JobInfo(1000, hotkeyPopWrap.monitorInfo, null, Increase_Brightness_Value));
-                    break;
+                    case HotkeyType.BrightnessIncrease:
+                        _hotkeyJobQueue.Enqueue(new JobInfo(1000, hotkeyPopWrap.monitorInfo, null, Increase_Brightness_Value));
+                        break;
 
-                case HotkeyType.ContrastReduce:
-                    _hotkeyJobQueue.Enqueue(new JobInfo(1000, hotkeyPopWrap.monitorInfo, null, Reduce_Contrast_Value));
-                    break;
+                    case HotkeyType.ContrastReduce:
+                        _hotkeyJobQueue.Enqueue(new JobInfo(1000, hotkeyPopWrap.monitorInfo, null, Reduce_Contrast_Value));
+                        break;
 
-                case HotkeyType.ContrastIncrease:
-                    _hotkeyJobQueue.Enqueue(new JobInfo(1000, hotkeyPopWrap.monitorInfo, null, Increase_Contrast_Value));
-                    break;
+                    case HotkeyType.ContrastIncrease:
+                        _hotkeyJobQueue.Enqueue(new JobInfo(1000, hotkeyPopWrap.monitorInfo, null, Increase_Contrast_Value));
+                        break;
+                }
             }
+            else
+            {
+                Debug.WriteLine($"IsALSautobrightness Yes_event[{hotkeyPopWrap.hotkeyType}:Monitor [ModelName={hotkeyPopWrap.monitorInfo.edid.ModelName},ServiceTag={hotkeyPopWrap.monitorInfo.edid.ServiceTag}],set ALS.AutoBrightness to off fail,skip this hotkey action");
+            }
+
         }
 
         private void NoEvent(object o, object ob)
@@ -16346,5 +16325,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         }
 
         #endregion
+
+        public Task<List<DDPMMonitorSettings>> ReloadMonitorSettings(string modelname)
+        {
+            Task<List<DDPMMonitorSettings>> settings = _SettingsPlugin.ReloadMonitorSettings(modelname);
+            return settings;
+        }
     }
 }

@@ -78,15 +78,15 @@ namespace DDPM.ColorApp
             b_Is_Game_DeviceName = blIs_Game_DeviceName; // jim add 20241207
             _supported_preset = ColorPresetSupportList;
 
+            writelog("Set_AUTO_ColorPresetConfig AUTO_ColorPresetConfig = " + blAUTO);
+
             if (b_AUTO_ColorPresetConfig)
             {
-                writelog("Set_AUTO_ColorPresetConfig AUTO_ColorPresetConfig = " + blAUTO);
                 AppStatusQuery.SendValue += EventAppStatus_SendValue;
                 AppStatusQuery.GetInstance(Log).ClearLastAppRecord("SET_AUTO");
             }
             else
-            {
-                writelog("Set_AUTO_ColorPresetConfig AUTO_ColorPresetConfig = " + blAUTO);
+            {                
                 AppStatusQuery.SendValue -= EventAppStatus_SendValue;
                 AppStatusQuery.GetInstance(Log).ClearLastAppRecord("SET_MANUAL");
             }
