@@ -56,7 +56,7 @@ namespace DDPM.EABroker
         //[Arrange_Windows]
         private string _arrangeWindows = "Arrange Windows";
         //[EA_MSG_0]
-        private string _adjust = "Adjust your current window arrangement, edit the name (if desired), and click &#34;Save&#34; to store the arrangement.";
+        private string _adjust = "Adjust your current window arrangement, edit the name (if desired), and click \"Save\" to store the arrangement.";
         #endregion
 
         #region Input/Output
