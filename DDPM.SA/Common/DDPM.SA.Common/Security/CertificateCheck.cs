@@ -155,13 +155,16 @@ namespace DDPM.SA.Common.Security
             {
                 try
                 {
+                    _logs?.DebugMsg_1($"CheckURLCACertificate HttpClientHandler initialization");
                     HttpClientHandler handler = new HttpClientHandler();
                     handler.ServerCertificateCustomValidationCallback = PinPublicKey;
                     using (HttpClient client = new HttpClient(handler))
                     {
+                        _logs?.DebugMsg_1($"CheckURLCACertificate client.GetAsync go");
                         HttpResponseMessage response = client.GetAsync(baseUrl).Result;
                     }
                     flag = true;
+                    _logs?.DebugMsg_1($"CheckURLCACertificate client.GetAsync done");
                 }
                 catch (Exception ex)
                 {
