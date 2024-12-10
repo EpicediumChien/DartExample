@@ -2350,10 +2350,6 @@ namespace DDPM.UI.Module.Brightness
         /// <param name="onoff">UI PrimaryMonitorSync status</param>
         private void ALSSettingsChangesOnNonPrimary(bool onoff, string property = "AUTOBRI", int level = 0)
         {
-            int level_keep = 0;
-            if (Start_ALSConfig.AutoBrightnessRangeLevel != null && Start_ALSConfig.AutoBrightnessRangeLevel.Count > 0)
-                level_keep = (int)Start_ALSConfig.AutoBrightnessRangeLevel[0].level_value;
-
             if (!Start_ALSConfig.isPrimaryMonitorSync && CheckMonitorALSStatus())// user change non-Primary
             {
                 //PIMS-328260
@@ -2362,10 +2358,6 @@ namespace DDPM.UI.Module.Brightness
                 {
                     _primaryMonitorSyncStatus = true;
                     Start_ALSConfig.isPrimaryMonitorSync = true;// onoff; //PIMS-328260
-                    if (property.Equals("BRILEVEL"))//PIMS-314583
-                    {
-                        SetBrightnessLevelDataToObject(level);
-                    }
                     SetALSAll(Start_ALSConfig, ALSFeatureQueryType.All, 0);
                     NotifyPropertyChanged("PrimaryMonitorSyncStatus");
                     NotifyPropertyChanged("PrimaryMonitorSync_String");
@@ -2385,11 +2377,6 @@ namespace DDPM.UI.Module.Brightness
                         _autoColorTempStatus = onoff;
                         Start_ALSConfig.isAutoColorTemp = onoff;
                     }
-                    if (property.Equals("BRILEVEL"))
-                    {
-                        //click no, switch back due to UI action
-                        SetBrightnessLevelDataToObject(level_keep);
-                    }
                 }
             }
             else
@@ -2398,13 +2385,6 @@ namespace DDPM.UI.Module.Brightness
                 {
                     _primaryMonitorSyncStatus = onoff;
                     Start_ALSConfig.isPrimaryMonitorSync = onoff;
-                }
-                if (property.Equals("BRILEVEL"))//PIMS-314583
-                {
-                    if (Start_ALSConfig.AutoBrightnessRangeLevel != null && Start_ALSConfig.AutoBrightnessRangeLevel.Count > 0)
-                    {
-                        SetBrightnessLevelDataToObject(level);
-                    }
                 }
                 SetALSAll(Start_ALSConfig, ALSFeatureQueryType.All, 0);
             }
@@ -3346,21 +3326,17 @@ namespace DDPM.UI.Module.Brightness
             set
             {
                 if ((int)Start_ALSConfig.AutoBrightnessRangeLevel[0].level_value != value)
-                {                    
-                    ALSSettingsChangesOnNonPrimary(false, "BRILEVEL", value);
-
-                    if ((int)Start_ALSConfig.AutoBrightnessRangeLevel[0].level_value == value)//already apply, make string change
-                    {
-                        if (value == 0)
-                            Start_ALSConfig.AutoBrightnessRangeLevel[0].level_name = "Low";
-                        else if (value == 1)
-                            Start_ALSConfig.AutoBrightnessRangeLevel[0].level_name = "Mid";
-                        else
-                            Start_ALSConfig.AutoBrightnessRangeLevel[0].level_name = "High";
-                    }
+                {
+                    Start_ALSConfig.AutoBrightnessRangeLevel[0].level_value = value;
+                    if (value == 0)
+                        Start_ALSConfig.AutoBrightnessRangeLevel[0].level_name = "Low";
+                    else if (value == 1)
+                        Start_ALSConfig.AutoBrightnessRangeLevel[0].level_name = "Mid";
+                    else
+                        Start_ALSConfig.AutoBrightnessRangeLevel[0].level_name = "High";
+                    SetALSAll(Start_ALSConfig, ALSFeatureQueryType.PrimaryMonitorSync, 0);
+                    NotifyPropertyChanged("AutoBrightnessRangeLevel_String");
                 }
-                NotifyPropertyChanged("AutoBrightnessRangeLevel_SelectedIndex");
-                NotifyPropertyChanged("AutoBrightnessRangeLevel_String");
             }
         }
 

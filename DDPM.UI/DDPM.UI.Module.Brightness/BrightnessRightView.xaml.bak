@@ -744,7 +744,7 @@
                                             HorizontalAlignment="Right"
                                             SelectionChanged="cbAutoBrightness_SelectionChanged"
                                             IsEnabled="{Binding AutoBrightnessStatus}"
-                                            ItemsSource="{Binding AutoBrightnessRangeLevel}"  
+                                            ItemsSource="{Binding AutoBrightnessRangeLevel}"
                                             SelectedIndex="{Binding AutoBrightnessRangeLevel_SelectedIndex, Mode=TwoWay}"
                                             Style="{StaticResource DdpmComboBoxStyle}" />
                                         <Border
