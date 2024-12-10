@@ -19,6 +19,7 @@ namespace DDPM.UI.Module.Collaboration
         private readonly KeyboardViewModel _vm;
 
         private string LearnMoreText = "";
+        private bool ShowAlert = false;
 
         public CollaborationRightView(KeyboardViewModel vm)
         {
@@ -101,6 +102,9 @@ namespace DDPM.UI.Module.Collaboration
             { // Scenario 1
                 txtAlert1.Text = Strings.Alert1;
                 bdrAlert1.Visibility = Visibility.Visible;
+                tsCollaboration.IsEnabled = false;
+                _vm.IsCollaborationKeyEnable = false;
+                ShowAlert = true;
             }
             else if (!_vm.CTKMessageHelper.IsZoomClientInstalled && _vm.CTKMessageHelper.TeamsSDKState == "SDK_STATE_CLIENT_UNPAIRED")
             { // Scenario 2
@@ -182,7 +186,7 @@ namespace DDPM.UI.Module.Collaboration
                 //bdrAlert1.Visibility = Visibility.Visible;
             }
 
-            spAlert.Visibility = _vm.IsCollaborationKeyEnable ? Visibility.Visible : Visibility.Collapsed; // Scenario 13
+            spAlert.Visibility = _vm.IsCollaborationKeyEnable || ShowAlert ? Visibility.Visible : Visibility.Collapsed; // Scenario 13
         }
 
         private void CloseDescription1(object sender, System.Windows.Input.MouseButtonEventArgs e)

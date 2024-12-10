@@ -4,16 +4,16 @@ namespace DDPM.SA.Common.Settings
 {
     public class DDPMImpExpSettings
     {
-        public DDPMAppSettings AppSettings { get; set; }
-        public DDPMUserSettings UserSettings { get; set; }
-        public DDPMMonitorSettings MonitorSettings { get; set; }
+        public DDPMAppSettings AppSettings { get; set; } = new DDPMAppSettings();
+        public DDPMUserSettings UserSettings { get; set; } = new DDPMUserSettings();
+        public DDPMMonitorSettings MonitorSettings { get; set; } = new DDPMMonitorSettings();
     }
 
     public class DDMImpSettings
     {
-        public DDMAppSettings AppSettings { get; set; }
-        public DDMUserSettings UserSettings { get; set; }
-        public DDMMonitorSettings MonitorSettings { get; set; }
+        public DDMAppSettings AppSettings { get; set; } = new DDMAppSettings();
+        public DDMUserSettings UserSettings { get; set; } = new DDMUserSettings();
+        public DDMMonitorSettings MonitorSettings { get; set; } = new DDMMonitorSettings();
 
     }
 

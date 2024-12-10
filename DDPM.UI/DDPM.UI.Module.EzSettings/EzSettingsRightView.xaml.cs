@@ -26,10 +26,15 @@ namespace DDPM.UI.Module.EzSettings
 
         #region Multilingual
         //UI Text
+        //[EazyMemorySettings.0]
         private string Hotkey_Recent = "Hotkey: Recent";
+        //[EazyMemorySettings.3]
         private string AllowWithoutGap = "Allow app to split side by side without gap";
+        //[EazyMemorySettings.4]
         private string OnlyShiftPressed = "Only allow zone positioning when SHIFT is pressed";
+        //[EazyMemorySettings.5]
         private string SpanMultiMonitors = "Snap across multiple monitors";
+        //[EazyMemorySettings.6]
         private string AWS = "Application Window Snap";
 
         #endregion
