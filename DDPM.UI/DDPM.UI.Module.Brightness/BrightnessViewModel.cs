@@ -163,6 +163,11 @@ namespace DDPM.UI.Module.Brightness
         public Debouncer Contrast_Debouncer;
         public Debouncer Luminance_Debouncer;
 
+        public Debouncer UpdateUI_Debouncer;
+        private static BackgroundWorker syncUIvalue_bw = new BackgroundWorker();
+        public bool isUserControlUI = true;
+        private static readonly object ExecutorLock = new object();
+
         public BrightnessModule MyModule { get; set; }
 
         public ALSConfig Start_ALSConfig = new ALSConfig();
@@ -483,6 +488,8 @@ namespace DDPM.UI.Module.Brightness
                 NotifyPropertyChanged("LuminanceValue");
                 NotifyPropertyChanged("BrightnessValue");
                 NotifyPropertyChanged("AutoBrightnessRangeLevel_String");
+
+                UpdateUI_Debouncer.Debounce(null);
             }
             else if (e.vcpcode.Equals("12"))
             {
@@ -500,6 +507,8 @@ namespace DDPM.UI.Module.Brightness
                 Contrast_Value = Convert.ToDouble(e.value);
 
                 NotifyPropertyChanged("ContrastValue");
+
+                UpdateUI_Debouncer.Debounce(null);
             }
         }
 
@@ -530,6 +539,8 @@ namespace DDPM.UI.Module.Brightness
             Brightness_Debouncer = new Debouncer(2000, Set_Brightness_Value);
             Luminance_Debouncer = new Debouncer(2000, Set_Luminance_Value);
 
+            UpdateUI_Debouncer = new Debouncer(3500, SyncUIValue);
+
             PR1Contrast_Debouncer = new Debouncer(2000, Set_Contrast_Value);
             PR1Brightness_Debouncer = new Debouncer(2000, Set_Brightness_Value);
             PR2Contrast_Debouncer = new Debouncer(2000, Set_Contrast_Value);
@@ -540,6 +551,11 @@ namespace DDPM.UI.Module.Brightness
 
             DdpmCommonHelper.MyConsole.RegisterForEvent("DisplayHDRStatusChanged", OnHDRChangedEvent);
             DdpmCommonHelper.BitmapImageUpdated += ALSFontColorUpdate;
+
+            syncUIvalue_bw.DoWork += new DoWorkEventHandler(SyncUI_Value);
+            syncUIvalue_bw.ProgressChanged += new ProgressChangedEventHandler(SyncUIValue_ProgressChanged);
+            syncUIvalue_bw.WorkerReportsProgress = true;
+            syncUIvalue_bw.WorkerSupportsCancellation = true;
         }
 
         private void ALSFontColorUpdate(OSThemeEnum oSThemeEnum)
@@ -2533,6 +2549,8 @@ namespace DDPM.UI.Module.Brightness
 
             if (IsSynchronize)
             {
+                //Luminance_Value = value;
+
                 foreach (HomeDevice hd in ModuleOwner.HomeDevices)
                 {
                     if (hd.MonitorInfo.IsDellMonitor)
@@ -2546,9 +2564,11 @@ namespace DDPM.UI.Module.Brightness
             }
             else
             {
+                //Luminance_Value = value;
                 _ = DdpmCommonHelper.DeviceManagerSA.SetVCPCapability(ModuleOwner.SelectedHomeDevice.MonitorInfo, 0x10, nNewValue).Result;
             }
 
+            UpdateUI_Debouncer.Debounce(null);
             //NotifyPropertyChanged("LuminanceValue");
         }
 
@@ -2563,6 +2583,8 @@ namespace DDPM.UI.Module.Brightness
 
                 if (IsSynchronize)
                 {
+                    //Brightness_Value = value;
+
                     foreach (HomeDevice hd in ModuleOwner.HomeDevices)
                     {
                         if (hd.MonitorInfo.IsDellMonitor)
@@ -2576,9 +2598,11 @@ namespace DDPM.UI.Module.Brightness
                 }
                 else
                 {
+                    //Brightness_Value = value;
                     _ = DdpmCommonHelper.DeviceManagerSA.SetVCPCapability(ModuleOwner.SelectedHomeDevice.MonitorInfo, 0x10, nNewValue).Result;
                 }
 
+                UpdateUI_Debouncer.Debounce(null);
                 //NotifyPropertyChanged("BrightnessValue");
             }
 
@@ -2641,6 +2665,8 @@ namespace DDPM.UI.Module.Brightness
 
             if (IsSynchronize)
             {
+                //Contrast_Value = value;
+
                 foreach (HomeDevice hd in ModuleOwner.HomeDevices)
                 {
                     if (hd.MonitorInfo.IsDellMonitor)
@@ -2648,8 +2674,12 @@ namespace DDPM.UI.Module.Brightness
                 }
             }
             else
+            {
+                //Contrast_Value = value;
                 _ = DdpmCommonHelper.DeviceManagerSA.SetVCPCapability(ModuleOwner.SelectedHomeDevice.MonitorInfo, 0x12, nNewValue).Result;
+            }
 
+            UpdateUI_Debouncer.Debounce(null);
             //NotifyPropertyChanged("ContrastValue");
         }
 
@@ -3376,6 +3406,89 @@ namespace DDPM.UI.Module.Brightness
         }
 
         #endregion ALS functions
+
+        public void SyncUIValue(object obj)
+        {
+            try
+            {
+                Monitor.Enter(ExecutorLock);
+
+                if (syncUIvalue_bw != null)
+                {
+                    if (!syncUIvalue_bw.IsBusy)
+                        syncUIvalue_bw.RunWorkerAsync();
+                }
+                else
+                {
+                    syncUIvalue_bw = new BackgroundWorker();
+                    syncUIvalue_bw.DoWork += new DoWorkEventHandler(SyncUI_Value);
+                    syncUIvalue_bw.ProgressChanged += new ProgressChangedEventHandler(SyncUIValue_ProgressChanged);
+                    syncUIvalue_bw.WorkerReportsProgress = true;
+                    syncUIvalue_bw.WorkerSupportsCancellation = true;
+                    syncUIvalue_bw.RunWorkerAsync();
+                }
+            }
+            catch (Exception ex)
+            {
+                Trace.WriteLine("SyncUIValue ex: " + ex.Message);
+            }
+            finally
+            {
+                Monitor.Exit(ExecutorLock);
+            }
+        }
+
+        private void SyncUI_Value(object sender, DoWorkEventArgs e)
+        {
+            //Brightness update//
+            var r = DdpmCommonHelper.DeviceManagerSA.GetVCPCapability(ModuleOwner.SelectedHomeDevice.MonitorInfo, 0x10).Result;
+            if (r.result)
+                syncUIvalue_bw.ReportProgress(50, Convert.ToDouble(r.value));
+
+            if (ModuleOwner.SelectedHomeDevice.MonitorInfo.CapabilityDic.ContainsKey("12"))
+            {
+                //Contrst update//
+                var t = DdpmCommonHelper.DeviceManagerSA.GetVCPCapability(ModuleOwner.SelectedHomeDevice.MonitorInfo, 0x12).Result;
+                if (t.result)
+                    syncUIvalue_bw.ReportProgress(100, Convert.ToDouble(t.value));
+            }
+        }
+
+        private void SyncUIValue_ProgressChanged(object sender, ProgressChangedEventArgs e)
+        {
+            if (e.ProgressPercentage.Equals(50))
+            {
+                if (ModuleOwner.SelectedHomeDevice.MonitorInfo.CapabilityDic.ContainsKey("12"))
+                {
+                    if (!Brightness_Value.Equals((double)e.UserState))
+                    {
+                        isUserControlUI = false;
+                        Brightness_Value = (double)e.UserState;
+                        NotifyPropertyChanged("BrightnessValue");
+                    }
+                }
+                else
+                {
+                    if (!Luminance_Value.Equals((double)e.UserState))
+                    {
+                        isUserControlUI = false;
+                        Luminance_Value = (double)e.UserState;
+                        NotifyPropertyChanged("LuminanceValue");
+                    }
+                }
+            }
+            else if (e.ProgressPercentage.Equals(100))
+            {
+                if (!Contrast_Value.Equals((double)e.UserState))
+                {
+                    isUserControlUI = false;
+                    Contrast_Value = (double)e.UserState;
+                    NotifyPropertyChanged("ContrastValue");
+                }
+            }
+
+            isUserControlUI = true;
+        }
 
         public void Luminance_Sync()
         {

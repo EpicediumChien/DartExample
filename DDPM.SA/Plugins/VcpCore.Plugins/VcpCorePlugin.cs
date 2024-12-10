@@ -2033,6 +2033,16 @@ namespace VcpCore.Plugins
                             if (monitors.Item1.Count < 1)
                             {
                                 _Isinitializing = false;
+
+                                _AllInfoMonitors = new List<MonitorInfo_complex>();
+                                _AllInfoMonitors_Mix = new List<(MonitorInfo_complex, MonitorInfo)>();
+
+                                if (!(_pauseEvent.WaitOne(0)))
+                                {
+                                    _logs.DebugMsg("[VcpCorePlugin] _pauseEvent.Set()");
+                                    _pauseEvent.Set();
+                                }
+
                                 var T = Task.Run(() =>
                                 {
                                     try
@@ -2041,24 +2051,33 @@ namespace VcpCore.Plugins
                                         _logs.DebugMsg("[VcpCorePlugin] *** Monitor-Retrier start ...");
 
                                         int count = 0;
-                                        while (count < 15)
+                                        while (count < 10)
                                         {
                                             TokenNew.ThrowIfCancellationRequested();
                                             Thread.Sleep(1000);
                                             List<MonitorInfo_complex> mos = _GetMonitors(TokenNew).Item1;
+
                                             if (mos.Count > 0)
                                             {
+                                                if (_pauseEvent.WaitOne(0))
+                                                {
+                                                    _logs.DebugMsg("[VcpCorePlugin] _pauseEvent.Reset()");
+                                                    _pauseEvent.Reset();
+                                                }
+
                                                 _logs.DebugMsg("[VcpCorePlugin] *** Monitor-Retrier Monitors.count is " + mos.Count);
                                                 _AllInfoMonitors = mos.ToList();
                                                 Initialize2TypesMonitorInfo(true);
                                                 _logs.DebugMsg("[VcpCorePlugin] *** Monitor-Retrier AllInfoMonitors.count is " + _AllInfoMonitors_Mix.Count);
                                                 Initialize0x52toEmpty();
 
-                                                //----//
+                                                //------------------------------------------------------------------------------------------------//
                                                 List<MonitorInfo> _tmp = new List<MonitorInfo>();
                                                 //_tmp.Clear();//Dean 0626 fix SAST issue, remove this line since the object just created and it's empty
                                                 foreach (var monitor in _AllInfoMonitors_Mix)
                                                 {
+                                                    TokenNew.ThrowIfCancellationRequested();
+
                                                     MonitorInfo minfo = monitor.Item2;
                                                     _tmp.Add(minfo);
                                                 }
@@ -2066,12 +2085,36 @@ namespace VcpCore.Plugins
                                                 _displaychangedEventArgss.count = _AllInfoMonitors_Mix.Count;
                                                 _displaychangedEventArgss.monitors = new List<MonitorInfo>(_tmp);
                                                 OnDisplaychanged(_displaychangedEventArgss);
-                                                //----//
+                                                //------------------------------------------------------------------------------------------------//
+
                                                 break;
                                             }
                                             count++;
                                         }
+                                    }
+                                    catch (TaskCanceledException)
+                                    {
+                                        _logs.DebugMsg("[VcpCorePlugin] Monitor-Retrier into TaskCanceledException ...");
 
+                                        _AllInfoMonitors = new List<MonitorInfo_complex>();
+                                        _AllInfoMonitors_Mix = new List<(MonitorInfo_complex, MonitorInfo)>();
+                                    }
+                                    catch (OperationCanceledException)
+                                    {
+                                        _logs.DebugMsg("[VcpCorePlugin] Monitor-Retrier into OperationCanceledException ...");
+
+                                        _AllInfoMonitors = new List<MonitorInfo_complex>();
+                                        _AllInfoMonitors_Mix = new List<(MonitorInfo_complex, MonitorInfo)>();
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        _logs.DebugMsg($"[VcpCorePlugin] Monitor-Retrier into catch {ex.Message} ...");
+
+                                        _AllInfoMonitors = new List<MonitorInfo_complex>();
+                                        _AllInfoMonitors_Mix = new List<(MonitorInfo_complex, MonitorInfo)>();
+                                    }
+                                    finally
+                                    {
                                         if (!(_pauseEvent.WaitOne(0)))
                                         {
                                             _logs.DebugMsg("[VcpCorePlugin] _pauseEvent.Set()");
@@ -2079,18 +2122,6 @@ namespace VcpCore.Plugins
                                         }
                                         _CacheTimer.Start();
                                         _StatusTimer.Start();
-                                    }
-                                    catch (TaskCanceledException)
-                                    {
-                                        _logs.DebugMsg("[VcpCorePlugin] Monitor-Retrier into TaskCanceledException ...");
-                                    }
-                                    catch (OperationCanceledException)
-                                    {
-                                        _logs.DebugMsg("[VcpCorePlugin] Monitor-Retrier into OperationCanceledException ...");
-                                    }
-                                    catch (Exception ex)
-                                    {
-                                        _logs.DebugMsg($"[VcpCorePlugin] Monitor-Retrier into catch {ex.Message} ...");
                                     }
                                 }, TokenNew).ConfigureAwait(false);
                             }
@@ -2113,7 +2144,9 @@ namespace VcpCore.Plugins
                                             var origan = monitors.Item1.ToList();
 
                                             TokenNew.ThrowIfCancellationRequested();
+
                                             Thread.Sleep(5000);
+
                                             TokenNew.ThrowIfCancellationRequested();
 
                                             List<MonitorInfo_complex> mos = _GetMonitors(TokenNew).Item1;
@@ -2141,6 +2174,8 @@ namespace VcpCore.Plugins
 
                                                 while (!_TaskQueue.IsEmpty())
                                                 {
+                                                    TokenNew.ThrowIfCancellationRequested();
+
                                                     if (_TaskQueueExecutor.IsBusy) _TaskQueueExecutor.CancelAsync();
                                                     else
                                                     {
@@ -2165,11 +2200,13 @@ namespace VcpCore.Plugins
                                                 _CacheTimer.Start();
                                                 _StatusTimer.Start();
 
-                                                //----//
+                                                //------------------------------------------------------------------------------------------------//
                                                 List<MonitorInfo> _tmp = new List<MonitorInfo>();
                                                 //_tmp.Clear();//Dean 0626 fix SAST issue, remove this line since the object just created and it's empty
                                                 foreach (var monitor in _AllInfoMonitors_Mix)
                                                 {
+                                                    TokenNew.ThrowIfCancellationRequested();
+
                                                     MonitorInfo minfo = monitor.Item2;
                                                     _tmp.Add(minfo);
                                                 }
@@ -2178,7 +2215,7 @@ namespace VcpCore.Plugins
                                                 _displaychangedEventArgss.count = _AllInfoMonitors_Mix.Count;
                                                 _displaychangedEventArgss.monitors = new List<MonitorInfo>(_tmp);
                                                 OnDisplaychanged(_displaychangedEventArgss);
-                                                //----//
+                                                //------------------------------------------------------------------------------------------------//
                                             }
                                         }
                                         catch (TaskCanceledException)
@@ -2192,6 +2229,16 @@ namespace VcpCore.Plugins
                                         catch (Exception ex)
                                         {
                                             _logs.DebugMsg($"[VcpCorePlugin] Monitor-Retrier into catch {ex.Message} ...");
+                                        }
+                                        finally
+                                        {
+                                            if (!(_pauseEvent.WaitOne(0)))
+                                            {
+                                                _logs.DebugMsg("[VcpCorePlugin] _pauseEvent.Set()");
+                                                _pauseEvent.Set();
+                                            }
+                                            _CacheTimer.Start();
+                                            _StatusTimer.Start();
                                         }
                                     }, TokenNew).ConfigureAwait(false);
                                 }
