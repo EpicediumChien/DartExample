@@ -44,10 +44,15 @@ namespace DDPM.UI.Module.EzArrange
         #endregion Private Members
 
         #region Strings
+        //[EazyMemory.10]
         private const string CustomListTooltipText = "You can arrange the windows on your screen and click + icon.\r\nAlternatively, select an existing layout below and click the pencil icon to edit the layout.";
+        //[Warning]
         private const string msgBox_Warning = "Warning";
+        //[EazyMemory.42]
         private const string msgBox_EAProfileWillBeDeleted = "The corresponding Easy Memory profile will be deleted too. Do you want to continue?";
+        //[Yes]
         private const string msgBox_Yes = "Yes";
+        //[No]
         private const string msgBox_No = "No";
         #endregion
 
