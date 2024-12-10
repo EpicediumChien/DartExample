@@ -2941,7 +2941,7 @@
     <value>Firmware update</value>
   </data>
   <data name="Color.10" xml:space="preserve">
-    <value>Auto Color Temperature is currently enabled. Do you wish to disable it to continue?</value>
+    <value>Auto Color Temperature is currently enabled. Do you wish to override it?</value>
   </data>
   <data name="Mouse.16" xml:space="preserve">
     <value>Number of times per second mouse’s position reports to system. Connect via USB for higher polling rates.</value>

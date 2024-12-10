@@ -23,6 +23,8 @@ namespace DDPM.UI.Module.SpeakerInteractions.Tests
         private IConsole? console;
         private Mock<ILog>? logMock;
         private ILog? log;
+        private Mock<IShowPluginManager>? showPluginManagerMock;
+        private IShowPluginManager? showPluginManager;
         private SoundBarViewModel? vm;
         private DeviceInfo? CurrentDeviceInfo;
 
@@ -40,7 +42,9 @@ namespace DDPM.UI.Module.SpeakerInteractions.Tests
             DdpmCommonHelper.MyConsole = console;
             logMock = new Mock<ILog>();
             log = logMock.Object;
-            vm = new SoundBarViewModel(console, log, deviceManager);
+            showPluginManagerMock = new Mock<IShowPluginManager>();
+            showPluginManager = showPluginManagerMock.Object;
+            vm = new SoundBarViewModel(showPluginManager, console, log, deviceManager);
             CurrentDeviceInfo = new DeviceInfo() { IsWiredAudioIMicNSEnable = true, IsWiredAudioMicMuteSoundEnable = true, WiredAudioVolumeAdjustmentTone = 1 };
             vm.CurrentDeviceInfo = CurrentDeviceInfo;
             speakerInteractionsModule = new SpeakerInteractionsModule(vm);
