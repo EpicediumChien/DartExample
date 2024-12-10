@@ -538,7 +538,7 @@ namespace DDPM.SA.Common
         public Task<bool> SavePowerNapSetting(PowerNapSetting powerNapSettings);
 
         public Task<List<PowerNapSetting>> ReadPowerNapSettings();
-        public Task<List<DDPMMonitorSettings>> ReloadMonitorSettings(string modelname);
+
         #endregion public for PowerNap
 
         #region public for FW Update by Bruce

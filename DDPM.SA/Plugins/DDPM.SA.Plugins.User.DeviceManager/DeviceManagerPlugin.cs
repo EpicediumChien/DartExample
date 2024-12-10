@@ -16325,11 +16325,5 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         }
 
         #endregion
-
-        public Task<List<DDPMMonitorSettings>> ReloadMonitorSettings(string modelname)
-        {
-            Task<List<DDPMMonitorSettings>> settings = _SettingsPlugin.ReloadMonitorSettings(modelname);
-            return settings;
-        }
     }
 }
