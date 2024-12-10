@@ -218,6 +218,11 @@ namespace DDPM.SA.Common
 
         public CommandLineInput StringProcessing(string[] args)
         {
+            if (args.Length == 0)
+            {
+                _Log.Error("[ICLICommandTable] Exception error: Missing arguments");
+                return null;
+            }
             ICLICommandTable iCLICommandTable = new ICLICommandTable(_Log);
             CommandLineInput commandInput = new CommandLineInput();
             commandInput.isCliCommandsProcessCompleted = false;
@@ -452,6 +457,11 @@ namespace DDPM.SA.Common
         //To support multiple command per command input, it means the command sequence contains /set, /get more than once.
         public List<CommandLineInput> StringProcessing_multi(string[] args)
         {
+            if (args.Length == 0)
+            {
+                _Log.Error("[ICLICommandTable] Exception error: Missing arguments");
+                return null;
+            }
             ICLICommandTable iCLICommandTable = new ICLICommandTable(_Log);
             List<CommandLineInput> commandInputs = new List<CommandLineInput>();
 

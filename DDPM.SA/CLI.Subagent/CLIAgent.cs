@@ -128,7 +128,10 @@ namespace CLI.Subagent
             else
             {
                 CommandLineInput commandLineInput = iCLICommandTable.StringProcessing(args);
-                commandLineInputs.Add(commandLineInput);
+                if (commandLineInput != null)
+                {
+                    commandLineInputs.Add(commandLineInput);
+                }
             }
             //1115 Dean add null check
             if (commandLineInputs == null || commandLineInputs.Count == 0)
