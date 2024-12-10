@@ -1091,19 +1091,17 @@ namespace DDPM.UI.Plugin.ViewModels
                     _log.Info($"[HeadsetViewModel] DeviceInfoDTP.WearDetection .......= {DeviceInfoDTP.AnswerCall.ToString()}");
                     _deviceManager.SetFactoryResetAsyncValueForHeadset(CurrentDeviceInfo!.ID.ToString(), true).Wait();
                     await UpdateDTPValue();
-                    CheckHeadsetFunc();
                     //_showPluginManager = HeadsetPlugin.PluginIoc.GetService<IShowPluginManager>();
                     //_showPluginManager?.ShowPluginById(DDPM.UI.Common.Constants.HeadsetPluginId, CurrentDeviceInfo!.ID.ToString());
-                    _showPluginManager?.ShowHomePage();
                 }
                 else
                 {
                     _log.Info($"[HeadsetViewModel] DTH Print before property ...RestoreToDefault ... in");
                     SetFactoryResetForDTH();
                     await UpdateDTHValue();                   
-                    CheckHeadsetFunc();
-                    _showPluginManager?.ShowHomePage();
                 }
+                CheckHeadsetFunc();
+                _showPluginManager?.ShowHomePage();
             }
             catch (Exception ex)
             {
@@ -1425,7 +1423,7 @@ namespace DDPM.UI.Plugin.ViewModels
         }
 
         /// <summary>
-        /// Update DTP Headset property Value
+        /// Update DTH Headset property Value
         /// </summary>
         /// <returns></returns>
         private async Task UpdateDTHValue()
