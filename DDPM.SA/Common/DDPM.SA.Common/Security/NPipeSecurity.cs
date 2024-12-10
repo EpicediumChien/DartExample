@@ -66,15 +66,22 @@ namespace DDPM.SA.Common.Security
         public static bool NamedPipeClientSecurity(NamedPipeServerStream pipeServer, out string info, string thumbPrint = null)
         {
             info = "success";
-            IntPtr hPipe = pipeServer.SafePipeHandle.DangerousGetHandle();
+            IntPtr hPipe = default;
             uint pid = default;
             try
             {
+                hPipe = pipeServer.SafePipeHandle.DangerousGetHandle();
+
                 if (!_GetNamedPipeClientProcessId(hPipe, out pid))
                 {
                     info = "[GetNamedPipeClientProcessId] failed";
                     return false;
                 }
+            }
+            catch (Exception ex) 
+            {
+                info = $"[GetNamedPipeClientProcessId] exception, message :{ex.Message}";
+                return false;
             }
             finally
             {
