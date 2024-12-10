@@ -123,18 +123,21 @@ namespace DDPM.UI.Module.Kvm
 
         private void OpenUSBKVM(object sender, RoutedEventArgs e)
         {
-            vm.SetInput = Visibility.Visible;
-            vm.SetPXP = Visibility.Visible;
-            vm.EditInput = Visibility.Collapsed;
-            vm.EditPXP = Visibility.Collapsed;
-            //Test Edit Input page
-            //vm.SetInput = Visibility.Collapsed;
-            //vm.SetPXP = Visibility.Collapsed;
-            //vm.EditInput = Visibility.Visible;
-            //vm.EditPXP = Visibility.Visible;
-            InputSourceFullView _inputSourceFullView = new InputSourceFullView();
-            _inputSourceFullView.DataContext = vm;
-            DdpmCommonHelper.ModuleOwner?.OpenFullView(_inputSourceFullView);
+            if (vm != null)
+            {
+                vm.SetInput = Visibility.Visible;
+                vm.SetPXP = Visibility.Visible;
+                vm.EditInput = Visibility.Collapsed;
+                vm.EditPXP = Visibility.Collapsed;
+                //Test Edit Input page
+                //vm.SetInput = Visibility.Collapsed;
+                //vm.SetPXP = Visibility.Collapsed;
+                //vm.EditInput = Visibility.Visible;
+                //vm.EditPXP = Visibility.Visible;
+                InputSourceFullView _inputSourceFullView = new InputSourceFullView();
+                _inputSourceFullView.DataContext = vm;
+                DdpmCommonHelper.ModuleOwner?.OpenFullView(_inputSourceFullView);
+            }
         }
 
         private void SelectUSBKVM(object sender, RoutedEventArgs e)
@@ -146,31 +149,40 @@ namespace DDPM.UI.Module.Kvm
             if (button_USB != null && button_Net != null)
             {
                 button_Net.Visibility = Visibility.Collapsed;
-                if (vm.USBKVMisON)
+                if (vm != null)
                 {
-                    vm._log.Debug("[SelectUSBKVM]USBKVM is on");
-                    button_USB.Visibility = Visibility.Collapsed;
-                    button_OnUSB.Visibility = Visibility.Visible;
-                    if (DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo.CapabilityDic.ContainsKey("E8"))
+                    if (vm.USBKVMisON)
                     {
-                        vm._log.Debug("[SelectUSBKVM]Have E8");
-                        button_USBHotkeys.Visibility = Visibility.Visible;
+                        vm._log.Debug("[SelectUSBKVM]USBKVM is on");
+                        button_USB.Visibility = Visibility.Collapsed;
+                        button_OnUSB.Visibility = Visibility.Visible;
+                        if (DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo.CapabilityDic.ContainsKey("E8"))
+                        {
+                            vm._log.Debug("[SelectUSBKVM]Have E8");
+                            button_USBHotkeys.Visibility = Visibility.Visible;
+                        }
+                        else
+                        {
+                            vm._log.Debug("[SelectUSBKVM]No E8");
+                            button_USBHotkeys.Visibility = Visibility.Collapsed;
+                        }
                     }
                     else
                     {
-                        vm._log.Debug("[SelectUSBKVM]No E8");
+                        vm._log.Debug("[SelectUSBKVM]USBKVM is off");
+                        button_USB.Visibility = Visibility.Visible;
+                        button_OnUSB.Visibility = Visibility.Collapsed;
                         button_USBHotkeys.Visibility = Visibility.Collapsed;
                     }
+                    vm.isNKVM = false;
+                    vm.isNoKVM = false;
                 }
                 else
                 {
-                    vm._log.Debug("[SelectUSBKVM]USBKVM is off");
-                    button_USB.Visibility = Visibility.Visible;
+                    button_USB.Visibility = Visibility.Collapsed;
                     button_OnUSB.Visibility = Visibility.Collapsed;
                     button_USBHotkeys.Visibility = Visibility.Collapsed;
                 }
-                vm.isNKVM = false;
-                vm.isNoKVM = false;
             }
         }
 
@@ -186,7 +198,10 @@ namespace DDPM.UI.Module.Kvm
                 button_OnUSB.Visibility = Visibility.Collapsed;
                 button_USBHotkeys.Visibility = Visibility.Collapsed;
                 button_Net.Visibility = Visibility.Visible;
-                vm.isNKVM = true;
+                if (vm != null)
+                {
+                    vm.isNKVM = true;
+                }
             }
         }
 
@@ -206,7 +221,10 @@ namespace DDPM.UI.Module.Kvm
                 button_OnUSB.Visibility = Visibility.Collapsed;
                 button_USBHotkeys.Visibility = Visibility.Collapsed;
                 button_Net.Visibility = Visibility.Collapsed;
-                vm.isNoKVM = true;
+                if (vm != null)
+                {
+                    vm.isNoKVM = true;
+                }
             }
 
             radioButton.IsEnabled = true;
@@ -220,16 +238,22 @@ namespace DDPM.UI.Module.Kvm
 
         private void OpenNKVM(object sender, RoutedEventArgs e)
         {
-            vm.NKVMOpenUI();
-            //vm.OpenNKVMUI(0, 100, 100);
-            //vm.isOnNKVM(true);
+            if (vm != null)
+            {
+                vm.NKVMOpenUI();
+                //vm.OpenNKVMUI(0, 100, 100);
+                //vm.isOnNKVM(true);
+            }
         }
 
         private void USBKVMHotkeys_Click(object sender, RoutedEventArgs e)
         {
-            KVMHotkeyFullView kVMHotkeyFullView = new KVMHotkeyFullView();
-            kVMHotkeyFullView.DataContext = vm;
-            DdpmCommonHelper.ModuleOwner?.OpenFullView(kVMHotkeyFullView);
+            if (vm != null)
+            {
+                KVMHotkeyFullView kVMHotkeyFullView = new KVMHotkeyFullView();
+                kVMHotkeyFullView.DataContext = vm;
+                DdpmCommonHelper.ModuleOwner?.OpenFullView(kVMHotkeyFullView);
+            }
         }
     }
 }
