@@ -292,6 +292,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 return;
             }
             ObjGetVCP obVCPValue = devManagerSA.GetVCPCapability(currentMoInfo, code, 0).Result;
+            Debug.WriteLine($"PerformHotKeyBrightnessContrastLuminanceAction current value={obVCPValue.value}");
             uint targetValue = (uint)obVCPValue.value;
             uint maxLuminace = 100;
             if (job == HotkeyType.LuminanceIncrease || job == HotkeyType.LuminanceReduce)
