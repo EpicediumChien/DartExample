@@ -324,7 +324,7 @@ namespace DDPM.UI.Module.Brightness
         }
 
         #endregion hotkey property
-       
+
         public void SaveHotkeySettings(MonitorInfo monitorInfo, HotkeyInfo hotkeyInfo)
         {
             if (DdpmCommonHelper.DeviceManagerSA != null)
@@ -337,6 +337,10 @@ namespace DDPM.UI.Module.Brightness
                     DdpmCommonHelper.isHotkeyBypass = DdpmCommonHelper.DeviceManagerSA.ByPassHotkey(false).Result;
                     IsBusy = false;
                     NotifyPropertyChanged("IsBusy");
+                }
+                else
+                {
+                    DdpmCommonHelper.WriteUILog($"[DisplayHotkey] monitor:{monitorInfo.AliasDeviceName}:{monitorInfo.edid.ServiceTag},({hotkeyInfo.Job}) SaveHotkeySetting fail.");
                 }
             }
             Invoke_RefreshHotkeySettings();
@@ -358,52 +362,55 @@ namespace DDPM.UI.Module.Brightness
 
         private void DoWork_RefreshData(object sender, DoWorkEventArgs e)
         {
-            var temp = DdpmCommonHelper.DeviceManagerSA.ReadCurrentHotkey(this.SelectedHomeDevice.MonitorInfo).Result;
-            HotkeySettings curHotkey = temp.Item1;
-            string swHortcutText = string.Empty;
-
-            if (curHotkey.HotkeyInfo.Count > 0)
+            if (DdpmCommonHelper.DeviceManagerSA != null)
             {
-                foreach (var hotkeyInfo in curHotkey.HotkeyInfo)
+                var temp = DdpmCommonHelper.DeviceManagerSA.ReadCurrentHotkey(this.SelectedHomeDevice?.MonitorInfo).Result;
+                HotkeySettings curHotkey = temp.Item1;
+                string swHortcutText = string.Empty;
+
+                if (curHotkey != null && curHotkey.HotkeyInfo.Count > 0)
                 {
-                    List<VirtualKey> hotkeys = hotkeyInfo.Hotkey;
-                    switch (hotkeyInfo.Job)
+                    foreach (var hotkeyInfo in curHotkey.HotkeyInfo)
                     {
-                        case HotkeyType.BrightnessReduce:
-                            KeysHelper.ReSetHotKeyText(ref swHortcutText, ref hotkeys);
-                            hotkeys.Clear();
-                            BrightnessMinsKey = swHortcutText;
-                            break;
+                        List<VirtualKey> hotkeys = hotkeyInfo.Hotkey;
+                        switch (hotkeyInfo.Job)
+                        {
+                            case HotkeyType.BrightnessReduce:
+                                KeysHelper.ReSetHotKeyText(ref swHortcutText, ref hotkeys);
+                                hotkeys.Clear();
+                                BrightnessMinsKey = swHortcutText;
+                                break;
 
-                        case HotkeyType.BrightnessIncrease:
-                            KeysHelper.ReSetHotKeyText(ref swHortcutText, ref hotkeys);
-                            hotkeys.Clear();
-                            BrightnessAddKey = swHortcutText;
-                            break;
+                            case HotkeyType.BrightnessIncrease:
+                                KeysHelper.ReSetHotKeyText(ref swHortcutText, ref hotkeys);
+                                hotkeys.Clear();
+                                BrightnessAddKey = swHortcutText;
+                                break;
 
-                        case HotkeyType.ContrastReduce:
-                            KeysHelper.ReSetHotKeyText(ref swHortcutText, ref hotkeys);
-                            hotkeys.Clear();
-                            ContrastMinsKey = swHortcutText;
-                            break;
+                            case HotkeyType.ContrastReduce:
+                                KeysHelper.ReSetHotKeyText(ref swHortcutText, ref hotkeys);
+                                hotkeys.Clear();
+                                ContrastMinsKey = swHortcutText;
+                                break;
 
-                        case HotkeyType.ContrastIncrease:
-                            KeysHelper.ReSetHotKeyText(ref swHortcutText, ref hotkeys);
-                            hotkeys.Clear();
-                            ContrastAddKey = swHortcutText;
-                            break;
+                            case HotkeyType.ContrastIncrease:
+                                KeysHelper.ReSetHotKeyText(ref swHortcutText, ref hotkeys);
+                                hotkeys.Clear();
+                                ContrastAddKey = swHortcutText;
+                                break;
 
-                        case HotkeyType.LuminanceReduce:
-                            KeysHelper.ReSetHotKeyText(ref swHortcutText, ref hotkeys);
-                            hotkeys.Clear();
-                            LuminanceMinsKey = swHortcutText;
-                            break;
+                            case HotkeyType.LuminanceReduce:
+                                KeysHelper.ReSetHotKeyText(ref swHortcutText, ref hotkeys);
+                                hotkeys.Clear();
+                                LuminanceMinsKey = swHortcutText;
+                                break;
 
-                        case HotkeyType.LuminanceIncrease:
-                            KeysHelper.ReSetHotKeyText(ref swHortcutText, ref hotkeys);
-                            hotkeys.Clear();
-                            LuminanceAddKey = swHortcutText;
-                            break;
+                            case HotkeyType.LuminanceIncrease:
+                                KeysHelper.ReSetHotKeyText(ref swHortcutText, ref hotkeys);
+                                hotkeys.Clear();
+                                LuminanceAddKey = swHortcutText;
+                                break;
+                        }
                     }
                 }
             }

@@ -967,7 +967,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
             // jim add  for The DDPM color profile can not be applied by DDPM on Smart HDR mode.(Gaming monitor ex: AW2724DM)
             if (blIs_Game_DeviceName && blSmartHDR_ON)
-            {                
+            {
                 try
                 {
                     uint title = (uint)Gaming_Supported.HDRType;
@@ -991,7 +991,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         param = 0x0E;
 
                     writelog($"[DeviceMangerPlugin] {nameof(SetGaming_HDRType)} title : {title}, param : {param}");
-                    r= SetVCPCapability(m, VcpCodeList.VCPctr["Gaming"], title + param).Result;
+                    r = SetVCPCapability(m, VcpCodeList.VCPctr["Gaming"], title + param).Result;
                 }
                 catch (Exception ex)
                 {
@@ -1001,7 +1001,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             else
             {
                 r = await Task.Run(() => SetVCPCapability(m, "colorpreset", ColorPreset_Name).Result).ConfigureAwait(false);
-            }            
+            }
 
             // 11/23 Wayn Add
             bool result = false;
@@ -1357,7 +1357,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             Thread.Sleep(100);
 
             return;
-        }        
+        }
 
         /// <summary>
         /// 回傳目前螢幕在 ColorSetting setting config的 index number
@@ -9818,7 +9818,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     string zipFilePath = saveFolderPath + ".zip";
                     FileInfo info = new FileInfo(zipFilePath);
                     zipFilePath = Path.Combine(info.DirectoryName, $"Log_{DateTime.Now.ToString("yyyy_MM_dd_HH.mm.ss.ff")}.zip");//force to set zip file name as Log.zip
-                                                                              // 壓縮資料夾
+                                                                                                                                 // 壓縮資料夾
                     if (!CreateZipFile(saveFolderPath, zipFilePath))
                         fail_info += "[Compression]";
                     Directory.Delete(saveFolderPath, true);
@@ -13818,7 +13818,9 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 //diable autobrightness
                 if (find != null)
                 {
-                    setALSFeature = SetALSFeatureValue(hotkeyPopWrap.monitorInfo, find, ALSFeatureQueryType.AutoBrightness, "OFF").Result;
+                    //setALSFeature = SetALSFeatureValue(hotkeyPopWrap.monitorInfo, find, ALSFeatureQueryType.AutoBrightness, "OFF").Result;
+                    find.isAutoBrightness = false;
+                    setALSFeature = SetALSFeatureValue(hotkeyPopWrap.monitorInfo, find, ALSFeatureQueryType.All, "").Result;
                     writelog($"IsALSautobrightness Yes_event[{hotkeyPopWrap.hotkeyType}:Monitor [ModelName={hotkeyPopWrap.monitorInfo.edid.ModelName},ServiceTag={hotkeyPopWrap.monitorInfo.edid.ServiceTag}],set ALS.AutoBrightness to off:" + (setALSFeature ? "success" : "fail"));
                 }
                 else
