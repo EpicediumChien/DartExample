@@ -249,9 +249,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                 }
                 if (commandLineInput.Command.Equals("SET"))
                 {
-                    writelog("FIRMWAREUPDATE SET Entry");
                     exitcode = SetPeripheralProperty();
-                    writelog("FIRMWAREUPDATE SET UPDATESOURCELOCATION DONE");
                     string json = JsonConvert.SerializeObject(SetResults, Formatting.Indented);
                     Console.WriteLine(json);
                     result.ExitCode = exitcode;
@@ -260,9 +258,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                 }
                 else if (commandLineInput.Command.Equals("GET"))
                 {
-                    writelog("FIRMWAREUPDATE GET Entry");
                     exitcode = GetPeripheralProperty();
-                    writelog("FIRMWAREUPDATE GET Entry");
                     string json = JsonConvert.SerializeObject(GetResults, Formatting.Indented);
                     Console.WriteLine(json);
                     result.ExitCode = exitcode;
