@@ -1419,9 +1419,6 @@ namespace DDPM.SA.Plugins.User.EasyArrange
             _agent.RegisterForEvent(AgentEventNames.DisplaySettingsChanged, DisplaySettingsChangedHandler);
             EventManagerArgs evtArgs = new EventManagerArgs() { Tag = "init" };
             _agent.RaiseEvent(AgentEventNames.DisplaySettingsChanged, this, evtArgs);
-
-            //Robert_Lin, 2024-12-10
-            _agent.RegisterForEvent(AgentEventNames.AllInfoMonitorsChanged, AllInfoMonitorChangedHandler);
             ConsoleWriteLine(" = = = = = = = = = =   EABroker Exit");
         }
 
@@ -1725,14 +1722,6 @@ namespace DDPM.SA.Plugins.User.EasyArrange
             }
         }
 
-        //Robert_Lin, 2024-12-10 added 
-        private void AllInfoMonitorChangedHandler(object sender, EventManagerArgs e)
-        {
-            if (_eaBroker != null)
-            {
-                _eaBroker.Handle_AllInfoMonitorChanged();
-            }
-        }
         #endregion Display Changed event
 
         #region InfoWindow - Unused
