@@ -5,7 +5,7 @@ namespace VcpCore.Common
 {
     public static class VcpCodeList
     {
-        public static Dictionary<string, byte> VCPctr = new Dictionary<string, byte>(StringComparer.OrdinalIgnoreCase)
+        public static readonly Dictionary<string, byte> VCPctr = new Dictionary<string, byte>(StringComparer.OrdinalIgnoreCase)
         {
             {"VCP Code Page" , 0x00 },
             {"Degauss" , 0x01 },
@@ -174,7 +174,7 @@ namespace VcpCore.Common
             {"Gaming" , 0xF4 },
         };
 
-        public static Dictionary<string, uint> VCP60 = new Dictionary<string, uint>(StringComparer.OrdinalIgnoreCase)
+        public static readonly Dictionary<string, uint> VCP60 = new Dictionary<string, uint>(StringComparer.OrdinalIgnoreCase)
         {
             {"VGA1" , 0x01 },
             {"VGA2" , 0x02 },
@@ -214,7 +214,7 @@ namespace VcpCore.Common
             {"USB Comm from USB-C4, Type-C, port 4" , 0x85 }
         };
 
-        public static Dictionary<string, uint> VCPF8 = new Dictionary<string, uint>(StringComparer.OrdinalIgnoreCase) // USB-C Prioritization
+        public static readonly Dictionary<string, uint> VCPF8 = new Dictionary<string, uint>(StringComparer.OrdinalIgnoreCase) // USB-C Prioritization
         {
             { "High Resolution", 0xF800 },
             { "High Data Speed", 0xF801 },
@@ -222,7 +222,7 @@ namespace VcpCore.Common
             { "FHD", 0xF810 }
         };
 
-        public static Dictionary<string, byte> VCPDC = new Dictionary<string, byte>(StringComparer.OrdinalIgnoreCase)
+        public static readonly Dictionary<string, byte> VCPDC = new Dictionary<string, byte>(StringComparer.OrdinalIgnoreCase)
         {
             { "Standard/Native", 0 }, // 20240731 jim add  "Game/Game1"
             { "Standard", 0 },
@@ -236,7 +236,7 @@ namespace VcpCore.Common
             { "Sport", 6 }
         };
 
-        public static Dictionary<string, byte> VCPF0 = new Dictionary<string, byte>(StringComparer.OrdinalIgnoreCase)
+        public static readonly Dictionary<string, byte> VCPF0 = new Dictionary<string, byte>(StringComparer.OrdinalIgnoreCase)
         {
             { "Text", 1 },
             { "AdobeRGB", 2 },
@@ -299,7 +299,7 @@ namespace VcpCore.Common
             { "Display P3", 161 }
         };
 
-        public static Dictionary<string, byte> VCP14 = new Dictionary<string, byte>(StringComparer.OrdinalIgnoreCase)
+        public static readonly Dictionary<string, byte> VCP14 = new Dictionary<string, byte>(StringComparer.OrdinalIgnoreCase)
         {
             { "sRGB", 1 },
             { "sRGB D65 sRGB L120", 1 },
@@ -393,7 +393,7 @@ namespace VcpCore.Common
             { 47, "SPORTS Game" },
         };
 
-        public static Dictionary<string, int> VCPE2_HardCode = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase)
+        public static readonly Dictionary<string, int> VCPE2_HardCode = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase)
         {
             { "Native", 0 },
             { "User 1", 44 },
@@ -451,7 +451,7 @@ namespace VcpCore.Common
             { 0X1D, "Micronas" }
         };
 
-        public static Dictionary<string, int> VCPE2_ref = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase)
+        public static readonly Dictionary<string, int> VCPE2_ref = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase)
         {
             {"Standard/Native", 0},
             {"Standard", 0 },
