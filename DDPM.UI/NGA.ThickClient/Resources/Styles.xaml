@@ -42,9 +42,10 @@
                             BorderThickness="{TemplateBinding BorderThickness}">
 
                         <!-- Display the Top Background-->
-                        <Border x:Name="topBackgroundBorder" Background="{TemplateBinding TopBackground}">
-                            <Grid>
-                                <!-- 20240507-1639-Robert_Lin, try to use real size
+                        <Border Background="{DynamicResource mainWindowBkColor}">
+                            <Border x:Name="topBackgroundBorder" Background="{TemplateBinding TopBackground}">
+                                <Grid>
+                                    <!-- 20240507-1639-Robert_Lin, try to use real size
                                 Put original code below inside <Grid>
                                 <Viewbox>
                                 <Grid>
@@ -60,21 +61,22 @@
                                 </Grid>
                                 </Vewbox>
                                 -->
-                                <Grid>
-                                    <!-- Render the Content-->
-                                    <!-- 2024-5-8 Robert_Lin, do not reomve AdornerDecorator, or
+                                    <Grid>
+                                        <!-- Render the Content-->
+                                        <!-- 2024-5-8 Robert_Lin, do not reomve AdornerDecorator, or
                                     the ConsoleWindow will fail to load Plugin -->
-                                    <AdornerDecorator>
-                                        <ContentPresenter />
-                                    </AdornerDecorator>
-                                    <!-- Render an optional Resize Grip -->
-                                    <ResizeGrip x:Name="WindowResizeGrip"
+                                        <AdornerDecorator>
+                                            <ContentPresenter />
+                                        </AdornerDecorator>
+                                        <!-- Render an optional Resize Grip -->
+                                        <ResizeGrip x:Name="WindowResizeGrip"
                                                 HorizontalAlignment="Right"
                                                 VerticalAlignment="Bottom"
                                                 Visibility="Collapsed"
                                                 IsTabStop="false" />
+                                    </Grid>
                                 </Grid>
-                            </Grid>
+                            </Border>
                         </Border>
                     </Border>
                     <ControlTemplate.Triggers>
