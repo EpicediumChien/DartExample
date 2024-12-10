@@ -15544,7 +15544,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 return Task.CompletedTask;
         }
 
-        public Task ShowOSD(object monitorInfo, OSDType type, string Content, bool State = false)
+        public Task ShowOSD(object monitorInfo, OSDType type, string Content, bool State)
         {
             if (monitorInfo != null)
             {
