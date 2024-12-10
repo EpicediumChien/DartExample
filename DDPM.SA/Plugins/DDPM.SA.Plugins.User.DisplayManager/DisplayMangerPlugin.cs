@@ -272,8 +272,6 @@ namespace DDPM.SA.Plugins.User.DisplayManager
 
                 _AllInfoMonitors = new List<MonitorInfo>(_VcpCorePlugin.Re_GetMonitors(NewToken).Result);
                 InitializeAllALSInfo();
-                //Robert_Lin, 2024-12-10 added to notify EAPlugin
-                NotifyEAPluginAllInfoMonitorsChanged();
                 _logs.DebugMsg("[DisplayMangerPlugin] Re_GetMonitors() AllInfoMonitors.count is " + _AllInfoMonitors.Count);
                 return Task.FromResult(_AllInfoMonitors);
             }
@@ -2425,8 +2423,6 @@ namespace DDPM.SA.Plugins.User.DisplayManager
 
             //Re Get ALS
             InitializeAllALSInfo();
-            //Robert_Lin, 2024-12-10 added to notify EAPlugin
-            NotifyEAPluginAllInfoMonitorsChanged();
         }
 
         #endregion
@@ -3743,19 +3739,6 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                 _logs.DebugMsg($"[DisplayMangerPlugin] @ LaunchAndArrangeAppsWithEzArrange(): _eaService is in null");
             }
             return Task.FromResult(false);
-        }
-
-        //Robert_Lin, 2024-12-10
-        /// <summary>
-        /// Raise a event to notify EAPlugin that DisplayManager AllInfoMonitors is changed
-        /// </summary>
-        private void NotifyEAPluginAllInfoMonitorsChanged()
-        {
-            if (_agent != null)
-            {
-                EventManagerArgs args = new EventManagerArgs();
-                _agent.RaiseEvent(AgentEventNames.AllInfoMonitorsChanged,this, args);
-            }
         }
         #endregion
 
