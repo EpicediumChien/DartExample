@@ -755,7 +755,9 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         public event EventHandler<NKVMRespone> NKVMCLIRespone;
 
-        public event EventHandler GlobalSettingChangeEvent;
+        //Derek 1209
+        //public event EventHandler GlobalSettingChangeEvent;
+        public event EventHandler<UpdateUINotify> GlobalSettingChangeEvent;
 
         public event EventHandler SystemSuspend;
 
@@ -967,7 +969,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
             // jim add  for The DDPM color profile can not be applied by DDPM on Smart HDR mode.(Gaming monitor ex: AW2724DM)
             if (blIs_Game_DeviceName && blSmartHDR_ON)
-            {                
+            {
                 try
                 {
                     uint title = (uint)Gaming_Supported.HDRType;
@@ -991,7 +993,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         param = 0x0E;
 
                     writelog($"[DeviceMangerPlugin] {nameof(SetGaming_HDRType)} title : {title}, param : {param}");
-                    r= SetVCPCapability(m, VcpCodeList.VCPctr["Gaming"], title + param).Result;
+                    r = SetVCPCapability(m, VcpCodeList.VCPctr["Gaming"], title + param).Result;
                 }
                 catch (Exception ex)
                 {
@@ -1001,7 +1003,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             else
             {
                 r = await Task.Run(() => SetVCPCapability(m, "colorpreset", ColorPreset_Name).Result).ConfigureAwait(false);
-            }            
+            }
 
             // 11/23 Wayn Add
             bool result = false;
@@ -1357,7 +1359,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             Thread.Sleep(100);
 
             return;
-        }        
+        }
 
         /// <summary>
         /// 回傳目前螢幕在 ColorSetting setting config的 index number
@@ -5717,12 +5719,12 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         toastContentBuilder.AddText(info);
                         if (!isOnlyUpdate)
                         {
-                            toastContentBuilder.AddButton("Update now", ToastActivationType.Background, "Update " + popupContentPackage.PopupType.ToString());
-                            toastContentBuilder.AddButton("Defer", ToastActivationType.Background, "Delay");
+                            toastContentBuilder.AddButton(LangHelper.Instance["UpdateNow"], ToastActivationType.Background, "Update " + popupContentPackage.PopupType.ToString());
+                            toastContentBuilder.AddButton(LangHelper.Instance["Defer"], ToastActivationType.Background, "Delay");
                         }
                         else
                         {
-                            toastContentBuilder.AddButton("Ok", ToastActivationType.Background, "Update");
+                            toastContentBuilder.AddButton(LangHelper.Instance["Ok"], ToastActivationType.Background, "Update");
                         }
                     }
                     else
@@ -9254,9 +9256,9 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             return await Task.Run(() => _DTPProxyPlugin.GetIsZoomMeetingActive(guid));
         }
 
-        public async Task<bool> GetZoomMeetingType(string guid)
+        public async Task<int> GetZoomMeetingType(string guid)
         {
-            return await Task.Run(() => _DTPProxyPlugin.GetZoomMeetingType(guid));
+            return await Task.Run(() => _DTPProxyPlugin.GetZoomMeetingTypeAsync(guid));
         }
 
         public async Task<bool> GetIsZoomScreenShareActive(string guid)
@@ -9436,6 +9438,10 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     writelog("[DeviceMangerPlugin] Send Telementry for EnableQuickAccessWidget Fail ...");
             }
             GlobalSettingChangeEvent?.Invoke(this, null);
+
+            //Derek 1209 to handle QAM event
+            HandleQAMV2();
+
             return Task.FromResult(ret);
         }
 
@@ -9457,6 +9463,10 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     writelog("[DeviceMangerPlugin] Send Telementry for EnableQuickAccessWidget_Reminder Fail ...");
             }
             GlobalSettingChangeEvent?.Invoke(this, null);
+
+            //Derek 1209 to handle OSD event
+            HandleQAMOSDEvent();
+
             return Task.FromResult(ret);
         }
 
@@ -9817,8 +9827,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
                     string zipFilePath = saveFolderPath + ".zip";
                     FileInfo info = new FileInfo(zipFilePath);
-                    zipFilePath = Path.Combine(info.DirectoryName, "Log.zip");//force to set zip file name as Log.zip
-                                                                              // 壓縮資料夾
+                    zipFilePath = Path.Combine(info.DirectoryName, $"Log_{DateTime.Now.ToString("yyyy_MM_dd_HH.mm.ss.ff")}.zip");//force to set zip file name as Log.zip
+                                                                                                                                 // 壓縮資料夾
                     if (!CreateZipFile(saveFolderPath, zipFilePath))
                         fail_info += "[Compression]";
                     Directory.Delete(saveFolderPath, true);
@@ -10094,55 +10104,156 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         private bool _IsZoomScreenShareActive = false;
         private bool _IsZoomMeetingActive = false;
         private ZoomMeetingType _ZoomMeetingType = ZoomMeetingType.ZOOM_MEETING_TYPE_UNKNOW;
-        private bool isWindowsScreenNotLocked = true; //
+        private bool isWindowsScreenNotLocked = true;
+        private string QAMWebcamDeviceGuid = string.Empty;
 
         //private bool isHiddenConditionsMet = false;
         private int currentZoomValue = -1;
 
         private EventMsg eventMsg = new EventMsg();
 
+        private void ResetQAMCondition()
+        {
+            _IsZoomScreenShareActive = false;
+            _IsZoomMeetingActive = false;
+            _ZoomMeetingType = ZoomMeetingType.ZOOM_MEETING_TYPE_UNKNOW;
+            isWindowsScreenNotLocked = true;
+
+            if (1 != GetWebcamDeviceCount())
+                QAMWebcamDeviceGuid = string.Empty;
+        }
+
         //Derek 1206
+        private void HandleQAMOSDEvent()
+        {
+            writelog($"HandleQAMOSDEvent start");
+
+            try
+            {
+                int devCnt = GetWebcamDeviceCount();
+                writelog($"GetWebcamDeviceCount = {devCnt}, current webcam device ID = {QAMWebcamDeviceGuid}");
+
+                if (1 != devCnt || _GlobalSettingParam == null || !isWindowsScreenNotLocked ||
+                    _GlobalSettingParam.GlobalSetting_WidgetSettings == null ||
+                    !_GlobalSettingParam.GlobalSetting_WidgetSettings.EnableQuickAccessWidget_Reminder
+                    //QAMWebcamDeviceGuid == string.Empty ||
+                    //_ZoomMeetingType != ZoomMeetingType.CONF_3RD_EVENT_MEETING
+                    //Derek 1206 test condition due to we can't receive zoom meeting type changed event
+                    //_ZoomMeetingType != ZoomMeetingType.ZOOM_MEETING_TYPE_UNKNOW
+                    )
+                {
+                    CloseQAMOSD();
+
+                    writelog($"CloseQAMOSD condition occur, close OSD if it's opened.");
+                }
+                //OSD just opened by QAM close event
+                //else if (_GlobalSettingParam.GlobalSetting_WidgetSettings.EnableQuickAccessWidget_Reminder
+                //            && _QAM == null)
+                //{
+                //    ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.QAM);
+
+                //    writelog($"Open OSD due to QAM is inactive and global setting change to {_GlobalSettingParam.GlobalSetting_WidgetSettings.EnableQuickAccessWidget_Reminder}");
+                //}
+            }
+            catch (Exception e)
+            {
+                writelog($"Catch exception[{e.Message}] when Handle HandleQAMOSDEvent process!");
+            }
+
+            writelog($"HandleQAMOSDEvent end");
+        }
+
         private void HandleQAMV2()
         {
-            writelog($"HandleQAM start");
+            writelog($"HandleQAMV2 start");
 
-            int devCnt = GetWebcamDeviceCount();
-
-            if (1 != devCnt || _GlobalSettingParam == null || !isWindowsScreenNotLocked ||
-                _GlobalSettingParam.GlobalSetting_WidgetSettings == null ||
-                !_GlobalSettingParam.GlobalSetting_WidgetSettings.EnableQuickAccessWidget ||
-                //_ZoomMeetingType != ZoomMeetingType.CONF_3RD_EVENT_MEETING
-                //Derek 1206 test condition due to we can't receive zoom meeting type changed event
-                _ZoomMeetingType != ZoomMeetingType.ZOOM_MEETING_TYPE_UNKNOW
-                )
+            try
             {
-                QAMClose();
+                int devCnt = GetWebcamDeviceCount();
+                writelog($"GetWebcamDeviceCount = {devCnt}, current webcam device ID = {QAMWebcamDeviceGuid}");
 
-                writelog($"Abnormal condition occur, close QAM if it's opened.");
+                if (1 != devCnt || _GlobalSettingParam == null || !isWindowsScreenNotLocked ||
+                    _GlobalSettingParam.GlobalSetting_WidgetSettings == null //||
+                    //QAMWebcamDeviceGuid == string.Empty ||
+                    //_ZoomMeetingType != ZoomMeetingType.CONF_3RD_EVENT_MEETING
+                    //Derek 1206 test condition due to we can't receive zoom meeting type changed event
+                    //_ZoomMeetingType != ZoomMeetingType.ZOOM_MEETING_TYPE_UNKNOW
+                    )
+                {
+                    ResetQAMCondition();
+                    QAMClose();
+                    CloseQAMOSD();
+
+                    writelog($"Abnormal condition occur, close QAM/OSD if it's opened.");
+
+                    return;
+                }
+
+                _IsZoomScreenShareActive = _DTPProxyPlugin.GetIsZoomScreenShareActive(QAMWebcamDeviceGuid).Result;
+                _IsZoomMeetingActive = _DTPProxyPlugin.GetIsZoomMeetingActive(QAMWebcamDeviceGuid).Result;
+                _ZoomMeetingType = (ZoomMeetingType)_DTPProxyPlugin.GetZoomMeetingTypeAsync(QAMWebcamDeviceGuid).Result;
+                writelog($"Zoom meeting condition, _IsZoomScreenShareActive = {_IsZoomScreenShareActive}, _IsZoomMeetingActive = {_IsZoomMeetingActive}, _ZoomMeetingType = {_ZoomMeetingType}");
+
+                //OSD condition
+                //if (!_GlobalSettingParam.GlobalSetting_WidgetSettings.EnableQuickAccessWidget_Reminder)
+                //{
+                //    CloseQAMOSD();
+
+                //    writelog($"Close OSD due to global setting change to {_GlobalSettingParam.GlobalSetting_WidgetSettings.EnableQuickAccessWidget_Reminder}");
+                //}
+                //else if (null == _QAM && _GlobalSettingParam.GlobalSetting_WidgetSettings.EnableQuickAccessWidget_Reminder)
+                //{
+                //    ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.QAM);
+
+                //    writelog($"Open OSD due to QAM is inactive and global setting change to {_GlobalSettingParam.GlobalSetting_WidgetSettings.EnableQuickAccessWidget_Reminder}");
+                //}
+
+                //QAM condition
+                if (_GlobalSettingParam.GlobalSetting_WidgetSettings.EnableQuickAccessWidget)
+                {
+                    //Active
+                    if (!_IsZoomScreenShareActive && _IsZoomMeetingActive)
+                    {
+                        writelog($"HandleQAM receive CallQAM_UI event");
+
+                        CloseQAMOSD();
+                        CallQAM_UI(this);
+                    }
+                    //Hide
+                    else if (_IsZoomScreenShareActive && _IsZoomMeetingActive)
+                    {
+                        writelog($"HandleQAM receive QAMHide event");
+
+                        CloseQAMOSD();
+                        QAMHide();
+                    }
+                    else
+                    {
+                        writelog($"HandleQAM receive QAMClose event");
+
+                        QAMClose();
+                    }
+                }
+                else
+                {
+                    QAMClose();
+
+                    writelog($"Close QAM due to global setting change to {_GlobalSettingParam.GlobalSetting_WidgetSettings.EnableQuickAccessWidget}");
+                }
+            }
+            catch (Exception e)
+            {
+                ResetQAMCondition();
+                writelog($"Catch exception[{e.Message}] when Handle QAM process!");
             }
 
-            //Hidden state
-            if (_IsZoomScreenShareActive && _IsZoomMeetingActive)
-            {
-                writelog($"HandleQAM receive QAMHide event");
+            ResetQAMCondition();
+            writelog($"HandleQAMV2 done");
+        }
 
-                QAMHide();
-            }
-            //Active state
-            else if (_IsZoomMeetingActive)
-            {
-                writelog($"HandleQAM receive CallQAM_UI event");
-                //_IsZoomMeetingActive = false;
-                CallQAM_UI(this);
-            }
-            else
-            {
-                writelog($"HandleQAM receive QAMClose event");
-
-                QAMClose();
-            }
-
-            writelog($"HandleQAM done");
+        private void CloseQAMOSD()
+        {
+            _OSD_Controler.QAMHotKeyWin_CloseWindow();
         }
 
         private void HandleQAM()
@@ -10237,6 +10348,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         private void HandleQAMEvent(string msg)
         {
             eventMsg = EventMsg.CreateEventObjectFromEventMsg(msg);
+            int WebcamDevCnt = GetWebcamDeviceCount();
 
             if (null == eventMsg)
                 return;
@@ -10254,32 +10366,50 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
                 case "Webcam_IsZoomMeetingActiveChanged":
                     isQAMHandleEvent = true;
-                    if (!bool.TryParse(eventMsg.NewValue, out _IsZoomMeetingActive))
-                        _IsZoomMeetingActive = false;
+
+                    if (1 == WebcamDevCnt)
+                        QAMWebcamDeviceGuid = eventMsg.DeviceId;
+
+                    //if (!bool.TryParse(eventMsg.NewValue, out _IsZoomMeetingActive))
+                    //    _IsZoomMeetingActive = false;
 
                     break;
 
                 case "Webcam_IsZoomScreenShareActiveChanged":
                     isQAMHandleEvent = true;
-                    if (!bool.TryParse(eventMsg.NewValue, out _IsZoomScreenShareActive))
-                        _IsZoomScreenShareActive = false;
+
+                    if (1 == WebcamDevCnt)
+                        QAMWebcamDeviceGuid = eventMsg.DeviceId;
+
+                    //if (!bool.TryParse(eventMsg.NewValue, out _IsZoomScreenShareActive))
+                    //    _IsZoomScreenShareActive = false;
 
                     break;
 
                 case "Webcam_ZoomMeetingTypeChanged":
                     isQAMHandleEvent = true;
-                    int type = (int)ZoomMeetingType.ZOOM_MEETING_TYPE_UNKNOW;
 
-                    if (int.TryParse(eventMsg.NewValue, out type))
-                        _ZoomMeetingType = (ZoomMeetingType)type;
-                    else
-                        _ZoomMeetingType = ZoomMeetingType.ZOOM_MEETING_TYPE_UNKNOW;
+                    if (1 == WebcamDevCnt)
+                        QAMWebcamDeviceGuid = eventMsg.DeviceId;
+
+                    //int type = (int)ZoomMeetingType.ZOOM_MEETING_TYPE_UNKNOW;
+
+                    //if (int.TryParse(eventMsg.NewValue, out type))
+                    //    _ZoomMeetingType = (ZoomMeetingType)type;
+                    //else
+                    //    _ZoomMeetingType = ZoomMeetingType.ZOOM_MEETING_TYPE_UNKNOW;
 
                     break;
 
                 case "Webcam_Disconnected":
+                    isQAMHandleEvent = true;
+                    break;
+
                 case "Webcam_Connected":
                     isQAMHandleEvent = true;
+
+                    if (1 == WebcamDevCnt)
+                        QAMWebcamDeviceGuid = eventMsg.DeviceId;
                     break;
 
                 default:
@@ -10480,7 +10610,10 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
 
             //close DDPM UI
-            CloseDDPM();
+            //CloseDDPM();  //Derek 1209
+
+            //close OSD
+            CloseQAMOSD();
 
             writelog($"CallQAM_UI: done");
 
@@ -10573,7 +10706,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             //    QAMClose();
             //}
 
-            QAMClose();
+            //Derek 1209
+            //QAMClose();
 
             return Task.CompletedTask;
         }
@@ -12765,22 +12899,24 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         }
 
         //Derek 1205 for Debug
-        //private void CreateWebcamEventForDebug_ShowUI()
-        //{
-        //    _IsZoomMeetingActive = true;
-        //    _ZoomMeetingType = ZoomMeetingType.CONF_3RD_EVENT_MEETING;
+        private void CreateWebcamEventForDebug_ShowUI()
+        {
+            _IsZoomMeetingActive = true;
+            _IsZoomScreenShareActive = false;
+            _ZoomMeetingType = ZoomMeetingType.CONF_3RD_EVENT_MEETING;
 
-        //    HandleQAM();
-        //    _IsZoomMeetingActive = false;
-        //    _ZoomMeetingType = ZoomMeetingType.ZOOM_MEETING_TYPE_UNKNOW;
-        //}
+            HandleQAMV2();
+            //_IsZoomMeetingActive = false;
+            //_ZoomMeetingType = ZoomMeetingType.ZOOM_MEETING_TYPE_UNKNOW;
+        }
 
-        //private void CreateWebcamEventForDebug_HideUI()
-        //{
-        //    _IsZoomScreenShareActive = true;
+        private void CreateWebcamEventForDebug_HideUI()
+        {
+            _IsZoomScreenShareActive = true;
+            _IsZoomMeetingActive = true;
 
-        //    HandleQAM();
-        //}
+            HandleQAMV2();
+        }
 
         private void Keyboard_KeyUpProc(object sender, KeyEventArgs e)
         {
@@ -12789,11 +12925,23 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             bool _altPressed = _HotkeyPlugin.IsKeyPushedDown(System.Windows.Forms.Keys.Menu);
             bool _ctrlPressed = _HotkeyPlugin.IsKeyPushedDown(System.Windows.Forms.Keys.ControlKey);
             bool _shiftPressed = _HotkeyPlugin.IsKeyPushedDown(System.Windows.Forms.Keys.ShiftKey);
+
             //will register as ALT+Z ?
             if (_altPressed && strKey.Equals("Z"))
             {
-                if (1 == GetWebcamDeviceCount())
+                int devCnt = GetWebcamDeviceCount();
+
+                writelog($"ALT+Z conditons: devcnt = {devCnt}, " +
+                    $"global setting is {_GlobalSettingParam.GlobalSetting_WidgetSettings.EnableQuickAccessWidget}");
+
+                //Derek PIMS PIMS-329759 Problem 1
+                if (1 == devCnt && _GlobalSettingParam != null &&
+                    _GlobalSettingParam.GlobalSetting_WidgetSettings != null &&
+                    _GlobalSettingParam.GlobalSetting_WidgetSettings.EnableQuickAccessWidget)
+                {
                     CallQAM_UI(this);
+                }
+
                 return;
             }
             //Derek 1205 for Debug
@@ -13047,6 +13195,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     /* HotkeyPopWrap hotkeyPopWrap1 = new HotkeyPopWrap() { monitorInfo = monitorInfo, hotkeyType = job };
                      HotkeyPopup(hotkeyPopWrap1);
                      break;*/
+                    //ALS stand for Ambient Light Sensor, include 3 fearture [Auto brightness][Auto color Temperature][Primary monitor for Sync]
+                    //DDPMW-764
                     if (IsALSautobrightness(monitorInfo))
                     {
                         writelog($"ExecHotkeyJob[{job}:{hotkeyStr} ,IsALSautobrightness=true,will Popup msg] => getTargetMonitor: {getTargetMo}, Monitor [ModelName={monitorInfo.edid.ModelName},ServiceTag={monitorInfo.edid.ServiceTag}, SerialNumber={monitorInfo.edid.SerialNumber}]");
@@ -13055,14 +13205,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     }
                     else
                     {
-                        if (!isAutoBrightnessOn(monitorInfo))
-                        {
-                            _hotkeyJobQueue.Enqueue(new JobInfo(1000, monitorInfo, null, Reduce_Brightness_Value));
-                        }
-                        else
-                        {
-                            writelog($"ExecHotkeyJob[ Skip {job}:{hotkeyStr} ,cause AutoBrightness is On] => getTargetMonitor: {getTargetMo}, Monitor [ModelName={monitorInfo.edid.ModelName},ServiceTag={monitorInfo.edid.ServiceTag}, SerialNumber={monitorInfo.edid.SerialNumber}]");
-                        }
+                        _hotkeyJobQueue.Enqueue(new JobInfo(1000, monitorInfo, null, Reduce_Brightness_Value));
                     }
                     break;
 
@@ -13074,14 +13217,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     }
                     else
                     {
-                        if (!isAutoBrightnessOn(monitorInfo))
-                        {
-                            _hotkeyJobQueue.Enqueue(new JobInfo(1000, monitorInfo, null, Increase_Brightness_Value));
-                        }
-                        else
-                        {
-                            writelog($"ExecHotkeyJob[ Skip {job}:{hotkeyStr} ,cause AutoBrightness is On] => getTargetMonitor: {getTargetMo}, Monitor [ModelName={monitorInfo.edid.ModelName},ServiceTag={monitorInfo.edid.ServiceTag}, SerialNumber={monitorInfo.edid.SerialNumber}]");
-                        }
+                        _hotkeyJobQueue.Enqueue(new JobInfo(1000, monitorInfo, null, Increase_Brightness_Value));
                     }
                     break;
 
@@ -13093,14 +13229,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     }
                     else
                     {
-                        if (!isAutoBrightnessOn(monitorInfo))
-                        {
-                            _hotkeyJobQueue.Enqueue(new JobInfo(1000, monitorInfo, null, Reduce_Contrast_Value));
-                        }
-                        else
-                        {
-                            writelog($"ExecHotkeyJob[ Skip {job}:{hotkeyStr} ,cause AutoBrightness is On] => getTargetMonitor: {getTargetMo}, Monitor [ModelName={monitorInfo.edid.ModelName},ServiceTag={monitorInfo.edid.ServiceTag}, SerialNumber={monitorInfo.edid.SerialNumber}]");
-                        }
+                        _hotkeyJobQueue.Enqueue(new JobInfo(1000, monitorInfo, null, Reduce_Contrast_Value));
                     }
                     break;
 
@@ -13112,14 +13241,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     }
                     else
                     {
-                        if (!isAutoBrightnessOn(monitorInfo))
-                        {
-                            _hotkeyJobQueue.Enqueue(new JobInfo(1000, monitorInfo, null, Increase_Contrast_Value));
-                        }
-                        else
-                        {
-                            writelog($"ExecHotkeyJob[ Skip {job}:{hotkeyStr} ,cause AutoBrightness is On] => getTargetMonitor: {getTargetMo}, Monitor [ModelName={monitorInfo.edid.ModelName},ServiceTag={monitorInfo.edid.ServiceTag}, SerialNumber={monitorInfo.edid.SerialNumber}]");
-                        }
+                        _hotkeyJobQueue.Enqueue(new JobInfo(1000, monitorInfo, null, Increase_Contrast_Value));
                     }
                     break;
 
@@ -13203,11 +13325,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             return Task.FromResult(true);
         }
 
-        private bool isAutoBrightnessOn(MonitorInfo mo)
-        {
-            scheduleInfo result = ReadScheduleMonitorSettings(mo).Result;
-            return result.IsEnable;
-        }
 
         private void Toggle_EzRecentSetting(MonitorInfo monitorInfo, Object[] param)
         {
@@ -13837,44 +13954,54 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             });
         }
 
-        private void YesEvent(object o, object ob)
+        private async void YesEvent(object o, object ob)
         {
             //Auto Brightness OFF & Auto OFF & Manual ON?
             HotkeyPopWrap hotkeyPopWrap = (HotkeyPopWrap)ob;
             List<ALSConfig> aLSConfigs = GetAllExistAlsConfig().Result;
+            bool setALSFeature = false;
             if (aLSConfigs != null)
             {
                 ALSConfig find = aLSConfigs.FirstOrDefault(x => x.Edid.ServiceTag.Equals(hotkeyPopWrap.monitorInfo.edid.ServiceTag) && x.isAutoBrightness);
                 //diable autobrightness
                 if (find != null)
                 {
-                    bool result = SetALSFeatureValue(hotkeyPopWrap.monitorInfo, find, ALSFeatureQueryType.AutoBrightness, "").Result;
-                    writelog($"IsALSautobrightness Yes_event[{hotkeyPopWrap.hotkeyType}:Monitor [ModelName={hotkeyPopWrap.monitorInfo.edid.ModelName},ServiceTag={hotkeyPopWrap.monitorInfo.edid.ServiceTag}],set ALS.AutoBrightness to off:" + (result ? "success" : "fail"));
+                    //setALSFeature = SetALSFeatureValue(hotkeyPopWrap.monitorInfo, find, ALSFeatureQueryType.AutoBrightness, "OFF").Result;
+                    find.isAutoBrightness = false;
+                    setALSFeature = SetALSFeatureValue(hotkeyPopWrap.monitorInfo, find, ALSFeatureQueryType.All, "").Result;
+                    writelog($"IsALSautobrightness Yes_event[{hotkeyPopWrap.hotkeyType}:Monitor [ModelName={hotkeyPopWrap.monitorInfo.edid.ModelName},ServiceTag={hotkeyPopWrap.monitorInfo.edid.ServiceTag}],set ALS.AutoBrightness to off:" + (setALSFeature ? "success" : "fail"));
                 }
                 else
                 {
                     writelog($"IsALSautobrightness Yes_event[{hotkeyPopWrap.hotkeyType}:Monitor [ModelName={hotkeyPopWrap.monitorInfo.edid.ModelName},ServiceTag={hotkeyPopWrap.monitorInfo.edid.ServiceTag}],ALS config not found");
                 }
             }
-
-            switch (hotkeyPopWrap.hotkeyType)
+            if (setALSFeature)
             {
-                case HotkeyType.BrightnessReduce:
-                    _hotkeyJobQueue.Enqueue(new JobInfo(1000, hotkeyPopWrap.monitorInfo, null, Reduce_Brightness_Value));
-                    break;
+                switch (hotkeyPopWrap.hotkeyType)
+                {
+                    case HotkeyType.BrightnessReduce:
+                        _hotkeyJobQueue.Enqueue(new JobInfo(1000, hotkeyPopWrap.monitorInfo, null, Reduce_Brightness_Value));
+                        break;
 
-                case HotkeyType.BrightnessIncrease:
-                    _hotkeyJobQueue.Enqueue(new JobInfo(1000, hotkeyPopWrap.monitorInfo, null, Increase_Brightness_Value));
-                    break;
+                    case HotkeyType.BrightnessIncrease:
+                        _hotkeyJobQueue.Enqueue(new JobInfo(1000, hotkeyPopWrap.monitorInfo, null, Increase_Brightness_Value));
+                        break;
 
-                case HotkeyType.ContrastReduce:
-                    _hotkeyJobQueue.Enqueue(new JobInfo(1000, hotkeyPopWrap.monitorInfo, null, Reduce_Contrast_Value));
-                    break;
+                    case HotkeyType.ContrastReduce:
+                        _hotkeyJobQueue.Enqueue(new JobInfo(1000, hotkeyPopWrap.monitorInfo, null, Reduce_Contrast_Value));
+                        break;
 
-                case HotkeyType.ContrastIncrease:
-                    _hotkeyJobQueue.Enqueue(new JobInfo(1000, hotkeyPopWrap.monitorInfo, null, Increase_Contrast_Value));
-                    break;
+                    case HotkeyType.ContrastIncrease:
+                        _hotkeyJobQueue.Enqueue(new JobInfo(1000, hotkeyPopWrap.monitorInfo, null, Increase_Contrast_Value));
+                        break;
+                }
             }
+            else
+            {
+                Debug.WriteLine($"IsALSautobrightness Yes_event[{hotkeyPopWrap.hotkeyType}:Monitor [ModelName={hotkeyPopWrap.monitorInfo.edid.ModelName},ServiceTag={hotkeyPopWrap.monitorInfo.edid.ServiceTag}],set ALS.AutoBrightness to off fail,skip this hotkey action");
+            }
+
         }
 
         private void NoEvent(object o, object ob)

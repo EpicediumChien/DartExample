@@ -326,15 +326,6 @@ namespace DDPM.UI.Common.UserControls
         {
             return vm.GetLatestItem();
         }
-
-        /// <summary>
-        /// Return the first item which Buddy is null
-        /// </summary>
-        /// <returns></returns>
-        public SplitItem? FindFirstNoBuddyItem()
-        {
-            return vm.FindFirstNoBuddyItem();
-        }
         //public SplitItem? ReplaceByFriendlyName(string friendlyName, )
         //{
         //    int idx = 0;

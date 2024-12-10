@@ -218,6 +218,11 @@ namespace DDPM.SA.Common
 
         public CommandLineInput StringProcessing(string[] args)
         {
+            if (args.Length == 0)
+            {
+                _Log.Error("[ICLICommandTable] Exception error: Missing arguments");
+                return null;
+            }
             ICLICommandTable iCLICommandTable = new ICLICommandTable(_Log);
             CommandLineInput commandInput = new CommandLineInput();
             commandInput.isCliCommandsProcessCompleted = false;
@@ -452,6 +457,11 @@ namespace DDPM.SA.Common
         //To support multiple command per command input, it means the command sequence contains /set, /get more than once.
         public List<CommandLineInput> StringProcessing_multi(string[] args)
         {
+            if (args.Length == 0)
+            {
+                _Log.Error("[ICLICommandTable] Exception error: Missing arguments");
+                return null;
+            }
             ICLICommandTable iCLICommandTable = new ICLICommandTable(_Log);
             List<CommandLineInput> commandInputs = new List<CommandLineInput>();
 
@@ -694,6 +704,8 @@ namespace DDPM.SA.Common
 
         private void CheckCommandRoutePath(ref CommandLineInput commandInput)
         {
+            ICLICommandTable iCLICommandTable = new ICLICommandTable(_Log);
+
             commandInput.isNormalCommands = false;
             commandInput.isITCommands = false;
             CommandLineInput commandInput_temp = commandInput;
@@ -1209,9 +1221,9 @@ namespace DDPM.SA.Common
     new Dictionary<string, object> { { "TargetType", "DISPLAY" }, { "TargetFeature", "Resolution" },                { "VCP", "ALL" } },
     new Dictionary<string, object> { { "TargetType", "DISPLAY" }, { "TargetFeature", "RefreshRate" },               { "VCP", "ALL" } },
     new Dictionary<string, object> { { "TargetType", "DISPLAY" }, { "TargetFeature", "ResolutionRefreshRate" },     { "VCP", "ALL" } },
-    new Dictionary<string, object> { { "TargetType", "DISPLAY" }, { "TargetFeature", "SpeakerMicrophone" },         { "VCP", "62,8D,FE,C0000,01,02" } },
-    new Dictionary<string, object> { { "TargetType", "DISPLAY" }, { "TargetFeature", "SpeakerVolume" },             { "VCP", "62,FE,C0000" } },
-    new Dictionary<string, object> { { "TargetType", "DISPLAY" }, { "TargetFeature", "Microphone" },                { "VCP", "8D,01,02,C000" } },
+    new Dictionary<string, object> { { "TargetType", "DISPLAY" }, { "TargetFeature", "SpeakerMicrophone" },         { "VCP", "62,8D" } },
+    new Dictionary<string, object> { { "TargetType", "DISPLAY" }, { "TargetFeature", "SpeakerVolume" },             { "VCP", "62" } },
+    new Dictionary<string, object> { { "TargetType", "DISPLAY" }, { "TargetFeature", "Microphone" },                { "VCP", "8D" } },
     new Dictionary<string, object> { { "TargetType", "DISPLAY" }, { "TargetFeature", "ColorPreset" },               { "VCP", "14" } },
     new Dictionary<string, object> { { "TargetType", "DISPLAY" }, { "TargetFeature", "FWVersion" },                 { "VCP", "ALL" } },
     new Dictionary<string, object> { { "TargetType", "DISPLAY" }, { "TargetFeature", "PowerNap" },                  { "VCP", "E0" } },

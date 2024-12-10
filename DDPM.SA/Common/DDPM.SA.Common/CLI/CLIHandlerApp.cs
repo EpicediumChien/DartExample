@@ -18,12 +18,12 @@ namespace DDPM.SA.Common.CLI
     {
         public static CLIEventResult CLI_Response_CompleteWithSuccess(CommandLineInput commandLineInput, CLIEventResult rst)
         {
-            CLI_RESPONSE response = new CLI_RESPONSE();
+            APP_RESPONSE response = new APP_RESPONSE();
             response.TargetFeature = commandLineInput.TargetFeature;
             response.Command = commandLineInput.Command;
             response.Message = "Operation Completed";
             response.Result = "Pass";
-            response.Value = "N/A";
+            response.Value = !string.IsNullOrWhiteSpace(commandLineInput.Options[0].Option_Value) ? commandLineInput.Options[0].Option_Value : "N/A";
             rst.serialize_Json_response = JsonConvert.SerializeObject(response, Formatting.Indented);
             rst.ExitCode = (int)CLI_ExitCode.success;
             return rst;
@@ -374,7 +374,7 @@ namespace DDPM.SA.Common.CLI
                 return CLI_Response_OptionNameNotSupport(commandLineInput, result, op);
             }
             string value = op.Option_Value;
-            if (value.ToUpper().Equals("LOCK") || value.ToUpper().Equals("ENABLE"))
+            if (value.ToUpper().Equals("LOCK") || value.ToUpper().Equals("ON") )//value.ToUpper().Equals("ENABLE"))
             {
                 if (data_IT != null)
                 {
@@ -485,7 +485,7 @@ namespace DDPM.SA.Common.CLI
                     }
                 }
             }
-            else if (value.ToUpper().Equals("UNLOCK") || value.ToUpper().Equals("DISABLE"))
+            else if (value.ToUpper().Equals("UNLOCK") || value.ToUpper().Equals("OFF"))//value.ToUpper().Equals("DISABLE")
             {
                 if (data_IT != null)
                 {
@@ -771,7 +771,7 @@ namespace DDPM.SA.Common.CLI
                         break;
                     case "USBCPRIORITIZATION": //assume only IT command enter here
                         Console.WriteLine($"{commandLineInput.TargetFeature}: is Locked? => = {data_IT.Lock_Display_USBCPrioritization}");
-                        response.Value = (data_IT.Lock_Display_USBCPrioritization ? "Lock" : "Unlock");
+                        response.Value = (data_IT.Lock_Display_USBCPrioritization ? "Lock" : "Unlock"); 
                         break;
                     case "ACTIVEINPUTSOURCE": //assume only IT command enter here
                         Console.WriteLine($"{commandLineInput.TargetFeature}: is Locked? => = {data_IT.Lock_Display_ActiveInputSource}");

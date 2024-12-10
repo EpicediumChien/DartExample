@@ -67,47 +67,7 @@ namespace DDPM.UI.Common.UserControls
 
         private Storyboard? _storyboardGlow = null;
 
-        //Unused
         public void GlowEffect_Start()
-        {
-            //To make it running on UI thread
-            //Dispatcher.Invoke(() =>
-            //{
-            //    if (_storyboardGlow == null)
-            //    {
-            //        object oSB = TryFindResource("glowAnimation");
-            //        if (oSB == null)
-            //            return;
-
-            //        _storyboardGlow = oSB as Storyboard;
-            //    }
-            //    if (_storyboardGlow != null)
-            //    {
-            //        _storyboardGlow.Begin(indication);
-            //        indication.Visibility = Visibility.Visible;
-            //    }
-            //});
-        }
-
-        //Unused
-        public void GlowEffect_Stop()
-        {
-            //To make it running on UI thread
-            //Dispatcher.Invoke(() =>
-            //{
-            //    if (_storyboardGlow != null)
-            //    {
-            //        indication.Visibility = Visibility.Collapsed;
-            //        _storyboardGlow.Stop();
-            //    }
-            //});
-        }
-
-        /// <summary>
-        /// Call this method to blinking for 2 sec when detect a new update added.
-        /// After triggered, the OrangeDot will keep in "On" state.
-        /// </summary>
-        public void GlowEffect_Trigger()
         {
             //To make it running on UI thread
             Dispatcher.Invoke(() =>
@@ -128,25 +88,19 @@ namespace DDPM.UI.Common.UserControls
             });
         }
 
-        /// <summary>
-        /// Call with (isVisible=false) when available updates count is changed from 1 => 0
-        /// </summary>
-        /// <param name="isVisible"></param>
-        public void SetOrangeDotVisible(bool isVisible)
+        public void GlowEffect_Stop()
         {
             //To make it running on UI thread
             Dispatcher.Invoke(() =>
             {
-                if (isVisible)
-                {
-                    indication.Visibility = Visibility.Visible;
-                }
-                else
+                if (_storyboardGlow != null)
                 {
                     indication.Visibility = Visibility.Collapsed;
+                    _storyboardGlow.Stop();
                 }
             });
         }
+
         #endregion Glow and Breathe effect
     }
 }
