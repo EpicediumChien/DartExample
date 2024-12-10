@@ -859,53 +859,56 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             //inputSourcelist[input].USBUpstream = upstream;
             int input_num = 0;
             ObjGetVCP objGetVCP = new ObjGetVCP();
-            if (monitorInfo.CapabilityDic.ContainsKey("EE"))
+            if (monitorInfo.CapabilityDic.ContainsKey("E7"))
             {
-                objGetVCP = GetVCPCapability(monitorInfo, 0xE7).Result;
-
-                if (objGetVCP.result)
+                if (monitorInfo.CapabilityDic.ContainsKey("EE"))
                 {
-                    if (_getVCPCapabilities == string.Empty)
-                    {
-                        _getVCPCapabilities = GetVCPCapabilities(monitorInfo).Result;
-                    }
-                    if (!string.IsNullOrEmpty(_getVCPCapabilities))
-                    {
-                        usbUpstreamList = GetUSBUpstreamList(monitorInfo).Result;
-                        JObject VCPjson = JObject.Parse(_getVCPCapabilities);
+                    objGetVCP = GetVCPCapability(monitorInfo, 0xE7).Result;
 
-                        JObject capsDataMap = (JObject)VCPjson["CapsDataMap"];
-                        JArray input = (JArray)capsDataMap["Input Select"];
-                        foreach (var tmp in input)
+                    if (objGetVCP.result)
+                    {
+                        if (_getVCPCapabilities == string.Empty)
                         {
-                            if (tmp.ToString() == inputsource)
-                            {
-                                break;
-                            }
-                            input_num = input_num + 1;
+                            _getVCPCapabilities = GetVCPCapabilities(monitorInfo).Result;
                         }
-                        if (input_num != 0)
+                        if (!string.IsNullOrEmpty(_getVCPCapabilities))
                         {
-                            string getUpstream = Convert.ToString((uint)objGetVCP.value, 2);
-                            string newstrUpstream = getUpstream;
-                            if (getUpstream.Length < 16)
+                            usbUpstreamList = GetUSBUpstreamList(monitorInfo).Result;
+                            JObject VCPjson = JObject.Parse(_getVCPCapabilities);
+
+                            JObject capsDataMap = (JObject)VCPjson["CapsDataMap"];
+                            JArray input = (JArray)capsDataMap["Input Select"];
+                            foreach (var tmp in input)
                             {
-                                for (int i = 0; i < (16 - getUpstream.Length); i++)
+                                if (tmp.ToString() == inputsource)
                                 {
-                                    newstrUpstream = "0" + newstrUpstream;
+                                    break;
                                 }
+                                input_num = input_num + 1;
                             }
-                            if (USBUpstream != null && USBUpstream.Count != 0)
+                            if (input_num != 0)
                             {
-                                string strsetUpstream = newstrUpstream.Substring(0, input_num * 2) + USBUpstream[upstream] + newstrUpstream.Substring((input_num + 1) * 2, newstrUpstream.Length - ((input_num + 1) * 2));
-                                uint code = Convert.ToUInt16(strsetUpstream, 2);
-                                Trace.WriteLine("strsetUpstream:" + code.ToString());
-                                bool b = SetVCPCapability(monitorInfo, 0xE7, code).Result;
-                                return Task.FromResult(b);
-                            }
-                            else
-                            {
-                                _logs.DebugMsg("[DisplayMangerPlugin][SetUSBUpstream] USBUpstream is null or Count = 0");
+                                string getUpstream = Convert.ToString((uint)objGetVCP.value, 2);
+                                string newstrUpstream = getUpstream;
+                                if (getUpstream.Length < 16)
+                                {
+                                    for (int i = 0; i < (16 - getUpstream.Length); i++)
+                                    {
+                                        newstrUpstream = "0" + newstrUpstream;
+                                    }
+                                }
+                                if (USBUpstream != null && USBUpstream.Count != 0)
+                                {
+                                    string strsetUpstream = newstrUpstream.Substring(0, input_num * 2) + USBUpstream[upstream] + newstrUpstream.Substring((input_num + 1) * 2, newstrUpstream.Length - ((input_num + 1) * 2));
+                                    uint code = Convert.ToUInt16(strsetUpstream, 2);
+                                    Trace.WriteLine("strsetUpstream:" + code.ToString());
+                                    bool b = SetVCPCapability(monitorInfo, 0xE7, code).Result;
+                                    return Task.FromResult(b);
+                                }
+                                else
+                                {
+                                    _logs.DebugMsg("[DisplayMangerPlugin][SetUSBUpstream] USBUpstream is null or Count = 0");
+                                }
                             }
                         }
                     }

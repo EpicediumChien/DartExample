@@ -655,7 +655,7 @@ namespace DDPM.UI.Module.Kvm
                     NKVMisON = false;
                 }
 
-                if (mi.CapabilityDic.ContainsKey("EE"))
+                if (mi.CapabilityDic.ContainsKey("E7"))
                 {
                     SupportUSBKVM = Visibility.Visible;
                     //inputList = new Dictionary<string, InputInfo>();
@@ -740,7 +740,7 @@ namespace DDPM.UI.Module.Kvm
                     return;
                 }
 
-                if (mi.CapabilityDic.ContainsKey("EE"))
+                if (mi.CapabilityDic.ContainsKey("E7"))
                 {
                     //If arg is specified, you can get it with below code
                     //myArgType arg = (myArgType)e.Argument;
