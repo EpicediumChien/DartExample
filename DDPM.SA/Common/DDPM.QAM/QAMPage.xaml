@@ -12,7 +12,7 @@
         ResizeMode="NoResize"
         ShowInTaskbar="False"
         AllowsTransparency="True"
-        Background="Transparent"
+        Background="Transparent" Closing="Window_Closing"
         Topmost="True">
     <Window.Resources>
         <ResourceDictionary>

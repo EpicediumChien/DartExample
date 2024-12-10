@@ -509,6 +509,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
             else if (e.UI_Field_Name.StartsWith("QAMEvent_NavigateToWidgetSettingPage"))
             {
                 _console.ShowPluginById(DDPM.UI.Common.Constants.SettingsPluginId);
+                DdpmCommonHelper.isDDPMSwitchToSettingPageByQAM = true;
             }
         }
 

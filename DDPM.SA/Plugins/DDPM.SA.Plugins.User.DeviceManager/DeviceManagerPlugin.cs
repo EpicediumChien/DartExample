@@ -9464,8 +9464,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
             GlobalSettingChangeEvent?.Invoke(this, null);
 
-            //Derek 1209 to handle QAM event
-            HandleQAMV2();
+            //Derek 1209 to handle OSD event
+            HandleQAMOSDEvent();
 
             return Task.FromResult(ret);
         }
@@ -10118,13 +10118,54 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             _IsZoomMeetingActive = false;
             _ZoomMeetingType = ZoomMeetingType.ZOOM_MEETING_TYPE_UNKNOW;
             isWindowsScreenNotLocked = true;
-            QAMWebcamDeviceGuid = string.Empty;
+
+            if (1 != GetWebcamDeviceCount())
+                QAMWebcamDeviceGuid = string.Empty;
         }
 
         //Derek 1206
+        private void HandleQAMOSDEvent()
+        {
+            writelog($"HandleQAMOSDEvent start");
+
+            try
+            {
+                int devCnt = GetWebcamDeviceCount();
+                writelog($"GetWebcamDeviceCount = {devCnt}, current webcam device ID = {QAMWebcamDeviceGuid}");
+
+                if (1 != devCnt || _GlobalSettingParam == null || !isWindowsScreenNotLocked ||
+                    _GlobalSettingParam.GlobalSetting_WidgetSettings == null ||
+                    !_GlobalSettingParam.GlobalSetting_WidgetSettings.EnableQuickAccessWidget_Reminder
+                    //QAMWebcamDeviceGuid == string.Empty ||
+                    //_ZoomMeetingType != ZoomMeetingType.CONF_3RD_EVENT_MEETING
+                    //Derek 1206 test condition due to we can't receive zoom meeting type changed event
+                    //_ZoomMeetingType != ZoomMeetingType.ZOOM_MEETING_TYPE_UNKNOW
+                    )
+                {
+                    CloseQAMOSD();
+
+                    writelog($"CloseQAMOSD condition occur, close OSD if it's opened.");
+                }
+                //OSD just opened by QAM close event
+                //else if (_GlobalSettingParam.GlobalSetting_WidgetSettings.EnableQuickAccessWidget_Reminder
+                //            && _QAM == null)
+                //{
+                //    ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.QAM);
+
+                //    writelog($"Open OSD due to QAM is inactive and global setting change to {_GlobalSettingParam.GlobalSetting_WidgetSettings.EnableQuickAccessWidget_Reminder}");
+                //}
+            }
+            catch (Exception e)
+            {
+                writelog($"Catch exception[{e.Message}] when Handle HandleQAMOSDEvent process!");
+            }
+
+            writelog($"HandleQAMOSDEvent end");
+        }
+
         private void HandleQAMV2()
         {
-            writelog($"HandleQAM start");
+            writelog($"HandleQAMV2 start");
 
             try
             {
@@ -10148,24 +10189,24 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     return;
                 }
 
-                //_IsZoomScreenShareActive = _DTPProxyPlugin.GetIsZoomScreenShareActive(QAMWebcamDeviceGuid).Result;
-                //_IsZoomMeetingActive = _DTPProxyPlugin.GetIsZoomMeetingActive(QAMWebcamDeviceGuid).Result;
-                //_ZoomMeetingType = (ZoomMeetingType)_DTPProxyPlugin.GetZoomMeetingTypeAsync(QAMWebcamDeviceGuid).Result;
+                _IsZoomScreenShareActive = _DTPProxyPlugin.GetIsZoomScreenShareActive(QAMWebcamDeviceGuid).Result;
+                _IsZoomMeetingActive = _DTPProxyPlugin.GetIsZoomMeetingActive(QAMWebcamDeviceGuid).Result;
+                _ZoomMeetingType = (ZoomMeetingType)_DTPProxyPlugin.GetZoomMeetingTypeAsync(QAMWebcamDeviceGuid).Result;
                 writelog($"Zoom meeting condition, _IsZoomScreenShareActive = {_IsZoomScreenShareActive}, _IsZoomMeetingActive = {_IsZoomMeetingActive}, _ZoomMeetingType = {_ZoomMeetingType}");
 
                 //OSD condition
-                if (!_GlobalSettingParam.GlobalSetting_WidgetSettings.EnableQuickAccessWidget_Reminder)
-                {
-                    CloseQAMOSD();
+                //if (!_GlobalSettingParam.GlobalSetting_WidgetSettings.EnableQuickAccessWidget_Reminder)
+                //{
+                //    CloseQAMOSD();
 
-                    writelog($"Close OSD due to global setting change to {_GlobalSettingParam.GlobalSetting_WidgetSettings.EnableQuickAccessWidget_Reminder}");
-                }
-                else if (null == _QAM && _GlobalSettingParam.GlobalSetting_WidgetSettings.EnableQuickAccessWidget_Reminder)
-                {
-                    ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.QAM);
+                //    writelog($"Close OSD due to global setting change to {_GlobalSettingParam.GlobalSetting_WidgetSettings.EnableQuickAccessWidget_Reminder}");
+                //}
+                //else if (null == _QAM && _GlobalSettingParam.GlobalSetting_WidgetSettings.EnableQuickAccessWidget_Reminder)
+                //{
+                //    ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.QAM);
 
-                    writelog($"Open OSD due to QAM is inactive and global setting change to {_GlobalSettingParam.GlobalSetting_WidgetSettings.EnableQuickAccessWidget_Reminder}");
-                }
+                //    writelog($"Open OSD due to QAM is inactive and global setting change to {_GlobalSettingParam.GlobalSetting_WidgetSettings.EnableQuickAccessWidget_Reminder}");
+                //}
 
                 //QAM condition
                 if (_GlobalSettingParam.GlobalSetting_WidgetSettings.EnableQuickAccessWidget)
@@ -10175,6 +10216,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     {
                         writelog($"HandleQAM receive CallQAM_UI event");
 
+                        CloseQAMOSD();
                         CallQAM_UI(this);
                     }
                     //Hide
@@ -10182,6 +10224,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     {
                         writelog($"HandleQAM receive QAMHide event");
 
+                        CloseQAMOSD();
                         QAMHide();
                     }
                     else
@@ -10200,10 +10243,12 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
             catch (Exception e)
             {
+                ResetQAMCondition();
                 writelog($"Catch exception[{e.Message}] when Handle QAM process!");
             }
 
-            writelog($"HandleQAM done");
+            ResetQAMCondition();
+            writelog($"HandleQAMV2 done");
         }
 
         private void CloseQAMOSD()
@@ -12860,7 +12905,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             _IsZoomScreenShareActive = false;
             _ZoomMeetingType = ZoomMeetingType.CONF_3RD_EVENT_MEETING;
 
-            HandleQAM();
+            HandleQAMV2();
             //_IsZoomMeetingActive = false;
             //_ZoomMeetingType = ZoomMeetingType.ZOOM_MEETING_TYPE_UNKNOW;
         }
@@ -12870,7 +12915,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             _IsZoomScreenShareActive = true;
             _IsZoomMeetingActive = true;
 
-            HandleQAM();
+            HandleQAMV2();
         }
 
         private void Keyboard_KeyUpProc(object sender, KeyEventArgs e)
@@ -12900,18 +12945,18 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 return;
             }
             //Derek 1205 for Debug
-            else if (_altPressed && strKey.Equals("A"))
-            {
-                CreateWebcamEventForDebug_ShowUI();
+            //else if (_altPressed && strKey.Equals("A"))
+            //{
+            //    CreateWebcamEventForDebug_ShowUI();
 
-                return;
-            }
-            else if (_altPressed && strKey.Equals("H"))
-            {
-                CreateWebcamEventForDebug_HideUI();
+            //    return;
+            //}
+            //else if (_altPressed && strKey.Equals("H"))
+            //{
+            //    CreateWebcamEventForDebug_HideUI();
 
-                return;
-            }
+            //    return;
+            //}
 
             //osd
             GlobalSettingParam result = GetGlobalSettingParam().Result;

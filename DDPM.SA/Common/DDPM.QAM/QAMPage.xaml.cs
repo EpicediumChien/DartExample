@@ -85,14 +85,14 @@ namespace DDPM.QAM
                     }
                     else
                     {
-                        //string ddpmExePath = @"C:\Program Files\Dell\Dell Display and Peripheral Manager\DDPM.exe";
-                        string debugPath = "D:\\DDPM\\DDPM.UI\\bin\\net8.0-windows10.0.19041.0\\DDPM.exe";
+                        string ddpmExePath = @"C:\Program Files\Dell\Dell Display and Peripheral Manager\DDPM.exe";
+                        //string debugPath = "D:\\DDPM\\DDPM.UI\\bin\\net8.0-windows10.0.19041.0\\DDPM.exe";
 
                         result = DDPM.SA.Common.Settings.DDPMFileSecurity.StartProcessSafely(
                             null,
                             new ProcessStartInfo
                             {
-                                FileName = debugPath,
+                                FileName = ddpmExePath,
                                 UseShellExecute = true
                             });
 
@@ -147,7 +147,11 @@ namespace DDPM.QAM
             {
                 if (CameraSetting != null)
                 {
-                    CameraSetting.Close();
+                    Dispatcher.Invoke(() =>
+                    {
+                        CameraSetting.Close();
+                    });
+                    
                     CameraSetting = null;
                 }
 
@@ -312,6 +316,16 @@ namespace DDPM.QAM
             IntPtr hWnd = new WindowInteropHelper(this).Handle;
 
             _SetWindowPos(hWnd, HWND_BOTTOM, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE);
+        }
+
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            Dispatcher.Invoke(() =>
+            {
+                CameraSetting?.Close();
+            });
+
+            CameraSetting = null;
         }
     }
 }
