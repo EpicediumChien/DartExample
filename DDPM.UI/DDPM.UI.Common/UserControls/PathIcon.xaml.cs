@@ -101,7 +101,6 @@ namespace DDPM.UI.Common.UserControls
             //        _storyboardGlow.Stop();
             //    }
             //});
-
         }
 
         /// <summary>

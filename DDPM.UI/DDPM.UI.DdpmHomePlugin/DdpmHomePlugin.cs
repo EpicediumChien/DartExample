@@ -1128,7 +1128,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
             return ret;
         }
 
-        //Robert_Lin, 2024-12-9 added for PIMS-
+        //Robert_Lin, 2024-12-9 added for PIMS-299696 Gear icon indication blinking not only twice to show availability.
         /// <summary>
         /// Invoked when any changed of FW/SW update package information.
         /// </summary>
