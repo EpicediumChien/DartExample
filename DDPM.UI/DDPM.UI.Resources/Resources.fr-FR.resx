@@ -1915,7 +1915,7 @@
     <value>Votre stylet est chargé à X %.\n\nPour charger complètement votre stylet, assurez-vous qu’il est fixé à l’écran de votre tablette. Vous serez averti lorsque le stylet aura fini de se charger.\n\nLes notifications de batterie faible s’affichent lorsque la charge de la batterie est inférieure à 10 %.</value>
   </data>
   <data name="WalkThroughPen_Sub.2" xml:space="preserve">
-    <value>Dans l’application, vous pouvez personnaliser les actions des boutons de votre stylet et définir la sensibilité de la pointe et de l’inclinaison\R\n</value>
+    <value>Dans l’application, vous pouvez personnaliser les actions des boutons de votre stylet et définir la sensibilité de la pointe et de l’inclinaison\r\n</value>
   </data>
   <data name="WalkThroughWebCam_Sub.0" xml:space="preserve">
     <value>Avec notre nouveau widget Paramètres rapides, gérez facilement les paramètres clés de votre webcam lors d’un appel Zoom</value>

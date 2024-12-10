@@ -31,7 +31,7 @@
             </Setter>
         </Style>
 
-        <DataTemplate x:Key="DeviceItemTemplate_Unused" DataType="model:DeviceInfo">
+        <!--<DataTemplate x:Key="DeviceItemTemplate_Unused" DataType="model:DeviceInfo">
             <Border BorderBrush="Green" BorderThickness="3">
                 <Grid>
                     <Grid.RowDefinitions>
@@ -58,7 +58,7 @@
                                             HorizontalAlignment="Center" />
                 </Grid>
             </Border>
-        </DataTemplate>
+        </DataTemplate>-->
 
         <SolidColorBrush x:Key="ListBox.Static.Background" Color="#FFFFFFFF" />
         <SolidColorBrush x:Key="ListBox.Static.Border" Color="#FFABADB3" />
@@ -144,8 +144,8 @@
 
         <StackPanel x:Name="UIDebugPanel" Grid.Row="0" Orientation="Horizontal" Visibility="Hidden">
 
-            <UXControls:UXTextBlock TextBlock.Text="DDPM 2.0"
-                                    TextBlockType="Header2" />
+            <!--<UXControls:UXTextBlock TextBlock.Text="DDPM 2.0"
+                                    TextBlockType="Header2" />-->
             <StackPanel x:Name="debugRwdParams" Orientation="Horizontal">
                 <Button Content="+D" Click="addDisplay_Click" />
                 <Button Content="+K" Click="addKb_Click" />
