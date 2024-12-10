@@ -67,11 +67,24 @@ namespace DDPM.SA.Common.Security
         {
             info = "success";
             IntPtr hPipe = pipeServer.SafePipeHandle.DangerousGetHandle();
-            if (!_GetNamedPipeClientProcessId(hPipe, out uint pid))
+            uint pid = default;
+            try
             {
-                info = "[GetNamedPipeClientProcessId] failed";
-                return false;
+                if (!_GetNamedPipeClientProcessId(hPipe, out pid))
+                {
+                    info = "[GetNamedPipeClientProcessId] failed";
+                    return false;
+                }
             }
+            finally
+            {
+                pipeServer.SafePipeHandle.Close();
+            }
+            //if (!_GetNamedPipeClientProcessId(hPipe, out uint pid))
+            //{
+            //    info = "[GetNamedPipeClientProcessId] failed";
+            //    return false;
+            //}
             Console.WriteLine("pid: " + pid);
             Process process = Process.GetProcessById((int)pid);
             string filePath = process.MainModule.FileName;
