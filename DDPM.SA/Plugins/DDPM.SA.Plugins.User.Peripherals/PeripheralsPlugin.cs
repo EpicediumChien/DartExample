@@ -700,8 +700,8 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                 var logicalDevice = device.Devices.FirstOrDefault(x => x.Id == deviceId);
                 if (logicalDevice is ILogicalDeviceHeadset _logicalDeviceHeadset)
                 {
-                    _DeviceManagerPlugin.SetMicNoiseCancellationAsync(logicalDevice.ToString(), newValue);
-                    _DeviceManagerPlugin.SetMicNCIncomingAsync(logicalDevice.ToString(), newValue);
+                    _DeviceManagerPlugin.SetMicNoiseCancellationAsync(deviceId.ToString(), newValue);
+                    _DeviceManagerPlugin.SetMicNCIncomingAsync(deviceId.ToString(), newValue);
                     DeviceInfo _deviceInfo = _deviceHelper.deviceInfo.Where(x => x.ID == deviceId).FirstOrDefault();
                     if (_deviceInfo != null)
                     {
@@ -757,7 +757,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                 if (logicalDevice is ILogicalDeviceHeadset _logicalDeviceHeadset)
                 {
                     bool setvalue = (newValue == 1 ? true : false);
-                    _DeviceManagerPlugin.SetWearDetectionAsync(logicalDevice.ToString(), setvalue);
+                    _DeviceManagerPlugin.SetWearDetectionAsync(deviceId.ToString(), setvalue);
                     DeviceInfo _deviceInfo = _deviceHelper.deviceInfo.Where(x => x.ID == deviceId).FirstOrDefault();
                     if (_deviceInfo != null)
                     {
