@@ -11945,15 +11945,15 @@ namespace DDPM.CLI.Plugins.Display
             {
                 output += "OSDDISABLE";
             }
-            else if (value_tmp == 0xFE)
+            else //if (value_tmp == 0xFE)
             {
                 output += "OSDENABLE";
             }
 
-            if (value_tmp < 0x65)
-            {
-                output = $"Volume:{value & 0xFF}";
-            }
+            //if (value_tmp < 0x65)
+            //{
+            //    output = $"Volume:{value & 0xFF}";
+            //}
             return output;
         }
 
@@ -12396,7 +12396,7 @@ namespace DDPM.CLI.Plugins.Display
                 switch (commandLineInput.TargetFeature)
                 {
                     case "MICROPHONE":
-                        if (monitor.CapabilityDic.ContainsKey("8D") && monitor.CapabilityDic["8D"] != null && monitor.CapabilityDic["8D"].Contains("01") && monitor.CapabilityDic["8D"].Contains("02") && monitor.CapabilityDic["8D"].Contains("C000"))
+                        if (monitor.CapabilityDic.ContainsKey("8D") && monitor.CapabilityDic["8D"] != null && monitor.CapabilityDic["8D"].Contains("01") && monitor.CapabilityDic["8D"].Contains("02"))
                         {
                             if (commandLineInput.Command == "SET")
                             {
@@ -12426,7 +12426,7 @@ namespace DDPM.CLI.Plugins.Display
                         break;
 
                     case "SPEAKERVOLUME":
-                        if (monitor.CapabilityDic.ContainsKey("62") && monitor.CapabilityDic["62"] != null && monitor.CapabilityDic["62"].Contains("FE") && monitor.CapabilityDic["62"].Contains("FF") && monitor.CapabilityDic["62"].Contains("C000"))
+                        if (monitor.CapabilityDic.ContainsKey("62") && monitor.CapabilityDic["62"] != null && monitor.CapabilityDic["62"].Contains("FE") && monitor.CapabilityDic["62"].Contains("FF"))
                         {
                             if (commandLineInput.Command == "SET")
                             {
@@ -12456,40 +12456,47 @@ namespace DDPM.CLI.Plugins.Display
                         break;
 
                     case "SPEAKERMICROPHONE":
-                        if (monitor.CapabilityDic.ContainsKey("62") && monitor.CapabilityDic["62"] != null && monitor.CapabilityDic["62"].Contains("FE") && monitor.CapabilityDic["62"].Contains("FF") && monitor.CapabilityDic["62"].Contains("C000") && monitor.CapabilityDic.ContainsKey("8D") && monitor.CapabilityDic["8D"] != null && monitor.CapabilityDic["8D"].Contains("01") && monitor.CapabilityDic["8D"].Contains("02") && monitor.CapabilityDic["8D"].Contains("C000"))
+                        if (monitor.CapabilityDic.ContainsKey("62") && monitor.CapabilityDic["62"] != null && monitor.CapabilityDic["62"].Contains("FE") && monitor.CapabilityDic["62"].Contains("FF") && monitor.CapabilityDic.ContainsKey("8D") && monitor.CapabilityDic["8D"] != null && monitor.CapabilityDic["8D"].Contains("01") && monitor.CapabilityDic["8D"].Contains("02"))
                         {
                             if (commandLineInput.Command == "SET")
                             {
-                                rc = GetVCPCode(devMgr, monitor, "0x62").Result;
-                                int getvalue = Convert.ToInt32(rc.value);
-                                string setvalue = get_SpeakerMicrophone(commandLineInput.Options[0].Option_Value, getvalue);
-
-                                if (setvalue != "unknown_command")
+                                if (commandLineInput.Options[0].Option_Value.Contains("LOCK") && (!monitor.CapabilityDic["62"].Contains("C000") || !monitor.CapabilityDic["8D"].Contains("C000")))
                                 {
-                                    retcode = SetVCPCode(devMgr, monitor, "0x62", setvalue).Result;
-                                    cli_Response.Value = commandLineInput.Options[0].Option_Value;
+                                    somethingfail |= 0x10;
                                 }
                                 else
-                                    somethingfail |= 0x01;
-
-                                while (!_AllInfoMonitors.Any(_ => _.edid.ServiceTag == monitor.edid.ServiceTag))
                                 {
-                                    _AllInfoMonitors = devMgr.GetMonitors().Result;
+                                    rc = GetVCPCode(devMgr, monitor, "0x62").Result;
+                                    int getvalue = Convert.ToInt32(rc.value);
+                                    string setvalue = get_SpeakerMicrophone(commandLineInput.Options[0].Option_Value, getvalue);
+
+                                    if (setvalue != "unknown_command")
+                                    {
+                                        retcode = SetVCPCode(devMgr, monitor, "0x62", setvalue).Result;
+                                        cli_Response.Value = commandLineInput.Options[0].Option_Value;
+                                    }
+                                    else
+                                        somethingfail |= 0x01;
+
+                                    while (!_AllInfoMonitors.Any(_ => _.edid.ServiceTag == monitor.edid.ServiceTag))
+                                    {
+                                        _AllInfoMonitors = devMgr.GetMonitors().Result;
+                                    }
+
+                                    monitor = _AllInfoMonitors.FirstOrDefault(_ => _.edid.ServiceTag == serviceTag);
+
+                                    rc = GetVCPCode(devMgr, monitor, "0x8D").Result;
+                                    int getvalue2 = Convert.ToInt32(rc.value);
+                                    string setvalue2 = get_SpeakerMicrophone(commandLineInput.Options[0].Option_Value, getvalue2);
+
+                                    if (setvalue2 != "unknown_command")
+                                    {
+                                        retcode = SetVCPCode(devMgr, monitor, "0x8D", setvalue2).Result;
+                                        cli_Response.Value = commandLineInput.Options[0].Option_Value;
+                                    }
+                                    else
+                                        somethingfail |= 0x02;
                                 }
-
-                                monitor = _AllInfoMonitors.FirstOrDefault(_ => _.edid.ServiceTag == serviceTag);
-
-                                rc = GetVCPCode(devMgr, monitor, "0x8D").Result;
-                                int getvalue2 = Convert.ToInt32(rc.value);
-                                string setvalue2 = get_SpeakerMicrophone(commandLineInput.Options[0].Option_Value, getvalue2);
-
-                                if (setvalue2 != "unknown_command")
-                                {
-                                    retcode = SetVCPCode(devMgr, monitor, "0x8D", setvalue2).Result;
-                                    cli_Response.Value = commandLineInput.Options[0].Option_Value;
-                                }
-                                else
-                                    somethingfail |= 0x02;
                             }
                             else if (commandLineInput.Command == "GET")
                             {
