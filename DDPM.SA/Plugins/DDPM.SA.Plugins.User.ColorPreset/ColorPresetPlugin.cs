@@ -1899,7 +1899,7 @@ namespace ColorPreset.Plugins
             }
 
             if (System.String.IsNullOrEmpty(strSync_ColorPreset_Name))
-            strSync_ColorPreset_Name = ColorPreset_Name;
+                strSync_ColorPreset_Name = ColorPreset_Name;
 
             return System.Threading.Tasks.Task.FromResult(strSync_ColorPreset_Name);
 
