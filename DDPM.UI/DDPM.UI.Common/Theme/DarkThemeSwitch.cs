@@ -148,7 +148,7 @@ namespace DDPM.UI.Common
 
                 #region Main Window Background
                 SplashPath = "Resources/Images/splash{0}-round_Dark.png";
-                UpdateFreezable("mainWindowBkColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#F20D121A"));
+                UpdateFreezable("mainWindowBkColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#FF0D121A"));
                 UpdateFreezable("bkImage", (ref ImageBrush brush) => {
                     brush.Stretch = Stretch.Fill;
                     brush.ImageSource = GetImageSourceFromCommonResource("Resources/Images/Background.png", "DDPM");

@@ -7,6 +7,20 @@
 
     <!-- #region Control Element Default Styles-->
     <!-- Common -->
+    <LinearGradientBrush x:Key="DDPMBackground" ColorInterpolationMode="SRgbLinearInterpolation" EndPoint="1,1" MappingMode="RelativeToBoundingBox" 
+                         SpreadMethod="Pad" StartPoint="0,0">
+        <LinearGradientBrush.RelativeTransform>
+            <MatrixTransform Matrix="Identity" />
+        </LinearGradientBrush.RelativeTransform>
+        <LinearGradientBrush.Transform>
+            <MatrixTransform Matrix="Identity" />
+        </LinearGradientBrush.Transform>
+        <GradientStop Color="#7F306CC7" Offset="0.0537" />
+        <GradientStop Color="#7F0063B8" Offset="0.237" />
+        <GradientStop Color="#E0003ACE" Offset="0.504" />
+        <GradientStop Color="#7F674AB8" Offset="0.7923" />
+        <GradientStop Color="#7F0063B8" Offset="0.9724" />
+    </LinearGradientBrush>
     <!-- #region FakeTransparent: When you need a transparent color and need can response mouse click -->
     <Color x:Key="Color_FakeTransparent">#01FFFFFF</Color>
     <SolidColorBrush x:Key="FakeTransparent" Color="{StaticResource Color_FakeTransparent}" />
@@ -390,7 +404,7 @@
     <!-- #endregion -->
 
     <!-- #region Main Background-->
-    <SolidColorBrush x:Key="mainWindowBkColor" Color="#F20D121A" />
+    <SolidColorBrush x:Key="mainWindowBkColor" Color="#FF0D121A" />
     <ImageBrush x:Key="bkImage" ImageSource="/DDPM;component/Resources/Images/Background.png" Stretch="UniformToFill" />
     <SolidColorBrush x:Key="SpinnerBkColor" Color="#F20D121A" />
     <SolidColorBrush x:Key="SpinnerWaitTxtColor" Color="#F5F6F7" />

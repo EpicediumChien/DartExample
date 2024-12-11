@@ -23,6 +23,8 @@ namespace DDPM.UI.Module.SpeakerAudioSettings.Tests
         private IConsole? console;
         private Mock<ILog>? logMock;
         private ILog? log;
+        private Mock<IShowPluginManager>? showPluginManagerMock;
+        private IShowPluginManager? showPluginManager;
         private SoundBarViewModel? vm;
         private DeviceInfo? CurrentDeviceInfo;
 
@@ -48,7 +50,9 @@ namespace DDPM.UI.Module.SpeakerAudioSettings.Tests
             DdpmCommonHelper.MyConsole = console;
             logMock = new Mock<ILog>();
             log = logMock.Object;
-            vm = new SoundBarViewModel(console, log, deviceManager);
+            showPluginManagerMock = new Mock<IShowPluginManager>();
+            showPluginManager = showPluginManagerMock.Object;
+            vm = new SoundBarViewModel(showPluginManager, console, log, deviceManager);
         }
 
         [Test]

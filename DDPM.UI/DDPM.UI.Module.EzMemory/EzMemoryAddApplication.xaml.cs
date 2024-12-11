@@ -108,7 +108,7 @@ namespace DDPM.UI.Module.EzMemory
 
             foreach (var item in TempSorted)
             {
-                if (_vm._bind_apps.Contains(item))
+                if (!_vm._bind_apps.Contains(item))
                 {
                     _vm._bind_apps.Add(item);
                 }
@@ -130,7 +130,7 @@ namespace DDPM.UI.Module.EzMemory
 
             foreach (var item in TempSorted)
             {
-                if (_vm._bind_apps.Contains(item))
+                if (!_vm._bind_apps.Contains(item))
                 {
                     _vm._bind_apps.Add(item);
                 }
@@ -152,7 +152,7 @@ namespace DDPM.UI.Module.EzMemory
 
             foreach (var item in TempSorted)
             {
-                if (_vm._bind_apps.Contains(item))
+                if (!_vm._bind_apps.Contains(item))
                 {
                     _vm._bind_apps.Add(item);
                 }
@@ -175,7 +175,7 @@ namespace DDPM.UI.Module.EzMemory
 
             foreach (var item in TempSorted)
             {
-                if (_vm._bind_apps.Contains(item))
+                if (!_vm._bind_apps.Contains(item))
                 {
                     _vm._bind_apps.Add(item);
                 }
