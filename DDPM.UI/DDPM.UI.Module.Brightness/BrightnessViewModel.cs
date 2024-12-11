@@ -2336,11 +2336,11 @@ namespace DDPM.UI.Module.Brightness
             {
                 Start_ALSConfig.AutoBrightnessRangeLevel[0].level_value = level;
                 if (level == 0)
-                    Start_ALSConfig.AutoBrightnessRangeLevel[0].level_name = "Low";
+                    Start_ALSConfig.AutoBrightnessRangeLevel[0].level_name = Strings.ALSRangeLevelLow; //"Low";
                 else if (level == 1)
-                    Start_ALSConfig.AutoBrightnessRangeLevel[0].level_name = "Mid";
+                    Start_ALSConfig.AutoBrightnessRangeLevel[0].level_name = Strings.ALSRangeLevelMid; //"Mid";
                 else
-                    Start_ALSConfig.AutoBrightnessRangeLevel[0].level_name = "High";
+                    Start_ALSConfig.AutoBrightnessRangeLevel[0].level_name = Strings.ALSRangeLevelHigh; //"High";
             }
         }
 
@@ -3319,18 +3319,19 @@ namespace DDPM.UI.Module.Brightness
                 _autoBrightnessRangeLevel = value;
                 _autoBrightnessRangeLevel[0].level_value = value[0].level_value;
                 if (value[0].level_value == 0)
-                    _autoBrightnessRangeLevel[0].level_name = "Low";
+                    _autoBrightnessRangeLevel[0].level_name = Strings.ALSRangeLevelLow; //"Low";
                 else if (value[0].level_value == 1)
-                    _autoBrightnessRangeLevel[0].level_name = "Mid";
+                    _autoBrightnessRangeLevel[0].level_name = Strings.ALSRangeLevelMid; //"Mid";
                 else
-                    _autoBrightnessRangeLevel[0].level_name = "High";
+                    _autoBrightnessRangeLevel[0].level_name = Strings.ALSRangeLevelHigh; //"High";
                 NotifyPropertyChanged("AutoBrightnessRangeLevel_SelectedIndex");
                 NotifyPropertyChanged("AutoBrightnessRangeLevel_String");
             }
         }
 
         public int AutoBrightnessSelectedIndex { get; set; } = 0;
-        public List<string> AutoBrightnessRangeLevel { get; set; } = new List<string>() { "Low", "Mid", "High" }; //mapping to 40%, 60%, 100%
+        public List<string> AutoBrightnessRangeLevel { get; set; } =
+            new List<string>() { Strings.ALSRangeLevelLow, Strings.ALSRangeLevelMid, Strings.ALSRangeLevelHigh };//{ "Low", "Mid", "High" }; //mapping to 40%, 60%, 100%
 
         /// <summary>
         /// AutoBrightnessRangeLevel String Binding data
@@ -3374,11 +3375,11 @@ namespace DDPM.UI.Module.Brightness
                         if ((int)Start_ALSConfig.AutoBrightnessRangeLevel[0].level_value == value)//already apply, make string change
                         {
                             if (value == 0)
-                                Start_ALSConfig.AutoBrightnessRangeLevel[0].level_name = "Low";
+                                Start_ALSConfig.AutoBrightnessRangeLevel[0].level_name = Strings.ALSRangeLevelLow; //"Low";
                             else if (value == 1)
-                                Start_ALSConfig.AutoBrightnessRangeLevel[0].level_name = "Mid";
+                                Start_ALSConfig.AutoBrightnessRangeLevel[0].level_name = Strings.ALSRangeLevelMid; //"Mid";
                             else
-                                Start_ALSConfig.AutoBrightnessRangeLevel[0].level_name = "High";
+                                Start_ALSConfig.AutoBrightnessRangeLevel[0].level_name = Strings.ALSRangeLevelHigh; //"High";
                         }
                     }
                     NotifyPropertyChanged("AutoBrightnessRangeLevel_SelectedIndex");

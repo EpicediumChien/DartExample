@@ -959,11 +959,11 @@ namespace DDPM.UI.Module.Brightness
                 int temp = (int)comboBox.SelectedIndex;// SelectedIndex;
 
                 if (temp == 0)
-                    comboBox.SelectedValue = "Low";// Strings.ALSRangeLevelLow; //"Low";
+                    comboBox.SelectedValue = Strings.ALSRangeLevelLow; //"Low";
                 else if (temp == 1)
-                    comboBox.SelectedValue = "Mid";// Strings.ALSRangeLevelMid;// "Mid";
+                    comboBox.SelectedValue = Strings.ALSRangeLevelMid; // "Mid";
                 else
-                    comboBox.SelectedValue = "High";// Strings.ALSRangeLevelHigh; //"High";
+                    comboBox.SelectedValue = Strings.ALSRangeLevelHigh; //"High";
             }
         }
     }
