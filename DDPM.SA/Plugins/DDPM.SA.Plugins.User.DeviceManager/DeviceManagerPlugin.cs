@@ -11452,6 +11452,14 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             OnSWSaveEvent(e);
         }
 
+        //Derek 1210
+        public Task WriteLog(string logMsg)
+        {
+            writelog(logMsg);
+
+            return Task.CompletedTask;
+        }
+
         /// <summary>
         /// //
         /// </summary>
