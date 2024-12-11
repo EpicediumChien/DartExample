@@ -315,7 +315,7 @@ namespace VcpCore.Common
             { "Custom Color", 12 }
         };
 
-        public static Dictionary<int, string> VCPF4 = new Dictionary<int, string>
+        public static readonly Dictionary<int, string> VCPF4 = new Dictionary<int, string>
         {
             { 0x40, "Off" },
             { 0x41, "Desktop" },
@@ -326,7 +326,7 @@ namespace VcpCore.Common
             { 0x46, "HDR Peak 1000" }
         };
 
-        public static Dictionary<int, string> VCPE2 = new Dictionary<int, string>
+        public static readonly Dictionary<int, string> VCPE2 = new Dictionary<int, string>
         {
             { 0, "Standard/Native" },  // 20240731 jim add
             //{ 0, "Standard" },
@@ -417,7 +417,7 @@ namespace VcpCore.Common
             { "Rec709", 26 }
         };
 
-        public static Dictionary<uint, string> VCPC8 = new Dictionary<uint, string>
+        public static readonly Dictionary<uint, string> VCPC8 = new Dictionary<uint, string>
         {
             { 0x00, "Reserved" },
             { 0x01, "Conexant" },
