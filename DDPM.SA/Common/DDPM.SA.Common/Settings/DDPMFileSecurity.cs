@@ -1482,7 +1482,7 @@ namespace DDPM.SA.Common.Settings
             return true;
         }*/
 
-        public static bool SRemoveSymbolicFolder(string filePath, out string info)
+        /*public static bool SRemoveSymbolicFolder(string filePath, out string info)
         {
             info = "pass";
             if (!IsPathSymbolicLinked(filePath, out info))  // filePath contain symbolic
@@ -1531,7 +1531,7 @@ namespace DDPM.SA.Common.Settings
                 }
             }
             return true;
-        }
+        }*/
         public static bool CheckFold(string folderPath, out string folderInfo, out string pathSymbolicLinInfo)    // Move from Bruce code
         {
             folderInfo = "Error";
