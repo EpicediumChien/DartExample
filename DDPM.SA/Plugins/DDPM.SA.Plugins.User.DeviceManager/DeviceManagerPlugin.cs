@@ -10357,12 +10357,12 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
             switch (eventMsg.EventType)
             {
-                //case "Webcam_ZoomChanged":
-                //    //isQAMHandleEvent = true;
-                //    if (!int.TryParse(eventMsg.NewValue, out currentZoomValue))
-                //        currentZoomValue = -1;
+                case "Webcam_ZoomChanged":
+                    //isQAMHandleEvent = true;
+                    if (!int.TryParse(eventMsg.NewValue, out currentZoomValue))
+                        currentZoomValue = -1;
 
-                //    break;
+                    break;
 
                 case "Webcam_IsZoomMeetingActiveChanged":
                     isQAMHandleEvent = true;
