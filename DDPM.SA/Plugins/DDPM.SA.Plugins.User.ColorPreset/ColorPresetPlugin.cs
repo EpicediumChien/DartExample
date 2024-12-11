@@ -1230,12 +1230,15 @@ namespace ColorPreset.Plugins
             return System.Threading.Tasks.Task.FromResult("OFF");
         }
 
-        public void ShowOSD_ColoPreset(MonitorInfo monitorInfo, string strMsg, bool is_ShowUI = true, bool is_AUTO = false)
+        public void ShowOSD_ColoPreset(MonitorInfo m, string strMsg, bool is_ShowUI = true, bool is_AUTO = false)
         {
             //if (Log != null)
             //{
             //    Log.Info($"ShowOSD_ColoPreset requested ...");
             //}
+
+            MonitorInfo monitorInfo = m;
+
             writelog("ColorPresetPlugin ShowOSD_ColoPreset requested ...");
 
             Thread thread = new Thread(() =>
