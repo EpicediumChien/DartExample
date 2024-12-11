@@ -6,10 +6,20 @@
              xmlns:UXControls="clr-namespace:Dell.Client.Framework.UX.WPF.Controls;assembly=DCF.UX.WPF"
              xmlns:local="clr-namespace:DDPM.UI.Module.Kvm"
              xmlns:lang="clr-namespace:DDPM.UI.Resources.Helper;assembly=DDPM.UI.Resources"
-             mc:Ignorable="d" Background="#FF0D121A"
+             xmlns:PluginCommon="clr-namespace:DDPM.UI.Plugin.Common;assembly=DDPM.UI.Plugin.Common"           
+             mc:Ignorable="d"
              d:DesignHeight="450" d:DesignWidth="800"
              MouseDown="UserControl_MouseDown">
-
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <PluginCommon:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <UserControl.Style>
+        <Style TargetType="UserControl">
+            <Setter Property="Background" Value="{DynamicResource DefaultTheme_BdBdColor}" />
+        </Style>
+    </UserControl.Style>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
@@ -36,10 +46,10 @@
             <!-- Robert_Lin, 2024-6-10, new approach -->
             <Grid Width="24" Height="24" Cursor="Hand" VerticalAlignment="Center" HorizontalAlignment="Left" MouseLeftButtonDown="LeftArrow_MouseLeftButtonDown">
                 <Polyline Points="12,5 5,12 12,19"
-                          Stroke="White" StrokeThickness="2"
+                          Stroke="{DynamicResource TextBlock_ForegroundColor}" StrokeThickness="2"
                           StrokeStartLineCap="Round" StrokeEndLineCap="Round" />
                 <Polyline Points="5,12 19,12"
-                          Stroke="White" StrokeThickness="2"
+                          Stroke="{DynamicResource TextBlock_ForegroundColor}" StrokeThickness="2"
                           StrokeStartLineCap="Round" StrokeEndLineCap="Round" />
                 <Grid.Style>
                     <Style TargetType="Grid">
@@ -62,7 +72,7 @@
             <UXControls:UXTextBlock Grid.Row="0" Grid.Column="1" Text="{Binding [Hotkeys], Source={x:Static lang:LangHelper.Instance}}"
                                     HorizontalAlignment="Left" TextBlockType="Header2"
                                     TextBlockSemanticColorType="DefaultHeader"
-                                    Foreground="White"
+                                    Foreground="{DynamicResource TextBlock_ForegroundColor}"
                                     FontSize="24" />
         </Grid>
         <Grid Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center" Name="displayHotkeyGrid">
@@ -77,12 +87,12 @@
 
             <Grid HorizontalAlignment="Center" Margin="0,0,4,10">
                 <StackPanel Width="480">
-                    <Label  Content="{Binding [Kvm.8], Source={x:Static lang:LangHelper.Instance}}" FontSize="14" Foreground="White" />
+                    <Label  Content="{Binding [Kvm.8], Source={x:Static lang:LangHelper.Instance}}" FontSize="14" Foreground="{DynamicResource TextBlock_ForegroundColor}" />
                     <UXControls:UXTextBox
                         Text="{Binding SwitchPCsKey,Mode=TwoWay}"
                         Name="tbSwitchPCsKey"
-                        Background="#141D28" Foreground="White" Width="472" Height="30"
-                        BorderBrush="#7E7E7E" BorderThickness="1" FontSize="14"
+                        Width="472" Height="30"
+                        BorderThickness="1" FontSize="14"
                         HorizontalAlignment="Center"
                         AcceptsReturn="True"
                         PreviewKeyDown="tbSwitchPCsKey_PreviewKeyDown"
@@ -95,12 +105,12 @@
             </Grid>
             <Grid Grid.Row="1" HorizontalAlignment="Center" Margin="0,0,4,10">
                 <StackPanel Width="480">
-                    <Label  Content="{Binding [Kvm.9], Source={x:Static lang:LangHelper.Instance}}" FontSize="14" Foreground="White" />
+                    <Label  Content="{Binding [Kvm.9], Source={x:Static lang:LangHelper.Instance}}" FontSize="14" Foreground="{DynamicResource TextBlock_ForegroundColor}" />
                     <UXControls:UXTextBox
                         Text="{Binding SwitchKbMsKey,Mode=TwoWay}"
                         Name="tbSwitchKbMsKey"
-                        Background="#141D28" Foreground="White" Width="472" Height="30"
-                        BorderBrush="#7E7E7E" BorderThickness="1" FontSize="14"
+                        Width="472" Height="30"
+                        BorderThickness="1" FontSize="14"
                         HorizontalAlignment="Center"
                         AcceptsReturn="True"
                         PreviewKeyDown="tbSwitchKbMsKey_PreviewKeyDown"
@@ -111,14 +121,14 @@
                         ContextMenu="{x:Null}" />
                 </StackPanel>
             </Grid>
-            <Grid Grid.Row="2" HorizontalAlignment="Center" Margin="4,0,0,10">
+            <Grid Grid.Row="2" HorizontalAlignment="Center" Margin="4,0,0,10" Visibility="{Binding isPxpModeOn, Converter={StaticResource BoolToVisibilityConverter}}">
                 <StackPanel Grid.Row="0" Width="480">
-                    <Label  Content="{Binding [Kvm.10], Source={x:Static lang:LangHelper.Instance}}" FontSize="14" Foreground="White" />
+                    <Label  Content="{Binding [Kvm.10], Source={x:Static lang:LangHelper.Instance}}" FontSize="14" Foreground="{DynamicResource TextBlock_ForegroundColor}" />
                     <UXControls:UXTextBox
                         Text="{Binding ChangePipKey,Mode=TwoWay}"
-                        Background="#141D28" Foreground="White" Width="472" Height="30"
+                        Width="472" Height="30"
                         Name="tbChangePipKey"
-                        BorderBrush="#7E7E7E" BorderThickness="1" FontSize="14"
+                        BorderThickness="1" FontSize="14"
                         HorizontalAlignment="Center"
                         AcceptsReturn="True"
                         PreviewKeyDown="tbChangePipKey_PreviewKeyDown"
@@ -133,12 +143,18 @@
                 <StackPanel Grid.Row="0" Width="480">
                     <UXControls:UXCheckBox Grid.Row="1" Margin="0, 8, 8, 0" CheckBoxSize="Large"
                                            Content="{Binding [Kvm.11], Source={x:Static lang:LangHelper.Instance}}"
-                                           HorizontalAlignment="Left" FontSize="14" Foreground="White"
-                                           IsChecked="{Binding AutoSwitchChecked}" />
+                                           HorizontalAlignment="Left" FontSize="14"
+                                           IsChecked="{Binding AutoSwitchChecked}" Foreground="{DynamicResource TextBlock_ForegroundColor}"/>
                     <UXControls:UXLink Content="{Binding [Kvm.12], Source={x:Static lang:LangHelper.Instance}}" Click="InputSourceHotkey_Click"
                                        IconPosition="IconRight" LinkSize="Medium" LinkColorScheme="Primary"
                                        LinkType="InLine" Margin="0,22,8,0"
-                                       HorizontalAlignment="Center" VerticalAlignment="Center" Height="40" />
+                                       HorizontalAlignment="Center" VerticalAlignment="Center" Height="40">
+                        <UXControls:UXLink.Resources>
+                            <Style TargetType="Border">
+                                <Setter Property="Background" Value="Transparent" />
+                            </Style>
+                        </UXControls:UXLink.Resources>
+                    </UXControls:UXLink>
                 </StackPanel>
             </Grid>
 
