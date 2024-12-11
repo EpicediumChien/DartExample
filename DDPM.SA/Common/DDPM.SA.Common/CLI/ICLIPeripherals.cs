@@ -201,13 +201,13 @@ namespace DDPM.SA.Common
                     if (prop.Name.ToUpper() == TargetFeature)
                     {
                         if (prop.GetValue(di).ToString().Equals("1") || prop.GetValue(di).ToString().ToUpper().Equals("TRUE"))
-                            Value = "ENABLE";
+                            Value = "ON";
                         else if (prop.GetValue(di).ToString().Equals("0") || prop.GetValue(di).ToString().ToUpper().Equals("FALSE"))
-                            Value = "DISABLE";
+                            Value = "OFF";
                         else if (prop.GetValue(di).ToString().Equals("7"))
                         {
                             if (TargetFeature.ToUpper().Equals("WEARDETECTION"))
-                                Value = "ENABLE";
+                                Value = "ON";
                         }                          
                         else
                         {
