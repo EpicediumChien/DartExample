@@ -172,7 +172,7 @@ namespace DDPM.SA.Common.Security
                                 HttpResponseMessage response = client.GetAsync(baseUrl).Result;
                             }
                             flag = true;
-                            _logs?.DebugMsg_1($"CheckURLCACertificate client.GetAsync done");
+                            _logs?.DebugMsg_1($"CheckURLCACertificate client.GetAsync finish");
                         }
                         catch (Exception ex)
                         {
@@ -188,7 +188,7 @@ namespace DDPM.SA.Common.Security
                     {
                         _logs?.DebugMsg_1($"CheckURLCACertificate CheckCAHTTP go");
                         flag = CheckCAHTTP(baseUrl);
-                        _logs?.DebugMsg_1($"CheckURLCACertificate CheckCAHTTP done");
+                        _logs?.DebugMsg_1($"CheckURLCACertificate CheckCAHTTP finish");
                     }
                     if (!flag)
                     {
@@ -196,7 +196,7 @@ namespace DDPM.SA.Common.Security
                     }
                 }
             }
-            _logs?.DebugMsg_1($"CheckURLCACertificate done");
+            _logs?.DebugMsg_1($"CheckURLCACertificate finish");
             return flag;
         }
         private bool CheckCAHTTP(string URL)
@@ -211,9 +211,9 @@ namespace DDPM.SA.Common.Security
                     HttpClient client = new HttpClient(httpClientHandler);
                     _logs?.DebugMsg_1($"CheckCAHTTP GetResponse go");
                     bool response = GetResponse(client, URL);
-                    _logs?.DebugMsg_1($"CheckCAHTTP GetResponse done");
+                    _logs?.DebugMsg_1($"CheckCAHTTP GetResponse finish");
                     _logs?.DebugMsg_1("[CheckCAHTTP] result:" + response);
-                    _logs?.DebugMsg_1($"CheckCAHTTP done");
+                    _logs?.DebugMsg_1($"CheckCAHTTP finish");
                     return response;
                 }
             }
@@ -221,7 +221,7 @@ namespace DDPM.SA.Common.Security
             {
                 _logs?.DebugMsg_1("[CheckCAHTTP] error:" + ex.Message.ToString());
             }
-            _logs?.DebugMsg_1($"CheckCAHTTP done");
+            _logs?.DebugMsg_1($"CheckCAHTTP finish");
             return false;
         }
         private bool ValidateCertificate(HttpRequestMessage request, X509Certificate2 certificate, X509Chain chain, SslPolicyErrors sslPolicyErrors)
@@ -303,7 +303,7 @@ namespace DDPM.SA.Common.Security
                 {
                     _logs?.DebugMsg_1($"GetResponse client.GetAsync go");
                     HttpResponseMessage result = client.GetAsync(URL).GetAwaiter().GetResult();
-                    _logs?.DebugMsg_1($"GetResponse client.GetAsync done");
+                    _logs?.DebugMsg_1($"GetResponse client.GetAsync finish");
                     _logs?.DebugMsg_1("GetResponse statusCode:" + result.StatusCode);
                     flag = true;
                 }
@@ -317,7 +317,7 @@ namespace DDPM.SA.Common.Security
                 num--;
             }
             _logs?.DebugMsg_1(string.Format("GetResponse result:" + flag));
-            _logs?.DebugMsg_1($"GetResponse done");
+            _logs?.DebugMsg_1($"GetResponse finish");
             return flag;
         }
 
@@ -333,16 +333,16 @@ namespace DDPM.SA.Common.Security
                 x509Chain.ChainPolicy.RevocationMode = X509RevocationMode.Online;
                 x509Chain.ChainPolicy.UrlRetrievalTimeout = new TimeSpan(0, 1, 0);
                 x509Chain.ChainPolicy.VerificationFlags = X509VerificationFlags.NoFlag;
-                _logs?.DebugMsg_1($"CheckCertificateIsVaild x509Chain done");
+                _logs?.DebugMsg_1($"CheckCertificateIsVaild x509Chain finish");
                 _logs?.DebugMsg_1($"CheckCertificateIsVaild x509Chain.Build go");
                 result = x509Chain.Build(certificate);
-                _logs?.DebugMsg_1($"CheckCertificateIsVaild x509Chain.Build done");
+                _logs?.DebugMsg_1($"CheckCertificateIsVaild x509Chain.Build finish");
             }
             catch (Exception ex)
             {
                 _logs?.DebugMsg_1("[CheckCertificateIsVaild] error: " + ex.Message);
             }
-            _logs?.DebugMsg_1($"CheckCertificateIsVaild done");
+            _logs?.DebugMsg_1($"CheckCertificateIsVaild finish");
             return result;
         }
         private bool CheckIssuerAndSubject(X509Certificate2 certificate, X509Chain chain)
@@ -388,7 +388,7 @@ namespace DDPM.SA.Common.Security
                     //_logs?.DebugMsg_1(san);
                     _logs?.DebugMsg_1($"CheckIssuerAndSubject ContainsAny go");
                     bool containsAny = ContainsAny(san, Subject);
-                    _logs?.DebugMsg_1($"CheckIssuerAndSubject ContainsAny done");
+                    _logs?.DebugMsg_1($"CheckIssuerAndSubject ContainsAny finish");
                     if (containsAny)
                     {
                         _logs?.DebugMsg_1("[CheckIssuerAndSubject] Subject is included in the SAN.");
@@ -465,14 +465,14 @@ namespace DDPM.SA.Common.Security
                     isCNMatch = temp;
                 }
                 //_logs?.DebugMsg_1("--------------CheckIssuerAndSubject------------------");
-                _logs?.DebugMsg_1($"CheckIssuerAndSubject done");
+                _logs?.DebugMsg_1($"CheckIssuerAndSubject finish");
                 return isCNMatch;
             }
             catch (Exception ex)
             {
                 _logs?.DebugMsg_1("[CheckIssuerAndSubject] Error." + ex.ToString());
             }
-            _logs?.DebugMsg_1($"CheckIssuerAndSubject done");
+            _logs?.DebugMsg_1($"CheckIssuerAndSubject finish");
             return false;
         }
         /*private bool ValidateProxyCertificate(StoreName storeName, StoreLocation storeLocation, X509Certificate2 certificate, X509Chain chain)
@@ -534,11 +534,11 @@ namespace DDPM.SA.Common.Security
                 {
                     _logs?.DebugMsg_1($"trimmedPart.Substring(3).Trim() : {trimmedPart.Substring(3).Trim()}");
                     // Return the value after CN=
-                    _logs?.DebugMsg_1($"ExtractCN done");
+                    _logs?.DebugMsg_1($"ExtractCN finish");
                     return trimmedPart.Substring(3).Trim();
                 }
             }
-            _logs?.DebugMsg_1($"ExtractCN done");
+            _logs?.DebugMsg_1($"ExtractCN finish");
             // CN not found
             return null;
         }
@@ -572,7 +572,7 @@ namespace DDPM.SA.Common.Security
                 }
             }
             _logs?.DebugMsg_1($"GetSubjectAlternativeNames sanList.Count : {sanList.Count}");
-            _logs?.DebugMsg_1($"GetSubjectAlternativeNames done");
+            _logs?.DebugMsg_1($"GetSubjectAlternativeNames finish");
             return sanList.ToArray();
         }
         private bool ContainsAny(string mainString, string[] searchArray)
