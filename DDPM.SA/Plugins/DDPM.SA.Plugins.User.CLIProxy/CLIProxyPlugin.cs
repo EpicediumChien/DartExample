@@ -733,7 +733,7 @@ namespace DDPM.SA.Plugin.User.CLIManager
                             Command = commandLineInput.Command,
                             TargetFeature = commandLineInput.TargetFeature,
                             Result = "FAIL",
-                            Message = "Functional error"
+                            Message = $"Functional error ({ex.Message})"
                         }, Formatting.Indented),
                         ExitCode = (int)CLI_ExitCode.functional_error,
                         ticket = DateTime.Now
