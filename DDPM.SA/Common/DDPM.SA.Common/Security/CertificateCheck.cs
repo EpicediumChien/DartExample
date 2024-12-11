@@ -16,9 +16,9 @@ namespace DDPM.SA.Common.Security
     {
         private Logs? _logs;
         //private string[] Issuer = new string[] { "Entrust Certification Authority - L1F" };
-        private string[] Subject = new string[] 
-        { 
-            "content-cdn.dell.com", 
+        private string[] Subject = new string[]
+        {
+            "content-cdn.dell.com",
             "www.dell.com",
             "downloads.dell.com",
             "ftp.dell.com",
@@ -147,44 +147,54 @@ namespace DDPM.SA.Common.Security
         public bool CheckURLCACertificate(string URL)
         {
             _logs?.DebugMsg_1($"CheckURLCACertificate start");
-            Uri uri = new Uri(URL);
-            string baseUrl = uri.GetLeftPart(UriPartial.Authority);
             bool flag = false;
-            int num = 1;
-            while (!flag && num > 0)
+            _logs?.DebugMsg_1($"CheckURLCACertificate URL.IsNullOrEmpty : {string.IsNullOrEmpty(URL)}");
+            if (!string.IsNullOrEmpty(URL))
             {
-                try
+                //Bruce 1210 Take the complete URL and only take a screenshot of the first network segment
+                Uri uri = new Uri(URL);
+                string baseUrl = uri.GetLeftPart(UriPartial.Authority);
+                _logs?.DebugMsg_1($"CheckURLCACertificate Url.IsNullOrEmpty : {string.IsNullOrEmpty(baseUrl)}");
+                if (!string.IsNullOrEmpty(baseUrl))
                 {
-                    _logs?.DebugMsg_1($"CheckURLCACertificate HttpClientHandler initialization");
-                    HttpClientHandler handler = new HttpClientHandler();
-                    handler.ServerCertificateCustomValidationCallback = PinPublicKey;
-                    using (HttpClient client = new HttpClient(handler))
+                    _logs?.DebugMsg_1($"CheckURLCACertificate Url : {baseUrl}");
+                    int num = 1;
+                    while (!flag && num > 0)
                     {
-                        _logs?.DebugMsg_1($"CheckURLCACertificate client.GetAsync go");
-                        HttpResponseMessage response = client.GetAsync(baseUrl).Result;
+                        try
+                        {
+                            _logs?.DebugMsg_1($"CheckURLCACertificate HttpClientHandler initialization");
+                            HttpClientHandler handler = new HttpClientHandler();
+                            handler.ServerCertificateCustomValidationCallback = PinPublicKey;
+                            using (HttpClient client = new HttpClient(handler))
+                            {
+                                _logs?.DebugMsg_1($"CheckURLCACertificate client.GetAsync go");
+                                HttpResponseMessage response = client.GetAsync(baseUrl).Result;
+                            }
+                            flag = true;
+                            _logs?.DebugMsg_1($"CheckURLCACertificate client.GetAsync done");
+                        }
+                        catch (Exception ex)
+                        {
+                            _logs?.DebugMsg_1("[CheckURLCACertificate] error:" + ex.Message.ToString());
+                            flag = false;
+                            _logs?.DebugMsg_1(string.Format("[CheckURLCACertificate] error, retry:" + num));
+                            Thread.Sleep(1000);
+                        }
+                        num--;
                     }
-                    flag = true;
-                    _logs?.DebugMsg_1($"CheckURLCACertificate client.GetAsync done");
+                    _logs?.DebugMsg_1(string.Format("[CheckURLCACertificate] res:" + flag));
+                    if (!flag)
+                    {
+                        _logs?.DebugMsg_1($"CheckURLCACertificate CheckCAHTTP go");
+                        flag = CheckCAHTTP(baseUrl);
+                        _logs?.DebugMsg_1($"CheckURLCACertificate CheckCAHTTP done");
+                    }
+                    if (!flag)
+                    {
+                        _logs?.DebugMsg_1(string.Format("[CheckURLCACertificate][CheckCAHTTP] Fail, Send Telemetry." + flag));
+                    }
                 }
-                catch (Exception ex)
-                {
-                    _logs?.DebugMsg_1("[CheckURLCACertificate] error:" + ex.Message.ToString());
-                    flag = false;
-                    _logs?.DebugMsg_1(string.Format("[CheckURLCACertificate] error, retry:" + num));
-                    Thread.Sleep(1000);
-                }
-                num--;
-            }
-            _logs?.DebugMsg_1(string.Format("[CheckURLCACertificate] res:" + flag));
-            if (!flag)
-            {
-                _logs?.DebugMsg_1($"CheckURLCACertificate CheckCAHTTP go");
-                flag = CheckCAHTTP(baseUrl);
-                _logs?.DebugMsg_1($"CheckURLCACertificate CheckCAHTTP done");
-            }
-            if (!flag)
-            {
-                _logs?.DebugMsg_1(string.Format("[CheckURLCACertificate][CheckCAHTTP] Fail, Send Telemetry." + flag));
             }
             _logs?.DebugMsg_1($"CheckURLCACertificate done");
             return flag;
@@ -248,7 +258,7 @@ namespace DDPM.SA.Common.Security
                 return false;
             }
 
-            if(!CheckCertificateIsVaild(certificate))
+            if (!CheckCertificateIsVaild(certificate))
             {
                 return false;
             }
@@ -442,12 +452,12 @@ namespace DDPM.SA.Common.Security
                     }*/
                     //[Dean] Use certificate verify to replace the usage like cert store
                     bool temp = true;
-                    if(!IsValidCertificate(certificate, chain))
+                    if (!IsValidCertificate(certificate, chain))
                     {
                         _logs?.DebugMsg_1("[CheckIssuerAndSubject][IsValidCertificate] cert/chain invalid.");
                         temp = false;
                     }
-                    if(!certificate.Verify())
+                    if (!certificate.Verify())
                     {
                         _logs?.DebugMsg_1("[CheckIssuerAndSubject] cert verify return fail.");
                         temp = false;
