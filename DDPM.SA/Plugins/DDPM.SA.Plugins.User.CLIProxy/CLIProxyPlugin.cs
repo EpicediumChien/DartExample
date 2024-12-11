@@ -447,276 +447,297 @@ namespace DDPM.SA.Plugin.User.CLIManager
                 //Do command line action
                 CLIEventResult? cliEventResult;
                 CommandLineInput commandLineInput = e.commandLineInput;
-                
-                if (commandLineInput.PluginsType.Equals("APP") && commandLineInput.TargetFeature.Equals("RESTOREFACTORYDEFAULTS"))
+
+                try
                 {
-                    IDeviceManagerSA _devMgr = _DevManagerPlugin;
-                    var _AllInfoMonitors = _devMgr.GetMonitors().Result;
-                    List<DeviceInfo> _deviceinfo = _devMgr.GetDevices().Result.deviceInfo;
-                    List<CLIEventResult> cliEventResults = new List<CLIEventResult>();
-                    List<CLI_PeripheralRESPONSE> cliPeripheralEventResults = new List<CLI_PeripheralRESPONSE>();
-                    var total_result = "";
-                    if(_AllInfoMonitors.Count > 0)
+                    if (commandLineInput.PluginsType.Equals("APP") && commandLineInput.TargetFeature.Equals("RESTOREFACTORYDEFAULTS"))
                     {
-                        total_result += "Display :";
-                        List<string> stringList = new List<string>
+                        IDeviceManagerSA _devMgr = _DevManagerPlugin;
+                        var _AllInfoMonitors = _devMgr.GetMonitors().Result;
+                        List<DeviceInfo> _deviceinfo = _devMgr.GetDevices().Result.deviceInfo;
+                        List<CLIEventResult> cliEventResults = new List<CLIEventResult>();
+                        List<CLI_PeripheralRESPONSE> cliPeripheralEventResults = new List<CLI_PeripheralRESPONSE>();
+                        var total_result = "";
+                        if (_AllInfoMonitors.Count > 0)
+                        {
+                            total_result += "Display :";
+                            List<string> stringList = new List<string>
                         {
                             "RESTOREFACTORYDEFAULTS",
                             "RESTORELEVELDEFAULTS",
                             "RESTORECOLORDEFAULTS"
                         };
-                        foreach (string str in stringList)
-                        {
-                            e.commandLineInput.TargetFeature = str;
-                            cliEventResult = _CLIDisplay.SetCommandArgs(e, _DevManagerPlugin);
-                            total_result += $"\n{cliEventResult.serialize_Json_response}";
-                            Thread.Sleep(5000);
-                        }
-                    }
-                    _deviceinfo.ForEach(x =>
-                    {    
-                        var result = "";
-                        var msg = new CLI_PeripheralRESPONSE($"{x.ID}", commandLineInput.Command, commandLineInput.TargetFeature, "", "", x.Name, x.ModelNumber, x.DockServiceTag);
-                        switch (x.LogicalDeviceType.ToUpper())
-                        {
-                            case "LOGICALHEADSET":
-                                result = RunAsyncTimeout(_devMgr.SetFactoryResetAsyncValueForHeadset(x.ID.ToString(), true)).Result;
-                                break;
-                            case "LOGICALWIREDAUDIO":
-                                result = RunAsyncTimeout(_devMgr.SetResetToDefaultAsyncForSoundbar(x.ID.ToString(), true)).Result;
-                                break;
-                            case "LOGICALWEBCAM":
-                                result = RunAsyncTimeout(_devMgr.ResetToDefault_webcam(x.ID.ToString(), true)).Result;
-                                break;
-                            case "LOGICALKEYBOARD":
-                                result = RunAsyncTimeout(_devMgr.RestoreToDefaultKB(x.ID.ToString())).Result;
-                                break;
-                            case "LOGICALMOUSE":
-                                result = RunAsyncTimeout(_devMgr.RestoreToDefaultMouse(x.ID.ToString())).Result;
-                                break;
-                            case "LOGICALPEN":
-                                result = RunAsyncTimeout(_devMgr.RestoreToDefaultPen()).Result;
-                                break;
-                            default:
-                                break;
-                        }
-                        if (result == "0")
-                        {
-                            msg.Result = "PASS";
-                            //retcode_ = _devMgr.GetIsAutoFramingOn(ItemId).Result;
-                            msg.Value = "SUCCESS";
-                            //x.Value += "," + (data.LockSettings.Lock_Audio_RestoreFactoryDefaults ? "LOCK" : "UNLOCK");
-                            msg.Message = "N/A";
-                        }
-                        else if (result == "1")
-                        {
-                            msg.Result = "FAIL";
-                            msg.Message = "Timeout";
-                        }
-                        else
-                        {
-                            msg.Result = "FAIL";
-                            msg.Message = result;
-                        }
-                        cliPeripheralEventResults.Add(msg);
-                        Thread.Sleep(5000);
-                    });
-                    total_result += $"\n{JsonConvert.SerializeObject(cliPeripheralEventResults, Formatting.Indented)}";
-                    var result = new CLIEventResult()
-                    {
-                        command_guid_string = e.command_guid_string,
-                        serialize_Json_response = total_result,
-                        ExitCode = (int)CLI_ExitCode.success,
-                        ticket = DateTime.Now
-                    };
-                    _CliManagerPlugin.WriteCommandResult(result);
-                    return;
-                }
-
-                if (commandLineInput.PluginsType.Equals("DISPLAY"))
-                {
-                    if (_CLIDisplay != null)
-                    {
-                        if (Display_Lock_WithoutAction.FindIndex(x => x.Equals(commandLineInput.TargetFeature)) >= 0)
-                        {
-                            DDPMSettings data_inappdisplaylock = _DevManagerPlugin.ReloadAppConfigData().Result;
-                            cliEventResult = CLIHandlerDisplay.CLI_Display_LockUnlock(Log, data_inappdisplaylock, _DevManagerPlugin, commandLineInput, e.command_guid_string);
-                        }
-                        else if (commandLineInput.TargetFeature == "INAPPEXPORTIMPORT")
-                        {
-
-                            DDPMSettings data_exportsettings = _DevManagerPlugin.ReloadAppConfigData().Result;
-                            cliEventResult = CLIHandlerDisplay.CLI_Display_LockUnlock(Log, data_exportsettings, _DevManagerPlugin, commandLineInput, e.command_guid_string);
-                        }
-                        else
-                            cliEventResult = _CLIDisplay.SetCommandArgs(e, _DevManagerPlugin);
-                    }
-                    else
-                    {
-                        WriteLog($"{nameof(ICLIDisplay)} was missing.");
-                        _CliManagerPlugin.WriteCommandResult(Response_PluginNotReady(commandLineInput, nameof(ICLIDisplay), e.command_guid_string));
-                        return;
-                    }
-                }
-                //else if (commandLineInput.PluginsType.Equals("AUDIO") || commandLineInput.PluginsType.Equals("MOUSE") || commandLineInput.PluginsType.Equals("KEYBOARD") || commandLineInput.PluginsType.Equals("DOCK") || commandLineInput.PluginsType.Equals("HEADSET"))
-                else if (peripheral_DeviceType.FindIndex(x => x.Equals(commandLineInput.PluginsType)) >= 0)
-                {
-                    if (_CLIPeripherals != null)
-                    {
-                        if (commandLineInput.TargetFeature.Equals("RESTOREFACTORYDEFAULTS") && commandLineInput.Options.Count == 0)
-                        {
-                            cliEventResult = _CLIPeripherals.SetCommandArgs(e, _DevManagerPlugin);
-                        }
-                        else if (commandLineInput.TargetFeature.Equals("RESTOREFACTORYDEFAULTS"))
-                        {
-                            DDPMSettings data_restorefactorydefault = _DevManagerPlugin.ReloadAppConfigData().Result;
-                            cliEventResult = CLIHandlerPeripheral.CLI_Peripheral_RestoreFactoryDefault(Log, data_restorefactorydefault, _DevManagerPlugin, commandLineInput, e.command_guid_string);
-                        }
-                        else
-                        {
-                            cliEventResult = _CLIPeripherals.SetCommandArgs(e, _DevManagerPlugin);
-                        }
-                    }
-                    else
-                    {
-                        WriteLog($"{nameof(ICLIPeripherals)} was missing.");
-                        _CliManagerPlugin.WriteCommandResult(Response_PluginNotReady(commandLineInput, nameof(ICLIPeripherals), e.command_guid_string));
-                        return;
-                    }
-                }
-                else if (commandLineInput.PluginsType.Equals("APP"))
-                {
-                    switch (commandLineInput.TargetFeature)
-                    {
-                        case "TELEMETRYCONSENT":
-                            //cliEventResult = CLI_Analytics_Consent(commandLineInput, e.command_guid_string);
-                            DDPMSettings data = _DevManagerPlugin.ReloadAppConfigData().Result;
-                            cliEventResult = CLIHandlerApp.CLI_Analytics_Consent(Log, data, _DevManagerPlugin, commandLineInput, e.command_guid_string);
-                            if (cliEventResult.ExitCode == (int)CLI_ExitCode.success)
+                            foreach (string str in stringList)
                             {
-                                UpdateUINotify no = new UpdateUINotify();
-                                no.UI_Field_Name = "TELEMETRYCONSENT";
-                                _DevManagerPlugin.OnUIUpdateNotify(no);
+                                e.commandLineInput.TargetFeature = str;
+                                cliEventResult = _CLIDisplay.SetCommandArgs(e, _DevManagerPlugin);
+                                total_result += $"\n{cliEventResult.serialize_Json_response}";
+                                Thread.Sleep(5000);
                             }
-                            break;
-
-                        case "INAPPUPDATE":
-                            //cliEventResult = CLI_Analytics_Consent(commandLineInput, e.command_guid_string);
-                            DDPMSettings data_update = _DevManagerPlugin.ReloadAppConfigData().Result;
-                            cliEventResult = CLIHandlerApp.CLI_App_LockUnlock(Log, data_update, _DevManagerPlugin, commandLineInput, e.command_guid_string);
-                            //if (cliEventResult.ExitCode == (int)CLI_ExitCode.success)
-                            //{
-                            //UpdateUINotify no = new UpdateUINotify();
-                            //no.UI_Field_Name = "INAPPUPDATE";
-                            //_DevManagerPlugin.OnUIUpdateNotify(no);
-                            //}
-                            break;
-                        //case "INAPPEXPORTIMPORT":
-                        //    //cliEventResult = CLI_Analytics_Consent(commandLineInput, e.command_guid_string);
-                        //    DDPMSettings data_exportsettings = _DevManagerPlugin.ReloadAppConfigData().Result;
-                        //    cliEventResult = CLIHandlerDisplay.CLI_Display_LockUnlock(Log, data_exportsettings, _DevManagerPlugin, commandLineInput, e.command_guid_string);
-                        //    break;
-
-                        case "INAPPRESTOREDEFAULTS":
-                            //cliEventResult = CLI_Analytics_Consent(commandLineInput, e.command_guid_string);
-                            DDPMSettings data_restoredefaults = _DevManagerPlugin.ReloadAppConfigData().Result;
-                            cliEventResult = CLIHandlerApp.CLI_App_LockUnlock(Log, data_restoredefaults, _DevManagerPlugin, commandLineInput, e.command_guid_string);
-                            break;
-                        case "DEVICEDATA":
-                        case "DEVICECONFIGURATION":
-                        case "CONNECTEDDEVICES":
-                        case "SCREENNOTIFICATION":
-                        case "DIAGNOSTICSREPORT":
-                            //cliEventResult = CLI_Analytics_Consent(commandLineInput, e.command_guid_string);
-                            cliEventResult = _CLIDisplay.SetCommandArgs(e, _DevManagerPlugin);
-                            break;
-                        case "FIRMWAREUPDATE":
-                            cliEventResult = _CLIPeripherals.SetCommandArgs(e, _DevManagerPlugin);
-
-                            // add @ stephen
-                            //DDPMSettings data_fwupdate = _DevManagerPlugin.ReloadAppConfigData().Result;
-                            //cliEventResult = CLIHandlerApp.CLI_FW_Update(Log, data_fwupdate, _DevManagerPlugin, commandLineInput, e.command_guid_string);
-                            break;
-                        case "DISABLECA":
-                            cliEventResult = CLIHandlerApp.CLI_Common_DisableCA(Log, _DevManagerPlugin, commandLineInput, e.command_guid_string);
-                            break;
-                        case "UPDATE":
-                            cliEventResult = _CLIPeripherals.SetCommandArgs(e, _DevManagerPlugin);
-                            break;
-                        case "UPDATESOURCELOCATION":
-                            cliEventResult = _CLIPeripherals.SetCommandArgs(e, _DevManagerPlugin);
-                            break;
-                        default:
-                            _CliManagerPlugin.WriteCommandResult(Response_TargetFeatureNotSupport(commandLineInput, e.command_guid_string));
-                            return;
-                    }
-                }
-                else if (commandLineInput.Command.Equals("HELP"))
-                {
-                    CLIEventResult result;
-                    IIC_Metadata iIC_Metadata = new IIC_Metadata();
-                    if (commandLineInput.TargetFeature.ToUpper() == "DISPLAY")
-                    {
-                        var monitorInfos = _DevManagerPlugin.GetMonitors().Result;
-                        string output = string.Empty;
-                        if (monitorInfos == null || monitorInfos.Count == 0)
-                        {
-                            CLI_RESPONSE cLI_RESPONSE = new CLI_RESPONSE()
-                            {
-                                Model = "N/A",
-                                SerialNumber = "N/A",
-                                Command = "N/A",
-                                TargetFeature = "N/A",
-                                Result = "no monitor connected",
-                                Index = "N/A",
-                                ServiceTag = "N/A",
-                                Value = "N/A",
-                                Message = "no monitor connected"
-                            };
-                            result = new CLIEventResult()
-                            {
-                                command_guid_string = e.command_guid_string,
-                                serialize_Json_response = JsonConvert.SerializeObject(cLI_RESPONSE, Formatting.Indented),
-                                ExitCode = (int)CLI_ExitCode.no_monitor_connected,
-                                ticket = DateTime.Now
-                            };
-                            _CliManagerPlugin.WriteCommandResult(result);
-                            return;
                         }
-                        foreach (var monitorInfo in monitorInfos)
+                        _deviceinfo.ForEach(x =>
                         {
-                            iIC_Metadata = _DevManagerPlugin.DownloadICCData(monitorInfo).Result;
-                            var results = ICLICommandTable.Response_HelpCommand_ByDisplay(commandLineInput.TargetFeature, monitorInfo.CapabilityDic, iIC_Metadata.Is_Support_ICC_DeviceName);
-                            output += "\n" + results;
-                        }
-                        result = new CLIEventResult()
+                            var result = "";
+                            var msg = new CLI_PeripheralRESPONSE($"{x.ID}", commandLineInput.Command, commandLineInput.TargetFeature, "", "", x.Name, x.ModelNumber, x.DockServiceTag);
+                            switch (x.LogicalDeviceType.ToUpper())
+                            {
+                                case "LOGICALHEADSET":
+                                    result = RunAsyncTimeout(_devMgr.SetFactoryResetAsyncValueForHeadset(x.ID.ToString(), true)).Result;
+                                    break;
+                                case "LOGICALWIREDAUDIO":
+                                    result = RunAsyncTimeout(_devMgr.SetResetToDefaultAsyncForSoundbar(x.ID.ToString(), true)).Result;
+                                    break;
+                                case "LOGICALWEBCAM":
+                                    result = RunAsyncTimeout(_devMgr.ResetToDefault_webcam(x.ID.ToString(), true)).Result;
+                                    break;
+                                case "LOGICALKEYBOARD":
+                                    result = RunAsyncTimeout(_devMgr.RestoreToDefaultKB(x.ID.ToString())).Result;
+                                    break;
+                                case "LOGICALMOUSE":
+                                    result = RunAsyncTimeout(_devMgr.RestoreToDefaultMouse(x.ID.ToString())).Result;
+                                    break;
+                                case "LOGICALPEN":
+                                    result = RunAsyncTimeout(_devMgr.RestoreToDefaultPen()).Result;
+                                    break;
+                                default:
+                                    break;
+                            }
+                            if (result == "0")
+                            {
+                                msg.Result = "PASS";
+                                //retcode_ = _devMgr.GetIsAutoFramingOn(ItemId).Result;
+                                msg.Value = "SUCCESS";
+                                //x.Value += "," + (data.LockSettings.Lock_Audio_RestoreFactoryDefaults ? "LOCK" : "UNLOCK");
+                                msg.Message = "N/A";
+                            }
+                            else if (result == "1")
+                            {
+                                msg.Result = "FAIL";
+                                msg.Message = "Timeout";
+                            }
+                            else
+                            {
+                                msg.Result = "FAIL";
+                                msg.Message = result;
+                            }
+                            cliPeripheralEventResults.Add(msg);
+                            Thread.Sleep(5000);
+                        });
+                        total_result += $"\n{JsonConvert.SerializeObject(cliPeripheralEventResults, Formatting.Indented)}";
+                        var result = new CLIEventResult()
                         {
                             command_guid_string = e.command_guid_string,
-                            serialize_Json_response = output,
+                            serialize_Json_response = total_result,
                             ExitCode = (int)CLI_ExitCode.success,
                             ticket = DateTime.Now
                         };
                         _CliManagerPlugin.WriteCommandResult(result);
                         return;
                     }
+
+                    if (commandLineInput.PluginsType.Equals("DISPLAY"))
+                    {
+                        if (_CLIDisplay != null)
+                        {
+                            if (Display_Lock_WithoutAction.FindIndex(x => x.Equals(commandLineInput.TargetFeature)) >= 0)
+                            {
+                                DDPMSettings data_inappdisplaylock = _DevManagerPlugin.ReloadAppConfigData().Result;
+                                cliEventResult = CLIHandlerDisplay.CLI_Display_LockUnlock(Log, data_inappdisplaylock, _DevManagerPlugin, commandLineInput, e.command_guid_string);
+                            }
+                            else if (commandLineInput.TargetFeature == "INAPPEXPORTIMPORT")
+                            {
+                                WriteLog($"INAPPEXPORTIMPORT entry");
+                                DDPMSettings data_exportsettings = _DevManagerPlugin.ReloadAppConfigData().Result;
+                                cliEventResult = CLIHandlerDisplay.CLI_Display_LockUnlock(Log, data_exportsettings, _DevManagerPlugin, commandLineInput, e.command_guid_string);
+                                WriteLog($"INAPPEXPORTIMPORT exit");
+                            }
+                            else
+                                cliEventResult = _CLIDisplay.SetCommandArgs(e, _DevManagerPlugin);
+                        }
+                        else
+                        {
+                            WriteLog($"{nameof(ICLIDisplay)} was missing.");
+                            _CliManagerPlugin.WriteCommandResult(Response_PluginNotReady(commandLineInput, nameof(ICLIDisplay), e.command_guid_string));
+                            return;
+                        }
+                    }
+                    //else if (commandLineInput.PluginsType.Equals("AUDIO") || commandLineInput.PluginsType.Equals("MOUSE") || commandLineInput.PluginsType.Equals("KEYBOARD") || commandLineInput.PluginsType.Equals("DOCK") || commandLineInput.PluginsType.Equals("HEADSET"))
+                    else if (peripheral_DeviceType.FindIndex(x => x.Equals(commandLineInput.PluginsType)) >= 0)
+                    {
+                        if (_CLIPeripherals != null)
+                        {
+                            if (commandLineInput.TargetFeature.Equals("RESTOREFACTORYDEFAULTS") && commandLineInput.Options.Count == 0)
+                            {
+                                cliEventResult = _CLIPeripherals.SetCommandArgs(e, _DevManagerPlugin);
+                            }
+                            else if (commandLineInput.TargetFeature.Equals("RESTOREFACTORYDEFAULTS"))
+                            {
+                                DDPMSettings data_restorefactorydefault = _DevManagerPlugin.ReloadAppConfigData().Result;
+                                cliEventResult = CLIHandlerPeripheral.CLI_Peripheral_RestoreFactoryDefault(Log, data_restorefactorydefault, _DevManagerPlugin, commandLineInput, e.command_guid_string);
+                            }
+                            else
+                            {
+                                cliEventResult = _CLIPeripherals.SetCommandArgs(e, _DevManagerPlugin);
+                            }
+                        }
+                        else
+                        {
+                            WriteLog($"{nameof(ICLIPeripherals)} was missing.");
+                            _CliManagerPlugin.WriteCommandResult(Response_PluginNotReady(commandLineInput, nameof(ICLIPeripherals), e.command_guid_string));
+                            return;
+                        }
+                    }
+                    else if (commandLineInput.PluginsType.Equals("APP"))
+                    {
+                        switch (commandLineInput.TargetFeature)
+                        {
+                            case "TELEMETRYCONSENT":
+                                //cliEventResult = CLI_Analytics_Consent(commandLineInput, e.command_guid_string);
+                                DDPMSettings data = _DevManagerPlugin.ReloadAppConfigData().Result;
+                                cliEventResult = CLIHandlerApp.CLI_Analytics_Consent(Log, data, _DevManagerPlugin, commandLineInput, e.command_guid_string);
+                                if (cliEventResult.ExitCode == (int)CLI_ExitCode.success)
+                                {
+                                    UpdateUINotify no = new UpdateUINotify();
+                                    no.UI_Field_Name = "TELEMETRYCONSENT";
+                                    _DevManagerPlugin.OnUIUpdateNotify(no);
+                                }
+                                break;
+
+                            case "INAPPUPDATE":
+                                //cliEventResult = CLI_Analytics_Consent(commandLineInput, e.command_guid_string);
+                                DDPMSettings data_update = _DevManagerPlugin.ReloadAppConfigData().Result;
+                                cliEventResult = CLIHandlerApp.CLI_App_LockUnlock(Log, data_update, _DevManagerPlugin, commandLineInput, e.command_guid_string);
+                                //if (cliEventResult.ExitCode == (int)CLI_ExitCode.success)
+                                //{
+                                //UpdateUINotify no = new UpdateUINotify();
+                                //no.UI_Field_Name = "INAPPUPDATE";
+                                //_DevManagerPlugin.OnUIUpdateNotify(no);
+                                //}
+                                break;
+                            //case "INAPPEXPORTIMPORT":
+                            //    //cliEventResult = CLI_Analytics_Consent(commandLineInput, e.command_guid_string);
+                            //    DDPMSettings data_exportsettings = _DevManagerPlugin.ReloadAppConfigData().Result;
+                            //    cliEventResult = CLIHandlerDisplay.CLI_Display_LockUnlock(Log, data_exportsettings, _DevManagerPlugin, commandLineInput, e.command_guid_string);
+                            //    break;
+
+                            case "INAPPRESTOREDEFAULTS":
+                                //cliEventResult = CLI_Analytics_Consent(commandLineInput, e.command_guid_string);
+                                DDPMSettings data_restoredefaults = _DevManagerPlugin.ReloadAppConfigData().Result;
+                                cliEventResult = CLIHandlerApp.CLI_App_LockUnlock(Log, data_restoredefaults, _DevManagerPlugin, commandLineInput, e.command_guid_string);
+                                break;
+                            case "DEVICEDATA":
+                            case "DEVICECONFIGURATION":
+                            case "CONNECTEDDEVICES":
+                            case "SCREENNOTIFICATION":
+                            case "DIAGNOSTICSREPORT":
+                                //cliEventResult = CLI_Analytics_Consent(commandLineInput, e.command_guid_string);
+                                cliEventResult = _CLIDisplay.SetCommandArgs(e, _DevManagerPlugin);
+                                break;
+                            case "FIRMWAREUPDATE":
+                                cliEventResult = _CLIPeripherals.SetCommandArgs(e, _DevManagerPlugin);
+
+                                // add @ stephen
+                                //DDPMSettings data_fwupdate = _DevManagerPlugin.ReloadAppConfigData().Result;
+                                //cliEventResult = CLIHandlerApp.CLI_FW_Update(Log, data_fwupdate, _DevManagerPlugin, commandLineInput, e.command_guid_string);
+                                break;
+                            case "DISABLECA":
+                                cliEventResult = CLIHandlerApp.CLI_Common_DisableCA(Log, _DevManagerPlugin, commandLineInput, e.command_guid_string);
+                                break;
+                            case "UPDATE":
+                                cliEventResult = _CLIPeripherals.SetCommandArgs(e, _DevManagerPlugin);
+                                break;
+                            case "UPDATESOURCELOCATION":
+                                cliEventResult = _CLIPeripherals.SetCommandArgs(e, _DevManagerPlugin);
+                                break;
+                            default:
+                                _CliManagerPlugin.WriteCommandResult(Response_TargetFeatureNotSupport(commandLineInput, e.command_guid_string));
+                                return;
+                        }
+                    }
+                    else if (commandLineInput.Command.Equals("HELP"))
+                    {
+                        CLIEventResult result;
+                        IIC_Metadata iIC_Metadata = new IIC_Metadata();
+                        if (commandLineInput.TargetFeature.ToUpper() == "DISPLAY")
+                        {
+                            var monitorInfos = _DevManagerPlugin.GetMonitors().Result;
+                            string output = string.Empty;
+                            if (monitorInfos == null || monitorInfos.Count == 0)
+                            {
+                                CLI_RESPONSE cLI_RESPONSE = new CLI_RESPONSE()
+                                {
+                                    Model = "N/A",
+                                    SerialNumber = "N/A",
+                                    Command = "N/A",
+                                    TargetFeature = "N/A",
+                                    Result = "no monitor connected",
+                                    Index = "N/A",
+                                    ServiceTag = "N/A",
+                                    Value = "N/A",
+                                    Message = "no monitor connected"
+                                };
+                                result = new CLIEventResult()
+                                {
+                                    command_guid_string = e.command_guid_string,
+                                    serialize_Json_response = JsonConvert.SerializeObject(cLI_RESPONSE, Formatting.Indented),
+                                    ExitCode = (int)CLI_ExitCode.no_monitor_connected,
+                                    ticket = DateTime.Now
+                                };
+                                _CliManagerPlugin.WriteCommandResult(result);
+                                return;
+                            }
+                            foreach (var monitorInfo in monitorInfos)
+                            {
+                                iIC_Metadata = _DevManagerPlugin.DownloadICCData(monitorInfo).Result;
+                                var results = ICLICommandTable.Response_HelpCommand_ByDisplay(commandLineInput.TargetFeature, monitorInfo.CapabilityDic, iIC_Metadata.Is_Support_ICC_DeviceName);
+                                output += "\n" + results;
+                            }
+                            result = new CLIEventResult()
+                            {
+                                command_guid_string = e.command_guid_string,
+                                serialize_Json_response = output,
+                                ExitCode = (int)CLI_ExitCode.success,
+                                ticket = DateTime.Now
+                            };
+                            _CliManagerPlugin.WriteCommandResult(result);
+                            return;
+                        }
+                        else
+                        {
+                            WriteLog($"{nameof(ICLIDisplay)} was missing.");
+                            _CliManagerPlugin.WriteCommandResult(Response_PluginNotReady(commandLineInput, nameof(ICLIDisplay), e.command_guid_string));
+                            return;
+                        }
+                    }
                     else
                     {
-                        WriteLog($"{nameof(ICLIDisplay)} was missing.");
-                        _CliManagerPlugin.WriteCommandResult(Response_PluginNotReady(commandLineInput, nameof(ICLIDisplay), e.command_guid_string));
+                        CLIEventResult result = new CLIEventResult()
+                        {
+                            command_guid_string = e.command_guid_string,
+                            serialize_Json_response = Response_TargetTypeNotSupport(commandLineInput, commandLineInput.PluginsType),
+                            ExitCode = (int)CLI_ExitCode.command_targettype_not_support,
+                            ticket = DateTime.Now
+                        };
+                        _CliManagerPlugin.WriteCommandResult(result);
                         return;
                     }
                 }
-                else
+                catch (Exception ex)
                 {
-                    CLIEventResult result = new CLIEventResult()
+                    WriteLog($"[Command line event] Error: {ex.Message}");
+                    cliEventResult = new CLIEventResult()
                     {
                         command_guid_string = e.command_guid_string,
-                        serialize_Json_response = Response_TargetTypeNotSupport(commandLineInput, commandLineInput.PluginsType),
-                        ExitCode = (int)CLI_ExitCode.command_targettype_not_support,
+                        serialize_Json_response = JsonConvert.SerializeObject(new APP_RESPONSE()
+                        {
+                            Command = commandLineInput.Command,
+                            TargetFeature = commandLineInput.TargetFeature,
+                            Result = "FAIL",
+                            Message = "Functional error"
+                        }, Formatting.Indented),
+                        ExitCode = (int)CLI_ExitCode.functional_error,
                         ticket = DateTime.Now
                     };
-                    _CliManagerPlugin.WriteCommandResult(result);
-                    return;
                 }
 
                 //write result back
