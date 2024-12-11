@@ -191,6 +191,7 @@ namespace DDPM.QAM
             try
             {
                 var filePath = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), @$"Dell\Dell Display and Peripheral Manager\WebcamSettings\{model}.json");
+                
                 if (File.Exists(filePath))
                 {
                     Dictionary<string, WebcamProfile> presetProfiles = new();
@@ -198,9 +199,11 @@ namespace DDPM.QAM
                     string json = File.ReadAllText(filePath);
                     var jsonObject = Newtonsoft.Json.Linq.JObject.Parse(json);
                     string presetProfilesString = jsonObject["PresetProfiles"].ToString();
+
                     if (!string.IsNullOrEmpty(presetProfilesString))
                     {
                         presetProfiles = JsonConvert.DeserializeObject<Dictionary<string, WebcamProfile>>(presetProfilesString);
+
                         if (presetProfiles != null)
                         {
                             foreach (var profile in presetProfiles)
@@ -233,9 +236,9 @@ namespace DDPM.QAM
                     }
                 }
             }
-            catch
+            catch (Exception e)
             {
-
+                DdpmCommonHelper.DeviceManagerSA!.WriteLog($"Catch exception: {e.Message}");
             }
         }
 
@@ -244,6 +247,7 @@ namespace DDPM.QAM
             if (Profiles.ContainsKey(CurrentProfileName.Profile_Name_Key))
             {
                 CurrentProfile = Profiles[CurrentProfileName.Profile_Name_Key];
+
                 if (CurrentDeviceInfo!.IsPropertyAutoFramingSensitivitySupported || CurrentDeviceInfo.IsPropertyAutoFramingSizeSupported || CurrentDeviceInfo.IsPropertyAutoFramingTransitionSupported)
                 {
                     DdpmCommonHelper.DeviceManagerSA!.SetIsAutoFramingOn(CurrentDeviceInfo!.ID.ToString(), CurrentProfile.IsAutoFramingOn);
