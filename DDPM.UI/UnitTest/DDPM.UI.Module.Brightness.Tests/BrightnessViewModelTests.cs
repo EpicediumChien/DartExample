@@ -730,7 +730,8 @@ namespace DDPM.UI.Module.Brightness.Tests
         public void TestAutoBrightnessRangeLevel()
         {
             var brightnessViewModel = new BrightnessViewModel();
-            var myAutoBrightnessRangeLevel = new List<string>() { "Low", "Mid", "High" };
+            var myAutoBrightnessRangeLevel = 
+                new List<string>() { Strings.ALSRangeLevelLow, Strings.ALSRangeLevelMid, Strings.ALSRangeLevelHigh };//{ "Low", "Mid", "High" };
             brightnessViewModel.AutoBrightnessRangeLevel = myAutoBrightnessRangeLevel;
 
             Assert.That(brightnessViewModel.AutoBrightnessRangeLevel, Is.EqualTo(myAutoBrightnessRangeLevel));
