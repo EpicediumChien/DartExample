@@ -3112,31 +3112,41 @@ namespace DDPM.UI.Module.Brightness
             }
             set
             {
-                _autoBrightnessStatus = value;
-                Start_ALSConfig.isAutoBrightness = value;
-                ALSSettingsChangesOnNonPrimary(value);
-                NotifyPropertyChanged("AutoBrightnessStatus");
-                NotifyPropertyChanged("AutoBrightness_String");
-                NotifyPropertyChanged("AutoBrightnessRangeLevelVisible");
-                NotifyPropertyChanged("AutoBrightnessRangeLevelVisible_invert");
-                Update_SupportedPrimaryMonitorSync(value, _autoColorTempStatus);
-                if (_autoBrightnessStatus == false)
+                IsBusy = true;
+                NotifyPropertyChanged("IsBusy");
+                MyModule.GetRightView().Dispatcher.Invoke((Action)(() =>
                 {
-                    //DDPMW-770
-                    //CheckIfNeedToTurnPrimarySyncOff();
-                    return;
-                }
-                //story: https://jira.cpg.dell.com/browse/DDPMW-769, set color preset to custom at the same time
-                if (DdpmCommonHelper.DeviceManagerSA != null && ModuleOwner.SelectedHomeDevice != null)
-                {
-                    MonitorInfo? mo = ModuleOwner.SelectedHomeDevice.MonitorInfo;
-                    List<string> presets = DdpmCommonHelper.DeviceManagerSA.ReadColorPreset(mo).Result;
-                    int idx = presets.FindIndex(x => x.ToUpper().Contains("CUSTOM"));
-                    if (idx >= 0)
+                    _autoBrightnessStatus = value;
+                    Start_ALSConfig.isAutoBrightness = value;
+                    ALSSettingsChangesOnNonPrimary(value);
+                    NotifyPropertyChanged("AutoBrightnessStatus");
+                    NotifyPropertyChanged("AutoBrightness_String");
+                    NotifyPropertyChanged("AutoBrightnessRangeLevelVisible");
+                    NotifyPropertyChanged("AutoBrightnessRangeLevelVisible_invert");
+                    Update_SupportedPrimaryMonitorSync(value, _autoColorTempStatus);
+                    if (_autoBrightnessStatus == false)
                     {
-                        _ = DdpmCommonHelper.DeviceManagerSA.SetVCPCapability(mo, "colorpreset", presets[idx]).Result;
+                        //DDPMW-770
+                        //CheckIfNeedToTurnPrimarySyncOff();
+                        IsBusy = false;
+                        NotifyPropertyChanged("IsBusy");
+                        return;
                     }
-                }
+                    //story: https://jira.cpg.dell.com/browse/DDPMW-769, set color preset to custom at the same time
+                    if (DdpmCommonHelper.DeviceManagerSA != null && ModuleOwner.SelectedHomeDevice != null)
+                    {
+                        MonitorInfo? mo = ModuleOwner.SelectedHomeDevice.MonitorInfo;
+                        List<string> presets = DdpmCommonHelper.DeviceManagerSA.ReadColorPreset(mo).Result;
+                        int idx = presets.FindIndex(x => x.ToUpper().Contains("CUSTOM"));
+                        if (idx >= 0)
+                        {
+                            _ = DdpmCommonHelper.DeviceManagerSA.SetVCPCapability(mo, "colorpreset", presets[idx]).Result;
+                        }
+                    }
+                    IsBusy = false;
+                    NotifyPropertyChanged("IsBusy");
+                }));
+                
             }
         }
 
@@ -3176,12 +3186,20 @@ namespace DDPM.UI.Module.Brightness
             }
             set
             {
-                _autoColorTempStatus = value;
-                Start_ALSConfig.isAutoColorTemp = value;
-                ALSSettingsChangesOnNonPrimary(value, "AUTOCOLOR");
-                NotifyPropertyChanged("AutoColorTempStatus");
-                NotifyPropertyChanged("AutoColorTemp_String");
-                //Update_SupportedPrimaryMonitorSync(_autoBrightnessStatus, value);
+                IsBusy = true;
+                NotifyPropertyChanged("IsBusy");
+                MyModule.GetRightView().Dispatcher.Invoke((Action)(() =>
+                {
+                    _autoColorTempStatus = value;
+                    Start_ALSConfig.isAutoColorTemp = value;
+                    ALSSettingsChangesOnNonPrimary(value, "AUTOCOLOR");
+                    NotifyPropertyChanged("AutoColorTempStatus");
+                    NotifyPropertyChanged("AutoColorTemp_String");
+                    //Update_SupportedPrimaryMonitorSync(_autoBrightnessStatus, value);
+                    IsBusy = false;
+                    NotifyPropertyChanged("IsBusy");
+                }));
+                
             }
         }
 
@@ -3345,22 +3363,29 @@ namespace DDPM.UI.Module.Brightness
             }
             set
             {
-                if ((int)Start_ALSConfig.AutoBrightnessRangeLevel[0].level_value != value)
-                {                    
-                    ALSSettingsChangesOnNonPrimary(false, "BRILEVEL", value);
-
-                    if ((int)Start_ALSConfig.AutoBrightnessRangeLevel[0].level_value == value)//already apply, make string change
+                IsBusy = true;
+                NotifyPropertyChanged("IsBusy");
+                MyModule.GetRightView().Dispatcher.Invoke((Action)(() =>
+                {
+                    if ((int)Start_ALSConfig.AutoBrightnessRangeLevel[0].level_value != value)
                     {
-                        if (value == 0)
-                            Start_ALSConfig.AutoBrightnessRangeLevel[0].level_name = "Low";
-                        else if (value == 1)
-                            Start_ALSConfig.AutoBrightnessRangeLevel[0].level_name = "Mid";
-                        else
-                            Start_ALSConfig.AutoBrightnessRangeLevel[0].level_name = "High";
+                        ALSSettingsChangesOnNonPrimary(false, "BRILEVEL", value);
+
+                        if ((int)Start_ALSConfig.AutoBrightnessRangeLevel[0].level_value == value)//already apply, make string change
+                        {
+                            if (value == 0)
+                                Start_ALSConfig.AutoBrightnessRangeLevel[0].level_name = "Low";
+                            else if (value == 1)
+                                Start_ALSConfig.AutoBrightnessRangeLevel[0].level_name = "Mid";
+                            else
+                                Start_ALSConfig.AutoBrightnessRangeLevel[0].level_name = "High";
+                        }
                     }
-                }
-                NotifyPropertyChanged("AutoBrightnessRangeLevel_SelectedIndex");
-                NotifyPropertyChanged("AutoBrightnessRangeLevel_String");
+                    NotifyPropertyChanged("AutoBrightnessRangeLevel_SelectedIndex");
+                    NotifyPropertyChanged("AutoBrightnessRangeLevel_String");
+                    IsBusy = false;
+                    NotifyPropertyChanged("IsBusy");
+                }));                
             }
         }
 
