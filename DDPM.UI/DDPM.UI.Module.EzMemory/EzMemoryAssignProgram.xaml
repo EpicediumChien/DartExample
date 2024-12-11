@@ -17,9 +17,6 @@
 
     <UserControl.Resources>
         <ResourceDictionary>
-            <ResourceDictionary.MergedDictionaries>
-                <!-- <ResourceDictionary Source="/DDPM.UI.Common;component/ModuleStyle.xaml" /> -->
-            </ResourceDictionary.MergedDictionaries>
             <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
             <Style x:Key="UXTextBlock_Caption" TargetType="UXControls:UXTextBlock">
                 <Setter Property="FontSize" Value="16" />
@@ -92,7 +89,9 @@
                 <Setter Property="TextWrapping" Value="Wrap" />
                 <Setter Property="MaxWidth" Value="300" />
             </Style>
-            
+            <Style TargetType="Border">
+                <Setter Property="Background" Value="{DynamicResource DefaultTheme_BdSolidBkColor}" />
+            </Style>
             <local:WindowGridVisibilityConverter x:Key="WindowGridVisibilityConverter"/>
         </ResourceDictionary>
     </UserControl.Resources>
@@ -235,7 +234,8 @@
                     <!--<Image Grid.Row="0" Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Monitor_Outline.png" HorizontalAlignment="Center" VerticalAlignment="Center" Width="361.86" Height="280" />-->
 
                     <!-- Bottom Control Panel -->
-                    <Border Grid.Row="1" CornerRadius="10" Margin="0,236,0,0" Padding="16" Width="415" Height="auto" HorizontalAlignment="Center">
+                    <Border Grid.Row="1" CornerRadius="10" Margin="0,236,0,0" Padding="16" Width="415" Height="auto" HorizontalAlignment="Center"
+                            BorderThickness="2">
                         <StackPanel>
                             <!-- Window 1 Control -->
                             <Grid Margin="0,0,0,8">

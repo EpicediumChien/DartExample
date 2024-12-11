@@ -32,6 +32,7 @@
         <Border CornerRadius="5"
         Width="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=UserControl}}"
         Height="{Binding ActualHeight, RelativeSource={RelativeSource AncestorType=UserControl}}"
+        Background="{DynamicResource SpinnerBkColor}"
         BorderThickness="1" >
             <Grid Margin="0,30,0,0">
                 <UXControls:UXTextBlock Width="523" Height="40" VerticalAlignment="Top"
