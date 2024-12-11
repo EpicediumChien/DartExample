@@ -280,7 +280,7 @@ namespace DDPM.UI.Plugin.ViewModels
             set
             {
                 _isEnable_WalkAwayLock = value;
-                OnPropertyChanged("IsEnable_WalkAwayLock"); 
+                OnPropertyChanged("IsEnable_WalkAwayLock");
             }
         }
 
@@ -294,7 +294,7 @@ namespace DDPM.UI.Plugin.ViewModels
                 _isEnable_SnoozeLength = value;
                 OnPropertyChanged("IsEnable_SnoozeLength");
             }
-        }       
+        }
 
         public string WalkAwayLockStatus_String
         {
@@ -594,6 +594,13 @@ namespace DDPM.UI.Plugin.ViewModels
             WebcamSettingChanged?.Invoke(this, EventArgs.Empty);
 
             _isChecked_ProximitySensor = CurrentDeviceInfo!.IsProximitySensorEnable;
+            if (WebcamSettings.IsFirstTime)
+            {
+                IsChecked_ProximitySensor = false;
+                WebcamSettings.IsFirstTime = false;
+                WebcamSettings.ExportWebcamSettings(WebcamSettings, Model);
+            }
+
             IsMicEnumerationOnEnabled = true;
             AlertVisibility = Visibility.Collapsed;
             return true;
@@ -640,7 +647,7 @@ namespace DDPM.UI.Plugin.ViewModels
                     _focus = CurrentDeviceInfo.FocusMin;
                 }
                 else
-                    _focus =  focus;
+                    _focus = focus;
             }
             if (CurrentDeviceInfo.IsPropertyPrioritySupported)
             {
@@ -931,8 +938,8 @@ namespace DDPM.UI.Plugin.ViewModels
 
         public bool is_hdr_enable = true;
         public bool usb_hdr_enable = true;
-        public bool hdr_enable 
-        { 
+        public bool hdr_enable
+        {
             get => IsNotRecording && is_hdr_enable;
             set
             {
@@ -1022,7 +1029,7 @@ namespace DDPM.UI.Plugin.ViewModels
             get => CurrentDeviceInfo!.IsMicEnumerationOn;
             set
             {
-                if(!isIsMicEnumerationOnChanged_event)
+                if (!isIsMicEnumerationOnChanged_event)
                     DdpmCommonHelper.DeviceManagerSA!.SetIsMicEnumerationOn(value, CurrentDeviceInfo!.ID);
                 OnPropertyChanged();
                 OnPropertyChanged(nameof(IsMicEnumerationOnText));
@@ -1082,7 +1089,7 @@ namespace DDPM.UI.Plugin.ViewModels
             get => _isAutoFramingTransitionOn;
             set
             {
-                if (value != _isAutoFramingTransitionOn) 
+                if (value != _isAutoFramingTransitionOn)
                 {
                     _isAutoFramingTransitionOn = value;
                     DdpmCommonHelper.DeviceManagerSA!.SetIsAutoFramingTransitionOn(CurrentDeviceInfo!.ID.ToString(), value);
@@ -1794,7 +1801,7 @@ namespace DDPM.UI.Plugin.ViewModels
                     break;
                 case "AutoFramingFrameSize":
                     DdpmCommonHelper.DeviceManagerSA!.SetAutoFramingFrameSize(CurrentDeviceInfo!.ID.ToString(), (int)value);
-                    _autoFramingFrameSize= (int)value;
+                    _autoFramingFrameSize = (int)value;
                     OnPropertyChanged(nameof(AutoFramingFrameSize));
                     break;
                 case "FieldOfView":
