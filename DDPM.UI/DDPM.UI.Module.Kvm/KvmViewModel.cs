@@ -620,6 +620,14 @@ namespace DDPM.UI.Module.Kvm
             set => SetProperty(ref _isBusy, value);
         }
 
+        private bool _isKVMBusy = false;
+
+        public bool IsKVMBusy
+        {
+            get => _isKVMBusy;
+            set => SetProperty(ref _isKVMBusy, value);
+        }
+
         #endregion UI Enable Flags
 
         //public ObjGetVCP ret_PxP = new ObjGetVCP();
@@ -706,7 +714,7 @@ namespace DDPM.UI.Module.Kvm
                 bw.DoWork += DoWork_RefreshData;
                 bw.RunWorkerCompleted += RunWorkerCompleted_RefreshData;
                 bw.RunWorkerAsync(); //myArg is the optional argument
-                IsBusy = true;
+                IsKVMBusy = true;
             }
             else
             {
@@ -811,6 +819,8 @@ namespace DDPM.UI.Module.Kvm
                                     _PC1selectUSB = _usbsList.Find(x => (x.Type == pcsList["PC1"].USBUpstream));
                                     _PC2selectInput = _inputsList.Find(x => (x.Type == pcsList["PC2"].InputType));
                                     _PC2selectUSB = _usbsList.Find(x => (x.Type == pcsList["PC2"].USBUpstream));
+                                    PC1_Input = pcsList["PC1"].InputType;
+                                    PC2_Input = pcsList["PC2"].InputType;
                                     if (!USBKVMisON)
                                     {
                                         pcsList["PC1"].InputName = "PC1";
@@ -824,6 +834,7 @@ namespace DDPM.UI.Module.Kvm
                                         {
                                             _PC3selectInput = _inputsList.Find(x => (x.Type == pcsList["PC3"].InputType));
                                             _PC3selectUSB = _usbsList.Find(x => (x.Type == pcsList["PC3"].USBUpstream));
+                                            PC3_Input = pcsList["PC3"].InputType;
                                             if (!USBKVMisON)
                                             {
                                                 pcsList["PC3"].InputName = "PC3";
@@ -836,6 +847,7 @@ namespace DDPM.UI.Module.Kvm
                                                 {
                                                     _PC4selectInput = _inputsList.Find(x => (x.Type == pcsList["PC4"].InputType));
                                                     _PC4selectUSB = _usbsList.Find(x => (x.Type == pcsList["PC4"].USBUpstream));
+                                                    PC4_Input = pcsList["PC4"].InputType;
                                                     if (!USBKVMisON)
                                                     {
                                                         pcsList["PC4"].InputName = "PC4";
@@ -876,6 +888,10 @@ namespace DDPM.UI.Module.Kvm
                             //isUSBKVMButton = false;
                             //USBKVMButtonOpacity = 0.5;
                         }
+                        OnPropertyChanged("PC1_Input");
+                        OnPropertyChanged("PC2_Input");
+                        OnPropertyChanged("PC3_Input");
+                        OnPropertyChanged("PC4_Input");
                         OnPropertyChanged("PC1Inputs_Selected");
                         OnPropertyChanged("PC2Inputs_Selected");
                         OnPropertyChanged("PC3Inputs_Selected");
@@ -995,7 +1011,8 @@ namespace DDPM.UI.Module.Kvm
 
         private void RunWorkerCompleted_RefreshData(object sender, RunWorkerCompletedEventArgs e)
         {
-            IsBusy = false;
+            Thread.Sleep(1000);
+            IsKVMBusy = false;
             //Handling the result and final process
         }
 
@@ -1008,7 +1025,7 @@ namespace DDPM.UI.Module.Kvm
                 {
                     pcInfo.InputType = input.Key;
                     pcInfo.InputName = input.Value.InputName;
-                    pcInfo.USBUpstream = input.Value.USBUpstream;
+                    pcInfo.USBUpstream = DdpmCommonHelper.DeviceManagerSA.GetUSBUpstream(KvmModule.SelectedHomeDevice.MonitorInfo, input.Key).Result;
                     pcInfo.Code = input.Value.Code;
                     break;
                 }
@@ -1031,6 +1048,10 @@ namespace DDPM.UI.Module.Kvm
                 _PC4selectUSB = _usbsList.Find(x => (x.Type == pcsList[pcnum].USBUpstream));
             }
             //bool b = DdpmCommonHelper.DeviceManagerSA.SetUSBKVMPCsList(KvmModule.SelectedHomeDevice.MonitorInfo, pcsList).Result;
+            OnPropertyChanged("PC1_Input");
+            OnPropertyChanged("PC2_Input");
+            OnPropertyChanged("PC3_Input");
+            OnPropertyChanged("PC4_Input");
             OnPropertyChanged("PC1Inputs_Selected");
             OnPropertyChanged("PC2Inputs_Selected");
             OnPropertyChanged("PC3Inputs_Selected");
