@@ -39,6 +39,7 @@ namespace DDPM.UI.Common
 
         public string CurrentResolution { get => Resolutions[SelectedResolution]; }
         public string CurrentFPS { get => SelectedFPSs[SelectedResolution]; }
+        public bool IsFirstTime = true;
 
         public WebcamSettings(DeviceInfo? di = null)
         {
