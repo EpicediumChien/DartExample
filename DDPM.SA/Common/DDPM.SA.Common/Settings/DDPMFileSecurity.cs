@@ -1858,22 +1858,23 @@ namespace DDPM.SA.Common.Settings
             return true;
         }
 
+        // [sonarqube] This method signature overlaps
         //hashType: SHA256 / SHA512
-        public static bool StartProcessSafely(
-            ILog log, string filePath,
-            string arguments = "",
-            string fileHash = "",
-            string hashType = "SHA512",
-            bool isLockNeeded = false,
-            string givenThumbprintCheck = "")
-        {
-            string info = string.Empty;
-            if (!IsProcessInfoValid(log, filePath, fileHash, hashType, false, givenThumbprintCheck))
-                return false;
+        //public static bool StartProcessSafely(
+        //    ILog log, string filePath,
+        //    string arguments = "",
+        //    string fileHash = "",
+        //    string hashType = "SHA512",
+        //    bool isLockNeeded = false,
+        //    string givenThumbprintCheck = "")
+        //{
+        //    string info = string.Empty;
+        //    if (!IsProcessInfoValid(log, filePath, fileHash, hashType, false, givenThumbprintCheck))
+        //        return false;
 
-            StartProcessByOptions(log, null, filePath, arguments, isLockNeeded);
-            return true;
-        }
+        //    StartProcessByOptions(log, null, filePath, arguments, isLockNeeded);
+        //    return true;
+        //}
 
         //Start process without any criteria
         public static bool StartProcessSafely(
@@ -1922,31 +1923,32 @@ namespace DDPM.SA.Common.Settings
             return StartProcessByOptions(log, startInfo, "", "", isLockNeeded, isWaitExitCode);
         }
 
+        // [sonarqube] This method signature overlaps
         //hashType: SHA256 / SHA512
-        public static bool StartProcessSafely(
-            ILog log,
-            ProcessStartInfo startInfo,
-            string fileHash = "",
-            string hashType = "SHA512",
-            bool isWaitExitCode = false,
-            bool isLockNeeded = false,
-            string givenThumbprintCheck = "")
-        {
-            string info = string.Empty;
-            if (startInfo == null)
-            {
-                if (log != null)
-                    log.Error("[StartProcessSafely] null process StartInfo");
-                return false;
-            }
+        //public static bool StartProcessSafely(
+        //    ILog log,
+        //    ProcessStartInfo startInfo,
+        //    string fileHash = "",
+        //    string hashType = "SHA512",
+        //    bool isWaitExitCode = false,
+        //    bool isLockNeeded = false,
+        //    string givenThumbprintCheck = "")
+        //{
+        //    string info = string.Empty;
+        //    if (startInfo == null)
+        //    {
+        //        if (log != null)
+        //            log.Error("[StartProcessSafely] null process StartInfo");
+        //        return false;
+        //    }
 
-            string filePath = startInfo.FileName;
+        //    string filePath = startInfo.FileName;
 
-            if (!IsProcessInfoValid(log, filePath, fileHash, hashType, false, givenThumbprintCheck))
-                return false;
+        //    if (!IsProcessInfoValid(log, filePath, fileHash, hashType, false, givenThumbprintCheck))
+        //        return false;
 
-            return StartProcessByOptions(log, startInfo, "", "", isLockNeeded, isWaitExitCode);
-        }
+        //    return StartProcessByOptions(log, startInfo, "", "", isLockNeeded, isWaitExitCode);
+        //}
 
         //public static X509Certificate2 LoadFileCertificate(string strFilePath)
         //{

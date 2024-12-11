@@ -188,7 +188,7 @@ namespace DDPM.EABroker
             });
         }
 
-        public void RefreshCellRects(int flag=0)
+        public void RefreshCellRects(int flag)
         {
             if (_workSplit == null)
                 return;
