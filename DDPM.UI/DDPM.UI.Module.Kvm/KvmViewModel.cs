@@ -1013,7 +1013,7 @@ namespace DDPM.UI.Module.Kvm
             }
             catch (Exception ex)
             {
-                _log.Error("[DoWork_RefreshData] exception:" + ex.Message);
+                _log.Error(ex, "[DoWork_RefreshData] exception");
             }
         }
 
