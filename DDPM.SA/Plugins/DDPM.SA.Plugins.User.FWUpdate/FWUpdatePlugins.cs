@@ -893,7 +893,10 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                         _logs.DebugMsg_1($"{nameof(DownloadAndInstall)} ServerPath : {url}");
                     }
                     string _installationFileStoragePath = Path.Combine(savePath + Path.GetFileName(url));
+                    _logs.DebugMsg_1($"{nameof(DownloadAndInstall)} download.DownloadFile go");
                     bool downloadRet = download.DownloadFile(url, _installationFileStoragePath, out downloadInfo, _IsSkipCA);
+                    _logs.DebugMsg_1($"{nameof(DownloadAndInstall)} download.DownloadFile finish");
+                    _downloadTimer.Elapsed -= new ElapsedEventHandler(DownloadTimer_Elapsed);
                     _downloadTimer.Stop();
                     UpdateProgressInfo updateProgressInfo = new UpdateProgressInfo()
                     {
@@ -1008,6 +1011,12 @@ namespace DDPM.SA.Plugins.User.FWUpdate
             }
             catch (Exception ex)
             {
+                if (_downloadTimer != null)
+                {
+                    _downloadTimer.Elapsed -= new ElapsedEventHandler(DownloadTimer_Elapsed);
+                    _downloadTimer.Stop();
+                    _downloadTimer = null;
+                }
                 foreach (FWUpdateInfo deviceInfo in fwUpdateInfos)
                 {
                     deviceInfo.FWUErrorCode = FWUErrorCode.NetworkDisconnection;
