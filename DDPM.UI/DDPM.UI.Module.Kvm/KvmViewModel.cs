@@ -750,6 +750,7 @@ namespace DDPM.UI.Module.Kvm
 
                 if (mi.CapabilityDic.ContainsKey("EE"))
                 {
+                    _log?.Debug("[KvmViewModel]Have 0xEE");
                     //If arg is specified, you can get it with below code
                     //myArgType arg = (myArgType)e.Argument;
                     inputList = new Dictionary<string, InputInfo>();
@@ -888,30 +889,32 @@ namespace DDPM.UI.Module.Kvm
                             //isUSBKVMButton = false;
                             //USBKVMButtonOpacity = 0.5;
                         }
-                        OnPropertyChanged("PC1_Input");
-                        OnPropertyChanged("PC2_Input");
-                        OnPropertyChanged("PC3_Input");
-                        OnPropertyChanged("PC4_Input");
-                        OnPropertyChanged("PC1Inputs_Selected");
-                        OnPropertyChanged("PC2Inputs_Selected");
-                        OnPropertyChanged("PC3Inputs_Selected");
-                        OnPropertyChanged("PC4Inputs_Selected");
-                        OnPropertyChanged("PC1USB_Selected");
-                        OnPropertyChanged("PC2USB_Selected");
-                        OnPropertyChanged("PC3USB_Selected");
-                        OnPropertyChanged("PC4USB_Selected");
-                        OnPropertyChanged("PCImage");
 
-                        #region PIP/PIP
-                        if (mi.CapabilityDic.ContainsKey("E8"))
+
+                        #region PIP/PBP
+                        _log?.Debug("[KvmViewModel]PIP/PBP...");
+                        if (mi.CapabilityDic.ContainsKey("E9"))
                         {
+                            _log?.Debug("[KvmViewModel]Have 0xE9");
                             if (!DdpmCommonHelper.DeviceManagerSA.isScreenPartition(mi).Result)
                             {
                                 //isPxP = Visibility.Visible;
                                 //NoPxP = Visibility.Collapsed;
                                 //Get the Pxp Capabilities
-                                _pipPbpCaps = DdpmCommonHelper.DeviceManagerSA.GetPipPbpCapabilitiesWords(mi).Result;
-                                OnPipPbpCapsChanged();
+                                //_pipPbpCaps = DdpmCommonHelper.DeviceManagerSA.GetPipPbpCapabilitiesWords(mi).Result;
+                                string _pxpString = string.Empty;
+                                foreach (string str in mi.CapabilityDic["E9"])
+                                {
+                                    if (_pxpString == string.Empty)
+                                    {
+                                        _pxpString = str;
+                                    }
+                                    else
+                                    {
+                                        _pxpString = _pxpString + " " + str;
+                                    }
+                                }
+                                _pipPbpCaps = DdpmCommonHelper.ParsingHexStringToWords(_pxpString);
 
                                 //Check if this monitor has Pxp mode capabilities
                                 if ((_pipPbpCaps != null) && (_pipPbpCaps.Length > 0))
@@ -970,6 +973,11 @@ namespace DDPM.UI.Module.Kvm
                                         }
                                     }
                                 }
+                                else
+                                {
+                                    _log.Debug("[KvmViewModel] _pipPbpCaps is null or Length not > 0");
+                                }
+
                                 //else
                                 //{
                                 //    isUSBKVMButton = false;
@@ -999,20 +1007,35 @@ namespace DDPM.UI.Module.Kvm
                         //    NoPxP = Visibility.Visible;
                         //    isPxP = Visibility.Collapsed;
                         //}
-                        #endregion PIP/PIP
+                        #endregion PIP/PBP
                     }
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                ;
+                _log.Error("[DoWork_RefreshData] exception:" + ex.Message);
             }
         }
 
         private void RunWorkerCompleted_RefreshData(object sender, RunWorkerCompletedEventArgs e)
         {
-            Thread.Sleep(1000);
+            _log.Debug("[KvmViewModel] RunWorkerCompleted_RefreshData start");
+            OnPropertyChanged("PC1_Input");
+            OnPropertyChanged("PC2_Input");
+            OnPropertyChanged("PC3_Input");
+            OnPropertyChanged("PC4_Input");
+            OnPropertyChanged("PC1Inputs_Selected");
+            OnPropertyChanged("PC2Inputs_Selected");
+            OnPropertyChanged("PC3Inputs_Selected");
+            OnPropertyChanged("PC4Inputs_Selected");
+            OnPropertyChanged("PC1USB_Selected");
+            OnPropertyChanged("PC2USB_Selected");
+            OnPropertyChanged("PC3USB_Selected");
+            OnPropertyChanged("PC4USB_Selected");
+            OnPropertyChanged("PCImage");
+            OnPipPbpCapsChanged();
             IsKVMBusy = false;
+            _log.Debug("[KvmViewModel] RunWorkerCompleted_RefreshData End");
             //Handling the result and final process
         }
 
