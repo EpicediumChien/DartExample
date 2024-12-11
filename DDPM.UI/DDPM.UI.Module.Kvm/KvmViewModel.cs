@@ -1475,7 +1475,7 @@ namespace DDPM.UI.Module.Kvm
             DdpmCommonHelper.DeviceManagerSA.NKVM_State(true).Wait();
             if (DdpmCommonHelper.DeviceManagerSA.IsNamedpipeConnected().Result)
             {
-//#if DEBUG
+                //#if DEBUG
                 isOnNKVM(true);
                 _log.Debug("NKVMOpenUI...");
                 DdpmCommonHelper.DeviceManagerSA.CallShowNKVM(0, 100, 100).Wait();
@@ -1486,11 +1486,11 @@ namespace DDPM.UI.Module.Kvm
             else
             {
                 DdpmCommonHelper.DeviceManagerSA.CreatNewNamedpipe().Wait();
-//#if DEBUG
-//                DdpmCommonHelper.DeviceManagerSA.CallShowNKVM(0, 100, 100).Wait();
-//#else
-//                OpenNKVMUI(0, 100, 100);
-//#endif
+                //#if DEBUG
+                //                DdpmCommonHelper.DeviceManagerSA.CallShowNKVM(0, 100, 100).Wait();
+                //#else
+                //                OpenNKVMUI(0, 100, 100);
+                //#endif
                 int i = 0;
                 while (!DdpmCommonHelper.DeviceManagerSA.IsNamedpipeConnected().Result && i < 20)
                 {
@@ -1641,7 +1641,13 @@ namespace DDPM.UI.Module.Kvm
             OnPropertyChanged("PC4Inputs_Selected");
             OnPropertyChanged("PCImage");
         }
-
+        public bool isPxpModeOn
+        {
+            get
+            {
+                return _curPxpMode != 0;
+            }
+        }
         #region Event
         /// <summary>
         /// Catch OSD menu event
