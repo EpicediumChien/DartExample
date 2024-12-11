@@ -227,22 +227,34 @@ namespace DDPM.SA.Common.Settings
             //}
 
             string json_content = string.Empty;
+            string filePath_sanitized = string.Empty;
             try
             {
-                if (ValidateFilePath(filePath, out info))
+                filePath_sanitized = SanitizePath(filePath, out info);
+                if (!string.IsNullOrEmpty(filePath_sanitized))
                 {
-                    using (FileLock fileLock = new FileLock(filePath, PathCheckOption.None, lockNow: true))
+                    if (ValidateFilePath(filePath_sanitized, out info))
                     {
-                        //1. Read json content
-                        json_content = File.ReadAllText(filePath);
+                        using (FileLock fileLock = new FileLock(filePath_sanitized, PathCheckOption.None, lockNow: true))
+                        {
+                            //1. Read json content
+                            json_content = File.ReadAllText(filePath_sanitized);
+                        }
+                    }
+                    else
+                    {
+#if DEBUG
+                        Console.WriteLine($"[GetSerializedJsonString] ValidateFilePath failed: {info}, path: {filePath}");
+#endif
+                        throw new Exception(info);
                     }
                 }
                 else
                 {
 #if DEBUG
-                    Console.WriteLine($"[GetSerializedJsonString] ValidateFilePath failed: {info}");
+                    Console.WriteLine($"[GetSerializedJsonString] SanitizePath failed: {info}, path: {filePath}");
 #endif
-                    throw new Exception(info);
+                    return string.Empty;
                 }
             }
             catch (Exception ex)

@@ -1171,40 +1171,56 @@ namespace DDPM.SA.Plugins.User.EzMemory
             {
                 string info = string.Empty;
                 string filePath = (appData.AppType == "False") ? "explorer.exe" : appData.AppPath;
-
+                string argument = string.Empty;
+                string argument_sanitized = string.Empty;
+                string filePath_sanitized = string.Empty;
                 if (appData.AppType == "False")
                 {
-                    if (!string.IsNullOrEmpty(DDPMFileSecurity.SanitizePath(filePath, out info)))//add path check for checkmarx issue fix, Dean 1208
+                    filePath_sanitized = DDPMFileSecurity.SanitizePath(filePath, out info);
+                    if (!string.IsNullOrEmpty(filePath_sanitized))//add path check for checkmarx issue fix, Dean 1211
                     {
-                        // UWP 應用程式
-                        ProcessStartInfo startInfo = new ProcessStartInfo
+                        argument = $"shell:AppsFolder\\{appData.AppUserModelID}";
+                        argument_sanitized = DDPMFileSecurity.SanitizePath(argument, out info);
+                        if (!string.IsNullOrEmpty(argument_sanitized))
                         {
-                            FileName = filePath,
-                            Arguments = $"shell:AppsFolder\\{appData.AppUserModelID}",
-                            UseShellExecute = true
-                        };
-                        _logs.Info($"[EzMemoryManagerPlugin] LaunchApp, Launching UWP app: {appData.AppName}");
-                        process = Process.Start(startInfo);
+                            // UWP 應用程式
+                            ProcessStartInfo startInfo = new ProcessStartInfo
+                            {
+                                FileName = filePath_sanitized,
+                                Arguments = argument_sanitized,
+                                UseShellExecute = true
+                            };
+                            _logs.Info($"[EzMemoryManagerPlugin] LaunchApp, Launching UWP app: {appData.AppName}");
+                            process = Process.Start(startInfo);
+                        }
+                        else
+                            throw new Exception($"argument SanitizePath check return empty: {argument}, {info}");
                     }
                     else
-                        throw new Exception("filePath SanitizePath check return empty: {filePath}, {info}");
+                        throw new Exception($"filePath SanitizePath check return empty: {filePath}, {info}");
                 }
                 else
                 {
-                    if (DDPMFileSecurity.ValidateFilePath(filePath, out info)) //add path check for checkmarx issue fix, Dean 1208
+                    // Desktop exe或檔案
+                    filePath_sanitized = DDPMFileSecurity.SanitizePath(filePath, out info);
+                    if (!string.IsNullOrEmpty(filePath_sanitized))//add path check for checkmarx issue fix, Dean 1211
                     {
-                        // Desktop exe或檔案
-                        ProcessStartInfo startInfo = new ProcessStartInfo
+                        if (DDPMFileSecurity.ValidateFilePath(filePath_sanitized, out info)) //add path check for checkmarx issue fix, Dean 1208
                         {
-                            FileName = filePath,
-                            UseShellExecute = true,  // 系統自動選擇應用程式來開啟
-                            Verb = "open"            // 指定開啟檔案的動作
-                        };
-                        _logs.Info($"[EzMemoryManagerPlugin] LaunchApp, Launching desktop app or file: {appData.AppName}");
-                        process = Process.Start(startInfo);
+                            ProcessStartInfo startInfo = new ProcessStartInfo
+                            {
+                                FileName = filePath_sanitized,
+                                UseShellExecute = true,  // 系統自動選擇應用程式來開啟
+                                Verb = "open"            // 指定開啟檔案的動作
+                            };
+                            _logs.Info($"[EzMemoryManagerPlugin] LaunchApp, Launching desktop app or file: {appData.AppName}");
+                            process = Process.Start(startInfo);
+                        }
+                        else
+                            throw new Exception($"filePath validation return fail: {filePath_sanitized}, {info}");
                     }
                     else
-                        throw new Exception("filePath validation return fail: {filePath}, {info}");
+                        throw new Exception($"filePath SanitizePath check return empty: {filePath}, {info}");
                 }
 
                 if (process != null)
