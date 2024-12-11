@@ -18,6 +18,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Reflection;
 using DDPM.SA.Obfuscation;
+using DDPM.SA.Common.Method;
 
 namespace DDPM.Subagent
 {
@@ -53,6 +54,7 @@ namespace DDPM.Subagent
 
         private static void Main(string[] args)
         {
+            ProcessMitigationPolicy.ApplySystemProcessPolicy();
             //#if DEBUG
             /*
              * Get the executing assembly so the ProductVersion can be populated
