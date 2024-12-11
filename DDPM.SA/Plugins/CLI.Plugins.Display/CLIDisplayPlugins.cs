@@ -9128,7 +9128,7 @@ namespace DDPM.CLI.Plugins.Display
                                 get_DeviceData.ColorManagement = devMgr.GetColorManagementStatus(monitor).Result;
 
                                 writelog($"SpeakerVolume Entry (62, 8D)");
-                                if (monitor.CapabilityDic.ContainsKey("62") && monitor.CapabilityDic["62"] != null && monitor.CapabilityDic["62"].Contains("FE") && monitor.CapabilityDic["62"].Contains("FF") && monitor.CapabilityDic["62"].Contains("C000") && monitor.CapabilityDic.ContainsKey("8D") && monitor.CapabilityDic["8D"] != null && monitor.CapabilityDic["8D"].Contains("01") && monitor.CapabilityDic["8D"].Contains("02") && monitor.CapabilityDic["8D"].Contains("C000"))
+                                if (monitor.CapabilityDic.ContainsKey("62") && monitor.CapabilityDic["62"] != null && monitor.CapabilityDic["62"].Contains("FE") && monitor.CapabilityDic["62"].Contains("FF") && monitor.CapabilityDic.ContainsKey("8D") && monitor.CapabilityDic["8D"] != null && monitor.CapabilityDic["8D"].Contains("01") && monitor.CapabilityDic["8D"].Contains("02"))
                                 {
                                     rc = GetVCPCode(devMgr, monitor, "0x62").Result;
                                     int getvalue = Convert.ToInt32(rc.value);
@@ -9140,7 +9140,7 @@ namespace DDPM.CLI.Plugins.Display
                                 writelog($"SpeakerVolume  (62, 8D) Exit return value: {get_DeviceData.SpeakerVolume} ,SpeakerMicrophone {get_DeviceData.SpeakerMicrophone} ");
 
                                 writelog($"SpeakerVolume Entry (62)");
-                                if (monitor.CapabilityDic.ContainsKey("62") && monitor.CapabilityDic["62"] != null && monitor.CapabilityDic["62"].Contains("FE") && monitor.CapabilityDic["62"].Contains("FF") && monitor.CapabilityDic["62"].Contains("C000"))
+                                if (monitor.CapabilityDic.ContainsKey("62") && monitor.CapabilityDic["62"] != null && monitor.CapabilityDic["62"].Contains("FE") && monitor.CapabilityDic["62"].Contains("FF"))
                                 {
                                     rc = GetVCPCode(devMgr, monitor, "0x62").Result;
                                     int getvalue = Convert.ToInt32(rc.value);
@@ -9153,7 +9153,7 @@ namespace DDPM.CLI.Plugins.Display
                                 writelog($"SpeakerVolume  (62) Exit return value: {get_DeviceData.SpeakerVolume}");
 
                                 writelog($"MicrophoneControl Entry");
-                                if (monitor.CapabilityDic.ContainsKey("8D") && monitor.CapabilityDic["8D"] != null && monitor.CapabilityDic["8D"].Contains("01") && monitor.CapabilityDic["8D"].Contains("02") && monitor.CapabilityDic["8D"].Contains("C000"))
+                                if (monitor.CapabilityDic.ContainsKey("8D") && monitor.CapabilityDic["8D"] != null && monitor.CapabilityDic["8D"].Contains("01") && monitor.CapabilityDic["8D"].Contains("02"))
                                 {
                                     rc = GetVCPCode(devMgr, monitor, "0x8D").Result;
                                     int getvalue = Convert.ToInt32(rc.value);
@@ -9401,7 +9401,7 @@ namespace DDPM.CLI.Plugins.Display
                     get_DeviceData.ColorManagement = devMgr.GetColorManagementStatus(monitor).Result;
 
                     writelog($"SpeakerVolume Entry (62, 8D)");
-                    if (monitor.CapabilityDic.ContainsKey("62") && monitor.CapabilityDic["62"] != null && monitor.CapabilityDic["62"].Contains("FE") && monitor.CapabilityDic["62"].Contains("FF") && monitor.CapabilityDic["62"].Contains("C000") && monitor.CapabilityDic.ContainsKey("8D") && monitor.CapabilityDic["8D"] != null && monitor.CapabilityDic["8D"].Contains("01") && monitor.CapabilityDic["8D"].Contains("02") && monitor.CapabilityDic["8D"].Contains("C000"))
+                    if (monitor.CapabilityDic.ContainsKey("62") && monitor.CapabilityDic["62"] != null && monitor.CapabilityDic["62"].Contains("FE") && monitor.CapabilityDic["62"].Contains("FF") && monitor.CapabilityDic.ContainsKey("8D") && monitor.CapabilityDic["8D"] != null && monitor.CapabilityDic["8D"].Contains("01") && monitor.CapabilityDic["8D"].Contains("02"))
                     {
                         rc = GetVCPCode(devMgr, monitor, "0x62").Result;
                         int getvalue = Convert.ToInt32(rc.value);
@@ -9413,7 +9413,7 @@ namespace DDPM.CLI.Plugins.Display
                     writelog($"SpeakerVolume  (62, 8D) Exit return value: {get_DeviceData.SpeakerVolume} ,SpeakerMicrophone {get_DeviceData.SpeakerMicrophone} ");
 
                     writelog($"SpeakerVolume Entry (62)");
-                    if (monitor.CapabilityDic.ContainsKey("62") && monitor.CapabilityDic["62"] != null && monitor.CapabilityDic["62"].Contains("FE") && monitor.CapabilityDic["62"].Contains("FF") && monitor.CapabilityDic["62"].Contains("C000"))
+                    if (monitor.CapabilityDic.ContainsKey("62") && monitor.CapabilityDic["62"] != null && monitor.CapabilityDic["62"].Contains("FE") && monitor.CapabilityDic["62"].Contains("FF"))
                     {
                         rc = GetVCPCode(devMgr, monitor, "0x62").Result;
                         int getvalue = Convert.ToInt32(rc.value);
@@ -9426,7 +9426,7 @@ namespace DDPM.CLI.Plugins.Display
                     writelog($"SpeakerVolume  (62) Exit return value: {get_DeviceData.SpeakerVolume}");
 
                     writelog($"MicrophoneControl Entry");
-                    if (monitor.CapabilityDic.ContainsKey("8D") && monitor.CapabilityDic["8D"] != null && monitor.CapabilityDic["8D"].Contains("01") && monitor.CapabilityDic["8D"].Contains("02") && monitor.CapabilityDic["8D"].Contains("C000"))
+                    if (monitor.CapabilityDic.ContainsKey("8D") && monitor.CapabilityDic["8D"] != null && monitor.CapabilityDic["8D"].Contains("01") && monitor.CapabilityDic["8D"].Contains("02"))
                     {
                         rc = GetVCPCode(devMgr, monitor, "0x8D").Result;
                         int getvalue = Convert.ToInt32(rc.value);
@@ -11691,19 +11691,28 @@ namespace DDPM.CLI.Plugins.Display
                                                 break;
                                             case "SPEAKERMICROPHONE":
                                                 writelog($"SpeakerMicrophone entry");
-                                                if (monitor.CapabilityDic.ContainsKey("62") && monitor.CapabilityDic["62"] != null && monitor.CapabilityDic["62"].Contains("FE") && monitor.CapabilityDic["62"].Contains("FF") && monitor.CapabilityDic["62"].Contains("C000") && monitor.CapabilityDic.ContainsKey("8D") && monitor.CapabilityDic["8D"] != null && monitor.CapabilityDic["8D"].Contains("01") && monitor.CapabilityDic["8D"].Contains("02") && monitor.CapabilityDic["8D"].Contains("C000"))
+                                                if (monitor.CapabilityDic.ContainsKey("62") && monitor.CapabilityDic["62"] != null && monitor.CapabilityDic["62"].Contains("FE") && monitor.CapabilityDic["62"].Contains("FF") && monitor.CapabilityDic.ContainsKey("8D") && monitor.CapabilityDic["8D"] != null && monitor.CapabilityDic["8D"].Contains("01") && monitor.CapabilityDic["8D"].Contains("02"))
                                                 {
-                                                    rc = GetVCPCode(devMgr, monitor, "0x62").Result;
-                                                    int getvalue = Convert.ToInt32(rc.value);
-                                                    retcode = SetVCPCode(devMgr, monitor, "0x62", get_SpeakerMicrophone(property.Value.ToString(), getvalue)).Result;
+                                                    if (property.Value.ToString().Contains("LOCK") && (!monitor.CapabilityDic["62"].Contains("C000") || !monitor.CapabilityDic["8D"].Contains("C000")))
+                                                    {
+                                                        ApplyConfiguration.SpeakerMicrophone = "N/A";
+                                                        writelog($"SpeakerMicrophone VCP not support lock/unlock");
+                                                        output += $"\n  \"Result: \": \"SpeakerMicrophone VCP not support lock/unlock\"";
+                                                    }
+                                                    else
+                                                    {
+                                                        rc = GetVCPCode(devMgr, monitor, "0x62").Result;
+                                                        int getvalue = Convert.ToInt32(rc.value);
+                                                        retcode = SetVCPCode(devMgr, monitor, "0x62", get_SpeakerMicrophone(property.Value.ToString(), getvalue)).Result;
 
-                                                    rc = GetVCPCode(devMgr, monitor, "0x8D").Result;
-                                                    int getvalue2 = Convert.ToInt32(rc.value);
-                                                    bool retcode2 = SetVCPCode(devMgr, monitor, "0x8D", get_SpeakerMicrophone(property.Value.ToString(), getvalue2)).Result;
+                                                        rc = GetVCPCode(devMgr, monitor, "0x8D").Result;
+                                                        int getvalue2 = Convert.ToInt32(rc.value);
+                                                        bool retcode2 = SetVCPCode(devMgr, monitor, "0x8D", get_SpeakerMicrophone(property.Value.ToString(), getvalue2)).Result;
 
-                                                if (!retcode && !retcode2) ispass = false;
-                                                    else ApplyConfiguration.SpeakerMicrophone = property.Value.ToString();
-                                                    writelog($"SpeakerMicrophone={ApplyConfiguration.SpeakerMicrophone}");
+                                                        if (!retcode && !retcode2) ispass = false;
+                                                        else ApplyConfiguration.SpeakerMicrophone = property.Value.ToString();
+                                                        writelog($"SpeakerMicrophone={ApplyConfiguration.SpeakerMicrophone}");
+                                                    }
                                                 }
                                                 else
                                                 {
@@ -11716,7 +11725,7 @@ namespace DDPM.CLI.Plugins.Display
 
                                             case "SPEAKERVOLUME":
                                                 writelog($"SpeakerVolume entry");
-                                                if (monitor.CapabilityDic.ContainsKey("62") && monitor.CapabilityDic["62"] != null && monitor.CapabilityDic["62"].Contains("FE") && monitor.CapabilityDic["62"].Contains("FF") && monitor.CapabilityDic["62"].Contains("C000"))
+                                                if (monitor.CapabilityDic.ContainsKey("62") && monitor.CapabilityDic["62"] != null && monitor.CapabilityDic["62"].Contains("FE") && monitor.CapabilityDic["62"].Contains("FF"))
                                                 {
                                                     rc = GetVCPCode(devMgr, monitor, "0x62").Result;
                                                     int getvalue = Convert.ToInt32(rc.value);
@@ -11740,7 +11749,7 @@ namespace DDPM.CLI.Plugins.Display
 
                                             case "MICROPHONECONTROL":
                                                 writelog($"MicrophoneControl entry");
-                                                if (monitor.CapabilityDic.ContainsKey("8D") && monitor.CapabilityDic["8D"] != null && monitor.CapabilityDic["8D"].Contains("01") && monitor.CapabilityDic["8D"].Contains("02") && monitor.CapabilityDic["8D"].Contains("C000"))
+                                                if (monitor.CapabilityDic.ContainsKey("8D") && monitor.CapabilityDic["8D"] != null && monitor.CapabilityDic["8D"].Contains("01") && monitor.CapabilityDic["8D"].Contains("02"))
                                                 {
                                                     rc = GetVCPCode(devMgr, monitor, "0x8D").Result;
                                                     int getvalue = Convert.ToInt32(rc.value);
@@ -12462,7 +12471,7 @@ namespace DDPM.CLI.Plugins.Display
                             {
                                 if (commandLineInput.Options[0].Option_Value.Contains("LOCK") && (!monitor.CapabilityDic["62"].Contains("C000") || !monitor.CapabilityDic["8D"].Contains("C000")))
                                 {
-                                    somethingfail |= 0x10;
+                                    somethingfail |= 0x03;
                                 }
                                 else
                                 {
@@ -12478,9 +12487,11 @@ namespace DDPM.CLI.Plugins.Display
                                     else
                                         somethingfail |= 0x01;
 
-                                    while (!_AllInfoMonitors.Any(_ => _.edid.ServiceTag == monitor.edid.ServiceTag))
+                                    int count = 0;
+                                    while (!_AllInfoMonitors.Any(_ => _.edid.ServiceTag == monitor.edid.ServiceTag) && count < 1000)
                                     {
                                         _AllInfoMonitors = devMgr.GetMonitors().Result;
+                                        count++;
                                     }
 
                                     monitor = _AllInfoMonitors.FirstOrDefault(_ => _.edid.ServiceTag == serviceTag);
