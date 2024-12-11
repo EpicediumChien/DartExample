@@ -15,7 +15,7 @@ namespace DDPM.UI.Plugin.Common.Tests
         [SetUp]
         public void Setup()
         {
-            learnMorePage = new LearnMorePage(1.0, 2.0, "parameter");
+            learnMorePage = new LearnMorePage(1.0, 2.0, "parameter", "model", "fwversion");
         }
 
         [Test]
