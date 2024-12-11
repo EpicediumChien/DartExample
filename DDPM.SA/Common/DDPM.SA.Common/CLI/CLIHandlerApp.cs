@@ -23,7 +23,7 @@ namespace DDPM.SA.Common.CLI
             response.Command = commandLineInput.Command;
             response.Message = "Operation Completed";
             response.Result = "Pass";
-            response.Value = "N/A";
+            response.Value = !string.IsNullOrWhiteSpace(commandLineInput.Options[0].Option_Value) ? commandLineInput.Options[0].Option_Value : "N/A";
             rst.serialize_Json_response = JsonConvert.SerializeObject(response, Formatting.Indented);
             rst.ExitCode = (int)CLI_ExitCode.success;
             return rst;
@@ -374,7 +374,7 @@ namespace DDPM.SA.Common.CLI
                 return CLI_Response_OptionNameNotSupport(commandLineInput, result, op);
             }
             string value = op.Option_Value;
-            if (value.ToUpper().Equals("LOCK") || value.ToUpper().Equals("ENABLE"))
+            if (value.ToUpper().Equals("LOCK") || value.ToUpper().Equals("ON") )//value.ToUpper().Equals("ENABLE"))
             {
                 if (data_IT != null)
                 {
@@ -485,7 +485,7 @@ namespace DDPM.SA.Common.CLI
                     }
                 }
             }
-            else if (value.ToUpper().Equals("UNLOCK") || value.ToUpper().Equals("DISABLE"))
+            else if (value.ToUpper().Equals("UNLOCK") || value.ToUpper().Equals("OFF"))//value.ToUpper().Equals("DISABLE")
             {
                 if (data_IT != null)
                 {

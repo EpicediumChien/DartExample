@@ -43,11 +43,12 @@ namespace DDPM.OSDs
                 this.WindowState = WindowState.Maximized;
                 this.Topmost = true;
 
-                time = TimeSpan.FromMilliseconds(5000);
-                animationTimer = new DispatcherTimer();
-                animationTimer.Interval = TimeSpan.FromMilliseconds(1000);
-                animationTimer.Tick += RunTimerTick;
-                animationTimer.Start();
+                //Derek 1209 OSD don't need to auto close
+                //time = TimeSpan.FromMilliseconds(5000);
+                //animationTimer = new DispatcherTimer();
+                //animationTimer.Interval = TimeSpan.FromMilliseconds(1000);
+                //animationTimer.Tick += RunTimerTick;
+                //animationTimer.Start();
             }
             //else
             //{

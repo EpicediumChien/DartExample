@@ -217,7 +217,7 @@ namespace DDPM.Easy.Common
         #region FriendlyName
         private string _friendlyName = string.Empty;
         private string _defaultHorzName = "Option 6.5: 2 rows, split 30/70%. Row 1, split equally in 3 sections. Row 2, split 30/70%. Column 1, split equally. Column 2, no split.";
-        private string _defaultVertName = "Option 6.5: 2 columns, split 30/70%. Row 1, split 30/70%. Row 2, split equally in 3 sections. Column 1, split equally. Column 2, no split. ";
+        private string _defaultVertName = "Option 6.5: 2 columns, split 30/70%. Row 1, split 30/70%. Row 2, split equally in 3 sections. Column 1, split equally. Column 2, no split.";
         public string FriendlyName
         {
             get

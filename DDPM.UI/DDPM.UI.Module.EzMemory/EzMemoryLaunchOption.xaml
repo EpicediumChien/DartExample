@@ -176,11 +176,23 @@
                                 <!-- Radio Buttons for Manual or Automatic Launch -->
                                 <StackPanel Orientation="Vertical" Margin="0,8,0,0">
                                     <StackPanel Orientation="Horizontal" Margin="0,8,0,0" Width="305" Height="28">
-                                        <UXControls:UXRadioButton x:Name="ManulRB" Grid.Row="1" Content="{Binding [EazyMemory.14], Source={x:Static lang:LangHelper.Instance}, Mode=OneWay}" FontSize="16" Height="36"  Margin="8,2,0,2" IsChecked="{Binding IsManualLaunch}" />
+                                        <UXControls:UXRadioButton x:Name="ManulRB" Grid.Row="1" Content="{Binding [EazyMemory.14], Source={x:Static lang:LangHelper.Instance}, Mode=OneWay}" FontSize="16" Height="36"  Margin="8,2,0,2" IsChecked="{Binding IsManualLaunch}">
+                                            <UXControls:UXRadioButton.Resources>
+                                                <Style TargetType="Border">
+                                                    <Setter Property="Background" Value="Transparent" />
+                                                </Style>
+                                            </UXControls:UXRadioButton.Resources>
+                                        </UXControls:UXRadioButton>
                                     </StackPanel>
 
                                     <StackPanel Orientation="Horizontal" Margin="0,8,0,0" Width="305" Height="28">
-                                        <UXControls:UXRadioButton x:Name="AutoRB" Grid.Row="2" Content="{Binding [EazyMemory.15], Source={x:Static lang:LangHelper.Instance}, Mode=OneWay}" FontSize="16" Height="36"  Margin="8,2,0,2" IsChecked="{Binding IsAutoLaunch}" />
+                                        <UXControls:UXRadioButton x:Name="AutoRB" Grid.Row="2" Content="{Binding [EazyMemory.15], Source={x:Static lang:LangHelper.Instance}, Mode=OneWay}" FontSize="16" Height="36"  Margin="8,2,0,2" IsChecked="{Binding IsAutoLaunch}">
+                                            <UXControls:UXRadioButton.Resources>
+                                                <Style TargetType="Border">
+                                                    <Setter Property="Background" Value="Transparent" />
+                                                </Style>
+                                            </UXControls:UXRadioButton.Resources>
+                                        </UXControls:UXRadioButton>
                                     </StackPanel>
 
                                     <!-- Time Picker Controls (Disabled when manually select is checked) -->
