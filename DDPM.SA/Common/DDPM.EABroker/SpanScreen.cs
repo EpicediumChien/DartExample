@@ -56,8 +56,11 @@ namespace DDPM.EABroker
             List<EAScreen> allScreens = EAScreen.GetEAScreens(monitors);
             //allScreens: all Screens with attached Monitors
 
+            //Robert_Lin, 2024-12-10 allow non-dell monitor to SpanScreen.
+            //When DisplaySettingsChanged, DisplayManager is waiting all monitors ready
+            //At this moment, AllMonitors may be null
             //To remove all EAScreens which as no Dell screent attached
-            allScreens.RemoveAll(x => !x.HasAttachedMonitor);
+            //allScreens.RemoveAll(x => !x.HasAttachedMonitor);
 
 
             List<EAScreen> spanEaScreens = new List<EAScreen>();
