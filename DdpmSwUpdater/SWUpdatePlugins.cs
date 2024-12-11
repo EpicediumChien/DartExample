@@ -585,8 +585,10 @@ namespace DdpmSwUpdater
         ManagementEventWatcher watcher;
         private void RegEvent()
         {
+            LogManage.LogMessage($"RegEvent start");
             try
             {
+                LogManage.LogMessage($"RegEvent watcher go");
                 // 將反斜線進行正確轉義
                 WqlEventQuery query = new WqlEventQuery(
                          "SELECT * FROM RegistryValueChangeEvent WHERE " +
@@ -596,6 +598,7 @@ namespace DdpmSwUpdater
                 LogManage.LogMessage("Waiting for an event...");
                 watcher.EventArrived += new EventArrivedEventHandler(OnRegistryValueChanged);
                 watcher.Start();
+                LogManage.LogMessage($"RegEvent watcher done");
             }
             catch (ManagementException ex)
             {
@@ -605,14 +608,20 @@ namespace DdpmSwUpdater
             {
                 LogManage.LogMessage($"Exception: {ex.Message}");
             }
+            LogManage.LogMessage($"RegEvent done");
         }
         private void CancelRegEvent()
         {
+            LogManage.LogMessage($"CancelRegEvent start");
             if (watcher != null)
             {
+                LogManage.LogMessage($"CancelRegEvent watcher is not null");
+                LogManage.LogMessage($"CancelRegEvent stop watcher go");
                 watcher.Stop();
                 watcher.EventArrived -= new EventArrivedEventHandler(OnRegistryValueChanged);
+                LogManage.LogMessage($"CancelRegEvent stop watcher done");
             }
+            LogManage.LogMessage($"CancelRegEvent done");
         }
         private void OnRegistryValueChanged(object sender, EventArrivedEventArgs e)
         {
