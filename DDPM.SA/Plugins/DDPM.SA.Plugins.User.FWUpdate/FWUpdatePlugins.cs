@@ -57,7 +57,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
         //0531 Bruce 因應IL的現有安裝包修改底層邏輯，FWUpdatePlugins.cs有稍作大改
         //0531 Bruce 因使用者可能在執行前將裝置移除，故將檢查是否延期的功能修改到底層的排程中
 
-        public static string[] ODM = new string[] { "Chicony", "Primax", "LiteON", "Darfon", "Wacom", "Luxshare", "Wistron", "Horn", "Tymphany" };
+        public static readonly string[] ODM = new string[] { "Chicony", "Primax", "LiteON", "Darfon", "Wacom", "Luxshare", "Wistron", "Horn", "Tymphany" };
         #region Private Members
 
         private const string pluginName = "FWUpdatePlugin";
