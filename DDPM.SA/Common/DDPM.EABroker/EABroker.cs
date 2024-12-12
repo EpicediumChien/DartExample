@@ -266,7 +266,7 @@ namespace DDPM.EABroker
                 }
                 workingArea = scr.WorkingArea;
             }
-
+            bool _isVertical = workingArea.Width < workingArea.Height;
             //Phase B. Create EA Layout and determine the cellBorderCount
             ISplitCtrl? ispLayout = null;
             int cellBorderCount = 0;
@@ -323,6 +323,7 @@ namespace DDPM.EABroker
                     return false;
                 }
             }
+            ispLayout.IsVertical = _isVertical;
             cellBorderCount = ispLayout.CellList.Count;
             int appCount = sortApps.Count;
             int arrangeCount = Math.Min(cellBorderCount, appCount);

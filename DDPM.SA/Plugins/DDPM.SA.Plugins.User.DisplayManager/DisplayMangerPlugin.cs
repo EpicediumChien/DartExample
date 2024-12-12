@@ -1287,11 +1287,13 @@ namespace DDPM.SA.Plugins.User.DisplayManager
         {
             if (vcpcode == "67" || vcpcode == "68")
             {
+                Trace.WriteLine($" Z [%%%%%%%%%%%%%%%] SyncPrimaryMonitorBrightnessAndColorTemp vcpcode = {vcpcode.ToString()}, need set val = {val.value.ToString()}");
                 _logs.DebugMsg($"[DisplayMangerPlugin] SyncPrimaryMonitorBrightnessAndColorTemp {monitorInfoMain.edid.SerialNumber} isSupportALS = 2 ... in ");
                 if (vcpcode == "68")
-                {
+                {                   
                     uint temp = (uint)val.value;
                     uint temp2 = (temp & 0xFF);
+                    Trace.WriteLine($" AAA [%%%%%%%%%%%%%%%] 68 SetVCPCapability temp = {temp.ToString()}, temp2 = {temp2.ToString()}");
                     if (_VcpCorePlugin.SetVCPCapability(monitorvalue, 0x68, temp2).Result)
                         _logs.DebugMsg($"[DisplayMangerPlugin] SyncPrimaryMonitorBrightnessAndColorTemp Success Set 0x68  = {temp2.ToString()}, e.monitor = {monitorInfoMain.edid.SerialNumber}, _AllInfoMonitors[i] = {monitorvalue.edid.SerialNumber}");
                     else
@@ -1301,6 +1303,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                 {
                     uint temp = (uint)val.value;
                     //uint temp2 = (temp & 0xFF);
+                    Trace.WriteLine($" BBB [%%%%%%%%%%%%%%%] 67 SetVCPCapability {temp.ToString()}");
                     if (_VcpCorePlugin.SetVCPCapability(monitorvalue, 0x67, temp).Result)
                         _logs.DebugMsg($"[DisplayMangerPlugin] SyncPrimaryMonitorBrightnessAndColorTemp Success Set 0x67  = {temp.ToString()}, e.monitor = {monitorInfoMain.edid.SerialNumber}, _AllInfoMonitors[i] = {monitorvalue.edid.SerialNumber}");
                     else
@@ -2222,23 +2225,35 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             //Keep first
             if (e.vcpcode.Equals("67") || e.vcpcode.Equals("68"))
             {
-                //DateTime now = DateTime.Now;
-
-                //if (LastProcessedTimestamps.TryGetValue(e.vcpcode, out DateTime lastProcessedTime))
-                //{
-                //    if ((now - lastProcessedTime).TotalSeconds < 2)
-                //    {
-                //        _logs.DebugMsg($"[DisplayManagerPlugin] Skipping VCP code {e.vcpcode} event ... last {(now - lastProcessedTime).TotalSeconds.ToString()}");
-                //        return;
-                //    }
-                //}
-                //else
-                //{
-                //    LastProcessedTimestamps[e.vcpcode] = now;
-                //    _logs.DebugMsg("[DisplayManagerPlugin] Processing VCP code 67/68...");
-                //PeocessALSTriggerEvent(e);
-                //    _logs.DebugMsg("[DisplayManagerPlugin] Completed processing VCP code 67/68.");
-                //}
+                Trace.WriteLine($" 1 [%%%%%%%%%%%%%%%] VCP code {e.vcpcode} event ...");
+                DateTime now = DateTime.Now;
+                Trace.WriteLine($" 2 [%%%%%%%%%%%%%%%] now {now.ToString()}");
+                if (LastProcessedTimestamps.TryGetValue(e.vcpcode, out DateTime lastProcessedTime))
+                {
+                    Trace.WriteLine($" 3 [%%%%%%%%%%%%%%%] lastProcessedTime = {lastProcessedTime.ToString()} || now - lastProcessedTime = {(now - lastProcessedTime).TotalSeconds.ToString()}");
+                    if ((now - lastProcessedTime).TotalSeconds < 2)
+                    {
+                        _logs.DebugMsg($"[DisplayManagerPlugin] Skipping VCP code {e.vcpcode} event ... last {(now - lastProcessedTime).TotalSeconds.ToString()}");
+                        Trace.WriteLine($" 4 [%%%%%%%%%%%%%%%] return ");
+                        return;
+                    }
+                    else
+                    {
+                        Trace.WriteLine($" 3 - 1 [%%%%%%%%%%%%%%%] lastProcessedTime = {lastProcessedTime.ToString()} || now = {now.ToString()}");
+                        LastProcessedTimestamps[e.vcpcode] = now;
+                        _logs.DebugMsg("[DisplayManagerPlugin] Processing VCP code 67/68...");
+                        PeocessALSTriggerEvent(e);
+                        _logs.DebugMsg("[DisplayManagerPlugin] Completed processing VCP code 67/68.");
+                    }
+                }
+                else
+                {
+                    Trace.WriteLine($" 3 - 2 [%%%%%%%%%%%%%%%] lastProcessedTime = {lastProcessedTime.ToString()} || now = {now.ToString()}");
+                    LastProcessedTimestamps[e.vcpcode] = now;
+                    _logs.DebugMsg("[DisplayManagerPlugin] Processing VCP code 67/68...");
+                    //PeocessALSTriggerEvent(e);
+                    _logs.DebugMsg("[DisplayManagerPlugin] Completed processing VCP code 67/68.");
+                }
             }
 
 
@@ -2310,16 +2325,19 @@ namespace DDPM.SA.Plugins.User.DisplayManager
         private void PeocessALSTriggerEvent(VCPchangedEventArgs e)
         {
             _logs.DebugMsg("[DisplayMangerPlugin] PeocessALSTriggerEvent ...... in");
+            Trace.WriteLine($" 5 [%%%%%%%%%%%%%%%] PeocessALSTriggerEvent e.value = {e.value.ToString()} ...... in");
             ObjGetVCP valemp;
             if (uint.TryParse(e.value, NumberStyles.Integer, CultureInfo.CurrentCulture, out uint result)) // Get ALS value
             {
                 if (GetBitsValue(result, 5) == 1) // Check monitor is Primary
                 {
+                    Trace.WriteLine($" 6 [%%%%%%%%%%%%%%%] Check monitor is Primary ...... in");
                     var allInfoMonitorsSnapshot = _AllInfoMonitors.ToList();
 
                     _logs.DebugMsg($"[DisplayMangerPlugin] show_VCPchangedEventArgs Total Monitors: {allInfoMonitorsSnapshot.Count}");
 
                     ALSConfig aconfig = AllALSConfig.Find(x => x.Edid.Equals(e.monitor.edid));
+                    Trace.WriteLine($" 6 - 1 [%%%%%%%%%%%%%%%] AllALSConfig.count = {AllALSConfig.Count.ToString()} ...... in");
                     if (aconfig != null)
                     {
                         if (e.vcpcode.Equals("67"))// Check AutoBrightness is On
@@ -2327,6 +2345,8 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                             if (aconfig.isAutoBrightness)
                             {
                                 valemp = _VcpCorePlugin.GetVCPCapability(e.monitor, 0x67).Result;
+                                Trace.WriteLine($" 7 [%%%%%%%%%%%%%%%]Check AutoBrightness is On ...... in");
+                                Trace.WriteLine($" 7 - 1 [%%%%%%%%%%%%%%%]AutoBrightness valemp = {valemp.value.ToString()}");
                                 if (!valemp.result)
                                 {
                                     _logs.DebugMsg($"[DisplayMangerPlugin] show_VCPchangedEventArgs GetVCPCapability 0x67 : {valemp.result.ToString()}");
@@ -2344,6 +2364,8 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                             if (aconfig.isAutoColorTemp)// Check AutoColorTemp is On
                             {
                                 valemp = _VcpCorePlugin.GetVCPCapability(e.monitor, 0x68).Result;
+                                Trace.WriteLine($" 8 [%%%%%%%%%%%%%%%]Check AutoColorTemp is On ...... in");
+                                Trace.WriteLine($" 8 - 1 [%%%%%%%%%%%%%%%]AutoColorTemp valemp = {valemp.value.ToString()}");
                                 if (!valemp.result)
                                 {
                                     _logs.DebugMsg($"[DisplayMangerPlugin] show_VCPchangedEventArgs GetVCPCapability 0x68 : {valemp.result.ToString()}");
@@ -2359,6 +2381,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                     }
                     else
                     {
+                        Trace.WriteLine($" 001 [%%%%%%%%%%%%%%%] ALSConfig aconfig null");
                         _logs.DebugMsg($"[DisplayMangerPlugin] show_VCPchangedEventArgs aconfig = null: Into ModelName = {e.monitor.edid.ModelName.ToString()} || Into SerialNumber =  {e.monitor.edid.SerialNumber.ToString()}");
                         return;
                     }
@@ -2366,6 +2389,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                     {
                         if (!e.monitor.edid.Equals(targetMonitor.edid)) // Get other monitor
                         {
+                            Trace.WriteLine($" 9 [%%%%%%%%%%%%%%%] monitor is {targetMonitor.modelName}");
                             //ALSConfig aconfig = AllALSConfig.Find(x => x.Edid.Equals(targetMonitor.edid));
                             if (aconfig != null)
                             {
@@ -2376,7 +2400,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                                     try
                                     {
                                         //待定義，先KEEP
-                                        //SyncPrimaryMonitorBrightnessAndColorTemp(e.monitor, targetMonitor, e.vcpcode, valemp);
+                                        SyncPrimaryMonitorBrightnessAndColorTemp(e.monitor, targetMonitor, e.vcpcode, valemp);
                                     }
                                     catch (Exception ex)
                                     {
@@ -2389,6 +2413,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                 }
                 else
                 {
+                    Trace.WriteLine($" 000 [%%%%%%%%%%%%%%%] monitor is not Primary ...... in");
                     _logs.DebugMsg("[DisplayMangerPlugin] show_VCPchangedEventArgs Non Primary Monitor ...");
                 }
             }
