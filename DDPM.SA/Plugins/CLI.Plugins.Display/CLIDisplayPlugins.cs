@@ -9204,38 +9204,39 @@ namespace DDPM.CLI.Plugins.Display
                                 writelog($"ColorManagement, ColorManagementType Entry");
                                 get_DeviceData.ColorManagement = devMgr.GetColorManagementStatus(monitor).Result;
 
-                                writelog($"SpeakerVolume Entry (62, 8D)");
-                                if (monitor.CapabilityDic.ContainsKey("62") && monitor.CapabilityDic["62"] != null && monitor.CapabilityDic["62"].Contains("FE") && monitor.CapabilityDic["62"].Contains("FF") && monitor.CapabilityDic.ContainsKey("8D") && monitor.CapabilityDic["8D"] != null && monitor.CapabilityDic["8D"].Contains("01") && monitor.CapabilityDic["8D"].Contains("02"))
+                                writelog($"SpeakerMicrophone Entry (62, 8D)");
+                                if (CheckSpeakerSupported(monitor, commandLineInput) && CheckMicrophoneSupported(monitor, commandLineInput))
                                 {
                                     rc = GetVCPCode(devMgr, monitor, "0x62").Result;
-                                    int getvalue = Convert.ToInt32(rc.value);
-                                    get_DeviceData.SpeakerVolume = ((getvalue & 0x8000) == 0x8000) ? "OSDLOCK," : "OSDUNLOCK,";
-                                    get_DeviceData.SpeakerVolume += ((getvalue & 0x4000) == 0x4000) ? "OSDENABLE" : "OSDDISABLE";
+                                    string speaker = get_SpeakerMicrophone_status(Convert.ToInt32(rc.value));
+                                    rc = GetVCPCode(devMgr, monitor, "0x8D").Result;
+                                    string microphone = get_SpeakerMicrophone_status(Convert.ToInt32(rc.value));
+                                    if (speaker == microphone)
+                                        get_DeviceData.SpeakerMicrophone = speaker;
+                                    else
+                                        get_DeviceData.SpeakerMicrophone = "N/A";
                                 }
                                 else
                                     get_DeviceData.SpeakerMicrophone = "N/A";
-                                writelog($"SpeakerVolume  (62, 8D) Exit return value: {get_DeviceData.SpeakerVolume} ,SpeakerMicrophone {get_DeviceData.SpeakerMicrophone} ");
+                                writelog($"SpeakerMicrophone  (62, 8D) Exit return value: {get_DeviceData.SpeakerMicrophone}");
 
                                 writelog($"SpeakerVolume Entry (62)");
-                                if (monitor.CapabilityDic.ContainsKey("62") && monitor.CapabilityDic["62"] != null && monitor.CapabilityDic["62"].Contains("FE") && monitor.CapabilityDic["62"].Contains("FF"))
+                                if (CheckSpeakerSupported(monitor, commandLineInput))
                                 {
                                     rc = GetVCPCode(devMgr, monitor, "0x62").Result;
                                     int getvalue = Convert.ToInt32(rc.value);
-                                    if ((getvalue & 0xFF) == 0xFF) get_DeviceData.SpeakerVolume = "OSDENABLE";
-                                    if ((getvalue & 0xFF) == 0xFE) get_DeviceData.SpeakerVolume = "OSDDISABLE";
-                                    if ((getvalue & 0xFF) != 0xFE && (getvalue & 0xFF) != 0xFF) get_DeviceData.SpeakerVolume = $"{getvalue}";
+                                    get_DeviceData.SpeakerVolume = get_SpeakerVolume_status(Convert.ToInt32(rc.value));
                                 }
                                 else
                                     get_DeviceData.SpeakerVolume = "N/A";
                                 writelog($"SpeakerVolume  (62) Exit return value: {get_DeviceData.SpeakerVolume}");
 
                                 writelog($"MicrophoneControl Entry");
-                                if (monitor.CapabilityDic.ContainsKey("8D") && monitor.CapabilityDic["8D"] != null && monitor.CapabilityDic["8D"].Contains("01") && monitor.CapabilityDic["8D"].Contains("02"))
+                                if (CheckMicrophoneSupported(monitor, commandLineInput))
                                 {
                                     rc = GetVCPCode(devMgr, monitor, "0x8D").Result;
                                     int getvalue = Convert.ToInt32(rc.value);
-                                    if ((getvalue & 0x03) == 0x01) get_DeviceData.MicrophoneControl = "OSDENABLE";
-                                    if ((getvalue & 0x03) == 0x02) get_DeviceData.MicrophoneControl = "OSDDISABLE";
+                                    get_DeviceData.MicrophoneControl = get_MicrophoneControl_status(Convert.ToInt32(rc.value));
                                 }
                                 else
                                     get_DeviceData.MicrophoneControl = "N/A";
@@ -9477,38 +9478,39 @@ namespace DDPM.CLI.Plugins.Display
                     writelog($"ColorManagement, ColorManagementType Entry");
                     get_DeviceData.ColorManagement = devMgr.GetColorManagementStatus(monitor).Result;
 
-                    writelog($"SpeakerVolume Entry (62, 8D)");
-                    if (monitor.CapabilityDic.ContainsKey("62") && monitor.CapabilityDic["62"] != null && monitor.CapabilityDic["62"].Contains("FE") && monitor.CapabilityDic["62"].Contains("FF") && monitor.CapabilityDic.ContainsKey("8D") && monitor.CapabilityDic["8D"] != null && monitor.CapabilityDic["8D"].Contains("01") && monitor.CapabilityDic["8D"].Contains("02"))
+                    writelog($"SpeakerMicrophone Entry (62, 8D)");
+                    if (CheckSpeakerSupported(monitor, commandLineInput) && CheckMicrophoneSupported(monitor, commandLineInput))
                     {
                         rc = GetVCPCode(devMgr, monitor, "0x62").Result;
-                        int getvalue = Convert.ToInt32(rc.value);
-                        get_DeviceData.SpeakerVolume = ((getvalue & 0x8000) == 0x8000) ? "OSDLOCK," : "OSDUNLOCK,";
-                        get_DeviceData.SpeakerVolume += ((getvalue & 0x4000) == 0x4000) ? "OSDENABLE" : "OSDDISABLE";
+                        string speaker = get_SpeakerMicrophone_status(Convert.ToInt32(rc.value));
+                        rc = GetVCPCode(devMgr, monitor, "0x8D").Result;
+                        string microphone = get_SpeakerMicrophone_status(Convert.ToInt32(rc.value));
+                        if (speaker == microphone)
+                            get_DeviceData.SpeakerMicrophone = speaker;
+                        else
+                            get_DeviceData.SpeakerMicrophone = "N/A";
                     }
                     else
                         get_DeviceData.SpeakerMicrophone = "N/A";
-                    writelog($"SpeakerVolume  (62, 8D) Exit return value: {get_DeviceData.SpeakerVolume} ,SpeakerMicrophone {get_DeviceData.SpeakerMicrophone} ");
+                    writelog($"SpeakerMicrophone  (62, 8D) Exit return value: {get_DeviceData.SpeakerMicrophone}");
 
                     writelog($"SpeakerVolume Entry (62)");
-                    if (monitor.CapabilityDic.ContainsKey("62") && monitor.CapabilityDic["62"] != null && monitor.CapabilityDic["62"].Contains("FE") && monitor.CapabilityDic["62"].Contains("FF"))
+                    if (CheckSpeakerSupported(monitor, commandLineInput))
                     {
                         rc = GetVCPCode(devMgr, monitor, "0x62").Result;
                         int getvalue = Convert.ToInt32(rc.value);
-                        if ((getvalue & 0xFF) == 0xFF) get_DeviceData.SpeakerVolume = "OSDENABLE";
-                        if ((getvalue & 0xFF) == 0xFE) get_DeviceData.SpeakerVolume = "OSDDISABLE";
-                        if ((getvalue & 0xFF) != 0xFE && (getvalue & 0xFF) != 0xFF) get_DeviceData.SpeakerVolume = $"{getvalue}";
+                        get_DeviceData.SpeakerVolume = get_SpeakerVolume_status(Convert.ToInt32(rc.value));
                     }
                     else
                         get_DeviceData.SpeakerVolume = "N/A";
                     writelog($"SpeakerVolume  (62) Exit return value: {get_DeviceData.SpeakerVolume}");
 
                     writelog($"MicrophoneControl Entry");
-                    if (monitor.CapabilityDic.ContainsKey("8D") && monitor.CapabilityDic["8D"] != null && monitor.CapabilityDic["8D"].Contains("01") && monitor.CapabilityDic["8D"].Contains("02"))
+                    if (CheckMicrophoneSupported(monitor, commandLineInput))
                     {
                         rc = GetVCPCode(devMgr, monitor, "0x8D").Result;
                         int getvalue = Convert.ToInt32(rc.value);
-                        if ((getvalue & 0x03) == 0x01) get_DeviceData.MicrophoneControl = "OSDENABLE";
-                        if ((getvalue & 0x03) == 0x02) get_DeviceData.MicrophoneControl = "OSDDISABLE";
+                        get_DeviceData.MicrophoneControl = get_MicrophoneControl_status(Convert.ToInt32(rc.value));
                     }
                     else
                         get_DeviceData.MicrophoneControl = "N/A";
@@ -11055,365 +11057,6 @@ namespace DDPM.CLI.Plugins.Display
             }
         }
 
-        //private async Task<(int code, string result)> ApplyConfiguration_v1(IDeviceManagerSA devMgr, CommandLineInput commandLineInput)
-        //{
-        //    DisplayPropertiesInfo displayPropertiesInfo = new DisplayPropertiesInfo();
-        //    Properties displayProperties;
-        //    ALSConfig param = new ALSConfig();
-        //    string output = string.Empty;
-        //    ObjGetVCP rc = new ObjGetVCP();
-        //
-        //    List<DeviceInfo> _deviceinfo = null;
-        //    _deviceinfo = _devMgr.GetDevices().Result.deviceInfo;
-        //    string[] ss_1 = commandLineInput.Options[0].Option_Value.Split(",");
-        //    Trace.WriteLine(ss_1[0]);
-        //    Trace.WriteLine(ss_1[1]);
-        //
-        //    /*StreamReader r = new StreamReader(ss_1[1]);
-        //    string jsonString = r.ReadToEnd();;
-        //    r.Close();*/
-        //
-        //    // modify start @ 20241022 stephen: modify for CMA input config as json string
-        //    // x:\\config.json
-        //
-        //    string jsonString = String.Empty;
-        //
-        //    if ((@$"x:\config.json").ToLower().Equals(ss_1[1].ToLower()))
-        //    {
-        //        jsonString = commandLineInput.jsonDeviceConfig.ToString();
-        //    }
-        //    else
-        //    {
-        //        StreamReader sr = default;
-        //
-        //        try
-        //        {
-        //            sr = new StreamReader(ss_1[1]);
-        //            jsonString = sr.ReadToEnd();
-        //        }
-        //        catch(Exception ex)
-        //        {
-        //            Trace.WriteLine($"[CLIDisplayPlugins] ApplyConfiguration_v1 exception, message: {ex.Message}");
-        //        }
-        //        finally
-        //        {
-        //            sr.Close();
-        //        }
-        //    }
-        //    // modiffy end @ 20241022
-        //
-        //    string[] jsonString_2 = jsonString.Split("\"Device\":");
-        //    int i = 0;
-        //    int count = jsonString.Split("Index").Length - 1;
-        //
-        //    switch (ss_1[0].ToUpper())
-        //    {
-        //        case "DISPLAY":
-        //            do
-        //            {
-        //                if (jsonString_2[i].Contains("DISPLAY", StringComparison.OrdinalIgnoreCase))
-        //                {
-        //
-        //                    if (jsonString_2[i].Contains("GET", StringComparison.OrdinalIgnoreCase) && count > 0)
-        //                    {
-        //                        jsonString_2[i] = jsonString_2[i].Replace("{\r\n  \"Command\": \"GET\",", "");
-        //                        jsonString_2[i] = jsonString_2[i].Replace("  \"TargetFeature\": \"DEVICEDATA\",\r\n  \"Result\": \"PASS\",", "");
-        //                        jsonString_2[i] = jsonString_2[i].Replace("\"Message\": \"N/A\"\r\n}", "");
-        //                    }
-        //                    break;
-        //                }
-        //
-        //                i++;
-        //            } while (true);
-        //            break;
-        //
-        //        case "MOUSE":
-        //            do
-        //            {
-        //                if (jsonString_2[i].Contains("MOUSE", StringComparison.OrdinalIgnoreCase))
-        //                {
-        //                    jsonString_2[i] = jsonString_2[i].Replace("\"Device\":", "");
-        //                    jsonString_2[i] = jsonString_2[i].Replace(" \"LogicalMouse\"", "");
-        //                    if (jsonString_2[i].Contains("GET", StringComparison.OrdinalIgnoreCase) && count > 0)
-        //                    {
-        //                        jsonString_2[i] = jsonString_2[i].Replace("{\r\n  \"Command\": \"GET\",", "");
-        //                        jsonString_2[i] = jsonString_2[i].Replace("  \"TargetFeature\": \"DEVICEDATA\",\r\n  \"Result\": \"PASS\",", "");
-        //                        jsonString_2[i] = jsonString_2[i].Replace("\"Message\": \"N/A\"\r\n}", "");
-        //                    }
-        //                    break;
-        //                }
-        //                i++;
-        //            } while (true);
-        //            break;
-        //
-        //        case "KEYBOARD":
-        //            do
-        //            {
-        //                if (jsonString_2[i].Contains("KEYBOARD", StringComparison.OrdinalIgnoreCase))
-        //                {
-        //                    jsonString_2[i] = jsonString_2[i].Replace("\"Device\":", "");
-        //                    jsonString_2[i] = jsonString_2[i].Replace(" \"LogicalKeyboard\"", "");
-        //                    if (jsonString_2[i].Contains("GET", StringComparison.OrdinalIgnoreCase) && count > 0)
-        //                    {
-        //                        jsonString_2[i] = jsonString_2[i].Replace("{\r\n  \"Command\": \"GET\",", "");
-        //                        jsonString_2[i] = jsonString_2[i].Replace("  \"TargetFeature\": \"DEVICEDATA\",\r\n  \"Result\": \"PASS\",", "");
-        //                        jsonString_2[i] = jsonString_2[i].Replace("\"Message\": \"N/A\"\r\n}", "");
-        //                    }
-        //                    break;
-        //                }
-        //
-        //                i++;
-        //            } while (true);
-        //            break;
-        //    }
-        //    if (string.IsNullOrWhiteSpace(jsonString_2[i]) || count < 1)
-        //    {
-        //        CLI_RESPONSE cli_Response = new CLI_RESPONSE();
-        //        cli_Response.Command = commandLineInput.Command;
-        //        cli_Response.TargetFeature = commandLineInput.TargetFeature;
-        //        cli_Response.Result = "FAIL";
-        //        cli_Response.Message = "file format is not valid.";
-        //        return ((int)CLI_ExitCode.invalide_cmdline_syntax, cli_Response.ToJson());
-        //    }
-        //    Get_DeviceData devicedata = JsonConvert.DeserializeObject<Get_DeviceData>(jsonString_2[i]);
-        //
-        //    bool ispass = true;
-        //    //string[] not_support_list = new string[] { "ColorPreset", "ColorManagement"};
-        //
-        //    List<int> _monitorIndeies = new List<int>();
-        //
-        //    if (_AllInfoMonitors == null)
-        //        _AllInfoMonitors = devMgr.GetMonitors().Result;
-        //    _monitorIndeies = GetMonitorIndeies(commandLineInput, _AllInfoMonitors);
-        //    writelog($"CLI /set -display=applyConfiguration -value={commandLineInput.Options[0].Option_Value}");
-        //    if (ss_1[0].ToUpper() == "DISPLAY")
-        //    {
-        //        foreach (int idx in _monitorIndeies)
-        //        {
-        //            MonitorInfo monitor = _AllInfoMonitors[idx];
-        //            Apply_Configuration ApplyConfiguration = new Apply_Configuration(monitor);
-        //            ApplyConfiguration.Command = commandLineInput.Command;
-        //            ApplyConfiguration.TargetFeature = commandLineInput.TargetFeature;
-        //            //ApplyConfiguration.Model = monitor.modelName;
-        //            //ApplyConfiguration.SerialNumber = monitor.edid.SerialNumber;
-        //            //ApplyConfiguration.Index = change_0base_to_1base((monitor.Index).ToString());
-        //            //ApplyConfiguration.ServiceTag = monitor.edid.ServiceTag;
-        //
-        //            bool retcode = SetVCPCode(devMgr, monitor, "0xAA", get_ScreenOrientation_code(devicedata.ScreenOrientation)).Result;
-        //            if (!retcode) ispass = false;
-        //            else ApplyConfiguration.ScreenOrientation = devicedata.ScreenOrientation;
-        //            writelog($"ScreenOrientation={ApplyConfiguration.ScreenOrientation}");
-        //
-        //            retcode = SetVCPCode(devMgr, monitor, "0x60", get_InputSource_code(get_inputsource_type(devicedata.ActiveInputSource.ToUpper()).ToString())).Result;
-        //            if (!retcode) ispass = false;
-        //            else ApplyConfiguration.ActiveInputSource = devicedata.ActiveInputSource;
-        //            writelog($"ActiveInputSource={ApplyConfiguration.ActiveInputSource}");
-        //
-        //            displayPropertiesInfo = devMgr.GetDisplayPropertiesInfo(monitor).Result;
-        //            string[] ss = devicedata.OptimalResolution.Split(" ");
-        //            displayProperties = new Properties() { Resolutions_Width = int.Parse(ss[0]), Resolutions_High = int.Parse(ss[2]), Frequency = int.Parse(ss[4].Split(".00Hz")[0]) };
-        //            retcode = devMgr.SetDisplayPropertiest(monitor, displayProperties, displayPropertiesInfo.CurrentOrientation).Result;
-        //            if (!retcode) ispass = false;
-        //            else ApplyConfiguration.OptimalResolution = devicedata.OptimalResolution;
-        //            ApplyConfiguration.Resolution = ApplyConfiguration.OptimalResolution;
-        //            writelog($"OptimalResolution={ApplyConfiguration.OptimalResolution}");
-        //
-        //            //int gcd = (int)GCD((ulong)displayProperties.Resolutions_Width, (ulong)displayProperties.Resolutions_High);
-        //            //ApplyConfiguration.AspectRatio = $"{displayProperties.Resolutions_Width / gcd}:{displayProperties.Resolutions_High / gcd}";
-        //            //writelog($"AspectRatio={ApplyConfiguration.AspectRatio}");
-        //            string gcd = "N/A";
-        //            if(displayProperties.Resolutions_Width != 0 && displayProperties.Resolutions_High!= 0)
-        //                gcd = Get_AR((double)displayProperties.Resolutions_Width / (double)displayProperties.Resolutions_High);
-        //            ApplyConfiguration.AspectRatio = $"{gcd}";
-        //            writelog($"AspectRatio= {gcd}");
-        //
-        //            if (monitor.CapabilityDic.ContainsKey("12"))
-        //            {
-        //                retcode = SetVCPCode(devMgr, monitor, "0x12", devicedata.ContrastLevel.Substring(0, devicedata.ContrastLevel.Length - 1)).Result;
-        //                if (!retcode) ispass = false;
-        //                else ApplyConfiguration.ContrastLevel = devicedata.ContrastLevel;
-        //                writelog($"ContrastLevel={ApplyConfiguration.ContrastLevel}");
-        //
-        //                retcode = SetVCPCode(devMgr, monitor, "0x10", devicedata.BrightnessLevel.Substring(0, devicedata.BrightnessLevel.Length - 1)).Result;
-        //                if (!retcode) ispass = false;
-        //                else ApplyConfiguration.BrightnessLevel = devicedata.BrightnessLevel;
-        //                writelog($"BrightnessLevel={ApplyConfiguration.BrightnessLevel}");
-        //            }
-        //            else
-        //            {
-        //                retcode = SetVCPCode(devMgr, monitor, "0x10", devicedata.LuminanceLevel.Substring(0, devicedata.LuminanceLevel.Length - 1)).Result;
-        //                if (!retcode) ispass = false;
-        //                else ApplyConfiguration.LuminanceLevel = devicedata.LuminanceLevel;
-        //                writelog($"LuminanceLevel={ApplyConfiguration.LuminanceLevel}");
-        //            }
-        //
-        //            retcode = await devMgr.SetALSFeatureValue(monitor, param, ALSFeatureQueryType.AutoBrightness, devicedata.AutoBrightness.ToUpper());
-        //            if (!retcode) ispass = false;
-        //            else ApplyConfiguration.AutoBrightness = devicedata.AutoBrightness;
-        //            writelog($"AutoBrightness={ApplyConfiguration.AutoBrightness}");
-        //
-        //            retcode = await devMgr.SetALSFeatureValue(monitor, param, ALSFeatureQueryType.AutoBrightnessRangeLevel, get_RangeLevel(devicedata.AutoBrightnessRangeLevel.ToUpper()));
-        //            if (!retcode) ispass = false;
-        //            else ApplyConfiguration.AutoBrightnessRangeLevel = devicedata.AutoBrightnessRangeLevel;
-        //            writelog($"AutoBrightnessRangeLevel={ApplyConfiguration.AutoBrightnessRangeLevel}");
-        //
-        //            retcode = await devMgr.SetALSFeatureValue(monitor, param, ALSFeatureQueryType.AutoColorTemperature, devicedata.AutoColorTemp.ToUpper());
-        //            if (!retcode) ispass = false;
-        //            else ApplyConfiguration.AutoColorTemp = devicedata.AutoColorTemp;
-        //            writelog($"AutoColorTemp={ApplyConfiguration.AutoColorTemp}");
-        //
-        //            retcode = await devMgr.SetALSFeatureValue(monitor, param, ALSFeatureQueryType.PrimaryMonitorSync, devicedata.PrimaryMonitorForSync.ToUpper());
-        //            if (!retcode) ispass = false;
-        //            else ApplyConfiguration.PrimaryMonitorForSync = devicedata.PrimaryMonitorForSync;
-        //            writelog($"PrimaryMonitorForSync={ApplyConfiguration.PrimaryMonitorForSync}");
-        //
-        //            if (displayPropertiesInfo.SupportedUSBCPrioritization)
-        //            {
-        //                USBCPrioritizationType gettype = get_USBCPrioritization(devicedata.USB_CPrioritization);
-        //                if (gettype != USBCPrioritizationType.Unknow)
-        //                {
-        //                    retcode = devMgr.SetUSBCPrioritizationType(monitor, gettype).Result;
-        //                    if (!retcode) ispass = false;
-        //                    else ApplyConfiguration.USB_CPrioritization = devicedata.USB_CPrioritization;
-        //                    writelog($"USB_CPrioritization={ApplyConfiguration.USB_CPrioritization}");
-        //                }
-        //            }
-        //            else
-        //                ApplyConfiguration.USB_CPrioritization = "NOT SUPPORT";
-        //
-        //            if (monitor.CapabilityDic.ContainsKey("62") && monitor.CapabilityDic["62"] != null && monitor.CapabilityDic["62"].Contains("FE") && monitor.CapabilityDic["62"].Contains("FF") && monitor.CapabilityDic["62"].Contains("C000") && monitor.CapabilityDic.ContainsKey("8D") && monitor.CapabilityDic["8D"] != null && monitor.CapabilityDic["8D"].Contains("01") && monitor.CapabilityDic["8D"].Contains("02") && monitor.CapabilityDic["8D"].Contains("C000"))
-        //            {
-        //                rc = GetVCPCode(devMgr, monitor, "0x62").Result;
-        //                int getvalue = Convert.ToInt32(rc.value);
-        //                retcode = SetVCPCode(devMgr, monitor, "0x62", get_SpeakerMicrophone(devicedata.SpeakerMicrophone, getvalue)).Result;
-        //
-        //                rc = GetVCPCode(devMgr, monitor, "0x8D").Result;
-        //                int getvalue2 = Convert.ToInt32(rc.value);
-        //                bool retcode2 = SetVCPCode(devMgr, monitor, "0x8D", get_SpeakerMicrophone(devicedata.SpeakerMicrophone, getvalue2)).Result;
-        //
-        //                if (!retcode && !retcode2) ispass = false;
-        //                else ApplyConfiguration.SpeakerMicrophone = devicedata.SpeakerMicrophone;
-        //                writelog($"SpeakerMicrophone={ApplyConfiguration.SpeakerMicrophone}");
-        //            }
-        //
-        //            if (monitor.CapabilityDic.ContainsKey("62") && monitor.CapabilityDic["62"] != null && monitor.CapabilityDic["62"].Contains("FE") && monitor.CapabilityDic["62"].Contains("FF") && monitor.CapabilityDic["62"].Contains("C000"))
-        //            {
-        //                rc = GetVCPCode(devMgr, monitor, "0x62").Result;
-        //                int getvalue = Convert.ToInt32(rc.value);
-        //                string setvalue = get_SpeakerVolume(devicedata.SpeakerVolume, getvalue);
-        //                if (setvalue != "unknown_command")
-        //                    retcode = SetVCPCode(devMgr, monitor, "0x62", setvalue).Result;
-        //                else
-        //                    retcode = SetVCPCode(devMgr, monitor, "0x62", devicedata.SpeakerVolume).Result;
-        //                if (!retcode) ispass = false;
-        //                else ApplyConfiguration.SpeakerVolume = devicedata.SpeakerVolume;
-        //                writelog($"SpeakerVolume={ApplyConfiguration.SpeakerVolume}");
-        //            }
-        //            else
-        //                ApplyConfiguration.SpeakerVolume = "N/A";
-        //
-        //            if (monitor.CapabilityDic.ContainsKey("8D") && monitor.CapabilityDic["8D"] != null && monitor.CapabilityDic["8D"].Contains("01") && monitor.CapabilityDic["8D"].Contains("02") && monitor.CapabilityDic["8D"].Contains("C000"))
-        //            {
-        //                rc = GetVCPCode(devMgr, monitor, "0x8D").Result;
-        //                int getvalue = Convert.ToInt32(rc.value);
-        //                retcode = SetVCPCode(devMgr, monitor, "0x8D", get_MicrophoneControl(devicedata.MicrophoneControl, getvalue)).Result;
-        //                if (!retcode) ispass = false;
-        //                else ApplyConfiguration.MicrophoneControl = devicedata.MicrophoneControl;
-        //                writelog($"MicrophoneControl={ApplyConfiguration.MicrophoneControl}");
-        //            }
-        //            else
-        //                ApplyConfiguration.MicrophoneControl = "N/A";
-        //
-        //            if (monitor.CapabilityDic.ContainsKey("E4"))
-        //            {
-        //                retcode = SetVCPCode(devMgr, monitor, "0xE4", get_Uniformity(devicedata.Uniformity)).Result;
-        //                if (!retcode) ispass = false;
-        //                else ApplyConfiguration.Uniformity = devicedata.Uniformity;
-        //                writelog($"Uniformity={ApplyConfiguration.Uniformity}");
-        //            }
-        //            else
-        //                ApplyConfiguration.Uniformity = "N/A";
-        //
-        //            await SetPowerNapAsync(get_PowerNapType_code(devicedata.PowerNap), devMgr, monitor.edid.ModelName, monitor.edid.SerialNumber);
-        //            //PowerNapSetting setting = new PowerNapSetting
-        //            //{
-        //            //    Status = false,
-        //            //    ModelName = monitor.edid.ModelName,
-        //            //    SerialNumber = monitor.edid.SerialNumber,
-        //            //    RunType = get_PowerNapType_code(devicedata.PowerNap)
-        //            //};
-        //            //retcode = await devMgr.SavePowerNapSetting(setting);
-        //            //UpdateUINotify off = new UpdateUINotify();
-        //            //off.UI_Field_Name = "POWERNAP;" + devicedata.PowerNap;
-        //            //devMgr.OnUIUpdateNotify(off);
-        //            if (!retcode) ispass = false;
-        //            else ApplyConfiguration.PowerNap = devicedata.PowerNap;
-        //            writelog($"PowerNap={ApplyConfiguration.PowerNap}");
-        //
-        //            retcode = SetVCPCode(devMgr, monitor, "0xCC", GetOSDLanguage_index(devicedata.OSD_language).ToString()).Result;
-        //            writelog($"OSD_language={GetOSDLanguage_index(devicedata.OSD_language).ToString()}");
-        //            if (!retcode) ispass = false;
-        //            else ApplyConfiguration.OSD_language = devicedata.OSD_language;
-        //            writelog($"OSD_language={ApplyConfiguration.OSD_language}");
-        //
-        //            if (ispass)
-        //            {
-        //                ApplyConfiguration.Result = "PASS";
-        //                ApplyConfiguration.Message = "N/A";
-        //            }
-        //            else
-        //            {
-        //                ApplyConfiguration.Result = "FAIL";
-        //                ApplyConfiguration.Message = "Somethings fail!";
-        //            }
-        //            System.Console.WriteLine(JsonConvert.SerializeObject(ApplyConfiguration, Formatting.Indented));
-        //            output += "\n" + JsonConvert.SerializeObject(ApplyConfiguration, Formatting.Indented);
-        //        }
-        //    }
-        //    else if (ss_1[0].ToUpper() == "MOUSE")
-        //    {
-        //        CLI_RESPONSE2 cli_Response2 = new CLI_RESPONSE2();
-        //        cli_Response2 = JsonConvert.DeserializeObject<CLI_RESPONSE2>(jsonString_2[i]);
-        //        ispass = true;
-        //
-        //        if (ispass)
-        //        {
-        //            output += $"\n  \"Result: \": \"PASS\"";
-        //        }
-        //        else
-        //        {
-        //            output += $"\n  \"Result: \": \"FAIL\"";
-        //        }
-        //        output += "\n" + JsonConvert.SerializeObject(cli_Response2, Formatting.Indented);
-        //    }
-        //    else if (ss_1[0].ToUpper() == "KEYBOARD")
-        //    {
-        //        CLI_RESPONSE2 cli_Response2 = new CLI_RESPONSE2();
-        //        cli_Response2 = JsonConvert.DeserializeObject<CLI_RESPONSE2>(jsonString_2[i]);
-        //        ispass = true;
-        //
-        //        if (ispass)
-        //        {
-        //            output += $"\n  \"Result: \": \"PASS\"";
-        //        }
-        //        else
-        //        {
-        //            output += $"\n  \"Result: \": \"FAIL\"";
-        //        }
-        //        output += "\n" + JsonConvert.SerializeObject(cli_Response2, Formatting.Indented);
-        //    }
-        //    else
-        //    {
-        //        CLI_RESPONSE cli_Response = new CLI_RESPONSE();
-        //        cli_Response.Command = commandLineInput.Command;
-        //        cli_Response.TargetFeature = commandLineInput.TargetFeature;
-        //        cli_Response.Result = "FAIL";
-        //        cli_Response.Message = "Invalid command line syntax or missing -value=file.json";
-        //        return ((int)CLI_ExitCode.invalide_cmdline_syntax, cli_Response.ToJson());
-        //    }
-        //    return (ispass ? (int)CLI_ExitCode.success : (int)CLI_ExitCode.functional_error, output);
-        //}
-
         private async Task<(int code, string result)> ApplyConfiguration(IDeviceManagerSA devMgr, CommandLineInput commandLineInput)
         {
             DisplayPropertiesInfo displayPropertiesInfo = new DisplayPropertiesInfo();
@@ -11780,28 +11423,19 @@ namespace DDPM.CLI.Plugins.Display
                                                 break;
                                             case "SPEAKERMICROPHONE":
                                                 writelog($"SpeakerMicrophone entry");
-                                                if (monitor.CapabilityDic.ContainsKey("62") && monitor.CapabilityDic["62"] != null && monitor.CapabilityDic["62"].Contains("FE") && monitor.CapabilityDic["62"].Contains("FF") && monitor.CapabilityDic.ContainsKey("8D") && monitor.CapabilityDic["8D"] != null && monitor.CapabilityDic["8D"].Contains("01") && monitor.CapabilityDic["8D"].Contains("02"))
+                                                if (CheckSpeakerSupported(monitor, commandLineInput) && CheckMicrophoneSupported(monitor, commandLineInput))
                                                 {
-                                                    if (property.Value.ToString().Contains("LOCK") && (!monitor.CapabilityDic["62"].Contains("C000") || !monitor.CapabilityDic["8D"].Contains("C000")))
-                                                    {
-                                                        ApplyConfiguration.SpeakerMicrophone = "N/A";
-                                                        writelog($"SpeakerMicrophone VCP not support lock/unlock");
-                                                        output += $"\n  \"Result: \": \"SpeakerMicrophone VCP not support lock/unlock\"";
-                                                    }
-                                                    else
-                                                    {
-                                                        rc = GetVCPCode(devMgr, monitor, "0x62").Result;
-                                                        int getvalue = Convert.ToInt32(rc.value);
-                                                        retcode = SetVCPCode(devMgr, monitor, "0x62", get_SpeakerMicrophone(property.Value.ToString(), getvalue)).Result;
+                                                    rc = GetVCPCode(devMgr, monitor, "0x62").Result;
+                                                    int getvalue = Convert.ToInt32(rc.value);
+                                                    retcode = SetVCPCode(devMgr, monitor, "0x62", get_SpeakerMicrophone(property.Value.ToString(), getvalue)).Result;
 
-                                                        rc = GetVCPCode(devMgr, monitor, "0x8D").Result;
-                                                        int getvalue2 = Convert.ToInt32(rc.value);
-                                                        bool retcode2 = SetVCPCode(devMgr, monitor, "0x8D", get_SpeakerMicrophone(property.Value.ToString(), getvalue2)).Result;
+                                                    rc = GetVCPCode(devMgr, monitor, "0x8D").Result;
+                                                    int getvalue2 = Convert.ToInt32(rc.value);
+                                                    bool retcode2 = SetVCPCode(devMgr, monitor, "0x8D", get_SpeakerMicrophone(property.Value.ToString(), getvalue2)).Result;
 
                                                         if (!retcode && !retcode2) ispass = false;
                                                         else ApplyConfiguration.SpeakerMicrophone = property.Value.ToString();
-                                                        writelog($"SpeakerMicrophone={ApplyConfiguration.SpeakerMicrophone}");
-                                                    }
+                                                    writelog($"SpeakerMicrophone={ApplyConfiguration.SpeakerMicrophone}");
                                                 }
                                                 else
                                                 {
@@ -11814,7 +11448,7 @@ namespace DDPM.CLI.Plugins.Display
 
                                             case "SPEAKERVOLUME":
                                                 writelog($"SpeakerVolume entry");
-                                                if (monitor.CapabilityDic.ContainsKey("62") && monitor.CapabilityDic["62"] != null && monitor.CapabilityDic["62"].Contains("FE") && monitor.CapabilityDic["62"].Contains("FF"))
+                                                if (CheckSpeakerSupported(monitor, commandLineInput))
                                                 {
                                                     rc = GetVCPCode(devMgr, monitor, "0x62").Result;
                                                     int getvalue = Convert.ToInt32(rc.value);
@@ -11838,7 +11472,7 @@ namespace DDPM.CLI.Plugins.Display
 
                                             case "MICROPHONECONTROL":
                                                 writelog($"MicrophoneControl entry");
-                                                if (monitor.CapabilityDic.ContainsKey("8D") && monitor.CapabilityDic["8D"] != null && monitor.CapabilityDic["8D"].Contains("01") && monitor.CapabilityDic["8D"].Contains("02"))
+                                                if (CheckMicrophoneSupported(monitor, commandLineInput))
                                                 {
                                                     rc = GetVCPCode(devMgr, monitor, "0x8D").Result;
                                                     int getvalue = Convert.ToInt32(rc.value);
@@ -11850,8 +11484,8 @@ namespace DDPM.CLI.Plugins.Display
                                                 else
                                                 {
                                                     ApplyConfiguration.MicrophoneControl = "N/A";
-                                                    writelog($"SpeakerVolume VCP not support");
-                                                    output += $"\n  \"Result: \": \"SpeakerVolume VCP not support\"";
+                                                    writelog($"MicrophoneControl VCP not support");
+                                                    output += $"\n  \"Result: \": \"MicrophoneControl VCP not support\"";
                                                 }
 
                                                 break;
@@ -12005,6 +11639,70 @@ namespace DDPM.CLI.Plugins.Display
             }
         }
 
+        private bool CheckSpeakerSupported(MonitorInfo monitor, CommandLineInput commandLineInput)
+        {
+            bool supported = false;
+
+            writelog("Check monitor is support speaker");
+            if (monitor.CapabilityDic.TryGetValue("62", out List<string> value) &&
+                value != null &&
+                value.Contains("FF") &&
+                value.Contains("FE"))
+            {
+                writelog("Monitor is support speaker");
+                supported = true;
+            }
+            else
+            {
+                writelog("Monitor is not support speaker");
+                return supported;
+            }
+
+            if (commandLineInput.Options.Count > 0)
+            {
+                if (commandLineInput.Options[0].Option_Value.Contains("LOCK"))
+                {
+                    writelog("Check monitor is support speaker lock/unlock");
+                    supported = value.Contains("C000");
+                    writelog(supported ? "Monitor is support speaker lock/unlock" : "Monitor is not support speaker lock/unlock");
+                }
+            }
+
+            return supported;
+        }
+
+        private bool CheckMicrophoneSupported(MonitorInfo monitor, CommandLineInput commandLineInput)
+        {
+            bool supported = false;
+
+            writelog("Check monitor is support microphone");
+            if (monitor.CapabilityDic.TryGetValue("8D", out List<string> value) &&
+                value != null &&
+                value.Contains("01") &&
+                value.Contains("02"))
+            {
+                writelog("Monitor is support microphone");
+                supported = true;
+            }
+            else
+            {
+                writelog("Monitor is not support microphone");
+                return supported;
+            }
+
+            if (commandLineInput.Options.Count > 0)
+            {
+                if (commandLineInput.Options[0].Option_Value.Contains("LOCK"))
+                {
+                    writelog("Check monitor is support microphone lock/unlock");
+                    supported = value.Contains("C000");
+                    writelog(supported ? "Monitor is support microphone lock/unlock" : "Monitor is not support microphone lock/unlock");
+                }
+            }
+
+            return supported;
+        }
+
         private static string get_MicrophoneControl(string status, int value)
         {
             switch (status.ToUpper())
@@ -12075,7 +11773,7 @@ namespace DDPM.CLI.Plugins.Display
         {
             string output = string.Empty;
             output += ((value & 0x8000) == 0x8000) ? "OSDLOCK," : "OSDUNLOCK,";
-            output += ((value & 0x4000) == 0x4000) ? "OSDENABLE," : "OSDDISABLE,";
+            output += ((value & 0x4000) == 0x4000) ? "OSDENABLE" : "OSDDISABLE";
 
             return output;
         }
@@ -12495,7 +12193,7 @@ namespace DDPM.CLI.Plugins.Display
                 {
                     case "MICROPHONE":
                         writelog("MICROPHONE entry");
-                        if (monitor.CapabilityDic.ContainsKey("8D") && monitor.CapabilityDic["8D"] != null && monitor.CapabilityDic["8D"].Contains("01") && monitor.CapabilityDic["8D"].Contains("02"))
+                        if (CheckMicrophoneSupported(monitor, commandLineInput))
                         {
                             if (commandLineInput.Command == "SET")
                             {
@@ -12528,7 +12226,7 @@ namespace DDPM.CLI.Plugins.Display
 
                     case "SPEAKERVOLUME":
                         writelog("SPEAKERVOLUME entry");
-                        if (monitor.CapabilityDic.ContainsKey("62") && monitor.CapabilityDic["62"] != null && monitor.CapabilityDic["62"].Contains("FE") && monitor.CapabilityDic["62"].Contains("FF"))
+                        if (CheckSpeakerSupported(monitor, commandLineInput))
                         {
                             if (commandLineInput.Command == "SET")
                             {
@@ -12561,50 +12259,43 @@ namespace DDPM.CLI.Plugins.Display
 
                     case "SPEAKERMICROPHONE":
                         writelog("SPEAKERMICROPHONE entry");
-                        if (monitor.CapabilityDic.ContainsKey("62") && monitor.CapabilityDic["62"] != null && monitor.CapabilityDic["62"].Contains("FE") && monitor.CapabilityDic["62"].Contains("FF") && monitor.CapabilityDic.ContainsKey("8D") && monitor.CapabilityDic["8D"] != null && monitor.CapabilityDic["8D"].Contains("01") && monitor.CapabilityDic["8D"].Contains("02"))
+                        if (CheckSpeakerSupported(monitor, commandLineInput) && CheckMicrophoneSupported(monitor, commandLineInput))
                         {
                             if (commandLineInput.Command == "SET")
                             {
                                 writelog("SPEAKERMICROPHONE SET entry");
-                                if (commandLineInput.Options[0].Option_Value.Contains("LOCK") && (!monitor.CapabilityDic["62"].Contains("C000") || !monitor.CapabilityDic["8D"].Contains("C000")))
+                                rc = GetVCPCode(devMgr, monitor, "0x62").Result;
+                                int getvalue = Convert.ToInt32(rc.value);
+                                string setvalue = get_SpeakerMicrophone(commandLineInput.Options[0].Option_Value, getvalue);
+
+                                if (setvalue != "unknown_command")
                                 {
-                                    somethingfail |= 0x03;
+                                    retcode = SetVCPCode(devMgr, monitor, "0x62", setvalue).Result;
+                                    cli_Response.Value = commandLineInput.Options[0].Option_Value;
                                 }
                                 else
+                                    somethingfail |= 0x01;
+
+                                int count = 0;
+                                while (!_AllInfoMonitors.Any(_ => _.edid.ServiceTag == monitor.edid.ServiceTag) && count < 1000)
                                 {
-                                    rc = GetVCPCode(devMgr, monitor, "0x62").Result;
-                                    int getvalue = Convert.ToInt32(rc.value);
-                                    string setvalue = get_SpeakerMicrophone(commandLineInput.Options[0].Option_Value, getvalue);
-
-                                    if (setvalue != "unknown_command")
-                                    {
-                                        retcode = SetVCPCode(devMgr, monitor, "0x62", setvalue).Result;
-                                        cli_Response.Value = commandLineInput.Options[0].Option_Value;
-                                    }
-                                    else
-                                        somethingfail |= 0x01;
-
-                                    int count = 0;
-                                    while (!_AllInfoMonitors.Any(_ => _.edid.ServiceTag == monitor.edid.ServiceTag) && count < 1000)
-                                    {
-                                        _AllInfoMonitors = devMgr.GetMonitors().Result;
-                                        count++;
-                                    }
-
-                                    monitor = _AllInfoMonitors.FirstOrDefault(_ => _.edid.ServiceTag == serviceTag);
-
-                                    rc = GetVCPCode(devMgr, monitor, "0x8D").Result;
-                                    int getvalue2 = Convert.ToInt32(rc.value);
-                                    string setvalue2 = get_SpeakerMicrophone(commandLineInput.Options[0].Option_Value, getvalue2);
-
-                                    if (setvalue2 != "unknown_command")
-                                    {
-                                        retcode = SetVCPCode(devMgr, monitor, "0x8D", setvalue2).Result;
-                                        cli_Response.Value = commandLineInput.Options[0].Option_Value;
-                                    }
-                                    else
-                                        somethingfail |= 0x02;
+                                    _AllInfoMonitors = devMgr.GetMonitors().Result;
+                                    count++;
                                 }
+
+                                monitor = _AllInfoMonitors.FirstOrDefault(_ => _.edid.ServiceTag == serviceTag);
+
+                                rc = GetVCPCode(devMgr, monitor, "0x8D").Result;
+                                int getvalue2 = Convert.ToInt32(rc.value);
+                                string setvalue2 = get_SpeakerMicrophone(commandLineInput.Options[0].Option_Value, getvalue2);
+
+                                if (setvalue2 != "unknown_command")
+                                {
+                                    retcode = SetVCPCode(devMgr, monitor, "0x8D", setvalue2).Result;
+                                    cli_Response.Value = commandLineInput.Options[0].Option_Value;
+                                }
+                                else
+                                    somethingfail |= 0x02;
                             }
                             else if (commandLineInput.Command == "GET")
                             {
