@@ -266,7 +266,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
 
             //check usb 2.0 / 3.0
             AllSupportedResolutions = DdpmCommonHelper.DeviceManagerSA!.GetIsAllSupportedResolutionsFound(_vm.CurrentDeviceInfo!.ID.ToString()).Result;
-
+            
             //api回傳camera硬體是否支援windows hello
             bool is_WindwosHelloSupport = DdpmCommonHelper.DeviceManagerSA!.GetIsWindowsHelloCapabilityVerified(_vm.CurrentDeviceInfo!.ID.ToString()).Result;
 
@@ -669,6 +669,10 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
 
                         //fps與解析度,排除4k
                         //Connect your monitor via USB 3.0 to enable 4K UHD resolution.
+
+                        _vm.Resolution_IsSelected[0] = false;
+                        _vm.Resolution_IsSelected[1] = true;
+
                         _vm.btnRes0_show = Visibility.Collapsed;
                         _vm.btnRes0_width = 0;
 
@@ -698,6 +702,10 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                         _vm.usbtype_info_v = LangHelper.Instance["Camera.25"];
 
                         //fps與解析度,排除4k Camera.14
+
+                        _vm.Resolution_IsSelected[0] = false;
+                        _vm.Resolution_IsSelected[1] = true;
+
                         _vm.btnRes0_show = Visibility.Collapsed;
                         _vm.btnRes0_width = 0;
                         _vm.btnRes1_width = 201;
@@ -724,6 +732,10 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                         _vm.usbtype_info_v = LangHelper.Instance["Camera.25"];
 
                         //fps與解析度,排除4k 
+
+                        _vm.Resolution_IsSelected[0] = false;
+                        _vm.Resolution_IsSelected[1] = true;
+
                         _vm.btnRes0_show = Visibility.Collapsed;
                         _vm.btnRes0_width = 0;
                         _vm.btnRes1_width = 201;
@@ -745,6 +757,10 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                         _vm.usbtype_info_v = LangHelper.Instance["Camera.25"].Replace("4K", "2K");
 
                         //fps與解析度,排除2k 
+
+                        _vm.Resolution_IsSelected[0] = false;
+                        _vm.Resolution_IsSelected[1] = true;
+
                         _vm.btnRes0_show = Visibility.Collapsed;
                         _vm.btnRes0_width = 0;
                         _vm.btnRes1_width = 201;
@@ -1481,6 +1497,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             else
                 StartRecordingAsync().RunSynchronously();
 
+            
         }
 
         private void StopRecord()
@@ -1532,8 +1549,9 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                 Debug.WriteLine("Starting recording to " + videoFile.Path);
 
                 if (_vm.MediaCapture != null)
+                {
                     await _vm.MediaCapture.StartRecordToStorageFileAsync(encodingProfile, videoFile);
-
+                }
                 Debug.WriteLine("Started recording!");
             }
             catch (Exception ex)
