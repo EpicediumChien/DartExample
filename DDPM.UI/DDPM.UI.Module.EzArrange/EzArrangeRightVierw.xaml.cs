@@ -288,6 +288,11 @@ namespace DDPM.UI.Module.EzArrange
 
             //Use to trace count of slected item
             int selectedCount = 0;
+            //Used to set flag if the Resecnt items are different with Custom items
+            // Case: DUT1 Edit/Change a Custom layout "A", switch to DUT2,
+            // DUT2's Custom list are reloaded from the saved custom list
+            // But DUT2's custom layout "A" in recent list settings file not been refreshed
+            bool isRecentListChangedByCustomSettingsFile = false;
 
             //C01. Add "Off" SplitCtrl0A as the first item of RecentList
             ISplitCtrl? sp0A = ISplitCtrl.Create(0, 'A');
@@ -350,6 +355,29 @@ namespace DDPM.UI.Module.EzArrange
                         //Find Buddy from CustomList
                         //itemBuddy = splitListView_Custom.FindItemByCustomId(spj.CustomId);
                         itemBuddy = splitListView_Custom.FindItemByEAID(spj.EAID);
+
+                        //Check if Buddy (custom item) has the same settings with recent
+                        if (itemBuddy != null)
+                        {
+                            //If any different between Recent item and its Buddy in Custom list
+
+                            if ((itemBuddy.CellCount != spj.CellCount) || (itemBuddy.SplitKey != spj.SplitKey) ||
+                                (!itemBuddy.CustomName.Equals(spj.CustomName)) ||
+                                (!DDPM.SA.Common.Display.SplitJson.AreSettingsEqual(itemBuddy.Settings, spj.Settings)))
+                            {
+                                //Copy properties from Custom to Recent
+                                spj.CellCount = itemBuddy.CellCount;
+                                spj.SplitKey = itemBuddy.SplitKey;
+                                spj.CustomName = itemBuddy.CustomName;
+
+                                if (itemBuddy.Settings != null)
+                                {
+                                    spj.Settings = new List<double>( itemBuddy.Settings);
+                                }
+
+                                isRecentListChangedByCustomSettingsFile = true;
+                            }
+                        }
                     }
                     //If cannot find a Buddy, then will be discard
                     if (itemBuddy == null)
@@ -376,7 +404,7 @@ namespace DDPM.UI.Module.EzArrange
                     spCtrl.FriendlyName = spj.CustomName;
                     spCtrl.EAID = spj.EAID;
 
-                    if (spCtrl.IsAddedCustomLayout)
+                    if (spCtrl.IsOverlapCustomLayout)
                     {
                         CreateCellBorderListToSplitCtrlFromCellJsons(spj.Cells, ref spCtrl);
                     }
@@ -428,6 +456,8 @@ namespace DDPM.UI.Module.EzArrange
             //
             //Return the item count has been added into RecentList
             int addCount = ComplementRecentListItem();
+
+           
 
             //D Add all custom items which has no Buddy into Recent list
             //
@@ -543,7 +573,7 @@ namespace DDPM.UI.Module.EzArrange
             splitListView_Recent.MoveSelectedItemToSecondPosition();
 
             //Check if RecentList has been modified
-            if (addCount > 0)
+            if ((addCount > 0) || isRecentListChangedByCustomSettingsFile)
             {
                 SaveEaSettings();
             }
@@ -551,7 +581,7 @@ namespace DDPM.UI.Module.EzArrange
 
         private void CreateCellBorderListToSplitCtrlFromCellJsons(CellJson[] cellJsons, ref ISplitCtrl ispCtrl)
         {
-            if (!ispCtrl.IsAddedCustomLayout)
+            if (!ispCtrl.IsOverlapCustomLayout)
                 return;
 
             SplitCtrl0B spCtrl0B = (SplitCtrl0B)ispCtrl;
@@ -605,7 +635,11 @@ namespace DDPM.UI.Module.EzArrange
             splitListView_Recent.ClearList();
             splitListView_Custom.ClearList();
             splitListView_2w.ClearList();
+            splitListView_3w.ClearList();
             splitListView_4w.ClearList();
+            splitListView_5w.ClearList();
+            splitListView_6w.ClearList();
+            splitListView_7w.ClearList();
         }
         #endregion Clean up SplitListView and Items
 
