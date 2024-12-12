@@ -2069,28 +2069,41 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
 
         }
-        public async Task<bool> GetZoomMeetingType(string Guid)
+
+        //Derek 1209 ZoomMeetingType should not return bool value
+        //public async Task<bool> GetZoomMeetingType(string Guid)
+        public async Task<int> GetZoomMeetingTypeAsync(string Guid)
         {
             if (!await GetItemIDAsync("Webcam", Guid))
-            { return false; }
+            {
+                //return false; 
+
+                return 4;
+            }
 
             if (_webcamMethodInfo != null)
             {
                 if (await GetCommodityInterfaceInstanceAsync(_webcamMethodInfo) is ICommodity commodity)
                 {
                     var value = GetPropertyValue(_webcamInterfaceType, commodity, "ZoomMeetingType");
-                    return (bool)value;
+
+                    //return (bool)value;
+                    return (int)value;
                 }
                 else
                 {
                     writelog($"[GetZoomMeetingType]Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {_itemID} item.");
-                    return false;
+
+                    //return false;
+                    return 4;
                 }
             }
             else
             {
                 writelog($"[GetZoomMeetingType]Could not retrieve the Commodity Interface for the {_itemID} item. _webcamMethodInfo is null");
-                return false;
+                //return false;
+
+                return 4;
             }
 
         }
@@ -3058,8 +3071,10 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         #region Headset set
 
         // 1125 Add log
-        public async Task<bool> SetMicNoiseCancellationAsync(string guidString, bool newValue)
+        public async Task<bool> SetMicNoiseCancellationAsync(string Guid, bool newValue)
         {
+            string guidString = Guid;
+
             try
             {
                 if (!await GetItemIDAsync("Headset", guidString))
@@ -3085,8 +3100,10 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
         }
 
-        public async Task<bool> SetSidetoneAsync(string guidString, bool newValue)
+        public async Task<bool> SetSidetoneAsync(string Guid, bool newValue)
         {
+            string guidString = Guid;
+
             try
             {
                 if (!await GetItemIDAsync("Headset", guidString))
@@ -3112,8 +3129,10 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
         }
 
-        public async Task<bool> SetBusyLightAsync(string guidString, bool newValue)
+        public async Task<bool> SetBusyLightAsync(string Guid, bool newValue)
         {
+            string guidString = Guid;
+
             try
             {
                 if (!await GetItemIDAsync("Headset", guidString))
@@ -3139,8 +3158,10 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
         }
 
-        public async Task<bool> SetVoiceGuidanceAsync(string guidString, bool newValue)
+        public async Task<bool> SetVoiceGuidanceAsync(string Guid, bool newValue)
         {
+            string guidString = Guid;
+
             try
             {
                 if (!await GetItemIDAsync("Headset", guidString))

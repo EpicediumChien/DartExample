@@ -10,6 +10,7 @@
 
 #endregion
 
+using DDPM.SA.Common.Method;
 using System;
 using System.Threading.Tasks;
 
@@ -19,6 +20,7 @@ namespace CLI.Subagent
     {
         private static async Task Main(string[] args)
         {
+            ProcessMitigationPolicy.ApplySystemProcessPolicy();
             /*
              * Only allow this application in debug mode
              */

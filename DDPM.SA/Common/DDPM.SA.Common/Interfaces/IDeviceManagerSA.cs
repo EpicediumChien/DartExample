@@ -1127,7 +1127,9 @@ namespace DDPM.SA.Common
 
         #region GlobalSetting
 
-        event EventHandler GlobalSettingChangeEvent;
+        //Derek 1209
+        //event EventHandler GlobalSettingChangeEvent;
+        event EventHandler<UpdateUINotify> GlobalSettingChangeEvent;
 
         Task<GlobalSettingParam> GetGlobalSettingParam();
 
@@ -1173,6 +1175,9 @@ namespace DDPM.SA.Common
         Task CloseQAMByDDPM();
         Task<bool> GetIsWidgetSettingPageLoadedByQAMAsync();
         Task SetIsWidgetSettingPageLoadedByQAMAsync(bool newValue);
+
+        //Derek 1210
+        Task WriteLog(string logMsg);
         #endregion
 
         #region System Suspend & Resume

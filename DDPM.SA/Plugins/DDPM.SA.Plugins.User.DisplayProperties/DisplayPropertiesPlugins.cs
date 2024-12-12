@@ -41,7 +41,7 @@ namespace DDPM.SA.Plugins.User.DisplayProperties
 
         private DisplayPropertiesInfo _displayPropertiesInfo;
         public const string PluginLogId = "DisplayProperties";
-        public static Logs? _logs;
+        private static Logs? _logs;
 
         /// <summary>
         /// HDR變更事件，回傳HDR狀態

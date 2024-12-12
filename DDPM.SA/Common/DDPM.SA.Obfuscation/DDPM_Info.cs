@@ -27,7 +27,7 @@ namespace DDPM.SA.Obfuscation
             0xa9, 0xc7, 0xf7, 0x43, 0x84, 0x7d, 0x15, 0x7c, 0xd5, 0x98
         };
 
-        public static byte[][] certificateHash = {
+        public static readonly byte[][] certificateHash = {
             WST_Hash,
             WST2_Hash,
             DELL_Hash

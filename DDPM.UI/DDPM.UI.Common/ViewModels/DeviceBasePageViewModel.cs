@@ -444,11 +444,24 @@ namespace DDPM.UI.Common.ViewModels
                             if (modLeftView != null)
                                 return modLeftView;
                         }
+                        else
+                        {
+                            selHeader.DdpmModule = (IDdpmModule)Activator.CreateInstance(selHeader.ModuleType, this);
+                            ActiveModule = selHeader.DdpmModule;
+                            return ActiveModule.GetLeftView();
+                        }
+
                     }
                 }
 
                 return DefaultLeftView;
             }
+        }
+
+        //Jason 12/11 add LoadLeftView()
+        public void LoadLeftView()
+        {
+            OnPropertyChanged(nameof(LeftView));
         }
 
         #endregion LeftView

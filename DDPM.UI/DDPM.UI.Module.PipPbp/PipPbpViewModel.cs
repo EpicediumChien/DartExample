@@ -645,6 +645,7 @@ namespace DDPM.UI.Module.PipPbp
         public void OnPipSmallClicked(SplitItem spItem)
         {
             LogInfo($"@ OnPipSmallClicked");
+            uint orgPxpMode = CurPxpMode;
             SelectedSplitItem = spItem;
 
             BackgroundWorker bw = new BackgroundWorker()
@@ -664,6 +665,23 @@ namespace DDPM.UI.Module.PipPbp
             };
             IsBusy = true;
             bw.RunWorkerAsync();
+
+            //Robert_Lin, 2024-12-10, root cause of PIMS-326907  When change to pip large mode from pip small mode ,
+            // software can't connect to monitor. When change to pip small mode from pip large mode ,software
+            // can't connect to monitor. Monitor Model: S3425DW.
+            //
+            //When PxpMode change pipSmall->pipLarge or PipLarge->pipSmall, the monitor will not be reconnected
+            // logically. But below code force back to homepage and clean up device list.
+            // Then DDPM expects to refresh devices in the next comming DeviceChanged event. But in fact,
+            // The pipSmall<-->pipLarge change will never have a DeviceChanged event. So the HomePage will
+            // stop at waiting deviceChanged until timeout and then show "Add Your First Device"
+            //
+            //TO DO:
+            // If the monitor is in PipLarge, then we will not back to home page
+            if (orgPxpMode == PipMode_Large)
+            {
+                return;
+            }
             //    IShowPluginManager? _showPluginManager = DDPM.UI.Plugin.DisplayPlugin.PluginIoc.GetService<IShowPluginManager>();
             //    _showPluginManager?.ShowPluginById(DDPM.UI.Common.Constants.SettingsPluginId, "1");
             DdpmCommonHelper.MyShowPluginManager?.ShowHomePage("GeHomeFirst");
@@ -671,6 +689,7 @@ namespace DDPM.UI.Module.PipPbp
 
         public void OnPipLargeClicked(SplitItem spItem)
         {
+            uint orgPxpMode = CurPxpMode;
             SelectedSplitItem = spItem;
 
             BackgroundWorker bw = new BackgroundWorker()
@@ -690,6 +709,13 @@ namespace DDPM.UI.Module.PipPbp
             };
             IsBusy = true;
             bw.RunWorkerAsync();
+            //Read the Robert_Lin, 2024-12-10, root cause of PIMS-326907  comment in OnPipSmallClicked(SplitItem spItem)
+            //TO DO:
+            // If the monitor is in PipSmall, then we will not back to home page
+            if (orgPxpMode == PipMode_Small)
+            {
+                return;
+            }
             DdpmCommonHelper.MyShowPluginManager?.ShowHomePage("GeHomeFirst");
         }
 

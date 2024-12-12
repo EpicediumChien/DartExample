@@ -601,6 +601,9 @@ namespace DDPM.UI.Common
         public static readonly string BrightnessPageWarning = GetString("Warning");
         public static readonly string BrightnessPageNotice0 = GetString("Brightness.19");
         public static readonly string BrightnessPageNotice1 = GetString("Brightness.20");
+        public static readonly string ALSRangeLevelLow = GetString("AutoBrightnessRangeLevel.0");
+        public static readonly string ALSRangeLevelMid = GetString("AutoBrightnessRangeLevel.1");
+        public static readonly string ALSRangeLevelHigh = GetString("AutoBrightnessRangeLevel.2");
 
         //InputSource
         public static readonly string InputTitle0 = GetString("InputSource.1");

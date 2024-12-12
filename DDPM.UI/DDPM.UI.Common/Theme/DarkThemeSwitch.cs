@@ -1,4 +1,5 @@
 ﻿using Dell.Client.Framework.UX.WPF.Controls;
+using System.Resources;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
@@ -20,10 +21,19 @@ namespace DDPM.UI.Common
         {
             try
             {
+                #region Background Color
+                UpdateFreezable("DDPMBackground", (ref LinearGradientBrush brush) => {
+                    GradientStop? gs4 = brush.GradientStops.FirstOrDefault(gs => gs.Offset == 0.7923);
+                    if (gs4 != null) gs4.Color = (Color)ColorConverter.ConvertFromString("#7F674AB8");
+                });
+                #endregion
+
                 #region Default Text Color
                 UpdateFreezable("DefaultTheme_TxtColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#FFFFFFFF"));
                 UpdateFreezable("DefaultTheme_BdBkColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#99194784"));
+                UpdateFreezable("DefaultTheme_BdSolidBkColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#FF132F54"));
                 UpdateFreezable("DefaultTheme_BdBdColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#132F54"));
+                UpdateFreezable("DefaultTheme_BdSolidBdColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#1B385F"));
                 UpdateFreezable("DefaultTheme_RbBkColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#800A0E14"));
                 UpdateFreezable("DefaultTheme_PathColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#FFFFFF"));
                 UpdateFreezable("DefaultTheme_PbHeaderColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#DAF5FD"));
@@ -148,13 +158,13 @@ namespace DDPM.UI.Common
 
                 #region Main Window Background
                 SplashPath = "Resources/Images/splash{0}-round_Dark.png";
-                UpdateFreezable("mainWindowBkColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#F20D121A"));
+                UpdateFreezable("mainWindowBkColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#FF0D121A"));
                 UpdateFreezable("bkImage", (ref ImageBrush brush) => {
                     brush.Stretch = Stretch.Fill;
                     brush.ImageSource = GetImageSourceFromCommonResource("Resources/Images/Background.png", "DDPM");
                     });
                 UpdateFreezable("SpinnerWaitTxtColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#F5F6F7"));
-                UpdateFreezable("SpinnerBkColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#F20D121A"));
+                UpdateFreezable("SpinnerBkColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#FF0D121A"));
                 #endregion
 
                 #region Add Device
