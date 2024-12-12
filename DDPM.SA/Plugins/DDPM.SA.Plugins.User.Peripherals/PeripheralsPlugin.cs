@@ -2085,6 +2085,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
 
         private void _iCTKMessageHelper_CollaborationMsgChanged(CollaborationMsg collaborationMsg)
         {
+            Debug.WriteLine($"CTKMessage: {collaborationMsg.ToString() ?? ""}");
             CollaborationMsgNotify?.Invoke(EventArgs.Empty, collaborationMsg);
         }
 
