@@ -225,7 +225,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                 || e.UI_Field_Name == string.Empty)
                 return;
 
-            DdpmCommonHelper.WriteUILog($"WebcamLanuchView_UIUpdateNotify catch event msg: {e.UI_Field_Name}");
+            //DdpmCommonHelper.WriteUILog($"WebcamLanuchView_UIUpdateNotify catch event msg: {e.UI_Field_Name}");
 
             try
             {
@@ -236,7 +236,10 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
 
                     if (null != msgs && msgs.Length == 2)
                     {
-                        _vm!.CurrentProfileName = msgs[1];
+                        //_vm!.CurrentProfileName = msgs[1];
+                        DdpmCommonHelper.WriteUILog($"WebcamLanuchView_UIUpdateNotify profileName: {msgs[1]}");
+
+                        ChangeProfileByQAM(msgs[1]);
                     }
                 }
             }
@@ -245,6 +248,24 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                 DdpmCommonHelper.WriteUILog($"DeviceManagerSA_UIUpdateNotify catch exception: {ex.Message}");
             }
             
+        }
+
+        private void ChangeProfileByQAM(string profileName)
+        {
+            if (profileName != _vm!.CurrentProfileName || isProfilePropertyChanged)
+            {
+                _vm!.CurrentProfileName = profileName;
+                _vm.IsSettingProfile = true;
+                _vm.SetProfile();
+                _vm.IsSettingProfile = false;
+                isProfilePropertyChanged = false;
+            }
+
+            Dispatcher.Invoke(new Action(() =>
+            {
+                btnPreset_Click(this, null);
+                btnPreset_Click(this, null);
+            }));
         }
 
         ~LaunchView()
@@ -1748,6 +1769,9 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                 isProfilePropertyChanged = false;
             }
             btnPreset_Click(this, null);
+
+            //Derek 1212
+            DdpmCommonHelper.DeviceManagerSA!.SyncWebcamProfile(_vm!.CurrentProfileName, false);
         }
 
         private void btnPreset_Click(object sender, System.Windows.Input.MouseButtonEventArgs? e)
@@ -1793,9 +1817,6 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             img.RenderTransform = new RotateTransform();
             img.RenderTransform.BeginAnimation(RotateTransform.AngleProperty, rotateAnimation);
             IsPresetOpen = !IsPresetOpen;
-
-            //Derek 1212
-            DdpmCommonHelper.DeviceManagerSA!.SyncWebcamProfile(_vm!.CurrentProfileName, false);
         }
 
         private void EditPreset(object sender, System.Windows.Input.MouseButtonEventArgs e)

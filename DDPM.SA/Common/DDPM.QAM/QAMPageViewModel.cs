@@ -22,6 +22,8 @@ using System.Windows.Input;
 using System.Diagnostics;
 using System.Windows.Interop;
 using Windows.Data.Text;
+using System.Windows.Media.Media3D;
+using System.Linq.Expressions;
 
 namespace DDPM.QAM
 {
@@ -385,8 +387,35 @@ namespace DDPM.QAM
                 }
 
                 RefreshUI();
+
+                //SaveSelectProfile(CurrentProfileName.Profile_Name_Key);
             }
         }
+
+        private void SaveSelectProfile(string profileName)
+        {
+            try
+            {
+                //var filePath = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), @$"Dell\Dell Display and Peripheral Manager\WebcamSettings\{model}.json");
+
+                //if (File.Exists(filePath))
+                //{
+                //    Dictionary<string, WebcamProfile> presetProfiles = new();
+                //    //Dictionary<string, WebcamProfile> customProfiles = new();
+                //    string json = File.ReadAllText(filePath);
+                //    var jsonObject = Newtonsoft.Json.Linq.JObject.Parse(json);
+                //    string presetProfilesString = jsonObject["PresetProfiles"].ToString();
+                //    //Derek 1212
+                //    selectedProfileName = jsonObject["SelectedProfileName"].ToString();
+                //    LogMsg($"ImportWebcamProfiles current SelectedProfileName: {selectedProfileName}");
+                //}
+            }
+            catch (Exception e)
+            {
+                LogMsg($"Catch execption: {e.Message} when SaveSelectProfile");
+            }
+        }
+
         #endregion
         #region AutoFraming
         bool _AutoFramingStatus;
