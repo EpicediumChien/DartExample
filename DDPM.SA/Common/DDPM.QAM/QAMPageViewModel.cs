@@ -157,6 +157,15 @@ namespace DDPM.QAM
                 else if (e.UI_Field_Name.StartsWith("WebcamProfileFromDDPM"))
                 {
                     //format "WebcamProfileFromDDPM:{profileName}"
+                    string[] msgs = e.UI_Field_Name.Split(':');
+
+                    if (null != msgs && msgs.Length == 2)
+                    {
+                        if (SetProfile(msgs[1]))
+                            LogMsg($"QAMPageViewModel_UIUpdateNotify: set webcam profile:{msgs[1]} successfully.");
+                        else
+                            LogMsg($"QAMPageViewModel_UIUpdateNotify: set webcam profile:{msgs[1]} fail!");
+                    }
                 }
 
             }
@@ -243,7 +252,21 @@ namespace DDPM.QAM
             }
             catch (Exception e)
             {
-                DdpmCommonHelper.DeviceManagerSA!.WriteLog($"Catch exception: {e.Message}");
+                LogMsg($"Catch exception: {e.Message}");
+            }
+        }
+
+        private bool SetProfile(string name)
+        {
+            try
+            {
+                UI_Profile uI_Profile = new UI_Profile();
+            }
+            catch (Exception e)
+            {
+                LogMsg($"Catch exception: {e.Message}");
+
+                return false;
             }
         }
 
@@ -270,6 +293,7 @@ namespace DDPM.QAM
                         DdpmCommonHelper.DeviceManagerSA!.SetAutoFramingFrameSize(CurrentDeviceInfo!.ID.ToString(), CurrentProfile.AutoFramingFrameSize);
                     }
                 }
+
                 if (CurrentDeviceInfo.IsPropertyFOVSupported)
                 {
                     if (_fOVs[0] == CurrentProfile.FieldOfView)
@@ -285,29 +309,35 @@ namespace DDPM.QAM
                         FOV_Selected(2);
                     }
                 }
+
                 if (CurrentDeviceInfo.IsPropertyZoomSupported)
                 {
                     DdpmCommonHelper.DeviceManagerSA!.SetZoom(CurrentDeviceInfo!.ID.ToString(), CurrentProfile.Zoom);
                     _ZoomValue = CurrentProfile.Zoom;
                 }
+
                 if (CurrentDeviceInfo.IsPropertyFocusSupported)
                 {
                     DdpmCommonHelper.DeviceManagerSA!.SetIsFocusOn(CurrentDeviceInfo!.ID.ToString(), CurrentProfile.IsFocusOn);
                     DdpmCommonHelper.DeviceManagerSA!.SetFocus(CurrentDeviceInfo!.ID.ToString(), CurrentProfile.Focus);
                 }
+
                 if (CurrentDeviceInfo.IsPropertyPrioritySupported)
                 {
                     DdpmCommonHelper.DeviceManagerSA!.SetPriority(CurrentDeviceInfo!.ID.ToString(), CurrentProfile.Priority);
                 }
+
                 if (CurrentDeviceInfo.IsPropertyHDRSupported)
                 {
                     DdpmCommonHelper.DeviceManagerSA!.SetIsHDROn(CurrentDeviceInfo!.ID.ToString(), CurrentProfile.IsHDROn);
                 }
+
                 if (CurrentDeviceInfo.IsPropertyWhiteBalanceSupported)
                 {
                     DdpmCommonHelper.DeviceManagerSA!.SetIsAutoWhiteBalanceOn(CurrentDeviceInfo!.ID.ToString(), CurrentProfile.IsAutoWhiteBalanceOn);
                     DdpmCommonHelper.DeviceManagerSA!.SetAutoWhiteBalance(CurrentDeviceInfo!.ID.ToString(), CurrentProfile.AutoWhiteBalance);
                 }
+
                 List<UI_Profile> temp = UI_ProfileList.ToList();
                 UI_ProfileList = new ObservableCollection<UI_Profile>();
                 foreach (var profile in temp)
@@ -319,6 +349,7 @@ namespace DDPM.QAM
                     }
                     UI_ProfileList.Add(profile);
                 }
+
                 RefreshUI();
             }
         }
