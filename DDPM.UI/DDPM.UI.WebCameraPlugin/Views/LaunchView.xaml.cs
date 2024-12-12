@@ -1031,7 +1031,15 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             txtTimer.Text = stopwatch.Elapsed.ToString(@"hh\:mm\:ss");
 
             //這邊做錄影長度限制 2小時
-            if( txtTimer.Text == "00:00:31" )
+            if( txtTimer.Text == "02:00:01" )
+            {
+                Dispatcher.Invoke(new Action(() =>
+                {
+                    UserStopRecord();
+                }));
+            }
+
+            if(!HasEnoughSpace(_vm!.VideoCaptureFolder, 20 * 1024 * 1024))//不到20MB時停止錄影
             {
                 Dispatcher.Invoke(new Action(() =>
                 {
@@ -1497,7 +1505,6 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             else
                 StartRecordingAsync().RunSynchronously();
 
-            
         }
 
         private void StopRecord()
@@ -1521,7 +1528,13 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             _timer.Stop();
             StartRecordingAsync().RunSynchronously();
         }
-
+        [DllImport("kernel32.dll", CharSet = CharSet.Unicode)] 
+        static extern bool GetDiskFreeSpaceEx(string lpDirectoryName, out ulong lpFreeBytesAvailable, out ulong lpTotalNumberOfBytes, out ulong lpTotalNumberOfFreeBytes); 
+        public static bool HasEnoughSpace(string path, ulong requiredBytes) 
+        { 
+            GetDiskFreeSpaceEx(path, out ulong freeBytesAvailable, out _, out _); 
+            return freeBytesAvailable >= requiredBytes; 
+        }
         /// <summary>
         /// Records an MP4 video to a StorageFile and adds rotation metadata to it
         /// </summary>
@@ -1682,6 +1695,11 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
 
         private void btnRecord_Click(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
+
+            if(!HasEnoughSpace(_vm!.VideoCaptureFolder, 20 * 1024 * 1024))
+            {
+                return;
+            }
             btnPause.Visibility = Visibility.Visible;
             btnRecord.Visibility = Visibility.Collapsed;
             btnStop.Visibility = Visibility.Visible;
