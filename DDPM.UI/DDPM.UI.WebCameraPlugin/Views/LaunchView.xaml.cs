@@ -132,6 +132,8 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                 DdpmCommonHelper.DeviceManagerSA.SystemSuspend += DeviceManagerSA_OnSystemSuspend;
                 DdpmCommonHelper.DeviceManagerSA.SystemResume += DeviceManagerSA_OnSystemResume;
                 DdpmCommonHelper.DeviceManagerSA.DeviceChanged += DeviceManagerSA_DeviceChanged;
+                //Derek 1212
+                DdpmCommonHelper.DeviceManagerSA.UIUpdateNotify += DeviceManagerSA_UIUpdateNotify;
                 //Derek 1110 for Webcam PIMS-315440
                 //During video recording, do"Restart" &"Shutdown"action in SUT,
                 //the video which I just recorded will have no length.
@@ -217,9 +219,38 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             DdpmCommonHelper.BitmapImageUpdated += ImageUpdate;
         }
 
+        private void DeviceManagerSA_UIUpdateNotify(object? sender, UpdateUINotify e)
+        {
+            if (e == null || e == EventArgs.Empty || e.UI_Field_Name == null
+                || e.UI_Field_Name == string.Empty)
+                return;
+
+            DdpmCommonHelper.WriteUILog($"WebcamLanuchView_UIUpdateNotify catch event msg: {e.UI_Field_Name}");
+
+            try
+            {
+                if (e.UI_Field_Name.StartsWith("WebcamProfileFromQAM")) //1212 Derek
+                {
+                    //format "WebcamProfileFromQAM:{profileName}"
+                    string[] msgs = e.UI_Field_Name.Split(':');
+
+                    if (null != msgs && msgs.Length == 2)
+                    {
+                        _vm!.CurrentProfileName = msgs[1];
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                DdpmCommonHelper.WriteUILog($"DeviceManagerSA_UIUpdateNotify catch exception: {ex.Message}");
+            }
+            
+        }
+
         ~LaunchView()
         {
             DdpmCommonHelper.BitmapImageUpdated -= ImageUpdate;
+            DdpmCommonHelper.DeviceManagerSA!.UIUpdateNotify -= DeviceManagerSA_UIUpdateNotify;
         }
 
         private void ImageUpdate(OSThemeEnum oSThemeEnum)
@@ -1762,6 +1793,9 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             img.RenderTransform = new RotateTransform();
             img.RenderTransform.BeginAnimation(RotateTransform.AngleProperty, rotateAnimation);
             IsPresetOpen = !IsPresetOpen;
+
+            //Derek 1212
+            DdpmCommonHelper.DeviceManagerSA!.SyncWebcamProfile(_vm!.CurrentProfileName, false);
         }
 
         private void EditPreset(object sender, System.Windows.Input.MouseButtonEventArgs e)

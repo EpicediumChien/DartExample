@@ -23,6 +23,7 @@ namespace DDPM.QAM
         public PresetsPage()
         {
             InitializeComponent();
+
             if (DdpmCommonHelper.QAMPageViewModel != null)
             {
                 DataContext = DdpmCommonHelper.QAMPageViewModel;
@@ -32,11 +33,18 @@ namespace DDPM.QAM
         {
             if (sender is Border border && border.DataContext is UI_Profile selectedProfile)
             {
-                QAMPageViewModel vm = DataContext as QAMPageViewModel;
-                if (vm != null)
+                if (DataContext is QAMPageViewModel vm)
                 {
                     vm.SetProfile(selectedProfile);
                 }
+            }
+        }
+
+        private void UserControl_Loaded(object sender, RoutedEventArgs e)
+        {
+            if (DataContext is QAMPageViewModel vm)
+            {
+                vm.SetProfile();
             }
         }
     }

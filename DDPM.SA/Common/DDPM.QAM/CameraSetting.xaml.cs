@@ -58,6 +58,7 @@ namespace DDPM.QAM
         private void Presets_Click(object sender, MouseButtonEventArgs e)
         {
             QAMPageViewModel vm = DataContext as QAMPageViewModel;
+
             if (vm != null)
             {
                 PresetsPage presetsPage = new PresetsPage();
