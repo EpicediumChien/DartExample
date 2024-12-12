@@ -348,9 +348,10 @@ namespace DDPM.UI.Module.DisplayOthers
                 case "import_confirm":
                     return Dispatcher.Invoke(new Func<bool>(() =>
                     {
-                        DdpmCommonHelper.WriteUILog($"Import Confirm for Same Model but Different Service Tag");
-                        bool? rst2 = DisplayMsgBox(Strings.ImpExp_Warning, Strings.ImpExp_WarningMsg2 + $" [{model}]", Strings.No, Strings.Yes);
-                        if(rst2 != null && rst2.Value)
+                        DdpmCommonHelper.WriteUILog($"Import Confirm for Same Model same Service Tag");
+                        //bool? rst2 = DisplayMsgBox(Strings.ImpExp_Warning, Strings.ImpExp_WarningMsg2 + $" [{model}]", Strings.No, Strings.Yes);
+                        bool? rst2 = DisplayMsgBox(LangHelper.Instance["Warning"], LangHelper.Instance["ImpExp_WarningMsg.2"]+ $" [{model}]", Strings.No, Strings.Yes);
+                        if (rst2 != null && rst2.Value)
                             DdpmCommonHelper.WriteUILog($"User Confirm");
                         else
                             DdpmCommonHelper.WriteUILog($"User Cancelled");
