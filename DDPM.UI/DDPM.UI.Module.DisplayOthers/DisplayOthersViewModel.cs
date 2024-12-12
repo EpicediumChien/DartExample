@@ -282,10 +282,15 @@ namespace DDPM.UI.Module.DisplayOthers
                         OnMessageDlgInvoke("result_fail");
                         return;
                     }
-                    //else if (DisplayOthersModule.SelectedHomeDevice.MonitorInfo.edid.ServiceTag == serviceTag)
-                    //{
-                        //OnMessageDlgInvoke("import_confirm");
-                    //}
+                    else if (DisplayOthersModule.SelectedHomeDevice.MonitorInfo.edid.ServiceTag == serviceTag)
+                    {
+                        bool result = OnMessageDlgInvoke("import_confirm_" + DisplayOthersModule.SelectedHomeDevice.MonitorInfo.modelName);
+                        if (false == result)
+                        {
+                            OnMessageDlgInvoke("close_loading");
+                            return;
+                        }
+                    }
 
                     if (DdpmCommonHelper.DeviceManagerSA.DisplayImportSettings(DisplayOthersModule.SelectedHomeDevice.MonitorInfo, AutoApply_Checked, impPath).Result)
                     {
@@ -391,14 +396,16 @@ namespace DDPM.UI.Module.DisplayOthers
             return false;
         }
 
-        public EventHandler<string>? ImportExportResult;
-        private void OnMessageDlgInvoke(string type)
+        public Func<string, bool>? ImportExportResult;
+        private bool OnMessageDlgInvoke(string type)
         {
-            EventHandler<string>? handler = ImportExportResult;
+            Func<string, bool>? handler = ImportExportResult;
             if (handler != null)
             {
-                handler.Invoke(this, type);
+                return handler.Invoke(type);
             }
+
+            return true;
         }
 
         public void OnPropertyChanged_Lock()
