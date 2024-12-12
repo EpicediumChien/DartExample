@@ -2510,6 +2510,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         {
             DeviceHelper deviceHelper = await Task.Run(() => _PeripheralsPlugin.GetDevices(Rescan));
             ChangeSB725(deviceHelper);
+            ChangeHeadset(deviceHelper);
             ChangeDock(deviceHelper);
             return await Task.Run(() => _PeripheralsPlugin.GetDevices(Rescan));
         }
@@ -2526,6 +2527,32 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     deviceInfo.LogicalDeviceType = "LogicalWiredAudio";
                 }
             }
+        }
+
+        private void ChangeHeadset(DeviceHelper deviceHelper)
+        {
+            writelog("ChangeHeadset start");
+            foreach(var a in deviceHelper.deviceInfo)
+            {
+                Trace.WriteLine($"l={a.LogicalDeviceType}");
+                Trace.WriteLine($"p={a.PhysicalDeviceType}");
+            }
+            List<DeviceInfo> GetDeviceInfos = deviceHelper.deviceInfo.Where(x => x.LogicalDeviceType == "LogicalHeadset").ToList();
+            Trace.WriteLine(GetDeviceInfos.Count);
+            if (GetDeviceInfos != null && GetDeviceInfos.Count >= 1)
+            {
+                writelog("ChangeHeadset go");
+                foreach (var deviceInfo in GetDeviceInfos)
+                {
+                    string version = GetHeadsetFirmwareVersionAsync(deviceInfo.ID.ToString()).Result;
+                    writelog($"GetHeadsetFirmwareVersionAsync : {version}");
+                    if (!string.IsNullOrEmpty(version))
+                    {
+                        deviceInfo.FirmwareVersion = version;
+                    }
+                }
+            }
+            writelog("ChangeHeadset done");
         }
 
         private void ChangeDock(DeviceHelper deviceHelper)
