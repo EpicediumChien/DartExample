@@ -79,6 +79,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.Tests
         [Test]
         public void TestPrepareMonitorInfos()
         {
+
             List<MonitorInfo> monitorInfos = new List<MonitorInfo>();
             try
             {
@@ -94,6 +95,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.Tests
         [Test]
         public void TestPrepareDeviceInfos()
         {
+            System.Windows.Application app = new System.Windows.Application();
             List<DeviceInfo> deviceInfos = new List<DeviceInfo>();
             try
             {
@@ -109,6 +111,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.Tests
         [Test]
         public void TestResetDevices()
         {
+            //System.Windows.Application app=new System.Windows.Application();
             try
             {
                 ddpmHomePageViewModel.ResetDevices();
@@ -124,6 +127,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.Tests
         [Test]
         public void TestRefreshCollectionView()
         {
+            //System.Windows.Application app = new System.Windows.Application();
             try
             {
                 ddpmHomePageViewModel.RefreshCollectionView();

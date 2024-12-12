@@ -12,7 +12,8 @@ using DDPM.SA.Common.Display;
 using DDPM.SA.Common.Settings;
 using Windows.System;
 using Dell.Client.Framework.UX.WPF;
-
+using Dell.Client.Framework.Common;
+using Dell.Client.Framework.UX.WPF.ResourceManager;
 namespace DDPM.UI.Module.Kvm.Tests
 {
     [Apartment(ApartmentState.STA)]
@@ -143,6 +144,9 @@ namespace DDPM.UI.Module.Kvm.Tests
         [Test]
         public void TestOnActivated()
         {
+            var _log=new Mock<ILog>();
+            //KvmViewModel._lo;
+            System.Windows.Application app=new Application();
             try
             {
                 kvmModule.OnActivated();
