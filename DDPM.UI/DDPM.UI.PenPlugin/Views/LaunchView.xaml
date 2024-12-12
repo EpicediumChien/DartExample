@@ -190,7 +190,7 @@
             <DDPMUserControls:BatteryIndicator  Margin="0,0,0,70" HorizontalAlignment="Center"
                                                            BatteryLevel="{Binding BatteryLevel}" BatteryStatus="{Binding BatteryStatus}" ConnectionType="{Binding ConnectionType}" VerticalAlignment="Bottom" />
                         <Border Style="{StaticResource BorderUnpair}" Width="176" MouseLeftButtonDown="Restore_Click" Cursor="Hand" Margin="8,0,0,70" Visibility="Visible" x:Name="btnRestore"
-                                BorderBrush="{DynamicResource SecondaryButton_DefaultBdColor}">
+                                BorderBrush="{DynamicResource Button_UXStyleColor_ForWhiteFrame}">
                             <Grid>
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="*"/>
