@@ -620,7 +620,9 @@ namespace DDPM.CLI.Plugins.Display
                 case "SWAPVIDEO":
                 case "SWAPUSB":
                 case "PXPZOOM":
+                    writelog($"{commandLineInput.TargetFeature} CLI_Pxp entry");
                     var pxp = CLI_Pxp(devMgr, commandLineInput).Result;
+                    writelog($"{commandLineInput.TargetFeature} CLI_Pxp exit");
                     result.ExitCode = pxp.code;
                     result.serialize_Json_response = pxp.result;
                     return result;
@@ -1817,6 +1819,7 @@ namespace DDPM.CLI.Plugins.Display
 
         private async Task<bool> SetVCPCode(IDeviceManagerSA devMgr, MonitorInfo mo, string vcpcode, string value)
         {
+            writelog($"SetVCPCode entry, vcpcode: {vcpcode}, monitor: {mo?.modelName}, value: {value}");
             if (devMgr == null)
             {
                 writelog("SetVCPCode: input null IDeviceManagerSA");
@@ -1846,11 +1849,13 @@ namespace DDPM.CLI.Plugins.Display
             else
                 return false;
 
+            writelog($"SetVCPCode exit, vcpcode: {vcpcode}, monitor: {mo?.modelName}, value: {value}");
             return result;
         }
 
         private async Task<bool> SetVCPCode(IDeviceManagerSA devMgr, int index, string vcpcode, string value)
         {
+            writelog($"SetVCPCode entry, vcpcode: {vcpcode}, index: {index}, value: {value}");
             if (devMgr == null)
             {
                 writelog("SetVCPCode: input null IDeviceManagerSA");
@@ -1867,11 +1872,13 @@ namespace DDPM.CLI.Plugins.Display
             else
                 return false;
 
+            writelog($"SetVCPCode exit, vcpcode: {vcpcode}, index: {index}, value: {value}");
             return result;
         }
 
         private async Task<ObjGetVCP> GetVCPCode(IDeviceManagerSA devMgr, MonitorInfo mo, string vcpcode)
         {
+            writelog($"GetVCPCode entry, vcpcode: {vcpcode}, monitor: {mo?.modelName}");
             if (devMgr == null)
             {
                 writelog("GetVCPCode: input null IDeviceManagerSA");
@@ -1896,11 +1903,13 @@ namespace DDPM.CLI.Plugins.Display
             else
                 return new ObjGetVCP() { result = false, value = null };
 
+            writelog($"GetVCPCode exit, vcpcode: {vcpcode}, monitor: {mo?.modelName}");
             return result;
         }
 
         private async Task<ObjGetVCP> GetVCPCodeMax(IDeviceManagerSA devMgr, MonitorInfo mo, string vcpcode)
         {
+            writelog($"GetVCPCodeMax entry, vcpcode: {vcpcode}, monitor: {mo?.modelName}");
             if (devMgr == null)
             {
                 writelog("GetVCPCodeMax: input null IDeviceManagerSA");
@@ -1925,11 +1934,13 @@ namespace DDPM.CLI.Plugins.Display
             else
                 return new ObjGetVCP() { result = false, value = null };
 
+            writelog($"GetVCPCodeMax exit, vcpcode: {vcpcode}, monitor: {mo?.modelName}");
             return result;
         }
 
         private async Task<ObjGetVCP> GetVCPCode(IDeviceManagerSA devMgr, int index, string vcpcode)
         {
+            writelog($"GetVCPCode entry, vcpcode: {vcpcode}, index: {index}");
             if (devMgr == null)
             {
                 writelog("GetVCPCode: input null IDeviceManagerSA");
@@ -2181,7 +2192,7 @@ namespace DDPM.CLI.Plugins.Display
 
                     foreach (string modelName in model)
                     {
-                        writelog($"Brightness set tag entry");
+                        writelog($"Brightness set model entry");
 
                         bool rc = false;
                         var tmp = _AllInfoMonitors.FindAll(x => x.edid.ModelName.ToUpper().Equals(modelName.ToUpper()));
@@ -2573,7 +2584,6 @@ namespace DDPM.CLI.Plugins.Display
                         {
                             S_Contrast_RESPONSE = new CLI_RESPONSE(mo);
 
-                            rc = SetVCPCode(devMgr, mo, "0x12", value).Result;
                             if (mo.CapabilityDic.ContainsKey("12") && Int32.Parse(value) > 100)
                             {
                                 S_Contrast_RESPONSE.Result = "Format Error, CONTRASTLEVEL lager then 100";
@@ -2623,7 +2633,7 @@ namespace DDPM.CLI.Plugins.Display
 
                     foreach (string modelName in model)
                     {
-                        writelog($"Contrast set tag entry");
+                        writelog($"Contrast set model entry");
 
                         bool rc = false;
                         var tmp = _AllInfoMonitors.FindAll(x => x.edid.ModelName.ToUpper().Equals(modelName.ToUpper()));
@@ -2631,7 +2641,6 @@ namespace DDPM.CLI.Plugins.Display
                         {
                             S_Contrast_RESPONSE = new CLI_RESPONSE(mo);
 
-                            rc = SetVCPCode(devMgr, mo, "0x12", value).Result;
                             if (mo.CapabilityDic.ContainsKey("12") && Int32.Parse(value) > 100)
                             {
                                 S_Contrast_RESPONSE.Result = "Format Error, CONTRASTLEVEL lager then 100";
@@ -4879,6 +4888,7 @@ namespace DDPM.CLI.Plugins.Display
                         writelog($"WriteColorPreset set Entry");
 
                         r = devMgr.WriteColorPreset(monitor, value).Result;
+                        writelog($"WriteColorPreset set Exit");
 
                         CLI_RESPONSE _Set_SupportedColorPreset_RESPONSE = new CLI_RESPONSE(monitor);
                         //_Set_SupportedColorPreset_RESPONSE.Model = monitor.modelName;
@@ -4914,6 +4924,7 @@ namespace DDPM.CLI.Plugins.Display
                         //r = devMgr.WriteColorPreset(idx, _AllInfoMonitors[System.Convert.ToInt32(idx)], value).Result;
                         writelog($"WriteColorPreset set idx Entry");
                         r = devMgr.WriteColorPreset(_AllInfoMonitors[System.Convert.ToInt32(idx)], value).Result;
+                        writelog($"WriteColorPreset set idx Exit");
 
                         CLI_RESPONSE _Set_SupportedColorPreset_RESPONSE = new CLI_RESPONSE(_AllInfoMonitors[Convert.ToInt32(idx)]);
                         // jim modify 20240608
@@ -4957,6 +4968,7 @@ namespace DDPM.CLI.Plugins.Display
                             //r = devMgr.WriteColorPreset(n_index.ToString(), mo, value).Result;
                             writelog($"WriteColorPreset set tag Entry");
                             r = devMgr.WriteColorPreset(mo, value).Result;
+                            writelog($"WriteColorPreset set tag Exit");
 
                             CLI_RESPONSE _Set_SupportedColorPreset_RESPONSE = new CLI_RESPONSE(mo);
                             //_Set_SupportedColorPreset_RESPONSE.Model = mo.modelName;
@@ -5005,6 +5017,7 @@ namespace DDPM.CLI.Plugins.Display
                     {
                         writelog($"ReadCurrentColorPreset Entry");
                         _ActiveColorPreset = devMgr.ReadCurrentColorPreset(monitor).Result;
+                        writelog($"ReadCurrentColorPreset Exit");
 
                         CLI_RESPONSE _Get_ActiveColorPresetList_RESPONSE = new CLI_RESPONSE(monitor);
                         //_Get_ActiveColorPresetList_RESPONSE.Model = monitor.modelName;
@@ -5040,6 +5053,7 @@ namespace DDPM.CLI.Plugins.Display
                     {
                         writelog($"ReadCurrentColorPreset idx Entry");
                         _ActiveColorPreset = devMgr.ReadCurrentColorPreset(_AllInfoMonitors[System.Convert.ToInt32(idx)]).Result;
+                        writelog($"ReadCurrentColorPreset idx Exit");
 
                         CLI_RESPONSE _Get_ActiveColorPresetList_RESPONSE = new CLI_RESPONSE(_AllInfoMonitors[Convert.ToInt32(idx)]);
                         //_Get_ActiveColorPresetList_RESPONSE.Model = _AllInfoMonitors[System.Convert.ToInt32(idx)].modelName;
@@ -5076,6 +5090,7 @@ namespace DDPM.CLI.Plugins.Display
                         {
                             writelog($"ReadCurrentColorPreset tag Entry");
                             _ActiveColorPreset = devMgr.ReadCurrentColorPreset(mo).Result;
+                            writelog($"ReadCurrentColorPreset tag Exit");
 
                             CLI_RESPONSE _Get_ActiveColorPresetList_RESPONSE = new CLI_RESPONSE(mo);
                             //_Get_ActiveColorPresetList_RESPONSE.Model = mo.modelName;
@@ -5114,6 +5129,7 @@ namespace DDPM.CLI.Plugins.Display
                         {
                             writelog($"ReadCurrentColorPreset tag Entry");
                             _ActiveColorPreset = devMgr.ReadCurrentColorPreset(mo).Result;
+                            writelog($"ReadCurrentColorPreset tag Exit");
 
                             CLI_RESPONSE _Get_ActiveColorPresetList_RESPONSE = new CLI_RESPONSE(mo);
                             //_Get_ActiveColorPresetList_RESPONSE.Model = mo.modelName;
@@ -5683,10 +5699,14 @@ namespace DDPM.CLI.Plugins.Display
                     switch (commandLineInput.Options[0].Option_Value.ToUpper())
                     {
                         case "BYMONITOR":
-                            writelog($"ColorManagement BYMONITOR entry");
+                            writelog($"ColorManagement BYMONITOR set entry");
                             bymonitor_byhost = "BYMONITOR";
+                            writelog("set devMgr.AutoColorManagementForMonitorConfig entry");
                             devMgr.AutoColorManagementForMonitorConfig(monitor, bymonitor_byhost, ColorPreset, ICC_profile);
+                            writelog("set devMgr.AutoColorManagementForMonitorConfig exit");
+                            writelog("set devMgr.GetColorManagementStatus entry");
                             rc_ = devMgr.GetColorManagementStatus(monitor).Result;
+                            writelog("set devMgr.GetColorManagementStatus exit");
                             Trace.WriteLine($"Rc_ = {rc_}");
                             if (rc_.Equals("BYMONITOR", StringComparison.OrdinalIgnoreCase))
                             {
@@ -5702,10 +5722,14 @@ namespace DDPM.CLI.Plugins.Display
                             break;
 
                         case "BYHOST":
-                            writelog($"ColorManagement BYHOST entry");
+                            writelog($"ColorManagement BYHOST set entry");
                             bymonitor_byhost = "Byhost";
+                            writelog("set devMgr.AutoColorManagementForMonitorConfig entry");
                             devMgr.AutoColorManagementForMonitorConfig(monitor, bymonitor_byhost, ColorPreset, ICC_profile);
+                            writelog("set devMgr.AutoColorManagementForMonitorConfig exit");
+                            writelog("set devMgr.GetColorManagementStatus entry");
                             rc_ = devMgr.GetColorManagementStatus(monitor).Result;
+                            writelog("set devMgr.GetColorManagementStatus exit");
                             if (rc_.Equals("BYHOST", StringComparison.OrdinalIgnoreCase))
                             {
                                 cli_Response.Result = "PASS";
@@ -5720,10 +5744,14 @@ namespace DDPM.CLI.Plugins.Display
                             break;
 
                         case "OFF":
-                            writelog($"ColorManagement OFF entry");
+                            writelog($"ColorManagement OFF set entry");
                             bymonitor_byhost = "off";
+                            writelog("set devMgr.AutoColorManagementForMonitorConfig entry");
                             devMgr.AutoColorManagementForMonitorConfig(monitor, bymonitor_byhost, ColorPreset, ICC_profile);
+                            writelog("set devMgr.AutoColorManagementForMonitorConfig exit");
+                            writelog("set devMgr.GetColorManagementStatus entry");
                             rc_ = devMgr.GetColorManagementStatus(monitor).Result;
+                            writelog("set devMgr.GetColorManagementStatus exit");
                             if (rc_.Equals("OFF", StringComparison.OrdinalIgnoreCase))
                             {
                                 cli_Response.Result = "PASS";
@@ -5765,7 +5793,9 @@ namespace DDPM.CLI.Plugins.Display
                     CLI_RESPONSE cli_Response = new CLI_RESPONSE(monitor);
                     cli_Response.Command = commandLineInput.Command;
                     cli_Response.TargetFeature = commandLineInput.TargetFeature;
+                    writelog($"devMgr.GetColorManagementStatus get entry");
                     rc = devMgr.GetColorManagementStatus(monitor).Result;
+                    writelog($"devMgr.GetColorManagementStatus get exit");
                     if (rc != null)
                     {
                         cli_Response.Result = "PASS";
@@ -5812,7 +5842,7 @@ namespace DDPM.CLI.Plugins.Display
                         CLI_RESPONSE _Set_CLI_RESPONSE_RESPONSE = new CLI_RESPONSE(monitor);
                         // jim modify 20240715
                         writelog($"RestoreFactoryDefaults entry");
-                        r = devMgr.SetVCPCapability(monitor, 0x04, 0x01).Result;
+                        r = SetVCPCode(devMgr, monitor, "0x04", "0x01").Result;
 
                         _Set_CLI_RESPONSE_RESPONSE.Command = "SET";
                         _Set_CLI_RESPONSE_RESPONSE.TargetFeature = "RESTOREFACTORYDEFAULTS";
@@ -5843,7 +5873,7 @@ namespace DDPM.CLI.Plugins.Display
                         CLI_RESPONSE _Set_CLI_RESPONSE_RESPONSE = new CLI_RESPONSE(_AllInfoMonitors[Convert.ToInt32(idx)]);
                         // jim modify 20240802
                         writelog($"RestoreFactoryDefaults idx entry");
-                        r = devMgr.SetVCPCapability(_AllInfoMonitors[System.Convert.ToInt32(idx)], 0x04, 0x01).Result;
+                        r = SetVCPCode(devMgr, _AllInfoMonitors[System.Convert.ToInt32(idx)], "0x04", "0x01").Result;
 
                         _Set_CLI_RESPONSE_RESPONSE.Command = "SET";
                         _Set_CLI_RESPONSE_RESPONSE.TargetFeature = "RESTOREFACTORYDEFAULTS";
@@ -5878,7 +5908,7 @@ namespace DDPM.CLI.Plugins.Display
                             CLI_RESPONSE _Set_CLI_RESPONSE_RESPONSE = new CLI_RESPONSE(mo);
                             // jim modify 20240802
                             writelog($"RestoreFactoryDefaults tag entry");
-                            r = devMgr.SetVCPCapability(mo, 0x04, 0x01).Result;
+                            r = SetVCPCode(devMgr, mo, "0x04", "0x01").Result;
 
                             _Set_CLI_RESPONSE_RESPONSE.Command = "SET";
                             _Set_CLI_RESPONSE_RESPONSE.TargetFeature = "RESTOREFACTORYDEFAULTS";
@@ -5915,7 +5945,7 @@ namespace DDPM.CLI.Plugins.Display
                             CLI_RESPONSE _Set_CLI_RESPONSE_RESPONSE = new CLI_RESPONSE(mo);
                             // jim modify 20240802
                             writelog($"RestoreFactoryDefaults tag entry");
-                            r = devMgr.SetVCPCapability(mo, 0x04, 0x01).Result;
+                            r = SetVCPCode(devMgr, mo, "0x04", "0x01").Result;
 
                             _Set_CLI_RESPONSE_RESPONSE.Command = "SET";
                             _Set_CLI_RESPONSE_RESPONSE.TargetFeature = "RESTOREFACTORYDEFAULTS";
@@ -5973,7 +6003,7 @@ namespace DDPM.CLI.Plugins.Display
                     {
                         CLI_RESPONSE _Set_CLI_RESPONSE_RESPONSE = new CLI_RESPONSE(monitor);
                         writelog($"RestoreLevelDefaults entry");
-                        r = devMgr.SetVCPCapability(monitor, 0x05, 0x01).Result;
+                        r = SetVCPCode(devMgr, monitor, "0x05", "0x01").Result;
 
                         _Set_CLI_RESPONSE_RESPONSE.Command = "SET";
                         _Set_CLI_RESPONSE_RESPONSE.TargetFeature = "RESTORELEVELDEFAULTS";
@@ -6002,7 +6032,7 @@ namespace DDPM.CLI.Plugins.Display
                     {
                         CLI_RESPONSE _Set_CLI_RESPONSE_RESPONSE = new CLI_RESPONSE(_AllInfoMonitors[Convert.ToInt32(idx)]);
                         writelog($"RestoreLevelDefaults idx entry");
-                        r = devMgr.SetVCPCapability(_AllInfoMonitors[System.Convert.ToInt32(idx)], 0x05, 0x01).Result;
+                        r = SetVCPCode(devMgr, _AllInfoMonitors[System.Convert.ToInt32(idx)], "0x05", "0x01").Result;
 
                         _Set_CLI_RESPONSE_RESPONSE.Command = "SET";
                         _Set_CLI_RESPONSE_RESPONSE.TargetFeature = "RESTORELEVELDEFAULTS";
@@ -6035,7 +6065,7 @@ namespace DDPM.CLI.Plugins.Display
                         {
                             CLI_RESPONSE _Set_CLI_RESPONSE_RESPONSE = new CLI_RESPONSE(mo);
                             writelog($"RestoreLevelDefaults tag entry");
-                            r = devMgr.SetVCPCapability(mo, 0x05, 0x01).Result;
+                            r = SetVCPCode(devMgr, mo, "0x05", "0x01").Result;
 
                             _Set_CLI_RESPONSE_RESPONSE.Command = "SET";
                             _Set_CLI_RESPONSE_RESPONSE.TargetFeature = "RESTORELEVELDEFAULTS";
@@ -6070,7 +6100,7 @@ namespace DDPM.CLI.Plugins.Display
                         {
                             CLI_RESPONSE _Set_CLI_RESPONSE_RESPONSE = new CLI_RESPONSE(mo);
                             writelog($"RestoreLevelDefaults tag entry");
-                            r = devMgr.SetVCPCapability(mo, 0x05, 0x01).Result;
+                            r = SetVCPCode(devMgr, mo, "0x05", "0x01").Result;
 
                             _Set_CLI_RESPONSE_RESPONSE.Command = "SET";
                             _Set_CLI_RESPONSE_RESPONSE.TargetFeature = "RESTORELEVELDEFAULTS";
@@ -6128,7 +6158,7 @@ namespace DDPM.CLI.Plugins.Display
                     {
                         CLI_RESPONSE _Set_CLI_RESPONSE_RESPONSE = new CLI_RESPONSE(monitor);
                         writelog($"RestoreColorDefaults entry");
-                        r = devMgr.SetVCPCapability(monitor, 0x08, 0x01).Result;
+                        r = SetVCPCode(devMgr, monitor, "0x08", "0x01").Result;
 
                         _Set_CLI_RESPONSE_RESPONSE.Command = "SET";
                         _Set_CLI_RESPONSE_RESPONSE.TargetFeature = "RESTORECOLORDEFAULTS";
@@ -6157,7 +6187,7 @@ namespace DDPM.CLI.Plugins.Display
                     {
                         CLI_RESPONSE _Set_CLI_RESPONSE_RESPONSE = new CLI_RESPONSE(_AllInfoMonitors[Convert.ToInt32(idx)]);
                         writelog($"RestoreColorDefaults idx entry");
-                        r = devMgr.SetVCPCapability(_AllInfoMonitors[System.Convert.ToInt32(idx)], 0x08, 0x01).Result;
+                        r = SetVCPCode(devMgr, _AllInfoMonitors[System.Convert.ToInt32(idx)], "0x08", "0x01").Result;
 
                         _Set_CLI_RESPONSE_RESPONSE.Command = "SET";
                         _Set_CLI_RESPONSE_RESPONSE.TargetFeature = "RESTORECOLORDEFAULTS";
@@ -6190,7 +6220,7 @@ namespace DDPM.CLI.Plugins.Display
                         {
                             CLI_RESPONSE _Set_CLI_RESPONSE_RESPONSE = new CLI_RESPONSE(mo);
                             writelog($"RestoreColorDefaults tag entry");
-                            r = devMgr.SetVCPCapability(mo, 0x08, 0x01).Result;
+                            r = SetVCPCode(devMgr, mo, "0x08", "0x01").Result;
 
                             _Set_CLI_RESPONSE_RESPONSE.Command = "SET";
                             _Set_CLI_RESPONSE_RESPONSE.TargetFeature = "RESTORECOLORDEFAULTS";
@@ -6224,7 +6254,7 @@ namespace DDPM.CLI.Plugins.Display
                         {
                             CLI_RESPONSE _Set_CLI_RESPONSE_RESPONSE = new CLI_RESPONSE(mo);
                             writelog($"RestoreColorDefaults tag entry");
-                            r = devMgr.SetVCPCapability(mo, 0x08, 0x01).Result;
+                            r = SetVCPCode(devMgr, mo, "0x08", "0x01").Result;
 
                             _Set_CLI_RESPONSE_RESPONSE.Command = "SET";
                             _Set_CLI_RESPONSE_RESPONSE.TargetFeature = "RESTORECOLORDEFAULTS";
@@ -6291,11 +6321,11 @@ namespace DDPM.CLI.Plugins.Display
                             switch (value.ToUpper())
                             {
                                 case "OSDLOCK":
-                                    r = devMgr.SetVCPCapability(monitor, 0xCA, 0x01).Result;
+                                    r = SetVCPCode(devMgr, monitor, "0xCA", "0x01").Result;
                                     break;
 
                                 case "OSDUNLOCK":
-                                    r = devMgr.SetVCPCapability(monitor, 0xCA, 0x02).Result;
+                                    r = SetVCPCode(devMgr, monitor, "0xCA", "0x02").Result;
                                     break;
                             }
                         }
@@ -6337,11 +6367,11 @@ namespace DDPM.CLI.Plugins.Display
                             switch (value.ToUpper())
                             {
                                 case "OSDLOCK":
-                                    r = devMgr.SetVCPCapability(_AllInfoMonitors[System.Convert.ToInt32(idx)], 0xCA, 0x01).Result;
+                                    r = SetVCPCode(devMgr, _AllInfoMonitors[System.Convert.ToInt32(idx)], "0xCA", "0x01").Result;
                                     break;
 
                                 case "OSDUNLOCK":
-                                    r = devMgr.SetVCPCapability(_AllInfoMonitors[System.Convert.ToInt32(idx)], 0xCA, 0x02).Result;
+                                    r = SetVCPCode(devMgr, _AllInfoMonitors[System.Convert.ToInt32(idx)], "0xCA", "0x02").Result;
                                     break;
                             }
                         }
@@ -6388,11 +6418,11 @@ namespace DDPM.CLI.Plugins.Display
                                 switch (value.ToUpper())
                                 {
                                     case "OSDLOCK":
-                                        r = devMgr.SetVCPCapability(mo, 0xCA, 0x01).Result;
+                                        r = SetVCPCode(devMgr, mo, "0xCA", "0x01").Result;
                                         break;
 
                                     case "OSDUNLOCK":
-                                        r = devMgr.SetVCPCapability(mo, 0xCA, 0x02).Result;
+                                        r = SetVCPCode(devMgr, mo, "0xCA", "0x02").Result;
                                         break;
                                 }
                             }
@@ -6440,11 +6470,11 @@ namespace DDPM.CLI.Plugins.Display
                                 switch (value.ToUpper())
                                 {
                                     case "OSDLOCK":
-                                        r = devMgr.SetVCPCapability(mo, 0xCA, 0x01).Result;
+                                        r = SetVCPCode(devMgr, mo, "0xCA", "0x01").Result;
                                         break;
 
                                     case "OSDUNLOCK":
-                                        r = devMgr.SetVCPCapability(mo, 0xCA, 0x02).Result;
+                                        r = SetVCPCode(devMgr, mo, "0xCA", "0x02").Result;
                                         break;
                                 }
                             }
@@ -6671,6 +6701,7 @@ namespace DDPM.CLI.Plugins.Display
 
         private (int code, string result) SetDisplayProperties(IDeviceManagerSA devMgr, CommandLineInput commandLineInput)
         {
+            writelog($"SetDisplayProperties {commandLineInput.TargetFeature} entry");
             //if (devMgr == null)
             //{
             //    writelog("ProcessListMonitorsOptionAsync: input null IDeviceManagerSA");
@@ -6762,6 +6793,7 @@ namespace DDPM.CLI.Plugins.Display
             {
                 foreach (string idx in commandLineInput.DeviceIndex)
                 {
+                    writelog($"SetDisplayProperties idx {commandLineInput.TargetFeature} entry");
                     MonitorInfo monitorInfo = _AllInfoMonitors[int.Parse(idx)];
                     CLI_RESPONSE cLI_RESPONSE = new CLI_RESPONSE(monitorInfo);
                     cLI_RESPONSE.Command = commandLineInput.Command;
@@ -6778,6 +6810,7 @@ namespace DDPM.CLI.Plugins.Display
                 int i = 0;
                 foreach (string tag in commandLineInput.ServiceTag)
                 {
+                    writelog($"SetDisplayProperties tag {commandLineInput.TargetFeature} entry");
                     var tmp = _AllInfoMonitors.FindAll(x => x.edid.ServiceTag.ToUpper().Equals(tag.ToUpper()));
                     foreach (MonitorInfo mo in tmp)
                     {
@@ -6797,6 +6830,7 @@ namespace DDPM.CLI.Plugins.Display
                 int j = 0;
                 foreach (string modelName in commandLineInput.Model)
                 {
+                    writelog($"SetDisplayProperties model {commandLineInput.TargetFeature} entry");
                     var tmp = _AllInfoMonitors.FindAll(x => x.edid.ModelName.ToUpper().Equals(modelName.ToUpper()));
                     foreach (MonitorInfo mo in tmp)
                     {
@@ -6825,6 +6859,7 @@ namespace DDPM.CLI.Plugins.Display
 
         private (int code, string result) PropertiesFunc(IDeviceManagerSA devMgr, MonitorInfo monitorInfo, CommandLineInput commandLineInput, CLI_RESPONSE cLI_RESPONSE)
         {
+            writelog($"PropertiesFunc {commandLineInput.TargetFeature} entry");
             bool? ret = false;
             bool? ret_osd = false;
             DisplayPropertiesInfo displayPropertiesInfo = _devMgr.GetDisplayPropertiesInfo(monitorInfo).Result;
@@ -6852,8 +6887,10 @@ namespace DDPM.CLI.Plugins.Display
                         break;
                     }
                     displayProperties = displayPropertiesInfo.SupportedProperties.Properties.Find(x => x.isRecommended);
+                    writelog($"PropertiesFunc {commandLineInput.TargetFeature} _devMgr.SetDisplayPropertiest entry");
                     ret = _devMgr.SetDisplayPropertiest(monitorInfo, displayProperties,
                             displayPropertiesInfo.CurrentOrientation).Result;
+                    writelog($"PropertiesFunc {commandLineInput.TargetFeature} _devMgr.SetDisplayPropertiest exit");
                     cLI_RESPONSE.Result = ret == true ? "pass" : "FAIL";
                     break;
 
@@ -6895,7 +6932,9 @@ namespace DDPM.CLI.Plugins.Display
                                     HDR_RESPONSE.HDR = commandLineInput.Options[i].Option_Value;
                                     HDR_RESPONSE.Value = commandLineInput.Options[i].Option_Value;
                                     bool _OnOff = commandLineInput.Options[i].Option_Value.Equals("ON") ? true : false;
+                                    writelog($"PropertiesFunc {commandLineInput.TargetFeature} _devMgr.SetHDRStatus entry");
                                     ret = _devMgr.SetHDRStatus(monitorInfo, _OnOff).Result;
+                                    writelog($"PropertiesFunc {commandLineInput.TargetFeature} _devMgr.SetHDRStatus exit");
                                 }
                             }
                         }
@@ -6967,7 +7006,9 @@ namespace DDPM.CLI.Plugins.Display
                                     case "UNLOCK":
                                         if (v.ToUpper().Equals("LOCK")) data.LockSettings.Lock_Display_USBCPrioritization = true;
                                         if (v.ToUpper().Equals("UNLOCK")) data.LockSettings.Lock_Display_USBCPrioritization = false;
+                                        writelog($"PropertiesFunc {commandLineInput.TargetFeature} devMgr.SetAppConfigData entry");
                                         devMgr.SetAppConfigData(data);
+                                        writelog($"PropertiesFunc {commandLineInput.TargetFeature} devMgr.SetAppConfigData exit");
                                         break;
                                 }
                             }
@@ -7002,7 +7043,9 @@ namespace DDPM.CLI.Plugins.Display
                                 }
                                 else
                                 {
+                                    writelog($"PropertiesFunc {commandLineInput.TargetFeature} _devMgr.SetUSBCPrioritizationType entry");
                                     ret = _devMgr.SetUSBCPrioritizationType(monitorInfo, usbcPrioritizationType).Result;
+                                    writelog($"PropertiesFunc {commandLineInput.TargetFeature} _devMgr.SetUSBCPrioritizationType exit");
                                 }
                             }
                             if (ret == false)
@@ -7039,9 +7082,11 @@ namespace DDPM.CLI.Plugins.Display
                                 cLI_RESPONSE.Value = commandLineInput.Options[i].Option_Value;
                                 string[] ss = commandLineInput.Options[i].Option_Value.Split("X");
                                 displayProperties = new Properties() { Resolutions_Width = int.Parse(ss[0]), Resolutions_High = int.Parse(ss[1]), Frequency = 0 };
+                                writelog($"PropertiesFunc {commandLineInput.TargetFeature} _devMgr.SetDisplayPropertiest entry");
                                 ret = _devMgr.SetDisplayPropertiest(monitorInfo,
                                     displayProperties,
                                     displayPropertiesInfo.CurrentOrientation).Result;
+                                writelog($"PropertiesFunc {commandLineInput.TargetFeature} _devMgr.SetDisplayPropertiest exit");
                             }
                         }
                     }
@@ -7078,9 +7123,11 @@ namespace DDPM.CLI.Plugins.Display
                                     Resolutions_High = 0,
                                     Frequency = int.Parse(commandLineInput.Options[i].Option_Value)
                                 };
+                                writelog($"PropertiesFunc {commandLineInput.TargetFeature} _devMgr.SetDisplayPropertiest entry");
                                 ret = _devMgr.SetDisplayPropertiest(monitorInfo,
                                     displayProperties,
                                     displayPropertiesInfo.CurrentOrientation).Result;
+                                writelog($"PropertiesFunc {commandLineInput.TargetFeature} _devMgr.SetDisplayPropertiest exit");
                             }
                         }
                     }
@@ -7161,7 +7208,9 @@ namespace DDPM.CLI.Plugins.Display
                                         }
                                         if (displayOrientation != null)
                                         {
+                                            writelog($"PropertiesFunc {commandLineInput.TargetFeature} _devMgr.SetDisplayPropertiest entry");
                                             ret = _devMgr.SetDisplayPropertiest(monitorInfo, displayProperties, (DisplayOrientation)displayOrientation).Result;
+                                            writelog($"PropertiesFunc {commandLineInput.TargetFeature} _devMgr.SetDisplayPropertiest exit");
                                         }
                                     }
                                 }
@@ -7253,9 +7302,11 @@ namespace DDPM.CLI.Plugins.Display
                                                             frequency = sss[1];
                                                         //Debug.WriteLine($"frequency: {ssss[0]}, {ssss[1]}");
                                                         displayProperties = new Properties() { Resolutions_Width = int.Parse(ss[0]), Resolutions_High = int.Parse(sss[0]), Frequency = int.Parse(frequency) };
+                                                        writelog($"PropertiesFunc {commandLineInput.TargetFeature} _devMgr.SetDisplayPropertiest entry");
                                                         ret = _devMgr.SetDisplayPropertiest(monitorInfo,
                                                             displayProperties,
                                                             displayPropertiesInfo.CurrentOrientation).Result;
+                                                        writelog($"PropertiesFunc {commandLineInput.TargetFeature} _devMgr.SetDisplayPropertiest exit");
 
                                                     }
                                                 }
@@ -7357,7 +7408,9 @@ namespace DDPM.CLI.Plugins.Display
                             if (commandLineInput.Options[i].Option_Name.ToUpper().Equals("VALUE")) //ex: /set -name=Display.Brightness -index=[0] -value=60
                             {
                                 cLI_RESPONSE.Value = commandLineInput.Options[i].Option_Value;
+                                writelog($"PropertiesFunc {commandLineInput.TargetFeature} devMgr.LockRotate entry");
                                 ret = devMgr.LockRotate(commandLineInput.Options[i].Option_Value == "ON" ? true : false).Result;
+                                writelog($"PropertiesFunc {commandLineInput.TargetFeature} devMgr.LockRotate exit");
                             }
                         }
                         cLI_RESPONSE.Result = ret == true ? "PASS" : "FAIL";
@@ -7367,7 +7420,9 @@ namespace DDPM.CLI.Plugins.Display
                         writelog("LOCKROTATE get entry");
                         for (int i = 0; i <= commandLineInput.Options.Count; i++)
                         {
+                            writelog($"PropertiesFunc {commandLineInput.TargetFeature} devMgr.GetLockRotateStatus entry");
                             ret_osd = devMgr.GetLockRotateStatus().Result;
+                            writelog($"PropertiesFunc {commandLineInput.TargetFeature} devMgr.GetLockRotateStatus exit");
                         }
                         cLI_RESPONSE.Value = ret_osd == true ? "ON" : "OFF";
                     }
@@ -7393,7 +7448,9 @@ namespace DDPM.CLI.Plugins.Display
                             if (commandLineInput.Options[i].Option_Name.ToUpper().Equals("VALUE")) //ex: /set -name=Display.Brightness -index=[0] -value=60
                             {
                                 cLI_RESPONSE.Value = commandLineInput.Options[i].Option_Value;
+                                writelog($"PropertiesFunc {commandLineInput.TargetFeature} devMgr.SetOSDOrientation entry");
                                 ret = devMgr.SetOSDOrientation(monitorInfo, commandLineInput.Options[i].Option_Value).Result;
+                                writelog($"PropertiesFunc {commandLineInput.TargetFeature} devMgr.SetOSDOrientation exit");
                             }
                         }
                         cLI_RESPONSE.Result = ret == true ? "PASS" : "FAIL";
@@ -7403,7 +7460,9 @@ namespace DDPM.CLI.Plugins.Display
                         writelog("ROTATEOSDMENU get entry");
                         for (int i = 0; i <= commandLineInput.Options.Count; i++)
                         {
+                            writelog($"PropertiesFunc {commandLineInput.TargetFeature} devMgr.GetOSDOrientation entry");
                             output_osd = devMgr.GetOSDOrientation(monitorInfo).Result;
+                            writelog($"PropertiesFunc {commandLineInput.TargetFeature} devMgr.GetOSDOrientation exit");
                         }
                         cLI_RESPONSE.Value = output_osd;
                     }
@@ -7474,6 +7533,7 @@ namespace DDPM.CLI.Plugins.Display
 
         private (int code, string result) GetALSPropertiesAsync(IDeviceManagerSA device, CommandLineInput target_type, string val)
         {
+            writelog($"GetALSPropertiesAsync entry: {target_type.TargetFeature}");
             if (device == null)
             {
                 return WriteALSResponse(_AllInfoMonitors, val.ToString(), target_type, CLI_ExitCode.null_device_manager, false, "Input null IDeviceManagerSA");
@@ -7520,6 +7580,7 @@ namespace DDPM.CLI.Plugins.Display
             }
             catch (Exception ex)
             {
+                writelog("GetALSPropertiesAsync Exception : " + ex.Message);
                 Console.WriteLine("Exception : " + ex.Message);
                 return WriteALSResponse(_AllInfoMonitors, val.ToString(), target_type, CLI_ExitCode.fail_GetAlsFeatureFail, false, "Fail Get Als Feature Fail");
             }
@@ -7528,6 +7589,7 @@ namespace DDPM.CLI.Plugins.Display
 
         private (int code, string result) SetALSProperties(IDeviceManagerSA device, CommandLineInput target_type, string idx, string value)
         {
+            writelog($"SetALSProperties entry: {target_type.TargetFeature}");
             if (device == null)
             {
                 return WriteALSResponse(_AllInfoMonitors, idx, target_type, CLI_ExitCode.null_device_manager, false, "");
@@ -7598,35 +7660,43 @@ namespace DDPM.CLI.Plugins.Display
 
             ALSConfig param = new ALSConfig();
             bool set_result = false;
-            switch (type)
+            try
             {
-                case ALSFeatureQueryType.MMS:
-                    set_result = device.SetALSFeatureValue(_AllInfoMonitors[int.Parse(idx)], param, ALSFeatureQueryType.MMS, value).Result;
-                    break;
+                switch (type)
+                {
+                    case ALSFeatureQueryType.MMS:
+                        set_result = device.SetALSFeatureValue(_AllInfoMonitors[int.Parse(idx)], param, ALSFeatureQueryType.MMS, value).Result;
+                        break;
 
-                case ALSFeatureQueryType.PrimaryMonitorSync:
-                    set_result = device.SetALSFeatureValue(_AllInfoMonitors[int.Parse(idx)], param, ALSFeatureQueryType.PrimaryMonitorSync, value).Result;
-                    break;
+                    case ALSFeatureQueryType.PrimaryMonitorSync:
+                        set_result = device.SetALSFeatureValue(_AllInfoMonitors[int.Parse(idx)], param, ALSFeatureQueryType.PrimaryMonitorSync, value).Result;
+                        break;
 
-                case ALSFeatureQueryType.AutoColorTemperature:
-                    set_result = device.SetALSFeatureValue(_AllInfoMonitors[int.Parse(idx)], param, ALSFeatureQueryType.AutoColorTemperature, value).Result;
-                    break;
+                    case ALSFeatureQueryType.AutoColorTemperature:
+                        set_result = device.SetALSFeatureValue(_AllInfoMonitors[int.Parse(idx)], param, ALSFeatureQueryType.AutoColorTemperature, value).Result;
+                        break;
 
-                case ALSFeatureQueryType.AutoBrightness:
-                    set_result = device.SetALSFeatureValue(_AllInfoMonitors[int.Parse(idx)], param, ALSFeatureQueryType.AutoBrightness, value).Result;
-                    break;
+                    case ALSFeatureQueryType.AutoBrightness:
+                        set_result = device.SetALSFeatureValue(_AllInfoMonitors[int.Parse(idx)], param, ALSFeatureQueryType.AutoBrightness, value).Result;
+                        break;
 
-                case ALSFeatureQueryType.AutoBrightnessRangeLevel:
-                    set_result = device.SetALSFeatureValue(_AllInfoMonitors[int.Parse(idx)], param, ALSFeatureQueryType.AutoBrightnessRangeLevel, value).Result;
-                    break;
+                    case ALSFeatureQueryType.AutoBrightnessRangeLevel:
+                        set_result = device.SetALSFeatureValue(_AllInfoMonitors[int.Parse(idx)], param, ALSFeatureQueryType.AutoBrightnessRangeLevel, value).Result;
+                        break;
 
-                case ALSFeatureQueryType.All:
-                    set_result = device.SetALSFeatureValue(_AllInfoMonitors[int.Parse(idx)], param, ALSFeatureQueryType.All, value).Result;
-                    break;
+                    case ALSFeatureQueryType.All:
+                        set_result = device.SetALSFeatureValue(_AllInfoMonitors[int.Parse(idx)], param, ALSFeatureQueryType.All, value).Result;
+                        break;
 
-                default:
-                    return WriteALSResponse(_AllInfoMonitors, idx, target_type, CLI_ExitCode.unknow_command, false, "");
+                    default:
+                        return WriteALSResponse(_AllInfoMonitors, idx, target_type, CLI_ExitCode.unknow_command, false, "");
+                }
             }
+            catch (Exception ex)
+            {
+                writelog("SetALSProperties Exception : " + ex.Message);
+            }
+
             if (set_result)
             {
                 return WriteALSResponse(_AllInfoMonitors, idx, target_type, CLI_ExitCode.success, set_result, "");
@@ -7810,6 +7880,7 @@ namespace DDPM.CLI.Plugins.Display
 
                 if (index.Count == 0 && serviceTag.Count == 0 && model.Count == 0)
                 {
+                    writelog("PowerNap set entry");
                     foreach (MonitorInfo monitor in _AllInfoMonitors)
                     {
                         S_PowerNap_RESPONSE = new CLI_RESPONSE(monitor);
@@ -7924,6 +7995,7 @@ namespace DDPM.CLI.Plugins.Display
                 }
                 else if (index.Count != 0)
                 {
+                    writelog("PowerNap set idx entry");
                     foreach (string idex in index)
                     {
                         MonitorInfo monitor = _AllInfoMonitors[int.Parse(idex)];
@@ -8043,6 +8115,7 @@ namespace DDPM.CLI.Plugins.Display
                 {
                     foreach (string tag in serviceTag)
                     {
+                        writelog("PowerNap set tag entry");
                         var tmp = _AllInfoMonitors.FindAll(x => x.edid.ServiceTag.ToUpper().Equals(tag.ToUpper()));
                         foreach (MonitorInfo monitor in tmp)
                         {
@@ -8163,6 +8236,7 @@ namespace DDPM.CLI.Plugins.Display
                 {
                     foreach (string modelName in model)
                     {
+                        writelog("PowerNap set model entry");
                         var tmp = _AllInfoMonitors.FindAll(x => x.edid.ModelName.ToUpper().Equals(modelName.ToUpper()));
                         foreach (MonitorInfo monitor in tmp)
                         {
@@ -8287,6 +8361,7 @@ namespace DDPM.CLI.Plugins.Display
             {
                 if (index.Count == 0 && serviceTag.Count == 0)
                 {
+                    writelog("PowerNap get entry");
                     foreach (MonitorInfo monitor in _AllInfoMonitors)
                     {
                         S_PowerNap_RESPONSE = new CLI_RESPONSE(monitor);
@@ -8331,6 +8406,7 @@ namespace DDPM.CLI.Plugins.Display
                 {
                     foreach (string idex in index)
                     {
+                        writelog("PowerNap get idx entry");
                         MonitorInfo monitor = _AllInfoMonitors[int.Parse(idex)];
                         S_PowerNap_RESPONSE = new CLI_RESPONSE(monitor);
 
@@ -8374,6 +8450,7 @@ namespace DDPM.CLI.Plugins.Display
                 {
                     foreach (string tag in serviceTag)
                     {
+                        writelog("PowerNap get tag entry");
                         var tmp = _AllInfoMonitors.FindAll(x => x.edid.ServiceTag.ToUpper().Equals(tag.ToUpper()));
                         foreach (MonitorInfo monitor in tmp)
                         {
@@ -9993,6 +10070,7 @@ namespace DDPM.CLI.Plugins.Display
                                     lock_unlock = false;
                                     writelog($"Autocolorpreset ON Entry");
                                     devMgr.AutoSetColorPresetForMonitorConfig(monitor, on_off, lock_unlock);
+                                    writelog($"Autocolorpreset ON Exit");
                                     retcode = true;
                                     S_Autocolorpreset_RESPONSE.Value = "ON";
                                     S_Autocolorpreset_RESPONSE.Result = "PASS";
@@ -10004,6 +10082,7 @@ namespace DDPM.CLI.Plugins.Display
                                     lock_unlock = false;
                                     writelog($"Autocolorpreset OFF Entry");
                                     devMgr.AutoSetColorPresetForMonitorConfig(monitor, on_off, lock_unlock);
+                                    writelog($"Autocolorpreset OFF Exit");
                                     retcode = true;
                                     S_Autocolorpreset_RESPONSE.Value = "OFF";
                                     S_Autocolorpreset_RESPONSE.Result = "PASS";
@@ -10041,6 +10120,7 @@ namespace DDPM.CLI.Plugins.Display
                                     lock_unlock = false;
                                     writelog($"Autocolorpreset ON Entry");
                                     devMgr.AutoSetColorPresetForMonitorConfig(monitor, on_off, lock_unlock);
+                                    writelog($"Autocolorpreset ON Exit");
                                     retcode = true;
                                     S_Autocolorpreset_RESPONSE.Value = "ON";
                                     S_Autocolorpreset_RESPONSE.Result = "PASS";
@@ -10052,6 +10132,7 @@ namespace DDPM.CLI.Plugins.Display
                                     lock_unlock = false;
                                     writelog($"Autocolorpreset OFF Entry");
                                     devMgr.AutoSetColorPresetForMonitorConfig(monitor, on_off, lock_unlock);
+                                    writelog($"Autocolorpreset OFF Exit");
                                     retcode = true;
                                     S_Autocolorpreset_RESPONSE.Value = "OFF";
                                     S_Autocolorpreset_RESPONSE.Result = "PASS";
@@ -10089,6 +10170,7 @@ namespace DDPM.CLI.Plugins.Display
                                         lock_unlock = false;
                                         writelog($"Autocolorpreset ON Entry");
                                         devMgr.AutoSetColorPresetForMonitorConfig(monitor, on_off, lock_unlock);
+                                        writelog($"Autocolorpreset ON Exit");
                                         retcode = true;
                                         S_Autocolorpreset_RESPONSE.Value = "ON";
                                         S_Autocolorpreset_RESPONSE.Result = "PASS";
@@ -10100,6 +10182,7 @@ namespace DDPM.CLI.Plugins.Display
                                         lock_unlock = false;
                                         writelog($"Autocolorpreset OFF Entry");
                                         devMgr.AutoSetColorPresetForMonitorConfig(monitor, on_off, lock_unlock);
+                                        writelog($"Autocolorpreset OFF Exit");
                                         retcode = true;
                                         S_Autocolorpreset_RESPONSE.Value = "OFF";
                                         S_Autocolorpreset_RESPONSE.Result = "PASS";
@@ -10138,6 +10221,7 @@ namespace DDPM.CLI.Plugins.Display
                                         lock_unlock = false;
                                         writelog($"Autocolorpreset ON Entry");
                                         devMgr.AutoSetColorPresetForMonitorConfig(monitor, on_off, lock_unlock);
+                                        writelog($"Autocolorpreset ON Exit");
                                         retcode = true;
                                         S_Autocolorpreset_RESPONSE.Value = "ON";
                                         S_Autocolorpreset_RESPONSE.Result = "PASS";
@@ -10149,6 +10233,7 @@ namespace DDPM.CLI.Plugins.Display
                                         lock_unlock = false;
                                         writelog($"Autocolorpreset OFF Entry");
                                         devMgr.AutoSetColorPresetForMonitorConfig(monitor, on_off, lock_unlock);
+                                        writelog($"Autocolorpreset OFF Exit");
                                         retcode = true;
                                         S_Autocolorpreset_RESPONSE.Value = "OFF";
                                         S_Autocolorpreset_RESPONSE.Result = "PASS";
@@ -10183,6 +10268,7 @@ namespace DDPM.CLI.Plugins.Display
 
                         writelog($"Autocolorpreset GET Entry");
                         restult_onoff = devMgr.GetAutoColorPresetStatus(monitor).Result.ToString();
+                        writelog($"Autocolorpreset GET Exit");
                         Trace.WriteLine("restult_onoff:", restult_onoff);
                         if (restult_onoff == "ON")
                         {
@@ -10220,6 +10306,7 @@ namespace DDPM.CLI.Plugins.Display
 
                         writelog($"Autocolorpreset GET idx Entry");
                         restult_onoff = devMgr.GetAutoColorPresetStatus(monitor).Result.ToString();
+                        writelog($"Autocolorpreset GET idx Exit");
                         Trace.WriteLine("restult_onoff:", restult_onoff);
                         if (restult_onoff == "ON")
                         {
@@ -10257,6 +10344,7 @@ namespace DDPM.CLI.Plugins.Display
 
                             writelog($"Autocolorpreset GET Entry");
                             restult_onoff = devMgr.GetAutoColorPresetStatus(monitor).Result.ToString();
+                            writelog($"Autocolorpreset GET Exit");
                             Trace.WriteLine("restult_onoff:", restult_onoff);
                             if (restult_onoff == "ON")
                             {
@@ -10295,6 +10383,7 @@ namespace DDPM.CLI.Plugins.Display
 
                             writelog($"Autocolorpreset GET Entry");
                             restult_onoff = devMgr.GetAutoColorPresetStatus(monitor).Result.ToString();
+                            writelog($"Autocolorpreset GET Exit");
                             Trace.WriteLine("restult_onoff:", restult_onoff);
                             if (restult_onoff == "ON")
                             {
@@ -12405,10 +12494,12 @@ namespace DDPM.CLI.Plugins.Display
                 switch (commandLineInput.TargetFeature)
                 {
                     case "MICROPHONE":
+                        writelog("MICROPHONE entry");
                         if (monitor.CapabilityDic.ContainsKey("8D") && monitor.CapabilityDic["8D"] != null && monitor.CapabilityDic["8D"].Contains("01") && monitor.CapabilityDic["8D"].Contains("02"))
                         {
                             if (commandLineInput.Command == "SET")
                             {
+                                writelog("MICROPHONE SET entry");
                                 rc = GetVCPCode(devMgr, monitor, "0x8D").Result;
                                 int getvalue = Convert.ToInt32(rc.value);
                                 string setvalue = get_MicrophoneControl(commandLineInput.Options[0].Option_Value, getvalue);
@@ -12423,6 +12514,7 @@ namespace DDPM.CLI.Plugins.Display
                             }
                             else if (commandLineInput.Command == "GET")
                             {
+                                writelog("MICROPHONE GET entry");
                                 rc = GetVCPCode(devMgr, monitor, "0x8D").Result;
                                 cli_Response.Value = get_MicrophoneControl_status(Convert.ToInt32(rc.value));
                                 retcode = true;
@@ -12435,10 +12527,12 @@ namespace DDPM.CLI.Plugins.Display
                         break;
 
                     case "SPEAKERVOLUME":
+                        writelog("SPEAKERVOLUME entry");
                         if (monitor.CapabilityDic.ContainsKey("62") && monitor.CapabilityDic["62"] != null && monitor.CapabilityDic["62"].Contains("FE") && monitor.CapabilityDic["62"].Contains("FF"))
                         {
                             if (commandLineInput.Command == "SET")
                             {
+                                writelog("SPEAKERVOLUME SET entry");
                                 rc = GetVCPCode(devMgr, monitor, "0x62").Result;
                                 int getvalue = Convert.ToInt32(rc.value);
                                 string setvalue = get_SpeakerVolume(commandLineInput.Options[0].Option_Value, getvalue);
@@ -12453,6 +12547,7 @@ namespace DDPM.CLI.Plugins.Display
                             }
                             else if (commandLineInput.Command == "GET")
                             {
+                                writelog("SPEAKERVOLUME GET entry");
                                 rc = GetVCPCode(devMgr, monitor, "0x62").Result;
                                 cli_Response.Value = get_SpeakerVolume_status(Convert.ToInt32(rc.value));
                                 retcode = true;
@@ -12465,10 +12560,12 @@ namespace DDPM.CLI.Plugins.Display
                         break;
 
                     case "SPEAKERMICROPHONE":
+                        writelog("SPEAKERMICROPHONE entry");
                         if (monitor.CapabilityDic.ContainsKey("62") && monitor.CapabilityDic["62"] != null && monitor.CapabilityDic["62"].Contains("FE") && monitor.CapabilityDic["62"].Contains("FF") && monitor.CapabilityDic.ContainsKey("8D") && monitor.CapabilityDic["8D"] != null && monitor.CapabilityDic["8D"].Contains("01") && monitor.CapabilityDic["8D"].Contains("02"))
                         {
                             if (commandLineInput.Command == "SET")
                             {
+                                writelog("SPEAKERMICROPHONE SET entry");
                                 if (commandLineInput.Options[0].Option_Value.Contains("LOCK") && (!monitor.CapabilityDic["62"].Contains("C000") || !monitor.CapabilityDic["8D"].Contains("C000")))
                                 {
                                     somethingfail |= 0x03;
@@ -12511,6 +12608,7 @@ namespace DDPM.CLI.Plugins.Display
                             }
                             else if (commandLineInput.Command == "GET")
                             {
+                                writelog("SPEAKERMICROPHONE GET entry");
                                 rc = GetVCPCode(devMgr, monitor, "0x62").Result;
                                 string ss0 = get_SpeakerMicrophone_status(Convert.ToInt32(rc.value));
                                 rc = GetVCPCode(devMgr, monitor, "0x8D").Result;
@@ -13256,7 +13354,9 @@ namespace DDPM.CLI.Plugins.Display
                     cli_Response.Command = commandLineInput.Command;
                     cli_Response.TargetFeature = commandLineInput.TargetFeature;
 
+                    writelog("devMgr.GetEAFunctionEnabled get entry");
                     rc = devMgr.GetEAFunctionEnabled().Result;
+                    writelog("devMgr.GetEAFunctionEnabled get exit");
 
                     //if (rc != null)
                     //    retcode = true;
@@ -13320,7 +13420,9 @@ namespace DDPM.CLI.Plugins.Display
                     }
 
                     await devMgr.SetAppConfigData(ddpmSettings);
+                    writelog("SetEAFunctionEnabled set entry");
                     output_ea = devMgr.SetEAFunctionEnabled(elable_ea).Result;
+                    writelog("SetEAFunctionEnabled set exit");
                     if (output_ea != null)
                         retcode = true;
 
@@ -15208,7 +15310,9 @@ namespace DDPM.CLI.Plugins.Display
                     }
                     else
                     {
+                        writelog("devMgr.DisplayImportSettings set entry");
                         retcode = devMgr.DisplayImportSettings(monitor, false, filepath).Result;
+                        writelog("devMgr.DisplayImportSettings set exit");
                     }
 
 
@@ -15234,7 +15338,9 @@ namespace DDPM.CLI.Plugins.Display
                     CLI_RESPONSE cli_Response = new CLI_RESPONSE(monitor);
                     cli_Response.Command = commandLineInput.Command;
                     cli_Response.TargetFeature = commandLineInput.TargetFeature;
+                    writelog("devMgr.DisplayExportSettings get entry");
                     retcode = devMgr.DisplayExportSettings(monitor, filepath).Result;
+                    writelog("devMgr.DisplayExportSettings get exit");
 
                     cli_Response.Result = retcode == true ? "PASS" : "FAIL";
 
@@ -15256,7 +15362,7 @@ namespace DDPM.CLI.Plugins.Display
 
         }
 
-        private static async Task<int> SetPowerNapAsync(PowerNapType type, IDeviceManagerSA devMgr, string modelName, string serialNumber, string serviceTag)
+        private async Task<int> SetPowerNapAsync(PowerNapType type, IDeviceManagerSA devMgr, string modelName, string serialNumber, string serviceTag)
         {
             if (devMgr == null)
                 return 0;
@@ -15268,10 +15374,14 @@ namespace DDPM.CLI.Plugins.Display
                 RunType = type,
                 ServiceTag = serviceTag
             };
+            writelog("devMgr.SavePowerNapSetting entry");
             await devMgr.SavePowerNapSetting(setting);
+            writelog("devMgr.SavePowerNapSetting exit");
             UpdateUINotify powerNapNotify = new UpdateUINotify();
             powerNapNotify.UI_Field_Name = "POWERNAP;" + get_PowerNapType_code_ToUpper(type.ToString().ToUpper());
+            writelog("devMgr.OnUIUpdateNotify entry");
             devMgr.OnUIUpdateNotify(powerNapNotify);
+            writelog("devMgr.OnUIUpdateNotify exit");
             return 1;
         }
         private static string get_PowerNapType_code_ToUpper(string code)

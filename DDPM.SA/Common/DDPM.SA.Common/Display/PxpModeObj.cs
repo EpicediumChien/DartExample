@@ -45,7 +45,7 @@ namespace DDPM.SA.Common.Display
 
         #region Table
 
-        public static PxpModeObj[] Table =
+        public static readonly PxpModeObj[] Table =
         {
             new PxpModeObj("off", 0x00, "PIP/PBP off, full screen"),
             new PxpModeObj("pip", 0x21, "PIP small"),

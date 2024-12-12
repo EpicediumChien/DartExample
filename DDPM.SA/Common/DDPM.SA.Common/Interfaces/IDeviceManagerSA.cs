@@ -1175,6 +1175,9 @@ namespace DDPM.SA.Common
         Task CloseQAMByDDPM();
         Task<bool> GetIsWidgetSettingPageLoadedByQAMAsync();
         Task SetIsWidgetSettingPageLoadedByQAMAsync(bool newValue);
+
+        //Derek 1210
+        Task WriteLog(string logMsg);
         #endregion
 
         #region System Suspend & Resume

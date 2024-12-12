@@ -1120,6 +1120,8 @@ namespace DDPM.SA.Plugins.User.SettingsManager
             {
                 //impexpSettings.AppSettings = settings.AppSettings;
                 impexpSettings.UserSettings = settings.UserSettings;
+                // PIMS-328022 to renew EzMemory
+                impexpSettings.UserSettings.EAProfile = new List<EAProfileDDPM>();
                 List<HotkeySettings> hotkeySettings = new List<HotkeySettings>();
                 hotkeySettings = ReadHotkeySettings().Result;
                 if (hotkeySettings != null)
@@ -1168,6 +1170,8 @@ namespace DDPM.SA.Plugins.User.SettingsManager
                         if (_settings.ServiceTag == seriveTag)
                         {
                             impexpSettings.MonitorSettings = _settings;
+                            // PIMS-328022 to renew EzMemory
+                            impexpSettings.MonitorSettings.easyArrangementDDPM.Desktops = new List<DesktopDDPM>();
 
                             //export file
                             FileInfo fileInfo = new FileInfo(path);

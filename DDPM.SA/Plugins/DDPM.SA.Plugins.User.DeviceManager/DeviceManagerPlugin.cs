@@ -10174,10 +10174,10 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
                 if (1 != devCnt || _GlobalSettingParam == null || !isWindowsScreenNotLocked ||
                     _GlobalSettingParam.GlobalSetting_WidgetSettings == null //||
-                    //QAMWebcamDeviceGuid == string.Empty ||
-                    //_ZoomMeetingType != ZoomMeetingType.CONF_3RD_EVENT_MEETING
-                    //Derek 1206 test condition due to we can't receive zoom meeting type changed event
-                    //_ZoomMeetingType != ZoomMeetingType.ZOOM_MEETING_TYPE_UNKNOW
+                                                                             //QAMWebcamDeviceGuid == string.Empty ||
+                                                                             //_ZoomMeetingType != ZoomMeetingType.CONF_3RD_EVENT_MEETING
+                                                                             //Derek 1206 test condition due to we can't receive zoom meeting type changed event
+                                                                             //_ZoomMeetingType != ZoomMeetingType.ZOOM_MEETING_TYPE_UNKNOW
                     )
                 {
                     ResetQAMCondition();
@@ -11450,6 +11450,14 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         private void show_swSaveUpdateInfoPackage(object sender, SWUpdateInfoPackage e)
         {
             OnSWSaveEvent(e);
+        }
+
+        //Derek 1210
+        public Task WriteLog(string logMsg)
+        {
+            writelog(logMsg);
+
+            return Task.CompletedTask;
         }
 
         /// <summary>
@@ -13608,7 +13616,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             HotkeyInfo hotkey = (HotkeyInfo)param.ElementAtOrDefault(0);
             List<InputSourceObj> list = (List<InputSourceObj>)param.ElementAtOrDefault(1);// GetInputSourceHotKeyData(monitorInfo);
             string crtInput = monitorInfo.inputSource;
-            if (list == null | list.Count == 0)//hotkey.InputSource.Count == 0)
+            if (list == null || list.Count == 0)//hotkey.InputSource.Count == 0)
             {
                 //hotkey.InputSource Count must not 0
                 //update inputsources to current inputsoure and subinput
@@ -13954,7 +13962,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             });
         }
 
-        private async void YesEvent(object o, object ob)
+        private void YesEvent(object o, object ob)
         {
             //Auto Brightness OFF & Auto OFF & Manual ON?
             HotkeyPopWrap hotkeyPopWrap = (HotkeyPopWrap)ob;
@@ -13978,24 +13986,27 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
             if (setALSFeature)
             {
-                switch (hotkeyPopWrap.hotkeyType)
-                {
-                    case HotkeyType.BrightnessReduce:
-                        _hotkeyJobQueue.Enqueue(new JobInfo(1000, hotkeyPopWrap.monitorInfo, null, Reduce_Brightness_Value));
-                        break;
+                Task.Run(() =>
+                  {
+                      switch (hotkeyPopWrap.hotkeyType)
+                      {
+                          case HotkeyType.BrightnessReduce:
+                              _hotkeyJobQueue.Enqueue(new JobInfo(1000, hotkeyPopWrap.monitorInfo, null, Reduce_Brightness_Value));
+                              break;
 
-                    case HotkeyType.BrightnessIncrease:
-                        _hotkeyJobQueue.Enqueue(new JobInfo(1000, hotkeyPopWrap.monitorInfo, null, Increase_Brightness_Value));
-                        break;
+                          case HotkeyType.BrightnessIncrease:
+                              _hotkeyJobQueue.Enqueue(new JobInfo(1000, hotkeyPopWrap.monitorInfo, null, Increase_Brightness_Value));
+                              break;
 
-                    case HotkeyType.ContrastReduce:
-                        _hotkeyJobQueue.Enqueue(new JobInfo(1000, hotkeyPopWrap.monitorInfo, null, Reduce_Contrast_Value));
-                        break;
+                          case HotkeyType.ContrastReduce:
+                              _hotkeyJobQueue.Enqueue(new JobInfo(1000, hotkeyPopWrap.monitorInfo, null, Reduce_Contrast_Value));
+                              break;
 
-                    case HotkeyType.ContrastIncrease:
-                        _hotkeyJobQueue.Enqueue(new JobInfo(1000, hotkeyPopWrap.monitorInfo, null, Increase_Contrast_Value));
-                        break;
-                }
+                          case HotkeyType.ContrastIncrease:
+                              _hotkeyJobQueue.Enqueue(new JobInfo(1000, hotkeyPopWrap.monitorInfo, null, Increase_Contrast_Value));
+                              break;
+                      }
+                  });
             }
             else
             {
@@ -15694,7 +15705,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 return Task.CompletedTask;
         }
 
-        public Task ShowOSD(object monitorInfo, OSDType type, string Content, bool State = false)
+        public Task ShowOSD(object monitorInfo, OSDType type, string Content, bool State)
         {
             if (monitorInfo != null)
             {
