@@ -8,6 +8,7 @@ using DDPM.UI.Common.Models;
 using Dell.Client.Framework.Common;
 using Dell.Client.Framework.UX.WPF.Controls;
 using Microsoft.VisualBasic.Logging;
+using Newtonsoft.Json.Linq;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
@@ -2362,9 +2363,18 @@ namespace DDPM.UI.Module.Brightness
                 {
                     _primaryMonitorSyncStatus = true;
                     Start_ALSConfig.isPrimaryMonitorSync = true;// onoff; //PIMS-328260
-                    if (property.Equals("BRILEVEL"))//PIMS-314583
+                    if (property.Equals("AUTOBRILEVEL"))//PIMS-314583
                     {
                         SetBrightnessLevelDataToObject(level);
+                    }
+                    if (property.Equals("BRILEVEL"))
+                    {
+                        _autoBrightnessStatus = false;
+                        Start_ALSConfig.isAutoBrightness = false;
+                        NotifyPropertyChanged("AutoBrightnessStatus");
+                        NotifyPropertyChanged("AutoBrightness_String");
+                        NotifyPropertyChanged("AutoBrightnessRangeLevelVisible");
+                        NotifyPropertyChanged("AutoBrightnessRangeLevelVisible_invert");
                     }
                     SetALSAll(Start_ALSConfig, ALSFeatureQueryType.All, 0);
                     NotifyPropertyChanged("PrimaryMonitorSyncStatus");
@@ -2385,7 +2395,7 @@ namespace DDPM.UI.Module.Brightness
                         _autoColorTempStatus = onoff;
                         Start_ALSConfig.isAutoColorTemp = onoff;
                     }
-                    if (property.Equals("BRILEVEL"))
+                    if (property.Equals("AUTOBRILEVEL"))
                     {
                         //click no, switch back due to UI action
                         SetBrightnessLevelDataToObject(level_keep);
@@ -2399,7 +2409,7 @@ namespace DDPM.UI.Module.Brightness
                     _primaryMonitorSyncStatus = onoff;
                     Start_ALSConfig.isPrimaryMonitorSync = onoff;
                 }
-                if (property.Equals("BRILEVEL"))//PIMS-314583
+                if (property.Equals("AUTOBRILEVEL"))//PIMS-314583
                 {
                     if (Start_ALSConfig.AutoBrightnessRangeLevel != null && Start_ALSConfig.AutoBrightnessRangeLevel.Count > 0)
                     {
@@ -2658,8 +2668,22 @@ namespace DDPM.UI.Module.Brightness
             {
                 if (_autoBrightnessStatus)
                 {
+                    if (!Start_ALSConfig.isPrimaryMonitorSync)
+                    {
+                        MyModule.GetRightView().Dispatcher.Invoke((Action)(() =>
+                        {
+                            ALSSettingsChangesOnNonPrimary(false, "BRILEVEL");
+                        }));
+                        if (_autoBrightnessStatus)//means select no
+                        {
+                            Get_Brightness_Value();
+                            return;
+                        }
+                        else//means select yes
+                            SET_Brightness();
+                        return;
+                    }
                     string pop_string = Strings.BrightnessPageNotice0;// "Auto Brightness is currently enabled. Do you wish to disable it to continue?";
-
                     MyModule.GetRightView().Dispatcher.Invoke((Action)(() =>
                     {
                         r = DdpmCommonHelper.DDPMMesssageBox(Strings.BrightnessPageWarning, pop_string);
@@ -2668,15 +2692,17 @@ namespace DDPM.UI.Module.Brightness
                         AutoBrightnessStatus = _autoBrightnessStatus = false;
                     else
                     {
-                        if (Start_ALSConfig.AutoBrightnessRangeLevel[0].level_value == 0)
-                            Brightness_Value = 40;
-                        else if (Start_ALSConfig.AutoBrightnessRangeLevel[0].level_value == 1)
-                            Brightness_Value = 60;
-                        else
-                            Brightness_Value = 100;
+                        //if (Start_ALSConfig.AutoBrightnessRangeLevel[0].level_value == 0)
+                        //    Brightness_Value = 40;
+                        //else if (Start_ALSConfig.AutoBrightnessRangeLevel[0].level_value == 1)
+                        //    Brightness_Value = 60;
+                        //else
+                        //    Brightness_Value = 100;
 
-                        NotifyPropertyChanged("BrightnessValue");
-                        NotifyPropertyChanged("AutoBrightnessRangeLevel_String");
+                        //NotifyPropertyChanged("BrightnessValue");
+                        //NotifyPropertyChanged("AutoBrightnessRangeLevel_String");
+
+                        Get_Brightness_Value();
                         return;
                     }
                 }
@@ -3370,7 +3396,7 @@ namespace DDPM.UI.Module.Brightness
                 {
                     if ((int)Start_ALSConfig.AutoBrightnessRangeLevel[0].level_value != value)
                     {
-                        ALSSettingsChangesOnNonPrimary(false, "BRILEVEL", value);
+                        ALSSettingsChangesOnNonPrimary(false, "AUTOBRILEVEL", value);
 
                         if ((int)Start_ALSConfig.AutoBrightnessRangeLevel[0].level_value == value)//already apply, make string change
                         {
