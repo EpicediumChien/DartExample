@@ -8,6 +8,7 @@
 
 #endregion
 
+using DDPM.UI.Common;
 using Dell.Client.Framework.Common;
 using Dell.Client.Framework.UX.Common;
 using Dell.Client.Framework.UX.Common.DataModel;
@@ -20,6 +21,7 @@ using NGA.Common;
 using NGA.ThickClient.Interfaces;
 using System.Diagnostics;
 using System.Windows;
+using System.Windows.Threading;
 
 namespace NGA.ThickClientCore
 {
@@ -386,7 +388,18 @@ namespace NGA.ThickClientCore
         {
             _log?.Info($"{nameof(DucaThickClientCore)} - OnSessionEnding called");
             _cleanupOnExit = false;
+            _ = Dispatcher.Invoke(() => DdpmCommonHelper.DeviceManagerSA!.FireSystemSessionEnd());
+            Delay(1500);
             base.OnSessionEnding(e);
+        }
+
+        private void Delay(int milliSecond)
+        {
+            int start = Environment.TickCount;
+            while (Environment.TickCount - start < milliSecond)
+            {
+                Dispatcher.Invoke(DispatcherPriority.Background, () => { });
+            }
         }
 
         /// <summary>
