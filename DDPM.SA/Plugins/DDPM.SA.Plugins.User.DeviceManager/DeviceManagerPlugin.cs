@@ -11452,6 +11452,14 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             OnSWSaveEvent(e);
         }
 
+        //Derek 1210
+        public Task WriteLog(string logMsg)
+        {
+            writelog(logMsg);
+
+            return Task.CompletedTask;
+        }
+
         /// <summary>
         /// //
         /// </summary>
@@ -13608,7 +13616,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             HotkeyInfo hotkey = (HotkeyInfo)param.ElementAtOrDefault(0);
             List<InputSourceObj> list = (List<InputSourceObj>)param.ElementAtOrDefault(1);// GetInputSourceHotKeyData(monitorInfo);
             string crtInput = monitorInfo.inputSource;
-            if (list == null | list.Count == 0)//hotkey.InputSource.Count == 0)
+            if (list == null || list.Count == 0)//hotkey.InputSource.Count == 0)
             {
                 //hotkey.InputSource Count must not 0
                 //update inputsources to current inputsoure and subinput
@@ -15700,7 +15708,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 return Task.CompletedTask;
         }
 
-        public Task ShowOSD(object monitorInfo, OSDType type, string Content, bool State = false)
+        public Task ShowOSD(object monitorInfo, OSDType type, string Content, bool State)
         {
             if (monitorInfo != null)
             {

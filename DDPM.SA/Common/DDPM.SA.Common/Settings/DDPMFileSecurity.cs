@@ -227,22 +227,34 @@ namespace DDPM.SA.Common.Settings
             //}
 
             string json_content = string.Empty;
+            string filePath_sanitized = string.Empty;
             try
             {
-                if (ValidateFilePath(filePath, out info))
+                filePath_sanitized = SanitizePath(filePath, out info);
+                if (!string.IsNullOrEmpty(filePath_sanitized))
                 {
-                    using (FileLock fileLock = new FileLock(filePath, PathCheckOption.None, lockNow: true))
+                    if (ValidateFilePath(filePath_sanitized, out info))
                     {
-                        //1. Read json content
-                        json_content = File.ReadAllText(filePath);
+                        using (FileLock fileLock = new FileLock(filePath_sanitized, PathCheckOption.None, lockNow: true))
+                        {
+                            //1. Read json content
+                            json_content = File.ReadAllText(filePath_sanitized);
+                        }
+                    }
+                    else
+                    {
+#if DEBUG
+                        Console.WriteLine($"[GetSerializedJsonString] ValidateFilePath failed: {info}, path: {filePath}");
+#endif
+                        throw new Exception(info);
                     }
                 }
                 else
                 {
 #if DEBUG
-                    Console.WriteLine($"[GetSerializedJsonString] ValidateFilePath failed: {info}");
+                    Console.WriteLine($"[GetSerializedJsonString] SanitizePath failed: {info}, path: {filePath}");
 #endif
-                    throw new Exception(info);
+                    return string.Empty;
                 }
             }
             catch (Exception ex)
@@ -1470,7 +1482,7 @@ namespace DDPM.SA.Common.Settings
             return true;
         }*/
 
-        public static bool SRemoveSymbolicFolder(string filePath, out string info)
+        /*public static bool SRemoveSymbolicFolder(string filePath, out string info)
         {
             info = "pass";
             if (!IsPathSymbolicLinked(filePath, out info))  // filePath contain symbolic
@@ -1519,7 +1531,7 @@ namespace DDPM.SA.Common.Settings
                 }
             }
             return true;
-        }
+        }*/
         public static bool CheckFold(string folderPath, out string folderInfo, out string pathSymbolicLinInfo)    // Move from Bruce code
         {
             folderInfo = "Error";
@@ -1858,22 +1870,23 @@ namespace DDPM.SA.Common.Settings
             return true;
         }
 
+        // [sonarqube] This method signature overlaps
         //hashType: SHA256 / SHA512
-        public static bool StartProcessSafely(
-            ILog log, string filePath,
-            string arguments = "",
-            string fileHash = "",
-            string hashType = "SHA512",
-            bool isLockNeeded = false,
-            string givenThumbprintCheck = "")
-        {
-            string info = string.Empty;
-            if (!IsProcessInfoValid(log, filePath, fileHash, hashType, false, givenThumbprintCheck))
-                return false;
+        //public static bool StartProcessSafely(
+        //    ILog log, string filePath,
+        //    string arguments = "",
+        //    string fileHash = "",
+        //    string hashType = "SHA512",
+        //    bool isLockNeeded = false,
+        //    string givenThumbprintCheck = "")
+        //{
+        //    string info = string.Empty;
+        //    if (!IsProcessInfoValid(log, filePath, fileHash, hashType, false, givenThumbprintCheck))
+        //        return false;
 
-            StartProcessByOptions(log, null, filePath, arguments, isLockNeeded);
-            return true;
-        }
+        //    StartProcessByOptions(log, null, filePath, arguments, isLockNeeded);
+        //    return true;
+        //}
 
         //Start process without any criteria
         public static bool StartProcessSafely(
@@ -1922,31 +1935,32 @@ namespace DDPM.SA.Common.Settings
             return StartProcessByOptions(log, startInfo, "", "", isLockNeeded, isWaitExitCode);
         }
 
+        // [sonarqube] This method signature overlaps
         //hashType: SHA256 / SHA512
-        public static bool StartProcessSafely(
-            ILog log,
-            ProcessStartInfo startInfo,
-            string fileHash = "",
-            string hashType = "SHA512",
-            bool isWaitExitCode = false,
-            bool isLockNeeded = false,
-            string givenThumbprintCheck = "")
-        {
-            string info = string.Empty;
-            if (startInfo == null)
-            {
-                if (log != null)
-                    log.Error("[StartProcessSafely] null process StartInfo");
-                return false;
-            }
+        //public static bool StartProcessSafely(
+        //    ILog log,
+        //    ProcessStartInfo startInfo,
+        //    string fileHash = "",
+        //    string hashType = "SHA512",
+        //    bool isWaitExitCode = false,
+        //    bool isLockNeeded = false,
+        //    string givenThumbprintCheck = "")
+        //{
+        //    string info = string.Empty;
+        //    if (startInfo == null)
+        //    {
+        //        if (log != null)
+        //            log.Error("[StartProcessSafely] null process StartInfo");
+        //        return false;
+        //    }
 
-            string filePath = startInfo.FileName;
+        //    string filePath = startInfo.FileName;
 
-            if (!IsProcessInfoValid(log, filePath, fileHash, hashType, false, givenThumbprintCheck))
-                return false;
+        //    if (!IsProcessInfoValid(log, filePath, fileHash, hashType, false, givenThumbprintCheck))
+        //        return false;
 
-            return StartProcessByOptions(log, startInfo, "", "", isLockNeeded, isWaitExitCode);
-        }
+        //    return StartProcessByOptions(log, startInfo, "", "", isLockNeeded, isWaitExitCode);
+        //}
 
         //public static X509Certificate2 LoadFileCertificate(string strFilePath)
         //{

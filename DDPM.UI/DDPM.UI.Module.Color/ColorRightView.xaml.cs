@@ -610,16 +610,15 @@ namespace DDPM.UI.Module.Color
                         strFolder += "\\";
 
                         string info = string.Empty;
-                        DDPM.SA.Common.Settings.DDPMFileSecurity.SRemoveSymbolicFolder(strFolder, out info);   // 20241004 Add for Security
+                        //DDPM.SA.Common.Settings.DDPMFileSecurity.SRemoveSymbolicFolder(strFolder, out info);   // 20241004 Add for Security
                         if (!System.IO.Directory.Exists(strFolder))
                             System.IO.Directory.CreateDirectory(strFolder);
 
-                        //Elsa Add Security
-                        //if (!DDPMFileSecurity.IsFolderPathValid(strFolder, out FileInfo))
-                        //{
-                        //    _log.Info($"{nameof(lb_AppList_PreviewDragEnter)} {FileInfo}");
-                        //}
-
+                        if (!DDPM.SA.Common.Settings.DDPMFileSecurity.ValidateFilePath(strFolder, out info))
+                        {
+                            DdpmCommonHelper.WriteUILog($"[ColorRightView.xaml.cs][lb_AppList_PreviewDragEnter] ValidateFilePath failed: {info}, it cause no app icon");
+                            continue;
+                        }
                         if (System.IO.File.Exists(strFolder + kvp.Value.IconName + ".png"))
                         {
                             strAppIcon = strFolder + kvp.Value.IconName + ".png";
