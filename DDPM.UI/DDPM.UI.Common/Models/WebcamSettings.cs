@@ -39,6 +39,7 @@ namespace DDPM.UI.Common
 
         public string CurrentResolution { get => Resolutions[SelectedResolution]; }
         public string CurrentFPS { get => SelectedFPSs[SelectedResolution]; }
+        public bool IsFirstTime = true;
 
         public WebcamSettings(DeviceInfo? di = null)
         {
@@ -73,7 +74,7 @@ namespace DDPM.UI.Common
                         "1280x720" => "HD",
                         "1920x1080" => "Full HD",
                         "2560x1440" => "2K QHD",
-                        "3840x2160" => "4K QHD",
+                        "3840x2160" => "4K UHD",
                         _ => "8K UHD"
                     };
                     SupportedFPSs.Add(resName, res.Value.FPS);
@@ -225,19 +226,28 @@ namespace DDPM.UI.Common
                 string json = JsonConvert.SerializeObject(WebcamSettings, Formatting.Indented);
                 var fileFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), @$"Dell\Dell Display and Peripheral Manager\WebcamSettings");
                 string info = string.Empty;
-                DDPM.SA.Common.Settings.DDPMFileSecurity.SRemoveSymbolicFolder(fileFolder, out info);   // 20241004 Add for Security
+                //DDPM.SA.Common.Settings.DDPMFileSecurity.SRemoveSymbolicFolder(fileFolder, out info);   // 20241004 Add for Security
                 if (!Directory.Exists(fileFolder))
                     Directory.CreateDirectory(fileFolder);
-                string strPath = Path.Combine(fileFolder, $"{model}.json");
-                //File.WriteAllText(strPath, json);
-                if (DdpmCommonHelper.DeviceManagerSA != null)
+                if (DDPM.SA.Common.Settings.DDPMFileSecurity.ValidateFilePath(fileFolder, out info))
                 {
-                    return DdpmCommonHelper.DeviceManagerSA.WriteSerializedContentToFile(strPath, json).Result;//1007 apply signature
+                    string strPath = Path.Combine(fileFolder, $"{model}.json");
+                    //File.WriteAllText(strPath, json);
+                    if (DdpmCommonHelper.DeviceManagerSA != null)
+                    {
+                        return DdpmCommonHelper.DeviceManagerSA.WriteSerializedContentToFile(strPath, json).Result;//1007 apply signature
+                    }
+                    //return true;
+                    throw new Exception($"[ExportWebcamSettings] DeviceManagerSA is null(model:{model})");
                 }
-                //return true;
+                else
+                {
+                    DdpmCommonHelper.WriteUILog($"[ExportWebcamSettings] ValidateFilePath failed(model:{model}): {info}");
+                }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                DdpmCommonHelper.WriteUILog($"[ExportWebcamSettings] exception: {ex.Message}");
             }
             return false;
         }
@@ -250,13 +260,20 @@ namespace DDPM.UI.Common
             if (hasFile)
             {
                 string info = string.Empty;
-                DDPM.SA.Common.Settings.DDPMFileSecurity.SRemoveSymbolicFolder(Path.GetDirectoryName(filePath), out info);   // 20241004 Add for Security
-                if (DdpmCommonHelper.DeviceManagerSA != null)
+                //DDPM.SA.Common.Settings.DDPMFileSecurity.SRemoveSymbolicFolder(Path.GetDirectoryName(filePath), out info);   // 20241004 Add for Security
+                if (DDPM.SA.Common.Settings.DDPMFileSecurity.ValidateFilePath(filePath, out info))
                 {
-                    jsonString = DdpmCommonHelper.DeviceManagerSA.ReadSerializedContentFromFile(filePath).Result;
+                    if (DdpmCommonHelper.DeviceManagerSA != null)
+                    {
+                        jsonString = DdpmCommonHelper.DeviceManagerSA.ReadSerializedContentFromFile(filePath).Result;
+                    }
+                    if (!string.IsNullOrEmpty(jsonString))
+                        return JsonConvert.DeserializeObject<WebcamSettings>(File.ReadAllText(filePath))!;
                 }
-                if (!string.IsNullOrEmpty(jsonString))
-                    return JsonConvert.DeserializeObject<WebcamSettings>(File.ReadAllText(filePath))!;
+                else
+                {
+                    DdpmCommonHelper.WriteUILog($"[ImportWebcamSettings] ValidateFilePath failed(model:{model}): {info}");
+                }
             }
             var ka = new WebcamSettings(di);
             ExportWebcamSettings(ka, model);

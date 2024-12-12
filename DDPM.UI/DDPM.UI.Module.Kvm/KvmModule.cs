@@ -34,6 +34,8 @@ namespace DDPM.UI.Module.Kvm
                 _leftView = null;
             }
             //vm.Invoke_RefreshData();
+            //Jason 12/11 add loadleftview
+            //moduleOwner.LoadLeftView();
         }
 
         public string ModuleName { get => Constants.ModuleName_KVM; } //"KvmModule"

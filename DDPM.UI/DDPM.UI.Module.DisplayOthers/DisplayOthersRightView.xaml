@@ -247,7 +247,7 @@
                             </Grid>
                             <UXControls:UXCheckBox Grid.Row="1" Margin="24, 8, 8, 0" CheckBoxSize="Large"
                                                    Content="{Binding [ImpExp_Message.0], Source={x:Static lang:LangHelper.Instance}}"
-                                                   HorizontalAlignment="Left" FontSize="14"
+                                                   HorizontalAlignment="Left" FontSize="14" Foreground="{DynamicResource TextBlock_ForegroundColor}"
                                                    IsEnabled="{Binding isSettingsEnable}" Opacity="{Binding Settings_Opacity}"
                                                    IsChecked="{Binding AutoApply_Checked}" />
                         </Grid>

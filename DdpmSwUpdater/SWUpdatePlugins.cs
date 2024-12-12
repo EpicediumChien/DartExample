@@ -465,13 +465,14 @@ namespace DdpmSwUpdater
             {
                 folderInfo = string.Empty;
                 pathSymbolicLinInfo = string.Empty;
-                folderValid = false;
-                folderValid = DDPMFileSecurity.SRemoveSymbolicFolder(path, out pathSymbolicLinInfo);//0924 Bruce Add Security
-                if (!folderValid)
-                {
-                    LogManage.LogMessage(nameof(CheckFold) + " FolderSymbolicFolderIsNotSafe:" + pathSymbolicLinInfo + " Retry:" + (count++));
-                }
-                folderValid = DDPMFileSecurity.IsFolderPathValid(path, out folderInfo) && folderValid;
+                //folderValid = false;
+                //folderValid = DDPMFileSecurity.SRemoveSymbolicFolder(path, out pathSymbolicLinInfo);//0924 Bruce Add Security
+                //if (!folderValid)
+                //{
+                //    LogManage.LogMessage(nameof(CheckFold) + " FolderSymbolicFolderIsNotSafe:" + pathSymbolicLinInfo + " Retry:" + (count++));
+                //}
+                //folderValid = DDPMFileSecurity.IsFolderPathValid(path, out folderInfo) && folderValid;
+                folderValid = DDPMFileSecurity.ValidateFilePath(path, out folderInfo);
                 if (!folderValid)
                 {
                     LogManage.LogMessage(nameof(CheckFold) + " FolderIsNotSafe:" + folderInfo + " Retry:" + (count++));
