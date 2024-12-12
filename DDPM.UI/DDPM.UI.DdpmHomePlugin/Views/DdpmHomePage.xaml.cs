@@ -72,7 +72,8 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
 
                     if (ImpExpSettings != null)
                     {
-                        if (ImpExpSettings.MonitorSettings != null)
+                        if (ImpExpSettings.MonitorSettings != null
+                        && ImpExpSettings.MonitorSettings.ServiceTag != mo.edid.ServiceTag)
                         {
                             if (ImpExpSettings.MonitorSettings.ImpExpSettings.SameModel)
                             {

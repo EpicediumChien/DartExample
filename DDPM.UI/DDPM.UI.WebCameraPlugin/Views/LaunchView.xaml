@@ -235,7 +235,7 @@
                                 <MouseBinding Gesture="RightDoubleClick" Command="{Binding ShowInfoClickedCommand}" />
                             </Border.InputBindings>
                             <Border.ToolTip>
-                                <ToolTip Placement="Top" VerticalOffset="6" HorizontalOffset="8">
+                                <ToolTip Placement="MousePoint" VerticalOffset="-50" HorizontalOffset="-5">
                                     <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
                                         <TextBlock Style="{StaticResource Tooltip_TextBlockStyle}" Text="{Binding FirmwareVersion2}" />
                                     </Border>
