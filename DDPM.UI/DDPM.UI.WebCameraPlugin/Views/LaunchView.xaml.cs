@@ -213,6 +213,8 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             check_PresenceFunction();
             BuildModuleGroups();
             CheckUSBtype();
+            initResolutionFPS();
+
 
             DdpmCommonHelper.BitmapImageUpdated += ImageUpdate;
         }
@@ -237,6 +239,12 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                 {
                     UserStopRecord();
                 }));
+        }
+
+        public void initResolutionFPS()
+        {
+            _vm!.SetResolution_Selected(1);
+            _vm!.SetFPS_Selected(1);
         }
 
         bool noPresenceFunction = false;
