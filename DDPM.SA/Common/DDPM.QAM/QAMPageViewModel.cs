@@ -19,6 +19,9 @@ using System.Windows.Shapes;
 using System.Collections.ObjectModel;
 using DDPM.SA.Resources.Helper;
 using System.Windows.Input;
+using System.Diagnostics;
+using System.Windows.Interop;
+using Windows.Data.Text;
 
 namespace DDPM.QAM
 {
@@ -63,7 +66,102 @@ namespace DDPM.QAM
                     }
                 }
             }
+
+            //Derek 1210
+            DdpmCommonHelper.DeviceManagerSA!.UIUpdateNotify += QAMPageViewModel_UIUpdateNotify;
+            LoadCurrentStatus();
         }
+
+        private void LoadCurrentStatus()
+        {
+            try
+            {
+                ZoomValue = DdpmCommonHelper.DeviceManagerSA!.GetZoom(CurrentDeviceInfo!.ID.ToString()).Result;
+                AutoFramingStatus = DdpmCommonHelper.DeviceManagerSA!.GetIsAutoFramingOn(CurrentDeviceInfo!.ID.ToString()).Result;
+
+                FieldOfView = DdpmCommonHelper.DeviceManagerSA!.GetFieldOfView(CurrentDeviceInfo!.ID.ToString()).Result;
+
+                LogMsg($"ZoomValue = {ZoomValue}, AutoFramingStatus = {AutoFramingStatus}, selFOVIdx = {FieldOfView}");
+
+                if (FieldOfView != -1)
+                    FOV_Selected(ChangeFOVToSelectIndex(FieldOfView));
+            }
+            catch (Exception e)
+            {
+                LogMsg($"Catch exception[{e.Message}]");
+            }
+        }
+
+        private int ChangeFOVToSelectIndex(int fov)
+        {
+            if (90 == fov)
+                return 2;
+            else if(78 == fov)
+                return 1;
+            else
+                return 0;
+        }
+
+        private void LogMsg(string msg)
+        {
+            DdpmCommonHelper.DeviceManagerSA!.WriteLog(msg);
+        }
+
+        private void QAMPageViewModel_UIUpdateNotify(object? sender, UpdateUINotify e)
+        {
+            try
+            {
+                if (e == null || e == EventArgs.Empty || e.UI_Field_Name == string.Empty)
+                    return;
+
+                LogMsg($"QAMPageViewModel_UIUpdateNotify receive msg is {e.UI_Field_Name}");
+
+                if (e.UI_Field_Name.StartsWith("WebcamEvent"))
+                {
+                    EventMsg? eventMsg = EventMsg.CreateEventObjectFromEventMsg(e.UI_Field_Name);
+
+                    if (null == eventMsg)
+                    {
+                        LogMsg($"Webcam event message is null");
+
+                        return;
+                    }
+
+                    int currentValue = 0;
+                    switch (eventMsg.EventType)
+                    {
+                        case "Webcam_ZoomChanged":
+                            if (int.TryParse(eventMsg.NewValue, out currentValue))
+                                ZoomValue = currentValue;
+
+                        break;
+
+
+                        case "Webcam_FieldOfViewChanged":
+                            if (int.TryParse(eventMsg.NewValue, out currentValue))
+                            {
+                                FieldOfView = currentValue;
+                                FOV_Selected(ChangeFOVToSelectIndex(FieldOfView));
+                            }
+
+                            break;
+
+
+                        case "Webcam_IsAutoFramingOnChanged":
+                            bool result = false;
+                            if (bool.TryParse(eventMsg.NewValue, out result))
+                                AutoFramingStatus = result;
+                            break;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                LogMsg($"Catch exception in QAMPageViewModel_UIUpdateNotify: {ex.Message}");
+            }
+            
+        }
+
         public void OpenFullView(ContentControl content)
         {
             FullView = content;
@@ -93,6 +191,7 @@ namespace DDPM.QAM
             try
             {
                 var filePath = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), @$"Dell\Dell Display and Peripheral Manager\WebcamSettings\{model}.json");
+                
                 if (File.Exists(filePath))
                 {
                     Dictionary<string, WebcamProfile> presetProfiles = new();
@@ -100,9 +199,11 @@ namespace DDPM.QAM
                     string json = File.ReadAllText(filePath);
                     var jsonObject = Newtonsoft.Json.Linq.JObject.Parse(json);
                     string presetProfilesString = jsonObject["PresetProfiles"].ToString();
+
                     if (!string.IsNullOrEmpty(presetProfilesString))
                     {
                         presetProfiles = JsonConvert.DeserializeObject<Dictionary<string, WebcamProfile>>(presetProfilesString);
+
                         if (presetProfiles != null)
                         {
                             foreach (var profile in presetProfiles)
@@ -135,9 +236,9 @@ namespace DDPM.QAM
                     }
                 }
             }
-            catch
+            catch (Exception e)
             {
-
+                DdpmCommonHelper.DeviceManagerSA!.WriteLog($"Catch exception: {e.Message}");
             }
         }
 
@@ -146,6 +247,7 @@ namespace DDPM.QAM
             if (Profiles.ContainsKey(CurrentProfileName.Profile_Name_Key))
             {
                 CurrentProfile = Profiles[CurrentProfileName.Profile_Name_Key];
+
                 if (CurrentDeviceInfo!.IsPropertyAutoFramingSensitivitySupported || CurrentDeviceInfo.IsPropertyAutoFramingSizeSupported || CurrentDeviceInfo.IsPropertyAutoFramingTransitionSupported)
                 {
                     DdpmCommonHelper.DeviceManagerSA!.SetIsAutoFramingOn(CurrentDeviceInfo!.ID.ToString(), CurrentProfile.IsAutoFramingOn);
@@ -226,6 +328,8 @@ namespace DDPM.QAM
                 _AutoFramingStatus = value;
                 DdpmCommonHelper.DeviceManagerSA!.SetIsAutoFramingOn(CurrentDeviceInfo!.ID.ToString(), _AutoFramingStatus);
                 RefreshUI();
+
+                OnPropertyChanged(nameof(AutoFramingStatus));
             }
         }
         #endregion
@@ -322,6 +426,7 @@ namespace DDPM.QAM
                 Settings_IsEnable[2] = true;
                 Settings_IsEnable[3] = true;
             }
+
             OnPropertyChanged(nameof(DeviceModel));
             OnPropertyChanged(nameof(Settings_IsEnable));
             OnPropertyChanged(nameof(ZoomValue));

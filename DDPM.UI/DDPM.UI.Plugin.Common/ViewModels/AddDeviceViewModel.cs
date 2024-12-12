@@ -175,9 +175,10 @@ namespace DDPM.UI.Plugin.ViewModels
                 }
                 return null;
             }
-            //set {
-            //  SetProperty(ref _leftView, value);
-            //}
+            set
+            {
+                //SetProperty(ref _leftView, value);
+            }
         }
 
         private ObservableCollection<RightViewHeader> _rightViewHeaders = new();

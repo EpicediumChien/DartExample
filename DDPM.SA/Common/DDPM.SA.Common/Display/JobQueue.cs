@@ -48,7 +48,7 @@ namespace DDPM.SA.Common.Display
             _invokeQueue.Clear();
         }
 
-        public void Dispose()
+        public void DisposeJobQueue()
         {
             lock (_lockObject)
             {

@@ -3754,7 +3754,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             if (_agent != null)
             {
                 EventManagerArgs args = new EventManagerArgs();
-                _agent.RaiseEvent(AgentEventNames.AllInfoMonitorsChanged,this, args);
+                _agent.RaiseEvent(AgentEventNames.AllInfoMonitorsChanged, this, args);
             }
         }
         #endregion

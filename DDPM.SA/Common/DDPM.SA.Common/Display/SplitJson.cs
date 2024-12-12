@@ -120,7 +120,7 @@ namespace DDPM.SA.Common.Display
         /// Need to copy the DefaultSettings from DDPM.Easy.Common/SplitCtrlXX.xaml.cs
         /// Never add SplitCtrl0A (Off) into the RecentList
         /// </summary>
-        public static List<SplitJson> DefaultRecentList = new List<SplitJson>()
+        public static readonly List<SplitJson> DefaultRecentList = new List<SplitJson>()
         {
             //[0] SplitCtrl2A
             new  SplitJson() { CellCount = 2, SplitKey='A', Settings=new List<double>() { 1, 1 } },
@@ -137,7 +137,7 @@ namespace DDPM.SA.Common.Display
         #endregion Defaul Recent List
 
         #region Preset List
-        public static List<SplitJson> PresetList = new List<SplitJson>()
+        public static readonly List<SplitJson> PresetList = new List<SplitJson>()
         {
             new  SplitJson() { EAID=0, CellCount = 0, SplitKey='A', Settings=new List<double>() { 1 } },
             new  SplitJson() { EAID=1, CellCount = 2, SplitKey='A', Settings=new List<double>() { 1, 1 } },

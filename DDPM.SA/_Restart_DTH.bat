@@ -11,6 +11,7 @@ SET Process3=Dell.UCA.Manager.exe
 SET Process4=Dell.TechHub.DataManager.SubAgent.exe
 SET Process5=Dell.TechHub.Instrumentation.SubAgent.exe
 SET Process10=Dell.TechHub.Instrumentation.UserProcess.exe
+SET Process11=Dell.Update.SubAgent.exe
 
 SET Process6=Dell.TechHub.Peripheral.Subagent.exe
 SET Process7=DDPM.Subagent.exe
@@ -30,6 +31,7 @@ taskkill /F /im %Process3% /T >nul 2>&1
 taskkill /F /im %Process4% /T >nul 2>&1
 taskkill /F /im %Process5% /T >nul 2>&1
 taskkill /F /im %Process10% /T >nul 2>&1
+taskkill /F /im %Process11% /T >nul 2>&1
 
 
 echo kill DDPM process [%Process6%, %Process7%, %Process8%, %Process9%]
