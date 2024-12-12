@@ -1468,6 +1468,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             DdpmCommonHelper.WriteUILog($"StartRecord");
 
             _vm!.IsRecording = true;
+            _vm.IsMicEnumerationOnEnabled = false;
 
             if (_vm!.WebcamCountdown)
             {
@@ -1549,6 +1550,8 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
         private async Task StopRecordingAsync()
         {
             Debug.WriteLine("Stopping recording...");
+
+            _vm.IsMicEnumerationOnEnabled = true;
 
             if (_vm.MediaCapture != null)
                 await _vm.MediaCapture.StopRecordAsync();
