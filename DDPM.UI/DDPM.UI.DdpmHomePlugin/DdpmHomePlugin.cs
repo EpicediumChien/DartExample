@@ -117,6 +117,12 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
 
         private GlobalSettingParam _globalSettings = null;
 
+        //Robert_Lin, 2024-12-9, FW, SW Update avaiable count
+        //PIMS-299696  Gear icon indication blinking not only twice to show availability of FW update
+        //
+        private int _updateAvailableCount_FW = 0;
+        private int _updateAvailableCount_SW = 0;
+
         /// <summary>
         /// Default constructor
         /// </summary>
@@ -277,9 +283,14 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                             //Call once
                             if (CheckIfSwFwUpdateAvailable(_deviceManager))
                             {
+                                //Robert_Lin, 2024-12-9, Change GlowEffect_Start() to GlowEffect_Trigger()
                                 if (_iconGear != null)
-                                    _iconGear.GlowEffect_Start();
+                                    _iconGear.GlowEffect_Trigger();
+                                    //_iconGear.GlowEffect_Start();
                             }
+                            //Robert_Lin, 2024-12-9 install event handler for new update fw/sw info
+                            _deviceManager.Peripherals_UpdateNotify += _deviceManager_Peripherals_UpdateNotify;
+
                         }
                         await CheckAndQueueDevice("DDPM", "DDPM", null);//DDPM WalkThrough no need into setting page.
                         if (WalkThroughQueue.Count != 0 && _showPluginById == false)
@@ -509,6 +520,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
             else if (e.UI_Field_Name.StartsWith("QAMEvent_NavigateToWidgetSettingPage"))
             {
                 _console.ShowPluginById(DDPM.UI.Common.Constants.SettingsPluginId);
+                DdpmCommonHelper.isDDPMSwitchToSettingPageByQAM = true;
             }
         }
 
@@ -1080,6 +1092,20 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
             SWUpdateInfoPackage sWUpdateInfoPackage = devMgr.SW_GetSWUpdateInfo(false, false, false, true).Result;
             if (fwUpdateInfoPackage.FWUpdateInfo.Count > 0 || sWUpdateInfoPackage.SWUpdateInfo.Count > 0)
                 ret = true;
+
+            //Robert_Lin, 2024-12-9 store the count for later check
+            if ((fwUpdateInfoPackage==null) || (fwUpdateInfoPackage.FWUpdateInfo == null))
+                _updateAvailableCount_FW = 0;
+            else
+                _updateAvailableCount_FW = fwUpdateInfoPackage.FWUpdateInfo.Count;
+
+            if ((sWUpdateInfoPackage == null) || (sWUpdateInfoPackage.SWUpdateInfo == null))
+                _updateAvailableCount_SW = 0;
+            else
+                _updateAvailableCount_SW = sWUpdateInfoPackage.SWUpdateInfo.Count;
+
+            _log.Info($"@ Startup update count: SW={_updateAvailableCount_SW}, FW={_updateAvailableCount_FW}");
+
             _IsAnyUpdate = ret;
             if (sWUpdateInfoPackage != null && sWUpdateInfoPackage.SWUpdateInfo != null && sWUpdateInfoPackage.SWUpdateInfo.Count >= 1)
             {
@@ -1101,6 +1127,80 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
             return ret;
         }
 
+        //Robert_Lin, 2024-12-9 added for PIMS-299696 Gear icon indication blinking not only twice to show availability.
+        /// <summary>
+        /// Invoked when any changed of FW/SW update package information.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void _deviceManager_Peripherals_UpdateNotify(object? sender, bool e)
+        {
+            if (_deviceManager != null)
+            {
+                //Get FW/SW update count
+                FWUpdateInfoPackage fwUpdateInfoPackage = _deviceManager.GetFWUpdateInfo(false, false, false, null, false, false, true).Result;
+                SWUpdateInfoPackage sWUpdateInfoPackage = _deviceManager.SW_GetSWUpdateInfo(false, false, false, true).Result;
+
+                int newSwCount = 0;
+                if ((sWUpdateInfoPackage != null) && (sWUpdateInfoPackage.SWUpdateInfo != null))
+                    newSwCount = sWUpdateInfoPackage.SWUpdateInfo.Count;
+                int newFwCount = 0;
+                if ((fwUpdateInfoPackage != null) && (fwUpdateInfoPackage.FWUpdateInfo != null))
+                    newFwCount = fwUpdateInfoPackage.FWUpdateInfo.Count;
+
+                _log.Info($"@ Peripherals_UpdateNotify, SW: {_updateAvailableCount_SW} -> {newSwCount}, FW: {_updateAvailableCount_FW} -> {newFwCount}");
+
+                //Case_1, no any sw/fw count => turn the indicator to OFF
+                if ((newSwCount <= 0) && (newFwCount <= 0))
+                {
+                    //Update to variables
+                    _updateAvailableCount_SW = 0;
+                    _updateAvailableCount_FW = 0;
+
+                    //Set to Off anyway
+                    if (_iconGear != null)
+                    {
+                        _log.Info($"@ Peripherals_UpdateNotify, Turn off GearIcon indicator");
+                        _iconGear.SetOrangeDotVisible(false);
+                    }
+                    else
+                    {
+                        _log.Info($"@ Peripherals_UpdateNotify, GearIcon is null.");
+                    }
+                    return;
+                }
+
+                //Case_2, Either SW or FW are increased
+                bool isSwCountIncreased = (newSwCount - _updateAvailableCount_SW > 0);
+                bool isFwCountIncreased = (newFwCount - _updateAvailableCount_FW > 0);
+                if (isSwCountIncreased || isFwCountIncreased)
+                {
+                    //Trigger a Blinking effect
+                    if (_iconGear != null)
+                    {
+                        _log.Info($"@ Peripherals_UpdateNotify, Trigger a glow effect.");
+                        _iconGear.GlowEffect_Trigger();
+                    }
+                    else
+                    {
+                        _log.Info($"@ Peripherals_UpdateNotify, Trigger a glow effect error, GearIcon is null.");
+                    }
+                }
+                else
+                {
+                    //Case_3, no changed : nothing to do
+                    _log.Info($"@ Peripherals_UpdateNotify, update count is not changed.");
+                }
+
+                //Update to variables
+                _updateAvailableCount_SW = newSwCount;
+                _updateAvailableCount_FW = newFwCount;
+            }
+            else
+            {
+                _log.Info("@ Peripherals_UpdateNotify, DeviceManager is null.");
+            }
+        }
         #endregion SW/FW Update
 
         #region WalkThrough

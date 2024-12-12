@@ -147,7 +147,11 @@ namespace DDPM.QAM
             {
                 if (CameraSetting != null)
                 {
-                    CameraSetting.Close();
+                    Dispatcher.Invoke(() =>
+                    {
+                        CameraSetting.Close();
+                    });
+                    
                     CameraSetting = null;
                 }
 
@@ -226,7 +230,7 @@ namespace DDPM.QAM
                 //Info SA that DDPM launched by QAM
                 //DdpmCommonHelper.DeviceManagerSA!.SetIsDDPMLaunchByQAMAsync(true);
 
-                Close_Click(this, null); //workable
+                //Close_Click(this, null); //Derek 1209
                 WriteLog($"Lanuch DDPM successfully!");
             }
             else
@@ -312,6 +316,16 @@ namespace DDPM.QAM
             IntPtr hWnd = new WindowInteropHelper(this).Handle;
 
             _SetWindowPos(hWnd, HWND_BOTTOM, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE);
+        }
+
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            Dispatcher.Invoke(() =>
+            {
+                CameraSetting?.Close();
+            });
+
+            CameraSetting = null;
         }
     }
 }

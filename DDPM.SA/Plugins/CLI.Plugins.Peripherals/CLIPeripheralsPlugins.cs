@@ -94,11 +94,13 @@ namespace DDPM.CLI.Plugins.Peripherals
                     {
                         if (g.LogicalDeviceType == "LogicalHeadset")
                         {
+                            writelog("LogicalHeadset Entry");
                             _commandLineInput.PluginsType = "HEADSET";
                             _recode_head = true;
                         }
                         if (g.LogicalDeviceType == "LogicalWiredAudio")
                         {
+                            writelog("LogicalWiredAudio Entry");
                             _commandLineInput.PluginsType = "LOGICALWIREDAUDIO";
                             _recode_speak = true;
                         }
@@ -120,7 +122,9 @@ namespace DDPM.CLI.Plugins.Peripherals
                                     //case "UODFWUPDATE":
                                     //case "LOCKUIUPDATE":
                                     //case "UNLOCKUIUPDATE":
+                                    writelog("FIRMWAREUPDATE Entry");
                                     var ret = FWUpdate(commandLineInput);
+                                    writelog("FIRMWAREUPDATE Done");
                                     result.ExitCode = ret.code;
                                     result.serialize_Json_response = ret.json;
                                     return result;
@@ -141,7 +145,9 @@ namespace DDPM.CLI.Plugins.Peripherals
                             //    case "UODFWUPDATE":
                             //    case "LOCKUIUPDATE":
                             //    case "UNLOCKUIUPDATE":
+                            writelog("FIRMWAREUPDATE SET DOCK SILENTFWUPDATE Entry");
                             var ret = FWUpdate(commandLineInput);
+                            writelog("FIRMWAREUPDATE SET DOCK SILENTFWUPDATE DONE");
                             result.ExitCode = ret.code;
                             result.serialize_Json_response = ret.json;
                             return result;
@@ -163,7 +169,9 @@ namespace DDPM.CLI.Plugins.Peripherals
                             //    case "UODFWUPDATE":
                             //    case "LOCKUIUPDATE":
                             //    case "UNLOCKUIUPDATE":
+                            writelog("FIRMWAREUPDATE SET UPDATE Entry");
                             var ret = SWAPPUpdate(commandLineInput);
+                            writelog("FIRMWAREUPDATE SET UPDATE DONE");
                             result.ExitCode = ret.code;
                             result.serialize_Json_response = ret.json;
                             return result;
@@ -184,7 +192,9 @@ namespace DDPM.CLI.Plugins.Peripherals
                             //    case "UODFWUPDATE":
                             //    case "LOCKUIUPDATE":
                             //    case "UNLOCKUIUPDATE":
+                            writelog("FIRMWAREUPDATE GET UPDATE Entry");
                             var ret = SWAPPUpdate_get(commandLineInput);
+                            writelog("FIRMWAREUPDATE GET UPDATE DONE");
                             result.ExitCode = ret.code;
                             result.serialize_Json_response = ret.json;
                             return result;
@@ -204,7 +214,9 @@ namespace DDPM.CLI.Plugins.Peripherals
                             //    case "UODFWUPDATE":
                             //    case "LOCKUIUPDATE":
                             //    case "UNLOCKUIUPDATE":
+                            writelog("FIRMWAREUPDATE GET UPDATESOURCELOCATION Entry");
                             var ret = SWAPPUpdate_get(commandLineInput);
+                            writelog("FIRMWAREUPDATE GET UPDATESOURCELOCATION DONE");
                             result.ExitCode = ret.code;
                             result.serialize_Json_response = ret.json;
                             return result;
@@ -224,7 +236,9 @@ namespace DDPM.CLI.Plugins.Peripherals
                             //    case "UODFWUPDATE":
                             //    case "LOCKUIUPDATE":
                             //    case "UNLOCKUIUPDATE":
+                            writelog("FIRMWAREUPDATE GET UPDATESOURCELOCATION Entry");
                             var ret = SWAPPUpdate(commandLineInput);
+                            writelog("FIRMWAREUPDATE GET UPDATESOURCELOCATION DONE");
                             result.ExitCode = ret.code;
                             result.serialize_Json_response = ret.json;
                             return result;
@@ -259,6 +273,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                     Message = "Un-supported command",
                     TargetFeature = commandLineInput.TargetFeature
                 };
+                writelog("FIRMWAREUPDATE Un-supported command");
                 result.serialize_Json_response = JsonConvert.SerializeObject(rsp, Formatting.Indented);
                 result.ExitCode = (int)CLI_ExitCode.empty_command_input;
                 return result;
@@ -270,6 +285,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                     Result = "Empty command input",
                     Message = "Empty command input"
                 };
+                writelog("FIRMWAREUPDATE Empty command input");
                 result.serialize_Json_response = JsonConvert.SerializeObject(rsp, Formatting.Indented);
                 result.ExitCode = (int)CLI_ExitCode.empty_command_input;
                 return result;
@@ -313,6 +329,7 @@ namespace DDPM.CLI.Plugins.Peripherals
             if (_deviceinfo == null || _deviceinfo.Count == 0)
             {
                 GetResults.Add(new CLI_PeripheralRESPONSE("N/A", "GET", _commandLineInput.TargetFeature, "Fail", "Device not found"));
+                writelog("GetPeripheralProperty: "+ _commandLineInput.TargetFeature  + "Device not found");
                 return (int)CLI_ExitCode.fail_GetPeripheralProperty_NoConnectDevice;
             }
 
@@ -334,6 +351,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                 if (go == 0)
                 {
                     GetResults.Add(new CLI_PeripheralRESPONSE("N/A", "GET", _commandLineInput.TargetFeature, "Fail", "Device not found"));
+                    writelog("GetPeripheralProperty: " + _commandLineInput.TargetFeature + "Device not found");
                 }
             }
             else if (_commandLineInput.GuidString.Count != 0)
@@ -346,6 +364,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                         if (di == null)
                         {
                             GetResults.Add(new CLI_PeripheralRESPONSE(x, "GET", _commandLineInput.TargetFeature, "Fail", "Device not found"));
+                            writelog("GetPeripheralProperty: " + _commandLineInput.TargetFeature + "Device not found");
                         }
                         else
                         {
@@ -355,6 +374,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                     else
                     {
                         GetResults.Add(new CLI_PeripheralRESPONSE(x, "GET", _commandLineInput.TargetFeature, "Fail", "Invalid Guid"));
+                        writelog("GetPeripheralProperty: " + _commandLineInput.TargetFeature + "Invalid Guid");
                     }
                 });
             }
@@ -366,6 +386,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                     if (di == null)
                     {
                         GetResults.Add(new CLI_PeripheralRESPONSE("N/A", "GET", _commandLineInput.TargetFeature, "Fail", "Device not found", null, model));
+                        writelog("GetPeripheralProperty: " + _commandLineInput.TargetFeature + "Device not found");
                     }
                     else
                     {
@@ -381,6 +402,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                     if (di == null)
                     {
                         GetResults.Add(new CLI_PeripheralRESPONSE("N/A", "GET", _commandLineInput.TargetFeature, "Fail", "Device not found", null, null, serviceTag));
+                        writelog("GetPeripheralProperty: " + _commandLineInput.TargetFeature + "Device not found");
                     }
                     else
                     {
@@ -430,6 +452,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                 int go = 0;
                 if (_deviceinfo == null || _deviceinfo.Count == 0)
                 {
+                    writelog("SetPeripheralProperty: Device not found");
                     SetResults.Add(new CLI_PeripheralRESPONSE("N/A", _commandLineInput.Command, _commandLineInput.TargetFeature, "FAIL", "Device not found"));
                     return (int)CLI_ExitCode.fail_SetPeripheralProperty;
                 }
@@ -444,6 +467,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                 });
                 if (go == 0)
                 {
+                    writelog("SetPeripheralProperty: Device not found");
                     SetResults.Add(new CLI_PeripheralRESPONSE("N/A", "SET", _commandLineInput.TargetFeature, "Fail", "Device not found"));
                     return (int)CLI_ExitCode.fail_GetPeripheralProperty;
                 }
@@ -466,11 +490,13 @@ namespace DDPM.CLI.Plugins.Peripherals
                         });
                         if (!found)
                         {
+                            writelog("SetPeripheralProperty: "+ guid + "FAIL Device not found");
                             SetResults.Add(new CLI_PeripheralRESPONSE($"{guid}", _commandLineInput.Command, _commandLineInput.TargetFeature, "FAIL", "Device not found"));
                         }
                     }
                     else
                     {
+                        writelog("SetPeripheralProperty: FAIL Invalid Guid");
                         SetResults.Add(new CLI_PeripheralRESPONSE(x, _commandLineInput.Command, _commandLineInput.TargetFeature, "FAIL", "Invalid Guid"));
                     }
                 });
@@ -491,6 +517,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                     });
                     if (!found)
                     {
+                        writelog("SetPeripheralProperty: FAIL Device not found");
                         SetResults.Add(new CLI_PeripheralRESPONSE("N/A", _commandLineInput.Command, _commandLineInput.TargetFeature, "FAIL", "Device not found", null, model));
                     }
                 });
@@ -511,6 +538,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                     });
                     if (!found)
                     {
+                        writelog("SetPeripheralProperty: FAIL Device not found");
                         SetResults.Add(new CLI_PeripheralRESPONSE("N/A", _commandLineInput.Command, _commandLineInput.TargetFeature, "FAIL", "Device not found", null, null, serviceTag));
                     }
                 });
@@ -535,6 +563,7 @@ namespace DDPM.CLI.Plugins.Peripherals
 
                     if (!found)
                     {
+                        writelog("SetPeripheralProperty: FAIL Device not found");
                         SetResults.Add(new CLI_PeripheralRESPONSE("N/A", _commandLineInput.Command, _commandLineInput.TargetFeature, "FAIL", "Device not found"));
                     }
                 });
@@ -559,6 +588,7 @@ namespace DDPM.CLI.Plugins.Peripherals
 
                     if (!found)
                     {
+                        writelog("SetPeripheralProperty: FAIL Device not found");
                         SetResults.Add(new CLI_PeripheralRESPONSE("N/A", _commandLineInput.Command, _commandLineInput.TargetFeature, "FAIL", "Device not found"));
                     }
                 });
@@ -573,7 +603,9 @@ namespace DDPM.CLI.Plugins.Peripherals
                         x.Value = "";
                         if (x.Result == "")
                         {
+                            writelog("SetPeripheralProperty: RESTOREFACTORYDEFAULTS HEADSET Entry");
                             var result = RunAsyncTimeout(_devMgr.SetFactoryResetAsyncValueForHeadset(x.Guid, true)).Result;
+                            writelog("SetPeripheralProperty: RESTOREFACTORYDEFAULTS HEADSET DONE");
                             if (result == "0")
                             {
                                 x.Result = "PASS";
@@ -604,7 +636,9 @@ namespace DDPM.CLI.Plugins.Peripherals
                         x.Value = "";
                         if (x.Result == "")
                         {
+                            writelog("SetPeripheralProperty: RESTOREFACTORYDEFAULTS LOGICALWIREDAUDIO Entry");
                             var result = RunAsyncTimeout(_devMgr.SetResetToDefaultAsyncForSoundbar(x.Guid, true)).Result;
+                            writelog("SetPeripheralProperty: RESTOREFACTORYDEFAULTS LOGICALWIREDAUDIO DONE");
                             if (result == "0")
                             {
                                 x.Result = "PASS";
@@ -635,7 +669,9 @@ namespace DDPM.CLI.Plugins.Peripherals
                         x.Value = "";
                         if (x.Result == "")
                         {
+                            writelog("SetPeripheralProperty: RESTOREFACTORYDEFAULTS Soundbar Entry");
                             var result = RunAsyncTimeout(_devMgr.SetResetToDefaultAsyncForSoundbar(x.Guid, true)).Result;
+                            writelog("SetPeripheralProperty: RESTOREFACTORYDEFAULTS Soundbar DONE");
                             if (result == "0")
                             {
                                 x.Result = "PASS";
@@ -685,7 +721,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                         }
                     });
                 }
-
+                writelog("SetPeripheralProperty: RESTOREFACTORYDEFAULTS" + (retcode ? "SUCCESS" :  "FAIL"));
                 return (retcode) ? (int)CLI_ExitCode.success : (int)CLI_ExitCode.functional_error;
             }
 
@@ -696,7 +732,9 @@ namespace DDPM.CLI.Plugins.Peripherals
                     x.Value = "";
                     if (x.Result == "")
                     {
+                        writelog("SetPeripheralProperty: RESTOREFACTORYDEFAULTS WEBCAM Entry");
                         var result = RunAsyncTimeout(_devMgr.ResetToDefault_webcam(x.Guid, true)).Result;
+                        writelog("SetPeripheralProperty: RESTOREFACTORYDEFAULTS WEBCAM DONE");
                         if (result == "0")
                         {
                             x.Result = "PASS";
@@ -718,6 +756,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                         retcode = (result == "0") ? true : false;
                     }
                 });
+                writelog("SetPeripheralProperty: RESTOREFACTORYDEFAULTS" + (retcode ? "SUCCESS" : "FAIL"));
                 return (retcode) ? (int)CLI_ExitCode.success : (int)CLI_ExitCode.functional_error;
             }
 
@@ -728,7 +767,9 @@ namespace DDPM.CLI.Plugins.Peripherals
                     x.Value = "";
                     if (x.Result == "")
                     {
+                        writelog("SetPeripheralProperty: RESTOREFACTORYDEFAULTS KEBOARD Entry");
                         var result = RunAsyncTimeout(_devMgr.RestoreToDefaultKB(x.Guid)).Result;
+                        writelog("SetPeripheralProperty: RESTOREFACTORYDEFAULTS KEBOARD Entry");
                         if (result == "0")
                         {
                             x.Result = "PASS";
@@ -748,6 +789,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                         retcode = (result == "0") ? true : false;
                     }
                 });
+                writelog("SetPeripheralProperty: RESTOREFACTORYDEFAULTS" + (retcode ? "SUCCESS" : "FAIL"));
                 return (retcode) ? (int)CLI_ExitCode.success : (int)CLI_ExitCode.functional_error;
             }
 
@@ -758,7 +800,9 @@ namespace DDPM.CLI.Plugins.Peripherals
                     x.Value = "";
                     if (x.Result == "")
                     {
+                        writelog("SetPeripheralProperty: RESTOREFACTORYDEFAULTS Mouse Entry");
                         var result = RunAsyncTimeout(_devMgr.RestoreToDefaultMouse(x.Guid)).Result;
+                        writelog("SetPeripheralProperty: RESTOREFACTORYDEFAULTS Mouse Entry");
                         if (result == "0")
                         {
                             x.Result = "PASS";
@@ -778,6 +822,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                         retcode = (result == "0") ? true : false;
                     }
                 });
+                writelog("SetPeripheralProperty: RESTOREFACTORYDEFAULTS" + (retcode ? "SUCCESS" : "FAIL"));
                 return (retcode) ? (int)CLI_ExitCode.success : (int)CLI_ExitCode.functional_error;
             }
 
@@ -788,7 +833,9 @@ namespace DDPM.CLI.Plugins.Peripherals
                     x.Value = "";
                     if (x.Result == "")
                     {
+                        writelog("SetPeripheralProperty: RESTOREFACTORYDEFAULTS Pen Entry");
                         var result = RunAsyncTimeout(_devMgr.RestoreToDefaultPen()).Result;
+                        writelog("SetPeripheralProperty: RESTOREFACTORYDEFAULTS Pen Entry");
                         if (result == "0")
                         {
                             x.Result = "PASS";
@@ -808,6 +855,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                         retcode = (result == "0") ? true : false;
                     }
                 });
+                writelog("SetPeripheralProperty: RESTOREFACTORYDEFAULTS" + (retcode ? "SUCCESS" : "FAIL"));
                 return (retcode) ? (int)CLI_ExitCode.success : (int)CLI_ExitCode.functional_error;
             }
 
@@ -824,6 +872,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                         if (value == null) // if there is no option value
                         {
                             SetFailResults("no setting value");
+                            writelog("SetPeripheralProperty: no setting value");
                             return (int)CLI_ExitCode.fail_SetPeripheralProperty_Value;
                         }
                         else if (int.TryParse(value, out int tmp)) // for the function argument is number
@@ -896,6 +945,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                                     else
                                     {
                                         SetFailResults("Invalid setting value");
+                                        writelog("SetPeripheralProperty: no setting value");
                                         return (int)CLI_ExitCode.fail_SetPeripheralProperty_Value;
                                     }
                             }
@@ -908,10 +958,11 @@ namespace DDPM.CLI.Plugins.Peripherals
             if (_commandLineInput.TargetFeature != "UNPAIR" && _commandLineInput.Options.Count != 0 && _commandLineInput.Options[0].Option_Value == "")
             {
                 SetResults.ForEach(x =>
-                {
-                    x.Result = "FAIL";
-                    x.Message += (x.Message == "" ? "" : ", ") + "Missing setting value";
-                });
+                        {
+                            x.Result = "FAIL";
+                            x.Message += (x.Message == "" ? "" : ", ") + "Missing setting value";
+                        });
+                writelog("SetPeripheralProperty: Missing setting value");
                 return (int)CLI_ExitCode.fail_SetPeripheralProperty_Value;
             }
 
@@ -930,10 +981,12 @@ namespace DDPM.CLI.Plugins.Peripherals
                 //    RunTaskB(bl);
                 //    return (int)CLI_ExitCode.success;
                 case "COLLABCAMERAENABLE":
+                    writelog("SetPeripheralProperty: COLLABCAMERAENABLE Entry");
                     taskB = _devMgr.SetCollaborationCameraEnable;
                     RunTaskB(bl);
                     return (int)CLI_ExitCode.success;
                 case "COLLABCHATENABLE":
+                    writelog("SetPeripheralProperty: COLLABCHATENABLE Entry");
                     taskB = _devMgr.SetCollaborationChatEnable;
                     RunTaskB(bl);
                     return (int)CLI_ExitCode.success;
@@ -946,10 +999,12 @@ namespace DDPM.CLI.Plugins.Peripherals
                 //    RunTaskB(bl);
                 //    return (int)CLI_ExitCode.success;
                 case "COLLABMICMUTE":
+                    writelog("SetPeripheralProperty: COLLABMICMUTE Entry");
                     taskB = _devMgr.SetCollaborationMicEnable;
                     RunTaskB(!bl);
                     return (int)CLI_ExitCode.success;
                 case "COLLABSCREENSHARE":
+                    writelog("SetPeripheralProperty: COLLABSCREENSHARE Entry");
                     taskB = _devMgr.SetCollaborationScreenShareEnable;
                     RunTaskB(bl);
                     return (int)CLI_ExitCode.success;
@@ -1045,6 +1100,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                 //    RunTaskA(val);
                 //    return (int)CLI_ExitCode.success;
                 case "ANCMODE":
+                    writelog("SetPeripheralProperty: ANCMODE Entry");
                     SetResults.ForEach(x =>
                     {
                         x.Value = "";
@@ -1087,9 +1143,11 @@ namespace DDPM.CLI.Plugins.Peripherals
                                 x.Result = "FAIL";
                                 x.Message = "HeadSet not support ANC";
                                 retcode = false;
+                                writelog("SetPeripheralProperty: FAIL HeadSet not support ANC");
                             }
                         }
                     });
+                    writelog("SetPeripheralProperty: ANCMODE" + (retcode ? "SUCCESS" : "FAIL"));
                     return retcode ? (int)CLI_ExitCode.success : (int)CLI_ExitCode.functional_error;
                 //if (val == 1)
                 //    data.LockSettings.Lock_Audio_ancMode = false;
@@ -1100,6 +1158,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                 //RunTaskA(val);
                 //return (int)CLI_ExitCode.success;
                 case "SETANCGAIN":
+                    writelog("SetPeripheralProperty: SETANCGAIN Entry");
                     taskA = _devMgr.SetAncGain;
                     RunTaskA(val);
                     return (int)CLI_ExitCode.success;
@@ -1185,6 +1244,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                 //    RunTaskA(val);
                 //    return (int)CLI_ExitCode.success;
                 case "WEARDETECTION":
+                    writelog("SetPeripheralProperty: WEARDETECTION Entry");
                     SetResults.ForEach(x =>
                     {
                         x.Value = "";
@@ -1207,9 +1267,11 @@ namespace DDPM.CLI.Plugins.Peripherals
                                 x.Result = "FAIL";
                                 x.Message = "HeadSet not support WearDetection";
                                 retcode = false;
+                                writelog("SetPeripheralProperty: FAIL HeadSet not support WearDetection");
                             }
                         }
                     });
+                    writelog("SetPeripheralProperty: WEARDETECTION" + (retcode ? "SUCCESS" : "FAIL"));
                     return retcode ? (int)CLI_ExitCode.success : (int)CLI_ExitCode.functional_error;
                 //if (val == 1)
                 //    data.LockSettings.Lock_Audio_wearDetection = false;
@@ -1244,6 +1306,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                 //        return (int)CLI_ExitCode.fail_SetPeripheralProperty_Value;
                 //    }
                 case "MICSWITCH":
+                    writelog("SetPeripheralProperty: MICSWITCH Entry");
                     SetResults.ForEach(x =>
                     {
                         x.Value = "";
@@ -1279,15 +1342,18 @@ namespace DDPM.CLI.Plugins.Peripherals
                                 x.Result = "FAIL";
                                 x.Message = "Webcam not support MicSwitch";
                                 retcode = false;
+                                writelog("SetPeripheralProperty: FAIL Webcam not support MicSwitch");
                             }
                         }
                     });
+                    writelog("SetPeripheralProperty: MICSWITCH" + (retcode ? "SUCCESS" : "FAIL"));
                     return retcode ? (int)CLI_ExitCode.success : (int)CLI_ExitCode.functional_error;
                     taskB = _devMgr.SetIsMicEnumerationOn;
                     RunTaskD(bl);
                     return (int)CLI_ExitCode.success;
 
                 case "HDR":
+                    writelog("SetPeripheralProperty: HDR Entry");
                     SetResults.ForEach(x =>
                     {
                         x.Value = "";
@@ -1322,9 +1388,11 @@ namespace DDPM.CLI.Plugins.Peripherals
                                 x.Result = "FAIL";
                                 x.Message = "Webcam not support HDR";
                                 retcode = false;
+                                writelog("SetPeripheralProperty: FAIL Webcam not support HDR");
                             }
                         }
                     });
+                    writelog("SetPeripheralProperty: HDR" + (retcode ? "SUCCESS" : "FAIL"));
                     return retcode ? (int)CLI_ExitCode.success : (int)CLI_ExitCode.functional_error;
                 //ItemId = "DellPeripheral.Webcam.0";
                 //if (_devMgr.GetIsPropertyHDRSupported(GUID).Result)
@@ -1370,6 +1438,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                 //}
 
                 case "ANTIFLICKER":
+                    writelog("SetPeripheralProperty: ANTIFLICKER Entry");
                     SetResults.ForEach(x =>
                     {
                         x.Value = "";
@@ -1406,6 +1475,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                                     x.Result = "FAIL";
                                     x.Message = "Webcam not support AntiFlicker";
                                     retcode = false;
+                                    writelog("SetPeripheralProperty: FAIL Webcam not support AntiFlicker");
                                 }
                             }
                             else
@@ -1414,9 +1484,11 @@ namespace DDPM.CLI.Plugins.Peripherals
                                 x.Message = "Wrong option value: ";
                                 x.Message += $"{val}";
                                 retcode = false;
+                                writelog("SetPeripheralProperty: Wrong option value:"+ val.ToString());
                             }
                         }
                     });
+                    writelog("SetPeripheralProperty: ANTIFLICKER" + (retcode ? "SUCCESS" : "FAIL"));
                     return (retcode) ? (int)CLI_ExitCode.success : (int)CLI_ExitCode.functional_error;
                 //ItemId = "DellPeripheral.Webcam.0";
                 //if (_devMgr.GetIsPropertyAntiFlickerSupported(GUID).Result)
@@ -1462,6 +1534,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                 //}
 
                 case "AIAUTOFRAMING":
+                    writelog("SetPeripheralProperty: AIAUTOFRAMING Entry");
                     SetResults.ForEach(x =>
                     {
                         x.Value = "";
@@ -1496,9 +1569,11 @@ namespace DDPM.CLI.Plugins.Peripherals
                                 x.Result = "FAIL";
                                 x.Message = "Webcam not support AI AutoFraming";
                                 retcode = false;
+                                writelog("SetPeripheralProperty: FAIL Webcam not support AI AutoFraming");
                             }
                         }
                     });
+                    writelog("SetPeripheralProperty: AIAUTOFRAMING" + (retcode ? "SUCCESS" : "FAIL"));
                     return (retcode) ? (int)CLI_ExitCode.success : (int)CLI_ExitCode.functional_error;
                 //ItemId = "DellPeripheral.Webcam.0";
                 //if (_devMgr.GetIsPropertyAutoFramingSupported(GUID).Result)
@@ -1544,6 +1619,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                 //}
                 case "PRESENCEDETECTION":
                     //ItemId = "DellPeripheral.Webcam.0";
+                    writelog("SetPeripheralProperty: PRESENCEDETECTION Entry");
                     SetResults.ForEach(x =>
                     {
                         x.Value = "";
@@ -1579,9 +1655,11 @@ namespace DDPM.CLI.Plugins.Peripherals
                                 x.Result = "FAIL";
                                 x.Message = "Webcam not support PresenceDetection";
                                 retcode = false;
+                                writelog("SetPeripheralProperty: FAIL Webcam not support PresenceDetection");
                             }
                         }
                     });
+                    writelog("SetPeripheralProperty: PRESENCEDETECTION" + (retcode ? "SUCCESS" : "FAIL"));
                     return (retcode) ? (int)CLI_ExitCode.success : (int)CLI_ExitCode.functional_error;
 
                 //case "MICSWITCH_":
@@ -1629,6 +1707,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                 //    }
                 default:
                     SetFailResults("Invalid TargetFeature");
+                    writelog("SetPeripheralProperty: Invalid TargetFeature");
                     return (int)CLI_ExitCode.fail_SetPeripheralProperty_Property;
             }
         }
@@ -3810,6 +3889,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                 Result = "FAIL",
                 Message = "No device connected",
             };
+            writelog("No Device Connect");
             System.Console.WriteLine(JsonConvert.SerializeObject(rsp, Formatting.Indented));
             return ((int)CLI_ExitCode.fail_FWUpdate, JsonConvert.SerializeObject(rsp, Formatting.Indented));
         }
@@ -3837,6 +3917,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                 cLI_RESPONSE.Result = "FAIL";
                 cLI_RESPONSE.Message = "Not Admin";
                 Console.WriteLine(JsonConvert.SerializeObject(cLI_RESPONSE, Formatting.Indented));
+                writelog("FIRMWAREUPDATE FAIL Not Admin");
                 return ((int)CLI_ExitCode.fail_FWUpdate, JsonConvert.SerializeObject(cLI_RESPONSE, Formatting.Indented));
             }
             bool? ret = null;
@@ -3879,6 +3960,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                 #region Parse Dock SilentFwUpdate command to unified format
                 if (commandLineInput.TargetType == "DOCK")
                 {
+                    writelog("FW update DOCK,FORCEWITHNONOTICE");
                     var dockNoCommaOptions = commandLineInput.Options.Where(_ => !_.Option_Value.Contains(',')).ToList();
 
                     foreach (var dockNoCommaOption in dockNoCommaOptions)
@@ -3924,6 +4006,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                                         Result = "FAIL",
                                         Message = "No monitor connected",
                                     };
+                                    writelog("FIRMWAREUPDATE DISPLAY No monitorconnected");
                                     Console.WriteLine(JsonConvert.SerializeObject(rsp, Formatting.Indented));
                                     return ((int)CLI_ExitCode.fail_FWUpdate, JsonConvert.SerializeObject(rsp, Formatting.Indented));
                                 }
@@ -4126,6 +4209,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                                                             Result = "FAIL",
                                                             Message = "Dock not support GUID option",
                                                         };
+                                                        writelog("FAIL Dock not support GUID option");
                                                         Console.WriteLine(JsonConvert.SerializeObject(rsp, Formatting.Indented));
                                                         return ((int)CLI_ExitCode.fail_FWUpdate, JsonConvert.SerializeObject(rsp, Formatting.Indented));
                                                     }
@@ -4238,6 +4322,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                                                                 Result = "FAIL",
                                                                 Message = "Not correct UOD option",
                                                             };
+                                                            writelog("FAIL Not correct UOD option");
                                                             Console.WriteLine(JsonConvert.SerializeObject(rsp, Formatting.Indented));
                                                             return ((int)CLI_ExitCode.fail_FWUpdate, JsonConvert.SerializeObject(rsp, Formatting.Indented));
                                                         }
@@ -4252,6 +4337,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                                                             Result = "FAIL",
                                                             Message = "Only dock supports UOD update mode",
                                                         };
+                                                        writelog("FAIL Only dock supports UOD update mode");
                                                         Console.WriteLine(JsonConvert.SerializeObject(rsp, Formatting.Indented));
                                                         return ((int)CLI_ExitCode.fail_FWUpdate, JsonConvert.SerializeObject(rsp, Formatting.Indented));
                                                     }
@@ -4288,6 +4374,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                                                         Result = "FAIL",
                                                         Message = "No MOUSE connected",
                                                     };
+                                                    writelog("FAIL No MOUSE connected");
                                                     System.Console.WriteLine(JsonConvert.SerializeObject(rsp, Formatting.Indented));
                                                     return ((int)CLI_ExitCode.fail_FWUpdate, JsonConvert.SerializeObject(rsp, Formatting.Indented));
                                                 }
@@ -4300,6 +4387,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                                                         Result = "FAIL",
                                                         Message = "No KEYBOARD connected",
                                                     };
+                                                    writelog("FAIL No KEYBOARD connected");
                                                     System.Console.WriteLine(JsonConvert.SerializeObject(rsp, Formatting.Indented));
                                                     return ((int)CLI_ExitCode.fail_FWUpdate, JsonConvert.SerializeObject(rsp, Formatting.Indented));
                                                 }
@@ -4312,6 +4400,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                                                         Result = "FAIL",
                                                         Message = "No DOCK connected",
                                                     };
+                                                    writelog("FAIL No DOCK connected");
                                                     System.Console.WriteLine(JsonConvert.SerializeObject(rsp, Formatting.Indented));
                                                     return ((int)CLI_ExitCode.fail_FWUpdate, JsonConvert.SerializeObject(rsp, Formatting.Indented));
                                                 }
@@ -4324,6 +4413,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                                                         Result = "FAIL",
                                                         Message = "No HEADSET connected",
                                                     };
+                                                    writelog("FAIL No HEADSET connected");
                                                     Console.WriteLine(JsonConvert.SerializeObject(rsp, Formatting.Indented));
                                                     return ((int)CLI_ExitCode.fail_FWUpdate, JsonConvert.SerializeObject(rsp, Formatting.Indented));
                                                 }
@@ -4336,6 +4426,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                                                         Result = "FAIL",
                                                         Message = "No WEBCAM connected",
                                                     };
+                                                    writelog("FAIL No WEBCAM connected");
                                                     Console.WriteLine(JsonConvert.SerializeObject(rsp, Formatting.Indented));
                                                     return ((int)CLI_ExitCode.fail_FWUpdate, JsonConvert.SerializeObject(rsp, Formatting.Indented));
                                                 }
@@ -4348,6 +4439,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                                                         Result = "FAIL",
                                                         Message = "No SPEAKER connected",
                                                     };
+                                                    writelog("FAIL No SPEAKER connected");
                                                     Console.WriteLine(JsonConvert.SerializeObject(rsp, Formatting.Indented));
                                                     return ((int)CLI_ExitCode.fail_FWUpdate, JsonConvert.SerializeObject(rsp, Formatting.Indented));
                                                 }
@@ -4360,6 +4452,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                                                         Result = "FAIL",
                                                         Message = "No PEN connected",
                                                     };
+                                                    writelog("FAIL No PEN connected");
                                                     Console.WriteLine(JsonConvert.SerializeObject(rsp, Formatting.Indented));
                                                     return ((int)CLI_ExitCode.fail_FWUpdate, JsonConvert.SerializeObject(rsp, Formatting.Indented));
                                                 }
@@ -4372,6 +4465,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                                                         Result = "FAIL",
                                                         Message = "No DONGLE connected",
                                                     };
+                                                    writelog("FAIL No DONGLE connected");
                                                     Console.WriteLine(JsonConvert.SerializeObject(rsp, Formatting.Indented));
                                                     return ((int)CLI_ExitCode.fail_FWUpdate, JsonConvert.SerializeObject(rsp, Formatting.Indented));
                                                 }
@@ -4384,6 +4478,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                                                         Result = "FAIL",
                                                         Message = "No AUDIO connected",
                                                     };
+                                                    writelog("FAIL No AUDIO connected");
                                                     Console.WriteLine(JsonConvert.SerializeObject(rsp, Formatting.Indented));
                                                     return ((int)CLI_ExitCode.fail_FWUpdate, JsonConvert.SerializeObject(rsp, Formatting.Indented));
                                                 }
@@ -4465,6 +4560,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                         Result = "FAIL",
                         Message = "Input fail, option count < 0",
                     };
+                    writelog("FW update Input fail, option count < 0");
                     Console.WriteLine(JsonConvert.SerializeObject(rsp, Formatting.Indented));
                     return ((int)CLI_ExitCode.fail_FWUpdate, JsonConvert.SerializeObject(rsp, Formatting.Indented));
                 }
@@ -4483,6 +4579,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                         Result = "FAIL",
                         Message = "Input null value",
                     };
+                    writelog("FW update FAIL Input null Value");
                     Console.WriteLine(JsonConvert.SerializeObject(rsp, Formatting.Indented));
                     return ((int)CLI_ExitCode.fail_FWUpdate, JsonConvert.SerializeObject(rsp, Formatting.Indented));
                 }
@@ -4495,6 +4592,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                         Result = "FAIL",
                         Message = "FW update failure",
                     };
+                    writelog("FW update failurre FAIL");
                     Console.WriteLine(JsonConvert.SerializeObject(rsp, Formatting.Indented));
                     return ((int)CLI_ExitCode.fail_FWUpdate, JsonConvert.SerializeObject(rsp, Formatting.Indented));
                 }
@@ -4511,6 +4609,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                         Result = "FAIL",
                         Message = "FW update failure exception x",
                     };
+                    writelog("FW update failure exception x");
                     Console.WriteLine(JsonConvert.SerializeObject(rsp, Formatting.Indented));
                     return ((int)CLI_ExitCode.fail_FWUpdate, JsonConvert.SerializeObject(rsp, Formatting.Indented));
                 }
@@ -4524,6 +4623,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                     Result = "FAIL",
                     Message = "FW update failure exception",
                 };
+                writelog("FW update failure exception");
                 Console.WriteLine(JsonConvert.SerializeObject(rsp, Formatting.Indented));
                 return ((int)CLI_ExitCode.fail_FWUpdate, JsonConvert.SerializeObject(rsp, Formatting.Indented));
             }
@@ -4727,6 +4827,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                     cli_FWU_RESPONSE.Result = "PASS";
                     Task.Run(new Action(() =>
                     {
+                        writelog("Auto_FWUpdate2 Install");
                         FWUErrorCode ret = _devMgr.Install(installPath, false).Result;
                         Trace.WriteLine($"ret = {ret}");
 
@@ -4751,6 +4852,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                     {
                         cli_FWU_RESPONSE.Message = "No updates available";
                         cli_FWU_RESPONSE.Result = "PASS";
+                        writelog("Auto_FWUpdate2 No updates available");
                         return ((int)CLI_ExitCode.NoUpdate, JsonConvert.SerializeObject(cli_FWU_RESPONSE, Formatting.Indented));
                     }
 
@@ -4795,18 +4897,22 @@ namespace DDPM.CLI.Plugins.Peripherals
                             _devMgr.ProgressUpdate_Notify -= _FWUpdatePlugin_ProgressUpdate;
                             _devMgr.DownloadAndInstall_Result_Notify -= Download_Event;
                         }));
+                        writelog("Auto_FWUpdate2 SUCCESS");
                         return ((int)CLI_ExitCode.success, JsonConvert.SerializeObject(cli_FWU_RESPONSE, Formatting.Indented));
                     }
                     else
                     {
                         cli_FWU_RESPONSE.Result = "FAIL";
+                        writelog("Auto_FWUpdate2 FAIL");
                         return ((int)CLI_ExitCode.fail_NotSupport, JsonConvert.SerializeObject(cli_FWU_RESPONSE, Formatting.Indented));
                     }
                 }
+                writelog("Auto_FWUpdate2 SUCCESS");
                 return ((int)CLI_ExitCode.success, JsonConvert.SerializeObject(cli_FWU_RESPONSE, Formatting.Indented));
             }
             catch
             {
+                writelog("Auto_FWUpdate2 FAIL");
                 cli_FWU_RESPONSE.Result = "FAIL";
                 return ((int)CLI_ExitCode.fail_FWUpdate, JsonConvert.SerializeObject(cli_FWU_RESPONSE, Formatting.Indented));
             }
@@ -4825,6 +4931,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                     cli_FWU_RESPONSE.Result = "PASS";
                     Task.Run(new Action(() =>
                     {
+                        writelog("Auto_FWUpdate_display Install");
                         FWUErrorCode ret = _devMgr.Install(installPath, true).Result;
                         Trace.WriteLine($"ret = {ret}");
 
@@ -4850,6 +4957,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                     {
                         cli_FWU_RESPONSE.Message = "No updates available";
                         cli_FWU_RESPONSE.Result = "PASS";
+                        writelog("Auto_FWUpdate_display No updates available");
                         return ((int)CLI_ExitCode.NoUpdate, JsonConvert.SerializeObject(cli_FWU_RESPONSE, Formatting.Indented));
                     }
 
@@ -4884,10 +4992,12 @@ namespace DDPM.CLI.Plugins.Peripherals
                         _devMgr.DownloadAndInstall_Result_Notify -= Download_Event;
                     }));
                 }
+                writelog("Auto_FWUpdate_display success");
                 return ((int)CLI_ExitCode.success, JsonConvert.SerializeObject(cli_FWU_RESPONSE, Formatting.Indented));
             }
             catch
             {
+                writelog("Auto_FWUpdate_display FAIL");
                 cli_FWU_RESPONSE.Result = "FAIL";
                 return ((int)CLI_ExitCode.fail_FWUpdate, JsonConvert.SerializeObject(cli_FWU_RESPONSE, Formatting.Indented));
             }
@@ -5233,6 +5343,7 @@ namespace DDPM.CLI.Plugins.Peripherals
             {
                 cLI_RESPONSE.Result = "FAIL";
                 cLI_RESPONSE.Message = "Not Admin";
+                writelog("SWAPPUpdate_get FAIL Not Admin");
                 System.Console.WriteLine(JsonConvert.SerializeObject(cLI_RESPONSE, Formatting.Indented));
                 return ((int)CLI_ExitCode.fail_FWUpdate, JsonConvert.SerializeObject(cLI_RESPONSE, Formatting.Indented));
             }
@@ -5306,16 +5417,19 @@ namespace DDPM.CLI.Plugins.Peripherals
                 }
                 if (ret == true)
                 {
+                    writelog("SWAPPUpdate_get SUCCESS");
                     return ((int)CLI_ExitCode.success, output);
                 }
                 else
                 {
+                    writelog("SWAPPUpdate_get FAIL");
                     Console.WriteLine(output);
                     return ((int)CLI_ExitCode.fail_SWUpdate, output);
                 }
             }
             catch
             {
+                writelog("SWAPPUpdate_get FAIL");
                 return ((int)CLI_ExitCode.fail_SWUpdate, output);
             }
 

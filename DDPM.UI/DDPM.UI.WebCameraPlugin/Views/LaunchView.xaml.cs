@@ -132,10 +132,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                 DdpmCommonHelper.DeviceManagerSA.SystemSuspend += DeviceManagerSA_OnSystemSuspend;
                 DdpmCommonHelper.DeviceManagerSA.SystemResume += DeviceManagerSA_OnSystemResume;
                 DdpmCommonHelper.DeviceManagerSA.DeviceChanged += DeviceManagerSA_DeviceChanged;
-                //Derek 1110 for Webcam PIMS-315440
-                //During video recording, do"Restart" &"Shutdown"action in SUT,
-                //the video which I just recorded will have no length.
-                SystemEvents.SessionEnding += SystemEvents_SessionEnding;
+                DdpmCommonHelper.DeviceManagerSA.SystemSessionEnd += DeviceManagerSA_OnSystemSessionEnd;
 
                 DDPMSettings data = DdpmCommonHelper.DeviceManagerSA.ReloadAppConfigData().Result;
                 if (data != null)
@@ -1056,6 +1053,16 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             //Debug.WriteLine("DeviceManagerSA_OnSystemResume");
         }
 
+        private void DeviceManagerSA_OnSystemSessionEnd(object? sender, EventArgs e)
+        {
+            DdpmCommonHelper.WriteUILog($"catch event DeviceManagerSA_OnSystemSessionEnd");
+            if (_vm!.IsRecording)
+                Dispatcher.Invoke(new Action(() =>
+                {
+                    UserStopRecord();
+                }));
+        }
+
         bool in_CameraPlugin = true;
         private async void LaunchView_Unloaded(object sender, RoutedEventArgs e)
         {
@@ -1070,7 +1077,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                 DdpmCommonHelper.DeviceManagerSA.SystemSuspend -= DeviceManagerSA_OnSystemSuspend;
                 DdpmCommonHelper.DeviceManagerSA.SystemResume -= DeviceManagerSA_OnSystemResume;
                 DdpmCommonHelper.DeviceManagerSA.DeviceChanged -= DeviceManagerSA_DeviceChanged;
-                SystemEvents.SessionEnding -= SystemEvents_SessionEnding;
+                DdpmCommonHelper.DeviceManagerSA.SystemSessionEnd -= DeviceManagerSA_OnSystemSessionEnd;
             }
             try
             {
@@ -1660,26 +1667,6 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             btnPreset.IsEnabled = false;
 
             StartRecord();
-        }
-
-        private void SystemEvents_SessionEnding(object sender, SessionEndingEventArgs e)
-        {
-            //if (e.Reason == SessionEndReasons.SystemShutdown)
-            //{
-            //    UserStopRecord();
-            //}
-            //else if (e.Reason == SessionEndReasons.Logoff)
-            //{
-            //    UserStopRecord();
-            //}
-
-            DdpmCommonHelper.WriteUILog($"catch event SystemEvents_SessionEnding");
-
-            if (_vm!.IsRecording)
-                Dispatcher.Invoke(new Action(() =>
-                {
-                    UserStopRecord();
-                }));
         }
 
         private void btnStop_Click(object sender, System.Windows.Input.MouseButtonEventArgs e)

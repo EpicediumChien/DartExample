@@ -273,7 +273,9 @@ namespace DDPM.SA.Plugin.CLIManager
             {
                 if (commandLineInput.TargetType == "DISPLAY")
                 {
-                    var _ = CLINetworkKVM.Execute(commandLineInput);
+                    WriteLog("ExecuteNetworkKVM Entry");
+                    var _ = ExecuteNetworkKVM(commandLineInput);
+                    WriteLog("ExecuteNetworkKVM Exit");
                     rst.ExitCode = _.code;
                     rst.serialize_Json_response = _.result;
 
@@ -293,6 +295,7 @@ namespace DDPM.SA.Plugin.CLIManager
                         {
                             data.Enable_Display_NetworkKVM = commandLineInput.Options[0].Option_Value == "ON";
 
+                            WriteLog("WriteITConfigData Enable_Display_NetworkKVM Entry");
                             if (!_SettingsPluginIT?.WriteITConfigData(data, new List<string>() { "Enable_Display_NetworkKVM" }).Result == true)
                             {
                                 rst.serialize_Json_response = JsonConvert.SerializeObject(new NKVM_RESPONSE
@@ -305,6 +308,7 @@ namespace DDPM.SA.Plugin.CLIManager
                                 }, Formatting.Indented);
                                 rst.ExitCode = (int)CLI_ExitCode.fail_SetSettings_ITSettingsValue;
                             }
+                            WriteLog("WriteITConfigData Enable_Display_NetworkKVM Exit");
                         }
                     }
                 }
@@ -401,7 +405,11 @@ namespace DDPM.SA.Plugin.CLIManager
                     break;
                 case "INAPPNETWORKKVM":          //InAppNetworkKVM           DDPMW-1599
                     if (commandLineInput.PluginsType.Equals("DISPLAY"))
+                    {
+                        WriteLog("INAPPNETWORKKVM CLI_Display_LockUnlock Entry");
                         rst = CLIHandlerDisplay.CLI_Display_LockUnlock(Log, data, _SettingsPluginIT, commandLineInput, command_guid);
+                        WriteLog("INAPPNETWORKKVM CLI_Display_LockUnlock Exit");
+                    }
                     else
                         rst = CLIHandlerDisplay.CLI_Response_TypeNotSupport(commandLineInput, rst);
                     return rst;
@@ -614,290 +622,233 @@ namespace DDPM.SA.Plugin.CLIManager
         }
         #endregion
 
-        public class CLINetworkKVM
+        #region NetworkKVM
+        private CommandLineInput _commandLineInput;
+
+        private (int code, string result) NotSupportResponse()
         {
-            private static CommandLineInput _commandLineInput;
-
-            private static (int code, string result) NotSupportResponse()
+            var response = new NKVM_RESPONSE
             {
-                var response = new NKVM_RESPONSE
-                {
-                    Command = _commandLineInput.Command,
-                    TargetFeature = _commandLineInput.TargetFeature,
-                    Result = "FAIL",
-                    Message = "Un-supported command or value"
-                };
-                return ((int)CLI_ExitCode.unknow_command, response.ToJson());
-            }
+                Command = _commandLineInput.Command,
+                TargetFeature = _commandLineInput.TargetFeature,
+                Result = "FAIL",
+                Message = "Un-supported command or value"
+            };
+            return ((int)CLI_ExitCode.unknow_command, response.ToJson());
+        }
 
-            public static (int code, string result) Execute(CommandLineInput commandLineInput)
+        public (int code, string result) ExecuteNetworkKVM(CommandLineInput commandLineInput)
+        {
+            _commandLineInput = commandLineInput;
+
+            switch (_commandLineInput.TargetFeature)
             {
-                _commandLineInput = commandLineInput;
-
-                switch (_commandLineInput.TargetFeature)
-                {
-                    case "NETWORKKVMVERSION":
-                        return NetworkKVMVersion();
-                    case "NETWORKKVM":
-                    case "NETWORKKVMAUTOCONNECT":
-                    case "NETWORKKVMCONTENTTRANSFER":
-                        return EntryNetworkKVM(_commandLineInput.TargetFeature);
-                    case "NETWORKKVMINCOMINGPORT":
-                    case "NETWORKKVMOUTGOINGPORT":
-                    case "NETWORKKVMCONTENTTRANSFERPORT":
-                        return EntryNetworkKVMPort(_commandLineInput.TargetFeature);
-                    case "NETWORKKVMACCESSRESET":
-                        return NetworkKVMAccessReset(_commandLineInput.TargetFeature);
-                    default:
-                        return NotSupportResponse();
-                }
-            }
-
-            private static (int exitCode, string value, string message) RunDDMCommand(string command)
-            {
-                string filePath = @"C:\Program Files\Dell\Dell Display and Peripheral Manager\Plugins\NKVM\DDM.exe";
-                int exitCode = -1;
-                string value = "N/A";
-                string message = "N/A";
-
-                if (!File.Exists(filePath))
-                {
-                    value = "Not Supported";
-                    message = "NetworkKVM is not support";
-                }
-                else
-                {
-                    ProcessStartInfo startInfo = new ProcessStartInfo
-                    {
-                        FileName = filePath,
-                        Arguments = command.ToLower(),
-                        UseShellExecute = false,
-                        RedirectStandardOutput = true,
-                        RedirectStandardError = true,
-                        CreateNoWindow = true
-                    };
-
-                    using (Process process = new Process { StartInfo = startInfo })
-                    {
-                        process.Start();
-                        process.WaitForExit();
-                        exitCode = process.ExitCode;
-                    }
-
-                    Trace.WriteLine($"{DateTime.Now} {command} (Exit code: {exitCode})");
-                }
-
-                return (exitCode, value, message);
-            }
-
-            private static (int code, string result) NetworkKVMVersion()
-            {
-                if (_commandLineInput.Command != "GET" || _commandLineInput.Options.Count > 0)
-                {
+                case "NETWORKKVMVERSION":
+                    return NetworkKVMVersion();
+                case "NETWORKKVM":
+                case "NETWORKKVMAUTOCONNECT":
+                case "NETWORKKVMCONTENTTRANSFER":
+                    return EntryNetworkKVM(_commandLineInput.TargetFeature);
+                case "NETWORKKVMINCOMINGPORT":
+                case "NETWORKKVMOUTGOINGPORT":
+                case "NETWORKKVMCONTENTTRANSFERPORT":
+                    return EntryNetworkKVMPort(_commandLineInput.TargetFeature);
+                case "NETWORKKVMACCESSRESET":
+                    return NetworkKVMAccessReset(_commandLineInput.TargetFeature);
+                default:
                     return NotSupportResponse();
-                }
+            }
+        }
 
-                string output = string.Empty;
-                bool retcode = false;
+        private (int exitCode, string value, string message) RunDDMCommand(string command)
+        {
+            WriteLog($"RunDDMCommand({command}) Entry");
+            string filePath = @"C:\Program Files\Dell\Dell Display and Peripheral Manager\Plugins\NKVM\DDM.exe";
+            int exitCode = -1;
+            string value = "N/A";
+            string message = "N/A";
 
-                var response = new NKVM_RESPONSE
+            if (!File.Exists(filePath))
+            {
+                value = "Not Supported";
+                message = "NetworkKVM is not support";
+            }
+            else
+            {
+                ProcessStartInfo startInfo = new ProcessStartInfo
                 {
-                    Command = _commandLineInput.Command,
-                    TargetFeature = _commandLineInput.TargetFeature
+                    FileName = filePath,
+                    Arguments = command.ToLower(),
+                    UseShellExecute = false,
+                    RedirectStandardOutput = true,
+                    RedirectStandardError = true,
+                    CreateNoWindow = true
                 };
 
-                string filePath = @"C:\Program Files\Dell\Dell Display and Peripheral Manager\Plugins\NKVM\DDM.exe";
-
-                if (File.Exists(filePath))
+                using (Process process = new Process { StartInfo = startInfo })
                 {
-                    FileVersionInfo fileVersionInfo = FileVersionInfo.GetVersionInfo(filePath);
-                    string version = fileVersionInfo.FileVersion;
+                    process.Start();
+                    process.WaitForExit();
+                    exitCode = process.ExitCode;
+                }
 
-                    if (!string.IsNullOrWhiteSpace(version))
-                    {
-                        response.Value = version;
-                        response.Result = "PASS";
-                        retcode = true;
-                    }
-                    else
-                    {
-                        response.Result = "FAIL";
-                        retcode = false;
-                    }
+                Trace.WriteLine($"{DateTime.Now} {command} (Exit code: {exitCode})");
+            }
+
+            WriteLog($"RunDDMCommand({command}) Exit");
+            return (exitCode, value, message);
+        }
+
+        private (int code, string result) NetworkKVMVersion()
+        {
+            WriteLog("NetworkKVMVersion Entry");
+            if (_commandLineInput.Command != "GET" || _commandLineInput.Options.Count > 0)
+            {
+                return NotSupportResponse();
+            }
+
+            string output = string.Empty;
+            bool retcode = false;
+
+            var response = new NKVM_RESPONSE
+            {
+                Command = _commandLineInput.Command,
+                TargetFeature = _commandLineInput.TargetFeature
+            };
+
+            string filePath = @"C:\Program Files\Dell\Dell Display and Peripheral Manager\Plugins\NKVM\DDM.exe";
+
+            if (File.Exists(filePath))
+            {
+                FileVersionInfo fileVersionInfo = FileVersionInfo.GetVersionInfo(filePath);
+                string version = fileVersionInfo.FileVersion;
+
+                if (!string.IsNullOrWhiteSpace(version))
+                {
+                    response.Value = version;
+                    response.Result = "PASS";
+                    retcode = true;
                 }
                 else
                 {
                     response.Result = "FAIL";
-                    response.Message = "NetworkKVM is not support";
-                    response.Value = "Not Supported";
+                    retcode = false;
                 }
-
-                Console.WriteLine(JsonConvert.SerializeObject(response, Formatting.Indented));
-                output = JsonConvert.SerializeObject(response, Formatting.Indented);
-                return (retcode ? (int)CLI_ExitCode.success : (int)CLI_ExitCode.functional_error, output);
+            }
+            else
+            {
+                response.Result = "FAIL";
+                response.Message = "NetworkKVM is not support";
+                response.Value = "Not Supported";
             }
 
-            private static (int code, string result) EntryNetworkKVM(string command)
+            Console.WriteLine(JsonConvert.SerializeObject(response, Formatting.Indented));
+            output = JsonConvert.SerializeObject(response, Formatting.Indented);
+
+            WriteLog("NetworkKVMVersion Exit");
+            return (retcode ? (int)CLI_ExitCode.success : (int)CLI_ExitCode.functional_error, output);
+        }
+
+        private (int code, string result) EntryNetworkKVM(string command)
+        {
+            WriteLog($"EntryNetworkKVM({command}) Entry");
+            var validOptions = new List<string> { "ON", "OFF" };
+            string output = string.Empty;
+            bool retcode = false;
+
+            var response = new NKVM_RESPONSE
             {
-                var validOptions = new List<string> { "ON", "OFF" };
-                string output = string.Empty;
-                bool retcode = false;
+                Command = _commandLineInput.Command,
+                TargetFeature = _commandLineInput.TargetFeature
+            };
 
-                var response = new NKVM_RESPONSE
+            if (_commandLineInput.Command == "SET" && _commandLineInput.Options.Count > 0 && !string.IsNullOrWhiteSpace(_commandLineInput.Options[0].Option_Value))
+            {
+                response.Value = _commandLineInput.Options[0].Option_Value;
+
+                if (!validOptions.Contains(_commandLineInput.Options[0].Option_Value.ToUpper()))
                 {
-                    Command = _commandLineInput.Command,
-                    TargetFeature = _commandLineInput.TargetFeature
-                };
-
-                if (_commandLineInput.Command == "SET" && _commandLineInput.Options.Count > 0 && !string.IsNullOrWhiteSpace(_commandLineInput.Options[0].Option_Value))
-                {
-                    response.Value = _commandLineInput.Options[0].Option_Value;
-
-                    if (!validOptions.Contains(_commandLineInput.Options[0].Option_Value.ToUpper()))
-                    {
-                        retcode = false;
-                        response.Result = "FAIL";
-                        response.Message = "Invalid option value";
-                    }
-                    else
-                    {
-                        command = $"/{command} {_commandLineInput.Options[0].Option_Value}";
-                        var commandResult = RunDDMCommand(command);
-
-                        if (commandResult.exitCode == 0)
-                        {
-                            retcode = true;
-                            response.Result = "PASS";
-                        }
-                        else
-                        {
-                            retcode = false;
-                            response.Result = "FAIL";
-                            response.Message = commandResult.message;
-                            response.Value = commandResult.value;
-                        }
-                    }
-                }
-                else if (_commandLineInput.Command == "GET" && _commandLineInput.Options.Count == 0)
-                {
-                    command = $"/get {command}";
-                    var commandResult = RunDDMCommand(command);
-
-                    switch (commandResult.exitCode)
-                    {
-                        case 0:
-                            retcode = true;
-                            response.Result = "PASS";
-                            response.Value = "OFF";
-                            break;
-
-                        case 1:
-                            retcode = true;
-                            response.Result = "PASS";
-                            response.Value = "ON";
-                            break;
-
-                        default:
-                            retcode = false;
-                            response.Result = "FAIL";
-                            response.Message = commandResult.message;
-                            response.Value = commandResult.value;
-                            break;
-                    }
+                    retcode = false;
+                    response.Result = "FAIL";
+                    response.Message = "Invalid option value";
                 }
                 else
                 {
-                    return NotSupportResponse();
-                }
-
-                Console.WriteLine(JsonConvert.SerializeObject(response, Formatting.Indented));
-                output += "\n" + JsonConvert.SerializeObject(response, Formatting.Indented);
-                return (retcode ? (int)CLI_ExitCode.success : (int)CLI_ExitCode.functional_error, output);
-            }
-
-            private static (int code, string result) EntryNetworkKVMPort(string command)
-            {
-                string output = string.Empty;
-                bool retcode = false;
-
-                var response = new NKVM_RESPONSE
-                {
-                    Command = _commandLineInput.Command,
-                    TargetFeature = _commandLineInput.TargetFeature
-                };
-
-                if (_commandLineInput.Command == "SET" && _commandLineInput.Options.Count > 0 && !string.IsNullOrWhiteSpace(_commandLineInput.Options[0].Option_Value))
-                {
-                    response.Value = _commandLineInput.Options[0].Option_Value;
-
-                    if (int.TryParse(_commandLineInput.Options[0].Option_Value, out int port) && port >= 1024 && port <= 49151)
-                    {
-                        command = $"/{command} {_commandLineInput.Options[0].Option_Value}";
-                        var commandResult = RunDDMCommand(command);
-
-                        if (commandResult.exitCode == 0)
-                        {
-                            retcode = true;
-                            response.Result = "PASS";
-                        }
-                        else
-                        {
-                            retcode = false;
-                            response.Result = "FAIL";
-                            response.Message = commandResult.message;
-                            response.Value = commandResult.value;
-                        }
-                    }
-                    else
-                    {
-                        retcode = false;
-                        response.Result = "FAIL";
-                        response.Message = "Invalid option value";
-                    }
-                }
-                else if (_commandLineInput.Command == "GET" && _commandLineInput.Options.Count == 0)
-                {
-                    command = $"/get {command}";
+                    command = $"/{command} {_commandLineInput.Options[0].Option_Value}";
                     var commandResult = RunDDMCommand(command);
 
-                    if (commandResult.exitCode == -1)
+                    if (commandResult.exitCode == 0)
+                    {
+                        retcode = true;
+                        response.Result = "PASS";
+                    }
+                    else
                     {
                         retcode = false;
                         response.Result = "FAIL";
                         response.Message = commandResult.message;
                         response.Value = commandResult.value;
                     }
-                    else
-                    {
+                }
+            }
+            else if (_commandLineInput.Command == "GET" && _commandLineInput.Options.Count == 0)
+            {
+                command = $"/get {command}";
+                var commandResult = RunDDMCommand(command);
+
+                switch (commandResult.exitCode)
+                {
+                    case 0:
                         retcode = true;
                         response.Result = "PASS";
-                        response.Value = commandResult.exitCode.ToString();
-                    }
-                }
-                else
-                {
-                    return NotSupportResponse();
-                }
+                        response.Value = "OFF";
+                        break;
 
-                Console.WriteLine(JsonConvert.SerializeObject(response, Formatting.Indented));
-                output += "\n" + JsonConvert.SerializeObject(response, Formatting.Indented);
-                return (retcode ? (int)CLI_ExitCode.success : (int)CLI_ExitCode.functional_error, output);
+                    case 1:
+                        retcode = true;
+                        response.Result = "PASS";
+                        response.Value = "ON";
+                        break;
+
+                    default:
+                        retcode = false;
+                        response.Result = "FAIL";
+                        response.Message = commandResult.message;
+                        response.Value = commandResult.value;
+                        break;
+                }
+            }
+            else
+            {
+                return NotSupportResponse();
             }
 
-            private static (int code, string result) NetworkKVMAccessReset(string command)
+            Console.WriteLine(JsonConvert.SerializeObject(response, Formatting.Indented));
+            output += "\n" + JsonConvert.SerializeObject(response, Formatting.Indented);
+
+            WriteLog($"EntryNetworkKVM({command}) Exit");
+            return (retcode ? (int)CLI_ExitCode.success : (int)CLI_ExitCode.functional_error, output);
+        }
+
+        private (int code, string result) EntryNetworkKVMPort(string command)
+        {
+            WriteLog($"EntryNetworkKVMPort({command}) Entry");
+            string output = string.Empty;
+            bool retcode = false;
+
+            var response = new NKVM_RESPONSE
             {
-                string output = string.Empty;
-                bool retcode = false;
+                Command = _commandLineInput.Command,
+                TargetFeature = _commandLineInput.TargetFeature
+            };
 
-                var response = new NKVM_RESPONSE
-                {
-                    Command = _commandLineInput.Command,
-                    TargetFeature = _commandLineInput.TargetFeature
-                };
+            if (_commandLineInput.Command == "SET" && _commandLineInput.Options.Count > 0 && !string.IsNullOrWhiteSpace(_commandLineInput.Options[0].Option_Value))
+            {
+                response.Value = _commandLineInput.Options[0].Option_Value;
 
-                if (_commandLineInput.Command == "SET" && _commandLineInput.Options.Count == 0)
+                if (int.TryParse(_commandLineInput.Options[0].Option_Value, out int port) && port >= 1024 && port <= 49151)
                 {
-                    command = $"/{command}";
+                    command = $"/{command} {_commandLineInput.Options[0].Option_Value}";
                     var commandResult = RunDDMCommand(command);
 
                     if (commandResult.exitCode == 0)
@@ -915,13 +866,83 @@ namespace DDPM.SA.Plugin.CLIManager
                 }
                 else
                 {
-                    return NotSupportResponse();
+                    retcode = false;
+                    response.Result = "FAIL";
+                    response.Message = "Invalid option value";
                 }
-
-                Console.WriteLine(JsonConvert.SerializeObject(response, Formatting.Indented));
-                output += "\n" + JsonConvert.SerializeObject(response, Formatting.Indented);
-                return (retcode ? (int)CLI_ExitCode.success : (int)CLI_ExitCode.functional_error, output);
             }
+            else if (_commandLineInput.Command == "GET" && _commandLineInput.Options.Count == 0)
+            {
+                command = $"/get {command}";
+                var commandResult = RunDDMCommand(command);
+
+                if (commandResult.exitCode == -1)
+                {
+                    retcode = false;
+                    response.Result = "FAIL";
+                    response.Message = commandResult.message;
+                    response.Value = commandResult.value;
+                }
+                else
+                {
+                    retcode = true;
+                    response.Result = "PASS";
+                    response.Value = commandResult.exitCode.ToString();
+                }
+            }
+            else
+            {
+                return NotSupportResponse();
+            }
+
+            Console.WriteLine(JsonConvert.SerializeObject(response, Formatting.Indented));
+            output += "\n" + JsonConvert.SerializeObject(response, Formatting.Indented);
+
+            WriteLog($"EntryNetworkKVMPort({command}) Exit");
+            return (retcode ? (int)CLI_ExitCode.success : (int)CLI_ExitCode.functional_error, output);
         }
+
+        private (int code, string result) NetworkKVMAccessReset(string command)
+        {
+            WriteLog($"NetworkKVMAccessReset({command}) Entry");
+            string output = string.Empty;
+            bool retcode = false;
+
+            var response = new NKVM_RESPONSE
+            {
+                Command = _commandLineInput.Command,
+                TargetFeature = _commandLineInput.TargetFeature
+            };
+
+            if (_commandLineInput.Command == "SET" && _commandLineInput.Options.Count == 0)
+            {
+                command = $"/{command}";
+                var commandResult = RunDDMCommand(command);
+
+                if (commandResult.exitCode == 0)
+                {
+                    retcode = true;
+                    response.Result = "PASS";
+                }
+                else
+                {
+                    retcode = false;
+                    response.Result = "FAIL";
+                    response.Message = commandResult.message;
+                    response.Value = commandResult.value;
+                }
+            }
+            else
+            {
+                return NotSupportResponse();
+            }
+
+            Console.WriteLine(JsonConvert.SerializeObject(response, Formatting.Indented));
+            output += "\n" + JsonConvert.SerializeObject(response, Formatting.Indented);
+
+            WriteLog($"NetworkKVMAccessReset({command}) Exit");
+            return (retcode ? (int)CLI_ExitCode.success : (int)CLI_ExitCode.functional_error, output);
+        }
+        #endregion
     }
 }

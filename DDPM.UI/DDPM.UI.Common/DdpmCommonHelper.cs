@@ -67,6 +67,9 @@ namespace DDPM.UI.Common
 
         public static ILog? Log { get; set; }
 
+        //Derek 1209
+        public static bool isDDPMSwitchToSettingPageByQAM = false;
+
         /// <summary>
         /// Flag to switch the Light Mode Feature
         /// </summary>

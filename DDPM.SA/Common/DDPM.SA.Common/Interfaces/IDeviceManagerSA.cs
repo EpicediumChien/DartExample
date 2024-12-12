@@ -538,7 +538,7 @@ namespace DDPM.SA.Common
         public Task<bool> SavePowerNapSetting(PowerNapSetting powerNapSettings);
 
         public Task<List<PowerNapSetting>> ReadPowerNapSettings();
-        public Task<List<DDPMMonitorSettings>> ReloadMonitorSettings(string modelname);
+
         #endregion public for PowerNap
 
         #region public for FW Update by Bruce
@@ -1127,7 +1127,9 @@ namespace DDPM.SA.Common
 
         #region GlobalSetting
 
-        event EventHandler GlobalSettingChangeEvent;
+        //Derek 1209
+        //event EventHandler GlobalSettingChangeEvent;
+        event EventHandler<UpdateUINotify> GlobalSettingChangeEvent;
 
         Task<GlobalSettingParam> GetGlobalSettingParam();
 
@@ -1173,11 +1175,17 @@ namespace DDPM.SA.Common
         Task CloseQAMByDDPM();
         Task<bool> GetIsWidgetSettingPageLoadedByQAMAsync();
         Task SetIsWidgetSettingPageLoadedByQAMAsync(bool newValue);
+
+        //Derek 1210
+        Task WriteLog(string logMsg);
         #endregion
 
-        #region System Suspend & Resume
+        #region System Suspend & Resume & SessionEnd
         event EventHandler SystemSuspend;
         event EventHandler SystemResume;
+        event EventHandler SystemSessionEnd;
+
+        Task FireSystemSessionEnd();
         #endregion
     }
 }
