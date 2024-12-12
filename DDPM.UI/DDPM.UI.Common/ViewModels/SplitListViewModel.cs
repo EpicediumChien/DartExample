@@ -159,6 +159,26 @@ namespace DDPM.UI.Common.ViewModels
 
             return _splitList[ItemCount-1];
         }
+        /// <summary>
+        /// Return the first item which Buddy is null
+        /// </summary>
+        /// <returns></returns>
+        public SplitItem? FindFirstNoBuddyItem()
+        {
+            if (_splitList == null) return null;
+            if (_splitList.Count == 0) return null;
+
+            foreach (SplitItem spItem in _splitList)
+            {
+                if (spItem.Buddy == null)
+                {
+                    return spItem;
+                }
+            }
+            return null;
+
+
+        }
         #endregion Find
 
         #region Index

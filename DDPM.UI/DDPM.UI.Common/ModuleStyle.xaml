@@ -8,7 +8,7 @@
     <!-- #region Control Element Default Styles-->
     <!-- Common -->
     <LinearGradientBrush x:Key="DDPMBackground" ColorInterpolationMode="SRgbLinearInterpolation" EndPoint="1,1" MappingMode="RelativeToBoundingBox" 
-                         SpreadMethod="Pad" StartPoint="0,0">
+                         SpreadMethod="Pad" StartPoint="0,0" Opacity="0.15">
         <LinearGradientBrush.RelativeTransform>
             <MatrixTransform Matrix="Identity" />
         </LinearGradientBrush.RelativeTransform>
@@ -28,7 +28,9 @@
     <!-- #endregion FakeTransparent: When you need a transparent color and need can response mouse click -->
     <SolidColorBrush x:Key="DefaultTheme_TxtColor" Color="#FFFFFF" />
     <SolidColorBrush x:Key="DefaultTheme_BdBkColor" Color="#99194784" />
+    <SolidColorBrush x:Key="DefaultTheme_BdSolidBkColor" Color="#FF132F54" />
     <SolidColorBrush x:Key="DefaultTheme_BdBdColor" Color="#132F54" />
+    <SolidColorBrush x:Key="DefaultTheme_BdSolidBdColor" Color="#1B385F" />
     <SolidColorBrush x:Key="DefaultTheme_RbBkColor" Color="#800A0E14" />
     <SolidColorBrush x:Key="DefaultTheme_RbBdColor" Color="#7E7E7E" />
     <SolidColorBrush x:Key="DefaultTheme_BtFgColor" Color="#FFF5F6F7" />
@@ -406,7 +408,7 @@
     <!-- #region Main Background-->
     <SolidColorBrush x:Key="mainWindowBkColor" Color="#FF0D121A" />
     <ImageBrush x:Key="bkImage" ImageSource="/DDPM;component/Resources/Images/Background.png" Stretch="UniformToFill" />
-    <SolidColorBrush x:Key="SpinnerBkColor" Color="#F20D121A" />
+    <SolidColorBrush x:Key="SpinnerBkColor" Color="#FF0D121A" />
     <SolidColorBrush x:Key="SpinnerWaitTxtColor" Color="#F5F6F7" />
     <!-- #endregion -->
 
@@ -851,7 +853,13 @@
                         ContentStringFormat="{TemplateBinding SelectionBoxItemStringFormat}"
                         ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}"
                         ContentTemplateSelector="{TemplateBinding ItemTemplateSelector}"
-                        IsHitTestVisible="False" />
+                        IsHitTestVisible="False">
+                        <ContentPresenter.Resources>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="Foreground" Value="{DynamicResource DefaultTheme_TxtColor}" />
+                            </Style>
+                        </ContentPresenter.Resources>
+                    </ContentPresenter>
                 </Grid>
             </Border>
         </Grid>
@@ -1979,7 +1987,7 @@
         <GradientStop Color="#7C674AB8" Offset="0.792288"/>
         <GradientStop Color="#7F0063B8" Offset="0.972444"/>
     </LinearGradientBrush>
-    <!-- #region MsgBoxLinearGradientBrush-->
+    <!-- #endregion MsgBoxLinearGradientBrush-->
 
     <Style x:Key="RemoveActionButtonStyle" TargetType="local:ActionButton">
         <Setter Property="Foreground" Value="#F5F6F7" />
@@ -2009,12 +2017,12 @@
         <Setter Property="VerticalAlignment" Value="Top" />
         <Setter Property="HorizontalAlignment" Value="Left" />
     </Style>
-    <!-- #region BitmapImage -->
-    <!--<BitmapImage x:Key="popup_ArrowCorner" UriSource="pack://application:,,,/DDPM.UI.Common;component/Resources/popup_ArrowCorner.png" />
-    <BitmapImage x:Key="down_Expand" UriSource="pack://application:,,,/DDPM.UI.Resources;component/Resources/Images/Down.png" />
-    <BitmapImage x:Key="Search_img" UriSource="pack://application:,,,/DDPM.UI.Resources;component/Resources/Images/Search.png" />
-    <BitmapImage x:Key="Close_img" UriSource="pack://application:,,,/DDPM.UI.Common;component/Resources/Close.png" />
-    <BitmapImage x:Key="left_img" UriSource="pack://application:,,,/DDPM.UI.Resources;component/Resources/Images/Left.png" />
-    <BitmapImage x:Key="MonitorImage_LineArt" UriSource="pack://application:,,,/DDPM.UI.Resources;component/Resources/Monitors/Lineart.png" />-->
+    <!-- #endregion BitmapImage -->
+
+    <!-- #region Easy Memory-->
+    <Style TargetType="Border" x:Key="RightBorderPageStyle">
+        <Setter Property="Background" Value="{DynamicResource DefaultTheme_BdSolidBkColor}" />
+    </Style>
+    <!-- #endregion -->
 
 </ResourceDictionary>

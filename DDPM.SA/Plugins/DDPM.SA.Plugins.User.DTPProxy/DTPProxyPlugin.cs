@@ -3071,8 +3071,10 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         #region Headset set
 
         // 1125 Add log
-        public async Task<bool> SetMicNoiseCancellationAsync(string guidString, bool newValue)
+        public async Task<bool> SetMicNoiseCancellationAsync(string Guid, bool newValue)
         {
+            string guidString = Guid;
+
             try
             {
                 if (!await GetItemIDAsync("Headset", guidString))
@@ -3098,8 +3100,10 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
         }
 
-        public async Task<bool> SetSidetoneAsync(string guidString, bool newValue)
+        public async Task<bool> SetSidetoneAsync(string Guid, bool newValue)
         {
+            string guidString = Guid;
+
             try
             {
                 if (!await GetItemIDAsync("Headset", guidString))
@@ -3125,8 +3129,10 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
         }
 
-        public async Task<bool> SetBusyLightAsync(string guidString, bool newValue)
+        public async Task<bool> SetBusyLightAsync(string Guid, bool newValue)
         {
+            string guidString = Guid;
+
             try
             {
                 if (!await GetItemIDAsync("Headset", guidString))
@@ -3152,8 +3158,10 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
         }
 
-        public async Task<bool> SetVoiceGuidanceAsync(string guidString, bool newValue)
+        public async Task<bool> SetVoiceGuidanceAsync(string Guid, bool newValue)
         {
+            string guidString = Guid;
+
             try
             {
                 if (!await GetItemIDAsync("Headset", guidString))

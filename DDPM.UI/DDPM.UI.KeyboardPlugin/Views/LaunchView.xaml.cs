@@ -419,8 +419,8 @@ namespace DDPM.UI.Plugin.KeyboardPlugin
                 case "KB7120W":
                 case "KB7221W":
                     Host1.Visibility = Visibility.Collapsed;
-                    txtBLHost2.Text = string.IsNullOrEmpty(_vm.PairedHostName1) ? Strings.ReadyToBePaired : _vm.PairedHostName1;
-                    txtBLHost3.Text = string.IsNullOrEmpty(_vm.PairedHostName2) ? Strings.ReadyToBePaired : _vm.PairedHostName2;
+                    txtBLHost2.Text = string.IsNullOrEmpty(_vm.PairedHostName2) ? Strings.ReadyToBePaired : _vm.PairedHostName2;
+                    txtBLHost3.Text = string.IsNullOrEmpty(_vm.PairedHostName3) ? Strings.ReadyToBePaired : _vm.PairedHostName3;
                     if (txtBLHost2.Text.Equals(hostName, StringComparison.CurrentCultureIgnoreCase))
                     {
                         txt2.Style = ConnectionStyle1;
@@ -462,12 +462,12 @@ namespace DDPM.UI.Plugin.KeyboardPlugin
                     txtBLHost2.Style = ConnectionStyle1;
                     break;
             }
-            if (txtBLHost1.Text.Length > 15)
-                txtBLHost1.Text = txtBLHost1.Text.Substring(0, 15);
-            if (txtBLHost2.Text.Length > 15)
-                txtBLHost2.Text = txtBLHost2.Text.Substring(0, 15);
-            if (txtBLHost3.Text.Length > 15)
-                txtBLHost3.Text = txtBLHost3.Text.Substring(0, 15);
+            if (txtBLHost1.Text.Length > 20)
+                txtBLHost1.Text = txtBLHost1.Text.Substring(0, 20);
+            if (txtBLHost2.Text.Length > 20)
+                txtBLHost2.Text = txtBLHost2.Text.Substring(0, 20);
+            if (txtBLHost3.Text.Length > 20)
+                txtBLHost3.Text = txtBLHost3.Text.Substring(0, 20);
         }
 
         private void BatteryIndicator_MouseLeave(object sender, System.Windows.Input.MouseEventArgs e)

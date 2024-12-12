@@ -270,11 +270,18 @@ namespace DDPM.UI.Common.ViewModels
             _log = console.CreateLog(logName);
         }
 
-        public void LogInfo(string message)
+        public void LogInfo(string message, Exception ex=null)
         {
             if (_log != null)
             {
-                _log.Info(message);
+                if (ex != null)
+                {
+                    _log.Error(ex, message);
+                }
+                else
+                {
+                    _log.Info(message);
+                }
             }
         }
 
@@ -286,6 +293,27 @@ namespace DDPM.UI.Common.ViewModels
         {
             get => _isVertical;
             set => SetProperty(ref _isVertical, value);
+        }
+        #endregion
+
+        #region Monitor Size
+        //Robert_Lin 2024-12-7, DDPMW-866 Note.
+        // Easy arrange window arrangement preset limited to 4 windows for all displays
+        // below 19 inches in size (Reference: MDDM-3039)
+        public bool IsMonitorSizeSmallerThan19Inches
+        {
+            get
+            {
+                if (_homeDevice != null)
+                {
+                    if (_homeDevice.MonitorInfo != null)
+                    {
+                        if (_homeDevice.MonitorInfo.edid != null)
+                            return (_homeDevice.MonitorInfo.edid.Size < 19.000);
+                    }
+                }
+                return false;
+            }
         }
         #endregion
 

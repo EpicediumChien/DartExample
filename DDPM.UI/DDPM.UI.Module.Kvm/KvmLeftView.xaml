@@ -86,16 +86,15 @@
 
                                                    ConnectionType="{Binding ConnectionType}" VerticalAlignment="Bottom" Text1="{Binding Text1}" />
 
-                <UXControls:UXButton Margin="8, 0" Width="171" Height="40" VerticalAlignment="Top"
-                                     ButtonType="Secondary" ButtonSize="Medium"
-                                     Foreground="#F5F6F7" BorderBrush="#F5F6F7"
-                                     FontSize="14" Content="{Binding [Kvm.13], Source={x:Static lang:LangHelper.Instance}}"
-                                     Click="EditInput_Click" />
-                <UXControls:UXButton Width="146" Height="40" VerticalAlignment="Top"
-                                     ButtonType="Secondary" ButtonSize="Medium"
-                                     Foreground="#F5F6F7" BorderBrush="#F5F6F7"
-                                     FontSize="14" Content="{Binding [Kvm.14], Source={x:Static lang:LangHelper.Instance}}"
-                                     Click="EditPXP_Click" Visibility="{Binding isPxP}"/>
+                <Button Margin="8, 0" Height="40" VerticalAlignment="Top"
+                        Style="{StaticResource SecondaryButtonStyle}"
+                        Content="{Binding [Kvm.13], Source={x:Static lang:LangHelper.Instance}}"
+                        Click="EditInput_Click">
+                </Button>
+                <Button Height="40" VerticalAlignment="Top"
+                        Style="{StaticResource SecondaryButtonStyle}"
+                        Content="{Binding [Kvm.14], Source={x:Static lang:LangHelper.Instance}}"
+                        Click="EditPXP_Click" Visibility="{Binding isPxP}"/>
             </StackPanel>
         </Grid>
     </Grid>
