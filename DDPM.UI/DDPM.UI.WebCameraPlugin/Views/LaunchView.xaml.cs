@@ -1536,8 +1536,9 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             _timer.Stop();
             StartRecordingAsync().RunSynchronously();
         }
-        [DllImport("kernel32.dll", CharSet = CharSet.Unicode)] 
-        static extern bool GetDiskFreeSpaceEx(string lpDirectoryName, out ulong lpFreeBytesAvailable, out ulong lpTotalNumberOfBytes, out ulong lpTotalNumberOfFreeBytes); 
+        [DllImport("kernel32.dll", CharSet = CharSet.Unicode)]
+        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
+        private static extern bool GetDiskFreeSpaceEx(string lpDirectoryName, out ulong lpFreeBytesAvailable, out ulong lpTotalNumberOfBytes, out ulong lpTotalNumberOfFreeBytes); 
         public static bool HasEnoughSpace(string path, ulong requiredBytes) 
         { 
             GetDiskFreeSpaceEx(path, out ulong freeBytesAvailable, out _, out _); 
