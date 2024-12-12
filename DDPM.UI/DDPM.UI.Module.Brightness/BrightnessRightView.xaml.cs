@@ -210,16 +210,18 @@ namespace DDPM.UI.Module.Brightness
                 BrightnessViewModel vm = (BrightnessViewModel)DataContext;
                 if (vm != null)
                 {
-                    bool autoBrightnessStatus = vm.AutoBrightnessStatus;
+                    /*bool autoBrightnessStatus = vm.AutoBrightnessStatus;
                     if (autoBrightnessStatus)
                     {
                         //disable hotkey btn
-                        btnManualBrightnessContrast.IsEnabled = false;
+                        btnManualBrightnessContrast.IsEnabled = false;                                          
                     }
                     else
                     {
                         btnManualBrightnessContrast.IsEnabled = true;
-                    }
+                    }*/
+                    vm.updateHotkeyBtn();
+
 
                     Task.Run(() => vm.CloseSchedule());
                 }

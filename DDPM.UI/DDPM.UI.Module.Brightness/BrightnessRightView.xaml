@@ -232,6 +232,7 @@
                                                 <StackPanel HorizontalAlignment="Center" Orientation="Horizontal">
                                                     <UXControls:UXButton
                                                         Name="btnManualBrightnessContrast"
+                                                        IsEnabled="{Binding ManualBCHotkeyBtn}"
                                                         Width="111"
                                                         Height="40"
                                                         Margin="8,0,0,16"

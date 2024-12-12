@@ -5,6 +5,7 @@ using DDPM.SA.Common.Settings;
 using DDPM.UI.Common;
 using DDPM.UI.Common.Interfaces;
 using DDPM.UI.Common.Models;
+using DDPM.UI.Resources.Helper;
 using Dell.Client.Framework.Common;
 using Dell.Client.Framework.UX.WPF.Controls;
 using Microsoft.VisualBasic.Logging;
@@ -3058,7 +3059,42 @@ namespace DDPM.UI.Module.Brightness
         public bool SupportedAutoBrightness { get; set; } = true;
 
         private bool _autoBrightnessStatus = false;
+        public bool ManualBCHotkeyBtn { get; set; } = true;
+        //brightness/contrast/luminance hotkey is setup or not
+        public void updateHotkeyBtn()
+        {
+            bool autoBrightnessStatus = AutoBrightnessStatus;
+            bool hotkeyStatus = isBCLHotkeyNotSet();
+            if (autoBrightnessStatus && hotkeyStatus)
+            {
+                //disable hotkey btn
+                //btnManualBrightnessContrast.IsEnabled = false;
+                ManualBCHotkeyBtn = false;
 
+            }
+            else
+            {
+                //btnManualBrightnessContrast.IsEnabled = true;
+                ManualBCHotkeyBtn = true;
+            }
+            NotifyPropertyChanged("ManualBCHotkeyBtn");
+        }
+        public bool isBCLHotkeyNotSet()
+        {
+            string defaultStr = LangHelper.Instance["None"];
+            bool ret = (defaultStr.Equals(_brightnessMinsKey.Trim(), StringComparison.OrdinalIgnoreCase) &&
+                    defaultStr.Equals(_brightnessAddKey.Trim(), StringComparison.OrdinalIgnoreCase) &&
+                    defaultStr.Equals(_contrastMinsKey.Trim(), StringComparison.OrdinalIgnoreCase) &&
+                    defaultStr.Equals(_contrastAddKey.Trim(), StringComparison.OrdinalIgnoreCase) &&
+                    defaultStr.Equals(_luminanceMinsKey.Trim(), StringComparison.OrdinalIgnoreCase) &&
+                    defaultStr.Equals(_luminanceAddKey.Trim(), StringComparison.OrdinalIgnoreCase));
+            DdpmCommonHelper.WriteUILog($"[isBCLHotkeyNotSet]hotkey config status:{ret};" +
+                $"defaultStr=[{defaultStr}]," +
+                $"_brightnessMinsKey=[{_brightnessMinsKey.Trim()}],_brightnessAddKey=[{_brightnessAddKey.Trim()}]" +
+                $"_contrastMinsKey=[{_contrastMinsKey.Trim()}],_contrastAddKey=[{_contrastAddKey.Trim()}]" +
+                $"_luminanceMinsKey=[{_luminanceMinsKey.Trim()}],_luminanceAddKey=[{_luminanceAddKey.Trim()}]");
+            return ret;
+        }
         /// <summary>
         /// Binding Auto Brightness element
         /// </summary>
