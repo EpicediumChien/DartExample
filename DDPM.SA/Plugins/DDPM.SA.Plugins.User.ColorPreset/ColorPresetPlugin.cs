@@ -1340,7 +1340,34 @@ namespace ColorPreset.Plugins
                 if (Capabilities.ContainsKey("CapsDataMap"))
                 {
                     var CapsDataMap = (JObject)Capabilities["CapsDataMap"];
-                    if (CapsDataMap.ContainsKey("ColorPreset"))
+
+                    // Jim 20241211 to fix PIMS-327396 - The DDPM color profile list is not matching exactly with OSD.(G2723H)
+                    // Jim 20241211 to fix PIMS-326656 - The DDPM color profile list is not matching exactly with OSD. "Game1" not show in DDPM.(AW3225QF)
+                    if (string.Equals(m.modelName, "G2723H", StringComparison.OrdinalIgnoreCase) || string.Equals(m.modelName, "AW3225QF", StringComparison.OrdinalIgnoreCase))
+                    {
+                        if (CapsDataMap.ContainsKey("Preset Modes Specific")) // VCP E2
+                        {
+                            if (CapsDataMap["Preset Modes Specific"].Type == JTokenType.Null)
+                            {
+                                ColorPresetSupportList_.Clear();
+                                ColorPresetSupportList_.Add("Standard/Native");
+                            }
+                            else
+                            {
+
+
+                                JArray colorrreset = (JArray)CapsDataMap["Preset Modes Specific"]; // VCP E2
+
+                                ColorPresetSupportList_.Clear();
+
+                                foreach (var tmp in colorrreset)
+                                    ColorPresetSupportList_.Add(new string(tmp.ToString()));
+
+                            }
+                        }
+                    }                      
+
+                    else if (CapsDataMap.ContainsKey("ColorPreset"))
                     {
                         if (CapsDataMap["ColorPreset"].Type == JTokenType.Null)
                         {
@@ -1358,6 +1385,10 @@ namespace ColorPreset.Plugins
                             foreach (var tmp in colorrreset)
                                 ColorPresetSupportList_.Add(new string(tmp.ToString()));
 
+                            // PIMS-327395 jim 20241212 add
+                            if (string.Equals(m.modelName, "G2724D", StringComparison.OrdinalIgnoreCase) || string.Equals(m.modelName, "G3223D", StringComparison.OrdinalIgnoreCase))
+                                ColorPresetSupportList_.Add("sRGB");
+
                         }
                     }
                 }
@@ -1372,6 +1403,16 @@ namespace ColorPreset.Plugins
                 foreach (string info in common_ColorPreset)
                 {
                     ColorPresetSupportList_.Add(new string(info));
+                }
+
+                // PIMS-298376 jim 20241212 add
+                if (string.Equals(m.modelName, "UP3221Q", StringComparison.OrdinalIgnoreCase))
+                {
+                    ColorPresetSupportList_.Add("Custom 1 / User 1");
+                    ColorPresetSupportList_.Add("Custom 2 / User 2");
+                    ColorPresetSupportList_.Add("Custom 3 / User 3");
+                    ColorPresetSupportList_.Add("CAL1");
+                    ColorPresetSupportList_.Add("CAL2");
                 }
 
             }

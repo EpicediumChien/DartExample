@@ -1000,7 +1000,46 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
             else
             {
-                r = await Task.Run(() => SetVCPCapability(m, "colorpreset", ColorPreset_Name).Result).ConfigureAwait(false);
+                if (string.Equals(m.modelName, "G2723H", StringComparison.OrdinalIgnoreCase)) // Jim 20241211 to fix PIMS-327396 - The DDPM color profile list is not matching exactly with OSD.(G2723H)
+                {
+                    if (string.Equals(ColorPreset_Name, "FPS Game", StringComparison.OrdinalIgnoreCase))
+                        r = SetVCPCapability(m, VcpCodeList.VCPctr["HDR Modes Specific"], VcpCodeList.VCPF0["FPS Game"]).Result;
+                    else if (string.Equals(ColorPreset_Name, "RTS Game", StringComparison.OrdinalIgnoreCase))
+                        r = SetVCPCapability(m, VcpCodeList.VCPctr["HDR Modes Specific"], VcpCodeList.VCPF0["RTS Game"]).Result;
+                    else if (string.Equals(ColorPreset_Name, "RPG Game", StringComparison.OrdinalIgnoreCase))
+                        r = SetVCPCapability(m, VcpCodeList.VCPctr["HDR Modes Specific"], VcpCodeList.VCPF0["RPG Game"]).Result;
+                    else if (string.Equals(ColorPreset_Name, "SPORTS Game", StringComparison.OrdinalIgnoreCase))
+                        r = SetVCPCapability(m, VcpCodeList.VCPctr["HDR Modes Specific"], VcpCodeList.VCPF0["SPORTS Game"]).Result;
+                    else if (string.Equals(ColorPreset_Name, "Game2", StringComparison.OrdinalIgnoreCase))
+                        r = SetVCPCapability(m, VcpCodeList.VCPctr["HDR Modes Specific"], VcpCodeList.VCPF0["Game2"]).Result;
+                    else if (string.Equals(ColorPreset_Name, "Game3", StringComparison.OrdinalIgnoreCase))
+                        r = SetVCPCapability(m, VcpCodeList.VCPctr["HDR Modes Specific"], VcpCodeList.VCPF0["Game3"]).Result;
+                    else if (string.Equals(ColorPreset_Name, "Game1", StringComparison.OrdinalIgnoreCase))
+                        r = SetVCPCapability(m, VcpCodeList.VCPctr["Display Application"],VcpCodeList.VCPDC["Game1"]).Result;
+                    else
+                        r = await Task.Run(() => SetVCPCapability(m, "colorpreset", ColorPreset_Name).Result).ConfigureAwait(false);
+                }
+                else if (string.Equals(m.modelName, "AW3225QF", StringComparison.OrdinalIgnoreCase)) // Jim 20241211 to fix PIMS-326656 - The DDPM color profile list is not matching exactly with OSD. "Game1" not show in DDPM.(AW3225QF)
+                {
+                    if (string.Equals(ColorPreset_Name, "Game1", StringComparison.OrdinalIgnoreCase))
+                        r = SetVCPCapability(m, VcpCodeList.VCPctr["Display Application"], Convert.ToUInt32(VcpCodeList.VCPDC["Game1"])).Result;
+                    else
+                        r = await Task.Run(() => SetVCPCapability(m, "colorpreset", ColorPreset_Name).Result).ConfigureAwait(false);
+                } 
+                else if (string.Equals(m.modelName, "G2724D", StringComparison.OrdinalIgnoreCase) || string.Equals(m.modelName, "G3223D", StringComparison.OrdinalIgnoreCase))
+                {
+                    if (string.Equals(ColorPreset_Name, "sRGB", StringComparison.OrdinalIgnoreCase))
+                        r = SetVCPCapability(m, VcpCodeList.VCPctr["Basic Color Preset Select"], Convert.ToUInt32(VcpCodeList.VCP14["sRGB"])).Result;
+                    else
+                        r = await Task.Run(() => SetVCPCapability(m, "colorpreset", ColorPreset_Name).Result).ConfigureAwait(false);
+                }
+                else
+                {
+                    r = await Task.Run(() => SetVCPCapability(m, "colorpreset", ColorPreset_Name).Result).ConfigureAwait(false);
+                    Trace.Write($"r = {r}");
+                }
+
+                writelog($"[DeviceMangerPlugin] WriteColorPreset {nameof(SetVCPCapability)} r = {r}");
             }
 
             // 11/23 Wayn Add

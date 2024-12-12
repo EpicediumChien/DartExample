@@ -3867,6 +3867,10 @@ namespace VcpCore.Plugins
             VCPF0.Add("AdobeRGB2", "22");
             VCPF0.Add("AdobeRGB1 (D65G2.2L250)", "21");
             VCPF0.Add("AdobeRGB2 (D50G2.2L250)", "22");
+            VCPF0.Add("Adobe RGB D65 G2.2 L160", "21"); // PIMS-327394 jim 20241211
+            VCPF0.Add("Adobe RGB D50 G2.2 L160", "22"); // PIMS-327394 jim 20241211
+            VCPF0.Add("Adobe RGB D65 G2.2 L250", "21"); // PIMS-327394 jim 20241211
+            VCPF0.Add("Adobe RGB D50 G2.2 L250", "22"); // PIMS-327394 jim 20241211
 
             VCPF0.Add("xvMode", "03");
             VCPF0.Add("DICOM", "04");
@@ -3892,11 +3896,14 @@ namespace VcpCore.Plugins
             VCPF0.Add("Rec.709", "09");
             VCPF0.Add("Rec. 709", "09");
             VCPF0.Add("BT.709", "09");
+            VCPF0.Add("BT.709 D65 BT1886 L100", "09"); // PIMS-327394 jim 20241211
             VCPF0.Add("DCI-P3", "0A");
+            VCPF0.Add("DCI P3 D65 G2.4 L100", "0A"); // PIMS-327394 jim 20241211
             VCPF0.Add("Display P3", "A1");
             VCPF0.Add("Rec.2020 / BT.2020", "0B"); // add 10/04
             VCPF0.Add("Rec.2020", "0B");
             VCPF0.Add("BT.2020", "0B");
+            VCPF0.Add("BT.2020 D65 BT1886 L100", "0B"); // PIMS-327394 jim 20241211
             VCPF0.Add("ComfortView", "0C");
             VCPF0.Add("Game2", "0D");
             VCPF0.Add("Game3", "0E");
@@ -3916,16 +3923,18 @@ namespace VcpCore.Plugins
             VCPF0.Add("HLG", "38");
 
             Dictionary<string, string> VCP14 = new Dictionary<string, string>();
-            VCP14.Add("sRGB", "01"); ;
-            VCP14.Add("5000K", "04"); ;
-            VCP14.Add("5700K", "0B"); ;
-            VCP14.Add("Warm", "0B"); ;
-            VCP14.Add("6500K", "05"); ;
-            VCP14.Add("7500K", "06"); ;
-            VCP14.Add("9300K", "08"); ;
-            VCP14.Add("Cool", "08"); ;
-            VCP14.Add("10000K", "09"); ;
-            VCP14.Add("Custom Color", "0C"); ;
+            VCP14.Add("sRGB", "01");
+            VCP14.Add("sRGB D65 sRGB L120", "01"); // PIMS-327394 jim 20241211
+            VCP14.Add("sRGB D65 sRGB L250", "01"); // PIMS-327394 jim 20241211
+            VCP14.Add("5000K", "04");
+            VCP14.Add("5700K", "0B");
+            VCP14.Add("Warm", "0B");
+            VCP14.Add("6500K", "05");
+            VCP14.Add("7500K", "06");
+            VCP14.Add("9300K", "08");
+            VCP14.Add("Cool", "08");
+            VCP14.Add("10000K", "09");
+            VCP14.Add("Custom Color", "0C");
 
             Dictionary<string, string> VCPE2 = new Dictionary<string, string>();
             VCPE2.Add("Standard/Native", "00");
@@ -5102,6 +5111,18 @@ namespace VcpCore.Plugins
             string codestr = code.ToString("X2");
 
             if (code == 0xC0)
+            {
+                rc = true;
+            }
+            else if (code == 0x14) // Jim 20241211 to fix PIMS-327396 - The DDPM color profile list is not matching exactly with OSD.(G2723H)
+            {
+                rc = true;
+            }
+            else if (code == 0xDC) // Jim 20241211 to fix PIMS-327396 - The DDPM color profile list is not matching exactly with OSD.(G2723H)
+            {
+                rc = true;
+            }
+            else if (code == 0xF0) // Jim 20241211 to fix PIMS-327396 - The DDPM color profile list is not matching exactly with OSD.(G2723H)
             {
                 rc = true;
             }

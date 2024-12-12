@@ -540,13 +540,14 @@ namespace DDPM.ColorApp
 
             string strSync_CurrentColorPreset = string.Empty;
 
-            if (!b_SmartHDR_ON)
-            {
-                strSync_CurrentColorPreset = ddmLib.Sync_ColorPresetName(actived_mi, strColorPresetName).Result;
+            // PIMS-327394 , jim 20241212 modify 
+            //if (!b_SmartHDR_ON)
+            //{
+            strSync_CurrentColorPreset = ddmLib.Sync_ColorPresetName(actived_mi, strColorPresetName).Result;
                 //strSync_CurrentColorPreset = Sync_CurrentColorPreset(strColorPresetName);
-            }
-            else
-                strSync_CurrentColorPreset = strColorPresetName;
+            //}
+            //else
+                //strSync_CurrentColorPreset = strColorPresetName;
 
             // jim 20241207  modify for The DDPM color profile can not be applied by DDPM on Smart HDR mode.(Gaming monitor ex: AW2724DM)
             bool bi = ddmLib.WriteColorPreset(actived_mi, strSync_CurrentColorPreset, 1, b_Is_Game_DeviceName, b_SmartHDR_ON, reqAppName).Result;
