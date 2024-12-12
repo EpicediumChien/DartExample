@@ -117,8 +117,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         {
                             displayInOut = false;
                             // Cancel any previous delay task
-                            _cancellationTokenSource.Cancel();
-                            _cancellationTokenSource.Dispose();
+                            if (_cancellationTokenSource != null)
+                            {
+                                _cancellationTokenSource.Cancel();
+                                _cancellationTokenSource.Dispose();
+                            }
                             _cancellationTokenSource = new CancellationTokenSource();
                             var token = _cancellationTokenSource.Token;
 

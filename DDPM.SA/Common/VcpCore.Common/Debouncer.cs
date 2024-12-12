@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Timers;
 
-namespace DDPM.UI.Module.Brightness
+namespace VcpCore.Common
 {
     public class Debouncer
     {

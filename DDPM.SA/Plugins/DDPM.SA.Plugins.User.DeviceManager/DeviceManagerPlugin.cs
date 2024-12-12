@@ -233,6 +233,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         private List<NKVMVCPValue> _nKVMVCPValues = new List<NKVMVCPValue>();
 
+        private Debouncer DisplayChangedDebouncer;
+
         #endregion
 
         #region Constructor
@@ -258,6 +260,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             //Robert_Lin, 2024-12-1 added, to let TextBox highlight text color can be changed with TextBox.SelectionTextBrush
             //Reference: https://github.com/dotnet/wpf/issues/4571
             AppContext.SetSwitch("Switch.System.Windows.Controls.Text.UseAdornerForTextboxSelectionRendering", false);
+
+            DisplayChangedDebouncer = new Debouncer(5000, _SystemEvents_DisplaySettingsChanged);
         }
 
         private void _DTPProxyPlugin_DTPEventHandler(object sender, UpdateUINotify e)
@@ -1894,21 +1898,24 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 }
                 catch (TaskCanceledException)
                 {
-                    _ReGetcancellationTokenSource.Dispose();
+                    if (_ReGetcancellationTokenSource != null)
+                        _ReGetcancellationTokenSource.Dispose();
                     writelog("[DeviceMangerPlugin] Re_GetMonitors cancellation happened...");
 
                     return Task.FromResult(_AllInfoMonitors);
                 }
                 catch (OperationCanceledException)
                 {
-                    _ReGetcancellationTokenSource.Dispose();
+                    if (_ReGetcancellationTokenSource != null)
+                        _ReGetcancellationTokenSource.Dispose();
                     writelog("[DeviceMangerPlugin] Re_GetMonitors cancellation happened...");
 
                     return Task.FromResult(_AllInfoMonitors);
                 }
                 catch (Exception ex)
                 {
-                    _ReGetcancellationTokenSource.Dispose();
+                    if (_ReGetcancellationTokenSource != null)
+                        _ReGetcancellationTokenSource.Dispose();
                     // Failed to complete due to e exception
                     writelog($"[DeviceMangerPlugin] --Task.Run(Re_GetMonitors) ...there is an exceptionI-- ({ex.Message})");
 
@@ -1974,7 +1981,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         }
                         finally
                         {
-                            _ReGetcancellationTokenSource.Dispose();
+                            if (_ReGetcancellationTokenSource != null)
+                                _ReGetcancellationTokenSource.Dispose();
                         }
                     }
                 }
@@ -10174,10 +10182,10 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
                 if (1 != devCnt || _GlobalSettingParam == null || !isWindowsScreenNotLocked ||
                     _GlobalSettingParam.GlobalSetting_WidgetSettings == null //||
-                    //QAMWebcamDeviceGuid == string.Empty ||
-                    //_ZoomMeetingType != ZoomMeetingType.CONF_3RD_EVENT_MEETING
-                    //Derek 1206 test condition due to we can't receive zoom meeting type changed event
-                    //_ZoomMeetingType != ZoomMeetingType.ZOOM_MEETING_TYPE_UNKNOW
+                                                                             //QAMWebcamDeviceGuid == string.Empty ||
+                                                                             //_ZoomMeetingType != ZoomMeetingType.CONF_3RD_EVENT_MEETING
+                                                                             //Derek 1206 test condition due to we can't receive zoom meeting type changed event
+                                                                             //_ZoomMeetingType != ZoomMeetingType.ZOOM_MEETING_TYPE_UNKNOW
                     )
                 {
                     ResetQAMCondition();
@@ -10727,7 +10735,21 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         private void SystemEvents_DisplaySettingsChanged(object sender, EventArgs e)
         {
-            writelog($"Receive DisplaySettingsChanged: {sender}, e:{e}, rescan monitor");
+            writelog("[DeviceMangerPlugin] YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY");
+
+            var arg = new DebouncerArg()
+            {
+                sender = sender,
+                eventArgs = e,
+            };
+
+            DisplayChangedDebouncer.Debounce(arg);
+        }
+
+        private void _SystemEvents_DisplaySettingsChanged(object _arg)
+        {
+            var arg = (DebouncerArg)_arg;
+            writelog($"Receive DisplaySettingsChanged: {arg.sender}, e:{arg.eventArgs}, rescan monitor");
             if (displayInOut)
             {
                 if (_AllInfoMonitors != null)
@@ -10755,16 +10777,17 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     writelog("[DeviceMangerPlugin] SystemEvents_DisplaySettingsChanged() Bruce count Screen Length ...");
 
                     //Bruce 08-09 Added judgment that if the number of screens does not change, the screen orientation adjustment function will not be performed. (For example: PxP change will trigger this event, but the screen is not actually plugged in or out)
-                    bool displayDeviceNumChange = false;
-                    int AllScreens = Screen.AllScreens.Length;
-                    if (_lastScreenCount != AllScreens)
-                    {
-                        displayDeviceNumChange = true;
-                        _lastScreenCount = AllScreens;
-                    }
+                    //bool displayDeviceNumChange = false;
+                    //int AllScreens = Screen.AllScreens.Length;
+                    //if (_lastScreenCount != AllScreens)
+                    //{
+                    //    displayDeviceNumChange = true;
+                    //    _lastScreenCount = AllScreens;
+                    //}
 
-                    writelog("[DeviceMangerPlugin] SystemEvents_DisplaySettingsChanged() Bruce count Screen Length finish ...");
-                    ///==============================================================
+                    //writelog("[DeviceMangerPlugin] SystemEvents_DisplaySettingsChanged() Bruce count Screen Length finish ...");
+
+                    ///=================================================================================================================================
 
                     try
                     {
@@ -10772,23 +10795,23 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
                         if (_ReGetcancellationTokenSource != null)
                         {
-                            writelog("[DeviceMangerPlugin] SystemEvents_DisplaySettingsChanged() _ReGetcancellationTokenSource trigger cancel ...");
-                            _ReGetcancellationTokenSource.Cancel();
+                            if (_ReGetcancellationTokenSource.Token.CanBeCanceled)
+                            {
+                                writelog("[DeviceMangerPlugin] SystemEvents_DisplaySettingsChanged() _ReGetcancellationTokenSource trigger cancel ...");
+                                _ReGetcancellationTokenSource.Cancel();
+                            }
                         }
                     }
                     catch (TaskCanceledException)
                     {
-                        _ReGetcancellationTokenSource.Dispose();
                         writelog("[DeviceMangerPlugin] SystemEvents_DisplaySettingsChanged() trigger cancel cancellation happened ...");
                     }
                     catch (OperationCanceledException)
                     {
-                        _ReGetcancellationTokenSource.Dispose();
                         writelog("[DeviceMangerPlugin] SystemEvents_DisplaySettingsChanged() trigger cancel cancellation happened ...");
                     }
                     catch (Exception ex)
                     {
-                        _ReGetcancellationTokenSource.Dispose();
                         // Failed to complete due to e exception
                         writelog($"[DeviceMangerPlugin] SystemEvents_DisplaySettingsChanged() --Task.Run ...there is an exceptionI-- ({ex.Message})");
 
@@ -10797,13 +10820,16 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     }
                     finally
                     {
-                        using (_ReGetcancellationTokenSource = new CancellationTokenSource())
+                        if (_ReGetcancellationTokenSource != null)
+                            _ReGetcancellationTokenSource.Dispose();
+
+                        using (var ReGetcancellationTokenSource = new CancellationTokenSource())
                         {
                             try
                             {
-                                var _cancellationTokenSource_tmp = CancellationTokenSource.CreateLinkedTokenSource(_ReGetcancellationTokenSource.Token);
+                                _ReGetcancellationTokenSource = CancellationTokenSource.CreateLinkedTokenSource(ReGetcancellationTokenSource.Token);
 
-                                var token = _cancellationTokenSource_tmp.Token;
+                                var token = _ReGetcancellationTokenSource.Token;
 
                                 writelog("[DeviceMangerPlugin] SystemEvents_DisplaySettingsChanged() into Re-GetDevices ...");
 
@@ -10848,26 +10874,28 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
                                         writelog("[DeviceMangerPlugin] SystemEvents_DisplaySettingsChanged() _agent.RaiseEvent finish ...");
 
-                                        Task.Run(() =>
+                                        if (_AllInfoMonitors.Count > 0)
                                         {
-                                            //Telementry Collection
-                                            var rt = false;
-                                            var DeviceTypeConnected_Function = new DeviceTypeConnected_Function();
-                                            writelog("[DeviceMangerPlugin] [Telementry] Send Telementry for DeviceTypeConnected_Function...");
-                                            rt = DeviceTypeConnected_Function.DeviceTypeConnected_Telementry(_TelementryScheduler, _AllInfoMonitors);
-                                            if (rt)
-                                                writelog("[DeviceMangerPlugin] [Telementry] Send Telementry for DeviceTypeConnected_Function Success ...");
-                                            else
-                                                writelog("[DeviceMangerPlugin] [Telementry] Send Telementry for DeviceTypeConnected_Function Fail ...");
-                                        }).ConfigureAwait(false);
+                                            Task.Run(() =>
+                                            {
+                                                //Telementry Collection
+                                                var rt = false;
+                                                var DeviceTypeConnected_Function = new DeviceTypeConnected_Function();
+                                                writelog("[DeviceMangerPlugin] [Telementry] Send Telementry for DeviceTypeConnected_Function...");
+                                                rt = DeviceTypeConnected_Function.DeviceTypeConnected_Telementry(_TelementryScheduler, _AllInfoMonitors);
+                                                if (rt)
+                                                    writelog("[DeviceMangerPlugin] [Telementry] Send Telementry for DeviceTypeConnected_Function Success ...");
+                                                else
+                                                    writelog("[DeviceMangerPlugin] [Telementry] Send Telementry for DeviceTypeConnected_Function Fail ...");
+                                            }, token).ConfigureAwait(false);
+                                        }
+
                                         ////1117 Bruce 不用自動旋轉把下兩行註解
                                         //if (displayDeviceNumChange && _AllInfoMonitors.Count > 0)
                                         //_DisplayManagerPlugin.SetDisplayOrientation(_AllInfoMonitors).Wait();
+                                        //writelog("[DeviceMangerPlugin] SystemEvents_DisplaySettingsChanged() SetDisplayOrientation finish ...");
 
-                                        writelog("[DeviceMangerPlugin] SystemEvents_DisplaySettingsChanged() SetDisplayOrientation finish ...");
-
-                                        _DisplayManagerPlugin.UpdateExistAlsConfig(_AllInfoMonitors.ToList()).Wait();
-
+                                        _DisplayManagerPlugin.UpdateExistAlsConfig(_AllInfoMonitors.ToList());
                                         writelog("[DeviceMangerPlugin] SystemEvents_DisplaySettingsChanged() UpdateExistAlsConfig finish ...");
 
                                         writelog("[DeviceMangerPlugin] SystemEvents_DisplaySettingsChanged() Re-GetDevices finish ...");
@@ -10904,7 +10932,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
             else//Add by Bruce
             {
-                writelog($"DisplaySettingsChanged: {sender}, e:{e}, By pass.");
+                writelog($"DisplaySettingsChanged: {arg.sender}, e:{arg.eventArgs}, By pass.");
                 displayInOut = true;
             }
         }
@@ -11111,6 +11139,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 ProgressUpdate_Notify += _UpdateProgress._FWUpdatePlugin_ProgressUpdate;
                 writelog($"OnDeviceChanged: Rrconnect FWU eventv don");
             }
+
             if (type == DeviceChangedType.NotifyOnly)
             {
                 //writelog("[OnDeviceChanged] Notify event to registers");
@@ -13325,7 +13354,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             return Task.FromResult(true);
         }
 
-
         private void Toggle_EzRecentSetting(MonitorInfo monitorInfo, Object[] param)
         {
             //Validation
@@ -14001,7 +14029,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             {
                 Debug.WriteLine($"IsALSautobrightness Yes_event[{hotkeyPopWrap.hotkeyType}:Monitor [ModelName={hotkeyPopWrap.monitorInfo.edid.ModelName},ServiceTag={hotkeyPopWrap.monitorInfo.edid.ServiceTag}],set ALS.AutoBrightness to off fail,skip this hotkey action");
             }
-
         }
 
         private void NoEvent(object o, object ob)
@@ -14820,6 +14847,16 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                             // scheduleInfo PIMS-302114
                             {
                                 if (m.modelName.Equals("UP2720Q", StringComparison.OrdinalIgnoreCase))
+                                {
+                                    settings.scheduleInfo = new scheduleInfo()
+                                    {
+                                        model = m.modelName,
+                                        serviceTag = m.edid.ServiceTag,
+                                        Brightness1 = 150,
+                                        Brightness2 = 150,
+                                    };
+                                }
+                                else if (m.modelName.Equals("UP2720QA", StringComparison.OrdinalIgnoreCase))
                                 {
                                     settings.scheduleInfo = new scheduleInfo()
                                     {
