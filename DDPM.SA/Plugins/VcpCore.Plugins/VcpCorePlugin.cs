@@ -736,7 +736,7 @@ namespace VcpCore.Plugins
                 _logs.DebugMsg("[VcpCorePlugin] VcpCorePlugin received GetResultObjectAsync requested ...");
                 _logs.DebugMsg("[VcpCorePlugin] Guid is " + guid.ToString());
 
-                using (var tokenSource = new CancellationTokenSource(20 * 1000))
+                using (var tokenSource = new CancellationTokenSource(10 * 1000))
                 {
                     CancellationTokenSource newGetResultCancellationTokenSource;
 
