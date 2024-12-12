@@ -243,8 +243,6 @@ namespace DDPM.UI.Module.DisplayOthers
             {
                 dlg.Owner = parentWindow;
             }
-
-            dlg.WindowStartupLocation = WindowStartupLocation.CenterOwner;
             return dlg.ShowDialog();
         }
 
@@ -261,14 +259,11 @@ namespace DDPM.UI.Module.DisplayOthers
             return dlg;
         }*/
 
-        private bool ImportExportNotify(string e)
+        private void ImportExportNotify(object? sender, string e)
         {
-
-            DdpmCommonHelper.WriteUILog("Enter ImportExportNotify");
             if (string.IsNullOrEmpty(e))
-                return false;
+                return;
             string result_success = "result_success_";
-            string import_confirm = "import_confirm_";
             string model = string.Empty;
             if (e.Contains("result_success_") && e.Length > result_success.Length)
             {
@@ -276,14 +271,7 @@ namespace DDPM.UI.Module.DisplayOthers
                 model = e.Substring(result_success.Length);
                 e = "result_success_model";
             }
-            else if (e.Contains(import_confirm) && e.Length > import_confirm.Length)
-            {
-                //retrieve model name
-                model = e.Substring(import_confirm.Length);
-                e = "import_confirm";
-            }
-
-            switch (e)
+            switch(e)
             {
                 case "close_loading":
                     Dispatcher.Invoke(new Action(() =>
@@ -298,14 +286,12 @@ namespace DDPM.UI.Module.DisplayOthers
                 case "file_corrupted":
                     Dispatcher.Invoke(new Action(() =>
                     {
-                        DdpmCommonHelper.WriteUILog("Import Failed, Import File Corrupted");
                         DisplayMsgBox(LangHelper.Instance["File_corrupted"], LangHelper.Instance["File_corruptedMsg"]);
                     }));
                     break;
                 case "result_fail":
                     Dispatcher.Invoke(new Action(() =>
                     {
-                        DdpmCommonHelper.WriteUILog($"Import Failed, ${LangHelper.Instance["ImportFailMsg"]}");
                         DisplayMsgBox(LangHelper.Instance["ImportFail"], LangHelper.Instance["ImportFailMsg"]);
                     }));
                     break;
@@ -318,7 +304,6 @@ namespace DDPM.UI.Module.DisplayOthers
                 case "result_success_model":
                     Dispatcher.Invoke(new Action(() =>
                     {
-                        DdpmCommonHelper.WriteUILog($"Import Success for Model ${model}");
                         string temp = Strings.ImpExp_SuccessMsg1;
                         temp = temp.Replace("%1", model);
                         DisplayMsgBox(Strings.ImpExp_Success, temp);
@@ -345,25 +330,9 @@ namespace DDPM.UI.Module.DisplayOthers
                     }));
                     //handle true(Yes) false(No)
                     break;
-                case "import_confirm":
-                    return Dispatcher.Invoke(new Func<bool>(() =>
-                    {
-                        DdpmCommonHelper.WriteUILog($"Import Confirm for Same Model same Service Tag");
-                        //bool? rst2 = DisplayMsgBox(Strings.ImpExp_Warning, Strings.ImpExp_WarningMsg2 + $" [{model}]", Strings.No, Strings.Yes);
-                        bool? rst2 = DisplayMsgBox(LangHelper.Instance["Warning"], LangHelper.Instance["ImpExp_WarningMsg.2"]+ $" [{model}]", Strings.No, Strings.Yes);
-                        if (rst2 != null && rst2.Value)
-                            DdpmCommonHelper.WriteUILog($"User Confirm");
-                        else
-                            DdpmCommonHelper.WriteUILog($"User Cancelled");
-
-                        return rst2 != null && rst2.Value;
-                    }));
-                    break;
-            default:
+                default:
                     break;
             }
-
-            return true;
         }
     }
 }
