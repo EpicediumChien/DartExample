@@ -459,7 +459,7 @@ namespace DDPM.UI.Common.Models
         //Robert_Lin, 2024-11-20 PIMS-302436, need to show user's input name on BatteryIndicatior
         //Add a new property to stroe the user input name
         public string InputName { get; set; } = "";
-     
+
         #endregion BatteryIndicator
 
         #region DisplayName
@@ -981,7 +981,7 @@ namespace DDPM.UI.Common.Models
                 //if (BleHost3Text.Length > 15)
                 //    BleHost3Text = BleHost3Text.Substring(0, 15);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 DdpmCommonHelper.WriteUILog($"[HomeDevice] SetBLConnectionStatus_Mouse Exception : {ex.Message}");
             }
@@ -1309,6 +1309,11 @@ namespace DDPM.UI.Common.Models
                     break;
             }
             */
+            //<< 241212 added by Hess for Pandora
+            if (deviceInfo.ModelNumber == "PN5122W")
+                return "Pandora";
+            //>>
+
             switch (deviceInfo.PhysicalDeviceType)
             {
                 case DeviceType.PhysicalWebcam:
@@ -1483,7 +1488,7 @@ namespace DDPM.UI.Common.Models
                     }
                     catch (Exception e)
                     {
-                        string errMsg = e.Message;   
+                        string errMsg = e.Message;
                     }
                 }
                 return false;
