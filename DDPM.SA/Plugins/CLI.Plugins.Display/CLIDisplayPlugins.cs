@@ -1990,24 +1990,24 @@ namespace DDPM.CLI.Plugins.Display
                     foreach (MonitorInfo monitor in _AllInfoMonitors)
                     {
                         S_Brightness_RESPONSE = new CLI_RESPONSE(monitor);
-                        if (monitor.CapabilityDic.ContainsKey("12") && Int32.Parse(value) > 100)
+                        if (Int32.Parse(value) > 100)
                         {
                             S_Brightness_RESPONSE.Result = "Format Error, Brightness lager then 100";
                             S_Brightness_RESPONSE.Message = "Format Error";
                             return ((int)CLI_ExitCode.fail_FormantError, JsonConvert.SerializeObject(S_Brightness_RESPONSE, Formatting.Indented));
                         }
-                        //else if (!monitor.CapabilityDic.ContainsKey("12") && Int32.Parse(value) < 45)
+                        //if (monitor.CapabilityDic.ContainsKey("12") && Int32.Parse(value) > 100)
                         //{
-                        //    S_Brightness_RESPONSE.Result = "Format Error, LUMINANCE samller then 45";
+                        //    S_Brightness_RESPONSE.Result = "Format Error, Brightness lager then 100";
                         //    S_Brightness_RESPONSE.Message = "Format Error";
                         //    return ((int)CLI_ExitCode.fail_FormantError, JsonConvert.SerializeObject(S_Brightness_RESPONSE, Formatting.Indented));
                         //}
-                        else if (!monitor.CapabilityDic.ContainsKey("12") && Int32.Parse(value) > 100)
-                        {
-                            S_Brightness_RESPONSE.Result = "Format Error, LUMINANCE lager then 100";
-                            S_Brightness_RESPONSE.Message = "Format Error";
-                            return ((int)CLI_ExitCode.fail_FormantError, JsonConvert.SerializeObject(S_Brightness_RESPONSE, Formatting.Indented));
-                        }
+                        //else if (!monitor.CapabilityDic.ContainsKey("12") && Int32.Parse(value) > 100)
+                        //{
+                        //    S_Brightness_RESPONSE.Result = "Format Error, LUMINANCE lager then 100";
+                        //    S_Brightness_RESPONSE.Message = "Format Error";
+                        //    return ((int)CLI_ExitCode.fail_FormantError, JsonConvert.SerializeObject(S_Brightness_RESPONSE, Formatting.Indented));
+                        //}
 
                         var setValue = value;
 
@@ -2021,7 +2021,7 @@ namespace DDPM.CLI.Plugins.Display
 
                         S_Brightness_RESPONSE.Command = "SET";
                         S_Brightness_RESPONSE.TargetFeature = "BRIGHTNESSLEVEL";//change from brightness to brightnesslevel to align with spec
-                        S_Brightness_RESPONSE.Value = value;
+                        S_Brightness_RESPONSE.Value = setValue;
 
                         if (!rc)
                         {
@@ -2033,19 +2033,22 @@ namespace DDPM.CLI.Plugins.Display
                         }
                         else
                         {
-                            if (monitor.CapabilityDic.ContainsKey("12"))
-                            {
-                                S_Brightness_RESPONSE.Result = "PASS";
-                                System.Console.WriteLine(JsonConvert.SerializeObject(S_Brightness_RESPONSE, Formatting.Indented));
-                                output += "\n" + JsonConvert.SerializeObject(S_Brightness_RESPONSE, Formatting.Indented);
-                            }
-                            else
-                            {
-                                S_Brightness_RESPONSE.TargetFeature = "LUMINANCE";
-                                S_Brightness_RESPONSE.Result = "PASS";
-                                System.Console.WriteLine(JsonConvert.SerializeObject(S_Brightness_RESPONSE, Formatting.Indented));
-                                output += "\n" + JsonConvert.SerializeObject(S_Brightness_RESPONSE, Formatting.Indented);
-                            }
+                            S_Brightness_RESPONSE.Result = "PASS";
+                            System.Console.WriteLine(JsonConvert.SerializeObject(S_Brightness_RESPONSE, Formatting.Indented));
+                            output += "\n" + JsonConvert.SerializeObject(S_Brightness_RESPONSE, Formatting.Indented);
+                            //if (monitor.CapabilityDic.ContainsKey("12"))
+                            //{
+                            //    S_Brightness_RESPONSE.Result = "PASS";
+                            //    System.Console.WriteLine(JsonConvert.SerializeObject(S_Brightness_RESPONSE, Formatting.Indented));
+                            //    output += "\n" + JsonConvert.SerializeObject(S_Brightness_RESPONSE, Formatting.Indented);
+                            //}
+                            //else
+                            //{
+                            //    S_Brightness_RESPONSE.TargetFeature = "LUMINANCE";
+                            //    S_Brightness_RESPONSE.Result = "PASS";
+                            //    System.Console.WriteLine(JsonConvert.SerializeObject(S_Brightness_RESPONSE, Formatting.Indented));
+                            //    output += "\n" + JsonConvert.SerializeObject(S_Brightness_RESPONSE, Formatting.Indented);
+                            //}
                         }
                     }
 
@@ -2062,24 +2065,24 @@ namespace DDPM.CLI.Plugins.Display
                         bool rc = false;
                         int nidx = int.Parse(idx);
                         S_Brightness_RESPONSE = new CLI_RESPONSE(_AllInfoMonitors[nidx]);
-                        if (_AllInfoMonitors[nidx].CapabilityDic.ContainsKey("12") && Int32.Parse(value) > 100)
+                        if (Int32.Parse(value) > 100)
                         {
                             S_Brightness_RESPONSE.Result = "Format Error, Brightness lager then 100";
                             S_Brightness_RESPONSE.Message = "Format Error";
                             return ((int)CLI_ExitCode.fail_FormantError, JsonConvert.SerializeObject(S_Brightness_RESPONSE, Formatting.Indented));
                         }
-                        //else if (!_AllInfoMonitors[nidx].CapabilityDic.ContainsKey("12") && Int32.Parse(value) < 45)
+                        //if (monitor.CapabilityDic.ContainsKey("12") && Int32.Parse(value) > 100)
                         //{
-                        //    S_Brightness_RESPONSE.Result = "Format Error, LUMINANCE samller then 45";
+                        //    S_Brightness_RESPONSE.Result = "Format Error, Brightness lager then 100";
                         //    S_Brightness_RESPONSE.Message = "Format Error";
                         //    return ((int)CLI_ExitCode.fail_FormantError, JsonConvert.SerializeObject(S_Brightness_RESPONSE, Formatting.Indented));
                         //}
-                        else if (!_AllInfoMonitors[nidx].CapabilityDic.ContainsKey("12") && Int32.Parse(value) > 100)
-                        {
-                            S_Brightness_RESPONSE.Result = "Format Error, LUMINANCE lager then 100";
-                            S_Brightness_RESPONSE.Message = "Format Error";
-                            return ((int)CLI_ExitCode.fail_FormantError, JsonConvert.SerializeObject(S_Brightness_RESPONSE, Formatting.Indented));
-                        }
+                        //else if (!monitor.CapabilityDic.ContainsKey("12") && Int32.Parse(value) > 100)
+                        //{
+                        //    S_Brightness_RESPONSE.Result = "Format Error, LUMINANCE lager then 100";
+                        //    S_Brightness_RESPONSE.Message = "Format Error";
+                        //    return ((int)CLI_ExitCode.fail_FormantError, JsonConvert.SerializeObject(S_Brightness_RESPONSE, Formatting.Indented));
+                        //}
 
                         var setValue = value;
 
@@ -2093,7 +2096,7 @@ namespace DDPM.CLI.Plugins.Display
 
                         S_Brightness_RESPONSE.Command = "SET";
                         S_Brightness_RESPONSE.TargetFeature = "BRIGHTNESSLEVEL";
-                        S_Brightness_RESPONSE.Value = value;
+                        S_Brightness_RESPONSE.Value = setValue;
 
                         if (!rc)
                         {
@@ -2105,19 +2108,22 @@ namespace DDPM.CLI.Plugins.Display
                         }
                         else
                         {
-                            if (_AllInfoMonitors[nidx].CapabilityDic.ContainsKey("12"))
-                            {
-                                S_Brightness_RESPONSE.Result = "PASS";
-                                System.Console.WriteLine(JsonConvert.SerializeObject(S_Brightness_RESPONSE, Formatting.Indented));
-                                output += "\n" + JsonConvert.SerializeObject(S_Brightness_RESPONSE, Formatting.Indented);
-                            }
-                            else
-                            {
-                                S_Brightness_RESPONSE.TargetFeature = "LUMINANCE";
-                                S_Brightness_RESPONSE.Result = "PASS";
-                                System.Console.WriteLine(JsonConvert.SerializeObject(S_Brightness_RESPONSE, Formatting.Indented));
-                                output += "\n" + JsonConvert.SerializeObject(S_Brightness_RESPONSE, Formatting.Indented);
-                            }
+                            S_Brightness_RESPONSE.Result = "PASS";
+                            System.Console.WriteLine(JsonConvert.SerializeObject(S_Brightness_RESPONSE, Formatting.Indented));
+                            output += "\n" + JsonConvert.SerializeObject(S_Brightness_RESPONSE, Formatting.Indented);
+                            //if (_AllInfoMonitors[nidx].CapabilityDic.ContainsKey("12"))
+                            //{
+                            //    S_Brightness_RESPONSE.Result = "PASS";
+                            //    System.Console.WriteLine(JsonConvert.SerializeObject(S_Brightness_RESPONSE, Formatting.Indented));
+                            //    output += "\n" + JsonConvert.SerializeObject(S_Brightness_RESPONSE, Formatting.Indented);
+                            //}
+                            //else
+                            //{
+                            //    S_Brightness_RESPONSE.TargetFeature = "LUMINANCE";
+                            //    S_Brightness_RESPONSE.Result = "PASS";
+                            //    System.Console.WriteLine(JsonConvert.SerializeObject(S_Brightness_RESPONSE, Formatting.Indented));
+                            //    output += "\n" + JsonConvert.SerializeObject(S_Brightness_RESPONSE, Formatting.Indented);
+                            //}
                         }
                     }
 
@@ -2130,24 +2136,24 @@ namespace DDPM.CLI.Plugins.Display
                         foreach (MonitorInfo mo in tmp)
                         {
                             S_Brightness_RESPONSE = new CLI_RESPONSE(mo);
-                            if (mo.CapabilityDic.ContainsKey("12") && Int32.Parse(value) > 100)
+                            if (Int32.Parse(value) > 100)
                             {
                                 S_Brightness_RESPONSE.Result = "Format Error, Brightness lager then 100";
                                 S_Brightness_RESPONSE.Message = "Format Error";
                                 return ((int)CLI_ExitCode.fail_FormantError, JsonConvert.SerializeObject(S_Brightness_RESPONSE, Formatting.Indented));
                             }
-                            //else if (!mo.CapabilityDic.ContainsKey("12") && Int32.Parse(value) < 45)
+                            //if (monitor.CapabilityDic.ContainsKey("12") && Int32.Parse(value) > 100)
                             //{
-                            //    S_Brightness_RESPONSE.Result = "Format Error, LUMINANCE samller then 45";
+                            //    S_Brightness_RESPONSE.Result = "Format Error, Brightness lager then 100";
                             //    S_Brightness_RESPONSE.Message = "Format Error";
                             //    return ((int)CLI_ExitCode.fail_FormantError, JsonConvert.SerializeObject(S_Brightness_RESPONSE, Formatting.Indented));
                             //}
-                            else if (!mo.CapabilityDic.ContainsKey("12") && Int32.Parse(value) > 100)
-                            {
-                                S_Brightness_RESPONSE.Result = "Format Error, LUMINANCE lager then 100";
-                                S_Brightness_RESPONSE.Message = "Format Error";
-                                return ((int)CLI_ExitCode.fail_FormantError, JsonConvert.SerializeObject(S_Brightness_RESPONSE, Formatting.Indented));
-                            }
+                            //else if (!monitor.CapabilityDic.ContainsKey("12") && Int32.Parse(value) > 100)
+                            //{
+                            //    S_Brightness_RESPONSE.Result = "Format Error, LUMINANCE lager then 100";
+                            //    S_Brightness_RESPONSE.Message = "Format Error";
+                            //    return ((int)CLI_ExitCode.fail_FormantError, JsonConvert.SerializeObject(S_Brightness_RESPONSE, Formatting.Indented));
+                            //}
 
                             var setValue = value;
 
@@ -2161,7 +2167,7 @@ namespace DDPM.CLI.Plugins.Display
 
                             S_Brightness_RESPONSE.Command = "SET";
                             S_Brightness_RESPONSE.TargetFeature = "BRIGHTNESSLEVEL";
-                            S_Brightness_RESPONSE.Value = value;
+                            S_Brightness_RESPONSE.Value = setValue;
 
                             if (!rc)
                             {
@@ -2173,19 +2179,22 @@ namespace DDPM.CLI.Plugins.Display
                             }
                             else
                             {
-                                if (mo.CapabilityDic.ContainsKey("12"))
-                                {
-                                    S_Brightness_RESPONSE.Result = "PASS";
-                                    System.Console.WriteLine(JsonConvert.SerializeObject(S_Brightness_RESPONSE, Formatting.Indented));
-                                    output += "\n" + JsonConvert.SerializeObject(S_Brightness_RESPONSE, Formatting.Indented);
-                                }
-                                else
-                                {
-                                    S_Brightness_RESPONSE.TargetFeature = "LUMINANCE";
-                                    S_Brightness_RESPONSE.Result = "PASS";
-                                    System.Console.WriteLine(JsonConvert.SerializeObject(S_Brightness_RESPONSE, Formatting.Indented));
-                                    output += "\n" + JsonConvert.SerializeObject(S_Brightness_RESPONSE, Formatting.Indented);
-                                }
+                                S_Brightness_RESPONSE.Result = "PASS";
+                                System.Console.WriteLine(JsonConvert.SerializeObject(S_Brightness_RESPONSE, Formatting.Indented));
+                                output += "\n" + JsonConvert.SerializeObject(S_Brightness_RESPONSE, Formatting.Indented);
+                                //if (mo.CapabilityDic.ContainsKey("12"))
+                                //{
+                                //    S_Brightness_RESPONSE.Result = "PASS";
+                                //    System.Console.WriteLine(JsonConvert.SerializeObject(S_Brightness_RESPONSE, Formatting.Indented));
+                                //    output += "\n" + JsonConvert.SerializeObject(S_Brightness_RESPONSE, Formatting.Indented);
+                                //}
+                                //else
+                                //{
+                                //    S_Brightness_RESPONSE.TargetFeature = "LUMINANCE";
+                                //    S_Brightness_RESPONSE.Result = "PASS";
+                                //    System.Console.WriteLine(JsonConvert.SerializeObject(S_Brightness_RESPONSE, Formatting.Indented));
+                                //    output += "\n" + JsonConvert.SerializeObject(S_Brightness_RESPONSE, Formatting.Indented);
+                                //}
                             }
                         }
                     }
@@ -2195,27 +2204,42 @@ namespace DDPM.CLI.Plugins.Display
                         writelog($"Brightness set model entry");
 
                         bool rc = false;
-                        var tmp = _AllInfoMonitors.FindAll(x => x.edid.ModelName.ToUpper().Equals(modelName.ToUpper()));
+                        var tmp = _AllInfoMonitors.FindAll(x => x.modelName.ToUpper().Equals(modelName.ToUpper()));
                         foreach (MonitorInfo mo in tmp)
                         {
                             S_Brightness_RESPONSE = new CLI_RESPONSE(mo);
-                            if (mo.CapabilityDic.ContainsKey("12") && Int32.Parse(value) > 100)
+                            if (Int32.Parse(value) > 100)
                             {
                                 S_Brightness_RESPONSE.Result = "Format Error, Brightness lager then 100";
                                 S_Brightness_RESPONSE.Message = "Format Error";
                                 return ((int)CLI_ExitCode.fail_FormantError, JsonConvert.SerializeObject(S_Brightness_RESPONSE, Formatting.Indented));
                             }
-                            else if (!mo.CapabilityDic.ContainsKey("12") && Int32.Parse(value) < 45)
+                            //if (monitor.CapabilityDic.ContainsKey("12") && Int32.Parse(value) > 100)
+                            //{
+                            //    S_Brightness_RESPONSE.Result = "Format Error, Brightness lager then 100";
+                            //    S_Brightness_RESPONSE.Message = "Format Error";
+                            //    return ((int)CLI_ExitCode.fail_FormantError, JsonConvert.SerializeObject(S_Brightness_RESPONSE, Formatting.Indented));
+                            //}
+                            //else if (!monitor.CapabilityDic.ContainsKey("12") && Int32.Parse(value) > 100)
+                            //{
+                            //    S_Brightness_RESPONSE.Result = "Format Error, LUMINANCE lager then 100";
+                            //    S_Brightness_RESPONSE.Message = "Format Error";
+                            //    return ((int)CLI_ExitCode.fail_FormantError, JsonConvert.SerializeObject(S_Brightness_RESPONSE, Formatting.Indented));
+                            //}
+
+                            var setValue = value;
+
+                            if (!mo.CapabilityDic.ContainsKey("12"))
                             {
-                                S_Brightness_RESPONSE.Result = "Format Error, LUMINANCE samller then 45";
-                                S_Brightness_RESPONSE.Message = "Format Error";
-                                return ((int)CLI_ExitCode.fail_FormantError, JsonConvert.SerializeObject(S_Brightness_RESPONSE, Formatting.Indented));
+                                var maxLuminance = GetVCPCodeMax(devMgr, mo, "0x10").Result;
+                                setValue = (Int32.Parse(maxLuminance.value.ToString()) * Int32.Parse(value) / 100).ToString();
                             }
-                            rc = SetVCPCode(devMgr, mo, "0x10", value).Result;
+
+                            rc = SetVCPCode(devMgr, mo, "0x10", setValue).Result;
 
                             S_Brightness_RESPONSE.Command = "SET";
                             S_Brightness_RESPONSE.TargetFeature = "BRIGHTNESSLEVEL";
-                            S_Brightness_RESPONSE.Value = value;
+                            S_Brightness_RESPONSE.Value = setValue;
 
                             if (!rc)
                             {
@@ -2227,19 +2251,22 @@ namespace DDPM.CLI.Plugins.Display
                             }
                             else
                             {
-                                if (mo.CapabilityDic.ContainsKey("12"))
-                                {
-                                    S_Brightness_RESPONSE.Result = "PASS";
-                                    System.Console.WriteLine(JsonConvert.SerializeObject(S_Brightness_RESPONSE, Formatting.Indented));
-                                    output += "\n" + JsonConvert.SerializeObject(S_Brightness_RESPONSE, Formatting.Indented);
-                                }
-                                else
-                                {
-                                    S_Brightness_RESPONSE.TargetFeature = "LUMINANCE";
-                                    S_Brightness_RESPONSE.Result = "PASS";
-                                    System.Console.WriteLine(JsonConvert.SerializeObject(S_Brightness_RESPONSE, Formatting.Indented));
-                                    output += "\n" + JsonConvert.SerializeObject(S_Brightness_RESPONSE, Formatting.Indented);
-                                }
+                                S_Brightness_RESPONSE.Result = "PASS";
+                                System.Console.WriteLine(JsonConvert.SerializeObject(S_Brightness_RESPONSE, Formatting.Indented));
+                                output += "\n" + JsonConvert.SerializeObject(S_Brightness_RESPONSE, Formatting.Indented);
+                                //if (mo.CapabilityDic.ContainsKey("12"))
+                                //{
+                                //    S_Brightness_RESPONSE.Result = "PASS";
+                                //    System.Console.WriteLine(JsonConvert.SerializeObject(S_Brightness_RESPONSE, Formatting.Indented));
+                                //    output += "\n" + JsonConvert.SerializeObject(S_Brightness_RESPONSE, Formatting.Indented);
+                                //}
+                                //else
+                                //{
+                                //    S_Brightness_RESPONSE.TargetFeature = "LUMINANCE";
+                                //    S_Brightness_RESPONSE.Result = "PASS";
+                                //    System.Console.WriteLine(JsonConvert.SerializeObject(S_Brightness_RESPONSE, Formatting.Indented));
+                                //    output += "\n" + JsonConvert.SerializeObject(S_Brightness_RESPONSE, Formatting.Indented);
+                                //}
                             }
                         }
                     }
@@ -2255,7 +2282,7 @@ namespace DDPM.CLI.Plugins.Display
             }
             else if (type == "GET")
             {
-                if (index.Count == 0 && serviceTag.Count == 0)
+                if (index.Count == 0 && serviceTag.Count == 0 && model.Count == 0)
                 {
                     ObjGetVCP rc = new ObjGetVCP();
                     bool IsFailhappened = false;
@@ -2280,31 +2307,35 @@ namespace DDPM.CLI.Plugins.Display
                         }
                         else
                         {
-                            if (monitor.CapabilityDic.ContainsKey("12"))
-                            {
-                                G_Brightness_RESPONSE.Value = $"{rc.value}";
-                                G_Brightness_RESPONSE.Result = "PASS";
-                                System.Console.WriteLine(JsonConvert.SerializeObject(G_Brightness_RESPONSE, Formatting.Indented));
-                                output += "\n" + JsonConvert.SerializeObject(G_Brightness_RESPONSE, Formatting.Indented);
-                            }
-                            else
-                            {
-                                var maxLuminance = GetVCPCodeMax(devMgr, monitor, "0x10").Result;
+                            G_Brightness_RESPONSE.Value = $"{rc.value}";
+                            G_Brightness_RESPONSE.Result = "PASS";
+                            System.Console.WriteLine(JsonConvert.SerializeObject(G_Brightness_RESPONSE, Formatting.Indented));
+                            output += "\n" + JsonConvert.SerializeObject(G_Brightness_RESPONSE, Formatting.Indented);
+                            //if (monitor.CapabilityDic.ContainsKey("12"))
+                            //{
+                            //    G_Brightness_RESPONSE.Value = $"{rc.value}";
+                            //    G_Brightness_RESPONSE.Result = "PASS";
+                            //    System.Console.WriteLine(JsonConvert.SerializeObject(G_Brightness_RESPONSE, Formatting.Indented));
+                            //    output += "\n" + JsonConvert.SerializeObject(G_Brightness_RESPONSE, Formatting.Indented);
+                            //}
+                            //else
+                            //{
+                            //    var maxLuminance = GetVCPCodeMax(devMgr, monitor, "0x10").Result;
 
-                                CLI_Get_Luminus_RESPONSE G_Luminus_RESPONSE = new CLI_Get_Luminus_RESPONSE(monitor);
+                            //    CLI_Get_Luminus_RESPONSE G_Luminus_RESPONSE = new CLI_Get_Luminus_RESPONSE(monitor);
 
-                                //G_Luminus_RESPONSE.Model = monitor.modelName;
-                                //G_Luminus_RESPONSE.SerialNumber = monitor.edid.SerialNumber;
-                                //G_Luminus_RESPONSE.Index = change_0base_to_1base((monitor.Index).ToString());
-                                //G_Luminus_RESPONSE.ServiceTag = monitor.edid.ServiceTag;
-                                G_Luminus_RESPONSE.Command = "GET";
-                                G_Luminus_RESPONSE.TargetFeature = "LUMINANCE";
-                                G_Luminus_RESPONSE.Value = $"{(int)((double)Int32.Parse(rc.value.ToString()) / Int32.Parse(maxLuminance.value.ToString()) * 100)}";
-                                //G_Luminus_RESPONSE.Luminus = $"{rc.value}";// ((uint)(long)rc.value).ToString();
-                                G_Luminus_RESPONSE.Result = "PASS";
-                                System.Console.WriteLine(JsonConvert.SerializeObject(G_Luminus_RESPONSE, Formatting.Indented));
-                                output += "\n" + JsonConvert.SerializeObject(G_Luminus_RESPONSE, Formatting.Indented);
-                            }
+                            //    //G_Luminus_RESPONSE.Model = monitor.modelName;
+                            //    //G_Luminus_RESPONSE.SerialNumber = monitor.edid.SerialNumber;
+                            //    //G_Luminus_RESPONSE.Index = change_0base_to_1base((monitor.Index).ToString());
+                            //    //G_Luminus_RESPONSE.ServiceTag = monitor.edid.ServiceTag;
+                            //    G_Luminus_RESPONSE.Command = "GET";
+                            //    G_Luminus_RESPONSE.TargetFeature = "LUMINANCE";
+                            //    G_Luminus_RESPONSE.Value = $"{(int)((double)Int32.Parse(rc.value.ToString()) / Int32.Parse(maxLuminance.value.ToString()) * 100)}";
+                            //    //G_Luminus_RESPONSE.Luminus = $"{rc.value}";// ((uint)(long)rc.value).ToString();
+                            //    G_Luminus_RESPONSE.Result = "PASS";
+                            //    System.Console.WriteLine(JsonConvert.SerializeObject(G_Luminus_RESPONSE, Formatting.Indented));
+                            //    output += "\n" + JsonConvert.SerializeObject(G_Luminus_RESPONSE, Formatting.Indented);
+                            //}
                         }
                     }
 
@@ -2337,30 +2368,34 @@ namespace DDPM.CLI.Plugins.Display
                         }
                         else
                         {
-                            if (_AllInfoMonitors[nidx].CapabilityDic.ContainsKey("12"))
-                            {
-                                G_Brightness_RESPONSE.Value = $"{rc.value}";
-                                G_Brightness_RESPONSE.Result = "PASS";
-                                System.Console.WriteLine(JsonConvert.SerializeObject(G_Brightness_RESPONSE, Formatting.Indented));
-                                output += "\n" + JsonConvert.SerializeObject(G_Brightness_RESPONSE, Formatting.Indented);
-                            }
-                            else
-                            {
-                                var maxLuminance = GetVCPCodeMax(devMgr, _AllInfoMonitors[nidx], "0x10").Result;
+                            G_Brightness_RESPONSE.Value = $"{rc.value}";
+                            G_Brightness_RESPONSE.Result = "PASS";
+                            System.Console.WriteLine(JsonConvert.SerializeObject(G_Brightness_RESPONSE, Formatting.Indented));
+                            output += "\n" + JsonConvert.SerializeObject(G_Brightness_RESPONSE, Formatting.Indented);
+                            //if (_AllInfoMonitors[nidx].CapabilityDic.ContainsKey("12"))
+                            //{
+                            //    G_Brightness_RESPONSE.Value = $"{rc.value}";
+                            //    G_Brightness_RESPONSE.Result = "PASS";
+                            //    System.Console.WriteLine(JsonConvert.SerializeObject(G_Brightness_RESPONSE, Formatting.Indented));
+                            //    output += "\n" + JsonConvert.SerializeObject(G_Brightness_RESPONSE, Formatting.Indented);
+                            //}
+                            //else
+                            //{
+                            //    var maxLuminance = GetVCPCodeMax(devMgr, _AllInfoMonitors[nidx], "0x10").Result;
 
-                                CLI_Get_Luminus_RESPONSE G_Luminus_RESPONSE = new CLI_Get_Luminus_RESPONSE(_AllInfoMonitors[nidx]);
-                                //G_Luminus_RESPONSE.Model = _AllInfoMonitors[nidx].modelName;
-                                //G_Luminus_RESPONSE.SerialNumber = _AllInfoMonitors[nidx].edid.SerialNumber;
-                                //G_Luminus_RESPONSE.Index = change_0base_to_1base(idx);
-                                //G_Luminus_RESPONSE.ServiceTag = _AllInfoMonitors[nidx].edid.ServiceTag;
-                                G_Luminus_RESPONSE.Command = "GET";
-                                G_Luminus_RESPONSE.TargetFeature = "LUMINUS";
-                                G_Luminus_RESPONSE.Value = $"{(int)((double)Int32.Parse(rc.value.ToString()) / Int32.Parse(maxLuminance.value.ToString()) * 100)}";
-                                //G_Luminus_RESPONSE.Luminus = $"{rc.value}";
-                                G_Luminus_RESPONSE.Result = "PASS";
-                                System.Console.WriteLine(JsonConvert.SerializeObject(G_Luminus_RESPONSE, Formatting.Indented));
-                                output += "\n" + JsonConvert.SerializeObject(G_Luminus_RESPONSE, Formatting.Indented);
-                            }
+                            //    CLI_Get_Luminus_RESPONSE G_Luminus_RESPONSE = new CLI_Get_Luminus_RESPONSE(_AllInfoMonitors[nidx]);
+                            //    //G_Luminus_RESPONSE.Model = _AllInfoMonitors[nidx].modelName;
+                            //    //G_Luminus_RESPONSE.SerialNumber = _AllInfoMonitors[nidx].edid.SerialNumber;
+                            //    //G_Luminus_RESPONSE.Index = change_0base_to_1base(idx);
+                            //    //G_Luminus_RESPONSE.ServiceTag = _AllInfoMonitors[nidx].edid.ServiceTag;
+                            //    G_Luminus_RESPONSE.Command = "GET";
+                            //    G_Luminus_RESPONSE.TargetFeature = "LUMINUS";
+                            //    G_Luminus_RESPONSE.Value = $"{(int)((double)Int32.Parse(rc.value.ToString()) / Int32.Parse(maxLuminance.value.ToString()) * 100)}";
+                            //    //G_Luminus_RESPONSE.Luminus = $"{rc.value}";
+                            //    G_Luminus_RESPONSE.Result = "PASS";
+                            //    System.Console.WriteLine(JsonConvert.SerializeObject(G_Luminus_RESPONSE, Formatting.Indented));
+                            //    output += "\n" + JsonConvert.SerializeObject(G_Luminus_RESPONSE, Formatting.Indented);
+                            //}
                         }
                     }
 
@@ -2389,30 +2424,91 @@ namespace DDPM.CLI.Plugins.Display
                             }
                             else
                             {
-                                if (mo.CapabilityDic.ContainsKey("12"))
-                                {
-                                    G_Brightness_RESPONSE.Value = $"{rc.value}";
-                                    G_Brightness_RESPONSE.Result = "PASS";
-                                    System.Console.WriteLine(JsonConvert.SerializeObject(G_Brightness_RESPONSE, Formatting.Indented));
-                                    output += "\n" + JsonConvert.SerializeObject(G_Brightness_RESPONSE, Formatting.Indented);
-                                }
-                                else
-                                {
-                                    var maxLuminance = GetVCPCodeMax(devMgr, mo, "0x10").Result;
+                                G_Brightness_RESPONSE.Value = $"{rc.value}";
+                                G_Brightness_RESPONSE.Result = "PASS";
+                                System.Console.WriteLine(JsonConvert.SerializeObject(G_Brightness_RESPONSE, Formatting.Indented));
+                                output += "\n" + JsonConvert.SerializeObject(G_Brightness_RESPONSE, Formatting.Indented);
+                                //if (mo.CapabilityDic.ContainsKey("12"))
+                                //{
+                                //    G_Brightness_RESPONSE.Value = $"{rc.value}";
+                                //    G_Brightness_RESPONSE.Result = "PASS";
+                                //    System.Console.WriteLine(JsonConvert.SerializeObject(G_Brightness_RESPONSE, Formatting.Indented));
+                                //    output += "\n" + JsonConvert.SerializeObject(G_Brightness_RESPONSE, Formatting.Indented);
+                                //}
+                                //else
+                                //{
+                                //    var maxLuminance = GetVCPCodeMax(devMgr, mo, "0x10").Result;
 
-                                    CLI_Get_Luminus_RESPONSE G_Luminus_RESPONSE = new CLI_Get_Luminus_RESPONSE(mo);
-                                    //G_Luminus_RESPONSE.Model = mo.modelName;
-                                    //G_Luminus_RESPONSE.SerialNumber = mo.edid.SerialNumber;
-                                    //G_Luminus_RESPONSE.Index = change_0base_to_1base((mo.Index).ToString());
-                                    //G_Luminus_RESPONSE.ServiceTag = mo.edid.ServiceTag;
-                                    G_Luminus_RESPONSE.Command = "GET";
-                                    G_Luminus_RESPONSE.TargetFeature = "LUMINUS";
-                                    G_Luminus_RESPONSE.Value = $"{(int)((double)Int32.Parse(rc.value.ToString()) / Int32.Parse(maxLuminance.value.ToString()) * 100)}";
-                                    //G_Luminus_RESPONSE.Luminus = $"{rc.value}";// ((uint)(long)rc.value).ToString();
-                                    G_Luminus_RESPONSE.Result = "PASS";
-                                    System.Console.WriteLine(JsonConvert.SerializeObject(G_Luminus_RESPONSE, Formatting.Indented));
-                                    output += "\n" + JsonConvert.SerializeObject(G_Luminus_RESPONSE, Formatting.Indented);
-                                }
+                                //    CLI_Get_Luminus_RESPONSE G_Luminus_RESPONSE = new CLI_Get_Luminus_RESPONSE(mo);
+                                //    //G_Luminus_RESPONSE.Model = mo.modelName;
+                                //    //G_Luminus_RESPONSE.SerialNumber = mo.edid.SerialNumber;
+                                //    //G_Luminus_RESPONSE.Index = change_0base_to_1base((mo.Index).ToString());
+                                //    //G_Luminus_RESPONSE.ServiceTag = mo.edid.ServiceTag;
+                                //    G_Luminus_RESPONSE.Command = "GET";
+                                //    G_Luminus_RESPONSE.TargetFeature = "LUMINUS";
+                                //    G_Luminus_RESPONSE.Value = $"{(int)((double)Int32.Parse(rc.value.ToString()) / Int32.Parse(maxLuminance.value.ToString()) * 100)}";
+                                //    //G_Luminus_RESPONSE.Luminus = $"{rc.value}";// ((uint)(long)rc.value).ToString();
+                                //    G_Luminus_RESPONSE.Result = "PASS";
+                                //    System.Console.WriteLine(JsonConvert.SerializeObject(G_Luminus_RESPONSE, Formatting.Indented));
+                                //    output += "\n" + JsonConvert.SerializeObject(G_Luminus_RESPONSE, Formatting.Indented);
+                                //}
+                            }
+                        }
+                    }
+
+                    foreach (string modelName in model)
+                    {
+                        ObjGetVCP rc = new ObjGetVCP();
+
+                        var tmp = _AllInfoMonitors.FindAll(x => x.modelName.ToUpper().Equals(modelName.ToUpper()));
+                        foreach (MonitorInfo mo in tmp)
+                        {
+                            writelog($"Brightness get tag entry");
+                            rc = GetVCPCode(devMgr, mo, "0x10").Result;
+
+                            G_Brightness_RESPONSE = new CLI_RESPONSE(mo);
+                            G_Brightness_RESPONSE.Command = "GET";
+                            G_Brightness_RESPONSE.TargetFeature = "BRIGHTNESSLEVEL";//change from brightness to brightnesslevel to align with spec
+
+                            if (!rc.result)
+                            {
+                                G_Brightness_RESPONSE.Value = "N/A";
+                                G_Brightness_RESPONSE.Result = "FAIL";
+                                G_Brightness_RESPONSE.Message = "FAIL VCP";
+                                System.Console.WriteLine(JsonConvert.SerializeObject(G_Brightness_RESPONSE, Formatting.Indented));
+                                output += "\n" + JsonConvert.SerializeObject(G_Brightness_RESPONSE, Formatting.Indented);
+                                IsFailhappened = true;
+                            }
+                            else
+                            {
+                                G_Brightness_RESPONSE.Value = $"{rc.value}";
+                                G_Brightness_RESPONSE.Result = "PASS";
+                                System.Console.WriteLine(JsonConvert.SerializeObject(G_Brightness_RESPONSE, Formatting.Indented));
+                                output += "\n" + JsonConvert.SerializeObject(G_Brightness_RESPONSE, Formatting.Indented);
+                                //if (mo.CapabilityDic.ContainsKey("12"))
+                                //{
+                                //    G_Brightness_RESPONSE.Value = $"{rc.value}";
+                                //    G_Brightness_RESPONSE.Result = "PASS";
+                                //    System.Console.WriteLine(JsonConvert.SerializeObject(G_Brightness_RESPONSE, Formatting.Indented));
+                                //    output += "\n" + JsonConvert.SerializeObject(G_Brightness_RESPONSE, Formatting.Indented);
+                                //}
+                                //else
+                                //{
+                                //    var maxLuminance = GetVCPCodeMax(devMgr, mo, "0x10").Result;
+
+                                //    CLI_Get_Luminus_RESPONSE G_Luminus_RESPONSE = new CLI_Get_Luminus_RESPONSE(mo);
+                                //    //G_Luminus_RESPONSE.Model = mo.modelName;
+                                //    //G_Luminus_RESPONSE.SerialNumber = mo.edid.SerialNumber;
+                                //    //G_Luminus_RESPONSE.Index = change_0base_to_1base((mo.Index).ToString());
+                                //    //G_Luminus_RESPONSE.ServiceTag = mo.edid.ServiceTag;
+                                //    G_Luminus_RESPONSE.Command = "GET";
+                                //    G_Luminus_RESPONSE.TargetFeature = "LUMINUS";
+                                //    G_Luminus_RESPONSE.Value = $"{(int)((double)Int32.Parse(rc.value.ToString()) / Int32.Parse(maxLuminance.value.ToString()) * 100)}";
+                                //    //G_Luminus_RESPONSE.Luminus = $"{rc.value}";// ((uint)(long)rc.value).ToString();
+                                //    G_Luminus_RESPONSE.Result = "PASS";
+                                //    System.Console.WriteLine(JsonConvert.SerializeObject(G_Luminus_RESPONSE, Formatting.Indented));
+                                //    output += "\n" + JsonConvert.SerializeObject(G_Luminus_RESPONSE, Formatting.Indented);
+                                //}
                             }
                         }
                     }
@@ -6316,23 +6412,15 @@ namespace DDPM.CLI.Plugins.Display
                         _Set_CLI_RESPONSE_RESPONSE.TargetFeature = "OSDACCESS";
                         _Set_CLI_RESPONSE_RESPONSE.Value = value;
 
-                        if (monitor.CapabilityDic.ContainsKey("CA"))
+                        switch (value.ToUpper())
                         {
-                            switch (value.ToUpper())
-                            {
-                                case "OSDLOCK":
-                                    r = SetVCPCode(devMgr, monitor, "0xCA", "0x01").Result;
-                                    break;
+                            case "OSDLOCK":
+                                r = SetVCPCode(devMgr, monitor, "0xCA", "0x01").Result;
+                                break;
 
-                                case "OSDUNLOCK":
-                                    r = SetVCPCode(devMgr, monitor, "0xCA", "0x02").Result;
-                                    break;
-                            }
-                        }
-                        else
-                        {
-                            _Set_CLI_RESPONSE_RESPONSE.Value = "Not supported";
-                            writelog($"OSDAccess not supported");
+                            case "OSDUNLOCK":
+                                r = SetVCPCode(devMgr, monitor, "0xCA", "0x02").Result;
+                                break;
                         }
 
                         if (!r)
@@ -6362,25 +6450,16 @@ namespace DDPM.CLI.Plugins.Display
                         _Set_CLI_RESPONSE_RESPONSE.TargetFeature = "OSDACCESS";
                         _Set_CLI_RESPONSE_RESPONSE.Value = value;
 
-                        if (_AllInfoMonitors[Convert.ToInt32(idx)].CapabilityDic.ContainsKey("CA"))
+                        switch (value.ToUpper())
                         {
-                            switch (value.ToUpper())
-                            {
-                                case "OSDLOCK":
-                                    r = SetVCPCode(devMgr, _AllInfoMonitors[System.Convert.ToInt32(idx)], "0xCA", "0x01").Result;
-                                    break;
+                            case "OSDLOCK":
+                                r = SetVCPCode(devMgr, _AllInfoMonitors[System.Convert.ToInt32(idx)], "0xCA", "0x01").Result;
+                                break;
 
-                                case "OSDUNLOCK":
-                                    r = SetVCPCode(devMgr, _AllInfoMonitors[System.Convert.ToInt32(idx)], "0xCA", "0x02").Result;
-                                    break;
-                            }
+                            case "OSDUNLOCK":
+                                r = SetVCPCode(devMgr, _AllInfoMonitors[System.Convert.ToInt32(idx)], "0xCA", "0x02").Result;
+                                break;
                         }
-                        else
-                        {
-                            _Set_CLI_RESPONSE_RESPONSE.Value = "Not supported";
-                            writelog($"OSDAccess not supported");
-                        }
-
 
                         if (!r)
                         {
@@ -6413,23 +6492,15 @@ namespace DDPM.CLI.Plugins.Display
                             _Set_CLI_RESPONSE_RESPONSE.TargetFeature = "OSDACCESS";
                             _Set_CLI_RESPONSE_RESPONSE.Value = value;
 
-                            if (mo.CapabilityDic.ContainsKey("CA"))
+                            switch (value.ToUpper())
                             {
-                                switch (value.ToUpper())
-                                {
-                                    case "OSDLOCK":
-                                        r = SetVCPCode(devMgr, mo, "0xCA", "0x01").Result;
-                                        break;
+                                case "OSDLOCK":
+                                    r = SetVCPCode(devMgr, mo, "0xCA", "0x01").Result;
+                                    break;
 
-                                    case "OSDUNLOCK":
-                                        r = SetVCPCode(devMgr, mo, "0xCA", "0x02").Result;
-                                        break;
-                                }
-                            }
-                            else
-                            {
-                                _Set_CLI_RESPONSE_RESPONSE.Value = "Not supported";
-                                writelog($"OSDAccess not supported");
+                                case "OSDUNLOCK":
+                                    r = SetVCPCode(devMgr, mo, "0xCA", "0x02").Result;
+                                    break;
                             }
 
                             if (!r)
@@ -6465,23 +6536,15 @@ namespace DDPM.CLI.Plugins.Display
                             _Set_CLI_RESPONSE_RESPONSE.TargetFeature = "OSDACCESS";
                             _Set_CLI_RESPONSE_RESPONSE.Value = value;
 
-                            if (mo.CapabilityDic.ContainsKey("CA"))
+                            switch (value.ToUpper())
                             {
-                                switch (value.ToUpper())
-                                {
-                                    case "OSDLOCK":
-                                        r = SetVCPCode(devMgr, mo, "0xCA", "0x01").Result;
-                                        break;
+                                case "OSDLOCK":
+                                    r = SetVCPCode(devMgr, mo, "0xCA", "0x01").Result;
+                                    break;
 
-                                    case "OSDUNLOCK":
-                                        r = SetVCPCode(devMgr, mo, "0xCA", "0x02").Result;
-                                        break;
-                                }
-                            }
-                            else
-                            {
-                                _Set_CLI_RESPONSE_RESPONSE.Value = "Not supported";
-                                writelog($"OSDAccess not supported");
+                                case "OSDUNLOCK":
+                                    r = SetVCPCode(devMgr, mo, "0xCA", "0x02").Result;
+                                    break;
                             }
 
                             if (!r)
@@ -6520,20 +6583,10 @@ namespace DDPM.CLI.Plugins.Display
                         _Get_CLI_RESPONSE_RESPONSE.Command = "GET";
                         _Get_CLI_RESPONSE_RESPONSE.TargetFeature = "OSDACCESS";
 
-                        if (monitor.CapabilityDic.ContainsKey("CA"))
-                        {
-                            rc = GetVCPCode(devMgr, monitor, "0xCA").Result;
-                            _Get_CLI_RESPONSE_RESPONSE.Value = get_osd(rc.value.ToString());
-                            _Get_CLI_RESPONSE_RESPONSE.Result = "PASS";
-                            writelog($"OSDAccess Pass");
-                        }
-                        else
-                        {
-                            _Get_CLI_RESPONSE_RESPONSE.Value = "Not supported";
-                            _Get_CLI_RESPONSE_RESPONSE.Result = "FAIL";
-                            exit = (int)CLI_ExitCode.functional_error;
-                            writelog($"OSDAccess not supported");
-                        }
+                        rc = GetVCPCode(devMgr, monitor, "0xCA").Result;
+                        _Get_CLI_RESPONSE_RESPONSE.Value = get_osd(rc.value.ToString());
+                        _Get_CLI_RESPONSE_RESPONSE.Result = "PASS";
+                        writelog($"OSDAccess Pass");
 
                         System.Console.WriteLine(JsonConvert.SerializeObject(_Get_CLI_RESPONSE_RESPONSE, Formatting.Indented));
                         output += "\n" + JsonConvert.SerializeObject(_Get_CLI_RESPONSE_RESPONSE, Formatting.Indented);
@@ -6549,20 +6602,10 @@ namespace DDPM.CLI.Plugins.Display
                         _Get_CLI_RESPONSE_RESPONSE.Command = "GET";
                         _Get_CLI_RESPONSE_RESPONSE.TargetFeature = "OSDACCESS";
 
-                        if (_AllInfoMonitors[Convert.ToInt32(idx)].CapabilityDic.ContainsKey("CA"))
-                        {
-                            rc = GetVCPCode(devMgr, _AllInfoMonitors[Convert.ToInt32(idx)], "0xCA").Result;
-                            _Get_CLI_RESPONSE_RESPONSE.Value = get_osd(rc.value.ToString());
-                            _Get_CLI_RESPONSE_RESPONSE.Result = "PASS";
-                            writelog($"OSDAccess Pass");
-                        }
-                        else
-                        {
-                            _Get_CLI_RESPONSE_RESPONSE.Value = "Not supported";
-                            _Get_CLI_RESPONSE_RESPONSE.Result = "FAIL";
-                            exit = (int)CLI_ExitCode.functional_error;
-                            writelog($"OSDAccess not supported");
-                        }
+                        rc = GetVCPCode(devMgr, _AllInfoMonitors[Convert.ToInt32(idx)], "0xCA").Result;
+                        _Get_CLI_RESPONSE_RESPONSE.Value = get_osd(rc.value.ToString());
+                        _Get_CLI_RESPONSE_RESPONSE.Result = "PASS";
+                        writelog($"OSDAccess Pass");
 
                         System.Console.WriteLine(JsonConvert.SerializeObject(_Get_CLI_RESPONSE_RESPONSE, Formatting.Indented));
                         output += "\n" + JsonConvert.SerializeObject(_Get_CLI_RESPONSE_RESPONSE, Formatting.Indented);
@@ -6581,20 +6624,10 @@ namespace DDPM.CLI.Plugins.Display
                             _Get_CLI_RESPONSE_RESPONSE.Command = "GET";
                             _Get_CLI_RESPONSE_RESPONSE.TargetFeature = "OSDACCESS";
 
-                            if (mo.CapabilityDic.ContainsKey("CA"))
-                            {
-                                rc = GetVCPCode(devMgr, mo, "0xCA").Result;
-                                _Get_CLI_RESPONSE_RESPONSE.Value = get_osd(rc.value.ToString());
-                                _Get_CLI_RESPONSE_RESPONSE.Result = "PASS";
-                                writelog($"OSDAccess Pass");
-                            }
-                            else
-                            {
-                                _Get_CLI_RESPONSE_RESPONSE.Value = "Not supported";
-                                _Get_CLI_RESPONSE_RESPONSE.Result = "FAIL";
-                                exit = (int)CLI_ExitCode.functional_error;
-                                writelog($"OSDAccess not supported");
-                            }
+                            rc = GetVCPCode(devMgr, mo, "0xCA").Result;
+                            _Get_CLI_RESPONSE_RESPONSE.Value = get_osd(rc.value.ToString());
+                            _Get_CLI_RESPONSE_RESPONSE.Result = "PASS";
+                            writelog($"OSDAccess Pass");
 
                             System.Console.WriteLine(JsonConvert.SerializeObject(_Get_CLI_RESPONSE_RESPONSE, Formatting.Indented));
                             output += "\n" + JsonConvert.SerializeObject(_Get_CLI_RESPONSE_RESPONSE, Formatting.Indented);

@@ -5101,7 +5101,9 @@ namespace VcpCore.Plugins
 
             string codestr = code.ToString("X2");
 
-            if (code == 0xC0)
+            var ignoreCodes = new List<uint> { 0xC0, 0xCA };
+
+            if (ignoreCodes.Contains(code))
             {
                 rc = true;
             }
