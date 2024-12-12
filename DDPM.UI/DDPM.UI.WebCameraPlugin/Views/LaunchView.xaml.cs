@@ -1013,6 +1013,16 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
         private void RecordingTimer_Tick(object? sender, EventArgs e)
         {
             txtTimer.Text = stopwatch.Elapsed.ToString(@"hh\:mm\:ss");
+
+            //這邊做錄影長度限制 2小時
+            if( txtTimer.Text == "00:00:31" )
+            {
+                Dispatcher.Invoke(new Action(() =>
+                {
+                    UserStopRecord();
+                }));
+            }
+
         }
 
         private void DeviceManagerSA_ITSettingsActionEvent(object? sender, SA.Common.ITSettingEventArgs e)
