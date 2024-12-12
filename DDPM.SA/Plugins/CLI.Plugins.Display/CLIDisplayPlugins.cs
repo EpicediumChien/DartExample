@@ -10829,15 +10829,15 @@ namespace DDPM.CLI.Plugins.Display
                 return ((int)CLI_ExitCode.Diagnostic_Report_fail, output);
             }
 
-            if (!File.Exists(file))
-            {
-                result = "FAIL";
-                message = "file is not exist.";
-                cli_Response.Result = result;
-                cli_Response.Message = message;
-                output += "\n" + JsonConvert.SerializeObject(cli_Response, Formatting.Indented);
-                return ((int)CLI_ExitCode.Diagnostic_Report_fail, output);
-            }
+            //if (!File.Exists(file))
+            //{
+            //    result = "FAIL";
+            //    message = "file is not exist.";
+            //    cli_Response.Result = result;
+            //    cli_Response.Message = message;
+            //    output += "\n" + JsonConvert.SerializeObject(cli_Response, Formatting.Indented);
+            //    return ((int)CLI_ExitCode.Diagnostic_Report_fail, output);
+            //}
 
             cli_Response.Result = result;
             cli_Response.Message = $"Log path: {file}";            
