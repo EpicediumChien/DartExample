@@ -10721,6 +10721,21 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             return Task.CompletedTask;
         }
 
+        //Derek 1212
+        public Task SyncWebcamProfile(string profileName, bool isActionFromQAM = true)
+        {
+            UpdateUINotify e = new UpdateUINotify();
+
+            if (isActionFromQAM)
+                e.UI_Field_Name = $"WebcamProfileFromQAM:{profileName}"; //message to DDPM
+            else
+                e.UI_Field_Name = $"WebcamProfileFromDDPM:{profileName}";//message to QAM
+
+            OnUIUpdateNotify(e);
+
+            return Task.CompletedTask;
+        }
+
         #endregion
 
         #region Private Methods

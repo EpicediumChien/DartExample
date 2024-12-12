@@ -134,7 +134,7 @@ namespace DDPM.QAM
                             if (int.TryParse(eventMsg.NewValue, out currentValue))
                                 ZoomValue = currentValue;
 
-                        break;
+                            break;
 
 
                         case "Webcam_FieldOfViewChanged":
@@ -154,6 +154,11 @@ namespace DDPM.QAM
                             break;
                     }
                 }
+                else if (e.UI_Field_Name.StartsWith("WebcamProfileFromDDPM"))
+                {
+                    //format "WebcamProfileFromDDPM:{profileName}"
+                }
+
             }
             catch (Exception ex)
             {

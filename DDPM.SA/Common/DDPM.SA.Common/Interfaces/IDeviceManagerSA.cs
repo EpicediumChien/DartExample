@@ -1175,9 +1175,8 @@ namespace DDPM.SA.Common
         Task CloseQAMByDDPM();
         Task<bool> GetIsWidgetSettingPageLoadedByQAMAsync();
         Task SetIsWidgetSettingPageLoadedByQAMAsync(bool newValue);
-
-        //Derek 1210
-        Task WriteLog(string logMsg);
+        Task SyncWebcamProfile(string profileName, bool isActionFromQAM = true); //Derek 1212
+        Task WriteLog(string logMsg); //Derek 1210
         #endregion
 
         #region System Suspend & Resume
