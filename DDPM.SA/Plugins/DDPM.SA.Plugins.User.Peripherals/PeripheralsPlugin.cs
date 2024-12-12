@@ -700,8 +700,8 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                 var logicalDevice = device.Devices.FirstOrDefault(x => x.Id == deviceId);
                 if (logicalDevice is ILogicalDeviceHeadset _logicalDeviceHeadset)
                 {
-                    _DeviceManagerPlugin.SetMicNoiseCancellationAsync(logicalDevice.ToString(), newValue);
-                    _DeviceManagerPlugin.SetMicNCIncomingAsync(logicalDevice.ToString(), newValue);
+                    _DeviceManagerPlugin.SetMicNoiseCancellationAsync(deviceId.ToString(), newValue);
+                    _DeviceManagerPlugin.SetMicNCIncomingAsync(deviceId.ToString(), newValue);
                     DeviceInfo _deviceInfo = _deviceHelper.deviceInfo.Where(x => x.ID == deviceId).FirstOrDefault();
                     if (_deviceInfo != null)
                     {
@@ -757,7 +757,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                 if (logicalDevice is ILogicalDeviceHeadset _logicalDeviceHeadset)
                 {
                     bool setvalue = (newValue == 1 ? true : false);
-                    _DeviceManagerPlugin.SetWearDetectionAsync(logicalDevice.ToString(), setvalue);
+                    _DeviceManagerPlugin.SetWearDetectionAsync(deviceId.ToString(), setvalue);
                     DeviceInfo _deviceInfo = _deviceHelper.deviceInfo.Where(x => x.ID == deviceId).FirstOrDefault();
                     if (_deviceInfo != null)
                     {
@@ -1276,6 +1276,8 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                                     _logicalDevice3.BackLightingControlsChanged += ILogicalDevice_BackLightingControlsChanged;
                                     _logicalDevice3.BackLightingLevelChanged += ILogicalDevice_BackLightingLevelChanged;
                                     _logicalDevice3.PairedHostNameChanged += ILogicalDevice_PairedHostNameChanged;
+                                    _logicalDevice3.IsDPILevelChangePendingChanged += ILogicalDevice_IsDPILevelChangePendingChanged;
+                                    _logicalDevice3.IsDPIValueChangePendingChanged += ILogicalDevice_IsDPIValueChangePendingChanged;
                                     LogicalDevices2.Add(_logicalDevice3.Id);
                                 }
                             }
@@ -1645,6 +1647,54 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                 }
                 Console.WriteLine(_deviceHelper.ToString());
                 writelog(_deviceHelper.ToString());
+            }
+        }
+
+        private void ILogicalDevice_IsDPIValueChangePendingChanged(ILogicalDevice3 arg1, bool arg2)
+        {
+            if (_deviceHelper is { deviceInfo: not null })
+            {
+                var deviceInfo = _deviceHelper.deviceInfo.FirstOrDefault(x => x.ID.ToString() == arg1.Id.ToString());
+                deviceInfo ??= new()
+                {
+                    ID = arg1.Id
+                };
+                deviceInfo.IsDPIValueChangePending = arg2;
+
+                Debug.WriteLine($"DPIValueChangePendingChanged: Guid:{arg1.Id} Value: {arg2}");
+                writelog($"DPIValueChangePendingChanged: Guid:{arg1.Id} Value: {arg2}");
+
+                DeviceChangedEventArgs _EventArgs = new()
+                {
+                    type = DeviceChangedType.Peripherals_SettingsChange,
+                    device_peripherals = deviceInfo,
+                    changedProperty = "DPIValueChangePendingChanged"
+                };
+                OnNotify(_EventArgs);
+            }
+        }
+
+        private void ILogicalDevice_IsDPILevelChangePendingChanged(ILogicalDevice3 arg1, bool arg2)
+        {
+            if (_deviceHelper is { deviceInfo: not null })
+            {
+                var deviceInfo = _deviceHelper.deviceInfo.FirstOrDefault(x => x.ID.ToString() == arg1.Id.ToString());
+                deviceInfo ??= new()
+                {
+                    ID = arg1.Id
+                };
+                deviceInfo.IsDPILevelChangePending = arg2;
+
+                Debug.WriteLine($"DPILevelChangePendingChanged: Guid:{arg1.Id} Value: {arg2}");
+                writelog($"DPILevelChangePendingChanged: Guid:{arg1.Id} Value: {arg2}");
+
+                DeviceChangedEventArgs _EventArgs = new()
+                {
+                    type = DeviceChangedType.Peripherals_SettingsChange,
+                    device_peripherals = deviceInfo,
+                    changedProperty = "DPILevelChangePendingChanged"
+                };
+                OnNotify(_EventArgs);
             }
         }
 

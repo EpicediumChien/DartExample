@@ -16,9 +16,9 @@ namespace DDPM.SA.Common.Security
     {
         private Logs? _logs;
         //private string[] Issuer = new string[] { "Entrust Certification Authority - L1F" };
-        private string[] Subject = new string[] 
-        { 
-            "content-cdn.dell.com", 
+        private string[] Subject = new string[]
+        {
+            "content-cdn.dell.com",
             "www.dell.com",
             "downloads.dell.com",
             "ftp.dell.com",
@@ -146,42 +146,62 @@ namespace DDPM.SA.Common.Security
         }
         public bool CheckURLCACertificate(string URL)
         {
+            _logs?.DebugMsg_1($"CheckURLCACertificate start");
             bool flag = false;
-            int num = 1;
-            while (!flag && num > 0)
+            _logs?.DebugMsg_1($"CheckURLCACertificate URL.IsNullOrEmpty : {string.IsNullOrEmpty(URL)}");
+            if (!string.IsNullOrEmpty(URL))
             {
-                try
+                //Bruce 1210 Take the complete URL and only take a screenshot of the first network segment
+                Uri uri = new Uri(URL);
+                string baseUrl = uri.GetLeftPart(UriPartial.Authority);
+                _logs?.DebugMsg_1($"CheckURLCACertificate Url.IsNullOrEmpty : {string.IsNullOrEmpty(baseUrl)}");
+                if (!string.IsNullOrEmpty(baseUrl))
                 {
-                    HttpClientHandler handler = new HttpClientHandler();
-                    handler.ServerCertificateCustomValidationCallback = PinPublicKey;
-                    using (HttpClient client = new HttpClient(handler))
+                    _logs?.DebugMsg_1($"CheckURLCACertificate Url : {baseUrl}");
+                    int num = 1;
+                    while (!flag && num > 0)
                     {
-                        HttpResponseMessage response = client.GetAsync(URL).Result;
+                        try
+                        {
+                            _logs?.DebugMsg_1($"CheckURLCACertificate HttpClientHandler initialization");
+                            HttpClientHandler handler = new HttpClientHandler();
+                            handler.ServerCertificateCustomValidationCallback = PinPublicKey;
+                            using (HttpClient client = new HttpClient(handler))
+                            {
+                                _logs?.DebugMsg_1($"CheckURLCACertificate client.GetAsync go");
+                                HttpResponseMessage response = client.GetAsync(baseUrl).Result;
+                            }
+                            flag = true;
+                            _logs?.DebugMsg_1($"CheckURLCACertificate client.GetAsync finish");
+                        }
+                        catch (Exception ex)
+                        {
+                            _logs?.DebugMsg_1("[CheckURLCACertificate] error:" + ex.Message.ToString());
+                            flag = false;
+                            _logs?.DebugMsg_1(string.Format("[CheckURLCACertificate] error, retry:" + num));
+                            Thread.Sleep(1000);
+                        }
+                        num--;
                     }
-                    flag = true;
+                    _logs?.DebugMsg_1(string.Format("[CheckURLCACertificate] res:" + flag));
+                    if (!flag)
+                    {
+                        _logs?.DebugMsg_1($"CheckURLCACertificate CheckCAHTTP go");
+                        flag = CheckCAHTTP(baseUrl);
+                        _logs?.DebugMsg_1($"CheckURLCACertificate CheckCAHTTP finish");
+                    }
+                    if (!flag)
+                    {
+                        _logs?.DebugMsg_1(string.Format("[CheckURLCACertificate][CheckCAHTTP] Fail, Send Telemetry." + flag));
+                    }
                 }
-                catch (Exception ex)
-                {
-                    _logs?.DebugMsg_1("[CheckURLCACertificate] error:" + ex.Message.ToString());
-                    flag = false;
-                    _logs?.DebugMsg_1(string.Format("[CheckURLCACertificate] error, retry:" + num));
-                    Thread.Sleep(1000);
-                }
-                num--;
             }
-            _logs?.DebugMsg_1(string.Format("[CheckURLCACertificate] res:" + flag));
-            if (!flag)
-            {
-                flag = CheckCAHTTP(URL);
-            }
-            if (!flag)
-            {
-                _logs?.DebugMsg_1(string.Format("[CheckURLCACertificate][CheckCAHTTP] Fail, Send Telemetry." + flag));
-            }
+            _logs?.DebugMsg_1($"CheckURLCACertificate finish");
             return flag;
         }
         private bool CheckCAHTTP(string URL)
         {
+            _logs?.DebugMsg_1($"CheckCAHTTP start");
             try
             {
                 if (CheckHTTPAvailable(URL))
@@ -189,8 +209,11 @@ namespace DDPM.SA.Common.Security
                     HttpClientHandler httpClientHandler = new HttpClientHandler();
                     httpClientHandler.ServerCertificateCustomValidationCallback = ValidateCertificate;
                     HttpClient client = new HttpClient(httpClientHandler);
+                    _logs?.DebugMsg_1($"CheckCAHTTP GetResponse go");
                     bool response = GetResponse(client, URL);
+                    _logs?.DebugMsg_1($"CheckCAHTTP GetResponse finish");
                     _logs?.DebugMsg_1("[CheckCAHTTP] result:" + response);
+                    _logs?.DebugMsg_1($"CheckCAHTTP finish");
                     return response;
                 }
             }
@@ -198,6 +221,7 @@ namespace DDPM.SA.Common.Security
             {
                 _logs?.DebugMsg_1("[CheckCAHTTP] error:" + ex.Message.ToString());
             }
+            _logs?.DebugMsg_1($"CheckCAHTTP finish");
             return false;
         }
         private bool ValidateCertificate(HttpRequestMessage request, X509Certificate2 certificate, X509Chain chain, SslPolicyErrors sslPolicyErrors)
@@ -234,7 +258,7 @@ namespace DDPM.SA.Common.Security
                 return false;
             }
 
-            if(!CheckCertificateIsVaild(certificate))
+            if (!CheckCertificateIsVaild(certificate))
             {
                 return false;
             }
@@ -270,49 +294,60 @@ namespace DDPM.SA.Common.Security
         }
         private bool GetResponse(HttpClient client, string URL)
         {
+            _logs?.DebugMsg_1($"GetResponse start");
             bool flag = false;
             int num = 5;
             while (!flag && num > 0)
             {
                 try
                 {
+                    _logs?.DebugMsg_1($"GetResponse client.GetAsync go");
                     HttpResponseMessage result = client.GetAsync(URL).GetAwaiter().GetResult();
-                    _logs?.DebugMsg_1("[GetResponse] statusCode:" + result.StatusCode);
+                    _logs?.DebugMsg_1($"GetResponse client.GetAsync finish");
+                    _logs?.DebugMsg_1("GetResponse statusCode:" + result.StatusCode);
                     flag = true;
                 }
                 catch (Exception ex)
                 {
-                    _logs?.DebugMsg_1("[GetResponse] error:" + ex.Message.ToString());
+                    _logs?.DebugMsg_1("GetResponse error:" + ex.Message.ToString());
                     flag = false;
-                    _logs?.DebugMsg_1(string.Format("[GetResponse] error, retry:" + num));
+                    _logs?.DebugMsg_1(string.Format("GetResponse error, retry:" + num));
                     Thread.Sleep(1000);
                 }
                 num--;
             }
-            _logs?.DebugMsg_1(string.Format("[GetResponse] result:" + flag));
+            _logs?.DebugMsg_1(string.Format("GetResponse result:" + flag));
+            _logs?.DebugMsg_1($"GetResponse finish");
             return flag;
         }
 
         public bool CheckCertificateIsVaild(X509Certificate2 certificate)
         {
+            _logs?.DebugMsg_1($"CheckCertificateIsVaild start");
             bool result = false;
             try
             {
+                _logs?.DebugMsg_1($"CheckCertificateIsVaild x509Chain go");
                 X509Chain x509Chain = new X509Chain();
                 x509Chain.ChainPolicy.RevocationFlag = X509RevocationFlag.EntireChain;
                 x509Chain.ChainPolicy.RevocationMode = X509RevocationMode.Online;
                 x509Chain.ChainPolicy.UrlRetrievalTimeout = new TimeSpan(0, 1, 0);
                 x509Chain.ChainPolicy.VerificationFlags = X509VerificationFlags.NoFlag;
+                _logs?.DebugMsg_1($"CheckCertificateIsVaild x509Chain finish");
+                _logs?.DebugMsg_1($"CheckCertificateIsVaild x509Chain.Build go");
                 result = x509Chain.Build(certificate);
+                _logs?.DebugMsg_1($"CheckCertificateIsVaild x509Chain.Build finish");
             }
             catch (Exception ex)
             {
                 _logs?.DebugMsg_1("[CheckCertificateIsVaild] error: " + ex.Message);
             }
+            _logs?.DebugMsg_1($"CheckCertificateIsVaild finish");
             return result;
         }
         private bool CheckIssuerAndSubject(X509Certificate2 certificate, X509Chain chain)
         {
+            _logs?.DebugMsg_1($"CheckIssuerAndSubject start");
             try
             {
                 bool isSubjectCNMatch = false;
@@ -351,7 +386,9 @@ namespace DDPM.SA.Common.Security
                 foreach (var san in sanList)
                 {
                     //_logs?.DebugMsg_1(san);
+                    _logs?.DebugMsg_1($"CheckIssuerAndSubject ContainsAny go");
                     bool containsAny = ContainsAny(san, Subject);
+                    _logs?.DebugMsg_1($"CheckIssuerAndSubject ContainsAny finish");
                     if (containsAny)
                     {
                         _logs?.DebugMsg_1("[CheckIssuerAndSubject] Subject is included in the SAN.");
@@ -415,12 +452,12 @@ namespace DDPM.SA.Common.Security
                     }*/
                     //[Dean] Use certificate verify to replace the usage like cert store
                     bool temp = true;
-                    if(!IsValidCertificate(certificate, chain))
+                    if (!IsValidCertificate(certificate, chain))
                     {
                         _logs?.DebugMsg_1("[CheckIssuerAndSubject][IsValidCertificate] cert/chain invalid.");
                         temp = false;
                     }
-                    if(!certificate.Verify())
+                    if (!certificate.Verify())
                     {
                         _logs?.DebugMsg_1("[CheckIssuerAndSubject] cert verify return fail.");
                         temp = false;
@@ -428,12 +465,14 @@ namespace DDPM.SA.Common.Security
                     isCNMatch = temp;
                 }
                 //_logs?.DebugMsg_1("--------------CheckIssuerAndSubject------------------");
+                _logs?.DebugMsg_1($"CheckIssuerAndSubject finish");
                 return isCNMatch;
             }
             catch (Exception ex)
             {
                 _logs?.DebugMsg_1("[CheckIssuerAndSubject] Error." + ex.ToString());
             }
+            _logs?.DebugMsg_1($"CheckIssuerAndSubject finish");
             return false;
         }
         /*private bool ValidateProxyCertificate(StoreName storeName, StoreLocation storeLocation, X509Certificate2 certificate, X509Chain chain)
@@ -477,6 +516,7 @@ namespace DDPM.SA.Common.Security
         }*/
         private string ExtractCN(string subject)
         {
+            _logs?.DebugMsg_1($"ExtractCN start");
             if (string.IsNullOrEmpty(subject))
             {
                 return null;
@@ -487,21 +527,24 @@ namespace DDPM.SA.Common.Security
 
             foreach (string part in subjectParts)
             {
+                _logs?.DebugMsg_1($"ExtractCN foreach go");
                 // Trim and check if it starts with CN=
                 string trimmedPart = part.Trim();
                 if (trimmedPart.StartsWith("CN=", StringComparison.OrdinalIgnoreCase))
                 {
-                    _logs?.DebugMsg_1(trimmedPart.Substring(3).Trim());
+                    _logs?.DebugMsg_1($"trimmedPart.Substring(3).Trim() : {trimmedPart.Substring(3).Trim()}");
                     // Return the value after CN=
+                    _logs?.DebugMsg_1($"ExtractCN finish");
                     return trimmedPart.Substring(3).Trim();
                 }
             }
-
+            _logs?.DebugMsg_1($"ExtractCN finish");
             // CN not found
             return null;
         }
         private string[] GetSubjectAlternativeNames(X509Certificate2 certificate)
         {
+            _logs?.DebugMsg_1($"GetSubjectAlternativeNames start");
             var sanList = new System.Collections.Generic.List<string>();
 
             foreach (var extension in certificate.Extensions)
@@ -528,6 +571,8 @@ namespace DDPM.SA.Common.Security
 
                 }
             }
+            _logs?.DebugMsg_1($"GetSubjectAlternativeNames sanList.Count : {sanList.Count}");
+            _logs?.DebugMsg_1($"GetSubjectAlternativeNames finish");
             return sanList.ToArray();
         }
         private bool ContainsAny(string mainString, string[] searchArray)

@@ -269,7 +269,17 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                             System.Windows.Application.Current.Dispatcher.Invoke(() =>
                             {
                                 if (int.TryParse(NewValue, out var _t))
+                                {
                                     _viewModel!.FieldOfView = _t;
+
+                                    //Derek 1211 to sync data with QAM
+                                    if (90 == _t)
+                                        _viewModel!.SetFOV_Selected(2);
+                                    else if (78 == _t)
+                                        _viewModel!.SetFOV_Selected(1);
+                                    else if (65 == _t)
+                                        _viewModel!.SetFOV_Selected(0);
+                                }
                                 else
                                 {
                                     _log.Debug("Webcam_FieldOfViewChanged NewValue not int");

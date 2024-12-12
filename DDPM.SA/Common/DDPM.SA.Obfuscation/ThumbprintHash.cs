@@ -81,7 +81,7 @@
             0x39, 0x43, 0xa2, 0x39, 0x06, 0x72, 0x54, 0x92, 0xdd, 0x29
         };
 
-        public static byte[][] certificateHash = {
+        public static readonly byte[][] certificateHash = {
             ThumbprintHash.DELL_Hash,
             ThumbprintHash.DELL_Hash1,
             ThumbprintHash.DELL_Hash2,

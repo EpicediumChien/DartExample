@@ -163,6 +163,11 @@ namespace DDPM.UI.Module.Brightness
         public Debouncer Contrast_Debouncer;
         public Debouncer Luminance_Debouncer;
 
+        public Debouncer UpdateUI_Debouncer;
+        private static BackgroundWorker syncUIvalue_bw = new BackgroundWorker();
+        public bool isUserControlUI = true;
+        private static readonly object ExecutorLock = new object();
+
         public BrightnessModule MyModule { get; set; }
 
         public ALSConfig Start_ALSConfig = new ALSConfig();
@@ -319,7 +324,7 @@ namespace DDPM.UI.Module.Brightness
         }
 
         #endregion hotkey property
-       
+
         public void SaveHotkeySettings(MonitorInfo monitorInfo, HotkeyInfo hotkeyInfo)
         {
             if (DdpmCommonHelper.DeviceManagerSA != null)
@@ -332,6 +337,10 @@ namespace DDPM.UI.Module.Brightness
                     DdpmCommonHelper.isHotkeyBypass = DdpmCommonHelper.DeviceManagerSA.ByPassHotkey(false).Result;
                     IsBusy = false;
                     NotifyPropertyChanged("IsBusy");
+                }
+                else
+                {
+                    DdpmCommonHelper.WriteUILog($"[DisplayHotkey] monitor:{monitorInfo.AliasDeviceName}:{monitorInfo.edid.ServiceTag},({hotkeyInfo.Job}) SaveHotkeySetting fail.");
                 }
             }
             Invoke_RefreshHotkeySettings();
@@ -353,52 +362,55 @@ namespace DDPM.UI.Module.Brightness
 
         private void DoWork_RefreshData(object sender, DoWorkEventArgs e)
         {
-            var temp = DdpmCommonHelper.DeviceManagerSA.ReadCurrentHotkey(this.SelectedHomeDevice.MonitorInfo).Result;
-            HotkeySettings curHotkey = temp.Item1;
-            string swHortcutText = string.Empty;
-
-            if (curHotkey.HotkeyInfo.Count > 0)
+            if (DdpmCommonHelper.DeviceManagerSA != null)
             {
-                foreach (var hotkeyInfo in curHotkey.HotkeyInfo)
+                var temp = DdpmCommonHelper.DeviceManagerSA.ReadCurrentHotkey(this.SelectedHomeDevice?.MonitorInfo).Result;
+                HotkeySettings curHotkey = temp.Item1;
+                string swHortcutText = string.Empty;
+
+                if (curHotkey != null && curHotkey.HotkeyInfo.Count > 0)
                 {
-                    List<VirtualKey> hotkeys = hotkeyInfo.Hotkey;
-                    switch (hotkeyInfo.Job)
+                    foreach (var hotkeyInfo in curHotkey.HotkeyInfo)
                     {
-                        case HotkeyType.BrightnessReduce:
-                            KeysHelper.ReSetHotKeyText(ref swHortcutText, ref hotkeys);
-                            hotkeys.Clear();
-                            BrightnessMinsKey = swHortcutText;
-                            break;
+                        List<VirtualKey> hotkeys = hotkeyInfo.Hotkey;
+                        switch (hotkeyInfo.Job)
+                        {
+                            case HotkeyType.BrightnessReduce:
+                                KeysHelper.ReSetHotKeyText(ref swHortcutText, ref hotkeys);
+                                hotkeys.Clear();
+                                BrightnessMinsKey = swHortcutText;
+                                break;
 
-                        case HotkeyType.BrightnessIncrease:
-                            KeysHelper.ReSetHotKeyText(ref swHortcutText, ref hotkeys);
-                            hotkeys.Clear();
-                            BrightnessAddKey = swHortcutText;
-                            break;
+                            case HotkeyType.BrightnessIncrease:
+                                KeysHelper.ReSetHotKeyText(ref swHortcutText, ref hotkeys);
+                                hotkeys.Clear();
+                                BrightnessAddKey = swHortcutText;
+                                break;
 
-                        case HotkeyType.ContrastReduce:
-                            KeysHelper.ReSetHotKeyText(ref swHortcutText, ref hotkeys);
-                            hotkeys.Clear();
-                            ContrastMinsKey = swHortcutText;
-                            break;
+                            case HotkeyType.ContrastReduce:
+                                KeysHelper.ReSetHotKeyText(ref swHortcutText, ref hotkeys);
+                                hotkeys.Clear();
+                                ContrastMinsKey = swHortcutText;
+                                break;
 
-                        case HotkeyType.ContrastIncrease:
-                            KeysHelper.ReSetHotKeyText(ref swHortcutText, ref hotkeys);
-                            hotkeys.Clear();
-                            ContrastAddKey = swHortcutText;
-                            break;
+                            case HotkeyType.ContrastIncrease:
+                                KeysHelper.ReSetHotKeyText(ref swHortcutText, ref hotkeys);
+                                hotkeys.Clear();
+                                ContrastAddKey = swHortcutText;
+                                break;
 
-                        case HotkeyType.LuminanceReduce:
-                            KeysHelper.ReSetHotKeyText(ref swHortcutText, ref hotkeys);
-                            hotkeys.Clear();
-                            LuminanceMinsKey = swHortcutText;
-                            break;
+                            case HotkeyType.LuminanceReduce:
+                                KeysHelper.ReSetHotKeyText(ref swHortcutText, ref hotkeys);
+                                hotkeys.Clear();
+                                LuminanceMinsKey = swHortcutText;
+                                break;
 
-                        case HotkeyType.LuminanceIncrease:
-                            KeysHelper.ReSetHotKeyText(ref swHortcutText, ref hotkeys);
-                            hotkeys.Clear();
-                            LuminanceAddKey = swHortcutText;
-                            break;
+                            case HotkeyType.LuminanceIncrease:
+                                KeysHelper.ReSetHotKeyText(ref swHortcutText, ref hotkeys);
+                                hotkeys.Clear();
+                                LuminanceAddKey = swHortcutText;
+                                break;
+                        }
                     }
                 }
             }
@@ -451,18 +463,25 @@ namespace DDPM.UI.Module.Brightness
                 //if (!SelectedHomeDevice.MonitorInfo.DisplayName.Equals(mo.DisplayName))//0614 add
                 //    return;
 
-                List<ALSConfig> tmp = DdpmCommonHelper.DeviceManagerSA.GetAllExistAlsConfig().Result;
-                if (tmp == null || tmp.Count == 0)
-                    return;
+				try
+				{
+                	List<ALSConfig> tmp = DdpmCommonHelper.DeviceManagerSA.GetAllExistAlsConfig().Result;
+                	if (tmp == null || tmp.Count == 0)
+                    	return;
 
-                int idx = tmp.FindIndex(x => x.Edid.Equals(mo.edid));
-                if (idx < 0)
-                    return;
+                	int idx = tmp.FindIndex(x => x.Edid.Equals(mo.edid));
+                	if (idx < 0)
+                    	return;
 
-                Start_ALSConfig = tmp[idx];
+                	Start_ALSConfig = tmp[idx];
 
-                //2.if yes, then update the vcp value to each option
-                GetALSContentAndSyncUI(SelectedHomeDevice.MonitorInfo);
+                	//2.if yes, then update the vcp value to each option
+                	GetALSContentAndSyncUI(SelectedHomeDevice.MonitorInfo);
+				}
+                catch (Exception ex)
+                {
+                    DdpmCommonHelper.WriteUILog($"[OnVCPChangedEvent][BrightnessViewModel] exception with {ex.Message}");
+                }
             }
             else if (e.vcpcode.Equals("10"))
             {
@@ -483,6 +502,8 @@ namespace DDPM.UI.Module.Brightness
                 NotifyPropertyChanged("LuminanceValue");
                 NotifyPropertyChanged("BrightnessValue");
                 NotifyPropertyChanged("AutoBrightnessRangeLevel_String");
+
+                UpdateUI_Debouncer.Debounce(null);
             }
             else if (e.vcpcode.Equals("12"))
             {
@@ -500,6 +521,8 @@ namespace DDPM.UI.Module.Brightness
                 Contrast_Value = Convert.ToDouble(e.value);
 
                 NotifyPropertyChanged("ContrastValue");
+
+                UpdateUI_Debouncer.Debounce(null);
             }
         }
 
@@ -530,6 +553,8 @@ namespace DDPM.UI.Module.Brightness
             Brightness_Debouncer = new Debouncer(2000, Set_Brightness_Value);
             Luminance_Debouncer = new Debouncer(2000, Set_Luminance_Value);
 
+            UpdateUI_Debouncer = new Debouncer(3500, SyncUIValue);
+
             PR1Contrast_Debouncer = new Debouncer(2000, Set_Contrast_Value);
             PR1Brightness_Debouncer = new Debouncer(2000, Set_Brightness_Value);
             PR2Contrast_Debouncer = new Debouncer(2000, Set_Contrast_Value);
@@ -540,6 +565,11 @@ namespace DDPM.UI.Module.Brightness
 
             DdpmCommonHelper.MyConsole.RegisterForEvent("DisplayHDRStatusChanged", OnHDRChangedEvent);
             DdpmCommonHelper.BitmapImageUpdated += ALSFontColorUpdate;
+
+            syncUIvalue_bw.DoWork += new DoWorkEventHandler(SyncUI_Value);
+            syncUIvalue_bw.ProgressChanged += new ProgressChangedEventHandler(SyncUIValue_ProgressChanged);
+            syncUIvalue_bw.WorkerReportsProgress = true;
+            syncUIvalue_bw.WorkerSupportsCancellation = true;
         }
 
         private void ALSFontColorUpdate(OSThemeEnum oSThemeEnum)
@@ -2300,12 +2330,30 @@ namespace DDPM.UI.Module.Brightness
             }
         }
 
+        private void SetBrightnessLevelDataToObject(int level)
+        {
+            if (Start_ALSConfig.AutoBrightnessRangeLevel != null && Start_ALSConfig.AutoBrightnessRangeLevel.Count > 0)
+            {
+                Start_ALSConfig.AutoBrightnessRangeLevel[0].level_value = level;
+                if (level == 0)
+                    Start_ALSConfig.AutoBrightnessRangeLevel[0].level_name = Strings.ALSRangeLevelLow; //"Low";
+                else if (level == 1)
+                    Start_ALSConfig.AutoBrightnessRangeLevel[0].level_name = Strings.ALSRangeLevelMid; //"Mid";
+                else
+                    Start_ALSConfig.AutoBrightnessRangeLevel[0].level_name = Strings.ALSRangeLevelHigh; //"High";
+            }
+        }
+
         /// <summary>
         /// Detect the status of the PrimaryMonitorSync and obtain the current number of monitors that support the ALS function.
         /// </summary>
         /// <param name="onoff">UI PrimaryMonitorSync status</param>
-        private void ALSSettingsChangesOnNonPrimary(bool onoff, string property = "AUTOBRI")
+        private void ALSSettingsChangesOnNonPrimary(bool onoff, string property = "AUTOBRI", int level = 0)
         {
+            int level_keep = 0;
+            if (Start_ALSConfig.AutoBrightnessRangeLevel != null && Start_ALSConfig.AutoBrightnessRangeLevel.Count > 0)
+                level_keep = (int)Start_ALSConfig.AutoBrightnessRangeLevel[0].level_value;
+
             if (!Start_ALSConfig.isPrimaryMonitorSync && CheckMonitorALSStatus())// user change non-Primary
             {
                 //PIMS-328260
@@ -2314,6 +2362,10 @@ namespace DDPM.UI.Module.Brightness
                 {
                     _primaryMonitorSyncStatus = true;
                     Start_ALSConfig.isPrimaryMonitorSync = true;// onoff; //PIMS-328260
+                    if (property.Equals("BRILEVEL"))//PIMS-314583
+                    {
+                        SetBrightnessLevelDataToObject(level);
+                    }
                     SetALSAll(Start_ALSConfig, ALSFeatureQueryType.All, 0);
                     NotifyPropertyChanged("PrimaryMonitorSyncStatus");
                     NotifyPropertyChanged("PrimaryMonitorSync_String");
@@ -2333,6 +2385,11 @@ namespace DDPM.UI.Module.Brightness
                         _autoColorTempStatus = onoff;
                         Start_ALSConfig.isAutoColorTemp = onoff;
                     }
+                    if (property.Equals("BRILEVEL"))
+                    {
+                        //click no, switch back due to UI action
+                        SetBrightnessLevelDataToObject(level_keep);
+                    }
                 }
             }
             else
@@ -2341,6 +2398,13 @@ namespace DDPM.UI.Module.Brightness
                 {
                     _primaryMonitorSyncStatus = onoff;
                     Start_ALSConfig.isPrimaryMonitorSync = onoff;
+                }
+                if (property.Equals("BRILEVEL"))//PIMS-314583
+                {
+                    if (Start_ALSConfig.AutoBrightnessRangeLevel != null && Start_ALSConfig.AutoBrightnessRangeLevel.Count > 0)
+                    {
+                        SetBrightnessLevelDataToObject(level);
+                    }
                 }
                 SetALSAll(Start_ALSConfig, ALSFeatureQueryType.All, 0);
             }
@@ -2533,6 +2597,8 @@ namespace DDPM.UI.Module.Brightness
 
             if (IsSynchronize)
             {
+                //Luminance_Value = value;
+
                 foreach (HomeDevice hd in ModuleOwner.HomeDevices)
                 {
                     if (hd.MonitorInfo.IsDellMonitor)
@@ -2546,9 +2612,11 @@ namespace DDPM.UI.Module.Brightness
             }
             else
             {
+                //Luminance_Value = value;
                 _ = DdpmCommonHelper.DeviceManagerSA.SetVCPCapability(ModuleOwner.SelectedHomeDevice.MonitorInfo, 0x10, nNewValue).Result;
             }
 
+            UpdateUI_Debouncer.Debounce(null);
             //NotifyPropertyChanged("LuminanceValue");
         }
 
@@ -2563,6 +2631,8 @@ namespace DDPM.UI.Module.Brightness
 
                 if (IsSynchronize)
                 {
+                    //Brightness_Value = value;
+
                     foreach (HomeDevice hd in ModuleOwner.HomeDevices)
                     {
                         if (hd.MonitorInfo.IsDellMonitor)
@@ -2576,9 +2646,11 @@ namespace DDPM.UI.Module.Brightness
                 }
                 else
                 {
+                    //Brightness_Value = value;
                     _ = DdpmCommonHelper.DeviceManagerSA.SetVCPCapability(ModuleOwner.SelectedHomeDevice.MonitorInfo, 0x10, nNewValue).Result;
                 }
 
+                UpdateUI_Debouncer.Debounce(null);
                 //NotifyPropertyChanged("BrightnessValue");
             }
 
@@ -2641,6 +2713,8 @@ namespace DDPM.UI.Module.Brightness
 
             if (IsSynchronize)
             {
+                //Contrast_Value = value;
+
                 foreach (HomeDevice hd in ModuleOwner.HomeDevices)
                 {
                     if (hd.MonitorInfo.IsDellMonitor)
@@ -2648,8 +2722,12 @@ namespace DDPM.UI.Module.Brightness
                 }
             }
             else
+            {
+                //Contrast_Value = value;
                 _ = DdpmCommonHelper.DeviceManagerSA.SetVCPCapability(ModuleOwner.SelectedHomeDevice.MonitorInfo, 0x12, nNewValue).Result;
+            }
 
+            UpdateUI_Debouncer.Debounce(null);
             //NotifyPropertyChanged("ContrastValue");
         }
 
@@ -3034,31 +3112,41 @@ namespace DDPM.UI.Module.Brightness
             }
             set
             {
-                _autoBrightnessStatus = value;
-                Start_ALSConfig.isAutoBrightness = value;
-                ALSSettingsChangesOnNonPrimary(value);
-                NotifyPropertyChanged("AutoBrightnessStatus");
-                NotifyPropertyChanged("AutoBrightness_String");
-                NotifyPropertyChanged("AutoBrightnessRangeLevelVisible");
-                NotifyPropertyChanged("AutoBrightnessRangeLevelVisible_invert");
-                Update_SupportedPrimaryMonitorSync(value, _autoColorTempStatus);
-                if (_autoBrightnessStatus == false)
+                IsBusy = true;
+                NotifyPropertyChanged("IsBusy");
+                MyModule.GetRightView().Dispatcher.Invoke((Action)(() =>
                 {
-                    //DDPMW-770
-                    //CheckIfNeedToTurnPrimarySyncOff();
-                    return;
-                }
-                //story: https://jira.cpg.dell.com/browse/DDPMW-769, set color preset to custom at the same time
-                if (DdpmCommonHelper.DeviceManagerSA != null && ModuleOwner.SelectedHomeDevice != null)
-                {
-                    MonitorInfo? mo = ModuleOwner.SelectedHomeDevice.MonitorInfo;
-                    List<string> presets = DdpmCommonHelper.DeviceManagerSA.ReadColorPreset(mo).Result;
-                    int idx = presets.FindIndex(x => x.ToUpper().Contains("CUSTOM"));
-                    if (idx >= 0)
+                    _autoBrightnessStatus = value;
+                    Start_ALSConfig.isAutoBrightness = value;
+                    ALSSettingsChangesOnNonPrimary(value);
+                    NotifyPropertyChanged("AutoBrightnessStatus");
+                    NotifyPropertyChanged("AutoBrightness_String");
+                    NotifyPropertyChanged("AutoBrightnessRangeLevelVisible");
+                    NotifyPropertyChanged("AutoBrightnessRangeLevelVisible_invert");
+                    Update_SupportedPrimaryMonitorSync(value, _autoColorTempStatus);
+                    if (_autoBrightnessStatus == false)
                     {
-                        _ = DdpmCommonHelper.DeviceManagerSA.SetVCPCapability(mo, "colorpreset", presets[idx]).Result;
+                        //DDPMW-770
+                        //CheckIfNeedToTurnPrimarySyncOff();
+                        IsBusy = false;
+                        NotifyPropertyChanged("IsBusy");
+                        return;
                     }
-                }
+                    //story: https://jira.cpg.dell.com/browse/DDPMW-769, set color preset to custom at the same time
+                    if (DdpmCommonHelper.DeviceManagerSA != null && ModuleOwner.SelectedHomeDevice != null)
+                    {
+                        MonitorInfo? mo = ModuleOwner.SelectedHomeDevice.MonitorInfo;
+                        List<string> presets = DdpmCommonHelper.DeviceManagerSA.ReadColorPreset(mo).Result;
+                        int idx = presets.FindIndex(x => x.ToUpper().Contains("CUSTOM"));
+                        if (idx >= 0)
+                        {
+                            _ = DdpmCommonHelper.DeviceManagerSA.SetVCPCapability(mo, "colorpreset", presets[idx]).Result;
+                        }
+                    }
+                    IsBusy = false;
+                    NotifyPropertyChanged("IsBusy");
+                }));
+                
             }
         }
 
@@ -3098,12 +3186,20 @@ namespace DDPM.UI.Module.Brightness
             }
             set
             {
-                _autoColorTempStatus = value;
-                Start_ALSConfig.isAutoColorTemp = value;
-                ALSSettingsChangesOnNonPrimary(value, "AUTOCOLOR");
-                NotifyPropertyChanged("AutoColorTempStatus");
-                NotifyPropertyChanged("AutoColorTemp_String");
-                //Update_SupportedPrimaryMonitorSync(_autoBrightnessStatus, value);
+                IsBusy = true;
+                NotifyPropertyChanged("IsBusy");
+                MyModule.GetRightView().Dispatcher.Invoke((Action)(() =>
+                {
+                    _autoColorTempStatus = value;
+                    Start_ALSConfig.isAutoColorTemp = value;
+                    ALSSettingsChangesOnNonPrimary(value, "AUTOCOLOR");
+                    NotifyPropertyChanged("AutoColorTempStatus");
+                    NotifyPropertyChanged("AutoColorTemp_String");
+                    //Update_SupportedPrimaryMonitorSync(_autoBrightnessStatus, value);
+                    IsBusy = false;
+                    NotifyPropertyChanged("IsBusy");
+                }));
+                
             }
         }
 
@@ -3223,18 +3319,19 @@ namespace DDPM.UI.Module.Brightness
                 _autoBrightnessRangeLevel = value;
                 _autoBrightnessRangeLevel[0].level_value = value[0].level_value;
                 if (value[0].level_value == 0)
-                    _autoBrightnessRangeLevel[0].level_name = "Low";
+                    _autoBrightnessRangeLevel[0].level_name = Strings.ALSRangeLevelLow; //"Low";
                 else if (value[0].level_value == 1)
-                    _autoBrightnessRangeLevel[0].level_name = "Mid";
+                    _autoBrightnessRangeLevel[0].level_name = Strings.ALSRangeLevelMid; //"Mid";
                 else
-                    _autoBrightnessRangeLevel[0].level_name = "High";
+                    _autoBrightnessRangeLevel[0].level_name = Strings.ALSRangeLevelHigh; //"High";
                 NotifyPropertyChanged("AutoBrightnessRangeLevel_SelectedIndex");
                 NotifyPropertyChanged("AutoBrightnessRangeLevel_String");
             }
         }
 
         public int AutoBrightnessSelectedIndex { get; set; } = 0;
-        public List<string> AutoBrightnessRangeLevel { get; set; } = new List<string>() { "Low", "Mid", "High" }; //mapping to 40%, 60%, 100%
+        public List<string> AutoBrightnessRangeLevel { get; set; } =
+            new List<string>() { Strings.ALSRangeLevelLow, Strings.ALSRangeLevelMid, Strings.ALSRangeLevelHigh };//{ "Low", "Mid", "High" }; //mapping to 40%, 60%, 100%
 
         /// <summary>
         /// AutoBrightnessRangeLevel String Binding data
@@ -3267,18 +3364,29 @@ namespace DDPM.UI.Module.Brightness
             }
             set
             {
-                if ((int)Start_ALSConfig.AutoBrightnessRangeLevel[0].level_value != value)
+                IsBusy = true;
+                NotifyPropertyChanged("IsBusy");
+                MyModule.GetRightView().Dispatcher.Invoke((Action)(() =>
                 {
-                    Start_ALSConfig.AutoBrightnessRangeLevel[0].level_value = value;
-                    if (value == 0)
-                        Start_ALSConfig.AutoBrightnessRangeLevel[0].level_name = "Low";
-                    else if (value == 1)
-                        Start_ALSConfig.AutoBrightnessRangeLevel[0].level_name = "Mid";
-                    else
-                        Start_ALSConfig.AutoBrightnessRangeLevel[0].level_name = "High";
-                    SetALSAll(Start_ALSConfig, ALSFeatureQueryType.PrimaryMonitorSync, 0);
+                    if ((int)Start_ALSConfig.AutoBrightnessRangeLevel[0].level_value != value)
+                    {
+                        ALSSettingsChangesOnNonPrimary(false, "BRILEVEL", value);
+
+                        if ((int)Start_ALSConfig.AutoBrightnessRangeLevel[0].level_value == value)//already apply, make string change
+                        {
+                            if (value == 0)
+                                Start_ALSConfig.AutoBrightnessRangeLevel[0].level_name = Strings.ALSRangeLevelLow; //"Low";
+                            else if (value == 1)
+                                Start_ALSConfig.AutoBrightnessRangeLevel[0].level_name = Strings.ALSRangeLevelMid; //"Mid";
+                            else
+                                Start_ALSConfig.AutoBrightnessRangeLevel[0].level_name = Strings.ALSRangeLevelHigh; //"High";
+                        }
+                    }
+                    NotifyPropertyChanged("AutoBrightnessRangeLevel_SelectedIndex");
                     NotifyPropertyChanged("AutoBrightnessRangeLevel_String");
-                }
+                    IsBusy = false;
+                    NotifyPropertyChanged("IsBusy");
+                }));                
             }
         }
 
@@ -3376,6 +3484,96 @@ namespace DDPM.UI.Module.Brightness
         }
 
         #endregion ALS functions
+
+        public void SyncUIValue(object obj)
+        {
+            try
+            {
+                Monitor.Enter(ExecutorLock);
+
+                if (syncUIvalue_bw != null)
+                {
+                    if (!syncUIvalue_bw.IsBusy)
+                        syncUIvalue_bw.RunWorkerAsync();
+                }
+                else
+                {
+                    syncUIvalue_bw = new BackgroundWorker();
+                    syncUIvalue_bw.DoWork += new DoWorkEventHandler(SyncUI_Value);
+                    syncUIvalue_bw.ProgressChanged += new ProgressChangedEventHandler(SyncUIValue_ProgressChanged);
+                    syncUIvalue_bw.WorkerReportsProgress = true;
+                    syncUIvalue_bw.WorkerSupportsCancellation = true;
+                    syncUIvalue_bw.RunWorkerAsync();
+                }
+            }
+            catch (Exception ex)
+            {
+                Trace.WriteLine("SyncUIValue ex: " + ex.Message);
+            }
+            finally
+            {
+                Monitor.Exit(ExecutorLock);
+            }
+        }
+
+        private void SyncUI_Value(object sender, DoWorkEventArgs e)
+        {
+            //Brightness update//
+            try
+            {
+                var r = DdpmCommonHelper.DeviceManagerSA.GetVCPCapability(ModuleOwner.SelectedHomeDevice.MonitorInfo, 0x10).Result;
+                if (r.result)
+                    syncUIvalue_bw.ReportProgress(50, Convert.ToDouble(r.value));
+
+                if (ModuleOwner.SelectedHomeDevice.MonitorInfo.CapabilityDic.ContainsKey("12"))
+                {
+                    //Contrst update//
+                    var t = DdpmCommonHelper.DeviceManagerSA.GetVCPCapability(ModuleOwner.SelectedHomeDevice.MonitorInfo, 0x12).Result;
+                    if (t.result)
+                        syncUIvalue_bw.ReportProgress(100, Convert.ToDouble(t.value));
+                }
+            }
+            catch(Exception ex)
+            {
+                DdpmCommonHelper.WriteUILog($"[BrightnessViewModel][SyncUI_Value] exception: {ex.Message}");
+            }
+        }
+
+        private void SyncUIValue_ProgressChanged(object sender, ProgressChangedEventArgs e)
+        {
+            if (e.ProgressPercentage.Equals(50))
+            {
+                if (ModuleOwner.SelectedHomeDevice.MonitorInfo.CapabilityDic.ContainsKey("12"))
+                {
+                    if (!Brightness_Value.Equals((double)e.UserState))
+                    {
+                        isUserControlUI = false;
+                        Brightness_Value = (double)e.UserState;
+                        NotifyPropertyChanged("BrightnessValue");
+                    }
+                }
+                else
+                {
+                    if (!Luminance_Value.Equals((double)e.UserState))
+                    {
+                        isUserControlUI = false;
+                        Luminance_Value = (double)e.UserState;
+                        NotifyPropertyChanged("LuminanceValue");
+                    }
+                }
+            }
+            else if (e.ProgressPercentage.Equals(100))
+            {
+                if (!Contrast_Value.Equals((double)e.UserState))
+                {
+                    isUserControlUI = false;
+                    Contrast_Value = (double)e.UserState;
+                    NotifyPropertyChanged("ContrastValue");
+                }
+            }
+
+            isUserControlUI = true;
+        }
 
         public void Luminance_Sync()
         {

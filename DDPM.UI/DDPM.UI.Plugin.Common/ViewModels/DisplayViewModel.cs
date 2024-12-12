@@ -438,6 +438,12 @@ namespace DDPM.UI.Plugin.Common.ViewModels
             }
         }
 
+        //Jason 12/11 add LoadLeftView()
+        public void LoadLeftView()
+        {
+            OnPropertyChanged(nameof(LeftView));
+        }
+
         #endregion LeftView
 
         #region RightView
