@@ -3019,7 +3019,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             newValue = Encoding.UTF8.GetBytes($"{{\"actionId\":26,\"actionName\":\"\"}}");
             await SetSideBottomSwitchSinglePressSetting(PenItemID0, newValue);
             await SetTipSensitivity(PenItemID0, 3);
-            await SetTiltSensitivity(PenItemID0, 1);
+            await SetTiltSensitivity(PenItemID0, 0);
             await SetIsSideTopButtonHoverClick(PenItemID0, false);
             await SetIsSideBottomButtonHoverClick(PenItemID0, false);
 
@@ -6576,7 +6576,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             else
                 return 0;
         }
-        
+
         private async Task<int> GetWebcamDevsCountAsync()
         {
             var webcams = await GetWebcamDeviceItemsExAsync();
