@@ -763,6 +763,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         public event EventHandler SystemResume;
 
+        public event EventHandler SystemSessionEnd;
+
         #endregion
 
         #region ColorPreset implementation
@@ -16471,7 +16473,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             return appModeTelementryData;
         }
 
-        #region System Suspend & Resume
+        #region System Suspend & Resume & SessionEnd
 
         private void OnSystemSuspend(object sender, EventArgs e)
         {
@@ -16483,6 +16485,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             SystemResume?.Invoke(this, e);
         }
 
+        public Task FireSystemSessionEnd()
+        {
+            SystemSessionEnd?.Invoke(this, EventArgs.Empty);
+            return Task.FromResult(true);
+        }
         #endregion
     }
 }
