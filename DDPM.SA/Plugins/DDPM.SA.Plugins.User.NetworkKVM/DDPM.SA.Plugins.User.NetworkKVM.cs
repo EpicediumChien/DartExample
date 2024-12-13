@@ -1399,6 +1399,7 @@ namespace NetworkKVM.Plugins
                     _AllInfoMonitors = GetMonitors().Result;
                     CreateNamedPipe_init();
                     i = 0;
+                    break; // 2024-12-13 Elie, break infinite loop when it doesn't support NKVM.
                 }
             }
             _logs.DebugMsg("NKVM NamedPipeServer is End...");
