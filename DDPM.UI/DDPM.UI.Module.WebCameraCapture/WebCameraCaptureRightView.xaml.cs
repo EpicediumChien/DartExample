@@ -143,7 +143,7 @@ namespace DDPM.UI.Module.WebCameraCapture
                 }
                 catch (Exception ex)
                 {
-                    DdpmCommonHelper.WriteUILog("DDPM.UI.WebCameraPlugin\\Views\\LaunchView.xaml.cs initResolutionFPS() : " + ex.Message);
+                    DdpmCommonHelper.WriteUILog("DDPM.UI.Module.WebCameraCapture\\WebCameraCaptureRightView.xaml.cs btnResolution_Click : " + ex.Message);
                 }
 
                 foreach (var property in _vm.allProperties)
