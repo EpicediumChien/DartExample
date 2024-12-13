@@ -48,6 +48,8 @@ using System.Windows.Media.Animation;
 using DDPM.SA.Common.Settings;
 using DDPM.SA.Common.Security;
 using static VcpCore.Common.User32;
+using Microsoft.VisualBasic.Logging;
+using System.Xml.Linq;
 //using DDPM.SA.Common.Settings;
 
 namespace ColorPreset.Plugins
@@ -1357,14 +1359,19 @@ namespace ColorPreset.Plugins
                             }
                             else
                             {
+                                try
+                                {
+                                    JArray colorrreset = (JArray)CapsDataMap["Preset Modes Specific"]; // VCP E2
 
+                                    ColorPresetSupportList_.Clear();
 
-                                JArray colorrreset = (JArray)CapsDataMap["Preset Modes Specific"]; // VCP E2
-
-                                ColorPresetSupportList_.Clear();
-
-                                foreach (var tmp in colorrreset)
-                                    ColorPresetSupportList_.Add(new string(tmp.ToString()));
+                                    foreach (var tmp in colorrreset)
+                                        ColorPresetSupportList_.Add(new string(tmp.ToString()));                                   
+                                }
+                                catch (Exception ex)
+                                {
+                                    writelog($"[ReadColorPreset] collect colore presets from VCP E2 , message: {ex.Message}");                                  
+                                }                                                         
 
                             }
                         }
@@ -1379,19 +1386,23 @@ namespace ColorPreset.Plugins
                         }
                         else
                         {
+                            try
+                            {
+                                JArray colorrreset = (JArray)CapsDataMap["ColorPreset"];
 
+                                ColorPresetSupportList_.Clear();
 
-                            JArray colorrreset = (JArray)CapsDataMap["ColorPreset"];
-
-                            ColorPresetSupportList_.Clear();
-
-                            foreach (var tmp in colorrreset)
-                                ColorPresetSupportList_.Add(new string(tmp.ToString()));
+                                foreach (var tmp in colorrreset)
+                                    ColorPresetSupportList_.Add(new string(tmp.ToString()));
+                            }
+                            catch (Exception ex)
+                            {
+                                writelog($"[ReadColorPreset] collect colore presets , message: {ex.Message}");
+                            }
 
                             // PIMS-327395 jim 20241212 add
                             if (string.Equals(m.modelName, "G2724D", StringComparison.OrdinalIgnoreCase) || string.Equals(m.modelName, "G3223D", StringComparison.OrdinalIgnoreCase))
                                 ColorPresetSupportList_.Add("sRGB");
-
                         }
                     }
                 }
