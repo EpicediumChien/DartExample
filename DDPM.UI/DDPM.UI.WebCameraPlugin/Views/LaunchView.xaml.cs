@@ -133,6 +133,8 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                 DdpmCommonHelper.DeviceManagerSA.SystemResume += DeviceManagerSA_OnSystemResume;
                 DdpmCommonHelper.DeviceManagerSA.DeviceChanged += DeviceManagerSA_DeviceChanged;
                 DdpmCommonHelper.DeviceManagerSA.SystemSessionEnd += DeviceManagerSA_OnSystemSessionEnd;
+                //Derek 1212
+                DdpmCommonHelper.DeviceManagerSA.UIUpdateNotify += DeviceManagerSA_UIUpdateNotify;
 
                 DDPMSettings data = DdpmCommonHelper.DeviceManagerSA.ReloadAppConfigData().Result;
                 if (data != null)
@@ -216,9 +218,59 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             DdpmCommonHelper.BitmapImageUpdated += ImageUpdate;
         }
 
+        private void DeviceManagerSA_UIUpdateNotify(object? sender, UpdateUINotify e)
+        {
+            if (e == null || e == EventArgs.Empty || e.UI_Field_Name == null
+                || e.UI_Field_Name == string.Empty)
+                return;
+
+            //DdpmCommonHelper.WriteUILog($"WebcamLanuchView_UIUpdateNotify catch event msg: {e.UI_Field_Name}");
+
+            try
+            {
+                if (e.UI_Field_Name.StartsWith("WebcamProfileFromQAM")) //1212 Derek
+                {
+                    //format "WebcamProfileFromQAM:{profileName}"
+                    string[] msgs = e.UI_Field_Name.Split(':');
+
+                    if (null != msgs && msgs.Length == 2)
+                    {
+                        //_vm!.CurrentProfileName = msgs[1];
+                        DdpmCommonHelper.WriteUILog($"WebcamLanuchView_UIUpdateNotify profileName: {msgs[1]}");
+
+                        ChangeProfileByQAM(msgs[1]);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                DdpmCommonHelper.WriteUILog($"DeviceManagerSA_UIUpdateNotify catch exception: {ex.Message}");
+            }
+            
+        }
+
+        private void ChangeProfileByQAM(string profileName)
+        {
+            if (profileName != _vm!.CurrentProfileName || isProfilePropertyChanged)
+            {
+                _vm!.CurrentProfileName = profileName;
+                _vm.IsSettingProfile = true;
+                _vm.SetProfile();
+                _vm.IsSettingProfile = false;
+                isProfilePropertyChanged = false;
+            }
+
+            Dispatcher.Invoke(new Action(() =>
+            {
+                btnPreset_Click(this, null);
+                btnPreset_Click(this, null);
+            }));
+        }
+
         ~LaunchView()
         {
             DdpmCommonHelper.BitmapImageUpdated -= ImageUpdate;
+            DdpmCommonHelper.DeviceManagerSA!.UIUpdateNotify -= DeviceManagerSA_UIUpdateNotify;
         }
 
         private void ImageUpdate(OSThemeEnum oSThemeEnum)
@@ -1763,6 +1815,9 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                 isProfilePropertyChanged = false;
             }
             btnPreset_Click(this, null);
+
+            //Derek 1212
+            DdpmCommonHelper.DeviceManagerSA!.SyncWebcamProfile(_vm!.CurrentProfileName, false);
         }
 
         private void btnPreset_Click(object sender, System.Windows.Input.MouseButtonEventArgs? e)

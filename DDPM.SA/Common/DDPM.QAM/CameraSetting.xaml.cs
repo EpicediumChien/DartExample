@@ -58,11 +58,12 @@ namespace DDPM.QAM
         private void Presets_Click(object sender, MouseButtonEventArgs e)
         {
             QAMPageViewModel vm = DataContext as QAMPageViewModel;
+
             if (vm != null)
             {
                 PresetsPage presetsPage = new PresetsPage();
                 presetsPage.DataContext = vm;
-                double newHeight = 145 + presetsPage.Height; //origin value is 128 
+                double newHeight = 145 + presetsPage.Height; //origin value is 128
                 this.Height = newHeight;
                 vm.FullView_Height = presetsPage.Height.ToString();
                 vm.Settings_Selected(0);
