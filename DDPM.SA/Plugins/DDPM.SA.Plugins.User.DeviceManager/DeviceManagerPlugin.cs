@@ -6409,7 +6409,23 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         #region EasyArrage
 
+        #region Properties - EasyArrange
         /// <summary>
+        /// The last error string after a EAPlugin method return error.
+        /// </summary>
+        public string EALastError
+        {
+            get
+            {
+                if (_DisplayManagerPlugin != null)
+                    return "DisplayManagerPlugin is not constructed.";
+                return _DisplayManagerPlugin.EALastError;
+            }
+        }
+        #endregion Properties - EasyArrange
+
+        /// <summary>
+        /// Robert_Lin, 2024-12-12, To be removed. Use 
         /// Enable/Disable EasyArrange function for all monitors.
         /// When Disabled (isEnable=false), DDPM will not show the WorkWindow (to arrange window),
         /// but user can edit/setup in DDPM.UI and save their settings.
@@ -6425,6 +6441,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             return Task.FromResult(false);
         }
 
+        /// <summary>
+        /// Robert_Lin, 2024-12-12, To be removed.
+        /// Old method for CLI
+        /// </summary>
+        /// <returns></returns>
         public Task<ObjGetVCP> GetEAFunctionEnabled()
         {
             if (_DisplayManagerPlugin != null)
@@ -6445,6 +6466,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         /// <param name="splitKey"></param>
         /// <param name="settings"></param>
         /// <returns>Always true unless DisplayManager is not ready</returns>
+
         public Task<bool> SetEAWrokSplit(MonitorInfo monitorInfo, int cellCount, char splitKey, List<double>? settings)
         {
             if (_DisplayManagerPlugin != null)
@@ -6932,6 +6954,14 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             return Task.FromResult(false);
         }
 
+        /// <summary>
+        /// [Unused Method]
+        /// This method is reserved for CLI command usage. Howevent CLI does not define a command
+        /// to set SelectedLayout (only select Off)
+        /// </summary>
+        /// <param name="monitorInfo"></param>
+        /// <param name="spJson"></param>
+        /// <returns></returns>
         public Task<bool> SetEASelectedLayout(MonitorInfo monitorInfo, SplitJson spJson)
         {
             if (_DisplayManagerPlugin != null)
@@ -6940,6 +6970,30 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
             writelog("@ DeviceManager.SetEASelectedLayout(): _DisplayManagerPlugin is null");
             return Task.FromResult(false);
+        }
+
+        public Task<bool> SetEASelectedLayout(MonitorInfo monitorInfo, int eaId)
+        {
+            if (_DisplayManagerPlugin != null)
+            {
+                return _DisplayManagerPlugin.SetEASelectedLayout(monitorInfo, eaId);
+            }
+            writelog("@ DeviceManager.SetEASelectedLayout(): _DisplayManagerPlugin is null");
+            return Task.FromResult(false);
+        }
+
+        /// <summary>
+        /// Return the EAID of current selected layout.
+        /// </summary>
+        /// <param name="monitorInfo">Specified the monitor</param>
+        /// <returns>0=Off (Empty Layout), [1~49]=Preset layout, [1000~1004]=Custom layout, others(Check if negavtive value) =error</returns>
+        public Task<int> GetEASelectedLayout(MonitorInfo monitorInfo)
+        {
+            //Read the EAMonitorSettings from MonitorSettins.
+            //If faile to read will return default settings. never return null.
+            EAMonitorSettings eaSettings = ReadEAMonitorSettings(monitorInfo).Result;
+            //Return the RAID of EAMonitorSettings.SelectedLayout
+            return Task.FromResult( eaSettings.SelectedSplit.EAID );
         }
 
         //Robert_Lin, 2024-10-8, bridge of EASettingsChanged
@@ -6979,7 +7033,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 }
             }
             //Failed, return an empty array instead of null
-            return Task.FromResult(new SplitJson[] { });
+            return Task.FromResult(Array.Empty<SplitJson>());
         }
 
         /// <summary>
