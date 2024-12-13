@@ -213,13 +213,13 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin.Test
                 DPeMSubAgentVersion = "1.0",
                 IsdDriverVersion = "1.0",
             };
-            privatetePeripheralsPlugin.SetFieldOrProperty("_iDeviceManager", null);
-            var GetDevices_Result1 = peripheralsPlugin.GetDevices(true).Result;  //_deviceHelper null
+            privatetePeripheralsPlugin.SetFieldOrProperty("_isClientConnected", false);
+            var GetDevices_Result1 = peripheralsPlugin.GetDevices(false).Result;  //_deviceHelper null
             Assert.IsNotNull(GetDevices_Result1);
 
             privatetePeripheralsPlugin.SetFieldOrProperty("_deviceHelper", deviceHelper);
             privatetePeripheralsPlugin.SetFieldOrProperty("_isClientConnected", true);
-            var GetDevices_Result2 = peripheralsPlugin.GetDevices(false).Result;  //_deviceHelper not null
+            var GetDevices_Result2 = peripheralsPlugin.GetDevices(true).Result;  //_deviceHelper not null
             Assert.IsNotNull(GetDevices_Result2);
         }
 
@@ -3417,8 +3417,11 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin.Test
             Mock<IPhysicalAudioDeviceDongle> mockDongle = new Mock<IPhysicalAudioDeviceDongle>();
             var device = mockDongle.Object;
             var pairingStatus = AudioDonglePairingStatus.AudioDonglePairingStatusStarted;
+            int nArg2 = 1;
+            int nArg3 = 2;
+            string strArg4 = "Audio";
             Assert.Throws<NotImplementedException>(() =>
-            privatetePeripheralsPlugin.Invoke("PhysicalAudioDeviceDongle_PairingStatusChanged", device, pairingStatus));
+            privatetePeripheralsPlugin.Invoke("PhysicalAudioDeviceDongle_PairingStatusChanged", device, nArg2, nArg3, strArg4));
         }
 
         [OneTimeTearDown]

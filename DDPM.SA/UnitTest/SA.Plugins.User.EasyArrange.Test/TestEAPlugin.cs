@@ -263,75 +263,74 @@ namespace DDPM.SA.Plugins.User.EasyArrange.Test
             DDPM.EABroker.EAEditWindow? editWindow;
             editWindow = null;
             privateEApluginObject.SetFieldOrProperty("_isEaBrokerStarted", true);
-            privateEApluginObject.SetFieldOrProperty("_editWindow", editWindow);
-            var EditCommand_Result2 = EAplugin.EditCommand(monitorInfo1, Args).Result;   //_isEaBrokerStarted true, _editWindow null    
-            Assert.That(EditCommand_Result2, Is.False);
+            //privateEApluginObject.SetFieldOrProperty("_editWindow", editWindow);
+            var EditCommand_Result2 = EAplugin.EditCommand(monitorInfo1, Args).Result;   //_isEaBrokerStarted true, remove _editWindow  
+            Assert.That(EditCommand_Result2, Is.True);
         }
 
         //Robert_Lin 2024-12-4 comment-out due to EABroker.EABroker add one argument
-        //[Test]
-        //public void TestReloadEzSettings()
-        //{
-        //    bool ReloadEzSettings1 = false;
-        //    bool ReloadEzSettings2 = true;
-        //    ArrangeVM arrangeVM = new ArrangeVM();
-        //    PrivateObject privateEApluginObject = new PrivateObject(EAplugin);
-        //    //privateEApluginObject.SetFieldOrProperty("_vmArrange", arrangeVM);  //_vmArrange method remove
+        [Test]
+        public void TestReloadEzSettings()
+        {
+            bool ReloadEzSettings1 = false;
+            bool ReloadEzSettings2 = true;
 
-        //    IDeviceManagerSA? _deviceManagerPluginNull;
-        //    _deviceManagerPluginNull = null;
-        //    privateEApluginObject.SetFieldOrProperty("_deviceManagerPlugin", _deviceManagerPluginNull);
-        //    if (_deviceManagerPluginNull == null)
-        //    {
-        //        var ReloadEzSettings_Result1 = EAplugin.ReloadEzSettings().Result;       //_deviceManagerPluginNull null, _eaBroker null
-        //        Assert.That(ReloadEzSettings1, Is.EqualTo(ReloadEzSettings_Result1));
-        //    }
+            PrivateObject privateEApluginObject = new PrivateObject(EAplugin);
 
-        //    EzSettings ezSettings = new EzSettings()
-        //    {
-        //        IsWidthoutGap = true,
-        //        IsOnlyAllowWhenShiftKeyPressed = false,
-        //        IsSpanAcrossMultiMonitors = false,
-        //        IsAwsEnabled = false
-        //    };
-        //    DeviceManagerService.Setup(x => x.ReadEzSettings()).Returns(Task.FromResult(ezSettings));
-        //    var DeviceManagerPluginObj = DeviceManagerService.Object;
-        //    privateEApluginObject.SetFieldOrProperty("_deviceManagerPlugin", DeviceManagerPluginObj);
+            DDPM.EABroker.EABroker? eaBroker;
+            eaBroker = null;
+            privateEApluginObject.SetFieldOrProperty("_eaBroker", eaBroker);
+            if (eaBroker == null)
+            {
+                var ReloadEzSettings_Result1 = EAplugin.ReloadEzSettings().Result;       //_eaBroker null
+                Assert.That(ReloadEzSettings1, Is.EqualTo(ReloadEzSettings_Result1));
+            }
 
-        //    if (DeviceManagerPluginObj != null)
-        //    {
-        //        var ReloadEzSettings_Result2 = EAplugin.ReloadEzSettings().Result;   //_deviceManagerPluginNull not  null, _eaBroker null
-        //        Assert.That(ReloadEzSettings1, Is.EqualTo(ReloadEzSettings_Result2));   //method update
-        //    }
-        //    var EApluginAgentObj = EApluginAgent.Object;
-        //    var DeviceManagerServiceObj = DeviceManagerService.Object;
-        //    var DisplayManagerServiceObj = DisplayManagerService.Object;
-        //    var EasyArrangeServiceObj = EasyArrangeService.Object;
+            Mock<IAgent> mockAgent = new Mock<IAgent>();
+            Mock<IDeviceManagerSA> mockDeviceManagerSA = new Mock<IDeviceManagerSA>();
+            Mock<IDisplayService> mockDisplayService = new Mock<IDisplayService>();
+            Mock<IEasyArrangeService> mockEasyArrangeService = new Mock<IEasyArrangeService>();
+            Mock<ISettingsManagerDev> mockSettingsManagerDev = new Mock<ISettingsManagerDev>();
+            eaBroker = new EABroker.EABroker(mockAgent.Object, mockDeviceManagerSA.Object, mockDisplayService.Object, mockEasyArrangeService.Object, mockSettingsManagerDev.Object);
+            privateEApluginObject.SetFieldOrProperty("_eaBroker", eaBroker);
 
-        //    DDPM.EABroker.EABroker EaBroker = new EABroker.EABroker(EApluginAgentObj, DeviceManagerServiceObj, DisplayManagerServiceObj, EasyArrangeServiceObj);
-        //    privateEApluginObject.SetFieldOrProperty("_eaBroker", EaBroker);
-        //    privateEApluginObject.SetFieldOrProperty("_deviceManagerPlugin", _deviceManagerPluginNull);
-        //    if (_deviceManagerPluginNull == null)
-        //    {
-        //        var ReloadEzSettings_Result3 = EAplugin.ReloadEzSettings().Result;       // _eaBroker not null ,_deviceManagerPluginNull null
-        //        Assert.That(ReloadEzSettings1, Is.EqualTo(ReloadEzSettings_Result3));
-        //    }
+            IDeviceManagerSA? _deviceManagerPluginNull;
+            _deviceManagerPluginNull = null;
+            privateEApluginObject.SetFieldOrProperty("_deviceManagerPlugin", _deviceManagerPluginNull);
+            if (eaBroker != null)
+            {
+                if (_deviceManagerPluginNull == null)
+                {
+                    var ReloadEzSettings_Result2 = EAplugin.ReloadEzSettings().Result;       //_eaBroker not null,_deviceManagerPlugin null
+                    Assert.That(ReloadEzSettings1, Is.EqualTo(ReloadEzSettings_Result2));
+                }
+            }
 
-        //    var DeviceManagerPluginObj2 = DeviceManagerService.Object;
-        //    privateEApluginObject.SetFieldOrProperty("_deviceManagerPlugin", DeviceManagerPluginObj2);
+            DDPM.EABroker.ArrangeVM arrangeVM = new DDPM.EABroker.ArrangeVM();
 
-        //    EABroker.ArrangeVM arrangeVM2 = new EABroker.ArrangeVM();
-        //    PrivateObject privateArrangeVMObject = new PrivateObject(arrangeVM2);
-        //    Mock<IDeviceManagerSA> mockDeviceManagerSA = new Mock<IDeviceManagerSA>();
-        //    mockDeviceManagerSA.Setup(x => x.ReadEzSettings()).Returns(Task.FromResult(ezSettings)); //DDPM.EABroker.ArrangeVM.cs  ReloadEzSettingsFromUserSettingsFile method
-        //    var mockDeviceManagerSAObj = mockDeviceManagerSA.Object;
-        //    privateArrangeVMObject.SetFieldOrProperty("_deviceManagerSA", mockDeviceManagerSAObj);
-        //    if (DeviceManagerPluginObj != null)
-        //    {
-        //        var ReloadEzSettings_Result4 = EAplugin.ReloadEzSettings().Result;   // _eaBroker not null ,_deviceManagerPluginNull not  null
-        //        Assert.That(ReloadEzSettings2, Is.EqualTo(ReloadEzSettings_Result4));
-        //    }
-        //}
+            PrivateObject privateArrangeVMObject = new PrivateObject(arrangeVM);
+            EzSettings ezSettings = new EzSettings()
+            {
+                IsWidthoutGap = true,
+                IsOnlyAllowWhenShiftKeyPressed = false,
+                IsSpanAcrossMultiMonitors = false,
+                IsAwsEnabled = false
+            };
+            mockDeviceManagerSA.Setup(x => x.ReadEzSettings()).Returns(Task.FromResult(ezSettings)); //DDPM.EABroker.ArrangeVM.cs  ReloadEzSettingsFromUserSettingsFile method
+            privateArrangeVMObject.SetFieldOrProperty("_deviceManagerSA", mockDeviceManagerSA.Object);
+
+            var DeviceManagerPluginObj = mockDeviceManagerSA.Object;
+            privateEApluginObject.SetFieldOrProperty("_deviceManagerPlugin", DeviceManagerPluginObj);
+
+            if (eaBroker != null)
+            {
+                if (mockDeviceManagerSA != null)
+                {
+                    var ReloadEzSettings_Result3 = EAplugin.ReloadEzSettings().Result;       //_eaBroker not null,_deviceManagerPlugin not null
+                    Assert.That(ReloadEzSettings2, Is.EqualTo(ReloadEzSettings_Result3));
+                }
+            }
+        }
 
         [Test]
         public void TestSetEASelectedLayout()

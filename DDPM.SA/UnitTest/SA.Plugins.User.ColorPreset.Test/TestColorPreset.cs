@@ -24,6 +24,9 @@ using Windows.ApplicationModel;
 using System.Net;
 using Microsoft.Windows.Themes;
 using DDPM.MonitorBorker;
+using System.Collections.Generic;
+using DdmLibrary;
+using DdmLibrary.Utility;
 
 
 namespace DDPM.SA.Plugins.User.ColorPreset.Test
@@ -527,7 +530,7 @@ namespace DDPM.SA.Plugins.User.ColorPreset.Test
             privatehotkeyPluginObject.SetFieldOrProperty("_SettingsPlugin_internal", settingsPluginManagerDev_);
             try
             {
-                var Result = colorPresetPlugin.DownloadICCData(monitorInfo1, settingsPluginManagerDev_, true,savelPath).Result;  // web no response,(404) Not Found.
+                var Result = colorPresetPlugin.DownloadICCData(monitorInfo1, settingsPluginManagerDev_, true, savelPath).Result;  // web no response,(404) Not Found.
                 Assert.IsNotNull(Result);
                 Assert.IsNotNull(Result.strICC_Folder);
                 Assert.IsNotNull(Result.Is_Support_ICC_DeviceName);
@@ -719,6 +722,191 @@ namespace DDPM.SA.Plugins.User.ColorPreset.Test
             var errorEventArgsMock = new Mock<ErrorEventArgs>();
             colorPresetPlugin.OnError_ICC(sender, e);
             Assert.IsTrue(true);
+        }
+
+        [Test]
+        public void TestAutoColorManagementForMonitorConfig()
+        {
+            MonitorInfo monitorInfo2 = monitorInfo1 as MonitorInfo;
+            string off_bymonitor_byhost1 = "ON";
+            string off_bymonitor_byhost2 = "OFF";
+            string off_bymonitor_byhost3 = "BYMONITOR";
+            string off_bymonitor_byhost4 = "BYHOST";
+            int index_config = 0;
+            bool AutoColorManagementForMonitorConfigPa = true;
+            Dictionary<string, ColorPresetSettings_AppInfo> appInfo = new Dictionary<string, ColorPresetSettings_AppInfo>();
+            appInfo.Add("Command Prompt", new ColorPresetSettings_AppInfo() { Color = 0, HDRColor = -1, IconName = "cmd.exe" });
+            List<ColorPresetSettings> monitorConfigs1 = new List<ColorPresetSettings>() { new ColorPresetSettings() { ModelName = "DELLU2724DE", SerialNumber = "808597589", ServiceTag = "123456", ColorForManual = 0, RunType = 0, ColorManagement_Status = 1, ColorManagement_RunType = 1, AppInfo = appInfo } };
+            Mock<ISettingsManagerDev> settingsPluginManagerDev = new Mock<ISettingsManagerDev>();
+            var settingsPluginManagerDev_ = settingsPluginManagerDev.Object;
+            settingsPluginManagerDev.Setup(x => x.ReadColorPresetSettings()).Returns(Task.FromResult(monitorConfigs1));
+            settingsPluginManagerDev.Setup(x => x.WriteColorPresetSettings(It.IsAny<List<ColorPresetSettings>>())).Returns(Task.FromResult(true));
+            PrivateObject colorPresetprivateObject = new PrivateObject(colorPresetPlugin);
+            if (off_bymonitor_byhost1 == "ON")
+            {
+                if (index_config >= 0)
+                {
+                    var AutoColorManagementForMonitorConfig_result1 = colorPresetPlugin.AutoColorManagementForMonitorConfig(monitorInfo2, off_bymonitor_byhost1, settingsPluginManagerDev_).Result;//ColorManagement_Status = 1 ON, off_bymonitor_byhost ON,ColorManagement_RunType = 1 Bymonitor
+                    Assert.IsNotNull(AutoColorManagementForMonitorConfig_result1);
+                    Assert.That(AutoColorManagementForMonitorConfigPa, Is.EqualTo(AutoColorManagementForMonitorConfig_result1));
+                }
+            }
+
+            if (off_bymonitor_byhost2 == "OFF")
+            {
+                if (index_config >= 0)
+                {
+                    List<ColorPresetSettings> monitorConfigs2 = new List<ColorPresetSettings>() { new ColorPresetSettings() { ModelName = "DELLU2724DE", SerialNumber = "808597589", ServiceTag = "123456", ColorForManual = 0, RunType = 0, ColorManagement_Status = 0, ColorManagement_RunType = 1, AppInfo = appInfo } };
+                    settingsPluginManagerDev.Setup(x => x.ReadColorPresetSettings()).Returns(Task.FromResult(monitorConfigs2));
+                    settingsPluginManagerDev.Setup(x => x.WriteColorPresetSettings(It.IsAny<List<ColorPresetSettings>>())).Returns(Task.FromResult(true));
+                    var settingsPluginManagerDev2_ = settingsPluginManagerDev.Object;
+
+                    var AutoColorManagementForMonitorConfig_result2 = colorPresetPlugin.AutoColorManagementForMonitorConfig(monitorInfo2, off_bymonitor_byhost2, settingsPluginManagerDev2_).Result;//ColorManagement_Status = 0 OFF,ColorManagement_RunType = 1 Bymonitor
+                    Assert.IsNotNull(AutoColorManagementForMonitorConfig_result2);
+                    Assert.That(AutoColorManagementForMonitorConfigPa, Is.EqualTo(AutoColorManagementForMonitorConfig_result2));
+                }
+            }
+
+            if (off_bymonitor_byhost3 == "BYMONITOR")
+            {
+                if (index_config >= 0)
+                {
+                    List<ColorPresetSettings> monitorConfigs3 = new List<ColorPresetSettings>() { new ColorPresetSettings() { ModelName = "DELLU2724DE", SerialNumber = "808597589", ServiceTag = "123456", ColorForManual = 0, RunType = 0, ColorManagement_Status = 1, ColorManagement_RunType = 1, AppInfo = appInfo } };
+                    settingsPluginManagerDev.Setup(x => x.ReadColorPresetSettings()).Returns(Task.FromResult(monitorConfigs3));
+                    settingsPluginManagerDev.Setup(x => x.WriteColorPresetSettings(It.IsAny<List<ColorPresetSettings>>())).Returns(Task.FromResult(true));
+                    var settingsPluginManagerDev3_ = settingsPluginManagerDev.Object;
+
+                    var AutoColorManagementForMonitorConfig_result3 = colorPresetPlugin.AutoColorManagementForMonitorConfig(monitorInfo2, off_bymonitor_byhost3, settingsPluginManagerDev3_).Result;//ColorManagement_Status = 1  On,ColorManagement_RunType = 1 Bymonitor
+                    Assert.IsNotNull(AutoColorManagementForMonitorConfig_result3);
+                    Assert.That(AutoColorManagementForMonitorConfigPa, Is.EqualTo(AutoColorManagementForMonitorConfig_result3));
+                }
+            }
+
+            if (off_bymonitor_byhost4 == "BYHOST")
+            {
+                if (index_config >= 0)
+                {
+                    List<ColorPresetSettings> monitorConfigs4 = new List<ColorPresetSettings>() { new ColorPresetSettings() { ModelName = "DELLU2724DE", SerialNumber = "808597589", ServiceTag = "123456", ColorForManual = 0, RunType = 0, ColorManagement_Status = 1, ColorManagement_RunType = 2, AppInfo = appInfo } };
+                    settingsPluginManagerDev.Setup(x => x.ReadColorPresetSettings()).Returns(Task.FromResult(monitorConfigs4));
+                    settingsPluginManagerDev.Setup(x => x.WriteColorPresetSettings(It.IsAny<List<ColorPresetSettings>>())).Returns(Task.FromResult(true));
+                    var settingsPluginManagerDev4_ = settingsPluginManagerDev.Object;
+
+                    var AutoColorManagementForMonitorConfig_result4 = colorPresetPlugin.AutoColorManagementForMonitorConfig(monitorInfo2, off_bymonitor_byhost4, settingsPluginManagerDev4_).Result;//ColorManagement_Status = 1  On, ColorManagement_RunType = 2 Byhost
+                    Assert.IsNotNull(AutoColorManagementForMonitorConfig_result4);
+                    Assert.That(AutoColorManagementForMonitorConfigPa, Is.EqualTo(AutoColorManagementForMonitorConfig_result4));
+                }
+            }
+        }
+
+        [Test]
+        public void TestMonitorSettingsDataExport()
+        {
+            List<ColorPresetSettings> monitorConfigs1 = new List<ColorPresetSettings>() { new ColorPresetSettings() { ModelName = "DELLU2724DE", SerialNumber = "808597589", ServiceTag = "123456", ColorForManual = 0, RunType = 0, ColorManagement_Status = 1, ColorManagement_RunType = 1, AppInfo = new Dictionary<string, ColorPresetSettings_AppInfo>() } };
+            Mock<ISettingsManagerDev> settingsPluginManagerDev = new Mock<ISettingsManagerDev>();
+            var settingsPluginManagerDev_ = settingsPluginManagerDev.Object;
+            settingsPluginManagerDev.Setup(x => x.ReadColorPresetSettings()).Returns(Task.FromResult(monitorConfigs1));
+            int AppInfoCount1 = 0;
+            var AppInfoCount2 = 1;
+            if (AppInfoCount1 <= 0)
+            {
+                var MonitorSettingsDataExport_result1 = colorPresetPlugin.Export(monitorInfo1, settingsPluginManagerDev_).Result;
+                Assert.IsNotNull(MonitorSettingsDataExport_result1);
+                Assert.Greater(MonitorSettingsDataExport_result1.AppInfo.Count, 0);
+            }
+
+            if (AppInfoCount2 > 0)
+            {
+                Dictionary<string, ColorPresetSettings_AppInfo> appInfo = new Dictionary<string, ColorPresetSettings_AppInfo>();
+                appInfo.Add("Command Prompt", new ColorPresetSettings_AppInfo() { Color = 0, HDRColor = -1, IconName = "cmd.exe" });
+                List<ColorPresetSettings> monitorConfigs2 = new List<ColorPresetSettings>() { new ColorPresetSettings() { ModelName = "DELLU2724DE", SerialNumber = "808597589", ServiceTag = "123456", ColorForManual = 0, RunType = 0, ColorManagement_Status = 1, ColorManagement_RunType = 1, AppInfo = appInfo } };
+                Mock<ISettingsManagerDev> settingsPluginManagerDev2 = new Mock<ISettingsManagerDev>();
+                var settingsPluginManagerDev2_ = settingsPluginManagerDev2.Object;
+                settingsPluginManagerDev2.Setup(x => x.ReadColorPresetSettings()).Returns(Task.FromResult(monitorConfigs2));
+                var MonitorSettingsDataExport_result2 = colorPresetPlugin.Export(monitorInfo1, settingsPluginManagerDev2_).Result;
+                Assert.IsNotNull(MonitorSettingsDataExport_result2);
+                Assert.Greater(MonitorSettingsDataExport_result2.AppInfo.Count, 0);
+                Assert.That(monitorConfigs2[0], Is.EqualTo(MonitorSettingsDataExport_result2));
+            }
+        }
+
+        [Test]
+        public void TestMonitorSettingsDataImport()
+        {
+            bool TestMonitorSettingsDataImport = true;
+            bool WriteColorPresetSettings = true;
+            ColorPresetSettings colorPresetSettings;
+            Dictionary<string, ColorPresetSettings_AppInfo> appInfo = new Dictionary<string, ColorPresetSettings_AppInfo>();
+            appInfo.Add("Command Prompt", new ColorPresetSettings_AppInfo() { Color = 0, HDRColor = -1, IconName = "cmd.exe" });
+            colorPresetSettings = new ColorPresetSettings() { ModelName = "DELLU2724DE", SerialNumber = "808597589", ServiceTag = "123456", ColorForManual = 0, RunType = 0, ColorManagement_Status = 1, ColorManagement_RunType = 1, AppInfo = appInfo };
+            List<ColorPresetSettings> monitorConfigs1 = new List<ColorPresetSettings>() { new ColorPresetSettings() { ModelName = "DELLU2724DE", SerialNumber = "808597589", ServiceTag = "123456", ColorForManual = 0, RunType = 0, ColorManagement_Status = 1, ColorManagement_RunType = 1, AppInfo = appInfo } };
+            Mock<ISettingsManagerDev> settingsPluginManagerDev1 = new Mock<ISettingsManagerDev>();
+            var settingsPluginManagerDev1_ = settingsPluginManagerDev1.Object;
+            settingsPluginManagerDev1.Setup(x => x.ReadColorPresetSettings()).Returns(Task.FromResult(monitorConfigs1));
+            settingsPluginManagerDev1.Setup(x => x.WriteColorPresetSettings(It.IsAny<List<ColorPresetSettings>>())).Returns(Task.FromResult(WriteColorPresetSettings));
+            var TestMonitorSettingsDataImport_result1 = colorPresetPlugin.Import(monitorInfo1, colorPresetSettings, settingsPluginManagerDev1_).Result;
+            Assert.IsNotNull(TestMonitorSettingsDataImport_result1);
+            Assert.That(TestMonitorSettingsDataImport, Is.EqualTo(TestMonitorSettingsDataImport_result1));
+        }
+
+        [Test]
+        public void TestMonitorSettingsDataMigration()
+        {
+            bool TestMonitorSettingsDataMigration = true;
+            bool WriteColorPresetSettings = true;
+            string Model = "DELLU2724DE";
+            string ServiceTag = "123456";
+            int ColorForManual_VCPE2Code_value = 0;
+            DdmLibrary.Utility.ColorPreset colorPresetSetting_Migration;
+            colorPresetSetting_Migration = new DdmLibrary.Utility.ColorPreset() { AppInfos = new List<DdmLibrary.Utility.AppInfo>(), Auto = false, ColorBindings = new List<DdmLibrary.Utility.ColorBinding>(), ColorManagement = 2, LockAuto = false };
+            ColorPresetSettings colorPresetSettings;
+            Dictionary<string, ColorPresetSettings_AppInfo> appInfo = new Dictionary<string, ColorPresetSettings_AppInfo>();
+            appInfo.Add("Command Prompt", new ColorPresetSettings_AppInfo() { Color = 0, HDRColor = -1, IconName = "cmd.exe" });
+            colorPresetSettings = new ColorPresetSettings() { ModelName = "DELLU2724DE", SerialNumber = "808597589", ServiceTag = "123456", ColorForManual = 0, RunType = 0, ColorManagement_Status = 1, ColorManagement_RunType = 1, AppInfo = appInfo };
+
+            List<ColorPresetSettings> monitorConfigs1 = new List<ColorPresetSettings>() { new ColorPresetSettings() { ModelName = "DELLU2724DE", SerialNumber = "808597589", ServiceTag = "123456", ColorForManual = 0, RunType = 0, ColorManagement_Status = 1, ColorManagement_RunType = 1, AppInfo = appInfo } };
+            Mock<ISettingsManagerDev> settingsPluginManagerDev1 = new Mock<ISettingsManagerDev>();
+            var settingsPluginManagerDev1_ = settingsPluginManagerDev1.Object;
+            settingsPluginManagerDev1.Setup(x => x.ReadColorPresetSettings()).Returns(Task.FromResult(monitorConfigs1));
+            settingsPluginManagerDev1.Setup(x => x.WriteColorPresetSettings(It.IsAny<List<ColorPresetSettings>>())).Returns(Task.FromResult(WriteColorPresetSettings));
+            int AppInfoCount1 = 0;
+            var AppInfoCount2 = 1;
+            if (AppInfoCount1 <= 0)
+            {
+                var MonitorSettingsDataMigration_result1 = colorPresetPlugin.Migration(colorPresetSetting_Migration, Model, ServiceTag, settingsPluginManagerDev1_, ColorForManual_VCPE2Code_value).Result;
+                Assert.IsNotNull(MonitorSettingsDataMigration_result1);
+                Assert.That(TestMonitorSettingsDataMigration, Is.EqualTo(MonitorSettingsDataMigration_result1));
+            }
+
+            string Name = "DELLU2724DE";
+            string ExeName = "TestAppInfoname";
+            string Path = "C:\\Windows";
+            int Color = 0;
+            int HDRColor = -1;
+            string ExeArg = "";
+            colorPresetSetting_Migration = new DdmLibrary.Utility.ColorPreset() { AppInfos = new List<DdmLibrary.Utility.AppInfo>() { new DdmLibrary.Utility.AppInfo(Name, ExeName, Path, Color, HDRColor, ExeArg) }, Auto = false, ColorBindings = new List<DdmLibrary.Utility.ColorBinding>(), ColorManagement = 3, LockAuto = false };
+            if (AppInfoCount2 > 0)
+            {
+                var MonitorSettingsDataMigration_result2 = colorPresetPlugin.Migration(colorPresetSetting_Migration, Model, ServiceTag, settingsPluginManagerDev1_, ColorForManual_VCPE2Code_value).Result;
+                Assert.IsNotNull(MonitorSettingsDataMigration_result2);
+                Assert.That(TestMonitorSettingsDataMigration, Is.EqualTo(MonitorSettingsDataMigration_result2));
+            }
+        }
+
+        [Test]
+        public void TestSync_ColorPresetName()
+        {
+            List<string> colorPresetSupportList1 = new List<string>() { "Standard", "Movie", "Game", "Custom Color" };
+            string colorPreset_Name1 = "Standard";
+            PrivateObject privateObject_colorPreset = new PrivateObject(colorPresetPlugin);
+            privateObject_colorPreset.SetFieldOrProperty("ColorPresetSupportList", colorPresetSupportList1);
+            var Sync_ColorPresetName_result1 = colorPresetPlugin.Sync_ColorPresetName(monitorInfo1, colorPreset_Name1).Result;
+            Assert.IsNotNull(Sync_ColorPresetName_result1);
+            Assert.That(colorPreset_Name1, Is.EqualTo(Sync_ColorPresetName_result1));
+
+            string colorPreset_Name2 = "Standard/Native";
+            var Sync_ColorPresetName_result2 = colorPresetPlugin.Sync_ColorPresetName(monitorInfo1, colorPreset_Name2).Result;
+            Assert.IsNotNull(Sync_ColorPresetName_result2);
+            Assert.That(colorPreset_Name1, Is.EqualTo(Sync_ColorPresetName_result2));
         }
 
     }
