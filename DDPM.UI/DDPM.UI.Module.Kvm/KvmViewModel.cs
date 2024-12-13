@@ -528,7 +528,8 @@ namespace DDPM.UI.Module.Kvm
                 //load hotkey setting
                 if (DdpmCommonHelper.DeviceManagerSA != null)
                 {
-                    var temp = DdpmCommonHelper.DeviceManagerSA.ReadCurrentHotkey(KvmModule?.SelectedHomeDevice?.MonitorInfo).Result;
+                    HomeDevice? selectedHomeDevice = KvmModule?.SelectedHomeDevice;
+                    var temp = DdpmCommonHelper.DeviceManagerSA.ReadCurrentHotkey(selectedHomeDevice?.MonitorInfo).Result;
                     HotkeySettings curHotkey = temp.Item1;
                     //0708 error handling for non-EE support monitor
                     string swHortcutText = string.Empty;
@@ -562,12 +563,66 @@ namespace DDPM.UI.Module.Kvm
                                     break;
                             }
                         }
-                        _kvmHotkeyTooltip = $"{HeadCaption} - {SwitchPCsKeyCaption}: {SwitchPCsKey}\r\n{HeadCaption} - {SwitchKbMsKeyCaption}: {SwitchKbMsKey}\r\n{HeadCaption} - {ChangePipKeyCaption}: {ChangePipKey}";
+
+                        if (selectedHomeDevice != null && selectedHomeDevice.HasCapability_PipPbp)
+                        {
+                            if (_curPxpMode == 0)
+                            {
+                                ObjGetVCP ret_PxP = DdpmCommonHelper.DeviceManagerSA.GetPxpMode(selectedHomeDevice.MonitorInfo).Result;
+                                if (ret_PxP != null && ret_PxP.result)
+                                {
+                                    UInt16 curPxpMode = Convert.ToUInt16(ret_PxP.value);
+                                    if (curPxpMode != 0)
+                                    {
+                                        _kvmHotkeyTooltip = $"{HeadCaption} - {SwitchPCsKeyCaption}: {SwitchPCsKey}\r\n{HeadCaption} - {SwitchKbMsKeyCaption}: {SwitchKbMsKey}\r\n{HeadCaption} - {ChangePipKeyCaption}: {ChangePipKey}";
+                                    }
+                                    else
+                                    {
+                                        _kvmHotkeyTooltip = $"{HeadCaption} - {SwitchPCsKeyCaption}: {SwitchPCsKey}\r\n{HeadCaption} - {SwitchKbMsKeyCaption}: {SwitchKbMsKey}";
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                _kvmHotkeyTooltip = $"{HeadCaption} - {SwitchPCsKeyCaption}: {SwitchPCsKey}\r\n{HeadCaption} - {SwitchKbMsKeyCaption}: {SwitchKbMsKey}\r\n{HeadCaption} - {ChangePipKeyCaption}: {ChangePipKey}";
+                            }
+                        }
+                        else
+                        {
+                            _kvmHotkeyTooltip = $"{HeadCaption} - {SwitchPCsKeyCaption}: {SwitchPCsKey}\r\n{HeadCaption} - {SwitchKbMsKeyCaption}: {SwitchKbMsKey}";
+                        }
                     }
                     else
                     {
                         string StrNone = LangHelper.Instance["None"];
-                        _kvmHotkeyTooltip = $"{HeadCaption} - {SwitchPCsKeyCaption}: {StrNone}\r\n{HeadCaption} - {SwitchKbMsKeyCaption}: {StrNone}\r\n{HeadCaption} - {ChangePipKeyCaption}: {StrNone}";
+                        if (selectedHomeDevice != null && selectedHomeDevice.HasCapability_PipPbp)
+                        {
+                            if (_curPxpMode == 0)
+                            {
+                                ObjGetVCP ret_PxP = DdpmCommonHelper.DeviceManagerSA.GetPxpMode(selectedHomeDevice.MonitorInfo).Result;
+                                if (ret_PxP != null && ret_PxP.result)
+                                {
+                                    UInt16 curPxpMode = Convert.ToUInt16(ret_PxP.value);
+                                    if (curPxpMode != 0)
+                                    {
+                                        _kvmHotkeyTooltip = $"{HeadCaption} - {SwitchPCsKeyCaption}: {StrNone}\r\n{HeadCaption} - {SwitchKbMsKeyCaption}: {StrNone}\r\n{HeadCaption} - {ChangePipKeyCaption}: {StrNone}";
+                                    }
+                                    else
+                                    {
+                                        _kvmHotkeyTooltip = $"{HeadCaption} - {SwitchPCsKeyCaption}: {StrNone}\r\n{HeadCaption} - {SwitchKbMsKeyCaption}: {StrNone}";
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                _kvmHotkeyTooltip = $"{HeadCaption} - {SwitchPCsKeyCaption}: {StrNone}\r\n{HeadCaption} - {SwitchKbMsKeyCaption}: {StrNone}\r\n{HeadCaption} - {ChangePipKeyCaption}: {StrNone}";
+                            }
+
+                        }
+                        else
+                        {
+                            _kvmHotkeyTooltip = $"{HeadCaption} - {SwitchPCsKeyCaption}: {StrNone}\r\n{HeadCaption} - {SwitchKbMsKeyCaption}: {StrNone}";
+                        }
                     }
                     if (curHotkey.HotkeyOptions.Count > 0 && curHotkey.HotkeyOptions.Any(x => x.Equals(HotkeyOption.KvmAutoApply)))
                     {
@@ -1519,7 +1574,7 @@ namespace DDPM.UI.Module.Kvm
             DdpmCommonHelper.DeviceManagerSA.NKVM_State(true).Wait();
             if (DdpmCommonHelper.DeviceManagerSA.IsNamedpipeConnected().Result)
             {
-//#if DEBUG
+                //#if DEBUG
                 isOnNKVM(true);
                 _log.Debug("NKVMOpenUI...");
                 DdpmCommonHelper.DeviceManagerSA.CallShowNKVM(0, 100, 100).Wait();
@@ -1530,11 +1585,11 @@ namespace DDPM.UI.Module.Kvm
             else
             {
                 DdpmCommonHelper.DeviceManagerSA.CreatNewNamedpipe().Wait();
-//#if DEBUG
-//                DdpmCommonHelper.DeviceManagerSA.CallShowNKVM(0, 100, 100).Wait();
-//#else
-//                OpenNKVMUI(0, 100, 100);
-//#endif
+                //#if DEBUG
+                //                DdpmCommonHelper.DeviceManagerSA.CallShowNKVM(0, 100, 100).Wait();
+                //#else
+                //                OpenNKVMUI(0, 100, 100);
+                //#endif
                 int i = 0;
                 while (!DdpmCommonHelper.DeviceManagerSA.IsNamedpipeConnected().Result && i < 20)
                 {
@@ -1685,7 +1740,13 @@ namespace DDPM.UI.Module.Kvm
             OnPropertyChanged("PC4Inputs_Selected");
             OnPropertyChanged("PCImage");
         }
-
+        public bool isPxpModeOn
+        {
+            get
+            {
+                return _curPxpMode != 0;
+            }
+        }
         #region Event
         /// <summary>
         /// Catch OSD menu event

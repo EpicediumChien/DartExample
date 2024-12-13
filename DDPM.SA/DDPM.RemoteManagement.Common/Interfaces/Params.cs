@@ -71,7 +71,7 @@
             public const int STATUS_COMMAND_ERROR_RESULT = 502;
             public const int STATUS_COMMAND_ERROR_RESULT_EXCEPTION = 503;
 
-            public static int UNKNOWN_ERROR = 9999;
+            public static readonly int UNKNOWN_ERROR = 9999;
 
         }
 

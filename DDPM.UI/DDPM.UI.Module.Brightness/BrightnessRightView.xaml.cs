@@ -210,16 +210,18 @@ namespace DDPM.UI.Module.Brightness
                 BrightnessViewModel vm = (BrightnessViewModel)DataContext;
                 if (vm != null)
                 {
-                    bool autoBrightnessStatus = vm.AutoBrightnessStatus;
+                    /*bool autoBrightnessStatus = vm.AutoBrightnessStatus;
                     if (autoBrightnessStatus)
                     {
                         //disable hotkey btn
-                        btnManualBrightnessContrast.IsEnabled = false;
+                        btnManualBrightnessContrast.IsEnabled = false;                                          
                     }
                     else
                     {
                         btnManualBrightnessContrast.IsEnabled = true;
-                    }
+                    }*/
+                    vm.updateHotkeyBtn();
+
 
                     Task.Run(() => vm.CloseSchedule());
                 }
@@ -944,6 +946,27 @@ namespace DDPM.UI.Module.Brightness
 
         private void Hyperlink_Click(object sender, RoutedEventArgs e)
         {
+        }
+
+        private void cbAutoBrightness_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            int _previousSelectedIndex = 0;
+            var comboBox = sender as ComboBox;
+            if (comboBox == null) return;
+            BrightnessViewModel vm = (BrightnessViewModel)DataContext;
+            if (vm.Start_ALSConfig.AutoBrightnessRangeLevel.Count != 0)
+            {
+                _previousSelectedIndex = (int)vm.Start_ALSConfig.AutoBrightnessRangeLevel[0].level_value;
+
+                int temp = (int)comboBox.SelectedIndex;// SelectedIndex;
+
+                if (temp == 0)
+                    comboBox.SelectedValue = Strings.ALSRangeLevelLow; //"Low";
+                else if (temp == 1)
+                    comboBox.SelectedValue = Strings.ALSRangeLevelMid; // "Mid";
+                else
+                    comboBox.SelectedValue = Strings.ALSRangeLevelHigh; //"High";
+            }
         }
     }
 }

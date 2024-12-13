@@ -1175,11 +1175,16 @@ namespace DDPM.SA.Common
         Task CloseQAMByDDPM();
         Task<bool> GetIsWidgetSettingPageLoadedByQAMAsync();
         Task SetIsWidgetSettingPageLoadedByQAMAsync(bool newValue);
+        Task SyncWebcamProfile(string profileName, bool isActionFromQAM = true); //Derek 1212
+        Task WriteLog(string logMsg); //Derek 1210
         #endregion
 
-        #region System Suspend & Resume
+        #region System Suspend & Resume & SessionEnd
         event EventHandler SystemSuspend;
         event EventHandler SystemResume;
+        event EventHandler SystemSessionEnd;
+
+        Task FireSystemSessionEnd();
         #endregion
     }
 }

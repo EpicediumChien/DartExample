@@ -12,7 +12,7 @@ namespace DDPM.SA.Common
         /// <summary>
         /// For monitors that automatically rotate OS, there is no need to set the screen orientation.
         /// </summary>
-        public static List<string> AutoRotateOSMonitorList = new List<string>
+        public static readonly List<string> AutoRotateOSMonitorList = new List<string>
         {
             "P1425"
         };
