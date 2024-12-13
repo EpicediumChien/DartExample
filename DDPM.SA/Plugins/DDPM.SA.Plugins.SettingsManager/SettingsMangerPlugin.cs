@@ -37,8 +37,6 @@ using DDPM.SA.Obfuscation;
 using System.Net.NetworkInformation;
 using System.Windows.Interop;
 using DDPMSettings = DDPM.SA.Common.Settings;
-using System.Data.SqlTypes;
-using MS.WindowsAPICodePack.Internal;
 
 namespace DDPM.SA.Plugins.SettingsManager
 {
