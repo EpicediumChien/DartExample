@@ -4,6 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:DDPM.EABroker"
+        xmlns:vcpCore="clr-namespace:VcpCore.Common;assembly=VcpCore.Common"
         mc:Ignorable="d"
         Title="InfoWindow" Height="300" Width="840" 
         Left="-99999" Top="-9999"
@@ -178,12 +179,36 @@
                 </ScrollViewer>
             </TabItem>
             <TabItem Header="Layouts">
-                <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="*"/>
-                        <RowDefinition Height="Auto"/>
-                    </Grid.RowDefinitions>
-                    <ListBox Name="lbLayouts" Grid.Row="0" MaxHeight="200"
+                <StackPanel Margin="8">
+                    <WrapPanel Margin="0,4">
+                        <TextBlock Text="Monitor:"/>
+                        <ComboBox Name="cbMonitors" Width="200">
+                            <ComboBox.ItemTemplate>
+                                <DataTemplate DataType="vcpCore:MonitorInfo">
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="{Binding modelName}"/>
+                                        <TextBlock Text=" - "/>
+                                        <TextBlock Text="{Binding edid.ServiceTag}"/>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </ComboBox.ItemTemplate>
+                        </ComboBox>
+                        <Button Name="refreshMonitorsButton" Content="RefreshMonitors" Margin="4,0"
+                                Click="refreshMonitorsButton_Click"/>
+                        <TextBlock Text="Layout.EAID:"/>
+                        <TextBox Name="tbEAId" Width="48"/>
+                        <Button Name="SetSelectedLayoutButton" Content="SetSelectedLayut" Margin="4,0"
+                                Click="SetSelectedLayoutButton_Click"/>
+                    </WrapPanel>
+                    <WrapPanel Margin="0,4">
+                        <Button Name="refreshRecentListButton" Content="RefreshRecentList" Click="refreshRecentListButton_Click"/>
+                        <TextBlock Name="txtRecentList" TextWrapping="Wrap" FontFamily="Consolas" FontSize="10" Margin="12,0,0,0"/>
+                    </WrapPanel>
+                    <WrapPanel Margin="0,4">
+                        <Button Name="refreshCustoListButton" Content="RefreshCustomList" Click="refreshCustoListButton_Click"/>
+                        <TextBlock Name="txtCustomList" TextWrapping="Wrap" FontFamily="Consolas" FontSize="10" Margin="12,0,0,0"/>
+                    </WrapPanel>
+                    <!--<ListBox Name="lbLayouts" Grid.Row="1" MaxHeight="200"
                              ScrollViewer.HorizontalScrollBarVisibility="Disabled" 
                              ScrollViewer.VerticalScrollBarVisibility="Auto">
                         <ListBox.ItemsPanel>
@@ -191,13 +216,8 @@
                                 <WrapPanel />
                             </ItemsPanelTemplate>
                         </ListBox.ItemsPanel>
-                    </ListBox>
-                    <WrapPanel Grid.Row="1">
-                        <Button Content="Select" Click="sekectLayoutButton_Click"/>
-                        <Button Content="Reload" Click="reloadCustomLayoutsButton_Click"/>
-                        <Button Content="Edit"/>
-                    </WrapPanel>
-                </Grid>
+                    </ListBox>-->
+                 </StackPanel>
             </TabItem>
             <TabItem Header="SpanMonitors">
                 <ScrollViewer>
@@ -219,15 +239,15 @@
             </TabItem>
         </TabControl>
         
-        <!-- Row 0: Window Moving info -->
+        <!-- Row 0: Window Moving info --><!--
         <StackPanel Grid.Row="0">
-            <!-- Moving Window -->
+            --><!-- Moving Window --><!--
         </StackPanel>
-        <!-- Row 1: AWS Icons -->
+        --><!-- Row 1: AWS Icons --><!--
         <StackPanel Grid.Row="1">
         </StackPanel>
-        <!-- Row 2: WorkWindows -->
+        --><!-- Row 2: WorkWindows --><!--
         <StackPanel Grid.Row="2">
-        </StackPanel>
+        </StackPanel>-->
     </Grid>
 </Window>
