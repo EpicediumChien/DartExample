@@ -14,10 +14,12 @@ namespace DDPM.UI.Plugin.Common
     {
         private readonly string Caption = "";
         private readonly string DownloadPage = "Download Dell Audio";
+        private readonly string Model = "";
+        private readonly string FirmwareVersion2 = "";
 
         public string Parameter { get; private set; } = "";
 
-        public LearnMorePage(double width, double height, string parameter)
+        public LearnMorePage(double width, double height, string parameter, string model, string fwv)
         {
             InitializeComponent();
             this.Width = width;
@@ -25,6 +27,8 @@ namespace DDPM.UI.Plugin.Common
             Caption = parameter;
             txtTitleBar.Text = Caption;
             txtCaption.Text = Caption;
+            TxBlockModel.Text = model;
+            TxBlockToolTip.Text = fwv;
 
             DdpmCommonHelper.BitmapImageUpdated += ImageUpdate;
         }
