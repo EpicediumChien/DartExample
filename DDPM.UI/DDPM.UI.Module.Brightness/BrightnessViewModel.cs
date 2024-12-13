@@ -3227,7 +3227,7 @@ namespace DDPM.UI.Module.Brightness
         /// </summary>
         public string AutoBrightness_String
         {
-            get => Start_ALSConfig.isAutoBrightness ? "ON" : "OFF";
+            get => Start_ALSConfig.isAutoBrightness ? Strings.On : Strings.Off;
         }
 
         public bool SupportedAutoColorTemp { get; set; } = true;
@@ -3278,7 +3278,7 @@ namespace DDPM.UI.Module.Brightness
         /// </summary>
         public string AutoColorTemp_String
         {
-            get => Start_ALSConfig.isAutoColorTemp ? "ON" : "OFF";
+            get => Start_ALSConfig.isAutoColorTemp ? Strings.On : Strings.Off;
         }
 
         private bool _supportedPrimaryMonitorSync = true;
@@ -3339,7 +3339,7 @@ namespace DDPM.UI.Module.Brightness
         /// </summary>
         public string PrimaryMonitorSync_String
         {
-            get => Start_ALSConfig.isPrimaryMonitorSync ? "ON" : "OFF";
+            get => Start_ALSConfig.isPrimaryMonitorSync ? Strings.On : Strings.Off;
         }
 
         /// <summary>
