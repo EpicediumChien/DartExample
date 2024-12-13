@@ -4786,7 +4786,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to An new monitor %1 is detected..
+        ///   Looks up a localized string similar to A new monitor %1 is detected..
         /// </summary>
         internal static string ImpExp_Title_0 {
             get {
