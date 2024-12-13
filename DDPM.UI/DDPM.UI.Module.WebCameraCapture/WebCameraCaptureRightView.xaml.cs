@@ -126,7 +126,10 @@ namespace DDPM.UI.Module.WebCameraCapture
                 InitializeFPS();
 
                 //for default 30 fps
-                _vm.SetFPS_Selected(1);
+                List<string> FPS = _vm.WebcamSettings.SupportedFPSs[_vm.WebcamSettings.SelectedResolution];
+                int index = FPS.FindIndex(x => x == "30");
+                if (index != -1)
+                    _vm.SetFPS_Selected(1);
 
                 foreach (var property in _vm.allProperties)
                 {
