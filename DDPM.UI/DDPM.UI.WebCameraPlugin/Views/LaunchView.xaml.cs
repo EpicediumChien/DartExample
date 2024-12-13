@@ -1030,7 +1030,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             txtTimer.Text = stopwatch.Elapsed.ToString(@"hh\:mm\:ss");
 
             //這邊做錄影長度限制 2小時
-            if (txtTimer.Text == "02:00:01")
+            if( txtTimer.Text == "02:00:01" )
             {
                 Dispatcher.Invoke(new Action(() =>
                 {
@@ -1038,7 +1038,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                 }));
             }
 
-            if (!HasEnoughSpace(_vm!.VideoCaptureFolder, 20 * 1024 * 1024))//不到20MB時停止錄影
+            if(!HasEnoughSpace(_vm!.VideoCaptureFolder, 20 * 1024 * 1024))//不到20MB時停止錄影
             {
                 Dispatcher.Invoke(new Action(() =>
                 {
@@ -1697,7 +1697,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
         private void btnRecord_Click(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
 
-            if (!HasEnoughSpace(_vm!.VideoCaptureFolder, 20 * 1024 * 1024))
+            if(!HasEnoughSpace(_vm!.VideoCaptureFolder, 20 * 1024 * 1024))
             {
                 return;
             }
