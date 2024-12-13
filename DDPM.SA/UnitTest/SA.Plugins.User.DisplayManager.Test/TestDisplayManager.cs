@@ -1,12 +1,14 @@
 ﻿using DDPM.SA.Common;
 using DDPM.SA.Common.Display;
 using DDPM.SA.Common.Interfaces;
+using DDPM.SA.Common.Settings;
 using DDPM.SA.Plugins.User.DisplayProperties;
 using DDPM.SA.Plugins.User.EasyArrange;
 using DDPM.SA.Plugins.User.PipPbpManger;
 using Dell.Client.Framework.Interfaces;
 using Dell.Client.Framework.UnitTestShared.Tests;
 using Moq;
+using System.DirectoryServices.ActiveDirectory;
 using VcpCore.Common;
 using VcpCore.Interfaces;
 using VcpCore.Plugins;
@@ -43,6 +45,13 @@ namespace DDPM.SA.Plugins.User.DisplayManager.Test
             //CapabilityDic = capabilityDic;
         };
 
+        private static List<ALSConfig> AllALSConfig;
+        public static List<ALSConfig> _AllALSConfig
+        {
+            get => AllALSConfig;
+            set => AllALSConfig = value;
+        }
+
         private ALSConfig aconfig = new ALSConfig()
         {
             DisplayName = "DISPLAY7",
@@ -55,6 +64,8 @@ namespace DDPM.SA.Plugins.User.DisplayManager.Test
             LiftTone = 0,
             AllValue = 0,
             result = false,
+            ModelName = "DISPLAY7",
+            Edid = new EDID() { SerialNumber = "808597589", ServiceTag = "123456" },
             AutoBrightnessRangeLevel = new List<AutoBrightnessRangeLevel>() { new AutoBrightnessRangeLevel() { level_name = "Low", level_value = 0 } }
         };
 
@@ -776,15 +787,17 @@ namespace DDPM.SA.Plugins.User.DisplayManager.Test
             {
             new InputSourceObj { Name = "DisplayPort-1" }
             };
+            string InputType1 = "HDMI-1";
+            string InputType2 = "DisplayPort-1";
             var result = displayPlugin.GetUSBKVMPCsList(monitorInfo1, inputlist1, subInputList).Result;
             Assert.IsNotNull(result);
             Assert.Greater(result.Count, 0);
             Assert.IsTrue(result.ContainsKey("PC1"));
             Assert.IsTrue(result.ContainsKey("PC2"));
             Assert.That(InputName1, Is.EqualTo(result["PC1"].InputName));
-            Assert.That(USBUpstream1, Is.EqualTo(result["PC1"].USBUpstream));
+            Assert.That(InputType1, Is.EqualTo(result["PC1"].InputType));
             Assert.That(InputName2, Is.EqualTo(result["PC2"].InputName));
-            Assert.That(USBUpstream2, Is.EqualTo(result["PC2"].USBUpstream));
+            Assert.That(InputType2, Is.EqualTo(result["PC2"].InputType));
         }
 
         [Test]
@@ -899,9 +912,9 @@ namespace DDPM.SA.Plugins.User.DisplayManager.Test
                 result = false,
                 AutoBrightnessRangeLevel = new List<AutoBrightnessRangeLevel>() { new AutoBrightnessRangeLevel() { level_name = "Low", level_value = 0 } }
             };
-            List<ALSConfig> allALSConfig = new List<ALSConfig>();
-            allALSConfig.Add(aconfig);
-            DisplayMangerPlugin.AllALSConfig = allALSConfig;
+            _AllALSConfig = new List<ALSConfig>();
+            _AllALSConfig.Add(aconfig);
+            DisplayMangerPlugin.AllALSConfig = _AllALSConfig;
             var allALSConfig_ = DisplayMangerPlugin.AllALSConfig;
 
             if (type != ALSFeatureQueryType.MMS)
@@ -947,9 +960,15 @@ namespace DDPM.SA.Plugins.User.DisplayManager.Test
                 result = false,
                 AutoBrightnessRangeLevel = new List<AutoBrightnessRangeLevel>() { new AutoBrightnessRangeLevel() { level_name = "Low", level_value = 0 } }
             };
-            List<ALSConfig> allALSConfig = new List<ALSConfig>();
-            allALSConfig.Add(monitorALS);
-            DisplayMangerPlugin.AllALSConfig = allALSConfig;
+            //List<ALSConfig> allALSConfig = new List<ALSConfig>();
+            //allALSConfig.Add(monitorALS);
+            //DisplayMangerPlugin.AllALSConfig = allALSConfig;
+            //var allALSConfig_ = DisplayMangerPlugin.AllALSConfig;
+            //var GetConnectedALSConfig_ = allALSConfig_[0];
+
+            _AllALSConfig = new List<ALSConfig>();
+            _AllALSConfig.Add(aconfig);
+            DisplayMangerPlugin.AllALSConfig = _AllALSConfig;
             var allALSConfig_ = DisplayMangerPlugin.AllALSConfig;
             var GetConnectedALSConfig_ = allALSConfig_[0];
 
@@ -994,9 +1013,14 @@ namespace DDPM.SA.Plugins.User.DisplayManager.Test
         [Test]
         public void TestGetAllExistAlsConfig()
         {
-            List<ALSConfig> allALSConfig = new List<ALSConfig>();
-            allALSConfig.Add(aconfig);
-            DisplayMangerPlugin.AllALSConfig = allALSConfig;
+            //List<ALSConfig> allALSConfig = new List<ALSConfig>();
+            //allALSConfig.Add(aconfig);
+            //DisplayMangerPlugin.AllALSConfig = allALSConfig;
+            //var allALSConfig_ = DisplayMangerPlugin.AllALSConfig;
+
+            _AllALSConfig = new List<ALSConfig>();
+            _AllALSConfig.Add(aconfig);
+            DisplayMangerPlugin.AllALSConfig = _AllALSConfig;
             var allALSConfig_ = DisplayMangerPlugin.AllALSConfig;
 
             var result = displayPlugin.GetAllExistAlsConfig().Result;
@@ -1024,9 +1048,15 @@ namespace DDPM.SA.Plugins.User.DisplayManager.Test
                 result = false,
                 AutoBrightnessRangeLevel = new List<AutoBrightnessRangeLevel>() { new AutoBrightnessRangeLevel() { level_name = "Low", level_value = 0 } }
             };
-            List<ALSConfig> allALSConfig = new List<ALSConfig>();
-            allALSConfig.Add(monitorALS);
-            DisplayMangerPlugin.AllALSConfig = allALSConfig;
+            //List<ALSConfig> allALSConfig = new List<ALSConfig>();
+            //allALSConfig.Add(monitorALS);
+            //DisplayMangerPlugin.AllALSConfig = allALSConfig;
+            //var allALSConfig_ = DisplayMangerPlugin.AllALSConfig;
+            //var GetConnectedALSConfig_ = allALSConfig_[0];
+
+            _AllALSConfig = new List<ALSConfig>();
+            _AllALSConfig.Add(aconfig);
+            DisplayMangerPlugin.AllALSConfig = _AllALSConfig;
             var allALSConfig_ = DisplayMangerPlugin.AllALSConfig;
             var GetConnectedALSConfig_ = allALSConfig_[0];
 
@@ -1068,9 +1098,15 @@ namespace DDPM.SA.Plugins.User.DisplayManager.Test
                 result = false,
                 AutoBrightnessRangeLevel = new List<AutoBrightnessRangeLevel>() { new AutoBrightnessRangeLevel() { level_name = "Low", level_value = 0 } }
             };
-            List<ALSConfig> allALSConfig = new List<ALSConfig>();
-            allALSConfig.Add(monitorALS);
-            DisplayMangerPlugin.AllALSConfig = allALSConfig;
+            //List<ALSConfig> allALSConfig = new List<ALSConfig>();
+            //allALSConfig.Add(monitorALS);
+            //DisplayMangerPlugin.AllALSConfig = allALSConfig;
+            //var allALSConfig_ = DisplayMangerPlugin.AllALSConfig;
+            //var GetConnectedALSConfig_ = allALSConfig_[0];
+
+            _AllALSConfig = new List<ALSConfig>();
+            _AllALSConfig.Add(aconfig);
+            DisplayMangerPlugin.AllALSConfig = _AllALSConfig;
             var allALSConfig_ = DisplayMangerPlugin.AllALSConfig;
             var GetConnectedALSConfig_ = allALSConfig_[0];
 
@@ -1149,8 +1185,11 @@ namespace DDPM.SA.Plugins.User.DisplayManager.Test
                 result = false,
                 AutoBrightnessRangeLevel = new List<AutoBrightnessRangeLevel>() { new AutoBrightnessRangeLevel() { level_name = "Low", level_value = 0 } }
             };
-            List<ALSConfig> allALSConfig = new List<ALSConfig>();
-            allALSConfig.Add(aconfig);
+            //List<ALSConfig> allALSConfig = new List<ALSConfig>();
+            //allALSConfig.Add(aconfig);
+
+            _AllALSConfig = new List<ALSConfig>();
+            _AllALSConfig.Add(aconfig);
 
             ObjGetVCP ObjGetvcp = new ObjGetVCP() { result = true, value = 305u }; //0x66
             var ObjGetvcpValue = ObjGetvcp.value;
@@ -1177,7 +1216,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager.Test
             }
             else
             {
-                DisplayMangerPlugin.AllALSConfig = allALSConfig;
+                DisplayMangerPlugin.AllALSConfig = _AllALSConfig;
                 var allALSConfig2 = DisplayMangerPlugin.AllALSConfig;
                 var result = displayPlugin.UpdateALSFeatureValue(monitorInfo1).Result;
                 Assert.IsTrue(result);
@@ -2434,6 +2473,108 @@ namespace DDPM.SA.Plugins.User.DisplayManager.Test
             PrivateObject privatedispalypluginObject = new PrivateObject(displayPlugin);
             var result = privatedispalypluginObject.Invoke("InitializeDisplayPropertiesPlugin");
             Assert.IsNotNull(displayPropertiesPlugin);
+        }
+
+        [Test]
+        public void TestSyncPrimaryMonitorBrightnessAndColorTemp()
+        {
+            MonitorInfo monitorInfoMain = monitorInfo1;
+            MonitorInfo monitorvalue = monitorInfo1;
+            string vcpcode;
+            ObjGetVCP val = new ObjGetVCP() { result = true, value = (uint)20 };
+            vcpcode = "60";
+            Mock<IVcpCoreService> mockVcpCoreService = new Mock<IVcpCoreService>();
+            if (vcpcode != "67" || vcpcode != "68")
+            {
+                var result = displayPlugin.SyncPrimaryMonitorBrightnessAndColorTemp(monitorInfoMain, monitorvalue, vcpcode, val).Result;  // vcpcode = "60"
+                Assert.IsTrue(result);
+            }
+
+            vcpcode = "68";
+            PrivateObject privatedispalypluginObject = new PrivateObject(displayPlugin);
+            mockVcpCoreService.Setup(x => x.SetVCPCapability(It.IsAny<MonitorInfo>(), It.IsAny<byte>(), It.IsAny<uint>())).Returns(Task.FromResult(true));
+            privatedispalypluginObject.SetFieldOrProperty("_VcpCorePlugin", mockVcpCoreService.Object);
+
+            if (vcpcode == "67" || vcpcode == "68")
+            {
+                var result = displayPlugin.SyncPrimaryMonitorBrightnessAndColorTemp(monitorInfoMain, monitorvalue, vcpcode, val).Result; // vcpcode = "68"
+                Assert.IsTrue(result);
+            }
+
+            vcpcode = "67";
+            if (vcpcode == "67" || vcpcode == "68")
+            {
+                var result = displayPlugin.SyncPrimaryMonitorBrightnessAndColorTemp(monitorInfoMain, monitorvalue, vcpcode, val).Result; //vcpcode = "67"
+                Assert.IsTrue(result);
+            }
+        }
+
+        [Test]
+        public void TestSyncPrimaryMonitorValueToOtherMonitor()
+        {
+            MonitorInfo moMain = monitorInfo1;
+            List<MonitorInfo> monitorAll = new List<MonitorInfo>();
+            MonitorInfo monitorInfoALS = new MonitorInfo() { DisplayName = "TestDisplay12", AliasDeviceName = "TestDisplay12", edid = new EDID() { ServiceTag = "123456", SerialNumber = "123456" } };
+            monitorAll.Add(monitorInfo1);
+            monitorAll.Add(monitorInfoALS);
+            aconfig.Edid = new EDID() { ServiceTag = "123456", SerialNumber = "123456" };
+            _AllALSConfig = new List<ALSConfig>();
+            _AllALSConfig.Add(aconfig);
+            List<ALSConfig> exitAls = _AllALSConfig;
+            ALSConfig moMainvalue = aconfig;
+            string vcpcode = "20";
+
+            Mock<IVcpCoreService> mockVcpCoreService = new Mock<IVcpCoreService>();
+            PrivateObject privatedispalypluginObject = new PrivateObject(displayPlugin);
+            privatedispalypluginObject.SetFieldOrProperty("_VcpCorePlugin", mockVcpCoreService.Object);
+            ObjGetVCP obBrightnessContrast = new ObjGetVCP() { result = true, value = (uint)30 };
+            ObjGetVCP obColor = new ObjGetVCP() { result = true, value = (uint)20 };
+            mockVcpCoreService.Setup(x => x.GetVCPCapability(It.IsAny<MonitorInfo>(), It.IsAny<byte>(), It.IsAny<int>())).Returns(Task.FromResult(obBrightnessContrast));
+            mockVcpCoreService.Setup(x => x.GetVCPCapability(It.IsAny<MonitorInfo>(), It.IsAny<string>(), It.IsAny<int>())).Returns(Task.FromResult(obColor));
+            mockVcpCoreService.Setup(x => x.SetVCPCapability(It.IsAny<MonitorInfo>(), It.IsAny<byte>(), It.IsAny<uint>())).Returns(Task.FromResult(true));
+            mockVcpCoreService.Setup(x => x.SetVCPCapability(It.IsAny<MonitorInfo>(), It.IsAny<string>(), It.IsAny<string>())).Returns(Task.FromResult(true));
+            var result = displayPlugin.SyncPrimaryMonitorValueToOtherMonitor(moMain, monitorAll, ref exitAls, moMainvalue, vcpcode).Result;
+            Assert.IsTrue(result);
+        }
+
+        [Test]
+        public void TestUpdateExistAlsConfig()
+        {
+            MonitorInfo monitorInfoAL = new MonitorInfo() { DisplayName = "TestDisplay12", AliasDeviceName = "TestDisplay12", edid = new EDID() { ServiceTag = "123456", SerialNumber = "123456" } };
+            List<MonitorInfo> monitorInfoMain = new List<MonitorInfo>();
+            monitorInfoMain.Add(monitorInfoAL);
+            aconfig.Edid = new EDID() { ServiceTag = "123456", SerialNumber = "123456" };
+            _AllALSConfig = new List<ALSConfig>();
+            _AllALSConfig.Add(aconfig);
+            DisplayMangerPlugin.AllALSConfig = _AllALSConfig;
+            var allALSConfig_ = DisplayMangerPlugin.AllALSConfig;
+
+            var UpdateExistAlsConfig_result = displayPlugin.UpdateExistAlsConfig(monitorInfoMain).Result;
+            Assert.IsNotNull(UpdateExistAlsConfig_result);
+            Assert.Greater(UpdateExistAlsConfig_result.Count, 0);
+        }
+
+        [Test]
+        public void TestisScreenPartition()
+        {
+            Mock<IVcpCoreService> mockVcpCoreService = new Mock<IVcpCoreService>();
+            PrivateObject privatedispalypluginObject = new PrivateObject(displayPlugin);
+            privatedispalypluginObject.SetFieldOrProperty("_VcpCorePlugin", mockVcpCoreService.Object);
+            ObjGetVCP isNotScreenPartition = new ObjGetVCP() { result = false, value = (uint)30 };
+            ObjGetVCP isScreenPartition = new ObjGetVCP() { result = true, value = (uint)256 };   //The eighth position is 1
+            mockVcpCoreService.Setup(x => x.GetVCPCapability(It.IsAny<MonitorInfo>(), It.IsAny<byte>(), It.IsAny<int>())).Returns(Task.FromResult(isNotScreenPartition));
+            if (isNotScreenPartition != null && !isNotScreenPartition.result)
+            {
+                var isScreenPartition_result1 = displayPlugin.isScreenPartition(monitorInfo1).Result;
+                Assert.IsFalse(isScreenPartition_result1);
+            }
+
+            mockVcpCoreService.Setup(x => x.GetVCPCapability(It.IsAny<MonitorInfo>(), It.IsAny<byte>(), It.IsAny<int>())).Returns(Task.FromResult(isScreenPartition));
+            if (isScreenPartition != null && isScreenPartition.result)
+            {
+                var isScreenPartition_result2 = displayPlugin.isScreenPartition(monitorInfo1).Result;
+                Assert.IsTrue(isScreenPartition_result2);
+            }
         }
     }
 }
