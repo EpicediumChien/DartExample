@@ -604,7 +604,6 @@ namespace VcpCore.Plugins
         {
             var can_Time = new CancellationTokenSource(15000);
             var canI_All = CancellationTokenSource.CreateLinkedTokenSource(can_Time.Token, token);
-
             while (!IsFinishedAlready)
             {
                 if (canI_All.Token.IsCancellationRequested)
