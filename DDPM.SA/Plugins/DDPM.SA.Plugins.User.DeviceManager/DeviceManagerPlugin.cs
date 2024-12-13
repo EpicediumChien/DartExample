@@ -15034,7 +15034,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         private bool CopyFile(string copyPath, string savePath)
         {
             writelog($"{nameof(CopyFile)} start");
-            Method method = new Method(Log);
+            Method method = new Method(Log);//Bruce 1213 Move the method to the common code
             bool ret = false;
             if (_DisplayManagerPlugin != null)
             {
@@ -15044,17 +15044,17 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     Directory.CreateDirectory(savePath);
                 }
 
-                if (method.DirectoryContainsFiles(copyPath))
+                if (method.DirectoryContainsFiles(copyPath))//Bruce 1213 Move the method to the common code
                 {
                     // 取得資料夾名稱
-                    string folderName = method.GetFolderName(copyPath);
+                    string folderName = method.GetFolderName(copyPath);//Bruce 1213 Move the method to the common code
                     // 複製指定的 log 文件到選擇的資料夾
-                    method.CopyLogFolder(copyPath, savePath);
+                    method.CopyLogFolder(copyPath, savePath);//Bruce 1213 Move the method to the common code
                     writelog($"{nameof(CopyFile)} end");
                     return true;
                 }
             }
-            if (method != null)
+            if (method != null)//Bruce 1213 Move the method to the common code
             {
                 method.Dispose();
                 method = null;
