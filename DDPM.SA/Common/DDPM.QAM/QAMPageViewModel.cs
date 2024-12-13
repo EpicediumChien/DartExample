@@ -22,6 +22,8 @@ using System.Windows.Input;
 using System.Diagnostics;
 using System.Windows.Interop;
 using Windows.Data.Text;
+using System.Windows.Media.Media3D;
+using System.Linq.Expressions;
 
 namespace DDPM.QAM
 {
@@ -32,6 +34,8 @@ namespace DDPM.QAM
         public bool[] Settings_IsEnable { get; set; } = { true, true, true, true };
         public bool[] Settings_IsSelected { get; set; } = { false, false, false, false };
         public Visibility[] Settings_IsVisibility { get; set; } = { Visibility.Visible, Visibility.Visible, Visibility.Visible, Visibility.Visible };
+        
+        private string selectedProfileName = string.Empty;
 
         public event PropertyChangedEventHandler? PropertyChanged;
         public void OnPropertyChanged(string propertyName)
@@ -47,12 +51,14 @@ namespace DDPM.QAM
         public QAMPageViewModel()
         {
             List<DeviceInfo> deviceInfos = DdpmCommonHelper.DeviceManagerSA!.GetDevices().Result.deviceInfo;
+
             if (deviceInfos != null && deviceInfos.Count > 0)
             {
                 CurrentDeviceInfo = deviceInfos.FirstOrDefault(x => (x.PhysicalDeviceType.Equals(DeviceType.LogicalWebcam) || x.PhysicalDeviceType.Equals(DeviceType.PhysicalWebcam)));
                 if (CurrentDeviceInfo != null)
                 {
-                    DeviceModel = CurrentDeviceInfo.Name;
+                    //DeviceModel = CurrentDeviceInfo.Name;
+                    DeviceModel = CurrentDeviceInfo.Name + " " + CurrentDeviceInfo.ModelNumber; //Derek 1213
                     ImportWebcamProfiles(CurrentDeviceInfo.ModelNumber);
                     ZoomMax = CurrentDeviceInfo.ZoomMax;
                     ZoomMin = CurrentDeviceInfo.ZoomMin;
@@ -60,6 +66,7 @@ namespace DDPM.QAM
                     {
                         Settings_IsVisibility[1] = Visibility.Collapsed;
                     }
+
                     for (int k = 0; k < CurrentDeviceInfo!.FOVValues.Length; k++)
                     {
                         _fOVs[k] = int.Parse(CurrentDeviceInfo!.FOVValues[k]);
@@ -134,7 +141,7 @@ namespace DDPM.QAM
                             if (int.TryParse(eventMsg.NewValue, out currentValue))
                                 ZoomValue = currentValue;
 
-                        break;
+                            break;
 
 
                         case "Webcam_FieldOfViewChanged":
@@ -154,6 +161,20 @@ namespace DDPM.QAM
                             break;
                     }
                 }
+                else if (e.UI_Field_Name.StartsWith("WebcamProfileFromDDPM")) //1212 Derek
+                {
+                    //format "WebcamProfileFromDDPM:{profileName}"
+                    string[] msgs = e.UI_Field_Name.Split(':');
+
+                    if (null != msgs && msgs.Length == 2)
+                    {
+                        if (SetProfile(msgs[1]))
+                            LogMsg($"QAMPageViewModel_UIUpdateNotify: set webcam profile:{msgs[1]} successfully.");
+                        else
+                            LogMsg($"QAMPageViewModel_UIUpdateNotify: set webcam profile:{msgs[1]} fail!");
+                    }
+                }
+
             }
             catch (Exception ex)
             {
@@ -199,6 +220,9 @@ namespace DDPM.QAM
                     string json = File.ReadAllText(filePath);
                     var jsonObject = Newtonsoft.Json.Linq.JObject.Parse(json);
                     string presetProfilesString = jsonObject["PresetProfiles"].ToString();
+                    //Derek 1212
+                    selectedProfileName = jsonObject["SelectedProfileName"].ToString();
+                    LogMsg($"ImportWebcamProfiles current SelectedProfileName: {selectedProfileName}");
 
                     if (!string.IsNullOrEmpty(presetProfilesString))
                     {
@@ -238,8 +262,47 @@ namespace DDPM.QAM
             }
             catch (Exception e)
             {
-                DdpmCommonHelper.DeviceManagerSA!.WriteLog($"Catch exception: {e.Message}");
+                LogMsg($"Catch exception: {e.Message}");
             }
+        }
+
+        private bool SetProfile(string name)
+        {
+            try
+            {
+                foreach (var profile in UI_ProfileList)
+                {
+                    //LogMsg($"Profile_Name_Key: {profile.Profile_Name_Key}, Profile_Name: {profile.Profile_Name}");
+
+                    if (profile.Profile_Name_Key.Equals(name))
+                    {
+                        SetProfile(profile);
+
+                        return true;
+                    }
+                }
+                    
+                LogMsg($"Could not found {name} in current UI_ProfileList.");
+
+                return false;
+            }
+            catch (Exception e)
+            {
+                LogMsg($"Catch exception: {e.Message}");
+
+                return false;
+            }
+        }
+
+        public void SendSelectProfileToDDPM()
+        {
+            DdpmCommonHelper.DeviceManagerSA!.SyncWebcamProfile(selectedProfileName);
+        }
+
+        public void SetProfile()
+        {
+            if (selectedProfileName != null && selectedProfileName != string.Empty)
+                SetProfile(selectedProfileName);
         }
 
         public void SetProfile(UI_Profile CurrentProfileName)
@@ -265,6 +328,7 @@ namespace DDPM.QAM
                         DdpmCommonHelper.DeviceManagerSA!.SetAutoFramingFrameSize(CurrentDeviceInfo!.ID.ToString(), CurrentProfile.AutoFramingFrameSize);
                     }
                 }
+
                 if (CurrentDeviceInfo.IsPropertyFOVSupported)
                 {
                     if (_fOVs[0] == CurrentProfile.FieldOfView)
@@ -280,43 +344,79 @@ namespace DDPM.QAM
                         FOV_Selected(2);
                     }
                 }
+
                 if (CurrentDeviceInfo.IsPropertyZoomSupported)
                 {
                     DdpmCommonHelper.DeviceManagerSA!.SetZoom(CurrentDeviceInfo!.ID.ToString(), CurrentProfile.Zoom);
                     _ZoomValue = CurrentProfile.Zoom;
                 }
+
                 if (CurrentDeviceInfo.IsPropertyFocusSupported)
                 {
                     DdpmCommonHelper.DeviceManagerSA!.SetIsFocusOn(CurrentDeviceInfo!.ID.ToString(), CurrentProfile.IsFocusOn);
                     DdpmCommonHelper.DeviceManagerSA!.SetFocus(CurrentDeviceInfo!.ID.ToString(), CurrentProfile.Focus);
                 }
+
                 if (CurrentDeviceInfo.IsPropertyPrioritySupported)
                 {
                     DdpmCommonHelper.DeviceManagerSA!.SetPriority(CurrentDeviceInfo!.ID.ToString(), CurrentProfile.Priority);
                 }
+
                 if (CurrentDeviceInfo.IsPropertyHDRSupported)
                 {
                     DdpmCommonHelper.DeviceManagerSA!.SetIsHDROn(CurrentDeviceInfo!.ID.ToString(), CurrentProfile.IsHDROn);
                 }
+
                 if (CurrentDeviceInfo.IsPropertyWhiteBalanceSupported)
                 {
                     DdpmCommonHelper.DeviceManagerSA!.SetIsAutoWhiteBalanceOn(CurrentDeviceInfo!.ID.ToString(), CurrentProfile.IsAutoWhiteBalanceOn);
                     DdpmCommonHelper.DeviceManagerSA!.SetAutoWhiteBalance(CurrentDeviceInfo!.ID.ToString(), CurrentProfile.AutoWhiteBalance);
                 }
+
                 List<UI_Profile> temp = UI_ProfileList.ToList();
                 UI_ProfileList = new ObservableCollection<UI_Profile>();
                 foreach (var profile in temp)
                 {
                     profile.IsSelected = false;
+
                     if (profile.Profile_Name.Equals(CurrentProfileName.Profile_Name))
                     {
                         profile.IsSelected = true;
+                        selectedProfileName = profile.Profile_Name_Key;
                     }
                     UI_ProfileList.Add(profile);
                 }
+
                 RefreshUI();
+
+                //SaveSelectProfile(CurrentProfileName.Profile_Name_Key);
             }
         }
+
+        private void SaveSelectProfile(string profileName)
+        {
+            try
+            {
+                //var filePath = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), @$"Dell\Dell Display and Peripheral Manager\WebcamSettings\{model}.json");
+
+                //if (File.Exists(filePath))
+                //{
+                //    Dictionary<string, WebcamProfile> presetProfiles = new();
+                //    //Dictionary<string, WebcamProfile> customProfiles = new();
+                //    string json = File.ReadAllText(filePath);
+                //    var jsonObject = Newtonsoft.Json.Linq.JObject.Parse(json);
+                //    string presetProfilesString = jsonObject["PresetProfiles"].ToString();
+                //    //Derek 1212
+                //    selectedProfileName = jsonObject["SelectedProfileName"].ToString();
+                //    LogMsg($"ImportWebcamProfiles current SelectedProfileName: {selectedProfileName}");
+                //}
+            }
+            catch (Exception e)
+            {
+                LogMsg($"Catch execption: {e.Message} when SaveSelectProfile");
+            }
+        }
+
         #endregion
         #region AutoFraming
         bool _AutoFramingStatus;

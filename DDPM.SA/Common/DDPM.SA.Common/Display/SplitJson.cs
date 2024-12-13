@@ -18,7 +18,7 @@ namespace DDPM.SA.Common.Display
         public List<double> Settings { get; set; } = new List<double>();
         public string CustomName { get; set; } = "";
         public long CustomId { get; set; } = 0;
-        public int EAID { get; set; }
+        public int EAID { get; set; } = 0;
         public CellJson[] Cells { get; set; }
         #endregion Native Properties
 
@@ -95,6 +95,26 @@ namespace DDPM.SA.Common.Display
             return true;
         }
 
+        //Robert_Lin, 2024-12-12 General (Static) method to compare two Settings (List<double>) are the same.
+        /// <summary>
+        /// Compare two Settings (List of double) are equal.
+        /// A. Both are null  : return true
+        /// B. Both are non-null: Copmare with List.SequenceEqual() to compare if all elements in both list are the same values in sequence.
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <returns></returns>
+        public static bool AreSettingsEqual(List<double> x, List<double> y)
+        {
+            if ((x== null) && (y== null))
+                return true;
+            if (x == null) return false;
+            if (y == null) return false;
+            if (x.Count != y.Count) 
+                return false;
+
+            return x.SequenceEqual(y);
+        }
         #region Defaul Recent List
         /// <summary>
         /// Need to copy the DefaultSettings from DDPM.Easy.Common/SplitCtrlXX.xaml.cs
@@ -157,6 +177,18 @@ namespace DDPM.SA.Common.Display
         public bool IsOverlapLayout
         {
             get { return ((CellCount == 0) && (SplitKey == 'B')); }
+        }
+
+        public bool IsOff
+        {
+            get { return ((CellCount == 0) && (SplitKey == 'A')); }
+        }
+        public bool IsCustomLayout
+        {
+            get 
+            {
+                return (EAID >= EAEMConstants.EAID_FirstCustom); //>=1000
+            }
         }
     }
 }

@@ -806,8 +806,8 @@ namespace VcpCore.Plugins.Test
             string FormatVCP_E227 = "Desktop";
             string FormatVCP_E228 = "Reference";
             string FormatVCP_E229 = "Multiscreen Match";
-            string FormatVCP_E22a = "AdobeRGB1";
-            string FormatVCP_E22b = "AdobeRGB2";
+            string FormatVCP_E22a = "AdobeRGB1 (D65G2.2L250)";
+            string FormatVCP_E22b = "AdobeRGB2 (D50G2.2L250)";
             string FormatVCP_E22c = "Custom 1 / User 1";
             string FormatVCP_E22d = "Custom 2 / User 2";
             string FormatVCP_E22e = "Custom 3 / User 3";

@@ -114,16 +114,17 @@ namespace DDPM.UI.Common
 
         public static bool DDPMMesssageBox(string title, string text, DependencyObject obj = null)
         {
-            //MessageBoxResult result = System.Windows.MessageBox.Show(text, "Confirmation", MessageBoxButton.YesNo);
-            DDPMMsgBox msgBox = new DDPMMsgBox(title, text, null);
+            Window hwnd = null;
             if (obj != null)
             {
                 Window parentWindow = Window.GetWindow(obj);
                 if (parentWindow != null)
                 {
-                    msgBox.Owner = parentWindow;
+                    hwnd = parentWindow;
                 }
             }
+            DDPMMsgBox msgBox = new DDPMMsgBox(title, text, hwnd);
+            
             msgBox.ShowDialog();
 
             //if (result == MessageBoxResult.Yes)

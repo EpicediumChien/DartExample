@@ -265,7 +265,17 @@
                   Fill="{Binding Tag, RelativeSource={RelativeSource AncestorType=Canvas}}" />
         </Canvas>
     </ControlTemplate>
-    
+
+    <!-- Icon Camera Preset -->
+    <ControlTemplate x:Key="icon_Pause" TargetType="ContentControl">
+        <Canvas Tag="{DynamicResource DefaultTheme_PathColor}" Width="16" Height="16">
+            <Path Data="M5.30957 0.00012207H6.49957V16.0001H5.30957V0.00012207Z"
+                  Fill="{Binding Tag, RelativeSource={RelativeSource AncestorType=Canvas}}" />
+            <Path Data="M10.4996 0.00012207H11.6996V16.0001H10.4996V0.00012207Z"
+                  Fill="{Binding Tag, RelativeSource={RelativeSource AncestorType=Canvas}}" />
+        </Canvas>
+    </ControlTemplate>
+
     <!-- Icon Undo -->
     <ControlTemplate x:Key="icon_Undo" TargetType="ContentControl">
         <Canvas Width="40" Height="40">

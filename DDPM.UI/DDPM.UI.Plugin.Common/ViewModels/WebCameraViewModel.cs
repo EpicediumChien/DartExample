@@ -1012,6 +1012,9 @@ namespace DDPM.UI.Plugin.ViewModels
             get => WebcamSettings.WebcamGrid;
             set
             {
+                if (value == WebcamSettings.WebcamGrid)
+                    return;
+
                 WebcamSettings.WebcamGrid = value;
                 WebcamSettings.ExportWebcamSettings(WebcamSettings, Model);
                 OnPropertyChanged();
@@ -1029,6 +1032,9 @@ namespace DDPM.UI.Plugin.ViewModels
             get => CurrentDeviceInfo!.IsMicEnumerationOn;
             set
             {
+                if (value == IsMicEnumerationOn)
+                    return;
+
                 if (!isIsMicEnumerationOnChanged_event)
                     DdpmCommonHelper.DeviceManagerSA!.SetIsMicEnumerationOn(value, CurrentDeviceInfo!.ID);
                 OnPropertyChanged();
@@ -1257,6 +1263,9 @@ namespace DDPM.UI.Plugin.ViewModels
             get => CurrentProfile.IsHDROn;
             set
             {
+                if (value == CurrentProfile.IsHDROn)
+                    return;
+
                 AlertType = WebcamAlert.Alert1;
                 AlertVisibility = Visibility.Visible;
                 hdr_change = true;
@@ -1293,6 +1302,9 @@ namespace DDPM.UI.Plugin.ViewModels
             get => CurrentProfile.IsAutoWhiteBalanceOn;
             set
             {
+                if (value == IsAutoWhiteBalanceOn)
+                    return;
+
                 DdpmCommonHelper.DeviceManagerSA!.SetIsAutoWhiteBalanceOn(CurrentDeviceInfo!.ID.ToString(), value);
                 SetProfileProperty(nameof(IsAutoWhiteBalanceOn), value, OperationModule.ColorAndImage);
                 OnPropertyChanged();

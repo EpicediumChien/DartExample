@@ -80,6 +80,15 @@
             0xd3, 0x11, 0x37, 0x9e, 0xee, 0x0e, 0x4a, 0x4a, 0xd0, 0xb1,
             0x39, 0x43, 0xa2, 0x39, 0x06, 0x72, 0x54, 0x92, 0xdd, 0x29
         };
+        
+        //ab f9 03 51 3e ff 6c b8 00 43 ab ab ec 7e 8f 6b 5d b2 ec 11
+        // Dell CI/CD cer thumbprint 2.
+        private static readonly byte[] DELL_CICD_Hash2 = new byte[]
+        {
+            //abf903513eff6cb80043ababec7e8f6b5db2ec11
+            0xab, 0xf9, 0x03, 0x51, 0x3e, 0xff, 0x6c, 0xb8, 0x00, 0x43,
+            0xab, 0xab, 0xec, 0x7e, 0x8f, 0x6b, 0x5d, 0xb2, 0xec, 0x11
+        };
 
         public static readonly byte[][] certificateHash = {
             ThumbprintHash.DELL_Hash,
@@ -89,7 +98,8 @@
             ThumbprintHash.WST2_Hash,
             ThumbprintHash.QDA1_Hash,
             ThumbprintHash.QDA2_Hash,
-            ThumbprintHash.DELL_CICD_Hash
+            ThumbprintHash.DELL_CICD_Hash,
+            ThumbprintHash.DELL_CICD_Hash2
         };
     }
 }
