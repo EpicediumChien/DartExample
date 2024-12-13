@@ -476,7 +476,8 @@ namespace DDPM.SA.Common
             { "PEN", Pen },
             { "HEADSET", Headset },
             { "AUDIO", Audio },
-            { "DOCK", Dock }
+            { "DOCK", Dock },
+            { "LOGICALWIREDAUDIO", Audio }
         };
     }
 }

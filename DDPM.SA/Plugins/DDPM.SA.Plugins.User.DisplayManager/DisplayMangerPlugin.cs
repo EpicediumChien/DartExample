@@ -36,9 +36,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using VcpCore.Common;
 using VcpCore.Interfaces;
-using static DDPM.SA.Common.Settings.DDPMUserSettings;
 using static VcpCore.Common.EDIDReader;
-using static VcpCore.Common.User32;
 using IDs = DDPM.SA.Common.IDs;
 
 //using WinCopies;
@@ -262,47 +260,22 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             }
         }
 
-        public Task<List<MonitorInfo>> Re_GetMonitors(CancellationToken token)
+        public async Task<List<MonitorInfo>> Re_GetMonitors(CancellationToken token)
         {
-            _logs.DebugMsg("[DisplayMangerPlugin] DisplayMangerPlugin received Re_GetMonitors requested ...");
             try
             {
-                var Cancellation = CancellationTokenSource.CreateLinkedTokenSource(token);
-                var NewToken = Cancellation.Token;
+                _logs.DebugMsg("[DisplayMangerPlugin] DisplayMangerPlugin received Re_GetMonitors requested ...");
 
-                _AllInfoMonitors = new List<MonitorInfo>(_VcpCorePlugin.Re_GetMonitors(NewToken).Result);
-                InitializeAllALSInfo();
-                //Robert_Lin, 2024-12-10 added to notify EAPlugin
-                NotifyEAPluginAllInfoMonitorsChanged();
+                _AllInfoMonitors = new List<MonitorInfo>(_VcpCorePlugin.Re_GetMonitors(token).Result);
+
                 _logs.DebugMsg("[DisplayMangerPlugin] Re_GetMonitors() AllInfoMonitors.count is " + _AllInfoMonitors.Count);
-                return Task.FromResult(_AllInfoMonitors);
-            }
-            catch (TaskCanceledException)
-            {
-                // Task was canceled before running.
-                // Cancelled due to timeout
 
-                _AllInfoMonitors = new List<MonitorInfo>();
-
-                _logs.DebugMsg("[DisplayMangerPlugin] Re_GetMonitors() cancellation happened...");
-                return Task.FromResult(_AllInfoMonitors);
-            }
-            catch (OperationCanceledException)
-            {
-                // Task was canceled while running.
-                // Cancelled due to timeout
-
-                _AllInfoMonitors = new List<MonitorInfo>();
-
-                _logs.DebugMsg("[DisplayMangerPlugin] Re_GetMonitors() cancellation happened...");
-                return Task.FromResult(_AllInfoMonitors);
+                return _AllInfoMonitors;
             }
             catch (Exception ex)
             {
-                _AllInfoMonitors = new List<MonitorInfo>();
-
                 _logs.DebugMsg("[DisplayMangerPlugin] Re_GetMonitors() AllInfoMonitors Exception is " + ex.Message);
-                return Task.FromResult(_AllInfoMonitors);
+                return new List<MonitorInfo>();
             }
         }
 
@@ -1208,7 +1181,6 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                                 _logs.DebugMsg($"[DisplayMangerPlugin] SyncPrimaryMonitorValueToOtherMonitor ... Lum True Do 0x10 ");
                             }
 
-
                             if (obColor.result)
                             {
                                 string obColorValue = obColor.value.ToString();
@@ -1227,7 +1199,6 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                             }
                         }
                     }
-
 
                     if (!isprimarysupportlum) // Lum False
                     {
@@ -1313,6 +1284,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
 
             return Task.FromResult(true);
         }
+
         /// <summary>
         /// Get Connected ALS Config
         /// </summary>
@@ -1341,7 +1313,6 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                 _logs.DebugMsg($"[DisplayMangerPlugin] GetAllExistAlsConfig ... in, AllALSConfig.Count = " + AllALSConfig.Count.ToString());
 
                 var distinctALSConfigList = new List<ALSConfig>();
-
 
                 distinctALSConfigList = AllALSConfig.Where(config => config != null && config.Edid != null
                                                                                    && !string.IsNullOrWhiteSpace(config.ModelName)
@@ -2243,8 +2214,6 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                 //}
             }
 
-
-
             //Dean 0614 handle brightness/contrast
             if (e.vcpcode.Equals("10") || e.vcpcode.Equals("12") || e.vcpcode.Equals("E2") || e.vcpcode.Equals("14") || e.vcpcode.Equals("F0") || e.vcpcode.Equals("DC"))
             {
@@ -2737,7 +2706,6 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                         }
                     }
                 }
-
             }
             else
             {
@@ -2956,6 +2924,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             _logs.DebugMsg($"[DisplayMangerPlugin] SetDisplayOrientation done");
             return Task.FromResult(ret);
         }
+
         private bool IsSupportHDR(string s)
         {
             _logs.DebugMsg($"[DisplayMangerPlugin] IsSupportHDR s : {s}");
@@ -3052,6 +3021,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             _logs.DebugMsg($"[DisplayMangerPlugin] IsSupportWriteOSDOrientation done");
             return (ret);
         }
+
         private DisplayOrientation[] IsSupportOSDOrientation(string s)
         {
             _logs.DebugMsg($"[DisplayMangerPlugin] IsSupportWriteOSDOrientation start");
@@ -3093,6 +3063,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             _logs.DebugMsg($"[DisplayMangerPlugin] IsSupportWriteOSDOrientation done");
             return (ret.ToArray());
         }
+
         public Task<string> GetMonitorCurrentResolution(MonitorInfo monitor)
         {
             var rc = string.Empty;
@@ -3754,7 +3725,6 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             return Task.FromResult(false);
         }
 
-
         /// <summary>
         /// Launch Apps in the specified EasyMemory Profile, and arrange their window to the EasyArrange layout.
         /// This method is moved from EzMemoryPlugin. Can be called from UI (EzMemory module) and SA (EzMemoryPlugin).
@@ -3788,6 +3758,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                 _agent.RaiseEvent(AgentEventNames.AllInfoMonitorsChanged, this, args);
             }
         }
+
         #endregion
 
         #region OutReport
@@ -4529,6 +4500,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                 Display_FWU_URL = testServer + Display_FWU_URL_Folder;
             }
         }
+
         private string GetTestServerURL()
         {
             RegistryKey localKey64 = RegistryKey.OpenBaseKey(Microsoft.Win32.RegistryHive.LocalMachine, RegistryView.Registry64);
@@ -4634,7 +4606,6 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                                     else
                                     {
                                         firmwares_item.url = Display_FWU_URL + firmwares_item.url;
-
                                     }
                                     firmwares_item.CurrentVersion = monitorInfo.FwVersion;
                                     firmwares_item.TheLastVersion = firmwares_item.TheLastVersion;

@@ -6,7 +6,7 @@
              xmlns:UXControls="clr-namespace:Dell.Client.Framework.UX.WPF.Controls;assembly=DCF.UX.WPF"
              xmlns:local="clr-namespace:DDPM.QAM"
              mc:Ignorable="d"
-             Height="216"
+             Height="216" Loaded="UserControl_Loaded"
              Width="288">
     <UserControl.Resources>
         <ResourceDictionary>

@@ -276,7 +276,7 @@ namespace DDPM.UI.Plugin.ViewModels
                     break;
 
                 case DeviceType.PhysicalPen:
-                    ConnectionType = "Bluetooth";
+                    ConnectionType = Model == "PN5122W" ? "Pandora" : "Bluetooth";
                     break;
                 //0617 Bruce 新增Dock連線方式的濾字串的方式
                 case DeviceType.PhysicalWiredDock:
