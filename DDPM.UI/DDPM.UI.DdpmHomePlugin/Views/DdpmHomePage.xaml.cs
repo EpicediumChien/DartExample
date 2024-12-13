@@ -99,7 +99,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                                 if (modalDialog.DialogResult != null && modalDialog.DialogResult == true)
                                 {
                                     //For jason to do import
-                                    if (DdpmCommonHelper.DeviceManagerSA.DisplayImportSettings(mo, true, exportpath).Result)
+                                    if((int)DdpmCommonHelper.DeviceManagerSA.DisplayImportSettings(mo, true, exportpath).Result > 0)
                                     {
                                         //ignore next check for this model
                                         if (modalDialog.isChecked)

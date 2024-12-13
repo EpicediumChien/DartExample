@@ -2124,6 +2124,9 @@
   <data name="ImpExp_SuccessMsg.1" xml:space="preserve">
     <value>Paramètres d’application appliqués à %1 avec succès. Nous vous souhaitons une bonne utilisation de votre écran.</value>
   </data>
+  <data name="ImpExp_SuccessMsg.2" xml:space="preserve">
+    <value>Paramètres d’application appliqués à %1 avec succès. Nous vous souhaitons une bonne utilisation de votre écran.</value>
+  </data>
   <data name="ImpExp_WarningMsg.0" xml:space="preserve">
     <value>Il ne s’agit pas de votre moniteur principal. Voulez-vous continuer et définir ce moniteur comme principal pour la synchronisation ?</value>
   </data>

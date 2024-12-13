@@ -4768,11 +4768,20 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   查詢類似 Application settings applied to %1 successfully. Enjoy using your monitor. 的當地語系化字串。
+        ///   查詢類似 Application settings applied to %1 successfully. Dell Display and Peripheral Manager will restart. 的當地語系化字串。
         /// </summary>
         internal static string ImpExp_SuccessMsg_1 {
             get {
                 return ResourceManager.GetString("ImpExp_SuccessMsg.1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Application settings applied to %1 successfully. The Easy Memory setting will be cleaned. Please setup Easy Memory again. Dell Display and Peripheral Manager will restart. 的當地語系化字串。
+        /// </summary>
+        internal static string ImpExp_SuccessMsg_2 {
+            get {
+                return ResourceManager.GetString("ImpExp_SuccessMsg.2", resourceCulture);
             }
         }
         

@@ -3712,7 +3712,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         {
             try
             {
-                if (!await GetItemIDAsync("Headset", guidString))
+                if (!await GetItemIDAsync("Headset", Guid))
                     return false;
 
                 if (await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo) is ICommodity commodity)
@@ -4279,7 +4279,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
         }
 
-        public async Task<int> GetHeadsetPairedDeviceCountAsync(string Guid)
+        public async Task<int> GetHeadsetPairedDeviceCountAsync(string guid)
         {
             try
             {
