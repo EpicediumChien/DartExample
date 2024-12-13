@@ -165,6 +165,11 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
 
         private void WebCameraplugin_UIUpdateNotify(object? sender, UpdateUINotify e)
         {
+            //Derek 1212
+            if (e == null || e == EventArgs.Empty || e.UI_Field_Name == null 
+                || e.UI_Field_Name == string.Empty) 
+                return;
+
             //Open this to get the message format of Webcam event
             //System.Windows.MessageBox.Show(e.UI_Field_Name);
             Console.WriteLine("Get event : " + e.UI_Field_Name + "#" + DateTime.Now.ToString("yyyy-MM-dd h:mm:tt") +"\r\n");

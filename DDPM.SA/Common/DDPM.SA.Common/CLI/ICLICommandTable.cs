@@ -220,8 +220,7 @@ namespace DDPM.SA.Common
         {
             if (args.Length == 0)
             {
-                _Log.Error("[ICLICommandTable] Exception error: Missing arguments");
-                return null;
+                args = ["HELP"];
             }
             ICLICommandTable iCLICommandTable = new ICLICommandTable(_Log);
             CommandLineInput commandInput = new CommandLineInput();
@@ -459,8 +458,7 @@ namespace DDPM.SA.Common
         {
             if (args.Length == 0)
             {
-                _Log.Error("[ICLICommandTable] Exception error: Missing arguments");
-                return null;
+                args = ["HELP"];
             }
             ICLICommandTable iCLICommandTable = new ICLICommandTable(_Log);
             List<CommandLineInput> commandInputs = new List<CommandLineInput>();

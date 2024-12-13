@@ -7,7 +7,7 @@
              xmlns:local="clr-namespace:DDPM.UI.Common"
              mc:Ignorable="d"
              d:DesignHeight="40" d:DesignWidth="200">
-    <!-- Robert_Lin: 2024-5-24, if the height of BatteryIndicator is changed, please help update to
+  <!-- Robert_Lin: 2024-5-24, if the height of BatteryIndicator is changed, please help update to
     DdpmHomePage.xaml.cs, #region RWD HomeDevices
     Robert_Lin, 2024-6-23, the fix width of outer Border(=111) need to remove (this is, should be auto),
     When a monitor connected with Thunderbolt, the right margin will be too small. The requirements are
@@ -16,28 +16,28 @@
 
     <Border Background="#99193457" CornerRadius="2" Width="111" Height="40">
     -->
-    <Border Background="{DynamicResource BatteryIndicator_BkColor}" CornerRadius="2" Height="40" HorizontalAlignment="Center">
-        <!--"{DynamicResource BatteryIndicator_BkColor}"-->
-        <!-- Robert_Lin, 2024-6-23 to meet reqtirements of Dell UI team, both left and right side margin should be 12. -->
-        <Grid Margin="12,0">
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                
-                <!-- #region ConnectionType Icon -->
-                <!-- Robert_lin, 2024-11-29, Use ContentControl to replace Image, set the Image to Collapsed now, can be removed in the future. -->
-                <!--<Image x:Name="ConnectionType" Margin="0" Source="{Binding ImageSource, RelativeSource={RelativeSource AncestorType=UserControl}}"
+  <Border Background="{DynamicResource BatteryIndicator_BkColor}" CornerRadius="2" Height="40" HorizontalAlignment="Center">
+    <!--"{DynamicResource BatteryIndicator_BkColor}"-->
+    <!-- Robert_Lin, 2024-6-23 to meet reqtirements of Dell UI team, both left and right side margin should be 12. -->
+    <Grid Margin="12,0">
+      <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+
+        <!-- #region ConnectionType Icon -->
+        <!-- Robert_lin, 2024-11-29, Use ContentControl to replace Image, set the Image to Collapsed now, can be removed in the future. -->
+        <!--<Image x:Name="ConnectionType" Margin="0" Source="{Binding ImageSource, RelativeSource={RelativeSource AncestorType=UserControl}}"
                 VerticalAlignment="Center" Stretch="UniformToFill" Width="16" Height="16" />-->
-                <!-- Robert_Lin, 2024-11-30, OLD Image solution, unused and set it Collapsed -->
-                <Image x:Name="ConnectionTypeImage" Margin="0" Source="{DynamicResource ConnectionTypeImageKey}" Visibility="Collapsed"
+        <!-- Robert_Lin, 2024-11-30, OLD Image solution, unused and set it Collapsed -->
+        <Image x:Name="ConnectionTypeImage" Margin="0" Source="{DynamicResource ConnectionTypeImageKey}" Visibility="Collapsed"
                        VerticalAlignment="Center" Stretch="UniformToFill" Width="16" Height="16" />
-                <!-- NEW ConnectionType Icon, Robert_Lin, 2024-11-29 Use ContentControl to replace Image -->
-                <ContentControl Name="connTypeIcon" Width="16" Height="16" VerticalAlignment="Center"
+        <!-- NEW ConnectionType Icon, Robert_Lin, 2024-11-29 Use ContentControl to replace Image -->
+        <ContentControl Name="connTypeIcon" Width="16" Height="16" VerticalAlignment="Center" Margin="0,0,6,0"
                                 Foreground="{DynamicResource DefaultTheme_PathColor}"
                                 Template="{Binding ConnectionTypeIcon, RelativeSource={RelativeSource AncestorType=UserControl}}"/>
-                
-                <!-- #endregion ConnectionType Icon -->
 
-                <StackPanel Orientation="Horizontal" Name="stackPanel">
-                    <!--
+        <!-- #endregion ConnectionType Icon -->
+
+        <StackPanel Orientation="Horizontal" Name="stackPanel">
+          <!--
                     <StackPanel.Style>
                     <Style TargetType="StackPanel">
                     <Setter Property="Visibility" Value="Visible" />
@@ -50,29 +50,29 @@
                     </StackPanel.Style>
                     -->
 
-                    <!-- #region BatteryIcon Robert_Lin, 2024-11-29 Use ContentControl to replace Image -->
-                    <!-- Robert_Lin, 2024-11-30, Unused and set it Collapsed -->
-                    <Image x:Name="BatteryImage" Margin="8,0,0,0" Source="/DDPM.UI.Resources;component/Resources/Images/Battery12.png"
+          <!-- #region BatteryIcon Robert_Lin, 2024-11-29 Use ContentControl to replace Image -->
+          <!-- Robert_Lin, 2024-11-30, Unused and set it Collapsed -->
+          <Image x:Name="BatteryImage" Margin="8,0,0,0" Source="/DDPM.UI.Resources;component/Resources/Images/Battery12.png"
                            VerticalAlignment="Center" Stretch="UniformToFill" Height="20" Visibility="Collapsed"/>
-                    <!-- Robert_Lin, NEW add for LightMode, use ContentControl to replace Image -->
-                    <ContentControl Name="batteryIcon" VerticalAlignment="Center" Margin="8,0,0,0"
+          <!-- Robert_Lin, NEW add for LightMode, use ContentControl to replace Image -->
+          <ContentControl Name="batteryIcon" VerticalAlignment="Center" Margin="2,0,0,0"
                                     Foreground="{DynamicResource DefaultTheme_PathColor}"
                                     Template="{Binding BatteryIcon, RelativeSource={RelativeSource AncestorType=UserControl}}"/>
-                                <!--Template="{StaticResource icon_Battery11}"/>-->
-                    
-                    <!-- #endregion  BatteryIcon Robert_Lin, 2024-11-29 Add an ContentControl to replace Image -->
-                    
-                    <!-- #region Battery Percentage Text -->
-                    <!-- Robert_Lin, 2024-11-30, Change Foreground="{DynamicResource TextBlock_ForegroundColor}"
+          <!--Template="{StaticResource icon_Battery11}"/>-->
+
+          <!-- #endregion  BatteryIcon Robert_Lin, 2024-11-29 Add an ContentControl to replace Image -->
+
+          <!-- #region Battery Percentage Text -->
+          <!-- Robert_Lin, 2024-11-30, Change Foreground="{DynamicResource TextBlock_ForegroundColor}"
                          because that it should has the same color with battery icon color
                     -->
-                    <UXControls:UXTextBlock x:Name="BatteryLevelText" Text="100%" Margin="7,2.5,0,0" VerticalAlignment="Center" 
+          <UXControls:UXTextBlock x:Name="BatteryLevelText" Text="100%" Margin="7,2.5,0,0" VerticalAlignment="Center" 
                                             Foreground="{DynamicResource DefaultTheme_PathColor}" FontFamily="Roboto" FontSize="14" />
-                    <!-- #endregion Battery Percentage Text -->
+          <!-- #endregion Battery Percentage Text -->
 
-                </StackPanel>
-                <UXControls:UXTextBlock x:Name="txt1" Text="" Margin="8,0,2,0" VerticalAlignment="Center" Foreground="{DynamicResource TextBlock_ForegroundColor}" FontFamily="Roboto" FontSize="14" />
-            </StackPanel>
-        </Grid>
-    </Border>
+        </StackPanel>
+        <UXControls:UXTextBlock x:Name="txt1" Text="" Margin="8,0,2,0" VerticalAlignment="Center" Foreground="{DynamicResource TextBlock_ForegroundColor}" FontFamily="Roboto" FontSize="14" />
+      </StackPanel>
+    </Grid>
+  </Border>
 </UserControl>
