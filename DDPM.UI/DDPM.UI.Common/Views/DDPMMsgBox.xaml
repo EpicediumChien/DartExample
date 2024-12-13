@@ -12,7 +12,7 @@
     AllowsTransparency="True"
     Background="Transparent"
     MouseDown="Window_MouseDown"
-    ResizeMode="NoResize"
+    ResizeMode="NoResize" ShowInTaskbar="False"
     WindowStartupLocation="Manual"
     WindowStyle="None"
     mc:Ignorable="d">
