@@ -1180,9 +1180,12 @@ namespace DDPM.SA.Common
         Task WriteLog(string logMsg);
         #endregion
 
-        #region System Suspend & Resume
+        #region System Suspend & Resume & SessionEnd
         event EventHandler SystemSuspend;
         event EventHandler SystemResume;
+        event EventHandler SystemSessionEnd;
+
+        Task FireSystemSessionEnd();
         #endregion
     }
 }

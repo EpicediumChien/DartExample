@@ -83,15 +83,12 @@ namespace DDPM.SA.Common.Security
                 info = $"[GetNamedPipeClientProcessId] exception, message :{ex.Message}";
                 return false;
             }
-            finally
-            {
-                pipeServer.SafePipeHandle.Close();
-            }
-            //if (!_GetNamedPipeClientProcessId(hPipe, out uint pid))
+            //this finally action cause NKVM/FW update namedpipe fail, remove it [Dean 1212]
+            //finally
             //{
-            //    info = "[GetNamedPipeClientProcessId] failed";
-            //    return false;
+            //    pipeServer.SafePipeHandle.Close();
             //}
+
             Console.WriteLine("pid: " + pid);
             Process process = Process.GetProcessById((int)pid);
             string filePath = process.MainModule.FileName;
