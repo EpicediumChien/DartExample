@@ -676,7 +676,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             {
                 foreach (var hd in moLists)
                 {
-                    if (!hd.CapabilityString.Contains("12"))
+                    if (!hd.CapabilityDic.ContainsKey("12"))
                     {
                         _isLuminanceCount++;
                     }
