@@ -165,10 +165,10 @@ namespace DDPM.SA.Plugins.User.DisplayManager.Test
         public void TestGetCapabilitiesString()
         {
             string capabilitiesString = "(prot(monitor)type(LCD)model(U2424H)cmds(01 02 03 07 0C E3 F3)vcp(02 04 05 08 10 12 14(01 04 05 06 08 09 0B 0C)";
-            VcpCoreService.Setup(x => x.GetCapabilitiesString(It.IsAny<MonitorInfo>())).Returns(Task.FromResult(capabilitiesString));
             var VcpCoreServiceObject = VcpCoreService.Object;
             PrivateObject privatedispalypluginObject = new PrivateObject(displayPlugin);
-            privatedispalypluginObject.SetField("_VcpCorePlugin", VcpCoreServiceObject);
+            privatedispalypluginObject.SetFieldOrProperty("_VcpCorePlugin", VcpCoreServiceObject);
+            VcpCoreService.Setup(x => x.GetCapabilitiesString(It.IsAny<MonitorInfo>())).Returns(Task.FromResult(capabilitiesString));
             var getCapabilitiesString = displayPlugin.GetCapabilitiesString(monitorInfo1).Result;
             Assert.Greater(capabilitiesString.Length, 0);
             Assert.That(capabilitiesString, Is.EqualTo(getCapabilitiesString));
