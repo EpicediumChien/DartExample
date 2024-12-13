@@ -13122,15 +13122,19 @@ namespace DDPM.CLI.Plugins.Display
                     cli_Response.Command = commandLineInput.Command;
                     cli_Response.TargetFeature = commandLineInput.TargetFeature;
 
-                    if (commandLineInput.Options[0].Option_Value == "ENABLE")
-                    {
-                        elable_ea = true;
-                        ddpmSettings.LockSettings.Lock_Display_EasyArrangeLayout = false;
-                    }
-                    else if (commandLineInput.Options[0].Option_Value == "DISABLE")
+                    //if (commandLineInput.Options[0].Option_Value == "ENABLE")
+                    //{
+                    //    elable_ea = true;
+                    //    ddpmSettings.LockSettings.Lock_Display_EasyArrangeLayout = false;
+                    //}
+                    //else if (commandLineInput.Options[0].Option_Value == "DISABLE")
+                    //{
+                    //    elable_ea = false;
+                    //    ddpmSettings.LockSettings.Lock_Display_EasyArrangeLayout = true;
+                    //}
+                    if (commandLineInput.Options[0].Option_Value == "OFF")
                     {
                         elable_ea = false;
-                        ddpmSettings.LockSettings.Lock_Display_EasyArrangeLayout = true;
                     }
                     else
                     {
@@ -13142,7 +13146,7 @@ namespace DDPM.CLI.Plugins.Display
                         return ((int)CLI_ExitCode.invalide_cmdline_syntax, cli_Response.ToJson());
                     }
 
-                    await devMgr.SetAppConfigData(ddpmSettings);
+                    //await devMgr.SetAppConfigData(ddpmSettings);
                     writelog("SetEAFunctionEnabled set entry");
                     output_ea = devMgr.SetEAFunctionEnabled(elable_ea).Result;
                     writelog("SetEAFunctionEnabled set exit");
@@ -13781,20 +13785,20 @@ namespace DDPM.CLI.Plugins.Display
 
                     switch (commandLineInput.Options[0].Option_Value.ToUpper())
                     {
-                        case "ENABLE":
-                            writelog($"InAppUSBkvm on entry");
-                            retcode = devMgr.SetOnUSBKVM(monitor, true).Result;
-                            ddpmSettings.LockSettings.Lock_Display_USBKVM = false;
-                            await devMgr.SetAppConfigData(ddpmSettings);
-                            cli_Response.Result = "PASS";
-                            cli_Response.Value = commandLineInput.Options[0].Option_Value.ToUpper();
-                            break;
+                        //case "ENABLE":
+                        //    writelog($"InAppUSBkvm on entry");
+                        //    retcode = devMgr.SetOnUSBKVM(monitor, true).Result;
+                        //    ddpmSettings.LockSettings.Lock_Display_USBKVM = false;
+                        //    await devMgr.SetAppConfigData(ddpmSettings);
+                        //    cli_Response.Result = "PASS";
+                        //    cli_Response.Value = commandLineInput.Options[0].Option_Value.ToUpper();
+                        //    break;
 
-                        case "DISABLE":
+                        case "OFF"://"DISABLE":
                             writelog($"InAppUSBkvm off entry");
                             retcode = devMgr.SetOnUSBKVM(monitor, false).Result;
-                            ddpmSettings.LockSettings.Lock_Display_USBKVM = true;
-                            await devMgr.SetAppConfigData(ddpmSettings);
+                            //ddpmSettings.LockSettings.Lock_Display_USBKVM = true;
+                            //await devMgr.SetAppConfigData(ddpmSettings);
                             cli_Response.Result = "PASS";
                             cli_Response.Value = commandLineInput.Options[0].Option_Value.ToUpper();
                             break;
@@ -13832,10 +13836,14 @@ namespace DDPM.CLI.Plugins.Display
                     cli_Response.Command = commandLineInput.Command;
                     cli_Response.TargetFeature = commandLineInput.TargetFeature;
                     cli_Response.Result = "PASS";
+                    //if (rc.ToString() == "True")
+                    //    cli_Response.Value = "ENABLE";
+                    //else
+                    //    cli_Response.Value = "DISABLE";
                     if (rc.ToString() == "True")
-                        cli_Response.Value = "ENABLE";
+                        cli_Response.Value = "ON";
                     else
-                        cli_Response.Value = "DISABLE";
+                        cli_Response.Value = "OFF";
 
                     //cli_Response.Value += "," + (ddpmSettings.LockSettings.Lock_Display_USBKVM ? "LOCK" : "UNLOCK");
                     System.Console.WriteLine(JsonConvert.SerializeObject(cli_Response, Formatting.Indented));
