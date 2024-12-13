@@ -3710,6 +3710,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
         public async Task<bool> SetBoomMicAsync(string Guid, bool newValue)
         {
+            string guidString = Guid;
             try
             {
                 if (!await GetItemIDAsync("Headset", guidString))
@@ -4281,6 +4282,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
         public async Task<int> GetHeadsetPairedDeviceCountAsync(string Guid)
         {
+            string guid = Guid;
             try
             {
                 if (!await GetItemIDAsync("Headset", guid))
