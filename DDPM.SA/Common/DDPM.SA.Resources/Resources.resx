@@ -507,4 +507,31 @@
   <data name="CollabMultipleCalls" xml:space="preserve">
     <value>Collaboration controls are not available during multiple conference calls</value>
   </data>
+  <data name="Custom_Color_HDR" xml:space="preserve">
+    <value>Custom Color HDR</value>
+  </data>
+  <data name="Display_P3" xml:space="preserve">
+    <value>Display P3</value>
+  </data>
+  <data name="FPS_Game" xml:space="preserve">
+    <value>FPS Game</value>
+  </data>
+  <data name="HDR_Peak_1000" xml:space="preserve">
+    <value>HDR Peak 1000</value>
+  </data>
+  <data name="Multiscreen_Match" xml:space="preserve">
+    <value>Multiscreen Match</value>
+  </data>
+  <data name="Off_0" xml:space="preserve">
+    <value>Off</value>
+  </data>
+  <data name="Presets_Disabled" xml:space="preserve">
+    <value>Presets Disabled</value>
+  </data>
+  <data name="RTS_Game" xml:space="preserve">
+    <value>RTS Game</value>
+  </data>
+  <data name="RPG_Game" xml:space="preserve">
+    <value>RPG Game</value>
+  </data>
 </root>
