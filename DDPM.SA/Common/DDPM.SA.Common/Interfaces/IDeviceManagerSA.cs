@@ -251,13 +251,6 @@ namespace DDPM.SA.Common
 
         #region EasyArrange
 
-        #region Properties - EasyArrange
-        /// <summary>
-        /// The last error string after a EAPlugin method return error.
-        /// </summary>
-        public string EALastError { get; }
-        #endregion Properties - EasyArrange
-
         /// <summary>
         /// Enable/Disable EasyArrange function for all monitors.
         /// When Disabled (isEnable=false), DDPM will not show the WorkWindow (to arrange window),
@@ -309,31 +302,7 @@ namespace DDPM.SA.Common
 
         public Task<bool> WriteEzSettings_IsAwsEnabled(bool newValue);
 
-        //Unused, use  SetEASelectedLayout(MonitorInfo monitorInfo, int eaId) instead
         public Task<bool> SetEASelectedLayout(MonitorInfo monitorInfo, SplitJson spJson);
-
-
-        /// <summary>
-        /// Set Selected EA Layout by EAID (Robert_Lin, 2024-12-13, wait for CLI verification)
-        /// Fully simulate the secnario that user select a layout from DDPM UI.
-        /// 1. Set the specified layout (by EAID) as selected layout.
-        /// 2. (if not exist then) Add to Recent list.
-        /// 3. Save the changed to EAMonitorSettings.
-        /// 4. Notify SA.EAPlugin (EABroker) to update/refresh. 
-        /// 5. User will see the selected layout shown and auto fade-out animation.
-        /// 6. Notify UI to reload settings.
-        /// </summary>
-        /// <param name="monitorInfo">It can set to null, if eaId>=1000. </param>
-        /// <param name="eaId">0=Off, [1~49]=Preset layout, [1000~1004]=Custom Layout.</param>
-        /// <returns></returns>
-        public Task<bool> SetEASelectedLayout(MonitorInfo monitorInfo, int eaId);
-
-        /// <summary>
-        /// Return the EAID of current selected layout.
-        /// </summary>
-        /// <param name="monitorInfo">Specified the monitor</param>
-        /// <returns>0=Off (Empty Layout), [1~49]=Preset layout, [1000~1004]=Custom layout, others(Check if negavtive value) =error</returns>
-        public Task<int> GetEASelectedLayout(MonitorInfo monitorInfo);
 
         //Robert_Lin, 2024-10-12 added, move EACustomList to UserSettings from MonitorSettings
         public Task<SplitJson[]> ReadEACustomList();
