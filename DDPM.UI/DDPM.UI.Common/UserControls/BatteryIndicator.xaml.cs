@@ -172,17 +172,26 @@ namespace DDPM.UI.Common
                         txt1.Text = Strings.USB_C_DP_14;
                     }
                 }
+                txt1.Visibility = Visibility.Visible;
                 return;
             }
             else if (ConnectionType == "Bluetooth")
             {
                 //Robert_Lin, 2024-11-29, LightMode, use a ContentControl to replace Image
                 ConnectionTypeIcon = (ControlTemplate)this.TryFindResource("icon_Bluetooth");
+                txt1.Visibility = Visibility.Collapsed;
             }
             else if (ConnectionType == "Dongle")
             {
                 //Robert_Lin, 2024-11-29, LightMode, use a ContentControl to replace Image
                 ConnectionTypeIcon = (ControlTemplate)this.TryFindResource("icon_Dongle");
+                txt1.Visibility = Visibility.Collapsed;
+            }
+            else if (ConnectionType == "Pandora")
+            {
+                connTypeIcon.Visibility = Visibility.Collapsed;
+                BatteryLevelText.Visibility = Visibility.Collapsed;
+                txt1.Visibility = Visibility.Collapsed;
             }
             else
             {

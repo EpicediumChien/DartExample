@@ -4,7 +4,6 @@ using DDPM.SA.Common.Settings;
 using DDPM.SA.Resources.Helper;
 using Dell.Client.Framework.Common;
 using Microsoft.Toolkit.Uwp.Notifications;
-using MS.WindowsAPICodePack.Internal;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
