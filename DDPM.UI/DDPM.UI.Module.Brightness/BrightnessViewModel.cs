@@ -2669,7 +2669,7 @@ namespace DDPM.UI.Module.Brightness
             {
                 if (_autoBrightnessStatus)
                 {
-                    if (!Start_ALSConfig.isPrimaryMonitorSync)
+                    if (CheckMonitorALSStatus() && !Start_ALSConfig.isPrimaryMonitorSync)
                     {
                         MyModule.GetRightView().Dispatcher.Invoke((Action)(() =>
                         {
