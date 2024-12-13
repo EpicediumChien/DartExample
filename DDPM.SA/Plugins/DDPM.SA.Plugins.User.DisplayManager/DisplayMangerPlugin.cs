@@ -268,7 +268,9 @@ namespace DDPM.SA.Plugins.User.DisplayManager
 
                 _AllInfoMonitors = new List<MonitorInfo>(_VcpCorePlugin.Re_GetMonitors(token).Result);
 
-                _logs.DebugMsg("[DisplayMangerPlugin] Re_GetMonitors() AllInfoMonitors.count is " + _AllInfoMonitors.Count);
+                InitializeAllALSInfo();
+                //Robert_Lin, 2024-12-10 added to notify EAPlugin
+                NotifyEAPluginAllInfoMonitorsChanged();                _logs.DebugMsg("[DisplayMangerPlugin] Re_GetMonitors() AllInfoMonitors.count is " + _AllInfoMonitors.Count);
 
                 return _AllInfoMonitors;
             }
@@ -1093,7 +1095,9 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             lock (_ALSVCPChangeLock)
             {
                 _logs.DebugMsg($"[DisplayMangerPlugin] CheckisPrimaryMonitorSyncOnOff ... in");
-                if (GetBitsValue(value.AllValue, 5) == 1)//check isPrimaryMonitorSync whether to change
+                Trace.WriteLine(monitorInfoMain.modelName.ToString() + " ||" + value.isPrimaryMonitorSync.ToString());
+                Trace.WriteLine(value.ModelName + " || AllValue = " + value.AllValue.ToString() + " || GetBit = " + (GetBitValue(value.AllValue, 5).ToString()));
+                if (GetBitValue(value.AllValue, 5) == 1)//check isPrimaryMonitorSync whether to change
                 {
                     List<ALSConfig> als_connected = new List<ALSConfig>();
                     List<ALSConfig> als_connected2 = new List<ALSConfig>();
@@ -1150,6 +1154,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
         /// <returns>True or False</returns>
         public Task<bool> SyncPrimaryMonitorValueToOtherMonitor(MonitorInfo moMain, List<MonitorInfo> monitorAll, ref List<ALSConfig> exitAls, ALSConfig moMainvalue, string vcpcode)
         {
+            Trace.WriteLine("moMain = " + moMain.modelName.ToString() + " ||  moMainvalue.ModelName = " + moMainvalue.ModelName.ToString() + " ||  isPrimaryMonitorSync = " + moMainvalue.isPrimaryMonitorSync.ToString());
             _logs.DebugMsg($"[DisplayMangerPlugin] SyncPrimaryMonitorValueToOtherMonitor ... in");
             var monitorInfoMain = moMain;
             var monitorALS = monitorAll;
@@ -1162,6 +1167,8 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             var isprimarysupportlum = !monitorInfoMain.CapabilityDic.ContainsKey("12");
             for (int i = 0; i < als_connected2.Count; i++)
             {
+                Trace.WriteLine("monitorALS = " + monitorALS.Find(x => x.edid.Equals(als_connected2[i].Edid)).modelName.ToString() + " || value.isPrimaryMonitorSync = " + value.isPrimaryMonitorSync.ToString());
+                Trace.WriteLine("als_connected2[i] = " + als_connected2[i].ModelName.ToString());
                 //Dean 0624, check with displayname and serialnumber at the same time
                 if (!als_connected2[i].Edid.Equals(monitorInfoMain.edid))//sync AutoBrightness & AutoColorTemp value
                 {
@@ -1231,6 +1238,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                             if (obBrightness.result)
                             {
                                 uint brightnessValue = (uint)obBrightness.value;
+                                Trace.WriteLine(monitorALS.Find(x => x.edid.Equals(als_connected2[i].Edid)).modelName + " ||" + brightnessValue.ToString());
                                 SetVCPCapability(monitorALS.Find(x => x.edid.Equals(als_connected2[i].Edid)), 0x10, brightnessValue);
                                 _logs.DebugMsg($"[DisplayMangerPlugin] SyncPrimaryMonitorValueToOtherMonitor ... Lum False set 0x10 ");
                             }
@@ -1238,6 +1246,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                             if (obContrast.result)
                             {
                                 uint obcontrastValue = (uint)obContrast.value;
+                                Trace.WriteLine(monitorALS.Find(x => x.edid.Equals(als_connected2[i].Edid)).modelName + " ||" + obcontrastValue.ToString());
                                 SetVCPCapability(monitorALS.Find(x => x.edid.Equals(als_connected2[i].Edid)), 0x12, obcontrastValue);
                                 _logs.DebugMsg($"[DisplayMangerPlugin] SyncPrimaryMonitorValueToOtherMonitor ... Lum False set 0x12 ");
                             }
@@ -1245,6 +1254,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                             if (obColor.result)
                             {
                                 string obColorValue = obColor.value.ToString();
+                                Trace.WriteLine(monitorALS.Find(x => x.edid.Equals(als_connected2[i].Edid)).modelName + " ||" + obColorValue.ToString());
                                 SetVCPCapability(monitorALS.Find(x => x.edid.Equals(als_connected2[i].Edid)), "colorpreset", obColorValue);
                                 _logs.DebugMsg($"[DisplayMangerPlugin] SyncPrimaryMonitorValueToOtherMonitor ... Lum False set colorpreset ");
                             }
@@ -2028,6 +2038,18 @@ namespace DDPM.SA.Plugins.User.DisplayManager
         }
 
         /// <summary>
+        /// Get Bits Value
+        /// </summary>
+        /// <param name="number">status</param>
+        /// <param name="startBitPosition">Bit Position</param>
+        /// <returns>return BitPosition value</returns>
+        private uint GetBitValue(uint number, int startBitPosition)
+        {
+            uint bitValue = ((number >> startBitPosition) & 0b1u);// Get startBitPosition和startBitPosition+1 value
+            return bitValue;
+        }
+
+        /// <summary>
         /// On , Off String Convert
         /// </summary>
         /// <param name="onoff">On or Off</param>
@@ -2300,7 +2322,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             ObjGetVCP valemp;
             if (uint.TryParse(e.value, NumberStyles.Integer, CultureInfo.CurrentCulture, out uint result)) // Get ALS value
             {
-                if (GetBitsValue(result, 5) == 1) // Check monitor is Primary
+                if (GetBitValue(result, 5) == 1) // Check monitor is Primary
                 {
                     Trace.WriteLine($" 6 [%%%%%%%%%%%%%%%] Check monitor is Primary ...... in");
                     var allInfoMonitorsSnapshot = _AllInfoMonitors.ToList();
