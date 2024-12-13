@@ -1977,11 +1977,11 @@ namespace DDPM.CLI.Plugins.Display
             if (type == "SET")
             {
                 writelog($"Brightness set entry");
-                if (string.IsNullOrWhiteSpace(value))
+                if (string.IsNullOrWhiteSpace(value) || !int.TryParse(value, out int intValue))
                 {
                     S_Brightness_RESPONSE.Result = "Format Error";
                     S_Brightness_RESPONSE.Message = "Format Error";
-                    return ((int)CLI_ExitCode.fail_FormantError, JsonConvert.SerializeObject(S_Brightness_RESPONSE, Formatting.Indented));
+                    return ((int)CLI_ExitCode.fail_FormantError, S_Brightness_RESPONSE.ToJson());
                 }
                 if (index.Count == 0 && serviceTag.Count == 0 && model.Count == 0)
                 {
@@ -1990,11 +1990,11 @@ namespace DDPM.CLI.Plugins.Display
                     foreach (MonitorInfo monitor in _AllInfoMonitors)
                     {
                         S_Brightness_RESPONSE = new CLI_RESPONSE(monitor);
-                        if (Int32.Parse(value) > 100)
+                        if (intValue > 100)
                         {
                             S_Brightness_RESPONSE.Result = "Format Error, Brightness lager then 100";
                             S_Brightness_RESPONSE.Message = "Format Error";
-                            return ((int)CLI_ExitCode.fail_FormantError, JsonConvert.SerializeObject(S_Brightness_RESPONSE, Formatting.Indented));
+                            return ((int)CLI_ExitCode.fail_FormantError, S_Brightness_RESPONSE.ToJson());
                         }
                         //if (monitor.CapabilityDic.ContainsKey("12") && Int32.Parse(value) > 100)
                         //{
@@ -2014,11 +2014,10 @@ namespace DDPM.CLI.Plugins.Display
                         if (!monitor.CapabilityDic.ContainsKey("12"))
                         {
                             var maxLuminance = GetVCPCodeMax(devMgr, monitor, "0x10").Result;
-                            setValue = (Int32.Parse(maxLuminance.value.ToString()) * Int32.Parse(value) / 100).ToString();
+                            setValue = (int.Parse(maxLuminance.value.ToString()) * intValue / 100).ToString();
                         }
 
                         rc = SetVCPCode(devMgr, monitor, "0x10", setValue).Result;
-
                         S_Brightness_RESPONSE.Command = "SET";
                         S_Brightness_RESPONSE.TargetFeature = "BRIGHTNESSLEVEL";//change from brightness to brightnesslevel to align with spec
                         S_Brightness_RESPONSE.Value = setValue;
@@ -2027,15 +2026,15 @@ namespace DDPM.CLI.Plugins.Display
                         {
                             S_Brightness_RESPONSE.Result = "FAIL";
                             S_Brightness_RESPONSE.Message = "FAIL VCP";
-                            System.Console.WriteLine(JsonConvert.SerializeObject(S_Brightness_RESPONSE, Formatting.Indented));
-                            output += "\n" + JsonConvert.SerializeObject(S_Brightness_RESPONSE, Formatting.Indented);
+                            Console.WriteLine(S_Brightness_RESPONSE.ToJson());
+                            output += "\n" + S_Brightness_RESPONSE.ToJson();
                             IsFailhappened = true;
                         }
                         else
                         {
                             S_Brightness_RESPONSE.Result = "PASS";
-                            System.Console.WriteLine(JsonConvert.SerializeObject(S_Brightness_RESPONSE, Formatting.Indented));
-                            output += "\n" + JsonConvert.SerializeObject(S_Brightness_RESPONSE, Formatting.Indented);
+                            Console.WriteLine(S_Brightness_RESPONSE.ToJson());
+                            output += "\n" + S_Brightness_RESPONSE.ToJson();
                             //if (monitor.CapabilityDic.ContainsKey("12"))
                             //{
                             //    S_Brightness_RESPONSE.Result = "PASS";
@@ -2065,11 +2064,11 @@ namespace DDPM.CLI.Plugins.Display
                         bool rc = false;
                         int nidx = int.Parse(idx);
                         S_Brightness_RESPONSE = new CLI_RESPONSE(_AllInfoMonitors[nidx]);
-                        if (Int32.Parse(value) > 100)
+                        if (intValue > 100)
                         {
                             S_Brightness_RESPONSE.Result = "Format Error, Brightness lager then 100";
                             S_Brightness_RESPONSE.Message = "Format Error";
-                            return ((int)CLI_ExitCode.fail_FormantError, JsonConvert.SerializeObject(S_Brightness_RESPONSE, Formatting.Indented));
+                            return ((int)CLI_ExitCode.fail_FormantError, S_Brightness_RESPONSE.ToJson());
                         }
                         //if (monitor.CapabilityDic.ContainsKey("12") && Int32.Parse(value) > 100)
                         //{
@@ -2089,7 +2088,7 @@ namespace DDPM.CLI.Plugins.Display
                         if (!_AllInfoMonitors[nidx].CapabilityDic.ContainsKey("12"))
                         {
                             var maxLuminance = GetVCPCodeMax(devMgr, _AllInfoMonitors[nidx], "0x10").Result;
-                            setValue = (Int32.Parse(maxLuminance.value.ToString()) * Int32.Parse(value) / 100).ToString();
+                            setValue = (int.Parse(maxLuminance.value.ToString()) * intValue / 100).ToString();
                         }
 
                         rc = SetVCPCode(devMgr, nidx, "0x10", setValue).Result;
@@ -2102,15 +2101,15 @@ namespace DDPM.CLI.Plugins.Display
                         {
                             S_Brightness_RESPONSE.Result = "FAIL";
                             S_Brightness_RESPONSE.Message = "FAIL VCP";
-                            System.Console.WriteLine(JsonConvert.SerializeObject(S_Brightness_RESPONSE, Formatting.Indented));
-                            output += "\n" + JsonConvert.SerializeObject(S_Brightness_RESPONSE, Formatting.Indented);
+                            Console.WriteLine(S_Brightness_RESPONSE.ToJson());
+                            output += "\n" + S_Brightness_RESPONSE.ToJson();
                             IsFailhappened = true;
                         }
                         else
                         {
                             S_Brightness_RESPONSE.Result = "PASS";
-                            System.Console.WriteLine(JsonConvert.SerializeObject(S_Brightness_RESPONSE, Formatting.Indented));
-                            output += "\n" + JsonConvert.SerializeObject(S_Brightness_RESPONSE, Formatting.Indented);
+                            Console.WriteLine(S_Brightness_RESPONSE.ToJson());
+                            output += "\n" + S_Brightness_RESPONSE.ToJson();
                             //if (_AllInfoMonitors[nidx].CapabilityDic.ContainsKey("12"))
                             //{
                             //    S_Brightness_RESPONSE.Result = "PASS";
@@ -2136,11 +2135,11 @@ namespace DDPM.CLI.Plugins.Display
                         foreach (MonitorInfo mo in tmp)
                         {
                             S_Brightness_RESPONSE = new CLI_RESPONSE(mo);
-                            if (Int32.Parse(value) > 100)
+                            if (intValue > 100)
                             {
                                 S_Brightness_RESPONSE.Result = "Format Error, Brightness lager then 100";
                                 S_Brightness_RESPONSE.Message = "Format Error";
-                                return ((int)CLI_ExitCode.fail_FormantError, JsonConvert.SerializeObject(S_Brightness_RESPONSE, Formatting.Indented));
+                                return ((int)CLI_ExitCode.fail_FormantError, S_Brightness_RESPONSE.ToJson());
                             }
                             //if (monitor.CapabilityDic.ContainsKey("12") && Int32.Parse(value) > 100)
                             //{
@@ -2160,7 +2159,7 @@ namespace DDPM.CLI.Plugins.Display
                             if (!mo.CapabilityDic.ContainsKey("12"))
                             {
                                 var maxLuminance = GetVCPCodeMax(devMgr, mo, "0x10").Result;
-                                setValue = (Int32.Parse(maxLuminance.value.ToString()) * Int32.Parse(value) / 100).ToString();
+                                setValue = (int.Parse(maxLuminance.value.ToString()) * intValue / 100).ToString();
                             }
 
                             rc = SetVCPCode(devMgr, mo, "0x10", setValue).Result;
@@ -2173,15 +2172,15 @@ namespace DDPM.CLI.Plugins.Display
                             {
                                 S_Brightness_RESPONSE.Result = "FAIL";
                                 S_Brightness_RESPONSE.Message = "FAIL VCP";
-                                System.Console.WriteLine(JsonConvert.SerializeObject(S_Brightness_RESPONSE, Formatting.Indented));
-                                output += "\n" + JsonConvert.SerializeObject(S_Brightness_RESPONSE, Formatting.Indented);
+                                Console.WriteLine(S_Brightness_RESPONSE.ToJson());
+                                output += "\n" + S_Brightness_RESPONSE.ToJson();
                                 IsFailhappened = true;
                             }
                             else
                             {
                                 S_Brightness_RESPONSE.Result = "PASS";
-                                System.Console.WriteLine(JsonConvert.SerializeObject(S_Brightness_RESPONSE, Formatting.Indented));
-                                output += "\n" + JsonConvert.SerializeObject(S_Brightness_RESPONSE, Formatting.Indented);
+                                Console.WriteLine(S_Brightness_RESPONSE.ToJson());
+                                output += "\n" + S_Brightness_RESPONSE.ToJson();
                                 //if (mo.CapabilityDic.ContainsKey("12"))
                                 //{
                                 //    S_Brightness_RESPONSE.Result = "PASS";
@@ -2208,11 +2207,11 @@ namespace DDPM.CLI.Plugins.Display
                         foreach (MonitorInfo mo in tmp)
                         {
                             S_Brightness_RESPONSE = new CLI_RESPONSE(mo);
-                            if (Int32.Parse(value) > 100)
+                            if (intValue > 100)
                             {
                                 S_Brightness_RESPONSE.Result = "Format Error, Brightness lager then 100";
                                 S_Brightness_RESPONSE.Message = "Format Error";
-                                return ((int)CLI_ExitCode.fail_FormantError, JsonConvert.SerializeObject(S_Brightness_RESPONSE, Formatting.Indented));
+                                return ((int)CLI_ExitCode.fail_FormantError, S_Brightness_RESPONSE.ToJson());
                             }
                             //if (monitor.CapabilityDic.ContainsKey("12") && Int32.Parse(value) > 100)
                             //{
@@ -2232,7 +2231,7 @@ namespace DDPM.CLI.Plugins.Display
                             if (!mo.CapabilityDic.ContainsKey("12"))
                             {
                                 var maxLuminance = GetVCPCodeMax(devMgr, mo, "0x10").Result;
-                                setValue = (Int32.Parse(maxLuminance.value.ToString()) * Int32.Parse(value) / 100).ToString();
+                                setValue = (int.Parse(maxLuminance.value.ToString()) * intValue / 100).ToString();
                             }
 
                             rc = SetVCPCode(devMgr, mo, "0x10", setValue).Result;
@@ -2245,15 +2244,15 @@ namespace DDPM.CLI.Plugins.Display
                             {
                                 S_Brightness_RESPONSE.Result = "FAIL";
                                 S_Brightness_RESPONSE.Message = "FAIL VCP";
-                                System.Console.WriteLine(JsonConvert.SerializeObject(S_Brightness_RESPONSE, Formatting.Indented));
-                                output += "\n" + JsonConvert.SerializeObject(S_Brightness_RESPONSE, Formatting.Indented);
+                                Console.WriteLine(S_Brightness_RESPONSE.ToJson());
+                                output += "\n" + S_Brightness_RESPONSE.ToJson();
                                 IsFailhappened = true;
                             }
                             else
                             {
                                 S_Brightness_RESPONSE.Result = "PASS";
-                                System.Console.WriteLine(JsonConvert.SerializeObject(S_Brightness_RESPONSE, Formatting.Indented));
-                                output += "\n" + JsonConvert.SerializeObject(S_Brightness_RESPONSE, Formatting.Indented);
+                                Console.WriteLine(S_Brightness_RESPONSE.ToJson());
+                                output += "\n" + S_Brightness_RESPONSE.ToJson();
                                 //if (mo.CapabilityDic.ContainsKey("12"))
                                 //{
                                 //    S_Brightness_RESPONSE.Result = "PASS";
@@ -2301,16 +2300,16 @@ namespace DDPM.CLI.Plugins.Display
                             G_Brightness_RESPONSE.Value = "N/A";
                             G_Brightness_RESPONSE.Result = "FAIL";
                             G_Brightness_RESPONSE.Message = "FAIL VCP";
-                            System.Console.WriteLine(JsonConvert.SerializeObject(G_Brightness_RESPONSE, Formatting.Indented));
-                            output += "\n" + JsonConvert.SerializeObject(G_Brightness_RESPONSE, Formatting.Indented);
+                            Console.WriteLine(G_Brightness_RESPONSE.ToJson());
+                            output += "\n" + G_Brightness_RESPONSE.ToJson();
                             IsFailhappened = true;
                         }
                         else
                         {
                             G_Brightness_RESPONSE.Value = $"{rc.value}";
                             G_Brightness_RESPONSE.Result = "PASS";
-                            System.Console.WriteLine(JsonConvert.SerializeObject(G_Brightness_RESPONSE, Formatting.Indented));
-                            output += "\n" + JsonConvert.SerializeObject(G_Brightness_RESPONSE, Formatting.Indented);
+                            Console.WriteLine(G_Brightness_RESPONSE.ToJson());
+                            output += "\n" + G_Brightness_RESPONSE.ToJson();
                             //if (monitor.CapabilityDic.ContainsKey("12"))
                             //{
                             //    G_Brightness_RESPONSE.Value = $"{rc.value}";
@@ -2362,16 +2361,16 @@ namespace DDPM.CLI.Plugins.Display
                             G_Brightness_RESPONSE.Value = "N/A";
                             G_Brightness_RESPONSE.Result = "FAIL";
                             G_Brightness_RESPONSE.Message = "FAIL VCP";
-                            System.Console.WriteLine(JsonConvert.SerializeObject(G_Brightness_RESPONSE, Formatting.Indented));
-                            output += "\n" + JsonConvert.SerializeObject(G_Brightness_RESPONSE, Formatting.Indented);
+                            Console.WriteLine(G_Brightness_RESPONSE.ToJson());
+                            output += "\n" + G_Brightness_RESPONSE.ToJson();
                             IsFailhappened = true;
                         }
                         else
                         {
                             G_Brightness_RESPONSE.Value = $"{rc.value}";
                             G_Brightness_RESPONSE.Result = "PASS";
-                            System.Console.WriteLine(JsonConvert.SerializeObject(G_Brightness_RESPONSE, Formatting.Indented));
-                            output += "\n" + JsonConvert.SerializeObject(G_Brightness_RESPONSE, Formatting.Indented);
+                            Console.WriteLine(G_Brightness_RESPONSE.ToJson());
+                            output += "\n" + G_Brightness_RESPONSE.ToJson();
                             //if (_AllInfoMonitors[nidx].CapabilityDic.ContainsKey("12"))
                             //{
                             //    G_Brightness_RESPONSE.Value = $"{rc.value}";
@@ -2418,16 +2417,16 @@ namespace DDPM.CLI.Plugins.Display
                                 G_Brightness_RESPONSE.Value = "N/A";
                                 G_Brightness_RESPONSE.Result = "FAIL";
                                 G_Brightness_RESPONSE.Message = "FAIL VCP";
-                                System.Console.WriteLine(JsonConvert.SerializeObject(G_Brightness_RESPONSE, Formatting.Indented));
-                                output += "\n" + JsonConvert.SerializeObject(G_Brightness_RESPONSE, Formatting.Indented);
+                                Console.WriteLine(G_Brightness_RESPONSE.ToJson());
+                                output += "\n" + G_Brightness_RESPONSE.ToJson();
                                 IsFailhappened = true;
                             }
                             else
                             {
                                 G_Brightness_RESPONSE.Value = $"{rc.value}";
                                 G_Brightness_RESPONSE.Result = "PASS";
-                                System.Console.WriteLine(JsonConvert.SerializeObject(G_Brightness_RESPONSE, Formatting.Indented));
-                                output += "\n" + JsonConvert.SerializeObject(G_Brightness_RESPONSE, Formatting.Indented);
+                                Console.WriteLine(G_Brightness_RESPONSE.ToJson());
+                                output += "\n" + G_Brightness_RESPONSE.ToJson();
                                 //if (mo.CapabilityDic.ContainsKey("12"))
                                 //{
                                 //    G_Brightness_RESPONSE.Value = $"{rc.value}";
@@ -2475,16 +2474,16 @@ namespace DDPM.CLI.Plugins.Display
                                 G_Brightness_RESPONSE.Value = "N/A";
                                 G_Brightness_RESPONSE.Result = "FAIL";
                                 G_Brightness_RESPONSE.Message = "FAIL VCP";
-                                System.Console.WriteLine(JsonConvert.SerializeObject(G_Brightness_RESPONSE, Formatting.Indented));
-                                output += "\n" + JsonConvert.SerializeObject(G_Brightness_RESPONSE, Formatting.Indented);
+                                Console.WriteLine(G_Brightness_RESPONSE.ToJson());
+                                output += "\n" + G_Brightness_RESPONSE.ToJson();
                                 IsFailhappened = true;
                             }
                             else
                             {
                                 G_Brightness_RESPONSE.Value = $"{rc.value}";
                                 G_Brightness_RESPONSE.Result = "PASS";
-                                System.Console.WriteLine(JsonConvert.SerializeObject(G_Brightness_RESPONSE, Formatting.Indented));
-                                output += "\n" + JsonConvert.SerializeObject(G_Brightness_RESPONSE, Formatting.Indented);
+                                Console.WriteLine(G_Brightness_RESPONSE.ToJson());
+                                output += "\n" + G_Brightness_RESPONSE.ToJson();
                                 //if (mo.CapabilityDic.ContainsKey("12"))
                                 //{
                                 //    G_Brightness_RESPONSE.Value = $"{rc.value}";
@@ -2528,7 +2527,7 @@ namespace DDPM.CLI.Plugins.Display
                 S_Brightness_RESPONSE.TargetFeature = "BRIGHTNESSLEVEL";
                 S_Brightness_RESPONSE.Result = "Format Error";
                 S_Brightness_RESPONSE.Message = "Format Error";
-                return ((int)CLI_ExitCode.unknow_command, JsonConvert.SerializeObject(S_Brightness_RESPONSE, Formatting.Indented));
+                return ((int)CLI_ExitCode.unknow_command, S_Brightness_RESPONSE.ToJson());
             }
         }
 
