@@ -210,6 +210,8 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             check_PresenceFunction();
             BuildModuleGroups();
             CheckUSBtype();
+            initResolutionFPS();
+
 
             DdpmCommonHelper.BitmapImageUpdated += ImageUpdate;
         }
@@ -234,6 +236,12 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                 {
                     UserStopRecord();
                 }));
+        }
+
+        public void initResolutionFPS()
+        {
+            _vm!.SetResolution_Selected(1);
+            _vm!.SetFPS_Selected(1);
         }
 
         bool noPresenceFunction = false;
@@ -263,7 +271,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
 
             //check usb 2.0 / 3.0
             AllSupportedResolutions = DdpmCommonHelper.DeviceManagerSA!.GetIsAllSupportedResolutionsFound(_vm.CurrentDeviceInfo!.ID.ToString()).Result;
-
+            
             //api回傳camera硬體是否支援windows hello
             bool is_WindwosHelloSupport = DdpmCommonHelper.DeviceManagerSA!.GetIsWindowsHelloCapabilityVerified(_vm.CurrentDeviceInfo!.ID.ToString()).Result;
 
@@ -666,6 +674,10 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
 
                         //fps與解析度,排除4k
                         //Connect your monitor via USB 3.0 to enable 4K UHD resolution.
+
+                        _vm.Resolution_IsSelected[0] = false;
+                        _vm.Resolution_IsSelected[1] = true;
+
                         _vm.btnRes0_show = Visibility.Collapsed;
                         _vm.btnRes0_width = 0;
 
@@ -695,6 +707,10 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                         _vm.usbtype_info_v = LangHelper.Instance["Camera.25"];
 
                         //fps與解析度,排除4k Camera.14
+
+                        _vm.Resolution_IsSelected[0] = false;
+                        _vm.Resolution_IsSelected[1] = true;
+
                         _vm.btnRes0_show = Visibility.Collapsed;
                         _vm.btnRes0_width = 0;
                         _vm.btnRes1_width = 201;
@@ -721,6 +737,10 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                         _vm.usbtype_info_v = LangHelper.Instance["Camera.25"];
 
                         //fps與解析度,排除4k 
+
+                        _vm.Resolution_IsSelected[0] = false;
+                        _vm.Resolution_IsSelected[1] = true;
+
                         _vm.btnRes0_show = Visibility.Collapsed;
                         _vm.btnRes0_width = 0;
                         _vm.btnRes1_width = 201;
@@ -742,6 +762,10 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                         _vm.usbtype_info_v = LangHelper.Instance["Camera.25"].Replace("4K", "2K");
 
                         //fps與解析度,排除2k 
+
+                        _vm.Resolution_IsSelected[0] = false;
+                        _vm.Resolution_IsSelected[1] = true;
+
                         _vm.btnRes0_show = Visibility.Collapsed;
                         _vm.btnRes0_width = 0;
                         _vm.btnRes1_width = 201;
@@ -1010,6 +1034,24 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
         private void RecordingTimer_Tick(object? sender, EventArgs e)
         {
             txtTimer.Text = stopwatch.Elapsed.ToString(@"hh\:mm\:ss");
+
+            //這邊做錄影長度限制 2小時
+            if( txtTimer.Text == "02:00:01" )
+            {
+                Dispatcher.Invoke(new Action(() =>
+                {
+                    UserStopRecord();
+                }));
+            }
+
+            if(!HasEnoughSpace(_vm!.VideoCaptureFolder, 20 * 1024 * 1024))//不到20MB時停止錄影
+            {
+                Dispatcher.Invoke(new Action(() =>
+                {
+                    UserStopRecord();
+                }));
+            }
+
         }
 
         private void DeviceManagerSA_ITSettingsActionEvent(object? sender, SA.Common.ITSettingEventArgs e)
@@ -1465,6 +1507,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             DdpmCommonHelper.WriteUILog($"StartRecord");
 
             _vm!.IsRecording = true;
+            _vm.IsMicEnumerationOnEnabled = false;
 
             if (_vm!.WebcamCountdown)
             {
@@ -1500,7 +1543,15 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             _timer.Stop();
             StartRecordingAsync().RunSynchronously();
         }
-
+        [DllImport("kernel32.dll", CharSet = CharSet.Unicode)]
+        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
+        private static extern bool GetDiskFreeSpaceEx(string lpDirectoryName, out ulong lpFreeBytesAvailable, out ulong lpTotalNumberOfBytes, out ulong lpTotalNumberOfFreeBytes); 
+        public static bool HasEnoughSpace(string path, ulong requiredBytes) 
+        { 
+            bool ret = GetDiskFreeSpaceEx(path, out ulong freeBytesAvailable, out _, out _);
+            if (ret == false) return false;
+            return freeBytesAvailable >= requiredBytes; 
+        }
         /// <summary>
         /// Records an MP4 video to a StorageFile and adds rotation metadata to it
         /// </summary>
@@ -1528,8 +1579,9 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                 Debug.WriteLine("Starting recording to " + videoFile.Path);
 
                 if (_vm.MediaCapture != null)
+                {
                     await _vm.MediaCapture.StartRecordToStorageFileAsync(encodingProfile, videoFile);
-
+                }
                 Debug.WriteLine("Started recording!");
             }
             catch (Exception ex)
@@ -1546,6 +1598,8 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
         private async Task StopRecordingAsync()
         {
             Debug.WriteLine("Stopping recording...");
+
+            _vm.IsMicEnumerationOnEnabled = true;
 
             if (_vm.MediaCapture != null)
                 await _vm.MediaCapture.StopRecordAsync();
@@ -1658,6 +1712,11 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
 
         private void btnRecord_Click(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
+
+            if(!HasEnoughSpace(_vm!.VideoCaptureFolder, 20 * 1024 * 1024))
+            {
+                return;
+            }
             btnPause.Visibility = Visibility.Visible;
             btnRecord.Visibility = Visibility.Collapsed;
             btnStop.Visibility = Visibility.Visible;
