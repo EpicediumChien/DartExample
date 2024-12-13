@@ -132,9 +132,12 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                 DdpmCommonHelper.DeviceManagerSA.SystemSuspend += DeviceManagerSA_OnSystemSuspend;
                 DdpmCommonHelper.DeviceManagerSA.SystemResume += DeviceManagerSA_OnSystemResume;
                 DdpmCommonHelper.DeviceManagerSA.DeviceChanged += DeviceManagerSA_DeviceChanged;
-                DdpmCommonHelper.DeviceManagerSA.SystemSessionEnd += DeviceManagerSA_OnSystemSessionEnd;
                 //Derek 1212
                 DdpmCommonHelper.DeviceManagerSA.UIUpdateNotify += DeviceManagerSA_UIUpdateNotify;
+                //Derek 1110 for Webcam PIMS-315440
+                //During video recording, do"Restart" &"Shutdown"action in SUT,
+                //the video which I just recorded will have no length.
+                SystemEvents.SessionEnding += SystemEvents_SessionEnding;
 
                 DDPMSettings data = DdpmCommonHelper.DeviceManagerSA.ReloadAppConfigData().Result;
                 if (data != null)
