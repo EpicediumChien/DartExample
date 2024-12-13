@@ -2532,13 +2532,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         private void ChangeHeadset(DeviceHelper deviceHelper)
         {
             writelog("ChangeHeadset start");
-            foreach(var a in deviceHelper.deviceInfo)
-            {
-                Trace.WriteLine($"l={a.LogicalDeviceType}");
-                Trace.WriteLine($"p={a.PhysicalDeviceType}");
-            }
             List<DeviceInfo> GetDeviceInfos = deviceHelper.deviceInfo.Where(x => x.LogicalDeviceType == "LogicalHeadset").ToList();
-            Trace.WriteLine(GetDeviceInfos.Count);
             if (GetDeviceInfos != null && GetDeviceInfos.Count >= 1)
             {
                 writelog("ChangeHeadset go");
