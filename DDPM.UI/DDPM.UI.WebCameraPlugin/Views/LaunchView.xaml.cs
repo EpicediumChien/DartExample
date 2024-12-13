@@ -1541,7 +1541,8 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
         private static extern bool GetDiskFreeSpaceEx(string lpDirectoryName, out ulong lpFreeBytesAvailable, out ulong lpTotalNumberOfBytes, out ulong lpTotalNumberOfFreeBytes); 
         public static bool HasEnoughSpace(string path, ulong requiredBytes) 
         { 
-            GetDiskFreeSpaceEx(path, out ulong freeBytesAvailable, out _, out _); 
+            bool ret = GetDiskFreeSpaceEx(path, out ulong freeBytesAvailable, out _, out _);
+            if (ret == false) return false;
             return freeBytesAvailable >= requiredBytes; 
         }
         /// <summary>
