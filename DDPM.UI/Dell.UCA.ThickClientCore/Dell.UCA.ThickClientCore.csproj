@@ -9,6 +9,7 @@
   </PropertyGroup>
 
 	<ItemGroup>
+		<ProjectReference Include="..\DDPM.UI.Common\DDPM.UI.Common.csproj" />
 		<ProjectReference Include="..\Dell.UCA.BaseClientCore\Dell.UCA.BaseClientCore.csproj" />
 		<ProjectReference Include="..\NGA.Common\NGA.Common.csproj" />
 		<ProjectReference Include="..\NGA.Resources\NGA.Resources.csproj" />
@@ -21,6 +22,12 @@
 		<PackageReference Include="Dell.TechHub.Settings.Console" Version="1.4.1" />
 		<PackageReference Include="Dell.UnifiedAgent.Client.Console" Version="1.4.1" />
 		<PackageReference Include="MessagePack" Version="2.5.192" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Reference Include="DDPM.SA.Common">
+	    <HintPath>..\CommonDll\DDPM.SA.Common.dll</HintPath>
+	  </Reference>
 	</ItemGroup>
 
 </Project>

@@ -35,11 +35,11 @@
                 <!--<DoubleAnimation Storyboard.TargetName="BottomGrid" Storyboard.TargetProperty="MaxHeight" Duration="0:0:0.4" From="500" To="540" />-->
             </Storyboard>
             <Style x:Key="Border1" TargetType="{x:Type Border}">
-                <Setter Property="Background" Value="#99193457" />
+                <Setter Property="Background" Value="{DynamicResource DdpmCB_BkColor}" />
                 <Setter Property="Border.CornerRadius" Value="2" />
                 <Setter Property="Width" Value="40" />
                 <Setter Property="BorderThickness" Value="0" />
-                <Setter Property="BorderBrush" Value="#1B385F" />
+                <Setter Property="BorderBrush" Value="{DynamicResource DdpmCB_BdColor}" />
             </Style>
             <Style x:Key="Border3" TargetType="{x:Type Border}">
                 <Setter Property="Background" Value="{DynamicResource DdpmCB_BkColor}" />
@@ -235,7 +235,7 @@
                                 <MouseBinding Gesture="RightDoubleClick" Command="{Binding ShowInfoClickedCommand}" />
                             </Border.InputBindings>
                             <Border.ToolTip>
-                                <ToolTip Placement="Top" VerticalOffset="6" HorizontalOffset="8">
+                                <ToolTip Placement="MousePoint" VerticalOffset="-50" HorizontalOffset="-5">
                                     <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
                                         <TextBlock Style="{StaticResource Tooltip_TextBlockStyle}" Text="{Binding FirmwareVersion2}" />
                                     </Border>
@@ -270,7 +270,7 @@
                                     </Border>
                                 </ToolTip>
                             </Border.ToolTip>
-                            <Image Margin="0" Source="/DDPM.UI.Resources;component/Resources/Images/Pause.png" Stretch="Fill" Width="17" Height="16" />
+                            <ContentControl Margin="0" Width="17" Height="16" Template="{StaticResource icon_Pause}" />
                         </Border>
                         <Border Style="{StaticResource Border1}" Cursor="Hand" Margin="8,0,0,70" Visibility="Collapsed" x:Name="btnPlay" Height="40" VerticalAlignment="Bottom" MouseLeftButtonDown="btnPlay_Click">
                             <Border.ToolTip>
