@@ -50,7 +50,6 @@ using LangHelper = DDPM.UI.Resources.Helper.LangHelper;
 using MessageBox = System.Windows.MessageBox;
 using WebcamProfile = DDPM.UI.Common.WebcamProfile;
 using static Windows.Foundation.UniversalApiContract;
-using System.Windows.Media.TextFormatting;
 
 
 namespace DDPM.UI.Plugin.WebCameraPlugin
