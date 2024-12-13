@@ -39,7 +39,15 @@ namespace DDPM.SA.Common
 
         public string ToJson()
         {
-            return JsonConvert.SerializeObject(this, Formatting.Indented);
+            try
+            {
+                return JsonConvert.SerializeObject(this, Formatting.Indented);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[CLI_RESPONSE] ToJson exception, message: {ex.Message}");
+                return string.Empty;
+            }
         }
 
         public string OutputLog(object o, CommandLineInput commandLineInput)

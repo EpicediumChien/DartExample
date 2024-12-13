@@ -124,6 +124,10 @@ namespace DDPM.UI.Module.WebCameraCapture
                     return;
                 _vm.SetResolution_Selected(idx);
                 InitializeFPS();
+
+                //for default 30 fps
+                _vm.SetFPS_Selected(1);
+
                 foreach (var property in _vm.allProperties)
                 {
                     string properties_temp = property.GetFriendlyName();

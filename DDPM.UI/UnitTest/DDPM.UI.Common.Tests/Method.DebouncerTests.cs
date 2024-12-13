@@ -18,6 +18,7 @@ using VcpCore.Common;
 using Windows.Devices.Input;
 using static DDPM.UI.Common.User32;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.Window;
+using Debouncer = DDPM.UI.Common.Method.Debouncer;
 
 namespace DDPM.UI.Common.Tests
 {

@@ -423,7 +423,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                         }
                     }
 
-                    CheckIfNeedImportSetting_Display();
+                    if(e.device_display != null) CheckIfNeedImportSetting_Display();
                 }
                 else
                 {

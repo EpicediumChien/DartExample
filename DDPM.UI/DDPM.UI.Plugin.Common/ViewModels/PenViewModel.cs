@@ -275,7 +275,7 @@ namespace DDPM.UI.Plugin.ViewModels
             {
                 IsRestoreEnable = true;
             }
-            else if (TiltSensitivity != 50)
+            else if (TiltSensitivity != 0)
             {
                 IsRestoreEnable = true;
             }
@@ -653,8 +653,8 @@ namespace DDPM.UI.Plugin.ViewModels
             if (PenAction.RestoreToDefault())
             {
                 RefreshButtonInfo();
-                CurrentDeviceInfo!.TiltSensitivity = 1;
-                TiltSensitivity = 50;
+                CurrentDeviceInfo!.TiltSensitivity = 0;
+                TiltSensitivity = 0;
                 CurrentDeviceInfo!.TipSensitivity = 3;
                 TipSensitivity = 50;
                 PenAction.IsTopBarrelHoverClickOn = false;
