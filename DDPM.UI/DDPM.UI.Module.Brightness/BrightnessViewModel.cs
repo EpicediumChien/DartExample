@@ -3131,7 +3131,7 @@ namespace DDPM.UI.Module.Brightness
         public void updateHotkeyBtn()
         {
             bool autoBrightnessStatus = AutoBrightnessStatus;
-            bool hotkeyStatus = isBCLHotkeyNotSet();
+            bool hotkeyStatus = isBCHotkeyNotSet();
             if (autoBrightnessStatus && hotkeyStatus)
             {
                 //disable hotkey btn
@@ -3146,20 +3146,18 @@ namespace DDPM.UI.Module.Brightness
             }
             NotifyPropertyChanged("ManualBCHotkeyBtn");
         }
-        public bool isBCLHotkeyNotSet()
+        public bool isBCHotkeyNotSet()
         {
+            //DDPMW-764
             string defaultStr = LangHelper.Instance["None"];
             bool ret = (defaultStr.Equals(_brightnessMinsKey.Trim(), StringComparison.OrdinalIgnoreCase) &&
                     defaultStr.Equals(_brightnessAddKey.Trim(), StringComparison.OrdinalIgnoreCase) &&
                     defaultStr.Equals(_contrastMinsKey.Trim(), StringComparison.OrdinalIgnoreCase) &&
-                    defaultStr.Equals(_contrastAddKey.Trim(), StringComparison.OrdinalIgnoreCase) &&
-                    defaultStr.Equals(_luminanceMinsKey.Trim(), StringComparison.OrdinalIgnoreCase) &&
-                    defaultStr.Equals(_luminanceAddKey.Trim(), StringComparison.OrdinalIgnoreCase));
-            DdpmCommonHelper.WriteUILog($"[isBCLHotkeyNotSet]hotkey config status:{ret};" +
+                    defaultStr.Equals(_contrastAddKey.Trim(), StringComparison.OrdinalIgnoreCase));
+            DdpmCommonHelper.WriteUILog($"[isBCHotkeyNotSet]hotkey config status:{ret};" +
                 $"defaultStr=[{defaultStr}]," +
                 $"_brightnessMinsKey=[{_brightnessMinsKey.Trim()}],_brightnessAddKey=[{_brightnessAddKey.Trim()}]" +
-                $"_contrastMinsKey=[{_contrastMinsKey.Trim()}],_contrastAddKey=[{_contrastAddKey.Trim()}]" +
-                $"_luminanceMinsKey=[{_luminanceMinsKey.Trim()}],_luminanceAddKey=[{_luminanceAddKey.Trim()}]");
+                $"_contrastMinsKey=[{_contrastMinsKey.Trim()}],_contrastAddKey=[{_contrastAddKey.Trim()}]");
             return ret;
         }
         /// <summary>

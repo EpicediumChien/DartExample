@@ -58,6 +58,7 @@ using VcpCore.Common;
 using Windows.System;
 using static DDPM.SA.Common.Telementry_GeneralFunction;
 using static DDPM.SA.Plugins.User.DeviceManager.DisplayDeviceHelper;
+using static VcpCore.Common.User32;
 using IDs = DDPM.SA.Common.IDs;
 
 //using MonitorProfile = DDPM.SA.Utility.MonitorProfile;
@@ -1023,7 +1024,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     else if (string.Equals(ColorPreset_Name, "Game3", StringComparison.OrdinalIgnoreCase))
                         r = SetVCPCapability(m, VcpCodeList.VCPctr["HDR Modes Specific"], VcpCodeList.VCPF0["Game3"]).Result;
                     else if (string.Equals(ColorPreset_Name, "Game1", StringComparison.OrdinalIgnoreCase))
-                        r = SetVCPCapability(m, VcpCodeList.VCPctr["Display Application"],VcpCodeList.VCPDC["Game1"]).Result;
+                        r = SetVCPCapability(m, VcpCodeList.VCPctr["Display Application"], VcpCodeList.VCPDC["Game1"]).Result;
                     else
                         r = await Task.Run(() => SetVCPCapability(m, "colorpreset", ColorPreset_Name).Result).ConfigureAwait(false);
                 }
@@ -1033,7 +1034,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         r = SetVCPCapability(m, VcpCodeList.VCPctr["Display Application"], Convert.ToUInt32(VcpCodeList.VCPDC["Game1"])).Result;
                     else
                         r = await Task.Run(() => SetVCPCapability(m, "colorpreset", ColorPreset_Name).Result).ConfigureAwait(false);
-                } 
+                }
                 else if (string.Equals(m.modelName, "G2724D", StringComparison.OrdinalIgnoreCase) || string.Equals(m.modelName, "G3223D", StringComparison.OrdinalIgnoreCase))
                 {
                     if (string.Equals(ColorPreset_Name, "sRGB", StringComparison.OrdinalIgnoreCase))
@@ -13076,6 +13077,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         {
                             showBatteryLowCombineOSD(Screen.PrimaryScreen.DeviceName, OSDType.CapsLock, true);
                             // ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.CapsLock, true);
+                            //ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.CollaborationNotAvailable, OSDType_Device.Keyboard, "Collaboration controls are not available during multiple conference calls");
                         }
                         else
                         {
@@ -13316,27 +13318,13 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     break;
 
                 case HotkeyType.ContrastReduce:
-                    if (IsALSautobrightness(monitorInfo))
-                    {
-                        HotkeyPopWrap hotkeyPopWrap = new HotkeyPopWrap() { monitorInfo = monitorInfo, hotkeyType = job };
-                        HotkeyPopup(hotkeyPopWrap);
-                    }
-                    else
-                    {
-                        _hotkeyJobQueue.Enqueue(new JobInfo(1000, monitorInfo, null, Reduce_Contrast_Value));
-                    }
+                    //DDPMW-764
+                    _hotkeyJobQueue.Enqueue(new JobInfo(1000, monitorInfo, null, Reduce_Contrast_Value));
                     break;
 
                 case HotkeyType.ContrastIncrease:
-                    if (IsALSautobrightness(monitorInfo))
-                    {
-                        HotkeyPopWrap hotkeyPopWrap = new HotkeyPopWrap() { monitorInfo = monitorInfo, hotkeyType = job };
-                        HotkeyPopup(hotkeyPopWrap);
-                    }
-                    else
-                    {
-                        _hotkeyJobQueue.Enqueue(new JobInfo(1000, monitorInfo, null, Increase_Contrast_Value));
-                    }
+                    //DDPMW-764
+                    _hotkeyJobQueue.Enqueue(new JobInfo(1000, monitorInfo, null, Increase_Contrast_Value));
                     break;
 
                 case HotkeyType.LuminanceReduce:
