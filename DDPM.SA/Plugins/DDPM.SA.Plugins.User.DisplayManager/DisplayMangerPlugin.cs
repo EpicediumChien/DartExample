@@ -71,7 +71,6 @@ namespace DDPM.SA.Plugins.User.DisplayManager
         //private bool _VcpCorePluginUsable = false;
 
         private List<MonitorInfo> _AllInfoMonitors = new List<MonitorInfo>();
-        private static CancellationTokenSource _cancellationTokenSource;
 
         //Input
         private Dictionary<string, InputInfo> inputSourcelist = new Dictionary<string, InputInfo>();
@@ -266,71 +265,17 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             try
             {
                 _logs.DebugMsg("[DisplayMangerPlugin] DisplayMangerPlugin received Re_GetMonitors requested ...");
-                _logs.DebugMsg("[DisplayMangerPlugin] Ready trigger cancel ...");
 
-                if (_cancellationTokenSource != null)
-                {
-                    if (_cancellationTokenSource.Token.CanBeCanceled)
-                    {
-                        _logs.DebugMsg("[DisplayMangerPlugin] _cancellationTokenSource trigger cancel ...");
-                        _cancellationTokenSource.Cancel();
-                    }
-                }
+                _AllInfoMonitors = new List<MonitorInfo>(_VcpCorePlugin.Re_GetMonitors(token).Result);
+
+                _logs.DebugMsg("[DisplayMangerPlugin] Re_GetMonitors() AllInfoMonitors.count is " + _AllInfoMonitors.Count);
 
                 return _AllInfoMonitors;
-            }
-            catch (TaskCanceledException)
-            {
-                // Task was canceled before running.
-                // Cancelled due to timeout
-
-                _logs.DebugMsg("[DisplayMangerPlugin] Re_GetMonitors() cancellation happened...");
-                return new List<MonitorInfo>();
-            }
-            catch (OperationCanceledException)
-            {
-                // Task was canceled while running.
-                // Cancelled due to timeout
-
-                _logs.DebugMsg("[DisplayMangerPlugin] Re_GetMonitors() cancellation happened...");
-                return new List<MonitorInfo>();
             }
             catch (Exception ex)
             {
                 _logs.DebugMsg("[DisplayMangerPlugin] Re_GetMonitors() AllInfoMonitors Exception is " + ex.Message);
                 return new List<MonitorInfo>();
-            }
-            finally
-            {
-                if (_cancellationTokenSource != null)
-                    _cancellationTokenSource.Dispose();
-
-                _cancellationTokenSource = CancellationTokenSource.CreateLinkedTokenSource(token);
-                var NewToken = _cancellationTokenSource.Token;
-
-                bool IsCancelAlready = false;
-
-                var CancelStatusCheck = Task.Run(() => CancellationCheck(NewToken, ref IsCancelAlready));
-
-                var ReGetTask = _VcpCorePlugin.Re_GetMonitors(NewToken);
-
-                if (await Task.WhenAny(ReGetTask, CancelStatusCheck) == ReGetTask)
-                {
-                    _logs.DebugMsg("[DisplayMangerPlugin] ReGetTask finished faster than CancelStatusCheck");
-
-                    _AllInfoMonitors = new List<MonitorInfo>(ReGetTask.Result);
-                    IsCancelAlready = true;
-                    InitializeAllALSInfo();
-                }
-                else
-                {
-                    _logs.DebugMsg("[DisplayMangerPlugin] CancelStatusCheck finished faster than ReGetTask");
-
-                    IsCancelAlready = true;
-                    _AllInfoMonitors = new List<MonitorInfo>();
-                }
-
-                _logs.DebugMsg("[DisplayMangerPlugin] Re_GetMonitors() AllInfoMonitors.count is " + _AllInfoMonitors.Count);
             }
         }
 
@@ -3782,6 +3727,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                 _agent.RaiseEvent(AgentEventNames.AllInfoMonitorsChanged, this, args);
             }
         }
+
         #endregion
 
         #region OutReport
@@ -4709,24 +4655,6 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             {
                 return "Unknow";
             }
-        }
-
-        private void CancellationCheck(CancellationToken token, ref bool IsCancelAlready)
-        {
-            var can = CancellationTokenSource.CreateLinkedTokenSource(token);
-            var NewToken = can.Token;
-
-            while (!IsCancelAlready)
-            {
-                _logs.DebugMsg("[DisplayMangerPlugin] Re_GetMonitors() while loop");
-
-                if (NewToken.IsCancellationRequested)
-                {
-                    _logs.DebugMsg("[DisplayMangerPlugin] Re_GetMonitors() IsCancellationRequested is True");
-                    break;
-                }
-            }
-            _logs.DebugMsg("[DisplayMangerPlugin] Re_GetMonitors() while loop exit");
         }
 
         #endregion
