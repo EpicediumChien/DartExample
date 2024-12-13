@@ -681,7 +681,7 @@ namespace DDPM.UI.Module.Brightness
                 //}
                 Trace.WriteLine($"6. {DateTime.Now.ToString("MM/dd/yyyy hh:mm ss fff")}");
                 //Check if support ALS
-                if (SelectedHomeDevice.MonitorInfo.CapabilityDic.ContainsKey("66"))
+                if (SelectedHomeDevice.MonitorInfo.CapabilityDic.ContainsKey("66") || isLuminance == true)
                 {
                     if (SelectedHomeDevice != null && SelectedHomeDevice.MonitorInfo != null)
                     {
@@ -692,14 +692,14 @@ namespace DDPM.UI.Module.Brightness
                         {
                             for (int i = 0; i < alsList.Count; i++)
                             {
-                                if (alsList[i].DisplayName == SelectedHomeDevice.MonitorInfo.DisplayName && alsList[i].serialNumber == SelectedHomeDevice.MonitorInfo.edid.SerialNumber)
+                                if (alsList[i].Edid == SelectedHomeDevice.MonitorInfo.edid )
                                 {
                                     Start_ALSConfig = alsList[i];
                                 }
                             }
                         }
                         //Re-Get Start_ALSConfig
-                        if (Start_ALSConfig.AllValue == 0)//Need to Re-Get value
+                        if (Start_ALSConfig.AllValue == 0 && isLuminance == false)//Need to Re-Get value
                         {
                             Start_ALSConfig = DdpmCommonHelper.DeviceManagerSA.GetALSFeatureValue(SelectedHomeDevice.MonitorInfo, ALSFeatureQueryType.All, 0).Result;
                             if (!alsList.Contains(Start_ALSConfig))
