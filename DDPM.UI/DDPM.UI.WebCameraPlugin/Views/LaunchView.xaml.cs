@@ -549,7 +549,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                 return true;
             }
 
-            if (manufacturer == null)
+            if(manufacturer == null)
                 DdpmCommonHelper.WriteUILog("check_DellPc() manufacturer == null");
 
             return false;
