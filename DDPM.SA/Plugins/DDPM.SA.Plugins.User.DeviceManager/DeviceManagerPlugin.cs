@@ -9805,6 +9805,10 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                 fail_info += "[DDPM.FwUpdate]";
                         }
                     }
+                    else
+                    {                        
+                        writelog("appDataPath is null, it means is no active user currently");
+                    }
                     if (!string.IsNullOrEmpty(programdataPath))
                     {
                         string LogFolder = @$"{programdataPath}\Dell\DDPM.Subagent";
