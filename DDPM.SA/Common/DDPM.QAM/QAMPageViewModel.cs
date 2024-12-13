@@ -57,7 +57,8 @@ namespace DDPM.QAM
                 CurrentDeviceInfo = deviceInfos.FirstOrDefault(x => (x.PhysicalDeviceType.Equals(DeviceType.LogicalWebcam) || x.PhysicalDeviceType.Equals(DeviceType.PhysicalWebcam)));
                 if (CurrentDeviceInfo != null)
                 {
-                    DeviceModel = CurrentDeviceInfo.Name;
+                    //DeviceModel = CurrentDeviceInfo.Name;
+                    DeviceModel = CurrentDeviceInfo.Name + " " + CurrentDeviceInfo.ModelNumber; //Derek 1213
                     ImportWebcamProfiles(CurrentDeviceInfo.ModelNumber);
                     ZoomMax = CurrentDeviceInfo.ZoomMax;
                     ZoomMin = CurrentDeviceInfo.ZoomMin;
