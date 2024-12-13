@@ -10793,6 +10793,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
                     try
                     {
+                        writelog("[DeviceMangerPlugin] XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
                         writelog("[DeviceMangerPlugin] SystemEvents_DisplaySettingsChanged() Ready trigger cancel ...");
 
                         if (_ReGetcancellationTokenSource != null)
@@ -10801,130 +10802,112 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                             {
                                 writelog("[DeviceMangerPlugin] SystemEvents_DisplaySettingsChanged() _ReGetcancellationTokenSource trigger cancel ...");
                                 _ReGetcancellationTokenSource.Cancel();
+                                _ReGetcancellationTokenSource.Dispose();
                             }
                         }
+
+                        if (_ReGetcancellationTokenSource != null)
+                            _ReGetcancellationTokenSource.Dispose();
+
+                        _ReGetcancellationTokenSource = new CancellationTokenSource();
+                        var token = _ReGetcancellationTokenSource.Token;
+
+                        writelog("[DeviceMangerPlugin] SystemEvents_DisplaySettingsChanged() into Re-GetDevices ...");
+                        //Call VCP to catch updated monitor info
+                        _AllInfoMonitors = new List<MonitorInfo>(_DisplayManagerPlugin.Re_GetMonitors(token).Result);
+
+                        token.ThrowIfCancellationRequested();
+                        //review monitor list to check duplicated data
+                        ReviewAllMonitorToAvoidDuplicatedInfo();
+
+                        //List<MonitorInfo> new_mo = new List<MonitorInfo>();
+                        //if (_AllInfoMonitors.Count > 0)
+                        //    new_mo.AddRange(_AllInfoMonitors);
+
+                        writelog($"[DeviceManager] SystemEvents_DisplaySettingsChanged() Got event, monitor count {_AllInfoMonitors.Count}");
+
+                        token.ThrowIfCancellationRequested();
+                        if (_AllInfoMonitors.Count > 0)
+                            OnDeviceChanged(_AllInfoMonitors[0], null, DeviceChangedType.NotifyOnly, token, "DisplayChanged");//DeviceChangedType.Display_PlugIn);
+                        else
+                            OnDeviceChanged(null, null, DeviceChangedType.NotifyOnly, token, "DisplayChanged");
+
+                        writelog("[DeviceMangerPlugin] SystemEvents_DisplaySettingsChanged() OnDeviceChanged finish ...");
+
+                        //Robert_Lin, 2024-9-9 Signal a DisplaySettingsChanged event through Agent
+                        //Anyone who would like to receive this event, you can add below code: (refer to EAPlugin.cs)
+                        // _agent.RegisterForEvent(AgentEventNames.DisplaySettingsChanged, DisplaySettingsChangedHandler);
+                        //
+                        // private void DisplaySettingsChangedHandler(object sender, EventManagerArgs e)
+                        // {
+                        //    your handler code
+                        // }
+                        //
+
+                        if (_agent != null && !token.IsCancellationRequested)
+                            _agent.RaiseEvent(AgentEventNames.DisplaySettingsChanged, this, new EventManagerArgs());
+
+                        writelog("[DeviceMangerPlugin] SystemEvents_DisplaySettingsChanged() _agent.RaiseEvent finish ...");
+
+                        if (_AllInfoMonitors.Count > 0 && !token.IsCancellationRequested)
+                        {
+                            Task.Run(() =>
+                            {
+                                //Telementry Collection
+                                var rt = false;
+                                var DeviceTypeConnected_Function = new DeviceTypeConnected_Function();
+                                writelog("[DeviceMangerPlugin] [Telementry] Send Telementry for DeviceTypeConnected_Function...");
+                                rt = DeviceTypeConnected_Function.DeviceTypeConnected_Telementry(_TelementryScheduler, _AllInfoMonitors);
+                                if (rt)
+                                    writelog("[DeviceMangerPlugin] [Telementry] Send Telementry for DeviceTypeConnected_Function Success ...");
+                                else
+                                    writelog("[DeviceMangerPlugin] [Telementry] Send Telementry for DeviceTypeConnected_Function Fail ...");
+                            }, token).ConfigureAwait(false);
+                        }
+
+                        ////1117 Bruce 不用自動旋轉把下兩行註解
+                        //if (displayDeviceNumChange && _AllInfoMonitors.Count > 0)
+                        //_DisplayManagerPlugin.SetDisplayOrientation(_AllInfoMonitors).Wait();
+                        //writelog("[DeviceMangerPlugin] SystemEvents_DisplaySettingsChanged() SetDisplayOrientation finish ...");
+
+                        token.ThrowIfCancellationRequested();
+                        _DisplayManagerPlugin.UpdateExistAlsConfig(_AllInfoMonitors.ToList());
+                        writelog("[DeviceMangerPlugin] SystemEvents_DisplaySettingsChanged() UpdateExistAlsConfig finish ...");
+                        writelog("[DeviceMangerPlugin] SystemEvents_DisplaySettingsChanged() Re-GetDevices finish ...");
+
+                        if (_AllInfoMonitors != null && _AllInfoMonitors.Count > 0 && !token.IsCancellationRequested)
+                            Task.Run(() => _disDevHelper?.CheckAndTriggerToastWhileMonitorPlugged(_millisecond, _AllInfoMonitors.ToList(), _SettingsPlugin));
                     }
                     catch (TaskCanceledException)
                     {
                         writelog("[DeviceMangerPlugin] SystemEvents_DisplaySettingsChanged() trigger cancel cancellation happened ...");
+
+                        if (_ReGetcancellationTokenSource != null)
+                            _ReGetcancellationTokenSource.Dispose();
+
+                        OnDeviceChanged(null, null, DeviceChangedType.NotifyOnly, CancellationToken.None, "DisplayChanged");
                     }
                     catch (OperationCanceledException)
                     {
                         writelog("[DeviceMangerPlugin] SystemEvents_DisplaySettingsChanged() trigger cancel cancellation happened ...");
+
+                        if (_ReGetcancellationTokenSource != null)
+                            _ReGetcancellationTokenSource.Dispose();
+
+                        OnDeviceChanged(null, null, DeviceChangedType.NotifyOnly, CancellationToken.None, "DisplayChanged");
                     }
                     catch (Exception ex)
                     {
                         // Failed to complete due to e exception
                         writelog($"[DeviceMangerPlugin] SystemEvents_DisplaySettingsChanged() --Task.Run ...there is an exceptionI-- ({ex.Message})");
 
-                        //Done: let's be nice and don't swallow the exception
-                        //throw new InvalidOperationException("some exception happened but not about InitializeMonitorsList cancellation");
-                    }
-                    finally
-                    {
                         if (_ReGetcancellationTokenSource != null)
                             _ReGetcancellationTokenSource.Dispose();
 
-                        using (var ReGetcancellationTokenSource = new CancellationTokenSource())
-                        {
-                            try
-                            {
-                                _ReGetcancellationTokenSource = CancellationTokenSource.CreateLinkedTokenSource(ReGetcancellationTokenSource.Token);
+                        OnDeviceChanged(null, null, DeviceChangedType.NotifyOnly, CancellationToken.None, "DisplayChanged");
 
-                                var token = _ReGetcancellationTokenSource.Token;
-
-                                writelog("[DeviceMangerPlugin] SystemEvents_DisplaySettingsChanged() into Re-GetDevices ...");
-
-                                //TODO: May be you'll want to add .ConfigureAwait(false);
-                                Task.Run(() =>
-                                {
-                                    try
-                                    {
-                                        writelog("[DeviceMangerPlugin] XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
-
-                                        //Call VCP to catch updated monitor info
-
-                                        _AllInfoMonitors = new List<MonitorInfo>(_DisplayManagerPlugin.Re_GetMonitors(token).Result);
-                                        //review monitor list to check duplicated data
-                                        ReviewAllMonitorToAvoidDuplicatedInfo();
-
-                                        //List<MonitorInfo> new_mo = new List<MonitorInfo>();
-                                        //if (_AllInfoMonitors.Count > 0)
-                                        //    new_mo.AddRange(_AllInfoMonitors);
-
-                                        writelog($"[DeviceManager] SystemEvents_DisplaySettingsChanged() Got event, monitor count {_AllInfoMonitors.Count}");
-
-                                        if (_AllInfoMonitors.Count > 0)
-                                            OnDeviceChanged(_AllInfoMonitors[0], null, DeviceChangedType.NotifyOnly, token, "DisplayChanged");//DeviceChangedType.Display_PlugIn);
-                                        else
-                                            OnDeviceChanged(null, null, DeviceChangedType.NotifyOnly, token, "DisplayChanged");
-
-                                        writelog("[DeviceMangerPlugin] SystemEvents_DisplaySettingsChanged() OnDeviceChanged finish ...");
-
-                                        //Robert_Lin, 2024-9-9 Signal a DisplaySettingsChanged event through Agent
-                                        //Anyone who would like to receive this event, you can add below code: (refer to EAPlugin.cs)
-                                        // _agent.RegisterForEvent(AgentEventNames.DisplaySettingsChanged, DisplaySettingsChangedHandler);
-                                        //
-                                        // private void DisplaySettingsChangedHandler(object sender, EventManagerArgs e)
-                                        // {
-                                        //    your handler code
-                                        // }
-                                        //
-
-                                        if (_agent != null)
-                                            _agent.RaiseEvent(AgentEventNames.DisplaySettingsChanged, this, new EventManagerArgs());
-
-                                        writelog("[DeviceMangerPlugin] SystemEvents_DisplaySettingsChanged() _agent.RaiseEvent finish ...");
-
-                                        if (_AllInfoMonitors.Count > 0)
-                                        {
-                                            Task.Run(() =>
-                                            {
-                                                //Telementry Collection
-                                                var rt = false;
-                                                var DeviceTypeConnected_Function = new DeviceTypeConnected_Function();
-                                                writelog("[DeviceMangerPlugin] [Telementry] Send Telementry for DeviceTypeConnected_Function...");
-                                                rt = DeviceTypeConnected_Function.DeviceTypeConnected_Telementry(_TelementryScheduler, _AllInfoMonitors);
-                                                if (rt)
-                                                    writelog("[DeviceMangerPlugin] [Telementry] Send Telementry for DeviceTypeConnected_Function Success ...");
-                                                else
-                                                    writelog("[DeviceMangerPlugin] [Telementry] Send Telementry for DeviceTypeConnected_Function Fail ...");
-                                            }, token).ConfigureAwait(false);
-                                        }
-
-                                        ////1117 Bruce 不用自動旋轉把下兩行註解
-                                        //if (displayDeviceNumChange && _AllInfoMonitors.Count > 0)
-                                        //_DisplayManagerPlugin.SetDisplayOrientation(_AllInfoMonitors).Wait();
-                                        //writelog("[DeviceMangerPlugin] SystemEvents_DisplaySettingsChanged() SetDisplayOrientation finish ...");
-
-                                        _DisplayManagerPlugin.UpdateExistAlsConfig(_AllInfoMonitors.ToList());
-                                        writelog("[DeviceMangerPlugin] SystemEvents_DisplaySettingsChanged() UpdateExistAlsConfig finish ...");
-
-                                        writelog("[DeviceMangerPlugin] SystemEvents_DisplaySettingsChanged() Re-GetDevices finish ...");
-
-                                        if (_AllInfoMonitors != null && _AllInfoMonitors.Count > 0)
-                                            Task.Run(() => _disDevHelper?.CheckAndTriggerToastWhileMonitorPlugged(_millisecond, _AllInfoMonitors.ToList(), _SettingsPlugin));
-                                    }
-                                    catch (Exception ex)
-                                    {
-                                        writelog("SystemEvents_DisplaySettingsChanged() Task.Run() happened Exception ... " + ex.Message);
-                                    }
-                                }, token).ConfigureAwait(false);
-                            }
-                            catch (TaskCanceledException)
-                            {
-                                writelog("[DeviceMangerPlugin] SystemEvents_DisplaySettingsChanged() Re-GetDevices cancellation happened ...");
-                            }
-                            catch (OperationCanceledException)
-                            {
-                                writelog("[DeviceMangerPlugin] SystemEvents_DisplaySettingsChanged() Re-GetDevices cancellation happened ...");
-                            }
-                            catch (Exception ex)
-                            {
-                                // Failed to complete due to e exception
-                                writelog($"[DeviceMangerPlugin] SystemEvents_DisplaySettingsChanged() --Task.Run ...there is an exceptionII-- ({ex.Message})");
-                            }
-                        }
+                        //Done: let's be nice and don't swallow the exception
+                        //throw new InvalidOperationException("some exception happened but not about InitializeMonitorsList cancellation");
                     }
                 }
                 catch (Exception ex)
@@ -11128,9 +11111,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         protected virtual void OnDeviceChanged(MonitorInfo mo, DeviceInfo di, DeviceChangedType type, CancellationToken token, string changedProperty = "")
         {
-            var Cancellation = CancellationTokenSource.CreateLinkedTokenSource(token);
-            var CancellationToken = Cancellation.Token;
-
             DeviceChangedEventArgs _EventArgs = new DeviceChangedEventArgs();
             if (_UpdateProgress != null && _FWUpdatePlugin != null)
             {
@@ -11164,7 +11144,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             _EventArgs.changedProperty = changedProperty;
             EventHandler<DeviceChangedEventArgs> handler = DeviceChanged;
             if (handler != null)
-                Task.Run(() => handler.Invoke(this, _EventArgs), CancellationToken).ConfigureAwait(false);
+                Task.Run(() => handler.Invoke(this, _EventArgs), token).ConfigureAwait(false);
 
             if (changedProperty.ToLower().Contains("add"))
             {
@@ -11201,7 +11181,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     //    _NKVMPlugin.MonitorPlug();
                     //    SupportedNKVMMonitors();
                     //}
-                    _NKVMPlugin.UpdateMonitorInfo(_AllInfoMonitors, CancellationToken);
+                    _NKVMPlugin.UpdateMonitorInfo(_AllInfoMonitors, token);
                     //SupportedNKVMMonitors();
                 }
             }
@@ -16527,6 +16507,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             SystemSessionEnd?.Invoke(this, EventArgs.Empty);
             return Task.FromResult(true);
         }
+
         #endregion
     }
 }
