@@ -1618,7 +1618,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Auto Color Temperature is currently enabled. Do you wish to disable it to continue?.
+        ///   Looks up a localized string similar to Auto Color Temperature is currently enabled. Do you wish to override it?.
         /// </summary>
         internal static string Color_10 {
             get {
@@ -1974,16 +1974,6 @@ namespace DDPM.UI.Resources {
         internal static string DeviceSettings {
             get {
                 return ResourceManager.GetString("DeviceSettings", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Diagnostic report save fail.
-        ///   Looks up a localized string similar to Disable.
-        /// </summary>
-        internal static string DiagnosticReport_SaveFail {
-            get {
-                return ResourceManager.GetString("DiagnosticReport_SaveFail", resourceCulture);
             }
         }
         
@@ -3609,7 +3599,6 @@ namespace DDPM.UI.Resources {
         
         /// <summary>
         ///   Looks up a localized string similar to The corresponding Easy Memory profile will be deleted too. Do you want to continue?.
-        ///   Looks up a localized string similar to Error.
         /// </summary>
         internal static string EazyMemory_42 {
             get {
@@ -4788,7 +4777,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to An new monitor %1 is detected..
+        ///   Looks up a localized string similar to A new monitor %1 is detected..
         /// </summary>
         internal static string ImpExp_Title_0 {
             get {
@@ -5486,15 +5475,6 @@ namespace DDPM.UI.Resources {
         internal static string MinimizeWindow {
             get {
                 return ResourceManager.GetString("MinimizeWindow", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Monitor asset report save fail.
-        /// </summary>
-        internal static string MonitorAssetReport_SaveFail {
-            get {
-                return ResourceManager.GetString("MonitorAssetReport_SaveFail", resourceCulture);
             }
         }
         
@@ -9378,7 +9358,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to New Comment.
+        ///   Looks up a localized string similar to Insert Comment.
         /// </summary>
         internal static string Word_4 {
             get {

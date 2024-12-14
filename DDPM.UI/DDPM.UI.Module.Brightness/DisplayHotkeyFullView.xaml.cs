@@ -35,6 +35,11 @@ namespace DDPM.UI.Module.Brightness
         private void leftArrow_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             DdpmCommonHelper.ModuleOwner?.CloseFullView();
+            BrightnessViewModel vm = (BrightnessViewModel)DataContext;
+            if (vm != null)
+            {
+                vm.updateHotkeyBtn();
+            }
         }
 
         private void tbBrightnessMins_PreviewKeyDown(object sender, KeyEventArgs e)

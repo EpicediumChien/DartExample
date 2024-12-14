@@ -2077,7 +2077,8 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
         private void _iCTKMessageHelper_CollabMultipleCallsDetectedChanged(bool obj)
         {
             CollabMultipleCallsDetectedChanged?.Invoke(this, obj);
-            Debug.WriteLine($"{obj}");
+            Debug.WriteLine($"CollabMultipleCallsDetectedChanged: {obj}");
+            writelog($"CollabMultipleCallsDetectedChanged: {obj}");
 
             if (obj)
                 _ = _DeviceManagerPlugin.ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.CollaborationNotAvailable, OSDType_Device.Keyboard, LangHelper.Instance["CollabMultipleCalls"]);
@@ -2085,6 +2086,8 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
 
         private void _iCTKMessageHelper_CollaborationMsgChanged(CollaborationMsg collaborationMsg)
         {
+            Debug.WriteLine($"CollaborationMsgChanged: {collaborationMsg.ToString() ?? ""}");
+            writelog($"CollaborationMsgChanged: {collaborationMsg.ToString() ?? ""}");
             CollaborationMsgNotify?.Invoke(EventArgs.Empty, collaborationMsg);
         }
 
@@ -2397,10 +2400,21 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                 _EventArgs.device_peripherals = deviceInfo;
                 _EventArgs.changedProperty = "MuteStatusChanged";
                 OnNotify(_EventArgs);
+                string osdinfo = string.Empty;
+                switch (deviceInfo.ModelNumber)
+                {
+                    //According to Figma string design. deviceInfo.Name
+                    case "SP3022":
+                        osdinfo = "Dell Speakerphone";
+                        break;
+                    case "SB522A":
+                        osdinfo = "Dell Soundbar";
+                        break;
+                }
                 _logs.DebugMsg_1("[PeripheralsPlugin] ILogicalWiredAudio_MuteStatusChanged ... out " + newMuteStatus.ToString() + " , OSD in");
                 if (_DeviceManagerPlugin.GetGlobalSettingParam().Result.GlobalSetting_General.Display_MuteState)
                 {
-                    Task.Run(async () => _DeviceManagerPlugin.ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.Mute, deviceInfo.Name, newMuteStatus));
+                    Task.Run(async () => _DeviceManagerPlugin.ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.Mute, osdinfo, newMuteStatus));
                 }
                 _logs.DebugMsg_1("[PeripheralsPlugin] ILogicalWiredAudio_MuteStatusChanged ... OSD out ");
             }

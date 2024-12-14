@@ -67,7 +67,7 @@ namespace DDPM.UI.Module.HeadsetDeviceSettings
             //Window parentWindow = Window.GetWindow(this);
             //double windowLeft = 0;
             //double windowTop = 0;
-            LearnMorePage modalDialog = new(parentWindow.ActualWidth, parentWindow.ActualHeight, parameter);
+            LearnMorePage modalDialog = new(parentWindow.ActualWidth, parentWindow.ActualHeight, parameter, _vm.Model, _vm.FirmwareVersion2);
             if (parentWindow != null)
             {
                 modalDialog.Owner = parentWindow;

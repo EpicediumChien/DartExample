@@ -132,7 +132,7 @@ namespace DDPM.SA.Plugins.SWUpdate
             _ForceSWUpdateInfoPackage = new SWUpdateInfoPackage();
             _ForceSWUpdateInfoPackage.SWUpdateInfo = new List<SWUpdateInfo>();
             _checkUpdateScheduleTimer = new Timer();
-            _checkUpdateScheduleTimer.Interval = TimeSpan.FromMinutes(0.5).TotalMilliseconds;
+            _checkUpdateScheduleTimer.Interval = TimeSpan.FromSeconds(10).TotalMilliseconds;
             _checkUpdateScheduleTimer.Elapsed += new ElapsedEventHandler(CheckUpdateScheduleTimer_Elapsed);
         }
         #region Overriding methods
