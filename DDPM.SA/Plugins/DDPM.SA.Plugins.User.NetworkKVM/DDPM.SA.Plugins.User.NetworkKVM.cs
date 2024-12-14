@@ -1680,6 +1680,7 @@ namespace NetworkKVM.Plugins
                 }
                 //ResponseSupportedMonitor().Wait();
                 OnNKVM().Wait();
+                _logs.DebugMsg("[NetworkKVM] StartAsync is end");
 #if RELEASE
             }
             else
