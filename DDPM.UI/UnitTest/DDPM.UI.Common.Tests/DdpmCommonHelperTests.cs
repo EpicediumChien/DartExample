@@ -134,7 +134,7 @@ namespace DDPM.UI.Common.Tests
             t.Start();
             while (hwnd_win == 0)
             {
-                Thread.Sleep(1000);
+                //Thread.Sleep(100);
                 hwnd_win = _FindWindow(null, "DDPMMsgBox");
             }
         }
@@ -149,7 +149,7 @@ namespace DDPM.UI.Common.Tests
             t.Start();
             while (hwnd_win == 0)
             {
-                Thread.Sleep(1000);
+                //Thread.Sleep(1000);
                 hwnd_win = _FindWindow(null, "DDPMMsgBox");
             }
         }
@@ -164,7 +164,7 @@ namespace DDPM.UI.Common.Tests
             t.Start();
             while (hwnd_win == 0)
             {
-                Thread.Sleep(1000);
+                Thread.Sleep(100);
                 hwnd_win = _FindWindow(null, "DDPMMsgBox");
             }
         }

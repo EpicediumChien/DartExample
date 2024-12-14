@@ -31,7 +31,7 @@ namespace DDPM.UI.Module.Kvm.Tests
         private KvmRightView? kvmRightView;
         private Mock<IConsole>? MyConsoleMock;
         private Mock<ILog>? MyLogMock;
-
+        private Mock<ILog>? _logMock;
         [SetUp]
         public void Setup()
         {
@@ -43,6 +43,10 @@ namespace DDPM.UI.Module.Kvm.Tests
             var resourceDictionary = new ResourceDictionary();
             resourceDictionary.Source = new Uri("pack://application:,,,/DDPM.UI.Common;component/ModuleStyle.xaml");
             System.Windows.Application.Current.Resources.MergedDictionaries.Add(resourceDictionary);
+            _logMock = new Mock<ILog>();
+            MyConsoleMock = new Mock<IConsole>();
+            DdpmCommonHelper.MyConsole = MyConsoleMock.Object;
+            MyConsoleMock.Setup(x => x.CreateLog(It.IsAny<string>())).Returns(_logMock.Object);
             MyConsoleMock = new Mock<IConsole>();
             MyLogMock=new Mock<ILog>();
             MyConsoleMock.Setup(x => x.CreateLog(It.IsAny<string>())).Returns(MyLogMock.Object);
