@@ -496,8 +496,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     //22 Test Scenario : 2 monitors with Brightness/Contrast and 1 monitor with Luminance
                     if (CheckLuminanceMonitorCount(moLists) == 2)
                     {
-                        ObjGetVCP obj = _displayManagerPlugin.GetVCPCapability(currentMoInfo, 0x12, 0).Result;
-                        if (obj.result)
+                        bool obj = currentMoInfo.CapabilityDic.ContainsKey("12");
+                        if (obj)
                         {
                             //Result same as Expected Result B and not apply to DUT3.
                             //SynchronizeBtnExpectedResult("B");
@@ -513,8 +513,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     //23 Test Scenario : 1 monitor with Brightness/Contrast and 2 monitors with Luminance
                     if (CheckLuminanceMonitorCount(moLists) == 1)
                     {
-                        ObjGetVCP obj = _displayManagerPlugin.GetVCPCapability(currentMoInfo, 0x12, 0).Result;
-                        if (obj.result)
+                        bool obj = currentMoInfo.CapabilityDic.ContainsKey("12");
+                        if (obj)
                         {
                             //Result same as Expected Result B and not apply to DUT3.
                             //SynchronizeBtnExpectedResult("A");
@@ -577,8 +577,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     //24 Test Scenario : 2 monitors with Brightness/Contrast and 2 monitors with Luminance
                     if (CheckLuminanceMonitorCount(moLists) == 2)
                     {
-                        ObjGetVCP obj = _displayManagerPlugin.GetVCPCapability(currentMoInfo, 0x12, 0).Result;
-                        if (obj.result)
+                        bool obj = currentMoInfo.CapabilityDic.ContainsKey("12");
+                        if (obj)
                         {
                             //Result same as Expected Result B and not apply to DUT3.
                             //SynchronizeBtnExpectedResult("B");
@@ -676,7 +676,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             {
                 foreach (var hd in moLists)
                 {
-                    if (hd.CapabilityString.Contains("12"))
+                    if (!hd.CapabilityDic.ContainsKey("12"))
                     {
                         _isLuminanceCount++;
                     }
