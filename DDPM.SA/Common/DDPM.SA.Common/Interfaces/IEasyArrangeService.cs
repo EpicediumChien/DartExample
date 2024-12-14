@@ -9,14 +9,9 @@ namespace DDPM.SA.Common.Interfaces
 {
     public interface IEasyArrangeService : IFrameworkPlugin
     {
-        #region Properties
+        #region CLI Flags: Enabled/Locked
         public bool IsFunctionEnabled { get; set; }
-
-        /// <summary>
-        /// The last error string after a EAPlugin method return error.
-        /// </summary>
-        public string EALastError { get; }
-        #endregion 
+        #endregion CLI Flags: Enabled/Locked
 
         #region Events
         public event EventHandler<string> EditStarted;
@@ -36,10 +31,7 @@ namespace DDPM.SA.Common.Interfaces
 
         public Task<bool> ReloadEzSettings();
 
-        //Unused. Use SetEASelectedLayout(MonitorInfo monitorInfo, int eaId) instead.
         public Task<bool> SetEASelectedLayout(MonitorInfo monitorInfo, SplitJson spJson);
-
-        public Task<bool> SetEASelectedLayout(MonitorInfo monitorInfo, int eaId);
 
         /// <summary>
         /// Return current Span across multiple monitor option is Enabled/Disabled;

@@ -44,16 +44,6 @@ namespace DDPM.Easy.Common
             ISplitCtrl? iSplit = ISplitCtrl.Splits_EA.Find(x => (x.CellCount == cellCount) && (x.SplitKey == splitKey));
             return (iSplit != null);
         }
-
-        /// <summary>
-        /// Check if the specified eaID is an existed (valid) EAID of Preset Layout 
-        /// </summary>
-        /// <param name="eaId"></param>
-        /// <returns></returns>
-        public static bool IsExistedPresetEAID(int eaId)
-        {
-            return (eaId >= 0) && (eaId <= 49);
-        }
         #endregion Collection of support SplitCtrl classes
 
         #region Native members - value not be changed once created

@@ -18,7 +18,7 @@ namespace DDPM.SA.Common.Display
         public List<double> Settings { get; set; } = new List<double>();
         public string CustomName { get; set; } = "";
         public long CustomId { get; set; } = 0;
-        public int EAID { get; set; } = 0;
+        public int EAID { get; set; }
         public CellJson[] Cells { get; set; }
         #endregion Native Properties
 
@@ -177,18 +177,6 @@ namespace DDPM.SA.Common.Display
         public bool IsOverlapLayout
         {
             get { return ((CellCount == 0) && (SplitKey == 'B')); }
-        }
-
-        public bool IsOff
-        {
-            get { return ((CellCount == 0) && (SplitKey == 'A')); }
-        }
-        public bool IsCustomLayout
-        {
-            get 
-            {
-                return (EAID >= EAEMConstants.EAID_FirstCustom); //>=1000
-            }
         }
     }
 }

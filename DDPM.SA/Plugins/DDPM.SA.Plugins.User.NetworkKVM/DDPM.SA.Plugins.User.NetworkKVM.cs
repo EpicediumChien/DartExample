@@ -148,11 +148,14 @@ namespace NetworkKVM.Plugins
                 //means unplug all connected dell monitors
                 //Call Func: OnMonitorUnPlug(_AllInfoMonitors);
                 //_SupportedMonitors = GetSupportedNKVM().Result;
-                if (pipeServer.IsConnected)
+                if (pipeServer != null)
                 {
-                    MonitorPlug();
+                    if (pipeServer.IsConnected)
+                    {
+                        MonitorPlug().Wait();
+                    }
+                    Disconnect();
                 }
-                Disconnect();
                 _ = Task.Run(async () => await NamedPipeServer(token));
                 _AllInfoMonitors.Clear();
             }
@@ -173,7 +176,6 @@ namespace NetworkKVM.Plugins
                         {
                             //ResponseSupportedMonitor();
                             MonitorPlug();
-                            OnNKVM();
                         }
                         else
                         {
@@ -183,7 +185,11 @@ namespace NetworkKVM.Plugins
                             _ = Task.Run(async () => await NamedPipeServer(token));
                         }
                     }
-                    //}
+                    else
+                    {
+                        isMonintorChange = true;
+                        _ = Task.Run(async () => await NamedPipeServer(token));
+                    }
                     _AllInfoMonitors.AddRange(monitorInfos);
                 }
                 else
@@ -197,15 +203,23 @@ namespace NetworkKVM.Plugins
                     {
                         //Call Func: OnMonitorUnPlug(unplug);
                         //_SupportedMonitors = GetSupportedNKVM().Result;
-                        if (pipeServer.IsConnected)
+                        if (pipeServer != null)
                         {
-                            MonitorPlug();
+                            if (pipeServer.IsConnected)
+                            {
+                                MonitorPlug();
+                            }
+                            else
+                            {
+                                Disconnect();
+                                isMonintorChange = true;
+                                //_runloop = true;
+                                _ = Task.Run(async () => await NamedPipeServer(token));
+                            }
                         }
                         else
                         {
-                            Disconnect();
                             isMonintorChange = true;
-                            //_runloop = true;
                             _ = Task.Run(async () => await NamedPipeServer(token));
                         }
                     }
@@ -218,17 +232,24 @@ namespace NetworkKVM.Plugins
                     {
                         //Call Func: OnMonitorPlugIn(plugin);
                         //_SupportedMonitors = GetSupportedNKVM().Result;
-                        if (pipeServer.IsConnected)
+                        if (pipeServer != null)
                         {
-                            //ResponseSupportedMonitor();
-                            MonitorPlug();
-                            OnNKVM();
+                            if (pipeServer.IsConnected)
+                            {
+                                //ResponseSupportedMonitor();
+                                MonitorPlug();
+                            }
+                            else
+                            {
+                                Disconnect();
+                                isMonintorChange = true;
+                                //_runloop = true;
+                                _ = Task.Run(async () => await NamedPipeServer(token));
+                            }
                         }
                         else
                         {
-                            Disconnect();
                             isMonintorChange = true;
-                            //_runloop = true;
                             _ = Task.Run(async () => await NamedPipeServer(token));
                         }
                     }
@@ -574,10 +595,10 @@ namespace NetworkKVM.Plugins
 
         public Task<bool> HaveSuppertMonitor()
         {
-            if (_AllInfoMonitors == null || _AllInfoMonitors.Count == 0)
-            {
+            //if (_AllInfoMonitors == null || _AllInfoMonitors.Count == 0)
+            //{
                 _AllInfoMonitors = GetMonitors().Result;//_DisplayPlugin.GetMonitors();
-            }
+            //}
             foreach (MonitorInfo monitorInfo in _AllInfoMonitors)
             {
                 if (isSupportMonitor(monitorInfo).Result && monitorInfo.DDCisON)
@@ -1281,124 +1302,135 @@ namespace NetworkKVM.Plugins
         {
             var Cancellation = CancellationTokenSource.CreateLinkedTokenSource(token);
             var CancellationToken = Cancellation.Token;
-            CreateNamedPipe_init();
-            _logs.DebugMsg("NKVM NamedPipeServer is go...");
-            Trace.WriteLine("NKVM NamedPipeServer is go...");
-            int i = 0;
-            while (_runloop)
+            if (CreateNamedPipe_init())
             {
-                //if (CancellationToken.IsCancellationRequested)
-                //{
-                //    _logs.DebugMsg("[NetworkKVM]Token is cancel");
-                //    Trace.WriteLine("[NetworkKVM]Token is cancel");
-                //    Disconnect();
-                //    _AllInfoMonitors = GetMonitors().Result;
-                //    CreateNamedPipe_init();
-                //    i = 0;
-                //    //break;
-                //}
-                if (pipeServer != null)
+                _logs.DebugMsg("NKVM NamedPipeServer is go...");
+                Trace.WriteLine("NKVM NamedPipeServer is go...");
+                int i = 0;
+                while (_runloop)
                 {
-                    if (pipeServer.IsConnected)
+                    //if (CancellationToken.IsCancellationRequested)
+                    //{
+                    //    _logs.DebugMsg("[NetworkKVM]Token is cancel");
+                    //    Trace.WriteLine("[NetworkKVM]Token is cancel");
+                    //    Disconnect();
+                    //    _AllInfoMonitors = GetMonitors().Result;
+                    //    CreateNamedPipe_init();
+                    //    i = 0;
+                    //    //break;
+                    //}
+                    if (i > 2)
                     {
-                        if (CancellationToken.IsCancellationRequested)
+                        _logs.DebugMsg("[NetworkKVM] loop error times = 3");
+                        Disconnect();
+                        break;
+                    }
+                    if (pipeServer != null)
+                    {
+                        if (pipeServer.IsConnected)
                         {
-                            _logs.DebugMsg("[NetworkKVM]Token is cancel");
-                            Trace.WriteLine("[NetworkKVM]Token is cancel");
-                            Disconnect();
-                            _AllInfoMonitors = GetMonitors().Result;
-                            CreateNamedPipe_init();
-                            i = 0;
-                            //break;
-                        }
-                        else
-                        {
-                            lock (lock_wait)
+                            if (CancellationToken.IsCancellationRequested)
                             {
-                                try
+                                _logs.DebugMsg("[NetworkKVM]Token is cancel");
+                                Trace.WriteLine("[NetworkKVM]Token is cancel");
+                                Disconnect();
+                                _AllInfoMonitors = GetMonitors().Result;
+                                if (CreateNamedPipe_init())
                                 {
-
-                                    response = ReadAsync().Result;
-                                    _logs.DebugMsg("[NetworkKVM] Get :" + response);
-                                    if (!string.IsNullOrEmpty(response))
+                                    break;
+                                }
+                                else
+                                {
+                                    i++;
+                                }
+                            }
+                            else
+                            {
+                                lock (lock_wait)
+                                {
+                                    try
                                     {
-                                        if (response == "Disconnect")
+                                        i = 0;
+                                        response = ReadAsync().Result;
+                                        _logs.DebugMsg("[NetworkKVM] Get :" + response);
+                                        if (!string.IsNullOrEmpty(response))
                                         {
-                                            Disconnect();
-                                            //CreateNamedPipe();
+                                            if (response == "Disconnect")
+                                            {
+                                                Disconnect();
+                                                //CreateNamedPipe();
+                                            }
+                                            else
+                                            {
+                                                //var matches = Regex.Matches(response, @"\{.*?\}");
+                                                List<string> respList = new List<string>();
+                                                int braceCount = 0;
+                                                int startIndex = 0;
+
+                                                for (int l = 0; l < response.Length; l++)
+                                                {
+                                                    if (response[l] == '{')
+                                                    {
+                                                        if (braceCount == 0)
+                                                        {
+                                                            startIndex = l;
+                                                        }
+                                                        braceCount++;
+                                                    }
+                                                    else if (response[l] == '}')
+                                                    {
+                                                        braceCount--;
+
+                                                        if (braceCount == 0)
+                                                        {
+                                                            respList.Add(response.Substring(startIndex, l - startIndex + 1));
+                                                        }
+                                                    }
+                                                }
+                                                if (respList != null)
+                                                {
+                                                    foreach (string resp in respList)
+                                                    {
+                                                        _logs.DebugMsg("[NetworkKVM] response string :" + resp);
+                                                        JsonstringParse(resp); //read json type
+                                                    }
+                                                }
+                                            }
                                         }
                                         else
                                         {
-                                            //var matches = Regex.Matches(response, @"\{.*?\}");
-                                            List<string> respList = new List<string>();
-                                            int braceCount = 0;
-                                            int startIndex = 0;
-
-                                            for (int l = 0; l < response.Length; l++)
-                                            {
-                                                if (response[l] == '{')
-                                                {
-                                                    if (braceCount == 0)
-                                                    {
-                                                        startIndex = l;
-                                                    }
-                                                    braceCount++;
-                                                }
-                                                else if (response[l] == '}')
-                                                {
-                                                    braceCount--;
-
-                                                    if (braceCount == 0)
-                                                    {
-                                                        respList.Add(response.Substring(startIndex, l - startIndex + 1));
-                                                    }
-                                                }
-                                            }
-                                            if (respList != null)
-                                            {
-                                                foreach (string resp  in respList)
-                                                {
-                                                    _logs.DebugMsg("[NetworkKVM] response string :" + resp);
-                                                    JsonstringParse(resp); //read json type
-                                                }
-                                            }
+                                            _logs.DebugMsg("[NetworkKVM] Get is null or empty");
                                         }
                                     }
-                                    else
+                                    catch (Exception ex)
                                     {
-                                        _logs.DebugMsg("[NetworkKVM] Get is null or empty");
+                                        _logs.DebugMsg($"[NetworkKVM] Failed to connect {ex}");
+                                        Disconnect();
+                                        _AllInfoMonitors = GetMonitors().Result;
+                                        if (CreateNamedPipe_init())
+                                        {
+                                            break;
+                                        }
+                                        else
+                                        {
+                                            i++;
+                                        }
                                     }
                                 }
-                                catch (Exception ex)
-                                {
-                                    //throw;
-                                    _logs.DebugMsg($"[NetworkKVM] Failed to connect {ex}");
-                                    Disconnect();
-                                    _AllInfoMonitors = GetMonitors().Result;
-                                    CreateNamedPipe_init();
-                                    i = 0;
-                                }
                             }
+                        }
+                        else
+                        {
+                            i++;
                         }
                     }
                     else
                     {
-                        if (i > 2)
-                        {
-                            break;
-                        }
-                        i++;
-                        //    Disconnect();
-                        //    CreateNamedPipe_init();
+                        _logs.DebugMsg("pipeServer is null");
+                        Disconnect();
+                        _AllInfoMonitors = GetMonitors().Result;
+                        break; // 2024-12-13 Elie, break infinite loop when it doesn't support NKVM.
                     }
-                }
-                else
-                {
-                    _logs.DebugMsg("pipeServer is null");
-                    Disconnect();
-                    _AllInfoMonitors = GetMonitors().Result;
-                    CreateNamedPipe_init();
-                    i = 0;
                 }
             }
             _logs.DebugMsg("NKVM NamedPipeServer is End...");
@@ -1410,115 +1442,120 @@ namespace NetworkKVM.Plugins
         {
             var Cancellation = CancellationTokenSource.CreateLinkedTokenSource(token);
             var CancellationToken = Cancellation.Token;
-            CreateNamedPipe();
-            //CallShowNKVM(0, 100, 100);
-            _logs.DebugMsg("NKVM NamedPipeServer_UI is go...");
-            Trace.WriteLine("NKVM NamedPipeServer_UI is go...");
-            int i = 0;
-            while (_runloop)
+            if (CreateNamedPipe())
             {
-                if (pipeServer != null)
+                //CallShowNKVM(0, 100, 100);
+                _logs.DebugMsg("NKVM NamedPipeServer_UI is go...");
+                Trace.WriteLine("NKVM NamedPipeServer_UI is go...");
+                int i = 0;
+                while (_runloop)
                 {
-                    if (pipeServer.IsConnected)
+                    if (i > 2)
                     {
-                        if (CancellationToken.IsCancellationRequested)
+                        _logs.DebugMsg("[NetworkKVM] loop error times = 3");
+                        Disconnect();
+                        break;
+                    }
+                    if (pipeServer != null)
+                    {
+                        if (pipeServer.IsConnected)
                         {
-                            _logs.DebugMsg("[NetworkKVM]Token is cancel");
-                            Trace.WriteLine("[NetworkKVM]Token is cancel");
-                            Disconnect();
-                            _AllInfoMonitors = GetMonitors().Result;
-                            CreateNamedPipe();
-                            i = 0;
-                            //break;
-                        }
-                        else
-                        {
-                            lock (lock_wait)
+                            if (CancellationToken.IsCancellationRequested)
                             {
-                                try
+                                _logs.DebugMsg("[NetworkKVM]Token is cancel");
+                                Trace.WriteLine("[NetworkKVM]Token is cancel");
+                                Disconnect();
+                                _AllInfoMonitors = GetMonitors().Result;
+                                if (CreateNamedPipe())
                                 {
-
-                                    response = ReadAsync().Result;
-                                    _logs.DebugMsg("[NetworkKVM] Get :" + response);
-                                    if (!string.IsNullOrEmpty(response))
+                                    break;
+                                }
+                                else
+                                {
+                                    i++;
+                                }
+                            }
+                            else
+                            {
+                                lock (lock_wait)
+                                {
+                                    try
                                     {
-                                        if (response == "Disconnect")
+                                        i = 0;
+                                        response = ReadAsync().Result;
+                                        _logs.DebugMsg("[NetworkKVM] Get :" + response);
+                                        if (!string.IsNullOrEmpty(response))
                                         {
-                                            Disconnect();
-                                            //CreateNamedPipe();
+                                            if (response == "Disconnect")
+                                            {
+                                                Disconnect();
+                                                //CreateNamedPipe();
+                                            }
+                                            else
+                                            {
+                                                //var matches = Regex.Matches(response, @"\{.*?\}");
+                                                List<string> respList = new List<string>();
+                                                int braceCount = 0;
+                                                int startIndex = 0;
+
+                                                for (int l = 0; l < response.Length; l++)
+                                                {
+                                                    if (response[l] == '{')
+                                                    {
+                                                        if (braceCount == 0)
+                                                        {
+                                                            startIndex = l;
+                                                        }
+                                                        braceCount++;
+                                                    }
+                                                    else if (response[l] == '}')
+                                                    {
+                                                        braceCount--;
+
+                                                        if (braceCount == 0)
+                                                        {
+                                                            respList.Add(response.Substring(startIndex, l - startIndex + 1));
+                                                        }
+                                                    }
+                                                }
+                                                if (respList != null)
+                                                {
+                                                    foreach (string resp in respList)
+                                                    {
+                                                        _logs.DebugMsg("[NetworkKVM] response string :" + resp);
+                                                        JsonstringParse(resp); //read json type
+                                                    }
+                                                }
+                                            }
                                         }
                                         else
                                         {
-                                            //var matches = Regex.Matches(response, @"\{.*?\}");
-                                            List<string> respList = new List<string>();
-                                            int braceCount = 0;
-                                            int startIndex = 0;
-
-                                            for (int l = 0; l < response.Length; l++)
-                                            {
-                                                if (response[l] == '{')
-                                                {
-                                                    if (braceCount == 0)
-                                                    {
-                                                        startIndex = l;
-                                                    }
-                                                    braceCount++;
-                                                }
-                                                else if (response[l] == '}')
-                                                {
-                                                    braceCount--;
-
-                                                    if (braceCount == 0)
-                                                    {
-                                                        respList.Add(response.Substring(startIndex, l - startIndex + 1));
-                                                    }
-                                                }
-                                            }
-                                            if (respList != null)
-                                            {
-                                                foreach (string resp in respList)
-                                                {
-                                                    _logs.DebugMsg("[NetworkKVM] response string :" + resp);
-                                                    JsonstringParse(resp); //read json type
-                                                }
-                                            }
+                                            _logs.DebugMsg("[NetworkKVM] Get is null or empty");
                                         }
                                     }
-                                    else
+                                    catch (Exception ex)
                                     {
-                                        _logs.DebugMsg("[NetworkKVM] Get is null or empty");
+                                        _logs.DebugMsg($"[NetworkKVM] Failed to connect {ex}");
+                                        Disconnect();
+                                        _AllInfoMonitors = GetMonitors().Result;
+                                        CreateNamedPipe();
+                                        i++;
                                     }
                                 }
-                                catch (Exception ex)
-                                {
-                                    //throw;
-                                    _logs.DebugMsg($"[NetworkKVM] Failed to connect {ex}");
-                                    Disconnect();
-                                    _AllInfoMonitors = GetMonitors().Result;
-                                    CreateNamedPipe();
-                                    i = 0;
-                                }
                             }
+                        }
+                        else
+                        {
+                            i++;
                         }
                     }
                     else
                     {
-                        if (i > 2)
-                        {
-                            break;
-                        }
-                        i++;
-                        //    Disconnect();
-                        //    CreateNamedPipe_init();
+                        _logs.DebugMsg("pipeServer is null...");
+                        Disconnect();
+                        _AllInfoMonitors = GetMonitors().Result;
+                        break;
                     }
-                }
-                else
-                {
-                    _logs.DebugMsg("pipeServer is null...");
-                    Disconnect();
-                    _AllInfoMonitors = GetMonitors().Result;
-                    CreateNamedPipe();
-                    i = 0;
                 }
             }
             _logs.DebugMsg("NKVM NamedPipeServer_UI is End...");
@@ -1526,7 +1563,7 @@ namespace NetworkKVM.Plugins
             //_agent.StopAgent();
         }
 
-        private void CreateNamedPipe_init()
+        private bool CreateNamedPipe_init()
         {
             try
             {
@@ -1568,6 +1605,7 @@ namespace NetworkKVM.Plugins
                     _logs.DebugMsg("NKVM CreateNamedPipe_init is not supperMonitor...");
                     Trace.WriteLine("NKVM CreateNamedPipe_init is not supperMonitor...");
                     Disconnect();
+                    return false;
                 }
                 Trace.WriteLine("NKVM CreateNamedPipe_init is End...");
             }
@@ -1575,10 +1613,12 @@ namespace NetworkKVM.Plugins
             {
                 _logs.DebugMsg("[NetworkKVM] CreateNamedPipe_init is error");
                 Disconnect();
+                return false;
             }
+            return true;
         }
 
-        private async void CreateNamedPipe()
+        private bool CreateNamedPipe()
         {
             try
             {
@@ -1616,7 +1656,9 @@ namespace NetworkKVM.Plugins
             {
                 _logs.DebugMsg("[NetworkKVM] CreateNamedPipe is error");
                 Disconnect();
+                return false;
             }
+            return true;
         }
 
         private async Task StartAsync()
@@ -1638,6 +1680,7 @@ namespace NetworkKVM.Plugins
                 }
                 //ResponseSupportedMonitor().Wait();
                 OnNKVM().Wait();
+                _logs.DebugMsg("[NetworkKVM] StartAsync is end");
 #if RELEASE
             }
             else
