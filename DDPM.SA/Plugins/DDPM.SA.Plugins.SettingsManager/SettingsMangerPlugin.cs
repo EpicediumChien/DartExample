@@ -512,14 +512,14 @@ namespace DDPM.SA.Plugins.SettingsManager
                 {
                     directoryInfo = new DirectoryInfo(folder);
                 }
-                catch (Exception ex) 
+                catch (Exception ex)
                 {
                     WriteLog($"[{type}]System config: retrieve Directory got null return");
                     Directory.Delete(folder, true);
                     directoryInfo = System.IO.Directory.CreateDirectory(folder);
                     WriteLog($"[{type}]re-create system settings folder success");
                 }
-                                                 
+
                 string info2 = string.Empty;
                 //if (DDPMFileSecurity.IsPathSymbolicLinked(folder, out info2))
                 if (!DDPMFileSecurity.IsFolderPathValid(folder, out info2))
@@ -573,7 +573,7 @@ namespace DDPM.SA.Plugins.SettingsManager
                 }
 
                 if (fileInfo != null)
-                {                
+                {
                     AclChecker aclChecker = new AclChecker();
                     if (aclChecker.ContainsUnprivilegedWriteAccess(fileInfo))
                     {
@@ -696,6 +696,22 @@ namespace DDPM.SA.Plugins.SettingsManager
                 WriteLog($"[System settings plugin] WriteRegistryData exception ({e.Message})");
                 return Task.FromResult(false);
             }
+        }
+        public Task<bool> SaveLog(string saveFolderPath)
+        {
+            bool ret = false;
+            try
+            {
+                ret = DiagnosticReport.SaveLogFile(saveFolderPath, Log);
+                WriteLog($"[System setting plugin] DiagnosticReport.SaveLogFile finish");
+            }
+            catch (Exception e)
+            {
+                WriteLog($"[System settings plugin] SaveLog exception ({e.Message})");
+            }
+            WriteLog($"[System setting plugin] SaveLog {(ret ? "success" : "failed")}");
+            WriteLog($"[System setting plugin] SaveLog end");
+            return Task.FromResult(ret);
         }
 
         #endregion

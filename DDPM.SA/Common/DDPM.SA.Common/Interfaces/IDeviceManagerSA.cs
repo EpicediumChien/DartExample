@@ -1153,7 +1153,7 @@ namespace DDPM.SA.Common
 
         Task<bool> ExportMonitorAssetReport(List<MonitorInfo> monitorInfos, string savePath);
 
-        Task<bool> SaveLogFile(string saveFolderPath = "");
+        Task<bool> SaveLogFile(string saveFolderPath);
 
         #endregion OutReport
 

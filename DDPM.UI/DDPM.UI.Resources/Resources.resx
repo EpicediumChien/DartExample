@@ -3249,4 +3249,10 @@
   <data name="EazyMemory.42" xml:space="preserve">
     <value>The corresponding Easy Memory profile will be deleted too. Do you want to continue?</value>
   </data>
+  <data name="DiagnosticReport_SaveFail" xml:space="preserve">
+    <value>Diagnostic report save fail</value>
+  </data>
+  <data name="MonitorAssetReport_SaveFail" xml:space="preserve">
+    <value>Monitor asset report save fail</value>
+  </data>
 </root>
