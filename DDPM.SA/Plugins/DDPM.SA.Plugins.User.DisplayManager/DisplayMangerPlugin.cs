@@ -4533,7 +4533,6 @@ namespace DDPM.SA.Plugins.User.DisplayManager
         {
             _logs.DebugMsg($"[DisplayMangerPlugin] {nameof(GetDisplayFWMetadata)} start");
             string display_FWU_URL = GetTestServerURL();
-            _logs.DebugMsg($"[DisplayMangerPlugin] display_FWU_URL : {display_FWU_URL}");
             DisplayUpdateHelper ret = new DisplayUpdateHelper();
             if (!isSkipCA)
             {

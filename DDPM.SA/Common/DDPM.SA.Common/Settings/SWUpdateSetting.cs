@@ -23,7 +23,7 @@ namespace DDPM.SA.Common.Settings
     {
         private static readonly string URL = @$"https://clientperipherals.dell.com/DDPM/";
         private static readonly string URL_Folder = @$"/Windows/Application/";
-        private static string SetSWUServer()
+        private static string GetSWUServer()
         {
             RegistryKey localKey64 = RegistryKey.OpenBaseKey(Microsoft.Win32.RegistryHive.LocalMachine, RegistryView.Registry64);
             string ret = URL + URL_Folder;
@@ -48,8 +48,7 @@ namespace DDPM.SA.Common.Settings
         public static SWUpdateHelper GetSWMetadata(bool isSkipCA, out string info, ISettingsManagerSA settingsPlugin, List<string> InserInfoPkey, Logs logs)
         {
             SWUpdateHelper data = new SWUpdateHelper();
-            string SW_URL = SetSWUServer();
-            logs?.DebugMsg_1($"GetSWMetadata SW_URL : {SW_URL}");
+            string SW_URL = GetSWUServer();
             CertificateCheck certificateCheck = new CertificateCheck(logs);
             if (!isSkipCA)
             {
@@ -191,8 +190,7 @@ namespace DDPM.SA.Common.Settings
         {
             InterruptScreenRoot result = null;
             logs?.DebugMsg_1("[InterruptScreen_Metadata], start.");
-            string SW_URL = SetSWUServer();
-            logs?.DebugMsg_1($"InterruptScreen_Metadata SW_URL : {SW_URL}");
+            string SW_URL = GetSWUServer();
             CertificateCheck certificateCheck = new CertificateCheck(logs);
             if (!isSkipCA)
             {
