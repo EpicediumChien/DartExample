@@ -2305,7 +2305,7 @@
     <value>Do you want to import the application settings for ease of use?</value>
   </data>
   <data name="ImpExp_Title.0" xml:space="preserve">
-    <value>An new monitor %1 is detected.</value>
+    <value>A new monitor %1 is detected.</value>
   </data>
   <data name="Wait_DevMgr" xml:space="preserve">
     <value>DDPM.Subagent.DeviceManager is not ready</value>

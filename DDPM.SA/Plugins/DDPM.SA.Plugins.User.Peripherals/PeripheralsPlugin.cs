@@ -2400,10 +2400,21 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                 _EventArgs.device_peripherals = deviceInfo;
                 _EventArgs.changedProperty = "MuteStatusChanged";
                 OnNotify(_EventArgs);
+                string osdinfo = string.Empty;
+                switch (deviceInfo.ModelNumber)
+                {
+                    //According to Figma string design. deviceInfo.Name
+                    case "SP3022":
+                        osdinfo = "Dell Speakerphone";
+                        break;
+                    case "SB522A":
+                        osdinfo = "Dell Soundbar";
+                        break;
+                }
                 _logs.DebugMsg_1("[PeripheralsPlugin] ILogicalWiredAudio_MuteStatusChanged ... out " + newMuteStatus.ToString() + " , OSD in");
                 if (_DeviceManagerPlugin.GetGlobalSettingParam().Result.GlobalSetting_General.Display_MuteState)
                 {
-                    Task.Run(async () => _DeviceManagerPlugin.ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.Mute, deviceInfo.Name, newMuteStatus));
+                    Task.Run(async () => _DeviceManagerPlugin.ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.Mute, osdinfo, newMuteStatus));
                 }
                 _logs.DebugMsg_1("[PeripheralsPlugin] ILogicalWiredAudio_MuteStatusChanged ... OSD out ");
             }
