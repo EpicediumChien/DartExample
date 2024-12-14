@@ -322,7 +322,7 @@
     <value>Permita que o dispositivo seja emparelhado ou inicie as definições do Windows e selecione o respetivo dispositivo assim que for detetado.</value>
   </data>
   <data name="AddDevice.Pen.4" xml:space="preserve">
-    <value>Selecione &quot;Sim&quot; para confirmar o emparelhamento na caixa de comandos</value>
+    <value>Selecione "Sim" para confirmar o emparelhamento na caixa de comandos</value>
   </data>
   <data name="AddDevice.Headset.0" xml:space="preserve">
     <value>Para conetividade em qualquer lugar, sem recetor USB sem fios</value>
@@ -535,7 +535,7 @@
     <value>Luminância +</value>
   </data>
   <data name="Hotkey.6" xml:space="preserve">
-    <value>Exemplo: &quot;Alt + P&quot;, &quot;Shift + F&quot;, &quot;Ctrl + Shift + F&quot;.\nTenha em atenção que, para vários monitores, o cursor do rato deve estar no ecrã do monitor de destino para ativar a função de tecla de atalho.</value>
+    <value>Exemplo: "Alt + P", "Shift + F", "Ctrl + Shift + F".\nTenha em atenção que, para vários monitores, o cursor do rato deve estar no ecrã do monitor de destino para ativar a função de tecla de atalho.</value>
   </data>
   <data name="ButtonSettings.0" xml:space="preserve">
     <value>Clique na Roda de Deslocamento</value>
@@ -1399,7 +1399,7 @@
     <value>Este dispositivo que está a emparelhar não é compatível com o recetor sem fios USB ligado. Utilize o recetor fornecido com o dispositivo.</value>
   </data>
   <data name="Tooltip.4" xml:space="preserve">
-    <value>As ranhuras disponíveis neste recetor sem fios USB estão ocupadas. Para utilizar, desemparelhe um dispositivo clicando no botão \&quot;Desemparelhar\&quot; na página de definições do dispositivo.</value>
+    <value>As ranhuras disponíveis neste recetor sem fios USB estão ocupadas. Para utilizar, desemparelhe um dispositivo clicando no botão \"Desemparelhar\" na página de definições do dispositivo.</value>
   </data>
   <data name="Mouse.14" xml:space="preserve">
     <value>Clicar para Atribuir uma ação</value>
@@ -2122,6 +2122,9 @@
     <value>Definições da aplicação exportadas com sucesso</value>
   </data>
   <data name="ImpExp_SuccessMsg.1" xml:space="preserve">
+    <value>Definições da aplicação aplicadas a %1 com sucesso. Desfrute da utilização do monitor.</value>
+  </data>
+  <data name="ImpExp_SuccessMsg.2" xml:space="preserve">
     <value>Definições da aplicação aplicadas a %1 com sucesso. Desfrute da utilização do monitor.</value>
   </data>
   <data name="ImpExp_WarningMsg.0" xml:space="preserve">

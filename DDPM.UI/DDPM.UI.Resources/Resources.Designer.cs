@@ -4775,9 +4775,18 @@ namespace DDPM.UI.Resources {
                 return ResourceManager.GetString("ImpExp_SuccessMsg.1", resourceCulture);
             }
         }
+
+        /// <summary>
+        /// Application settings applied to %1 successfully. The Easy Memory setting will be cleaned. Please setup Easy Memory again. Dell Display and Peripheral Manager will restart.
+        /// </summary>
+        internal static string ImpExp_SuccessMsg_2 {
+            get {
+                return ResourceManager.GetString("ImpExp_SuccessMsg.2", resourceCulture);
+            }
+        }
         
         /// <summary>
-        ///   Looks up a localized string similar to A new monitor %1 is detected..
+        ///   查詢類似 An new monitor %1 is detected. 的當地語系化字串。
         /// </summary>
         internal static string ImpExp_Title_0 {
             get {

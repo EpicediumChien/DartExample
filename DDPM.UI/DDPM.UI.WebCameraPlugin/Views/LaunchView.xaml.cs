@@ -102,7 +102,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             _vm.Reset();
             DataContext = _vm;
             _vm.VbarItemClickCommand = new RelayCommand<VbarItem>(OnVbarItemClicked!);
-            
+
             //leo 2024/12/09 因為多加條件判斷,改變呼叫位置
             //BuildModuleGroups();
 
@@ -293,7 +293,25 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
         public void initResolutionFPS()
         {
             _vm!.SetResolution_Selected(1);
-            _vm!.SetFPS_Selected(1);
+            try
+            {
+                if (_vm.WebcamSettings?.SupportedFPSs != null && _vm.WebcamSettings.SelectedResolution != null)
+                {
+                    if (_vm.WebcamSettings.SupportedFPSs.ContainsKey(_vm.WebcamSettings.SelectedResolution))
+                    {
+                        List<string> FPS = _vm.WebcamSettings.SupportedFPSs[_vm.WebcamSettings.SelectedResolution];
+                        int index = FPS.FindIndex(x => x == "30");
+                        if (index != -1)
+                        {
+                            _vm.SetFPS_Selected(index);
+                        }
+                    }
+                }
+            }
+            catch(Exception ex) 
+            {
+                DdpmCommonHelper.WriteUILog("DDPM.UI.WebCameraPlugin\\Views\\LaunchView.xaml.cs initResolutionFPS() : " +  ex.Message);
+            }
         }
 
         bool noPresenceFunction = false;
@@ -323,7 +341,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
 
             //check usb 2.0 / 3.0
             AllSupportedResolutions = DdpmCommonHelper.DeviceManagerSA!.GetIsAllSupportedResolutionsFound(_vm.CurrentDeviceInfo!.ID.ToString()).Result;
-            
+
             //api回傳camera硬體是否支援windows hello
             bool is_WindwosHelloSupport = DdpmCommonHelper.DeviceManagerSA!.GetIsWindowsHelloCapabilityVerified(_vm.CurrentDeviceInfo!.ID.ToString()).Result;
 
@@ -412,7 +430,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                         {
 
                             print_debug("check_PresenceFunction() s6");
-                            
+
                             // PresenceFunction  整個分頁不用顯示
                             noPresenceFunction = true;
                         }
@@ -443,7 +461,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                             if (!is_DellPc)
                             {
                                 print_debug("check_PresenceFunction() s10");
-                                
+
                                 //顯示韌體升級
                                 _vm.brdHello_show = Visibility.Collapsed;
                                 _vm.MPS_Setting_Visibility = Visibility.Collapsed;
@@ -503,7 +521,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                     _vm.UPD_Visibility = Visibility.Collapsed;
                     _vm.brdHello_show_control = Visibility.Collapsed;//隱藏攝影機控制區windows helllo設定
                     _vm.brdHello_show = Visibility.Collapsed;  //隱藏人物偵測區windows hello設定連結
-                    
+
                     //甚麼都不要顯示
 
                     // PresenceFunction  整個分頁不用顯示
@@ -699,7 +717,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                         print_debug("CheckUSBtype() s4");
                         //hdr on按鈕diable & 功能關閉
                         _vm.hdr_enable = false;
-                        _vm.usb_hdr_enable = false; 
+                        _vm.usb_hdr_enable = false;
                         _vm.IsHDROn = false;
 
                         // ProximitySensor按鈕diable & 功能關閉
@@ -726,9 +744,6 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
 
                         //fps與解析度,排除4k
                         //Connect your monitor via USB 3.0 to enable 4K UHD resolution.
-
-                        _vm.Resolution_IsSelected[0] = false;
-                        _vm.Resolution_IsSelected[1] = true;
 
                         _vm.btnRes0_show = Visibility.Collapsed;
                         _vm.btnRes0_width = 0;
@@ -760,9 +775,6 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
 
                         //fps與解析度,排除4k Camera.14
 
-                        _vm.Resolution_IsSelected[0] = false;
-                        _vm.Resolution_IsSelected[1] = true;
-
                         _vm.btnRes0_show = Visibility.Collapsed;
                         _vm.btnRes0_width = 0;
                         _vm.btnRes1_width = 201;
@@ -790,9 +802,6 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
 
                         //fps與解析度,排除4k 
 
-                        _vm.Resolution_IsSelected[0] = false;
-                        _vm.Resolution_IsSelected[1] = true;
-
                         _vm.btnRes0_show = Visibility.Collapsed;
                         _vm.btnRes0_width = 0;
                         _vm.btnRes1_width = 201;
@@ -814,9 +823,6 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                         _vm.usbtype_info_v = LangHelper.Instance["Camera.25"].Replace("4K", "2K");
 
                         //fps與解析度,排除2k 
-
-                        _vm.Resolution_IsSelected[0] = false;
-                        _vm.Resolution_IsSelected[1] = true;
 
                         _vm.btnRes0_show = Visibility.Collapsed;
                         _vm.btnRes0_width = 0;
@@ -1597,12 +1603,12 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
         }
         [DllImport("kernel32.dll", CharSet = CharSet.Unicode)]
         [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
-        private static extern bool GetDiskFreeSpaceEx(string lpDirectoryName, out ulong lpFreeBytesAvailable, out ulong lpTotalNumberOfBytes, out ulong lpTotalNumberOfFreeBytes); 
-        public static bool HasEnoughSpace(string path, ulong requiredBytes) 
-        { 
+        private static extern bool GetDiskFreeSpaceEx(string lpDirectoryName, out ulong lpFreeBytesAvailable, out ulong lpTotalNumberOfBytes, out ulong lpTotalNumberOfFreeBytes);
+        public static bool HasEnoughSpace(string path, ulong requiredBytes)
+        {
             bool ret = GetDiskFreeSpaceEx(path, out ulong freeBytesAvailable, out _, out _);
             if (ret == false) return false;
-            return freeBytesAvailable >= requiredBytes; 
+            return freeBytesAvailable >= requiredBytes;
         }
         /// <summary>
         /// Records an MP4 video to a StorageFile and adds rotation metadata to it
