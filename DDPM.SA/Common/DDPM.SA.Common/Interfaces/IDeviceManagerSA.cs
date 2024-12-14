@@ -86,7 +86,8 @@ namespace DDPM.SA.Common
         Task<List<string>> ReadColorPreset(MonitorInfo m);
 
         //Task<bool> WriteColorPreset(MonitorInfo m, string ColorPreset_Name);
-        Task<bool> WriteColorPreset(MonitorInfo m, string ColorPreset_Name, int colorPresetRunType = 0, string reqAppName = null, bool showOSD = true);
+        // jim 20241207 modify for The DDPM color profile can not be applied by DDPM on Smart HDR mode.(Gaming monitor ex: AW2724DM)       
+        Task<bool> WriteColorPreset(MonitorInfo m, string ColorPreset_Name, int colorPresetRunType = 0, bool blIs_Game_DeviceName = false, bool blSmartHDR_ON = false, string reqAppName = null, bool showOSD = true);
 
         Task<bool> WriteColorPreset_AUTO(MonitorInfo m, string ColorPreset_Name);
 
@@ -96,7 +97,8 @@ namespace DDPM.SA.Common
 
         void DeleteColorPresetForMonitorConfig(string index_monitor, string AppName);
 
-        Task<bool> AutoSetColorPresetForMonitorConfig(MonitorInfo mo, string on_off, bool Islock = false);
+        // jim 20241207 modify for The DDPM color profile can not be applied by DDPM on Smart HDR mode.(Gaming monitor ex: AW2724DM)
+        Task<bool> AutoSetColorPresetForMonitorConfig(MonitorInfo mo, string on_off, bool Is_Game_DeviceName = false, bool Islock = false);
 
         Task<string> GetMonitorProfile(MonitorInfo m);
 
@@ -646,7 +648,7 @@ namespace DDPM.SA.Common
 
         Task<bool> DisplayExportSettings(MonitorInfo monitorInfo, string path);
 
-        Task<bool> DisplayImportSettings(MonitorInfo monitorInfo, bool isSameModel, string path);
+        Task<DisplayImportResultCode> DisplayImportSettings(MonitorInfo monitorInfo, bool isSameModel, string path);
 
         Task SetSameModel(MonitorInfo monitorInfo, bool isSameModel);
 
@@ -814,88 +816,53 @@ namespace DDPM.SA.Common
         Task<string> GetSelectedResolution(string Guid);
         Task<int> GetZoom(string Guid);
         Task<int> GetFocus(string Guid);
-        Task<bool> GetIsFocusOn(string Guid);
+        Task<bool?> GetIsFocusOn(string Guid);
         Task<int> GetPriority(string Guid);
+        Task<bool?> GetIsAutoFramingTransitionOn(string Guid);
+        Task<int> GetAutoFramingFrameSize(string Guid);
+        Task<int> GetAutoFramingSensitivity(string Guid);
 
         Task SetIsMicEnumerationOn(string Guid, bool newValue);
-
         Task SetProfile(string Guid, string newValue);
-
         Task SetProfileName(string Guid, string newValue);
-
         Task CreateCustomProfile(string Guid, string newValue);
-
         Task DeleteProfile(string Guid, string newValue);
-
         Task<bool> SetZoom(string Guid, int newValue);
-
         Task<bool> SetIsAutoFramingOn(string Guid, bool newValue);
-
-        Task SetIsAutoFramingTransitionOn(string Guid, bool newValue);
-
-        Task SetAutoFramingSensitivity(string Guid, int newValue);
-
-        Task SetAutoFramingFrameSize(string Guid, int newValue);
-
+        Task<bool> SetIsAutoFramingTransitionOn(string Guid, bool newValue);
+        Task<bool> SetAutoFramingSensitivity(string Guid, int newValue);
+        Task<bool> SetAutoFramingFrameSize(string Guid, int newValue);
         Task<bool> SetFieldOfView(string Guid, int newValue);
-
         Task SetIsFocusOn(string Guid, bool newValue);
-
         Task SetFocus(string Guid, int newValue);
-
         Task SetPriority(string Guid, int newValue);
-
-        Task SetIsHDROn(string Guid, bool newValue);
-
+        Task<bool> SetIsHDROn(string Guid, bool newValue);
         Task SetIsAutoWhiteBalanceOn(string Guid, bool newValue);
-
         Task SetAutoWhiteBalance(string Guid, int newValue);
-
         Task SetBrightness(string Guid, int newValue);
-
         Task SetSharpness(string Guid, int newValue);
-
         Task SetContrast(string Guid, int newValue);
-
         Task SetSaturation(string Guid, int newValue);
-
         Task SetAntiFlicker(string Guid, int newValue);
-
         Task SetTilt(string Guid, int newValue);
-
         Task SetPan(string Guid, int newValue);
 
         // webcam presence detection
         Task SetWALTime(string Guid, int newValue);
-
         Task SetSnooze(string Guid, int newValue);
-
         Task SetSnoozeLength(string Guid, int newValue);
-
         Task SetIsProximitySensorEnable(string Guid, bool newValue);
-
         Task SetIsWakeonApproachEnable(string Guid, bool newValue);
-
         Task SetIsWalkAwayLockEnable(string Guid, bool newValue);
-
         Task SetIsPrioritizeExternalWebcam(string Guid, bool newValue);
-
         Task ResetToDefault_webcam(string Guid, bool newValue);
-
         Task<int> GetWALTime(string Guid);
-
         Task<int> GetSnooze(string Guid);
-
         Task<int> GetSnoozeLength(string Guid);
-
         Task<bool> GetIsProximitySensorEnable(string Guid);
-
         Task<bool> GetIsWakeonApproachEnable(string Guid);
-
         Task<bool> GetIsWalkAwayLockEnable(string Guid);
-
         Task<bool?> GetIsPrioritizeExternalWebcam(string Guid);
-
         Task<bool> GetIsESISupported(string Guid);
 
         #endregion Webcam
@@ -1160,7 +1127,9 @@ namespace DDPM.SA.Common
 
         #region GlobalSetting
 
-        event EventHandler GlobalSettingChangeEvent;
+        //Derek 1209
+        //event EventHandler GlobalSettingChangeEvent;
+        event EventHandler<UpdateUINotify> GlobalSettingChangeEvent;
 
         Task<GlobalSettingParam> GetGlobalSettingParam();
 
@@ -1206,11 +1175,16 @@ namespace DDPM.SA.Common
         Task CloseQAMByDDPM();
         Task<bool> GetIsWidgetSettingPageLoadedByQAMAsync();
         Task SetIsWidgetSettingPageLoadedByQAMAsync(bool newValue);
+        Task SyncWebcamProfile(string profileName, bool isActionFromQAM = true); //Derek 1212
+        Task WriteLog(string logMsg); //Derek 1210
         #endregion
 
-        #region System Suspend & Resume
+        #region System Suspend & Resume & SessionEnd
         event EventHandler SystemSuspend;
         event EventHandler SystemResume;
+        event EventHandler SystemSessionEnd;
+
+        Task FireSystemSessionEnd();
         #endregion
     }
 }

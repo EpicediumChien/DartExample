@@ -29,6 +29,7 @@ namespace DDPM.ColorApp
         private bool b_AUTO_ColorPresetConfig = false;//Dean 0626 fix SAST issue, remove static as recommend and set as private
 
         private bool b_SmartHDR_ON= false;
+        private bool b_Is_Game_DeviceName = false;  // Jim 20241207 add
 
         #region data region
 
@@ -68,22 +69,24 @@ namespace DDPM.ColorApp
         }
 
         // jim add 20240605
-        public void Set_AUTO_ColorPresetConfig(bool blAUTO, bool blSmartHDR_ON, List<string> ColorPresetSupportList)
+        // jim 20241207 modify for The DDPM color profile can not be applied by DDPM on Smart HDR mode.(Gaming monitor ex: AW2724DM)
+        public void Set_AUTO_ColorPresetConfig(bool blAUTO, bool blIs_Game_DeviceName, bool blSmartHDR_ON, List<string> ColorPresetSupportList)
         {
             Pre_reqKey = -1;
             b_AUTO_ColorPresetConfig = blAUTO;
             b_SmartHDR_ON = blSmartHDR_ON;
+            b_Is_Game_DeviceName = blIs_Game_DeviceName; // jim add 20241207
             _supported_preset = ColorPresetSupportList;
+
+            writelog("Set_AUTO_ColorPresetConfig AUTO_ColorPresetConfig = " + blAUTO);
 
             if (b_AUTO_ColorPresetConfig)
             {
-                writelog("Set_AUTO_ColorPresetConfig AUTO_ColorPresetConfig = " + blAUTO);
                 AppStatusQuery.SendValue += EventAppStatus_SendValue;
                 AppStatusQuery.GetInstance(Log).ClearLastAppRecord("SET_AUTO");
             }
             else
-            {
-                writelog("Set_AUTO_ColorPresetConfig AUTO_ColorPresetConfig = " + blAUTO);
+            {                
                 AppStatusQuery.SendValue -= EventAppStatus_SendValue;
                 AppStatusQuery.GetInstance(Log).ClearLastAppRecord("SET_MANUAL");
             }
@@ -537,127 +540,19 @@ namespace DDPM.ColorApp
 
             string strSync_CurrentColorPreset = string.Empty;
 
-            if (!b_SmartHDR_ON)
-            {
-                strSync_CurrentColorPreset = ddmLib.Sync_ColorPresetName(actived_mi, strColorPresetName).Result;
+            // PIMS-327394 , jim 20241212 modify 
+            //if (!b_SmartHDR_ON)
+            //{
+            strSync_CurrentColorPreset = ddmLib.Sync_ColorPresetName(actived_mi, strColorPresetName).Result;
                 //strSync_CurrentColorPreset = Sync_CurrentColorPreset(strColorPresetName);
-            }
-            else
-                strSync_CurrentColorPreset = strColorPresetName;    
+            //}
+            //else
+                //strSync_CurrentColorPreset = strColorPresetName;
 
-            bool bi = ddmLib.WriteColorPreset(actived_mi, strSync_CurrentColorPreset, 1, reqAppName).Result;
+            // jim 20241207  modify for The DDPM color profile can not be applied by DDPM on Smart HDR mode.(Gaming monitor ex: AW2724DM)
+            bool bi = ddmLib.WriteColorPreset(actived_mi, strSync_CurrentColorPreset, 1, b_Is_Game_DeviceName, b_SmartHDR_ON, reqAppName).Result;
 
             return true;
-        }
-
-        /*
-        public string Sync_CurrentColorPreset(string curcolorPreset)
-        {
-            string strSync_CurrentColorPreset = string.Empty;
-
-            int index = -1;
-
-            // check Color Preset Strings Standard or Native
-
-            if (Mi.modelName.StartsWith("UP"))
-            {
-                if (curcolorPreset == "Standard/Native")
-                    strSync_CurrentColorPreset = "Native";
-            }
-            else
-            {
-                if (curcolorPreset == "Standard/Native")
-                    strSync_CurrentColorPreset = "Standard";
-            }
-
-            // check Color Preset Strings Custom 1/2/3 or User 1/2/3
-
-            if (Mi.modelName.StartsWith("UP3221Q"))
-            {
-                if (curcolorPreset == "Custom 1 / User 1")
-                    strSync_CurrentColorPreset = "User 1";
-                else if (curcolorPreset == "Custom 2 / User 2")
-                    strSync_CurrentColorPreset = "User 2";
-                else if (curcolorPreset == "Custom 3 / User 3")
-                    strSync_CurrentColorPreset = "User 3";
-            }
-            else
-            {
-                if (curcolorPreset == "Custom 1 / User 1")
-                    strSync_CurrentColorPreset = "Custom 1";
-                else if (curcolorPreset == "Custom 2 / User 2")
-                    strSync_CurrentColorPreset = "Custom 2";
-                else if (curcolorPreset == "Custom 3 / User 3")
-                    strSync_CurrentColorPreset = "Custom 3";
-            }
-
-            // check Color Preset Strings Game or Game1
-
-            if (_supported_preset!= null)
-            {                
-                index = _supported_preset.FindIndex(x => x == "Game2");
-
-                if (index >= 0)
-                {
-                    if (curcolorPreset == "Game/Game1")
-                        strSync_CurrentColorPreset = "Game1";
-                }
-                else
-                {
-                    if (curcolorPreset == "Game/Game1")
-                        strSync_CurrentColorPreset = "Game";
-                }                            
-            }          
-
-            // check Color Preset Strings Rec.709 or BT.709 / Rec.709 or BT.709
-
-            string strFY = string.Empty;
-
-            for (int i = 0; i < Mi.modelName.Length; i++) // loop over the complete modelName
-            {
-                if (Char.IsDigit(Mi.modelName[i])) //check if the current char is digit
-                {
-                    strFY = Mi.modelName.Substring(i + 2, 2);
-                    break;
-                }
-
-            }
-
-            // check Color Preset Strings Rec.2020 or BT.2020 / Rec.2020 or BT.2020
-            int numFY = 0;
-            try
-            {
-                numFY = Int32.Parse(strFY);
-
-                if (numFY <= 23)
-                {
-                    if (curcolorPreset == "Rec.709 / BT.709")
-                        strSync_CurrentColorPreset = "Rec.709";
-
-                    if (curcolorPreset == "Rec.2020 / BT.2020")
-                        strSync_CurrentColorPreset = "Rec.2020";
-
-                }
-                else if (numFY >= 25)
-                {
-                    if (curcolorPreset == "Rec.709 / BT.709")
-                        strSync_CurrentColorPreset = "BT.709";
-
-                    if (curcolorPreset == "Rec.2020 / BT.2020")
-                        strSync_CurrentColorPreset = "BT.2020";
-                }
-
-            }
-            catch (FormatException e)
-            {
-                Log?.Error("check Color Preset Strings Rec.709 or BT.709 / Rec.2020 or BT.2020..." + e.Message);
-            }
-
-            if (System.String.IsNullOrEmpty(strSync_CurrentColorPreset))
-                strSync_CurrentColorPreset = curcolorPreset;
-
-            return strSync_CurrentColorPreset;
-        }
-        */
+        }      
     }
 }

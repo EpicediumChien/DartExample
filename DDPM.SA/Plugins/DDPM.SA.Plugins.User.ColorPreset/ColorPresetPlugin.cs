@@ -48,6 +48,8 @@ using System.Windows.Media.Animation;
 using DDPM.SA.Common.Settings;
 using DDPM.SA.Common.Security;
 using static VcpCore.Common.User32;
+using Microsoft.VisualBasic.Logging;
+using System.Xml.Linq;
 //using DDPM.SA.Common.Settings;
 
 namespace ColorPreset.Plugins
@@ -405,7 +407,8 @@ namespace ColorPreset.Plugins
         /// 啟動 MonitorBorker 執行抓前景active app name
         /// </summary>
         /// <param name="m"></param>
-        public void Launch_MonitorBorker(MonitorInfo m, IDeviceManagerSA _DeviceManagerPlugin, bool SmartHDR_ON = false, List<string> ColorPresetSupportList = null)
+        // jim 20241207 modify for The DDPM color profile can not be applied by DDPM on Smart HDR mode.(Gaming monitor ex: AW2724DM)
+        public void Launch_MonitorBorker(MonitorInfo m, IDeviceManagerSA _DeviceManagerPlugin, bool Is_Game_DeviceName = false, bool SmartHDR_ON = false, List<string> ColorPresetSupportList = null)
         {
             //if (Log != null)
             //{
@@ -430,7 +433,8 @@ namespace ColorPreset.Plugins
                         MonitorBorkerWin = new MainWindow(_DeviceManagerPlugin, m);
 
                         MonitorBorkerWin.Show();
-                        MonitorBorkerWin.Set_AUTO_ColorPresetConfig(true, SmartHDR_ON, ColorPresetSupportList);
+                        //jim 20241207 modify for The DDPM color profile can not be applied by DDPM on Smart HDR mode.(Gaming monitor ex: AW2724DM)
+                        MonitorBorkerWin.Set_AUTO_ColorPresetConfig(true, Is_Game_DeviceName, SmartHDR_ON, ColorPresetSupportList);
                     }
                     else
                     {
@@ -442,7 +446,8 @@ namespace ColorPreset.Plugins
             return;
         }
 
-        public Task<bool> AutoSetColorPresetForMonitorConfig(MonitorInfo mo, string on_off, ISettingsManagerDev _SettingsPlugin, IDeviceManagerSA _DeviceManagerPlugin, bool SmartHDR_ON = false, List<string> ColorPresetSupportList = null)
+        // jim 20241207 modify for The DDPM color profile can not be applied by DDPM on Smart HDR mode.(Gaming monitor ex: AW2724DM)
+        public Task<bool> AutoSetColorPresetForMonitorConfig(MonitorInfo mo, string on_off, ISettingsManagerDev _SettingsPlugin, IDeviceManagerSA _DeviceManagerPlugin, bool Is_Game_DeviceName = false, bool SmartHDR_ON = false, List<string> ColorPresetSupportList = null)
         {
             writelog("ColorPresetPlugin AutoSetColorPresetForMonitorConfig requested ...");
 
@@ -472,7 +477,8 @@ namespace ColorPreset.Plugins
                     newWindowThread_AutoSetColorPresetForMonitorConfig = new Thread(new ThreadStart(() =>
                     {
                         // create and show the window
-                        Launch_MonitorBorker(mo, _DeviceManagerPlugin, SmartHDR_ON, ColorPresetSupportList);
+                        // jim 20241207 modify for The DDPM color profile can not be applied by DDPM on Smart HDR mode.(Gaming monitor ex: AW2724DM)
+                        Launch_MonitorBorker(mo, _DeviceManagerPlugin, Is_Game_DeviceName, SmartHDR_ON, ColorPresetSupportList);
 
                         // start the Dispatcher processing
                         // 啟動消息循環
@@ -496,7 +502,8 @@ namespace ColorPreset.Plugins
                     if (MonitorBorkerWin != null) // jim add 20240809
                     {
                         MonitorBorkerWin.Set_Active_Monitor(mo); // For PIMS-326072
-                        MonitorBorkerWin.Set_AUTO_ColorPresetConfig(true, SmartHDR_ON, ColorPresetSupportList);
+                        // jim 20241207 modify for The DDPM color profile can not be applied by DDPM on Smart HDR mode.(Gaming monitor ex: AW2724DM)
+                        MonitorBorkerWin.Set_AUTO_ColorPresetConfig(true, Is_Game_DeviceName, SmartHDR_ON, ColorPresetSupportList);
                     }
                 }
             }
@@ -522,7 +529,8 @@ namespace ColorPreset.Plugins
                     if (MonitorBorkerWin != null) // jim add 20240809
                     {
                         MonitorBorkerWin.Set_Active_Monitor(mo); // for PIMS-326072
-                        MonitorBorkerWin.Set_AUTO_ColorPresetConfig(false, SmartHDR_ON, ColorPresetSupportList);
+                        // jim 20241207 modify for The DDPM color profile can not be applied by DDPM on Smart HDR mode.(Gaming monitor ex: AW2724DM)
+                        MonitorBorkerWin.Set_AUTO_ColorPresetConfig(false, Is_Game_DeviceName, SmartHDR_ON, ColorPresetSupportList);
                     }
                 }
 
@@ -1224,12 +1232,15 @@ namespace ColorPreset.Plugins
             return System.Threading.Tasks.Task.FromResult("OFF");
         }
 
-        public void ShowOSD_ColoPreset(MonitorInfo monitorInfo, string strMsg, bool is_ShowUI = true, bool is_AUTO = false)
+        public void ShowOSD_ColoPreset(MonitorInfo m, string strMsg, bool is_ShowUI = true, bool is_AUTO = false)
         {
             //if (Log != null)
             //{
             //    Log.Info($"ShowOSD_ColoPreset requested ...");
             //}
+
+            MonitorInfo monitorInfo = m;
+
             writelog("ColorPresetPlugin ShowOSD_ColoPreset requested ...");
 
             Thread thread = new Thread(() =>
@@ -1334,7 +1345,39 @@ namespace ColorPreset.Plugins
                 if (Capabilities.ContainsKey("CapsDataMap"))
                 {
                     var CapsDataMap = (JObject)Capabilities["CapsDataMap"];
-                    if (CapsDataMap.ContainsKey("ColorPreset"))
+
+                    // Jim 20241211 to fix PIMS-327396 - The DDPM color profile list is not matching exactly with OSD.(G2723H)
+                    // Jim 20241211 to fix PIMS-326656 - The DDPM color profile list is not matching exactly with OSD. "Game1" not show in DDPM.(AW3225QF)
+                    if (string.Equals(m.modelName, "G2723H", StringComparison.OrdinalIgnoreCase) || string.Equals(m.modelName, "AW3225QF", StringComparison.OrdinalIgnoreCase))
+                    {
+                        if (CapsDataMap.ContainsKey("Preset Modes Specific")) // VCP E2
+                        {
+                            if (CapsDataMap["Preset Modes Specific"].Type == JTokenType.Null)
+                            {
+                                ColorPresetSupportList_.Clear();
+                                ColorPresetSupportList_.Add("Standard/Native");
+                            }
+                            else
+                            {
+                                try
+                                {
+                                    JArray colorrreset = (JArray)CapsDataMap["Preset Modes Specific"]; // VCP E2
+
+                                    ColorPresetSupportList_.Clear();
+
+                                    foreach (var tmp in colorrreset)
+                                        ColorPresetSupportList_.Add(new string(tmp.ToString()));                                   
+                                }
+                                catch (Exception ex)
+                                {
+                                    writelog($"[ReadColorPreset] collect colore presets from VCP E2 , message: {ex.Message}");                                  
+                                }                                                         
+
+                            }
+                        }
+                    }                      
+
+                    else if (CapsDataMap.ContainsKey("ColorPreset"))
                     {
                         if (CapsDataMap["ColorPreset"].Type == JTokenType.Null)
                         {
@@ -1343,15 +1386,23 @@ namespace ColorPreset.Plugins
                         }
                         else
                         {
+                            try
+                            {
+                                JArray colorrreset = (JArray)CapsDataMap["ColorPreset"];
 
+                                ColorPresetSupportList_.Clear();
 
-                            JArray colorrreset = (JArray)CapsDataMap["ColorPreset"];
+                                foreach (var tmp in colorrreset)
+                                    ColorPresetSupportList_.Add(new string(tmp.ToString()));
+                            }
+                            catch (Exception ex)
+                            {
+                                writelog($"[ReadColorPreset] collect colore presets , message: {ex.Message}");
+                            }
 
-                            ColorPresetSupportList_.Clear();
-
-                            foreach (var tmp in colorrreset)
-                                ColorPresetSupportList_.Add(new string(tmp.ToString()));
-
+                            // PIMS-327395 jim 20241212 add
+                            if (string.Equals(m.modelName, "G2724D", StringComparison.OrdinalIgnoreCase) || string.Equals(m.modelName, "G3223D", StringComparison.OrdinalIgnoreCase))
+                                ColorPresetSupportList_.Add("sRGB");
                         }
                     }
                 }
@@ -1366,6 +1417,16 @@ namespace ColorPreset.Plugins
                 foreach (string info in common_ColorPreset)
                 {
                     ColorPresetSupportList_.Add(new string(info));
+                }
+
+                // PIMS-298376 jim 20241212 add
+                if (string.Equals(m.modelName, "UP3221Q", StringComparison.OrdinalIgnoreCase))
+                {
+                    ColorPresetSupportList_.Add("Custom 1 / User 1");
+                    ColorPresetSupportList_.Add("Custom 2 / User 2");
+                    ColorPresetSupportList_.Add("Custom 3 / User 3");
+                    ColorPresetSupportList_.Add("CAL1");
+                    ColorPresetSupportList_.Add("CAL2");
                 }
 
             }
@@ -1890,7 +1951,7 @@ namespace ColorPreset.Plugins
             }
 
             if (System.String.IsNullOrEmpty(strSync_ColorPreset_Name))
-            strSync_ColorPreset_Name = ColorPreset_Name;
+                strSync_ColorPreset_Name = ColorPreset_Name;
 
             return System.Threading.Tasks.Task.FromResult(strSync_ColorPreset_Name);
 

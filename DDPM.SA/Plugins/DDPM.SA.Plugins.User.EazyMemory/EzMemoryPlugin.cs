@@ -1145,34 +1145,82 @@ namespace DDPM.SA.Plugins.User.EzMemory
             }
         }
 
+        /*private static string GetExecutablePath(string executableName, out string info)
+        {
+            string path = string.Empty;
+            foreach (var process in Process.GetProcessesByName(executableName))
+            {
+                try
+                {
+                    info = "success";
+                    return process.MainModule.FileName;
+                }
+                catch(Exception e)
+                {
+                    info = $"failed with: {e.Message}";
+                }
+            }
+            info = "Can't find specific file";
+            return string.Empty;
+        }*/
+
         private Process LaunchApp(Bind_AddFullPage_AppCollectionData appData)
         {
             Process process = null;
             try
             {
+                string info = string.Empty;
+                string filePath = (appData.AppType == "False") ? "explorer.exe" : appData.AppPath;
+                string argument = string.Empty;
+                string argument_sanitized = string.Empty;
+                string filePath_sanitized = string.Empty;
                 if (appData.AppType == "False")
                 {
-                    // UWP 應用程式
-                    ProcessStartInfo startInfo = new ProcessStartInfo
+                    filePath_sanitized = DDPMFileSecurity.SanitizePath(filePath, out info);
+                    if (!string.IsNullOrEmpty(filePath_sanitized))//add path check for checkmarx issue fix, Dean 1211
                     {
-                        FileName = "explorer.exe",
-                        Arguments = $"shell:AppsFolder\\{appData.AppUserModelID}",
-                        UseShellExecute = true
-                    };
-                    _logs.Info($"[EzMemoryManagerPlugin] LaunchApp, Launching UWP app: {appData.AppName}");
-                    process = Process.Start(startInfo);
+                        argument = $"shell:AppsFolder\\{appData.AppUserModelID}";
+                        argument_sanitized = DDPMFileSecurity.SanitizePath(argument, out info);
+                        if (!string.IsNullOrEmpty(argument_sanitized))
+                        {
+                            // UWP 應用程式
+                            ProcessStartInfo startInfo = new ProcessStartInfo
+                            {
+                                FileName = filePath_sanitized,
+                                Arguments = argument_sanitized,
+                                UseShellExecute = true
+                            };
+                            _logs.Info($"[EzMemoryManagerPlugin] LaunchApp, Launching UWP app: {appData.AppName}");
+                            process = Process.Start(startInfo);
+                        }
+                        else
+                            throw new Exception($"argument SanitizePath check return empty: {argument}, {info}");
+                    }
+                    else
+                        throw new Exception($"filePath SanitizePath check return empty: {filePath}, {info}");
                 }
                 else
                 {
                     // Desktop exe或檔案
-                    ProcessStartInfo startInfo = new ProcessStartInfo
+                    filePath_sanitized = DDPMFileSecurity.SanitizePath(filePath, out info);
+                    if (!string.IsNullOrEmpty(filePath_sanitized))//add path check for checkmarx issue fix, Dean 1211
                     {
-                        FileName = appData.AppPath,
-                        UseShellExecute = true,  // 系統自動選擇應用程式來開啟
-                        Verb = "open"            // 指定開啟檔案的動作
-                    };
-                    _logs.Info($"[EzMemoryManagerPlugin] LaunchApp, Launching desktop app or file: {appData.AppName}");
-                    process = Process.Start(startInfo);
+                        if (DDPMFileSecurity.ValidateFilePath(filePath_sanitized, out info)) //add path check for checkmarx issue fix, Dean 1208
+                        {
+                            ProcessStartInfo startInfo = new ProcessStartInfo
+                            {
+                                FileName = filePath_sanitized,
+                                UseShellExecute = true,  // 系統自動選擇應用程式來開啟
+                                Verb = "open"            // 指定開啟檔案的動作
+                            };
+                            _logs.Info($"[EzMemoryManagerPlugin] LaunchApp, Launching desktop app or file: {appData.AppName}");
+                            process = Process.Start(startInfo);
+                        }
+                        else
+                            throw new Exception($"filePath validation return fail: {filePath_sanitized}, {info}");
+                    }
+                    else
+                        throw new Exception($"filePath SanitizePath check return empty: {filePath}, {info}");
                 }
 
                 if (process != null)
@@ -1190,7 +1238,7 @@ namespace DDPM.SA.Plugins.User.EzMemory
             }
             catch (Exception ex)
             {
-                _logs.Error($"[EzMemoryManagerPlugin] LaunchApp, Exception while launching app or file: {appData.AppName}, Error: {ex}");
+                _logs.Error($"[EzMemoryManagerPlugin] LaunchApp, Failed while launching app or file: {appData.AppName}, Error: {ex}");
             }
 
             return process;

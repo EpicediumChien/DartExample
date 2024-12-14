@@ -3,8 +3,10 @@ using DDPM.SA.Common.Settings;
 using DDPM.UI.Common;
 using DDPM.UI.Interfaces;
 using DDPM.UI.Plugin.ViewModels;
+using Dell.Client.Framework.Common;
 using Dell.Client.Framework.UX.WPF;
 using Dell.Client.Framework.UX.WPF.Controls;
+using System;
 using System.Diagnostics;
 using System.Net.Sockets;
 using System.Reflection;
@@ -22,12 +24,15 @@ namespace DDPM.UI.Plugin.SettingsPlugin
     /// </summary>
     public partial class SettingsPage : UserControl
     {
+        private ILog? _log;
         private SettingsPageViewModel vm
         {
             get { return (SettingsPageViewModel)DataContext; }
         }
         public SettingsPage()
         {
+            _log = SettingsPlugin.PluginIoc?.GetService<ILog>();
+            _log?.Info("SettingsPage initialize start");
             InitializeComponent();
             SettingsPageViewModel _vm = (SettingsPageViewModel?)SettingsPlugin.PluginIoc?.GetService<ISettingsPageViewModel>();
 
@@ -41,7 +46,27 @@ namespace DDPM.UI.Plugin.SettingsPlugin
                     DdpmCommonHelper.DeviceManagerSA.ITSettingsActionEvent += DeviceManagerSA_ITSettingsActionEvent;
                     DdpmCommonHelper.DeviceManagerSA.GlobalSettingChangeEvent += GlobalSettingChangeEvent;
                     DdpmCommonHelper.DeviceManagerSA.Peripherals_UpdateNotify += Peripherals_UpdateEvent;
+                    //Derek 1210
+                    DdpmCommonHelper.DeviceManagerSA.UIUpdateNotify += DeviceManagerSA_UIUpdateNotify;
                 }
+            }
+            _log?.Info("SettingsPage initialize done");
+        }
+
+        //Derek 1210 add to support if user has in setting page
+        private void DeviceManagerSA_UIUpdateNotify(object? sender, UpdateUINotify e)
+        {
+            if (e == null || e.UI_Field_Name == null || e == UpdateUINotify.Empty)
+                return;
+
+            _log?.Info($"DeviceManagerSA_UIUpdateNotify received msg is {e.UI_Field_Name}");
+
+            if (e.UI_Field_Name.StartsWith("QAMEvent_NavigateToWidgetSettingPage"))
+            {
+                Dispatcher.Invoke(() =>
+                {
+                    WidgetSettingsButton_Click(this, null);
+                });
             }
         }
 
@@ -52,6 +77,7 @@ namespace DDPM.UI.Plugin.SettingsPlugin
                 DdpmCommonHelper.DeviceManagerSA.ITSettingsActionEvent -= DeviceManagerSA_ITSettingsActionEvent;
                 DdpmCommonHelper.DeviceManagerSA.GlobalSettingChangeEvent -= GlobalSettingChangeEvent;
                 DdpmCommonHelper.DeviceManagerSA.Peripherals_UpdateNotify -= Peripherals_UpdateEvent;
+                DdpmCommonHelper.DeviceManagerSA.UIUpdateNotify -= DeviceManagerSA_UIUpdateNotify;
             }
         }
 
@@ -66,7 +92,7 @@ namespace DDPM.UI.Plugin.SettingsPlugin
                     if (vm != null)
                     {
                         vm.Lock_AnalyticsPage = (bool)isLocked;
-                        Trace.WriteLine($"[SettingsPage] Apply TelemetryConsent(Lock) : {isLocked}");
+                        _log?.Info($"[SettingsPage] Apply TelemetryConsent(Lock) : {isLocked}");
                     }
                 }));
             }
@@ -80,7 +106,7 @@ namespace DDPM.UI.Plugin.SettingsPlugin
                     if (vm != null)
                     {
                         vm.Lock_UpdatesPage = (bool)isLocked;
-                        Trace.WriteLine($"[SettingsPage] Apply FW/SW Updates(Lock) : {isLocked}");
+                        _log?.Info($"[SettingsPage] Apply FW/SW Updates(Lock) : {isLocked}");
                     }
                 }));
             }
@@ -93,7 +119,7 @@ namespace DDPM.UI.Plugin.SettingsPlugin
                     if (vm != null)
                     {
                         vm.Lock_GeneralPage = (bool)isLocked;
-                        Trace.WriteLine($"[SettingsPage] Apply General(check) : {isLocked}");
+                        _log?.Info($"[SettingsPage] Apply General(check) : {isLocked}");
                     }
                 }));
             }
@@ -153,23 +179,45 @@ namespace DDPM.UI.Plugin.SettingsPlugin
 
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
-            try
-            {
-                if (DdpmCommonHelper.DeviceManagerSA!.GetIsWidgetSettingPageLoadedByQAMAsync().Result == true)
-                {
-                    DdpmCommonHelper.WriteUILog($"GetIsWidgetSettingPageLoadedByQAMAsync = true");
+            //1210 marked by Derek due to spend more time to communicate with SA
+            //2024.12.10 08:47:58.546[7364](00001) I------DDPMHOME: [Caller: UserControl_Loaded][SourceLine:163] start to GetIsWidgetSettingPageLoadedByQAMAsync
+            //2024.12.10 08:48:17.921[7364](00001) I------DDPMHOME: [Caller: UserControl_Loaded][SourceLine:174] GetIsWidgetSettingPageLoadedByQAMAsync = false
+            //try
+            //{
+            //    DdpmCommonHelper.WriteUILog($"start to GetIsWidgetSettingPageLoadedByQAMAsync");
 
-                    DdpmCommonHelper.DeviceManagerSA!.SetIsWidgetSettingPageLoadedByQAMAsync(false);
+            //    if (DdpmCommonHelper.DeviceManagerSA!.GetIsWidgetSettingPageLoadedByQAMAsync().Result == true)
+            //    {
+            //        DdpmCommonHelper.WriteUILog($"GetIsWidgetSettingPageLoadedByQAMAsync = true");
 
-                    WidgetSettingsButton_Click(this, null);
-                }
-                else
-                    DdpmCommonHelper.WriteUILog($"GetIsWidgetSettingPageLoadedByQAMAsync = false");
-            }
-            catch (Exception)
+            //        DdpmCommonHelper.DeviceManagerSA!.SetIsWidgetSettingPageLoadedByQAMAsync(false);
+
+            //        WidgetSettingsButton_Click(this, null);
+            //    }
+            //    else
+            //        DdpmCommonHelper.WriteUILog($"GetIsWidgetSettingPageLoadedByQAMAsync = false");
+            //}
+            //catch (Exception)
+            //{
+            //    DdpmCommonHelper.WriteUILog($"Catch exception when navigate to Widget Setting");
+            //}
+
+            SwitchToWidgetSettingPage();
+        }
+
+        private void SwitchToWidgetSettingPage()
+        {
+            //Derek 1210 use new solution -- workable
+
+            if (DdpmCommonHelper.isDDPMSwitchToSettingPageByQAM)
             {
-                DdpmCommonHelper.WriteUILog($"Catch exception when navigate to Widget Setting");
+                DdpmCommonHelper.WriteUILog($"DdpmCommonHelper.isDDPMSwitchToSettingPageByQAM == true");
+
+                WidgetSettingsButton_Click(this, null);
+                DdpmCommonHelper.isDDPMSwitchToSettingPageByQAM = false;
             }
+            else
+                DdpmCommonHelper.WriteUILog($"DdpmCommonHelper.isDDPMSwitchToSettingPageByQAM == false");
         }
     }
 }

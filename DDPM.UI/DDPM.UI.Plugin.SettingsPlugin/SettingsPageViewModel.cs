@@ -1,10 +1,12 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using DDPM.SA.Common;
 using DDPM.SA.Common.Method;
+using DDPM.SA.Common.Popup;
 using DDPM.SA.Common.Settings;
 using DDPM.UI.Common;
 using DDPM.UI.Common.Interfaces;
 using DDPM.UI.Common.Models;
+using DDPM.UI.Plugin.Common;
 using DDPM.UI.Plugin.DdpmHomePlugin.Interfaces;
 using DDPM.UI.Resources.Helper;
 using Dell.Client.Framework.Common;
@@ -19,6 +21,8 @@ using System.Windows.Controls;
 using System.Windows.Forms;
 using System.Windows.Threading;
 using VcpCore.Common;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.Window;
+using Application = System.Windows.Application;
 
 namespace DDPM.UI.Plugin.SettingsPlugin
 {
@@ -26,6 +30,7 @@ namespace DDPM.UI.Plugin.SettingsPlugin
     {
         private List<HomeDevice> _homeDevices = new List<HomeDevice>();
         public bool[] IsSelected { get; set; } = new bool[5];
+        public ILog? Log { get; set; }
 
         public List<HomeDevice> HomeDevices
         {
@@ -126,6 +131,7 @@ namespace DDPM.UI.Plugin.SettingsPlugin
         }
         public void Invoke_RefreshData()
         {
+            Log?.Info($"Invoke_RefreshData start");
             BackgroundWorker bw = new BackgroundWorker()
             {
                 WorkerReportsProgress = false,
@@ -139,6 +145,7 @@ namespace DDPM.UI.Plugin.SettingsPlugin
         }
         public void Invoke_RefreshData_1()
         {
+            Log?.Info($"Invoke_RefreshData_1 start");
             BackgroundWorker bw = new BackgroundWorker()
             {
                 WorkerReportsProgress = false,
@@ -155,6 +162,7 @@ namespace DDPM.UI.Plugin.SettingsPlugin
         {
             try
             {
+                Log?.Info($"Invoke_RefreshData go");
                 GlobalSettingParam = DdpmCommonHelper.DeviceManagerSA.GetGlobalSettingParam().Result;
                 DDPMSettings data = DdpmCommonHelper.ReadDDPMSettings();//DeviceManagerSA.ReloadAppConfigData().Result;
                 Lock_AnalyticsPage = data.LockSettings.Lock_Settings_TelemetryConsent;
@@ -174,9 +182,11 @@ namespace DDPM.UI.Plugin.SettingsPlugin
         {
             IsBusy = false;
             OnPropertyChanged("IsBusy");
+            Log?.Info($"Invoke_RefreshData done");
         }
         private void DoWork_RefreshData_1(object sender, DoWorkEventArgs e)
         {
+            Log?.Info($"Invoke_RefreshData_1 go");
             try
             {
                 SetUpdateInfoUI(DdpmCommonHelper.DeviceManagerSA.GetFWUpdateInfo(false, false, false, null, false, false, true).Result, DdpmCommonHelper.DeviceManagerSA.SW_GetSWUpdateInfo(false, false, true, false).Result);
@@ -208,6 +218,7 @@ namespace DDPM.UI.Plugin.SettingsPlugin
                     }));
                 }
             }
+            Log?.Info($"Invoke_RefreshData_1 done");
         }
         #region General
         public GlobalSettingParam GlobalSettingParam { get; set; }
@@ -255,6 +266,7 @@ namespace DDPM.UI.Plugin.SettingsPlugin
         }
         public void SaveMonitorAssetReport(string filePath)
         {
+            Log?.Info($"SaveMonitorAssetReport start");
             BackgroundWorker bw = new BackgroundWorker()
             {
                 WorkerReportsProgress = false,
@@ -265,9 +277,11 @@ namespace DDPM.UI.Plugin.SettingsPlugin
             bw.RunWorkerAsync(filePath);
             IsBusy = true;
             OnPropertyChanged("IsBusy");
+            Log?.Info($"SaveMonitorAssetReport done");
         }
         public void SaveDiagnosticReport(string filePath)
         {
+            Log?.Info($"SaveDiagnosticReport start");
             BackgroundWorker bw = new BackgroundWorker()
             {
                 WorkerReportsProgress = false,
@@ -278,17 +292,52 @@ namespace DDPM.UI.Plugin.SettingsPlugin
             bw.RunWorkerAsync(filePath);
             IsBusy = true;
             OnPropertyChanged("IsBusy");
+            Log?.Info($"SaveDiagnosticReport done");
         }
         private void Set_SaveMonitorAssetReport_Dowork(object sender, DoWorkEventArgs e)
         {
+            Log?.Info($"SaveMonitorAssetReport_Dowork start");
             string filePath = e.Argument.ToString();
             List<MonitorInfo> monitorInfos = DdpmCommonHelper.DeviceManagerSA.GetMonitors().Result;
             bool monitorAssetReports = DdpmCommonHelper.DeviceManagerSA.ExportMonitorAssetReport(monitorInfos, filePath).Result;
+            Application.Current.Dispatcher.Invoke(new Action(() =>
+            {
+                if (!monitorAssetReports)
+                {
+                    MessageModalDialog msgBox = new MessageModalDialog(LangHelper.Instance["Error"], LangHelper.Instance["MonitorAssetReport_SaveFail"], LangHelper.Instance["OK"]);
+                    Window mainWindow = System.Windows.Application.Current.MainWindow;
+                    if (mainWindow != null)
+                    {
+                        msgBox.Owner = mainWindow;
+                        msgBox.Left = mainWindow.Left + (mainWindow!.ActualWidth - 417) / 2;
+                        msgBox.Top = mainWindow.Top + 300;
+                        msgBox.ShowDialog();
+                    }
+                }
+            }));
+            Log?.Info($"SaveMonitorAssetReport_Dowork done");
         }
         private void Set_SaveDiagnosticReport_Dowork(object sender, DoWorkEventArgs e)
         {
+            Log?.Info($"SaveDiagnosticReport_Dowork start");
             string filePath = e.Argument.ToString();
             bool monitorAssetReports = DdpmCommonHelper.DeviceManagerSA.SaveLogFile(filePath).Result;
+            Application.Current.Dispatcher.Invoke(new Action(() =>
+            {
+                if (!monitorAssetReports)
+                {
+                    MessageModalDialog msgBox = new MessageModalDialog(LangHelper.Instance["Error"], LangHelper.Instance["DiagnosticReport_SaveFail"], LangHelper.Instance["OK"]);
+                    Window mainWindow = System.Windows.Application.Current.MainWindow;
+                    if (mainWindow != null)
+                    {
+                        msgBox.Owner = mainWindow;
+                        msgBox.Left = mainWindow.Left + (mainWindow.ActualWidth - 417) / 2;
+                        msgBox.Top = mainWindow.Top + 300;
+                        msgBox.ShowDialog();
+                    }
+                }
+            }));
+            Log?.Info($"SaveDiagnosticReport_Dowork done");
         }
 
         #endregion
@@ -325,6 +374,7 @@ namespace DDPM.UI.Plugin.SettingsPlugin
         }
         public void CheckUpdate()
         {
+            Log?.Info($"CheckUpdate start");
             BackgroundWorker bw = new BackgroundWorker()
             {
                 WorkerReportsProgress = false,
@@ -338,11 +388,14 @@ namespace DDPM.UI.Plugin.SettingsPlugin
         }
         private void Set_CheckUpdate_Dowork(object sender, DoWorkEventArgs e)
         {
+            Log?.Info($"CheckUpdate start");
             SetUpdateInfoUI(DdpmCommonHelper.DeviceManagerSA.GetFWUpdateInfo(false, false, false, null, false, false, true, true).Result, DdpmCommonHelper.DeviceManagerSA.SW_GetSWUpdateInfo(false).Result);
             RefreshUI();
+            Log?.Info($"CheckUpdate done");
         }
         public void SetUpdateInfoUI(FWUpdateInfoPackage fwUpdateInfoPackage, SWUpdateInfoPackage swUpdateInfoPackage)
         {
+            Log?.Info($"SetUpdateInfoUI start");
             LastCheckDate = fwUpdateInfoPackage.TheLastCheckTime.ToString();
             FWUpdateInfoPackage = fwUpdateInfoPackage;
             SWUpdateInfoPackage = swUpdateInfoPackage;
@@ -357,31 +410,38 @@ namespace DDPM.UI.Plugin.SettingsPlugin
             {
                 NoNetwork = Visibility.Collapsed;
                 List<DeviceInfo> deviceInfos = DdpmCommonHelper.DeviceManagerSA.GetDevices().Result.deviceInfo;
+                Log?.Info($"fwUpdateInfoPackage.FWUpdateInfo.Count : {fwUpdateInfoPackage.FWUpdateInfo.Count}");
                 foreach (FWUpdateInfo fwUpdateInfo in fwUpdateInfoPackage.FWUpdateInfo)
                 {
                     UIUpdateInfo uiUpdateInfo = new UIUpdateInfo(fwUpdateInfo, deviceInfos);
                     if ((!uiUpdateInfo.IsEnableCheckBox) && uiUpdateInfo.IsCheckUpdate)//如果不能選擇是否更新為強制更新
                     {
+                        Log?.Info($"Critical_UpdateList_UI.Add {uiUpdateInfo.UpdateInfo}");
                         Critical_UpdateList_UI.Add(uiUpdateInfo);
                     }
                     else if (uiUpdateInfo.IsCheckUpdate)//如果為true為建議更新
                     {
+                        Log?.Info($"Recommended_UpdateList_UI.Add {uiUpdateInfo.UpdateInfo}");
                         Recommended_UpdateList_UI.Add(uiUpdateInfo);
                     }
                     else//剩下的為選用更新
                     {
+                        Log?.Info($"Optional_UpdateList_UI.Add {uiUpdateInfo.UpdateInfo}");
                         Optional_UpdateList_UI.Add(uiUpdateInfo);
                     }
                 }
+                Log?.Info($"swUpdateInfoPackage.SWUpdateInfo.Count : {swUpdateInfoPackage.SWUpdateInfo.Count}");
                 foreach (SWUpdateInfo swUpdateInfo in swUpdateInfoPackage.SWUpdateInfo)
                 {
                     UIUpdateInfo uiUpdateInfo = new UIUpdateInfo(swUpdateInfo);
                     if ((!uiUpdateInfo.IsEnableCheckBox) && uiUpdateInfo.IsCheckUpdate)
                     {
+                        Log?.Info($"Critical_UpdateList_UI.Add {uiUpdateInfo.UpdateInfo}");
                         Critical_UpdateList_UI.Add(uiUpdateInfo);
                     }
                 }
             }
+            Log?.Info($"SetUpdateInfoUI done");
         }
 
         public bool IsCanUpdate()
@@ -397,6 +457,7 @@ namespace DDPM.UI.Plugin.SettingsPlugin
 
         public void SetVMUpdate()
         {
+            Log?.Info($"SetVMUpdate start");
             List<FWUpdateInfo> fwUpdateInfos = new List<FWUpdateInfo>();
             List<SWUpdateInfo> swUpdateInfos = new List<SWUpdateInfo>();
             foreach (UIUpdateInfo uiUpdateInfo in Critical_UpdateList_UI)
@@ -431,6 +492,7 @@ namespace DDPM.UI.Plugin.SettingsPlugin
             FWUpdateInfoPackage.FWUpdateInfo = fwUpdateInfos;
             SWUpdateInfoPackage.SWUpdateInfo.Clear();
             SWUpdateInfoPackage.SWUpdateInfo = swUpdateInfos;
+            Log?.Info($"SetVMUpdate done");
         }
         #endregion
         #region Lock/Unlock

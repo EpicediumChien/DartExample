@@ -2,7 +2,6 @@
 using DDPM.SA.Common.Settings;
 using DDPM.UI.Common;
 using DDPM.UI.Common.Method;
-using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -130,6 +129,75 @@ namespace DDPM.UI.Module.Brightness
             DdpmCommonHelper.WriteDDPMSettings(setting);// DeviceManagerSA.SetAppConfigData(setting);
         }
 
+        private void Synchronize_LuminanceSwitch_Click(object sender, RoutedEventArgs e)
+        {
+            BrightnessViewModel _vm = (BrightnessViewModel)DataContext;
+
+            DDPMSettings setting = DdpmCommonHelper.ReadDDPMSettings();// DeviceManagerSA.ReloadAppConfigData().Result;
+
+            if ((bool)SynchronizeSwitch_Luminance.IsChecked)
+            {
+                _vm.IsSynchronize = true;
+                //SynchronizeSwitch.Content = Strings.On;
+
+                // Luminance
+                _vm.Luminance_Sync();
+
+                // Color
+                _vm.Invoke_ColorPreset_Sync();
+            }
+            else
+            {
+                _vm.IsSynchronize = false;
+                //SynchronizeSwitch.Content = Strings.Off;
+            }
+
+            setting.UserSettings.IsSynchronizemonitor = _vm.IsSynchronize;
+            DdpmCommonHelper.WriteDDPMSettings(setting);// DeviceManagerSA.SetAppConfigData(setting);
+        }
+
+        private void Synchronize_ScheduledSwitch_Click(object sender, RoutedEventArgs e)
+        {
+            BrightnessViewModel _vm = (BrightnessViewModel)DataContext;
+
+            DDPMSettings setting = DdpmCommonHelper.ReadDDPMSettings();// DeviceManagerSA.ReloadAppConfigData().Result;
+
+            if ((bool)ScheduledSynchronizeSwitch.IsChecked)
+            {
+                _vm.IsSynchronize_Scheduled = true;
+                //SynchronizeSwitch.Content = Strings.On;
+            }
+            else
+            {
+                _vm.IsSynchronize_Scheduled = false;
+                //SynchronizeSwitch.Content = Strings.Off;
+            }
+
+            setting.UserSettings.IsSynchronizemonitor_Scheduled = _vm.IsSynchronize_Scheduled;
+            DdpmCommonHelper.WriteDDPMSettings(setting);// DeviceManagerSA.SetAppConfigData(setting);
+        }
+
+        private void Synchronize_LuminanceScheduledSwitch_Click(object sender, RoutedEventArgs e)
+        {
+            BrightnessViewModel _vm = (BrightnessViewModel)DataContext;
+
+            DDPMSettings setting = DdpmCommonHelper.ReadDDPMSettings();// DeviceManagerSA.ReloadAppConfigData().Result;
+
+            if ((bool)ScheduledLuminanceSynchronizeSwitch.IsChecked)
+            {
+                _vm.IsSynchronize_Scheduled = true;
+                //SynchronizeSwitch.Content = Strings.On;
+            }
+            else
+            {
+                _vm.IsSynchronize_Scheduled = false;
+                //SynchronizeSwitch.Content = Strings.Off;
+            }
+
+            setting.UserSettings.IsSynchronizemonitor_Scheduled = _vm.IsSynchronize_Scheduled;
+            DdpmCommonHelper.WriteDDPMSettings(setting);// DeviceManagerSA.SetAppConfigData(setting);
+        }
+
         private void Expander_Manual_Expanded(object sender, RoutedEventArgs e)
         {
             Expander_Manual_Luminance.IsExpanded = false;
@@ -142,16 +210,18 @@ namespace DDPM.UI.Module.Brightness
                 BrightnessViewModel vm = (BrightnessViewModel)DataContext;
                 if (vm != null)
                 {
-                    bool autoBrightnessStatus = vm.AutoBrightnessStatus;
+                    /*bool autoBrightnessStatus = vm.AutoBrightnessStatus;
                     if (autoBrightnessStatus)
                     {
                         //disable hotkey btn
-                        btnManualBrightnessContrast.IsEnabled = false;
+                        btnManualBrightnessContrast.IsEnabled = false;                                          
                     }
                     else
                     {
                         btnManualBrightnessContrast.IsEnabled = true;
-                    }
+                    }*/
+                    vm.updateHotkeyBtn();
+
 
                     Task.Run(() => vm.CloseSchedule());
                 }
@@ -876,6 +946,27 @@ namespace DDPM.UI.Module.Brightness
 
         private void Hyperlink_Click(object sender, RoutedEventArgs e)
         {
+        }
+
+        private void cbAutoBrightness_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            int _previousSelectedIndex = 0;
+            var comboBox = sender as ComboBox;
+            if (comboBox == null) return;
+            BrightnessViewModel vm = (BrightnessViewModel)DataContext;
+            if (vm.Start_ALSConfig.AutoBrightnessRangeLevel.Count != 0)
+            {
+                _previousSelectedIndex = (int)vm.Start_ALSConfig.AutoBrightnessRangeLevel[0].level_value;
+
+                int temp = (int)comboBox.SelectedIndex;// SelectedIndex;
+
+                if (temp == 0)
+                    comboBox.SelectedValue = Strings.ALSRangeLevelLow; //"Low";
+                else if (temp == 1)
+                    comboBox.SelectedValue = Strings.ALSRangeLevelMid; // "Mid";
+                else
+                    comboBox.SelectedValue = Strings.ALSRangeLevelHigh; //"High";
+            }
         }
     }
 }

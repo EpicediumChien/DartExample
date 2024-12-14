@@ -46,7 +46,7 @@ namespace DDPM.UI.Plugin.SoundBarPlugin
             _vm = (SoundBarViewModel?)SoundBarPlugin.PluginIoc?.GetService<IPeripheralViewModel>()!;
             if (_vm != null)
             {
-                if (!_vm.IsDTPReady)
+                if (false)//(!_vm.IsDTPReady)
                 {
                     MessageModalDialog messageModalDialog = new(Strings.Error, Strings.DTPUnavailable, "");
                     Window mainWindow = System.Windows.Application.Current.MainWindow;

@@ -95,12 +95,32 @@ namespace DDPM.SA.Common.Display
             return true;
         }
 
+        //Robert_Lin, 2024-12-12 General (Static) method to compare two Settings (List<double>) are the same.
+        /// <summary>
+        /// Compare two Settings (List of double) are equal.
+        /// A. Both are null  : return true
+        /// B. Both are non-null: Copmare with List.SequenceEqual() to compare if all elements in both list are the same values in sequence.
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <returns></returns>
+        public static bool AreSettingsEqual(List<double> x, List<double> y)
+        {
+            if ((x== null) && (y== null))
+                return true;
+            if (x == null) return false;
+            if (y == null) return false;
+            if (x.Count != y.Count) 
+                return false;
+
+            return x.SequenceEqual(y);
+        }
         #region Defaul Recent List
         /// <summary>
         /// Need to copy the DefaultSettings from DDPM.Easy.Common/SplitCtrlXX.xaml.cs
         /// Never add SplitCtrl0A (Off) into the RecentList
         /// </summary>
-        public static List<SplitJson> DefaultRecentList = new List<SplitJson>()
+        public static readonly List<SplitJson> DefaultRecentList = new List<SplitJson>()
         {
             //[0] SplitCtrl2A
             new  SplitJson() { CellCount = 2, SplitKey='A', Settings=new List<double>() { 1, 1 } },
@@ -117,7 +137,7 @@ namespace DDPM.SA.Common.Display
         #endregion Defaul Recent List
 
         #region Preset List
-        public static List<SplitJson> PresetList = new List<SplitJson>()
+        public static readonly List<SplitJson> PresetList = new List<SplitJson>()
         {
             new  SplitJson() { EAID=0, CellCount = 0, SplitKey='A', Settings=new List<double>() { 1 } },
             new  SplitJson() { EAID=1, CellCount = 2, SplitKey='A', Settings=new List<double>() { 1, 1 } },

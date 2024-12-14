@@ -40,6 +40,7 @@
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
         <Grid
+            Margin="0,32,0,0"
             x:Name="fadeOutCtrl"
             Grid.Row="0"
             Grid.Column="1"

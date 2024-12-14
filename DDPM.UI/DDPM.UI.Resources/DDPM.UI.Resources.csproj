@@ -320,18 +320,24 @@
 		<None Remove="Resources\Monitors\e2222h.png" />
 		<None Remove="Resources\Monitors\e2222hs.png" />
 		<None Remove="Resources\Monitors\e2225h.png" />
+		<None Remove="Resources\Monitors\e2225hm.png" />
 		<None Remove="Resources\Monitors\e2225hs.png" />
+		<None Remove="Resources\Monitors\e2225hsm.png" />
 		<None Remove="Resources\Monitors\e2420hs.png" />
 		<None Remove="Resources\Monitors\e2425h.png" />
+		<None Remove="Resources\Monitors\e2425hm.png" />
 		<None Remove="Resources\Monitors\e2425hs.png" />
+		<None Remove="Resources\Monitors\e2425hsm.png" />
 		<None Remove="Resources\Monitors\e2723h.png" />
 		<None Remove="Resources\Monitors\e2724hs.png" />
 		<None Remove="Resources\Monitors\e2725h.png" />
+		<None Remove="Resources\Monitors\e2725hm.png" />
 		<None Remove="Resources\Monitors\g2422hs.png" />
 		<None Remove="Resources\Monitors\g2724d.png" />
 		<None Remove="Resources\Monitors\Lineart-w.png" />
 		<None Remove="Resources\Monitors\Lineart.png" />
 		<None Remove="Resources\Monitors\p1424h.png" />
+		<None Remove="Resources\Monitors\p1425.png" />
 		<None Remove="Resources\Monitors\p1917s.png" />
 		<None Remove="Resources\Monitors\p2219h.png" />
 		<None Remove="Resources\Monitors\p2222h.png" />
@@ -339,15 +345,33 @@
 		<None Remove="Resources\Monitors\p2418ht.png" />
 		<None Remove="Resources\Monitors\p2424heb.png" />
 		<None Remove="Resources\Monitors\p2424ht.png" />
+		<None Remove="Resources\Monitors\p2425d.png" />
+		<None Remove="Resources\Monitors\p2425de.png" />
 		<None Remove="Resources\Monitors\p2724deb.png" />
+		<None Remove="Resources\Monitors\p2725d.png" />
+		<None Remove="Resources\Monitors\p2725de.png" />
+		<None Remove="Resources\Monitors\p2725qe.png" />
+		<None Remove="Resources\Monitors\p3225de.png" />
+		<None Remove="Resources\Monitors\p3225qe.png" />
+		<None Remove="Resources\Monitors\p3425we.png" />
 		<None Remove="Resources\Monitors\p5525qc.png" />
+		<None Remove="Resources\Monitors\p7525qt.png" />
 		<None Remove="Resources\Monitors\s2421h.png" />
 		<None Remove="Resources\Monitors\s2421hsx.png" />
 		<None Remove="Resources\Monitors\s2422hz.png" />
 		<None Remove="Resources\Monitors\s2721nx.png" />
+		<None Remove="Resources\Monitors\s2725hs.png" />
+		<None Remove="Resources\Monitors\s2725qc.png" />
+		<None Remove="Resources\Monitors\s2725qs.png" />
+		<None Remove="Resources\Monitors\s3225qc.png" />
+		<None Remove="Resources\Monitors\s3225qs.png" />
 		<None Remove="Resources\Monitors\s3423dwc.png" />
+		<None Remove="Resources\Monitors\s3425dw.png" />
 		<None Remove="Resources\Monitors\se2219h.png" />
 		<None Remove="Resources\Monitors\se2222h.png" />
+		<None Remove="Resources\Monitors\se2225hm.png" />
+		<None Remove="Resources\Monitors\se2425hm.png" />
+		<None Remove="Resources\Monitors\se2725hm.png" />
 		<None Remove="Resources\Monitors\u2419h.png" />
 		<None Remove="Resources\Monitors\u2422h.png" />
 		<None Remove="Resources\Monitors\u2424h.png" />
@@ -823,18 +847,24 @@
 		<Resource Include="Resources\Monitors\e2222h.png" />
 		<Resource Include="Resources\Monitors\e2222hs.png" />
 		<Resource Include="Resources\Monitors\e2225h.png" />
+		<Resource Include="Resources\Monitors\e2225hm.png" />
 		<Resource Include="Resources\Monitors\e2225hs.png" />
+		<Resource Include="Resources\Monitors\e2225hsm.png" />
 		<Resource Include="Resources\Monitors\e2420hs.png" />
 		<Resource Include="Resources\Monitors\e2425h.png" />
+		<Resource Include="Resources\Monitors\e2425hm.png" />
 		<Resource Include="Resources\Monitors\e2425hs.png" />
+		<Resource Include="Resources\Monitors\e2425hsm.png" />
 		<Resource Include="Resources\Monitors\e2723h.png" />
 		<Resource Include="Resources\Monitors\e2724hs.png" />
 		<Resource Include="Resources\Monitors\e2725h.png" />
+		<Resource Include="Resources\Monitors\e2725hm.png" />
 		<Resource Include="Resources\Monitors\g2422hs.png" />
 		<Resource Include="Resources\Monitors\g2724d.png" />
 		<Resource Include="Resources\Monitors\Lineart-w.png" />
 		<Resource Include="Resources\Monitors\Lineart.png" />
 		<Resource Include="Resources\Monitors\p1424h.png" />
+		<Resource Include="Resources\Monitors\p1425.png" />
 		<Resource Include="Resources\Monitors\p1917s.png" />
 		<Resource Include="Resources\Monitors\p2219h.png" />
 		<Resource Include="Resources\Monitors\p2222h.png" />
@@ -842,15 +872,33 @@
 		<Resource Include="Resources\Monitors\p2418ht.png" />
 		<Resource Include="Resources\Monitors\p2424heb.png" />
 		<Resource Include="Resources\Monitors\p2424ht.png" />
+		<Resource Include="Resources\Monitors\p2425d.png" />
+		<Resource Include="Resources\Monitors\p2425de.png" />
 		<Resource Include="Resources\Monitors\p2724deb.png" />
+		<Resource Include="Resources\Monitors\p2725d.png" />
+		<Resource Include="Resources\Monitors\p2725de.png" />
+		<Resource Include="Resources\Monitors\p2725qe.png" />
+		<Resource Include="Resources\Monitors\p3225de.png" />
+		<Resource Include="Resources\Monitors\p3225qe.png" />
+		<Resource Include="Resources\Monitors\p3425we.png" />
 		<Resource Include="Resources\Monitors\p5525qc.png" />
+		<Resource Include="Resources\Monitors\p7525qt.png" />
 		<Resource Include="Resources\Monitors\s2421h.png" />
 		<Resource Include="Resources\Monitors\s2421hsx.png" />
 		<Resource Include="Resources\Monitors\s2422hz.png" />
 		<Resource Include="Resources\Monitors\s2721nx.png" />
+		<Resource Include="Resources\Monitors\s2725hs.png" />
+		<Resource Include="Resources\Monitors\s2725qc.png" />
+		<Resource Include="Resources\Monitors\s2725qs.png" />
+		<Resource Include="Resources\Monitors\s3225qc.png" />
+		<Resource Include="Resources\Monitors\s3225qs.png" />
 		<Resource Include="Resources\Monitors\s3423dwc.png" />
+		<Resource Include="Resources\Monitors\s3425dw.png" />
 		<Resource Include="Resources\Monitors\se2219h.png" />
 		<Resource Include="Resources\Monitors\se2222h.png" />
+		<Resource Include="Resources\Monitors\se2225hm.png" />
+		<Resource Include="Resources\Monitors\se2425hm.png" />
+		<Resource Include="Resources\Monitors\se2725hm.png" />
 		<Resource Include="Resources\Monitors\u2419h.png" />
 		<Resource Include="Resources\Monitors\u2422h.png" />
 		<Resource Include="Resources\Monitors\u2424h.png" />
@@ -875,12 +923,21 @@
 			<AutoGen>True</AutoGen>
 			<DependentUpon>Resources.resx</DependentUpon>
 		</Compile>
+		<Compile Update="ThirdPartyLicense_NKVM.Designer.cs">
+		  <DesignTime>True</DesignTime>
+		  <AutoGen>True</AutoGen>
+		  <DependentUpon>ThirdPartyLicense_NKVM.resx</DependentUpon>
+		</Compile>
 	</ItemGroup>
 
 	<ItemGroup>
 		<EmbeddedResource Update="Resources.resx">
 			<Generator>ResXFileCodeGenerator</Generator>
 			<LastGenOutput>Resources.Designer.cs</LastGenOutput>
+		</EmbeddedResource>
+		<EmbeddedResource Update="ThirdPartyLicense_NKVM.resx">
+		  <Generator>ResXFileCodeGenerator</Generator>
+		  <LastGenOutput>ThirdPartyLicense_NKVM.Designer.cs</LastGenOutput>
 		</EmbeddedResource>
 	</ItemGroup>
 

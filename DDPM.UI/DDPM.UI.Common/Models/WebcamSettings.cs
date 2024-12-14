@@ -39,29 +39,31 @@ namespace DDPM.UI.Common
 
         public string CurrentResolution { get => Resolutions[SelectedResolution]; }
         public string CurrentFPS { get => SelectedFPSs[SelectedResolution]; }
+        public bool IsFirstTime = true;
 
         public WebcamSettings(DeviceInfo? di = null)
         {
-            if (di != null && di.ID != new Guid())
+            if (di != null)
             {
                 Task<string> task = DdpmCommonHelper.DeviceManagerSA!.GetSupportedResolutions(di.ID.ToString());
                 var str = task.Result;
                 if (string.IsNullOrEmpty(str))
                 {
-                    Task<DeviceHelper> task1 = DdpmCommonHelper.DeviceManagerSA.GetDevices(true);
-                    var dis = task1.Result.deviceInfo;
-                    foreach (var item in dis)
-                    {
-                        if (item.ID == di.ID)
-                        {
-                            di = item;
-                            str = di.SupportedResolutions;
-                            break;
-                        }
-                    }
+                    DdpmCommonHelper.WriteUILog("DTP GetSupportedResolutions fail!");
+                    str = di.SupportedResolutions;
                 }
                 if (string.IsNullOrEmpty(str))
-                    return;
+                {
+                    switch (di.ModelNumber)
+                    {
+                        case "WB5023":
+                            str = "{\"1280x720\":{\"Resolution\":\"1280x720\",\"FPS\":[\"24\",\"30\",\"60\"]},\"1920x1080\":{\"Resolution\":\"1920x1080\",\"FPS\":[\"24\",\"30\",\"60\"]},\"2560x1440\":{\"Resolution\":\"2560x1440\",\"FPS\":[\"24\",\"30\"]}}";
+                            break;
+                        default:
+                            str = "{\"1280x720\":{\"Resolution\":\"1280x720\",\"FPS\":[\"24\",\"30\",\"60\"]},\"1920x1080\":{\"Resolution\":\"1920x1080\",\"FPS\":[\"24\",\"30\",\"60\"]},\"2560x1440\":{\"Resolution\":\"2560x1440\",\"FPS\":[\"24\",\"30\"]}}";
+                            break;
+                    }
+                }
 
                 //var resolutions = JsonConvert.DeserializeObject<List<ResolutionItem>>(str)!;
                 var resolutions = JsonConvert.DeserializeObject<Dictionary<string, ResolutionItem>>(str)!;
@@ -72,13 +74,22 @@ namespace DDPM.UI.Common
                         "1280x720" => "HD",
                         "1920x1080" => "Full HD",
                         "2560x1440" => "2K QHD",
-                        "3840x2160" => "4K QHD",
+                        "3840x2160" => "4K UHD",
                         _ => "8K UHD"
                     };
                     SupportedFPSs.Add(resName, res.Value.FPS);
                     Resolutions.Add(resName, res.Value.Resolution);
                 }
                 task = DdpmCommonHelper.DeviceManagerSA!.GetSelectedResolution(di.ID.ToString());
+                str = task.Result;
+                if (string.IsNullOrEmpty(str))
+                {
+                    DdpmCommonHelper.WriteUILog("DTP GetSelectedResolution fail!");
+                    str = di.SelectedResolution;
+                }
+                if (string.IsNullOrEmpty(str))
+                    str = "{\"Resolution\":\"1280x720\",\"FPS\":[\"24\"]}";
+
                 var currentRes = JsonConvert.DeserializeObject<ResolutionItem>(task.Result)!;
                 SelectedResolution = Resolutions.FirstOrDefault(x => x.Value == currentRes.Resolution).Key;
                 SelectedFPSs.Add(SelectedResolution, currentRes.FPS[0]);
@@ -215,19 +226,28 @@ namespace DDPM.UI.Common
                 string json = JsonConvert.SerializeObject(WebcamSettings, Formatting.Indented);
                 var fileFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), @$"Dell\Dell Display and Peripheral Manager\WebcamSettings");
                 string info = string.Empty;
-                DDPM.SA.Common.Settings.DDPMFileSecurity.SRemoveSymbolicFolder(fileFolder, out info);   // 20241004 Add for Security
+                //DDPM.SA.Common.Settings.DDPMFileSecurity.SRemoveSymbolicFolder(fileFolder, out info);   // 20241004 Add for Security
                 if (!Directory.Exists(fileFolder))
                     Directory.CreateDirectory(fileFolder);
-                string strPath = Path.Combine(fileFolder, $"{model}.json");
-                //File.WriteAllText(strPath, json);
-                if (DdpmCommonHelper.DeviceManagerSA != null)
+                if (DDPM.SA.Common.Settings.DDPMFileSecurity.ValidateFilePath(fileFolder, out info))
                 {
-                    return DdpmCommonHelper.DeviceManagerSA.WriteSerializedContentToFile(strPath, json).Result;//1007 apply signature
+                    string strPath = Path.Combine(fileFolder, $"{model}.json");
+                    //File.WriteAllText(strPath, json);
+                    if (DdpmCommonHelper.DeviceManagerSA != null)
+                    {
+                        return DdpmCommonHelper.DeviceManagerSA.WriteSerializedContentToFile(strPath, json).Result;//1007 apply signature
+                    }
+                    //return true;
+                    throw new Exception($"[ExportWebcamSettings] DeviceManagerSA is null(model:{model})");
                 }
-                //return true;
+                else
+                {
+                    DdpmCommonHelper.WriteUILog($"[ExportWebcamSettings] ValidateFilePath failed(model:{model}): {info}");
+                }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                DdpmCommonHelper.WriteUILog($"[ExportWebcamSettings] exception: {ex.Message}");
             }
             return false;
         }
@@ -240,13 +260,20 @@ namespace DDPM.UI.Common
             if (hasFile)
             {
                 string info = string.Empty;
-                DDPM.SA.Common.Settings.DDPMFileSecurity.SRemoveSymbolicFolder(Path.GetDirectoryName(filePath), out info);   // 20241004 Add for Security
-                if (DdpmCommonHelper.DeviceManagerSA != null)
+                //DDPM.SA.Common.Settings.DDPMFileSecurity.SRemoveSymbolicFolder(Path.GetDirectoryName(filePath), out info);   // 20241004 Add for Security
+                if (DDPM.SA.Common.Settings.DDPMFileSecurity.ValidateFilePath(filePath, out info))
                 {
-                    jsonString = DdpmCommonHelper.DeviceManagerSA.ReadSerializedContentFromFile(filePath).Result;
+                    if (DdpmCommonHelper.DeviceManagerSA != null)
+                    {
+                        jsonString = DdpmCommonHelper.DeviceManagerSA.ReadSerializedContentFromFile(filePath).Result;
+                    }
+                    if (!string.IsNullOrEmpty(jsonString))
+                        return JsonConvert.DeserializeObject<WebcamSettings>(File.ReadAllText(filePath))!;
                 }
-                if (!string.IsNullOrEmpty(jsonString))
-                    return JsonConvert.DeserializeObject<WebcamSettings>(File.ReadAllText(filePath))!;
+                else
+                {
+                    DdpmCommonHelper.WriteUILog($"[ImportWebcamSettings] ValidateFilePath failed(model:{model}): {info}");
+                }
             }
             var ka = new WebcamSettings(di);
             ExportWebcamSettings(ka, model);

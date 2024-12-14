@@ -234,7 +234,7 @@
                                                         Margin="16,4,16,16" Opacity="{Binding NKVM_Opacity}"/>
                             </Grid>
                             <Grid Grid.Row="4">
-                                <UXControls:UXButton ButtonType="Tertiary"
+                                <UXControls:UXButton ButtonType="Primary"
                                                      Name="NetworkKVM"
                                                      ButtonSize="Medium"
                                                      HorizontalAlignment="Center"
@@ -287,6 +287,22 @@
             <UXControls:UXBusyIndicator BusyIndicatorType="Secondary" Width="64" Height="64"
                                         HorizontalAlignment="Center" VerticalAlignment="Center"
                                         IsActive="{Binding IsBusy}" />
+        </Border>
+        <Border Name="DisableAll2" Background="#4C24273C">
+            <Border.Style>
+                <Style TargetType="Border">
+                    <Setter Property="Visibility" Value="Collapsed" />
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding IsKVMBusy}" Value="True">
+                            <Setter Property="Visibility" Value="Visible" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Border.Style>
+            <!-- Add a UXBusyIndicator from Robert -->
+            <UXControls:UXBusyIndicator BusyIndicatorType="Secondary" Width="64" Height="64"
+                                HorizontalAlignment="Center" VerticalAlignment="Center"
+                                IsActive="{Binding IsKVMBusy}" />
         </Border>
         <!--<Button Width="200" Height="160" Content="KvmRightView" />-->
     </Grid>

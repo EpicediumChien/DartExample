@@ -16,6 +16,7 @@ namespace DDPM.UI.Plugin.ViewModels
 
         public readonly ILog _log;
         public IDeviceManagerSA _deviceManager;
+        public IShowPluginManager _showPluginManager;
         public SpeakerInfoValue SpeakerInfoValueDTP;
         public string _current_soundBar;
         public string _default = "{CFA20B04-897A-4E5F-A0C3-D95FD4594F85}";
@@ -29,13 +30,14 @@ namespace DDPM.UI.Plugin.ViewModels
 
         public string modelTest;
 
-        public SoundBarViewModel(IConsole console, ILog log, IDeviceManagerSA deviceManager) : base(console, log, deviceManager)
+        public SoundBarViewModel(IShowPluginManager showPluginManager, IConsole console, ILog log, IDeviceManagerSA deviceManager) : base(console, log, deviceManager)
         {
             Requires.NotNull(console, nameof(console));
             Requires.NotNull(log, nameof(log));
 
             _log = log;
             _deviceManager = deviceManager;
+            _showPluginManager = showPluginManager;
             _log!.Info($"[SoundBarViewModel] SoundBarViewModel Start...");
             SpeakerInfoValueDTP = new SpeakerInfoValue();
             _current_soundBar = string.Empty;
@@ -66,16 +68,24 @@ namespace DDPM.UI.Plugin.ViewModels
                         break;
                     //------------------------------------------------------------------------------------------
                     case "IntelligentMicNoiseCancellationCheck":
-                        _log.Info($"[SoundBarViewModel] SetIsWiredAudioIMicNSEnableAsync ... IntelligentMicNoiseCancellationCheck ... {SpeakerInfoValueDTP.IsWiredAudioIMicNSEnable.ToString()}");
-                        _deviceManager.SetIsWiredAudioIMicNSEnableAsync(CurrentDeviceInfo!.ID.ToString(), SpeakerInfoValueDTP.IsWiredAudioIMicNSEnable).Wait();
+                        //_log.Info($"[SoundBarViewModel] SetIsWiredAudioIMicNSEnableAsync ... IntelligentMicNoiseCancellationCheck ... {SpeakerInfoValueDTP.IsWiredAudioIMicNSEnable.ToString()}");
+                        //_deviceManager.SetIsWiredAudioIMicNSEnableAsync(CurrentDeviceInfo!.ID.ToString(), SpeakerInfoValueDTP.IsWiredAudioIMicNSEnable).Wait();
                         break;
                     case "MuteSoundNotificationCheck":
-                        _log.Info($"[SoundBarViewModel] SetIsWiredAudioMicMuteSoundEnableAsync ... MuteSoundNotificationCheck .... {SpeakerInfoValueDTP.IsWiredAudioMicMuteSoundEnable.ToString()}");
-                        _deviceManager.SetIsWiredAudioMicMuteSoundEnableAsync(CurrentDeviceInfo!.ID.ToString(), SpeakerInfoValueDTP.IsWiredAudioMicMuteSoundEnable).Wait();
+                        //_log.Info($"[SoundBarViewModel] SetIsWiredAudioMicMuteSoundEnableAsync ... MuteSoundNotificationCheck .... {SpeakerInfoValueDTP.IsWiredAudioMicMuteSoundEnable.ToString()}");
+                        //_deviceManager.SetIsWiredAudioMicMuteSoundEnableAsync(CurrentDeviceInfo!.ID.ToString(), SpeakerInfoValueDTP.IsWiredAudioMicMuteSoundEnable).Wait();
                         break;
                     case "VolumeAdjustmentToneCheck":
-                        _log.Info($"[SoundBarViewModel] SetWiredAudioVolumeAdjustmentToneAsync ... VolumeAdjustmentToneCheck .... {SpeakerInfoValueDTP.WiredAudioVolumeAdjustmentTone.ToString()}");
-                        _deviceManager.SetWiredAudioVolumeAdjustmentToneAsync(CurrentDeviceInfo!.ID.ToString(), SpeakerInfoValueDTP.WiredAudioVolumeAdjustmentTone).Wait();
+                        if (IsDTPReady)
+                        {
+                            _log.Info($"[SoundBarViewModel] SetWiredAudioVolumeAdjustmentToneAsync ... VolumeAdjustmentToneCheck .... {SpeakerInfoValueDTP.WiredAudioVolumeAdjustmentTone.ToString()}");
+                            _deviceManager.SetWiredAudioVolumeAdjustmentToneAsync(CurrentDeviceInfo!.ID.ToString(), SpeakerInfoValueDTP.WiredAudioVolumeAdjustmentTone).Wait();
+                        }
+                        else
+                        {
+                            _log.Info($"[SoundBarViewModel] DTH SetWiredAudioVolumeAdjustmentToneAsync ... VolumeAdjustmentToneCheck .... {SpeakerInfoValueDTP.WiredAudioVolumeAdjustmentTone.ToString()}");
+                            _deviceManager.SetWiredAudioVolumeAdjustmentTone(1, CurrentDeviceInfo!.ID).Wait();
+                        }
                         break;
                     //------------------------------------------------------------------------------------------
                     default:
@@ -87,23 +97,45 @@ namespace DDPM.UI.Plugin.ViewModels
         {
             try
             {
-                _log.Info($"[SoundBarViewModel] Print get property ...UpdateDTPValue ... in");
-                if (SpeakerInfoValueDTP == null)
+                if (IsDTPReady)
                 {
-                    SpeakerInfoValueDTP = new SpeakerInfoValue();
-                    _log.Info($"[SoundBarViewModel] Print before property ...UpdateDTPValue new DeviceInfo...");
+                    _log.Info($"[SoundBarViewModel] Print get property ...UpdateDTPValue ... in");
+                    if (SpeakerInfoValueDTP == null)
+                    {
+                        SpeakerInfoValueDTP = new SpeakerInfoValue();
+                        _log.Info($"[SoundBarViewModel] Print before property ...UpdateDTPValue new DeviceInfo...");
+                    }
+                    SpeakerInfoValueDTP.SpeakerProfile = (await _deviceManager.GetProfileAsync(CurrentDeviceID.ToString())) ?? String.Empty;
+                    SpeakerInfoValueDTP.SpeakerBass = await _deviceManager.GetBassAsync(CurrentDeviceID.ToString());
+                    SpeakerInfoValueDTP.SpeakerMidRange = await _deviceManager.GetMidRangeAsync(CurrentDeviceID.ToString());
+                    SpeakerInfoValueDTP.SpeakerTreble = await _deviceManager.GetTrebleAsync(CurrentDeviceID.ToString());
+                    SpeakerInfoValueDTP.IsWiredAudioMicMuteSoundEnable = await _deviceManager.GetIsWiredAudioMicMuteSoundEnableAsync(CurrentDeviceID.ToString());
+                    SpeakerInfoValueDTP.WiredAudioVolumeAdjustmentTone = await _deviceManager.GetWiredAudioVolumeAdjustmentToneAsync(CurrentDeviceID.ToString());
+                    SpeakerInfoValueDTP.IsWiredAudioIMicNSEnable = await _deviceManager.GetIsWiredAudioIMicNSEnableAsync(CurrentDeviceID.ToString());
+                    SpeakerInfoValueDTP.IsAudioEqualizerSupported = await _deviceManager.GetIsAudioEqualizerSupportedAsync(CurrentDeviceID.ToString());
+                    SpeakerInfoValueDTP.MuteStatus = await _deviceManager.GetMuteStatusAsyncForSpeaker(CurrentDeviceID.ToString());
+                    ChangeImage(Model, "MuteStatusChanged");
                 }
+                else
+                {
+                    _log.Info($"[SoundBarViewModel] DTH Print get property ...UpdateDTPValue ... in");
+                    if (SpeakerInfoValueDTP == null)
+                    {
+                        SpeakerInfoValueDTP = new SpeakerInfoValue();
+                        _log.Info($"[SoundBarViewModel] DTH Print before property ...UpdateDTPValue new DeviceInfo...");
+                    }
 
-                SpeakerInfoValueDTP.SpeakerProfile = (await _deviceManager.GetProfileAsync(CurrentDeviceID.ToString())) ?? String.Empty;
-                SpeakerInfoValueDTP.SpeakerBass = await _deviceManager.GetBassAsync(CurrentDeviceID.ToString());
-                SpeakerInfoValueDTP.SpeakerMidRange = await _deviceManager.GetMidRangeAsync(CurrentDeviceID.ToString());
-                SpeakerInfoValueDTP.SpeakerTreble = await _deviceManager.GetTrebleAsync(CurrentDeviceID.ToString());
-                SpeakerInfoValueDTP.IsWiredAudioMicMuteSoundEnable = await _deviceManager.GetIsWiredAudioMicMuteSoundEnableAsync(CurrentDeviceID.ToString());
-                SpeakerInfoValueDTP.WiredAudioVolumeAdjustmentTone = await _deviceManager.GetWiredAudioVolumeAdjustmentToneAsync(CurrentDeviceID.ToString());
-                SpeakerInfoValueDTP.IsWiredAudioIMicNSEnable = await _deviceManager.GetIsWiredAudioIMicNSEnableAsync(CurrentDeviceID.ToString());
-                SpeakerInfoValueDTP.IsAudioEqualizerSupported = await _deviceManager.GetIsAudioEqualizerSupportedAsync(CurrentDeviceID.ToString());
-                SpeakerInfoValueDTP.MuteStatus = await _deviceManager.GetMuteStatusAsyncForSpeaker(CurrentDeviceID.ToString());
-                ChangeImage(Model, "MuteStatusChanged");
+                    SpeakerInfoValueDTP.SpeakerProfile = _default;
+                    SpeakerInfoValueDTP.SpeakerBass = 0;
+                    SpeakerInfoValueDTP.SpeakerMidRange = 0;
+                    SpeakerInfoValueDTP.SpeakerTreble = 0;
+                    SpeakerInfoValueDTP.IsWiredAudioMicMuteSoundEnable = CurrentDeviceInfo!.IsWiredAudioMicMuteSoundEnable;
+                    SpeakerInfoValueDTP.WiredAudioVolumeAdjustmentTone = CurrentDeviceInfo!.WiredAudioVolumeAdjustmentTone;
+                    SpeakerInfoValueDTP.IsWiredAudioIMicNSEnable = CurrentDeviceInfo!.IsWiredAudioIMicNSEnable;
+                    SpeakerInfoValueDTP.IsAudioEqualizerSupported = true;
+                    SpeakerInfoValueDTP.MuteStatus = true;
+                    //ChangeImage(Model, "MuteStatusChanged");
+                }
                 _log.Info($"[SoundBarViewModel] ***********************************************************************");
                 _log.Info($"[SoundBarViewModel] SpeakerInfoValueDTP.SpeakerProfile .............= {SpeakerInfoValueDTP.SpeakerProfile.ToString()}");
                 _log.Info($"[SoundBarViewModel] SpeakerInfoValueDTP.SpeakerBass .............= {SpeakerInfoValueDTP.SpeakerBass.ToString()}");
@@ -226,9 +258,9 @@ namespace DDPM.UI.Plugin.ViewModels
         public void CheckAudioSettingsUI()
         {
             _log!.Info($"[SoundBarViewModel] CheckAudioSettingsUI ......");
-            _isIntelligentMicNoiseCancellationStatus = SpeakerInfoValueDTP.IsWiredAudioIMicNSEnable;//CurrentDeviceInfo!.IsWiredAudioIMicNSEnable;
-            _isMuteSoundNotificationStatus = SpeakerInfoValueDTP.IsWiredAudioMicMuteSoundEnable;//CurrentDeviceInfo!.IsWiredAudioMicMuteSoundEnable;
-            _isVolumeAdjustmentToneMode = SpeakerInfoValueDTP.WiredAudioVolumeAdjustmentTone;//CurrentDeviceInfo!.WiredAudioVolumeAdjustmentTone;
+            _isIntelligentMicNoiseCancellationStatus = SpeakerInfoValueDTP.IsWiredAudioIMicNSEnable;
+            _isMuteSoundNotificationStatus = SpeakerInfoValueDTP.IsWiredAudioMicMuteSoundEnable;
+            _isVolumeAdjustmentToneMode = SpeakerInfoValueDTP.WiredAudioVolumeAdjustmentTone;
 
             if (_isVolumeAdjustmentToneMode == 3)
             {
@@ -472,6 +504,7 @@ namespace DDPM.UI.Plugin.ViewModels
                 _deviceManager.SetResetToDefaultAsyncForSoundbar(CurrentDeviceInfo!.ID.ToString(), true).Wait();
                 await UpdateDTPValue();
                 CheckHeadsetFunc();
+                _showPluginManager?.ShowHomePage();
             }
             catch (Exception ex)
             {
@@ -675,8 +708,23 @@ namespace DDPM.UI.Plugin.ViewModels
 
         #region SpeakerAudioSettings
 
-        private bool _isIntelligentMicNoiseCancellationStatus = false;
+        private bool _supportedIntelligentMicNoiseCancellationToggleSwitch = true;
 
+        public bool SupportedIntelligentMicNoiseCancellationToggleSwitch
+        {
+            get
+            {
+                //_isIntelligentMicNoiseCancellationStatus = SpeakerInfoValueDTP.IsWiredAudioIMicNSEnable;// _deviceManager.GetIsWiredAudioIMicNSEnableAsync(CurrentDeviceInfo!.ID.ToString()).Result;//CurrentDeviceInfo!.IsWiredAudioIMicNSEnable;
+                return _supportedIntelligentMicNoiseCancellationToggleSwitch;
+            }
+            set
+            {
+                _supportedIntelligentMicNoiseCancellationToggleSwitch = value;
+                OnPropertyChanged("SupportedIntelligentMicNoiseCancellationToggleSwitch");
+            }
+        }
+
+        private bool _isIntelligentMicNoiseCancellationStatus = false;
         public bool IntelligentMicNoiseCancellationStatus
         {
             get
@@ -690,8 +738,15 @@ namespace DDPM.UI.Plugin.ViewModels
                 {
                     _isIntelligentMicNoiseCancellationStatus = value;
                     SpeakerInfoValueDTP.IsWiredAudioIMicNSEnable = value;
-                    _debouncerSpeaker.Debounce("IntelligentMicNoiseCancellationCheck");
+                    _supportedIntelligentMicNoiseCancellationToggleSwitch = false;
+                    if (IsDTPReady)
+                        _deviceManager.SetIsWiredAudioIMicNSEnableAsync(CurrentDeviceInfo!.ID.ToString(), SpeakerInfoValueDTP.IsWiredAudioIMicNSEnable);
+                    else
+                        _deviceManager.SetWiredAudioIMicNSEnable(value, CurrentDeviceInfo!.ID).Wait();
+                    _supportedIntelligentMicNoiseCancellationToggleSwitch = true;
+                    //_debouncerSpeaker.Debounce("IntelligentMicNoiseCancellationCheck");
                     OnPropertyChanged("IntelligentMicNoiseCancellation_String");
+                    _log.Info($"[SoundBarViewModel] SetIsWiredAudioIMicNSEnableAsync ... IntelligentMicNoiseCancellationCheck ... {SpeakerInfoValueDTP.IsWiredAudioIMicNSEnable.ToString()}");
                 }
             }
         }
@@ -701,6 +756,21 @@ namespace DDPM.UI.Plugin.ViewModels
         public string IntelligentMicNoiseCancellation_String
         {
             get => _isIntelligentMicNoiseCancellationStatus ? "ON" : "OFF";
+        }
+
+        
+        private bool _supportedMuteSoundNotificationToggleSwitch = true;
+        public bool SupportedMuteSoundNotificationToggleSwitch
+        {
+            get
+            {
+                return _supportedMuteSoundNotificationToggleSwitch;
+            }
+            set
+            {
+                _supportedMuteSoundNotificationToggleSwitch = value;
+                OnPropertyChanged("SupportedMuteSoundNotificationToggleSwitch");
+            }
         }
 
         private bool _isMuteSoundNotificationStatus = false;
@@ -718,8 +788,15 @@ namespace DDPM.UI.Plugin.ViewModels
                 {
                     _isMuteSoundNotificationStatus = value;
                     SpeakerInfoValueDTP.IsWiredAudioMicMuteSoundEnable = value;
-                    _debouncerSpeaker.Debounce("MuteSoundNotificationCheck");
+                    _supportedMuteSoundNotificationToggleSwitch = false;
+                    if (IsDTPReady)
+                        _deviceManager.SetIsWiredAudioMicMuteSoundEnableAsync(CurrentDeviceInfo!.ID.ToString(), SpeakerInfoValueDTP.IsWiredAudioMicMuteSoundEnable).Wait();
+                    else
+                        _deviceManager.SetWiredAudioMicMuteSoundEnable(value, CurrentDeviceInfo!.ID).Wait();
+                    _supportedMuteSoundNotificationToggleSwitch = true;
+                    //_debouncerSpeaker.Debounce("MuteSoundNotificationCheck");
                     OnPropertyChanged("MuteSoundNotification_String");
+                    _log.Info($"[SoundBarViewModel] SetIsWiredAudioMicMuteSoundEnableAsync ... MuteSoundNotificationCheck .... {SpeakerInfoValueDTP.IsWiredAudioMicMuteSoundEnable.ToString()}");
                 }
             }
         }
@@ -729,6 +806,21 @@ namespace DDPM.UI.Plugin.ViewModels
         public string MuteSoundNotification_String
         {
             get => _isMuteSoundNotificationStatus ? "ON" : "OFF";
+        }
+
+
+        private bool _supportedolumeAdjustmentToneToggleSwitch = true;
+        public bool SupportedolumeAdjustmentToneToggleSwitch
+        {
+            get
+            {
+                return _supportedolumeAdjustmentToneToggleSwitch;
+            }
+            set
+            {
+                _supportedolumeAdjustmentToneToggleSwitch = value;
+                OnPropertyChanged("SupportedolumeAdjustmentToneToggleSwitch");
+            }
         }
 
         private int _isVolumeAdjustmentToneMode;
@@ -749,24 +841,38 @@ namespace DDPM.UI.Plugin.ViewModels
                     _isMinMaxOnlyChecked = false;
                     _isVolumeAdjustmentToneMode = 1;
                     SpeakerInfoValueDTP.WiredAudioVolumeAdjustmentTone = 1;
-                    _debouncerSpeaker.Debounce("VolumeAdjustmentToneCheck");
+                    _supportedolumeAdjustmentToneToggleSwitch = false;
+                    if (IsDTPReady)
+                        _deviceManager.SetWiredAudioVolumeAdjustmentToneAsync(CurrentDeviceInfo!.ID.ToString(), SpeakerInfoValueDTP.WiredAudioVolumeAdjustmentTone).Wait();
+                    else
+                        _deviceManager.SetWiredAudioVolumeAdjustmentTone(1, CurrentDeviceInfo!.ID).Wait();
+                    _supportedolumeAdjustmentToneToggleSwitch = true;
+                    //_debouncerSpeaker.Debounce("VolumeAdjustmentToneCheck");
                     OnPropertyChanged("VolumeAdjustmentToneStatus");
                     OnPropertyChanged("VolumeAdjustmentTone_String");
                     OnPropertyChanged("IsEveryLevelChecked");
                     OnPropertyChanged("IsMinMaxOnlyChecked");
+                    _log.Info($"[SoundBarViewModel] SetWiredAudioVolumeAdjustmentToneAsync ... VolumeAdjustmentToneCheck .... {SpeakerInfoValueDTP.WiredAudioVolumeAdjustmentTone.ToString()}");
                 }
                 if (!value)
                 {
-                    _isVolumeAdjustmentToneMode = 3;
                     _volumeAdjustmentToneStatus = false;
                     _isEveryLevelChecked = false;
                     _isMinMaxOnlyChecked = false;
+                    _isVolumeAdjustmentToneMode = 3;
                     SpeakerInfoValueDTP.WiredAudioVolumeAdjustmentTone = 3;
-                    _debouncerSpeaker.Debounce("VolumeAdjustmentToneCheck");
+                    _supportedolumeAdjustmentToneToggleSwitch = false;
+                    if (IsDTPReady)
+                        _deviceManager.SetWiredAudioVolumeAdjustmentToneAsync(CurrentDeviceInfo!.ID.ToString(), SpeakerInfoValueDTP.WiredAudioVolumeAdjustmentTone).Wait();
+                    else
+                        _deviceManager.SetWiredAudioVolumeAdjustmentTone(3, CurrentDeviceInfo!.ID).Wait();
+                    _supportedolumeAdjustmentToneToggleSwitch = true;
+                    //_debouncerSpeaker.Debounce("VolumeAdjustmentToneCheck");
                     OnPropertyChanged("VolumeAdjustmentToneStatus");
                     OnPropertyChanged("VolumeAdjustmentTone_String");
                     OnPropertyChanged("IsEveryLevelChecked");
                     OnPropertyChanged("IsMinMaxOnlyChecked");
+                    _log.Info($"[SoundBarViewModel] SetWiredAudioVolumeAdjustmentToneAsync ... VolumeAdjustmentToneCheck .... {SpeakerInfoValueDTP.WiredAudioVolumeAdjustmentTone.ToString()}");
                 }
             }
         }

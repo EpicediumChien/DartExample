@@ -114,7 +114,7 @@ namespace DDPM.UI.Common
           { 120, new ActionItem(ActionCategory.WordAction, Strings.ViewPageWidth, false, false) },
           { 121, new ActionItem(ActionCategory.WordAction, Strings.ZoomIn, false, false) },
           { 122, new ActionItem(ActionCategory.WordAction, Strings.ZoomOut, false, false) },
-          { 200, new ActionItem(ActionCategory.ExcelAction, Strings.Autoscroll, false, false) },
+          //{ 200, new ActionItem(ActionCategory.ExcelAction, Strings.Autoscroll, false, false) },
           { 201, new ActionItem(ActionCategory.ExcelAction, Strings.AlignCenter, false, false) },
           { 202, new ActionItem(ActionCategory.ExcelAction, Strings.AlignLeft, false, false) },
           { 203, new ActionItem(ActionCategory.ExcelAction, Strings.AlignRight, false, false) },

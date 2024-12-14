@@ -7,7 +7,7 @@ namespace DDPM.SA.Obfuscation
           //841C87C9F5A679DCDBA8A9C7F743847D157CD598
           0x84, 0x1C, 0x87, 0xC9, 0xF5, 0xA6, 0x79, 0xDC, 0xDB, 0xA8,
           0xA9, 0xC7, 0xF7, 0x43, 0x84, 0x7D, 0x15, 0x7C, 0xD5, 0x98
-        };
+        };        
 
         private static readonly byte[] WST_Hash = new byte[]
         {
@@ -27,10 +27,30 @@ namespace DDPM.SA.Obfuscation
             0xa9, 0xc7, 0xf7, 0x43, 0x84, 0x7d, 0x15, 0x7c, 0xd5, 0x98
         };
 
-        public static byte[][] certificateHash = {
+        //d3 11 37 9e ee 0e 4a 4a d0 b1 39 43 a2 39 06 72 54 92 dd 29
+        // Dell CI/CD cer thumbprint.
+        private static readonly byte[] DELL_CICD_Hash = new byte[]
+        {
+            //d311379eee0e4a4ad0b13943a23906725492dd29
+            0xd3, 0x11, 0x37, 0x9e, 0xee, 0x0e, 0x4a, 0x4a, 0xd0, 0xb1,
+            0x39, 0x43, 0xa2, 0x39, 0x06, 0x72, 0x54, 0x92, 0xdd, 0x29
+        };
+
+        //ab f9 03 51 3e ff 6c b8 00 43 ab ab ec 7e 8f 6b 5d b2 ec 11
+        // Dell CI/CD cer thumbprint 2.
+        private static readonly byte[] DELL_CICD_Hash2 = new byte[]
+        {
+            //abf903513eff6cb80043ababec7e8f6b5db2ec11
+            0xab, 0xf9, 0x03, 0x51, 0x3e, 0xff, 0x6c, 0xb8, 0x00, 0x43,
+            0xab, 0xab, 0xec, 0x7e, 0x8f, 0x6b, 0x5d, 0xb2, 0xec, 0x11
+        };
+
+        public static readonly byte[][] certificateHash = {
             WST_Hash,
             WST2_Hash,
-            DELL_Hash
+            DELL_Hash,
+            DELL_CICD_Hash,
+            DELL_CICD_Hash2
         };
     }
 }

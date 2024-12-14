@@ -145,8 +145,11 @@ namespace DDPM.SA.Common
         Task<string> GetSelectedResolution(string Guid);
         Task<int> GetZoom(string Guid);
         Task<int> GetFocus(string Guid);
-        Task<bool> GetIsFocusOn(string Guid);
+        Task<bool?> GetIsFocusOn(string Guid);
         Task<int> GetPriority(string Guid);
+        Task<bool?> GetIsAutoFramingTransitionOn(string Guid);
+        Task<int> GetAutoFramingFrameSize(string Guid);
+        Task<int> GetAutoFramingSensitivity(string Guid);
 
         Task SetIsMicEnumerationOn(string Guid, bool newValue);
         Task SetProfile(string Guid, string newValue);
@@ -155,14 +158,14 @@ namespace DDPM.SA.Common
         Task DeleteProfile(string Guid, string newValue);
         Task<bool> SetZoom(string Guid, int newValue);
         Task<bool> SetIsAutoFramingOn(string Guid, bool newValue);
-        Task SetIsAutoFramingTransitionOn(string Guid, bool newValue);
-        Task SetAutoFramingSensitivity(string Guid, int newValue);
-        Task SetAutoFramingFrameSize(string Guid, int newValue);
+        Task<bool> SetIsAutoFramingTransitionOn(string Guid, bool newValue);
+        Task<bool> SetAutoFramingSensitivity(string Guid, int newValue);
+        Task<bool> SetAutoFramingFrameSize(string Guid, int newValue);
         Task<bool> SetFieldOfView(string Guid, int newValue);
         Task SetIsFocusOn(string Guid, bool newValue);
         Task SetFocus(string Guid, int newValue);
         Task SetPriority(string Guid, int newValue);
-        Task SetIsHDROn(string Guid, bool newValue);
+        Task<bool> SetIsHDROn(string Guid, bool newValue);
         Task SetIsAutoWhiteBalanceOn(string Guid, bool newValue);
         Task SetAutoWhiteBalance(string Guid, int newValue);
         Task SetBrightness(string Guid, int newValue);
@@ -191,7 +194,8 @@ namespace DDPM.SA.Common
         Task<bool> GetIsWalkAwayLockEnable(string Guid);
         Task<bool?> GetIsPrioritizeExternalWebcam(string Guid);
         Task<bool> GetIsZoomMeetingActive(string Guid);
-        Task<bool> GetZoomMeetingType(string Guid);
+        //Task<bool> GetZoomMeetingType(string Guid);
+        Task<int> GetZoomMeetingTypeAsync(string Guid);
         Task<bool> GetIsZoomScreenShareActive(string Guid);
 
         //Marked by Derek 1121

@@ -165,6 +165,11 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
 
         private void WebCameraplugin_UIUpdateNotify(object? sender, UpdateUINotify e)
         {
+            //Derek 1212
+            if (e == null || e == EventArgs.Empty || e.UI_Field_Name == null 
+                || e.UI_Field_Name == string.Empty) 
+                return;
+
             //Open this to get the message format of Webcam event
             //System.Windows.MessageBox.Show(e.UI_Field_Name);
             Console.WriteLine("Get event : " + e.UI_Field_Name + "#" + DateTime.Now.ToString("yyyy-MM-dd h:mm:tt") +"\r\n");
@@ -269,7 +274,17 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                             System.Windows.Application.Current.Dispatcher.Invoke(() =>
                             {
                                 if (int.TryParse(NewValue, out var _t))
+                                {
                                     _viewModel!.FieldOfView = _t;
+
+                                    //Derek 1211 to sync data with QAM
+                                    if (90 == _t)
+                                        _viewModel!.SetFOV_Selected(2);
+                                    else if (78 == _t)
+                                        _viewModel!.SetFOV_Selected(1);
+                                    else if (65 == _t)
+                                        _viewModel!.SetFOV_Selected(0);
+                                }
                                 else
                                 {
                                     _log.Debug("Webcam_FieldOfViewChanged NewValue not int");
@@ -281,40 +296,40 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                         break;
                         case "Webcam_AutoFramingFrameSizeChanged":
                         {
-                            if (!event_param.TryGetValue("NewValue", out var NewValue))
-                            {
-                                _log.Debug("NewValue cannot be found in event_param");
-                                return;
-                            }
-                            System.Windows.Application.Current.Dispatcher.Invoke(() =>
-                            {
-                                if (int.TryParse(NewValue, out var _t))
-                                    _viewModel!.AutoFramingFrameSize = _t;
-                                else
-                                {
-                                    _log.Debug("Webcam_AutoFramingFrameSizeChanged NewValue not int");
-                                    return;
-                                }
-                            });
+                            //if (!event_param.TryGetValue("NewValue", out var NewValue))
+                            //{
+                            //    _log.Debug("NewValue cannot be found in event_param");
+                            //    return;
+                            //}
+                            //System.Windows.Application.Current.Dispatcher.Invoke(() =>
+                            //{
+                            //    if (int.TryParse(NewValue, out var _t))
+                            //        _viewModel!.AutoFramingFrameSize = _t;
+                            //    else
+                            //    {
+                            //        _log.Debug("Webcam_AutoFramingFrameSizeChanged NewValue not int");
+                            //        return;
+                            //    }
+                            //});
                         }
                         break;
                         case "Webcam_AutoFramingSensitivityChanged":
                         {
-                            if (!event_param.TryGetValue("NewValue", out var NewValue))
-                            {
-                                _log.Debug("NewValue cannot be found in event_param");
-                                return;
-                            }
-                            System.Windows.Application.Current.Dispatcher.Invoke(() =>
-                            {
-                                if (int.TryParse(NewValue, out var _t))
-                                    _viewModel!.AutoFramingFrameSize = _t;
-                                else
-                                {
-                                    _log.Debug("Webcam_AutoFramingSensitivityChanged NewValue not int");
-                                    return;
-                                }
-                            });
+                            //if (!event_param.TryGetValue("NewValue", out var NewValue))
+                            //{
+                            //    _log.Debug("NewValue cannot be found in event_param");
+                            //    return;
+                            //}
+                            //System.Windows.Application.Current.Dispatcher.Invoke(() =>
+                            //{
+                            //    if (int.TryParse(NewValue, out var _t))
+                            //        _viewModel!.AutoFramingFrameSize = _t;
+                            //    else
+                            //    {
+                            //        _log.Debug("Webcam_AutoFramingSensitivityChanged NewValue not int");
+                            //        return;
+                            //    }
+                            //});
                         }
                         break;
                         case "Webcam_IsAutoFramingOnChanged":

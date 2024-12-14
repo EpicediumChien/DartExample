@@ -1120,6 +1120,8 @@ namespace DDPM.SA.Plugins.User.SettingsManager
             {
                 //impexpSettings.AppSettings = settings.AppSettings;
                 impexpSettings.UserSettings = settings.UserSettings;
+                // PIMS-328022 to renew EzMemory
+                impexpSettings.UserSettings.EAProfile = new List<EAProfileDDPM>();
                 List<HotkeySettings> hotkeySettings = new List<HotkeySettings>();
                 hotkeySettings = ReadHotkeySettings().Result;
                 if (hotkeySettings != null)
@@ -1168,6 +1170,8 @@ namespace DDPM.SA.Plugins.User.SettingsManager
                         if (_settings.ServiceTag == seriveTag)
                         {
                             impexpSettings.MonitorSettings = _settings;
+                            // PIMS-328022 to renew EzMemory
+                            impexpSettings.MonitorSettings.easyArrangementDDPM.Desktops = new List<DesktopDDPM>();
 
                             //export file
                             FileInfo fileInfo = new FileInfo(path);
@@ -1211,8 +1215,9 @@ namespace DDPM.SA.Plugins.User.SettingsManager
             return Task.FromResult<bool>(false);
         }
 
-        public Task<bool> DisplayImportSettings(string path, bool isSameModel, string serviceTag, out DDPMImpExpSettings ImpExpSettings)
+        public Task<DisplayImportResultCode> DisplayImportSettings(string path, bool isSameModel, string serviceTag, out DDPMImpExpSettings ImpExpSettings)
         {
+            bool isEzMemoryOverride = false;
             WriteLog("[DisplayImportSettings] path :" + path);
             List<DDPMMonitorSettings> monitorSettingsList = new List<DDPMMonitorSettings>();
             ImpExpSettings = ReadImportSettingsFile(path).Result;
@@ -1229,6 +1234,9 @@ namespace DDPM.SA.Plugins.User.SettingsManager
                     DDPMSettings settings = ReloadAppConfigData().Result;
                     if (settings != null)
                     {
+                        if(settings.UserSettings.EAProfile != null
+                            && settings.UserSettings.EAProfile.Count() > 0)
+                            isEzMemoryOverride = true;
                         settings.UserSettings = userSettings;
                         if (SetAppConfigData(settings).Result)
                         {
@@ -1284,7 +1292,8 @@ namespace DDPM.SA.Plugins.User.SettingsManager
                                             //vcps = monitorSettings.VCPs;
                                             if (!isSameModel)
                                             {
-                                                return Task.FromResult<bool>(true);
+                                                if(isEzMemoryOverride) return Task.FromResult(DisplayImportResultCode.DoneWithEzMemoryCleared);
+                                                return Task.FromResult(DisplayImportResultCode.Done);
                                             }
                                         }
                                         else
@@ -1320,7 +1329,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager
                 WriteLog("[DisplayImportSettings] Settings is not DDPMSettings...");
             }
             
-            return Task.FromResult<bool>(false);
+            return Task.FromResult(DisplayImportResultCode.Error);
         }
 
         public Task<bool> DisplayImpDDMSettings(string path, bool isSameModel, out DDMImpSettings impSettings)
