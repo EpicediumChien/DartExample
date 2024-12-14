@@ -648,7 +648,7 @@ namespace DDPM.SA.Common
 
         Task<bool> DisplayExportSettings(MonitorInfo monitorInfo, string path);
 
-        Task<bool> DisplayImportSettings(MonitorInfo monitorInfo, bool isSameModel, string path);
+        Task<DisplayImportResultCode> DisplayImportSettings(MonitorInfo monitorInfo, bool isSameModel, string path);
 
         Task SetSameModel(MonitorInfo monitorInfo, bool isSameModel);
 

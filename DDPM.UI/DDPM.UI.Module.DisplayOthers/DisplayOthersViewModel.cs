@@ -284,14 +284,17 @@ namespace DDPM.UI.Module.DisplayOthers
                     }
                     //else if (DisplayOthersModule.SelectedHomeDevice.MonitorInfo.edid.ServiceTag == serviceTag)
                     //{
-                        //OnMessageDlgInvoke("import_confirm");
+                    //OnMessageDlgInvoke("import_confirm");
                     //}
-
-                    if (DdpmCommonHelper.DeviceManagerSA.DisplayImportSettings(DisplayOthersModule.SelectedHomeDevice.MonitorInfo, AutoApply_Checked, impPath).Result)
+                    DisplayImportResultCode importResult = DdpmCommonHelper.DeviceManagerSA.DisplayImportSettings(DisplayOthersModule.SelectedHomeDevice.MonitorInfo, AutoApply_Checked, impPath).Result;
+                    if ((int)importResult > 0)
                     {
                         //string fileName = Path.GetFileNameWithoutExtension(impPath);
                         OnMessageDlgInvoke("close_loading");
-                        OnMessageDlgInvoke("result_success_" + DisplayOthersModule.SelectedHomeDevice.MonitorInfo.modelName);
+                        if (importResult == DisplayImportResultCode.DoneWithEzMemoryCleared)
+                            OnMessageDlgInvoke($"result_success_{DisplayOthersModule.SelectedHomeDevice.MonitorInfo.modelName}_EzMemory");
+                        else
+                            OnMessageDlgInvoke($"result_success_{DisplayOthersModule.SelectedHomeDevice.MonitorInfo.modelName}");
                     }
                     else
                     {

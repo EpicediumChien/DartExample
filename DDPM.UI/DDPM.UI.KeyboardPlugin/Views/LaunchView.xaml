@@ -421,7 +421,7 @@
                                                            BatteryLevel="{Binding BatteryLevel}" BatteryStatus="{Binding BatteryStatus}" MouseLeave="BatteryIndicator_MouseLeave"
                                                            ConnectionType="{Binding ConnectionType}" VerticalAlignment="Bottom" />
                         <Border Style="{StaticResource BorderUnpair}" Width="176" MouseLeftButtonDown="Restore_Click" Cursor="Hand" Margin="8,0,0,70" Visibility="{Binding IsRestoreEnable, Converter={StaticResource BoolToVisibilityConverter}}" x:Name="btnRestore"
-                                BorderBrush="{DynamicResource SecondaryButton_DefaultBdColor}">
+                                BorderBrush="{DynamicResource Button_UXStyleColor_ForWhiteFrame}">
                             <Grid>
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="*"/>

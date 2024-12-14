@@ -681,7 +681,7 @@ namespace DDPM.UI.Module.Brightness
                 //}
                 Trace.WriteLine($"6. {DateTime.Now.ToString("MM/dd/yyyy hh:mm ss fff")}");
                 //Check if support ALS
-                if (SelectedHomeDevice.MonitorInfo.CapabilityDic.ContainsKey("66"))
+                if (SelectedHomeDevice.MonitorInfo.CapabilityDic.ContainsKey("66") || isLuminance == true)
                 {
                     if (SelectedHomeDevice != null && SelectedHomeDevice.MonitorInfo != null)
                     {
@@ -692,14 +692,14 @@ namespace DDPM.UI.Module.Brightness
                         {
                             for (int i = 0; i < alsList.Count; i++)
                             {
-                                if (alsList[i].DisplayName == SelectedHomeDevice.MonitorInfo.DisplayName && alsList[i].serialNumber == SelectedHomeDevice.MonitorInfo.edid.SerialNumber)
+                                if (alsList[i].Edid == SelectedHomeDevice.MonitorInfo.edid )
                                 {
                                     Start_ALSConfig = alsList[i];
                                 }
                             }
                         }
                         //Re-Get Start_ALSConfig
-                        if (Start_ALSConfig.AllValue == 0)//Need to Re-Get value
+                        if (Start_ALSConfig.AllValue == 0 && isLuminance == false)//Need to Re-Get value
                         {
                             Start_ALSConfig = DdpmCommonHelper.DeviceManagerSA.GetALSFeatureValue(SelectedHomeDevice.MonitorInfo, ALSFeatureQueryType.All, 0).Result;
                             if (!alsList.Contains(Start_ALSConfig))
@@ -2360,7 +2360,7 @@ namespace DDPM.UI.Module.Brightness
             {
                 //PIMS-328260
                 string pop_string = Strings.BrightnessPageNotice1;//"This is not your primary monitor. Do you want to proceed with the change and set this as primary Monitor for Sync?";
-                if (DdpmCommonHelper.DDPMMesssageBox(Strings.BrightnessPageWarning, pop_string))
+                if (DdpmCommonHelper.DDPMMesssageBox(Strings.BrightnessPageWarning, pop_string, MyModule.GetRightView().Parent))
                 {
                     _primaryMonitorSyncStatus = true;
                     Start_ALSConfig.isPrimaryMonitorSync = true;// onoff; //PIMS-328260
@@ -2669,7 +2669,7 @@ namespace DDPM.UI.Module.Brightness
             {
                 if (_autoBrightnessStatus)
                 {
-                    if (!Start_ALSConfig.isPrimaryMonitorSync)
+                    if (CheckMonitorALSStatus() && !Start_ALSConfig.isPrimaryMonitorSync)
                     {
                         MyModule.GetRightView().Dispatcher.Invoke((Action)(() =>
                         {
@@ -2687,7 +2687,7 @@ namespace DDPM.UI.Module.Brightness
                     string pop_string = Strings.BrightnessPageNotice0;// "Auto Brightness is currently enabled. Do you wish to disable it to continue?";
                     MyModule.GetRightView().Dispatcher.Invoke((Action)(() =>
                     {
-                        r = DdpmCommonHelper.DDPMMesssageBox(Strings.BrightnessPageWarning, pop_string);
+                        r = DdpmCommonHelper.DDPMMesssageBox(Strings.BrightnessPageWarning, pop_string, MyModule.GetRightView().Parent);
                     }));
                     if (r)
                         AutoBrightnessStatus = _autoBrightnessStatus = false;
@@ -3227,7 +3227,7 @@ namespace DDPM.UI.Module.Brightness
         /// </summary>
         public string AutoBrightness_String
         {
-            get => Start_ALSConfig.isAutoBrightness ? "ON" : "OFF";
+            get => Start_ALSConfig.isAutoBrightness ? Strings.On : Strings.Off;
         }
 
         public bool SupportedAutoColorTemp { get; set; } = true;
@@ -3278,7 +3278,7 @@ namespace DDPM.UI.Module.Brightness
         /// </summary>
         public string AutoColorTemp_String
         {
-            get => Start_ALSConfig.isAutoColorTemp ? "ON" : "OFF";
+            get => Start_ALSConfig.isAutoColorTemp ? Strings.On : Strings.Off;
         }
 
         private bool _supportedPrimaryMonitorSync = true;
@@ -3339,7 +3339,7 @@ namespace DDPM.UI.Module.Brightness
         /// </summary>
         public string PrimaryMonitorSync_String
         {
-            get => Start_ALSConfig.isPrimaryMonitorSync ? "ON" : "OFF";
+            get => Start_ALSConfig.isPrimaryMonitorSync ? Strings.On : Strings.Off;
         }
 
         /// <summary>

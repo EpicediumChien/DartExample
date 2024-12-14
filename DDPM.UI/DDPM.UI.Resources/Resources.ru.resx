@@ -2124,6 +2124,9 @@
   <data name="ImpExp_SuccessMsg.1" xml:space="preserve">
     <value>Настройки приложения применены к %1. Наслаждайтесь работой с монитором.</value>
   </data>
+  <data name="ImpExp_SuccessMsg.2" xml:space="preserve">
+    <value>Настройки приложения применены к %1. Наслаждайтесь работой с монитором.</value>
+  </data>
   <data name="ImpExp_WarningMsg.0" xml:space="preserve">
     <value>Это не основной монитор. Продолжить и установить его в качестве основного монитора для синхронизации?</value>
   </data>
