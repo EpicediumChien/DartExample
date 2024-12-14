@@ -162,6 +162,13 @@ namespace DDPM.SA.Common
         public event EventHandler<EAArgs> EAEditReturn;
 
         //        public Task<bool> EAReloadMonitorSettings(MonitorInfo monitorInfo);
+
+        /// <summary>
+        /// Called by DeviceManagerSA only, when one of EzSettings is changed from DDPM.UI.
+        /// It will call to EAPlugin IEasyArrangeService.ReloadEzSettings() to notify 
+        /// EAPlugin reload EzSettings and refresh to its ViewModel.
+        /// </summary>
+        /// <returns></returns>
         public Task<bool> ReloadEzSettings();
 
         public Task<bool> SetEASelectedLayout(MonitorInfo monitorInfo, SplitJson spJson);

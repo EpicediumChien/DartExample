@@ -6,6 +6,7 @@ using DPeMPublic.Common.Enums;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.Security.Policy;
 using System.Threading;
 using System.Threading.Tasks;
 using VcpCore.Common;
@@ -251,6 +252,7 @@ namespace DDPM.SA.Common
 
         #region EasyArrange
 
+        #region EAFunctionEanbled - EasyArrange
         /// <summary>
         /// Enable/Disable EasyArrange function for all monitors.
         /// When Disabled (isEnable=false), DDPM will not show the WorkWindow (to arrange window),
@@ -261,6 +263,7 @@ namespace DDPM.SA.Common
         public Task<bool> SetEAFunctionEnabled(bool isEnabled);
 
         public Task<ObjGetVCP> GetEAFunctionEnabled();
+        #endregion EAFunctionEanbled - EasyArrange
 
         public event EventHandler<EAArgs> EASettingsChanged;
 
@@ -284,30 +287,98 @@ namespace DDPM.SA.Common
 
         public event EventHandler<EAArgs> EAEditReturn;
 
+        #region EAMonitorSettings - EasyArrange
+        /// <summary>
+        /// Write new values to EA MonitorSettings file. A basic write file function, no any notification support.
+        /// </summary>
+        /// <param name="monitorInfo"></param>
+        /// <param name="eaSettings"></param>
+        /// <returns></returns>
         public Task<bool> WriteEAMonitorSettings(MonitorInfo monitorInfo, EAMonitorSettings eaSettings);
 
+        /// <summary>
+        /// Read setting values from EA MonitorSettings file.
+        /// </summary>
+        /// <param name="monitorInfo"></param>
+        /// <param name="eaSettings"></param>
+        /// <returns></returns>
         public Task<EAMonitorSettings> ReadEAMonitorSettings(MonitorInfo monitorInfo);
+        #endregion EAMonitorSettings - EasyArrange
 
         //public Task<bool> EAReloadMonitorSettings(MonitorInfo monitorInfo);
         //public Task<bool> EASaveOptions(MonitorInfo monitorInfo, EAMonitorSettings eaSettings);
 
+        #region EzSettings - EasyArrange
         //Robert_Lin, 2024-9-18 added for EzSettings
+        /// <summary>
+        /// Read the settings in DDPM.UI Easy Arrange / Settings page. Inlcude
+        /// 1. Allow app to split side by side without gap
+        /// 2. Only allow zone positioning when SHIFT is pressed
+        /// 3. Span across multiple monitors
+        /// 4. Application Window Snap
+        /// But not include "Hotkey: Recent"
+        /// These settings will be loaded from UserSettings file.
+        /// </summary>
+        /// <returns></returns>
         public Task<EzSettings> ReadEzSettings();
 
+        /// <summary>
+        /// Write new value to EasyArrange/Settings/Allow app to split side by side without gap
+        /// The new value will write to UserSettings file, and notify EAPlugin to reload
+        /// new settings with IDisplayService.ReloadEzSettings()
+        /// </summary>
+        /// <param name="newValue"></param>
+        /// <returns></returns>
         public Task<bool> WriteEzSettings_IsWidthoutGap(bool newValue);
 
+        /// <summary>
+        /// Write new value to EasyArrange/Settings/Only allow zone positioning when SHIFT is pressed
+        /// The new value will write to UserSettings file, and notify EAPlugin to reload
+        /// new settings with IDisplayService.ReloadEzSettings()
+        /// </summary>
+        /// <param name="newValue"></param>
+        /// <returns></returns>
         public Task<bool> WriteEzSettings_IsOnlyAllowWhenShiftKeyPressed(bool newValue);
 
+        /// <summary>
+        /// Write new value to EasyArrange/Settings/Span across multiple monitors
+        /// The new value will write to UserSettings file, and notify EAPlugin to reload
+        /// new settings with IDisplayService.ReloadEzSettings()
+        /// </summary>
+        /// <param name="newValue"></param>
+        /// <returns></returns>
         public Task<bool> WriteEzSettings_IsSpanAcrossMultiMonitors(bool newValue);
 
+        /// <summary>
+        /// Write new value to EasyArrange/Settings/Application Window Snap
+        /// The new value will write to UserSettings file, and notify EAPlugin to reload
+        /// new settings with IDisplayService.ReloadEzSettings()
+        /// </summary>
+        /// <param name="newValue"></param>
+        /// <returns></returns>
         public Task<bool> WriteEzSettings_IsAwsEnabled(bool newValue);
+        #endregion EzSettings - EasyArrange
 
         public Task<bool> SetEASelectedLayout(MonitorInfo monitorInfo, SplitJson spJson);
 
+        #region EA Custom List - EasyArrange
         //Robert_Lin, 2024-10-12 added, move EACustomList to UserSettings from MonitorSettings
+        /// <summary>
+        /// Read EasyArrange Custom layout list from UserSettings file.
+        /// Implement in DeviceManagerPlugin.
+        /// </summary>
+        /// <returns></returns>
         public Task<SplitJson[]> ReadEACustomList();
 
+        //Robert_Lin, 2024-10-12 added, move EACustomList to UserSettings from MonitorSettings
+        /// <summary>
+        /// Write EasyArrange Custom layout list to UserSettings file.
+        /// Implement in DeviceManagerPlugin.
+        /// It's called by DDPM.UI. It's no need to notify SA EAPlugin.
+        /// </summary>
+        /// <returns></returns>
         public Task<bool> WriteEACustomList(SplitJson[] customList);
+        #endregion EA Custom List - EasyArrange
 
         public event EventHandler<EAArgs> EANotify;
         public Task SendEANotify(EAArgs args);

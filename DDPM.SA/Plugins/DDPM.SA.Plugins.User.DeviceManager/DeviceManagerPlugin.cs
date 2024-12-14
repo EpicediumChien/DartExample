@@ -6810,6 +6810,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         #region EasyArrage
 
+        #region EAFunctionEanbled - EasyArrange
         /// <summary>
         /// Enable/Disable EasyArrange function for all monitors.
         /// When Disabled (isEnable=false), DDPM will not show the WorkWindow (to arrange window),
@@ -6834,6 +6835,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
             return Task.FromResult<ObjGetVCP>(new ObjGetVCP() { result = false, value = false });
         }
+        #endregion EAFunctionEanbled - EasyArrange
 
         /// <summary>
         /// Set current WorkSplit (selected layout).
@@ -6971,6 +6973,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
         }
 
+        #region EAMonitorSettings - EasyArrange
         public Task<bool> WriteEAMonitorSettings(MonitorInfo monitorInfo, EAMonitorSettings eaSettings)
         {
             if (_SettingsPlugin == null)
@@ -7118,6 +7121,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             //Return the EA settings from the settings file
             return Task.FromResult(monitorSetting.EA);
         }
+        #endregion EAMonitorSettings - EasyArrange
 
         private void _dump_SplitJsonList(MonitorInfo mi, List<SplitJson> splitJsonList)
         {
@@ -7186,6 +7190,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         //     return Task.FromResult(false);
         //}
 
+        #region EzSettings - EasyArrange
         public Task<EzSettings> ReadEzSettings()
         {
             //Read DDPMSettings
@@ -7332,6 +7337,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             //Fail to read, will return false
             return Task.FromResult(false);
         }
+        #endregion EzSettings - EasyArrange
 
         public Task<bool> SetEASelectedLayout(MonitorInfo monitorInfo, SplitJson spJson)
         {
@@ -7358,6 +7364,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
         }
 
+        #region EA Custom List - EasyArrange
         //Robert_Ln, 2024-10-12, Added after move CustomList to UserSettings from MonitorSettings
         /// <summary>
         /// Read the EACustomList for current user
@@ -7383,10 +7390,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             return Task.FromResult(new SplitJson[] { });
         }
 
+        //Robert_Lin, 2024-10-12 added, move EACustomList to UserSettings from MonitorSettings
         /// <summary>
-        /// Write the EACustomList to current user's settings file
+        /// Write EasyArrange Custom layout list to UserSettings file.
+        /// It's called by DDPM.UI. It's no need to notify SA EAPlugin.
         /// </summary>
-        /// <param name="customList"></param>
         /// <returns></returns>
         public Task<bool> WriteEACustomList(SplitJson[] customList)
         {
@@ -7407,6 +7415,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             //Failed, return an empty array instead of null
             return Task.FromResult(false);
         }
+        #endregion EA Custom List - EasyArrange
 
         //Robert_Lin, 2024-11-18, a general method for Subagent to send event to UI
         /// <summary>
@@ -15917,7 +15926,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     int activeLayout = ddmMonitorSettings.EasyArrangement.Desktops[0].ActiveLayout;
                     SplitJson? selJson = null;
                     //activaLayout: [0~49]=preset layout, [1000~1004]=custom layout
-                    if (activeLayout >= 1000)
+                    if (activeLayout >= 1000) //or EAEMConstants.EAID_FirstCustom
                     {
                         //Find the CustomLayout by EAID
                         selJson = ddpmCustomList.Find(x => x.EAID == activeLayout);
