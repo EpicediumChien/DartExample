@@ -15042,7 +15042,7 @@ namespace DDPM.CLI.Plugins.Display
                     else
                     {
                         writelog("devMgr.DisplayImportSettings set entry");
-                        retcode = devMgr.DisplayImportSettings(monitor, false, filepath).Result;
+                        retcode = (int)devMgr.DisplayImportSettings(monitor, false, filepath).Result > 0;
                         writelog("devMgr.DisplayImportSettings set exit");
                     }
 

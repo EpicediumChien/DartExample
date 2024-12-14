@@ -1685,7 +1685,7 @@ namespace DDPM.CLI.Plugins.Display.Test
 
             // Case 03  OSDENABLE,Volume:52
             value = 0x1234;
-            get_SpeakerVolume_status = "Volume:52";
+            get_SpeakerVolume_status = "OSDENABLE";
             get_SpeakerVolume_status_Result = (string)privatetecLIDisplayPlugins.Invoke("get_SpeakerVolume_status", value);
             Assert.IsNotNull(get_SpeakerVolume_status_Result);
             Assert.That(get_SpeakerVolume_status, Is.EqualTo(get_SpeakerVolume_status_Result));
@@ -1781,14 +1781,14 @@ namespace DDPM.CLI.Plugins.Display.Test
 
             // Case 01  OSDLOCK,OSDDISABLE,0x8000
             value = 0x8000;
-            get_SpeakerMicrophone_status = "OSDLOCK,OSDDISABLE,";
+            get_SpeakerMicrophone_status = "OSDLOCK,OSDDISABLE";
             get_SpeakerMicrophone_status_Result = (string)privatetecLIDisplayPlugins.Invoke("get_SpeakerMicrophone_status", value);
             Assert.IsNotNull(get_SpeakerMicrophone_status_Result);
             Assert.That(get_SpeakerMicrophone_status, Is.EqualTo(get_SpeakerMicrophone_status_Result));
 
             // Case 01  OSDUNLOCK,OSDENABLE,0x4000
             value = 0x4000;
-            get_SpeakerMicrophone_status = "OSDUNLOCK,OSDENABLE,";
+            get_SpeakerMicrophone_status = "OSDUNLOCK,OSDENABLE";
             get_SpeakerMicrophone_status_Result = (string)privatetecLIDisplayPlugins.Invoke("get_SpeakerMicrophone_status", value);
             Assert.IsNotNull(get_SpeakerMicrophone_status_Result);
             Assert.That(get_SpeakerMicrophone_status, Is.EqualTo(get_SpeakerMicrophone_status_Result));

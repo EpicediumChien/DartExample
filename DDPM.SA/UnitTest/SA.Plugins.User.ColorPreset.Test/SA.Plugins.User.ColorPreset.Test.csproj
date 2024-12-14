@@ -30,6 +30,12 @@
     <ProjectReference Include="..\SA.Plugins.User.DisplayProperties.Test\SA.Plugins.User.DisplayProperties.Test.csproj" />
   </ItemGroup>
 
+	<ItemGroup>
+		<Reference Include="DdmLibrary">
+			<HintPath>..\..\dll\DdmLibrary.dll</HintPath>
+		</Reference>
+	</ItemGroup>
+
   <ItemGroup>
     <Using Include="NUnit.Framework" />
   </ItemGroup>
