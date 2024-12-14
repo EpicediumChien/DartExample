@@ -21,12 +21,12 @@ namespace DDPM.SA.Common.Settings
 {
     public class SWUpdateSetting
     {
-        private static string URL = $"https://clientperipherals.dell.com/DDPM/";
-        private static string URL_Folder = $"/Windows/Application/";
-        private static void SetSWUServer()
+        private static readonly string URL = @$"https://clientperipherals.dell.com/DDPM/";
+        private static readonly string URL_Folder = @$"/Windows/Application/";
+        private static string SetSWUServer()
         {
             RegistryKey localKey64 = RegistryKey.OpenBaseKey(Microsoft.Win32.RegistryHive.LocalMachine, RegistryView.Registry64);
-            URL = URL + URL_Folder;
+            string ret = URL + URL_Folder;
             if (localKey64 != null)
             {
                 RegistryKey registryKey = localKey64.OpenSubKey("SOFTWARE\\Dell\\DDPM Subagent\\", false);
@@ -38,20 +38,22 @@ namespace DDPM.SA.Common.Settings
                         string s = obj.ToString();
                         if (!string.IsNullOrEmpty(s))
                         {
-                            URL = obj + URL_Folder;
+                            ret = s + URL_Folder;
                         }
                     }
                 }
             }
+            return ret;
         }
         public static SWUpdateHelper GetSWMetadata(bool isSkipCA, out string info, ISettingsManagerSA settingsPlugin, List<string> InserInfoPkey, Logs logs)
         {
             SWUpdateHelper data = new SWUpdateHelper();
-            SetSWUServer();
+            string SW_URL = SetSWUServer();
+            logs?.DebugMsg_1($"GetSWMetadata SW_URL : {SW_URL}");
             CertificateCheck certificateCheck = new CertificateCheck(logs);
             if (!isSkipCA)
             {
-                if (!certificateCheck.CheckURLCACertificate(URL))
+                if (!certificateCheck.CheckURLCACertificate(SW_URL))
                 {
                     info = $"{nameof(GetSWMetadata)} URL CA check fail";
                     logs?.DebugMsg_1(info);
@@ -65,7 +67,7 @@ namespace DDPM.SA.Common.Settings
                     try
                     {
                         client.Timeout = TimeSpan.FromSeconds(5);
-                        HttpResponseMessage response = client.GetAsync(URL + "SWMetaData.json").Result;
+                        HttpResponseMessage response = client.GetAsync(SW_URL + "SWMetaData.json").Result;
                         response.EnsureSuccessStatusCode();
                         string fileContent = response.Content.ReadAsStringAsync().Result;
                         List<string> InfoPkey = new List<string>();
@@ -94,7 +96,7 @@ namespace DDPM.SA.Common.Settings
                         }
                         if (!string.IsNullOrEmpty(jsonString))
                         {
-                            jsonString = jsonString.Replace("%1/", URL);
+                            jsonString = jsonString.Replace("%1/", SW_URL);
                             data = JsonSerializer.Deserialize<SWUpdateHelper>(jsonString);
                             if (data != null)
                             {
@@ -189,11 +191,12 @@ namespace DDPM.SA.Common.Settings
         {
             InterruptScreenRoot result = null;
             logs?.DebugMsg_1("[InterruptScreen_Metadata], start.");
-            SetSWUServer();
+            string SW_URL = SetSWUServer();
+            logs?.DebugMsg_1($"InterruptScreen_Metadata SW_URL : {SW_URL}");
             CertificateCheck certificateCheck = new CertificateCheck(logs);
             if (!isSkipCA)
             {
-                if (!certificateCheck.CheckURLCACertificate(URL))
+                if (!certificateCheck.CheckURLCACertificate(SW_URL))
                 {
                     info = $"{nameof(GetSWMetadata)} URL CA check fail";
                     logs?.DebugMsg_1(info);
@@ -207,7 +210,7 @@ namespace DDPM.SA.Common.Settings
                     try
                     {
                         client.Timeout = TimeSpan.FromSeconds(5);
-                        HttpResponseMessage response = client.GetAsync(URL + "AppUpdates.json").Result;
+                        HttpResponseMessage response = client.GetAsync(SW_URL + "AppUpdates.json").Result;
                         response.EnsureSuccessStatusCode();
                         string fileContent = response.Content.ReadAsStringAsync().Result;
                         List<string> InfoPkey = new List<string>();
@@ -243,7 +246,7 @@ namespace DDPM.SA.Common.Settings
                                 {
                                     if (interruptScreenRoot != null && interruptScreenRoot.content != null)
                                     {
-                                        interruptScreenRoot.content.image = DownloadImageAsByteArray($@"{URL}\{interruptScreenRoot.content.imageUrl}");
+                                        interruptScreenRoot.content.image = DownloadImageAsByteArray($@"{SW_URL}\{interruptScreenRoot.content.imageUrl}");
                                     }
                                 }
                                 info = $"{nameof(InterruptScreen_Metadata)} Pass";
