@@ -648,7 +648,7 @@ namespace DDPM.SA.Common
 
         Task<bool> DisplayExportSettings(MonitorInfo monitorInfo, string path);
 
-        Task<bool> DisplayImportSettings(MonitorInfo monitorInfo, bool isSameModel, string path);
+        Task<DisplayImportResultCode> DisplayImportSettings(MonitorInfo monitorInfo, bool isSameModel, string path);
 
         Task SetSameModel(MonitorInfo monitorInfo, bool isSameModel);
 
@@ -1153,7 +1153,7 @@ namespace DDPM.SA.Common
 
         Task<bool> ExportMonitorAssetReport(List<MonitorInfo> monitorInfos, string savePath);
 
-        Task<bool> SaveLogFile(string saveFolderPath = "");
+        Task<bool> SaveLogFile(string saveFolderPath);
 
         #endregion OutReport
 

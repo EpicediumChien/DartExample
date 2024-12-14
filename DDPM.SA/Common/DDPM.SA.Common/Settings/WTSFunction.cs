@@ -24,7 +24,7 @@ namespace DDPM.SA.Common.Settings
         [DllImport("Kernel32.dll", SetLastError = true)]
         [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
         private static extern int WTSGetActiveConsoleSessionId();
-        private static int _WTSGetActiveConsoleSessionId()
+        public static int _WTSGetActiveConsoleSessionId()
         {
             return WTSGetActiveConsoleSessionId();
         }

@@ -18,6 +18,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Management;
@@ -392,22 +393,34 @@ namespace DdpmSwUpdater
                         _clientProcess.WaitForExit();*/
 
                         //For checkmarx test, [code part2]
-                        if(DDPMFileSecurity.ValidateFilePath(fileFullPath, out string info))
+                        string fileFullPath_sanitized = DDPMFileSecurity.SanitizePath(fileFullPath, out string info);
+                        if (!string.IsNullOrEmpty(fileFullPath_sanitized))
                         {
-                            ProcessStartInfo startInfo = new ProcessStartInfo()
+                            if (DDPMFileSecurity.ValidateFilePath(fileFullPath, out info))
                             {
-                                UseShellExecute = false,
-                                FileName = fileFullPath,
-                                Arguments = arguments
-                            };
-                            //_clientProcess = new Process();                        
-                            _clientProcess.StartInfo = startInfo;
-                            _clientProcess.Start();
-                            _clientProcess.WaitForExit();
+                                ProcessStartInfo startInfo = new ProcessStartInfo()
+                                {
+                                    UseShellExecute = false,
+                                    FileName = fileFullPath_sanitized,//fileFullPath,
+                                    Arguments = arguments
+                                };
+                                //_clientProcess = new Process();                        
+                                _clientProcess.StartInfo = startInfo;
+                                _clientProcess.Start();
+                                _clientProcess.WaitForExit();
+                            }
+                            else
+                            {
+                                LogManage.LogMessage($"{nameof(DownloadAndInstall)} {_SWUpdateInfo.SoftwareName} FilePathIsNotSafe - result : {info}");
+                                _notificationStr = LangHelper.Instance["Firmware_update_unsuccessful"];
+                                NotificationFWupdate(LangHelper.Instance["Error"], _notificationStr);
+                                _updateErrorCode = SWUErrorCode.FileIsNoSafe;
+                                return _updateErrorCode;
+                            }
                         }
                         else
                         {
-                            LogManage.LogMessage($"{nameof(DownloadAndInstall)} {_SWUpdateInfo.SoftwareName} FileIsNoSafe - FileCheckInfo : {info}");
+                            LogManage.LogMessage($"{nameof(DownloadAndInstall)} {_SWUpdateInfo.SoftwareName} FilePath sanitized check - result : {info}");
                             _notificationStr = LangHelper.Instance["Firmware_update_unsuccessful"];
                             NotificationFWupdate(LangHelper.Instance["Error"], _notificationStr);
                             _updateErrorCode = SWUErrorCode.FileIsNoSafe;

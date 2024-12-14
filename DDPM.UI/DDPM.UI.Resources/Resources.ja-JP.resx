@@ -2124,6 +2124,9 @@
   <data name="ImpExp_SuccessMsg.1" xml:space="preserve">
     <value>アプリケーション設定が%1に正常に適用されました。モニターを使用できるようになりました。</value>
   </data>
+  <data name="ImpExp_SuccessMsg.2" xml:space="preserve">
+    <value>アプリケーション設定が%1に正常に適用されました。モニターを使用できるようになりました。</value>
+  </data>
   <data name="ImpExp_WarningMsg.0" xml:space="preserve">
     <value>これはプライマリー モニターではありません。続行して、これを同期するプライマリー モニターとして設定しますか？</value>
   </data>

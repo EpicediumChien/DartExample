@@ -2262,7 +2262,7 @@ namespace DDPM.UI.Plugin.ViewModels
         #region Group 2
 
         private bool _isCollaborationChecked = true;
-        private bool _isMultimediaChecked;
+        private bool _isMultimediaChecked = false;
 
         public bool IsCollaborationChecked
         {
@@ -2316,11 +2316,11 @@ namespace DDPM.UI.Plugin.ViewModels
 
         #region Group 3
 
-        private bool _isDefaultChecked;
-        private bool _isBassBoostChecked;
-        private bool _isSpeechBoostChecked;
-        private bool _isTrebleBoostChecked;
-        private bool _isCustomChecked;
+        private bool _isDefaultChecked = true;
+        private bool _isBassBoostChecked = false;
+        private bool _isSpeechBoostChecked = false;
+        private bool _isTrebleBoostChecked = false;
+        private bool _isCustomChecked = false;
 
         public bool IsDefaultChecked
         {
