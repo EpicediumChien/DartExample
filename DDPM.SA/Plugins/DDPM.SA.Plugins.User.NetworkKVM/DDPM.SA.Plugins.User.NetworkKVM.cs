@@ -1321,6 +1321,7 @@ namespace NetworkKVM.Plugins
                     //}
                     if (i > 2)
                     {
+                        _logs.DebugMsg("[NetworkKVM] loop error times = 3");
                         Disconnect();
                         break;
                     }
@@ -1451,6 +1452,7 @@ namespace NetworkKVM.Plugins
                 {
                     if (i > 2)
                     {
+                        _logs.DebugMsg("[NetworkKVM] loop error times = 3");
                         Disconnect();
                         break;
                     }
