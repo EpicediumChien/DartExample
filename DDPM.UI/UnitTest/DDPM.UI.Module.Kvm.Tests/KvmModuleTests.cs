@@ -14,6 +14,8 @@ using Windows.System;
 using Dell.Client.Framework.UX.WPF;
 using Dell.Client.Framework.Common;
 using Dell.Client.Framework.UX.WPF.ResourceManager;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Assert = NUnit.Framework.Assert;
 namespace DDPM.UI.Module.Kvm.Tests
 {
     [Apartment(ApartmentState.STA)]
@@ -28,6 +30,7 @@ namespace DDPM.UI.Module.Kvm.Tests
         private KvmViewModel? kvmViewModel;
         private KvmRightView? kvmRightView;
         private Mock<IConsole>? MyConsoleMock;
+        private Mock<ILog>? MyLogMock;
 
         [SetUp]
         public void Setup()
@@ -41,6 +44,8 @@ namespace DDPM.UI.Module.Kvm.Tests
             resourceDictionary.Source = new Uri("pack://application:,,,/DDPM.UI.Common;component/ModuleStyle.xaml");
             System.Windows.Application.Current.Resources.MergedDictionaries.Add(resourceDictionary);
             MyConsoleMock = new Mock<IConsole>();
+            MyLogMock=new Mock<ILog>();
+            MyConsoleMock.Setup(x => x.CreateLog(It.IsAny<string>())).Returns(MyLogMock.Object);
             DdpmCommonHelper.MyConsole = MyConsoleMock.Object;
             kvmViewModel = new KvmViewModel();
             deviceManagerMock = new Mock<IDeviceManagerSA>();
@@ -144,9 +149,6 @@ namespace DDPM.UI.Module.Kvm.Tests
         [Test]
         public void TestOnActivated()
         {
-            var _log=new Mock<ILog>();
-            //KvmViewModel._lo;
-            System.Windows.Application app=new Application();
             try
             {
                 kvmModule.OnActivated();

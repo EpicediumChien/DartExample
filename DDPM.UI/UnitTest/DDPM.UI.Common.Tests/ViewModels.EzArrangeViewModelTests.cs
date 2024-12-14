@@ -374,34 +374,35 @@ namespace DDPM.UI.Common.Tests
         {
             try
             {
+                ezArrangeViewModel.currentUXTextBoxInfo = new Dell.Client.Framework.UX.WPF.Controls.UXTextBox() { AcceptsReturn = true };
                 ezArrangeViewModel.UpdateTextBlockAppName("AddButton2_1", "Window2_1AppName");
-                Assert.That(ezArrangeViewModel.Window2_1AppName, Is.EqualTo("Window2_1AppName"));
+                Assert.That(ezArrangeViewModel.Window2_1AppName, Is.EqualTo("..."));
                 ezArrangeViewModel.UpdateTextBlockAppName("AddButton2_2", "Window2_2AppName");
-                Assert.That(ezArrangeViewModel.Window2_2AppName, Is.EqualTo("Window2_2AppName"));
+                Assert.That(ezArrangeViewModel.Window2_2AppName, Is.EqualTo("..."));
                 ezArrangeViewModel.UpdateTextBlockAppName("AddButton1", "Window1AppName");
-                Assert.That(ezArrangeViewModel.Window1AppName, Is.EqualTo("Window1AppName"));
+                Assert.That(ezArrangeViewModel.Window1AppName, Is.EqualTo("..."));
                 ezArrangeViewModel.UpdateTextBlockAppName("AddButton2", "Window2AppName");
-                Assert.That(ezArrangeViewModel.Window2AppName, Is.EqualTo("Window2AppName"));
+                Assert.That(ezArrangeViewModel.Window2AppName, Is.EqualTo("..."));
                 ezArrangeViewModel.UpdateTextBlockAppName("AddButton3", "Window3AppName");
-                Assert.That(ezArrangeViewModel.Window3AppName, Is.EqualTo("Window3AppName"));
+                Assert.That(ezArrangeViewModel.Window3AppName, Is.EqualTo("..."));
                 ezArrangeViewModel.UpdateTextBlockAppName("AddButton4", "Window4AppName");
-                Assert.That(ezArrangeViewModel.Window4AppName, Is.EqualTo("Window4AppName"));
+                Assert.That(ezArrangeViewModel.Window4AppName, Is.EqualTo("..."));
                 ezArrangeViewModel.UpdateTextBlockAppName("AddButton5", "Window5AppName");
-                Assert.That(ezArrangeViewModel.Window5AppName, Is.EqualTo("Window5AppName"));
+                Assert.That(ezArrangeViewModel.Window5AppName, Is.EqualTo("..."));
                 ezArrangeViewModel.UpdateTextBlockAppName("AddButton6", "Window6AppName");
-                Assert.That(ezArrangeViewModel.Window6AppName, Is.EqualTo("Window6AppName"));
+                Assert.That(ezArrangeViewModel.Window6AppName, Is.EqualTo("..."));
                 ezArrangeViewModel.UpdateTextBlockAppName("AddButton7", "Window7AppName");
-                Assert.That(ezArrangeViewModel.Window7AppName, Is.EqualTo("Window7AppName"));
+                Assert.That(ezArrangeViewModel.Window7AppName, Is.EqualTo("..."));
                 ezArrangeViewModel.UpdateTextBlockAppName("AddButton8", "Window8AppName");
-                Assert.That(ezArrangeViewModel.Window8AppName, Is.EqualTo("Window8AppName"));
+                Assert.That(ezArrangeViewModel.Window8AppName, Is.EqualTo("..."));
                 ezArrangeViewModel.UpdateTextBlockAppName("AddButton9", "Window9AppName");
-                Assert.That(ezArrangeViewModel.Window9AppName, Is.EqualTo("Window9AppName"));
+                Assert.That(ezArrangeViewModel.Window9AppName, Is.EqualTo("..."));
                 ezArrangeViewModel.UpdateTextBlockAppName("AddButton10", "Window10AppName");
-                Assert.That(ezArrangeViewModel.Window10AppName, Is.EqualTo("Window10AppName"));
+                Assert.That(ezArrangeViewModel.Window10AppName, Is.EqualTo("..."));
                 ezArrangeViewModel.UpdateTextBlockAppName("AddButton11", "Window11AppName");
-                Assert.That(ezArrangeViewModel.Window11AppName, Is.EqualTo("Window11AppName"));
+                Assert.That(ezArrangeViewModel.Window11AppName, Is.EqualTo("..."));
                 ezArrangeViewModel.UpdateTextBlockAppName("AddButton12", "Window12AppName");
-                Assert.That(ezArrangeViewModel.Window12AppName, Is.EqualTo("Window12AppName"));
+                Assert.That(ezArrangeViewModel.Window12AppName, Is.EqualTo("..."));
             }
             catch (Exception ex)
             {

@@ -111,7 +111,6 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.Tests
         [Test]
         public void TestResetDevices()
         {
-            //System.Windows.Application app=new System.Windows.Application();
             try
             {
                 ddpmHomePageViewModel.ResetDevices();
