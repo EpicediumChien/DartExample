@@ -65,16 +65,17 @@ namespace DDPM.SA.Plugins.SettingsManager
                     } while (!folderValid && count < 2);
 
                     string programdataPath = Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData);
-                    log.Info("folderPath - programdataPath Line 9169: " + programdataPath);
+                    log.Info($"folderPath - programdataPath Line 68: programdataPath is null : {string.IsNullOrEmpty(programdataPath)}");
                     string appDataPath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
-                    log.Info("folderPath - appDataPath Line 9171: " + appDataPath);
+                    log.Info($"folderPath - appDataPath Line 70: appDataPath is null : {string.IsNullOrEmpty(appDataPath)}");
                     string fail_info = string.Empty;
                     try
                     {
                         if (!string.IsNullOrEmpty(appDataPath))
                         {
+                            log.Info($"folderPath - appDataPath Line 76: appDataPath  : {appDataPath}");
                             string LogFolder = @$"{appDataPath}\Dell\Dell Display and Peripheral Manager\Log\DDPM.Subagent.User";
-                            log.Info("folderPath - LogFolder Line 9175: " + LogFolder);
+                            log.Info("folderPath - LogFolder Line 78: " + LogFolder);
                             if (method.DirectoryContainsFiles(LogFolder))
                             {
                                 // 取得資料夾名稱
@@ -85,7 +86,7 @@ namespace DDPM.SA.Plugins.SettingsManager
                                     fail_info += "[DDPM.Subagent.User]";
                             }
                             LogFolder = @$"{appDataPath}\Dell\Dell Display and Peripheral Manager\Log\DDPM.GUI";
-                            log.Info("folderPath - LogFolder Line 9185: " + LogFolder);
+                            log.Info("folderPath - LogFolder Line 89: " + LogFolder);
                             if (method.DirectoryContainsFiles(LogFolder))
                             {
                                 // 取得資料夾名稱
@@ -96,7 +97,7 @@ namespace DDPM.SA.Plugins.SettingsManager
                                     fail_info += "[DDPM.GUI]";
                             }
                             LogFolder = @$"{appDataPath}\Dell\Dell Display and Peripheral Manager\Log\DDPM-Setup-DdpmSwUpdater";
-                            log.Info("folderPath - LogFolder Line 9195: " + LogFolder);
+                            log.Info("folderPath - LogFolder Line 100: " + LogFolder);
                             if (method.DirectoryContainsFiles(LogFolder))
                             {
                                 // 取得資料夾名稱
@@ -107,7 +108,7 @@ namespace DDPM.SA.Plugins.SettingsManager
                                     fail_info += "[DDPM.SwUpdater]";
                             }
                             LogFolder = @$"{appDataPath}\Dell\Dell Display and Peripheral Manager\Log\FWUpdataLog";
-                            log.Info("folderPath - LogFolder Line 9205: " + LogFolder);
+                            log.Info("folderPath - LogFolder Line 111: " + LogFolder);
                             if (method.DirectoryContainsFiles(LogFolder))
                             {
                                 // 取得資料夾名稱
@@ -124,8 +125,9 @@ namespace DDPM.SA.Plugins.SettingsManager
                         }
                         if (!string.IsNullOrEmpty(programdataPath))
                         {
+                            log.Info($"folderPath - appDataPath Line 128: programdataPath  : {programdataPath}");
                             string LogFolder = @$"{programdataPath}\Dell\DDPM.Subagent";
-                            log.Info("folderPath - LogFolder Line 9218: " + LogFolder);
+                            log.Info("folderPath - LogFolder Line 130: " + LogFolder);
                             if (method.DirectoryContainsFiles(LogFolder))
                             {
                                 // 取得資料夾名稱
@@ -136,7 +138,7 @@ namespace DDPM.SA.Plugins.SettingsManager
                                     fail_info += "[DDPM.Subagent]";
                             }
                             LogFolder = @$"{programdataPath}\Dell\Dell TechHub";
-                            log.Info("folderPath - LogFolder Line 9228: " + LogFolder);
+                            log.Info("folderPath - LogFolder Line 141: " + LogFolder);
                             if (method.DirectoryContainsFiles(LogFolder))
                             {
                                 // 取得資料夾名稱
@@ -147,7 +149,7 @@ namespace DDPM.SA.Plugins.SettingsManager
                                     fail_info += "[Dell TechHub]";
                             }
                             LogFolder = @$"{programdataPath}\Dell\DTP\Logs";
-                            log.Info("folderPath - LogFolder Line 9238: " + LogFolder);
+                            log.Info("folderPath - LogFolder Line 152: " + LogFolder);
                             if (method.DirectoryContainsFiles(LogFolder))
                             {
                                 // 取得資料夾名稱
@@ -162,7 +164,7 @@ namespace DDPM.SA.Plugins.SettingsManager
                             if (o != null && o is string && !string.IsNullOrEmpty(o.ToString()))
                             {
                                 LogFolder = @$"{programdataPath}\{o.ToString()}\DDPMW-NKVM";
-                                log.Info("folderPath - LogFolder Line 9252: " + LogFolder);
+                                log.Info("folderPath - LogFolder Line 167: " + LogFolder);
                                 if (method.DirectoryContainsFiles(LogFolder))
                                 {
                                     // 取得資料夾名稱
@@ -174,7 +176,7 @@ namespace DDPM.SA.Plugins.SettingsManager
                                 }
                             }
                             LogFolder = @$"{programdataPath}\Dell\Dell Peripheral Manager\DPMService\Log";
-                            log.Info("folderPath - LogFolder Line 9263: " + LogFolder);
+                            log.Info("folderPath - LogFolder Line 179: " + LogFolder);
                             if (method.DirectoryContainsFiles(LogFolder))
                             {
                                 // 取得資料夾名稱
@@ -185,7 +187,7 @@ namespace DDPM.SA.Plugins.SettingsManager
                                     fail_info += "[DPMService_Log]";
                             }
                             LogFolder = @$"{programdataPath}\Dell\Dell Peripheral Manager\DPM\Log";
-                            log.Info("folderPath - LogFolder Line 9273: " + LogFolder);
+                            log.Info("folderPath - LogFolder Line 190: " + LogFolder);
                             if (method.DirectoryContainsFiles(LogFolder))
                             {
                                 // 取得資料夾名稱
@@ -196,7 +198,7 @@ namespace DDPM.SA.Plugins.SettingsManager
                                     fail_info += "[DPM_Log]";
                             }
                             LogFolder = @$"{programdataPath}\Dell\Dell Peripheral Manager\DPeMSDK\Log";
-                            log.Info("folderPath - LogFolder Line 9283: " + LogFolder);
+                            log.Info("folderPath - LogFolder Line 201: " + LogFolder);
                             if (method.DirectoryContainsFiles(LogFolder))
                             {
                                 // 取得資料夾名稱
