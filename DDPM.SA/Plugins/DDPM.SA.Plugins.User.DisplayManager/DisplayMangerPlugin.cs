@@ -2237,7 +2237,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                         Trace.WriteLine($" 3 - 1 [%%%%%%%%%%%%%%%] lastProcessedTime = {lastProcessedTime.ToString()} || now = {now.ToString()}");
                         LastProcessedTimestamps[e.vcpcode] = now;
                         _logs.DebugMsg("[DisplayManagerPlugin] Processing VCP code 67/68...");
-                        PeocessALSTriggerEvent(e);
+                        //PeocessALSTriggerEvent(e);
                         _logs.DebugMsg("[DisplayManagerPlugin] Completed processing VCP code 67/68.");
                     }
                 }
@@ -2393,7 +2393,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                                     try
                                     {
                                         //待定義，先KEEP
-                                        SyncPrimaryMonitorBrightnessAndColorTemp(e.monitor, targetMonitor, e.vcpcode, valemp);
+                                        //SyncPrimaryMonitorBrightnessAndColorTemp(e.monitor, targetMonitor, e.vcpcode, valemp);
                                     }
                                     catch (Exception ex)
                                     {
