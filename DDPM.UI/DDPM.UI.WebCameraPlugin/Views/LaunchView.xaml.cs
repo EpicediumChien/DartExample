@@ -1006,6 +1006,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                 {
                     print_debug("_vm.MediaCapture == null");
                     Thread.Sleep(100);//for wait device init
+                    DdpmCommonHelper.WriteUILog("WebCameraMicrophone Action 10 (retry) : " + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
                     _vm.mre.Set();
                     return;
                 }
