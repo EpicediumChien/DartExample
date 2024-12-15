@@ -212,6 +212,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             check_PresenceFunction();
             BuildModuleGroups();
             initResolutionFPS();
+            //usb 2.0限制規則要放在最後做校正
             CheckUSBtype();
             
 
