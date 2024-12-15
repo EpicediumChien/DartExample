@@ -44,6 +44,7 @@ namespace DDPM.UI.Module.Collaboration
             if (DdpmCommonHelper.DeviceManagerSA != null)
             {
                 DdpmCommonHelper.DeviceManagerSA.ITSettingsActionEvent += DeviceManagerSA_ITSettingsActionEvent;
+                DdpmCommonHelper.DeviceManagerSA.DeviceChanged += DeviceManagerSA_DeviceChanged;
 
                 DDPMSettings data = DdpmCommonHelper.DeviceManagerSA.ReloadAppConfigData().Result;
                 if (data != null)
@@ -55,6 +56,14 @@ namespace DDPM.UI.Module.Collaboration
                         tsShare.IsEnabled = false;
                     }
                 }
+            }
+        }
+
+        private void DeviceManagerSA_DeviceChanged(object? sender, SA.Common.DeviceChangedEventArgs e)
+        {
+            if (e.changedProperty == "CollaborationMsgChanged")
+            {
+                CheckCTKMessage();
             }
         }
 
