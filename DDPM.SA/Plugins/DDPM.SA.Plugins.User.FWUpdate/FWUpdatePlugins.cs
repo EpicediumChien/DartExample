@@ -1564,8 +1564,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                     }
                 }
                 string arguments;
-                DDPMFileSecurity ddpmFileSecurity = new DDPMFileSecurity();
-                string AppDataPath = ddpmFileSecurity.GetActiveUserLocalAppDataPath();
+                string AppDataPath = WTSFunction.GetActiveUserLocalAppDataPath(Log);
                 string logPath = "";
                 _ProgressLogPath = string.Empty;
                 _logs.DebugMsg_1(fwUpdateInfo.DeviceName + " create log path start");
