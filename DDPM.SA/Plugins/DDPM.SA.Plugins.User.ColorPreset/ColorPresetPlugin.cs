@@ -2395,8 +2395,8 @@ namespace ColorPreset.Plugins
             if (InfoPkey == null || InfoPkey.Count == 0)
             {
                 //if read info failed, load default key as well
-                InfoPkey = new List<string>();
-                InfoPkey.Add(DDPM.SA.Obfuscation.InfoHash.Info_Hash);
+                InfoPkey = new List<string>(DDPM.SA.Obfuscation.InfoHash.Info_Hash);
+                //InfoPkey.Add(DDPM.SA.Obfuscation.InfoHash.Info_Hash);
             }
             string szInfo = string.Empty;
             ret = DDPM.SA.Common.Settings.DDPMFileSecurity.VerifyDDPMMetadata(Log, filePath, InfoPkey, out szInfo, out strJson);
