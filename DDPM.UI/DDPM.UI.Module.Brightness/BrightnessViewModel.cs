@@ -2561,10 +2561,10 @@ namespace DDPM.UI.Module.Brightness
 
         public void UpdateLuminance()
         {
-            if (Luminance_Value < 0)
+            //if (Luminance_Value < 0)
                 Get_Luminance_Value(); //0703 fix update luminance issue
             //NotifyPropertyChanged("LuminanceValue");
-            if (LuminanceMax_Value < 0)
+            //if (LuminanceMax_Value < 0)
                 Get_LuminanceMax_Value();
             //NotifyPropertyChanged("LuminanceMaxValue");
         }
