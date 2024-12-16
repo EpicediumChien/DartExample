@@ -948,7 +948,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                             if (!Unzip(_installationFileStoragePath, extractPath, out exeFilePath))
                             {
                                 fwUpdateInfos[i].FWUErrorCode = FWUErrorCode.FolderIsNotSafe;
-                                _logs.DebugMsg_1($"{fwUpdateInfos[i].DeviceName} Unzip Faile");
+                                _logs.DebugMsg_1($"{fwUpdateInfos[i].DeviceName} Unzip Fail");
                                 _notificationStr = LangHelper.Instance["Firmware_update_unsuccessful"];
                                 NotificationFWupdate(LangHelper.Instance["Error"], _notificationStr);
                                 continue;
