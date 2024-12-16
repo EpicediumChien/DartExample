@@ -10817,63 +10817,60 @@ namespace DDPM.CLI.Plugins.Display
 
         private async Task<(int code, string result)> DiagnosticReportv2(IDeviceManagerSA devMgr, CommandLineInput commandLineInput)
         {
+            writelog("DiagnosticReportv2 entry");
             string output = string.Empty;
-            //string filepath = @$"C:\Temp\";
-            string filepath_ = @$"C:\Temp\Log";
-            string file = @$"C:\Temp\Log.zip";
+            string now = $"{DateTime.Now:yyyyMMdd_HHmmss}";
+            string filepath = @$"C:\Temp\Log_{now}"; // 1. 不帶路徑, Path + 檔名 =  @$"C:\Temp\Log_{DateTime.Now:yyyyMMdd_HHmmss}"
             if (commandLineInput.Options.Count == 1)
             {
-                //filepath = commandLineInput.Options[0].Option_Value;
-                filepath_ = @$"{commandLineInput.Options[0].Option_Value}\Temp";
-                file = @$"{commandLineInput.Options[0].Option_Value}\Log.zip";
-            }
+                writelog("DiagnosticReportv2 option entry");
+                var inputPath = commandLineInput.Options[0].Option_Value.Replace("/", @"\");
 
-            string folderinfo = string.Empty;
-            string symblinkinfo = string.Empty;
-            var result = "PASS";
-            var message = "N/A";
-
-            if (!Directory.Exists(filepath_))
-            {
-                Directory.CreateDirectory(filepath_);
+                if (inputPath.EndsWith(@"\")) // 2. 帶路徑, 以斜線結尾, Path + 檔名 = 路徑 + $"Log_{DateTime.Now:yyyyMMdd_HHmmss}"
+                {
+                    writelog("DiagnosticReportv2 option is endswith slash");
+                    inputPath += $"Log_{now}";
+                }
+                else if (!inputPath.EndsWith(".zip", StringComparison.OrdinalIgnoreCase) && Directory.Exists(inputPath)) // 3. 帶路徑, 不是以斜線或.zip結尾, 需檢查資料夾是否存在, 若存在, Path = 路徑 + @$"\Log_{DateTime.Now:yyyyMMdd_HHmmss}"
+                {
+                    writelog("DiagnosticReportv2 option is not endswith .zip and directory is exist");
+                    inputPath += @$"\Log_{now}";
+                }
+                else if (inputPath.EndsWith(".zip", StringComparison.OrdinalIgnoreCase)) // 4. 帶路徑, 以.zip結尾, Path + 檔名 = 路徑[..^4]
+                {
+                    writelog("DiagnosticReportv2 option is endswith .zip");
+                    inputPath = inputPath[..^4];
+                }
+                filepath = inputPath; // 此時格式為 路徑 + 檔名 (不包含.zip)
             }
 
             CLI_RESPONSE cli_Response = new CLI_RESPONSE();
             cli_Response.Command = commandLineInput.Command;
             cli_Response.TargetFeature = commandLineInput.TargetFeature;
+            cli_Response.Result = "PASS";
 
-            //[Dean 1123] SaveLogFile function has symlink check function already
-            //if (!DDPMFileSecurity.CheckFold(filepath_, out folderinfo, out symblinkinfo))
-            //{
-            //    result = "FAIL";
-            //    message = "Target folder has symlink.";
-            //    cli_Response.Result = result;
-            //    cli_Response.Message = message;
-            //    output += "\n" + JsonConvert.SerializeObject(cli_Response, Formatting.Indented);
-            //    return ((int)CLI_ExitCode.Diagnostic_Report_fail, output);
-            //}
-
-            if (!devMgr.SaveLogFile(filepath_).Result)
+            writelog("DiagnosticReportv2 devMgr.SaveLogFile entry");
+            if (!devMgr.SaveLogFile(filepath).Result)
             {
+                writelog("DiagnosticReportv2 devMgr.SaveLogFile fail");
                 cli_Response.Result = "FAIL";
                 cli_Response.Message = "Collect files to save report failed.";
+                output += "\n" + cli_Response.ToJson();
+                return ((int)CLI_ExitCode.Diagnostic_Report_fail, output);
+            }
+            writelog("DiagnosticReportv2 devMgr.SaveLogFile success exit");
+
+            if (!File.Exists($"{filepath}.zip"))
+            {
+                writelog("DiagnosticReportv2 log file exist check fail");
+                cli_Response.Result = "FAIL";
+                cli_Response.Message = "Collect files to save report failed, log file is not exist.";
                 output += "\n" + JsonConvert.SerializeObject(cli_Response, Formatting.Indented);
                 return ((int)CLI_ExitCode.Diagnostic_Report_fail, output);
             }
 
-            //if (!File.Exists(file))
-            //{
-            //    result = "FAIL";
-            //    message = "file is not exist.";
-            //    cli_Response.Result = result;
-            //    cli_Response.Message = message;
-            //    output += "\n" + JsonConvert.SerializeObject(cli_Response, Formatting.Indented);
-            //    return ((int)CLI_ExitCode.Diagnostic_Report_fail, output);
-            //}
-
-            cli_Response.Result = result;
-            cli_Response.Message = $"Log path: {file}";            
-            output += "\n" + JsonConvert.SerializeObject(cli_Response, Formatting.Indented);
+            cli_Response.Message = $"Log path: {filepath}.zip";            
+            output += "\n" + cli_Response.ToJson();
             
             return ((int)CLI_ExitCode.success, output);
         }
