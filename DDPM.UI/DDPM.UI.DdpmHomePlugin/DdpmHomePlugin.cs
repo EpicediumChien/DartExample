@@ -344,7 +344,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                 _log.Info($"GetIsDDPMLaunchByQAM = true");
 
                 await _deviceManager!.SetIsDDPMHomepageReadyAsync(true);
-                await _deviceManager!.SetIsDDPMLaunchByQAMAsync(false);
+                //await _deviceManager!.SetIsDDPMLaunchByQAMAsync(false);
             }
             else
                 _log.Info($"GetIsDDPMLaunchByQAM = false");

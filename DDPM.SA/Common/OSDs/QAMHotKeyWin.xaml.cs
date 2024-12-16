@@ -107,10 +107,9 @@ namespace DDPM.OSDs
             try
             {
                 //PIMS 332041 need launch DDPM if DDPM not launched
-                bool bDDPMHasLaunched = false;
                 if (ShowDDPM())
                 {
-                    DdpmCommonHelper.DeviceManagerSA!.SetIsWidgetSettingPageLoadedByQAMAsync(true);
+                    DdpmCommonHelper.DeviceManagerSA!.WriteLog($"Lanuch DDPM successfully!");
                 }
                 else
                     DdpmCommonHelper.DeviceManagerSA!.WriteLog($"OAMOSD launch DDPM fail");
@@ -156,6 +155,9 @@ namespace DDPM.OSDs
                         // 顯示到前景
                         _SetForegroundWindow(mainWindowHandle);
 
+                        //info DDPM navigate to widget setting page directly
+                        DdpmCommonHelper.DeviceManagerSA!.SetIsWidgetSettingPageLoadedByQAMAsync(true);
+
                         result = true;
                     }
                     else
@@ -170,6 +172,9 @@ namespace DDPM.OSDs
                                 FileName = debugPath,
                                 UseShellExecute = true
                             });
+
+                        //Info SA that new DDPM instance launched by OSD
+                        DdpmCommonHelper.DeviceManagerSA!.SetIsDDPMLaunchByQAMAsync(true);
                     }
                 }
                 catch (Exception ex)
