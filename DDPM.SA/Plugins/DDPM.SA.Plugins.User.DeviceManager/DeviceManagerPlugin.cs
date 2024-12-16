@@ -3005,11 +3005,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         //////////////////////////////////Set///////////////////////////////////
 
-        public async Task<bool> SetMicNoiseCancellationAsync(string guid, bool newValue)
+        public async Task<bool> SetMicNoiseCancellationAsync(string Guid, bool newValue)
         {
             try
             {
-                bool result = await _DTPProxyPlugin.SetMicNoiseCancellationAsync(guid, newValue);
+                bool result = await _DTPProxyPlugin.SetMicNoiseCancellationAsync(Guid, newValue);
                 if (result)
                     writelog($"[DeviceManagerPlugin] [Headset] SetMicNoiseCancellationAsync Success");
                 else
@@ -3018,16 +3018,16 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
             catch (Exception ex)
             {
-                writelog($"[DeviceManagerPlugin] [Headset] SetMicNoiseCancellationAsync failed for GUID: {guid}, Error: {ex.Message}");
+                writelog($"[DeviceManagerPlugin] [Headset] SetMicNoiseCancellationAsync failed for GUID: {Guid}, Error: {ex.Message}");
                 return false;
             }
         }
 
-        public async Task<bool> SetSidetoneAsync(string guid, bool newValue)
+        public async Task<bool> SetSidetoneAsync(string Guid, bool newValue)
         {
             try
             {
-                bool result = await _DTPProxyPlugin.SetSidetoneAsync(guid, newValue);
+                bool result = await _DTPProxyPlugin.SetSidetoneAsync(Guid, newValue);
                 if (result)
                     writelog($"[DeviceManagerPlugin] [Headset] SetSidetoneAsync Success");
                 else
@@ -3036,16 +3036,16 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
             catch (Exception ex)
             {
-                writelog($"[DeviceManagerPlugin] [Headset] SetSidetoneAsync failed for GUID: {guid}, Error: {ex.Message}");
+                writelog($"[DeviceManagerPlugin] [Headset] SetSidetoneAsync failed for GUID: {Guid}, Error: {ex.Message}");
                 return false;
             }
         }
 
-        public async Task<bool> SetBusyLightAsync(string guid, bool newValue)
+        public async Task<bool> SetBusyLightAsync(string Guid, bool newValue)
         {
             try
             {
-                bool result = await _DTPProxyPlugin.SetBusyLightAsync(guid, newValue);
+                bool result = await _DTPProxyPlugin.SetBusyLightAsync(Guid, newValue);
                 if (result)
                     writelog($"[DeviceManagerPlugin] [Headset] SetBusyLightAsync Success");
                 else
@@ -3054,16 +3054,16 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
             catch (Exception ex)
             {
-                writelog($"[DeviceManagerPlugin] [Headset] SetBusyLightAsync failed for GUID: {guid}, Error: {ex.Message}");
+                writelog($"[DeviceManagerPlugin] [Headset] SetBusyLightAsync failed for GUID: {Guid}, Error: {ex.Message}");
                 return false;
             }
         }
 
-        public async Task<bool> SetVoiceGuidanceAsync(string guid, bool newValue)
+        public async Task<bool> SetVoiceGuidanceAsync(string Guid, bool newValue)
         {
             try
             {
-                bool result = await _DTPProxyPlugin.SetVoiceGuidanceAsync(guid, newValue);
+                bool result = await _DTPProxyPlugin.SetVoiceGuidanceAsync(Guid, newValue);
                 if (result)
                     writelog($"[DeviceManagerPlugin] [Headset] SetVoiceGuidanceAsync Success");
                 else
@@ -3072,16 +3072,16 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
             catch (Exception ex)
             {
-                writelog($"[DeviceManagerPlugin] [Headset] SetVoiceGuidanceAsync failed for GUID: {guid}, Error: {ex.Message}");
+                writelog($"[DeviceManagerPlugin] [Headset] SetVoiceGuidanceAsync failed for GUID: {Guid}, Error: {ex.Message}");
                 return false;
             }
         }
 
-        public async Task<bool> SetSelectedPresetAsync(string guid, int newValue)
+        public async Task<bool> SetSelectedPresetAsync(string Guid, int newValue)
         {
             try
             {
-                bool result = await _DTPProxyPlugin.SetSelectedPresetAsync(guid, newValue);
+                bool result = await _DTPProxyPlugin.SetSelectedPresetAsync(Guid, newValue);
                 if (result)
                     writelog($"[DeviceManagerPlugin] [Headset] SetSelectedPresetAsync Success");
                 else
@@ -3090,16 +3090,16 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
             catch (Exception ex)
             {
-                writelog($"[DeviceManagerPlugin] [Headset] SetSelectedPresetAsync failed for GUID: {guid}, Error: {ex.Message}");
+                writelog($"[DeviceManagerPlugin] [Headset] SetSelectedPresetAsync failed for GUID: {Guid}, Error: {ex.Message}");
                 return false;
             }
         }
 
-        public async Task<bool> SetSidetoneLevelAsync(string guid, int newValue)
+        public async Task<bool> SetSidetoneLevelAsync(string Guid, int newValue)
         {
             try
             {
-                bool result = await _DTPProxyPlugin.SetSidetoneLevelAsync(guid, newValue);
+                bool result = await _DTPProxyPlugin.SetSidetoneLevelAsync(Guid, newValue);
                 if (result)
                     writelog($"[DeviceManagerPlugin] [Headset] SetSidetoneLevelAsync Success");
                 else
@@ -3108,16 +3108,16 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
             catch (Exception ex)
             {
-                writelog($"[DeviceManagerPlugin] [Headset] SetSidetoneLevelAsync failed for GUID: {guid}, Error: {ex.Message}");
+                writelog($"[DeviceManagerPlugin] [Headset] SetSidetoneLevelAsync failed for GUID: {Guid}, Error: {ex.Message}");
                 return false;
             }
         }
 
-        public async Task<bool> SetBandsGainAsync(string guid, byte[] newValue)
+        public async Task<bool> SetBandsGainAsync(string Guid, byte[] newValue)
         {
             try
             {
-                bool result = await _DTPProxyPlugin.SetBandsGainAsync(guid, newValue);
+                bool result = await _DTPProxyPlugin.SetBandsGainAsync(Guid, newValue);
                 if (result)
                     writelog($"[DeviceManagerPlugin] [Headset] SetBandsGainAsync Success");
                 else
@@ -3126,16 +3126,16 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
             catch (Exception ex)
             {
-                writelog($"[DeviceManagerPlugin] [Headset] SetBandsGainAsync failed for GUID: {guid}, Error: {ex.Message}");
+                writelog($"[DeviceManagerPlugin] [Headset] SetBandsGainAsync failed for GUID: {Guid}, Error: {ex.Message}");
                 return false;
             }
         }
 
-        public async Task<bool> SetBand1GainAsync(string guid, int newValue)
+        public async Task<bool> SetBand1GainAsync(string Guid, int newValue)
         {
             try
             {
-                bool result = await _DTPProxyPlugin.SetBand1GainAsync(guid, newValue);
+                bool result = await _DTPProxyPlugin.SetBand1GainAsync(Guid, newValue);
                 if (result)
                     writelog($"[DeviceManagerPlugin] [Headset] SetBand1GainAsync Success");
                 else
@@ -3144,16 +3144,16 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
             catch (Exception ex)
             {
-                writelog($"[DeviceManagerPlugin] [Headset] SetBand1GainAsync failed for GUID: {guid}, Error: {ex.Message}");
+                writelog($"[DeviceManagerPlugin] [Headset] SetBand1GainAsync failed for GUID: {Guid}, Error: {ex.Message}");
                 return false;
             }
         }
 
-        public async Task<bool> SetBand2GainAsync(string guid, int newValue)
+        public async Task<bool> SetBand2GainAsync(string Guid, int newValue)
         {
             try
             {
-                bool result = await _DTPProxyPlugin.SetBand2GainAsync(guid, newValue);
+                bool result = await _DTPProxyPlugin.SetBand2GainAsync(Guid, newValue);
                 if (result)
                     writelog($"[DeviceManagerPlugin] [Headset] SetBand2GainAsync Success");
                 else
@@ -3162,16 +3162,16 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
             catch (Exception ex)
             {
-                writelog($"[DeviceManagerPlugin] [Headset] SetBand2GainAsync failed for GUID: {guid}, Error: {ex.Message}");
+                writelog($"[DeviceManagerPlugin] [Headset] SetBand2GainAsync failed for GUID: {Guid}, Error: {ex.Message}");
                 return false;
             }
         }
 
-        public async Task<bool> SetBand3GainAsync(string guid, int newValue)
+        public async Task<bool> SetBand3GainAsync(string Guid, int newValue)
         {
             try
             {
-                bool result = await _DTPProxyPlugin.SetBand3GainAsync(guid, newValue);
+                bool result = await _DTPProxyPlugin.SetBand3GainAsync(Guid, newValue);
                 if (result)
                     writelog($"[DeviceManagerPlugin] [Headset] SetBand3GainAsync Success");
                 else
@@ -3180,16 +3180,16 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
             catch (Exception ex)
             {
-                writelog($"[DeviceManagerPlugin] [Headset] SetBand3GainAsync failed for GUID: {guid}, Error: {ex.Message}");
+                writelog($"[DeviceManagerPlugin] [Headset] SetBand3GainAsync failed for GUID: {Guid}, Error: {ex.Message}");
                 return false;
             }
         }
 
-        public async Task<bool> SetBand4GainAsync(string guid, int newValue)
+        public async Task<bool> SetBand4GainAsync(string Guid, int newValue)
         {
             try
             {
-                bool result = await _DTPProxyPlugin.SetBand4GainAsync(guid, newValue);
+                bool result = await _DTPProxyPlugin.SetBand4GainAsync(Guid, newValue);
                 if (result)
                     writelog($"[DeviceManagerPlugin] [Headset] SetBand4GainAsync Success");
                 else
@@ -3198,16 +3198,16 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
             catch (Exception ex)
             {
-                writelog($"[DeviceManagerPlugin] [Headset] SetBand4GainAsync failed for GUID: {guid}, Error: {ex.Message}");
+                writelog($"[DeviceManagerPlugin] [Headset] SetBand4GainAsync failed for GUID: {Guid}, Error: {ex.Message}");
                 return false;
             }
         }
 
-        public async Task<bool> SetBand5GainAsync(string guid, int newValue)
+        public async Task<bool> SetBand5GainAsync(string Guid, int newValue)
         {
             try
             {
-                bool result = await _DTPProxyPlugin.SetBand5GainAsync(guid, newValue);
+                bool result = await _DTPProxyPlugin.SetBand5GainAsync(Guid, newValue);
                 if (result)
                     writelog($"[DeviceManagerPlugin] [Headset] SetBand5GainAsync Success");
                 else
@@ -3216,16 +3216,16 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
             catch (Exception ex)
             {
-                writelog($"[DeviceManagerPlugin] [Headset] SetBand5GainAsync failed for GUID: {guid}, Error: {ex.Message}");
+                writelog($"[DeviceManagerPlugin] [Headset] SetBand5GainAsync failed for GUID: {Guid}, Error: {ex.Message}");
                 return false;
             }
         }
 
-        public async Task<bool> SetAncModeAsync(string guid, int newValue)
+        public async Task<bool> SetAncModeAsync(string Guid, int newValue)
         {
             try
             {
-                bool result = await _DTPProxyPlugin.SetAncModeAsync(guid, newValue);
+                bool result = await _DTPProxyPlugin.SetAncModeAsync(Guid, newValue);
                 if (result)
                     writelog($"[DeviceManagerPlugin] [Headset] SetAncModeAsync Success");
                 else
@@ -3234,16 +3234,16 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
             catch (Exception ex)
             {
-                writelog($"[DeviceManagerPlugin] [Headset] SetAncModeAsync failed for GUID: {guid}, Error: {ex.Message}");
+                writelog($"[DeviceManagerPlugin] [Headset] SetAncModeAsync failed for GUID: {Guid}, Error: {ex.Message}");
                 return false;
             }
         }
 
-        public async Task<bool> SetAncGainAsync(string guid, int newValue)
+        public async Task<bool> SetAncGainAsync(string Guid, int newValue)
         {
             try
             {
-                bool result = await _DTPProxyPlugin.SetAncGainAsync(guid, newValue);
+                bool result = await _DTPProxyPlugin.SetAncGainAsync(Guid, newValue);
                 if (result)
                     writelog($"[DeviceManagerPlugin] [Headset] SetAncGainAsync Success");
                 else
@@ -3252,16 +3252,16 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
             catch (Exception ex)
             {
-                writelog($"[DeviceManagerPlugin] [Headset] SetAncGainAsync failed for GUID: {guid}, Error: {ex.Message}");
+                writelog($"[DeviceManagerPlugin] [Headset] SetAncGainAsync failed for GUID: {Guid}, Error: {ex.Message}");
                 return false;
             }
         }
 
-        public async Task<bool> SetWearDetectionAsync(string guid, bool newValue)
+        public async Task<bool> SetWearDetectionAsync(string Guid, bool newValue)
         {
             try
             {
-                bool result = await _DTPProxyPlugin.SetWearDetectionAsync(guid, newValue);
+                bool result = await _DTPProxyPlugin.SetWearDetectionAsync(Guid, newValue);
                 if(result)
                     writelog($"[DeviceManagerPlugin] [Headset] SetWearDetectionAsync Success");
                 else
@@ -3270,16 +3270,16 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
             catch (Exception ex)
             {
-                writelog($"[DeviceManagerPlugin] [Headset] SetWearDetectionAsync failed for GUID: {guid}, Error: {ex.Message}");
+                writelog($"[DeviceManagerPlugin] [Headset] SetWearDetectionAsync failed for GUID: {Guid}, Error: {ex.Message}");
                 return false;
             }
         }
 
-        public async Task<bool> SetIsWearDetectionMuteMicEnabledAsync(string guid, bool newValue)
+        public async Task<bool> SetIsWearDetectionMuteMicEnabledAsync(string Guid, bool newValue)
         {
             try
             {
-                bool result = await _DTPProxyPlugin.SetIsWearDetectionMuteMicEnabledAsync(guid, newValue);
+                bool result = await _DTPProxyPlugin.SetIsWearDetectionMuteMicEnabledAsync(Guid, newValue);
                 if (result)
                     writelog($"[DeviceManagerPlugin] [Headset] SetIsWearDetectionMuteMicEnabledAsync Success");
                 else
@@ -3288,16 +3288,16 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
             catch (Exception ex)
             {
-                writelog($"[DeviceManagerPlugin] [Headset] SetIsWearDetectionMuteMicEnabledAsync failed for GUID: {guid}, Error: {ex.Message}");
+                writelog($"[DeviceManagerPlugin] [Headset] SetIsWearDetectionMuteMicEnabledAsync failed for GUID: {Guid}, Error: {ex.Message}");
                 return false;
             }
         }
 
-        public async Task<bool> SetIsWearDetectionPauseMusicEnabledAsync(string guid, bool newValue)
+        public async Task<bool> SetIsWearDetectionPauseMusicEnabledAsync(string Guid, bool newValue)
         {
             try
             {
-                bool result = await _DTPProxyPlugin.SetIsWearDetectionPauseMusicEnabledAsync(guid, newValue);
+                bool result = await _DTPProxyPlugin.SetIsWearDetectionPauseMusicEnabledAsync(Guid, newValue);
                 if (result)
                     writelog($"[DeviceManagerPlugin] [Headset] SetIsWearDetectionPauseMusicEnabledAsync Success");
                 else
@@ -3306,16 +3306,16 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
             catch (Exception ex)
             {
-                writelog($"[DeviceManagerPlugin] [Headset] SetIsWearDetectionPauseMusicEnabledAsync failed for GUID: {guid}, Error: {ex.Message}");
+                writelog($"[DeviceManagerPlugin] [Headset] SetIsWearDetectionPauseMusicEnabledAsync failed for GUID: {Guid}, Error: {ex.Message}");
                 return false;
             }
         }
 
-        public async Task<bool> SetWearDetectionQuickPauseAsync(string guid, int newValue)
+        public async Task<bool> SetWearDetectionQuickPauseAsync(string Guid, int newValue)
         {
             try
             {
-                bool result = await _DTPProxyPlugin.SetWearDetectionQuickPauseAsync(guid, newValue);
+                bool result = await _DTPProxyPlugin.SetWearDetectionQuickPauseAsync(Guid, newValue);
                 if (result)
                     writelog($"[DeviceManagerPlugin] [Headset] SetWearDetectionQuickPauseAsync Success");
                 else
@@ -3324,16 +3324,16 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
             catch (Exception ex)
             {
-                writelog($"[DeviceManagerPlugin] [Headset] SetWearDetectionQuickPauseAsync failed for GUID: {guid}, Error: {ex.Message}");
+                writelog($"[DeviceManagerPlugin] [Headset] SetWearDetectionQuickPauseAsync failed for GUID: {Guid}, Error: {ex.Message}");
                 return false;
             }
         }
 
-        public async Task<bool> SetWearDetectionSensitivityAsync(string guid, int newValue)
+        public async Task<bool> SetWearDetectionSensitivityAsync(string Guid, int newValue)
         {
             try
             {
-                bool result = await _DTPProxyPlugin.SetWearDetectionSensitivityAsync(guid, newValue);
+                bool result = await _DTPProxyPlugin.SetWearDetectionSensitivityAsync(Guid, newValue);
                 if (result)
                     writelog($"[DeviceManagerPlugin] [Headset] SetWearDetectionSensitivityAsync Success");
                 else
@@ -3342,16 +3342,16 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
             catch (Exception ex)
             {
-                writelog($"[DeviceManagerPlugin] [Headset] SetWearDetectionSensitivityAsync failed for GUID: {guid}, Error: {ex.Message}");
+                writelog($"[DeviceManagerPlugin] [Headset] SetWearDetectionSensitivityAsync failed for GUID: {Guid}, Error: {ex.Message}");
                 return false;
             }
         }
 
-        public async Task<bool> SetMicNCIncomingAsync(string guid, bool newValue)
+        public async Task<bool> SetMicNCIncomingAsync(string Guid, bool newValue)
         {
             try
             {
-                bool result = await _DTPProxyPlugin.SetMicNCIncomingAsync(guid, newValue);
+                bool result = await _DTPProxyPlugin.SetMicNCIncomingAsync(Guid, newValue);
                 if (result)
                     writelog($"[DeviceManagerPlugin] [Headset] SetMicNCIncomingAsync Success");
                 else
@@ -3360,16 +3360,16 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
             catch (Exception ex)
             {
-                writelog($"[DeviceManagerPlugin] [Headset] SetMicNCIncomingAsync failed for GUID: {guid}, Error: {ex.Message}");
+                writelog($"[DeviceManagerPlugin] [Headset] SetMicNCIncomingAsync failed for GUID: {Guid}, Error: {ex.Message}");
                 return false;
             }
         }
 
-        public async Task<bool> SetUnPairAsync(string guid, bool newValue)
+        public async Task<bool> SetUnPairAsync(string Guid, bool newValue)
         {
             try
             {
-                bool result = await _DTPProxyPlugin.SetUnPairAsync(guid, newValue);
+                bool result = await _DTPProxyPlugin.SetUnPairAsync(Guid, newValue);
                 if (result)
                     writelog($"[DeviceManagerPlugin] [Headset] SetUnPairAsync Success");
                 else
@@ -3378,16 +3378,16 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
             catch (Exception ex)
             {
-                writelog($"[DeviceManagerPlugin] [Headset] SetUnPairAsync failed for GUID: {guid}, Error: {ex.Message}");
+                writelog($"[DeviceManagerPlugin] [Headset] SetUnPairAsync failed for GUID: {Guid}, Error: {ex.Message}");
                 return false;
             }
         }
 
-        public async Task<bool> SetFactoryResetAsyncValueForHeadset(string guid, bool newValue)
+        public async Task<bool> SetFactoryResetAsyncValueForHeadset(string Guid, bool newValue)
         {
             try
             {
-                bool result = await _DTPProxyPlugin.SetFactoryResetAsyncValueForHeadset(guid, newValue);
+                bool result = await _DTPProxyPlugin.SetFactoryResetAsyncValueForHeadset(Guid, newValue);
                 if (result)
                     writelog($"[DeviceManagerPlugin] [Headset] SetFactoryResetAsyncValueForHeadset Success");
                 else
@@ -3396,16 +3396,16 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
             catch (Exception ex)
             {
-                writelog($"[DeviceManagerPlugin] [Headset] SetFactoryResetAsync failed for GUID: {guid}, Error: {ex.Message}");
+                writelog($"[DeviceManagerPlugin] [Headset] SetFactoryResetAsync failed for GUID: {Guid}, Error: {ex.Message}");
                 return false;
             }
         }
 
-        public async Task<bool> SetBoomMicAsync(string guid, bool newValue)
+        public async Task<bool> SetBoomMicAsync(string Guid, bool newValue)
         {
             try
             {
-                bool result = await _DTPProxyPlugin.SetBoomMicAsync(guid, newValue);
+                bool result = await _DTPProxyPlugin.SetBoomMicAsync(Guid, newValue);
                 if (result)
                     writelog($"[DeviceManagerPlugin] [Headset] SetBoomMicAsync Success");
                 else
@@ -3414,7 +3414,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
             catch (Exception ex)
             {
-                writelog($"[DeviceManagerPlugin] [Headset] SetBoomMicAsync failed for GUID: {guid}, Error: {ex.Message}");
+                writelog($"[DeviceManagerPlugin] [Headset] SetBoomMicAsync failed for GUID: {Guid}, Error: {ex.Message}");
                 return false;
             }
         }
@@ -3444,26 +3444,26 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
         }
 
-        public async Task<DeviceInterfaceType> GetHeadsetInterfaceTypeAsync(string guid)
+        public async Task<DeviceInterfaceType> GetHeadsetInterfaceTypeAsync(string Guid)
         {
             try
             {
-                var result = await _DTPProxyPlugin.GetHeadsetInterfaceTypeAsync(guid);
+                var result = await _DTPProxyPlugin.GetHeadsetInterfaceTypeAsync(Guid);
                 writelog($"[DeviceManagerPlugin] [Headset] GetHeadsetInterfaceTypeAsync succeeded, value is {result.ToString()}");
                 return result;
             }
             catch (Exception ex)
             {
-                writelog($"[DeviceManagerPlugin] [Headset] GetHeadsetInterfaceTypeAsync failed for {guid} - Exception: {ex.Message}");
+                writelog($"[DeviceManagerPlugin] [Headset] GetHeadsetInterfaceTypeAsync failed for {Guid} - Exception: {ex.Message}");
                 return default(DeviceInterfaceType);
             }
         }
 
-        public async Task<string> GetHeadsetDeviceNameAsync(string guid)
+        public async Task<string> GetHeadsetDeviceNameAsync(string Guid)
         {
             try
             {
-                var result = await _DTPProxyPlugin.GetHeadsetDeviceNameAsync(guid);
+                var result = await _DTPProxyPlugin.GetHeadsetDeviceNameAsync(Guid);
                 if (result != null)
                 {
                     writelog($"[DeviceManagerPlugin] [Headset] GetDeviceNameAsync Success");
@@ -3477,16 +3477,16 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
             catch (Exception ex)
             {
-                writelog($"[DeviceManagerPlugin] [Headset] GetDeviceNameAsync failed for {guid} - Exception: {ex.Message}");
+                writelog($"[DeviceManagerPlugin] [Headset] GetDeviceNameAsync failed for {Guid} - Exception: {ex.Message}");
                 return null;
             }
         }
 
-        public async Task<string> GetHeadsetDeviceIdAsync(string guid)
+        public async Task<string> GetHeadsetDeviceIdAsync(string Guid)
         {
             try
             {
-                var result = await _DTPProxyPlugin.GetHeadsetDeviceIdAsync(guid);
+                var result = await _DTPProxyPlugin.GetHeadsetDeviceIdAsync(Guid);
                 if (result != null)
                 {
                     writelog($"[DeviceManagerPlugin] [Headset] GetHeadsetDeviceIdAsync Success");
@@ -3500,16 +3500,16 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
             catch (Exception ex)
             {
-                writelog($"[DeviceManagerPlugin] [Headset] GetDeviceIdAsync failed for {guid} - Exception: {ex.Message}");
+                writelog($"[DeviceManagerPlugin] [Headset] GetDeviceIdAsync failed for {Guid} - Exception: {ex.Message}");
                 return null;
             }
         }
 
-        public async Task<string> GetHeadsetPluginIdAsync(string guid)
+        public async Task<string> GetHeadsetPluginIdAsync(string Guid)
         {
             try
             {
-                var result = await _DTPProxyPlugin.GetHeadsetPluginIdAsync(guid);
+                var result = await _DTPProxyPlugin.GetHeadsetPluginIdAsync(Guid);
                 if (result != null)
                 {
                     writelog($"[DeviceManagerPlugin] [Headset] GetHeadsetPluginIdAsync Success");
@@ -3523,16 +3523,16 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
             catch (Exception ex)
             {
-                writelog($"[DeviceManagerPlugin] [Headset] GetPluginIdAsync failed for {guid} - Exception: {ex.Message}");
+                writelog($"[DeviceManagerPlugin] [Headset] GetPluginIdAsync failed for {Guid} - Exception: {ex.Message}");
                 return null;
             }
         }
 
-        public async Task<int> GetHeadsetODMIdAsync(string guid)
+        public async Task<int> GetHeadsetODMIdAsync(string Guid)
         {
             try
             {
-                var result = await _DTPProxyPlugin.GetHeadsetODMIdAsync(guid);
+                var result = await _DTPProxyPlugin.GetHeadsetODMIdAsync(Guid);
                 if (result != -1)
                 {
                     writelog($"[DeviceManagerPlugin] [Headset] GetHeadsetODMIdAsync Success");
@@ -3546,16 +3546,16 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
             catch (Exception ex)
             {
-                writelog($"[DeviceManagerPlugin] [Headset] GetODMIdAsync failed for {guid} - Exception: {ex.Message}");
+                writelog($"[DeviceManagerPlugin] [Headset] GetODMIdAsync failed for {Guid} - Exception: {ex.Message}");
                 return -1;
             }
         }
 
-        public async Task<string> GetHeadsetModelNumberAsync(string guid)
+        public async Task<string> GetHeadsetModelNumberAsync(string Guid)
         {
             try
             {
-                var result = await _DTPProxyPlugin.GetHeadsetModelNumberAsync(guid);
+                var result = await _DTPProxyPlugin.GetHeadsetModelNumberAsync(Guid);
                 if (result != null)
                 {
                     writelog($"[DeviceManagerPlugin] [Headset] GetHeadsetModelNumberAsync Success");
@@ -3569,16 +3569,16 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
             catch (Exception ex)
             {
-                writelog($"[DeviceManagerPlugin] [Headset] GetModelNumberAsync failed for {guid} - Exception: {ex.Message}");
+                writelog($"[DeviceManagerPlugin] [Headset] GetModelNumberAsync failed for {Guid} - Exception: {ex.Message}");
                 return null;
             }
         }
 
-        public async Task<int> GetHeadsetInstanceNumberAsync(string guid)
+        public async Task<int> GetHeadsetInstanceNumberAsync(string Guid)
         {
             try
             {
-                var result = await _DTPProxyPlugin.GetHeadsetInstanceNumberAsync(guid);
+                var result = await _DTPProxyPlugin.GetHeadsetInstanceNumberAsync(Guid);
                 if (result != -1)
                 {
                     writelog($"[DeviceManagerPlugin] [Headset] GetHeadsetInstanceNumberAsync Success");
@@ -3592,16 +3592,16 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
             catch (Exception ex)
             {
-                writelog($"[DeviceManagerPlugin] [Headset] GetInstanceNumberAsync failed for {guid} - Exception: {ex.Message}");
+                writelog($"[DeviceManagerPlugin] [Headset] GetInstanceNumberAsync failed for {Guid} - Exception: {ex.Message}");
                 return -1;
             }
         }
 
-        public async Task<int> GetHeadsetInstanceIdAsync(string guid)
+        public async Task<int> GetHeadsetInstanceIdAsync(string Guid)
         {
             try
             {
-                var result = await _DTPProxyPlugin.GetHeadsetInstanceIdAsync(guid);
+                var result = await _DTPProxyPlugin.GetHeadsetInstanceIdAsync(Guid);
                 if (result != -1)
                 {
                     writelog($"[DeviceManagerPlugin] [Headset] GetHeadsetInstanceIdAsync Success");
@@ -3615,16 +3615,16 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
             catch (Exception ex)
             {
-                writelog($"[DeviceManagerPlugin] [Headset] GetInstanceIdAsync failed for {guid} - Exception: {ex.Message}");
+                writelog($"[DeviceManagerPlugin] [Headset] GetInstanceIdAsync failed for {Guid} - Exception: {ex.Message}");
                 return -1;
             }
         }
 
-        public async Task<string> GetHeadsetFirmwareVersionAsync(string guid)
+        public async Task<string> GetHeadsetFirmwareVersionAsync(string Guid)
         {
             try
             {
-                var result = await _DTPProxyPlugin.GetHeadsetFirmwareVersionAsync(guid);
+                var result = await _DTPProxyPlugin.GetHeadsetFirmwareVersionAsync(Guid);
                 if (result != null)
                 {
                     writelog($"[DeviceManagerPlugin] [Headset] GetHeadsetFirmwareVersionAsync Success");
@@ -3638,16 +3638,16 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
             catch (Exception ex)
             {
-                writelog($"[DeviceManagerPlugin] [Headset] GetFirmwareVersionAsync failed for {guid} - Exception: {ex.Message}");
+                writelog($"[DeviceManagerPlugin] [Headset] GetFirmwareVersionAsync failed for {Guid} - Exception: {ex.Message}");
                 return null;
             }
         }
 
-        public async Task<string> GetHeadsetDeviceTypeAsync(string guid)
+        public async Task<string> GetHeadsetDeviceTypeAsync(string Guid)
         {
             try
             {
-                var result = await _DTPProxyPlugin.GetHeadsetDeviceTypeAsync(guid);
+                var result = await _DTPProxyPlugin.GetHeadsetDeviceTypeAsync(Guid);
                 if (result != null)
                 {
                     writelog($"[DeviceManagerPlugin] [Headset] GetHeadsetDeviceTypeAsync Success");
@@ -3661,16 +3661,16 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
             catch (Exception ex)
             {
-                writelog($"[DeviceManagerPlugin] [Headset] GetDeviceTypeAsync failed for {guid} - Exception: {ex.Message}");
+                writelog($"[DeviceManagerPlugin] [Headset] GetDeviceTypeAsync failed for {Guid} - Exception: {ex.Message}");
                 return null;
             }
         }
 
-        public async Task<string> GetHeadsetParentDeviceTypeAsync(string guid)
+        public async Task<string> GetHeadsetParentDeviceTypeAsync(string Guid)
         {
             try
             {
-                var result = await _DTPProxyPlugin.GetHeadsetParentDeviceTypeAsync(guid);
+                var result = await _DTPProxyPlugin.GetHeadsetParentDeviceTypeAsync(Guid);
                 if (result != null)
                 {
                     writelog($"[DeviceManagerPlugin] [Headset] GetHeadsetParentDeviceTypeAsync Success");
@@ -3684,16 +3684,16 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
             catch (Exception ex)
             {
-                writelog($"[DeviceManagerPlugin] [Headset] GetParentDeviceTypeAsync failed for {guid} - Exception: {ex.Message}");
+                writelog($"[DeviceManagerPlugin] [Headset] GetParentDeviceTypeAsync failed for {Guid} - Exception: {ex.Message}");
                 return null;
             }
         }
 
-        public async Task<bool> GetHeadsetIsBatteryLevelSupportedAsync(string guid)
+        public async Task<bool> GetHeadsetIsBatteryLevelSupportedAsync(string Guid)
         {
             try
             {
-                var result = await _DTPProxyPlugin.GetHeadsetIsBatteryLevelSupportedAsync(guid);
+                var result = await _DTPProxyPlugin.GetHeadsetIsBatteryLevelSupportedAsync(Guid);
                 if (result)
                     writelog($"[DeviceManagerPlugin] [Headset] GetHeadsetIsBatteryLevelSupportedAsync Success");
                 else
@@ -3702,16 +3702,16 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
             catch (Exception ex)
             {
-                writelog($"[DeviceManagerPlugin] [Headset] GetIsBatteryLevelSupportedAsync failed for {guid} - Exception: {ex.Message}");
+                writelog($"[DeviceManagerPlugin] [Headset] GetIsBatteryLevelSupportedAsync failed for {Guid} - Exception: {ex.Message}");
                 return false;
             }
         }
 
-        public async Task<int> GetHeadsetBatteryLevelAsync(string guid)
+        public async Task<int> GetHeadsetBatteryLevelAsync(string Guid)
         {
             try
             {
-                var result = await _DTPProxyPlugin.GetHeadsetBatteryLevelAsync(guid);
+                var result = await _DTPProxyPlugin.GetHeadsetBatteryLevelAsync(Guid);
                 if (result != -1)
                 {
                     writelog($"[DeviceManagerPlugin] [Headset] GetHeadsetBatteryLevelAsync Success");
@@ -3725,16 +3725,16 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
             catch (Exception ex)
             {
-                writelog($"[DeviceManagerPlugin] [Headset] GetBatteryLevelAsync failed for {guid} - Exception: {ex.Message}");
+                writelog($"[DeviceManagerPlugin] [Headset] GetBatteryLevelAsync failed for {Guid} - Exception: {ex.Message}");
                 return -1;
             }
         }
 
-        public async Task<string> GetHeadsetDeviceBatteryStatusAsync(string guid)
+        public async Task<string> GetHeadsetDeviceBatteryStatusAsync(string Guid)
         {
             try
             {
-                var result = await _DTPProxyPlugin.GetHeadsetDeviceBatteryStatusAsync(guid);
+                var result = await _DTPProxyPlugin.GetHeadsetDeviceBatteryStatusAsync(Guid);
                 if (result != null)
                 {
                     writelog($"[DeviceManagerPlugin] [Headset] GetHeadsetDeviceBatteryStatusAsync Success");
@@ -3748,16 +3748,16 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
             catch (Exception ex)
             {
-                writelog($"[DeviceManagerPlugin] [Headset] GetDeviceBatteryStatusAsync failed for {guid} - Exception: {ex.Message}");
+                writelog($"[DeviceManagerPlugin] [Headset] GetDeviceBatteryStatusAsync failed for {Guid} - Exception: {ex.Message}");
                 return null;
             }
         }
 
-        public async Task<string> GetHeadsetPairingStatusAsync(string guid)
+        public async Task<string> GetHeadsetPairingStatusAsync(string Guid)
         {
             try
             {
-                var result = await _DTPProxyPlugin.GetHeadsetPairingStatusAsync(guid);
+                var result = await _DTPProxyPlugin.GetHeadsetPairingStatusAsync(Guid);
                 if (result != null)
                 {
                     writelog($"[DeviceManagerPlugin] [Headset] GetHeadsetPairingStatusAsync Success");
@@ -3771,16 +3771,16 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
             catch (Exception ex)
             {
-                writelog($"[DeviceManagerPlugin] [Headset] GetPairingStatusAsync failed for {guid} - Exception: {ex.Message}");
+                writelog($"[DeviceManagerPlugin] [Headset] GetPairingStatusAsync failed for {Guid} - Exception: {ex.Message}");
                 return null;
             }
         }
 
-        public async Task<string> GetHeadsetPairedHostName1Async(string guid)
+        public async Task<string> GetHeadsetPairedHostName1Async(string Guid)
         {
             try
             {
-                var result = await _DTPProxyPlugin.GetHeadsetPairedHostName1Async(guid);
+                var result = await _DTPProxyPlugin.GetHeadsetPairedHostName1Async(Guid);
                 if (result != null)
                 {
                     writelog($"[DeviceManagerPlugin] [Headset] GetHeadsetPairedHostName1Async Success");
@@ -3794,16 +3794,16 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
             catch (Exception ex)
             {
-                writelog($"[DeviceManagerPlugin] [Headset] GetPairedHostName1Async failed for {guid} - Exception: {ex.Message}");
+                writelog($"[DeviceManagerPlugin] [Headset] GetPairedHostName1Async failed for {Guid} - Exception: {ex.Message}");
                 return null;
             }
         }
 
-        public async Task<string> GetHeadsetPairedHostName2Async(string guid)
+        public async Task<string> GetHeadsetPairedHostName2Async(string Guid)
         {
             try
             {
-                var result = await _DTPProxyPlugin.GetHeadsetPairedHostName2Async(guid);
+                var result = await _DTPProxyPlugin.GetHeadsetPairedHostName2Async(Guid);
                 if (result != null)
                 {
                     writelog($"[DeviceManagerPlugin] [Headset] GetHeadsetPairedHostName2Async Success");
@@ -3817,16 +3817,16 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
             catch (Exception ex)
             {
-                writelog($"[DeviceManagerPlugin] [Headset] GetPairedHostName2Async failed for {guid} - Exception: {ex.Message}");
+                writelog($"[DeviceManagerPlugin] [Headset] GetPairedHostName2Async failed for {Guid} - Exception: {ex.Message}");
                 return null;
             }
         }
 
-        public async Task<string> GetHeadsetPairedHostName3Async(string guid)
+        public async Task<string> GetHeadsetPairedHostName3Async(string Guid)
         {
             try
             {
-                var result = await _DTPProxyPlugin.GetHeadsetPairedHostName3Async(guid);
+                var result = await _DTPProxyPlugin.GetHeadsetPairedHostName3Async(Guid);
                 if (result != null)
                 {
                     writelog($"[DeviceManagerPlugin] [Headset] GetHeadsetPairedHostName3Async Success");
@@ -3840,16 +3840,16 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
             catch (Exception ex)
             {
-                writelog($"[DeviceManagerPlugin] [Headset] GetPairedHostName3Async failed for {guid} - Exception: {ex.Message}");
+                writelog($"[DeviceManagerPlugin] [Headset] GetPairedHostName3Async failed for {Guid} - Exception: {ex.Message}");
                 return null;
             }
         }
 
-        public async Task<int> GetHeadsetMaxPairingSlotsAsync(string guid)
+        public async Task<int> GetHeadsetMaxPairingSlotsAsync(string Guid)
         {
             try
             {
-                var result = await _DTPProxyPlugin.GetHeadsetMaxPairingSlotsAsync(guid);
+                var result = await _DTPProxyPlugin.GetHeadsetMaxPairingSlotsAsync(Guid);
                 if (result != -1)
                 {
                     writelog($"[DeviceManagerPlugin] [Headset] GetHeadsetMaxPairingSlotsAsync Success");
@@ -3863,16 +3863,16 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
             catch (Exception ex)
             {
-                writelog($"[DeviceManagerPlugin] [Headset] GetMaxPairingSlotsAsync failed for {guid} - Exception: {ex.Message}");
+                writelog($"[DeviceManagerPlugin] [Headset] GetMaxPairingSlotsAsync failed for {Guid} - Exception: {ex.Message}");
                 return -1;
             }
         }
 
-        public async Task<int> GetHeadsetPairedDeviceCountAsync(string guid)
+        public async Task<int> GetHeadsetPairedDeviceCountAsync(string Guid)
         {
             try
             {
-                var result = await _DTPProxyPlugin.GetHeadsetPairedDeviceCountAsync(guid);
+                var result = await _DTPProxyPlugin.GetHeadsetPairedDeviceCountAsync(Guid);
                 if (result != -1)
                 {
                     writelog($"[DeviceManagerPlugin] [Headset] GetHeadsetPairedDeviceCountAsync Success");
@@ -3886,16 +3886,16 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
             catch (Exception ex)
             {
-                writelog($"[DeviceManagerPlugin] [Headset] GetPairedDeviceCountAsync failed for {guid} - Exception: {ex.Message}");
+                writelog($"[DeviceManagerPlugin] [Headset] GetPairedDeviceCountAsync failed for {Guid} - Exception: {ex.Message}");
                 return -1;
             }
         }
 
-        public async Task<int> GetHeadsetTotalNumberOfPairedHostNameAsync(string guid)
+        public async Task<int> GetHeadsetTotalNumberOfPairedHostNameAsync(string Guid)
         {
             try
             {
-                var result = await _DTPProxyPlugin.GetHeadsetTotalNumberOfPairedHostNameAsync(guid);
+                var result = await _DTPProxyPlugin.GetHeadsetTotalNumberOfPairedHostNameAsync(Guid);
                 if (result != -1)
                 {
                     writelog($"[DeviceManagerPlugin] [Headset] GetHeadsetTotalNumberOfPairedHostNameAsync Success");
@@ -3909,16 +3909,16 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
             catch (Exception ex)
             {
-                writelog($"[DeviceManagerPlugin] [Headset] GetTotalNumberOfPairedHostNameAsync failed for {guid} - Exception: {ex.Message}");
+                writelog($"[DeviceManagerPlugin] [Headset] GetTotalNumberOfPairedHostNameAsync failed for {Guid} - Exception: {ex.Message}");
                 return -1;
             }
         }
 
-        public async Task<string> GetHeadsetSerialNumberAsync(string guid)
+        public async Task<string> GetHeadsetSerialNumberAsync(string Guid)
         {
             try
             {
-                var result = await _DTPProxyPlugin.GetHeadsetSerialNumberAsync(guid);
+                var result = await _DTPProxyPlugin.GetHeadsetSerialNumberAsync(Guid);
                 if (result != null)
                 {
                     writelog($"[DeviceManagerPlugin] [Headset] GetHeadsetSerialNumberAsync Success");
@@ -3932,16 +3932,16 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
             catch (Exception ex)
             {
-                writelog($"[DeviceManagerPlugin] [Headset] GetSerialNumberAsync failed for {guid} - Exception: {ex.Message}");
+                writelog($"[DeviceManagerPlugin] [Headset] GetSerialNumberAsync failed for {Guid} - Exception: {ex.Message}");
                 return null;
             }
         }
 
-        public async Task<bool> GetIsReadyAsync(string guid)
+        public async Task<bool> GetIsReadyAsync(string Guid)
         {
             try
             {
-                var result = await _DTPProxyPlugin.GetIsReadyAsync(guid);
+                var result = await _DTPProxyPlugin.GetIsReadyAsync(Guid);
                 if (result)
                     writelog($"[DeviceManagerPlugin] [Headset] GetIsReadyAsync Success");
                 else
@@ -3950,16 +3950,16 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
             catch (Exception ex)
             {
-                writelog($"[DeviceManagerPlugin] [Headset] GetIsReadyAsync failed for {guid} - Exception: {ex.Message}");
+                writelog($"[DeviceManagerPlugin] [Headset] GetIsReadyAsync failed for {Guid} - Exception: {ex.Message}");
                 return false;
             }
         }
 
-        public async Task<bool> GetIsDirtyAsync(string guid)
+        public async Task<bool> GetIsDirtyAsync(string Guid)
         {
             try
             {
-                var result = await _DTPProxyPlugin.GetIsDirtyAsync(guid);
+                var result = await _DTPProxyPlugin.GetIsDirtyAsync(Guid);
                 if (result)
                     writelog($"[DeviceManagerPlugin] [Headset] GetIsDirtyAsync Success");
                 else
@@ -3968,16 +3968,16 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
             catch (Exception ex)
             {
-                writelog($"[DeviceManagerPlugin] [Headset] GetIsDirtyAsync failed for {guid} - Exception: {ex.Message}");
+                writelog($"[DeviceManagerPlugin] [Headset] GetIsDirtyAsync failed for {Guid} - Exception: {ex.Message}");
                 return false;
             }
         }
 
-        public async Task<bool> GetIsMicNoiseCancellationSupportedAsync(string guid)
+        public async Task<bool> GetIsMicNoiseCancellationSupportedAsync(string Guid)
         {
             try
             {
-                var result = await _DTPProxyPlugin.GetIsMicNoiseCancellationSupportedAsync(guid);
+                var result = await _DTPProxyPlugin.GetIsMicNoiseCancellationSupportedAsync(Guid);
                 if (result)
                     writelog($"[DeviceManagerPlugin] [Headset] GetIsMicNoiseCancellationSupportedAsync Success");
                 else
@@ -3986,16 +3986,16 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
             catch (Exception ex)
             {
-                writelog($"[DeviceManagerPlugin] [Headset] GetIsMicNoiseCancellationSupportedAsync failed for {guid} - Exception: {ex.Message}");
+                writelog($"[DeviceManagerPlugin] [Headset] GetIsMicNoiseCancellationSupportedAsync failed for {Guid} - Exception: {ex.Message}");
                 return false;
             }
         }
 
-        public async Task<bool> GetIsSidetoneSupportedAsync(string guid)
+        public async Task<bool> GetIsSidetoneSupportedAsync(string Guid)
         {
             try
             {
-                var result = await _DTPProxyPlugin.GetIsSidetoneSupportedAsync(guid);
+                var result = await _DTPProxyPlugin.GetIsSidetoneSupportedAsync(Guid);
                 if (result)
                     writelog($"[DeviceManagerPlugin] [Headset] GetIsSidetoneSupportedAsync Success");
                 else
@@ -4004,16 +4004,16 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
             catch (Exception ex)
             {
-                writelog($"[DeviceManagerPlugin] [Headset] GetIsSidetoneSupportedAsync failed for {guid} - Exception: {ex.Message}");
+                writelog($"[DeviceManagerPlugin] [Headset] GetIsSidetoneSupportedAsync failed for {Guid} - Exception: {ex.Message}");
                 return false;
             }
         }
 
-        public async Task<bool> GetIsBusyLightSupportedAsync(string guid)
+        public async Task<bool> GetIsBusyLightSupportedAsync(string Guid)
         {
             try
             {
-                var result = await _DTPProxyPlugin.GetIsBusyLightSupportedAsync(guid);
+                var result = await _DTPProxyPlugin.GetIsBusyLightSupportedAsync(Guid);
                 if (result)
                     writelog($"[DeviceManagerPlugin] [Headset] GetIsBusyLightSupportedAsync Success");
                 else
@@ -4022,16 +4022,16 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
             catch (Exception ex)
             {
-                writelog($"[DeviceManagerPlugin] [Headset] GetIsBusyLightSupportedAsync failed for {guid} - Exception: {ex.Message}");
+                writelog($"[DeviceManagerPlugin] [Headset] GetIsBusyLightSupportedAsync failed for {Guid} - Exception: {ex.Message}");
                 return false;
             }
         }
 
-        public async Task<bool> GetIsVoiceGuidanceSupportedAsync(string guid)
+        public async Task<bool> GetIsVoiceGuidanceSupportedAsync(string Guid)
         {
             try
             {
-                var result = await _DTPProxyPlugin.GetIsVoiceGuidanceSupportedAsync(guid);
+                var result = await _DTPProxyPlugin.GetIsVoiceGuidanceSupportedAsync(Guid);
                 if (result)
                     writelog($"[DeviceManagerPlugin] [Headset] GetIsVoiceGuidanceSupportedAsync Success");
                 else
@@ -4040,16 +4040,16 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
             catch (Exception ex)
             {
-                writelog($"[DeviceManagerPlugin] [Headset] GetIsVoiceGuidanceSupportedAsync failed for {guid} - Exception: {ex.Message}");
+                writelog($"[DeviceManagerPlugin] [Headset] GetIsVoiceGuidanceSupportedAsync failed for {Guid} - Exception: {ex.Message}");
                 return false;
             }
         }
 
-        public async Task<bool> GetIsPresetsSupportedAsync(string guid)
+        public async Task<bool> GetIsPresetsSupportedAsync(string Guid)
         {
             try
             {
-                var result = await _DTPProxyPlugin.GetIsPresetsSupportedAsync(guid);
+                var result = await _DTPProxyPlugin.GetIsPresetsSupportedAsync(Guid);
                 if (result)
                     writelog($"[DeviceManagerPlugin] [Headset] GetIsPresetsSupportedAsync Success");
                 else
@@ -4058,16 +4058,16 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
             catch (Exception ex)
             {
-                writelog($"[DeviceManagerPlugin] [Headset] GetIsPresetsSupportedAsync failed for {guid} - Exception: {ex.Message}");
+                writelog($"[DeviceManagerPlugin] [Headset] GetIsPresetsSupportedAsync failed for {Guid} - Exception: {ex.Message}");
                 return false;
             }
         }
 
-        public async Task<bool> GetIsEqualizerSupportedAsync(string guid)
+        public async Task<bool> GetIsEqualizerSupportedAsync(string Guid)
         {
             try
             {
-                var result = await _DTPProxyPlugin.GetIsEqualizerSupportedAsync(guid);
+                var result = await _DTPProxyPlugin.GetIsEqualizerSupportedAsync(Guid);
                 if (result)
                     writelog($"[DeviceManagerPlugin] [Headset] GetIsEqualizerSupportedAsync Success");
                 else
@@ -4076,32 +4076,32 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
             catch (Exception ex)
             {
-                writelog($"[DeviceManagerPlugin] [Headset] GetIsEqualizerSupportedAsync failed for {guid} - Exception: {ex.Message}");
+                writelog($"[DeviceManagerPlugin] [Headset] GetIsEqualizerSupportedAsync failed for {Guid} - Exception: {ex.Message}");
                 return false;
             }
         }
 
-        public async Task<HeadsetConnectionType> GetConnectionTypeAsync(string guid)
+        public async Task<HeadsetConnectionType> GetConnectionTypeAsync(string Guid)
         {
             try
             {
                 //It's enum HeadsetConnectionType
-                var result = await _DTPProxyPlugin.GetConnectionTypeAsync(guid);
+                var result = await _DTPProxyPlugin.GetConnectionTypeAsync(Guid);
                 writelog($"[DeviceManagerPlugin] [Headset] GetConnectionTypeAsync succeeded, value is {result.ToString()}");
                 return result;
             }
             catch (Exception ex)
             {
-                writelog($"[DeviceManagerPlugin] [Headset] GetConnectionTypeAsync failed for {guid} - Exception: {ex.Message}");
+                writelog($"[DeviceManagerPlugin] [Headset] GetConnectionTypeAsync failed for {Guid} - Exception: {ex.Message}");
                 return HeadsetConnectionType.HeadsetConnectionTypeUnknown;
             }
         }
 
-        public async Task<bool> GetIsANCSupportedAsync(string guid)
+        public async Task<bool> GetIsANCSupportedAsync(string Guid)
         {
             try
             {
-                var result = await _DTPProxyPlugin.GetIsANCSupportedAsync(guid);
+                var result = await _DTPProxyPlugin.GetIsANCSupportedAsync(Guid);
                 if (result)
                     writelog($"[DeviceManagerPlugin] [Headset] GetIsANCSupportedAsync Success");
                 else
@@ -4110,16 +4110,16 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
             catch (Exception ex)
             {
-                writelog($"[DeviceManagerPlugin] [Headset] GetIsANCSupportedAsync failed for {guid} - Exception: {ex.Message}");
+                writelog($"[DeviceManagerPlugin] [Headset] GetIsANCSupportedAsync failed for {Guid} - Exception: {ex.Message}");
                 return false;
             }
         }
 
-        public async Task<bool> GetIsWearDetectionSupportedAsync(string guid)
+        public async Task<bool> GetIsWearDetectionSupportedAsync(string Guid)
         {
             try
             {
-                var result = await _DTPProxyPlugin.GetIsWearDetectionSupportedAsync(guid);
+                var result = await _DTPProxyPlugin.GetIsWearDetectionSupportedAsync(Guid);
                 if (result)
                     writelog($"[DeviceManagerPlugin] [Headset] GetIsWearDetectionSupportedAsync Success");
                 else
@@ -4128,16 +4128,16 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
             catch (Exception ex)
             {
-                writelog($"[DeviceManagerPlugin] [Headset] GetIsWearDetectionSupportedAsync failed for {guid} - Exception: {ex.Message}");
+                writelog($"[DeviceManagerPlugin] [Headset] GetIsWearDetectionSupportedAsync failed for {Guid} - Exception: {ex.Message}");
                 return false;
             }
         }
 
-        public async Task<bool> GetIsWearDetectionSensitivitySupportedAsync(string guid)
+        public async Task<bool> GetIsWearDetectionSensitivitySupportedAsync(string Guid)
         {
             try
             {
-                var result = await _DTPProxyPlugin.GetIsWearDetectionSensitivitySupportedAsync(guid);
+                var result = await _DTPProxyPlugin.GetIsWearDetectionSensitivitySupportedAsync(Guid);
                 if (result)
                     writelog($"[DeviceManagerPlugin] [Headset] GetIsWearDetectionSensitivitySupportedAsync Success");
                 else
@@ -4146,16 +4146,16 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
             catch (Exception ex)
             {
-                writelog($"[DeviceManagerPlugin] [Headset] GetIsWearDetectionSensitivitySupportedAsync failed for {guid} - Exception: {ex.Message}");
+                writelog($"[DeviceManagerPlugin] [Headset] GetIsWearDetectionSensitivitySupportedAsync failed for {Guid} - Exception: {ex.Message}");
                 return false;
             }
         }
 
-        public async Task<bool> GetIsWearDetectionPauseMusicSupportedAsync(string guid)
+        public async Task<bool> GetIsWearDetectionPauseMusicSupportedAsync(string Guid)
         {
             try
             {
-                var result = await _DTPProxyPlugin.GetIsWearDetectionPauseMusicSupportedAsync(guid);
+                var result = await _DTPProxyPlugin.GetIsWearDetectionPauseMusicSupportedAsync(Guid);
                 if (result)
                     writelog($"[DeviceManagerPlugin] [Headset] GetIsWearDetectionPauseMusicSupportedAsync Success");
                 else
@@ -4164,16 +4164,16 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
             catch (Exception ex)
             {
-                writelog($"[DeviceManagerPlugin] [Headset] GetIsWearDetectionPauseMusicSupportedAsync failed for {guid} - Exception: {ex.Message}");
+                writelog($"[DeviceManagerPlugin] [Headset] GetIsWearDetectionPauseMusicSupportedAsync failed for {Guid} - Exception: {ex.Message}");
                 return false;
             }
         }
 
-        public async Task<bool> GetIsWearDetectionMuteMicSupportedAsync(string guid)
+        public async Task<bool> GetIsWearDetectionMuteMicSupportedAsync(string Guid)
         {
             try
             {
-                var result = await _DTPProxyPlugin.GetIsWearDetectionMuteMicSupportedAsync(guid);
+                var result = await _DTPProxyPlugin.GetIsWearDetectionMuteMicSupportedAsync(Guid);
                 if (result)
                     writelog($"[DeviceManagerPlugin] [Headset] GetIsWearDetectionMuteMicSupportedAsync Success");
                 else
@@ -4182,16 +4182,16 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
             catch (Exception ex)
             {
-                writelog($"[DeviceManagerPlugin] [Headset] GetIsWearDetectionMuteMicSupportedAsync failed for {guid} - Exception: {ex.Message}");
+                writelog($"[DeviceManagerPlugin] [Headset] GetIsWearDetectionMuteMicSupportedAsync failed for {Guid} - Exception: {ex.Message}");
                 return false;
             }
         }
 
-        public async Task<bool> GetIsWearDetectionQuickPauseSupportedAsync(string guid)
+        public async Task<bool> GetIsWearDetectionQuickPauseSupportedAsync(string Guid)
         {
             try
             {
-                var result = await _DTPProxyPlugin.GetIsWearDetectionQuickPauseSupportedAsync(guid);
+                var result = await _DTPProxyPlugin.GetIsWearDetectionQuickPauseSupportedAsync(Guid);
                 if (result)
                     writelog($"[DeviceManagerPlugin] [Headset] GetIsWearDetectionQuickPauseSupportedAsync Success");
                 else
@@ -4200,16 +4200,16 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
             catch (Exception ex)
             {
-                writelog($"[DeviceManagerPlugin] [Headset] GetIsWearDetectionQuickPauseSupportedAsync failed for {guid} - Exception: {ex.Message}");
+                writelog($"[DeviceManagerPlugin] [Headset] GetIsWearDetectionQuickPauseSupportedAsync failed for {Guid} - Exception: {ex.Message}");
                 return false;
             }
         }
 
-        public async Task<bool> GetMicNoiseCancellationAsync(string guid)
+        public async Task<bool> GetMicNoiseCancellationAsync(string Guid)
         {
             try
             {
-                var result = await _DTPProxyPlugin.GetMicNoiseCancellationAsync(guid);
+                var result = await _DTPProxyPlugin.GetMicNoiseCancellationAsync(Guid);
                 if (result)
                     writelog($"[DeviceManagerPlugin] [Headset] GetMicNoiseCancellationAsync Success");
                 else
@@ -4218,16 +4218,16 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
             catch (Exception ex)
             {
-                writelog($"[DeviceManagerPlugin] [Headset] GetMicNoiseCancellationAsync failed for {guid} - Exception: {ex.Message}");
+                writelog($"[DeviceManagerPlugin] [Headset] GetMicNoiseCancellationAsync failed for {Guid} - Exception: {ex.Message}");
                 return false;
             }
         }
 
-        public async Task<bool> GetMicNCIncomingAsync(string guid)
+        public async Task<bool> GetMicNCIncomingAsync(string Guid)
         {
             try
             {
-                var result = await _DTPProxyPlugin.GetMicNCIncomingAsync(guid);
+                var result = await _DTPProxyPlugin.GetMicNCIncomingAsync(Guid);
                 if (result)
                     writelog($"[DeviceManagerPlugin] [Headset] GetMicNCIncomingAsync Success");
                 else
@@ -4236,16 +4236,16 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
             catch (Exception ex)
             {
-                writelog($"[DeviceManagerPlugin] [Headset] GetMicNCIncomingAsync failed for {guid} - Exception: {ex.Message}");
+                writelog($"[DeviceManagerPlugin] [Headset] GetMicNCIncomingAsync failed for {Guid} - Exception: {ex.Message}");
                 return false;
             }
         }
 
-        public async Task<bool> GetSidetoneAsync(string guid)
+        public async Task<bool> GetSidetoneAsync(string Guid)
         {
             try
             {
-                var result = await _DTPProxyPlugin.GetSidetoneAsync(guid);
+                var result = await _DTPProxyPlugin.GetSidetoneAsync(Guid);
                 if (result)
                     writelog($"[DeviceManagerPlugin] [Headset] GetSidetoneAsync Success");
                 else
@@ -4254,16 +4254,16 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
             catch (Exception ex)
             {
-                writelog($"[DeviceManagerPlugin] [Headset] GetSidetoneAsync failed for {guid} - Exception: {ex.Message}");
+                writelog($"[DeviceManagerPlugin] [Headset] GetSidetoneAsync failed for {Guid} - Exception: {ex.Message}");
                 return false;
             }
         }
 
-        public async Task<bool> GetBusyLightAsync(string guid)
+        public async Task<bool> GetBusyLightAsync(string Guid)
         {
             try
             {
-                var result = await _DTPProxyPlugin.GetBusyLightAsync(guid);
+                var result = await _DTPProxyPlugin.GetBusyLightAsync(Guid);
                 if (result)
                     writelog($"[DeviceManagerPlugin] [Headset] GetBusyLightAsync Success");
                 else
@@ -4272,16 +4272,16 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
             catch (Exception ex)
             {
-                writelog($"[DeviceManagerPlugin] [Headset] GetBusyLightAsync failed for {guid} - Exception: {ex.Message}");
+                writelog($"[DeviceManagerPlugin] [Headset] GetBusyLightAsync failed for {Guid} - Exception: {ex.Message}");
                 return false;
             }
         }
 
-        public async Task<bool> GetVoiceGuidanceAsync(string guid)
+        public async Task<bool> GetVoiceGuidanceAsync(string Guid)
         {
             try
             {
-                var result = await _DTPProxyPlugin.GetVoiceGuidanceAsync(guid);
+                var result = await _DTPProxyPlugin.GetVoiceGuidanceAsync(Guid);
                 if (result)
                     writelog($"[DeviceManagerPlugin] [Headset] GetVoiceGuidanceAsync Success");
                 else
@@ -4290,16 +4290,16 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
             catch (Exception ex)
             {
-                writelog($"[DeviceManagerPlugin] [Headset] GetVoiceGuidanceAsync failed for {guid} - Exception: {ex.Message}");
+                writelog($"[DeviceManagerPlugin] [Headset] GetVoiceGuidanceAsync failed for {Guid} - Exception: {ex.Message}");
                 return false;
             }
         }
 
-        public async Task<int> GetSelectedPresetAsync(string guid)
+        public async Task<int> GetSelectedPresetAsync(string Guid)
         {
             try
             {
-                var result = await _DTPProxyPlugin.GetSelectedPresetAsync(guid);
+                var result = await _DTPProxyPlugin.GetSelectedPresetAsync(Guid);
                 if (result != -1)
                     writelog($"[DeviceManagerPlugin] [Headset] GetVoiceGuidanceAsync Success");
                 else
@@ -4308,16 +4308,16 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
             catch (Exception ex)
             {
-                writelog($"[DeviceManagerPlugin] [Headset] GetSelectedPresetAsync failed for {guid} - Exception: {ex.Message}");
+                writelog($"[DeviceManagerPlugin] [Headset] GetSelectedPresetAsync failed for {Guid} - Exception: {ex.Message}");
                 return -1;
             }
         }
 
-        public async Task<int> GetSidetoneLevelAsync(string guid)
+        public async Task<int> GetSidetoneLevelAsync(string Guid)
         {
             try
             {
-                var result = await _DTPProxyPlugin.GetSidetoneLevelAsync(guid);
+                var result = await _DTPProxyPlugin.GetSidetoneLevelAsync(Guid);
                 if (result != -1)
                     writelog($"[DeviceManagerPlugin] [Headset] GetSidetoneLevelAsync Success");
                 else
@@ -4326,16 +4326,16 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
             catch (Exception ex)
             {
-                writelog($"[DeviceManagerPlugin] [Headset] GetSidetoneLevelAsync failed for {guid} - Exception: {ex.Message}");
+                writelog($"[DeviceManagerPlugin] [Headset] GetSidetoneLevelAsync failed for {Guid} - Exception: {ex.Message}");
                 return -1;
             }
         }
 
-        public async Task<bool> GetMuteStatusAsync(string guid)
+        public async Task<bool> GetMuteStatusAsync(string Guid)
         {
             try
             {
-                var result = await _DTPProxyPlugin.GetMuteStatusAsync(guid);
+                var result = await _DTPProxyPlugin.GetMuteStatusAsync(Guid);
                 if (result)
                     writelog($"[DeviceManagerPlugin] [Headset] GetMuteStatusAsync Success");
                 else
@@ -4344,16 +4344,16 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
             catch (Exception ex)
             {
-                writelog($"[DeviceManagerPlugin] [Headset] GetMuteStatusAsync failed for {guid} - Exception: {ex.Message}");
+                writelog($"[DeviceManagerPlugin] [Headset] GetMuteStatusAsync failed for {Guid} - Exception: {ex.Message}");
                 return false;
             }
         }
 
-        public async Task<byte[]> GetBandsGainAsync(string guid)
+        public async Task<byte[]> GetBandsGainAsync(string Guid)
         {
             try
             {
-                var result = await _DTPProxyPlugin.GetBandsGainAsync(guid);
+                var result = await _DTPProxyPlugin.GetBandsGainAsync(Guid);
                 if (result != null)
                     writelog($"[DeviceManagerPlugin] [Headset] GetBandsGainAsync succeeded, result length is {result.Length}");
                 else
@@ -4362,16 +4362,16 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
             catch (Exception ex)
             {
-                writelog($"[DeviceManagerPlugin] [Headset] GetBandsGainAsync failed for {guid} - Exception: {ex.Message}");
+                writelog($"[DeviceManagerPlugin] [Headset] GetBandsGainAsync failed for {Guid} - Exception: {ex.Message}");
                 return null;
             }
         }
 
-        public async Task<int> GetBand1GainAsync(string guid)
+        public async Task<int> GetBand1GainAsync(string Guid)
         {
             try
             {
-                var result = await _DTPProxyPlugin.GetBand1GainAsync(guid);
+                var result = await _DTPProxyPlugin.GetBand1GainAsync(Guid);
                 if (result != -1)
                     writelog($"[DeviceManagerPlugin] [Headset] GetBand1GainAsync Success");
                 else
@@ -4380,16 +4380,16 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
             catch (Exception ex)
             {
-                writelog($"[DeviceManagerPlugin] [Headset] GetBand1GainAsync failed for {guid} - Exception: {ex.Message}");
+                writelog($"[DeviceManagerPlugin] [Headset] GetBand1GainAsync failed for {Guid} - Exception: {ex.Message}");
                 return -1;
             }
         }
 
-        public async Task<int> GetBand2GainAsync(string guid)
+        public async Task<int> GetBand2GainAsync(string Guid)
         {
             try
             {
-                var result = await _DTPProxyPlugin.GetBand2GainAsync(guid);
+                var result = await _DTPProxyPlugin.GetBand2GainAsync(Guid);
                 if (result != -1)
                     writelog($"[DeviceManagerPlugin] [Headset] GetBand2GainAsync Success");
                 else
@@ -4398,16 +4398,16 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
             catch (Exception ex)
             {
-                writelog($"[DeviceManagerPlugin] [Headset] GetBand2GainAsync failed for {guid} - Exception: {ex.Message}");
+                writelog($"[DeviceManagerPlugin] [Headset] GetBand2GainAsync failed for {Guid} - Exception: {ex.Message}");
                 return -1;
             }
         }
 
-        public async Task<int> GetBand3GainAsync(string guid)
+        public async Task<int> GetBand3GainAsync(string Guid)
         {
             try
             {
-                var result = await _DTPProxyPlugin.GetBand3GainAsync(guid);
+                var result = await _DTPProxyPlugin.GetBand3GainAsync(Guid);
                 if (result != -1)
                     writelog($"[DeviceManagerPlugin] [Headset] GetBand3GainAsync Success");
                 else
@@ -4416,16 +4416,16 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
             catch (Exception ex)
             {
-                writelog($"[DeviceManagerPlugin] [Headset] GetBand3GainAsync failed for {guid} - Exception: {ex.Message}");
+                writelog($"[DeviceManagerPlugin] [Headset] GetBand3GainAsync failed for {Guid} - Exception: {ex.Message}");
                 return -1;
             }
         }
 
-        public async Task<int> GetBand4GainAsync(string guid)
+        public async Task<int> GetBand4GainAsync(string Guid)
         {
             try
             {
-                var result = await _DTPProxyPlugin.GetBand4GainAsync(guid);
+                var result = await _DTPProxyPlugin.GetBand4GainAsync(Guid);
                 if (result != -1)
                     writelog($"[DeviceManagerPlugin] [Headset] GetBand4GainAsync Success");
                 else
@@ -4434,16 +4434,16 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
             catch (Exception ex)
             {
-                writelog($"[DeviceManagerPlugin] [Headset] GetBand4GainAsync failed for {guid} - Exception: {ex.Message}");
+                writelog($"[DeviceManagerPlugin] [Headset] GetBand4GainAsync failed for {Guid} - Exception: {ex.Message}");
                 return -1;
             }
         }
 
-        public async Task<int> GetBand5GainAsync(string guid)
+        public async Task<int> GetBand5GainAsync(string Guid)
         {
             try
             {
-                var result = await _DTPProxyPlugin.GetBand5GainAsync(guid);
+                var result = await _DTPProxyPlugin.GetBand5GainAsync(Guid);
                 if (result != -1)
                     writelog($"[DeviceManagerPlugin] [Headset] GetBand5GainAsync Success");
                 else
@@ -4452,16 +4452,16 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
             catch (Exception ex)
             {
-                writelog($"[DeviceManagerPlugin] [Headset] GetBand5GainAsync failed for {guid} - Exception: {ex.Message}");
+                writelog($"[DeviceManagerPlugin] [Headset] GetBand5GainAsync failed for {Guid} - Exception: {ex.Message}");
                 return -1;
             }
         }
 
-        public async Task<int> GetAncModeAsync(string guid)
+        public async Task<int> GetAncModeAsync(string Guid)
         {
             try
             {
-                var result = await _DTPProxyPlugin.GetAncModeAsync(guid);
+                var result = await _DTPProxyPlugin.GetAncModeAsync(Guid);
                 if (result != -1)
                     writelog($"[DeviceManagerPlugin] [Headset] GetAncModeAsync Success");
                 else
@@ -4470,16 +4470,16 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
             catch (Exception ex)
             {
-                writelog($"[DeviceManagerPlugin] [Headset] GetAncModeAsync failed for {guid} - Exception: {ex.Message}");
+                writelog($"[DeviceManagerPlugin] [Headset] GetAncModeAsync failed for {Guid} - Exception: {ex.Message}");
                 return -1;
             }
         }
 
-        public async Task<int> GetAncGainAsync(string guid)
+        public async Task<int> GetAncGainAsync(string Guid)
         {
             try
             {
-                var result = await _DTPProxyPlugin.GetAncGainAsync(guid);
+                var result = await _DTPProxyPlugin.GetAncGainAsync(Guid);
                 if (result != -1)
                     writelog($"[DeviceManagerPlugin] [Headset] GetAncGainAsync Success");
                 else
@@ -4488,16 +4488,16 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
             catch (Exception ex)
             {
-                writelog($"[DeviceManagerPlugin] [Headset] GetAncGainAsync failed for {guid} - Exception: {ex.Message}");
+                writelog($"[DeviceManagerPlugin] [Headset] GetAncGainAsync failed for {Guid} - Exception: {ex.Message}");
                 return -1;
             }
         }
 
-        public async Task<bool> GetWearDetectionAsync(string guid)
+        public async Task<bool> GetWearDetectionAsync(string Guid)
         {
             try
             {
-                var result = await _DTPProxyPlugin.GetWearDetectionAsync(guid);
+                var result = await _DTPProxyPlugin.GetWearDetectionAsync(Guid);
 
                 if (result)
                     writelog($"[DeviceManagerPlugin] [Headset] GetWearDetectionAsync Success");
@@ -4508,16 +4508,16 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
             catch (Exception ex)
             {
-                writelog($"[DeviceManagerPlugin] [Headset] GetWearDetectionAsync failed for {guid} - Exception: {ex.Message}");
+                writelog($"[DeviceManagerPlugin] [Headset] GetWearDetectionAsync failed for {Guid} - Exception: {ex.Message}");
                 return false;
             }
         }
 
-        public async Task<bool> GetIsWearDetectionPauseMusicEnabledAsync(string guid)
+        public async Task<bool> GetIsWearDetectionPauseMusicEnabledAsync(string Guid)
         {
             try
             {
-                var result = await _DTPProxyPlugin.GetIsWearDetectionPauseMusicEnabledAsync(guid);
+                var result = await _DTPProxyPlugin.GetIsWearDetectionPauseMusicEnabledAsync(Guid);
                 if (result)
                     writelog($"[DeviceManagerPlugin] [Headset] GetIsWearDetectionPauseMusicEnabledAsync Success");
                 else
@@ -4526,16 +4526,16 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
             catch (Exception ex)
             {
-                writelog($"[DeviceManagerPlugin] [Headset] GetIsWearDetectionPauseMusicEnabledAsync failed for {guid} - Exception: {ex.Message}");
+                writelog($"[DeviceManagerPlugin] [Headset] GetIsWearDetectionPauseMusicEnabledAsync failed for {Guid} - Exception: {ex.Message}");
                 return false;
             }
         }
 
-        public async Task<bool> GetIsWearDetectionMuteMicEnabledAsync(string guid)
+        public async Task<bool> GetIsWearDetectionMuteMicEnabledAsync(string Guid)
         {
             try
             {
-                var result = await _DTPProxyPlugin.GetIsWearDetectionMuteMicEnabledAsync(guid);
+                var result = await _DTPProxyPlugin.GetIsWearDetectionMuteMicEnabledAsync(Guid);
                 if (result)
                     writelog($"[DeviceManagerPlugin] [Headset] GetIsWearDetectionMuteMicEnabledAsync Success");
                 else
@@ -4544,16 +4544,16 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
             catch (Exception ex)
             {
-                writelog($"[DeviceManagerPlugin] [Headset] GetIsWearDetectionMuteMicEnabledAsync failed for {guid} - Exception: {ex.Message}");
+                writelog($"[DeviceManagerPlugin] [Headset] GetIsWearDetectionMuteMicEnabledAsync failed for {Guid} - Exception: {ex.Message}");
                 return false;
             }
         }
 
-        public async Task<int> GetWearDetectionSensitivityAsync(string guid)
+        public async Task<int> GetWearDetectionSensitivityAsync(string Guid)
         {
             try
             {
-                var result = await _DTPProxyPlugin.GetWearDetectionSensitivityAsync(guid);
+                var result = await _DTPProxyPlugin.GetWearDetectionSensitivityAsync(Guid);
                 if (result != -1)
                     writelog($"[DeviceManagerPlugin] [Headset] GetWearDetectionSensitivityAsync Success");
                 else
@@ -4562,16 +4562,16 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
             catch (Exception ex)
             {
-                writelog($"[DeviceManagerPlugin] [Headset] GetWearDetectionSensitivityAsync failed for {guid} - Exception: {ex.Message}");
+                writelog($"[DeviceManagerPlugin] [Headset] GetWearDetectionSensitivityAsync failed for {Guid} - Exception: {ex.Message}");
                 return -1;
             }
         }
 
-        public async Task<int> GetWearDetectionQuickPauseAsync(string guid)
+        public async Task<int> GetWearDetectionQuickPauseAsync(string Guid)
         {
             try
             {
-                var result = await _DTPProxyPlugin.GetWearDetectionQuickPauseAsync(guid);
+                var result = await _DTPProxyPlugin.GetWearDetectionQuickPauseAsync(Guid);
                 if (result != -1)
                     writelog($"[DeviceManagerPlugin] [Headset] GetWearDetectionQuickPauseAsync Success");
                 else
@@ -4580,16 +4580,16 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
             catch (Exception ex)
             {
-                writelog($"[DeviceManagerPlugin] [Headset] GetWearDetectionQuickPauseAsync failed for {guid} - Exception: {ex.Message}");
+                writelog($"[DeviceManagerPlugin] [Headset] GetWearDetectionQuickPauseAsync failed for {Guid} - Exception: {ex.Message}");
                 return -1;
             }
         }
 
-        public async Task<bool> GetIsMicNCIncomingSupportedAsync(string guid)
+        public async Task<bool> GetIsMicNCIncomingSupportedAsync(string Guid)
         {
             try
             {
-                var result = await _DTPProxyPlugin.GetIsMicNCIncomingSupportedAsync(guid);
+                var result = await _DTPProxyPlugin.GetIsMicNCIncomingSupportedAsync(Guid);
                 if (result)
                     writelog($"[DeviceManagerPlugin] [Headset] GetIsMicNCIncomingSupportedAsync Success");
                 else
@@ -4598,16 +4598,16 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
             catch (Exception ex)
             {
-                writelog($"[DeviceManagerPlugin] [Headset] GetIsMicNCIncomingSupportedAsync failed for {guid} - Exception: {ex.Message}");
+                writelog($"[DeviceManagerPlugin] [Headset] GetIsMicNCIncomingSupportedAsync failed for {Guid} - Exception: {ex.Message}");
                 return false;
             }
         }
 
-        public async Task<bool> GetIsBoomMicSupportedAsync(string guid)
+        public async Task<bool> GetIsBoomMicSupportedAsync(string Guid)
         {
             try
             {
-                var result = await _DTPProxyPlugin.GetIsBoomMicSupportedAsync(guid);
+                var result = await _DTPProxyPlugin.GetIsBoomMicSupportedAsync(Guid);
                 if (result)
                     writelog($"[DeviceManagerPlugin] [Headset] GetIsBoomMicSupportedAsync Success");
                 else
@@ -4616,16 +4616,16 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
             catch (Exception ex)
             {
-                writelog($"[DeviceManagerPlugin] [Headset] GetIsBoomMicSupportedAsync failed for {guid} - Exception: {ex.Message}");
+                writelog($"[DeviceManagerPlugin] [Headset] GetIsBoomMicSupportedAsync failed for {Guid} - Exception: {ex.Message}");
                 return false;
             }
         }
 
-        public async Task<bool> GetBoomMicAsync(string guid)
+        public async Task<bool> GetBoomMicAsync(string Guid)
         {
             try
             {
-                var result = await _DTPProxyPlugin.GetBoomMicAsync(guid);
+                var result = await _DTPProxyPlugin.GetBoomMicAsync(Guid);
                 if (result)
                     writelog($"[DeviceManagerPlugin] [Headset] GetBoomMicAsync Success");
                 else
@@ -4634,7 +4634,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
             catch (Exception ex)
             {
-                writelog($"[DeviceManagerPlugin] [Headset] GetBoomMicAsync failed for {guid} - Exception: {ex.Message}");
+                writelog($"[DeviceManagerPlugin] [Headset] GetBoomMicAsync failed for {Guid} - Exception: {ex.Message}");
                 return false;
             }
         }
@@ -4645,11 +4645,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         //////////////////////////////////Set///////////////////////////////////
 
-        public async Task<bool> SetBassAsync(string guid, int newValue)
+        public async Task<bool> SetBassAsync(string Guid, int newValue)
         {
             try
             {
-                bool result = await _DTPProxyPlugin.SetBassAsync(guid, newValue);
+                bool result = await _DTPProxyPlugin.SetBassAsync(Guid, newValue);
                 if (result)
                     writelog($"[DeviceManagerPlugin] [Speaker] SetBassAsync Success");
                 else
@@ -4658,16 +4658,16 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
             catch (Exception ex)
             {
-                writelog($"[DeviceManagerPlugin] [Speaker] SetBassAsync failed for {guid} - Exception: {ex.Message}");
+                writelog($"[DeviceManagerPlugin] [Speaker] SetBassAsync failed for {Guid} - Exception: {ex.Message}");
                 return false;
             }
         }
 
-        public async Task<bool> SetMidRangeAsync(string guid, int newValue)
+        public async Task<bool> SetMidRangeAsync(string Guid, int newValue)
         {
             try
             {
-                bool result = await _DTPProxyPlugin.SetMidRangeAsync(guid, newValue);
+                bool result = await _DTPProxyPlugin.SetMidRangeAsync(Guid, newValue);
                 if (result)
                     writelog($"[DeviceManagerPlugin] [Speaker] SetMidRangeAsync Success");
                 else
@@ -4676,16 +4676,16 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
             catch (Exception ex)
             {
-                writelog($"[DeviceManagerPlugin] [Speaker] SetMidRangeAsync failed for {guid} - Exception: {ex.Message}");
+                writelog($"[DeviceManagerPlugin] [Speaker] SetMidRangeAsync failed for {Guid} - Exception: {ex.Message}");
                 return false;
             }
         }
 
-        public async Task<bool> SetTrebleAsync(string guid, int newValue)
+        public async Task<bool> SetTrebleAsync(string Guid, int newValue)
         {
             try
             {
-                bool result = await _DTPProxyPlugin.SetTrebleAsync(guid, newValue);
+                bool result = await _DTPProxyPlugin.SetTrebleAsync(Guid, newValue);
                 if (result)
                     writelog($"[DeviceManagerPlugin] [Speaker] SetTrebleAsync Success");
                 else
@@ -4694,16 +4694,16 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
             catch (Exception ex)
             {
-                writelog($"[DeviceManagerPlugin] [Speaker] SetTrebleAsync failed for {guid} - Exception: {ex.Message}");
+                writelog($"[DeviceManagerPlugin] [Speaker] SetTrebleAsync failed for {Guid} - Exception: {ex.Message}");
                 return false;
             }
         }
 
-        public async Task<bool> SetProfileForSpeaker(string guid, string newValue)
+        public async Task<bool> SetProfileForSpeaker(string Guid, string newValue)
         {
             try
             {
-                bool result = await _DTPProxyPlugin.SetProfileForSpeaker(guid, newValue);
+                bool result = await _DTPProxyPlugin.SetProfileForSpeaker(Guid, newValue);
                 if (result)
                     writelog($"[DeviceManagerPlugin] [Speaker] SetProfileForSpeaker Success");
                 else
@@ -4712,16 +4712,16 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
             catch (Exception ex)
             {
-                writelog($"[DeviceManagerPlugin] [Speaker] SetProfileForSpeaker failed for {guid} - Exception: {ex.Message}");
+                writelog($"[DeviceManagerPlugin] [Speaker] SetProfileForSpeaker failed for {Guid} - Exception: {ex.Message}");
                 return false;
             }
         }
 
-        public async Task<bool> SetIsWiredAudioMicMuteSoundEnableAsync(string guid, bool newValue)
+        public async Task<bool> SetIsWiredAudioMicMuteSoundEnableAsync(string Guid, bool newValue)
         {
             try
             {
-                bool result = await _DTPProxyPlugin.SetIsWiredAudioMicMuteSoundEnableAsync(guid, newValue);
+                bool result = await _DTPProxyPlugin.SetIsWiredAudioMicMuteSoundEnableAsync(Guid, newValue);
                 if (result)
                     writelog($"[DeviceManagerPlugin] [Speaker] SetIsWiredAudioMicMuteSoundEnableAsync Success");
                 else
@@ -4730,16 +4730,16 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
             catch (Exception ex)
             {
-                writelog($"[DeviceManagerPlugin] [Speaker] SetIsWiredAudioMicMuteSoundEnableAsync failed for {guid} - Exception: {ex.Message}");
+                writelog($"[DeviceManagerPlugin] [Speaker] SetIsWiredAudioMicMuteSoundEnableAsync failed for {Guid} - Exception: {ex.Message}");
                 return false;
             }
         }
 
-        public async Task<bool> SetWiredAudioVolumeAdjustmentToneAsync(string guid, int newValue)
+        public async Task<bool> SetWiredAudioVolumeAdjustmentToneAsync(string Guid, int newValue)
         {
             try
             {
-                bool result = await _DTPProxyPlugin.SetWiredAudioVolumeAdjustmentToneAsync(guid, newValue);
+                bool result = await _DTPProxyPlugin.SetWiredAudioVolumeAdjustmentToneAsync(Guid, newValue);
                 if (result)
                     writelog($"[DeviceManagerPlugin] [Speaker] SetWiredAudioVolumeAdjustmentToneAsync Success");
                 else
@@ -4748,16 +4748,16 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
             catch (Exception ex)
             {
-                writelog($"[DeviceManagerPlugin] [Speaker] SetWiredAudioVolumeAdjustmentToneAsync failed for {guid} - Exception: {ex.Message}");
+                writelog($"[DeviceManagerPlugin] [Speaker] SetWiredAudioVolumeAdjustmentToneAsync failed for {Guid} - Exception: {ex.Message}");
                 return false;
             }
         }
 
-        public async Task<bool> SetIsWiredAudioIMicNSEnableAsync(string guid, bool newValue)
+        public async Task<bool> SetIsWiredAudioIMicNSEnableAsync(string Guid, bool newValue)
         {
             try
             {
-                bool result = await _DTPProxyPlugin.SetIsWiredAudioIMicNSEnableAsync(guid, newValue);
+                bool result = await _DTPProxyPlugin.SetIsWiredAudioIMicNSEnableAsync(Guid, newValue);
                 if (result)
                     writelog($"[DeviceManagerPlugin] [Speaker] SetIsWiredAudioIMicNSEnableAsync Success");
                 else
@@ -4766,16 +4766,16 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
             catch (Exception ex)
             {
-                writelog($"[DeviceManagerPlugin] [Speaker] SetIsWiredAudioIMicNSEnableAsync failed for {guid} - Exception: {ex.Message}");
+                writelog($"[DeviceManagerPlugin] [Speaker] SetIsWiredAudioIMicNSEnableAsync failed for {Guid} - Exception: {ex.Message}");
                 return false;
             }
         }
 
-        public async Task<bool> SetResetToDefaultAsyncForSoundbar(string guid, bool newValue)
+        public async Task<bool> SetResetToDefaultAsyncForSoundbar(string Guid, bool newValue)
         {
             try
             {
-                bool result = await _DTPProxyPlugin.SetResetToDefaultAsyncForSoundbar(guid, newValue);
+                bool result = await _DTPProxyPlugin.SetResetToDefaultAsyncForSoundbar(Guid, newValue);
                 if (result)
                     writelog($"[DeviceManagerPlugin] [Speaker] SetResetToDefaultAsyncForSoundbar Success");
                 else
@@ -4784,18 +4784,18 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
             catch (Exception ex)
             {
-                writelog($"[DeviceManagerPlugin] [Speaker] SetResetToDefaultAsyncForSoundbar failed for {guid} - Exception: {ex.Message}");
+                writelog($"[DeviceManagerPlugin] [Speaker] SetResetToDefaultAsyncForSoundbar failed for {Guid} - Exception: {ex.Message}");
                 return false;
             }
         }
 
         //////////////////////////////////Get///////////////////////////////////
 
-        public async Task<string> GetProfileAsync(string guid)
+        public async Task<string> GetProfileAsync(string item)
         {
             try
             {
-                var result = await _DTPProxyPlugin.GetProfileAsync(guid);
+                var result = await _DTPProxyPlugin.GetProfileAsync(item);
                 if (result != null)
                     writelog($"[DeviceManagerPlugin] [Headset] GetProfileAsync Success");
                 else
@@ -4804,16 +4804,16 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
             catch (Exception ex)
             {
-                writelog($"[DeviceManagerPlugin] [Speaker] GetProfileAsync failed for {guid} - Exception: {ex.Message}");
+                writelog($"[DeviceManagerPlugin] [Speaker] GetProfileAsync failed for {item} - Exception: {ex.Message}");
                 return null;
             }
         }
 
-        public async Task<int> GetBassAsync(string guid)
+        public async Task<int> GetBassAsync(string Guid)
         {
             try
             {
-                var result = await _DTPProxyPlugin.GetBassAsync(guid);
+                var result = await _DTPProxyPlugin.GetBassAsync(Guid);
                 if (result != -1)
                     writelog($"[DeviceManagerPlugin] [Headset] GetBassAsync Success");
                 else
@@ -4822,16 +4822,16 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
             catch (Exception ex)
             {
-                writelog($"[DeviceManagerPlugin] [Speaker] GetBassAsync failed for {guid} - Exception: {ex.Message}");
+                writelog($"[DeviceManagerPlugin] [Speaker] GetBassAsync failed for {Guid} - Exception: {ex.Message}");
                 return -1;
             }
         }
 
-        public async Task<int> GetMidRangeAsync(string guid)
+        public async Task<int> GetMidRangeAsync(string Guid)
         {
             try
             {
-                var result = await _DTPProxyPlugin.GetMidRangeAsync(guid);
+                var result = await _DTPProxyPlugin.GetMidRangeAsync(Guid);
                 if (result != -1)
                     writelog($"[DeviceManagerPlugin] [Headset] GetMidRangeAsync Success");
                 else
@@ -4840,16 +4840,16 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
             catch (Exception ex)
             {
-                writelog($"[DeviceManagerPlugin] [Speaker] GetMidRangeAsync failed for {guid} - Exception: {ex.Message}");
+                writelog($"[DeviceManagerPlugin] [Speaker] GetMidRangeAsync failed for {Guid} - Exception: {ex.Message}");
                 return -1;
             }
         }
 
-        public async Task<int> GetTrebleAsync(string guid)
+        public async Task<int> GetTrebleAsync(string Guid)
         {
             try
             {
-                var result = await _DTPProxyPlugin.GetTrebleAsync(guid);
+                var result = await _DTPProxyPlugin.GetTrebleAsync(Guid);
                 if (result != -1)
                     writelog($"[DeviceManagerPlugin] [Headset] GetTrebleAsync Success");
                 else
@@ -4858,16 +4858,16 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
             catch (Exception ex)
             {
-                writelog($"[DeviceManagerPlugin] [Speaker] GetTrebleAsync failed for {guid} - Exception: {ex.Message}");
+                writelog($"[DeviceManagerPlugin] [Speaker] GetTrebleAsync failed for {Guid} - Exception: {ex.Message}");
                 return -1;
             }
         }
 
-        public async Task<bool> GetIsWiredAudioMicMuteSoundEnableAsync(string guid)
+        public async Task<bool> GetIsWiredAudioMicMuteSoundEnableAsync(string Guid)
         {
             try
             {
-                var result = await _DTPProxyPlugin.GetIsWiredAudioMicMuteSoundEnableAsync(guid);
+                var result = await _DTPProxyPlugin.GetIsWiredAudioMicMuteSoundEnableAsync(Guid);
                 if (result)
                     writelog($"[DeviceManagerPlugin] [Headset] GetIsWiredAudioMicMuteSoundEnableAsync Success");
                 else
@@ -4876,16 +4876,16 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
             catch (Exception ex)
             {
-                writelog($"[DeviceManagerPlugin] [Speaker] GetIsWiredAudioMicMuteSoundEnableAsync failed for {guid} - Exception: {ex.Message}");
+                writelog($"[DeviceManagerPlugin] [Speaker] GetIsWiredAudioMicMuteSoundEnableAsync failed for {Guid} - Exception: {ex.Message}");
                 return false;
             }
         }
 
-        public async Task<int> GetWiredAudioVolumeAdjustmentToneAsync(string guid)
+        public async Task<int> GetWiredAudioVolumeAdjustmentToneAsync(string Guid)
         {
             try
             {
-                var result = await _DTPProxyPlugin.GetWiredAudioVolumeAdjustmentToneAsync(guid);
+                var result = await _DTPProxyPlugin.GetWiredAudioVolumeAdjustmentToneAsync(Guid);
                 if (result != -1)
                     writelog($"[DeviceManagerPlugin] [Headset] GetWiredAudioVolumeAdjustmentToneAsync Success");
                 else
@@ -4894,16 +4894,16 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
             catch (Exception ex)
             {
-                writelog($"[DeviceManagerPlugin] [Speaker] GetWiredAudioVolumeAdjustmentToneAsync failed for {guid} - Exception: {ex.Message}");
+                writelog($"[DeviceManagerPlugin] [Speaker] GetWiredAudioVolumeAdjustmentToneAsync failed for {Guid} - Exception: {ex.Message}");
                 return -1;
             }
         }
 
-        public async Task<bool> GetIsWiredAudioIMicNSEnableAsync(string guid)
+        public async Task<bool> GetIsWiredAudioIMicNSEnableAsync(string Guid)
         {
             try
             {
-                var result = await _DTPProxyPlugin.GetIsWiredAudioIMicNSEnableAsync(guid);
+                var result = await _DTPProxyPlugin.GetIsWiredAudioIMicNSEnableAsync(Guid);
                 if (result)
                     writelog($"[DeviceManagerPlugin] [Headset] GetIsWiredAudioIMicNSEnableAsync Success");
                 else
@@ -4912,16 +4912,16 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
             catch (Exception ex)
             {
-                writelog($"[DeviceManagerPlugin] [Speaker] GetIsWiredAudioIMicNSEnableAsync failed for {guid} - Exception: {ex.Message}");
+                writelog($"[DeviceManagerPlugin] [Speaker] GetIsWiredAudioIMicNSEnableAsync failed for {Guid} - Exception: {ex.Message}");
                 return false;
             }
         }
 
-        public async Task<bool> GetIsAudioEqualizerSupportedAsync(string guid)
+        public async Task<bool> GetIsAudioEqualizerSupportedAsync(string Guid)
         {
             try
             {
-                var result = await _DTPProxyPlugin.GetIsAudioEqualizerSupportedAsync(guid);
+                var result = await _DTPProxyPlugin.GetIsAudioEqualizerSupportedAsync(Guid);
                 if (result)
                     writelog($"[DeviceManagerPlugin] [Headset] GetIsAudioEqualizerSupportedAsync Success");
                 else
@@ -4930,7 +4930,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
             catch (Exception ex)
             {
-                writelog($"[DeviceManagerPlugin] [Speaker] GetIsAudioEqualizerSupportedAsync failed for {guid} - Exception: {ex.Message}");
+                writelog($"[DeviceManagerPlugin] [Speaker] GetIsAudioEqualizerSupportedAsync failed for {Guid} - Exception: {ex.Message}");
                 return false;
             }
         }
@@ -4957,77 +4957,77 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         #region Dongle
 
-        public async Task<string> GetFirmwareVersionAsyncForDongle(string guid)
+        public async Task<string> GetFirmwareVersionAsyncForDongle(string Guid)
         {
             try
             {
-                var result = await _DTPProxyPlugin.GetFirmwareVersionAsyncForDongle(guid);
+                var result = await _DTPProxyPlugin.GetFirmwareVersionAsyncForDongle(Guid);
                 writelog($"[DeviceManagerPlugin] [Dongle] GetFirmwareVersionAsyncForDongle succeeded, value is {result.ToString()}");
                 return result;
             }
             catch (Exception ex)
             {
-                writelog($"[DeviceManagerPlugin] [Dongle] GetFirmwareVersionAsyncForDongle failed for {guid} - Exception: {ex.Message}");
+                writelog($"[DeviceManagerPlugin] [Dongle] GetFirmwareVersionAsyncForDongle failed for {Guid} - Exception: {ex.Message}");
                 return null;
             }
         }
 
-        public async Task<string> GetConnectedDeviceInfoAsyncForDongle(string guid)
+        public async Task<string> GetConnectedDeviceInfoAsyncForDongle(string Guid)
         {
             try
             {
-                var result = await _DTPProxyPlugin.GetConnectedDeviceInfoAsyncForDongle(guid);
+                var result = await _DTPProxyPlugin.GetConnectedDeviceInfoAsyncForDongle(Guid);
                 writelog($"[DeviceManagerPlugin] [Dongle] GetConnectedDeviceInfoAsyncForDongle succeeded, value is {result.ToString()}");
                 return result;
             }
             catch (Exception ex)
             {
-                writelog($"[DeviceManagerPlugin] [Dongle] GetConnectedDeviceInfoAsyncForDongle failed for {guid} - Exception: {ex.Message}");
+                writelog($"[DeviceManagerPlugin] [Dongle] GetConnectedDeviceInfoAsyncForDongle failed for {Guid} - Exception: {ex.Message}");
                 return null;
             }
         }
 
-        public async Task<string> GetDeviceIdAsyncForDongle(string guid)
+        public async Task<string> GetDeviceIdAsyncForDongle(string Guid)
         {
             try
             {
-                var result = await _DTPProxyPlugin.GetDeviceIdAsyncForDongle(guid);
+                var result = await _DTPProxyPlugin.GetDeviceIdAsyncForDongle(Guid);
                 writelog($"[DeviceManagerPlugin] [Dongle] GetDeviceIdAsyncForDongle succeeded, value is {result.ToString()}");
                 return result;
             }
             catch (Exception ex)
             {
-                writelog($"[DeviceManagerPlugin] [Dongle] GetDeviceIdAsyncForDongle failed for {guid} - Exception: {ex.Message}");
+                writelog($"[DeviceManagerPlugin] [Dongle] GetDeviceIdAsyncForDongle failed for {Guid} - Exception: {ex.Message}");
                 return null;
             }
         }
 
-        public async Task<string> GetPluginIdAsyncForDongle(string guid)
+        public async Task<string> GetPluginIdAsyncForDongle(string Guid)
         {
             try
             {
-                var result = await _DTPProxyPlugin.GetPluginIdAsyncForDongle(guid);
+                var result = await _DTPProxyPlugin.GetPluginIdAsyncForDongle(Guid);
                 writelog($"[DeviceManagerPlugin] [Dongle] GetPluginIdAsyncForDongle succeeded, value is {result.ToString()}");
                 return result;
             }
             catch (Exception ex)
             {
-                writelog($"[DeviceManagerPlugin] [Dongle] GetPluginIdAsyncForDongle failed for {guid} - Exception: {ex.Message}");
+                writelog($"[DeviceManagerPlugin] [Dongle] GetPluginIdAsyncForDongle failed for {Guid} - Exception: {ex.Message}");
                 return null;
             }
         }
 
-        public async Task<JArray> GetDeviceItemsExAsyncForDongle(string guid)
+        public async Task<JArray> GetDeviceItemsExAsyncForDongle(string Guid)
         {
             try
             {
-                var result = await _DTPProxyPlugin.GetDeviceItemsExAsyncForDongle(guid);
+                var result = await _DTPProxyPlugin.GetDeviceItemsExAsyncForDongle(Guid);
                 writelog($"[DeviceManagerPlugin] [Dongle] GetDeviceItemsExAsyncForDongle succeeded, value is {result.ToString()}");
                 return result;
             }
             catch (Exception ex)
             {
-                writelog($"[DeviceManagerPlugin] [Dongle] GetDeviceItemsExAsyncForDongle failed for {guid} - Exception: {ex.Message}");
+                writelog($"[DeviceManagerPlugin] [Dongle] GetDeviceItemsExAsyncForDongle failed for {Guid} - Exception: {ex.Message}");
                 return null;
             }
         }
@@ -9407,337 +9407,337 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             return await Task.Run(() => _DTPProxyPlugin.GetAutoFramingSensitivity(Guid));
         }
 
-        public Task SetIsMicEnumerationOn(string guid, bool newValue)
+        public Task SetIsMicEnumerationOn(string Guid, bool newValue)
         {
             writelog("DeviceMangerPlugin received SetIsMicEnumerationOn requested ...");
-            writelog($"Target Guid is {guid}");
+            writelog($"Target Guid is {Guid}");
             writelog($"Target Value is {newValue}");
-            _DTPProxyPlugin.SetIsMicEnumerationOn(guid, newValue);
+            _DTPProxyPlugin.SetIsMicEnumerationOn(Guid, newValue);
             return Task.FromResult(true);
         }
 
-        public Task SetProfile(string guid, string newValue)
+        public Task SetProfile(string Guid, string newValue)
         {
             writelog("DeviceMangerPlugin received SetProfile requested ...");
-            writelog($"Target Guid is {guid}");
+            writelog($"Target Guid is {Guid}");
             writelog($"Target Value is {newValue}");
-            _DTPProxyPlugin.SetProfile(guid, newValue);
+            _DTPProxyPlugin.SetProfile(Guid, newValue);
             return Task.FromResult(true);
         }
 
-        public Task SetProfileName(string guid, string newValue)
+        public Task SetProfileName(string Guid, string newValue)
         {
             writelog("DeviceMangerPlugin received SetProfileName requested ...");
-            writelog($"Target Guid is {guid}");
+            writelog($"Target Guid is {Guid}");
             writelog($"Target Value is {newValue}");
-            _DTPProxyPlugin.SetProfileName(guid, newValue);
+            _DTPProxyPlugin.SetProfileName(Guid, newValue);
             return Task.FromResult(true);
         }
 
-        public Task CreateCustomProfile(string guid, string newValue)
+        public Task CreateCustomProfile(string Guid, string newValue)
         {
             writelog("DeviceMangerPlugin received CreateCustomProfile requested ...");
-            writelog($"Target Guid is {guid}");
+            writelog($"Target Guid is {Guid}");
             writelog($"Target Value is {newValue}");
-            _DTPProxyPlugin.CreateCustomProfile(guid, newValue);
+            _DTPProxyPlugin.CreateCustomProfile(Guid, newValue);
             return Task.FromResult(true);
         }
 
-        public Task DeleteProfile(string guid, string newValue)
+        public Task DeleteProfile(string Guid, string newValue)
         {
             writelog("DeviceMangerPlugin received DeleteProfile requested ...");
-            writelog($"Target Guid is {guid}");
+            writelog($"Target Guid is {Guid}");
             writelog($"Target Value is {newValue}");
-            _DTPProxyPlugin.DeleteProfile(guid, newValue);
+            _DTPProxyPlugin.DeleteProfile(Guid, newValue);
             return Task.FromResult(true);
         }
 
-        public Task<bool> SetZoom(string guid, int newValue)
+        public Task<bool> SetZoom(string Guid, int newValue)
         {
             writelog("DeviceMangerPlugin received SetZoom requested ...");
-            writelog($"Target Guid is {guid}");
+            writelog($"Target Guid is {Guid}");
             writelog($"Target Value is {newValue}");
-            //_DTPProxyPlugin.SetZoom(guid, newValue);
+            //_DTPProxyPlugin.SetZoom(Guid, newValue);
             //return Task.FromResult(true);
-            return _DTPProxyPlugin.SetZoom(guid, newValue);
+            return _DTPProxyPlugin.SetZoom(Guid, newValue);
         }
 
-        public Task<bool> SetAutoFramingSensitivity(string guid, int newValue)
+        public Task<bool> SetAutoFramingSensitivity(string Guid, int newValue)
         {
             writelog("DeviceMangerPlugin received SetAutoFramingSensitivity requested ...");
-            writelog($"Target Guid is {guid}");
+            writelog($"Target Guid is {Guid}");
             writelog($"Target Value is {newValue}");
-            return _DTPProxyPlugin.SetAutoFramingSensitivity(guid, newValue);
+            return _DTPProxyPlugin.SetAutoFramingSensitivity(Guid, newValue);
         }
 
-        public Task<bool> SetAutoFramingFrameSize(string guid, int newValue)
+        public Task<bool> SetAutoFramingFrameSize(string Guid, int newValue)
         {
             writelog("DeviceMangerPlugin received SetAutoFramingFrameSize requested ...");
-            writelog($"Target Guid is {guid}");
+            writelog($"Target Guid is {Guid}");
             writelog($"Target Value is {newValue}");
-            return _DTPProxyPlugin.SetAutoFramingFrameSize(guid, newValue);
+            return _DTPProxyPlugin.SetAutoFramingFrameSize(Guid, newValue);
         }
 
-        public Task<bool> SetIsAutoFramingOn(string guid, bool newValue)
+        public Task<bool> SetIsAutoFramingOn(string Guid, bool newValue)
         {
             writelog("DeviceMangerPlugin received SetIsAutoFramingOn requested ...");
-            writelog($"Target Guid is {guid}");
+            writelog($"Target Guid is {Guid}");
             writelog($"Target Value is {newValue}");
-            return _DTPProxyPlugin.SetIsAutoFramingOn(guid, newValue);
+            return _DTPProxyPlugin.SetIsAutoFramingOn(Guid, newValue);
         }
 
-        public Task<bool> SetIsAutoFramingTransitionOn(string guid, bool newValue)
+        public Task<bool> SetIsAutoFramingTransitionOn(string Guid, bool newValue)
         {
             writelog("DeviceMangerPlugin received SetIsAutoFramingTransitionOn requested ...");
-            writelog($"Target Guid is {guid}");
+            writelog($"Target Guid is {Guid}");
             writelog($"Target Value is {newValue}");
-            return _DTPProxyPlugin.SetIsAutoFramingTransitionOn(guid, newValue);
+            return _DTPProxyPlugin.SetIsAutoFramingTransitionOn(Guid, newValue);
         }
 
-        public Task<bool> SetFieldOfView(string guid, int newValue)
+        public Task<bool> SetFieldOfView(string Guid, int newValue)
         {
             writelog("DeviceMangerPlugin received SetFieldOfView requested ...");
-            writelog($"Target Guid is {guid}");
+            writelog($"Target Guid is {Guid}");
             writelog($"Target Value is {newValue}");
-            return _DTPProxyPlugin.SetFieldOfView(guid, newValue);
+            return _DTPProxyPlugin.SetFieldOfView(Guid, newValue);
         }
 
-        public Task SetIsFocusOn(string guid, bool newValue)
+        public Task SetIsFocusOn(string Guid, bool newValue)
         {
             writelog("DeviceMangerPlugin received SetIsFocusOn requested ...");
-            writelog($"Target Guid is {guid}");
+            writelog($"Target Guid is {Guid}");
             writelog($"Target Value is {newValue}");
-            _DTPProxyPlugin.SetIsFocusOn(guid, newValue);
+            _DTPProxyPlugin.SetIsFocusOn(Guid, newValue);
             return Task.FromResult(true);
         }
 
-        public Task SetFocus(string guid, int newValue)
+        public Task SetFocus(string Guid, int newValue)
         {
             writelog("DeviceMangerPlugin received SetFocus requested ...");
-            writelog($"Target Guid is {guid}");
+            writelog($"Target Guid is {Guid}");
             writelog($"Target Value is {newValue}");
-            _DTPProxyPlugin.SetFocus(guid, newValue);
+            _DTPProxyPlugin.SetFocus(Guid, newValue);
             return Task.FromResult(true);
         }
 
-        public Task SetPriority(string guid, int newValue)
+        public Task SetPriority(string Guid, int newValue)
         {
             writelog("DeviceMangerPlugin received SetPriority requested ...");
-            writelog($"Target Guid is {guid}");
+            writelog($"Target Guid is {Guid}");
             writelog($"Target Value is {newValue}");
-            _DTPProxyPlugin.SetPriority(guid, newValue);
+            _DTPProxyPlugin.SetPriority(Guid, newValue);
             return Task.FromResult(true);
         }
 
-        public Task<bool> SetIsHDROn(string guid, bool newValue)
+        public Task<bool> SetIsHDROn(string Guid, bool newValue)
         {
             writelog("DeviceMangerPlugin received SetIsHDROn requested ...");
-            writelog($"Target Guid is {guid}");
+            writelog($"Target Guid is {Guid}");
             writelog($"Target Value is {newValue}");
-            return _DTPProxyPlugin.SetIsHDROn(guid, newValue);
+            return _DTPProxyPlugin.SetIsHDROn(Guid, newValue);
         }
 
-        public Task SetIsAutoWhiteBalanceOn(string guid, bool newValue)
+        public Task SetIsAutoWhiteBalanceOn(string Guid, bool newValue)
         {
             writelog("DeviceMangerPlugin received SetIsAutoWhiteBalanceOn requested ...");
-            writelog($"Target Guid is {guid}");
+            writelog($"Target Guid is {Guid}");
             writelog($"Target Value is {newValue}");
-            _DTPProxyPlugin.SetIsAutoWhiteBalanceOn(guid, newValue);
+            _DTPProxyPlugin.SetIsAutoWhiteBalanceOn(Guid, newValue);
             return Task.FromResult(true);
         }
 
-        public Task SetAutoWhiteBalance(string guid, int newValue)
+        public Task SetAutoWhiteBalance(string Guid, int newValue)
         {
             writelog("DeviceMangerPlugin received SetAutoWhiteBalance requested ...");
-            writelog($"Target Guid is {guid}");
+            writelog($"Target Guid is {Guid}");
             writelog($"Target Value is {newValue}");
-            _DTPProxyPlugin.SetAutoWhiteBalance(guid, newValue);
+            _DTPProxyPlugin.SetAutoWhiteBalance(Guid, newValue);
             return Task.FromResult(true);
         }
 
-        public Task SetWALTime(string guid, int newValue)
+        public Task SetWALTime(string Guid, int newValue)
         {
             writelog("DeviceMangerPlugin received SetWALTime requested ...");
-            writelog($"Target Guid is {guid}");
+            writelog($"Target Guid is {Guid}");
             writelog($"Target Value is {newValue}");
-            _DTPProxyPlugin.SetWALTime(guid, newValue);
+            _DTPProxyPlugin.SetWALTime(Guid, newValue);
             return Task.FromResult(true);
         }
 
-        public Task SetSnooze(string guid, int newValue)
+        public Task SetSnooze(string Guid, int newValue)
         {
             writelog("DeviceMangerPlugin received SetSnooze requested ...");
-            writelog($"Target Guid is {guid}");
+            writelog($"Target Guid is {Guid}");
             writelog($"Target Value is {newValue}");
-            _DTPProxyPlugin.SetSnooze(guid, newValue);
+            _DTPProxyPlugin.SetSnooze(Guid, newValue);
             return Task.FromResult(true);
         }
 
-        public Task SetSnoozeLength(string guid, int newValue)
+        public Task SetSnoozeLength(string Guid, int newValue)
         {
             writelog("DeviceMangerPlugin received SetSnoozeLength requested ...");
-            writelog($"Target Guid is {guid}");
+            writelog($"Target Guid is {Guid}");
             writelog($"Target Value is {newValue}");
-            _DTPProxyPlugin.SetSnoozeLength(guid, newValue);
+            _DTPProxyPlugin.SetSnoozeLength(Guid, newValue);
             return Task.FromResult(true);
         }
 
-        public Task SetIsProximitySensorEnable(string guid, bool newValue)
+        public Task SetIsProximitySensorEnable(string Guid, bool newValue)
         {
             writelog("DeviceMangerPlugin received SetIsProximitySensorEnable requested ...");
-            writelog($"Target Guid is {guid}");
+            writelog($"Target Guid is {Guid}");
             writelog($"Target Value is {newValue}");
-            _DTPProxyPlugin.SetIsProximitySensorEnable(guid, newValue);
+            _DTPProxyPlugin.SetIsProximitySensorEnable(Guid, newValue);
             return Task.FromResult(true);
         }
 
-        public Task SetIsWakeonApproachEnable(string guid, bool newValue)
+        public Task SetIsWakeonApproachEnable(string Guid, bool newValue)
         {
             writelog("DeviceMangerPlugin received SetIsWakeonApproachEnable requested ...");
-            writelog($"Target Guid is {guid}");
+            writelog($"Target Guid is {Guid}");
             writelog($"Target Value is {newValue}");
-            _DTPProxyPlugin.SetIsWakeonApproachEnable(guid, newValue);
+            _DTPProxyPlugin.SetIsWakeonApproachEnable(Guid, newValue);
             return Task.FromResult(true);
         }
 
-        public Task SetIsWalkAwayLockEnable(string guid, bool newValue)
+        public Task SetIsWalkAwayLockEnable(string Guid, bool newValue)
         {
             writelog("DeviceMangerPlugin received SetIsWalkAwayLockEnable requested ...");
-            writelog($"Target Guid is {guid}");
+            writelog($"Target Guid is {Guid}");
             writelog($"Target Value is {newValue}");
-            _DTPProxyPlugin.SetIsWalkAwayLockEnable(guid, newValue);
+            _DTPProxyPlugin.SetIsWalkAwayLockEnable(Guid, newValue);
             return Task.FromResult(true);
         }
 
-        public Task SetIsPrioritizeExternalWebcam(string guid, bool newValue)
+        public Task SetIsPrioritizeExternalWebcam(string Guid, bool newValue)
         {
             writelog("DeviceMangerPlugin received SetIsPrioritizeExternalWebcam requested ...");
-            writelog($"Target Guid is {guid}");
+            writelog($"Target Guid is {Guid}");
             writelog($"Target Value is {newValue}");
-            _DTPProxyPlugin.SetIsPrioritizeExternalWebcam(guid, newValue);
+            _DTPProxyPlugin.SetIsPrioritizeExternalWebcam(Guid, newValue);
             return Task.FromResult(true);
         }
 
-        public Task ResetToDefault_webcam(string guid, bool newValue)
+        public Task ResetToDefault_webcam(string Guid, bool newValue)
         {
             writelog("DeviceMangerPlugin received ResetToDefault_webcam requested ...");
-            writelog($"Target Guid is {guid}");
+            writelog($"Target Guid is {Guid}");
             writelog($"Target Value is {newValue}");
-            _DTPProxyPlugin.ResetToDefault_webcam(guid, newValue);
+            _DTPProxyPlugin.ResetToDefault_webcam(Guid, newValue);
             return Task.FromResult(true);
         }
 
-        public Task SetBrightness(string guid, int newValue)
+        public Task SetBrightness(string Guid, int newValue)
         {
             writelog("DeviceMangerPlugin received SetBrightness requested ...");
-            writelog($"Target Guid is {guid}");
+            writelog($"Target Guid is {Guid}");
             writelog($"Target Value is {newValue}");
-            _DTPProxyPlugin.SetBrightness(guid, newValue);
+            _DTPProxyPlugin.SetBrightness(Guid, newValue);
             return Task.FromResult(true);
         }
 
-        public Task SetSharpness(string guid, int newValue)
+        public Task SetSharpness(string Guid, int newValue)
         {
             writelog("DeviceMangerPlugin received SetSharpness requested ...");
-            writelog($"Target Guid is {guid}");
+            writelog($"Target Guid is {Guid}");
             writelog($"Target Value is {newValue}");
-            _DTPProxyPlugin.SetSharpness(guid, newValue);
+            _DTPProxyPlugin.SetSharpness(Guid, newValue);
             return Task.FromResult(true);
         }
 
-        public Task SetContrast(string guid, int newValue)
+        public Task SetContrast(string Guid, int newValue)
         {
             writelog("DeviceMangerPlugin received SetContrast requested ...");
-            writelog($"Target Guid is {guid}");
+            writelog($"Target Guid is {Guid}");
             writelog($"Target Value is {newValue}");
-            _DTPProxyPlugin.SetContrast(guid, newValue);
+            _DTPProxyPlugin.SetContrast(Guid, newValue);
             return Task.FromResult(true);
         }
 
-        public Task SetSaturation(string guid, int newValue)
+        public Task SetSaturation(string Guid, int newValue)
         {
             writelog("DeviceMangerPlugin received SetSaturation requested ...");
-            writelog($"Target Guid is {guid}");
+            writelog($"Target Guid is {Guid}");
             writelog($"Target Value is {newValue}");
-            _DTPProxyPlugin.SetSaturation(guid, newValue);
+            _DTPProxyPlugin.SetSaturation(Guid, newValue);
             return Task.FromResult(true);
         }
 
-        public Task SetAntiFlicker(string guid, int newValue)
+        public Task SetAntiFlicker(string Guid, int newValue)
         {
             writelog("DeviceMangerPlugin received SetAntiFlicker requested ...");
-            writelog($"Target Guid is {guid}");
+            writelog($"Target Guid is {Guid}");
             writelog($"Target Value is {newValue}");
-            _DTPProxyPlugin.SetAntiFlicker(guid, newValue);
+            _DTPProxyPlugin.SetAntiFlicker(Guid, newValue);
             return Task.FromResult(true);
         }
 
-        public Task SetTilt(string guid, int newValue)
+        public Task SetTilt(string Guid, int newValue)
         {
             writelog("DeviceMangerPlugin received SetTilt requested ...");
-            writelog($"Target Guid is {guid}");
+            writelog($"Target Guid is {Guid}");
             writelog($"Target Value is {newValue}");
-            _DTPProxyPlugin.SetTilt(guid, newValue);
+            _DTPProxyPlugin.SetTilt(Guid, newValue);
             return Task.FromResult(true);
         }
 
-        public Task SetPan(string guid, int newValue)
+        public Task SetPan(string Guid, int newValue)
         {
             writelog("DeviceMangerPlugin received SetPan requested ...");
-            writelog($"Target Guid is {guid}");
+            writelog($"Target Guid is {Guid}");
             writelog($"Target Value is {newValue}");
-            _DTPProxyPlugin.SetPan(guid, newValue);
+            _DTPProxyPlugin.SetPan(Guid, newValue);
             return Task.FromResult(true);
         }
 
-        public async Task<int> GetWALTime(string guid)
+        public async Task<int> GetWALTime(string Guid)
         {
-            return await Task.Run(() => _DTPProxyPlugin.GetWALTime(guid));
+            return await Task.Run(() => _DTPProxyPlugin.GetWALTime(Guid));
         }
 
-        public async Task<int> GetSnooze(string guid)
+        public async Task<int> GetSnooze(string Guid)
         {
-            return await Task.Run(() => _DTPProxyPlugin.GetSnooze(guid));
+            return await Task.Run(() => _DTPProxyPlugin.GetSnooze(Guid));
         }
 
-        public async Task<int> GetSnoozeLength(string guid)
+        public async Task<int> GetSnoozeLength(string Guid)
         {
-            return await Task.Run(() => _DTPProxyPlugin.GetSnoozeLength(guid));
+            return await Task.Run(() => _DTPProxyPlugin.GetSnoozeLength(Guid));
         }
 
-        public async Task<bool> GetIsProximitySensorEnable(string guid)
+        public async Task<bool> GetIsProximitySensorEnable(string Guid)
         {
-            return await Task.Run(() => _DTPProxyPlugin.GetIsProximitySensorEnable(guid));
+            return await Task.Run(() => _DTPProxyPlugin.GetIsProximitySensorEnable(Guid));
         }
 
-        public async Task<bool> GetIsWakeonApproachEnable(string guid)
+        public async Task<bool> GetIsWakeonApproachEnable(string Guid)
         {
-            return await Task.Run(() => _DTPProxyPlugin.GetIsWakeonApproachEnable(guid));
+            return await Task.Run(() => _DTPProxyPlugin.GetIsWakeonApproachEnable(Guid));
         }
 
-        public async Task<bool> GetIsWalkAwayLockEnable(string guid)
+        public async Task<bool> GetIsWalkAwayLockEnable(string Guid)
         {
-            return await Task.Run(() => _DTPProxyPlugin.GetIsWalkAwayLockEnable(guid));
+            return await Task.Run(() => _DTPProxyPlugin.GetIsWalkAwayLockEnable(Guid));
         }
 
-        public async Task<bool?> GetIsPrioritizeExternalWebcam(string guid)
+        public async Task<bool?> GetIsPrioritizeExternalWebcam(string Guid)
         {
-            return await Task.Run(() => _DTPProxyPlugin.GetIsPrioritizeExternalWebcam(guid));
+            return await Task.Run(() => _DTPProxyPlugin.GetIsPrioritizeExternalWebcam(Guid));
         }
 
-        public async Task<bool> GetIsZoomMeetingActive(string guid)
+        public async Task<bool> GetIsZoomMeetingActive(string Guid)
         {
-            return await Task.Run(() => _DTPProxyPlugin.GetIsZoomMeetingActive(guid));
+            return await Task.Run(() => _DTPProxyPlugin.GetIsZoomMeetingActive(Guid));
         }
 
-        public async Task<int> GetZoomMeetingType(string guid)
+        public async Task<int> GetZoomMeetingType(string Guid)
         {
-            return await Task.Run(() => _DTPProxyPlugin.GetZoomMeetingTypeAsync(guid));
+            return await Task.Run(() => _DTPProxyPlugin.GetZoomMeetingTypeAsync(Guid));
         }
 
-        public async Task<bool> GetIsZoomScreenShareActive(string guid)
+        public async Task<bool> GetIsZoomScreenShareActive(string Guid)
         {
-            return await Task.Run(() => _DTPProxyPlugin.GetIsZoomScreenShareActive(guid));
+            return await Task.Run(() => _DTPProxyPlugin.GetIsZoomScreenShareActive(Guid));
         }
 
         public Task<DockData> GetDockData(string guid)
