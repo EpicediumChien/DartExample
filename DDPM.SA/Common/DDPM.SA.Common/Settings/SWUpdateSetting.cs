@@ -84,7 +84,7 @@ namespace DDPM.SA.Common.Settings
                         {
                             //if read info failed, load default key as well
                             InfoPkey = new List<string>();
-                            InfoPkey.Add(DDPM.SA.Obfuscation.InfoHash.Info_Hash);
+                            InfoPkey.AddRange(DDPM.SA.Obfuscation.InfoHash.Info_Hash);
                         }
                         string szInfo = string.Empty;
                         string jsonString = DDPMFileSecurity.VerifyDDPMMetadata(null, fileContent, InfoPkey, out szInfo);
@@ -226,7 +226,7 @@ namespace DDPM.SA.Common.Settings
                         {
                             //if read info failed, load default key as well
                             InfoPkey = new List<string>();
-                            InfoPkey.Add(DDPM.SA.Obfuscation.InfoHash.Info_Hash);
+                            InfoPkey.AddRange(DDPM.SA.Obfuscation.InfoHash.Info_Hash);
                         }
                         string szInfo = string.Empty;
                         string jsonString = DDPMFileSecurity.VerifyDDPMMetadata(null, fileContent, InfoPkey, out szInfo);
