@@ -147,7 +147,7 @@
                                             SelectionChanged="cbManualPreset_SelectionChanged" />
                                             -->
                                             <ComboBox x:Name="cbManualPreset" Grid.Column="2" Style="{StaticResource DdpmComboBoxStyle}"
-                                                    Width="184"
+                                                    Width="184" SelectionChanged="cbManualPreset_SelectionChanged"
                                                     ItemsSource="{Binding ColorPresets_ItemsCollection}"
                                                     SelectedIndex="{Binding ColorPresetSelectedIndex}" KeyboardNavigation.TabNavigation="{Binding TabNavigation}" IsTabStop="{Binding isTabStoppable}" KeyboardNavigation.AcceptsReturn="{Binding isTabStoppable}" KeyboardNavigation.IsTabStop="{Binding isTabStoppable}" />
                                         </Grid>

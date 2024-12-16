@@ -535,6 +535,7 @@ namespace DDPM.UI.Module.Brightness
                 DdpmCommonHelper.DeviceManagerSA.VCPchanged -= OnVCPChangedEvent;
                 DdpmCommonHelper.BitmapImageUpdated -= ALSFontColorUpdate;
             }
+            DdpmCommonHelper.MyConsole.UnregisterForEvent("DisplayHDRStatusChanged", OnHDRChangedEvent);
         }
 
         public BrightnessViewModel()
@@ -565,7 +566,7 @@ namespace DDPM.UI.Module.Brightness
             PR1Luminance_Debouncer = new Debouncer(2000, Set_Luminance_Value);
             PR2Luminance_Debouncer = new Debouncer(2000, Set_Luminance_Value);
 
-            DdpmCommonHelper.MyConsole.RegisterForEvent("DisplayHDRStatusChanged", OnHDRChangedEvent);
+            DdpmCommonHelper.MyConsole?.RegisterForEvent("DisplayHDRStatusChanged", OnHDRChangedEvent);
             DdpmCommonHelper.BitmapImageUpdated += ALSFontColorUpdate;
 
             syncUIvalue_bw.DoWork += new DoWorkEventHandler(SyncUI_Value);
@@ -1906,7 +1907,7 @@ namespace DDPM.UI.Module.Brightness
             else
                 ScheduleMap.IsEnable = false;
 
-            DdpmCommonHelper.DeviceManagerSA.WriteScheduleMonitorSettings(SelectedHomeDevice.MonitorInfo, ScheduleMap);
+            DdpmCommonHelper.DeviceManagerSA?.WriteScheduleMonitorSettings(SelectedHomeDevice.MonitorInfo, ScheduleMap);
         }
 
         public bool CheckIsTimeOverlap()
