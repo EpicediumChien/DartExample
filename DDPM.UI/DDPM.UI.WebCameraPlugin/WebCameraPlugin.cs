@@ -591,13 +591,23 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                                 return;
                             }
                             _viewModel!.isIsMicEnumerationOnChanged_event = true;
+
+                            DdpmCommonHelper.WriteUILog("WebCameraMicrophone Action 6 : " + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
+
                             System.Windows.Application.Current.Dispatcher.Invoke(() =>
                             {
                                 if (NewValue.ToLower() == "true")
+                                {
+                                    DdpmCommonHelper.WriteUILog("WebCameraMicrophone Action 7 : " + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
                                     _viewModel!.IsMicEnumerationOn = true;
+                                }
                                 else
+                                {
+                                    DdpmCommonHelper.WriteUILog("WebCameraMicrophone Action 8 : " + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
                                     _viewModel!.IsMicEnumerationOn = false;
+                                }
                             });
+                            DdpmCommonHelper.WriteUILog("WebCameraMicrophone Action 9 : " + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
                             _viewModel!.isIsMicEnumerationOnChanged_event = false;
                         }
                         break;
