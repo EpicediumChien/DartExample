@@ -1076,7 +1076,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             {
                 ALSConfig aconfig = AllALSConfig[idx];
                 AllALSConfig[idx] = param;
-                CheckisPrimaryMonitorSyncOnOff(monitorInfos, param, "0");
+                //CheckisPrimaryMonitorSyncOnOff(monitorInfos, param, "0");
             }
             else
             {
@@ -2218,10 +2218,9 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             Trace.WriteLine("[DisplayMangerPlugin] show_VCPchangedEventArgs vcpcode = " + e.vcpcode.ToString() + " || monitor = " + e.monitor.edid.ModelName + " || Value = " + result2.ToString());
 
             VCPchangedEventArgs _VCPchangedEventArgs = new VCPchangedEventArgs();
-            _VCPchangedEventArgs.vcpcode = e.vcpcode;
             _VCPchangedEventArgs.value = e.value;
             _VCPchangedEventArgs.monitor = e.monitor;
-            OnVCPchanged(_VCPchangedEventArgs);         
+       
             ////0607 Bruce 自動旋轉畫面顧新增下面兩行程式碼
             //SetDisplayOrientation(_VCPchangedEventArgs);
 
@@ -2234,12 +2233,18 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                     ALSConfig alsConfig = UpdateALSFeatureByValue(e.monitor, result);
 
                     Trace.WriteLine("[DisplayMangerPlugin] show_VCPchangedEventArgs 0x66 " + result.ToString() + "|| AllValue = " + alsConfig.AllValue.ToString());
-                    if (alsConfig != null && alsConfig.AllValue != result)
+                    if (alsConfig != null)// && alsConfig.AllValue != result)
                     {
                         Task.Run(() => CheckisPrimaryMonitorSyncOnOff(e.monitor, alsConfig, e.vcpcode));//JIRA DDPMW-770
                     }
                 }
+                _VCPchangedEventArgs.vcpcode = e.vcpcode;
             }
+            else
+            {
+                _VCPchangedEventArgs.vcpcode = e.vcpcode;
+            }
+            OnVCPchanged(_VCPchangedEventArgs);
 
             //Wayn  1130
             //For [PIMS-314608] U2725QEt Wistron-P3:DDPM(Windows) - Shine a torch or cover the sensor of DUT1, DUT2 screen has not changed
