@@ -64,9 +64,8 @@ namespace DDPM.SA.Common.Security
         }
 
         /// <summary>
-        /// For buildin user please make your decision for PipeAccessRights.ReadWrite or PipeAccessRights.FullControl
+        /// System permissions are used, buildin user will be rejected
         /// </summary>
-        /// <param name="privilegeForBuildInUser"></param>
         /// <returns></returns>
         public static PipeSecurity CreatePipeSecurity_System()
         {
