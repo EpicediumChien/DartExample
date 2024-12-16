@@ -269,8 +269,11 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                 _AllInfoMonitors = new List<MonitorInfo>(_VcpCorePlugin.Re_GetMonitors(token).Result);
 
                 InitializeAllALSInfo();
+
                 //Robert_Lin, 2024-12-10 added to notify EAPlugin
-                NotifyEAPluginAllInfoMonitorsChanged(); _logs.DebugMsg("[DisplayMangerPlugin] Re_GetMonitors() AllInfoMonitors.count is " + _AllInfoMonitors.Count);
+                NotifyEAPluginAllInfoMonitorsChanged();
+
+                _logs.DebugMsg("[DisplayMangerPlugin] Re_GetMonitors() AllInfoMonitors.count is " + _AllInfoMonitors.Count);
 
                 return _AllInfoMonitors;
             }
@@ -2221,7 +2224,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             _VCPchangedEventArgs.vcpcode = e.vcpcode;
             _VCPchangedEventArgs.value = e.value;
             _VCPchangedEventArgs.monitor = e.monitor;
-            OnVCPchanged(_VCPchangedEventArgs);         
+            OnVCPchanged(_VCPchangedEventArgs);
             ////0607 Bruce 自動旋轉畫面顧新增下面兩行程式碼
             //SetDisplayOrientation(_VCPchangedEventArgs);
 
@@ -2229,7 +2232,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             if (e.vcpcode.Equals("66"))
             {
                 if (uint.TryParse(e.value, NumberStyles.Integer, CultureInfo.CurrentCulture, out uint result))
-                {                    
+                {
                     //update target als config via target monitorinfo with e.value
                     ALSConfig alsConfig = UpdateALSFeatureByValue(e.monitor, result);
 
