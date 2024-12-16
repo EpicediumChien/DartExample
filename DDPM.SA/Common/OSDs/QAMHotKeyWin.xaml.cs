@@ -1,7 +1,9 @@
 ﻿using DDPM.QAM;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -104,11 +106,81 @@ namespace DDPM.OSDs
             //System.Windows.MessageBox.Show("Button_MouseLeftButtonDown");
             try
             {
-                DdpmCommonHelper.DeviceManagerSA!.SetIsWidgetSettingPageLoadedByQAMAsync(true);
+                //PIMS 332041 need launch DDPM if DDPM not launched
+                bool bDDPMHasLaunched = false;
+                if (ShowDDPM())
+                {
+                    DdpmCommonHelper.DeviceManagerSA!.SetIsWidgetSettingPageLoadedByQAMAsync(true);
+                }
+                else
+                    DdpmCommonHelper.DeviceManagerSA!.WriteLog($"OAMOSD launch DDPM fail");
             }
             catch (Exception)
             {
             }
+        }
+
+        [DllImport("user32.dll", SetLastError = true)]
+        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
+        private static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
+
+        private static bool _ShowWindow(IntPtr hWnd, int nCmdShow)
+        {
+            return ShowWindow(hWnd, nCmdShow);
+        }
+        [DllImport("user32.dll", SetLastError = true)]
+        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
+        private static extern bool SetForegroundWindow(IntPtr hWnd);
+        private static bool _SetForegroundWindow(IntPtr hWnd)
+        {
+            return SetForegroundWindow(hWnd);
+        }
+
+        private bool ShowDDPM()
+        {
+            const int SW_SHOWNORMALSW_NORMAL = 1;
+            string processName = "DDPM";
+            bool result = false;
+
+            if (OperatingSystem.IsWindows())
+            {
+                try
+                {
+                    Process[] processes = Process.GetProcessesByName(processName);
+
+                    if (processes.Length > 0)
+                    {
+                        IntPtr mainWindowHandle = processes[0].MainWindowHandle;
+                        // 將窗口最大化
+                        _ShowWindow(mainWindowHandle, SW_SHOWNORMALSW_NORMAL);
+                        // 顯示到前景
+                        _SetForegroundWindow(mainWindowHandle);
+
+                        result = true;
+                    }
+                    else
+                    {
+                        //string ddpmExePath = @"C:\Program Files\Dell\Dell Display and Peripheral Manager\DDPM.exe";
+                        string debugPath = "D:\\DDPM\\DDPM.UI\\bin\\net8.0-windows10.0.19041.0\\DDPM.exe";
+
+                        result = DDPM.SA.Common.Settings.DDPMFileSecurity.StartProcessSafely(
+                            null,
+                            new ProcessStartInfo
+                            {
+                                FileName = debugPath,
+                                UseShellExecute = true
+                            });
+                    }
+                }
+                catch (Exception ex)
+                {
+                    DdpmCommonHelper.DeviceManagerSA!.WriteLog($"Catch exception[{ex.Message}]");
+
+                    result = false;
+                }
+            }
+
+            return result;
         }
     }
 }

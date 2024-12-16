@@ -10258,6 +10258,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 }
                 else
                 {
+                    //Derek 1216
+                    //PIMS 332041 OSD should not be seen on set Widget setting- Activae Quick Access widget
+                    //during Zoom conference calls" = Off (uncheck)
+                    CloseQAMOSD();
+
                     QAMClose(false);
 
                     writelog($"Close QAM/OSD due to global setting change to {_GlobalSettingParam.GlobalSetting_WidgetSettings.EnableQuickAccessWidget}");
