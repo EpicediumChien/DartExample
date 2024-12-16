@@ -211,14 +211,22 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                 }
                 else if (pluginCondition is PluginRunningCondition)
                 {
+                    //16:42:39.795
                     _log.Info($"{nameof(GetCurrentDeviceManagerPluginPluginCondition)} plugin is in {nameof(PluginRunningCondition)}");
 
                     if (_deviceManager != null)
                     {
                         if (!_HasRegisted)
                         {
+                            //Robert_Lin, 2024-12-16 add log for each key points to trace status.
+
                             if (_viewModel != null)
+                            {
                                 _viewModel.IsDeviceManagerReady = true;
+                                //Robert_Lin, 2024-12-16 for PleaseWait thread to get devices
+                                _viewModel.DeviceManagerPlugin = _deviceManager;
+
+                            }
                             _HasRegisted = true;
                             _deviceManager.DeviceChanged += _deviceManager_DeviceChanged;
                             _deviceManager.VCPchanged += _deviceManager_VCPchanged;
@@ -228,15 +236,25 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                             //So uncommented below code
                             //Task.Run(async () => await GetDdpmDevicesAsync(_deviceManager));
 
+                            //16:42:39.795
                             //Robert_Lin, 2024-6-21 UI shown, tell VCPCore to increase polling rate to 0x52
                             //Derek_Du, 2024-10-21 add send process ID to SA
+                            _log.Info("Calling to DeviceManager.Reset0x52TimerTick(2000)");
                             Task delayTask = _deviceManager.Reset0x52TimerTick(2000, Process.GetCurrentProcess().Id);
+                            //16:42:39.799
+                            _log.Info("Calling to DeviceManager.ReceiveTelemetryInfo(AppSession,AppStarted)");
                             _deviceManager.ReceiveTelemetryInfo("AppSession", "AppStarted", Telementry_Frequency.RealTime);
 
+                            //16:42:39.801
+                            _log.Info("Calling GetDdpmDevicesAsync()");
                             await GetDdpmDevicesAsync(_deviceManager);
+                            //16:42:40.127
+                            _log.Info("Calling CloseQAMIfExist()");
                             CloseQAMIfExist();
 
+                            //16:42:40.128
                             //1030 get global settings for telemetry consent page using
+                            _log.Info("Calling to DeviceManager.GetGlobalSettingParam()");
                             _globalSettings = _deviceManager.GetGlobalSettingParam().Result;
                             //1030 Dean
                             //For Hess to read global setting "_globalSettings"
@@ -244,7 +262,10 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                             if (DdpmCommonHelper.Settings_Cache == null)
                             {
                                 if (DdpmCommonHelper.DeviceManagerSA != null)
+                                {
+                                    _log.Info("Calling to ReadDDPMSettings()");
                                     DdpmCommonHelper.ReadDDPMSettings();
+                                }
                             }
                             if (_globalSettings != null && DdpmCommonHelper.Settings_Cache != null && _viewModel != null)
                             {
@@ -253,46 +274,79 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                                 {
                                     var fileFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), @$"Dell\Dell Display and Peripheral Manager\Actions");
                                     if (Directory.Exists(fileFolder))
+                                    {
+                                        _log.Info($"Delete Directory: {fileFolder}");
                                         Directory.Delete(fileFolder, true);
+                                    }
 
                                     fileFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), @$"Dell\Dell Display and Peripheral Manager\WebcamSettings");
                                     if (Directory.Exists(fileFolder))
+                                    {
+                                        _log.Info($"Delete Directory: {fileFolder}");
                                         Directory.Delete(fileFolder, true);
+                                    }
                                 }
                                 // >>
 
                                 if (!_globalSettings.isSetTelemetryOverInstaller && !DdpmCommonHelper.Settings_Cache.UserSettings.isDisplayConsentPage)
                                 {
+                                    _log.Info("Invoking ShowConsent()");
                                     _viewModel.ShowConsent();
                                     DdpmCommonHelper.Settings_Cache.UserSettings.isDisplayConsentPage = true;
+                                    _log.Info("Caling to WriteDDPMSettings()");
                                     DdpmCommonHelper.WriteDDPMSettings(DdpmCommonHelper.Settings_Cache);
                                 }
                             }
 
-                            if (_deviceManager == null)
-                            {
-                                _log.Error($"{nameof(PluginManager_PluginsStarted)} ISettingsManagerDev Plugin is null");
-                                return;
-                            }
+                            //Robert_Lin, 2024-12-16 never be true, comment-out
+                            //if (_deviceManager == null)
+                            //{
+                            //    //Robert_Lin, 2024-12-16 fix
+                            //    //NEW:
+                            //    _log.Error($"{nameof(PluginManager_PluginsStarted)} IDeviceManagerSA Plugin is null");
+                            //    //OLD:
+                            //    //_log.Error($"{nameof(PluginManager_PluginsStarted)} ISettingsManagerDev Plugin is null");
+                            //    return;
+                            //}
+
+                            //16:42:40.130
                             //Wayn 2024-09-04 For WalkThrough
                             _log.Info($"[Walkthrough] {nameof(GetCurrentDeviceManagerPluginPluginCondition)} Start");
                             await CollectAndCompareDevicesAsync();
+                            //16:42:40.196
+                            _log.Info($"[Walkthrough] {nameof(GetCurrentDeviceManagerPluginPluginCondition)} Exit");
 
+                            //16:42:40.197
                             //Robert_Lin 2024-8-2 DDPMW-579, If there is any FW/SW update available,
                             //then the Gear icon on masthead will show breathe & glow animation.
                             //Call once
-                            if (CheckIfSwFwUpdateAvailable(_deviceManager))
+                            _log.Info("Calling to CheckIfSwFwUpdateAvailable()");
+                            if (CheckIfSwFwUpdateAvailable(_deviceManager)) // 9 sec
                             {
+                                //16:42:49.173
+                                _log.Info("CheckIfSwFwUpdateAvailable() return true.");
                                 //Robert_Lin, 2024-12-9, Change GlowEffect_Start() to GlowEffect_Trigger()
                                 if (_iconGear != null)
+                                {
+                                    //16:42:49.173
+                                    _log.Info("Calling to GlowEffect_Trigger()");
                                     _iconGear.GlowEffect_Trigger();
                                     //_iconGear.GlowEffect_Start();
+                                }
+                                else
+                                {
+                                    _log.Info("Not calling to GlowEffect_Trigger(), due to _iconGear is null.");
+                                }
                             }
                             //Robert_Lin, 2024-12-9 install event handler for new update fw/sw info
                             _deviceManager.Peripherals_UpdateNotify += _deviceManager_Peripherals_UpdateNotify;
 
                         }
+                        //16:42:49.174
+                        _log.Info($"Calling to CheckAndQueueDevice(DDPM,DDPM,null)");
                         await CheckAndQueueDevice("DDPM", "DDPM", null);//DDPM WalkThrough no need into setting page.
+                        //16:42:49.203
+                        _log.Info($"Returned from CheckAndQueueDevice()");
                         if (WalkThroughQueue.Count != 0 && _showPluginById == false)
                         {
                             _log.Info($"[Walkthrough] WalkThroughQueue.Count != 0, ShowPluginById Start DDPM");
@@ -300,6 +354,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                             _showPluginById = true;
                         }
 
+                        _log.Info($"Calling to CheckIfNeedImportSetting_Display()");
                         CheckIfNeedImportSetting_Display();
 
                         //await DDPMInfoSAHomepageIsReady();
@@ -651,6 +706,10 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                     Interfaces.IDdpmHomePageViewModel? viewModel = PluginIoc.GetService<Interfaces.IDdpmHomePageViewModel>();
                     if (viewModel != null)
                     {
+                        //Robert_Lin, 2024-12-16, PIMS-329606 Observe no device connected manu flash on disconnect - connect device.
+                        //To prevent "Add your first device" (flash) show, we will show Please wait before clear all devices
+                        viewModel.IsPleaseWaitVisible = true;
+
                         viewModel.ResetDevices();
 
                         _log.Info("Adding Monitors to HomePageViewModel...");
@@ -663,6 +722,9 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                         //Robert_Lin, 2024-8-5 for PIMS-289060, display a "Please wait" UI before devices ready
                         if (viewModel.HomeDevices.Count == 0)
                         {
+                            //Robert_Lin, 2024-12-16, PIMS-329606 Observe no device connected manu flash on disconnect - connect device.
+                            //Invoke_PleaseWait() will set IsPleaseWaitVisible=true again, and reset to false, when device count>0
+                            // or time out.
                             //The "PleaseWait" UI will be displayed and auto closed after timeout (=12 sec)
                             viewModel.Invoke_PleaseWait();
 
@@ -770,7 +832,24 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                 IDdpmHomePageViewModel? viewModel = PluginIoc.GetService<IDdpmHomePageViewModel>();
                 if (viewModel != null)
                 {
-                    viewModel.HomeDevices = new System.Collections.ObjectModel.ObservableCollection<HomeDevice>();
+                    //Robert_Lin, 2024-12-16 fix, once you clear HomeDevices, the "Add your first device"
+                    //will be visible immediately. We need set ViewModel.IsPleaseWaitVisible=true to show
+                    //the Please wait
+                    viewModel.IsPleaseWaitVisible = true;
+
+                    //Robert_Lin, 2024-12-16
+                    //NEW:
+                    viewModel.ResetDevices();
+                    //OLD:
+                    //viewModel.HomeDevices = new System.Collections.ObjectModel.ObservableCollection<HomeDevice>();
+
+                    //After HomeDevices are cleared, Add your first device will not show, because that we has set
+                    // IsPleaseWaitVisible to true.
+
+                    //Robert_Lin, 2024-12-16 Not sure if we should invokd PleaseWait??
+                    //If the device will be reconnect soon, then we don't need to invoke it.
+                    //But if we clear the devices, but no a DeviceChanged later, then we need to invoke it.
+                    viewModel.Invoke_PleaseWait();
                 }
             }
             ConfigureServices();
