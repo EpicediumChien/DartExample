@@ -251,7 +251,8 @@ namespace DDPM.SA.Common
         #endregion public for USBKVM
 
         #region EasyArrange
-
+        //Robert_Lin, 2024-12-15 rearrange order of interfaces and grouping in sub-Regions
+        
         #region Properties - EasyArrange
         //Robert_Lin, 2024-12-15, comment-out temporary
         /// <summary>
