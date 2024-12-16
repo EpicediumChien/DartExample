@@ -365,13 +365,19 @@ namespace DDPM.EABroker
             emWin.LayoutReady += delegate
             {
                 //Phase D. 
-                var sortedApps = sortApps.OrderBy(x => x.Key).Select(x => x.Value).ToList();
+                //var sortedApps = sortApps.OrderBy(x => x.Key).Select(x => x.Value).ToList();
+                //int idxCell = 0;
+                //for (int i=0; i< arrangeCount; i++)
+                //{
+                //    var sortedApps = sortApps.OrderBy(x => i).Select(x => x.Value).ToList();
+                //    var app = sortedApps[i];
+                //    Task.Delay(500);
+                //    emWin.LaunchAndArrange(app, i);
+
+                //}
+
                 int idxCell = 0;
-                for (int i=0; i< arrangeCount; i++)
-                {
-                    var app = sortedApps[i];
-                    emWin.LaunchAndArrange(app, i);
-                }
+                emWin.LaunchAndArrange(sortApps, idxCell++);
             };
 
             emWin.ArrangeDone += delegate

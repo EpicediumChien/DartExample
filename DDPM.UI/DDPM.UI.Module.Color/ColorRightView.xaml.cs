@@ -678,5 +678,14 @@ namespace DDPM.UI.Module.Color
         private void Hyperlink_Click(object sender, RoutedEventArgs e)
         {
         }
+
+        private void cbManualPreset_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            int _previousSelectedIndex = 0;
+            var comboBox = sender as System.Windows.Controls.ComboBox;
+            if (comboBox == null) return;
+            ColorViewModel vm = (ColorViewModel)DataContext;
+            //Need Jim help to add func
+        }
     }
 }

@@ -503,7 +503,7 @@ namespace DDPM.SA.Common
         public string SpeakerMicrophone { get; set; } = "N/A";
         public string SpeakerVolume { get; set; } = "N/A";
         public string MicrophoneControl { get; set; } = "N/A";
-        public string Uniformity { get; set; } = "N/A";
+        //public string Uniformity { get; set; } = "N/A";
         public string PowerNap { get; set; } = "N/A";
         public string OSD_language { get; set; } = "N/A";
         public string PID { get; set; } = "N/A";
@@ -719,7 +719,7 @@ namespace DDPM.SA.Common
         public string SpeakerMicrophone { get; set; } = "N/A";
         public string SpeakerVolume { get; set; } = "N/A";
         public string MicrophoneControl { get; set; } = "N/A";
-        public string Uniformity { get; set; } = "N/A";
+        //public string Uniformity { get; set; } = "N/A";
         public string PowerNap { get; set; } = "N/A";
         public string OSD_language { get; set; } = "N/A";
     }
