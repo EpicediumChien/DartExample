@@ -139,6 +139,13 @@ namespace DDPM.SA.Common
 
         #region EasyArange
 
+        #region Properties - EasyArange
+        /// <summary>
+        /// The last error string after a EAPlugin method return error.
+        /// </summary>
+        public string EALastError { get; }
+        #endregion Properties - EasyArange
+
         public Task<bool> SetEAFunctionEnabled(bool isEnabled);
 
         public Task<ObjGetVCP> GetEAFunctionEnabled();
@@ -162,9 +169,17 @@ namespace DDPM.SA.Common
         public event EventHandler<EAArgs> EAEditReturn;
 
         //        public Task<bool> EAReloadMonitorSettings(MonitorInfo monitorInfo);
+
+        /// <summary>
+        /// Called by DeviceManagerSA only, when one of EzSettings is changed from DDPM.UI.
+        /// It will call to EAPlugin IEasyArrangeService.ReloadEzSettings() to notify 
+        /// EAPlugin reload EzSettings and refresh to its ViewModel.
+        /// </summary>
+        /// <returns></returns>
         public Task<bool> ReloadEzSettings();
 
         public Task<bool> SetEASelectedLayout(MonitorInfo monitorInfo, SplitJson spJson);
+        public Task<bool> SetEASelectedLayout(MonitorInfo monitorInfo, int eaId);
 
         /// <summary>
         /// Return current Span across multiple monitor option is Enabled/Disabled;
