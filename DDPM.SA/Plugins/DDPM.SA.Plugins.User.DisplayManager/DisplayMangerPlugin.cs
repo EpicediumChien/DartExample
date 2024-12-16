@@ -4600,8 +4600,8 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                     if (InfoPkey == null || InfoPkey.Count == 0)
                     {
                         //if read info failed, load default key as well
-                        InfoPkey = new List<string>();
-                        InfoPkey.Add(DDPM.SA.Obfuscation.InfoHash.Info_Hash);
+                        InfoPkey = new List<string>(DDPM.SA.Obfuscation.InfoHash.Info_Hash);
+                        //InfoPkey.Add(DDPM.SA.Obfuscation.InfoHash.Info_Hash);
                     }
                     string szInfo = string.Empty;
                     string jsonString = string.Empty;
