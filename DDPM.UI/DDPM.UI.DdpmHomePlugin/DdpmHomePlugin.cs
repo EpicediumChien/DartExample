@@ -235,6 +235,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
 
                             await GetDdpmDevicesAsync(_deviceManager);
                             //CloseQAMIfExist();
+                            await CheckIfNeedNavigateToWebcamPage();
 
                             //1030 get global settings for telemetry consent page using
                             _globalSettings = _deviceManager.GetGlobalSettingParam().Result;
