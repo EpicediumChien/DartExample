@@ -241,7 +241,7 @@ namespace VcpCore.Plugins
             _pauseEvent.WaitOne(Timeout.Infinite);
             _logs.DebugMsg("[VcpCorePlugin] VcpCorePlugin GetCapabilitiesString overgo WaitOne ...");
 
-            if (_AllInfoMonitors.Count > 0 && _AllInfoMonitors_Mix.Count > 0 && _AllInfoMonitors.Count.Equals(_AllInfoMonitors_Mix.Count))
+            if (IsOutInitialize && _AllInfoMonitors_Mix.Count > 0)
             {
                 _logs.DebugMsg("[VcpCorePlugin] TargetMonitor DisplayName is " + monitorInfo.DisplayName);
                 _logs.DebugMsg("[VcpCorePlugin] TargetMonitor AliasDeviceName is " + monitorInfo.AliasDeviceName);
@@ -280,7 +280,7 @@ namespace VcpCore.Plugins
             }
             else
             {
-                _logs.DebugMsg("[VcpCorePlugin] No monitors to work. So, ignor requested");
+                _logs.DebugMsg("[VcpCorePlugin] No monitors to work or is Initialize. So, ignor requested");
                 return Task.FromResult(string.Empty);
             }
         }
@@ -292,7 +292,7 @@ namespace VcpCore.Plugins
             _pauseEvent.WaitOne(Timeout.Infinite);
             _logs.DebugMsg("[VcpCorePlugin] VcpCorePlugin GetVCPCapabilities overgo WaitOne ...");
 
-            if (_AllInfoMonitors.Count > 0 && _AllInfoMonitors_Mix.Count > 0 && _AllInfoMonitors.Count.Equals(_AllInfoMonitors_Mix.Count))
+            if (IsOutInitialize && _AllInfoMonitors_Mix.Count > 0)
             {
                 _logs.DebugMsg("[VcpCorePlugin] TargetMonitor DisplayName is " + monitorInfo.DisplayName);
                 _logs.DebugMsg("[VcpCorePlugin] TargetMonitor AliasDeviceName is " + monitorInfo.AliasDeviceName);
@@ -331,7 +331,7 @@ namespace VcpCore.Plugins
             }
             else
             {
-                _logs.DebugMsg("[VcpCorePlugin] No monitors to work. So, ignor requested");
+                _logs.DebugMsg("[VcpCorePlugin] No monitors to work or is Initialize. So, ignor requested");
                 return Task.FromResult(string.Empty);
             }
         }
@@ -343,7 +343,7 @@ namespace VcpCore.Plugins
             _pauseEvent.WaitOne(Timeout.Infinite);
             _logs.DebugMsg("[VcpCorePlugin] VcpCorePlugin GetVCPCapability overgo WaitOne ...");
 
-            if (_AllInfoMonitors.Count > 0 && _AllInfoMonitors_Mix.Count > 0 && _AllInfoMonitors.Count.Equals(_AllInfoMonitors_Mix.Count))
+            if (IsOutInitialize && _AllInfoMonitors_Mix.Count > 0)
             {
                 _logs.DebugMsg("[VcpCorePlugin] TargetMonitor DisplayName is " + monitorInfo.DisplayName);
                 _logs.DebugMsg("[VcpCorePlugin] TargetMonitor AliasDeviceName is " + monitorInfo.AliasDeviceName);
@@ -392,7 +392,7 @@ namespace VcpCore.Plugins
             }
             else
             {
-                _logs.DebugMsg("[VcpCorePlugin] No monitors to work. So, ignor requested");
+                _logs.DebugMsg("[VcpCorePlugin] No monitors to work or is Initialize. So, ignor requested");
                 return Task.FromResult(new ObjGetVCP() { value = null, result = false });
             }
         }
@@ -404,7 +404,7 @@ namespace VcpCore.Plugins
             _pauseEvent.WaitOne(Timeout.Infinite);
             _logs.DebugMsg("[VcpCorePlugin] VcpCorePlugin GetVCPCapability overgo WaitOne ...");
 
-            if (_AllInfoMonitors.Count > 0 && _AllInfoMonitors_Mix.Count > 0 && _AllInfoMonitors.Count.Equals(_AllInfoMonitors_Mix.Count))
+            if (IsOutInitialize && _AllInfoMonitors_Mix.Count > 0)
             {
                 _logs.DebugMsg("[VcpCorePlugin] TargetMonitor DisplayName is " + monitorInfo.DisplayName);
                 _logs.DebugMsg("[VcpCorePlugin] TargetMonitor AliasDeviceName is " + monitorInfo.AliasDeviceName);
@@ -445,7 +445,7 @@ namespace VcpCore.Plugins
             }
             else
             {
-                _logs.DebugMsg("[VcpCorePlugin] No monitors to work. So, ignor requested");
+                _logs.DebugMsg("[VcpCorePlugin] No monitors to work or is Initialize. So, ignor requested");
                 return Task.FromResult(new ObjGetVCP() { value = null, result = false });
             }
         }
@@ -457,7 +457,7 @@ namespace VcpCore.Plugins
             _pauseEvent.WaitOne(Timeout.Infinite);
             _logs.DebugMsg("[VcpCorePlugin] VcpCorePlugin SetVCPCapability overgo WaitOne ...");
 
-            if (_AllInfoMonitors.Count > 0 && _AllInfoMonitors_Mix.Count > 0 && _AllInfoMonitors.Count.Equals(_AllInfoMonitors_Mix.Count))
+            if (IsOutInitialize && _AllInfoMonitors_Mix.Count > 0)
             {
                 _logs.DebugMsg("[VcpCorePlugin] TargetMonitor DisplayName is " + monitorInfo.DisplayName);
                 _logs.DebugMsg("[VcpCorePlugin] TargetMonitor AliasDeviceName is " + monitorInfo.AliasDeviceName);
@@ -506,7 +506,7 @@ namespace VcpCore.Plugins
             }
             else
             {
-                _logs.DebugMsg("[VcpCorePlugin] No monitors to work. So, ignor requested");
+                _logs.DebugMsg("[VcpCorePlugin] No monitors to work or is Initialize. So, ignor requested");
                 return Task.FromResult(false);
             }
         }
@@ -518,7 +518,7 @@ namespace VcpCore.Plugins
             _pauseEvent.WaitOne(Timeout.Infinite);
             _logs.DebugMsg("[VcpCorePlugin] VcpCorePlugin SetVCPCapability overgo WaitOne ...");
 
-            if (_AllInfoMonitors.Count > 0 && _AllInfoMonitors_Mix.Count > 0 && _AllInfoMonitors.Count.Equals(_AllInfoMonitors_Mix.Count))
+            if (IsOutInitialize && _AllInfoMonitors_Mix.Count > 0)
             {
                 _logs.DebugMsg("[VcpCorePlugin] TargetMonitor DisplayName is " + monitorInfo.DisplayName);
                 _logs.DebugMsg("[VcpCorePlugin] TargetMonitor AliasDeviceName is " + monitorInfo.AliasDeviceName);
@@ -559,7 +559,7 @@ namespace VcpCore.Plugins
             }
             else
             {
-                _logs.DebugMsg("[VcpCorePlugin] No monitors to work. So, ignor requested");
+                _logs.DebugMsg("[VcpCorePlugin] No monitors to work or is Initialize. So, ignor requested");
                 return Task.FromResult(false);
             }
         }
@@ -1553,7 +1553,7 @@ namespace VcpCore.Plugins
             {
                 _logs.DebugMsg("[VcpCorePlugin] [QueueTrigger] VcpCorePlugin Initialize 0x52 to 0 Let's go ...");
 
-                if (IsOutInitialize && _AllInfoMonitors_Mix.Count > 0 && _AllInfoMonitors.Count.Equals(_AllInfoMonitors_Mix.Count))
+                if (IsOutInitialize && _AllInfoMonitors_Mix.Count > 0)
                 {
                     bool rc = false;
                     object object_0x02 = null;
@@ -3351,7 +3351,7 @@ namespace VcpCore.Plugins
             {
                 //Monitor.Enter(SetVCPLock);
 
-                if (_AllInfoMonitors.Count > 0 && _AllInfoMonitors_Mix.Count > 0 && _AllInfoMonitors.Count.Equals(_AllInfoMonitors_Mix.Count) && (_AllInfoMonitors_Mix.Exists(M => M.Item1.edid.Equals(monitorInfoX.edid))))
+                if (_AllInfoMonitors_Mix.Count > 0 && (_AllInfoMonitors_Mix.Exists(M => M.Item1.edid.Equals(monitorInfoX.edid))))
                 {
                     int count = 0;
 
@@ -3381,10 +3381,9 @@ namespace VcpCore.Plugins
 
                         if (retry) Thread.Sleep(1000);
                     } while (count < 3 && retry && IsOutInitialize);
-
-                    _logs.DebugMsg("[VcpCorePlugin] Set_VCPCapability return false");
                 }
 
+                _logs.DebugMsg("[VcpCorePlugin] Set_VCPCapability return false");
                 return false;
             }
             catch (Exception ex)
@@ -3404,24 +3403,27 @@ namespace VcpCore.Plugins
             {
                 //Monitor.Enter(GetVCPLock);
 
-                int count = 0;
-
-                do
+                if (_AllInfoMonitors_Mix.Count > 0 && (_AllInfoMonitors_Mix.Exists(M => M.Item1.edid.Equals(monitorInfoX.edid))))
                 {
-                    bool rc = _GetVCPFeatureAndVCPFeatureReply(monitorInfoX.hPhysicalMonitor, code, IntPtr.Zero, out uint currentValue, out uint maxValue); /*monitor[0].hPhysicalMonitor*/
-                    if (rc)
+                    int count = 0;
+
+                    do
                     {
-                        if (opt == 1)
-                            return maxValue;
-                        else
-                            return currentValue;
-                    }
+                        bool rc = _GetVCPFeatureAndVCPFeatureReply(monitorInfoX.hPhysicalMonitor, code, IntPtr.Zero, out uint currentValue, out uint maxValue); /*monitor[0].hPhysicalMonitor*/
+                        if (rc)
+                        {
+                            if (opt == 1)
+                                return maxValue;
+                            else
+                                return currentValue;
+                        }
 
-                    count++;
-                    _logs.DebugMsg("[VcpCorePlugin] Get_VCPCapability " + code.ToString("X2") + ", retry(" + count.ToString() + ")");
+                        count++;
+                        _logs.DebugMsg("[VcpCorePlugin] Get_VCPCapability " + code.ToString("X2") + ", retry(" + count.ToString() + ")");
 
-                    if (retry) Thread.Sleep(1000);
-                } while (count < 3 && retry && IsOutInitialize);
+                        if (retry) Thread.Sleep(1000);
+                    } while (count < 3 && retry && IsOutInitialize);
+                }
 
                 _logs.DebugMsg("[VcpCorePlugin] Get_VCPCapability return null");
                 return null;
