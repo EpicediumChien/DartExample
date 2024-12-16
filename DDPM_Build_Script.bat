@@ -17,6 +17,8 @@ set RootDir=%1
 :: 2. %2 = "clear", clear all bin/obj under root dir %1
 :: 3. %2 = "skipcert", ignore the step "Generate cert file" of fully release flow
 :: 4. %2 = "Debug", Debug build for RD verify and runtime debug (without DTP.Decoupling, only DDPM.SA/DDPM.UI/DdpmSwUpdater)
+:: 5. %2 = "Debug_UI", Debug build for RD verify and runtime debug with UI only
+:: 6. %2 = "Debug_SA", Debug build for RD verify and runtime debug with SA only
 set option_cmd=%2
 IF "%2"=="Debug" (
 	set build_type=Debug
@@ -29,6 +31,37 @@ IF "%2"=="debug" (
 IF "%2"=="DEBUG" (
 	set build_type=Debug
 	echo "*** Build with Debug(3) ***"
+)
+::-----
+IF "%2"=="debug_ui" (
+	set build_type=Debug
+	echo "*** Build with UI Debug(1) ***"
+)
+IF "%2"=="DEBUG_UI" (
+	set build_type=Debug
+	set option_cmd=debug_ui
+	echo "*** Build with UI Debug(2) ***"
+)
+IF "%2"=="Debug_UI" (
+	set build_type=Debug
+	set option_cmd=debug_ui
+	echo "*** Build with UI Debug(3) ***"
+)
+::-----
+IF "%2"=="debug_sa" (
+	set build_type=Debug
+	set option_cmd=debug_sa
+	echo "*** Build with SA Debug(1) ***"
+)
+IF "%2"=="DEBUG_SA" (
+	set build_type=Debug
+	set option_cmd=debug_sa
+	echo "*** Build with SA Debug(2) ***"
+)
+IF "%2"=="Debug_SA" (
+	set build_type=Debug
+	set option_cmd=debug_sa
+	echo "*** Build with SA Debug(3) ***"
 )
 echo The build type is [%build_type%]
 ::-----------
@@ -99,6 +132,7 @@ echo errorlevel is %errorlevel%
 if not %errorlevel% == 0 goto copy_cert_cs_fail
 	
 :_skipcert
+if "%option_cmd%"=="debug_ui" goto _ONLY_UI
 Echo -------------------------------------------
 Echo [Build DDM decryption lib]
 Echo -------------------------------------------
@@ -230,6 +264,8 @@ if not %errorlevel% == 0 goto SA_CopyFail
 xcopy "%Dir_Subagent_CommonDll%\VcpCore.Common.*" "%RootDir%\DdpmSwUpdater\CommonDll\" /Y /S /Q
 echo errorlevel is %errorlevel%
 if not %errorlevel% == 0 goto SA_CopyFail
+::---
+if "%option_cmd%"=="debug_sa" goto _ONLY_SA
 Echo --------------------------------------------
 Echo [Build DdpmSwUpdater project]
 Echo --------------------------------------------
@@ -241,6 +277,7 @@ if not %errorlevel% == 0 goto DdpmSwUpdater_CleanFail
 dotnet.exe build -c %build_type% -v minimal /p:Framework="net8.0" /p:platform=%build_arch% /p:EnableWindowsTargeting=true /p:DebugSymbols=false /p:DebugType=None ".\DdpmSwUpdater.sln"
 echo errorlevel is %errorlevel%
 if not %errorlevel% == 0 goto DdpmSwUpdater_Fail
+:_ONLY_UI
 Echo --------------------------------------------
 Echo [Build DDPM.UI project]
 Echo --------------------------------------------
@@ -253,6 +290,7 @@ dotnet.exe build -c %build_type% -v minimal /p:Framework="net8.0" /p:platform=%b
 echo errorlevel is %errorlevel%
 if not %errorlevel% == 0 goto UI_Fail
 ::-----------------
+:_ONLY_SA
 IF "%build_type%"=="Debug" (
 	echo "*** Debug build, skip [Copy to Installer] step ***"
 	goto _skipCopyToInstaller
@@ -542,7 +580,7 @@ echo     1. Empty means normal release build and copy all necessary data to Inst
 echo     2. "clear", clear all bin/obj under root dir %1
 echo     3. "skipcert", ignore the step "Generate cert file" of fully release flow
 echo     4. "Debug", Debug build for RD verify and runtime debug (without DTP.Decoupling, only DDPM.SA/DDPM.UI/DdpmSwUpdater)
-echo 
+echo -
 echo Example:
 echo   [Fully Release build with installer]
 echo     Command: DDPM_Build_Script.bat D:\DDPM
@@ -552,6 +590,10 @@ echo   [Create Release BIN data with all necessary files but ignore cert]
 echo     Command: DDPM_Build_Script.bat D:\DDPM skipcert
 echo   [Help RD to copy all related data to right position in Debug build]
 echo     Command: DDPM_Build_Script.bat D:\DDPM Debug
-echo   [Help RD to compile SA and UI solution for runtime debug]
+echo   [Help RD to compile SA and UI solutions for runtime debug]
 echo     Command: DDPM_Build_Script.bat D:\DDPM Debug
+echo   [Help RD to compile UI solution only for runtime debug]
+echo     Command: DDPM_Build_Script.bat D:\DDPM Debug_UI
+echo   [Help RD to compile SA solution only for runtime debug]
+echo     Command: DDPM_Build_Script.bat D:\DDPM Debug_SA
 Exit /b 1
