@@ -67,7 +67,7 @@ namespace DDPM.SA.Plugins.SettingsManager
 
                     string programdataPath = Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData);
                     log.Info($"folderPath - programdataPath Line 68: programdataPath is null : {string.IsNullOrEmpty(programdataPath)}");
-                    string appDataPath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+                    string appDataPath = WTSFunction.GetActiveUserLocalAppDataPath(log);
                     log.Info($"folderPath - appDataPath Line 70: appDataPath is null : {string.IsNullOrEmpty(appDataPath)}");
                     string fail_info = string.Empty;
                     try

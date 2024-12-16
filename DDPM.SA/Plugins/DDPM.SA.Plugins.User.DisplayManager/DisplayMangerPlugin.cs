@@ -114,8 +114,8 @@ namespace DDPM.SA.Plugins.User.DisplayManager
         private Dictionary<string, string> USBUpstream = new Dictionary<string, string>(); // Port name, Upstream Port num
 
         private string[] OrientationString = new string[] { "", "Landscape", "Portrait", "Landscape_flipped", "Portrait_flipped" };//OSD orientation
-        private string Display_FWU_URL = $"https://clientperipherals.dell.com/DDPM/";
-        private string Display_FWU_URL_Folder = $"/Windows/Display/Firmware/";
+        private readonly string Display_FWU_URL = @$"https://clientperipherals.dell.com/DDPM/";
+        private readonly string Display_FWU_URL_Folder = @$"/Windows/Display/Firmware/";
 
         //Derek 2024/10/21
         private Process uiProcess = null;
@@ -4565,25 +4565,14 @@ namespace DDPM.SA.Plugins.User.DisplayManager
         public Task<DisplayUpdateHelper> GetDisplayFWUpdate(bool isSkipCA, ISettingsManagerDev settingsPlugin)
         {
             DisplayUpdateHelper displayUpdateHelper = new DisplayUpdateHelper();
-            SetDisplayFWUServer();
             displayUpdateHelper = GetDisplayFWMetadata(isSkipCA, settingsPlugin);
             return Task.FromResult(displayUpdateHelper);
-        }
-
-        private void SetDisplayFWUServer()
-        {
-            Display_FWU_URL = Display_FWU_URL + Display_FWU_URL_Folder;
-            string testServer = GetTestServerURL();
-            if (!string.IsNullOrEmpty(testServer))
-            {
-                Display_FWU_URL = testServer + Display_FWU_URL_Folder;
-            }
         }
 
         private string GetTestServerURL()
         {
             RegistryKey localKey64 = RegistryKey.OpenBaseKey(Microsoft.Win32.RegistryHive.LocalMachine, RegistryView.Registry64);
-            string ret = string.Empty;
+            string ret = Display_FWU_URL + Display_FWU_URL_Folder;
             if (localKey64 != null)
             {
                 RegistryKey registryKey = localKey64.OpenSubKey("SOFTWARE\\Dell\\DDPM Subagent\\", false);
@@ -4595,7 +4584,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                         string s = obj.ToString();
                         if (!string.IsNullOrEmpty(s))
                         {
-                            ret = s;
+                            ret = s + Display_FWU_URL_Folder;
                         }
                     }
                 }
@@ -4606,11 +4595,12 @@ namespace DDPM.SA.Plugins.User.DisplayManager
         private DisplayUpdateHelper GetDisplayFWMetadata(bool isSkipCA, ISettingsManagerDev settingsPlugin)
         {
             _logs.DebugMsg($"[DisplayMangerPlugin] {nameof(GetDisplayFWMetadata)} start");
+            string display_FWU_URL = GetTestServerURL();
             DisplayUpdateHelper ret = new DisplayUpdateHelper();
             if (!isSkipCA)
             {
                 CertificateCheck certificateCheck = new CertificateCheck(_logs);
-                if (!certificateCheck.CheckURLCACertificate(Display_FWU_URL))
+                if (!certificateCheck.CheckURLCACertificate(display_FWU_URL))
                 {
                     _logs.DebugMsg($"[DisplayMangerPlugin] {nameof(GetDisplayFWMetadata)} check CA fail");
                     return ret;
@@ -4628,7 +4618,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                 {
                     _logs.DebugMsg($"[DisplayMangerPlugin] {nameof(GetDisplayFWMetadata)} get jsonContent");
                     client.Timeout = TimeSpan.FromSeconds(5);
-                    HttpResponseMessage response = client.GetAsync(Display_FWU_URL + "version_sha256.json").Result;
+                    HttpResponseMessage response = client.GetAsync(display_FWU_URL + "version_sha256.json").Result;
                     response.EnsureSuccessStatusCode();
                     string jsonContent = response.Content.ReadAsStringAsync().Result;
                     List<string> InfoPkey = new List<string>();
@@ -4684,7 +4674,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                                     }
                                     else
                                     {
-                                        firmwares_item.url = Display_FWU_URL + firmwares_item.url;
+                                        firmwares_item.url = display_FWU_URL + firmwares_item.url;
                                     }
                                     firmwares_item.CurrentVersion = monitorInfo.FwVersion;
                                     firmwares_item.TheLastVersion = firmwares_item.TheLastVersion;

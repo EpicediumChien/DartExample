@@ -7979,8 +7979,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 if (o != null && o is string && !string.IsNullOrEmpty(o.ToString()))
                 {
                     writelog($"[DeleteDdpmSwUpdaterFolder], o_String={o.ToString()}.");
-                    DDPMFileSecurity DDPMFileSecurity = new DDPMFileSecurity();
-                    string AppDataPath = DDPMFileSecurity.GetActiveUserLocalAppDataPath();
+                    string AppDataPath = WTSFunction.GetActiveUserLocalAppDataPath(Log);
                     if (!string.IsNullOrEmpty(AppDataPath))
                     {
                         string path = AppDataPath + "\\Dell\\Dell Display and Peripheral Manager" + "\\" + o.ToString();

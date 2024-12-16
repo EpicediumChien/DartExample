@@ -184,7 +184,7 @@
     <value>update download cancel, because PC battery too low.</value>
   </data>
   <data name="FW_is_being_Installing" xml:space="preserve">
-    <value>FW is being Installing. Do not disconnect the device.</value>
+    <value>FW is being installed. Do not disconnect the device.</value>
   </data>
   <data name="Update" xml:space="preserve">
     <value>Update</value>
