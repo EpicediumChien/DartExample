@@ -2184,7 +2184,18 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
         {
             Debug.WriteLine($"CollaborationMsgChanged: {collaborationMsg.ToString() ?? ""}");
             writelog($"CollaborationMsgChanged: {collaborationMsg.ToString() ?? ""}");
-            CollaborationMsgNotify?.Invoke(EventArgs.Empty, collaborationMsg);
+            //CollaborationMsgNotify?.Invoke(EventArgs.Empty, collaborationMsg);
+            var di = new DeviceInfo
+            {
+                Message = collaborationMsg.ToString()
+            };
+            DeviceChangedEventArgs _EventArgs = new()
+            {
+                type = DeviceChangedType.Peripherals_SettingsChange,
+                changedProperty = "CollaborationMsgChanged",
+                device_peripherals = di
+            };
+            OnNotify(_EventArgs);
         }
 
         private void _iOverlayManager_VolatileSettingsChanged(bool arg1, string arg2, string arg3)
