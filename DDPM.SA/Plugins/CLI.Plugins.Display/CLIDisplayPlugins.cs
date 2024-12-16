@@ -11522,23 +11522,23 @@ namespace DDPM.CLI.Plugins.Display
 
                                                 break;
 
-                                            case "UNIFORMITY":
-                                                writelog($"Uniformity entry");
-                                                if (monitor.CapabilityDic.ContainsKey("E4"))
-                                                {
-                                                    retcode = SetVCPCode(devMgr, monitor, "0xE4", get_Uniformity(property.Value.ToString())).Result;
-                                                if (!retcode) ispass = false;
-                                                    else ApplyConfiguration.Uniformity = property.Value.ToString();
-                                                    writelog($"Uniformity={ApplyConfiguration.Uniformity}");
-                                                }
-                                                else
-                                                {
-                                                    ApplyConfiguration.Uniformity = "N/A";
-                                                    writelog($"Uniformity VCP not support");
-                                                    output += $"\n  \"Result: \": \"Uniformity VCP not support\"";
-                                                }
+                                            //case "UNIFORMITY":
+                                            //    writelog($"Uniformity entry");
+                                            //    if (monitor.CapabilityDic.ContainsKey("E4"))
+                                            //    {
+                                            //        retcode = SetVCPCode(devMgr, monitor, "0xE4", get_Uniformity(property.Value.ToString())).Result;
+                                            //    if (!retcode) ispass = false;
+                                            //        else ApplyConfiguration.Uniformity = property.Value.ToString();
+                                            //        writelog($"Uniformity={ApplyConfiguration.Uniformity}");
+                                            //    }
+                                            //    else
+                                            //    {
+                                            //        ApplyConfiguration.Uniformity = "N/A";
+                                            //        writelog($"Uniformity VCP not support");
+                                            //        output += $"\n  \"Result: \": \"Uniformity VCP not support\"";
+                                            //    }
 
-                                                break;
+                                            //    break;
 
                                             case "POWERNAP":
                                                 writelog($"PowerNap entry");
