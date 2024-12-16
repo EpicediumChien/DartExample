@@ -64,7 +64,7 @@
                     <Grid VerticalAlignment="top" Grid.Row="2" Visibility="{Binding IsSliderVisible, Converter={StaticResource BoolToVisibilityConverter}}">
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,18,0,0">
                             <UXControls:UXSlider Value="{Binding BackLightingLevel}" Maximum="4" Width="400" Thumb.DragCompleted="BackLightingSlider_DragCompleted" Thumb.DragStarted="BackLightingSlider_DragStarted" />
-                            <UXControls:UXTextBlock Text="{Binding BackLightingLevelText}" FontWeight="Light" FontSize="14" Foreground="#A4B8CD" Margin="10,0,0,0" />
+                            <UXControls:UXTextBlock Text="{Binding BackLightingLevelText}" FontWeight="Light" FontSize="14" Foreground="{DynamicResource DefaultTheme_ProcessBarTxtColor}" Margin="10,0,0,0" />
                         </StackPanel>
                     </Grid>
                 </Grid>
