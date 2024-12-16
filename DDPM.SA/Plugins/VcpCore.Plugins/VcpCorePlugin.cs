@@ -3403,7 +3403,7 @@ namespace VcpCore.Plugins
             {
                 //Monitor.Enter(GetVCPLock);
 
-                if (_AllInfoMonitors_Mix.Count > 0 && (_AllInfoMonitors_Mix.Exists(M => M.Item1.edid.Equals(monitorInfoX.edid))))
+                if ((!IsOutInitialize) || (_AllInfoMonitors_Mix.Count > 0 && (_AllInfoMonitors_Mix.Exists(M => M.Item1.edid.Equals(monitorInfoX.edid)))))
                 {
                     int count = 0;
 
