@@ -951,7 +951,11 @@ namespace DDPM.CLI.Plugins.Display
         {
             output += $"\n  \"Device\": \"{g.LogicalDeviceType}\"";
             PeripheralResponse cli_Response2 = new PeripheralResponse(index, g);
-            cli_Response2.Connectiontype = get_headsetconnection_type(g.ConnectionType);
+            if (g.LogicalDeviceType == "LogicalHeadset")
+            {
+                //cli_Response2.SerialNumber = _devMgr.GetHeadsetSerialNumberAsync(g.ID.ToString()).Result ?? "N/A";
+                cli_Response2.Connectiontype = get_headsetconnection_type(_devMgr.GetConnectionTypeAsync(g.ID.ToString()).Result);
+            }
             output += "\n" + JsonConvert.SerializeObject(cli_Response2, Formatting.Indented);
 
             return output;
@@ -9654,10 +9658,9 @@ namespace DDPM.CLI.Plugins.Display
         {
             switch (ConnectionType.ToString())
             {
-
-                case "1": return "Wired";
-                case "2": return "WirelessDongle";
-                case "3": return "WirelessBLE";
+                case "HeadsetConnectionTypeWired": return "Wired";
+                case "HeadsetConnectionTypeWirelessDongle": return "WirelessDongle";
+                case "HeadsetConnectionTypeWirelessBLE": return "WirelessBLE";
                 default: return "Unknown";
             }
         }
