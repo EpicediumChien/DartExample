@@ -107,8 +107,11 @@ namespace DDPM.OSDs
             try
             {
                 //PIMS 332041 need launch DDPM if DDPM not launched
+                bool bDDPMHasLaunched = false;
                 if (ShowDDPM())
+                {
                     DdpmCommonHelper.DeviceManagerSA!.SetIsWidgetSettingPageLoadedByQAMAsync(true);
+                }
                 else
                     DdpmCommonHelper.DeviceManagerSA!.WriteLog($"OAMOSD launch DDPM fail");
             }
