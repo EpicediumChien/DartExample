@@ -53,7 +53,8 @@ namespace DDPM.SA.Plugins.SettingsManager
                             //Directory.CreateDirectory(saveFolderPath);
                         }*/
                         // The function call IsPathSymbolicLinked is merged to "IsFolderPathValid"
-                        folderValid = DDPMFileSecurity.IsFolderPathValid(saveFolderPath, out FolderInfo);// && folderValid;
+                        //folderValid = DDPMFileSecurity.IsFolderPathValid(saveFolderPath, out FolderInfo);// && folderValid;
+                        folderValid = DDPMFileSecurity.ValidateFilePath(saveFolderPath, out FolderInfo); //[Dean 1216] Validate with sanitized string check
                         if (!folderValid)
                         {
                             log.Info(nameof(SaveLogFile) + " FolderIsNotSafe:" + FolderInfo + " Retry:" + (count++));
