@@ -4777,16 +4777,16 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Application settings applied to %1 successfully. Enjoy using your monitor..
+        ///   Looks up a localized string similar to Application settings applied to %1 successfully. Dell Display and Peripheral Manager will restart..
         /// </summary>
         internal static string ImpExp_SuccessMsg_1 {
             get {
                 return ResourceManager.GetString("ImpExp_SuccessMsg.1", resourceCulture);
             }
         }
-
+        
         /// <summary>
-        /// Application settings applied to %1 successfully. The Easy Memory setting will be cleaned. Please setup Easy Memory again. Dell Display and Peripheral Manager will restart.
+        ///   Looks up a localized string similar to Application settings applied to %1 successfully. The Easy Memory setting will be cleaned. Please setup Easy Memory again. Dell Display and Peripheral Manager will restart..
         /// </summary>
         internal static string ImpExp_SuccessMsg_2 {
             get {
@@ -4795,7 +4795,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   查詢類似 An new monitor %1 is detected. 的當地語系化字串。
+        ///   Looks up a localized string similar to A new monitor %1 is detected..
         /// </summary>
         internal static string ImpExp_Title_0 {
             get {
@@ -7581,6 +7581,15 @@ namespace DDPM.UI.Resources {
         internal static string USB {
             get {
                 return ResourceManager.GetString("USB", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Example: “Alt + P”; “Shift + F”; “Ctrl + Shift + F”\nNote: For multiple monitors, the mouse cursor should be on the targeted monitor screen to trigger the hotkey function..
+        /// </summary>
+        internal static string USBKVM_Tips {
+            get {
+                return ResourceManager.GetString("USBKVM.Tips", resourceCulture);
             }
         }
         
