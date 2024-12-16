@@ -1420,7 +1420,6 @@ namespace DDPM.UI.Plugin.ViewModels
             get => _saturation;
             set
             {
-                _saturation = value;
                 if (value != _saturation)
                 {
                     _saturation = value;
