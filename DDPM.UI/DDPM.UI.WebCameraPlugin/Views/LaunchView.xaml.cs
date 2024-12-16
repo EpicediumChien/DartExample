@@ -211,8 +211,10 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             //因為需要處理PresenceDetection分頁是否出現判斷,改變呼叫順序
             check_PresenceFunction();
             BuildModuleGroups();
-            CheckUSBtype();
             initResolutionFPS();
+            //usb 2.0限制規則要放在最後做校正
+            CheckUSBtype();
+            
 
 
             DdpmCommonHelper.BitmapImageUpdated += ImageUpdate;
@@ -751,6 +753,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                         _vm.btnRes1_width = 201;
                         _vm.btnRes1_radius_v = new CornerRadius(5, 0, 0, 5);
                         _vm.btnRes2_width = 201;
+                        _vm!.SetResolution_Selected(1);
                     }
                     break;
                 case "U3224KBA":
@@ -780,6 +783,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                         _vm.btnRes1_width = 201;
                         _vm.btnRes1_radius_v = new CornerRadius(5, 0, 0, 5);
                         _vm.btnRes2_width = 201;
+                        _vm!.SetResolution_Selected(1);
                     }
                     break;
                 case "U3223QZ":
@@ -807,6 +811,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                         _vm.btnRes1_width = 201;
                         _vm.btnRes1_radius_v = new CornerRadius(5, 0, 0, 5);
                         _vm.btnRes2_width = 201;
+                        _vm!.SetResolution_Selected(1);
 
                     }
                     break;
@@ -829,6 +834,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                         _vm.btnRes1_width = 201;
                         _vm.btnRes1_radius_v = new CornerRadius(5, 0, 0, 5);
                         _vm.btnRes2_width = 201;
+                        _vm!.SetResolution_Selected(1);
                     }
                     break;
             }
@@ -1006,6 +1012,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                 {
                     print_debug("_vm.MediaCapture == null");
                     Thread.Sleep(100);//for wait device init
+                    DdpmCommonHelper.WriteUILog("WebCameraMicrophone Action 10 (retry) : " + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
                     _vm.mre.Set();
                     return;
                 }
