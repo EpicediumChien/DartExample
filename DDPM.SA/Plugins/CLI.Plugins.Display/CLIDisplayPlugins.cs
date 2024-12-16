@@ -4111,89 +4111,93 @@ namespace DDPM.CLI.Plugins.Display
                     List<string> swapIsDone = new List<string>();
                     if (commandLineInput.DeviceIndex.Count == 0 && commandLineInput.ServiceTag.Count == 0 && commandLineInput.Model.Count == 0)
                     {
+                        writelog($"ActiveInputSource set entry");
+                        serviceTagList = _AllInfoMonitors.DistinctBy(_ => _.edid.ServiceTag).ToDictionary(_ => _.edid.ServiceTag, _ => _.edid.ServiceTag);
+                        targetList = _AllInfoMonitors.Select(_ => _.edid.ServiceTag).ToList();
+                        outCount = _AllInfoMonitors.Select(_ => _.edid.ServiceTag).ToList().Count();
                         //CLI_Set_Input_RESPONSE _Set_Input_RESPONSE = new CLI_Set_Input_RESPONSE();
                         //foreach (var monitor in _AllInfoMonitors)
-                        for (int i = 0; i < _AllInfoMonitors.Count; i++)
-                        {
-                            writelog($"ActiveInputSource set entry");
-                            var monitor = _AllInfoMonitors[i];
+                        //for (int i = 0; i < _AllInfoMonitors.Count; i++)
+                        //{
+                        //    writelog($"ActiveInputSource set entry");
+                        //    var monitor = _AllInfoMonitors[i];
 
-                            CLI_RESPONSE _Input_RESPONSE = new CLI_RESPONSE(monitor);
-                            _Input_RESPONSE.Command = commandLineInput.Command;
-                            _Input_RESPONSE.TargetFeature = commandLineInput.TargetFeature;
+                        //    CLI_RESPONSE _Input_RESPONSE = new CLI_RESPONSE(monitor);
+                        //    _Input_RESPONSE.Command = commandLineInput.Command;
+                        //    _Input_RESPONSE.TargetFeature = commandLineInput.TargetFeature;
 
-                            //commandLineInput.Options[0].Option_Value.Replace(".", ",");
-                            string[] op_values = commandLineInput.Options[0].Option_Value.Replace(".", ",").Split(",");
+                        //    //commandLineInput.Options[0].Option_Value.Replace(".", ",");
+                        //    string[] op_values = commandLineInput.Options[0].Option_Value.Replace(".", ",").Split(",");
 
-                            foreach (string v in op_values)
-                            {
-                                switch (v.ToUpper())
-                                {
-                                    case "LOCK":
-                                    case "UNLOCK":
-                                        if (v.ToUpper().Equals("LOCK")) data.LockSettings.Lock_Display_ActiveInputSource = true;
-                                        if (v.ToUpper().Equals("UNLOCK")) data.LockSettings.Lock_Display_ActiveInputSource = false;
-                                        await devMgr.SetAppConfigData(data);
-                                        break;
-                                }
-                            }
-                            string get_inputvpccode = get_inputsource_type(op_values[0]);
-                            // int getvcp = get_inputsource_vcp(get_inputvpccode);
+                        //    foreach (string v in op_values)
+                        //    {
+                        //        switch (v.ToUpper())
+                        //        {
+                        //            case "LOCK":
+                        //            case "UNLOCK":
+                        //                if (v.ToUpper().Equals("LOCK")) data.LockSettings.Lock_Display_ActiveInputSource = true;
+                        //                if (v.ToUpper().Equals("UNLOCK")) data.LockSettings.Lock_Display_ActiveInputSource = false;
+                        //                await devMgr.SetAppConfigData(data);
+                        //                break;
+                        //        }
+                        //    }
+                        //    string get_inputvpccode = get_inputsource_type(op_values[0]);
+                        //    // int getvcp = get_inputsource_vcp(get_inputvpccode);
 
-                            if (get_inputvpccode != "Unknown")
-                            {
-                                if (commandLineInput.Options.Count == 1)
-                                {
-                                    // bool retcode = SetVCPCode(devMgr, monitor, "0x60", "0x" + get_inputsource_vcp(get_inputvpccode).ToString("X2")).Result;
-                                    bool retcode = SetVCPCode(devMgr, monitor, "Input Select", get_inputvpccode).Result;
-                                    if (!retcode) ispass = false;
+                        //    if (get_inputvpccode != "Unknown")
+                        //    {
+                        //        if (commandLineInput.Options.Count == 1)
+                        //        {
+                        //            // bool retcode = SetVCPCode(devMgr, monitor, "0x60", "0x" + get_inputsource_vcp(get_inputvpccode).ToString("X2")).Result;
+                        //            bool retcode = SetVCPCode(devMgr, monitor, "Input Select", get_inputvpccode).Result;
+                        //            if (!retcode) ispass = false;
 
-                                    //_Input_RESPONSE.ActiveInputSource = commandLineInput.Options[0].Option_Value;
-                                    _Input_RESPONSE.Value = op_values[0];
-                                    if (!ispass)
-                                    {
-                                        _Input_RESPONSE.Result = "FAIL";
-                                        _Input_RESPONSE.Message = "FAIL_SetVCP";
-                                        System.Console.WriteLine(_Input_RESPONSE.ToJson());
-                                        output += "\n" + _Input_RESPONSE.ToJson();
-                                    }
-                                    else
-                                    {
-                                        _Input_RESPONSE.Result = "PASS";
-                                        //_Input_RESPONSE.Value += "," + (data.LockSettings.Lock_Display_ActiveInputSource ? "LOCK" : "UNLOCK");
-                                        System.Console.WriteLine(_Input_RESPONSE.ToJson());
-                                        output += "\n" + _Input_RESPONSE.ToJson();
-                                    }
-                                }
-                                else
-                                {
-                                    //_Input_RESPONSE.ActiveInputSource = String.Empty;
-                                    _Input_RESPONSE.Result = "FAIL";
-                                    if (commandLineInput.Options.Count > 1)
-                                    {
-                                        _Input_RESPONSE.Message = "Too Many Value";
-                                    }
-                                    else
-                                    {
-                                        _Input_RESPONSE.Message = "No Value";
-                                    }
-                                    System.Console.WriteLine(_Input_RESPONSE.ToJson());
-                                    output += "\n" + _Input_RESPONSE.ToJson();
-                                    return ((int)CLI_ExitCode.fail_Value, output);
-                                }
-                            }
-                            else
-                            {
-                                //_Input_RESPONSE.ActiveInputSource = String.Empty;
-                                _Input_RESPONSE.Result = "FAIL";
-                                _Input_RESPONSE.Message = "Wrong option value: ";
-                                _Input_RESPONSE.Message += $"{op_values[0]}";//add error message if option value not exist in input source list
-                                System.Console.WriteLine(_Input_RESPONSE.ToJson());
-                                output += "\n" + _Input_RESPONSE.ToJson();
-                                writelog($"ActiveInputSource set fail {output}");
-                                return ((int)CLI_ExitCode.fail_Value, output);
-                            }
-                        }
+                        //            //_Input_RESPONSE.ActiveInputSource = commandLineInput.Options[0].Option_Value;
+                        //            _Input_RESPONSE.Value = op_values[0];
+                        //            if (!ispass)
+                        //            {
+                        //                _Input_RESPONSE.Result = "FAIL";
+                        //                _Input_RESPONSE.Message = "FAIL_SetVCP";
+                        //                System.Console.WriteLine(_Input_RESPONSE.ToJson());
+                        //                output += "\n" + _Input_RESPONSE.ToJson();
+                        //            }
+                        //            else
+                        //            {
+                        //                _Input_RESPONSE.Result = "PASS";
+                        //                //_Input_RESPONSE.Value += "," + (data.LockSettings.Lock_Display_ActiveInputSource ? "LOCK" : "UNLOCK");
+                        //                System.Console.WriteLine(_Input_RESPONSE.ToJson());
+                        //                output += "\n" + _Input_RESPONSE.ToJson();
+                        //            }
+                        //        }
+                        //        else
+                        //        {
+                        //            //_Input_RESPONSE.ActiveInputSource = String.Empty;
+                        //            _Input_RESPONSE.Result = "FAIL";
+                        //            if (commandLineInput.Options.Count > 1)
+                        //            {
+                        //                _Input_RESPONSE.Message = "Too Many Value";
+                        //            }
+                        //            else
+                        //            {
+                        //                _Input_RESPONSE.Message = "No Value";
+                        //            }
+                        //            System.Console.WriteLine(_Input_RESPONSE.ToJson());
+                        //            output += "\n" + _Input_RESPONSE.ToJson();
+                        //            return ((int)CLI_ExitCode.fail_Value, output);
+                        //        }
+                        //    }
+                        //    else
+                        //    {
+                        //        //_Input_RESPONSE.ActiveInputSource = String.Empty;
+                        //        _Input_RESPONSE.Result = "FAIL";
+                        //        _Input_RESPONSE.Message = "Wrong option value: ";
+                        //        _Input_RESPONSE.Message += $"{op_values[0]}";//add error message if option value not exist in input source list
+                        //        System.Console.WriteLine(_Input_RESPONSE.ToJson());
+                        //        output += "\n" + _Input_RESPONSE.ToJson();
+                        //        writelog($"ActiveInputSource set fail {output}");
+                        //        return ((int)CLI_ExitCode.fail_Value, output);
+                        //    }
+                        //}
                     }
                     else if (commandLineInput.DeviceIndex.Count != 0)
                     {
@@ -6952,6 +6956,17 @@ namespace DDPM.CLI.Plugins.Display
                     USBCPrioritization_RESPONSE = new CLI_Get_Properties_USBCPrioritization_RESPONSE(cLI_RESPONSE);
                     DDPMSettings data = devMgr.ReloadAppConfigData().Result;
                     //USBCPrioritization_RESPONSE.SupportedUSBCPrioritization = displayPropertiesInfo.SupportedUSBCPrioritization ? "Yes" : "No";
+                    int count = 0;
+                    bool flag = true;
+                    while (flag && count < 1000)
+                    {
+                        Thread.Sleep(3000);
+                        _AllInfoMonitors = devMgr.GetMonitors().Result;
+                        var serviceTag = _AllInfoMonitors.FirstOrDefault(_ => _.edid.ServiceTag == monitorInfo.edid.ServiceTag);
+                        if (serviceTag != null)
+                            flag = false;
+                        count++;
+                    }
                     if (displayPropertiesInfo.SupportedUSBCPrioritization)
                     {
                         if (commandLineInput.Command.Equals("GET"))
