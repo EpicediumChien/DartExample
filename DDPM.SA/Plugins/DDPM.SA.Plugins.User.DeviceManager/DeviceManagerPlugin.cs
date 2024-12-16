@@ -10201,6 +10201,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         private ZoomMeetingType _ZoomMeetingType = ZoomMeetingType.ZOOM_MEETING_TYPE_UNKNOW;
         private bool isWindowsScreenNotLocked = true;
         private string QAMWebcamDeviceGuid = string.Empty;
+        private bool isOpenOSDWhenQAMClosed = true; //Derek 1215 for PIMS 332040
 
         //private bool isHiddenConditionsMet = false;
         private int currentZoomValue = -1;
@@ -10276,7 +10277,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     )
                 {
                     ResetQAMCondition();
-                    QAMClose();
+                    QAMClose(false);
                     CloseQAMOSD();
 
                     writelog($"Abnormal condition occur, close QAM/OSD if it's opened.");
@@ -10326,14 +10327,16 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     {
                         writelog($"HandleQAM receive QAMClose event");
 
-                        QAMClose();
+                        QAMClose(true);
                     }
+
+                    isOpenOSDWhenQAMClosed = true;
                 }
                 else
                 {
-                    QAMClose();
+                    QAMClose(false);
 
-                    writelog($"Close QAM due to global setting change to {_GlobalSettingParam.GlobalSetting_WidgetSettings.EnableQuickAccessWidget}");
+                    writelog($"Close QAM/OSD due to global setting change to {_GlobalSettingParam.GlobalSetting_WidgetSettings.EnableQuickAccessWidget}");
                 }
             }
             catch (Exception e)
@@ -10395,7 +10398,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             {
                 writelog($"HandleQAM receive QAMClose event");
 
-                QAMClose();
+                QAMClose(false);
             }
 
             //if (_ZoomMeetingType == ZoomMeetingType.CONF_3RD_EVENT_MEETING)
@@ -10560,7 +10563,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 _QAM = null;
 
                 if (_GlobalSettingParam != null && _GlobalSettingParam.GlobalSetting_WidgetSettings != null
-                    && _GlobalSettingParam.GlobalSetting_WidgetSettings.EnableQuickAccessWidget_Reminder)
+                    && _GlobalSettingParam.GlobalSetting_WidgetSettings.EnableQuickAccessWidget_Reminder && 
+                    isOpenOSDWhenQAMClosed)
                 {
                     ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.QAM);
                 }
@@ -10605,7 +10609,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         //    writelog($"QAMShow done");
         //}
-        private Task QAMClose()
+        private Task QAMClose(bool openQAMOSD)
         {
             if (null == _QAM)
                 return Task.CompletedTask;
@@ -10616,6 +10620,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             {
                 writelog($"Try to run QAMClose");
                 _QAM?.Dispatcher.BeginInvoke(DispatcherPriority.Normal, () => _QAM?.Close());
+                isOpenOSDWhenQAMClosed = openQAMOSD;
             }
             catch (Exception e)
             {
@@ -10811,7 +10816,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         {
             writelog($"UI send command CloseQAMByDDPM");
 
-            QAMClose();
+            QAMClose(true);
 
             return Task.CompletedTask;
         }
