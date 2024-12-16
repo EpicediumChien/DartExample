@@ -6810,8 +6810,25 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         #region EasyArrage
 
-        #region EAFunctionEanbled - EasyArrange
+        #region Properties - EasyArrange
         /// <summary>
+        /// The last error string after a EAPlugin method return error.
+        /// </summary>
+        public string EALastError
+        {
+            get
+            {
+                if (_DisplayManagerPlugin != null)
+                    return "DisplayManagerPlugin is not constructed.";
+                return _DisplayManagerPlugin.EALastError;
+            }
+        }
+        #endregion Properties - EasyArrange
+
+        #region EAFunctionEanbled - EasyArrange
+
+        /// <summary>
+        /// Robert_Lin, 2024-12-12, To be removed. Use 
         /// Enable/Disable EasyArrange function for all monitors.
         /// When Disabled (isEnable=false), DDPM will not show the WorkWindow (to arrange window),
         /// but user can edit/setup in DDPM.UI and save their settings.
@@ -6827,6 +6844,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             return Task.FromResult(false);
         }
 
+        /// <summary>
+        /// Robert_Lin, 2024-12-12, To be removed.
+        /// Old method for CLI
+        /// </summary>
+        /// <returns></returns>
         public Task<ObjGetVCP> GetEAFunctionEnabled()
         {
             if (_DisplayManagerPlugin != null)
@@ -6837,141 +6859,198 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         }
         #endregion EAFunctionEanbled - EasyArrange
 
-        /// <summary>
-        /// Set current WorkSplit (selected layout).
-        /// EAPlugin will show the new WorkSpit layout on the target "Screen" and autofade-out.
-        /// This method will not save to settings file, please use WriteEAMonitorSettings() to
-        /// save new per-monitor settings.
-        /// </summary>
-        /// <param name="monitorInfo">The target monitor, EAPlugin will use this to find the target "Screen"</param>
-        /// <param name="cellCount"></param>
-        /// <param name="splitKey"></param>
-        /// <param name="settings"></param>
-        /// <returns>Always true unless DisplayManager is not ready</returns>
-        public Task<bool> SetEAWrokSplit(MonitorInfo monitorInfo, int cellCount, char splitKey, List<double>? settings)
+        #region EzSettings - EasyArrange
+        public Task<EzSettings> ReadEzSettings()
         {
-            if (_DisplayManagerPlugin != null)
+            //Read DDPMSettings
+            DDPMSettings ddpmSettings = _SettingsPlugin.ReloadAppConfigData().Result;
+            if (ddpmSettings != null)
             {
-                _DisplayManagerPlugin.SetEAWrokSplit(monitorInfo, cellCount, splitKey, settings);
-                //Telemetry
-                //Robert_Lin, 2024-11-15, add monitorInfo for PIMS-321601
-                SendEasyArrangeTelemetry("Change_layout", monitorInfo);
+                return Task.FromResult(ddpmSettings.UserSettings.EzSettings);
             }
+            //Fail to read, will return the default settings
+            return Task.FromResult(new EzSettings());
+        }
+
+        public Task<bool> WriteEzSettings_IsWidthoutGap(bool newValue)
+        {
+            if (_SettingsPlugin != null)
+            {
+                DDPMSettings ddpmSettings = _SettingsPlugin.ReloadAppConfigData().Result;
+                if (ddpmSettings != null)
+                {
+                    //Check if value is changed
+                    if (ddpmSettings.UserSettings.EzSettings.IsWidthoutGap == newValue)
+                        return Task.FromResult(true);
+
+                    //Apply new setting value
+                    ddpmSettings.UserSettings.EzSettings.IsWidthoutGap = newValue;
+                    //Save the DDPMSettings back to Settings file
+                    if (_SettingsPlugin.SetAppConfigData(ddpmSettings).Result)
+                    {
+                        if (_DisplayManagerPlugin != null)
+                        {
+                            _DisplayManagerPlugin.ReloadEzSettings();
+                        }
+
+                        SendEasyArrangeTelemetry("OverlapBorder");
+                        return Task.FromResult(true);
+                    }
+                }
+            }
+            //Read DDPMSettings
+            //Fail to read, will return false
             return Task.FromResult(false);
         }
 
-        public Task<bool> NotifyEASelectedLayoutChanged(MonitorInfo monitorInfo, SplitJson spJson)
+        public Task<bool> WriteEzSettings_IsOnlyAllowWhenShiftKeyPressed(bool newValue)
         {
-            if (_DisplayManagerPlugin != null)
+            if (_SettingsPlugin != null)
             {
-                _DisplayManagerPlugin.NotifyEASelectedLayoutChanged(monitorInfo, spJson);
-                //Telemetry
-                //Robert_Lin, 2024-11-15, add monitorInfo for PIMS-321601
-                SendEasyArrangeTelemetry("Change_layout", monitorInfo);
-            }
-            return Task.FromResult(false);
-        }
+                DDPMSettings ddpmSettings = _SettingsPlugin.ReloadAppConfigData().Result;
+                if (ddpmSettings != null)
+                {
+                    //Check if value is changed
+                    if (ddpmSettings.UserSettings.EzSettings.IsOnlyAllowWhenShiftKeyPressed == newValue)
+                    {
+                        writelog($"@ DeviceManager.WriteEzSettings_IsOnlyAllowWhenShiftKeyPressed({newValue}): Value is not changed");
+                        return Task.FromResult(true);
+                    }
 
-        //Robert_Lin, 2024-9-13 Remove unused interfaces
-        //public Task<bool> RequestEditSplit(MonitorInfo monitorInfo, int cellCount, char splitKey, string customName, List<double>? settings = null)
-        //{
-        //    if (_DisplayManagerPlugin != null)
-        //    {
-        //        return _DisplayManagerPlugin.RequestEditSplit(monitorInfo, cellCount, splitKey, customName, settings);
-        //    }
-        //    return Task.FromResult(false);
-        //}
+                    //Apply new setting value
+                    ddpmSettings.UserSettings.EzSettings.IsOnlyAllowWhenShiftKeyPressed = newValue;
+                    writelog($"@ DeviceManager.WriteEzSettings_IsOnlyAllowWhenShiftKeyPressed({newValue}): Value is changed");
+                    //Save the DDPMSettings back to Settings file
+                    if (_SettingsPlugin.SetAppConfigData(ddpmSettings).Result)
+                    {
+                        writelog($"@ DeviceManager.WriteEzSettings_IsOnlyAllowWhenShiftKeyPressed({newValue}): Update to settings file");
+                        if (_DisplayManagerPlugin != null)
+                        {
+                            writelog($"@ DeviceManager.WriteEzSettings_IsOnlyAllowWhenShiftKeyPressed({newValue}): Notify EAPlugin to refresh itself");
+                            _DisplayManagerPlugin.ReloadEzSettings();
+                        }
 
-        //public Task<string> WriteEasyArrangeSettings(EAMonitorSettings eaMonitorSettings)
-        //{
-        //    if (_SettingsPlugin == null)
-        //    {
-        //        string err = "SettingsPlugin is null.";
-        //        writelog($"WriteEasyArrangeSettings(), {err}");
-        //        return Task.FromResult(err);
-        //    }
-        //    return _SettingsPlugin.WriteEasyArrangeSettings(eaMonitorSettings);
-        //}
-
-        //public Task<EAMonitorSettings> ReadEasyArrangeSettings(string monitorModel, string serialNumber)
-        //{
-        //    if (_SettingsPlugin == null)
-        //    {
-        //        string err = "SettingsPlugin is null.";
-        //        writelog($"WriteEasyArrangeSettings(), {err}");
-        //        return Task.FromResult<EAMonitorSettings>(null);
-        //    }
-        //    return _SettingsPlugin.ReadEasyArrangeSettings(monitorModel, serialNumber);
-        //}
-
-        //Robert_Lin, 2024-9-13 Remove unused interfaces
-        //private void _DisplayManagerPlugin_EAEditCompleted(object sender, string e)
-        //{
-        //    if (EAEditCompleted != null)
-        //    {
-        //        Task.Run(() => EAEditCompleted.Invoke(this, e));
-        //    }
-        //}
-
-        /// <summary>
-        /// Notify to UI: The EAPlugin is enter the Edit stage. The Layout you specified in EAEditCommand()
-        /// is under editing. By design, UI should minimized itself.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void _DisplayManagerPlugin_EAEditStarted(object sender, string e)
-        {
-            if (EAEditStarted != null)
-            {
-                writelog("@ DeviceManaerPlugin._DisplayManagerPlugin_EAEditStarted(), Call to next handler.");
-                Task.Run(() => EAEditStarted.Invoke(this, e));
+                        SendEasyArrangeTelemetry("Hold-Shift");
+                        return Task.FromResult(true);
+                    }
+                }
             }
             else
             {
-                writelog("@ DeviceManaerPlugin._DisplayManagerPlugin_EAEditStarted(), EAEditStarted is null.");
+                writelog($"@ DeviceManager.WriteEzSettings_IsOnlyAllowWhenShiftKeyPressed({newValue}): _SettingsPlugin is null");
             }
-        }
-
-        //Robert_Lin, 2024-8-4 added
-        /// <summary>
-        /// Request from UI, to initiate a layout edit process.
-        /// </summary>
-        /// <param name="monitorInfo"></param>
-        /// <param name="args">The arguments for the Edit command.</param>
-        /// <returns></returns>
-        public Task<bool> EAEditCommand(MonitorInfo monitorInfo, EAArgs args)
-        {
-            if (_DisplayManagerPlugin != null)
-            {
-                return _DisplayManagerPlugin.EAEditCommand(monitorInfo, args);
-            }
-            writelog("@ DeviceManaerPlugin.EAEditCommand(), _DisplayManagerPlugin is null.");
+            //Read DDPMSettings
+            //Fail to read, will return false
             return Task.FromResult(false);
         }
 
-        /// <summary>
-        /// Notify to UI, the EditCommand has been finished and return to UI.
-        /// UI can get the return from EAArgs.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e">The result of the edit command.
-        /// UI can check if user finish the edit process by clicking "Save", or "Cancel"</param>
-        private void _DisplayManagerPlugin_EAEditReturn(object sender, EAArgs e)
+        public Task<bool> WriteEzSettings_IsSpanAcrossMultiMonitors(bool newValue)
         {
-            if (EAEditReturn != null)
+            if (_SettingsPlugin != null)
             {
-                writelog("@ DeviceManaerPlugin._DisplayManagerPlugin_EAEditReturn(), Call to next handler.");
-                Task.Run(() => EAEditReturn.Invoke(this, e));
+                DDPMSettings ddpmSettings = _SettingsPlugin.ReloadAppConfigData().Result;
+                if (ddpmSettings != null)
+                {
+                    //Check if value is changed
+                    if (ddpmSettings.UserSettings.EzSettings.IsSpanAcrossMultiMonitors == newValue)
+                        return Task.FromResult(true);
 
-                //Only if Result==true will send Telemetry
-                if (e.Result)
-                    SendEasyArrangeTelemetry("Custom_Layout");
+                    //Apply new setting value
+                    ddpmSettings.UserSettings.EzSettings.IsSpanAcrossMultiMonitors = newValue;
+                    //Save the DDPMSettings back to Settings file
+                    if (_SettingsPlugin.SetAppConfigData(ddpmSettings).Result)
+                    {
+                        if (_DisplayManagerPlugin != null)
+                        {
+                            _DisplayManagerPlugin.ReloadEzSettings();
+                        }
+
+                        SendEasyArrangeTelemetry("span_monitors");
+                        return Task.FromResult(true);
+                    }
+                }
             }
-            else
-            {
-                writelog("@ DeviceManaerPlugin._DisplayManagerPlugin_EAEditReturn(), EAEditReturn is null.");
-            }
+            //Read DDPMSettings
+            //Fail to read, will return false
+            return Task.FromResult(false);
         }
+
+        public Task<bool> WriteEzSettings_IsAwsEnabled(bool newValue)
+        {
+            if (_SettingsPlugin != null)
+            {
+                DDPMSettings ddpmSettings = _SettingsPlugin.ReloadAppConfigData().Result;
+                if (ddpmSettings != null)
+                {
+                    //Check if value is changed
+                    if (ddpmSettings.UserSettings.EzSettings.IsAwsEnabled == newValue)
+                        return Task.FromResult(true);
+                    //Apply new setting value
+                    ddpmSettings.UserSettings.EzSettings.IsAwsEnabled = newValue;
+                    //Save the DDPMSettings back to Settings file
+                    if (_SettingsPlugin.SetAppConfigData(ddpmSettings).Result)
+                    {
+                        if (_DisplayManagerPlugin != null)
+                        {
+                            _DisplayManagerPlugin.ReloadEzSettings();
+                        }
+
+                        //Telemetry
+                        SendEasyArrangeTelemetry("App-Snap");
+
+                        return Task.FromResult(true);
+                    }
+                }
+            }
+            //Read DDPMSettings
+            //Fail to read, will return false
+            return Task.FromResult(false);
+        }
+        #endregion EzSettings - EasyArrange
+
+        #region EA Custom List - EasyArrange
+        //Robert_Ln, 2024-10-12, Added after move CustomList to UserSettings from MonitorSettings
+        public Task<SplitJson[]> ReadEACustomList()
+        {
+            if (_SettingsPlugin != null)
+            {
+                //Read App Settings
+                DDPMSettings appSettings = _SettingsPlugin.ReloadAppConfigData().Result;
+                //Don't return null, return empty array instead
+                if (appSettings != null)
+                {
+                    if (appSettings.UserSettings != null)
+                    {
+                        if (appSettings.UserSettings.EACustomList != null)
+                            return Task.FromResult(appSettings.UserSettings.EACustomList);
+                    }
+                }
+            }
+            //Failed, return an empty array instead of null
+            return Task.FromResult(Array.Empty<SplitJson>());
+        }
+
+        //Robert_Lin, 2024-10-12 added, move EACustomList to UserSettings from MonitorSettings
+        public Task<bool> WriteEACustomList(SplitJson[] customList)
+        {
+            if (_SettingsPlugin != null)
+            {
+                //Read App Settings
+                DDPMSettings appSettings = _SettingsPlugin.ReloadAppConfigData().Result;
+                if (appSettings != null)
+                {
+                    if (appSettings.UserSettings != null)
+                    {
+                        appSettings.UserSettings.EACustomList = (SplitJson[])customList.Clone();
+                        //Writeback to app settings
+                        _SettingsPlugin.SetAppConfigData(appSettings);
+                    }
+                }
+            }
+            //Failed, return an empty array instead of null
+            return Task.FromResult(false);
+        }
+        #endregion EA Custom List - EasyArrange
 
         #region EAMonitorSettings - EasyArrange
         public Task<bool> WriteEAMonitorSettings(MonitorInfo monitorInfo, EAMonitorSettings eaSettings)
@@ -7123,6 +7202,176 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         }
         #endregion EAMonitorSettings - EasyArrange
 
+        #region SelectedLayout - EasyArrange
+        public Task<int> GetEASelectedLayout(MonitorInfo monitorInfo)
+        {
+            //Read the EAMonitorSettings from MonitorSettins.
+            //If faile to read will return default settings. never return null.
+            EAMonitorSettings eaSettings = ReadEAMonitorSettings(monitorInfo).Result;
+            //Return the RAID of EAMonitorSettings.SelectedLayout
+            return Task.FromResult(eaSettings.SelectedSplit.EAID);
+        }
+
+        public Task<bool> SetEASelectedLayout(MonitorInfo monitorInfo, int eaId)
+        {
+            if (_DisplayManagerPlugin != null)
+            {
+                writelog($"@ DeviceManager.SetEASelectedLayout({eaId})");
+                return _DisplayManagerPlugin.SetEASelectedLayout(monitorInfo, eaId);
+            }
+            writelog($"@ DeviceManager.SetEASelectedLayout({eaId}): _DisplayManagerPlugin is null");
+            return Task.FromResult(false);
+        }
+
+        // [OLD, Use NotifyEASelectedLayoutChanged() instead]
+        public Task<bool> SetEAWrokSplit(MonitorInfo monitorInfo, int cellCount, char splitKey, List<double>? settings)
+        {
+            if (_DisplayManagerPlugin != null)
+            {
+                _DisplayManagerPlugin.SetEAWrokSplit(monitorInfo, cellCount, splitKey, settings);
+                //Telemetry
+                //Robert_Lin, 2024-11-15, add monitorInfo for PIMS-321601
+                SendEasyArrangeTelemetry("Change_layout", monitorInfo);
+            }
+            return Task.FromResult(false);
+        }
+
+        public Task<bool> NotifyEASelectedLayoutChanged(MonitorInfo monitorInfo, SplitJson spJson)
+        {
+            if (_DisplayManagerPlugin != null)
+            {
+                _DisplayManagerPlugin.NotifyEASelectedLayoutChanged(monitorInfo, spJson);
+                //Telemetry
+                //Robert_Lin, 2024-11-15, add monitorInfo for PIMS-321601
+                SendEasyArrangeTelemetry("Change_layout", monitorInfo);
+            }
+            return Task.FromResult(false);
+        }
+
+        /// <summary>
+        /// [Unused Method]
+        /// [OLD, Use SetEASelectedLayout(MonitorInfo monitorInfo, int eaId) instead]
+        /// This method is reserved for CLI command usage. Howevent CLI does not define a command
+        /// to set SelectedLayout (only select Off)
+        /// </summary>
+        /// <param name="monitorInfo"></param>
+        /// <param name="spJson"></param>
+        /// <returns></returns>
+        public Task<bool> SetEASelectedLayout(MonitorInfo monitorInfo, SplitJson spJson)
+        {
+            if (_DisplayManagerPlugin != null)
+            {
+                return _DisplayManagerPlugin.SetEASelectedLayout(monitorInfo, spJson);
+            }
+            writelog("@ DeviceManager.SetEASelectedLayout(): _DisplayManagerPlugin is null");
+            return Task.FromResult(false);
+        }
+
+        #endregion SelectedLayout - EasyArrange
+
+
+        //Robert_Lin, 2024-9-13 Remove unused interfaces
+        //public Task<bool> RequestEditSplit(MonitorInfo monitorInfo, int cellCount, char splitKey, string customName, List<double>? settings = null)
+        //{
+        //    if (_DisplayManagerPlugin != null)
+        //    {
+        //        return _DisplayManagerPlugin.RequestEditSplit(monitorInfo, cellCount, splitKey, customName, settings);
+        //    }
+        //    return Task.FromResult(false);
+        //}
+
+        //public Task<string> WriteEasyArrangeSettings(EAMonitorSettings eaMonitorSettings)
+        //{
+        //    if (_SettingsPlugin == null)
+        //    {
+        //        string err = "SettingsPlugin is null.";
+        //        writelog($"WriteEasyArrangeSettings(), {err}");
+        //        return Task.FromResult(err);
+        //    }
+        //    return _SettingsPlugin.WriteEasyArrangeSettings(eaMonitorSettings);
+        //}
+
+        //public Task<EAMonitorSettings> ReadEasyArrangeSettings(string monitorModel, string serialNumber)
+        //{
+        //    if (_SettingsPlugin == null)
+        //    {
+        //        string err = "SettingsPlugin is null.";
+        //        writelog($"WriteEasyArrangeSettings(), {err}");
+        //        return Task.FromResult<EAMonitorSettings>(null);
+        //    }
+        //    return _SettingsPlugin.ReadEasyArrangeSettings(monitorModel, serialNumber);
+        //}
+
+        //Robert_Lin, 2024-9-13 Remove unused interfaces
+        //private void _DisplayManagerPlugin_EAEditCompleted(object sender, string e)
+        //{
+        //    if (EAEditCompleted != null)
+        //    {
+        //        Task.Run(() => EAEditCompleted.Invoke(this, e));
+        //    }
+        //}
+
+        /// <summary>
+        /// Notify to UI: The EAPlugin is enter the Edit stage. The Layout you specified in EAEditCommand()
+        /// is under editing. By design, UI should minimized itself.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void _DisplayManagerPlugin_EAEditStarted(object sender, string e)
+        {
+            if (EAEditStarted != null)
+            {
+                writelog("@ DeviceManaerPlugin._DisplayManagerPlugin_EAEditStarted(), Call to next handler.");
+                Task.Run(() => EAEditStarted.Invoke(this, e));
+            }
+            else
+            {
+                writelog("@ DeviceManaerPlugin._DisplayManagerPlugin_EAEditStarted(), EAEditStarted is null.");
+            }
+        }
+
+        //Robert_Lin, 2024-8-4 added
+        /// <summary>
+        /// Request from UI, to initiate a layout edit process.
+        /// </summary>
+        /// <param name="monitorInfo"></param>
+        /// <param name="args">The arguments for the Edit command.</param>
+        /// <returns></returns>
+        public Task<bool> EAEditCommand(MonitorInfo monitorInfo, EAArgs args)
+        {
+            if (_DisplayManagerPlugin != null)
+            {
+                return _DisplayManagerPlugin.EAEditCommand(monitorInfo, args);
+            }
+            writelog("@ DeviceManaerPlugin.EAEditCommand(), _DisplayManagerPlugin is null.");
+            return Task.FromResult(false);
+        }
+
+        /// <summary>
+        /// Notify to UI, the EditCommand has been finished and return to UI.
+        /// UI can get the return from EAArgs.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e">The result of the edit command.
+        /// UI can check if user finish the edit process by clicking "Save", or "Cancel"</param>
+        private void _DisplayManagerPlugin_EAEditReturn(object sender, EAArgs e)
+        {
+            if (EAEditReturn != null)
+            {
+                writelog("@ DeviceManaerPlugin._DisplayManagerPlugin_EAEditReturn(), Call to next handler.");
+                Task.Run(() => EAEditReturn.Invoke(this, e));
+
+                //Only if Result==true will send Telemetry
+                if (e.Result)
+                    SendEasyArrangeTelemetry("Custom_Layout");
+            }
+            else
+            {
+                writelog("@ DeviceManaerPlugin._DisplayManagerPlugin_EAEditReturn(), EAEditReturn is null.");
+            }
+        }
+
+
         private void _dump_SplitJsonList(MonitorInfo mi, List<SplitJson> splitJsonList)
         {
             Trace.WriteLine($"Monitor: {mi.AliasDeviceName}");
@@ -7190,164 +7439,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         //     return Task.FromResult(false);
         //}
 
-        #region EzSettings - EasyArrange
-        public Task<EzSettings> ReadEzSettings()
-        {
-            //Read DDPMSettings
-            DDPMSettings ddpmSettings = _SettingsPlugin.ReloadAppConfigData().Result;
-            if (ddpmSettings != null)
-            {
-                return Task.FromResult(ddpmSettings.UserSettings.EzSettings);
-            }
-            //Fail to read, will return the default settings
-            return Task.FromResult(new EzSettings());
-        }
 
-        public Task<bool> WriteEzSettings_IsWidthoutGap(bool newValue)
-        {
-            if (_SettingsPlugin != null)
-            {
-                DDPMSettings ddpmSettings = _SettingsPlugin.ReloadAppConfigData().Result;
-                if (ddpmSettings != null)
-                {
-                    //Check if value is changed
-                    if (ddpmSettings.UserSettings.EzSettings.IsWidthoutGap == newValue)
-                        return Task.FromResult(true);
 
-                    //Apply new setting value
-                    ddpmSettings.UserSettings.EzSettings.IsWidthoutGap = newValue;
-                    //Save the DDPMSettings back to Settings file
-                    if (_SettingsPlugin.SetAppConfigData(ddpmSettings).Result)
-                    {
-                        if (_DisplayManagerPlugin != null)
-                        {
-                            _DisplayManagerPlugin.ReloadEzSettings();
-                        }
-
-                        SendEasyArrangeTelemetry("OverlapBorder");
-                        return Task.FromResult(true);
-                    }
-                }
-            }
-            //Read DDPMSettings
-            //Fail to read, will return false
-            return Task.FromResult(false);
-        }
-
-        public Task<bool> WriteEzSettings_IsOnlyAllowWhenShiftKeyPressed(bool newValue)
-        {
-            if (_SettingsPlugin != null)
-            {
-                DDPMSettings ddpmSettings = _SettingsPlugin.ReloadAppConfigData().Result;
-                if (ddpmSettings != null)
-                {
-                    //Check if value is changed
-                    if (ddpmSettings.UserSettings.EzSettings.IsOnlyAllowWhenShiftKeyPressed == newValue)
-                    {
-                        writelog($"@ DeviceManager.WriteEzSettings_IsOnlyAllowWhenShiftKeyPressed({newValue}): Value is not changed");
-                        return Task.FromResult(true);
-                    }
-
-                    //Apply new setting value
-                    ddpmSettings.UserSettings.EzSettings.IsOnlyAllowWhenShiftKeyPressed = newValue;
-                    writelog($"@ DeviceManager.WriteEzSettings_IsOnlyAllowWhenShiftKeyPressed({newValue}): Value is changed");
-                    //Save the DDPMSettings back to Settings file
-                    if (_SettingsPlugin.SetAppConfigData(ddpmSettings).Result)
-                    {
-                        writelog($"@ DeviceManager.WriteEzSettings_IsOnlyAllowWhenShiftKeyPressed({newValue}): Update to settings file");
-                        if (_DisplayManagerPlugin != null)
-                        {
-                            writelog($"@ DeviceManager.WriteEzSettings_IsOnlyAllowWhenShiftKeyPressed({newValue}): Notify EAPlugin to refresh itself");
-                            _DisplayManagerPlugin.ReloadEzSettings();
-                        }
-
-                        SendEasyArrangeTelemetry("Hold-Shift");
-                        return Task.FromResult(true);
-                    }
-                }
-            }
-            else
-            {
-                writelog($"@ DeviceManager.WriteEzSettings_IsOnlyAllowWhenShiftKeyPressed({newValue}): _SettingsPlugin is null");
-            }
-            //Read DDPMSettings
-            //Fail to read, will return false
-            return Task.FromResult(false);
-        }
-
-        public Task<bool> WriteEzSettings_IsSpanAcrossMultiMonitors(bool newValue)
-        {
-            if (_SettingsPlugin != null)
-            {
-                DDPMSettings ddpmSettings = _SettingsPlugin.ReloadAppConfigData().Result;
-                if (ddpmSettings != null)
-                {
-                    //Check if value is changed
-                    if (ddpmSettings.UserSettings.EzSettings.IsSpanAcrossMultiMonitors == newValue)
-                        return Task.FromResult(true);
-
-                    //Apply new setting value
-                    ddpmSettings.UserSettings.EzSettings.IsSpanAcrossMultiMonitors = newValue;
-                    //Save the DDPMSettings back to Settings file
-                    if (_SettingsPlugin.SetAppConfigData(ddpmSettings).Result)
-                    {
-                        if (_DisplayManagerPlugin != null)
-                        {
-                            _DisplayManagerPlugin.ReloadEzSettings();
-                        }
-
-                        SendEasyArrangeTelemetry("span_monitors");
-                        return Task.FromResult(true);
-                    }
-                }
-            }
-            //Read DDPMSettings
-            //Fail to read, will return false
-            return Task.FromResult(false);
-        }
-
-        public Task<bool> WriteEzSettings_IsAwsEnabled(bool newValue)
-        {
-            if (_SettingsPlugin != null)
-            {
-                DDPMSettings ddpmSettings = _SettingsPlugin.ReloadAppConfigData().Result;
-                if (ddpmSettings != null)
-                {
-                    //Check if value is changed
-                    if (ddpmSettings.UserSettings.EzSettings.IsAwsEnabled == newValue)
-                        return Task.FromResult(true);
-                    //Apply new setting value
-                    ddpmSettings.UserSettings.EzSettings.IsAwsEnabled = newValue;
-                    //Save the DDPMSettings back to Settings file
-                    if (_SettingsPlugin.SetAppConfigData(ddpmSettings).Result)
-                    {
-                        if (_DisplayManagerPlugin != null)
-                        {
-                            _DisplayManagerPlugin.ReloadEzSettings();
-                        }
-
-                        //Telemetry
-                        SendEasyArrangeTelemetry("App-Snap");
-
-                        return Task.FromResult(true);
-                    }
-                }
-            }
-            //Read DDPMSettings
-            //Fail to read, will return false
-            return Task.FromResult(false);
-        }
-        #endregion EzSettings - EasyArrange
-
-        public Task<bool> SetEASelectedLayout(MonitorInfo monitorInfo, SplitJson spJson)
-        {
-            if (_DisplayManagerPlugin != null)
-            {
-                return _DisplayManagerPlugin.SetEASelectedLayout(monitorInfo, spJson);
-            }
-            writelog("@ DeviceManager.SetEASelectedLayout(): _DisplayManagerPlugin is null");
-            return Task.FromResult(false);
-        }
 
         //Robert_Lin, 2024-10-8, bridge of EASettingsChanged
         //DisplayManagerPlugin will call to here, and DeviceManagerPlugin call to its handler
@@ -7364,58 +7457,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
         }
 
-        #region EA Custom List - EasyArrange
-        //Robert_Ln, 2024-10-12, Added after move CustomList to UserSettings from MonitorSettings
-        /// <summary>
-        /// Read the EACustomList for current user
-        /// </summary>
-        /// <returns></returns>
-        public Task<SplitJson[]> ReadEACustomList()
-        {
-            if (_SettingsPlugin != null)
-            {
-                //Read App Settings
-                DDPMSettings appSettings = _SettingsPlugin.ReloadAppConfigData().Result;
-                //Don't return null, return empty array instead
-                if (appSettings != null)
-                {
-                    if (appSettings.UserSettings != null)
-                    {
-                        if (appSettings.UserSettings.EACustomList != null)
-                            return Task.FromResult(appSettings.UserSettings.EACustomList);
-                    }
-                }
-            }
-            //Failed, return an empty array instead of null
-            return Task.FromResult(new SplitJson[] { });
-        }
-
-        //Robert_Lin, 2024-10-12 added, move EACustomList to UserSettings from MonitorSettings
-        /// <summary>
-        /// Write EasyArrange Custom layout list to UserSettings file.
-        /// It's called by DDPM.UI. It's no need to notify SA EAPlugin.
-        /// </summary>
-        /// <returns></returns>
-        public Task<bool> WriteEACustomList(SplitJson[] customList)
-        {
-            if (_SettingsPlugin != null)
-            {
-                //Read App Settings
-                DDPMSettings appSettings = _SettingsPlugin.ReloadAppConfigData().Result;
-                if (appSettings != null)
-                {
-                    if (appSettings.UserSettings != null)
-                    {
-                        appSettings.UserSettings.EACustomList = (SplitJson[])customList.Clone();
-                        //Writeback to app settings
-                        _SettingsPlugin.SetAppConfigData(appSettings);
-                    }
-                }
-            }
-            //Failed, return an empty array instead of null
-            return Task.FromResult(false);
-        }
-        #endregion EA Custom List - EasyArrange
 
         //Robert_Lin, 2024-11-18, a general method for Subagent to send event to UI
         /// <summary>

@@ -3491,10 +3491,28 @@ namespace DDPM.SA.Plugins.User.DisplayManager
 
         #region EasyArrange implementation
 
+        #region Private members - EasyArrange
         private bool _isEaPluginConfigured = false;
         private IEasyArrangeService _eaService;
         private PluginCondition _eaPluginCondition;
+        #endregion Private members - EasyArrange
 
+        #region Properties - EasyArrange
+        /// <summary>
+        /// The last error string after a EAPlugin method return error.
+        /// </summary>
+        public string EALastError
+        {
+            get
+            {
+                if (_eaService != null)
+                    return "EAPlugin is not constructed.";
+                if (!_isEaPluginConfigured)
+                    return "EAPlugin Condition is NOT configured.";
+                return _eaService.EALastError;
+             }
+        }
+        #endregion Properties - EasyArrange
         //Robert_Lin, 2024-9-13 Remove unused interfaces
         //public event EventHandler<string> EAEditCompleted;
 
@@ -3705,6 +3723,19 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             return Task.FromResult(false);
         }
 
+        public Task<bool> SetEASelectedLayout(MonitorInfo monitorInfo, int eaId)
+        {
+            if (_eaService != null)
+            {
+                return _eaService.SetEASelectedLayout(monitorInfo, eaId);
+            }
+            else
+            {
+                _logs.DebugMsg($"[DisplayMangerPlugin] @ DisplayManager.SetEASelectedLayout(): _eaService is in null");
+            }
+            return Task.FromResult(false);
+
+        }
         /// <summary>
         /// Return current Span across multiple monitor option is Enabled/Disabled;
         /// Note that it's different with EzSettings.IsSpanAcrossMultiMonitors (=ON|OFF)
