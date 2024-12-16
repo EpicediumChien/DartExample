@@ -443,7 +443,7 @@
                 <StackPanel Orientation="Vertical">
                   <Grid Margin="16,25,16,0">
                     <StackPanel Orientation="Horizontal">
-                      <UXControls:UXTextBlock Grid.Column="0" Text="{Binding [WebCameraSettings.16], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource ModuleItemStyle}" />
+                      <UXControls:UXTextBlock Grid.Column="0" Text="{Binding [WebCameraSettings.16], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource ModuleItemStyle}" IsEnabled="{Binding IsNotAutoFramingOn}" />
                       <Border Background="{StaticResource FakeTransparent}" Cursor="Hand">
                         <ContentControl Template="{StaticResource icon_Info}" Margin="10,0,0,0" Width="18" Height="18" VerticalAlignment="Center" HorizontalAlignment="Left"/>
                         <Border.ToolTip>
