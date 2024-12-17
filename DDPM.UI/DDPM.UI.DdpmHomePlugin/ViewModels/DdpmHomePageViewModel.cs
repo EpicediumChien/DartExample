@@ -91,26 +91,6 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.ViewModels
             }
         }
 
-
-        public double MinWidth
-        {
-            get
-            {
-                switch (HomeDevices.Count)
-                {
-                    case 1:
-                        return _pictureMinWidth + _gapMinWidth * 2;
-                    case 2:
-                    case 4:
-                        return _pictureMinWidth * 2 + _gapMinWidth * 3;
-                    case 3:
-                    default:
-                        return _pictureMinWidth * 3 + _gapMinWidth * 4;
-                }
-
-            }
-        }
-
         /// <summary>
         /// Input list of MonitorInfo, convert to HomeDevice and add to HomeDevices
         /// </summary>

@@ -951,7 +951,11 @@ namespace DDPM.CLI.Plugins.Display
         {
             output += $"\n  \"Device\": \"{g.LogicalDeviceType}\"";
             PeripheralResponse cli_Response2 = new PeripheralResponse(index, g);
-            cli_Response2.Connectiontype = get_headsetconnection_type(g.ConnectionType);
+            if (g.LogicalDeviceType == "LogicalHeadset")
+            {
+                //cli_Response2.SerialNumber = _devMgr.GetHeadsetSerialNumberAsync(g.ID.ToString()).Result ?? "N/A";
+                cli_Response2.Connectiontype = get_headsetconnection_type(_devMgr.GetConnectionTypeAsync(g.ID.ToString()).Result);
+            }
             output += "\n" + JsonConvert.SerializeObject(cli_Response2, Formatting.Indented);
 
             return output;
@@ -4206,89 +4210,93 @@ namespace DDPM.CLI.Plugins.Display
                     List<string> swapIsDone = new List<string>();
                     if (commandLineInput.DeviceIndex.Count == 0 && commandLineInput.ServiceTag.Count == 0 && commandLineInput.Model.Count == 0)
                     {
+                        writelog($"ActiveInputSource set entry");
+                        serviceTagList = _AllInfoMonitors.DistinctBy(_ => _.edid.ServiceTag).ToDictionary(_ => _.edid.ServiceTag, _ => _.edid.ServiceTag);
+                        targetList = _AllInfoMonitors.Select(_ => _.edid.ServiceTag).ToList();
+                        outCount = _AllInfoMonitors.Select(_ => _.edid.ServiceTag).ToList().Count();
                         //CLI_Set_Input_RESPONSE _Set_Input_RESPONSE = new CLI_Set_Input_RESPONSE();
                         //foreach (var monitor in _AllInfoMonitors)
-                        for (int i = 0; i < _AllInfoMonitors.Count; i++)
-                        {
-                            writelog($"ActiveInputSource set entry");
-                            var monitor = _AllInfoMonitors[i];
+                        //for (int i = 0; i < _AllInfoMonitors.Count; i++)
+                        //{
+                        //    writelog($"ActiveInputSource set entry");
+                        //    var monitor = _AllInfoMonitors[i];
 
-                            CLI_RESPONSE _Input_RESPONSE = new CLI_RESPONSE(monitor);
-                            _Input_RESPONSE.Command = commandLineInput.Command;
-                            _Input_RESPONSE.TargetFeature = commandLineInput.TargetFeature;
+                        //    CLI_RESPONSE _Input_RESPONSE = new CLI_RESPONSE(monitor);
+                        //    _Input_RESPONSE.Command = commandLineInput.Command;
+                        //    _Input_RESPONSE.TargetFeature = commandLineInput.TargetFeature;
 
-                            //commandLineInput.Options[0].Option_Value.Replace(".", ",");
-                            string[] op_values = commandLineInput.Options[0].Option_Value.Replace(".", ",").Split(",");
+                        //    //commandLineInput.Options[0].Option_Value.Replace(".", ",");
+                        //    string[] op_values = commandLineInput.Options[0].Option_Value.Replace(".", ",").Split(",");
 
-                            foreach (string v in op_values)
-                            {
-                                switch (v.ToUpper())
-                                {
-                                    case "LOCK":
-                                    case "UNLOCK":
-                                        if (v.ToUpper().Equals("LOCK")) data.LockSettings.Lock_Display_ActiveInputSource = true;
-                                        if (v.ToUpper().Equals("UNLOCK")) data.LockSettings.Lock_Display_ActiveInputSource = false;
-                                        await devMgr.SetAppConfigData(data);
-                                        break;
-                                }
-                            }
-                            string get_inputvpccode = get_inputsource_type(op_values[0]);
-                            // int getvcp = get_inputsource_vcp(get_inputvpccode);
+                        //    foreach (string v in op_values)
+                        //    {
+                        //        switch (v.ToUpper())
+                        //        {
+                        //            case "LOCK":
+                        //            case "UNLOCK":
+                        //                if (v.ToUpper().Equals("LOCK")) data.LockSettings.Lock_Display_ActiveInputSource = true;
+                        //                if (v.ToUpper().Equals("UNLOCK")) data.LockSettings.Lock_Display_ActiveInputSource = false;
+                        //                await devMgr.SetAppConfigData(data);
+                        //                break;
+                        //        }
+                        //    }
+                        //    string get_inputvpccode = get_inputsource_type(op_values[0]);
+                        //    // int getvcp = get_inputsource_vcp(get_inputvpccode);
 
-                            if (get_inputvpccode != "Unknown")
-                            {
-                                if (commandLineInput.Options.Count == 1)
-                                {
-                                    // bool retcode = SetVCPCode(devMgr, monitor, "0x60", "0x" + get_inputsource_vcp(get_inputvpccode).ToString("X2")).Result;
-                                    bool retcode = SetVCPCode(devMgr, monitor, "Input Select", get_inputvpccode).Result;
-                                    if (!retcode) ispass = false;
+                        //    if (get_inputvpccode != "Unknown")
+                        //    {
+                        //        if (commandLineInput.Options.Count == 1)
+                        //        {
+                        //            // bool retcode = SetVCPCode(devMgr, monitor, "0x60", "0x" + get_inputsource_vcp(get_inputvpccode).ToString("X2")).Result;
+                        //            bool retcode = SetVCPCode(devMgr, monitor, "Input Select", get_inputvpccode).Result;
+                        //            if (!retcode) ispass = false;
 
-                                    //_Input_RESPONSE.ActiveInputSource = commandLineInput.Options[0].Option_Value;
-                                    _Input_RESPONSE.Value = op_values[0];
-                                    if (!ispass)
-                                    {
-                                        _Input_RESPONSE.Result = "FAIL";
-                                        _Input_RESPONSE.Message = "FAIL_SetVCP";
-                                        System.Console.WriteLine(_Input_RESPONSE.ToJson());
-                                        output += "\n" + _Input_RESPONSE.ToJson();
-                                    }
-                                    else
-                                    {
-                                        _Input_RESPONSE.Result = "PASS";
-                                        //_Input_RESPONSE.Value += "," + (data.LockSettings.Lock_Display_ActiveInputSource ? "LOCK" : "UNLOCK");
-                                        System.Console.WriteLine(_Input_RESPONSE.ToJson());
-                                        output += "\n" + _Input_RESPONSE.ToJson();
-                                    }
-                                }
-                                else
-                                {
-                                    //_Input_RESPONSE.ActiveInputSource = String.Empty;
-                                    _Input_RESPONSE.Result = "FAIL";
-                                    if (commandLineInput.Options.Count > 1)
-                                    {
-                                        _Input_RESPONSE.Message = "Too Many Value";
-                                    }
-                                    else
-                                    {
-                                        _Input_RESPONSE.Message = "No Value";
-                                    }
-                                    System.Console.WriteLine(_Input_RESPONSE.ToJson());
-                                    output += "\n" + _Input_RESPONSE.ToJson();
-                                    return ((int)CLI_ExitCode.fail_Value, output);
-                                }
-                            }
-                            else
-                            {
-                                //_Input_RESPONSE.ActiveInputSource = String.Empty;
-                                _Input_RESPONSE.Result = "FAIL";
-                                _Input_RESPONSE.Message = "Wrong option value: ";
-                                _Input_RESPONSE.Message += $"{op_values[0]}";//add error message if option value not exist in input source list
-                                System.Console.WriteLine(_Input_RESPONSE.ToJson());
-                                output += "\n" + _Input_RESPONSE.ToJson();
-                                writelog($"ActiveInputSource set fail {output}");
-                                return ((int)CLI_ExitCode.fail_Value, output);
-                            }
-                        }
+                        //            //_Input_RESPONSE.ActiveInputSource = commandLineInput.Options[0].Option_Value;
+                        //            _Input_RESPONSE.Value = op_values[0];
+                        //            if (!ispass)
+                        //            {
+                        //                _Input_RESPONSE.Result = "FAIL";
+                        //                _Input_RESPONSE.Message = "FAIL_SetVCP";
+                        //                System.Console.WriteLine(_Input_RESPONSE.ToJson());
+                        //                output += "\n" + _Input_RESPONSE.ToJson();
+                        //            }
+                        //            else
+                        //            {
+                        //                _Input_RESPONSE.Result = "PASS";
+                        //                //_Input_RESPONSE.Value += "," + (data.LockSettings.Lock_Display_ActiveInputSource ? "LOCK" : "UNLOCK");
+                        //                System.Console.WriteLine(_Input_RESPONSE.ToJson());
+                        //                output += "\n" + _Input_RESPONSE.ToJson();
+                        //            }
+                        //        }
+                        //        else
+                        //        {
+                        //            //_Input_RESPONSE.ActiveInputSource = String.Empty;
+                        //            _Input_RESPONSE.Result = "FAIL";
+                        //            if (commandLineInput.Options.Count > 1)
+                        //            {
+                        //                _Input_RESPONSE.Message = "Too Many Value";
+                        //            }
+                        //            else
+                        //            {
+                        //                _Input_RESPONSE.Message = "No Value";
+                        //            }
+                        //            System.Console.WriteLine(_Input_RESPONSE.ToJson());
+                        //            output += "\n" + _Input_RESPONSE.ToJson();
+                        //            return ((int)CLI_ExitCode.fail_Value, output);
+                        //        }
+                        //    }
+                        //    else
+                        //    {
+                        //        //_Input_RESPONSE.ActiveInputSource = String.Empty;
+                        //        _Input_RESPONSE.Result = "FAIL";
+                        //        _Input_RESPONSE.Message = "Wrong option value: ";
+                        //        _Input_RESPONSE.Message += $"{op_values[0]}";//add error message if option value not exist in input source list
+                        //        System.Console.WriteLine(_Input_RESPONSE.ToJson());
+                        //        output += "\n" + _Input_RESPONSE.ToJson();
+                        //        writelog($"ActiveInputSource set fail {output}");
+                        //        return ((int)CLI_ExitCode.fail_Value, output);
+                        //    }
+                        //}
                     }
                     else if (commandLineInput.DeviceIndex.Count != 0)
                     {
@@ -6984,6 +6992,17 @@ namespace DDPM.CLI.Plugins.Display
                     USBCPrioritization_RESPONSE = new CLI_Get_Properties_USBCPrioritization_RESPONSE(cLI_RESPONSE);
                     DDPMSettings data = devMgr.ReloadAppConfigData().Result;
                     //USBCPrioritization_RESPONSE.SupportedUSBCPrioritization = displayPropertiesInfo.SupportedUSBCPrioritization ? "Yes" : "No";
+                    int count = 0;
+                    bool flag = true;
+                    while (flag && count < 1000)
+                    {
+                        Thread.Sleep(3000);
+                        _AllInfoMonitors = devMgr.GetMonitors().Result;
+                        var serviceTag = _AllInfoMonitors.FirstOrDefault(_ => _.edid.ServiceTag == monitorInfo.edid.ServiceTag);
+                        if (serviceTag != null)
+                            flag = false;
+                        count++;
+                    }
                     if (displayPropertiesInfo.SupportedUSBCPrioritization)
                     {
                         if (commandLineInput.Command.Equals("GET"))
@@ -9639,10 +9658,9 @@ namespace DDPM.CLI.Plugins.Display
         {
             switch (ConnectionType.ToString())
             {
-
-                case "1": return "Wired";
-                case "2": return "WirelessDongle";
-                case "3": return "WirelessBLE";
+                case "HeadsetConnectionTypeWired": return "Wired";
+                case "HeadsetConnectionTypeWirelessDongle": return "WirelessDongle";
+                case "HeadsetConnectionTypeWirelessBLE": return "WirelessBLE";
                 default: return "Unknown";
             }
         }
@@ -10817,63 +10835,60 @@ namespace DDPM.CLI.Plugins.Display
 
         private async Task<(int code, string result)> DiagnosticReportv2(IDeviceManagerSA devMgr, CommandLineInput commandLineInput)
         {
+            writelog("DiagnosticReportv2 entry");
             string output = string.Empty;
-            //string filepath = @$"C:\Temp\";
-            string filepath_ = @$"C:\Temp\Log";
-            string file = @$"C:\Temp\Log.zip";
+            string now = $"{DateTime.Now:yyyyMMdd_HHmmss}";
+            string filepath = @$"C:\Temp\Log_{now}"; // 1. 不帶路徑, Path + 檔名 =  @$"C:\Temp\Log_{DateTime.Now:yyyyMMdd_HHmmss}"
             if (commandLineInput.Options.Count == 1)
             {
-                //filepath = commandLineInput.Options[0].Option_Value;
-                filepath_ = @$"{commandLineInput.Options[0].Option_Value}\Temp";
-                file = @$"{commandLineInput.Options[0].Option_Value}\Log.zip";
-            }
+                writelog("DiagnosticReportv2 option entry");
+                var inputPath = commandLineInput.Options[0].Option_Value.Replace("/", @"\");
 
-            string folderinfo = string.Empty;
-            string symblinkinfo = string.Empty;
-            var result = "PASS";
-            var message = "N/A";
-
-            if (!Directory.Exists(filepath_))
-            {
-                Directory.CreateDirectory(filepath_);
+                if (inputPath.EndsWith(@"\")) // 2. 帶路徑, 以斜線結尾, Path + 檔名 = 路徑 + $"Log_{DateTime.Now:yyyyMMdd_HHmmss}"
+                {
+                    writelog("DiagnosticReportv2 option is endswith slash");
+                    inputPath += $"Log_{now}";
+                }
+                else if (!inputPath.EndsWith(".zip", StringComparison.OrdinalIgnoreCase) && Directory.Exists(inputPath)) // 3. 帶路徑, 不是以斜線或.zip結尾, 需檢查資料夾是否存在, 若存在, Path = 路徑 + @$"\Log_{DateTime.Now:yyyyMMdd_HHmmss}"
+                {
+                    writelog("DiagnosticReportv2 option is not endswith .zip and directory is exist");
+                    inputPath += @$"\Log_{now}";
+                }
+                else if (inputPath.EndsWith(".zip", StringComparison.OrdinalIgnoreCase)) // 4. 帶路徑, 以.zip結尾, Path + 檔名 = 路徑[..^4]
+                {
+                    writelog("DiagnosticReportv2 option is endswith .zip");
+                    inputPath = inputPath[..^4];
+                }
+                filepath = inputPath; // 此時格式為 路徑 + 檔名 (不包含.zip)
             }
 
             CLI_RESPONSE cli_Response = new CLI_RESPONSE();
             cli_Response.Command = commandLineInput.Command;
             cli_Response.TargetFeature = commandLineInput.TargetFeature;
+            cli_Response.Result = "PASS";
 
-            //[Dean 1123] SaveLogFile function has symlink check function already
-            //if (!DDPMFileSecurity.CheckFold(filepath_, out folderinfo, out symblinkinfo))
-            //{
-            //    result = "FAIL";
-            //    message = "Target folder has symlink.";
-            //    cli_Response.Result = result;
-            //    cli_Response.Message = message;
-            //    output += "\n" + JsonConvert.SerializeObject(cli_Response, Formatting.Indented);
-            //    return ((int)CLI_ExitCode.Diagnostic_Report_fail, output);
-            //}
-
-            if (!devMgr.SaveLogFile(filepath_).Result)
+            writelog("DiagnosticReportv2 devMgr.SaveLogFile entry");
+            if (!devMgr.SaveLogFile(filepath).Result)
             {
+                writelog("DiagnosticReportv2 devMgr.SaveLogFile fail");
                 cli_Response.Result = "FAIL";
                 cli_Response.Message = "Collect files to save report failed.";
+                output += "\n" + cli_Response.ToJson();
+                return ((int)CLI_ExitCode.Diagnostic_Report_fail, output);
+            }
+            writelog("DiagnosticReportv2 devMgr.SaveLogFile success exit");
+
+            if (!File.Exists($"{filepath}.zip"))
+            {
+                writelog("DiagnosticReportv2 log file exist check fail");
+                cli_Response.Result = "FAIL";
+                cli_Response.Message = "Collect files to save report failed, log file is not exist.";
                 output += "\n" + JsonConvert.SerializeObject(cli_Response, Formatting.Indented);
                 return ((int)CLI_ExitCode.Diagnostic_Report_fail, output);
             }
 
-            //if (!File.Exists(file))
-            //{
-            //    result = "FAIL";
-            //    message = "file is not exist.";
-            //    cli_Response.Result = result;
-            //    cli_Response.Message = message;
-            //    output += "\n" + JsonConvert.SerializeObject(cli_Response, Formatting.Indented);
-            //    return ((int)CLI_ExitCode.Diagnostic_Report_fail, output);
-            //}
-
-            cli_Response.Result = result;
-            cli_Response.Message = $"Log path: {file}";            
-            output += "\n" + JsonConvert.SerializeObject(cli_Response, Formatting.Indented);
+            cli_Response.Message = $"Log path: {filepath}.zip";            
+            output += "\n" + cli_Response.ToJson();
             
             return ((int)CLI_ExitCode.success, output);
         }
@@ -11522,23 +11537,23 @@ namespace DDPM.CLI.Plugins.Display
 
                                                 break;
 
-                                            case "UNIFORMITY":
-                                                writelog($"Uniformity entry");
-                                                if (monitor.CapabilityDic.ContainsKey("E4"))
-                                                {
-                                                    retcode = SetVCPCode(devMgr, monitor, "0xE4", get_Uniformity(property.Value.ToString())).Result;
-                                                if (!retcode) ispass = false;
-                                                    else ApplyConfiguration.Uniformity = property.Value.ToString();
-                                                    writelog($"Uniformity={ApplyConfiguration.Uniformity}");
-                                                }
-                                                else
-                                                {
-                                                    ApplyConfiguration.Uniformity = "N/A";
-                                                    writelog($"Uniformity VCP not support");
-                                                    output += $"\n  \"Result: \": \"Uniformity VCP not support\"";
-                                                }
+                                            //case "UNIFORMITY":
+                                            //    writelog($"Uniformity entry");
+                                            //    if (monitor.CapabilityDic.ContainsKey("E4"))
+                                            //    {
+                                            //        retcode = SetVCPCode(devMgr, monitor, "0xE4", get_Uniformity(property.Value.ToString())).Result;
+                                            //    if (!retcode) ispass = false;
+                                            //        else ApplyConfiguration.Uniformity = property.Value.ToString();
+                                            //        writelog($"Uniformity={ApplyConfiguration.Uniformity}");
+                                            //    }
+                                            //    else
+                                            //    {
+                                            //        ApplyConfiguration.Uniformity = "N/A";
+                                            //        writelog($"Uniformity VCP not support");
+                                            //        output += $"\n  \"Result: \": \"Uniformity VCP not support\"";
+                                            //    }
 
-                                                break;
+                                            //    break;
 
                                             case "POWERNAP":
                                                 writelog($"PowerNap entry");
@@ -13044,10 +13059,7 @@ namespace DDPM.CLI.Plugins.Display
 
         private async Task<(int code, string result)> Easyarrange(IDeviceManagerSA devMgr, CommandLineInput commandLineInput)
         {
-
             string output = string.Empty;
-            bool output_ea = true;
-            bool elable_ea = true;
             bool retcode = false;
 
             if (_AllInfoMonitors == null)
@@ -13072,42 +13084,39 @@ namespace DDPM.CLI.Plugins.Display
                 foreach (int idx in _monitorIndeies)
                 {
                     MonitorInfo monitor = _AllInfoMonitors[idx];
-                    ObjGetVCP rc = new ObjGetVCP();
+                    int rc = -1;
                     CLI_RESPONSE cli_Response = new CLI_RESPONSE(monitor);
                     cli_Response.Command = commandLineInput.Command;
                     cli_Response.TargetFeature = commandLineInput.TargetFeature;
 
-                    writelog("devMgr.GetEAFunctionEnabled get entry");
-                    rc = devMgr.GetEAFunctionEnabled().Result;
-                    writelog("devMgr.GetEAFunctionEnabled get exit");
+                    writelog("devMgr.GetEASelectedLayout get entry");
+                    rc = devMgr.GetEASelectedLayout(monitor).Result;
+                    writelog("devMgr.GetEASelectedLayout get exit");
 
-                    //if (rc != null)
-                    //    retcode = true;
-
-                    if (rc != null) // 20240911 SAST fix
+                    retcode = true;
+                    cli_Response.Result = "PASS";
+                    if (rc == 0)
                     {
-                        retcode = true;
-                        cli_Response.Result = "PASS";
-                        cli_Response.Message = "N/A";
-                        if (rc.value.ToString() == "True")
-                            cli_Response.Value = "EANBLE";
-                        else
-                            cli_Response.Value = "DISABLE";
+                        cli_Response.Value = "OFF";
+                    }
+                    else if (rc > 0)
+                    {
+                        cli_Response.Value = "ON";
                     }
                     else
                     {
+                        retcode = false;
                         cli_Response.Result = "FAIL";
-                        cli_Response.Message = "Invalid command line syntax.";
                     }
+
                     //cli_Response.Value += "," + (ddpmSettings.LockSettings.Lock_Display_EasyArrangeLayout ? "LOCK" : "UNLOCK");
-                    System.Console.WriteLine(JsonConvert.SerializeObject(cli_Response, Formatting.Indented));
-                    output += "\n" + JsonConvert.SerializeObject(cli_Response, Formatting.Indented);
+                    Console.WriteLine(cli_Response.ToJson());
+                    output += "\n" + cli_Response.ToJson();
                 }
             }
             if (commandLineInput.Command == "SET")
             {
-
-                writelog("Easyarrange configure entry");
+                writelog("Easyarrange set entry");
                 List<int> _monitorIndeies = new List<int>();
 
                 if (_AllInfoMonitors == null)
@@ -13117,10 +13126,10 @@ namespace DDPM.CLI.Plugins.Display
                 foreach (int idx in _monitorIndeies)
                 {
                     MonitorInfo monitor = _AllInfoMonitors[idx];
-                    ObjGetVCP rc = new ObjGetVCP();
                     CLI_RESPONSE cli_Response = new CLI_RESPONSE(monitor);
                     cli_Response.Command = commandLineInput.Command;
                     cli_Response.TargetFeature = commandLineInput.TargetFeature;
+                    cli_Response.Value = commandLineInput.Options[0].Option_Value;
 
                     //if (commandLineInput.Options[0].Option_Value == "ENABLE")
                     //{
@@ -13134,42 +13143,23 @@ namespace DDPM.CLI.Plugins.Display
                     //}
                     if (commandLineInput.Options[0].Option_Value == "OFF")
                     {
-                        elable_ea = false;
+                        writelog("SetEAFunctionEnabled set entry");
+                        retcode = devMgr.SetEASelectedLayout(monitor, 0).Result;
+                        writelog("SetEAFunctionEnabled set exit");
                     }
                     else
                     {
-                        //CLI_RESPONSE cli_Response = new CLI_RESPONSE();
-                        cli_Response.Command = commandLineInput.Command;
-                        cli_Response.TargetFeature = commandLineInput.TargetFeature;
                         cli_Response.Result = "FAIL";
                         cli_Response.Message = "Invalid command line syntax, missing -value=... or more than one -value=...";
                         return ((int)CLI_ExitCode.invalide_cmdline_syntax, cli_Response.ToJson());
                     }
 
                     //await devMgr.SetAppConfigData(ddpmSettings);
-                    writelog("SetEAFunctionEnabled set entry");
-                    output_ea = devMgr.SetEAFunctionEnabled(elable_ea).Result;
-                    writelog("SetEAFunctionEnabled set exit");
-                    if (output_ea != null)
-                        retcode = true;
 
-                    if (retcode)
-                    {
-                        cli_Response.Result = "PASS";
-                        cli_Response.Message = "N/A";
-                        if (elable_ea)
-                            cli_Response.Value = "EANBLE";
-                        else
-                            cli_Response.Value = "DISABLE";
-                    }
-                    else
-                    {
-                        cli_Response.Result = "FAIL";
-                        cli_Response.Message = "Invalid command line syntax.";
-                    }
+                    cli_Response.Result = retcode ? "PASS" : "FAIL";
                     //cli_Response.Value += "," + (ddpmSettings.LockSettings.Lock_Display_EasyArrangeLayout ? "LOCK" : "UNLOCK");
-                    System.Console.WriteLine(JsonConvert.SerializeObject(cli_Response, Formatting.Indented));
-                    output += "\n" + JsonConvert.SerializeObject(cli_Response, Formatting.Indented);
+                    Console.WriteLine(cli_Response.ToJson());
+                    output += "\n" + cli_Response.ToJson();
                 }
             }
             writelog($"Output={output}");

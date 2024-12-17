@@ -548,6 +548,7 @@ namespace CLI.Plugins.Display
                         flag = false;
                     count++;
                 }
+                Thread.Sleep(1000);
             }
             swapIsDone = new List<string>();
             flag = true;
@@ -612,6 +613,7 @@ namespace CLI.Plugins.Display
                     flag = false;
                 count++;
             }
+            Thread.Sleep(1000);
             if (_cmdLineInput.Options.Count == 2)
             {
                 swapIsDone = new List<string>();

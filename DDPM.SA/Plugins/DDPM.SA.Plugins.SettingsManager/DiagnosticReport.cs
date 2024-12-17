@@ -53,7 +53,8 @@ namespace DDPM.SA.Plugins.SettingsManager
                             //Directory.CreateDirectory(saveFolderPath);
                         }*/
                         // The function call IsPathSymbolicLinked is merged to "IsFolderPathValid"
-                        folderValid = DDPMFileSecurity.IsFolderPathValid(saveFolderPath, out FolderInfo);// && folderValid;
+                        //folderValid = DDPMFileSecurity.IsFolderPathValid(saveFolderPath, out FolderInfo);// && folderValid;
+                        folderValid = DDPMFileSecurity.ValidateFilePath(saveFolderPath, out FolderInfo); //[Dean 1216] Validate with sanitized string check
                         if (!folderValid)
                         {
                             log.Info(nameof(SaveLogFile) + " FolderIsNotSafe:" + FolderInfo + " Retry:" + (count++));
@@ -66,7 +67,7 @@ namespace DDPM.SA.Plugins.SettingsManager
 
                     string programdataPath = Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData);
                     log.Info($"folderPath - programdataPath Line 68: programdataPath is null : {string.IsNullOrEmpty(programdataPath)}");
-                    string appDataPath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+                    string appDataPath = WTSFunction.GetActiveUserLocalAppDataPath(log);
                     log.Info($"folderPath - appDataPath Line 70: appDataPath is null : {string.IsNullOrEmpty(appDataPath)}");
                     string fail_info = string.Empty;
                     try

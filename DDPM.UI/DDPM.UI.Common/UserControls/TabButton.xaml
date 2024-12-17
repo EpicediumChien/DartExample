@@ -7,14 +7,7 @@
              mc:Ignorable="d"
              d:DesignHeight="60"
              d:DesignWidth="200">
-  <UserControl.Resources>
-    <ResourceDictionary>
-      <ResourceDictionary.MergedDictionaries>
-        <ResourceDictionary Source="/DDPM.UI.Common;component/PluginStyles.xaml" />
-      </ResourceDictionary.MergedDictionaries>
-    </ResourceDictionary>
-  </UserControl.Resources>
-  <Grid>
+    <Grid>
     <Border x:Name="Border" CornerRadius="{Binding CornerRadius, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=TwoWay}"
                 Width="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=UserControl}}"
                 Height="{Binding ActualHeight, RelativeSource={RelativeSource AncestorType=UserControl}}"
