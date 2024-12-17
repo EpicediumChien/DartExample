@@ -249,6 +249,8 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                             //Elapsed= 484, 316, 314 msec
                             _log.Info("Calling GetDdpmDevicesAsync()");
                             await GetDdpmDevicesAsync(_deviceManager);
+                            //CloseQAMIfExist();
+                            await CheckIfNeedNavigateToSettingPageByQAMOSD();  //Derek 1217 for QAM PIMS-332041
 
                             //Elapsed= 1, 1 msec
                             _log.Info("Calling CloseQAMIfExist()");
@@ -400,14 +402,14 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
         //        DdpmCommonHelper.WriteUILog($"GetIsDDPMLaunchByQAM = false");
         //}
 
-        private async Task CheckIfNeedNavigateToWebcamPage()
+        private async Task CheckIfNeedNavigateToSettingPageByQAMOSD()
         {
             if (_deviceManager!.GetIsDDPMLaunchByQAM().Result == true)
             {
                 _log.Info($"GetIsDDPMLaunchByQAM = true");
 
                 await _deviceManager!.SetIsDDPMHomepageReadyAsync(true);
-                await _deviceManager!.SetIsDDPMLaunchByQAMAsync(false);
+                //await _deviceManager!.SetIsDDPMLaunchByQAMAsync(false);
             }
             else
                 _log.Info($"GetIsDDPMLaunchByQAM = false");
