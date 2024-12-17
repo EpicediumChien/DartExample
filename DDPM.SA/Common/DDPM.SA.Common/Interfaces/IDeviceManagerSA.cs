@@ -6,6 +6,7 @@ using DPeMPublic.Common.Enums;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.Security.Policy;
 using System.Threading;
 using System.Threading.Tasks;
 using VcpCore.Common;
@@ -20,7 +21,8 @@ namespace DDPM.SA.Common
         Peripherals_SettingsChange = 3,
         Peripherals_PlugIn = 4,
         Peripherals_UnPlug = 5,
-        NotifyOnly = 6
+        NotifyOnly = 6,
+        PleaseWait = 7,
     }
 
     public class DeviceChangedEventArgs : EventArgs
@@ -86,7 +88,7 @@ namespace DDPM.SA.Common
         Task<List<string>> ReadColorPreset(MonitorInfo m);
 
         //Task<bool> WriteColorPreset(MonitorInfo m, string ColorPreset_Name);
-        // jim 20241207 modify for The DDPM color profile can not be applied by DDPM on Smart HDR mode.(Gaming monitor ex: AW2724DM)       
+        // jim 20241207 modify for The DDPM color profile can not be applied by DDPM on Smart HDR mode.(Gaming monitor ex: AW2724DM)
         Task<bool> WriteColorPreset(MonitorInfo m, string ColorPreset_Name, int colorPresetRunType = 0, bool blIs_Game_DeviceName = false, bool blSmartHDR_ON = false, string reqAppName = null, bool showOSD = true);
 
         Task<bool> WriteColorPreset_AUTO(MonitorInfo m, string ColorPreset_Name);
@@ -133,7 +135,6 @@ namespace DDPM.SA.Common
         Task<bool> CheckNightLightStatus();
         Task<bool> CheckNightLightScheduler();
         Task<bool> CheckColorICCStatus();
-
 
         Task<bool> StopRegistryMonitor_NightLight();
         Task<bool> StopRegistryMonitor_NightLightScheduler();
@@ -250,7 +251,75 @@ namespace DDPM.SA.Common
         #endregion public for USBKVM
 
         #region EasyArrange
+        //Robert_Lin, 2024-12-15 rearrange order of interfaces and grouping in sub-Regions
+        
+        #region Properties - EasyArrange
+        //Robert_Lin, 2024-12-15, comment-out temporary
+        /// <summary>
+        /// The last error string after a EAPlugin method return error.
+        /// </summary>
+        //public string EALastError { get; }
+        #endregion Properties - EasyArrange
 
+        #region Events - EasyArrange
+
+        /// <summary>
+        /// Notify DDPM.UI to RefreshData when EAMonitorSettings are changed (by DDPM.SA).
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// EAArgs.Command=<b>EACommand_LastSelectedMonitorChanged</b>:<br/>
+        /// * Notify EAPlugin when SelectedMonitor is changed.<br/>
+        /// * New SelectedMonitor should has been updated to UserSettings.lastUISelectedMonitor.  
+        /// </para>
+        /// </remarks>
+        /// 
+        public event EventHandler<EAArgs> EASettingsChanged;
+
+        /// <summary>
+        /// A general event from SA to UI, using EAAgs to pass information.
+        /// Callers in DDPM.SA can call <c>IDeviceManagerSA.SendEANotify()</c> to invoke this event.
+        /// </summary>
+        /// <remarks>
+        /// Use <c>EAArgs.Command</c> to pass the Commands/Messages, which are defined in 
+        /// <c>DDPM.SA.Common.Display.EAEMCostants</c> class.
+        /// <para>
+        /// <c>EA_Command_SetIsSplanEnabled</c>:<br/>
+        /// When EAPlugin detects current monitor configuration should enable or disable the 
+        /// "Span across multiple monitors" options in EzSettings.
+        /// </para>
+        /// </remarks>
+        public event EventHandler<EAArgs> EANotify;
+
+        /// <summary>
+        /// Send from EAPlugin to the EAEditCommand() initiator.
+        /// The event argument (string) will contain the error message, said why the
+        /// EditCommand is aborted.<br/>
+        /// If the argument is a String.Empty (""), then means that the command is continued.
+        /// EAPlugin should has open its UI to interact with user, so DDPM.UI should minimized
+        /// itself, and wait until a EditReturn event is signaled.
+        /// </summary>
+        public event EventHandler<string> EAEditStarted;
+
+        /// <summary>
+        /// Send from EAPlugin when the EditCommand procedure is completed, and send the result back to DDPM.UI.<br/>
+        /// The returned arguments in EAArgs:<br/>
+        /// <c>Command="EditReturn"</c>;<br/>
+        /// <c>Return=false</c>: User cancel the edit by clicking "Cancel" button. or check <c>Message</c> for the detail.<br/>
+        /// <c>Return=true</c>: User click "Save" button, and below are the key return values:<br/>
+        /// <para>
+        /// 1 Below arguments in <c>SplitJson</c> are not changed, will be the same with initiating EAEditCommand():<br/>
+        ///   <c>CellCount</c>, and <c>SplitKey</c>.<br/>
+        /// 2 <c>EAID</c>: The user selected custom layout item which would like to replace. If it's 0, then means that
+        /// the layout item is edited from preset layout and user does not change from the drop-down list.<br/>
+        /// 3 <c>Settings</c>: The new layout settings.<br/>
+        /// 4 <c>CustomName</c>: User input Custom Name.
+        /// </para>
+        /// </summary>
+        public event EventHandler<EAArgs> EAEditReturn;
+        #endregion Events - EasyArrange
+
+        #region EAFunctionEnabled - EasyArrange
         /// <summary>
         /// Enable/Disable EasyArrange function for all monitors.
         /// When Disabled (isEnable=false), DDPM will not show the WorkWindow (to arrange window),
@@ -259,65 +328,198 @@ namespace DDPM.SA.Common
         /// <param name="isEnabled"></param>
         /// <returns></returns>
         public Task<bool> SetEAFunctionEnabled(bool isEnabled);
-
         public Task<ObjGetVCP> GetEAFunctionEnabled();
 
-        public event EventHandler<EAArgs> EASettingsChanged;
+        #endregion EAFunctionEnabled - EasyArrange
 
-        public Task<bool> SetEAWrokSplit(MonitorInfo monitorInfo, int cellCount, char splitKey, List<double>? settings);
-        public Task<bool> NotifyEASelectedLayoutChanged(MonitorInfo monitorInfo, SplitJson spJson);
-
-        //Robert_Lin, 2024-9-13 Remove unused interfaces
-        //public Task<bool> RequestEditSplit(MonitorInfo monitorInfo, int cellCount, char splitKey, string customName, List<double>? settings = null);
-
-        //Robert_Lin, 2024-9-13 Remove unused interfaces
-        //public event EventHandler<string> EAEditCompleted;
-
-        public event EventHandler<string> EAEditStarted;
-
-        //Task<string> WriteEasyArrangeSettings(EAMonitorSettings eaMonitorSettings);
-
-        //public Task<EAMonitorSettings> ReadEasyArrangeSettings(string monitorModel, string serialNumber);
-
-        //Robert_Lin, 2024-8-4 new added
-        public Task<bool> EAEditCommand(MonitorInfo monitorInfo, EAArgs args);
-
-        public event EventHandler<EAArgs> EAEditReturn;
-
-        public Task<bool> WriteEAMonitorSettings(MonitorInfo monitorInfo, EAMonitorSettings eaSettings);
-
-        public Task<EAMonitorSettings> ReadEAMonitorSettings(MonitorInfo monitorInfo);
-
-        //public Task<bool> EAReloadMonitorSettings(MonitorInfo monitorInfo);
-        //public Task<bool> EASaveOptions(MonitorInfo monitorInfo, EAMonitorSettings eaSettings);
-
+        #region EzSettings - EasyArrange
         //Robert_Lin, 2024-9-18 added for EzSettings
+        /// <summary>
+        /// Read the settings in DDPM.UI Easy Arrange / Settings page. Inlcude
+        /// 1. Allow app to split side by side without gap
+        /// 2. Only allow zone positioning when SHIFT is pressed
+        /// 3. Span across multiple monitors
+        /// 4. Application Window Snap
+        /// But not include "Hotkey: Recent"
+        /// These settings will be loaded from UserSettings file.
+        /// </summary>
+        /// <returns></returns>
         public Task<EzSettings> ReadEzSettings();
 
+        /// <summary>
+        /// Write new value to EasyArrange/Settings/Allow app to split side by side without gap
+        /// The new value will write to UserSettings file, and notify EAPlugin to reload
+        /// new settings with IDisplayService.ReloadEzSettings()
+        /// </summary>
+        /// <param name="newValue"></param>
+        /// <returns></returns>
         public Task<bool> WriteEzSettings_IsWidthoutGap(bool newValue);
 
+        /// <summary>
+        /// Write new value to EasyArrange/Settings/Only allow zone positioning when SHIFT is pressed
+        /// The new value will write to UserSettings file, and notify EAPlugin to reload
+        /// new settings with IDisplayService.ReloadEzSettings()
+        /// </summary>
+        /// <param name="newValue"></param>
+        /// <returns></returns>
         public Task<bool> WriteEzSettings_IsOnlyAllowWhenShiftKeyPressed(bool newValue);
 
+        /// <summary>
+        /// Write new value to EasyArrange/Settings/Span across multiple monitors
+        /// The new value will write to UserSettings file, and notify EAPlugin to reload
+        /// new settings with IDisplayService.ReloadEzSettings()
+        /// </summary>
+        /// <param name="newValue"></param>
+        /// <returns></returns>
         public Task<bool> WriteEzSettings_IsSpanAcrossMultiMonitors(bool newValue);
 
+        /// <summary>
+        /// Write new value to EasyArrange/Settings/Application Window Snap
+        /// The new value will write to UserSettings file, and notify EAPlugin to reload
+        /// new settings with IDisplayService.ReloadEzSettings()
+        /// </summary>
+        /// <param name="newValue"></param>
+        /// <returns></returns>
         public Task<bool> WriteEzSettings_IsAwsEnabled(bool newValue);
+        #endregion EzSettings - EasyArrange
 
-        public Task<bool> SetEASelectedLayout(MonitorInfo monitorInfo, SplitJson spJson);
-
+        #region EA Custom List - EasyArrange
         //Robert_Lin, 2024-10-12 added, move EACustomList to UserSettings from MonitorSettings
+        /// <summary>
+        /// Read EasyArrange Custom layout list from UserSettings file.
+        /// Implement in DeviceManagerPlugin.
+        /// </summary>
+        /// <returns></returns>
         public Task<SplitJson[]> ReadEACustomList();
 
+        //Robert_Lin, 2024-10-12 added, move EACustomList to UserSettings from MonitorSettings
+        /// <summary>
+        /// Write EasyArrange Custom layout list to UserSettings file.
+        /// Implement in DeviceManagerPlugin.
+        /// It's called by DDPM.UI. It's no need to notify SA EAPlugin.
+        /// </summary>
+        /// <returns></returns>
         public Task<bool> WriteEACustomList(SplitJson[] customList);
+        #endregion EA Custom List - EasyArrange
 
-        public event EventHandler<EAArgs> EANotify;
+        #region EAMonitorSettings - EasyArrange
+        /// <summary>
+        /// Write new values to EA MonitorSettings file. A basic write file function, no any notification support.
+        /// </summary>
+        /// <param name="monitorInfo"></param>
+        /// <param name="eaSettings"></param>
+        /// <returns></returns>
+        public Task<bool> WriteEAMonitorSettings(MonitorInfo monitorInfo, EAMonitorSettings eaSettings);
+
+        /// <summary>
+        /// Read setting values from EA MonitorSettings file.
+        /// </summary>
+        /// <param name="monitorInfo"></param>
+        /// <param name="eaSettings"></param>
+        /// <returns></returns>
+        public Task<EAMonitorSettings> ReadEAMonitorSettings(MonitorInfo monitorInfo);
+        #endregion EAMonitorSettings - EasyArrange
+
+        #region SelectedLayout - EasyArrange
+        /// <summary>
+        /// Return the EAID of current selected layout. Called by CLI.
+        /// UI/SA should call ReadEAMonitorSettings() to get the full properties of SelectedLayout.
+        /// </summary>
+        /// <param name="monitorInfo">Specified the monitor</param>
+        /// <returns>
+        /// <b>0</b>=Off (Empty Layout), <b>[1~49]</b>=Preset layout, 
+        /// <b>[1000~1004]</b>=Custom layout, <b>others</b>(shold be a negavtive value)=error
+        /// </returns>
+        public Task<int> GetEASelectedLayout(MonitorInfo monitorInfo);
+
+        /// <summary>
+        /// Set Selected EA Layout by EAID (Robert_Lin, 2024-12-13, wait for CLI verification)
+        /// Fully simulate the secnario that user select a layout from DDPM UI. with below steps<br/>
+        /// 1. Set the specified layout (by EAID) as selected layout.<br/>
+        /// 2. (if not exist then) Add to Recent list.<br/>
+        /// 3. Save the changed to EAMonitorSettings.<br/>
+        /// 4. Notify SA.EAPlugin (EABroker) to update/refresh.<br/> 
+        /// 5. User will see the selected layout shown and auto fade-out animation.<br/>
+        /// 6. Notify UI to reload settings.<br/>
+        /// </summary>
+        /// <param name="monitorInfo">It can set to null, if eaId>=1000. </param>
+        /// <param name="eaId">0=Off, [1~49]=Preset layout, [1000~1004]=Custom Layout.</param>
+        /// <returns></returns>
+        public Task<bool> SetEASelectedLayout(MonitorInfo monitorInfo, int eaId);
+
+        /// <summary>
+        /// The major method for DDPM.UI to notify SA.EAPlugin to refresh the SelectedLayout.
+        /// The selection will not be saved to settings file with this method.
+        /// </summary>
+        /// <param name="monitorInfo"></param>
+        /// <param name="spJson"></param>
+        /// <returns></returns>
+        public Task<bool> NotifyEASelectedLayoutChanged(MonitorInfo monitorInfo, SplitJson spJson);
+
+        /// <summary>
+        /// [OLD, Use NotifyEASelectedLayoutChanged() instead]
+        /// Set the SelectedLayout from UI to EAPlugin, apply to all of related runtime objects.
+        /// The new settings will be save to Settings file by UI with WriteEAMonitorSettings(),
+        /// Not included in this method.
+        /// </summary>
+        /// <param name="monitorInfo"></param>
+        /// <param name="cellCount"></param>
+        /// <param name="splitKey"></param>
+        /// <param name="settings"></param>
+        /// <returns></returns>
+        public Task<bool> SetEAWrokSplit(MonitorInfo monitorInfo, int cellCount, char splitKey, List<double>? settings);
+
+        /// <summary>
+        /// [OLD, Use SetEASelectedLayout(MonitorInfo monitorInfo, int eaId) instead]
+        /// </summary>
+        /// <param name="monitorInfo"></param>
+        /// <param name="spJson"></param>
+        /// <returns></returns>
+        public Task<bool> SetEASelectedLayout(MonitorInfo monitorInfo, SplitJson spJson);
+        #endregion SelectedLayout - EasyArrange
+
+        #region EditCommand - EasyArrange
+        //Robert_Lin, 2024-8-4 new added
+        /// <summary>
+        /// Initiate a EditCommand to EAPlugin from DDPM.UI.
+        /// </summary>
+        /// <param name="monitorInfo">The MonitorInfo of the monitor</param>
+        /// <param name="args">
+        /// <c>args.Command</c>="EditCommand"<br/>
+        /// <c>args.SplitJson.CellCount,SplitKey,Settings</c>=The ISplitCtrl settings to be edited.<br/>
+        /// <c>args.SplitJson.EAID</c>=The original EAID which is selected for editing.<br/>
+        /// For example, if the edit is initiated by clicking the pencil icon of a preset layout, then EAID=0.<br/>
+        /// But if it's initiated from a custom layout, then EAID will be in range of [1000~10004].
+        /// </param>
+        /// <returns>
+        /// <c>true</c>: EAPlugin has accept the EditCommand, and initiate an internal Edit Procedure.
+        /// The caller (DDPM.UI) should wait for a EditStarted event.<br/>
+        /// <c>false</c>: The EditCommand is rejected by EAPlugin. 
+        /// </returns>
+        public Task<bool> EAEditCommand(MonitorInfo monitorInfo, EAArgs args);
+
+        #endregion EditCommand - EasyArrange
+
+        #region SendEANotify -EasyArrange
+        /// <summary>
+        /// General notification  to EAPlugin from other Plugins inside DDPM.SA.User
+        /// </summary>
+        /// <param name="args">
+        /// eaArgs.Command=EAEMConstants.EACommand_LastSelectedMonitorChanged:
+        ///     Notify EAPlugin when SelectedMonitor is changed, 
+        /// </param>
+        /// <returns></returns>
         public Task SendEANotify(EAArgs args);
+        #endregion  SendEANotify -EasyArrange
 
+        #region Span across multiple monitors - EasyArrange
         /// <summary>
         /// Return current Span across multiple monitor option is Enabled/Disabled;
         /// Note that it's different with EzSettings.IsSpanAcrossMultiMonitors (=ON|OFF)
         /// </summary>
         /// <returns>True=Enabled; False=Disabled</returns>
         public Task<bool> GetIsSpanEnabled();
+        #endregion Span across multiple monitors - EasyArrange
 
         #endregion EasyArrange
 
@@ -771,7 +973,6 @@ namespace DDPM.SA.Common
         Task<bool> FinishKeyCapturePen();
         Task<string> KeyCaptureData();
 
-
         Task UnPairPen(string Guid);
         Task SetEraserDoublePressSetting(string itemID, byte[] newValue);
         Task SetEraserLongPressSetting(string itemID, byte[] newValue);
@@ -1107,7 +1308,7 @@ namespace DDPM.SA.Common
 
         #region Dock
         Task<DockData> GetDockData(string guid);
-        #endregion
+        #endregion Dock
 
         #endregion public for DTPProxy
 
@@ -1177,7 +1378,7 @@ namespace DDPM.SA.Common
         Task SetIsWidgetSettingPageLoadedByQAMAsync(bool newValue);
         Task SyncWebcamProfile(string profileName, bool isActionFromQAM = true); //Derek 1212
         Task WriteLog(string logMsg); //Derek 1210
-        #endregion
+        #endregion QAM
 
         #region System Suspend & Resume & SessionEnd
         event EventHandler SystemSuspend;
@@ -1185,6 +1386,6 @@ namespace DDPM.SA.Common
         event EventHandler SystemSessionEnd;
 
         Task FireSystemSessionEnd();
-        #endregion
+        #endregion System Suspend & Resume & SessionEnd
     }
 }

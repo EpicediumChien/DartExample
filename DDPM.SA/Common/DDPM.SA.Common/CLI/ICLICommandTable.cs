@@ -351,11 +351,11 @@ namespace DDPM.SA.Common
                                         t = tS;
                                     if (t.Length > 1 && t.EndsWith("]"))
                                         t = t.Substring(0, t.Length - 1);
-                                    if (tmpSS[0].ToUpper().Contains("SERVICETAG"))
+                                    if (tmpSS[0].ToUpper().Contains("SERVICETAG") && (commandInput.TargetFeature.ToUpper() != "SCREENNOTIFICATION") && (commandInput.TargetFeature.ToUpper() != "CONNECTEDDEVICES") && (commandInput.TargetFeature.ToUpper() != "DEVICEDATA") && (commandInput.TargetFeature.ToUpper() != "DIAGNOSTICSREPORT"))
                                     {
                                         commandInput.ServiceTag.Add(t);
                                     }
-                                    else if (tmpSS[0].ToUpper().Contains("MODEL"))
+                                    else if (tmpSS[0].ToUpper().Contains("MODEL") && (commandInput.TargetFeature.ToUpper() != "SCREENNOTIFICATION") && (commandInput.TargetFeature.ToUpper() != "CONNECTEDDEVICES") && (commandInput.TargetFeature.ToUpper() != "DEVICEDATA") && (commandInput.TargetFeature.ToUpper() != "DIAGNOSTICSREPORT"))
                                     {
                                         commandInput.Model.Add(t);
                                     }
@@ -363,7 +363,7 @@ namespace DDPM.SA.Common
                                     {
                                         commandInput.GuidString.Add(t);
                                     }
-                                    else if (tmpSS[0].ToUpper().Contains("INDEX"))
+                                    else if (tmpSS[0].ToUpper().Contains("INDEX") && (commandInput.TargetFeature.ToUpper() != "SCREENNOTIFICATION") && (commandInput.TargetFeature.ToUpper() != "CONNECTEDDEVICES") && (commandInput.TargetFeature.ToUpper() != "DEVICEDATA") && (commandInput.TargetFeature.ToUpper() != "DIAGNOSTICSREPORT"))
                                     {
                                         int temp = int.Parse(t) - 1;
                                         commandInput.DeviceIndex.Add(temp.ToString());
@@ -599,11 +599,11 @@ namespace DDPM.SA.Common
                                                 t = tS;
                                             if (t.Length > 1 && t.EndsWith("]"))
                                                 t = t.Substring(0, t.Length - 1);
-                                            if (tmpSS[0].ToUpper().Contains("SERVICETAG"))
+                                            if (tmpSS[0].ToUpper().Contains("SERVICETAG") && (input.TargetFeature.ToUpper() != "SCREENNOTIFICATION") && (input.TargetFeature.ToUpper() != "CONNECTEDDEVICES") && (input.TargetFeature.ToUpper() != "DEVICEDATA") && (input.TargetFeature.ToUpper() != "DIAGNOSTICSREPORT"))
                                             {
                                                 input.ServiceTag.Add(t);
                                             }
-                                            else if (tmpSS[0].ToUpper().Contains("MODEL"))
+                                            else if (tmpSS[0].ToUpper().Contains("MODEL") && (input.TargetFeature.ToUpper() != "SCREENNOTIFICATION") && (input.TargetFeature.ToUpper() != "CONNECTEDDEVICES") && (input.TargetFeature.ToUpper() != "DEVICEDATA") && (input.TargetFeature.ToUpper() != "DIAGNOSTICSREPORT"))
                                             {
                                                 input.Model.Add(t);
                                             }
@@ -611,7 +611,7 @@ namespace DDPM.SA.Common
                                             {
                                                 input.GuidString.Add(t);
                                             }
-                                            else if (tmpSS[0].ToUpper().Contains("INDEX"))
+                                            else if (tmpSS[0].ToUpper().Contains("INDEX") && (input.TargetFeature.ToUpper() != "SCREENNOTIFICATION") && (input.TargetFeature.ToUpper() != "CONNECTEDDEVICES") && (input.TargetFeature.ToUpper() != "DEVICEDATA") && (input.TargetFeature.ToUpper() != "DIAGNOSTICSREPORT"))
                                             {
                                                 int temp = int.Parse(t) - 1;
                                                 input.DeviceIndex.Add(temp.ToString());

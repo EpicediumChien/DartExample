@@ -915,6 +915,8 @@ namespace DDPM.UI.Plugin.ViewModels
                 OnPropertyChanged(nameof(hdr_enable));
             }
         }
+
+        public bool IsNotAutoFramingOn { get => !IsAutoFramingOn; }
         public bool IsNotRecording { get => !IsRecording; }
 
         public int btnRes0_width { get; set; }
@@ -1059,6 +1061,9 @@ namespace DDPM.UI.Plugin.ViewModels
             get => CurrentProfile.IsAutoFramingOn;
             set
             {
+
+                OnPropertyChanged(nameof(IsNotAutoFramingOn));
+
                 if (value == CurrentProfile.IsAutoFramingOn)
                     return;
 
