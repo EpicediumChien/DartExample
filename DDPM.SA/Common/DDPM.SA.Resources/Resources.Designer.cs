@@ -511,7 +511,7 @@ namespace DDPM.SA.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to FW is being Installing. Do not disconnect the device..
+        ///   Looks up a localized string similar to FW is being installed. Do not disconnect the device..
         /// </summary>
         internal static string FW_is_being_Installing {
             get {
