@@ -7,6 +7,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media.Animation;
 using Windows.Devices.Geolocation;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.Window;
 
 namespace DDPM.UI.Plugin.WalkThroughPlugin
 {
@@ -93,7 +94,7 @@ namespace DDPM.UI.Plugin.WalkThroughPlugin
         private void MainNextBtn_Click(object sender, RoutedEventArgs e)
         {
             WalkThroughBox msgBox = new WalkThroughBox(ViewModel, Window.GetWindow(this));
-
+            msgBox.WindowStartupLocation = WindowStartupLocation.Manual;
             msgBox.ShowDialog();
 
             if (DdpmHomePlugin.DdpmHomePlugin.WalkThroughQueue.Count == 0)
