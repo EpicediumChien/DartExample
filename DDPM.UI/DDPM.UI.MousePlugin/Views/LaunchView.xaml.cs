@@ -40,7 +40,10 @@ namespace DDPM.UI.Plugin.MousePlugin
             InitializeComponent();
             _vm = (MouseViewModel?)Mouseplugin.PluginIoc?.GetService<IPeripheralViewModel>()!;
             if (_vm == null)
+            {
+                DdpmCommonHelper.WriteUILog("Mouse ViewModel is null");
                 return;
+            }
 
             // for Light mode check by leo
             if (UXSystemParameters.Instance.OSTheme == OSThemeEnum.Light)

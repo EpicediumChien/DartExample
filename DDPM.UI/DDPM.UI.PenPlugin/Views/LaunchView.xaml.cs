@@ -27,7 +27,10 @@ namespace DDPM.UI.Plugin.PenPlugin
             InitializeComponent();
             _vm = (PenViewModel?)Penplugin.PluginIoc?.GetService<IPeripheralViewModel>()!;
             if (_vm == null)
+            {
+                DdpmCommonHelper.WriteUILog("Pen ViewModel is null");
                 return;
+            }
 
             _vm.Reset();
             DataContext = _vm;

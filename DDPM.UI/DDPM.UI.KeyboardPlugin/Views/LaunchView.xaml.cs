@@ -33,7 +33,10 @@ namespace DDPM.UI.Plugin.KeyboardPlugin
             InitializeComponent();
             _vm = (KeyboardViewModel?)Keyboardplugin.PluginIoc?.GetService<IPeripheralViewModel>();
             if (_vm == null)
+            {
+                DdpmCommonHelper.WriteUILog("Keyboard ViewModel is null");
                 return;
+            }
 
             DataContext = _vm;
             _vm.VbarItemClickCommand = new RelayCommand<VbarItem>(OnVbarItemClicked!);

@@ -95,7 +95,10 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
         {
             _vm = (WebCameraViewModel?)WebCameraplugin.PluginIoc?.GetService<IPeripheralViewModel>();
             if (_vm == null)
+            {
+                DdpmCommonHelper.WriteUILog("Webcam ViewModel is null");
                 return;
+            }
 
             InitializeComponent();
             _vm.Reset();
