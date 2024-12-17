@@ -104,7 +104,7 @@
                                     </UXControls:UXAlert>
                                 </StackPanel>
                                 <StackPanel Grid.Row="1" Margin="0,0,0,24" Visibility="{Binding Critical_UpdateList}">
-                                    <UXControls:UXTextBlock Foreground="{DynamicResource DefaultTheme_TxtColor}" Margin="20,16,0,0" FontSize="16" Grid.Row="0" Text="Critical" TextBlockType="Header1" HorizontalAlignment="Left" />
+                                    <UXControls:UXTextBlock Foreground="{DynamicResource DefaultTheme_TxtColor}" Margin="20,16,0,0" FontSize="16" Grid.Row="0" Text="{Binding [Critical], Source={x:Static lang:LangHelper.Instance}}" TextBlockType="Header1" HorizontalAlignment="Left" />
                                     <ListBox ItemsSource="{Binding Critical_UpdateList_UI}" Name="listTopics" Background="Transparent" BorderThickness="0" Margin="20,0,0,0">
                                         <ListBox.ItemTemplate>
                                             <DataTemplate>
@@ -158,7 +158,7 @@
                                     </ListBox>
                                 </StackPanel>
                                 <StackPanel Grid.Row="3" Visibility="{Binding Optional_UpdateList}">
-                                    <UXControls:UXTextBlock Foreground="{DynamicResource DefaultTheme_TxtColor}" FontSize="16" Grid.Row="0" Text="Optional" TextBlockType="Header1" HorizontalAlignment="Left" Margin="20,4,4,4" />
+                                    <UXControls:UXTextBlock Foreground="{DynamicResource DefaultTheme_TxtColor}" FontSize="16" Grid.Row="0" Text="{Binding [Optional], Source={x:Static lang:LangHelper.Instance}}" TextBlockType="Header1" HorizontalAlignment="Left" Margin="20,4,4,4" />
                                     <ListBox ItemsSource="{Binding Optional_UpdateList_UI}" Background="Transparent" BorderThickness="0" Margin="20,0,0,0">
                                         <ListBox.ItemTemplate>
                                             <DataTemplate>
