@@ -33,6 +33,7 @@ using Google.Protobuf.WellKnownTypes;
 using System.IO;
 using Type = System.Type;
 using DDPM.SA.Common.UI;
+using MS.WindowsAPICodePack.Internal;
 
 namespace DDPM.SA.Plugins.User.DTPProxy
 {
@@ -150,8 +151,6 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         public async Task<bool> GetIsLockKeyNotificationsEnabledValue()
         {
             writelog($"Get IsLockKeyNotificationsEnabled Fun");
-            _itemID = new ItemId(GlobalPeripheralItemID);
-
             if (_globalperipheralMethodInfo != null)
             {
                 if (await GetCommodityInterfaceInstanceAsync(_globalperipheralMethodInfo) is ICommodity commodity)
@@ -162,13 +161,13 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 }
                 else
                 {
-                    writelog($"Could not retrieve the Commodity Interface {_globalperipheralInterfaceType} for the {_itemID} item.");
+                    writelog($"Could not retrieve the Commodity Interface {_globalperipheralInterfaceType} for the item.");
                     return false;
                 }
             }
             else
             {
-                writelog($"[{nameof(GetIsLockKeyNotificationsEnabledValue)}]Could not retrieve the Commodity Interface for the {_itemID} item. _mouseMethodInfo is null");
+                writelog($"[{nameof(GetIsLockKeyNotificationsEnabledValue)}]Could not retrieve the Commodity Interface for the item. _globalperipheralMethodInfo is null");
                 return false;
             }
 
@@ -177,8 +176,6 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         public async Task<bool> GetIsBatteryNotificationsEnabledValue()
         {
             writelog($"Get IsBatteryNotificationsEnabled Fun");
-            _itemID = new ItemId(GlobalPeripheralItemID);
-
             if (_globalperipheralMethodInfo != null)
             {
                 if (await GetCommodityInterfaceInstanceAsync(_globalperipheralMethodInfo) is ICommodity commodity)
@@ -189,13 +186,13 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 }
                 else
                 {
-                    writelog($"Could not retrieve the Commodity Interface {_globalperipheralInterfaceType} for the {_itemID} item.");
+                    writelog($"Could not retrieve the Commodity Interface {_globalperipheralInterfaceType} for the  item.");
                     return false;
                 }
             }
             else
             {
-                writelog($"[{nameof(GetIsBatteryNotificationsEnabledValue)}]Could not retrieve the Commodity Interface for the {_itemID} item. _mouseMethodInfo is null");
+                writelog($"[{nameof(GetIsBatteryNotificationsEnabledValue)}]Could not retrieve the Commodity Interface for the  item. _globalperipheralMethodInfo is null");
                 return false;
             }
 
@@ -204,7 +201,6 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         public async Task<bool> GetIsPresenceDetectionSensnorStateNotificationsEnabledValue()
         {
             writelog($"Get IsPresenceDetectionSensnorStateNotificationsEnabled Fun");
-            _itemID = new ItemId(GlobalPeripheralItemID);
 
             if (_globalperipheralMethodInfo != null)
             {
@@ -216,13 +212,13 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 }
                 else
                 {
-                    writelog($"Could not retrieve the Commodity Interface {_globalperipheralInterfaceType} for the {_itemID} item.");
+                    writelog($"Could not retrieve the Commodity Interface {_globalperipheralInterfaceType} for the item.");
                     return false;
                 }
             }
             else
             {
-                writelog($"[{nameof(GetIsPresenceDetectionSensnorStateNotificationsEnabledValue)}]Could not retrieve the Commodity Interface for the {_itemID} item. _mouseMethodInfo is null");
+                writelog($"[{nameof(GetIsPresenceDetectionSensnorStateNotificationsEnabledValue)}]Could not retrieve the Commodity Interface for the item. _globalperipheralMethodInfo is null");
                 return false;
             }
 
@@ -231,8 +227,6 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         public async Task<bool> GetIsAnalyticsEnabledValue()
         {
             writelog($"Get IsAnalyticsEnabled Fun");
-            _itemID = new ItemId(GlobalPeripheralItemID);
-
             if (_globalperipheralMethodInfo != null)
             {
                 if (await GetCommodityInterfaceInstanceAsync(_globalperipheralMethodInfo) is ICommodity commodity)
@@ -243,13 +237,13 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 }
                 else
                 {
-                    writelog($"Could not retrieve the Commodity Interface {_globalperipheralInterfaceType} for the {_itemID} item.");
+                    writelog($"Could not retrieve the Commodity Interface {_globalperipheralInterfaceType} for the item.");
                     return false;
                 }
             }
             else
             {
-                writelog($"[{nameof(GetIsAnalyticsEnabledValue)}]Could not retrieve the Commodity Interface for the {_itemID} item. _mouseMethodInfo is null");
+                writelog($"[{nameof(GetIsAnalyticsEnabledValue)}]Could not retrieve the Commodity Interface for the item. _globalperipheralMethodInfo is null");
                 return false;
             }
 
@@ -258,7 +252,6 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         public async Task<bool> GetIsQuickAccessMenuEnabledValue()
         {
             writelog($"Get IsQuickAccessMenuEnabled Fun");
-            _itemID = new ItemId(GlobalPeripheralItemID);
 
             if (_globalperipheralMethodInfo != null)
             {
@@ -270,13 +263,13 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 }
                 else
                 {
-                    writelog($"Could not retrieve the Commodity Interface {_globalperipheralInterfaceType} for the {_itemID} item.");
+                    writelog($"Could not retrieve the Commodity Interface {_globalperipheralInterfaceType} for the item.");
                     return false;
                 }
             }
             else
             {
-                writelog($"[{nameof(GetIsQuickAccessMenuEnabledValue)}]Could not retrieve the Commodity Interface for the {_itemID} item. _mouseMethodInfo is null");
+                writelog($"[{nameof(GetIsQuickAccessMenuEnabledValue)}]Could not retrieve the Commodity Interface for the item. _globalperipheralMethodInfo is null");
                 return false;
             }
 
@@ -285,7 +278,6 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         public async Task<bool> GetIsMuteStatusNotificationsEnabledValue()
         {
             writelog($"Get IsMuteStatusNotificationsEnabled Fun");
-            _itemID = new ItemId(GlobalPeripheralItemID);
 
             if (_globalperipheralMethodInfo != null)
             {
@@ -297,13 +289,13 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 }
                 else
                 {
-                    writelog($"Could not retrieve the Commodity Interface {_globalperipheralInterfaceType} for the {_itemID} item.");
+                    writelog($"Could not retrieve the Commodity Interface {_globalperipheralInterfaceType} for the item.");
                     return false;
                 }
             }
             else
             {
-                writelog($"[{nameof(GetIsMuteStatusNotificationsEnabledValue)}]Could not retrieve the Commodity Interface for the {_itemID} item. _mouseMethodInfo is null");
+                writelog($"[{nameof(GetIsMuteStatusNotificationsEnabledValue)}]Could not retrieve the Commodity Interface for the item. _globalperipheralMethodInfo is null");
                 return false;
             }
 
@@ -312,8 +304,6 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         public async Task<bool> GetIsQuickAccessMenuOSDEnabledValue()
         {
             writelog($"Get IsQuickAccessMenuOSDEnabled Fun");
-            _itemID = new ItemId(GlobalPeripheralItemID);
-
             if (_globalperipheralMethodInfo != null)
             {
                 if (await GetCommodityInterfaceInstanceAsync(_globalperipheralMethodInfo) is ICommodity commodity)
@@ -324,128 +314,176 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 }
                 else
                 {
-                    writelog($"Could not retrieve the Commodity Interface {_globalperipheralInterfaceType} for the {_itemID} item.");
+                    writelog($"Could not retrieve the Commodity Interface {_globalperipheralInterfaceType} for the item.");
                     return false;
                 }
             }
             else
             {
-                writelog($"[{nameof(GetIsQuickAccessMenuOSDEnabledValue)}]Could not retrieve the Commodity Interface for the {_itemID} item. _mouseMethodInfo is null");
+                writelog($"[{nameof(GetIsQuickAccessMenuOSDEnabledValue)}]Could not retrieve the Commodity Interface for the item. _globalperipheralMethodInfo is null");
                 return false;
             }
 
         }
 
-        public async Task SetIsLockKeyNotificationsEnabledValue(bool newValue)
+        public async Task<bool> SetIsLockKeyNotificationsEnabledValue(bool newValue)
         {
             writelog($"Set IsLockKeyNotificationsEnabled Fun");
-            _itemID = new ItemId(GlobalPeripheralItemID);
 
             if (await GetCommodityInterfaceInstanceAsync(_globalperipheralMethodInfo) is ICommodity commodity)
             {
                 writelog($"SetPropertyValue IsLockKeyNotificationsEnabled :{newValue}");
-                SetPropertyValue(_globalperipheralInterfaceType, commodity, "IsLockKeyNotificationsEnabled", newValue);
+                var result = SetPropertyValue(_globalperipheralInterfaceType, commodity, "IsLockKeyNotificationsEnabled", newValue);
+                return result;
             }
             else
             {
-                writelog($"Could not retrieve the Commodity Interface {_globalperipheralInterfaceType} for the {_itemID} item.");
+                writelog($"Could not retrieve the Commodity Interface {_globalperipheralInterfaceType} for the item.");
             }
+            return false;
         }
 
-        public async Task SetIsBatteryNotificationsEnabledValue(bool newValue)
+        public async Task<bool> SetIsBatteryNotificationsEnabledValue(bool newValue)
         {
             writelog($"Set IsBatteryNotificationsEnabled Fun");
-            _itemID = new ItemId(GlobalPeripheralItemID);
 
             if (await GetCommodityInterfaceInstanceAsync(_globalperipheralMethodInfo) is ICommodity commodity)
             {
                 writelog($"SetPropertyValue IsBatteryNotificationsEnabled :{newValue}");
-                SetPropertyValue(_globalperipheralInterfaceType, commodity, "IsBatteryNotificationsEnabled", newValue);
+                var result = SetPropertyValue(_globalperipheralInterfaceType, commodity, "IsBatteryNotificationsEnabled", newValue);
+                return result;
             }
             else
             {
-                writelog($"Could not retrieve the Commodity Interface {_globalperipheralInterfaceType} for the {_itemID} item.");
+                writelog($"Could not retrieve the Commodity Interface {_globalperipheralInterfaceType} for the item.");
             }
+            return false;
         }
 
-        public async Task SetIsPresenceDetectionSensnorStateNotificationsEnabledValue(bool newValue)
+        public async Task<bool> SetIsPresenceDetectionSensnorStateNotificationsEnabledValue(bool newValue)
         {
             writelog($"Set IsPresenceDetectionSensnorStateNotificationsEnabled Fun");
-            _itemID = new ItemId(GlobalPeripheralItemID);
 
             if (await GetCommodityInterfaceInstanceAsync(_globalperipheralMethodInfo) is ICommodity commodity)
             {
                 writelog($"SetPropertyValue IsPresenceDetectionSensnorStateNotificationsEnabled :{newValue}");
-                SetPropertyValue(_globalperipheralInterfaceType, commodity, "IsPresenceDetectionSensnorStateNotificationsEnabled", newValue);
+                var result = SetPropertyValue(_globalperipheralInterfaceType, commodity, "IsPresenceDetectionSensnorStateNotificationsEnabled", newValue);
+                return result;
             }
             else
             {
-                writelog($"Could not retrieve the Commodity Interface {_globalperipheralInterfaceType} for the {_itemID} item.");
+                writelog($"Could not retrieve the Commodity Interface {_globalperipheralInterfaceType} for the item.");
             }
+            return false;
         }
 
-        public async Task SetIsAnalyticsEnabledValue(bool newValue)
+        public async Task<bool> SetIsAnalyticsEnabledValue(bool newValue)
         {
             writelog($"Set IsAnalyticsEnabled Fun");
-            _itemID = new ItemId(GlobalPeripheralItemID);
 
             if (await GetCommodityInterfaceInstanceAsync(_globalperipheralMethodInfo) is ICommodity commodity)
             {
                 writelog($"SetPropertyValue IsAnalyticsEnabled :{newValue}");
-                SetPropertyValue(_globalperipheralInterfaceType, commodity, "IsAnalyticsEnabled", newValue);
+                var result = SetPropertyValue(_globalperipheralInterfaceType, commodity, "IsAnalyticsEnabled", newValue);
+                return result;
             }
             else
             {
-                writelog($"Could not retrieve the Commodity Interface {_globalperipheralInterfaceType} for the {_itemID} item.");
+                writelog($"Could not retrieve the Commodity Interface {_globalperipheralInterfaceType} for the item.");
             }
+            return false;
         }
 
-        public async Task SetIsQuickAccessMenuEnabledValue(bool newValue)
+        public async Task<bool> SetIsQuickAccessMenuEnabledValue(bool newValue)
         {
             writelog($"Set IsQuickAccessMenuEnabled Fun");
-            _itemID = new ItemId(GlobalPeripheralItemID);
 
             if (await GetCommodityInterfaceInstanceAsync(_globalperipheralMethodInfo) is ICommodity commodity)
             {
                 writelog($"SetPropertyValue IsQuickAccessMenuEnabled :{newValue}");
-                SetPropertyValue(_globalperipheralInterfaceType, commodity, "IsQuickAccessMenuEnabled", newValue);
+                var result = SetPropertyValue(_globalperipheralInterfaceType, commodity, "IsQuickAccessMenuEnabled", newValue);
+                return result;
             }
             else
             {
-                writelog($"Could not retrieve the Commodity Interface {_globalperipheralInterfaceType} for the {_itemID} item.");
+                writelog($"Could not retrieve the Commodity Interface {_globalperipheralInterfaceType} for the item.");
             }
+            return false;
         }
 
-        public async Task SetIsMuteStatusNotificationsEnabledValue(bool newValue)
+        public async Task<bool> SetIsMuteStatusNotificationsEnabledValue(bool newValue)
         {
             writelog($"Set IsMuteStatusNotificationsEnabled Fun");
-            _itemID = new ItemId(GlobalPeripheralItemID);
 
             if (await GetCommodityInterfaceInstanceAsync(_globalperipheralMethodInfo) is ICommodity commodity)
             {
                 writelog($"SetPropertyValue IsMuteStatusNotificationsEnabled :{newValue}");
-                SetPropertyValue(_globalperipheralInterfaceType, commodity, "IsMuteStatusNotificationsEnabled", newValue);
+                var result = SetPropertyValue(_globalperipheralInterfaceType, commodity, "IsMuteStatusNotificationsEnabled", newValue);
+                return result;
             }
             else
             {
-                writelog($"Could not retrieve the Commodity Interface {_globalperipheralInterfaceType} for the {_itemID} item.");
+                writelog($"Could not retrieve the Commodity Interface {_globalperipheralInterfaceType} for the item.");
             }
+            return false;
         }
 
-        public async Task SetIsQuickAccessMenuOSDEnabledValue(bool newValue)
+        public async Task<bool> SetIsQuickAccessMenuOSDEnabledValue(bool newValue)
         {
             writelog($"Set IsQuickAccessMenuOSDEnabled Fun");
-            _itemID = new ItemId(GlobalPeripheralItemID);
-
             if (await GetCommodityInterfaceInstanceAsync(_globalperipheralMethodInfo) is ICommodity commodity)
             {
                 writelog($"SetPropertyValue IsQuickAccessMenuOSDEnabled :{newValue}");
-                SetPropertyValue(_globalperipheralInterfaceType, commodity, "IsQuickAccessMenuOSDEnabled", newValue);
+                var result=SetPropertyValue(_globalperipheralInterfaceType, commodity, "IsQuickAccessMenuOSDEnabled", newValue);
+                return result;
             }
             else
             {
-                writelog($"Could not retrieve the Commodity Interface {_globalperipheralInterfaceType} for the {_itemID} item.");
+                writelog($"Could not retrieve the Commodity Interface {_globalperipheralInterfaceType} for the item.");
             }
+            return false;
+        }
+
+        private void _globalperipheralcom_IsQuickAccessMenuOSDEnabledChanged(object sender, IsQuickAccessMenuOSDEnabledChangedArgs e)
+        {
+            writelog($"[DTPProxy] IsQuickAccessMenuOSDEnabled {e.IsQuickAccessMenuOSDEnabled} Device ID: {e.DeviceId} !!!!!!!!!!!!!!!");
+            SendDTPEventToUI(CreateEventMsg("GlobalPeripheralcom", "_globalperipheralcom_IsQuickAccessMenuOSDEnabledChanged", e.DeviceId));
+        }
+
+        private void _globalperipheralcom_IsQuickAccessMenuEnabledChanged(object sender, IsQuickAccessMenuEnabledChangedArgs e)
+        {
+            writelog($"[DTPProxy] IsQuickAccessMenuEnabled {e.IsQuickAccessMenuEnabled} Device ID: {e.DeviceId} !!!!!!!!!!!!!!!");
+            SendDTPEventToUI(CreateEventMsg("GlobalPeripheralcom", "_globalperipheralcom_IsQuickAccessMenuEnabledChanged", e.DeviceId));
+        }
+
+        private void _globalperipheralcom_IsPresenceDetectionSensnorStateNotificationsEnabledChanged(object sender, IsPresenceDetectionSensnorStateNotificationsEnabledChangedArgs e)
+        {
+            writelog($"[DTPProxy] IsPresenceDetectionSensnorStateNotificationsEnabled {e.IsPresenceDetectionSensnorStateNotificationsEnabled} Device ID: {e.DeviceId} !!!!!!!!!!!!!!!");
+            SendDTPEventToUI(CreateEventMsg("GlobalPeripheralcom", "_globalperipheralcom_IsPresenceDetectionSensnorStateNotificationsEnabledChanged", e.DeviceId));
+        }
+
+        private void _globalperipheralcom_IsMuteStatusNotificationsEnabledChanged(object sender, IsMuteStatusNotificationsEnabledChangedArgs e)
+        {
+            writelog($"[DTPProxy] IsMuteStatusNotificationsEnabled {e.IsMuteStatusNotificationsEnabled} Device ID: {e.DeviceId} !!!!!!!!!!!!!!!");
+            SendDTPEventToUI(CreateEventMsg("GlobalPeripheralcom", "_globalperipheralcom_IsMuteStatusNotificationsEnabledChanged", e.DeviceId));
+        }
+
+        private void _globalperipheralcom_IsLockKeyNotificationsEnabledChanged(object sender, IsLockKeyNotificationsEnabledChangedArgs e)
+        {
+            writelog($"[DTPProxy] IsLockKeyNotificationsEnabled {e.IsLockKeyNotificationsEnabled} Device ID: {e.DeviceId} !!!!!!!!!!!!!!!");
+            SendDTPEventToUI(CreateEventMsg("GlobalPeripheralcom", "_globalperipheralcom_IsLockKeyNotificationsEnabledChanged", e.DeviceId));
+        }
+
+        private void _globalperipheralcom_IsBatteryNotificationsEnabledChanged(object sender, IsBatteryNotificationsEnabledChangedArgs e)
+        {
+            writelog($"[DTPProxy] IsBatteryNotifications {e.IsBatteryNotificationsEnabled} Device ID: {e.DeviceId} !!!!!!!!!!!!!!!");
+            SendDTPEventToUI(CreateEventMsg("GlobalPeripheralcom", "_globalperipheralcom_IsBatteryNotificationsEnabledChanged", e.DeviceId));
+        }
+
+        private void _globalperipheralcom_IsAnalyticsEnabledChanged(object sender, IsAnalyticsEnabledChangedArgs e)
+        {
+            writelog($"[DTPProxy] IsAnalyticsEnabled {e.IsAnalyticsEnabled} Device ID: {e.DeviceId} !!!!!!!!!!!!!!!");
+            SendDTPEventToUI(CreateEventMsg("GlobalPeripheralcom", "_globalperipheralcom_IsAnalyticsEnabledChanged", e.DeviceId));
         }
 
         #endregion globalperipheral
@@ -7111,42 +7149,6 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
             await RegisterEventsForAllHeadsetAsync();
         }
-
-        private void _globalperipheralcom_IsQuickAccessMenuOSDEnabledChanged(object sender, IsQuickAccessMenuOSDEnabledChangedArgs e)
-        {
-            writelog($"[DTPProxy] IsQuickAccessMenuOSDEnabled {e.IsQuickAccessMenuOSDEnabled} Device ID: {e.DeviceId} !!!!!!!!!!!!!!!");
-        }
-
-        private void _globalperipheralcom_IsQuickAccessMenuEnabledChanged(object sender, IsQuickAccessMenuEnabledChangedArgs e)
-        {
-            writelog($"[DTPProxy] IsQuickAccessMenuEnabled {e.IsQuickAccessMenuEnabled} Device ID: {e.DeviceId} !!!!!!!!!!!!!!!");
-        }
-
-        private void _globalperipheralcom_IsPresenceDetectionSensnorStateNotificationsEnabledChanged(object sender, IsPresenceDetectionSensnorStateNotificationsEnabledChangedArgs e)
-        {
-            writelog($"[DTPProxy] IsPresenceDetectionSensnorStateNotificationsEnabled {e.IsPresenceDetectionSensnorStateNotificationsEnabled} Device ID: {e.DeviceId} !!!!!!!!!!!!!!!");
-        }
-
-        private void _globalperipheralcom_IsMuteStatusNotificationsEnabledChanged(object sender, IsMuteStatusNotificationsEnabledChangedArgs e)
-        {
-            writelog($"[DTPProxy] IsMuteStatusNotificationsEnabled {e.IsMuteStatusNotificationsEnabled} Device ID: {e.DeviceId} !!!!!!!!!!!!!!!");
-        }
-
-        private void _globalperipheralcom_IsLockKeyNotificationsEnabledChanged(object sender, IsLockKeyNotificationsEnabledChangedArgs e)
-        {
-            writelog($"[DTPProxy] IsLockKeyNotificationsEnabled {e.IsLockKeyNotificationsEnabled} Device ID: {e.DeviceId} !!!!!!!!!!!!!!!");
-        }
-
-        private void _globalperipheralcom_IsBatteryNotificationsEnabledChanged(object sender, IsBatteryNotificationsEnabledChangedArgs e)
-        {
-            writelog($"[DTPProxy] IsBatteryNotifications {e.IsBatteryNotificationsEnabled} Device ID: {e.DeviceId} !!!!!!!!!!!!!!!");
-        }
-
-        private void _globalperipheralcom_IsAnalyticsEnabledChanged(object sender, IsAnalyticsEnabledChangedArgs e)
-        {
-            writelog($"[DTPProxy] IsAnalyticsEnabled {e.IsAnalyticsEnabled} Device ID: {e.DeviceId} !!!!!!!!!!!!!!!");
-        }
-
         private async Task<int> GetHeadsetDevsCountAsync()
         {
             var headsets = await GetHeadsetDeviceItemsExAsync();
