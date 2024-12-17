@@ -201,7 +201,7 @@
                                             VerticalAlignment="Center"
                                             Margin="20,8,8,8" />
                                     <UXControls:UXBusyIndicator x:Name="DownloadUXBusyIndicator" Grid.Column="1" BusyIndicatorType="Secondary" HorizontalAlignment="Left" IsActive="False" Visibility="Hidden"/>
-                                    <UXControls:UXTextBlock x:Name="DownloadUXTextBlock" Grid.Column="2" Text="{Binding [Updates.6], Source={x:Static lang:LangHelper.Instance}}" TextBlockType="Header1" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5,0,0,0" Visibility="Hidden"/>
+                                    <!--<UXControls:UXTextBlock x:Name="DownloadUXTextBlock" Grid.Column="2" Text="{Binding [Updates.6], Source={x:Static lang:LangHelper.Instance}}" TextBlockType="Header1" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5,0,0,0" Visibility="Hidden"/>-->
                                 </Grid>
                             </Grid>
                         </StackPanel>
